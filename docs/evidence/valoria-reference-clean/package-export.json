@@ -1,11 +1,11 @@
 {
-    "source_sha": "af87f39e6a324d8bbb906ed2a2ef97484a91aa78",
+    "source_sha": "8f55b6223f3bc0a3581ed79554e7aac4f7509497",
     "status": "EXPORTED_GZIP_VERIFIED_IMPORT_PENDING",
     "package": "C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\Unity\\Builds\\ValoriaReferenceClean\\Valoria_Reference_Clean.unitypackage",
-    "sha256": "d8afed994705ff1a5001c86fc22bea18cf24a036216e1f551edc7eddce5005e7",
-    "scene_sha256": "8ddda44f57c6f3233dc5e244bc62dd7a3197e940c222f5a4afee3713900a3599",
+    "sha256": "13ab37a9c3aa6d774bdbefdb3e5b35f813fc58d30946a4b2d69360d2a1da455a",
+    "scene_sha256": "433d6ed87748d308dba1ee7629617fc1bf8fb98b76d08cd66d84842eb717326f",
     "error": "",
-    "bytes": 284335755,
-    "uncompressed_bytes": 702318592,
+    "bytes": 285652338,
+    "uncompressed_bytes": 705892352,
     "native_import_verified": false
 }

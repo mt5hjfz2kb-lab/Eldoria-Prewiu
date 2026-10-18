@@ -5,8 +5,8 @@ OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 16314 
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-10-18T11:35:08Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 40680)
+Date: 2026-10-18T11:38:01Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 35868)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
@@ -15,7 +15,7 @@ C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
 -projectPath
 C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu/valoria-layered-source/Unity
 -executeMethod
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanCampTrial.Build
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanCampTrial.Integrate
 -logFile
 C:\actions-runner-eldoria\_work\_temp\valoria-reference-clean.log
 -buildTarget
@@ -58,29 +58,29 @@ C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-so
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [40996]  Target information:
+Player connection [40124]  Target information:
 
-Player connection [40996]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 1108559820 [EditorId] 1108559820 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [40124]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 682013152 [EditorId] 682013152 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [40996] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [40996] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [40124] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [40124] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T11:35:09.2119843Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 40680, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-18T11:38:01.3536764Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 35868, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
-[Package Manager] Connected to IPC stream "Upm-26976" after 0.2 seconds.
+[Package Manager] Connected to IPC stream "Upm-41676" after 0.2 seconds.
 [Licensing::Module] Licensing is not yet initialized.
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              b462fff53d3c4ba3ac66d3fe66f544df
-  Correlation Id:          26d627f54a9f7ab22f2534bb3e18c359
-  External correlation Id: 478995006380831354
+  Session Id:              d7d9c435733f42a1ad7de92687380808
+  Correlation Id:          e69856b28ae556099128521cdbaeb5e5
+  External correlation Id: 378239675085887611
   Machine Id:              2f5r11GGPSmasE3evuSWjGpcpFg=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.26s, validation: 0.10s, handshake: 0.02s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T11:35:09.3333355Z"
-[Licensing::Module] Connected to LicensingClient (PId: 40680, launch time: 0.00, total connection time: 0.38s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.26s, validation: 0.09s, handshake: 0.02s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-18T11:38:01.4609615Z"
+[Licensing::Module] Connected to LicensingClient (PId: 35868, launch time: 0.00, total connection time: 0.37s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -90,8 +90,8 @@ Input System module state changed to: Initialized.
   Expiration: Unlimited
 [Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 0.41s
-[Licensing::Module] Licensing is initialized (took 0.10s).
+[Licensing::Module] Licensing Background thread has ended after 0.40s
+[Licensing::Module] Licensing is initialized (took 0.08s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
 FMOD initialized on nosound output
@@ -101,9 +101,8 @@ FMOD initialized on nosound output
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Artifact Garbage Collection - Removed 1 unused hashed content files
 Targeting platform: Win64
-Refreshing native plugins compatible for Editor in 1.75 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 1.88 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/UnitySubsystems
@@ -120,7 +119,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56976
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56676
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -133,8 +132,8 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.005901 seconds.
-- Loaded All Assemblies, in  0.390 seconds
+Registered in 0.005833 seconds.
+- Loaded All Assemblies, in  0.407 seconds
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
@@ -143,34 +142,34 @@ Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
 Mono: successfully reloaded assembly
 - Finished resetting the current domain, in  0.380 seconds
-Domain Reload Profiling: 767ms
-	BeginReloadAssembly (119ms)
+Domain Reload Profiling: 786ms
+	BeginReloadAssembly (130ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (6ms)
+		CreateAndSetChildDomain (19ms)
 	RebuildCommonClasses (35ms)
 	RebuildNativeTypeToScriptingClass (13ms)
-	initialDomainReloadingComplete (47ms)
-	LoadAllAssembliesAndSetupDomain (173ms)
-		LoadAssemblies (111ms)
+	initialDomainReloadingComplete (49ms)
+	LoadAllAssembliesAndSetupDomain (178ms)
+		LoadAssemblies (110ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (170ms)
-			TypeCache.Refresh (168ms)
-				TypeCache.ScanAssembly (155ms)
+		AnalyzeDomain (175ms)
+			TypeCache.Refresh (173ms)
+				TypeCache.ScanAssembly (160ms)
 			BuildScriptInfoCaches (0ms)
 			ResolveRequiredComponents (0ms)
-	FinalizeReload (380ms)
+	FinalizeReload (381ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (344ms)
+		SetupLoadedEditorAssemblies (345ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (64ms)
+			InitializePlatformSupportModulesInManaged (65ms)
 			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (78ms)
-			ProcessInitializeOnLoadAttributes (123ms)
-			ProcessInitializeOnLoadMethodAttributes (74ms)
+			BeforeProcessingInitializeOnLoad (80ms)
+			ProcessInitializeOnLoadAttributes (124ms)
+			ProcessInitializeOnLoadMethodAttributes (73ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -215,132 +214,100 @@ Application.AssetDatabase Initial Refresh Start
 [Subsystems] No new subsystems found in resolved package list.
 [Package Manager] Done registering packages in 0.01 seconds
 A meta data file (.meta) exists but its asset 'Assets/EmaceArt/Slavic World Free/URP_Support/URP/URP_Material.unitypackage' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
-[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
 DisplayProgressbar: Compiling Scripts
-ExitCode: 0 Duration: 3s892ms
-[621/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[790/794    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionIntegrate.cs(40,328): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(66,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(59,27): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnvironment.cs(69,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(57,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanPineVolume.cs(44,314): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-[791/794    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 138 defines and 323 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[792/794    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
-[793/794    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
-*** Tundra build success (3.87 seconds), 5 items updated, 794 evaluated
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionIntegrate.cs(40,328): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(66,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(59,27): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnvironment.cs(69,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(57,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanPineVolume.cs(44,314): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-AssetDatabase: script compilation time: 4.239169s
+ExitCode: 0 Duration: 0s186ms
+[622/794    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra build success (0.16 seconds), 1 items updated, 794 evaluated
+AssetDatabase: script compilation time: 0.534053s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  1.477 seconds
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0113325 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0014889 seconds
-Refreshing native plugins compatible for Editor in 6.56 ms, found 4 plugins.
+- Loaded All Assemblies, in  0.696 seconds
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0110544 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0015653 seconds
+Refreshing native plugins compatible for Editor in 6.23 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  2.606 seconds
-Domain Reload Profiling: 4080ms
-	BeginReloadAssembly (305ms)
+- Finished resetting the current domain, in  2.556 seconds
+Domain Reload Profiling: 3253ms
+	BeginReloadAssembly (296ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (21ms)
+		DisableScriptedObjects (25ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
 		CreateAndSetChildDomain (152ms)
 	RebuildCommonClasses (34ms)
 	RebuildNativeTypeToScriptingClass (13ms)
 	initialDomainReloadingComplete (25ms)
-	LoadAllAssembliesAndSetupDomain (1096ms)
-		LoadAssemblies (1032ms)
+	LoadAllAssembliesAndSetupDomain (325ms)
+		LoadAssemblies (259ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (152ms)
-			TypeCache.Refresh (103ms)
-				TypeCache.ScanAssembly (92ms)
+		AnalyzeDomain (153ms)
+			TypeCache.Refresh (104ms)
+				TypeCache.ScanAssembly (93ms)
 			BuildScriptInfoCaches (37ms)
 			ResolveRequiredComponents (10ms)
-	FinalizeReload (2607ms)
+	FinalizeReload (2560ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (2409ms)
+		SetupLoadedEditorAssemblies (2369ms)
 			LogAssemblyErrors (0ms)
 			InitializePlatformSupportModulesInManaged (35ms)
 			SetLoadedEditorAssemblies (3ms)
-			BeforeProcessingInitializeOnLoad (143ms)
-			ProcessInitializeOnLoadAttributes (2067ms)
-			ProcessInitializeOnLoadMethodAttributes (155ms)
+			BeforeProcessingInitializeOnLoad (142ms)
+			ProcessInitializeOnLoadAttributes (2038ms)
+			ProcessInitializeOnLoadMethodAttributes (145ms)
 			AfterProcessingInitializeOnLoad (6ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (25ms)
+		AwakeInstancesAfterBackupRestoration (18ms)
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
-Refreshing native plugins compatible for Editor in 6.22 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 6.35 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=dda06e05b0a42854b8da084acfdd7a38): Total: 9.318 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=db5bfa2f7c43090488801123104c0ebd): Total: 4.745 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
 		Imports: total=2 (actual=2, local cache=0, cache server=0)
-		Asset DB Process Time: managed=3 ms, native=3056 ms
-		Asset DB Callback time: managed=325 ms, native=172 ms
-		Scripting: domain reloads=1, domain reload time=1477 ms, compile time=4241 ms, other=41 ms
-		Project Asset Count: scripts=1207, non-scripts=5878
-		Asset File Changes: new=0, changed=3, moved=0, deleted=0
+		Asset DB Process Time: managed=3 ms, native=2994 ms
+		Asset DB Callback time: managed=302 ms, native=171 ms
+		Scripting: domain reloads=1, domain reload time=696 ms, compile time=536 ms, other=41 ms
+		Project Asset Count: scripts=1207, non-scripts=5895
+		Asset File Changes: new=0, changed=2, moved=0, deleted=0
 		Scan Filter Count: 0
-	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 10.702ms
-	ApplyChangesToAssetFolders: 0.423ms
-	Scan: 93.977ms
-	OnSourceAssetsModified: 0.534ms
-	CategorizeAssetsWithTransientArtifact: 21.840ms
-	ProcessAssetsWithTransientArtifactChanges: 46.305ms
-	CategorizeAssets: 120.012ms
-	ImportOutOfDateAssets: 2645.754ms (-1612.993ms without children)
-		ImportManagerImport: 14.224ms (1.063ms without children)
-			ImportInProcess: 13.138ms
-			UpdateCategorizedAssets: 0.023ms
-		CompileScripts: 4240.704ms
-		ReloadNativeAssets: 0.040ms
-		UnloadImportedAssets: 0.803ms
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 10.298ms
+	ApplyChangesToAssetFolders: 0.485ms
+	Scan: 86.400ms
+	OnSourceAssetsModified: 0.533ms
+	CategorizeAssetsWithTransientArtifact: 21.002ms
+	ProcessAssetsWithTransientArtifactChanges: 45.522ms
+	CategorizeAssets: 114.365ms
+	ImportOutOfDateAssets: 2599.416ms (2045.680ms without children)
+		ImportManagerImport: 14.085ms (1.103ms without children)
+			ImportInProcess: 12.958ms
+			UpdateCategorizedAssets: 0.024ms
+		CompileScripts: 535.605ms
+		ReloadNativeAssets: 0.042ms
+		UnloadImportedAssets: 0.857ms
 		ReloadImportedAssets: 0.000ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.629ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.716ms
 		InitializingProgressBar: 0.001ms
 		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 1.345ms
-	PostProcessAllAssets: 529.124ms
-	Hotreload: 7.362ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.286ms
-	UnloadStreamsBegin: 3.320ms
-	PersistCurrentRevisions: 0.512ms
-	UnloadStreamsEnd: 0.002ms
-	GenerateScriptTypeHashes: 3.928ms
-	Untracked: 5837.378ms
+		OnDemandSchedulerStart: 1.429ms
+	PostProcessAllAssets: 505.238ms
+	Hotreload: 7.487ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.277ms
+	UnloadStreamsBegin: 3.304ms
+	PersistCurrentRevisions: 0.520ms
+	UnloadStreamsEnd: 0.003ms
+	GenerateScriptTypeHashes: 3.624ms
+	Untracked: 1350.309ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 3.220ms
+Scanning for USB devices : 2.898ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
@@ -442,259 +409,1148 @@ UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
 UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
 Unloading 35 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4318 unused Assets / (5.0 MB). Loaded Objects now: 5239.
-Memory consumption went from 213.2 MB to 208.2 MB.
-Total: 10.019900 ms (FindLiveObjects: 0.496200 ms CreateObjectMapping: 0.470400 ms MarkObjects: 7.127500 ms  DeleteObjects: 1.925200 ms)
+Unloading 4318 unused Assets / (5.2 MB). Loaded Objects now: 5239.
+Memory consumption went from 211.3 MB to 206.1 MB.
+Total: 9.630000 ms (FindLiveObjects: 0.489300 ms CreateObjectMapping: 0.472500 ms MarkObjects: 6.692000 ms  DeleteObjects: 1.975600 ms)
 
-Asset Pipeline Refresh (id=04ae7a4d0c8b8eb4898eb57560149923): Total: 0.056 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
-Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
+Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Valoria_CampCloth87.unity'
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
 LightingSettings: switching bake backend from 2 to 1.
-Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
-	Deserialize:            9.238 ms
-	Integration:            1176.338 ms
-	Integration of assets:  0.349 ms
+Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Valoria_CampCloth87.unity'
+	Deserialize:            9.457 ms
+	Integration:            1177.013 ms
+	Integration of assets:  0.363 ms
 	Thread Wait Time:       0.033 ms
-	Total Operation Time:   1185.958 ms
-Unloading 4 unused Assets / (5.2 KB). Loaded Objects now: 5687.
-Memory consumption went from 374.3 MB to 374.3 MB.
-Total: 5.854100 ms (FindLiveObjects: 0.350900 ms CreateObjectMapping: 0.234000 ms MarkObjects: 5.212800 ms  DeleteObjects: 0.055600 ms)
+	Total Operation Time:   1186.866 ms
+Unloading 4 unused Assets / (5.8 KB). Loaded Objects now: 5689.
+Memory consumption went from 381.9 MB to 381.9 MB.
+Total: 6.035500 ms (FindLiveObjects: 0.343300 ms CreateObjectMapping: 0.232700 ms MarkObjects: 5.400500 ms  DeleteObjects: 0.058200 ms)
 
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.003257 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '140f0b49d81c91091551a2c318405d85') in 0.0013427 seconds
-Refreshing native plugins compatible for Editor in 5.81 ms, found 4 plugins.
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BarracksCamp.prefab using Guid(0808346eb4e126b4fa47736047fdff85) (PrefabImporter) -> (artifact id: 'a2c0f5880d39ab353bd5b8172f6ce7af') in 0.0109903 seconds
+Refreshing native plugins compatible for Editor in 5.70 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=c9535203086197b438cde23f64953419): Total: 0.087 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Valoria_CampCloth87.unity using Guid(b3ed9b5b04267b94aa32e806ecb0cc5c) (DefaultImporter) -> (artifact id: 'b44fea60912c2804981a5526044eb339') in 0.0011432 seconds
-Refreshing native plugins compatible for Editor in 6.17 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=9d02baaea0759c44cacb2adcb4d5fed2): Total: 0.048 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Unity is not designed to run with Administrator privileges.
-
-With elevated access, scripts in your project can modify system files, registry settings, or protected areas, even accidentally.
-This could make your system unstable or unbootable.
-
-Restart as a standard user for the safest experience.
-[Project] Loading completed in 15.664 seconds
-	Project init time: 				11.250 seconds
-		Template init time: 		0.000 seconds
-		Package Manager init time: 		0.320 seconds
-		Asset Database init time: 		0.307 seconds
-		Global illumination init time: 	0.002 seconds
-		Assemblies load time: 			0.788 seconds
-		Unity extensions init time: 	0.006 seconds
-		Asset Database refresh time: 	9.318 seconds
-	Scene opening time: 			4.288 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792323324578,"processId":26976,"projectLoad":15.664066700000002,"projectInit":11.2502949,"templateInit":0.0,"packageManagerInit":0.3203087,"assetDatabaseInit":0.3070957,"globalIlluminationInit":0.0020345,"assembliesLoad":0.7875099,"unityExtensionsInit":0.006007,"assetDatabaseRefresh":9.317622,"sceneOpening":4.2881352}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792323324578,"processId":26976,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
-[Licensing::Client] Successfully resolved entitlement details
-Start Indexing on Editor startup
-[Indexing] Starting Initial Indexing for Assets
-[UnityConnectServicesConfig] config is NOT valid, switching to default
-Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.013s, timestamps: [15.667 - 15.680]
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000 1.asset using Guid(2c49f3287946bb045a81810c0c81b38e) (NativeFormatImporter) -> (artifact id: '6ac77e0fb9db5b95f2f65233a68dede2') in 0.0063328 seconds
-Refreshing native plugins compatible for Editor in 7.38 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=59c5aaebec306c0459704e27067ee7eb): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001 1.asset using Guid(11ef282b61b30ed49a1bd8f4055c32e6) (NativeFormatImporter) -> (artifact id: '073d69fb04ff1891965d2164d5bef77f') in 0.006084 seconds
-Refreshing native plugins compatible for Editor in 6.21 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=1d9e839c90af82147aeb0f6159300752): Total: 0.065 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002 1.mat using Guid(40d866b11addb8e408f93c3c288288d8) (NativeFormatImporter) -> (artifact id: '24c224f5d2887aada5753674705ec3df') in 0.0017633 seconds
-Refreshing native plugins compatible for Editor in 6.17 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=9cb37499cb4b5674b9e583e8b1bb0962): Total: 0.056 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003 1.mat using Guid(306a188f7b257174eb34fedc1286906c) (NativeFormatImporter) -> (artifact id: '847cc8568618d6de8f3e5cde1ec49a2a') in 0.0017 seconds
-Refreshing native plugins compatible for Editor in 6.51 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=358c32c443d9d7a4f886929f870abbb7): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0004 1.mat using Guid(462e6647f9495ed48927576000c08a6c) (NativeFormatImporter) -> (artifact id: 'a4a2e267cb20a0e7bd81db87f644eee2') in 0.0017978 seconds
-Refreshing native plugins compatible for Editor in 6.39 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=7fe9fad2228ffd540879209d9e6a930f): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005 1.mat using Guid(818586a33cb71e1419f65d8e266de7bb) (NativeFormatImporter) -> (artifact id: '744e277781ddd7915cec02389d82fe5d') in 0.0018788 seconds
-Refreshing native plugins compatible for Editor in 6.33 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=d8e9d5a90842c964593751a7a2a0770b): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006 1.mat using Guid(c83906e490981524e91ba043118c8d7c) (NativeFormatImporter) -> (artifact id: 'bb59065adb8d018055e18680bdc03fa6') in 0.0016973 seconds
-Refreshing native plugins compatible for Editor in 6.32 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=7ef4492b5f49e4541a7a1dd3ee1981e5): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0007 1.asset using Guid(641ec184c2974d44cac9b771ee073ffd) (NativeFormatImporter) -> (artifact id: 'a3d636ddcd4ad2daf52271f11db3b914') in 0.0027802 seconds
-Refreshing native plugins compatible for Editor in 6.29 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=2ffc6c425b5ffe648a18e3212b1bfece): Total: 0.073 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008 1.mat using Guid(1c7092cc41346e249ba56175218acf64) (NativeFormatImporter) -> (artifact id: '7de8428de3bdd63adea25ddafcb7b2f2') in 0.0018181 seconds
-Refreshing native plugins compatible for Editor in 6.28 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=7f799425e9ab19d439adc7f263597d3e): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0009 1.mat using Guid(311736ab5554c01448936b9456cf1f38) (NativeFormatImporter) -> (artifact id: '54b273beb495faa3c92a8e919152024f') in 0.001521 seconds
-Refreshing native plugins compatible for Editor in 6.28 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=85c4595394cf78f49ac6dbea9c0e6a8c): Total: 0.052 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0010 1.mat using Guid(0f28aca0e1737614c92d4713006fbecc) (NativeFormatImporter) -> (artifact id: 'dbe70a6bdf69eff5a825bd3a7da77a62') in 0.0016869 seconds
-Refreshing native plugins compatible for Editor in 6.25 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=e1c71a1a98fa5164ab93a5515f98ce4f): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0011 1.asset using Guid(512414e20aa4c234cae6ac70d2d0cc96) (NativeFormatImporter) -> (artifact id: '5c841c3c16116680a08b665114c02770') in 0.0018521 seconds
-Refreshing native plugins compatible for Editor in 6.17 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=ab917a247a9d8044dbaf867a22b818fa): Total: 0.528 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-	Summary:
-		Imports: total=1 (actual=1, local cache=0, cache server=0)
-		Asset DB Process Time: managed=0 ms, native=519 ms
-		Asset DB Callback time: managed=0 ms, native=8 ms
-		Scripting: domain reloads=0, domain reload time=0 ms, compile time=0 ms, other=0 ms
-		Project Asset Count: scripts=1207, non-scripts=5890
-		Asset File Changes: new=1, changed=1, moved=0, deleted=0
-		Scan Filter Count: 7
-	InvokeCustomDependenciesCallbacks: 0.000ms
-	InvokePackagesCallback: 0.000ms
-	ApplyChangesToAssetFolders: 0.051ms
-	Scan: 21.822ms
-	OnSourceAssetsModified: 0.037ms
-	CategorizeAssetsWithTransientArtifact: 0.002ms
-	ProcessAssetsWithTransientArtifactChanges: 0.049ms
-	CategorizeAssets: 22.072ms
-	ImportOutOfDateAssets: 470.984ms (0.573ms without children)
-		ImportManagerImport: 468.776ms (0.495ms without children)
-			ImportInProcess: 468.264ms
-			UpdateCategorizedAssets: 0.017ms
-		ReloadNativeAssets: 0.217ms
-		UnloadImportedAssets: 0.160ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.740ms
-		InitializingProgressBar: 0.005ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 0.514ms
-	PostProcessAllAssets: 2.261ms
-	Hotreload: 6.679ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.448ms
-	UnloadStreamsBegin: 0.024ms
-	PersistCurrentRevisions: 0.263ms
-	UnloadStreamsEnd: 0.001ms
-	Untracked: 3.370ms
-
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0012 1.asset using Guid(f2f085ce0d5caf246b6d1ad42dd5d9d4) (NativeFormatImporter) -> (artifact id: 'efb9cb41b564e8dff21588ab78dd3d12') in 0.002122 seconds
-Refreshing native plugins compatible for Editor in 6.29 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=2b08d4a930bf1c1449d090828a487570): Total: 0.084 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0013 1.asset using Guid(987ba33012968cd43b3f15c22676e52c) (NativeFormatImporter) -> (artifact id: '678e8ba2e16a7232ecfd2a2359909fdf') in 0.0019123 seconds
-Refreshing native plugins compatible for Editor in 6.13 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=1c6cecf39d352be4ea11fd58a810d61c): Total: 0.066 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0014 1.asset using Guid(4296a9256e7a58b49b819b26a7536456) (NativeFormatImporter) -> (artifact id: '731b53c6100ff46dc45c9302ffa84b0d') in 0.001949 seconds
-Refreshing native plugins compatible for Editor in 6.12 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=b573282c258d0e64a8ef4ac13dda7bb5): Total: 0.053 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0015 1.asset using Guid(5d1d9df1053222e41ba98f4cad62888f) (NativeFormatImporter) -> (artifact id: 'ed1676ffe7bbe2a062a72ad30819556b') in 0.0021568 seconds
-Refreshing native plugins compatible for Editor in 6.16 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=2ae5d618cd9c67e4897fb6cd2eb1487d): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0016 1.asset using Guid(b591c1d715287cb42954486c148cfbef) (NativeFormatImporter) -> (artifact id: 'b873d87dd0178d2a0a123f7d86afda2a') in 0.0029884 seconds
+Asset Pipeline Refresh (id=49065071504ca2845bc933764d1b4e32): Total: 0.106 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0027282 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'c145d6b770d91ee527dfb5bd279aea68') in 0.0015198 seconds
 Refreshing native plugins compatible for Editor in 6.10 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=ef1f1b0f5d91b7240982f90693b2fd8c): Total: 0.060 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003 1.mat using Guid(306a188f7b257174eb34fedc1286906c) (NativeFormatImporter) -> (artifact id: 'f0be4e6669b33cbf09d6331a25110698') in 0.005388 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002 1.mat using Guid(40d866b11addb8e408f93c3c288288d8) (NativeFormatImporter) -> (artifact id: '29e7a12813edc053a5542e3618c08268') in 0.0014687 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0009 1.mat using Guid(311736ab5554c01448936b9456cf1f38) (NativeFormatImporter) -> (artifact id: '9ff69896e3cc7bde669012a17bf20998') in 0.001711 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005 1.mat using Guid(818586a33cb71e1419f65d8e266de7bb) (NativeFormatImporter) -> (artifact id: '618600133b75a77053359ac3a59dc552') in 0.0038301 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0004 1.mat using Guid(462e6647f9495ed48927576000c08a6c) (NativeFormatImporter) -> (artifact id: '69ab3995f7de01c2def26c00b526125c') in 0.0010457 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006 1.mat using Guid(c83906e490981524e91ba043118c8d7c) (NativeFormatImporter) -> (artifact id: 'd4ab5cd245d541330a0da4b72ce9f31b') in 0.0060304 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008 1.mat using Guid(1c7092cc41346e249ba56175218acf64) (NativeFormatImporter) -> (artifact id: '25ae85c72434851bda62bee5d7517927') in 0.0055507 seconds
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0010 1.mat using Guid(0f28aca0e1737614c92d4713006fbecc) (NativeFormatImporter) -> (artifact id: '7b22df7703c67a35d2890118492a601d') in 0.0034609 seconds
-Refreshing native plugins compatible for Editor in 5.99 ms, found 4 plugins.
+Asset Pipeline Refresh (id=4e053d935282ddb4b9c2f130efd7a247): Total: 0.047 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity using Guid(05b7642946ba5934ba822f4204a83e1a) (DefaultImporter) -> (artifact id: 'f8e3937495902cdcee41c0599a7c5a01') in 0.0009176 seconds
+Refreshing native plugins compatible for Editor in 6.11 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=928837214035d484f9b5b90fa2972f39): Total: 0.200 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Valoria_CampCloth87.unity using Guid(b3ed9b5b04267b94aa32e806ecb0cc5c) (DefaultImporter) -> (artifact id: 'c3a29b26f45d249cca09d99d29772b57') in 0.001127 seconds
-Refreshing native plugins compatible for Editor in 5.99 ms, found 4 plugins.
+Asset Pipeline Refresh (id=a024a2efbadffc94a99112f926318c77): Total: 0.050 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
+Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity'
+	Deserialize:            4.885 ms
+	Integration:            144.899 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.029 ms
+	Total Operation Time:   149.816 ms
+Unloading 231 unused Assets / (42.6 KB). Loaded Objects now: 5698.
+Memory consumption went from 375.8 MB to 375.8 MB.
+Total: 6.367800 ms (FindLiveObjects: 0.337200 ms CreateObjectMapping: 0.195700 ms MarkObjects: 5.533900 ms  DeleteObjects: 0.300400 ms)
+
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Bastion_I.prefab using Guid(6d2943a9fbf7a224b85b95df7dc32b52) (PrefabImporter) -> (artifact id: 'ade20543bec7763074b21a4c7015e7e5') in 0.0036071 seconds
+Refreshing native plugins compatible for Editor in 5.67 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=ecdbcefd6ea87d341bed28679cd5ecf3): Total: 0.051 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
-VALORIA_REFERENCE_CLEAN_CAMP_TRIAL_COMPLETE
+Asset Pipeline Refresh (id=a77b277230775314e8e674413ff78aea): Total: 0.075 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/FortifiedGate.prefab using Guid(44e652bb0869b404eb1cf0bb3a3e40b3) (PrefabImporter) -> (artifact id: '51fc396b7bc2176552bb0a1d90f7c037') in 0.0029678 seconds
+Refreshing native plugins compatible for Editor in 6.09 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=a93196b0831bda044a999ae09cf1c5e0): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/MedievalBridge.prefab using Guid(fffb610f044e39b43bb86fe9dc6c876e) (PrefabImporter) -> (artifact id: 'f621651e55a07181922392c8490e26ed') in 0.003061 seconds
+Refreshing native plugins compatible for Editor in 6.10 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=cf36c6a68b46e0f449307234bd7f20a2): Total: 0.057 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Paths.prefab using Guid(09d5f3ce9f00ffc49bf71529d2d5bb5e) (PrefabImporter) -> (artifact id: '8d280161daa3912b007285387ef4e894') in 0.0024548 seconds
+Refreshing native plugins compatible for Editor in 6.09 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=2e17aee3ebcf165489106fee16c1787a): Total: 0.054 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BuildablePlots.prefab using Guid(ee75939cc989a824e84545fdf93f8d72) (PrefabImporter) -> (artifact id: 'f788b037900961d63f0fd4e525cf4950') in 0.0024229 seconds
+Refreshing native plugins compatible for Editor in 6.19 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=d4750568a30f25a4a9d9e64c0fad81c2): Total: 0.087 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Ruins.prefab using Guid(c746bfe12561a944198586e15c1ed736) (PrefabImporter) -> (artifact id: 'a9c6f184417f2ac312ef90a059408dad') in 0.0025613 seconds
+Refreshing native plugins compatible for Editor in 6.11 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=4ac4663450730d140be39821436742e8): Total: 0.055 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=c563aa51e64e75542bbbe8570d55c0c5): Total: 0.010 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=1afecf61c86ff374ba6955e481db771d): Total: 0.010 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '140f0b49d81c91091551a2c318405d85') in 0.0025456 seconds
+Refreshing native plugins compatible for Editor in 6.03 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=ceb426759e6a749459449d5d9118d0de): Total: 0.045 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity using Guid(05b7642946ba5934ba822f4204a83e1a) (DefaultImporter) -> (artifact id: 'f8e3937495902cdcee41c0599a7c5a01') in 0.0009039 seconds
+Refreshing native plugins compatible for Editor in 6.46 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=fc17f26759b9bff4681da181d2447ca7): Total: 0.029 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '47ecddcdbd0d5b3419f443c4bd7fac25') in 0.0017973 seconds
+Refreshing native plugins compatible for Editor in 6.15 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Asset Pipeline Refresh (id=694c91abe9a077f4fbb21fe196b76192): Total: 0.075 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=dcd2840740cb9104d94a6a6b557c4dd6): Total: 0.008 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Starting new worker id: 0 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker0.log
+Starting new worker id: 1 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker1.log
+Worker ready: AssetImportWorker0 0
+Worker ready: AssetImportWorker1 1
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/CampCloth87.glb using Guid(eb55c5221bdca2a4d93e32911e475d86) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'f496692edfc36cf75234ea4124ce27d2') in 0.7705471 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Paths.prefab using Guid(09d5f3ce9f00ffc49bf71529d2d5bb5e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'bb6a1a5939302a35612165bb8ce8ae66') in 0.1104925 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BuildablePlots.prefab using Guid(ee75939cc989a824e84545fdf93f8d72) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b068e3a28187baf1093d3f3d985989b7') in 0.0576836 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Bastion_I.prefab using Guid(6d2943a9fbf7a224b85b95df7dc32b52) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '3525b14986ea2b7f6f889aca1042d697') in 0.235122 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/Camp87Canvas.png using Guid(9b8191d6a976cb649ade4ddbb570f9b6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '8d93ad47e73513f97aa83c1ccd1a36c8') in 0.0213759 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0015 1.asset using Guid(5d1d9df1053222e41ba98f4cad62888f) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'adb0d1c4595021046b1de4f9a72c4547') in 0.0122467 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0014 1.asset using Guid(4296a9256e7a58b49b819b26a7536456) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'a539eec35a536507d5ec78195c9f6a67') in 0.0098968 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0006 1.mat using Guid(c83906e490981524e91ba043118c8d7c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '28b5686766bdcef625a157aa733346bd') in 0.0390482 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0000 1.asset using Guid(2c49f3287946bb045a81810c0c81b38e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b8c541d7ccae4acc5934fc30bb99de10') in 0.018609 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0001 1.asset using Guid(11ef282b61b30ed49a1bd8f4055c32e6) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '06b719f0e01e720100970dcceda88843') in 0.0338695 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0002 1.mat using Guid(40d866b11addb8e408f93c3c288288d8) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '880065205d3e00b2365701dcc9882604') in 0.0295155 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0010 1.mat using Guid(0f28aca0e1737614c92d4713006fbecc) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'b30afc54983fe3d898e58e2833837f13') in 0.014134 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity using Guid(05b7642946ba5934ba822f4204a83e1a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '20549648d67d30f2ac662396a56f1d3b') in 0.0005234 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0003 1.mat using Guid(306a188f7b257174eb34fedc1286906c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6438ba7fdb6a56565dce18f2ff092627') in 0.0430899 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0009 1.mat using Guid(311736ab5554c01448936b9456cf1f38) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '80abf4900dfa90c49fefb173c7712931') in 0.0456863 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0016 1.asset using Guid(b591c1d715287cb42954486c148cfbef) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'c94a096386961f322aa9d98ab7d2430b') in 0.0129492 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/FortifiedGate.prefab using Guid(44e652bb0869b404eb1cf0bb3a3e40b3) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '04533ada9e804db8f9cfe418285459e7') in 0.0604052 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/MedievalBridge.prefab using Guid(fffb610f044e39b43bb86fe9dc6c876e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '014a4fbb455b7d5d0eb64be8fca8ed04') in 0.1784195 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0004 1.mat using Guid(462e6647f9495ed48927576000c08a6c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '593475b9cf4db525ee6072d72ed97633') in 0.0124733 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0008 1.mat using Guid(1c7092cc41346e249ba56175218acf64) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '271645c86d81037dd437f92dd1ff44e0') in 0.0147691 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/Ruins.prefab using Guid(c746bfe12561a944198586e15c1ed736) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'd087c5aae39b809f534a6ccb5f15eb54') in 0.1079956 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0012 1.asset using Guid(f2f085ce0d5caf246b6d1ad42dd5d9d4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6f7fe5f95bb472d415ad2a4dd9c6cd09') in 0.0122782 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0007 1.asset using Guid(641ec184c2974d44cac9b771ee073ffd) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'a89daae3585bcd93582a9dad2bbb7a18') in 0.0128219 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0011 1.asset using Guid(512414e20aa4c234cae6ac70d2d0cc96) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ebdd3f999e4be88c04c59251564b11cd') in 0.0104162 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0005 1.mat using Guid(818586a33cb71e1419f65d8e266de7bb) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: 'ed0be85169206653b071bc2a560698c6') in 0.0404023 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/ArtVariants/CampCloth87/Camp87_0013 1.asset using Guid(987ba33012968cd43b3f15c22676e52c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '6e34f7bb4a17b260057d9fed71c209d0') in 0.0100051 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Prefabs/BarracksCamp.prefab using Guid(0808346eb4e126b4fa47736047fdff85) Importer(815301076,1909f56bfc062723c751e8b465ee728b) 
+[Worker0] (PreviewImporter)
+[Worker0]  -> (artifact id: '07e7c8026a502cf3ebabb15fd5987cc5') in 0.0408452 seconds
+VALORIA_PACKAGE_EXPORT_RETURNED exists=True
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanCampTrial/<Build>d__11:MoveNext () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs:56)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__58:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:407)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Load>d__59:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:425)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<LoadFromUri>d__117:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:1219)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<bool>:TrySetResult (bool)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<bool>:SetResult (bool)
-GLTFast.GltfImportBase/<Prepare>d__142:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2330)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Threading.Tasks.AwaitTaskContinuation:InvokeAction (object)
-System.Threading.Tasks.AwaitTaskContinuation:RunCallback (System.Threading.ContextCallback,object,System.Threading.Tasks.Task&)
-System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation:Run (System.Threading.Tasks.Task,bool)
-System.Threading.Tasks.Task:FinishContinuations ()
-System.Threading.Tasks.Task:FinishStageThree ()
-System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>:TrySetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.VoidTaskResult)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1<System.Threading.Tasks.VoidTaskResult>:SetResult (System.Threading.Tasks.Task`1<System.Threading.Tasks.VoidTaskResult>)
-System.Runtime.CompilerServices.AsyncTaskMethodBuilder:SetResult ()
-GLTFast.GltfImportBase/<WaitForAllMeshGenerators>d__146:MoveNext () (at ./Library/PackageCache/com.unity.cloud.gltfast@0847aee0f6da/Runtime/Scripts/GltfImport.cs:2529)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
-System.Threading.ExecutionContext:RunInternal (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
-System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:Run ()
-System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter:RunAction (object)
-UnityEngine.UnitySynchronizationContext/WorkRequest:Invoke ()
-UnityEngine.UnitySynchronizationContext:Exec ()
-UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:ExportExisting () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:59)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:Build () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:26)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanCampTrial:Integrate () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs:64)
 
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanCampTrial.cs Line: 56)
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs Line: 59)
 
-Killing ADB server in 2,057027 seconds.
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '47ecddcdbd0d5b3419f443c4bd7fac25') in 0.0021611 seconds
-Refreshing native plugins compatible for Editor in 6.42 ms, found 4 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=c31c97a179deb454f864f9a294f1e91f): Total: 0.078 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Unity is not designed to run with Administrator privileges.
+
+With elevated access, scripts in your project can modify system files, registry settings, or protected areas, even accidentally.
+This could make your system unstable or unbootable.
+
+Restart as a standard user for the safest experience.
+[Project] Loading completed in 96.347 seconds
+	Project init time: 				6.714 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		0.305 seconds
+		Asset Database init time: 		0.288 seconds
+		Global illumination init time: 	0.002 seconds
+		Assemblies load time: 			0.859 seconds
+		Unity extensions init time: 	0.005 seconds
+		Asset Database refresh time: 	4.745 seconds
+	Scene opening time: 			89.441 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1792323577401,"processId":41676,"projectLoad":96.3469575,"projectInit":6.7135218,"templateInit":0.0,"packageManagerInit":0.3047289,"assetDatabaseInit":0.2877818,"globalIlluminationInit":0.0017894,"assembliesLoad":0.8592792,"unityExtensionsInit":0.0054378,"assetDatabaseRefresh":4.7452438,"sceneOpening":89.4412494}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1792323577403,"processId":41676,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+[UnityConnectServicesConfig] config is NOT valid, switching to default
+Created GICache directory at C:/Users/crist/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.013s, timestamps: [96.364 - 96.376]
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+[Worker0] Start importing Assets/UniversalRenderPipelineGlobalSettings.asset using Guid(fbef4b0b894160541864bf14bca0beba) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+Starting new worker id: 2 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker2.log
+[Worker1] Start importing Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity using Guid(05b7642946ba5934ba822f4204a83e1a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+Starting new worker id: 3 with log in C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity/Logs/AssetImportWorker3.log
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '91e4678b81bdc9ffcb0aa2475c2ff7ca') in 0.6760202 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/rack_for_weapons.prefab using Guid(0137f721b82b567438eb74a52f479f35) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6e18a4a947a0b1c4eb54e67ca19d89e6') in 1.8537129 seconds
+[Worker1]  -> (artifact id: '9790824cb61a891df539ed281e536aec') in 0.1025526 seconds
+[Worker0] Start importing Assets/Holotna/Mountain/Textures/Trunk01_NRM.png using Guid(78f692f242a2f834e8f0468c93fcd502) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Chairs/chair.002.prefab using Guid(392ad3985e02f2e4eb64f045a1319530) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '623148d2b5c0e6a37ed33c3a6c2942ee') in 0.0360753 seconds
+[Worker0]  -> (artifact id: '5ccd65f6313d3bdf0436f0b12812ee9e') in 0.0872078 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Platforms/platform.prefab using Guid(2e85e654d9d08b54294966420d8a2155) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Tables/table.002.prefab using Guid(7924c58951d065e41a642120f0e71713) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '2cfc8cff3e25792429af858c5bf42174') in 0.0347118 seconds
+[Worker0]  -> (artifact id: '4182cc948254f7075d56387018129c88') in 0.0523978 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/BloomAndFlaresEditor.cs using Guid(4deca87cb459d1642ac8f734856ca84e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'a6914e4fc10c72834cf7aa717d2a58f0') in 0.0144489 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush02_Textures/normal_specular.png using Guid(a0d503ff62e3323448a75a7485e3c50b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'e8a8c1efa0c1db6d7e85015d6c0ccc83') in 0.0259728 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/CameraMotionBlurEditor.cs using Guid(80cbbe1c107bf5e43a96347d3dfc2658) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'd01bbc3d216020b5d29b5fa07df0e3ca') in 0.0078819 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Fences/big_fence.002.prefab using Guid(e17090a47b884224e92e6bf7126d1eca) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Houses/house.002.prefab using Guid(4a44f35a46b75e941b4ca602c1b9a78d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '0b655d5cdc320d381ba8966f9e467198') in 0.0342786 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/firewood_no_support.prefab using Guid(baff10b8e1a024d41b45733d378107c9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '177cd827431cce1dae4e8a5353f1a7b7') in 0.0924083 seconds
+[Worker0]  -> (artifact id: '2f0d75406b5485f66043b6f4f226013b') in 0.0369232 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Platforms/platform.005.prefab using Guid(fccfddf88c6943348a64ef8cbd966b73) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/tree01_Textures/normal_specular.png using Guid(8c09b7803cd35a7439d17c6f8c1afe76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f4fc861c62387f3a1fcdd3c1ac2150b4') in 0.0129 seconds
+[Worker1]  -> (artifact id: '18a711e368fb9cb4eea1bc5f9487979c') in 0.0318553 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush06_Textures/shadow.png using Guid(d98f7f433a35e2644b3737f5b6abbe8a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/bush05_Textures/shadow.png using Guid(dd66a18c48485c04081d7545c87b5804) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker1] [Licensing::Client] Successfully resolved entitlement details
+[Worker1] [Licensing::Client] Successfully resolved entitlement details
+[Worker0]  -> (artifact id: 'd093173dddbf58a87ccb858b8530bd87') in 0.0234897 seconds
+[Worker1]  -> (artifact id: '906078daa94fb98ba4220bff21ad5ab9') in 0.0494479 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/rack_for_weapons_small.prefab using Guid(9f1174680b6eec646bad64015b37aaa3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'e3ff5d1db9e7e7e7453220c26fef6885') in 0.0302225 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/BloomEditor.cs using Guid(43fcc28c40e404d4eabfc88b1dbda7b5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '16e5c945e990d7061012c11825360078') in 0.0078714 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Tables/table.003.prefab using Guid(3830693df886e8948a6eb6f9b756916d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/bush06_Textures/diffuse.png using Guid(c40a1e1e56a4e2a48880f0c13f4af075) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'aade4174f8fb91d9ac10ba779948abe2') in 0.033894 seconds
+[Worker1]  -> (artifact id: '32dace17301fa36dea0e4b57ffe04dab') in 0.0398894 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Stairs/wood_stairs.prefab using Guid(90def6c32e7b9fa458dfdd4b6ea67ae5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.009.prefab using Guid(d24cbc466424f71408559463ee47e0cf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '8a45c83e1ac4682b120619700105de27') in 0.0341902 seconds
+[Worker1]  -> (artifact id: 'b166dbc65d464a56a9d8563491d51396') in 0.0329584 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Tables/bedside_table.002.prefab using Guid(0caf0d4823fcc7a4bb64144f3b4469fb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/bush05_Textures/translucency_gloss.png using Guid(6471761cd0be04a48ab5c5b0598c426d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'ef35a7a925fe675b4c11516a2dffbc50') in 0.0341785 seconds
+[Worker1]  -> (artifact id: '6da527286436c97841aac298d0c5cf88') in 0.023418 seconds
+Worker ready: AssetImportWorker2 2
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/wagon.prefab using Guid(83dbbb8dec8a8de42b788eab746b43fd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Columns/wood_column.005.prefab using Guid(ce4bc96a94c35524880e25f081c1e9d4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'a339bad51dc5b1d63be6ec6bf29140a9') in 0.0369176 seconds
+[Worker1]  -> (artifact id: '0332985e446fd4a4df64c624abf2026c') in 0.0396787 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/tree03_Textures/translucency_gloss.png using Guid(e08b6027d32f103499d413e4141bfcf3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/tree04_Textures/diffuse.png using Guid(2358a0d0a1cf20d4ea0018c742bd06e4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c449fca82ed3b361cd198821f5e69c6f') in 0.0131487 seconds
+[Worker1]  -> (artifact id: 'fbab091c8d1386f4a5fa778a4f5a0574') in 0.0262542 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/tree02_Textures/shadow.png using Guid(3dec27efd56514645878b45ee3ec32a4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '9e1d7b092f9c3e5d1512e6ac09223c71') in 0.0203791 seconds
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Materials/M_BaseColor_v02.mat using Guid(de039427346d8dd4a92c89b03f128d8c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/tree04_Textures/translucency_gloss.png using Guid(867a9bb6289eac041a67ad5218a3307e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'e243eabbfeb787f87fa31a2917194425') in 0.0472561 seconds
+[Worker0]  -> (artifact id: '8dd909035f35d27d06105b5fe2157d3c') in 0.0117214 seconds
+[Worker1] Start importing Assets/Holotna/Mountain/Textures/Trunk01_SPE.png using Guid(ba917b9a0ddba9948bb5200f57c46f4f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/cupboard.001.prefab using Guid(aa0009ae7dd83014bae59d3b7b9e2134) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'd5c741724c1d795accd3ba7f18363032') in 0.0363067 seconds
+Worker ready: AssetImportWorker3 3
+[Worker1]  -> (artifact id: '2206e56b1c83368636956776c5ccf3ec') in 0.0578169 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush01_Textures/diffuse.png using Guid(f09d087d144fc6f4a8b97c748f7e48f1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_half_gate.001.prefab using Guid(03396297ca39f2a49bf02b6a413cc9a5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'f7be0ea7ff5418e8ed9d57fa7e0f3f36') in 0.0233466 seconds
+[Worker1]  -> (artifact id: '782a4e8442040f95d7ca354af776b4ab') in 0.0506827 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.017.prefab using Guid(03a3404dccc8da44da7eeb75bea469a3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '3d98a3077662e958a601e10c0da8797a') in 0.0234208 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/AntialiasingEditor.cs using Guid(ba15fa37442517749a3c4640a4ad4054) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '6d08165a3ce6a329ff14b316e366d96c') in 0.0079253 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.019.prefab using Guid(3791ad93542e723428db28d79398aef4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/bush02_Textures/translucency_gloss.png using Guid(55c6ac3e6f8270d469c6046696f009db) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '447abc20e3f161fcfd0d8ed123752df5') in 0.0307114 seconds
+[Worker1]  -> (artifact id: '8bcd3a13de0b64c5d35df934fc2851ca') in 0.0140946 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Stairs/stone_stairs.prefab using Guid(bf2fbad40791acd49990f2f65d1e3115) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Tables/table.004.prefab using Guid(f4952206a68af1d469faf4d40de936bd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'd5f35ecd863cd20a86f29c40aaa15587') in 0.0336455 seconds
+[Worker1]  -> (artifact id: 'cd9c983e4d689cc8d1a94fea64f17fe7') in 0.0313083 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/furnace.prefab using Guid(b859b474959b15d41baff2b4738b550b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/shelf.prefab using Guid(200d0a8368bd3c547bcad5a9f5a3a15d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '1ca79032c6aa412fb115c8f5720331c0') in 0.0368022 seconds
+[Worker1]  -> (artifact id: 'e5cfc8f043bdffa74f7d6f2bf4d64ebe') in 0.0444901 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_half_wall_bottom.001.prefab using Guid(7ab4f1759c4498a44ae5e8bd46e7e4ef) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/tree03_Textures/shadow.png using Guid(fa29af801d4654e469207cffeea8e8cf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '6aaae5b96b39530bb71a8f5a87ad18a2') in 0.0139838 seconds
+[Worker0]  -> (artifact id: '77d898fe3f2a08de4ceb5b7a8cf8a4a7') in 0.034357 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/hood.prefab using Guid(36f9fc079e16fb34996c398dbf985c7d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush03_Textures/translucency_gloss.png using Guid(5aa3e304ca031934dab7713a359e61c0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '707790fc7bf6e4974593b8cb6062c446') in 0.0135746 seconds
+[Worker1]  -> (artifact id: 'e4ddb2b181e345434d78ed11746e551d') in 0.0397684 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/tree04_Textures/shadow.png using Guid(72f5e509a5e5ca04a9cc9e1b40193f99) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_wall_detailed_corner.001.prefab using Guid(71cd35efe3659a74a97461a422e3357a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'eb0aa41a3dd48cc8f7dba153e0773037') in 0.0117642 seconds
+[Worker1]  -> (artifact id: '7d86c6a9da300a5e22700f45124b798f') in 0.0326657 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Complex prefabs/Three firewoods.prefab using Guid(c4ad67a7cd19345449ac3646963ee9aa) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/tree02_Textures/translucency_gloss.png using Guid(da1974f349a2d6a4696866fae760fef8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '2e8524e780b20268a784c86f23117e8d') in 0.0280802 seconds
+[Worker1]  -> (artifact id: '76ef146511aaf8a9685a81963f548e98') in 0.0146143 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/tree02_Textures/normal_specular.png using Guid(ae561c4b1e740354fb9a2b30b2ff4dac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Example Scenes/Materials/Dusk.mat using Guid(9e1baa1471a98104981f47bf7a8ef580) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6e45401688183747317589b0a1e8e3ee') in 0.0121691 seconds
+[Worker1]  -> (artifact id: 'd61362d18abf58f3fd77f880323b3161') in 0.0185035 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/EdgeDetectionEditor.cs using Guid(b5f1618d14cd80f4da910f00b04af37f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Wall Support/wood_column.009.prefab using Guid(f1a7aa5f2090e774ab7d9260d06eceb7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'd591adf8cb5ff211309a04ce6d77f8ac') in 0.0091376 seconds
+[Worker1]  -> (artifact id: 'e83296e6428040f4a60463a12d84763f') in 0.0307529 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush02_Textures/diffuse.png using Guid(4fde83dbcc90ddf4496b7d4b4a533032) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'b1c781247a364025be20810ce64997e1') in 0.0253403 seconds
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Grass_v4_01.prefab using Guid(60dcb4b6818225d43af86929dee12fe6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Tree_Packs/URP_Tree_Pack/Prefabs/URP_Tree_2.prefab using Guid(40cc2dd6b744b344a9a4ea56076c47fb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '3bc3226c89706990d36858289fdc2aa8') in 0.032528 seconds
+[Worker1] Start importing Assets/Tree_Packs/URP_Tree_Pack/Doc/1_Readme.txt using Guid(11bed03e83f28874094ffca65f9694e3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'ed022ad091e43b7d08391ee09c5bb8f5') in 0.0555613 seconds
+[Worker1]  -> (artifact id: '5f86c310cdd88f8fb7535df00b704ae5') in 0.0128826 seconds
+[Worker0] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Cliffs_01.prefab using Guid(0018d97e3a4aa8344b29131988c262bb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Mountains_11.fbx using Guid(57e6644f776608c4f96eaa0636c09221) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'efb8c244abfa06c3c84a389f11c02bda') in 0.0314465 seconds
+[Worker1]  -> (artifact id: '9f591f825ffaefcc414cd2c52e6a40c1') in 0.0605487 seconds
+[Worker0] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Grass_v8_02.fbx using Guid(b1aa1b6574044f54898e422b52f4bc9b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Grass_v4_02.prefab using Guid(a435e309a28d19243ae5c059cbda9ab8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6629ccf0e5b115b6e51d478a6891c453') in 0.0369248 seconds
+[Worker1]  -> (artifact id: 'c009b1eb9d8ec6e54994e1a48779af48') in 0.0289069 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/gabinet.001.prefab using Guid(23942876fd996034c89ed1b82cc8516f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Cliffs_06.prefab using Guid(791620c57aeccb1458f38ec232ae29e8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'fcba1c91eff8ed33d98e544514b05203') in 0.0305532 seconds
+[Worker1]  -> (artifact id: '7893011d66dc92c61e71512e49f29fad') in 0.0287887 seconds
+[Worker0] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Cliffs_03.fbx using Guid(cf2222a8c5eb38541a85032d090ebf34) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'cfbe4d0754eac4176b2ce6c3832f0052') in 0.0196524 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/scrolls.prefab using Guid(5819cea5b13f2934a8e13996ff748543) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/gabinet.prefab using Guid(b2104cd97435ca840ad296caa01cb4ff) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '86d7b0e58b93c4aff77def3064c38887') in 0.0380792 seconds
+[Worker0]  -> (artifact id: 'c24b5d12ebd84727c59e831e4028c521') in 0.0327967 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_half_gate.prefab using Guid(57abdd11cedcad8478c764228178c11f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/SunShaftsEditor.cs using Guid(54f6f6313f2aecc4d81035ec0031e313) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'beba1d2cf3ae8ca5fc2f67ce72c11e09') in 0.0322254 seconds
+[Worker0]  -> (artifact id: '4642678042ef61f7357331240838b1ab') in 0.0079684 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Chairs/chair.004.prefab using Guid(f334c3c90cd7ffb4abbf4a5f8784463a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Columns/wood_column.002.prefab using Guid(3c04685f22c382445882791e52977fef) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'ae27179941c0858047b0b49895001f8b') in 0.034567 seconds
+[Worker0]  -> (artifact id: '9a481b0c925427a187b2626f0eb6d6b4') in 0.0292749 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Example Scenes/Materials/Grass.mat using Guid(053356d265f0eb8469318125bba20044) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/chest.prefab using Guid(94a4e3eafbc7e2942931221d56b6e8d6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'eed434e99f570b5093844345bace19fc') in 0.0969692 seconds
+[Worker1]  -> (artifact id: '82242d1cef1a7b829f1e5f7179e8a09d') in 0.1194713 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Wall Support/wood_column.008.prefab using Guid(e36062a8ffb167543bdd9f9843e2ea81) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Cliffs_08.fbx using Guid(f75d487e5903ab54f9eb204adc9a61d1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'ac260f6c5b50d210e13d9eff1f8bdf50') in 0.0361476 seconds
+[Worker1]  -> (artifact id: '0b3d7fc7efb6ca7348fdca0bfd7ea333') in 0.0215576 seconds
+[Worker0] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Grass_v8_01.prefab using Guid(5abe5cabe48b7d348a12bb6c7295f95f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Scene/Free Modular Terrain - Demo.unity using Guid(42e619c9d1da9ff4091570be6215237f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '1f271b99a25f31b53f36a1d914348195') in 0.0547081 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Complex prefabs/Barrels.prefab using Guid(eefa18c7aee7d324eb1d4af38eafc25a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '1dddd8dbf768ff86c5501bdcb3919822') in 0.0385053 seconds
+[Worker1]  -> (artifact id: 'b79b4e797dbe259909c01ced7d9ee125') in 0.179322 seconds
+[Worker0] Start importing Assets/Tree_Packs/URP_Tree_Pack/Settings/SampleSceneProfile.asset using Guid(acae3a13020e22e45bc0cbc8bb127d7e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '9981ac8fa715a44a961f838b91bacb62') in 0.0168648 seconds
+[Worker2] Start importing Assets/Bublik/Simple Modular Castle Assets/Materials/Built-in/Gray_Gradient.mat using Guid(d63caf4441cd1d5419639edf057bc9e9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1ReferenceCapture.cs using Guid(cb518ca3b399204372786469b4421ddc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'cf81e229bcb03e08932ac358b22dd8c1') in 0.0159236 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_albedo.png using Guid(5752178ff2bc6714e85b22582e02c82d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'fd56be8880b1ba267fa8997a95e20314') in 0.037839 seconds
+[Worker1] Start importing Assets/Tree_Packs/URP_Tree_Pack/Prefabs/URP_Tree_3.prefab using Guid(af90fe2f0f252bf4b8c2ab79bcd41edf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Bublik/Simple Modular Castle Assets/Materials/Built-in/Color.mat using Guid(0830321a2e7dfa54ab55d76841d69ebf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'b847d14fd4d4538b9abdca06a17c31b0') in 0.0805853 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/crate.prefab using Guid(c544f22775dffd641b35be9b929052d1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'dda6ce31938a0a1348f21cc3e0169227') in 0.0499078 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/tree03_Textures/diffuse.png using Guid(f82d7808d61c0fe40ac870b61d38c05f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '58f39352325ee8b824585428945940df') in 0.0218292 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Example Scenes/Materials/White Sky.mat using Guid(7ba84f62312fc834886529e05c3a251e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/bush01_Textures/translucency_gloss.png using Guid(cf9b478cf6fc37d4db53b2670e435165) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '5316c87a6cc0c79efb54c46d7777e9d8') in 0.0251162 seconds
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Terrain_05.fbx using Guid(fab9366617871e147a316fa6d23cd33c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'c3b21963fc15ab87e3e5cd55f16b46c0') in 0.0472943 seconds
+[Worker0]  -> (artifact id: '14be5deced9fac0c4867b036b5bc25d2') in 0.4795843 seconds
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/bush05_Textures/diffuse.png using Guid(99594b157f839144d8c0e173b04dc37a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'f87b133d39bdcbc2163fbf918328fdbe') in 0.6439156 seconds
+[Worker3]  -> (artifact id: 'fd4961cbaa8a5ce6487235f56bf3c46e') in 0.1973112 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Wall Support/wood_column.prefab using Guid(573f99840f3379a4a986fb407322d445) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '09b1a10870c73c2fb32940a572955c39') in 0.0545834 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/carpet.prefab using Guid(8088cc0ca1f49f645802eeca8f4c1615) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/bush03_Textures/diffuse.png using Guid(bafd27072aee8654485c538f80de7dd8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'acaff8c72e15c592508ef1cfd157ab2b') in 0.048263 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Fences/big_fence.003.prefab using Guid(66ce2554d943ab14db051b408dc948ed) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'e385aa857827134ffa27b36a3709e33c') in 0.0357165 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/anvil.prefab using Guid(9067651dcf99b9f4e96b878d0ab98445) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '8bb4d38181d31a7c752ab5c6d43dbddc') in 0.0964991 seconds
+[Worker1]  -> (artifact id: '4b5082192a6f90376263f64cca6c6e2a') in 0.0614655 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Tables/bedside_table.prefab using Guid(cb72f022f1a7115419cafb5ff29794a3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'eabbd886377ad308ecc804b3fb7cd6a2') in 0.049137 seconds
+[Worker2] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Cliffs_08.prefab using Guid(5f7791ca2a487fc4895c93bfd26774f6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Wall Support/wood_column.010.prefab using Guid(6c4940aaf5c04a14dafe1c41907d4bf4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'b8c45c0cc69e7d4ad91270a8b36b200d') in 0.0639613 seconds
+[Worker2]  -> (artifact id: 'aadb06934800bb5722aaed5fd0c0ad60') in 0.0265109 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush03_Textures/shadow.png using Guid(9663e13e6c841444cafc1bed4dbcc299) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '32619f068dfd059e3c59c60a49bf52f3') in 0.0309276 seconds
+[Worker0]  -> (artifact id: 'f1ac5fe5e3a18fd0e5baa4f084f64aa6') in 0.0116576 seconds
+[Worker3] Start importing Assets/Bublik/Simple Modular Castle Assets/Materials/HDRP/Gray_Gradient.mat using Guid(b087276077c48eb4f8244bc3874b464b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.015.prefab using Guid(36a2c2928411717458d4316611ed4870) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/bush02_Textures/shadow.png using Guid(acac49e6c49c1da4d91b3702823fe4cf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/FBX/Materials/No Name.mat using Guid(f6df608e7374294479ffd74f1ededc71) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '82e10dca4433aab49deef349e3906b49') in 0.011111 seconds
+[Worker0]  -> (artifact id: '010abb04901e6da8adeb0da700146444') in 0.0154032 seconds
+[Worker3]  -> (artifact id: 'b5f175b1351c549978b8ca4ed32d522c') in 0.0753254 seconds
+[Worker2]  -> (artifact id: 'c99901ee3a3bdb9eaa740eb7fc8f64e6') in 0.0881801 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaInterfaceReview.cs using Guid(0479e6724fe7cfb48b39e5fc74e21255) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_smoothness.png using Guid(df799e75d8e969947ae13c3908753748) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_smoothness.png using Guid(53554716fa618f54ab9d2d99c220d94d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '02d7d2041c15654c67925652b39e121d') in 0.0083545 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoModuleReview.cs using Guid(b8e9c56d44060314185b5dfe39c17cc6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '983b4a2d520986c1f872c7239eba78fe') in 0.0095613 seconds
+[Worker1]  -> (artifact id: 'bd2bf40e1613fa5d9483abd1b2e1125a') in 0.0315642 seconds
+[Worker0]  -> (artifact id: 'e323a26f814ced9297974d061496456d') in 0.0344714 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_albedo.png using Guid(93ee86da70da60e4f9053c6822799027) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_albedo.png using Guid(aec69359ffd532447a1f357d73996f50) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_normal.png using Guid(443fd6cb411f4814c82a04148b88a26b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/trunk.prefab using Guid(03d4692bad6ae2846b02d5e5cd5be76f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'd412790c4e5f47c157bf0f7b50940cac') in 0.038648 seconds
+[Worker1]  -> (artifact id: '3f9c2d00eedc868845f986afd604fa47') in 0.0325815 seconds
+[Worker0]  -> (artifact id: '897541cdbe34fc7446de61c71566dbeb') in 0.0383955 seconds
+[Worker2]  -> (artifact id: 'a49c47b22e0394ead6cc0bdb58521375') in 0.0452329 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_half_wall_corner.prefab using Guid(2476d9b069a4759428a3345111f25de2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_albedo.png using Guid(698e0df44dfb5b74983e2520ac9e1cd0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Platforms/platform.001.prefab using Guid(3b0351c8c6424ba4484c08a7df107bb1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/torch.prefab using Guid(f990a7f182be91b41b7167bc5fdff7eb) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '754a413500d7ae5c723b77cc833b48c2') in 0.0237184 seconds
+[Worker3]  -> (artifact id: '3db97a2c8e70e16737944d2e914e28eb') in 0.0415581 seconds
+[Worker2]  -> (artifact id: 'e1c220d12baec7aad49cd1a8604d00ad') in 0.0350537 seconds
+[Worker0]  -> (artifact id: '7024aa54e4fac0cdb040b4d04aed5955') in 0.0449951 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/bush04_Textures/diffuse.png using Guid(1bc291dddd73b3546b8d909b1c407553) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_wall.prefab using Guid(d2522dcf0fb8d6b4aa4ddd10c405746a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Example Scenes/Materials/White Color.mat using Guid(c2572cbc7e9c29d40b3c2aaa2193c820) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_normal.png using Guid(a04e6e2e565810b4eb63ebc213359b32) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'aa05b678282b5e251153ce101d435f3c') in 0.0139318 seconds
+[Worker2]  -> (artifact id: '15d6babcdd7db14d3a712ef318cb3516') in 0.0202487 seconds
+[Worker1]  -> (artifact id: '6d9763f66d14ee1da94dd0298e66b616') in 0.0325093 seconds
+[Worker0]  -> (artifact id: '0232c5ec276c3cb017f1b1b4ea789ff7') in 0.0455892 seconds
+[Worker2] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Cliffs_06.fbx using Guid(a8e0cab51155deb4b8f4643baaacc946) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/bush01_Textures/shadow.png using Guid(601b2261c9f9ef0438b1966de0080c95) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Stairs/wood_stairs_support.prefab using Guid(edb0d94010558614c976dfa15f61dee3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '6803308611f483de7616eeaf17860450') in 0.0115926 seconds
+[Worker0] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Terrain_02.prefab using Guid(72f64d2d2f97793409bca236ad93d486) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'eea58ee90fec2556f4ab7496df1f4396') in 0.0276554 seconds
+[Worker1]  -> (artifact id: '603be4834f2f64837a543880d1631102') in 0.0360309 seconds
+[Worker0]  -> (artifact id: '1498cebdf3956b71eb20c796637a28b4') in 0.0474334 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Houses/House.001.prefab using Guid(187270ca2fe18a94cab577d45457fcef) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/WorldPackCompare/Quaternius/FBX/Column_Round.fbx using Guid(26b2de9a4357d28428292aa0b74e8e7f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaOwnerReview.cs using Guid(e918d8985f8dbed47b925a1e5c35082e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoriaReview.cs using Guid(847bbb17ceec6004eaba8ee08c31bdca) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '82a5d470ad2d51d822680f0551dcf7fa') in 0.010064 seconds
+[Worker0]  -> (artifact id: 'e1babd5fde73b35a3bf4529c0c8667e7') in 0.0080159 seconds
+[Worker2]  -> (artifact id: '3196e77d50b5eb0fd90220d84009adc0') in 0.0275964 seconds
+[Worker3]  -> (artifact id: '2e3306fbb77d9a1f458417eee2c3921b') in 0.0551386 seconds
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Hills_01.fbx using Guid(34c12c174474d704dab361434acec964) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Columns/wood_column.004.prefab using Guid(cee3e2fd2a6f1614c9e86ca24459a9e7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/BastionImageTo3DReview.cs using Guid(a398673a7fbd4734384cab1a54d84b1a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/scroll.prefab using Guid(bfb5063a60f6ab946b7818053c46d9d2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1]  -> (artifact id: 'c53fe96742ac58942d6da340ce1be9de') in 0.0216879 seconds
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '01c85b87581fdd692791a511fccfcf68') in 0.0117568 seconds
+[Worker0]  -> (artifact id: 'b8ee280a8eff04ea4dd1772535ab4bd9') in 0.023095 seconds
+[Worker3]  -> (artifact id: '2b5537bf5db671bfe4a5d31583299a7f') in 0.0349485 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.013.prefab using Guid(faff629fb8eb81f4ea40f416bcf9bc10) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Tree_Packs/URP_Tree_Pack/Doc/2_Notices.txt using Guid(d37efe34565d3e541957b06214302f0c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/tree02_Textures/diffuse.png using Guid(da4827ac8df28d1439b10b2ec7735a68) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '2b8cf3b5c10ea74cb31cf01f48680ac2') in 0.013418 seconds
+[Worker0]  -> (artifact id: 'a4ff3e3b6daa40b67595d59a6d025e71') in 0.0151715 seconds
+[Worker1]  -> (artifact id: '8b4a96c1f49093ef0c3c3569ca746e2f') in 0.0293739 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Fences/big_fence.prefab using Guid(34b237876876baf4fa134407d8dc57d5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Nature/bush04_Textures/shadow.png using Guid(ee879bd20f6819143a6527d0c880ac6e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Platforms/platform.004.prefab using Guid(b9a53f46178556b49af819cc5b767a72) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'be2fb4d54f834b077d1b7992dd3c3271') in 0.0297841 seconds
+[Worker2]  -> (artifact id: '33a058d20adc3cf375670f4e677886d1') in 0.0109102 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.012.prefab using Guid(344e4116cf98b4643a88a1d956cf10e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '99eef9c4a8a6b459df2a985cf5f57da3') in 0.0268483 seconds
+[Worker1]  -> (artifact id: '3d6adae31691cd03cd0c6eb90308285c') in 0.0279549 seconds
+[Worker3] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Grass_v8_01.fbx using Guid(f8b95f09bb8da7e40b2dc23fc0a8a2b2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Grass_v4_02.fbx using Guid(f3b276625743c124e88ea38caf1a95e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Terrain_03.prefab using Guid(7a31b542268b8cf498b9162630d9ea15) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'd55e12ad0b3b460379acb0a9f945e512') in 0.0130259 seconds
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Mountains_12.fbx using Guid(e1b3c7cbda9ff5f4fa38b72e8cf5e580) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '89932477bf7f3a1d84e2b72feba6809b') in 0.0289385 seconds
+[Worker1]  -> (artifact id: '05d8c6c3d08fef5c82e5748be84f3c71') in 0.0200436 seconds
+[Worker0]  -> (artifact id: '6df54dee27688a096b1c1d06c7a02666') in 0.036009 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_ao.png using Guid(6f22b0bf92d92884c804842c5446d6d9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Mountains_12.prefab using Guid(68faf84d52a4f7e4e87fc77859873fbd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'a70726989857cbf36c6fb0754e19164f') in 0.0204145 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_ao.png using Guid(758e6e11a011c784fb93baee608a174e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/WorldPackCompare/Quaternius/FBX/Wall_Broken.fbx using Guid(6d0786d13313d904ebdb7173945a3575) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: '1ff6c2fd6b0f4edd9664695a1e423646') in 0.0227497 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_ao.png using Guid(1866d28a612383040ad4e0527386fddf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '494f7c73a786495dbf7fa4c40c87d020') in 0.0440943 seconds
+[Worker1]  -> (artifact id: '70edc24614731373888ac4ee9ef86f10') in 0.0509889 seconds
+[Worker2]  -> (artifact id: 'ebeb51bad6a0938ff04c1b7a3bb1de3a') in 0.0294181 seconds
+[Worker3] Start importing Assets/Bublik/Simple Modular Castle Assets/Materials/URP/Gray_Gradient.mat using Guid(12e6736748c72764eab06c9887c80bb8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Bublik/Simple Modular Castle Assets/Materials/URP/Color.mat using Guid(800508383bbab4846be508199a6f78f1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/WorldPackCompare/Quaternius/FBX/Arch_Gothic.fbx using Guid(5e5afc3a4ddb3074b9e51632832e0739) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_normal.png using Guid(d56ccb406e0cca84b8bf8df78a960edf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '9fd8fc2ebb3bff04e36f8476f0ad98a7') in 0.0323222 seconds
+[Worker1]  -> (artifact id: 'e061b6387fab69ec6e311ed2bd862ade') in 0.0215963 seconds
+[Worker2]  -> (artifact id: 'b5d4191d33183df66de1d21d06b6c60b') in 0.0227705 seconds
+[Worker0]  -> (artifact id: 'cba4c02ef5519197d1c044cc0d78e81e') in 0.033121 seconds
+[Worker3] Start importing Assets/Tree_Packs/URP_Tree_Pack/Scripts/Tree_Packs.cs using Guid(0447bde6a836ff8469f99c2ba035cdac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'cd349a03a5379fcf2432fcb2c37007ac') in 0.0078436 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_ao.png using Guid(7694448761b2d9c45b35cc2b6b5c3409) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGateStreetModuleReview.cs using Guid(c3649e48653538d4d92b2b009268c3cc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_ao.png using Guid(b4d1cf5f00f33f542817c069d391d1f5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '087a12be9b9800da6699b423bed13b1b') in 0.0077901 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoAppearanceV4Review.cs using Guid(fd338f1af26142248953628d355bd715) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '99e28338577e31b4c8ee3e8bc537ca45') in 0.0201869 seconds
+[Worker3]  -> (artifact id: '91415e900f53cd0c471a47d0d9d64c3d') in 0.0074798 seconds
+[Worker1]  -> (artifact id: '0018b126cb24660cc32e6d410ecc43f4') in 0.048157 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_albedo.png using Guid(3e0b2df058c457a46b04bdbafec482e7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/NatureStarterKit2/Nature/tree01_Textures/translucency_gloss.png using Guid(853d85e6df42bb346a907893af921d1e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Tables/bedside_table.001.prefab using Guid(23e4917209654d2429c3955900bdee6c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/OriginalHero/Textures/oldstone.png using Guid(19dcca9eb6eea434e87935141c9a8dcf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '0db6bdb390c67caa8cba69fb832679ff') in 0.0127616 seconds
+[Worker0]  -> (artifact id: '77d06eef0b0af995d6794703e7809521') in 0.0355234 seconds
+[Worker3]  -> (artifact id: 'e7fe5f16a9559216e88a81e0646dcaf0') in 0.0506507 seconds
+[Worker1]  -> (artifact id: 'f197faa23765bc8236bbd3a055a7e0d9') in 0.0442459 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/brazier_pedestal-material-bindings.json using Guid(0bb6a7224cd12614a8198fa2759adcd0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '50a51b2ee37077729ab5821b6b87ad40') in 0.0131422 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/banner_small.glb using Guid(402f5cad8b153e24aa46696db92f832c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_keystone_major.glb using Guid(f6da39bc3cda5bf48ae1d31e43e2582f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/cobble_pebbles.glb using Guid(da4724dc17198ea4281c9c8b881242b3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/grass_tuft_2-material-bindings.json using Guid(f2ed728c1cf873f4f8c2e80814c19705) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '352e1957745e1a2dda493316d9498e5b') in 0.0165739 seconds
+[Worker1]  -> (artifact id: '3d8364b4646a01a0bfebd2facf0544a7') in 0.0554728 seconds
+[Worker0]  -> (artifact id: '3c040801b7188f8552a0c3964fc54af1') in 0.0777546 seconds
+[Worker3]  -> (artifact id: 'c20cac7330c2ffa857335eb214218013') in 0.0745533 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/dirt_ground_patch-material-bindings.json using Guid(f0bbe8353b021094799f913a2dcaaf5c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '47ea33123ac30c1986353924ab34df08') in 0.0134794 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_keystone_major-material-bindings.json using Guid(d66b2959209ebe847b9365d4934106cf) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/grass_tuft_1.glb using Guid(89228dd0d87e0df45b12581b6f18d029) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '8ef394be66f8404bacd000536221327a') in 0.0160069 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/cliff_stone_chip-material-bindings.json using Guid(8e2092b0b2b6ba04eb57328783af5b8a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/OriginalHero/Textures/oak.png using Guid(2346c52048856c045aca81f849f7e156) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/cliff_rock_column-material-bindings.json using Guid(079d131147073f747bfa0895547e51f8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '0117880ae43e9b8334c59c1b788534e9') in 0.0386537 seconds
+[Worker2]  -> (artifact id: '8e94793a6f07fe6ff0af50bcb573c9fd') in 0.0509601 seconds
+[Worker1]  -> (artifact id: '6c6ca5196e4814d9a40213c2c29a2501') in 0.0441478 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/bridge_span_4m.glb using Guid(2aa387729b2a73844b41f80d7680fc2a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '71ab53b0f822189fb6744e518ec8ca96') in 0.0949293 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_keystone_minor-material-bindings.json using Guid(baab26598e9af20498aa7ed8b0e70b52) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'fd28203f901c6dc28975de431cf8ea92') in 0.0145809 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/merlon_low.glb using Guid(d40b8092d68d2d74ab826e7fddaf6e48) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/merlon_tall-material-bindings.json using Guid(cee7372ef99b0e24fb0c7314d39f6623) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '07200f14c99978b8040afadfa3b7fc9a') in 0.0126425 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/banner_small-material-bindings.json using Guid(c1f9bcdf0deb9874a9681189f781ddf7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'dbab0491830791f43b5bdecc6a810aa8') in 0.0776406 seconds
+[Worker2]  -> (artifact id: '777827added36ce744c129e2caedc7d4') in 0.0177976 seconds
+[Worker1]  -> (artifact id: 'ec8960717f92aae51df0d535cbd572b2') in 0.0514103 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_bridge_support-material-bindings.json using Guid(4add2507397835a48be30c6c8039b4a7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c8a01151fdff5743498bb462e064787d') in 0.014366 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/grass_ground_patch-material-bindings.json using Guid(ef4d3764a79eb5c41b1b7f60546d2991) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '8df087f76f6fabe5f047b373ce1952f5') in 0.0131916 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_voussoir_major-material-bindings.json using Guid(b94c42a7cb04bdd41a5ad7d59a96652c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/boulder_1-material-bindings.json using Guid(20514befa31df6c468dc98665ed0348a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '4fe5e482b104f212c7d728f7d5acc96b') in 0.0134008 seconds
+[Worker1]  -> (artifact id: 'c97de201ea30ec3d7c73115fa8a0a115') in 0.0134465 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_complete_major.glb using Guid(ee5acafa2ffa1f543aa7a4e15193ffae) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/merlon_low-material-bindings.json using Guid(f6c9cdca51854c8459ede0ccd24bb0da) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/boulder_2-material-bindings.json using Guid(173134c5f10c8454d8e25cc893922ef8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTerraceModuleReview.cs using Guid(89207ba9142a3a4489ca2740f06e1506) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3]  -> (artifact id: '772b46bf9ecf22552ac3cd281c2769c6') in 0.0196949 seconds
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '08bb3c519daea9b9bb6b76142f1972d5') in 0.0079665 seconds
+[Worker2]  -> (artifact id: '7c057d20643f354d3ec1fa0e66b9ea15') in 0.0137255 seconds
+[Worker0]  -> (artifact id: '617689e479163f7d209511b6f8b94d3f') in 0.0637097 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/brazier_pedestal.glb using Guid(651752b427a428a46b56cf0a215c85a9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/banner_royal_blue.glb using Guid(8bbf16b959ede4246a7c350c337862d5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/cobble_pebbles-material-bindings.json using Guid(de3261d6323e9b84da038cf5fb3ed867) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'f2bbcd0328ab6b4c52ce836aff07f440') in 0.0131867 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_voussoir_minor-material-bindings.json using Guid(0b27dfdf24fd0e54d973de6873d7d015) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '017e934eec70922f0b1f755b3f804ffa') in 0.0154234 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/banner_royal_blue-material-bindings.json using Guid(b9878eba88f92ad40b2087c4c8b3208d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'ab07dc7d15cabaab703ec6bf9e202fd3') in 0.0649006 seconds
+[Worker2]  -> (artifact id: '53789f0dedf7288dc741dd1a40926b02') in 0.0130496 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/cliff_rock_column.glb using Guid(e29b576bf5ec774449c21979d698de48) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arrow_slit_frame.glb using Guid(07b2ec9f0267f224c89428367667d8ff) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/bridge_span_4m-material-bindings.json using Guid(04c9475b9d6781249838937714774ccd) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '2e8945daac191a82da696689c6b410ac') in 0.0173495 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/boulder_1.glb using Guid(65012259a7aae95438f2fa4f0edf7b2b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1]  -> (artifact id: 'c93f565bcb9729123fddc54361628fe6') in 0.057282 seconds
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoTextureImportDebug.cs using Guid(6bdc531707067ae48bb25733f1007aae) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: '14d7f463d0d2fb223728116bd3d8b2bf') in 0.0117117 seconds
+[Worker2]  -> (artifact id: 'b8234b23b18beb40bfede2385ec02b44') in 0.0669863 seconds
+[Worker0]  -> (artifact id: '822dd575b78362303754e00d600094ab') in 0.153012 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/grass_tuft_1-material-bindings.json using Guid(eb1846720c2f27a4084d72cd356d755b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_keystone_minor.glb using Guid(58d6675e30d468148ac617022a307aad) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '090e1c094fdcf73fa44195964e18f532') in 0.0145952 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/grass_ground_patch.glb using Guid(e632c937d5ed9564f912da451ebd76ea) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '753b778354e6e27eb5a5273c06f2c040') in 0.052031 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_complete_major-material-bindings.json using Guid(3d85595e2456bc84aab2fceb78a68de4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '3734f92e13c14055173cfb1bebf6a3a3') in 0.3316618 seconds
+[Worker1]  -> (artifact id: 'f473afcb1797d0d761427dc06d20e4d9') in 0.0129411 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/cliff_stone_chip.glb using Guid(c371043614b1d264c8c0be48f0ce5f39) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '520ddecff6a284a11b2181a07f8f43f7') in 0.0888275 seconds
+[Worker3] Start importing Assets/Tree_Packs/URP_Tree_Pack/Settings/Global Volume Profile.asset using Guid(ca6bb682be9fc6a4db7edacf7ee83d22) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2]  -> (artifact id: 'f00ca4236dc7e90bed12cf10bf84f19a') in 0.0410615 seconds
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Cliffs_03.prefab using Guid(335c8e3e62b2e0e469351832b0b7aed0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/rock_smoothness.png using Guid(0507a7b90981d4c4bb549b9ac7b286f7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3]  -> (artifact id: '2e8913bc4c83378bd581f22e409ce4d7') in 0.0111492 seconds
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'a29f0856f02ad28b38bdc62368b2ffd6') in 0.0231487 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_wall_detailed.prefab using Guid(564e49f56923de148b581d811733f251) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c8922457cd3eae6045793601bc91f555') in 0.0346923 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/CreaseShadingEditor.cs using Guid(6788af605d2f1244789565913bb4e7f6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '94207dfdf5b37bcdddd2727424ce11a0') in 0.0076078 seconds
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Grass_v4_01.fbx using Guid(2a0b3ee6106f4d64fadde68becd048a2) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'a5a7333836f24ed211b20cb63b6346cc') in 0.0295829 seconds
+[Worker1]  -> (artifact id: '61c5166afd0516777f13a19a6d684a4b') in 0.0122276 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/vegetation_normal.png using Guid(b3963856abae2584bbcc2340a390178e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '5ce3d475ec8e4781435ede0a2e7b2ef8') in 0.0188552 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/ColorCorrectionCurvesEditor.cs using Guid(a4a9489f73e4f0344ab3fc97bdf5170b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Columns/wood_column.001.prefab using Guid(ea0930fcd2181ba48bde8ca2ce528df3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/half_tree.001.prefab using Guid(41bd38faa607929438760553682eff4a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: '7782cedafa0ac74627496252031f8dc7') in 0.0093304 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/crate.001.prefab using Guid(9d9dd1cff3cb5e147b732da5712b7587) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/stone_normal.png using Guid(45af27721c9915e459c64369e77f0168) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'ce74298c47008ff59d49b35dd528e32e') in 0.0463954 seconds
+[Worker0]  -> (artifact id: 'a574cdee79aa691df6d0d925560e0090') in 0.0309924 seconds
+[Worker1]  -> (artifact id: '4f02275493d2a5dd2a0ed349ac0390ce') in 0.0597971 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arrow_slit_frame-material-bindings.json using Guid(8959a1f6fa1646b49ab4b0a716f6aa6a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Nature/bush06_Textures/translucency_gloss.png using Guid(a1d7ed651121f6b438e5ac9602ede8a1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'e67c223e461c1e0740e4bdfde32e4104') in 0.0420299 seconds
+[Worker0]  -> (artifact id: '03b740f1e92cf59984fab0ab0f3768d0') in 0.014958 seconds
+[Worker2]  -> (artifact id: '80bc19db4994e9edb8215c7af818ba29') in 0.0139376 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1MaterialBindings.cs using Guid(635ee406f2440f0e7eea2155226efcc8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/firewood_single.prefab using Guid(f110c542cb124a045a69faf5b0b218c4) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '96afd5bb380bed5ba36e6ac63d23debe') in 0.007744 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/firewood.prefab using Guid(dd95ee52b2d3a914baa7f842b3cf7592) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/TonemappingEditor.cs using Guid(0f7cab214f141f642b87a5bdbd14653e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '9fcebdf76beeb98790b435d0893ed326') in 0.0095977 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Chairs/chair.003.prefab using Guid(83a0c52366d043948b7b8baee40e87b9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'b65a761758a243da49f1ac0279ec6234') in 0.0411744 seconds
+[Worker0]  -> (artifact id: '70f062d00292a84310de7dfa7883befa') in 0.0341362 seconds
+[Worker2] Start importing Assets/PolyOne/Free Modular Terrain/Materials/M_BaseColor_v01.mat using Guid(722aeec4274add2459c096fc7055673b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'b72a45bf30b35ae39769bef1646c507c') in 0.0312189 seconds
+[Worker2]  -> (artifact id: 'ee00ebcc13c5bc22fb861558c850ac0f') in 0.0161443 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.014.prefab using Guid(ed256d5359ce3224b9ec662aec78a093) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/shelf.001.prefab using Guid(b62a06d8e5f0af046833b04abd1e57c0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '2b09c778baca31dd21156dc7c6065bdf') in 0.0232055 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/cauldron.prefab using Guid(0decf664aa10e334dac700e1299b0eed) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'f2823f4341ecd1ee07cb7fb29a8e6d81') in 0.0290221 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/granite_panel.prefab using Guid(5cd8c9e8157360648bf43e9188816395) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '3c5a6669cb3e4e8007b498d1d0d257bf') in 0.0281729 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/basket.prefab using Guid(5c63ee1e94a9a014da2292f3dbf7b19a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '1588fe36db2ced4a6584231cb13f9470') in 0.0293964 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/bush04_Textures/translucency_gloss.png using Guid(f8d43e186daf2bc49a80785d236cb157) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '9fa3e0b323cc3aa70daa9343ae9dffb1') in 0.0140192 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/ValoriaInterfaceShortChainReview.cs using Guid(92b901e08e02cb04b8a09486f5456483) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c1959a4f98f323d9bec2cd219084b931') in 0.0345945 seconds
+[Worker1]  -> (artifact id: '1b948a2d73fb8b799cb750e441db9719') in 0.0076091 seconds
+[Worker2] Start importing Assets/NatureStarterKit2/Nature/tree01_Textures/shadow.png using Guid(be1ad731c04407f45b029b05b032834f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '09d1675ccbd4bdcafec43cc057700705') in 0.0111104 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Nature/tree01_Textures/diffuse.png using Guid(bc1041f423dc3314e8998435028d0fd3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'aa22d2a8ded705fcf2a86d7f30a46348') in 0.0121492 seconds
+[Worker0] Start importing Assets/Tree_Packs/URP_Tree_Pack/Scene/URP_Tree_Model_Sample.unity using Guid(7f3412947a5e982458e774670d849cc1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Bublik/Simple Modular Castle Assets/Materials/HDRP/Color.mat using Guid(c4e4dfee9088e2b4d828d2d282d59fff) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/ground_smoothness.png using Guid(50337e2fbe6b3e442b2f5fbf755e269e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: 'f1171127183c8e28a9f37b485f693263') in 0.0207211 seconds
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '2ae241e28d4154370f9001c6e8260fd3') in 0.0190852 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Example Scenes/Prefabs/FPSController.prefab using Guid(d08d3436960136e4b931d585653ee519) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'c99c9be63226f6c2cc13889ad3955325') in 0.0215779 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/half_tree.prefab using Guid(a29cd1ae58878ec4cbbaa2778eaa0569) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/spice_bag.prefab using Guid(fad3894d33d323447a3187fbca3004cc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/Eldoria/ArtTests/OriginalHero/Textures/rock.png using Guid(7c373c80a9070dd4b8877ce34deb6ca0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'c73cd0a626a5ff8a790afe497c2dcd3e') in 0.0239269 seconds
+[Worker3]  -> (artifact id: 'a00538cce12f1ba51aded122f7579934') in 0.0834608 seconds
+[Worker0]  -> (artifact id: '9da6dd00c321dfafe8c56d889871b438') in 0.053866 seconds
+[Worker1]  -> (artifact id: 'aa3dc8a61438887b8783a59469a91f33') in 0.057419 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Chairs/chair_canvas.prefab using Guid(813a7d32ab774ab4db8e24f2ad24b7ac) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Terrain_02.fbx using Guid(2a3e18afcd37ede40878e91ee9b25e7b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Eldoria/ArtTests/GoldenSurfaceV2/Textures/shore_smoothness.png using Guid(78a6930d69ebd1246a32633be44138be) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Materials/M_Plane.mat using Guid(80d9dda45224dbe4e96f9f807632424f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'b90db1c3a7257f53f9df2b86652efce0') in 0.0197833 seconds
+[Worker1]  -> (artifact id: '49c127745ffe248901a02bbc551f726c') in 0.0236386 seconds
+[Worker0]  -> (artifact id: 'cbabe81882c3d4c65274b326de0d7166') in 0.0378619 seconds
+[Worker3]  -> (artifact id: 'c34e56394930424279b142f2d1be1fa4') in 0.0541378 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/cupboard.002.prefab using Guid(3cdde60b1f6962c49929ebd07f7284ec) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/VignetteAndChromaticAberrationEditor.cs using Guid(08126bf2baa528c4cb9c60340a24e5d6) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Hills_01.prefab using Guid(27a0ce3b6aab1c243bd181d225d35df5) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'b05a25f1944ff3c3fd1beaf63b1ef6a6') in 0.0286112 seconds
+[Worker1]  -> (artifact id: '76b3a3956d77ca37d806fccb2e37e24a') in 0.0074457 seconds
+[Worker3] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Mountains_11.prefab using Guid(7c4d9dcc2ad012f41a52362d2bba2b26) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '0b66298fb3fd6e541b27f3a4915cd0e9') in 0.0285365 seconds
+[Worker3]  -> (artifact id: 'c0ee9510a100cab2dfce7f4702cd28c2') in 0.0216953 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/cage.prefab using Guid(2813f18062e255a4aa5723d7a214a18c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/tree03_Textures/normal_specular.png using Guid(62a80745906a31e4e80055fd7ec2add8) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Fences/big_fence.001.prefab using Guid(9770515ffff23894fa760b75b8b24b51) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/MicroValoria2Review.cs using Guid(433bcb4dae6ce2844bdf09e52a95ef62) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'f816f063aa8a8fdc4249da364f948f4b') in 0.0150832 seconds
+[Worker3]  -> (artifact id: '52c501e6bede640391a859194425c79c') in 0.0166462 seconds
+[Worker2]  -> (artifact id: '1b886fdaa26138ed62cdc4aaee92acdc') in 0.0471616 seconds
+[Worker0]  -> (artifact id: '0791ff5c27c8c6ad02ff40064912f81f') in 0.0331471 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Wall Support/wood_column.007.prefab using Guid(d47cdb9109cdfb8459ccec2ea1a19a7c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Cliffs_01.fbx using Guid(0f112d3e062c3ea4eb76496b8b6115b1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Chairs/chair.005.prefab using Guid(4b8bcfc52cd181349906c1279e1d513f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush06_Textures/normal_specular.png using Guid(49660356ce0eb774b9277274d7a54b6e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2]  -> (artifact id: '3f5d359be6cc98dbc003ff4bc2ee7567') in 0.0135232 seconds
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '67277166ee7a944094bfc1c4adfb0a8a') in 0.0157122 seconds
+[Worker1]  -> (artifact id: 'd495894a389aa1a6f07c25aa27007fa1') in 0.039032 seconds
+[Worker3]  -> (artifact id: 'e30450c72ed95e530088401fe3376ee4') in 0.0378685 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/boulder_3.glb using Guid(735f649a34dd9844a98126cd0fe6cf5a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Tables/table.prefab using Guid(c544c58272b03294ebe7a1babe149792) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/OriginalHero/Textures/slate.png using Guid(747ca421701a1e940a55855faa4c572b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_half_wall.prefab using Guid(fb0c0b748de48f948978dd8dc3b53aae) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '6751047931fe1506cd84dfb3a7d6f681') in 0.0302943 seconds
+[Worker3]  -> (artifact id: 'f59f3b77c77971d84e00741316d4ceda') in 0.0482552 seconds
+[Worker1]  -> (artifact id: 'c7852d9a2554b77ff6d945eedd40f690') in 0.0525185 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/tree.prefab using Guid(2b0bf804c6d79704d8c705b94af63855) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '6ecc3a0d4c33448a8061ca4ef9a5bad3') in 0.0683302 seconds
+[Worker0]  -> (artifact id: '2c59ff92820e49a6639e4e6cd5ae3e1b') in 0.0283819 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Houses/house.003.prefab using Guid(966be20f9e46e6a4cbeecd459d97d9c3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.021.prefab using Guid(037edc94c4d25ab49a143371268aee98) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/DepthOfFieldDeprecatedEditor.cs using Guid(943c59645eb905144a0990b57e13a6f9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker2]  -> (artifact id: '3339f5f11b3eedd473e0a87b3568fc25') in 0.0075632 seconds
+[Worker3]  -> (artifact id: 'b41f3b5bcfd0d45a99de94c4c606c57a') in 0.029987 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/OriginalHero/Textures/limestone.png using Guid(3aa31211b66d2fa47afbea8d46306883) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: '651cb12781bc9238e6af01da15cf6700') in 0.0458315 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Storage/cupboard.prefab using Guid(a5d3bb1b5f474bd46b01dad20147a6be) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '4e570bfd2224f6266c725f42943387f6') in 0.0247347 seconds
+[Worker3] Start importing Assets/PolyOne/Free Modular Terrain/Model/SM_Terrain_03.fbx using Guid(aa41854e372b88f45adeb8b32069f1b3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: '6d17db7864319b93687a3cc04b62cb5e') in 0.0133616 seconds
+[Worker2]  -> (artifact id: 'a0285017c925e52cac609a2a0e8e5156') in 0.0292004 seconds
+[Worker1] Start importing Assets/PolyOne/Free Modular Terrain/Texture/T_BaseColor_v01.psd using Guid(612c43d0ed7aab749a484462e0db56ee) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/bucket.prefab using Guid(97318fbbd96e1824c9f8390c74e20ed3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'acb8797002b3a3ae7ad7082d2ead669a') in 0.0136558 seconds
+[Worker2] Start importing Assets/NatureStarterKit2/Nature/bush03_Textures/normal_specular.png using Guid(3d94ae574d920c5449fe4e032d8c414d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/dirt_ground_patch.glb using Guid(f4d4b20ef1b58284ba7c75f77e5f5dc1) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2]  -> (artifact id: '1313144193079ce0751f239f8f2378bc') in 0.0248115 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/sawing_wood.prefab using Guid(099f3d86a4a33ad418b73fcb72ad8d6c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'a022eeff6b7ccc41c03e4fc859afb319') in 0.0596704 seconds
+[Worker1]  -> (artifact id: '67c588d1e6939f7f4ea3018bf0bf96fe') in 0.0552258 seconds
+[Worker3]  -> (artifact id: '421c4f83e8cad7c5fc6a88e8697947b1') in 0.0913573 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_complete_minor.glb using Guid(a881c8b8cd0f7b8468b5e326d8fa5b94) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Tables/table.005.prefab using Guid(861484977034f89419f6311ff123a574) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.016.prefab using Guid(cd55e245d3cf33c4dab2e9577a37bbcc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'e19469c978c9b82b733e0735fd414102') in 0.0309494 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGenericModuleReview.cs using Guid(8b0ac33c81419a146ab202e25aa8a0c7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/NatureStarterKit2/Nature/tree04_Textures/normal_specular.png using Guid(4561489a3ef42ad4eae5f6167fc00c76) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '68941226dd17fc2c9a39f21408e13de5') in 0.0328035 seconds
+[Worker1]  -> (artifact id: 'e307f6859f737d739c51fb1e7378b4dc') in 0.0468442 seconds
+[Worker2]  -> (artifact id: 'd9c6c0696e466c1c3ccd003da525e277') in 0.011638 seconds
+[Worker0]  -> (artifact id: 'f183c7d2b510a7e43edebea6121725c5') in 0.1131961 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/DepthOfFieldEditor.cs using Guid(427fdf36119bab44a9131abd19b90f57) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/NatureStarterKit2/Nature/bush05_Textures/normal_specular.png using Guid(ca8eb19e8e565a64fb8f2f4c2d9f9297) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/PolyOne/Free Modular Terrain/Texture/T_BaseColor_v02.png using Guid(98a5f7b937a308e478c396dc246d63a9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2] (ScriptedImporter)
+[Worker3]  -> (artifact id: '912951b79e145b5d296367f36cd56e6e') in 0.0079541 seconds
+[Worker1]  -> (artifact id: '5d2508fc093f64c93fa63ab39ae67ed4') in 0.0144983 seconds
+[Worker2]  -> (artifact id: 'c6504c126c9d106fc7f703f7e3f358b3') in 0.0144968 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Source/SOURCE.md using Guid(261ed11631b8ad441abcfcf2e051e6e0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: '675964f0cbc6095b76918b7c65f09afc') in 0.0182918 seconds
+[Worker3] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/NoiseAndGrainEditor.cs using Guid(abd63abcc46fbcb4588164b671b52d3b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'c597066d8d5fe809c7a0317c5370ff29') in 0.00759 seconds
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/boulder_3-material-bindings.json using Guid(80961636c641c3044be8c6a11bcf0018) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] Start importing Assets/Tree_Packs/URP_Tree_Pack/Prefabs/URP_Tree_1.prefab using Guid(022485ff60e4a26418217d8ab778a812) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush04_Textures/normal_specular.png using Guid(198f2f9f3ce914b4196c142c0614649f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Grass_v8_02.prefab using Guid(4914800dd2cb66543a3e675c0071d3f0) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1]  -> (artifact id: '9f31140108d03150e27e142006d0d2a8') in 0.0353654 seconds
+[Worker0]  -> (artifact id: '6c3edb5a1f4502711e1a25fb8123fa0c') in 0.0189257 seconds
+[Worker3]  -> (artifact id: '251c353c36fa00fee8394a374579509b') in 0.0225547 seconds
+[Worker2]  -> (artifact id: 'acf1c6cd1eb202f2c3f56735fe5906e1') in 0.0701619 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Columns/wood_column.006.prefab using Guid(3b72b0aebeb6c7e4b985d8649ba112e7) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/NatureStarterKit2/Editor/ImageEffects/ColorCorrectionLookupEditor.cs using Guid(66c17be95fbf398439ea09f8892a8b43) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Miscellaneous/bag.prefab using Guid(8084703d30cc2204d910a3ffb54cf246) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] (ScriptedImporter)
+[Worker3]  -> (artifact id: 'a42421354cc0e982bcb5ae99339b38b3') in 0.0074377 seconds
+[Worker1]  -> (artifact id: '3e401e5938e203cf6754ddff2bfcd8bd') in 0.0330838 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Chairs/chair.prefab using Guid(1ca36c4bdaa81a14a8b52d79cc04b095) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'c9aa62a6d78ba42a5433f5b90bf36682') in 0.0371819 seconds
+[Worker2]  -> (artifact id: '3f2438e767fd014ac4f478d40d79aefc') in 0.0280385 seconds
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.010.prefab using Guid(2352ad4bffcb10147a353d0e0712853a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoMultipieceReview.cs using Guid(9eeb2be7ac6fca244bb86d3d6d8aea86) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker1]  -> (artifact id: 'fb55290c87936c3f75f5e1eb4466d007') in 0.0077061 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Complex prefabs/Boxes.prefab using Guid(32ec60437affc154daf6bbf3557b1fe3) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: '38078f9bf768a7b68c61dafd5cc2657c') in 0.0314127 seconds
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_wall_detailed_corner.prefab using Guid(5081fa4ee7ae4fd47b77c904b7ec80af) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Castle walls/stone_quarter_wall.prefab using Guid(3191a5244fe759c449c1f17f8f3c794c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: '558f65d947adfadb77e8536616333337') in 0.0327984 seconds
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_complete_minor-material-bindings.json using Guid(5e0afd523e9386e42b7b590d90ce8320) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '4502f60ab1ba43e9fb0ae078165cc977') in 0.0570745 seconds
+[Worker1]  -> (artifact id: '5b7acee0110aff9d14e6dd6af3efb37b') in 0.029741 seconds
+[Worker3]  -> (artifact id: 'aa82344488484b2163078da277d145bc') in 0.0154475 seconds
+[Worker2] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_bridge_support.glb using Guid(d79a9bcaf83172049b2338bf71f9696b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Platforms/platform.003.prefab using Guid(6f4b137e447fb8d449da53d5bf77a303) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_voussoir_minor.glb using Guid(ac993070512a685488f9ca8ef7d7e9f9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Wall Support/wood_column.011.prefab using Guid(c546d472c763cdb4a8cfbb105bf97a2a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker0]  -> (artifact id: '830b988a422e61043594bd41844859e5') in 0.0374784 seconds
+[Worker3]  -> (artifact id: '42bb18a413c8bf7adfb8e077b6283716') in 0.048337 seconds
+[Worker1]  -> (artifact id: 'd7913a31b0518d71ce6b382a2f2cafbc') in 0.0563673 seconds
+[Worker2]  -> (artifact id: '0fa0f08da8ef3a4e8e7e9bbd21217a36') in 0.0737197 seconds
+[Worker0] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Walls/wood_wall.011.prefab using Guid(744e4859e3fd9f243a573e8037e26374) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/boulder_2.glb using Guid(0b56dcf34d805c54583ea52f7ea18e36) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker1] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/arch_voussoir_major.glb using Guid(b6d5f8ca847135d429473e2af1cf107b) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0]  -> (artifact id: '7283abae3ed0ad026dc897f662b07357') in 0.0316111 seconds
+[Worker2] Start importing Assets/PolyOne/Free Modular Terrain/Prefabs/SM_Terrain_05.prefab using Guid(9be0a3c94d6c6d141a4f5bed91c6df0a) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '7fcb7ee6825713c3b86fab8a1ae6676c') in 0.0730169 seconds
+[Worker0] Start importing Assets/NatureStarterKit2/Nature/bush01_Textures/normal_specular.png using Guid(c0ff824bc7611d6448b7231d21ecb58d) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2]  -> (artifact id: '898ad7d8ce3b3b092f228338fffc77fa') in 0.0563479 seconds
+[Worker3]  -> (artifact id: 'ce9f16831bd44b57288266ecaa346826') in 0.087212 seconds
+[Worker0]  -> (artifact id: '4564c5e2ab98e7da7335527a2c3a2b74') in 0.0123226 seconds
+[Worker1] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Platforms/platform.002.prefab using Guid(e2b76660c8ac65e4b920f50d5505a134) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker3] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Columns/wood_column.003.prefab using Guid(6b1ceddab81a0ed4d95cce9054a25174) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker3] (ScriptedImporter)
+[Worker2] Start importing Assets/Mega Fantasy Props Pack/Prefabs/Chairs/chair.001.prefab using Guid(51d5bd1ea00a0a54fa377c2fe5110130) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker1]  -> (artifact id: '96acd61cc86a922db7c498c0df01595a') in 0.0302893 seconds
+[Worker0] Start importing Assets/Eldoria/ArtTests/Valoria63CleanScene/Sources/grass_tuft_2.glb using Guid(fd870dea6bc43a54591194ce8b80fc9f) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker3]  -> (artifact id: '0897f62be3e4153d2d8eb1de0d3323ab') in 0.0274436 seconds
+[Worker2]  -> (artifact id: 'f34263e1681db388a457695466313134') in 0.0361796 seconds
+[Worker0]  -> (artifact id: '591edcd29ad029fd4e80e9717277411d') in 0.0700143 seconds
+VALORIA_REFERENCE_CLEAN_PACKAGE_COMPLETE bytes=285652338 sha256=13ab37a9c3aa6d774bdbefdb3e5b35f813fc58d30946a4b2d69360d2a1da455a
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanFinalize:CheckExport () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs:92)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/ValoriaReferenceCleanFinalize.cs Line: 92)
+
+Killing ADB server in 2,1163217 seconds.
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -707,4 +1563,4 @@ Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792323331725,"processId":26976,"allocatedMemory":20037678,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67837},{"Thread":4230344},{"Manager":821648},{"VertexData":1880},{"Geometry":816},{"Texture":296},{"Shader":81701},{"Material":24},{"GfxDevice":57168},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":12716},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":27233},{"DynamicArray":110680},{"HashMap":72725},{"Utility":2660822},{"Curl":4238},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":9040},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":110259},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366082},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792323597813,"processId":41676,"allocatedMemory":20041284,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67795},{"Thread":4230344},{"Manager":821648},{"VertexData":1784},{"Geometry":816},{"Texture":296},{"Shader":81701},{"Material":24},{"GfxDevice":57168},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620400},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":36124},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":13978},{"DynamicArray":110680},{"HashMap":79005},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":5341},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":6736},{"WebRequest":4478},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":110675},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366082},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}

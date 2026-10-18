@@ -1,5 +1,5 @@
 {
-    "source_sha": "8e250050a7d4c51762105bd1145c35dd4dbd5f93",
+    "source_sha": "8f55b6223f3bc0a3581ed79554e7aac4f7509497",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",
     "prefab_lighting": "Portable prefabs use light probes; placed scene keeps its baked GI",
     "prefabs": [
