@@ -627,9 +627,18 @@ async function main() {
     report.build = { bytes: manifest.bytes, files: manifest.files.length, manifest_sha256: manifest.manifest_sha256 };
     const { chromium } = require('playwright');
     report.playwright_version = require('playwright/package.json').version;
+    // The single existing Windows PC can expose native D3D11 graphics.
+    // Linux hosted Chromium/SwiftShader rendered fewer than 5 telemetry
+    // frames in 35 seconds, without runtime errors. Never force software
+    // ANGLE when exercising the real Windows Chromium connection.
+    const launchArgs = process.platform === 'win32'
+      ? ['--no-sandbox', '--use-angle=d3d11', '--ignore-gpu-blocklist', '--enable-webgl']
+      : ['--no-sandbox', '--disable-dev-shm-usage', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'];
     browser = await chromium.launch({ headless: true,
       executablePath: process.env.VALORIA_CHROMIUM_EXECUTABLE || undefined,
-      args: ['--no-sandbox', '--disable-dev-shm-usage', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+      args: launchArgs });
+    report.chromium_launch = { platform:process.platform, args:launchArgs,
+      existing_executable:process.env.VALORIA_CHROMIUM_EXECUTABLE||null };
     report.browser_version = browser.version();
     const options = { viewport: VIEWS.landscape, deviceScaleFactor: 1, hasTouch: true };
     need(process.env.VALORIA_PLAYTEST_VIDEO !== '0', 'Video capture is required to validate authentic frame evidence');

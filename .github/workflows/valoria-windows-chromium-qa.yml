@@ -1,0 +1,131 @@
+name: '[VALORIA] Exact I-II Chromium QA on existing Windows PC'
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/valoria-windows-chromium-qa.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-windows-chromium-qa
+  cancel-in-progress: false
+jobs:
+  native-browser:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 25
+    steps:
+      - name: Recover existing GitHub Desktop Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
+              Sort-Object Name -Descending | ForEach-Object {
+                Join-Path $_.FullName 'resources/app/git/cmd/git.exe'
+              } | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Existing PC Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/valoria-reference-clean/
+            /docs/evidence/valoria-reference-clean/environment-city-wide-after.png
+            /pipeline/active-workstreams.json
+      - name: Honor current Windows runner owner and no shared Unity/Blender process
+        shell: powershell
+        run: |
+          $registry=Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
+          $claim=@($registry.active|Where-Object {
+            $_.id -eq 'valoria-master-plan-layered-construction-20261016' -and
+            $_.owner -eq 'codex-work-valoria-integration-continuation-20261018' -and
+            $_.resources -contains 'windows-runner-heavy'
+          })
+          if($claim.Count -ne 1){throw 'Live integrated main Windows claim not held'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC native editing resources occupied; refuse interference'}
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-integrated-web-playtest-39163287848
+          run-id: 39163287848
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: unity-raw
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Prepare the exact approved WebGL binary; no Unity rebuild
+        shell: powershell
+        run: |
+          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native131 7aeef2e942883fae93a5e033bf9a0a05ebc85e46 39163287848
+          if($LASTEXITCODE){throw 'Exact integrated browser transport rejected'}
+          node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
+          if($LASTEXITCODE){throw 'Existing Site wrapper integrity failed'}
+      - name: Use installed PC Chromium/Edge, and temporary free Playwright/FFmpeg when needed
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $lib=Join-Path $env:RUNNER_TEMP 'valoria-browser-library'
+          npm install --prefix $lib --no-save --ignore-scripts playwright@1.55.0
+          if($LASTEXITCODE){throw 'Playwright package resolution failed'}
+          Add-Content $env:GITHUB_ENV "NODE_PATH=$(Join-Path $lib 'node_modules')"
+          $candidates=@(
+            (Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'),
+            (Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Microsoft/Edge/Application/msedge.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Google/Chrome/Application/chrome.exe')
+          )
+          $chrome=$candidates|Where-Object {Test-Path $_}|Select-Object -First 1
+          if($chrome){Add-Content $env:GITHUB_ENV "VALORIA_CHROMIUM_EXECUTABLE=$chrome";Write-Host "Using existing browser: $chrome"}
+          else {
+            & (Join-Path $lib 'node_modules/.bin/playwright.cmd') install chromium
+            if($LASTEXITCODE){throw 'No existing or free browser available'}
+          }
+          $ffmpeg=Get-Command ffmpeg.exe -ErrorAction SilentlyContinue
+          if(-not $ffmpeg){
+            python -m pip install --quiet imageio-ffmpeg
+            if($LASTEXITCODE){throw 'No existing or temporary free ffmpeg available'}
+            $exe=(python -c "import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())" | Select-Object -Last 1).Trim()
+            if(-not(Test-Path $exe)){throw 'Temporary ffmpeg executable unavailable'}
+            $dir=Join-Path $env:RUNNER_TEMP 'valoria-ffmpeg'
+            New-Item $dir -ItemType Directory -Force | Out-Null
+            Copy-Item $exe (Join-Path $dir 'ffmpeg.exe')
+            Add-Content $env:GITHUB_PATH $dir
+          }
+          node --check tools/valoria-reference-clean/playtest_web.cjs
+          if($LASTEXITCODE){throw 'Visible-control test source syntax invalid'}
+      - name: Actually play Bastion I-II with native Windows Chromium GPU and SystemClock
+        shell: powershell
+        timeout-minutes: 15
+        env:
+          VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
+          VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence
+          VALORIA_SOURCE_SHA: 7aeef2e942883fae93a5e033bf9a0a05ebc85e46
+          VALORIA_PLAYTEST_TIMEOUT_SECONDS: '480'
+          VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
+        run: |
+          node tools/valoria-reference-clean/playtest_web.cjs
+          if($LASTEXITCODE){throw "Normal-clock Windows Chromium playthrough failed; preserve report/video"}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: valoria-windows-chromium-evidence-${{ github.run_id }}
+          path: web-visible-controls-evidence/**
+          if-no-files-found: warn
+      - name: Authorize only genuinely passed same-byte private site package
+        if: success()
+        shell: powershell
+        run: |
+          $report=Get-Content 'web-visible-controls-evidence/report.json' -Raw|ConvertFrom-Json
+          if($report.status -ne 'PASS' -or -not $report.checks.exact_save_reload.pass){throw 'Real user-facing gameplay incomplete'}
+          if(-not $report.dialogue_clip -or @($report.screenshots|Where-Object {$_.extraction_pending}).Count){throw 'Visual evidence incomplete'}
+          $verification=Get-Content prepared-site/unity-output-verification.json -Raw|ConvertFrom-Json
+          $verification.browser_runtime_qa=$true
+          $verification|ConvertTo-Json -Depth 12|Set-Content prepared-site/unity-output-verification.json -Encoding utf8
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: valoria-verified-private-site-windows-${{ github.run_id }}
+          path: prepared-site/**
+          if-no-files-found: error
