@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CORRECTED_NATIVE_GI_RIVER_LIGHTING",
-      "next": "Native49 genuine A/B inspected: material/GI contamination fixed through native URP Lit; mixed indirect bake keeps daylight realtime shadows and moderated torch glow. Retain working lighting49; native50 integrates existing baked river cubemap with shader, reduces repeating deep caustics, fixed camera/light/mesh A/B, actual Play and existing local Qwen advisory comparison. No composition or geometry reset. Windows retained.",
+      "phase": "REFERENCE_CLEAN_LATERAL_KEY_LIGHT_WITH_EXISTING_BAKED_GI",
+      "next": "Native50 baked environment river integration inspected, fixed camera/light/mesh; working surface retained, parallel bands still need refinement. Native51 isolates the major lighting cause of flat architecture: sun yaw -32 to+32 for sunlit front/shaded side, same pitch/intensity/materials/composition. Existing GI UV assets/probe groups reused, indirect GI and reflections rebaked. Native Qwen50 auxiliary executed40s,8/10 and unchanged-sun assertions not adopted. No formal approval or physical mobile claim; sole Windows retained.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -111,7 +111,7 @@
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "ALL_ART_STATIC_FALSE; PNG_PARITY_PASS_THROUGH_REV46",
           "current_run": 0,
-          "current_source": "1f8222abac374bb4e75f1d7b0e9823e27e612717",
+          "current_source": "df724b3ac7726059d764467dfb17e1e8394ac49b",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
@@ -155,6 +155,18 @@
             "realtime_gi": false,
             "visual_status": "CORRECTED_WORKING_LIGHTING_BASIS_NO_FORMAL_ART_APPROVAL",
             "gameplay": "PASS"
+          },
+          "native50": {
+            "run": 39081698539,
+            "output": "94f68ade5190fb9eefe96677e0a17971fb545be2",
+            "same_camera": true,
+            "same_lighting": true,
+            "same_mesh": true,
+            "baked_river_cube": 128,
+            "active_lightmap_bytes": 5594304,
+            "active_reflection_bytes": 1053664,
+            "qwen_advisory_only": true,
+            "physical_mobile_profiled": false
           }
         }
       },
