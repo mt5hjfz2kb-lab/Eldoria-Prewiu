@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T09:30:24.292Z",
+  "updated_at": "2026-10-18T09:41:23.996Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_BASTION_INTEGRATED_OPTIMIZED_ANDROID_UPDATE",
-      "next": "Native75 builds original optimized Android application with integrated74 Valoria, same package/signing certificate versionCode2. Wait for completion before branch writes; verify actual signature/manifest/APK. Continue art after delivery check: isolated three-pine closed-volume canopy study prepared, not launched. No parallel heavy job or whole-scene art certification.",
+      "phase": "REFERENCE_CLEAN_BASTION_RETAINED_PINE_CROWN_ZONE_ART_TRIAL",
+      "next": "Native77 evaluates three Qwen-directed closed pine canopies with duplicate target trunks removed, preserving outside UV/normal/geometry and authoritative74 scene. Android75/76 update already compiled, signature/package/code2 verified and downloaded CRC/ARM64 ELF checked; do not re-investigate size or rebuild without new art. Continue visual comparison then extend only if clearly improved.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -110,8 +110,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39115078383,
-          "current_source": "ea95e188c567a38dc81c74cb5b1bfce1636b2118",
+          "current_run": 39116187160,
+          "current_source": "7b92f91ff45d4b8b089b9f68d804160ee8dc2987",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -134,7 +134,7 @@
             "score_not_adopted": true
           },
           "water_camera_light_geometry_identity": true,
-          "android_apk_status": "OWNER_REPORTS_LATER_SIZE_FIXED_APK_INSTALLED_ON_ANDROID",
+          "android_apk_status": "OPTIMIZED_UPDATE_V2_SIGNED_PACKAGE_MATCH_HASH_CRC_ARM64_VERIFIED_PHONE_UNTESTED",
           "native48": {
             "run": 39080822196,
             "output": "88d600b2632154c0c03e04c4146cf5ee7690ad1c",
@@ -331,6 +331,25 @@
             "prefabs": 8,
             "native_import_verified": false,
             "art_approved": false
+          },
+          "android_update": {
+            "build_run": 39115078383,
+            "verification_run": 39115927964,
+            "output": "a42f9463d0af0cd02a025ec09af725278edd2193",
+            "artifact": 12132635525,
+            "apk_bytes": 161291726,
+            "apk_sha256": "a57f3463f5f3a718ba81d6740d1b28f6ced0f33f46ec90dc5b5b3effe4f00a89",
+            "package": "com.eldoria.valoria.v5test",
+            "version_name": "1.1",
+            "version_code": 2,
+            "original_certificate_matches": true,
+            "apksigner_v2_verified": true,
+            "downloaded_crc_hash_arm64_verified": true,
+            "arm64_elf_libraries": 11,
+            "source_glbs_excluded": 67,
+            "source_bytes_excluded": 573685112,
+            "phone_update_tested": false,
+            "user_data_reset": false
           }
         }
       },
