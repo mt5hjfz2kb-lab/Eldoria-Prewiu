@@ -1,15 +1,25 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T09:41:23.996Z",
+  "updated_at": "2026-10-18T09:43:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
-    "scope": "ALL_ELDORIA_PRODUCTION_WORKSTREAMS_EXCEPT_EXCLUSIVE_LAYERED_VALORIA",
+    "scope": "ALL_ELDORIA_EXCEPT_AUTHORIZED_VALORIA_AND_WORLD4X_20261018",
     "reason": "LATEST OWNER ORDER 2026-10-16: absolute priority to Valoria construction from existing master plan by layers; every other active Eldoria workstream paused.",
-    "allowed_work": "ONLY valoria-master-plan-layered-construction-20261016 in isolated non-overlapping Unity scope, after a real claim, reuse verified certified topology/gameplay, no spend; read-only recovery and repository governance allowed.",
+    "allowed_work": "Valoria and isolated world4x-zone1-isolated-reference-prototype-20261013 are authorized by owner. 4X resumes under the explicit 18-10-2026 request; other pauses remain. Valoria retains Windows lease; 4X may not take it merely because queue is idle. No expenditure or publication.",
     "resumption": "Other workstreams require a fresh explicit owner instruction. Do not automatically resume artist, World4X, Region 1, Bastion I, 63-asset branches or deployments.",
-    "note": "Exclusive new construction line is authorized by latest owner order; original previously paused branches remain paused. No publication, production-scene overwrites, paid credits or automatic runner appropriation. Repo pause does not cancel running chats or GitHub jobs. See docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md"
+    "note": "Exclusive new construction line is authorized by latest owner order; original previously paused branches remain paused. No publication, production-scene overwrites, paid credits or automatic runner appropriation. Repo pause does not cancel running chats or GitHub jobs. See docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
+    "authorized_workstream_ids": [
+      "valoria-master-plan-layered-construction-20261016",
+      "world4x-zone1-isolated-reference-prototype-20261013"
+    ],
+    "latest_owner_exception": {
+      "date": "2026-10-18",
+      "workstream": "world4x-zone1-isolated-reference-prototype-20261013",
+      "authorization": "Explicit current owner message 11:36:57 Europe/Madrid",
+      "windows_lease_transfer": false
+    }
   },
   "active": [
     {
@@ -366,6 +376,40 @@
         "other_workstreams": "remain_paused"
       },
       "continuation_authorization": "Owner follow-up 2026-10-17 asks why execution stopped; original autonomous production remains authorized. Physical mobile absence does not block artistic work."
+    },
+    {
+      "id": "world4x-zone1-isolated-reference-prototype-20261013",
+      "title": "Zona 1 4X — producción gráfica y conexión futura a Valoria",
+      "owner": "chatgpt-world4x-production-20261018",
+      "branch": "prototype/world4x-zone1-zoom-reference-20261013",
+      "status": "active",
+      "claimed_at": "2026-10-18T09:36:57Z",
+      "base_main_sha": "9b3e847a81995a81efb564c52146556ee9172dba",
+      "scope": [
+        "docs/world4x-zone1/**",
+        "tools/world4x-zone1/**",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
+        "pipeline/art-production-requests/world4x-zone1-isolated-reference-prototype-20261013.json",
+        ".github/workflows/world4x-zone1-*.yml"
+      ],
+      "resources": [],
+      "phase": "OWNER_AUTHORIZED_RESUMPTION_REFERENCES_AND_ART",
+      "authorization": "Owner 2026-10-18 11:36:57 Europe/Madrid explicitly asks this chat to assume 4X, recover three references, strongly improve graphics and prepare later connection to current Work without crossing scope. Budget 0 EUR.",
+      "art_production_routing": "required",
+      "dependency": "Valoria Work retains its scene, SliceBoot, Packages, canonical gameplay/save, branch and windows-runner-heavy. 4X uses independent Linux Blender and code. Windows native window must be explicitly coordinated; not claimed.",
+      "coordination": {
+        "native_window": "REQUESTED_WHEN_VISUAL_CANDIDATE_READY; NOT_CLAIMED",
+        "protected_scopes": [
+          "ValoriaReferenceClean",
+          "SliceBoot.cs",
+          "Application/LocalGateway.cs",
+          "Infrastructure/LocalServices.cs",
+          "Unity/Packages",
+          "valoria-reference-clean.yml"
+        ],
+        "integration": "Provide opt-in 4X scene/module, semantic IDs and host adapter; Valoria owner integrates later. Do not edit or publish its player scene."
+      },
+      "handoff_source": "docs/world4x-zone1/TAKEOVER_20261018.md"
     }
   ],
   "history": [
@@ -5628,7 +5672,13 @@
       "exclusive_resume": "Only fresh explicit owner instruction",
       "preserve": "All branches, commits, scenes, prefabs, BLEND/GLB, captures, runs, artifacts and source; these workstreams are paused, not completed or cancelled.",
       "allowed_exception": "valoria-master-plan-layered-construction-20261016, strictly isolated/claimed, 0 € and no old-scene/paused-branch mutations",
-      "notice": "Registry updates are logical ownership only; they do not stop other ChatGPT sessions or cancel queued/inflight Actions. Inspect actual runs and cancel via authorized UI if necessary."
+      "notice": "Registry updates are logical ownership only; they do not stop other ChatGPT sessions or cancel queued/inflight Actions. Inspect actual runs and cancel via authorized UI if necessary.",
+      "later_owner_exception": {
+        "date": "2026-10-18",
+        "workstream": "world4x-zone1-isolated-reference-prototype-20261013",
+        "status": "RESUMED_EXPLICIT_OWNER_REQUEST",
+        "windows_lease_transfer": false
+      }
     }
   ],
   "exclusive_priority": {
@@ -5652,6 +5702,11 @@
       "full-frame visual plus technical and mobile validation"
     ],
     "restrictions": "Isolated work and original paused branches protected; no publication or expenditure without separate approvals. Do not claim runner until available.",
-    "reference_image": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg"
+    "reference_image": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+    "parallel_exception": {
+      "authorized_on": "2026-10-18",
+      "workstream": "world4x-zone1-isolated-reference-prototype-20261013",
+      "scope": "Independent 4X production only; Valoria priority on shared Windows retained."
+    }
   }
 }
