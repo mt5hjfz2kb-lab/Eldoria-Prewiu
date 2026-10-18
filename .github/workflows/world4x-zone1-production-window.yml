@@ -13,44 +13,38 @@ concurrency:
 jobs:
   coordinate:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Preserve other claims and wait behind Work
+      - name: Record queue ticket without claiming or cancelling Work resources
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           python - <<'PY'
-          import os,json,time,urllib.request,urllib.error,base64,datetime
-          repo=os.environ['GITHUB_REPOSITORY'];base='https://api.github.com/repos/'+repo
+          import os,json,urllib.request,urllib.error,base64,datetime
+          base='https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']
           request=json.load(open('docs/world4x-zone1/PC_ART_REQUEST.json'))
           assert request['mode'] in ['resume_ground','native_pair']
           def api(path,data=None,method=None):
               req=urllib.request.Request(base+path,data=None if data is None else json.dumps(data).encode(),method=method,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json','Content-Type':'application/json'})
               with urllib.request.urlopen(req,timeout=30) as r:return json.load(r)
-          me='world4x-zone1-isolated-reference-prototype-20261013'
+          queued=[]
+          for status in ['in_progress','queued','waiting','pending']:
+              queued += [{'id':r['id'],'status':r['status'],'created_at':r['created_at']} for r in api('/actions/runs?branch=construction%2Fvaloria-master-plan-layers-20261016&status='+status+'&per_page=50').get('workflow_runs',[])]
           for attempt in range(3):
               file=api('/contents/pipeline/active-workstreams.json?ref=main');r=json.loads(base64.b64decode(file['content']))
-              own=next(x for x in r['active'] if x['id']==me)
+              me='world4x-zone1-isolated-reference-prototype-20261013';own=next(x for x in r['active'] if x['id']==me)
               assert own['owner']=='chatgpt-world4x-production-20261018' and own['status']=='active'
               assert me in r['owner_production_pause']['authorized_workstream_ids']
-              own.setdefault('coordination',{})['queue_delegation']={'authorization':'Owner explicitly permits PC resources respecting Work queue; reiterated live continuation after checkpoint, 18-10-2026.','mode':request['mode'],'run_id':os.environ['GITHUB_RUN_ID'],'work_priority':True,'transfer_valoria_lease':False,'cancel_other_jobs':False,'scope':'Only World4X existing source continuation or isolated Unity comparison/host/camera checks. No Valoria, UI, save, settings, package or publication changes.'}
-              own['phase']='EXACT_SAVED_SOURCE_CONTINUATION_QUEUED'
-              own['next']='Finish current requested bounded unit, preserve genuine outputs; inspect screenshots and do not equate technical success with art approval.'
+              own.setdefault('coordination',{})['queue_delegation']={'authorization':'Owner explicitly permits PC resources respecting Work queue; live continuation18-10-2026.','mode':request['mode'],'run_id':os.environ['GITHUB_RUN_ID'],'preceding_work_jobs':queued,'transfer_valoria_lease':False,'cancel_other_jobs':False,'policy':'Append one job to the existing single Windows runner queue; on start refuse if older Work job still queued or Unity/Blender occupied. Do not wait for a permanently idle queue.','scope':'Only isolated World4X source/capture/host checks; no Valoria, UI, saves, settings, packages or publication changes.'}
+              own['phase']='BOUNDED_UNIT_QUEUED_AFTER_WORK'
+              own['next']='Finish requested exact-source unit, preserve files and inspect genuine evidence. Technical checks do not approve art.'
               r['updated_at']=datetime.datetime.now(datetime.timezone.utc).isoformat()
               try:
-                  api('/contents/pipeline/active-workstreams.json',{'message':'coordination(world4x): record current owner-authorized queue slot without changing Work claim [skip ci]','branch':'main','sha':file['sha'],'content':base64.b64encode((json.dumps(r,indent=2,ensure_ascii=False)+'\n').encode()).decode()},'PUT');break
+                  api('/contents/pipeline/active-workstreams.json',{'message':'coordination(world4x): append bounded owner-authorized queue ticket; preserve Work [skip ci]','branch':'main','sha':file['sha'],'content':base64.b64encode((json.dumps(r,indent=2,ensure_ascii=False)+'\n').encode()).decode()},'PUT');break
               except urllib.error.HTTPError as e:
                   if e.code!=409 or attempt==2:raise
-          deadline=time.time()+840
-          while True:
-              waiting=[]
-              for status in ['in_progress','queued','waiting','pending']:
-                  for run in api('/actions/runs?branch=construction%2Fvaloria-master-plan-layers-20261016&status='+status+'&per_page=50').get('workflow_runs',[]):waiting.append({'id':run['id'],'status':run['status']})
-              print(json.dumps({'prior_work_jobs':waiting}),flush=True)
-              if not waiting:break
-              if time.time()>deadline:raise RuntimeError('Work queue occupied; no Windows job enqueued or cancelled')
-              time.sleep(30)
+          print(json.dumps({'preceding_work_jobs':queued,'windows_lease_transferred':False}))
           PY
   ground-art:
     needs: coordinate
@@ -76,7 +70,7 @@ jobs:
           sparse-checkout: pipeline/active-workstreams.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
-      - name: Recheck delegation, prior Work queue and native processes
+      - name: Recheck delegation, older Work queue and native processes
         env:
           GH_TOKEN: ${{ github.token }}
         shell: powershell
@@ -89,35 +83,24 @@ jobs:
           $base="https://api.github.com/repos/$env:GITHUB_REPOSITORY"
           $ours=Invoke-RestMethod "$base/actions/runs/$env:GITHUB_RUN_ID" -Headers $headers
           $queued=Invoke-RestMethod "$base/actions/runs?branch=construction%2Fvaloria-master-plan-layers-20261016&status=queued&per_page=50" -Headers $headers
-          if(@($queued.workflow_runs|Where-Object {[datetime]$_.created_at -lt [datetime]$ours.created_at}).Count){throw 'An earlier Work job has priority'}
-      - name: Execute requested exact-source unit
+          if(@($queued.workflow_runs|Where-Object {[datetime]$_.created_at -lt [datetime]$ours.created_at}).Count){throw 'An older Work job has priority; no native process started'}
+      - name: Execute exact saved source unit
         working-directory: world4x-production-source
         shell: powershell
         run: |
           $request=Get-Content docs/world4x-zone1/PC_ART_REQUEST.json -Raw|ConvertFrom-Json
           $out=Join-Path (Get-Location) "docs/world4x-zone1/evidence/ground-finish-$env:GITHUB_RUN_ID"
-          $owned=$null
           if($request.mode -eq 'resume_ground'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
             if(-not $blender){throw 'Existing Blender not found'}
-            try{
-              try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 5}catch{
-                $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
-                if(-not $ollama){$ollama=Join-Path $env:LOCALAPPDATA 'Programs/Ollama/ollama.exe'}
-                if(-not(Test-Path $ollama)){throw 'Previously installed Ollama unavailable'}
-                $owned=Start-Process $ollama -ArgumentList 'serve' -PassThru
-                $ready=$false
-                for($i=0;$i -lt 20;$i++){Start-Sleep 1;try{$null=Invoke-RestMethod 'http://127.0.0.1:11434/api/version' -TimeoutSec 2;$ready=$true;break}catch{}}
-                if(-not $ready){throw 'Existing Ollama did not start'}
-              }
-              & $blender -b -t 4 --python-exit-code 1 --python tools/world4x-zone1/production/resume_ground_finish.py -- --out $out
-              if($LASTEXITCODE -ne 0){throw 'Source continuation failed; partial evidence will be retained'}
-            }finally{if($owned -and -not $owned.HasExited){& taskkill.exe /PID $owned.Id /T /F | Out-Null}}
+            # Reuse the genuine already-recorded Qwen plan: no unnecessary model/server start.
+            & $blender -b -t 4 --python-exit-code 1 --python tools/world4x-zone1/production/resume_ground_finish.py -- --out $out
+            if($LASTEXITCODE -ne 0){throw 'Source continuation failed; preserve partial evidence'}
           }elseif($request.mode -eq 'native_pair'){
             if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity missing'}
             foreach($pair in @(@($request.before,$request.before_sha256),@($request.after,$request.after_sha256))){
-              if(-not $pair[0].StartsWith('docs/world4x-zone1/evidence/')){throw 'Input must belong to own evidence scope'}
+              if(-not $pair[0].StartsWith('docs/world4x-zone1/evidence/')){throw 'Input outside own evidence scope'}
               if((Get-FileHash $pair[0] -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pair[1]){throw 'Exact input hash mismatch'}
             }
             $env:ELDORIA_ZONEONE_GROUND_BEFORE=Join-Path (Get-Location) $request.before
@@ -131,7 +114,7 @@ jobs:
             Copy-Item $log (Join-Path $out 'unity.log')
             if($p.ExitCode -ne 0){Get-Content $log -Tail 80;throw 'Native comparison failed'}
           }else{throw 'Unsupported bounded mode'}
-      - name: Preserve real partial or complete outputs in own branch
+      - name: Preserve genuine outputs in own branch
         if: always()
         working-directory: world4x-production-source
         shell: powershell
@@ -146,8 +129,8 @@ jobs:
             if(Test-Path $generated){& git add -f -- $generated}
             & git diff --cached --quiet
             if($LASTEXITCODE -ne 0){
-              & git commit -m "art(world4x): retain actual source and validation evidence $env:GITHUB_RUN_ID [skip ci]"
-              if($LASTEXITCODE -ne 0){throw 'Evidence commit failed; artifact remains'}
+              & git commit -m "art(world4x): retain actual source and native evidence $env:GITHUB_RUN_ID [skip ci]"
+              if($LASTEXITCODE -ne 0){throw 'Evidence commit failed'}
               & git pull --rebase origin prototype/world4x-zone1-zoom-reference-20261013
               if($LASTEXITCODE -ne 0){throw 'Concurrent conflict; no force push'}
               & git push origin HEAD:prototype/world4x-zone1-zoom-reference-20261013
