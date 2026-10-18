@@ -1,10 +1,13 @@
 {
-    "source": "ac7654d9d778a41c74157e1504e2c852de5e1b49",
+    "source": "07aade21cc1e1a3aeec457a15061e01153d51b32",
     "status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
     "error": "",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
     "checks": [
         "city HUD, one camera",
+        "mechanic-gated menus, narrative, no slabs, objective navigation",
+        "story modal opened",
+        "dialogue survives refresh",
         "world return preserves session",
         "Royal build command",
         "shared timer and authored model",
