@@ -71,6 +71,17 @@
       "asset_url": "https://polyhaven.com/a/rock_3",
       "source_manifest": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/license-manifest.json",
       "changes": "Raw1k albedo/GL normal/roughness with official MD5 and pinned SHA256 retained. Closed Blender sculpted boulders, Smart UV after deformation, physical scale; bounded Unity39 accepted before bank-wide extension40. Runtime normals/roughness512."
+    },
+    {
+      "name": "Camp cloth / functional barracks refinement",
+      "source": "art-source/valoria/production/camp-family-v1/CampFamilyV1.blend",
+      "original_source_sha256": "36fc16fab611198dcf9bc60767e3dd103bef53cb9c602394dbe4cc741b1b2b7f",
+      "author": "Existing Eldoria authored source; revised current-workstream cloth geometry with local Qwen and typed BlenderMCP",
+      "license": "Existing project content; no new third-party asset license introduced",
+      "derivative_blend": "docs/evidence/valoria-reference-clean/CampCloth87.blend",
+      "derivative_glb": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/CampCloth87.glb",
+      "changes": "Open cloth entrance, folded flaps, curved roof/awning and guys; original timber/supplies source preserved. Existing timber maps reused; authored canvas weave. Native90 Unity review then91 full gameplay integration.",
+      "new_external_downloads": 0
     }
   ],
   "not_certified": {
