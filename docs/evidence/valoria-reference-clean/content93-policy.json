@@ -1,0 +1,13 @@
+{
+    "schema": 1,
+    "revision": 93,
+    "minimumPlayerCode": 6,
+    "platform": "windows",
+    "unityVersion": "6000.3.23f1",
+    "runtimeContract": "caf01f99f9fd48a125673bd2d53deed924e49f335bf3b450fd9b25fd2b2364dc",
+    "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/valoria-content-93/valoria-windows-2d144991f5fb804951b0961b605856b509fd7cb9700aaae44c2cadecad15810d.bundle",
+    "sha256": "2d144991f5fb804951b0961b605856b509fd7cb9700aaae44c2cadecad15810d",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Valoria_Reference_Clean.unity",
+    "bytes": 119535878,
+    "crc": 2394233119
+}
