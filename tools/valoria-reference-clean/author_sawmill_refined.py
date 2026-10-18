@@ -28,39 +28,48 @@ bpy.ops.object.camera_add(location=centre+Vector((-13,-17,12)));camera=bpy.conte
 bpy.ops.object.light_add(type='AREA',location=(-6,-8,14));light=bpy.context.object;light.data.energy=2200;light.data.size=7
 light.rotation_euler=(centre-light.location).to_track_quat('-Z','Y').to_euler()
 def render(name):scene.render.filepath=str(EV/name);bpy.ops.render.render(write_still=True)
-render('sawmill-refined-before.png')
-memory_path=EV/('sawmill-refined-memory-'+os.environ.get('GITHUB_RUN_ID','local')+'.txt')
-subprocess.run(['node','tools/art-direction/learning-evidence/cycle-hooks.mjs','prepare','--target','bastion1','--out',str(memory_path)],check=True,cwd=ROOT)
-memory=memory_path.read_text(encoding='utf8')
-context={'source_sha256':expected,'source_bounds':[list(lo),list(hi)],'history':memory[:10500],'history_sha256':hashlib.sha256(memory[:10500].encode()).hexdigest(),
-'brief':'Owner rejects the existing sawmill as incoherent with Valoria. Design a NEW medieval timber workshop, not a recolor. Observe old model and actual Unity city/reference. Choose coherent spatial composition, proportions and material hierarchy. Existing tool kit supports dressed limestone piers, oak braced structural frame, overlapping blue slate roof, masonry rear workshop, open front saw bay, framed saw blade and cut-log stock. No rectangular parcel/platform, no modern circular saw or waterwheel without water. Ground contact at Z0, silhouette under Z8, X/Y footprint maximum10m. Front is Y negative. Design proportions and optional lean-to/log-yard orientation. The lower stone piers and masonry rear workshop must visually relate to Bastion stonework; slate roof matches actual retained blue palette. Explain three visual defects addressed and the new spatial composition. No self approval.'}
-fields={'width':[6.4,7.2,8.0],'depth':[5.2,6.0,6.8],'eave_height':[3.3,3.8,4.2],'roof_rise':[1.6,2.0,2.4],'bay_count':[2,3],'rear_wall_fraction':[.25,.35,.45],'stone_height':[.55,.8,1.05],'frame_thickness':[.22,.28,.34],'lean_to':['left','right','none'],'lean_to_depth':[1.0,1.4],'log_yard':['front_left','front_right'],'log_count':[4,6,8],'roof_rows':[8,10,12],'timber_tone':['dark_oak','weathered_oak'],'masonry_tone':['warm_limestone','sandstone'],'brace_style':['short_knee','cross_rear']}
-schema={'type':'object','required':['rationale']+list(fields),'additionalProperties':False,'properties':{'rationale':{'type':'string'},**{k:{'type':'string' if isinstance(v[0],str) else 'number','enum':v} for k,v in fields.items()}}}
-images=['sawmill-refined-before.png','sawmill-completed-after-detail.png','bastion2-after-bastion.png']
-payload=dict(model='qwen3-vl:8b-instruct-q4_K_M',stream=False,format=schema,think=False,keep_alive=0,messages=[{'role':'system','content':'You are the existing Eldoria local 3D author. Direct a new coherent sawmill from observed references using spatial tools and full architectural decisions. JSON only, no score or approval.'},{'role':'user','content':json.dumps(context),'images':[base64.b64encode((EV/n).read_bytes()).decode() for n in images]}],options={'temperature':.3,'num_ctx':8192,'num_predict':1900})
-write('sawmill-refined-qwen-request.json',{'model':payload['model'],'schema':schema,'context':context,'image_sha256':{n:digest(EV/n) for n in images}})
-def api(path,data=None,timeout=3):
- req=urllib.request.Request('http://127.0.0.1:11434'+path,data=None if data is None else json.dumps(data).encode(),headers={'Content-Type':'application/json'})
- with urllib.request.urlopen(req,timeout=timeout) as r:return json.load(r)
-server=None;log=None
-try:
- try:api('/api/version')
- except Exception:
-  users=pathlib.Path(os.environ.get('SystemDrive','C:')+'/Users');installs=list(users.glob('*/AppData/Local/Programs/Ollama/ollama.exe'));assert installs
-  env=os.environ.copy();env['OLLAMA_HOST']='127.0.0.1:11434';models=list(users.glob('*/.ollama/models'))
-  if models:env['OLLAMA_MODELS']=str(models[0])
-  log=open(EV/'sawmill-refined-ollama.log','w');server=subprocess.Popen([str(installs[0]),'serve'],env=env,stdout=log,stderr=subprocess.STDOUT)
-  for i in range(40):
-   try:api('/api/version');break
-   except Exception:time.sleep(1)
-  else:raise RuntimeError('Existing Ollama unavailable')
- assert any(m['name']==payload['model'] for m in api('/api/tags')['models'])
- response=api('/api/chat',payload,360);write('sawmill-refined-qwen-response.json',response);plan=json.loads(response['message']['content']);assert set(plan)==set(fields)|{'rationale'}
- for k,values in fields.items():assert plan[k] in values,(k,plan[k])
- write('sawmill-refined-plan.json',plan)
-finally:
- if server:subprocess.run(['taskkill.exe','/PID',str(server.pid),'/T','/F'],capture_output=True);server.wait(timeout=20)
- if log:log.close()
+repair=os.environ.get('VALORIA_SAWMILL_REPAIR')=='1'
+if not repair:render('sawmill-refined-before.png')
+if not repair:
+ memory_path=EV/('sawmill-refined-memory-'+os.environ.get('GITHUB_RUN_ID','local')+'.txt')
+ subprocess.run(['node','tools/art-direction/learning-evidence/cycle-hooks.mjs','prepare','--target','bastion1','--out',str(memory_path)],check=True,cwd=ROOT)
+ memory=memory_path.read_text(encoding='utf8')
+ context={'source_sha256':expected,'source_bounds':[list(lo),list(hi)],'history':memory[:10500],'history_sha256':hashlib.sha256(memory[:10500].encode()).hexdigest(),
+ 'brief':'Owner rejects the existing sawmill as incoherent with Valoria. Design a NEW medieval timber workshop, not a recolor. Observe old model and actual Unity city/reference. Choose coherent spatial composition, proportions and material hierarchy. Existing tool kit supports dressed limestone piers, oak braced structural frame, overlapping blue slate roof, masonry rear workshop, open front saw bay, framed saw blade and cut-log stock. No rectangular parcel/platform, no modern circular saw or waterwheel without water. Ground contact at Z0, silhouette under Z8, X/Y footprint maximum10m. Front is Y negative. Design proportions and optional lean-to/log-yard orientation. The lower stone piers and masonry rear workshop must visually relate to Bastion stonework; slate roof matches actual retained blue palette. Explain three visual defects addressed and the new spatial composition. No self approval.'}
+ fields={'width':[6.4,7.2,8.0],'depth':[5.2,6.0,6.8],'eave_height':[3.3,3.8,4.2],'roof_rise':[1.6,2.0,2.4],'bay_count':[2,3],'rear_wall_fraction':[.25,.35,.45],'stone_height':[.55,.8,1.05],'frame_thickness':[.22,.28,.34],'lean_to':['left','right','none'],'lean_to_depth':[1.0,1.4],'log_yard':['front_left','front_right'],'log_count':[4,6,8],'roof_rows':[8,10,12],'timber_tone':['dark_oak','weathered_oak'],'masonry_tone':['warm_limestone','sandstone'],'brace_style':['short_knee','cross_rear']}
+ schema={'type':'object','required':['rationale']+list(fields),'additionalProperties':False,'properties':{'rationale':{'type':'string'},**{k:{'type':'string' if isinstance(v[0],str) else 'number','enum':v} for k,v in fields.items()}}}
+ images=['sawmill-refined-before.png','sawmill-completed-after-detail.png','bastion2-after-bastion.png']
+ payload=dict(model='qwen3-vl:8b-instruct-q4_K_M',stream=False,format=schema,think=False,keep_alive=0,messages=[{'role':'system','content':'You are the existing Eldoria local 3D author. Direct a new coherent sawmill from observed references using spatial tools and full architectural decisions. JSON only, no score or approval.'},{'role':'user','content':json.dumps(context),'images':[base64.b64encode((EV/n).read_bytes()).decode() for n in images]}],options={'temperature':.3,'num_ctx':8192,'num_predict':1900})
+ write('sawmill-refined-qwen-request.json',{'model':payload['model'],'schema':schema,'context':context,'image_sha256':{n:digest(EV/n) for n in images}})
+ def api(path,data=None,timeout=3):
+  req=urllib.request.Request('http://127.0.0.1:11434'+path,data=None if data is None else json.dumps(data).encode(),headers={'Content-Type':'application/json'})
+  with urllib.request.urlopen(req,timeout=timeout) as r:return json.load(r)
+ server=None;log=None
+ try:
+  try:api('/api/version')
+  except Exception:
+   users=pathlib.Path(os.environ.get('SystemDrive','C:')+'/Users');installs=list(users.glob('*/AppData/Local/Programs/Ollama/ollama.exe'));assert installs
+   env=os.environ.copy();env['OLLAMA_HOST']='127.0.0.1:11434';models=list(users.glob('*/.ollama/models'))
+   if models:env['OLLAMA_MODELS']=str(models[0])
+   log=open(EV/'sawmill-refined-ollama.log','w');server=subprocess.Popen([str(installs[0]),'serve'],env=env,stdout=log,stderr=subprocess.STDOUT)
+   for i in range(40):
+    try:api('/api/version');break
+    except Exception:time.sleep(1)
+   else:raise RuntimeError('Existing Ollama unavailable')
+  assert any(m['name']==payload['model'] for m in api('/api/tags')['models'])
+  response=api('/api/chat',payload,360);write('sawmill-refined-qwen-response.json',response);plan=json.loads(response['message']['content']);assert set(plan)==set(fields)|{'rationale'}
+  for k,values in fields.items():assert plan[k] in values,(k,plan[k])
+  write('sawmill-refined-plan.json',plan)
+ finally:
+  if server:subprocess.run(['taskkill.exe','/PID',str(server.pid),'/T','/F'],capture_output=True);server.wait(timeout=20)
+  if log:log.close()
+else:
+ request=json.loads((EV/'sawmill-refined-qwen-request.json').read_text());response=json.loads((EV/'sawmill-refined-qwen-response.json').read_text())
+ assert request['context']['source_sha256']==expected
+ for n,sha in request['image_sha256'].items():assert digest(EV/n)==sha
+ assert digest(OUT/'SawmillRefined104.glb')=='8d1cdccf3c5146ba1d4e859477c2af5772a8a15e9b0d97f9ff51df9bb591ac81'
+ plan=json.loads(response['message']['content']);payload={'model':request['model']};memory_path=EV/'sawmill-refined-memory-39136158993.txt'
+ write('sawmill-refined-repair.json',{'new_inference':False,'original_inference_run':39136158993,'same_ai_architectural_plan':True,'repair':'Real overlapping closed slate tiles on AI-chosen lean-to; replaces erroneous round slats. Original library unchanged.'})
 tree=ast.parse((ROOT/'tools/valoria-reference-clean/author_scene.py').read_text())
 exec(compile(ast.Module(body=[n for n in tree.body if isinstance(n,(ast.FunctionDef,ast.ClassDef)) and n.name in {'Mesh','line','execute_via_blendermcp'}],type_ignores=[]),'<reviewed authoring tools>','exec'))
 RejectedPlan=RuntimeError;stone_trial=False
@@ -148,9 +157,12 @@ def perform(action):
   side=-1 if plan['lean_to']=='left' else 1;ext=min(plan['lean_to_depth'],4.9-w/2);x=side*(w/2+ext)
   for y in [rear,d/2]:
    pier(x,y,.4,.4,.4);frame.box((x,y,1.5),(.17,.17,2.6),wood)
-  for j in range(6):
-   y=rear+(j+.5)*(d/2-rear)/6
-   line(slates,(side*w/2,y,3.3),(x,y,2.8),.12,blue[j%len(blue)])
+  for row in range(3):
+   t0=row/3;t1=min(1,(row+1.15)/3);x0=side*(w/2+ext*(1-t0));x1=side*(w/2+ext*(1-t1));z0=2.8+.5*t0;z1=2.8+.5*t1
+   for j in range(6):
+    y0=rear+j*(d/2-rear)/6+.008;y1=rear+(j+1)*(d/2-rear)/6-.008
+    v=[(x0,y0,z0),(x0,y1,z0),(x1,y1,z1),(x1,y0,z1),(x0,y0,z0-.065),(x0,y1,z0-.065),(x1,y1,z1-.065),(x1,y0,z1-.065)]
+    slates.add(v,[(0,1,2,3),(4,7,6,5),(0,4,5,1),(1,5,6,2),(2,6,7,3),(3,7,4,0)],blue[j%len(blue)])
  created.extend([masonry.finish(.015),frame.finish(.018),slates.finish(0),work.finish(.012),hardware.finish(0)])
 operation={'id':'sawmill-refined-architecture','op':'author_new_workshop_from_spatial_plan','plan':plan}
 import addon_utils
