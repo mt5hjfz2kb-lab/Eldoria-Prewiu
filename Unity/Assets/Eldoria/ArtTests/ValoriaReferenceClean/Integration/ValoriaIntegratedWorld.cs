@@ -122,30 +122,36 @@ namespace Eldoria.ReferenceClean {
   IEnumerator FocusAfterLayout(string id,int version){yield return null;if(version!=focusRequest||id!=Selected)yield break;Canvas.ForceUpdateCanvases();var target=FindTarget(id=="march-main"?"barracks":id);if(target)Focus(target.gameObject);}
   public void Focus(GameObject target){
    if(!target||!Ready||!Hud)return;
-   var camera=PlayerCamera;var safe=Hud.GetVisibleSceneViewport();
-   // An occluded layout is a real failure for the native probe, not a rectangle to repair by clamping.
-   if(!camera||safe.width<=0||safe.height<=0)return;
+   var camera=PlayerCamera;
+   var safe=Hud.GetVisibleSceneViewport();
+   if(!camera||safe.width<=.08f||safe.height<=.08f)return;
    var points=FocusPoints(target);
    if(!ProjectFocus(camera,points,out var projected))return;
-   if(camera.orthographic){
-    float ratio=Mathf.Max(projected.width/safe.width,projected.height/safe.height);
-    if(ratio>1){
-     // Leave a small breathing margin only when zooming out is actually needed.
-     float size=camera.orthographicSize*ratio*1.04f;
-     if(InWorld)WorldNavigation.RestoreView(WorldNavigation.target,Mathf.Min(size,WorldNavigation.globalZoom));
-     else city.Controls.ZoomBy(size-camera.orthographicSize);
-     if(!ProjectFocus(camera,points,out projected))return;
-    }
-   }
-   // Use the projected model envelope, including the roof, rather than the ground hotspot centre.
-   // Two rays at the same height retain the existing ground-plane camera movement and pitch.
-   var from=camera.ViewportPointToRay(new Vector3(projected.center.x,projected.center.y,0));
-   var to=camera.ViewportPointToRay(new Vector3(safe.center.x,safe.center.y,0));
-   var plane=new Plane(Vector3.up,points[0]);
-   if(plane.Raycast(from,out var a)&&plane.Raycast(to,out var b)){
-    var offset=from.GetPoint(a)-to.GetPoint(b);
-    if(InWorld)WorldNavigation.PanTo(WorldNavigation.target+offset);
-    else{camera.transform.position+=offset;city.Controls.FitToTerrain();}
+   // Focus against the actual unobstructed HUD rectangle, not the whole screen.
+   // Terrain-wide camera clamps can reverse the final adjustment when the
+   // selected Bastion roof is close to the upper chapter panel.
+   var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+.012f,safe.xMax-.012f,safe.yMax-.012f);
+   for(int attempt=0;attempt<5;attempt++){
+    if(!ProjectFocus(camera,points,out projected))break;
+    if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax)return;
+    if(camera.orthographic){
+     float required=Mathf.Max(projected.width/padded.width,projected.height/padded.height);
+     if(required>1.001f){
+      float size=camera.orthographicSize*required*1.05f;
+      if(InWorld)WorldNavigation.RestoreView(WorldNavigation.target,Mathf.Min(size,WorldNavigation.globalZoom));
+      else city.Controls.ZoomBy(size-camera.orthographicSize);
+      if(!ProjectFocus(camera,points,out projected))break;
+     }
+     // Translate parallel to the picture plane. Using an arbitrary horizontal
+     // ground-plane ray and immediately clamping to a full-terrain footprint
+     // previously caused the selected model to re-enter an occluded HUD area.
+     Vector2 desired=padded.center;
+     float x=(projected.center.x-desired.x)*2f*camera.orthographicSize*camera.aspect;
+     float y=(projected.center.y-desired.y)*2f*camera.orthographicSize;
+     var shift=camera.transform.right*x+camera.transform.up*y;
+     if(InWorld)WorldNavigation.PanTo(WorldNavigation.target+new Vector3(shift.x,0,shift.z));
+     else camera.transform.position+=shift;
+    }else break;
    }
   }
   /// <summary>Checks every visible model-bound corner against the actual unoccluded UI viewport.</summary>

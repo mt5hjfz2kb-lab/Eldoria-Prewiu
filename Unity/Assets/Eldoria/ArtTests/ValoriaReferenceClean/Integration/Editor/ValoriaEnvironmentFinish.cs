@@ -108,11 +108,11 @@ namespace Eldoria.ReferenceClean.Editor {
      foreach(string name in new[]{"Food resource existing supply","Food resource existing store"}) {
       var unused=Find(host.WorldRoot,name); if(unused) unused.gameObject.SetActive(false);
      }
-     report.world_painted_pixels=FinishWorldSurface(host,ground);
+     // Owner decision: no painted road corridors on the 4X world. Marches use\n     // a direct origin-to-target interpolation; preserve the existing prairie.\n     report.world_painted_pixels=0;
     } finally { Object.DestroyImmediate(query); }
     host.WorldRoot.SetActive(false);
     report.city_painted_cells=FinishCityGround(city,terrain,plan);
-    report.shoreline_stones_reused=BreakShoreRepetition(host,plan);
+    // Do not scale embedded bank stones while their foam contact masks still\n    // refer to the old silhouettes. A mismatched shoreline is a visible regression.\n    report.shoreline_stones_reused=0;
     CaptureViews(city,host,plan,evidenceDir,"after",frames);
     report.same_camera_light=beforeLight==LightStamp(); Need(report.same_camera_light,"A/B light changed");
     report.terrain_heights_preserved=terrainBefore.GetHeights(0,0,terrainBefore.heightmapResolution,terrainBefore.heightmapResolution)
@@ -246,13 +246,20 @@ namespace Eldoria.ReferenceClean.Editor {
   }
 
   static int FinishCityGround(ValoriaReferenceCleanGameplay city,Terrain terrain,ArtistPlan plan) {
-   var original=terrain.terrainData; var data=Object.Instantiate(original); data.name="Current city terrain / organic working routes";
-   Put(data,"city-terrain"); terrain.terrainData=data;
-   var collider=terrain.GetComponent<TerrainCollider>(); if(collider) collider.terrainData=data;
+   var original=terrain.terrainData;
+   var data=Object.Instantiate(original); data.name="Current city terrain / organic working routes";
    var layers=data.terrainLayers;
    int loam=Array.FindLastIndex(layers,l=>l&&l.name.ToLowerInvariant().Contains("loam")); if(loam<0) loam=Mathf.Min(2,layers.Length-1);
    Need(layers.Length>=3,"Current terrain material family missing");
-   int n=data.alphamapWidth,m=data.alphamapHeight; var map=data.GetAlphamaps(0,0,n,m);
+   int n=original.alphamapWidth,m=original.alphamapHeight;
+   var map=original.GetAlphamaps(0,0,n,m);
+   // Clone explicitly from the original splat weights. Unity's TerrainData
+   // asset cloning does not always retain packed alphamap texture contents.
+   // Starting from the clone can recolour the entire river/grass outside the
+   // tiny edited work-yard mask.
+   data.SetAlphamaps(0,0,map);
+   Put(data,"city-terrain"); terrain.terrainData=data;
+   var collider=terrain.GetComponent<TerrainCollider>(); if(collider) collider.terrainData=data;
    var left=BoundsOf(city.Parcels.LeftBuilt); var right=BoundsOf(city.Parcels.RightBuilt);
    Vector2[] Access(Bounds b) {
     var end=new Vector2(b.center.x,b.min.z+.9f); var start=new Vector2(ValoriaReferenceCleanArtBuilder.RoadX(15),15);
