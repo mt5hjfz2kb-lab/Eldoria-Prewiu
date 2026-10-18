@@ -75,6 +75,9 @@ jobs:
           # even when the installed Microsoft Edge/Chrome browser is reused.
           & (Join-Path $lib 'node_modules/.bin/playwright.cmd') install ffmpeg
           if($LASTEXITCODE){throw 'Matching free Playwright FFmpeg recorder missing'}
+          $recorders=@(Get-ChildItem (Join-Path $env:LOCALAPPDATA 'ms-playwright') -Filter ffmpeg-win64.exe -File -Recurse -ErrorAction SilentlyContinue)
+          if(-not $recorders.Count){throw 'Matching Playwright FFmpeg recorder was not installed on this Windows PC'}
+          Write-Host "PLAYWRIGHT_VIDEO_RECORDER_READY $($recorders[0].FullName)"
           Add-Content $env:GITHUB_ENV "NODE_PATH=$(Join-Path $lib 'node_modules')"
           $candidates=@(
             (Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'),
