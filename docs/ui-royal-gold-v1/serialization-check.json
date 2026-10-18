@@ -1,0 +1,65 @@
+{
+  "source_sha": "f0977a72119a8eb6b54270ec575d4b2290df9878",
+  "run_id": "39128460062",
+  "native_unity": false,
+  "serialized_prefabs": 10,
+  "test_scene_objects": 100,
+  "graphs": [
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/BottomNavigation.prefab",
+      "objects": 105,
+      "sha256": "7c76b6526dec099485454f9de754718ad926f638e01137b0c001f550f3ad447c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/BuildingDetailsPanel.prefab",
+      "objects": 52,
+      "sha256": "1a22cecf0cddc2a224da5c6518bb1c07e21f2620b4ad79765c58144af0055986"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/BuildingLabel.prefab",
+      "objects": 16,
+      "sha256": "acd9a2981781d06999fa1e7091054f2975a8658d575d91576e4ffb41ca1d34c8"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/MissionPanel.prefab",
+      "objects": 45,
+      "sha256": "575ede1cee190c7d8e1e7a2aa5077fdca7ba8230df5e23c9bad643e24ba0e054"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/ModalWindow.prefab",
+      "objects": 47,
+      "sha256": "81bc3617f7b2f36fb7f7cff87fdc3785af4bdf383ff9b78c8ba80f43af877543"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/NotificationIndicator.prefab",
+      "objects": 9,
+      "sha256": "f0f6ece14ddc77582cae6daeed27b7967f15e5921b031d192f198566f368f623"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/PrimaryAction.prefab",
+      "objects": 10,
+      "sha256": "11c39ccbbc0da2208bdb855489a2044fca925bd76ffad46d7e64908bde239c3b"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/RealmHeader.prefab",
+      "objects": 23,
+      "sha256": "7d46d3e4771c08671587e4ff3a02f5d4baa4968112d17b83caf07703ef723992"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/ResourceBar.prefab",
+      "objects": 41,
+      "sha256": "274f0996ee09ee33e35bfcb805b60bfd379e6703d9185a875e11d4197213611c"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Prefabs/RoyalGoldHUD.prefab",
+      "objects": 341,
+      "sha256": "e6458d48f1975efa7f61167640064baf0173f167a475a4916b15a3e9d5d6a2a6"
+    },
+    {
+      "path": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Preview/RoyalGold_UI_TEST.unity",
+      "objects": 428,
+      "sha256": "aa9e085f192166ad1a5cbbb5d6a55988078f0db0e653954b5abdaa0960eb68d8"
+    }
+  ],
+  "object_reference_graph": "PASS"
+}
