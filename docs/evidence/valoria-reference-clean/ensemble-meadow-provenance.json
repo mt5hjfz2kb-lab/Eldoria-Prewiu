@@ -1,0 +1,9 @@
+{
+  "tool": "OpenAI image_gen",
+  "purpose": "2D meadow albedo candidate only, NOT Unity screenshot",
+  "sha256": "326ac232361753a81145cf340d032133b6d410fef70c86973b134dddb240889c",
+  "source": "generated_images/exec-4d09823b-d09f-4e36-b7a9-fd0df8decd6f.png",
+  "generated_asset": true,
+  "cc0_claim": false,
+  "art_approved": false
+}
