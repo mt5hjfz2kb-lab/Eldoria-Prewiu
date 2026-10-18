@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T12:43:29.196815+00:00",
+  "updated_at": "2026-10-18T13:21:56.383Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -37,7 +37,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Valoria: independent reference clean scene — native functional candidate",
-      "owner": "codex-work-valoria-reference-clean-20261017",
+      "owner": "codex-work-valoria-integration-continuation-20261018",
       "branch": "construction/valoria-master-plan-layers-20261016",
       "status": "active",
       "claimed_at": "2026-10-16",
@@ -61,7 +61,8 @@
         "Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs",
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/ParcelProgressionRuntimeTests.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**"
       ],
       "resources": [
         "windows-runner-heavy",
@@ -70,8 +71,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_NATIVE_CONTENT_LOADER_VALIDATING_SAME_APP_BOOTSTRAP_PREPARED",
-      "next": "Finish96 (actual Windows bundle + full UI/save + four loader file fixtures). Reviewed candidate changes prepare distinct included fallback scene path, foreground recheck and bounded cache; require exact native preflight before Android1.5/code6. Preserve1.4 stable and all art. UI698e7502 has new components/bindings but no native-ready released prefabs; keep independent.4X delegation finished; no takeover.",
+      "phase": "OWNER_AUTHORIZED_CONTINUATION_UI_WORLD4X_INTEGRATION",
+      "next": "Recover native97 exact results; consume pinned UI and Zone1 outputs in existing Valoria branch, validate shared-session city/world/UI integration and improve visible scene. Android compatible-content channel remains secondary. Preserve independent source branches and do not overwrite concurrent work.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -533,7 +534,9 @@
         "goal": "Recover original Source08 Bastion material hierarchy, prove actual renderer influence on SHARP player presentation, art-source/Unity A/B before any promotion",
         "other_workstreams": "remain_paused"
       },
-      "continuation_authorization": "Owner18Oct latest explicit order: close Bastion I immediate ensemble, migrate existing gameplay complete I-II loop in current workstream, preserve saves and Android update identity. Other4X scope remains independent. Owner latest18Oct asks automatic Android content updates and safe later consumption of UI/4X; retain current art/gameplay. Neither independent candidate is native-ready at live handoff read; no scope takeover."
+      "continuation_authorization": "Owner18Oct latest explicit order: close Bastion I immediate ensemble, migrate existing gameplay complete I-II loop in current workstream, preserve saves and Android update identity. Other4X scope remains independent. Owner latest18Oct asks automatic Android content updates and safe later consumption of UI/4X; retain current art/gameplay. Neither independent candidate is native-ready at live handoff read; no scope takeover.",
+      "handoff_authorization": "Explicit owner request in successor chat 18-10-2026 15:20 Europe/Madrid: continue saturated Valoria chat, assume interface and integrate Zone1 4X as world without losing primary visual/playable mission.",
+      "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge."
     },
     {
       "id": "world4x-zone1-isolated-reference-prototype-20261013",
@@ -2070,7 +2073,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -2081,7 +2084,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
