@@ -27,8 +27,8 @@ namespace Eldoria.ReferenceClean {
   public void PresentMilestone(){
    if(!host||!host.Ready||host.Hud.Modal.gameObject.activeSelf)return;
    string beat=Beat,key="valoria.journey.story."+beat;
-   if(seen.Contains(beat)||(!Application.isEditor&&PlayerPrefs.GetInt(key,0)==1))return;
-   seen.Add(beat);if(!Application.isEditor){PlayerPrefs.SetInt(key,1);PlayerPrefs.Save();}
+   if(seen.Contains(beat)||(!UnityEngine.Application.isEditor&&PlayerPrefs.GetInt(key,0)==1))return;
+   seen.Add(beat);if(!UnityEngine.Application.isEditor){PlayerPrefs.SetInt(key,1);PlayerPrefs.Save();}
    host.Hud.ShowNarrative(Speaker,Dialogue);
   }
   public void Initialize(ValoriaIntegratedWorld h,ValoriaReferenceCleanGameplay c){
