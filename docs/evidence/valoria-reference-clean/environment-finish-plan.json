@@ -1,0 +1,106 @@
+{
+  "forest_trees": [
+    {
+      "x": -8.5,
+      "y": 2.0,
+      "scale": 0.75
+    },
+    {
+      "x": -5.0,
+      "y": 3.5,
+      "scale": 0.85
+    },
+    {
+      "x": -2.0,
+      "y": 1.0,
+      "scale": 0.7
+    },
+    {
+      "x": 1.5,
+      "y": 4.5,
+      "scale": 0.9
+    },
+    {
+      "x": 4.0,
+      "y": 2.0,
+      "scale": 0.8
+    },
+    {
+      "x": 6.5,
+      "y": 3.5,
+      "scale": 0.75
+    },
+    {
+      "x": 3.0,
+      "y": 6.0,
+      "scale": 0.85
+    },
+    {
+      "x": 0.0,
+      "y": 0.0,
+      "scale": 0.9
+    }
+  ],
+  "log_yard_side": "left",
+  "quarry_width": 18.0,
+  "quarry_depth": 12.0,
+  "quarry_height": 5.5,
+  "quarry_benches": 3,
+  "quarry_rim": [
+    {
+      "x": -0.9,
+      "y": 0.1,
+      "height": 0.7
+    },
+    {
+      "x": -0.6,
+      "y": 0.3,
+      "height": 0.8
+    },
+    {
+      "x": -0.3,
+      "y": 0.5,
+      "height": 0.75
+    },
+    {
+      "x": 0.0,
+      "y": 0.7,
+      "height": 0.85
+    },
+    {
+      "x": 0.3,
+      "y": 0.5,
+      "height": 0.7
+    },
+    {
+      "x": 0.6,
+      "y": 0.3,
+      "height": 0.8
+    },
+    {
+      "x": 0.9,
+      "y": 0.1,
+      "height": 0.75
+    }
+  ],
+  "derrick_side": "right",
+  "city_path_width": 1.8,
+  "shore_gaps": [
+    {
+      "x": -60.0,
+      "width": 7.0,
+      "scale": 0.45
+    },
+    {
+      "x": 55.0,
+      "width": 6.0,
+      "scale": 0.5
+    },
+    {
+      "x": -50.0,
+      "width": 8.0,
+      "scale": 0.55
+    }
+  ],
+  "rationale": "Create a forest with staggered pine groups around a clear logging entrance, a quarry with exposed extraction faces and a derrick, and riverbank stretches with embedded, scaled stones to enhance realism and compositional flow. Create the forest with 8-11 pine trees arranged around a clear logging entrance, with two stacks of cut logs."
+}

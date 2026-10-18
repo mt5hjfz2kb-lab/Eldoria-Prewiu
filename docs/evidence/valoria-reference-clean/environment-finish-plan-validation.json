@@ -1,0 +1,14 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "errors": [],
+      "prompt_eval_count": 5839,
+      "eval_count": 497,
+      "response_sha256": "a4340b0673e748beb80ff99cb47befcd47c3ad5a4da9562a8ed6ef164c89f2e1"
+    }
+  ],
+  "canonical_system_sha256": "33656f575e2dd3eca73472b48555257f9f5e3450c8e73ca9e3d1397aecbf7346",
+  "numeric_limits_unchanged": true,
+  "geometry_executed": false
+}

@@ -1,0 +1,7 @@
+{
+  "errors": [
+    "plan.planned_actions[0].parameters.shore_gaps[0].x: -65.0 outside -62..62"
+  ],
+  "correction_sent": "VALIDATOR REJECTED YOUR PREVIOUS ANSWER BEFORE ANY EDIT. Correct these exact errors and recheck every range and coordinate frame. Return the complete canonical JSON, with concise prose.\nplan.planned_actions[0].parameters.shore_gaps[0].x: -65.0 outside -62..62",
+  "canonical_system_sha256": "33656f575e2dd3eca73472b48555257f9f5e3450c8e73ca9e3d1397aecbf7346"
+}
