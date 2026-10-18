@@ -1,12 +1,12 @@
 {
-  "stage": "bastion_two",
-  "validate_play": false,
-  "revision": 81,
+  "stage": "bastion_two_integrate",
+  "validate_play": true,
+  "revision": 82,
   "budget_eur": 0,
-  "validated_runtime_source": "da89bd5c69b10cc45278dab1ca3377f57848d532",
-  "validated_run": 39114236961,
+  "validated_runtime_source": "2770507a13b6f3263a5f1f2a54332660fa0fd211",
+  "validated_run": 39117498102,
   "checks": "5 selections / 96 routes / 6 stairs / 1 camera / save untouched / 0 exceptions / editor-play image parity",
-  "art_correction": "Native79 existing gameplay UI/save/timer and fullscene Play PASS. Retain native74/79BastionI ensemble. Author recognizable II from exact source70copy: actual crown components moved intact, matching upper watch chamber and slate hip roofs. Qwen vision plus historical memory before typedMCP; Blender structural A/B and minimal genuine Unity camera/light comparison in isolatedvariant. Retained scene/GI unchanged. No art approval until independent review. Native80 genuine Qwen+MCP geometry succeeded; failed only Background-node lookup for Blender structural preview.81 replays exact validated80 inference with source/image/topology hashes, fixes shader node lookup by type, no fresh artistic proposal.",
+  "art_correction": "Native81 actual matched Unity main/detail independently inspected: recognizable II crown raise and inset blue flank roofs, original lower entrance/stairs unchanged. Retain as first playable evolution; probe-lit II has less baked torch glow, recorded limitation, no formal art certification. Integrate reviewed variant then test real UI/resource/timer/reload/exclusive geometry swap plus96routes/6stairs and core rules. Preserve current I and worldGI.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
@@ -16,5 +16,6 @@
   "shore_treatment": "all_profile",
   "review_scope": "lighting",
   "shore_finish": "zone_shingle",
-  "waterline_finish": "zone_talus"
+  "waterline_finish": "zone_talus",
+  "validate_core_tests": true
 }

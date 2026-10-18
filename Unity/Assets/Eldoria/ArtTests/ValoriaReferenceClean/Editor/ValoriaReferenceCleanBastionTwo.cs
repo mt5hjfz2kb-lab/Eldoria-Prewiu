@@ -18,6 +18,17 @@ namespace Eldoria.ReferenceClean.Editor {
    ValoriaReferenceCleanBuilder.Capture(c,Ev+"/"+prefix+"-main.png",1448,1086);
    c.transform.position=new Vector3(24,31,-8);c.transform.LookAt(new Vector3(0,4,35.5f));c.orthographicSize=18;ValoriaReferenceCleanBuilder.Capture(c,Ev+"/"+prefix+"-bastion.png",1448,1086);
   }finally{c.transform.SetPositionAndRotation(p,r);c.orthographicSize=z;}}
+  public static void Integrate(){try{
+   var scene=EditorSceneManager.OpenScene(Dir+"/Valoria_BastionII.unity",OpenSceneMode.Single);
+   var h=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();if(!h||!h.BastionOne||!h.BastionTwo)throw new Exception("Reviewed evolution bindings missing");
+   h.BastionOne.SetActive(false);h.BastionTwo.SetActive(true);
+   if(!PrefabUtility.SaveAsPrefabAsset(h.BastionTwo,Root+"/Prefabs/Bastion_II.prefab"))throw new Exception("Bastion II portable prefab failed");
+   h.BastionTwo.SetActive(false);h.BastionOne.SetActive(true);
+   if(!EditorSceneManager.SaveScene(scene,Root+"/Valoria_Reference_Clean.unity"))throw new Exception("Evolution integration save failed");
+   AssetDatabase.SaveAssets();
+   File.WriteAllText(Ev+"/bastion2-integration.json","{\"source_sha\":\""+Environment.GetEnvironmentVariable("GITHUB_SHA")+"\",\"existing_scene_and_gameplay_preserved\":true,\"level_two_model_bound\":true,\"level_one_saved_visible\":true,\"static_batching\":false}");
+   ValoriaReferenceCleanFinalize.Build();
+  }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
   public static async void Build(){ValoriaReferenceCleanRenderSettings guard=null;try{
    Directory.CreateDirectory(Dir);AssetDatabase.Refresh();string source=Root+"/Valoria_Reference_Clean.unity";string hash=Hash(source);var scene=EditorSceneManager.OpenScene(source,OpenSceneMode.Single);
    guard=Object.FindFirstObjectByType<ValoriaReferenceCleanRenderSettings>();guard.Apply();var cam=Camera.main;var old=Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None).Single(x=>x.name=="Bastion_I");

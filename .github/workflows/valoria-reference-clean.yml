@@ -78,6 +78,7 @@ jobs:
           if($req.stage -eq 'gameplay_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'play'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanPlayProbe.Build'}
           if($req.stage -eq 'android'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build'}
+          if($req.stage -eq 'bastion_two_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionTwo.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'bastion_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionIntegrate.Build'}
           if($req.stage -eq 'bastion_ground_finish'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionGroundFinish.Build'}
           if($req.stage -eq 'ground_diagnose'){$method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBastionEnsemble.DiagnoseGround'}
@@ -161,7 +162,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
 
           $resourceRoot=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/Assets/Eldoria/Resources/Valoria'
@@ -206,7 +207,7 @@ jobs:
           Get-Content $log -Tail 100
           if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
           if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
-          if($req.stage -eq 'gameplay'){
+          if($req.stage -in @('gameplay','bastion_two_integrate')){
             $gameLog=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean-gameplay.log'
             $gameArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanGameplayBuild.PlayProbe','-logFile',$gameLog)
             $gp=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $gameArgs -PassThru
@@ -214,6 +215,17 @@ jobs:
             Copy-Item $gameLog docs/evidence/valoria-reference-clean/gameplay78-native.log
             Get-Content $gameLog -Tail 100
             if($gp.ExitCode -ne 0 -or -not(Select-String $gameLog -Pattern 'VALORIA_REFERENCE_CLEAN_GAMEPLAY_PROBE_COMPLETE EXISTING_UI_RULES_SAVE_I_II_PASS' -Quiet)){throw 'Gameplay I-II probe failed'}
+          }
+          if($req.validate_core_tests){
+            $testLog=Join-Path $env:RUNNER_TEMP 'valoria-core-tests.log'
+            $testResult=Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean') 'gameplay-core-tests.xml'
+            $testArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-runTests','-testPlatform','EditMode','-testFilter','Eldoria.Tests.SliceCoreTests','-testResults',$testResult,'-logFile',$testLog)
+            $tests=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $testArgs -PassThru
+            if(-not $tests.WaitForExit(600000)){& taskkill.exe /PID $tests.Id /T /F|Out-Null;throw 'Own core tests timed out'}
+            Copy-Item $testLog docs/evidence/valoria-reference-clean/gameplay-core-tests.log
+            if(-not(Test-Path $testResult)){throw 'Native test result missing'}
+            [xml]$testXml=Get-Content $testResult
+            if($tests.ExitCode -ne 0 -or $testXml.'test-run'.result -ne 'Passed' -or [int]$testXml.'test-run'.total -lt 10){Get-Content $testLog -Tail 100;throw 'Native core tests failed'}
           }
           if($req.validate_play){
             $playLog=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean-play.log'
@@ -315,6 +327,7 @@ jobs:
           path: |
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay78-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/bastion2-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay-core-*
             ${{ runner.temp }}/valoria-reference-clean.log
             ${{ runner.temp }}/valoria-reference-clean-gameplay.log
           if-no-files-found: warn
@@ -336,7 +349,7 @@ jobs:
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: success() && (steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate' || steps.native_stage.outputs.stage == 'bastion_integrate')
+        if: success() && (steps.native_stage.outputs.stage == 'package' || steps.native_stage.outputs.stage == 'finalize' || steps.native_stage.outputs.stage == 'bank_integrate' || steps.native_stage.outputs.stage == 'bastion_integrate' || steps.native_stage.outputs.stage == 'bastion_two_integrate')
         with:
           name: valoria-reference-clean-package-${{ github.run_id }}
           path: valoria-layered-source/Unity/Builds/ValoriaReferenceClean/*.unitypackage
