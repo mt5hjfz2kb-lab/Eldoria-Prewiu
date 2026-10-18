@@ -1,5 +1,5 @@
 {
-    "source_sha": "095f3e6dfc4862c60843632ad684106629e8455b",
+    "source_sha": "421f2c7012c3ec54d13c65992c0581ac0252a078",
     "status": "EXISTING_UI_RULES_SAVE_I_II_PASS_CHAPTER_II_BUILD_TRAIN_MARCH_VICTORY_VERIFIED",
     "error": "",
     "save_scope": "Unique temporary FileStateStore; canonical files guarded",
@@ -14,6 +14,7 @@
     "march_configuration": true,
     "engendro_victory": true,
     "chapter_two_persistence": true,
+    "open_panel_completion": true,
     "ui_sawmill": true,
     "ui_gather": true,
     "ui_fight": true,
