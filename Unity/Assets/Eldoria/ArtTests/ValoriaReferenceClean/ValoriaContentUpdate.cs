@@ -47,6 +47,7 @@ namespace Eldoria.ReferenceClean {
   bool sceneReady;
 #if UNITY_EDITOR
   public bool SuppressStartupForEditorProbe;
+  public string EditorChannelFile,EditorBundleFile,EditorCacheDirectory;
 #endif
   string Platform=>UnityEngine.Application.platform==RuntimePlatform.Android?"android":"windows";
   void Awake(){DontDestroyOnLoad(gameObject);}
@@ -55,9 +56,16 @@ namespace Eldoria.ReferenceClean {
    if(SuppressStartupForEditorProbe)yield break;
 #endif
    cache=Path.Combine(UnityEngine.Application.persistentDataPath,"valoria-content-v1");
+#if UNITY_EDITOR
+   if(!string.IsNullOrEmpty(EditorCacheDirectory))cache=EditorCacheDirectory;
+#endif
    try{Directory.CreateDirectory(cache);}catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_CACHE "+e.Message);}
    ValoriaContentManifest next=null;
-   using(var req=UnityWebRequest.Get(Channel+"?check="+DateTime.UtcNow.Ticks)){
+   string channel=Channel+"?check="+DateTime.UtcNow.Ticks;
+#if UNITY_EDITOR
+   if(!string.IsNullOrEmpty(EditorChannelFile))channel=new Uri(EditorChannelFile).AbsoluteUri;
+#endif
+   using(var req=UnityWebRequest.Get(channel)){
     req.timeout=8;yield return req.SendWebRequest();
     if(req.result==UnityWebRequest.Result.Success&&req.downloadHandler.data.Length<16384){try{next=JsonUtility.FromJson<ValoriaContentManifest>(req.downloadHandler.text);}catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_MANIFEST "+e.Message);}}
    }
@@ -67,10 +75,14 @@ namespace Eldoria.ReferenceClean {
     string path=Path.Combine(cache,next.sha256+".bundle");
     if(!SafeVerify(path,next)){
      string part=path+".part";
-     using(var req=UnityWebRequest.Get(next.url)){
-      req.downloadHandler=new DownloadHandlerFile(part){removeFileOnAbort=true};req.timeout=120;
+     string url=next.url;
+#if UNITY_EDITOR
+     if(!string.IsNullOrEmpty(EditorBundleFile))url=new Uri(EditorBundleFile).AbsoluteUri;
+#endif
+     var download=CreateDownload(url,part);
+     if(download!=null)using(var req=download){
       var op=req.SendWebRequest();
-      while(!op.isDone){Status="Descargando Valoria · "+Mathf.RoundToInt(req.downloadProgress*100)+" %";if(req.downloadedBytes>(ulong)ValoriaContentPolicy.MaximumBytes)req.Abort();yield return null;}
+      while(!op.isDone){Status="Descargando Valoria · "+Mathf.RoundToInt(Mathf.Clamp01(req.downloadProgress)*100)+" %";if(req.downloadedBytes>(ulong)ValoriaContentPolicy.MaximumBytes)req.Abort();yield return null;}
       if(req.result==UnityWebRequest.Result.Success&&SafeVerify(part,next)){
        try{if(File.Exists(path))File.Delete(path);File.Move(part,path);}catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_STORE "+e.Message);}
       }
@@ -84,8 +96,18 @@ namespace Eldoria.ReferenceClean {
    }
    if(current!=null){yield return Load(current,Path.Combine(cache,current.sha256+".bundle"));if(sceneReady)yield break;}
    Status="Abriendo la versión incluida";
-   var fallback=SceneManager.LoadSceneAsync(FallbackScene,LoadSceneMode.Single);yield return fallback;
+   AsyncOperation fallback;
+#if UNITY_EDITOR
+   fallback=UnityEditor.SceneManagement.EditorSceneManager.LoadSceneAsyncInPlayMode(ValoriaContentPolicy.Scene,new LoadSceneParameters(LoadSceneMode.Single));
+#else
+   fallback=SceneManager.LoadSceneAsync(FallbackScene,LoadSceneMode.Single);
+#endif
+   yield return fallback;
    Destroy(gameObject);
+  }
+  UnityWebRequest CreateDownload(string url,string path){
+   try{var req=UnityWebRequest.Get(url);req.downloadHandler=new DownloadHandlerFile(path){removeFileOnAbort=true};req.timeout=120;return req;}
+   catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_DOWNLOAD "+e.Message);return null;}
   }
   bool SafeVerify(string path,ValoriaContentManifest m){try{return ValoriaContentPolicy.Verify(path,m);}catch(Exception e){Debug.LogWarning("VALORIA_CONTENT_VERIFY "+e.Message);return false;}}
   ValoriaContentManifest ReadCurrent(){
@@ -114,5 +136,6 @@ namespace Eldoria.ReferenceClean {
 #endif
    if(!sceneReady)GUI.Box(new Rect(20,20,Mathf.Min(Screen.width-40,600),70),Status);
   }
+  void OnDestroy(){if(loaded!=null)loaded.Unload(false);}
  }
 }
