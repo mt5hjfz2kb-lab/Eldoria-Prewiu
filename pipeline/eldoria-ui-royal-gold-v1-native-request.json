@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "workstream": "eldoria-ui-royal-gold-v1-20261018",
+  "owner": "chatgpt-ui-royal-gold-v1-20261018",
+  "branch": "ui/eldoria-royal-gold-v1-20261018",
+  "requested_on": "2026-10-18",
+  "status": "REQUESTED_NOT_GRANTED",
+  "candidate_source_sha": "3e7b58e9304bdb3a931d7b9381223f1845e7c44a",
+  "last_completed_adapter_gate": {
+    "source_sha": "f0977a72119a8eb6b54270ec575d4b2290df9878",
+    "output_sha": "53e9c676da19217c89499275c538113cc2cc7e2e",
+    "run_id": 39128460062,
+    "adapter_checks_passed": 34,
+    "serialized_prefabs": 10,
+    "native_unity": false
+  },
+  "candidate_matrix_run_id": 39129399565,
+  "candidate_matrix_result": "VERIFY_RUN_BEFORE_ANY_NATIVE_EXECUTION",
+  "budget_eur": 0,
+  "windows_lease_claimed": false,
+  "priority_workstream": "valoria-master-plan-layered-construction-20261016",
+  "native_method": "Eldoria.UI.RoyalGold.Editor.RoyalNativeProbe.Begin",
+  "scene": "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Preview/RoyalGold_UI_TEST.unity",
+  "result": "docs/ui-royal-gold-v1/native/native-result.json",
+  "scope": [
+    "Compile/import the UI package in an isolated checkout using existing Unity 6000.3.23f1",
+    "Run actual uGUI event-system, command, drag, modal and completion probes",
+    "Capture the real UI components offscreen at 16:9, 20:9, tablet and simulated safe-area sizes"
+  ],
+  "protected": "No Valoria/4X source edits, production scenes, camera replacement, shared gameplay, saves, ProjectSettings, package changes, APK or game publication. No cancellation or interference with active jobs.",
+  "required_coordination": "The Valoria resource holder or authorized coordinator must record a compatible bounded window for this exact candidate before UI uses Windows. Empty queue is not a grant. Recheck both live registry and actual queue at execution time. This request changes no existing ownership or authorization.",
+  "grant": null,
+  "handoff": "docs/ui-royal-gold-v1/PRODUCTION_STATE.md on the UI branch"
+}
