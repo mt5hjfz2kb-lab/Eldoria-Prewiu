@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_NATIVE_UNITY_BAKED_LIGHTING_IN_PRODUCTION",
-      "next": "Owner prioritizes native Unity lighting: existing46 scene preserved, native48 opens it without rebuild, authentic fixed-camera before/after, ProgressiveCPU baked GI, independent ContributeGI flags never BatchingStatic, light/reflection probes and URP postprocess. Inspect genuine outputs before art acceptance. Android47 failed Player compilation, separate bounded diagnosis; no APK/device performance claim. Windows exclusive claim retained.",
+      "phase": "REFERENCE_CLEAN_BAKED_GI_VISUAL_REGRESSION_CORRECTION",
+      "next": "Native48 actual GI/264lightprobes/4reflections and all gameplay checks passed but observed A/B rejected color/material artifacts and dark/orange look. Native49 corrects GI architecture to native URP Lit explicitUV0/convertedORM/imported normals; mixed indirect mode preserves real sun shadows. Existing saved scene and all geometry/camera preserved; probes reused. No art approval; retained native46 baseline.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -111,7 +111,7 @@
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "ALL_ART_STATIC_FALSE; PNG_PARITY_PASS_THROUGH_REV46",
           "current_run": 0,
-          "current_source": "de30f88f4e81a65cb061a738e921918339999bbf",
+          "current_source": "a2496128949d7a2d77aaa059dc75db4eeb2116cd",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
@@ -133,7 +133,17 @@
             "art_approved": false
           },
           "water_camera_light_geometry_identity": true,
-          "android_apk_status": "NATIVE47_PLAYER_BUILD_FAILED_DIAGNOSIS_PENDING"
+          "android_apk_status": "NATIVE47_PLAYER_BUILD_FAILED_DIAGNOSIS_PENDING",
+          "native48": {
+            "run": 39080822196,
+            "output": "88d600b2632154c0c03e04c4146cf5ee7690ad1c",
+            "lightmaps": 1,
+            "lightprobes": 264,
+            "reflection_probes": 4,
+            "same_geometry": true,
+            "visual_status": "REJECTED_MATERIAL_GI_UV_ARTIFACTS_AND_DARK_ORANGE_REGRESSION",
+            "gameplay": "PASS"
+          }
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
