@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T10:48:12.056Z",
+  "updated_at": "2026-10-18 10:49:40 UTC",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -486,14 +486,15 @@
         "tools/eldoria-ui-royal-gold-v1/**",
         "docs/ui-royal-gold-v1/**",
         ".github/workflows/eldoria-ui-royal-gold-v1.yml",
-        "pipeline/eldoria-ui-royal-gold-v1-native-request.json"
+        "pipeline/eldoria-ui-royal-gold-v1-native-request.json",
+        "Unity/Assets/Eldoria/UI.meta"
       ],
       "resources": [],
-      "phase": "CLAIMED_VISUAL_SYSTEM_AND_REAL_CONTRACT_RECOVERY",
+      "phase": "VISUAL_ASSETS_PREFABS_AND_GAMEPLAY_BINDINGS_AUTHORED_STATIC_VALIDATION",
       "authorization": "Explicit owner instruction 18-10-2026 12:15 Europe/Madrid: third independent Unity UI workstream, Royal Gold V1; no other paused work resumed.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Explicit owner-authorized 2D UI art and uGUI components; no 3D art authoring, city geometry, camera replacement, paid generation or canonical promotion.",
-      "dependency": "Valoria and 4X keep all existing scopes. Windows runner held by Valoria; only an explicitly coordinated compatible reservation permits native UI execution. Independent Linux source/asset/testing work continues.",
+      "dependency": "Valoria retains windows-runner-heavy. Independent source/assets validation proceeds; isolated native UI import, PlayMode and real screenshots await a compatible recorded reservation. Canonical scene integration is not authorized by this claim.",
       "coordination": {
         "protected_scopes": [
           "ValoriaReferenceClean",
