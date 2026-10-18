@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_LATERAL_LIGHT_RETAINED_WATER_AND_ROOF_CORRECTION",
-      "next": "Native51 actual close/main A/B inspected: lateral sunlight visibly separates bright facade/shaded flank and directional ground shadows; retained. GI29.43s,1atlas/264probes/4reflections and all gameplay checks pass, geometry635048 unchanged. Native52 removes regular river reflection bands using existing-noise domain warp and smoother reflection normal; fixed-camera/light A/B; temporary direct-shadows-off/baked-receivers-off diagnostic captures isolate roof main-view speckle, all states restored. No composition reset, no formal art/device approval; sole Windows retained.",
+      "phase": "REFERENCE_CLEAN_DENSE_GI_SAMPLING_CORRECTION_NATIVE_MSAA",
+      "next": "Native52 actual diagnostic images isolate distant roof speckle to baked map sampling: direct-shadows-off still speckled, baked-receivers-off clean. Water parallel bands corrected and inspected. Native53 raises dense architecture lightmap allocation without moving/rebuilding meshes, retains lateral key, records actual atlas widths/allocations/texture bytes. Genuine captures now honor existing URP4x MSAA; before/after53 both4x and previous1x preserved. Native Play parity/routes/picks required. No art8/mobile claim. Sole Windows retained.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -111,7 +111,7 @@
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "ALL_ART_STATIC_FALSE; PNG_PARITY_PASS_THROUGH_REV46",
           "current_run": 0,
-          "current_source": "a1edc1b6abcce659f68379404e5625718f53864a",
+          "current_source": "732cdb97cc6fc81b3fc325efec3ddc9acee169be",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "f9cc6a6999626d5e0067960a7fa2c80675e07dd4",
@@ -180,6 +180,13 @@
             "realtime_gi": false,
             "visual_status": "LATERAL_KEY_RETAINED_AFTER_AUTHENTIC_MAIN_AND_DETAIL_INSPECTION",
             "gameplay": "96routes/96headroom/6stairs/5picks/12mobile-ground/1camera/0exceptions/save untouched"
+          },
+          "native52": {
+            "run": 39082328459,
+            "output": "10a96f65205a154a8a870b7e595800860b1322b2",
+            "water_visual": "DOMAIN_WARP_REMOVES_PARALLEL_BANDS_OBSERVED",
+            "roof_diagnostic": "BAKED_MAP_SAMPLING_NOT_DIRECT_SHADOW_BIAS",
+            "art_approved": false
           }
         }
       },
