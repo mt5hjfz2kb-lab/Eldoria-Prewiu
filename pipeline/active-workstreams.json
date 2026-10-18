@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T09:10:15.985Z",
+  "updated_at": "2026-10-18T09:30:24.292Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_REVIEWED_BASTION_INTEGRATION_AND_GAMEPLAY",
-      "next": "Native74 integrates visually retained native73 Bastion/planting/ground ensemble into existing scene object, rebakes and updates8prefabs/package, then real Play checks. No geometry duplicates/static batching. After successful exact review use recovered optimized same-package Android versionCode2 with matching signing certificate; no uninstall/data reset. Whole Valoria7–8/10 remains pending.",
+      "phase": "REFERENCE_CLEAN_BASTION_INTEGRATED_OPTIMIZED_ANDROID_UPDATE",
+      "next": "Native75 builds original optimized Android application with integrated74 Valoria, same package/signing certificate versionCode2. Wait for completion before branch writes; verify actual signature/manifest/APK. Continue art after delivery check: isolated three-pine closed-volume canopy study prepared, not launched. No parallel heavy job or whole-scene art certification.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -91,8 +91,8 @@
         "last_handoff": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_CONTINUATION_HANDOFF_20261017.md",
         "reference_clean": {
           "source_commit": "2ec9a5f9c05e65fd1ad689549fd3250c39255fc5",
-          "output_commit": "1d3dd88734cc5aa42d8c274ab7743db66711ff97",
-          "native_run": 39086815642,
+          "output_commit": "da89bd5c69b10cc45278dab1ca3377f57848d532",
+          "native_run": 39114236961,
           "native_run_result": "success",
           "scene": "Valoria_Reference_Clean.unity",
           "route_passes": 96,
@@ -110,8 +110,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39114236961,
-          "current_source": "408f01d4d8ae6e44e622bd3cae15bffd43915c91",
+          "current_run": 39115078383,
+          "current_source": "ea95e188c567a38dc81c74cb5b1bfce1636b2118",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -119,12 +119,12 @@
           "run_id": 39086815642,
           "stone_zone_camera_light_geometry_identity": true,
           "stone35_visual_review": "Superseded by revised36 palette and native37 extension; comparison evidence preserved",
-          "scene_triangles": 635048,
+          "scene_triangles": 658186,
           "native_texture_bytes": 140985974,
           "shore_zone_camera_light_identity": true,
           "blendermcp_installed_addon_sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5",
           "blendermcp_current_connection": "ACTUAL_EXISTING_BLENDERMCP_TYPED_ACTION in native61; Qwen14B authored seven existing bank components,2602vertices,topology and all other vertices preserved",
-          "scene_renderers": 35,
+          "scene_renderers": 36,
           "scene_material_slots": 163,
           "actual_local_qwen_review": {
             "run": 39081698539,
@@ -217,7 +217,7 @@
           "lightprobes": 264,
           "reflection_probes": 4,
           "portable_prefabs": 8,
-          "package_status": "NATIVE62_REAL_PACKAGE_CONTENT_VERIFIED_NATIVE_IMPORT_UNTESTED",
+          "package_status": "NATIVE74_REAL_PACKAGE_442_ASSETS_8_PREFABS_HASH_CRC_GZIP_TAR_VERIFIED_IMPORT_UNTESTED",
           "native55": {
             "run": 39083545579,
             "source": "b7173bdf751ecd5e9898cd4bf467ecbc558fe734",
@@ -316,6 +316,21 @@
             "scene_integrated": false,
             "lightmaps": 5,
             "lightprobes": 264
+          },
+          "native74": {
+            "run": 39114236961,
+            "output": "da89bd5c69b10cc45278dab1ca3377f57848d532",
+            "scene_integrated": true,
+            "play": "96routes/96headroom/6stairs/5picks/12mobileframes/1camera/0exceptions/save untouched",
+            "editor_play_parity": true,
+            "package_artifact": 12131882123,
+            "package_bytes": 258128641,
+            "package_sha256": "18250d19e08558d95264f91190963e1b7e74119bfcf3c6b2861961945fc7f2e0",
+            "package_zip_gzip_tar_verified": true,
+            "package_assets": 442,
+            "prefabs": 8,
+            "native_import_verified": false,
+            "art_approved": false
           }
         }
       },
