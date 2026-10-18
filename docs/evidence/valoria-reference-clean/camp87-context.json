@@ -1,0 +1,83 @@
+{
+  "source_sha256": "36fc16fab611198dcf9bc60767e3dd103bef53cb9c602394dbe4cc741b1b2b7f",
+  "bounds_world_blender": {
+    "tent": [
+      [
+        22.0,
+        0.3500000238418579,
+        7.179999828338623
+      ],
+      [
+        26.600000381469727,
+        4.150000095367432,
+        9.972101211547852
+      ]
+    ],
+    "ensemble": [
+      [
+        19.850000381469727,
+        -1.125,
+        7.175000190734863
+      ],
+      [
+        27.774999618530273,
+        4.360000133514404,
+        10.050000190734863
+      ]
+    ]
+  },
+  "meshes": [
+    {
+      "name": "Camp_Tent",
+      "vertices": 70,
+      "materials": [
+        "Eldoria_fabric_main"
+      ]
+    },
+    {
+      "name": "Camp_Timber",
+      "vertices": 168,
+      "materials": [
+        "Eldoria_timber_dark",
+        "Eldoria_timber"
+      ]
+    },
+    {
+      "name": "Camp_Awning",
+      "vertices": 224,
+      "materials": [
+        "Eldoria_timber_dark",
+        "Eldoria_timber",
+        "Eldoria_fabric_secondary"
+      ]
+    },
+    {
+      "name": "Camp_Supplies",
+      "vertices": 168,
+      "materials": [
+        "Eldoria_crate",
+        "Eldoria_crate_dark"
+      ]
+    },
+    {
+      "name": "Camp_Activity",
+      "vertices": 224,
+      "materials": [
+        "Eldoria_timber",
+        "Eldoria_timber_dark",
+        "Eldoria_fabric_secondary"
+      ]
+    },
+    {
+      "name": "Camp_Detail",
+      "vertices": 112,
+      "materials": [
+        "Eldoria_rope"
+      ]
+    }
+  ],
+  "brief": "Current existing functional level-I barracks is a solid orange wedge. Keep the exact tent footprint, height and all poles/supplies/bench. Remodel ONLY cloth shell and ropes: curved taut roof with visible seams, actual open entrance with folded side flaps, sagging awning. Prefer restrained blue/sand cloth coherent with current Bastion; no castle replacement, new props or crowd. No closed fake black doorway. Preserve library source and gameplay parcel. Select a coherent full geometric treatment from the typed operations and values below, explain silhouette and material choices. No scores or approval.",
+  "history": "EVIDENCE-BASED ART MEMORY: not model-weight training, not ART APPROVED.\nPinned approved reference: 8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689\nLESSON small-sculpt-repeated (runs 38358105789,38360450981): No repetir detalles peque\u00f1os en el borde; dise\u00f1ar una masa de acantilado visible y verificar la imagen entera.\nLESSON tiny-sculpt-path (runs 38370740511): Proporcionar informaci\u00f3n geom\u00e9trica del encuadre y exigir acciones de escala suficiente para la c\u00e1mara.\nLESSON frustum-parity (runs 38401480696): Fijar el frustum aut\u00e9ntico antes de juzgar. REVIEW_REQUIRED solo obliga a inspeccionar, nunca certifica belleza.\nLESSON unity-a-b-independent (runs 38405267853): Juzgar la calidad compositiva, materiales y silueta con referencia estable; no confundir cambios visuales con calidad.\nLESSON preserve-playable-protected-terrain (runs 38406612333): Proteger parcelas y anclajes; despu\u00e9s del acabado Blender exigir captura real y revisi\u00f3n independiente en Unity.\nNever use pixel fraction as a beauty score. Require matched Unity evidence and independent art review.\n",
+  "history_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e",
+  "history_source_sha256": "b077b62100ac722d2bc45cb1b955945ef6c0be2250dbd4fc54499573d7d1e98e"
+}
