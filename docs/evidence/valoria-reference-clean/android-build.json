@@ -1,12 +1,12 @@
 {
-    "source_sha": "0483910cc65205e50461c41c3ed30cce2b826a45",
-    "status": "ANDROID_BUILD_FAILED",
-    "apk_sha256": "",
+    "source_sha": "b7173bdf751ecd5e9898cd4bf467ecbc558fe734",
+    "status": "APK_COMPILED_NOT_DEVICE_VALIDATED",
+    "apk_sha256": "a8864d2c13a9aeefa7d5ac90ef6c78eb8730c4761e4104497859a2b1b6cbcc02",
     "package_id": "com.eldoria.valoriareferenceclean",
     "graphics_apis": "Vulkan, OpenGLES3",
-    "note": "System.Exception: Android build failed: Failed\r\n  at Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanAndroidBuild.Build () [0x001e1] in C:\\actions-runner-eldoria\\_work\\Eldoria-Prewiu\\Eldoria-Prewiu\\valoria-layered-source\\Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Editor\\ValoriaReferenceCleanAndroidBuild.cs:39 ",
-    "apk_bytes": 0,
-    "errors": 9,
-    "warnings": 26,
+    "note": "ARM64 IL2CPP development APK compilation only; no physical visual or performance certification.",
+    "apk_bytes": 1212469313,
+    "errors": 0,
+    "warnings": 23,
     "physical_device_tested": false
 }

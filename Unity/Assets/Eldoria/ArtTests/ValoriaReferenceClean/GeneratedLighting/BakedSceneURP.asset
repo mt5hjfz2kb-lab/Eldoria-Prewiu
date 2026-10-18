@@ -113,11 +113,11 @@ MonoBehaviour:
   m_PrefilterAlphaOutput: 1
   m_PrefilterSSAODepthNormals: 1
   m_PrefilterSSAOSourceDepthLow: 1
-  m_PrefilterSSAOSourceDepthMedium: 1
+  m_PrefilterSSAOSourceDepthMedium: 0
   m_PrefilterSSAOSourceDepthHigh: 1
-  m_PrefilterSSAOInterleaved: 1
+  m_PrefilterSSAOInterleaved: 0
   m_PrefilterSSAOBlueNoise: 1
-  m_PrefilterSSAOSampleCountLow: 1
+  m_PrefilterSSAOSampleCountLow: 0
   m_PrefilterSSAOSampleCountMedium: 1
   m_PrefilterSSAOSampleCountHigh: 1
   m_PrefilterDBufferMRT1: 1
@@ -133,8 +133,8 @@ MonoBehaviour:
   m_PrefilterUseLegacyLightmaps: 0
   m_PrefilterBicubicLightmapSampling: 1
   m_PrefilterReflectionProbeRotation: 0
-  m_PrefilterReflectionProbeBlending: 1
-  m_PrefilterReflectionProbeBoxProjection: 1
+  m_PrefilterReflectionProbeBlending: 0
+  m_PrefilterReflectionProbeBoxProjection: 0
   m_PrefilterReflectionProbeAtlas: 1
   m_ShaderVariantLogLevel: 0
   m_ShadowCascades: 0
