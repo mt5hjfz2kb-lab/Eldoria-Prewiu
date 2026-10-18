@@ -42,6 +42,12 @@ jobs:
           run-id: 39164920701
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: prior-evidence
+      - name: Install existing Chromium tool and video frame extraction
+        run: |
+          npm install --prefix "$RUNNER_TEMP/valoria-web-qa" --no-save --ignore-scripts playwright@1.55.0
+          "$RUNNER_TEMP/valoria-web-qa/node_modules/.bin/playwright" install --with-deps chromium
+          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y ffmpeg; fi
+          ffmpeg -version | head -n 1
       - name: Diagnose prior real freeze from exact browser errors and recording
         run: |
           python3 - <<'PY'
@@ -57,19 +63,25 @@ jobs:
           for name in ("actions.ndjson","telemetry.ndjson","browser-console.ndjson"):
               files=list(root.rglob(name))
               if files:
-                  last=files[0].read_text().splitlines()[-6:]
-                  print("PRIOR_"+name,json.dumps(last,ensure_ascii=False)[:2200])
+                  raw=files[0].read_text().splitlines()
+                  if name=="telemetry.ndjson":
+                      states=[]
+                      for line in raw[-10:]:
+                          try:
+                              item=json.loads(line);state=item.get("state",{})
+                              states.append({"t":item.get("elapsed_s"),"sequence":item.get("sequence"),
+                              "width":state.get("width"),"height":state.get("height"),"narrative":state.get("narrative")})
+                          except Exception: pass
+                      print("PRIOR_TELEMETRY_COUNT",len(raw),"LAST",json.dumps(states))
+                  elif name=="actions.ndjson":
+                      print("PRIOR_ACTIONS",json.dumps([{"t":json.loads(x).get("elapsed_s"),
+                      "label":json.loads(x).get("label")} for x in raw[-8:]]))
+                  else: print("PRIOR_CONSOLE_COUNT",len(raw),"LAST",json.dumps(raw[-5:])[:1200])
           for f in root.rglob("*.webm"):
               p=subprocess.run(["ffprobe","-v","error","-show_entries","format=duration",
               "-of","default=noprint_wrappers=1:nokey=1",str(f)],capture_output=True,text=True)
               print("PRIOR_VIDEO",f.name,f.stat().st_size,"duration",p.stdout.strip(),"probe_error",p.stderr[:300])
           PY
-      - name: Install existing Chromium tool and video frame extraction
-        run: |
-          npm install --prefix "$RUNNER_TEMP/valoria-web-qa" --no-save --ignore-scripts playwright@1.55.0
-          "$RUNNER_TEMP/valoria-web-qa/node_modules/.bin/playwright" install --with-deps chromium
-          if ! command -v ffmpeg >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y ffmpeg; fi
-          ffmpeg -version | head -n 1
       - name: Play exact WebGL with real input and normal clock, extract real video frames
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
