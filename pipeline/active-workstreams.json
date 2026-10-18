@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T12:08:47.755141+00:00",
+  "updated_at": "2026-10-18T12:27:42.504461+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -552,7 +552,7 @@
         ".github/workflows/world4x-zone1-*.yml"
       ],
       "resources": [],
-      "phase": "RECOVERED_SOURCES_TEST_PASSED_QUEUED_GROUND_ART",
+      "phase": "EXACT_SAVED_SOURCE_CONTINUATION_QUEUED",
       "authorization": "Owner 2026-10-18 11:36:57 Europe/Madrid explicitly asks this chat to assume 4X, recover three references, strongly improve graphics and prepare later connection to current Work without crossing scope. Budget 0 EUR.",
       "art_production_routing": "required",
       "dependency": "Valoria Work retains its scene, SliceBoot, Packages, canonical gameplay/save, branch and windows-runner-heavy. 4X uses independent Linux Blender and code. Windows native window must be explicitly coordinated; not claimed.",
@@ -568,17 +568,17 @@
         ],
         "integration": "Provide opt-in 4X scene/module, semantic IDs and host adapter; Valoria owner integrates later. Do not edit or publish its player scene.",
         "queue_delegation": {
-          "authorization": "User explicitly: Continua con el trabajo si necesitas utilizar algun recurso del PC usalo respetando la cola de work (18-10-2026); reiterated continuation after checkpoint.",
-          "mode": "ONE_QUEUED_ISOLATED_GROUND_ART_JOB",
-          "run_id": "39126030933",
+          "authorization": "Owner explicitly permits PC resources respecting Work queue; reiterated live continuation after checkpoint, 18-10-2026.",
+          "mode": "resume_ground",
+          "run_id": "39127306553",
           "work_priority": true,
           "transfer_valoria_lease": false,
           "cancel_other_jobs": false,
-          "scope": "World4X ground Blender/Qwen only; no Unity, gameplay, Valoria, UI or publication"
+          "scope": "Only World4X existing source continuation or isolated Unity comparison/host/camera checks. No Valoria, UI, save, settings, package or publication changes."
         }
       },
       "handoff_source": "docs/world4x-zone1/TAKEOVER_20261018.md",
-      "next": "Complete exact-source Blender/Qwen ground finish; preserve original plan, paired images and editable sources; independent art review before native Unity."
+      "next": "Finish current requested bounded unit, preserve genuine outputs; inspect screenshots and do not equate technical success with art approval."
     },
     {
       "id": "eldoria-ui-royal-gold-v1-20261018",
@@ -2071,7 +2071,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -2082,7 +2082,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
