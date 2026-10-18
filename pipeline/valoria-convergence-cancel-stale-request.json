@@ -1,14 +1,15 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Cancel only the archived SHARP First Playable capture accidentally triggered by repairing retained PlayMode fixtures. The owner consolidated the integrated Valoria city/world/UI on main and explicitly retired alternative production directions. Preserve current normal Unity regression gates and native116 outputs.",
+  "reason": "Stop only archived SHARP First Playable v1 production accidentally activated by the current RoyalGold dialogue/domain changes. The owner retired experimental branches; the sole main integration run 39157273911 is preserved. Avoid single Windows runner contention or publishing a historical scene.",
   "runs": [
-    39149491653
+    39157273793
   ],
   "keep_runs": [
-    39149491623,
-    39149491637,
-    39149491752
+    39157273911,
+    39157273814,
+    39157273859,
+    39157273829
   ],
-  "triggered_at": "2026-10-18T17:29:00Z"
+  "triggered_at": "2026-10-18T19:13:00Z"
 }
