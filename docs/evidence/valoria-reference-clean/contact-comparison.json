@@ -1,0 +1,14 @@
+{
+    "source_sha": "ac050eb8b40b556f94097109b20e05d94586fb8c",
+    "scene_sha256": "56e59f593502dfbe8f4d46f448a4cf72d1e6fa3c86bf01af8388451eb001a908",
+    "scope": "Only existing SSAO AfterOpaque true to false; same native scene/geometry/materials/GI/sun/exposure/SSAO strength and radius; trial restored",
+    "documentation": "Context7 official Unity manual plus exact Unity6000.3 SSAO renderer-feature reference; AfterOpaque can over-darken baked occlusion",
+    "scene_unchanged": true,
+    "same_camera": true,
+    "same_sun": true,
+    "after_opaque_before": true,
+    "after_opaque_after": false,
+    "art_approved": false,
+    "triangles": 635048,
+    "renderers": 35
+}
