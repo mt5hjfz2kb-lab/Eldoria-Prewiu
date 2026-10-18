@@ -8,6 +8,10 @@ using UnityEngine.TestTools;
 
 namespace Eldoria.Tests
 {
+#if UNITY_EDITOR
+    [PrebuildSetup(typeof(RegressionSceneBuildSetup))]
+    [PostBuildCleanup(typeof(RegressionSceneBuildSetup))]
+#endif
     public sealed class SliceSceneSmokeTests
     {
         [UnityTest]

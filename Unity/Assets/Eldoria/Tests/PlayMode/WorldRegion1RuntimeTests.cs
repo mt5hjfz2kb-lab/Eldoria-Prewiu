@@ -11,6 +11,10 @@ using UnityEngine.UI;
 // Region 1 certified-terrain fast certification marker.
 namespace Eldoria.Tests
 {
+#if UNITY_EDITOR
+    [PrebuildSetup(typeof(RegressionSceneBuildSetup))]
+    [PostBuildCleanup(typeof(RegressionSceneBuildSetup))]
+#endif
     public sealed class WorldRegion1RuntimeTests
     {
         [UnityTest]

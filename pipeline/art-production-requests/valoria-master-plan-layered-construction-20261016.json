@@ -1,0 +1,38 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "valoria-master-plan-layered-construction-20261016",
+  "request_id": "valoria-master-plan-layered-construction-20261016",
+  "asset_or_sector": "Consolidated Valoria city and Zone One: recognizable world destinations, quarry and forest, organic sawmill and barracks access, ground contact and environment transitions",
+  "profile": "environment_composition",
+  "visual_gate_state": "AUTHORING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "The consolidated native111 player scene retains provisional world destination geometry and weak city ground transitions. The owner explicitly requires visible improvements in this same integrated game using the existing local artist. The Qwen-authored forest and quarry remain under technical repair and require matched real Unity inspection before artistic acceptance.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": true,
+    "unity_material_blending": true
+  },
+  "artist": {
+    "system_prompt": "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md",
+    "environment_adapter": "tools/valoria-reference-clean/author_environment_finish.py",
+    "execution": "Existing local Qwen/Ollama with validated BlenderMCP actions; installed Blender fallback when necessary. Preserve immutable source GLBs and original inference, plan and execution hashes.",
+    "technical_repairs": "Reuse the exact retained artist plan for bounded assembly, UV or export defects. Record repairs separately and never represent them as a new AI inference."
+  },
+  "validation": {
+    "source_gate": "Genuine Qwen diagnosis from actual player captures, prior authored decisions and executed geometry/material changes; preserve source and plan integrity, editable Blender/GLB output and comparable Blender evidence.",
+    "final_gate": "Native Unity 6000.3.23f1 import and matched before/after player-camera captures of world and city; independent visual inspection, both orientations, retained I-II progression and save behavior. Browser normal-time playthrough and physical-device performance are separate evidence gates."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "PENDING",
+  "physical_mobile_tested": false,
+  "owner_authorization": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
+  "notes": "Records the existing active owner and resource claim after main consolidation; opens no new workstream or artist system. Budget 0 EUR, no Tripo or paid credits. Preserve Valoria, integrated Zone One, Royal Gold, dialogues and Bastion I-II saves; no Bastion III expansion. A green governance or build result does not approve art."
+}

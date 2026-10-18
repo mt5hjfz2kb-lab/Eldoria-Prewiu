@@ -51,8 +51,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
+      "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "INTEGRATED_PLAYER_CLARITY_AND_ENVIRONMENT_FINISH",
       "next": "Implement owner priorities on live main: unified World access, readable HUD/operations, coherent world destinations, organic city access and real Unity/WebGL verification.",

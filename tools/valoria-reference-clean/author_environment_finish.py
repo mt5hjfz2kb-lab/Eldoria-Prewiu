@@ -21,6 +21,26 @@ repair_mode = '--repair-last-plan' in sys.argv
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def verify_recorded_text_bytes(path, recorded):
+    """Verify exact authored bytes, including Git's proven CRLF -> LF checkout.
+
+    Run114 wrote these JSON files with Windows CRLF; run115 checked out the
+    byte-identical text with LF. Reconstruct only that exact transformation in
+    memory and require the original recorded SHA256. Never rewrite the plan or
+    accept JSON reserialization, whitespace edits or changed parameter values.
+    """
+    raw = path.read_bytes()
+    actual = hashlib.sha256(raw).hexdigest()
+    transformation = 'NONE'
+    if actual != recorded:
+        restored = raw.replace(b'\n', b'\r\n') if b'\r' not in raw else b''
+        assert restored and hashlib.sha256(restored).hexdigest() == recorded, (
+            f'Retained text integrity mismatch: {path.name}; recorded={recorded}; checkout={actual}')
+        transformation = 'EXACT_CRLF_BYTES_RECONSTRUCTED_FROM_GIT_LF_CHECKOUT_IN_MEMORY'
+    return {'file': path.name, 'recorded_sha256': recorded,
+            'checkout_sha256': actual, 'verification': transformation,
+            'original_byte_hash_verified': True, 'file_rewritten': False}
+
 def write(name, value):
     (EV / name).write_text(json.dumps(value, indent=2), encoding='utf8')
 
@@ -43,8 +63,9 @@ if repair_mode:
     repair_plan_hash = digest(EV/'environment-finish-plan.json')
     repair_artist_plan_hash = digest(EV/'environment-finish-artist-plan.json')
     assert repair_parent['sources_preserved'] and repair_parent['source_sha256'] == source_hashes
-    assert repair_parent['plan_sha256'] == repair_plan_hash
-    assert repair_parent['canonical_artist_plan_sha256'] == repair_artist_plan_hash
+    repair_text_integrity = [
+        verify_recorded_text_bytes(EV/'environment-finish-plan.json', repair_parent['plan_sha256']),
+        verify_recorded_text_bytes(EV/'environment-finish-artist-plan.json', repair_parent['canonical_artist_plan_sha256'])]
     assert all(digest(OUT/name) == value for name, value in repair_parent['glb_sha256'].items())
 
 # Import into a disposable Blender document. No original .blend is overwritten.
@@ -380,6 +401,7 @@ if repair_mode:
         'parent_result_sha256': repair_parent_result_hash,
         'parent_source_sha': repair_parent['source_sha'],
         'artist_plan_sha256': repair_artist_plan_hash, 'plan_sha256': repair_plan_hash,
+        'retained_text_integrity': repair_text_integrity,
         'qwen_inference_performed': False, 'artistic_composition_changed': False,
         'observed_defects': ['Diverging per-segment bench offsets opened the centre joint.',
                              'Untextured excavation faces read as concrete.',
@@ -710,6 +732,7 @@ write('environment-finish-result.json', {
     'sources_preserved': True, 'qwen_model': payload['model'], 'transport': transport,
     'qwen_inference_performed': not repair_mode, 'existing_artist_plan_reused': repair_mode,
     'technical_repair_parent_result_sha256': repair_parent_result_hash if repair_mode else None,
+    'retained_text_integrity': repair_text_integrity if repair_mode else [],
     'canonical_system_sha256': system_hash, 'memory_source_sha256': digest(memory_path),
     'actual_memory_sha256': context['actual_memory_sha256'], 'plan': plan,
     'canonical_artist_plan_sha256': digest(EV/'environment-finish-artist-plan.json'),

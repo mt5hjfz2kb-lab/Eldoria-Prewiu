@@ -89,6 +89,25 @@ jobs:
           }
           git --version
       - uses: actions/checkout@v4
+        with:
+          # The default clean -ffdx also deletes the native workflow's nested checkouts.
+          # Keep their own checkout lifecycle and Unity's validated import cache intact.
+          clean: false
+      - name: Restore exact source while preserving isolated Unity caches
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $expectedCommit = $env:GITHUB_SHA
+          if ($expectedCommit -notmatch '^[0-9a-fA-F]{40}$') { throw 'Expected workflow commit is not a full Git SHA.' }
+          & git reset --hard $expectedCommit
+          if ($LASTEXITCODE -ne 0) { throw 'Could not restore tracked source to the workflow commit.' }
+          & git clean -ffdx -e '/Unity/Library/' -e '/valoria-layered-source/' -e '/valoria-clean-live-main/'
+          if ($LASTEXITCODE -ne 0) { throw 'Could not remove stale untracked source and build output.' }
+          $actualCommit = & git rev-parse HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'Could not read the restored Git HEAD.' }
+          if ($actualCommit.Trim() -ne $expectedCommit) { throw "Checkout SHA mismatch: $actualCommit" }
+          & git diff --quiet HEAD -- .
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked source differs from the expected workflow commit after cleanup.' }
+          Write-Host "Source restored to $expectedCommit; only Unity/Library and the two separately managed native checkouts are excluded from cleanup."
       - name: Stage owner-supplied optimized Bastion from runner Downloads if present
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
@@ -179,6 +198,9 @@ jobs:
             # Start-Process keeps the probe's exit code out of Actions' LASTEXITCODE epilogue.
             # Launch, timeout and evidence-writing failures still fail this step explicitly.
             $adbProcess = Start-Process -FilePath $adb -ArgumentList 'devices', '-l' -NoNewWindow -PassThru -RedirectStandardOutput $adbStdoutPath -RedirectStandardError $adbStderrPath -ErrorAction Stop
+            # Retain the process handle before waiting: Windows PowerShell can otherwise
+            # lose ExitCode with redirected Start-Process (PowerShell/PowerShell#5421).
+            $adbProcessHandle = $adbProcess.Handle
             if (-not $adbProcess.WaitForExit(15000)) {
               Stop-Process -Id $adbProcess.Id -Force -ErrorAction Stop
               throw 'ADB availability probe timed out after 15 seconds; physical-device state is unknown.'
