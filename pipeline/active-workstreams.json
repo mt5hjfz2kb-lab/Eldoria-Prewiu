@@ -48,12 +48,14 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "CANONICAL_MAIN_DEVELOPMENT_BASELINE",
-      "next": "Prioritize integrated player-experience findings in docs/ELDORIA_PLAYER_REVIEW_20261018.md. Work from current main only; coordinate Windows claim before native execution.",
+      "phase": "INTEGRATED_PLAYER_CLARITY_AND_ENVIRONMENT_FINISH",
+      "next": "Implement owner priorities on live main: unified World access, readable HUD/operations, coherent world destinations, organic city access and real Unity/WebGL verification.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -556,13 +558,17 @@
         "goal": "Recover original Source08 Bastion material hierarchy, prove actual renderer influence on SHARP player presentation, art-source/Unity A/B before any promotion",
         "other_workstreams": "remain_paused"
       },
-      "continuation_authorization": "Owner18Oct latest explicit order: close Bastion I immediate ensemble, migrate existing gameplay complete I-II loop in current workstream, preserve saves and Android update identity. Other4X scope remains independent. Owner latest18Oct asks automatic Android content updates and safe later consumption of UI/4X; retain current art/gameplay. Neither independent candidate is native-ready at live handoff read; no scope takeover.",
+      "continuation_authorization": "Explicit owner successor-session order 2026-10-18 17:54 Europe/Madrid: continue consolidated main, implement and verify interaction, world and city art, marches/narrative, normal-time playtest and update same owner-private Site. Preserve I-II/saves and 0 EUR, no Tripo. Same existing workstream and owner identity retained for runner contract.",
       "handoff_authorization": "Explicit owner request in successor chat 18-10-2026 15:20 Europe/Madrid: continue saturated Valoria chat, assume interface and integrate Zone1 4X as world without losing primary visual/playable mission.",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
       "latest_owner_feedback": "18Oct16:20 Europe/Madrid: use our existing AI artist, explicitly no Tripo; new coherent sawmill, visual quality, contextual UI, original dialogue, vertical world pan, no parcel slabs, clear build locations.",
       "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
-      "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied"
+      "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
+      "current_session": "chatgpt-main-player-improvements-20261018",
+      "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
+      "resources_verified_at": "2026-10-18T15:57:23Z",
+      "resources_evidence": "Live Actions: 0 in_progress; only two legacy 7Oct startup probes queued (37642384303/37642364289); sole active workstream previously released runner. Native workflow checks actual processes before launch."
     }
   ],
   "history": [
