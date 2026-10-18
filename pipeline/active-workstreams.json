@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T01:41:31.329Z",
+  "updated_at": "2026-10-18T07:50:18.037Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -40,8 +40,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_NATIVE62_LOCAL_BANK_RETAINED_PLAY_PACKAGE_VERIFIED",
-      "next": "Continue artistic convergence from native62 saved scene, exact reviewed seven-rock bank patch and existing53 GI. Do not regenerate from46 alone. Ground57/58 not retained;59/60 safe plan-gate aborts;61 real BlenderMCP/Unity A-B inspected;62 retained with Play and package verified. APK55 is earlier geometry, ARM64 verified but1.21GB/not device-tested. No formal8/10. No heavy run active; same exclusive workstream and owner.",
+      "phase": "REFERENCE_CLEAN_CONTINUOUS_ART_CONTACT_COMPARISON",
+      "next": "Continue native62 artistic improvement without stopping at intermediate reports. Context7 available and consulted for exact Unity6.3 SSAO question; native63 A/B under review. Owner reports another chat fixed Android APK size and supplied APK installed on physical Android: do not treat native55 size as latest state or repeat that work. No performance certification inferred.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -110,8 +110,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39086815642,
-          "current_source": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
+          "current_run": 39109065804,
+          "current_source": "ac050eb8b40b556f94097109b20e05d94586fb8c",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -134,7 +134,7 @@
             "score_not_adopted": true
           },
           "water_camera_light_geometry_identity": true,
-          "android_apk_status": "NATIVE55_EXACT_SHA_AND_ARM64_ELF_VERIFIED",
+          "android_apk_status": "OWNER_REPORTS_LATER_SIZE_FIXED_APK_INSTALLED_ON_ANDROID",
           "native48": {
             "run": 39080822196,
             "output": "88d600b2632154c0c03e04c4146cf5ee7690ad1c",
@@ -255,7 +255,14 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "completed"
+          "current_run_status": "CAPTURES_REVIEW",
+          "android_user_report": {
+            "date": "2026-10-18",
+            "installed_on_physical_android": true,
+            "size_issue_resolved_by_other_chat": true,
+            "exact_artifact_not_identified_here": true,
+            "performance_profile_verified": false
+          }
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
