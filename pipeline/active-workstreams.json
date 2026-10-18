@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18T10:23:33.390Z",
+  "updated_at": "2026-10-18T10:33:29.527Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-16",
@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_BASTION_I_II_GAMEPLAY_VERIFIED_ANDROID_V3_BUILD",
-      "next": "Native82 complete real I-II UI/rules/save/model swap and16coretests PASS, actual UI captures reviewed. Android83 optimized same-id/certificate1.2/code3 underway. Preserve independent4X and RoyalGoldUI scopes; UI candidate consumes existing host/gateway later, no concurrent integration.",
+      "phase": "REFERENCE_CLEAN_BASTION_I_II_ANDROID_V3_MILESTONE_DELIVERED",
+      "next": "Native82 local art/gameplay I-II milestone verified, native83 signed Android update1.2/code3 independently downloaded/hash/CRC/ARM64 verified; deliveryHead ba13a8e909536ea73d6e096995ed4c15cbeff076. Owner phone update/save/performance pending. Next functions and RoyalGoldUI/4X integration require their reviewed stable handoffs; preserve all current scene/runtime work. No active Valoria native job.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -89,7 +89,7 @@
         "best_visual_art_status": "V12_LOCAL_SILHOUETTE_CHANGE_VISIBLE_ART_REVIEW_REQUIRED",
         "e1_bridgedeck_verdict": "VISUAL_REJECTED",
         "e2_bridgedeck_verdict": "VISUAL_REJECTED_AS_PRODUCTION_ART_SUPPORT_RESTORED",
-        "latest_branch_head": "6d62399958ef6fd27bd3966b17a054e708038676",
+        "latest_branch_head": "ba13a8e909536ea73d6e096995ed4c15cbeff076",
         "actual_player_runtime_integrated": true,
         "mobile_physical_tested": false,
         "art_approved": false,
@@ -139,8 +139,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39119050074,
-          "current_source": "55c333516ff0ead5ed26ea55c4df70468b47a9c4",
+          "current_run": 0,
+          "current_source": "ba13a8e909536ea73d6e096995ed4c15cbeff076",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -163,7 +163,7 @@
             "score_not_adopted": true
           },
           "water_camera_light_geometry_identity": true,
-          "android_apk_status": "OPTIMIZED_UPDATE_V2_SIGNED_PACKAGE_MATCH_HASH_CRC_ARM64_VERIFIED_PHONE_UNTESTED",
+          "android_apk_status": "OPTIMIZED_V3_SAME_ID_CERTIFICATE_HASH_CRC_ARM64_VERIFIED_PHONE_UNTESTED",
           "native48": {
             "run": 39080822196,
             "output": "88d600b2632154c0c03e04c4146cf5ee7690ad1c",
@@ -246,7 +246,7 @@
           "lightprobes": 264,
           "reflection_probes": 4,
           "portable_prefabs": 8,
-          "package_status": "NATIVE74_REAL_PACKAGE_442_ASSETS_8_PREFABS_HASH_CRC_GZIP_TAR_VERIFIED_IMPORT_UNTESTED",
+          "package_status": "NATIVE82_REAL_PACKAGE_497_ASSETS_HASH_CRC_GZIP_TAR_VERIFIED_IMPORT_UNTESTED",
           "native55": {
             "run": 39083545579,
             "source": "b7173bdf751ecd5e9898cd4bf467ecbc558fe734",
@@ -408,6 +408,19 @@
             "stairs_passes": 6,
             "package_artifact": 12133880417,
             "art_approved": false
+          },
+          "native83": {
+            "run": 39119050074,
+            "source": "55c333516ff0ead5ed26ea55c4df70468b47a9c4",
+            "output": "6f898b109c08b973821611624fe03bed3e236453",
+            "apk_artifact": 12133277857,
+            "apk_bytes": 174678797,
+            "apk_sha256": "38f1aa1e720fb76bf61f31ed91e1b93fe6b55556f2991ddbff182cba5f8b7734",
+            "version_name": "1.2",
+            "version_code": 3,
+            "package": "com.eldoria.valoria.v5test",
+            "certificate_sha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+            "physical_phone_update_tested": false
           }
         }
       },
