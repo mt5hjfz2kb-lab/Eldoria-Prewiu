@@ -214,17 +214,25 @@ namespace Eldoria.ReferenceClean.Editor {
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");
    var report=new Report{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),status=failure==null?"INTEGRATION_PASS_ART_REVIEW_REQUIRED":"FAIL",error=failure,checks=checks.ToArray(),scene=Scene,framing=framingChecks.ToArray()};
-   if(failure==null)File.WriteAllText(Path.Combine(Ev,"integration-input-signature.txt"),ComputeInputSignature());
+   if(failure==null) {
+    File.WriteAllText(Path.Combine(Ev,"integration-input-manifest.txt"),ComputeInputManifest());
+    File.WriteAllText(Path.Combine(Ev,"integration-input-signature.txt"),ComputeInputSignature());
+   }
    File.WriteAllText(Path.Combine(Ev,"integration-result.json"),JsonUtility.ToJson(report,true));
    if(failure==null)Debug.Log("VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE");EditorApplication.Exit(failure==null?0:1);
   }
-  public static string ComputeInputSignature(){
+  public static string ComputeInputManifest(){
    var files=new HashSet<string>(AssetDatabase.GetDependencies(Scene,true).Where(File.Exists));
-   foreach(var path in Directory.GetFiles("Assets/Eldoria","*.cs",SearchOption.AllDirectories))files.Add(path.Replace('\\','/'));
-   foreach(var path in Directory.GetFiles("Assets/Eldoria","*.asmdef",SearchOption.AllDirectories))files.Add(path.Replace('\\','/'));
+   foreach(var path in Directory.GetFiles("Assets/Eldoria","*.cs",SearchOption.AllDirectories))
+    files.Add(path.Replace('\\','/'));
+   foreach(var path in Directory.GetFiles("Assets/Eldoria","*.asmdef",SearchOption.AllDirectories))
+    files.Add(path.Replace('\\','/'));
    foreach(var path in files.ToArray())if(File.Exists(path+".meta"))files.Add(path+".meta");
-   var identities=files.OrderBy(x=>x,StringComparer.Ordinal).Select(path=>path+" "+FileHash(path));
-   using(var sha=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(string.Join("\n",identities))));
+   return string.Join("\n",files.OrderBy(x=>x,StringComparer.Ordinal).Select(path=>path+" "+FileHash(path)));
+  }
+  public static string ComputeInputSignature(){
+   using(var sha=System.Security.Cryptography.SHA256.Create())
+    return BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(ComputeInputManifest())));
   }
   static string FileHash(string path){if(!File.Exists(path))return "ABSENT";using(var sha=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path)));}
   static void Click(RoyalButton button){

@@ -24,7 +24,25 @@ namespace Eldoria.ReferenceClean.Editor {
     if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.WebGL,BuildTarget.WebGL))throw new Exception("Installed Unity WebGL module unavailable");
     var proof=File.ReadAllText(Ev+"/integration-result.json");
     if(!proof.Contains("INTEGRATION_PASS_ART_REVIEW_REQUIRED"))throw new Exception("Integrated I-II native proof missing");
-    if(!File.Exists(Ev+"/integration-input-signature.txt")||File.ReadAllText(Ev+"/integration-input-signature.txt")!=ValoriaIntegrationBuild.ComputeInputSignature())throw new Exception("Integrated scene/runtime differs from the native I-II proof");
+    var expectedPath=Ev+"/integration-input-signature.txt";
+    var manifestPath=Ev+"/integration-input-manifest.txt";
+    var currentManifest=ValoriaIntegrationBuild.ComputeInputManifest();
+    var currentSignature=ValoriaIntegrationBuild.ComputeInputSignature();
+    File.WriteAllText(Ev+"/web-input-current-manifest.txt",currentManifest);
+    File.WriteAllText(Ev+"/web-input-current-signature.txt",currentSignature);
+    if(!File.Exists(expectedPath))throw new Exception("Integrated source input signature absent");
+    var expectedSignature=File.ReadAllText(expectedPath).Trim();
+    if(expectedSignature!=currentSignature){
+     var oldLines=File.Exists(manifestPath)?File.ReadAllLines(manifestPath):Array.Empty<string>();
+     var nowLines=currentManifest.Split(new[]{'\n'},StringSplitOptions.None);
+     var oldMap=oldLines.ToDictionary(l=>l.Substring(0,Math.Max(0,l.LastIndexOf(' '))),l=>l);
+     var newMap=nowLines.ToDictionary(l=>l.Substring(0,Math.Max(0,l.LastIndexOf(' '))),l=>l);
+     var changed=oldMap.Keys.Union(newMap.Keys).Where(path=>
+      !oldMap.TryGetValue(path,out var before)||!newMap.TryGetValue(path,out var after)||before!=after)
+      .OrderBy(x=>x,StringComparer.Ordinal).ToArray();
+     File.WriteAllLines(Ev+"/web-input-signature-differences.txt",changed);
+     throw new Exception("Integrated WebGL input mismatch against current Win64 native proof. expected="+expectedSignature+" current="+currentSignature+" changed="+changed.Length+" paths="+string.Join(" ; ",changed.Take(12)));
+    }
     EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
     var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
     if(!host||!host.HudPrefab||!host.WorldRoot||!host.WorldCamera)throw new Exception("Integrated city/UI/Zone1 bindings missing");
