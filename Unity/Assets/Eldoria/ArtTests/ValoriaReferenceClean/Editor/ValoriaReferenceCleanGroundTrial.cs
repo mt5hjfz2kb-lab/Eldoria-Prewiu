@@ -64,18 +64,18 @@ public static class ValoriaReferenceCleanGroundTrial {
    Views("bastion-ground-before");
    trial=UnityEngine.Object.Instantiate(original);
    var layers=original.terrainLayers;
-   var source=layers[0].diffuseTexture;int level=Mathf.Min(4,source.mipmapCount-1);
+   var source=layers[2].diffuseTexture;int level=Mathf.Min(1,source.mipmapCount-1);
    var pixels=source.GetPixels(level);int width=Mathf.Max(1,source.width>>level),height=Mathf.Max(1,source.height>>level);
    var values=pixels.Select(p=>p.grayscale).OrderBy(v=>v).ToArray();
    float low=values[values.Length/10],high=values[values.Length*9/10];
    for(int i=0;i<pixels.Length;i++){
     float value=Mathf.SmoothStep(0,1,Mathf.InverseLerp(low,high,pixels[i].grayscale));
-    pixels[i]=Color.Lerp(new Color(.24f,.30f,.075f),new Color(.43f,.46f,.16f),value);
+    pixels[i]=Color.Lerp(new Color(.30f,.23f,.12f),new Color(.53f,.42f,.25f),value);
    }
-   meadow=new Texture2D(width,height,TextureFormat.RGB24,true){name="Trial broad meadow from existing CC0 scan",wrapMode=TextureWrapMode.Repeat,anisoLevel=4};
+   meadow=new Texture2D(width,height,TextureFormat.RGB24,true){name="Trial worn loam from existing CC0 scan",wrapMode=TextureWrapMode.Repeat,anisoLevel=4};
    meadow.SetPixels(pixels);meadow.Apply();
-   meadowLayer=UnityEngine.Object.Instantiate(layers[0]);meadowLayer.name="Trial bastion meadow";
-   meadowLayer.diffuseTexture=meadow;meadowLayer.tileSize=new Vector2(18,18);meadowLayer.normalScale=.25f;
+   meadowLayer=UnityEngine.Object.Instantiate(layers[2]);meadowLayer.name="Trial bastion worn loam";
+   meadowLayer.diffuseTexture=meadow;meadowLayer.tileSize=new Vector2(8,8);meadowLayer.normalScale=.45f;
    trial.terrainLayers=layers.Concat(new[]{meadowLayer}).ToArray();
    int n=original.alphamapResolution;var before=original.GetAlphamaps(0,0,n,n);var next=new float[n,n,layers.Length+1];int changed=0;
    for(int z=0;z<n;z++)for(int x=0;x<n;x++){
@@ -87,18 +87,17 @@ public static class ValoriaReferenceCleanGroundTrial {
      if(Mathf.Abs(wx-p.x)<10&&Mathf.Abs(wz-p.y)<7.5f)mask=0;
     float fringe=(Mathf.PerlinNoise(wx*.22f+13,wz*.22f+47)-.5f)*2;
     float fortDistance=Mathf.Max(Mathf.Abs(wx)-10.6f,Mathf.Max(25.5f-wz,wz-44));
-    float apron=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.2f,4.5f,fortDistance+fringe));
-    float shoulder=wz<27?1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(3.7f,6.9f,Mathf.Abs(wx-ValoriaReferenceCleanArtBuilder.RoadX(wz))+fringe*.6f)):0;
-    float soil=Mathf.Clamp01(Mathf.Max(apron,shoulder)*.75f);
-    float meadowWeight=.92f*(1-soil);
-    for(int k=0;k<layers.Length;k++)next[z,x,k]=before[z,x,k]*(1-mask);
-    next[z,x,0]+=mask*(1-soil-meadowWeight);
-    next[z,x,2]+=mask*soil;next[z,x,layers.Length]=mask*meadowWeight;
+    float apron=1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.2f,2.8f,fortDistance+fringe));
+    float shoulder=wz<27?1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(3.7f,5.8f,Mathf.Abs(wx-ValoriaReferenceCleanArtBuilder.RoadX(wz))+fringe*.6f)):0;
+    float soil=Mathf.Clamp01(Mathf.Max(apron,shoulder)*.80f);
+    float wear=mask*soil;
+    for(int k=0;k<layers.Length;k++)next[z,x,k]=before[z,x,k]*(1-wear);
+    next[z,x,layers.Length]=wear;
     if(mask>.05f)changed++;
    }
    trial.SetAlphamaps(0,0,next);terrain.terrainData=trial;terrain.Flush();
    Views("bastion-ground-after");
-   var report=new Report{scope="Single bastion apron and adjacent meadow surface trial. Existing CC0 scan mip-filtered into coherent grass masses; irregular soil transition. No scene save or global extension.",
+   var report=new Report{scope="Bastion footfall loam only. Original meadow fully preserved outside irregular worn fringe; existing sparse-grass scan remapped into lighter warm loam. Reject previous blurred dark meadow. No scene save or global extension.",
     source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),same_camera=cam.transform.position==position&&cam.transform.rotation==rotation&&cam.orthographicSize==zoom,
     same_lighting=light==RenderSettings.sun.transform.rotation.ToString("R")+RenderSettings.sun.intensity+RenderSettings.sun.color.ToString(),
     same_heights=original.GetHeights(0,0,original.heightmapResolution,original.heightmapResolution).Cast<float>().SequenceEqual(trial.GetHeights(0,0,trial.heightmapResolution,trial.heightmapResolution).Cast<float>()),
