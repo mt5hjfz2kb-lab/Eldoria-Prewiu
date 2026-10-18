@@ -69,8 +69,8 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Owner-authorized isolated new Valoria scene; no gameplay/canonical promotion, no old production art mutation, zero paid credits.",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REFERENCE_CLEAN_CAMP_ANDROID_1_4_DELIVERED",
-      "next": "Reviewed camp integrated91 and native full I-II/ChapterII gameplay/save/general guards PASS. Android1.4/code5 native92 independently downloaded/CRC/hash/11ARM64 verified, originalpackage/cert retained, direct APK delivered in chat. Current package91 independently verified502assets/10prefabs. Physical phone update/save/performance pending. Next: review existing complete sawmill evolution; later coordinated RoyalGoldUI/4X handoffs. No active Valoria job.",
+      "phase": "REFERENCE_CLEAN_CONTENT_UPDATE_NATIVE_ISOLATED_VALIDATION",
+      "next": "Validate opt-in native scene AssetBundle loader/policy and rollback/fallback; then same-ID/same-cert bootstrap APK plus immutable verified content channel. Current1.4 delivery/validated91scene retained. No remote content published or phone auto-update claimed.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -521,7 +521,7 @@
         "goal": "Recover original Source08 Bastion material hierarchy, prove actual renderer influence on SHARP player presentation, art-source/Unity A/B before any promotion",
         "other_workstreams": "remain_paused"
       },
-      "continuation_authorization": "Owner18Oct latest explicit order: close Bastion I immediate ensemble, migrate existing gameplay complete I-II loop in current workstream, preserve saves and Android update identity. Other4X scope remains independent."
+      "continuation_authorization": "Owner18Oct latest explicit order: close Bastion I immediate ensemble, migrate existing gameplay complete I-II loop in current workstream, preserve saves and Android update identity. Other4X scope remains independent. Owner latest18Oct asks automatic Android content updates and safe later consumption of UI/4X; retain current art/gameplay. Neither independent candidate is native-ready at live handoff read; no scope takeover."
     },
     {
       "id": "world4x-zone1-isolated-reference-prototype-20261013",
