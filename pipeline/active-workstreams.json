@@ -110,8 +110,8 @@
           "bridge_method": "closed_profile_extrusion",
           "bridge_openings_visually_observed": true,
           "playmode_visual_regression": "CONTRIBUTE_GI_ONLY_NO_BATCHING_STATIC; EDITOR_PLAY_PARITY_PASS_THROUGH_NATIVE54",
-          "current_run": 39109065804,
-          "current_source": "ac050eb8b40b556f94097109b20e05d94586fb8c",
+          "current_run": 39111107853,
+          "current_source": "b058eb1b3d22b7cf637ddbcfb703c55a5fa38c75",
           "headroom_passes": 96,
           "mobile_frame_ground_hits": 12,
           "source_sha": "b74b852567e73dbf9a86db35898a28b0329ef5dc",
@@ -255,7 +255,7 @@
             "play": "96routes/96headroom/6stairs/5picks/12frame/1camera/0exceptions/save untouched",
             "art_approved": false
           },
-          "current_run_status": "NATIVE66_PREPARED",
+          "current_run_status": "RUNNING_BASTION_ENSEMBLE_BLENDER_UNITY",
           "android_user_report": {
             "date": "2026-10-18",
             "installed_on_physical_android": true,
@@ -267,7 +267,19 @@
             "run": 39109065804,
             "visual_status": "INSUFFICIENT_GAIN_NOT_RETAINED"
           },
-          "native64_65": "FAILED_BEFORE_GEOMETRY_EDITS; MICRO_STRATEGY_DISCONTINUED"
+          "native64_65": "FAILED_BEFORE_GEOMETRY_EDITS; MICRO_STRATEGY_DISCONTINUED",
+          "native66_68": "Stopped before geometry/Unity: material default node name, missing sys import, quoted Java option. Concrete fixes included69. Native62 authoritative scene preserved.",
+          "android_optimized_recovered": {
+            "run": 38279800977,
+            "artifact": 11761406447,
+            "bytes": 184264521,
+            "sha256": "36a316afae508613a35d92a241d74e526c96cd04544ba5536bf5a115b06e6da0",
+            "package": "com.eldoria.valoria.v5test",
+            "versionCode": 1,
+            "certificate_sha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+            "runner_key_match": "pending_current_run_report",
+            "installed_phone_identity_independently_verified": false
+          }
         }
       },
       "previous_owner": "chatgpt-normal-valoria-construction-20261017",
