@@ -1,0 +1,46 @@
+name: '[VALORIA] Recover exact signed integrated Android APK'
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/valoria-signed-apk-recovery.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: valoria-exact-signed-apk-recovery
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 9
+    steps:
+      - name: Recover compiled APK from completed native132 Windows build, no checkout or Unity invocation
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $native=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source'
+          $apk=Join-Path $native 'Unity/Builds/ValoriaReferenceClean/Valoria-Reference-Clean.apk'
+          $evidence=Join-Path $native 'docs/evidence/valoria-reference-clean/android-update-verification.json'
+          if(-not(Test-Path $apk)){throw 'Exact native132 compiled APK unavailable after workspace reuse; no substituted APK authorized'}
+          if(-not(Test-Path $evidence)){throw 'Original signature verification evidence unavailable; refuse unverified binary'}
+          $proof=Get-Content $evidence -Raw|ConvertFrom-Json
+          $digest=(Get-FileHash $apk -Algorithm SHA256).Hash.ToLowerInvariant()
+          $bytes=(Get-Item $apk).Length
+          if($bytes -ne 212263415 -or $proof.sha256 -ne $digest){throw 'Compiled binary changed since native132 signature verification'}
+          if($proof.package -ne 'com.eldoria.valoria.v5test' -or $proof.version_code -ne 6 -or
+             $proof.prior_version_code -ne 5 -or -not $proof.cryptographic_signature_verified -or
+             $proof.certificate_sha256 -ne 'f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8'){
+            throw 'Installed-app update certificate/package/version gate failed'
+          }
+          $destination=Join-Path $env:GITHUB_WORKSPACE 'valoria-verified-apk-only'
+          New-Item $destination -ItemType Directory -Force|Out-Null
+          Copy-Item $apk (Join-Path $destination 'Eldoria-Valoria-Integrated-1.6-code6.apk')
+          $proof|ConvertTo-Json -Depth 7|Set-Content (Join-Path $destination 'android-build-identity.json') -Encoding utf8
+          Write-Host "ANDROID_EXACT_RETAINED_APK_PASS sha256=$digest bytes=$bytes versionCode=6 same_cert=true scene=Valoria_City_World_UI device_tested=false"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: eldoria-valoria-integrated-android-1_6-code6-${{ github.run_id }}
+          path: valoria-verified-apk-only/**
+          if-no-files-found: error
