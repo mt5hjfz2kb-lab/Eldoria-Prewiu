@@ -1,4 +1,4 @@
-"""Repackage a pinned, QA-approved archive without changing any playable bytes."""
+"""Adapt verified Unity transport to itch CDN without changing engine/game bytes."""
 import hashlib
 import json
 import pathlib
@@ -41,6 +41,48 @@ def prepare(archive, destination, config):
         manifest = json.loads((dist / 'build-manifest.json').read_text(encoding='utf-8-sig'))
         if manifest['revision'] != expected['revision']:
             raise ValueError('Unexpected playable revision')
+
+        # Sites splits a gzip stream; itch sniffs each file and sends Content-Encoding.
+        # Restore the EXACT original compressed Unity bytes before CDN delivery.
+        transport = []
+        for name, entry in manifest.get('chunks', {}).items():
+            rel = name.split('?', 1)[0]
+            target = dist / rel
+            if pathlib.PurePosixPath(rel).is_absolute() or '..' in pathlib.PurePosixPath(rel).parts:
+                raise ValueError('Unsafe reconstructed path')
+            target.parent.mkdir(parents=True, exist_ok=True)
+            digest = hashlib.sha256()
+            with target.open('wb') as out:
+                for part in entry['parts']:
+                    path = dist / part
+                    if not path.resolve().is_relative_to(dist.resolve()):
+                        raise ValueError('Unsafe chunk path')
+                    data = path.read_bytes()
+                    digest.update(data)
+                    out.write(data)
+            if target.stat().st_size != entry['bytes'] or digest.hexdigest() != entry['sha256']:
+                raise ValueError('Reconstructed Unity bytes differ from original')
+            # Fully validate gzip CRC and trailer, not just its header.
+            import gzip
+            with gzip.open(target, 'rb') as stream:
+                while stream.read(1024 * 1024):
+                    pass
+            transport.append({'file':rel, 'sha256':digest.hexdigest(), 'bytes':target.stat().st_size})
+        if transport:
+            for entry in manifest['chunks'].values():
+                for part in entry['parts']:
+                    (dist / part).unlink(missing_ok=True)
+            manifest['chunks'] = {}
+            (dist / 'build-manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
+        # Show the actual startup error to make physical-device failures diagnosable.
+        play = dist / 'play.js'
+        original = play.read_text()
+        old = 'errorText.textContent="No se ha podido abrir Valoria. Vuelve a intentarlo con una conexión estable. Tu progreso guardado no se borra.";'
+        new = 'errorText.textContent="No se ha podido abrir Valoria. Detalle: "+String(error?.message||error).replace(/<[^>]*>/g,"").slice(0,1200);'
+        if original.count(old) != 1:
+            raise ValueError('Unexpected welcome wrapper; diagnostic patch needs review')
+        play.write_text(original.replace(old,new))
+
         files = sorted(p for p in dist.rglob('*') if p.is_file())
         if not (dist / 'index.html').is_file() or len(files) > 1000 or any(p.stat().st_size > 200_000_000 for p in files):
             raise ValueError('itch.io HTML5 layout or file size limit violated')
@@ -58,7 +100,7 @@ def prepare(archive, destination, config):
             for f in identities:
                 data = z.read(f['file'])
                 assert len(data) == f['bytes'] and hashlib.sha256(data).hexdigest() == f['sha256']
-        report = {'status':'PACKAGE_READY_NOT_PUBLISHED', 'candidate':expected, 'original_unity_integrity':check, 'playable_files_unchanged':True, 'files':identities, 'zip_sha256':hashlib.file_digest(open(output,'rb'),'sha256').hexdigest(), 'hosted_verified':False}
+        report = {'status':'PACKAGE_READY_NOT_PUBLISHED', 'candidate':expected, 'original_unity_integrity':check, 'playable_files_unchanged':False, 'unity_bytes_unchanged':True, 'transport_adapter':'itch-complete-gzip-v1', 'reconstructed_files':transport, 'wrapper_changes':['build-manifest.json','play.js'], 'files':identities, 'zip_sha256':hashlib.file_digest(open(output,'rb'),'sha256').hexdigest(), 'hosted_verified':False}
         (destination/'identity.json').write_text(json.dumps(report,indent=2)+'\n')
         shutil.copytree(dist, destination/'dist')
         print(json.dumps({'status':report['status'], 'files':len(files), 'zip_sha256':report['zip_sha256']}))
