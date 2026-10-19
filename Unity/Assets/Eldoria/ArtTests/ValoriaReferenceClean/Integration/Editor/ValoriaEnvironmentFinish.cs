@@ -1989,7 +1989,7 @@ namespace Eldoria.ReferenceClean.Editor {
    const string model="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/ConnectedPrecinctV16.glb";
    Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Retained playable scene missing");
    Need(Find(host.WorldRoot,"Hostile encampment cloth / Breach rust v11"),"Accepted visual context missing");
-   Need(Find(host.WorldRoot,"Valoria initial camera framing / city-first v14"),
+   Need(Find(city.gameObject,"Valoria initial camera framing / city-first v14"),
     "Native163 city-first normal player camera missing");
    if(Find(city.gameObject,marker)){Debug.Log("ELDORIA_CONNECTED_PRECINCT_V16_ALREADY_PRESENT");return;}
    Need(File.Exists(model),"Actual Blender-authored saved GLB missing");
