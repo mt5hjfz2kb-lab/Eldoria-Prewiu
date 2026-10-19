@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "UPLOADED_ITCH_HOSTED_VERIFICATION_PENDING",
+  "state": "REMOTE_CHANNEL_MISSING_RETRY_REQUESTED",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -36,7 +36,7 @@
   },
   "privacy_confirmation_basis": "Owner setup screenshots: Restricted selected, then project saved successfully; remote anonymous access verification pending.",
   "promotion_request": {
-    "id": "itch-native152-email-verified-20261019",
+    "id": "itch-native152-restore-missing-channel-20261019",
     "target": "chrismad/eldoria-pruebas",
     "revision": "native152",
     "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
