@@ -188,3 +188,15 @@ test('Site path traversal is never read even when referenced by apparently signe
     assert.throws(()=>inspectPreparedSite({siteDirectory:fixture.root,sourceSha:validSource,validatedSourceSha:validSource,nativeRun:39251384413}),/Unsafe package path|byte mismatch/);
   } finally{rmSync(dir,{recursive:true,force:true});}
 });
+
+test('Windows UTF-8 BOM metadata preserves exact prepared package validation',()=>{
+  const dir=mkdtempSync(path.join(tmpdir(),'eldoria-site-bom-'));
+  try {
+    const fixture=fixturePreparedSite(dir);
+    for(const file of [path.join(fixture.root,'unity-output-verification.json'),path.join(fixture.dist,'build-manifest.json')])
+      writeFileSync(file,'\uFEFF'+readFileSync(file,'utf8'));
+    const result=inspectPreparedSite({siteDirectory:fixture.root,sourceSha:validSource,validatedSourceSha:validSource,nativeRun:39251384413});
+    assert.equal(result.validated_files,4);
+    assert.equal(result.chunked_files,1);
+  } finally {rmSync(dir,{recursive:true,force:true});}
+});

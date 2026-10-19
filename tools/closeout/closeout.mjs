@@ -149,7 +149,7 @@ export function inspectPreparedSite({siteDirectory, sourceSha, validatedSourceSh
     if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('Package entry is not a regular file: '+relative);
     return full;
   }
-  const readJson = p => JSON.parse(fs.readFileSync(within(p), 'utf8'));
+  const readJson = p => JSON.parse(fs.readFileSync(within(p), 'utf8').replace(/^\uFEFF/, ''));
   const verification = readJson('unity-output-verification.json');
   const manifest = readJson('dist/build-manifest.json');
   if (!sha40.test(sourceSha || '') || !sha40.test(validatedSourceSha || '') ||
