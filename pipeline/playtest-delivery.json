@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ITCH_SERVER_PROCESSING_FIRST_BUILD",
+  "state": "ITCH_PROCESSING_DELAY_REMOTE_CHANNEL_STILL_UNAVAILABLE",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -56,6 +56,16 @@
     "files": 18,
     "hosted_verified": false,
     "first_html5_channel_configuration": "PENDING_OWNER_UI_CHECK",
-    "processing_status": "CONFIRMED_PROCESSING_BY_ITCH_API_20261019_200710Z"
+    "processing_status": "CONFIRMED_PROCESSING_BY_ITCH_API_20261019_200710Z",
+    "latest_remote_check": {
+      "run_id": 39322513107,
+      "checked_at": "2026-10-19T22:49:28+02:00",
+      "result": "No channels visible, including all file types; no further upload attempted"
+    }
+  },
+  "manual_fallback": {
+    "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
+    "inner_zip": "Eldoria-native152-itch.zip",
+    "reason": "Owner browser upload is a temporary fallback; cloud itch browser remains bot-blocked. Automatic channel processing unresolved."
   }
 }
