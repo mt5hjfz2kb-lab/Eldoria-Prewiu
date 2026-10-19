@@ -582,9 +582,20 @@
           "SESSION_HANDOFF.md",
           "PROJECT_STATE.md"
         ],
-        "status": "diagnosing_checkout_and_private_delivery",
+        "status": "repairs_committed_private_web_deployed_final_gate_and_hosted_read_pending",
         "base_main_sha": "3fa068a795d9b7fb1fd13787bd05652db6774fde",
-        "preserve_existing_art_owner": true
+        "preserve_existing_art_owner": true,
+        "evidence": {
+          "unity_gate_run": 39277900049,
+          "unity_gate_conclusion": null,
+          "wrong_project_run_not_certification": 39274718168,
+          "prepared_site_regression_tests": "16/16 PASS",
+          "prepared_site_real_bytes": "5 original files / 184860322 bytes PASS",
+          "private_deployment": "appgdep_6ad63a0012448191b64d52721e4479a6",
+          "private_deployment_status": "succeeded",
+          "hosted_http_identity": "BLOCKED_BY_AUTOMATIC_APPROVAL_REVIEW_REQUIRES_EXPLICIT_DESTINATION_AUTHORIZATION",
+          "physical_mobile_tested": false
+        }
       }
     }
   ],
