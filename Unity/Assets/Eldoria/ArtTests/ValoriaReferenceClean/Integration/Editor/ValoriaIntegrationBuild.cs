@@ -164,8 +164,18 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(h.Hud.Modal.gameObject.activeSelf&&!h.Hud.NarrativeOpen,"Settings panel was replaced by narrator");
     var portraits=h.Hud.Modal.GetComponentsInChildren<RawImage>(true).Where(x=>x.name=="Canonical Aldric portrait");
     Need(portraits.All(x=>!x.gameObject.activeSelf),"Non-narrative menu inherited Aldric portrait");
-    Click(h.Hud.Modal.Close);
    },"new player introduction saved and shared modal restored for settings");
+   // After a cinematic closes, restoring Settings activates a previously hidden
+   // button. In the same Editor call stack its Graphic has depth=-1 until the
+   // next rendered frame; a human touch cannot arrive within that frame.
+   // Keep the real EventSystem raycast and pointer handlers (no Invoke shortcut).
+   yield return null;
+   yield return new WaitForSecondsRealtime(.20f);
+   Check(()=>{
+    Need(h.Hud.Modal.gameObject.activeInHierarchy&&h.Hud.Modal.Close.gameObject.activeInHierarchy,"Settings modal or Close disappeared");
+    Click(h.Hud.Modal.Close);
+    Need(!h.Hud.Modal.gameObject.activeSelf,"Settings Close failed through real pointer");
+   },"restored Settings closes through real rendered-button raycast");
    Check(()=>{Need(h.Ready,"Host not ready");Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,"HUD count");Need(Camera.allCameras.Count(x=>x.enabled)==1,"City camera count");Need(!GameObject.Find("Eldoria HUD").GetComponent<Canvas>().enabled,"Legacy HUD still visible");Capture(h,"integration-city-16x9.png",1600,900);},"city HUD, one camera");
    Check(()=>{Need(h.Hud.Mission.ChapterStepCount==6&&h.Hud.Mission.CompletedStepCount==0,"New-player chapter objectives not projected from real state");Click(h.Hud.Mission.ListToggle);Need(h.Hud.Mission.ListExpanded,"Chapter list did not open through its visible button");Capture(h,"integration-chapter-list.png",1600,900);Click(h.Hud.Mission.ListToggle);Need(!h.Hud.Mission.ListExpanded,"Chapter list would not close");},"Royal Gold real chapter checklist and collapse");
    Check(()=>{Need(!h.CanOpen(RoyalSection.Heroes)&&!h.CanOpen(RoyalSection.Army),"Premature menus visible");Need(!string.IsNullOrWhiteSpace(h.Guidance.Story),"Original narrative missing");Need(Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).All(r=>!r.enabled),"Plot slab remains visible");Click(h.Hud.Mission.Open);Need(h.Read("sawmill",false).Building!=null&&!h.InWorld,"Objective construction navigation failed");},"mechanic-gated menus, narrative, no slabs, objective navigation");
