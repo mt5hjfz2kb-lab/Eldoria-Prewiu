@@ -646,11 +646,11 @@ Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_023.png 7
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_023.png.meta 79-14-B8-21-0D-DA-F5-80-86-19-2B-9B-4D-23-CF-AE-2E-C0-28-E2-B6-94-EE-3F-0D-B9-F2-93-0B-56-0F-76
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Outer_Road_GI.asset 93-D7-70-B1-1D-79-21-B6-08-F0-FC-74-7D-60-F0-A2-14-21-C8-E3-7C-ED-63-B3-8C-39-3B-B0-E0-0A-88-F8
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Outer_Road_GI.asset.meta D5-2C-CF-52-9C-C9-44-DA-2D-57-04-68-6F-2C-BB-E4-13-13-11-29-34-3A-53-DF-87-B0-6C-19-C3-14-45-84
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs AA-88-0E-C7-2D-3A-B6-F1-BF-7F-DB-F8-ED-DB-89-49-68-96-46-46-1E-7D-28-2F-1C-72-1F-F9-46-0C-F5-49
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs 1A-1B-40-AA-37-90-CB-F2-9E-1C-57-D9-9B-06-98-05-FD-36-01-09-D6-82-72-99-B3-35-FD-35-E8-BB-28-6E
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs.meta 4D-22-92-FF-39-E1-FB-5D-F1-D0-B8-AF-1D-CB-78-B0-40-2D-49-4D-72-20-E1-37-29-A6-8E-FB-DD-35-70-78
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegratedWebBuild.cs 07-65-4F-94-CE-25-23-7B-EC-F9-52-E6-CB-0F-EA-74-7A-B5-85-C4-D0-71-CE-47-9A-66-2C-96-02-85-43-C3
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegratedWebBuild.cs.meta E7-BB-35-9F-66-24-82-99-67-91-C1-5A-7F-F0-49-25-C7-F6-D1-8F-A8-62-2E-90-17-38-2D-E7-B2-DC-C9-66
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs 71-5B-DA-4F-C8-A5-80-21-CA-46-31-54-E1-F2-49-2A-06-A1-D5-BF-32-0F-ED-5D-A2-66-5B-4D-5E-2D-56-5B
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs BC-CE-97-81-A0-6B-8D-62-13-8A-76-49-F1-39-0E-DA-C5-D2-3A-14-60-23-FC-98-29-A5-0E-7F-A9-F4-77-2F
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs.meta C5-2D-6B-18-71-F4-2E-91-22-6F-03-FE-06-DD-0F-6B-44-59-F2-85-D0-46-BE-34-29-41-71-A2-02-E8-B2-4E
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/RoofSignature-39298794759/bastion-slate-material-1.mat F6-69-1F-DF-89-22-07-5B-18-85-DC-A5-4C-EC-E9-66-00-6E-B9-25-70-4B-27-AA-59-7B-72-19-56-D0-A1-80
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/RoofSignature-39298794759/bastion-slate-material-1.mat.meta 93-9F-05-1E-D6-35-CD-82-34-6A-3A-94-D7-1E-AB-1F-64-D4-0E-5E-0E-34-F7-11-D0-5B-0C-77-A9-1A-3A-5A
@@ -852,7 +852,7 @@ Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentati
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentation.cs.meta 2B-59-C5-83-85-FB-AD-D0-56-DB-F2-C0-95-CF-1B-65-31-E4-24-D3-AB-B9-92-8A-D7-1B-D0-EA-7C-74-EB-0A
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaPlaytestTelemetry.cs 27-79-3F-45-E7-BD-8F-59-F1-7A-8A-5B-0F-DC-C4-EA-14-C8-6A-81-41-21-F1-DE-E5-31-77-22-EA-0E-B8-75
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaPlaytestTelemetry.cs.meta 6F-C7-53-A8-BC-22-00-15-6E-FA-07-28-58-DB-35-07-5B-99-3C-8C-24-8B-2D-06-D2-E6-05-A6-4F-73-E8-BB
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity 16-D4-86-1E-E5-47-99-FD-68-3F-69-AC-09-89-E0-B1-E1-98-99-0E-45-0D-9C-22-B6-91-17-C4-A6-0C-0E-CB
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity 4E-7C-94-3C-94-15-F8-C5-BE-4D-15-E5-75-39-0C-4E-72-85-22-06-CA-EA-5E-FD-AE-0C-2D-5F-68-87-45-EC
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity.meta 4F-DE-F2-ED-9C-CC-A1-E1-01-02-AE-F0-99-8F-30-87-6B-81-12-33-D5-96-55-B3-40-6F-E0-0E-AA-36-F9-C2
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnsembleMeadow.png 32-6A-C2-32-36-17-53-A8-11-45-CF-34-0D-03-21-33-B6-D4-10-FE-F7-0C-86-97-3B-13-4D-DD-B2-40-88-9C
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnsembleMeadow.png.meta 9D-A6-25-DD-0A-58-A7-65-0F-0E-86-2C-C1-89-12-D1-73-8C-36-5A-91-98-F0-8C-67-E1-69-BB-2D-3B-29-1D
