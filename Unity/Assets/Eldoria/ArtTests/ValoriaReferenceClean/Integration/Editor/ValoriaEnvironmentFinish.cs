@@ -928,16 +928,26 @@ namespace Eldoria.ReferenceClean.Editor {
     .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
    Need(terrain&&terrain.terrainData,"Current city terrain missing");
    var source=terrain.terrainData;var layers=source.terrainLayers;
-   int dry=Array.FindIndex(layers,l=>l&&l.name.IndexOf("DryEarth",StringComparison.OrdinalIgnoreCase)>=0);
+   // Current integrated native152 replaces the obsolete DryEarth layer with
+   // the original scanned CC0 WornSoil material; resolve real semantic assets,
+   // not names assumed from a historical construction source.
+   int dry=Array.FindIndex(layers,l=>l&&
+    (l.name.IndexOf("ScannedWornSoil",StringComparison.OrdinalIgnoreCase)>=0||
+     l.name.IndexOf("DryEarth",StringComparison.OrdinalIgnoreCase)>=0||
+     l.name.IndexOf("Loam",StringComparison.OrdinalIgnoreCase)>=0));
    int bank=Array.FindIndex(layers,l=>l&&l.name.IndexOf("Bank",StringComparison.OrdinalIgnoreCase)>=0);
-   Need(dry>=0&&bank>=0&&dry!=bank,"Original four-family terrain layer vocabulary changed");
+   var layerSignature=string.Join(" | ",layers.Select((l,i)=>i+":"+(l?l.name:"MISSING")+
+    " @ "+(l?AssetDatabase.GetAssetPath(l):"none")));
+   Debug.Log("VALORIA_CONNECTED_GROUND_RETAINED_LAYER_SIGNATURE "+layerSignature);
+   Need(dry>=0,"Current integrated scene has no retained soil material: "+layerSignature);
+   if(bank<0||bank==dry)bank=dry; // No invented substitute texture.
    var sourceHeights=source.GetHeights(0,0,source.heightmapResolution,source.heightmapResolution);
    var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
    var hotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
    string light=LightStamp();var cityCam=new CameraState(city.PlayerCamera);var worldCam=new CameraState(host.WorldCamera);
    bool worldWasActive=host.WorldRoot.activeSelf;var frames=new Dictionary<string,Frame>();
    var report=new WorkgroundReport{scene=city.gameObject.scene.path,source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
-    source_scene_sha256=Hash(city.gameObject.scene.path),original_terrain_guidance="DryEarth + Bank CC0 retained terrain layers",
+    source_scene_sha256=Hash(city.gameObject.scene.path),original_terrain_guidance="Native retained scanned WornSoil and Bank materials (if present)",
     workyard_count=2,access_lane_count=2,art_approved=false,physical_mobile_tested=false,
     limitations=new[]{"Natural ground treatments need independent before/after visual acceptance; no technical gate alone confers ART_APPROVED.",
      "No runtime mobile GPU timing or physical iPhone/Android coverage.",
@@ -999,8 +1009,8 @@ namespace Eldoria.ReferenceClean.Editor {
      // Existing dry-earth texture gives readable load-bearing paths and
      // compacted soil. A little damp bank texture prevents uniform brown blobs.
      for(int i=0;i<layers.Length;i++)map[z,x,i]*=1-wear;
-     map[z,x,dry]+=wear*.84f;
-     map[z,x,bank]+=wear*.16f;
+     if(bank==dry)map[z,x,dry]+=wear;
+     else{map[z,x,dry]+=wear*.84f;map[z,x,bank]+=wear*.16f;}
      maxWear=Mathf.Max(maxWear,wear);changed++;
     }
     Need(changed>280&&maxWear>.48f,"Earthwork does not make a meaningful visible-scale change");
