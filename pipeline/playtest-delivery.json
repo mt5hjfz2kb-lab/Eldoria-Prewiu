@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "AUTOMATIC_PROMOTION_REQUESTED_NOT_YET_PUBLISHED",
+  "state": "UPLOADED_ITCH_HOSTED_VERIFICATION_PENDING",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -29,7 +29,7 @@
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
-    "status": "SECRET_PRESENT_ITCH_API_REACHED_EMAIL_VERIFICATION_REQUIRED",
+    "status": "VERIFIED_BY_SUCCESSFUL_BUTLER_UPLOAD",
     "environment": "eldoria-playtest",
     "secret_name": "BUTLER_API_KEY",
     "confirmed_at": "2026-10-19T21:48:04+02:00"
@@ -42,11 +42,20 @@
     "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
   },
   "last_attempt": {
-    "run_id": 39314902404,
+    "run_id": 39315488741,
     "trigger": "push",
     "prepare": "success",
-    "publish": "failure",
-    "reason": "itch.io requires owner email verification before uploading a build",
+    "publish": "success",
     "automatic_trigger_verified": true
+  },
+  "uploaded": {
+    "provider": "itch.io",
+    "target": "chrismad/eldoria-pruebas",
+    "channel": "web",
+    "revision": "native152",
+    "run_id": 39315488741,
+    "files": 18,
+    "hosted_verified": false,
+    "first_html5_channel_configuration": "PENDING_OWNER_UI_CHECK"
   }
 }
