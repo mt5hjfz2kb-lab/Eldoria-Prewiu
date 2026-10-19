@@ -1,9 +1,9 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "PREPARED_NOT_PUBLISHED_ACCOUNT_SETUP_REQUIRED",
+  "state": "PREPARED_NOT_PUBLISHED_CREDENTIAL_SETUP_REQUIRED",
   "publish_enabled": false,
-  "target": null,
+  "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": false,
   "candidate": {
     "revision": "native152",
@@ -25,5 +25,7 @@
     "physical_mobile_tested": false,
     "art_approved": false
   },
-  "instructions": "Candidate is not published. Never change published until upload and hosted checks pass. Preserve old Site until replacement works; no Unity rebuild. Secrets only in GitHub environment eldoria-playtest."
+  "instructions": "Candidate is not published. Never change published until upload and hosted checks pass. Preserve old Site until replacement works; no Unity rebuild. Secrets only in GitHub environment eldoria-playtest.",
+  "project_url": "https://chrismad.itch.io/eldoria-pruebas",
+  "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified."
 }
