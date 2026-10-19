@@ -1,0 +1,22 @@
+{
+  "stage": "BLENDER_SOURCE_ONLY",
+  "source_sha": "c6901ec5c29347bb5cf65de2a815d0e5ca94692a",
+  "input_hashes": {
+    "Unity\\Assets\\Eldoria\\ArtTests\\World4XZone1\\Models\\ZoneOneSectorCandidate.glb": "6d22c3319524839620591363b3696e920501813a12ad094a327c672f7d06a32d",
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\MaterialInputs\\rock_3\\rock_3_diff_1k.png": "649a4794c36923a94c3d9e996e674585fff5a7fea26f32ba5158da5da5acbcfb",
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\MaterialInputs\\rock_3\\rock_3_nor_gl_1k.png": "2d9512adb2cbe2667755d70367bb000ba434a08edb349f84d920a570e38f3d92",
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\MaterialInputs\\rock_3\\rock_3_rough_1k.png": "8b3c0f938682f7818aac2a979a9c80e242e6589e78b8981b6492d0d728f63f1e",
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\MaterialInputs\\rock_3\\license-manifest.json": "036643e7f67aeabeee84924a0d0ead136c0f2a298e77f07b097fefd91d366b7e"
+  },
+  "output_path": "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\OwnerCityCliffsV19.glb",
+  "output_sha256": "d98268b85b19e8ce8af7d3f63d49943ddbd18b00891bf6ab9adb8a4ab0f74776",
+  "blend_path": "docs\\evidence\\valoria-reference-clean\\OwnerCityCliffsV19.blend",
+  "blend_sha256": "839935729068420613263e0babad952dc724aee2167b6a769f5a8b22f5f155f1",
+  "mesh_count": 24,
+  "triangles": 12232,
+  "geometry": "continuous four coastal formations over authentic river curve, donor rock massing",
+  "protected": "all Bastion, bridge, lower-gate and plot region x[-20,20]; no collision/new gameplay",
+  "art_approved": false,
+  "unity_AB_pending": true,
+  "cost_eur": 0
+}
