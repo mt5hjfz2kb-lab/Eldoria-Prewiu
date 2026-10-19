@@ -1529,6 +1529,151 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class OrganicCivicSurfaceReport {
+   public string scene,source_sha,source_terrain_material;
+   public bool same_camera_light,terrain_heights_preserved,parcels_preserved,
+    hotspots_preserved,original_surface_preserved,visual_only,art_approved,physical_mobile_tested;
+   public int connected_workplaces,workyard_pixels,paved_road_crossings,new_terrain_layers;
+   public Frame[] frames;
+   public string[] limitations;
+  }
+
+  // Deliberate change of technique after ART_REJECTED v8 and v12.
+  // Worksite roads are painted INTO Unity's real TerrainData using one original
+  // authored scanned-soil source, not detached/pale mesh slabs or new plots.
+  public static void ApplyOrganicCivicGroundV13(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string marker="Organic civic working ground / original scanned soil v13";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Current integrated I-II source missing");
+   Need(Find(host.WorldRoot,"Hostile encampment cloth / Breach rust v11"),"Verified world environmental stage missing");
+   Need(!Find(city.gameObject,"Reconstruction circulation / genuine paved access v12"),"Rejected v12 mesh remains in scene");
+   if(Find(city.gameObject,marker)){Debug.Log("VALORIA_ORGANIC_WORKGROUND_ALREADY_APPLIED");return;}
+   var planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Native A/B camera plan missing");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Original review plan invalid");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Current integrated terrain missing");
+   var oldData=terrain.terrainData;
+   var layers=oldData.terrainLayers;
+   var donor=layers.FirstOrDefault(l=>l&&l.name.IndexOf("ScannedWornSoil",StringComparison.OrdinalIgnoreCase)>=0);
+   if(!donor)donor=layers.FirstOrDefault(l=>l&&l.name.IndexOf("Loam",StringComparison.OrdinalIgnoreCase)>=0);
+   Need(donor&&donor.diffuseTexture&&layers.Length>=3&&layers.Length<=5,"Expected original licensed soil layer absent or additional draw-pass limit exceeded");
+   var l=city.Parcels.LeftBuilt;var r=city.Parcels.RightBuilt;
+   var worldNodes=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true)
+    .ToDictionary(h=>h,h=>h.transform.position);
+   string light=LightStamp();var cityCamera=new CameraState(city.PlayerCamera);var worldCamera=new CameraState(host.WorldCamera);
+   bool worldActive=host.WorldRoot.activeSelf;var frames=new Dictionary<string,Frame>();
+   var report=new OrganicCivicSurfaceReport{
+    scene=city.gameObject.scene.path,source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    source_terrain_material=AssetDatabase.GetAssetPath(donor),
+    connected_workplaces=2,visual_only=true,art_approved=false,physical_mobile_tested=false,
+    limitations=new[]{"Fifth existing-family TerrainLayer may require later mobile texture/pass optimization.",
+     "Actual before/after images require independent artistic acceptance.",
+     "No structure, collider, gameplay, progression, save or parcel modification."}};
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"organic-before",frames);
+    host.WorldRoot.SetActive(false);
+    folder=AssetsRoot+"/OrganicCivic-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+    Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+    // Reuse the current CC0 scanned-earth microdetails. Regrade a COPY to
+    // visibly compacted warm ground; no external asset or license is added.
+    var earth=ReadableCopy(donor.diffuseTexture,512);
+    var texels=earth.GetPixels();
+    for(int i=0;i<texels.Length;i++){
+     var source=texels[i];
+     float detail=Mathf.Clamp01(source.grayscale);
+     float value=.72f+detail*.49f;
+     var tint=new Color(.34f*value,.285f*value,.215f*value,source.a);
+     texels[i]=Color.Lerp(tint,source,.12f); // retain scanned original hue
+    }
+    earth.SetPixels(texels);earth.Apply(true);earth.wrapMode=TextureWrapMode.Repeat;earth.name="Retained scanned worksite earth / visible mobile scale";
+    Put(earth,"organic-reconstruction-earth-v13");
+    var newLayer=Object.Instantiate(donor);
+    newLayer.name="Retained scanned soils / active civic work yards";
+    newLayer.diffuseTexture=earth;
+    newLayer.tileSize=new Vector2(4.2f,4.2f);newLayer.normalScale=.52f;
+    AssetDatabase.CreateAsset(newLayer,AssetDatabase.GenerateUniqueAssetPath(folder+"/active-workyard-earth.terrainlayer"));
+    var newData=Object.Instantiate(oldData);
+    newData.name="Original Valoria / softly-connected working quarters v13";
+    var oldCount=layers.Length;
+    newData.terrainLayers=layers.Concat(new[]{newLayer}).ToArray();
+    var n=oldData.alphamapWidth;var m=oldData.alphamapHeight;
+    var original=oldData.GetAlphamaps(0,0,n,m);
+    var alpha=new float[m,n,oldCount+1];
+    var yards=new[]{BoundsOf(l),BoundsOf(r)};
+    Vector2[] Access(Bounds b){
+     var from=new Vector2(ValoriaReferenceCleanArtBuilder.RoadX(10.5f),10.5f);
+     var to=new Vector2(b.center.x,b.min.z-1.2f);
+     var c=new Vector2((from.x+to.x)*.52f,from.y+(to.y-from.y)*.73f);
+     return Curve(from,c,to,28);
+    }
+    var paths=yards.Select(Access).ToArray();
+    float maxPaint=0;
+    for(int y=0;y<m;y++)for(int x=0;x<n;x++){
+     var p=new Vector2(terrain.transform.position.x+x/(float)(n-1)*newData.size.x,
+      terrain.transform.position.z+y/(float)(m-1)*newData.size.z);
+     float wear=0f;
+     if(Mathf.Abs(p.y-RiverCenter(p.x))>RiverWidth(p.x)+4f){
+      var macro=Mathf.PerlinNoise(p.x*.082f+13.6f,p.y*.082f+6.2f);
+      var detail=(Mathf.PerlinNoise(p.x*.37f+33.5f,p.y*.37f+17f)-.5f)*1.9f;
+      for(int k=0;k<2;k++){
+       float d=DistanceToPath(p,paths[k]);
+       var access=1-Smooth(1.95f,5.2f,d+detail*.55f);
+       var b=yards[k];
+       // Organic elliptical worn work zone, never a rectangular plot.
+       float dx=(p.x-b.center.x)/(b.extents.x+5.5f);
+       float dz=(p.y-(b.center.z-1.1f))/(b.extents.z+5.0f);
+       var ell=Mathf.Sqrt(dx*dx+dz*dz);
+       var yard=1-Smooth(.57f,1.32f,ell+detail*.035f);
+       wear=Mathf.Max(wear,Mathf.Max(access*.84f,yard*.67f));
+      }
+      // Original stone road still owns the center: blend gently against
+      // the existing pavement edge with no additional raised quad.
+      var axial=Mathf.Abs(p.x-ValoriaReferenceCleanArtBuilder.RoadX(p.y));
+      wear*=Smooth(2.1f,4.2f,axial);
+      wear*=.93f+.07f*macro;
+     }
+     wear=Mathf.Clamp01(wear);
+     for(int i=0;i<oldCount;i++)alpha[y,x,i]=original[y,x,i]*(1-wear);
+     alpha[y,x,oldCount]=wear;
+     if(wear>.055f){report.workyard_pixels++;maxPaint=Mathf.Max(maxPaint,wear);}
+    }
+    Need(report.workyard_pixels>1100&&maxPaint>.62f,
+     "Original scanned dirt could not produce a visible-scale organic worksite change");
+    newData.SetAlphamaps(0,0,alpha);
+    Put(newData,"city-reconstruction-ground-v13");
+    terrain.terrainData=newData;
+    var collider=terrain.GetComponent<TerrainCollider>();
+    if(collider)collider.terrainData=newData;
+    terrain.Flush();EditorUtility.SetDirty(newData);
+    var mark=new GameObject(marker);mark.transform.SetParent(city.transform,false);
+    report.new_terrain_layers=newData.terrainLayers.Length;
+    CaptureViews(city,host,plan,evidenceDir,"organic-after",frames);
+    report.same_camera_light=light==LightStamp();
+    var hh=oldData.GetHeights(0,0,oldData.heightmapResolution,oldData.heightmapResolution);
+    var now=newData.GetHeights(0,0,newData.heightmapResolution,newData.heightmapResolution);
+    report.terrain_heights_preserved=hh.Cast<float>().SequenceEqual(now.Cast<float>());
+    report.parcels_preserved=city.Parcels.LeftBuilt==l&&city.Parcels.RightBuilt==r;
+    report.hotspots_preserved=worldNodes.All(h=>h.Key&&h.Key.transform.position==h.Value);
+    report.original_surface_preserved=oldData!=newData&&donor.diffuseTexture!=earth;
+    Need(report.same_camera_light&&report.terrain_heights_preserved&&report.parcels_preserved&&
+     report.hotspots_preserved&&report.original_surface_preserved,
+     "Original city heights, materials or interactive I-II bindings changed");
+    report.frames=frames.Values.ToArray();AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-organic-workground-v13.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("ELDORIA_ORGANIC_WORKGROUND_V13_CANDIDATE cells="+report.workyard_pixels);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(worldActive);cityCamera.Restore(city.PlayerCamera);worldCamera.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -1877,7 +2022,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before"||phase=="access-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before"||phase=="access-before"||phase=="organic-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
