@@ -628,7 +628,8 @@ namespace Eldoria.ReferenceClean.Editor {
        bool blueFactor=hue>.52f&&hue<.72f&&saturation>.24f&&color.g>.12f&&color.b>color.g*1.07f;
        diagnostic.Add(renderer.name+" / slot "+slot+" / "+current.name+" / blue_texture="+
         coverage.ToString("F3")+" / blue_factor="+blueFactor);
-       bool candidate=!exclude&&(namedSlate||coverage>.045f||blueFactor);
+       // Do not mistake the flat cobalt colour factor of royal cloth for a roof.
+       bool candidate=!exclude&&(namedSlate||coverage>.045f);
        if(!candidate){
         if(copyTexture)Object.DestroyImmediate(copyTexture);
         continue;
@@ -685,6 +686,82 @@ namespace Eldoria.ReferenceClean.Editor {
     if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
     if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
     host.WorldRoot.SetActive(worldActive);camCity.Restore(city.PlayerCamera);camWorld.Restore(host.WorldCamera);
+   }
+  }
+
+
+  [Serializable] sealed class HeraldicRestoreReport {
+   public string scene,source_sha,original_banner_material_guid;
+   public bool same_camera_light,terrain_heights_preserved,parcels_preserved,hotspots_preserved,
+    art_approved,physical_mobile_tested;
+   public int checked_bastion_renderers,royal_material_slots_restored,material_slots_already_original;
+   public Frame[] frames;
+  }
+  // The original large stone roof in V5 is good. Its generic-colour material
+  // selection also caught the heraldic banners; restore only that donor slot.
+  public static void RestoreRoyalBanners(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string marker="Heraldic original royal blue / roof correction v6";
+   const string bannerGuid="93d5684611f84b34693282ec9c3c3649";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Retained player scene missing");
+   Need(Find(host.WorldRoot,"Roof signature / Bastion weathered stone slate v5"),"V5 roof model finishing absent");
+   if(Find(host.WorldRoot,marker)){Debug.Log("VALORIA_REFERENCE_CLEAN_BANNERS_ALREADY_RESTORED_COMPLETE");return;}
+   var oldMat=AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath(bannerGuid));
+   Need(oldMat&&oldMat.name=="NativeGI_Material_026","Exact historic royal banner source material missing");
+   string path=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(path),"Original environment evidence missing");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(path));
+   Need(plan!=null&&plan.shore_gaps!=null,"Original artist plan invalid");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"City terrain missing");
+   var data=terrain.terrainData;
+   var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var nodes=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   var cc=new CameraState(city.PlayerCamera);var wc=new CameraState(host.WorldCamera);
+   var lighting=LightStamp();bool wasWorld=host.WorldRoot.activeSelf;
+   var frames=new Dictionary<string,Frame>();
+   var result=new HeraldicRestoreReport{scene=city.gameObject.scene.path,
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    original_banner_material_guid=bannerGuid,art_approved=false,physical_mobile_tested=false};
+   try{
+    city.Apply(new PlayerState {BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"banner-before",frames);
+    host.WorldRoot.SetActive(true);
+    var markerObject=new GameObject(marker);markerObject.transform.SetParent(host.WorldRoot.transform,false);
+    foreach(var root in new[]{city.BastionOne,city.BastionTwo,host.WorldBastionOne,host.WorldBastionTwo}.Where(x=>x)){
+     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>(true)){
+      if(!renderer.name.StartsWith("Bastion_"))continue;
+      result.checked_bastion_renderers++;
+      var mats=renderer.sharedMaterials;
+      Need(mats.Length>14&&mats[14],"Original 19-slot Bastion materials changed");
+      if(mats[14]==oldMat){result.material_slots_already_original++;continue;}
+      Need(mats[14].name.Contains("NativeGI_Material_026"),
+       "Expected only previously regraded royal-blue cloth in slot14");
+      mats[14]=oldMat;renderer.sharedMaterials=mats;result.royal_material_slots_restored++;
+     }
+    }
+    host.WorldRoot.SetActive(false);
+    CaptureViews(city,host,plan,evidenceDir,"banner-after",frames);
+    result.same_camera_light=lighting==LightStamp();
+    result.terrain_heights_preserved=data.GetHeights(0,0,data.heightmapResolution,data.heightmapResolution)
+     .Cast<float>().SequenceEqual(terrain.terrainData.GetHeights(0,0,terrain.terrainData.heightmapResolution,terrain.terrainData.heightmapResolution).Cast<float>());
+    result.parcels_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    result.hotspots_preserved=nodes.All(x=>x.Key&&x.Key.transform.position==x.Value);
+    Need(result.same_camera_light&&result.terrain_heights_preserved&&result.parcels_preserved&&result.hotspots_preserved,
+     "Heraldic material correction changed protected playable state");
+    Need(result.checked_bastion_renderers>=2&&
+     result.material_slots_already_original+result.royal_material_slots_restored==result.checked_bastion_renderers,
+     "Incomplete Bastion banner recovery");
+    result.frames=frames.Values.ToArray();
+    AssetDatabase.SaveAssets();Directory.CreateDirectory(evidenceDir);
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-heraldic-restoration-unity.json"),JsonUtility.ToJson(result,true));
+    Debug.Log("VALORIA_REFERENCE_CLEAN_ROYAL_BANNERS_COMPLETE restored="+result.royal_material_slots_restored);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(wasWorld);cc.Restore(city.PlayerCamera);wc.Restore(host.WorldCamera);
    }
   }
 
@@ -1036,7 +1113,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
