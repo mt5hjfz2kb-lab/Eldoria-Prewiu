@@ -646,12 +646,16 @@ Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_023.png 7
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_023.png.meta 79-14-B8-21-0D-DA-F5-80-86-19-2B-9B-4D-23-CF-AE-2E-C0-28-E2-B6-94-EE-3F-0D-B9-F2-93-0B-56-0F-76
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Outer_Road_GI.asset 93-D7-70-B1-1D-79-21-B6-08-F0-FC-74-7D-60-F0-A2-14-21-C8-E3-7C-ED-63-B3-8C-39-3B-B0-E0-0A-88-F8
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Outer_Road_GI.asset.meta D5-2C-CF-52-9C-C9-44-DA-2D-57-04-68-6F-2C-BB-E4-13-13-11-29-34-3A-53-DF-87-B0-6C-19-C3-14-45-84
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs F9-78-88-38-5E-02-28-8A-C6-47-78-4B-DC-D3-B6-DF-03-46-C6-30-25-4C-7E-BA-74-12-83-B8-CE-5E-ED-16
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs 99-E3-2F-DD-CA-35-DE-4A-D1-A8-F6-02-AC-E4-F7-8F-CE-1C-1D-FA-EA-DF-57-CB-09-A5-BE-09-E7-8F-26-E3
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs.meta 4D-22-92-FF-39-E1-FB-5D-F1-D0-B8-AF-1D-CB-78-B0-40-2D-49-4D-72-20-E1-37-29-A6-8E-FB-DD-35-70-78
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegratedWebBuild.cs 07-65-4F-94-CE-25-23-7B-EC-F9-52-E6-CB-0F-EA-74-7A-B5-85-C4-D0-71-CE-47-9A-66-2C-96-02-85-43-C3
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegratedWebBuild.cs.meta E7-BB-35-9F-66-24-82-99-67-91-C1-5A-7F-F0-49-25-C7-F6-D1-8F-A8-62-2E-90-17-38-2D-E7-B2-DC-C9-66
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs 23-71-CC-6F-9D-08-62-37-BE-A3-76-0F-85-A1-E7-0C-FB-53-F9-90-63-A5-56-F3-E3-19-3A-AC-A0-10-55-DA
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs 09-96-50-38-7B-2D-D5-B7-2B-AB-0A-DE-AB-C2-DD-BE-CD-9C-B6-53-02-4B-36-54-1E-B1-1D-A6-24-C9-03-CC
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs.meta C5-2D-6B-18-71-F4-2E-91-22-6F-03-FE-06-DD-0F-6B-44-59-F2-85-D0-46-BE-34-29-41-71-A2-02-E8-B2-4E
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-mat-v11-1.mat 8A-D2-E3-4D-46-64-5D-5B-67-CC-E0-81-BE-AA-F6-B2-BC-E5-B3-2C-8C-0D-95-13-F4-D5-78-20-34-4E-71-C8
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-mat-v11-1.mat.meta 4C-A2-F6-C1-51-09-FA-9A-12-D2-C8-EB-68-14-02-B0-E3-C0-9A-20-21-94-93-F6-48-C7-DF-04-4A-E4-CB-3E
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-texture-v11-0.asset 5D-21-7E-98-D4-7F-B8-8A-89-22-5D-FF-AD-CC-43-F1-3F-CE-9F-75-53-3D-C7-CF-C9-32-52-62-77-AD-1B-92
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-texture-v11-0.asset.meta 63-22-1F-EC-59-8F-73-81-6C-80-BC-91-E2-E3-83-74-7A-E0-18-F2-B5-94-95-D9-1C-21-F7-E8-1B-BA-16-B5
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/RoofSignature-39298794759/bastion-slate-material-1.mat F6-69-1F-DF-89-22-07-5B-18-85-DC-A5-4C-EC-E9-66-00-6E-B9-25-70-4B-27-AA-59-7B-72-19-56-D0-A1-80
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/RoofSignature-39298794759/bastion-slate-material-1.mat.meta 93-9F-05-1E-D6-35-CD-82-34-6A-3A-94-D7-1E-AB-1F-64-D4-0E-5E-0E-34-F7-11-D0-5B-0C-77-A9-1A-3A-5A
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/RoofSignature-39298794759/bastion-slate-material-3.mat 8D-01-95-59-6A-12-E4-16-24-5D-62-CA-CC-C5-BF-26-18-B6-D2-F7-66-3A-DF-BD-69-89-15-B8-09-2C-00-09
@@ -852,7 +856,7 @@ Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentati
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentation.cs.meta 2B-59-C5-83-85-FB-AD-D0-56-DB-F2-C0-95-CF-1B-65-31-E4-24-D3-AB-B9-92-8A-D7-1B-D0-EA-7C-74-EB-0A
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaPlaytestTelemetry.cs 27-79-3F-45-E7-BD-8F-59-F1-7A-8A-5B-0F-DC-C4-EA-14-C8-6A-81-41-21-F1-DE-E5-31-77-22-EA-0E-B8-75
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaPlaytestTelemetry.cs.meta 6F-C7-53-A8-BC-22-00-15-6E-FA-07-28-58-DB-35-07-5B-99-3C-8C-24-8B-2D-06-D2-E6-05-A6-4F-73-E8-BB
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity 92-91-CE-15-15-56-49-08-3B-F1-87-43-94-FB-78-1C-A0-CC-EF-1C-BE-7E-75-02-09-8E-12-5D-56-1C-03-BC
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity 01-D9-EB-ED-6A-F0-94-15-76-AE-EB-F6-99-7F-B0-DD-82-EE-89-A6-C5-CC-EE-6F-D7-61-73-B4-D0-02-A9-B3
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity.meta 4F-DE-F2-ED-9C-CC-A1-E1-01-02-AE-F0-99-8F-30-87-6B-81-12-33-D5-96-55-B3-40-6F-E0-0E-AA-36-F9-C2
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnsembleMeadow.png 32-6A-C2-32-36-17-53-A8-11-45-CF-34-0D-03-21-33-B6-D4-10-FE-F7-0C-86-97-3B-13-4D-DD-B2-40-88-9C
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnsembleMeadow.png.meta 9D-A6-25-DD-0A-58-A7-65-0F-0E-86-2C-C1-89-12-D1-73-8C-36-5A-91-98-F0-8C-67-E1-69-BB-2D-3B-29-1D
