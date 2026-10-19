@@ -102,6 +102,31 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Could not restore tracked source to the workflow commit.' }
           & git clean -ffdx -e '/Unity/Library/' -e '/valoria-layered-source/' -e '/valoria-clean-live-main/'
           if ($LASTEXITCODE -ne 0) { throw 'Could not remove stale untracked source and build output.' }
+          # A Windows CI run (39266054859) proved Unity/Assets can be absent here despite
+          # checkout/reset claiming success. Repair only exact tracked project files, never
+          # regenerate art or overwrite the independent native-checkout/Unity Library.
+          $gitRoot = (& git rev-parse --show-toplevel).Trim()
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot resolve the actual Git checkout root.' }
+          $gitRootCanonical = [System.IO.Path]::GetFullPath($gitRoot)
+          $workspaceCanonical = [System.IO.Path]::GetFullPath($env:GITHUB_WORKSPACE)
+          if ($gitRootCanonical -ine $workspaceCanonical) {
+            throw "UNITY_CHECKOUT_ROOT_MISMATCH: actual=$gitRootCanonical expected=$workspaceCanonical"
+          }
+          $paths = @('Unity/Assets','Unity/Packages/manifest.json','Unity/ProjectSettings/ProjectVersion.txt')
+          $missing = @($paths | Where-Object { -not (Test-Path -LiteralPath (Join-Path $workspaceCanonical $_)) })
+          if ($missing.Count) {
+            Write-Warning "UNITY_TRACKED_SOURCE_MISSING: $($missing -join ', '); recovering exact HEAD paths without touching Library or native checkouts."
+            $indexed = @(& git ls-tree -r --name-only $expectedCommit -- Unity/Assets Unity/Packages Unity/ProjectSettings | Select-Object -First 1)
+            if ($LASTEXITCODE -ne 0 -or -not $indexed.Count) { throw 'Git commit has no Unity source to restore; refuse fabricated project.' }
+            & git checkout --ignore-skip-worktree-bits $expectedCommit -- Unity/Assets Unity/Packages Unity/ProjectSettings
+            if ($LASTEXITCODE -ne 0) { throw 'Tracked Unity source recovery from exact HEAD failed.' }
+            foreach ($required in $paths) {
+              if (-not (Test-Path -LiteralPath (Join-Path $workspaceCanonical $required))) {
+                throw "UNITY_TRACKED_SOURCE_STILL_MISSING_AFTER_RESTORE: $required"
+              }
+            }
+            Write-Host 'UNITY_EXACT_TRACKED_SOURCE_RECOVERED'
+          }
           $actualCommit = & git rev-parse HEAD
           if ($LASTEXITCODE -ne 0) { throw 'Could not read the restored Git HEAD.' }
           if ($actualCommit.Trim() -ne $expectedCommit) { throw "Checkout SHA mismatch: $actualCommit" }
