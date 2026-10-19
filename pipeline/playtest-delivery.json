@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "REMOTE_CHANNEL_MISSING_RETRY_REQUESTED",
+  "state": "ITCH_SERVER_PROCESSING_FIRST_BUILD",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -42,11 +42,10 @@
     "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
   },
   "last_attempt": {
-    "run_id": 39315488741,
-    "trigger": "push",
+    "run_id": 39316473158,
     "prepare": "success",
-    "publish": "success",
-    "automatic_trigger_verified": true
+    "publish": "blocked_by_existing_build_processing",
+    "reason": "itch API: channel web's latest build is still processing, try again later"
   },
   "uploaded": {
     "provider": "itch.io",
@@ -56,6 +55,7 @@
     "run_id": 39315488741,
     "files": 18,
     "hosted_verified": false,
-    "first_html5_channel_configuration": "PENDING_OWNER_UI_CHECK"
+    "first_html5_channel_configuration": "PENDING_OWNER_UI_CHECK",
+    "processing_status": "CONFIRMED_PROCESSING_BY_ITCH_API_20261019_200710Z"
   }
 }
