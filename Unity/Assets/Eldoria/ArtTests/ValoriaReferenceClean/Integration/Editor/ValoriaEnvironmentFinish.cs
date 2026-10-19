@@ -1405,6 +1405,130 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class FunctionalAccessReport {
+   public string scene,source_sha,source_paving_material;
+   public bool same_camera_light,terrain_heights_preserved,parcels_preserved,
+    hotspot_centres_preserved,source_paving_preserved,art_approved,physical_mobile_tested;
+   public int connected_worksites,road_segments,added_renderers,added_colliders,source_triangles;
+   public Frame[] frames;public string[] limitations;
+  }
+  // Retained city's missing circulation, not independent architecture:
+  // two substantial curved stone footways branch from the existing avenue to
+  // its real sawmill and garrison and are laid flush to the actual terrain.
+  // The paving texture/material comes from the already visible authored road.
+  // These surfaces do not change physical routes, selection, plots or gameplay.
+  public static void ApplyIntegratedWorkingAccessV12(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string marker="Reconstruction circulation / genuine paved access v12";
+   Need(city&&host&&city.PlayerCamera&&host.WorldRoot&&host.WorldCamera,"Original consolidated scene missing");
+   Need(Find(host.WorldRoot,"Hostile encampment cloth / Breach rust v11"),"Verified world+camp visual sequence incomplete");
+   if(Find(city.gameObject,marker)){Debug.Log("VALORIA_WORKING_ACCESS_ALREADY_APPLIED");return;}
+   var planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Existing camera plan missing");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Current native camera plan invalid");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Current terrain foundation not available");
+   var paving=Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(r=>r.name.StartsWith("Axial_Paving")&&!r.transform.IsChildOf(host.WorldRoot.transform)
+      &&r.sharedMaterial&&r.GetComponent<MeshFilter>()&&r.GetComponent<MeshFilter>().sharedMesh);
+   Need(paving,"No retained authored avenue paving to match; decline unlicensed or newly invented street material");
+   var pavingMaterial=paving.sharedMaterial;
+   var pavingMesh=paving.GetComponent<MeshFilter>().sharedMesh;
+   var data=terrain.terrainData;var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var nodes=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   var cityCam=new CameraState(city.PlayerCamera);var worldCam=new CameraState(host.WorldCamera);
+   string light=LightStamp();bool worldWasActive=host.WorldRoot.activeSelf;
+   var views=new Dictionary<string,Frame>();
+   var result=new FunctionalAccessReport{
+    scene=city.gameObject.scene.path,source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    source_paving_material=AssetDatabase.GetAssetPath(pavingMaterial),
+    source_triangles=pavingMesh.triangles.Length/3,art_approved=false,physical_mobile_tested=false,
+    limitations=new[]{"Authentic city A/B requires independent visual acceptance before ART_APPROVED.",
+     "Two noninteractive paving strips only; future buildable plot references remain original.",
+     "Not yet tested on physical Android or iPhone hardware."}};
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"access-before",views);
+    host.WorldRoot.SetActive(false);
+    folder=AssetsRoot+"/WorkAccess-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+    Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+    var parent=new GameObject(marker);parent.transform.SetParent(city.transform,false);
+    var yards=new[]{BoundsOf(left),BoundsOf(right)};
+    for(int k=0;k<yards.Length;k++){
+     var yard=yards[k];
+     float goalZ=yard.min.z-2.4f;
+     float junctionZ=Mathf.Min(12f,goalZ-12f);
+     junctionZ=Mathf.Max(-5f,junctionZ);
+     var start=new Vector2(ValoriaReferenceCleanArtBuilder.RoadX(junctionZ),junctionZ);
+     var end=new Vector2(yard.center.x,goalZ);
+     Need(Mathf.Abs(end.x-start.x)>12f&&end.y>start.y+7f,
+      "Unexpected building access placement; no forced path across existing plot");
+     // Functional bend respects the avenue and joins the front entrance at
+     // an oblique angle, without reintroducing a rigid city lot grid.
+     var guide=new Vector2(start.x+(end.x-start.x)*.29f,
+      start.y+(end.y-start.y)*.79f);
+     var path=Curve(start,guide,end,20);
+     var v=new List<Vector3>();var uvs=new List<Vector2>();var tris=new List<int>();
+     float length=0;
+     for(int i=0;i<path.Length;i++){
+      if(i>0)length+=Vector2.Distance(path[i-1],path[i]);
+      var tangent=(path[Mathf.Min(i+1,path.Length-1)]-path[Mathf.Max(0,i-1)]).normalized;
+      var normal=new Vector2(-tangent.y,tangent.x);
+      float width=Mathf.Lerp(3.65f,3.0f,i/(float)(path.Length-1));
+      for(int side=0;side<3;side++){
+       float offset=(side-1)*width*.5f;
+       var p=path[i]+normal*offset;
+       // The Unity physical terrain is the authority, not a new flat strip;
+       // sample every road boundary point to avoid detached geometry.
+       float h=terrain.SampleHeight(new Vector3(p.x,0,p.y))+terrain.transform.position.y;
+       var world=new Vector3(p.x,h+.072f,p.y);
+       v.Add(parent.transform.InverseTransformPoint(world));
+       uvs.Add(new Vector2((side/2f)*1.35f,length*.37f));
+      }
+      if(i>0)for(int side=0;side<2;side++){
+       int a=(i-1)*3+side;int b=i*3+side;
+       tris.AddRange(new[]{a,a+1,b,a+1,b+1,b});
+      }
+     }
+     var roadMesh=new Mesh{name=k==0?"Retained paving / sawmill delivery access":"Retained paving / garrison access"};
+     roadMesh.SetVertices(v);roadMesh.SetTriangles(tris,0);roadMesh.SetUVs(0,uvs);
+     roadMesh.RecalculateNormals();roadMesh.RecalculateBounds();
+     Need(roadMesh.vertexCount==path.Length*3&&roadMesh.triangles.Length>150,"Incomplete original-width stone access");
+     Put(roadMesh,k==0?"sawmill-access-paving":"garrison-access-paving");
+     var root=new GameObject(k==0?"Sawmill stone deliveries / curved access":"Garrison reconstruction / connected access");
+     root.transform.SetParent(parent.transform,true);
+     root.transform.position=parent.transform.position;root.transform.rotation=parent.transform.rotation;
+     root.AddComponent<MeshFilter>().sharedMesh=roadMesh;
+     var renderer=root.AddComponent<MeshRenderer>();renderer.sharedMaterial=pavingMaterial;PrepareRenderer(renderer);
+     result.connected_worksites++;result.road_segments+=path.Length-1;
+    }
+    result.added_renderers=parent.GetComponentsInChildren<MeshRenderer>(true).Length;
+    result.added_colliders=parent.GetComponentsInChildren<Collider>(true).Length;
+    Need(result.connected_worksites==2&&result.added_renderers==2&&result.added_colliders==0,
+     "Reused access has unsafe/unsupported gameplay components");
+    CaptureViews(city,host,plan,evidenceDir,"access-after",views);
+    result.same_camera_light=light==LightStamp();
+    result.terrain_heights_preserved=terrain.terrainData==data;
+    result.parcels_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    result.hotspot_centres_preserved=nodes.All(p=>p.Key&&p.Key.transform.position==p.Value);
+    result.source_paving_preserved=paving.sharedMaterial==pavingMaterial&&paving.GetComponent<MeshFilter>().sharedMesh==pavingMesh;
+    Need(result.same_camera_light&&result.terrain_heights_preserved&&result.parcels_preserved&&
+     result.hotspot_centres_preserved&&result.source_paving_preserved,"Paved access changed protected geometry/gameplay or lighting");
+    result.frames=views.Values.ToArray();AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-work-access-v12.json"),JsonUtility.ToJson(result,true));
+    Debug.Log("VALORIA_FUNCTIONAL_ACCESS_V12_CANDIDATE roads="+result.connected_worksites+
+     " segments="+result.road_segments);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(worldWasActive);cityCam.Restore(city.PlayerCamera);worldCam.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -1753,7 +1877,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before"||phase=="access-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
