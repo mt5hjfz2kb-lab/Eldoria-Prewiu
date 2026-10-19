@@ -1,0 +1,78 @@
+name: '[VALORIA] One-time native156 real capture recovery'
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/valoria-native156-evidence-recovery.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: valoria-native156-evidence-recovery
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-review-small-39314778625
+          run-id: 39314778625
+          github-token: ${{ github.token }}
+          path: incoming
+      - name: Extract only real Unity scene-image previews and native pass
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64, json, hashlib, shutil
+          incoming=Path('incoming')
+          out=Path('docs/evidence/valoria-reference-clean/native156-recovery')
+          out.mkdir(parents=True,exist_ok=True)
+          def unique(pattern):
+              matches=list(incoming.rglob(pattern))
+              if len(matches)!=1:
+                  raise RuntimeError(f'Expected exactly one {pattern}, got {len(matches)}')
+              return matches[0]
+          source='865bd48d29e8df090468dce1c9f3fde140f5038b'
+          report=json.loads(unique('environment-surviving-quarter-unity.json').read_text(encoding='utf-8-sig'))
+          if report.get('source_sha')!=source or report.get('placed_quarters')!=2:
+              raise RuntimeError('Exact native156 run did not produce two surviving architectural quarters')
+          for field in ['same_camera_light','terrain_heights_preserved','parcel_bindings_preserved','hotspots_preserved']:
+              if report.get(field) is not True: raise RuntimeError('Protected native156 proof failed: '+field)
+          metadata={'source_run':39314778625,'source_sha':source,'source_artifact':12215949809,'visual_status':'ART_REVIEW_REQUIRED_NOT_APPROVED','native_checks':{k:report.get(k) for k in ['same_camera_light','terrain_heights_preserved','parcel_bindings_preserved','hotspots_preserved','placed_quarters','reused_renderer_count']},'image_previews':{}}
+          for view in ['city-wide','city-portrait','sawmill','barracks']:
+              for phase in (['before','after'] if view!='city-portrait' else ['after']):
+                  name=f'environment-{view}-survivors-{phase}'
+                  pic=unique(name+'.preview.b64')
+                  raw=base64.b64decode(pic.read_text().strip(),validate=True)
+                  if raw[:3]!=bytes.fromhex('ffd8ff'):raise RuntimeError('Preview not JPEG: '+name)
+                  dest=out/(name+'.jpg')
+                  dest.write_bytes(raw)
+                  metadata['image_previews'][name]={'sha256':hashlib.sha256(raw).hexdigest(),'bytes':len(raw),'original_file':str(pic)}
+          (out/'native156-verified-report.json').write_text(json.dumps(metadata,indent=2)+'\n')
+          shutil.copyfile(unique('environment-surviving-quarter-unity.json'),out/'native156-unity-report.json')
+          shutil.copyfile(unique('integration-result.json'),out/'native156-integration-result.json')
+          print('RECOVERY_PASS',metadata['native_checks'],list(metadata['image_previews']))
+          PY
+      - name: Commit recovered evidence only, never promote scene automatically
+        shell: bash
+        run: |
+          git config user.name 'Eldoria evidence recovery'
+          git config user.email 'valoria-review@users.noreply.github.com'
+          git add docs/evidence/valoria-reference-clean/native156-recovery/
+          git diff --cached --quiet && exit 0
+          git commit -m 'evidence(valoria): restore real Unity native156 captures for independent art review'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main
+            if git push origin HEAD:main; then exit 0; fi
+            echo "Concurrent independent change attempt $attempt; retry without force"
+          done
+          echo "EVIDENCE_RECOVERY_PENDING_RECONCILIATION" >&2
+          exit 1
