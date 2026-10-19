@@ -6,6 +6,8 @@
  *   node tools/closeout/closeout.mjs triage --log job.log [--report report.json] [--change qa_only|product|unknown]
  *   node tools/closeout/closeout.mjs preflight-browser --artifact build.zip --sha256 <64hex>
  *        --source-sha <40hex> --validated-source-sha <40hex> [--script tools/.../playtest_web.cjs]
+ *   node tools/closeout/closeout.mjs preflight-browser --prepared-site prepared-site
+ *        --source-sha <40hex> --validated-source-sha <40hex> --native-run <id> --script <qa.cjs>
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -23,6 +25,10 @@ const ERROR_CATEGORIES = [
     action: 'Bloquear promoción. Comparar SHA y manifiestos de fuentes/artefacto; no desactivar la comprobación.' },
   { id: 'ENVIRONMENT_FFMPEG', pattern: /(?:spawnSync ffmpeg ENOENT|ffmpeg (?:not found|unavailable|ENOENT)|Genuine Chromium video frames missing)/i,
     action: 'Reparar FFmpeg en el entorno antes de repetir Chromium; conservar el artefacto exacto.' },
+  { id: 'ENVIRONMENT_UNITY_CHECKOUT', pattern: /(?:UNITY_PROJECT_SOURCE_MISSING|UNITY_TRACKED_SOURCE_MISSING|UNITY_TRACKED_SOURCE_STILL_MISSING_AFTER_RESTORE|UNITY_CHECKOUT_ROOT_MISMATCH)/i,
+    action: 'El checkout Windows no tiene el proyecto completo. Reconstruir desde el SHA exacto y verificar Unity/Assets, Packages y ProjectSettings ANTES de iniciar Unity. No tocar arte, guardados ni WebGL.' },
+  { id: 'ENVIRONMENT_UNITY_PROJECT_PATH', pattern: /Couldn't set project path to:/i,
+    action: 'Fallo antes de EditMode. Verificar presencia del proyecto y ruta/workdir reales; no modificar gameplay ni concluir que fallaron los tests.' },
   { id: 'ENVIRONMENT_UNITY_EDITOR', pattern: /(?:IndexationOnStartup|SearchDatabase|Search\.index[^\n\r]{0,90}(?:exception|corrupt|failed)|UI certification path[^\n\r]{0,60}incorrect)/i,
     action: 'Corregir el entorno del Editor en su procedimiento de recuperación acotado; preservar el juego.' },
   { id: 'ENVIRONMENT_BROWSER', pattern: /(?:Playwright package resolution failed|browser executable[^\n\r]{0,80}(?:not found|missing)|SwiftShader[^\n\r]{0,80}(?:slow|several seconds)|ffmpeg-win64\.exe[^\n\r]{0,60}ENOENT)/i,
@@ -122,12 +128,98 @@ function hashFile(file) {
   return hash.digest('hex');
 }
 
-export function browserPreflight({ artifact, artifactSha256, sourceSha, validatedSourceSha,
+
+/**
+ * Validate the exact prepared Sites payload, not merely the presence of a ZIP.
+ * Unity was already compiled by the owning workflow. We verify each original
+ * SHA-256 after direct copying or chunk reconstruction before replaying it.
+ * This is package consistency; it NEVER certifies browser QA or publishing.
+ */
+export function inspectPreparedSite({siteDirectory, sourceSha, validatedSourceSha, nativeRun} = {}) {
+  if (!siteDirectory) throw new Error('prepared site path is required');
+  const root = path.resolve(siteDirectory);
+  function within(relative, base = root) {
+    if (typeof relative !== 'string' || !relative || relative.includes('\\') ||
+        relative.includes('?') || relative.includes('\0') ||
+        relative.split('/').some(p => !p || p === '.' || p === '..') ||
+        path.posix.isAbsolute(relative)) throw new Error('Unsafe package path');
+    const full = path.resolve(base, ...relative.split('/'));
+    if (!full.startsWith(path.resolve(base) + path.sep)) throw new Error('Package path escapes root');
+    const stat = fs.lstatSync(full);
+    if (!stat.isFile() || stat.isSymbolicLink()) throw new Error('Package entry is not a regular file: '+relative);
+    return full;
+  }
+  const readJson = p => JSON.parse(fs.readFileSync(within(p), 'utf8'));
+  const verification = readJson('unity-output-verification.json');
+  const manifest = readJson('dist/build-manifest.json');
+  if (!sha40.test(sourceSha || '') || !sha40.test(validatedSourceSha || '') ||
+      !same(sourceSha, validatedSourceSha) || !same(sourceSha, verification.source_commit))
+    throw new Error('Prepared WebGL source SHA differs from the pinned native source');
+  if (!Number.isSafeInteger(Number(nativeRun)) || Number(nativeRun) <= 0 ||
+      Number(verification.native_run) !== Number(nativeRun))
+    throw new Error('Prepared WebGL native run differs from the pinned build run');
+  if (verification.all_transport_hashes_verified !== true ||
+      !Array.isArray(verification.files) || verification.files.length < 4)
+    throw new Error('Prepared WebGL verification is incomplete');
+  if (!manifest || typeof manifest !== 'object' || !manifest.chunks || typeof manifest.chunks !== 'object' ||
+      !['loader','framework','data','code'].every(x => typeof manifest[x] === 'string'))
+    throw new Error('Prepared WebGL build manifest is malformed');
+  const digestMap = new Map(), usedChunkKeys = new Set();
+  let totalBytes = 0, validatedFiles = 0, reconstructedFiles = 0;
+  for (const entry of verification.files) {
+    if (!entry || typeof entry.file !== 'string' || !sha64.test(entry.sha256 || '') ||
+        !Number.isSafeInteger(entry.bytes) || entry.bytes < 0 || digestMap.has(entry.file))
+      throw new Error('Invalid or duplicated original file digest');
+    const expectedKey = entry.file + '?v=' + entry.sha256.slice(0,16);
+    const chunked = manifest.chunks[expectedKey];
+    let digester = crypto.createHash('sha256'), bytes = 0;
+    if (chunked) {
+      if (!Array.isArray(chunked.parts) || !chunked.parts.length ||
+          chunked.bytes !== entry.bytes || !same(chunked.sha256,entry.sha256))
+        throw new Error('Chunk manifest differs from original: '+entry.file);
+      for (const chunk of chunked.parts) {
+        if (!chunk.startsWith('payload/')) throw new Error('Unexpected chunk path: '+chunk);
+        const data = fs.readFileSync(within('dist/'+chunk));
+        if (data.length > 20*1024*1024) throw new Error('Oversized transport chunk');
+        bytes += data.length; digester.update(data);
+      }
+      reconstructedFiles++; usedChunkKeys.add(expectedKey);
+    } else {
+      if (entry.bytes > 20*1024*1024) throw new Error('Large Unity file not chunked: '+entry.file);
+      const data = fs.readFileSync(within('dist/'+entry.file));
+      bytes = data.length; digester.update(data);
+    }
+    if (bytes !== entry.bytes || !same(digester.digest('hex'),entry.sha256))
+      throw new Error('Prepared WebGL byte mismatch: '+entry.file);
+    digestMap.set(entry.file,entry.sha256);
+    totalBytes += bytes; validatedFiles++;
+  }
+  if (Object.keys(manifest.chunks).length !== usedChunkKeys.size)
+    throw new Error('Unknown chunks in prepared manifest');
+  for (const role of ['loader','framework','data','code']) {
+    const match = manifest[role].match(/^(Build\/[^?]+)\?v=([a-f0-9]{16})$/i);
+    if (!match || !digestMap.has(match[1]) ||
+        digestMap.get(match[1]).slice(0,16) !== match[2])
+      throw new Error('Manifest role references unverified Unity file: '+role);
+  }
+  return {validated_files:validatedFiles,original_bytes:totalBytes,chunked_files:reconstructedFiles,
+    source_sha:verification.source_commit,native_run:Number(verification.native_run)};
+}
+
+export function browserPreflight({ artifact, artifactSha256, preparedSite = null, nativeRun = null, sourceSha, validatedSourceSha,
     scriptPath = null, environment = process.env, fileExists = fs.existsSync,
     findBrowser = null, findFfmpeg = null, findPlaywright = null, computeHash = hashFile,
     checkScript = null } = {}) {
   const checks = [];
   const record = (name, pass, detail) => checks.push({name, status:pass?'READY':'BLOCKED', detail});
+  if (preparedSite) {
+    try {
+      const details = inspectPreparedSite({siteDirectory:preparedSite,sourceSha,validatedSourceSha,nativeRun});
+      record('prepared_site_integrity',true,'Verified '+details.validated_files+' exact original WebGL files ('+details.original_bytes+' bytes), native run '+details.native_run);
+    } catch (error) {
+      record('prepared_site_integrity',false,String(error.message));
+    }
+  } else {
   record('source_provenance', sha40.test(sourceSha || '') && sha40.test(validatedSourceSha || '') && same(sourceSha, validatedSourceSha),
     sha40.test(sourceSha || '') && sha40.test(validatedSourceSha || '') ? (same(sourceSha,validatedSourceSha)?'Exact SHA matches':'Source SHA differs') : 'Both full Git source SHAs are required');
   record('artifact_expected_sha', sha64.test(artifactSha256 || ''), sha64.test(artifactSha256 || '') ? 'Pinned digest supplied' : 'Expected SHA-256 required');
@@ -136,6 +228,7 @@ export function browserPreflight({ artifact, artifactSha256, sourceSha, validate
   if (realFile && sha64.test(artifactSha256 || '')) {
     try { const observed = computeHash(artifact); record('artifact_bytes', same(observed,artifactSha256), same(observed,artifactSha256)?'Bytes match pinned SHA-256':'Artifact digest mismatch'); }
     catch (e) { record('artifact_bytes', false, 'Cannot calculate SHA-256: '+e.code); }
+  }
   }
   const playwright = findPlaywright ? findPlaywright(environment) : locatePlaywright(environment);
   record('playwright_package', Boolean(playwright), playwright ? 'Local dependency discovered' : 'Playwright unavailable on this host');
@@ -189,7 +282,8 @@ export function main(argv=process.argv.slice(2)) {
       report=triage({logText,report:json,change:a['--change']||'unknown'});
     } else {
       report=browserPreflight({artifact:a['--artifact'],artifactSha256:a['--sha256'],
-        sourceSha:a['--source-sha'],validatedSourceSha:a['--validated-source-sha'],scriptPath:a['--script']});
+        sourceSha:a['--source-sha'],validatedSourceSha:a['--validated-source-sha'],scriptPath:a['--script'],
+        preparedSite:a['--prepared-site'],nativeRun:a['--native-run']});
     }
     process.stdout.write(JSON.stringify(report,null,2)+'\n');
     return report.verdict.startsWith('BLOCKED') ? 2 : 0;

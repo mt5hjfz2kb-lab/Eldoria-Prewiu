@@ -33,6 +33,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/valoria-reference-clean/
+            /tools/closeout/
             /docs/evidence/valoria-reference-clean/environment-city-wide-after.png
             /pipeline/active-workstreams.json
       - name: Honor current Windows runner owner and no shared Unity/Blender process
@@ -116,6 +117,13 @@ jobs:
           if(-not ($source.Contains("await page.mouse.wheel(0, -240)") -and $source.Contains("A real world mouse-wheel tick did not visibly zoom"))){
             throw 'Native Windows browser test is missing zoom-limit-aware real wheel check'
           }
+      - name: Preflight exact Sites payload, pinned native source, browser tools and QA syntax
+        shell: powershell
+        run: |
+          # Reuse the previously downloaded and prepared native143 artifact.
+          # No Unity build, credential access, release, or runner reallocation.
+          node tools/closeout/closeout.mjs preflight-browser --prepared-site prepared-site --native-run 39251384413 --source-sha b8127112890ca64c808e767e74c2a536747f6bf9 --validated-source-sha b8127112890ca64c808e767e74c2a536747f6bf9 --script tools/valoria-reference-clean/playtest_web.cjs
+          if($LASTEXITCODE){throw 'ELDORIA_CLOSEOUT_PREFLIGHT_BLOCKED: check prepared bytes/source/Playwright/Edge/FFmpeg before long QA'}
       - name: Actually play Bastion I-II with native Windows Chromium GPU and SystemClock
         shell: powershell
         timeout-minutes: 25
@@ -128,6 +136,30 @@ jobs:
         run: |
           node tools/valoria-reference-clean/playtest_web.cjs
           if($LASTEXITCODE){throw "Normal-clock Windows Chromium playthrough failed; preserve report/video"}
+      - name: Preserve independent failure classification without overriding gameplay gates
+        if: always()
+        shell: powershell
+        run: |
+          $folder=Join-Path $env:GITHUB_WORKSPACE ("web-visible-controls-evidence-{0}-{1}" -f $env:GITHUB_RUN_ID,$env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Force -Path $folder | Out-Null
+          $report=Join-Path $folder 'report.json'
+          $classified=Join-Path $folder 'eldoria-closeout-triage.json'
+          if((Test-Path tools/closeout/closeout.mjs) -and (Test-Path $report)){
+            node tools/closeout/closeout.mjs triage --report $report --change unknown | Out-File -FilePath $classified -Encoding utf8
+            $code=$LASTEXITCODE
+            if($code -notin @(0,2)){throw "Closeout diagnostic invocation failed: $code"}
+          } else {
+            # An absent report is an infrastructure/evidence problem, NEVER a pass.
+            $fallback=[ordered]@{
+              tool='eldoria-closeout-triage-v1'
+              verdict='BLOCKED_NOT_CLOSED'
+              release_approved=$false
+              issues=@(@{category='MISSING_BROWSER_REPORT';next_action='Read failing job step and recover original log; never rebuild or publish automatically'})
+              note='QA did not produce a report; no runtime verdict is available'
+            }
+            $fallback | ConvertTo-Json -Depth 6 | Set-Content -Path $classified -Encoding UTF8
+          }
+          Write-Host "ELDORIA_CLOSEOUT_CLASSIFICATION $classified"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
