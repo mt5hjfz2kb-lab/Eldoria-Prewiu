@@ -1177,6 +1177,120 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class IdentityV10Report {
+   public string scene,source_sha,source_material;
+   public bool same_camera_light,terrain_preserved,mesh_preserved,parcels_preserved,
+    hotspots_preserved,art_approved,physical_mobile_tested;
+   public int forest_pixels,quarry_pixels,breach_pixels;
+   public Frame[] frames;
+  }
+  // Large-scale destination character, in the existing UV-painted world material.
+  // No additional props, meshes, colliders, triggers, hidden resources or player rules.
+  public static void ApplyWorldIdentityV10(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string tag="World landmarks / working quarry and Breach v10";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Retained I-II scene absent");
+   Need(Find(host.WorldRoot,"Heraldic original royal blue / roof correction v6"),"Native152 visual base missing");
+   if(Find(host.WorldRoot,tag)){Debug.Log("ELDORIA_WORLD_IDENTITY_V10_ALREADY_APPLIED");return;}
+   string path=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(path),"Native A/B capture plan required");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(path));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Original camera plan invalid");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Original city terrain missing");
+   var oldData=terrain.terrainData;var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var originalHotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true)
+    .ToDictionary(h=>h,h=>h.transform.position);
+   var originalLighting=LightStamp();var cc=new CameraState(city.PlayerCamera);var wc=new CameraState(host.WorldCamera);
+   bool wasWorld=host.WorldRoot.activeSelf;var views=new Dictionary<string,Frame>();
+   var report=new IdentityV10Report{scene=city.gameObject.scene.path,
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),art_approved=false,physical_mobile_tested=false};
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"destinations-before",views);
+    host.WorldRoot.SetActive(true);
+    var ground=host.WorldRoot.GetComponentsInChildren<MeshFilter>(true)
+     .FirstOrDefault(f=>f.name=="ZoneOne continuous prairie source");
+    Need(ground&&ground.sharedMesh,"Authored Zone1 source ground absent");
+    var mesh=ground.sharedMesh;var renderer=ground.GetComponent<MeshRenderer>();
+    Need(renderer&&renderer.sharedMaterials.Length==1&&renderer.sharedMaterial,"Retained Zone1 ground material absent");
+    var source=renderer.sharedMaterial;var prop=BaseTextureProperty(source);
+    Need(prop!=null&&source.GetTexture(prop),"Retained source soil texture absent");
+    report.source_material=AssetDatabase.GetAssetPath(source);
+    var texture=ReadableCopy(source.GetTexture(prop),1536);
+    var pixels=texture.GetPixels();var uv=mesh.uv;var verts=mesh.vertices;
+    Need(uv.Length==verts.Length&&uv.Length>2,"UV mapping missing");
+    int a=0,b=-1,c=-1;
+    for(int i=1;i<uv.Length;i++)if((uv[i]-uv[a]).sqrMagnitude>.00000001f){b=i;break;}
+    Need(b>=0,"UV baseline line collapsed");var ab=uv[b]-uv[a];
+    for(int i=b+1;i<uv.Length;i++)if(Mathf.Abs(ab.x*(uv[i].y-uv[a].y)-ab.y*(uv[i].x-uv[a].x))>.000001f){c=i;break;}
+    Need(c>=0,"UV baseline plane collapsed");var ac=uv[c]-uv[a];
+    float det=ab.x*ac.y-ab.y*ac.x;
+    var p0=ground.transform.TransformPoint(verts[a]);
+    var du=ground.transform.TransformPoint(verts[b])-p0;var dv=ground.transform.TransformPoint(verts[c])-p0;
+    var U=(du*ac.y-dv*ab.y)/det;var V=(dv*ab.x-du*ac.x)/det;var origin=p0-U*uv[a].x-V*uv[a].y;
+    Vector2 Point(string id){var p=Target(host,id).transform.position;return new Vector2(p.x,p.z);}
+    var forest=Point("forest-valoria");var quarry=Point("quarry-valoria");
+    var scout=Point("corrupt-scout");var engendro=Point("engendro-valoria");
+    folder=AssetsRoot+"/WorldDestinations-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+    Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+    for(int y=0;y<texture.height;y++)for(int x=0;x<texture.width;x++){
+     var world=origin+U*(x/(float)(texture.width-1))+V*(y/(float)(texture.height-1));
+     var point=new Vector2(world.x,world.z);
+     float fd=Vector2.Distance(point,forest),qd=Vector2.Distance(point,quarry);
+     float bd=Mathf.Min(Vector2.Distance(point,scout),Vector2.Distance(point,engendro));
+     if(fd>38&&qd>38&&bd>38)continue;
+     float noise=(Mathf.PerlinNoise(point.x*.095f+3.2f,point.y*.095f+24f)-.5f)*6f+
+       (Mathf.PerlinNoise(point.x*.32f+7f,point.y*.32f+11f)-.5f)*2f;
+     float f=1-Smooth(9f,28f,fd+noise*.8f);
+     float q=1-Smooth(10f,29f,qd+noise*.95f);
+     float bmask=1-Smooth(11f,30f,bd+noise*1.2f);
+     if(Mathf.Max(f,Mathf.Max(q,bmask))<.02f)continue;
+     float detail=Mathf.PerlinNoise(point.x*.31f+4.5f,point.y*.31f+13f);
+     Color color;float blend;
+     if(bmask>=f&&bmask>=q){
+      color=Color.Lerp(new Color(.17f,.15f,.18f,1),new Color(.26f,.23f,.25f,1),detail);
+      blend=Mathf.Clamp01(bmask*.91f);report.breach_pixels++;
+     }else if(q>=f){
+      color=Color.Lerp(new Color(.32f,.30f,.27f,1),new Color(.45f,.42f,.36f,1),detail);
+      blend=Mathf.Clamp01(q*.91f);report.quarry_pixels++;
+     }else{
+      color=Color.Lerp(new Color(.235f,.275f,.205f,1),new Color(.34f,.375f,.265f,1),detail);
+      blend=Mathf.Clamp01(f*.77f);report.forest_pixels++;
+     }
+     int id=y*texture.width+x;
+     pixels[id]=Color.Lerp(pixels[id],color,blend);
+    }
+    Need(report.breach_pixels>450&&report.quarry_pixels>450&&report.forest_pixels>450,
+     "Not all destination-scale features projected to the active mesh UVs");
+    texture.SetPixels(pixels);texture.Apply(true);texture.wrapMode=TextureWrapMode.Clamp;
+    Put(texture,"world-zone-ground-identity-v10");
+    var material=new Material(source){name="Retained world / forest quarry Breach visual identities"};
+    material.SetTexture(prop,texture);Put(material,"world-destination-material-v10");
+    renderer.sharedMaterial=material;
+    var marker=new GameObject(tag);marker.transform.SetParent(host.WorldRoot.transform,false);
+    CaptureViews(city,host,plan,evidenceDir,"destinations-after",views);
+    report.same_camera_light=originalLighting==LightStamp();
+    report.terrain_preserved=oldData==terrain.terrainData;
+    report.mesh_preserved=ground.sharedMesh==mesh;
+    report.parcels_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    report.hotspots_preserved=originalHotspots.All(p=>p.Key&&p.Key.transform.position==p.Value);
+    Need(report.same_camera_light&&report.terrain_preserved&&report.mesh_preserved&&
+     report.parcels_preserved&&report.hotspots_preserved,"Visual ground altered protected data or camera/light");
+    report.frames=views.Values.ToArray();AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-world-identity-v10.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("ELDORIA_WORLD_IDENTITY_V10_CANDIDATE forest="+report.forest_pixels+
+     " quarry="+report.quarry_pixels+" breach="+report.breach_pixels);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(wasWorld);cc.Restore(city.PlayerCamera);wc.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -1525,7 +1639,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
