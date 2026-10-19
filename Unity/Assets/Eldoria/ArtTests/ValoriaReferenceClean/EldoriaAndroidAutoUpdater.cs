@@ -61,7 +61,7 @@ namespace Eldoria.ReferenceClean {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void InstallBootstrap() {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if (Application.identifier != EldoriaAndroidUpdatePolicy.Package) return;
+            if (UnityEngine.Application.identifier != EldoriaAndroidUpdatePolicy.Package) return;
             if (FindFirstObjectByType<EldoriaAndroidAutoUpdater>() != null) return;
             var instance = new GameObject("Eldoria / actualizaciones verificadas de main");
             DontDestroyOnLoad(instance);
