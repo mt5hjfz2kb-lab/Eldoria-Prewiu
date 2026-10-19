@@ -136,8 +136,8 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             var r = NewRect(name, parent);
             r.gameObject.AddComponent<CanvasRenderer>();
-            var bg = r.gameObject.AddComponent<RoyalFrameGraphic>();
-            bg.Variant = 0;
+            var bg = r.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+            bg.Primary = false;
             bg.color = Color.white;
             bg.raycastTarget = true;
             return r;
@@ -163,8 +163,9 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             var r = NewRect(name, parent);
             r.gameObject.AddComponent<CanvasRenderer>();
-            var frame = r.gameObject.AddComponent<RoyalFrameGraphic>();
-            frame.Variant = primary ? 1 : 0;
+            var frame = r.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+            frame.Primary = primary;
+            frame.DecorativeCorners = false;
             frame.color = Color.white;
             frame.raycastTarget = true;
             var button = r.gameObject.AddComponent<RoyalButton>();
