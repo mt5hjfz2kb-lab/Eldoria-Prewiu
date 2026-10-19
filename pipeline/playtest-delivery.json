@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ITCH_TRANSPORT_FIX_READY_AWAITING_HOSTED_VERIFICATION",
+  "state": "ITCH_TRANSPORT_FIX_UPLOADED_PROCESSING",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -42,31 +42,34 @@
     "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
   },
   "last_attempt": {
-    "run_id": 39316473158,
+    "run_id": 39325971944,
     "prepare": "success",
-    "publish": "blocked_by_existing_build_processing",
-    "reason": "itch API: channel web's latest build is still processing, try again later"
+    "publish": "upload_accepted",
+    "remote_build": 2164730,
+    "hosted_verified": false
   },
   "uploaded": {
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
     "revision": "native152",
-    "run_id": 39315488741,
-    "files": 18,
+    "run_id": 39325971944,
+    "files": 10,
     "hosted_verified": false,
     "first_html5_channel_configuration": "PENDING_OWNER_UI_CHECK",
-    "processing_status": "CONFIRMED_PROCESSING_BY_ITCH_API_20261019_200710Z",
+    "processing_status": "PROCESSING_AT_20261019_211530Z",
     "latest_remote_check": {
       "run_id": 39322513107,
       "checked_at": "2026-10-19T22:49:28+02:00",
       "result": "No channels visible, including all file types; no further upload attempted"
-    }
+    },
+    "remote_build": 2164730,
+    "transport_adapter": "itch-complete-gzip-v1"
   },
   "manual_fallback": {
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
     "inner_zip": "Eldoria-native152-itch.zip",
-    "reason": "Owner browser upload is a temporary fallback; cloud itch browser remains bot-blocked. Automatic channel processing unresolved."
+    "reason": "Initial 18-file package is superseded. Do not use the old fallback ZIP; use corrected delivery run 39325971944 if required."
   },
   "transport_fix": {
     "adapter": "itch-complete-gzip-v1",
@@ -78,6 +81,12 @@
       "play.js"
     ],
     "physical_mobile_pass": false,
-    "owner_report": "Welcome loads but startup fails in ChatGPT iOS browser and standalone Safari."
+    "owner_report": "Welcome loads but startup fails in ChatGPT iOS browser and standalone Safari.",
+    "http_regression_test": {
+      "old_first_part_bytes": 20971520,
+      "old_first_part_after_http_gzip_bytes": 24532611,
+      "complete_stream_after_http_gzip_bytes": 215390889,
+      "result": "PASS"
+    }
   }
 }
