@@ -1678,6 +1678,118 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class CompositionPoseView {
+   public string phase,aspect_name,file;
+   public int width,height;
+   public float size;
+   public float[] position,rotation,bastion_viewport;
+  }
+  [Serializable] sealed class CameraCompositionReport {
+   public string source_sha,scene;
+   public bool camera_only,lighting_preserved,terrain_preserved,plots_preserved,
+    hotspots_preserved,bastion_centred_both_orientations,art_approved,physical_mobile_tested;
+   public float old_home_zoom,new_home_zoom;
+   public float[] old_home_position,new_home_position;
+   public CompositionPoseView[] views;
+   public string[] limitations;
+  }
+  // Changes only the view, not a single mesh or gameplay objective. Intentionally
+  // separate from the identical-camera asset A/B: this is a camera comparison,
+  // with the exact camera pose and orthographic size recorded in each image.
+  public static void ApplyCityCameraCompositionV14(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string tag="Valoria initial camera framing / city-first v14";
+   Need(city&&city.Controls&&city.PlayerCamera&&host&&host.WorldRoot,"Playable city camera bindings missing");
+   Need(Find(host.WorldRoot,"Hostile encampment cloth / Breach rust v11"),"Retained world v10/v11 absent");
+   Need(!Find(city.gameObject,"Organic civic working ground / original scanned soil v13")
+     &&!Find(city.gameObject,"Reconstruction circulation / genuine paved access v12"),
+     "One rejected road treatment still exists in canonical scene");
+   if(Find(city.gameObject,tag)){Debug.Log("VALORIA_CITY_CAMERA_COMPOSITION_ALREADY_APPLIED");return;}
+   var camera=city.PlayerCamera;
+   Need(camera.orthographic&&city.Controls.playerCamera==camera,"Only existing player orthographic camera permitted");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Canonical playable terrain missing");
+   var oldTerrain=terrain.terrainData;
+   var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var hotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   var origin=new CameraState(camera);var previousHome=city.Controls.homePosition;
+   float previousZoom=city.Controls.homeZoom;
+   var worldCam=new CameraState(host.WorldCamera);bool oldWorld=host.WorldRoot.activeSelf;
+   var beforeLight=LightStamp();var views=new List<CompositionPoseView>();
+   var report=new CameraCompositionReport{scene=city.gameObject.scene.path,
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    old_home_zoom=previousZoom,old_home_position=new[]{previousHome.x,previousHome.y,previousHome.z},
+    camera_only=true,art_approved=false,physical_mobile_tested=false,
+    limitations=new[]{"Intentional camera A/B; no identical-camera scoring applies to framing interventions.",
+     "New default home pose must pass actual portrait/landscape playable I-II target tests.",
+     "Physical Android/iPhone screen and GPU use not certified."}};
+   bool passed=false;
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    host.WorldRoot.SetActive(false);
+    void Capture(string phase,string orientation,int width,int height) {
+     var priorAspect=camera.aspect;
+     camera.aspect=width/(float)height;
+     try{
+      var centre=BoundsOf(city.BastionTwo).center;
+      var viewport=camera.WorldToViewportPoint(centre);
+      var position=camera.transform.position;var rotation=camera.transform.rotation;
+      string file="environment-city-camera-"+phase+"-"+orientation+".png";
+      Directory.CreateDirectory(evidenceDir);
+      ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidenceDir,file),width,height);
+      views.Add(new CompositionPoseView{phase=phase,aspect_name=orientation,file=file,
+       width=width,height=height,size=camera.orthographicSize,
+       position=new[]{position.x,position.y,position.z},
+       rotation=new[]{rotation.x,rotation.y,rotation.z,rotation.w},
+       bastion_viewport=new[]{viewport.x,viewport.y,viewport.z}});
+     }finally{camera.aspect=priorAspect;}
+    }
+    Capture("before","landscape",1600,900);
+    Capture("before","portrait",900,1600);
+    // The city should dominate more of the useful frame, while keeping gate
+    // and bridge in view. Shift view center towards the Bastion, not geometry.
+    var advance=new Vector3(camera.transform.forward.x,0,camera.transform.forward.z);
+    Need(advance.sqrMagnitude>.25f,"Original camera horizontal axis unexpected");
+    camera.transform.position=origin.position+advance.normalized*7.2f;
+    camera.orthographicSize=Mathf.Min(origin.size,29.5f);
+    city.Controls.homePosition=camera.transform.position;
+    city.Controls.homeRotation=camera.transform.rotation;
+    city.Controls.homeZoom=camera.orthographicSize;
+    Capture("after","landscape",1600,900);
+    Capture("after","portrait",900,1600);
+    report.new_home_zoom=city.Controls.homeZoom;
+    report.new_home_position=new[]{camera.transform.position.x,camera.transform.position.y,camera.transform.position.z};
+    report.lighting_preserved=beforeLight==LightStamp();
+    report.terrain_preserved=terrain.terrainData==oldTerrain;
+    report.plots_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    report.hotspots_preserved=hotspots.All(h=>h.Key&&h.Key.transform.position==h.Value);
+    report.bastion_centred_both_orientations=views.Where(v=>v.phase=="after")
+     .All(v=>v.bastion_viewport[0]>.08f&&v.bastion_viewport[0]<.92f&&
+      v.bastion_viewport[1]>.16f&&v.bastion_viewport[1]<.90f&&v.bastion_viewport[2]>0);
+    Need(report.lighting_preserved&&report.terrain_preserved&&report.plots_preserved&&
+     report.hotspots_preserved&&report.bastion_centred_both_orientations&&report.new_home_zoom<report.old_home_zoom,
+     "No safe compelling camera framing candidate / lost playable Bastion in portrait");
+    var mark=new GameObject(tag);mark.transform.SetParent(city.transform,false);
+    EditorUtility.SetDirty(camera);EditorUtility.SetDirty(city.Controls);
+    report.views=views.ToArray();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-city-camera-v14.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("VALORIA_CITY_CAMERA_V14_CANDIDATE old="+report.old_home_zoom+" new="+report.new_home_zoom);
+    passed=true;
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(oldWorld);
+    worldCam.Restore(host.WorldCamera);
+    if(!passed){
+     origin.Restore(camera);
+     city.Controls.homePosition=previousHome;city.Controls.homeZoom=previousZoom;
+    }
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
