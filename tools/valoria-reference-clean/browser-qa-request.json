@@ -24,5 +24,9 @@
   "reason": "Hosted Linux SwiftShader slowed real telemetry to several seconds per frame; preserve original fail evidence and rerun independently with Windows D3D11 without weakening acceptance.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
-  "physical_mobile_tested": false
+  "physical_mobile_tested": false,
+  "attempt": 2,
+  "method_note": "Use native Windows Edge/Chromium GPU and real 160ms CDP touch hold-release in portrait. Native139 prior Windows run 39234921616 passed eight directional drags and genuine wheel zoom, but immediate touch to City was missed; preserve all navigation, dialogue, normal-clock and exact save checks. No edits to game or engine.",
+  "gameplay_source_unchanged": true,
+  "qa_code_commit": "ca6f0640c792ab343171a820dea0baec0ac13c85"
 }
