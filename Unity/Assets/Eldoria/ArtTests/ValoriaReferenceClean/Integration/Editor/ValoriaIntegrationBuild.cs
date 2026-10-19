@@ -80,6 +80,16 @@ namespace Eldoria.ReferenceClean.Editor {
    AssetDatabase.SaveAssets();Need(EditorSceneManager.SaveScene(scene,Scene),"Improved integrated scene save");
    BeginCurrentProbe();
   }catch(Exception e){Debug.LogException(e);File.WriteAllText(Path.Combine(Ev,"integration-failure.txt"),e.ToString());EditorApplication.Exit(1);}}
+  public static void VisualLeap(){try{
+   Directory.CreateDirectory(Ev);Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+   var scene=EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
+   var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();
+   var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+   Need(city&&host&&host.HudPrefab&&host.WorldRoot,"Consolidated playable source missing");
+   ValoriaEnvironmentFinish.ApplyVisualLeap(city,host,Ev);
+   AssetDatabase.SaveAssets();Need(EditorSceneManager.SaveScene(scene,Scene),"Visual leap scene save");
+   BeginCurrentProbe();
+  }catch(Exception e){Debug.LogException(e);File.WriteAllText(Path.Combine(Ev,"visual-leap-failure.txt"),e.ToString());EditorApplication.Exit(1);}}
   public static void ValidateCurrent(){try{
    Directory.CreateDirectory(Ev);Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
    EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);BeginCurrentProbe();

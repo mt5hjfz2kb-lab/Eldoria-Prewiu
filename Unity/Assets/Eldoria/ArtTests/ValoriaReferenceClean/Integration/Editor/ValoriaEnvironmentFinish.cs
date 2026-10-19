@@ -133,6 +133,86 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  // Second, idempotent visual treatment of the actual playable I-II scene.
+  // Retains all authored meshes and original gameplay, save and hotspot identities.
+  public static void ApplyVisualLeap(ValoriaReferenceCleanGameplay city, ValoriaIntegratedWorld host, string evidenceDir) {
+   const string leapMarker="Visual leap / integrated landscape v2";
+   Need(city&&host&&host.WorldRoot&&host.WorldCamera&&city.PlayerCamera,"Consolidated playable bindings required");
+   Need(Find(host.WorldRoot,Marker),"Existing native environment finishing must be retained");
+   if(Find(host.WorldRoot,leapMarker)){Debug.Log("VALORIA_REFERENCE_CLEAN_VISUAL_LEAP_ALREADY_APPLIED_COMPLETE");return;}
+   var planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Previously authored environment plan absent");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Retained local artist plan invalid");
+   Directory.CreateDirectory(evidenceDir);
+   folder=AssetsRoot+"/VisualLeap-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+   Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Playable city terrain absent");
+   var beforeTerrain=terrain.terrainData;
+   var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var hotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(x=>x,x=>x.transform.position);
+   var cityCamera=new CameraState(city.PlayerCamera);var worldCamera=new CameraState(host.WorldCamera);
+   string light=LightStamp();bool worldWasActive=host.WorldRoot.activeSelf;
+   var views=new Dictionary<string,Frame>();
+   var report=new Report{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    scene=city.gameObject.scene.path,source_scene_sha256=Hash(city.gameObject.scene.path),
+    artist_plan_sha256=Hash(planPath),current_scene_only=true,source_meshes_preserved=true,art_approved=false,
+    limitations=new[]{"Independent before/after Unity-camera art review still required; counts are not art approval.",
+     "Physical mobile GPU/memory performance not measured; unchanged terrain heights, gameplay, targets and state are checked."}};
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"leap-before",views);
+    host.WorldRoot.SetActive(true);Physics.SyncTransforms();
+    var marker=new GameObject(leapMarker);marker.transform.SetParent(host.WorldRoot.transform,false);
+    var ground=host.WorldRoot.GetComponentsInChildren<MeshFilter>(true)
+     .FirstOrDefault(x=>x.name=="ZoneOne continuous prairie source");
+    Need(ground&&ground.sharedMesh,"Current world prairie mesh absent");
+    var collider=ground.GetComponent<MeshCollider>();
+    bool temporaryCollider=collider==null;
+    if(temporaryCollider)collider=ground.gameObject.AddComponent<MeshCollider>();
+    var priorMesh=collider.sharedMesh;
+    collider.sharedMesh=ground.sharedMesh;Physics.SyncTransforms();
+    try {
+     float Height(Vector3 p) {
+      return collider.Raycast(new Ray(new Vector3(p.x,160,p.z),Vector3.down),out var hit,320)
+       ?hit.point.y:p.y;
+     }
+     report.world_painted_pixels=FinishWorldSurface(host,ground);
+     report.world_trees_reused=DeepenExistingForest(host,marker.transform,Height);
+    }finally{
+     if(temporaryCollider)Object.DestroyImmediate(collider);
+     else collider.sharedMesh=priorMesh;
+    }
+    host.WorldRoot.SetActive(false);
+    report.city_painted_cells=RefineCityLandscape(city,terrain);
+    CaptureViews(city,host,plan,evidenceDir,"leap-after",views);
+    report.same_camera_light=light==LightStamp();
+    var oldHeights=beforeTerrain.GetHeights(0,0,beforeTerrain.heightmapResolution,beforeTerrain.heightmapResolution);
+    var newHeights=terrain.terrainData.GetHeights(0,0,terrain.terrainData.heightmapResolution,terrain.terrainData.heightmapResolution);
+    report.terrain_heights_preserved=oldHeights.Cast<float>().SequenceEqual(newHeights.Cast<float>());
+    report.parcel_bindings_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    report.hotspot_centres_preserved=hotspots.All(t=>t.Key&&t.Key.transform.position==t.Value);
+    Need(report.same_camera_light&&report.terrain_heights_preserved&&report.parcel_bindings_preserved&&report.hotspot_centres_preserved,
+     "Light, terrain heights, parcels or gameplay hotspot positions changed");
+    Need(report.city_painted_cells>0&&report.world_painted_pixels>0,"No perceptible ground treatment authored");
+    report.frames=views.Values.ToArray();
+    AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-visual-leap-unity.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("VALORIA_REFERENCE_CLEAN_VISUAL_LEAP_COMPLETE city_cells="+report.city_painted_cells+
+      " world_pixels="+report.world_painted_pixels+" forest_clumps="+report.world_trees_reused);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(worldWasActive);
+    cityCamera.Restore(city.PlayerCamera);worldCamera.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -306,14 +386,97 @@ namespace Eldoria.ReferenceClean.Editor {
    return Mathf.Sqrt(best);
   }
 
+
+  // Reuses the actual Qwen/Blender-authored pine, not new primitive trees.
+  // Decorative clones have no collider: selectable routes and hotspots are untouched.
+  static int DeepenExistingForest(ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground){
+   var pine=host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+    .FirstOrDefault(r=>r.name.StartsWith("Forest retained Valoria pine"));
+   Need(pine&&pine.GetComponent<MeshFilter>()&&pine.GetComponent<MeshFilter>().sharedMesh,"Retained authored pine unavailable");
+   Vector3 centre=Target(host,"forest-valoria").transform.position;
+   Vector3 city=Target(host,"valoria-map-city").transform.position;
+   var other=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true)
+    .Where(h=>h.Id!="forest-valoria").Select(h=>h.transform.position).ToArray();
+   int count=0;
+   // A natural edge rather than a geometric ring, keeping an open arrival lane.
+   for(int i=0;i<26;i++){
+    float angle=(i*.618034f+.19f)*Mathf.PI*2f;
+    float distance=10f+Mathf.PerlinNoise(i*.43f+.23f,11f)*20f;
+    var direction=new Vector2(Mathf.Cos(angle),Mathf.Sin(angle));
+    var fromCity=new Vector2(city.x-centre.x,city.z-centre.z).normalized;
+    if(Vector2.Dot(direction,fromCity)>.68f&&distance<22f)continue;
+    var candidate=centre+new Vector3(direction.x*distance,0,direction.y*distance);
+    if(other.Any(p=>(new Vector2(p.x-candidate.x,p.z-candidate.z)).sqrMagnitude<11f*11f))continue;
+    candidate.y=ground(candidate);
+    float width=3.9f+Mathf.PerlinNoise(i*.36f+4f,.71f)*2.1f;
+    var tree=CloneVisual(pine.gameObject,"Zone1 woodland edge / retained pine "+i,parent,candidate,width);
+    tree.transform.rotation=Quaternion.Euler(0,(i*137.508f)%360f,0);
+    count++;
+   }
+   Need(count>=9,"Unable to create a visually legible woodland edge");
+   return count;
+  }
+
+  // A broad, restrained terrain-layer treatment: soft vegetation/earth variation,
+  // weathered foundations and river contact, with NO new mesh or visible plot grids.
+  static int RefineCityLandscape(ValoriaReferenceCleanGameplay city,Terrain terrain){
+   var source=terrain.terrainData;
+   var data=Object.Instantiate(source);
+   data.name="Valoria retained landscape / organic variation v2";
+   var layers=data.terrainLayers;Need(layers!=null&&layers.Length>=3,"Original terrain materials absent");
+   int loam=Array.FindLastIndex(layers,l=>l&&l.name.ToLowerInvariant().Contains("loam"));
+   if(loam<0)loam=Mathf.Min(2,layers.Length-1);
+   int grit=Array.FindIndex(layers,l=>l&&(l.name.ToLowerInvariant().Contains("stone")||
+    l.name.ToLowerInvariant().Contains("gravel")||l.name.ToLowerInvariant().Contains("rock")));
+   if(grit<0||grit==loam)grit=(loam+1)%layers.Length;
+   int w=source.alphamapWidth,h=source.alphamapHeight;
+   var map=source.GetAlphamaps(0,0,w,h);
+   // Preserve packed terrain splats explicitly when cloning an existing TerrainData.
+   data.SetAlphamaps(0,0,map);
+   var workplaces=new[]{BoundsOf(city.Parcels.LeftBuilt),BoundsOf(city.Parcels.RightBuilt)};
+   int changed=0;
+   for(int z=0;z<h;z++)for(int x=0;x<w;x++){
+    var p=new Vector2(terrain.transform.position.x+x/(float)(w-1)*data.size.x,
+     terrain.transform.position.z+z/(float)(h-1)*data.size.z);
+    float broad=Mathf.PerlinNoise(p.x*.039f+3.7f,p.y*.039f+27.6f);
+    float detail=Mathf.PerlinNoise(p.x*.18f+13.3f,p.y*.18f+52.1f);
+    float irregular=(broad-.47f)*.60f+(detail-.5f)*.28f;
+    float variation=Mathf.Clamp01(irregular)*.37f;
+    float yard=0f;
+    foreach(var b in workplaces){
+     float dx=(p.x-b.center.x)/(b.extents.x+3.8f);
+     float dz=(p.y-b.center.z)/(b.extents.z+3.2f);
+     yard=Mathf.Max(yard,1-Smooth(.65f,1.6f,Mathf.Sqrt(dx*dx+dz*dz)+irregular*.11f));
+    }
+    float riverEdge=Mathf.Abs(Mathf.Abs(p.y-RiverCenter(p.x))-RiverWidth(p.x));
+    float bank=(1-Smooth(.7f,5.6f,riverEdge+irregular*.6f))*.18f;
+    float wear=Mathf.Clamp01(Mathf.Max(variation,Mathf.Max(yard*.29f,bank)));
+    // Original darker road/cobble splats remain the authority; do not repaint.
+    wear*=1-Smooth(.51f,.94f,map[z,x,loam]);
+    if(wear<.025f)continue;
+    int target=(yard>.5f&&detail>.60f)?grit:loam;
+    for(int i=0;i<layers.Length;i++)map[z,x,i]*=1-wear;
+    map[z,x,target]+=wear;
+    changed++;
+   }
+   data.SetAlphamaps(0,0,map);Put(data,"city-landscape-v2");
+   terrain.terrainData=data;
+   var terrainCollider=terrain.GetComponent<TerrainCollider>();
+   if(terrainCollider)terrainCollider.terrainData=data;
+   terrain.Flush();EditorUtility.SetDirty(data);return changed;
+  }
+
   static int FinishWorldSurface(ValoriaIntegratedWorld host,MeshFilter ground) {
    var renderer=ground.GetComponent<MeshRenderer>(); Need(renderer&&renderer.sharedMaterials.Length==1,"World ground material layout changed");
    var old=renderer.sharedMaterial; string property=BaseTextureProperty(old); Need(property!=null&&old.GetTexture(property),"World ground base texture missing");
    var texture=ReadableCopy(old.GetTexture(property),1536); var pixels=texture.GetPixels();
    var mesh=ground.sharedMesh; var uv=mesh.uv; var vertices=mesh.vertices;
    Need(uv.Length==vertices.Length,"Current world ground UVs missing");
-   int a=0,b=1,c=-1; var ab=uv[b]-uv[a];
-   for(int i=2;i<uv.Length;i++) if(Mathf.Abs(ab.x*(uv[i].y-uv[a].y)-ab.y*(uv[i].x-uv[a].x))>.000001f) {c=i;break;}
+   int a=0,b=-1,c=-1;
+   for(int i=1;i<uv.Length;i++)if((uv[i]-uv[a]).sqrMagnitude>.00000001f){b=i;break;}
+   Need(b>=0,"World UV map lacks a distinct second coordinate");
+   var ab=uv[b]-uv[a];
+   for(int i=b+1;i<uv.Length;i++)if(Mathf.Abs(ab.x*(uv[i].y-uv[a].y)-ab.y*(uv[i].x-uv[a].x))>.000001f){c=i;break;}
    Need(c>=0,"World texture coordinate map degenerate");
    var ac=uv[c]-uv[a]; float determinant=ab.x*ac.y-ab.y*ac.x;
    var pa=ground.transform.TransformPoint(vertices[a]); var pb=ground.transform.TransformPoint(vertices[b])-pa; var pc=ground.transform.TransformPoint(vertices[c])-pa;
@@ -324,25 +487,32 @@ namespace Eldoria.ReferenceClean.Editor {
    }
    Vector2 Point(string id) {var position=Target(host,id).transform.position;return new Vector2(position.x,position.z);}
    var home=Point("valoria-map-city"); var wood=Point("forest-valoria"); var quarry=Point("quarry-valoria");
-   var destinations=new[]{wood,quarry,Point("corrupt-scout"),Point("engendro-valoria"),Point("old-watch-ruin")};
+   // Only two well-travelled resource routes. No five-spoke road star and no mesh strip.
+   var destinations=new[]{wood,quarry};
    var routes=destinations.Select((destination,index)=> {
-    var delta=destination-home; var bend=new Vector2(-delta.y,delta.x).normalized*Mathf.Min(6,delta.magnitude*.08f)*(index%2==0?1:-1);
-    return Curve(home,(home+destination)*.5f+bend,destination,9);
+    var delta=destination-home;
+    var bend=new Vector2(-delta.y,delta.x).normalized*Mathf.Min(9f,delta.magnitude*.12f)*(index==0?1:-1);
+    return Curve(home,(home+destination)*.5f+bend,destination,12);
    }).ToArray();
+   var breachA=Point("corrupt-scout");var breachB=Point("engendro-valoria");
    int changed=0;
    for(int y=0;y<texture.height;y++) for(int x=0;x<texture.width;x++) {
     var world=origin+u*(x/(float)(texture.width-1))+v*(y/(float)(texture.height-1)); var p=new Vector2(world.x,world.z);
     float edge=(Mathf.PerlinNoise(p.x*.19f+13,p.y*.19f+43)-.5f)*1.3f;
     float path=float.MaxValue;for(int route=0;route<routes.Length;route++)path=Mathf.Min(path,DistanceToPath(p,routes[route]));
-    float wear=(1-Smooth(1.0f,2.8f,path+edge))*.82f;
-    float homeApron=(1-Smooth(11,18,Vector2.Distance(p,home)+edge))* .49f;
-    float forestFloor=(1-Smooth(6,12,Vector2.Distance(p,wood)+edge))* .69f;
-    float quarryFloor=(1-Smooth(7,13,Vector2.Distance(p,quarry)+edge))* .83f;
-    float strength=Mathf.Max(wear,Mathf.Max(homeApron,Mathf.Max(forestFloor,quarryFloor)));
-    if(strength<.014f) continue;
-    var soil=Color.Lerp(new Color(.19f,.145f,.079f),new Color(.28f,.225f,.15f),Mathf.PerlinNoise(p.x*.8f,p.y*.8f));
-    if(forestFloor>wear) soil*=.78f;
-    if(quarryFloor>wear) soil=Color.Lerp(soil,new Color(.34f,.285f,.21f),.65f);
+    float wear=(1-Smooth(.9f,3.4f,path+edge))*.64f;
+    float homeApron=(1-Smooth(10,19,Vector2.Distance(p,home)+edge))*.40f;
+    float forestFloor=(1-Smooth(8,20,Vector2.Distance(p,wood)+edge))*.45f;
+    float quarryFloor=(1-Smooth(7,17,Vector2.Distance(p,quarry)+edge))*.68f;
+    float corruptedDistance=Mathf.Min(Vector2.Distance(p,breachA),Vector2.Distance(p,breachB));
+    float breach=(1-Smooth(10,30,corruptedDistance+edge*2f))*.58f;
+    float strength=Mathf.Max(Mathf.Max(wear,homeApron),Mathf.Max(forestFloor,Mathf.Max(quarryFloor,breach)));
+    if(strength<.014f)continue;
+    var soil=Color.Lerp(new Color(.26f,.213f,.14f),new Color(.36f,.30f,.21f),
+     Mathf.PerlinNoise(p.x*.38f+6f,p.y*.38f+12f));
+    if(forestFloor>wear)soil=Color.Lerp(soil,new Color(.18f,.22f,.14f),.56f);
+    if(quarryFloor>wear)soil=Color.Lerp(soil,new Color(.32f,.29f,.24f),.68f);
+    if(breach>.05f)soil=Color.Lerp(soil,new Color(.22f,.165f,.19f),Mathf.Clamp01(breach*1.35f));
     int i=y*texture.width+x; pixels[i]=Color.Lerp(pixels[i],soil,strength); pixels[i].a=1; changed++;
    }
    texture.SetPixels(pixels); texture.Apply(true); texture.wrapMode=TextureWrapMode.Clamp;
