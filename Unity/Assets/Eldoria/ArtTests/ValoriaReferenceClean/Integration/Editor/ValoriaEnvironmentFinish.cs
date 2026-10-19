@@ -1968,6 +1968,147 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class ConnectedPrecinctV16Report {
+   public string source_sha,scene,blender_source_sha256,glb_sha256,source_scene_sha256;
+   public bool same_camera_light,terrain_data_preserved,parcel_bindings_preserved,
+    hotspots_preserved,visual_only,art_approved,physical_mobile_tested;
+   public int precincts,renderers,triangles,colliders;
+   public Frame[] frames;public string[] limitations;
+  }
+  [Serializable] sealed class ConnectedPrecinctV16Author {
+   public string source_sha,output_sha256,blender_sha256,source_glb,blender_source;
+   public int triangles,vertices;public bool art_approved;
+  }
+  // One two-sided WORK FRONTAGE, designed and exported in real Blender, reused
+  // ONLY as two continuous links from the retained paved avenue to workshops.
+  // No gameplay objects, foundations/plots, collider, arch unlock or save changes.
+  public static async Task ApplyConnectedPrecinctV16(ValoriaReferenceCleanGameplay city,
+    ValoriaIntegratedWorld host,string evidenceDir) {
+   const string marker="Valoria connected working avenue / genuine Blender authored v16";
+   const string model="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/ConnectedPrecinctV16.glb";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Retained playable scene missing");
+   Need(Find(host.WorldRoot,"Hostile encampment cloth / Breach rust v11"),"Accepted visual context missing");
+   Need(Find(host.WorldRoot,"Valoria initial camera framing / city-first v14"),
+    "Native163 city-first normal player camera missing");
+   if(Find(city.gameObject,marker)){Debug.Log("ELDORIA_CONNECTED_PRECINCT_V16_ALREADY_PRESENT");return;}
+   Need(File.Exists(model),"Actual Blender-authored saved GLB missing");
+   string artistPath=Path.Combine(evidenceDir,"connected-precinct-v16-author.json");
+   Need(File.Exists(artistPath),"Exact retained Blender author record missing");
+   var authored=JsonUtility.FromJson<ConnectedPrecinctV16Author>(File.ReadAllText(artistPath));
+   Need(authored!=null&&authored.output_sha256==Hash(model)&&authored.blender_sha256!=null&&
+    !authored.art_approved,"Source Blender GLB signature failed / no implied approval");
+   string planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Original native camera reference missing");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Native game A/B framing plan invalid");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Retained city terrain absent");
+   var terrainData=terrain.terrainData;
+   var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   Need(left&&right&&city.BastionTwo,"Retained real Bastion, sawmill, barracks required");
+   var plotWorld=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true)
+    .ToDictionary(h=>h,h=>h.transform.position);
+   var cc=new CameraState(city.PlayerCamera);var wc=new CameraState(host.WorldCamera);
+   string lighting=LightStamp();bool worldWasActive=host.WorldRoot.activeSelf;
+   var frames=new Dictionary<string,Frame>();
+   var report=new ConnectedPrecinctV16Report {
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scene=city.gameObject.scene.path,
+    source_scene_sha256=Hash(city.gameObject.scene.path),
+    blender_source_sha256=authored.blender_sha256,glb_sha256=authored.output_sha256,
+    visual_only=true,art_approved=false,physical_mobile_tested=false,
+    limitations=new[]{"Real native Unity A/B required; Blender appearance alone cannot confer ART_APPROVED.",
+     "Source and two copies contain NO collider, economic mechanic or new selectable plot.",
+     "Physical Android/iPhone GPU-memory performance is not certified."}
+   };
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"precinct-before",frames);
+    host.WorldRoot.SetActive(false);
+    folder=AssetsRoot+"/BlenderPrecinct-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+    Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+    var root=new GameObject(marker);root.transform.SetParent(city.transform,false);
+    var centres=new[]{BoundsOf(left).center,BoundsOf(right).center};
+    var from=new[]{new Vector3(-9.5f,0,14f),new Vector3(9.5f,0,14f)};
+    var to=new[]{
+     new Vector3(centres[0].x,0,Mathf.Min(centres[0].z-2f,25.0f)),
+     new Vector3(centres[1].x,0,Mathf.Min(centres[1].z-2f,27.0f))
+    };
+    // The two future pads stay outside the authored frontage centreline.
+    var futurePlots=new[]{new Vector2(-19,9),new Vector2(28,12)};
+    for(int section=0;section<2;section++){
+     var a=from[section];var b=to[section];var delta=b-a;var distance=delta.magnitude;
+     Need(distance>=11&&distance<=30,"Unexpected original street to working-yard route");
+     for(int k=0;k<=12;k++){
+      var p=Vector3.Lerp(a,b,k/12f);
+      Need(futurePlots.All(q=>Vector2.Distance(new Vector2(p.x,p.z),q)>7.5f),
+       "Prefab path crosses reserved future parcel rather than working-quarter approach");
+     }
+     float heightMin=float.MaxValue,heightMax=float.MinValue;
+     foreach(var p in new[]{a,(a+b)*.5f,b}){
+      float h=terrain.SampleHeight(p)+terrain.transform.position.y;
+      heightMin=Mathf.Min(heightMin,h);heightMax=Mathf.Max(heightMax,h);
+     }
+     Need(heightMax-heightMin<1.85f,"Original city ground slope too high for embedded authored foundations");
+     var site=new GameObject(section==0
+      ?"Western joined timber-workers arcade / original Blender V16"
+      :"Eastern joined royal-garrison arcade / original Blender V16");
+     site.transform.SetParent(root.transform,true);
+     using(var loader=new GltfImport(null,new UninterruptedDeferAgent())){
+      Need(await loader.Load(new Uri(Path.GetFullPath(model)).AbsoluteUri,
+       new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=4}),
+       "Authentic Blender street GLB import failed");
+      Need(await loader.InstantiateMainSceneAsync(site.transform),
+       "Authentic connected street geometry could not instantiate");
+      var bounds=BoundsOf(site);
+      Need(bounds.size.x>=20&&bounds.size.x<=26&&bounds.size.y>=2.7f&&
+       bounds.size.z<=11f,"Blender asset scale/orientation differs from approved authoring dimensions");
+      var size=distance/Mathf.Max(1f,bounds.size.x);
+      site.transform.localScale=Vector3.one*size;
+      var yaw=-Mathf.Atan2(delta.z,delta.x)*Mathf.Rad2Deg;
+      site.transform.rotation=Quaternion.Euler(0,yaw,0);
+      var newBounds=BoundsOf(site);
+      var mid=(a+b)*.5f;mid.y=heightMin-.17f;
+      site.transform.position+=mid-new Vector3(newBounds.center.x,newBounds.min.y,newBounds.center.z);
+      foreach(var renderer in site.GetComponentsInChildren<MeshRenderer>(true)){
+       PrepareRenderer(renderer);
+       Need(renderer.sharedMaterials.All(m=>m&&m.shader&&m.shader.name!="Hidden/InternalErrorShader"),
+        "Blender art imported with an invalid/pink material");
+       var filter=renderer.GetComponent<MeshFilter>();
+       Need(filter&&filter.sharedMesh,"Blender renderer lacked genuine source mesh");
+       report.renderers++;report.triangles+=filter.sharedMesh.triangles.Length/3;
+      }
+      Need(site.GetComponentsInChildren<MeshRenderer>(true).Length>0,"Street asset has no visible renderers");
+      PersistImported(site);
+     }
+     report.precincts++;
+    }
+    report.colliders=root.GetComponentsInChildren<Collider>(true).Length;
+    Need(report.precincts==2&&report.colliders==0&&report.triangles<120000,
+     "Precinct violates mobile geometry or current gameplay collision budget");
+    CaptureViews(city,host,plan,evidenceDir,"precinct-after",frames);
+    report.same_camera_light=lighting==LightStamp();
+    report.terrain_data_preserved=terrain.terrainData==terrainData;
+    report.parcel_bindings_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    report.hotspots_preserved=plotWorld.All(pair=>pair.Key&&pair.Key.transform.position==pair.Value);
+    Need(report.same_camera_light&&report.terrain_data_preserved&&
+     report.parcel_bindings_preserved&&report.hotspots_preserved,
+     "Protected camera, terrain, construction plots or world hotspots were modified");
+    report.frames=frames.Values.ToArray();AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-blender-connected-precinct-v16.json"),
+     JsonUtility.ToJson(report,true));
+    Debug.Log("ELDORIA_BLENDER_CONNECTED_PRECINCT_V16_CANDIDATE precincts="+report.precincts+
+     " triangles="+report.triangles);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(worldWasActive);cc.Restore(city.PlayerCamera);wc.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -2316,7 +2457,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before"||phase=="access-before"||phase=="organic-before"||phase=="frontage-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before"||phase=="access-before"||phase=="organic-before"||phase=="frontage-before"||phase=="precinct-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
