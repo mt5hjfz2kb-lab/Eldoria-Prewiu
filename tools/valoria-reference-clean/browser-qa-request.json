@@ -25,8 +25,8 @@
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 3,
-  "method_note": "Diagnose return-to-city control using the same WebGL bytes in Edge. Keep real touch acceptance mandatory, and compare a real mouse click only after a failed touch to isolate the defect. Retain the original FAIL and report the observed behavior.",
+  "attempt": 4,
+  "method_note": "Replay EXACT native139 WebGL with genuine CDP touchStart/move/end for all portrait world pans; test mouse wheel while still in landscape. Then use genuine portrait touch City; require complete I-II real-system-clock, both orientations and exact save reload. No game/asset/Android recompile, and fail on any regression.",
   "gameplay_source_unchanged": true,
-  "qa_code_commit": "4f7b723ed90aace529af2e71a3b45db6fc434947"
+  "qa_code_commit": "e90561d057041b347fbff79fc61bb2c31a1a9316"
 }
