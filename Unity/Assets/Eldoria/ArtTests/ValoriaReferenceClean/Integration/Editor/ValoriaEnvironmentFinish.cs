@@ -552,6 +552,142 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class RoofSignatureReport{
+   public string scene,source_sha,scene_sha256;
+   public bool original_light_preserved,terrain_heights_preserved,parcels_preserved,hotspots_preserved,
+    renderer_colliders_preserved,art_approved,physical_mobile_tested;
+   public int bastion_renderers,identified_blue_materials,weathered_roof_materials,roof_pixels_regraded;
+   public string[] material_diagnosis;
+   public Frame[] frames;
+  }
+  // Corrects the still-bright roof visible in the real Bastion II player image.
+  // Material identities are diagnosed from the live integrated renderer slots:
+  // historic NativeGI_Material_* names are not reliable slate identifiers.
+  public static void ApplyRoofSignature(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string markerName="Roof signature / Bastion weathered stone slate v5";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Current I-II city/world missing");
+   Need(Find(host.WorldRoot,"Visual palette / slate and river v4"),"Visual palette finishing not integrated");
+   if(Find(host.WorldRoot,markerName)){Debug.Log("VALORIA_REFERENCE_CLEAN_BASTION_ROOF_ALREADY_APPLIED_COMPLETE");return;}
+   string planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Original Qwen/Blender environment plan missing");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Artist plan lost");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Retained city landscape missing");
+   var oldTerrain=terrain.terrainData;
+   var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var hotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   var camCity=new CameraState(city.PlayerCamera);var camWorld=new CameraState(host.WorldCamera);
+   bool worldActive=host.WorldRoot.activeSelf;var lightBefore=LightStamp();
+   folder=AssetsRoot+"/RoofSignature-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+   Directory.CreateDirectory(folder);Directory.CreateDirectory(evidenceDir);AssetDatabase.Refresh();assetIndex=0;
+   var frames=new Dictionary<string,Frame>();var diagnostic=new List<string>();
+   var report=new RoofSignatureReport{scene=city.gameObject.scene.path,
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scene_sha256=Hash(city.gameObject.scene.path),
+    art_approved=false,physical_mobile_tested=false};
+   try{
+    city.Apply(new PlayerState {BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"roof-before",frames);
+    host.WorldRoot.SetActive(true);
+    var marker=new GameObject(markerName);marker.transform.SetParent(host.WorldRoot.transform,false);
+    var roots=new[]{city.BastionOne,city.BastionTwo,host.WorldBastionOne,host.WorldBastionTwo};
+    var cache=new Dictionary<Material,Material>();
+    foreach(var root in roots.Where(g=>g)){
+     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>(true)){
+      // Bastion large mesh only. Keep royal banners, limestone, glass and
+      // all non-roof materials unaltered even when names are generic.
+      if(!renderer.name.StartsWith("Bastion_"))continue;
+      report.bastion_renderers++;
+      var mats=renderer.sharedMaterials;bool anyChanged=false;
+      for(int slot=0;slot<mats.Length;slot++){
+       var current=mats[slot];if(!current)continue;
+       var key=current.name.ToLowerInvariant();
+       string textureProperty=BaseTextureProperty(current);
+       bool exclude=new[]{"cloth","banner","flag","herald","crest","oak","gold",
+        "window","limestone","sandstone","wood","iron","mortar"}.Any(key.Contains);
+       bool namedSlate=key.Contains("slate")||key.Contains("roof");
+       int pixelsForSlot=0;
+       Texture2D copyTexture=null;Color[] pixels=null;
+       if(textureProperty!=null){
+        copyTexture=ReadableCopy(current.GetTexture(textureProperty),768);
+        pixels=copyTexture.GetPixels();
+        for(int k=0;k<pixels.Length;k++){
+         Color p=pixels[k];Color.RGBToHSV(p,out float h,out float sat,out float value);
+         // Roof blue is medium slate: do not target the darker royal cloth.
+         if(p.a>.05f&&h>.51f&&h<.715f&&sat>.19f&&sat<.83f&&
+          p.b>p.g*1.06f&&p.g>p.r*1.13f&&p.g>.10f)pixelsForSlot++;
+        }
+       }
+       float coverage=pixels==null?0:pixelsForSlot/(float)pixels.Length;
+       string factorKey=current.HasProperty("baseColorFactor")?"baseColorFactor":
+        current.HasProperty("_BaseColor")?"_BaseColor":null;
+       Color color=factorKey!=null?current.GetColor(factorKey):Color.white;
+       Color.RGBToHSV(color,out float hue,out float saturation,out float valueFactor);
+       bool blueFactor=hue>.52f&&hue<.72f&&saturation>.24f&&color.g>.12f&&color.b>color.g*1.07f;
+       diagnostic.Add(renderer.name+" / slot "+slot+" / "+current.name+" / blue_texture="+
+        coverage.ToString("F3")+" / blue_factor="+blueFactor);
+       bool candidate=!exclude&&(namedSlate||coverage>.045f||blueFactor);
+       if(!candidate){
+        if(copyTexture)Object.DestroyImmediate(copyTexture);
+        continue;
+       }
+       report.identified_blue_materials++;
+       if(!cache.TryGetValue(current,out var replacement)){
+        replacement=new Material(current){name="Bastion II / reclaimed weathered slate / "+current.name};
+        bool changed=false;
+        if(copyTexture&&pixelsForSlot>0){
+         int modified=0;
+         for(int k=0;k<pixels.Length;k++){
+          Color p=pixels[k];Color.RGBToHSV(p,out float h,out float sat,out float bright);
+          if(p.a<.05f||h<=.50f||h>=.73f||sat<.17f||p.b<p.g*1.05f)continue;
+          pixels[k]=Color.Lerp(p,new Color(bright*.51f,bright*.56f,bright*.59f,p.a),.93f);
+          modified++;
+         }
+         if(modified>0){
+          copyTexture.SetPixels(pixels);copyTexture.Apply(true);
+          Put(copyTexture,"bastion-weathered-slate");replacement.SetTexture(textureProperty,copyTexture);
+          report.roof_pixels_regraded+=modified;changed=true;
+         }
+        }
+        if(!changed&&(namedSlate||blueFactor)&&factorKey!=null){
+         replacement.SetColor(factorKey,new Color(.29f,.34f,.37f,color.a));changed=true;
+        }
+        if(!changed){Object.DestroyImmediate(replacement);if(copyTexture)Object.DestroyImmediate(copyTexture);continue;}
+        Put(replacement,"bastion-slate-material");cache[current]=replacement;report.weathered_roof_materials++;
+       }else if(copyTexture)Object.DestroyImmediate(copyTexture);
+       mats[slot]=replacement;anyChanged=true;
+      }
+      if(anyChanged)renderer.sharedMaterials=mats;
+     }
+    }
+    host.WorldRoot.SetActive(false);
+    CaptureViews(city,host,plan,evidenceDir,"roof-after",frames);
+    report.original_light_preserved=LightStamp()==lightBefore;
+    report.terrain_heights_preserved=oldTerrain.GetHeights(0,0,oldTerrain.heightmapResolution,oldTerrain.heightmapResolution)
+     .Cast<float>().SequenceEqual(terrain.terrainData.GetHeights(0,0,terrain.terrainData.heightmapResolution,terrain.terrainData.heightmapResolution).Cast<float>());
+    report.parcels_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    report.hotspots_preserved=hotspots.All(p=>p.Key&&p.Key.transform.position==p.Value);
+    report.renderer_colliders_preserved=true; // This pass never edits or creates a Collider.
+    Need(report.original_light_preserved&&report.terrain_heights_preserved&&report.parcels_preserved&&report.hotspots_preserved,
+     "Protected native I-II world state changed in roof finishing");
+    report.frames=frames.Values.ToArray();report.material_diagnosis=diagnostic.ToArray();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-roof-signature-unity.json"),JsonUtility.ToJson(report,true));
+    Need(report.weathered_roof_materials>=1&&report.roof_pixels_regraded>250,
+     "Bastion roof regrade not established: actual renderer/material diagnostics retained");
+    AssetDatabase.SaveAssets();
+    Debug.Log("VALORIA_REFERENCE_CLEAN_ROOF_SIGNATURE_COMPLETE mats="+report.weathered_roof_materials+
+     " pixels="+report.roof_pixels_regraded+" model_renderers="+report.bastion_renderers);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(worldActive);camCity.Restore(city.PlayerCamera);camWorld.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -900,7 +1036,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
