@@ -326,11 +326,11 @@ jobs:
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "EditMode results were not produced." }
           [xml]$results = Get-Content $xml
           # A successful XML from Unity's last-opened project is not this checkout.
-          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/ScriptAssemblies'))).Replace('\\','/').TrimEnd('/') + '/'
+          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/ScriptAssemblies'))).Replace([char]92, [char]47).TrimEnd('/') + '/'
           $assemblies = @($results.SelectNodes("//test-suite[@type='Assembly']"))
           if (-not $assemblies.Count) { throw 'No test assemblies in result; cannot verify project identity.' }
           foreach ($assembly in $assemblies) {
-            $actualAssembly = ([string]$assembly.fullname).Replace('\\','/')
+            $actualAssembly = ([string]$assembly.fullname).Replace([char]92, [char]47)
             if (-not $actualAssembly.StartsWith($expectedAssemblyRoot, [StringComparison]::OrdinalIgnoreCase)) {
               throw "UNITY_TEST_WRONG_PROJECT: $actualAssembly expected beneath $expectedAssemblyRoot"
             }
@@ -354,11 +354,11 @@ jobs:
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "PlayMode results were not produced." }
           [xml]$results = Get-Content $xml
           # A successful XML from Unity's last-opened project is not this checkout.
-          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/ScriptAssemblies'))).Replace('\\','/').TrimEnd('/') + '/'
+          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/ScriptAssemblies'))).Replace([char]92, [char]47).TrimEnd('/') + '/'
           $assemblies = @($results.SelectNodes("//test-suite[@type='Assembly']"))
           if (-not $assemblies.Count) { throw 'No test assemblies in result; cannot verify project identity.' }
           foreach ($assembly in $assemblies) {
-            $actualAssembly = ([string]$assembly.fullname).Replace('\\','/')
+            $actualAssembly = ([string]$assembly.fullname).Replace([char]92, [char]47)
             if (-not $actualAssembly.StartsWith($expectedAssemblyRoot, [StringComparison]::OrdinalIgnoreCase)) {
               throw "UNITY_TEST_WRONG_PROJECT: $actualAssembly expected beneath $expectedAssemblyRoot"
             }
