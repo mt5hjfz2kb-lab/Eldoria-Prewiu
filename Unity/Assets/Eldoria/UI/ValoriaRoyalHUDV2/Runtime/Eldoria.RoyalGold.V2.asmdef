@@ -1,0 +1,10 @@
+{
+  "name": "Eldoria.RoyalGold.V2",
+  "rootNamespace": "Eldoria.UI.RoyalGold.V2",
+  "references": [
+    "Eldoria.RoyalGold.Core",
+    "Eldoria.RoyalGold.UI",
+    "Unity.ugui",
+    "Unity.InputSystem"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Eldoria.RoyalGold.V2.Editor",
+  "rootNamespace": "Eldoria.UI.RoyalGold.V2.Editor",
+  "includePlatforms": [
+    "Editor"
+  ],
+  "references": [
+    "Eldoria.RoyalGold.V2",
+    "Eldoria.RoyalGold.UI",
+    "Eldoria.RoyalGold.Preview",
+    "Unity.ugui",
+    "Unity.InputSystem"
+  ]
+}
