@@ -1,3 +1,5 @@
+> **19-10-2026 — Validación en recuperación:** usar la escena integrada de `pipeline/development-baseline.json`. El run 39274718168 restauró 10.212 archivos, pero `-projectPath=Unity` abrió la última copia del editor (`valoria-layered-source`) y sus XML no certifican el checkout solicitado. Se corrige a argumento separado con ruta absoluta entre comillas y se exige que los XML provengan de `Unity/Library/ScriptAssemblies` del checkout exacto. Mantener los resultados anteriores como diagnóstico, no como cierre.
+
 # Eldoria en Unity — primera slice de Valoria
 
 **Estado: primera slice compilada y jugada correctamente en Unity 6.3 LTS sobre Windows.** Es una línea Unity separada del producto web v0.32.0; esta carpeta no cambia la versión ni la URL del web. La versión del Editor está fijada en `ProjectSettings/ProjectVersion.txt`: **6000.3.23f1 (Unity 6.3 LTS)**.
