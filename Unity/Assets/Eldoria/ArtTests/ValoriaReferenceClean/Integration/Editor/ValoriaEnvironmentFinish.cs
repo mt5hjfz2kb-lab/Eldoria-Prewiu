@@ -330,11 +330,14 @@ namespace Eldoria.ReferenceClean.Editor {
   }
 
   static Vector2Int ReuseCityPlantsAndStone(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Terrain terrain,Transform parent){
-   var donors=Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
-    .Where(r=>!r.transform.IsChildOf(host.WorldRoot.transform));
-   var tree=donors.FirstOrDefault(r=>r.name.StartsWith("Tree01_LOD0."));
-   var rock=donors.FirstOrDefault(r=>r.name.StartsWith("Rock01_LOD0."));
-   Need(tree&&rock,"Retained licensed city conifer and stone families missing");
+   // Native scene uses aggregated "Fir_tree_group" and "River_bank_rocks"
+   // as one combined mesh each. Do not mistake the old inactive world LOD
+   // children for city models. Reuse the proven individual Qwen/Blender pine
+   // and extracted quarry stone already visible in the integrated world.
+   var worldRenderers=host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true);
+   var tree=worldRenderers.FirstOrDefault(r=>r.name.StartsWith("Forest retained Valoria pine"));
+   var rock=worldRenderers.FirstOrDefault(r=>r.name.StartsWith("Quarry retained embedded rim rock"));
+   Need(tree&&rock,"Retained integrated single-mesh pine or limestone donor missing");
    var cityBase=BoundsOf(city.BastionTwo).center;
    var work=new[]{BoundsOf(city.Parcels.LeftBuilt),BoundsOf(city.Parcels.RightBuilt)};
    int countTree=0,countRock=0;

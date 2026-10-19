@@ -1,11 +1,11 @@
 {
   "stage": "visual_leap",
   "validate_play": false,
-  "revision": 146,
+  "revision": 147,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Player-camera comparison showed v2 world paths too dark and city too visually uniform. Keep real scene and tests; restore retained original prairie material before paint with lower opacity, reuse live 3D natural stone/pines around actual buildings and quarry, harmonize blue roofs to slate where source texture permits. Validate matched native screenshots, preserve I-II save/gates/targets; no publish pending review.",
+  "checks": "Native 39292555609 proved slate recolor, softened ground and quarry assets processed, then found inaccurate assumption of city renderer donors; original city vegetation and rocks are combined meshes, not individual Tree01/Rock01. Reuse established individual Qwen/Blender pine and limestone meshes already in integrated world, no new 3D, no gameplay changes. Re-run Unity A/B and existing I-II probe.",
   "art_correction": "Native 39289698230 completed source integration and A/B image evidence; independent artistic review rejected severe world dirt streak and weak city-wide improvement. This v3 makes specific corrections based on those images, with no new artist inference, branches, paid assets or changed gameplay.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
