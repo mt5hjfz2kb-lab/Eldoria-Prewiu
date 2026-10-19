@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ITCH_TRANSPORT_FIX_UPLOADED_PROCESSING",
+  "state": "ITCH_LOW_MEMORY_FIX_REQUESTED_MOBILE_FAILURE_UNRESOLVED",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -36,7 +36,7 @@
   },
   "privacy_confirmation_basis": "Owner setup screenshots: Restricted selected, then project saved successfully; remote anonymous access verification pending.",
   "promotion_request": {
-    "id": "itch-native152-complete-gzip-fix-20261019",
+    "id": "itch-native152-low-memory-v2-20261020",
     "target": "chrismad/eldoria-pruebas",
     "revision": "native152",
     "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
@@ -88,5 +88,14 @@
       "complete_stream_after_http_gzip_bytes": 215390889,
       "result": "PASS"
     }
+  },
+  "memory_fix": {
+    "adapter": "itch-low-memory-v2",
+    "owner_report": "2026-10-20 00:10 Europe/Madrid: repeatedly reloads at 71 percent.",
+    "cause_status": "Memory pressure suspected, not device-profiled.",
+    "verified_changes": "Exact decoded sizes avoid 1.6x allocation and slice; Unity download cache disabled to avoid Response.clone buffering; browser HTTP cache and saves unchanged.",
+    "test": "Real native152 loader reader via local gzip HTTP: data/framework/code single allocation and decoded SHA256 PASS",
+    "unity_bytes_unchanged": true,
+    "physical_mobile_pass": false
   }
 }
