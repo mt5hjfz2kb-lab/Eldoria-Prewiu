@@ -74,27 +74,19 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                     .SelectMany(x => x.GetComponentsInChildren<RoyalHUD>(true)).Single();
                 var driver = scene.GetRootGameObjects()
                     .SelectMany(x => x.GetComponentsInChildren<RoyalPreviewDriver>(true)).Single();
-                var originalRoot = existing.gameObject;
-                var source = AssetDatabase.LoadAssetAtPath<GameObject>(TargetPrefab);
-                if (!source) throw new InvalidOperationException("V2 prefab missing after save.");
-                var candidate = PrefabUtility.InstantiatePrefab(source, scene) as GameObject;
-                if (!candidate) throw new InvalidOperationException("V2 instance cannot be created.");
-                var replacement = candidate.GetComponentInChildren<RoyalHUD>(true);
-                if (!replacement || !replacement.GetComponent<RoyalGoldV2Hud>() ||
-                    !replacement.GetComponent<RoyalGoldV2Narrative>())
-                    throw new InvalidOperationException("V2 candidate has missing components.");
-                if (originalRoot.transform.parent != null)
-                {
-                    candidate.transform.SetParent(originalRoot.transform.parent, false);
-                    candidate.transform.SetSiblingIndex(originalRoot.transform.GetSiblingIndex());
-                }
-                candidate.transform.localPosition = originalRoot.transform.localPosition;
-                candidate.transform.localRotation = originalRoot.transform.localRotation;
-                candidate.transform.localScale = originalRoot.transform.localScale;
-                driver.Hud = replacement;
-                UnityEngine.Object.DestroyImmediate(originalRoot);
+                // The legacy TEST fixture keeps its driver on the same
+                // GameObject as RoyalHUD. Replacing that object would destroy
+                // the fixture itself. Extend the additive TEST copy in place.
+                var candidate = existing.GetComponent<RoyalGoldV2Hud>();
+                if (!candidate) candidate = existing.gameObject.AddComponent<RoyalGoldV2Hud>();
+                candidate.Source = existing;
+                var story = existing.GetComponent<RoyalGoldV2Narrative>();
+                if (!story) story = existing.gameObject.AddComponent<RoyalGoldV2Narrative>();
+                story.Source = existing;
+                existing.gameObject.name = "RoyalGoldHUDV2 ISOLATED TEST";
+                driver.Hud = existing;
                 if (scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<RoyalHUD>(true)).Count() != 1)
-                    throw new InvalidOperationException("Preview now contains more than one HUD.");
+                    throw new InvalidOperationException("Preview has more than one HUD.");
                 Directory.CreateDirectory(Path.GetDirectoryName(TargetPreview) ?? throw new InvalidOperationException());
                 EditorSceneManager.MarkSceneDirty(scene);
                 if (!EditorSceneManager.SaveScene(scene, TargetPreview, true))
