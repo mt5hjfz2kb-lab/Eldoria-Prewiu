@@ -735,8 +735,14 @@ namespace Eldoria.ReferenceClean.Editor {
       var mats=renderer.sharedMaterials;
       Need(mats.Length>14&&mats[14],"Original 19-slot Bastion materials changed");
       if(mats[14]==oldMat){result.material_slots_already_original++;continue;}
-      Need(mats[14].name.Contains("NativeGI_Material_026"),
-       "Expected only previously regraded royal-blue cloth in slot14");
+      // Unity AssetDatabase.CreateAsset renames the previous tinted material
+      // to its generated filename, so the Blender source name is not retained.
+      // Check the exact generated artifact GUID instead of a mutable name.
+      string pathOfPrevious=AssetDatabase.GetAssetPath(mats[14]);
+      string guidOfPrevious=string.IsNullOrEmpty(pathOfPrevious)?"":AssetDatabase.AssetPathToGUID(pathOfPrevious);
+      Need(guidOfPrevious=="9195b0acd9a2d524695f719dcfee0a7b",
+       "Expected exact v5 regraded banner material identity in slot14, got "+
+       renderer.name+"/"+pathOfPrevious+"/"+guidOfPrevious);
       mats[14]=oldMat;renderer.sharedMaterials=mats;result.royal_material_slots_restored++;
      }
     }

@@ -1,11 +1,11 @@
 {
   "stage": "visual_leap",
   "validate_play": false,
-  "revision": 150,
+  "revision": 151,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Inspect native V5 reveal: true roof recolor clearly visible, but generic base-color detection unintentionally desaturated blue-and-gold heraldic banners on original Bastion I-II. Restore ONLY the precise original Unity material GUID in original 19-slot Bastion renderer slot14 (native and miniaturized world), preserve weathered slate. Native matching camera A/B, core I-II PlayMode, saved session. No publication or new dependencies.",
+  "checks": "Fix exact-banner restoration guard: generated Material instance is renamed by AssetDatabase.CreateAsset from NativeGI_Material_026 to bastion-slate-material-6, causing run 39299556578 to stop safely. Compare material's exact generated GUID 9195b0... rather than its mutable display name, then restore original royal blue/gold GUID 93d568... only in Bastion renderer slot14. Validate native Unity same-camera A/B, saved progress. Do not publish until review.",
   "art_correction": "Review of actual native 39298794759 before/after: slate approved as visually material, banner gray is a regression. V6 source changes exclude fallback blueFactor without texture from roof candidate and restores original NativeGI_Material_026 only. Source asset still untouched.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
