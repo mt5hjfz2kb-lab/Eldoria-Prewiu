@@ -44,6 +44,8 @@ jobs:
         run: node tools/check-documentation-governance.mjs
       - name: Test documentation governance (positive and negative cases)
         run: node --test tools/check-documentation-governance.test.mjs
+      - name: Test read-only closeout diagnostics (no Windows, no game build)
+        run: node --test tools/closeout/closeout.test.mjs
       - name: Enforce persistent art learning evidence and regression tests
         run: |
           node tools/art-direction/learning-evidence/learning.mjs audit
