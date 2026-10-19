@@ -206,7 +206,7 @@ async function main() {
     selection_framing_measurement: 'Before each real primary action and after a completed operation that retains its selection/view: at least three telemetry frames across >=0.7 s with the same selection, viewport, camera and panel/projection bounds. Completion observations allow objective advancement and need no enabled next action; view/selection/narrative changes are recorded as interruptions. Full projected model envelope must be inside the HUD free viewport; transient camera/layout frames are observed without failing immediately. Rectangles use Unity normalized bottom-left viewport coordinates.',
     cold_load_definition: 'Empty browser context with no prior HTTP/IndexedDB cache; operating-system disk cache is not claimed empty',
     checks: {}, loads: [], orientations: [], actions: [], operations: [], marches: [], navigation: [], selection_framing: [],
-    transitions: [], screenshots: [], failures: [], warnings: [], runtime_errors: [], network_failures: [], diagnostics: []
+    transitions: [], screenshots: [], failures: [], warnings: [], runtime_errors: [], network_failures: [], diagnostics: [], legacy_ui_fallbacks: []
   };
   const ndjson = (file, value) => fs.appendFileSync(path.join(out, file), JSON.stringify(value) + '\n');
   const elapsed = () => round((performance.now() - born) / 1000);
@@ -757,6 +757,9 @@ async function main() {
     });
     page.on('console', message => {
       const text = message.text(), where = text.indexOf(PREFIX);
+      if (text.includes('ELDORIA_PLAYABLE_NAV') && text.includes('source=webgl-touch-fallback')) {
+        report.legacy_ui_fallbacks.push({ elapsed_s: elapsed(), text });
+      }
       if (where >= 0) {
         try { recordFrame(JSON.parse(text.slice(where + PREFIX.length).split('\n')[0])); }
         catch (error) { telemetryBroken = true; report.failures.push('Invalid read-only telemetry: ' + error.message); }
@@ -806,6 +809,10 @@ async function main() {
     await capture('warm-reload-complete');
     report.checks.normal_system_clock = true;
     report.checks.no_runtime_errors = report.runtime_errors.length === 0;
+    // A RoyalGold navigation tap must not also run the archived WebGL nav
+    // heuristic, which previously reopened World after a real City click.
+    report.checks.no_legacy_touch_shadow_navigation = report.legacy_ui_fallbacks.length === 0;
+    need(report.checks.no_legacy_touch_shadow_navigation, 'Legacy WebGL navigation overrode the integrated RoyalGold touch; inspect browser-console.ndjson');
     report.checks.no_failed_build_requests = report.network_failures.filter(item => item.error !== 'net::ERR_ABORTED').length === 0;
     need(report.checks.no_runtime_errors, 'Browser or Unity runtime errors were observed; inspect browser-console.ndjson');
     need(report.checks.no_failed_build_requests, 'A build request failed; inspect report.network_failures');
