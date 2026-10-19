@@ -25,5 +25,8 @@
   "physical_mobile_tested": false,
   "manual_browser_playthrough": "BLOCKED_BY_CHATGPT_SIGN_IN",
   "legacy_android": "Android97/1.5 retained until separately rebuilt; no automatic content update",
-  "budget_eur": 0
+  "budget_eur": 0,
+  "record_role": "INITIAL_CONSOLIDATION_SNAPSHOT_NOT_CURRENT_RELEASE",
+  "current_delivery_manifest": "pipeline/playtest-delivery.json",
+  "current_delivery_guide": "docs/ELDORIA_PLAYTEST_DELIVERY.md"
 }

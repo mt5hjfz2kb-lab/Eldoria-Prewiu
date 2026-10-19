@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "provider": "itch.io",
+  "state": "PREPARED_NOT_PUBLISHED_ACCOUNT_SETUP_REQUIRED",
+  "publish_enabled": false,
+  "target": null,
+  "restricted_project_confirmed": false,
+  "candidate": {
+    "revision": "native152",
+    "source_sha": "f5203b84a77540d6704efc5c2576343c7e88fe5c",
+    "native_run": 39301296709,
+    "qa_run": 39305545377,
+    "qa_source_sha": "4584ffe8f0432553e53dc0bbea4fc575e65d2f4c",
+    "artifact_id": 12213501867,
+    "artifact_name": "valoria-verified-private-site-windows-39305545377",
+    "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
+  },
+  "published": {
+    "provider": "sites",
+    "revision": "native143",
+    "url": "https://valoria-city-world.kbkvc5c45n.chatgpt.site",
+    "deployment": "appgdep_6ad63a0012448191b64d52721e4479a6"
+  },
+  "limits": {
+    "physical_mobile_tested": false,
+    "art_approved": false
+  },
+  "instructions": "Candidate is not published. Never change published until upload and hosted checks pass. Preserve old Site until replacement works; no Unity rebuild. Secrets only in GitHub environment eldoria-playtest."
+}

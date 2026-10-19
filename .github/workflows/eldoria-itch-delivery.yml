@@ -1,0 +1,103 @@
+name: Prepare or publish exact Eldoria playtest
+on:
+  push:
+    branches: [main]
+    paths:
+      - pipeline/playtest-delivery.json
+      - tools/delivery/**
+      - .github/workflows/eldoria-itch-delivery.yml
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Upload to the configured restricted itch.io project
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-external-playtest
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/delivery
+            tools/closeout
+            pipeline/playtest-delivery.json
+          sparse-checkout-cone-mode: false
+      - name: Verify upstream QA and exact artifact, then download
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const c = require('./pipeline/playtest-delivery.json').candidate;
+            const qa = (await github.rest.actions.getWorkflowRun({...context.repo,run_id:c.qa_run})).data;
+            if (qa.status !== 'completed' || qa.conclusion !== 'success' || qa.head_sha !== c.qa_source_sha || qa.head_branch !== 'main' || qa.path !== '.github/workflows/valoria-windows-chromium-qa.yml') throw Error('Pinned QA identity/status mismatch');
+            const a = (await github.rest.actions.getArtifact({...context.repo,artifact_id:c.artifact_id})).data;
+            if (a.expired || a.name !== c.artifact_name || a.workflow_run.id !== c.qa_run || a.digest !== 'sha256:'+c.artifact_sha256) throw Error('Artifact provenance mismatch');
+            const native = (await github.rest.actions.getWorkflowRun({...context.repo,run_id:c.native_run})).data;
+            if (native.head_sha !== c.source_sha || native.head_branch !== 'main') throw Error('Native source mismatch');
+            const bytes = await github.rest.actions.downloadArtifact({...context.repo,artifact_id:c.artifact_id,archive_format:'zip'});
+            fs.writeFileSync('candidate.zip',Buffer.from(bytes.data));
+      - name: Check original Unity hashes and produce unchanged HTML5 package
+        run: python3 tools/delivery/prepare.py candidate.zip delivery-output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-external-playtest-${{ github.run_id }}
+          path: |
+            delivery-output/*.zip
+            delivery-output/identity.json
+          retention-days: 90
+      - name: Report delivery boundary
+        run: echo 'Package verified. This job does not certify publication or physical mobile play.' >> "$GITHUB_STEP_SUMMARY"
+  publish:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    needs: prepare
+    runs-on: ubuntu-latest
+    environment: eldoria-playtest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: pipeline/playtest-delivery.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-external-playtest-${{ github.run_id }}
+          path: package
+      - name: Require configured restricted destination and credential
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json,os,re
+          c=json.load(open('pipeline/playtest-delivery.json'))
+          assert c['publish_enabled'] is True and c['restricted_project_confirmed'] is True, 'Account/privacy setup incomplete'
+          assert re.fullmatch(r'[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9-]*',c['target'] or ''), 'Invalid project target'
+          assert os.environ.get('BUTLER_API_KEY'), 'Missing environment secret BUTLER_API_KEY'
+          PY
+      - name: Install official stable Butler
+        run: |
+          curl --fail --location --retry 2 https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -o butler.zip
+          unzip -q butler.zip -d butler-bin
+          chmod +x butler-bin/butler
+          butler-bin/butler version
+      - name: Upload verified package to existing restricted project
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          python3 - <<'PY'
+          import json,subprocess,hashlib
+          from pathlib import Path
+          c=json.load(open('pipeline/playtest-delivery.json'))
+          r=json.load(open('package/identity.json'))
+          p=Path('package')/('Eldoria-'+c['candidate']['revision']+'-itch.zip')
+          assert r['candidate']==c['candidate'] and hashlib.sha256(p.read_bytes()).hexdigest()==r['zip_sha256']
+          subprocess.run(['butler-bin/butler','push',str(p),c['target']+':web','--userversion',c['candidate']['revision']],check=True)
+          PY
+          echo 'Upload accepted; verify restricted hosted page, load and save before marking delivered. No automatic claim of hosted PASS.' >> "$GITHUB_STEP_SUMMARY"
