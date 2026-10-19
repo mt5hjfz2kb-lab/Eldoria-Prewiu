@@ -508,8 +508,16 @@ jobs:
               if($protected.Count){
                 throw ('Concurrent protected gameplay/art change; preserve artifacts without integration: '+($protected -join ', '))
               }
-              git rebase origin/main
-              if($LASTEXITCODE){git rebase --abort;throw 'Safe Git rebase failed; preserve evidence artifact'}
+              $remoteSha=(git rev-parse origin/main).Trim()
+              $parentSha=(git rev-parse HEAD^).Trim()
+              if($remoteSha -ne $parentSha){
+                # The Unity editor can leave unrelated tracked local settings
+                # changed; preserve them with Git's own bounded auto-stash.
+                git -c rebase.autoStash=true rebase origin/main
+                if($LASTEXITCODE){throw 'Safe Git autostash rebase failed; preserve evidence artifact'}
+              }
+              # For unchanged origin, direct fast-forward push is always safer
+              # than a redundant rebase of the native-rendered working tree.
               git push origin HEAD:main
               if($LASTEXITCODE -eq 0){$published=$true;break}
               Write-Warning "Unrelated concurrent main update, retrying safe fast-forward attempt $attempt/3"
