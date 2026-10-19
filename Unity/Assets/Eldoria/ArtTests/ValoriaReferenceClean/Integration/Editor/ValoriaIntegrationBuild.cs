@@ -93,6 +93,7 @@ namespace Eldoria.ReferenceClean.Editor {
    ValoriaEnvironmentFinish.RestoreRoyalBanners(city,host,Ev);
    ValoriaEnvironmentFinish.ApplyWorldIdentityV10(city,host,Ev);
    ValoriaEnvironmentFinish.ApplyHostileCampIdentityV11(city,host,Ev);
+   ValoriaEnvironmentFinish.ApplyIntegratedWorkingAccessV12(city,host,Ev);
    // Retained V7–V9 visual experiments are archived and rejected; no promotion.
    AssetDatabase.SaveAssets();Need(EditorSceneManager.SaveScene(scene,Scene),"Visual leap scene save");
    BeginCurrentProbe();
