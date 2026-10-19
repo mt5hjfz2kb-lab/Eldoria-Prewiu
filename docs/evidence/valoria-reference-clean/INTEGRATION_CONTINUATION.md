@@ -1,3 +1,5 @@
+> **ACTUALIZACIÓN DE ENTREGA GRÁFICA — 19 OCT 2026.** El resultado presente es `NATIVE152_WEBGL_QA_PASS` (run Windows `39305545377`), pero la web privada sigue en `native143`. Paquete verificado artefacto `12213501867`; cero fallos runtime/red, guardados exactos; no certificado ART_APPROVED ni móvil físico. [Detalle y pendientes](GRAPHICAL_LEAP_NATIVE152_DELIVERY_20261019.md). La reparación de validaciones tratada más abajo permanece cerrada.
+
 # Estado actual 19-10-2026 — incidencia de validación reparada y entrega web verificada
 
 Continúa el mismo workstream y main. Esta cabecera supera los bloqueos y estados históricos inferiores.
