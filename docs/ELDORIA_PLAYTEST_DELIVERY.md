@@ -46,3 +46,13 @@ El propietario confirma fallo tanto en navegador integrado de ChatGPT como en Sa
 Corrección: reconstruir 174.615.244 bytes comprimidos con SHA256 57712f5c116bd5da46388cee661e26628ffe9350b77f754855c8652d6d5b7a4f. CRC gzip completo PASS; entrega HTTP con Content-Encoding gzip produce correctamente 215.390.889 bytes. El archivo almacenado en ZIP está por debajo de 200 MB. Motor y contenido originales conservados; manifiesto de transporte y aviso de error cambiados explícitamente. Se verificaron sintaxis JS, manifiesto JSON y hashes de los demás archivos. Estas pruebas NO certifican arranque en iPhone.
 
 Promoción correctiva: commit a1c1c55c3fb57a7f052f7b43fc2adbc1396725ef, run 39325971944. Consultar su resultado y `pipeline/playtest-delivery.json` antes de declarar publicado. No reutilizar los ZIP iniciales de 18 archivos para nuevas instalaciones.
+
+## Reinicio físico al 71 %, 20 octubre, 00:10 Europe/Madrid
+
+El propietario comunica reinicios repetidos al 71 %. No se ha capturado un log de iOS: presión de memoria es una hipótesis sustentada, no un diagnóstico confirmado de terminación del proceso. El cargador original estima el tamaño descomprimido como 1,6 veces Content-Length gzip: para data, 279.384.390 bytes; al completar 215.390.889 bytes ejecuta slice y crea otra copia. Su UnityCache también usa Response.clone antes de consumir el flujo, que puede retener el cuerpo adicional mientras la escritura de caché aún no ha empezado.
+
+Adaptador itch-low-memory-v2: mantiene el flujo HTTP, pero indica al cargador el tamaño exacto calculado por descompresión validada durante el empaquetado. Solo normaliza respuestas gzip conocidas, 200 y con cuerpo. Desactiva la caché de DESCARGAS de Unity mediante cacheControl=no-store (no cambia el almacenamiento de partidas ni la caché HTTP normal). No modifica ninguno de los cuatro archivos del motor/datos; SHA256 idénticos. No baja la calidad artística ni cambia escenas.
+
+Prueba focalizada con el lector real de native152, HTTP gzip y hashes: framework 432.603, wasm 40.040.598 y data 215.390.889 bytes, una única reserva Uint8Array por archivo, todos los hashes decodificados correctos. El mismo test se ejecuta ahora antes de publicar. Esto verifica la reducción de copias del cargador, no el pico total de RAM ni el arranque físico.
+
+Promoción: 6a556f06cf5a49c4c57cf0c70f521c90bf3394ac. Comprobar resultado y build servido antes de pedir nueva prueba. Mantener fallo físico abierto hasta arranque real; si persiste, perfilar dispositivo/ajustar build móvil con el propietario Unity, sin apropiarse del runner Windows ni degradar arte a ciegas.
