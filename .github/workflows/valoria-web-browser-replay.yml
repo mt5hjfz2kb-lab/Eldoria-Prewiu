@@ -38,7 +38,7 @@ jobs:
           node-version: 22
       - uses: actions/download-artifact@v4
         with:
-          name: valoria-exact-browser-evidence-39223329742
+          name: valoria-web-visible-controls-39223329742
           run-id: 39223329742
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: prior-evidence
