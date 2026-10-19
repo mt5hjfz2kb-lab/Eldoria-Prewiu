@@ -1,0 +1,64 @@
+{
+  "run": 39318416130,
+  "artifact": 12219407350,
+  "source_sha": "1aa508cdbb7403e1939aed5fd62e33f5ff7db738",
+  "status": "ART_REVIEW_REQUIRED",
+  "protected_checks": {
+    "same_camera_light": true,
+    "terrain_preserved": true,
+    "mesh_preserved": true,
+    "parcels_preserved": true,
+    "hotspots_preserved": true
+  },
+  "painted_pixels": 139000,
+  "previews": {
+    "environment-world-forest-valoria-destinations-before": {
+      "sha256": "10f40429c1a50cfc31a3270233cad8c5b49262136238629b10544fa8c996db6d",
+      "bytes": 193743
+    },
+    "environment-world-forest-valoria-destinations-after": {
+      "sha256": "a0dbc36d164fe9607edb0e780ef3f2e088563bdbd667fa1cc42d8d77261b3648",
+      "bytes": 166882
+    },
+    "environment-world-quarry-valoria-destinations-before": {
+      "sha256": "4a115aa0e8d8cf2f71206644ef0489aa8a010e671af2f90a319e80c84444bcb7",
+      "bytes": 169676
+    },
+    "environment-world-quarry-valoria-destinations-after": {
+      "sha256": "6ed437d454b0594259498d2917868bcf764735721ad07fd3885062e71d8e7e14",
+      "bytes": 131051
+    },
+    "environment-world-corrupt-scout-destinations-before": {
+      "sha256": "3c058b6b6657c2244f9b1328774211392bb98b10e7dc9107d9ccfa3ef7571ba0",
+      "bytes": 155037
+    },
+    "environment-world-corrupt-scout-destinations-after": {
+      "sha256": "6cffa1f7b33f78b915f0e5432c1b5d4d1a24d7aa7473467eb5c4a238c55af5a3",
+      "bytes": 112349
+    },
+    "environment-world-engendro-valoria-destinations-before": {
+      "sha256": "be2ab192622b48230fe0f6bb435e885130b86bdb5b195da4714714a9b2501ff9",
+      "bytes": 151644
+    },
+    "environment-world-engendro-valoria-destinations-after": {
+      "sha256": "e34dac93ca8db8aca88ae753809519f0f7d27b3a6ee605cabf7b34ae94b97c4f",
+      "bytes": 109512
+    },
+    "environment-world-wide-destinations-before": {
+      "sha256": "ca0dc536c224b40fc9210cf35e38b0e1197f2467decd82065bbf4081e19ba820",
+      "bytes": 237544
+    },
+    "environment-world-wide-destinations-after": {
+      "sha256": "5054ac10fee353bbf3b31ebb665bf243f6fef1a02783ee015b615d3756ddd9f2",
+      "bytes": 229848
+    },
+    "environment-city-wide-destinations-before": {
+      "sha256": "6f90d1d152b58ba52d254771746969f50e0b7f708df8404a32e2336f42fc839f",
+      "bytes": 384785
+    },
+    "environment-city-wide-destinations-after": {
+      "sha256": "253b3e2eebd398236cb75a50ab680c4eba56a6f1e206314548b3004bd77e82da",
+      "bytes": 384842
+    }
+  }
+}

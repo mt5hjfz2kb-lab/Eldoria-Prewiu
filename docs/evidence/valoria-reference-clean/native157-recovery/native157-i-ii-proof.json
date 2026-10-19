@@ -1,0 +1,159 @@
+{
+    "source": "1aa508cdbb7403e1939aed5fd62e33f5ff7db738",
+    "status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
+    "error": "",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "checks": [
+        "original web opening narrator and Aldric appear through actual buttons",
+        "Aldric portrait and text rendered at settled opacity",
+        "new player introduction saved and shared modal restored for settings",
+        "restored Settings closes through real rendered-button raycast",
+        "city HUD, one camera",
+        "Royal Gold real chapter checklist and collapse",
+        "mechanic-gated menus, narrative, no slabs, objective navigation",
+        "story modal opened",
+        "dialogue survives refresh without gaining a duplicate milestone",
+        "all world entry points share progression gate",
+        "construction panel visible in both orientations",
+        "Royal build command",
+        "shared timer and authored model",
+        "world return preserves session",
+        "world gathering, city return, saved reward",
+        "narrator presents original forest mark without mixing voices",
+        "forest mark narrator legible and next Aldric speaker acknowledged",
+        "forest mark Aldric legible after animation and story ledger persisted",
+        "Royal map action forest-valoria",
+        "World return forest-valoria",
+        "Royal map action quarry-valoria",
+        "World return quarry-valoria",
+        "Royal map action corrupt-scout",
+        "World return corrupt-scout",
+        "Royal Bastion upgrade",
+        "Bastion II visual",
+        "Royal barracks",
+        "Royal recruitment",
+        "Royal march action becomes available",
+        "Royal march confirmation via visible primary button",
+        "Royal I-II chapter complete and reload",
+        "canonical save byte hashes preserved"
+    ],
+    "framing": [
+        {
+            "capture": "integration-construction-landscape.png",
+            "target": "sawmill",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.38703954219818118,
+                0.36028870940208437,
+                0.5529604554176331,
+                0.4997110664844513
+            ],
+            "visible": [
+                0.2212500423192978,
+                0.013333214446902275,
+                0.71875,
+                0.793333113193512
+            ]
+        },
+        {
+            "capture": "integration-construction-portrait.png",
+            "target": "sawmill",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.2378038465976715,
+                0.4137263000011444,
+                0.7621959447860718,
+                0.5531486868858337
+            ],
+            "visible": [
+                0.014999881386756897,
+                0.36343756318092348,
+                0.9849998354911804,
+                0.6034373641014099
+            ]
+        },
+        {
+            "capture": "integration-city-built.png",
+            "target": "sawmill",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.41875821352005007,
+                0.38678038120269778,
+                0.5206267833709717,
+                0.5514084100723267
+            ],
+            "visible": [
+                0.2212500423192978,
+                0.1733333319425583,
+                0.71875,
+                0.793333113193512
+            ]
+        },
+        {
+            "capture": "integration-bastion-upgrade.png",
+            "target": "bastion",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.36244186758995058,
+                0.28629153966903689,
+                0.5775579810142517,
+                0.6803749799728394
+            ],
+            "visible": [
+                0.2212499976158142,
+                0.17333339154720307,
+                0.7187500596046448,
+                0.7933332920074463
+            ]
+        },
+        {
+            "capture": "integration-training.png",
+            "target": "barracks",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.42207127809524538,
+                0.4462442398071289,
+                0.5168066024780273,
+                0.5594631433486939
+            ],
+            "visible": [
+                0.22124993801116944,
+                0.1733333021402359,
+                0.7187499403953552,
+                0.7933331727981567
+            ]
+        },
+        {
+            "capture": "integration-training-portrait.png",
+            "target": "barracks",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.2537066340446472,
+                0.4462442398071289,
+                0.5531172752380371,
+                0.5594631433486939
+            ],
+            "visible": [
+                0.01499970257282257,
+                0.37265610694885256,
+                0.9849997162818909,
+                0.6034374237060547
+            ]
+        }
+    ],
+    "artApproved": false,
+    "physicalDeviceTested": false,
+    "timeAccelerated": true
+}
