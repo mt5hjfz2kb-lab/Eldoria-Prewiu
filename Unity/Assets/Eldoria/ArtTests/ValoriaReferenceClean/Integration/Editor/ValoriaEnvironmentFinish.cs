@@ -1040,6 +1040,143 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class SurvivingQuarterReport {
+   public string scene,source_sha,source_scene_sha256,asset_source,license;
+   public bool visual_only,same_camera_light,terrain_heights_preserved,parcel_bindings_preserved,
+    hotspots_preserved,art_approved,physical_mobile_tested;
+   public int existing_building_donors,reused_renderer_count,placed_quarters,decorative_collider_count;
+   public Frame[] frames;
+   public string[] placed_asset_paths,limitations;
+  }
+
+  // One coherent pre-existing town survivor on either side of the Bastion,
+  // NOT replicated random walls, unlocked structures or another city plan.
+  // Uses the already installed EmacEArt Slavic Medieval Village Free prefab kit
+  // (Unity Asset Store standard EULA, embedded commercial gameplay permitted).
+  // We retain only the existing MeshRenderer/mesh/material hierarchy, stripping
+  // scripts, colliders, physics, triggers, lightmap indices and navigation.
+  public static void ApplySurvivingQuarterMassing(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string marker="Surviving medieval quarters / contained composition v9";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Current integrated scene required");
+   Need(Find(host.WorldRoot,"Heraldic original royal blue / roof correction v6"),"Exact native152 art baseline absent");
+   Need(!Find(city.gameObject,"Reconstruction districts / existing masonry v7")&&
+    !Find(city.gameObject,"Connected working grounds / city cohesion v8"),
+    "Rejected v7 or v8 scene still present; return to approved source first");
+   if(Find(city.gameObject,marker)){Debug.Log("VALORIA_SURVIVING_QUARTERS_ALREADY_APPLIED");return;}
+   var planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Saved native camera framing plan absent");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Source framing plan incomplete");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Retained city terrain missing");
+   var td=terrain.terrainData;
+   var sourcePaths=new[]{
+    "Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",
+    "Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_03a_PRE.prefab"};
+   var donorAssets=sourcePaths.Select(AssetDatabase.LoadAssetAtPath<GameObject>).ToArray();
+   Need(donorAssets.All(x=>x),"Installed prefab sources missing. No synthetic house substitution allowed");
+   var preservedLeft=city.Parcels.LeftBuilt;var preservedRight=city.Parcels.RightBuilt;
+   var plotBounds=new List<Bounds>{BoundsOf(city.BastionOne),BoundsOf(city.BastionTwo),
+    BoundsOf(preservedLeft),BoundsOf(preservedRight)};
+   foreach(var binding in city.Parcels.Bindings)
+    foreach(var part in new[]{binding.Ground,binding.Available})
+     if(part)foreach(var renderer in part.GetComponentsInChildren<Renderer>(true))plotBounds.Add(renderer.bounds);
+   var originalRuins=Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .Where(r=>r.name.StartsWith("Ruin_")&&!r.transform.IsChildOf(host.WorldRoot.transform)).Select(r=>r.bounds).ToArray();
+   var treeBounds=city.GetComponentsInChildren<Transform>(true)
+    .Where(t=>t.name.StartsWith("Valoria wild conifers / reclaimed"))
+    .Select(t=>BoundsOf(t.gameObject)).ToArray();
+   var nodes=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   var left=BoundsOf(preservedLeft);var right=BoundsOf(preservedRight);
+   var targets=new[]{
+    new Vector3(left.center.x-7.0f,0,left.center.z+left.extents.z+13.5f),
+    new Vector3(right.center.x+7.0f,0,right.center.z+right.extents.z+13.5f)};
+   bool Clear(Vector3 p,float radius){
+    var start=terrain.transform.position;var end=start+td.size;
+    if(p.x<start.x+radius+4f||p.z<start.z+radius+4f||p.x>end.x-radius-4f||p.z>end.z-radius-4f)return false;
+    if(Mathf.Abs(p.x-ValoriaReferenceCleanArtBuilder.RoadX(p.z))<radius+6f)return false;
+    if(Mathf.Abs(p.z-RiverCenter(p.x))<RiverWidth(p.x)+radius+4f)return false;
+    if(plotBounds.Any(b=>Mathf.Abs(p.x-b.center.x)<b.extents.x+radius+2.8f
+      &&Mathf.Abs(p.z-b.center.z)<b.extents.z+radius+2.8f))return false;
+    if(originalRuins.Any(b=>Mathf.Abs(p.x-b.center.x)<b.extents.x+radius*.8f
+      &&Mathf.Abs(p.z-b.center.z)<b.extents.z+radius*.8f))return false;
+    if(treeBounds.Any(b=>Mathf.Abs(p.x-b.center.x)<b.extents.x+radius*.75f
+      &&Mathf.Abs(p.z-b.center.z)<b.extents.z+radius*.75f))return false;
+    return true;
+   }
+   var lighting=LightStamp();var cityCam=new CameraState(city.PlayerCamera);var worldCam=new CameraState(host.WorldCamera);
+   var frames=new Dictionary<string,Frame>();bool worldWasActive=host.WorldRoot.activeSelf;
+   var report=new SurvivingQuarterReport{scene=city.gameObject.scene.path,
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    source_scene_sha256=Hash(city.gameObject.scene.path),existing_building_donors=sourcePaths.Length,
+    asset_source="Existing repository prefabs: EmacEArt Slavic Medieval Village Free",
+    license="Standard Unity Asset Store EULA (integrated non-extractable content, non-SDK)",
+    visual_only=true,art_approved=false,physical_mobile_tested=false,placed_asset_paths=sourcePaths,
+    limitations=new[]{"Candidate background survivors only; no new constructible or walkable property.",
+     "Require independent real-image art approval, no claim from CI alone.",
+     "Physical Android/iPhone GPU and device tests have not been performed."}};
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"survivors-before",frames);
+    host.WorldRoot.SetActive(false);
+    var collection=new GameObject(marker);collection.transform.SetParent(city.transform,false);
+    for(int i=0;i<donorAssets.Length;i++){
+     var prefab=(GameObject)PrefabUtility.InstantiatePrefab(donorAssets[i]);
+     Need(prefab,"Could not instantiate retained prefab source "+sourcePaths[i]);
+     try{
+      var donorRenderers=prefab.GetComponentsInChildren<MeshRenderer>(true);
+      Need(donorRenderers.Length>=4,"Prefab house is not a meaningful original 3D structure");
+      bool placed=false;
+      for(int attempt=0;attempt<32;attempt++){
+       float angle=(attempt*.618034f+i*.31f)*Mathf.PI*2f;
+       float spread=attempt<8?attempt*.54f:(attempt-8)*.37f+4.3f;
+       var p=targets[i]+new Vector3(Mathf.Cos(angle)*spread,0,Mathf.Sin(angle)*spread*.67f);
+       float radius=i==0?7f:7.9f;
+       if(!Clear(p,radius))continue;
+       p.y=terrain.SampleHeight(p)+terrain.transform.position.y;
+       var house=CloneVisual(prefab,i==0?"Western / surviving former workshops":"Eastern / damaged civilian frontage",
+        collection.transform,p,i==0?11.0f:12.4f);
+       house.transform.rotation=Quaternion.Euler(0,i==0?80:280,0);
+       int copied=house.GetComponentsInChildren<MeshRenderer>(true).Length;
+       if(copied<4){Object.DestroyImmediate(house);continue;}
+       // Signify damaged post-Breach survivors: one volume keeps its roof,
+       // the other loses a portion of any named upper roofing surfaces.
+       if(i==1){
+        var roofRenderers=house.GetComponentsInChildren<MeshRenderer>(true)
+         .Where(r=>r.name.IndexOf("Roof",StringComparison.OrdinalIgnoreCase)>=0).ToArray();
+        if(roofRenderers.Length>=2)roofRenderers[0].enabled=false;
+       }
+       report.reused_renderer_count+=copied;report.placed_quarters++;placed=true;break;
+      }
+      Need(placed,"No visually safe non-building district position; refuse to occupy gameplay plots");
+     }finally{Object.DestroyImmediate(prefab);}
+    }
+    report.decorative_collider_count=collection.GetComponentsInChildren<Collider>(true).Length;
+    Need(report.placed_quarters==2&&report.decorative_collider_count==0,
+     "Surviving quarters not visible or copied an unintended gameplay collider");
+    CaptureViews(city,host,plan,evidenceDir,"survivors-after",frames);
+    report.same_camera_light=LightStamp()==lighting;
+    report.terrain_heights_preserved=ReferenceEquals(td,terrain.terrainData);
+    report.parcel_bindings_preserved=city.Parcels.LeftBuilt==preservedLeft&&city.Parcels.RightBuilt==preservedRight;
+    report.hotspots_preserved=nodes.All(n=>n.Key&&n.Key.transform.position==n.Value);
+    Need(report.same_camera_light&&report.terrain_heights_preserved&&report.parcel_bindings_preserved&&report.hotspots_preserved,
+     "Visual-only quarters changed current player light, terrain or interactions");
+    report.frames=frames.Values.ToArray();AssetDatabase.SaveAssets();
+    Directory.CreateDirectory(evidenceDir);
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-surviving-quarter-unity.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("VALORIA_SURVIVING_QUARTERS_CANDIDATE structures="+report.placed_quarters+
+     " retained_renderers="+report.reused_renderer_count);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(worldWasActive);cityCam.Restore(city.PlayerCamera);worldCam.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -1388,7 +1525,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}

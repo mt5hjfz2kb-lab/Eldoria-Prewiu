@@ -91,7 +91,7 @@ namespace Eldoria.ReferenceClean.Editor {
    ValoriaEnvironmentFinish.ApplyVisualPalette(city,host,Ev);
    ValoriaEnvironmentFinish.ApplyRoofSignature(city,host,Ev);
    ValoriaEnvironmentFinish.RestoreRoyalBanners(city,host,Ev);
-   ValoriaEnvironmentFinish.ApplyConnectedWorkyardGround(city,host,Ev);
+   ValoriaEnvironmentFinish.ApplySurvivingQuarterMassing(city,host,Ev);
    AssetDatabase.SaveAssets();Need(EditorSceneManager.SaveScene(scene,Scene),"Visual leap scene save");
    BeginCurrentProbe();
   }catch(Exception e){Debug.LogException(e);File.WriteAllText(Path.Combine(Ev,"visual-leap-failure.txt"),e.ToString());EditorApplication.Exit(1);}}
