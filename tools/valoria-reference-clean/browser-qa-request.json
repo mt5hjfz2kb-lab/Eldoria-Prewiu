@@ -25,8 +25,8 @@
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 2,
-  "method_note": "Use native Windows Edge/Chromium GPU and real 160ms CDP touch hold-release in portrait. Native139 prior Windows run 39234921616 passed eight directional drags and genuine wheel zoom, but immediate touch to City was missed; preserve all navigation, dialogue, normal-clock and exact save checks. No edits to game or engine.",
+  "attempt": 3,
+  "method_note": "Diagnose return-to-city control using the same WebGL bytes in Edge. Keep real touch acceptance mandatory, and compare a real mouse click only after a failed touch to isolate the defect. Retain the original FAIL and report the observed behavior.",
   "gameplay_source_unchanged": true,
-  "qa_code_commit": "ca6f0640c792ab343171a820dea0baec0ac13c85"
+  "qa_code_commit": "4f7b723ed90aace529af2e71a3b45db6fc434947"
 }
