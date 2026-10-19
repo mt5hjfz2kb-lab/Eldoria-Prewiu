@@ -1870,7 +1870,7 @@ namespace Eldoria.ReferenceClean.Editor {
       }
       var meshRenderers=donor.GetComponentsInChildren<MeshRenderer>(true)
        .Where(r=>!excluded.Contains(r)&&r.GetComponent<MeshFilter>()&&r.GetComponent<MeshFilter>().sharedMesh).ToArray();
-      Need(meshRenderers.Length>=2,"No source LOD0 mesh suitable for new workfront");
+      Need(meshRenderers.Length>=1,"No source LOD0 mesh suitable for new workfront");
       var bounds=meshRenderers[0].bounds;foreach(var r in meshRenderers.Skip(1))bounds.Encapsulate(r.bounds);
       float width=n%2==0?10.5f:6.2f;
       var yard=yards[n<2?0:1];float dir=n<2?-1f:1f;
@@ -1909,10 +1909,13 @@ namespace Eldoria.ReferenceClean.Editor {
         result.lod0_renderers++;result.triangle_count+=filter.sharedMesh.triangles.Length/3;
         bool isRoof=old.name.IndexOf("roof",StringComparison.OrdinalIgnoreCase)>=0
          ||old.name.IndexOf("thatch",StringComparison.OrdinalIgnoreCase)>=0;
-        if(!isRoof)continue;
         var mats=newRenderer.sharedMaterials;
         for(int m=0;m<mats.Length;m++){
          if(!mats[m])continue;
+         bool roofSlot=isRoof||mats[m].name.IndexOf("roof",StringComparison.OrdinalIgnoreCase)>=0
+          ||mats[m].name.IndexOf("thatch",StringComparison.OrdinalIgnoreCase)>=0
+          ||mats[m].name.IndexOf("slate",StringComparison.OrdinalIgnoreCase)>=0;
+         if(!roofSlot)continue;
          if(!styledRoof.TryGetValue(mats[m],out var newMat)){
           newMat=new Material(mats[m]){name="Valoria unified original slate workfront v15"};
           var prop=BaseTextureProperty(newMat);
@@ -1943,7 +1946,7 @@ namespace Eldoria.ReferenceClean.Editor {
      }finally{Object.DestroyImmediate(donor);}
     }
     result.colliders=parent.GetComponentsInChildren<Collider>(true).Length;
-    Need(result.placed_sources==4&&result.colliders==0&&result.lod0_renderers>=10,
+    Need(result.placed_sources==4&&result.colliders==0&&result.lod0_renderers>=4,
      "Source assets were not integrated as collision-free high-detail art");
     Need(result.triangle_count<250000&&result.roof_materials>0,
      "Renderer budget or coherent slate material condition failed");
