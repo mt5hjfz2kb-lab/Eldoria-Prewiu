@@ -58,3 +58,8 @@ Este cambio documental solicita una ejecución real de los gates existentes al a
 ### Diagnóstico del rechazo de ruta en Windows (segunda comprobación)
 
 La ejecución `39263683526` confirmó que el proceso Unity.exe arranca con el directorio relativo `Unity`, pero la API del Editor todavía devuelve `Couldn't set project path to` **antes de entrar en EditMode**. El siguiente gate no repetirá sin observación la misma hipótesis: verificará que `Unity/Assets`, `Unity/Packages/manifest.json` y `Unity/ProjectSettings/ProjectVersion.txt` están presentes en el checkout Windows, que el proyecto admite una escritura temporal y que no existe otro proceso Unity ocupando el PC. También comprobará la forma atómica `-projectPath=Unity` recomendada en incidencias históricas de invocación automatizada. La continuación de CI solo es válida cuando esas comprobaciones y las pruebas EditMode/PlayMode aporten evidencia real; ninguna recompilación WebGL está solicitada por este cambio.
+
+
+### Recuperación exacta de Unity/Assets en Windows CI (19-10-2026)
+
+El diagnóstico `39266054859` demostró que el checkout del workflow genérico no contenía `Unity/Assets` en `GITHUB_WORKSPACE`, aunque GitHub conserva los recursos del mismo commit. El workflow ahora verifica que el directorio de Git y el workspace coinciden y, únicamente cuando faltan carpetas rastreadas, ejecuta una restauración explícita de `Unity/Assets`, `Unity/Packages` y `Unity/ProjectSettings` **desde el SHA exacto**. Si faltan después, el gate falla con causa concreta antes de Unity. No modifica `Unity/Library`, `valoria-layered-source`, assets del juego ni guardados. La recuperación no equivale a pruebas aprobadas; el siguiente resultado Windows decidirá.
