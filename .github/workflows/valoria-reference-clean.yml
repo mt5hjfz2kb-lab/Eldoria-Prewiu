@@ -155,6 +155,21 @@ jobs:
             if(-not((Get-Content $result -Raw|ConvertFrom-Json).sources_preserved)){throw 'Environment source preservation failed'}
             return
           }
+          if($req.stage -eq 'connected_precinct_author'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender installation missing; do not substitute a generator'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_connected_precinct_v16.py
+            if($LASTEXITCODE){throw 'Real Blender connected precinct authoring failed; no scene integration'}
+            $proof='docs/evidence/valoria-reference-clean/connected-precinct-v16-author.json'
+            $source='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/ConnectedPrecinctV16.glb'
+            if(-not(Test-Path $proof) -or -not(Test-Path $source)){throw 'Authored GLB or Blender source report not generated'}
+            $result=Get-Content $proof -Raw|ConvertFrom-Json
+            $actual=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($result.output_sha256 -ne $actual -or $result.art_approved){throw 'Blender output integrity or approval boundary failed'}
+            Write-Host "ELDORIA_CONNECTED_PRECINCT_REAL_BLENDER_SOURCE_SUCCESS SHA256=$actual"
+            return
+          }
           if($req.stage -eq 'web_playtest'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegratedWebBuild.Build'}
           if($req.stage -eq 'experience_finish'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Improve';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'visual_leap'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.VisualLeap';$env:VALORIA_GAMEPLAY_PROBE='1'}
