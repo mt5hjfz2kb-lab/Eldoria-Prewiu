@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ITCH_LOW_MEMORY_FIX_REQUESTED_MOBILE_FAILURE_UNRESOLVED",
+  "state": "ITCH_LOW_MEMORY_FIX_UPLOADED_PROCESSING_MOBILE_FAILURE_OPEN",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -22,8 +22,10 @@
     "deployment": "appgdep_6ad63a0012448191b64d52721e4479a6"
   },
   "limits": {
-    "physical_mobile_tested": false,
-    "art_approved": false
+    "physical_mobile_tested": true,
+    "art_approved": false,
+    "physical_mobile_pass": false,
+    "physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
   "instructions": "Candidate is not published. Never change published until upload and hosted checks pass. Preserve old Site until replacement works; no Unity rebuild. Secrets only in GitHub environment eldoria-playtest.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
@@ -42,10 +44,11 @@
     "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
   },
   "last_attempt": {
-    "run_id": 39325971944,
+    "run_id": 39333420999,
     "prepare": "success",
-    "publish": "upload_accepted",
-    "remote_build": 2164730,
+    "transport_tests": "success",
+    "publish": "upload_accepted_remote_confirmation_timed_out",
+    "remote_build": 2165127,
     "hosted_verified": false
   },
   "uploaded": {
@@ -53,18 +56,18 @@
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
     "revision": "native152",
-    "run_id": 39325971944,
+    "run_id": 39333420999,
     "files": 10,
     "hosted_verified": false,
     "first_html5_channel_configuration": "PENDING_OWNER_UI_CHECK",
-    "processing_status": "PROCESSING_AT_20261019_211530Z",
+    "processing_status": "PROCESSING_AT_20261019_221509Z",
     "latest_remote_check": {
-      "run_id": 39322513107,
-      "checked_at": "2026-10-19T22:49:28+02:00",
-      "result": "No channels visible, including all file types; no further upload attempted"
+      "run_id": 39333420999,
+      "checked_at": "2026-10-20T00:15:09+02:00",
+      "result": "Corrected gzip build 2164730 active; low-memory build 2165127 processing."
     },
-    "remote_build": 2164730,
-    "transport_adapter": "itch-complete-gzip-v1"
+    "remote_build": 2165127,
+    "transport_adapter": "itch-low-memory-v2"
   },
   "manual_fallback": {
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
@@ -96,6 +99,8 @@
     "verified_changes": "Exact decoded sizes avoid 1.6x allocation and slice; Unity download cache disabled to avoid Response.clone buffering; browser HTTP cache and saves unchanged.",
     "test": "Real native152 loader reader via local gzip HTTP: data/framework/code single allocation and decoded SHA256 PASS",
     "unity_bytes_unchanged": true,
-    "physical_mobile_pass": false
+    "physical_mobile_pass": false,
+    "delivery_run": 39333420999,
+    "delivery_build": 2165127
   }
 }
