@@ -2435,7 +2435,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: c379d296ae4ab9140880c8ea07a9397c, type: 2}
   - {fileID: 2100000, guid: 006f8bbf60c7428419fc4aa483af6919, type: 2}
   - {fileID: 2100000, guid: 8a67f6974d2e868459073af526cbc89d, type: 2}
-  - {fileID: 2100000, guid: 9195b0acd9a2d524695f719dcfee0a7b, type: 2}
+  - {fileID: 2100000, guid: 93d5684611f84b34693282ec9c3c3649, type: 2}
   - {fileID: 2100000, guid: 86cbd89acf1e96b43833c08e17cc1f94, type: 2}
   - {fileID: 2100000, guid: 88534aa40269c764e93c76550a4d28a2, type: 2}
   - {fileID: 2100000, guid: e437dbb0663547f47a8964b61abe095c, type: 2}
@@ -32962,7 +32962,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: c379d296ae4ab9140880c8ea07a9397c, type: 2}
   - {fileID: 2100000, guid: 006f8bbf60c7428419fc4aa483af6919, type: 2}
   - {fileID: 2100000, guid: 8a67f6974d2e868459073af526cbc89d, type: 2}
-  - {fileID: 2100000, guid: 9195b0acd9a2d524695f719dcfee0a7b, type: 2}
+  - {fileID: 2100000, guid: 93d5684611f84b34693282ec9c3c3649, type: 2}
   - {fileID: 2100000, guid: 86cbd89acf1e96b43833c08e17cc1f94, type: 2}
   - {fileID: 2100000, guid: 88534aa40269c764e93c76550a4d28a2, type: 2}
   - {fileID: 2100000, guid: e437dbb0663547f47a8964b61abe095c, type: 2}
@@ -33817,7 +33817,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: c379d296ae4ab9140880c8ea07a9397c, type: 2}
   - {fileID: 2100000, guid: 006f8bbf60c7428419fc4aa483af6919, type: 2}
   - {fileID: 2100000, guid: 8a67f6974d2e868459073af526cbc89d, type: 2}
-  - {fileID: 2100000, guid: 9195b0acd9a2d524695f719dcfee0a7b, type: 2}
+  - {fileID: 2100000, guid: 93d5684611f84b34693282ec9c3c3649, type: 2}
   - {fileID: 2100000, guid: 86cbd89acf1e96b43833c08e17cc1f94, type: 2}
   - {fileID: 2100000, guid: 88534aa40269c764e93c76550a4d28a2, type: 2}
   - {fileID: 2100000, guid: e437dbb0663547f47a8964b61abe095c, type: 2}
@@ -37761,6 +37761,7 @@ Transform:
   - {fileID: 359964447}
   - {fileID: 831769775}
   - {fileID: 1691021288}
+  - {fileID: 1966753886}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1817491954
@@ -40430,6 +40431,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1965550514}
   m_Mesh: {fileID: 4300000, guid: 879b5e4ca51920040959986a32d7ffbc, type: 2}
+--- !u!1 &1966753885
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1966753886}
+  m_Layer: 0
+  m_Name: Heraldic original royal blue / roof correction v6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1966753886
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1966753885}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1816922690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1968187516
 GameObject:
   m_ObjectHideFlags: 0
@@ -41030,7 +41062,7 @@ MeshRenderer:
   - {fileID: 2100000, guid: c379d296ae4ab9140880c8ea07a9397c, type: 2}
   - {fileID: 2100000, guid: 006f8bbf60c7428419fc4aa483af6919, type: 2}
   - {fileID: 2100000, guid: 8a67f6974d2e868459073af526cbc89d, type: 2}
-  - {fileID: 2100000, guid: 9195b0acd9a2d524695f719dcfee0a7b, type: 2}
+  - {fileID: 2100000, guid: 93d5684611f84b34693282ec9c3c3649, type: 2}
   - {fileID: 2100000, guid: 86cbd89acf1e96b43833c08e17cc1f94, type: 2}
   - {fileID: 2100000, guid: 88534aa40269c764e93c76550a4d28a2, type: 2}
   - {fileID: 2100000, guid: e437dbb0663547f47a8964b61abe095c, type: 2}
