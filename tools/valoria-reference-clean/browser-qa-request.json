@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "scope": "EXACT_INTEGRATED_BASTION_I_II_NORMAL_CLOCK_BROWSER_VALIDATION",
-  "source_sha": "2210c14593f142ef144be6d628df7e873512e218",
-  "artifact_run": 39223329742,
-  "artifact_name": "valoria-integrated-web-playtest-39223329742",
+  "source_sha": "5edf0df42d26db5b4849b06d44bad76a27fc0459",
+  "artifact_run": 39238653398,
+  "artifact_name": "valoria-integrated-web-playtest-39238653398",
   "tester": "existing Windows Chromium/Edge with GPU; actual pointer and touch, landscape and portrait",
   "controls": [
     "dialogues",
@@ -25,8 +25,8 @@
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 4,
-  "method_note": "Replay EXACT native139 WebGL with genuine CDP touchStart/move/end for all portrait world pans; test mouse wheel while still in landscape. Then use genuine portrait touch City; require complete I-II real-system-clock, both orientations and exact save reload. No game/asset/Android recompile, and fail on any regression.",
-  "gameplay_source_unchanged": true,
+  "attempt": 5,
+  "method_note": "On existing Windows Edge D3D11, use exact native140 WebGL bytes including repaired RoyalButton touch exit. Exercise portrait touch-only map swipes, navigation City return, narratives and complete Bastion I–II normal SystemClock progression, all steps via real visible input, exact save reload, screenshots/video, no gameplay shortcut.",
+  "gameplay_source_unchanged": false,
   "qa_code_commit": "e90561d057041b347fbff79fc61bb2c31a1a9316"
 }
