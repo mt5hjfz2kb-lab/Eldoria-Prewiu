@@ -132,3 +132,18 @@ jobs:
 
           PY
           echo 'Upload accepted; verify restricted hosted page, load and save before marking delivered. No automatic claim of hosted PASS.' >> "$GITHUB_STEP_SUMMARY"
+
+  remote_status:
+    runs-on: ubuntu-latest
+    environment: eldoria-playtest
+    timeout-minutes: 5
+    steps:
+      - name: Inspect remote channel without uploading
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          curl --fail --location --retry 2 https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -o butler.zip
+          unzip -q butler.zip -d butler-bin
+          chmod +x butler-bin/butler
+          butler-bin/butler status chrismad/eldoria-pruebas:web
+          butler-bin/butler status --help
