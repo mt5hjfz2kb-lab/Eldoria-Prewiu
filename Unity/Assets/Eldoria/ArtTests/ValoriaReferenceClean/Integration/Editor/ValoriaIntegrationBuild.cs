@@ -88,6 +88,7 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(city&&host&&host.HudPrefab&&host.WorldRoot,"Consolidated playable source missing");
    ValoriaEnvironmentFinish.ApplyVisualLeap(city,host,Ev);
    ValoriaEnvironmentFinish.ApplyVisualPolish(city,host,Ev);
+   ValoriaEnvironmentFinish.ApplyVisualPalette(city,host,Ev);
    AssetDatabase.SaveAssets();Need(EditorSceneManager.SaveScene(scene,Scene),"Visual leap scene save");
    BeginCurrentProbe();
   }catch(Exception e){Debug.LogException(e);File.WriteAllText(Path.Combine(Ev,"visual-leap-failure.txt"),e.ToString());EditorApplication.Exit(1);}}

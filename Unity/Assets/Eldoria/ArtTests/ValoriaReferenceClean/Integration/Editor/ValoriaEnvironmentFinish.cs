@@ -417,6 +417,141 @@ namespace Eldoria.ReferenceClean.Editor {
    return adjusted;
   }
 
+
+  [Serializable] sealed class VisualPaletteReport {
+   public string scene,source_sha,source_scene_sha256,baseline_water;
+   public bool same_camera_light,terrain_heights_preserved,parcel_bindings_preserved,
+    hotspot_centres_preserved,visual_only,art_approved,physical_mobile_tested;
+   public int slate_materials_reused,slate_renderers_modified,blue_roof_pixels_regraded,water_materials_reused;
+   public Frame[] frames;
+   public string[] limitations;
+  }
+
+  // V4 works on the integrated game only, regrading existing real source materials.
+  // It creates no new geometry, changes no light, and touches no game progression.
+  public static void ApplyVisualPalette(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string markerName="Visual palette / slate and river v4";
+   Need(city&&host&&host.WorldRoot&&host.WorldCamera&&city.PlayerCamera,"Integrated player scene missing");
+   Need(Find(host.WorldRoot,"Visual polish / integrated environment v3"),"Prior validated visual pass missing");
+   if(Find(host.WorldRoot,markerName)){Debug.Log("VALORIA_REFERENCE_CLEAN_VISUAL_PALETTE_ALREADY_APPLIED_COMPLETE");return;}
+   string planFile=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planFile),"Previously retained local artist plan missing");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planFile));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Artist plan invalid");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Retained city terrain missing");
+   var heightSource=terrain.terrainData;
+   var cityLeft=city.Parcels.LeftBuilt;var cityRight=city.Parcels.RightBuilt;
+   var hotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(t=>t,t=>t.transform.position);
+   var cityCamera=new CameraState(city.PlayerCamera);var worldCamera=new CameraState(host.WorldCamera);
+   bool wasWorldActive=host.WorldRoot.activeSelf;string lightSource=LightStamp();
+   Directory.CreateDirectory(evidenceDir);
+   folder=AssetsRoot+"/VisualPalette-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+   Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+   var frames=new Dictionary<string,Frame>();
+   var report=new VisualPaletteReport {scene=city.gameObject.scene.path,
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    source_scene_sha256=Hash(city.gameObject.scene.path),
+    visual_only=true,art_approved=false,physical_mobile_tested=false,
+    limitations=new[]{"Artistic acceptance needs inspection of the genuine before/after images at the player camera.",
+     "Physical iOS/Android device performance and publication are NOT implied by a native editor success."}};
+   try{
+    city.Apply(new PlayerState {BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"palette-before",frames);
+    host.WorldRoot.SetActive(true);Physics.SyncTransforms();
+    var marker=new GameObject(markerName);marker.transform.SetParent(host.WorldRoot.transform,false);
+    RegradeExistingSlate(city,host,report);
+    var water=Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+     .FirstOrDefault(r=>r.name=="River water"&&!r.transform.IsChildOf(host.WorldRoot.transform));
+    Need(water&&water.sharedMaterials.Length==1&&water.sharedMaterial,"Retained river material unavailable");
+    var originalWater=water.sharedMaterial;
+    Need(originalWater.HasProperty("_BaseColor")&&originalWater.HasProperty("_ShallowColor"),
+     "Retained URP water shader colour interface changed");
+    report.baseline_water=originalWater.name;
+    var river=new Material(originalWater){name="Valoria river / shaded deep teal v4"};
+    river.SetColor("_BaseColor",new Color(.036f,.207f,.265f,1));
+    river.SetColor("_ShallowColor",new Color(.068f,.315f,.355f,1));
+    if(river.HasProperty("_ReflectionStrength"))river.SetFloat("_ReflectionStrength",.69f);
+    Put(river,"retained-river-deep-teal");
+    water.sharedMaterial=river;report.water_materials_reused=1;
+    host.WorldRoot.SetActive(false);
+    CaptureViews(city,host,plan,evidenceDir,"palette-after",frames);
+    report.same_camera_light=LightStamp()==lightSource;
+    report.terrain_heights_preserved=heightSource.GetHeights(0,0,heightSource.heightmapResolution,heightSource.heightmapResolution)
+     .Cast<float>().SequenceEqual(terrain.terrainData.GetHeights(0,0,terrain.terrainData.heightmapResolution,terrain.terrainData.heightmapResolution).Cast<float>());
+    report.parcel_bindings_preserved=city.Parcels.LeftBuilt==cityLeft&&city.Parcels.RightBuilt==cityRight;
+    report.hotspot_centres_preserved=hotspots.All(k=>k.Key&&k.Key.transform.position==k.Value);
+    Need(report.same_camera_light&&report.terrain_heights_preserved&&report.parcel_bindings_preserved&&report.hotspot_centres_preserved,
+     "Game bindings, terrain elevation, destination centres or comparison illumination changed");
+    Need(report.water_materials_reused==1&&report.slate_materials_reused>0,
+     "Native targeted water or roof material finishing not established");
+    report.frames=frames.Values.ToArray();AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-visual-palette-unity.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("VALORIA_REFERENCE_CLEAN_VISUAL_PALETTE_COMPLETE slate_materials="+report.slate_materials_reused+
+     " roof_pixels="+report.blue_roof_pixels_regraded+" river="+report.water_materials_reused);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(wasWorldActive);
+    cityCamera.Restore(city.PlayerCamera);worldCamera.Restore(host.WorldCamera);
+   }
+  }
+
+  static void RegradeExistingSlate(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,VisualPaletteReport report){
+   var roots=new[]{city.BastionOne,city.BastionTwo,city.Parcels.LeftBuilt,
+    city.Parcels.RightBuilt,host.WorldBastionOne,host.WorldBastionTwo,host.WorldSawmill};
+   var cache=new Dictionary<Material,Material>();
+   foreach(var root in roots.Where(r=>r!=null)){
+    foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>(true)){
+     var materials=renderer.sharedMaterials;bool modified=false;
+     for(int j=0;j<materials.Length;j++){
+      var source=materials[j];if(!source)continue;
+      string name=source.name.ToLowerInvariant();
+      bool slate=name.Contains("blue slate")||name.Contains("weathered slate")||
+       (name.Contains("roof")&&!name.Contains("wood"));
+      bool herald=name.Contains("cloth")||name.Contains("banner")||name.Contains("flag")||
+       name.Contains("herald")||name.Contains("crest")||name.Contains("gold");
+      if(!slate||herald)continue;
+      if(!cache.TryGetValue(source,out var copy)){
+       copy=new Material(source){name="Valoria muted stone slate / "+source.name};
+       bool changed=false;
+       string textureProperty=BaseTextureProperty(source);
+       if(textureProperty!=null){
+        var texture=ReadableCopy(source.GetTexture(textureProperty),1024);
+        var pixels=texture.GetPixels();int coloured=0;
+        for(int k=0;k<pixels.Length;k++){
+         Color old=pixels[k];Color.RGBToHSV(old,out float hue,out float sat,out float value);
+         if(old.a<.04f||sat<.19f||hue<.49f||hue>.74f)continue;
+         // Keep the original tile detail; remove the strong cyan-blue saturation.
+         var weathered=new Color(value*.57f,value*.62f,value*.65f,old.a);
+         pixels[k]=Color.Lerp(old,weathered,.92f);coloured++;
+        }
+        if(coloured>pixels.Length*.003f){
+         texture.SetPixels(pixels);texture.Apply(true);Put(texture,"muted-slate-texture");
+         copy.SetTexture(textureProperty,texture);
+         report.blue_roof_pixels_regraded+=coloured;changed=true;
+        }else Object.DestroyImmediate(texture);
+       }
+       // Some of the original Blender glTF roof materials are plain colour
+       // factors rather than painted albedo textures. Cover those as well.
+       if(copy.HasProperty("baseColorFactor")&&(!changed||!source.GetTexture("baseColorTexture"))){
+        copy.SetColor("baseColorFactor",new Color(.31f,.36f,.41f,1f));changed=true;
+       }else if(copy.HasProperty("_BaseColor")&&(!changed||textureProperty==null)){
+        copy.SetColor("_BaseColor",new Color(.31f,.36f,.41f,1f));changed=true;
+       }
+       if(!changed){Object.DestroyImmediate(copy);continue;}
+       Put(copy,"muted-slate-material");cache[source]=copy;report.slate_materials_reused++;
+      }
+      materials[j]=copy;modified=true;
+     }
+     if(modified){renderer.sharedMaterials=materials;report.slate_renderers_modified++;}
+    }
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -765,7 +900,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
