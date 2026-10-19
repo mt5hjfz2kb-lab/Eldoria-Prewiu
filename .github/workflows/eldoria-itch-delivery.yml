@@ -114,26 +114,21 @@ jobs:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
           python3 - <<'PY'
-          import json,subprocess,hashlib
+          import json,subprocess,hashlib,time
           from pathlib import Path
           c=json.load(open('pipeline/playtest-delivery.json'))
           r=json.load(open('package/identity.json'))
           p=Path('package')/('Eldoria-'+c['candidate']['revision']+'-itch.zip')
           assert r['candidate']==c['candidate'] and hashlib.sha256(p.read_bytes()).hexdigest()==r['zip_sha256']
           subprocess.run(['butler-bin/butler','push',str(p),c['target']+':web','--userversion',c['candidate']['revision']],check=True)
+          for attempt in range(4):
+              result=subprocess.run(['butler-bin/butler','status',c['target']+':web'],capture_output=True,text=True,check=True)
+              print(result.stdout)
+              if 'No channel' not in result.stdout+result.stderr and c['candidate']['revision'] in result.stdout:
+                  break
+              if attempt==3:
+                  raise RuntimeError('Upload returned success but remote channel/version is not confirmed')
+              time.sleep(10)
+
           PY
           echo 'Upload accepted; verify restricted hosted page, load and save before marking delivered. No automatic claim of hosted PASS.' >> "$GITHUB_STEP_SUMMARY"
-
-  remote_status:
-    runs-on: ubuntu-latest
-    environment: eldoria-playtest
-    timeout-minutes: 5
-    steps:
-      - name: Inspect existing itch channel processing status
-        env:
-          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
-        run: |
-          curl --fail --location --retry 2 https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -o butler.zip
-          unzip -q butler.zip -d butler-bin
-          chmod +x butler-bin/butler
-          butler-bin/butler status chrismad/eldoria-pruebas
