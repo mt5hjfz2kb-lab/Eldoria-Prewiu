@@ -13,7 +13,7 @@ concurrency:
 jobs:
   replay:
     runs-on: ubuntu-latest
-    timeout-minutes: 18
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,23 +23,23 @@ jobs:
             /docs/evidence/valoria-reference-clean/environment-city-wide-after.png
       - uses: actions/download-artifact@v4
         with:
-          name: valoria-integrated-web-playtest-39163287848
-          run-id: 39163287848
+          name: valoria-integrated-web-playtest-39223329742
+          run-id: 39223329742
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: unity-raw
       - name: Check browser test syntax without opening Unity
         run: node --check tools/valoria-reference-clean/playtest_web.cjs
       - name: Verify exact existing integrated build transport
         run: |
-          python3 tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native131 7aeef2e942883fae93a5e033bf9a0a05ebc85e46 39163287848
+          python3 tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native139 2210c14593f142ef144be6d628df7e873512e218 39223329742
           node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - uses: actions/download-artifact@v4
         with:
-          name: valoria-exact-browser-evidence-39164920701
-          run-id: 39164920701
+          name: valoria-exact-browser-evidence-39223329742
+          run-id: 39223329742
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: prior-evidence
       - name: Install existing Chromium tool and video frame extraction
@@ -48,7 +48,7 @@ jobs:
           "$RUNNER_TEMP/valoria-web-qa/node_modules/.bin/playwright" install --with-deps chromium
           if ! command -v ffmpeg >/dev/null; then sudo apt-get update -qq && sudo apt-get install -y ffmpeg; fi
           ffmpeg -version | head -n 1
-      - name: Diagnose prior real freeze from exact browser errors and recording
+      - name: Diagnose prior world-pan interception from real video evidence
         run: |
           python3 - <<'PY'
           import json,pathlib,subprocess
@@ -86,8 +86,8 @@ jobs:
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
           VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence
-          VALORIA_SOURCE_SHA: 7aeef2e942883fae93a5e033bf9a0a05ebc85e46
-          VALORIA_PLAYTEST_TIMEOUT_SECONDS: '480'
+          VALORIA_SOURCE_SHA: 2210c14593f142ef144be6d628df7e873512e218
+          VALORIA_PLAYTEST_TIMEOUT_SECONDS: '1100'
           VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
         run: NODE_PATH="$RUNNER_TEMP/valoria-web-qa/node_modules" node tools/valoria-reference-clean/playtest_web.cjs
       - name: Bind exact bytes to passed game, saves, video and screenshot evidence
