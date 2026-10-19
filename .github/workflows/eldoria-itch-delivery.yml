@@ -66,7 +66,7 @@ jobs:
             if (native.head_sha !== c.source_sha || native.head_branch !== 'main') throw Error('Native source mismatch');
             const bytes = await github.rest.actions.downloadArtifact({...context.repo,artifact_id:c.artifact_id,archive_format:'zip'});
             fs.writeFileSync('candidate.zip',Buffer.from(bytes.data));
-      - name: Check original Unity hashes and produce unchanged HTML5 package
+      - name: Check original Unity hashes and adapt HTML5 transport
         run: python3 tools/delivery/prepare.py candidate.zip delivery-output
       - uses: actions/upload-artifact@v4
         with:
@@ -120,11 +120,12 @@ jobs:
           r=json.load(open('package/identity.json'))
           p=Path('package')/('Eldoria-'+c['candidate']['revision']+'-itch.zip')
           assert r['candidate']==c['candidate'] and hashlib.sha256(p.read_bytes()).hexdigest()==r['zip_sha256']
-          subprocess.run(['butler-bin/butler','push',str(p),c['target']+':web','--userversion',c['candidate']['revision']],check=True)
+          delivery_version=c['candidate']['revision']+'-'+r['zip_sha256'][:12]
+          subprocess.run(['butler-bin/butler','push',str(p),c['target']+':web','--userversion',delivery_version],check=True)
           for attempt in range(4):
               result=subprocess.run(['butler-bin/butler','status',c['target']+':web'],capture_output=True,text=True,check=True)
               print(result.stdout)
-              if 'No channel' not in result.stdout+result.stderr and c['candidate']['revision'] in result.stdout:
+              if 'No channel' not in result.stdout+result.stderr and delivery_version in result.stdout and '•' not in result.stdout:
                   break
               if attempt==3:
                   raise RuntimeError('Upload returned success but remote channel/version is not confirmed')
