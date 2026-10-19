@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "PREPARED_NOT_PUBLISHED_CREDENTIAL_SETUP_REQUIRED",
-  "publish_enabled": false,
+  "state": "READY_FOR_FIRST_PUBLISH_NOT_PUBLISHED",
+  "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
-  "restricted_project_confirmed": false,
+  "restricted_project_confirmed": true,
   "candidate": {
     "revision": "native152",
     "source_sha": "f5203b84a77540d6704efc5c2576343c7e88fe5c",
@@ -27,5 +27,12 @@
   },
   "instructions": "Candidate is not published. Never change published until upload and hosted checks pass. Preserve old Site until replacement works; no Unity rebuild. Secrets only in GitHub environment eldoria-playtest.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
-  "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified."
+  "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
+  "credential_setup": {
+    "status": "OWNER_CONFIRMED_SAVED_NOT_YET_RUNTIME_VERIFIED",
+    "environment": "eldoria-playtest",
+    "secret_name": "BUTLER_API_KEY",
+    "confirmed_at": "2026-10-19T21:48:04+02:00"
+  },
+  "privacy_confirmation_basis": "Owner setup screenshots: Restricted selected, then project saved successfully; remote anonymous access verification pending."
 }
