@@ -60,6 +60,7 @@ jobs:
           $project=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity'
           $settings=Join-Path $project 'UserSettings/Search.index'
           $backup=Join-Path $env:RUNNER_TEMP "eldoria-search-preferences-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "eldoria-search-created-$env:GITHUB_RUN_ID.flag"
           if(Test-Path $settings){
             Copy-Item $settings $backup -Force
             $saved=Get-Content $settings -Raw -Encoding UTF8
@@ -69,8 +70,27 @@ jobs:
               $config.roots=@()
               $config | ConvertTo-Json -Depth 32 | Set-Content $settings -Encoding UTF8
               Write-Host 'ELDORIA_CI_SEARCH_INDEX_ROOTS_DISABLED_TEMPORARILY; old preferences backed up'
+            } else {
+              Write-Host 'ELDORIA_CI_SEARCH_INDEX_NO_ROOTS_PROPERTY; original preferences backed up'
             }
+          } else {
+            # CI worktrees can lack UserSettings/Search.index: the previous workaround then did nothing.
+            # Unity Search maintainer workaround for the 6.3 Editor startup indexer is roots: [].
+            # Create only a temporary Editor preference, not an asset or a game setting.
+            New-Item -ItemType Directory -Force (Split-Path $settings) | Out-Null
+            $config=[ordered]@{
+              name='Assets'; type='asset'; roots=@(); includes=@();
+              excludes=@('Assets/Temp/','Assets/External/','Temp/')
+              options=@{disabled=$false;types=$true;properties=$true;extended=$true;dependencies=$true}
+              baseScore=999
+            }
+            $config | ConvertTo-Json -Depth 16 | Set-Content $settings -Encoding UTF8
+            'TEMPORARY_SEARCH_INDEX_CREATED' | Set-Content $created -Encoding ASCII
+            Write-Host 'ELDORIA_CI_SEARCH_INDEX_CREATED_WITH_EMPTY_ROOTS; will remove after CI'
           }
+          $actual=Get-Content $settings -Raw -Encoding UTF8|ConvertFrom-Json
+          if($actual.PSObject.Properties['roots'] -and @($actual.roots).Count -ne 0){throw 'Editor-only Search index roots must be empty for this CI run'}
+          Write-Host "ELDORIA_CI_SEARCH_INDEX_ROOTS_COUNT $(@($actual.roots).Count)"
           $cache=Join-Path $project 'Library/Search'
           if(Test-Path $cache){
             $moved=Join-Path $env:RUNNER_TEMP "eldoria-corrupt-search-cache-$env:GITHUB_RUN_ID"
@@ -257,7 +277,8 @@ jobs:
             # Preserve the full editor log on BOTH failure and timeout.
             $preflightPassed=$integrationProcess.WaitForExit(1200000)
             if(Test-Path $integrationLog){
-              # Full preflight editor log already copied before verifying the completion marker. -Force
+              Copy-Item $integrationLog docs/evidence/valoria-reference-clean/web-integration-preflight.log -Force
+              Write-Host 'ELDORIA_WEB_PREFLIGHT_LOG_CAPTURED_BEFORE_RESULT'
             }
             if(-not $preflightPassed){
               Write-Warning 'Native I-II scene verification exceeded 20 minutes: source cannot advance to WebGL'
@@ -541,6 +562,10 @@ jobs:
             New-Item -Force -ItemType Directory (Split-Path $settings) | Out-Null
             Copy-Item -LiteralPath $backup -Destination $settings -Force
             Write-Host 'ELDORIA_CI_SEARCH_PREFERENCES_RESTORED; only disposable Library/Search rebuilt'
+          } elseif(Test-Path $created){
+            if(Test-Path $settings){Remove-Item -LiteralPath $settings -Force}
+            Remove-Item -LiteralPath $created -Force
+            Write-Host 'ELDORIA_CI_TEMPORARY_SEARCH_INDEX_REMOVED; original UserSettings lacked Search.index'
           }
 
   visible-controls-web:
