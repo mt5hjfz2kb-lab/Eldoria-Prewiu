@@ -9,7 +9,6 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
       - 'Unity/Assets/Eldoria/Tests/EditMode/**'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/**'
-      - '.github/workflows/ui-progression-cert.yml'
   workflow_dispatch:
 
 permissions:
