@@ -170,6 +170,21 @@ jobs:
             Write-Host "ELDORIA_QUARRY_GEOLOGY_V18_BLENDER_AUTHOR_SUCCESS"
             return
           }
+          if($req.stage -eq 'owner_city_cliffs_author'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender not available for original rock edits'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_owner_city_cliffs_v19.py
+            if($LASTEXITCODE){throw 'Measured city rock cliff Blender authoring failed'}
+            $f='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/OwnerCityCliffsV19.glb'
+            $report='docs/evidence/valoria-reference-clean/owner-city-cliffs-v19-source.json'
+            if(-not(Test-Path $f) -or -not(Test-Path $report)){throw 'Real Blender GLB and evidence both required'}
+            $e=Get-Content $report -Raw|ConvertFrom-Json
+            if($e.art_approved -or $e.output_sha256 -ne (Get-FileHash $f -Algorithm SHA256).Hash.ToLowerInvariant()){throw 'Original rock source output did not match SHA-256 or claimed artistic approval'}
+            if($e.triangles -lt 8000 -or $e.triangles -ge 120000){throw 'Unmeasured city river cliff source geometry'}
+            Write-Host "ELDORIA_OWNER_CITY_GEOLOGY_AUTHORED_SOURCE_ONLY / no ART_APPROVED"
+            return
+          }
           if($req.stage -eq 'connected_precinct_author'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
