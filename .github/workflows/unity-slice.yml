@@ -315,7 +315,7 @@ jobs:
           $xml = "$env:RUNNER_TEMP/Eldoria-EditMode.xml"
           $log = "$env:RUNNER_TEMP/Eldoria-EditMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-nographics","-projectPath=Unity","-runTests","-testPlatform","EditMode","-testResults",$xml,"-logFile",$log)
+          $args = @("-batchmode","-nographics","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-runTests","-testPlatform","EditMode","-testResults",$xml,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -325,6 +325,17 @@ jobs:
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity EditMode process failed with exit code $($process.ExitCode)." }
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "EditMode results were not produced." }
           [xml]$results = Get-Content $xml
+          # A successful XML from Unity's last-opened project is not this checkout.
+          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/ScriptAssemblies'))).Replace('\\','/').TrimEnd('/') + '/'
+          $assemblies = @($results.SelectNodes("//test-suite[@type='Assembly']"))
+          if (-not $assemblies.Count) { throw 'No test assemblies in result; cannot verify project identity.' }
+          foreach ($assembly in $assemblies) {
+            $actualAssembly = ([string]$assembly.fullname).Replace('\\','/')
+            if (-not $actualAssembly.StartsWith($expectedAssemblyRoot, [StringComparison]::OrdinalIgnoreCase)) {
+              throw "UNITY_TEST_WRONG_PROJECT: $actualAssembly expected beneath $expectedAssemblyRoot"
+            }
+          }
+
           if ($results.'test-run'.result -ne "Passed") { throw "EditMode tests did not pass: $($results.'test-run'.result)" }
       - name: PlayMode
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
@@ -332,7 +343,7 @@ jobs:
           $xml = "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
           $log = "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-nographics","-projectPath=Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          $args = @("-batchmode","-nographics","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -342,6 +353,17 @@ jobs:
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity PlayMode process failed with exit code $($process.ExitCode)." }
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "PlayMode results were not produced." }
           [xml]$results = Get-Content $xml
+          # A successful XML from Unity's last-opened project is not this checkout.
+          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/ScriptAssemblies'))).Replace('\\','/').TrimEnd('/') + '/'
+          $assemblies = @($results.SelectNodes("//test-suite[@type='Assembly']"))
+          if (-not $assemblies.Count) { throw 'No test assemblies in result; cannot verify project identity.' }
+          foreach ($assembly in $assemblies) {
+            $actualAssembly = ([string]$assembly.fullname).Replace('\\','/')
+            if (-not $actualAssembly.StartsWith($expectedAssemblyRoot, [StringComparison]::OrdinalIgnoreCase)) {
+              throw "UNITY_TEST_WRONG_PROJECT: $actualAssembly expected beneath $expectedAssemblyRoot"
+            }
+          }
+
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
       - name: Windows desktop build
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
@@ -349,7 +371,7 @@ jobs:
           $log = "$env:RUNNER_TEMP/Eldoria-Build.log"
           Remove-Item $log -Force -ErrorAction SilentlyContinue
           Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-nographics","-quit","-projectPath=Unity","-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
+          $args = @("-batchmode","-nographics","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -376,7 +398,7 @@ jobs:
           $log = "$env:RUNNER_TEMP/Eldoria-BenchmarkCapture.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item $log -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath=Unity","-executeMethod","Eldoria.EditorTools.ValoriaBenchmarkCapture.Capture","-logFile",$log)
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaBenchmarkCapture.Capture","-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(180000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -401,7 +423,7 @@ jobs:
           $folder = "$env:GITHUB_WORKSPACE/Unity/AssetGateCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-AssetGate.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath=Unity","-executeMethod","Eldoria.EditorTools.ValoriaAssetGateCapture.Capture","-logFile",$log)
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaAssetGateCapture.Capture","-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(180000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -426,7 +448,7 @@ jobs:
           $folder = "$env:GITHUB_WORKSPACE/Unity/OriginalHeroCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-OriginalHero.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath=Unity","-executeMethod","Eldoria.EditorTools.ValoriaOriginalHeroCapture.Capture","-logFile",$log)
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaOriginalHeroCapture.Capture","-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(180000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -451,7 +473,7 @@ jobs:
           $folder = "$env:GITHUB_WORKSPACE/Unity/LayeredValoriaCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-LayeredValoria.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath=Unity","-executeMethod","Eldoria.EditorTools.LayeredValoriaArtTestCapture.Capture","-logFile",$log)
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.LayeredValoriaArtTestCapture.Capture","-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(240000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -478,7 +500,7 @@ jobs:
           $folder = "$env:GITHUB_WORKSPACE/Unity/ImageTo3DReviewCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-ImageTo3DReview.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath=Unity","-executeMethod","Eldoria.EditorTools.BastionImageTo3DReview.Capture","-logFile",$log)
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.BastionImageTo3DReview.Capture","-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(300000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -497,7 +519,7 @@ jobs:
           $folder = "$env:GITHUB_WORKSPACE/Unity/TripoModuleReviewCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-TripoModuleReview.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath=Unity","-executeMethod","Eldoria.EditorTools.TripoModuleReview.Capture","-logFile",$log)
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.TripoModuleReview.Capture","-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(300000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
