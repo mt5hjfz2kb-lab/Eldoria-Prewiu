@@ -99,6 +99,10 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingScroll.scrollSensitivity = 24f;
             buildingScroll.movementType = ScrollRect.MovementType.Clamped;
             scrollViewport = NewRect("Clipped text viewport", scrollRoot);
+            scrollViewport.gameObject.AddComponent<CanvasRenderer>();
+            var hitArea = scrollViewport.gameObject.AddComponent<Image>();
+            hitArea.color = new Color(0f, 0f, 0f, 0f);
+            hitArea.raycastTarget = true;
             scrollViewport.gameObject.AddComponent<RectMask2D>();
             scrollContent = NewRect("Building details content", scrollViewport);
             buildingBody = Text("Real status costs and requirements", scrollContent, 22, Ivory);
@@ -256,7 +260,6 @@ namespace Eldoria.UI.RoyalGold.V2
             Append(body, Safe(source.Time));
             Append(body, Safe(source.Costs));
             Append(body, Safe(source.Requirements));
-            var result = source.GetComponentInChildren<RoyalText>(true);
             // All costs, requirements and state above are sourced directly from
             // the current authoritative offer. Do not synthesize extras.
             string details = body.ToString();
@@ -336,14 +339,23 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             Rect free = Source ? Source.GetVisibleSceneViewport() : new Rect(.07f, .12f, .86f, .78f);
             if (!safe || !hasGeometry) return free;
+            float width = Mathf.Max(1, safe.rect.width);
+            float height = Mathf.Max(1, safe.rect.height);
+            float padding = .025f;
             if (portrait && BuildingVisible)
-                free.yMin = Mathf.Max(free.yMin, .42f);
+                free.yMin = Mathf.Max(free.yMin, buildingCard.rect.height / height + padding);
             else if (!portrait && BuildingVisible)
-                free.xMax = Mathf.Min(free.xMax, .74f);
-            if (portrait && objectiveCard && objectiveCard.gameObject.activeInHierarchy)
-                free.yMax = Mathf.Min(free.yMax, .73f);
-            else if (!portrait && objectiveCard && objectiveCard.gameObject.activeInHierarchy)
-                free.xMin = Mathf.Max(free.xMin, .27f);
+                free.xMax = Mathf.Min(free.xMax, 1f - buildingCard.rect.width / width - padding);
+            if (objectiveCard && objectiveCard.gameObject.activeInHierarchy)
+            {
+                if (portrait)
+                {
+                    float fromTop = -objectiveCard.anchoredPosition.y + objectiveCard.rect.height;
+                    free.yMax = Mathf.Min(free.yMax, 1f - fromTop / height - padding);
+                }
+                else
+                    free.xMin = Mathf.Max(free.xMin, objectiveCard.rect.width / width + padding);
+            }
             return free;
         }
     }
