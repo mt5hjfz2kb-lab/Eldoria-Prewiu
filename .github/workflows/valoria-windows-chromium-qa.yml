@@ -48,8 +48,8 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC native editing resources occupied; refuse interference'}
       - uses: actions/download-artifact@v4
         with:
-          name: valoria-integrated-web-playtest-39238653398
-          run-id: 39238653398
+          name: valoria-integrated-web-playtest-39241282398
+          run-id: 39241282398
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: unity-raw
       - uses: actions/setup-node@v4
@@ -61,7 +61,7 @@ jobs:
       - name: Prepare the exact approved WebGL binary; no Unity rebuild
         shell: powershell
         run: |
-          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native140 5edf0df42d26db5b4849b06d44bad76a27fc0459 39238653398
+          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native141 01201c564f7ac40ee157a70a183cc6ec24db20b6 39241282398
           if($LASTEXITCODE){throw 'Exact integrated browser transport rejected'}
           node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
           if($LASTEXITCODE){throw 'Existing Site wrapper integrity failed'}
@@ -122,7 +122,7 @@ jobs:
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
           VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}
-          VALORIA_SOURCE_SHA: 5edf0df42d26db5b4849b06d44bad76a27fc0459
+          VALORIA_SOURCE_SHA: 01201c564f7ac40ee157a70a183cc6ec24db20b6
           VALORIA_PLAYTEST_TIMEOUT_SECONDS: '1100'
           VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
         run: |
