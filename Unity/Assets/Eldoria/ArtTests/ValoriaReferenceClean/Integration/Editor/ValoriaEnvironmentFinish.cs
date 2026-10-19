@@ -771,6 +771,136 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class UrbanCompositionReport {
+   public string scene,source_sha,source_scene_sha256;
+   public bool visual_only,same_camera_light,terrain_data_preserved,parcel_bindings_preserved,
+    hotspots_preserved,art_approved,physical_mobile_tested;
+   public int original_ruin_donors,original_limestone_donors,masonry_fragments,foundation_stones,completed_districts;
+   public Frame[] frames;public string[] limitations;
+  }
+
+  // A small number of substantial surviving masonry masses, based exclusively
+  // on retained artist meshes. This cannot create new mechanics or edit plots.
+  public static void ApplyUrbanComposition(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string marker="Reconstruction districts / existing masonry v7";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Current integrated game required");
+   Need(Find(host.WorldRoot,"Heraldic original royal blue / roof correction v6"),"Native152 art must remain intact");
+   if(Find(city.gameObject,marker)){Debug.Log("VALORIA_URBAN_COMPOSITION_ALREADY_APPLIED");return;}
+   var path=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(path),"Retained environment capture plan missing");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(path));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Native camera framing plan missing");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Original city terrain missing");
+   var ruinSources=Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .Where(r=>r.name.StartsWith("Ruin_")&&!r.transform.IsChildOf(host.WorldRoot.transform)
+      &&r.GetComponent<MeshFilter>()&&r.GetComponent<MeshFilter>().sharedMesh).ToArray();
+   var rockSources=host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+    .Where(r=>r.name.StartsWith("Quarry retained embedded rim rock")
+      &&r.GetComponent<MeshFilter>()&&r.GetComponent<MeshFilter>().sharedMesh).ToArray();
+   Need(ruinSources.Length>0&&rockSources.Length>0,"Existing sculpted masonry or quarry stone missing; decline fake substitute");
+   var terrainData=terrain.terrainData;
+   var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var hotspotPositions=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   var cityCamera=new CameraState(city.PlayerCamera);var worldCamera=new CameraState(host.WorldCamera);
+   var light=LightStamp();bool oldWorldActive=host.WorldRoot.activeSelf;
+   var views=new Dictionary<string,Frame>();
+   var result=new UrbanCompositionReport{
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scene=city.gameObject.scene.path,
+    source_scene_sha256=Hash(city.gameObject.scene.path),visual_only=true,art_approved=false,physical_mobile_tested=false,
+    original_ruin_donors=ruinSources.Length,original_limestone_donors=rockSources.Length,
+    limitations=new[]{"Unity native A/B is a candidate; independent visual acceptance is still needed.",
+     "No physical Android/iPhone test or mobile thermal profiling.",
+     "No additional housing, construction mechanics, colliders, terrain-height changes or economy."}};
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"urban-before",views);
+    host.WorldRoot.SetActive(false);
+    var bastion=BoundsOf(city.BastionTwo);
+    var yards=new[]{BoundsOf(left),BoundsOf(right)};
+    var blocked=new List<Bounds>{BoundsOf(city.BastionOne),bastion,yards[0],yards[1]};
+    foreach(var binding in city.Parcels.Bindings)
+     foreach(var part in new[]{binding.Ground,binding.Available})
+      if(part)foreach(var renderer in part.GetComponentsInChildren<Renderer>(true))blocked.Add(renderer.bounds);
+    var existingTrees=city.GetComponentsInChildren<Transform>(true)
+     .Where(t=>t.name.StartsWith("Valoria wild conifers / reclaimed"))
+     .Select(t=>BoundsOf(t.gameObject)).ToArray();
+    var min=terrain.transform.position;var max=min+terrainData.size;
+    bool Clear(Vector3 p,float radius){
+     if(p.x<min.x+radius+3f||p.z<min.z+radius+3f||
+      p.x>max.x-radius-3f||p.z>max.z-radius-3f)return false;
+     if(Mathf.Abs(p.x-ValoriaReferenceCleanArtBuilder.RoadX(p.z))<radius+5f)return false;
+     if(Mathf.Abs(p.z-RiverCenter(p.x))<RiverWidth(p.x)+radius+3f)return false;
+     if(blocked.Any(b=>Mathf.Abs(p.x-b.center.x)<b.extents.x+radius+2f
+      &&Mathf.Abs(p.z-b.center.z)<b.extents.z+radius+2f))return false;
+     if(existingTrees.Any(b=>Mathf.Abs(p.x-b.center.x)<b.extents.x+radius+1f
+      &&Mathf.Abs(p.z-b.center.z)<b.extents.z+radius+1f))return false;
+     return true;
+    }
+    Vector3 Surface(Vector3 p){p.y=terrain.SampleHeight(p)+terrain.transform.position.y;return p;}
+    var zones=new[]{
+     new Vector3(yards[0].center.x-yards[0].extents.x-11f,0,yards[0].center.z-3f),
+     new Vector3(yards[1].center.x+yards[1].extents.x+11f,0,yards[1].center.z-3f),
+     new Vector3(bastion.center.x-bastion.extents.x-15f,0,bastion.center.z-bastion.extents.z-11f),
+     new Vector3(bastion.center.x+bastion.extents.x+15f,0,bastion.center.z-bastion.extents.z-11f)
+    };
+    var groupRoot=new GameObject(marker);groupRoot.transform.SetParent(city.transform,false);
+    var occupied=new List<Vector3>();
+    for(int zone=0;zone<zones.Length;zone++){
+     var district=new GameObject(new[]{"Timber-work reconstruction frontage","Garrison reconstruction frontage",
+      "Western ruined civic quarter","Eastern ruined civic quarter"}[zone]);
+     district.transform.SetParent(groupRoot.transform,false);
+     int placed=0;
+     // At most three legible fragments per quarter: intentional street frontage
+     // instead of indiscriminate small props on a lawn.
+     for(int i=0;i<44&&placed<3;i++){
+      float theta=(i*.618034f+zone*.23f)*Mathf.PI*2f;
+      float distance=3.1f+(i%7)*1.8f;
+      var point=zones[zone]+new Vector3(Mathf.Cos(theta)*distance,0,Mathf.Sin(theta)*distance*.75f);
+      float width=6.2f+((i+zone)%3)*.85f;
+      if(!Clear(point,width*.57f))continue;
+      if(occupied.Any(p=>Vector2.Distance(new Vector2(p.x,p.z),new Vector2(point.x,point.z))<7.2f))continue;
+      var ruin=ruinSources[(zone+placed)%ruinSources.Length];
+      var fragment=CloneVisual(ruin.gameObject,"Surviving medieval masonry / "+zone+"-"+placed,
+       district.transform,Surface(point),width);
+      fragment.transform.rotation=Quaternion.Euler(0,point.x<ValoriaReferenceCleanArtBuilder.RoadX(point.z)?72f:-72f,0);
+      occupied.Add(point);placed++;result.masonry_fragments++;
+     }
+     if(placed>=2)result.completed_districts++;
+     for(int k=0;k<2&&placed>=2;k++){
+      var point=zones[zone]+new Vector3(k==0?-3.5f:4.2f,0,k==0?5.4f:-5.8f);
+      if(!Clear(point,1.25f))continue;
+      var rock=CloneVisual(rockSources[(zone+k)%rockSources.Length].gameObject,
+       "Embedded foundation stone / "+zone+"-"+k,district.transform,Surface(point),1.95f+k*.35f);
+      rock.transform.rotation=Quaternion.Euler(0,(zone*59+k*127)%360,0);
+      result.foundation_stones++;
+     }
+    }
+    Need(result.completed_districts>=2&&result.masonry_fragments>=6,
+     "City plot protection leaves insufficient room for a meaningful composition; reject candidate");
+    CaptureViews(city,host,plan,evidenceDir,"urban-after",views);
+    result.same_camera_light=light==LightStamp();
+    result.terrain_data_preserved=ReferenceEquals(terrainData,terrain.terrainData);
+    result.parcel_bindings_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    result.hotspots_preserved=hotspotPositions.All(h=>h.Key&&h.Key.transform.position==h.Value);
+    Need(result.same_camera_light&&result.terrain_data_preserved&&result.parcel_bindings_preserved&&result.hotspots_preserved,
+     "Visual composition altered protected city data, light, plots or interactive targets");
+    result.frames=views.Values.ToArray();AssetDatabase.SaveAssets();
+    Directory.CreateDirectory(evidenceDir);
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-urban-composition-unity.json"),JsonUtility.ToJson(result,true));
+    Debug.Log("VALORIA_URBAN_COMPOSITION_CANDIDATE ruins="+result.masonry_fragments+
+     " districts="+result.completed_districts+" reclaimed_rock="+result.foundation_stones);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(oldWorldActive);cityCamera.Restore(city.PlayerCamera);worldCamera.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -1119,7 +1249,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
