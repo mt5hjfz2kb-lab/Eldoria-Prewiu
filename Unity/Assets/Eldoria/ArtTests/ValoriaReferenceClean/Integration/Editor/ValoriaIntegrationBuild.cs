@@ -80,7 +80,7 @@ namespace Eldoria.ReferenceClean.Editor {
    AssetDatabase.SaveAssets();Need(EditorSceneManager.SaveScene(scene,Scene),"Improved integrated scene save");
    BeginCurrentProbe();
   }catch(Exception e){Debug.LogException(e);File.WriteAllText(Path.Combine(Ev,"integration-failure.txt"),e.ToString());EditorApplication.Exit(1);}}
-  public static void VisualLeap(){try{
+  public static async void VisualLeap(){try{
    Directory.CreateDirectory(Ev);Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
    var scene=EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);
    var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();
@@ -95,6 +95,7 @@ namespace Eldoria.ReferenceClean.Editor {
    ValoriaEnvironmentFinish.ApplyHostileCampIdentityV11(city,host,Ev);
    // Native165 compact building variant retained for historical visual review; ART_REJECTED.
    ValoriaEnvironmentFinish.ApplyCityCameraCompositionV14(city,host,Ev);
+   await ValoriaEnvironmentFinish.ApplyConnectedPrecinctV16(city,host,Ev);
    // V13 soil-layer repaint rejected: genuine A/B at normal camera was imperceptible.
    // V12 road overlay rejected after genuine native A/B: light slabs and broken ground contact.
    // Retained V7–V9 visual experiments are archived and rejected; no promotion.
