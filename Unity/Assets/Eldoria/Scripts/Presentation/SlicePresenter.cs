@@ -190,8 +190,17 @@ namespace Eldoria.Presentation
 #if UNITY_WEBGL && !UNITY_EDITOR
                 if(usingTouch&&!pointerDragged)
                 {
-                    TryScheduleWebResetFallback(point);
-                    TryScheduleWebBottomNavFallback(point);
+                    // The legacy WebGL reset/bottom-nav fallbacks belong only
+                    // to legacy HUD touches. The integrated RoyalGold UI has
+                    // its own real EventSystem buttons. Native140 browser trace
+                    // proved a City tap was accepted, then this old fallback
+                    // reopened Frontier on the next frame, undoing it.
+                    // Preserve the fallbacks for uncovered legacy UI only.
+                    if(ExternalPointerBlocked?.Invoke(point)!=true)
+                    {
+                        TryScheduleWebResetFallback(point);
+                        TryScheduleWebBottomNavFallback(point);
+                    }
                 }
 #endif
                 pointerActive=false;
