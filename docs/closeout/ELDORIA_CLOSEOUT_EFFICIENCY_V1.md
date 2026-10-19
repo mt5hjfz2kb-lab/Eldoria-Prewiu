@@ -48,6 +48,20 @@ node --test tools/closeout/closeout.test.mjs
 - La opción --change qa_only declara una intención, NO verifica el diff por sí misma. Confirmar siempre los cambios reales en Git antes de reutilizar una compilación.
 - El SHA-256 esperado tiene que venir de la misma evidencia del artefacto que se va a probar. No adivinarlo ni usar el SHA de un ZIP para un fichero extraído. El SHA de juego validado no es necesariamente el último HEAD documental de main.
 
+
+## Aplicación real en el workflow Windows Chromium (19-10-2026)
+
+El workflow existente **.github/workflows/valoria-windows-chromium-qa.yml** consume ya estas comprobaciones, sin abrir un segundo pipeline:
+
+1. Descarga el mismo artefacto Unity fijado por nombre/run. prepare_web.py reconstruye el paquete Sites con manifiesto y SHA-256 individuales de los ficheros originales.
+2. **Antes de jugar**, ejecuta closeout.mjs en modalidad preflight-browser con prepared-site, native-run, SHA de fuente y script de QA. Reconstituye SHA-256 de cada fichero a partir de sus fragmentos reales y verifica fuente, native run, Playwright, Chromium/Edge, FFmpeg y sintaxis. Si falla, NO abre la partida larga ni convierte ese defecto en regresión del juego.
+3. Después de la partida, tanto si falla como si pasa, conserva eldoria-closeout-triage.json dentro del mismo artefacto de evidencia. El diagnóstico clasifica el informe existente y **nunca sustituye ni suaviza el exit code de la prueba**.
+4. El control de publicación privado permanece cerrado salvo PASS completo, guardado exacto y capturas/video válidos. Esta herramienta no publica en Sites ni concede permisos a chats sin conexión de publicación.
+
+El fallo observado del runner Windows el 19-10-2026 tuvo la firma exacta **UNITY_PROJECT_SOURCE_MISSING: .../Unity/Assets** en el run 39266054859. La categoría ENVIRONMENT_UNITY_CHECKOUT exige recuperar archivos trackeados desde el SHA correcto antes de ejecutar el Editor. **No atribuirlo a una avería de la escena ni rehacer el juego.** El workstream propietario continúa su corrección en el workflow Unity; la integración de este diagnóstico NO pisa ni reinicia ese trabajo.
+
+El ajuste es válido para la próxima ejecución autorizada del navegador. No solicita correrla inmediatamente ni altera la QA funcional ya aprobada en 39253871138. El web privado Sites continúa como entrega independiente pendiente de disponer de una sesión autorizada capaz de actualizar ese proyecto existente, sin reconstruir Unity ni cambiar de plataforma.
+
 ## Decisión por tipo de fallo
 
 | Evidencia real | Primer paso | ¿Nueva build? |
