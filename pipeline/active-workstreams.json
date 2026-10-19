@@ -599,6 +599,20 @@
           "web_revision": "native143",
           "live_browser_replay": false
         }
+      },
+      "external_delivery_session": {
+        "owner": "chatgpt-external-playtest-delivery-20261019",
+        "authorization": "Owner 19Oct2026 21:18 Europe/Madrid: choose best Sites-independent testing channel and implement.",
+        "scope": [
+          ".github/workflows/eldoria-itch-delivery.yml",
+          "tools/delivery/**",
+          "pipeline/playtest-delivery.json",
+          "docs/ELDORIA_PLAYTEST_DELIVERY.md"
+        ],
+        "resources": [],
+        "status": "preparing_exact_package_itch_restricted",
+        "preserve_art_owner": true,
+        "budget_eur": 0
       }
     }
   ],
