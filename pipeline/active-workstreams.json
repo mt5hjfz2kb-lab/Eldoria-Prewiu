@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-18",
+  "updated_at": "2026-10-20",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -17,7 +17,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-work-valoria-integration-continuation-20261018",
+      "owner": "chatgpt-eldoria-visual-recovery-20261020",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-16",
@@ -55,8 +55,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "INTEGRATED_PLAYER_CLARITY_AND_ENVIRONMENT_FINISH",
-      "next": "Implement owner priorities on live main: unified World access, readable HUD/operations, coherent world destinations, organic city access and real Unity/WebGL verification.",
+      "phase": "OWNER_DIRECTED_GRAPHICS_RECOVERY",
+      "next": "Reject unapproved V16; hide invented enemy-camp tent visuals without removing gameplay hotspots; recover measured eight-prefab/63-library and CC0 cliff reauthoring methods; improve true Bastion I-II and Zone1 art via Blender and native Unity A/B. No publication.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -547,7 +547,7 @@
           "handoff_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677"
         }
       },
-      "previous_owner": "chatgpt-normal-valoria-construction-20261017",
+      "previous_owner": "codex-work-valoria-integration-continuation-20261018",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md",
@@ -623,7 +623,8 @@
           "incorrect_archive_rejected": true,
           "workflow_yaml": "PASS"
         }
-      }
+      },
+      "owner_handoff": "Explicit 2026-10-20 owner takeover of single canonical integrated art workstream. No concurrent authority. Targets City>=7/10 World>=5.5/10 only on independent Unity A/B, with no unsupported buildings or enemy tents."
     }
   ],
   "history": [
