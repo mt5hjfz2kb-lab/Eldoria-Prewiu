@@ -1322,7 +1322,7 @@ Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs 3C-5F-5B-A2-7D-75-
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RealmHeader.cs.meta 8D-A8-14-56-29-29-0B-4F-EA-C7-35-C2-E4-20-71-80-EA-E4-AF-A9-37-5B-B9-AB-1A-64-64-2C-74-AB-74-D0
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/ResourceBar.cs 59-C8-9E-DE-41-2B-54-48-82-61-AB-AF-41-9D-E8-28-7D-B1-25-29-CA-04-F1-2C-FB-AF-93-68-9C-83-FE-7E
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/ResourceBar.cs.meta E8-BB-44-65-A3-43-B6-AA-21-15-11-AC-01-27-75-F0-12-06-97-50-E8-BF-2D-DA-DC-0C-30-19-89-51-EE-8B
-Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalButton.cs F3-8E-17-BC-D9-93-47-F4-B9-20-06-8A-5C-2A-B4-BE-FB-7C-95-9F-31-4E-6D-C4-FD-42-9A-BE-18-D0-17-44
+Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalButton.cs F1-85-8E-87-13-E1-93-F5-7E-4C-CD-B5-35-B7-27-0B-EB-1C-2F-86-D3-A7-91-EA-8F-EE-FA-2B-53-04-9B-C9
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalButton.cs.meta 0F-0A-57-3E-A4-05-66-41-C7-56-41-E2-D3-50-E2-E2-80-05-8E-42-7F-C8-2A-3D-38-BE-98-72-9F-D9-06-FB
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalFrameGraphic.cs 1D-9C-69-3B-2F-2B-E0-B4-2E-7E-B3-27-FA-C8-D2-61-5A-3E-09-27-FD-6E-64-64-89-18-FC-DC-0E-16-E0-E3
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalFrameGraphic.cs.meta 52-03-29-D4-33-AB-C6-9E-A2-D4-D3-BE-F7-DF-E1-B9-1D-34-C1-2F-15-A3-EC-74-B6-A1-32-CF-06-13-78-92
