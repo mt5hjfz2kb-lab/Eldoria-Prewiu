@@ -6,6 +6,12 @@ Proveedor elegido por delegación del propietario: **itch.io, proyecto Restricte
 
 Autoridad de entrega: `pipeline/playtest-delivery.json`. Distingue candidata native152, source y QA exactos, y publicación vigente native143 en Sites. `pipeline/development-baseline.json` conserva la instantánea fundacional del 18 octubre; no representa la última entrega. El trabajo artístico y main mantienen su propietario y reserva Windows.
 
+## Evidencia de preparación en GitHub
+
+Run **39310549617 COMPLETED / SUCCESS**, source **9564104118872fc78a36894153eb7e626e4c85b9**. Paquete preparado: artifact **12215243251**, `eldoria-external-playtest-39310549617`. Incluye ZIP listo para itch.io e identity.json, sin recompilación. Gobernanza de workflows y cuarentena: PASS. Esto NO implica publicación.
+
+[Descargar preparación](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39310549617/artifacts/12215243251). Descomprimir el contenedor de Actions y subir el ZIP interior Eldoria-native152-itch.zip; no subir el contenedor exterior.
+
 ## Implementado y comprobado
 
 - ZIP original artifact 12213501867, SHA256 da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad, QA Windows 39305545377 SUCCESS.
