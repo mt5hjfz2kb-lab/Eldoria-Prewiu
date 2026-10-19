@@ -1,0 +1,51 @@
+{
+  "source_run": 39314778625,
+  "source_sha": "865bd48d29e8df090468dce1c9f3fde140f5038b",
+  "source_artifact": 12215949809,
+  "visual_status": "ART_REVIEW_REQUIRED_NOT_APPROVED",
+  "native_checks": {
+    "same_camera_light": true,
+    "terrain_heights_preserved": true,
+    "parcel_bindings_preserved": true,
+    "hotspots_preserved": true,
+    "placed_quarters": 2,
+    "reused_renderer_count": 99
+  },
+  "image_previews": {
+    "environment-city-wide-survivors-before": {
+      "sha256": "13fe4545ea10efd8d9ef2bd8b11371c0b6ead8386593cb3ad7d206717a00b065",
+      "bytes": 384740,
+      "original_file": "incoming/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/docs/evidence/valoria-reference-clean/environment-city-wide-survivors-before.preview.b64"
+    },
+    "environment-city-wide-survivors-after": {
+      "sha256": "03264982447ba8bcc437b2b64fe42995b1341814c89d1ca4a5ca490021174e9d",
+      "bytes": 386893,
+      "original_file": "incoming/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/docs/evidence/valoria-reference-clean/environment-city-wide-survivors-after.preview.b64"
+    },
+    "environment-city-portrait-survivors-after": {
+      "sha256": "588ea9dcbd365863a726a86572a98f7fcb461bf6ad76652c8deea5fe38aecda8",
+      "bytes": 398368,
+      "original_file": "incoming/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/docs/evidence/valoria-reference-clean/environment-city-portrait-survivors-after.preview.b64"
+    },
+    "environment-sawmill-survivors-before": {
+      "sha256": "c8d555b28ed0f14829168dc0efa797bdf4e51537634dd05a9f9e5bf5457dccb6",
+      "bytes": 496379,
+      "original_file": "incoming/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/docs/evidence/valoria-reference-clean/environment-sawmill-survivors-before.preview.b64"
+    },
+    "environment-sawmill-survivors-after": {
+      "sha256": "a37989e31b1ea4be7518233152cbce85a5c9f9829e3ee724b19ff27f0f3d66f6",
+      "bytes": 495910,
+      "original_file": "incoming/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/docs/evidence/valoria-reference-clean/environment-sawmill-survivors-after.preview.b64"
+    },
+    "environment-barracks-survivors-before": {
+      "sha256": "d3f80b0fd57aabe1c3eee1bf5e906f53114f689a4722b0bfad4de6bb442c3915",
+      "bytes": 492886,
+      "original_file": "incoming/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/docs/evidence/valoria-reference-clean/environment-barracks-survivors-before.preview.b64"
+    },
+    "environment-barracks-survivors-after": {
+      "sha256": "d3f80b0fd57aabe1c3eee1bf5e906f53114f689a4722b0bfad4de6bb442c3915",
+      "bytes": 492886,
+      "original_file": "incoming/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/docs/evidence/valoria-reference-clean/environment-barracks-survivors-after.preview.b64"
+    }
+  }
+}
