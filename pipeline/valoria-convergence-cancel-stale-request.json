@@ -1,18 +1,14 @@
 {
   "schema_version": 1,
   "request_id": "valoria-convergence-cancel-stale",
-  "reason": "Only the historic [PRODUCTION] Valoria First Playable City Slice v1 was accidentally triggered by the authorized input/gameplay source update. It is an archived alternative and must not spend the exclusive Windows runner or rebuild old parcels. Preserve the current main Unity native135, EditMode, UI certification, architecture, art and workflow guards.",
+  "reason": "The pre-consolidation [R&D] Valoria SHARP Gaussian Unity Proof v1 was inadvertently triggered by the main integrated updater's PackageManager Android JNI dependency. This archived line is not authorized to spend the shared Unity Windows runner. Cancel only run 39210015637; preserve valid integrated family updater 39210015599 and current code/architecture guards. No cancel of other users' valid work.",
   "runs": [
-    39174538447
+    39210015637
   ],
   "keep_runs": [
-    39174538515,
-    39174538433,
-    39174538409,
-    39174538414,
-    39174538440,
-    39174538491,
-    39174538597
+    39210015599,
+    39210015543,
+    39210015505
   ],
-  "triggered_at": "2026-10-18T23:10:00Z"
+  "triggered_at": "2026-10-19T08:25:00+02:00"
 }
