@@ -10,6 +10,7 @@ on:
       - '!Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs'
       - '!Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
       - 'scripts/check_unity_slice.py'
+      - '.github/workflows/unity-slice.yml'
   workflow_dispatch:
 
 concurrency:
@@ -49,7 +50,7 @@ jobs:
                 # Dedicated UI Progression Certification owns these UI-only changes.
                 continue
                 ;;
-              Unity/*)
+              .github/workflows/unity-slice.yml|Unity/*)
                 heavy=true
                 break
                 ;;
@@ -116,7 +117,10 @@ jobs:
           $missing = @($paths | Where-Object { -not (Test-Path -LiteralPath (Join-Path $workspaceCanonical $_)) })
           if ($missing.Count) {
             Write-Warning "UNITY_TRACKED_SOURCE_MISSING: $($missing -join ', '); recovering exact HEAD paths without touching Library or native checkouts."
-            $indexed = @(& git ls-tree -r --name-only $expectedCommit -- Unity/Assets Unity/Packages Unity/ProjectSettings | Select-Object -First 1)
+            $indexed = @(& git -C $workspaceCanonical ls-tree -r --full-tree --name-only $expectedCommit -- Unity/Assets Unity/Packages Unity/ProjectSettings)
+            # Consume all native output: Select-Object -First can close the pipe and
+            # make Git exit nonzero even though the exact source exists.
+            Write-Host "UNITY_TRACKED_SOURCE_COUNT=$($indexed.Count) gitExit=$LASTEXITCODE"
             if ($LASTEXITCODE -ne 0 -or -not $indexed.Count) { throw 'Git commit has no Unity source to restore; refuse fabricated project.' }
             & git checkout --ignore-skip-worktree-bits $expectedCommit -- Unity/Assets Unity/Packages Unity/ProjectSettings
             if ($LASTEXITCODE -ne 0) { throw 'Tracked Unity source recovery from exact HEAD failed.' }
