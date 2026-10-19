@@ -206,7 +206,7 @@ async function main() {
     selection_framing_measurement: 'Before each real primary action and after a completed operation that retains its selection/view: at least three telemetry frames across >=0.7 s with the same selection, viewport, camera and panel/projection bounds. Completion observations allow objective advancement and need no enabled next action; view/selection/narrative changes are recorded as interruptions. Full projected model envelope must be inside the HUD free viewport; transient camera/layout frames are observed without failing immediately. Rectangles use Unity normalized bottom-left viewport coordinates.',
     cold_load_definition: 'Empty browser context with no prior HTTP/IndexedDB cache; operating-system disk cache is not claimed empty',
     checks: {}, loads: [], orientations: [], actions: [], operations: [], marches: [], navigation: [], selection_framing: [],
-    transitions: [], screenshots: [], failures: [], warnings: [], runtime_errors: [], network_failures: []
+    transitions: [], screenshots: [], failures: [], warnings: [], runtime_errors: [], network_failures: [], diagnostics: []
   };
   const ndjson = (file, value) => fs.appendFileSync(path.join(out, file), JSON.stringify(value) + '\n');
   const elapsed = () => round((performance.now() - born) / 1000);
@@ -434,7 +434,23 @@ async function main() {
     await dismissNarrative();
     if (latest.inWorld === open) return;
     await clickControl('world');
-    await waitState(state => state.inWorld === open, open ? 'Open world' : 'Return to city');
+    try {
+      await waitState(state => state.inWorld === open, open ? 'Open world' : 'Return to city');
+    } catch (failure) {
+      // Diagnostic only: a failed touch stays a failed acceptance gate.
+      // Differentiate touch handling from a completely blocked visible button.
+      if (!open && orientation(latest) === 'portrait' && latest?.controls?.world?.enabled) {
+        const before=summary(latest), point=await screenPoint(latest.controls.world);
+        await page.mouse.click(point.x, point.y, {delay:140});
+        const afterClick=sequence;
+        const mouseSucceeded=await waitState(state => !state.inWorld,
+          'Diagnostic mouse click of same visible City control', 4000, afterClick)
+          .then(() => true).catch(() => false);
+        report.warnings.push('City return diagnostic: first genuine touch failed; real mouse click also tested; succeeded='+mouseSucceeded);
+        report.diagnostics.push({kind:'city-return-control-path',before,mouseSucceeded,after:summary(latest),point});
+      }
+      throw failure;
+    }
     await sleep(350);
   }
   async function drag(dx, dy, label) {
