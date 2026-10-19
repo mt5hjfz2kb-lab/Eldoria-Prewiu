@@ -569,7 +569,20 @@
       "current_session": "chatgpt-main-player-improvements-20261018",
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
       "resources_verified_at": "2026-10-18T15:57:23Z",
-      "resources_evidence": "Live Actions: 0 in_progress; only two legacy 7Oct startup probes queued (37642384303/37642364289); sole active workstream previously released runner. Native workflow checks actual processes before launch."
+      "resources_evidence": "Live Actions: 0 in_progress; only two legacy 7Oct startup probes queued (37642384303/37642364289); sole active workstream previously released runner. Native workflow checks actual processes before launch.",
+      "validation_recovery_session": {
+        "owner": "chatgpt-validation-recovery-20261019",
+        "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
+        "scope": [
+          ".github/workflows/unity-slice.yml",
+          "Unity/README.md",
+          "docs/evidence/valoria-reference-clean/INTEGRATION_CONTINUATION.md",
+          "Sites project appgprj_6ad4ce602c808191859268d570c93352"
+        ],
+        "status": "diagnosing_checkout_and_private_delivery",
+        "base_main_sha": "3fa068a795d9b7fb1fd13787bd05652db6774fde",
+        "preserve_existing_art_owner": true
+      }
     }
   ],
   "history": [
