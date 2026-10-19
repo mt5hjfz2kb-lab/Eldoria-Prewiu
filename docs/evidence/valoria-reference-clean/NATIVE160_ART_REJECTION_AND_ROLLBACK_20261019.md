@@ -1,0 +1,12 @@
+# Eldoria — revisión visual independiente native160 y reversión de pavimento defectuoso
+
+**Estado: `ART_REJECTED` (caminos V12), jugabilidad `TECH_PASS`, escena devuelta a V11.** Fecha 19 de octubre de 2026.
+
+- Prueba real: [run Unity Windows 39322150028](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39322150028), fuente `1006c51d5cd47420456aa831d741670dbe346032`. El informe `environment-work-access-v12.json` registra dos caminos, 40 segmentos y 2 renderers, sin colliders adicionales. Mismo encuadre, misma luz, alturas, parcelas, hotspots y geometría del pavimento original conservados.
+- `integration-result.json` registra `INTEGRATION_PASS_ART_REVIEW_REQUIRED` con 32 controles de narrativa, economía, operaciones, Bastión I–II y persistencia de guardados; certificación física de teléfonos pendiente.
+- Imágenes reales comparables: [ciudad antes](environment-city-wide-access-before.png) y [ciudad después](environment-city-wide-access-after.png); [aserradero antes](environment-sawmill-access-before.png) y [aserradero después](environment-sawmill-access-after.png); [cuartel antes](environment-barracks-access-before.png) y [cuartel después](environment-barracks-access-after.png).
+- **Diagnóstico artístico:** el material del camino es demasiado claro y no guarda continuidad con el empedrado oscuro original. El trazado presenta recortes/huecos de hierba entre triángulos y superficies superpuestas de aspecto artificial. El camino del cuartel acaba junto a la tienda pero no resuelve un patio. Técnicamente no hay colisiones, pero la imagen se degrada. **No debe promocionarse ni publicarse.**
+- **Reversión controlada:** restaurar el único blob de escena en `main` al commit anterior a V12, `682d2bbaed78d3b72bb3f16ac4df6f46b8d667c9`, blob exacto `cd702fdd0dfa0af5bd902c087b23b116266ae755`. Mantiene V10 (mundo: bosque/cantera/Brecha) y V11 (tiendas hostiles granate), sin reactivar las V7–V9 rechazadas. Deshabilitar `ApplyIntegratedWorkingAccessV12` en el constructor; preservar intactas capturas, reporte y código experimental para consulta.
+- **Siguiente intervención:** no añadir otra tira plana ni empedrado de bloques. Necesita plataforma de trabajo/terreno conectado y correctamente integrado, con prueba A/B real en Unity. Ni Blender PASS ni contador de geometría sustituyen aprobación visual.
+
+No se modifica WebGL publicada, APK, servidores, Site privado ni jugabilidad. No se comienza Bastión III.
