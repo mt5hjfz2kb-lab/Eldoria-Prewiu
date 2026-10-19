@@ -14,7 +14,7 @@ jobs:
   native:
     if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-native]'))
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 55
+    timeout-minutes: 75
     outputs:
       stage: ${{ steps.native_stage.outputs.stage }}
       revision: ${{ steps.native_stage.outputs.revision }}
@@ -251,7 +251,20 @@ jobs:
             # Validate the committed integrated scene; never rebuild the historical assembly before WebGL.
             $integrationArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent','-logFile',$integrationLog)
             $integrationProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $integrationArgs -PassThru
-            if(-not $integrationProcess.WaitForExit(600000)){& taskkill.exe /PID $integrationProcess.Id /T /F|Out-Null;throw 'Own integrated web preflight timed out'}
+            # After switching the cached Unity project from Android to Win64,
+            # this source-validated preflight can import thousands of assets.
+            # Never infer a game PASS from elapsed time or skip the native check.
+            # Preserve the full editor log on BOTH failure and timeout.
+            $preflightPassed=$integrationProcess.WaitForExit(1200000)
+            if(Test-Path $integrationLog){
+              # Full preflight editor log already copied before verifying the completion marker. -Force
+            }
+            if(-not $preflightPassed){
+              Write-Warning 'Native I-II scene verification exceeded 20 minutes: source cannot advance to WebGL'
+              if(Test-Path $integrationLog){Get-Content $integrationLog -Tail 120}
+              & taskkill.exe /PID $integrationProcess.Id /T /F|Out-Null
+              throw 'Own integrated web preflight timed out; full editor log retained in web-integration-preflight.log'
+            }
             Copy-Item $integrationLog docs/evidence/valoria-reference-clean/web-integration-preflight.log
             if($integrationProcess.ExitCode -ne 0 -or -not(Select-String $integrationLog -Pattern 'VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE' -Quiet)){Get-Content $integrationLog -Tail 100;throw 'Integrated I-II preflight failed; no browser build'}
           }
