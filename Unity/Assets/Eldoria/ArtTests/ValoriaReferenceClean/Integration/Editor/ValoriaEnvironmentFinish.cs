@@ -1790,6 +1790,181 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class CompactQuarterV15Report {
+   public string source_sha,scene;
+   public bool same_camera_light,terrain_preserved,parcels_preserved,hotspots_preserved,
+    visual_only,art_approved,physical_mobile_tested;
+   public int placed_sources,lod0_renderers,roof_materials,triangle_count,colliders;
+   public string[] donors,limitations;public Frame[] frames;
+  }
+  // A bounded, coherent reconstruction quarter: original medieval town
+  // architecture beside the TWO working yards, not scattered former ruins.
+  // Only LOD0 source meshes are retained. Never copy prefab game behaviours.
+  public static void ApplyCompactQuarterV15(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string marker="Valoria compact rebuilding workfronts / original LOD0 v15";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Integrated I-II scene missing");
+   Need(Find(host.WorldRoot,"Hostile encampment cloth / Breach rust v11"),"Verified V11 base absent");
+   if(Find(city.gameObject,marker)){Debug.Log("VALORIA_COMPACT_V15_ALREADY_APPLIED");return;}
+   var planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Original native camera plan absent");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Invalid native A/B camera plan");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"City terrain missing");
+   var td=terrain.terrainData;var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var yards=new[]{BoundsOf(left),BoundsOf(right)};
+   var blocked=new List<Bounds>{BoundsOf(city.BastionOne),BoundsOf(city.BastionTwo),yards[0],yards[1]};
+   foreach(var binding in city.Parcels.Bindings)
+    foreach(var part in new[]{binding.Ground,binding.Available})
+     if(part)foreach(var renderer in part.GetComponentsInChildren<Renderer>(true))blocked.Add(renderer.bounds);
+   var hotspotPositions=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true)
+    .ToDictionary(h=>h,h=>h.transform.position);
+   var donors=new[]{
+    "Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_02a_PRE.prefab",
+    "Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/EA03_Village_OutBuilding_Shed_03b_PRE.prefab",
+    "Assets/EmaceArt/Slavic World Free/Prefabs/Town/Building/EA03_Town_House_Comp_01a_PRE.prefab",
+    "Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Other/EA03_Village_OutBuilding_Convenience_01a_PRE.prefab"
+   };
+   Need(donors.All(p=>AssetDatabase.LoadAssetAtPath<GameObject>(p)),
+    "Original locally installed commercial-use medieval prefab sources absent");
+   var result=new CompactQuarterV15Report{
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),scene=city.gameObject.scene.path,donors=donors,
+    visual_only=true,art_approved=false,physical_mobile_tested=false,
+    limitations=new[]{"Gameplay camera screenshot A/B needs independent artistic review before promotion.",
+     "Original licensed Unity Asset Store free prefab geometry, no redistribution or paid assets.",
+     "No colliders, mechanics, economy, plots or construction progress added.",
+     "Physical mobile memory, GPU and thermal performance remain unmeasured."}};
+   var cc=new CameraState(city.PlayerCamera);var wc=new CameraState(host.WorldCamera);
+   var wasWorld=host.WorldRoot.activeSelf;string light=LightStamp();
+   var views=new Dictionary<string,Frame>();var occupied=new List<Bounds>();
+   bool Fits(Vector3 pos,float halfSize){
+    float pad=halfSize+1f;var min=terrain.transform.position;var max=min+td.size;
+    if(pos.x<min.x+pad+3||pos.x>max.x-pad-3||pos.z<min.z+pad+3||pos.z>max.z-pad-3)return false;
+    if(Mathf.Abs(pos.x-ValoriaReferenceCleanArtBuilder.RoadX(pos.z))<pad+4f)return false;
+    if(Mathf.Abs(pos.z-RiverCenter(pos.x))<RiverWidth(pos.x)+pad+2f)return false;
+    if(blocked.Any(b=>Mathf.Abs(pos.x-b.center.x)<b.extents.x+pad+1.2f
+     &&Mathf.Abs(pos.z-b.center.z)<b.extents.z+pad+1.2f))return false;
+    if(occupied.Any(b=>Mathf.Abs(pos.x-b.center.x)<b.extents.x+pad+1f
+     &&Mathf.Abs(pos.z-b.center.z)<b.extents.z+pad+1f))return false;
+    return true;
+   }
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"frontage-before",views);
+    host.WorldRoot.SetActive(false);
+    folder=AssetsRoot+"/CompactFrontage-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+    Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+    var parent=new GameObject(marker);parent.transform.SetParent(city.transform,false);
+    var styledRoof=new Dictionary<Material,Material>();
+    for(int n=0;n<donors.Length;n++){
+     var original=AssetDatabase.LoadAssetAtPath<GameObject>(donors[n]);
+     var donor=(GameObject)PrefabUtility.InstantiatePrefab(original);
+     Need(donor,"Could not instantiate retained town prefab");
+     try{
+      var excluded=new HashSet<Renderer>();
+      foreach(var group in donor.GetComponentsInChildren<LODGroup>(true)){
+       var all=group.GetLODs();
+       for(int lod=1;lod<all.Length;lod++)foreach(var r in all[lod].renderers)if(r)excluded.Add(r);
+      }
+      var meshRenderers=donor.GetComponentsInChildren<MeshRenderer>(true)
+       .Where(r=>!excluded.Contains(r)&&r.GetComponent<MeshFilter>()&&r.GetComponent<MeshFilter>().sharedMesh).ToArray();
+      Need(meshRenderers.Length>=2,"No source LOD0 mesh suitable for new workfront");
+      var bounds=meshRenderers[0].bounds;foreach(var r in meshRenderers.Skip(1))bounds.Encapsulate(r.bounds);
+      float width=n%2==0?10.5f:6.2f;
+      var yard=yards[n<2?0:1];float dir=n<2?-1f:1f;
+      var desired=yard.center+new Vector3(dir*(yard.extents.x+(n%2==0?8.0f:11.5f)),0,
+       n%2==0?-5.1f:8.0f);
+      var offsets=new[]{Vector2.zero,new Vector2(dir*2f,0),new Vector2(0,-2f),
+       new Vector2(dir*2f,-2f),new Vector2(0,2f)};
+      bool positioned=false;
+      foreach(var offset in offsets){
+       var pos=desired+new Vector3(offset.x,0,offset.y);
+       if(!Fits(pos,width*.49f))continue;
+       float half=width*.34f;
+       var samples=new[]{
+        terrain.SampleHeight(pos),
+        terrain.SampleHeight(pos+new Vector3(half,0,half)),
+        terrain.SampleHeight(pos+new Vector3(-half,0,half)),
+        terrain.SampleHeight(pos+new Vector3(half,0,-half)),
+        terrain.SampleHeight(pos+new Vector3(-half,0,-half))
+       };
+       if(samples.Max()-samples.Min()>1.2f)continue;
+       pos.y=samples.Min()+terrain.transform.position.y-.04f;
+       var root=new GameObject(n==0?"Timber-workers inhabited support"
+        :n==1?"Timber yard reclaimed storage"
+        :n==2?"Garrison workers occupied lodging":"Garrison quarter reclaimed stores");
+       root.transform.SetParent(parent.transform,true);
+       var center=new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);
+       foreach(var old in meshRenderers){
+        var filter=old.GetComponent<MeshFilter>();
+        var part=new GameObject(old.name);part.transform.SetParent(root.transform,false);
+        var matrix=Matrix4x4.Translate(-center)*old.transform.localToWorldMatrix;
+        part.transform.localPosition=matrix.GetColumn(3);part.transform.localRotation=matrix.rotation;
+        part.transform.localScale=matrix.lossyScale;
+        part.AddComponent<MeshFilter>().sharedMesh=filter.sharedMesh;
+        var newRenderer=part.AddComponent<MeshRenderer>();newRenderer.sharedMaterials=old.sharedMaterials;
+        PrepareRenderer(newRenderer);
+        result.lod0_renderers++;result.triangle_count+=filter.sharedMesh.triangles.Length/3;
+        bool isRoof=old.name.IndexOf("roof",StringComparison.OrdinalIgnoreCase)>=0
+         ||old.name.IndexOf("thatch",StringComparison.OrdinalIgnoreCase)>=0;
+        if(!isRoof)continue;
+        var mats=newRenderer.sharedMaterials;
+        for(int m=0;m<mats.Length;m++){
+         if(!mats[m])continue;
+         if(!styledRoof.TryGetValue(mats[m],out var newMat)){
+          newMat=new Material(mats[m]){name="Valoria unified original slate workfront v15"};
+          var prop=BaseTextureProperty(newMat);
+          if(prop!=null&&newMat.GetTexture(prop)){
+           var tex=ReadableCopy(newMat.GetTexture(prop),512);
+           var color=tex.GetPixels();
+           for(int i=0;i<color.Length;i++){
+            float v=Mathf.Clamp(.24f+color[i].grayscale*.32f,.24f,.56f);
+            color[i]=new Color(v*.93f,v*.98f,v*1.02f,color[i].a);
+           }
+           tex.SetPixels(color);tex.Apply(true);Put(tex,"original-slate-regrade");
+           newMat.SetTexture(prop,tex);
+          }
+          if(newMat.HasProperty("_BaseColor"))newMat.SetColor("_BaseColor",Color.white);
+          if(newMat.HasProperty("baseColorFactor"))newMat.SetColor("baseColorFactor",Color.white);
+          Put(newMat,"unified-roof");styledRoof[mats[m]]=newMat;result.roof_materials++;
+         }
+         mats[m]=newMat;
+        }
+        newRenderer.sharedMaterials=mats;
+       }
+       root.transform.localScale=Vector3.one*(width/Mathf.Max(bounds.size.x,bounds.size.z));
+       root.transform.position=pos;root.transform.rotation=Quaternion.Euler(0,n<2?82f:278f,0);
+       occupied.Add(new Bounds(pos,new Vector3(width*1.2f,5,width*1.2f)));
+       result.placed_sources++;positioned=true;break;
+      }
+      Need(positioned,"Playable parcels/circulation leave no safe grounded workfront footprint for "+donors[n]);
+     }finally{Object.DestroyImmediate(donor);}
+    }
+    result.colliders=parent.GetComponentsInChildren<Collider>(true).Length;
+    Need(result.placed_sources==4&&result.colliders==0&&result.lod0_renderers>=10,
+     "Source assets were not integrated as collision-free high-detail art");
+    Need(result.triangle_count<250000&&result.roof_materials>0,
+     "Renderer budget or coherent slate material condition failed");
+    CaptureViews(city,host,plan,evidenceDir,"frontage-after",views);
+    result.same_camera_light=LightStamp()==light;result.terrain_preserved=terrain.terrainData==td;
+    result.parcels_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    result.hotspots_preserved=hotspotPositions.All(k=>k.Key&&k.Key.transform.position==k.Value);
+    Need(result.same_camera_light&&result.terrain_preserved&&result.parcels_preserved&&result.hotspots_preserved,
+     "New art changed current game / terrain / camera bindings");
+    result.frames=views.Values.ToArray();AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-compact-quarter-v15.json"),JsonUtility.ToJson(result,true));
+    Debug.Log("VALORIA_COMPACT_V15_CANDIDATE sources="+result.placed_sources+" LOD0="+result.lod0_renderers);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(wasWorld);cc.Restore(city.PlayerCamera);wc.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -2138,7 +2313,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before"||phase=="access-before"||phase=="organic-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before"||phase=="access-before"||phase=="organic-before"||phase=="frontage-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
