@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using GLTFast;
 using Eldoria.Domain;
+using Eldoria.Presentation;
 using Object = UnityEngine.Object;
 
 namespace Eldoria.ReferenceClean.Editor {
