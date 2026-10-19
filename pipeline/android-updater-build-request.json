@@ -5,5 +5,5 @@
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Explicit first updater APK code7; official Android PluginImporter metadata included; runner-owner and original cert guarded."
+  "note": "Retry first same-identity integrated Android updater code7 with Unity 6000.3 built-in Android JNI (com.unity.modules.androidjni 1.0.0), manifest+lock pinned; prior run 39175540386 stopped at CS1069 before APK generation. Keep original signature, current source, and no automatic release without verified proof."
 }

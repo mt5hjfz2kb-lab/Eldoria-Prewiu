@@ -98,6 +98,12 @@
       "note": "Cabecera preparada-en-rama desfasada tras PR36/40/43/47; reservado por Bastión I. Usar AGENTS y el código vivo"
     },
     {
+      "path": "docs/ELDORIA_ANDROID_FAMILY_UPDATES.md",
+      "domain": "quality",
+      "status": "current",
+      "note": "Canal familiar Android de versiones completas con firma y confirmación de instalación; requiere prueba física y promoción explícita"
+    },
+    {
       "path": "docs/ELDORIA_ART_BIBLE.md",
       "domain": "art",
       "status": "reference",
