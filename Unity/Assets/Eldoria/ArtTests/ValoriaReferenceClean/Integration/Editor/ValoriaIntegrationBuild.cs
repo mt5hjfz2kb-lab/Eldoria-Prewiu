@@ -95,7 +95,9 @@ namespace Eldoria.ReferenceClean.Editor {
    ValoriaEnvironmentFinish.ApplyHostileCampIdentityV11(city,host,Ev);
    // Native165 compact building variant retained for historical visual review; ART_REJECTED.
    ValoriaEnvironmentFinish.ApplyCityCameraCompositionV14(city,host,Ev);
-   await ValoriaEnvironmentFinish.ApplyConnectedPrecinctV16(city,host,Ev);
+   // OWNER 2026-10-20: do not add a new urban precinct before its actual I-II gameplay unlock.
+   // V16 retained as isolated historical .blend/.glb evidence, not a playable-scene addition.
+   ValoriaEnvironmentFinish.ApplyPlayerFacingFidelityV17(city,host,Ev);
    // V13 soil-layer repaint rejected: genuine A/B at normal camera was imperceptible.
    // V12 road overlay rejected after genuine native A/B: light slabs and broken ground contact.
    // Retained V7–V9 visual experiments are archived and rejected; no promotion.

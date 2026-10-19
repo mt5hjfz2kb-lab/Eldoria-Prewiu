@@ -2109,6 +2109,90 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class PlayerFacingFidelityV17Report {
+   public string scene,source_sha,decision;
+   public bool no_gameplay_colliders_removed,world_hotspots_preserved,terrain_preserved,
+    plot_references_preserved,art_approved,physical_mobile_tested;
+   public int disconnected_precincts_removed,unlicensed_tent_representations_hidden;
+   public string[] affected_visuals,limits;
+   public Frame[] frames;
+  }
+  // OWNER 2026-10-20: a Corruptos/Engendro encounter in web v0220 is NOT evidence of
+  // a built hostile army camp. Remove unsupported prefab tent depictions from the
+  // player-facing scene; preserve all genuine I-II combat destinations and data.
+  // Housing/workfront V15/V16 likewise may not appear before a gameplay unlock.
+  public static void ApplyPlayerFacingFidelityV17(
+   ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string mark="Owner fidelity I-II / no premature quarters or fictional enemy camps v17";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,
+    "Protected current city/world session missing");
+   if(Find(city.gameObject,mark)){
+    Debug.Log("ELDORIA_CANONICAL_CONTENT_FIDELITY_ALREADY_APPLIED");return;
+   }
+   var report=new PlayerFacingFidelityV17Report{
+    scene=city.gameObject.scene.path,source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    decision="Match the authored I-II progression and web encounter semantics; preserve hotspots, do not invent residential quarters or enemy tent structures.",
+    no_gameplay_colliders_removed=true,art_approved=false,physical_mobile_tested=false,
+    limits=new[]{"Visual continuity and gameplay require authentic Unity native verification.",
+      "This is removal of unsupported content, NOT a new art-quality 7/10 or world 5.5/10 certification."}
+   };
+   var originalTerrain=Object.FindObjectsByType<Terrain>(
+    FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(originalTerrain&&originalTerrain.terrainData,"Original terrain missing");
+   var td=originalTerrain.terrainData;
+   var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var hotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true)
+    .ToDictionary(x=>x,x=>x.transform.position);
+   string light=LightStamp();
+   string planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Canonical camera plan absent");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,
+    "Identical-camera evidence plan invalid");
+   var frames=new Dictionary<string,Frame>();
+   var names=new List<string>();
+   CaptureViews(city,host,plan,evidenceDir,"owner-fidelity-before",frames);
+   foreach(string candidate in new[]{
+    "Valoria connected working avenue / genuine Blender authored v16",
+    "Valoria compact rebuilding workfronts / original LOD0 v15"}){
+    var t=Find(city.gameObject,candidate);
+    if(!t)continue;
+    Need(t.GetComponentsInChildren<WorldHotspot>(true).Length==0&&
+     t.GetComponentsInChildren<Collider>(true).Length==0,
+     "Cannot remove a playable architecture root: "+candidate);
+    Object.DestroyImmediate(t.gameObject);
+    names.Add(candidate);report.disconnected_precincts_removed++;
+   }
+   foreach(string label in new[]{"Zone1 hostile camp corrupt-scout",
+      "Zone1 hostile camp engendro-valoria","Zone1 hostile camp rear shelter"}){
+    var visual=Find(host.WorldRoot,label);
+    Need(visual,"Expected existing cosmetic military tents absent: "+label);
+    Need(visual.GetComponentsInChildren<WorldHotspot>(true).Length==0&&
+     visual.GetComponentsInChildren<Collider>(true).Length==0,
+     "Enemy representation contains real interaction / collider; refuse deletion: "+label);
+    visual.gameObject.SetActive(false); // non-destructive for history; absent from all rendered views
+    names.Add(label);report.unlicensed_tent_representations_hidden++;
+   }
+   Need(report.unlicensed_tent_representations_hidden==3,
+    "All three unsupported tent visuals must be hidden together");
+   var stamp=new GameObject(mark);stamp.transform.SetParent(city.transform,false);
+   CaptureViews(city,host,plan,evidenceDir,"owner-fidelity-after",frames);
+   report.terrain_preserved=originalTerrain.terrainData==td;
+   report.plot_references_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+   report.world_hotspots_preserved=hotspots.All(x=>x.Key&&x.Key.transform.position==x.Value);
+   Need(report.terrain_preserved&&report.plot_references_preserved&&
+    report.world_hotspots_preserved&&LightStamp()==light,
+    "Owner fidelity pass changed protected terrain, light, city plots or interactions");
+   report.frames=frames.Values.ToArray();report.affected_visuals=names.ToArray();
+   File.WriteAllText(Path.Combine(evidenceDir,"owner-player-facing-fidelity-v17.json"),
+    JsonUtility.ToJson(report,true));
+   Debug.Log("ELDORIA_OWNER_FIDELITY_V17_DONE / removed unearned city additions "+
+    report.disconnected_precincts_removed+" / hidden unsupported enemy tent visuals "+
+    report.unlicensed_tent_representations_hidden);
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
