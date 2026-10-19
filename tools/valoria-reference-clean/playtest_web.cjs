@@ -428,14 +428,22 @@ async function main() {
     // do not disable UI raycasts or edit the world camera/gameplay rules.
     const view = orientation(latest), spots = Object.values(hotspotMap(latest))
       .filter(h => h.visible !== false && Number.isFinite(h.x) && Number.isFinite(h.y));
+    // Exact browser video from run 39223329742 revealed a real UI hit:
+    // at 960x540 the previous (.16,.58) candidate is (154,227), directly
+    // INSIDE the left chapter panel (x=17..205). Hotspot clearance alone
+    // cannot detect UI and so the up swipe was swallowed by its GraphicRaycaster.
+    // Pick only exposed world ground without disabling the legitimate HUD.
     const candidates = view === 'portrait'
       ? [[.83,.56],[.15,.56],[.83,.69],[.17,.70],[.75,.49]]
-      : [[.68,.55],[.81,.57],[.16,.58],[.74,.67],[.38,.68]];
+      : [[.58,.56],[.74,.55],[.54,.66],[.85,.63],[.31,.59]];
     const points = candidates.map(([nx,ny]) => {
       const screen = {x:nx*latest.width,y:(1-ny)*latest.height};
       const clearance = Math.min(...spots.map(h => Math.hypot(h.x-screen.x,h.y-screen.y)),Math.max(latest.width,latest.height));
       const inside = nx+dx>.07 && nx+dx<.93 && ny+dy>.33 && ny+dy<.88;
-      return {nx,ny,clearance,inside};
+      // Mission occupies the left chapter lane in landscape. Its projected
+      // bounding region is outside this lane; retain the original raycasters.
+      const notHud = view !== 'landscape' || (nx > .26 && nx < .90);
+      return {nx,ny,clearance,inside:inside&&notHud};
     }).filter(p=>p.inside).sort((a,b)=>b.clearance-a.clearance);
     need(points.length>0, 'No on-screen ground location for the requested real drag');
     const chosen = points[0];
