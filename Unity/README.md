@@ -46,3 +46,10 @@ El 2026-09-25 el propietario abrió el proyecto con Unity 6.3.23f1 en Windows, s
 La primera build Windows en `Unity/Builds/Windows/` compiló y arrancó. Un fallo magenta del player se corrigió asegurando un material URP base incluido en Resources; la build posterior renderizó correctamente y la interacción de mundo/recolección funcionó fuera del Editor.
 
 El PC Windows del propietario será el nodo Unity de Eldoria: GitHub → PC → Unity → compilación/tests/build → logs/resultados. La automatización se implantará progresivamente cuando compilación, tests y builds sean reproducibles, con el objetivo de dirigir el desarrollo principalmente desde móvil y minimizar intervención física.
+
+
+## Recuperación del lanzador EditMode/PlayMode (2026-10-19)
+
+En Windows self-hosted, el gate de `.github/workflows/unity-slice.yml` ejecuta Unity a través de PowerShell `Start-Process`. La ejecución 39251384434 falló antes de las pruebas porque `-projectPath` se interpretó como una ruta absoluta duplicada (error `Couldn't set project path`). El workflow se corrigió en 5548bd93c110f8fa223892335d876f0de4a7e6c3 para iniciar Unity con `-WorkingDirectory $env:GITHUB_WORKSPACE` y `-projectPath Unity`, sin modificar ni recompilar el juego.
+
+Este cambio documental solicita una ejecución real de los gates existentes al afectar `Unity/**`; el resultado del nuevo workflow, y no este texto, determina si EditMode, PlayMode y Windows Player funcionan. La certificación funcional específica Bastión I–II/Chrome con reloj normal de 39253871138 se reutiliza mientras los bytes del WebGL no cambien. No publicar el artefacto de prueba automáticamente, ni tratar el éxito técnico como aprobación artística.
