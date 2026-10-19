@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "scope": "EXACT_INTEGRATED_BASTION_I_II_NORMAL_CLOCK_BROWSER_VALIDATION",
-  "source_sha": "b8127112890ca64c808e767e74c2a536747f6bf9",
-  "artifact_run": 39251384413,
-  "artifact_name": "valoria-integrated-web-playtest-39251384413",
+  "source_sha": "f5203b84a77540d6704efc5c2576343c7e88fe5c",
+  "artifact_run": 39301296709,
+  "artifact_name": "valoria-integrated-web-playtest-39301296709",
   "tester": "existing Windows Chromium/Edge with GPU; actual pointer and touch, landscape and portrait",
   "controls": [
     "dialogues",
@@ -21,12 +21,12 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Native142 Edge completed forest/quarry/scout plus all map gestures and failed Bastion portrait framing. Native143 retains actionable mission when building selected and passed 32 integrated Unity checks; real browser still needs independent acceptance.",
+  "reason": "Native graphical V2-V6 preserved on main. WebGL source f5203b84 successfully compiled in GitHub Actions 39301296709 (184751921 bytes) and native Unity I-II scene probe passed. The bundled ubuntu-latest SwiftShader visible-controls job failed waiting for a fresh telemetry frame after first portrait dialogue tap, with zero reported runtime/network errors. Reuse the existing Windows Edge D3D11 QA flow on the exact artifact, no recompilation, no promotion without full PASS.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 8,
-  "method_note": "Test native143 precise real WebGL in Windows Edge D3D11: selected-building mobile portrait chapter sheet now compact but objective action remains functional. Require authentic gameplay with 4-way pan both orientations, zoom, visible Go-to-objective, full framed Bastion upgrade and barracks/training/marches/combat, no legacy duplicate navigation, no browser runtime exceptions, exact save across reload, normal SystemClock, video/stills. No game rebuild or shortcuts.",
-  "gameplay_source_unchanged": false,
+  "attempt": 9,
+  "method_note": "Test current native152 WebGL exact run 39301296709, compiled source f5203b84a77540d6704efc5c2576343c7e88fe5c on existing Windows Edge/Chromium with D3D11. Real SystemClock, portrait/landscape dialogues, camera framing, Bastion I-II progression, resources, march visibility, normal timings, save and reload, video and screenshot extraction. Do not conflate ubuntu-latest SwiftShader latency with gameplay evidence; never weaken any assertion or accept timeout as PASS.",
+  "gameplay_source_unchanged": true,
   "qa_code_commit": "d716e3d5db55af58e562620db4826683f89f2e2c"
 }

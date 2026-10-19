@@ -16,7 +16,7 @@ shell=Path(__file__).parent/"web-shell"
 for asset in shell.iterdir():
  if asset.is_file(): shutil.copy2(asset,dist/asset.name)
 # The welcome image is an actual capture of the exact integrated scene.
-review=Path("docs/evidence/valoria-reference-clean/environment-city-wide-after.png")
+review=Path("docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png")
 if not review.is_file(): raise SystemExit("Native integrated city capture missing")
 shutil.copy2(review,dist/"city.png")
 build=source/"Build"

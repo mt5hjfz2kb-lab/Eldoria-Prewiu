@@ -585,7 +585,7 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/valoria-reference-clean/
-            /docs/evidence/valoria-reference-clean/environment-city-wide-after.png
+            /docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png
       - uses: actions/setup-node@v4
         with:
           node-version: 22
