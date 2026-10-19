@@ -204,14 +204,14 @@ namespace Eldoria.UI.RoyalGold.V2
             portrait = height > width;
             float goalWidth = Mathf.Min(portrait ? width - 36f : 446f, width - 32f);
             float goalTop = portrait ? Mathf.Min(248f, height * .23f) : 146f;
-            Top(objectiveCard, portrait ? 18 : 24, goalTop, goalWidth, 156f);
+            Top(objectiveCard, portrait ? 18 : 24, goalTop, goalWidth, 174f);
             Top(chapterText.rectTransform, 17, 13, goalWidth - 130, 25);
             Top(progressText.rectTransform, goalWidth - 108, 13, 93, 25);
             progressText.alignment = TextAnchor.MiddleRight;
             Top(objectiveText.rectTransform, 17, 43, goalWidth - 34, 51);
-            Top((RectTransform)objectiveAction.transform, 14, 102, (goalWidth - 40f) * .59f, 42);
+            Top((RectTransform)objectiveAction.transform, 14, 108, (goalWidth - 40f) * .59f, 52);
             Top((RectTransform)objectivesButton.transform, 20 + (goalWidth - 40f) * .59f,
-                102, (goalWidth - 40f) * .41f, 42);
+                108, (goalWidth - 40f) * .41f, 52);
             // Explicitly expanded chapter panels are allowed to be larger; the
             // default HUD remains only one short objective card.
             Top((RectTransform)chapterClose.transform,
@@ -299,8 +299,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!Application.isPlaying) return;
             EnsureView();
             if (!ready) return;
-            if (!hasGeometry || Mathf.Abs(safe.rect.width - lastWidth) > .5f ||
-                Mathf.Abs(safe.rect.height - lastHeight) > .5f) Layout();
+            bool resized = !hasGeometry || Mathf.Abs(safe.rect.width - lastWidth) > .5f ||
+                Mathf.Abs(safe.rect.height - lastHeight) > .5f;
+            if (resized) Layout();
             if (!hasGeometry) return;
             bool modalOpen = Source.Modal && Source.Modal.gameObject.activeSelf;
 
@@ -309,12 +310,14 @@ namespace Eldoria.UI.RoyalGold.V2
             progressText.Put(Safe(Source.Mission.ProgressText));
 
             bool showExpanded = expanded && !modalOpen;
-            if (Source.Mission.gameObject.activeSelf != showExpanded)
+            bool chapterJustOpened = Source.Mission.gameObject.activeSelf != showExpanded;
+            if (chapterJustOpened)
                 Source.Mission.gameObject.SetActive(showExpanded);
             if (showExpanded)
             {
                 Source.Mission.SetSelectionCompact(false);
-                Source.Mission.ApplyLayout(safe.rect.width);
+                if (chapterJustOpened || resized)
+                    Source.Mission.ApplyLayout(safe.rect.width);
                 var legacy = (RectTransform)Source.Mission.transform;
                 legacy.anchoredPosition = new Vector2(portrait ? 16f : 26f, -(portrait ? 245f : 145f));
             }
