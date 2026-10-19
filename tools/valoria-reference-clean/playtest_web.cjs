@@ -317,12 +317,31 @@ async function main() {
   async function clickPoint(point, label, mode) {
     const before = latest, position = await screenPoint(point, before);
     const used = mode || (orientation(before) === 'portrait' ? 'touch' : 'mouse');
-    const action = { elapsed_s: elapsed(), kind: used === 'touch' ? 'tap' : 'click', label, css: position, before: summary(before) };
+    const action = { elapsed_s: elapsed(), kind: used === 'touch' ? 'touch-hold-release' : 'click',
+      label, css: position, held_ms: used === 'touch' ? 160 : 90, before: summary(before) };
     report.actions.push(action); ndjson('actions.ndjson', action);
-    if (used === 'touch') await page.touchscreen.tap(position.x, position.y);
-    else await page.mouse.click(position.x, position.y, { delay: 90 });
+    if (used === 'touch') {
+      // Playwright touchscreen.tap dispatches start and end with no human-length
+      // hold. In native139 Windows GPU the portrait City control missed the
+      // immediate tap after genuine world drags, while all four pan directions
+      // and wheel zoom worked. Exercise Chromium's real touch input protocol
+      // with an ordinary 160ms press, never DOM events or Unity/Button.Invoke.
+      const cdp = await page.context().newCDPSession(page);
+      const point = { x: position.x, y: position.y, radiusX: 2, radiusY: 2, force: 1 };
+      let down = false;
+      try {
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [point] });
+        down = true;
+        await sleep(160);
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        down = false;
+      } finally {
+        if (down) await cdp.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] }).catch(() => {});
+        await cdp.detach().catch(() => {});
+      }
+    } else await page.mouse.click(position.x, position.y, { delay: 90 });
     // A telemetry frame emitted during pointer-down predates the click's effect.
-    // Require another observation after pointer-up/touch-end has been delivered.
+    // Require another observation after actual pointer-up/touch-end.
     const deliveredSequence = sequence;
     await waitState(() => true, `Fresh observation after ${label}`, 10000, deliveredSequence);
     return before;
