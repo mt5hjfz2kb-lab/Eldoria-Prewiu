@@ -1559,7 +1559,11 @@ namespace Eldoria.ReferenceClean.Editor {
    var layers=oldData.terrainLayers;
    var donor=layers.FirstOrDefault(l=>l&&l.name.IndexOf("ScannedWornSoil",StringComparison.OrdinalIgnoreCase)>=0);
    if(!donor)donor=layers.FirstOrDefault(l=>l&&l.name.IndexOf("Loam",StringComparison.OrdinalIgnoreCase)>=0);
-   Need(donor&&donor.diffuseTexture&&layers.Length>=3&&layers.Length<=5,"Expected original licensed soil layer absent or additional draw-pass limit exceeded");
+   // Native159/160 have six existing layers (ScannedLeafMeadow, Bank,
+   // ScannedWornSoil, SunDryGrass, Meadow, Loam): two URP terrain passes.
+   // A seventh stays within that already-required two-pass budget.
+   Need(donor&&donor.diffuseTexture&&layers.Length>=3&&layers.Length<=7,
+    "Expected original scanned-earth texture absent or terrain exceeds bounded eight-layer/two-pass URP budget");
    var l=city.Parcels.LeftBuilt;var r=city.Parcels.RightBuilt;
    var worldNodes=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true)
     .ToDictionary(h=>h,h=>h.transform.position);
@@ -1569,7 +1573,7 @@ namespace Eldoria.ReferenceClean.Editor {
     scene=city.gameObject.scene.path,source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
     source_terrain_material=AssetDatabase.GetAssetPath(donor),
     connected_workplaces=2,visual_only=true,art_approved=false,physical_mobile_tested=false,
-    limitations=new[]{"Fifth existing-family TerrainLayer may require later mobile texture/pass optimization.",
+    limitations=new[]{"Seventh TerrainLayer reuses original scanned soil; existing URP terrain uses two texture passes. Physical-mobile timing still required.",
      "Actual before/after images require independent artistic acceptance.",
      "No structure, collider, gameplay, progression, save or parcel modification."}};
    try{
