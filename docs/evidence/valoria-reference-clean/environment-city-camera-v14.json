@@ -1,0 +1,127 @@
+{
+    "source_sha": "dbe3e678fc194f13f347f850b4eda1ae608eb989",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "camera_only": true,
+    "lighting_preserved": true,
+    "terrain_preserved": true,
+    "plots_preserved": true,
+    "hotspots_preserved": true,
+    "bastion_centred_both_orientations": true,
+    "art_approved": false,
+    "physical_mobile_tested": false,
+    "old_home_zoom": 34.0,
+    "new_home_zoom": 29.5,
+    "old_home_position": [
+        46.0,
+        77.0,
+        -104.0
+    ],
+    "new_home_position": [
+        43.563323974609378,
+        77.0,
+        -97.224853515625
+    ],
+    "views": [
+        {
+            "phase": "before",
+            "aspect_name": "landscape",
+            "file": "environment-city-camera-before-landscape.png",
+            "width": 1600,
+            "height": 900,
+            "size": 34.0,
+            "position": [
+                46.0,
+                77.0,
+                -104.0
+            ],
+            "rotation": [
+                0.27516937255859377,
+                -0.16492974758148194,
+                0.04797792434692383,
+                0.9459271430969238
+            ],
+            "bastion_viewport": [
+                0.5291842818260193,
+                0.8129494190216065,
+                159.15164184570313
+            ]
+        },
+        {
+            "phase": "before",
+            "aspect_name": "portrait",
+            "file": "environment-city-camera-before-portrait.png",
+            "width": 900,
+            "height": 1600,
+            "size": 34.0,
+            "position": [
+                46.0,
+                77.0,
+                -104.0
+            ],
+            "rotation": [
+                0.27516937255859377,
+                -0.16492974758148194,
+                0.04797792434692383,
+                0.9459271430969238
+            ],
+            "bastion_viewport": [
+                0.5922368764877319,
+                0.8129494190216065,
+                159.15164184570313
+            ]
+        },
+        {
+            "phase": "after",
+            "aspect_name": "landscape",
+            "file": "environment-city-camera-after-landscape.png",
+            "width": 1600,
+            "height": 900,
+            "size": 29.5,
+            "position": [
+                43.563323974609378,
+                77.0,
+                -97.224853515625
+            ],
+            "rotation": [
+                0.27516937255859377,
+                -0.16492974758148194,
+                0.04797792434692383,
+                0.9459271430969238
+            ],
+            "bastion_viewport": [
+                0.533636212348938,
+                0.7952277064323425,
+                153.0751190185547
+            ]
+        },
+        {
+            "phase": "after",
+            "aspect_name": "portrait",
+            "file": "environment-city-camera-after-portrait.png",
+            "width": 900,
+            "height": 1600,
+            "size": 29.5,
+            "position": [
+                43.563323974609378,
+                77.0,
+                -97.224853515625
+            ],
+            "rotation": [
+                0.27516937255859377,
+                -0.16492974758148194,
+                0.04797792434692383,
+                0.9459271430969238
+            ],
+            "bastion_viewport": [
+                0.6063069105148315,
+                0.7952277064323425,
+                153.0751190185547
+            ]
+        }
+    ],
+    "limitations": [
+        "Intentional camera A/B; no identical-camera scoring applies to framing interventions.",
+        "New default home pose must pass actual portrait/landscape playable I-II target tests.",
+        "Physical Android/iPhone screen and GPU use not certified."
+    ]
+}
