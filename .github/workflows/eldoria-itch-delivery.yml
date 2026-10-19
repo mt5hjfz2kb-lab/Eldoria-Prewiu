@@ -68,6 +68,10 @@ jobs:
             fs.writeFileSync('candidate.zip',Buffer.from(bytes.data));
       - name: Check original Unity hashes and adapt HTML5 transport
         run: python3 tools/delivery/prepare.py candidate.zip delivery-output
+      - name: Verify decoded transport hashes and single-allocation Unity loading
+        run: |
+          node --check delivery-output/dist/play.js
+          node tools/delivery/test-exact-decoded-transport.mjs delivery-output/dist
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-external-playtest-${{ github.run_id }}
