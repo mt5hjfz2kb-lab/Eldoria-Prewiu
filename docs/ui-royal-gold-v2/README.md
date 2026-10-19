@@ -35,16 +35,24 @@ premium, misiones, acciones o cifras ficticias.
 2. **RoyalGoldV2Narrative.cs**, adaptación de tamaño y distribución del
    relato que utiliza el mismo RoyalNarrativePresentation, retrato ya
    autorizado, texto, secuencia de páginas y confirmación original.
-3. **RoyalGoldV2PrefabBuilder.cs**, comando editorial manual que podrá
-   generar un prefab candidato aparte del antiguo RoyalGoldHUD.prefab,
-   además de una escena aislada copiando el TEST original. No se ejecuta solo.
-4. Nuevas definiciones de ensamblado y GUIDs .meta de Unity, sin alterar
+3. **RoyalGoldV2FrameGraphic.cs**, marco uGUI propio de pizarra azul, oro
+   envejecido y pequeños acentos medievales; solo vértices y color, sin
+   texturas costosas ni shaders externos.
+4. **RoyalGoldV2PrefabBuilder.cs**, comando editorial manual que podrá
+   regenerar los assets anteriores usando el serializador de Unity,
+   aparte del antiguo RoyalGoldHUD.prefab y TEST original. No se ejecuta solo.
+5. **Prefab RoyalGoldHUDV2.prefab y escena RoyalGold_V2_ISOLATED.unity**
+   ya montados como copias YAML de los originales con dos componentes V2
+   añadidos y nuevos GUIDs. El fixture conserva el mismo driver de prueba,
+   los botones y la sesión aislada; no sustituye el original. Necesitan
+   abrirse y reserializarse/validarse en Unity para certificar la importación.
+6. Nuevas definiciones de ensamblado y GUIDs .meta de Unity, sin alterar
    ninguna referencia original ni instalar dependencias.
 
-**No terminado:** no hay un prefab serializado generado desde Unity ni
-captura nativa de V2 hasta ejecutar el comando anterior en Unity con el
-recurso Windows disponible; no se debe decir UI_APPROVED, UNITY_PASS ni
-que está dentro del enlace jugable. La nueva capa aún requiere prueba
+**No terminado:** el prefab y la escena YAML V2 están presentes en GitHub,
+pero NO existe aún un Unity import/play/render de V2 ni una captura nativa
+certificada. Su serialización todavía no ha sido comprobada en Unity.
+No se debe decir UI_APPROVED, UNITY_PASS ni que está dentro del enlace jugable. La nueva capa aún requiere prueba
 de localización, safe area, interacción real y rendimiento móvil.
 
 ## Decisiones visuales
@@ -73,9 +81,10 @@ compartidos reservados.** Consultar pipeline/active-workstreams.json y
 GitHub Actions actual antes de tocar el equipo.
 
 A. En una copia de Unity 6000.3.23f1 y rama V2, con reserva Windows libre,
-   usar menú «Eldoria / Royal Gold V2 / Create isolated reusable prefab»;
-   comprobar resultado en Prefabs/RoyalGoldHUDV2.prefab. El constructor
-   no debe guardar ni abrir escenas jugables.
+   **abrir primero el prefab y escena V2 ya existentes** y comprobar que
+   importan sin Missing Script. El menú «Eldoria / Royal Gold V2 /
+   Create isolated reusable prefab» puede reserializar el prefab desde
+   la fuente original; nunca guardar ni abrir escenas jugables.
 
 B. Ejecutar menú «Eldoria / Royal Gold V2 / Create isolated fixture scene».
    Verificar Preview/RoyalGold_V2_ISOLATED.unity con un solo HUD, cámara,
