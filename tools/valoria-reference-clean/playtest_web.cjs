@@ -491,14 +491,41 @@ async function main() {
       interactive_hotspot_clearance_px: round(chosen.clearance), origin: 'open-ground',
       before: summary(before) };
     report.actions.push(action); ndjson('actions.ndjson', action);
-    await page.mouse.move(start.x, start.y); await page.mouse.down(); await sleep(100);
-    // Real elapsed gesture time lets Unity observe held/moved/released frames,
-    // including on a slower software renderer. No game timer is altered.
-    for (let step = 1; step <= 12; step++) {
-      await page.mouse.move(start.x + (end.x - start.x) * step / 12, start.y + (end.y - start.y) * step / 12);
-      await sleep(35);
+    // Keep the portrait gameplay session touch-only. The previous QA used
+    // mouse dragging in portrait and immediately switched to a touchscreen
+    // tap for City; the SAME control worked with mouse after touch failed.
+    // Genuine Chromium CDP touchscreen events exercise Unity's real touch
+    // input path, without game API calls or synthetic DOM events.
+    if (view === 'portrait') {
+      const cdp = await page.context().newCDPSession(page);
+      let touching = false;
+      try {
+        const finger = (x, y) => ({ x, y, id: 0, radiusX: 3, radiusY: 3, force: 1 });
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [finger(start.x, start.y)] });
+        touching = true;
+        await sleep(100);
+        for (let step = 1; step <= 12; step++) {
+          const t = step / 12;
+          await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove',
+            touchPoints: [finger(start.x + (end.x - start.x)*t, start.y + (end.y - start.y)*t)] });
+          await sleep(35);
+        }
+        await sleep(100);
+        await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        touching = false;
+      } finally {
+        if (touching) await cdp.send('Input.dispatchTouchEvent', { type: 'touchCancel', touchPoints: [] }).catch(() => {});
+        await cdp.detach().catch(() => {});
+      }
+    } else {
+      await page.mouse.move(start.x, start.y); await page.mouse.down(); await sleep(100);
+      // Genuine mouse gesture remains the landscape mouse-input baseline.
+      for (let step = 1; step <= 12; step++) {
+        await page.mouse.move(start.x + (end.x - start.x) * step / 12, start.y + (end.y - start.y) * step / 12);
+        await sleep(35);
+      }
+      await sleep(100); await page.mouse.up();
     }
-    await sleep(100); await page.mouse.up();
     const deliveredSequence = sequence;
     await waitState(state => state.inWorld, 'World observation after drag', 8000, deliveredSequence);
     await sleep(650);
@@ -530,26 +557,28 @@ async function main() {
         report.navigation.push(entry); await capture(`world-pan-${label}`);
         need(entry.pass, `World pan ${label} did not move the camera/landmarks in the requested direction in ${view}`);
       }
+      if (view === 'landscape') {
+      await closeDetails();
+      const beforeZoom = latest, box = await canvasBox(), seq = sequence;
+      // Use the same exposed ground lane that allowed real portrait panning.
+      // The world city label is a genuine UI control and must keep intercepting
+      // wheel/pointer input when hovered. Observe an actual zoom-in wheel tick,
+      // never set camera values through browser automation.
+      await page.mouse.move(box.x + box.width * 0.83, box.y + box.height * 0.56);
+      report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-in',
+        deltaY: -240, origin: 'exposed-world-ground', before: summary(beforeZoom) });
+      await page.mouse.wheel(0, -240);
+      await waitState(() => true, 'Zoom-in observation', 8000, seq);
+      await sleep(850);
+      const zoomDifference = cameraDifference(beforeZoom, latest);
+      need(zoomDifference && zoomDifference.zoom < -0.65,
+        'A real world mouse-wheel tick did not visibly zoom toward the selected world ground');
+      report.checks.world_zoom = { pass: true, input_delta_y: +240,
+        initial_at_regional_fitting_limit: beforeZoom.camera.zoom >= 31.9,
+        zoom_direction: zoomDifference.zoom < 0 ? 'in' : 'out',
+        before: beforeZoom.camera, after: latest.camera };
+      }
     }
-    await closeDetails();
-    const beforeZoom = latest, box = await canvasBox(), seq = sequence;
-    // Use the same exposed ground lane that allowed real portrait panning.
-    // The world city label is a genuine UI control and must keep intercepting
-    // wheel/pointer input when hovered. Observe an actual zoom-in wheel tick,
-    // never set camera values through browser automation.
-    await page.mouse.move(box.x + box.width * 0.83, box.y + box.height * 0.56);
-    report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-in',
-      deltaY: -240, origin: 'exposed-world-ground', before: summary(beforeZoom) });
-    await page.mouse.wheel(0, -240);
-    await waitState(() => true, 'Zoom-in observation', 8000, seq);
-    await sleep(850);
-    const zoomDifference = cameraDifference(beforeZoom, latest);
-    need(zoomDifference && zoomDifference.zoom < -0.65,
-      'A real world mouse-wheel tick did not visibly zoom toward the selected world ground');
-    report.checks.world_zoom = { pass: true, input_delta_y: +240,
-      initial_at_regional_fitting_limit: beforeZoom.camera.zoom >= 31.9,
-      zoom_direction: zoomDifference.zoom < 0 ? 'in' : 'out',
-      before: beforeZoom.camera, after: latest.camera };
     const retained = latest;
     await capture('world-before-city-return'); await toggleWorld(false); await capture('city-world-transition');
     await toggleWorld(true); await sleep(900);
