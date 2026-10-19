@@ -494,8 +494,27 @@ jobs:
           if(-not(git diff --cached --quiet)){
             git commit -m 'art(valoria): native independent reference scene and genuine Unity evidence'
             if($LASTEXITCODE){throw 'Commit failed'}
-            git push origin HEAD:main
-            if($LASTEXITCODE){throw 'Concurrent branch change; preserve artifacts without force push'}
+            # If another chat updated only unrelated delivery docs during native
+            # capture, preserve their work and rebase this proof safely. Never
+            # force-push or rebase over changed gameplay/Unity/art authority.
+            $published=$false
+            for($attempt=1;$attempt -le 3;$attempt++){
+              git fetch origin main
+              if($LASTEXITCODE){throw 'Cannot read live main for safe evidence integration'}
+              $changes=@(git diff --name-only "$env:GITHUB_SHA" origin/main)
+              $protected=@($changes|Where-Object {
+                $_ -match '^(Unity/|tools/valoria-reference-clean/|docs/evidence/valoria-reference-clean/|pipeline/development-baseline\.json$|pipeline/active-workstreams\.json$|AGENTS\.md$|PROJECT_STATE\.md$|SESSION_HANDOFF\.md$)'
+              })
+              if($protected.Count){
+                throw ('Concurrent protected gameplay/art change; preserve artifacts without integration: '+($protected -join ', '))
+              }
+              git rebase origin/main
+              if($LASTEXITCODE){git rebase --abort;throw 'Safe Git rebase failed; preserve evidence artifact'}
+              git push origin HEAD:main
+              if($LASTEXITCODE -eq 0){$published=$true;break}
+              Write-Warning "Unrelated concurrent main update, retrying safe fast-forward attempt $attempt/3"
+            }
+            if(-not $published){throw 'Concurrent main mutation persisted; all original artifacts retained, no force-push'}
           }
       - uses: actions/upload-artifact@v4
         if: always()
