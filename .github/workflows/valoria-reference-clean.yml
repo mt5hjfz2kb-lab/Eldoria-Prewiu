@@ -598,10 +598,16 @@ jobs:
         run: |
           python3 tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site "native$VALORIA_REVISION" "$GITHUB_SHA" "$GITHUB_RUN_ID"
           node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
-      - name: Install the existing Chromium test tool on this temporary free runner
+      - name: Install existing Chromium and free FFmpeg frame extractor on temporary runner
         run: |
           npm install --prefix "$RUNNER_TEMP/valoria-web-qa" --no-save --ignore-scripts playwright@1.55.0
           "$RUNNER_TEMP/valoria-web-qa/node_modules/.bin/playwright" install --with-deps chromium
+          # Playwright's bundled FFmpeg is only a recorder, not necessarily on
+          # PATH for the independent video/JPEG extraction acceptance gate.
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -version | head -n 1
       - name: Play the exact local build with visible controls and the normal clock
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
