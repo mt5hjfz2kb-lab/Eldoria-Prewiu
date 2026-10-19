@@ -28,7 +28,15 @@ namespace Eldoria.UI.RoyalGold
             // Unity's offscreen 1600px capture must not use the 640px editor
             // GameView to choose its layout. Runtime 640px must remain compact
             // even when CanvasScaler reports 1200 logical reference units.
-            bool wide = width >= 1080 && (offscreenCapture || Screen.width >= 1080);
+            // A 960x540 desktop/phone landscape canvas has 1600 logical
+            // reference units after CanvasScaler. The previous *pixel-width*
+            // cutoff incorrectly forced a portrait-style full-width bottom sheet
+            // and overlapped the left mission sheet. The free world viewport
+            // then had yMin > yMax, making forest/quarry impossible to frame.
+            // Use the actual aspect ratio for live layout; retained offscreen
+            // landscape captures explicitly select the wide composition.
+            bool landscape = Screen.width > Screen.height * 1.08f;
+            bool wide = width >= 1080 && (offscreenCapture || landscape);
             float stripWidth = Resources.rect.width;
             if (wide)
             {
