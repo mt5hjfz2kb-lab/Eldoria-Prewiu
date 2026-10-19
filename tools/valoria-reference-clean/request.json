@@ -1,11 +1,11 @@
 {
   "stage": "visual_leap",
   "validate_play": false,
-  "revision": 144,
+  "revision": 145,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Integrated native I-II landscape visual leap on the existing scene: compare real same-camera city/world before-after captures; preserve heights, hotspots, materials, save state, gameplay and existing Blender/Qwen sources. Do NOT publish unreviewed art. 0 EUR.",
+  "checks": "Fix new leap-before camera snapshot registration; rerun current integrated Unity I-II visual leap at unchanged camera and light, preserve game progression and save. Prior run 39288915379 deliberately stopped before any visual edits.",
   "art_correction": "Owner 2026-10-19 visual priority: retain city buildings, replace uniform city meadow transitions, add two integrated working world tracks, ground material for forest/quarry and dark Breach scars, reinforce retained forest silhouette. Art approval requires captured review.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
