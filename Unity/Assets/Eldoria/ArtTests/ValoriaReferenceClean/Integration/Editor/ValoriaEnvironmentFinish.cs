@@ -1291,6 +1291,120 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class HostileOutpostReport {
+   public string scene,source_sha;
+   public bool same_camera_light,terrain_preserved,hotspots_preserved,parcels_preserved,
+    material_sources_preserved,art_approved,physical_mobile_tested;
+   public int camp_roots,recolored_camps,recolored_materials,recolored_pixels;
+   public Frame[] frames;
+  }
+  // Distinct enemy camp cloth from the retained original tent materials:
+  // recolor only demonstrably blue fabric texture pixels, not timber/stone/UI.
+  // No props, geometry, targeting, triggers, source texture or plot change.
+  public static void ApplyHostileCampIdentityV11(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string marker="Hostile encampment cloth / Breach rust v11";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Integrated city/world missing");
+   Need(Find(host.WorldRoot,"World landmarks / working quarry and Breach v10"),"Retained v10 terrain identity required");
+   if(Find(host.WorldRoot,marker)){Debug.Log("ELDORIA_HOSTILE_CLOTH_ALREADY_APPLIED");return;}
+   string planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Native camera plan absent");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Native capture framing plan invalid");
+   var camps=new[]{
+    Find(host.WorldRoot,"Zone1 hostile camp corrupt-scout"),
+    Find(host.WorldRoot,"Zone1 hostile camp engendro-valoria"),
+    Find(host.WorldRoot,"Zone1 hostile camp rear shelter")};
+   Need(camps.All(x=>x),"Original three already-playable enemy shelters missing");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Original Valoria terrain missing");
+   var sourceTerrain=terrain.terrainData;var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var nodes=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   string light=LightStamp();var cc=new CameraState(city.PlayerCamera);var wc=new CameraState(host.WorldCamera);
+   bool oldWorld=host.WorldRoot.activeSelf;var views=new Dictionary<string,Frame>();
+   var report=new HostileOutpostReport{scene=city.gameObject.scene.path,
+    source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    material_sources_preserved=true,art_approved=false,physical_mobile_tested=false,
+    camp_roots=camps.Length};
+   try{
+    city.Apply(new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"hostile-before",views);
+    host.WorldRoot.SetActive(true);
+    folder=AssetsRoot+"/HostileCanvas-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+    Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+    var recolored=new Dictionary<Material,Material>();
+    for(int campId=0;campId<camps.Length;campId++){
+     bool changedCamp=false;
+     foreach(var renderer in camps[campId].GetComponentsInChildren<MeshRenderer>(true)){
+      var original=renderer.sharedMaterials;var edited=(Material[])original.Clone();
+      for(int slot=0;slot<original.Length;slot++){
+       var src=original[slot];if(!src)continue;
+       if(recolored.TryGetValue(src,out var cached)){edited[slot]=cached;if(cached!=src)changedCamp=true;continue;}
+       Material output=src;
+       var prop=BaseTextureProperty(src);
+       if(prop!=null&&src.GetTexture(prop)){
+        var tex=ReadableCopy(src.GetTexture(prop),1024);
+        var pixels=tex.GetPixels();int blue=0;
+        for(int px=0;px<pixels.Length;px++){
+         var c=pixels[px];
+         if(c.b>c.r*1.22f&&c.b>c.g*1.10f&&c.b>.07f)blue++;
+        }
+        if(blue>Mathf.Max(120,(int)(pixels.Length*.018f))){
+         for(int px=0;px<pixels.Length;px++){
+          var c=pixels[px];
+          if(c.b<=c.r*1.22f||c.b<=c.g*1.10f||c.b<=.07f)continue;
+          float detail=Mathf.Clamp01(c.grayscale*2.5f);
+          var rust=Color.Lerp(new Color(.16f,.07f,.075f,1),new Color(.34f,.17f,.13f,1),detail);
+          var target=Color.Lerp(c,rust,.93f);target.a=c.a;pixels[px]=target;
+         }
+         tex.SetPixels(pixels);tex.Apply(true);Put(tex,"hostile-canvas-texture-v11");
+         output=new Material(src){name="Breach hostile charcoal/rust / "+src.name};
+         output.SetTexture(prop,tex);
+         if(output.HasProperty("_BaseColor"))output.SetColor("_BaseColor",Color.white);
+         if(output.HasProperty("baseColorFactor"))output.SetColor("baseColorFactor",Color.white);
+         Put(output,"hostile-canvas-mat-v11");
+         report.recolored_materials++;report.recolored_pixels+=blue;
+        }else Object.DestroyImmediate(tex);
+       }
+       // Also handle texture-neutral canvases tinted royal blue only by shader.
+       if(output==src&&src.HasProperty("_BaseColor")){
+        var tint=src.GetColor("_BaseColor");
+        if(tint.b>tint.r*1.22f&&tint.b>tint.g*1.10f&&tint.b>.07f){
+         output=new Material(src){name="Breach hostile rust tint / "+src.name};
+         output.SetColor("_BaseColor",new Color(.27f,.105f,.095f,tint.a));
+         Put(output,"hostile-tint-v11");report.recolored_materials++;
+        }
+       }
+       recolored[src]=output;edited[slot]=output;
+       if(output!=src)changedCamp=true;
+      }
+      renderer.sharedMaterials=edited;
+     }
+     if(changedCamp)report.recolored_camps++;
+    }
+    Need(report.recolored_camps>=2&&report.recolored_materials>=1,
+     "Original hostile canvas contained no identifiable navy material; do not invent replacement assets");
+    var tag=new GameObject(marker);tag.transform.SetParent(host.WorldRoot.transform,false);
+    CaptureViews(city,host,plan,evidenceDir,"hostile-after",views);
+    report.same_camera_light=light==LightStamp();
+    report.terrain_preserved=terrain.terrainData==sourceTerrain;
+    report.parcels_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    report.hotspots_preserved=nodes.All(n=>n.Key&&n.Key.transform.position==n.Value);
+    Need(report.same_camera_light&&report.terrain_preserved&&report.parcels_preserved&&report.hotspots_preserved,
+     "Enemy canvas operation changed gameplay data, camera or terrain");
+    report.frames=views.Values.ToArray();AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-hostile-outposts-v11.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("ELDORIA_HOSTILE_OUTPOST_PALETTE_CANDIDATE recolored="+report.recolored_materials);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(oldWorld);cc.Restore(city.PlayerCamera);wc.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -1639,7 +1753,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before"||phase=="survivors-before"||phase=="destinations-before"||phase=="hostile-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
