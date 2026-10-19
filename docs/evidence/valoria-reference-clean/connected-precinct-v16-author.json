@@ -1,0 +1,20 @@
+{
+  "source_sha": "9a28875b2816123bb710eefe2e7aac99749c42e3",
+  "input_sha256": {
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\MaterialInputs\\sandstone_blocks_05\\sandstone_blocks_05_diff_1k.png": "c6087f35bf30efeb895d12f5da098e7fca4026429b8a17da1b50e11626e73ef2",
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\MaterialInputs\\sandstone_blocks_05\\sandstone_blocks_05_nor_gl_1k.png": "a8937bd775fba9d9b1b1010b20b4906c9e4a9d6d368aaef8fd45d72afca4d88a",
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\MaterialInputs\\sandstone_blocks_05\\license-manifest.json": "a39e8a3db960bfbbe2a08b2698709c13a798c611acdb23358c9892906a2016d8",
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\SawmillRefinedOak.png": "02a886a4466439afa0d4da5faa469e589ddfeac9ec041f58a8d1a5e3b4ed3bc2"
+  },
+  "output_sha256": "133818220e849fccf88fb2cbd1b2f5cf0d72363b0a636022b941f985424e209f",
+  "blender_sha256": "f63f97df736ddc9487d05e5945a46a3b7fc68d94bfafaba50f5f074730add320",
+  "source_glb": "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\ConnectedPrecinctV16.glb",
+  "blender_source": "docs\\evidence\\valoria-reference-clean\\ConnectedPrecinctV16.blend",
+  "triangles": 1788,
+  "vertices": 3192,
+  "design": "one connected roofless stone and timber reconstruction frontage with Gothic arch",
+  "reused": "retained CC0 sandstone normal and diffuse; retained Eldoria Sawmill oak",
+  "art_approved": false,
+  "unity_native_player_capture_pending": true,
+  "budget_eur": 0
+}
