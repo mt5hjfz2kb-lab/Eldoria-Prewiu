@@ -93,6 +93,7 @@ namespace Eldoria.ReferenceClean.Editor {
    ValoriaEnvironmentFinish.RestoreRoyalBanners(city,host,Ev);
    ValoriaEnvironmentFinish.ApplyWorldIdentityV10(city,host,Ev);
    ValoriaEnvironmentFinish.ApplyHostileCampIdentityV11(city,host,Ev);
+   ValoriaEnvironmentFinish.ApplyCompactQuarterV15(city,host,Ev);
    ValoriaEnvironmentFinish.ApplyCityCameraCompositionV14(city,host,Ev);
    // V13 soil-layer repaint rejected: genuine A/B at normal camera was imperceptible.
    // V12 road overlay rejected after genuine native A/B: light slabs and broken ground contact.
