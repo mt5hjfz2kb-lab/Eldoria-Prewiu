@@ -26,7 +26,7 @@ for o in source:o.hide_render=True
 # right-angle wall or repeated boxes. These face and shoulder control profiles
 # are physically joined along an uninterrupted, deliberately asymmetric plan.
 rng=random.Random(20261020)
-N=65
+N=88
 outer=[]
 for i in range(N):
  t=i/(N-1); x=-9.1+18.2*t
@@ -118,7 +118,9 @@ for old in source:
   clone.matrix_world=old.matrix_world.copy()
   clone.name="Retained functional quarry equipment / "+old.name
   keep.append(clone)
-assert len(mesh.polygons)>2500 and len(keep)>=1, "Art donor/continuous geometry not recovered"
+print("ELDORIA_QUARRY_SOURCE_DIAGNOSTICS", [o.name for o in source], "authored_faces", len(mesh.polygons), "kept_source_equipment",len(keep))
+assert len(mesh.polygons)>2500, "Continuous geological escarpment topology under-required size"
+assert len(keep)>=1, "No genuine existing source quarry equipment survived import"
 # Same-camera Blender A/B is *diagnostic only*, Unity approves separately.
 def material_color(name,color):
  mat=bpy.data.materials.new(name);mat.diffuse_color=(*color,1);mat.use_nodes=True
