@@ -607,12 +607,22 @@
           ".github/workflows/eldoria-itch-delivery.yml",
           "tools/delivery/**",
           "pipeline/playtest-delivery.json",
-          "docs/ELDORIA_PLAYTEST_DELIVERY.md"
+          "docs/ELDORIA_PLAYTEST_DELIVERY.md",
+          "pipeline/development-baseline.json",
+          "SESSION_HANDOFF.md (delivery notice only)",
+          "PROJECT_STATE.md (delivery notice only)"
         ],
         "resources": [],
-        "status": "preparing_exact_package_itch_restricted",
+        "status": "package_locally_verified_awaiting_itch_account_and_secret",
         "preserve_art_owner": true,
-        "budget_eur": 0
+        "budget_eur": 0,
+        "local_checks": {
+          "original_zip_sha256": "PASS",
+          "unity_original_hashes": "PASS",
+          "playable_files_unchanged": 18,
+          "incorrect_archive_rejected": true,
+          "workflow_yaml": "PASS"
+        }
       }
     }
   ],
