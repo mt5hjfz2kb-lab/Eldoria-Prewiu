@@ -74,6 +74,22 @@ def prepare(archive, destination, config):
                     (dist / part).unlink(missing_ok=True)
             manifest['chunks'] = {}
             (dist / 'build-manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
+        # Record exact decoded sizes; no buffered decompression in the browser adapter.
+        import gzip
+        manifest['decoded_sizes'] = {}
+        for key in ('data', 'framework', 'code'):
+            name = manifest[key]
+            asset = dist / name.split('?', 1)[0]
+            with asset.open('rb') as raw:
+                compressed = raw.read(2) == b'\x1f\x8b'
+            if compressed:
+                total = 0
+                with gzip.open(asset, 'rb') as stream:
+                    while block := stream.read(1024 * 1024):
+                        total += len(block)
+                manifest['decoded_sizes'][name] = total
+        manifest['delivery_adapter'] = 'itch-low-memory-v2'
+        (dist / 'build-manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
         # Show the actual startup error to make physical-device failures diagnosable.
         play = dist / 'play.js'
         original = play.read_text()
@@ -81,7 +97,19 @@ def prepare(archive, destination, config):
         new = 'errorText.textContent="No se ha podido abrir Valoria. Detalle: "+String(error?.message||error).replace(/<[^>]*>/g,"").slice(0,1200);'
         if original.count(old) != 1:
             raise ValueError('Unexpected welcome wrapper; diagnostic patch needs review')
-        play.write_text(original.replace(old,new))
+        adapted = original.replace(old,new)
+        needle = 'installChunkTransport(build.chunks);'
+        if adapted.count(needle) != 1:
+            raise ValueError('Unexpected transport initialization')
+        adapted = adapted.replace(needle, 'installExactDecodedTransport(build.decoded_sizes);')
+        needle = 'streamingAssetsUrl:"StreamingAssets",'
+        if adapted.count(needle) != 1:
+            raise ValueError('Unexpected Unity configuration')
+        # Avoid Response.clone() buffering the entire data file for UnityCache.
+        # Normal browser HTTP caching and game saves remain independent.
+        adapted = adapted.replace(needle, 'cacheControl:()=>"no-store",'+needle)
+        helper = (ROOT/'tools/delivery/exact-decoded-transport.js').read_text()
+        play.write_text(helper+'\n'+adapted)
 
         files = sorted(p for p in dist.rglob('*') if p.is_file())
         if not (dist / 'index.html').is_file() or len(files) > 1000 or any(p.stat().st_size > 200_000_000 for p in files):
@@ -100,7 +128,7 @@ def prepare(archive, destination, config):
             for f in identities:
                 data = z.read(f['file'])
                 assert len(data) == f['bytes'] and hashlib.sha256(data).hexdigest() == f['sha256']
-        report = {'status':'PACKAGE_READY_NOT_PUBLISHED', 'candidate':expected, 'original_unity_integrity':check, 'playable_files_unchanged':False, 'unity_bytes_unchanged':True, 'transport_adapter':'itch-complete-gzip-v1', 'reconstructed_files':transport, 'wrapper_changes':['build-manifest.json','play.js'], 'files':identities, 'zip_sha256':hashlib.file_digest(open(output,'rb'),'sha256').hexdigest(), 'hosted_verified':False}
+        report = {'status':'PACKAGE_READY_NOT_PUBLISHED', 'candidate':expected, 'original_unity_integrity':check, 'playable_files_unchanged':False, 'unity_bytes_unchanged':True, 'transport_adapter':'itch-low-memory-v2', 'reconstructed_files':transport, 'wrapper_changes':['build-manifest.json','play.js'], 'files':identities, 'zip_sha256':hashlib.file_digest(open(output,'rb'),'sha256').hexdigest(), 'hosted_verified':False}
         (destination/'identity.json').write_text(json.dumps(report,indent=2)+'\n')
         shutil.copytree(dist, destination/'dist')
         print(json.dumps({'status':report['status'], 'files':len(files), 'zip_sha256':report['zip_sha256']}))
