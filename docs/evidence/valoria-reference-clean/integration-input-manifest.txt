@@ -646,12 +646,16 @@ Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_023.png 7
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_023.png.meta 79-14-B8-21-0D-DA-F5-80-86-19-2B-9B-4D-23-CF-AE-2E-C0-28-E2-B6-94-EE-3F-0D-B9-F2-93-0B-56-0F-76
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Outer_Road_GI.asset 93-D7-70-B1-1D-79-21-B6-08-F0-FC-74-7D-60-F0-A2-14-21-C8-E3-7C-ED-63-B3-8C-39-3B-B0-E0-0A-88-F8
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Outer_Road_GI.asset.meta D5-2C-CF-52-9C-C9-44-DA-2D-57-04-68-6F-2C-BB-E4-13-13-11-29-34-3A-53-DF-87-B0-6C-19-C3-14-45-84
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs 9C-21-B6-E1-AA-64-41-A9-F0-9E-19-6E-69-3D-D7-11-61-8D-7E-F4-D3-6D-C8-B7-4E-3D-28-D0-61-A0-58-3C
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs 05-1E-3E-0B-8B-A0-C4-F6-55-79-19-24-BB-38-E6-3A-60-3E-1F-76-26-88-80-9D-BA-65-DD-5A-2F-3B-B7-E5
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaEnvironmentFinish.cs.meta 4D-22-92-FF-39-E1-FB-5D-F1-D0-B8-AF-1D-CB-78-B0-40-2D-49-4D-72-20-E1-37-29-A6-8E-FB-DD-35-70-78
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegratedWebBuild.cs 07-65-4F-94-CE-25-23-7B-EC-F9-52-E6-CB-0F-EA-74-7A-B5-85-C4-D0-71-CE-47-9A-66-2C-96-02-85-43-C3
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegratedWebBuild.cs.meta E7-BB-35-9F-66-24-82-99-67-91-C1-5A-7F-F0-49-25-C7-F6-D1-8F-A8-62-2E-90-17-38-2D-E7-B2-DC-C9-66
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs 44-CF-9F-1C-05-F1-74-2D-36-8E-5F-75-8F-65-DE-DB-19-D2-BE-1E-1D-60-1C-DC-B3-B5-93-FD-84-07-F7-F8
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs 85-55-F5-EB-C9-BD-26-1C-4E-97-7C-03-4B-72-C9-12-7D-9B-C4-85-47-C8-60-00-6C-6C-F7-4F-4B-58-37-64
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs.meta C5-2D-6B-18-71-F4-2E-91-22-6F-03-FE-06-DD-0F-6B-44-59-F2-85-D0-46-BE-34-29-41-71-A2-02-E8-B2-4E
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/CompactFrontage-39330844141/original-slate-regrade-0.asset B1-8E-01-A3-04-DC-A9-F0-F0-26-69-05-5D-DD-61-F1-96-0A-6B-D5-0A-1B-19-A1-8F-B3-07-4D-99-F8-FD-D9
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/CompactFrontage-39330844141/original-slate-regrade-0.asset.meta CE-8B-0D-C3-4B-09-CC-8F-A0-9E-97-B8-8C-AB-2E-BC-57-8B-4D-F3-00-20-2B-3F-D8-4D-8D-05-21-BF-78-16
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/CompactFrontage-39330844141/unified-roof-1.mat 64-40-62-CD-46-2C-E0-9B-FF-D0-BC-10-90-D4-B0-C5-F9-D5-B2-7C-8D-1F-76-44-62-F9-72-FC-5F-77-08-74
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/CompactFrontage-39330844141/unified-roof-1.mat.meta D6-92-8E-92-46-60-6C-3D-A2-B7-7F-3F-75-1B-A8-F4-CE-66-8A-CD-A4-75-1B-AD-F0-4D-4D-60-3C-3E-A4-A8
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-mat-v11-1.mat 8A-D2-E3-4D-46-64-5D-5B-67-CC-E0-81-BE-AA-F6-B2-BC-E5-B3-2C-8C-0D-95-13-F4-D5-78-20-34-4E-71-C8
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-mat-v11-1.mat.meta 4C-A2-F6-C1-51-09-FA-9A-12-D2-C8-EB-68-14-02-B0-E3-C0-9A-20-21-94-93-F6-48-C7-DF-04-4A-E4-CB-3E
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-texture-v11-0.asset 5D-21-7E-98-D4-7F-B8-8A-89-22-5D-FF-AD-CC-43-F1-3F-CE-9F-75-53-3D-C7-CF-C9-32-52-62-77-AD-1B-92
@@ -856,7 +860,7 @@ Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentati
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentation.cs.meta 2B-59-C5-83-85-FB-AD-D0-56-DB-F2-C0-95-CF-1B-65-31-E4-24-D3-AB-B9-92-8A-D7-1B-D0-EA-7C-74-EB-0A
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaPlaytestTelemetry.cs 27-79-3F-45-E7-BD-8F-59-F1-7A-8A-5B-0F-DC-C4-EA-14-C8-6A-81-41-21-F1-DE-E5-31-77-22-EA-0E-B8-75
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaPlaytestTelemetry.cs.meta 6F-C7-53-A8-BC-22-00-15-6E-FA-07-28-58-DB-35-07-5B-99-3C-8C-24-8B-2D-06-D2-E6-05-A6-4F-73-E8-BB
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity F4-CF-21-2C-D4-3F-98-8F-54-BC-59-50-FC-56-79-43-19-F2-30-84-FD-50-2E-22-43-44-65-A2-37-55-CE-4C
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity 84-BE-34-EE-95-AB-C2-FB-C5-E2-B5-B7-50-F0-7F-90-F9-7E-9A-86-6D-6C-8B-04-64-41-6E-8C-0C-67-9F-9A
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity.meta 4F-DE-F2-ED-9C-CC-A1-E1-01-02-AE-F0-99-8F-30-87-6B-81-12-33-D5-96-55-B3-40-6F-E0-0E-AA-36-F9-C2
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnsembleMeadow.png 32-6A-C2-32-36-17-53-A8-11-45-CF-34-0D-03-21-33-B6-D4-10-FE-F7-0C-86-97-3B-13-4D-DD-B2-40-88-9C
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnsembleMeadow.png.meta 9D-A6-25-DD-0A-58-A7-65-0F-0E-86-2C-C1-89-12-D1-73-8C-36-5A-91-98-F0-8C-67-E1-69-BB-2D-3B-29-1D
@@ -1386,6 +1390,32 @@ Assets/Eldoria/UI/ValoriaRoyalHUDV1/Preview/RoyalPreviewDriver.cs A9-BF-7B-AA-A4
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Preview/RoyalPreviewDriver.cs.meta 58-66-88-B5-19-61-54-75-56-6F-0B-61-E2-57-4C-E8-5F-BB-AC-D6-34-92-AC-09-FE-9A-80-CA-03-55-EF-5E
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/AldricPortraitOriginal.jpg 12-89-CD-01-DC-81-D3-43-5E-F8-36-B7-D1-CB-A6-1B-6D-1A-C5-16-8A-4B-1F-F7-BE-7F-60-09-CA-D7-63-28
 Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/AldricPortraitOriginal.jpg.meta C7-EF-A6-24-1F-FC-BE-6A-2B-94-F0-CE-3E-C6-1F-9E-2D-21-18-F8-6E-3E-37-85-8E-37-61-55-9B-46-44-FA
+Assets/EmaceArt/Slavic World Free/Materials/EA03_LPNP-Slavika_Colorsheet_v1.mat BD-0B-5F-F7-9B-6A-00-58-E3-D6-B8-2E-61-D0-26-F9-52-59-E1-A4-AA-62-45-E8-25-07-42-B4-CE-19-45-F2
+Assets/EmaceArt/Slavic World Free/Materials/EA03_LPNP-Slavika_Colorsheet_v1.mat.meta 9E-0C-79-F1-34-10-10-15-AF-C4-F3-9E-E7-CE-16-E3-54-FF-2F-51-8A-FB-6B-9D-FE-A2-67-25-3B-F3-EC-AE
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Ill_Roof_01a.fbx D1-74-FE-8D-3B-AC-04-EC-E6-38-0E-00-BB-AA-4D-B7-26-1D-75-A0-E4-CB-22-FE-88-32-0A-B9-83-3C-FD-85
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Town_Ill_Roof_01a.fbx.meta CA-F1-56-8F-E9-38-A3-75-71-7B-82-45-E4-23-DA-F9-4D-2B-F0-C8-69-33-B6-9B-B1-DF-D4-B9-AC-F3-C7-D9
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx C9-19-80-85-21-49-6B-A6-AC-5D-B3-84-0A-9E-1B-24-6E-38-77-85-6F-F4-E6-D4-BE-3C-0A-24-51-8C-A4-7E
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_HouseModule_Porch_01d.fbx.meta E8-F0-4B-43-7C-E6-B4-0C-10-67-F4-BE-0C-A4-1E-F6-E4-95-A4-53-BE-E1-08-7E-1A-C7-17-F2-7A-F0-32-52
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Ceiling_01e.fbx 0F-27-7C-A9-56-29-03-63-8F-00-8C-3E-9D-A1-D3-0C-78-E0-94-B2-C2-BC-F5-FB-26-B0-41-C1-60-5A-8F-6C
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Ceiling_01e.fbx.meta 34-79-FE-7D-09-20-94-05-20-FF-1B-1C-13-4C-AE-16-BA-F8-ED-78-6E-8F-99-C8-93-96-A6-0C-B5-8A-64-47
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Foundation_02b.fbx E3-34-88-C3-68-6D-AF-6F-0C-64-F8-DD-AF-83-63-4F-0E-54-F4-F2-3A-76-B3-1B-D2-74-6B-0D-6D-4C-13-42
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Foundation_02b.fbx.meta 8B-A8-56-52-B4-7C-6C-5B-3D-5A-32-E9-D2-31-BA-AB-06-F9-CD-8F-23-97-58-9F-08-B1-00-73-5C-A5-B3-7D
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01a.fbx AB-93-92-DF-FC-51-F8-68-F8-A2-3A-F3-1C-05-5D-AF-E6-5F-37-33-50-BE-3C-CA-CE-52-B3-EA-D6-D3-EF-90
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Roof_Cut_01a.fbx.meta D8-10-C1-90-86-CF-52-86-2B-3A-F4-96-F1-41-AE-8C-EF-F7-96-28-2C-F0-CD-72-66-B3-72-83-46-F8-4B-4D
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04b.fbx E8-51-41-FE-A7-0E-FE-D1-D6-D5-C4-0D-EE-C3-ED-FA-8A-37-D1-6C-28-27-E7-58-42-23-38-2A-A1-DC-87-29
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04b.fbx.meta E9-DC-00-51-7D-23-CD-E2-52-14-BA-D1-33-CC-0C-2E-4B-2D-EA-73-0F-58-53-C3-CB-31-D9-68-E8-0B-9F-5F
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04e.fbx 77-CC-72-11-08-8F-08-8B-02-DC-50-C1-A9-09-56-D2-23-CF-38-67-26-BC-E9-D9-64-1E-0D-A5-D5-E2-46-DF
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04e.fbx.meta 29-E9-53-58-EA-F0-D4-D7-C9-3D-DF-50-49-C2-57-A2-41-58-F4-41-C5-91-8B-B6-F0-34-1C-F7-90-43-8B-B9
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04f.fbx 91-89-6F-7F-39-6E-65-55-57-2E-12-95-0A-06-D9-25-88-0F-FA-CB-01-5E-E2-82-2C-82-DE-44-34-F6-41-01
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04f.fbx.meta 57-40-C7-22-B1-3F-68-3C-B5-11-3E-14-BD-1E-51-AC-7C-A7-8E-09-C3-A7-BD-77-42-60-EF-AB-DE-2A-3C-E6
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04h.fbx A7-E3-9E-11-D7-AE-73-08-F9-0F-5C-53-4A-EE-6F-21-C5-CC-C6-BE-3B-1B-D9-D9-2A-8E-1B-9F-1B-29-5E-FB
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_Hut_Wall_Front_04h.fbx.meta 8F-84-B5-74-1C-7C-F3-2E-FD-B3-18-68-1C-F5-74-84-13-6E-69-9B-61-D4-E7-B7-E5-13-6A-87-0C-E7-52-E4
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Convenience_01a.fbx 54-E8-AC-A3-12-F4-80-9D-A0-9F-1C-A6-90-C9-CF-31-F9-A7-54-AB-40-C8-A3-DE-CD-95-1F-A9-99-82-54-16
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Convenience_01a.fbx.meta 26-61-78-B9-AB-02-BC-1F-4D-5B-FC-0E-D8-20-B1-31-2E-66-CA-FA-DD-10-E2-79-65-2C-DD-95-3A-59-E5-75
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Shed_03b.fbx 55-33-D6-C6-E1-BF-6D-C3-C6-A4-11-1D-28-E2-49-85-EE-E9-A8-70-72-BD-FB-CA-46-13-DA-D7-20-5D-48-6B
+Assets/EmaceArt/Slavic World Free/Meshes/EA03_Village_OutBuilding_Shed_03b.fbx.meta B5-D6-D5-B7-03-95-4C-6C-9A-65-32-7D-72-06-A0-C4-3F-64-F2-93-02-62-18-9F-6D-87-6F-22-7C-F5-8A-F6
+Assets/EmaceArt/Slavic World Free/Texture/EA03_FREE_Slavica.png 13-9F-70-A5-6E-47-57-55-34-7B-4F-CA-F4-C8-64-0F-20-9B-7B-49-13-30-47-D0-0C-3B-1F-11-DE-27-7F-5C
+Assets/EmaceArt/Slavic World Free/Texture/EA03_FREE_Slavica.png.meta B7-A7-14-05-38-39-A6-D3-6B-BA-30-52-43-2A-93-DC-CA-54-B2-89-5C-FB-CA-20-B9-D4-97-4B-91-46-82-D1
 Packages/com.unity.cloud.gltfast/Runtime/Shader/Includes/Emission.cginc 03-77-5F-D1-76-EC-F9-0B-94-F5-5C-55-4D-31-1C-DA-F5-04-F1-14-A4-3D-61-79-11-10-68-C1-4E-15-8C-38
 Packages/com.unity.cloud.gltfast/Runtime/Shader/Includes/Emission.cginc.meta C4-1B-2E-6F-F4-53-2E-9D-3A-ED-C7-D0-73-B9-E4-C5-BD-4E-79-0C-A4-82-22-D2-FD-A1-B8-84-44-30-75-9C
 Packages/com.unity.cloud.gltfast/Runtime/Shader/Includes/Normal.cginc 31-55-A1-1F-4A-4F-FC-52-C2-85-C0-A8-7F-60-17-32-F0-5E-FA-0B-7E-80-81-C4-5D-FB-D4-71-CB-72-9A-76
