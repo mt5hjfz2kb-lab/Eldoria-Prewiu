@@ -1,4 +1,4 @@
-> **19-10-2026 — Validación en recuperación:** usar la escena integrada de `pipeline/development-baseline.json`. El run 39274718168 restauró 10.212 archivos, pero `-projectPath=Unity` abrió la última copia del editor (`valoria-layered-source`) y sus XML no certifican el checkout solicitado. Se corrige a argumento separado con ruta absoluta entre comillas y se exige que los XML provengan de `Unity/Library/ScriptAssemblies` del checkout exacto. Mantener los resultados anteriores como diagnóstico, no como cierre.
+> **19-10-2026 — Validación en recuperación:** usar la escena integrada de `pipeline/development-baseline.json`. El run 39274718168 restauró 10.212 archivos, pero `-projectPath=Unity` abrió la última copia del editor (`valoria-layered-source`) y sus XML no certifican el checkout solicitado. Se corrige a argumento separado con ruta absoluta entre comillas y normaliza los separadores Windows antes de exigir que los XML provengan de `Unity/Library/ScriptAssemblies` del checkout exacto. Mantener los resultados anteriores como diagnóstico, no como cierre.
 
 # Eldoria en Unity — primera slice de Valoria
 
