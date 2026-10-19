@@ -245,10 +245,10 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private static string Safe(RoyalText value) => value ? value.text ?? "" : "";
 
-        private void RenderBuilding()
+        private void RenderBuilding(bool narrativeOrModal)
         {
             var source = Source.Building;
-            bool show = !string.IsNullOrEmpty(Source.SelectedBuildingId) &&
+            bool show = !narrativeOrModal && !string.IsNullOrEmpty(Source.SelectedBuildingId) &&
                 source && source.Title && !string.IsNullOrWhiteSpace(source.Title.text);
             if (buildingCard.gameObject.activeSelf != show) buildingCard.gameObject.SetActive(show);
             if (!show) return;
@@ -325,8 +325,7 @@ namespace Eldoria.UI.RoyalGold.V2
             objectiveCard.gameObject.SetActive(!expanded && !modalOpen);
             chapterClose.gameObject.SetActive(showExpanded);
 
-            RenderBuilding();
-            if (buildingCard.gameObject.activeSelf && modalOpen) buildingCard.gameObject.SetActive(false);
+            RenderBuilding(modalOpen);
 
             // The V1 detail sheet is only a data/command source in this isolated
             // candidate. Hide it after each V1 refresh so it cannot intercept
