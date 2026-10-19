@@ -155,6 +155,21 @@ jobs:
             if(-not((Get-Content $result -Raw|ConvertFrom-Json).sources_preserved)){throw 'Environment source preservation failed'}
             return
           }
+          if($req.stage -eq 'quarry_geology_author'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender missing'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_quarry_geology_v18.py
+            if($LASTEXITCODE){throw 'Quarry continuous CC0 geology author failed'}
+            $proof='docs/evidence/valoria-reference-clean/quarry-geology-v18-author.json'
+            if(-not(Test-Path $proof)){throw 'Quarry Blender proof missing'}
+            $result=Get-Content $proof -Raw|ConvertFrom-Json
+            $source='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnvironmentFinish/QuarryGeologyV18.glb'
+            if(-not(Test-Path $source)){throw 'Quarry author did not output GLB'}
+            if($result.new_glb_sha256 -ne (Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -or $result.art_approved){throw 'Quarry source SHA or artistic approval boundary invalid'}
+            Write-Host "ELDORIA_QUARRY_GEOLOGY_V18_BLENDER_AUTHOR_SUCCESS"
+            return
+          }
           if($req.stage -eq 'connected_precinct_author'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
@@ -547,6 +562,8 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/web-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/environment-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/quarry-geology-v18-*
+            valoria-layered-source/docs/evidence/valoria-reference-clean/QuarryGeologyV18.blend
             valoria-layered-source/docs/evidence/valoria-reference-clean/EnvironmentFinish.blend
             valoria-layered-source/docs/evidence/valoria-reference-clean/gameplay78-*
             valoria-layered-source/docs/evidence/valoria-reference-clean/bastion2-*
@@ -563,7 +580,7 @@ jobs:
 
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
+        if: always() && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
