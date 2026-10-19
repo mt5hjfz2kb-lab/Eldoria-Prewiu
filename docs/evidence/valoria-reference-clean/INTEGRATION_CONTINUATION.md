@@ -1,3 +1,17 @@
+# Estado actual 19-10-2026 — reparación de identidad del proyecto en validación
+
+Continúa el mismo workstream y main. Esta cabecera supera los bloqueos y estados históricos inferiores.
+
+- Recuperación real: run 39274718168 restauró 10.212 archivos Unity desde el commit exacto; el inventario anterior cortaba la salida de Git con Select-Object -First y abortaba la restauración. Cambio efectivo en .github/workflows/unity-slice.yml: inventario completo, -C explícito y --full-tree.
+- NO certificar ese run: sus XML dieron 20 EditMode/32 PlayMode PASS y Build Successful, pero se ejecutaron en valoria-layered-source/Unity. El argumento no documentado -projectPath=Unity fue ignorado; Unity abrió el último proyecto usado. La búsqueda del ejecutable en Unity/Builds falló por esa discrepancia. La evidencia de las asambleas permite detectar el falso cierre.
+- Reparación adicional ya en main e5eae7119d2635497da55e2f72c6e9321f295dcd: argumento -projectPath separado de la ruta absoluta entre comillas en los nueve lanzamientos; cada XML debe identificar asambleas bajo el Unity/Library/ScriptAssemblies exacto del checkout. Una prueba aprobada en otra copia ahora falla explícitamente. No se relajaron pruebas.
+- Confirmación en curso: Unity gate 39277900049 (source e5eae7119d2635497da55e2f72c6e9321f295dcd). No duplicarlo; consultas de GitHub han tenido ReadTimeout intermitentes. Esperar resultado y reparar cualquier fallo real antes de certificarlo.
+- Sites está conectado en esta sesión. Proyecto privado EXISTENTE appgprj_6ad4ce602c808191859268d570c93352, misma URL https://valoria-city-world.kbkvc5c45n.chatgpt.site. Lectura autenticada directa confirma revisión 111 aún publicada. Paquete native143 del artifact 12187980116 recuperado y sus cinco hashes originales verificados, incluidos los nueve fragmentos de datos. Source Sites 3c20f30dccaad6cdad7c1356b57e60464c41e57e ya subido; los 18 archivos del paquete de despliegue coinciden byte a byte. Pendiente deploy privado y verificación de los archivos servidos. No reconstruir WebGL.
+- Android: el fallo de compilación 1.7 YA fue resuelto antes de esta sesión. Run 39216718830, source 616f8c431fb549e170b0118a4fd405d4b4b1128a, artifact 12169359211, resultado BUILD_AND_SIGNATURE_PASS. No equivale a publicación ni instalación física; updates/android/family.json sigue disabled. No promover ese APK antiguo como equivalente a native143.
+- No se ha hecho arte nuevo ni modificado reglas, economía o guardados en esta reparación. El toque directo en puerta y la prueba física móvil siguen sin cobertura nueva. El recorrido browser I-II normal-clock previo continúa siendo el del artifact exacto citado abajo.
+
+---
+
 # Recuperación 2026-10-19 — I–II Windows PASS; despliegue privado y gate Editor pendientes
 
 **Estado verificado: OPEN — NO DECLARAR PUBLICACIÓN NI CIERRE ARTÍSTICO.** Recuperación del mismo workstream `valoria-master-plan-layered-construction-20261016`, sin crear ramas ni proyectos. Fuente del juego WebGL conservada: `b8127112890ca64c808e767e74c2a536747f6bf9`; HEAD del repositorio antes de la reparación CI: `f1f257cbd42012e5daa8608572312c60e53ff418`. La compilación exacta procede de run `39251384413` (job `native` PASS, artefacto `12185029720`), aunque el mismo run tuvo un job de QA Linux fallido. **No volver a compilar el WebGL por ese fallo de test.**
