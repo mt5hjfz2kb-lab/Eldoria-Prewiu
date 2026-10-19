@@ -40,5 +40,9 @@
   "native_import_tested": false,
   "native_playmode_tested": false,
   "mobile_tested": false,
-  "art_approved": false
+  "art_approved": false,
+  "underlying_original_prefab_byte_identical_after_removing_additive_v2": true,
+  "underlying_original_fixture_byte_identical_after_removing_additive_v2": true,
+  "native_compilation_verdict": "NOT_RUN_RESOURCE_REQUIRES_COORDINATION",
+  "release_verdict": "NO_RELEASE_NO_MERGE_NO_PUBLICATION"
 }
