@@ -558,6 +558,7 @@ jobs:
           $project=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity'
           $settings=Join-Path $project 'UserSettings/Search.index'
           $backup=Join-Path $env:RUNNER_TEMP "eldoria-search-preferences-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "eldoria-search-created-$env:GITHUB_RUN_ID.flag"
           if(Test-Path $backup){
             New-Item -Force -ItemType Directory (Split-Path $settings) | Out-Null
             Copy-Item -LiteralPath $backup -Destination $settings -Force
