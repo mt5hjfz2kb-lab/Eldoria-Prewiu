@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ITCH_PROCESSING_DELAY_REMOTE_CHANNEL_STILL_UNAVAILABLE",
+  "state": "ITCH_TRANSPORT_FIX_READY_AWAITING_HOSTED_VERIFICATION",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -36,7 +36,7 @@
   },
   "privacy_confirmation_basis": "Owner setup screenshots: Restricted selected, then project saved successfully; remote anonymous access verification pending.",
   "promotion_request": {
-    "id": "itch-native152-restore-missing-channel-20261019",
+    "id": "itch-native152-complete-gzip-fix-20261019",
     "target": "chrismad/eldoria-pruebas",
     "revision": "native152",
     "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
@@ -67,5 +67,17 @@
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
     "inner_zip": "Eldoria-native152-itch.zip",
     "reason": "Owner browser upload is a temporary fallback; cloud itch browser remains bot-blocked. Automatic channel processing unresolved."
+  },
+  "transport_fix": {
+    "adapter": "itch-complete-gzip-v1",
+    "reason": "Sites gzip stream was split across nine files. itch sniffs gzip and adds Content-Encoding to truncated first part.",
+    "evidence": "First part gzip decompression fails at EOF; reconstructed 174615244 bytes pass full gzip CRC and original SHA-256.",
+    "engine_bytes_unchanged": true,
+    "wrapper_changed": [
+      "build-manifest.json",
+      "play.js"
+    ],
+    "physical_mobile_pass": false,
+    "owner_report": "Welcome loads but startup fails in ChatGPT iOS browser and standalone Safari."
   }
 }
