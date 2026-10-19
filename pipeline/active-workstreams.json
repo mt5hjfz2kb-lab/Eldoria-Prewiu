@@ -582,19 +582,22 @@
           "SESSION_HANDOFF.md",
           "PROJECT_STATE.md"
         ],
-        "status": "repairs_committed_private_web_deployed_final_gate_and_hosted_read_pending",
+        "status": "validation_incident_resolved_private_web_exact_bytes_verified",
         "base_main_sha": "3fa068a795d9b7fb1fd13787bd05652db6774fde",
         "preserve_existing_art_owner": true,
         "evidence": {
           "unity_gate_run": 39277900049,
-          "unity_gate_conclusion": null,
+          "unity_gate_conclusion": "success",
           "wrong_project_run_not_certification": 39274718168,
           "prepared_site_regression_tests": "16/16 PASS",
           "prepared_site_real_bytes": "5 original files / 184860322 bytes PASS",
           "private_deployment": "appgdep_6ad63a0012448191b64d52721e4479a6",
           "private_deployment_status": "succeeded",
-          "hosted_http_identity": "BLOCKED_BY_AUTOMATIC_APPROVAL_REVIEW_REQUIRES_EXPLICIT_DESTINATION_AUTHORIZATION",
-          "physical_mobile_tested": false
+          "hosted_http_identity": "PASS_18_FILES_SIZE_AND_SHA256_AFTER_EXPLICIT_OWNER_AUTHORIZATION",
+          "physical_mobile_tested": false,
+          "unity_checks_artifact": 12200516729,
+          "web_revision": "native143",
+          "live_browser_replay": false
         }
       }
     }

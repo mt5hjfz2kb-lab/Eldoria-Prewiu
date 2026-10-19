@@ -1,16 +1,121 @@
-# Estado actual 19-10-2026 — reparación de identidad del proyecto en validación
+# Estado actual 19-10-2026 — incidencia de validación reparada y entrega web verificada
 
 Continúa el mismo workstream y main. Esta cabecera supera los bloqueos y estados históricos inferiores.
 
 - Recuperación real: run 39274718168 restauró 10.212 archivos Unity desde el commit exacto; el inventario anterior cortaba la salida de Git con Select-Object -First y abortaba la restauración. Cambio efectivo en .github/workflows/unity-slice.yml: inventario completo, -C explícito y --full-tree.
 - NO certificar ese run: sus XML dieron 20 EditMode/32 PlayMode PASS y Build Successful, pero se ejecutaron en valoria-layered-source/Unity. El argumento no documentado -projectPath=Unity fue ignorado; Unity abrió el último proyecto usado. La búsqueda del ejecutable en Unity/Builds falló por esa discrepancia. La evidencia de las asambleas permite detectar el falso cierre.
 - Reparación adicional ya en main e5eae7119d2635497da55e2f72c6e9321f295dcd: argumento -projectPath separado de la ruta absoluta entre comillas en los nueve lanzamientos; cada XML debe identificar asambleas bajo el Unity/Library/ScriptAssemblies exacto del checkout. Una prueba aprobada en otra copia ahora falla explícitamente. No se relajaron pruebas.
-- Confirmación en curso (última consulta: in_progress, sin resultado final ni artefactos): Unity gate 39277900049 (source e5eae7119d2635497da55e2f72c6e9321f295dcd). No duplicarlo; consultas de GitHub han tenido ReadTimeout intermitentes. Esperar resultado y reparar cualquier fallo real antes de certificarlo.
+- CONFIRMADO: Unity gate 39277900049 COMPLETED / SUCCESS, source e5eae7119d2635497da55e2f72c6e9321f295dcd. Restauración exacta, EditMode, PlayMode (incluidos controles de identidad de asambleas), Windows player y captura benchmark PASS. Artifact de pruebas/build 12200516729; capturas 12199973254. La confirmación sustituye el estado pendiente anterior.
 - Sites ACTUALIZADO: proyecto privado EXISTENTE appgprj_6ad4ce602c808191859268d570c93352, misma URL https://valoria-city-world.kbkvc5c45n.chatgpt.site. Versión 3, deployment appgdep_6ad63a0012448191b64d52721e4479a6 SUCCEEDED, source Sites 3c20f30dccaad6cdad7c1356b57e60464c41e57e. Sustituye native111 por paquete native143 exacto del artifact 12187980116; cinco hashes originales verificados (184860322 bytes) y 18 archivos del archive idénticos. QA browser independiente previa: run 39253871138, artifact 12187705647; no se reconstruyó WebGL. Se mantiene acceso exclusivo propietario. Esta publicación usa esa evidencia independiente, NO el gate general todavía pendiente.
-- Límite de entrega: la revisión automática de seguridad BLOQUEÓ la lectura HTTP autenticada final del sitio; alegó falta de autorización explícita del usuario para ese destino, incluso tras get_site confirmar current_user_role=owner y current_live_url exacta. No eludir ni repetir sin autorización. Deploy confirmado por Sites; NO afirmar igualdad de bytes ya servidos, nuevo recorrido browser ni pruebas físicas móviles.
+- ENTREGA VERIFICADA: el propietario autorizó explícitamente la lectura del Site a las 18:12 Europe/Madrid. Los 18 archivos publicados coinciden por tamaño y SHA-256 con el paquete probado. index.html redirige a / en el mismo origen, donde coincide exactamente; no se enviaron credenciales a otro origen. El bloqueo previo de revisión automática está resuelto. No se realizó un nuevo recorrido browser en el servidor ni prueba física móvil; se mantiene la evidencia browser independiente del mismo paquete.
 - Comprobador de paquetes: reparación 090e8b0c0f56606a53c5c3f56c99fae69eb2b477 acepta BOM UTF-8 de los JSON Windows reales. 16/16 tests node pasan, incluido caso BOM; el paquete real pasa inspectPreparedSite con cinco archivos originales y un flujo fragmentado. Se conservan comprobaciones de procedencia, hashes y rechazo de rutas inseguras.
 - Android: el fallo de compilación 1.7 YA fue resuelto antes de esta sesión. Run 39216718830, source 616f8c431fb549e170b0118a4fd405d4b4b1128a, artifact 12169359211, resultado BUILD_AND_SIGNATURE_PASS. No equivale a publicación ni instalación física; updates/android/family.json sigue disabled. No promover ese APK antiguo como equivalente a native143.
 - No se ha hecho arte nuevo ni modificado reglas, economía o guardados en esta reparación. El toque directo en puerta y la prueba física móvil siguen sin cobertura nueva. El recorrido browser I-II normal-clock previo continúa siendo el del artifact exacto citado abajo.
+
+
+Evidencia de identidad HTTP de los 18 archivos (SHA-256; lectura autorizada del Site privado):
+
+```json
+{
+  "url": "https://valoria-city-world.kbkvc5c45n.chatgpt.site/",
+  "revision": "native143",
+  "published_files_identical": true,
+  "files": [
+    {
+      "file": "Build/ValoriaWebPlaytest.framework.js.unityweb",
+      "bytes": 84816,
+      "sha256": "8a853c5e9f9baa8b4a3986f187e70fd0a991949b668c95995664c2ba85b095cb"
+    },
+    {
+      "file": "Build/ValoriaWebPlaytest.loader.js",
+      "bytes": 47867,
+      "sha256": "6cffce9c86356c56bf2ea4672874efa76edc3e95d858dc5b0818dcc65c134ce8"
+    },
+    {
+      "file": "Build/ValoriaWebPlaytest.wasm.unityweb",
+      "bytes": 10000353,
+      "sha256": "474bdf50dcaf613abe52f1d0ad4c2db03434d13713ae5c950bd8e8f9c953f73d"
+    },
+    {
+      "file": "TemplateData/webmemd-icon.png",
+      "bytes": 1670,
+      "sha256": "c56f5494640cedda273aad38d58e6ab9da625d5b3f4d875c0ff92c6192a569c2"
+    },
+    {
+      "file": "build-manifest.json",
+      "bytes": 1007,
+      "sha256": "a44187421c3fb1fa21af726fb8b9e0ff5aada4be0dc72da22ed57a28e1b76f2a"
+    },
+    {
+      "file": "city.png",
+      "bytes": 2658815,
+      "sha256": "388464e38c27ea164e8838367c8a8dd01570407d867a18d8ae7685d26deef8f1"
+    },
+    {
+      "file": "index.html",
+      "bytes": 1912,
+      "sha256": "cb126f498956243188f9c074b8504e66cfcab186f77ac0c17070487ac64d8cc6"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/000.bin",
+      "bytes": 20971520,
+      "sha256": "18964fd2d0473d3cfa8b28d6d2bbb70beb989c2e483950e85431150f0a3e78e2"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/001.bin",
+      "bytes": 20971520,
+      "sha256": "491cf9f4117f1a996726076f253c1af847190659e4c5cc90194ff0f85f99f510"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/002.bin",
+      "bytes": 20971520,
+      "sha256": "d6528c3455b95ee1fd13c872153db65d8b9aebd0cd3b4b356dcee31103252355"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/003.bin",
+      "bytes": 20971520,
+      "sha256": "281f3ba8436ed256bdad924972070037248f6848e8fdc5a7ddb91c9176a28e88"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/004.bin",
+      "bytes": 20971520,
+      "sha256": "c1126bd7ea797e1b729482e70b3efa09764ab7d205f72b3c6859716dc5bac72f"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/005.bin",
+      "bytes": 20971520,
+      "sha256": "422efb1ecbb3070dd8d1df691f245f557b06efccc2bed07b13202afb6c553997"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/006.bin",
+      "bytes": 20971520,
+      "sha256": "87605d6f9e6aebf198b36d333c8ae7ae6d2fe36f3c006baffce3b5de156d654c"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/007.bin",
+      "bytes": 20971520,
+      "sha256": "c007b5f18f51f9a9aaa1e3baa4ddf0f74318c4f5909668fcc72e851cb0278ca3"
+    },
+    {
+      "file": "payload/b820fb7908629667092c/008.bin",
+      "bytes": 6953456,
+      "sha256": "dcb9b980dd8bea92add533911ea153a897a400fb6fd2a0d30b79956099ffc702"
+    },
+    {
+      "file": "play.js",
+      "bytes": 4477,
+      "sha256": "ea99b509d3d6483d65483906db359bfc42e96c93cd4d25562514fa1126ea4ba4"
+    },
+    {
+      "file": "style.css",
+      "bytes": 2924,
+      "sha256": "1de9bf732e5ff9179625eb5aef90abac80064ebc77cb9469aa5d67966df4b53d"
+    }
+  ],
+  "live_browser_playthrough": false,
+  "physical_mobile_tested": false
+}
+```
 
 ---
 
