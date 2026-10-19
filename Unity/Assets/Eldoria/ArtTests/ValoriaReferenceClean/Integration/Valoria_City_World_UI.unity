@@ -2429,13 +2429,13 @@ MeshRenderer:
   - {fileID: 2100000, guid: 256dd254f6e3692448dd7a58a1b32e77, type: 2}
   - {fileID: 2100000, guid: 0869ac73b14662b4987d116d89e72faa, type: 2}
   - {fileID: 2100000, guid: 7903e4242252f314eaf3762768b132f1, type: 2}
-  - {fileID: 2100000, guid: 2693df1af89f87f41a0cf716eca67560, type: 2}
-  - {fileID: 2100000, guid: eb1dec98fb71fb4448738f24d7623f35, type: 2}
-  - {fileID: 2100000, guid: 694184b12ac062c498566a6101ba2a4f, type: 2}
+  - {fileID: 2100000, guid: 9b5f729619b7c4a42af03b9868cfd5bf, type: 2}
+  - {fileID: 2100000, guid: 75e7560107f9f8142a75827cbd0a9773, type: 2}
+  - {fileID: 2100000, guid: 3fe72435f6d56054dbfe94e92a8000d2, type: 2}
   - {fileID: 2100000, guid: c379d296ae4ab9140880c8ea07a9397c, type: 2}
   - {fileID: 2100000, guid: 006f8bbf60c7428419fc4aa483af6919, type: 2}
   - {fileID: 2100000, guid: 8a67f6974d2e868459073af526cbc89d, type: 2}
-  - {fileID: 2100000, guid: 93d5684611f84b34693282ec9c3c3649, type: 2}
+  - {fileID: 2100000, guid: 9195b0acd9a2d524695f719dcfee0a7b, type: 2}
   - {fileID: 2100000, guid: 86cbd89acf1e96b43833c08e17cc1f94, type: 2}
   - {fileID: 2100000, guid: 88534aa40269c764e93c76550a4d28a2, type: 2}
   - {fileID: 2100000, guid: e437dbb0663547f47a8964b61abe095c, type: 2}
@@ -32956,13 +32956,13 @@ MeshRenderer:
   - {fileID: 2100000, guid: 256dd254f6e3692448dd7a58a1b32e77, type: 2}
   - {fileID: 2100000, guid: 0869ac73b14662b4987d116d89e72faa, type: 2}
   - {fileID: 2100000, guid: 7903e4242252f314eaf3762768b132f1, type: 2}
-  - {fileID: 2100000, guid: 2693df1af89f87f41a0cf716eca67560, type: 2}
-  - {fileID: 2100000, guid: eb1dec98fb71fb4448738f24d7623f35, type: 2}
-  - {fileID: 2100000, guid: 694184b12ac062c498566a6101ba2a4f, type: 2}
+  - {fileID: 2100000, guid: 9b5f729619b7c4a42af03b9868cfd5bf, type: 2}
+  - {fileID: 2100000, guid: 75e7560107f9f8142a75827cbd0a9773, type: 2}
+  - {fileID: 2100000, guid: 3fe72435f6d56054dbfe94e92a8000d2, type: 2}
   - {fileID: 2100000, guid: c379d296ae4ab9140880c8ea07a9397c, type: 2}
   - {fileID: 2100000, guid: 006f8bbf60c7428419fc4aa483af6919, type: 2}
   - {fileID: 2100000, guid: 8a67f6974d2e868459073af526cbc89d, type: 2}
-  - {fileID: 2100000, guid: 93d5684611f84b34693282ec9c3c3649, type: 2}
+  - {fileID: 2100000, guid: 9195b0acd9a2d524695f719dcfee0a7b, type: 2}
   - {fileID: 2100000, guid: 86cbd89acf1e96b43833c08e17cc1f94, type: 2}
   - {fileID: 2100000, guid: 88534aa40269c764e93c76550a4d28a2, type: 2}
   - {fileID: 2100000, guid: e437dbb0663547f47a8964b61abe095c, type: 2}
@@ -33811,13 +33811,13 @@ MeshRenderer:
   - {fileID: 2100000, guid: 256dd254f6e3692448dd7a58a1b32e77, type: 2}
   - {fileID: 2100000, guid: 0869ac73b14662b4987d116d89e72faa, type: 2}
   - {fileID: 2100000, guid: 7903e4242252f314eaf3762768b132f1, type: 2}
-  - {fileID: 2100000, guid: 2693df1af89f87f41a0cf716eca67560, type: 2}
-  - {fileID: 2100000, guid: eb1dec98fb71fb4448738f24d7623f35, type: 2}
-  - {fileID: 2100000, guid: 694184b12ac062c498566a6101ba2a4f, type: 2}
+  - {fileID: 2100000, guid: 9b5f729619b7c4a42af03b9868cfd5bf, type: 2}
+  - {fileID: 2100000, guid: 75e7560107f9f8142a75827cbd0a9773, type: 2}
+  - {fileID: 2100000, guid: 3fe72435f6d56054dbfe94e92a8000d2, type: 2}
   - {fileID: 2100000, guid: c379d296ae4ab9140880c8ea07a9397c, type: 2}
   - {fileID: 2100000, guid: 006f8bbf60c7428419fc4aa483af6919, type: 2}
   - {fileID: 2100000, guid: 8a67f6974d2e868459073af526cbc89d, type: 2}
-  - {fileID: 2100000, guid: 93d5684611f84b34693282ec9c3c3649, type: 2}
+  - {fileID: 2100000, guid: 9195b0acd9a2d524695f719dcfee0a7b, type: 2}
   - {fileID: 2100000, guid: 86cbd89acf1e96b43833c08e17cc1f94, type: 2}
   - {fileID: 2100000, guid: 88534aa40269c764e93c76550a4d28a2, type: 2}
   - {fileID: 2100000, guid: e437dbb0663547f47a8964b61abe095c, type: 2}
@@ -34679,6 +34679,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1690374943}
   m_Mesh: {fileID: 4300000, guid: e48bbfc92a160bb419ca54848c0cf9fc, type: 2}
+--- !u!1 &1691021287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1691021288}
+  m_Layer: 0
+  m_Name: Roof signature / Bastion weathered stone slate v5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1691021288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691021287}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1816922690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1691572804
 GameObject:
   m_ObjectHideFlags: 0
@@ -37729,6 +37760,7 @@ Transform:
   - {fileID: 989225117}
   - {fileID: 359964447}
   - {fileID: 831769775}
+  - {fileID: 1691021288}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1817491954
@@ -40992,13 +41024,13 @@ MeshRenderer:
   - {fileID: 2100000, guid: 256dd254f6e3692448dd7a58a1b32e77, type: 2}
   - {fileID: 2100000, guid: 0869ac73b14662b4987d116d89e72faa, type: 2}
   - {fileID: 2100000, guid: 7903e4242252f314eaf3762768b132f1, type: 2}
-  - {fileID: 2100000, guid: 2693df1af89f87f41a0cf716eca67560, type: 2}
-  - {fileID: 2100000, guid: eb1dec98fb71fb4448738f24d7623f35, type: 2}
-  - {fileID: 2100000, guid: 694184b12ac062c498566a6101ba2a4f, type: 2}
+  - {fileID: 2100000, guid: 9b5f729619b7c4a42af03b9868cfd5bf, type: 2}
+  - {fileID: 2100000, guid: 75e7560107f9f8142a75827cbd0a9773, type: 2}
+  - {fileID: 2100000, guid: 3fe72435f6d56054dbfe94e92a8000d2, type: 2}
   - {fileID: 2100000, guid: c379d296ae4ab9140880c8ea07a9397c, type: 2}
   - {fileID: 2100000, guid: 006f8bbf60c7428419fc4aa483af6919, type: 2}
   - {fileID: 2100000, guid: 8a67f6974d2e868459073af526cbc89d, type: 2}
-  - {fileID: 2100000, guid: 93d5684611f84b34693282ec9c3c3649, type: 2}
+  - {fileID: 2100000, guid: 9195b0acd9a2d524695f719dcfee0a7b, type: 2}
   - {fileID: 2100000, guid: 86cbd89acf1e96b43833c08e17cc1f94, type: 2}
   - {fileID: 2100000, guid: 88534aa40269c764e93c76550a4d28a2, type: 2}
   - {fileID: 2100000, guid: e437dbb0663547f47a8964b61abe095c, type: 2}
