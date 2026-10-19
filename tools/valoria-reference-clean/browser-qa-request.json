@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "scope": "EXACT_INTEGRATED_BASTION_I_II_NORMAL_CLOCK_BROWSER_VALIDATION",
-  "source_sha": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
-  "artifact_run": 39246879204,
-  "artifact_name": "valoria-integrated-web-playtest-39246879204",
+  "source_sha": "b8127112890ca64c808e767e74c2a536747f6bf9",
+  "artifact_run": 39251384413,
+  "artifact_name": "valoria-integrated-web-playtest-39251384413",
   "tester": "existing Windows Chromium/Edge with GPU; actual pointer and touch, landscape and portrait",
   "controls": [
     "dialogues",
@@ -21,12 +21,12 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Native141 Windows proved City touch fixed but caught invalid landscape free viewport (yMin > yMax) when selected forest was overlapped by compact HUD at 960x540. Native142 fixes layout based on actual aspect and builds same-source WebGL; independent browser acceptance pending.",
+  "reason": "Native142 Edge completed forest/quarry/scout plus all map gestures and failed Bastion portrait framing. Native143 retains actionable mission when building selected and passed 32 integrated Unity checks; real browser still needs independent acceptance.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 7,
-  "method_note": "Run full normal-time integrated Bastion I-II browser test on existing Windows Edge GPU with exact native142 WebGL. Native142 corrected 960x540 landscape misclassification (side panels instead of overlapping compact), kept six native model framing passes and 32 integration checks. Preserve all required real mouse/touch navigation, world focus for forest/quarry, 4-direction map movement, zoom, UI, dialogues, save persistence, no legacy shadow touch navigation, screenshots and full video. Do not weaken acceptance or simulate gameplay state.",
+  "attempt": 8,
+  "method_note": "Test native143 precise real WebGL in Windows Edge D3D11: selected-building mobile portrait chapter sheet now compact but objective action remains functional. Require authentic gameplay with 4-way pan both orientations, zoom, visible Go-to-objective, full framed Bastion upgrade and barracks/training/marches/combat, no legacy duplicate navigation, no browser runtime exceptions, exact save across reload, normal SystemClock, video/stills. No game rebuild or shortcuts.",
   "gameplay_source_unchanged": false,
-  "qa_code_commit": "39bf31a3bd3b72f84efc55a0fe738a82c5427a9d"
+  "qa_code_commit": "d716e3d5db55af58e562620db4826683f89f2e2c"
 }
