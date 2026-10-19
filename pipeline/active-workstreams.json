@@ -578,7 +578,9 @@
           "Unity/README.md",
           "docs/evidence/valoria-reference-clean/INTEGRATION_CONTINUATION.md",
           "Sites project appgprj_6ad4ce602c808191859268d570c93352",
-          "tools/closeout/**"
+          "tools/closeout/**",
+          "SESSION_HANDOFF.md",
+          "PROJECT_STATE.md"
         ],
         "status": "diagnosing_checkout_and_private_delivery",
         "base_main_sha": "3fa068a795d9b7fb1fd13787bd05652db6774fde",
