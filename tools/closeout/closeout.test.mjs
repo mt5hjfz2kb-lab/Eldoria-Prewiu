@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, writeFileSync, readFileSync, mkdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import { triage, browserPreflight, main } from './closeout.mjs';
+import { triage, browserPreflight, inspectPreparedSite, main } from './closeout.mjs';
 
 const validSource='2210c14593f142ef144be6d628df7e873512e218';
 
@@ -89,4 +89,102 @@ test('missing browser/ffmpeg/playwright prevents expensive run even with same ar
 test('CLI errors on missing evidence without creating any status files',()=>{
   assert.equal(main(['triage']),2);
   assert.equal(main(['preflight-browser']),2);
+});
+
+
+test('Unity missing Assets is classified as checkout infrastructure, not a gameplay failure', () => {
+  const r = triage({logText:'UNITY_PROJECT_SOURCE_MISSING: C:\\actions-runner\\repo\\Unity\\Assets\n##[error] Process completed with exit code 1',change:'qa_only'});
+  assert.equal(r.verdict,'BLOCKED_NOT_CLOSED');
+  assert.ok(r.issues.some(x=>x.category==='ENVIRONMENT_UNITY_CHECKOUT'));
+  assert.equal(r.release_approved,false);
+});
+
+function fixturePreparedSite(dir, source=validSource, run=39251384413) {
+  const root=path.join(dir,'prepared-site'), dist=path.join(root,'dist');
+  mkdirSync(dist,{recursive:true});
+  const parts=[
+    ['Build/test.loader.js','loader'],
+    ['Build/test.framework.js.unityweb','framework'],
+    ['Build/test.data.unityweb','original-data'],
+    ['Build/test.wasm.unityweb','wasm'],
+  ];
+  const files=[], chunks={};
+  const roles=['loader','framework','data','code'];
+  const manifest={revision:'native143',chunks};
+  parts.forEach(([file,value],i)=>{
+    const raw=Buffer.from(value),sha=createHash('sha256').update(raw).digest('hex');
+    files.push({file,bytes:raw.length,sha256:sha});
+    manifest[roles[i]]=file+'?v='+sha.slice(0,16);
+    if (i===2) {
+      const key=file+'?v='+sha.slice(0,16);
+      const pieces=['payload/'+sha.slice(0,20)+'/000.bin','payload/'+sha.slice(0,20)+'/001.bin'];
+      const sections=[raw.subarray(0,6),raw.subarray(6)];
+      for(let n=0;n<pieces.length;n++){
+        const out=path.join(dist,pieces[n]);mkdirSync(path.dirname(out),{recursive:true});writeFileSync(out,sections[n]);
+      }
+      chunks[key]={bytes:raw.length,sha256:sha,parts:pieces};
+    } else {
+      const out=path.join(dist,file);mkdirSync(path.dirname(out),{recursive:true});writeFileSync(out,raw);
+    }
+  });
+  writeFileSync(path.join(dist,'build-manifest.json'),JSON.stringify(manifest));
+  writeFileSync(path.join(root,'unity-output-verification.json'),JSON.stringify({
+    source_commit:source,native_run:run,all_transport_hashes_verified:true,browser_runtime_qa:false,files
+  }));
+  return {root,dist,manifest};
+}
+
+test('prepared WebGL package is byte validated including original chunk stream',()=>{
+  const dir=mkdtempSync(path.join(tmpdir(),'eldoria-site-gate-'));
+  try{
+    const fixture=fixturePreparedSite(dir);
+    const result=inspectPreparedSite({siteDirectory:fixture.root,sourceSha:validSource,validatedSourceSha:validSource,nativeRun:39251384413});
+    assert.equal(result.validated_files,4);
+    assert.equal(result.chunked_files,1);
+    const ready=browserPreflight({preparedSite:fixture.root,sourceSha:validSource,validatedSourceSha:validSource,nativeRun:39251384413,
+      findBrowser:()=>'/mock/edge',findFfmpeg:()=>'/mock/ffmpeg',findPlaywright:()=>'/mock/playwright'});
+    assert.equal(ready.verdict,'READY_FOR_TARGETED_QA_NOT_CERTIFIED');
+    assert.equal(ready.release_approved,false);
+  } finally{rmSync(dir,{recursive:true,force:true});}
+});
+
+test('corrupted Sites chunk is rejected; no release by metadata alone',()=>{
+  const dir=mkdtempSync(path.join(tmpdir(),'eldoria-site-gate-'));
+  try {
+    const fixture=fixturePreparedSite(dir);
+    const entry=Object.values(fixture.manifest.chunks)[0].parts[0];
+    writeFileSync(path.join(fixture.dist,entry),'tampered payload');
+    const r=browserPreflight({preparedSite:fixture.root,sourceSha:validSource,validatedSourceSha:validSource,nativeRun:39251384413,
+      findBrowser:()=>'/mock/edge',findFfmpeg:()=>'/mock/ffmpeg',findPlaywright:()=>'/mock/playwright'});
+    assert.equal(r.verdict,'BLOCKED_BEFORE_EXPENSIVE_QA');
+    assert.ok(r.blocked.includes('prepared_site_integrity'));
+    assert.equal(r.release_approved,false);
+  } finally{rmSync(dir,{recursive:true,force:true});}
+});
+
+test('wrong native run and source are rejected even when generated payload hashes match',()=>{
+  const dir=mkdtempSync(path.join(tmpdir(),'eldoria-site-gate-'));
+  try{
+    const fixture=fixturePreparedSite(dir);
+    for(const args of [
+      {sourceSha:'a'.repeat(40),validatedSourceSha:'a'.repeat(40),nativeRun:39251384413},
+      {sourceSha:validSource,validatedSourceSha:validSource,nativeRun:39251384414},
+    ]) {
+      const result=browserPreflight({preparedSite:fixture.root,...args,
+        findBrowser:()=>'/mock/edge',findFfmpeg:()=>'/mock/ffmpeg',findPlaywright:()=>'/mock/playwright'});
+      assert.equal(result.verdict,'BLOCKED_BEFORE_EXPENSIVE_QA');
+    }
+  } finally{rmSync(dir,{recursive:true,force:true});}
+});
+
+test('Site path traversal is never read even when referenced by apparently signed metadata',()=>{
+  const dir=mkdtempSync(path.join(tmpdir(),'eldoria-site-gate-'));
+  try{
+    const fixture=fixturePreparedSite(dir);
+    const verifyFile=path.join(fixture.root,'unity-output-verification.json');
+    const verify=JSON.parse(readFileSync(verifyFile,'utf8'));
+    verify.files[0].file='../outside-secret.txt';
+    writeFileSync(verifyFile,JSON.stringify(verify));
+    assert.throws(()=>inspectPreparedSite({siteDirectory:fixture.root,sourceSha:validSource,validatedSourceSha:validSource,nativeRun:39251384413}),/Unsafe package path|byte mismatch/);
+  } finally{rmSync(dir,{recursive:true,force:true});}
 });
