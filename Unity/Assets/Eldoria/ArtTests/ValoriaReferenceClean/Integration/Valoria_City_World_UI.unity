@@ -6610,37 +6610,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 326401143}
   m_Mesh: {fileID: 4300000, guid: e48bbfc92a160bb419ca54848c0cf9fc, type: 2}
---- !u!1 &326469626
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 326469627}
-  m_Layer: 0
-  m_Name: Organic civic working ground / original scanned soil v13
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &326469627
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 326469626}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 944482451}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &328802178
 GameObject:
   m_ObjectHideFlags: 0
@@ -19265,7 +19234,6 @@ Transform:
   - {fileID: 2065097093}
   - {fileID: 126412280}
   - {fileID: 1745248026}
-  - {fileID: 326469627}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &944482452
@@ -28690,7 +28658,7 @@ TerrainCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_TerrainData: {fileID: 15600000, guid: 9b5601ce38b7aeb4e9a3a9414c35b3b6, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: 5d838404e2bfc7d48a55fa7f6f98a44f, type: 2}
   m_EnableTreeColliders: 1
 --- !u!218 &1423032818
 Terrain:
@@ -28701,7 +28669,7 @@ Terrain:
   m_GameObject: {fileID: 1423032816}
   m_Enabled: 1
   serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: 9b5601ce38b7aeb4e9a3a9414c35b3b6, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: 5d838404e2bfc7d48a55fa7f6f98a44f, type: 2}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5

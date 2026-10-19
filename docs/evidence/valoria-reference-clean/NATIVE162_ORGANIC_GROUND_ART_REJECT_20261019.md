@@ -1,0 +1,11 @@
+# Eldoria — candidato de accesos orgánicos native162: ART_REJECTED
+
+**Fecha:** 19-10-2026. **V13 NO promovido; escena integrada devuelta exactamente al estado V11.** Proteger Bastión I–II.
+
+- Candidato fuente `49e9e6a675e3186d3fd09518c26f625a3cf54fad`, prueba [Windows Unity 39327566889](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39327566889): `SUCCESS`, 32 pruebas de progresión, navegación, economía, narrativa y guardados superadas. `environment-organic-workground-v13.json`: 1.707 celdas de terreno pintadas, 7 layers, alturas/parcelas/hotspots/luz/soporte original conservados. Sin prueba física móvil. Un pase URP adicional NO está aprobado sin evidencia móvil.
+- [Ciudad A/B original](environment-city-wide-organic-before.png) y [candidata](environment-city-wide-organic-after.png); [Aserradero antes](environment-sawmill-organic-before.png) y [después](environment-sawmill-organic-after.png); [Cuartel antes](environment-barracks-organic-before.png) y [después](environment-barracks-organic-after.png). Capturas auténticas Unity con misma cámara y luz.
+- **Juicio artístico independiente:** imperceptible desde la cámara normal y prácticamente indistinguible en detalles. No crea una relación ciudad/caminos y no reduce la sensación de castillo aislado. Como V8, no cumple el filtro de mejora perceptiva ni una subida de puntuación ponderada >=0,25. ART_REJECTED, aunque la validación técnica esté verde.
+- Restaurar blob exacto `cd702fdd0dfa0af5bd902c087b23b116266ae755` del commit V11 `682d2bbaed78d3b72bb3f16ac4df6f46b8d667c9`, que contiene el mundo V10 y tiendas hostiles V11 integrados. Eliminar solo la invocación V13 en `ValoriaIntegrationBuild.VisualLeap`; mantener el código, modelo de terreno generado y evidencia histórica para diagnóstico. No modificar narrativa, economía, guardados, WebGL/Sites/itch, Android ni Bastión III.
+- **Cambio de hipótesis obligado:** suspender repintados de suelo casi invisibles y tiras planas. El siguiente candidato artístico debe cambiar la composición y escala percibida de Valoria desde cámara real, o reutilizar ensamblaje arquitectónico específico, no dispersar piezas.
+
+Estado final: `NATIVE162_TECH_PASS / V13_ART_REJECTED / ORIGINAL_V11_SCENE_RESTORED`.
