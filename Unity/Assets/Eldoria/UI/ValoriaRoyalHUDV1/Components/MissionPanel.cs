@@ -17,7 +17,7 @@ namespace Eldoria.UI.RoyalGold
         public bool ListExpanded => listExpanded;
         public int ChapterStepCount => steps.Length;
         public int CompletedStepCount { get { int n=0;foreach(var step in steps)if(step.Done)n++;return n; } }
-        private bool collapsed;
+        private bool collapsed, selectionCompact;
         private float width = 316f;
         public bool IsCollapsed => collapsed;
         public string ContextText => context ? context.text : "";
@@ -81,7 +81,20 @@ namespace Eldoria.UI.RoyalGold
             }
         }
 
-        private void Switch() { collapsed = !collapsed; Reflow(); }
+        private void Switch() {
+            // A selected building may request a compact yet actionable mission
+            // header. Its chapter toggle still allows the player to expand it.
+            if (selectionCompact) { selectionCompact = false; collapsed = false; }
+            else collapsed = !collapsed;
+            Reflow();
+        }
+
+        public void SetSelectionCompact(bool compact) {
+            if (selectionCompact == compact) return;
+            selectionCompact = compact;
+            if (compact) collapsed = false;
+            Reflow();
+        }
 
         public void SetContext(string text)
         {
@@ -129,6 +142,24 @@ namespace Eldoria.UI.RoyalGold
             Details.anchoredPosition = new Vector2(0, -62);
             Details.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
             float top = 0, inside = width - 40;
+            if (selectionCompact) {
+                // At 540x960 the full chapter panel plus a paid-building panel
+                // left only 0.216 normalized height; even the maximum permitted
+                // city zoom could not frame the Bastion. Retain the REAL
+                // Go-to-objective action while freeing camera-visible space.
+                Objective.gameObject.SetActive(false);
+                if (context) context.gameObject.SetActive(false);
+                ProgressText.gameObject.SetActive(false);
+                if (Fill && Fill.parent is RectTransform compactTrack) compactTrack.gameObject.SetActive(false);
+                if (listButton) listButton.gameObject.SetActive(false);
+                foreach (var item in stepLabels) if (item) item.gameObject.SetActive(false);
+                if (Open) Position((RectTransform)Open.transform, 20, 4, inside, 60);
+                Details.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 72);
+                root.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 134);
+                return;
+            }
+            Objective.gameObject.SetActive(true);
+            if (listButton) listButton.gameObject.SetActive(true);
             top = TextRow(Objective, top, inside, 24, 58);
             if (context)
             {

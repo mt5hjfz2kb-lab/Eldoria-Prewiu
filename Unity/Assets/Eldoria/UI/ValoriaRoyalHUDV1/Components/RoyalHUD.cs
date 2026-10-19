@@ -6,20 +6,31 @@ namespace Eldoria.UI.RoyalGold {
  public sealed class RoyalHUD:MonoBehaviour {
   public RealmHeader Realm;public ResourceBar Resources;public MissionPanel Mission;public BottomNavigation Navigation;public BuildingDetailsPanel Building;public ModalWindow Modal;public RoyalText Feedback,TestMark;public RoyalButton Settings;
   IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending,narrative;
-  RoyalNarrativePresentation cinematic;float next,submitAfter;RoyalSection shown;CanvasGroup group;
+  RoyalNarrativePresentation cinematic;float next,submitAfter;RoyalSection shown;CanvasGroup group;int orientationKey=-1;
   RoyalHudLayout layout;Canvas canvas;readonly Vector3[] corners=new Vector3[4];
   public string SelectedBuildingId=>selected;
   public event Action<string> SelectionChanged;
   void Awake(){group=GetComponent<CanvasGroup>();canvas=GetComponent<Canvas>();layout=GetComponentInChildren<RoyalHudLayout>(true);cinematic=Modal?Modal.GetComponent<RoyalNarrativePresentation>():null;SetBound(session!=null);}
   void SetBound(bool bound){if(!group)group=GetComponent<CanvasGroup>();group.alpha=bound?1:0;group.interactable=group.blocksRaycasts=bound;}
   public void Bind(IRoyalSession source,IRoyalNavigation navigation=null){session=source??throw new ArgumentNullException(nameof(source));host=navigation;SetBound(true);Refresh();}
-  public void SelectBuilding(string id){selected=id??"";Refresh();Canvas.ForceUpdateCanvases();SelectionChanged?.Invoke(selected);}
+  public void SelectBuilding(string id){
+   selected=id??"";
+   Mission.SetSelectionCompact(Screen.height>Screen.width&&!string.IsNullOrEmpty(selected));
+   Refresh();Canvas.ForceUpdateCanvases();SelectionChanged?.Invoke(selected);
+  }
   void OnEnable(){Realm.Info.onClick.AddListener(OpenRealm);Mission.Open.onClick.AddListener(OpenMissions);Settings.onClick.AddListener(OpenSettings);Building.Close.onClick.AddListener(CloseBuilding);Building.Primary.Button.onClick.AddListener(Submit);Modal.Extra.onClick.AddListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.AddListener(ShowMarch);Navigation.Requested+=Open;}
   void OnDisable(){Realm.Info.onClick.RemoveListener(OpenRealm);Mission.Open.onClick.RemoveListener(OpenMissions);Settings.onClick.RemoveListener(OpenSettings);Building.Close.onClick.RemoveListener(CloseBuilding);Building.Primary.Button.onClick.RemoveListener(Submit);Modal.Extra.onClick.RemoveListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.RemoveListener(ShowMarch);Navigation.Requested-=Open;}
   void Update(){if(session!=null&&Time.unscaledTime>=next){next=Time.unscaledTime+.25f;Refresh();}if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){if(NarrativeOpen)Extra();else if(Modal.gameObject.activeSelf)Modal.Hide();else CloseBuilding();}}
   public void SetEnglish(bool value){english=value;Refresh();if(NarrativeOpen){if(cinematic)cinematic.SetEnglish(value);}else if(Modal.gameObject.activeSelf)ShowModal(shown);}
   public void Refresh(){
    if(session==null)return;
+   // Apply a different mobile panel layout only on orientation transitions,
+   // not on every tick: a user's chapter expansion must remain respected.
+   int orientation=Screen.height>Screen.width?1:0;
+   if(orientation!=orientationKey){
+    orientationKey=orientation;
+    Mission.SetSelectionCompact(orientation==1&&!string.IsNullOrEmpty(selected));
+   }
    try{current=session.Read(selected,english);Realm.Render(current,english);Resources.Render(current,english);Mission.Render(current,english);Navigation.Layout(english,host);Building.Render(current.Building,english,pending||Time.unscaledTime<submitAfter);if(layout)layout.Apply(((RectTransform)layout.transform).rect.width);TestMark.gameObject.SetActive(current.IsTest);TestMark.Put(L("PRUEBA AISLADA · SIN GUARDADO","ISOLATED TEST · NO SAVE"));if(Modal.gameObject.activeSelf&&shown!=RoyalSection.Settings&&!narrative)ShowModal(shown,false);}
    catch(Exception e){Feedback.Put(L("No se pudo actualizar la interfaz: ","Could not refresh UI: ")+e.Message);Building.Primary.Button.interactable=false;}
   }
