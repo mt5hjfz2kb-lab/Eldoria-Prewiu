@@ -22,6 +22,8 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      should_publish: ${{ steps.promotion.outputs.should_publish }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,6 +32,26 @@ jobs:
             tools/closeout
             pipeline/playtest-delivery.json
           sparse-checkout-cone-mode: false
+      - name: Resolve explicit promotion request
+        id: promotion
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const cfg = JSON.parse(fs.readFileSync('pipeline/playtest-delivery.json','utf8'));
+            let requested = context.eventName === 'workflow_dispatch' && String(context.payload.inputs?.publish) === 'true';
+            if (context.eventName === 'push' && cfg.promotion_request) {
+              const old = await github.rest.repos.getContent({...context.repo,path:'pipeline/playtest-delivery.json',ref:context.payload.before});
+              const previous = JSON.parse(Buffer.from(old.data.content,'base64').toString('utf8'));
+              requested = JSON.stringify(previous.promotion_request) !== JSON.stringify(cfg.promotion_request);
+            }
+            if (requested) {
+              const p = cfg.promotion_request;
+              if (!cfg.publish_enabled || !cfg.restricted_project_confirmed || !p?.id ||
+                  p.target !== cfg.target || p.artifact_sha256 !== cfg.candidate.artifact_sha256 ||
+                  p.revision !== cfg.candidate.revision) throw Error('Explicit promotion does not match verified candidate/destination');
+            }
+            core.setOutput('should_publish',String(requested));
       - name: Verify upstream QA and exact artifact, then download
         uses: actions/github-script@v7
         with:
@@ -56,7 +78,7 @@ jobs:
       - name: Report delivery boundary
         run: echo 'Package verified. This job does not certify publication or physical mobile play.' >> "$GITHUB_STEP_SUMMARY"
   publish:
-    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    if: needs.prepare.outputs.should_publish == 'true'
     needs: prepare
     runs-on: ubuntu-latest
     environment: eldoria-playtest
