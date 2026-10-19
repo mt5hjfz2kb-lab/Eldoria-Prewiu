@@ -901,6 +901,135 @@ namespace Eldoria.ReferenceClean.Editor {
    }
   }
 
+
+  [Serializable] sealed class WorkgroundReport {
+   public string scene,source_sha,source_scene_sha256,original_terrain_guidance;
+   public bool same_camera_light,terrain_heights_preserved,parcels_preserved,
+    world_hotspots_preserved,art_approved,physical_mobile_tested;
+   public int terrain_cells_retuned,workyard_count,access_lane_count;
+   public Frame[] frames;public string[] limitations;
+  }
+
+  // Corrects the art-rejected scattered masonry hypothesis v7 by addressing the
+  // ground-scale problem instead: continuous worksite yards and connected access.
+  // No new geometry, props, roads, collision meshes or gameplay are created.
+  public static void ApplyConnectedWorkyardGround(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,string evidenceDir){
+   const string marker="Connected working grounds / city cohesion v8";
+   Need(city&&host&&host.WorldRoot&&city.PlayerCamera&&host.WorldCamera,"Integrated city is required");
+   Need(Find(host.WorldRoot,"Heraldic original royal blue / roof correction v6"),"Verified native152 base missing");
+   Need(!Find(city.gameObject,"Reconstruction districts / existing masonry v7"),
+    "Rejected v7 candidate is still present; restore verified baseline before v8");
+   if(Find(city.gameObject,marker)){Debug.Log("VALORIA_WORKGROUND_ALREADY_APPLIED");return;}
+   string planPath=Path.Combine(evidenceDir,"environment-finish-plan.json");
+   Need(File.Exists(planPath),"Native camera framing plan missing");
+   var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(planPath));
+   Need(plan!=null&&plan.shore_gaps!=null&&plan.shore_gaps.Length>0,"Retained native capture plan missing");
+   var terrain=Object.FindObjectsByType<Terrain>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+    .FirstOrDefault(t=>!t.transform.IsChildOf(host.WorldRoot.transform));
+   Need(terrain&&terrain.terrainData,"Current city terrain missing");
+   var source=terrain.terrainData;var layers=source.terrainLayers;
+   int dry=Array.FindIndex(layers,l=>l&&l.name.IndexOf("DryEarth",StringComparison.OrdinalIgnoreCase)>=0);
+   int bank=Array.FindIndex(layers,l=>l&&l.name.IndexOf("Bank",StringComparison.OrdinalIgnoreCase)>=0);
+   Need(dry>=0&&bank>=0&&dry!=bank,"Original four-family terrain layer vocabulary changed");
+   var sourceHeights=source.GetHeights(0,0,source.heightmapResolution,source.heightmapResolution);
+   var left=city.Parcels.LeftBuilt;var right=city.Parcels.RightBuilt;
+   var hotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).ToDictionary(h=>h,h=>h.transform.position);
+   string light=LightStamp();var cityCam=new CameraState(city.PlayerCamera);var worldCam=new CameraState(host.WorldCamera);
+   bool worldWasActive=host.WorldRoot.activeSelf;var frames=new Dictionary<string,Frame>();
+   var report=new WorkgroundReport{scene=city.gameObject.scene.path,source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),
+    source_scene_sha256=Hash(city.gameObject.scene.path),original_terrain_guidance="DryEarth + Bank CC0 retained terrain layers",
+    workyard_count=2,access_lane_count=2,art_approved=false,physical_mobile_tested=false,
+    limitations=new[]{"Natural ground treatments need independent before/after visual acceptance; no technical gate alone confers ART_APPROVED.",
+     "No runtime mobile GPU timing or physical iPhone/Android coverage.",
+     "Retained Unity terrain heights, road mesh, interactive footprints, economy, narrative and saved state."}};
+   try{
+    city.Apply(new PlayerState {BastionLevel=2,SawmillLevel=1,BarracksLevel=1});
+    CaptureViews(city,host,plan,evidenceDir,"workground-before",frames);
+    host.WorldRoot.SetActive(false);
+    folder=AssetsRoot+"/ConnectedGround-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
+    Directory.CreateDirectory(folder);AssetDatabase.Refresh();assetIndex=0;
+    var data=Object.Instantiate(source);
+    data.name="Retained Valoria / connected reconstruction working ground v8";
+    int w=source.alphamapWidth,h=source.alphamapHeight;
+    var originalMap=source.GetAlphamaps(0,0,w,h);
+    var map=(float[,,])originalMap.Clone();
+    // Existing 256x256 splats are the source: explicitly copy all weights
+    // before a bounded and soft application of the genuine CC0 earth layers.
+    data.SetAlphamaps(0,0,map);
+    var yards=new[]{BoundsOf(left),BoundsOf(right)};
+    Vector2[] Lane(Bounds b){
+     var start=new Vector2(ValoriaReferenceCleanArtBuilder.RoadX(13),13);
+     var end=new Vector2(b.center.x,b.center.z-2f);
+     return Curve(start,new Vector2(start.x*.53f+end.x*.47f,15.5f),end,24);
+    }
+    var connections=new[]{Lane(yards[0]),Lane(yards[1])};
+    var bastion=BoundsOf(city.BastionTwo);
+    var civic=new Vector2(bastion.center.x,bastion.center.z-bastion.extents.z-7f);
+    int changed=0;float maxWear=0f;
+    for(int z=0;z<h;z++)for(int x=0;x<w;x++){
+     var p=new Vector2(terrain.transform.position.x+x/(float)(w-1)*data.size.x,
+      terrain.transform.position.z+z/(float)(h-1)*data.size.z);
+     // Respect river water and shingle, existing stone road render mesh,
+     // and nonfunctional far pasture. Yards are elliptical with irregular edges.
+     if(Mathf.Abs(p.y-RiverCenter(p.x))<RiverWidth(p.x)+4.0f)continue;
+     float detail=(Mathf.PerlinNoise(p.x*.29f+11.3f,p.y*.29f+23.9f)-.5f)*1.5f;
+     float macro=Mathf.PerlinNoise(p.x*.063f+3.7f,p.y*.063f+16.1f);
+     float access=0f,yard=0f;
+     for(int k=0;k<yards.Length;k++){
+      var bb=yards[k];
+      float dist=DistanceToPath(p,connections[k]);
+      // A continuous traveled route from stone avenue to functional building;
+      // irregular feathering avoids an artificial rectangular plot look.
+      access=Mathf.Max(access,1-Smooth(2.4f,5.9f,dist+detail));
+      float dx=(p.x-bb.center.x)/(bb.extents.x+7f);
+      float dz=(p.y-(bb.center.z-1.2f))/(bb.extents.z+6f);
+      float ell=Mathf.Sqrt(dx*dx+dz*dz);
+      yard=Mathf.Max(yard,1-Smooth(.57f,1.22f,ell+detail*.047f));
+     }
+     // A coherent worn civic approach below the Bastion stairs; this is
+     // landscaping, not an unlockable future district or building.
+     float civicDist=new Vector2((p.x-civic.x)/18f,(p.y-civic.y)/9f).magnitude;
+     float civicApron=1-Smooth(.45f,1.18f,civicDist+detail*.028f);
+     float wear=Mathf.Max(Mathf.Max(access*.71f,yard*.79f),civicApron*.49f);
+     wear*=.85f+.15f*macro;
+     // Prevent painting below the currently raised central paved approach.
+     if(Mathf.Abs(p.x-ValoriaReferenceCleanArtBuilder.RoadX(p.y))<3.5f)wear*=.20f;
+     wear=Mathf.Clamp01(wear);
+     if(wear<.025f)continue;
+     // Existing dry-earth texture gives readable load-bearing paths and
+     // compacted soil. A little damp bank texture prevents uniform brown blobs.
+     for(int i=0;i<layers.Length;i++)map[z,x,i]*=1-wear;
+     map[z,x,dry]+=wear*.84f;
+     map[z,x,bank]+=wear*.16f;
+     maxWear=Mathf.Max(maxWear,wear);changed++;
+    }
+    Need(changed>280&&maxWear>.48f,"Earthwork does not make a meaningful visible-scale change");
+    data.SetAlphamaps(0,0,map);Put(data,"city-connected-ground-v8");
+    terrain.terrainData=data;
+    var collider=terrain.GetComponent<TerrainCollider>();if(collider)collider.terrainData=data;
+    terrain.Flush();EditorUtility.SetDirty(data);
+    var markerGo=new GameObject(marker);markerGo.transform.SetParent(city.transform,false);
+    report.terrain_cells_retuned=changed;
+    CaptureViews(city,host,plan,evidenceDir,"workground-after",frames);
+    report.same_camera_light=LightStamp()==light;
+    report.terrain_heights_preserved=sourceHeights.Cast<float>().SequenceEqual(
+     data.GetHeights(0,0,data.heightmapResolution,data.heightmapResolution).Cast<float>());
+    report.parcels_preserved=city.Parcels.LeftBuilt==left&&city.Parcels.RightBuilt==right;
+    report.world_hotspots_preserved=hotspots.All(hp=>hp.Key&&hp.Key.transform.position==hp.Value);
+    Need(report.same_camera_light&&report.terrain_heights_preserved&&report.parcels_preserved&&report.world_hotspots_preserved,
+     "Workground retouch violated protected city heights, lighting, plots or hotspots");
+    report.frames=frames.Values.ToArray();AssetDatabase.SaveAssets();
+    File.WriteAllText(Path.Combine(evidenceDir,"environment-connected-workgrounds-unity.json"),JsonUtility.ToJson(report,true));
+    Debug.Log("VALORIA_CONNECTED_WORKGROUNDS_CANDIDATE edited="+changed);
+   }finally{
+    city.Apply(new PlayerState());
+    if(host.WorldBastionOne)host.WorldBastionOne.SetActive(true);
+    if(host.WorldBastionTwo)host.WorldBastionTwo.SetActive(false);
+    if(host.WorldSawmill)host.WorldSawmill.SetActive(false);
+    host.WorldRoot.SetActive(worldWasActive);cityCam.Restore(city.PlayerCamera);worldCam.Restore(host.WorldCamera);
+   }
+  }
+
   static void ReplaceMapValoria(ValoriaReferenceCleanGameplay city,ValoriaIntegratedWorld host,Transform parent,Func<Vector3,float> ground) {
    var old=Find(host.WorldRoot,"Existing medieval player city"); Need(old,"Original map city missing");
    var target=Target(host,"valoria-map-city"); var origin=target.transform.position; origin.y=ground(origin);
@@ -1249,7 +1378,7 @@ namespace Eldoria.ReferenceClean.Editor {
     void Capture(Camera camera,string view,int width,int height) {
      string name="environment-"+view+"-"+phase+".png";var matrix=camera.transform.localToWorldMatrix;
      var stamp=new float[18];for(int i=0;i<16;i++)stamp[i]=matrix[i];stamp[16]=camera.orthographicSize;stamp[17]=camera.fieldOfView;
-     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
+     if(phase=="before"||phase=="leap-before"||phase=="polish-before"||phase=="palette-before"||phase=="roof-before"||phase=="banner-before"||phase=="urban-before"||phase=="workground-before")frames.Add(view,new Frame{view=view,before=name,width=width,height=height,camera=stamp});
      else {Need(frames.ContainsKey(view)&&frames[view].camera.SequenceEqual(stamp),"A/B camera moved: "+view);frames[view].after=name;}
      float previousAspect=camera.aspect;camera.aspect=width/(float)height;
      try {ValoriaReferenceCleanBuilder.Capture(camera,Path.Combine(evidence,name),width,height);}
