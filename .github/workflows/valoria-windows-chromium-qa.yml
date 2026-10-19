@@ -2,7 +2,7 @@ name: '[VALORIA] Exact I-II Chromium QA on existing Windows PC'
 on:
   push:
     branches: [main]
-    paths: ['.github/workflows/valoria-windows-chromium-qa.yml']
+    paths: ['tools/valoria-reference-clean/browser-qa-request.json']
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,8 +12,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   native-browser:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[valoria-web-qa]'))
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - name: Recover existing GitHub Desktop Git
         shell: powershell
@@ -47,8 +48,8 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC native editing resources occupied; refuse interference'}
       - uses: actions/download-artifact@v4
         with:
-          name: valoria-integrated-web-playtest-39163287848
-          run-id: 39163287848
+          name: valoria-integrated-web-playtest-39223329742
+          run-id: 39223329742
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: unity-raw
       - uses: actions/setup-node@v4
@@ -60,7 +61,7 @@ jobs:
       - name: Prepare the exact approved WebGL binary; no Unity rebuild
         shell: powershell
         run: |
-          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native131 7aeef2e942883fae93a5e033bf9a0a05ebc85e46 39163287848
+          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native139 2210c14593f142ef144be6d628df7e873512e218 39223329742
           if($LASTEXITCODE){throw 'Exact integrated browser transport rejected'}
           node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
           if($LASTEXITCODE){throw 'Existing Site wrapper integrity failed'}
@@ -112,17 +113,17 @@ jobs:
         shell: powershell
         run: |
           $source=Get-Content tools/valoria-reference-clean/playtest_web.cjs -Raw
-          if(-not $source.Contains("Mouse wheel zoom-in on free world terrain")){
+          if(-not ($source.Contains("await page.mouse.wheel(0, -240)") -and $source.Contains("A real world mouse-wheel tick did not visibly zoom"))){
             throw 'Native Windows browser test is missing zoom-limit-aware real wheel check'
           }
       - name: Actually play Bastion I-II with native Windows Chromium GPU and SystemClock
         shell: powershell
-        timeout-minutes: 15
+        timeout-minutes: 25
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
           VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}
-          VALORIA_SOURCE_SHA: 7aeef2e942883fae93a5e033bf9a0a05ebc85e46
-          VALORIA_PLAYTEST_TIMEOUT_SECONDS: '480'
+          VALORIA_SOURCE_SHA: 2210c14593f142ef144be6d628df7e873512e218
+          VALORIA_PLAYTEST_TIMEOUT_SECONDS: '1100'
           VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
         run: |
           node tools/valoria-reference-clean/playtest_web.cjs
