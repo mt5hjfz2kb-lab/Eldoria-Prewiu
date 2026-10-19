@@ -136,4 +136,4 @@ jobs:
           curl --fail --location --retry 2 https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -o butler.zip
           unzip -q butler.zip -d butler-bin
           chmod +x butler-bin/butler
-          butler-bin/butler status chrismad/eldoria-pruebas:web
+          butler-bin/butler status chrismad/eldoria-pruebas
