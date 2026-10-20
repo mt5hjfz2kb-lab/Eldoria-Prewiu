@@ -29,7 +29,7 @@
     "enabled": false
   },
   "visual_acceptance": "Rock boar (v0220 enemy id=boar, Jabalí de roca), identifiable boar silhouette at Unity strategic/city/detail zooms and angled back/front, believable anatomy with exactly four legs and two short tusks, dark textured bristles and subtle natural slate shoulders (not decorative armor). PBR and UV/color preserved, grounding and collider/picking verified. No extra objects/background, no melted/fused proportions, no spikes. Keep lore, node IDs, economy, savegames, world routes, and city scene intact. Capture true Unity PNGs and retain original Tripo GLB + Blender editable + optimized GLB. No automatic production promotion or publication; review first.",
-  "run_nonce": "20261020-rock-boar-first-hunt-one-api-call-only-no-retry",
+  "run_nonce": "rock-boar-cli-run-after-yaml-repair-20261020-one-generation-only",
   "notes": "New user order specifically creates the first Hunt rock boar with Tripo API using newly purchased credits. This isolated source proof does not amend existing Unity gameplay or ongoing artist-owned world/city scenes. Once verified, integration into world is separate and must observe live workstream lease and visual approval.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
