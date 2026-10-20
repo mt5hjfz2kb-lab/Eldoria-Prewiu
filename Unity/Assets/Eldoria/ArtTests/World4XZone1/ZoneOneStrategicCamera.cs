@@ -15,6 +15,9 @@ namespace Eldoria.World4XPrototype
         public float localZoom = 32, regionalZoom = 60, globalZoom = 110;
         [Range(35, 80)] public float tilt = 55;
         public float edgeMargin = 2, dragThresholdPixels = 8;
+        // Orthographic framing depends on zoom, not this depth offset.
+        // Integrated Valoria sets 140 to keep visible ground inside URP shadows.
+        [Min(80)] public float cameraDistance = 350;
         public Vector2 minimum = new Vector2(-120, -120), maximum = new Vector2(120, 120);
         // The UI owner injects its hit test. This component never creates a second UI.
         public Func<Vector2, bool> PointerBlocked;
@@ -152,7 +155,8 @@ namespace Eldoria.World4XPrototype
         void ApplyPose()
         {
             transform.rotation = Quaternion.Euler(tilt, 0, 0);
-            transform.position = target - transform.forward * 350;
+            transform.position = target - transform.forward * cameraDistance;
         }
     }
 }
+

@@ -218,6 +218,8 @@ jobs:
           }
           if($req.stage -eq 'world_art_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'world_art_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Trial'}
+          if($req.world_contact -and $req.stage -eq 'world_art_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Trial'}
+          if($req.world_contact -and $req.stage -eq 'world_art_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Integrate'}
           if($req.stage -eq 'world_art_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Survey'}
           if($req.stage -eq 'architecture_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Survey'}
           if($req.terrain_polish){$env:VALORIA_TERRAIN_POLISH='1'}
@@ -263,7 +265,7 @@ jobs:
             if($LASTEXITCODE){throw 'Blender authoring failed'}
             $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanArtBuilder.Build'
           }
-          if($req.stage -eq 'world_art_trial'){
+          if($req.stage -eq 'world_art_trial' -and -not $req.world_contact){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
             if(-not $blender){throw 'Installed Blender required'}
@@ -720,6 +722,16 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/native-unity.log
           if-no-files-found: warn
           compression-level: 1
+
+      - uses: actions/upload-artifact@v4
+        if: always() && (steps.native_stage.outputs.stage == 'world_art_trial' || steps.native_stage.outputs.stage == 'world_art_integrate')
+        with:
+          name: valoria-world-contact-review-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/world-contact222/*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/world-contact222/*.json
+          if-no-files-found: warn
+          retention-days: 30
 
       - uses: actions/upload-artifact@v4
         if: always() && steps.native_stage.outputs.stage == 'city_bank_meadow_trial'
