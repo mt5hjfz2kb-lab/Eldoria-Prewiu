@@ -13,7 +13,8 @@ const nonnegative=n=>Number.isSafeInteger(n)&&n>=0;
 const filled=s=>typeof s==='string'&&s.trim().length>=12&&s.length<=1200;
 
 export function validate(db) {
-  if(!db||db.schema_version!==1||!Array.isArray(db.cases)||!HEX.test(db.reference_sha256||''))
+  if(!db||db.schema_version!==1||!Array.isArray(db.cases)||!HEX.test(db.reference_sha256||'')||
+     (db.current_reference_sha256!==undefined&&!HEX.test(db.current_reference_sha256)))
     return ['Invalid catalog root'];
   const errors=[],ids=new Set();
   for(const c of db.cases){
@@ -26,7 +27,10 @@ export function validate(db) {
       fail('invalid run provenance');
     if(c.source?.url!=='https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/'+c.source?.run_id)
       fail('run URL/id mismatch');
-    if(c.reference_sha256!==db.reference_sha256)fail('mismatched reference hash');
+    // Append-only observations keep their authentic historical reference hashes.
+    // Only the currently approved hash may be used for NEW cycles.
+    if(c.reference_sha256!==db.reference_sha256&&c.reference_sha256!==db.current_reference_sha256)
+      fail('unrecognized historical/current reference hash');
     for(const attr of ['target','view_id','render_pass'])
       if(!/^[a-zA-Z0-9_-]{5,110}$/.test(c[attr]||''))fail('invalid '+attr);
     if(!STATES.has(c.visibility_gate)||!ART.has(c.art_verdict)||c.art_approved!==false)
@@ -59,6 +63,8 @@ export function appendPending(db,candidate){
   if(candidate?.source?.evidence_level!=='pending_verification')
     throw Error('New entries must be pending_verification until original artifacts checked');
   if(db.cases.some(x=>x.id===candidate.id))throw Error('Duplicate case: append-only history');
+  if(candidate.reference_sha256!==(db.current_reference_sha256||db.reference_sha256))
+    throw Error('New art cycles must use the current owner-approved reference');
   const next=structuredClone(db);next.cases.push(candidate);
   const errors=validate(next);if(errors.length)throw Error(errors.join('\n'));
   return next;
@@ -79,7 +85,8 @@ export function comparisonGroups(db){
 
 export function report(db){
   let out='# Eldoria — Evidence-based artistic memory\n\n';
-  out+='Reference SHA-256: '+db.reference_sha256+'\n';
+  out+='Historical reference SHA-256: '+db.reference_sha256+'\n';
+  out+='Current owner-approved reference SHA-256: '+(db.current_reference_sha256||db.reference_sha256)+'\n';
   out+='Visibility is NOT artistic quality or a model-weights update.\n\n';
   out+='| GitHub run | View | Measurement | Art verdict |\n| --- | --- | --- | --- |\n';
   for(const c of db.cases){
@@ -103,7 +110,9 @@ export function report(db){
 export function brief(db, target='bastion1',maxChars=6000){
   if(!Number.isSafeInteger(maxChars)||maxChars<300||maxChars>12000)throw Error('Invalid brief size');
   let out='EVIDENCE-BASED ART MEMORY: not model-weight training, not ART APPROVED.\n';
-  out+='Pinned approved reference: '+db.reference_sha256+'\n';
+  out+='CURRENT owner-approved reference: '+(db.current_reference_sha256||db.reference_sha256)+'\n';
+  if(db.current_reference_sha256&&db.current_reference_sha256!==db.reference_sha256)
+    out+='WARNING: The lessons below were observed with a SUPERSEDED visual reference. Transfer METHODS only, never its former cliff/urban COMPOSITION. Current approved city has compact Bastion, bridge, riverbank, four empty plots, no large cliffs or enemy tent camps.\n';
   const byLesson=new Map();
   for(const c of db.cases){
     if(c.target!==target||c.source.evidence_level!=='run_log_reviewed')continue;
