@@ -119,6 +119,15 @@ jobs:
           }
           $report|ConvertTo-Json -Depth 5|Set-Content docs/evidence/valoria-reference-clean/android-existing-key-check.json -Encoding utf8
           Write-Host "Original Android signing key certificate match: $($report.matching_key_found)"
+      - name: Recover exact reviewed world captures from native228
+        if: contains(github.event.head_commit.message, '[world-contact-recover]')
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-world-contact-review-39486649326
+          run-id: 39486649326
+          github-token: ${{ github.token }}
+          path: valoria-layered-source/docs/evidence/valoria-reference-clean/world-contact222
+
       - name: Execute requested stage in native Unity
         id: native_stage
         shell: powershell

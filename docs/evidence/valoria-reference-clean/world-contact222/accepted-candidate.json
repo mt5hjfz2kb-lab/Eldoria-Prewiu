@@ -1,0 +1,41 @@
+{
+  "accepted": true,
+  "source_scene_sha256": "0261e36310fa003944895c3016a1f8b9a56e0bfc39ab07f27f97d3936b87ec3f",
+  "tool_sha256": "bc561cdeff05a117e589137817fa479cd7c2948848a1ba6e83ff08663bdc8711",
+  "images": [
+    "after-corrupt-scout-14.png",
+    "after-corrupt-scout-32.png",
+    "after-corrupt-scout-64.png",
+    "after-corrupt-scout-portrait.png",
+    "after-engendro-valoria-14.png",
+    "after-engendro-valoria-32.png",
+    "after-engendro-valoria-64.png",
+    "after-engendro-valoria-portrait.png",
+    "after-forest-valoria-14.png",
+    "after-forest-valoria-32.png",
+    "after-forest-valoria-64.png",
+    "after-forest-valoria-portrait.png",
+    "after-quarry-valoria-14.png",
+    "after-quarry-valoria-32.png",
+    "after-quarry-valoria-64.png",
+    "after-quarry-valoria-portrait.png"
+  ],
+  "hashes": [
+    "e8d6f2f45a7243c79de63254336c0105391b1a3ee78b1aa73f6566d3bddf8ded",
+    "ac32e41054b1a9d79aa65985e2c58da32775a3d3057ee68c6be8fc4a74f0750a",
+    "143e4b53aae8133afd0af31a2aaff60bea03b0000c98246cfaec72dd03833b3b",
+    "37522a2eab62f873efeaf470782ac137b1efc36ed0f4946035908c07126f1c50",
+    "f95a182c0b9c4dc63ae69e83b037afda92979cec28b245fc3c92c192164e53b4",
+    "5497d982a9c287c4497aefab103a5ed558f16e798c874e28c0539bc7d662661d",
+    "2f2a5cd0b24c03854262ecb0996cd2d6189a981ef7d13dcc64df7c4ca04c80f6",
+    "fa6d190424d4b66b6f58d821eb211242864adaa7205a10a89c473a0f29524f34",
+    "2b114935a10c98a3e8e6fe95204cfc8866992b3355cd37195665081d42e7db23",
+    "dc91cf42b41ad38cde9f1956a3097dceb26d132d07a59cb1acb844778a0db8b5",
+    "f87939e64da21c03e6d26c6a85ba9fba313adbb60554a3f2dd58981b33761f58",
+    "d07e55dc7257ed774f46df51d25688ae7bba80a08c2bfbce55246259b60b030d",
+    "b72336c09cdef791a458640193fdd091e4ee1de41a5ae1c5425d3d80ac768c09",
+    "a2e230c98a5401c89cbfd2c035dede575d1cef272dde6ad902b95306adb1d12f",
+    "c9a2c7007fc9a14dd125b2e4d01493c1c6af1f83e33ad5f81bb4ae3530e93bc5",
+    "61b5ba1d86f39d4c7a86e9501d883613e6b4bbe26e1c7a3a0182fb199f92a832"
+  ]
+}
