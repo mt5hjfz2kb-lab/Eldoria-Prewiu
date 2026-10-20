@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ROYAL_GOLD_V2_PRIVATE_ITCH_UPLOAD_REQUESTED_NATIVE191",
+  "state": "ITCH_NATIVE191_UPLOADED_REMOTE_BUILD_2169803_PROCESSING_NOT_HOSTED_VERIFIED",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -44,30 +44,26 @@
     "artifact_sha256": "5e2d674a77e836133fa0a13a2279de90732f175b2116c0dd46d38259efbbab05"
   },
   "last_attempt": {
-    "run_id": 39333420999,
+    "run_id": 39440869260,
     "prepare": "success",
     "transport_tests": "success",
-    "publish": "upload_accepted_remote_confirmation_timed_out",
-    "remote_build": 2165127,
-    "hosted_verified": false
+    "publish": "upload_accepted_remote_confirmation_pending",
+    "remote_build": 2169803,
+    "hosted_verified": false,
+    "reason": "Butler confirmed 175.55 MiB patch accepted and build #2169803 processing; remote status still serving previous native152 #2165127. Do not label native191 as hosted yet."
   },
   "uploaded": {
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native152",
-    "run_id": 39333420999,
-    "files": 10,
+    "revision": "native191",
+    "run_id": 39440869260,
+    "remote_build": 2169803,
+    "upload_accepted": true,
     "hosted_verified": false,
-    "first_html5_channel_configuration": "PENDING_OWNER_UI_CHECK",
-    "processing_status": "PROCESSING_AT_20261019_221509Z",
-    "latest_remote_check": {
-      "run_id": 39333420999,
-      "checked_at": "2026-10-20T00:15:09+02:00",
-      "result": "Corrected gzip build 2164730 active; low-memory build 2165127 processing."
-    },
-    "remote_build": 2165127,
-    "transport_adapter": "itch-low-memory-v2"
+    "processing_status": "PROCESSING",
+    "transport_adapter": "itch-low-memory-v2",
+    "physical_mobile_tested": false
   },
   "manual_fallback": {
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
@@ -149,6 +145,7 @@
     "published_updated": false,
     "delivery_prepared_run": 39440643475,
     "delivery_prepared_artifact": 12274180615,
-    "release_target": "Restricted itch.io chrismad/eldoria-pruebas web"
+    "release_target": "Restricted itch.io chrismad/eldoria-pruebas web",
+    "remote_build": 2169803
   }
 }
