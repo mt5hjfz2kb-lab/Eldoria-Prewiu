@@ -60,13 +60,29 @@ public static class OwnerCityCliffsUnityTrial {
  }
  static void PersistAll(GameObject root,Report report) {
   Directory.CreateDirectory(Target);AssetDatabase.Refresh();int n=0;
-  foreach(var f in root.GetComponentsInChildren<MeshFilter>(true)){
-   Require(f.sharedMesh!=null,"Blank GLB renderer mesh");
+  var filters=root.GetComponentsInChildren<MeshFilter>(true);
+  int emptyContainers=0,sourceMeshes=0;
+  foreach(var f in filters){
+   if(!f.sharedMesh){
+    // GLTFast may create non-rendering container MeshFilters.
+    // Keep only real triangle-bearing original source geometry.
+    emptyContainers++;
+    var renderer=f.GetComponent<MeshRenderer>();
+    if(renderer)renderer.enabled=false;
+    continue;
+   }
+   Require(f.sharedMesh.vertexCount>0&&f.sharedMesh.triangles.Length>0,
+    "Source rock mesh has no triangles: "+f.name);
    var m=Object.Instantiate(f.sharedMesh);m.name="OriginalSourceRockMesh"+n;
    AssetDatabase.CreateAsset(m,Target+"/CliffMesh"+(n++)+".asset");f.sharedMesh=m;
-   report.triangles+=m.triangles.Length/3;
+   report.triangles+=m.triangles.Length/3;sourceMeshes++;
   }
+  Debug.Log("ELDORIA_OWNER_CLIFF_IMPORT_DIAGNOSTIC realMeshes="+sourceMeshes+
+   " emptyContainers="+emptyContainers+" triangles="+report.triangles);
+  Require(sourceMeshes>=12,"Imported too few source meshes for the geological candidate");
   foreach(var r in root.GetComponentsInChildren<MeshRenderer>(true)){
+   var filter=r.GetComponent<MeshFilter>();
+   if(!r.enabled||!filter||!filter.sharedMesh)continue;
    r.lightmapIndex=-1;r.receiveGI=ReceiveGI.LightProbes;
    r.lightProbeUsage=LightProbeUsage.BlendProbes;
    r.shadowCastingMode=ShadowCastingMode.On;
@@ -133,7 +149,8 @@ public static class OwnerCityCliffsUnityTrial {
     Require(await loader.InstantiateMainSceneAsync(rock.transform),"Blender GLB could not instantiate");
    }
    PersistAll(rock,report);
-   var rs=rock.GetComponentsInChildren<MeshRenderer>(true);
+   Require(report.triangles==b.triangles,"Original Blender cliff triangles not preserved by importer");
+   var rs=rock.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.enabled).ToArray();
    Require(rs.All(x=>Mathf.Abs(x.bounds.center.x)>18),
      "Protected city bridge or actual building access occupied");
    var all=rs[0].bounds;foreach(var r in rs.Skip(1))all.Encapsulate(r.bounds);
