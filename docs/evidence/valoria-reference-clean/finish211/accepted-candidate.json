@@ -1,0 +1,37 @@
+{
+  "accepted": true,
+  "source_scene_sha256": "eee58998a2b58f35a14bb64aa74bd11ace67e10f781afe125df52df759a538d6",
+  "candidate_sha256": "00124b1f0b265b2a9df5c1d8148109f939bba5e1080a53e283df9b3f348b87c0",
+  "image_names": [
+    "after-city-built-landscape.png",
+    "after-city-built-portrait.png",
+    "after-city-initial-landscape.png",
+    "after-city-initial-portrait.png",
+    "after-corrupt-scout-14.png",
+    "after-corrupt-scout-32.png",
+    "after-corrupt-scout-portrait.png",
+    "after-engendro-valoria-14.png",
+    "after-engendro-valoria-32.png",
+    "after-engendro-valoria-portrait.png",
+    "after-quarry-valoria-14.png",
+    "after-quarry-valoria-32.png",
+    "after-quarry-valoria-portrait.png"
+  ],
+  "image_hashes": [
+    "4e8933cd750ddb588ec0613ef0a4438db855862b415d7b9adedf19ad3f619b97",
+    "411f99fee0d133597d9892f8401fece499978e73d66b94709220d40327fcdd8c",
+    "2401e8437b3e50942b039e30b970fe983c723e84ad1cb6be76dd433deac9cfaa",
+    "bbb3dc3e66463875127a06dbe45d526b2b716ae69394a17d42534dfd632cb5ea",
+    "35569ecc22dce72ca55e0eecb63d36d1ee2b9b597c13c23046a3b2430010343c",
+    "424cd7580af32b289fff5ac7d7aca1a74ac800be21f8f444d64649c9a0e0bd5f",
+    "4fbe89d83bb7a1753e7bd0c385d432789db98b5320fb36ff99455f7bef78823d",
+    "26c8bee0eb117fe0d713cdf7af7de7d8b3640b4876093f71231bdd6fd37491d8",
+    "e22a1266ebd65e1b516c79277a3b1cff2367806723c7925564e7e93117268f3d",
+    "4f357e7519575fa3163d0fc4fa9b11a73ed50f125a8130de9a380415fc4ef8d1",
+    "ef600cbe1e72f492c764bc662d7f4f764ea11f0a063c32f23a969659c54c763a",
+    "580a4412cb6132ef0f9f8294633a2b420b998f33b4e5e8c3c5f1f012ce0d80ed",
+    "218687d05d1268b892785338fd6ef1866868700ab49d18e2f0ef2a2e2b815839"
+  ],
+  "run": 39469098373,
+  "scope": "Incremental phase4 environment finishing; not overall numerical target certification"
+}
