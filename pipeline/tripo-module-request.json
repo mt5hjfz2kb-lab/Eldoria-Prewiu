@@ -29,10 +29,16 @@
     "enabled": false
   },
   "visual_acceptance": "Spawnling enemy source only, v0220 entity id spawnling, Bastion II: small hunched violet partly deformed quadruped-like humanoid with coherent TWO forearms, TWO legs and ONE head; natural base, legible high-isometric silhouette, subtle Rift veins (not demon horns). UV0, normals, texture maps 2K require real Unity QA. Retain original raw GLB/Blender .blend/optimized GLB. No gameplay edits, no automatic promotion, no world hotspot/camp or live scene mutation.",
-  "run_nonce": "spawnling-paid-once-permanently-disabled-recover-source-20261021",
+  "run_nonce": "spawnling-recover-paid-raw-asset-only-20261021",
   "notes": "PAID TASK COMPLETED ONCE: Tripo task 351d1034-25ec-4300-a2e0-d03a0e68175a. H3.1 20 credits, source-run 39511077721, raw artifact 12305368720, raw GLB SHA256 5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f. Canonical workflow Blender failed ONLY because tools/tripo_module_blender.py was not present in Windows checkout; raw source is preserved; NEVER retry paid generation. Resume Blender from raw artifact with exact SHA. Not integrated in gameplay.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
+  },
+  "recover": {
+    "asset_name": "Eldoria_Spawnling_Bastion2_v1",
+    "source_run_id": 39511077721,
+    "raw_artifact": "tripo-raw-eldoria-spawnling-bastion2-h31-one-20261021-69c83a6dc0eaba754e5cb5f933af5da9fe6a9399",
+    "expected_raw_sha256": "5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f"
   }
 }
