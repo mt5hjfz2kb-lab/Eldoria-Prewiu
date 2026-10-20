@@ -76,3 +76,16 @@ Todavía se requieren: prueba de compilación Unity ARM64, certificado apksigner
 Owner physical Android observation: the update text appears over world cards with translucent backgrounds. Cause in code8/code9: runtime OnGUI relied on the default Unity GUI.Box skin, which has no guaranteed opaque background. The fix is local to EldoriaAndroidAutoUpdater.cs: dim the visible world, render an **opaque dark card** with gold frame, readable white text, opaque buttons, responsive portrait/landscape layout, and restore GUI color/matrix/depth. The download policy, signing, local saves and Android install confirmation remain unchanged.
 
 Code10/1.10 is requested from the current integrated main; do **not** announce this UI improvement on the physical phone until signed APK build and test are complete. Keep the stable public update channel code9 until the independently verified code10 APK is promoted. Full device readability and tap behavior still need physical QA.
+
+## 2026-10-20 — code10 / 1.10: corrección visual Android PUBLICADA
+
+**Estado técnico FINALIZADO.** El propietario observó en su teléfono un cuadro semitransparente mezclado con el HUD del mundo. Se sustituyó el predeterminado GUI.Box de Unity por un panel **opaco oscuro con marco dorado, textos blancos de alto contraste, botón principal y «Ahora no»**, reescalado para vertical y horizontal. El fondo del juego se atenúa durante el aviso; la descarga automática por Wi-Fi, el consentimiento de instalación del sistema Android y la persistencia de guardados no cambian.
+
+- Código y pruebas: commit 3a1cc3f17dc7adc543126c46ec53f402bb39aa94; **9/9 pruebas de política y UI PASS**. Unity editor source gate 39502034766 SUCCESS.
+- **APK compilada y firmada:** code10 / versionName 1.10, build 39502034675, SUCCESS (verificó paquete original, clave/certificado, versionCode, ARM64 y REQUEST_INSTALL_PACKAGES); artifact eldoria-family-updater-code10-39502034675.
+- **Publicación:** run 39504548347 COMPLETED SUCCESS, validó el SHA original, creó Release code10, descargó el APK público y comparó bytes exactos (ELDORIA_FAMILY_RELEASE_BYTE_MATCH_PASS). Manifest main canal familia actualizado y habilitado para versionCode 10, **247491508 bytes**, SHA-256 **24299a64a3dd8a205b2058df42cc7bf6191609ac2fe607ba5a0da73a52ec9511**, source exacto 3a1cc3f17dc7adc543126c46ec53f402bb39aa94.
+- Descarga Android: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code10/Eldoria-Valoria-code10.apk
+- Se deshabilitó la petición de publicación tras éxito; no hay duplicados ni recompilaciones en bucle.
+
+**Límite: aceptación móvil PENDIENTE.** El aviso que ya está compilado en las APK 1.8/1.9 seguirá siendo semitransparente durante el paso a 1.10. La nueva ventana solo existe tras instalar 1.10. El propietario puede instalarla encima del paquete existente desde el canal o enlace, **sin desinstalar**. Para certificar el aspecto de la nueva ventana en el móvil es necesario que haya una futura actualización posterior a code10 (o prueba instrumentada en Android real) y comprobar la captura, los botones y la continuidad del guardado. No declarar PHONE_PASS ni afirmar que la UI física ya se ha visto.
+
