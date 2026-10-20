@@ -42,6 +42,9 @@ prove composition, look-dev and hero-fragment language at the cheapest useful fi
 
 ### Tripo module production
 - Contract: `docs/TRIPO_MODULE_PIPELINE.md`
+- Postmortem visual y técnico comprobado: [`docs/TRIPO_API_JABALI_LECCIONES_20261021.md`](TRIPO_API_JABALI_LECCIONES_20261021.md).
+- Norma reutilizable de costes, glTFast 2K, Blender/Unity y validación artística: [`docs/TRIPO_API_NORMA_PRODUCCION_V1.md`](TRIPO_API_NORMA_PRODUCCION_V1.md).
+- Briefs de producción autorizados Engendro / Foco (fuentes aisladas, sin nueva mecánica): [`docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md`](TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md).
 - Kit inventory: `docs/VALORIA_MODULE_KIT.md`
 - Request: `pipeline/tripo-module-request.json`
 - Workflow: `.github/workflows/tripo-module-pipeline.yml`
