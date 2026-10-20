@@ -137,7 +137,8 @@ bpy.context.scene.camera=camera
 bpy.ops.object.light_add(type="AREA",location=(-10,-12,22))
 light=bpy.context.object;light.data.energy=2800;light.data.shape="DISK";light.data.size=17
 scene=bpy.context.scene
-scene.render.engine="BLENDER_EEVEE_NEXT"
+try:scene.render.engine="BLENDER_EEVEE_NEXT"
+except TypeError:scene.render.engine="BLENDER_EEVEE"
 scene.render.resolution_x=1280;scene.render.resolution_y=720;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 obj.hide_render=True
