@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-spawnling-bastion2-h31-one-20261021",
   "module_label": "Eldoria_Spawnling_Bastion2_v1",
   "unity_yaw_degrees": 0,
@@ -10,7 +10,7 @@
     "prompt": "ONE small early-game Rift Spawnling creature for medieval dark fantasy 4X game, full body standalone 3D creature in neutral crouched alert pose. Approximately 1.35 meters tall, hunched asymmetric silhouette, compact vaguely human torso but bestial stance, exactly TWO elongated forearms with short claws and TWO powerful digitigrade legs, one head with narrow distorted face and small fangs, broad low shoulders and curved back. Desaturated matte purple/violet leathery skin with charcoal patches, a few thin muted lavender fissure veins on back and shoulder, extremely subtle lilac inner glow, coherent anatomy suitable for future rigging. Recognizable at high isometric camera distance, eerie organic design, realistic stylized detailed PBR skin. No clothes, no armor, no weapon, no wings, no horns, no extra limbs or head, no enormous spikes, no exposed organs, no blood, no pedestal, no ground, no scenery, no text, no floating pieces."
   },
   "credit_authorization": {
-    "approved": true,
+    "approved": false,
     "authorized_credit_cost": 20,
     "scope": "Owner explicit instruction 2026-10-21 to create Engendro de la Fisura and separate corruption focus using existing prepaid Tripo API credits; approval narrowly limited to ONE H3.1 text + STANDARD PBR generation of canonical enemy spawnling; max 20 credits; no retry, other assets separate approval."
   },
@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Spawnling enemy source only, v0220 entity id spawnling, Bastion II: small hunched violet partly deformed quadruped-like humanoid with coherent TWO forearms, TWO legs and ONE head; natural base, legible high-isometric silhouette, subtle Rift veins (not demon horns). UV0, normals, texture maps 2K require real Unity QA. Retain original raw GLB/Blender .blend/optimized GLB. No gameplay edits, no automatic promotion, no world hotspot/camp or live scene mutation.",
-  "run_nonce": "spawnling-h31-recovered-request-after-checkout-missing-20261021-one-charge",
-  "notes": "Previous attempt 39509917643 failed at Read canonical request: request file missing after checkout, before Tripo CLI and before any credit charge. This is the first paid attempt for Spawnling; newly approved explicit one generation up to 20 credits. Workflow is exact-SHA fallback and will not retry paid if generation succeeds.",
+  "run_nonce": "spawnling-paid-once-permanently-disabled-recover-source-20261021",
+  "notes": "PAID TASK COMPLETED ONCE: Tripo task 351d1034-25ec-4300-a2e0-d03a0e68175a. H3.1 20 credits, source-run 39511077721, raw artifact 12305368720, raw GLB SHA256 5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f. Canonical workflow Blender failed ONLY because tools/tripo_module_blender.py was not present in Windows checkout; raw source is preserved; NEVER retry paid generation. Resume Blender from raw artifact with exact SHA. Not integrated in gameplay.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
