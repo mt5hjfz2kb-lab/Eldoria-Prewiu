@@ -1,0 +1,13 @@
+{
+    "source_scene_sha256": "0261e36310fa003944895c3016a1f8b9a56e0bfc39ab07f27f97d3936b87ec3f",
+    "tool_sha256": "bc561cdeff05a117e589137817fa479cd7c2948848a1ba6e83ff08663bdc8711",
+    "camera_before": 350.0,
+    "camera_after": 140.0,
+    "urp_shadow_distance": 220.0,
+    "max_viewport_xy_difference": 1.1920928955078126e-7,
+    "min_apron_before_ground_delta": -2.2598204612731935,
+    "max_apron_before_ground_delta": 0.3928731083869934,
+    "apron_vertices": 5794,
+    "retained_props_seated": 15,
+    "terrain_and_gameplay_unchanged": true
+}
