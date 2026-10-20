@@ -105,7 +105,7 @@ namespace Eldoria.ReferenceClean.Editor
 
     public static void Run()
     {
-      try {Execute(); Debug.Log("ELDORIA_BANK_MEADOW_OWNER_AB_CAPTURED_ART_REVIEW_REQUIRED");EditorApplication.Exit(0);}
+      try {Execute(); Debug.Log("VALORIA_REFERENCE_CLEAN_BANK_MEADOW_TRIAL_COMPLETE_ART_REVIEW_REQUIRED");EditorApplication.Exit(0);}
       catch(Exception error) {Debug.LogException(error);EditorApplication.Exit(1);}
     }
 
