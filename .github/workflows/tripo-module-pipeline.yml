@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   api-diagnostic:
-    if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'push' && startsWith(github.event.head_commit.message, 'ci: tripo-api-doctor-readonly')
+    if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'push' && startsWith(github.event.head_commit.message, 'TRIPO_API_DIAG_')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 5
     steps:
@@ -101,7 +101,7 @@ jobs:
 
 
   module-gate:
-    if: vars.UNITY_RUNNER_READY == 'true' && !startsWith(github.event.head_commit.message, 'ci: tripo-api-doctor-readonly')
+    if: vars.UNITY_RUNNER_READY == 'true' && !startsWith(github.event.head_commit.message, 'TRIPO_API_DIAG_')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 20
 
