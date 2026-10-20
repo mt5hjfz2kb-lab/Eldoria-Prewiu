@@ -3,18 +3,20 @@
   "source_vertices": 45148,
   "source_triangles": 67582,
   "welded_vertices": 33949,
-  "output_vertices": 363912,
-  "output_triangles": 121304,
+  "sculpted_stone_components": 63,
+  "output_vertices": 137748,
+  "output_triangles": 45916,
   "operations": [
     "weld split source topology",
     "dissolve coplanar source triangles",
-    "bounded 0.38m two-segment convex bevel",
-    "area weighted normals",
+    "proportional whole-component weathering with protected feet",
+    "silhouette-preserving source reduction",
+    "smooth rock normals",
     "metric dominant-plane UV"
   ],
-  "candidate_sha256": "fd420cf3ec1e0c78bb537dd6c20125f0a4b21738bd152736abef1a0204e8f257",
-  "blend_sha256": "66e4c8326df97af019f9695f9018d12a62e502d1bf508d133b7ae3b62ba32fbf",
-  "glb_sha256": "8aff52f72d48a825375fdb8d520abaf1e0f225ad4f13962789794c995de63c7b",
+  "candidate_sha256": "53071b499616aa4ab2bc85323a1d4d1229592881b35f1e58e14494c34725b767",
+  "blend_sha256": "8f788b3098f573af89b16a6920fbc225c8b0b74f5b23af9382fc1a2bf0f1b2b9",
+  "glb_sha256": "0a7edfa597ebf0d1d4f7777c88c87b62cbd06711b67344fae2966326e23b13a2",
   "collision_modified": false,
   "art_approved": false
 }
