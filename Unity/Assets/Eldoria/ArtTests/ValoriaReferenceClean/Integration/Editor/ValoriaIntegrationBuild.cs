@@ -246,6 +246,19 @@ namespace Eldoria.ReferenceClean.Editor {
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
    Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
+   Check(()=>{
+    var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
+    v2.SynchronizeNow();Canvas.ForceUpdateCanvases();
+    Need(v2.ObjectiveVisible&&v2.VisibleObjectiveButton.interactable,
+     "A selected World resource hid the next real objective");
+    var button=v2.VisibleObjectiveButton;
+    var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);
+    var point=RectTransformUtility.WorldToScreenPoint(null,(corners[0]+corners[2])*.5f);
+    var evt=new PointerEventData(EventSystem.current){pointerId=-1,button=PointerEventData.InputButton.Left,position=point};
+    var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(evt,hits);
+    Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,
+     "Next objective is masked by the World selection panel: "+string.Join(",",hits.Select(x=>x.gameObject.name)));
+   },"Current objective is still genuinely clickable while a World resource is selected");
    Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"Forest command disabled");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World gathering did not start");h.SetWorld(false);((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().ChapterProgress.GatheredWood>0,"Shared world reward missing");var snapshot=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(snapshot==JsonUtility.ToJson(city.Gateway.Snapshot()),"Reload changed rewards");},"world gathering, city return, saved reward");
    yield return new WaitForSecondsRealtime(.5f);
    Check(()=>{

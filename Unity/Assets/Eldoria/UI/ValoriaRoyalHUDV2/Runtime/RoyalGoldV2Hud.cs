@@ -24,7 +24,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private ScrollRect buildingScroll;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
         private bool buildingVisible;
-        private bool ready, expanded, portrait, hasGeometry;
+        private bool ready, expanded, portrait, hasGeometry, compactObjective;
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
         private static readonly Color Ivory = new Color(.945f, .913f, .852f);
@@ -240,6 +240,8 @@ namespace Eldoria.UI.RoyalGold.V2
             Top((RectTransform)objectiveAction.transform, 14, 108, (goalWidth - 40f) * .59f, 52);
             Top((RectTransform)objectivesButton.transform, 20 + (goalWidth - 40f) * .59f,
                 108, (goalWidth - 40f) * .41f, 52);
+            // Reflow selected objectives after every orientation/size change.
+            compactObjective = false;
             // Explicitly expanded chapter panels are allowed to be larger; the
             // default HUD remains only one short objective card.
             Top((RectTransform)chapterClose.transform,
@@ -274,6 +276,42 @@ namespace Eldoria.UI.RoyalGold.V2
             lastWidth = width;
             lastHeight = height;
             lastDetails = "";
+        }
+
+        /// <summary>The next real objective remains actionable while a
+        /// destination is selected. Its reduced height does not create
+        /// another HUD or obscure the contextual building action.</summary>
+        private void ReflowSelectedObjective(bool compact)
+        {
+            if (!hasGeometry || compactObjective == compact) return;
+            compactObjective = compact;
+            float w = objectiveCard.rect.width;
+            if (compact)
+            {
+                objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 126f);
+                Top(chapterText.rectTransform, 17, 8, w - 130, 24);
+                Top(progressText.rectTransform, w - 108, 8, 93, 24);
+                Top(objectiveText.rectTransform, 17, 32, w - 34, 37);
+                objectiveText.fontSize = 22;
+                Top((RectTransform)objectiveAction.transform, 14, 75,
+                    (w - 40f) * .59f, 43f);
+                Top((RectTransform)objectivesButton.transform,
+                    20 + (w - 40f) * .59f, 75,
+                    (w - 40f) * .41f, 43f);
+            }
+            else
+            {
+                objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 174f);
+                Top(chapterText.rectTransform, 17, 13, w - 130, 25);
+                Top(progressText.rectTransform, w - 108, 13, 93, 25);
+                Top(objectiveText.rectTransform, 17, 43, w - 34, 51);
+                objectiveText.fontSize = 25;
+                Top((RectTransform)objectiveAction.transform, 14, 108,
+                    (w - 40f) * .59f, 52f);
+                Top((RectTransform)objectivesButton.transform,
+                    20 + (w - 40f) * .59f, 108,
+                    (w - 40f) * .41f, 52f);
+            }
         }
 
         private static string Safe(RoyalText value) => value ? value.text ?? "" : "";
@@ -443,7 +481,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // scene itself. Never stack a full-width chapter card above the
             // bottom building sheet on a portrait handset.
             bool inspectingBuilding = !string.IsNullOrEmpty(Source.SelectedBuildingId);
-            SetVisible(objectiveGroup, !expanded && !modalOpen && !inspectingBuilding);
+            // Previously hiding all objectives during selection stranded
+            // a player on the Forest resource after its first expedition.
+            // Keep a compact, *genuine* next-objective action available.
+            ReflowSelectedObjective(inspectingBuilding);
+            SetVisible(objectiveGroup, !expanded && !modalOpen);
             SetVisible(chapterCloseGroup, showExpanded);
 
             RenderBuilding(modalOpen);
