@@ -322,7 +322,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 var legacy = (RectTransform)Source.Mission.transform;
                 legacy.anchoredPosition = new Vector2(portrait ? 16f : 26f, -(portrait ? 245f : 145f));
             }
-            objectiveCard.gameObject.SetActive(!expanded && !modalOpen);
+            // When a building is selected, prioritize its actions and the
+            // scene itself. Never stack a full-width chapter card above the
+            // bottom building sheet on a portrait handset.
+            bool inspectingBuilding = !string.IsNullOrEmpty(Source.SelectedBuildingId);
+            objectiveCard.gameObject.SetActive(!expanded && !modalOpen && !inspectingBuilding);
             chapterClose.gameObject.SetActive(showExpanded);
 
             RenderBuilding(modalOpen);
