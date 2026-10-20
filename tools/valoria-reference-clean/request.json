@@ -1,13 +1,13 @@
 {
-  "stage": "architecture_integrate",
-  "validate_play": true,
-  "revision": 234,
+  "stage": "final_environment_trial",
+  "validate_play": false,
+  "revision": 235,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Integrate exact native233 reviewed I-II roof candidate, six strict render comparisons and all current native gameplay checks; independent installed local vision critique of city/world.",
-  "art_correction": "Measured original slate roof fit and stone tower seats; preserve I-II architecture, colliders, materials and progression.",
-  "auxiliary_review": true,
+  "checks": "Matched actual Unity captures of measured paving shoulder height/contact correction and reused four torch lights. No source scene save, no new props or shadow maps.",
+  "art_correction": "Fit existing earthen road shoulders to actual paving silhouette, restore warm existing torch response on corrected non-baked Bastion.",
+  "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
   "nature_treatment": "all_banks",
@@ -33,6 +33,7 @@
   "terrain_polish": false,
   "reuse_polish_candidate": true,
   "world_contact": false,
-  "roof_junction": true,
-  "reuse_roof_candidate": true
+  "roof_junction": false,
+  "reuse_roof_candidate": true,
+  "city_surface": true
 }

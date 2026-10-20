@@ -237,7 +237,7 @@ jobs:
 
           if($req.stage -eq 'architecture_trial' -and -not $req.roof_junction){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Trial'}
           if($req.stage -eq 'final_environment_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaFinalEnvironmentFinishing.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
-          if($req.stage -eq 'final_environment_trial'){
+          if($req.stage -eq 'final_environment_trial' -and -not $req.city_surface){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
             if(-not $blender){throw 'Installed Blender required'}
@@ -245,6 +245,8 @@ jobs:
             if($LASTEXITCODE){throw 'Breach terrain authoring failed'}
             $method='Eldoria.ReferenceClean.Editor.ValoriaFinalEnvironmentFinishing.Trial'
           }
+          if($req.city_surface -and $req.stage -eq 'final_environment_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaCitySurfaceFinishing.Trial'}
+          if($req.city_surface -and $req.stage -eq 'final_environment_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaCitySurfaceFinishing.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'world_art_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'world_art_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Trial'}
           if($req.world_contact -and $req.stage -eq 'world_art_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Trial'}
@@ -758,6 +760,7 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-polish218/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/architecture201/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/roof-junction226/**
+            valoria-layered-source/docs/evidence/valoria-reference-clean/city-surface235/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/world204/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/finish211/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/quarry-geology-v18-*
@@ -776,13 +779,15 @@ jobs:
           retention-days: 30
 
       - uses: actions/upload-artifact@v4
-        if: always() && (steps.native_stage.outputs.stage == 'architecture_trial' || steps.native_stage.outputs.stage == 'architecture_integrate')
+        if: always() && (steps.native_stage.outputs.stage == 'architecture_trial' || steps.native_stage.outputs.stage == 'architecture_integrate' || steps.native_stage.outputs.stage == 'final_environment_trial' || steps.native_stage.outputs.stage == 'final_environment_integrate')
         with:
           name: valoria-roof-junction-review-${{ github.run_id }}
           path: |
             valoria-layered-source/docs/evidence/valoria-reference-clean/roof-junction226/*.png
             valoria-layered-source/docs/evidence/valoria-reference-clean/roof-junction226/author-proof.json
             valoria-layered-source/docs/evidence/valoria-reference-clean/roof-junction226/unity-review.json
+            valoria-layered-source/docs/evidence/valoria-reference-clean/city-surface235/*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/city-surface235/*.json
           if-no-files-found: warn
           retention-days: 30
 
