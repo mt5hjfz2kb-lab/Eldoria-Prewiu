@@ -1,18 +1,18 @@
 {
-  "enabled": false,
-  "request_id": "eldoria-world4x-rock-boar-hunt-v1-20261020",
-  "module_label": "Eldoria_RockBoar_FirstHunt_v1",
+  "enabled": true,
+  "request_id": "eldoria-spawnling-bastion2-h31-one-20261021",
+  "module_label": "Eldoria_Spawnling_Bastion2_v1",
   "unity_yaw_degrees": 0,
   "source": {
     "mode": "tripo_text",
     "tripo_model": "v3.1-20260211",
     "face_limit": 85000,
-    "prompt": "Eldoria medieval fantasy 4X first-hunt creature: ONE realistic-stylized RO​​CK BOAR (wild Sus scrofa) standing on four strong short legs, full body, natural believable anatomy. Thick stocky torso, powerful muscular shoulders, dark umber and charcoal coarse bristly fur, narrow amber eyes, compact ears, pronounced snout and TWO short curved ivory tusks, black hooves, short tail. Faint slate-grey rocky crust along upper back and shoulders only, organically blended into fur, never armor; weathered woodland creature with subtle stone coloring. Strong readable silhouette for high isometric strategy camera, rich physically based fur texture, restrained natural colors, grounded side three-quarter standing neutral pose that could later be rigged. Single whole animal, centered isolated model, no ground plane, no base, no scenery, no rider, no harness, no collar, no weapons, no text, no extra heads, no extra limbs, no fantasy horns, no cartoon proportions."
+    "prompt": "ONE small early-game Rift Spawnling creature for medieval dark fantasy 4X game, full body standalone 3D creature in neutral crouched alert pose. Approximately 1.35 meters tall, hunched asymmetric silhouette, compact vaguely human torso but bestial stance, exactly TWO elongated forearms with short claws and TWO powerful digitigrade legs, one head with narrow distorted face and small fangs, broad low shoulders and curved back. Desaturated matte purple/violet leathery skin with charcoal patches, a few thin muted lavender fissure veins on back and shoulder, extremely subtle lilac inner glow, coherent anatomy suitable for future rigging. Recognizable at high isometric camera distance, eerie organic design, realistic stylized detailed PBR skin. No clothes, no armor, no weapon, no wings, no horns, no extra limbs or head, no enormous spikes, no exposed organs, no blood, no pedestal, no ground, no scenery, no text, no floating pieces."
   },
   "credit_authorization": {
-    "approved": false,
+    "approved": true,
     "authorized_credit_cost": 20,
-    "scope": "ONE text-to-3D H3.1 standard-texture rock boar for Eldoria first hunt, explicitly commissioned by owner after 5 EUR API recharge on 2026-10-20; no retries, no other paid tasks"
+    "scope": "Owner explicit instruction 2026-10-21 to create Engendro de la Fisura and separate corruption focus using existing prepaid Tripo API credits; approval narrowly limited to ONE H3.1 text + STANDARD PBR generation of canonical enemy spawnling; max 20 credits; no retry, other assets separate approval."
   },
   "refinement": {
     "enabled": false
@@ -28,9 +28,9 @@
   "promotion": {
     "enabled": false
   },
-  "visual_acceptance": "Rock boar (v0220 enemy id=boar, Jabalí de roca), identifiable boar silhouette at Unity strategic/city/detail zooms and angled back/front, believable anatomy with exactly four legs and two short tusks, dark textured bristles and subtle natural slate shoulders (not decorative armor). PBR and UV/color preserved, grounding and collider/picking verified. No extra objects/background, no melted/fused proportions, no spikes. Keep lore, node IDs, economy, savegames, world routes, and city scene intact. Capture true Unity PNGs and retain original Tripo GLB + Blender editable + optimized GLB. No automatic production promotion or publication; review first.",
-  "run_nonce": "boar-archive-only-preserve-unity-2k-evidence-20261021",
-  "notes": "Read-only archive of the same one-time Tripo H3.1 boar: original 20-credit task 28f57ff9-b978-468c-8c2a-6136e0a65ea1, raw+optimized+blend and genuine Unity 2K captures from 39505056649 into ArtSource/World4X/RockBoar_v1. NO Tripo generation, Windows runner, Unity build, gameplay or automatic promotion.",
+  "visual_acceptance": "Spawnling enemy source only, v0220 entity id spawnling, Bastion II: small hunched violet partly deformed quadruped-like humanoid with coherent TWO forearms, TWO legs and ONE head; natural base, legible high-isometric silhouette, subtle Rift veins (not demon horns). UV0, normals, texture maps 2K require real Unity QA. Retain original raw GLB/Blender .blend/optimized GLB. No gameplay edits, no automatic promotion, no world hotspot/camp or live scene mutation.",
+  "run_nonce": "spawnling-h31-20261021-one-20-credit-generation-no-retry",
+  "notes": "First of 2 Tripo API art-source trials. Docs: docs/TRIPO_API_JABALI_LECCIONES_20261021.md and docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md. One paid generation only, 20 credits, sequential with later Rift Focus; if paid step succeeds but downstream QA fails use task ID, never regenerate.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
