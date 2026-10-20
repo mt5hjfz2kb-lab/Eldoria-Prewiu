@@ -1,0 +1,30 @@
+{
+    "asset": "Eldoria_RockBoar_FirstHunt_v1",
+    "source": "Assets/RockBoar.glb",
+    "unityVersion": "6000.3.23f1",
+    "meshes": 1,
+    "renderers": 1,
+    "materials": 1,
+    "textures": 3,
+    "importedBaseColorWidth": 2048,
+    "importedBaseColorHeight": 2048,
+    "fullResolutionTexturePass": true,
+    "triangles": 49800,
+    "vertices": 34125,
+    "uv0AllMeshes": true,
+    "normalsAllMeshes": true,
+    "positiveSelection": true,
+    "emptySelectionMiss": true,
+    "capturesValid": true,
+    "worldBounds": {
+        "x": 1.7000000476837159,
+        "y": 0.9746842384338379,
+        "z": 0.5594873428344727
+    },
+    "captureFiles": [
+        "boar-unity-isometric-textured.png",
+        "boar-unity-side-textured.png",
+        "boar-unity-front-textured.png",
+        "boar-unity-strategic-textured.png"
+    ]
+}
