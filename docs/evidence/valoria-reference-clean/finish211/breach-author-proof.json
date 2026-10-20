@@ -1,0 +1,21 @@
+{
+  "source_world_survey_sha256": "6c17142a5ef11fefcf4f56044d1edb3074bd6140034a647e87108a3bebb661f0",
+  "blend_sha256": "8cfc98aab46da1e1f1736504f16cfca6a4f0a631985149676cb1d4aee1967ae0",
+  "mesh_sha256": "81edab100c6e0bc465440bdbe3415b45329e7927215b5aa65a2b35ef939c36cc",
+  "triangles": [
+    376,
+    424,
+    288,
+    288
+  ],
+  "new_settlements": false,
+  "gameplay_nodes_untouched": true,
+  "art_approved": false,
+  "operations": [
+    "measured heightfield contact",
+    "irregular fracture plates",
+    "closed broken sides",
+    "narrow branching corruption seams"
+  ],
+  "lore": "v0220 altered matter and violet/black fissure signature; no camps, monuments or new enemy rules"
+}
