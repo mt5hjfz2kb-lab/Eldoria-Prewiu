@@ -1,1 +1,10 @@
-{"phase1_visual_accepted":true,"gameplay_validation":"PENDING_CURRENT_PROBE","scene_sha256":"51b973fb826d95ede358724a3b270a25a85c5c03a60a3b177a2c09470164afc3","candidate_sha256":"e53003405169bdc766d3b8d6b432680d6182c4ca7237573ce2d55c6285024df5","published":false}
+{
+  "phase1_visual_accepted": true,
+  "gameplay_validation": "PASS_35_EXISTING_CHECKS",
+  "scene_sha256": "51b973fb826d95ede358724a3b270a25a85c5c03a60a3b177a2c09470164afc3",
+  "candidate_sha256": "e53003405169bdc766d3b8d6b432680d6182c4ca7237573ce2d55c6285024df5",
+  "published": false,
+  "native_run": 39450899545,
+  "integration_commit": "7bdda6f80309b49b1e7aee59b86baccd6c3db39f",
+  "visual_review": "Real runtime city 16:9 and construction portrait inspected; accepted first improvement, no full-scene score certification"
+}

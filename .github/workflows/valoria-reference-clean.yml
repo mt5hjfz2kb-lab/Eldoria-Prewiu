@@ -205,6 +205,7 @@ jobs:
           if($req.stage -eq 'experience_finish'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.Improve';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'visual_leap'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.VisualLeap';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'experience_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'architecture_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Survey'}
           if($req.stage -eq 'terrain_bank_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainBankAuthoring.Survey'}
           if($req.stage -eq 'terrain_bank_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainBankAuthoring.Trial'}
           if($req.stage -eq 'terrain_bank_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainBankAuthoring.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
@@ -362,7 +363,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui','experience_finish','experience_validate','visual_leap','owner_city_cliffs_probe','city_bank_meadow_trial','terrain_bank_survey','terrain_bank_trial','terrain_bank_integrate')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui','experience_finish','experience_validate','visual_leap','owner_city_cliffs_probe','city_bank_meadow_trial','terrain_bank_survey','terrain_bank_trial','terrain_bank_integrate','architecture_survey')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
           if($req.stage -eq 'web_playtest'){$args+=@('-buildTarget','WebGL')}
 
@@ -607,7 +608,7 @@ jobs:
           compression-level: 1
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate'
+        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey'
         with:
           name: valoria-review-small-${{ github.run_id }}
           path: |
@@ -632,11 +633,12 @@ jobs:
 
 
       - uses: actions/upload-artifact@v4
-        if: always() && (steps.native_stage.outputs.stage == 'terrain_bank_trial' || steps.native_stage.outputs.stage == 'terrain_bank_survey' || steps.native_stage.outputs.stage == 'terrain_bank_integrate')
+        if: always() && (steps.native_stage.outputs.stage == 'terrain_bank_trial' || steps.native_stage.outputs.stage == 'terrain_bank_survey' || steps.native_stage.outputs.stage == 'terrain_bank_integrate' || steps.native_stage.outputs.stage == 'architecture_survey')
         with:
           name: valoria-terrain-bank-${{ github.run_id }}
           path: |
             valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-bank192/**
+            valoria-layered-source/docs/evidence/valoria-reference-clean/architecture201/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/native-unity.log
           if-no-files-found: warn
           compression-level: 1
@@ -655,7 +657,7 @@ jobs:
           if-no-files-found: warn
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
+        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
