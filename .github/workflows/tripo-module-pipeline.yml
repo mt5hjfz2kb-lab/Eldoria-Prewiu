@@ -16,6 +16,87 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  tripo-raw-recover:
+    if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'push' && contains(github.event.head_commit.message, '[tripo-recover-only]')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 22
+    steps:
+      - name: Verify this is a recovery of a previously paid H3.1 task
+        id: pre
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          $uri='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/pipeline/tripo-module-request.json'
+          $request=(Invoke-WebRequest -Uri $uri -UseBasicParsing -TimeoutSec 30).Content | ConvertFrom-Json
+          if ([bool]$request.enabled -or [bool]$request.credit_authorization.approved) { throw 'Paid generation still enabled; refuse recovery.' }
+          $recover=$request.recover
+          if ([string]$recover.asset_name -ne 'Eldoria_Spawnling_Bastion2_v1') { throw 'Wrong recovery identity.' }
+          if ([string]$recover.expected_raw_sha256 -notmatch '^[0-9a-fA-F]{64}$') { throw 'Missing expected raw hash.' }
+          if ([long]$recover.source_run_id -ne 39511077721) { throw 'Wrong original task run.' }
+          if ([string]$recover.raw_artifact -notmatch '^tripo-raw-eldoria-spawnling-') { throw 'Unexpected source artifact.' }
+          ('asset='+[string]$recover.asset_name) >> $env:GITHUB_OUTPUT
+          ('request_id='+[string]$request.request_id) >> $env:GITHUB_OUTPUT
+          ('source_run='+[string]$recover.source_run_id) >> $env:GITHUB_OUTPUT
+          ('raw_sha='+[string]$recover.expected_raw_sha256) >> $env:GITHUB_OUTPUT
+          ('raw_name='+[string]$recover.raw_artifact) >> $env:GITHUB_OUTPUT
+          Write-Host 'TRIPO_RECOVERY_ONLY=PASS original task was already paid, new credits=0'
+      - name: Download original GLB from paid task
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.pre.outputs.raw_name }}
+          run-id: ${{ steps.pre.outputs.source_run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/tripo-paid-source
+      - name: Recover existing canonical Blender processor from exact commit
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $out=Join-Path $env:RUNNER_TEMP 'tripo_module_blender.py'
+          $url='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tripo_module_blender.py'
+          Invoke-WebRequest -Uri $url -OutFile $out -UseBasicParsing -TimeoutSec 30
+          if (-not (Test-Path $out) -or (Get-Item $out).Length -lt 15000) { throw 'Canonical processor download failed.' }
+      - name: Optimize exact paid model with installed Blender without calling Tripo
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          $matches=@(Get-ChildItem (Join-Path $env:RUNNER_TEMP 'tripo-paid-source') -Filter 'Eldoria_Module_UnderReview_HQ.glb' -Recurse -File)
+          if ($matches.Count -ne 1) { throw 'Expected one raw paid GLB.' }
+          $raw=$matches[0].FullName
+          $sha=(Get-FileHash -Algorithm SHA256 $raw).Hash.ToLowerInvariant()
+          if ($sha -ne '${{ steps.pre.outputs.raw_sha }}') { throw ('Raw Tripo task hash mismatch '+$sha) }
+          $out=Join-Path $env:RUNNER_TEMP 'tripo-recovered-source'
+          New-Item -ItemType Directory -Force $out | Out-Null
+          Copy-Item $raw (Join-Path $out 'Eldoria_Module_UnderReview_HQ.glb')
+          $blend=''
+          $command=Get-Command blender.exe -ErrorAction SilentlyContinue
+          if ($command) { $blend=$command.Source }
+          if (-not $blend) {
+            $candidate=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1
+            if ($candidate) { $blend=$candidate.FullName }
+          }
+          if (-not $blend -or -not (Test-Path $blend)) { throw 'Installed Blender missing.' }
+          $args=@('--background','--python',(Join-Path $env:RUNNER_TEMP 'tripo_module_blender.py'),'--','--input',$raw,'--output',(Join-Path $out 'Eldoria_Module_UnderReview_50K.glb'),'--report',(Join-Path $out 'tripo-module-blender-report.json'),'--target-tris','49800','--min-tris','49500','--max-tris','50000','--save-blend')
+          $log=Join-Path $out 'blender.log'
+          $err=Join-Path $out 'blender-errors.log'
+          $p=Start-Process -FilePath $blend -ArgumentList $args -PassThru -Wait -RedirectStandardOutput $log -RedirectStandardError $err
+          if ($p.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 90 }; if (Test-Path $err) { Get-Content $err -Tail 90 }; throw ('Blender recovery failed: '+$p.ExitCode) }
+          foreach ($file in @('Eldoria_Module_UnderReview_50K.glb','Eldoria_Module_UnderReview_50K.blend','tripo-module-blender-report.json')) { if (-not (Test-Path (Join-Path $out $file))) { throw ('Missing expected output '+$file) } }
+          @('asset=${{ steps.pre.outputs.asset }}','original_run=${{ steps.pre.outputs.source_run }}','original_task=351d1034-25ec-4300-a2e0-d03a0e68175a','paid_credits=20','additional_credits=0','original_sha256='+$sha,'optimized_sha256='+((Get-FileHash -Algorithm SHA256 (Join-Path $out 'Eldoria_Module_UnderReview_50K.glb')).Hash.ToLowerInvariant())) | Set-Content (Join-Path $out 'source-identity.txt')
+          Get-Content (Join-Path $out 'tripo-module-blender-report.json')
+      - name: Preserve recovered original source as a separate immutable artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tripo-raw-${{ steps.pre.outputs.request_id }}-${{ github.sha }}
+          path: ${{ runner.temp }}/tripo-recovered-source/Eldoria_Module_UnderReview_HQ.glb
+          if-no-files-found: warn
+      - name: Preserve optimized GLB Blender editable and reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-tripo-module-${{ steps.pre.outputs.request_id }}-${{ github.sha }}
+          path: ${{ runner.temp }}/tripo-recovered-source/*
+          if-no-files-found: warn
+
   tripo-source-archive:
     if: github.event_name == 'push' && contains(github.event.head_commit.message, '[tripo-archive-only]')
     runs-on: ubuntu-latest
@@ -325,7 +406,7 @@ jobs:
           path: ${{ runner.temp }}/eldoria-boar-unity-isolated-20261020/Output/*
           if-no-files-found: warn
   module-gate:
-    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]') && !contains(github.event.head_commit.message, '[tripo-review-only]') && !contains(github.event.head_commit.message, '[tripo-archive-only]')
+    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]') && !contains(github.event.head_commit.message, '[tripo-review-only]') && !contains(github.event.head_commit.message, '[tripo-archive-only]') && !contains(github.event.head_commit.message, '[tripo-recover-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
 
