@@ -1,5 +1,5 @@
 {
-    "source": "2fa5d4e5598c62c4c2139998442e6ce2c7d23da3",
+    "source": "6c5c7d4dfd04dc10586a897aed3b072c70ddf25e",
     "status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
     "error": "",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
@@ -38,7 +38,11 @@
         "Royal march action becomes available",
         "Royal march confirmation via visible primary button",
         "Royal I-II chapter complete and reload",
-        "canonical save byte hashes preserved"
+        "canonical save byte hashes preserved",
+        "native authored destination capture forest-valoria",
+        "native authored destination capture quarry-valoria",
+        "native authored destination capture corrupt-scout",
+        "native authored destination capture engendro-valoria"
     ],
     "framing": [
         {
@@ -153,6 +157,158 @@
                 0.3540625274181366,
                 0.9850000143051148,
                 0.7120312452316284
+            ]
+        },
+        {
+            "capture": "integration-art-forest-valoria-landscape.png",
+            "target": "forest-valoria",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.4500274658203125,
+                0.427504301071167,
+                0.6166343688964844,
+                0.6696327924728394
+            ],
+            "visible": [
+                0.007499999832361937,
+                0.140000119805336,
+                0.9925000071525574,
+                0.7933335900306702
+            ]
+        },
+        {
+            "capture": "integration-art-forest-valoria-portrait.png",
+            "target": "forest-valoria",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.18931005895137788,
+                0.427504301071167,
+                0.7158699035644531,
+                0.6696327924728394
+            ],
+            "visible": [
+                0.014999999664723874,
+                0.08859334886074066,
+                0.9850000143051148,
+                0.7946874499320984
+            ]
+        },
+        {
+            "capture": "integration-art-quarry-valoria-landscape.png",
+            "target": "quarry-valoria",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.4418926239013672,
+                0.20475149154663087,
+                0.6176729202270508,
+                0.5412113666534424
+            ],
+            "visible": [
+                0.007499999832361937,
+                0.1400003582239151,
+                0.9925000071525574,
+                0.7933337688446045
+            ]
+        },
+        {
+            "capture": "integration-art-quarry-valoria-portrait.png",
+            "target": "quarry-valoria",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.22222326695919038,
+                0.2508223056793213,
+                0.7777748107910156,
+                0.5872821807861328
+            ],
+            "visible": [
+                0.014999999664723874,
+                0.08859358727931977,
+                0.9850000143051148,
+                0.7946874499320984
+            ]
+        },
+        {
+            "capture": "integration-art-corrupt-scout-landscape.png",
+            "target": "corrupt-scout",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.307830810546875,
+                0.3470180630683899,
+                0.41841888427734377,
+                0.6810752749443054
+            ],
+            "visible": [
+                0.007499999832361937,
+                0.140000119805336,
+                0.9925000071525574,
+                0.7933337688446045
+            ]
+        },
+        {
+            "capture": "integration-art-corrupt-scout-portrait.png",
+            "target": "corrupt-scout",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.32524487376213076,
+                0.2984328866004944,
+                0.6747570037841797,
+                0.6324901580810547
+            ],
+            "visible": [
+                0.014999999664723874,
+                0.08859358727931977,
+                0.9850000143051148,
+                0.7946874499320984
+            ]
+        },
+        {
+            "capture": "integration-art-engendro-valoria-landscape.png",
+            "target": "engendro-valoria",
+            "width": 1600,
+            "height": 900,
+            "pass": true,
+            "projected": [
+                0.2664461135864258,
+                0.2885333299636841,
+                0.3367586135864258,
+                0.4762285351753235
+            ],
+            "visible": [
+                0.007499999832361937,
+                0.140000119805336,
+                0.9925000071525574,
+                0.7933337688446045
+            ]
+        },
+        {
+            "capture": "integration-art-engendro-valoria-portrait.png",
+            "target": "engendro-valoria",
+            "width": 900,
+            "height": 1600,
+            "pass": true,
+            "projected": [
+                0.38888928294181826,
+                0.3282972574234009,
+                0.6111125946044922,
+                0.5159924626350403
+            ],
+            "visible": [
+                0.014999999664723874,
+                0.08859358727931977,
+                0.9850000143051148,
+                0.7946874499320984
             ]
         }
     ],

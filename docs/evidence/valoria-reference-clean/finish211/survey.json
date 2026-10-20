@@ -1,0 +1,2193 @@
+{
+    "scene_sha256": "eee58998a2b58f35a14bb64aa74bd11ace67e10f781afe125df52df759a538d6",
+    "parts": [
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 2/Forest retained Valoria pine 00",
+            "min": {
+                "x": -20.555025100708009,
+                "y": 2.0467560291290285,
+                "z": 54.72802734375
+            },
+            "max": {
+                "x": -16.349191665649415,
+                "y": 8.71924877166748,
+                "z": 58.88902282714844
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Gate_LowerGate_WestTower",
+            "path": "Valoria authored architecture and environment/Scene/Gate_LowerGate_WestTower",
+            "min": {
+                "x": -6.338809490203857,
+                "y": 0.6729996204376221,
+                "z": -12.941038131713868
+            },
+            "max": {
+                "x": -3.1848092079162599,
+                "y": 8.557999610900879,
+                "z": -9.739538192749024
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006",
+                "NativeGI_Material_007",
+                "NativeGI_Material_028"
+            ],
+            "vertices": 11262,
+            "triangles": 4419
+        },
+        {
+            "name": "Camp87 sculpted canvas",
+            "path": "Valoria gameplay / existing rules and UI/Barracks / authored canvas camp/Camp cloth87 model/Scene/Camp87 sculpted canvas",
+            "min": {
+                "x": 25.271608352661134,
+                "y": 0.5555553436279297,
+                "z": 28.512104034423829
+            },
+            "max": {
+                "x": 31.424291610717775,
+                "y": 4.301235198974609,
+                "z": 34.572200775146487
+            },
+            "active": false,
+            "materials": [
+                "Camp87_0008 1"
+            ],
+            "vertices": 2934,
+            "triangles": 4544
+        },
+        {
+            "name": "Bridge_ArchSpandrel.001",
+            "path": "Valoria authored architecture and environment/Scene/Bridge_ArchSpandrel.001",
+            "min": {
+                "x": -3.9112696647644045,
+                "y": -3.674999952316284,
+                "z": -35.3418083190918
+            },
+            "max": {
+                "x": 2.616532802581787,
+                "y": -0.02500009536743164,
+                "z": -11.879315376281739
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_005"
+            ],
+            "vertices": 2451,
+            "triangles": 1628
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 26/Forest retained Valoria pine 00",
+            "min": {
+                "x": 9.180051803588868,
+                "y": 0.7745542526245117,
+                "z": 52.30045700073242
+            },
+            "max": {
+                "x": 14.203330993652344,
+                "y": 7.331687927246094,
+                "z": 57.3474235534668
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 2/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -34.5205078125,
+                "y": 0.4297633469104767,
+                "z": 29.301841735839845
+            },
+            "max": {
+                "x": -33.191810607910159,
+                "y": 1.0536882877349854,
+                "z": 30.622196197509767
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Bastion_II",
+            "path": "Bastion II / authored evolution/Bastion_II",
+            "min": {
+                "x": -10.644998550415039,
+                "y": 0.37999916076660159,
+                "z": 25.5049991607666
+            },
+            "max": {
+                "x": 10.645004272460938,
+                "y": 18.799999237060548,
+                "z": 43.14961242675781
+            },
+            "active": false,
+            "materials": [
+                "NativeGI_Material_011",
+                "NativeGI_Material_009",
+                "NativeGI_Material_014",
+                "NativeGI_Material_016",
+                "NativeGI_Material_013",
+                "NativeGI_Material_012",
+                "NativeGI_Material_015",
+                "NativeGI_Material_010",
+                "material-3",
+                "material-4",
+                "material-5",
+                "NativeGI_Material_024",
+                "NativeGI_Material_000",
+                "NativeGI_Material_025",
+                "NativeGI_Material_026",
+                "NativeGI_Material_000",
+                "NativeGI_Material_027",
+                "NativeGI_Material_017",
+                "NativeGI_Material_018"
+            ],
+            "vertices": 366884,
+            "triangles": 162306
+        },
+        {
+            "name": "Gate_LowerGate_WestWing",
+            "path": "Valoria authored architecture and environment/Scene/Gate_LowerGate_WestWing",
+            "min": {
+                "x": -14.274184226989746,
+                "y": 0.615999698638916,
+                "z": -10.120881080627442
+            },
+            "max": {
+                "x": -6.152483940124512,
+                "y": 3.4850001335144045,
+                "z": -7.058963298797607
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006",
+                "NativeGI_Material_007"
+            ],
+            "vertices": 1870,
+            "triangles": 726
+        },
+        {
+            "name": "Plot_29_32",
+            "path": "Valoria authored architecture and environment/Scene/Plot_29_32",
+            "min": {
+                "x": 20.344999313354493,
+                "y": 0.3050000071525574,
+                "z": 25.84499740600586
+            },
+            "max": {
+                "x": 37.654998779296878,
+                "y": 0.5799999833106995,
+                "z": 38.154998779296878
+            },
+            "active": false,
+            "materials": [
+                "Warm cultivated earth",
+                "Warm limestone 4",
+                "Warm limestone 3",
+                "Warm limestone 2",
+                "Warm limestone 0",
+                "Warm limestone 5",
+                "Warm limestone 1"
+            ],
+            "vertices": 8352,
+            "triangles": 3828
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 12/Forest retained Valoria pine 00",
+            "min": {
+                "x": -43.69514083862305,
+                "y": 0.7361154556274414,
+                "z": 25.848108291625978
+            },
+            "max": {
+                "x": -38.28798294067383,
+                "y": 7.586005210876465,
+                "z": 31.27369499206543
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 7/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 18.300334930419923,
+                "y": 0.5614056587219238,
+                "z": 28.54387664794922
+            },
+            "max": {
+                "x": 19.238059997558595,
+                "y": 1.1028929948806763,
+                "z": 29.55685043334961
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Camp87 Camp_Supplies",
+            "path": "Valoria gameplay / existing rules and UI/Barracks / authored canvas camp/Camp cloth87 model/Scene/Camp87 Camp_Supplies",
+            "min": {
+                "x": 23.96750259399414,
+                "y": 0.5934387445449829,
+                "z": 29.66959571838379
+            },
+            "max": {
+                "x": 34.266563415527347,
+                "y": 1.6099694967269898,
+                "z": 33.62871551513672
+            },
+            "active": false,
+            "materials": [
+                "Camp87_0005 1",
+                "Camp87_0006 1"
+            ],
+            "vertices": 800,
+            "triangles": 324
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 11/Forest retained Valoria pine 00",
+            "min": {
+                "x": 24.720195770263673,
+                "y": 0.5547451972961426,
+                "z": 17.233243942260743
+            },
+            "max": {
+                "x": 29.421768188476564,
+                "y": 7.01615047454834,
+                "z": 21.903520584106447
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Bridge_ArchSpandrel_DressedCourses.001",
+            "path": "Valoria authored architecture and environment/Scene/Bridge_ArchSpandrel_DressedCourses.001",
+            "min": {
+                "x": -3.9966371059417726,
+                "y": -3.6589999198913576,
+                "z": -35.365264892578128
+            },
+            "max": {
+                "x": 2.6980292797088625,
+                "y": -0.0409998893737793,
+                "z": -11.871384620666504
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_000",
+                "NativeGI_Material_001",
+                "NativeGI_Material_002",
+                "NativeGI_Material_003",
+                "NativeGI_Material_004",
+                "NativeGI_Material_005"
+            ],
+            "vertices": 43257,
+            "triangles": 22928
+        },
+        {
+            "name": "Ruin_-22_46",
+            "path": "Valoria authored architecture and environment/Scene/Ruin_-22_46",
+            "min": {
+                "x": -25.534996032714845,
+                "y": 1.5904216766357422,
+                "z": 43.87335968017578
+            },
+            "max": {
+                "x": -18.514995574951173,
+                "y": 5.689156532287598,
+                "z": 48.40185546875
+            },
+            "active": true,
+            "materials": [
+                "Recessed stone joints",
+                "Trial sandstone 2",
+                "Trial sandstone 3",
+                "Trial sandstone 1",
+                "Trial sandstone 4",
+                "Trial sandstone 5",
+                "Trial sandstone 0",
+                "Carved limestone"
+            ],
+            "vertices": 24768,
+            "triangles": 11352
+        },
+        {
+            "name": "Shrub_group",
+            "path": "Valoria authored architecture and environment/Scene/Shrub_group",
+            "min": {
+                "x": -40.45396423339844,
+                "y": -0.09469449520111084,
+                "z": -42.46588897705078
+            },
+            "max": {
+                "x": 48.45396423339844,
+                "y": 3.708486557006836,
+                "z": 59.46588897705078
+            },
+            "active": true,
+            "materials": [
+                "Leaves_TwistedTree"
+            ],
+            "vertices": 41400,
+            "triangles": 18900
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 1/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 34.381526947021487,
+                "y": 0.37797829508781435,
+                "z": 24.59150505065918
+            },
+            "max": {
+                "x": 35.78872299194336,
+                "y": 1.042881727218628,
+                "z": 25.96870231628418
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Dressed_abutment_south-1",
+            "path": "Valoria authored architecture and environment/Scene/Dressed_abutment_south-1",
+            "min": {
+                "x": -13.263856887817383,
+                "y": -3.490999937057495,
+                "z": -33.79148483276367
+            },
+            "max": {
+                "x": -9.56584358215332,
+                "y": 0.3810000419616699,
+                "z": -28.916996002197267
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006"
+            ],
+            "vertices": 1320,
+            "triangles": 440
+        },
+        {
+            "name": "Foundation_shrubs_and_groundcover",
+            "path": "Valoria authored architecture and environment/Scene/Foundation_shrubs_and_groundcover",
+            "min": {
+                "x": -26.279090881347658,
+                "y": -0.10699236392974854,
+                "z": -11.830879211425782
+            },
+            "max": {
+                "x": 47.70970153808594,
+                "y": 3.180286407470703,
+                "z": 52.993431091308597
+            },
+            "active": true,
+            "materials": [
+                "Shrub leaf 3",
+                "Shrub leaf 0",
+                "Shrub leaf 1",
+                "Shrub leaf 2"
+            ],
+            "vertices": 51120,
+            "triangles": 7200
+        },
+        {
+            "name": "Meadow_tufts_east",
+            "path": "Valoria authored architecture and environment/Scene/Meadow_tufts_east",
+            "min": {
+                "x": -0.07378959655761719,
+                "y": -0.667306661605835,
+                "z": -48.06936264038086
+            },
+            "max": {
+                "x": 59.97193908691406,
+                "y": 5.735485076904297,
+                "z": 65.21843719482422
+            },
+            "active": true,
+            "materials": [
+                "Meadow blade 1",
+                "Meadow blade 0",
+                "Meadow blade 2"
+            ],
+            "vertices": 38340,
+            "triangles": 12780
+        },
+        {
+            "name": "Bridge_Paving",
+            "path": "Valoria authored architecture and environment/Scene/Bridge_Paving",
+            "min": {
+                "x": -11.112703323364258,
+                "y": 0.4320027232170105,
+                "z": -35.12342071533203
+            },
+            "max": {
+                "x": 1.8541803359985352,
+                "y": 0.5479876399040222,
+                "z": -9.978129386901856
+            },
+            "active": true,
+            "materials": [
+                "material-18",
+                "material-19",
+                "material-20",
+                "material-21",
+                "material-22",
+                "material-23"
+            ],
+            "vertices": 31008,
+            "triangles": 14212
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 21/Forest retained Valoria pine 00",
+            "min": {
+                "x": 30.42410659790039,
+                "y": 1.9147968292236329,
+                "z": 49.4777946472168
+            },
+            "max": {
+                "x": 33.631893157958987,
+                "y": 6.869298934936523,
+                "z": 52.71700668334961
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Gate_LowerGate_EastWing",
+            "path": "Valoria authored architecture and environment/Scene/Gate_LowerGate_EastWing",
+            "min": {
+                "x": 3.717068672180176,
+                "y": 0.615999698638916,
+                "z": -9.718647003173829
+            },
+            "max": {
+                "x": 11.274182319641114,
+                "y": 3.4850001335144045,
+                "z": -7.9251861572265629
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006",
+                "NativeGI_Material_007"
+            ],
+            "vertices": 1890,
+            "triangles": 726
+        },
+        {
+            "name": "Measured low river bank / terrain-bank197",
+            "path": "Measured low river bank / terrain-bank197",
+            "min": {
+                "x": -72.0,
+                "y": -3.861586809158325,
+                "z": -37.18718719482422
+            },
+            "max": {
+                "x": 72.0,
+                "y": 1.4165432453155518,
+                "z": -8.759780883789063
+            },
+            "active": true,
+            "materials": [
+                "Seamless mineral boulder surface"
+            ],
+            "vertices": 2288,
+            "triangles": 3948
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 15/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 16.821352005004884,
+                "y": 0.48453283309936526,
+                "z": 31.337865829467775
+            },
+            "max": {
+                "x": 18.08250617980957,
+                "y": 1.0793999433517457,
+                "z": 32.60425567626953
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 3/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 38.19468688964844,
+                "y": 0.5376276969909668,
+                "z": 35.78899002075195
+            },
+            "max": {
+                "x": 39.66807556152344,
+                "y": 1.2355823516845704,
+                "z": 37.27534866333008
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 8/Forest retained Valoria pine 00",
+            "min": {
+                "x": 34.38224411010742,
+                "y": 1.516927719116211,
+                "z": 42.887752532958987
+            },
+            "max": {
+                "x": 39.15273666381836,
+                "y": 7.965553283691406,
+                "z": 47.68667984008789
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Woodland_ground_rocks",
+            "path": "Valoria authored architecture and environment/Scene/Woodland_ground_rocks",
+            "min": {
+                "x": -40.970340728759769,
+                "y": -0.24041950702667237,
+                "z": -45.256507873535159
+            },
+            "max": {
+                "x": 49.462406158447269,
+                "y": 3.855825901031494,
+                "z": 54.28417205810547
+            },
+            "active": true,
+            "materials": [
+                "River granite 0",
+                "River granite 3",
+                "River granite 1",
+                "River granite 4",
+                "River granite 2"
+            ],
+            "vertices": 10800,
+            "triangles": 3600
+        },
+        {
+            "name": "River_sedge_pockets",
+            "path": "Valoria authored architecture and environment/Scene/River_sedge_pockets",
+            "min": {
+                "x": 9.434913635253907,
+                "y": -0.5368070602416992,
+                "z": -12.782303810119629
+            },
+            "max": {
+                "x": 24.73644256591797,
+                "y": 0.9231586456298828,
+                "z": -10.325627326965332
+            },
+            "active": true,
+            "materials": [
+                "Shore sedge olive blades"
+            ],
+            "vertices": 504,
+            "triangles": 168
+        },
+        {
+            "name": "Bastion_I",
+            "path": "Valoria authored architecture and environment/Scene/Bastion_I",
+            "min": {
+                "x": -10.644998550415039,
+                "y": 0.38000011444091799,
+                "z": 25.5049991607666
+            },
+            "max": {
+                "x": 10.645004272460938,
+                "y": 17.0,
+                "z": 43.14961242675781
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_011",
+                "NativeGI_Material_009",
+                "NativeGI_Material_014",
+                "NativeGI_Material_016",
+                "NativeGI_Material_013",
+                "NativeGI_Material_012",
+                "NativeGI_Material_015",
+                "NativeGI_Material_010",
+                "material-3",
+                "material-4",
+                "material-5",
+                "NativeGI_Material_024",
+                "NativeGI_Material_000",
+                "NativeGI_Material_025",
+                "NativeGI_Material_026",
+                "NativeGI_Material_000",
+                "NativeGI_Material_027",
+                "NativeGI_Material_017",
+                "NativeGI_Material_018"
+            ],
+            "vertices": 323834,
+            "triangles": 142782
+        },
+        {
+            "name": "Plot_-23_28",
+            "path": "Valoria authored architecture and environment/Scene/Plot_-23_28",
+            "min": {
+                "x": -31.65500259399414,
+                "y": 0.3050000071525574,
+                "z": 21.845001220703126
+            },
+            "max": {
+                "x": -14.344998359680176,
+                "y": 0.5799999833106995,
+                "z": 34.15500259399414
+            },
+            "active": false,
+            "materials": [
+                "Warm cultivated earth",
+                "Warm limestone 4",
+                "Warm limestone 2",
+                "Warm limestone 0",
+                "Warm limestone 3",
+                "Warm limestone 5",
+                "Warm limestone 1"
+            ],
+            "vertices": 8352,
+            "triangles": 3828
+        },
+        {
+            "name": "Camp87 Camp_Awning",
+            "path": "Valoria gameplay / existing rules and UI/Barracks / authored canvas camp/Camp cloth87 model/Scene/Camp87 Camp_Awning",
+            "min": {
+                "x": 30.554889678955079,
+                "y": 0.5600008964538574,
+                "z": 31.776222229003908
+            },
+            "max": {
+                "x": 34.29999923706055,
+                "y": 3.0143511295318605,
+                "z": 33.98316192626953
+            },
+            "active": false,
+            "materials": [
+                "Camp87_0003 1",
+                "Camp87_0002 1",
+                "Camp87_0004 1"
+            ],
+            "vertices": 1826,
+            "triangles": 2052
+        },
+        {
+            "name": "Bridge_ArchSpandrel_DressedCourses",
+            "path": "Valoria authored architecture and environment/Scene/Bridge_ArchSpandrel_DressedCourses",
+            "min": {
+                "x": -11.991873741149903,
+                "y": -3.6589999198913576,
+                "z": -33.371826171875
+            },
+            "max": {
+                "x": -5.297207832336426,
+                "y": -0.0409998893737793,
+                "z": -9.877948760986329
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_005",
+                "NativeGI_Material_000",
+                "NativeGI_Material_002",
+                "NativeGI_Material_001",
+                "NativeGI_Material_004",
+                "NativeGI_Material_003"
+            ],
+            "vertices": 43062,
+            "triangles": 22928
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 4/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -26.9390869140625,
+                "y": -0.16688108444213868,
+                "z": 18.68248748779297
+            },
+            "max": {
+                "x": -25.397380828857423,
+                "y": 0.5811696648597717,
+                "z": 20.261791229248048
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Sawmill layered blue slate",
+            "path": "Valoria gameplay / existing rules and UI/Sawmill / local AI authored workshop/Scene/Sawmill layered blue slate",
+            "min": {
+                "x": -28.147462844848634,
+                "y": 3.540144443511963,
+                "z": 24.303421020507814
+            },
+            "max": {
+                "x": -18.013879776000978,
+                "y": 7.114139080047607,
+                "z": 31.696578979492189
+            },
+            "active": false,
+            "materials": [
+                "muted-slate-material-1",
+                "muted-slate-material-3",
+                "muted-slate-material-5",
+                "muted-slate-material-7",
+                "muted-slate-material-9"
+            ],
+            "vertices": 7224,
+            "triangles": 3612
+        },
+        {
+            "name": "Meadow_tufts_and_bank_reeds",
+            "path": "Valoria authored architecture and environment/Scene/Meadow_tufts_and_bank_reeds",
+            "min": {
+                "x": -56.25224304199219,
+                "y": -1.5894813537597657,
+                "z": -32.98677062988281
+            },
+            "max": {
+                "x": 50.19331359863281,
+                "y": -0.06286084651947022,
+                "z": -12.417844772338868
+            },
+            "active": true,
+            "materials": [
+                "Shrub leaf 0",
+                "Shrub leaf 3",
+                "Shrub leaf 2",
+                "Shrub leaf 1"
+            ],
+            "vertices": 1152,
+            "triangles": 384
+        },
+        {
+            "name": "Camp87 Camp_Timber",
+            "path": "Valoria gameplay / existing rules and UI/Barracks / authored canvas camp/Camp cloth87 model/Scene/Camp87 Camp_Timber",
+            "min": {
+                "x": 28.227569580078126,
+                "y": 0.5600008964538574,
+                "z": 28.719942092895509
+            },
+            "max": {
+                "x": 28.468326568603517,
+                "y": 4.405428409576416,
+                "z": 34.36436080932617
+            },
+            "active": false,
+            "materials": [
+                "Camp87_0003 1",
+                "Camp87_0002 1"
+            ],
+            "vertices": 800,
+            "triangles": 324
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 12/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -30.812992095947267,
+                "y": 0.21645641326904298,
+                "z": 19.472105026245118
+            },
+            "max": {
+                "x": -29.12055206298828,
+                "y": 1.1040587425231934,
+                "z": 21.255041122436525
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Bastion_I_Grounding",
+            "path": "Valoria authored architecture and environment/Bastion_I_Grounding",
+            "min": {
+                "x": -12.630873680114746,
+                "y": 0.126082181930542,
+                "z": 26.26694107055664
+            },
+            "max": {
+                "x": 13.016755104064942,
+                "y": 2.7145824432373049,
+                "z": 40.23774337768555
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_000",
+                "NativeGI_Material_001",
+                "NativeGI_Material_002",
+                "NativeGI_Material_003",
+                "NativeGI_Material_004",
+                "NativeGI_Material_005",
+                "NativeGI_Material_006",
+                "NativeGI_Material_007",
+                "NativeGI_Material_008",
+                "NativeGI_Material_009"
+            ],
+            "vertices": 56905,
+            "triangles": 24300
+        },
+        {
+            "name": "Plot_-19_9",
+            "path": "Valoria authored architecture and environment/Scene/Plot_-19_9",
+            "min": {
+                "x": -27.65500259399414,
+                "y": 0.3050000071525574,
+                "z": 2.845001220703125
+            },
+            "max": {
+                "x": -10.344998359680176,
+                "y": 0.5799999833106995,
+                "z": 15.15500259399414
+            },
+            "active": false,
+            "materials": [
+                "Warm cultivated earth",
+                "Warm limestone 0",
+                "Warm limestone 4",
+                "Warm limestone 3",
+                "Warm limestone 2",
+                "Warm limestone 1",
+                "Warm limestone 5"
+            ],
+            "vertices": 8352,
+            "triangles": 3828
+        },
+        {
+            "name": "Sawmill functional saw and timber",
+            "path": "Valoria gameplay / existing rules and UI/Sawmill / local AI authored workshop/Scene/Sawmill functional saw and timber",
+            "min": {
+                "x": -27.282482147216798,
+                "y": 0.5599994659423828,
+                "z": 24.556760787963868
+            },
+            "max": {
+                "x": -21.064849853515626,
+                "y": 2.756887197494507,
+                "z": 28.31599235534668
+            },
+            "active": false,
+            "materials": [
+                "material-6",
+                "material-7"
+            ],
+            "vertices": 2158,
+            "triangles": 1048
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 8/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -18.343172073364259,
+                "y": 0.6960296630859375,
+                "z": 35.734046936035159
+            },
+            "max": {
+                "x": -17.605886459350587,
+                "y": 1.1663035154342652,
+                "z": 36.54890441894531
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 15/Forest retained Valoria pine 00",
+            "min": {
+                "x": -28.065017700195314,
+                "y": 2.8307039737701418,
+                "z": 53.50886917114258
+            },
+            "max": {
+                "x": -24.891666412353517,
+                "y": 7.702959060668945,
+                "z": 56.651119232177737
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 17/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 27.178510665893556,
+                "y": 0.5789351463317871,
+                "z": 22.191308975219728
+            },
+            "max": {
+                "x": 28.879274368286134,
+                "y": 1.3865078687667847,
+                "z": 23.847871780395509
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Sawmill limestone footings and workshop",
+            "path": "Valoria gameplay / existing rules and UI/Sawmill / local AI authored workshop/Scene/Sawmill limestone footings and workshop",
+            "min": {
+                "x": -28.0669002532959,
+                "y": 0.5612683296203613,
+                "z": 24.374755859375
+            },
+            "max": {
+                "x": -17.799997329711915,
+                "y": 4.476781845092773,
+                "z": 31.625751495361329
+            },
+            "active": false,
+            "materials": [
+                "material-23",
+                "material-24",
+                "material-25",
+                "material-26",
+                "material-27",
+                "material-28"
+            ],
+            "vertices": 19104,
+            "triangles": 8756
+        },
+        {
+            "name": "Fir_tree_group",
+            "path": "Valoria authored architecture and environment/Scene/Fir_tree_group",
+            "min": {
+                "x": -47.69588088989258,
+                "y": -0.3830394744873047,
+                "z": -47.11854934692383
+            },
+            "max": {
+                "x": 50.61765670776367,
+                "y": 11.622647285461426,
+                "z": 62.16176986694336
+            },
+            "active": true,
+            "materials": [
+                "Bark_NormalTree.002",
+                "Leaves_Pine.002"
+            ],
+            "vertices": 255791,
+            "triangles": 136986
+        },
+        {
+            "name": "Camp87 Camp_Activity",
+            "path": "Valoria gameplay / existing rules and UI/Barracks / authored canvas camp/Camp cloth87 model/Scene/Camp87 Camp_Activity",
+            "min": {
+                "x": 23.699996948242189,
+                "y": 0.23230308294296266,
+                "z": 29.6160945892334
+            },
+            "max": {
+                "x": 30.019874572753908,
+                "y": 1.436089277267456,
+                "z": 35.48789596557617
+            },
+            "active": false,
+            "materials": [
+                "Camp87_0002 1",
+                "Camp87_0003 1",
+                "Camp87_0004 1"
+            ],
+            "vertices": 1810,
+            "triangles": 2052
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 10/Forest retained Valoria pine 00",
+            "min": {
+                "x": -9.784160614013672,
+                "y": 1.7988429069519044,
+                "z": 53.8533935546875
+            },
+            "max": {
+                "x": -4.026035785675049,
+                "y": 9.266483306884766,
+                "z": 59.58490753173828
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 0/Forest retained Valoria pine 00",
+            "min": {
+                "x": 22.4295654296875,
+                "y": 1.3836352825164796,
+                "z": 49.41302490234375
+            },
+            "max": {
+                "x": 25.57950210571289,
+                "y": 6.862797737121582,
+                "z": 52.603485107421878
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 19/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 39.55746078491211,
+                "y": 0.6085801124572754,
+                "z": 29.71868324279785
+            },
+            "max": {
+                "x": 41.133487701416019,
+                "y": 1.4098701477050782,
+                "z": 31.202547073364259
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Dressed_abutment_north-1",
+            "path": "Valoria authored architecture and environment/Scene/Dressed_abutment_north-1",
+            "min": {
+                "x": -7.1446332931518559,
+                "y": 0.15900000929832459,
+                "z": -12.52638053894043
+            },
+            "max": {
+                "x": -4.286532402038574,
+                "y": 0.38100001215934756,
+                "z": -7.341920852661133
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006"
+            ],
+            "vertices": 132,
+            "triangles": 44
+        },
+        {
+            "name": "Outer_Road",
+            "path": "Valoria authored architecture and environment/Scene/Outer_Road",
+            "min": {
+                "x": -19.38330841064453,
+                "y": 0.3420427739620209,
+                "z": -72.67465209960938
+            },
+            "max": {
+                "x": -5.138075828552246,
+                "y": 0.45798423886299136,
+                "z": -33.642860412597659
+            },
+            "active": true,
+            "materials": [
+                "material-12",
+                "material-13",
+                "material-14",
+                "material-15",
+                "material-16",
+                "material-17"
+            ],
+            "vertices": 39660,
+            "triangles": 18128
+        },
+        {
+            "name": "River_shore_foam",
+            "path": "Valoria authored architecture and environment/Scene/River_shore_foam",
+            "min": {
+                "x": -65.79401397705078,
+                "y": -2.0280001163482668,
+                "z": -33.79265213012695
+            },
+            "max": {
+                "x": 65.6496810913086,
+                "y": -2.0280001163482668,
+                "z": -12.226696014404297
+            },
+            "active": true,
+            "materials": [
+                "Rock intersection foam"
+            ],
+            "vertices": 5108,
+            "triangles": 2554
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 20/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -33.05854797363281,
+                "y": 0.34627488255500796,
+                "z": 22.339771270751954
+            },
+            "max": {
+                "x": -31.611391067504884,
+                "y": 1.1273915767669678,
+                "z": 23.675369262695314
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 10/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -32.448089599609378,
+                "y": 0.35011908411979678,
+                "z": 31.97137451171875
+            },
+            "max": {
+                "x": -31.203899383544923,
+                "y": 1.117840051651001,
+                "z": 33.336280822753909
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 18/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -30.794750213623048,
+                "y": 0.39132213592529299,
+                "z": 34.68589401245117
+            },
+            "max": {
+                "x": -29.083560943603517,
+                "y": 1.2253427505493165,
+                "z": 36.32576370239258
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Sawmill_State0_Materials",
+            "path": "Valoria gameplay / existing rules and UI/Sawmill reconstruction/Scene/Sawmill_State0_Materials",
+            "min": {
+                "x": -28.200000762939454,
+                "y": 0.7591730356216431,
+                "z": 25.09307289123535
+            },
+            "max": {
+                "x": -17.799999237060548,
+                "y": 1.703999400138855,
+                "z": 27.744001388549806
+            },
+            "active": false,
+            "materials": [
+                "Gameplay_00028",
+                "Gameplay_00027",
+                "Gameplay_00026",
+                "Gameplay_00023"
+            ],
+            "vertices": 2886,
+            "triangles": 1092
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 13/Forest retained Valoria pine 00",
+            "min": {
+                "x": 25.977703094482423,
+                "y": 2.936150312423706,
+                "z": 62.40250778198242
+            },
+            "max": {
+                "x": 30.345645904541017,
+                "y": 9.29886531829834,
+                "z": 66.80630493164063
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Sawmill_State0_Timber",
+            "path": "Valoria gameplay / existing rules and UI/Sawmill reconstruction/Scene/Sawmill_State0_Timber",
+            "min": {
+                "x": -25.559999465942384,
+                "y": 1.3439997434616089,
+                "z": 29.45600128173828
+            },
+            "max": {
+                "x": -19.719999313354493,
+                "y": 3.6239991188049318,
+                "z": 30.304000854492189
+            },
+            "active": false,
+            "materials": [
+                "Gameplay_00026",
+                "Gameplay_00027"
+            ],
+            "vertices": 1090,
+            "triangles": 432
+        },
+        {
+            "name": "River water",
+            "path": "River water",
+            "min": {
+                "x": -110.0,
+                "y": -2.049999952316284,
+                "z": -32.68804931640625
+            },
+            "max": {
+                "x": 110.0,
+                "y": -2.049999952316284,
+                "z": -13.559630393981934
+            },
+            "active": true,
+            "materials": [
+                "retained-river-deep-teal-10"
+            ],
+            "vertices": 442,
+            "triangles": 440
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 21/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 31.06610679626465,
+                "y": 0.8465266823768616,
+                "z": 39.43269729614258
+            },
+            "max": {
+                "x": 32.38434600830078,
+                "y": 1.617037296295166,
+                "z": 40.62112045288086
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Sawmill iron joinery",
+            "path": "Valoria gameplay / existing rules and UI/Sawmill / local AI authored workshop/Scene/Sawmill iron joinery",
+            "min": {
+                "x": -27.913190841674806,
+                "y": 1.5679097175598145,
+                "z": 24.496829986572267
+            },
+            "max": {
+                "x": -18.792966842651368,
+                "y": 4.368265151977539,
+                "z": 31.07821273803711
+            },
+            "active": false,
+            "materials": [
+                "material-8"
+            ],
+            "vertices": 366,
+            "triangles": 174
+        },
+        {
+            "name": "River_bank_rocks",
+            "path": "Valoria authored architecture and environment/Scene/River_bank_rocks",
+            "min": {
+                "x": -68.18756866455078,
+                "y": -3.539823532104492,
+                "z": -34.535606384277347
+            },
+            "max": {
+                "x": 66.91027069091797,
+                "y": 2.2795181274414064,
+                "z": -10.936704635620118
+            },
+            "active": true,
+            "materials": [
+                "Seamless mineral boulder surface"
+            ],
+            "vertices": 45148,
+            "triangles": 67582
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 13/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 27.212221145629884,
+                "y": 0.8571748733520508,
+                "z": 40.29816436767578
+            },
+            "max": {
+                "x": 28.67900276184082,
+                "y": 1.5875890254974366,
+                "z": 41.817405700683597
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 22/Forest retained Valoria pine 00",
+            "min": {
+                "x": -12.927938461303711,
+                "y": 0.2295546531677246,
+                "z": -0.7086166143417358
+            },
+            "max": {
+                "x": -9.016294479370118,
+                "y": 5.092019557952881,
+                "z": 3.21201229095459
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Bridge_Masonry",
+            "path": "Valoria authored architecture and environment/Scene/Bridge_Masonry",
+            "min": {
+                "x": -12.299010276794434,
+                "y": -3.7203800678253176,
+                "z": -35.464229583740237
+            },
+            "max": {
+                "x": 3.009037971496582,
+                "y": 3.424999952316284,
+                "z": -9.763457298278809
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_009",
+                "NativeGI_Material_010",
+                "NativeGI_Material_011",
+                "NativeGI_Material_012",
+                "NativeGI_Material_013",
+                "NativeGI_Material_014",
+                "NativeGI_Material_015",
+                "NativeGI_Material_016",
+                "NativeGI_Material_017",
+                "NativeGI_Material_018"
+            ],
+            "vertices": 67696,
+            "triangles": 29572
+        },
+        {
+            "name": "Gate_LowerGate_EastTower",
+            "path": "Valoria authored architecture and environment/Scene/Gate_LowerGate_EastTower",
+            "min": {
+                "x": 1.2825850248336793,
+                "y": 0.6729996204376221,
+                "z": -12.659159660339356
+            },
+            "max": {
+                "x": 4.816585540771484,
+                "y": 8.557999610900879,
+                "z": -9.457657814025879
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006",
+                "NativeGI_Material_007",
+                "NativeGI_Material_028"
+            ],
+            "vertices": 11203,
+            "triangles": 4419
+        },
+        {
+            "name": "Camp87 seams and guys",
+            "path": "Valoria gameplay / existing rules and UI/Barracks / authored canvas camp/Camp cloth87 model/Scene/Camp87 seams and guys",
+            "min": {
+                "x": 24.329072952270509,
+                "y": 0.3320624828338623,
+                "z": 28.72662925720215
+            },
+            "max": {
+                "x": 32.31332015991211,
+                "y": 4.319594383239746,
+                "z": 34.44060134887695
+            },
+            "active": false,
+            "materials": [
+                "Camp87_0009 1",
+                "Camp87_0010 1"
+            ],
+            "vertices": 12000,
+            "triangles": 7000
+        },
+        {
+            "name": "Sawmill oak frame",
+            "path": "Valoria gameplay / existing rules and UI/Sawmill / local AI authored workshop/Scene/Sawmill oak frame",
+            "min": {
+                "x": -28.19999885559082,
+                "y": 0.5599994659423828,
+                "z": 24.154563903808595
+            },
+            "max": {
+                "x": -17.9212589263916,
+                "y": 6.999825954437256,
+                "z": 31.845436096191408
+            },
+            "active": false,
+            "materials": [
+                "material-6"
+            ],
+            "vertices": 4608,
+            "triangles": 2176
+        },
+        {
+            "name": "Axial_Paving",
+            "path": "Valoria authored architecture and environment/Scene/Axial_Paving",
+            "min": {
+                "x": -4.223109245300293,
+                "y": 0.34213727712631228,
+                "z": -10.979999542236329
+            },
+            "max": {
+                "x": 2.485002040863037,
+                "y": 0.4579138159751892,
+                "z": 25.889999389648439
+            },
+            "active": true,
+            "materials": [
+                "material-6",
+                "material-7",
+                "material-8",
+                "material-9",
+                "material-10",
+                "material-11"
+            ],
+            "vertices": 38108,
+            "triangles": 17160
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 11/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 38.95348358154297,
+                "y": 0.6391376852989197,
+                "z": 32.66106414794922
+            },
+            "max": {
+                "x": 40.542388916015628,
+                "y": 1.5333175659179688,
+                "z": 34.366722106933597
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Gate_LowerGate_Base",
+            "path": "Valoria authored architecture and environment/Scene/Gate_LowerGate_Base",
+            "min": {
+                "x": -6.329083442687988,
+                "y": 0.3500000238418579,
+                "z": -12.789236068725586
+            },
+            "max": {
+                "x": 4.806817054748535,
+                "y": 0.7299996614456177,
+                "z": -9.467084884643555
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_007"
+            ],
+            "vertices": 1184,
+            "triangles": 440
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 5/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 23.672473907470704,
+                "y": 0.43411922454833987,
+                "z": 38.78751754760742
+            },
+            "max": {
+                "x": 25.18329620361328,
+                "y": 1.1970845460891724,
+                "z": 40.360286712646487
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 6/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -13.32052230834961,
+                "y": 0.22043612599372865,
+                "z": 23.812179565429689
+            },
+            "max": {
+                "x": -12.060403823852539,
+                "y": 0.89432692527771,
+                "z": 25.147037506103517
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Plot_28_12",
+            "path": "Valoria authored architecture and environment/Scene/Plot_28_12",
+            "min": {
+                "x": 19.344999313354493,
+                "y": 0.3050000071525574,
+                "z": 5.844995498657227
+            },
+            "max": {
+                "x": 36.654998779296878,
+                "y": 0.5799999833106995,
+                "z": 18.154998779296876
+            },
+            "active": false,
+            "materials": [
+                "Warm cultivated earth",
+                "Warm limestone 2",
+                "Warm limestone 0",
+                "Warm limestone 5",
+                "Warm limestone 1",
+                "Warm limestone 3",
+                "Warm limestone 4"
+            ],
+            "vertices": 8352,
+            "triangles": 3828
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 23/Forest retained Valoria pine 00",
+            "min": {
+                "x": -19.455198287963868,
+                "y": 2.3186447620391847,
+                "z": 61.96235275268555
+            },
+            "max": {
+                "x": -16.0183162689209,
+                "y": 7.26871395111084,
+                "z": 65.3715591430664
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 0/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -22.450584411621095,
+                "y": 0.8209576606750488,
+                "z": 36.208168029785159
+            },
+            "max": {
+                "x": -20.82876968383789,
+                "y": 1.6038129329681397,
+                "z": 37.77033233642578
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Ruin_-25_0",
+            "path": "Valoria authored architecture and environment/Scene/Ruin_-25_0",
+            "min": {
+                "x": -28.535001754760743,
+                "y": 0.17423152923583985,
+                "z": -1.8834294080734254
+            },
+            "max": {
+                "x": -21.18229866027832,
+                "y": 4.1502885818481449,
+                "z": 2.0652709007263185
+            },
+            "active": true,
+            "materials": [
+                "Recessed stone joints",
+                "Trial sandstone 4",
+                "Trial sandstone 5",
+                "Trial sandstone 3",
+                "Trial sandstone 1",
+                "Trial sandstone 0",
+                "Trial sandstone 2",
+                "Carved limestone"
+            ],
+            "vertices": 23616,
+            "triangles": 10824
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 7/Forest retained Valoria pine 00",
+            "min": {
+                "x": -44.99597930908203,
+                "y": 2.439042568206787,
+                "z": 46.82598114013672
+            },
+            "max": {
+                "x": -39.803489685058597,
+                "y": 9.081460952758789,
+                "z": 51.997520446777347
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Dressed_abutment_north1",
+            "path": "Valoria authored architecture and environment/Scene/Dressed_abutment_north1",
+            "min": {
+                "x": 0.7672489881515503,
+                "y": -1.1302850246429444,
+                "z": -14.360963821411133
+            },
+            "max": {
+                "x": 4.450766563415527,
+                "y": 0.3810000419616699,
+                "z": -9.505582809448243
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006"
+            ],
+            "vertices": 528,
+            "triangles": 176
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 19/Forest retained Valoria pine 00",
+            "min": {
+                "x": 22.087482452392579,
+                "y": 0.35011911392211916,
+                "z": 6.418323993682861
+            },
+            "max": {
+                "x": 25.170883178710939,
+                "y": 5.419295310974121,
+                "z": 9.466012001037598
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 14/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -15.113655090332032,
+                "y": 0.3258505165576935,
+                "z": 20.92289161682129
+            },
+            "max": {
+                "x": -13.894439697265625,
+                "y": 0.9121227264404297,
+                "z": 22.165918350219728
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 20/Forest retained Valoria pine 00",
+            "min": {
+                "x": -37.420738220214847,
+                "y": 0.8985099792480469,
+                "z": 37.890811920166019
+            },
+            "max": {
+                "x": -33.45056915283203,
+                "y": 5.767457485198975,
+                "z": 41.85640335083008
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Ruin_26_52",
+            "path": "Valoria authored architecture and environment/Scene/Ruin_26_52",
+            "min": {
+                "x": 22.014341354370118,
+                "y": 1.4084763526916505,
+                "z": 50.644283294677737
+            },
+            "max": {
+                "x": 30.3238468170166,
+                "y": 5.8644514083862309,
+                "z": 54.7599983215332
+            },
+            "active": true,
+            "materials": [
+                "Recessed stone joints",
+                "Trial sandstone 5",
+                "Trial sandstone 1",
+                "Trial sandstone 2",
+                "Trial sandstone 4",
+                "Trial sandstone 0",
+                "Trial sandstone 3",
+                "Carved limestone"
+            ],
+            "vertices": 45408,
+            "triangles": 20812
+        },
+        {
+            "name": "Ruin_46_-1",
+            "path": "Valoria authored architecture and environment/Scene/Ruin_46_-1",
+            "min": {
+                "x": 42.41093063354492,
+                "y": -0.0055997371673583988,
+                "z": -2.9300925731658937
+            },
+            "max": {
+                "x": 50.15431594848633,
+                "y": 4.720425605773926,
+                "z": 1.7599961757659913
+            },
+            "active": true,
+            "materials": [
+                "Recessed stone joints",
+                "Trial sandstone 4",
+                "Trial sandstone 5",
+                "Trial sandstone 1",
+                "Trial sandstone 2",
+                "Trial sandstone 3",
+                "Carved limestone",
+                "Trial sandstone 0"
+            ],
+            "vertices": 45984,
+            "triangles": 21076
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 9/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": 31.6036376953125,
+                "y": 0.5500330924987793,
+                "z": 22.95649528503418
+            },
+            "max": {
+                "x": 32.38838577270508,
+                "y": 1.0949361324310303,
+                "z": 23.840177536010743
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Quarry retained embedded rim rock 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria reclaimed natural stone 16/Quarry retained embedded rim rock 00",
+            "min": {
+                "x": -15.378023147583008,
+                "y": 0.36123374104499819,
+                "z": 33.705841064453128
+            },
+            "max": {
+                "x": -13.912952423095704,
+                "y": 1.0494132041931153,
+                "z": 35.154991149902347
+            },
+            "active": true,
+            "materials": [
+                "authored-material-19"
+            ],
+            "vertices": 285,
+            "triangles": 480
+        },
+        {
+            "name": "Sawmill_State0_Foundation",
+            "path": "Valoria gameplay / existing rules and UI/Sawmill reconstruction/Scene/Sawmill_State0_Foundation",
+            "min": {
+                "x": -27.1200008392334,
+                "y": 0.5600000619888306,
+                "z": 25.040000915527345
+            },
+            "max": {
+                "x": -18.48000144958496,
+                "y": 1.6799997091293336,
+                "z": 30.959999084472658
+            },
+            "active": false,
+            "materials": [
+                "Gameplay_00020",
+                "Gameplay_00023"
+            ],
+            "vertices": 1064,
+            "triangles": 432
+        },
+        {
+            "name": "Bridge_ArchSpandrel",
+            "path": "Valoria authored architecture and environment/Scene/Bridge_ArchSpandrel",
+            "min": {
+                "x": -11.906506538391114,
+                "y": -3.674999952316284,
+                "z": -33.34837341308594
+            },
+            "max": {
+                "x": -5.3787031173706059,
+                "y": -0.02500009536743164,
+                "z": -9.885879516601563
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_005"
+            ],
+            "vertices": 2432,
+            "triangles": 1628
+        },
+        {
+            "name": "River_shingle_pockets",
+            "path": "Valoria authored architecture and environment/Scene/River_shingle_pockets",
+            "min": {
+                "x": 8.18377685546875,
+                "y": -2.428938388824463,
+                "z": -15.910999298095704
+            },
+            "max": {
+                "x": 25.596885681152345,
+                "y": 0.825162410736084,
+                "z": -11.0643310546875
+            },
+            "active": true,
+            "materials": [
+                "Seamless mineral boulder surface"
+            ],
+            "vertices": 4864,
+            "triangles": 4960
+        },
+        {
+            "name": "Meadow_tufts_west",
+            "path": "Valoria authored architecture and environment/Scene/Meadow_tufts_west",
+            "min": {
+                "x": -60.24285125732422,
+                "y": -0.5355889797210693,
+                "z": -48.22442626953125
+            },
+            "max": {
+                "x": 0.16837120056152345,
+                "y": 4.6630048751831059,
+                "z": 65.22417449951172
+            },
+            "active": true,
+            "materials": [
+                "Meadow blade 2",
+                "Meadow blade 1",
+                "Meadow blade 0"
+            ],
+            "vertices": 36480,
+            "triangles": 12160
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 6/Forest retained Valoria pine 00",
+            "min": {
+                "x": 15.784139633178711,
+                "y": 0.15129327774047852,
+                "z": -1.8247931003570557
+            },
+            "max": {
+                "x": 20.82096290588379,
+                "y": 7.2296552658081059,
+                "z": 3.175067663192749
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Gate_LowerGate_Arch",
+            "path": "Valoria authored architecture and environment/Scene/Gate_LowerGate_Arch",
+            "min": {
+                "x": -3.556983470916748,
+                "y": 0.6729996204376221,
+                "z": -12.235823631286621
+            },
+            "max": {
+                "x": 1.6528164148330689,
+                "y": 8.177999496459961,
+                "z": -9.765824317932129
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006",
+                "NativeGI_Material_007",
+                "NativeGI_Material_008"
+            ],
+            "vertices": 13104,
+            "triangles": 5100
+        },
+        {
+            "name": "Dressed_abutment_south1",
+            "path": "Valoria authored architecture and environment/Scene/Dressed_abutment_south1",
+            "min": {
+                "x": -4.531355381011963,
+                "y": -1.427976131439209,
+                "z": -35.9609375
+            },
+            "max": {
+                "x": -1.6552019119262696,
+                "y": 0.3810000419616699,
+                "z": -30.743728637695314
+            },
+            "active": true,
+            "materials": [
+                "NativeGI_Material_006"
+            ],
+            "vertices": 660,
+            "triangles": 220
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 9/Forest retained Valoria pine 00",
+            "min": {
+                "x": -16.147480010986329,
+                "y": 0.35011911392211916,
+                "z": 10.25398063659668
+            },
+            "max": {
+                "x": -11.050506591796875,
+                "y": 7.113931179046631,
+                "z": 15.378107070922852
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        },
+        {
+            "name": "Forest retained Valoria pine 00",
+            "path": "Valoria gameplay / existing rules and UI/Visual polish / city environmental details v3/Valoria wild conifers / reclaimed 5/Forest retained Valoria pine 00",
+            "min": {
+                "x": 8.707605361938477,
+                "y": 1.6231985092163087,
+                "z": 60.44563674926758
+            },
+            "max": {
+                "x": 13.136238098144532,
+                "y": 7.175667762756348,
+                "z": 64.88687896728516
+            },
+            "active": true,
+            "materials": [
+                "authored-material-4",
+                "authored-material-6",
+                "authored-material-7",
+                "authored-material-8",
+                "authored-material-9"
+            ],
+            "vertices": 3708,
+            "triangles": 3626
+        }
+    ],
+    "sawmill_min": {
+        "x": -28.199996948242189,
+        "y": 0.5599994659423828,
+        "z": 24.154563903808595
+    },
+    "sawmill_max": {
+        "x": -17.79999542236328,
+        "y": 7.114139080047607,
+        "z": 31.845436096191408
+    },
+    "barracks_min": {
+        "x": 23.699996948242189,
+        "y": 0.23230314254760743,
+        "z": 28.512104034423829
+    },
+    "barracks_max": {
+        "x": 34.29999923706055,
+        "y": 4.405428409576416,
+        "z": 35.48789596557617
+    }
+}
