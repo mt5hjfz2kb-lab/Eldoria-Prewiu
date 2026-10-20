@@ -9,29 +9,31 @@ def gy(x,z):
  ix=math.floor((x-880)/2)*2+880;iz=math.floor((z+120)/2)*2-120;u=(x-ix)/2;v=(z-iz)/2
  return samples[(ix,iz)]*(1-u)*(1-v)+samples[(ix+2,iz)]*u*(1-v)+samples[(ix,iz+2)]*(1-u)*v+samples[(ix+2,iz+2)]*u*v
 bpy.ops.wm.read_factory_settings(use_empty=True)
-colors=[(.22,.19,.25),(.29,.25,.32),(.35,.31,.38),(.37,.065,.49),(.76,.30,.87),(.38,.29,.18),(.48,.37,.23)]
+colors=[(.22,.19,.25),(.29,.25,.32),(.35,.31,.38),(.19,.035,.25),(.48,.12,.60),(.38,.29,.18),(.48,.37,.23)]
 mats=[]
 for i,c in enumerate(colors):
  m=bpy.data.materials.new(['Altered bedrock','Fresh fracture','Weathered fracture edge','Violet corruption vein','Contained fissure core','Compacted workground','Sawdust workground'][i]);m.diffuse_color=(*c,1);m.use_nodes=True;p=next(n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED');p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=.91
  if i in (3,4):p.inputs['Emission Color'].default_value=(*c,1);p.inputs['Emission Strength'].default_value=.65
  mats.append(m)
 models=[]
-for index,(ident,radius,uplift) in enumerate([('corrupt-scout',2.7,.48),('engendro-valoria',3.8,1.65)]):
+for index,(ident,radius,uplift) in enumerate([('corrupt-scout',2.7,.30),('engendro-valoria',3.8,.72)]):
  node=next(n for n in world['nodes'] if n['id']==ident)['position'];cx,cz=node['x'],node['z'];rng=random.Random(211+index);vv=[];ff=[];ss=[]
  def add(points,faces,slot):
   offset=len(vv);vv.extend(points);ff.extend([tuple(offset+j for j in f) for f in faces]);ss.extend([slot]*len(faces))
  # Two fractured curved scarps flank an irregular narrow ground fissure.
  # The rejected native211 radial fan is replaced outright: no cone or disk.
  N=45;B=12
- def line(t):return .22*math.sin(t*5.3+index)+.09*math.sin(t*14.1+.3)
+ crease=[rng.uniform(-.28,.28) for _ in range(12)]
+ def line(t):
+  u=(t+1)*5.5;i=min(10,int(u));return crease[i]+(crease[i+1]-crease[i])*(u-i)
  for side in (-1,1):
   points=[]
   for k in range(N):
    t=-1+2*k/(N-1);x=cx+radius*t;zmid=cz+line(t);fade=max(0,1-t*t)**.7
    for j in range(B):
     q=j/(B-1);width=(.48*radius+.15*math.sin(t*11))*fade
-    z=zmid+side*(.34*fade+width*q)
-    rise=uplift*(.24 if side==-1 else 1)*fade*(1-q)**1.3*(.58+.16*math.sin(k*1.1+j*.8))
+    z=zmid+side*(.24*fade+width*q)
+    rise=uplift*(.24 if side==-1 else 1)*fade*(1-q)**1.3*(.68+.10*math.sin(k*.35+j*.8))
     fracture=.055*fade*math.sin(k*2.4+j*1.7)*math.sin(math.pi*q)
     height=gy(x,z)+rise+fracture+.035-.075*q*q
     points.append((x,-z,height))
@@ -46,12 +48,12 @@ for index,(ident,radius,uplift) in enumerate([('corrupt-scout',2.7,.48),('engend
   top=[points[k*B] for k in range(N)];bottom=[(x,y,gy(x,-y)+.018) for x,y,h in top]
   add(top+bottom,[(k,k+1,k+1+N,k+N) for k in range(N-1)],0)
  # Recessed vein is wide enough to read at local zoom, remains contained.
- for slot,wide,lift in [(0,.34,.035),(3,.23,.052),(4,.065,.061)]:
+ for slot,wide,lift in [(0,.24,.035),(3,.105,.052),(4,.027,.061)]:
   points=[]
   for k in range(N):
    t=-1+2*k/(N-1);fade=max(0,1-t*t)**.7;x=cx+radius*t;z=cz+line(t);w=wide*fade*(.75+.25*math.sin(k*.81)**2)
    points.extend([(x,-z-w,gy(x,z)+lift),(x,-z+w,gy(x,z)+lift)])
-  add(points,[(2*k,2*k+1,2*k+3,2*k+2) for k in range(N-1)],slot)
+  add(points,[(2*k,2*k+1,2*k+3,2*k+2) for k in range(N-1) if slot==0 or k%11 not in (0,1)],slot)
  mesh=bpy.data.meshes.new(ident+' measured fractured ground');mesh.from_pydata(vv,[],ff);mesh.update()
  for m in mats:mesh.materials.append(m)
  for p,slot in zip(mesh.polygons,ss):p.material_index=slot
@@ -59,7 +61,7 @@ for index,(ident,radius,uplift) in enumerate([('corrupt-scout',2.7,.48),('engend
  vertices=[];normals=[];uv=[];subs=[[] for m in mats]
  for p in mesh.polygons:
   for vi in p.vertices:
-   v=mesh.vertices[vi].co;n=p.normal;vertices.append({'x':v.x,'y':v.z,'z':-v.y});normals.append({'x':n.x,'y':n.z,'z':-n.y});uv.append({'x':v.x*.7,'y':-v.y*.7});subs[p.material_index].append(len(vertices)-1)
+   v=mesh.vertices[vi].co;n=p.normal;vertices.append({'x':v.x,'y':v.z,'z':-v.y});normals.append({'x':n.x,'y':n.z,'z':-n.y});axis=max(range(3),key=lambda a:abs(n[a]));axes=[a for a in range(3) if a!=axis];uv.append({'x':v[axes[0]]*.7,'y':v[axes[1]]*.7});subs[p.material_index].append(len(vertices)-1)
  models.append({'name':ident,'vertices':vertices,'normals':normals,'uv':uv,'submeshes':[{'indices':s} for s in subs]})
 # Small irregular contact aprons belong to already-unlocked functional models.
 # Their final vertices are projected onto the CURRENT city Terrain in Unity.

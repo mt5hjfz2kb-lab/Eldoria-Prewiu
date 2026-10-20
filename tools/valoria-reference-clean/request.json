@@ -1,11 +1,11 @@
 {
   "stage": "final_environment_trial",
   "validate_play": false,
-  "revision": 213,
+  "revision": 214,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Native213: expose the contained Breach seam by widening the fractured gap and lowering the foreground lip; retain reviewed city finishing. Same-camera Unity trial, no scene save or publication.",
+  "checks": "Reject native213 neon continuous stripe and ribbed high lip. Native214 changes to low fractured edges, jagged interrupted vein, restrained violet, dominant-plane UV for fracture walls. Real Unity comparison before any integration.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
