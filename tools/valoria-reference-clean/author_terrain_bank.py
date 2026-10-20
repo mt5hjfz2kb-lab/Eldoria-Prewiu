@@ -62,22 +62,33 @@ region={'type':'object','required':['compression','flare','inland','shear'],'pro
 schema['properties'].update(north=region,south=region,landforms={'type':'array','minItems':4,'maxItems':7,'items':{'type':'object','required':['center_index','rise','radius_x','radius_z'],'properties':{'center_index':{'type':'integer','minimum':0,'maximum':8},'rise':{'type':'number','minimum':.35,'maximum':1.0},'radius_x':{'type':'number','minimum':8,'maximum':15},'radius_z':{'type':'number','minimum':6,'maximum':12}}}})
 payload={'model':'qwen3:14b','stream':False,'think':False,'keep_alive':0,'format':schema,'messages':[{'role':'system','content':'You direct a bounded professional Blender terrain correction from real Unity geometry and independent visual diagnosis. Return only validated spatial JSON, no code. No art approval. Preserve canonical scene and gameplay.'},{'role':'user','content':json.dumps(context)}],'options':{'temperature':.2,'num_ctx':8192,'num_predict':1500}}
 write('qwen-request.json',payload)
-try:
- try:api('/api/version')
- except Exception:
-  users=pathlib.Path(os.environ.get('SystemDrive','C:')+'/Users');bins=list(users.glob('*/AppData/Local/Programs/Ollama/ollama.exe'));assert bins,'Installed Ollama unavailable'
-  env=os.environ.copy();env['OLLAMA_HOST']='127.0.0.1:11434';models=list(users.glob('*/.ollama/models'))
-  if models:env['OLLAMA_MODELS']=str(models[0])
-  log=open(EV/'ollama.log','w');server=subprocess.Popen([str(bins[0]),'serve'],env=env,stdout=log,stderr=subprocess.STDOUT)
-  for _ in range(40):
-   try:api('/api/version');break
-   except Exception:time.sleep(1)
-  else:raise RuntimeError('Installed Ollama not ready')
- assert any(m['name']=='qwen3:14b' for m in api('/api/tags')['models']),'Existing local model missing; no download'
- response=api('/api/chat',payload,300);write('qwen-response.json',response);plan=json.loads(response['message']['content'])
-finally:
- if server:subprocess.run(['taskkill.exe','/PID',str(server.pid),'/T','/F'],capture_output=True);server.wait(timeout=20)
- if log:log.close()
+retained=EV/'qwen-response-native193.json'
+if retained.exists():
+ assert sha(retained)=='ec714d777fe9514109409bf93600644e148c8c042187bf0db5575c5b90d1d7a1', 'Retained Qwen response changed'
+ response=json.loads(retained.read_text());plan=json.loads(response['message']['content'])
+ # Independent director correction, explicitly NOT another Qwen inference:
+ # preserve every authored rise/radius and both bank designs; relocate the three
+ # repeated western centers to the other approved spatial gaps, no overlap.
+ assert [l['center_index'] for l in plan['landforms']]==[4,1,1,1,1]
+ for l,center in zip(plan['landforms'],[4,1,8,3,6]):l['center_index']=center
+ write('director-repair.json',{'source_run':39445329743,'raw_response_sha256':sha(retained),'reason':'Qwen repeated center 1 four times; overlapping mound plan rejected before editing. Independent director assigns distinct approved gaps, retaining all authored shapes and bank parameters.','before_centers':[4,1,1,1,1],'after_centers':[4,1,8,3,6],'new_inference':False})
+else:
+ try:
+  try:api('/api/version')
+  except Exception:
+   users=pathlib.Path(os.environ.get('SystemDrive','C:')+'/Users');bins=list(users.glob('*/AppData/Local/Programs/Ollama/ollama.exe'));assert bins,'Installed Ollama unavailable'
+   env=os.environ.copy();env['OLLAMA_HOST']='127.0.0.1:11434';models=list(users.glob('*/.ollama/models'))
+   if models:env['OLLAMA_MODELS']=str(models[0])
+   log=open(EV/'ollama.log','w');server=subprocess.Popen([str(bins[0]),'serve'],env=env,stdout=log,stderr=subprocess.STDOUT)
+   for _ in range(40):
+    try:api('/api/version');break
+    except Exception:time.sleep(1)
+   else:raise RuntimeError('Installed Ollama not ready')
+  assert any(m['name']=='qwen3:14b' for m in api('/api/tags')['models']),'Existing local model missing; no download'
+  response=api('/api/chat',payload,300);write('qwen-response.json',response);plan=json.loads(response['message']['content'])
+ finally:
+  if server:subprocess.run(['taskkill.exe','/PID',str(server.pid),'/T','/F'],capture_output=True);server.wait(timeout=20)
+  if log:log.close()
 for side in ['north','south']:
  assert set(plan[side])=={'compression','flare','inland','shear'}
  for k,a,b in [('compression',.48,.72),('flare',1.08,1.28),('inland',.25,.65),('shear',-.22,.22)]:assert isinstance(plan[side][k],(int,float)) and math.isfinite(plan[side][k]) and a<=plan[side][k]<=b
@@ -133,7 +144,7 @@ for m in survey['meshes']:
   # original vegetation silhouette while avoiding floating ground contacts.
   for ids in comps:
    pts=v[ids];foot=pts[pts[:,1]<=np.quantile(pts[:,1],.12)+.005];cx,cz=np.median(foot[:,0]),np.median(foot[:,2]);dy=float(sample_delta(cx,cz));out[ids,1]+=dy
- obj=mesh_obj(m['name'],np.stack([out[:,0],-out[:,2],out[:,1]],axis=-1).tolist(),np.array(m['triangles']).reshape(-1,3).tolist())
+ obj=mesh_obj(m['name'],np.stack([out[:,0],-out[:,2],out[:,1]],axis=-1).tolist(),np.array(m['triangles']).reshape(-1,3)[:,::-1].tolist())
  outputs.append({'name':m['name'],'vertices':[{'x':float(q[0]),'y':float(q[1]),'z':float(q[2])} for q in out]})
 assert changed_bank>100
 bpy.context.preferences.filepaths.save_version=0
@@ -142,5 +153,5 @@ bpy.ops.wm.save_as_mainfile(filepath=str(EV/'TerrainBank192.blend'),compress=Tru
 # height field from that mesh, not from an unrelated preview or mock result.
 actual=np.array([v.co.z for v in terrain.data.vertices]).reshape(n,n)
 write('candidate.json',{'survey_sha256':sha(EV/'survey.json'),'heights':((actual-origin[1])/size[1]).reshape(-1).tolist(),'meshes':outputs,'changed_terrain_vertices':int(np.count_nonzero(delta>.001)),'changed_bank_vertices':changed_bank,'art_approved':False})
-write('author-proof.json',{'blender':bpy.app.version_string,'source_scene_sha256':survey['scene_sha256'],'survey_sha256':sha(EV/'survey.json'),'plan_sha256':sha(EV/'validated-plan.json'),'blend_sha256':sha(EV/'TerrainBank192.blend'),'candidate_sha256':sha(EV/'candidate.json'),'changed_bank_vertices':changed_bank,'changed_terrain_vertices':int(np.count_nonzero(delta>.001)),'max_height_delta_m':float(delta.max()),'protected_height_delta_max':float(np.max(delta[free(wx,wz)==0])),'topology_preserved':True,'reference_sha256':survey['reference_sha256'],'author':'Qwen3 14B bounded spatial plan; independently directed mesh operations in bpy','transport':'direct bpy selected for measured mesh authoring; no extra MCP server needed','art_approved':False,'published':False})
+write('author-proof.json',{'blender':bpy.app.version_string,'source_scene_sha256':survey['scene_sha256'],'survey_sha256':sha(EV/'survey.json'),'plan_sha256':sha(EV/'validated-plan.json'),'blend_sha256':sha(EV/'TerrainBank192.blend'),'candidate_sha256':sha(EV/'candidate.json'),'changed_bank_vertices':changed_bank,'changed_terrain_vertices':int(np.count_nonzero(delta>.001)),'max_height_delta_m':float(delta.max()),'protected_height_delta_max':float(np.max(delta[free(wx,wz)==0])),'topology_preserved':True,'reference_sha256':survey['reference_sha256'],'author':'Retained Qwen3 14B bank/shape parameters with explicit independent director repair of repeated centers; mesh operations in bpy','transport':'direct bpy selected for measured mesh authoring; no extra MCP server needed','art_approved':False,'published':False})
 print('VALORIA_TERRAIN_BANK_BLENDER_AUTHOR_COMPLETE')

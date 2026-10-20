@@ -1,11 +1,11 @@
 {
   "stage": "terrain_bank_trial",
   "validate_play": false,
-  "revision": 193,
+  "revision": 194,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Author measured current terrain and river bank in installed Blender; bounded local Qwen spatial plan; same-camera native Unity A/B without saving canonical scene.",
+  "checks": "Reuse native193 real Qwen response, correct duplicate landform centers with recorded independent director decision, author mesh and compare in Unity; no repeated inference or source survey.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
