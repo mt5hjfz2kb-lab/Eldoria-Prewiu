@@ -45,8 +45,20 @@ if(fs.existsSync("pipeline/valoria-visual-authority-v1.json")){
   if(hash!==authority.authority_sha256)failures.push("visual_authority_exact_bytes_mismatch");
   const slice=json("pipeline/valoria-first-playable-city-slice-v1.json");
   if(slice?.visual_authority?.source_artifact_id===authority.superseded_source_artifact_id)failures.push("slice_uses_superseded_sharp");
-  for(const criterion of ["TECH PASS","VISUAL PASS","REFERENCE MATCH PASS","COMPOSITION PASS","INTERACTION PASS","BOUNDED CAMERA PASS"])
-    if(!slice?.required_closure?.includes(criterion))failures.push("slice_missing_closure:"+criterion);
+  // The October 20 owner reference supersedes the historical SHARP-only slice.
+  // Never force a false VISUAL/REFERENCE PASS merely to make a static gate green.
+  // Existing historical proof is preserved, while the new reference must pass a
+  // fresh independent native Unity A/B before any production art approval.
+  if(authority.status==="REFERENCE_CURRENT_NEW_UNITY_ART_REVIEW_REQUIRED"){
+    if(authority.production_promotion!==false||!authority.reference_canon||
+       authority.source_equals_preproduction_target!==false)
+      failures.push("new_reference_must_remain_unapproved_until_native_AB");
+    if(slice?.production_promotion!==false)
+      failures.push("historical_sharp_slice_must_not_be_repromoted");
+  }else{
+    for(const criterion of ["TECH PASS","VISUAL PASS","REFERENCE MATCH PASS","COMPOSITION PASS","INTERACTION PASS","BOUNDED CAMERA PASS"])
+      if(!slice?.required_closure?.includes(criterion))failures.push("slice_missing_closure:"+criterion);
+  }
 }
 if(!Array.isArray(rollout?.sequence)||rollout.sequence.length<5)failures.push("rollout_too_short");
 
