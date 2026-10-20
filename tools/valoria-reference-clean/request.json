@@ -1,11 +1,11 @@
 {
   "stage": "city_bank_meadow_trial",
   "validate_play": false,
-  "revision": 178,
+  "revision": 179,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "A/B NATIVO de ribera natural/pradera I-II contra la imagen EXACTA aprobada 20-10-2026; referencia JPG SHA-256 86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d. Capturas horizontales 1448x1086 y verticales 900x1600, cámara/luz constantes. Ensayo aislado, cero persistencia en escena jugable, no acantilados, campamentos ni urbanizaciones inventadas, no publicar, no adjudicar ART_APPROVED automáticamente.",
+  "checks": "RETRY native179 of the exact owner178 city_bank_meadow_trial after CS0234 Application.dataPath collision fix. Exact owner-approved JPEG SHA256 86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d; Unity A/B PNG horizontal/portrait, same camera/light, no scene save, no gameplay, no publication. Real visual review required.",
   "art_correction": "Continuación exacta del candidato Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaBankMeadowCandidate.cs (commit 7045161a), fixes 0a48c4d, 8aa4726f y routing 89542038. Veredicto artístico solo tras comparar PNG A/B reales. No alterar lógica, guardados ni parcelas.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
