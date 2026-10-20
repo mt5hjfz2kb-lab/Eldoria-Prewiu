@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Spawnling enemy source only, v0220 entity id spawnling, Bastion II: small hunched violet partly deformed quadruped-like humanoid with coherent TWO forearms, TWO legs and ONE head; natural base, legible high-isometric silhouette, subtle Rift veins (not demon horns). UV0, normals, texture maps 2K require real Unity QA. Retain original raw GLB/Blender .blend/optimized GLB. No gameplay edits, no automatic promotion, no world hotspot/camp or live scene mutation.",
-  "run_nonce": "tripo-review-only-spawnling-recovered-blender-2k-20261021",
-  "notes": "No Tripo generation: the one paid Spawnling model exists, task 351d1034-25ec-4300-a2e0-d03a0e68175a (20 credits), raw SHA 5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f. Original run 39511077721, Blender recovery run 39512676401 (source/artifact) PASS, optimized GLB sha 2701e6...; this triggers ONLY isolated zero-credit Unity QA from the already-persisted Blender artifact.",
+  "run_nonce": "tripo-archive-only-spawnling-2k-pass-no-generation-20261021",
+  "notes": "Archive proven Spawnling raw/optimized GLB, .blend and genuine 2K Unity isolated QA run 39512910985 to ArtSource outside Unity/Assets. Original paid task 351d1034-25ec-4300-a2e0-d03a0e68175a already charged 20 credits once. No Tripo generation or Unity gameplay mutation.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
@@ -46,5 +46,18 @@
     "source_run_id": 39512676401,
     "artifact_name": "eldoria-tripo-module-eldoria-spawnling-bastion2-h31-one-20261021-5fe81846fe6c36c006abaa3d63b1800437d2e59b",
     "expected_sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a"
+  },
+  "archive": {
+    "asset_name": "Eldoria_Spawnling_Bastion2_v1",
+    "source_run_id": 39512676401,
+    "qa_run_id": 39512910985,
+    "raw_artifact": "tripo-raw-eldoria-spawnling-bastion2-h31-one-20261021-5fe81846fe6c36c006abaa3d63b1800437d2e59b",
+    "optimized_artifact": "eldoria-tripo-module-eldoria-spawnling-bastion2-h31-one-20261021-5fe81846fe6c36c006abaa3d63b1800437d2e59b",
+    "qa_artifact": "tripo-source-qa-Eldoria_Spawnling_Bastion2_v1-e971d357249f6630821a5e922ebea5db0bcc9e86",
+    "raw_sha": "5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f",
+    "optimized_sha": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
+    "blend_sha": "7aa6521ea27b5996851aea7d78f0d30caee15e3ec77797df5ac09d0ff10f7edf",
+    "task_id": "351d1034-25ec-4300-a2e0-d03a0e68175a",
+    "credits_consumed": 20
   }
 }
