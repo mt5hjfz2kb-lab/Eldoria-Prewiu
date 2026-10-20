@@ -1,11 +1,11 @@
 {
   "stage": "world_art_trial",
   "validate_play": false,
-  "revision": 206,
+  "revision": 207,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Measured native205 before shows uniform lobed pines and wall-like quarry. Original branch/needle conifer family (3+3LOD) replaces98visuals at retained positions; recover existing V18 continuous geological authoring and equipment, integrate memory-only same-view Unity forest/quarry AB. No save.",
+  "checks": "Native206 real review: branch silhouettes improve but leaf facet shading harsh; quarry lost meshes on glTFast Dispose before capture. Own cloned imported resources before Dispose and assert valid bounds. Smooth needle normals; add low understory and fallen wood to existing forest clearing. Reuse exact V18 quarry source/hash, no reauthoring.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
@@ -28,5 +28,6 @@
   "android_version_name": "1.6",
   "repair_sawmill": false,
   "repair_environment": false,
-  "reuse_authored_geometry": true
+  "reuse_authored_geometry": true,
+  "reuse_world_quarry": true
 }

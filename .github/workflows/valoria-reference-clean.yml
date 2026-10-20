@@ -212,8 +212,10 @@ jobs:
             if(-not $blender){throw 'Installed Blender required'}
             & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_forest_canopy.py
             if($LASTEXITCODE){throw 'Conifer family authoring failed'}
-            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_quarry_geology_v18.py
-            if($LASTEXITCODE){throw 'Retained geological authoring failed'}
+            if(-not $req.reuse_world_quarry){
+              & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_quarry_geology_v18.py
+              if($LASTEXITCODE){throw 'Retained geological authoring failed'}
+            }
           }
           if($req.stage -eq 'architecture_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Trial'}
           if($req.stage -eq 'world_art_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Trial'}
@@ -267,8 +269,10 @@ jobs:
             if(-not $blender){throw 'Installed Blender required'}
             & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_forest_canopy.py
             if($LASTEXITCODE){throw 'Conifer family authoring failed'}
-            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_quarry_geology_v18.py
-            if($LASTEXITCODE){throw 'Retained geological authoring failed'}
+            if(-not $req.reuse_world_quarry){
+              & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_quarry_geology_v18.py
+              if($LASTEXITCODE){throw 'Retained geological authoring failed'}
+            }
           }
           if($req.stage -eq 'architecture_trial'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source

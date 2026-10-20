@@ -5,10 +5,10 @@ import bpy,bmesh,json,math,random,pathlib,hashlib
 from mathutils import Vector
 ROOT=pathlib.Path.cwd();EV=ROOT/'docs/evidence/valoria-reference-clean/world204';EV.mkdir(parents=True,exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
-palette=[(.18,.105,.047),(.055,.115,.035),(.095,.19,.055),(.16,.27,.085)]
+palette=[(.18,.105,.047),(.055,.115,.035),(.095,.19,.055),(.16,.27,.085),(.38,.25,.12)]
 mats=[]
 for i,c in enumerate(palette):
- m=bpy.data.materials.new(['Weathered branch bark','Needle undersides','Mature needles','Sunward needle tips'][i]);m.diffuse_color=(*c,1);m.use_nodes=True;n=m.node_tree.nodes;p=next((n for n in n if n.type=='BSDF_PRINCIPLED'),None) or n.new('ShaderNodeBsdfPrincipled');out=next((q for q in n if q.type=='OUTPUT_MATERIAL'),None) or n.new('ShaderNodeOutputMaterial');m.node_tree.links.new(p.outputs['BSDF'],out.inputs['Surface']);p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=.94;mats.append(m)
+ m=bpy.data.materials.new(['Weathered branch bark','Needle undersides','Mature needles','Sunward needle tips','Exposed weathered cut wood'][i]);m.diffuse_color=(*c,1);m.use_nodes=True;n=m.node_tree.nodes;p=next((n for n in n if n.type=='BSDF_PRINCIPLED'),None) or n.new('ShaderNodeBsdfPrincipled');out=next((q for q in n if q.type=='OUTPUT_MATERIAL'),None) or n.new('ShaderNodeOutputMaterial');m.node_tree.links.new(p.outputs['BSDF'],out.inputs['Surface']);p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=.94;mats.append(m)
 variants=[];low_variants=[];preview=[]
 for variant,(height,spread,tiers,lean) in enumerate([(8.4,2.45,8,.16),(7.2,2.05,7,-.34),(9.1,2.55,9,.42)]):
  rng=random.Random(2041+variant*173);verts=[];faces=[];slots=[]
@@ -48,25 +48,39 @@ for variant,(height,spread,tiers,lean) in enumerate([(8.4,2.45,8,.16),(7.2,2.05,
      add(vv,[tuple(reversed(p)) for p in ff],1)
  mesh=bpy.data.meshes.new('Authored branch conifer '+str(variant));mesh.from_pydata(verts,[],faces);mesh.update()
  for m in mats:mesh.materials.append(m)
- for p,slot in zip(mesh.polygons,slots):p.material_index=slot;p.use_smooth=slot==0
+ for p,slot in zip(mesh.polygons,slots):p.material_index=slot;p.use_smooth=True
  bm=bmesh.new();bm.from_mesh(mesh);bmesh.ops.triangulate(bm,faces=bm.faces);bm.to_mesh(mesh);bm.free();mesh.update()
  obj=bpy.data.objects.new(mesh.name,mesh);bpy.context.collection.objects.link(obj);preview.append(obj)
  outv=[];normals=[];uvs=[];sub=[[] for _ in mats]
  for poly in mesh.polygons:
   for vi in poly.vertices:
-   v=mesh.vertices[vi];outv.append({'x':v.co.x,'y':v.co.z,'z':-v.co.y});normal=v.normal if poly.material_index==0 else poly.normal;normals.append({'x':normal.x,'y':normal.z,'z':-normal.y});uvs.append({'x':v.co.x,'y':v.co.z});sub[poly.material_index].append(len(outv)-1)
+   v=mesh.vertices[vi];outv.append({'x':v.co.x,'y':v.co.z,'z':-v.co.y});normal=v.normal;normals.append({'x':normal.x,'y':normal.z,'z':-normal.y});uvs.append({'x':v.co.x,'y':v.co.z});sub[poly.material_index].append(len(outv)-1)
  variants.append({'name':obj.name,'vertices':outv,'normals':normals,'uv':uvs,'submeshes':[{'indices':s} for s in sub]})
  # A shared lower mesh is retained for the strategic camera, not a second scene.
  low=obj.copy();low.data=mesh.copy();bpy.context.collection.objects.link(low);bpy.context.view_layer.objects.active=low
  dec=low.modifiers.new('Strategic silhouette LOD','DECIMATE');dec.ratio=.38;bpy.ops.object.modifier_apply(modifier=dec.name);lm=low.data;lm.calc_loop_triangles();lv=[];ln=[];ls=[[] for _ in mats]
  for tri in lm.loop_triangles:
   for vi in tri.vertices:
-   v=lm.vertices[vi];lv.append({'x':v.co.x,'y':v.co.z,'z':-v.co.y});normal=lm.polygons[tri.polygon_index].normal;ln.append({'x':normal.x,'y':normal.z,'z':-normal.y});ls[tri.material_index].append(len(lv)-1)
+   v=lm.vertices[vi];lv.append({'x':v.co.x,'y':v.co.z,'z':-v.co.y});normal=v.normal;ln.append({'x':normal.x,'y':normal.z,'z':-normal.y});ls[tri.material_index].append(len(lv)-1)
  low_variants.append({'name':obj.name+' strategic LOD','vertices':lv,'normals':ln,'submeshes':[{'indices':s} for s in ls]});low.hide_render=True;low.hide_viewport=True
  obj.location.x=(variant-1)*7
+# Original fallen wood uses the same curved profile tools, with exposed ends.
+verts=[];faces=[];slots=[]
+sweep([Vector((-1.9+i*.475,.06*math.sin(i*.8),.23+.035*math.cos(i*.7))) for i in range(9)],[.22-i*.008 for i in range(9)],9)
+slots[0]=4;slots[-1]=4
+for x,sgn in [(-.6,1),(.7,-1)]:sweep([Vector((x,0,.25)),Vector((x+.25,sgn*.48,.40)),Vector((x+.38,sgn*.84,.48))],[.075,.045,.02],5)
+mesh=bpy.data.meshes.new('Original fallen timber with broken branches');mesh.from_pydata(verts,[],faces);mesh.update()
+for m in mats:mesh.materials.append(m)
+for p,slot in zip(mesh.polygons,slots):p.material_index=slot;p.use_smooth=slot==0
+bm=bmesh.new();bm.from_mesh(mesh);bmesh.ops.triangulate(bm,faces=bm.faces);bm.to_mesh(mesh);bm.free();mesh.update();obj=bpy.data.objects.new(mesh.name,mesh);bpy.context.collection.objects.link(obj)
+ev=[];en=[];es=[[] for _ in mats]
+for poly in mesh.polygons:
+ for vi in poly.vertices:
+  v=mesh.vertices[vi];ev.append({'x':v.co.x,'y':v.co.z,'z':-v.co.y});nn=v.normal if poly.material_index==0 else poly.normal;en.append({'x':nn.x,'y':nn.z,'z':-nn.y});es[poly.material_index].append(len(ev)-1)
+extras=[{'name':mesh.name,'vertices':ev,'normals':en,'submeshes':[{'indices':a} for a in es]}]
 # Sources retain all three independently editable meshes and material assignments.
 bpy.context.preferences.filepaths.save_version=0;bpy.ops.wm.save_as_mainfile(filepath=str(EV/'ConiferFamily.blend'),compress=True)
-(EV/'conifer-family.json').write_text(json.dumps({'variants':variants,'low_variants':low_variants,'colors':[{'r':r,'g':g,'b':b,'a':1} for r,g,b in palette]},separators=(',',':')))
+(EV/'conifer-family.json').write_text(json.dumps({'variants':variants,'low_variants':low_variants,'extras':extras,'colors':[{'r':r,'g':g,'b':b,'a':1} for r,g,b in palette]},separators=(',',':')))
 proof={'author':'Independent director original mesh authoring','operations':['curved tapered trunk and branch sweeps','flared root continuation','unequal branch whorls','folded serrated needle sprays with undersides','three controlled silhouette variants'],'triangles':[len(v['vertices'])//3 for v in variants],'low_triangles':[len(v['vertices'])//3 for v in low_variants],'blend_sha256':hashlib.sha256((EV/'ConiferFamily.blend').read_bytes()).hexdigest(),'mesh_sha256':hashlib.sha256((EV/'conifer-family.json').read_bytes()).hexdigest(),'art_approved':False};(EV/'conifer-author-proof.json').write_text(json.dumps(proof,indent=2))
 # Isolated diagnostic preview, not a Unity result or final approval.
 bpy.ops.object.camera_add(location=(16,-28,18));camera=bpy.context.object;camera.rotation_euler=(Vector((0,0,4))-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=25;bpy.context.scene.camera=camera

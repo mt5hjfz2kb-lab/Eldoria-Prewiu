@@ -26,13 +26,13 @@ namespace Eldoria.ReferenceClean.Editor {
    var c=host.WorldCamera;var pos=c.transform.position;var rot=c.transform.rotation;float zoom=c.orthographicSize;bool active=host.WorldRoot.activeSelf;host.WorldRoot.SetActive(true);
    try{foreach(string id in new[]{"forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"}){
     var point=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).Single(n=>n.Id==id).transform.position;point.y=2;c.transform.position=point-c.transform.forward*110;
-    foreach(float size in new[]{32f,14f}){c.orthographicSize=size;ValoriaReferenceCleanBuilder.Capture(c,Ev+"/"+prefix+"-"+id+"-"+size.ToString("0")+".png",1448,1086);}
+    foreach(float size in new[]{64f,32f,14f}){c.orthographicSize=size;ValoriaReferenceCleanBuilder.Capture(c,Ev+"/"+prefix+"-"+id+"-"+size.ToString("0")+".png",1448,1086);}
     c.orthographicSize=14;ValoriaReferenceCleanBuilder.Capture(c,Ev+"/"+prefix+"-"+id+"-portrait.png",900,1600);
    }}finally{c.transform.SetPositionAndRotation(pos,rot);c.orthographicSize=zoom;host.WorldRoot.SetActive(active);}
   }
   [Serializable] public class Indices {public int[] indices;}
   [Serializable] public class TreeMesh {public string name;public Vector3[] vertices,normals;public Vector2[] uv;public Indices[] submeshes;}
-  [Serializable] public class Family {public TreeMesh[] variants,low_variants;public Color[] colors;}
+  [Serializable] public class Family {public TreeMesh[] variants,low_variants,extras;public Color[] colors;}
   static void Need(bool b,string message){if(!b)throw new InvalidOperationException(message);}
   static Mesh MakeMesh(TreeMesh source){var m=new Mesh{name=source.name,indexFormat=source.vertices.Length>65535?IndexFormat.UInt32:IndexFormat.UInt16};m.vertices=source.vertices;m.normals=source.normals;if(source.uv!=null&&source.uv.Length==source.vertices.Length)m.uv=source.uv;m.subMeshCount=source.submeshes.Length;for(int i=0;i<source.submeshes.Length;i++)m.SetTriangles(source.submeshes[i].indices,i);m.RecalculateBounds();return m;}
   static Bounds BoundsOf(GameObject obj){var rr=obj.GetComponentsInChildren<Renderer>(true);Need(rr.Length>0,"Missing model bounds");var b=rr[0].bounds;foreach(var r in rr.Skip(1))b.Encapsulate(r.bounds);return b;}
@@ -50,11 +50,22 @@ namespace Eldoria.ReferenceClean.Editor {
      Renderer MakeLOD(string name,Mesh mesh){var obj=new GameObject(name);obj.transform.SetParent(tree.transform,false);obj.AddComponent<MeshFilter>().sharedMesh=mesh;var renderer=obj.AddComponent<MeshRenderer>();renderer.sharedMaterials=materials;renderer.lightProbeUsage=LightProbeUsage.BlendProbes;renderer.reflectionProbeUsage=ReflectionProbeUsage.BlendProbes;return renderer;}
      var high=MakeLOD("Near branches",meshes[variant]);var far=MakeLOD("Strategic silhouette",low[variant]);var group=tree.AddComponent<LODGroup>();group.SetLODs(new[]{new LOD(.16f,new[]{high}),new LOD(.012f,new[]{far})});group.RecalculateBounds();old.enabled=false;originals.Add(old);
     }
+    var forestPoint=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).Single(n=>n.Id=="forest-valoria").transform.position;
+    foreach(var offset in new[]{new Vector3(-6,0,-2),new Vector3(5,0,1),new Vector3(-9,0,4),new Vector3(7,0,-3),new Vector3(-4,0,6),new Vector3(9,0,7),new Vector3(2,0,5)}){
+     var p=forestPoint+offset;p.y=GroundAt(p)-.04f;var under=new GameObject("Forest understory / young conifer");under.transform.SetParent(root.transform,true);under.transform.position=p;under.transform.localScale=Vector3.one*.13f;under.transform.rotation=Quaternion.Euler(0,offset.x*31,0);under.AddComponent<MeshFilter>().sharedMesh=low[1];under.AddComponent<MeshRenderer>().sharedMaterials=materials;
+    }
+    Need(family.extras!=null&&family.extras.Length==1,"Fallen timber source missing");var log=MakeMesh(family.extras[0]);temporary.Add(log);
+    foreach(var offset in new[]{new Vector3(-5,0,-4),new Vector3(5,0,4)}){var p=forestPoint+offset;p.y=GroundAt(p)-.045f;var obj=new GameObject("Forest fallen timber / retained clearing");obj.transform.SetParent(root.transform,true);obj.transform.position=p;obj.transform.rotation=Quaternion.Euler(0,offset.x<0?28:113,0);obj.AddComponent<MeshFilter>().sharedMesh=log;obj.AddComponent<MeshRenderer>().sharedMaterials=materials;}
     // Replace only the previous quarry visual; preserve the hotspot, crane/stock
     // language, every other destination and all gameplay components.
     var oldBounds=BoundsOf(oldQuarry.gameObject);var quarry=new GameObject("Quarry / continuous geological excavation");quarry.transform.SetParent(root.transform,true);
-    using(var loader=new GltfImport(null,new UninterruptedDeferAgent())){Need(await loader.Load(new Uri(Path.GetFullPath("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnvironmentFinish/QuarryGeologyV18.glb")).AbsoluteUri,new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=4}),"Authored quarry GLB load failed");Need(await loader.InstantiateMainSceneAsync(quarry.transform),"Authored quarry instantiate failed");}
-    quarry.transform.rotation=oldQuarry.rotation;var qb=BoundsOf(quarry);quarry.transform.localScale=Vector3.one*(oldBounds.size.x/qb.size.x);qb=BoundsOf(quarry);quarry.transform.position+=new Vector3(oldBounds.center.x-qb.center.x,oldBounds.min.y-qb.min.y,oldBounds.center.z-qb.center.z);oldQuarry.gameObject.SetActive(false);
+    using(var loader=new GltfImport(null,new UninterruptedDeferAgent())){Need(await loader.Load(new Uri(Path.GetFullPath("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/EnvironmentFinish/QuarryGeologyV18.glb")).AbsoluteUri,new ImportSettings{GenerateMipMaps=true,AnisotropicFilterLevel=4}),"Authored quarry GLB load failed");Need(await loader.InstantiateMainSceneAsync(quarry.transform),"Authored quarry instantiate failed");
+     var copied=new Dictionary<Object,Object>();Object Own(Object src){if(!src)return null;if(copied.TryGetValue(src,out var saved))return saved;var clone=Object.Instantiate(src);copied.Add(src,clone);temporary.Add(clone);return clone;}
+     foreach(var filter in quarry.GetComponentsInChildren<MeshFilter>())filter.sharedMesh=(Mesh)Own(filter.sharedMesh);
+     foreach(var renderer in quarry.GetComponentsInChildren<MeshRenderer>()){var mm=renderer.sharedMaterials;for(int k=0;k<mm.Length;k++){var original=mm[k];var material=(Material)Own(original);foreach(string property in original.GetTexturePropertyNames()){var texture=original.GetTexture(property);if(texture)material.SetTexture(property,(Texture)Own(texture));}mm[k]=material;}renderer.sharedMaterials=mm;}
+    }
+    Need(quarry.GetComponentsInChildren<MeshFilter>().All(f=>f.sharedMesh&&f.sharedMesh.vertexCount>0),"Imported quarry resources released");
+    quarry.transform.rotation=oldQuarry.rotation;var qb=BoundsOf(quarry);Need(qb.size.x>10&&qb.size.x<40,"Invalid quarry import bounds");quarry.transform.localScale=Vector3.one*(oldBounds.size.x/qb.size.x);qb=BoundsOf(quarry);quarry.transform.position+=new Vector3(oldBounds.center.x-qb.center.x,oldBounds.min.y-qb.min.y,oldBounds.center.z-qb.center.z);oldQuarry.gameObject.SetActive(false);
     foreach(var r in quarry.GetComponentsInChildren<Renderer>()){r.lightmapIndex=-1;r.lightProbeUsage=LightProbeUsage.BlendProbes;r.reflectionProbeUsage=ReflectionProbeUsage.BlendProbes;}
     Physics.SyncTransforms();CaptureViews(host,"after");Need(Hash(Scene)==source.scene_sha256,"Trial scene unexpectedly saved");File.WriteAllText(Ev+"/unity-review.json","{\"same_camera_light\":true,\"scene_saved\":false,\"tree_count_preserved\":98,\"LOD_high_transition\":0.16,\"hotspots_unchanged\":true,\"art_approved\":false}");
    }finally{foreach(var r in originals)r.enabled=true;oldQuarry.gameObject.SetActive(quarryActive);foreach(var obj in temporary)if(obj)Object.DestroyImmediate(obj);host.WorldRoot.SetActive(wasActive);}
