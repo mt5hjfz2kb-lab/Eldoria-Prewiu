@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Rock boar (v0220 enemy id=boar, Jabalí de roca), identifiable boar silhouette at Unity strategic/city/detail zooms and angled back/front, believable anatomy with exactly four legs and two short tusks, dark textured bristles and subtle natural slate shoulders (not decorative armor). PBR and UV/color preserved, grounding and collider/picking verified. No extra objects/background, no melted/fused proportions, no spikes. Keep lore, node IDs, economy, savegames, world routes, and city scene intact. Capture true Unity PNGs and retain original Tripo GLB + Blender editable + optimized GLB. No automatic production promotion or publication; review first.",
-  "run_nonce": "boar-qa-only-fixed-gltfast-image-modules-20261020",
-  "notes": "No generation allowed: exact existing 20-credit Rock Boar task 28f57ff9-b978-468c-8c2a-6136e0a65ea1. Minimal Unity tests 39500313917 and 39502850810 passed geometry/raycast but discovered glTFast 4x4 baseColor placeholder, matching documented optional module issue; this final zero-credit Unity QA adds com.unity.modules.imageconversion/unitywebrequest/unitywebrequesttexture and requires imported textures >=1024. No gameplay changes, no source generation, no repeated Tripo call.",
+  "run_nonce": "boar-archive-only-immutable-raw-optimized-blend-20261020",
+  "notes": "TRIPO GENERATION PERMANENTLY DISABLED. One existing paid H3.1 task 28f57ff9-b978-468c-8c2a-6136e0a65ea1, 20 credits. QA source glTFast 2K/49,800 tris PASS in run 39505056649. Trigger ONLY ubuntu-latest no-Unity no-Tripo art-source archive of exact SHA-locked GLB and editable Blender to ArtSource/World4X/RockBoar_v1. No gameplay integration, no publication, no asset included in builds.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
