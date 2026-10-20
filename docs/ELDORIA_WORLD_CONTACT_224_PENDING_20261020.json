@@ -1,5 +1,5 @@
 {
-  "status": "MISSION_ACTIVE_NOT_FINISHED",
+  "status": "FOUR_PHASES_INTEGRATED_FUNCTIONAL_VALIDATION_COMPLETE_ART_TARGET_NOT_CERTIFIED",
   "owner": "chatgpt-eldoria-visual-recovery-20261020",
   "canonical_scene": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "canonical_scene_sha256": "4c8bbdc6ccb1273bcf24c0e94fa102d88077faac71869598a0e215b88a1cb2bb",
@@ -23,16 +23,7 @@
       "visual_review": "All six full-resolution after images inspected directly: terrace lighting and torch glow restored; limited finish accepted."
     }
   },
-  "pending": {
-    "revision": 242,
-    "build_run": 39506996242,
-    "build": "SUCCESS",
-    "artifact": 12303829447,
-    "artifact_zip_sha256": "d027ea0fa69f3f2cbc29b2063f130219b01592d73c47155c3bcbe74556c9f618",
-    "windows_qa_run": 39509184788,
-    "windows_qa_source": "8a1a0b482ea1a9ec8e683319e9d7bc92b2128d4a",
-    "stage": "Windows browser QA in progress"
-  },
+  "pending": null,
   "roof": {
     "retained_candidate_sha256": "248fddf822484641d61f681d6db94041e119b321d367d4e580ad14bb8ae5e37a",
     "editable_blend_sha256": "c33187ec65202319554941063119ef2a3366f01c078cbe2b825e30138ae21ce4",
@@ -42,8 +33,8 @@
     "source_storage": "pack_roof_sources.py tested96MiB split/restore SHA256 exactly; workflow now uses installed Blender bundled Python, not missing Windows python alias."
   },
   "next": [
-    "Inspect Windows QA run39509184788 report and direct screenshots; require complete strict PASS, exact save/reload, zero runtime/network errors.",
-    "No rebuild or publication. Update final evidence/root handoff only after genuine browser verdict."
+    "No pending job. Exact validated delivery and sources preserved in main; no publication.",
+    "Further art gain requires substantial prairie/ground-transition/world-base improvement; city minimum7 remains unconfirmed. Do not repeat unchanged successful validations."
   ],
   "prepared_independent_review": {
     "path": "tools/valoria-reference-clean/review_capture.py",
@@ -73,5 +64,88 @@
       "estimate": 6.5,
       "reliability_note": "Model wrongly claims four visible plots; direct full-resolution images and native checks contradict this. Score advisory, not certification."
     }
-  }
+  },
+  "final_browser": {
+    "run": 39509184788,
+    "artifact": 12305530711,
+    "status": "PASS",
+    "source_sha": "f8e294dda9a829316eb0dec764f8e2b1ce7d20d0",
+    "checks": {
+      "fresh_save": true,
+      "early_world_control_locked": true,
+      "early_gate_visible_click": {
+        "attempted": false,
+        "reason": "Gate collider centre outside current visible frame; native gate regression remains separate"
+      },
+      "world_zoom": {
+        "pass": true,
+        "input_delta_y": 240,
+        "initial_at_regional_fitting_limit": true,
+        "zoom_direction": "in",
+        "before": {
+          "x": 1018.1185913085938,
+          "y": 114.68132019042969,
+          "z": -50.30059814453125,
+          "zoom": 32
+        },
+        "after": {
+          "x": 1018.1185913085938,
+          "y": 114.68132019042969,
+          "z": -50.300567626953125,
+          "zoom": 29.539722442626953
+        }
+      },
+      "world_view_retained": {
+        "pass": true,
+        "before": {
+          "x": 1018.1190795898438,
+          "y": 114.68132019042969,
+          "z": -50.300743103027344,
+          "zoom": 29.539722442626953
+        },
+        "after": {
+          "x": 1018.1190795898438,
+          "y": 114.68132019042969,
+          "z": -50.300743103027344,
+          "zoom": 29.539722442626953
+        },
+        "difference": {
+          "dx": 0,
+          "dy": 0,
+          "dz": 0,
+          "distance": 0,
+          "zoom": 0
+        }
+      },
+      "world_four_directions_both_orientations": true,
+      "complete_i_ii": true,
+      "real_primary_actions_both_orientations": true,
+      "selection_framing_before_all_actions": true,
+      "selection_framing_both_orientations": true,
+      "normal_operation_durations": true,
+      "march_phases_and_rewards": true,
+      "march_visual_outbound": true,
+      "march_visual_returning": true,
+      "exact_save_reload": {
+        "pass": true,
+        "before_sha256": "0ee7b91db0680c5f0a3e45d8aa935db675fa0aad51b6caefdad51caa7f19e96d",
+        "after_sha256": "0ee7b91db0680c5f0a3e45d8aa935db675fa0aad51b6caefdad51caa7f19e96d"
+      },
+      "normal_system_clock": true,
+      "no_runtime_errors": true,
+      "no_legacy_touch_shadow_navigation": true,
+      "no_failed_build_requests": true
+    },
+    "orientations": [
+      "landscape",
+      "portrait"
+    ],
+    "failures": [],
+    "runtime_errors": [],
+    "network_failures": [],
+    "final_save_sha256": "0ee7b91db0680c5f0a3e45d8aa935db675fa0aad51b6caefdad51caa7f19e96d",
+    "total_seconds": 159.85,
+    "browser_version": "149.0.4022.80"
+  },
+  "runner_released": true
 }

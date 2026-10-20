@@ -1,0 +1,101 @@
+{
+  "bytes": 219324048,
+  "files": [
+    {
+      "path": "build-manifest.json",
+      "bytes": 1056,
+      "sha256": "6398415b879a6c2a1a2374dbdac6ad1b0aa0267a43bc29b083126a7905ea4a28"
+    },
+    {
+      "path": "Build/ValoriaWebPlaytest.framework.js.unityweb",
+      "bytes": 84873,
+      "sha256": "7bf0eaf3adf6bb3cf6f83c46e9c5087c95c3e3ffea0c7d24cc015349d73fdba7"
+    },
+    {
+      "path": "Build/ValoriaWebPlaytest.loader.js",
+      "bytes": 47867,
+      "sha256": "baf752950b8a88f5c6527398fef496ee620ad035dd798830fd9468d426ac4d8f"
+    },
+    {
+      "path": "Build/ValoriaWebPlaytest.wasm.unityweb",
+      "bytes": 10007517,
+      "sha256": "177c5d262103929dc94e539c955ff8f195283915ba6d2966cd655dd29449672a"
+    },
+    {
+      "path": "city.png",
+      "bytes": 2776267,
+      "sha256": "0a9b861a266f87dc8d8d44541f22d8ed5ea8e386a8b7ad4eec8955839b814768"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1912,
+      "sha256": "cb126f498956243188f9c074b8504e66cfcab186f77ac0c17070487ac64d8cc6"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/000.bin",
+      "bytes": 20971520,
+      "sha256": "b31ff933f41653cf7b97efd05540b0eb4ac536c1733c91bf5a572d39a3c15db8"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/001.bin",
+      "bytes": 20971520,
+      "sha256": "d0d6767db814219d19f7d32c5c279a61943f581f4fa3f6868b58707de997b40b"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/002.bin",
+      "bytes": 20971520,
+      "sha256": "a47ee25767733055afcb35194a7cac8d5bd0a64703504298b76989c35851922a"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/003.bin",
+      "bytes": 20971520,
+      "sha256": "264c87ac6f8f4227cbde46857e30ffb0665b907429456bd3cdbb20b6ed262d6b"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/004.bin",
+      "bytes": 20971520,
+      "sha256": "bcc6e825e77d2cd0750e1318be1d5a362312da3b9073f7ec47be2ef1548d9f4b"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/005.bin",
+      "bytes": 20971520,
+      "sha256": "5bb4fed063db5a83debea5044d10d559f4fc37ace3f8175598aab9145da8fcb6"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/006.bin",
+      "bytes": 20971520,
+      "sha256": "3c04536d18abe520a3b9b12025032a2219ffceb91e886654536036fbf90575c1"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/007.bin",
+      "bytes": 20971520,
+      "sha256": "8b07c46d3155c5c1b7c0430599569fb214d30fe4e76f318320e1d042052e42cb"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/008.bin",
+      "bytes": 20971520,
+      "sha256": "8513d5bc2c6d6efa4a479687e3df1c582c8c40b17e6fefc9aef3f0541da8c423"
+    },
+    {
+      "path": "payload/f83ed2ae4ca5f5a5fb23/009.bin",
+      "bytes": 17651805,
+      "sha256": "2e4ac4ae26c903cc471b6bc2e5105f4498117d80c94e7684f02541eb52d7ea0b"
+    },
+    {
+      "path": "play.js",
+      "bytes": 4477,
+      "sha256": "ea99b509d3d6483d65483906db359bfc42e96c93cd4d25562514fa1126ea4ba4"
+    },
+    {
+      "path": "style.css",
+      "bytes": 2924,
+      "sha256": "1de9bf732e5ff9179625eb5aef90abac80064ebc77cb9469aa5d67966df4b53d"
+    },
+    {
+      "path": "TemplateData/webmemd-icon.png",
+      "bytes": 1670,
+      "sha256": "c56f5494640cedda273aad38d58e6ab9da625d5b3f4d875c0ff92c6192a569c2"
+    }
+  ],
+  "manifest_sha256": "86831c7eb61233560f3788aa329202316de2a932c15ceceb6be2579ec7024290"
+}
