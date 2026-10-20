@@ -101,6 +101,22 @@
     "unity_bytes_unchanged": true,
     "physical_mobile_pass": false,
     "delivery_run": 39333420999,
-    "delivery_build": 2165127
+    "delivery_build": 2165127,
+    "owner_followup": "2026-10-20 08:23 Europe/Madrid: owner confirms game now allows entry; full gameplay not certified."
+  },
+  "pc_request": {
+    "id": "pc-tailscale-initial-setup-20261020",
+    "revision": "native152",
+    "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad",
+    "authorization": "Owner 2026-10-20 15:55 Europe/Madrid asks configuration from this chat; stage verified game and install signed Tailscale. Owner account login remains interactive.",
+    "exposure": "none_until_owner_account_login",
+    "no_unity_rebuild": true
+  },
+  "pc_delivery": {
+    "state": "SETUP_REQUESTED_NOT_REACHABLE",
+    "provider": "owner_pc_tailscale",
+    "version": "native152",
+    "owner_step": "Sign in to Tailscale on PC and iPhone using the same account.",
+    "network_verified": false
   }
 }
