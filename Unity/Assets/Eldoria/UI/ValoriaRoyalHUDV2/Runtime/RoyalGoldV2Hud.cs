@@ -295,6 +295,71 @@ namespace Eldoria.UI.RoyalGold.V2
             buffer.Append(value.Trim());
         }
 
+        private static void SetWidthAndHeight(RectTransform r, float w, float h)
+        {
+            if (Mathf.Abs(r.rect.width - w) > .2f)
+                r.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
+            if (Mathf.Abs(r.rect.height - h) > .2f)
+                r.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
+        }
+
+        /// <summary>
+        /// The existing navigation logic uses six 140-unit cells (over 900
+        /// logical units). This extends past portrait safe areas, even when
+        /// all its buttons work. Reflow ONLY existing, authorized actions.
+        /// Do not create dummy buttons or hide usable navigation categories.
+        /// </summary>
+        private void LayoutNavigation()
+        {
+            if (!Source.Navigation || !safe) return;
+            var nav = Source.Navigation;
+            int count = 0;
+            foreach (var item in nav.Items)
+                if (item.Button && item.Button.gameObject.activeSelf) count++;
+            if (count == 0) return;
+            float space = Mathf.Max(250f, safe.rect.width - 30f);
+            float gap = portrait ? 7f : 9f;
+            float width = Mathf.Min(portrait ? 110f : 122f, (space - gap * (count - 1)) / count);
+            float total = width * count + gap * (count - 1);
+            var navRect = nav.transform as RectTransform;
+            if (navRect)
+            {
+                SetWidthAndHeight(navRect, total, 104f);
+                if ((navRect.anchoredPosition - new Vector2(0, 10f)).sqrMagnitude > .1f)
+                    navRect.anchoredPosition = new Vector2(0, 10f);
+            }
+            float icon = Mathf.Min(68f, width - 10f);
+            int index = 0;
+            foreach (var item in nav.Items)
+            {
+                if (!item.Button || !item.Button.gameObject.activeSelf) continue;
+                var cell = (RectTransform)item.Button.transform;
+                SetWidthAndHeight(cell, width, 104f);
+                float x = -total * .5f + width * .5f + index++ * (width + gap);
+                if ((cell.anchoredPosition - new Vector2(x, 0)).sqrMagnitude > .1f)
+                    cell.anchoredPosition = new Vector2(x, 0);
+                // The canonical prefab has one medallion child and one label.
+                // Icons retain the existing medieval artwork and listeners.
+                if (cell.childCount > 0 && cell.GetChild(0) is RectTransform medallion)
+                {
+                    SetWidthAndHeight(medallion, icon, icon);
+                    Vector2 position = new Vector2((width - icon) * .5f, -2f);
+                    if ((medallion.anchoredPosition - position).sqrMagnitude > .1f)
+                        medallion.anchoredPosition = position;
+                }
+                if (item.Label)
+                {
+                    var label = item.Label.rectTransform;
+                    SetWidthAndHeight(label, width, 27f);
+                    Vector2 position = new Vector2(0, -74f);
+                    if ((label.anchoredPosition - position).sqrMagnitude > .1f)
+                        label.anchoredPosition = position;
+                    if (item.Label.fontSize != 19) item.Label.fontSize = 19;
+                    item.Label.alignment = TextAnchor.MiddleCenter;
+                }
+            }
+        }
+
         private void LateUpdate()
         {
             if (!Application.isPlaying) return;
@@ -304,6 +369,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Mathf.Abs(safe.rect.height - lastHeight) > .5f;
             if (resized) Layout();
             if (!hasGeometry) return;
+            LayoutNavigation();
             bool modalOpen = Source.Modal && Source.Modal.gameObject.activeSelf;
 
             chapterText.Put(Safe(Source.Mission.Chapter));
