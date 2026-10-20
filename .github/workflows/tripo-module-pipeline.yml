@@ -16,6 +16,130 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  tripo-source-archive:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[tripo-archive-only]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            ArtSource/World4X
+      - name: Validate exact paid-source archival request
+        id: pre
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,os,re,urllib.request
+          uri='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/pipeline/tripo-module-request.json'
+          obj=json.load(urllib.request.urlopen(uri,timeout=30))
+          if obj.get('enabled') or obj.get('credit_authorization',{}).get('approved'): raise SystemExit('Cannot archive with paid request enabled')
+          x=obj.get('archive') or {}
+          allowed={'Eldoria_Spawnling_Bastion2_v1':'Spawnling_v1','Eldoria_RiftFocus_v1':'RiftFocus_v1'}
+          a=x.get('asset_name')
+          if a not in allowed: raise SystemExit('Bad asset')
+          for v in ('source_run_id','qa_run_id'):
+            if int(x.get(v,0))<1: raise SystemExit('Need exact existing '+v)
+          for v in ('raw_sha','optimized_sha','blend_sha'):
+            if not re.fullmatch(r'[a-f0-9]{64}',str(x.get(v,''))): raise SystemExit('Bad '+v)
+          for v in ('raw_artifact','optimized_artifact','qa_artifact'):
+            if not re.fullmatch(r'[A-Za-z0-9._-]{15,180}',str(x.get(v,''))): raise SystemExit('Bad artifact '+v)
+          if int(x.get('credits_consumed',-1))!=20 or not re.fullmatch(r'[0-9a-f-]{36}',str(x.get('task_id',''))): raise SystemExit('Invalid task or cost')
+          labels={'asset':a,'folder':allowed[a],'source_run':str(x['source_run_id']),'qa_run':str(x['qa_run_id'])}
+          for v in ('raw_sha','optimized_sha','blend_sha','raw_artifact','optimized_artifact','qa_artifact','task_id','credits_consumed'): labels[v]=str(x[v])
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf8') as f:
+            for k,v in labels.items(): f.write(k+'='+v+'\n')
+          print('ARCHIVE_PREFLIGHT=PASS '+a)
+          PY
+      - name: Recover raw GLB from existing paid generation
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.pre.outputs.raw_artifact }}
+          run-id: ${{ steps.pre.outputs.source_run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/tripo-art-source-raw
+      - name: Recover optimized GLB and Blender editable from same task
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.pre.outputs.optimized_artifact }}
+          run-id: ${{ steps.pre.outputs.source_run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/tripo-art-source-optimized
+      - name: Recover real isolated Unity material and screenshot gate
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.pre.outputs.qa_artifact }}
+          run-id: ${{ steps.pre.outputs.qa_run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/tripo-art-source-qa
+      - name: Preserve SHA-verified original, Blender, Unity art evidence on main
+        shell: bash
+        run: |
+          set -euo pipefail
+          dst='ArtSource/World4X/${{ steps.pre.outputs.folder }}'
+          mkdir -p "$dst/UnityQA"
+          find_one() {
+            mapfile -t f < <(find "$1" -type f -name "$2" -print)
+            if [ "${#f[@]}" -ne 1 ]; then echo "Missing/non-unique $2" >&2; exit 1; fi
+            printf '%s' "${f[0]}"
+          }
+          raw=$(find_one "$RUNNER_TEMP/tripo-art-source-raw" 'Eldoria_Module_UnderReview_HQ.glb')
+          opt=$(find_one "$RUNNER_TEMP/tripo-art-source-optimized" 'Eldoria_Module_UnderReview_50K.glb')
+          blend=$(find_one "$RUNNER_TEMP/tripo-art-source-optimized" 'Eldoria_Module_UnderReview_50K.blend')
+          printf '%s  %s\n' '${{ steps.pre.outputs.raw_sha }}' "$raw" | sha256sum --check --status
+          printf '%s  %s\n' '${{ steps.pre.outputs.optimized_sha }}' "$opt" | sha256sum --check --status
+          printf '%s  %s\n' '${{ steps.pre.outputs.blend_sha }}' "$blend" | sha256sum --check --status
+          cp "$raw" "$dst/Tripo_H31_Original.glb"
+          cp "$opt" "$dst/Optimized_Source.glb"
+          cp "$blend" "$dst/Optimized_Editable.blend"
+          metrics=$(find_one "$RUNNER_TEMP/tripo-art-source-qa" 'tripo-source-metrics.json')
+          python - "$metrics" '${{ steps.pre.outputs.asset }}' <<'PY'
+          import json,sys
+          a=json.load(open(sys.argv[1],encoding='utf8'))
+          assert a['asset']==sys.argv[2] and a['unityVersion']=='6000.3.23f1'
+          assert a['fullResolutionTexturePass'] and a['uv0AllMeshes'] and a['normalsAllMeshes']
+          assert a['positiveSelection'] and a['emptySelectionMiss'] and a['textures']>=1
+          print('Genuine QA with high-res albedo PASS')
+          PY
+          cp "$metrics" "$dst/UnityQA/metrics.json"
+          for image in iso.png side.png front.png strategic.png; do
+            source=$(find_one "$RUNNER_TEMP/tripo-art-source-qa" "$image")
+            test "$(wc -c < "$source")" -gt 15000
+            cp "$source" "$dst/UnityQA/$image"
+          done
+          cat > "$dst/PROVENANCE.md" <<'MD'
+          # Eldoria — Tripo API (fuente artística)
+
+          Arte aislado, **NO integrado en el juego**, sin rigging/animación certificados ni perfil móvil. El foco no autoriza nuevos nodos jugables.
+
+          - Modelo: ${{ steps.pre.outputs.asset }}
+          - Tripo H3.1, una sola generación, task: ${{ steps.pre.outputs.task_id }}.
+          - Créditos consumidos: ${{ steps.pre.outputs.credits_consumed }}.
+          - GLB original SHA-256: `${{ steps.pre.outputs.raw_sha }}`.
+          - Optimizado SHA-256: `${{ steps.pre.outputs.optimized_sha }}`.
+          - BLEND SHA-256: `${{ steps.pre.outputs.blend_sha }}`.
+          - Importado en Unity 6000.3.23f1 con texturas reales en proyecto aislado.
+          - Vistas y métricas: `UnityQA/`.
+          - Fuente de generación: GitHub Actions run ${{ steps.pre.outputs.source_run }}.
+          - Validación aislada: GitHub Actions run ${{ steps.pre.outputs.qa_run }}.
+          - Revisión artística y perfil móvil separados de TECH PASS.
+          MD
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$dst"
+          if git diff --cached --quiet; then echo 'SOURCE_ALREADY_ARCHIVED_IDENTICAL'; exit 0; fi
+          git commit -m 'art(world4x): preserve exact Tripo H3.1 source and Unity QA [skip ci]'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main || { git rebase --abort || true; echo 'Concurrent change; preserve source artifact'; exit 1; }
+            if git push origin HEAD:main; then echo 'TRIPO_SOURCE_ARCHIVED_MAIN'; exit 0; fi
+            sleep 3
+          done
+          echo 'Archive push failed without overwrite'; exit 1
+
   tripo-source-qa:
     if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'push' && contains(github.event.head_commit.message, '[tripo-review-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -201,7 +325,7 @@ jobs:
           path: ${{ runner.temp }}/eldoria-boar-unity-isolated-20261020/Output/*
           if-no-files-found: warn
   module-gate:
-    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]') && !contains(github.event.head_commit.message, '[tripo-review-only]')
+    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]') && !contains(github.event.head_commit.message, '[tripo-review-only]') && !contains(github.event.head_commit.message, '[tripo-archive-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
 
