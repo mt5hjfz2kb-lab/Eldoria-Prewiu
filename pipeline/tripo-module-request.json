@@ -27,7 +27,7 @@
     "enabled": false
   },
   "visual_acceptance": "Four distinct reusable architecture pieces derived from exactly the owner-approved sheet: 2-storey residential facade/corner mass with balconies; arched entry/porch mass with blue/gold banners and steps; roof/upper structure with tower/chimney (partial-height module is intentional); workshop/facade mass with open arch and side canopy. Require each intended mass to remain complete, coherent stone/timber/red-tile identity, readable major silhouettes and attached roofs/walls; no cross-piece fusion, stranded fragments, connected spikes, severed principal facades or major texture washout. Evaluate real official19/12/9 kit captures plus each piece front/rear/side/oblique. Technical separation alone does not certify usability or integrated Valoria quality. Isolated gate only, gameplay topology/hotspots/colliders/circulation authoritative; no automatic production promotion.",
-  "run_nonce": "tripo-api-doctor-direct-powershell-no-checkout-20261020",
+  "run_nonce": "TRIPO_API_DIAG_20261020_FAST_WINDOWS_RUN",
   "notes": "Temporary read-only API diagnostic on existing Windows runner, direct PowerShell without repository checkout. No generation, no spending; restore original parked request after result.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
