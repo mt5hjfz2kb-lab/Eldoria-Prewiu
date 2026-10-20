@@ -31,15 +31,17 @@ public static class ValoriaTerrainBankAuthoring {
   Need(data.meshes.Count(m=>m.name=="River_bank_rocks")==1,"Ambiguous current bank geometry");Views(c,"before");File.WriteAllText(Ev+"/survey.json",JsonUtility.ToJson(data));Debug.Log("VALORIA_REFERENCE_CLEAN_TERRAIN_SURVEY_COMPLETE");EditorApplication.Exit(0);
  }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
  public static void Trial(){try{Apply(false);Debug.Log("VALORIA_REFERENCE_CLEAN_TERRAIN_BANK_TRIAL_COMPLETE");EditorApplication.Exit(0);}catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
+ [Serializable] public class Acceptance {public string candidate_sha256,source_scene_sha256,after_main_sha256,after_portrait_sha256;public bool phase1_visual_accepted;}
+ public static void Integrate(){try{Apply(true);ValoriaIntegrationBuild.ValidateCurrent();}catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
  static void Apply(bool promote){
-  Need(!promote,"Candidate must pass independent Unity review before promotion");var c=Open();var stamp=Stamp(c);var light=LightStamp();var survey=JsonUtility.FromJson<SurveyData>(File.ReadAllText(Ev+"/survey.json"));var result=JsonUtility.FromJson<Result>(File.ReadAllText(Ev+"/candidate.json"));
+  Acceptance accepted=null;if(promote){accepted=JsonUtility.FromJson<Acceptance>(File.ReadAllText(Ev+"/accepted-candidate.json"));Need(accepted.phase1_visual_accepted&&accepted.candidate_sha256==Hash(Ev+"/candidate.json")&&accepted.source_scene_sha256==Hash(Scene),"Exact reviewed candidate required");}var c=Open();var stamp=Stamp(c);var light=LightStamp();var survey=JsonUtility.FromJson<SurveyData>(File.ReadAllText(Ev+"/survey.json"));var result=JsonUtility.FromJson<Result>(File.ReadAllText(Ev+"/candidate.json"));
   Need(Hash(Scene)==survey.scene_sha256&&result.survey_sha256==Hash(Ev+"/survey.json"),"Exact live source/survey mismatch");Need(!result.art_approved&&result.changed_terrain_vertices>100&&result.changed_bank_vertices>100,"No geometric change or false approval");
   var t=Ground();var original=t.terrainData;var collider=t.GetComponent<TerrainCollider>();var originalCollider=collider.terrainData;var trial=Object.Instantiate(original);int n=trial.heightmapResolution;Need(result.heights.Length==n*n,"Height topology changed");var hh=new float[n,n];for(int z=0;z<n;z++)for(int x=0;x<n;x++){float v=result.heights[z*n+x];Need(!float.IsNaN(v)&&v>=0&&v<=1,"Invalid height");hh[z,x]=v;}
-  var meshes=new List<Mesh>();var temporary=new List<Object>();var replaced=new List<Tuple<MeshFilter,Mesh>>();
+  var meshes=new List<Mesh>();var temporary=new List<Object>();var replaced=new List<Tuple<MeshFilter,Mesh>>();var changedColliders=new List<Tuple<MeshCollider,Mesh>>();bool saved=false;
   try{
    // Re-capture within this same process: exactly identical lighting/camera/URP.
    Views(c,"before");trial.SetHeights(0,0,hh);trial.SyncHeightmap();t.terrainData=trial;collider.terrainData=trial;t.Flush();
-   var filters=Natural();foreach(var g in result.meshes){var f=filters.Single(m=>m.name==g.name);var old=f.sharedMesh;Need(old.vertexCount==g.vertices.Length,"Mesh topology changed");var copy=Object.Instantiate(old);copy.name=old.name+"_TerrainBank192_candidate";copy.vertices=g.vertices.Select(v=>f.transform.InverseTransformPoint(v)).ToArray();if(g.name=="River_bank_rocks")copy.RecalculateNormals();copy.RecalculateBounds();meshes.Add(copy);replaced.Add(Tuple.Create(f,old));f.sharedMesh=copy;}
+   var filters=Natural();foreach(var g in result.meshes){var f=filters.Single(m=>m.name==g.name);var old=f.sharedMesh;Need(old.vertexCount==g.vertices.Length,"Mesh topology changed");var copy=Object.Instantiate(old);copy.name=old.name+"_TerrainBank192_candidate";copy.vertices=g.vertices.Select(v=>f.transform.InverseTransformPoint(v)).ToArray();if(g.name=="River_bank_rocks")copy.RecalculateNormals();copy.RecalculateBounds();meshes.Add(copy);replaced.Add(Tuple.Create(f,old));f.sharedMesh=copy;foreach(var mc in Object.FindObjectsByType<MeshCollider>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(mc=>mc.sharedMesh==old)){changedColliders.Add(Tuple.Create(mc,old));mc.sharedMesh=copy;}}
    Need(result.shore!=null&&result.shore.vertices.Length>100&&result.shore.triangles.Length<18000,"Missing measured low bank");
    var bank=filters.Single(f=>f.name=="River_bank_rocks").GetComponent<Renderer>();
    var skin=new GameObject("Measured low river bank / candidate");temporary.Add(skin);var sm=new Mesh{name="Measured low river bank"};sm.vertices=result.shore.vertices;sm.triangles=result.shore.triangles;sm.uv=result.shore.uv;sm.RecalculateNormals();sm.RecalculateBounds();meshes.Add(sm);skin.AddComponent<MeshFilter>().sharedMesh=sm;var sr=skin.AddComponent<MeshRenderer>();sr.sharedMaterial=bank.sharedMaterials[0];
@@ -67,8 +69,18 @@ public static class ValoriaTerrainBankAuthoring {
    }
    trial.SetAlphamaps(0,0,alpha);t.Flush();
    Physics.SyncTransforms();Views(c,"after");Need(stamp==Stamp(c)&&light==LightStamp(),"Camera/light changed");Need(Hash(Scene)==survey.scene_sha256,"Source scene mutated");
-   File.WriteAllText(Ev+"/unity-review.json","{\"status\":\"REAL_UNITY_AB_REVIEW_REQUIRED\",\"same_camera\":true,\"same_light\":true,\"scene_saved\":false,\"art_approved\":false,\"gameplay_modified\":false,\"before_main_sha256\":\""+Hash(Ev+"/before-main.png")+"\",\"after_main_sha256\":\""+Hash(Ev+"/after-main.png")+"\",\"before_portrait_sha256\":\""+Hash(Ev+"/before-portrait.png")+"\",\"after_portrait_sha256\":\""+Hash(Ev+"/after-portrait.png")+"\"}");
-  }finally{foreach(var pair in replaced)pair.Item1.sharedMesh=pair.Item2;t.terrainData=original;collider.terrainData=originalCollider;t.Flush();foreach(var m in meshes)Object.DestroyImmediate(m);foreach(var o in temporary)Object.DestroyImmediate(o);Object.DestroyImmediate(trial);}
+   if(promote){
+    Need(Hash(Ev+"/after-main.png")==accepted.after_main_sha256&&Hash(Ev+"/after-portrait.png")==accepted.after_portrait_sha256,"Exact approved rendered candidate mismatch");
+    string folder="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/TerrainBank197";Need(!Directory.Exists(folder),"Refuse overwrite existing integrated terrain assets");Directory.CreateDirectory(folder);AssetDatabase.Refresh();
+    int index=0;foreach(var obj in temporary.Where(o=>o is Texture2D))AssetDatabase.CreateAsset(obj,folder+"/meadow-"+(index++)+".asset");
+    index=0;foreach(var obj in temporary.Where(o=>o is TerrainLayer))AssetDatabase.CreateAsset(obj,folder+"/layer-"+(index++)+".terrainlayer");
+    index=0;foreach(var mesh in meshes)AssetDatabase.CreateAsset(mesh,folder+"/mesh-"+(index++)+".asset");AssetDatabase.CreateAsset(trial,folder+"/Terrain.asset");
+    skin.name="Measured low river bank / terrain-bank197";skin.transform.SetParent(t.transform.parent,true);
+    AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(t.gameObject.scene);Need(EditorSceneManager.SaveScene(t.gameObject.scene,Scene),"Scene save failed");saved=true;
+    File.WriteAllText(Ev+"/integrated.json","{\"phase1_visual_accepted\":true,\"gameplay_validation\":\"PENDING_CURRENT_PROBE\",\"scene_sha256\":\""+Hash(Scene)+"\",\"candidate_sha256\":\""+accepted.candidate_sha256+"\",\"published\":false}");
+   }
+   if(!promote)File.WriteAllText(Ev+"/unity-review.json","{\"status\":\"REAL_UNITY_AB_REVIEW_REQUIRED\",\"same_camera\":true,\"same_light\":true,\"scene_saved\":false,\"art_approved\":false,\"gameplay_modified\":false,\"before_main_sha256\":\""+Hash(Ev+"/before-main.png")+"\",\"after_main_sha256\":\""+Hash(Ev+"/after-main.png")+"\",\"before_portrait_sha256\":\""+Hash(Ev+"/before-portrait.png")+"\",\"after_portrait_sha256\":\""+Hash(Ev+"/after-portrait.png")+"\"}");
+  }finally{if(!saved){foreach(var pair in changedColliders)pair.Item1.sharedMesh=pair.Item2;foreach(var pair in replaced)pair.Item1.sharedMesh=pair.Item2;t.terrainData=original;collider.terrainData=originalCollider;t.Flush();foreach(var m in meshes)Object.DestroyImmediate(m);foreach(var o in temporary)Object.DestroyImmediate(o);Object.DestroyImmediate(trial);}}
  }
 }}
 #endif

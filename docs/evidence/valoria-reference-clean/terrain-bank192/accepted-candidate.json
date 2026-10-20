@@ -1,0 +1,16 @@
+{
+  "phase1_visual_accepted": true,
+  "candidate_sha256": "e53003405169bdc766d3b8d6b432680d6182c4ca7237573ce2d55c6285024df5",
+  "source_scene_sha256": "a7009e65f774113ce9735d460c142c70bed856422be488f343875c08151e4f61",
+  "after_main_sha256": "c95ab5fe634ea542a137213c1fce67557b26be6b65ed1317b0db1408f30ee268",
+  "after_portrait_sha256": "627eae9b5081067285f92f9f0fd0566c72da6148666c1627dbf6094cc7ed5b47",
+  "reviewed_run": 39449755129,
+  "scope": "First terrain/bank improvement; not full mission or city 7/10 approval",
+  "reviewer": "Primary art director visual inspection of full real Unity A/B and portrait, separate from local Qwen shape proposal",
+  "limitations": [
+    "Existing conical tree silhouettes still need forest phase",
+    "Angular original large rocks remain recognizable; low supporting bank replaces disconnected placement",
+    "Bastion roof/bridge junction remain for phase 2"
+  ],
+  "gameplay_gate": "Required before persistence to main"
+}
