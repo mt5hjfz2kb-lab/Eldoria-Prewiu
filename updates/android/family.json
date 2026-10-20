@@ -1,7 +1,14 @@
 {
   "schema": 1,
-  "enabled": false,
+  "enabled": true,
   "channel": "family",
   "packageName": "com.eldoria.valoria.v5test",
-  "message": "El canal familiar se activará después de verificar la primera APK con actualizador integrado."
+  "versionCode": 9,
+  "versionName": "1.9",
+  "bytes": 228701167,
+  "sha256": "13f41bd9c93cea07dd36e82322df501e66fa7041afc30b4ee5d8644968c3b2fe",
+  "sourceSha": "575933732d3e96a934695d35abe5cbb502574762",
+  "certificateSha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+  "apkUrl": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code9/Eldoria-Valoria-code9.apk",
+  "message": "Nueva versión de Eldoria disponible. Conserva tu partida y confirma la instalación en Android."
 }
