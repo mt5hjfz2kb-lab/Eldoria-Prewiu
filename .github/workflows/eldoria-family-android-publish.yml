@@ -18,6 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            pipeline/android-updater-release-request.json
+            tools/android-updates
+            updates/android
+          sparse-checkout-cone-mode: false
       - name: Verify explicit release request and source run
         id: approval
         uses: actions/github-script@v7
