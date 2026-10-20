@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ROYAL_GOLD_V2_WEBGL_191_WINDOWS_QA_PASS_PACKAGE_PREPARATION",
+  "state": "ROYAL_GOLD_V2_PRIVATE_ITCH_UPLOAD_REQUESTED_NATIVE191",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -38,10 +38,10 @@
   },
   "privacy_confirmation_basis": "Owner setup screenshots: Restricted selected, then project saved successfully; remote anonymous access verification pending.",
   "promotion_request": {
-    "id": "itch-native152-low-memory-v2-20261020",
+    "id": "itch-royal-gold-v2-native191-gpu-qa-20261020",
     "target": "chrismad/eldoria-pruebas",
-    "revision": "native152",
-    "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
+    "revision": "native191",
+    "artifact_sha256": "5e2d674a77e836133fa0a13a2279de90732f175b2116c0dd46d38259efbbab05"
   },
   "last_attempt": {
     "run_id": 39333420999,
@@ -146,6 +146,9 @@
       "0 runtime/network errors"
     ],
     "phone_hardware_tested": false,
-    "published_updated": false
+    "published_updated": false,
+    "delivery_prepared_run": 39440643475,
+    "delivery_prepared_artifact": 12274180615,
+    "release_target": "Restricted itch.io chrismad/eldoria-pruebas web"
   }
 }
