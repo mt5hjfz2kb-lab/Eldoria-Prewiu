@@ -119,15 +119,6 @@ jobs:
           }
           $report|ConvertTo-Json -Depth 5|Set-Content docs/evidence/valoria-reference-clean/android-existing-key-check.json -Encoding utf8
           Write-Host "Original Android signing key certificate match: $($report.matching_key_found)"
-      - name: Recover exact reviewed world captures from native228
-        if: contains(github.event.head_commit.message, '[world-contact-recover]')
-        uses: actions/download-artifact@v4
-        with:
-          name: valoria-world-contact-review-39486649326
-          run-id: 39486649326
-          github-token: ${{ github.token }}
-          path: valoria-layered-source/docs/evidence/valoria-reference-clean/world-contact222
-
       - name: Execute requested stage in native Unity
         id: native_stage
         shell: powershell
@@ -215,7 +206,17 @@ jobs:
           if($req.stage -eq 'visual_leap'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.VisualLeap';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'experience_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'architecture_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
-          if($req.stage -eq 'architecture_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Trial'}
+          if($req.roof_junction -and $req.stage -eq 'architecture_trial'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
+            if(-not $blender){throw 'Installed Blender required'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_roof_junction.py
+            if($LASTEXITCODE){throw 'Measured roof junction authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaRoofJunctionFinishing.Trial'
+          }
+          if($req.roof_junction -and $req.stage -eq 'architecture_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaRoofJunctionFinishing.Integrate'}
+
+          if($req.stage -eq 'architecture_trial' -and -not $req.roof_junction){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Trial'}
           if($req.stage -eq 'final_environment_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaFinalEnvironmentFinishing.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'final_environment_trial'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
@@ -285,7 +286,7 @@ jobs:
               if($LASTEXITCODE){throw 'Retained geological authoring failed'}
             }
           }
-          if($req.stage -eq 'architecture_trial'){
+          if($req.stage -eq 'architecture_trial' -and -not $req.roof_junction){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
             if(-not $blender){throw 'Installed Blender required'}
@@ -739,6 +740,17 @@ jobs:
           path: |
             valoria-layered-source/docs/evidence/valoria-reference-clean/world-contact222/*.png
             valoria-layered-source/docs/evidence/valoria-reference-clean/world-contact222/*.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - uses: actions/upload-artifact@v4
+        if: always() && (steps.native_stage.outputs.stage == 'architecture_trial' || steps.native_stage.outputs.stage == 'architecture_integrate')
+        with:
+          name: valoria-roof-junction-review-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/roof-junction226/*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/roof-junction226/author-proof.json
+            valoria-layered-source/docs/evidence/valoria-reference-clean/roof-junction226/unity-review.json
           if-no-files-found: warn
           retention-days: 30
 
