@@ -16,6 +16,72 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  rock-boar-archive:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[boar-archive-only]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            ArtSource/World4X/RockBoar_v1
+      - uses: actions/download-artifact@v4
+        with:
+          name: tripo-raw-eldoria-world4x-rock-boar-hunt-v1-20261020-d65a223378ce1ff2754ab17c932826a02a2aa9e9
+          run-id: 39495619494
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/boar-archive-raw
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-tripo-module-eldoria-world4x-rock-boar-hunt-v1-20261020-d65a223378ce1ff2754ab17c932826a02a2aa9e9
+          run-id: 39495619494
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/boar-archive-optimized
+      - name: Verify SHA and preserve editable source without gameplay changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          raw_file=$(find "$RUNNER_TEMP/boar-archive-raw" -type f -name 'Eldoria_Module_UnderReview_HQ.glb' -print -quit)
+          low_file=$(find "$RUNNER_TEMP/boar-archive-optimized" -type f -name 'Eldoria_Module_UnderReview_50K.glb' -print -quit)
+          blend_file=$(find "$RUNNER_TEMP/boar-archive-optimized" -type f -name 'Eldoria_Module_UnderReview_50K.blend' -print -quit)
+          test -f "$raw_file" && test -f "$low_file" && test -f "$blend_file"
+          printf '%s  %s\n' 166c32e7f0b86d3212aa1fdc2c30ee67bc4ce2a0994bbf15a30a42050cfd4dd5 "$raw_file" | sha256sum --check --status
+          printf '%s  %s\n' 897c8d02a445c6c760376031c38618698740e9593346099fafb4c3a0b93c1dc3 "$low_file" | sha256sum --check --status
+          printf '%s  %s\n' 91e8385dc4229b963289b4f1356056fc34e88fca67af18d86ca03675ded7cab7 "$blend_file" | sha256sum --check --status
+          dest=ArtSource/World4X/RockBoar_v1
+          mkdir -p "$dest"
+          cp "$raw_file" "$dest/Tripo_RockBoar_H31_Original.glb"
+          cp "$low_file" "$dest/RockBoar_Optimizado_49800.glb"
+          cp "$blend_file" "$dest/RockBoar_Optimizado_49800.blend"
+          cat > "$dest/PROVENANCE.md" <<'EOF'
+          # Eldoria — Jabalí de roca (World4X First Hunt)
+          
+          Canonical web game key: `boar`; level 1; first hunt, Chapter III.
+          Tripo H3.1 task: `28f57ff9-b978-468c-8c2a-6136e0a65ea1`.
+          One paid generation: 20 API credits, no paid retries.
+          Exact raw: 84,178 triangles, SHA-256 `166c32e7f0b86d3212aa1fdc2c30ee67bc4ce2a0994bbf15a30a42050cfd4dd5`.
+          Blender optimized: 49,800 triangles, SHA-256 `897c8d02a445c6c760376031c38618698740e9593346099fafb4c3a0b93c1dc3`.
+          Editable Blender SHA-256 `91e8385dc4229b963289b4f1356056fc34e88fca67af18d86ca03675ded7cab7`.
+          Real isolated Unity 6000.3.23f1 art/texture/collider QA: run 39505056649; 2K base-color; 3 maps; selecting/missing raycasts passed.
+          These files are source archive OUTSIDE `Unity/Assets`: they DO NOT auto-import, alter the current Bastion I–II scene, or ship in WebGL/APK.
+          The asset is static and not rigged/animated. World4X gameplay integration belongs to the Chapter III scope, not the current I–II release.
+          EOF
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- "$dest"
+          if git diff --cached --quiet; then echo 'BOAR_ALREADY_ARCHIVED_SHA_VERIFIED'; exit 0; fi
+          git commit -m 'art(world4x): preserve approved Rock Boar source without gameplay changes [skip ci]'
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main || exit 1
+            if git push origin HEAD:main; then echo 'ROCK_BOAR_ARTSOURCE_ARCHIVED'; exit 0; fi
+            sleep 3
+          done
+          echo 'Archive push lost concurrent-main race; preserve current work and stop without force' >&2
+          exit 1
+
   rock-boar-qa:
     if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'push' && contains(github.event.head_commit.message, '[boar-qa-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -51,7 +117,7 @@ jobs:
           path: ${{ runner.temp }}/eldoria-boar-unity-isolated-20261020/Output/*
           if-no-files-found: warn
   module-gate:
-    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]')
+    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
 
