@@ -59,3 +59,14 @@ test('Version exhaustion and malformed SHA fail closed',()=>{
     sha256:'e'.repeat(64),bytes:200000000});
   assert.equal(decideNightly(payload({channel:max})).reason,'android_version_limit');
 });
+
+test('Explicit nightly kill switch is nonpublishing even when content is green',()=>{
+  const d=decideNightly(payload({enabled:false}));
+  assert.equal(d.shouldBuild,false);
+  assert.equal(d.reason,'nightly_disabled');
+});
+test('An already verified revision is never repackaged because automation metadata changed',()=>{
+  const sameHead=decideNightly(payload({headSha:channel.sourceSha}));
+  assert.equal(sameHead.shouldBuild,false);
+  assert.equal(sameHead.reason,'no_new_unity_source');
+});

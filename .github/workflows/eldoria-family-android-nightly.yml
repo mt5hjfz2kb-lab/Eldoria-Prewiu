@@ -1,5 +1,11 @@
 name: '[ELDORIA] Nightly verified Android family release'
 on:
+  # Source-policy pushes execute only the dry-run gates (never the Windows build).
+  push:
+    branches: [main]
+    paths:
+      - 'tools/android-updates/nightly-policy.mjs'
+      - 'tools/android-updates/nightly-policy.test.mjs'
   # 02:17 UTC: 04:17 CEST / 03:17 CET in Madrid. One nightly window.
   schedule:
     - cron: '17 2 * * *'
@@ -46,7 +52,7 @@ jobs:
         id: gate
         uses: actions/github-script@v7
         env:
-          ELDORIA_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+          ELDORIA_DRY_RUN: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
           ELDORIA_ENABLED: ${{ vars.ELDORIA_NIGHTLY_ANDROID_ENABLED }}
         with:
           script: |
