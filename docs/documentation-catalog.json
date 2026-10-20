@@ -150,6 +150,12 @@
       "note": "Antiguo modelo de pipeline; verificar contra AGENTS"
     },
     {
+      "path": "docs/ELDORIA_GRAPHICS_RECOVERY_OWNER_20261020.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Recuperación visual y técnica autorizada; subordinada a referencia confirmada 20-10-2026"
+    },
+    {
       "path": "docs/ELDORIA_GRAPHICS_TOOLCHAIN_AUDIT_2026.md",
       "domain": "project",
       "status": "review_pending"
@@ -204,6 +210,12 @@
       "domain": "quality",
       "status": "current",
       "note": "Hallazgos y prioridades; distingue evidencia técnica de partida manual pendiente"
+    },
+    {
+      "path": "docs/ELDORIA_PLAYTEST_DELIVERY.md",
+      "domain": "quality",
+      "status": "current",
+      "note": "Entrega de pruebas externas; no fuente de dirección artística"
     },
     {
       "path": "docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md",
@@ -968,6 +980,12 @@
       "path": "docs/VALORIA_VISUAL_FORMULA_v1.md",
       "domain": "art",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Referencia visual del propietario ratificada 20-10-2026 (imagen original distinta de la histórica en references/); no ART PASS sin cotejar JPEG SHA"
     },
     {
       "path": "docs/VALORIA_VISUAL_RND_DECISION_REGISTER_V1.md",
