@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Spawnling enemy source only, v0220 entity id spawnling, Bastion II: small hunched violet partly deformed quadruped-like humanoid with coherent TWO forearms, TWO legs and ONE head; natural base, legible high-isometric silhouette, subtle Rift veins (not demon horns). UV0, normals, texture maps 2K require real Unity QA. Retain original raw GLB/Blender .blend/optimized GLB. No gameplay edits, no automatic promotion, no world hotspot/camp or live scene mutation.",
-  "run_nonce": "spawnling-recover-paid-raw-asset-only-20261021",
-  "notes": "PAID TASK COMPLETED ONCE: Tripo task 351d1034-25ec-4300-a2e0-d03a0e68175a. H3.1 20 credits, source-run 39511077721, raw artifact 12305368720, raw GLB SHA256 5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f. Canonical workflow Blender failed ONLY because tools/tripo_module_blender.py was not present in Windows checkout; raw source is preserved; NEVER retry paid generation. Resume Blender from raw artifact with exact SHA. Not integrated in gameplay.",
+  "run_nonce": "tripo-review-only-spawnling-recovered-blender-2k-20261021",
+  "notes": "No Tripo generation: the one paid Spawnling model exists, task 351d1034-25ec-4300-a2e0-d03a0e68175a (20 credits), raw SHA 5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f. Original run 39511077721, Blender recovery run 39512676401 (source/artifact) PASS, optimized GLB sha 2701e6...; this triggers ONLY isolated zero-credit Unity QA from the already-persisted Blender artifact.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
@@ -40,5 +40,11 @@
     "source_run_id": 39511077721,
     "raw_artifact": "tripo-raw-eldoria-spawnling-bastion2-h31-one-20261021-69c83a6dc0eaba754e5cb5f933af5da9fe6a9399",
     "expected_raw_sha256": "5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f"
+  },
+  "review": {
+    "asset_name": "Eldoria_Spawnling_Bastion2_v1",
+    "source_run_id": 39512676401,
+    "artifact_name": "eldoria-tripo-module-eldoria-spawnling-bastion2-h31-one-20261021-5fe81846fe6c36c006abaa3d63b1800437d2e59b",
+    "expected_sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a"
   }
 }
