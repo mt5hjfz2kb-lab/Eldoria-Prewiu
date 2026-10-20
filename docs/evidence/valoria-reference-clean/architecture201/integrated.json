@@ -1,1 +1,8 @@
-{"visual_scope_accepted":true,"scene_sha256":"6ad4188c5cbe8f653974c713fbef54519df791f43c2e21cf8c6bc48f5aa8d11e","gameplay_gate":"PENDING_CURRENT_PROBE","published":false}
+{
+  "visual_scope_accepted": true,
+  "scene_sha256": "6ad4188c5cbe8f653974c713fbef54519df791f43c2e21cf8c6bc48f5aa8d11e",
+  "gameplay_gate": "PASS_35_EXISTING_CHECKS",
+  "published": false,
+  "native_run": 39453446158,
+  "runtime_capture_review": "Chapter II completion actual UI viewed; slate change persists with both existing functional buildings; no full quality score claim."
+}
