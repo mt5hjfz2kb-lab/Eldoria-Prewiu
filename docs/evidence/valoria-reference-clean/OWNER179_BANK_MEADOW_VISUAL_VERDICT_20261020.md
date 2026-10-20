@@ -1,0 +1,12 @@
+# OWNER179 · Ribera/pradera CC0 · Veredicto visual (20-10-2026)
+
+**ART_REJECTED como mejora suficiente. No integrar, no publicar, no asignar nota 7/10 ni 5,5/10.**
+
+- Referencia exacta aprobada: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg` SHA-256 `86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d`.
+- Ejecución nativa **39402773463, SUCCESS técnico**, fuente `cbce94ad923c12ee7fe23feb8986965702bd31a4`. Capturas reales A/B: `owner178-bank-meadow-before-main.png`, `owner178-bank-meadow-after-main.png`, `owner178-bank-meadow-before-portrait.png`, `owner178-bank-meadow-after-portrait.png`; prueba `owner178-bank-meadow-review.json`. Evidencia incorporada a `main` en `2c1733427ad1d6280822e91f2283a1232c99fbfb`.
+- Cámara e iluminación idénticas; cambio de 59.622/65.536 celdas de mezcla y ~10,8% de píxeles principales. `source_scene_saved=false`, `heightmap_changed=false`, `gameplay_modified=false`, `published=false`.
+- **Juicio basado en imágenes, no en porcentaje:** los cambios visibles son principalmente transiciones de color/terreno seco en la ribera. En vista vertical la composición apenas mejora. Persisten losas/parcelas invisibles, orillas con bloques pétreos sobredimensionados y terreno liso respecto a la referencia de cuatro parcelas vacías, ribera orgánica y masas verdes coherentes. Este método no proporciona el salto gráfico exigido.
+- **Causa concreta de las parcelas ausentes:** `ValoriaIntegrationBuild.Build()` deshabilitó expresamente renderizadores de objetos `Plot_` y de `Parcels.Bindings[*].Ground/Available` para no mostrar losas provisionales; las pruebas integradas también exigen que esos viejos renderizadores sigan ocultos. No reactivar losas antiguas. Diseñar cuatro parcelas de tierra claramente legibles, bordes/pavimento integrado y materiales de alta calidad a través de nueva autoría visual, conservando hotspots, progresión y guardados. El mundo 4X continúa dentro de su alcance autoritario independiente, sin campamentos inventados.
+- **Siguiente producción autorizada:** levantar dimensiones XYZ y en cámara real de los cuatro `Plot_` históricos y sus vínculos de progresión, reutilizar fuentes CC0/Blender y módulos previos si mejoran macroforma, producir una única propuesta visual A/B con las cuatro parcelas vacías y acceso/ribera. Nada de nuevos barrios, edificios, acantilados ni microrecoloraciones en bucle; si falla, cambiar de método. `main` única, 0 €.
+
+Este registro preserva el punto exacto de continuidad. Un SUCCESS de Unity no implica ART_APPROVED.
