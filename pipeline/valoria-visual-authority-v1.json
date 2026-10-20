@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
-  "classification": "VISUAL_AUTHORITY_MISMATCH_RESOLVED",
+  "classification": "OWNER_APPROVED_REFERENCE_CURRENT_ART_UNCERTIFIED",
   "authority_path": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
-  "authority_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
-  "authority_size_bytes": 702827,
+  "authority_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d",
+  "authority_size_bytes": 772948,
   "dimensions": [
-    1536,
-    1024
+    1448,
+    1086
   ],
-  "source": "Owner attachment 2026-10-06; exact original bytes",
-  "source_equals_preproduction_target": true,
+  "source": "Owner-approved Valoria city image reconfirmed 2026-10-20; exact original bytes",
+  "source_equals_preproduction_target": false,
   "clean_input_path": "docs/evidence/valoria-visual-authority-reset-v1/sharp-clean-input.png",
   "crop_box": [
     210,
@@ -34,14 +34,44 @@
   ],
   "superseded_source_artifact_id": 11408853949,
   "superseded_home_artifact_id": 11409079879,
-  "production_promotion": true,
+  "production_promotion": false,
   "paid_credits": 0,
   "clean_input_sha256": "a94e7e35a9396f9aabc0ddfaf5802a0775929cbd708f35e6a9ed3adabdbf5a34",
-  "status": "CORRECT_AUTHORITY_PASS",
+  "status": "REFERENCE_CURRENT_NEW_UNITY_ART_REVIEW_REQUIRED",
   "source_run_id": 37472982237,
   "source_artifact_id": 11418315301,
   "home_authority_run_id": 37474695980,
   "home_authority_artifact_id": 11418118004,
   "review": "docs/evidence/valoria-visual-authority-reset-v1/review.json",
-  "promotion_scope": "correct reference + bounded hybrid slice only"
+  "promotion_scope": "correct reference + bounded hybrid slice only",
+  "reference_canon": "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md",
+  "historical_2026_10_06_reference": {
+    "sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
+    "size_bytes": 702827,
+    "dimensions": [
+      1536,
+      1024
+    ],
+    "source": "Owner attachment 2026-10-06; exact original bytes",
+    "status": "CORRECT_AUTHORITY_PASS",
+    "review": "docs/evidence/valoria-visual-authority-reset-v1/review.json",
+    "source_run_id": 37472982237,
+    "source_artifact_id": 11418315301,
+    "home_authority_run_id": 37474695980,
+    "home_authority_artifact_id": 11418118004,
+    "clean_input_path": "docs/evidence/valoria-visual-authority-reset-v1/sharp-clean-input.png",
+    "clean_input_sha256": "a94e7e35a9396f9aabc0ddfaf5802a0775929cbd708f35e6a9ed3adabdbf5a34",
+    "clean_dimensions": [
+      1230,
+      845
+    ],
+    "cleaning_method": "exact-pixel border crop; no inpainting, generation, redesign or semantic layers",
+    "crop_box": [
+      210,
+      50,
+      1440,
+      895
+    ]
+  },
+  "historical_inputs_not_current_art_authority": true
 }
