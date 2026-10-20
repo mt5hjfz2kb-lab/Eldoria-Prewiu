@@ -24,7 +24,7 @@ public static class OwnerCityCliffsUnityTrial {
  const string Live=Base+"/Valoria_City_World_UI.unity";
  const string Source="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/OwnerCityCliffsV19.glb";
  const string Target=Base+"/ArtCandidates/OwnerCityCliffsV19";
- static string Ev=>Path.GetFullPath(Path.Combine(Application.dataPath,
+ static string Ev=>Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,
     "../../docs/evidence/valoria-reference-clean"));
  [Serializable] sealed class BlenderSource {
   public string output_sha256,blend_sha256;public bool art_approved;public int triangles;
