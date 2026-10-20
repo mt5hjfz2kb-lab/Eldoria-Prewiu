@@ -1,0 +1,108 @@
+{
+  "role": "INDEPENDENT_LOCAL_VISUAL_CRITIQUE_NOT_AUTHOR_OR_ACCEPTANCE_GATE",
+  "art_approved": false,
+  "new_model_downloads": 0,
+  "source_sha": "229fbfb807920bc14695037a265a8289869f68e5",
+  "reviews": [
+    {
+      "scope": "city",
+      "images": [
+        {
+          "path": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+          "sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/roof-junction226/after-I-landscape.png",
+          "sha256": "c8f5731c03a3967ebd1d388d1d47c1cfa20783984e1c2be128487c2f9b978380"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/roof-junction226/after-II-landscape.png",
+          "sha256": "10e8f72f0f2f6efa2807f25266bd2c3ce11affbf7309180110f94721717827da"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/roof-junction226/after-I-portrait.png",
+          "sha256": "f62efd32c9fa66677f3e5cf11f3bf9a1a4dfb92b7790c76491c8c1aa2e25d450"
+        }
+      ],
+      "model": "qwen3-vl:8b-instruct-q4_K_M",
+      "elapsed_seconds": 39.5,
+      "review": {
+        "visible_strengths": [
+          "The stone textures and lighting on the compact keep, gatehouse, and bridge are consistent with the reference, showing good material fidelity and a cohesive color palette.",
+          "The river's blue color and the way it reflects light, along with the rocky banks, are visually accurate and match the reference image's water rendering.",
+          "The overall composition, including the placement of trees, the meadow's grass texture, and the stone paths, maintains the reference's spatial relationships and scale."
+        ],
+        "highest_impact_defects": [
+          {
+            "observation": "The castle's roof is rendered as a flat, uniform blue, lacking the detailed texture and subtle shading visible in the reference image, which shows a more complex, multi-toned roof surface.",
+            "correction": "Apply a detailed, multi-layered roof texture with normal and specular maps to simulate the varied lighting and surface detail seen in the reference."
+          },
+          {
+            "observation": "The bridge's stone blocks are uniformly gray and lack the varied, weathered appearance and subtle lighting variations present in the reference, making it appear less realistic.",
+            "correction": "Introduce a weathered stone texture with varied albedo and normal maps, and add directional lighting to create realistic shadows and highlights on the bridge's surface."
+          },
+          {
+            "observation": "The trees are rendered with a simplified, uniform green color and lack the varied shading and depth of field seen in the reference, making the landscape appear flat and less immersive.",
+            "correction": "Use a more complex tree shader with multiple layers of foliage, varied lighting, and depth-of-field effects to enhance realism and visual depth."
+          }
+        ],
+        "visual_quality_estimate_0_to_10": 6.5,
+        "uncertainty": "The assessment is based solely on visible assets and does not account for performance, gameplay mechanics, or future updates. The reference image's artistic intent may not be fully captured by the current game assets, and some details may be lost due to technical constraints."
+      }
+    },
+    {
+      "scope": "world",
+      "images": [
+        {
+          "path": "docs/evidence/valoria-reference-clean/world-contact222/after-forest-valoria-32.png",
+          "sha256": "dc91cf42b41ad38cde9f1956a3097dceb26d132d07a59cb1acb844778a0db8b5"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/world-contact222/after-quarry-valoria-32.png",
+          "sha256": "a2e230c98a5401c89cbfd2c035dede575d1cef272dde6ad902b95306adb1d12f"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/world-contact222/after-corrupt-scout-14.png",
+          "sha256": "e8d6f2f45a7243c79de63254336c0105391b1a3ee78b1aa73f6566d3bddf8ded"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/world-contact222/after-engendro-valoria-14.png",
+          "sha256": "f95a182c0b9c4dc63ae69e83b037afda92979cec28b245fc3c92c192164e53b4"
+        }
+      ],
+      "model": "qwen3-vl:8b-instruct-q4_K_M",
+      "elapsed_seconds": 40.73,
+      "review": {
+        "visible_strengths": [
+          "The forest region (Image 1) displays strong visual cohesion with consistent tree silhouettes and naturalistic shadowing that grounds the objects in a believable environment.",
+          "The quarry (Image 2) effectively uses atmospheric fog to create depth and a sense of scale, with the rock formation and small structures appearing appropriately integrated into the terrain.",
+          "The close-up views of Corruptos and Engendro (Images 3 & 4) maintain a consistent visual style with the rest of the world, using muted, desaturated tones to imply corruption without introducing distracting elements."
+        ],
+        "highest_impact_defects": [
+          {
+            "observation": "The forest region (Image 1) suffers from a lack of ground contact and visual clarity. The trees appear to float slightly above the terrain, and the ground texture is uniformly flat, lacking the subtle variations that would enhance realism.",
+            "correction": "Introduce subtle terrain undulations and add small-scale ground detail (e.g., grass patches, dirt clods) beneath the trees to establish a more grounded and textured surface."
+          },
+          {
+            "observation": "The quarry (Image 2) has poor visual clarity due to the heavy, uniform fog that obscures the details of the rock formation and structures, making the scene feel flat and indistinct.",
+            "correction": "Adjust the fog density and add directional lighting to illuminate the quarry's features, ensuring that the rock textures and small structures remain visible and distinct."
+          },
+          {
+            "observation": "The close-up views of Corruptos and Engendro (Images 3 & 4) lack visual cohesion with the rest of the world. The dark, floating rock formations appear disconnected from the environment and do not cast convincing shadows or interact with the terrain.",
+            "correction": "Anchor the rock formations to the ground with visible contact points and add dynamic, directionally consistent shadows to integrate them into the scene and reinforce their physical presence."
+          }
+        ],
+        "visual_quality_estimate_0_to_10": 6.5,
+        "uncertainty": "The images are static captures and do not provide information about gameplay mechanics, performance, or the full scope of the environment. The assessment is based solely on visible assets and their integration within the current-world view."
+      }
+    }
+  ],
+  "installed_models": [
+    "qwen3:14b",
+    "qwen3-vl:8b-instruct-q4_K_M",
+    "qwen3-vl:4b-instruct",
+    "eldoria-artist:latest",
+    "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M"
+  ],
+  "status": "REAL_LOCAL_INDEPENDENT_CRITIQUE_RECORDED"
+}
