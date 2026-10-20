@@ -42,6 +42,9 @@ test('preflight reads all six validated lessons with provenance, without touchin
  assert.match(a.message,/small-sculpt-repeated/);
  assert.match(a.message,/frustum-parity/);
  assert.equal(a.provenance.case_count,6);
+ assert.equal(a.provenance.reference_sha256,'86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d');
+ assert.match(a.message,/SUPERSEDED visual reference/);
+ assert.match(a.message,/no large cliffs or enemy tent camps/);
  assert.ok(fs.existsSync(out+'.provenance.json'));
  assert.deepEqual(fs.readFileSync(db),first);
  assert.throws(()=>prepare({out}),/Refuse to overwrite/);
@@ -59,6 +62,7 @@ test('completed paired PNGs stage pending evidence, not an approved result',()=>
  assert.deepEqual(validate(result),[]);
  assert.equal(staged.event.source.evidence_level,'pending_verification');
  assert.equal(staged.event.art_approved,false);
+ assert.equal(staged.event.reference_sha256,'86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d');
  assert.equal(staged.event.art_verdict,'ART_UNREVIEWED');
  assert.equal(staged.measurement.changed_pixels,1);
  assert.equal(result.cases.length,7);
