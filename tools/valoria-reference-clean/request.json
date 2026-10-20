@@ -1,11 +1,11 @@
 {
   "stage": "world_art_survey",
   "validate_play": false,
-  "revision": 204,
+  "revision": 205,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Phase2 integrated run39453446158 with35checks PASS. Read actual world ground, forest/quarry meshes/anchors and threat visuals; capture same actual strategic/regional/near camera orientations before phase3. No scene save.",
+  "checks": "Repair missing WorldHotspot namespace import in read-only survey; same phase3 measured world scope, no scene mutation.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
