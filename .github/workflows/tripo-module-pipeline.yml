@@ -40,6 +40,10 @@ jobs:
           git --version
 
       - uses: actions/checkout@v4
+        # Shared runner: default git clean removed valoria-layered-source and
+        # its Unity cache in run39495619494. Preserve other authorised worktrees.
+        with:
+          clean: false
 
       - name: Read canonical request
         id: request
