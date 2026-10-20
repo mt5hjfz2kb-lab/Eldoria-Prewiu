@@ -49,8 +49,8 @@ jobs:
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC native editing resources occupied; refuse interference'}
       - uses: actions/download-artifact@v4
         with:
-          name: valoria-integrated-web-playtest-39429191573
-          run-id: 39429191573
+          name: valoria-integrated-web-playtest-39430944680
+          run-id: 39430944680
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: unity-raw
       - uses: actions/setup-node@v4
@@ -62,7 +62,7 @@ jobs:
       - name: Prepare the exact approved WebGL binary; no Unity rebuild
         shell: powershell
         run: |
-          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native188 ce9e7e766b6cc26dbbbdad9b9ff08023db7ce7b3 39429191573
+          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native189 fe0c510aff6b82a2461a85f6f6d53345c2ff86d9 39430944680
           if($LASTEXITCODE){throw 'Exact integrated browser transport rejected'}
           node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
           if($LASTEXITCODE){throw 'Existing Site wrapper integrity failed'}
@@ -120,9 +120,9 @@ jobs:
       - name: Preflight exact Sites payload, pinned native source, browser tools and QA syntax
         shell: powershell
         run: |
-          # Reuse the exact compiled native188 output and validate its original manifest; do not rebuild Unity.
+          # Reuse the exact compiled native189 output and validate its original manifest; do not rebuild Unity.
           # No Unity build, credential access, release, or runner reallocation.
-          node tools/closeout/closeout.mjs preflight-browser --prepared-site prepared-site --native-run 39429191573 --source-sha ce9e7e766b6cc26dbbbdad9b9ff08023db7ce7b3 --validated-source-sha ce9e7e766b6cc26dbbbdad9b9ff08023db7ce7b3 --script tools/valoria-reference-clean/playtest_web.cjs
+          node tools/closeout/closeout.mjs preflight-browser --prepared-site prepared-site --native-run 39430944680 --source-sha fe0c510aff6b82a2461a85f6f6d53345c2ff86d9 --validated-source-sha fe0c510aff6b82a2461a85f6f6d53345c2ff86d9 --script tools/valoria-reference-clean/playtest_web.cjs
           if($LASTEXITCODE){throw 'ELDORIA_CLOSEOUT_PREFLIGHT_BLOCKED: check prepared bytes/source/Playwright/Edge/FFmpeg before long QA'}
       - name: Actually play Bastion I-II with native Windows Chromium GPU and SystemClock
         shell: powershell
@@ -130,7 +130,7 @@ jobs:
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
           VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}
-          VALORIA_SOURCE_SHA: ce9e7e766b6cc26dbbbdad9b9ff08023db7ce7b3
+          VALORIA_SOURCE_SHA: fe0c510aff6b82a2461a85f6f6d53345c2ff86d9
           VALORIA_PLAYTEST_TIMEOUT_SECONDS: '1100'
           VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
         run: |
