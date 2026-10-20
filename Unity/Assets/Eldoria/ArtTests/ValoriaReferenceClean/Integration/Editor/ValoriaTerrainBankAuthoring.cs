@@ -48,11 +48,24 @@ public static class ValoriaTerrainBankAuthoring {
    var layers=trial.terrainLayers;
    foreach(int index in new[]{0,3}){
     var src=layers[index].diffuseTexture;var colors=src.GetPixels();var luminance=colors.Select(v=>v.grayscale).OrderBy(v=>v).ToArray();float low=luminance[luminance.Length/10],high=luminance[luminance.Length*9/10];
-    for(int i=0;i<colors.Length;i++){float q=Mathf.Clamp01((colors[i].grayscale-low)/Mathf.Max(.01f,high-low));q=.28f+.44f*q;colors[i]=index==0?Color.Lerp(new Color(.29f,.36f,.10f),new Color(.58f,.59f,.25f),q):Color.Lerp(new Color(.34f,.38f,.12f),new Color(.58f,.57f,.25f),q);}
+    for(int i=0;i<colors.Length;i++){float q=Mathf.Clamp01((colors[i].grayscale-low)/Mathf.Max(.01f,high-low));q=.28f+.44f*q;colors[i]=index==0?Color.Lerp(new Color(.29f,.36f,.10f),new Color(.58f,.59f,.25f),q):Color.Lerp(new Color(.39f,.39f,.13f),new Color(.66f,.59f,.29f),q);}
     var tex=new Texture2D(src.width,src.height,TextureFormat.RGB24,true){name="Measured meadow subdued fine contrast",wrapMode=TextureWrapMode.Repeat,anisoLevel=4};tex.SetPixels(colors);tex.Apply();temporary.Add(tex);
     var layer=Object.Instantiate(layers[index]);layer.diffuseTexture=tex;layer.normalScale=Mathf.Min(layer.normalScale,.35f);if(index==0)layer.tileSize=new Vector2(7.5f,7.5f);temporary.Add(layer);layers[index]=layer;
    }
-   trial.terrainLayers=layers;t.Flush();
+   trial.terrainLayers=layers;
+   // Worn shoulders and damp soil connect the measured relief to existing access.
+   int an=trial.alphamapResolution;var alpha=trial.GetAlphamaps(0,0,an,an);
+   for(int z=0;z<an;z++)for(int x=0;x<an;x++){
+    float wx=t.transform.position.x+x/(float)(an-1)*trial.size.x,wz=t.transform.position.z+z/(float)(an-1)*trial.size.z;
+    float road=wz < -10?-1.5f+Mathf.Tan(14*Mathf.Deg2Rad)*(wz+10):-1.5f*Mathf.Clamp01((25.6f-wz)/35.6f);
+    float noise=Mathf.PerlinNoise(wx*.31f+21,wz*.31f+14);
+    float wear=wz>-78&&wz<27?(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(3.1f,5.7f+noise,Mathf.Abs(wx-road))))*.65f:0;
+    float river=-23+1.5f*Mathf.Sin(wx*.065f)+.85f*Mathf.Sin(wx*.19f+.4f)*Mathf.SmoothStep(0,1,Mathf.InverseLerp(6,17,Mathf.Abs(wx)));
+    float width=7.1f+.75f*Mathf.Sin(wx*.095f+.7f)+.48f*Mathf.Sin(wx*.23f);
+    float bankSoil=(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(2.6f,6.4f+noise,Mathf.Abs(wz-river)-width)))*.68f;
+    float amount=Mathf.Max(wear,bankSoil);for(int k=0;k<layers.Length;k++)alpha[z,x,k]*=1-amount;alpha[z,x,2]+=amount;
+   }
+   trial.SetAlphamaps(0,0,alpha);t.Flush();
    Physics.SyncTransforms();Views(c,"after");Need(stamp==Stamp(c)&&light==LightStamp(),"Camera/light changed");Need(Hash(Scene)==survey.scene_sha256,"Source scene mutated");
    File.WriteAllText(Ev+"/unity-review.json","{\"status\":\"REAL_UNITY_AB_REVIEW_REQUIRED\",\"same_camera\":true,\"same_light\":true,\"scene_saved\":false,\"art_approved\":false,\"gameplay_modified\":false,\"before_main_sha256\":\""+Hash(Ev+"/before-main.png")+"\",\"after_main_sha256\":\""+Hash(Ev+"/after-main.png")+"\",\"before_portrait_sha256\":\""+Hash(Ev+"/before-portrait.png")+"\",\"after_portrait_sha256\":\""+Hash(Ev+"/after-portrait.png")+"\"}");
   }finally{foreach(var pair in replaced)pair.Item1.sharedMesh=pair.Item2;t.terrainData=original;collider.terrainData=originalCollider;t.Flush();foreach(var m in meshes)Object.DestroyImmediate(m);foreach(var o in temporary)Object.DestroyImmediate(o);Object.DestroyImmediate(trial);}

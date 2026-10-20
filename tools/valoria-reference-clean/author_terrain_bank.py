@@ -135,7 +135,7 @@ for side in [-1,1]:
    for k,off in enumerate(bands):
     ripple=.28*math.sin(x*.72+k*.91)+.14*math.sin(x*1.93-k*.63)
     z=float(river(x)+side*(width(x)+off+ripple))
-    y=float(surface_y(x,z));lift=(.08+.10*math.sin(x*.71+k*1.3))*endmask
+    y=float(surface_y(x,z));lift=(.28+.035*math.sin(x*.71+k*1.3))*endmask
     if k==0:lift=-.35
     if k==len(bands)-1:lift=-.18
     if endmask<.1:lift=-.18
