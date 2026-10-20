@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "scope": "EXACT_INTEGRATED_ROYAL_GOLD_V2_BASTION_I_II_NORMAL_CLOCK_GPU_BROWSER_VALIDATION",
-  "source_sha": "766ef92e85d2c37903277f4b266915507166563c",
-  "artifact_run": 39425606466,
-  "artifact_name": "valoria-integrated-web-playtest-39425606466",
+  "scope": "EXACT_ROYAL_GOLD_V2_VISIBLE_NATIVE188_CHROMIUM_GPU_QA",
+  "source_sha": "ce9e7e766b6cc26dbbbdad9b9ff08023db7ce7b3",
+  "artifact_run": 39429191573,
+  "artifact_name": "valoria-integrated-web-playtest-39429191573",
   "tester": "existing Windows Chromium/Edge with GPU; actual pointer and touch, landscape and portrait",
   "controls": [
     "dialogues",
@@ -21,12 +21,12 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "New integrated Royal Gold V2 WebGL native187 built successfully in native Unity 39425606466; exact independent Linux SwiftShader browser QA failed at first portrait dialogue due absent fresh telemetry/soft-render timing (no runtime/network error), similar to historical browser issue. Reuse existing Windows Chromium hardware-accelerated acceptance with original strict assertions; no release without PASS.",
+  "reason": "Retest exact native188 V2 WebGL after fixing the ONLY confirmed Windows QA mismatch: read-only telemetry emitted hidden V1 objective control disabled while V2 objective remained visible. Original real touch/action assertions preserved; no release before PASS.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 10,
-  "method_note": "Verify exact native187 and current V2 objective/narrative/input with Windows Chromium D3D11, normal SystemClock, actual pointer/touch, full Bastion I-II, save/reload, genuine video/screenshots. Keep stricter existing test and isolate from Unity/Blender authoring.",
+  "attempt": 11,
+  "method_note": "Run existing GPU Windows Chromium with true V2 visible controls objective/primary/close, original narrative, Bastion I-II full normal time, exact saves, 4-direction pan and persisted modal. Raw Unity compiled at run 39429191573.",
   "gameplay_source_unchanged": false,
   "qa_code_commit": "d716e3d5db55af58e562620db4826683f89f2e2c"
 }
