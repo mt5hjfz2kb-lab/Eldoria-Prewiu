@@ -4,7 +4,7 @@ root=pathlib.Path.cwd();ev=root/'docs/evidence/valoria-reference-clean'
 result={'role':'AUXILIARY_CRITIQUE_OF_ACTUAL_UNITY_CAPTURE','art_approved':False,'new_model_downloads':0,'source_sha':os.environ.get('GITHUB_SHA')}
 
 # Final production review uses current integrated evidence, never legacy plot captures.
-if json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf-8-sig')).get('review_scope')=='production_final':
+if json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf-8-sig')).get('review_scope') in ('production_final','production_final_city'):
  import sys
  result['role']='INDEPENDENT_LOCAL_VISUAL_CRITIQUE_NOT_AUTHOR_OR_ACCEPTANCE_GATE'
  result['reviews']=[]
@@ -18,6 +18,10 @@ if json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf
    ('world',[ev/'world-contact222/after-forest-valoria-32.png',ev/'world-contact222/after-quarry-valoria-32.png',ev/'world-contact222/after-corrupt-scout-14.png',ev/'world-contact222/after-engendro-valoria-14.png'],
     'All four images are authentic Unity current-world captures: forest regional view, quarry regional view, Corruptos close view and Engendro close view. Judge visible resource identity, natural silhouettes, excavation, ground contact, visual clarity and cohesion. Threats must be represented through restrained Breach corruption, NEVER enemy tents or settlements. The camera framing and gameplay are fixed. Do not invent missing unseen content.')
   ]
+  city_only=json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf-8-sig')).get('review_scope')=='production_final_city'
+  if city_only:
+   batches=batches[:1]
+   batches[0]=(batches[0][0],[pathlib.Path(str(p).replace('roof-junction226','city-surface235')) for p in batches[0][1]],batches[0][2])
   for scope,paths,context in batches:
    identities=[{'path':p.relative_to(root).as_posix(),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths]
    if scope=='city':
@@ -33,7 +37,7 @@ if json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf
    result['reviews'].append({'scope':scope,'images':identities,'model':model,'elapsed_seconds':round(time.monotonic()-start,2),'review':json.loads(raw['message']['content'])})
   result['status']='REAL_LOCAL_INDEPENDENT_CRITIQUE_RECORDED'
  except Exception as exc:result.update(status='AUXILIARY_UNAVAILABLE_NOT_AN_ART_PASS',error=str(exc))
- (ev/'production-final-independent-review.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+ (ev/('production-final-city-review.json' if json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf-8-sig')).get('review_scope')=='production_final_city' else 'production-final-independent-review.json')).write_text(json.dumps(result,indent=2),encoding='utf-8')
  print('VALORIA_PRODUCTION_FINAL_QWEN_AUXILIARY',result['status'])
  sys.exit(0)
 
