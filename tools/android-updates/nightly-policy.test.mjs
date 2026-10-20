@@ -70,3 +70,10 @@ test('An already verified revision is never repackaged because automation metada
   assert.equal(sameHead.shouldBuild,false);
   assert.equal(sameHead.reason,'no_new_unity_source');
 });
+
+test('A stale or future-dated source timestamp must not silently publish',()=>{
+  assert.equal(decideNightly(payload({latestUnityCommitAt:'2026-01-01T00:00:00.000Z'})).reason,
+    'stale_unity_source_time');
+  assert.equal(decideNightly(payload({latestUnityCommitAt:'2026-10-21T03:00:00.000Z'})).reason,
+    'source_still_changing');
+});
