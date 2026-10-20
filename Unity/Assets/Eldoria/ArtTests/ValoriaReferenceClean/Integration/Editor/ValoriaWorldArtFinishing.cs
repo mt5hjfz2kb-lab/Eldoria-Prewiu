@@ -93,7 +93,7 @@ namespace Eldoria.ReferenceClean.Editor {
     }
     if(!integrate)File.WriteAllText(Ev+"/unity-review.json","{\"same_camera_light\":true,\"scene_saved\":false,\"tree_count_preserved\":98,\"LOD_high_transition\":0.16,\"hotspots_unchanged\":true,\"art_approved\":false}");
    }finally{if(!saved){if(groundRenderer&&originalGround)groundRenderer.sharedMaterial=originalGround;foreach(var r in originals)r.enabled=true;oldQuarry.gameObject.SetActive(quarryActive);foreach(var obj in temporary)if(obj)Object.DestroyImmediate(obj);host.WorldRoot.SetActive(wasActive);}}
-   if(integrate)ValoriaIntegrationBuild.ValidateCurrent();else{Debug.Log("VALORIA_REFERENCE_CLEAN_WORLD_ART_TRIAL_COMPLETE");EditorApplication.Exit(0);}
+   if(integrate){ValoriaFinalEnvironmentFinishing.SurveyCurrent();ValoriaIntegrationBuild.ValidateCurrent();}else{Debug.Log("VALORIA_REFERENCE_CLEAN_WORLD_ART_TRIAL_COMPLETE");EditorApplication.Exit(0);}
   }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
   public static void Survey(){try{
    Directory.CreateDirectory(Ev);EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();bool active=host.WorldRoot.activeSelf;host.WorldRoot.SetActive(true);

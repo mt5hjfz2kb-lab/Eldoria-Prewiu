@@ -1,0 +1,29 @@
+{
+  "accepted": true,
+  "source_scene_sha256": "6ad4188c5cbe8f653974c713fbef54519df791f43c2e21cf8c6bc48f5aa8d11e",
+  "family_sha256": "fe267958bc15d0c6d83f6a910b73a1f177cb45af5bdb00824f5acc87ec7439c6",
+  "atlas_sha256": "30638402c0df4afaf786e0e70b9a96f6311a502d3a20615974fc753149d93d07",
+  "quarry_sha256": "8b1948f16f2fddab61edd6a29d2b6c2a3ac540ccd26046274caa7eb7da43ea8f",
+  "image_names": [
+    "after-forest-valoria-64.png",
+    "after-forest-valoria-32.png",
+    "after-forest-valoria-14.png",
+    "after-forest-valoria-portrait.png",
+    "after-quarry-valoria-64.png",
+    "after-quarry-valoria-32.png",
+    "after-quarry-valoria-14.png",
+    "after-quarry-valoria-portrait.png"
+  ],
+  "image_hashes": [
+    "ec6052ae0bde167e0d0d6ab6e41073975bbfdb657cdcf853db5013e349713e27",
+    "f1e656b19b2f5d60633cff079eabd6f01925d95ff82d379cef9e58819020881d",
+    "bd437b5345b9625942fd1288589487108b4ad4e9e9bef9e80da06c98bb9e3eff",
+    "511428fc5aa562c6950e44ae2246305f4957912994b7bfe47246ea21dca2d1df",
+    "55e6680064507231a65c9d592b0fa2e667cd94ebbb8ba5d8ece28f5598ff5c44",
+    "498a4e05b3af3b075075ee6a0c98c1ea1aca48604d7fbb3e49b6a77096dd57f3",
+    "2b5d9cfbaf449a734719352000362ecab7fb37fde27019784c84ac3634f3e333",
+    "6afe865985c3bf31386b41cd55676a41eef29350bcb11ec3dd78fa2dd4014caf"
+  ],
+  "scope": "Native209 forest/quarry visual improvement only; no overall score certification",
+  "run": 39459227255
+}
