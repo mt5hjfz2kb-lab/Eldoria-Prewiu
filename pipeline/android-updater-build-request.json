@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "versionCode": 8,
-  "versionName": "1.8",
+  "versionCode": 9,
+  "versionName": "1.9",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner requests automatic Wi-Fi download on opening; code8 first bootstrap uses integrated main, updater release remains disabled until signed APK QA and physical installation verification. No experimental branches."
+  "note": "Second native APK (code9) for automatic-download acceptance from code8, built from current canonical main snapshot with city/world/Royal Gold integrated. Signed release remains gated; no old branch, no saves reset, no paid resources."
 }
