@@ -389,10 +389,10 @@ jobs:
           Remove-Item $outDir -Recurse -Force -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force $outDir | Out-Null
 
-          $isRockBoar = [string]$request.module_label -eq 'Eldoria_RockBoar_FirstHunt_v1'
-          if ($isRockBoar) {
+          $isScopedH31 = @('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1') -contains [string]$request.module_label
+          if ($isScopedH31) {
             if ($mode -ne 'tripo_text' -or $model -ne 'v3.1-20260211' -or $faceLimit -ne 85000 -or $authorizedCredits -ne 20) {
-              throw 'Rock Boar fixed-cost model or parameters mismatch: no generation.'
+              throw 'Scoped H3.1 model or cost mismatch: refusing generation.'
             }
             $diagnostic = (& $tripo.Source doctor 2>&1 | Out-String).Trim()
             if ($LASTEXITCODE -ne 0 -or $diagnostic -notmatch '"ok"\s*:\s*true') {
@@ -411,12 +411,12 @@ jobs:
               $available = [double]::Parse($Matches[1],[System.Globalization.CultureInfo]::InvariantCulture)
             }
             if ($null -eq $available -or $available -lt 20) {
-              throw 'Boar balance preflight requires >=20 API credits and an explicit numeric balance.'
+              throw 'Scoped H3.1 preflight requires 20 available API credits and exact numeric balance; refusing generation.'
             }
-            Write-Host "ROCK_BOAR_API_PREFLIGHT=PASS available_credits=$available approved=20"
+            Write-Host "TRIPO_SCOPED_H31_PREFLIGHT=PASS available_credits=$available approved=20"
           }
           $args = @('make') + $inputArgs + @('--model',$model,'-p',"face_limit=$faceLimit",'--json','--yes','--no-open','-o',$outDir)
-          if ($isRockBoar) {
+          if ($isScopedH31) {
             $args += @('-p','texture=true','-p','pbr=true','-p','texture_quality=standard','-p','geometry_quality=standard')
           }
           Write-Host ("TRIPO_COMMAND: tripo " + (($args | ForEach-Object {
@@ -539,7 +539,7 @@ jobs:
           }
           Write-Host "TRIANGLE_PROFILE: min=$minTris target=$targetTris max=$maxTris"
           $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py","--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
-          if ([string]$request.module_label -eq 'Eldoria_RockBoar_FirstHunt_v1') {
+          if (@('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1') -contains [string]$request.module_label) {
             $args += '--save-blend'
           }
           if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
@@ -579,6 +579,10 @@ jobs:
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $request = Get-Content "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json" -Raw | ConvertFrom-Json
+          if ([string]$request.module_label -in @('Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1')) {
+            Write-Host 'TRIPO_ASSET_SOURCE_READY: skip expensive full-game Unity import; use already-proven isolated Unity QA on exact artifacts with 2K images.'
+            exit 0
+          }
           if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
             Write-Host "Skipping generic combined visual gate: multipiece mode has its own isolated Unity review."
             exit 0
