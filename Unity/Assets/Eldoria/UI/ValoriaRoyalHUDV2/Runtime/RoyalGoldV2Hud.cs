@@ -36,6 +36,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public RoyalButton VisibleObjectiveButton => objectiveAction;
         public RoyalButton VisibleChapterButton => objectivesButton;
         public RoyalButton VisibleBuildingButton => buildingAction;
+        public RoyalButton VisibleBuildingCloseButton => buildingClose;
+        public bool ObjectiveVisible => objectiveGroup && objectiveGroup.blocksRaycasts;
+        public bool BuildingActionVisible => BuildingVisible && buildingActionGroup && buildingActionGroup.blocksRaycasts;
 
         private void Awake()
         {

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Eldoria.Domain;
 using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,16 @@ namespace Eldoria.ReferenceClean {
   void Emit(){
    var s=host.City.Gateway.Snapshot();var hud=host.Hud;Canvas.ForceUpdateCanvases();
    var f=new Frame{ready=true,width=Screen.width,height=Screen.height,inWorld=host.InWorld,selected=host.Selected,objective=SliceRules.CurrentObjectiveKey(s),narrative=hud.NarrativeOpen,revision=s.Revision,wood=s.Resources.Wood,stone=s.Resources.Stone,sawmill=s.SawmillLevel,barracks=s.BarracksLevel,bastion=s.BastionLevel,trained=s.ChapterProgress.TrainedArchers,configured=s.MarchConfigured,scout=s.ScoutDefeated,engendro=s.EngendroDefeated,march=s.March.Phase,target=s.March.TargetId,busy=s.BuildingCompletesUtcTicks>0||s.RecruitmentCompletesUtcTicks>0||s.BastionUpgradeCompletesUtcTicks>0,save=JsonUtility.ToJson(s),clock=host.City.Clock.GetType().Name,timeScale=Time.timeScale,utc=DateTime.UtcNow.ToString("O")};
-   f.controls=new Controls{objective=Point(hud.Mission.Open),primary=Point(hud.Building.Primary.Button),@continue=Point(hud.Modal.Extra),close=Point(hud.Building.Close)};
+   // Native V2 buttons are not the hidden V1 view controls. Report
+   // only the actual visible hit targets so browser QA exercises the same
+   // uGUI path a player taps. All actions still go through RoyalHUD.
+   var v2=hud.GetComponent<RoyalGoldV2Hud>();
+   f.controls=new Controls{
+    objective=v2?Point(v2.VisibleObjectiveButton,v2.ObjectiveVisible):Point(hud.Mission.Open),
+    primary=v2?Point(v2.VisibleBuildingButton,v2.BuildingActionVisible):Point(hud.Building.Primary.Button),
+    @continue=Point(hud.Modal.Extra),
+    close=v2?Point(v2.VisibleBuildingCloseButton,v2.BuildingVisible):Point(hud.Building.Close)
+   };
    var nav=hud.Navigation.Items.FirstOrDefault(x=>x.Section==RoyalSection.World);if(nav!=null)f.controls.world=Point(nav.Button);
    f.camera=new View{x=host.PlayerCamera.transform.position.x,y=host.PlayerCamera.transform.position.y,z=host.PlayerCamera.transform.position.z,zoom=host.PlayerCamera.orthographicSize};
    var expedition=host.GetComponent<ValoriaMarchPresentation>();
@@ -29,9 +39,9 @@ namespace Eldoria.ReferenceClean {
    }).ToArray();
    Debug.Log("VALORIA_PLAYTEST "+JsonUtility.ToJson(f));
   }
-  static Control Point(Button button){
+  static Control Point(Button button,bool onScreen=true){
    var value=new Control();if(!button)return value;
-   value.enabled=button.isActiveAndEnabled&&button.gameObject.activeInHierarchy&&button.interactable;
+   value.enabled=onScreen&&button.isActiveAndEnabled&&button.gameObject.activeInHierarchy&&button.interactable;
    var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);var canvas=button.GetComponentInParent<Canvas>();
    var p=RectTransformUtility.WorldToScreenPoint(canvas&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?canvas.worldCamera:null,(corners[0]+corners[2])*.5f);value.x=p.x;value.y=p.y;return value;
   }
