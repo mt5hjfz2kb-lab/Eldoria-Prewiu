@@ -71,10 +71,17 @@ public static class RockBoarMinimalReview
                 {
                     target = new Material(shader) { name = "BoarPreview_" + original.name };
                     var tex = GetBaseTexture(original);
-                    if (tex != null) target.mainTexture = tex;
-                    if (original.HasProperty("_BaseColor")) target.color = original.GetColor("_BaseColor");
-                    else if (original.HasProperty("_Color")) target.color = original.GetColor("_Color");
+                    if (tex == null) throw new Exception("Imported PBR base-color texture was not accessible: " + original.name);
+                    // The GLB's glTF baseColorFactor is [1,1,1,1].
+                    // Never multiply the imported albedo by a second (possibly dark)
+                    // Unity shader color: this made the first Unity capture near-black.
+                    target.mainTexture = tex;
+                    target.color = Color.white;
                     if (target.HasProperty("_Glossiness")) target.SetFloat("_Glossiness", 0.12f);
+                    Debug.Log("BOAR_MATERIAL_TRANSPORT: source_shader=" + original.shader.name +
+                              " imported_base_texture=" + tex.name +
+                              " resolution=" + tex.width + "x" + tex.height +
+                              " preview_tint=white");
                     converted.Add(original, target);
                 }
                 slots[i] = target;
