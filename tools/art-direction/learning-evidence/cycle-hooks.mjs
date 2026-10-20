@@ -30,7 +30,7 @@ export function prepare({dbPath=DEFAULT_DB,target='bastion1',out,maxChars=1800})
  assert(Number.isInteger(maxChars)&&maxChars>=300&&maxChars<=6000,'Invalid memory brief bound');
  const c=catalog(dbPath),message=brief(c,target,maxChars);
  const raw=fs.readFileSync(dbPath);
- const provenance={schema_version:1,target,catalog_sha256:sha(raw),reference_sha256:c.reference_sha256,
+ const provenance={schema_version:1,target,catalog_sha256:sha(raw),reference_sha256:(c.current_reference_sha256||c.reference_sha256),
    case_count:c.cases.filter(x=>x.target===target).length,brief_sha256:sha(Buffer.from(message)),
    status:'HISTORIC_ADVICE_NOT_MODEL_TRAINING_OR_ART_PASS'};
  if(out){
@@ -58,7 +58,10 @@ export function stage({dbPath=DEFAULT_DB,target='bastion1',out,runId,gitSha,refe
  }
  const c=catalog(dbPath);
  const ref=verifiedFile(reference,'Approved reference');
- assert(sha(ref)===c.reference_sha256,'Approved reference bytes/hash mismatch');
+ // Historical lessons remain bound to their original JPEG; a new cycle must
+ // verify the latest owner-approved JPEG instead of the historical hash.
+ const currentReference=c.current_reference_sha256||c.reference_sha256;
+ assert(sha(ref)===currentReference,'Approved reference bytes/hash mismatch');
  const left=verifiedFile(before,'Original capture'),right=verifiedFile(after,'Candidate capture');
  const measured=measureUnityVisualChange(left,right);
  // Matching dimensions and claimed fixed-camera provenance are necessary but
@@ -67,7 +70,7 @@ export function stage({dbPath=DEFAULT_DB,target='bastion1',out,runId,gitSha,refe
  const event={id:'eldoria-'+target+'-'+runId,target,source:{
    run_id:runId,git_sha:gitSha,evidence_level:'pending_verification',
    url:'https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/'+runId
- },reference_sha256:c.reference_sha256,view_id:viewId,render_pass:renderPass,
+ },reference_sha256:currentReference,view_id:viewId,render_pass:renderPass,
  measurement:{kind:'camera_pixels',width:measured.width,height:measured.height,
    changed_pixels:measured.changed_pixels,threshold_rgb:measured.channel_difference_threshold},
  visibility_gate:observed?'REJECT_NOT_VISIBLE':'REVIEW_REQUIRED',art_verdict:'ART_UNREVIEWED',
