@@ -182,7 +182,13 @@ jobs:
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $path = "$env:GITHUB_WORKSPACE\pipeline\tripo-module-request.json"
-          if (-not (Test-Path $path)) { throw 'Canonical Tripo request file is missing.' }
+          if (-not (Test-Path $path)) {
+            Write-Host 'TRIPO_REQUEST_MISSING_AFTER_CHECKOUT: recovering exact request for github.sha only.'
+            New-Item -ItemType Directory -Force (Split-Path $path) | Out-Null
+            $url='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/pipeline/tripo-module-request.json'
+            Invoke-WebRequest -Uri $url -OutFile $path -UseBasicParsing -TimeoutSec 30
+            if (-not (Test-Path $path)) { throw 'Exact SHA Tripo request recovery failed.' }
+          }
           $request = Get-Content $path -Raw | ConvertFrom-Json
           $enabled = [bool]$request.enabled
           $sourceMode = [string]$request.source.mode
