@@ -227,7 +227,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = safe.rect.width, height = safe.rect.height;
             if (width < 120 || height < 120) return;
             portrait = height > width;
-            float goalWidth = Mathf.Min(portrait ? width - 36f : 446f, width - 32f);
+            float goalWidth = Mathf.Min(portrait ? width - 36f : 360f, width - 32f);
             float goalTop = portrait ? Mathf.Min(248f, height * .23f) : 146f;
             Top(objectiveCard, portrait ? 18 : 24, goalTop, goalWidth, 174f);
             Top(chapterText.rectTransform, 17, 13, goalWidth - 130, 25);
