@@ -51,3 +51,5 @@ if(-not $state -or $state.BackendState -ne 'Running'){
 }
 $report | ConvertTo-Json -Depth 6 | Set-Content -Encoding UTF8 (Join-Path $base 'setup-status.json')
 $report | ConvertTo-Json -Depth 6
+
+exit 0
