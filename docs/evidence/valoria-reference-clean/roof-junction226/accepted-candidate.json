@@ -1,0 +1,25 @@
+{
+  "accepted": true,
+  "source_scene_sha256": "b6bc04b8c7b70acdc1fb11042b8fd26148cbadb9b0ecffb6f2abca2f3ae96940",
+  "candidate_sha256": "248fddf822484641d61f681d6db94041e119b321d367d4e580ad14bb8ae5e37a",
+  "tool_sha256": "9e021f3bc9ec6ea89686ec5d06ba95cd45db875391bb3c8708c2b2a51d0d26c5",
+  "images": [
+    "after-I-landscape.png",
+    "after-I-portrait.png",
+    "after-I-roof-detail.png",
+    "after-II-landscape.png",
+    "after-II-portrait.png",
+    "after-II-roof-detail.png"
+  ],
+  "hashes": [
+    "cdcc75e3763f73bc779535f95517fab1e6ca4f528d77f9ccdc4b0381a46c9d6f",
+    "9e557c8c4e431a5f5b1efa248916f60b31acb12b04965cdfe60cabc9cc404c81",
+    "f665238ac022739070415f4824156027879fa81566ffc059913cfe19c030cd54",
+    "6f2e1e0622258b1759e233e846288e120e9bbfeb771f438d4c5e5c36321f1e6e",
+    "ecc9643b34e533d4f0042f2ad11f983f4f90098285c2a71a68c5dc7ac2d77683",
+    "24e3992d5046faed8350817cf56941b8917d5211e1c53eefa97ff15cbd6fad7c"
+  ],
+  "reviewed_run": 39491046549,
+  "verdict": "Six authentic Unity views independently inspected. Original slate slopes fitted between existing side tower walkways, original I-II crowns retained. Clear geometry improvement. Tradeoff: less baked orange torch spill on Bastion. Existing broad shadows/repetitive meadow remain visible. Not a whole-game score or mobile certification. Native230/231 rejected geometry excluded.",
+  "incremental_triangles_each_stage": 48
+}

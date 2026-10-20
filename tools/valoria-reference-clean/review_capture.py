@@ -2,6 +2,41 @@
 import bpy,base64,hashlib,json,os,pathlib,tempfile,time,urllib.request
 root=pathlib.Path.cwd();ev=root/'docs/evidence/valoria-reference-clean'
 result={'role':'AUXILIARY_CRITIQUE_OF_ACTUAL_UNITY_CAPTURE','art_approved':False,'new_model_downloads':0,'source_sha':os.environ.get('GITHUB_SHA')}
+
+# Final production review uses current integrated evidence, never legacy plot captures.
+if json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf-8-sig')).get('review_scope')=='production_final':
+ import sys
+ result['role']='INDEPENDENT_LOCAL_VISUAL_CRITIQUE_NOT_AUTHOR_OR_ACCEPTANCE_GATE'
+ result['reviews']=[]
+ try:
+  tags=json.load(urllib.request.urlopen('http://127.0.0.1:11434/api/tags',timeout=10))
+  installed=[x['name'] for x in tags.get('models',[])];result['installed_models']=installed
+  model=next(x for x in ['qwen3-vl:8b-instruct-q4_K_M','qwen3-vl:4b-instruct'] if x in installed)
+  batches=[
+   ('city',[root/'references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg',ev/'roof-junction226/after-I-landscape.png',ev/'roof-junction226/after-II-landscape.png',ev/'roof-junction226/after-I-portrait.png'],
+    'Image1 is the approved artistic reference. Images2,3,4 are authentic Unity captures of the current city: Bastion I landscape, Bastion II landscape and Bastion I portrait. The four empty plots in the reference MUST stay HIDDEN in the game. Do not request their reconstruction. Judge the compact keep, gate, bridge, river, meadow, paths and vegetation. The existing game and progression are fixed; no new districts, camps, monumental mountains, cliffs or Bastion III.'),
+   ('world',[ev/'world-contact222/after-forest-valoria-32.png',ev/'world-contact222/after-quarry-valoria-32.png',ev/'world-contact222/after-corrupt-scout-14.png',ev/'world-contact222/after-engendro-valoria-14.png'],
+    'All four images are authentic Unity current-world captures: forest regional view, quarry regional view, Corruptos close view and Engendro close view. Judge visible resource identity, natural silhouettes, excavation, ground contact, visual clarity and cohesion. Threats must be represented through restrained Breach corruption, NEVER enemy tents or settlements. The camera framing and gameplay are fixed. Do not invent missing unseen content.')
+  ]
+  for scope,paths,context in batches:
+   identities=[{'path':p.relative_to(root).as_posix(),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in paths]
+   if scope=='city':
+    assert identities[0]['sha256']=='86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d'
+   images=[]
+   with tempfile.TemporaryDirectory(prefix='eldoria-final-review-') as scratch:
+    for index,path in enumerate(paths):
+     im=bpy.data.images.load(str(path),check_existing=False);w,h=im.size;scale=640/max(w,h);im.scale(max(1,round(w*scale)),max(1,round(h*scale)))
+     out=pathlib.Path(scratch)/(str(index)+'.jpg');im.filepath_raw=str(out);im.file_format='JPEG';im.save();bpy.data.images.remove(im);images.append(base64.b64encode(out.read_bytes()).decode())
+   prompt=context+' You did not create these assets. Critique the actual visible result independently. Do not assume success because code or tests passed. Give three specific visible strengths and the three highest-impact remaining defects, with a concrete correction for each. Clearly distinguish visible observations from uncertainty. Do not claim performance or mechanics are proven by images. Do not grant ART_APPROVED, certification, or a forced target score. Return valid JSON with keys visible_strengths, highest_impact_defects (observation/correction), visual_quality_estimate_0_to_10, uncertainty. Scores are advisory only.'
+   request={'model':model,'stream':False,'format':'json','messages':[{'role':'user','content':prompt,'images':images}],'options':{'temperature':.1,'num_ctx':8192,'num_predict':1100},'keep_alive':'0s'}
+   start=time.monotonic();raw=json.load(urllib.request.urlopen(urllib.request.Request('http://127.0.0.1:11434/api/chat',data=json.dumps(request).encode(),headers={'Content-Type':'application/json'}),timeout=240))
+   result['reviews'].append({'scope':scope,'images':identities,'model':model,'elapsed_seconds':round(time.monotonic()-start,2),'review':json.loads(raw['message']['content'])})
+  result['status']='REAL_LOCAL_INDEPENDENT_CRITIQUE_RECORDED'
+ except Exception as exc:result.update(status='AUXILIARY_UNAVAILABLE_NOT_AN_ART_PASS',error=str(exc))
+ (ev/'production-final-independent-review.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+ print('VALORIA_PRODUCTION_FINAL_QWEN_AUXILIARY',result['status'])
+ sys.exit(0)
+
 try:
  tags=json.load(urllib.request.urlopen('http://127.0.0.1:11434/api/tags',timeout=10))
  installed=[x['name'] for x in tags.get('models',[])];result['installed_models']=installed
