@@ -149,7 +149,7 @@ uv=shore.data.uv_layers.new(name='UVMap')
 for face in shore.data.polygons:
  for li in face.loop_indices:uv.data[li].uv=shore_uv[shore.data.loops[li].vertex_index]
 # Actual CC0 PBR source remains editable in the Blender file.
-mat=bpy.data.materials.new('Existing_CC0_Rock3_Bank');mat.use_nodes=True;nodes=mat.node_tree.nodes;links=mat.node_tree.links;bsdf=nodes.get('Principled BSDF');tex=nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(ROOT/'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/rock_3_diff_1k.png'));tex.image.pack();links.new(tex.outputs['Color'],bsdf.inputs['Base Color']);bsdf.inputs['Roughness'].default_value=.9;shore.data.materials.append(mat)
+mat=bpy.data.materials.new('Existing_CC0_Rock3_Bank');mat.use_nodes=True;nodes=mat.node_tree.nodes;links=mat.node_tree.links;bsdf=next((n for n in nodes if n.type=='BSDF_PRINCIPLED'),None) or nodes.new('ShaderNodeBsdfPrincipled');output=next((n for n in nodes if n.type=='OUTPUT_MATERIAL'),None) or nodes.new('ShaderNodeOutputMaterial');links.new(bsdf.outputs['BSDF'],output.inputs['Surface']);tex=nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(ROOT/'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/rock_3_diff_1k.png'));tex.image.pack();links.new(tex.outputs['Color'],bsdf.inputs['Base Color']);bsdf.inputs['Roughness'].default_value=.9;shore.data.materials.append(mat)
 outputs=[];changed_bank=0
 for m in survey['meshes']:
  v=np.array([vec(p) for p in m['vertices']],dtype=float);out=v.copy();comps=groups if m['name']=='River_bank_rocks' else components(m)
