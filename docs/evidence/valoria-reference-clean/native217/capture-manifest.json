@@ -1,0 +1,16 @@
+{
+  "native_run": 39470143984,
+  "scene_sha256": "305dc0dd0cb010291dcd3aa52bdea12c02c91dd10b0187f167673fab5a48768b",
+  "review": "Eight destination captures reviewed directly, landscape and portrait, unobscured by narrative modal. Incremental visual evidence, not certification of global artistic targets.",
+  "files": {
+    "integration-art-corrupt-scout-landscape.png": "689c6e07a31a14f70e6c72c5204ff9a7418d52cfad5f96706f1ff89da607fb48",
+    "integration-art-corrupt-scout-portrait.png": "029360ecab988a0a4d701102f2ede1ad742b2828de4dcbc39740524a6bd0eca0",
+    "integration-art-engendro-valoria-landscape.png": "8c86aca4c8833696126fbb919354ddbb4b7c4a183af99affabda06f641502534",
+    "integration-art-engendro-valoria-portrait.png": "f688bd1d45ae96762eba15ea31c431a3350df1001ef3e9eefa0a7cec7c92dcf0",
+    "integration-art-forest-valoria-landscape.png": "a15a54217c9dd34bdef31641a14a286c3a88d39c3b52c1935beddba077353f4a",
+    "integration-art-forest-valoria-portrait.png": "f47068a67bd2ecb6c609e6032b959810055c587441649b82d704294324699597",
+    "integration-art-quarry-valoria-landscape.png": "c4e856be73e8e7240181d74a69f796e68eab41583eee6fcc2e1133de1ad79381",
+    "integration-art-quarry-valoria-portrait.png": "b23a7fb2d0357778fd42b05ebf7f340eb7fba9177eb15589b206c2bf5501bcdf",
+    "integration-result.json": "258ffb6b9c4d424e84b04e9f43f20d7c590ab3f5bc01f8535b7842000f156535"
+  }
+}
