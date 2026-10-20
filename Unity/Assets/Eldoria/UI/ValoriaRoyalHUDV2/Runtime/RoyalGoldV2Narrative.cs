@@ -60,7 +60,13 @@ namespace Eldoria.UI.RoyalGold.V2
             float frameWidth = Mathf.Min(availableWidth - 34f, portraitScreen ? 646f : 760f);
             float textWidth = frameWidth - 52f;
             float bodyTop = portraitScreen ? 147f : 150f;
-            float bodyHeight = portraitScreen ? Mathf.Min(298f, availableHeight * .32f) : 222f;
+            // A dialogue can contain up to 218 characters with explicit
+            // paragraph breaks. A short fixed 222/298px text region clips
+            // Aldric's very first speech when the font is enlarged.
+            // Prioritise COMPLETE legibility over an artificially short box.
+            float maxReadable = Mathf.Max(185f, availableHeight - bodyTop - 100f);
+            float minimumReadable = portraitScreen ? 385f : 325f;
+            float bodyHeight = Mathf.Min(maxReadable, minimumReadable);
             float actionTop = bodyTop + bodyHeight + 12f;
             frame.sizeDelta = new Vector2(frameWidth, actionTop + 82f);
 
@@ -90,13 +96,23 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (label) label.fontSize = 60;
             }
 
-            modal.Body.fontSize = portraitScreen ? 29 : 30;
+            modal.Body.fontSize = availableHeight < 590f ? 25 : (portraitScreen ? 29 : 30);
             modal.Body.color = new Color(.95f, .93f, .88f);
             modal.Body.lineSpacing = 1.18f;
             modal.Body.alignment = TextAnchor.UpperLeft;
             modal.Body.horizontalOverflow = HorizontalWrapMode.Wrap;
             modal.Body.verticalOverflow = VerticalWrapMode.Truncate;
             Top(modal.Body.rectTransform, 26, bodyTop, textWidth, bodyHeight);
+            // Auto-extend for real measured content (including hard line breaks)
+            // when space allows. Do NOT crop a dialogue to fit a mockup.
+            float required = Mathf.Ceil(modal.Body.preferredHeight) + 12f;
+            if (required > bodyHeight && maxReadable > bodyHeight)
+            {
+                bodyHeight = Mathf.Min(maxReadable, required);
+                actionTop = bodyTop + bodyHeight + 12f;
+                Top(modal.Body.rectTransform, 26, bodyTop, textWidth, bodyHeight);
+                frame.sizeDelta = new Vector2(frameWidth, actionTop + 82f);
+            }
             Top((RectTransform)modal.Extra.transform, 24, actionTop, frameWidth - 48f, 60);
             if (modal.ExtraLabel)
                 modal.ExtraLabel.fontSize = 24;
