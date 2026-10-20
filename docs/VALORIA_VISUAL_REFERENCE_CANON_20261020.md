@@ -16,10 +16,10 @@
 ## Rasgos obligatorios observables en la referencia
 - Bastión compacto central al fondo, arquitectura medieval de piedra clara, cubiertas azules, banderas azules y antorchas. **No** gran ciudad amurallada ni fortaleza monumental extendida.
 - Puerta de acceso fortificada delante y **puente de piedra** sobre un **río azul** con orillas de piedras naturales. Camino empedrado continuo que enlaza la puerta y el Bastión.
-- **Cuatro parcelas de tierra vacías** bien definidas alrededor del eje principal (dos a la izquierda y dos a la derecha). Son reservas de progresión; no autorizan viviendas, barrios, arcadas, andamios ni edificios no desbloqueados.
+- **EXCEPCIÓN EXPRESA POSTERIOR DEL PROPIETARIO (20-10-2026): las cuatro parcelas visibles del JPEG deben continuar ELIMINADAS de la escena jugable.** La fotografía de referencia muestra esas cuatro manchas de tierra, pero NO se deben restaurar, ni como losas, ni como cuatro huecos/parcelas con suelo bonito, ni reconstruir su forma 3D. Se mantiene solo el aspecto y la composición general de bastión, puerta, puente, río, pradera y ribera; los puntos de interacción/progresión existentes siguen funcionando sin renderizar las parcelas.
 - Pradera verde suavemente ondulada; coníferas dispersas, matas, rocas pequeñas, ruinas bajas/fragmentos de muro y pequeñas pendientes. **No** acantilados verticales, taludes masivos, cascadas ni grandes terrazas rocosas alrededor del Bastión.
 - Sin tiendas ni campamentos enemigos visibles en esta ciudad. Los encuentros Corruptos y Engendro siguen siendo mecánicas/nodos del mundo, nunca justifican crear campamentos 3D por intuición.
-- Lectura isométrica con la ciudad, acceso, parcelas y ribera a la vista; evitar superficies vacías artificiales, formas flotantes, repetición de prefabs y objetos que oculten botones/recorridos.
+- Lectura isométrica con la ciudad, acceso y ribera a la vista, SIN parcelas de tierra visible; evitar superficies vacías artificiales, formas flotantes, repetición de prefabs y objetos que oculten botones/recorridos.
 
 ## Jerarquía obligatoria en cualquier trabajo de arte
 1. **Esta referencia aprobada determina la apariencia, volumen y composición** de la escena temprana de Valoria. El vertical slice web `v0220` y los planos de progreso determinan qué existe y cuándo se desbloquea. Las instrucciones previas de acantilados/gran distrito urbano quedan obsoletas como objetivo de esta escena.
