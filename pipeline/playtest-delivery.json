@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ITCH_LOW_MEMORY_FIX_UPLOADED_PROCESSING_MOBILE_FAILURE_OPEN",
+  "state": "ROYAL_GOLD_V2_WEBGL_191_WINDOWS_QA_PASS_PACKAGE_PREPARATION",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
   "candidate": {
-    "revision": "native152",
-    "source_sha": "f5203b84a77540d6704efc5c2576343c7e88fe5c",
-    "native_run": 39301296709,
-    "qa_run": 39305545377,
-    "qa_source_sha": "4584ffe8f0432553e53dc0bbea4fc575e65d2f4c",
-    "artifact_id": 12213501867,
-    "artifact_name": "valoria-verified-private-site-windows-39305545377",
-    "artifact_sha256": "da699020ad3cb3699ff08e707b2a5c9ebd01663d7f794e6c8bfe72abed78eaad"
+    "revision": "native191",
+    "source_sha": "2642d3e10d7924fa61c537a93c19e71fd13d1eee",
+    "native_run": 39438288326,
+    "qa_run": 39438406183,
+    "qa_source_sha": "3fb5c06b23288017282bec59d1a1c7257df9c0c4",
+    "artifact_id": 12273740274,
+    "artifact_name": "valoria-verified-private-site-windows-39438406183",
+    "artifact_sha256": "5e2d674a77e836133fa0a13a2279de90732f175b2116c0dd46d38259efbbab05"
   },
   "published": {
     "provider": "sites",
@@ -126,5 +126,26 @@
     "package_sha256": "13c154fe6597224d8d7be7bf285e19383b3cd37c5e9727214409ae22d8906d17",
     "public_access_enabled": false,
     "next": "Owner signs into Tailscale on Windows PC and installs/signs into iPhone using same account; then configure private Serve and verify phone."
+  },
+  "prepared_ui_v2": {
+    "source_sha": "2642d3e10d7924fa61c537a93c19e71fd13d1eee",
+    "revision": "native191",
+    "native_run": 39438288326,
+    "qa_run": 39438406183,
+    "qa_conclusion": "success",
+    "platforms_proven": [
+      "Unity 6000.3.23f1 Windows native",
+      "Windows Chromium GPU WebGL"
+    ],
+    "passed_claims": [
+      "real controls landscape portrait",
+      "Bastion I-II normal-clock flow",
+      "model framing",
+      "marshalling and rewards",
+      "byte-identical save and reload",
+      "0 runtime/network errors"
+    ],
+    "phone_hardware_tested": false,
+    "published_updated": false
   }
 }
