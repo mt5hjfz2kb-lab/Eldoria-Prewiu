@@ -1,0 +1,62 @@
+{
+  "role": "INDEPENDENT_LOCAL_VISUAL_CRITIQUE_NOT_AUTHOR_OR_ACCEPTANCE_GATE",
+  "art_approved": false,
+  "new_model_downloads": 0,
+  "source_sha": "421ad20d2c8e0bbab68509651e7c899fa4cf21aa",
+  "reviews": [
+    {
+      "scope": "city",
+      "images": [
+        {
+          "path": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+          "sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/city-surface235/after-I-landscape.png",
+          "sha256": "64ef2e2ecd943658ab249bda9af05064970a657866144792cd63c68d59b37e4a"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/city-surface235/after-II-landscape.png",
+          "sha256": "31b9670fe9798a59dddf9efc0198d928bb2a926f8b6db29a92bdfb2ebd1850cb"
+        },
+        {
+          "path": "docs/evidence/valoria-reference-clean/city-surface235/after-I-portrait.png",
+          "sha256": "468f1e9806ac9ba5146088f8e33bf490072100e0e050171f09e772a9a3cba51b"
+        }
+      ],
+      "model": "qwen3-vl:8b-instruct-q4_K_M",
+      "elapsed_seconds": 39.82,
+      "review": {
+        "visible_strengths": [
+          "The stone textures and lighting on the compact keep, gatehouse, and bridge are consistent with the reference, creating a cohesive and believable medieval aesthetic.",
+          "The river's blue color and the way it reflects light, along with the rocky banks, are visually accurate and contribute to a naturalistic environment.",
+          "The placement of trees and grassy meadows is well-distributed, maintaining a balanced composition that mirrors the reference image's layout."
+        ],
+        "highest_impact_defects": [
+          {
+            "observation": "The four empty plots visible in the reference image are present in the game's current state, violating the requirement to keep them hidden. This is a critical visual inconsistency that breaks immersion.",
+            "correction": "Hide the four empty plots by either removing them from the game's tileset or rendering them as solid terrain with no visual distinction from the surrounding meadow."
+          },
+          {
+            "observation": "The bridge's arch is visually inconsistent with the reference. In the reference, the bridge is a straight, solid structure with a clear arch, while in the game, the arch appears as a simple, flat cutout, lacking structural detail and perspective.",
+            "correction": "Rebuild the bridge's arch to match the reference's design, ensuring it has proper perspective, depth, and structural detail to appear as a solid, functional bridge."
+          },
+          {
+            "observation": "The gatehouse's stone texture and lighting are inconsistent with the reference. The reference shows a more detailed, weathered stone texture with realistic lighting, while the game's gatehouse appears flat and lacks the same level of detail and shadowing.",
+            "correction": "Apply the reference's stone texture and lighting to the gatehouse, ensuring it matches the reference's level of detail and realism, including proper shadowing and surface variation."
+          }
+        ],
+        "visual_quality_estimate_0_to_10": 6.5,
+        "uncertainty": "The visual quality estimate is based on visible observations and does not account for performance, mechanics, or unrendered assets. The presence of the four empty plots and the bridge's arch inconsistency are concrete defects that can be corrected. The overall aesthetic is generally consistent with the reference, but the specific defects significantly impact immersion and visual fidelity."
+      }
+    }
+  ],
+  "installed_models": [
+    "qwen3:14b",
+    "qwen3-vl:8b-instruct-q4_K_M",
+    "qwen3-vl:4b-instruct",
+    "eldoria-artist:latest",
+    "hf.co/Qwen/Qwen3-VL-2B-Instruct-GGUF:Q4_K_M"
+  ],
+  "status": "REAL_LOCAL_INDEPENDENT_CRITIQUE_RECORDED"
+}

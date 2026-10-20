@@ -1,10 +1,10 @@
 {
     "editor_sha": "A3-5C-05-55-20-2D-6C-0D-C5-5D-56-40-CC-E7-6D-27-3D-F6-92-4A-08-FF-27-B3-76-99-09-B7-48-15-68-4F",
-    "play_sha": "0C-4C-80-12-76-E1-0B-82-34-FF-A2-81-12-7F-06-0A-A2-E4-3C-EC-1C-59-1A-D4-82-F3-76-BB-0B-B5-5D-CB",
+    "play_sha": "C9-07-4C-B9-DE-D0-99-63-74-1D-AB-CA-07-1A-EC-66-8C-C2-65-64-77-96-F0-DA-D1-08-B5-64-41-C8-99-19",
     "note": "Same native camera; upper field ROI excludes animated river. Consistency gate only, never an artistic approval.",
     "compared_pixels": 952128,
-    "changed_pixels": 17,
+    "changed_pixels": 16,
     "channel_threshold": 24,
-    "changed_fraction": 0.000017854741599876434,
+    "changed_fraction": 0.000016804462575237267,
     "consistent": true
 }
