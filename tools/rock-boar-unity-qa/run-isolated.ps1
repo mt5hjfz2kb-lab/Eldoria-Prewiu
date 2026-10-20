@@ -20,7 +20,7 @@ if ($sha -ne '897c8d02a445c6c760376031c38618698740e9593346099fafb4c3a0b93c1dc3')
 }
 Copy-Item $source (Join-Path $project 'Assets\RockBoar.glb') -Force
 Copy-Item $EditorScript (Join-Path $project 'Assets\Editor\RockBoarMinimalReview.cs') -Force
-$manifest = '{"dependencies":{"com.unity.cloud.gltfast":"6.14.1"}}'
+$manifest = '{"dependencies":{"com.unity.cloud.gltfast":"6.14.1","com.unity.modules.imageconversion":"1.0.0","com.unity.modules.unitywebrequest":"1.0.0","com.unity.modules.unitywebrequesttexture":"1.0.0"}}'
 [IO.File]::WriteAllText((Join-Path $project 'Packages\manifest.json'),$manifest)
 @('m_EditorVersion: 6000.3.23f1','m_EditorVersionWithRevision: 6000.3.23f1 (09d2ecc7fb28)') | Set-Content (Join-Path $project 'ProjectSettings\ProjectVersion.txt')
 @{
