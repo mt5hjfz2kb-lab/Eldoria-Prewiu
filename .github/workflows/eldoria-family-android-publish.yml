@@ -74,10 +74,11 @@ jobs:
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             echo 'Release tag exists: immutable, no overwrite'; exit 1
           fi
+          # GITHUB_TOKEN may not tag an older workflow-changing SHA; APK identity remains pinned by sourceSha.
           gh release create "$tag" "verified-build/$asset" \
-            --repo "$GITHUB_REPOSITORY" --target "$SOURCE" \
+            --repo "$GITHUB_REPOSITORY" --target main \
             --title "Eldoria Android code$CODE · family preview" --prerelease \
-            --notes "Verified original APK signature and device-compatible certificate. Integrated main-only Unity scene. Physical phone test remains separate; Android requires user confirmation."
+            --notes "Exact signed game source: $SOURCE. Git tag points to main release metadata (avoids disallowed tagging of historical workflow-changing commits). APK and signed identity verified byte-for-byte. Physical-phone QA remains pending; Android requires user confirmation."
           curl --fail --location --retry 5 --retry-delay 3 --silent --show-error "$url" -o published.apk
           cmp published.apk "verified-build/$asset"
           echo 'ELDORIA_FAMILY_RELEASE_BYTE_MATCH_PASS'
