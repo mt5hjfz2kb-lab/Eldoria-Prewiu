@@ -89,3 +89,19 @@ Code10/1.10 is requested from the current integrated main; do **not** announce t
 
 **Límite: aceptación móvil PENDIENTE.** El aviso que ya está compilado en las APK 1.8/1.9 seguirá siendo semitransparente durante el paso a 1.10. La nueva ventana solo existe tras instalar 1.10. El propietario puede instalarla encima del paquete existente desde el canal o enlace, **sin desinstalar**. Para certificar el aspecto de la nueva ventana en el móvil es necesario que haya una futura actualización posterior a code10 (o prueba instrumentada en Android real) y comprobar la captura, los botones y la continuidad del guardado. No declarar PHONE_PASS ni afirmar que la UI física ya se ha visto.
 
+## 2026-10-21 — Publicación nocturna automática en GitHub
+
+**AUTOMATIZACIÓN CONFIGURADA (pendiente de primera ejecución programada):** el workflow .github/workflows/eldoria-family-android-nightly.yml corre una vez cada noche con cron UTC 17 2 * * *. Equivale aproximadamente a **04:17 en horario de verano / 03:17 en horario de invierno en Madrid**; GitHub puede demorar su inicio. No usa servicios pagados y reutiliza el mismo compilador Android firmado en Windows que ya produjo code8, code9 y code10.
+
+**Solo se prepara UNA APK si se cumplen todas las condiciones:**
+
+1. Canal familiar publicado válido y firmado; peticiones manuales Android desactivadas; propietario canónico de main sin reserva de otro trabajo.
+2. El árbol completo Unity/ ha cambiado desde el APK publicado. Un cambio exclusivo de documentos, workflows o registros no provoca una nueva APK.
+3. Al menos **45 minutos** sin cambios en Unity/, sin trabajo nativo incompatible ya en ejecución.
+4. Unity cuenta con un trabajo Valoria nativo o prueba completa del editor Unity **SUCCESS para el mismo árbol Unity/**. Un preflight de código sin compilación/jugabilidad real no basta. Si falta QA, se conserva la APK anterior.
+5. versionCode aumenta exactamente **+1** respecto al canal vigente; build ARM64, APK firmada con la clave original y verificaciones de integridad/permisos/bytes pasan. Después se publica una Release inmutable y se comparan de nuevo sus bytes HTTPS.
+6. El canal updates/android/family.json avanza solo después de publicar; hay control de conflictos sobre main, sin force-push. En Android la descarga es automática por Wi-Fi y la instalación requiere confirmación; no se borra deliberadamente la partida.
+
+**Gestión:** ejecutar manualmente el workflow con dry_run=true (opción por defecto) comprueba los gates sin compilar ni publicar. La variable del repositorio ELDORIA_NIGHTLY_ANDROID_ENABLED=false permite pausar futuras noches, pero no hace falta configurarla para activar el plan. Los logs especifican cuándo se salta la noche por falta de cambios, QA o recurso.
+
+**Límites:** no publica cada commit ni certifica calidad gráfica absoluta. No sustituye el test de un Android físico. Las APK completas pesan cientos de MB. Si el PC de Unity no está operativo, la compilación no finalizará. Las Releases son públicas y destinadas a pruebas, no a distribución comercial.

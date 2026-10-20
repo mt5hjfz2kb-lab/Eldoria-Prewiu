@@ -1,0 +1,274 @@
+name: '[ELDORIA] Nightly verified Android family release'
+on:
+  # 02:17 UTC: 04:17 CEST / 03:17 CET in Madrid. One nightly window.
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: true
+        description: 'Only evaluate gates; never build or publish when true'
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eldoria-android-nightly
+  cancel-in-progress: false
+jobs:
+  decide:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    outputs:
+      build: ${{ steps.gate.outputs.build }}
+      code: ${{ steps.gate.outputs.code }}
+      version: ${{ steps.gate.outputs.version }}
+      unity_tree: ${{ steps.gate.outputs.unity_tree }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/android-updates
+            pipeline/android-updater-build-request.json
+            pipeline/android-updater-release-request.json
+            pipeline/active-workstreams.json
+            updates/android/family.json
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/EldoriaAndroidAutoUpdater.cs
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Unit-test release policy and current signed family channel
+        run: |
+          node --test tools/android-updates/*.test.mjs
+          node tools/android-updates/check-channel.mjs updates/android/family.json
+      - name: Check quiet main, exact Unity-tree QA, live lease and new gameplay
+        id: gate
+        uses: actions/github-script@v7
+        env:
+          ELDORIA_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+          ELDORIA_ENABLED: ${{ vars.ELDORIA_NIGHTLY_ANDROID_ENABLED }}
+        with:
+          script: |
+            const fs=require('node:fs');
+            const path=require('node:path');
+            const {pathToFileURL}=require('node:url');
+            const {decideNightly,CANONICAL_OWNER}=await import(
+              pathToFileURL(path.resolve('tools/android-updates/nightly-policy.mjs')).href);
+            const channel=JSON.parse(fs.readFileSync('updates/android/family.json','utf8'));
+            const build=JSON.parse(fs.readFileSync('pipeline/android-updater-build-request.json','utf8'));
+            const release=JSON.parse(fs.readFileSync('pipeline/android-updater-release-request.json','utf8'));
+            const registry=JSON.parse(fs.readFileSync('pipeline/active-workstreams.json','utf8'));
+            const owner=context.repo.owner,repo=context.repo.repo;
+            const api={owner,repo};
+            const dryRun=process.env.ELDORIA_DRY_RUN==='true';
+            const enabled=process.env.ELDORIA_ENABLED!=='false';
+            const main=(await github.rest.repos.getBranch({...api,branch:'main'})).data.commit.sha;
+            if(main!==context.sha){core.info('ELDORIA_NIGHTLY_SKIP main_advanced_after_schedule');return;}
+            const unityTreeCache=new Map();
+            async function unityTree(sha){
+              if(unityTreeCache.has(sha))return unityTreeCache.get(sha);
+              const commit=(await github.rest.git.getCommit({...api,commit_sha:sha})).data;
+              const tree=(await github.rest.git.getTree({...api,tree_sha:commit.tree.sha})).data;
+              const unity=tree.tree.find(z=>z.path==='Unity'&&z.type==='tree');
+              if(!unity)throw Error('Canonical Unity tree absent for '+sha);
+              unityTreeCache.set(sha,unity.sha);
+              return unity.sha;
+            }
+            const [currentTree,originalTree,commits]=await Promise.all([
+              unityTree(context.sha),unityTree(channel.sourceSha),
+              github.rest.repos.listCommits({...api,path:'Unity',sha:context.sha,per_page:1})]);
+            if(!commits.data.length)throw Error('Cannot identify last Unity source change');
+            const latestUnityCommitAt=commits.data[0].commit.committer?.date ||
+              commits.data[0].commit.author?.date;
+            const active=registry.active||[];
+            const canonicalOwner=active.filter(w=>w.id===CANONICAL_OWNER&&w.status==='active'&&w.branch==='main').length===1;
+            const conflictingLease=active.some(w=>w.id!==CANONICAL_OWNER&&w.resources?.includes('windows-runner-heavy'));
+            const base={now:new Date().toISOString(),latestUnityCommitAt,
+              headSha:context.sha,currentUnityTree:currentTree,releasedUnityTree:originalTree,
+              channel,manualBuildEnabled:build.enabled===true,manualReleaseEnabled:release.enabled===true,
+              canonicalOwner,conflictingLease,enabled,dryRun};
+            const preliminary=decideNightly({...base,gameQaVerified:true,windowsBusy:false});
+            if(!preliminary.eligible) {
+              core.info('ELDORIA_NIGHTLY_SKIP '+preliminary.reason);
+              return;
+            }
+            // Never mistake a successful source-only preflight for a playable build.
+            // Only an actual successful native/Unity editor job against the IDENTICAL
+            // complete Unity tree qualifies, even if docs/workflow commits follow.
+            async function matchingQa(workflowId,jobName){
+              const runs=(await github.rest.actions.listWorkflowRuns({
+                ...api,workflow_id:workflowId,branch:'main',status:'success',per_page:80})).data.workflow_runs;
+              for(const run of runs.slice(0,40)){
+                if(run.conclusion!=='success')continue;
+                if((await unityTree(run.head_sha))!==currentTree)continue;
+                const jobs=(await github.rest.actions.listJobsForWorkflowRun({
+                  ...api,run_id:run.id,per_page:100})).data.jobs;
+                if(jobs.some(j=>j.name===jobName&&j.conclusion==='success'))
+                  return {id:run.id,sha:run.head_sha,jobName};
+              }
+              return null;
+            }
+            const qa=(await matchingQa('valoria-reference-clean.yml','native')) ||
+              (await matchingQa('unity-slice.yml','editor-tests-and-player'));
+            const activeRuns=(await github.rest.actions.listWorkflowRunsForRepo({
+              ...api,branch:'main',status:'in_progress',per_page:100})).data.workflow_runs;
+            const busy=activeRuns.some(r=>r.id!==context.runId &&
+              (/Clean reference reconstruction|Unity slice source and editor gate|Canonical Tripo module pipeline|Family Android updater build/i).test(r.name));
+            const plan=decideNightly({...base,gameQaVerified:!!qa,windowsBusy:busy});
+            if(!plan.eligible){
+              core.info('ELDORIA_NIGHTLY_SKIP '+plan.reason+
+                ' qa='+(qa?qa.id:'none')+' windowsBusy='+busy);
+              return;
+            }
+            core.info('ELDORIA_NIGHTLY_'+(dryRun?'DRY_RUN':'APPROVED')+
+              ' code='+plan.code+' source='+plan.sourceSha+' QA_RUN='+qa.id+
+              ' quiet_minutes='+plan.quietMinutes);
+            if(plan.shouldBuild){
+              core.setOutput('build','true');
+              core.setOutput('code',String(plan.code));
+              core.setOutput('version',plan.version);
+              core.setOutput('unity_tree',plan.unityTree);
+            }
+
+  android:
+    needs: decide
+    if: needs.decide.outputs.build == 'true'
+    uses: ./.github/workflows/eldoria-family-android-build.yml
+    with:
+      nightly: true
+      nightly_code: ${{ fromJSON(needs.decide.outputs.code) }}
+      nightly_version: ${{ needs.decide.outputs.version }}
+
+  promote:
+    needs: [decide, android]
+    if: needs.decide.outputs.build == 'true' && needs.android.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    concurrency:
+      group: eldoria-android-family-release
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CODE: ${{ needs.decide.outputs.code }}
+      VERSION: ${{ needs.decide.outputs.version }}
+      SIGNED_SOURCE: ${{ github.sha }}
+      TESTED_UNITY_TREE: ${{ needs.decide.outputs.unity_tree }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/android-updates
+            updates/android/family.json
+            pipeline/android-updater-build-request.json
+            pipeline/android-updater-release-request.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-family-updater-code${{ needs.decide.outputs.code }}-${{ github.run_id }}
+          path: verified-build
+      - name: Reject newer untested Unity source or a competing release
+        uses: actions/github-script@v7
+        env:
+          ELDORIA_CODE: ${{ needs.decide.outputs.code }}
+          ELDORIA_SOURCE: ${{ github.sha }}
+          ELDORIA_UNITY_TREE: ${{ needs.decide.outputs.unity_tree }}
+        with:
+          script: |
+            const fs=require('node:fs'),api=context.repo;
+            const liveHead=(await github.rest.repos.getBranch({...api,branch:'main'})).data.commit.sha;
+            const liveCommit=(await github.rest.git.getCommit({...api,commit_sha:liveHead})).data;
+            const liveTree=(await github.rest.git.getTree({...api,tree_sha:liveCommit.tree.sha})).data.tree;
+            const unity=liveTree.find(e=>e.path==='Unity'&&e.type==='tree');
+            if(!unity||unity.sha!==process.env.ELDORIA_UNITY_TREE)
+              throw Error('Unity source changed since certification: keep exact APK artifact but do NOT publish');
+            const remote=(await github.rest.repos.getContent({
+              ...api,path:'updates/android/family.json',ref:'main'})).data;
+            const channel=JSON.parse(Buffer.from(remote.content,'base64').toString('utf8'));
+            if(channel.versionCode!==Number(process.env.ELDORIA_CODE)-1||
+               channel.enabled!==true)
+              throw Error('Competing Android release changed the official channel');
+            const local=JSON.parse(fs.readFileSync('updates/android/family.json','utf8'));
+            if(local.sourceSha!==channel.sourceSha||local.sha256!==channel.sha256)
+              throw Error('Signed baseline advanced since nightly decision');
+            core.info('ELDORIA_NIGHTLY_SOURCE_AND_CHANNEL_PINNED '+liveHead);
+      - name: Verify original signature proof and calculate the new immutable manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp updates/android/family.json "$RUNNER_TEMP/eldoria-proposed-family.json"
+          export ELDORIA_EXPECTED_CODE="$CODE"
+          export ELDORIA_EXPECTED_SHA="$SIGNED_SOURCE"
+          node tools/android-updates/create-channel.mjs \
+            "verified-build/Eldoria-Valoria-code$CODE.apk" \
+            verified-build/android-build-identity.json "$RUNNER_TEMP/eldoria-proposed-family.json"
+      - name: Publish the exact signed APK and independently compare its public bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="eldoria-android-code$CODE"
+          apk="Eldoria-Valoria-code$CODE.apk"
+          url="https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/$apk"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Immutable release already exists: compare exact signed bytes (do not overwrite)'
+          else
+            gh release create "$tag" "verified-build/$apk" --repo "$GITHUB_REPOSITORY" \
+              --target main --title "Eldoria Android $VERSION · nightly family preview" \
+              --prerelease --notes "Nightly verified APK. Original Unity SHA: $SIGNED_SOURCE. Android signature, version, package, exact build/run and SHA256 verified. Physical mobile QA remains separate. Android installation requires user confirmation."
+          fi
+          curl --fail --location --retry 5 --retry-delay 4 --silent --show-error "$url" -o verified-public.apk
+          cmp "verified-build/$apk" verified-public.apk
+          sha256sum verified-public.apk
+          echo 'ELDORIA_NIGHTLY_PUBLIC_BYTES_VERIFIED'
+      - name: Atomically advance verified channel without racing art commits
+        uses: actions/github-script@v7
+        env:
+          ELDORIA_CODE: ${{ needs.decide.outputs.code }}
+          ELDORIA_SOURCE: ${{ github.sha }}
+        with:
+          script: |
+            const fs=require('node:fs'),path=require('node:path'),api=context.repo;
+            const target=JSON.parse(fs.readFileSync(
+              path.join(process.env.RUNNER_TEMP,'eldoria-proposed-family.json'),'utf8'));
+            const code=Number(process.env.ELDORIA_CODE);
+            if(target.enabled!==true||target.versionCode!==code||
+               target.sourceSha!==process.env.ELDORIA_SOURCE)
+              throw Error('Release proof and proposed manifest are not identical');
+            const destination='updates/android/family.json';
+            const encoded=Buffer.from(JSON.stringify(target,null,2)+'\n').toString('base64');
+            let completed=false;
+            for(let attempt=1;attempt<=7;attempt++){
+              const file=(await github.rest.repos.getContent({
+                ...api,path:destination,ref:'main'})).data;
+              const live=JSON.parse(Buffer.from(file.content,'base64').toString('utf8'));
+              if(live.versionCode===code && live.sha256===target.sha256 &&
+                 live.sourceSha===target.sourceSha) {
+                core.info('ELDORIA_NIGHTLY_ALREADY_PROMOTED same signed version');
+                completed=true;break;
+              }
+              if(live.versionCode>=code)
+                throw Error('Competing Android version already promoted; refusing downgrade or overwrite');
+              if(!live.enabled||live.versionCode!==code-1)
+                throw Error('Release gap or disabled channel: keep previous version');
+              try{
+                await github.rest.repos.createOrUpdateFileContents({
+                  ...api,path:destination,branch:'main',
+                  message:'release(android): nightly verified family channel code'+code,
+                  content:encoded,sha:file.sha
+                });
+                completed=true;break;
+              }catch(error){
+                if(![409,422].includes(error.status))throw error;
+                core.warning('Concurrent manifest writer, safe retry '+attempt);
+                await new Promise(resolve=>setTimeout(resolve,1500));
+              }
+            }
+            if(!completed)throw Error('Cannot atomically promote signed APK after 7 retries');
+            const proof=(await github.rest.repos.getContent({
+              ...api,path:destination,ref:'main'})).data;
+            const remote=JSON.parse(Buffer.from(proof.content,'base64').toString('utf8'));
+            if(remote.versionCode!==code||remote.sha256!==target.sha256||
+               remote.sourceSha!==target.sourceSha)
+              throw Error('Post-publish channel did not confirm exact signed identity');
+            core.info('ELDORIA_NIGHTLY_FAMILY_CHANNEL_ACTIVE code='+code+
+              ' sha256='+target.sha256);

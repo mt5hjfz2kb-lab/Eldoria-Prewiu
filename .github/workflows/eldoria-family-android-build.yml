@@ -1,5 +1,19 @@
 name: '[ELDORIA] Family Android updater build'
 on:
+  # Reuse the original signed Android builder from an independent nightly controller.
+  workflow_call:
+    inputs:
+      nightly:
+        required: true
+        type: boolean
+      nightly_code:
+        required: false
+        type: number
+        default: 0
+      nightly_version:
+        required: false
+        type: string
+        default: ''
   workflow_dispatch:
   push:
     branches: [main]
@@ -43,20 +57,39 @@ jobs:
           node tools/android-updates/check-channel.mjs updates/android/family.json
       - name: Protect sole integrated main workstream
         id: gate
+        env:
+          ELDORIA_NIGHTLY: ${{ inputs.nightly }}
+          NIGHTLY_CODE: ${{ inputs.nightly_code }}
+          NIGHTLY_VERSION: ${{ inputs.nightly_version }}
         run: |
           node <<'JS'
           const fs=require('node:fs');
           const cfg=JSON.parse(fs.readFileSync('pipeline/android-updater-build-request.json'));
           const reg=JSON.parse(fs.readFileSync('pipeline/active-workstreams.json'));
           const owners=reg.active.filter(w=>w.resources?.includes('windows-runner-heavy'));
-          if(owners.length!==1 || owners[0].id!==cfg.workstreamId || owners[0].branch!=='main')
-            throw Error('Runner lease belongs to another workstream');
+          const active=reg.active.filter(w=>w.id===cfg.workstreamId&&w.branch==='main'&&w.status==='active');
+          if(active.length!==1 || owners.some(w=>w.id!==cfg.workstreamId))
+            throw Error('Native Android builder cannot take an incompatible workstream lease');
           if(cfg.budgetEur!==0 || cfg.scene!=='Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity')
             throw Error('Wrong budget/scene');
-          if(cfg.enabled!==true) { console.log('Verified; build not requested'); process.exit(0); }
-          if(!Number.isInteger(cfg.versionCode) || cfg.versionCode<7 || !/^[0-9]+[.][0-9]+$/.test(cfg.versionName))
+          const nightly=process.env.ELDORIA_NIGHTLY==='true';
+          const channel=JSON.parse(fs.readFileSync('updates/android/family.json','utf8'));
+          let code=cfg.versionCode,version=cfg.versionName;
+          if(nightly) {
+            if(cfg.enabled || channel.enabled!==true || !Number.isInteger(channel.versionCode))
+              throw Error('Automated build cannot override a manual request or inactive family channel');
+            code=Number(process.env.NIGHTLY_CODE);
+            version=process.env.NIGHTLY_VERSION;
+            if(!Number.isInteger(code) || code!==channel.versionCode+1 || version!=='1.'+code)
+              throw Error('Nightly code must increase exactly one verified family version');
+          } else {
+            if(owners.length!==1 || owners[0].id!==cfg.workstreamId)
+              throw Error('Manual builder still requires the existing Windows runner lease');
+            if(cfg.enabled!==true) { console.log('Verified; build not requested'); process.exit(0); }
+          }
+          if(!Number.isInteger(code) || code<7 || code>999999 || !/^[0-9]+[.][0-9]+$/.test(version))
             throw Error('Invalid family updater version');
-          fs.appendFileSync(process.env.GITHUB_OUTPUT,'build=true\ncode='+cfg.versionCode+'\nversion='+cfg.versionName+'\n');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'build=true\ncode='+code+'\nversion='+version+'\n');
           JS
 
   android:
@@ -86,6 +119,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           CODE: ${{ needs.preflight.outputs.code }}
           VERSION: ${{ needs.preflight.outputs.version }}
+          ELDORIA_NIGHTLY: ${{ inputs.nightly }}
         run: |
           $ErrorActionPreference='Stop'
           $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
@@ -94,7 +128,9 @@ jobs:
           $live=Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" -Headers $h
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($live.content))|ConvertFrom-Json
           $owners=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($owners.Count -ne 1 -or $owners[0].id -ne 'valoria-master-plan-layered-construction-20261016' -or $owners[0].branch -ne 'main'){throw 'Runner is claimed by another workstream'}
+          $canonical=@($reg.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.status -eq 'active' -and $_.branch -eq 'main'})
+          if($canonical.Count -ne 1 -or @($owners|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016'}).Count){throw 'Runner claimed by an incompatible workstream'}
+          if($env:ELDORIA_NIGHTLY -ne 'true' -and ($owners.Count -ne 1 -or $owners[0].branch -ne 'main')){throw 'Manual Android build requires the runner claim'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools already busy; never cancel other jobs'}
           $proof=Get-Content 'docs/evidence/valoria-reference-clean/android-existing-key-check.json' -Raw|ConvertFrom-Json
           if(-not @($proof.keys|Where-Object {$_.matches_original -and $_.certificate_sha256 -eq 'f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8' -and (Test-Path $_.path)}).Count){throw 'Original Android signing key missing'}
