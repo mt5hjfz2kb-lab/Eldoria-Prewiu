@@ -1,8 +1,8 @@
 {
-  "enabled": false,
-  "buildRunId": 39490305176,
-  "versionCode": 9,
-  "expectedSourceSha": "575933732d3e96a934695d35abe5cbb502574762",
+  "enabled": true,
+  "buildRunId": 39502034675,
+  "versionCode": 10,
+  "expectedSourceSha": "3a1cc3f17dc7adc543126c46ec53f402bb39aa94",
   "budgetEur": 0,
-  "note": "Verified code9 release published as immutable prerelease, GitHub run 39494077995 SUCCESS. OTA channel at code9 active; first phone install code8 and code8-to-code9 automatic test remain physical QA pending. Future release requests require an explicit new version/source/run."
+  "note": "Owner-authorized Android visual readability hotfix: exact signed code10 build, opaque dark updater modal, high-contrast text and buttons. Release only after exact artifact hash/public-byte proof; preserve app data; physical phone visual QA remains outstanding."
 }

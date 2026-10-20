@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 10,
   "versionName": "1.10",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner Android readability fix: fully opaque high-contrast updater dialog (gold/brown dark theme), landscape/portrait; build signed code10 from pinned integrated main snapshot, separate from art owner. No scene/gameplay/save edits; release remains disabled until native QA."
+  "note": "Signed code10/1.10 updater-UI build 39502034675 SUCCESS from pinned integrated main 3a1cc3f17dc7adc543126c46ec53f402bb39aa94. Disable duplicate native builds; next upgrade requires monotonic code11 and separate QA."
 }
