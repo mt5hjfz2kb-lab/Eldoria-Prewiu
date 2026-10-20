@@ -1,8 +1,8 @@
 {
-  "enabled": false,
-  "buildRunId": 0,
-  "versionCode": 7,
-  "expectedSourceSha": "",
+  "enabled": true,
+  "buildRunId": 39490305176,
+  "versionCode": 9,
+  "expectedSourceSha": "575933732d3e96a934695d35abe5cbb502574762",
   "budgetEur": 0,
-  "note": "Only approve a compiled, signature-verified APK artifact after QA; no unverified nightly releases."
+  "note": "Owner-authorized tester pre-release: code8 first installed manually, code9 intended for automatic Wi-Fi download and user-confirmed Android install. Exact signed bytes and release channel must be verified; physical Android test is not yet certified."
 }

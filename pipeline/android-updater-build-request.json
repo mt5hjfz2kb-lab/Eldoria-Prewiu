@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 9,
   "versionName": "1.9",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Second native APK (code9) for automatic-download acceptance from code8, built from current canonical main snapshot with city/world/Royal Gold integrated. Signed release remains gated; no old branch, no saves reset, no paid resources."
+  "note": "Code9 signed build run 39490305176 SUCCESS at pinned main 575933732d3e96a934695d35abe5cbb502574762. Prevent duplicate native builds on promotion; next version must bump monotonic code and explicitly request build."
 }
