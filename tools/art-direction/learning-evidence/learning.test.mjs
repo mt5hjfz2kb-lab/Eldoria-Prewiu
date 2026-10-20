@@ -29,6 +29,8 @@ test('new event is only pending verification and append-only',()=>{
  const d=fresh(),e=structuredClone(d.cases[0]);
  e.id='eldoria-bastion1-provisional';e.source.evidence_level='pending_verification';
  e.art_verdict='ART_UNREVIEWED';
+ assert.throws(()=>appendPending(d,e),/current owner-approved reference/);
+ e.reference_sha256=d.current_reference_sha256;
  const n=appendPending(d,e);
  assert.equal(n.cases.length,7);assert.equal(d.cases.length,6);
  assert.throws(()=>appendPending(n,e),/Duplicate/);
@@ -62,7 +64,7 @@ test('never compare different camera frustum or resolution as a quality trend',(
 });
 test('pin reference across all records and require real run URL',()=>{
  const d=fresh();d.cases[0].reference_sha256='a'.repeat(64);
- assert.match(validate(d).join(' | '),/mismatched reference/);
+ assert.match(validate(d).join(' | '),/unrecognized historical\/current reference hash/);
  const e=fresh();e.cases[0].source.url='https://example.com';
  assert.match(validate(e).join(' | '),/URL/);
 });
