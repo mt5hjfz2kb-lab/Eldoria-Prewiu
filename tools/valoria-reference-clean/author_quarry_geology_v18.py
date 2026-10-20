@@ -32,7 +32,7 @@ for i in range(N):
  t=i/(N-1); x=-9.1+18.2*t
  y=-2.3+6.1*(max(0,1-(x/9.3)**2)**.79)+.43*math.sin(x*.47)
  height=(4.70+.63*math.sin(.61*x+.4)+.32*math.sin(1.52*x+.2))
- height*=.81+.19*max(0,1-(abs(x)/9.1)**3)
+ height*=max(.12,1-(abs(x)/9.25)**8)
  outer.append((x,y,height))
 vertices=[];uvs=[];faces=[]
 # "excavation scar" four principal geological benches, each with actual
@@ -93,7 +93,7 @@ normal=tex("CC0 rock normal", "rock_3_nor_gl_1k.png",True)
 rough=tex("CC0 roughness","rock_3_rough_1k.png",True)
 links.new(diff.outputs["Color"],pbr.inputs["Base Color"])
 links.new(rough.outputs["Color"],pbr.inputs["Roughness"])
-normalnode=nodes.new("ShaderNodeNormalMap");normalnode.inputs["Strength"].default_value=.54
+normalnode=nodes.new("ShaderNodeNormalMap");normalnode.inputs["Strength"].default_value=.25
 links.new(normal.outputs["Color"],normalnode.inputs["Color"])
 links.new(normalnode.outputs["Normal"],pbr.inputs["Normal"])
 mesh=bpy.data.meshes.new("Joined quarry geological escarpment")
@@ -105,9 +105,42 @@ uv=obj.data.uv_layers.new(name="World-metric-rock-UV")
 for poly in obj.data.polygons:
  for li in poly.loop_indices:
   v=obj.data.vertices[obj.data.loops[li].vertex_index].co
-  uv.data[li].uv=(v.x/3.8+(v.y/9.4),v.z/3.4+(v.y/8.1))
+  uv.data[li].uv=((v.x/3.8,v.y/3.8) if abs(poly.normal.z)>.6 else (v.x/3.8+v.y/7.5,v.z/3.4))
 # Intentionally keep crisp strata fracture facets for the real isometric view.
 for poly in mesh.polygons:poly.use_smooth=False
+# An irregular working apron shares the scarp foot; shallow extraction ripples
+# and fractured waste stones provide real contact rather than walls on turf.
+apronv=[];apronf=[];NX,NY=45,23
+for j in range(NY):
+ q=j/(NY-1)
+ for i in range(NX):
+  x=-8.9+17.8*i/(NX-1);back=-2.3+6.1*max(0,1-(x/9.3)**2)**.79+.43*math.sin(x*.47)-.9
+  front=-6.8+.5*math.sin(x*.71)+.32*math.cos(x*1.9)
+  y=front+(back-front)*q;edge=math.sin(math.pi*i/(NX-1))*math.sin(math.pi*q)
+  z=-.84+edge*(.16+.06*math.sin(x*2.1+y*1.7))
+  apronv.append((x,y,z))
+for j in range(NY-1):
+ for i in range(NX-1):
+  a=j*NX+i;apronf.extend([(a,a+1,a+NX),(a+1,a+NX+1,a+NX)])
+am=bpy.data.meshes.new('Connected graded extraction apron');am.from_pydata(apronv,[],apronf);am.update();apron=bpy.data.objects.new(am.name,am);bpy.context.collection.objects.link(apron);am.materials.append(m)
+au=am.uv_layers.new(name='Metric gravel UV')
+for poly in am.polygons:
+ for li in poly.loop_indices:
+  v=am.vertices[am.loops[li].vertex_index].co;au.data[li].uv=(v.x/2.2,v.y/2.2)
+debris=[]
+for k in range(13):
+ x=-7.4+k*1.13;y=-2.3+6.1*max(0,1-(x/9.3)**2)**.79+.43*math.sin(x*.47)-1.45
+ radius=rng.uniform(.18,.42);vv=[];ff=[]
+ for h,rad in [(-.9,1),(-.65,.94),(-.65+radius*.8,.57)]:
+  for i in range(7):
+   a=i*math.tau/7;rr=radius*rad*rng.uniform(.8,1.2);vv.append((x+rr*math.cos(a),y+rr*math.sin(a),h+rng.uniform(-.035,.035)))
+ for ring in range(2):
+  for i in range(7):a=ring*7+i;b=ring*7+(i+1)%7;ff.extend([(a,b,a+7),(b,b+7,a+7)])
+ ff.append(tuple(range(14,21)));dm=bpy.data.meshes.new('Fractured extraction waste');dm.from_pydata(vv,[],ff);dm.update();d=bpy.data.objects.new('Quarry fractured waste '+str(k),dm);bpy.context.collection.objects.link(d);dm.materials.append(m);du=dm.uv_layers.new()
+ for poly in dm.polygons:
+  for li in poly.loop_indices:
+   v=dm.vertices[dm.loops[li].vertex_index].co;du.data[li].uv=(v.x/1.5,v.y/1.5+v.z)
+ debris.append(d)
 # Preserve only genuine earlier authored extraction equipment/stone stock,
 # not its rejected repetitive quarry retaining wall.
 keep=[]
@@ -142,19 +175,21 @@ except TypeError:scene.render.engine="BLENDER_EEVEE"
 scene.render.resolution_x=1280;scene.render.resolution_y=720;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format="PNG"
 obj.hide_render=True
+for o in [apron]+debris:o.hide_render=True
 for o in keep:o.hide_render=True
 for o in source:o.hide_render=False
 scene.render.filepath=str(EV/"quarry-geology-v18-before.png")
 bpy.ops.render.render(write_still=True)
 for o in source:o.hide_render=True
 obj.hide_render=False
+for o in [apron]+debris:o.hide_render=False
 for o in keep:o.hide_render=False
 scene.render.filepath=str(EV/"quarry-geology-v18-after.png")
 bpy.ops.render.render(write_still=True)
 # Export only source-authored geometry and retained equipment, not the
 # diagnostic floor/lights or any unused originals.
 bpy.ops.object.select_all(action="DESELECT")
-for o in [obj]+keep:o.select_set(True)
+for o in [obj,apron]+debris+keep:o.select_set(True)
 bpy.context.view_layer.objects.active=obj
 bpy.ops.export_scene.gltf(filepath=str(OUT),export_format="GLB",
  use_selection=True,export_apply=True,export_yup=True,export_texcoords=True,
