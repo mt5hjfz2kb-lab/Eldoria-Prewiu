@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Rock boar (v0220 enemy id=boar, Jabalí de roca), identifiable boar silhouette at Unity strategic/city/detail zooms and angled back/front, believable anatomy with exactly four legs and two short tusks, dark textured bristles and subtle natural slate shoulders (not decorative armor). PBR and UV/color preserved, grounding and collider/picking verified. No extra objects/background, no melted/fused proportions, no spikes. Keep lore, node IDs, economy, savegames, world routes, and city scene intact. Capture true Unity PNGs and retain original Tripo GLB + Blender editable + optimized GLB. No automatic production promotion or publication; review first.",
-  "run_nonce": "boar-h31-28f57ff9-generated-20-credits-20261020-no-retry",
-  "notes": "Single 20-credit Tripo H3.1 generation completed, task 28f57ff9-b978-468c-8c2a-6136e0a65ea1. Raw artifact 12298657449, optimized Blender/GLB artifact 12297913548, GitHub run 39495619494. Native Unity gate hit 9-min full-project import timeout, without rendering; technical Unity QA must reuse existing artifacts without any new paid generation. This request is permanently disabled against accidental resubmission.",
+  "run_nonce": "boar-qa-only-exact-optimized-artifact-12297913548-20261020",
+  "notes": "Single 20-credit Tripo H3.1 generation completed, task 28f57ff9-b978-468c-8c2a-6136e0a65ea1. Raw artifact 12298657449, optimized Blender/GLB artifact 12297913548, GitHub run 39495619494. Native Unity gate hit 9-min full-project import timeout, without rendering; technical Unity QA must reuse existing artifacts without any new paid generation. This request is permanently disabled against accidental resubmission. 2026-10-20: invoke ONLY rock-boar-qa isolated Unity validation job from existing artifact. Generation disabled, no credits, one previously paid task.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
