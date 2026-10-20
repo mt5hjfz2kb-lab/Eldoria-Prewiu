@@ -1,0 +1,18 @@
+{
+  "blender": "5.2.2 LTS",
+  "source_scene_sha256": "a7009e65f774113ce9735d460c142c70bed856422be488f343875c08151e4f61",
+  "survey_sha256": "82cf4af9e44c43778e70246a599c1901085adccaa7d419a958622ba7de6e605c",
+  "plan_sha256": "d3fb441f0a5fad27677c70970b6d22b16f2d9db77db52a6cb44bcd7cf08aebab",
+  "blend_sha256": "eb1906b1ea467c41d2bdc4175453d8f7ff6a7dec1b3f2b68ba9445c763a7d95c",
+  "candidate_sha256": "d8d865dee6a2ddacf063cd524a4b729a7eedfb777cd8e0bf8881bf3389a88455",
+  "changed_bank_vertices": 36660,
+  "changed_terrain_vertices": 6613,
+  "max_height_delta_m": 0.8178664364572741,
+  "protected_height_delta_max": 0.0,
+  "topology_preserved": true,
+  "reference_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d",
+  "author": "Retained Qwen3 14B bank/shape parameters with explicit independent director repair of repeated centers; mesh operations in bpy",
+  "transport": "direct bpy selected for measured mesh authoring; no extra MCP server needed",
+  "art_approved": false,
+  "published": false
+}

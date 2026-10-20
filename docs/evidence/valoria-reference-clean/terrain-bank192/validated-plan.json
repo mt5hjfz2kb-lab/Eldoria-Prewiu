@@ -1,0 +1,47 @@
+{
+  "rationale": "Selected landforms and parameters align with visual diagnosis and schema constraints, ensuring gentle relief, coherent riverbank structure, and preservation of existing architecture and gameplay elements.",
+  "north": {
+    "compression": 0.61,
+    "flare": 1.19,
+    "inland": 0.43,
+    "shear": 0.14
+  },
+  "south": {
+    "compression": 0.58,
+    "flare": 1.23,
+    "inland": 0.39,
+    "shear": -0.11
+  },
+  "landforms": [
+    {
+      "center_index": 4,
+      "rise": 0.82,
+      "radius_x": 12,
+      "radius_z": 9
+    },
+    {
+      "center_index": 1,
+      "rise": 0.67,
+      "radius_x": 14,
+      "radius_z": 8
+    },
+    {
+      "center_index": 8,
+      "rise": 0.55,
+      "radius_x": 11,
+      "radius_z": 7
+    },
+    {
+      "center_index": 3,
+      "rise": 0.78,
+      "radius_x": 13,
+      "radius_z": 10
+    },
+    {
+      "center_index": 6,
+      "rise": 0.49,
+      "radius_x": 9,
+      "radius_z": 6
+    }
+  ]
+}

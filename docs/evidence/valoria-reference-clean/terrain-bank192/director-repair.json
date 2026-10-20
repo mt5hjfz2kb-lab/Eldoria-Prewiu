@@ -1,0 +1,20 @@
+{
+  "source_run": 39445329743,
+  "raw_response_sha256": "ec714d777fe9514109409bf93600644e148c8c042187bf0db5575c5b90d1d7a1",
+  "reason": "Qwen repeated center 1 four times; overlapping mound plan rejected before editing. Independent director assigns distinct approved gaps, retaining all authored shapes and bank parameters.",
+  "before_centers": [
+    4,
+    1,
+    1,
+    1,
+    1
+  ],
+  "after_centers": [
+    4,
+    1,
+    8,
+    3,
+    6
+  ],
+  "new_inference": false
+}
