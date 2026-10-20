@@ -245,6 +245,16 @@ jobs:
             if($LASTEXITCODE){throw 'Breach terrain authoring failed'}
             $method='Eldoria.ReferenceClean.Editor.ValoriaFinalEnvironmentFinishing.Trial'
           }
+          if($req.city_surface -and $req.revision -eq 240){
+            $failed='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/CitySurface235'
+            if(Test-Path $failed){
+              if(@(git ls-files -- $failed).Count){throw 'Refuse moving tracked terrain'}
+              $backup=Join-Path $env:RUNNER_TEMP 'valoria-rejected-239-terrain'
+              if(Test-Path $backup){throw 'Prior backup exists'}
+              Move-Item $failed $backup
+              if(Test-Path "$failed.meta"){Move-Item "$failed.meta" "$backup.meta"}
+            }
+          }
           if($req.city_surface -and $req.stage -eq 'final_environment_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaCitySurfaceFinishing.Trial'}
           if($req.city_surface -and $req.stage -eq 'final_environment_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaCitySurfaceFinishing.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'world_art_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}

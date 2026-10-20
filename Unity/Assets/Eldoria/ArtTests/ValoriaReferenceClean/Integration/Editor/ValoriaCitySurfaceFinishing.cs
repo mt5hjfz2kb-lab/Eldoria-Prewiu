@@ -13,8 +13,9 @@ public static class ValoriaCitySurfaceFinishing {
  const string Scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
  const string Tool="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaCitySurfaceFinishing.cs";
  const string Source="57a27c1dbb21d20646e6593695e4deb15b65c00aa277242c5de18d9eaf36ec00";
+ const string TerrainAsset="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/CitySurface240/Terrain.asset";
  static string Ev=>Path.GetFullPath("../docs/evidence/valoria-reference-clean/city-surface235");
- [Serializable] public class Acceptance {public bool accepted;public string source_scene_sha256,tool_sha256;public string[] images,hashes;}
+ [Serializable] public class Acceptance {public bool accepted;public string source_scene_sha256,tool_sha256,terrain_sha256;public string[] images,hashes;}
  static string Hash(string p){using(var h=SHA256.Create())return BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(p))).Replace("-","").ToLowerInvariant();}
  static void Need(bool b,string s){if(!b)throw new InvalidOperationException(s);}
  // Measure the existing paving silhouette in half-metre sections; no guessed new roads.
@@ -49,12 +50,13 @@ public static class ValoriaCitySurfaceFinishing {
  public static void Integrate(){Run(true);}
  static void Run(bool integrate){try{
   Need(Hash(Scene)==Source,"Current reviewed integrated source required");Directory.CreateDirectory(Ev);
-  var approved=new Dictionary<string,byte[]>();if(integrate){var a=JsonUtility.FromJson<Acceptance>(File.ReadAllText(Ev+"/accepted-candidate.json"));Need(a.accepted&&a.source_scene_sha256==Source&&a.tool_sha256==Hash(Tool),"Reviewed exact surface tool required");Need(a.images.Length==6&&a.hashes.Length==6,"Six views required");for(int i=0;i<6;i++){Need(Hash(Ev+"/"+a.images[i])==a.hashes[i],"Reviewed capture changed");approved.Add(a.images[i],File.ReadAllBytes(Ev+"/"+a.images[i]));}}
+  var approved=new Dictionary<string,byte[]>();if(integrate){var a=JsonUtility.FromJson<Acceptance>(File.ReadAllText(Ev+"/accepted-candidate.json"));Need(a.accepted&&a.source_scene_sha256==Source&&a.tool_sha256==Hash(Tool),"Reviewed exact surface tool required");Need(File.Exists(TerrainAsset)&&Hash(TerrainAsset)==a.terrain_sha256,"Reviewed serialized terrain required");Need(a.images.Length==6&&a.hashes.Length==6,"Six views required");for(int i=0;i<6;i++){Need(Hash(Ev+"/"+a.images[i])==a.hashes[i],"Reviewed capture changed");approved.Add(a.images[i],File.ReadAllBytes(Ev+"/"+a.images[i]));}}
   EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();var t=Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Single();var old=t.terrainData;var collider=t.GetComponent<TerrainCollider>();var physics=collider.terrainData;
   var lights=Object.FindObjectsByType<Light>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(l=>l.type==LightType.Point&&l.name=="Torch glow"&&l.transform.position.z>27&&l.transform.position.z<32&&Mathf.Abs(l.transform.position.x)<4).ToArray();Need(lights.Length==4,"Four retained Bastion torch lights required");
   var bake=lights.Select(l=>l.lightmapBakeType).ToArray();var modes=lights.Select(l=>l.renderMode).ToArray();var enabled=lights.Select(l=>l.enabled).ToArray();TerrainData next=null;bool saved=false;var changedRenderers=new List<MeshRenderer>();var renderChildren=new List<GameObject>();
   try{
-   Views(city,"before");next=Object.Instantiate(old);next.name="Existing city paving / measured earthen shoulder contact";
+   Views(city,"before");if(integrate){next=AssetDatabase.LoadAssetAtPath<TerrainData>(TerrainAsset);}else{
+   Need(!File.Exists(TerrainAsset),"Refuse overwriting candidate terrain");next=Object.Instantiate(old);next.name="Existing city paving / measured earthen shoulder contact";
    var filters=Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None);var roads=new[]{"Axial_Paving","Outer_Road"}.Select(n=>new Road(filters.Single(f=>f.name==n))).ToArray();
    // Native235 measured no missing height contact: preserve the accepted relief exactly.
    int an=next.alphamapResolution;
@@ -64,7 +66,11 @@ public static class ValoriaCitySurfaceFinishing {
     float w=0;foreach(var road in roads)w=Mathf.Max(w,road.Weight(wx,wz,out float unused));w*=.72f;
     for(int k=0;k<layers;k++)alpha[z,x,k]*=1-w;alpha[z,x,2]+=w;
    }
-   next.SetAlphamaps(0,0,alpha);t.terrainData=next;t.Flush();Need(collider.terrainData==physics,"Collision terrain changed");
+   next.SetAlphamaps(0,0,alpha);
+   Directory.CreateDirectory(Path.GetDirectoryName(TerrainAsset));AssetDatabase.Refresh();AssetDatabase.CreateAsset(next,TerrainAsset);AssetDatabase.SaveAssets();
+   Resources.UnloadAsset(next);next=AssetDatabase.LoadAssetAtPath<TerrainData>(TerrainAsset);Need(next!=null,"Serialized terrain reload failed");
+   }
+   t.terrainData=next;t.Flush();Need(collider.terrainData==physics,"Collision terrain changed");
    // LightingDataAsset rebinds the old renderer fileIDs on reopen. Preserve those
    // components disabled; render the reviewed meshes with new unbaked identities.
    foreach(var root in new[]{city.BastionOne,city.BastionTwo}){
@@ -83,16 +89,16 @@ public static class ValoriaCitySurfaceFinishing {
     direct.bakingOutput=new LightBakingOutput{isBaked=false,lightmapBakeType=LightmapBakeType.Realtime,occlusionMaskChannel=-1,probeOcclusionLightIndex=-1};
     l.enabled=false;
    }
-   Views(city,"after");Need(Hash(Scene)==Source,"Trial changed source scene");
+   Views(city,"after");File.WriteAllText(Ev+"/serialized-terrain.json","{\"terrain_sha256\":\""+Hash(TerrainAsset)+"\"}");Need(Hash(Scene)==Source,"Trial changed source scene");
    File.WriteAllText(Ev+"/unity-review.json","{\"source_scene_sha256\":\""+Source+"\",\"tool_sha256\":\""+Hash(Tool)+"\",\"changed_height_samples\":0,\"maximum_visual_raise_m\":0,\"retained_torch_positions\":4,\"replaced_light_components\":4,\"net_new_active_lights\":0,\"new_shadow_maps\":0,\"collision_unchanged\":true,\"plots_created\":false,\"art_approved\":false}");
    if(integrate){
     var diffs=new List<string>();foreach(var im in approved){diffs.Add(ValoriaTerrainBankAuthoring.CompareRender(im.Value,Ev+"/"+im.Key));File.WriteAllBytes(Ev+"/approved-"+im.Key,im.Value);}File.WriteAllText(Ev+"/render-identity.json","["+string.Join(",",diffs)+"]");
-    const string folder="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/CitySurface235";Need(!Directory.Exists(folder),"Refuse overwriting existing finish");Directory.CreateDirectory(folder);AssetDatabase.Refresh();AssetDatabase.CreateAsset(next,folder+"/Terrain.asset");AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(city.gameObject.scene);Need(EditorSceneManager.SaveScene(city.gameObject.scene,Scene),"Save failed");saved=true;
+    AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(city.gameObject.scene);Need(EditorSceneManager.SaveScene(city.gameObject.scene,Scene),"Save failed");saved=true;
     EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);var reopened=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();Views(reopened,"reopened");
     var reloadDiffs=new List<string>();foreach(var im in approved)reloadDiffs.Add(ValoriaTerrainBankAuthoring.CompareRender(im.Value,Ev+"/"+im.Key.Replace("after-","reopened-")));File.WriteAllText(Ev+"/reload-render-identity.json","["+string.Join(",",reloadDiffs)+"]");
     File.WriteAllText(Ev+"/integrated.json","{\"scene_sha256\":\""+Hash(Scene)+"\",\"six_saved_reopened_captures_compared\":true,\"published\":false}");
    }
-  }finally{if(!saved){t.terrainData=old;t.Flush();for(int i=0;i<lights.Length;i++){lights[i].lightmapBakeType=bake[i];lights[i].renderMode=modes[i];lights[i].enabled=enabled[i];}foreach(var r in changedRenderers)if(r)r.enabled=true;foreach(var g in renderChildren)if(g)Object.DestroyImmediate(g);if(next)Object.DestroyImmediate(next);}}
+  }finally{if(!saved){t.terrainData=old;t.Flush();for(int i=0;i<lights.Length;i++){lights[i].lightmapBakeType=bake[i];lights[i].renderMode=modes[i];lights[i].enabled=enabled[i];}foreach(var r in changedRenderers)if(r)r.enabled=true;foreach(var g in renderChildren)if(g)Object.DestroyImmediate(g);if(next&&!AssetDatabase.Contains(next))Object.DestroyImmediate(next);}}
   if(integrate)ValoriaIntegrationBuild.ValidateCurrent();else{Debug.Log("VALORIA_REFERENCE_CLEAN_CITY_SURFACE_TRIAL_COMPLETE");EditorApplication.Exit(0);}
  }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
 }}
