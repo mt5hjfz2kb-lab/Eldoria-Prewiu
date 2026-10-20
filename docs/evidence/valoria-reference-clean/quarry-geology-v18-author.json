@@ -1,0 +1,30 @@
+{
+  "source_original": "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\EnvironmentFinish\\EnvironmentQuarry.glb",
+  "source_sha256": "eb2d3ef911162875414edd750f65d3a31750881b32aadd2a7a8a0310af074d7f",
+  "new_glb": "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\EnvironmentFinish\\QuarryGeologyV18.glb",
+  "new_glb_sha256": "3f5b7bc0df50b682f6bc99f63dc022cc7692d7ea4e407f2327ce441d9e89fc39",
+  "blend": "docs\\evidence\\valoria-reference-clean\\QuarryGeologyV18.blend",
+  "triangles": 2812,
+  "retained_equipment_meshes": 2,
+  "real_blender_render": true,
+  "unity_integration": false,
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "source_assets": [
+    "rock_3 (Poly Haven CC0)",
+    "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\EnvironmentFinish\\EnvironmentQuarry.glb"
+  ],
+  "methods": [
+    "continuous shared-vertex escarpment",
+    "measured nonrectangular footprint",
+    "fractured multilevel excavation benches",
+    "closed rear terrain-shoulder",
+    "metric UV",
+    "CC0 scanned diffuse/normal/rough",
+    "same-camera Blender diagnostic"
+  ],
+  "limitations": [
+    "No Unity A/B or gameplay certification yet.",
+    "Do not promote without user-camera visual review."
+  ]
+}

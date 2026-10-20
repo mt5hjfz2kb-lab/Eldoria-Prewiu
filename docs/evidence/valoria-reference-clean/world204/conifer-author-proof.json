@@ -1,0 +1,23 @@
+{
+  "author": "Independent director original mesh authoring",
+  "operations": [
+    "curved tapered trunk and branch sweeps",
+    "flared root continuation",
+    "unequal branch whorls",
+    "folded serrated needle sprays with undersides",
+    "three controlled silhouette variants"
+  ],
+  "triangles": [
+    8960,
+    7724,
+    10196
+  ],
+  "low_triangles": [
+    3404,
+    2934,
+    3874
+  ],
+  "blend_sha256": "d19e4d7481aa40642f022c432230d02d3e6ed491b6c2ae8914c59101ccb59c8b",
+  "mesh_sha256": "7c4a259cfbf593bf33adf0c1dc3cfa5cc257b4fa3f7e1361d2bec4dffbd5674c",
+  "art_approved": false
+}
