@@ -2,6 +2,10 @@
 
 Rama única: main. Workstream único ya reclamado: valoria-master-plan-layered-construction-20261016. Director actual: chatgpt-eldoria-visual-recovery-20261020. Presupuesto: 0 €. No publicación ni Bastión III.
 
+## Prioridad de referencia visual
+- Imagen exacta: `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg`, JPEG 1448×1086 SHA-256 `86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d`, almacenado en `main`. Leer `docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md` antes de cualquier intervención.
+- **EXCLUSIÓN POSTERIOR DEL PROPIETARIO:** aunque el JPEG muestre cuatro parcelas de tierra, sus huellas visibles deben continuar ELIMINADAS; no restaurar las losas `Plot_`, ni `Parcels.Bindings`, ni reconstruir las cuatro parcelas visuales, ni «mejorarlas» con tierra/vegetación. Mantener sistemas de selección/progreso. La orden OWNER179 de reconstruir cuatro parcelas fue revocada por decisión posterior.
+
 ## Auditoría de autoridad y alcance
 - Autoridad principal: v0220/index.html, v0220/js/gameplay.js, docs/VALORIA_MASTER_PLAN_V1.md y docs/VALORIA_PROGRESSION_MAP_V1.md. El prologo temprano muestra Bastión I, aserradero, bosque, cantera, Corruptos, Bastión II, cuartel, reclutamiento y Engendro; un nodo de amenaza no obliga a una instalación de tiendas y viviendas residenciales claras se reservan para Bastión III. Material ajeno o adelantado queda fuera de la escena temprana.
 - Datos jugables, collider/hotspot IDs, navegación de ciudad/mundo, economía, diálogos, guardados e historia son intocables. Ningún lanzamiento público/WebGL/APK/itch durante esta obra.
