@@ -5,7 +5,6 @@ on:
     paths:
       - pipeline/playtest-delivery.json
       - tools/delivery/**
-      - .github/workflows/eldoria-itch-delivery.yml
   workflow_dispatch:
     inputs:
       publish:

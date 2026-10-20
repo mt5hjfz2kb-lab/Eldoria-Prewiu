@@ -1074,6 +1074,12 @@
       "domain": "engineering",
       "status": "current",
       "note": "Contrato de componentes Unity"
+    },
+    {
+      "path": "docs/ROYAL_GOLD_V2_LIVE_DELIVERY_20261020.md",
+      "domain": "quality",
+      "status": "reference",
+      "note": "Exact native191 delivery evidence; not art approval or physical device certification."
     }
   ]
 }
