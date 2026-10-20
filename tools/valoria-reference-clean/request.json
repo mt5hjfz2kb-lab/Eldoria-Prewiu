@@ -1,11 +1,11 @@
 {
-  "stage": "terrain_bank_integrate",
+  "stage": "terrain_bank_trial",
   "validate_play": false,
-  "revision": 224,
+  "revision": 225,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Retry exact native222 accepted integration after fresh Windows line-ending identity failure; normalize only if LF SHA exactly matches approved source, retain all render/gameplay gates.",
+  "checks": "Re-capture exact retained native222 geometry with deterministic editor-only river time. Same strict render gate retained; no Blender regeneration, gameplay or publication.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
@@ -30,5 +30,6 @@
   "repair_environment": false,
   "reuse_authored_geometry": true,
   "reuse_world_quarry": true,
-  "terrain_polish": true
+  "terrain_polish": true,
+  "reuse_polish_candidate": true
 }

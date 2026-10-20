@@ -20,13 +20,14 @@ Shader "Eldoria/ReferenceClean/River" {
    CBUFFER_START(UnityPerMaterial)
     half4 _BaseColor; half4 _ShallowColor; half4 _RiverReflection_HDR; half _ReflectionStrength;
    CBUFFER_END
+   float4 _ValoriaArtCaptureClock;
    struct A {float4 positionOS:POSITION;float2 uv:TEXCOORD0;};
    struct V {float4 positionCS:SV_POSITION;float3 world:TEXCOORD0;float2 uv:TEXCOORD1;};
    V vert(A a){V o;o.world=TransformObjectToWorld(a.positionOS.xyz);o.positionCS=TransformWorldToHClip(o.world);o.uv=a.uv;return o;}
    float hash21(float2 p){return frac(sin(dot(p,float2(127.1,311.7)))*43758.5453);}
    float noise21(float2 p){float2 q=floor(p),f=frac(p);f=f*f*(3-2*f);return lerp(lerp(hash21(q),hash21(q+float2(1,0)),f.x),lerp(hash21(q+float2(0,1)),hash21(q+1),f.x),f.y);}
    half4 frag(V i):SV_Target {
-    float t=_Time.y*.6;float w=sin(i.world.x*1.5+i.world.z*2.2+t);float w2=sin(i.world.z*3.4-i.world.x*.7-t*.8);
+    float t=(_ValoriaArtCaptureClock.x>0.5?_ValoriaArtCaptureClock.y:_Time.y)*.6;float w=sin(i.world.x*1.5+i.world.z*2.2+t);float w2=sin(i.world.z*3.4-i.world.x*.7-t*.8);
     float edge=abs(i.uv.y*2-1);float2 flow=i.world.xz*float2(.22,.54)+float2(-t*.045,t*.012);float n0=noise21(flow),n1=noise21(flow*2.17),n2=noise21(flow*5.23);float n=n0+n1*.40+n2*.16;float rawDepth=SampleSceneDepth(GetNormalizedScreenSpaceUV(i.positionCS));float depth01=rawDepth;
     #if UNITY_REVERSED_Z
      depth01=1-rawDepth;
