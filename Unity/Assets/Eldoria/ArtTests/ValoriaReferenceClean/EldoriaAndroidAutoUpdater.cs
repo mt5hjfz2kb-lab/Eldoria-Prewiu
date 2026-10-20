@@ -194,39 +194,112 @@ namespace Eldoria.ReferenceClean {
         }
 
 #endif
+        // Always use opaque in-app surfaces: Unity's default GUI.Box skin can be
+        // translucent, making the world HUD visible through the updater dialog.
+        static void DrawSolid(Rect area, Color color) {
+            Color previous = GUI.color;
+            GUI.color = color;
+            GUI.DrawTexture(area, Texture2D.whiteTexture);
+            GUI.color = previous;
+        }
+
         void OnGUI() {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            // Keep normal gameplay unobstructed while an APK downloads in Android's background service.
+            // Never obstruct normal gameplay until the player has an actionable choice.
             if (candidate == null || dismissed || downloading ||
                 (!downloaded && !waitingForWifi && !downloadFailed)) return;
-            var old = GUI.matrix;
-            float scale = Mathf.Max(0.75f, Mathf.Min(Screen.width / 720f, Screen.height / 1280f));
-            GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1));
-            float width = Screen.width / scale, height = Screen.height / scale;
-            float boxWidth = Mathf.Min(640f, width - 32f), x = (width - boxWidth) / 2f;
-            var rect = new Rect(x, Mathf.Max(12, height * .12f), boxWidth, 208);
-            GUI.depth = -1000;
-            GUI.Box(rect, "");
-            var heading = new GUIStyle(GUI.skin.label) { fontSize = 27, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, wordWrap = true };
-            var body = new GUIStyle(GUI.skin.label) { fontSize = 19, alignment = TextAnchor.MiddleCenter, wordWrap = true };
-            GUI.Label(new Rect(x + 14, rect.y + 12, boxWidth - 28, 36),
-                downloaded ? "Eldoria " + candidate.versionName + " lista para instalar" :
-                (waitingForWifi ? "Eldoria " + candidate.versionName + " · esperando Wi-Fi" :
-                                  "Eldoria " + candidate.versionName + " · reintentar"), heading);
-            GUI.Label(new Rect(x + 18, rect.y + 50, boxWidth - 36, 70),
-                downloaded ? "Descarga verificada. Instálala cuando termines de jugar." :
-                (waitingForWifi ? "Se descargará sola con Wi-Fi, o puedes autorizar datos móviles." :
-                                  "Descarga interrumpida. No se ha instalado nada."), body);
-            GUI.enabled = !downloading;
-            if (GUI.Button(new Rect(x + 22, rect.y + 138, boxWidth * .58f - 26f, 51),
-                downloaded ? "Instalar" : (waitingForWifi ? "Usar datos móviles" : "Reintentar"))) {
-                if (downloaded) LaunchInstaller();
-                else StartCoroutine(DownloadUpdate(false));
+
+            Matrix4x4 previousMatrix = GUI.matrix;
+            Color previousColor = GUI.color;
+            int previousDepth = GUI.depth;
+            try {
+                bool landscape = Screen.width > Screen.height;
+                float scale = Mathf.Clamp(
+                    Mathf.Min(Screen.width / (landscape ? 1300f : 820f),
+                              Screen.height / (landscape ? 780f : 1180f)), 0.72f, 1.45f);
+                GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1));
+                GUI.depth = -1000;
+                float fullWidth = Screen.width / scale;
+                float fullHeight = Screen.height / scale;
+                float panelWidth = Mathf.Min(landscape ? 760f : 710f, fullWidth - 32f);
+                float panelHeight = 300f;
+                float x = (fullWidth - panelWidth) * 0.5f;
+                float y = Mathf.Max(12f, (fullHeight - panelHeight) * 0.5f);
+
+                // Dim the game and make the update card 100% opaque, including its border.
+                DrawSolid(new Rect(0f, 0f, fullWidth, fullHeight),
+                          new Color(0.015f, 0.025f, 0.045f, 0.72f));
+                DrawSolid(new Rect(x - 3f, y - 3f, panelWidth + 6f, panelHeight + 6f),
+                          new Color(0.76f, 0.60f, 0.35f, 1f));
+                DrawSolid(new Rect(x, y, panelWidth, panelHeight),
+                          new Color(0.075f, 0.095f, 0.135f, 1f));
+                DrawSolid(new Rect(x + 22f, y + 96f, panelWidth - 44f, 2f),
+                          new Color(0.58f, 0.47f, 0.31f, 1f));
+
+                GUIStyle eyebrow = new GUIStyle(GUI.skin.label) {
+                    fontSize = 17, fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter, wordWrap = true
+                };
+                eyebrow.normal.textColor = new Color(0.96f, 0.78f, 0.48f, 1f);
+                GUIStyle headline = new GUIStyle(GUI.skin.label) {
+                    fontSize = 29, fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter, wordWrap = true
+                };
+                headline.normal.textColor = Color.white;
+                GUIStyle description = new GUIStyle(GUI.skin.label) {
+                    fontSize = 21, alignment = TextAnchor.MiddleCenter, wordWrap = true
+                };
+                description.normal.textColor = new Color(0.96f, 0.96f, 0.96f, 1f);
+
+                string title = downloaded ? "Versión " + candidate.versionName + " lista" :
+                               waitingForWifi ? "Versión " + candidate.versionName + " disponible" :
+                                                "No se pudo descargar";
+                string body = downloaded
+                    ? "Descarga verificada. Puedes instalarla cuando termines de jugar. Tu partida se conserva."
+                    : waitingForWifi
+                        ? "Eldoria descargará la actualización con Wi-Fi. Puedes permitir datos móviles si quieres."
+                        : "La actualización no se ha instalado. Puedes reintentarla sin perder tu partida.";
+
+                GUI.Label(new Rect(x + 20f, y + 15f, panelWidth - 40f, 30f),
+                          "ELDORIA · ACTUALIZACIÓN", eyebrow);
+                GUI.Label(new Rect(x + 20f, y + 47f, panelWidth - 40f, 47f), title, headline);
+                GUI.Label(new Rect(x + 24f, y + 114f, panelWidth - 48f, 90f),
+                          body, description);
+
+                float buttonGap = 14f;
+                float usable = panelWidth - 48f;
+                float primaryWidth = usable * 0.60f;
+                float secondaryWidth = usable - primaryWidth - buttonGap;
+                Rect primary = new Rect(x + 24f, y + 225f, primaryWidth, 54f);
+                Rect secondary = new Rect(primary.xMax + buttonGap, y + 225f,
+                                          secondaryWidth, 54f);
+                DrawSolid(primary, new Color(0.68f, 0.49f, 0.22f, 1f));
+                DrawSolid(secondary, new Color(0.19f, 0.23f, 0.30f, 1f));
+                GUIStyle button = new GUIStyle(GUI.skin.button) {
+                    fontSize = 21, fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter
+                };
+                // The opaque button backing is drawn above; no default semi-transparent skin.
+                button.normal.background = null;
+                button.hover.background = null;
+                button.active.background = null;
+                button.focused.background = null;
+                button.normal.textColor = Color.white;
+                button.hover.textColor = Color.white;
+                button.active.textColor = Color.white;
+                button.focused.textColor = Color.white;
+                if (GUI.Button(primary,
+                    downloaded ? "Instalar" : (waitingForWifi ? "Usar datos móviles" : "Reintentar"),
+                    button)) {
+                    if (downloaded) LaunchInstaller(); // Only after a real user tap.
+                    else StartCoroutine(DownloadUpdate(false));
+                }
+                if (GUI.Button(secondary, "Ahora no", button)) dismissed = true;
+            } finally {
+                GUI.matrix = previousMatrix;
+                GUI.color = previousColor;
+                GUI.depth = previousDepth;
             }
-            if (GUI.Button(new Rect(x + boxWidth * .58f + 8, rect.y + 138, boxWidth * .42f - 30f, 51), "Ahora no"))
-                dismissed = true;
-            GUI.enabled = true;
-            GUI.matrix = old;
 #endif
         }
 

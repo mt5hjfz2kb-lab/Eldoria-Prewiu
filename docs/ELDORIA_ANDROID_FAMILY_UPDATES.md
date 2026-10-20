@@ -69,3 +69,10 @@ Todavía se requieren: prueba de compilación Unity ARM64, certificado apksigner
 - **Siguiente versión:** seleccionar commit estable de main, fijar código Android **10 o posterior**, compilar y revisar, aprobar Release con source+build run exactos. El código instalado8/9 descargará la nueva versión al abrir con Wi-Fi sin buscar enlaces; Android continúa exigiendo confirmación de instalación.
 
 **No afirmar PHONE_PASS todavía:** faltan instalación sobre APK existente, conservación del progreso y prueba física 1.8→1.9, incluyendo Wi-Fi, descarga interrumpida, confirmación Android y recarga. El servidor de APK está en un repositorio público, así que es distribución de pruebas, no privada.
+
+
+## 2026-10-20 — Android update prompt: visual accessibility hotfix, code10
+
+Owner physical Android observation: the update text appears over world cards with translucent backgrounds. Cause in code8/code9: runtime OnGUI relied on the default Unity GUI.Box skin, which has no guaranteed opaque background. The fix is local to EldoriaAndroidAutoUpdater.cs: dim the visible world, render an **opaque dark card** with gold frame, readable white text, opaque buttons, responsive portrait/landscape layout, and restore GUI color/matrix/depth. The download policy, signing, local saves and Android install confirmation remain unchanged.
+
+Code10/1.10 is requested from the current integrated main; do **not** announce this UI improvement on the physical phone until signed APK build and test are complete. Keep the stable public update channel code9 until the independently verified code10 APK is promoted. Full device readability and tap behavior still need physical QA.
