@@ -30,8 +30,8 @@ for index,(ident,radius,uplift) in enumerate([('corrupt-scout',2.7,.48),('engend
    t=-1+2*k/(N-1);x=cx+radius*t;zmid=cz+line(t);fade=max(0,1-t*t)**.7
    for j in range(B):
     q=j/(B-1);width=(.48*radius+.15*math.sin(t*11))*fade
-    z=zmid+side*(.13*fade+width*q)
-    rise=uplift*fade*(1-q)**1.3*(.58+.16*math.sin(k*1.1+j*.8))
+    z=zmid+side*(.34*fade+width*q)
+    rise=uplift*(.24 if side==-1 else 1)*fade*(1-q)**1.3*(.58+.16*math.sin(k*1.1+j*.8))
     fracture=.055*fade*math.sin(k*2.4+j*1.7)*math.sin(math.pi*q)
     height=gy(x,z)+rise+fracture+.035-.075*q*q
     points.append((x,-z,height))
@@ -46,7 +46,7 @@ for index,(ident,radius,uplift) in enumerate([('corrupt-scout',2.7,.48),('engend
   top=[points[k*B] for k in range(N)];bottom=[(x,y,gy(x,-y)+.018) for x,y,h in top]
   add(top+bottom,[(k,k+1,k+1+N,k+N) for k in range(N-1)],0)
  # Recessed vein is wide enough to read at local zoom, remains contained.
- for slot,wide,lift in [(0,.20,.025),(3,.075,.04),(4,.022,.046)]:
+ for slot,wide,lift in [(0,.34,.035),(3,.23,.052),(4,.065,.061)]:
   points=[]
   for k in range(N):
    t=-1+2*k/(N-1);fade=max(0,1-t*t)**.7;x=cx+radius*t;z=cz+line(t);w=wide*fade*(.75+.25*math.sin(k*.81)**2)

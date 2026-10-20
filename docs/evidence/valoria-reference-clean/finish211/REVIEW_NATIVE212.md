@@ -1,0 +1,1 @@
+Native212 actual Unity review: opposed scarps remove the rejected radial fan, but the foreground lip occludes the corruption seam. Threat art NOT ACCEPTED. Native213 changes opening geometry and lowers the foreground lip. City conifer reuse and functional contact treatment retained for combined review. Canonical scene remains phase3. No overall target score claimed.

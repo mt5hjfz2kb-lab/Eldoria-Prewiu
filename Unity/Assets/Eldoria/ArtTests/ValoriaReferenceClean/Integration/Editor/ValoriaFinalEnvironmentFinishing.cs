@@ -56,8 +56,12 @@ namespace Eldoria.ReferenceClean.Editor {
    try{foreach(string id in new[]{"corrupt-scout","engendro-valoria"}){var p=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).Single(n=>n.Id==id).transform.position;p.y=2;camera.transform.position=p-camera.transform.forward*110;foreach(float size in new[]{32f,14f}){camera.orthographicSize=size;ValoriaReferenceCleanBuilder.Capture(camera,Ev+"/"+prefix+"-"+id+"-"+size.ToString("0")+".png",1448,1086);}camera.orthographicSize=14;ValoriaReferenceCleanBuilder.Capture(camera,Ev+"/"+prefix+"-"+id+"-portrait.png",900,1600);}}
    finally{camera.transform.position=pos;camera.orthographicSize=zoom;host.WorldRoot.SetActive(active);}
   }
-  public static void Trial(){try{
-   EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);Directory.CreateDirectory(Ev);var source=JsonUtility.FromJson<Data>(File.ReadAllText(Ev+"/survey.json"));Need(source.scene_sha256==Hash(Scene),"Finishing source scene changed");var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();var temporary=new List<Object>();var changedMeshes=new Dictionary<MeshFilter,Mesh>();var replacedTrees=new List<Renderer>();var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();
+  [Serializable] public class Acceptance {public bool accepted;public string source_scene_sha256,candidate_sha256;public string[] image_names,image_hashes;}
+  public static void Trial(){Run(false);}
+  public static void Integrate(){Run(true);}
+  static void Run(bool integrate){try{
+   EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);Directory.CreateDirectory(Ev);var source=JsonUtility.FromJson<Data>(File.ReadAllText(Ev+"/survey.json"));Need(source.scene_sha256==Hash(Scene),"Finishing source scene changed");var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();bool saved=false;var approvedImages=new Dictionary<string,byte[]>();if(integrate){var a=JsonUtility.FromJson<Acceptance>(File.ReadAllText(Ev+"/accepted-candidate.json"));Need(a.accepted&&a.source_scene_sha256==Hash(Scene)&&a.candidate_sha256==Hash(Ev+"/breach-ground.json"),"Exact reviewed finishing sources required");Need(a.image_names.Length==10&&a.image_hashes.Length==10,"Ten matching city/threat views required");for(int i=0;i<a.image_names.Length;i++){string n=a.image_names[i];Need(Hash(Ev+"/"+n)==a.image_hashes[i],"Reviewed image changed");approvedImages.Add(n,File.ReadAllBytes(Ev+"/"+n));}}
+   var temporary=new List<Object>();var changedMeshes=new Dictionary<MeshFilter,Mesh>();var replacedTrees=new List<Renderer>();var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();
    try{
     ThreatViews(host,"before");CityViews(city,"before-city");Need(!host.WorldRoot.GetComponentsInChildren<Transform>(true).Any(t=>t.gameObject.activeSelf&&(t.name.StartsWith("Zone1 hostile camp")||t.name.StartsWith("Enemy camp"))&&t.GetComponentsInChildren<Renderer>().Any(r=>r.enabled)),"Unauthorised camp unexpectedly active");
     var data=JsonUtility.FromJson<ValoriaWorldArtFinishing.Family>(File.ReadAllText(Ev+"/breach-ground.json"));Need(data.variants.Length==4,"Two existing threats and two functional contact aprons required");
@@ -78,9 +82,14 @@ namespace Eldoria.ReferenceClean.Editor {
      Renderer Child(string name,Mesh mesh){var c=new GameObject(name);c.transform.SetParent(g.transform,false);c.AddComponent<MeshFilter>().sharedMesh=mesh;var r=c.AddComponent<MeshRenderer>();r.sharedMaterials=mats;return r;}
      var hi=Child("Near branches",near.sharedMesh);var low=Child("Strategic silhouette",far.sharedMesh);var lod=g.AddComponent<LODGroup>();lod.SetLODs(new[]{new LOD(.16f,new[]{hi}),new LOD(.012f,new[]{low})});lod.RecalculateBounds();old.enabled=false;replacedTrees.Add(old);
     }
-    ThreatViews(host,"after");CityViews(city,"after-city");Need(source.scene_sha256==Hash(Scene),"Trial unexpectedly saved");File.WriteAllText(Ev+"/unity-review.json","{\"same_camera_light\":true,\"scene_saved\":false,\"art_approved\":false,\"hotspots_preserved\":true,\"no_camps\":true}");
-   }finally{foreach(var r in replacedTrees)r.enabled=true;foreach(var kv in changedMeshes)kv.Key.sharedMesh=kv.Value;foreach(var o in temporary)if(o)Object.DestroyImmediate(o);}
-   Debug.Log("VALORIA_REFERENCE_CLEAN_FINAL_ENVIRONMENT_TRIAL_COMPLETE");EditorApplication.Exit(0);
+    ThreatViews(host,"after");CityViews(city,"after-city");Need(source.scene_sha256==Hash(Scene),"Trial unexpectedly saved");if(integrate){
+     var differences=new List<string>();foreach(var im in approvedImages){differences.Add(ValoriaTerrainBankAuthoring.CompareRender(im.Value,Ev+"/"+im.Key));File.WriteAllBytes(Ev+"/approved-"+im.Key,im.Value);}File.WriteAllText(Ev+"/render-identity.json","["+string.Join(",",differences)+"]");
+     const string folder="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/FinalEnvironment212";Need(!Directory.Exists(folder),"Refuse overwrite existing final environment assets");Directory.CreateDirectory(folder);AssetDatabase.Refresh();int ix=0;foreach(var o in temporary.OfType<Texture2D>())AssetDatabase.CreateAsset(o,folder+"/texture-"+(ix++)+".asset");foreach(var o in temporary.OfType<Material>())AssetDatabase.CreateAsset(o,folder+"/material-"+(ix++)+".mat");foreach(var o in temporary.OfType<Mesh>())AssetDatabase.CreateAsset(o,folder+"/mesh-"+(ix++)+".asset");AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(host.gameObject.scene);Need(EditorSceneManager.SaveScene(host.gameObject.scene,Scene),"Final environment save failed");saved=true;
+     File.WriteAllText(Ev+"/integrated.json","{\"scene_sha256\":\""+Hash(Scene)+"\",\"gameplay_gate\":\"PENDING_CURRENT_PROBE\",\"reused_city_trees\":18,\"new_enemy_camps\":false,\"published\":false}");
+    }
+    if(!integrate)File.WriteAllText(Ev+"/unity-review.json","{\"same_camera_light\":true,\"scene_saved\":false,\"art_approved\":false,\"hotspots_preserved\":true,\"no_camps\":true}");
+   }finally{if(!saved){foreach(var r in replacedTrees)r.enabled=true;foreach(var kv in changedMeshes)kv.Key.sharedMesh=kv.Value;foreach(var o in temporary)if(o)Object.DestroyImmediate(o);}}
+   if(integrate)ValoriaIntegrationBuild.ValidateCurrent();else{Debug.Log("VALORIA_REFERENCE_CLEAN_FINAL_ENVIRONMENT_TRIAL_COMPLETE");EditorApplication.Exit(0);}
   }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
   static void Views(Camera camera,string prefix){ValoriaReferenceCleanBuilder.Capture(camera,Ev+"/"+prefix+"-landscape.png",1448,1086);ValoriaReferenceCleanBuilder.Capture(camera,Ev+"/"+prefix+"-portrait.png",900,1600);}
  }
