@@ -1,11 +1,11 @@
 {
   "stage": "final_environment_trial",
   "validate_play": false,
-  "revision": 211,
+  "revision": 212,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Measured Breach fracture ground on two existing nodes, no camps. Existing sawmill/barracks irregular contact aprons as children of unlocked models, no visible plot footprints. Re-group existing small woodland rocks at measured tree bases with unchanged topology/colliders. Trial unsaved before visual review.",
+  "checks": "Reject native211 Breach radial fans: replace with opposed curved geological scarps and a recessed fissure, existing CC0 rock grain. Reuse validated world conifer meshes for exactly 18 measured lobed city trees; retain better Fir_tree_group. Retain gated functional contact aprons and 19 grouped rock components. Trial only.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",

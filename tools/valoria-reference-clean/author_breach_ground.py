@@ -9,7 +9,7 @@ def gy(x,z):
  ix=math.floor((x-880)/2)*2+880;iz=math.floor((z+120)/2)*2-120;u=(x-ix)/2;v=(z-iz)/2
  return samples[(ix,iz)]*(1-u)*(1-v)+samples[(ix+2,iz)]*u*(1-v)+samples[(ix,iz+2)]*(1-u)*v+samples[(ix+2,iz+2)]*u*v
 bpy.ops.wm.read_factory_settings(use_empty=True)
-colors=[(.10,.085,.105),(.18,.145,.18),(.31,.26,.30),(.37,.065,.49),(.76,.30,.87),(.38,.29,.18),(.48,.37,.23)]
+colors=[(.22,.19,.25),(.29,.25,.32),(.35,.31,.38),(.37,.065,.49),(.76,.30,.87),(.38,.29,.18),(.48,.37,.23)]
 mats=[]
 for i,c in enumerate(colors):
  m=bpy.data.materials.new(['Altered bedrock','Fresh fracture','Weathered fracture edge','Violet corruption vein','Contained fissure core','Compacted workground','Sawdust workground'][i]);m.diffuse_color=(*c,1);m.use_nodes=True;p=next(n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED');p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=.91
@@ -20,31 +20,38 @@ for index,(ident,radius,uplift) in enumerate([('corrupt-scout',2.7,.48),('engend
  node=next(n for n in world['nodes'] if n['id']==ident)['position'];cx,cz=node['x'],node['z'];rng=random.Random(211+index);vv=[];ff=[];ss=[]
  def add(points,faces,slot):
   offset=len(vv);vv.extend(points);ff.extend([tuple(offset+j for j in f) for f in faces]);ss.extend([slot]*len(faces))
- # Polygon sectors are individually lifted fracture plates. Their irregular
- # stepped radial profiles close below the existing terrain, with no cliff rim.
- count=19
- for i in range(count):
-  a=math.tau*i/count+.14*math.sin(i*1.7);b=math.tau*(i+1)/count+.14*math.sin((i+1)*1.7);gap=.018
-  v=[]
-  for ring,r in enumerate([.08,.32,.58,.83,1.0]):
-   for angle in [a+gap,b-gap]:
-    rr=radius*r*(1+.10*math.sin(angle*3+index));x=cx+math.cos(angle)*rr;z=cz+math.sin(angle)*rr
-    height=gy(x,z)+(.045 if ring==4 else uplift*(1-r)**1.2*(.45+.55*abs(math.sin(angle*2.4+.7))))
-    if ring==0:height-=.11
-    v.append((x,-z,height))
+ # Two fractured curved scarps flank an irregular narrow ground fissure.
+ # The rejected native211 radial fan is replaced outright: no cone or disk.
+ N=45;B=12
+ def line(t):return .22*math.sin(t*5.3+index)+.09*math.sin(t*14.1+.3)
+ for side in (-1,1):
+  points=[]
+  for k in range(N):
+   t=-1+2*k/(N-1);x=cx+radius*t;zmid=cz+line(t);fade=max(0,1-t*t)**.7
+   for j in range(B):
+    q=j/(B-1);width=(.48*radius+.15*math.sin(t*11))*fade
+    z=zmid+side*(.13*fade+width*q)
+    rise=uplift*fade*(1-q)**1.3*(.58+.16*math.sin(k*1.1+j*.8))
+    fracture=.055*fade*math.sin(k*2.4+j*1.7)*math.sin(math.pi*q)
+    height=gy(x,z)+rise+fracture+.035-.075*q*q
+    points.append((x,-z,height))
   faces=[]
-  for j in range(4):faces.extend([(j*2,j*2+1,j*2+2),(j*2+1,j*2+3,j*2+2)])
-  add(v,faces,i%3)
-  # Actual downturned broken plate sides meet the measured terrain.
-  side=[v[j] for j in [0,2,4,6,8]];base=[(x,y,gy(x,-y)-.06) for x,y,h in side]
-  add(side+base,[(j,j+1,j+6,j+5) for j in range(4)],0)
- # Branching light is restricted to cracks, with no particles/volumetric fog.
- for branch in range(3 if index==0 else 5):
-  angle=branch*math.tau/(3 if index==0 else 5)+index*.4;points=[]
-  for k in range(13):
-   t=k/12;r=radius*(.06+.78*t);a=angle+.16*math.sin(k*1.6+branch);x=cx+math.cos(a)*r;z=cz+math.sin(a)*r;height=gy(x,z)+.065+uplift*(1-r/radius)**1.2*.28
-   width=(.025 if index==0 else .045)*(1-.7*t);points.extend([(x-math.sin(a)*width,-z-math.cos(a)*width,height),(x+math.sin(a)*width,-z+math.cos(a)*width,height)])
-  add(points,[(2*k,2*k+1,2*k+3,2*k+2) for k in range(12)],3 if branch%2 else 4)
+  for k in range(N-1):
+   for j in range(B-1):
+    a=k*B+j;b=a+1;c=a+B;d=c+1
+    if side==-1:faces.extend([(a,c,b),(b,c,d)])
+    else:faces.extend([(a,b,c),(b,d,c)])
+  add(points,faces,1 if side==1 else 2)
+  # Dark inner broken wall closes down to the actual source ground.
+  top=[points[k*B] for k in range(N)];bottom=[(x,y,gy(x,-y)+.018) for x,y,h in top]
+  add(top+bottom,[(k,k+1,k+1+N,k+N) for k in range(N-1)],0)
+ # Recessed vein is wide enough to read at local zoom, remains contained.
+ for slot,wide,lift in [(0,.20,.025),(3,.075,.04),(4,.022,.046)]:
+  points=[]
+  for k in range(N):
+   t=-1+2*k/(N-1);fade=max(0,1-t*t)**.7;x=cx+radius*t;z=cz+line(t);w=wide*fade*(.75+.25*math.sin(k*.81)**2)
+   points.extend([(x,-z-w,gy(x,z)+lift),(x,-z+w,gy(x,z)+lift)])
+  add(points,[(2*k,2*k+1,2*k+3,2*k+2) for k in range(N-1)],slot)
  mesh=bpy.data.meshes.new(ident+' measured fractured ground');mesh.from_pydata(vv,[],ff);mesh.update()
  for m in mats:mesh.materials.append(m)
  for p,slot in zip(mesh.polygons,ss):p.material_index=slot
@@ -76,5 +83,5 @@ for ident,slot in [('sawmill',6),('barracks',5)]:
  models.append(dict(name=ident,vertices=vertices,normals=normals,uv=uv,submeshes=[dict(indices=ss) for ss in subs]))
 bpy.context.preferences.filepaths.save_version=0;bpy.ops.wm.save_as_mainfile(filepath=str(EV/'BreachGround211.blend'),compress=True)
 (EV/'breach-ground.json').write_text(json.dumps({'variants':models,'colors':[dict(r=r,g=g,b=b,a=1) for r,g,b in colors]},separators=(',',':')))
-(EV/'breach-author-proof.json').write_text(json.dumps({'source_world_survey_sha256':hashlib.sha256((ROOT/'docs/evidence/valoria-reference-clean/world204/survey.json').read_bytes()).hexdigest(),'blend_sha256':hashlib.sha256((EV/'BreachGround211.blend').read_bytes()).hexdigest(),'mesh_sha256':hashlib.sha256((EV/'breach-ground.json').read_bytes()).hexdigest(),'triangles':[len(m['vertices'])//3 for m in models],'new_settlements':False,'gameplay_nodes_untouched':True,'art_approved':False,'operations':['measured heightfield contact','irregular fracture plates','closed broken sides','narrow branching corruption seams'],'lore':'v0220 altered matter and violet/black fissure signature; no camps, monuments or new enemy rules'},indent=2))
+(EV/'breach-author-proof.json').write_text(json.dumps({'source_world_survey_sha256':hashlib.sha256((ROOT/'docs/evidence/valoria-reference-clean/world204/survey.json').read_bytes()).hexdigest(),'blend_sha256':hashlib.sha256((EV/'BreachGround211.blend').read_bytes()).hexdigest(),'mesh_sha256':hashlib.sha256((EV/'breach-ground.json').read_bytes()).hexdigest(),'triangles':[len(m['vertices'])//3 for m in models],'new_settlements':False,'gameplay_nodes_untouched':True,'art_approved':False,'operations':['measured heightfield contact','curved opposed geological scarps','closed broken inner walls','recessed narrow corruption seam'],'lore':'v0220 altered matter and violet/black fissure signature; no camps, monuments or new enemy rules'},indent=2))
 print('VALORIA_BREACH_GROUND_AUTHOR_COMPLETE')
