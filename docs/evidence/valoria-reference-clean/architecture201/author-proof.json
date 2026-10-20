@@ -1,0 +1,10 @@
+{
+  "author": "Independent director; no Qwen inference or auto approval",
+  "operation": "Measured deck-axis splayed polygon extrusion, battered course profile, recessed bed joints, bevel rings, face normals, metre UV, terrain-buried foot",
+  "triangles": 880,
+  "clearway_min_halfwidth_m": 3.25,
+  "blend_sha256": "14a7c9151db560e7194bc43d9df8bfe939b74fcabf15a3bdc162417bb49dd775",
+  "candidate_sha256": "bc690af1666ed1bd5b9172c73da7936c7de3abb1a1a21ef86036222992186312",
+  "scene_sha256": "51b973fb826d95ede358724a3b270a25a85c5c03a60a3b177a2c09470164afc3",
+  "published": false
+}
