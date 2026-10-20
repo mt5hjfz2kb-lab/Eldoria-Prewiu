@@ -1,5 +1,14 @@
 > **HANDOFF CORREGIDO POR DECISIÓN POSTERIOR DEL PROPIETARIO — 20-10-2026: NO PARCELAS VISIBLES.** La referencia JPEG canónica permanece fijada, pero sus cuatro parcelas visibles DEBEN SEGUIR ELIMINADAS en el juego. La instrucción OWNER179 de más abajo de «reconstruir las cuatro parcelas ocultas con calidad» queda EXPRESAMENTE REVOCADA; no deshacer la supresión de renderizadores `Plot_`/`Parcels.Bindings` ni dibujar sus contornos; conservar el estado e interacciones. Priorizar fidelidad de bastión/puente/río/pradera/ribera sin grandes acantilados, barrios, campamentos o arcadas. El archivo oficial es `references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg` (SHA-256 `86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d`). Ver `docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md`; lo inferior es histórico en caso de contradicción.
 
+## 2026-10-20 — Producción artística: fases 1–3 integradas; fase 4 en ejecución
+
+- Escena canónica: SHA-256 `eee58998a2b58f35a14bb64aa74bd11ace67e10f781afe125df52df759a538d6`, main tras native210 `59ccad1`. Sin publicación.
+- Terreno/ribera native200 run39450899545 y arquitectura native203 run39453446158 conservados; 35 pruebas funcionales cada uno.
+- Bosque/cantera revisados en native209 run39459227255 e integrados native210 run39459840985: 35 checks funcionales + 4 operaciones de captura; ocho imágenes de cámara idéntica verificadas antes de guardar. Fuentes Blender, UV, atlas de agujas, LOD y materiales en world204 y QuarryGeologyV18.
+- Las capturas adicionales de destinos con UI quedaron tapadas por el diálogo final. Corregir el harness cerrando la narrativa mediante sus botones reales en la próxima prueba; NO afirmar revisión visual runtime despejada por estas capturas.
+- Siguiente operación: native211 `final_environment_trial`, Brecha sin campamentos, contacto de edificios ya desbloqueados y agrupación de piedras. Misma titularidad `chatgpt-eldoria-visual-recovery-20261020` y workstream integrado. No hay ramas/agentes/pipelines nuevos.
+- Objetivos globales ciudad 7/10 y mundo 5,5/10 AÚN NO CERTIFICADOS. No WebGL final ni prueba física móvil de estos cambios. Continuar fase4 y evaluación completa, después WebGL/QA pertinente sin publicar.
+
 ## 2026-10-20 — Producción artística integrada: terreno/ribera, primera mejora
 
 - `main` `7bdda6f80309b49b1e7aee59b86baccd6c3db39f`: primera intervención de terreno/ribera guardada en la escena canónica, no publicada. Fuente editable y capturas antes/después: `docs/evidence/valoria-reference-clean/terrain-bank192/`; ver `VERDICT_NATIVE198.md` e `integrated.json`.

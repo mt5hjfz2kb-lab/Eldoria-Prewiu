@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using Eldoria.Presentation;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine.Rendering;
 using Object=UnityEngine.Object;
 namespace Eldoria.ReferenceClean.Editor {
  public static class ValoriaFinalEnvironmentFinishing {
@@ -25,10 +27,51 @@ namespace Eldoria.ReferenceClean.Editor {
    }
    var saw=BoundsOf(city.Parcels.LeftBuilt);var barr=BoundsOf(city.Parcels.RightBuilt);
    File.WriteAllText(Ev+"/survey.json",JsonUtility.ToJson(new Data{scene_sha256=Hash(Scene),parts=parts.ToArray(),sawmill_min=saw.min,sawmill_max=saw.max,barracks_min=barr.min,barracks_max=barr.max},true));
+   CityViews(city,"before-city");
+  }
+  static void CityViews(ValoriaReferenceCleanGameplay city,string prefix){
    var targets=new[]{city.BastionOne,city.BastionTwo,city.Parcels.LeftBuilt,city.Parcels.RightBuilt};var states=targets.Select(t=>t.activeSelf).ToArray();
-   try{Views(city.PlayerCamera,"before-city-initial");city.BastionOne.SetActive(false);city.BastionTwo.SetActive(true);city.Parcels.LeftBuilt.SetActive(true);city.Parcels.RightBuilt.SetActive(true);Views(city.PlayerCamera,"before-city-built");}
+   try{Views(city.PlayerCamera,prefix+"-initial");city.BastionOne.SetActive(false);city.BastionTwo.SetActive(true);city.Parcels.LeftBuilt.SetActive(true);city.Parcels.RightBuilt.SetActive(true);Views(city.PlayerCamera,prefix+"-built");}
    finally{for(int i=0;i<targets.Length;i++)targets[i].SetActive(states[i]);}
   }
+  static Mesh SeatWoodlandRocks(MeshFilter filter,MeshFilter trees,Terrain terrain){
+   var original=filter.sharedMesh;var v=original.vertices;var triangles=original.triangles;var parent=Enumerable.Range(0,v.Length).ToArray();var keys=new Dictionary<Vector3Int,int>();
+   int Root(int i){while(parent[i]!=i){parent[i]=parent[parent[i]];i=parent[i];}return i;}
+   void Join(int a,int b){parent[Root(a)]=Root(b);}
+   for(int i=0;i<v.Length;i++){var key=new Vector3Int(Mathf.RoundToInt(v[i].x*10000),Mathf.RoundToInt(v[i].y*10000),Mathf.RoundToInt(v[i].z*10000));if(keys.TryGetValue(key,out int prior))Join(i,prior);else keys.Add(key,i);}
+   for(int i=0;i<triangles.Length;i+=3){Join(triangles[i],triangles[i+1]);Join(triangles[i],triangles[i+2]);}
+   float Ground(Vector3 p)=>terrain.SampleHeight(p)+terrain.transform.position.y;
+   var anchors=new Dictionary<Vector2Int,Vector3>();foreach(var local in trees.sharedMesh.vertices){var p=trees.transform.TransformPoint(local);float delta=p.y-Ground(p);if(delta<-.15f||delta>.38f)continue;var key=new Vector2Int(Mathf.RoundToInt(p.x/2),Mathf.RoundToInt(p.z/2));if(!anchors.ContainsKey(key))anchors.Add(key,p);}
+   Need(anchors.Count>10,"Tree-ground anchors missing");int moved=0;
+   foreach(var component in Enumerable.Range(0,v.Length).GroupBy(Root)){
+    var indices=component.ToArray();var b=new Bounds(filter.transform.TransformPoint(v[indices[0]]),Vector3.zero);foreach(int ix in indices)b.Encapsulate(filter.transform.TransformPoint(v[ix]));if(b.size.x>3.2f||b.size.z>3.2f)continue;var c=b.center;var anchor=anchors.Values.OrderBy(p=>(new Vector2(p.x-c.x,p.z-c.z)).sqrMagnitude).First();float distance=Vector2.Distance(new Vector2(c.x,c.z),new Vector2(anchor.x,anchor.z));
+    if(distance<2||distance>18)continue;var dest=Vector3.Lerp(c,anchor,.80f);var shift=dest-c;shift.y=Ground(dest)-Ground(c)-Mathf.Min(.12f,b.size.y*.18f);foreach(int ix in indices)v[ix]=filter.transform.InverseTransformPoint(filter.transform.TransformPoint(v[ix])+shift);moved++;
+   }
+   Need(moved>5,"Woodland stone grouping produced no visible intervention");var next=Object.Instantiate(original);next.name="Woodland rocks / rigid natural tree-foot clusters";next.vertices=v;next.RecalculateBounds();File.WriteAllText(Ev+"/rock-grouping.json","{\"moved_components\":"+moved+",\"topology_unchanged\":true,\"collision_unchanged\":true,\"plot_footprints_created\":false}");return next;
+  }
+  static void Need(bool test,string reason){if(!test)throw new InvalidOperationException(reason);}
+  static Mesh Make(ValoriaWorldArtFinishing.TreeMesh data){var mesh=new Mesh{name=data.name};mesh.vertices=data.vertices;mesh.normals=data.normals;mesh.uv=data.uv;mesh.subMeshCount=data.submeshes.Length;for(int i=0;i<data.submeshes.Length;i++)mesh.SetTriangles(data.submeshes[i].indices,i);mesh.RecalculateBounds();return mesh;}
+  static void ThreatViews(ValoriaIntegratedWorld host,string prefix){
+   var camera=host.WorldCamera;var pos=camera.transform.position;float zoom=camera.orthographicSize;bool active=host.WorldRoot.activeSelf;host.WorldRoot.SetActive(true);
+   try{foreach(string id in new[]{"corrupt-scout","engendro-valoria"}){var p=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).Single(n=>n.Id==id).transform.position;p.y=2;camera.transform.position=p-camera.transform.forward*110;foreach(float size in new[]{32f,14f}){camera.orthographicSize=size;ValoriaReferenceCleanBuilder.Capture(camera,Ev+"/"+prefix+"-"+id+"-"+size.ToString("0")+".png",1448,1086);}camera.orthographicSize=14;ValoriaReferenceCleanBuilder.Capture(camera,Ev+"/"+prefix+"-"+id+"-portrait.png",900,1600);}}
+   finally{camera.transform.position=pos;camera.orthographicSize=zoom;host.WorldRoot.SetActive(active);}
+  }
+  public static void Trial(){try{
+   EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);Directory.CreateDirectory(Ev);var source=JsonUtility.FromJson<Data>(File.ReadAllText(Ev+"/survey.json"));Need(source.scene_sha256==Hash(Scene),"Finishing source scene changed");var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();var temporary=new List<Object>();var changedMeshes=new Dictionary<MeshFilter,Mesh>();var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();
+   try{
+    ThreatViews(host,"before");CityViews(city,"before-city");Need(!host.WorldRoot.GetComponentsInChildren<Renderer>(true).Any(r=>r.gameObject.activeInHierarchy&&r.enabled&&(r.name.StartsWith("Zone1 hostile camp")||r.name.StartsWith("Enemy camp"))),"Unauthorised camp unexpectedly active");
+    var data=JsonUtility.FromJson<ValoriaWorldArtFinishing.Family>(File.ReadAllText(Ev+"/breach-ground.json"));Need(data.variants.Length==4,"Two existing threats and two functional contact aprons required");
+    var materials=data.colors.Select((c,i)=>{var m=new Material(Shader.Find("Universal Render Pipeline/Lit")){name="Breach altered matter "+i};m.SetColor("_BaseColor",c);m.SetFloat("_Smoothness",.08f);m.SetFloat("_Metallic",0);m.SetFloat("_Cull",0);if(i==3||i==4){m.EnableKeyword("_EMISSION");m.SetColor("_EmissionColor",c*.65f);}if(i>=5){var t=Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Single();m.SetTexture("_BaseMap",t.terrainData.terrainLayers[2].diffuseTexture);m.SetColor("_BaseColor",Color.white);}return m;}).ToArray();temporary.AddRange(materials);
+    foreach(var model in data.variants){bool functional=model.name=="sawmill"||model.name=="barracks";Need(functional||model.name=="corrupt-scout"||model.name=="engendro-valoria","Unknown destination");if(!functional)Need(!host.WorldRoot.GetComponentsInChildren<Transform>(true).Any(t=>t.name=="Zone1 authored "+model.name),"Existing threat art must be retained/reviewed");
+     var go=new GameObject(functional?model.name+" / irregular workground contact":"Zone1 authored "+model.name);var parent=functional?(model.name=="sawmill"?city.Parcels.LeftBuilt.transform:city.Parcels.RightBuilt.transform):host.WorldRoot.transform;go.transform.SetParent(parent,true);temporary.Add(go);var mesh=Make(model);
+     if(functional){var t=Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Single();var vv=mesh.vertices;float baseline=model.name=="sawmill"?source.sawmill_min.y:source.barracks_min.y;for(int i=0;i<vv.Length;i++){float offset=vv[i].y-baseline;vv[i].y=t.SampleHeight(vv[i])+t.transform.position.y+offset;}mesh.vertices=vv;mesh.RecalculateNormals();mesh.RecalculateBounds();}
+     temporary.Add(mesh);go.AddComponent<MeshFilter>().sharedMesh=mesh;var r=go.AddComponent<MeshRenderer>();r.sharedMaterials=materials;r.shadowCastingMode=functional?ShadowCastingMode.Off:ShadowCastingMode.On;
+    }
+    var natural=Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None).Where(f=>f.gameObject.activeInHierarchy&&!f.transform.IsChildOf(host.WorldRoot.transform)).ToArray();var rock=natural.Single(f=>f.name=="Woodland_ground_rocks");var tree=natural.Single(f=>f.name=="Fir_tree_group");var terrain=Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Single();changedMeshes.Add(rock,rock.sharedMesh);var grouped=SeatWoodlandRocks(rock,tree,terrain);temporary.Add(grouped);rock.sharedMesh=grouped;
+    ThreatViews(host,"after");CityViews(city,"after-city");Need(source.scene_sha256==Hash(Scene),"Trial unexpectedly saved");File.WriteAllText(Ev+"/unity-review.json","{\"same_camera_light\":true,\"scene_saved\":false,\"art_approved\":false,\"hotspots_preserved\":true,\"no_camps\":true}");
+   }finally{foreach(var kv in changedMeshes)kv.Key.sharedMesh=kv.Value;foreach(var o in temporary)if(o)Object.DestroyImmediate(o);}
+   Debug.Log("VALORIA_REFERENCE_CLEAN_FINAL_ENVIRONMENT_TRIAL_COMPLETE");EditorApplication.Exit(0);
+  }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
   static void Views(Camera camera,string prefix){ValoriaReferenceCleanBuilder.Capture(camera,Ev+"/"+prefix+"-landscape.png",1448,1086);ValoriaReferenceCleanBuilder.Capture(camera,Ev+"/"+prefix+"-portrait.png",900,1600);}
  }
 }

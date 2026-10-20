@@ -1,1 +1,8 @@
-{"visual_scope_accepted":true,"scene_sha256":"eee58998a2b58f35a14bb64aa74bd11ace67e10f781afe125df52df759a538d6","gameplay_gate":"PENDING_CURRENT_PROBE","published":false}
+{
+  "visual_scope_accepted": true,
+  "scene_sha256": "eee58998a2b58f35a14bb64aa74bd11ace67e10f781afe125df52df759a538d6",
+  "gameplay_gate": "PASS_35_FUNCTIONAL_CHECKS_PLUS_4_CAPTURE_OPERATIONS",
+  "published": false,
+  "native_run": 39459840985,
+  "runtime_capture_review": "Four extra destination operations completed, but end-of-chapter narrative obscures art. Correct capture harness by completing actual dialogue before next final gameplay probe; do not treat these PNGs as clear destination review. Exact saved source matched eight approved editor camera captures before save."
+}

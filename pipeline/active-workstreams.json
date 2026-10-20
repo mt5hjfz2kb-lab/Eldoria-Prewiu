@@ -56,7 +56,7 @@
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "OWNER_DIRECTED_GRAPHICS_RECOVERY",
-      "next": "Phase1 terrain/bank integrated native200 run39450899545; 35 gameplay checks PASS. Continue phase2 measured bridge/gate/Bastion I-II finishing, then forest/quarry, Breach and final finish. No publication or whole-scene quality certification.",
+      "next": "Fases1-3 integradas: native200,203,210; 35 functional checks PASS each. Ejecutar/revisar native211 fase4 Breach + functional building contact + woodland rock grouping. Final runtime destination captures must dismiss closing narrative through real UI. Targets7/5.5 not yet certified; final WebGL pending; no publication.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,

@@ -316,6 +316,8 @@ namespace Eldoria.ReferenceClean.Editor {
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");
    // Render the actual authored destinations through the same Royal UI and
    // production focus path that the player uses, after the progression probe.
+   for(int turn=0;turn<16&&h.Hud.NarrativeOpen;turn++){Click(h.Hud.Modal.Extra);yield return new WaitForSecondsRealtime(.35f);}
+   Check(()=>Need(!h.Hud.NarrativeOpen,"Closing narrative still obscures destination review"),"narrative closed through actual UI before art captures");
    foreach(string destination in new[]{"forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"}){
     h.SetWorld(true);h.Select(destination);yield return null;yield return new WaitForSecondsRealtime(.35f);
     Check(()=>{Capture(h,"integration-art-"+destination+"-landscape.png",1600,900);Capture(h,"integration-art-"+destination+"-portrait.png",900,1600);},"native authored destination capture "+destination);
