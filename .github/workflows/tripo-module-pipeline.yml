@@ -16,6 +16,58 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  tripo-source-qa:
+    if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'push' && contains(github.event.head_commit.message, '[tripo-review-only]')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 24
+    steps:
+      - name: Inspect exact review-only request without checking out Eldoria
+        id: pre
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $url = 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/pipeline/tripo-module-request.json'
+          $req = (Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 30).Content | ConvertFrom-Json
+          if ([bool]$req.enabled -or [bool]$req.credit_authorization.approved) { throw 'Review request must be zero-spend.' }
+          $v = $req.review
+          if ([string]$v.asset_name -notin @('Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1')) { throw 'Bad QA asset.' }
+          if ([string]$v.expected_sha256 -notmatch '^[0-9a-fA-F]{64}$') { throw 'Expected SHA256 missing.' }
+          if ([string]$v.artifact_name -notmatch '^eldoria-tripo-module-eldoria-') { throw 'Incorrect artifact type.' }
+          if ([long]$v.source_run_id -lt 1) { throw 'Missing existing source run.' }
+          ('asset='+[string]$v.asset_name) >> $env:GITHUB_OUTPUT
+          ('sha='+[string]$v.expected_sha256) >> $env:GITHUB_OUTPUT
+          ('archive='+[string]$v.artifact_name) >> $env:GITHUB_OUTPUT
+          ('run='+[string]$v.source_run_id) >> $env:GITHUB_OUTPUT
+          Write-Host ('EXISTING_SOURCE_REVIEW_PREFLIGHT=PASS asset='+[string]$v.asset_name)
+      - name: Retrieve only already generated optimized model
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.pre.outputs.archive }}
+          run-id: ${{ steps.pre.outputs.run }}
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/tripo-review-source
+      - name: Fetch exact-commit QA scripts
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $dest = Join-Path $env:RUNNER_TEMP 'tripo-review-script'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          $base = 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tripo-module-qa/'
+          Invoke-WebRequest -Uri ($base+'run-isolated.ps1') -OutFile (Join-Path $dest 'run-isolated.ps1') -TimeoutSec 30 -UseBasicParsing
+          Invoke-WebRequest -Uri ($base+'TripoAssetMinimalReview.cs') -OutFile (Join-Path $dest 'TripoAssetMinimalReview.cs') -TimeoutSec 30 -UseBasicParsing
+      - name: Validate existing model in minimal Unity and capture four genuine renders
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $dest = Join-Path $env:RUNNER_TEMP 'tripo-review-script'
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $dest 'run-isolated.ps1') -InputRoot (Join-Path $env:RUNNER_TEMP 'tripo-review-source') -AssetName '${{ steps.pre.outputs.asset }}' -ExpectedSha256 '${{ steps.pre.outputs.sha }}' -SourceRun '${{ steps.pre.outputs.run }}' -UnityEditor $env:UNITY_EDITOR_PATH -EditorSource (Join-Path $dest 'TripoAssetMinimalReview.cs')
+          if ($LASTEXITCODE -ne 0) { throw ('Isolated source QA exit='+$LASTEXITCODE) }
+      - name: Preserve measured images and report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tripo-source-qa-${{ steps.pre.outputs.asset }}-${{ github.sha }}
+          path: ${{ runner.temp }}/eldoria-tripo-qa-${{ steps.pre.outputs.asset }}/Output/*
+          if-no-files-found: warn
+
   rock-boar-archive:
     if: github.event_name == 'push' && contains(github.event.head_commit.message, '[boar-archive-only]')
     runs-on: ubuntu-latest
@@ -149,7 +201,7 @@ jobs:
           path: ${{ runner.temp }}/eldoria-boar-unity-isolated-20261020/Output/*
           if-no-files-found: warn
   module-gate:
-    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]')
+    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]') && !contains(github.event.head_commit.message, '[tripo-review-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
 
