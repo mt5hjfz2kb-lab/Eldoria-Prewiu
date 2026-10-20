@@ -1,0 +1,42 @@
+{
+  "source_survey_sha256": "29a28de677be5060166abcfe3e0e1734f8dde137a843de971b294c392e75a55b",
+  "candidate_sha256": "248fddf822484641d61f681d6db94041e119b321d367d4e580ad14bb8ae5e37a",
+  "blend_sha256": "c33187ec65202319554941063119ef2a3366f01c078cbe2b825e30138ae21ce4",
+  "glb_sha256": {
+    "Bastion_II_RoofJunction.glb": "a1748d5a10eac1a22e8da112a161c706961ce37f5311ad228957f31799a4d2bf",
+    "Bastion_I_RoofJunction.glb": "fea6641edde0f3ddd62247e29b8d70f56fc4a3dc548275bea7ed690e243129f1"
+  },
+  "operations": [
+    "Measured affine hall-roof width fit between existing tower inner walls",
+    "Original slate slopes and closed tile geometry preserved",
+    "Existing gables fitted with roof; closed stone side seats on existing hall walls",
+    "Retained II hip caps",
+    "Closed dressed tower terrace",
+    "Original UV and protected geometry retention"
+  ],
+  "parts": [
+    {
+      "name": "Bastion_I",
+      "protected_source_vertices": 262896,
+      "protected_source_sha256": "7132d6f3195e1d4aac93bcf1ad6d80441fdd85d5d381187657de682db23967e1",
+      "source_vertices": 323834,
+      "candidate_vertices": 345150,
+      "affected_source_triangles": 27370,
+      "removed_intersection_triangles": 0,
+      "source_triangles": 142782,
+      "candidate_triangles": 142830
+    },
+    {
+      "name": "Bastion_II",
+      "protected_source_vertices": 305942,
+      "protected_source_sha256": "23dec5d41fa87d234493fd8cafeb8e43073efbc69410bafb72a13649d73a9e06",
+      "source_vertices": 366884,
+      "candidate_vertices": 388196,
+      "affected_source_triangles": 27370,
+      "removed_intersection_triangles": 0,
+      "source_triangles": 162306,
+      "candidate_triangles": 162354
+    }
+  ],
+  "art_approved": false
+}
