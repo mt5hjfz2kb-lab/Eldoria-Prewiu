@@ -24,6 +24,7 @@ jobs:
     timeout-minutes: 15
     outputs:
       should_publish: ${{ steps.promotion.outputs.should_publish }}
+      should_configure_pc: ${{ steps.promotion.outputs.should_configure_pc }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,6 +52,15 @@ jobs:
                   p.target !== cfg.target || p.artifact_sha256 !== cfg.candidate.artifact_sha256 ||
                   p.revision !== cfg.candidate.revision) throw Error('Explicit promotion does not match verified candidate/destination');
             }
+            let configurePC=false;
+            if (context.eventName === 'push' && cfg.pc_request?.id) {
+              const old=await github.rest.repos.getContent({...context.repo,path:'pipeline/playtest-delivery.json',ref:context.payload.before});
+              const previous=JSON.parse(Buffer.from(old.data.content,'base64').toString('utf8'));
+              configurePC=JSON.stringify(previous.pc_request)!==JSON.stringify(cfg.pc_request);
+              if(configurePC && (cfg.pc_request.artifact_sha256!==cfg.candidate.artifact_sha256 || cfg.pc_request.revision!==cfg.candidate.revision))
+                throw Error('PC request does not match QA-approved candidate');
+            }
+            core.setOutput('should_configure_pc',String(configurePC));
             core.setOutput('should_publish',String(requested));
       - name: Verify upstream QA and exact artifact, then download
         uses: actions/github-script@v7
@@ -151,3 +161,39 @@ jobs:
           unzip -q butler.zip -d butler-bin
           chmod +x butler-bin/butler
           butler-bin/butler status --show-all-files chrismad/eldoria-pruebas
+
+  configure_pc:
+    if: needs.prepare.outputs.should_configure_pc == 'true'
+    needs: prepare
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 8
+    steps:
+      - name: Recover existing GitHub Desktop Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
+              Sort-Object Name -Descending | ForEach-Object {
+                Join-Path $_.FullName 'resources/app/git/cmd/git.exe'
+              } | Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Existing PC Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: eldoria-delivery-setup
+          sparse-checkout: tools/delivery
+          sparse-checkout-cone-mode: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: eldoria-external-playtest-${{ github.run_id }}
+          path: eldoria-delivery-setup/package
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install signed Tailscale and stage verified game without opening network access
+        shell: powershell
+        working-directory: eldoria-delivery-setup
+        run: |
+          & tools/delivery/setup-pc.ps1 -Package package
+          if($LASTEXITCODE){throw 'PC setup failed'}
