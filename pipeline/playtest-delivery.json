@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ROYAL_GOLD_V2_NATIVE191_ACTIVE_RESTRICTED_ITCH_REMOTE_GAMEPLAY_DEVICE_PENDING",
+  "state": "NATIVE242_PUBLICATION_PREPARING",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
   "candidate": {
-    "revision": "native191",
-    "source_sha": "2642d3e10d7924fa61c537a93c19e71fd13d1eee",
-    "native_run": 39438288326,
-    "qa_run": 39438406183,
-    "qa_source_sha": "3fb5c06b23288017282bec59d1a1c7257df9c0c4",
-    "artifact_id": 12273740274,
-    "artifact_name": "valoria-verified-private-site-windows-39438406183",
-    "artifact_sha256": "5e2d674a77e836133fa0a13a2279de90732f175b2116c0dd46d38259efbbab05"
+    "revision": "native242",
+    "source_sha": "f8e294dda9a829316eb0dec764f8e2b1ce7d20d0",
+    "native_run": 39506996242,
+    "qa_run": 39509184788,
+    "qa_source_sha": "8a1a0b482ea1a9ec8e683319e9d7bc92b2128d4a",
+    "artifact_id": 12304528775,
+    "artifact_name": "valoria-verified-private-site-windows-39509184788",
+    "artifact_sha256": "9eab4396a9aa723208ee0fddc624e27791ee3870f30f99942029158a7f05dede"
   },
   "published": {
     "provider": "itch.io",
@@ -34,7 +34,7 @@
     "physical_mobile_pass": false,
     "physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Candidate is not published. Never change published until upload and hosted checks pass. Preserve old Site until replacement works; no Unity rebuild. Secrets only in GitHub environment eldoria-playtest.",
+  "instructions": "Promote native242 only after exact upstream QA, original artifact hashes, decoded streaming transport checks. Preserve published native191 record until remote activation confirmed. No Unity rebuild, no Android changes, no public access change.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -45,10 +45,11 @@
   },
   "privacy_confirmation_basis": "Owner setup screenshots: Restricted selected, then project saved successfully; remote anonymous access verification pending.",
   "promotion_request": {
-    "id": "itch-royal-gold-v2-native191-gpu-qa-20261020",
+    "id": "itch-native242-four-art-phases-20261021",
     "target": "chrismad/eldoria-pruebas",
-    "revision": "native191",
-    "artifact_sha256": "5e2d674a77e836133fa0a13a2279de90732f175b2116c0dd46d38259efbbab05"
+    "revision": "native242",
+    "artifact_sha256": "9eab4396a9aa723208ee0fddc624e27791ee3870f30f99942029158a7f05dede",
+    "authorization": "Owner explicitly asks consolidated and published, and instructs to continue if unfinished in current session. Publish same tested native242 via existing restricted channel."
   },
   "last_attempt": {
     "run_id": 39440869260,

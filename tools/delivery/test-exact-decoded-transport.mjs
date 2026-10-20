@@ -15,7 +15,7 @@ const server=http.createServer((req,res)=>{
  const file=root+name;
  if(!fs.existsSync(file)){res.writeHead(404);res.end();return;}
  const bytes=fs.statSync(file).size;
- res.writeHead(200,{'Content-Encoding':'gzip','Content-Length':bytes});
+ res.writeHead(200,req.url.includes('raw=1')?{'Content-Length':bytes}:{'Content-Encoding':'gzip','Content-Length':bytes});
  fs.createReadStream(file).pipe(res);
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -25,9 +25,9 @@ try {
  class TrackedArray extends Uint8Array {
   constructor(...args){super(...args);if(typeof args[0]==='number')allocations.push(args[0]);}
  }
- const scope={window:{fetch},location:{href:base},URL,Headers,Response,Map,console,Uint8Array:TrackedArray,b:{}};
+ const scope={window:{fetch},location:{href:base},URL,Headers,Response,ReadableStream,DecompressionStream,Map,console,Uint8Array:TrackedArray,b:{}};
  vm.createContext(scope);vm.runInContext(reader,scope);vm.runInContext(helper,scope);
- scope.installExactDecodedTransport(manifest.decoded_sizes);
+ scope.installExactDecodedTransport(manifest.decoded_sizes,manifest.decoded_parts);
  for(const key of ['framework','code','data']){
   const url=new URL(manifest[key],base).href;
   allocations.length=0;
@@ -38,14 +38,29 @@ try {
   const result=await scope.b.readBodyWithProgress(response,()=>{},false);
   assert.deepEqual(allocations,[manifest.decoded_sizes[manifest[key]]],'Unity should allocate exactly once');
   const expectedHash=crypto.createHash('sha256');
-  await new Promise((resolve,reject)=>fs.createReadStream(root+'/'+manifest[key].split('?')[0]).pipe(zlib.createGunzip()).on('data',b=>expectedHash.update(b)).on('end',resolve).on('error',reject));
+  const parts=manifest.decoded_parts?.[manifest[key]];
+  for(const file of parts?parts.map(p=>p.url):[manifest[key].split('?')[0]])
+   await new Promise((resolve,reject)=>fs.createReadStream(root+'/'+file).pipe(zlib.createGunzip()).on('data',b=>expectedHash.update(b)).on('end',resolve).on('error',reject));
   assert.equal(crypto.createHash('sha256').update(result.parsedBody).digest('hex'),expectedHash.digest('hex'));
   console.log(key+': exact decoded bytes, single allocation '+allocations[0]+' PASS');
  }
  const missing=await scope.window.fetch(base+'missing');
  assert.equal(missing.status,404);
  console.log('Error status passthrough PASS');
+ const fw=manifest.framework, fwsize=manifest.decoded_sizes[fw];
+ const cases={
+  'raw-stream':[{url:fw.split('?')[0]+'?raw=1',decoded_bytes:fwsize}],
+  'bad-size':[{url:fw,decoded_bytes:fwsize-1}],
+  'missing-part':[{url:'missing',decoded_bytes:fwsize}]
+ };
+ scope.installExactDecodedTransport(Object.fromEntries(Object.keys(cases).map(k=>[k,fwsize])),cases);
+ const raw=await (await scope.window.fetch(base+'raw-stream')).arrayBuffer();
+ assert.equal(raw.byteLength,fwsize);
+ for(const key of ['bad-size','missing-part'])
+  await assert.rejects(async()=>await (await scope.window.fetch(base+key)).arrayBuffer());
+ console.log('Complete gzip without CDN header PASS; truncated/failed part rejected PASS');
  const play=fs.readFileSync(root+'/play.js','utf8');
  assert(play.includes('cacheControl:()=>"no-store"'));
  console.log('Unity download-cache clone disabled; save code untouched PASS');
 } finally {server.close();}
+

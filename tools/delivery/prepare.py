@@ -77,6 +77,8 @@ def prepare(archive, destination, config):
         # Record exact decoded sizes; no buffered decompression in the browser adapter.
         import gzip
         manifest['decoded_sizes'] = {}
+        manifest['decoded_parts'] = {}
+        reencoded = []
         for key in ('data', 'framework', 'code'):
             name = manifest[key]
             asset = dist / name.split('?', 1)[0]
@@ -88,7 +90,26 @@ def prepare(archive, destination, config):
                     while block := stream.read(1024 * 1024):
                         total += len(block)
                 manifest['decoded_sizes'][name] = total
-        manifest['delivery_adapter'] = 'itch-low-memory-v2'
+                if asset.stat().st_size > 200_000_000:
+                    # Separate COMPLETE gzip streams; never split a gzip header/body.
+                    # The browser concatenates decoded streams, preserving Unity's
+                    # exact input bytes with one final allocation in its own loader.
+                    parts, source_hash, decoded_bytes = [], hashlib.sha256(), 0
+                    with gzip.open(asset, 'rb') as stream:
+                        while block := stream.read(64 * 1024 * 1024):
+                            source_hash.update(block)
+                            decoded_bytes += len(block)
+                            rel = 'payload-decoded/' + key + '-' + str(len(parts)) + '.gz'
+                            part = dist / rel
+                            part.parent.mkdir(parents=True, exist_ok=True)
+                            part.write_bytes(gzip.compress(block, compresslevel=6, mtime=0))
+                            assert gzip.decompress(part.read_bytes()) == block
+                            parts.append({'url':rel, 'decoded_bytes':len(block), 'decoded_sha256':hashlib.sha256(block).hexdigest()})
+                    assert decoded_bytes == total
+                    manifest['decoded_parts'][name] = parts
+                    reencoded.append({'file':name, 'decoded_bytes':total, 'decoded_sha256':source_hash.hexdigest(), 'parts':parts})
+                    asset.unlink()
+        manifest['delivery_adapter'] = 'itch-decoded-stream-v3' if reencoded else 'itch-low-memory-v2'
         (dist / 'build-manifest.json').write_text(json.dumps(manifest, indent=2)+'\n')
         # Show the actual startup error to make physical-device failures diagnosable.
         play = dist / 'play.js'
@@ -101,7 +122,7 @@ def prepare(archive, destination, config):
         needle = 'installChunkTransport(build.chunks);'
         if adapted.count(needle) != 1:
             raise ValueError('Unexpected transport initialization')
-        adapted = adapted.replace(needle, 'installExactDecodedTransport(build.decoded_sizes);')
+        adapted = adapted.replace(needle, 'installExactDecodedTransport(build.decoded_sizes,build.decoded_parts);')
         needle = 'streamingAssetsUrl:"StreamingAssets",'
         if adapted.count(needle) != 1:
             raise ValueError('Unexpected Unity configuration')
@@ -128,7 +149,7 @@ def prepare(archive, destination, config):
             for f in identities:
                 data = z.read(f['file'])
                 assert len(data) == f['bytes'] and hashlib.sha256(data).hexdigest() == f['sha256']
-        report = {'status':'PACKAGE_READY_NOT_PUBLISHED', 'candidate':expected, 'original_unity_integrity':check, 'playable_files_unchanged':False, 'unity_bytes_unchanged':True, 'transport_adapter':'itch-low-memory-v2', 'reconstructed_files':transport, 'wrapper_changes':['build-manifest.json','play.js'], 'files':identities, 'zip_sha256':hashlib.file_digest(open(output,'rb'),'sha256').hexdigest(), 'hosted_verified':False}
+        report = {'status':'PACKAGE_READY_NOT_PUBLISHED', 'candidate':expected, 'original_unity_integrity':check, 'playable_files_unchanged':False, 'unity_bytes_unchanged':not reencoded, 'unity_decoded_bytes_unchanged':True, 'reencoded_transport':reencoded, 'transport_adapter':manifest['delivery_adapter'], 'reconstructed_files':transport, 'wrapper_changes':['build-manifest.json','play.js'], 'files':identities, 'zip_sha256':hashlib.file_digest(open(output,'rb'),'sha256').hexdigest(), 'hosted_verified':False}
         (destination/'identity.json').write_text(json.dumps(report,indent=2)+'\n')
         shutil.copytree(dist, destination/'dist')
         print(json.dumps({'status':report['status'], 'files':len(files), 'zip_sha256':report['zip_sha256']}))
@@ -136,3 +157,4 @@ def prepare(archive, destination, config):
 
 if __name__ == '__main__':
     prepare(sys.argv[1], sys.argv[2], json.loads((ROOT/'pipeline/playtest-delivery.json').read_text()))
+
