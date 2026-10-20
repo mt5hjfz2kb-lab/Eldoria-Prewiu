@@ -32,13 +32,14 @@ jobs:
             updates/android
             pipeline/android-updater-build-request.json
             pipeline/active-workstreams.json
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/EldoriaAndroidAutoUpdater.cs
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - name: Verify channel policy and negative cases
         run: |
-          node --test tools/android-updates/check-channel.test.mjs
+          node --test tools/android-updates/*.test.mjs
           node tools/android-updates/check-channel.mjs updates/android/family.json
       - name: Protect sole integrated main workstream
         id: gate

@@ -1,9 +1,9 @@
 {
   "enabled": true,
-  "versionCode": 7,
-  "versionName": "1.7",
+  "versionCode": 8,
+  "versionName": "1.8",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Retry first same-identity integrated Android updater code7 with Unity 6000.3 built-in Android JNI (com.unity.modules.androidjni 1.0.0), manifest+lock pinned; prior run 39175540386 stopped at CS1069 before APK generation. Keep original signature, current source, and no automatic release without verified proof."
+  "note": "Owner requests automatic Wi-Fi download on opening; code8 first bootstrap uses integrated main, updater release remains disabled until signed APK QA and physical installation verification. No experimental branches."
 }

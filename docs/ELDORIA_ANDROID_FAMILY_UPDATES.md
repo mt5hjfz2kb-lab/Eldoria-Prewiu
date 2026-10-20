@@ -42,3 +42,18 @@ No se introducen claves privadas en el repositorio. GitHub es público y las APK
 ## Límites
 
 PASS de CI no equivale a instalación física real, rendimiento Android ni calidad visual. El runtime no borra partidas ni recursos fuera de su carpeta de APK. No reutilizar las URLs ni las escenas del canal histórico.
+
+## 20 de octubre — descarga automática de APK aprobadas (versión de prueba)
+
+La aplicación Android con el nuevo actualizador comprueba al abrir la versión publicada y validada en el canal familiar de main. Si es superior a la instalada:
+
+- Con Wi-Fi/red sin coste medido, descarga automáticamente en segundo plano mientras el juego continúa; se utiliza DownloadManager del sistema y el APK no se carga entero en memoria.
+- Sin Wi-Fi, espera sin gastar datos móviles automáticamente. La interfaz permite pulsar «Usar datos móviles» de manera explícita.
+- Conserva el identificador de descarga en un pequeño archivo download-id en su propia carpeta de APK. Al cerrar/reabrir, reconecta con la descarga ya solicitada y evita duplicarla.
+- Cuando termina, verifica tamaño y SHA-256 fuera del hilo gráfico. Después muestra «Instalar / Ahora no». Nunca abre el instalador sin pulsar el botón. Android comprueba además el certificado y exige confirmación.
+- Si falla, mantiene la aplicación y el progreso intactos. No borra partidas ni datos generales; solo elimina su APK local y la descarga fallida.
+- El canal no se habilita por cambios de GitHub; solo después de compilar una APK firmada y verificar Release y bytes públicos. Se excluyen las ramas experimentales.
+
+La APK anterior no puede adquirir estas capacidades sin una instalación inicial de la nueva APK. La compilación 1.7 (code7) del 19/10 es histórica y no contiene descarga automática: la primera candidata debe usar versionCode 8 / 1.8 o superior. Las mejoras de Unity pendientes no llegan a Android hasta que su APK sea compilada, validada y publicada.
+
+Todavía se requieren: prueba de compilación Unity ARM64, certificado apksigner, permiso Android, instalación física sobre la anterior sin perder guardados y después prueba 1.8→1.9 con Wi-Fi, datos móviles y sin conexión. Ningún CI sustituye PHONE PASS.

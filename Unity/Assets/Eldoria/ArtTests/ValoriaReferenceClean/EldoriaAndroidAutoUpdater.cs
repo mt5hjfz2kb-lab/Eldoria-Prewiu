@@ -53,9 +53,9 @@ namespace Eldoria.ReferenceClean {
     public sealed class EldoriaAndroidAutoUpdater : MonoBehaviour {
         EldoriaAndroidRelease candidate;
         string information = "";
-        bool downloading, downloaded, awaitingPermission, dismissed, checking;
+        bool downloading, downloaded, awaitingPermission, dismissed, checking, waitingForWifi, downloadFailed;
         long downloadId = -1;
-        string apkPath;
+        string apkPath, downloadTicketPath;
         DateTime lastCheck = DateTime.MinValue;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -73,6 +73,13 @@ namespace Eldoria.ReferenceClean {
 #if UNITY_ANDROID && !UNITY_EDITOR
             yield return new WaitForSecondsRealtime(3f);
             yield return Check();
+            // An in-game Wi-Fi connection may appear after startup; resume without user action.
+            while (true) {
+                yield return new WaitForSecondsRealtime(30f);
+                if (waitingForWifi && candidate != null && !downloading && !downloaded &&
+                    HasUnmeteredNetwork())
+                    StartCoroutine(DownloadUpdate(true));
+            }
 #else
             yield break;
 #endif
@@ -80,10 +87,12 @@ namespace Eldoria.ReferenceClean {
 
         void OnApplicationFocus(bool focused) {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if (focused && !checking && !downloading && !downloaded &&
-                (DateTime.UtcNow - lastCheck).TotalMinutes >= 30) {
+            if (!focused) return;
+            if (waitingForWifi && !downloading && !downloaded && HasUnmeteredNetwork())
+                StartCoroutine(DownloadUpdate(true));
+            if (!checking && !downloading && !downloaded &&
+                (DateTime.UtcNow - lastCheck).TotalMinutes >= 30)
                 StartCoroutine(Check());
-            }
 #endif
         }
 
@@ -106,6 +115,9 @@ namespace Eldoria.ReferenceClean {
                                 dismissed = false;
                                 downloaded = false;
                                 awaitingPermission = false;
+                                downloadId = -1;
+                                waitingForWifi = false;
+                                downloadFailed = false;
                                 information = next.message ?? "";
                             }
                         }
@@ -115,6 +127,11 @@ namespace Eldoria.ReferenceClean {
                 }
             }
             checking = false;
+#if UNITY_ANDROID && !UNITY_EDITOR
+            // Download the approved APK quietly on unmetered Wi-Fi; never launch installation here.
+            if (candidate != null && !downloaded && !downloading)
+                StartCoroutine(DownloadUpdate(true));
+#endif
         }
 
         int InstalledVersionCode() {
@@ -130,9 +147,58 @@ namespace Eldoria.ReferenceClean {
 #endif
         }
 
+        // Respect mobile data plans. A user can explicitly override this gate using the button.
+        bool HasUnmeteredNetwork() {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            try {
+                if (UnityEngine.Application.internetReachability == NetworkReachability.NotReachable) return false;
+                using (var unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+                using (var activity = unity.GetStatic<AndroidJavaObject>("currentActivity"))
+                using (var connectivity = activity.Call<AndroidJavaObject>("getSystemService", "connectivity"))
+                    return connectivity != null && !connectivity.Call<bool>("isActiveNetworkMetered");
+            } catch (Exception error) {
+                Debug.LogWarning("ELDORIA_UPDATE_NETWORK: " + error.Message);
+                return false;
+            }
+#else
+            return false;
+#endif
+        }
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+        // Reattach an Android download after an app restart. Status 1/2/4 is pending, 8 completed.
+        int DownloadStatus(AndroidJavaObject manager, long id, out long received) {
+            received = 0;
+            if (id < 0) return 0;
+            using (var query = new AndroidJavaObject("android.app.DownloadManager$Query")) {
+                using (var filter = query.Call<AndroidJavaObject>("setFilterById", new long[] { id })) { }
+                using (var cursor = manager.Call<AndroidJavaObject>("query", query)) {
+                    if (cursor == null || !cursor.Call<bool>("moveToFirst")) return 0;
+                    int status = cursor.Call<int>("getInt", cursor.Call<int>("getColumnIndexOrThrow", "status"));
+                    received = cursor.Call<long>("getLong", cursor.Call<int>("getColumnIndexOrThrow", "bytes_so_far"));
+                    return status;
+                }
+            }
+        }
+
+        void DropBadDownload(AndroidJavaObject manager) {
+            if (downloadId >= 0) {
+                try { manager.Call<int>("remove", new long[] { downloadId }); }
+                catch (Exception e) { Debug.LogWarning("ELDORIA_UPDATE_REMOVE: " + e.Message); }
+            }
+            try {
+                if (!string.IsNullOrEmpty(downloadTicketPath) && File.Exists(downloadTicketPath)) File.Delete(downloadTicketPath);
+                if (!string.IsNullOrEmpty(apkPath) && File.Exists(apkPath)) File.Delete(apkPath);
+            } catch (Exception e) { Debug.LogWarning("ELDORIA_UPDATE_CLEANUP: " + e.Message); }
+            downloadId = -1;
+        }
+
+#endif
         void OnGUI() {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if (candidate == null || dismissed) return;
+            // Keep normal gameplay unobstructed while an APK downloads in Android's background service.
+            if (candidate == null || dismissed || downloading ||
+                (!downloaded && !waitingForWifi && !downloadFailed)) return;
             var old = GUI.matrix;
             float scale = Mathf.Max(0.75f, Mathf.Min(Screen.width / 720f, Screen.height / 1280f));
             GUI.matrix = Matrix4x4.Scale(new Vector3(scale, scale, 1));
@@ -143,12 +209,20 @@ namespace Eldoria.ReferenceClean {
             GUI.Box(rect, "");
             var heading = new GUIStyle(GUI.skin.label) { fontSize = 27, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter, wordWrap = true };
             var body = new GUIStyle(GUI.skin.label) { fontSize = 19, alignment = TextAnchor.MiddleCenter, wordWrap = true };
-            GUI.Label(new Rect(x + 14, rect.y + 12, boxWidth - 28, 36), "Eldoria " + candidate.versionName + " disponible", heading);
+            GUI.Label(new Rect(x + 14, rect.y + 12, boxWidth - 28, 36),
+                downloaded ? "Eldoria " + candidate.versionName + " lista para instalar" :
+                (waitingForWifi ? "Eldoria " + candidate.versionName + " · esperando Wi-Fi" :
+                                  "Eldoria " + candidate.versionName + " · reintentar"), heading);
             GUI.Label(new Rect(x + 18, rect.y + 50, boxWidth - 36, 70),
-                downloading ? information : (string.IsNullOrEmpty(information) ? "Actualización verificada. Tu partida se conserva." : information), body);
+                downloaded ? "Descarga verificada. Instálala cuando termines de jugar." :
+                (waitingForWifi ? "Se descargará sola con Wi-Fi, o puedes autorizar datos móviles." :
+                                  "Descarga interrumpida. No se ha instalado nada."), body);
             GUI.enabled = !downloading;
             if (GUI.Button(new Rect(x + 22, rect.y + 138, boxWidth * .58f - 26f, 51),
-                downloaded ? "Continuar instalación" : "Actualizar")) StartCoroutine(BeginInstallation());
+                downloaded ? "Instalar" : (waitingForWifi ? "Usar datos móviles" : "Reintentar"))) {
+                if (downloaded) LaunchInstaller();
+                else StartCoroutine(DownloadUpdate(false));
+            }
             if (GUI.Button(new Rect(x + boxWidth * .58f + 8, rect.y + 138, boxWidth * .42f - 30f, 51), "Ahora no"))
                 dismissed = true;
             GUI.enabled = true;
@@ -156,11 +230,18 @@ namespace Eldoria.ReferenceClean {
 #endif
         }
 
-        IEnumerator BeginInstallation() {
+        IEnumerator DownloadUpdate(bool automatic) {
 #if UNITY_ANDROID && !UNITY_EDITOR
-            if (downloading || candidate == null) yield break;
-            if (downloaded) { LaunchInstaller(); yield break; }
+            if (downloading || candidate == null || downloaded) yield break;
+            // Download on Wi-Fi automatically. Metered/mobile data is used only after a tap.
+            if (automatic && !HasUnmeteredNetwork()) {
+                waitingForWifi = true;
+                information = "Esperando Wi-Fi para descargar la nueva versión.";
+                yield break;
+            }
             downloading = true;
+            waitingForWifi = false;
+            downloadFailed = false;
             information = "Preparando descarga segura…";
             using (var unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
             using (var activity = unity.GetStatic<AndroidJavaObject>("currentActivity")) {
@@ -174,10 +255,19 @@ namespace Eldoria.ReferenceClean {
                         Directory.CreateDirectory(folder);
                         string filename = "Eldoria-code" + candidate.versionCode + "-" + candidate.sha256.Substring(0, 12) + ".apk";
                         apkPath = Path.Combine(folder, filename);
-                        // Reuse only a fully verified previous download; never use unknown/stale APKs.
-                        if (EldoriaAndroidUpdatePolicy.VerifyApk(apkPath, candidate)) {
-                            downloaded = true;
-                        } else {
+                        // Reattach an existing DownloadManager job rather than repeating the download.
+                        // Never trust a partial or orphaned APK as installable.
+                        downloadTicketPath = apkPath + ".download-id";
+                        if (File.Exists(downloadTicketPath) &&
+                            long.TryParse(File.ReadAllText(downloadTicketPath), out long knownId) && knownId > 0)
+                            downloadId = knownId;
+                        long oldBytes;
+                        int oldStatus = DownloadStatus(manager, downloadId, out oldBytes);
+                        if (oldStatus == 0 || oldStatus == 16) {
+                            DropBadDownload(manager);
+                            oldStatus = 0;
+                        }
+                        if (oldStatus == 0) {
                             if (File.Exists(apkPath)) File.Delete(apkPath);
                             using (var androidUri = new AndroidJavaClass("android.net.Uri"))
                             using (var uri = androidUri.CallStatic<AndroidJavaObject>("parse", candidate.apkUrl))
@@ -187,12 +277,15 @@ namespace Eldoria.ReferenceClean {
                                 request.Call<AndroidJavaObject>("setTitle", "Eldoria " + candidate.versionName);
                                 request.Call<AndroidJavaObject>("setDescription", "Actualización oficial de prueba");
                                 request.Call<AndroidJavaObject>("setNotificationVisibility", 1);
+                                using (var network = request.Call<AndroidJavaObject>("setAllowedOverMetered", !automatic)) { }
                                 downloadId = manager.Call<long>("enqueue", request);
+                                File.WriteAllText(downloadTicketPath, downloadId.ToString());
                             }
                         }
                     }
                 } catch (Exception error) {
                     information = "No se ha podido iniciar la descarga: " + error.Message;
+                    downloadFailed = true;
                     Debug.LogWarning("ELDORIA_UPDATE_DOWNLOAD: " + error);
                     downloading = false;
                     if (manager != null) manager.Dispose();
@@ -205,18 +298,12 @@ namespace Eldoria.ReferenceClean {
                     while (!finished && !failed && Time.realtimeSinceStartup - started < 1800f) {
                         yield return new WaitForSecondsRealtime(1f);
                         try {
-                            using (var query = new AndroidJavaObject("android.app.DownloadManager$Query"))
-                            {
-                                query.Call<AndroidJavaObject>("setFilterById", new long[] { downloadId });
-                                using (var cursor = manager.Call<AndroidJavaObject>("query", query)) {
-                                    if (cursor == null || !cursor.Call<bool>("moveToFirst")) { failed = true; break; }
-                                    int status = cursor.Call<int>("getInt", cursor.Call<int>("getColumnIndexOrThrow", "status"));
-                                    if (status == 8) { finished = true; break; }
-                                    if (status == 16) { failed = true; break; }
-                                    long received = cursor.Call<long>("getLong", cursor.Call<int>("getColumnIndexOrThrow", "bytes_so_far"));
-                                    information = "Descargando actualización: " + Mathf.Clamp(Mathf.RoundToInt(100f * received / candidate.bytes), 0, 99) + " %";
-                                }
-                            }
+                            long received;
+                            int status = DownloadStatus(manager, downloadId, out received);
+                            if (status == 8) { finished = true; break; }
+                            if (status == 0 || status == 16) { failed = true; break; }
+                            information = "Descargando actualización: " +
+                                Mathf.Clamp(Mathf.RoundToInt(100f * received / candidate.bytes), 0, 99) + " %";
                         } catch (Exception error) {
                             Debug.LogWarning("ELDORIA_UPDATE_POLL: " + error.Message);
                             failed = true;
@@ -224,25 +311,37 @@ namespace Eldoria.ReferenceClean {
                     }
                     if (!finished || failed) {
                         information = "Descarga interrumpida. Puedes reintentarlo.";
+                        // A paused Wi-Fi-only DownloadManager job is preserved for the next opening.
+                        if (failed) DropBadDownload(manager);
+                        else waitingForWifi = automatic;
+                        downloadFailed = failed || !automatic;
                         downloading = false;
                         manager.Dispose();
                         yield break;
                     }
                     information = "Verificando integridad de la actualización…";
-                    try {
-                        downloaded = EldoriaAndroidUpdatePolicy.VerifyApk(apkPath, candidate);
-                        if (!downloaded && File.Exists(apkPath)) File.Delete(apkPath);
-                    } catch (Exception error) {
-                        Debug.LogWarning("ELDORIA_UPDATE_VERIFY: " + error.Message);
-                        downloaded = false;
-                    }
+                    // Stream SHA-256 on a worker: never freeze the Unity render loop on a 200MB APK.
+                    var verification = System.Threading.Tasks.Task.Run(
+                        () => EldoriaAndroidUpdatePolicy.VerifyApk(apkPath, candidate));
+                    while (!verification.IsCompleted) yield return null;
+                    downloaded = verification.Status == System.Threading.Tasks.TaskStatus.RanToCompletion &&
+                                 verification.Result;
+                    if (!downloaded) DropBadDownload(manager);
                 }
                 manager.Dispose();
             }
             downloading = false;
-            if (!downloaded) { information = "La descarga no superó la verificación. No se instalará."; yield break; }
-            information = "Archivo verificado. Android solicitará confirmar la instalación.";
-            LaunchInstaller();
+            if (!downloaded) {
+                if (!waitingForWifi) downloadFailed = true;
+                information = "La descarga no superó la verificación. No se instalará.";
+                yield break;
+            }
+            // Show a user-controlled Install button; NEVER force an installer during startup.
+            dismissed = false;
+            waitingForWifi = false;
+            downloadFailed = false;
+            information = "APK descargada y verificada. Se instalará solo cuando lo confirmes.";
+            Debug.Log("ELDORIA_UPDATE_READY versionCode=" + candidate.versionCode);
 #else
             yield break;
 #endif
