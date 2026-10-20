@@ -113,10 +113,18 @@
     "no_unity_rebuild": true
   },
   "pc_delivery": {
-    "state": "SETUP_REQUESTED_NOT_REACHABLE",
+    "state": "PC_READY_OWNER_TAILSCALE_LOGIN_REQUIRED",
     "provider": "owner_pc_tailscale",
     "version": "native152",
     "owner_step": "Sign in to Tailscale on PC and iPhone using the same account.",
-    "network_verified": false
+    "network_verified": false,
+    "setup_run": 39435262688,
+    "setup_job": 118670752781,
+    "tailscale_installed": true,
+    "tailscale_version": "1.104.1",
+    "files_verified": true,
+    "package_sha256": "13c154fe6597224d8d7be7bf285e19383b3cd37c5e9727214409ae22d8906d17",
+    "public_access_enabled": false,
+    "next": "Owner signs into Tailscale on Windows PC and installs/signs into iPhone using same account; then configure private Serve and verify phone."
   }
 }
