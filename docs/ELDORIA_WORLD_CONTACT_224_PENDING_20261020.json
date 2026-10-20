@@ -25,11 +25,13 @@
   },
   "pending": {
     "revision": 242,
-    "run": 39506996242,
-    "source": "f8e294dda9a829316eb0dec764f8e2b1ce7d20d0",
-    "stage": "web_playtest",
-    "browser_backend": "windows",
-    "reason": "Exact final scene build; after native completion pin existing Windows QA to these bytes and require complete visible-control PASS. No publication."
+    "build_run": 39506996242,
+    "build": "SUCCESS",
+    "artifact": 12303829447,
+    "artifact_zip_sha256": "d027ea0fa69f3f2cbc29b2063f130219b01592d73c47155c3bcbe74556c9f618",
+    "windows_qa_run": 39509184788,
+    "windows_qa_source": "8a1a0b482ea1a9ec8e683319e9d7bc92b2128d4a",
+    "stage": "Windows browser QA in progress"
   },
   "roof": {
     "retained_candidate_sha256": "248fddf822484641d61f681d6db94041e119b321d367d4e580ad14bb8ae5e37a",
@@ -40,9 +42,8 @@
     "source_storage": "pack_roof_sources.py tested96MiB split/restore SHA256 exactly; workflow now uses installed Blender bundled Python, not missing Windows python alias."
   },
   "next": [
-    "Wait for native242 build; inspect its manifest/source and actual Unity validation.",
-    "Pin existing valoria-windows-chromium-qa.yml and browser-qa-request.json to run39506996242/sourcef8e294dda9a829316eb0dec764f8e2b1ce7d20d0/native242. Run same strict Windows GPU QA, no rebuild or publication.",
-    "Only after QA update root handoff/state/workstream and existing delivery report with final evidence and honest visual assessment."
+    "Inspect Windows QA run39509184788 report and direct screenshots; require complete strict PASS, exact save/reload, zero runtime/network errors.",
+    "No rebuild or publication. Update final evidence/root handoff only after genuine browser verdict."
   ],
   "prepared_independent_review": {
     "path": "tools/valoria-reference-clean/review_capture.py",
