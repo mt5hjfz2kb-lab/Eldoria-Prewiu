@@ -22,6 +22,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
+        private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
+        private bool buildingVisible;
         private bool ready, expanded, portrait, hasGeometry;
         private float lastWidth = -1f, lastHeight = -1f;
         private string lastDetails = "";
@@ -30,7 +32,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
 
         public bool ChapterExpanded => expanded;
-        public bool BuildingVisible => buildingCard && buildingCard.gameObject.activeSelf;
+        public bool BuildingVisible => buildingVisible;
         public RoyalButton VisibleObjectiveButton => objectiveAction;
         public RoyalButton VisibleChapterButton => objectivesButton;
         public RoyalButton VisibleBuildingButton => buildingAction;
@@ -133,8 +135,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 var sourceButton = Source.Building.Primary.Button;
                 if (sourceButton && sourceButton.interactable) sourceButton.onClick.Invoke();
             });
-            buildingCard.gameObject.SetActive(false);
-            chapterClose.gameObject.SetActive(false);
+            // Keep dynamically created uGUI graphics registered with the
+            // parent canvas. Disabling the GameObject caused new buttons to
+            // have Graphic.depth=-1 even after the building changed state.
+            objectiveGroup = objectiveCard.gameObject.AddComponent<CanvasGroup>();
+            buildingGroup = buildingCard.gameObject.AddComponent<CanvasGroup>();
+            buildingActionGroup = buildingAction.gameObject.AddComponent<CanvasGroup>();
+            chapterCloseGroup = chapterClose.gameObject.AddComponent<CanvasGroup>();
+            SetVisible(buildingGroup, false);
+            SetVisible(buildingActionGroup, false);
+            SetVisible(chapterCloseGroup, false);
             ready = true;
         }
 
@@ -264,7 +274,8 @@ namespace Eldoria.UI.RoyalGold.V2
             var source = Source.Building;
             bool show = !narrativeOrModal && !string.IsNullOrEmpty(Source.SelectedBuildingId) &&
                 source && source.Title && !string.IsNullOrWhiteSpace(source.Title.text);
-            if (buildingCard.gameObject.activeSelf != show) buildingCard.gameObject.SetActive(show);
+            buildingVisible = show;
+            SetVisible(buildingGroup, show);
             if (!show) return;
             buildingTitle.Put(Safe(source.Title));
             buildingLevel.Put(Safe(source.Level));
@@ -293,13 +304,22 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
             }
             bool offered = source.Primary && source.Primary.Visible;
-            buildingAction.gameObject.SetActive(offered);
+            SetVisible(buildingActionGroup, offered);
             if (offered)
             {
                 primaryLabel.Put(Safe(source.Primary.Label));
                 buildingAction.interactable =
                     source.Offer != null && source.Primary.Button && source.Primary.Button.interactable;
             }
+        }
+
+        private static void SetVisible(CanvasGroup group, bool show)
+        {
+            if (!group) return;
+            float opacity = show ? 1f : 0f;
+            if (!Mathf.Approximately(group.alpha, opacity)) group.alpha = opacity;
+            if (group.interactable != show) group.interactable = show;
+            if (group.blocksRaycasts != show) group.blocksRaycasts = show;
         }
 
         private static void Append(StringBuilder buffer, string value)
@@ -414,8 +434,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // scene itself. Never stack a full-width chapter card above the
             // bottom building sheet on a portrait handset.
             bool inspectingBuilding = !string.IsNullOrEmpty(Source.SelectedBuildingId);
-            objectiveCard.gameObject.SetActive(!expanded && !modalOpen && !inspectingBuilding);
-            chapterClose.gameObject.SetActive(showExpanded);
+            SetVisible(objectiveGroup, !expanded && !modalOpen && !inspectingBuilding);
+            SetVisible(chapterCloseGroup, showExpanded);
 
             RenderBuilding(modalOpen);
 
@@ -441,7 +461,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 free.yMin = Mathf.Max(free.yMin, buildingCard.rect.height / height + padding);
             else if (!portrait && BuildingVisible)
                 free.xMax = Mathf.Min(free.xMax, 1f - buildingCard.rect.width / width - padding);
-            if (objectiveCard && objectiveCard.gameObject.activeInHierarchy)
+            if (objectiveGroup && objectiveGroup.blocksRaycasts)
             {
                 if (portrait)
                 {
