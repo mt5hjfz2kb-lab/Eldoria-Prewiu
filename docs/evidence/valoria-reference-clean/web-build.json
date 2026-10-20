@@ -1,9 +1,9 @@
 {
-    "source_sha": "f5203b84a77540d6704efc5c2576343c7e88fe5c",
+    "source_sha": "766ef92e85d2c37903277f4b266915507166563c",
     "status": "WEB_COMPILED_CURRENT_INTEGRATED_SCENE_NOT_PHYSICAL_IPHONE_TESTED",
     "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
     "error": "",
-    "bytes": 184751921,
+    "bytes": 184754890,
     "physical_iphone_tested": false,
     "files": [
         "Builds/ValoriaWebPlaytest\\index.html",

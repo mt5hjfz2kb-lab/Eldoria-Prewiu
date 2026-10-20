@@ -241,6 +241,8 @@ Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_021.png
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_022.png
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Normal_023.png
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/GeneratedLighting/Outer_Road_GI.asset
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-mat-v11-1.mat
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/HostileCanvas-39320820165/hostile-canvas-texture-v11-0.asset
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/RoofSignature-39298794759/bastion-slate-material-1.mat
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/RoofSignature-39298794759/bastion-slate-material-3.mat
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/RoofSignature-39298794759/bastion-slate-material-5.mat
@@ -281,8 +283,8 @@ Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/Visu
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/VisualPalette-39297720549/muted-slate-texture-6.asset
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/VisualPalette-39297720549/muted-slate-texture-8.asset
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/VisualPalette-39297720549/retained-river-deep-teal-10.mat
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/VisualPolish-39293435990/world-ground-1.mat
-Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/VisualPolish-39293435990/world-ground-connected-routes-0.asset
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/WorldDestinations-39319603425/world-destination-material-v10-1.mat
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/EnvironmentFinish/WorldDestinations-39319603425/world-zone-ground-identity-v10-0.asset
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-18.mat
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-20.mat
 Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/material-22.mat

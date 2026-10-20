@@ -1398,7 +1398,7 @@ Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef 6D-97-90
 Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef.meta 9A-E6-90-43-FD-17-B2-BD-5D-E8-D1-9C-85-E2-E1-AF-F7-65-45-0B-A5-81-94-4E-FC-55-36-0B-56-15-08-F6
 Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2FrameGraphic.cs F6-99-CD-4C-B6-BC-01-DB-0C-CB-9B-C7-C9-9F-42-58-5C-24-15-AA-24-6E-D5-AE-41-C8-1A-98-61-A8-33-E1
 Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2FrameGraphic.cs.meta 44-19-A7-02-54-5B-6A-98-2E-D3-50-CF-71-2F-B4-25-CB-5C-3A-21-8F-1F-E2-FD-42-03-EC-35-EF-73-C1-25
-Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs B3-A0-25-65-BE-34-93-FE-42-10-D5-6E-57-18-98-77-51-3D-E1-F0-3E-0A-7D-19-6B-A9-E2-06-B9-12-A5-86
+Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs AD-A6-82-9A-6E-24-8A-31-DB-96-73-9B-83-B9-06-CF-25-EA-40-B6-DF-74-0F-14-6A-04-17-D2-B7-03-3C-71
 Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs.meta 4A-2F-78-8C-53-0D-9B-2B-1D-F3-5C-38-BA-72-39-6D-68-E1-D8-2B-0C-50-87-79-8D-16-08-C5-E8-FC-EC-FA
 Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs 56-04-4E-28-B6-11-1D-BC-B2-DD-8F-4F-E7-D7-59-1B-80-38-7D-B2-A7-2F-57-DC-22-34-CE-ED-60-8A-A0-34
 Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs.meta 1B-BC-E0-B4-B3-CC-36-73-77-15-B8-C0-14-D5-06-33-88-36-70-D4-18-5F-CE-09-48-52-A0-72-E1-64-1C-84
