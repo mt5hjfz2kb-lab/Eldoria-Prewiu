@@ -14,9 +14,9 @@ public static class ValoriaTerrainBankAuthoring {
  const string RefHash="86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d";
  static string Ev=>Path.GetFullPath("../docs/evidence/valoria-reference-clean/terrain-bank192");
  [Serializable] public class Surface { public int resolution;public Vector3 origin,size;public float[] heights; }
- [Serializable] public class Geometry {public string name;public Vector3[] vertices; public int[] triangles;}
+ [Serializable] public class Geometry {public string name;public Vector3[] vertices; public int[] triangles;public Vector2[] uv;}
  [Serializable] public class SurveyData {public string scene_sha256,reference_sha256,source_commit;public Surface terrain; public Geometry[] meshes;public string camera,light;}
- [Serializable] public class Result {public string survey_sha256;public float[] heights;public Geometry[] meshes;public int changed_terrain_vertices,changed_bank_vertices;public bool art_approved;}
+ [Serializable] public class Result {public string survey_sha256;public float[] heights;public Geometry[] meshes;public Geometry shore;public int changed_terrain_vertices,changed_bank_vertices;public bool art_approved;}
  static string Hash(string p){using(var h=SHA256.Create())return BitConverter.ToString(h.ComputeHash(File.ReadAllBytes(p))).Replace("-","").ToLowerInvariant();}
  static void Need(bool b,string s){if(!b)throw new InvalidOperationException(s);}
  static string Stamp(Camera c)=>c.transform.position.ToString("R")+c.transform.rotation.ToString("R")+c.orthographicSize.ToString("R");
@@ -35,14 +35,27 @@ public static class ValoriaTerrainBankAuthoring {
   Need(!promote,"Candidate must pass independent Unity review before promotion");var c=Open();var stamp=Stamp(c);var light=LightStamp();var survey=JsonUtility.FromJson<SurveyData>(File.ReadAllText(Ev+"/survey.json"));var result=JsonUtility.FromJson<Result>(File.ReadAllText(Ev+"/candidate.json"));
   Need(Hash(Scene)==survey.scene_sha256&&result.survey_sha256==Hash(Ev+"/survey.json"),"Exact live source/survey mismatch");Need(!result.art_approved&&result.changed_terrain_vertices>100&&result.changed_bank_vertices>100,"No geometric change or false approval");
   var t=Ground();var original=t.terrainData;var collider=t.GetComponent<TerrainCollider>();var originalCollider=collider.terrainData;var trial=Object.Instantiate(original);int n=trial.heightmapResolution;Need(result.heights.Length==n*n,"Height topology changed");var hh=new float[n,n];for(int z=0;z<n;z++)for(int x=0;x<n;x++){float v=result.heights[z*n+x];Need(!float.IsNaN(v)&&v>=0&&v<=1,"Invalid height");hh[z,x]=v;}
-  var meshes=new List<Mesh>();var replaced=new List<Tuple<MeshFilter,Mesh>>();
+  var meshes=new List<Mesh>();var temporary=new List<Object>();var replaced=new List<Tuple<MeshFilter,Mesh>>();
   try{
    // Re-capture within this same process: exactly identical lighting/camera/URP.
    Views(c,"before");trial.SetHeights(0,0,hh);trial.SyncHeightmap();t.terrainData=trial;collider.terrainData=trial;t.Flush();
    var filters=Natural();foreach(var g in result.meshes){var f=filters.Single(m=>m.name==g.name);var old=f.sharedMesh;Need(old.vertexCount==g.vertices.Length,"Mesh topology changed");var copy=Object.Instantiate(old);copy.name=old.name+"_TerrainBank192_candidate";copy.vertices=g.vertices.Select(v=>f.transform.InverseTransformPoint(v)).ToArray();if(g.name=="River_bank_rocks")copy.RecalculateNormals();copy.RecalculateBounds();meshes.Add(copy);replaced.Add(Tuple.Create(f,old));f.sharedMesh=copy;}
+   Need(result.shore!=null&&result.shore.vertices.Length>100&&result.shore.triangles.Length<18000,"Missing measured low bank");
+   var bank=filters.Single(f=>f.name=="River_bank_rocks").GetComponent<Renderer>();
+   var skin=new GameObject("Measured low river bank / candidate");temporary.Add(skin);var sm=new Mesh{name="Measured low river bank"};sm.vertices=result.shore.vertices;sm.triangles=result.shore.triangles;sm.uv=result.shore.uv;sm.RecalculateNormals();sm.RecalculateBounds();meshes.Add(sm);skin.AddComponent<MeshFilter>().sharedMesh=sm;var sr=skin.AddComponent<MeshRenderer>();sr.sharedMaterial=bank.sharedMaterials[0];
+   // Coherent whole-meadow material treatment follows the geometry correction.
+   // Preserve source textures/UVs; avoid the old dark localized blurred patch.
+   var layers=trial.terrainLayers;
+   foreach(int index in new[]{0,3}){
+    var src=layers[index].diffuseTexture;var colors=src.GetPixels();var luminance=colors.Select(v=>v.grayscale).OrderBy(v=>v).ToArray();float low=luminance[luminance.Length/10],high=luminance[luminance.Length*9/10];
+    for(int i=0;i<colors.Length;i++){float q=Mathf.Clamp01((colors[i].grayscale-low)/Mathf.Max(.01f,high-low));q=.28f+.44f*q;colors[i]=index==0?Color.Lerp(new Color(.29f,.36f,.10f),new Color(.58f,.59f,.25f),q):Color.Lerp(new Color(.34f,.38f,.12f),new Color(.58f,.57f,.25f),q);}
+    var tex=new Texture2D(src.width,src.height,TextureFormat.RGB24,true){name="Measured meadow subdued fine contrast",wrapMode=TextureWrapMode.Repeat,anisoLevel=4};tex.SetPixels(colors);tex.Apply();temporary.Add(tex);
+    var layer=Object.Instantiate(layers[index]);layer.diffuseTexture=tex;layer.normalScale=Mathf.Min(layer.normalScale,.35f);if(index==0)layer.tileSize=new Vector2(7.5f,7.5f);temporary.Add(layer);layers[index]=layer;
+   }
+   trial.terrainLayers=layers;t.Flush();
    Physics.SyncTransforms();Views(c,"after");Need(stamp==Stamp(c)&&light==LightStamp(),"Camera/light changed");Need(Hash(Scene)==survey.scene_sha256,"Source scene mutated");
    File.WriteAllText(Ev+"/unity-review.json","{\"status\":\"REAL_UNITY_AB_REVIEW_REQUIRED\",\"same_camera\":true,\"same_light\":true,\"scene_saved\":false,\"art_approved\":false,\"gameplay_modified\":false,\"before_main_sha256\":\""+Hash(Ev+"/before-main.png")+"\",\"after_main_sha256\":\""+Hash(Ev+"/after-main.png")+"\",\"before_portrait_sha256\":\""+Hash(Ev+"/before-portrait.png")+"\",\"after_portrait_sha256\":\""+Hash(Ev+"/after-portrait.png")+"\"}");
-  }finally{foreach(var pair in replaced)pair.Item1.sharedMesh=pair.Item2;t.terrainData=original;collider.terrainData=originalCollider;t.Flush();foreach(var m in meshes)Object.DestroyImmediate(m);Object.DestroyImmediate(trial);}
+  }finally{foreach(var pair in replaced)pair.Item1.sharedMesh=pair.Item2;t.terrainData=original;collider.terrainData=originalCollider;t.Flush();foreach(var m in meshes)Object.DestroyImmediate(m);foreach(var o in temporary)Object.DestroyImmediate(o);Object.DestroyImmediate(trial);}
  }
 }}
 #endif

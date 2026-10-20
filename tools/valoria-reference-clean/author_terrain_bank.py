@@ -118,9 +118,38 @@ def mesh_obj(name,v,faces):
  mesh=bpy.data.meshes.new(name);mesh.from_pydata(v,[],faces);mesh.update();o=bpy.data.objects.new(name,mesh);bpy.context.collection.objects.link(o);return o
 terrain=mesh_obj('Current_Meadow_Editable',verts.tolist(),faces)
 for i,v in enumerate(terrain.data.vertices):v.co.z+=float(delta.flat[i])
-def sample_delta(x,z):
+def sample_grid(grid,x,z):
  fx=np.clip((x-origin[0])/size[0]*(n-1),0,n-1);fz=np.clip((z-origin[2])/size[2]*(n-1),0,n-1);ix=np.floor(fx).astype(int);iz=np.floor(fz).astype(int);jx=np.minimum(ix+1,n-1);jz=np.minimum(iz+1,n-1);u=fx-ix;v=fz-iz
- return (delta[iz,ix]*(1-u)+delta[iz,jx]*u)*(1-v)+(delta[jz,ix]*(1-u)+delta[jz,jx]*u)*v
+ return (grid[iz,ix]*(1-u)+grid[iz,jx]*u)*(1-v)+(grid[jz,ix]*(1-u)+grid[jz,jx]*u)*v
+def sample_delta(x,z):return sample_grid(delta,x,z)
+def surface_y(x,z):return origin[1]+sample_grid(newh,x,z)*size[1]
+# Hand-directed continuous low erosion skin follows the MEASURED terrain.
+# Outer edge is submerged; inland edge is buried. This is a thin rocky bank,
+# never an escarpment, wall, repeated cube or new traversable platform.
+shore_v=[];shore_f=[];shore_uv=[]
+for side in [-1,1]:
+ for start,end in [(-72,-15),(9,72)]:
+  count=int((end-start)/.85)+1;base=len(shore_v);bands=[-1.15,-.55,.15,.85,1.65,2.5,3.5,4.6]
+  for j in range(count):
+   x=start+(end-start)*j/(count-1);endmask=float(ease(0,4,x-start)*ease(0,4,end-x))
+   for k,off in enumerate(bands):
+    ripple=.28*math.sin(x*.72+k*.91)+.14*math.sin(x*1.93-k*.63)
+    z=float(river(x)+side*(width(x)+off+ripple))
+    y=float(surface_y(x,z));lift=(.08+.10*math.sin(x*.71+k*1.3))*endmask
+    if k==0:lift=-.35
+    if k==len(bands)-1:lift=-.18
+    if endmask<.1:lift=-.18
+    shore_v.append((x,y+lift,z));shore_uv.append((x/3.8,(z+y*.55)/3.8))
+  for j in range(count-1):
+   for k in range(len(bands)-1):
+    a=base+j*len(bands)+k;b=a+len(bands)
+    shore_f.extend([(a,a+1,b),(b,a+1,b+1)] if side==1 else [(a,b,a+1),(b,b+1,a+1)])
+shore=mesh_obj('Measured_Low_Rocky_Bank',[(x,-z,y) for x,y,z in shore_v],shore_f)
+uv=shore.data.uv_layers.new(name='UVMap')
+for face in shore.data.polygons:
+ for li in face.loop_indices:uv.data[li].uv=shore_uv[shore.data.loops[li].vertex_index]
+# Actual CC0 PBR source remains editable in the Blender file.
+mat=bpy.data.materials.new('Existing_CC0_Rock3_Bank');mat.use_nodes=True;nodes=mat.node_tree.nodes;links=mat.node_tree.links;bsdf=nodes.get('Principled BSDF');tex=nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(ROOT/'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/MaterialInputs/rock_3/rock_3_diff_1k.png'));tex.image.pack();links.new(tex.outputs['Color'],bsdf.inputs['Base Color']);bsdf.inputs['Roughness'].default_value=.9;shore.data.materials.append(mat)
 outputs=[];changed_bank=0
 for m in survey['meshes']:
  v=np.array([vec(p) for p in m['vertices']],dtype=float);out=v.copy();comps=groups if m['name']=='River_bank_rocks' else components(m)
@@ -131,20 +160,21 @@ for m in survey['meshes']:
    pts=v[ids];lo=pts.min(0);hi=pts.max(0);c=(lo+hi)*.5;side=1 if c[2]>river(c[0]) else -1;p=plan['north' if side==1 else 'south'];t=np.clip((pts[:,1]-lo[1])/(hi[1]-lo[1]),0,1)
    # Sculpt a fractured shelf: broad buried foot, asymmetric crown, stepped
    # compressed face and lateral shear. Existing closed topology/UV preserved.
-   crown=lo[1]+(hi[1]-lo[1])*p['compression'];crown=max(crown,-1.62)
-   profile=.78*t+.22*(np.floor(t*3)/3);profile=np.where(t>.96,1,profile)
-   out[ids,1]=lo[1]+(crown-lo[1])*profile-.08
-   out[ids,0]=c[0]+(pts[:,0]-c[0])*(1+(p['flare']-1)*(1-t*.45))+p['shear']*(t-.5)
-   out[ids,2]=c[2]+(pts[:,2]-c[2])*(1+(p['flare']-1)*(1-t*.35))+side*p['inland']
-   # Restore a softly tilted top rather than identical horizontal shelves.
-   out[ids,1]+=p['shear']*(pts[:,0]-c[0])/(hi[0]-lo[0]+.01)*t
+   # Second strategy: preserve the rock's rounded mass and seat it into a
+   # continuous low bank; reject native194's flattened submerged slabs.
+   out[ids,0]=c[0]+(pts[:,0]-c[0])*1.08
+   out[ids,2]=c[2]+(pts[:,2]-c[2])*1.06+side*.28
+   out[ids,1]=pts[:,1]-.12
   changed_bank=int(np.count_nonzero(np.linalg.norm(out-v,axis=1)>.001))
  else:
   # Move each connected natural component as a rigid object to preserve the
   # original vegetation silhouette while avoiding floating ground contacts.
   for ids in comps:
    pts=v[ids];foot=pts[pts[:,1]<=np.quantile(pts[:,1],.12)+.005];cx,cz=np.median(foot[:,0]),np.median(foot[:,2]);dy=float(sample_delta(cx,cz));out[ids,1]+=dy
- obj=mesh_obj(m['name'],np.stack([out[:,0],-out[:,2],out[:,1]],axis=-1).tolist(),np.array(m['triangles']).reshape(-1,3)[:,::-1].tolist())
+   if m['name'].startswith('River_shingle'):
+    target=float(surface_y(cx,cz))-.055
+    out[ids,1]+=target-float(out[ids,1].min())
+ obj=mesh_obj(m['name'],np.stack([out[:,0],-out[:,2],out[:,1]],axis=-1).tolist(),np.array(m['triangles']).reshape(-1,3).tolist())
  outputs.append({'name':m['name'],'vertices':[{'x':float(q[0]),'y':float(q[1]),'z':float(q[2])} for q in out]})
 assert changed_bank>100
 bpy.context.preferences.filepaths.save_version=0
@@ -152,6 +182,6 @@ bpy.ops.wm.save_as_mainfile(filepath=str(EV/'TerrainBank192.blend'),compress=Tru
 # Blender source carries the actual edited vertices; re-extract the authored
 # height field from that mesh, not from an unrelated preview or mock result.
 actual=np.array([v.co.z for v in terrain.data.vertices]).reshape(n,n)
-write('candidate.json',{'survey_sha256':sha(EV/'survey.json'),'heights':((actual-origin[1])/size[1]).reshape(-1).tolist(),'meshes':outputs,'changed_terrain_vertices':int(np.count_nonzero(delta>.001)),'changed_bank_vertices':changed_bank,'art_approved':False})
-write('author-proof.json',{'blender':bpy.app.version_string,'source_scene_sha256':survey['scene_sha256'],'survey_sha256':sha(EV/'survey.json'),'plan_sha256':sha(EV/'validated-plan.json'),'blend_sha256':sha(EV/'TerrainBank192.blend'),'candidate_sha256':sha(EV/'candidate.json'),'changed_bank_vertices':changed_bank,'changed_terrain_vertices':int(np.count_nonzero(delta>.001)),'max_height_delta_m':float(delta.max()),'protected_height_delta_max':float(np.max(delta[free(wx,wz)==0])),'topology_preserved':True,'reference_sha256':survey['reference_sha256'],'author':'Retained Qwen3 14B bank/shape parameters with explicit independent director repair of repeated centers; mesh operations in bpy','transport':'direct bpy selected for measured mesh authoring; no extra MCP server needed','art_approved':False,'published':False})
+write('candidate.json',{'survey_sha256':sha(EV/'survey.json'),'heights':((actual-origin[1])/size[1]).reshape(-1).tolist(),'meshes':outputs,'shore':{'name':'Measured_Low_Rocky_Bank','vertices':[{'x':x,'y':y,'z':z} for x,y,z in shore_v],'triangles':[i for f in shore_f for i in f],'uv':[{'x':u,'y':v} for u,v in shore_uv]},'changed_terrain_vertices':int(np.count_nonzero(delta>.001)),'changed_bank_vertices':changed_bank,'art_approved':False})
+write('author-proof.json',{'blender':bpy.app.version_string,'source_scene_sha256':survey['scene_sha256'],'survey_sha256':sha(EV/'survey.json'),'plan_sha256':sha(EV/'validated-plan.json'),'blend_sha256':sha(EV/'TerrainBank192.blend'),'candidate_sha256':sha(EV/'candidate.json'),'changed_bank_vertices':changed_bank,'changed_terrain_vertices':int(np.count_nonzero(delta>.001)),'max_height_delta_m':float(delta.max()),'protected_height_delta_max':float(np.max(delta[free(wx,wz)==0])),'topology_preserved':True,'reference_sha256':survey['reference_sha256'],'author':'Retained Qwen3 14B bank/shape parameters with explicit independent director repair of repeated centers; mesh operations in bpy','second_strategy':'Independent director: original rock masses seated into continuous measured low shore surface; reject native194 flattened slab geometry; restore shingle contact to surface', 'new_shore_triangles':len(shore_f), 'transport':'direct bpy selected for measured mesh authoring; no extra MCP server needed','art_approved':False,'published':False})
 print('VALORIA_TERRAIN_BANK_BLENDER_AUTHOR_COMPLETE')
