@@ -394,6 +394,10 @@ namespace Eldoria.UI.RoyalGold.V2
             objectiveText.Put(Safe(Source.Mission.Objective));
             progressText.Put(Safe(Source.Mission.ProgressText));
 
+            // Closing the canonical checklist also restores the compact
+            // current-objective action. Otherwise it remains invisible behind
+            // a nominally closed V1 list in the V2 expanded overlay.
+            if (expanded && !Source.Mission.ListExpanded) expanded = false;
             bool showExpanded = expanded && !modalOpen;
             bool chapterJustOpened = Source.Mission.gameObject.activeSelf != showExpanded;
             if (chapterJustOpened)
