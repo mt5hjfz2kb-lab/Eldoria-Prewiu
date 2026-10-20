@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Rock boar (v0220 enemy id=boar, Jabalí de roca), identifiable boar silhouette at Unity strategic/city/detail zooms and angled back/front, believable anatomy with exactly four legs and two short tusks, dark textured bristles and subtle natural slate shoulders (not decorative armor). PBR and UV/color preserved, grounding and collider/picking verified. No extra objects/background, no melted/fused proportions, no spikes. Keep lore, node IDs, economy, savegames, world routes, and city scene intact. Capture true Unity PNGs and retain original Tripo GLB + Blender editable + optimized GLB. No automatic production promotion or publication; review first.",
-  "run_nonce": "boar-qa-only-color-transport-fixed-20261020",
-  "notes": "Paid H3.1 Rock Boar completed once for exactly 20 credits, task 28f57ff9-b978-468c-8c2a-6136e0a65ea1; original GLB SHA 166c32..., optimized GLB SHA 897c8d... in artifact 12297913548. First minimal Unity isolated QA PASS technical run 39500313917, but visual reviewer found too-dark albedo in the test-only Standard material conversion. This repeat is 0-credit Unity QA from same artifact with corrected white baseColorFactor; NO Tripo generation and no edits to live scenes, saves or gameplay.",
+  "run_nonce": "boar-qa-only-fixed-gltfast-image-modules-20261020",
+  "notes": "No generation allowed: exact existing 20-credit Rock Boar task 28f57ff9-b978-468c-8c2a-6136e0a65ea1. Minimal Unity tests 39500313917 and 39502850810 passed geometry/raycast but discovered glTFast 4x4 baseColor placeholder, matching documented optional module issue; this final zero-credit Unity QA adds com.unity.modules.imageconversion/unitywebrequest/unitywebrequesttexture and requires imported textures >=1024. No gameplay changes, no source generation, no repeated Tripo call.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
