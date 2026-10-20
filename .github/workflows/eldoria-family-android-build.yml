@@ -149,6 +149,9 @@ jobs:
           if($badging -notmatch "package: name='com.eldoria.valoria.v5test' versionCode='$env:CODE'"){throw 'VersionCode or package mismatch'}
           if($badging -notmatch "native-code: 'arm64-v8a'"){throw 'ARM64 absent'}
           if($perms -notmatch 'android.permission.REQUEST_INSTALL_PACKAGES'){throw 'Android updater permission not merged'}
+          if($perms -notmatch 'android.permission.ACCESS_NETWORK_STATE' -or $perms -notmatch 'android.permission.INTERNET'){throw 'Required Wi-Fi detection/network permissions absent'}
+          # The self-hosted checkout is deliberately reused. Never upload older APKs left by another run.
+          if(Test-Path family-android-output){Remove-Item family-android-output -Recurse -Force}
           New-Item family-android-output -ItemType Directory -Force|Out-Null
           $dest="family-android-output/Eldoria-Valoria-code$env:CODE.apk"
           Copy-Item $apk $dest
@@ -157,6 +160,9 @@ jobs:
             sha256=(Get-FileHash $dest -Algorithm SHA256).Hash.ToLowerInvariant();bytes=(Get-Item $dest).Length
             nativeSignatureVerified=$true;installerPermissionVerified=$true;physicalPhoneTested=$false
             userDataReset=$false}|ConvertTo-Json|Set-Content 'family-android-output/android-build-identity.json' -Encoding utf8
+          $actual=@(Get-ChildItem family-android-output -File |ForEach-Object {$_.Name})
+          $expectedApk="Eldoria-Valoria-code$env:CODE.apk"
+          if($actual.Count -ne 2 -or $expectedApk -notin $actual -or 'android-build-identity.json' -notin $actual){throw 'Unexpected/stale APK leaked into the exact-version artifact'}
           Write-Host 'ELDORIA_FAMILY_ANDROID_UPDATER_BUILD_AND_SIGNATURE_PASS'
       - uses: actions/upload-artifact@v4
         if: success()
