@@ -203,6 +203,11 @@ namespace Eldoria.ReferenceClean.Editor {
    },"restored Settings closes through real rendered-button raycast");
    Check(()=>{Need(h.Ready,"Host not ready");Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,"HUD count");Need(Camera.allCameras.Count(x=>x.enabled)==1,"City camera count");Need(!GameObject.Find("Eldoria HUD").GetComponent<Canvas>().enabled,"Legacy HUD still visible");Capture(h,"integration-city-16x9.png",1600,900);},"city HUD, one camera");
    Check(()=>{Need(h.Hud.Mission.ChapterStepCount==6&&h.Hud.Mission.CompletedStepCount==0,"New-player chapter objectives not projected from real state");Click(h.Hud.Mission.ListToggle);Need(h.Hud.Mission.ListExpanded,"Chapter list did not open through its visible button");Capture(h,"integration-chapter-list.png",1600,900);Click(h.Hud.Mission.ListToggle);Need(!h.Hud.Mission.ListExpanded,"Chapter list would not close");},"Royal Gold real chapter checklist and collapse");
+   // The compact action becomes visible again AFTER a chapter closes.
+   // Unity GraphicRegistry registers its raycast rectangle on the next
+   // rendered frame; the real player cannot touch during the same stack.
+   yield return null;
+   yield return new WaitForSecondsRealtime(.15f);
    Check(()=>{Need(!h.CanOpen(RoyalSection.Heroes)&&!h.CanOpen(RoyalSection.Army),"Premature menus visible");Need(!string.IsNullOrWhiteSpace(h.Guidance.Story),"Original narrative missing");Need(Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).All(r=>!r.enabled),"Plot slab remains visible");Click(h.Hud.Mission.Open);Need(h.Read("sawmill",false).Building!=null&&!h.InWorld,"Objective construction navigation failed");},"mechanic-gated menus, narrative, no slabs, objective navigation");
    yield return null;
    Check(()=>{h.Guidance.ShowStory();},"story modal opened");yield return new WaitForSecondsRealtime(.4f);
