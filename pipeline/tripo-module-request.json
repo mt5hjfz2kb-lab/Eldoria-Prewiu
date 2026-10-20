@@ -1,15 +1,18 @@
 {
-  "enabled": false,
-  "request_id": "valoria-mid-tier-architecture-kit-v1-four-piece-isolated-gate",
-  "module_label": "Valoria_MidTierArchitectureKit_v1",
+  "enabled": true,
+  "request_id": "eldoria-world4x-rock-boar-hunt-v1-20261020",
+  "module_label": "Eldoria_RockBoar_FirstHunt_v1",
   "unity_yaw_degrees": 0,
   "source": {
-    "mode": "downloads_glb",
-    "exact_name": "Valoria_MidTierArchitectureKit_v1.glb",
-    "exact_sha256": "5e5432b78151a837eea1a77c2ea5783c543da10da747add208adfdc21cbf284a",
-    "name_regex": "^Valoria_MidTierArchitectureKit_v1\\.glb$",
-    "max_age_hours": 24,
-    "exclude_sha256": []
+    "mode": "tripo_text",
+    "tripo_model": "v3.1-20260211",
+    "face_limit": 85000,
+    "prompt": "Eldoria medieval fantasy 4X first-hunt creature: ONE realistic-stylized RO​​CK BOAR (wild Sus scrofa) standing on four strong short legs, full body, natural believable anatomy. Thick stocky torso, powerful muscular shoulders, dark umber and charcoal coarse bristly fur, narrow amber eyes, compact ears, pronounced snout and TWO short curved ivory tusks, black hooves, short tail. Faint slate-grey rocky crust along upper back and shoulders only, organically blended into fur, never armor; weathered woodland creature with subtle stone coloring. Strong readable silhouette for high isometric strategy camera, rich physically based fur texture, restrained natural colors, grounded side three-quarter standing neutral pose that could later be rigged. Single whole animal, centered isolated model, no ground plane, no base, no scenery, no rider, no harness, no collar, no weapons, no text, no extra heads, no extra limbs, no fantasy horns, no cartoon proportions."
+  },
+  "credit_authorization": {
+    "approved": true,
+    "authorized_credit_cost": 20,
+    "scope": "ONE text-to-3D H3.1 standard-texture rock boar for Eldoria first hunt, explicitly commissioned by owner after 5 EUR API recharge on 2026-10-20; no retries, no other paid tasks"
   },
   "refinement": {
     "enabled": false
@@ -20,20 +23,14 @@
     "max_triangles": 50000
   },
   "multipiece": {
-    "enabled": true,
-    "expected_piece_count": 4,
-    "cluster_axes": "yz",
-    "min_component_triangles": 250,
-    "salvage": {
-      "enabled": false
-    }
+    "enabled": false
   },
   "promotion": {
     "enabled": false
   },
-  "visual_acceptance": "Four distinct reusable architecture pieces derived from exactly the owner-approved sheet: 2-storey residential facade/corner mass with balconies; arched entry/porch mass with blue/gold banners and steps; roof/upper structure with tower/chimney (partial-height module is intentional); workshop/facade mass with open arch and side canopy. Require each intended mass to remain complete, coherent stone/timber/red-tile identity, readable major silhouettes and attached roofs/walls; no cross-piece fusion, stranded fragments, connected spikes, severed principal facades or major texture washout. Evaluate real official19/12/9 kit captures plus each piece front/rear/side/oblique. Technical separation alone does not certify usability or integrated Valoria quality. Isolated gate only, gameplay topology/hotspots/colliders/circulation authoritative; no automatic production promotion.",
-  "run_nonce": "mid-tier-kit-v1-yz-reconstruction-closed-36857266003",
-  "notes": "Zero-credit YZ reconstruction completed in run 36857266003. Same exact raw GLB/SHA; no Tripo generation, no paid retry, no promotion. Blender+Unity multipiece technical gate PASS. Visual review recovered the intended four objects cleanly enough to continue as isolated candidates: piece01 arched entry/porch has one small detached fragment below the mass (VISUAL PARTIAL, cleanup required before production); piece02 two-storey residence PASS candidate; piece03 workshop/facade PASS candidate; piece04 roof/upper structure PASS candidate. No automatic Valoria integration. Evidence artifact 11160571815; full artifact 11160251379.",
+  "visual_acceptance": "Rock boar (v0220 enemy id=boar, Jabalí de roca), identifiable boar silhouette at Unity strategic/city/detail zooms and angled back/front, believable anatomy with exactly four legs and two short tusks, dark textured bristles and subtle natural slate shoulders (not decorative armor). PBR and UV/color preserved, grounding and collider/picking verified. No extra objects/background, no melted/fused proportions, no spikes. Keep lore, node IDs, economy, savegames, world routes, and city scene intact. Capture true Unity PNGs and retain original Tripo GLB + Blender editable + optimized GLB. No automatic production promotion or publication; review first.",
+  "run_nonce": "20261020-rock-boar-first-hunt-one-api-call-only-no-retry",
+  "notes": "New user order specifically creates the first Hunt rock boar with Tripo API using newly purchased credits. This isolated source proof does not amend existing Unity gameplay or ongoing artist-owned world/city scenes. Once verified, integration into world is separate and must observe live workstream lease and visual approval.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
