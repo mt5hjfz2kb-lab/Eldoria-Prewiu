@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Rock boar (v0220 enemy id=boar, Jabalí de roca), identifiable boar silhouette at Unity strategic/city/detail zooms and angled back/front, believable anatomy with exactly four legs and two short tusks, dark textured bristles and subtle natural slate shoulders (not decorative armor). PBR and UV/color preserved, grounding and collider/picking verified. No extra objects/background, no melted/fused proportions, no spikes. Keep lore, node IDs, economy, savegames, world routes, and city scene intact. Capture true Unity PNGs and retain original Tripo GLB + Blender editable + optimized GLB. No automatic production promotion or publication; review first.",
-  "run_nonce": "boar-archive-only-immutable-raw-optimized-blend-20261020",
-  "notes": "TRIPO GENERATION PERMANENTLY DISABLED. One existing paid H3.1 task 28f57ff9-b978-468c-8c2a-6136e0a65ea1, 20 credits. QA source glTFast 2K/49,800 tris PASS in run 39505056649. Trigger ONLY ubuntu-latest no-Unity no-Tripo art-source archive of exact SHA-locked GLB and editable Blender to ArtSource/World4X/RockBoar_v1. No gameplay integration, no publication, no asset included in builds.",
+  "run_nonce": "boar-archive-only-preserve-unity-2k-evidence-20261021",
+  "notes": "Read-only archive of the same one-time Tripo H3.1 boar: original 20-credit task 28f57ff9-b978-468c-8c2a-6136e0a65ea1, raw+optimized+blend and genuine Unity 2K captures from 39505056649 into ArtSource/World4X/RockBoar_v1. NO Tripo generation, Windows runner, Unity build, gameplay or automatic promotion.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
