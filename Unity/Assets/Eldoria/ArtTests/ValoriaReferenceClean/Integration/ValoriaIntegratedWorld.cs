@@ -5,6 +5,7 @@ using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.Presentation;
 using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
 using Eldoria.World4XPrototype;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +32,11 @@ namespace Eldoria.ReferenceClean {
   Rect observedVisibleArea;
   WorldHotspot[] targets;
   public Camera PlayerCamera=>InWorld?WorldCamera:city.PlayerCamera;
+  Rect UIVisibleSceneViewport(){
+   if(!Hud)return default;
+   var v2=Hud.GetComponent<RoyalGoldV2Hud>();
+   return v2?v2.GetFreeSceneViewport():Hud.GetVisibleSceneViewport();
+  }
   IEnumerator Start(){
    city=GetComponent<ValoriaReferenceCleanGameplay>();
    yield return null;
@@ -40,6 +46,9 @@ namespace Eldoria.ReferenceClean {
    legacyCanvas=legacy.GetComponent<Canvas>();legacyRaycaster=legacy.GetComponent<GraphicRaycaster>();
    cityFog=RenderSettings.fog;
    Hud=Instantiate(HudPrefab).GetComponent<RoyalHUD>();Hud.name="Valoria Royal Gold HUD";
+   // One authoritative Royal Gold session; V2 alters presentation only.
+   if(!Hud.GetComponent<RoyalGoldV2Hud>())Hud.gameObject.AddComponent<RoyalGoldV2Hud>();
+   if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
    BindSession();Hud.SelectionChanged+=SelectionChanged;
    // Keep the original presenter ticking the authoritative gateway and gestures.
    legacyCanvas.enabled=false;legacyRaycaster.enabled=false;
@@ -60,7 +69,7 @@ namespace Eldoria.ReferenceClean {
    RefreshNavigation();if(Time.unscaledTime>=nextVisualSync){
     nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();
     if(!string.IsNullOrEmpty(Selected)){
-     var area=Hud.GetVisibleSceneViewport();
+     var area=UIVisibleSceneViewport();
      if(Mathf.Abs(area.xMin-observedVisibleArea.xMin)+Mathf.Abs(area.yMin-observedVisibleArea.yMin)+Mathf.Abs(area.xMax-observedVisibleArea.xMax)+Mathf.Abs(area.yMax-observedVisibleArea.yMax)>.005f||FocusStage(Selected)!=observedFocusStage){observedVisibleArea=area;SelectionChanged(Selected);}
     }
    }
@@ -123,7 +132,7 @@ namespace Eldoria.ReferenceClean {
   public void Focus(GameObject target){
    if(!target||!Ready||!Hud)return;
    var camera=PlayerCamera;
-   var safe=Hud.GetVisibleSceneViewport();
+   var safe=UIVisibleSceneViewport();
    if(!camera||safe.width<=.08f||safe.height<=.08f)return;
    var points=FocusPoints(target);
    if(!ProjectFocus(camera,points,out var projected))return;
@@ -156,7 +165,7 @@ namespace Eldoria.ReferenceClean {
   }
   /// <summary>Checks every visible model-bound corner against the actual unoccluded UI viewport.</summary>
   public bool IsTargetFramed(GameObject target,out Rect projected,out Rect visible){
-   projected=default;visible=Hud?Hud.GetVisibleSceneViewport():default;
+   projected=default;visible=Hud?UIVisibleSceneViewport():default;
    if(!target||!Ready||!PlayerCamera)return false;
    bool inFront=ProjectFocus(PlayerCamera,FocusPoints(target),out projected);
    return inFront&&visible.width>0&&visible.height>0&&projected.xMin>=visible.xMin&&projected.xMax<=visible.xMax&&projected.yMin>=visible.yMin&&projected.yMax<=visible.yMax;
