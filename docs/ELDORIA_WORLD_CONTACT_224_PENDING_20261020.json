@@ -2,7 +2,7 @@
   "status": "MISSION_ACTIVE_NOT_FINISHED",
   "owner": "chatgpt-eldoria-visual-recovery-20261020",
   "canonical_scene": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
-  "canonical_scene_sha256": "57a27c1dbb21d20646e6593695e4deb15b65c00aa277242c5de18d9eaf36ec00",
+  "canonical_scene_sha256": "4c8bbdc6ccb1273bcf24c0e94fa102d88077faac71869598a0e215b88a1cb2bb",
   "verified": {
     "terrain226": {
       "run": 39485567981,
@@ -24,45 +24,53 @@
     }
   },
   "pending": {
-    "revision": 239,
-    "run": 39502200815,
-    "source": "f8b97ecc0e8fac8ab719cb1e48870cef86ce8e76",
-    "stage": "final_environment_integrate",
-    "reason": "Six saved/reopened render comparisons,40native checks, PlayMode and final city critique.",
-    "queue": "Waiting for existing Android39502034675 in shared concurrency group; do not interrupt other work."
+    "revision": 242,
+    "run": 39506996242,
+    "source": "f8e294dda9a829316eb0dec764f8e2b1ce7d20d0",
+    "stage": "web_playtest",
+    "browser_backend": "windows",
+    "reason": "Exact final scene build; after native completion pin existing Windows QA to these bytes and require complete visible-control PASS. No publication."
   },
   "roof": {
     "retained_candidate_sha256": "248fddf822484641d61f681d6db94041e119b321d367d4e580ad14bb8ae5e37a",
     "editable_blend_sha256": "c33187ec65202319554941063119ef2a3366f01c078cbe2b825e30138ae21ce4",
     "source_scene_sha256": "b6bc04b8c7b70acdc1fb11042b8fd26148cbadb9b0ecffb6f2abca2f3ae96940",
-    "geometry_review": "Integrated native234; accepted native238 lighting correction pending integration239.",
+    "geometry_review": "Native234 roof geometry retained; native241 persistent renderer/light identities and serialized terrain integrated, six saved/reopened comparisons passed.",
     "rejected": "native230 distorted hip; native231 clipping exposed unsupported gaps; neither scene saved.",
     "source_storage": "pack_roof_sources.py tested96MiB split/restore SHA256 exactly; workflow now uses installed Blender bundled Python, not missing Windows python alias."
   },
   "next": [
-    "Verify native239 exact saved/reopened scene and gameplay; do not treat queued as complete.",
-    "Final exact WebGL240 and existing Windows GPU QA, no publication.",
-    "Update existing final report, handoff, project state and workstream only after verification."
+    "Wait for native242 build; inspect its manifest/source and actual Unity validation.",
+    "Pin existing valoria-windows-chromium-qa.yml and browser-qa-request.json to run39506996242/sourcef8e294dda9a829316eb0dec764f8e2b1ce7d20d0/native242. Run same strict Windows GPU QA, no rebuild or publication.",
+    "Only after QA update root handoff/state/workstream and existing delivery report with final evidence and honest visual assessment."
   ],
   "prepared_independent_review": {
     "path": "tools/valoria-reference-clean/review_capture.py",
     "integrated_in": "f8b97ecc0e8fac8ab719cb1e48870cef86ce8e76"
   },
   "constraints": "0EUR, main only, same owner/workstream, no new agents/pipelines, no visible4plots, enemy camps, huge cliffs, BastionIII or gameplay changes. Preserve Android updater changes.",
-  "current_integrated_scene_sha256": "57a27c1dbb21d20646e6593695e4deb15b65c00aa277242c5de18d9eaf36ec00",
+  "current_integrated_scene_sha256": "4c8bbdc6ccb1273bcf24c0e94fa102d88077faac71869598a0e215b88a1cb2bb",
   "latest_integrated": {
-    "revision": 234,
-    "run": 39492819273,
-    "source": "229fbfb807920bc14695037a265a8289869f68e5",
+    "revision": 241,
+    "run": 39506119472,
+    "source": "421ad20d2c8e0bbab68509651e7c899fa4cf21aa",
     "checks": 40,
+    "playmode_pass": true,
     "render_comparisons": 6,
-    "persisted_scene_warning": "On reopen old LightingDataAsset rebinds old roof renderer IDs. Fix trial238, not yet integrated."
+    "saved_reopened_comparisons": 6,
+    "reload_max_mean_8bit": 0.001060501,
+    "published": false
   },
   "independent_critique": {
     "path": "docs/evidence/valoria-reference-clean/production-final-independent-review.json",
     "model": "qwen3-vl:8b-instruct-q4_K_M",
     "city_estimate": 6.5,
     "world_estimate": 6.5,
-    "certifies_targets": false
+    "certifies_targets": false,
+    "final_city": {
+      "path": "docs/evidence/valoria-reference-clean/production-final-city-review.json",
+      "estimate": 6.5,
+      "reliability_note": "Model wrongly claims four visible plots; direct full-resolution images and native checks contradict this. Score advisory, not certification."
+    }
   }
 }
