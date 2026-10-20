@@ -220,6 +220,7 @@ jobs:
           if($req.stage -eq 'world_art_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Trial'}
           if($req.stage -eq 'world_art_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Survey'}
           if($req.stage -eq 'architecture_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Survey'}
+          if($req.terrain_polish){$env:VALORIA_TERRAIN_POLISH='1'}
           if($req.stage -eq 'terrain_bank_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainBankAuthoring.Survey'}
           if($req.stage -eq 'terrain_bank_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainBankAuthoring.Trial'}
           if($req.stage -eq 'terrain_bank_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainBankAuthoring.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
@@ -672,6 +673,7 @@ jobs:
           name: valoria-terrain-bank-${{ github.run_id }}
           path: |
             valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-bank192/**
+            valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-polish218/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/architecture201/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/world204/**
             valoria-layered-source/docs/evidence/valoria-reference-clean/finish211/**

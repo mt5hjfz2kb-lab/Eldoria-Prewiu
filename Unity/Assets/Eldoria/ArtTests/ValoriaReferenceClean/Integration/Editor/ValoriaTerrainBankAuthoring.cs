@@ -12,7 +12,7 @@ namespace Eldoria.ReferenceClean.Editor {
 public static class ValoriaTerrainBankAuthoring {
  const string Scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
  const string RefHash="86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d";
- static string Ev=>Path.GetFullPath("../docs/evidence/valoria-reference-clean/terrain-bank192");
+ static string Ev=>Path.GetFullPath("../docs/evidence/valoria-reference-clean/"+(Environment.GetEnvironmentVariable("VALORIA_TERRAIN_POLISH")=="1"?"terrain-polish218":"terrain-bank192"));
  [Serializable] public class Surface { public int resolution;public Vector3 origin,size;public float[] heights; }
  [Serializable] public class Geometry {public string name;public Vector3[] vertices; public int[] triangles;public Vector2[] uv;}
  [Serializable] public class SurveyData {public string scene_sha256,reference_sha256,source_commit;public Surface terrain; public Geometry[] meshes;public string camera,light;}
