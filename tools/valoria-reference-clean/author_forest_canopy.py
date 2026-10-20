@@ -5,7 +5,7 @@ import bpy,bmesh,json,math,random,pathlib,hashlib,numpy as np
 from mathutils import Vector
 ROOT=pathlib.Path.cwd();EV=ROOT/'docs/evidence/valoria-reference-clean/world204';EV.mkdir(parents=True,exist_ok=True)
 bpy.ops.wm.read_factory_settings(use_empty=True)
-palette=[(.18,.105,.047),(.055,.115,.035),(.095,.19,.055),(.16,.27,.085),(.38,.25,.12)]
+palette=[(.18,.105,.047),(.12,.21,.065),(.24,.38,.115),(.34,.47,.17),(.38,.25,.12)]
 mats=[]
 for i,c in enumerate(palette):
  m=bpy.data.materials.new(['Weathered branch bark','Needle undersides','Mature needles','Sunward needle tips','Exposed weathered cut wood'][i]);m.diffuse_color=(*c,1);m.use_nodes=True;n=m.node_tree.nodes;p=next((n for n in n if n.type=='BSDF_PRINCIPLED'),None) or n.new('ShaderNodeBsdfPrincipled');out=next((q for q in n if q.type=='OUTPUT_MATERIAL'),None) or n.new('ShaderNodeOutputMaterial');m.node_tree.links.new(p.outputs['BSDF'],out.inputs['Surface']);p.inputs['Base Color'].default_value=(*c,1);p.inputs['Roughness'].default_value=.94;mats.append(m)
