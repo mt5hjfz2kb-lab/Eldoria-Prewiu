@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "NATIVE242_PUBLICATION_PREPARING",
+  "state": "NATIVE242_UPLOAD_ACCEPTED_REMOTE_PROCESSING",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -52,32 +52,33 @@
     "authorization": "Owner explicitly asks consolidated and published, and instructs to continue if unfinished in current session. Publish same tested native242 via existing restricted channel."
   },
   "last_attempt": {
-    "run_id": 39440869260,
+    "run_id": 39511020125,
     "prepare": "success",
     "transport_tests": "success",
-    "publish": "accepted_confirmed_active_via_separate_remote_status",
-    "remote_build": 2169803,
+    "publish": "upload_accepted_remote_processing",
+    "remote_build": 2172967,
     "hosted_verified": false,
-    "reason": "Remote build 2169803 is active in Restricted itch.io web channel. Actual hosted page and physical iPhone gameplay remain untested."
+    "reason": "Butler accepted upload; remote activation still pending at22:57:10UTC. Never repeat upload to resolve processing delay."
   },
   "uploaded": {
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native191",
-    "run_id": 39440869260,
-    "remote_build": 2169803,
+    "revision": "native242",
+    "run_id": 39511020125,
+    "remote_build": 2172967,
+    "version": "native242-3ba026d54e2e",
     "upload_accepted": true,
     "hosted_verified": false,
-    "processing_status": "ACTIVE",
-    "transport_adapter": "itch-low-memory-v2",
+    "processing_status": "PROCESSING",
+    "transport_adapter": "itch-decoded-stream-v3",
     "physical_mobile_tested": false,
-    "remote_active_confirmed": true,
-    "activated_evidence": "Butler status✓ #2169803 (from #2165127) | native191-97997478971c, 2026-10-20 14:45:53Z",
+    "remote_active_confirmed": false,
     "latest_remote_check": {
-      "run_id": 39441475526,
-      "checked_at": "2026-10-20T14:45:53Z",
-      "result": "ACTIVE_NATIVE191_VERSION_MATCH"
+      "run_id": 39511020125,
+      "job_id": 118934065576,
+      "checked_at": "2026-10-20T22:57:10Z",
+      "result": "NATIVE191_ACTIVE_NATIVE242_PROCESSING"
     }
   },
   "manual_fallback": {
@@ -172,7 +173,7 @@
     "deployment": "appgdep_6ad63a0012448191b64d52721e4479a6"
   },
   "current_revision_qa": {
-    "revision": "native191",
+    "revision": "native242",
     "windows_gpu_webgl_pass": true,
     "native_unity_pass": true,
     "normal_clock": true,
@@ -180,6 +181,8 @@
     "save_reload_exact": true,
     "hosted_chrome_tested": false,
     "ios_safari_tested": false,
-    "art_approved": false
+    "art_approved": false,
+    "transport_reader_actual_unity_pass": true,
+    "decoded_data_sha256": "9db4914eb661e57ecf4d491f774e56a64e4bd346e898633d366ffdc2eef54853"
   }
 }
