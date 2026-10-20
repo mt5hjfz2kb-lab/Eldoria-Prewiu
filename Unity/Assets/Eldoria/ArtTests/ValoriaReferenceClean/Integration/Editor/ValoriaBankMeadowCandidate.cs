@@ -30,7 +30,7 @@ namespace Eldoria.ReferenceClean.Editor
       public string status;
     }
 
-    static string Workspace => Path.GetFullPath(Path.Combine(Application.dataPath,"../.."));
+    static string Workspace => Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../.."));
     static string Evidence => Path.Combine(Workspace,"docs/evidence/valoria-reference-clean");
     static void Need(bool ok, string why) { if (!ok) throw new InvalidOperationException(why); }
     static string SHA(string file)
