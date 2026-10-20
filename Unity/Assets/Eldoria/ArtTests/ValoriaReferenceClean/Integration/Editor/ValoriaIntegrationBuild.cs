@@ -228,6 +228,21 @@ namespace Eldoria.ReferenceClean.Editor {
     yield return new WaitForSecondsRealtime(.4f);
     Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.SawmillBuildSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Parcels.LeftBuilt.activeSelf,"Built scene model missing");h.Hud.Refresh();Capture(h,"integration-city-built.png",1600,900);},"shared timer and authored model");
    }
+   Check(()=>{
+    // Native regression for a real fault found on Windows Chromium in
+    // native189: the V2 context sheet obscured the only World button.
+    var nav=h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Button;
+    Need(nav&&nav.gameObject.activeInHierarchy&&nav.interactable,"World button not available after sawmill");
+    h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>().SynchronizeNow();
+    Canvas.ForceUpdateCanvases();
+    var corners=new Vector3[4];((RectTransform)nav.transform).GetWorldCorners(corners);
+    var center=RectTransformUtility.WorldToScreenPoint(null,(corners[0]+corners[2])*.5f);
+    var pointer=new PointerEventData(EventSystem.current){pointerId=-1,button=PointerEventData.InputButton.Left,position=center};
+    var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(pointer,hits);
+    Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==nav.gameObject,
+     "Context sheet obstructs real World button; screen="+Screen.width+"x"+Screen.height+
+     "; point="+center+"; hits="+string.Join(",",hits.Select(x=>x.gameObject.name)));
+   },"World navigation is touchable even while a building sheet is open");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
    Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;

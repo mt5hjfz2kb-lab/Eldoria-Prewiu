@@ -247,9 +247,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 goalTop - 8f, 48, 48);
 
             float cardWidth = portrait ? Mathf.Min(width - 24, 720f) : Mathf.Min(420f, width * .34f);
-            float cardHeight = portrait ? Mathf.Min(420f, height * .37f) : Mathf.Min(474f, height * .67f);
+            float cardHeight = portrait ? Mathf.Min(340f, height * .30f) : Mathf.Min(474f, height * .67f);
+            // The bottom navigation is the only entrance to the World after
+            // Bastion I builds the sawmill. The context sheet MUST start above
+            // that navigation instead of silently covering its hit targets.
+            var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
+            float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
+            float sheetBottom = Mathf.Max(128f, navTop + 14f);
             if (portrait)
-                Place(buildingCard, new Vector2(.5f, 0), new Vector2(.5f, 0), 0, 14, cardWidth, cardHeight);
+                Place(buildingCard, new Vector2(.5f, 0), new Vector2(.5f, 0), 0, sheetBottom, cardWidth, cardHeight);
             else
                 Place(buildingCard, Vector2.one, Vector2.one, -22, -152, cardWidth, cardHeight);
             Top(buildingTitle.rectTransform, 19, 18, cardWidth - 91, 42);
@@ -461,7 +467,8 @@ namespace Eldoria.UI.RoyalGold.V2
             float height = Mathf.Max(1, safe.rect.height);
             float padding = .025f;
             if (portrait && BuildingVisible)
-                free.yMin = Mathf.Max(free.yMin, buildingCard.rect.height / height + padding);
+                free.yMin = Mathf.Max(free.yMin,
+                    (buildingCard.anchoredPosition.y + buildingCard.rect.height) / height + padding);
             else if (!portrait && BuildingVisible)
                 free.xMax = Mathf.Min(free.xMax, 1f - buildingCard.rect.width / width - padding);
             if (objectiveGroup && objectiveGroup.blocksRaycasts)
