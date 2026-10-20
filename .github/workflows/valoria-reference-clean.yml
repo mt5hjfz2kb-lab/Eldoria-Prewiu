@@ -18,6 +18,7 @@ jobs:
     outputs:
       stage: ${{ steps.native_stage.outputs.stage }}
       revision: ${{ steps.native_stage.outputs.revision }}
+      browser_backend: ${{ steps.native_stage.outputs.browser_backend }}
     defaults:
       run:
         working-directory: valoria-layered-source
@@ -159,6 +160,7 @@ jobs:
           }
           "stage=$($req.stage)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "revision=$($req.revision)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "browser_backend=$($req.browser_backend)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanBuilder.Build'
           if($req.stage -eq 'environment_author'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
@@ -866,7 +868,7 @@ jobs:
 
   visible-controls-web:
     needs: native
-    if: needs.native.outputs.stage == 'web_playtest'
+    if: needs.native.outputs.stage == 'web_playtest' && needs.native.outputs.browser_backend != 'windows'
     runs-on: ubuntu-latest
     timeout-minutes: 18
     permissions:
