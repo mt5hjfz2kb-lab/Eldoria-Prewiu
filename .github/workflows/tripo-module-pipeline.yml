@@ -39,6 +39,38 @@ jobs:
           run-id: 39495619494
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/boar-archive-optimized
+      - name: Recover genuine full-resolution Unity evidence
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-rock-boar-unity-isolated-57d9f85196c29b1884a5febb65ce3b4f3c67a310
+          run-id: 39505056649
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/boar-archive-unity2k
+      - name: Persist verified 2K Unity rock-boar capture evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          dest='ArtSource/World4X/RockBoar_v1/UnityQA'
+          mkdir -p "$dest"
+          metrics=$(find "$RUNNER_TEMP/boar-archive-unity2k" -type f -name 'boar-unity-metrics.json' -print -quit)
+          test -f "$metrics"
+          python - "$metrics" <<'PY'
+          import json,sys
+          m=json.load(open(sys.argv[1],encoding='utf8'))
+          assert m['unityVersion']=='6000.3.23f1'
+          assert m['triangles']==49800 and m['vertices']==34125
+          assert m['fullResolutionTexturePass'] and m['importedBaseColorWidth']==2048 and m['importedBaseColorHeight']==2048
+          assert m['textures']==3 and m['uv0AllMeshes'] and m['normalsAllMeshes'] and m['positiveSelection'] and m['emptySelectionMiss']
+          print('ROCK_BOAR_QA2K_VERIFIED')
+          PY
+          cp "$metrics" "$dest/boar-unity-metrics.json"
+          for name in boar-unity-isometric-textured.png boar-unity-side-textured.png boar-unity-front-textured.png boar-unity-strategic-textured.png; do
+            f=$(find "$RUNNER_TEMP/boar-archive-unity2k" -type f -name "$name" -print -quit)
+            test -f "$f"
+            test "$(wc -c < "$f")" -gt 20000
+            cp "$f" "$dest/$name"
+          done
+          echo 'ROCK_BOAR_ISOLATED_RENDER_EVIDENCE_PRESERVED'
       - name: Verify SHA and preserve editable source without gameplay changes
         shell: bash
         run: |
