@@ -2,7 +2,7 @@
   "schema_version": 1,
   "reference_sha256": "8ae6fb0e6949dd4f7d37b38767282e5f1fb6089e117a29f362945c1edfa66689",
   "benchmark": "references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
-  "provenance_note": "These six observations were transcribed from GitHub Actions job logs, not from direct re-hashing of all original PNG files. Art is not approved and these observations are not training weights.",
+  "provenance_note": "These six observations were transcribed from GitHub Actions job logs, not from direct re-hashing of all original PNG files. Art is not approved and these observations are not training weights. Six historical observations use the October 06 reference and their hashes are preserved, not retroactively rewritten. New cycles must use current_reference_sha256 and the October 20 owner image; old cliff-composition advice is method-only.",
   "cases": [
     {
       "id": "eldoria-bastion1-38358105789",
@@ -164,5 +164,7 @@
       "lesson": "Proteger parcelas y anclajes; después del acabado Blender exigir captura real y revisión independiente en Unity.",
       "next_action": "Usar el GLB original y acabado en una comparación Unity del candidato exacto con auditoría de materiales y rendimiento."
     }
-  ]
+  ],
+  "current_reference_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d",
+  "current_reference_canonic": "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md"
 }
