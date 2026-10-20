@@ -629,6 +629,17 @@ jobs:
             }
             if(-not $published){throw 'Concurrent main mutation persisted; all original artifacts retained, no force-push'}
           }
+      - uses: actions/upload-artifact@v4
+        if: always() && (steps.native_stage.outputs.stage == 'terrain_bank_trial' || steps.native_stage.outputs.stage == 'terrain_bank_integrate')
+        with:
+          name: valoria-terrain-polish-review-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-polish218/*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-polish218/authoring-result.json
+            valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-polish218/unity-review.json
+            valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-polish218/integrated.json
+          if-no-files-found: warn
+          retention-days: 30
       # Compact visual evidence for the REAL owner-facing uGUI V2. The legacy
       # review artifact carries nearly a gigabyte of old Blender/source files
       # and exceeds connector limits; retain it unchanged, add PNGs separately.

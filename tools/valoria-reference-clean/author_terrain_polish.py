@@ -17,11 +17,40 @@ bm=bmesh.new();bm.from_mesh(m);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),
 bmesh.ops.dissolve_limit(bm,angle_limit=math.radians(1),use_dissolve_boundaries=False,verts=list(bm.verts),edges=list(bm.edges),delimit={'NORMAL'})
 bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(m);bm.free();m.update()
 source_after_weld=len(m.vertices)
-bevel=o.modifiers.new('Eroded convex corners / bounded 38 cm','BEVEL');bevel.width=.38;bevel.segments=2;bevel.limit_method='ANGLE';bevel.angle_limit=math.radians(26);bevel.use_clamp_overlap=True
-bpy.ops.object.modifier_apply(modifier=bevel.name)
+# Change the complete stone mass rather than a sub-pixel chamfer. Connected
+# source components are proportionally sculpted toward irregular rounded
+# superellipsoids, with lower feet preserved and no new rock instances.
+bm=bmesh.new();bm.from_mesh(m);remaining=set(bm.verts);groups=[]
+while remaining:
+ seed=min(remaining,key=lambda v:v.index);remaining.remove(seed);component={seed}
+ todo=[seed]
+ while todo:
+  current=todo.pop()
+  for edge in current.link_edges:
+   other=edge.other_vert(current)
+   if other in remaining:remaining.remove(other);component.add(other);todo.append(other)
+ groups.append(component)
+changed=0
+for component in groups:
+ lo=Vector(tuple(min(v.co[k] for v in component) for k in range(3)));hi=Vector(tuple(max(v.co[k] for v in component) for k in range(3)));center=(lo+hi)*.5;half=(hi-lo)*.5
+ if max(half.x,half.y)<.8 or half.z<.4:continue
+ for v in component:
+  q=Vector(tuple((v.co[k]-center[k])/max(.05,half[k]) for k in range(3)))
+  radius=sum(abs(q[k])**2.35 for k in range(3))**(1/2.35)
+  if radius<.15:continue
+  blend=.86*max(0,min(1,(q.z+.85)/.45));target=q/radius
+  # Restrained uneven weathering follows the stone's measured own frame.
+  erosion=1+.035*math.sin(q.x*4.1+center.x)*math.sin(q.y*3.8+q.z*2.9)
+  target*=erosion
+  sculpt=q.lerp(target,blend)
+  v.co=center+Vector(tuple(sculpt[k]*half[k] for k in range(3)))
+ changed+=1
+bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(m);bm.free();m.update()
+assert changed>30
+# Reduce the old overly dense source while retaining the sculpted silhouette.
+dec=o.modifiers.new('Preserve weathered silhouette / bounded reduction','DECIMATE');dec.ratio=.68
+bpy.ops.object.modifier_apply(modifier=dec.name)
 for p in o.data.polygons:p.use_smooth=True
-normal=o.modifiers.new('Preserve broad stone planes / area weighted normals','WEIGHTED_NORMAL');normal.keep_sharp=True;normal.weight=65
-bpy.ops.object.modifier_apply(modifier=normal.name)
 m=o.data;m.calc_loop_triangles()
 assert 10000<len(m.loop_triangles)<160000, len(m.loop_triangles)
 # Per-face metric UV, independent of the triangulated source's stretched atlas.
@@ -44,4 +73,4 @@ out={'survey_sha256':sha(EV/'survey.json'),'source_scene_sha256':s['scene_sha256
 (EV/'bank-weathered.json').write_text(json.dumps(out,separators=(',',':')))
 bpy.ops.wm.save_as_mainfile(filepath=str((EV/'RiverbankWeathered.blend').resolve()))
 bpy.ops.export_scene.gltf(filepath=str((EV/'RiverbankWeathered.glb').resolve()),export_format='GLB',use_selection=True)
-(EV/'authoring-result.json').write_text(json.dumps({'blender':bpy.app.version_string,'source_vertices':len(v),'source_triangles':len(f),'welded_vertices':source_after_weld,'output_vertices':len(vv),'output_triangles':len(tt)//3,'operations':['weld split source topology','dissolve coplanar source triangles','bounded 0.38m two-segment convex bevel','area weighted normals','metric dominant-plane UV'],'candidate_sha256':sha(EV/'bank-weathered.json'),'blend_sha256':sha(EV/'RiverbankWeathered.blend'),'glb_sha256':sha(EV/'RiverbankWeathered.glb'),'collision_modified':False,'art_approved':False},indent=2))
+(EV/'authoring-result.json').write_text(json.dumps({'blender':bpy.app.version_string,'source_vertices':len(v),'source_triangles':len(f),'welded_vertices':source_after_weld,'sculpted_stone_components':changed,'output_vertices':len(vv),'output_triangles':len(tt)//3,'operations':['weld split source topology','dissolve coplanar source triangles','proportional whole-component weathering with protected feet','silhouette-preserving source reduction','smooth rock normals','metric dominant-plane UV'],'candidate_sha256':sha(EV/'bank-weathered.json'),'blend_sha256':sha(EV/'RiverbankWeathered.blend'),'glb_sha256':sha(EV/'RiverbankWeathered.glb'),'collision_modified':False,'art_approved':False},indent=2))
