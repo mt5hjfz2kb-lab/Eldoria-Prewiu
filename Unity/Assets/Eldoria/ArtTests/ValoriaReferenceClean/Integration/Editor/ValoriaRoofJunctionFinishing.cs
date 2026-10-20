@@ -53,7 +53,7 @@ public static class ValoriaRoofJunctionFinishing {
    File.WriteAllText(Ev+"/unity-review.json","{\"same_camera_light\":true,\"both_bastion_stages\":true,\"materials_retained\":true,\"colliders_unchanged\":true,\"scene_saved\":false,\"art_approved\":false}");
    if(integrate){var differences=new List<string>();foreach(var a in approved){differences.Add(ValoriaTerrainBankAuthoring.CompareRender(a.Value,Ev+"/"+a.Key));File.WriteAllBytes(Ev+"/approved-"+a.Key,a.Value);}File.WriteAllText(Ev+"/render-identity.json","["+string.Join(",",differences)+"]");const string folder="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/RoofJunction226";Need(!Directory.Exists(folder),"Refuse overwrite of retained architecture");Directory.CreateDirectory(folder);AssetDatabase.Refresh();for(int i=0;i<owned.Count;i++)AssetDatabase.CreateAsset(owned[i],folder+"/Bastion-"+i+".asset");AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(city.gameObject.scene);Need(EditorSceneManager.SaveScene(city.gameObject.scene,Scene),"Roof integration save failed");saved=true;File.WriteAllText(Ev+"/integrated.json","{\"scene_sha256\":\""+Hash(Scene)+"\",\"gameplay_gate\":\"PENDING_CURRENT_PROBE\",\"published\":false}");}
   }finally{if(!saved){foreach(var p in original)p.Key.sharedMesh=p.Value;foreach(var m in owned)if(m)Object.DestroyImmediate(m);}}
-  if(integrate)ValoriaIntegrationBuild.ValidateCurrent();else{Debug.Log("VALORIA_ROOF_JUNCTION_TRIAL_COMPLETE");EditorApplication.Exit(0);}
+  if(integrate)ValoriaIntegrationBuild.ValidateCurrent();else{Debug.Log("VALORIA_REFERENCE_CLEAN_ROOF_JUNCTION_TRIAL_COMPLETE");EditorApplication.Exit(0);}
  }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
 }}
 #endif

@@ -1,15 +1,23 @@
 """Repair measured existing Bastion roof/tower intersections, preserving I–II.
 
-Source: exact current Unity mesh survey. Shape the existing tiled roof ends,
+Source: exact current Unity mesh survey. Preserve the existing tiled roof slopes,
 clip the inherited roof out of tower interiors, retain II's original hip caps.
 Editable Blender sources preserve original and candidate geometry/materials.
 """
-import bpy, json, math, hashlib, pathlib, gzip
+import bpy, json, math, hashlib, pathlib, gzip, shutil
 import numpy as np
 ROOT=pathlib.Path.cwd()
 SRC=ROOT/'docs/evidence/valoria-reference-clean/world-contact222/roof-source-survey.json.gz'
 EV=ROOT/'docs/evidence/valoria-reference-clean/roof-junction226'
 EV.mkdir(parents=True,exist_ok=True)
+# Preserve the rejected editable hip source and proof once; reviewed screenshots
+# remain in immutable native230 artifact12294402736.
+old=EV/'BastionRoofJunctions.blend'
+if old.exists() and hashlib.sha256(old.read_bytes()).hexdigest()=='ec9ca3c1471903782b4316abd1e4fa9b93a2d387148ba923c197a31af635529b':
+ rejected=EV/'RejectedHip230';rejected.mkdir(exist_ok=True)
+ for name in ['BastionRoofJunctions.blend','author-proof.json']:
+  if not (rejected/name).exists():shutil.copy2(EV/name,rejected/name)
+
 source=json.loads(gzip.decompress(SRC.read_bytes()).decode('utf-8-sig'))
 assert {p['name'] for p in source['parts']}=={'Bastion_I','Bastion_II'}
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -67,9 +75,9 @@ for part in source['parts']:
    pts=v[tri]
    slate=slot in [8,9,10] and all(key(p) in main for p in pts)
    timber=slot==11 and pts[:,1].min()>5.6 and pts[:,1].max()<10 and pts[:,2].min()>31.7 and pts[:,2].max()<43.3
-   gable=slot==12 and np.ptp(pts[:,0])<.002 and abs(abs(pts[0,0])-8.5)<.002 and pts[:,1].min()>5.7 and pts[:,1].max()<10
+   gable=False # The original supported gable shape remains unchanged.
    if not(slate or timber or gable):indices.extend(int(i) for i in tri);protected.update(int(i) for i in tri);continue
-   poly=[deform(a) for a in original[tri]]
+   poly=[a.copy() for a in original[tri]]
    polygons=[poly]
    if not gable:
     for box in boxes:polygons=[q for p in polygons for q in subtract(p,box)]
@@ -120,5 +128,5 @@ for obj in exports:
  bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);bpy.context.view_layer.objects.active=obj
  bpy.ops.export_scene.gltf(filepath=str(EV/(obj.name.split()[0]+'_RoofJunction.glb')),export_format='GLB',use_selection=True)
 (EV/'candidate.json.gz').write_bytes(gzip.compress(json.dumps({'survey_sha256':sha(SRC),'source_scene_sha256':source['scene_sha256'],'parts':results},separators=(',',':')).encode('utf-8'),mtime=0))
-(EV/'author-proof.json').write_text(json.dumps({'source_survey_sha256':sha(SRC),'candidate_sha256':sha(EV/'candidate.json.gz'),'blend_sha256':sha(EV/'BastionRoofJunctions.blend'),'glb_sha256':{f.name:sha(f) for f in EV.glob('*_RoofJunction.glb')},'operations':['Measured existing slate end shaping','Attribute-preserving plane clipping at existing tower interiors','Retained II hip caps','Closed dressed tower terrace','Original UV and protected geometry retention'],'parts':proof,'art_approved':False},indent=2))
-print('VALORIA_ROOF_JUNCTION_BLENDER_COMPLETE')
+(EV/'author-proof.json').write_text(json.dumps({'source_survey_sha256':sha(SRC),'candidate_sha256':sha(EV/'candidate.json.gz'),'blend_sha256':sha(EV/'BastionRoofJunctions.blend'),'glb_sha256':{f.name:sha(f) for f in EV.glob('*_RoofJunction.glb')},'operations':['Original supported gable and slate slopes preserved','Attribute-preserving plane clipping at existing tower interiors','Retained II hip caps','Closed dressed tower terrace','Original UV and protected geometry retention'],'parts':proof,'art_approved':False},indent=2))
+print('VALORIA_REFERENCE_CLEAN_ROOF_JUNCTION_BLENDER_COMPLETE')

@@ -1,11 +1,11 @@
 {
   "stage": "architecture_trial",
   "validate_play": false,
-  "revision": 230,
+  "revision": 231,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Author from exact current city I-II source survey: reshape retained slate roof ends, clip intersections within existing tower walls, retain II hip caps and original materials/UV. Six actual Unity A/B views, no trial scene save.",
+  "checks": "Reject native230 hip deformation after all6 visual views: distorted slate and raised rear edge. Preserve original roof slopes and gables; only clip roof/timber from existing tower interiors and close tower terrace. New6-view native trial, no scene save.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
