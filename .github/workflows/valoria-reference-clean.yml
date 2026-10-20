@@ -531,6 +531,11 @@ jobs:
             @{windows_host=$true;android_adb_available=$available;authorized_android_devices=$count;physical_android_profile_performed=$false;physical_ios_profile_performed=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/mobile-availability.json -Encoding utf8
           }
       - name: Persist independent scene, models, prefabs and actual captures on construction branch
+        # A WebGL-only QA stage authors no scene/model/prefab. Its artifacts
+        # must be uploaded unchanged; rebasing an unnecessary art commit here
+        # used to reject harmless browser-QA request updates and prevent a
+        # successful exact WebGL build from reaching the browser gate.
+        if: steps.native_stage.outputs.stage != 'web_playtest'
         shell: powershell
         run: |
           git config user.name 'Valoria reference clean builder'
