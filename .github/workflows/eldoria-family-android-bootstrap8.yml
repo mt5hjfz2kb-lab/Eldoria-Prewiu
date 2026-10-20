@@ -1,0 +1,108 @@
+name: '[ELDORIA] Publish first-install Android 1.8 APK'
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/eldoria-family-android-bootstrap8.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eldoria-android-bootstrap-code8
+  cancel-in-progress: false
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            updates/android/family.json
+          sparse-checkout-cone-mode: false
+      - name: Require exact first-install APK artifact and already promoted code9
+        id: approved
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const r=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:39481727537})).data;
+            if(r.status!=='completed' || r.conclusion!=='success' || r.head_branch!=='main' ||
+               r.head_sha!=='1e7c1858a6d6d2a3b613da8763a34965b85c55f7' ||
+               !r.name.startsWith('[ELDORIA] Family Android updater build')) throw Error('Exact code8 builder proof invalid');
+            const artifacts=await github.paginate(github.rest.actions.listWorkflowRunArtifacts,{...context.repo,run_id:r.id,per_page:100});
+            if(!artifacts.some(a=>!a.expired&&a.name==='eldoria-family-updater-code8-39481727537'))
+              throw Error('Original signed code8 artifact absent or expired');
+            const channel=require('./updates/android/family.json');
+            if(channel.enabled!==true || channel.versionCode<9 ||
+               channel.packageName!=='com.eldoria.valoria.v5test')
+              throw Error('Do not expose code8 before signed code9 channel is active');
+            core.setOutput('ok','true');
+      - uses: actions/download-artifact@v4
+        if: steps.approved.outputs.ok == 'true'
+        with:
+          name: eldoria-family-updater-code8-39481727537
+          run-id: 39481727537
+          github-token: ${{ github.token }}
+          path: original
+      - name: Verify exact signed APK, manifest, Android permissions and SHA-256
+        if: steps.approved.outputs.ok == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          apk=original/Eldoria-Valoria-code8.apk
+          test -f "$apk"
+          python3 - <<'PY'
+          import json,hashlib,pathlib
+          p=pathlib.Path('original/Eldoria-Valoria-code8.apk')
+          proof=json.loads(pathlib.Path('original/android-build-identity.json').read_text(encoding='utf-8-sig'))
+          expected='7570fb7fc08d4a665e264af51b0968cac2bc79bf783e256a1e367c935964b8e6'
+          sha=hashlib.sha256()
+          with p.open('rb') as f:
+            while True:
+              data=f.read(8*1024*1024)
+              if not data:break
+              sha.update(data)
+          assert sha.hexdigest()==proof['sha256']==expected
+          assert p.stat().st_size==proof['bytes']==227769276
+          assert proof['packageName']=='com.eldoria.valoria.v5test'
+          assert proof['sourceSha']=='1e7c1858a6d6d2a3b613da8763a34965b85c55f7'
+          assert proof['versionCode']==8 and proof['versionName']=='1.8'
+          assert proof['certificateSha256']=='f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8'
+          assert proof['nativeSignatureVerified'] is True
+          assert proof['installerPermissionVerified'] is True
+          assert proof['userDataReset'] is False
+          print('ELDORIA_CODE8_EXACT_SOURCE_SIGNED_HASH_PASS')
+          PY
+          aapt="$(find "$ANDROID_HOME/build-tools" -mindepth 2 -maxdepth 2 -name aapt -type f | sort -V | tail -n 1)"
+          test -x "$aapt" || { echo 'Android aapt verifier missing'; exit 1; }
+          "$aapt" dump badging "$apk" >badging.txt
+          "$aapt" dump permissions "$apk" >perms.txt
+          grep -F "package: name='com.eldoria.valoria.v5test' versionCode='8'" badging.txt
+          grep -F "native-code: 'arm64-v8a'" badging.txt
+          grep -F 'android.permission.INTERNET' perms.txt
+          grep -F 'android.permission.ACCESS_NETWORK_STATE' perms.txt
+          grep -F 'android.permission.REQUEST_INSTALL_PACKAGES' perms.txt
+          echo 'ELDORIA_CODE8_NETWORK_AND_INSTALL_PERMISSIONS_PASS'
+      - name: Publish immutable first-install APK without touching the active code9 channel
+        if: steps.approved.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag=eldoria-android-code8
+          filename=Eldoria-Valoria-code8.apk
+          url="https://github.com/$GITHUB_REPOSITORY/releases/download/$tag/$filename"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Previous code8 release exists, verifying immutable bytes only'
+          else
+            gh release create "$tag" "original/$filename" \
+              --repo "$GITHUB_REPOSITORY" --target main \
+              --title 'Eldoria Android 1.8 · first-install updater' --prerelease \
+              --notes 'One-time initial installation for the family tester. Signed original code8 APK source: 1e7c1858a6d6d2a3b613da8763a34965b85c55f7. Opens Eldoria and automatically downloads approved code9 over Wi-Fi; Android requires an explicit install confirmation. No game-data uninstall.'
+          fi
+          curl -fL --retry 5 --retry-delay 3 -sS "$url" -o verify-public.apk
+          cmp "original/$filename" verify-public.apk
+          test "$(sha256sum verify-public.apk | cut -d ' ' -f1)" = "7570fb7fc08d4a665e264af51b0968cac2bc79bf783e256a1e367c935964b8e6"
+          echo 'ELDORIA_CODE8_FIRST_INSTALL_PUBLIC_BYTES_PASS'
