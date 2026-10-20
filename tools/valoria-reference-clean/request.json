@@ -1,11 +1,11 @@
 {
   "stage": "terrain_bank_integrate",
   "validate_play": false,
-  "revision": 223,
+  "revision": 224,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Integrate exact native222 reviewed terrain/bank candidate, compare all four images and run current I-II native regression. No publication.",
+  "checks": "Retry exact native222 accepted integration after fresh Windows line-ending identity failure; normalize only if LF SHA exactly matches approved source, retain all render/gameplay gates.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",

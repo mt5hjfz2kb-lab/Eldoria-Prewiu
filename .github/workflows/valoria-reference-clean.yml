@@ -400,6 +400,23 @@ jobs:
             if($pre.ExitCode -ne 0 -or -not(Select-String $preLog -Pattern 'VALORIA_REFERENCE_CLEAN_GAMEPLAY_PROBE_COMPLETE EXISTING_UI_RULES_SAVE_I_II_PASS' -Quiet)){Get-Content $preLog -Tail 100;throw 'Exact content/runtime preflight failed'}
             if($req.validate_loader_cases){Test-ValoriaContentLoaderCases;$loaderCasesDone=$true}
           }
+          # A fresh Windows checkout can translate .unity LF to CRLF. Restore
+          # only when LF bytes match the exact visually accepted scene hash.
+          if($req.terrain_polish -and $req.stage -eq 'terrain_bank_integrate'){
+            $scene='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
+            $accepted=Get-Content 'docs/evidence/valoria-reference-clean/terrain-polish218/accepted-candidate.json' -Raw|ConvertFrom-Json
+            $actual=(Get-FileHash $scene -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($actual -ne $accepted.source_scene_sha256){
+              $utf8=New-Object System.Text.UTF8Encoding($false,$true)
+              $bytes=$utf8.GetBytes([IO.File]::ReadAllText((Resolve-Path $scene),$utf8).Replace("`r`n","`n"))
+              $sha=[Security.Cryptography.SHA256]::Create()
+              try{$lfHash=([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','').ToLowerInvariant()}finally{$sha.Dispose()}
+              Write-Host "Accepted scene=$($accepted.source_scene_sha256); checkout=$actual; LF-only=$lfHash"
+              if($lfHash -ne $accepted.source_scene_sha256){throw 'Real source change: refuse normalization or candidate integration'}
+              [IO.File]::WriteAllBytes((Resolve-Path $scene),$bytes)
+              Write-Host 'VALORIA_ACCEPTED_SCENE_EXACT_BYTES_RESTORED_LINE_ENDINGS_ONLY'
+            }
+          }
           $log=Join-Path $env:RUNNER_TEMP 'valoria-reference-clean.log'
           $args=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod',$method,'-logFile',$log)
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
