@@ -1,18 +1,18 @@
 {
-  "enabled": false,
-  "request_id": "eldoria-spawnling-bastion2-h31-one-20261021",
-  "module_label": "Eldoria_Spawnling_Bastion2_v1",
+  "enabled": true,
+  "request_id": "eldoria-rift-focus-h31-one-20261021",
+  "module_label": "Eldoria_RiftFocus_v1",
   "unity_yaw_degrees": 0,
   "source": {
     "mode": "tripo_text",
     "tripo_model": "v3.1-20260211",
     "face_limit": 85000,
-    "prompt": "ONE small early-game Rift Spawnling creature for medieval dark fantasy 4X game, full body standalone 3D creature in neutral crouched alert pose. Approximately 1.35 meters tall, hunched asymmetric silhouette, compact vaguely human torso but bestial stance, exactly TWO elongated forearms with short claws and TWO powerful digitigrade legs, one head with narrow distorted face and small fangs, broad low shoulders and curved back. Desaturated matte purple/violet leathery skin with charcoal patches, a few thin muted lavender fissure veins on back and shoulder, extremely subtle lilac inner glow, coherent anatomy suitable for future rigging. Recognizable at high isometric camera distance, eerie organic design, realistic stylized detailed PBR skin. No clothes, no armor, no weapon, no wings, no horns, no extra limbs or head, no enormous spikes, no exposed organs, no blood, no pedestal, no ground, no scenery, no text, no floating pieces."
+    "prompt": "ONE grounded fantasy 3D corruption focus environmental prop, about 2.2 meters wide and 1.2 meters tall, a low compact naturally fused cluster of three weathered irregular slate-black mineral rocks merging into one contiguous rough rock base, restrained organic purple-black corrupted material within cracks, few thin veins of dim violet-magenta luminescence, a small uneven amethyst mineral seam protruding from the center, subtle ashen deposits, no pedestal or platform. Readable asymmetrical silhouette at high isometric 4X map camera, realistic stylized matte rock physically based texture, grounded weathering and stone-to-corruption transitions. No character, no huge crystals, no altar, no shrine, no statues, no tents, no camp, no building, no ritual symbols, no runes, no weapons, no eggs, no floating objects, no neon landscape, no environment, no text."
   },
   "credit_authorization": {
-    "approved": false,
+    "approved": true,
     "authorized_credit_cost": 20,
-    "scope": "Owner explicit instruction 2026-10-21 to create Engendro de la Fisura and separate corruption focus using existing prepaid Tripo API credits; approval narrowly limited to ONE H3.1 text + STANDARD PBR generation of canonical enemy spawnling; max 20 credits; no retry, other assets separate approval."
+    "scope": "Owner explicitly approved creation of two sequential experimental Tripo API assets after purchasing prepaid credit. This is the second and final authorized standard H3.1 text-to-3D source, a single Rift Focus environment prop. Exactly one paid task, 20 credits maximum, no regenerations or add-on paid operations."
   },
   "refinement": {
     "enabled": false
@@ -28,36 +28,11 @@
   "promotion": {
     "enabled": false
   },
-  "visual_acceptance": "Spawnling enemy source only, v0220 entity id spawnling, Bastion II: small hunched violet partly deformed quadruped-like humanoid with coherent TWO forearms, TWO legs and ONE head; natural base, legible high-isometric silhouette, subtle Rift veins (not demon horns). UV0, normals, texture maps 2K require real Unity QA. Retain original raw GLB/Blender .blend/optimized GLB. No gameplay edits, no automatic promotion, no world hotspot/camp or live scene mutation.",
-  "run_nonce": "tripo-archive-only-spawnling-2k-pass-no-generation-20261021",
-  "notes": "Archive proven Spawnling raw/optimized GLB, .blend and genuine 2K Unity isolated QA run 39512910985 to ArtSource outside Unity/Assets. Original paid task 351d1034-25ec-4300-a2e0-d03a0e68175a already charged 20 credits once. No Tripo generation or Unity gameplay mutation.",
+  "visual_acceptance": "Rift corruption focus is an environmental ROCK+PURPLE CORRUPTION PROP ONLY, not a new game node/camp/altar/building. Low grounded irregular mineral mass with distinct native stone and subtle dark purple fissures, no platform, no floating fragments or giant crystals. One standalone GLB plus raw GLB, editable .blend, UV/PBR/albedo 2K when imported in isolated Unity, four true-camera captures. No gameplay/hotspot edits, no auto-promote to runtime, no publication.",
+  "run_nonce": "rift-focus-h31-20261021-one-20-credit-generation-no-retry",
+  "notes": "Second and last owner-approved experimental Tripo API source after Spawnling task 351d1034-25ec-4300-a2e0-d03a0e68175a (20 credits, archived under ArtSource/World4X/Spawnling_v1). This focus is solely a lore-consistent optional art prop without new camp/node/mission. Keep original task/artifacts if Blender or Unity fails and NEVER regenerate automatically.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
-  },
-  "recover": {
-    "asset_name": "Eldoria_Spawnling_Bastion2_v1",
-    "source_run_id": 39511077721,
-    "raw_artifact": "tripo-raw-eldoria-spawnling-bastion2-h31-one-20261021-69c83a6dc0eaba754e5cb5f933af5da9fe6a9399",
-    "expected_raw_sha256": "5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f"
-  },
-  "review": {
-    "asset_name": "Eldoria_Spawnling_Bastion2_v1",
-    "source_run_id": 39512676401,
-    "artifact_name": "eldoria-tripo-module-eldoria-spawnling-bastion2-h31-one-20261021-5fe81846fe6c36c006abaa3d63b1800437d2e59b",
-    "expected_sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a"
-  },
-  "archive": {
-    "asset_name": "Eldoria_Spawnling_Bastion2_v1",
-    "source_run_id": 39512676401,
-    "qa_run_id": 39512910985,
-    "raw_artifact": "tripo-raw-eldoria-spawnling-bastion2-h31-one-20261021-5fe81846fe6c36c006abaa3d63b1800437d2e59b",
-    "optimized_artifact": "eldoria-tripo-module-eldoria-spawnling-bastion2-h31-one-20261021-5fe81846fe6c36c006abaa3d63b1800437d2e59b",
-    "qa_artifact": "tripo-source-qa-Eldoria_Spawnling_Bastion2_v1-e971d357249f6630821a5e922ebea5db0bcc9e86",
-    "raw_sha": "5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f",
-    "optimized_sha": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
-    "blend_sha": "7aa6521ea27b5996851aea7d78f0d30caee15e3ec77797df5ac09d0ff10f7edf",
-    "task_id": "351d1034-25ec-4300-a2e0-d03a0e68175a",
-    "credits_consumed": 20
   }
 }
