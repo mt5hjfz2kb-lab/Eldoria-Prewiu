@@ -2,7 +2,7 @@
   "source_original": "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\EnvironmentFinish\\EnvironmentQuarry.glb",
   "source_sha256": "eb2d3ef911162875414edd750f65d3a31750881b32aadd2a7a8a0310af074d7f",
   "new_glb": "Unity\\Assets\\Eldoria\\ArtTests\\ValoriaReferenceClean\\Sources\\EnvironmentFinish\\QuarryGeologyV18.glb",
-  "new_glb_sha256": "3f5b7bc0df50b682f6bc99f63dc022cc7692d7ea4e407f2327ce441d9e89fc39",
+  "new_glb_sha256": "8b1948f16f2fddab61edd6a29d2b6c2a3ac540ccd26046274caa7eb7da43ea8f",
   "blend": "docs\\evidence\\valoria-reference-clean\\QuarryGeologyV18.blend",
   "triangles": 2812,
   "retained_equipment_meshes": 2,
