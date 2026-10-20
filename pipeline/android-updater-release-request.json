@@ -4,5 +4,5 @@
   "versionCode": 9,
   "expectedSourceSha": "575933732d3e96a934695d35abe5cbb502574762",
   "budgetEur": 0,
-  "note": "Owner-authorized tester pre-release: code8 first installed manually, code9 intended for automatic Wi-Fi download and user-confirmed Android install. Exact signed bytes and release channel must be verified; physical Android test is not yet certified."
+  "note": "Reattempt exact signed code9 family prerelease after GitHub 403 historical-tag permission fix: tag release at current main, retain signed APK source SHA and public-byte verification; physical phone acceptance still pending."
 }
