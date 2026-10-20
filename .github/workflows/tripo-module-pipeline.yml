@@ -801,7 +801,17 @@ jobs:
             if ([int]$request.optimization.max_triangles -gt 0) { $maxTris = [int]$request.optimization.max_triangles }
           }
           Write-Host "TRIANGLE_PROFILE: min=$minTris target=$targetTris max=$maxTris"
-          $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py","--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
+          $processor = "$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py"
+          if (-not (Test-Path $processor)) {
+            $processor = Join-Path $env:RUNNER_TEMP 'tripo_module_blender.py'
+            $url = 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tripo_module_blender.py'
+            Invoke-WebRequest -Uri $url -OutFile $processor -UseBasicParsing -TimeoutSec 30
+            Write-Host 'TRIPO_CANONICAL_BLENDER_SOURCE_RECOVERED_FROM_EXACT_SHA'
+          }
+          if (-not (Test-Path $processor) -or (Get-Item $processor).Length -lt 15000) {
+            throw 'Canonical Blender processor unavailable or incomplete. The Tripo-paid GLB remains preserved.'
+          }
+          $args = @("--background","--python",$processor,"--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
           if (@('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1') -contains [string]$request.module_label) {
             $args += '--save-blend'
           }
