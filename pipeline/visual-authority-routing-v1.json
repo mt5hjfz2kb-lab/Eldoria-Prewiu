@@ -10,7 +10,16 @@
     "runtime_component": "ValoriaIntegratedWorld",
     "certified_runtime_scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
     "technical_run": 39138751241,
-    "art_approved": false
+    "art_approved": false,
+    "reference_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d",
+    "owner_visual_overrides": {
+      "visible_four_plots": "KEEP_REMOVED",
+      "large_cliffs": "FORBIDDEN",
+      "invented_neighborhoods": "FORBIDDEN",
+      "enemy_tents": "FORBIDDEN",
+      "respect_gameplay_hotspots": true,
+      "source": "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md"
+    }
   },
   "current_screenshot_policy": {
     "canonical_only": true,
