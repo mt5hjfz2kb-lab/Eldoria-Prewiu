@@ -1,0 +1,17 @@
+{
+  "accepted": true,
+  "source_scene_sha256": "305dc0dd0cb010291dcd3aa52bdea12c02c91dd10b0187f167673fab5a48768b",
+  "candidate_sha256": "4a2a7d6f2acfc16051494913324b3c55d54d091b5c5020b5dab996ae071b5b56",
+  "images": [
+    "after-initial-landscape.png",
+    "after-initial-portrait.png",
+    "after-built-landscape.png",
+    "after-built-portrait.png"
+  ],
+  "hashes": [
+    "6f9da4b7522c63d5228c2915f446395df6edc91c0d0d011660af6f81cbff1b2c",
+    "43c870abf233aefa1e78a994f407e793fd2dfa5419f89cfd0fd09fd6705539ec",
+    "8616081d9920d9cfcafc0267870b15ec32c8b5f89d359ea0a2dd29fc1dd6ce7b",
+    "dba1a8d72662ab1c9469d007c3ef1b5e5e0c3b43a2e68f5c4ebbf2804c39f613"
+  ]
+}
