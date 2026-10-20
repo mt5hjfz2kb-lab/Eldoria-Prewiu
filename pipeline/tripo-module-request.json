@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-world4x-rock-boar-hunt-v1-20261020",
   "module_label": "Eldoria_RockBoar_FirstHunt_v1",
   "unity_yaw_degrees": 0,
@@ -10,7 +10,7 @@
     "prompt": "Eldoria medieval fantasy 4X first-hunt creature: ONE realistic-stylized RO​​CK BOAR (wild Sus scrofa) standing on four strong short legs, full body, natural believable anatomy. Thick stocky torso, powerful muscular shoulders, dark umber and charcoal coarse bristly fur, narrow amber eyes, compact ears, pronounced snout and TWO short curved ivory tusks, black hooves, short tail. Faint slate-grey rocky crust along upper back and shoulders only, organically blended into fur, never armor; weathered woodland creature with subtle stone coloring. Strong readable silhouette for high isometric strategy camera, rich physically based fur texture, restrained natural colors, grounded side three-quarter standing neutral pose that could later be rigged. Single whole animal, centered isolated model, no ground plane, no base, no scenery, no rider, no harness, no collar, no weapons, no text, no extra heads, no extra limbs, no fantasy horns, no cartoon proportions."
   },
   "credit_authorization": {
-    "approved": true,
+    "approved": false,
     "authorized_credit_cost": 20,
     "scope": "ONE text-to-3D H3.1 standard-texture rock boar for Eldoria first hunt, explicitly commissioned by owner after 5 EUR API recharge on 2026-10-20; no retries, no other paid tasks"
   },
@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Rock boar (v0220 enemy id=boar, Jabalí de roca), identifiable boar silhouette at Unity strategic/city/detail zooms and angled back/front, believable anatomy with exactly four legs and two short tusks, dark textured bristles and subtle natural slate shoulders (not decorative armor). PBR and UV/color preserved, grounding and collider/picking verified. No extra objects/background, no melted/fused proportions, no spikes. Keep lore, node IDs, economy, savegames, world routes, and city scene intact. Capture true Unity PNGs and retain original Tripo GLB + Blender editable + optimized GLB. No automatic production promotion or publication; review first.",
-  "run_nonce": "rock-boar-cli-run-after-yaml-repair-20261020-one-generation-only",
-  "notes": "New user order specifically creates the first Hunt rock boar with Tripo API using newly purchased credits. This isolated source proof does not amend existing Unity gameplay or ongoing artist-owned world/city scenes. Once verified, integration into world is separate and must observe live workstream lease and visual approval.",
+  "run_nonce": "boar-h31-28f57ff9-generated-20-credits-20261020-no-retry",
+  "notes": "Single 20-credit Tripo H3.1 generation completed, task 28f57ff9-b978-468c-8c2a-6136e0a65ea1. Raw artifact 12298657449, optimized Blender/GLB artifact 12297913548, GitHub run 39495619494. Native Unity gate hit 9-min full-project import timeout, without rendering; technical Unity QA must reuse existing artifacts without any new paid generation. This request is permanently disabled against accidental resubmission.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
