@@ -572,7 +572,7 @@ jobs:
             if(-not $published){throw 'Concurrent main mutation persisted; all original artifacts retained, no force-push'}
           }
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial'
         with:
           name: valoria-review-small-${{ github.run_id }}
           path: |
@@ -597,7 +597,20 @@ jobs:
 
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
+        if: always() && steps.native_stage.outputs.stage == 'city_bank_meadow_trial'
+        with:
+          name: valoria-owner178-bank-meadow-ab-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/owner178-bank-meadow-before-main.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/owner178-bank-meadow-after-main.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/owner178-bank-meadow-before-portrait.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/owner178-bank-meadow-after-portrait.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/owner178-bank-meadow-review.json
+            valoria-layered-source/docs/evidence/valoria-reference-clean/native-unity.log
+          if-no-files-found: warn
+
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
