@@ -281,6 +281,15 @@ jobs:
             & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_architecture_finish.py
             if($LASTEXITCODE){throw 'Measured bridge abutment authoring failed'}
           }
+          if($req.terrain_polish -and $req.stage -eq 'terrain_bank_trial'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
+            if(-not $blender){throw 'Installed Blender required for source mesh weathering'}
+            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_terrain_polish.py
+            if($LASTEXITCODE){throw 'Riverbank authoring failed'}
+            $method='Eldoria.ReferenceClean.Editor.ValoriaTerrainPolish.Trial'
+          }
+          if($req.terrain_polish -and $req.stage -eq 'terrain_bank_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainPolish.Integrate'}
           if($req.stage -eq 'terrain_bank_trial' -and -not $req.reuse_authored_geometry){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}

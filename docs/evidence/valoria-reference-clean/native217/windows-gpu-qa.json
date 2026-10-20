@@ -1,0 +1,101 @@
+{
+  "status": "PASS",
+  "source_sha": "74b5fb8518fe0bbf89a1c233af65466ed41830be",
+  "method": {
+    "fresh_browser_context": true,
+    "engine_commands": false,
+    "game_clock_modified": false,
+    "input": "Playwright mouse and emulated touchscreen on visible canvas controls",
+    "manual_human_playthrough": false,
+    "physical_device_tested": false,
+    "sites_or_authentication_used": false,
+    "visual_review": "REQUIRED: inspect screenshots and continuous browser video independently"
+  },
+  "checks": {
+    "fresh_save": true,
+    "early_world_control_locked": true,
+    "early_gate_visible_click": {
+      "attempted": false,
+      "reason": "Gate collider centre outside current visible frame; native gate regression remains separate"
+    },
+    "world_zoom": {
+      "pass": true,
+      "input_delta_y": 240,
+      "initial_at_regional_fitting_limit": true,
+      "zoom_direction": "in",
+      "before": {
+        "x": 1018.1185913085938,
+        "y": 286.7032470703125,
+        "z": -170.7515869140625,
+        "zoom": 32
+      },
+      "after": {
+        "x": 1018.1185913085938,
+        "y": 286.7032470703125,
+        "z": -170.7515869140625,
+        "zoom": 29.539722442626953
+      }
+    },
+    "world_view_retained": {
+      "pass": true,
+      "before": {
+        "x": 1018.1185302734375,
+        "y": 286.7032470703125,
+        "z": -170.75181579589844,
+        "zoom": 29.539722442626953
+      },
+      "after": {
+        "x": 1018.1185302734375,
+        "y": 286.7032470703125,
+        "z": -170.75181579589844,
+        "zoom": 29.539722442626953
+      },
+      "difference": {
+        "dx": 0,
+        "dy": 0,
+        "dz": 0,
+        "distance": 0,
+        "zoom": 0
+      }
+    },
+    "world_four_directions_both_orientations": true,
+    "complete_i_ii": true,
+    "real_primary_actions_both_orientations": true,
+    "selection_framing_before_all_actions": true,
+    "selection_framing_both_orientations": true,
+    "normal_operation_durations": true,
+    "march_phases_and_rewards": true,
+    "march_visual_outbound": true,
+    "march_visual_returning": true,
+    "exact_save_reload": {
+      "pass": true,
+      "before_sha256": "042ece5f0df3cc88c34523ce3fa9501206a1f6b4be76c74fd9cb61ac5d2a381b",
+      "after_sha256": "042ece5f0df3cc88c34523ce3fa9501206a1f6b4be76c74fd9cb61ac5d2a381b"
+    },
+    "normal_system_clock": true,
+    "no_runtime_errors": true,
+    "no_legacy_touch_shadow_navigation": true,
+    "no_failed_build_requests": true
+  },
+  "build": {
+    "bytes": 200856903,
+    "files": 18,
+    "manifest_sha256": "838a99594d1a3173686b36fe685ecf339c14636843dc2cf79b80bd02729f0ae4"
+  },
+  "final_save_sha256": "042ece5f0df3cc88c34523ce3fa9501206a1f6b4be76c74fd9cb61ac5d2a381b",
+  "runtime_errors": [],
+  "network_failures": [],
+  "failures": [],
+  "visual_source": "Direct Chromium compositor screenshots plus contextual WebM",
+  "run_id": 39473497402,
+  "artifact_id": 12289305252,
+  "report_sha256": "8255aa15f2ff742218eeea70d72a86d9758ebe816045ec57600abc0e00b96d54",
+  "independent_visual_review": {
+    "inspected": [
+      "071-bastion-ii-complete-city-landscape.jpg",
+      "072-bastion-ii-complete-city-portrait.jpg",
+      "064-selected-b2-defeat-engendro-engendro-valoria-portrait.jpg"
+    ],
+    "verdict": "Correct actual event, UI and orientation in direct captures. Functional baseline accepted; not global art approval."
+  }
+}
