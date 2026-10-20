@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Spawnling enemy source only, v0220 entity id spawnling, Bastion II: small hunched violet partly deformed quadruped-like humanoid with coherent TWO forearms, TWO legs and ONE head; natural base, legible high-isometric silhouette, subtle Rift veins (not demon horns). UV0, normals, texture maps 2K require real Unity QA. Retain original raw GLB/Blender .blend/optimized GLB. No gameplay edits, no automatic promotion, no world hotspot/camp or live scene mutation.",
-  "run_nonce": "spawnling-h31-20261021-one-20-credit-generation-no-retry",
-  "notes": "First of 2 Tripo API art-source trials. Docs: docs/TRIPO_API_JABALI_LECCIONES_20261021.md and docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md. One paid generation only, 20 credits, sequential with later Rift Focus; if paid step succeeds but downstream QA fails use task ID, never regenerate.",
+  "run_nonce": "spawnling-h31-recovered-request-after-checkout-missing-20261021-one-charge",
+  "notes": "Previous attempt 39509917643 failed at Read canonical request: request file missing after checkout, before Tripo CLI and before any credit charge. This is the first paid attempt for Spawnling; newly approved explicit one generation up to 20 credits. Workflow is exact-SHA fallback and will not retry paid if generation succeeds.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
