@@ -1,1 +1,12 @@
-{"scene_sha256":"305dc0dd0cb010291dcd3aa52bdea12c02c91dd10b0187f167673fab5a48768b","gameplay_gate":"PENDING_CURRENT_PROBE","reused_city_trees":18,"new_enemy_camps":false,"published":false}
+{
+  "scene_sha256": "305dc0dd0cb010291dcd3aa52bdea12c02c91dd10b0187f167673fab5a48768b",
+  "gameplay_gate": "PASS_NATIVE216_40_CHECKS",
+  "reused_city_trees": 18,
+  "new_enemy_camps": false,
+  "published": false,
+  "run": 39469515439,
+  "render_comparisons": 13,
+  "world_render_identical": 9,
+  "city_render_max_mean_abs_8bit": 0.04765,
+  "runtime_image_review": "BLOCKED_BY_DEFERRED_OUTRO; fixed capture timing must be verified in next WebGL native preflight"
+}

@@ -623,7 +623,7 @@ jobs:
       # review artifact carries nearly a gigabyte of old Blender/source files
       # and exceeds connector limits; retain it unchanged, add PNGs separately.
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage == 'experience_validate'
+        if: always() && (steps.native_stage.outputs.stage == 'experience_validate' || steps.native_stage.outputs.stage == 'web_playtest')
         with:
           name: valoria-royal-gold-v2-review-${{ github.run_id }}
           path: |
@@ -635,6 +635,8 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-training*.png
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-chapter2-complete.png
             valoria-layered-source/docs/evidence/valoria-reference-clean/integration-result.json
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-art-*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/web-integration-preflight.log
           if-no-files-found: warn
           retention-days: 30
           compression-level: 1
