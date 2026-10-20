@@ -269,7 +269,23 @@ jobs:
             try {
               $bj = $balanceRaw | ConvertFrom-Json
               foreach ($n in @($bj.balance, $bj.available, $bj.available_credits, $bj.credits_available, $bj.data.balance, $bj.data.available, $bj.data.credits)) {
-                if ($null -ne $n -and "$n" -match '^\d+(\.\d+)?          Write-Host ("TRIPO_COMMAND: tripo " + (($args | ForEach-Object {
+                if ($null -ne $n -and "$n" -match '^\d+(\.\d+)?$') { $creditsAvailable = [double]$n; break }
+              }
+            } catch { }
+            if ($null -eq $creditsAvailable -and $balanceRaw -match '(?i)(?:"balance"|"available"|"available_credits")\s*:\s*(\d+(\.\d+)?)') {
+              $creditsAvailable = [double]::Parse($Matches[1],[System.Globalization.CultureInfo]::InvariantCulture)
+            }
+            if ($null -eq $creditsAvailable -or $creditsAvailable -lt 20) {
+              throw 'Boar preflight cannot certify 20 available API credits. No paid command was issued.'
+            }
+            Write-Host "ROCK_BOAR_API_PREFLIGHT=PASS available_credits=$creditsAvailable fixed_model=$model authorized=20"
+          }
+
+          $args = @('make') + $inputArgs + @('--model',$model,'-p',"face_limit=$faceLimit",'--json','--yes','--no-open','-o',$outDir)
+          if ($isRockBoar) {
+            $args += @('-p','texture=true','-p','pbr=true','-p','texture_quality=standard','-p','geometry_quality=standard')
+          }
+          Write-Host ("TRIPO_COMMAND: tripo " + (($args | ForEach-Object {
             $s = [string]$_
             if ($s -match '\s') { '"' + $s.Replace('"','\"') + '"' } else { $s }
           }) -join ' '))
