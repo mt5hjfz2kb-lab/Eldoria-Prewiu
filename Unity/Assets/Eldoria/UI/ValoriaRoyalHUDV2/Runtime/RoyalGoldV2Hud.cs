@@ -31,6 +31,9 @@ namespace Eldoria.UI.RoyalGold.V2
 
         public bool ChapterExpanded => expanded;
         public bool BuildingVisible => buildingCard && buildingCard.gameObject.activeSelf;
+        public RoyalButton VisibleObjectiveButton => objectiveAction;
+        public RoyalButton VisibleChapterButton => objectivesButton;
+        public RoyalButton VisibleBuildingButton => buildingAction;
 
         private void Awake()
         {
@@ -77,12 +80,23 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (Source && Source.Mission && Source.Mission.Open)
                     Source.Mission.Open.onClick.Invoke();
             });
-            objectivesButton.onClick.AddListener(() => expanded = true);
+            objectivesButton.onClick.AddListener(() =>
+            {
+                expanded = true;
+                // Keep the original checklist projection and toggle state.
+                if (Source.Mission.ListToggle && !Source.Mission.ListExpanded)
+                    Source.Mission.ListToggle.onClick.Invoke();
+            });
 
             chapterClose = Button("Close chapter overlay", safe, out var closeChapterText, false);
             closeChapterText.Put("×");
             closeChapterText.fontSize = 30;
-            chapterClose.onClick.AddListener(() => expanded = false);
+            chapterClose.onClick.AddListener(() =>
+            {
+                expanded = false;
+                if (Source.Mission.ListToggle && Source.Mission.ListExpanded)
+                    Source.Mission.ListToggle.onClick.Invoke();
+            });
 
             buildingCard = Panel("V2 / contextual building sheet", safe);
             buildingTitle = Text("Selected building", buildingCard, 30, Ivory, true);
@@ -360,7 +374,11 @@ namespace Eldoria.UI.RoyalGold.V2
             }
         }
 
-        private void LateUpdate()
+        private void LateUpdate() => SynchronizeNow();
+
+        /// <summary>Explicit native QA sync after temporary canvas resolution
+        /// changes. Identical to the normal Unity LateUpdate rendering path.</summary>
+        public void SynchronizeNow()
         {
             if (!Application.isPlaying) return;
             EnsureView();
