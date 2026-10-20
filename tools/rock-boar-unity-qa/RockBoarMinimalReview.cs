@@ -19,6 +19,9 @@ public static class RockBoarMinimalReview
         public int renderers;
         public int materials;
         public int textures;
+        public int importedBaseColorWidth;
+        public int importedBaseColorHeight;
+        public bool fullResolutionTexturePass;
         public long triangles;
         public long vertices;
         public bool uv0AllMeshes = true;
@@ -152,6 +155,23 @@ public static class RockBoarMinimalReview
         }
         result.materials = originals.Count;
         result.textures = textures.Count;
+        foreach (Material m in originals)
+        {
+            Texture tex = GetBaseTexture(m);
+            if (tex == null) continue;
+            result.importedBaseColorWidth = Mathf.Max(result.importedBaseColorWidth, tex.width);
+            result.importedBaseColorHeight = Mathf.Max(result.importedBaseColorHeight, tex.height);
+        }
+        result.fullResolutionTexturePass = result.importedBaseColorWidth >= 1024 && result.importedBaseColorHeight >= 1024;
+        foreach (Texture importedTexture in textures)
+        {
+            if (importedTexture.width < 512 || importedTexture.height < 512)
+                throw new Exception("Tripo image silently degraded to " + importedTexture.width + "x" + importedTexture.height +
+                                    " (required glTFast image modules or import regression).");
+        }
+        if (!result.fullResolutionTexturePass)
+            throw new Exception("Tripo base-color failed full-res import: " + result.importedBaseColorWidth +
+                                "x" + result.importedBaseColorHeight + ". Refusing ART PASS with placeholder texture.");
         if (result.triangles < 48000 || result.triangles > 51000 || !result.uv0AllMeshes || !result.normalsAllMeshes || result.textures == 0)
             throw new Exception("Boar import acceptance failed triangles=" + result.triangles + " uv=" + result.uv0AllMeshes + " normals=" + result.normalsAllMeshes + " textures=" + result.textures);
 
