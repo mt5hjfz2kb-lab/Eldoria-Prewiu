@@ -16,8 +16,42 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  rock-boar-qa:
+    if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'push' && contains(github.event.head_commit.message, '[boar-qa-only]')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 24
+    steps:
+      - name: Recover the one already-paid Tripo boar from exact prior artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-tripo-module-eldoria-world4x-rock-boar-hunt-v1-20261020-d65a223378ce1ff2754ab17c932826a02a2aa9e9
+          run-id: 39495619494
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/rock-boar-paid-artifact
+      - name: Read exact committed isolated QA scripts without downloading Eldoria
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dest = Join-Path $env:RUNNER_TEMP 'rock-boar-qa-scripts'
+          New-Item -ItemType Directory -Force $dest | Out-Null
+          $base = 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/rock-boar-unity-qa/'
+          Invoke-WebRequest -Uri ($base + 'run-isolated.ps1') -OutFile (Join-Path $dest 'run-isolated.ps1') -UseBasicParsing -TimeoutSec 30
+          Invoke-WebRequest -Uri ($base + 'RockBoarMinimalReview.cs') -OutFile (Join-Path $dest 'RockBoarMinimalReview.cs') -UseBasicParsing -TimeoutSec 30
+      - name: Verify the existing optimized GLB in an isolated minimal Unity project
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $scripts = Join-Path $env:RUNNER_TEMP 'rock-boar-qa-scripts'
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $scripts 'run-isolated.ps1') -InputRoot (Join-Path $env:RUNNER_TEMP 'rock-boar-paid-artifact') -EditorScript (Join-Path $scripts 'RockBoarMinimalReview.cs') -UnityEditor $env:UNITY_EDITOR_PATH
+          if ($LASTEXITCODE -ne 0) { throw "Isolated Unity validation exited with $LASTEXITCODE" }
+      - name: Preserve isolated Unity screenshots metrics and diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-rock-boar-unity-isolated-${{ github.sha }}
+          path: ${{ runner.temp }}/eldoria-boar-unity-isolated-20261020/Output/*
+          if-no-files-found: warn
   module-gate:
-    if: vars.UNITY_RUNNER_READY == 'true'
+    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
 
