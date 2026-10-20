@@ -1,11 +1,11 @@
 {
   "stage": "terrain_bank_trial",
   "validate_play": false,
-  "revision": 197,
+  "revision": 198,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Native196 real Unity review: relief and contact improved, but thin skin intersects meadow and road lacks shoulder transition. Raise measured skin interior 0.28m, bury edges, apply worn soil shoulders and controlled dry meadow variation. Same camera/light; no save until independent review.",
+  "checks": "Native197 contact geometry passes but existing dark DryEarth shader makes path shoulder read as shadow; independent visual rejection for material finish. Correct soil layer albedo, retain richer meadow microcontrast. Reuse exact native197 Blender candidate without reauthoring.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
@@ -27,5 +27,6 @@
   "android_version_code": 6,
   "android_version_name": "1.6",
   "repair_sawmill": false,
-  "repair_environment": false
+  "repair_environment": false,
+  "reuse_authored_geometry": true
 }

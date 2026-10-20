@@ -46,11 +46,11 @@ public static class ValoriaTerrainBankAuthoring {
    // Coherent whole-meadow material treatment follows the geometry correction.
    // Preserve source textures/UVs; avoid the old dark localized blurred patch.
    var layers=trial.terrainLayers;
-   foreach(int index in new[]{0,3}){
+   foreach(int index in new[]{0,2,3}){
     var src=layers[index].diffuseTexture;var colors=src.GetPixels();var luminance=colors.Select(v=>v.grayscale).OrderBy(v=>v).ToArray();float low=luminance[luminance.Length/10],high=luminance[luminance.Length*9/10];
-    for(int i=0;i<colors.Length;i++){float q=Mathf.Clamp01((colors[i].grayscale-low)/Mathf.Max(.01f,high-low));q=.28f+.44f*q;colors[i]=index==0?Color.Lerp(new Color(.29f,.36f,.10f),new Color(.58f,.59f,.25f),q):Color.Lerp(new Color(.39f,.39f,.13f),new Color(.66f,.59f,.29f),q);}
+    for(int i=0;i<colors.Length;i++){float q=Mathf.Clamp01((colors[i].grayscale-low)/Mathf.Max(.01f,high-low));q=.15f+.70f*q;colors[i]=index==0?Color.Lerp(new Color(.32f,.38f,.10f),new Color(.66f,.62f,.25f),q):index==2?Color.Lerp(new Color(.47f,.38f,.25f),new Color(.67f,.55f,.36f),q):Color.Lerp(new Color(.40f,.40f,.14f),new Color(.72f,.63f,.33f),q);}
     var tex=new Texture2D(src.width,src.height,TextureFormat.RGB24,true){name="Measured meadow subdued fine contrast",wrapMode=TextureWrapMode.Repeat,anisoLevel=4};tex.SetPixels(colors);tex.Apply();temporary.Add(tex);
-    var layer=Object.Instantiate(layers[index]);layer.diffuseTexture=tex;layer.normalScale=Mathf.Min(layer.normalScale,.35f);if(index==0)layer.tileSize=new Vector2(7.5f,7.5f);temporary.Add(layer);layers[index]=layer;
+    var layer=Object.Instantiate(layers[index]);layer.diffuseTexture=tex;layer.smoothness=0;layer.metallic=0;layer.normalScale=Mathf.Min(layer.normalScale,.35f);if(index==0)layer.tileSize=new Vector2(7.5f,7.5f);temporary.Add(layer);layers[index]=layer;
    }
    trial.terrainLayers=layers;
    // Worn shoulders and damp soil connect the measured relief to existing access.

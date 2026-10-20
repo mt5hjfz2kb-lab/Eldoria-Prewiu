@@ -246,7 +246,7 @@ jobs:
             if($LASTEXITCODE){throw 'Blender authoring failed'}
             $method='Eldoria.ReferenceClean.Editor.ValoriaReferenceCleanArtBuilder.Build'
           }
-          if($req.stage -eq 'terrain_bank_trial'){
+          if($req.stage -eq 'terrain_bank_trial' -and -not $req.reuse_authored_geometry){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
             if(-not $blender){throw 'Installed Blender unavailable for measured terrain authoring'}
