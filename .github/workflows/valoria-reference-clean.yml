@@ -570,6 +570,14 @@ jobs:
           $req=Get-Content tools/valoria-reference-clean/request.json -Raw|ConvertFrom-Json
           if(-not $req.publish_content){return}
           & ./tools/valoria-reference-clean/publish_content.ps1
+      - name: Preserve oversized editable roof sources as verified lossless blocks
+        if: always() && (steps.native_stage.outputs.stage == 'architecture_trial' || steps.native_stage.outputs.stage == 'architecture_integrate')
+        shell: powershell
+        run: |
+          if(Test-Path 'tools/valoria-reference-clean/pack_roof_sources.py'){
+            python tools/valoria-reference-clean/pack_roof_sources.py
+            if($LASTEXITCODE){throw 'Editable source preservation failed'}
+          }
       - name: Review real capture with previously installed local vision model
         continue-on-error: true
         shell: powershell
