@@ -265,7 +265,13 @@ namespace Eldoria.ReferenceClean.Editor {
    h.Select("barracks");yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().BuildingCompletesUtcTicks>0,"Barracks did not start");},"Royal barracks");
    yield return new WaitForSecondsRealtime(.4f);
-   Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.BarracksBuildSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Parcels.RightBuilt.activeSelf,"Barracks model missing");h.Select("barracks");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"Recruitment did not start");Need(h.Read("barracks",false).Building.OperationActive,"Training not identified as paid active operation");Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");Capture(h,"integration-training.png",1600,900);Capture(h,"integration-training-portrait.png",900,1600);},"Royal recruitment");
+   Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.BarracksBuildSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Parcels.RightBuilt.activeSelf,"Barracks model missing");h.Select("barracks");},"Royal barracks construction completed with native state");
+   // The paid-building action only becomes visible after the finished
+   // construction changes from a progress-only sheet to an actionable sheet.
+   // A real finger cannot touch in that same immediate C# call stack.
+   yield return null;
+   yield return new WaitForSecondsRealtime(.20f);
+   Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"Recruitment did not start");Need(h.Read("barracks",false).Building.OperationActive,"Training not identified as paid active operation");Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");Capture(h,"integration-training.png",1600,900);Capture(h,"integration-training-portrait.png",900,1600);},"Royal recruitment");
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.RecruitSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();h.Select("march-main");Need(h.Hud.Building.Primary.Button.interactable,"Configured march primary action not enabled");},"Royal march action becomes available");
    // Canvas GraphicsRegistry must render its first active frame after the
