@@ -1,0 +1,30 @@
+{
+    "asset": "Eldoria_Spawnling_Bastion2_v1",
+    "unityVersion": "6000.3.23f1",
+    "source": "Assets/TripoSubject.glb",
+    "meshes": 1,
+    "renderers": 1,
+    "materials": 1,
+    "textures": 3,
+    "triangles": 49800,
+    "vertices": 29779,
+    "importedBaseColorWidth": 2048,
+    "importedBaseColorHeight": 2048,
+    "uv0AllMeshes": true,
+    "normalsAllMeshes": true,
+    "fullResolutionTexturePass": true,
+    "positiveSelection": true,
+    "emptySelectionMiss": true,
+    "worldBounds": {
+        "x": 1.600000023841858,
+        "y": 1.2519237995147706,
+        "z": 1.2105623483657838
+    },
+    "captures": [
+        "iso.png",
+        "side.png",
+        "front.png",
+        "strategic.png"
+    ],
+    "status": "UNITY_TECH_ONLY_ART_REVIEW_PENDING"
+}
