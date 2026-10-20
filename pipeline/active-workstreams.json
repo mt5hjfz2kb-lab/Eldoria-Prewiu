@@ -56,7 +56,7 @@
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "OWNER_DIRECTED_GRAPHICS_RECOVERY",
-      "next": "Fases1-3 integradas: native200,203,210; 35 functional checks PASS each. Ejecutar/revisar native211 fase4 Breach + functional building contact + woodland rock grouping. Final runtime destination captures must dismiss closing narrative through real UI. Targets7/5.5 not yet certified; final WebGL pending; no publication.",
+      "next": "Four art phases integrated. Native216 run39469515439 PASS40, scene305dc0dd. Native217 WebGL run39470143984 active; review corrected deferred-narrative destination captures and exact browser QA. No publication; overall7/5.5 not certified.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -629,9 +629,10 @@
         "executor": "codex-work-artistic-convergence-20261020",
         "base_main_sha": "22fcaf8c0b3c1b1c97bc914e7b6e80b57ecdc748",
         "authority": "Explicit owner request 2026-10-20: assume existing integrated workstream, same owner identity and main; terrain and bank first; no parallel owner, no publication, no visible parcels.",
-        "phase": "PHASE_1_FIRST_IMPROVEMENT_INTEGRATED_PHASE_2_SURVEY",
-        "last_verified_run": 39450899545,
-        "next": "architecture_survey revision201"
+        "phase": "FOUR_ART_PHASES_INTEGRATED_EXACT_WEBGL_PENDING",
+        "last_verified_run": 39469515439,
+        "next": "Finish run39470143984 and review native destination images + exact WebGL QA",
+        "scene_sha256": "305dc0dd0cb010291dcd3aa52bdea12c02c91dd10b0187f167673fab5a48768b"
       }
     }
   ],

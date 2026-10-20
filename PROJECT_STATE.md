@@ -1,13 +1,14 @@
 > **CORRECCIÓN DE ALCANCE VISUAL POSTERIOR DEL PROPIETARIO — 20-10-2026: CUATRO PARCELAS NO DEBEN REAPARECER.** La orden «SIGUIENTE OBRA: reconstruir cuatro parcelas ocultas» del registro OWNER179 inmediatamente inferior es HISTÓRICA Y QUEDA REVOCADA. Aunque el JPEG aprobado muestre cuatro parcelas, el propietario exige mantenerlas ELIMINADAS en la escena jugable. No reconstruir su suelo/contornos ni reactivar `Plot_`/`Parcels.Bindings` por razones estéticas; preservar solo las interacciones/hotspots que correspondan. Continuar aproximación visual al resto de la referencia (bastión compacto, puerta, puente, río, ribera, pradera verde suave) sin grandes acantilados, barrios ni tiendas. Autoridad: [imagen canónica y excepción](docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md). Objetivos artísticos sin certificar, sin publicación ni gasto.
 
-## 2026-10-20 — Producción artística: fases 1–3 integradas; fase 4 en ejecución
+## 2026-10-20 — Cuatro fases artísticas integradas; WebGL exacto en verificación
 
-- Escena canónica: SHA-256 `eee58998a2b58f35a14bb64aa74bd11ace67e10f781afe125df52df759a538d6`, main tras native210 `59ccad1`. Sin publicación.
-- Terreno/ribera native200 run39450899545 y arquitectura native203 run39453446158 conservados; 35 pruebas funcionales cada uno.
-- Bosque/cantera revisados en native209 run39459227255 e integrados native210 run39459840985: 35 checks funcionales + 4 operaciones de captura; ocho imágenes de cámara idéntica verificadas antes de guardar. Fuentes Blender, UV, atlas de agujas, LOD y materiales en world204 y QuarryGeologyV18.
-- Las capturas adicionales de destinos con UI quedaron tapadas por el diálogo final. Corregir el harness cerrando la narrativa mediante sus botones reales en la próxima prueba; NO afirmar revisión visual runtime despejada por estas capturas.
-- Siguiente operación: native211 `final_environment_trial`, Brecha sin campamentos, contacto de edificios ya desbloqueados y agrupación de piedras. Misma titularidad `chatgpt-eldoria-visual-recovery-20261020` y workstream integrado. No hay ramas/agentes/pipelines nuevos.
-- Objetivos globales ciudad 7/10 y mundo 5,5/10 AÚN NO CERTIFICADOS. No WebGL final ni prueba física móvil de estos cambios. Continuar fase4 y evaluación completa, después WebGL/QA pertinente sin publicar.
+- Escena canónica SHA-256 `305dc0dd0cb010291dcd3aa52bdea12c02c91dd10b0187f167673fab5a48768b`, commit de escena `d1ed49ddfbcdb0288696e6229443c8e7beac62cf`. Sin publicación ni sustitución de native191.
+- Fases1–3: native200 terreno/ribera, native203 arquitectura y native210 bosque/cantera conservados. Fuentes editables, geometría, UV/materiales y LOD en sus carpetas de evidencia.
+- Fase4 revisada en native215 e integrada native216 run39469515439: 18 coníferas de ciudad reutilizadas, 19 grupos de roca, contacto de edificios desbloqueados, Brecha sin campamentos y materiales/UV de tres montañas EXISTENTES. Trece imágenes comparadas antes de guardar; 40 checks nativos PASS.
+- Limitación de captura detectada visualmente: el diálogo final se abre diferido tras recarga y tapó los destinos aunque el check previo fuera PASS. Harness corregido para esperar y verificar justo antes de cada captura; no declarar esas imágenes despejadas.
+- Operación activa: native217 `web_playtest`, run39470143984, fuente `74b5fb8518fe0bbf89a1c233af65466ed41830be`. Esperar resultado, revisar artifact de capturas nativas y QA del build exacto, resolver fallos reales. No lanzar otro trabajo pesado mientras siga activo.
+- Informe consolidado: `docs/evidence/valoria-reference-clean/PRODUCTION_DELIVERY_20261020.md`. Objetivos globales 7/10 y 5,5/10 aún no certificados; persisten límites de pradera/ribera y acabado de destinos. Sin dispositivo físico Android autorizado ni prueba iOS.
+- Mismo propietario `chatgpt-eldoria-visual-recovery-20261020`, workstream y main. Cero euros, sin agentes/ramas/pipelines nuevos. No reactivar parcelas, barrios, campamentos ni Bastión III.
 
 ## 2026-10-20 — Producción artística integrada: terreno/ribera, primera mejora
 
