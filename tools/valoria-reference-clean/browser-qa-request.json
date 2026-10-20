@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "scope": "NATIVE217_FOUR_ART_PHASES_EXACT_WEBGL_QA",
-  "source_sha": "74b5fb8518fe0bbf89a1c233af65466ed41830be",
-  "artifact_run": 39470143984,
-  "artifact_name": "valoria-integrated-web-playtest-39470143984",
+  "scope": "NATIVE242_FINAL_INTEGRATED_ART_EXACT_WEBGL_QA",
+  "source_sha": "f8e294dda9a829316eb0dec764f8e2b1ce7d20d0",
+  "artifact_run": 39506996242,
+  "artifact_name": "valoria-integrated-web-playtest-39506996242",
   "tester": "existing Windows Chromium/Edge with GPU; actual pointer and touch, landscape and portrait",
   "controls": [
     "dialogues",
@@ -21,12 +21,11 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Previous exact native217 Windows replay passed gameplay, but direct visual review found WebM wall-clock/PTS drift mislabeled selected-event images. Use direct Windows GPU compositor screenshots, retain contextual video, same binary and strict gameplay assertions. No Unity rebuild or publication.",
+  "reason": "Final native241 integrated scene4c8bbdc6... with stable saved/reopened finish. Validate new native242 compiled bytes using existing strict GPU controls, direct screenshots and SystemClock. Do not reuse native217 certification, rebuild Unity, publish or alter gameplay.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 16,
-  "method_note": "Exact native217 output, current unchanged browser QA script, real pointer/touch, normal clock, strict framing and save/reload.",
-  "gameplay_source_unchanged": true,
-  "qa_code_commit": "d716e3d5db55af58e562620db4826683f89f2e2c"
+  "attempt": 17,
+  "method_note": "Exact native242 output, existing browser QA assertions unchanged; pointer/touch, normal clock, direct GPU images, exact save/reload.",
+  "gameplay_source_unchanged": false
 }
