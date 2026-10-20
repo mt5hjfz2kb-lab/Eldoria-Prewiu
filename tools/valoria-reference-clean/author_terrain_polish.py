@@ -38,7 +38,7 @@ for component in groups:
   q=Vector(tuple((v.co[k]-center[k])/max(.05,half[k]) for k in range(3)))
   radius=sum(abs(q[k])**2.35 for k in range(3))**(1/2.35)
   if radius<.15:continue
-  blend=.86*max(0,min(1,(q.z+.85)/.45));target=q/radius
+  blend=.62*max(0,min(1,(q.z+.85)/.45));target=q/radius
   # Restrained uneven weathering follows the stone's measured own frame.
   erosion=1+.035*math.sin(q.x*4.1+center.x)*math.sin(q.y*3.8+q.z*2.9)
   target*=erosion
@@ -48,9 +48,9 @@ for component in groups:
 bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(m);bm.free();m.update()
 assert changed>30
 # Reduce the old overly dense source while retaining the sculpted silhouette.
-dec=o.modifiers.new('Preserve weathered silhouette / bounded reduction','DECIMATE');dec.ratio=.68
+dec=o.modifiers.new('Preserve weathered silhouette / bounded reduction','DECIMATE');dec.ratio=.32
 bpy.ops.object.modifier_apply(modifier=dec.name)
-for p in o.data.polygons:p.use_smooth=True
+for p in o.data.polygons:p.use_smooth=False
 m=o.data;m.calc_loop_triangles()
 assert 10000<len(m.loop_triangles)<160000, len(m.loop_triangles)
 # Per-face metric UV, independent of the triangulated source's stretched atlas.
@@ -73,4 +73,4 @@ out={'survey_sha256':sha(EV/'survey.json'),'source_scene_sha256':s['scene_sha256
 (EV/'bank-weathered.json').write_text(json.dumps(out,separators=(',',':')))
 bpy.ops.wm.save_as_mainfile(filepath=str((EV/'RiverbankWeathered.blend').resolve()))
 bpy.ops.export_scene.gltf(filepath=str((EV/'RiverbankWeathered.glb').resolve()),export_format='GLB',use_selection=True)
-(EV/'authoring-result.json').write_text(json.dumps({'blender':bpy.app.version_string,'source_vertices':len(g['vertices']),'source_triangles':len(f),'welded_vertices':source_after_weld,'sculpted_stone_components':changed,'output_vertices':len(vv),'output_triangles':len(tt)//3,'operations':['weld split source topology','dissolve coplanar source triangles','proportional whole-component weathering with protected feet','silhouette-preserving source reduction','smooth rock normals','metric dominant-plane UV'],'candidate_sha256':sha(EV/'bank-weathered.json'),'blend_sha256':sha(EV/'RiverbankWeathered.blend'),'glb_sha256':sha(EV/'RiverbankWeathered.glb'),'collision_modified':False,'art_approved':False},indent=2))
+(EV/'authoring-result.json').write_text(json.dumps({'blender':bpy.app.version_string,'source_vertices':len(g['vertices']),'source_triangles':len(f),'welded_vertices':source_after_weld,'sculpted_stone_components':changed,'output_vertices':len(vv),'output_triangles':len(tt)//3,'operations':['weld split source topology','dissolve coplanar source triangles','proportional whole-component weathering with protected feet','silhouette-preserving source reduction','retained mineral fracture facets','metric dominant-plane UV'],'candidate_sha256':sha(EV/'bank-weathered.json'),'blend_sha256':sha(EV/'RiverbankWeathered.blend'),'glb_sha256':sha(EV/'RiverbankWeathered.glb'),'collision_modified':False,'art_approved':False},indent=2))
