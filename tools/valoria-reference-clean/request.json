@@ -1,11 +1,11 @@
 {
   "stage": "terrain_bank_integrate",
   "validate_play": false,
-  "revision": 199,
+  "revision": 200,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Integrate exact independently reviewed native198 candidate only after image/hash identity guard; existing current gameplay probe must pass before scene persistence to main. No publication.",
+  "checks": "Native199 stopped before save: PNG byte identity too strict for measured temporal render drift. Authentic A/B reviewed: mean errors .024/.036 of 255; >5 differences only .0162%/.0120% pixels. Pin source/candidate/approved image hashes, compare new render with max MAE .10 and >5 fraction .1%; retain both originals and measurements, then run actual gameplay probe.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
