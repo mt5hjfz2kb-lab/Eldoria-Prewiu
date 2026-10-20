@@ -21,9 +21,13 @@ namespace Eldoria.ReferenceClean.Editor {
   [Serializable] public class Piece {public string name;public Vector3[] vertices;public Vector2[] uv;public int[] triangles;}
   [Serializable] public class Candidate {public string scene_sha256,survey_sha256;public Piece[] pieces;}
   static void Need(bool b,string message){if(!b)throw new InvalidOperationException(message);}
-  public static void Trial(){try{
+  [Serializable] public class Acceptance {public string candidate_sha256,source_scene_sha256;public string[] image_names,image_hashes;public bool accepted;}
+  public static void Trial(){Run(false);}
+  public static void Integrate(){Run(true);}
+  static void Run(bool integrate){try{
    Directory.CreateDirectory(Ev);EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);var data=JsonUtility.FromJson<Candidate>(File.ReadAllText(Ev+"/candidate.json"));Need(data.scene_sha256==Hash(Scene)&&data.survey_sha256==Hash(Ev+"/survey.json"),"Measured architecture source changed");
-   var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();bool one=city.BastionOne.activeSelf,two=city.BastionTwo.activeSelf;var replacements=new Dictionary<Renderer,Material[]>();var temporary=new List<Object>();
+   var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();bool one=city.BastionOne.activeSelf,two=city.BastionTwo.activeSelf;var replacements=new Dictionary<Renderer,Material[]>();var temporary=new List<Object>();bool saved=false;Acceptance accepted=null;var approvedImages=new Dictionary<string,byte[]>();
+   if(integrate){accepted=JsonUtility.FromJson<Acceptance>(File.ReadAllText(Ev+"/accepted-candidate.json"));Need(accepted.accepted&&accepted.candidate_sha256==Hash(Ev+"/candidate.json")&&accepted.source_scene_sha256==Hash(Scene),"Exact reviewed architecture required");for(int i=0;i<accepted.image_names.Length;i++){string name=accepted.image_names[i];Need(Hash(Ev+"/"+name)==accepted.image_hashes[i],"Approved architecture image changed");approvedImages.Add(name,File.ReadAllBytes(Ev+"/"+name));}}
    try{
     city.BastionOne.SetActive(true);city.BastionTwo.SetActive(false);Views(city.PlayerCamera,"before-I");city.BastionOne.SetActive(false);city.BastionTwo.SetActive(true);Views(city.PlayerCamera,"before-II");
     var roofSources=city.BastionOne.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Bastion_I").sharedMaterials;
@@ -40,9 +44,16 @@ namespace Eldoria.ReferenceClean.Editor {
     var donor=Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Single(r=>r.name=="Gate_LowerGate_WestTower").sharedMaterials[0];
     foreach(var piece in data.pieces){var g=new GameObject(piece.name);temporary.Add(g);var m=new Mesh{name=piece.name};m.vertices=piece.vertices;m.uv=piece.uv;m.triangles=piece.triangles;m.RecalculateNormals();m.RecalculateBounds();temporary.Add(m);g.AddComponent<MeshFilter>().sharedMesh=m;g.AddComponent<MeshRenderer>().sharedMaterial=donor;}
     city.BastionOne.SetActive(true);city.BastionTwo.SetActive(false);Views(city.PlayerCamera,"after-I");city.BastionOne.SetActive(false);city.BastionTwo.SetActive(true);Views(city.PlayerCamera,"after-II");Need(Hash(Scene)==data.scene_sha256,"Scene modified during trial");
-    File.WriteAllText(Ev+"/unity-review.json","{\"same_camera_light\":true,\"scene_saved\":false,\"art_approved\":false,\"I_II_preserved\":true,\"banner_slot14_untouched\":true}");
-   }finally{foreach(var r in replacements)r.Key.sharedMaterials=r.Value;city.BastionOne.SetActive(one);city.BastionTwo.SetActive(two);foreach(var o in temporary)Object.DestroyImmediate(o);}
-   Debug.Log("VALORIA_REFERENCE_CLEAN_ARCHITECTURE_TRIAL_COMPLETE");EditorApplication.Exit(0);
+    if(integrate){
+     var diffs=new List<string>();foreach(var im in approvedImages){diffs.Add(ValoriaTerrainBankAuthoring.CompareRender(im.Value,Ev+"/"+im.Key));File.WriteAllBytes(Ev+"/approved-"+im.Key,im.Value);}File.WriteAllText(Ev+"/render-identity.json","["+string.Join(",",diffs)+"]");
+     string folder="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Architecture202";Need(!Directory.Exists(folder),"Refuse overwrite existing architecture assets");Directory.CreateDirectory(folder);AssetDatabase.Refresh();int ix=0;
+     foreach(var obj in temporary.Where(o=>o is Texture2D))AssetDatabase.CreateAsset(obj,folder+"/texture-"+(ix++)+".asset");foreach(var obj in temporary.Where(o=>o is Material))AssetDatabase.CreateAsset(obj,folder+"/material-"+(ix++)+".mat");foreach(var obj in temporary.Where(o=>o is Mesh))AssetDatabase.CreateAsset(obj,folder+"/mesh-"+(ix++)+".asset");
+     var parent=Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Single(r=>r.name=="Gate_LowerGate_WestTower").transform.parent;foreach(var obj in temporary.OfType<GameObject>())obj.transform.SetParent(parent,true);
+     city.BastionOne.SetActive(one);city.BastionTwo.SetActive(two);AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(city.gameObject.scene);Need(EditorSceneManager.SaveScene(city.gameObject.scene,Scene),"Architecture scene save failed");saved=true;File.WriteAllText(Ev+"/integrated.json","{\"visual_scope_accepted\":true,\"scene_sha256\":\""+Hash(Scene)+"\",\"gameplay_gate\":\"PENDING_CURRENT_PROBE\",\"published\":false}");
+    }
+    if(!integrate)File.WriteAllText(Ev+"/unity-review.json","{\"same_camera_light\":true,\"scene_saved\":false,\"art_approved\":false,\"I_II_preserved\":true,\"banner_slot14_untouched\":true}");
+   }finally{if(!saved){foreach(var r in replacements)r.Key.sharedMaterials=r.Value;city.BastionOne.SetActive(one);city.BastionTwo.SetActive(two);foreach(var o in temporary)Object.DestroyImmediate(o);}}
+   if(integrate)ValoriaIntegrationBuild.ValidateCurrent();else{Debug.Log("VALORIA_REFERENCE_CLEAN_ARCHITECTURE_TRIAL_COMPLETE");EditorApplication.Exit(0);}
   }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
   public static void Survey(){try{
    Directory.CreateDirectory(Ev);EditorSceneManager.OpenScene(Scene,OpenSceneMode.Single);var city=Object.FindFirstObjectByType<ValoriaReferenceCleanGameplay>();var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();

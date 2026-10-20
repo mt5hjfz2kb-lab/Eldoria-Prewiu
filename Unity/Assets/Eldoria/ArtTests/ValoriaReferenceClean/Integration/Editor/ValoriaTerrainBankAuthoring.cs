@@ -33,7 +33,7 @@ public static class ValoriaTerrainBankAuthoring {
  public static void Trial(){try{Apply(false);Debug.Log("VALORIA_REFERENCE_CLEAN_TERRAIN_BANK_TRIAL_COMPLETE");EditorApplication.Exit(0);}catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
  [Serializable] public class Acceptance {public string candidate_sha256,source_scene_sha256,after_main_sha256,after_portrait_sha256;public bool phase1_visual_accepted;}
  public static void Integrate(){try{Apply(true);ValoriaIntegrationBuild.ValidateCurrent();}catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}}
- static string CompareRender(byte[] approved,string current){
+ internal static string CompareRender(byte[] approved,string current){
   var a=new Texture2D(2,2);var b=new Texture2D(2,2);try{a.LoadImage(approved);b.LoadImage(File.ReadAllBytes(current));Need(a.width==b.width&&a.height==b.height,"Render dimensions changed");var aa=a.GetPixels32();var bb=b.GetPixels32();double sum=0;int changed=0;for(int i=0;i<aa.Length;i++){int r=Math.Abs(aa[i].r-bb[i].r),g=Math.Abs(aa[i].g-bb[i].g),bl=Math.Abs(aa[i].b-bb[i].b);sum+=r+g+bl;if(Math.Max(r,Math.Max(g,bl))>5)changed++;}double mean=sum/(aa.Length*3),fraction=changed/(double)aa.Length;Need(mean<.10&&fraction<.001,"Reviewed render drift exceeds measured temporal tolerance");return "{\"mean_abs_8bit\":"+mean.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+",\"fraction_above_5\":"+fraction.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+"}";}finally{Object.DestroyImmediate(a);Object.DestroyImmediate(b);}
  }
  static void Apply(bool promote){
