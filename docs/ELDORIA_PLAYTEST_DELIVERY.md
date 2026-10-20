@@ -1,5 +1,16 @@
 # Eldoria — entrega independiente de Sites
 
+## Native242 — subida solicitada por el propietario, 21 octubre 2026
+
+Cuatro fases artísticas consolidadas en main, escena SHA-256 `4c8bbdc6ccb1273bcf24c0e94fa102d88077faac71869598a0e215b88a1cb2bb`. Native241 PASS40/Play/reapertura; native242 build39506996242 y QA Windows39509184788 PASS. El propietario solicita ahora consolidado y publicado: se utiliza el canal Restricted existente, sin cambios de acceso ni Android.
+
+Promoción commit `c7f537ae623d4705ad8b57c9a44242c4f3e35e22`, run39511020125. Preparación SUCCESS; artefacto12305937115. ZIP de entrega SHA-256 `3ba026d54e2e7e9d5edfdc8dd46e348ac71d6197b97a5f8db62a6906f0837954`. Subida aceptada build2172967; ACTIVACIÓN REMOTA PENDIENTE a las22:53:30UTC. El job publish marca failure porque no se activó en sus30s de espera, NO por rechazo de upload. No reenviar. Continuar solo job remote_status en ese run hasta verificar `native242-3ba026d54e2e` activo. Último job de consulta118932711309; posterior reconsulta ya solicitada.
+
+El nuevo data gzip206.395.485 bytes excedía nuestro límite por archivo200MB. Adaptador `itch-decoded-stream-v3`: cuatro flujos gzip completos; mayor archivo57.626.772 bytes,13 archivos. Stream secuencial descomprimido al cargador Unity:257.063.153 bytes, SHA256 `9db4914eb661e57ecf4d491f774e56a64e4bd346e898633d366ffdc2eef54853`, idéntico al original probado. Cambia la codificación comprimida/transporte, NO los bytes descomprimidos del juego. Prueba del lector REAL de Unity: única reserva por recurso, hashes framework/code/data PASS; HTTP404 y tamaño incorrecto rechazados; gzip con/sin cabecera CDN PASS. Sin recompilar Unity ni modificar guardados. Documentación del proveedor: https://itch.io/docs/creators/html5 (200MB por archivo; detección gzip).
+
+Acceso anónimo verificado en navegador: página restringida, sin sesión autorizada; no se modifica privacidad ni se declara hosted gameplay PASS o móvil físico. Itch conserva versión anterior hasta activación.
+
+
 ## Estado actual, 19 octubre 2026
 
 Proveedor elegido por delegación del propietario: **itch.io, proyecto Restricted**, coste 0 EUR. Automatización implementada; primera subida aceptada, pero **JUGABILIDAD EXTERNA AÚN NO VERIFICADA**. Proyecto chrismad/eldoria-pruebas creado por el propietario con Restricted seleccionado. Propietario confirmó secreto BUTLER_API_KEY guardado en entorno eldoria-playtest; credencial aceptada por Butler. El navegador cloud encontró un bucle de verificación Cloudflare y se detuvo tras un único reintento. No intentar eludirlo ni afirmar que una sesión externa se transfiere al chat.
