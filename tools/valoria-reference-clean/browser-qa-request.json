@@ -21,11 +21,11 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Native217 build and 40 native checks PASS. Linux SwiftShader browser failed fresh observation after dialogue input with zero runtime/network errors. Replay identical bytes on existing Windows D3D11 Chromium, preserving all assertions and no rebuild/publication.",
+  "reason": "Previous exact native217 Windows replay passed gameplay, but direct visual review found WebM wall-clock/PTS drift mislabeled selected-event images. Use direct Windows GPU compositor screenshots, retain contextual video, same binary and strict gameplay assertions. No Unity rebuild or publication.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 15,
+  "attempt": 16,
   "method_note": "Exact native217 output, current unchanged browser QA script, real pointer/touch, normal clock, strict framing and save/reload.",
   "gameplay_source_unchanged": true,
   "qa_code_commit": "d716e3d5db55af58e562620db4826683f89f2e2c"

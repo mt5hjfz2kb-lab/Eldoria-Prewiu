@@ -356,6 +356,23 @@ async function main() {
     const before = latest, started = elapsed();
     const videoTime = Math.max(0, (performance.now() - videoStartedAt) / 1000);
     const relative = `screenshots/${String(++captureNumber).padStart(3, '0')}-${slug(label)}-${orientation(before)}.jpg`;
+    if (process.platform === 'win32') {
+      // Hardware Chromium supports direct compositor capture. WebM PTS can
+      // drift from wall time during loading/resizing; never label a guessed
+      // video time as verified proof of an exact gameplay event.
+      const destination = path.join(out, relative);
+      await page.screenshot({path: destination, type: 'jpeg', quality: 90, timeout: 15000});
+      const bytes = fs.statSync(destination).size;
+      need(bytes > 2048, 'Direct Chromium screenshot has no usable image');
+      report.screenshots.push({path: relative, label, video_second: round(videoTime),
+        source: 'CHROMIUM_DIRECT_COMPOSITOR_SCREENSHOT', requested_elapsed_s: started,
+        before: summary(before), after: summary(latest),
+        phase_stable_during_capture: before?.objective === latest?.objective && phase(before) === phase(latest),
+        framing_check: framingCheck, full_selection_framed_before: framingObservation(before).pass,
+        full_selection_framed_after: framingObservation(latest).pass,
+        extraction_pending: false, event_frame_verified: true, bytes});
+      return;
+    }
     // SwiftShader did not answer either live Chromium compositor screenshot.
     // Mark the instant in the continuously recorded REAL browser video; extract
     // that exact time after the WebM closes. The game input and clock are untouched.
@@ -833,6 +850,7 @@ async function main() {
         report.video=path.relative(out,recorded).split(path.sep).join('/');
         const frameFailures=[];
         for(const shot of report.screenshots){
+          if(shot.source==='CHROMIUM_DIRECT_COMPOSITOR_SCREENSHOT')continue;
           const destination=path.join(out,shot.path);
           const args=['-y','-hide_banner','-loglevel','error','-ss',String(Math.max(0,shot.video_second-.08)),
             '-i',recorded,'-frames:v','1','-q:v','3','-update','1',destination];
@@ -860,7 +878,7 @@ async function main() {
             frameFailures.push({file:shot.path,reason:p.error?.message||p.stderr?.slice(-400)||'no genuine JPEG frame'});
           else{shot.extraction_pending=false;shot.bytes=bytes.length;
             shot.extracted_after_video_finalization=true;
-            if(shot.event_frame_verified!==false)shot.event_frame_verified=true;}
+            shot.event_frame_verified=false;shot.video_time_is_approximate=true;}
         }
         const first=report.screenshots.find(shot=>shot.label.startsWith('narrative-'));
         if(first){
@@ -875,7 +893,7 @@ async function main() {
         }
         if(frameFailures.length){report.failures.push('Genuine Chromium video frames missing: '+JSON.stringify(frameFailures.slice(0,10)));
           report.status='FAIL';process.exitCode=1;}
-        report.visual_source='Authentic Chromium WebM and time-matched FFmpeg still frames';
+        report.visual_source=process.platform==='win32'?'Direct Chromium compositor screenshots plus contextual WebM':'Authentic Chromium WebM; extracted still timing approximate';
       }catch(error){
         report.failures.push('Required real browser video/screenshots unavailable: '+(error.stack||error.message));
         report.status='FAIL';process.exitCode=1;
