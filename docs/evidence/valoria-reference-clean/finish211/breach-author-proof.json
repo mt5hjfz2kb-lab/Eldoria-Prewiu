@@ -1,10 +1,10 @@
 {
   "source_world_survey_sha256": "6c17142a5ef11fefcf4f56044d1edb3074bd6140034a647e87108a3bebb661f0",
-  "blend_sha256": "5714ad09f9bfb6546b271f26411957e01bc4ed06f4a1c1b6dd80c796981dfcc2",
-  "mesh_sha256": "93ded36903964496c70911ac0cd1aaec24c7fea09c60e72a4458b273b699dc7f",
+  "blend_sha256": "83fda12f19f15253f7b67239c6ebb1b7c5d09fc8a8e24652b84c2eec7750991d",
+  "mesh_sha256": "00124b1f0b265b2a9df5c1d8148109f939bba5e1080a53e283df9b3f348b87c0",
   "triangles": [
-    2376,
-    2376,
+    2344,
+    2344,
     288,
     288
   ],
