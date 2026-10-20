@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "ITCH_NATIVE191_UPLOADED_REMOTE_BUILD_2169803_PROCESSING_NOT_HOSTED_VERIFIED",
+  "state": "ROYAL_GOLD_V2_NATIVE191_ACTIVE_RESTRICTED_ITCH_REMOTE_GAMEPLAY_DEVICE_PENDING",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -16,10 +16,17 @@
     "artifact_sha256": "5e2d674a77e836133fa0a13a2279de90732f175b2116c0dd46d38259efbbab05"
   },
   "published": {
-    "provider": "sites",
-    "revision": "native143",
-    "url": "https://valoria-city-world.kbkvc5c45n.chatgpt.site",
-    "deployment": "appgdep_6ad63a0012448191b64d52721e4479a6"
+    "provider": "itch.io",
+    "target": "chrismad/eldoria-pruebas",
+    "channel": "web",
+    "revision": "native191",
+    "url": "https://chrismad.itch.io/eldoria-pruebas",
+    "remote_build": 2169803,
+    "version": "native191-97997478971c",
+    "restricted": true,
+    "remote_active_confirmed": true,
+    "hosted_gameplay_verified": false,
+    "physical_mobile_pass": false
   },
   "limits": {
     "physical_mobile_tested": true,
@@ -47,10 +54,10 @@
     "run_id": 39440869260,
     "prepare": "success",
     "transport_tests": "success",
-    "publish": "upload_accepted_remote_confirmation_pending",
+    "publish": "accepted_confirmed_active_via_separate_remote_status",
     "remote_build": 2169803,
     "hosted_verified": false,
-    "reason": "Butler confirmed 175.55 MiB patch accepted and build #2169803 processing; remote status still serving previous native152 #2165127. Do not label native191 as hosted yet."
+    "reason": "Remote build 2169803 is active in Restricted itch.io web channel. Actual hosted page and physical iPhone gameplay remain untested."
   },
   "uploaded": {
     "provider": "itch.io",
@@ -61,9 +68,16 @@
     "remote_build": 2169803,
     "upload_accepted": true,
     "hosted_verified": false,
-    "processing_status": "PROCESSING",
+    "processing_status": "ACTIVE",
     "transport_adapter": "itch-low-memory-v2",
-    "physical_mobile_tested": false
+    "physical_mobile_tested": false,
+    "remote_active_confirmed": true,
+    "activated_evidence": "Butler status✓ #2169803 (from #2165127) | native191-97997478971c, 2026-10-20 14:45:53Z",
+    "latest_remote_check": {
+      "run_id": 39441475526,
+      "checked_at": "2026-10-20T14:45:53Z",
+      "result": "ACTIVE_NATIVE191_VERSION_MATCH"
+    }
   },
   "manual_fallback": {
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
@@ -142,10 +156,29 @@
       "0 runtime/network errors"
     ],
     "phone_hardware_tested": false,
-    "published_updated": false,
+    "published_updated": true,
     "delivery_prepared_run": 39440643475,
     "delivery_prepared_artifact": 12274180615,
     "release_target": "Restricted itch.io chrismad/eldoria-pruebas web",
-    "remote_build": 2169803
+    "remote_build": 2169803,
+    "remote_activated": true,
+    "remote_status_run": 39441475526
+  },
+  "legacy_published": {
+    "provider": "sites",
+    "revision": "native143",
+    "url": "https://valoria-city-world.kbkvc5c45n.chatgpt.site",
+    "deployment": "appgdep_6ad63a0012448191b64d52721e4479a6"
+  },
+  "current_revision_qa": {
+    "revision": "native191",
+    "windows_gpu_webgl_pass": true,
+    "native_unity_pass": true,
+    "normal_clock": true,
+    "full_bastion_i_ii": true,
+    "save_reload_exact": true,
+    "hosted_chrome_tested": false,
+    "ios_safari_tested": false,
+    "art_approved": false
   }
 }
