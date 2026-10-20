@@ -1,11 +1,11 @@
 {
   "stage": "architecture_trial",
   "validate_play": false,
-  "revision": 232,
+  "revision": 233,
   "budget_eur": 0,
   "validated_runtime_source": "2f59adcf8bc43338cadd9630dd77d7a7b55f7900",
   "validated_run": 39246879204,
-  "checks": "Reject native231 exposed rear gable/roof gaps. Affine-fit existing hall roof width to measured tower clear span, preserve closed tiles/slopes, fit original gables and close side stone seats on existing hall walls. Preserve exact editable sources below GitHub size limit. Six-view Unity A/B.",
+  "checks": "Reuse exact native232 fitted roof geometry. Remove stale baked atlas binding from modified I-II mesh renderers; use existing scene light probes and direct shadows. Six fresh matched Unity views, no scene save or new Blender production.",
   "art_correction": "Phase 1 geometric authoring after measured current source; no plots, cliffs, camps or buildings.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
@@ -33,5 +33,6 @@
   "terrain_polish": false,
   "reuse_polish_candidate": true,
   "world_contact": false,
-  "roof_junction": true
+  "roof_junction": true,
+  "reuse_roof_candidate": true
 }

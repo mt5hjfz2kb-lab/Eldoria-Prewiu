@@ -119,6 +119,23 @@ jobs:
           }
           $report|ConvertTo-Json -Depth 5|Set-Content docs/evidence/valoria-reference-clean/android-existing-key-check.json -Encoding utf8
           Write-Host "Original Android signing key certificate match: $($report.matching_key_found)"
+      - name: Recover exact native232 roof source and images
+        if: contains(github.event.head_commit.message, '[roof-source-recover]')
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-terrain-bank-39490209153
+          run-id: 39490209153
+          github-token: ${{ github.token }}
+          path: roof-source-recovery
+      - name: Restore only the exact roof evidence directory
+        if: contains(github.event.head_commit.message, '[roof-source-recover]')
+        shell: powershell
+        run: |
+          $sources=@(Get-ChildItem "$env:GITHUB_WORKSPACE/roof-source-recovery" -Filter candidate.json.gz -Recurse | Where-Object {$_.FullName -match 'roof-junction226'})
+          if($sources.Count -ne 1){throw 'Exact native232 roof source missing or ambiguous'}
+          $destination='docs/evidence/valoria-reference-clean/roof-junction226'
+          New-Item -ItemType Directory -Force $destination | Out-Null
+          Copy-Item (Join-Path $sources[0].DirectoryName '*') $destination -Recurse -Force
       - name: Execute requested stage in native Unity
         id: native_stage
         shell: powershell
@@ -210,8 +227,10 @@ jobs:
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
             if(-not $blender){throw 'Installed Blender required'}
-            & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_roof_junction.py
-            if($LASTEXITCODE){throw 'Measured roof junction authoring failed'}
+            if(-not $req.reuse_roof_candidate){
+              & $blender -b -t 4 --python-exit-code 1 --python tools/valoria-reference-clean/author_roof_junction.py
+              if($LASTEXITCODE){throw 'Measured roof junction authoring failed'}
+            }
             $method='Eldoria.ReferenceClean.Editor.ValoriaRoofJunctionFinishing.Trial'
           }
           if($req.roof_junction -and $req.stage -eq 'architecture_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaRoofJunctionFinishing.Integrate'}
@@ -575,7 +594,11 @@ jobs:
         shell: powershell
         run: |
           if(Test-Path 'tools/valoria-reference-clean/pack_roof_sources.py'){
-            python tools/valoria-reference-clean/pack_roof_sources.py
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
+            $python=Get-ChildItem (Split-Path $blender) -Filter python.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName
+            if(-not $python){throw 'Existing Blender Python unavailable'}
+            & $python tools/valoria-reference-clean/pack_roof_sources.py
             if($LASTEXITCODE){throw 'Editable source preservation failed'}
           }
       - name: Review real capture with previously installed local vision model
