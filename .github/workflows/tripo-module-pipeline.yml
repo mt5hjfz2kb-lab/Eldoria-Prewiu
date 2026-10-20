@@ -389,6 +389,9 @@ jobs:
           }
           Write-Host "TRIANGLE_PROFILE: min=$minTris target=$targetTris max=$maxTris"
           $args = @("--background","--python","$env:GITHUB_WORKSPACE\tools\tripo_module_blender.py","--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
+          if ([string]$request.module_label -eq 'Eldoria_RockBoar_FirstHunt_v1') {
+            $args += '--save-blend'
+          }
           if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
             $splitDir = "$env:GITHUB_WORKSPACE\Unity\Assets\Eldoria\ArtTests\ImageTo3D\Source\MultiPiece"
             Remove-Item $splitDir -Recurse -Force -ErrorAction SilentlyContinue
