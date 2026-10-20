@@ -44,6 +44,19 @@ jobs:
           while IFS= read -r file; do
             [[ -z "$file" ]] && continue
             case "$file" in
+              Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/*)
+                # This V2 module has an explicit native scene/PlayMode gate.
+                # Avoid a SECOND Windows Unity checkout/build only when the
+                # SAME push schedules that gate using its exact request file.
+                # UI-only commits without the native request still get the
+                # full default Windows gate.
+                if grep -Fxq 'tools/valoria-reference-clean/request.json' <<< "$files" &&
+                   git log -1 --format=%B | grep -Fq '[valoria-native]'; then
+                  continue
+                fi
+                heavy=true
+                break
+                ;;
               Unity/Assets/Eldoria/ArtTests/*|Unity/Assets/Eldoria/Scripts/Editor/*|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaProductionArtResetV1.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaProductionDensityLifeV1.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaReferenceConvergencePassV2.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaWorldFrameMountainTerrainV1.cs|Unity/Assets/Eldoria/Scripts/Presentation/ProductionVisualIntegration.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaFullFrame*.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCameraBackdrop*.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaOpenValley*.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaPanoramicSkyCandidate*.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaDistantWorldComposite*.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaGroundMaterialHarmonization*.cs|Unity/Assets/Eldoria/Scripts/Presentation/ValoriaBenchmarkComposite*.cs|Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs|Unity/Assets/Eldoria/Scripts/Presentation/SliceBoot.cs|Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs|Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs|Unity/Assets/Eldoria/Tests/PlayMode/SliceSceneSmokeTests.cs|Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs|Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs.meta)
                 # Dedicated visual/progression gates own these editor/reset-only changes; avoid duplicating the heavy Windows job.
                 # Dedicated UI Progression Certification owns these UI-only changes.
