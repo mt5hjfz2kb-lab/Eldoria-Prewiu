@@ -571,6 +571,26 @@ jobs:
             }
             if(-not $published){throw 'Concurrent main mutation persisted; all original artifacts retained, no force-push'}
           }
+      # Compact visual evidence for the REAL owner-facing uGUI V2. The legacy
+      # review artifact carries nearly a gigabyte of old Blender/source files
+      # and exceeds connector limits; retain it unchanged, add PNGs separately.
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.native_stage.outputs.stage == 'experience_validate'
+        with:
+          name: valoria-royal-gold-v2-review-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-story*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-city-16x9.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-chapter-list.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-construction-*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-world-*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-training*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-chapter2-complete.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/integration-result.json
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 1
+
       - uses: actions/upload-artifact@v4
         if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial'
         with:
