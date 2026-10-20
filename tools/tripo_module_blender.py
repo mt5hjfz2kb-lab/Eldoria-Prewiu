@@ -18,6 +18,7 @@ def parse_args():
     p.add_argument("--min-tris", type=int, default=DEFAULT_MIN_TRIS)
     p.add_argument("--max-tris", type=int, default=DEFAULT_MAX_TRIS)
     p.add_argument("--diagnostic-only", action="store_true")
+    p.add_argument("--save-blend", action="store_true", help="Preserve optimized editable .blend beside exported GLB")
     p.add_argument("--surface-rescue-profile", choices=["", "rock"], default="")
     p.add_argument("--split-components-dir", default="")
     p.add_argument("--split-min-triangles", type=int, default=250)
@@ -898,6 +899,10 @@ def main():
         export_materials="EXPORT",
         export_yup=True,
     )
+    if a.save_blend:
+        blend_path = os.path.splitext(a.output)[0] + ".blend"
+        bpy.ops.wm.save_as_mainfile(filepath=blend_path)
+        print("ELDORIA_EDITABLE_BLENDER_SOURCE=" + blend_path)
     # Optional reusable multipiece extraction runs after the canonical combined export so
     # per-piece pivot normalization cannot alter the certified combined geometry.
     salvage_cfg = load_refine_config(a.split_salvage_config)
