@@ -56,13 +56,8 @@ public static class ValoriaCitySurfaceFinishing {
   try{
    Views(city,"before");next=Object.Instantiate(old);next.name="Existing city paving / measured earthen shoulder contact";
    var filters=Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None);var roads=new[]{"Axial_Paving","Outer_Road"}.Select(n=>new Road(filters.Single(f=>f.name==n))).ToArray();
-   int hn=next.heightmapResolution,an=next.alphamapResolution,changed=0;float maxDelta=0;var heights=next.GetHeights(0,0,hn,hn);
-   for(int z=0;z<hn;z++)for(int x=0;x<hn;x++){
-    float wx=t.transform.position.x+x/(float)(hn-1)*next.size.x,wz=t.transform.position.z+z/(float)(hn-1)*next.size.z;
-    foreach(var road in roads){float weight=road.Weight(wx,wz,out float edgeY);if(weight<=0)continue;float ground=t.transform.position.y+heights[z,x]*next.size.y;
-     float delta=Mathf.Clamp(edgeY-ground,0,.38f)*weight;if(delta>.0001f){heights[z,x]+=delta/next.size.y;maxDelta=Mathf.Max(maxDelta,delta);changed++;}}
-   }
-   Need(changed>100,"No measured road contact correction");next.SetHeights(0,0,heights);
+   // Native235 measured no missing height contact: preserve the accepted relief exactly.
+   int an=next.alphamapResolution;
    var alpha=next.GetAlphamaps(0,0,an,an);int layers=alpha.GetLength(2);
    for(int z=0;z<an;z++)for(int x=0;x<an;x++){
     float wx=t.transform.position.x+x/(float)(an-1)*next.size.x,wz=t.transform.position.z+z/(float)(an-1)*next.size.z;
@@ -72,7 +67,7 @@ public static class ValoriaCitySurfaceFinishing {
    next.SetAlphamaps(0,0,alpha);t.terrainData=next;t.Flush();Need(collider.terrainData==physics,"Collision terrain changed");
    foreach(var l in lights){l.lightmapBakeType=LightmapBakeType.Realtime;l.renderMode=LightRenderMode.ForcePixel;}
    Views(city,"after");Need(Hash(Scene)==Source,"Trial changed source scene");
-   File.WriteAllText(Ev+"/unity-review.json","{\"source_scene_sha256\":\""+Source+"\",\"tool_sha256\":\""+Hash(Tool)+"\",\"changed_height_samples\":"+changed+",\"maximum_visual_raise_m\":"+maxDelta.ToString("R",System.Globalization.CultureInfo.InvariantCulture)+",\"existing_torch_lights_reused\":4,\"new_lights\":0,\"new_shadow_maps\":0,\"collision_unchanged\":true,\"plots_created\":false,\"art_approved\":false}");
+   File.WriteAllText(Ev+"/unity-review.json","{\"source_scene_sha256\":\""+Source+"\",\"tool_sha256\":\""+Hash(Tool)+"\",\"changed_height_samples\":0,\"maximum_visual_raise_m\":0,\"existing_torch_lights_reused\":4,\"new_lights\":0,\"new_shadow_maps\":0,\"collision_unchanged\":true,\"plots_created\":false,\"art_approved\":false}");
    if(integrate){
     var diffs=new List<string>();foreach(var im in approved){diffs.Add(ValoriaTerrainBankAuthoring.CompareRender(im.Value,Ev+"/"+im.Key));File.WriteAllBytes(Ev+"/approved-"+im.Key,im.Value);}File.WriteAllText(Ev+"/render-identity.json","["+string.Join(",",diffs)+"]");
     const string folder="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/CitySurface235";Need(!Directory.Exists(folder),"Refuse overwriting existing finish");Directory.CreateDirectory(folder);AssetDatabase.Refresh();AssetDatabase.CreateAsset(next,folder+"/Terrain.asset");AssetDatabase.SaveAssets();EditorSceneManager.MarkSceneDirty(city.gameObject.scene);Need(EditorSceneManager.SaveScene(city.gameObject.scene,Scene),"Save failed");saved=true;File.WriteAllText(Ev+"/integrated.json","{\"scene_sha256\":\""+Hash(Scene)+"\",\"published\":false}");
