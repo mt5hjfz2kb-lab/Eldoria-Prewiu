@@ -624,7 +624,13 @@
           "workflow_yaml": "PASS"
         }
       },
-      "owner_handoff": "Explicit 2026-10-20 owner takeover of single canonical integrated art workstream. No concurrent authority. Targets City>=7/10 World>=5.5/10 only on independent Unity A/B, with no unsupported buildings or enemy tents."
+      "owner_handoff": "Explicit 2026-10-20 owner takeover of single canonical integrated art workstream. No concurrent authority. Targets City>=7/10 World>=5.5/10 only on independent Unity A/B, with no unsupported buildings or enemy tents.",
+      "session_continuation": {
+        "executor": "codex-work-artistic-convergence-20261020",
+        "base_main_sha": "22fcaf8c0b3c1b1c97bc914e7b6e80b57ecdc748",
+        "authority": "Explicit owner request 2026-10-20: assume existing integrated workstream, same owner identity and main; terrain and bank first; no parallel owner, no publication, no visible parcels.",
+        "phase": "RECOVER_CURRENT_GEOMETRY_AND_NATIVE_CAPTURES"
+      }
     }
   ],
   "history": [
