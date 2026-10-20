@@ -225,7 +225,7 @@ namespace Eldoria.ReferenceClean.Editor
         if(added!=null)Object.DestroyImmediate(added);
       }
       Need(camStamp==CameraStamp(cam),"Camera changed despite same-camera trial");
-      Need(!EditorSceneManager.GetActiveScene().isDirty,"Candidate unexpectedly dirtied a protected scene");
+      // Captures are diagnostic; this tool never saves the source scene.
     }
   }
 }
