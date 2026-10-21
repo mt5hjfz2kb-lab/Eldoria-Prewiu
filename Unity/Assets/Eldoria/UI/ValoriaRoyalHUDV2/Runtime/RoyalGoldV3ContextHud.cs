@@ -50,6 +50,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
 
         public bool ContextVisible => cardGroup && cardGroup.blocksRaycasts;
+        public RoyalButton VisibleActionButton => actionButton;
         public RectTransform ContextRect => card;
         public bool IsConfigured => FindAnchor != null && ActiveCamera != null && ReadBuilding != null;
         public int ActiveTimers
@@ -173,7 +174,11 @@ namespace Eldoria.UI.RoyalGold.V2
             Visible(group, false, false);
             return new TimerView { Root = r, Label = label, Progress = fill, Fill = ink, Visibility = group };
         }
-        private void LateUpdate()
+        private void LateUpdate() => SynchronizeNow();
+
+        /// <summary>Reproject immediately after camera changes or a native QA
+        /// capture resize; ordinary frames also call this from LateUpdate.</summary>
+        public void SynchronizeNow()
         {
             if (!Application.isPlaying || !IsConfigured || !Source) return;
             EnsureView();
@@ -208,7 +213,9 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             var screen = camera.WorldToScreenPoint(position);
             if (screen.z <= camera.nearClipPlane || screen.z >= camera.farClipPlane) return false;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(safe, screen, null, out local)) return false;
+            var canvas = safe.GetComponentInParent<Canvas>();
+            var uiCamera = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(safe, screen, uiCamera, out local)) return false;
             var bounds = safe.rect;
             return local.x >= bounds.xMin - 36 && local.x <= bounds.xMax + 36 &&
                 local.y >= bounds.yMin - 36 && local.y <= bounds.yMax + 36;
