@@ -1064,6 +1064,196 @@
       "conditions": "Comprobar objetos reales en `main` antes de copiar arte legado.",
       "run_ids": [],
       "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K48",
+      "family": "rejection",
+      "problem": "Una obra de seis módulos parece una meseta continua por sus nombres, pero los recursos son pequeñas islas.",
+      "recommended_route": "Clasificar primero el rol espacial y límites reales del donante, y no componer un paisaje masivo con piezas puntuales.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Reference First V20–V22 inspeccionó prefabs y fuentes: ART_FAIL como base geológica; se resolvió parte del error de materiales, pero no la forma. Método reusable de diagnóstico, no escena.",
+      "source_paths": [
+        "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/V16_TO_V20_DONOR_EVIDENCE_AND_VISUAL_DECISION_20261016.md",
+        "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/V21_V22_TERRAIN_SOURCE_DECISION_20261016.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+          "sha": "2959d743e7aab966bafa12a89bd3529c39141959",
+          "path": "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/V16_TO_V20_DONOR_EVIDENCE_AND_VISUAL_DECISION_20261016.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/2959d743e7aab966bafa12a89bd3529c39141959/docs/evidence/reference-first-zero-budget-visual-pilot-20261015/V16_TO_V20_DONOR_EVIDENCE_AND_VISUAL_DECISION_20261016.md"
+        },
+        {
+          "ref": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+          "sha": "2959d743e7aab966bafa12a89bd3529c39141959",
+          "path": "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/V21_V22_TERRAIN_SOURCE_DECISION_20261016.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/2959d743e7aab966bafa12a89bd3529c39141959/docs/evidence/reference-first-zero-budget-visual-pilot-20261015/V21_V22_TERRAIN_SOURCE_DECISION_20261016.md"
+        }
+      ],
+      "avoid": "Escalar partes repetidas a una gran meseta o seguir retintando donantes.",
+      "conditions": "La meseta monumental objetivo fue sustituida por el canon 20-10 actual.",
+      "run_ids": [
+        38861107452,
+        38866725171,
+        38867193841
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K49",
+      "family": "operations",
+      "problem": "El GLB carga pero materiales quedan blancos, magenta o con brillo aberrante.",
+      "recommended_route": "Verificar slots de glTF, valores por defecto, índices faltantes=-1, roughness y equivalencia PBR al guardar Unity.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Reference Assembly detectó interpretación errónea de JSON nested/índice 0 y roughness 0, además de problemas de textura/URP, con sucesivas revisiones sin ART PASS.",
+      "source_paths": [
+        "docs/evidence/valoria-bastion1-reference-assembly/RESULT.json"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/valoria-bastion1-reference-assembly-20261012",
+          "sha": "89ded38acf411a503269d618c2469ec5269999b1",
+          "path": "docs/evidence/valoria-bastion1-reference-assembly/RESULT.json",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/89ded38acf411a503269d618c2469ec5269999b1/docs/evidence/valoria-bastion1-reference-assembly/RESULT.json"
+        }
+      ],
+      "avoid": "Atribuir todos los artefactos al modelado y generar de nuevo antes de reparar importación.",
+      "conditions": "No dar por aprobado el modelo por corregir sus canales materiales.",
+      "run_ids": [
+        38284402710,
+        38285712056,
+        38287194015
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K50",
+      "family": "environment",
+      "problem": "Se necesita fuente de roca natural CC0 con retoques profesionales y no otro generador desde cero.",
+      "recommended_route": "Recuperar el método de extracción de donante CC0 con SHA, revisión en Blender, reparación acotada y QA Unity separado.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Estudio Studio Rocks conserva receta reproducible y pruebas Blender, pero declara bloqueo de integración por runner/deriva del terreno; no ART_APPROVED.",
+      "source_paths": [
+        "tools/art-studio-recovery/REPRODUCE.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/valoria-studio-recovery-rocks-v1-20261011",
+          "sha": "c13c03d90479305b4dfe3adc740c8933fabb1bf6",
+          "path": "tools/art-studio-recovery/REPRODUCE.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/c13c03d90479305b4dfe3adc740c8933fabb1bf6/tools/art-studio-recovery/REPRODUCE.md"
+        }
+      ],
+      "avoid": "Incluir script arbitrario de IA o recuperar un paisaje ya descartado.",
+      "conditions": "Verificar licencia exacta, archivo fuente, SHA y canon actual.",
+      "run_ids": [
+        38127483365
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K51",
+      "family": "rejection",
+      "problem": "Se pulen pavimento y pequeños patios sin efectos visibles en la cámara del jugador.",
+      "recommended_route": "Rechazar intervenciones sin impacto de pantalla significativo aunque PlayMode pase.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Authored Gameplay Cell realizó dos variantes Unity con TECH PASS/VISUAL FAIL; segunda alteraba solo 0,027% pixeles en vista estratégica 19 histórica.",
+      "source_paths": [
+        "docs/VALORIA_AUTHORED_GAMEPLAY_CELL_ART_DIRECTION_V1_RESULT.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "visual-proof/valoria-authored-gameplay-cell-art-direction-v1",
+          "sha": "f3f5aac2f2bb6b6f3cd67584ea8823ed1e59f9a5",
+          "path": "docs/VALORIA_AUTHORED_GAMEPLAY_CELL_ART_DIRECTION_V1_RESULT.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/f3f5aac2f2bb6b6f3cd67584ea8823ed1e59f9a5/docs/VALORIA_AUTHORED_GAMEPLAY_CELL_ART_DIRECTION_V1_RESULT.md"
+        }
+      ],
+      "avoid": "Más bordillos, losas, andamios y microprops para ocultar falta de forma general.",
+      "conditions": "Medir en cámara actual; las vistas 19/12/9 antiguas no son el encuadre canónico actual.",
+      "run_ids": [
+        37153721252,
+        37153946756
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K52",
+      "family": "rejection",
+      "problem": "Familia artística secundaria no armoniza con Hero pese a materiales compartidos.",
+      "recommended_route": "Diseñar relación de escala, volumen y materiales del conjunto antes de producir variantes masivas.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Authored Secondary Family: arquitectura de Aserradero/muro/puerta pasó TECH pero falló cohesión y fue descartada; no extrapolar a Cuartel/Granero.",
+      "source_paths": [
+        "docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "visual-proof/valoria-authored-secondary-art-family-v1",
+          "sha": "b52c3e78c3be7f1a2b8027fc73c5350890942cf0",
+          "path": "docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/b52c3e78c3be7f1a2b8027fc73c5350890942cf0/docs/VALORIA_AUTHORED_SECONDARY_ART_FAMILY_V1_RESULT.md"
+        }
+      ],
+      "avoid": "Repetir variaciones de material sin resolver diferencia de densidad y forma.",
+      "conditions": "Solo rescatar partes tras A/B individual pertinente al canon nuevo.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K53",
+      "family": "operations",
+      "problem": "Tres propuestas visuales se confunden con tres pruebas de calidad reales.",
+      "recommended_route": "Conservar fuentes de estilos como prototipos, con licencias, pero no valorar sin capturas Unity verdaderas.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Experimento Three Visual Styles almacenó tres escenas Unity y referencias CC0 Quaternius/Kenney, pero el README dice NOT YET UNITY-RENDER-VALIDATED.",
+      "source_paths": [
+        "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/README.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "experiment/eldoria-three-visual-styles-20261017",
+          "sha": "b2b87d52fe297152669b7071777acdd3c7aa3115",
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/README.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/b2b87d52fe297152669b7071777acdd3c7aa3115/Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/README.md"
+        }
+      ],
+      "avoid": "Declarar ganadora una variante solo por existir una escena o un script ExecuteAlways.",
+      "conditions": "No reconstruir Valoria desde prototipo no aprobado.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K54",
+      "family": "rejection",
+      "problem": "Abundantes prefabs retocados crean artefactos materiales graves y no coherencia de escena.",
+      "recommended_route": "Mantener revisión independiente y rollback ante regresión severa de color/iluminación.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Reference First segunda captura Unity: coníferas cambiaron a azul neón y la fortificación seguía desconectada, ART_REJECTED pese a TECH PASS.",
+      "source_paths": [
+        "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/SECOND_VISUAL_REVIEW.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+          "sha": "2959d743e7aab966bafa12a89bd3529c39141959",
+          "path": "docs/evidence/reference-first-zero-budget-visual-pilot-20261015/SECOND_VISUAL_REVIEW.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/2959d743e7aab966bafa12a89bd3529c39141959/docs/evidence/reference-first-zero-budget-visual-pilot-20261015/SECOND_VISUAL_REVIEW.md"
+        }
+      ],
+      "avoid": "Aprobar por volumen de props o textura de roca neutralizada.",
+      "conditions": "No extrapolar referencias visuales previas al canon actual.",
+      "run_ids": [
+        38798569103
+      ],
+      "provenance_level": "archived_primary_file_read"
     }
   ]
 }
