@@ -163,13 +163,23 @@ jobs:
           # changing the checked-in baseline or taking credit for old runs.
           $e=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
           $baselineFile=Join-Path $env:RUNNER_TEMP "Eldoria-V2-Native-Framing-Baseline-$env:GITHUB_RUN_ID.json"
-          $baselineOriginal=Join-Path $e 'integration-result.json'
-          if(-not(Test-Path $baselineOriginal)){throw 'Original native I-II framing evidence unavailable'}
-          $original=Get-Content $baselineOriginal -Raw|ConvertFrom-Json
-          if($original.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED' -or @($original.framing).Count -lt 10){
-            throw 'Original V2 baseline is not an acceptable full I-II capture'
+          # On the shared Windows runner, a previous task can leave a sparse
+          # checkout that omits docs/evidence even though the blob is tracked.
+          # Read the original baseline directly from THIS PR merge commit's
+          # Git tree. Do not overwrite another workstream's evidence on disk.
+          $blobRef="$($env:GITHUB_SHA):docs/evidence/valoria-reference-clean/integration-result.json"
+          $baselineLines=@(& git show $blobRef)
+          if($LASTEXITCODE -ne 0 -or $baselineLines.Count -lt 8){
+            throw 'Original native V2 baseline blob missing from exact Git commit'
           }
-          Copy-Item $baselineOriginal $baselineFile -Force
+          $baselineText=$baselineLines -join "`n"
+          try{$original=$baselineText|ConvertFrom-Json -ErrorAction Stop}
+          catch{throw 'Original exact-Git V2 baseline JSON could not be parsed'}
+          if($original.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED' -or @($original.framing).Count -lt 10){
+            throw 'Original exact-Git V2 baseline is not an acceptable full I-II capture'
+          }
+          [IO.File]::WriteAllText($baselineFile,$baselineText,(New-Object Text.UTF8Encoding $false))
+          Write-Host "ELDORIA_V2_SOURCE_BASELINE_FROM_EXACT_GIT_TREE $($env:GITHUB_SHA)"
           $log=Join-Path $env:RUNNER_TEMP 'Eldoria-V3-Native-I-II-Visual.log'
           Remove-Item $log -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
