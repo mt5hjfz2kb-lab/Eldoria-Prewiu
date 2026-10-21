@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "asset": "Eldoria_Spawnling_Bastion2_v1",
+  "workstream": "eldoria-spawnling-bastion2-finish-20261021",
+  "native_unity_run": 39578889927,
+  "native_local_commit_prefix": "1682d87",
+  "native_local_commit_message": "feat(spawnling): actual Bastion II enemy visual integrated with I-II QA",
+  "native_steps_success": [
+    "Import real PBR+LOD scene without changing game rules or hotspots",
+    "Replay exact canonical Bastion I-II buttons combat rewards and save"
+  ],
+  "required_recovery": "cherry_pick_only_exact_existing_tested_commit",
+  "replay_unity": false,
+  "publish": false,
+  "budget_eur": 0,
+  "allow_force_push": false,
+  "expected_original_hitbox": "engendro-valoria",
+  "method": "Remote new checkout receives local object and cherry-picks without modifying the preserved source worktree; refuses conflicts."
+}
