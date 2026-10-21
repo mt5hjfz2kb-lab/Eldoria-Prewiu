@@ -747,6 +747,48 @@ namespace Eldoria.ReferenceClean.Editor
                 rr.lightProbeUsage=donor.lightProbeUsage;
                 rr.reflectionProbeUsage=donor.reflectionProbeUsage;
                 rr.renderingLayerMask=donor.renderingLayerMask;
+                // Preserve the already-reviewed two-stage Unity LOD contract.
+                // Copying Near branches or Strategic silhouette alone at every
+                // distance needlessly cost mobile triangles or sacrifices detail.
+                if((donor.name=="Near branches"||donor.name=="Strategic silhouette")
+                    && donor.transform.parent!=null)
+                {
+                    string partnerName=donor.name=="Near branches"
+                        ?"Strategic silhouette":"Near branches";
+                    Transform partner=donor.transform.parent.Find(partnerName);
+                    if(partner!=null)
+                    {
+                        var sourceRenderer=partner.GetComponent<MeshRenderer>();
+                        var sourceMesh=partner.GetComponent<MeshFilter>();
+                        Need(sourceRenderer!=null && sourceMesh!=null &&
+                            sourceMesh.sharedMesh!=null,
+                            "Retained near/far conifer partner lacks original mesh");
+                        var other=new GameObject("Retained "+partnerName+" / mobile LOD");
+                        other.layer=partner.gameObject.layer;
+                        other.transform.SetParent(obj.transform,false);
+                        other.transform.localPosition=Vector3.zero;
+                        other.transform.localRotation=Quaternion.identity;
+                        other.transform.localScale=Vector3.one;
+                        other.AddComponent<MeshFilter>().sharedMesh=sourceMesh.sharedMesh;
+                        var alternate=other.AddComponent<MeshRenderer>();
+                        alternate.sharedMaterials=sourceRenderer.sharedMaterials;
+                        alternate.shadowCastingMode=sourceRenderer.shadowCastingMode;
+                        alternate.receiveShadows=sourceRenderer.receiveShadows;
+                        alternate.lightProbeUsage=sourceRenderer.lightProbeUsage;
+                        alternate.reflectionProbeUsage=sourceRenderer.reflectionProbeUsage;
+                        alternate.renderingLayerMask=sourceRenderer.renderingLayerMask;
+                        MeshRenderer near=donor.name=="Near branches"?rr:alternate;
+                        MeshRenderer far=donor.name=="Strategic silhouette"?rr:alternate;
+                        var nearMesh=near.GetComponent<MeshFilter>().sharedMesh;
+                        var farMesh=far.GetComponent<MeshFilter>().sharedMesh;
+                        Need(farMesh.triangles.Length<=nearMesh.triangles.Length,
+                            "Repeated forest silhouette is more expensive than near variant");
+                        var lod=obj.AddComponent<LODGroup>();
+                        lod.SetLODs(new[]{new LOD(.16f,new Renderer[]{near}),
+                            new LOD(.012f,new Renderer[]{far})});
+                        lod.RecalculateBounds();
+                    }
+                }
                 Vector3 actualCenter=rr.bounds.center;
                 Need((host.WorldCamera.cullingMask & (1<<obj.layer)) != 0,
                      "Mature canopy not included in real strategic camera culling mask");
