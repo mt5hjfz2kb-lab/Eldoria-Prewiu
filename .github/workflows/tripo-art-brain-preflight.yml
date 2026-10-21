@@ -32,6 +32,9 @@ jobs:
           sparse-checkout: |
             tools/tripo-art-brain/
             tools/plan-art-production.mjs
+            tools/art-direction/ai-authoring/author_brief.py
+            tools/art-direction/ai-authoring/artistic_learning_feedback.py
+            tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
             pipeline/tripo-art-brain/
             ArtSource/World4X/
             docs/evidence/spawnling-bastion2/native-integration.json
@@ -50,6 +53,27 @@ jobs:
             node tools/tripo-art-brain/preflight.mjs prepare "$id" --out "$OUT/$id"
             node tools/plan-art-production.mjs "$OUT/$id/art-production-request.json" "$OUT/$id/canonical-planner.json" > "$OUT/$id/planner-console.txt"
           done
+
+      - name: Verify current Qwen artist accepts this context without model inference
+        shell: bash
+        run: |
+          python3 tools/art-direction/ai-authoring/author_brief.py --help > "$OUT/qwen-interface-help.txt"
+          grep -F -- '--inventory' "$OUT/qwen-interface-help.txt"
+          grep -F -- '--reference' "$OUT/qwen-interface-help.txt"
+          grep -F -- '--unity-before' "$OUT/qwen-interface-help.txt"
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          for (const id of ['spawnling', 'boar', 'focus']) {
+            const txt = fs.readFileSync(path.join(process.env.OUT,id,'qwen-inventory.txt'),'utf8');
+            if (txt.length > 4000) throw new Error(id+': generated Qwen context would be truncated by artist --inventory');
+            if (!txt.includes('SHA256') || !txt.includes('Art approval=false') ||
+                !txt.includes('External Tripo API is NOT authorized')) {
+              throw new Error(id+': incomplete source-locked artistic context');
+            }
+          }
+          console.log('EXISTING_QWEN_INTERFACE_COMPATIBLE_ZERO_INFERENCE');
+          NODE
 
       - name: Verify the art director remains independent and Tripo spending is blocked
         shell: bash
