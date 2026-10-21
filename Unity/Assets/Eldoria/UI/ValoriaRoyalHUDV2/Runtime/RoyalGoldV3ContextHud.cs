@@ -239,19 +239,16 @@ namespace Eldoria.UI.RoyalGold.V2
         private void RenderSelection(Camera camera, bool blocked)
         {
             string id = Source.SelectedBuildingId;
-            if (blocked || string.IsNullOrEmpty(id) || !live.ContainsKey(id))
+            if (blocked || string.IsNullOrEmpty(id))
             {
-                // march-main is not a timed structural target; read it only
-                // when explicitly selected, never as background decoration.
-                if (!blocked && id == "march-main")
-                {
-                    var march = ReadBuilding(id);
-                    if (march != null) { RenderSelectedBuilding(id, march, camera); return; }
-                }
                 Visible(cardGroup, false, true);
                 return;
             }
-            RenderSelectedBuilding(id, live[id], camera);
+            // The canonical host may expose additional read-only world POIs
+            // such as old-watch-ruin; no extra actions or state are invented.
+            if (!live.TryGetValue(id, out var selected)) selected = ReadBuilding(id);
+            if (selected == null) { Visible(cardGroup, false, true); return; }
+            RenderSelectedBuilding(id, selected, camera);
         }
         private void RenderSelectedBuilding(string id, RoyalBuilding value, Camera camera)
         {
