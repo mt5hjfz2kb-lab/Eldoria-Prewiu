@@ -112,6 +112,10 @@ async function verifyExistingQwenContract(id,kind,{compact=false,invalidFirst=fa
         assert.equal(actual.target,target);
         assert.match(prompt,/local_aabb/);
         assert.match(prompt,new RegExp(actual.source_sha256));
+        if(compact){
+          assert.match(prompt,/verified_positive_x_candidate/);
+          assert.doesNotMatch(prompt,/negative_y_cliff|playable_crest_center|southern_join/);
+        }
       }
       assert.match(prompt,/skeletal deformation/);
       assert.doesNotMatch(prompt,/GENUINE UNITY V5 cliff|existing cliff rock face/);
