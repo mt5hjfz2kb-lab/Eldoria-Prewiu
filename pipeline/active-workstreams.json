@@ -700,8 +700,8 @@
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-eldoria-tripo-brain-phase2-20261021",
-      "ownership_revision": 1,
+      "owner": "chatgpt-eldoria-tripo-brain-continuation-20261021",
+      "ownership_revision": 2,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -721,14 +721,15 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "AUTHENTIC_LOCAL_QWEN_BLENDER_HOSTED_PILOT",
+      "phase": "REAL_QWEN_SOURCE_EVIDENCE_REPAIR_AND_RETRY",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Rig check zero-credit execution or documented access blocker, plus authenticated detailed asset profile and testable input binding to existing Qwen artist; retain game untouched.",
         "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
-      "next": "Run one bounded actual Qwen 2B CPU artist inference and Blender copy-only A/B on exact archived Spawnling, inside hosted isolated GitHub Actions, no Windows/Tripo API spend or runtime commit. Preserve originals and explicit QA of output."
+      "next": "Reconcile second authentic Qwen FAIL (39631639948) and treat zero displacement as non-art. Keep fixed source/pictures and audit constraints; improve Qwen creature direction with new hypothesis and isolated rerun. No paid API, runtime/Windows.",
+      "handoff_note": "Owner explicitly requested continue same Tripo+art-brain job; no active phase2 job at claim time. Do not touch Valoria scene or runner. Previous chat may not be remotely interrupted: re-read live registry before any further writes."
     }
   ],
   "history": [
