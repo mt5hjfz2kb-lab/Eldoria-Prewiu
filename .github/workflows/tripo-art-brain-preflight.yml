@@ -56,6 +56,30 @@ jobs:
             node tools/tripo-art-brain/rig-check-v3.mjs "$id" --dry-run > "$OUT/$id/free-rig-check-dry-run.json"
           done
 
+      - name: Inspect the ACTUAL finished Engendro Blender mesh (no authoring, no Windows)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          mkdir -p "$OUT/spawnling/blender-context"
+          blender --background --disable-autoexec -t 2 --python-exit-code 1 \
+            --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend \
+            --inspect --inspect-target-object Spawnling_Near_Authored \
+            --out "$OUT/spawnling/blender-context" \
+            > "$OUT/spawnling/blender-context/blender-inspection.log" 2>&1
+          node tools/tripo-art-brain/verify-mesh-context.mjs \
+            "$OUT/spawnling/blender-context/mesh-context.json" \
+            "$OUT/spawnling/blender-context/verified-source-context.json" \
+            > "$OUT/spawnling/blender-context/context-verification.log"
+          # Test real source metadata entering existing Qwen author_brief.py. A
+          # local MOCK Ollama response is used; no Qwen inference is implied.
+          TRIPO_SOURCE_MESH_CONTEXT="$OUT/spawnling/blender-context/mesh-context.json" \
+            node --test tools/tripo-art-brain/artist-context.test.mjs \
+            > "$OUT/spawnling/blender-context/qwen-mesh-interface-MOCK-test.log"
+          echo "REAL_BLENDER_SOURCE_CONTEXT_AND_MOCK_QWEN_INPUT_PASS"
+
       - name: Verify current Qwen artist accepts this context without model inference
         shell: bash
         run: |
