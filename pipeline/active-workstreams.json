@@ -651,13 +651,15 @@
         "ArtSource/World4X/Spawnling_v1/Finished/**",
         "tools/spawnling-bastion2/**",
         ".github/workflows/eldoria-spawnling-bastion2.yml",
-        "docs/evidence/spawnling-bastion2/**"
+        "docs/evidence/spawnling-bastion2/**",
+        "Unity/Assets/Eldoria/SpawnlingBastion2/**",
+        ".github/workflows/eldoria-spawnling-native.yml"
       ],
       "resources": [],
       "budget_eur": 0,
       "art_production_routing": "required",
       "dependency": "Canonical Unity scene and runner remain under valoria-master-plan-layered-construction-20261016; prepare complete visual asset, integrate only through reviewed PR/serialized scene change without overwriting live owner/UI V3.",
-      "next": "Author revised, mobile-fitted GLB and source in zero-credit Blender run; then native Unity integration and gameplay QA after scene owner / runner lease available."
+      "next": "Authored two mobile GLBs; validate focused art correction, then use NEW Unity/Assets/Eldoria/SpawnlingBastion2 adapter to replace engendro-valoria in the existing scene via controlled scene-owner serialized integration and true I-II probe."
     }
   ],
   "history": [
