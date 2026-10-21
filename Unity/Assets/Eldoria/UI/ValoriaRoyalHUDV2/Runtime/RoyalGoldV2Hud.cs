@@ -115,6 +115,20 @@ namespace Eldoria.UI.RoyalGold.V2
             objectivesButton = Button("Open current chapter", objectiveCard, out objectivesButtonLabel, false);
             objectiveActionLabel.Put("Ir al objetivo");
             objectivesButtonLabel.Put("Misiones");
+            // Unity offscreen portrait captures exposed a uGUI canvas ordering
+            // defect: the original Text children were clipped to blank blue
+            // button frames even though both real Button raycasts worked.
+            // Keep the SAME Text objects, but draw them as later, non-raycast
+            // siblings of the objective buttons on the one existing canvas.
+            // This adds no duplicate action, EventSystem or touch surface.
+            objectiveActionLabel.rectTransform.SetParent(objectiveCard, false);
+            objectivesButtonLabel.rectTransform.SetParent(objectiveCard, false);
+            objectiveActionLabel.raycastTarget = false;
+            objectivesButtonLabel.raycastTarget = false;
+            objectiveActionLabel.fontSize = 18;
+            objectivesButtonLabel.fontSize = 18;
+            objectiveActionLabel.alignment = TextAnchor.MiddleCenter;
+            objectivesButtonLabel.alignment = TextAnchor.MiddleCenter;
             objectiveAction.onClick.AddListener(() =>
             {
                 if (Source && Source.Mission && Source.Mission.Open)
@@ -280,6 +294,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Top((RectTransform)objectiveAction.transform, 10, 76, (goalWidth - 32f) * .58f, 39);
             Top((RectTransform)objectivesButton.transform, 16 + (goalWidth - 32f) * .58f,
                 76, (goalWidth - 32f) * .42f, 39);
+            PositionObjectiveActionLabels();
             // Reflow selected objectives after every orientation/size change.
             compactObjective = false;
             // Explicitly expanded chapter panels are allowed to be larger; the
@@ -336,6 +351,36 @@ namespace Eldoria.UI.RoyalGold.V2
             Top((RectTransform)objectiveAction.transform, 10, 76, (w - 32f) * .58f, 39f);
             Top((RectTransform)objectivesButton.transform,
                 16 + (w - 32f) * .58f, 76, (w - 32f) * .42f, 39f);
+            PositionObjectiveActionLabels();
+        }
+
+        /// <summary>
+        /// One visible native uGUI label per original clickable button.
+        /// The labels are non-interactive siblings to avoid the portrait
+        /// offscreen MaskableGraphic ordering/clip regression.
+        /// </summary>
+        private void PositionObjectiveActionLabels()
+        {
+            if (!objectiveActionLabel || !objectivesButtonLabel ||
+                !objectiveAction || !objectivesButton) return;
+            PlaceObjectiveLabel(objectiveActionLabel, (RectTransform)objectiveAction.transform);
+            PlaceObjectiveLabel(objectivesButtonLabel, (RectTransform)objectivesButton.transform);
+            objectiveActionLabel.transform.SetAsLastSibling();
+            objectivesButtonLabel.transform.SetAsLastSibling();
+        }
+
+        private static void PlaceObjectiveLabel(RoyalText label, RectTransform button)
+        {
+            var x = button.anchoredPosition.x + 7f;
+            var top = -button.anchoredPosition.y + 3f;
+            Top(label.rectTransform, x, top,
+                Mathf.Max(40f, button.rect.width - 14f),
+                Mathf.Max(30f, button.rect.height - 6f));
+            label.fontSize = 18;
+            label.alignment = TextAnchor.MiddleCenter;
+            label.horizontalOverflow = HorizontalWrapMode.Wrap;
+            label.verticalOverflow = VerticalWrapMode.Overflow;
+            label.raycastTarget = false;
         }
 
         private static string Safe(RoyalText value) => value ? value.text ?? "" : "";
@@ -475,6 +520,27 @@ namespace Eldoria.UI.RoyalGold.V2
             }
         }
 
+        /// <summary>
+        /// Long live feedback must wrap inside the actual mobile safe area,
+        /// rather than projecting beyond the right edge over the city.
+        /// This only affects the existing text component; no new HUD/toast.
+        /// </summary>
+        private void ConfigureFeedbackReadability()
+        {
+            if (!Source || !Source.Feedback || !safe) return;
+            var feedback = Source.Feedback;
+            feedback.raycastTarget = false;
+            feedback.alignment = TextAnchor.MiddleCenter;
+            feedback.horizontalOverflow = HorizontalWrapMode.Wrap;
+            feedback.verticalOverflow = VerticalWrapMode.Truncate;
+            int size = portrait ? 19 : 20;
+            if (feedback.fontSize != size) feedback.fontSize = size;
+            var rect = feedback.rectTransform;
+            float width = Mathf.Min(portrait ? safe.rect.width - 36f : 690f,
+                safe.rect.width - 26f);
+            SetWidthAndHeight(rect, Mathf.Max(240f, width), portrait ? 56f : 48f);
+        }
+
         private void LateUpdate() => SynchronizeNow();
 
         /// <summary>Explicit native QA sync after temporary canvas resolution
@@ -498,6 +564,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             if (!hasGeometry) return;
             LayoutNavigation();
+            ConfigureFeedbackReadability();
             bool modalOpen = Source.Modal && Source.Modal.gameObject.activeSelf;
 
             chapterText.Put(Safe(Source.Mission.Chapter));
