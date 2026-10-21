@@ -19,6 +19,12 @@ namespace Eldoria.UI.RoyalGold.V2
         public RoyalHUD Hud { get; private set; }
         public bool IsOpen => root != null && root.gameObject.activeSelf;
         public Destination CurrentDestination { get; private set; }
+        // Read-only observations of the real destination for native/browser QA.
+        public RectTransform VisibleRoot => IsOpen ? root : null;
+        public Button VisibleAction => IsOpen ? action : null;
+        public Button VisibleBack => IsOpen ? back : null;
+        public int SelectedQuantity => selectedCount;
+        public int SelectedTrainingSeconds => SliceRules.RecruitSecondsFor(selectedCount);
         ICommandGateway gateway;
         Func<long> utcTicks;
         Action onCommand;
