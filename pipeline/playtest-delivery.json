@@ -1,32 +1,37 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "NATIVE242_UPLOAD_ACCEPTED_REMOTE_PROCESSING",
+  "state": "UI_V3_NATIVE245_EXACT_QA_PASS_PROMOTION_REQUESTED",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
   "candidate": {
-    "revision": "native242",
-    "source_sha": "f8e294dda9a829316eb0dec764f8e2b1ce7d20d0",
-    "native_run": 39506996242,
-    "qa_run": 39509184788,
-    "qa_source_sha": "8a1a0b482ea1a9ec8e683319e9d7bc92b2128d4a",
-    "artifact_id": 12304528775,
-    "artifact_name": "valoria-verified-private-site-windows-39509184788",
-    "artifact_sha256": "9eab4396a9aa723208ee0fddc624e27791ee3870f30f99942029158a7f05dede"
+    "revision": "native245",
+    "source_sha": "e117087fbfbc8068913e754b5bf69293fed7826c",
+    "native_run": 39610358759,
+    "qa_run": 39612300155,
+    "qa_source_sha": "40189af703a418b249bf073fd08f95df1c00c4fd",
+    "artifact_id": 12352445055,
+    "artifact_name": "valoria-verified-private-site-windows-39612300155",
+    "artifact_sha256": "642e74165f1aee68022b7c8459aa52bed3a61ad91837b75235bf825e0538e47b"
   },
   "published": {
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native191",
+    "revision": "native242",
     "url": "https://chrismad.itch.io/eldoria-pruebas",
-    "remote_build": 2169803,
-    "version": "native191-97997478971c",
+    "remote_build": 2172967,
+    "version": "native242-3ba026d54e2e",
     "restricted": true,
     "remote_active_confirmed": true,
     "hosted_gameplay_verified": false,
-    "physical_mobile_pass": false
+    "physical_mobile_pass": false,
+    "remote_status_evidence": {
+      "run": 39511020125,
+      "job": 119261533056,
+      "checked_at": "2026-10-21T13:50:58Z"
+    }
   },
   "limits": {
     "physical_mobile_tested": true,
@@ -34,7 +39,7 @@
     "physical_mobile_pass": false,
     "physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Promote native242 only after exact upstream QA, original artifact hashes, decoded streaming transport checks. Preserve published native191 record until remote activation confirmed. No Unity rebuild, no Android changes, no public access change.",
+  "instructions": "Promote only verified native245 original artifact through the existing Restricted web channel. Unity integrated40/Edit20/Play37 PASS, complete general Editor/Windows gate PASS, exact Chromium I-II normal clock + identical save/reload PASS, zero legacy navigation callbacks. Confirm remote activation separately; do not repeat an accepted upload merely because processing is pending. Preserve privacy, Android and PC delivery settings.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -45,11 +50,11 @@
   },
   "privacy_confirmation_basis": "Owner setup screenshots: Restricted selected, then project saved successfully; remote anonymous access verification pending.",
   "promotion_request": {
-    "id": "itch-native242-four-art-phases-20261021",
+    "id": "itch-ui-v3-final-native245-20261021",
     "target": "chrismad/eldoria-pruebas",
-    "revision": "native242",
-    "artifact_sha256": "9eab4396a9aa723208ee0fddc624e27791ee3870f30f99942029158a7f05dede",
-    "authorization": "Owner explicitly asks consolidated and published, and instructs to continue if unfinished in current session. Publish same tested native242 via existing restricted channel."
+    "revision": "native245",
+    "artifact_sha256": "642e74165f1aee68022b7c8459aa52bed3a61ad91837b75235bf825e0538e47b",
+    "authorization": "Current owner explicitly instructs this executor to assume UI work and complete its verified existing restricted delivery without stopping at intermediate reports. Publish the exact certified native245 only; no public access change."
   },
   "last_attempt": {
     "run_id": 39511020125,
@@ -70,15 +75,15 @@
     "version": "native242-3ba026d54e2e",
     "upload_accepted": true,
     "hosted_verified": false,
-    "processing_status": "PROCESSING",
+    "processing_status": "ACTIVE",
     "transport_adapter": "itch-decoded-stream-v3",
     "physical_mobile_tested": false,
-    "remote_active_confirmed": false,
+    "remote_active_confirmed": true,
     "latest_remote_check": {
       "run_id": 39511020125,
-      "job_id": 118934065576,
-      "checked_at": "2026-10-20T22:57:10Z",
-      "result": "NATIVE191_ACTIVE_NATIVE242_PROCESSING"
+      "job_id": 119261533056,
+      "checked_at": "2026-10-21T13:50:58Z",
+      "result": "NATIVE242_ACTIVE"
     }
   },
   "manual_fallback": {
@@ -173,16 +178,46 @@
     "deployment": "appgdep_6ad63a0012448191b64d52721e4479a6"
   },
   "current_revision_qa": {
-    "revision": "native242",
+    "revision": "native245",
     "windows_gpu_webgl_pass": true,
     "native_unity_pass": true,
+    "native_checks": 40,
+    "edit_mode": 20,
+    "play_mode": 37,
+    "native_certification_run": 39609160363,
+    "general_editor_windows_gate_run": 39611381736,
     "normal_clock": true,
     "full_bastion_i_ii": true,
     "save_reload_exact": true,
+    "save_sha256": "a82f882c059b22ce4587efd2ca7697eba52eadb41223ee17f104e53844df79a5",
+    "no_legacy_touch_shadow_navigation": true,
+    "runtime_errors": 0,
+    "network_failures": 0,
     "hosted_chrome_tested": false,
     "ios_safari_tested": false,
     "art_approved": false,
-    "transport_reader_actual_unity_pass": true,
-    "decoded_data_sha256": "9db4914eb661e57ecf4d491f774e56a64e4bd346e898633d366ffdc2eef54853"
+    "transport_reader_actual_unity_pass": false,
+    "transport_status": "PENDING_EXACT_DELIVERY_ADAPTER_CHECK"
+  },
+  "published_history": [
+    {
+      "provider": "itch.io",
+      "target": "chrismad/eldoria-pruebas",
+      "channel": "web",
+      "revision": "native191",
+      "url": "https://chrismad.itch.io/eldoria-pruebas",
+      "remote_build": 2169803,
+      "version": "native191-97997478971c",
+      "restricted": true,
+      "remote_active_confirmed": true,
+      "hosted_gameplay_verified": false,
+      "physical_mobile_pass": false
+    }
+  ],
+  "hosted_verification": {
+    "status": "BLOCKED_CURRENT_CLOUD_BROWSER_SIGN_IN",
+    "reason": "itch.io login displays Cloudflare verification; persists after one reload. No credentials requested, no privacy changes and no HOSTED_GAMEPLAY_PASS.",
+    "observed_at": "2026-10-21T14:05:00Z",
+    "retry_count": 1
   }
 }

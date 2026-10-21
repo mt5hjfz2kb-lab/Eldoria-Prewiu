@@ -48,9 +48,7 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -646,8 +644,8 @@
         "reserved_for": "Same existing Valoria native build and Chromium QA, no authoring or scene mutation",
         "release_condition": "Release after exact final UI build/QA; preserve canonical art owner and sources",
         "ui_executor": "codex-ui-v3-completion-takeover-20261021",
-        "status": "delegated_native245_build_then_exact_browser_qa",
-        "evidence": "UI fix a1e0fb7 native run39609160363 SUCCESS: integrated probe, Edit20/Play37; obsolete run39609160173 cancelled."
+        "status": "native245_exact_browser_qa_complete_resource_released",
+        "evidence": "Native39610358759 SUCCESS; exact Chromium39612300155 PASS I-II, normal clock, save identical, zero legacy fallback. General Windows39611381736 SUCCESS. No native work pending for UI."
       },
       "delegated_ui_navigation_fix": {
         "owner": "codex-ui-v3-completion-takeover-20261021",
@@ -699,8 +697,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "NATIVE245_FINAL_WEB_BUILD",
-      "next": "Build certified cinematic UI and final-touch navigation fix as native245, then unchanged strict browser I-II/save QA and restricted itch delivery.",
+      "phase": "NATIVE245_QA_PASS_RESTRICTED_PROMOTION",
+      "next": "Upload exact QA-pinned native245, confirm remote activation, reconcile UI documentation; current cloud-browser hosted sign-in blocked by itch.io Cloudflare after one reload.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
       "handoff": {
         "owner_instruction": "Asume tú los trabajos y organízalos",
@@ -743,19 +741,32 @@
         "visual_review": "Canonical full Aldric text and Continue label inspected in genuine portrait Unity render; landscape/contextual controls retained. No global art quality score.",
         "navigation_fix_source": "a1e0fb7b71632c175a396d8c3aadf2e71dee0a80",
         "navigation_fix_native_run": 39609160363,
-        "navigation_fix_artifact_id": 12350227186
+        "navigation_fix_artifact_id": 12350227186,
+        "general_editor_windows_run": 39611381736,
+        "browser_run": 39612300155,
+        "browser_evidence_artifact_id": 12350819552,
+        "save_reload_exact": true,
+        "no_legacy_touch_shadow_navigation": true
       },
       "ci_recovery": "General source-preflight checkout is still downloading the entire repository after UI native 40/20/36 passed. Narrow only its checkout to actual Python-preflight inputs; preserve all assertions and explicitly request the pending full editor gate for the same final UI runtime.",
       "web_candidate": {
-        "revision": "native244",
-        "source_sha": "d280965a3276e99843ec6bc767a13dd805e4fac3",
-        "native_run": 39605933465,
-        "raw_artifact_id": 12349440623,
-        "qa_run": 39607571030,
-        "qa_source_sha": "6b7b873f0a74bf5984685bcfc9f8d3424e9bc272",
+        "revision": "native245",
+        "source_sha": "e117087fbfbc8068913e754b5bf69293fed7826c",
+        "native_run": 39610358759,
+        "qa_run": 39612300155,
+        "qa_source_sha": "40189af703a418b249bf073fd08f95df1c00c4fd",
+        "artifact_id": 12352445055,
+        "artifact_name": "valoria-verified-private-site-windows-39612300155",
+        "artifact_sha256": "642e74165f1aee68022b7c8459aa52bed3a61ad91837b75235bf825e0538e47b",
         "published": false
       },
-      "obsolete_trigger_recovery": "SlicePresenter UI touch launched legacy SHARP/visible-parcel production from an Oct6 stale pending request. Current AGENTS and canonical Oct18 scene supersede it. Preserve historical source/config but disable legacy execution and remove shared-core automatic triggers; cancel only our queued legacy run via its existing concurrency when config changes. Confirmed run39609160173 cancelled before legacy production; historical execution disabled."
+      "obsolete_trigger_recovery": "SlicePresenter UI touch launched legacy SHARP/visible-parcel production from an Oct6 stale pending request. Current AGENTS and canonical Oct18 scene supersede it. Preserve historical source/config but disable legacy execution and remove shared-core automatic triggers; cancel only our queued legacy run via its existing concurrency when config changes. Confirmed run39609160173 cancelled before legacy production; historical execution disabled.",
+      "hosted_verification": {
+        "status": "BLOCKED_CURRENT_CLOUD_BROWSER_SIGN_IN",
+        "reason": "itch.io login displays Cloudflare verification; persists after one reload. No credentials requested, no privacy changes and no HOSTED_GAMEPLAY_PASS.",
+        "observed_at": "2026-10-21T14:05:00Z",
+        "retry_count": 1
+      }
     }
   ],
   "history": [
