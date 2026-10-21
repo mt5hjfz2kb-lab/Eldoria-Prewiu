@@ -1,5 +1,7 @@
 name: V3 management domain smoke (no Unity/Windows lease)
 on:
+  push:
+    branches: [feature/ui-v3-management-completion-20261021]
   pull_request:
     branches: [main]
     paths:
