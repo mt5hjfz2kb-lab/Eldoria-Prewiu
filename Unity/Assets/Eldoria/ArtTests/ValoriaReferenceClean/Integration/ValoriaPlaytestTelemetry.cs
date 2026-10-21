@@ -26,6 +26,15 @@ namespace Eldoria.ReferenceClean {
     close=v2?Point(v2.VisibleBuildingCloseButton,v2.BuildingVisible):Point(hud.Building.Close)
    };
    var nav=hud.Navigation.Items.FirstOrDefault(x=>x.Section==RoyalSection.World);if(nav!=null)f.controls.world=Point(nav.Button);
+   var management=hud.GetComponent<RoyalGoldV3ManagementScreens>();
+   if(management&&management.IsOpen){
+    f.management=new Management{destination=management.CurrentDestination.ToString(),quantity=management.SelectedQuantity,
+     trainingSeconds=management.SelectedTrainingSeconds,bounds=ScreenBounds(management.VisibleRoot)};
+    f.controls.primary=Point(management.VisibleAction);
+    f.controls.close=Point(management.VisibleBack);
+    f.controls.objective.enabled=false;
+    if(f.controls.world!=null)f.controls.world.enabled=false;
+   }
    f.camera=new View{x=host.PlayerCamera.transform.position.x,y=host.PlayerCamera.transform.position.y,z=host.PlayerCamera.transform.position.z,zoom=host.PlayerCamera.orthographicSize};
    var expedition=host.GetComponent<ValoriaMarchPresentation>();
    if(expedition){var p=host.PlayerCamera.WorldToScreenPoint(expedition.ObservedPosition);f.marchVisual=new Hotspot{id=expedition.ObservedPhase,x=p.x,y=p.y,visible=expedition.MarkerVisible};}
@@ -39,13 +48,21 @@ namespace Eldoria.ReferenceClean {
    }).ToArray();
    Debug.Log("VALORIA_PLAYTEST "+JsonUtility.ToJson(f));
   }
+  static float[] ScreenBounds(RectTransform rect){
+   var corners=new Vector3[4];rect.GetWorldCorners(corners);var canvas=rect.GetComponentInParent<Canvas>();
+   var camera=canvas&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?canvas.worldCamera:null;
+   var points=corners.Select(p=>RectTransformUtility.WorldToScreenPoint(camera,p)).ToArray();
+   return new[]{points.Min(p=>p.x)/Screen.width,points.Min(p=>p.y)/Screen.height,
+    points.Max(p=>p.x)/Screen.width,points.Max(p=>p.y)/Screen.height};
+  }
+  [Serializable] class Management{public string destination;public int quantity,trainingSeconds;public float[] bounds;}
   static Control Point(Button button,bool onScreen=true){
    var value=new Control();if(!button)return value;
    value.enabled=onScreen&&button.isActiveAndEnabled&&button.gameObject.activeInHierarchy&&button.interactable;
    var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);var canvas=button.GetComponentInParent<Canvas>();
    var p=RectTransformUtility.WorldToScreenPoint(canvas&&canvas.renderMode!=RenderMode.ScreenSpaceOverlay?canvas.worldCamera:null,(corners[0]+corners[2])*.5f);value.x=p.x;value.y=p.y;return value;
   }
-  [Serializable] class Frame{public bool ready,inWorld,narrative,busy,configured,scout,engendro;public int width,height,wood,stone,sawmill,barracks,bastion,trained;public long revision;public string selected,objective,march,target,save,clock,utc;public float timeScale;public Controls controls;public View camera;public Hotspot[] hotspots;public Hotspot marchVisual;public Framing framing;}
+  [Serializable] class Frame{public bool ready,inWorld,narrative,busy,configured,scout,engendro;public int width,height,wood,stone,sawmill,barracks,bastion,trained;public long revision;public string selected,objective,march,target,save,clock,utc;public float timeScale;public Controls controls;public View camera;public Hotspot[] hotspots;public Hotspot marchVisual;public Framing framing;public Management management;}
   [Serializable] class Framing{public bool pass;public float[] projected,visible;}
   [Serializable] class Controls{public Control objective,primary,@continue,close,world;}
   [Serializable] class Control{public float x,y;public bool enabled;}
