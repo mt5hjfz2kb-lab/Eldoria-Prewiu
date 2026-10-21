@@ -10,8 +10,7 @@
     "allowed_work": "Continue city/world/UI/gameplay on main under existing owner; historical branches read-only by project policy.",
     "authorized_workstream_ids": [
       "valoria-master-plan-layered-construction-20261016",
-      "eldoria-tripo-art-brain-phase2-20261021",
-      "eldoria-tripo-mobile-lod-proof-20261021"
+      "eldoria-tripo-art-brain-phase2-20261021"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
@@ -730,15 +729,17 @@
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
       "next": "Run one bounded actual Qwen 2B CPU artist inference and Blender copy-only A/B on exact archived Spawnling, inside hosted isolated GitHub Actions, no Windows/Tripo API spend or runtime commit. Preserve originals and explicit QA of output."
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-tripo-mobile-lod-proof-20261021",
       "title": "Tripo—LOD móviles de Jabalí y Foco, prueba sin créditos",
       "owner": "chatgpt-eldoria-mobile-lod-20261021",
-      "ownership_state": "claimed",
+      "ownership_state": "released",
       "ownership_revision": 1,
       "branch": "main",
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-21",
       "scope": [
         ".github/workflows/tripo-mobile-lod-proof.yml",
@@ -752,16 +753,56 @@
       "art_production_routing_reason": "QA técnica aislada y perfiles LOD de los GLB originales de Jabalí y Foco usando Blender canónico; no altera obra principal, Qwen/Engendro ni consume Tripo.",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-mobile-lod-proof-20261021.json",
       "dependency": "No modificar tools/tripo-art-brain/** ni Qwen (fase2 activa), no Windows runner (Valoria activo). Solo Blender Linux/Actions y fuentes conservadas en modo lectura; sin publicar ni integrar LOD como art approved.",
-      "phase": "SOURCE_MOBILE_LOD_QA_ZERO_CREDIT",
+      "phase": "TECH_PASS_2_ASSETS_LOD_AND_1K_PBR_ART_REVIEW_PENDING",
       "delivery_definition": {
         "deliverable": "Prueba reproducible de LOD reales de Jabalí y Foco con proporciones precisas, archivos GLB y capturas Blender (sin autoría artística), métricas e informe en artefacto QA; sin tocar escenas ni assets canónicos.",
         "evidence": "Blender en runner GitHub Ubuntu y auditoría estructural GLB con SHA + presupuestos visibles + imágenes originales por LOD. Revisor independiente pendiente.",
         "handoff": "Enlace a job/artifact, números reales de tris y condiciones de siguiente A/B Unity."
       },
-      "next": "Use existing certified Blender capability proof on archived Jabalí/Foco sources, compare measurable 3 LODs, preserve artifacts and no-spend evidence."
-    }
-  ],
-  "history": [
+      "next": "No active QA job. ART_APPROVED/Unity/device still pending other scene owner. Re-run if source hash changes; do not regenerate or integrate automatically.",
+      "completed_at": "2026-10-21",
+      "last_verified": {
+        "run_id": 39629479262,
+        "run_sha": "491dc905902b1e4439eb42a94d3ad055a5c3048d",
+        "artifact_id": 12358279342,
+        "status": "TECHNICAL_QA_PASS",
+        "source_assets": [
+          "boar",
+          "focus"
+        ],
+        "lod_triangle_profiles": {
+          "boar": [
+            49800,
+            12450,
+            3984
+          ],
+          "focus": [
+            49799,
+            12448,
+            3983
+          ]
+        },
+        "glb_1k_bytes": {
+          "boar": 3741384,
+          "focus": 3728512
+        },
+        "real_blender_pngs": 16,
+        "paid_tripo_credits": 0,
+        "art_approved": false,
+        "physical_mobile_profiled": false,
+        "runtime_modified": false
+      },
+      "closure": {
+        "delivered": "Two GLB source LOD technical proof families (6 GLBs), additional 1K PBR candidates (2 GLBs), 16 authentic Blender QA PNGs, SHA manifests, exact source checks, current CI and documented caveats.",
+        "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39629479262",
+        "artifact_id": 12358279342,
+        "tripo_credits": 0,
+        "work_complete": true,
+        "art_approved": false,
+        "mobile_qa": false,
+        "qa_scope_only": true
+      }
+    },
     {
       "id": "eldoria-tripo-art-brain-integration-20261021",
       "title": "Tripo API + cerebro artístico — preproducción y pruebas sin créditos",
