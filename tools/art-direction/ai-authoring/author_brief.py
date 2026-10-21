@@ -250,11 +250,32 @@ def main():
   # Explicit opt-in for existing asset art. Preserve the legacy terrain prompt,
   # spatial validator, real Qwen model and Blender executor unmodified.
   if a.subject_kind=='creature':
-   focus=('CREATURE ART: analyse a recognisable head/face, anatomy, limbs, posture, '
-     'body and floor contact, silhouette at strategic camera distance and joints '
-     'suitable for future skeletal deformation. Preserve original fantasy identity '
-     'and the canonical limb count. Never sculpt terrain, cliffs, create extra limbs, '
-     'or imply that a successful mesh import is a successful character rig. ')
+   # The last two AUTHENTIC 2B cycles were rejected: one translated the
+   # entire body (radius 10.24m on a ~1.47m creature); the next submitted
+   # delta=[0,0,0]. Give independent artistic agency real spatial boundaries,
+   # never invent/edit 3D coordinates or write a fake plan in Python.
+   bb=(topology.get('local_aabb') or {}) if a.mesh_context else {}
+   lows,highs=bb.get('min'),bb.get('max')
+   if not(all(isinstance(v,list) and len(v)==3 for v in (lows,highs))):
+    raise ValueError('CREATURE_REQUIRES_VERIFIED_SOURCE_LOCAL_BOUNDS')
+   source_diagonal=math.sqrt(sum((highs[k]-lows[k])**2 for k in range(3)))
+   if not .1 <= source_diagonal <= 100:
+    raise ValueError('CREATURE_SOURCE_DIMENSIONS_INVALID')
+   focus=('CREATURE ART: look at genuine BEFORE image and source-topology samples. '
+     'Aim for ONE unmistakable localized anatomical improvement, preferably face/head '
+     'or shoulder silhouette. Source provenance states head faces +X and tail -X; '
+     'verify against the photos, do NOT treat this as permission to invent vertex coordinates. '
+     'Use sculpt_region on an observed existing localized anatomical region, unless '
+     'another typed structural operation is clearly more appropriate. '
+     f'Actual mesh diagonal is {source_diagonal:.4f}m (from verified local AABB). '
+     f'Choose yourself a NONZERO sculpt displacement (suggested 0.015..{0.12*source_diagonal:.3f}m) '
+     f'and a genuinely LOCAL radius (suggested {0.06*source_diagonal:.3f}..{0.35*source_diagonal:.3f}m). '
+     'Your delta MUST contain at least one nonzero coordinate and change the proportions/silhouette, '
+     'NOT translate whole creature; delta=[0,0,0] is invalid and will be rejected. '
+     'Your center MUST belong to an anatomical feature from the verified Blender AABB, '
+     'not simply the global origin by default. '
+     'Protect claws, digitigrade legs, two arms and two legs, grounded stance, matte muted violet PBR, '
+     'and future skeletal deformation. NEVER invent horns, wings, additional limbs, cliffs or props. ')
   else:
    focus=('MINERAL ENVIRONMENT PROP ART: analyse readable connected stone masses, '
      'surface and crack continuity, natural ground contact and distinctive dark '
