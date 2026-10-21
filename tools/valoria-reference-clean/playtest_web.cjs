@@ -30,7 +30,8 @@ const summary = state => state && ({
   bastion: state.bastion, trained: state.trained, configured: state.configured,
   scout: state.scout, engendro: state.engendro, busy: state.busy,
   march: phase(state), target: target(state), camera: state.camera, framing: state.framing || null,
-  controls: state.controls ? { primary: state.controls.primary } : null,
+  controls: state.controls ? { primary: state.controls.primary, close: state.controls.close } : null,
+  management: state.management?.destination ? state.management : null,
   save_sha256: typeof state.save === 'string' ? sha256(state.save) : null
 });
 
@@ -46,6 +47,18 @@ function cameraDifference(before, after) {
     distance: Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z), zoom: b.zoom - a.zoom };
 }
 function framingObservation(state) {
+  if (state?.management?.destination) {
+    const projected = state.management.bounds, visible = [0, 0, 1, 1];
+    const valid = Array.isArray(projected) && projected.length === 4 && projected.every(Number.isFinite);
+    const controlInside = control => control && Number.isFinite(control.x) && Number.isFinite(control.y) &&
+      control.x > 0 && control.x < state.width && control.y > 0 && control.y < state.height;
+    const covers = valid && Math.abs(projected[0]) <= .002 && Math.abs(projected[1]) <= .002 &&
+      Math.abs(projected[2] - 1) <= .002 && Math.abs(projected[3] - 1) <= .002;
+    return { valid, pass: covers && controlInside(state.controls?.primary) &&
+      controlInside(state.controls?.close) && state.controls.close.enabled === true,
+      kind: 'FULL_SCREEN_MANAGEMENT', projected, visible,
+      destination: state.management.destination };
+  }
   const frame = state?.framing, projected = frame?.projected, visible = frame?.visible;
   const valid = rect => Array.isArray(rect) && rect.length === 4 && rect.every(Number.isFinite) && rect[2] > rect[0] && rect[3] > rect[1];
   if (!valid(projected) || !valid(visible)) return { valid: false, pass: false, projected, visible };
@@ -55,6 +68,7 @@ function framingObservation(state) {
     engine_pass: frame.pass === true, projected, visible, margins_normalized: margins };
 }
 function stableSelectionView(before, after) {
+  if (before?.management?.destination !== after?.management?.destination) return false;
   if (!before?.selected || before.selected !== after?.selected || before.inWorld !== after.inWorld ||
       before.width !== after.width || before.height !== after.height || before.narrative || after.narrative) return false;
   const camera = cameraDifference(before, after), a = framingObservation(before), b = framingObservation(after);
@@ -609,7 +623,7 @@ async function main() {
   function describeOperation(state) {
     if (state.selected === 'sawmill' && state.sawmill === 0) return { kind: 'sawmill', expected_seconds: 6 };
     if (state.selected === 'barracks' && state.barracks === 0) return { kind: 'barracks', expected_seconds: 8 };
-    if (state.selected === 'barracks' && state.objective === 'b2.train-archers') return { kind: 'training', expected_seconds: 7 };
+    if (state.selected === 'barracks' && state.objective === 'b2.train-archers') return { kind: 'training', expected_seconds: state.management?.trainingSeconds || 7 };
     if (state.selected === 'bastion') return { kind: 'bastion', expected_seconds: 10 };
     if (state.selected === 'march-main') return { kind: 'configuration', expected_seconds: null };
     if (['forest-valoria', 'quarry-valoria'].includes(state.selected)) return { kind: 'gathering', expected_seconds: 9 };
@@ -641,6 +655,11 @@ async function main() {
         const key = `${report.marches.length}-${phase(latest)}-${latest.busy}-${latest.selected}`;
         if (!capturedPhases.has(key)) { capturedPhases.add(key); await capture(`operation-${target(latest) || latest.selected}-${phase(latest)}${latest.busy ? '-working' : ''}`); }
         await sleep(100); continue;
+      }
+      if (latest.management?.destination) {
+        await capture(`management-complete-${latest.management.destination}`);
+        await closeDetails();
+        need(!latest.management?.destination, 'Visible return button did not close management');
       }
       if (latest.objective === 'b2.complete') break;
       if (!checkedNavigation && latest.sawmill > 0) { await navigationCheck(); checkedNavigation = true; continue; }
@@ -675,6 +694,10 @@ async function main() {
         operation.interrupted_by_narrative = true; activeOperation = null; actionKeys.delete(key);
       }
     }
+    report.checks.management_destinations = ['Training', 'March'].every(destination =>
+      report.selection_framing.some(check => check.pass &&
+        check.samples.some(sample => sample.kind === 'FULL_SCREEN_MANAGEMENT' && sample.destination === destination)));
+    need(report.checks.management_destinations, 'Training and march must each pass real full-screen control framing');
     report.checks.complete_i_ii = latest.bastion === 2 && latest.sawmill > 0 && latest.barracks > 0 &&
       latest.trained >= 20 && latest.configured && latest.scout && latest.engendro && phase(latest) === 'idle' && !latest.busy;
     need(report.checks.complete_i_ii, 'Bastion II completion did not retain all required systems and the returned march');
