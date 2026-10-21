@@ -30,6 +30,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The planning check reads text contracts, not the multi-GB Unity art archive.
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/plan-art-production.mjs
+            /tools/art-knowledge/
+            /tools/check-art-production-governance.mjs
+            /tools/validate-blender-professional-authoring.mjs
+            /tools/art-direction/ai-authoring/approval-boundary.mjs
+            /tools/art-direction/ai-authoring/verify-artist-cycle.mjs
+            /tools/art-direction/ai-authoring/unity_pixel_diff.mjs
+            /pipeline/active-workstreams.json
+            /pipeline/art-production-request.json
+            /pipeline/art-production-requests/
+            /pipeline/art-knowledge/catalog-v1.json
+            /pipeline/visual-fallback-policy.json
+            /pipeline/toolchain-capabilities.json
+            /pipeline/blender-professional-authoring-standard.json
+            /docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md
+            /docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
