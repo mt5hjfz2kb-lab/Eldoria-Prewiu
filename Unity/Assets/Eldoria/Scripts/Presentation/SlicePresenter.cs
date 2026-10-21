@@ -798,7 +798,9 @@ namespace Eldoria.Presentation
                 int left=Math.Max(0,(int)Math.Ceiling((s.RecruitmentCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
                 buildingBody.text="Entrenando "+s.PendingRecruitArchers+" arqueros · "+left+" s restantes\nEl entrenamiento continúa al cerrar el juego.";
                 buildingAction.GetComponentInChildren<Text>().text="ENTRENANDO · "+left+" s";
-                buildingAction.interactable=false;return;
+                buildingAction.interactable=false;
+                RefreshManagementScreenLabels();
+                return;
             }
             int seconds=Math.Max(0,(int)Math.Ceiling((s.BuildingCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
             if(s.BuildingCompletesUtcTicks>0&&(currentBuildingId=="sawmill"||currentBuildingId=="barracks"))
