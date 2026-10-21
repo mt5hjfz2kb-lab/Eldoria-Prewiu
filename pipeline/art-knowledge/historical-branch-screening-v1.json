@@ -6,12 +6,13 @@
   "main_ref_note": "Main advanced during screening; each archived source SHA is fixed, but comparison base was current main at query time. Do not treat ahead/behind or status as a frozen one-SHA baseline.",
   "counts": {
     "total": 201,
-    "deep_read": 10,
-    "screen_only": 191,
+    "deep_read": 20,
+    "screen_only": 181,
     "reported_some_art_paths": 154,
     "zero_art_paths": 47,
     "github_compare_limit_300": 8,
-    "errors": 0
+    "errors": 0,
+    "recursive_tree_checked": 8
   },
   "items": [
     {
@@ -795,13 +796,14 @@
           "status": "added"
         }
       ],
-      "error": null
+      "error": null,
+      "full_tree_crosscheck": true
     },
     {
       "name": "art/valoria-bastion1-reference-assembly-20261012",
       "sha": "89ded38acf411a503269d618c2469ec5269999b1",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 49,
       "art_relevant_path_count_reported": 31,
@@ -1105,13 +1107,14 @@
           "status": "added"
         }
       ],
-      "error": null
+      "error": null,
+      "full_tree_crosscheck": true
     },
     {
       "name": "art/valoria-studio-recovery-rocks-v1-20261011",
       "sha": "c13c03d90479305b4dfe3adc740c8933fabb1bf6",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 117,
       "art_relevant_path_count_reported": 116,
@@ -1652,7 +1655,7 @@
       "name": "diagnostic/gpt6-vs-qwen-valoria-tower-20261015",
       "sha": "451509815660bce4cb1970946d65e1471ebe0209",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 173,
       "art_relevant_path_count_reported": 172,
@@ -1889,7 +1892,7 @@
       "name": "experiment/eldoria-three-visual-styles-20261017",
       "sha": "b2b87d52fe297152669b7071777acdd3c7aa3115",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 98,
       "art_relevant_path_count_reported": 98,
@@ -1964,7 +1967,7 @@
       "name": "experiment/valoria-63-clean-composition-20261016",
       "sha": "47049355befde55a33b2358502f58176cc1ab548",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 300,
       "art_relevant_path_count_reported": 300,
@@ -2020,7 +2023,8 @@
           "status": "added"
         }
       ],
-      "error": null
+      "error": null,
+      "full_tree_crosscheck": true
     },
     {
       "name": "experiment/valoria-cliff-ai-authorship-ab-20261011",
@@ -2122,7 +2126,7 @@
       "name": "experiment/valoria-scene-method-breakthrough-20261016",
       "sha": "2f4e0a166d2ef18810ac0ef48b5bac5b089fc779",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 300,
       "art_relevant_path_count_reported": 300,
@@ -2178,7 +2182,8 @@
           "status": "added"
         }
       ],
-      "error": null
+      "error": null,
+      "full_tree_crosscheck": true
     },
     {
       "name": "experiment/valoria-v5-android-apk-20261012",
@@ -3699,7 +3704,8 @@
           "status": "added"
         }
       ],
-      "error": null
+      "error": null,
+      "full_tree_crosscheck": true
     },
     {
       "name": "integration/valoria-v3-unity-lookdev-20261012",
@@ -4466,7 +4472,7 @@
       "name": "prototype/reference-first-zero-budget-visual-pilot-20261015",
       "sha": "2959d743e7aab966bafa12a89bd3529c39141959",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 135,
       "art_relevant_path_count_reported": 135,
@@ -4616,7 +4622,7 @@
       "name": "prototype/world4x-zone1-zoom-reference-20261013",
       "sha": "f3ccc8d0b7767472ef09b02c3091f6d676f204ee",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 300,
       "art_relevant_path_count_reported": 113,
@@ -4672,7 +4678,8 @@
           "status": "added"
         }
       ],
-      "error": null
+      "error": null,
+      "full_tree_crosscheck": true
     },
     {
       "name": "publish-r7",
@@ -5342,7 +5349,8 @@
           "status": "added"
         }
       ],
-      "error": null
+      "error": null,
+      "full_tree_crosscheck": true
     },
     {
       "name": "stable/visual-good-f139968c",
@@ -5730,7 +5738,8 @@
           "status": "added"
         }
       ],
-      "error": null
+      "error": null,
+      "full_tree_crosscheck": true
     },
     {
       "name": "validation/eldoria-exterior-visible-component-gate-20261014",
@@ -6441,7 +6450,7 @@
       "name": "visual-proof/valoria-authored-gameplay-cell-art-direction-v1",
       "sha": "f3f5aac2f2bb6b6f3cd67584ea8823ed1e59f9a5",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 69,
       "art_relevant_path_count_reported": 43,
@@ -6503,7 +6512,7 @@
       "name": "visual-proof/valoria-authored-secondary-art-family-v1",
       "sha": "b52c3e78c3be7f1a2b8027fc73c5350890942cf0",
       "archive_status": "reference_only",
-      "review_depth": "commit_file_screen_only",
+      "review_depth": "selected_primary_sources_read",
       "screen_status": "github_compare_main_to_archived_sha",
       "changed_file_count_reported": 96,
       "art_relevant_path_count_reported": 70,
