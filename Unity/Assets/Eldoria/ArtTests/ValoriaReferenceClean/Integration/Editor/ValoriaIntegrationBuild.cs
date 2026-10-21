@@ -301,7 +301,26 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return new WaitForSecondsRealtime(.20f);
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"Recruitment did not start");Need(h.Read("barracks",false).Building.OperationActive,"Training not identified as paid active operation");Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");Capture(h,"integration-training.png",1600,900);Capture(h,"integration-training-portrait.png",900,1600);},"Royal recruitment");
    yield return new WaitForSecondsRealtime(.4f);
-   Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(SliceRules.RecruitSeconds+1);city.Gateway.Advance();city.Presenter.RefreshState();h.Select("march-main");Need(h.Hud.Building.Primary.Button.interactable,"Configured march primary action not enabled");},"Royal march action becomes available");
+   Check(()=>{
+    ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(
+      SliceRules.RecruitSecondsFor(SliceRules.RecruitArchers)+1);
+    city.Gateway.Advance();city.Presenter.RefreshState();
+    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    if(management!=null && management.IsOpen){
+      if(management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training){
+        var switchButton=GameObject.Find("Switch destination")?.GetComponent<RoyalButton>();
+        Need(switchButton&&switchButton.interactable,"V3 march navigation button unavailable");
+        Click(switchButton);
+      }
+      Need(management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.March,
+        "Visible V3 destination did not navigate to March");
+      var confirm=GameObject.Find("Confirm military command")?.GetComponent<RoyalButton>();
+      Need(confirm&&confirm.interactable,"Visible V3 march confirmation unavailable");
+    }else{
+      h.Select("march-main");
+      Need(h.Hud.Building.Primary.Button.interactable,"Configured march action not enabled");
+    }
+   },"Royal march action becomes available");
    // Canvas GraphicsRegistry must render its first active frame after the
    // recruitment panel was hidden. An immediate synthetic pointer in the same
    // call-stack cannot occur for a human finger and may have graphic.depth=-1.
