@@ -5,7 +5,6 @@ using NUnit.Framework;
 
 namespace Eldoria.Tests
 {
-    [NonParallelizable]
     public sealed class RoyalV3ManagementRulesTests
     {
         sealed class Clock : IClock
