@@ -336,7 +336,16 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             // The canonical host may expose additional read-only world POIs
             // such as old-watch-ruin; no extra actions or state are invented.
-            if (!live.TryGetValue(id, out var selected)) selected = ReadBuilding(id);
+            if (!live.TryGetValue(id, out var selected))
+            {
+                selected = ReadBuilding(id);
+                // Keep the *same-frame* authoritative operation in the timer
+                // projection. Previously a just-paid Build/Upgrade/Recruit
+                // invalidated the action card cache but was not written back
+                // until the next 0.25s poll, leaving the first real capture
+                // without its building-anchored countdown.
+                if (selected != null) live[id] = selected;
+            }
             if (selected == null) { Visible(cardGroup, false, true); return; }
             RenderSelectedBuilding(id, selected, camera);
         }
