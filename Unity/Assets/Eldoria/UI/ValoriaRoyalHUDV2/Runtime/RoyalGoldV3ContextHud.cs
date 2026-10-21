@@ -285,7 +285,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if (offered) { Place(cardButton, 12f, y, width - 24f, 48f); y += 56f; }
             float height = Mathf.Max(62f, y + 6f);
             card.sizeDelta = new Vector2(width, height);
-            var exclusionTop = safe.rect.height > safe.rect.width ? 130f : 98f;
+            // Keep the selection card below the real resources/feedback/compact
+            // chapter instead of solving overlap with unreadable tiny text.
+            var exclusionTop = safe.rect.height > safe.rect.width ? 421f : 266f;
             var center = FitToSafe(screen, width, height, safe, exclusionTop, 88f, false);
             card.anchorMin = card.anchorMax = card.pivot = new Vector2(.5f, .5f);
             card.anchoredPosition = center;
@@ -326,7 +328,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(timer.Progress, 10f, 57f, width - 20f, 6f);
             timer.Fill.rectTransform.anchorMax = new Vector2(Mathf.Clamp01(data.Progress), 1f);
             var center = FitToSafe(screen, width, height, safe,
-                safe.rect.height > safe.rect.width ? 130f : 98f, 88f, true);
+                safe.rect.height > safe.rect.width ? 421f : 266f, 88f, true);
             timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot = new Vector2(.5f, .5f);
             timer.Root.anchoredPosition = center;
             Visible(timer.Visibility, true, false);
