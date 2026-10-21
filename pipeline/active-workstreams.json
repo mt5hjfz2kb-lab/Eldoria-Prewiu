@@ -50,15 +50,13 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "GEOGRAPHY_NATIVE264_PLACEMENT_REPAIR_IN_PROGRESS",
-      "next": "Run39658026450: native263 failed because only11 tree sites passed original spacing/road constraints. Search extended; quality/count/contact gates retained. Review only fresh native264 images with source/tool hashes; source scene unchanged.",
+      "phase": "NATIVE264_PASS_INDEPENDENT_IMAGE_REVIEW",
+      "next": "Native264 run39658026450 SUCCESS, artifact12373020171; review exact fresh15 A/B pairs before acceptance. Release shared Windows runner to isolated archived V4 rig probe.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -703,7 +701,7 @@
           "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 11,
+      "ownership_revision": 12,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -741,7 +739,7 @@
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": "codex-three-workstreams-completion-20261021",
-      "ownership_revision": 12,
+      "ownership_revision": 13,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -766,18 +764,20 @@
         ".github/workflows/tripo-spawnling-unity-animated-qa.yml",
         "docs/evidence/spawnling-animation-v4-review-20261021/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "V4_ISOLATED_UNITY_PROBE_PREPARED_WAITING_MAIN_REGRESSION",
+      "phase": "V4_ISOLATED_UNITY_QA_READY",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "After live Unity main gates release Windows, lease this same ID and increment pipeline/tripo-art-brain/unity-qa-request.json with [spawnling-unity-qa]. Nonexecuting tool source and new lease-gated workflow accepted on main; disposable project uses exact V4 archive and canonical URP, animation module only in disposable manifest. Review skin/clip/PBR/three native poses before production integration.",
+      "next": "Execute pinned V4 GLB in disposable Unity project; verify12bones, skin deformation, rest recovery and actual URP pixels. No production scene writes.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
