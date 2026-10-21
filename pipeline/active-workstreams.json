@@ -725,8 +725,8 @@
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-eldoria-spawnling-rig-integration-20261021",
-      "ownership_revision": 10,
+      "owner": "chatgpt-eldoria-spawnling-rig-finish-20261021",
+      "ownership_revision": 11,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -747,20 +747,22 @@
         ".github/workflows/tripo-spawnling-free-rig-probe-v2.yml",
         ".github/workflows/tripo-spawnling-rig-v3.yml",
         ".github/workflows/tripo-spawnling-rig-v4.yml",
-        "pipeline/tripo-art-brain/verified-rig-probes/spawnling-blender-rig-elbow-v4-20261021.json"
+        "pipeline/tripo-art-brain/verified-rig-probes/spawnling-blender-rig-elbow-v4-20261021.json",
+        ".github/workflows/tripo-spawnling-unity-animated-qa.yml",
+        "docs/evidence/spawnling-animation-v4-review-20261021/**"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "RIG_V4_VERIFY_AND_SAFE_GAME_REPLACEMENT_IF_ACCEPTED",
+      "phase": "V4_ARTIFACT_REVIEW_AND_UNITY_ISOLATED_GATE_PREPARATION",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Create real source-locked V4 arm/forearm expressive swipe on copy, certify independently with Blender PBR frames; do not integrate until actual Unity skinned import+animation clip, player-camera A/B, Bastion II fight/EngendroDefeated/persistence gates PASS. Windows lease currently held by UI V3; no takeover of their runner. New explicit owner instruction to replace only on PASS.",
+      "next": "Review genuine V4 GLB/BLEND and pose A/B from run39651422644; prepare source-locked Unity 6 animated import test without Windows runner use until UI release. Preserve main scene, combat and saves, no paid Tripo.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -823,6 +825,13 @@
         "spend_credits": 0,
         "unity_scene_changes": "Only after technical+visual and gameplay certification",
         "date": "2026-10-21"
+      },
+      "last_handoff": {
+        "from_owner": "chatgpt-eldoria-spawnling-rig-integration-20261021",
+        "to_owner": "chatgpt-eldoria-spawnling-rig-finish-20261021",
+        "from_run": 39651422644,
+        "artifact_id": 12368972822,
+        "windows_lease_claimed": false
       }
     },
     {
