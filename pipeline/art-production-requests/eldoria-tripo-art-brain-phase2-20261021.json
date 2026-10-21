@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-tripo-art-brain-phase2-20261021",
+  "workstream_id": "eldoria-tripo-art-brain-phase2-20261021",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Engendro de la Fisura, inspección no destructiva de animabilidad y perfil de malla, usando fuente existente Tripo H3.1",
+  "profile": "animated_asset",
+  "ai_authorship_policy": "required",
+  "visual_gate_state": "PREFLIGHT_FREE_RIG_CHECK",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "existing_canonical_art_brain": true,
+    "blender_geometry_diagnostics": true
+  },
+  "diagnosis": "El Engendro de Bastión II ya está integrado como malla estática con LOD cercano/lejano, pero no tiene rig ni animación esquelética. Verificar gratuitamente si su fuente real es apta para esqueletos, sin nuevas generaciones o mutaciones del juego. El Qwen artista existente aún no ha recibido inferencia genuina de este nuevo contexto.",
+  "validation": {
+    "source_gate": "Comprobar origen y hashes exactos del GLB H3.1, GLB editado, BLEND y UnityQA. La comprobación gratuita nunca llama a rig/retarget/servicios de pago.",
+    "final_gate": "Una respuesta API con credits_consumed=0 y riggable explícito, o un bloqueo de acceso concretamente demostrado. Confirmar el tránsito del contexto a la interfaz Qwen con prueba sin inferencia, con SHA y evidencias aisladas."
+  },
+  "notes": "No usar Windows reservado ni tocar escena I-II/Engendro existente. Rigging de 25 créditos, animación de 10 créditos y generación están expresamente desautorizados en este trabajo; no publicar."
+}
