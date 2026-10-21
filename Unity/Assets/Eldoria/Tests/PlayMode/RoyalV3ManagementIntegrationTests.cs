@@ -70,6 +70,13 @@ namespace Eldoria.Tests
             {
                 Component host=null,hud=null;
                 yield return Boot((h,u)=>{host=h;hud=u;});
+                // An introductory cinematic has input priority. This test
+                // deliberately exercises management AFTER dismissing it, as a
+                // real player would, without writing the family save.
+                var guidance=Member(host,"Guidance") as Behaviour;
+                if(guidance)guidance.enabled=false;
+                var modal=Member(hud,"Modal") as Component;
+                if(modal&&modal.gameObject.activeInHierarchy)Call(modal,"Hide");
                 var management=hud.GetComponent("RoyalGoldV3ManagementScreens");
                 Assert.That(management,Is.Not.Null,"Integrated HUD must own V3 management navigator");
                 Assert.That(Member(management,"IsOpen"),Is.False);
