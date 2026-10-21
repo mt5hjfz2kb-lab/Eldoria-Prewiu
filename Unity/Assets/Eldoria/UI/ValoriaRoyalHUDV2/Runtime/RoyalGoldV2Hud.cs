@@ -20,6 +20,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private RectTransform safe, objectiveCard, buildingCard, scrollContent, scrollViewport;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
+        private RoyalText objectiveActionLabel, objectivesButtonLabel;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
@@ -110,10 +111,10 @@ namespace Eldoria.UI.RoyalGold.V2
             chapterText = Text("Chapter", objectiveCard, 18, Gold, true);
             objectiveText = Text("Current real objective", objectiveCard, 25, Ivory, true);
             progressText = Text("Objective progress", objectiveCard, 17, Muted);
-            objectiveAction = Button("Go to existing objective", objectiveCard, out var goText, true);
-            objectivesButton = Button("Open current chapter", objectiveCard, out var moreText, false);
-            goText.Put("Ir al objetivo");
-            moreText.Put("Misiones");
+            objectiveAction = Button("Go to existing objective", objectiveCard, out objectiveActionLabel, true);
+            objectivesButton = Button("Open current chapter", objectiveCard, out objectivesButtonLabel, false);
+            objectiveActionLabel.Put("Ir al objetivo");
+            objectivesButtonLabel.Put("Misiones");
             objectiveAction.onClick.AddListener(() =>
             {
                 if (Source && Source.Mission && Source.Mission.Open)
@@ -485,7 +486,16 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!ready) return;
             bool resized = !hasGeometry || Mathf.Abs(safe.rect.width - lastWidth) > .5f ||
                 Mathf.Abs(safe.rect.height - lastHeight) > .5f;
-            if (resized) Layout();
+            if (resized)
+            {
+                Layout();
+                // Native portrait captures and live orientation switches alter
+                // the stretched button rectangles while the text string stays
+                // unchanged. Explicitly rebuild their uGUI vertices so these
+                // genuine mission labels cannot render as empty gold frames.
+                if (objectiveActionLabel) objectiveActionLabel.SetAllDirty();
+                if (objectivesButtonLabel) objectivesButtonLabel.SetAllDirty();
+            }
             if (!hasGeometry) return;
             LayoutNavigation();
             bool modalOpen = Source.Modal && Source.Modal.gameObject.activeSelf;
