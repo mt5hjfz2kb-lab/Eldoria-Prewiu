@@ -109,6 +109,10 @@ namespace Eldoria.Tests
             var beforeBodyColor = body.color;
             var beforeTitleSize = title.fontSize;
             var beforeBodySize = body.fontSize;
+            var extraLabel = Read(modal, "ExtraLabel") as Text;
+            Assert.That(extraLabel, Is.Not.Null);
+            var beforeLabelPosition = extraLabel.rectTransform.anchoredPosition;
+            var beforeLabelSize = extraLabel.rectTransform.sizeDelta;
 
             // The same genuine dialogue and original controller/button.
             Call(hud, "ShowNarrative", "Sir Aldric", canonicalAldricText);
@@ -143,6 +147,13 @@ namespace Eldoria.Tests
             Assert.That(body.rectTransform.rect.width, Is.GreaterThan(170f));
             Assert.That(button.gameObject.activeInHierarchy, Is.True);
             Assert.That(button.interactable, Is.True);
+            Assert.That(extraLabel.transform.parent, Is.SameAs(button.transform));
+            var labelCorners = new Vector3[4];
+            extraLabel.rectTransform.GetWorldCorners(labelCorners);
+            var buttonRect = (RectTransform)button.transform;
+            foreach (var corner in labelCorners)
+                Assert.That(buttonRect.rect.Contains(buttonRect.InverseTransformPoint(corner)),
+                    Is.True, "The real Continue label must remain fully inside its real button");
             button.onClick.Invoke(); // reveal the full canonical page
             yield return null;
             Assert.That(body.preferredHeight, Is.LessThanOrEqualTo(body.rectTransform.rect.height),
@@ -170,6 +181,8 @@ namespace Eldoria.Tests
             Assert.That(body.color, Is.EqualTo(beforeBodyColor));
             Assert.That(title.fontSize, Is.EqualTo(beforeTitleSize));
             Assert.That(body.fontSize, Is.EqualTo(beforeBodySize));
+            Assert.That(extraLabel.rectTransform.anchoredPosition, Is.EqualTo(beforeLabelPosition));
+            Assert.That(extraLabel.rectTransform.sizeDelta, Is.EqualTo(beforeLabelSize));
         }
     }
 }

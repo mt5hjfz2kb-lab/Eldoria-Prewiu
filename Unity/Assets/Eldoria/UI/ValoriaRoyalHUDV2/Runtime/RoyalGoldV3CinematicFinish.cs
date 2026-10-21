@@ -22,6 +22,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private Vector2 savedPosition, savedSize;
         private Color savedTitleColor, savedBodyColor, savedExtraLabelColor;
         private int savedTitleSize, savedBodySize, savedExtraLabelSize;
+        private Vector2 labelAnchorMin, labelAnchorMax, labelPivot, labelPosition, labelSize;
+        private TextAnchor labelAlignment;
         private bool captured;
         private static readonly Color Sepia = new Color(.19f, .15f, .11f, 1f);
         private static readonly Color Brown = new Color(.38f, .25f, .13f, 1f);
@@ -86,6 +88,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     modal.ExtraLabel.color = savedExtraLabelColor;
                     modal.ExtraLabel.fontSize = savedExtraLabelSize;
+                    var label = modal.ExtraLabel.rectTransform;
+                    label.anchorMin = labelAnchorMin;
+                    label.anchorMax = labelAnchorMax;
+                    label.pivot = labelPivot;
+                    label.anchoredPosition = labelPosition;
+                    label.sizeDelta = labelSize;
+                    modal.ExtraLabel.alignment = labelAlignment;
                 }
             }
             captured = false;
@@ -155,6 +164,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     savedExtraLabelColor = modal.ExtraLabel.color;
                     savedExtraLabelSize = modal.ExtraLabel.fontSize;
+                    var label = modal.ExtraLabel.rectTransform;
+                    labelAnchorMin = label.anchorMin;
+                    labelAnchorMax = label.anchorMax;
+                    labelPivot = label.pivot;
+                    labelPosition = label.anchoredPosition;
+                    labelSize = label.sizeDelta;
+                    labelAlignment = modal.ExtraLabel.alignment;
                 }
                 captured = true;
             }
@@ -253,6 +269,11 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 modal.ExtraLabel.fontSize = 21;
                 modal.ExtraLabel.color = new Color(.96f, .91f, .81f);
+                // The original label is a fixed 510px child of a 530px
+                // button. Resize that SAME child with its compact button;
+                // otherwise Continue renders outside the paper entirely.
+                Top(modal.ExtraLabel.rectTransform, 8f, 3f, buttonWidth - 16f, 42f);
+                modal.ExtraLabel.alignment = TextAnchor.MiddleCenter;
             }
         }
     }
