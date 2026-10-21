@@ -137,12 +137,21 @@ namespace Eldoria.Application
                     if(command.TargetId=="forest-valoria") state.CorruptionDiscovered=true;
                     break;
                 case "ConfigureMarch":
-                    if (command.TargetId != "march-main" || state.BastionLevel < 2 || state.BarracksLevel < 1)
+                    if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Marcha no disponible");
                     if (state.March.Phase != "idle") return Fail("Espera al regreso de la Marcha");
-                    if (state.Available.Total < 1) return Fail("No hay tropas disponibles");
+                    int marchArchers=state.Available.ArcherT1;
+                    if(command.TargetId != "march-main")
+                    {
+                        if(!command.TargetId.StartsWith("march-main:",StringComparison.Ordinal) ||
+                            !int.TryParse(command.TargetId.Substring("march-main:".Length),out marchArchers))
+                            return Fail("Composición desconocida");
+                    }
+                    if(marchArchers < 1 || marchArchers > state.Available.ArcherT1)
+                        return Fail("No hay suficientes arqueros disponibles");
                     state.PreparedHeroId = "aldric";
                     state.PreparedTroops = state.Available.Copy();
+                    state.PreparedTroops.ArcherT1 = marchArchers;
                     state.MarchConfigured = true;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.MarchConfirmed = true;
@@ -212,16 +221,27 @@ namespace Eldoria.Application
                     else return Fail("Obra no disponible");
                     break;
                 case "Recruit":
-                    if (command.TargetId != "archer:t1" || state.BastionLevel < 2 || state.BarracksLevel < 1)
+                    if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Reclutamiento no disponible");
+                    int recruitCount=SliceRules.RecruitArchers;
+                    if(command.TargetId != "archer:t1")
+                    {
+                        if(!command.TargetId.StartsWith("archer:t1:",StringComparison.Ordinal) ||
+                           !int.TryParse(command.TargetId.Substring("archer:t1:".Length),out recruitCount))
+                            return Fail("Tipo de unidad desconocido");
+                    }
+                    if(recruitCount<1 || recruitCount>500) return Fail("Cantidad de reclutas no válida");
                     if (state.RecruitmentCompletesUtcTicks > 0) return Fail("Ya hay reclutas entrenando");
-                    if (state.Resources.Wood < SliceRules.RecruitWoodCost || state.Resources.Stone < SliceRules.RecruitStoneCost)
+                    int recruitWood=SliceRules.RecruitWoodCostFor(recruitCount);
+                    int recruitStone=SliceRules.RecruitStoneCostFor(recruitCount);
+                    if (state.Resources.Wood < recruitWood || state.Resources.Stone < recruitStone)
                         return Fail("Faltan recursos para equipar reclutas");
-                    state.Resources.Wood -= SliceRules.RecruitWoodCost;
-                    state.Resources.Stone -= SliceRules.RecruitStoneCost;
-                    state.PendingRecruitArchers = SliceRules.RecruitArchers;
+                    state.Resources.Wood -= recruitWood;
+                    state.Resources.Stone -= recruitStone;
+                    state.PendingRecruitArchers = recruitCount;
                     state.RecruitmentTaskId = "recruit:" + command.Id;
-                    state.RecruitmentCompletesUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.RecruitSeconds).Ticks;
+                    state.RecruitmentCompletesUtcTicks = clock.UtcTicks +
+                        TimeSpan.FromSeconds(SliceRules.RecruitSecondsFor(recruitCount)).Ticks;
                     break;
                 default: return Fail("Acción desconocida");
             }
