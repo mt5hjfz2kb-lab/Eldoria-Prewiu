@@ -16,7 +16,7 @@ concurrency:
 jobs:
   actual-qwen-blender:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 55
     env:
       OUT: /tmp/eldoria-tripo-qwen-real
       SOURCE_BLEND: ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend
@@ -79,6 +79,13 @@ jobs:
             --out "$OUT/mesh" > "$OUT/blender-mesh-inspection.log" 2>&1
           node tools/tripo-art-brain/verify-mesh-context.mjs \
             "$OUT/mesh/mesh-context.json" "$OUT/mesh/verification.json"
+          blender --background --disable-autoexec -t 2 --python-exit-code 1 \
+            --python tools/tripo-art-brain/creature-anatomy-context.py -- \
+            --source "$SOURCE_BLEND" \
+            --original-context "$OUT/mesh/mesh-context.json" \
+            --target "$TARGET_MESH" \
+            --author-evidence ArtSource/World4X/Spawnling_v1/Finished/author-evidence.json \
+            --out "$OUT/mesh/face-anatomy-context.json" | tee "$OUT/mesh/face-anatomy.log"
           /usr/bin/python3 tools/tripo-art-brain/prepare-real-inputs.py "$OUT/photos"
           python3 - <<'PY'
           import json,os,pathlib
@@ -93,7 +100,7 @@ jobs:
           print('GENUINE_FACE_CROP_AND_STRATEGIC_UNITY_FRAME_PINNED_NO_SYNTHETIC_PIXELS')
           PY
 
-      - name: Local CPU Ollama and real Qwen3-VL-2B (no paid cloud)
+      - name: Local CPU Ollama and real Qwen3-VL-4B (no paid cloud)
         timeout-minutes: 12
         shell: bash
         run: |
@@ -104,10 +111,10 @@ jobs:
             sleep 2
           done
           test -s "$OUT/ollama-version.json"
-          docker exec eldoria-tripo-real-qwen ollama pull qwen3-vl:2b-instruct
+          docker exec eldoria-tripo-real-qwen ollama pull qwen3-vl:4b-instruct
 
       - name: REAL Qwen vision authoring on existing Engendro, isolated
-        timeout-minutes: 21
+        timeout-minutes: 30
         shell: bash
         run: |
           set -euo pipefail
@@ -116,10 +123,10 @@ jobs:
             --unity-before "$OUT/photos/before-cpu512.jpg" \
             --target-object "$TARGET_MESH" --target-mode existing \
             --inventory "$OUT/prepared/qwen-inventory.txt" \
-            --mesh-context "$OUT/mesh/mesh-context.json" \
-            --model qwen3-vl:2b-instruct --num-ctx 10240 --num-predict 1000 \
+            --mesh-context "$OUT/mesh/face-anatomy-context.json" --anatomy-focus face \
+            --model qwen3-vl:4b-instruct --num-ctx 8192 --num-predict 800 \
             --max-actions 1 --cpu-compact --repair-attempts 1 \
-            --request-timeout 500 --out "$OUT/qwen" | tee "$OUT/real-qwen.log"
+            --request-timeout 540 --out "$OUT/qwen" | tee "$OUT/real-qwen.log"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs \
             --preflight-plan "$OUT/qwen/artist-plan.json" "$TARGET_MESH" existing
 
@@ -139,7 +146,7 @@ jobs:
           p=pathlib.Path(os.environ["OUT"])
           ai=json.loads((p/"qwen/artist-inference.json").read_text())
           op=json.loads((p/"blender-output/artist-execution.json").read_text())
-          assert ai["model"]=="qwen3-vl:2b-instruct" and ai["subject_kind"]=="creature"
+          assert ai["model"]=="qwen3-vl:4b-instruct" and ai["subject_kind"]=="creature"
           assert ai["self_approval"] is False
           assert op["source_mesh_sha256"]!=op["result_mesh_sha256"]
           assert op["source_sha256"]==hashlib.sha256(pathlib.Path(os.environ["SOURCE_BLEND"]).read_bytes()).hexdigest()
