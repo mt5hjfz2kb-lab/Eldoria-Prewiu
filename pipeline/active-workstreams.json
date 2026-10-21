@@ -48,9 +48,7 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -644,7 +642,10 @@
         "purpose": "UI V3 WebGL revision 243, existing Valoria native workflow without art mutation",
         "delegated_by": "Owner order to finish Eldoria UI V3 and prepare verified playtest",
         "reserved_for": "valoria-reference-clean web_playtest and exact browser QA",
-        "release_condition": "After WebGL+QA completion or failure; no other Windows native jobs"
+        "release_condition": "After WebGL+QA completion or failure; no other Windows native jobs",
+        "status": "superseded_by_owner_UI87_sequence",
+        "released_at": "2026-10-21T12:38:05.412Z",
+        "evidence": "native243 run39592544222 completed SUCCESS; no active native Actions observed; current owner prioritizes PR87 before final WebGL QA"
       }
     },
     {
@@ -666,13 +667,22 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs.meta",
-        "docs/ui-v3/OWNER_APPROVED_DIRECTION.md"
+        "docs/ui-v3/OWNER_APPROVED_DIRECTION.md",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3CinematicAcceptanceTests.cs.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2FrameGraphic.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "OWNER_ORDERED_SINGLE_EXECUTOR_TAKEOVER_PR87_THEN_EXACT_WEBGL_QA",
-      "next": "Single UI executor owns PR87 cinematic finish first; validate Unity Edit/Play and native real screenshots, owner reference match and zero regressions. Then rebuild WebGL from final merged main and run Windows Chromium I-II before restricted publication. PR85 native243 QA is an earlier pre-cinematic candidate; do not promote or merge its stale artifact pins. Coordinate Windows runner with Valoria art owner, no simultaneous heavy work.",
+      "phase": "PR87_CINEMATIC_NATIVE_VALIDATION",
+      "next": "Validate PR87 cinematic on current main + exact UI change; gate checks live exclusive UI lease and actual processes. Then visual inspection, merge, final WebGL QA and restricted delivery.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
       "handoff": {
         "owner_instruction": "Asume tú los trabajos y organízalos",
