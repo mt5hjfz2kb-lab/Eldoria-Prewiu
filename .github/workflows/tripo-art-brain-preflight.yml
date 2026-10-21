@@ -32,8 +32,7 @@ jobs:
           sparse-checkout: |
             tools/tripo-art-brain/
             tools/plan-art-production.mjs
-            tools/art-direction/ai-authoring/author_brief.py
-            tools/art-direction/ai-authoring/artistic_learning_feedback.py
+            tools/art-direction/ai-authoring/
             tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
             pipeline/tripo-art-brain/
             ArtSource/World4X/
