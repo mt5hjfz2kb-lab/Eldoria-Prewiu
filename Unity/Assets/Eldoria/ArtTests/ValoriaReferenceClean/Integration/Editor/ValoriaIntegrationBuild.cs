@@ -250,7 +250,14 @@ namespace Eldoria.ReferenceClean.Editor {
     var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
     v2.SynchronizeNow();Canvas.ForceUpdateCanvases();
     Need(v2.ObjectiveVisible&&v2.VisibleObjectiveButton.interactable,
-     "A selected World resource hid the next real objective");
+     "A selected World resource hid the next real objective"+
+     "; objectiveVisible="+v2.ObjectiveVisible+
+     "; actionable="+v2.VisibleObjectiveButton.interactable+
+     "; modalActive="+h.Hud.Modal.gameObject.activeSelf+
+     "; narrative="+h.Hud.NarrativeOpen+
+     "; selected="+h.Hud.SelectedBuildingId+
+     "; missionExpanded="+h.Hud.Mission.ListExpanded+
+     "; inWorld="+h.InWorld);
     var button=v2.VisibleObjectiveButton;
     var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);
     var point=RectTransformUtility.WorldToScreenPoint(null,(corners[0]+corners[2])*.5f);
