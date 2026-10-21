@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "policy": "Only byte-validated independent reviewed events; never ART_APPROVED without existing art authority. No runtime writes, no cloud costs.",
+  "records": []
+}
