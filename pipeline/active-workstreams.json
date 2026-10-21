@@ -683,7 +683,9 @@
         "docs/archive/process-efficiency-20261021/**",
         "tools/check-valoria-visual-authority-routing.mjs",
         ".github/workflows/valoria-visual-authority-routing.yml",
-        ".github/workflows/eldoria-art-visual-acceptance.yml"
+        ".github/workflows/eldoria-art-visual-acceptance.yml",
+        "tools/check-documentation-governance.mjs",
+        "tools/check-documentation-governance.test.mjs"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
