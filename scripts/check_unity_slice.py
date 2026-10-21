@@ -4,7 +4,7 @@
 #!/usr/bin/env python3
 """Offline source preflight. Its sparse CI inputs retain every assertion below.
 
-This does not compile or launch the Unity player.
+This does not compile or launch the Unity player, or delete shared worktrees.
 """
 import json
 from pathlib import Path

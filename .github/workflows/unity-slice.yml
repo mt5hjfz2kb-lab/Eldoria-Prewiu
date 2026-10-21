@@ -135,10 +135,17 @@ jobs:
         run: |
           $expectedCommit = $env:GITHUB_SHA
           if ($expectedCommit -notmatch '^[0-9a-fA-F]{40}$') { throw 'Expected workflow commit is not a full Git SHA.' }
-          & git reset --hard $expectedCommit
-          if ($LASTEXITCODE -ne 0) { throw 'Could not restore tracked source to the workflow commit.' }
-          & git clean -ffdx -e '/Unity/Library/' -e '/valoria-layered-source/' -e '/valoria-clean-live-main/'
-          if ($LASTEXITCODE -ne 0) { throw 'Could not remove stale untracked source and build output.' }
+          # actions/checkout already selected the exact commit. Never sweep
+          # untracked files or nested worktrees from this shared Windows root:
+          # run39606507642 attempted to delete Spawnling's independent checkout
+          # and failed on its long Unity PackageCache paths. Preserve it all.
+          $initialCommit = (& git rev-parse HEAD).Trim()
+          if ($LASTEXITCODE -ne 0 -or $initialCommit -ne $expectedCommit) {
+            throw 'Checkout did not select the expected commit; preserve the workspace.'
+          }
+          if (@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count) {
+            throw 'Shared native tools are busy; preserve their working files.'
+          }
           # A Windows CI run (39266054859) proved Unity/Assets can be absent here despite
           # checkout/reset claiming success. Repair only exact tracked project files, never
           # regenerate art or overwrite the independent native-checkout/Unity Library.
@@ -170,6 +177,11 @@ jobs:
           $actualCommit = & git rev-parse HEAD
           if ($LASTEXITCODE -ne 0) { throw 'Could not read the restored Git HEAD.' }
           if ($actualCommit.Trim() -ne $expectedCommit) { throw "Checkout SHA mismatch: $actualCommit" }
+          & git diff --quiet HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          if ($LASTEXITCODE -ne 0) { throw 'Tracked Unity source differs from the exact commit; preserve differences rather than reset them.' }
+          $unexpected = @(& git ls-files --others --exclude-standard -- Unity/Assets | Where-Object { $_ -match '\.(cs|asmdef|asmref|shader|hlsl|cginc)$' })
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect untracked Unity compilation inputs.' }
+          if ($unexpected.Count) { throw "Untracked Unity compilation inputs need reconciliation, not deletion: $($unexpected -join ', ')" }
           & git diff --quiet HEAD -- .
           if ($LASTEXITCODE -ne 0) { throw 'Tracked source differs from the expected workflow commit after cleanup.' }
           Write-Host "Source restored to $expectedCommit; only Unity/Library and the two separately managed native checkouts are excluded from cleanup."
