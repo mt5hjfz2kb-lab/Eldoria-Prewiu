@@ -111,6 +111,10 @@ jobs:
           git add docs/evidence/spawnling-bastion2
           if(git diff --cached --quiet){throw 'No actual integrated scene and assets changed'}
           git commit -m 'feat(spawnling): actual Bastion II enemy visual integrated with I-II QA'
+          git fetch origin art/spawnling-bastion2-finish-20261021
+          if($LASTEXITCODE){throw 'Could not refresh current feature-branch head'}
+          git rebase 'origin/art/spawnling-bastion2-finish-20261021'
+          if($LASTEXITCODE){throw 'Concurrent source edit conflict; do not force-push or overwrite work'}
           git push origin 'HEAD:refs/heads/art/spawnling-bastion2-finish-20261021'
           Write-Host 'SPAWNLING_B2_GREEN_NATIVE_BRANCH_COMMITTED'
       - name: Preserve exact authentic Unity screenshots and diagnostics
