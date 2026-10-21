@@ -21,11 +21,11 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Accepted UI native623, geography integrated275 and visually accepted animation280. General Unity39677488034SUCCESS. Test combined native281 using actual visible controls, full-screen training/march in portrait/landscape, original normal-clock I-II and byte-identical save/reload.0EUR; no publish unless PASS.",
+  "reason": "Accepted UI native623, geography integrated275 and visually accepted animation280. General Unity39677488034SUCCESS. Test combined native281 using actual visible controls, full-screen training/march in portrait/landscape, original normal-clock I-II and byte-identical save/reload.0EUR; no publish unless PASS. Retry same binary after comparator null/empty normalization; failed39680443692 had0 operations,935 valid framing checks rejected after capture,0 runtime/network errors. Genuine camera/management changes still invalidate;5-repeat progress guard added.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 20,
+  "attempt": 21,
   "method_note": "Pin final canonical main source and original WebGL artifact; retain all existing real pointer/touch, normal clock, direct GPU image/video and exact save/reload assertions.",
   "gameplay_source_unchanged": false
 }

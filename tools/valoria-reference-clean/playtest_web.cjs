@@ -68,7 +68,7 @@ function framingObservation(state) {
     engine_pass: frame.pass === true, projected, visible, margins_normalized: margins };
 }
 function stableSelectionView(before, after) {
-  if (before?.management?.destination !== after?.management?.destination) return false;
+  if ((before?.management?.destination || '') !== (after?.management?.destination || '')) return false;
   if (!before?.selected || before.selected !== after?.selected || before.inWorld !== after.inWorld ||
       before.width !== after.width || before.height !== after.height || before.narrative || after.narrative) return false;
   const camera = cameraDifference(before, after), a = framingObservation(before), b = framingObservation(after);
@@ -633,6 +633,7 @@ async function main() {
   async function normalPlaythrough() {
     flowDeadline = performance.now() + flowTimeout;
     let checkedNavigation = false;
+    const invalidatedSelections = new Map();
     while (true) {
       health(); await dismissNarrative();
       if (activeOperation?.completed) {
@@ -685,7 +686,11 @@ async function main() {
         if (latest.narrative) continue;
       }
       if (!stableSelectionView(framing.after, latest) || !framingObservation(latest).pass) {
-        framing.invalidated_after_capture = true; continue;
+        framing.invalidated_after_capture = true;
+        const attempts = (invalidatedSelections.get(key) || 0) + 1;
+        invalidatedSelections.set(key, attempts);
+        need(attempts <= 5, `Selection repeatedly invalidated without progress: ${key}; before=${JSON.stringify(framing.after)}; after=${JSON.stringify(summary(latest))}`);
+        continue;
       }
       need(!latest.busy && phase(latest) === 'idle', 'Operation became busy before the next visible action');
       const operation = { index: report.operations.length + 1, ...describeOperation(latest), selected: latest.selected,
