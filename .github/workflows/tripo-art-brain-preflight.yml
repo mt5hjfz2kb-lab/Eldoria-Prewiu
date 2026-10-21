@@ -6,6 +6,7 @@ on:
     paths:
       - "tools/tripo-art-brain/**"
       - "pipeline/tripo-art-brain/**"
+      - "tools/art-direction/ai-authoring/author_brief.py"
       - ".github/workflows/tripo-art-brain-preflight.yml"
 
 permissions:
