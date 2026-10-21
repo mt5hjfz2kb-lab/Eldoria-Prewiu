@@ -100,7 +100,7 @@ jobs:
           print('GENUINE_FACE_CROP_AND_STRATEGIC_UNITY_FRAME_PINNED_NO_SYNTHETIC_PIXELS')
           PY
 
-      - name: Local CPU Ollama and real Qwen3-VL-4B (no paid cloud)
+      - name: Local CPU Ollama and real Qwen3-VL-2B (no paid cloud)
         timeout-minutes: 12
         shell: bash
         run: |
@@ -111,10 +111,10 @@ jobs:
             sleep 2
           done
           test -s "$OUT/ollama-version.json"
-          docker exec eldoria-tripo-real-qwen ollama pull qwen3-vl:4b-instruct
+          docker exec eldoria-tripo-real-qwen ollama pull qwen3-vl:2b-instruct
 
       - name: REAL Qwen vision authoring on existing Engendro, isolated
-        timeout-minutes: 30
+        timeout-minutes: 18
         shell: bash
         run: |
           set -euo pipefail
@@ -124,9 +124,9 @@ jobs:
             --target-object "$TARGET_MESH" --target-mode existing \
             --inventory "$OUT/prepared/qwen-inventory.txt" \
             --mesh-context "$OUT/mesh/face-anatomy-context.json" --anatomy-focus face \
-            --model qwen3-vl:4b-instruct --num-ctx 8192 --num-predict 800 \
+            --model qwen3-vl:2b-instruct --num-ctx 8192 --num-predict 900 \
             --max-actions 1 --cpu-compact --repair-attempts 1 \
-            --request-timeout 540 --out "$OUT/qwen" | tee "$OUT/real-qwen.log"
+            --request-timeout 450 --out "$OUT/qwen" | tee "$OUT/real-qwen.log"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs \
             --preflight-plan "$OUT/qwen/artist-plan.json" "$TARGET_MESH" existing
 
@@ -146,7 +146,7 @@ jobs:
           p=pathlib.Path(os.environ["OUT"])
           ai=json.loads((p/"qwen/artist-inference.json").read_text())
           op=json.loads((p/"blender-output/artist-execution.json").read_text())
-          assert ai["model"]=="qwen3-vl:4b-instruct" and ai["subject_kind"]=="creature"
+          assert ai["model"]=="qwen3-vl:2b-instruct" and ai["subject_kind"]=="creature"
           assert ai["self_approval"] is False
           assert op["source_mesh_sha256"]!=op["result_mesh_sha256"]
           assert op["source_sha256"]==hashlib.sha256(pathlib.Path(os.environ["SOURCE_BLEND"]).read_bytes()).hexdigest()
