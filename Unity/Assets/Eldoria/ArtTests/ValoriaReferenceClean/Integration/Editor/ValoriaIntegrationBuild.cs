@@ -316,7 +316,20 @@ namespace Eldoria.ReferenceClean.Editor {
    // A real finger cannot touch in that same immediate C# call stack.
    yield return null;
    yield return new WaitForSecondsRealtime(.20f);
-   Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"Recruitment did not start");Need(h.Read("barracks",false).Building.OperationActive,"Training not identified as paid active operation");Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");Capture(h,"integration-training.png",1600,900);Capture(h,"integration-training-portrait.png",900,1600);},"Royal recruitment");
+   Check(()=>{
+    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    Need(management!=null&&management.IsOpen&&
+      management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training,
+      "Built Barracks did not open the independent V3 training destination");
+    var train=GameObject.Find("Confirm military command")?.GetComponent<RoyalButton>();
+    Need(train&&train.interactable,"Real V3 train button unavailable");
+    Click(train);
+    Need(city.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"Recruitment did not start");
+    Need(h.Read("barracks",false).Building.OperationActive,"Training not identified as paid active operation");
+    Need(!h.Read("barracks",false).Building.Requirements.Contains("Operación en curso"),"Duplicate training status remains");
+    Capture(h,"integration-training.png",1600,900);
+    Capture(h,"integration-training-portrait.png",900,1600);
+   },"Royal recruitment via visible V3 primary button");
    yield return new WaitForSecondsRealtime(.4f);
    Check(()=>{
     ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(
@@ -354,7 +367,9 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-march-portrait.png",900,1600);
    },"Royal march management real independent landscape and portrait");
    Check(()=>{
-    Click(h.Hud.Building.Primary.Button);
+    var prepare=GameObject.Find("Confirm military command")?.GetComponent<RoyalButton>();
+    Need(prepare&&prepare.interactable,"Visible V3 march confirm unavailable");
+    Click(prepare);
     Need(city.Gateway.Snapshot().MarchConfigured,"March configuration missing");
     var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
     if(management!=null&&management.IsOpen){
