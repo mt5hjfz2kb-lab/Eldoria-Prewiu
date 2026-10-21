@@ -26,7 +26,8 @@ async function verifyExistingQwenContract(id,kind) {
   const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'eldoria-qwen-contract-'));
   const inventory=path.join(tmp,'qwen-inventory.txt');
   const output=path.join(tmp,'inference');
-  const target='Eldoria_SourceMesh_ContractOnly';
+  const realContext=(id==='spawnling'&&kind==='creature')?process.env.TRIPO_SOURCE_MESH_CONTEXT:null;
+  const target=realContext?'Spawnling_Near_Authored':'Eldoria_SourceMesh_ContractOnly';
   fs.writeFileSync(inventory,makeBundle(ROOT,id).context);
   const received=[];
   const srv=http.createServer((req,res)=>{
@@ -67,6 +68,7 @@ async function verifyExistingQwenContract(id,kind) {
       '--repair-attempts','0','--max-actions','2'
     ];
     if(kind!=='terrain') args.push('--subject-kind',kind);
+    if(realContext) args.push('--mesh-context',realContext);
     const spawned=await new Promise((resolve,reject)=>{
       const child=spawn('python3',args,{cwd:ROOT,env:{...process.env,TRIPO_API_KEY:''}});
       let stdout='',stderr='';
@@ -91,6 +93,13 @@ async function verifyExistingQwenContract(id,kind) {
     assert.match(prompt,/Existing|existing/);
     if(kind==='creature'){
       assert.match(prompt,/CREATURE ART:/);
+      if(realContext){
+        const raw=fs.readFileSync(realContext);
+        const actual=JSON.parse(raw);
+        assert.equal(actual.target,target);
+        assert.match(prompt,/local_aabb/);
+        assert.match(prompt,new RegExp(actual.source_sha256));
+      }
       assert.match(prompt,/skeletal deformation/);
       assert.doesNotMatch(prompt,/GENUINE UNITY V5 cliff|existing cliff rock face/);
     }
@@ -108,6 +117,7 @@ async function verifyExistingQwenContract(id,kind) {
     assert.equal(evidence.reference_sha256,sha(actualBytes[0]));
     assert.equal(evidence.unity_before_sha256,sha(actualBytes[1]));
     assert.equal(evidence.asset_inventory_sha256,sha(Buffer.from(fs.readFileSync(inventory,'utf8').slice(0,4000))));
+    if(realContext)assert.equal(evidence.mesh_context_sha256,sha(fs.readFileSync(realContext)));
     if(kind==='terrain')assert.ok(!('subject_kind' in evidence));
     else assert.equal(evidence.subject_kind,kind);
     const plan=JSON.parse(fs.readFileSync(path.join(output,'artist-plan.json'),'utf8'));
