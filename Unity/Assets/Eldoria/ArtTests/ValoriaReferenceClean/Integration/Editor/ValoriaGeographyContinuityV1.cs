@@ -362,6 +362,16 @@ namespace Eldoria.ReferenceClean.Editor
                 {
                     float x = terrain.transform.position.x + data.size.x * ix / (hn - 1f);
                     float z = terrain.transform.position.z + data.size.z * iz / (hn - 1f);
+                    // Outer city TerrainData bounds are shared with the original
+                    // landscape. Never lift border vertices or create abrupt cuts
+                    // between the authored meadow and untouched surroundings.
+                    if (ix == 0 || iz == 0 || ix == hn-1 || iz == hn-1) continue;
+                    float edgeDistance = Mathf.Min(
+                        Mathf.Min(x - terrain.transform.position.x,
+                                  terrain.transform.position.x + data.size.x - x),
+                        Mathf.Min(z - terrain.transform.position.z,
+                                  terrain.transform.position.z + data.size.z - z));
+                    float smoothBorder = Smooth(2f, 16f, edgeDistance);
                     float roadSafe = 1f;
                     foreach (var road in roads)
                     {
@@ -401,7 +411,7 @@ namespace Eldoria.ReferenceClean.Editor
                         Mathf.Pow((z + 57f) / 40f, 2f));
                     float grain = (Noise(x, z) - .5f) * .22f;
                     float delta = (westMeadow + eastMeadow + southwestMeadow + grain) *
-                        roadSafe * waterSafe * fortressSafe * sitesSafe;
+                        smoothBorder * roadSafe * waterSafe * fortressSafe * sitesSafe;
                     if (delta < .012f) continue;
                     heights[iz, ix] = Mathf.Clamp01(heights[iz, ix] +
                         delta / data.size.y);
