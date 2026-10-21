@@ -193,7 +193,8 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
   const verifiedFailures = (asset.verified_failures || []).map(failurePath => {
     const record = readJson(root, failurePath);
     if (record.asset !== id || record.art_approved !== false ||
-        record.classification !== 'ART_REJECTED_GLOBAL_TRANSLATION_LIKE' ||
+        !['ART_REJECTED_GLOBAL_TRANSLATION_LIKE',
+          'QWEN_PLAN_REJECTED_NON_EXECUTABLE'].includes(record.classification) ||
         record.source?.source_blend_sha256 !== asset.integration?.editable?.sha256 ||
         !Number.isInteger(record.source?.repo_run) ||
         !record.lesson || !record.next_action) {
