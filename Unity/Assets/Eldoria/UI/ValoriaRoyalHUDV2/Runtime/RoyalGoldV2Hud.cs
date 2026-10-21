@@ -32,7 +32,14 @@ namespace Eldoria.UI.RoyalGold.V2
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
 
         public bool ChapterExpanded => expanded;
-        public bool BuildingVisible => buildingVisible;
+        public bool BuildingVisible
+        {
+            get
+            {
+                var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                return v3 && v3.IsConfigured ? v3.CloseVisible : buildingVisible;
+            }
+        }
         public RoyalButton VisibleObjectiveButton => objectiveAction;
         public RoyalButton VisibleChapterButton => objectivesButton;
         public RoyalButton VisibleBuildingButton
@@ -43,9 +50,29 @@ namespace Eldoria.UI.RoyalGold.V2
                 return v3 && v3.IsConfigured ? v3.VisibleActionButton : buildingAction;
             }
         }
-        public RoyalButton VisibleBuildingCloseButton => buildingClose;
+        public RoyalButton VisibleBuildingCloseButton
+        {
+            get
+            {
+                var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                return v3 && v3.IsConfigured ? v3.VisibleCloseButton : buildingClose;
+            }
+        }
         public bool ObjectiveVisible => objectiveGroup && objectiveGroup.blocksRaycasts;
-        public bool BuildingActionVisible => BuildingVisible && buildingActionGroup && buildingActionGroup.blocksRaycasts;
+        public bool BuildingActionVisible
+        {
+            get
+            {
+                var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                // The established WebGL telemetry reads this boolean before
+                // clicking the actual V3 button. Do not silently mask it by
+                // the intentionally hidden V2 building sheet CanvasGroup.
+                return v3 && v3.IsConfigured
+                    ? v3.ContextVisible && v3.VisibleActionButton &&
+                        v3.VisibleActionButton.gameObject.activeInHierarchy
+                    : buildingVisible && buildingActionGroup && buildingActionGroup.blocksRaycasts;
+            }
+        }
 
         private void Awake()
         {
@@ -518,10 +545,10 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
             float padding = .025f;
-            if (portrait && BuildingVisible)
+            if (portrait && buildingVisible)
                 free.yMin = Mathf.Max(free.yMin,
                     (buildingCard.anchoredPosition.y + buildingCard.rect.height) / height + padding);
-            else if (!portrait && BuildingVisible)
+            else if (!portrait && buildingVisible)
                 free.xMax = Mathf.Min(free.xMax, 1f - buildingCard.rect.width / width - padding);
             // The V3 selected control follows the object itself and does not
             // reduce a whole side of the playable camera rectangle.

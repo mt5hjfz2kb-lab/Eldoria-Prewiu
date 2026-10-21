@@ -24,10 +24,10 @@ namespace Eldoria.UI.RoyalGold.V2
         public Func<Camera> ActiveCamera;
         public Func<string, RoyalBuilding> ReadBuilding;
 
-        private RectTransform safe, card, cardButton;
+        private RectTransform safe, card, cardButton, closeRect;
         private RoyalText title, status, costs, requirements, buttonLabel;
-        private RoyalButton actionButton;
-        private CanvasGroup cardGroup;
+        private RoyalButton actionButton, closeButton;
+        private CanvasGroup cardGroup, closeGroup;
         private readonly Dictionary<string, TimerView> timers = new Dictionary<string, TimerView>();
         private readonly Dictionary<string, RoyalBuilding> live = new Dictionary<string, RoyalBuilding>();
         private float nextRead;
@@ -51,6 +51,8 @@ namespace Eldoria.UI.RoyalGold.V2
 
         public bool ContextVisible => cardGroup && cardGroup.blocksRaycasts;
         public RoyalButton VisibleActionButton => actionButton;
+        public RoyalButton VisibleCloseButton => closeButton;
+        public bool CloseVisible => closeGroup && closeGroup.blocksRaycasts;
         public RectTransform ContextRect => card;
         public bool IsConfigured => FindAnchor != null && ActiveCamera != null && ReadBuilding != null;
         public int ActiveTimers
@@ -68,6 +70,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private void OnDisable()
         {
             Visible(cardGroup, false, true);
+            Visible(closeGroup, false, true);
             foreach (var t in timers.Values) Visible(t.Visibility, false, false);
         }
         private static RectTransform Rect(string name, Transform parent)
@@ -148,6 +151,26 @@ namespace Eldoria.UI.RoyalGold.V2
             });
             Visible(cardGroup, false, true);
             foreach (var id in TimedTargets) timers.Add(id, CreateTimer(id));
+            // A scene selection needs a touchable close affordance: a tap on
+            // empty terrain is intentionally not a deselection command.
+            // Position this tiny control alongside V3 action OR running timer.
+            closeRect = Frame("V3 / close selected object", safe, true);
+            closeRect.sizeDelta = new Vector2(40f, 40f);
+            closeButton = closeRect.gameObject.AddComponent<RoyalButton>();
+            closeButton.targetGraphic = closeRect.GetComponent<RoyalGoldV2FrameGraphic>();
+            var closeLabel = Text("Close selected object label", closeRect, 26, Ivory, true);
+            closeLabel.Put("×");
+            closeLabel.alignment = TextAnchor.MiddleCenter;
+            closeLabel.rectTransform.anchorMin = Vector2.zero;
+            closeLabel.rectTransform.anchorMax = Vector2.one;
+            closeLabel.rectTransform.offsetMin = new Vector2(3f, 2f);
+            closeLabel.rectTransform.offsetMax = new Vector2(-3f, -2f);
+            closeButton.onClick.AddListener(() =>
+            {
+                if (Source) Source.SelectBuilding("");
+            });
+            closeGroup = closeRect.gameObject.AddComponent<CanvasGroup>();
+            Visible(closeGroup, false, true);
             ready = true;
         }
         private TimerView CreateTimer(string id)
@@ -198,6 +221,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 (Source.Mission && Source.Mission.gameObject.activeInHierarchy);
             RenderSelection(camera, blocked);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
+            RenderClose(blocked);
         }
         private static bool CanProject(Transform target, Camera camera, RectTransform safe,
             bool aboveBuilding, out Vector2 local)
@@ -316,7 +340,8 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = Mathf.Min(290f, safe.rect.width - 24f);
             float contentWidth = width - 24f;
             float y = 10f;
-            y = PositionRow(title, y, contentWidth, 27f, 3f);
+            // Keep the title clear of the separate 40-unit Close target.
+            y = PositionRow(title, y, Mathf.Max(90f, contentWidth - 42f), 27f, 3f);
             y = PositionRow(status, y, contentWidth, 20f, 5f);
             y = PositionRow(costs, y, contentWidth, 0f, 5f);
             y = PositionRow(requirements, y, contentWidth, 0f, 6f);
@@ -342,6 +367,42 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(label.rectTransform, 12f, y, width, h);
             return y + h + gap;
         }
+        /// <summary>
+        /// Contextual Close is the only added action beyond the underlying
+        /// canonical offer. It calls RoyalHUD.SelectBuilding and is present
+        /// next to the object card or its ongoing real timer, never globally.
+        /// </summary>
+        private void RenderClose(bool blocked)
+        {
+            if (blocked || string.IsNullOrEmpty(Source.SelectedBuildingId))
+            {
+                Visible(closeGroup, false, true);
+                return;
+            }
+            RectTransform relative = null;
+            if (cardGroup && cardGroup.blocksRaycasts)
+                relative = card;
+            else if (timers.TryGetValue(Source.SelectedBuildingId, out var timed) &&
+                timed.Visibility && timed.Visibility.alpha > .5f)
+                relative = timed.Root;
+            if (!relative)
+            {
+                Visible(closeGroup, false, true);
+                return;
+            }
+            // Overlay the top-right frame edge, not a large permanent sheet.
+            // The icon has its own small raycast rect and never blocks the map
+            // outside that 40x40 accessible touch surface.
+            var x = relative.anchoredPosition.x + relative.rect.width * .5f - 8f;
+            var y = relative.anchoredPosition.y + relative.rect.height * .5f - 8f;
+            var bounds = safe.rect;
+            x = Mathf.Clamp(x, bounds.xMin + 24f, bounds.xMax - 24f);
+            y = Mathf.Clamp(y, bounds.yMin + 24f, bounds.yMax - 24f);
+            closeRect.anchorMin = closeRect.anchorMax = closeRect.pivot = new Vector2(.5f, .5f);
+            closeRect.anchoredPosition = new Vector2(x, y);
+            Visible(closeGroup, true, true);
+        }
+
         private void RenderTimer(string id, Camera camera, bool blocked)
         {
             var timer = timers[id];
