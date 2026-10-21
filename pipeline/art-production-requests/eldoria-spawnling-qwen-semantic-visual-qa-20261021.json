@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "request_id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
+  "workstream_id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
+  "asset_or_sector": "Copia de Engendro Bastión II Qwen head-region already generated in run39643146556",
+  "profile": "environment_surface",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "ai_authorship_policy": "required",
+  "visual_gate_state": "TECH_CANDIDATE_ONLY_ART_REVIEW_PENDING",
+  "diagnosis": "2B genuine Qwen local head-localized Blender edit changed 2038 verts and 573/307200 distant clay pixels, structurally valid; needs real matched closeup original + edited before artistic judgement; preserve current existing runtime",
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_geometry_diagnostics": true,
+    "unity_material_blending": false
+  },
+  "validation": {
+    "source_gate": "Artifact original run39643146556 and SHA expected e9fdb4ae...; exact source .blend e27b6037...; preexisting approved camera render tool; no model rerun",
+    "final_gate": "Five authentic matched camera Blender pairs, screenshot byte hashes, independent technical review, no automatic artistic approval, no mobile or game edits."
+  },
+  "notes": "No API credits, no Qwen calls, no Windows. Keep all files out of Unity/Assets and preserve original task/scene."
+}
