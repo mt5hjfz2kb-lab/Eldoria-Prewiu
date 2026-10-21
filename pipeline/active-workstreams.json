@@ -664,6 +664,27 @@
       "dependency": "Scene integration staged exclusively in PR #84 (draft); existing valoria-master-plan workstream retains authority over Valoria_City_World_UI.unity and Windows runner. Coordinate main merge after native QA and UI V3 PR #83 conflict checks. Zero Tripo credits, no release.",
       "next": "Source art and LOD production pass; native Windows source scene integration started run 39568710360, must prove actual scene, I-II save/rewards, independent art screenshots; guard routing request now authored in main; coordinate PR #83 without overwriting.",
       "art_production_request": "pipeline/art-production-requests/eldoria-spawnling-bastion2-finish-20261021.json"
+    },
+    {
+      "id": "eldoria-process-efficiency-20261021",
+      "title": "Reduce redundant CI and clarify operational entry documents",
+      "owner": "chatgpt-process-efficiency-20261021",
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-21",
+      "scope": [
+        "AGENTS.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
+        ".github/workflows/tester-qa.yml",
+        ".github/workflows/repository-architecture-guard.yml",
+        "tools/check-repository-architecture.mjs",
+        "tools/check-repository-architecture.test.mjs",
+        "docs/documentation-catalog.json",
+        "docs/archive/process-efficiency-20261021/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Owner-authorized CI and documentation maintenance only; no artwork, Unity execution or publication."
     }
   ],
   "history": [
