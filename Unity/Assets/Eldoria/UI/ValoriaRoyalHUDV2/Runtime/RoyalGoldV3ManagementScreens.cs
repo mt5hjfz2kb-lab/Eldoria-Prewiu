@@ -381,27 +381,27 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             Place(footer,leftSide,h-bottom-footH,usable,footH);
             float hw=header.rect.width;
-            Place(heading,landscape?14:15,7,hw*.67f,landscape?32:37);
-            Place(subheading,landscape?14:15,landscape?39:47,hw*.70f,22);
+            Place(heading.rectTransform,landscape?14:15,7,hw*.67f,landscape?32:37);
+            Place(subheading.rectTransform,landscape?14:15,landscape?39:47,hw*.70f,22);
             Place(switchDestination.transform as RectTransform,hw*.71f,landscape?9:16,hw*.27f,landscape?42:48);
             float uw=left.rect.width,uh=left.rect.height;
-            Place(unitTitle,landscape?15:18,landscape?7:18,uw-35,landscape?32:40);
-            Place(unitDetail,landscape?15:18,landscape?46:69,uw-35,landscape?42:60);
+            Place(unitTitle.rectTransform,landscape?15:18,landscape?7:18,uw-35,landscape?32:40);
+            Place(unitDetail.rectTransform,landscape?15:18,landscape?46:69,uw-35,landscape?42:60);
             float qy=landscape?Mathf.Max(90,uh-95):uh-129;
             Place(quantityRow,landscape?14:20,qy,uw-(landscape?28:40),landscape?39:48);
             float qw=quantityRow.rect.width;
             float ctrl=landscape?43:50;
             Place(minus.transform as RectTransform,0,0,ctrl,landscape?39:48);
             Place(plus.transform as RectTransform,qw-ctrl,0,ctrl,landscape?39:48);
-            Place(selectedText,ctrl+8,0,qw-2*(ctrl+8),landscape?39:48);
+            Place(selectedText.rectTransform,ctrl+8,0,qw-2*(ctrl+8),landscape?39:48);
             Place(slider.transform as RectTransform,landscape?19:25,uh-(landscape?21:45),uw-(landscape?38:50),landscape?14:19);
             float rw=right.rect.width,rh=right.rect.height;
             float statusH=landscape?Mathf.Min(62,rh*.28f):Mathf.Min(108,rh*.37f);
-            Place(summary,landscape?14:19,landscape?10:18,rw-(landscape?28:38),
+            Place(summary.rectTransform,landscape?14:19,landscape?10:18,rw-(landscape?28:38),
                 rh-statusH-(landscape?18:22));
-            Place(status,landscape?14:19,rh-statusH-4,rw-(landscape?28:38),statusH);
+            Place(status.rectTransform,landscape?14:19,rh-statusH-4,rw-(landscape?28:38),statusH);
             float fw=footer.rect.width;
-            Place(feedback,14,4,fw-28,landscape?20:25);
+            Place(feedback.rectTransform,14,4,fw-28,landscape?20:25);
             float bw=Mathf.Max(90,(fw-42)*.48f);
             float by=landscape?25:footH-60;
             Place(back.transform as RectTransform,12,by,bw,landscape?42:49);
