@@ -690,7 +690,9 @@
         "pipeline/playtest-delivery.json",
         ".github/workflows/unity-slice.yml",
         "scripts/check_unity_slice.py",
-        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+        ".github/workflows/valoria-first-playable-city-slice-v1.yml",
+        "pipeline/valoria-first-playable-city-slice-v1.json"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -749,7 +751,8 @@
         "qa_run": 39607571030,
         "qa_source_sha": "6b7b873f0a74bf5984685bcfc9f8d3424e9bc272",
         "published": false
-      }
+      },
+      "obsolete_trigger_recovery": "SlicePresenter UI touch launched legacy SHARP/visible-parcel production from an Oct6 stale pending request. Current AGENTS and canonical Oct18 scene supersede it. Preserve historical source/config but disable legacy execution and remove shared-core automatic triggers; cancel only our queued legacy run via its existing concurrency when config changes."
     }
   ],
   "history": [
