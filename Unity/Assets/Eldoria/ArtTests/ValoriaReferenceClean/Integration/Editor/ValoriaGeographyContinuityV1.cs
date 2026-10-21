@@ -574,25 +574,55 @@ namespace Eldoria.ReferenceClean.Editor
                 return height;
             }
             var placed = new List<Vector3>(original.Select(x => x.bounds.center));
-            Vector2[] offsets = {
-                new Vector2(-29f,9f), new Vector2(-22f,24f),
-                new Vector2(-8f,31f), new Vector2(16f,29f),
-                new Vector2(30f,15f), new Vector2(28f,-9f),
-                new Vector2(9f,-24f), new Vector2(-16f,-23f),
-                new Vector2(-35f,-8f), new Vector2(3f,17f)
+            // Three irregular, geographically connected forest shoulders:
+            // the current source has attractive trees but too much open board
+            // between canopy groups. Extend existing canopy clusters, not POIs.
+            var city = Hotspots(host).Single(p => p.Id == "valoria-map-city").transform.position;
+            Vector2[] lobes = {
+                new Vector2(-18f,24f), new Vector2(12f,30f),
+                new Vector2(34f,15f), new Vector2(26f,-16f),
+                new Vector2(-12f,-29f)
             };
-            additions=0;
-            for(int i=0;i<offsets.Length;i++)
+            var playable = worldGround.GetComponent<Renderer>().bounds;
+            var otherPOIs = Hotspots(host).Where(p => p.Id != "forest-valoria")
+                .Select(p => p.transform.position).ToArray();
+            // A retained open corridor from Valoria's gate to the lumber
+            // destination remains visible and usable in the 4X camera.
+            float DistanceToRoad(Vector3 q)
             {
-                Vector3 target = forest + new Vector3(offsets[i].x,0,offsets[i].y);
-                float nearest = placed.Min(v=>PlanarDistance(v,target));
-                if(nearest<8.0f)continue;  // retained natural clearings
-                var donor=original[i%original.Length];
+                Vector2 a = new Vector2(city.x,city.z);
+                Vector2 b = new Vector2(forest.x,forest.z);
+                Vector2 c = new Vector2(q.x,q.z);
+                float t=Mathf.Clamp01(Vector2.Dot(c-a,b-a)/Mathf.Max(.001f,(b-a).sqrMagnitude));
+                return Vector2.Distance(c,Vector2.Lerp(a,b,t));
+            }
+            additions=0;
+            int considered = 0;
+            for(int l=0;l<lobes.Length;l++)
+            for(int j=0;j<16;j++)
+            {
+                int index=l*16+j;
+                // Golden-angle sampling plus bounded jitter avoids rows,
+                // perfect rings or repeated prefab silhouettes.
+                float angle = index*2.3999632f + l*.7f;
+                float spread=4.5f + Mathf.Sqrt(j+.4f)*3.8f;
+                float jitter = (Mathf.PerlinNoise(index*.37f+14,l*.71f+29)-.5f)*5f;
+                Vector2 offset=lobes[l] + new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*(spread+jitter);
+                Vector3 target=forest+new Vector3(offset.x,0,offset.y);
+                if(target.x<playable.min.x+9||target.x>playable.max.x-9||
+                   target.z<playable.min.z+9||target.z>playable.max.z-9)continue;
+                if(DistanceToRoad(target)<10f)continue;
+                if(otherPOIs.Any(q=>PlanarDistance(q,target)<15f))continue;
+                if(placed.Any(v=>PlanarDistance(v,target)<7.7f))continue;
+                float canopy = Mathf.PerlinNoise(target.x*.085f+21,target.z*.085f+67);
+                if(canopy<.25f)continue; // irregular clearings, not solid wall
+                var donor=original[(l*3+j)%original.Length];
+                considered++;
                 var meshFilter=donor.GetComponent<MeshFilter>();
                 if(!meshFilter||!meshFilter.sharedMesh)continue;
                 float baseToCenter=donor.bounds.center.y-donor.bounds.min.y;
                 target.y=GroundHeight(target.x,target.z)+baseToCenter+.045f;
-                var obj=new GameObject("Existing conifer canopy / distributed cluster "+i);
+                var obj=new GameObject("Existing conifer canopy / forest ecological lobe "+l+" tree "+j);
                 obj.transform.SetParent(root.transform,true);
                 // Preserve the original mesh's pivot, even if source vertices
                 // are stored in world coordinates relative to its donor.
@@ -616,7 +646,7 @@ namespace Eldoria.ReferenceClean.Editor
                 // owner is cloned: only compatible visual source geometry.
                 placed.Add(actualCenter);additions++;
             }
-            Need(additions>=3&&additions<=10,"Forest expansion did not produce a useful silhouette");
+            Need(additions>=18&&additions<=62,"Forest extension did not create meaningful continuous masses: "+additions+" trees from "+considered+" measured sites");
             return root;
         }
         static string[] ImageNames(string prefix)
@@ -694,6 +724,7 @@ namespace Eldoria.ReferenceClean.Editor
                 WorldViews(host, "before", true);
                 newCity = AuthorCityTerrain(city, terrain);
                 worldMesh = AuthorWorldMesh(ground, Hotspots(host));
+                forestVisual = ExpandExistingForest(host, ground, out int forestAdditions);
                 albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
                 var existingWorldMat = oldRenderer.sharedMaterial;
                 Need(existingWorldMat && existingWorldMat.HasProperty("_BaseMap"), "Original URP world material unavailable");
@@ -717,7 +748,6 @@ namespace Eldoria.ReferenceClean.Editor
                 newRenderer.receiveShadows = oldRenderer.receiveShadows;
                 newRenderer.lightmapIndex = -1;
                 oldRenderer.enabled = false;
-                forestVisual = ExpandExistingForest(host, ground, out int forestAdditions);
                 var afterPOI = Hotspots(host).Select(s => s.Id + "=" + s.transform.position.ToString("R")).ToArray();
                 Need(beforePOI.SequenceEqual(afterPOI), "Original POI identities or positions changed");
                 Need(host.WorldRoot.GetComponentsInChildren<Collider>(true).Length == beforeColliders,
@@ -742,7 +772,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Retained-source conifer silhouette masses, original forest POI and safe clearings; three site-specific smooth macroforms and protected quarry rock base; original UV/roads/6 POIs preserved",
+                    method = "Measured forest landscape: original tree meshes extended into 5 organic lobes with route/POI exclusions and connected forest-floor albedo; low site-specific quarry macrorelief; original atlas and gameplay protected",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
