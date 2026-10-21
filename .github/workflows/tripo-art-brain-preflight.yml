@@ -85,6 +85,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tripo-art-brain-zero-credit-${{ github.run_id }}
-          path: ${{ runner.temp }}/tripo-art-brain/
+          path: ${{ env.OUT }}/
           retention-days: 14
-          if-no-files-found: warn
+          if-no-files-found: error
