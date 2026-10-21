@@ -1,0 +1,83 @@
+name: Eldoria Spawnling B2 zero-credit art finishing
+on:
+  push:
+    branches: ['art/spawnling-bastion2-finish-20261021']
+    paths:
+      - '.github/workflows/eldoria-spawnling-bastion2.yml'
+      - 'tools/spawnling-bastion2/finish_existing_spawnling.py'
+permissions:
+  contents: write
+concurrency:
+  group: eldoria-spawnling-finish-b2
+  cancel-in-progress: false
+jobs:
+  author:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            ArtSource/World4X/Spawnling_v1
+            tools/spawnling-bastion2
+      - name: Confirm exact paid source and no API use
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'art/spawnling-bastion2-finish-20261021'
+          python3 - <<'PY'
+          import hashlib,pathlib
+          p=pathlib.Path("ArtSource/World4X/Spawnling_v1/Optimized_Source.glb")
+          assert p.is_file() and p.stat().st_size>500000
+          h=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert h=="2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",h
+          print("IMMUTABLE_TRIPO_SOURCE_PASS additional_api_credits=0",h)
+          PY
+      - name: Install open Blender without commercial services
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          blender --version | head -2
+      - name: Finish existing model - real geometry, LODs, PBR and source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ArtSource/World4X/Spawnling_v1/Finished
+          blender -b -t 4 --python-exit-code 1 --python tools/spawnling-bastion2/finish_existing_spawnling.py -- \
+            ArtSource/World4X/Spawnling_v1/Optimized_Source.glb \
+            ArtSource/World4X/Spawnling_v1/Finished
+          python3 - <<'PY'
+          import json,hashlib,pathlib,struct
+          root=pathlib.Path('ArtSource/World4X/Spawnling_v1/Finished')
+          x=json.loads((root/'author-evidence.json').read_text())
+          assert x['tripo_credits_added']==0 and x['art_approved'] is False
+          assert x['source_sha256']=='2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a'
+          assert x['triangles_near_body']<=12500 and x['triangles_far_body']<=3200
+          for n,k in [('Spawnling_B2_Near.glb','near_sha256'),('Spawnling_B2_Far.glb','far_sha256'),('Spawnling_B2_Finished.blend','blend_sha256')]:
+            data=(root/n).read_bytes();assert hashlib.sha256(data).hexdigest()==x[k]
+            if n.endswith('.glb'):assert data[:4]==b'glTF' and struct.unpack('<I',data[8:12])[0]==len(data)
+            else:assert data.startswith(b'BLENDER')
+          for n in ['finished_iso.png','finished_face.png','finished_rear.png','finished_strategic.png']:
+            assert (root/n).stat().st_size>3000,n
+          print('SPAWNLING_SOURCE_TECH_PASS_ART_REVIEW_PENDING')
+          PY
+      - name: Archive every actual product of authoring
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spawnling-b2-authored
+          path: ArtSource/World4X/Spawnling_v1/Finished/
+          if-no-files-found: warn
+          retention-days: 14
+      - name: Commit vetted binaries to this feature branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add ArtSource/World4X/Spawnling_v1/Finished
+          git diff --cached --quiet && { echo 'No new source'; exit 1; }
+          git commit -m 'art(spawnling): mobile LOD mesh, dusk-violet PBR, face details and Blender source'
+          git push origin "HEAD:refs/heads/art/spawnling-bastion2-finish-20261021"
