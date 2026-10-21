@@ -210,6 +210,37 @@ namespace Eldoria.SpawnlingBastion2.Editor
                 rt.Release();Object.DestroyImmediate(rt);Object.DestroyImmediate(tex);
             }
         }
+        static float MatchedVisualChange(string beforeName,string afterName)
+        {
+            string before=Path.Combine(Evidence,beforeName),after=Path.Combine(Evidence,afterName);
+            Need(File.Exists(before)&&File.Exists(after),"Genuine paired Unity screenshots missing");
+            var first=new Texture2D(2,2,TextureFormat.RGB24,false);
+            var second=new Texture2D(2,2,TextureFormat.RGB24,false);
+            try
+            {
+                Need(first.LoadImage(File.ReadAllBytes(before)) &&
+                     second.LoadImage(File.ReadAllBytes(after)),
+                     "PNG source cannot be decoded into actual Unity pixels");
+                Need(first.width==second.width && first.height==second.height &&
+                     first.width>=900 && first.height>=900,"A/B camera capture dimensions mismatch");
+                var a=first.GetPixels32();var b=second.GetPixels32();
+                int changed=0;
+                for(int index=0;index<a.Length;index++)
+                {
+                    if(Math.Abs(a[index].r-b[index].r)>5 ||
+                       Math.Abs(a[index].g-b[index].g)>5 ||
+                       Math.Abs(a[index].b-b[index].b)>5)changed++;
+                }
+                float fraction=(float)changed/a.Length;
+                Need(fraction>=.001f,"Replacement invisible from Unity player camera "+
+                     beforeName+" -> "+afterName+" fraction="+fraction);
+                return fraction;
+            }
+            finally
+            {
+                Object.DestroyImmediate(first);Object.DestroyImmediate(second);
+            }
+        }
         [Serializable] class Report
         {
             public string scene_sha_before,scene_sha_after,source_glb_sha256,
@@ -217,6 +248,8 @@ namespace Eldoria.SpawnlingBastion2.Editor
             public int near_triangles,far_triangles,hotspot_count,gameplay_collider_count,
                 visual_renderers,visual_colliders;
             public bool hotspot_preserved,gameplay_unchanged,save_untouched,physical_mobile_tested=false;
+            public float local_changed_fraction,regional_changed_fraction;
+            public bool actual_unity_pixels_changed;
             public string[] captures;
         }
         public static async void Integrate()
@@ -301,6 +334,8 @@ namespace Eldoria.SpawnlingBastion2.Editor
                 Physics.SyncTransforms();
                 Capture(host.WorldCamera,focus,Path.Combine(Evidence,"after-local-900x1600.png"),900,1600,14);
                 Capture(host.WorldCamera,focus,Path.Combine(Evidence,"after-region-1600x900.png"),1600,900,32);
+                float localChange=MatchedVisualChange("before-local-900x1600.png","after-local-900x1600.png");
+                float regionChange=MatchedVisualChange("before-region-1600x900.png","after-region-1600x900.png");
                 Need(host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true).Length==originalHotspots
                     &&spot &&spot.Id==CanonicalId &&spot.transform.position==location,
                     "Existing interactable target or exact position changed");
@@ -316,6 +351,8 @@ namespace Eldoria.SpawnlingBastion2.Editor
                     near_triangles=nearTris,far_triangles=farTris,
                     hotspot_count=originalHotspots,gameplay_collider_count=originalColliders,
                     visual_renderers=nearRs.Length+farRs.Length,visual_colliders=0,
+                    local_changed_fraction=localChange,regional_changed_fraction=regionChange,
+                    actual_unity_pixels_changed=localChange>=.001f&&regionChange>=.001f,
                     hotspot_preserved=true,gameplay_unchanged=true,save_untouched=true,
                     status="SCENE_INTEGRATED_NATIVE_GAMEPLAY_PROBE_REQUIRED",
                     captures=new[]{"before-local-900x1600.png","after-local-900x1600.png",
