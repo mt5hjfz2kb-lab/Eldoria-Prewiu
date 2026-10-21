@@ -590,14 +590,16 @@ namespace Eldoria.ReferenceClean.Editor
                 var donor=original[i%original.Length];
                 var meshFilter=donor.GetComponent<MeshFilter>();
                 if(!meshFilter||!meshFilter.sharedMesh)continue;
-                float footOffset=donor.bounds.min.y-donor.transform.position.y;
-                target.y=GroundHeight(target.x,target.z)-footOffset+.045f;
+                float baseToCenter=donor.bounds.center.y-donor.bounds.min.y;
+                target.y=GroundHeight(target.x,target.z)+baseToCenter+.045f;
                 var obj=new GameObject("Existing conifer canopy / distributed cluster "+i);
                 obj.transform.SetParent(root.transform,true);
-                obj.transform.position=target;
+                // Preserve the original mesh's pivot, even if source vertices
+                // are stored in world coordinates relative to its donor.
+                Vector3 displacement=target-donor.bounds.center;
+                obj.transform.position=donor.transform.position+displacement;
                 obj.transform.rotation=donor.transform.rotation;
-                obj.transform.localScale=donor.transform.lossyScale *
-                    (i%3==0?.91f:i%3==1?1.04f:.98f);
+                obj.transform.localScale=donor.transform.lossyScale;
                 obj.AddComponent<MeshFilter>().sharedMesh=meshFilter.sharedMesh;
                 var rr=obj.AddComponent<MeshRenderer>();
                 rr.sharedMaterials=donor.sharedMaterials;
@@ -606,9 +608,13 @@ namespace Eldoria.ReferenceClean.Editor
                 rr.lightProbeUsage=donor.lightProbeUsage;
                 rr.reflectionProbeUsage=donor.reflectionProbeUsage;
                 rr.renderingLayerMask=donor.renderingLayerMask;
+                Vector3 actualCenter=rr.bounds.center;
+                Need(PlanarDistance(actualCenter,target)<3.5f &&
+                     Mathf.Abs(rr.bounds.min.y-GroundHeight(target.x,target.z))<2.5f,
+                     "Cloned conifer must actually render grounded inside surveyed forest");
                 // Absolutely no collider, WorldHotspot, army marker, or LOD
                 // owner is cloned: only compatible visual source geometry.
-                placed.Add(target);additions++;
+                placed.Add(actualCenter);additions++;
             }
             Need(additions>=3&&additions<=10,"Forest expansion did not produce a useful silhouette");
             return root;
