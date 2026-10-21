@@ -1,4 +1,5 @@
 name: Eldoria Spawnling B2 native game integration
+# Source-refreshed job supersedes pre-consolidation queued run; keep current branch safe.
 on:
   push:
     branches: ['art/spawnling-bastion2-finish-20261021']
