@@ -573,6 +573,53 @@ namespace Eldoria.ReferenceClean.Editor
             }
             finally { RenderTexture.active = previous; RenderTexture.ReleaseTemporary(rt); }
         }
+        static Transform[] WorldDecorationRoots(ValoriaIntegratedWorld host,MeshFilter ground)
+        {
+            var bounds=ground.GetComponent<Renderer>().bounds;
+            var roots=host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(r=>r&&r.enabled&&new[]{"tree","conifer","forest retained","near branches","strategic silhouette","rock","boulder","shrub","bush"}
+                    .Any(n=>r.name.ToLowerInvariant().Contains(n)))
+                .Select(r=>{var lod=r.GetComponentInParent<LODGroup>();return lod?lod.transform:r.transform;})
+                .Distinct().Where(root=>{
+                    if(root.GetComponentInParent<WorldHotspot>()||root.GetComponentInParent<Collider>()||
+                        root.GetComponentsInChildren<Collider>(true).Length>0)return false;
+                    var rs=root.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return false;
+                    var b=rs[0].bounds;foreach(var r in rs.Skip(1))b.Encapsulate(r.bounds);
+                    return b.size.x<28&&b.size.z<28&&b.center.x>bounds.min.x&&b.center.x<bounds.max.x&&
+                        b.center.z>bounds.min.z&&b.center.z<bounds.max.z;
+                }).ToArray();
+            return roots.Where(r=>!roots.Any(other=>other!=r&&r.IsChildOf(other))).ToArray();
+        }
+        static Dictionary<Transform,Vector3> SeatWorldDecoration(ValoriaIntegratedWorld host,MeshFilter ground,Mesh candidate)
+        {
+            var moved=new Dictionary<Transform,Vector3>();
+            var original=ground.sharedMesh.vertices.Select(p=>ground.transform.TransformPoint(p)).ToArray();
+            var changed=candidate.vertices.Select(p=>ground.transform.TransformPoint(p)).ToArray();
+            var triangles=candidate.triangles;
+            float Delta(float x,float z) {
+                for(int i=0;i<triangles.Length;i+=3) {
+                    int ia=triangles[i],ib=triangles[i+1],ic=triangles[i+2];
+                    var a=original[ia];var b=original[ib];var cc=original[ic];
+                    float den=(b.z-cc.z)*(a.x-cc.x)+(cc.x-b.x)*(a.z-cc.z);
+                    if(Mathf.Abs(den)<.0000001f)continue;
+                    float u=((b.z-cc.z)*(x-cc.x)+(cc.x-b.x)*(z-cc.z))/den;
+                    float v=((cc.z-a.z)*(x-cc.x)+(a.x-cc.x)*(z-cc.z))/den;
+                    float w=1-u-v;
+                    if(u>=-.0002f&&v>=-.0002f&&w>=-.0002f)
+                        return u*(changed[ia].y-a.y)+v*(changed[ib].y-b.y)+w*(changed[ic].y-cc.y);
+                }
+                throw new InvalidOperationException("Existing visual root outside exact world terrain");
+            }
+            foreach(var root in WorldDecorationRoots(host,ground)) {
+                var rs=root.GetComponentsInChildren<Renderer>(true);var b=rs[0].bounds;
+                foreach(var r in rs.Skip(1))b.Encapsulate(r.bounds);
+                float delta=Delta(b.center.x,b.center.z);if(Mathf.Abs(delta)<.001f)continue;
+                moved[root]=root.position;root.position+=Vector3.up*delta;
+            }
+            Debug.Log("VALORIA_GEOGRAPHY_WORLD_DECORATION_SEATED "+moved.Count+" complete original visual roots");
+            return moved;
+        }
+
         static Mesh AuthorWorldMesh(ValoriaIntegratedWorld host, MeshFilter source, WorldHotspot[] spots)
         {
             var original = source.sharedMesh;
@@ -597,8 +644,11 @@ namespace Eldoria.ReferenceClean.Editor
                 .Select(rr => new Vector2(rr.bounds.center.x, rr.bounds.center.z))
                 .Distinct().ToArray();
             Need(existingTreeBases.Length > 12, "Missing retained forest anchors for 4X terrain contact protection");
+            var movable=activeArtistPlan!=null?
+                new HashSet<MeshRenderer>(WorldDecorationRoots(host,source).SelectMany(t=>t.GetComponentsInChildren<MeshRenderer>(true))):
+                new HashSet<MeshRenderer>();
             var fixedProps=host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
-                .Where(rr=>rr.enabled&&rr.bounds.size.x<65&&rr.bounds.size.z<65&&
+                .Where(rr=>rr.enabled&&!movable.Contains(rr)&&rr.bounds.size.x<65&&rr.bounds.size.z<65&&
                     rr.bounds.center.x>b.min.x&&rr.bounds.center.x<b.max.x&&
                     rr.bounds.center.z>b.min.z&&rr.bounds.center.z<b.max.z)
                 .Select(rr=>new Vector3(rr.bounds.center.x,rr.bounds.center.z,
@@ -641,7 +691,7 @@ namespace Eldoria.ReferenceClean.Editor
                     float dx = world.x - tree.x, dz = world.z - tree.y;
                     nearestTrunkSqr = Mathf.Min(nearestTrunkSqr, dx * dx + dz * dz);
                 }
-                float trunkSafe = Smooth(2.5f, 8f, Mathf.Sqrt(nearestTrunkSqr));
+                float trunkSafe = activeArtistPlan!=null?1f:Smooth(2.5f, 8f, Mathf.Sqrt(nearestTrunkSqr));
                 if(activeArtistPlan!=null) {
                     float propDistance=float.PositiveInfinity;
                     foreach(var prop in fixedProps)
@@ -1002,6 +1052,7 @@ namespace Eldoria.ReferenceClean.Editor
             bool oldEnabled = false;
             bool saved = false;
             var movedCityDecoration=new Dictionary<Transform,Vector3>();
+            var movedWorldDecoration=new Dictionary<Transform,Vector3>();
             try
             {
                 Directory.CreateDirectory(Evidence);
@@ -1054,6 +1105,7 @@ namespace Eldoria.ReferenceClean.Editor
                 newCity = AuthorCityTerrain(city, terrain, out int cityHeightChanges);
                 if(activeArtistPlan!=null)movedCityDecoration=SeatCityDecoration(terrain,originalTerrain,newCity);
                 worldMesh = AuthorWorldMesh(host, ground, Hotspots(host));
+                if(activeArtistPlan!=null)movedWorldDecoration=SeatWorldDecoration(host,ground,worldMesh);
                 forestVisual = ExpandExistingForest(host, ground, worldMesh, out int forestAdditions);
                 albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
                 var existingWorldMat = oldRenderer.sharedMaterial;
@@ -1105,7 +1157,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash, artist_plan_sha256=activeArtistPlanHash,
-                    method = "Open-meadow TerrainData sculpt with synced trial physics; Region1 retained-tree roots anchored to original ground, mature forest additions seated on the candidate visual macroterrain; original atlas/POIs intact",
+                    method = "Open-meadow TerrainData sculpt with synced trial physics; Region1 noninteractive natural roots seated on exact candidate triangles, mature forest additions seated on the candidate visual macroterrain; original atlas/POIs intact",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
@@ -1162,6 +1214,7 @@ namespace Eldoria.ReferenceClean.Editor
                 if (!saved)
                 {
                     foreach(var entry in movedCityDecoration)if(entry.Key)entry.Key.position=entry.Value;
+                    foreach(var entry in movedWorldDecoration)if(entry.Key)entry.Key.position=entry.Value;
                     if (terrain && originalTerrain) {
                         var originalPhysics = terrain.GetComponent<TerrainCollider>();
                         if (originalPhysics) originalPhysics.terrainData = originalTerrain;

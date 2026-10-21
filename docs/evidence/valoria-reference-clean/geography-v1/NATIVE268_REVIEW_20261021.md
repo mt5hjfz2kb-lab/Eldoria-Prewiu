@@ -1,0 +1,9 @@
+# Native268 visual review — 2026-10-21
+
+Run39669656633 completed successfully; artifact12378334568 ZIP SHA256318231058f9cd57ec99bbe980ec12616cdf66f01d9866f879aeb3c721faf2f4a. Exact trial c9542de8efe345231f9c6018ea092382e7e113981fe630939b315e62145a38d7 and artist plan bef99097182203125dc51fa0dbc4bf9e1a8adddfe9b9809e240fc36bcf283407.
+
+Independent root reviewer viewed the original canonical JPEG and actual before/after city-II-wide, region entire and candidate strategic world. The local artist produced a real new plan and Unity executed it. HTTP recovery succeeded. Central POI crater regression from265 is removed. Nonetheless the two16m world hills at30m radii are visually isolated rounded mounds; protections around small decorative meshes carve grooves. City foliage relative LOD shapes are now preserved, but the terrain gain is too small to close the requested work. Verdict VISUAL_REJECTED; no acceptance file, no integration, no publication, no quality score claimed.
+
+Next causal correction: preserve fixed interactable/collider/structural anchors, but seat complete noninteractive natural visual roots on barycentric source-to-candidate terrain deltas rather than hollowing terrain around them. Restore their transforms on rejected trials. Require local artist3-4 broad lower connected world shoulders with height/minradius<=0.24 and<=0.6m unmasked contribution at POIs. Feed exact native268 pixels. Keep source scene4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237, source meshes/UVs/cameras and six targets intact.
+
+Separate verification: main source623de76 passed general Unity39666405387 including Windows build and UI39666405366. Actual XML26/26 EditMode and39/39 PlayMode, including OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave. Browser adapter stall deadline now follows actual training duration; final WebGL/browser and combined delivery remain pending.
