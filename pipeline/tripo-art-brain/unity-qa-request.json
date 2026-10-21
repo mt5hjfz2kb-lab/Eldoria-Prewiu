@@ -1,5 +1,5 @@
 {
-  "revision": 3,
+  "revision": 4,
   "stage": "isolated_unity_skin_import",
   "workstream": "eldoria-tripo-art-brain-phase2-20261021",
   "artifact_id": 12368972822,
@@ -11,5 +11,5 @@
   "integration": false,
   "expected_unity": "6000.3.23f1",
   "expected_urp": "17.3.0",
-  "reason": "Previous isolated import proved12bones/3skins/2.708s clip. Correct validator to accept exact source solid emissive gaze while requiring all3 original body PBR maps. Continue actual skin-deformation and URP pixel checks; no production writes."
+  "reason": "Correct repeated-checkout cone mode for file paths; previous retry stopped before Unity. Same pinned source and material-aware skin QA."
 }
