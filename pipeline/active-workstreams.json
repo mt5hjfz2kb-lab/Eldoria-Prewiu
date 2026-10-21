@@ -746,16 +746,16 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-eldoria-ui-v3-management-resume-20261021",
+      "owner": "chatgpt-eldoria-ui-v3-management-current-chat-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
       "base_main_sha": "4c871bcebaa40030bac745852438d249d06ba8ad",
       "branch": "feature/ui-v3-management-completion-20261021",
       "pr": 90,
-      "owner_instruction": "User requested current executor continue unfinished Eldoria management screens through test, integration and verification without stopping at PR or CI.",
+      "owner_instruction": "El propietario ordenó continuar hasta entrega funcional verificada; asumir PR #90 sobre main sin invadir arte 3D o runner ajeno.",
       "scope": [
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs.meta",
@@ -790,6 +790,11 @@
           "owner": "chatgpt-eldoria-management-finalization-20261021",
           "revision": 1,
           "reason": "Owner requested continued V3 implementation after chat interruption."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-management-resume-20261021",
+          "revision": 2,
+          "reason": "Propietario ordena continuar en el chat actual; relevo autorizado sin alterar al ejecutor de arte."
         }
       ]
     }
