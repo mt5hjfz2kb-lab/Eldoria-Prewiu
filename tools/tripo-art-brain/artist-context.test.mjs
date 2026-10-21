@@ -16,7 +16,7 @@ import { makeBundle } from './preflight.mjs';
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 
-async function verifyExistingQwenContract(id,kind) {
+async function verifyExistingQwenContract(id,kind,{compact=false}={}) {
   const base=path.join(ROOT,'ArtSource/World4X',
     id==='spawnling'?'Spawnling_v1':'RiftFocus_v1','UnityQA');
   const reference=path.join(base,'front.png');
@@ -68,6 +68,7 @@ async function verifyExistingQwenContract(id,kind) {
       '--repair-attempts','0','--max-actions','2'
     ];
     if(kind!=='terrain') args.push('--subject-kind',kind);
+    if(compact)args.push('--cpu-compact');
     if(realContext) args.push('--mesh-context',realContext);
     const spawned=await new Promise((resolve,reject)=>{
       const child=spawn('python3',args,{cwd:ROOT,env:{...process.env,TRIPO_API_KEY:''}});
@@ -116,7 +117,8 @@ async function verifyExistingQwenContract(id,kind) {
     assert.equal(evidence.self_approval,false);
     assert.equal(evidence.reference_sha256,sha(actualBytes[0]));
     assert.equal(evidence.unity_before_sha256,sha(actualBytes[1]));
-    assert.equal(evidence.asset_inventory_sha256,sha(Buffer.from(fs.readFileSync(inventory,'utf8').slice(0,4000))));
+    assert.equal(evidence.asset_inventory_sha256,sha(Buffer.from(fs.readFileSync(inventory,'utf8').slice(0,compact?1800:4000))));
+    assert.equal(evidence.cpu_compact,compact);
     if(realContext)assert.equal(evidence.mesh_context_sha256,sha(fs.readFileSync(realContext)));
     if(kind==='terrain')assert.ok(!('subject_kind' in evidence));
     else assert.equal(evidence.subject_kind,kind);
@@ -137,4 +139,8 @@ test('MOCK ONLY: mineral focus uses source-aware art directions, never Valoria c
 });
 test('MOCK ONLY: legacy terrain prompt contract remains available and unchanged by default',async()=>{
   await verifyExistingQwenContract('spawnling','terrain');
+});
+
+test('MOCK ONLY: small animated creature compact schema never inherits 1-metre Valoria cliff limits',async()=>{
+  await verifyExistingQwenContract('spawnling','creature',{compact:true});
 });
