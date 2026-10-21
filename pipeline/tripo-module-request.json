@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-rift-focus-h31-one-20261021",
   "module_label": "Eldoria_RiftFocus_v1",
   "unity_yaw_degrees": 0,
@@ -10,7 +10,7 @@
     "prompt": "ONE grounded fantasy 3D corruption focus environmental prop, about 2.2 meters wide and 1.2 meters tall, a low compact naturally fused cluster of three weathered irregular slate-black mineral rocks merging into one contiguous rough rock base, restrained organic purple-black corrupted material within cracks, few thin veins of dim violet-magenta luminescence, a small uneven amethyst mineral seam protruding from the center, subtle ashen deposits, no pedestal or platform. Readable asymmetrical silhouette at high isometric 4X map camera, realistic stylized matte rock physically based texture, grounded weathering and stone-to-corruption transitions. No character, no huge crystals, no altar, no shrine, no statues, no tents, no camp, no building, no ritual symbols, no runes, no weapons, no eggs, no floating objects, no neon landscape, no environment, no text."
   },
   "credit_authorization": {
-    "approved": true,
+    "approved": false,
     "authorized_credit_cost": 20,
     "scope": "Owner explicitly approved creation of two sequential experimental Tripo API assets after purchasing prepaid credit. This is the second and final authorized standard H3.1 text-to-3D source, a single Rift Focus environment prop. Exactly one paid task, 20 credits maximum, no regenerations or add-on paid operations."
   },
@@ -29,10 +29,16 @@
     "enabled": false
   },
   "visual_acceptance": "Rift corruption focus is an environmental ROCK+PURPLE CORRUPTION PROP ONLY, not a new game node/camp/altar/building. Low grounded irregular mineral mass with distinct native stone and subtle dark purple fissures, no platform, no floating fragments or giant crystals. One standalone GLB plus raw GLB, editable .blend, UV/PBR/albedo 2K when imported in isolated Unity, four true-camera captures. No gameplay/hotspot edits, no auto-promote to runtime, no publication.",
-  "run_nonce": "rift-focus-h31-20261021-one-20-credit-generation-no-retry",
-  "notes": "Second and last owner-approved experimental Tripo API source after Spawnling task 351d1034-25ec-4300-a2e0-d03a0e68175a (20 credits, archived under ArtSource/World4X/Spawnling_v1). This focus is solely a lore-consistent optional art prop without new camp/node/mission. Keep original task/artifacts if Blender or Unity fails and NEVER regenerate automatically.",
+  "run_nonce": "20261021-rift-focus-qa-only-from-paid-model-no-credit",
+  "notes": "Rift Focus one-time H3.1 Tripo API source generated exactly once task 3800e44b-2718-454d-b904-dbe56a842c33, 20 credits in run 39513703787. Raw GLB sha c1d0e458b1eb52f1a31a04361f18985cb3e14967ad4f8abf99073a696be07ae0, optimized GLB sha 00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e. Run isolated zero-credit Unity image/UV/raycast gate on existing artifact only; never regenerate.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
+  },
+  "review": {
+    "asset_name": "Eldoria_RiftFocus_v1",
+    "source_run_id": 39513703787,
+    "artifact_name": "eldoria-tripo-module-eldoria-rift-focus-h31-one-20261021-617d94564a36d7ab3516284b432ad82e5598d1e1",
+    "expected_sha256": "00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e"
   }
 }
