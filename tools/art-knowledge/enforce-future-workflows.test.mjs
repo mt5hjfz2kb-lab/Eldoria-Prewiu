@@ -12,6 +12,8 @@ test('new workflows cannot bypass memory; legacy owners left untouched',()=>{
   let errs=checkNewQwenWorkflows(d,['legacy.yml']);
   assert.deepEqual(errs,['New Qwen workflow bypasses art-memory adapter: new.yml']);
   fs.writeFileSync(path.join(d,'new.yml'),'run: node tools/art-knowledge/run-artist.mjs --run -- python3 tools/art-direction/ai-authoring/author_brief.py');
+  assert.match(checkNewQwenWorkflows(d,['legacy.yml']).join(),/must preserve/);
+  fs.writeFileSync(path.join(d,'new.yml'),'run: node tools/art-knowledge/run-artist.mjs --run -- python3 tools/art-direction/ai-authoring/author_brief.py\nuses: actions/upload-artifact@v4\npath: /tmp/job/*.cycle-feedback.json');
   assert.deepEqual(checkNewQwenWorkflows(d,['legacy.yml']),[]);
  }finally{fs.rmSync(d,{force:true,recursive:true});}
 });
