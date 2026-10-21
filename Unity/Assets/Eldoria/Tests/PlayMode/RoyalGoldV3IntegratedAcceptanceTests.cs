@@ -185,7 +185,10 @@ namespace Eldoria.Tests
 
             var v3 = FindComponent(hud.gameObject, "RoyalGoldV3ContextHud");
             Call(hud, "SelectBuilding", "sawmill");
-            yield return null; // existing canonical camera focus coroutine
+            // FocusAfterLayout has its own yield; wait for its projection
+            // BEFORE the purchase. The timer assertion below stays same-frame.
+            yield return null;
+            yield return null;
             Canvas.ForceUpdateCanvases();
             Call(v3, "SynchronizeNow");
 
