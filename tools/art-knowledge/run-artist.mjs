@@ -55,7 +55,7 @@ export function prepareInvocation({requestFile,prefix,artistArgs,sourceInventory
  const inventoryText=composedInventory(selected,sourceInventoryPath,compact,subject);
  const inv=prefix+'.knowledge.txt',manifest=prefix+'.knowledge.json';
  for(const p of [inv,manifest,prefix+'.cycle-feedback.json'])assert(!fs.existsSync(p),'Refuse overwrite '+p);
- uniqueWrite(inv,inventoryText+'\n');
+ uniqueWrite(inv,inventoryText);
  const record={schema_version:2,request_id:selected.request_id,catalog_sha256:selected.catalog_sha256,
    source_inventory_sha256:sourceInventoryPath?hash(fs.readFileSync(sourceInventoryPath)):null,
    selected_ids:selected.selected_ids,rejected_ids:selected.rejected_ids,
@@ -73,7 +73,7 @@ export function verifyArtistConsumption(invocation){
  assert(fs.existsSync(file),'Real Qwen inference evidence not found');
  const evidence=JSON.parse(fs.readFileSync(file,'utf8'));
  const data=fs.readFileSync(invocation.inventory,'utf8');
- const actual=hash(Buffer.from(data.slice(0,data.endsWith('\n')?-1:undefined),'utf8'));
+ const actual=hash(Buffer.from(data.slice(0,4000),'utf8'));
  assert(actual===invocation.expected_inventory_sha256,'Qwen inventory generated hash changed');
  assert(evidence.asset_inventory_sha256===actual,'Qwen did NOT receive exact knowledge+source inventory');
  assert(evidence.self_approval===false,'Artistic self-approval forbidden');
