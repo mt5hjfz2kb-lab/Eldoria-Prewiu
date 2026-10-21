@@ -387,6 +387,11 @@ jobs:
 
           if ($results.'test-run'.result -ne "Passed") { throw "EditMode tests did not pass: $($results.'test-run'.result)" }
       - name: PlayMode
+        # Integrated acceptance tests require a new disposable game. This also
+        # enables the purchase/dialogue regressions instead of skipping them,
+        # and never interprets the runner owner's persisted progress as a fixture.
+        env:
+          VALORIA_GAMEPLAY_PROBE: '1'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $xml = "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
