@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-tripo-art-brain-integration-20261021",
+  "request_id": "eldoria-tripo-art-brain-integration-20261021",
+  "asset_or_sector": "Tripo source audit and Qwen/Blender/Unity zero-credit preflight for existing Spawnling, RockBoar and RiftFocus",
+  "profile": "environment_surface",
+  "visual_gate_state": "PREFLIGHT_ZERO_SPEND",
+  "ai_authorship_policy": "required",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_material_blending": true,
+    "blender_material_consolidation": true
+  },
+  "diagnosis": "Three previously paid and preserved H3.1 3D assets exist. Reuse and independently inspect raw/optimized GLB, UnityQA, evidence, and existing integrated Spawnling LODs. Prepare source-locked Qwen inventory/brief to direct future source refinement. No additional model request, paid rigging, animation, destructive export, Unity scene edit, or publication.",
+  "validation": {
+    "source_gate": "Verify real SHA256 of immutable GLBs and Blender sources against preserved provenance, inspect GLB topology and UnityQA genuine captures; restrict inputs/outputs to safe paths and reject unmaterialized sources.",
+    "final_gate": "Preflight manifests and local unit/CI gate proven at zero credits; full Qwen infer + Blender edit + Unity visual and Android QA remain distinct separately authorized future operations. No ART_APPROVED or MOBILE_PASS declared."
+  },
+  "notes": "Production workstream is scoped to tools/tripo-art-brain/**, pipeline/tripo-art-brain/**, this request, docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md and lightweight preflight workflow. Respect existing Valoria and UI ownership. Never run Tripo API or paid rigging from these tools."
+}
