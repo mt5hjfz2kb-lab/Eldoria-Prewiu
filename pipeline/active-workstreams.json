@@ -50,13 +50,15 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "GEOGRAPHY_NATIVE262_SOURCE_QA_UI_WINDOWS_DEPENDENCY",
-      "next": "Current art candidate 262 is SOURCE-ONLY, NOT UNITY/ART_APPROVED. Reclaim this SAME canonical ID after UI V3 releases windows-runner-heavy, verify current scene SHA against survey 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237, increment tools/valoria-reference-clean/request.json geography_trial revision from 262 with [valoria-native], review true city I-II/mobile and whole Region1 A/B (new meadow sculpt, candidate forest ground and existing tree roots), get independent art review; integrate only if accepted and full gameplay/save/URP/device constraints pass. Current extra evidence: docs/evidence/valoria-reference-clean/geography-v1/NATIVE261_OBJECTIVE_AB_AUDIT_20261021.md, native261 run39641901228/artifact12365323917. No new APK/itch publication.",
+      "phase": "GEOGRAPHY_NATIVE263_QUEUED_AFTER_GENERAL_MAIN_GATE",
+      "next": "Execute source-preserving native263 geography_trial on existing candidate262 with latest exact triangle root-contact fixes. Serial Windows queue behind general main gate39655724743; inspect true 15-pair A/B and source invariants, then accept or repair based on actual visuals. No publication from trial.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -701,7 +703,7 @@
           "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 10,
+      "ownership_revision": 11,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -722,7 +724,7 @@
         "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
         "owner_authorized": "2026-10-21"
       },
-      "runner_lease_note": "Temporary cooperative release for owner-prioritized UI V3 management native validation; art owner/scope/work remain intact. No current native jobs were running at handoff. Claim again after UI tests finish.",
+      "runner_lease_note": "Same owner controls UI/general gate and art. Reserve NEXT serial native geography job, with existing main regression39655724743 preserved ahead; no cancellation or simultaneous editor use.",
       "pending_art_validation": {
         "last_visual_source": "native261 run39641901228 (forest gains local, entire region below requested quality)",
         "last_true_unity_probe": "geography_trial native261",
@@ -878,7 +880,7 @@
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
       "owner": "codex-three-workstreams-completion-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
@@ -905,9 +907,7 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -941,7 +941,11 @@
           "status": "SUCCESS",
           "artifact": 12370039251
         },
-        "main_merge": "284ef398e078021f4eeef42f852730714c0bd48b"
+        "main_merge": "284ef398e078021f4eeef42f852730714c0bd48b",
+        "main_ui_gate": {
+          "run": 39655724788,
+          "status": "SUCCESS"
+        }
       },
       "next": "Observe post-merge Unity gates39655724788/39655724743 without duplicates; release shared runner for geography and exact V4 isolated import, then one exact WebGL build/QA/delivery. No physical mobile certificate.",
       "art_production_routing": "not_applicable",
@@ -983,7 +987,7 @@
           "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
+      "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
       "phase": "MERGED_NATIVE_PASS_MAIN_REGRESSION_AND_PLAYABLE_DELIVERY",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
