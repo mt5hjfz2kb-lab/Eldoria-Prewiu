@@ -49,6 +49,17 @@ namespace Eldoria.ReferenceClean {
    // One authoritative Royal Gold session; V2 alters presentation only.
    if(!Hud.GetComponent<RoyalGoldV2Hud>())Hud.gameObject.AddComponent<RoyalGoldV2Hud>();
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
+   // V3 shares the one RoyalHUD and receives only read-only target/camera
+   // projections and the exact existing IRoyalSession building snapshot.
+   // No second Canvas, controller, timer, EventSystem or gameplay rules.
+   var context=Hud.GetComponent<RoyalGoldV3ContextHud>();
+   if(!context)context=Hud.gameObject.AddComponent<RoyalGoldV3ContextHud>();
+   context.Source=Hud;
+   context.FindAnchor=id=>{var spot=FindTarget(id);return spot?spot.transform:null;};
+   context.ActiveCamera=()=>PlayerCamera;
+   context.ReadBuilding=id=>Read(id,English).Building;
+   if(!Hud.GetComponent<EldoriaV3VisualDirection>())
+     Hud.gameObject.AddComponent<EldoriaV3VisualDirection>();
    BindSession();Hud.SelectionChanged+=SelectionChanged;
    // Keep the original presenter ticking the authoritative gateway and gestures.
    legacyCanvas.enabled=false;legacyRaycaster.enabled=false;
