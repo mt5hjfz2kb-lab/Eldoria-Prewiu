@@ -821,9 +821,9 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-eldoria-ui-v3-resume-20261021b",
+      "owner": "chatgpt-eldoria-ui-v3-management-final-run-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
@@ -864,7 +864,7 @@
           "checks": 29
         }
       },
-      "next": "Repair exact native Unity I-II failure in PR90 without altering real economy; run mandatory Unity UI/visual gates; reconcile canonical main before merge.",
+      "next": "Preserve in-flight native job, repair traced contextual raycast regression, recertify same candidate and exact mobile UI, reconcile main, integrate/publish only on green evidence.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -887,10 +887,15 @@
           "owner": "chatgpt-eldoria-ui-v3-current-continuation-20261021",
           "revision": 5,
           "reason": "Owner-directed continuation of unfinished management UI after chat interruption (2026-10-21)."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-resume-20261021b",
+          "revision": 6,
+          "reason": "Owner explicitly orders this chat to continue V3 management finalization, no additional approval required."
         }
       ],
       "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
-      "phase": "UI_V3_NATIVE_CERTIFICATION",
+      "phase": "UI_V3_NATIVE_FAILURE_REPAIR",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner."
     },
     {
