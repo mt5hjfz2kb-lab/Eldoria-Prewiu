@@ -8,6 +8,8 @@
 - Respeta `author_brief.py --inventory` (autor ya existente). La memoria y el inventario de asset deben conservar fuente, SHA de catálogo y de inventario, y el `artist-inference.json` de Qwen ha de confirmar el SHA exacto que realmente recibió.
 - Un ciclo que solo prepara memoria informa `PREPARED_NOT_CONSUMED`; solo una inferencia real genera `EXACT_QWEN_INVENTORY_CONSUMED`. No basta con ver un fichero creado.
 - `tools/art-knowledge/enforce-future-workflows.mjs` y el control de planificación impiden que **nuevos** workflows usen el ejecutor directo sin el adaptador de memoria. El catálogo inicial de 241 workflows preexistentes se congela como excepciones históricas; no se reescriben las rutas de Qwen reservadas por otros responsables.
+- **Regla de aprobación de nueva obra:** `tools/check-art-production-governance.mjs` exige una prueba `EXACT_QWEN_INVENTORY_CONSUMED` con identidad y SHA para pasar a estados `ART_APPROVED` y posteriores en nuevos trabajos. Los cuatro trabajos que ya estaban en validación quedan expresamente protegidos.
+- **Conservación automática:** el guard de nuevos workflows exige también `actions/upload-artifact` del `.cycle-feedback.json`, para no perder el registro al terminar el runner.
 - **Limitación comprobable:** la regla se aplica a la planificación y a los nuevos workflows, no reescribe automáticamente las rutas antiguas. La migración de flujos Qwen preexistentes solo puede hacerse coordinando titularidad y comparando resultados. No declarar que TODAS las ejecuciones existentes están obligadas todavía.
 
 ### Ejemplo (autor existente, sin iniciar Unity, sin Tripo)
@@ -36,7 +38,7 @@ Sin `--run` realiza preparación solamente. La clave es que **no sustituye el ar
 
 **Límite importante:** la captura visual y su revisión artística independiente no pueden fabricarse por una automatización. El ciclo de **registro de intentos** es automático; la **admisión como conocimiento contrastado** está condicionada a esa evidencia y a consolidar el fichero mediante el procedimiento de Git existente. No se envían evaluaciones inventadas a la memoria.
 
-## 3. Prueba comparativa real, mismo problema, sin gastar
+## 3. Prueba comparativa real, mismo problema, sin gastos de servicio
 
 `.github/workflows/eldoria-art-knowledge-controlled-ab.yml` ejecuta en **Linux GitHub-hosted** un ensayo Qwen visual de una sola pieza: el Engendro ya existente. La prueba recupera una fotografía auténtica de su fuente y una captura del videojuego; ambas se convierten a 400 px para CPU dejando SHA de origen.
 
@@ -47,7 +49,7 @@ Compara tres rutas, sin tocar ninguna escena:
 
 Se archivan **segundos de inferencia, tokens, respuesta literal, verificaciones de contexto y SHA** por brazo. Las sugerencias no se llevan automáticamente a Blender y los datos jamás autorizan `ART_APPROVED`.
 
-**Qué puede demostrar:** si Qwen emplea mejor los antecedentes, evita errores conocidos y cuánto tarda en proponer una intervención. **Qué NO demuestra:** superioridad gráfica; eso requeriría aplicar ambas propuestas a copias del mismo modelo, render A/B en Unity y evaluación independiente. No asignar ahorro porcentual sin ese siguiente experimento de calidad.
+**Resultado REAL:** [run 39687896808](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39687896808) terminó con dos respuestas Qwen genuinas, ambas con propuesta genérica `assign_material` y **ninguna mejora artística demostrada**. Véanse [resultados completos](../evidence/eldoria-art-memory-real-ab/RESULT.md) y [recepción estructurada](../../pipeline/art-knowledge/benchmarks/engendro-qwen-memory-ab-20261021.json). Los tiempos 118,909s/14,568s no se pueden comparar por el calentamiento del modelo. **Qué puede demostrar:** que los contextos se pudieron contrastar con mismas imágenes y sin gasto de servicio; no una mejora gráfica. **Qué NO demuestra:** superioridad gráfica; eso requeriría aplicar ambas propuestas a copias del mismo modelo, render A/B en Unity y evaluación independiente. No asignar ahorro porcentual sin ese siguiente experimento de calidad.
 
 ### Criterio de cierre
 
