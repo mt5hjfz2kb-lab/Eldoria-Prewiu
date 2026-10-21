@@ -63,7 +63,14 @@ namespace Eldoria.Tests
             Component host = null, hud = null;
             yield return Boot((h, u) => { host = h; hud = u; });
             var guidance = Read(host, "Guidance") as Behaviour;
-            if (guidance) guidance.enabled = false;
+            if (guidance)
+            {
+                guidance.enabled = false;
+                // Ready precedes the guidance LateUpdate in a freshly loaded
+                // scene. Start its real authored prologue explicitly, exactly
+                // as the existing native integration probe does.
+                Call(guidance, "PresentMilestone");
+            }
 
             Assert.That(hud.gameObject.GetComponent("RoyalGoldV3CinematicFinish"),
                 Is.Not.Null, "The actual one RoyalHUD must own the cinematic finish");
