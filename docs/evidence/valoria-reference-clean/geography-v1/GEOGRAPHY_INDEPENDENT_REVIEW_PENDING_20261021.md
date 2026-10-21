@@ -25,3 +25,14 @@
 4. Only after real A/B + independent visual acceptance perform reversible integration and native I–II, save/reload, UI V3, Engendro, camera/picking and performance checks. Publishing Android/itch is separate and not authorized by this work.
 
 **No asset or gameplay file is changed by this review.**
+
+## Continuación source-safe y corrección de contacto — 21-10-2026
+
+- Se retomó el mismo workstream, sin crear una rama ni reclamar el Windows ocupado por UI V3.
+- [`bc42c984`](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/bc42c984248f013a4c383aac4fd8431c5a49f0ee): las coníferas copiadas consultan la **malla visual candidata** para medir su apoyo; antes se apoyaban incorrectamente sobre el mapa de alturas antiguo.
+- [`15ba6535`](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/commit/15ba653578e2e49bca373a56bc6d6006e0fe644e): el relieve regional modificado se atenúa alrededor de los troncos adultos existentes para evitar enterrarlos, preservando el atlas y las coordenadas/ID de POI.
+- La prueba ligera de código/arquitectura sobre esa modificación concluyó sin fallos. Esto no certifica captura ni arte. Ninguno de estos cambios ha modificado la escena canónica `Valoria_City_World_UI.unity`.
+- El `request.json` vigente permanece en `geography_trial`, revisión **262**. El intento anterior native262 no abrió Unity por la reserva vigente de `windows-runner-heavy` en UI V3. El siguiente ensayo debe incrementar revisión tras reservar y comprobar en vivo el mismo propietario/escena/artefacto.
+- Las capturas native261 de la Región 1 completa y de Valoria se conservan como A/B histórico. Materiales/caminos originales están presentes, pero **no hay ART_APPROVED, mejora 8/10 o 7,5/10, prueba física Android, ni entrega del nuevo relieve**. La revisión Qwen existente también requiere Windows/Ollama y no ha sido ejecutada para la candidata nueva.
+
+**Puerta siguiente:** liberar la reserva del trabajo UI V3 por su propietario; recuperar la reserva bajo el mismo workstream de Valoria; ejecutar nueva prueba Unity con capturas A/B desde cámaras idénticas y métricas de contacto árbol/terreno original y candidato, luego valoración independiente y QA I–II; solo entonces considerar la integración en main. Coste 0 €, no publicar.
