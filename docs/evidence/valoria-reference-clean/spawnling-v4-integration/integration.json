@@ -1,0 +1,18 @@
+{
+    "status": "V4_CANONICAL_SKIN_INTEGRATED_GAMEPLAY_QA_REQUIRED",
+    "source_sha256": "eef82ab48b8e512a39b3f87b5b282f5bc493ec119a7e21c2149a2437c1448128",
+    "scene_before": "a6c82250a743d8c9559a55cf66d60f830e465936c806e931a414d2e0f7e28244",
+    "scene_after": "429a7912d5b6d1ed02ee331320cfdfd4cfe25a7278160536aff499a85430185a",
+    "clip": "ExpressiveClawSwipeV4",
+    "bones": 12,
+    "near_triangles": 12040,
+    "far_triangles": 2900,
+    "hotspots": 6,
+    "colliders": 6,
+    "new_textures": 0,
+    "reused_textures": 3,
+    "duration": 2.7083332538604738,
+    "original_hotspots_preserved": true,
+    "gameplay_unchanged": true,
+    "canonical_save_untouched": true
+}
