@@ -107,6 +107,26 @@ namespace Eldoria.UI.RoyalGold.V2
             safe = anchor.transform as RectTransform;
             if (!safe) return;
 
+            // Approved Interface 1: the existing crest/name/power receive a
+            // quiet midnight-blue royal plate INSIDE their existing bounds.
+            // Decorative graphic only; the genuine realm button remains sole
+            // hit target, and no extra overlay occupies city coordinates.
+            var realm = Source.Realm ? Source.Realm.transform as RectTransform : null;
+            if (realm && !realm.Find("V3 / subdued Valoria livery"))
+            {
+                var relief = NewRect("V3 / subdued Valoria livery", realm);
+                relief.gameObject.AddComponent<CanvasRenderer>();
+                var reliefSkin = relief.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+                reliefSkin.Primary = false;
+                reliefSkin.DecorativeCorners = false;
+                reliefSkin.raycastTarget = false;
+                relief.anchorMin = Vector2.zero;
+                relief.anchorMax = Vector2.one;
+                relief.offsetMin = Vector2.zero;
+                relief.offsetMax = Vector2.zero;
+                relief.SetAsFirstSibling();
+            }
+
             objectiveCard = Panel("V2 / current objective", safe);
             chapterText = Text("Chapter", objectiveCard, 18, Gold, true);
             objectiveText = Text("Current real objective", objectiveCard, 25, Ivory, true);
