@@ -109,7 +109,7 @@ jobs:
           rear 0.8 rear-close
           VIEWS
 
-      - name: Independent view manifest: visible change is never ART_APPROVED
+      - name: 'Independent view manifest: visible change is never ART_APPROVED'
         shell: bash
         run: |
           set -euo pipefail
