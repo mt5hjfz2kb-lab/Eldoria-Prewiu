@@ -712,20 +712,21 @@
         ".github/workflows/tripo-art-brain-preflight.yml",
         "pipeline/tripo-art-brain/**",
         "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
-        "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md"
+        "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
+        "tools/art-direction/ai-authoring/author_brief.py"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
       "phase": "PHASE2_FREE_INSPECTION_AND_ARTIST_CONTEXT",
-      "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA.",
+      "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Rig check zero-credit execution or documented access blocker, plus authenticated detailed asset profile and testable input binding to existing Qwen artist; retain game untouched.",
         "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
-      "next": "Verify API free check security/availability then test only previously generated Engendro. Validate artist context with actual input path. No new paid tasks."
+      "next": "Extend existing Qwen author with opt-in creature/prop awareness (unchanged terrain default), prove actual prompt passed with isolated mock Ollama and archived images; perform free rig check only if valid nonexposed API key is available, otherwise exact blocker."
     }
   ],
   "history": [
