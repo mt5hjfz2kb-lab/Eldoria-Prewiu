@@ -103,8 +103,11 @@ jobs:
           # Read current main, never a stale PR merge snapshot's old reservation.
           $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-contextual-20261021' -and $_.owner -eq 'codex-ui-v3-completion-takeover-20261021' -and $_.status -eq 'active'})
-          if($claims.Count -ne 1 -or $ui.Count -ne 1){throw "Current exclusive UI native lease missing or contested: $($claims.id -join ', ')"}
+          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-contextual-20261021' -and $_.status -eq 'active'})
+          # An active UI owner may validate its own reservation. With no
+          # reservations, preserve the existing ordinary progression CI path.
+          # Never couple future tests to one temporary executor's identity.
+          if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $ui.Count -ne 1)){throw "Windows native lease belongs to another workstream: $($claims.id -join ', ')"}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
             throw 'Unity or Blender already running; UI gate must not interrupt another job'
           }
