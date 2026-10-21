@@ -646,6 +646,15 @@
         "reserved_for": "Same existing Valoria native build and Chromium QA, no authoring or scene mutation",
         "release_condition": "Release after exact final UI build/QA; preserve canonical art owner and sources",
         "ui_executor": "codex-ui-v3-completion-takeover-20261021"
+      },
+      "delegated_ui_navigation_fix": {
+        "owner": "codex-ui-v3-completion-takeover-20261021",
+        "paths": [
+          "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs",
+          "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs"
+        ],
+        "scope": "Only suppress archived WebGL coordinate navigation while the canonical RoyalHUD explicitly owns navigation; no art, scene, economy or save changes",
+        "evidence": "Native244 browser run39607571030 detects three actual legacy fallback calls after Continue; all I-II/save checks passed"
       }
     },
     {
@@ -680,13 +689,14 @@
         ".github/workflows/valoria-windows-chromium-qa.yml",
         "pipeline/playtest-delivery.json",
         ".github/workflows/unity-slice.yml",
-        "scripts/check_unity_slice.py"
+        "scripts/check_unity_slice.py",
+        "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "FINAL_UI_NATIVE244_EXACT_BROWSER_QA",
-      "next": "Compiled native244 SUCCESS run39605933465. Exact Chromium QA39607571030 queued behind general Unity editor gate39606507642 on same PC; retain controls/normal-clock/save assertions, then restricted itch delivery. Do not rebuild native243 or alter art.",
+      "phase": "REPAIR_WEBGL_DOUBLE_NAVIGATION",
+      "next": "Native244 exact QA completes I-II and byte-identical save/reload but correctly rejects 3 legacy navigation fallbacks triggered by final bottom-right Continue touches. Repair external UI navigation ownership in SlicePresenter, preserve legacy default behavior, native regressions then new exact WebGL native245.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
       "handoff": {
         "owner_instruction": "Asume tú los trabajos y organízalos",
