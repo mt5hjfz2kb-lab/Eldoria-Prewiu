@@ -19,6 +19,12 @@
     "original_bastion_i_ii_runtime_play_save"
   ],
   "owner_authorization": "2026-10-21 user explicitly requested finishing and replacing the Bastion II enemy silhouette in-game; no additional monetized Tripo generation.",
-  "stage_revision": 3,
-  "preflight_description": "Finished Blender 12k/2.9k real LOD; canonical Unity scene-only visual swap; near/far share actual PBR materials and maps; matching hashes; current safe-rebase workflow"
+  "stage_revision": 4,
+  "preflight_description": "Use installed Git before checkout and non-destructive clean=false on Windows; CI-only reversible Unity Search index repair, persistent glTFast PBR near/far LODs, save-scene + full canonical Bastion I-II play/save QA. Run after active older native attempt finishes, never in parallel.",
+  "executor_safety": {
+    "shared_windows_runner": "single serial concurrency group, never cancel running processes",
+    "paid_credits": 0,
+    "auto_publish": false,
+    "canonical_ui_v3": "preserve PR #83"
+  }
 }
