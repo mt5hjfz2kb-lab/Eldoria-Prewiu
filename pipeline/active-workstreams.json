@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T08:35:00Z",
+  "updated_at": "2026-10-21T09:50:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -666,30 +666,32 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-spawnling-bastion2-finish-20261021.json"
     },
     {
-      "id": "eldoria-process-efficiency-20261021",
-      "title": "Reduce redundant CI and clarify operational entry documents",
-      "owner": "chatgpt-process-efficiency-20261021",
-      "branch": "main",
+      "id": "eldoria-ui-v3-contextual-20261021",
+      "title": "UI V3 contextual — existing PR #83 (registry reconciliation)",
+      "owner": "existing-ui-v3-executor-pr83",
+      "owner_reference": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/83",
+      "branch": "ui/eldoria-v3-contextual-20261021",
       "status": "active",
       "claimed_at": "2026-10-21",
       "scope": [
-        "AGENTS.md",
-        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
-        ".github/workflows/tester-qa.yml",
-        ".github/workflows/repository-architecture-guard.yml",
-        "tools/check-repository-architecture.mjs",
-        "tools/check-repository-architecture.test.mjs",
-        "docs/documentation-catalog.json",
-        "docs/archive/process-efficiency-20261021/**",
-        "tools/check-valoria-visual-authority-routing.mjs",
-        ".github/workflows/valoria-visual-authority-routing.yml",
-        ".github/workflows/eldoria-art-visual-acceptance.yml",
-        "tools/check-documentation-governance.mjs",
-        "tools/check-documentation-governance.test.mjs"
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/EldoriaV3VisualDirection.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/EldoriaV3VisualDirection.cs.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs.meta",
+        "docs/ui-v3/OWNER_APPROVED_DIRECTION.md"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Owner-authorized CI and documentation maintenance only; no artwork, Unity execution or publication."
+      "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
+      "phase": "EXISTING_DRAFT_PR_NATIVE_VALIDATION_PENDING",
+      "next": "Existing UI executor continues PR #83 from its live HEAD and reconciles current main before promotion; retain native/visual/gameplay acceptance gates.",
+      "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch."
     }
   ],
   "history": [
@@ -6005,6 +6007,46 @@
       "next": "Build authored Royal Gold 2D sprite family and reusable uGUI components; isolated TEST scene and bindings to current authoritative gameplay, then native validation when resource is coordinated.",
       "closed_at": "2026-10-18",
       "closed_reason": "Owner consolidated integrated native111 into main; existing module consumed; retain branch for reference, no independent production."
+    },
+    {
+      "id": "eldoria-process-efficiency-20261021",
+      "title": "Reduce redundant CI and clarify operational entry documents",
+      "owner": "chatgpt-process-efficiency-20261021",
+      "branch": "main",
+      "status": "completed",
+      "claimed_at": "2026-10-21",
+      "scope": [
+        "AGENTS.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
+        ".github/workflows/tester-qa.yml",
+        ".github/workflows/repository-architecture-guard.yml",
+        "tools/check-repository-architecture.mjs",
+        "tools/check-repository-architecture.test.mjs",
+        "docs/documentation-catalog.json",
+        "docs/archive/process-efficiency-20261021/**",
+        "tools/check-valoria-visual-authority-routing.mjs",
+        ".github/workflows/valoria-visual-authority-routing.yml",
+        ".github/workflows/eldoria-art-visual-acceptance.yml",
+        "tools/check-documentation-governance.mjs",
+        "tools/check-documentation-governance.test.mjs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Owner-authorized CI and documentation maintenance only; no artwork, Unity execution or publication.",
+      "completed_at": "2026-10-21",
+      "result_commit": "5f2de6f243605f999579b434c9c898122944b61c",
+      "evidence": {
+        "architecture_run": 39579932294,
+        "architecture_job_seconds": 8,
+        "checkout_seconds": 2,
+        "visual_authority_run": 39579629215,
+        "art_visual_evidence_run": 39579629172,
+        "art_governance_run": 39578467154,
+        "workflow_governance_run": 39579932368,
+        "quarantine_run": 39579932263,
+        "local_tests": "Web scope positive/negative/rename, API failure/incomplete/stale-head fail-open, manual/push; canonical owner positive/negative; structural and documentation mutation regression tests."
+      },
+      "next": "No maintenance work pending. Existing UI/Spawnling owners consume current main; no runtime, release or Windows job changed."
     }
   ],
   "owner_specific_pauses": [
