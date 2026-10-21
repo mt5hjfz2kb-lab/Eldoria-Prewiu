@@ -1,0 +1,22 @@
+{
+  "stage": "native_unity_existing_scene_visual_replacement",
+  "asset": "Eldoria_Spawnling_Bastion2_v1",
+  "workstream": "eldoria-spawnling-bastion2-finish-20261021",
+  "target_hotspot": "engendro-valoria",
+  "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+  "source_glb_sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
+  "near_glb_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+  "far_glb_sha256": "dd698116c7cb517d9fdf95154f6b8c275235d7f6e241cab1a04b2302b67fecbd",
+  "credits_added": 0,
+  "budget_eur": 0,
+  "allow_gameplay_change": false,
+  "allow_save_change": false,
+  "allow_publication": false,
+  "required_gates": [
+    "native_import_pbr_lod",
+    "same_camera_unity_ab",
+    "existing_hotspot_unchanged",
+    "original_bastion_i_ii_runtime_play_save"
+  ],
+  "owner_authorization": "2026-10-21 user explicitly requested finishing and replacing the Bastion II enemy silhouette in-game; no additional monetized Tripo generation."
+}
