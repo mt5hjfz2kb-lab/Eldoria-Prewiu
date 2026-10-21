@@ -717,44 +717,6 @@
         "handoff": "Código y documentación de uso en main; pasos de animación/pago segregados y bloqueados hasta autorización."
       },
       "next": "Implementar preflight y memoria consumible por el cerebro artístico, añadir tests y workflow ligero, ejecutar pruebas; la fase de rigging de pago queda bloqueada."
-    },
-    {
-      "id": "eldoria-coordination-handoff-repair-20261021",
-      "title": "Remove stale chat ownership barriers while preserving live writer and runner exclusion",
-      "owner": "codex-coordination-handoff-repair-20261021",
-      "branch": "main",
-      "status": "active",
-      "claimed_at": "2026-10-21T14:46:58.162Z",
-      "scope": [
-        "AGENTS.md",
-        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
-        ".github/workflows/valoria-reference-clean.yml",
-        ".github/workflows/valoria-windows-chromium-qa.yml",
-        "tools/workstream-lease/**",
-        ".github/workflows/repository-architecture-guard.yml",
-        "tools/work-status/report.mjs",
-        "tools/work-status/report.test.mjs",
-        "tools/check-valoria-visual-authority-routing.mjs"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Owner explicitly requests resolving stale ownership and chat-name barriers. Coordination guards/docs/tests only; no artwork, gameplay, saves, heavy PC jobs or publication.",
-      "delivery_definition": {
-        "deliverable": "Transferable work ownership and dynamic runner guards without stale chat-name locks",
-        "evidence": "Positive/negative lease and workflow binding tests; architecture and governance checks",
-        "handoff": "Existing artistic work can be claimed safely from available state; old evidence preserved"
-      },
-      "phase": "VALIDATING_DYNAMIC_OWNER_GATES",
-      "validation": {
-        "local_tests": 8,
-        "workflow_files_scanned": 230,
-        "fixed_name_guards": 2,
-        "workflow_governance": "PASS",
-        "all_workflow_yaml_parse": "PASS",
-        "unity_or_blender_jobs_dispatched": 0
-      },
-      "next": "Wait for lightweight CI of this change and close maintenance. Art can claim the available canonical workstream now; no reservation of art scene/code or Windows by maintenance."
     }
   ],
   "history": [
@@ -6396,6 +6358,58 @@
       "closed_at": "2026-10-21T14:42:47.889Z",
       "closed_reason": "Implementation, main integration, all native/general/exact WebGL/transport QA and Restricted activation complete. Sole external blocker is hosted browser sign-in verification. Release this UI mutation scope; it must not block new art or Windows work.",
       "write_scope_released": true
+    },
+    {
+      "id": "eldoria-coordination-handoff-repair-20261021",
+      "title": "Remove stale chat ownership barriers while preserving live writer and runner exclusion",
+      "owner": "codex-coordination-handoff-repair-20261021",
+      "branch": "main",
+      "status": "completed",
+      "claimed_at": "2026-10-21T14:46:58.162Z",
+      "scope": [
+        "AGENTS.md",
+        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
+        ".github/workflows/valoria-reference-clean.yml",
+        ".github/workflows/valoria-windows-chromium-qa.yml",
+        "tools/workstream-lease/**",
+        ".github/workflows/repository-architecture-guard.yml",
+        "tools/work-status/report.mjs",
+        "tools/work-status/report.test.mjs",
+        "tools/check-valoria-visual-authority-routing.mjs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Owner explicitly requests resolving stale ownership and chat-name barriers. Coordination guards/docs/tests only; no artwork, gameplay, saves, heavy PC jobs or publication.",
+      "delivery_definition": {
+        "deliverable": "Transferable work ownership and dynamic runner guards without stale chat-name locks",
+        "evidence": "Positive/negative lease and workflow binding tests; architecture and governance checks",
+        "handoff": "Existing artistic work can be claimed safely from available state; old evidence preserved"
+      },
+      "phase": "CLOSED_VERIFIED",
+      "validation": {
+        "local_tests": 8,
+        "workflow_files_scanned": 230,
+        "fixed_name_guards": 2,
+        "workflow_governance": "PASS",
+        "all_workflow_yaml_parse": "PASS",
+        "unity_or_blender_jobs_dispatched": 0
+      },
+      "next": "No maintenance work pending. Artistic continuation belongs to the live canonical claim; new owner commands use the documented transferable handoff. Preserve active work and every quality/release gate.",
+      "completed_at": "2026-10-21T15:03:17.302Z",
+      "result_commit": "bd4b278a875fcdb5c48f78ab6e4253c04d2e6906",
+      "evidence": {
+        "workflow_files_scanned": 230,
+        "hardcoded_chat_guards_removed": 2,
+        "actual_lease_tests_passed": 8,
+        "initial_lease_test_run": 39621649973,
+        "full_architecture_and_documentation_run": 39622037395,
+        "new_owner_governance_run": 39622037514,
+        "new_owner_authority_run": 39622037366,
+        "new_owner_status_run": 39622037654,
+        "real_handoff": "canonical Valoria workstream claimed by chatgpt-eldoria-geography-visual-production-20261021, ownership_revision2; no geometry/source/evidence reset",
+        "no_heavy_pc_job_for_maintenance": true
+      }
     }
   ],
   "owner_specific_pauses": [
