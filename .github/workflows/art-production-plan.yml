@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   push:
     branches: [main, pipeline/toolchain-automation-v2]
+  pull_request:
+    branches: [main]
     paths:
       - 'pipeline/art-production-request.json'
       - 'pipeline/art-production-requests/**'
@@ -14,6 +16,8 @@ on:
       - 'docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md'
       - 'pipeline/blender-professional-authoring-standard.json'
       - 'tools/validate-blender-professional-authoring.mjs'
+      - 'pipeline/art-knowledge/**'
+      - 'tools/art-knowledge/**'
       - 'pipeline/visual-fallback-policy.json'
       - 'tools/route-visual-fallback.mjs'
       - 'tools/classify-visual-failure.mjs'
@@ -26,6 +30,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The planning check reads text contracts, not the multi-GB Unity art archive.
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/plan-art-production.mjs
+            /tools/art-knowledge/
+            /tools/check-art-production-governance.mjs
+            /tools/validate-blender-professional-authoring.mjs
+            /tools/art-direction/ai-authoring/approval-boundary.mjs
+            /tools/art-direction/ai-authoring/verify-artist-cycle.mjs
+            /tools/art-direction/ai-authoring/unity_pixel_diff.mjs
+            /pipeline/active-workstreams.json
+            /pipeline/art-production-request.json
+            /pipeline/art-production-requests/
+            /pipeline/art-knowledge/catalog-v1.json
+            /pipeline/visual-fallback-policy.json
+            /pipeline/toolchain-capabilities.json
+            /pipeline/blender-professional-authoring-standard.json
+            /docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md
+            /docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -33,6 +57,8 @@ jobs:
         run: node tools/validate-blender-professional-authoring.mjs
       - name: Validate universal art-production governance
         run: node tools/check-art-production-governance.mjs
+      - name: Verify safe historical memory selection
+        run: node --test tools/art-knowledge/*.test.mjs
       - name: Build deterministic plans
         shell: bash
         run: |
@@ -44,6 +70,29 @@ jobs:
             name="$(basename "$request" .json)"
             node tools/plan-art-production.mjs "$request" "art-production-plans/$name.json"
           done
+      - name: Validate planner memory provenance and Qwen inventory handoff
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import crypto from 'node:crypto';
+          const sha=t=>crypto.createHash('sha256').update(t).digest('hex');
+          let checked=0;
+          for(const name of fs.readdirSync('art-production-plans').filter(n=>n.endsWith('.json')&&!n.endsWith('.knowledge.json'))){
+            const base='art-production-plans/'+name;
+            const plan=JSON.parse(fs.readFileSync(base));
+            const m=plan.art_memory;
+            if(!m||!m.catalog_sha256||m.qwen_consumption_verified!==false)throw Error('No safe knowledge handoff '+base);
+            const a=fs.readFileSync(base+'.knowledge.txt','utf8');
+            const p=JSON.parse(fs.readFileSync(base+'.knowledge.json'));
+            if(sha(a.trimEnd())!==m.inventory_sha256||p.inventory_sha256!==m.inventory_sha256)throw Error('Memory hash mismatch '+base);
+            if(m.policy.art_approved!==false||m.policy.paid_calls_authorized!==false||m.policy.qwen_has_received_inventory!==false)throw Error('Unsafe memory plan '+base);
+            checked++;
+          }
+          if(checked<1)throw Error('No art requests verified');
+          console.log('ART_MEMORY_PREFLIGHT_PASS plans='+checked);
+          NODE
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-art-production-plans-${{ github.sha }}

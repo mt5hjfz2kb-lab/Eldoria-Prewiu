@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import {readCatalog, selectKnowledge, writePrepared} from './art-knowledge/select.mjs';
 
 const path = process.argv[2] || 'pipeline/art-production-request.json';
 const out = process.argv[3] || '';
@@ -110,6 +111,10 @@ if (req.failure_class) {
   if (fallback.open_new_research) fail('Fallback policy violation: new R&D cannot be opened automatically.');
 }
 
+// Consult versioned lessons BEFORE any Qwen/Blender/Unity stage. This does not execute artists.
+const memory = selectKnowledge(req, readCatalog());
+stages.unshift('art_knowledge_preflight');
+
 const plan = {
   schema_version: 2,
   workstream_id: req.workstream_id || req.request_id,
@@ -132,7 +137,20 @@ const plan = {
   ai_authorship_policy: req.ai_authorship_policy || 'legacy-active-request',
   artist_cycle_path: req.artist_cycle_path || null,
   required_verdicts: req.profile === 'environment_new_geometry' ? ['TECH_PASS','ART_SOURCE_PASS','INTEGRATED_VISUAL_PASS','AI_AUTHORING_PROOF'] : ['TECH_PASS','INTEGRATED_VISUAL_PASS','AI_AUTHORING_PROOF'],
-  fallback
+  fallback,
+  art_memory: {
+    status:memory.status,
+    catalog_sha256:memory.catalog_sha256,
+    inventory_sha256:memory.inventory_sha256,
+    selected_ids:memory.selected_ids,
+    rejected_ids:memory.rejected_ids,
+    prepared_inventory_path:out?out+'.knowledge.txt':null,
+    existing_qwen_contract:'--inventory',
+    qwen_consumption_verified:false,
+    historical_methods_not_auto_approved:true,
+    evidence_capture:'Existing tools/art-direction/learning-evidence/cycle-hooks.mjs stage (pending verification)',
+    policy:memory.qa_boundary
+  }
 };
 
 if (req.geometry_gap_proven === true && ['environment_composition','environment_surface'].includes(req.profile)) {
@@ -141,4 +159,9 @@ if (req.geometry_gap_proven === true && ['environment_composition','environment_
 const json = JSON.stringify(plan, null, 2);
 console.log('ART_PRODUCTION_PLAN=PASS');
 console.log(json);
-if (out) fs.writeFileSync(out, json + '\n');
+if (out) {
+  // Keep a separate provenance-bound inventory for the pre-existing Qwen --inventory hook.
+  // Never silently overwrite a previous generation or claim Qwen consumed it.
+  writePrepared(memory,out);
+  fs.writeFileSync(out,json+'\n',{flag:'wx'});
+}
