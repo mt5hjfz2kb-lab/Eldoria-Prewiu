@@ -172,7 +172,7 @@ namespace Eldoria.UI.RoyalGold.V2
             fill.sizeDelta = Vector2.zero;
             var group = r.gameObject.AddComponent<CanvasGroup>();
             Visible(group, false, false);
-            return new TimerView { Root = r, Label = label, Progress = fill, Fill = ink, Visibility = group };
+            return new TimerView { Root = r, Label = label, Progress = track, Fill = ink, Visibility = group };
         }
         private void LateUpdate() => SynchronizeNow();
 
