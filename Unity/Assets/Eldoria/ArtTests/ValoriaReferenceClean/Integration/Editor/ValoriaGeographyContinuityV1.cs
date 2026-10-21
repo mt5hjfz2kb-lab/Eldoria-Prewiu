@@ -401,9 +401,13 @@ namespace Eldoria.ReferenceClean.Editor
                 // into surrounding open grass. Existing POIs and roads remain in place.
                 // Author three low, connected macroforms around existing
                 // geographic landmarks, rather than noise over the entire map.
-                float quarryFoothill = 3.7f * Mathf.Exp(
-                    -Mathf.Pow((world.x - 1092f) / 54f, 2f) -
-                    Mathf.Pow((world.z + 73f) / 67f, 2f));
+                // One readable topographic shoulder joining the retained
+                // quarry/existing rock formation. Unlike broad random noise,
+                // this is a coherent landform, with its original quarry base
+                // and sector edge untouched by the existing keep-outs.
+                float quarryFoothill = 7.2f * Mathf.Exp(
+                    -Mathf.Pow((world.x - 1092f) / 61f, 2f) -
+                    Mathf.Pow((world.z + 73f) / 73f, 2f));
                 float northForestRise = 1.65f * Mathf.Exp(
                     -Mathf.Pow((world.x - 1051f) / 76f, 2f) -
                     Mathf.Pow((world.z - 78f) / 58f, 2f));
@@ -531,9 +535,17 @@ namespace Eldoria.ReferenceClean.Editor
                         baseColor = Color.Lerp(baseColor,
                             new Color(baseColor.r * .79f, baseColor.g * .91f, baseColor.b * .71f),
                             treesFloor * .48f);
+                        // The same authored foothill controls material change:
+                        // subtle rock/dry-soil only where the terrain actually
+                        // rises toward the retained quarry formation.
+                        float upland = Mathf.Exp(
+                            -Mathf.Pow((wx - 1092f) / 62f, 2f) -
+                            Mathf.Pow((wz + 73f) / 74f, 2f));
+                        float grain = .65f + .35f * Mathf.PerlinNoise(wx*.14f+72,wz*.14f+33);
+                        float earth = Mathf.Clamp01(upland * grain * .37f + quarry * .2f);
                         baseColor = Color.Lerp(baseColor,
-                            new Color(baseColor.r * 1.03f, baseColor.g * .91f, baseColor.b * .79f),
-                            quarry * .36f);
+                            new Color(baseColor.r * .94f, baseColor.g * .81f, baseColor.b * .68f),
+                            earth);
                         baseColor = Color.Lerp(baseColor,
                             new Color(baseColor.r * .80f, baseColor.g * .80f, baseColor.b * .84f),
                             corruption * .18f);
@@ -796,7 +808,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Measured forest landscape: original tree meshes extended into 5 organic lobes with route/POI exclusions and connected forest-floor albedo; low site-specific quarry macrorelief; original atlas and gameplay protected",
+                    method = "Retained mature conifers with protected 4X corridor and quarry geological foothill: 7.2m taper into original rock base, slope-tied PBR earth, source UV/roads/POI and city colliders unchanged",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
