@@ -166,5 +166,67 @@ namespace Eldoria.Tests
             Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false));
             Assert.That(Member(v3, "CloseVisible"), Is.EqualTo(false));
         }
+        [UnityTest]
+        public IEnumerator RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame()
+        {
+            // Never execute a building purchase on an owner's persisted save.
+            // The existing native CI sets the probe variable and the real
+            // ValoriaReferenceCleanGameplay creates a disposable file store.
+            if (Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE") != "1")
+                Assert.Ignore("Timer purchase test requires the disposable Valoria native probe save");
+
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+
+            var guidance = Member(host, "Guidance") as Behaviour;
+            if (guidance) guidance.enabled = false;
+            var modal = Member(hud, "Modal") as Component;
+            if (modal && modal.gameObject.activeInHierarchy) Call(modal, "Hide");
+
+            var v3 = FindComponent(hud.gameObject, "RoyalGoldV3ContextHud");
+            Call(hud, "SelectBuilding", "sawmill");
+            yield return null; // existing canonical camera focus coroutine
+            Canvas.ForceUpdateCanvases();
+            Call(v3, "SynchronizeNow");
+
+            var command = Member(v3, "VisibleActionButton") as Button;
+            Assert.That(command, Is.Not.Null);
+            Assert.That(command.interactable, Is.True, "Actual sawmill Build must be actionable");
+            var offer = Member(Member(Call(host, "Read", "sawmill", false),
+                "Building"), "Action");
+            Assert.That(offer, Is.Not.Null);
+            Assert.That(Member(offer, "Kind"), Is.EqualTo("Build"));
+
+            // The V3 button itself forwards to the one existing RoyalHUD
+            // command handler. Its old callback persists the real operation.
+            command.onClick.Invoke();
+            var operation = Member(Call(host, "Read", "sawmill", false), "Building");
+            Assert.That(Member(operation, "OperationActive"), Is.EqualTo(true),
+                "Real gateway must own the construction state and deadline");
+
+            // No wait/yield: the first UI sync after payment must project
+            // the same authoritative timer, not a stale pre-purchase offer.
+            Call(v3, "SynchronizeNow");
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
+                "A just-paid real construction must show exactly one timer immediately");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
+                "Build control must disappear once construction is in progress");
+
+            var timer = GameObject.Find("V3 / real-time operation / sawmill");
+            Assert.That(timer, Is.Not.Null);
+            Assert.That(timer.GetComponent<CanvasGroup>().blocksRaycasts, Is.False,
+                "Non-interactive timer must not steal city gestures");
+            Assert.That(timer.GetComponent<CanvasGroup>().alpha,
+                Is.GreaterThan(.5f), "Timer must be visibly anchored to the sawmill");
+            var timeLabel = timer.GetComponentInChildren<Text>(true);
+            Assert.That(timeLabel, Is.Not.Null);
+            Assert.That(timeLabel.text, Does.Contain("Tiempo restante"),
+                "Timer must use the canonical state-derived countdown text");
+            var fill = timer.transform.Find("Actual progress/Gateway progress fill")
+                as RectTransform;
+            Assert.That(fill, Is.Not.Null);
+            Assert.That(fill.anchorMax.x, Is.InRange(0f, 1f));
+        }
+
     }
 }
