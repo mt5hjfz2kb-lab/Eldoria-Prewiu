@@ -828,9 +828,9 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-eldoria-ui-v3-management-final-run-20261021",
+      "owner": "chatgpt-eldoria-ui-v3-management-resumed-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 7,
+      "ownership_revision": 8,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
@@ -853,7 +853,9 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -869,9 +871,18 @@
           "run_id": 39641171771,
           "result": "success",
           "checks": 29
+        },
+        "latest_native_run": {
+          "id": 39651216087,
+          "sha": "6a380fdc704dbf0852ba0e9cc30daeb817fc0882",
+          "status": "FAILED_PLAYMODE",
+          "failed": [
+            "OwnerFreshSaveCompletesIAndIIThroughGuidedHud",
+            "RoyalV3ManagementIntegrationTests.FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave"
+          ]
         }
       },
-      "next": "Preserve in-flight native job, repair traced contextual raycast regression, recertify same candidate and exact mobile UI, reconcile main, integrate/publish only on green evidence.",
+      "next": "Repair exact native PlayMode failures (guided Chapter II recruitment + modal navigation), revalidate full Unity, coordinate selective merge into main and final playable delivery",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -899,6 +910,11 @@
           "owner": "chatgpt-eldoria-ui-v3-resume-20261021b",
           "revision": 6,
           "reason": "Owner explicitly orders this chat to continue V3 management finalization, no additional approval required."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-management-final-run-20261021",
+          "revision": 7,
+          "reason": "Owner authorized this chat to resume and finish UI V3 after latest Unity run 39651216087 ended with concrete PlayMode failures"
         }
       ],
       "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
