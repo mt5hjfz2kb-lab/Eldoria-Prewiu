@@ -53,6 +53,7 @@ function tempFixture() {
     const base = 'ArtSource/World4X/' + id;
     const raw = create(base + '/raw.glb', fixtureGLB(4));
     const optimized = create(base + '/optimized.glb', fixtureGLB(3));
+    const editable = create(base + '/editable.blend', Buffer.from('BLENDER-v410-' + id));
     const qaDir = base + '/UnityQA';
     const metricPath = qaDir + '/metrics.json';
     for (const name of ['iso.png', 'side.png', 'front.png', 'strategic.png']) {
@@ -68,7 +69,7 @@ function tempFixture() {
     cfg.assets[id] = {
       label: id, role: 'test', planner_profile: id === 'focus' ? 'environment_surface' : 'environment_composition',
       source: { task_id: 'test-task', credits_consumed: 20,
-        raw: { ...raw, triangles: 4 }, optimized: { ...optimized, triangles: 3 } },
+        raw: { ...raw, triangles: 4 }, optimized: { ...optimized, triangles: 3 }, editable }, 
       qa: { metrics: metricPath }, defects: ['observed issue'],
       next_actions: ['Blender copy-only'], protected: ['No paid calls']
     };
@@ -76,6 +77,7 @@ function tempFixture() {
   const asset = cfg.assets.spawnling;
   const near = create('ArtSource/World4X/spawnling/near.glb', fixtureGLB(2));
   const far = create('ArtSource/World4X/spawnling/far.glb', fixtureGLB(1));
+  const finished = create('ArtSource/World4X/spawnling/finished.blend', Buffer.from('BLENDER-v410-finished'));
   const scene = 'Unity/Assets/Scene.unity';
   create(scene, Buffer.from('real simulated fixture, not Unity certification'));
   const evidence = 'docs/evidence/native-integration.json';
@@ -89,10 +91,11 @@ function tempFixture() {
   })));
   create(authorPath, Buffer.from(JSON.stringify({
     source_sha256: asset.source.optimized.sha256,
-    near_sha256: near.sha256, far_sha256: far.sha256
+    near_sha256: near.sha256, far_sha256: far.sha256,
+    blend_sha256: finished.sha256
   })));
   asset.integration = {
-    evidence, author: authorPath, scene,
+    evidence, author: authorPath, scene, editable: finished,
     near: { ...near, triangles: 2 }, far: { ...far, triangles: 1 }
   };
   create('pipeline/tripo-art-brain/catalog.json', Buffer.from(JSON.stringify(cfg)));
@@ -118,6 +121,7 @@ test('offline audit verifies all three archived sources and retains state bounda
   assert.equal(auditAsset(root, 'focus', cfg).art_approved, false);
   assert.equal(auditAsset(root, 'spawnling', cfg).lods.near.triangles, 2);
   assert.equal(auditAsset(root, 'spawnling', cfg).new_credits, 0);
+  assert.equal(auditAsset(root, 'spawnling', cfg).lods.finished_blend.sha256, cfg.assets.spawnling.integration.editable.sha256);
 }));
 test('corrupted source or wrong declared polygon count fails closed', () => withFixture(({ root, cfg }) => {
   const boar = cfg.assets.boar;
@@ -168,4 +172,14 @@ test('Qwen context and canonical planner request are prepared with spending disa
     assert.throws(() => writeBundle(root, 'spawnling', output), /EEXIST/);
     assert.throws(() => writeBundle(root, 'spawnling', root + '/generated'), /OUTPUT_MUST_BE_OUTSIDE_REPO/);
   } finally { fs.rmSync(output, { recursive: true, force: true }); }
+}));
+
+test('editable Blender sources are pinned, real files and not mislabeled placeholders', () => withFixture(({root,cfg,create}) => {
+  const a=cfg.assets.boar;
+  const wrong=create('ArtSource/World4X/boar/non-blender.blend',Buffer.from('this is not a Blender file'));
+  a.source.editable=wrong;
+  assert.throws(() => auditAsset(root,'boar',cfg),/INVALID_EDITABLE_BLEND_HEADER/);
+  const mismatch=create('ArtSource/World4X/boar/editable.blend',Buffer.from('BLENDER-v410-tampered'));
+  a.source.editable={...mismatch,sha256:'f'.repeat(64)};
+  assert.throws(() => auditAsset(root,'boar',cfg),/SHA256_MISMATCH/);
 }));
