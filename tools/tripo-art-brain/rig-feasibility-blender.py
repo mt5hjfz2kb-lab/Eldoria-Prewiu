@@ -164,6 +164,8 @@ def render_proof(out,center,scale,frames):
     scene.render.resolution_percentage=100
     scene.render.image_settings.file_format='PNG'
     scene.render.film_transparent=False
+    if scene.world is None:
+        scene.world=bpy.data.worlds.new('RigQA_World')
     scene.world.color=(.10,.10,.12)
     diag=math.sqrt(sum(z*z for z in scale))
     data=bpy.data.cameras.new('RigQA_Camera')
