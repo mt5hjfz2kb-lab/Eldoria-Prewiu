@@ -276,6 +276,7 @@ namespace Eldoria.Presentation
 
         bool IsPointerOverInteractiveUi(Vector2 point)
         {
+            if(managementScreen!=null&&managementScreen.activeInHierarchy)return true;
             if(ExternalPointerBlocked?.Invoke(point)==true)return true;
             if(EventSystem.current==null)return false;
             var data=new PointerEventData(EventSystem.current){position=point};
