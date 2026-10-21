@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "asset": "spawnling",
+  "classification": "QWEN_PLAN_REJECTED_NON_EXECUTABLE",
+  "reviewed_at": "2026-10-21",
+  "source": {
+    "repo_run": 39631639948,
+    "artifact_id": 12360077106,
+    "source_blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
+    "model": "qwen3-vl:2b-instruct"
+  },
+  "observations": {
+    "qwen_inference": "REAL",
+    "attempts": 2,
+    "attempt_1_tokens": 361,
+    "attempt_2_tokens": 404,
+    "attempt_1_latency_seconds": 359.621,
+    "attempt_2_latency_seconds": 67.191,
+    "last_error": "sculpt_region delta MUST BE NONZERO, executable 3D displacement (>0.005, <=20)",
+    "blender_authoring_executed": false,
+    "unity_qa_executed": false
+  },
+  "lesson": "The genuine second Qwen attempt returned a null or effectively zero sculpt_region delta after one repair, and typed validation correctly blocked Blender. Do not run repeated blind 2B retries; provide task-specific head/face intention, source-relative locality and a nonzero displacement requirement, then re-infer from actual photos and mesh context.",
+  "next_action": "Use the SAME SHA-pinned creature and authentic photos, ask Qwen to choose one localized facial/head or shoulder deformation with real source AABB and nonzero delta, fail-closed in validator, review new independent Blender A/B before any Unity mutation.",
+  "art_approved": false,
+  "mobile_profiled": false,
+  "integrated": false,
+  "credits_spent_new": 0
+}
