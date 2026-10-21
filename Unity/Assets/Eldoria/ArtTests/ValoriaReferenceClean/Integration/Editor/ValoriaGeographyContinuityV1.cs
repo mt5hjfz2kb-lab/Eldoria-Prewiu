@@ -155,6 +155,19 @@ namespace Eldoria.ReferenceClean.Editor
                 host.WorldRoot.SetActive(originalRootState);
             }
         }
+
+        // Integration methods are gated separately. The first native pass is a strict
+        // read-only survey of the actual scene and masks; no candidates may be
+        // promoted or accepted until their source scene/hash and A/B are recorded.
+        public static void Trial()
+        {
+            throw new InvalidOperationException("GEOGRAPHY_TRIAL_REQUIRES_SURVEY_AND_AUTHORED_MASKS");
+        }
+        public static void Integrate()
+        {
+            throw new InvalidOperationException("GEOGRAPHY_INTEGRATION_REQUIRES_ACCEPTED_REAL_UNITY_AB");
+        }
+
         public static void Survey()
         {
             try
