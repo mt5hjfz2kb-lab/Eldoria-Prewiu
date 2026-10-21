@@ -17,10 +17,10 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          api="repos/$GITHUB_REPOSITORY/actions/runs/39565315185"
+          api="repos/$GITHUB_REPOSITORY/actions/runs/39567161112"
           status="$(gh api "$api" --jq '.status')"
           conclusion="$(gh api "$api" --jq '.conclusion')"
-          echo "OBSOLETE_OWN_NATIVE id=39565315185 status=$status conclusion=$conclusion"
+          echo "OBSOLETE_OWN_NATIVE id=39567161112 status=$status conclusion=$conclusion"
           if [[ "$status" == 'queued' || "$status" == 'pending' ]]; then
             gh api -X POST "$api/cancel" >/dev/null
             echo "CANCELLED_OWN_QUEUED_ONLY"
