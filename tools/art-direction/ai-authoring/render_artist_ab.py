@@ -14,6 +14,7 @@ p.add_argument('--after',required=True,type=pathlib.Path)
 p.add_argument('--target',required=True)
 p.add_argument('--out',required=True,type=pathlib.Path)
 p.add_argument('--min-frame-size',type=float,default=3.0,help='Reviewer camera minimum world-space extent; default 3m preserves Valoria terrain evidence. For small isolated creatures, opt in to a closer camera.')
+p.add_argument('--camera-view',choices=['isometric','face','rear','side'],default='isometric',help='Choose matched viewing angle; the default is unchanged for the current Valoria contract')
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 if not a.before.is_file() or not a.after.is_file():raise ValueError('Both real Blender files are required')
 if a.before.resolve()==a.after.resolve():raise ValueError('The same source cannot be compared to itself')
@@ -52,7 +53,8 @@ def render(path,name):
  cam_data=bpy.data.cameras.new('QA_Locked_Camera')
  cam=bpy.data.objects.new('QA_Locked_Camera',cam_data)
  scene.collection.objects.link(cam)
- cam.location=center+Vector((size*1.10,-size*1.35,size*1.0))
+ view_offsets={'isometric':(1.10,-1.35,1.0),'face':(1.55,-0.25,0.40),'rear':(-1.55,-0.25,0.40),'side':(0.25,-1.55,0.40)}
+ cam.location=center+Vector(tuple(size*x for x in view_offsets[a.camera_view]))
  direction=center-cam.location
  cam.rotation_euler=direction.to_track_quat('-Z','Y').to_euler()
  cam_data.type='ORTHO';cam_data.ortho_scale=size*1.9
@@ -89,6 +91,7 @@ visibility=visible_change(before_pixels,after_pixels,bw,bh)
 manifest={'scope':'Blender clay A/B only, NOT Unity, NOT ART_APPROVED',
           'target':a.target,'camera':'orthographic camera and clay/light anchored to combined source/edited target bounds',
           'min_frame_size':a.min_frame_size,
+          'camera_view':a.camera_view,
           'orthographic_scale':size*1.9,
           'source_file_sha256':hashlib.sha256(a.before.read_bytes()).hexdigest(),
           'result_file_sha256':hashlib.sha256(a.after.read_bytes()).hexdigest(),
