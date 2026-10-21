@@ -278,6 +278,11 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,
      "Next objective is masked by the World selection panel: "+string.Join(",",hits.Select(x=>x.gameObject.name)));
    },"Current objective is still genuinely clickable while a World resource is selected");
+   // SynchronizeNow may activate a new V3 action graphic in the frame above.
+   // Unity registers the raycast depth at the next rendered frame; a player
+   // cannot physically press it in the same C# callback. Keep the genuine
+   // EventSystem raycast and do not substitute a direct onClick.Invoke.
+   yield return null;yield return new WaitForSecondsRealtime(.16f);
    Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"Forest command disabled");Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World gathering did not start");h.SetWorld(false);((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().ChapterProgress.GatheredWood>0,"Shared world reward missing");var snapshot=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(snapshot==JsonUtility.ToJson(city.Gateway.Snapshot()),"Reload changed rewards");},"world gathering, city return, saved reward");
    yield return new WaitForSecondsRealtime(.5f);
    Check(()=>{
@@ -301,6 +306,9 @@ namespace Eldoria.ReferenceClean.Editor {
    },"forest mark Aldric legible after animation and story ledger persisted");
    foreach(string node in new[]{"forest-valoria","quarry-valoria","corrupt-scout"}){
     h.SetWorld(true);h.Select(node);yield return null;
+    // The contextual button was just reprojected from another target.
+    // Allow its uGUI GraphicRegistry entry to become touchable.
+    yield return new WaitForSecondsRealtime(.16f);
     Check(()=>{Need(h.Hud.Building.Primary.Button.interactable,"World command disabled: "+node);Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","World march missing: "+node);},"Royal map action "+node);
     yield return new WaitForSecondsRealtime(.4f);
     Check(()=>{((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(city.Gateway.Snapshot().March.Phase=="idle","World march failed to return");},"World return "+node);
