@@ -160,6 +160,11 @@ def movement(meshes):
 def render_proof(out,center,scale,frames):
     scene=bpy.context.scene
     scene.render.engine='CYCLES';scene.cycles.samples=8
+    # Ubuntu's apt Blender package does not include OpenImageDenoiser.
+    # Disable layer denoising explicitly, as in the existing artist A/B renderer.
+    for layer in scene.view_layers:
+        if hasattr(layer,'cycles'):
+            layer.cycles.use_denoising=False
     # Hosted Ubuntu Blender build lacks OpenImageDenoiser.
     for layer in scene.view_layers:
         if hasattr(layer,'cycles'):
