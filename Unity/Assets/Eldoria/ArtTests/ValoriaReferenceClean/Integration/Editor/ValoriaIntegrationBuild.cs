@@ -309,6 +309,14 @@ namespace Eldoria.ReferenceClean.Editor {
    // event-system raycasts and the actual primary action hit rectangle.
    yield return null;
    yield return new WaitForSecondsRealtime(.20f);
+   Check(()=>{
+    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    Need(management!=null&&management.IsOpen&&
+      management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.March,
+      "Native march preparation is not an independent management destination");
+    Capture(h,"integration-march-landscape.png",1600,900);
+    Capture(h,"integration-march-portrait.png",900,1600);
+   },"Royal march management real independent landscape and portrait");
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().MarchConfigured,"March configuration missing");},"Royal march confirmation via visible primary button");
    yield return new WaitForSecondsRealtime(.4f);
    h.SetWorld(true);h.Select("engendro-valoria");yield return null;
