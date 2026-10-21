@@ -19,8 +19,8 @@
     "original_bastion_i_ii_runtime_play_save"
   ],
   "owner_authorization": "2026-10-21 user explicitly requested finishing and replacing the Bastion II enemy silhouette in-game; no additional monetized Tripo generation.",
-  "stage_revision": 4,
-  "preflight_description": "Use installed Git before checkout and non-destructive clean=false on Windows; CI-only reversible Unity Search index repair, persistent glTFast PBR near/far LODs, save-scene + full canonical Bastion I-II play/save QA. Run after active older native attempt finishes, never in parallel.",
+  "stage_revision": 5,
+  "preflight_description": "Corrected Windows Git sparse-checkout non-cone mode for root AGENTS.md; existing Git on PATH, clean false, asset origin SHA verified, reversible Unity Search preferences, no concurrent scene owner overwrite.",
   "executor_safety": {
     "shared_windows_runner": "single serial concurrency group, never cancel running processes",
     "paid_credits": 0,
