@@ -31,6 +31,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private readonly Dictionary<string, TimerView> timers = new Dictionary<string, TimerView>();
         private readonly Dictionary<string, RoyalBuilding> live = new Dictionary<string, RoyalBuilding>();
         private float nextRead;
+        private float lastCanvasWidth = -1f, lastCanvasHeight = -1f;
+        private string lastPortraitTimerDiagnostic = "";
         private bool ready;
         private string lastProbeMismatch = "";
         private static readonly string[] TimedTargets =
@@ -231,13 +233,63 @@ namespace Eldoria.UI.RoyalGold.V2
                     if (data != null) live[id] = data;
                 }
             }
+            bool resized = Mathf.Abs(safe.rect.width - lastCanvasWidth) > .5f ||
+                Mathf.Abs(safe.rect.height - lastCanvasHeight) > .5f;
+            lastCanvasWidth = safe.rect.width;
+            lastCanvasHeight = safe.rect.height;
             var camera = ActiveCamera();
             bool blocked = (Source.Modal && Source.Modal.gameObject.activeInHierarchy) ||
                 (Source.Mission && Source.Mission.gameObject.activeInHierarchy);
             RenderSelection(camera, blocked);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
             RenderClose(blocked);
+            if (resized)
+            {
+                // Dynamic timer graphics were registered on the previous
+                // landscape Canvas. When Unity's offscreen mobile capture
+                // switches render target and canvas geometry in the SAME
+                // frame, the old CanvasRenderer can still have depth=-1.
+                // Re-register only the active, non-interactive graphics on
+                // the new canvas. Do not recreate the timer, operation,
+                // clock, selection or EventSystem.
+                foreach (var view in timers.Values)
+                    if (view.Visibility && view.Visibility.alpha > .5f)
+                        RebindGraphics(view.Root);
+                if (closeGroup && closeGroup.alpha > .5f)
+                    RebindGraphics(closeRect);
+            }
         }
+        private static void RebindGraphics(RectTransform root)
+        {
+            if (!root) return;
+            foreach (var graphic in root.GetComponentsInChildren<Graphic>(true))
+            {
+                if (!graphic || !graphic.enabled) continue;
+                graphic.enabled = false;
+                graphic.enabled = true;
+                graphic.SetAllDirty();
+            }
+        }
+
+        private void ProbeTimerState(string id, string status, TimerView timer, Vector2 screenPoint)
+        {
+#if UNITY_EDITOR
+            if (Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE") != "1" ||
+                Source.SelectedBuildingId != id || safe.rect.height <= safe.rect.width)
+                return;
+            string signature = id + ":" + status + ":" + Mathf.RoundToInt(safe.rect.width) +
+                ":" + Mathf.RoundToInt(safe.rect.height);
+            if (signature == lastPortraitTimerDiagnostic) return;
+            lastPortraitTimerDiagnostic = signature;
+            var frame = timer.Root.GetComponent<RoyalGoldV2FrameGraphic>();
+            Debug.Log("ELDORIA_V3_PORTRAIT_TIMER_PROBE id=" + id +
+                " state=" + status + " canvas=" + safe.rect.size +
+                " projected=" + screenPoint + " alpha=" + timer.Visibility.alpha +
+                " depth=" + (frame ? frame.depth : -999) +
+                " culled=" + (frame && frame.canvasRenderer.cull));
+#endif
+        }
+
         private static bool CanProject(Transform target, Camera camera, RectTransform safe,
             bool aboveBuilding, out Vector2 local)
         {
@@ -475,12 +527,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 !data.OperationActive || string.IsNullOrWhiteSpace(data.Time))
             {
                 Visible(timer.Visibility, false, false);
+                if (Source && Source.Building && Source.Building.OperationActive)
+                    ProbeTimerState(id, "NO_LIVE_OPERATION_OR_BLOCKED", timer, Vector2.zero);
                 return;
             }
             var target = FindAnchor(id);
             if (!CanProject(target, camera, safe, true, out var screen))
             {
                 Visible(timer.Visibility, false, false);
+                ProbeTimerState(id, "ANCHOR_NOT_PROJECTABLE", timer, Vector2.zero);
                 return;
             }
             float width = Mathf.Min(254f, safe.rect.width - 26f);
@@ -496,6 +551,7 @@ namespace Eldoria.UI.RoyalGold.V2
             timer.Root.anchorMin = timer.Root.anchorMax = timer.Root.pivot = new Vector2(.5f, .5f);
             timer.Root.anchoredPosition = center;
             Visible(timer.Visibility, true, false);
+            ProbeTimerState(id, "VISIBLE", timer, screen);
         }
     }
 }
