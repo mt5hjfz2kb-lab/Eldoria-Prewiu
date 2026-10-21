@@ -297,7 +297,8 @@ namespace Eldoria.ReferenceClean.Editor
                         float dz = Mathf.Max(Mathf.Abs(z - b.center.z) - b.extents.z, 0);
                         contact = Mathf.Max(contact, 1f - Smooth(.2f, 2.3f + warp, Mathf.Sqrt(dx * dx + dz * dz)));
                     }
-                    float paint = Mathf.Clamp01(.33f * shoulder + .20f * bank + .12f * contact);
+                    float paintGrain = .85f + .15f * Mathf.PerlinNoise(x*.12f+49f,z*.13f+17f);
+                     float paint = Mathf.Clamp01((.46f * shoulder + .28f * bank + .14f * contact) * paintGrain);
                     // No erosion that changes navigation, terrain height or hidden parcel geometry.
                     float available = alphas[iz, ix, 0] + alphas[iz, ix, 1];
                     float transferred = available * paint;
@@ -315,7 +316,7 @@ namespace Eldoria.ReferenceClean.Editor
                     {
                         float mix = alphas[iz, ix, 1] / green;
                         float detail = Noise(x + 73, z - 121) - .5f;
-                        mix = Mathf.Clamp01(mix + detail * .22f);
+                        mix = Mathf.Clamp01(mix + detail * .26f);
                         alphas[iz, ix, 0] = green * (1f - mix);
                         alphas[iz, ix, 1] = green * mix;
                     }
@@ -682,10 +683,12 @@ namespace Eldoria.ReferenceClean.Editor
             // the current source has attractive trees but too much open board
             // between canopy groups. Extend existing canopy clusters, not POIs.
             var city = Hotspots(host).Single(p => p.Id == "valoria-map-city").transform.position;
+            // Revise native261's isolated NE saplings: new adult crowns now
+            // extend measured existing canopy clusters, not the map edge.
             Vector2[] lobes = {
-                new Vector2(-18f,24f), new Vector2(12f,30f),
-                new Vector2(34f,15f), new Vector2(26f,-16f),
-                new Vector2(-12f,-29f)
+                new Vector2(-17f,10f), new Vector2(-6f,22f),
+                new Vector2(16f,14f), new Vector2(19f,-12f),
+                new Vector2(-12f,-17f)
             };
             var playable = worldGround.GetComponent<Renderer>().bounds;
             var otherPOIs = Hotspots(host).Where(p => p.Id != "forest-valoria")
@@ -709,7 +712,7 @@ namespace Eldoria.ReferenceClean.Editor
                 // Golden-angle sampling plus bounded jitter avoids rows,
                 // perfect rings or repeated prefab silhouettes.
                 float angle = index*2.3999632f + l*.7f;
-                float spread=4.5f + Mathf.Sqrt(j+.4f)*3.8f;
+                float spread=3.5f + Mathf.Sqrt(j+.4f)*2.95f;
                 float jitter = (Mathf.PerlinNoise(index*.37f+14,l*.71f+29)-.5f)*5f;
                 Vector2 offset=lobes[l] + new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*(spread+jitter);
                 Vector3 target=forest+new Vector3(offset.x,0,offset.y);
@@ -720,7 +723,7 @@ namespace Eldoria.ReferenceClean.Editor
                 if(placed.Any(v=>PlanarDistance(v,target)<7.7f))continue;
                 float canopy = Mathf.PerlinNoise(target.x*.085f+21,target.z*.085f+67);
                 if(canopy<.25f)continue; // irregular clearings, not solid wall
-                if(additions>=25)continue;
+                if(additions>=21)continue;
                 var donor=original[(l*3+j)%original.Length];
                 considered++;
                 var meshFilter=donor.GetComponent<MeshFilter>();
@@ -754,7 +757,7 @@ namespace Eldoria.ReferenceClean.Editor
                 // owner is cloned: only compatible visual source geometry.
                 placed.Add(actualCenter);additions++;
             }
-            Need(additions>=15&&additions<=25,"Forest extension did not create bounded mature canopy masses: "+additions+" trees from "+considered+" measured sites");
+            Need(additions>=15&&additions<=21,"Forest silhouettes are too sparse or excessively expensive: "+additions+" mature trees from "+considered+" surveyed locations");
             return root;
         }
         static string[] ImageNames(string prefix)
