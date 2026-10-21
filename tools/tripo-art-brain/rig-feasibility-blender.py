@@ -160,6 +160,11 @@ def movement(meshes):
 def render_proof(out,center,scale,frames):
     scene=bpy.context.scene
     scene.render.engine='CYCLES';scene.cycles.samples=8
+    # Hosted Ubuntu Blender build lacks OpenImageDenoiser.
+    for layer in scene.view_layers:
+        if hasattr(layer,'cycles'):
+            layer.cycles.use_denoising=False
+
     scene.render.resolution_x=600;scene.render.resolution_y=480
     scene.render.resolution_percentage=100
     scene.render.image_settings.file_format='PNG'
