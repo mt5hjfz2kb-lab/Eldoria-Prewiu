@@ -49,9 +49,7 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -674,7 +672,7 @@
           "reason": "Four art phases delivered; no runner reservation; owner requests removing stale chat ownership barriers. Canonical work ID and all sources/evidence retained."
         }
       ],
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -695,7 +693,8 @@
       "active_runner_claim": {
         "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
         "owner_authorized": "2026-10-21"
-      }
+      },
+      "runner_lease_note": "Temporary cooperative release for owner-prioritized UI V3 management native validation; art owner/scope/work remain intact. No current native jobs were running at handoff. Claim again after UI tests finish."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -748,7 +747,7 @@
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
       "owner": "chatgpt-eldoria-ui-v3-management-current-chat-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
@@ -768,7 +767,9 @@
         ".github/workflows/ui-v3-domain-smoke.yml",
         "docs/ui-v3/MANAGEMENT_SCREENS_V3_IMPLEMENTATION_20261021.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -796,7 +797,9 @@
           "revision": 2,
           "reason": "Propietario ordena continuar en el chat actual; relevo autorizado sin alterar al ejecutor de arte."
         }
-      ]
+      ],
+      "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
+      "phase": "UI_V3_NATIVE_CERTIFICATION"
     }
   ],
   "history": [
