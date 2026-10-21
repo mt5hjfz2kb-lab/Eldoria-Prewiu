@@ -18,6 +18,11 @@ namespace Eldoria.Presentation
         // Optional presentation adapter; simulation and gesture ownership remain here.
         public Func<Vector2,bool> ExternalPointerBlocked { get; set; }
         public Func<string,bool> ExternalSelection { get; set; }
+        // An integrated UI owns navigation for its entire lifetime, including
+        // the frame in which its final Continue button closes a dialogue.
+        // A raycast after that close no longer sees the button just released.
+        public bool ExternalNavigationOwned { get; set; }
+        public bool LegacyWebNavigationAllowed => !ExternalNavigationOwned;
         public Func<long> UtcNowTicks = () => DateTime.UtcNow.Ticks;
         void NavigateScene(string target) { if(SceneHost!=null)SceneHost.Navigate(target);else SceneManager.LoadScene(target); }
         public void Inspect(string id) { Select(id); }
@@ -196,7 +201,7 @@ namespace Eldoria.Presentation
                     // proved a City tap was accepted, then this old fallback
                     // reopened Frontier on the next frame, undoing it.
                     // Preserve the fallbacks for uncovered legacy UI only.
-                    if(ExternalPointerBlocked?.Invoke(point)!=true)
+                    if(LegacyWebNavigationAllowed&&ExternalPointerBlocked?.Invoke(point)!=true)
                     {
                         TryScheduleWebResetFallback(point);
                         TryScheduleWebBottomNavFallback(point);
@@ -227,6 +232,7 @@ namespace Eldoria.Presentation
             // occasional WebGL/touch release that is visible over the reset Button but
             // never reaches Button.onClick.
             yield return null;
+            if(!LegacyWebNavigationAllowed)yield break;
             if(ownerResetExecutionSerial!=executionSerialAtRelease)yield break;
             if(ownerResetArmed!=armedAtRelease)yield break;
             Debug.Log("ELDORIA_PLAYABLE_RESET fallback=True armed="+ownerResetArmed);
@@ -261,6 +267,7 @@ namespace Eldoria.Presentation
         {
             string before=SceneManager.GetActiveScene().name;
             yield return null;
+            if(!LegacyWebNavigationAllowed)yield break;
             if(SceneManager.GetActiveScene().name!=before)yield break;
             Debug.Log("ELDORIA_PLAYABLE_NAV target="+target+" city="+expectedCity+" source=webgl-touch-fallback");
             NavigateScene(target=="Valoria"?CitySceneName:target);
@@ -1584,5 +1591,6 @@ namespace Eldoria.Presentation
         }
     }
 }
+
 
 

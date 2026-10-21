@@ -95,6 +95,37 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator ClosingActualPrologueKeepsIntegratedNavigationOwnership()
+        {
+            if (Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE") != "1")
+                Assert.Ignore("Requires disposable native probe save");
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            var city = Member(host, "City");
+            var presenter = Member(city, "Presenter");
+            Assert.That(Member(presenter, "ExternalNavigationOwned"), Is.EqualTo(true));
+            Assert.That(Member(presenter, "LegacyWebNavigationAllowed"), Is.EqualTo(false));
+            var guidance = Member(host, "Guidance") as Behaviour;
+            Assert.That(guidance, Is.Not.Null);
+            guidance.enabled = false;
+            Call(guidance, "PresentMilestone");
+            Assert.That(Member(hud, "NarrativeOpen"), Is.EqualTo(true));
+            var modal = Member(hud, "Modal");
+            var next = Member(modal, "Extra") as Button;
+            for (int i = 0; i < 40 && (bool)Member(hud, "NarrativeOpen"); i++)
+            {
+                next.onClick.Invoke();
+                // Ownership must still hold in the release frame, before a
+                // deferred WebGL heuristic can interpret this same touch.
+                Assert.That(Member(presenter, "LegacyWebNavigationAllowed"), Is.EqualTo(false));
+                yield return null;
+            }
+            Assert.That(Member(hud, "NarrativeOpen"), Is.EqualTo(false));
+            Assert.That(Member(host, "InWorld"), Is.EqualTo(false));
+            Assert.That(Member(presenter, "LegacyWebNavigationAllowed"), Is.EqualTo(false));
+        }
+
+        [UnityTest]
         public IEnumerator BuildingSelectionRetainsAuthoritativeGatewayOffer()
         {
             Component host = null, hud = null;
@@ -233,3 +264,4 @@ namespace Eldoria.Tests
 
     }
 }
+

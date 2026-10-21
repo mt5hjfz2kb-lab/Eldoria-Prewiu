@@ -71,6 +71,7 @@ namespace Eldoria.ReferenceClean {
    BindSession();Hud.SelectionChanged+=SelectionChanged;
    // Keep the original presenter ticking the authoritative gateway and gestures.
    legacyCanvas.enabled=false;legacyRaycaster.enabled=false;
+   city.Presenter.ExternalNavigationOwned=true;
    city.Presenter.SceneHost=this;city.Presenter.ExternalSelection=Select;
    city.Presenter.ExternalPointerBlocked=RoyalInputGate.Blocks;
    WorldNavigation.enabled=false;WorldCamera.enabled=false;WorldRoot.SetActive(false);
@@ -99,7 +100,7 @@ namespace Eldoria.ReferenceClean {
    }
   }
   void SyncWorldCity(){var state=city.Gateway.Snapshot();if(WorldBastionOne)WorldBastionOne.SetActive(state.BastionLevel<2);if(WorldBastionTwo)WorldBastionTwo.SetActive(state.BastionLevel>=2);if(WorldSawmill)WorldSawmill.SetActive(state.SawmillLevel>0);}
-  void OnDestroy(){if(Hud)Hud.SelectionChanged-=SelectionChanged;if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
+  void OnDestroy(){if(Hud)Hud.SelectionChanged-=SelectionChanged;if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;city.Presenter.ExternalNavigationOwned=false;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
   public static bool CanEnterWorld(PlayerState s)=>s!=null&&(s.SawmillLevel>0||s.Resources.Wood<SliceRules.SawmillWoodCost);
   public bool Select(string id){
    if(!Ready)return false;
@@ -277,3 +278,4 @@ namespace Eldoria.ReferenceClean {
   string L(string es,string en)=>englishInterface?en:es;
  }
 }
+
