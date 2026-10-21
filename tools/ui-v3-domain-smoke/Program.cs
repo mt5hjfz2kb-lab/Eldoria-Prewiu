@@ -41,6 +41,7 @@ internal static class Program
     static void Main()
     {
         SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
+        Check(SliceRules.RecruitSeconds==600,"legacy default batch uses the same true OWNER deadline");
         Check(SliceRules.RecruitSecondsFor(10)==300,"10 T1 = 5 minutes");
         Check(SliceRules.RecruitSecondsFor(20)==600,"20 T1 = 10 minutes");
         Check(SliceRules.RecruitSecondsFor(30)==900,"30 T1 = 15 minutes");
