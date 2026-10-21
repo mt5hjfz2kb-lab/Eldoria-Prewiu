@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T20:01:26.686Z",
+  "updated_at": "2026-10-21T20:21:37.099Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -50,13 +50,15 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NATIVE267_ARTIST_REQUEST_HTTP400_RECOVERY",
-      "next": "Native266 stopped before authoring on mismatched native265 cityPNG pin; verified and fixed. Native267 accepted all input hashes then local Ollama returned HTTP400 on expanded4-image request, before geometry. Restore proven2-image context with exact rejected-world feedback and log server error body. No candidate integration; native265 visually rejected.",
+      "phase": "NATIVE268_COMPACT_GEOGRAPHY_ARTIST_TRIAL",
+      "next": "Execute repaired local artist request, then inspect all15 genuine native A/B pairs. No accepted geography yet; native265 rejected and canonical scene preserved.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -701,7 +703,7 @@
           "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -719,8 +721,13 @@
         "handoff": "Exact source SHA, trial revision, tests and untouched canonical art; no APK/itch publication"
       },
       "active_runner_claim": {
-        "purpose": "Native265 local Qwen geography plan and reversible city/world trial",
-        "owner_authorized": "2026-10-21"
+        "purpose": "Native268 local Qwen compact geography plan and reversible same-source Unity A/B",
+        "owner_authorized": "2026-10-21",
+        "previous_jobs_completed": [
+          39666405366,
+          39666405387,
+          39665814420
+        ]
       },
       "runner_lease_note": "Same owner controls UI/general gate and art. Reserve NEXT serial native geography job, with existing main regression39655724743 preserved ahead; no cancellation or simultaneous editor use.",
       "pending_art_validation": {
@@ -887,7 +894,7 @@
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
       "owner": "codex-three-workstreams-completion-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 11,
+      "ownership_revision": 12,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
@@ -914,9 +921,7 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -956,7 +961,7 @@
           "status": "SUCCESS"
         }
       },
-      "next": "Native source tests automatically queued by explicit skin support commit; retain UI lease while UI/general editor tests run serially. Current tested source623de76 uses reflection at existing Assembly-CSharp boundary. Then release native runner to geography268 and final combined WebGL QA.",
+      "next": "Current main source623de76 general39666405387 and UI39666405366 SUCCESS. Final exact WebGL/browser QA follows geography and accepted animated actor integration.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -997,19 +1002,23 @@
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "AUTOMATIC_SOURCE_CERT_AFTER_ANIMATION_SUPPORT",
+      "phase": "MAIN_NATIVE_CERTIFIED_COMBINED_WEBGL_PENDING",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
-        "run": 39655724743,
-        "source": "284ef398e078021f4eeef42f852730714c0bd48b",
+        "run": 39666405387,
+        "source": "623de76ca7a7742d59e97c3b5a160de75e68af89",
         "editmode": "success",
         "playmode": "success",
         "windows_build": "success",
-        "artifact_id": 12371064139,
-        "artifact_sha256": "6e514f81bbb3a621abe93072aa529150d8d27216f4b835bae41d7e5a2a2fe59d",
-        "run_conclusion": "cancelled",
-        "note": "New source push superseded run during final upload/cleanup; tests/build steps passed and artifact finalized. Overall run must not be reported SUCCESS."
+        "run_conclusion": "success",
+        "artifact_id": 12378457368
+      },
+      "current_native_cert": {
+        "run": 39666405366,
+        "source": "623de76ca7a7742d59e97c3b5a160de75e68af89",
+        "conclusion": "success",
+        "artifact_id": 12378682966
       }
     },
     {
