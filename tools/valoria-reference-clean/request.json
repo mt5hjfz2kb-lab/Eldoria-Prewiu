@@ -1,11 +1,11 @@
 {
   "stage": "geography_trial",
   "validate_play": false,
-  "revision": 271,
+  "revision": 272,
   "budget_eur": 0,
   "validated_runtime_source": "623de76ca7a7742d59e97c3b5a160de75e68af89",
   "validated_run": 39666405366,
-  "checks": "Native270 provided both target arrays but four world heights failed5..16m range before geometry. Native271 typed target schemas now encode their own city/world coordinates, radii and height units, matching unchanged validator. Keep exact native268 feedback; all slope, source, contact and POI gates.0EUR,reversible trial only.",
+  "checks": "Reuse exact valid Qwen target groups from native271 same-image attempts: city from response2, world from response1. No numeric parameter modifications; full combined validation PASS,7 authored actions. Both raw responses archived and SHA-pinned. Execute first native test of broad-landform/contact correction,15 real A/B;0EUR,no integration.",
   "art_correction": "Replace isolated peaks and decorative contact cutouts with connected low shoulders and actual noninteractive root seating.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
@@ -37,6 +37,6 @@
   "reuse_roof_candidate": true,
   "city_surface": false,
   "browser_backend": "windows",
-  "author_geography": true,
-  "reuse_geography_plan": false
+  "author_geography": false,
+  "reuse_geography_plan": true
 }

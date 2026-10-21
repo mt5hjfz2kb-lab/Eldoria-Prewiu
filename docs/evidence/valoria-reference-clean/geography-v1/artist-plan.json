@@ -1,67 +1,123 @@
 {
-  "observed_defect": "City terrain lacks sculpted shoulders and world hills exceed height limits",
-  "design_intent": "Add 2-4 compact city shoulders and cap world hills to 16m max",
+  "observed_defect": "Silhouettes lack architectural continuity; terrain seams break visual unity; isolated hills create unnatural focal points; mobile rendering cost exceeds 0.24 height/radius ratio.",
+  "design_intent": "Create broad, overlapping meadow shoulders using compact finite-footprint landforms to unify terrain with castle and roads, preserving gameplay anchors while reducing visual fragmentation.",
   "asset_decision": "MODIFY",
-  "reason_for_new_geometry": "City needs visible terrain continuity; world hills must comply with validation bounds",
+  "reason_for_new_geometry": "Existing terrain lacks readable spatial hierarchy and visual cohesion. Compact finite-footprint landforms will resolve silhouettes, terrain seams, and focal fragmentation without altering POIs or architecture.",
+  "expected_visual_difference": "Broad, overlapping meadow shoulders will unify terrain with castle and roads, reducing visual fragmentation and enhancing architectural continuity.",
+  "mobile_risks": "Height-to-radius ratio maintained at 0.24 or less; no new buildings or assets; terrain modifications preserve gameplay anchors and topology.",
   "planned_actions": [
     {
-      "id": "city-shoulder-west",
+      "id": "shoulder_west",
       "type": "sculpt_region",
       "target": "city",
-      "rationale": "Add visible shoulder for west meadow",
+      "rationale": "Establish a broad west shoulder to unify castle with meadow, avoiding isolated peaks.",
       "parameters": {
-        "x": -50,
-        "z": 50,
-        "radius_x": 30,
-        "radius_z": 35,
-        "height": 3.5
+        "x": -50.0,
+        "z": 35.0,
+        "radius_x": 40.0,
+        "radius_z": 40.0,
+        "height": 4.0
       }
     },
     {
-      "id": "city-shoulder-east",
+      "id": "shoulder_east",
       "type": "sculpt_region",
       "target": "city",
-      "rationale": "Add visible shoulder for east meadow",
+      "rationale": "Create a balanced east shoulder to mirror west, enhancing visual continuity.",
       "parameters": {
-        "x": 50,
-        "z": 50,
-        "radius_x": 30,
-        "radius_z": 35,
-        "height": 3.5
+        "x": 50.0,
+        "z": 35.0,
+        "radius_x": 40.0,
+        "radius_z": 40.0,
+        "height": 4.0
       }
     },
     {
-      "id": "world-hill-northwest",
+      "id": "shoulder_north",
       "type": "sculpt_region",
-      "target": "world",
-      "rationale": "Cap hill height to 16m in northwest",
+      "target": "city",
+      "rationale": "Add a north shoulder to connect castle with road, reducing visual isolation.",
       "parameters": {
-        "x": 940,
-        "z": 75,
-        "radius_x": 30,
-        "radius_z": 35,
-        "height": 16
+        "x": 0.0,
+        "z": 70.0,
+        "radius_x": 40.0,
+        "radius_z": 40.0,
+        "height": 4.0
       }
     },
     {
-      "id": "world-hill-southwest",
+      "id": "shoulder_northwest",
       "type": "sculpt_region",
       "target": "world",
-      "rationale": "Cap hill height to 16m in southwest",
+      "rationale": "Add a northwest shoulder to connect city with forest, reducing visual fragmentation.",
       "parameters": {
-        "x": 930,
-        "z": -80,
-        "radius_x": 30,
-        "radius_z": 35,
-        "height": 16
+        "x": 925.0,
+        "z": 65.0,
+        "radius_x": 65.0,
+        "radius_z": 55.0,
+        "height": 9.0
+      }
+    },
+    {
+      "id": "shoulder_northeast",
+      "type": "sculpt_region",
+      "target": "world",
+      "rationale": "Create a northeast shoulder to unify city with quarry, enhancing visual continuity.",
+      "parameters": {
+        "x": 995.0,
+        "z": 85.0,
+        "radius_x": 65.0,
+        "radius_z": 55.0,
+        "height": 9.0
+      }
+    },
+    {
+      "id": "shoulder_southwest",
+      "type": "sculpt_region",
+      "target": "world",
+      "rationale": "Introduce a southwest shoulder to connect city with ruin, improving compositional balance.",
+      "parameters": {
+        "x": 910.0,
+        "z": -100.0,
+        "radius_x": 65.0,
+        "radius_z": 55.0,
+        "height": 9.0
+      }
+    },
+    {
+      "id": "shoulder_southeast",
+      "type": "sculpt_region",
+      "target": "world",
+      "rationale": "Add a southeast shoulder to anchor city with enemy, reducing visual isolation.",
+      "parameters": {
+        "x": 990.0,
+        "z": -105.0,
+        "radius_x": 65.0,
+        "radius_z": 55.0,
+        "height": 9.0
       }
     }
   ],
-  "expected_visual_difference": "City shoulders will appear as gentle slopes; world hills will be capped at 16m, eliminating unnatural ring-shaped craters",
-  "mobile_risks": "Minimal risk; height changes are within validated bounds and localized to avoid excessive vertex count",
   "sculpt_kernel": "compact_cubic_v2",
   "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
-  "source_run": 39661331858,
+  "source_run": 39669656633,
   "qwen_artist_authored": true,
-  "art_approved": false
+  "art_approved": false,
+  "composition_method": "Select complete independently valid target arrays from two genuine responses to the same exact native268 image brief; no parameter edits, invented actions, clamping or constraint changes.",
+  "composition_sources": [
+    {
+      "target": "city",
+      "run": 39672014429,
+      "artifact": 12380152522,
+      "file": "geography-v1/artist-response-2.json",
+      "response_sha256": "7654f439d7d808e6e1b4d701e57135e09f8601b62255ebb088c372aeda2fbab0"
+    },
+    {
+      "target": "world",
+      "run": 39672014429,
+      "artifact": 12380152522,
+      "file": "geography-v1/artist-response-1.json",
+      "response_sha256": "f5854e051683c41bf7c5945ec6726d1f9ea8a286ea8e061d08a2b3338fdc90e4"
+    }
+  ]
 }
