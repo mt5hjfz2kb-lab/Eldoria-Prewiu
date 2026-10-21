@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21",
+  "updated_at": "2026-10-21T11:30:54.056Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -48,7 +48,9 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -637,6 +639,12 @@
         "art_target_certified": false,
         "physical_mobile_tested": false,
         "published": false
+      },
+      "release_lease": {
+        "purpose": "UI V3 WebGL revision 243, existing Valoria native workflow without art mutation",
+        "delegated_by": "Owner order to finish Eldoria UI V3 and prepare verified playtest",
+        "reserved_for": "valoria-reference-clean web_playtest and exact browser QA",
+        "release_condition": "After WebGL+QA completion or failure; no other Windows native jobs"
       }
     },
     {
@@ -644,7 +652,7 @@
       "title": "UI V3 contextual — existing PR #83 (registry reconciliation)",
       "owner": "existing-ui-v3-executor-pr83",
       "owner_reference": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/83",
-      "branch": "ui/eldoria-v3-contextual-20261021",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-21",
       "scope": [
@@ -663,8 +671,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "EXISTING_DRAFT_PR_NATIVE_VALIDATION_PENDING",
-      "next": "Existing UI executor continues PR #83 from its live HEAD and reconciles current main before promotion; retain native/visual/gameplay acceptance gates.",
+      "phase": "INTEGRATED_NATIVE_40_20_35_PASS_WEBGL_DELIVERY_RUNNING",
+      "next": "V3 merged PR83 on main; native 39586129212 passes 40+20+35 and 7 viewport comparisons; compile WebGL revision243, verify exact browser build, preserve Restricted release until QA.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch."
     },
     {
