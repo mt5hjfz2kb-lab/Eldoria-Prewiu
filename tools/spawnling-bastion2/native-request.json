@@ -18,5 +18,7 @@
     "existing_hotspot_unchanged",
     "original_bastion_i_ii_runtime_play_save"
   ],
-  "owner_authorization": "2026-10-21 user explicitly requested finishing and replacing the Bastion II enemy silhouette in-game; no additional monetized Tripo generation."
+  "owner_authorization": "2026-10-21 user explicitly requested finishing and replacing the Bastion II enemy silhouette in-game; no additional monetized Tripo generation.",
+  "stage_revision": 2,
+  "preflight_description": "Use latest merged source code with Unity hotspot namespace fix, zero-credit PBR GLBs, and safe branch refresh before writing candidate scene"
 }
