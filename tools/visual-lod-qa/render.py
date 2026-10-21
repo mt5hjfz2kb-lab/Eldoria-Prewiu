@@ -73,8 +73,11 @@ def make_light(name, loc, center, power, size):
 
 def set_world_and_camera(center, diag, size):
     scene = bpy.context.scene
-    engine = "BLENDER_EEVEE_NEXT" if bpy.app.version >= (4, 2, 0) else "BLENDER_EEVEE"
-    scene.render.engine = engine
+    # Cycles CPU is stable on headless GitHub Ubuntu; no GPU/display needed.
+    scene.render.engine = "CYCLES"
+    scene.cycles.samples = 12
+    scene.render.threads_mode = "FIXED"
+    scene.render.threads = 4
     scene.render.resolution_x = size
     scene.render.resolution_y = size
     scene.render.resolution_percentage = 100
