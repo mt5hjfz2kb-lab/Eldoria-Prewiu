@@ -256,20 +256,25 @@ def main():
    # never invent/edit 3D coordinates or write a fake plan in Python.
    bb=(topology.get('local_aabb') or {}) if a.mesh_context else {}
    lows,highs=bb.get('min'),bb.get('max')
-   if not(all(isinstance(v,list) and len(v)==3 for v in (lows,highs))):
-    raise ValueError('CREATURE_REQUIRES_VERIFIED_SOURCE_LOCAL_BOUNDS')
-   source_diagonal=math.sqrt(sum((highs[k]-lows[k])**2 for k in range(3)))
-   if not .1 <= source_diagonal <= 100:
-    raise ValueError('CREATURE_SOURCE_DIMENSIONS_INVALID')
+   if a.mesh_context:
+    if not(all(isinstance(v,list) and len(v)==3 for v in (lows,highs))):
+     raise ValueError('CREATURE_REQUIRES_VERIFIED_SOURCE_LOCAL_BOUNDS')
+    source_diagonal=math.sqrt(sum((highs[k]-lows[k])**2 for k in range(3)))
+    if not .1 <= source_diagonal <= 100:
+     raise ValueError('CREATURE_SOURCE_DIMENSIONS_INVALID')
+    bounds_advice=(f'Actual mesh diagonal is {source_diagonal:.4f}m (verified local AABB). '
+     f'Choose yourself a NONZERO sculpt displacement (0.015..{0.12*source_diagonal:.3f}m) '
+     f'and a genuinely LOCAL radius ({0.06*source_diagonal:.3f}..{0.35*source_diagonal:.3f}m). ')
+   else:
+    bounds_advice='No source-verified mesh bounds supplied; do not invent measurements. '
    focus=('CREATURE ART: look at genuine BEFORE image and source-topology samples. '
      'Aim for ONE unmistakable localized anatomical improvement, preferably face/head '
      'or shoulder silhouette. Source provenance states head faces +X and tail -X; '
      'verify against the photos, do NOT treat this as permission to invent vertex coordinates. '
      'Use sculpt_region on an observed existing localized anatomical region, unless '
      'another typed structural operation is clearly more appropriate. '
-     f'Actual mesh diagonal is {source_diagonal:.4f}m (from verified local AABB). '
-     f'Choose yourself a NONZERO sculpt displacement (suggested 0.015..{0.12*source_diagonal:.3f}m) '
-     f'and a genuinely LOCAL radius (suggested {0.06*source_diagonal:.3f}..{0.35*source_diagonal:.3f}m). '
+     +bounds_advice+
+
      'Your delta MUST contain at least one nonzero coordinate and change the proportions/silhouette, '
      'NOT translate whole creature; delta=[0,0,0] is invalid and will be rejected. '
      'Your center MUST belong to an anatomical feature from the verified Blender AABB, '
