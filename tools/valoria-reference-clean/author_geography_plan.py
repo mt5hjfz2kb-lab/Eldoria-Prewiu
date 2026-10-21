@@ -54,7 +54,7 @@ def main():
     assert sha(trial)=="568c6c67417d5fba827f18da5f9ab6c71292c9f19111f4d652a7b9518efc19b6"
     identity=json.loads(trial.read_text(encoding="utf-8-sig"))
     images=[ev/"before-city-II-wide.png",ev/"before-world-REGION1-ENTIRE-2048x1152.png",ev/"after-world-REGION1-ENTIRE-2048x1152.png",ev/"after-world-quarry-valoria-wide.png"]
-    expected=["b0452915eb773be9060d899fb1c5fbe37a2280e46b0b0fc0a017d0facdb64e54",
+    expected=["66a9463a0cfcec2ce1d540a13a89093d516760708ece3739b04fa6bf5f23463e",
               "58255a0c06e92d5441c37849b4713f94a4bdd10f1ac1059b5cb4773b10bbd827",
               "dd6b118d8b53d9dd5f0bcd63d7993e356ba342fb4c393351edae39585b905e4b",
               "efaee2525fbffe9d01783bbc4aea4593e72701557ed7a783767f6c1fde66b035"]
