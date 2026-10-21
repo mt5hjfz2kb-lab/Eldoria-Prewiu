@@ -434,23 +434,6 @@ namespace Eldoria.ReferenceClean.Editor
             }
             finally { if (sample) Object.DestroyImmediate(sample); }
         }
-        static void WriteImages(string prefix, string[] imageNames)
-        {
-            foreach (string suffix in new[] { "-city-I-wide.png", "-city-I-mobile.png",
-                "-city-II-wide.png", "-city-II-mobile.png", "-world-REGION1-ENTIRE-2048x1152.png",
-                "-world-strategic-wide.png", "-world-strategic-mobile.png",
-                "-world-forest-valoria-wide.png", "-world-forest-valoria-mobile.png",
-                "-world-quarry-valoria-wide.png", "-world-quarry-valoria-mobile.png",
-                "-world-corrupt-scout-wide.png", "-world-corrupt-scout-mobile.png",
-                "-world-engendro-valoria-wide.png", "-world-engendro-valoria-mobile.png" })
-                imageNames[Array.IndexOf(new[] { "-city-I-wide.png", "-city-I-mobile.png",
-                  "-city-II-wide.png", "-city-II-mobile.png", "-world-REGION1-ENTIRE-2048x1152.png",
-                  "-world-strategic-wide.png", "-world-strategic-mobile.png",
-                  "-world-forest-valoria-wide.png", "-world-forest-valoria-mobile.png",
-                  "-world-quarry-valoria-wide.png", "-world-quarry-valoria-mobile.png",
-                  "-world-corrupt-scout-wide.png", "-world-corrupt-scout-mobile.png",
-                  "-world-engendro-valoria-wide.png", "-world-engendro-valoria-mobile.png" }, suffix)] = prefix + suffix;
-        }
         static string[] ImageNames(string prefix)
         {
             return new[] { "city-I-wide", "city-I-mobile", "city-II-wide", "city-II-mobile",
