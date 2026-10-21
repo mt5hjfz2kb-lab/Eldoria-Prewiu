@@ -723,14 +723,14 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "ISOLATED_FREE_BLENDER_RIG_QA_RECOVERY",
+      "phase": "FREE_BLENDER_SKELETON_IDLE_TECH_PASS_ART_UNITY_PENDING",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Rig check zero-credit execution or documented access blocker, plus authenticated detailed asset profile and testable input binding to existing Qwen artist; retain game untouched.",
         "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
-      "next": "Recover failed Blender rig candidate from run39642306967 (scene.world None in render) by fixing only isolated script, rerun exact hosted CI; preserve in-progress Qwen run39641404559 and consume result read-only, no duplicate Qwen or Tripo request.",
+      "next": "Verified real 8-bone weighted GLB and 1 idle clip from run39642770488 (artifact12364689083), zero credits; genuine Blender pose review reveals only modest motion, not production rig. Preserve script, archive proof SHA, and do not promote/integrate while Valoria owns Unity Windows; refine anatomically and certify animated Unity import in future isolated QA. Qwen4B run39641404559 failed inference timeout; do not repeat without a changed hypothesis.",
       "handoff_note": "Owner explicitly requested continue same Tripo+art-brain job; no active phase2 job at claim time. Do not touch Valoria scene or runner. Previous chat may not be remotely interrupted: re-read live registry before any further writes.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -740,6 +740,22 @@
         "date": "2026-10-21",
         "reason": "Propietario solicita continuar el trabajo desde streaming interrumpido; un único ID canónico, sin detener trabajos existentes.",
         "recovery_source_run": 39642306967
+      },
+      "last_verified_rig": {
+        "run": 39642770488,
+        "artifact": 12364689083,
+        "source_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+        "glb_sha256": "d092ead354eb1cc30a11bfe5f29f29b6715cd44af484d113b4bfaebf04b56c7e",
+        "bone_count": 8,
+        "skins": 1,
+        "clips": 1,
+        "animated": true,
+        "blender_preview": true,
+        "unity_import": false,
+        "art_approved": false,
+        "physical_mobile_profiled": false,
+        "credits_spent": 0,
+        "provenance": "pipeline/tripo-art-brain/verified-rig-probes/spawnling-blender-rig-v1-20261021.json"
       }
     },
     {
