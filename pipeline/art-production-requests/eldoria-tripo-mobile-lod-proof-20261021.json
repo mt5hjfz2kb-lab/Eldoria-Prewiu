@@ -2,14 +2,14 @@
   "schema_version": 2,
   "request_id": "eldoria-tripo-mobile-lod-proof-20261021",
   "workstream_id": "eldoria-tripo-mobile-lod-proof-20261021",
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "COMPLETED",
   "asset_or_sector": "Jabalí de roca (no integrado, capítulo III) y Foco de corrupción (prop experimental): LOD visuales y métricas de coste para móviles",
   "profile": "environment_surface",
   "geometry_gap_proven": false,
   "allow_tripo": false,
   "ai_authorship_policy": "required",
-  "visual_gate_state": "TECHNICAL_LOD_CANDIDATES_UNDER_QA",
+  "visual_gate_state": "TECHNICAL_LOD_AND_TEXTURE_PASS_ART_REVIEW_REQUIRED",
   "credit_authorization": {
     "approved": false,
     "authorized_credit_cost": 0
@@ -24,5 +24,30 @@
     "source_gate": "GLB existente protegido por SHA-256, procesado con tools/blender_capability_proof.py; no Tripo API ni modelo nuevo.",
     "final_gate": "LOD0/1/2 resultantes deben conservar triángulos descendentes, UV0, PBR y textura embebida, con PNG Blender mismos ángulos y reporte original. NO ART_APPROVED ni MOBILE_PASS sin comparación Unity real y dispositivo."
   },
-  "notes": "Trabajo aditivo separado de artista Tripo phase2 (Engendro/Qwen) y escena Valoria. Solo GitHub-hosted Ubuntu, no Windows runner. No integrar ni publicar."
+  "notes": "Trabajo aditivo separado de artista Tripo phase2 (Engendro/Qwen) y escena Valoria. Solo GitHub-hosted Ubuntu, no Windows runner. No integrar ni publicar.",
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "credits_new": 0,
+  "closure": {
+    "run_id": 39629479262,
+    "artifact_id": 12358279342,
+    "artifacts": "8 experimental GLB files / 16 genuine Blender PNGs / per-file GLB SHA and UV/PBR QA manifests",
+    "new_credits": 0,
+    "blender_pngs": 16,
+    "boar_lods": [
+      49800,
+      12450,
+      3984
+    ],
+    "focus_lods": [
+      49799,
+      12448,
+      3983
+    ],
+    "boar_1k_bytes": 3741384,
+    "focus_1k_bytes": 3728512,
+    "game_modified": false,
+    "art_approved": false,
+    "mobile_device_tested": false
+  }
 }
