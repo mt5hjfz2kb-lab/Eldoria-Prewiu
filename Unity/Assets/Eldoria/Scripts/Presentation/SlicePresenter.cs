@@ -799,7 +799,6 @@ namespace Eldoria.Presentation
             var prepared=SliceRules.Expedition(s.Available,"aldric");
             currentBuildingId="barracks";
             SetBuildingPanelOpen(true);
-            ApplyManagementScreen(true);
             buildingAction.onClick.RemoveAllListeners();
             buildingTitle.text="PREPARAR MARCHA";
             buildingBody.text="Sir Aldric · "+s.Available.Total+" Arqueros disponibles\n"+
@@ -870,7 +869,7 @@ namespace Eldoria.Presentation
             UpdateBuildingLevelBadges(s);
             if(SceneHost!=null){SceneHost.Apply(s);if(renderedBastion!=s.BastionLevel){renderedBastion=s.BastionLevel;if(currentBuildingId=="bastion"&&buildingPanel!=null&&buildingPanel.activeSelf)OpenBuildingPanel("bastion");}}
             else if(productionParcels!=null) productionParcels.Apply(s);
-            if(SceneHost!=null&&buildingPanel!=null&&buildingPanel.activeSelf&&
+            if(SceneHost!=null&&buildingPanel!=null&&(buildingPanel.activeSelf||(managementScreen!=null&&managementScreen.activeSelf))&&
                 (currentBuildingId=="sawmill"||currentBuildingId=="barracks")&&buildingTitle.text!="PREPARAR MARCHA")
                 OpenBuildingPanel(currentBuildingId);
             UpdateBuildingLevelBadgePositions();
