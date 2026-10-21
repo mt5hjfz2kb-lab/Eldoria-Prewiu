@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T08:12:00Z",
+  "updated_at": "2026-10-21T08:35:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -655,13 +655,15 @@
         "Unity/Assets/Eldoria/SpawnlingBastion2/**",
         ".github/workflows/eldoria-spawnling-native.yml",
         "Unity/Assets/Eldoria/ArtTests/SpawnlingB2/**",
-        "Unity/Assets/Eldoria/Resources/SpawnlingB2/**"
+        "Unity/Assets/Eldoria/Resources/SpawnlingB2/**",
+        "pipeline/art-production-requests/eldoria-spawnling-bastion2-finish-20261021.json"
       ],
       "resources": [],
       "budget_eur": 0,
       "art_production_routing": "required",
       "dependency": "Scene integration staged exclusively in PR #84 (draft); existing valoria-master-plan workstream retains authority over Valoria_City_World_UI.unity and Windows runner. Coordinate main merge after native QA and UI V3 PR #83 conflict checks. Zero Tripo credits, no release.",
-      "next": "Await runner availability; native scene GLB PBR + LOD import with before/after images, canonical I-II save/raycast tests, review PR #83, then safe main promotion without publishing."
+      "next": "Source art and LOD production pass; native Windows source scene integration started run 39568710360, must prove actual scene, I-II save/rewards, independent art screenshots; guard routing request now authored in main; coordinate PR #83 without overwriting.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-spawnling-bastion2-finish-20261021.json"
     }
   ],
   "history": [
