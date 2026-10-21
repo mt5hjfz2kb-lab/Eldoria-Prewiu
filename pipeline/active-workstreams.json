@@ -19,7 +19,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-geography-source-validation-20261021",
+      "owner": "codex-three-workstreams-completion-20261021",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-21T18:27:50.616Z",
@@ -694,9 +694,14 @@
           "reason": "Native262 requires shared Windows runner currently exclusively held by UI V3. No valid zero-cost independent native Unity route to certify or integrate. Kept scene unchanged, source candidate untouched and wrote native261 quantitative visual review on main.",
           "evidence": "docs/evidence/valoria-reference-clean/geography-v1/NATIVE261_OBJECTIVE_AB_AUDIT_20261021.md",
           "handoff": "On explicit UI release, reclaim same ID and reserve Windows after current live checks; run request geography_trial rev262 incrementing revision in request; review 15 real A/B images and live gameplay before integration."
+        },
+        {
+          "owner": "chatgpt-eldoria-geography-source-validation-20261021",
+          "revision": 9,
+          "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -727,13 +732,14 @@
         "resource_holder": "eldoria-ui-v3-management-completion-20261021",
         "review_status": "ART_REVIEW_REQUIRED",
         "canonical_scene_unchanged": true
-      }
+      },
+      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-eldoria-spawnling-rig-finish-20261021",
-      "ownership_revision": 11,
+      "owner": "codex-three-workstreams-completion-20261021",
+      "ownership_revision": 12,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -823,6 +829,11 @@
           "revision": 9,
           "released_at": "2026-10-21T20:06:00+02:00",
           "reason": "Owner explicitly requests this chat to verify rigged Spawnling and replace existing ONLY if real artistic, Unity and gameplay QA pass; safe same-workstream handoff."
+        },
+        {
+          "owner": "chatgpt-eldoria-spawnling-rig-finish-20261021",
+          "revision": 11,
+          "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
       "write_scope_released": false,
@@ -860,14 +871,15 @@
         "runner_owner": "eldoria-ui-v3-management-completion-20261021",
         "platform_write_denial": "GitHub connector create_file attempt for isolated Unity C# QA source blocked by OpenAI safety controls; no alternate route attempted",
         "next_allowed_action": "Continue once ownership/runner reconciled; preserve existing V4 artifact source and QA verdict; no bypass of denied write."
-      }
+      },
+      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
     },
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-eldoria-ui-v3-management-resumed-20261021",
+      "owner": "codex-three-workstreams-completion-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 8,
+      "ownership_revision": 9,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
@@ -952,11 +964,17 @@
           "owner": "chatgpt-eldoria-ui-v3-management-final-run-20261021",
           "revision": 7,
           "reason": "Owner authorized this chat to resume and finish UI V3 after latest Unity run 39651216087 ended with concrete PlayMode failures"
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-management-resumed-20261021",
+          "revision": 8,
+          "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
       "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
       "phase": "UI_V3_NATIVE_FAILURE_REPAIR",
-      "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner."
+      "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
+      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
