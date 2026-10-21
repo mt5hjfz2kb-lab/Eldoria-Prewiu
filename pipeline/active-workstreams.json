@@ -707,7 +707,8 @@
         "tools/workstream-lease/**",
         ".github/workflows/repository-architecture-guard.yml",
         "tools/work-status/report.mjs",
-        "tools/work-status/report.test.mjs"
+        "tools/work-status/report.test.mjs",
+        "tools/check-valoria-visual-authority-routing.mjs"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
