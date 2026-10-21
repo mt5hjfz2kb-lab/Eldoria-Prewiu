@@ -1,9 +1,10 @@
 {
     "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
-    "tool_sha256": "32a194a8388f88a2fccd36e21ba5d01744c80f6d701804edd1a00f5a04982270",
+    "tool_sha256": "d7a201a27cb0f1a562b74a56d62b9f1aaadc3dc80a627c3c6f902f0f1731e28b",
     "method": "Open-meadow TerrainData sculpt with synced trial physics; Region1 noninteractive natural roots seated on exact candidate triangles, mature forest additions seated on the candidate visual macroterrain; original atlas/POIs intact",
     "world_ground_source": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-0.asset",
     "artist_plan_sha256": "34c0a4933b21e0280fb047ac162aa165be097083e75c353674a93e8c446e4f87",
+    "geometry_sha256": "a2d06d0d83106205b3e81edbbad81d012dc71e3b8ff389e48b3997eeee055f67",
     "original_poi_ids": [
         "corrupt-scout=(933, 16.2930984, -22.99998)",
         "engendro-valoria=(926.000061, 7.31442165, -27.0000343)",
@@ -38,14 +39,14 @@
         "after-world-engendro-valoria-mobile.png"
     ],
     "image_sha256": [
-        "f6256fcb5124cf7f06f1911114631bea6b9576e47f1ceb3d80d55d1124f74e0e",
-        "5dc9861a435beff76a7f9eca1c6b79e4cfd2340d441451f8873d9c1eea495b8e",
-        "47ac297e200cbfd861c6b03a7684bdc4d115dfdd774788cb566e03f214b68469",
-        "ee448c1c9b76300bf46e37303bc5c5cf60f58ca356d06e4cad9244fa1303ff76",
+        "3676b5186a61cf9ee2509af21ce8bfe9fa508dafa0eb07e8e9ef5c455cb0fd1d",
+        "77bab98f1bdce71c6bbbaab8dd797ad2a79eec596f711334a4faf7ed0e8aa769",
+        "b81eb4ed2ad7000bcb900e9bcf8a46a53d712091cd9a099867ca25102b1fd56c",
+        "a6cfdfd114f963f2fdff9302c9d6f7f7a0e72f1672ecac39bdf68835f66b4e5e",
         "795a42d1ec367eb9c2f6cceb1ecb0963ae616cef48e9d964d2564a775addfc57",
-        "a56b3f501fcc4764e4d0b34d01398647a854e830ea756d493595e8b5085998e0",
-        "642310c780114ab7dfc98bc1014114fcc93c74fc9c1acb3b34da558ab9176e33",
-        "d9d128ee5f7654474c7b080a9f43ea0ee0acea58611b5af222ba8d4d406c69b3",
+        "e7903ae422a3dded5104a511a9c3ecdd62d70fe8ed4c1933ec223abbf2c3ae14",
+        "fdd066c91d22ac7c17e58ac86282b6e4fa47e113b0160df03e184ebebd62e2ec",
+        "142b4f3528953405f2dbcef870b5f45dc47ea78e82773344bd705c3873bda1fc",
         "b7c304e294b3486913a42af00c5bf9eea2eb9bf2c1ab9d792bc9e7c9bb44970e",
         "535afa673b09712bd03f4f83be05844c116f08dba21c443dd792dcff71e62df8",
         "02e2a0aa355a786b10d07c044c4735feba5856b251c5d12ba30da744498db4bb",
