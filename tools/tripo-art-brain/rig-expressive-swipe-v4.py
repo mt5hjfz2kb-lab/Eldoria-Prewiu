@@ -38,8 +38,8 @@ def animate_v4(arm):
             pose.update({"spine":(0,-.065,.015),"R_arm":(-.36,.09,.12),"head":(0,.06,0)})
         if frame==27:
             pose.update({
-                "spine":(0,.075,-.025),"head":(0,-.10,-.015),
-                "R_arm":(.78,-.22,-.39),
+                "spine":(0,.052,-.020),"head":(0,-.10,-.015),
+                "R_arm":(.56,-.16,-.29),
                 "L_arm":(.12,-.04,-.08),
                 "R_leg":(-.045,0,0),"L_leg":(.045,0,0),
                 "tail":(0,0,.08)
@@ -50,7 +50,7 @@ def animate_v4(arm):
             "R_forearm": {
                 1:(0,0,0),10:(-.05,.015,-.02),
                 19:(-.36,.12,.08),
-                27:(.26,.17,-.31),
+                27:(.19,.12,-.20),
                 34:(-.18,.045,.075),
                 46:(-.045,0,.015),65:(0,0,0)
             }[frame],
@@ -109,7 +109,7 @@ def main():
     animate_v4(arm)
     displacements=V2.all_displacements(meshes,1,[10,19,27,34,46,65])
     attack=displacements["27"]
-    if not .17<=attack["max_m"]<=.45 or attack["moving_samples_gt2mm"]<300:
+    if not .17<=attack["max_m"]<=.35 or attack["moving_samples_gt2mm"]<300:
         raise RuntimeError("V4_STRIKE_NOT_SUITABLE_FOR_VISUAL_REVIEW:"+str(attack))
     if displacements["65"]["max_m"]>.002:
         raise RuntimeError("NON_LOOPING_ANIMATION")
