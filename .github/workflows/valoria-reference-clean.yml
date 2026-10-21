@@ -267,7 +267,7 @@ jobs:
           if($req.world_contact -and $req.stage -eq 'world_art_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Integrate'}
           if($req.stage -eq 'world_art_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Survey'}
           if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
-          if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
+          if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyTerrainCandidateV1.Trial'}
           if($req.stage -eq 'geography_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'architecture_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Survey'}
           if($req.terrain_polish){$env:VALORIA_TERRAIN_POLISH='1'}
