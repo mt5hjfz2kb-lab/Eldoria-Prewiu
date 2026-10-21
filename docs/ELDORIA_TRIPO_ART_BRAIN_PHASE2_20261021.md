@@ -52,3 +52,12 @@ Una inferencia de Qwen solo demuestra que el modelo participó si existen regist
 ## Medición y continuidad
 
 Registrar la fuente SHA, identidad de Qwen, tiempo de inferencia, acciones permitidas realmente ejecutadas, bytes y conteo de malla, diferencia real de imágenes, observaciones del revisor independiente, créditos, móvil y estado de integración. Etiquetas separadas: SOURCE/TECH, QWEN_AUTHORED, BLENDER_REVIEW, UNITY_ART_APPROVED, MOBILE_PASS, RUNTIME_INTEGRATED.
+
+## Revisión independiente del tercer Qwen real: descartado, no reinferido
+
+- [Run real 39636058045](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39636058045): Qwen3-VL-2B ejecutó un plan tipado y Blender modificó 206/9753 vértices; centro [0,0,0], radio 0,088 m, desplazamiento Z 0,015 m. El A/B estratégico apenas cambió 2/307200 píxeles. No se tocó el juego.
+- [Replay real 39639377365 — SUCCESS técnico](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39639377365): se recuperó por SHA el mismo candidato sin inferencia ni escultor nuevos. En cinco pares Blender verdaderos: cámara isométrica general 2 píxeles, acercamiento isométrico 24, cara cercana 485, lateral 158, posterior 90, sobre 307200 por vista. Solo la cara llega al 0,1579 %, sin mejora anatómica significativa. Veredicto independiente ART_REJECTED_NO_MEANINGFUL_VISUAL_UPLIFT, NO ART_APPROVED. Artifact 12363503143, ver aprendizaje source-locked en pipeline/tripo-art-brain/verified-failures/spawnling-qwen2b-invisible-local-sculpt-20261021.json.
+- **Cambio real de hipótesis:** tools/tripo-art-brain/creature-anatomy-context.py deriva vértices faciales candidatos de la fuente Blender, basados en la orientación facial verificada +X. El mismo Qwen recibe esta región mediante --mesh-context; author_brief.py --anatomy-focus face impide aceptar otro origen incorrecto o desplazamientos diminutos. El modo terreno no cambia.
+- Se prueba Qwen3-VL-4B local en un runner GitHub-hosted gratuito y copia protegida: [run 39641404559](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39641404559), en ejecución al registrar esta evidencia. No se presume que haya mejora ni rig.
+
+El objetivo es una corrección anatómica visible. Si este enfoque falla, revisar estrategia y herramientas del artista, no repetir infinitamente prompts ni gastar generaciones Tripo. Rig Check real sigue pendiente por credencial no disponible en Actions, y rigging/animación de pago NO están autorizados.
