@@ -1,11 +1,11 @@
 {
-  "stage": "geography_integrate",
+  "stage": "spawnling_animated_integrate",
   "validate_play": false,
-  "revision": 275,
+  "revision": 276,
   "budget_eur": 0,
   "validated_runtime_source": "623de76ca7a7742d59e97c3b5a160de75e68af89",
   "validated_run": 39666405366,
-  "checks": "Integrate exact reviewed native274 repeat of accepted272 design. Exact source/tool/geometry/albedo/transform and original reviewed image byte hashes required; tight measured pixel rounding/water allowance only.15 matched views,6 unchangedPOIs.0EUR; thenV42 animation and combinedWebGL.",
+  "checks": "Integrate approved V4.2 eef82ab48b8e512a39b3f87b5b282f5bc493ec119a7e21c2149a2437c1448128 in canonical geography275 scene; preserve camera,POI,farLOD,combat/save; actual Unity captures and runtime PlayMode test required.0EUR.",
   "art_correction": "Replace isolated peaks and decorative contact cutouts with connected low shoulders and actual noninteractive root seating.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
@@ -38,5 +38,5 @@
   "city_surface": false,
   "browser_backend": "windows",
   "author_geography": false,
-  "reuse_geography_plan": true
+  "reuse_geography_plan": false
 }
