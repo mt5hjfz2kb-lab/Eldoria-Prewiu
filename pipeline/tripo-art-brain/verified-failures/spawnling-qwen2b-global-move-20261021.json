@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "asset": "spawnling",
+  "classification": "ART_REJECTED_GLOBAL_TRANSLATION_LIKE",
+  "reviewed_at": "2026-10-21",
+  "source": {
+    "repo_run": 39628068735,
+    "artifact_id": 12358905425,
+    "artifact_sha256": "02fcfc0dc76ebf4becd1444b64223885556f30cf1849414cdb806f29a2489afb",
+    "unit": "Blender mesh-local",
+    "target": "Spawnling_Near_Authored",
+    "source_blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
+    "candidate_blend_sha256": "6f4f035cbf8d99c630d5252d62a0edb793039dd9604fce06500dffcdb1a227f2",
+    "plan_sha256": "f20492297cd8ce6234cbfc200d9e2a4677d4f29e4d22703396422068bd949053",
+    "model": "qwen3-vl:2b-instruct",
+    "real_inference_seconds": 346.211
+  },
+  "action": {
+    "type": "sculpt_region",
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "radius": 10.24,
+    "delta": [
+      0.5,
+      0.5,
+      0.5
+    ],
+    "changed_vertices": 9753,
+    "total_target_vertices": 9753
+  },
+  "geometry": {
+    "original_aabb_min": [
+      -0.4843054413795471,
+      -0.37767457962036133,
+      -0.3924106955528259
+    ],
+    "original_aabb_max": [
+      0.5007545351982117,
+      0.3789690434932709,
+      0.3918762505054474
+    ],
+    "edited_aabb_min": [
+      0.013166457414627075,
+      0.1186327338218689,
+      0.10351824760437012
+    ],
+    "edited_aabb_max": [
+      0.9980534911155701,
+      0.8752173185348511,
+      0.8901352882385254
+    ],
+    "original_diagonal": 1.4689992319982035,
+    "center_shift": 0.8606894606884408,
+    "max_relative_extent_delta": 0.002971
+  },
+  "visual": {
+    "camera_type": "Blender locked orthographic clay (not Unity)",
+    "changed_fraction": 0.02802409,
+    "visual_independent_review": "NO REAL ANATOMICAL IMPROVEMENT. Near-uniform XYZ displacement causes a visible relocation but almost identical silhouette/body proportions. Do not promote."
+  },
+  "lesson": "Reject sculpt plans with a radius far beyond the actual source bounds and nonlocal displacements; compare shape and source-relative topology, not just shifted screen pixels or changed mesh hashes. Do not take a successful model response / Blender job / changed-pixel count as art improvement.",
+  "next_action": "Qwen must independently choose a focused anatomical area using verified real Blender mesh-context, with the radius and displacement limited proportionally to current creature bounding-box dimensions. Execute on another copy, compare identical camera, reject mere translation; original integrated near/far remains authoritative.",
+  "art_approved": false,
+  "mobile_profiled": false,
+  "unity_ab_pass": false,
+  "integrated": false,
+  "credits_spent_new": 0
+}
