@@ -105,6 +105,22 @@ namespace Eldoria.Tests
                 for(int step=0;step<40;step++)
                 {
                     var state=gateway.Snapshot();
+                    // An actual paid training batch temporarily disables the
+                    // guided primary CTA. Do not demand another purchase during
+                    // the countdown: finish this existing job with the disposable
+                    // test clock, then let the real gateway deliver it once.
+                    if(state.RecruitmentCompletesUtcTicks>clock.UtcTicks)
+                    {
+                        Assert.That(state.PendingRecruitArchers,Is.GreaterThan(0));
+                        Assert.That(state.Available.ArcherT1,Is.GreaterThanOrEqualTo(0));
+                        clock.UtcTicks=state.RecruitmentCompletesUtcTicks+
+                            System.TimeSpan.FromSeconds(1).Ticks;
+                        gateway.Advance();
+                        typeof(Eldoria.Presentation.SlicePresenter).
+                            GetMethod("Refresh",flags).Invoke(presenter,null);
+                        yield return null;
+                        continue;
+                    }
                     if(Eldoria.Domain.SliceRules.CurrentObjectiveKey(state)=="b2.complete"&&
                        state.March.Phase=="idle"&&SceneManager.GetActiveScene().name=="Valoria")break;
                     var primaryObject=GameObject.Find("CONTINUAR");
