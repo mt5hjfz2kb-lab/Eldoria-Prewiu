@@ -82,9 +82,7 @@ def set_world_and_camera(center, diag, size):
     scene.render.image_settings.color_mode = "RGBA"
     scene.render.film_transparent = False
     scene.view_settings.view_transform = "Standard"
-    scene.view_settings.look = "Medium High Contrast" if "Medium High Contrast" in [
-        item.name for item in scene.view_settings.bl_rna.properties["look"].enum_items
-    ] else "Medium High Contrast"
+    scene.view_settings.look = "Medium High Contrast"
     scene.render.filepath = ""
     scene.world.use_nodes = True
     bg = scene.world.node_tree.nodes.get("Background")
