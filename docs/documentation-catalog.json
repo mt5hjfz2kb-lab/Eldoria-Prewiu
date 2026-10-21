@@ -1080,6 +1080,41 @@
       "domain": "quality",
       "status": "reference",
       "note": "Exact native191 delivery evidence; not art approval or physical device certification."
+    },
+    {
+      "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",
+      "status": "review_pending",
+      "domain": "infrastructure"
+    },
+    {
+      "path": "docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_NORMA_PRODUCCION_V1.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
     }
   ]
 }

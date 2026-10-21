@@ -9,9 +9,59 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
+
+concurrency:
+  group: eldoria-closed-tester-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  scope:
+    runs-on: ubuntu-latest
+    outputs:
+      required: ${{ steps.changed.outputs.required }}
+    steps:
+      - name: Decide whether frozen web inputs changed (fail open to full QA)
+        id: changed
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Keep the workflow/check present for required-check compatibility.
+            // Unknown paths or an incomplete comparison always run the full suite.
+            function needsWebQA(file) {
+              const relevant = p => {
+                if (p === '.github/workflows/tester-qa.yml') return true;
+                if (/^(Unity|ArtSource|docs|pipeline|references)\//.test(p)) return false;
+                if (/^\.github\/workflows\//.test(p)) return false;
+                if (['AGENTS.md', 'SESSION_HANDOFF.md', 'PROJECT_STATE.md',
+                     'tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md'].includes(p)) return false;
+                return true;
+              };
+              return relevant(file.filename) ||
+                Boolean(file.previous_filename && relevant(file.previous_filename));
+            }
+            let required = true;
+            if (context.eventName === 'pull_request') {
+              try {
+                const files = await github.paginate(github.rest.pulls.listFiles, {
+                  ...context.repo, pull_number: context.issue.number, per_page: 100
+                });
+                const pr = await github.rest.pulls.get({
+                  ...context.repo, pull_number: context.issue.number
+                });
+                const sameHead = pr.data.head.sha === context.payload.pull_request.head.sha;
+                required = !sameHead || files.length >= 3000 ||
+                  files.length !== pr.data.changed_files || files.some(needsWebQA);
+              } catch (error) {
+                core.warning('Changed-file lookup failed; running all web checks.');
+              }
+            }
+            core.setOutput('required', String(required));
+            core.info(required ? 'Full frozen-web QA required.' :
+              'Unity/art/documentation-only changes: frozen-web QA is not applicable.');
   tester-qa:
+    needs: scope
+    if: needs.scope.outputs.required == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 32
     steps:

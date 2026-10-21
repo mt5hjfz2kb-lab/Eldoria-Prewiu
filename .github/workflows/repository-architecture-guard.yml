@@ -24,9 +24,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
-          # Keep every recursively counted tree and every documentation/learning
-          # dependency. Unrelated Unity vendor packs and source art are not read
-          # by these guards; fetching their binaries exhausted this job's budget.
+          # Structural checks inspect all paths in the exact committed Git tree.
+          # Keep source/docs dependencies; omit Unity binary bodies that no check reads.
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /*
@@ -38,8 +37,20 @@ jobs:
             /Unity/Assets/Eldoria/
             /Unity/ProjectSettings/ProjectVersion.txt
             /references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+            !/Unity/Assets/Eldoria/**/*.png
+            !/Unity/Assets/Eldoria/**/*.jpg
+            !/Unity/Assets/Eldoria/**/*.jpeg
+            !/Unity/Assets/Eldoria/**/*.glb
+            !/Unity/Assets/Eldoria/**/*.fbx
+            !/Unity/Assets/Eldoria/**/*.blend
+            !/Unity/Assets/Eldoria/**/*.wav
+            !/Unity/Assets/Eldoria/**/*.mp3
+            !/Unity/Assets/Eldoria/**/*.tga
+            !/Unity/Assets/Eldoria/**/*.exr
       - name: Enforce repository architecture invariants
-        run: node tools/check-repository-architecture.mjs
+        run: |
+          node tools/check-repository-architecture.mjs --tracked-tree
+          node --test tools/check-repository-architecture.test.mjs
       - name: Validate documentation catalogue and local links
         run: node tools/check-documentation-governance.mjs
       - name: Test documentation governance (positive and negative cases)
