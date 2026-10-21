@@ -290,48 +290,71 @@ namespace Eldoria.UI.RoyalGold.V2
             if(root==null)return;
             lastWidth=root.rect.width;lastHeight=root.rect.height;
             float w=lastWidth,h=lastHeight;
+            if(w<1||h<1)return;
             bool landscape=w>h;
-            float side=Mathf.Max(18,w*.035f), top=Mathf.Max(15,h*.035f);
-            Place(header,side,top,w-2*side,landscape?84:92);
-            float bodyY=top+(landscape?98:106);
-            float footH=landscape?92:128;
-            float bodyH=Mathf.Max(240,h-bodyY-footH-2*top);
-            float gap=18;
+            float canvasScale=Hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
+            Rect area=Screen.safeArea;
+            float insetLeft=Screen.width>0?area.xMin/Mathf.Max(.01f,canvasScale):0;
+            float insetRight=Screen.width>0?(Screen.width-area.xMax)/Mathf.Max(.01f,canvasScale):0;
+            float side=Mathf.Max(18,w*.027f);
+            float leftSide=Mathf.Max(side,insetLeft+12),rightSide=Mathf.Max(side,insetRight+12);
+            float usable=w-leftSide-rightSide;
+            float top=Mathf.Max(10,h*.024f);
+            float headerH=landscape?Mathf.Clamp(h*.205f,66,95):Mathf.Clamp(h*.115f,84,104);
+            float footH=landscape?Mathf.Clamp(h*.21f,70,92):Mathf.Clamp(h*.155f,102,132);
+            float bodyY=top+headerH+8;
+            float bodyH=Mathf.Max(120,h-bodyY-footH-2*top-8);
+            float gap=landscape?Mathf.Clamp(w*.018f,12,25):10;
+            Place(header,leftSide,top,usable,headerH);
             if(landscape)
             {
-                float lw=(w-2*side-gap)*.50f;
-                Place(left,side,bodyY,lw,bodyH);
-                Place(right,side+lw+gap,bodyY,w-2*side-lw-gap,bodyH);
+                float lw=(usable-gap)*.49f;
+                Place(left,leftSide,bodyY,lw,bodyH);
+                Place(right,leftSide+lw+gap,bodyY,usable-lw-gap,bodyH);
             }
             else
             {
-                float lh=bodyH*.49f;
-                Place(left,side,bodyY,w-2*side,lh);
-                Place(right,side,bodyY+lh+gap,w-2*side,bodyH-lh-gap);
+                float lh=(bodyH-gap)*.48f;
+                Place(left,leftSide,bodyY,usable,lh);
+                Place(right,leftSide,bodyY+lh+gap,usable,bodyH-lh-gap);
             }
-            Place(footer,side,h-top-footH,w-2*side,footH);
+            Place(footer,leftSide,h-top-footH,usable,footH);
             float hw=header.rect.width;
-            Place(heading,20,12,hw*.68f,38);
-            Place(subheading,20,51,hw*.70f,24);
-            Place(switchDestination.transform as RectTransform,hw*.71f,18,hw*.27f,48);
-            Place(unitTitle,20,24,left.rect.width-40,40);
-            Place(unitDetail,20,72,left.rect.width-40,landscape?70:60);
-            Place(quantityRow,22,left.rect.height-132,left.rect.width-44,53);
+            Place(heading,landscape?14:15,7,hw*.67f,landscape?32:37);
+            Place(subheading,landscape?14:15,landscape?39:47,hw*.70f,22);
+            Place(switchDestination.transform as RectTransform,hw*.71f,landscape?9:16,hw*.27f,landscape?42:48);
+            float uw=left.rect.width,uh=left.rect.height;
+            Place(unitTitle,landscape?15:18,landscape?7:18,uw-35,landscape?32:40);
+            Place(unitDetail,landscape?15:18,landscape?46:69,uw-35,landscape?42:60);
+            float qy=landscape?Mathf.Max(90,uh-95):uh-129;
+            Place(quantityRow,landscape?14:20,qy,uw-(landscape?28:40),landscape?39:48);
             float qw=quantityRow.rect.width;
-            Place(minus.transform as RectTransform,0,0,54,52);
-            Place(plus.transform as RectTransform,qw-54,0,54,52);
-            Place(selectedText,65,0,qw-130,52);
-            Place(slider.transform as RectTransform,28,left.rect.height-65,left.rect.width-56,20);
-            Place(summary,24,24,right.rect.width-48,Mathf.Max(100,right.rect.height*.70f));
-            Place(status,24,right.rect.height*.69f,right.rect.width-48,right.rect.height*.29f);
-            Place(feedback,20,8,footer.rect.width-40,24);
-            float bw=Mathf.Max(140,(footer.rect.width-56)*.46f);
-            float by=landscape?37:49;
-            Place(back.transform as RectTransform,20,by,bw,50);
-            Place(action.transform as RectTransform,footer.rect.width-20-bw,by,bw,50);
-            heading.fontSize=landscape?27:23;
-            summary.fontSize=landscape?20:17;
-            status.fontSize=landscape?16:14;
+            float ctrl=landscape?43:50;
+            Place(minus.transform as RectTransform,0,0,ctrl,landscape?39:48);
+            Place(plus.transform as RectTransform,qw-ctrl,0,ctrl,landscape?39:48);
+            Place(selectedText,ctrl+8,0,qw-2*(ctrl+8),landscape?39:48);
+            Place(slider.transform as RectTransform,landscape?19:25,uh-(landscape?21:45),uw-(landscape?38:50),landscape?14:19);
+            float rw=right.rect.width,rh=right.rect.height;
+            float statusH=landscape?Mathf.Min(62,rh*.28f):Mathf.Min(108,rh*.37f);
+            Place(summary,landscape?14:19,landscape?10:18,rw-(landscape?28:38),
+                rh-statusH-(landscape?18:22));
+            Place(status,landscape?14:19,rh-statusH-4,rw-(landscape?28:38),statusH);
+            float fw=footer.rect.width;
+            Place(feedback,14,4,fw-28,landscape?20:25);
+            float bw=Mathf.Max(90,(fw-42)*.48f);
+            float by=landscape?25:footH-60;
+            Place(back.transform as RectTransform,12,by,bw,landscape?42:49);
+            Place(action.transform as RectTransform,fw-12-bw,by,bw,landscape?42:49);
+            heading.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.062f,20,27)):23;
+            subheading.fontSize=landscape?12:15;
+            unitTitle.fontSize=landscape?20:25;
+            unitDetail.fontSize=landscape?13:17;
+            selectedText.fontSize=landscape?21:25;
+            summary.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.04f,13,20)):17;
+            status.fontSize=landscape?12:14;
+            actionLabel.fontSize=landscape?14:16;
+            switchLabel.fontSize=landscape?13:15;
+            feedback.fontSize=landscape?12:14;
         }
         static RectTransform Rect(string name,Transform parent)
         {
