@@ -147,7 +147,7 @@ namespace Eldoria.Presentation
             HandlePointerInput();
             AnimateCityAmbientation();
             UpdateBuildingLevelBadgePositions();
-            if(buildingPanel!=null&&buildingPanel.activeInHierarchy&&city) PositionBuildingPanel(currentBuildingId);
+            if(buildingPanel!=null&&buildingPanel.activeInHierarchy&&city&&!(currentBuildingId=="barracks"&&gateway.Snapshot().BarracksLevel>0)) PositionBuildingPanel(currentBuildingId);
         }
         void HandlePointerInput()
         {
@@ -567,13 +567,34 @@ namespace Eldoria.Presentation
             StartCoroutine(LogPlayableButtonRectNextFrame(buildingAction,"WORLD_ACTION"));
 #endif
         }
+        void ApplyManagementScreen(bool management)
+        {
+            if(buildingPanel==null)return;
+            var rt=buildingPanel.GetComponent<RectTransform>();
+            if(management)
+            {
+                rt.anchorMin=Vector2.zero;rt.anchorMax=Vector2.one;
+                rt.offsetMin=new Vector2(14,84);rt.offsetMax=new Vector2(-14,-84);
+                rt.anchoredPosition=Vector2.zero;
+            }
+            else
+            {
+                rt.anchorMin=rt.anchorMax=new Vector2(.5f,.5f);
+                rt.sizeDelta=new Vector2(276,178);
+                rt.anchoredPosition=new Vector2(0,-70);
+            }
+            if(buildingBody!=null)
+                buildingBody.GetComponent<LayoutElement>().preferredHeight=management?128:56;
+        }
+
         void OpenBuildingPanel(string id)
         {
             if(buildingPanel==null)return;
             var s=gateway.Snapshot();
             currentBuildingId=id;
             SetBuildingPanelOpen(true);
-            PositionBuildingPanel(id);
+            ApplyManagementScreen(id=="barracks"&&s.BarracksLevel>0);
+            if(id!="barracks"||s.BarracksLevel==0)PositionBuildingPanel(id);
             buildingAction.onClick.RemoveAllListeners();
             if(id=="sawmill")
             {
@@ -602,7 +623,8 @@ namespace Eldoria.Presentation
                 }
                 else if((s.ChapterProgress?.TrainedArchers??0)<SliceContentProfiles.Active.Chapter2TrainArchers)
                 {
-                    buildingBody.text="Guarnición activa · "+s.Available.Total+" arqueros disponibles · "+
+                    buildingBody.text="ENTRENAMIENTO DE TROPAS  ·  ARQUEROS T1\\n"+
+                        "Guarnición activa · "+s.Available.Total+" arqueros disponibles · "+
                         (s.ChapterProgress?.TrainedArchers??0)+"/"+SliceContentProfiles.Active.Chapter2TrainArchers+" entrenados en este capítulo. "+
                         "Entrenar "+SliceRules.RecruitArchers+" arqueros cuesta "+SliceRules.RecruitWoodCost+" madera / "+SliceRules.RecruitStoneCost+" piedra.";
                     buildingAction.GetComponentInChildren<Text>().text="RECLUTAR +"+SliceRules.RecruitArchers;
@@ -744,7 +766,7 @@ namespace Eldoria.Presentation
             var prepared=SliceRules.Expedition(s.Available,"aldric");
             currentBuildingId="barracks";
             SetBuildingPanelOpen(true);
-            PositionBuildingPanel("barracks");
+            ApplyManagementScreen(true);
             buildingAction.onClick.RemoveAllListeners();
             buildingTitle.text="PREPARAR MARCHA";
             buildingBody.text="Sir Aldric · "+s.Available.Total+" Arqueros disponibles\n"+
@@ -1267,6 +1289,8 @@ namespace Eldoria.Presentation
             var rt=buildingPanel.GetComponent<RectTransform>();rt.SetParent(parent,false);
             rt.anchorMin=rt.anchorMax=new Vector2(.5f,.5f);rt.pivot=new Vector2(.5f,.5f);
             rt.sizeDelta=new Vector2(276,178);rt.anchoredPosition=new Vector2(0,-70);
+            // Management screens are full-screen overlays, not separate Unity scenes.
+            // Compact contextual popups remain unchanged for world and construction actions.
             buildingPanel.GetComponent<Image>().color=new Color(.045f,.065f,.085f,.94f);
             var layout=buildingPanel.GetComponent<VerticalLayoutGroup>();layout.padding=new RectOffset(12,12,8,8);
             layout.spacing=2;layout.childControlHeight=true;layout.childForceExpandHeight=false;
