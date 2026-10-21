@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T11:30:54.056Z",
+  "updated_at": "2026-10-21",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -650,7 +650,7 @@
     {
       "id": "eldoria-ui-v3-contextual-20261021",
       "title": "UI V3 contextual — existing PR #83 (registry reconciliation)",
-      "owner": "existing-ui-v3-executor-pr83",
+      "owner": "chatgpt-eldoria-ui-v3-takeover-20261021",
       "owner_reference": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/83",
       "branch": "main",
       "status": "active",
@@ -671,9 +671,31 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "INTEGRATED_NATIVE_40_20_35_PASS_WEBGL_DELIVERY_RUNNING",
-      "next": "V3 merged PR83 on main; native 39586129212 passes 40+20+35 and 7 viewport comparisons; compile WebGL revision243, verify exact browser build, preserve Restricted release until QA.",
-      "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch."
+      "phase": "OWNER_ORDERED_SINGLE_EXECUTOR_TAKEOVER_PR87_THEN_EXACT_WEBGL_QA",
+      "next": "Single UI executor owns PR87 cinematic finish first; validate Unity Edit/Play and native real screenshots, owner reference match and zero regressions. Then rebuild WebGL from final merged main and run Windows Chromium I-II before restricted publication. PR85 native243 QA is an earlier pre-cinematic candidate; do not promote or merge its stale artifact pins. Coordinate Windows runner with Valoria art owner, no simultaneous heavy work.",
+      "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
+      "handoff": {
+        "owner_instruction": "Asume tú los trabajos y organízalos",
+        "date": "2026-10-21",
+        "scope": "UI V3 cinematic, contextual controls, timer, QA and restricted release",
+        "priority": [
+          "PR87 cinematic UI isolated proof",
+          "merge PR87 only after true native and visual PASS",
+          "rebuild final main WebGL",
+          "Windows Chromium real gameplay and persistence",
+          "restricted itch release only on PASS"
+        ],
+        "preserve": [
+          "PR85 historical native243 exact QA candidate",
+          "PR83 merged V3 functional baseline",
+          "all art scene/geometry and owner saves"
+        ],
+        "source_branch": "ui/eldoria-v3-cinematic-art-20261021",
+        "pr": 87,
+        "stale_candidate_pr": 85,
+        "writer_exclusivity": "Previous UI chat must stop new writes and respect this recorded owner takeover; repository registry does not remotely stop its session.",
+        "windows_lease": "Wait for explicit Valoria art runner release; do not cancel others."
+      }
     }
   ],
   "history": [
@@ -6152,6 +6174,15 @@
       ],
       "artifact_id": 12341953333,
       "result": "Existing read-only report now exposes optional delivery definitions, bounded Actions timings and distinct development/recorded-QA/available versions. 14 Node tests passed locally and in CI; architecture guard and report workflow passed; actual JSON artifact inspected (9238 bytes). No native build/release/runner mutation."
+    },
+    {
+      "id": "eldoria-ui-v3-owner-takeover-20261021",
+      "owner": "chatgpt-eldoria-ui-v3-takeover-20261021",
+      "status": "ACTIVE_OWNER_ORDERED",
+      "reason": "Owner expressly transfers coordination and implementation of UI V3 PR87 and downstream WebGL QA to one executor, without taking over Valoria 3D art.",
+      "pr": 87,
+      "obsolete_qa_pr": 85,
+      "baseline": "c54bbdc3fdd2d9599e6f40eb730b8b1c80e78e96"
     }
   ],
   "owner_specific_pauses": [
