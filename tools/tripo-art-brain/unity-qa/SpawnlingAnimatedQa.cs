@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using GLTFast;
@@ -52,6 +53,18 @@ public static class SpawnlingAnimatedQa
             File.WriteAllBytes(file,image.EncodeToPNG());
         }
         finally { camera.targetTexture=null;RenderTexture.active=previous;Object.DestroyImmediate(image);RenderTexture.ReleaseTemporary(target); }
+    }
+    static Task WaitForSkinRenderUpdate()
+    {
+        var ready=new TaskCompletionSource<bool>();int ticks=0;
+        void Update() {
+            EditorApplication.QueuePlayerLoopUpdate();
+            if(++ticks<3)return;
+            EditorApplication.update-=Update;ready.SetResult(true);
+        }
+        EditorApplication.update+=Update;
+        EditorApplication.QueuePlayerLoopUpdate();
+        return ready.Task;
     }
     public static async void Run()
     {
@@ -134,8 +147,11 @@ public static class SpawnlingAnimatedQa
                 camera.transform.LookAt(bounds.center);
                 for(int i=0;i<times.Length;i++) {
                     clip.SampleAnimation(anim.gameObject,times[i]);
+                    await WaitForSkinRenderUpdate();
                     Capture(camera,Path.Combine(output,labels[i]+".png"));
                 }
+                Need(Hash(Path.Combine(output,"rest.png"))!=Hash(Path.Combine(output,"swipe.png")),
+                    "GPU captures did not update the actual skinned pose");
                 result.status="UNITY_SKIN_CLIP_IMPORT_PASS_VISUAL_REVIEW_REQUIRED";exit=0;
             }
         }
