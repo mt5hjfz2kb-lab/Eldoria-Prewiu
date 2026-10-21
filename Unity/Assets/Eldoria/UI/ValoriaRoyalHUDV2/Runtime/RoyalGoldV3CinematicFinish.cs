@@ -52,8 +52,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 frame.anchorMin = savedAnchorMin;
                 frame.anchorMax = savedAnchorMax;
                 frame.pivot = savedPivot;
-                frame.anchoredPosition = savedPosition;
-                frame.sizeDelta = savedSize;
+                // The canonical narrative controller has already restored
+                // ordinary menu geometry when its story ends. Never replace
+                // that with a snapshot of the preceding narrative layout.
+                if (Source && Source.NarrativeOpen)
+                {
+                    frame.anchoredPosition = savedPosition;
+                    frame.sizeDelta = savedSize;
+                }
             }
             if (Source && Source.Modal)
             {
@@ -66,7 +72,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (modal.Body)
                 {
                     modal.Body.color = savedBodyColor;
-                    modal.Body.fontSize = savedBodySize;
+                    if (Source.NarrativeOpen) modal.Body.fontSize = savedBodySize;
                 }
                 if (modal.ExtraLabel)
                 {
@@ -241,3 +247,4 @@ namespace Eldoria.UI.RoyalGold.V2
         }
     }
 }
+

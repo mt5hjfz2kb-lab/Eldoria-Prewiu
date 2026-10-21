@@ -74,6 +74,22 @@ namespace Eldoria.Tests
             var body = Read(modal, "Body") as Text;
             var button = Read(modal, "Extra") as Button;
             Assert.That(button, Is.Not.Null);
+            string canonicalAldricText = null;
+            // Boot can already be inside the genuine prologue. Finish it
+            // before taking the NORMAL modal baseline; a cinematic snapshot
+            // cannot be the expected appearance of an ordinary menu.
+            for (int turn = 0; turn < 40 && (bool)Read(hud, "NarrativeOpen"); turn++)
+            {
+                if (string.Equals((string)Read(hud, "NarrativeSpeaker"),
+                    "Sir Aldric", StringComparison.OrdinalIgnoreCase))
+                    canonicalAldricText = (string)Read(hud, "NarrativeSourceText");
+                button.onClick.Invoke();
+                yield return null;
+            }
+            Assert.That((bool)Read(hud, "NarrativeOpen"), Is.False);
+            Assert.That(canonicalAldricText, Is.Not.Null.And.Not.Empty,
+                "Use the genuine existing Aldric introduction, never invented product text");
+            yield return null;
             var frame = title.transform.parent as RectTransform;
             var original = frame.GetComponent<Graphic>();
             Assert.That(original, Is.Not.Null, "Original reusable modal frame missing");
@@ -87,26 +103,16 @@ namespace Eldoria.Tests
             var beforeTitleSize = title.fontSize;
             var beforeBodySize = body.fontSize;
 
-            // Use the *actual* original dialogue; no duplicate controller.
-            // The prologue begins with a narrator turn before Sir Aldric.
-            for (int turn = 0; turn < 16; turn++)
-            {
-                if (!(bool)Read(hud, "NarrativeOpen")) break;
-                if (string.Equals((string)Read(hud, "NarrativeSpeaker"),
-                    "Sir Aldric", StringComparison.OrdinalIgnoreCase)) break;
-                button.onClick.Invoke(); // reveal
-                button.onClick.Invoke(); // next canonical speaker/page
-                yield return null;
-            }
-            if (!(bool)Read(hud, "NarrativeOpen"))
-                Call(hud, "ShowNarrative", "Sir Aldric",
-                    "Valoria sobrevivió a la noche. La Brecha sigue abierta. " +
-                    "No dejaremos que destruya de nuevo aquello que hemos jurado proteger.");
+            // The same genuine dialogue and original controller/button.
+            Call(hud, "ShowNarrative", "Sir Aldric", canonicalAldricText);
             yield return null;
             yield return null;
 
             Assert.That((bool)Read(hud, "NarrativeOpen"), Is.True);
-            var paper = frame.Find("V3 / cinematic royal parchment") as RectTransform;
+            // Transform.Find treats '/' as a hierarchy path, even when a
+            // single child object's literal name contains those characters.
+            var paper = frame.Cast<Transform>().SingleOrDefault(x =>
+                x.name == "V3 / cinematic royal parchment") as RectTransform;
             Assert.That(paper, Is.Not.Null);
             Assert.That(paper.gameObject.activeInHierarchy, Is.True);
             Assert.That(paper.GetComponent<Graphic>().raycastTarget, Is.False);
@@ -130,6 +136,10 @@ namespace Eldoria.Tests
             Assert.That(body.rectTransform.rect.width, Is.GreaterThan(170f));
             Assert.That(button.gameObject.activeInHierarchy, Is.True);
             Assert.That(button.interactable, Is.True);
+            button.onClick.Invoke(); // reveal the full canonical page
+            yield return null;
+            Assert.That(body.preferredHeight, Is.LessThanOrEqualTo(body.rectTransform.rect.height),
+                "The genuine full Aldric text must fit, not merely its first typed characters");
 
             // Click the real button, never a fake narrative acknowledgement.
             for (int i = 0; i < 40 && (bool)Read(hud, "NarrativeOpen"); i++)
@@ -156,3 +166,4 @@ namespace Eldoria.Tests
         }
     }
 }
+
