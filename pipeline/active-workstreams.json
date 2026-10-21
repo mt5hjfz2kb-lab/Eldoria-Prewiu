@@ -762,14 +762,14 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "V4_ARTIFACT_REVIEW_AND_UNITY_ISOLATED_GATE_PREPARATION",
+      "phase": "V4_ARTIFACT_INDEPENDENT_REVIEW_PASS_WAITING_UNITY_GATE",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Review genuine V4 GLB/BLEND and pose A/B from run39651422644; prepare source-locked Unity 6 animated import test without Windows runner use until UI release. Preserve main scene, combat and saves, no paid Tripo.",
+      "next": "Safely run an isolated genuine Unity 6000.3.23f1 animated import/clip/skin/matched rest-swipe-return QA with exact archived V4 SHA86ec1c93... ONLY when UI V3 releases windows-runner-heavy; current UI workstream owns it. New Unity C# QA write attempt blocked by platform safety controls, do not reroute around denial. Current main Engendro remains static. Do not spend Tripo or claim gameplay integration.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -839,6 +839,27 @@
         "from_run": 39651422644,
         "artifact_id": 12368972822,
         "windows_lease_claimed": false
+      },
+      "review_evidence": {
+        "source_run": 39651422644,
+        "source_artifact_id": 12368972822,
+        "glb_sha256": "86ec1c93a222d58b89b9f393d39c8e5e912b14516ff5298500e5aca80048f631",
+        "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
+        "rig_joint_count": 12,
+        "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
+        "skin_weights_sum_max_error": 1.1920929e-7,
+        "static_retained": true,
+        "art_approved": false,
+        "isolated_unity_import_tested": false,
+        "mobile_profile_pass": false,
+        "game_integrated": false,
+        "credits_new": 0
+      },
+      "blocker": {
+        "dependency": "UI V3 active workstream owns windows-runner-heavy",
+        "runner_owner": "eldoria-ui-v3-management-completion-20261021",
+        "platform_write_denial": "GitHub connector create_file attempt for isolated Unity C# QA source blocked by OpenAI safety controls; no alternate route attempted",
+        "next_allowed_action": "Continue once ownership/runner reconciled; preserve existing V4 artifact source and QA verdict; no bypass of denied write."
       }
     },
     {
