@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "asset": "spawnling",
+  "date": "2026-10-21",
+  "classification": "FREE_BLENDER_RIG_TECH_PASS_ART_AND_GAMEPLAY_PENDING",
+  "source": {
+    "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb",
+    "sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+    "source_meshes": 3
+  },
+  "tool": "tools/tripo-art-brain/rig-feasibility-blender.py",
+  "workflow": ".github/workflows/tripo-spawnling-free-rig-probe.yml",
+  "evidence": {
+    "run_id": 39642770488,
+    "run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39642770488",
+    "artifact_id": 12364689083,
+    "artifact_name": "spawnling-free-blender-rig-probe",
+    "artifact_retention_days": 14
+  },
+  "output": {
+    "glb_filename": "spawnling-rig-tech-test.glb",
+    "glb_sha256": "d092ead354eb1cc30a11bfe5f29f29b6715cd44af484d113b4bfaebf04b56c7e",
+    "editable_blend_filename": "spawnling-rig-tech-test.blend",
+    "editable_blend_sha256": "4a3566d081c4b7086b011bb66b3c6ebc2ac20ef6278598a05a38d72045b76672",
+    "true_bones": 8,
+    "gltf_skins": 1,
+    "gltf_animation_clips": 1,
+    "animation_name": "Eldoria_Spawnling_RigFeasibility_Idle",
+    "rigged_vertex_weights": true,
+    "animation_channels": true,
+    "true_deformation_max_m": 0.087236,
+    "sampled_moving_vertices_over_2mm": 3280,
+    "total_sampled_vertices": 3368,
+    "screenshots": [
+      {
+        "frame": 1,
+        "filename": "spawnling-pose-01.png",
+        "sha256": "ade2c74165c63632f45187f53a437d90cb2d4830e856dc2d1c7f4268f3248f8c"
+      },
+      {
+        "frame": 9,
+        "filename": "spawnling-pose-09.png",
+        "sha256": "7f5de7fa5bb182e59dec28cf3bdbf4187551201c10de0af8ff97501f4ccdc72d"
+      }
+    ]
+  },
+  "costs": {
+    "new_tripo_api_credits": 0,
+    "tripo_api_calls": 0,
+    "new_paid_generations": 0
+  },
+  "QA": {
+    "source_sha_verification": "PASS",
+    "skinning_bones_weights": "PASS",
+    "animation_export_channels": "PASS",
+    "pose_render_blender": "PASS",
+    "artistic_deformation_quality": "REVIEW_REQUIRED",
+    "unity_animated_import": "NOT_EXECUTED",
+    "gameplay_interaction": "NOT_EXECUTED",
+    "mobile_device_perf": "NOT_EXECUTED",
+    "art_approved": false,
+    "integrated_in_runtime": false,
+    "published": false
+  },
+  "limitations": [
+    "Procedural spatial weights are a technical study, not anatomically painted production weights.",
+    "Animation is an experimental idle pose cycle, not gameplay attack or walk motion.",
+    "Two genuine Blender preview frames show modest changes; no Unity camera comparison.",
+    "Original runtime LODs, hotspots, UI, combat and saves unchanged."
+  ],
+  "note": "Reproducible from original exact GLB on zero-credit Ubuntu Blender; CI verifies actual glTF skin, JOINTS_0 / WEIGHTS_0, animation channels, weighted mesh motion and authentic PNG, not mere JSON claims."
+}
