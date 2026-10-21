@@ -1,19 +1,19 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "UI_V3_NATIVE245_REMOTE_ACTIVE_HOST_BROWSER_VERIFICATION_BLOCKED",
+  "state": "NATIVE281_COMBINED_QA_PASS_RESTRICTED_PROMOTION_REQUESTED",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
   "candidate": {
-    "revision": "native245",
-    "source_sha": "e117087fbfbc8068913e754b5bf69293fed7826c",
-    "native_run": 39610358759,
-    "qa_run": 39612300155,
-    "qa_source_sha": "40189af703a418b249bf073fd08f95df1c00c4fd",
-    "artifact_id": 12352445055,
-    "artifact_name": "valoria-verified-private-site-windows-39612300155",
-    "artifact_sha256": "642e74165f1aee68022b7c8459aa52bed3a61ad91837b75235bf825e0538e47b"
+    "revision": "native281",
+    "source_sha": "7ba5c901f968b35d596047537eff8b4892f2e799",
+    "native_run": 39678224055,
+    "qa_run": 39683431955,
+    "qa_source_sha": "62417f09b843ca22941e46b2d8619d0980c71c17",
+    "artifact_id": 12385344486,
+    "artifact_name": "valoria-verified-private-site-windows-39683431955",
+    "artifact_sha256": "773e20b4125aadcba4dd321ac31b5afcc746a062711d20560a771ab0411336d7"
   },
   "published": {
     "provider": "itch.io",
@@ -45,7 +45,7 @@
     "physical_mobile_pass": false,
     "physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Certified native245 is remotely active on the existing Restricted web channel (build2177569/version native245-585451deffe0), confirmed by read-only Butler status. UI integration, native/general/Chromium QA and decoded transport PASS. Only hosted page load/save review in this cloud browser remains blocked by itch.io Cloudflare sign-in. No rebuild, repeated upload, public access, Android or PC changes needed.",
+  "instructions": "Publish exactly certified combined native281 once to existing Restricted web target. Preserve historical published245 until remote new build activation verified. Browser39683431955SUCCESS exact save/reload and full I-II normal clock. No public access change, Android update or PC setup.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -56,11 +56,11 @@
   },
   "privacy_confirmation_basis": "Owner setup screenshots: Restricted selected, then project saved successfully; remote anonymous access verification pending.",
   "promotion_request": {
-    "id": "itch-ui-v3-final-native245-20261021",
+    "id": "itch-combined-ui-terrain-animated-spawnling-native281-20261021",
     "target": "chrismad/eldoria-pruebas",
-    "revision": "native245",
-    "artifact_sha256": "642e74165f1aee68022b7c8459aa52bed3a61ad91837b75235bf825e0538e47b",
-    "authorization": "Current owner explicitly instructs this executor to assume UI work and complete its verified existing restricted delivery without stopping at intermediate reports. Publish the exact certified native245 only; no public access change."
+    "revision": "native281",
+    "artifact_sha256": "773e20b4125aadcba4dd321ac31b5afcc746a062711d20560a771ab0411336d7",
+    "authorization": "Owner explicitly asks this executor to assume and finish all three works, including existing restricted delivery after exact QA. Publish certified native281 only to existing Restricted web channel;0EUR."
   },
   "last_attempt": {
     "run_id": 39614581796,
@@ -198,29 +198,24 @@
     "deployment": "appgdep_6ad63a0012448191b64d52721e4479a6"
   },
   "current_revision_qa": {
-    "revision": "native245",
+    "revision": "native281",
     "windows_gpu_webgl_pass": true,
     "native_unity_pass": true,
     "native_checks": 40,
-    "edit_mode": 20,
-    "play_mode": 37,
-    "native_certification_run": 39609160363,
-    "general_editor_windows_gate_run": 39611381736,
+    "native_certification_run": 39678224055,
+    "general_editor_windows_gate_run": 39677488034,
     "normal_clock": true,
     "full_bastion_i_ii": true,
+    "fullscreen_training_march": true,
     "save_reload_exact": true,
-    "save_sha256": "a82f882c059b22ce4587efd2ca7697eba52eadb41223ee17f104e53844df79a5",
+    "save_sha256": "8555fcbe7b6a9735bf984d36ef588e3eba1af48eb25e25488479604dba5febb9",
     "no_legacy_touch_shadow_navigation": true,
     "runtime_errors": 0,
     "network_failures": 0,
     "hosted_chrome_tested": false,
     "ios_safari_tested": false,
     "art_approved": false,
-    "transport_reader_actual_unity_pass": true,
-    "transport_status": "EXACT_DECODED_UNITY_TRANSPORT_PASS",
-    "original_unity_files_validated": 5,
-    "unity_decoded_bytes_unchanged": true,
-    "decoded_data_sha256": "644af37496d29bd2bfbaa4455f08a1fd89da6edb4faf698d2f26c4ef69af84ab"
+    "transport_reader_actual_unity_pass": false
   },
   "published_history": [
     {
