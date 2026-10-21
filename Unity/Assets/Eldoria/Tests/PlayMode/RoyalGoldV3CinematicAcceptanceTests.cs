@@ -77,6 +77,15 @@ namespace Eldoria.Tests
             var frame = title.transform.parent as RectTransform;
             var original = frame.GetComponent<Graphic>();
             Assert.That(original, Is.Not.Null, "Original reusable modal frame missing");
+            var beforeAnchorMin = frame.anchorMin;
+            var beforeAnchorMax = frame.anchorMax;
+            var beforePivot = frame.pivot;
+            var beforePosition = frame.anchoredPosition;
+            var beforeSize = frame.sizeDelta;
+            var beforeTitleColor = title.color;
+            var beforeBodyColor = body.color;
+            var beforeTitleSize = title.fontSize;
+            var beforeBodySize = body.fontSize;
 
             // Use the *actual* original dialogue; no duplicate controller.
             // The prologue begins with a narrator turn before Sir Aldric.
@@ -135,6 +144,15 @@ namespace Eldoria.Tests
                 "Cinematic parchment must disappear for ordinary gameplay");
             Assert.That(original.enabled, Is.True,
                 "Original frame must be restored for ordinary non-story modals");
+            Assert.That(frame.anchorMin, Is.EqualTo(beforeAnchorMin));
+            Assert.That(frame.anchorMax, Is.EqualTo(beforeAnchorMax));
+            Assert.That(frame.pivot, Is.EqualTo(beforePivot));
+            Assert.That(frame.anchoredPosition, Is.EqualTo(beforePosition));
+            Assert.That(frame.sizeDelta, Is.EqualTo(beforeSize));
+            Assert.That(title.color, Is.EqualTo(beforeTitleColor));
+            Assert.That(body.color, Is.EqualTo(beforeBodyColor));
+            Assert.That(title.fontSize, Is.EqualTo(beforeTitleSize));
+            Assert.That(body.fontSize, Is.EqualTo(beforeBodySize));
         }
     }
 }
