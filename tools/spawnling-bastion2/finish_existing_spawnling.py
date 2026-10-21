@@ -164,24 +164,35 @@ def main():
     original.hide_set(True)
     near=original.copy();near.data=original.data.copy();bpy.context.collection.objects.link(near)
     near.name="Spawnling_Near_Authored"
+    # Retain actual donor materials unchanged in the editable .blend.
+    original_materials=list(near.data.materials)
+    near.data.materials.clear()
+    for material in original_materials:
+        near.data.materials.append(material.copy() if material else None)
     near.hide_render=False;near.hide_set(False)
-    # Actual inspected Blender views locate the face towards +X and the
-    # large tapering tail towards -X (not +/-Y). Target only rear-centre,
-    # mid-height vertices: no claws, cheek, brow or torso repositioned.
+    # Correct anatomical axis from actual source images: +X head, -X tail.
+    # Gently compress rear tail without folding its curved tip or forming a stump.
+    # Soft 3-axis weights preserve continuity with flanks, feet and hips.
     coords=[v.co for v in near.data.vertices]
     ylo=min(v.y for v in coords);yhi=max(v.y for v in coords)
     zlo=min(v.z for v in coords);zhi=max(v.z for v in coords)
     xlo=min(v.x for v in coords);xhi=max(v.x for v in coords)
+    def smooth(a,b,n):
+        t=max(0.,min(1.,(n-a)/(b-a)))
+        return t*t*(3-2*t)
     edits=0
     for v in near.data.vertices:
         rear=(xhi-v.co.x)/max(.001,xhi-xlo)
         height=(v.co.z-zlo)/max(.001,zhi-zlo)
         sideways=abs(v.co.y-(ylo+yhi)*.5)/max(.001,yhi-ylo)
-        if rear>.79 and .29<height<.73 and sideways<.26:
-            t=(rear-.79)/.21
-            v.co.x+=.13*(xhi-xlo)*t*t
+        weight=smooth(.61,.98,rear)*smooth(.30,.47,height)
+        weight*=1-smooth(.72,.86,height)
+        weight*=1-smooth(.29,.40,sideways)
+        if weight>.001:
+            v.co.x+=.075*(xhi-xlo)*weight
             edits+=1
     near.data.update()
+    require(edits>20,"Measured tail edit had no geometry effect")
     diag["tail_vertices_moved"]=edits
     diag["anatomical_axis"]="head +X; tail -X; Blender real four-view diagnosis"
     mats=process_materials([near],out)
