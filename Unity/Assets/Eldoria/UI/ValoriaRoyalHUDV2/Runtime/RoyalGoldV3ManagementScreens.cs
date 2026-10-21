@@ -329,11 +329,14 @@ namespace Eldoria.UI.RoyalGold.V2
             float side=Mathf.Max(18,w*.027f);
             float leftSide=Mathf.Max(side,insetLeft+12),rightSide=Mathf.Max(side,insetRight+12);
             float usable=w-leftSide-rightSide;
-            float top=Mathf.Max(10,h*.024f);
+            float safeTop=Screen.height>0?(Screen.height-area.yMax)/Mathf.Max(.01f,canvasScale):0;
+            float safeBottom=Screen.height>0?area.yMin/Mathf.Max(.01f,canvasScale):0;
+            float top=Mathf.Max(Mathf.Max(10,h*.024f),safeTop+8);
+            float bottom=Mathf.Max(Mathf.Max(10,h*.024f),safeBottom+8);
             float headerH=landscape?Mathf.Clamp(h*.205f,66,95):Mathf.Clamp(h*.115f,84,104);
             float footH=landscape?Mathf.Clamp(h*.21f,70,92):Mathf.Clamp(h*.155f,102,132);
             float bodyY=top+headerH+8;
-            float bodyH=Mathf.Max(120,h-bodyY-footH-2*top-8);
+            float bodyH=Mathf.Max(120,h-bodyY-footH-bottom-8);
             float gap=landscape?Mathf.Clamp(w*.018f,12,25):10;
             Place(header,leftSide,top,usable,headerH);
             if(landscape)
@@ -348,7 +351,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(left,leftSide,bodyY,usable,lh);
                 Place(right,leftSide,bodyY+lh+gap,usable,bodyH-lh-gap);
             }
-            Place(footer,leftSide,h-top-footH,usable,footH);
+            Place(footer,leftSide,h-bottom-footH,usable,footH);
             float hw=header.rect.width;
             Place(heading,landscape?14:15,7,hw*.67f,landscape?32:37);
             Place(subheading,landscape?14:15,landscape?39:47,hw*.70f,22);
