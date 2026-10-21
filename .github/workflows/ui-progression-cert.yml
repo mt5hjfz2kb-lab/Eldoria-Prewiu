@@ -159,6 +159,17 @@ jobs:
           # real scene with a probe-only disposable save and checks real pointer
           # raycasts, both orientations, story, construction, World and I-II.
           # Do not modify any art, prefab, saved game or canonical publication.
+          # Preserve the ORIGINAL V2 native framing metrics, without
+          # changing the checked-in baseline or taking credit for old runs.
+          $e=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
+          $baselineFile=Join-Path $env:RUNNER_TEMP "Eldoria-V2-Native-Framing-Baseline-$env:GITHUB_RUN_ID.json"
+          $baselineOriginal=Join-Path $e 'integration-result.json'
+          if(-not(Test-Path $baselineOriginal)){throw 'Original native I-II framing evidence unavailable'}
+          $original=Get-Content $baselineOriginal -Raw|ConvertFrom-Json
+          if($original.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED' -or @($original.framing).Count -lt 10){
+            throw 'Original V2 baseline is not an acceptable full I-II capture'
+          }
+          Copy-Item $baselineOriginal $baselineFile -Force
           $log=Join-Path $env:RUNNER_TEMP 'Eldoria-V3-Native-I-II-Visual.log'
           Remove-Item $log -Force -ErrorAction SilentlyContinue
           $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
@@ -207,6 +218,40 @@ jobs:
           $result=Get-Content (Join-Path $e 'integration-result.json') -Raw|ConvertFrom-Json
           if($result.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){
             throw "Existing I-II probe not accepted: $($result.status) $($result.error)"
+          }
+          # Measure actually-free camera area in BOTH mobile orientations,
+          # using the existing certified native framing rectangles, and
+          # compare like-for-like against V2 for each same gameplay state.
+          $before=Get-Content $baselineFile -Raw|ConvertFrom-Json
+          $v3Targets=@(
+            'integration-construction-landscape.png',
+            'integration-construction-portrait.png',
+            'integration-bastion-upgrade.png',
+            'integration-training.png',
+            'integration-training-portrait.png',
+            'integration-art-forest-valoria-landscape.png',
+            'integration-art-forest-valoria-portrait.png'
+          )
+          foreach($capture in $v3Targets){
+            $old=@($before.framing | Where-Object {$_.capture -eq $capture})
+            $new=@($result.framing | Where-Object {$_.capture -eq $capture})
+            if($old.Count -ne 1 -or $new.Count -ne 1 -or -not $new[0].pass){
+              throw "HUD V3 missing successful like-for-like native camera framing: $capture"
+            }
+            $oldRect=@($old[0].visible)
+            $newRect=@($new[0].visible)
+            if($oldRect.Count -ne 4 -or $newRect.Count -ne 4){
+              throw "Invalid native viewport coordinates: $capture"
+            }
+            $oldArea=([math]::Max(0,$oldRect[2]-$oldRect[0]))*([math]::Max(0,$oldRect[3]-$oldRect[1]))
+            $newArea=([math]::Max(0,$newRect[2]-$newRect[0]))*([math]::Max(0,$newRect[3]-$newRect[1]))
+            $gain=$newArea-$oldArea
+            Write-Host ("ELDORIA_V3_FREE_VIEWPORT capture={0} V2={1:N1}% V3={2:N1}% gain={3:N1}pp" -f $capture,($oldArea*100),($newArea*100),($gain*100))
+            # An eight-percentage-point increase is meaningful; leave V2
+            # untouched if the contextual cards merely moved the occlusion.
+            if($gain -lt .08){
+              throw "V3 did not reclaim at least 8 percentage points of real free scene: $capture"
+            }
           }
           Write-Host "ELDORIA_V3_REAL_NATIVE_I_II_PROBE=$($result.status)"
           Write-Host "ELDORIA_V3_CHECKS=$(@($result.checks).Count) CAPTURES=$(@(Get-ChildItem $e -Filter 'integration*.png').Count)"
@@ -315,6 +360,7 @@ jobs:
             ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
             ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log
+            ${{ runner.temp }}/Eldoria-V2-Native-Framing-Baseline-*.json
             docs/evidence/valoria-reference-clean/integration-*.png
             docs/evidence/valoria-reference-clean/integration-result.json
           if-no-files-found: warn
