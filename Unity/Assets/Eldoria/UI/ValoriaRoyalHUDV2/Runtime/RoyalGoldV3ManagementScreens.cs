@@ -52,7 +52,23 @@ namespace Eldoria.UI.RoyalGold.V2
 
         void OnSelection(string id)
         {
-            if(gateway == null || IsOpen) return;
+            if(gateway == null) return;
+            // Canonical navigation clears selection before switching world/city.
+            // Never leave a full-screen management destination over the world.
+            if(IsOpen)
+            {
+                if(string.IsNullOrEmpty(id))
+                {
+                    root.gameObject.SetActive(false);
+                    notice="";
+                    return;
+                }
+                if(id=="march-main" && CurrentDestination!=Destination.March)
+                    Open(Destination.March);
+                else if(id=="barracks" && CurrentDestination!=Destination.Training)
+                    Open(Destination.Training);
+                return;
+            }
             var s = gateway.Snapshot();
             if(s.BastionLevel < 2 || s.BarracksLevel < 1) return;
             if(id == "barracks") Open(Destination.Training);
