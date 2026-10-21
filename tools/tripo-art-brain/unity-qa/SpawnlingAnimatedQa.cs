@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 public static class SpawnlingAnimatedQa
 {
-    const string Expected = "c846969f98c838f9a4c6b0436097d729135109eabaa573210096a6b11332f1db";
+    const string Expected = "eef82ab48b8e512a39b3f87b5b282f5bc493ec119a7e21c2149a2437c1448128";
     [Serializable] public class Result
     {
         public string status, source_sha256, unity, clip, error;
