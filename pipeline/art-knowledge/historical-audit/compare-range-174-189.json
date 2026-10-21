@@ -1,0 +1,655 @@
+{
+  "schema_version": 1,
+  "base": "main",
+  "offset": 174,
+  "items": [
+    {
+      "name": "visual-proof/valoria-golden-district-v1",
+      "sha": "547e4ba16a73ba9044ffd772520a5cdde723e6e7",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 5375,
+      "files_count": 3,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 3,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-golden-district-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/GoldenDistrictV1/Editor/GoldenDistrictV1Gate.cs",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_GOLDEN_DISTRICT_V1_VERDICT.md",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-master-visual-rebuild-v2",
+      "sha": "6e31855e40c50622ff57e1c61c911d2bb09d20da",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 32,
+      "behind": 5312,
+      "files_count": 5,
+      "total_commits": 32,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 3,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-master-visual-rebuild-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_MASTER_VISUAL_REBUILD_V2_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/art-production-request.json",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-monumental-ruin-gap-v1",
+      "sha": "1b7101220c478043969422ba42790f15a09f43a3",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 29,
+      "behind": 5312,
+      "files_count": 6,
+      "total_commits": 29,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 4,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-master-visual-rebuild-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_MASTER_VISUAL_REBUILD_V2_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_REFERENCE_CONVERGENCE_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/art-production-request.json",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-photogrammetry-midground-v1",
+      "sha": "fc7ea4c71c73f4362b25b3b081fdd8952e5d56d3",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 29,
+      "behind": 4356,
+      "files_count": 13,
+      "total_commits": 29,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 6,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-composition-frame-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-shell-v2-fused-transition.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-shell-v2-photogrammetry-midground.yml",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/art-production-request.json",
+          "status": "modified"
+        },
+        {
+          "path": "tools/valoria-shell-v2-fused/build_fused_transition.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/valoria-shell-v2-photogrammetry/build_midground.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-production-cell-golden-transfer-v1",
+      "sha": "5f7f389148186b42d20f3673bc4e3f093557c941",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 10,
+      "behind": 5375,
+      "files_count": 3,
+      "total_commits": 10,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 3,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-production-cell-transfer.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ValoriaProductionCellTransfer/Editor/ValoriaProductionCellTransferGate.cs",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_PRODUCTION_CELL_GOLDEN_TRANSFER_V1_RESULT.md",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-production-module-kit-v1",
+      "sha": "a268c749a53af2c4ccfdcb2423f80e327a629a5d",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 7,
+      "behind": 5375,
+      "files_count": 3,
+      "total_commits": 7,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 2,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-production-module-kit-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_PRODUCTION_MODULE_KIT_V1_RESULT.md",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-reference-convergence-v1-refine",
+      "sha": "af196da64861f70cb22b338a4e2aa66c4d4c683f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 59,
+      "behind": 5312,
+      "files_count": 19,
+      "total_commits": 59,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 4,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-master-visual-rebuild-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-reference-convergence-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_MASTER_VISUAL_REBUILD_V2_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/art-production-request.json",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-reference-convergence-v1",
+      "sha": "57d376398e47f32e78ef3968c65bb1de6cd1d75a",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 63,
+      "behind": 5312,
+      "files_count": 21,
+      "total_commits": 63,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 5,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-master-visual-rebuild-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-reference-convergence-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_MASTER_VISUAL_REBUILD_V2_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_REFERENCE_CONVERGENCE_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/art-production-request.json",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-reference-convergence-v2-r2",
+      "sha": "5c6df6e87d0aeec7d0b4a57649a2cc12177fe5d3",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 5253,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "visual-proof/valoria-reference-convergence-v2",
+      "sha": "88a4e3e4eea28c875c48f76aa7ef657416d8ef41",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 13,
+      "behind": 5300,
+      "files_count": 9,
+      "total_commits": 13,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 4,
+      "highlights": [
+        {
+          "path": ".github/workflows/art-production-plan.yml",
+          "status": "modified"
+        },
+        {
+          "path": ".github/workflows/valoria-reference-convergence-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_REFERENCE_CONVERGENCE_PASS_V2_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/art-production-request.json",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-semantic-source-reauthoring-proof-v1",
+      "sha": "64675d692ac45318743b4d34d7aae7aff0917d7f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 177,
+      "behind": 4331,
+      "files_count": 72,
+      "total_commits": 177,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 45,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-flat-citadel-art-consolidation-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-flat-citadel-production-uplift-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-semantic-source-reauthoring-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-audit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-comparison.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-segmentation.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-functional-source-audit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-secondary-lineup.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-wall-lineup.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_ASSET_COHERENCE_GAME_PRESENTATION_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_FLAT_CITADEL_PRODUCTION_UPLIFT_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_SEMANTIC_SOURCE_REAUTHORING_PROOF_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_RESEARCH.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/Coherence-HUD-PlayMode.xml",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/asset-audit.txt",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/coherence-metrics.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-12.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-19.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-9.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-mobile.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/evidence.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/manifest.json",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-shell-v2-blender-transition",
+      "sha": "014e0f561ea636f6890a0010ef0370115dfaa5ad",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 4359,
+      "files_count": 5,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 2,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-shell-v2-blender-transition.yml",
+          "status": "added"
+        },
+        {
+          "path": "tools/valoria-shell-v2/build_transition.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "tools"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-shell-v2-fused-transition",
+      "sha": "e88d821e1e00dce5249fc6ee445f51ee7a267e1d",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 15,
+      "behind": 4356,
+      "files_count": 10,
+      "total_commits": 15,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 4,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-composition-frame-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-shell-v2-fused-transition.yml",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/art-production-request.json",
+          "status": "modified"
+        },
+        {
+          "path": "tools/valoria-shell-v2-fused/build_fused_transition.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-shell-v2-landform",
+      "sha": "7b913fa8c8ce72ee1ccf310c242797059309cdc7",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 2,
+      "behind": 4370,
+      "files_count": 6,
+      "total_commits": 2,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-strongest-composite-v2.yml",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-source-level-art-direction-proof-v1",
+      "sha": "ee51cfbbb4752b631a099e32da1b361ce568dd1e",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 152,
+      "behind": 4331,
+      "files_count": 69,
+      "total_commits": 152,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 43,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-flat-citadel-art-consolidation-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-flat-citadel-production-uplift-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-audit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-comparison.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-segmentation.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-functional-source-audit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-secondary-lineup.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-wall-lineup.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_ASSET_COHERENCE_GAME_PRESENTATION_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_FLAT_CITADEL_PRODUCTION_UPLIFT_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_SOURCE_LEVEL_ART_DIRECTION_PROOF_V1_RESEARCH.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_SOURCE_LEVEL_ART_DIRECTION_PROOF_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_RESEARCH.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/Coherence-HUD-PlayMode.xml",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/asset-audit.txt",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/coherence-metrics.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-12.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-19.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-9.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-mobile.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/evidence.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/manifest.json",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "visual-proof/valoria-tripo-selective-replacement-proof-v1",
+      "sha": "f93ff437ec28e688f48b14702097db8d418d0640",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 4289,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    }
+  ]
+}
