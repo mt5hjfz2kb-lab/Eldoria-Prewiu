@@ -1,0 +1,281 @@
+using Eldoria.UI.RoyalGold;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Eldoria.UI.RoyalGold.V2
+{
+    /// <summary>
+    /// Final owner-art pass applied AFTER the certified V2/V3 narrative layout.
+    /// Reuses the single real RoyalHUD, ModalWindow and original Aldric texture.
+    /// No fabricated character, new button, event, save, clock or game command.
+    /// </summary>
+    [DisallowMultipleComponent]
+    [DefaultExecutionOrder(520)]
+    public sealed class RoyalGoldV3CinematicFinish : MonoBehaviour
+    {
+        public RoyalHUD Source;
+        private RectTransform safe, frame, manuscript, portrait, sigil;
+        private RoyalGoldV3ParchmentGraphic parchment;
+        private Graphic originalFrame;
+        private RoyalText role;
+        private Vector2 savedAnchorMin, savedAnchorMax, savedPivot;
+        private Vector2 savedPosition, savedSize;
+        private Color savedTitleColor, savedBodyColor, savedExtraLabelColor;
+        private int savedTitleSize, savedBodySize, savedExtraLabelSize;
+        private Vector2 labelAnchorMin, labelAnchorMax, labelPivot, labelPosition, labelSize;
+        private TextAnchor labelAlignment;
+        private bool captured;
+        private static readonly Color Sepia = new Color(.19f, .15f, .11f, 1f);
+        private static readonly Color Brown = new Color(.38f, .25f, .13f, 1f);
+        private static readonly Color PurplePale = new Color(.95f, .86f, 1f, 1f);
+
+        private void Awake()
+        {
+            if (!Source) Source = GetComponent<RoyalHUD>();
+        }
+
+        private static void Top(RectTransform r, float x, float top, float w, float h)
+        {
+            if (!r) return;
+            r.anchorMin = r.anchorMax = r.pivot = new Vector2(0, 1);
+            r.anchoredPosition = new Vector2(x, -top);
+            r.sizeDelta = new Vector2(Mathf.Max(0, w), Mathf.Max(0, h));
+        }
+
+        // Canvas dimensions also change during offscreen native captures and
+        // phone rotation between LateUpdate and rendering. Reflow from the
+        // actual current canvas before it is drawn, not last frame's width.
+        private void OnEnable() => Canvas.willRenderCanvases += SynchronizeNow;
+        private void OnDisable()
+        {
+            Canvas.willRenderCanvases -= SynchronizeNow;
+            Restore();
+        }
+
+        private void Restore()
+        {
+            if (!captured) return;
+            if (originalFrame) originalFrame.enabled = true;
+            if (manuscript) manuscript.gameObject.SetActive(false);
+            if (frame)
+            {
+                frame.anchorMin = savedAnchorMin;
+                frame.anchorMax = savedAnchorMax;
+                frame.pivot = savedPivot;
+                // The canonical narrative controller has already restored
+                // ordinary menu geometry when its story ends. Never replace
+                // that with a snapshot of the preceding narrative layout.
+                if (Source && Source.NarrativeOpen)
+                {
+                    frame.anchoredPosition = savedPosition;
+                    frame.sizeDelta = savedSize;
+                }
+            }
+            if (Source && Source.Modal)
+            {
+                var modal = Source.Modal;
+                if (modal.Title)
+                {
+                    modal.Title.color = savedTitleColor;
+                    modal.Title.fontSize = savedTitleSize;
+                }
+                if (modal.Body)
+                {
+                    modal.Body.color = savedBodyColor;
+                    if (Source.NarrativeOpen) modal.Body.fontSize = savedBodySize;
+                }
+                if (modal.ExtraLabel)
+                {
+                    modal.ExtraLabel.color = savedExtraLabelColor;
+                    modal.ExtraLabel.fontSize = savedExtraLabelSize;
+                    var label = modal.ExtraLabel.rectTransform;
+                    label.anchorMin = labelAnchorMin;
+                    label.anchorMax = labelAnchorMax;
+                    label.pivot = labelPivot;
+                    label.anchoredPosition = labelPosition;
+                    label.sizeDelta = labelSize;
+                    modal.ExtraLabel.alignment = labelAlignment;
+                }
+            }
+            captured = false;
+        }
+
+        private bool Cache()
+        {
+            if (!Source || !Source.Modal || !Source.Modal.Title) return false;
+            var layout = Source.GetComponentInChildren<RoyalHudLayout>(true);
+            safe = layout ? layout.transform as RectTransform : null;
+            frame = Source.Modal.Title.rectTransform.parent as RectTransform;
+            if (!safe || !frame) return false;
+            role = frame.Find("Narrative character role")
+                ? frame.Find("Narrative character role").GetComponent<RoyalText>() : null;
+            portrait = frame.Find("Canonical Aldric portrait") as RectTransform;
+            sigil = frame.Find("Narrator sigil") as RectTransform;
+            if (!manuscript)
+            {
+                var go = new GameObject("V3 / cinematic royal parchment",
+                    typeof(RectTransform), typeof(CanvasRenderer),
+                    typeof(RoyalGoldV3ParchmentGraphic));
+                go.transform.SetParent(frame, false);
+                go.transform.SetAsFirstSibling();
+                go.layer = frame.gameObject.layer;
+                manuscript = (RectTransform)go.transform;
+                manuscript.anchorMin = Vector2.zero;
+                manuscript.anchorMax = Vector2.one;
+                manuscript.offsetMin = Vector2.zero;
+                manuscript.offsetMax = Vector2.zero;
+                parchment = go.GetComponent<RoyalGoldV3ParchmentGraphic>();
+                parchment.raycastTarget = false;
+            }
+            if (!parchment) parchment = manuscript.GetComponent<RoyalGoldV3ParchmentGraphic>();
+            originalFrame = frame.GetComponent<Graphic>();
+            return true;
+        }
+
+        private void LateUpdate() => SynchronizeNow();
+
+        public void SynchronizeNow()
+        {
+            if (!Application.isPlaying || !Source) return;
+            if (!Source.NarrativeOpen)
+            {
+                Restore();
+                return;
+            }
+            var modal = Source.Modal;
+            if (!modal || !modal.Title || !modal.Body || !modal.Extra) return;
+            if (!Cache()) return;
+            float availableWidth = safe.rect.width;
+            float availableHeight = safe.rect.height;
+            if (availableWidth < 280f || availableHeight < 320f) return;
+
+            if (!captured)
+            {
+                savedAnchorMin = frame.anchorMin;
+                savedAnchorMax = frame.anchorMax;
+                savedPivot = frame.pivot;
+                savedPosition = frame.anchoredPosition;
+                savedSize = frame.sizeDelta;
+                savedTitleColor = modal.Title.color;
+                savedBodyColor = modal.Body.color;
+                savedTitleSize = modal.Title.fontSize;
+                savedBodySize = modal.Body.fontSize;
+                if (modal.ExtraLabel)
+                {
+                    savedExtraLabelColor = modal.ExtraLabel.color;
+                    savedExtraLabelSize = modal.ExtraLabel.fontSize;
+                    var label = modal.ExtraLabel.rectTransform;
+                    labelAnchorMin = label.anchorMin;
+                    labelAnchorMax = label.anchorMax;
+                    labelPivot = label.pivot;
+                    labelPosition = label.anchoredPosition;
+                    labelSize = label.sizeDelta;
+                    labelAlignment = modal.ExtraLabel.alignment;
+                }
+                captured = true;
+            }
+            if (originalFrame) originalFrame.enabled = false;
+            manuscript.gameObject.SetActive(true);
+
+            bool arcane = Source.NarrativeSpeaker == "Orín" ||
+                Source.NarrativeSpeaker == "Orin";
+            if (parchment.Arcane != arcane)
+            {
+                parchment.Arcane = arcane;
+                parchment.SetVerticesDirty();
+            }
+
+            bool portraitOrientation = availableHeight > availableWidth;
+            float panelWidth = Mathf.Min(availableWidth - 26f,
+                portraitOrientation ? 725f : 1120f);
+            float panelHeight = Mathf.Min(availableHeight - 24f,
+                portraitOrientation ? 440f : 356f);
+            float column = Mathf.Clamp(panelWidth * .245f, 120f, 270f);
+            // Dialogues rest in the bottom cinematic strip. Unlike V2, they
+            // never create a central opaque rectangle covering the whole city.
+            frame.anchorMin = frame.anchorMax = new Vector2(.5f, 0f);
+            frame.pivot = new Vector2(.5f, 0f);
+            frame.sizeDelta = new Vector2(panelWidth, panelHeight);
+            frame.anchoredPosition = new Vector2(0f, portraitOrientation ? 23f : 18f);
+
+            float left = column + 22f;
+            float textWidth = panelWidth - left - 22f;
+            float titleTop = 22f;
+            float bodyTop = portraitOrientation ? 116f : 102f;
+            float bodyHeight = panelHeight - bodyTop - 78f;
+            float portraitSize = Mathf.Min(column - 25f, panelHeight - 60f);
+            portraitSize = Mathf.Max(90f, portraitSize);
+            float portraitLeft = 11f + (column - portraitSize) * .5f;
+            float portraitTop = Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
+
+            modal.Title.fontSize = panelWidth < 465f ? 23 : 29;
+            modal.Title.color = arcane ? PurplePale : Brown;
+            modal.Title.fontStyle = FontStyle.Bold;
+            modal.Title.alignment = TextAnchor.MiddleLeft;
+            Top(modal.Title.rectTransform, left, titleTop, textWidth, 48f);
+            if (role)
+            {
+                role.color = arcane ? new Color(.82f, .69f, .94f, 1f) : Brown;
+                role.fontSize = panelWidth < 465f ? 17 : 20;
+                Top(role.rectTransform, left + 2f, 70f, textWidth - 4f, 30f);
+            }
+
+            if (portrait)
+            {
+                // Only the authentic Aldric image may represent Aldric. Lyra,
+                // narrator and Orín keep the canonical speaker-specific sigil,
+                // never an invented portrait or Aldric misidentified as Lyra.
+                Top(portrait, portraitLeft, portraitTop, portraitSize, portraitSize);
+                var face = portrait.GetComponent<RawImage>();
+                if (face)
+                {
+                    face.raycastTarget = false;
+                    face.uvRect = new Rect(0f, 0f, 1f, 1f);
+                }
+            }
+            if (sigil)
+            {
+                Top(sigil, portraitLeft, portraitTop, portraitSize, portraitSize);
+                var glyph = sigil.GetComponent<RoyalText>();
+                if (glyph)
+                {
+                    glyph.fontSize = Mathf.RoundToInt(portraitSize * .58f);
+                    glyph.color = arcane
+                        ? new Color(.78f, .60f, .92f) : new Color(.89f, .75f, .43f);
+                }
+            }
+
+            // The paper uses ink, NOT white text on an oversized navy slab.
+            // A real 218-character page must remain fully readable on phones.
+            modal.Body.fontSize = panelWidth < 465f ? 21 :
+                (portraitOrientation ? 25 : 27);
+            modal.Body.color = arcane ? PurplePale : Sepia;
+            modal.Body.lineSpacing = 1.15f;
+            modal.Body.alignment = TextAnchor.UpperLeft;
+            modal.Body.horizontalOverflow = HorizontalWrapMode.Wrap;
+            modal.Body.verticalOverflow = VerticalWrapMode.Truncate;
+            Top(modal.Body.rectTransform, left, bodyTop, textWidth, bodyHeight);
+            for (int size = modal.Body.fontSize;
+                 modal.Body.preferredHeight > bodyHeight - 8f && size > 20; size--)
+                modal.Body.fontSize = size - 1;
+
+            // Retain the actual original Continue/Reveal button and listener,
+            // but present it as a compact action on the bottom-right of paper.
+            float buttonWidth = Mathf.Clamp(panelWidth * .255f, 170f, 225f);
+            Top((RectTransform)modal.Extra.transform,
+                panelWidth - buttonWidth - 20f, panelHeight - 64f,
+                buttonWidth, 48f);
+            if (modal.ExtraLabel)
+            {
+                modal.ExtraLabel.fontSize = 21;
+                modal.ExtraLabel.color = new Color(.96f, .91f, .81f);
+                // The original label is a fixed 510px child of a 530px
+                // button. Resize that SAME child with its compact button;
+                // otherwise Continue renders outside the paper entirely.
+                Top(modal.ExtraLabel.rectTransform, 8f, 3f, buttonWidth - 16f, 42f);
+                modal.ExtraLabel.alignment = TextAnchor.MiddleCenter;
+            }
+        }
+    }
+}
+

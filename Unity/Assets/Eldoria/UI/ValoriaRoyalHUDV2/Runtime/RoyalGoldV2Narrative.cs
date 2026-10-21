@@ -25,6 +25,11 @@ namespace Eldoria.UI.RoyalGold.V2
         private void Awake()
         {
             if (!Source) Source = GetComponent<RoyalHUD>();
+            // Owner-approved art finish is presentation-only and runs AFTER
+            // the certified V2 narrative. No second HUD or story controller.
+            var finish = GetComponent<RoyalGoldV3CinematicFinish>();
+            if (!finish) finish = gameObject.AddComponent<RoyalGoldV3CinematicFinish>();
+            finish.Source = Source;
         }
 
         private void Cache()

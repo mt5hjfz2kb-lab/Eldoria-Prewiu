@@ -107,6 +107,45 @@ namespace Eldoria.UI.RoyalGold.V2
             safe = anchor.transform as RectTransform;
             if (!safe) return;
 
+            // Approved Interface 1: the existing crest/name/power receive a
+            // quiet midnight-blue royal plate INSIDE their existing bounds.
+            // Decorative graphic only; the genuine realm button remains sole
+            // hit target, and no extra overlay occupies city coordinates.
+            var realm = Source.Realm ? Source.Realm.transform as RectTransform : null;
+            if (realm && !realm.Find("V3 / subdued Valoria livery"))
+            {
+                var relief = NewRect("V3 / subdued Valoria livery", realm);
+                relief.gameObject.AddComponent<CanvasRenderer>();
+                var reliefSkin = relief.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+                reliefSkin.Primary = false;
+                reliefSkin.DecorativeCorners = false;
+                reliefSkin.raycastTarget = false;
+                relief.anchorMin = Vector2.zero;
+                relief.anchorMax = Vector2.one;
+                relief.offsetMin = Vector2.zero;
+                relief.offsetMax = Vector2.zero;
+                relief.SetAsFirstSibling();
+                // Reuse only the REAL Valoria crest artwork already in Unity.
+                // Invert the old beige shield to noble midnight-blue and make
+                // the existing Bastion emblem antique gold; no new fake icon.
+                var crest = realm.Find("Valoria crest");
+                if (crest)
+                {
+                    var shield = crest.GetComponent<RoyalIconGraphic>();
+                    if (shield) shield.color = new Color(.078f, .148f, .265f, 1f);
+                    var bastionEmblem = crest.Find("Bastion emblem");
+                    if (bastionEmblem)
+                    {
+                        var emblem = bastionEmblem.GetComponent<RoyalIconGraphic>();
+                        if (emblem) emblem.color = new Color(.92f, .75f, .43f, 1f);
+                    }
+                }
+                if (Source.Realm.Realm)
+                    Source.Realm.Realm.color = new Color(.96f, .84f, .61f, 1f);
+                if (Source.Realm.Power)
+                    Source.Realm.Power.color = new Color(.80f, .82f, .81f, 1f);
+            }
+
             objectiveCard = Panel("V2 / current objective", safe);
             chapterText = Text("Chapter", objectiveCard, 18, Gold, true);
             objectiveText = Text("Current real objective", objectiveCard, 25, Ivory, true);
