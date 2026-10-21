@@ -13,9 +13,11 @@ p.add_argument('--before',required=True,type=pathlib.Path)
 p.add_argument('--after',required=True,type=pathlib.Path)
 p.add_argument('--target',required=True)
 p.add_argument('--out',required=True,type=pathlib.Path)
+p.add_argument('--min-frame-size',type=float,default=3.0,help='Reviewer camera minimum world-space extent; default 3m preserves Valoria terrain evidence. For small isolated creatures, opt in to a closer camera.')
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 if not a.before.is_file() or not a.after.is_file():raise ValueError('Both real Blender files are required')
 if a.before.resolve()==a.after.resolve():raise ValueError('The same source cannot be compared to itself')
+if not 0.7 <= a.min_frame_size <= 10.0:raise ValueError('Unsafe review-camera framing size')
 a.out.mkdir(parents=True,exist_ok=True)
 def collect(path):
  bpy.ops.wm.open_mainfile(filepath=str(path.resolve()))
@@ -29,7 +31,7 @@ source=collect(a.before);dest=collect(a.after)
 if source['lo']==dest['lo'] and source['hi']==dest['hi'] and source['verts']==dest['verts'] and source['faces']==dest['faces']:
  print('WARNING: identical target bounds/counts; verify exact geometry hashes before claiming progress')
 center=Vector([(min(source['lo'][i],dest['lo'][i])+max(source['hi'][i],dest['hi'][i]))/2 for i in range(3)])
-size=max(3.0,max(max(source['hi'][i],dest['hi'][i])-min(source['lo'][i],dest['lo'][i]) for i in range(3)))
+size=max(a.min_frame_size,max(max(source['hi'][i],dest['hi'][i])-min(source['lo'][i],dest['lo'][i]) for i in range(3)))
 def render(path,name):
  bpy.ops.wm.open_mainfile(filepath=str(path.resolve()))
  for item in list(bpy.data.objects):
@@ -86,6 +88,8 @@ if (bw,bh)!=(aw,ah):raise ValueError('Cannot compare Blender frames of differing
 visibility=visible_change(before_pixels,after_pixels,bw,bh)
 manifest={'scope':'Blender clay A/B only, NOT Unity, NOT ART_APPROVED',
           'target':a.target,'camera':'orthographic camera and clay/light anchored to combined source/edited target bounds',
+          'min_frame_size':a.min_frame_size,
+          'orthographic_scale':size*1.9,
           'source_file_sha256':hashlib.sha256(a.before.read_bytes()).hexdigest(),
           'result_file_sha256':hashlib.sha256(a.after.read_bytes()).hexdigest(),
           'before_image_sha256':before_hash,'after_image_sha256':after_hash,
