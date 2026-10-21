@@ -28,33 +28,29 @@ jobs:
           # Keep source/docs dependencies; omit Unity binary bodies that no check reads.
           sparse-checkout-cone-mode: false
           sparse-checkout: |
-            /*
-            !/*/
-            /.github/workflows/
-            /docs/
-            /pipeline/
-            /tools/
-            /Unity/Assets/Eldoria/
-            /Unity/ProjectSettings/ProjectVersion.txt
-            /references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
-            !/Unity/Assets/Eldoria/**/*.png
-            !/Unity/Assets/Eldoria/**/*.jpg
-            !/Unity/Assets/Eldoria/**/*.jpeg
-            !/Unity/Assets/Eldoria/**/*.glb
-            !/Unity/Assets/Eldoria/**/*.fbx
-            !/Unity/Assets/Eldoria/**/*.blend
-            !/Unity/Assets/Eldoria/**/*.wav
-            !/Unity/Assets/Eldoria/**/*.mp3
-            !/Unity/Assets/Eldoria/**/*.tga
-            !/Unity/Assets/Eldoria/**/*.exr
+            /AGENTS.md
+            /SESSION_HANDOFF.md
+            /PROJECT_STATE.md
+            /README.md
+            /docs/documentation-catalog.json
+            /docs/DOCUMENTATION_INDEX.md
+            /docs/DOCUMENTATION_POLICY.md
+            /docs/WORKFLOW_INDEX.md
+            /docs/ELDORIA_ART_PIPELINE_INDEX.md
+            /pipeline/repository-architecture-invariants.json
+            /pipeline/active-workstreams.json
+            /tools/check-repository-architecture*
+            /tools/check-documentation-governance*
+            /tools/closeout/
+            /tools/art-direction/learning-evidence/
       - name: Enforce repository architecture invariants
         run: |
           node tools/check-repository-architecture.mjs --tracked-tree
           node --test tools/check-repository-architecture.test.mjs
       - name: Validate documentation catalogue and local links
-        run: node tools/check-documentation-governance.mjs
+        run: node tools/check-documentation-governance.mjs --tracked-tree
       - name: Test documentation governance (positive and negative cases)
-        run: node --test tools/check-documentation-governance.test.mjs
+        run: ELDORIA_CI_TRACKED_TREE=1 node --test tools/check-documentation-governance.test.mjs
       - name: Test read-only closeout diagnostics (no Windows, no game build)
         run: node --test tools/closeout/closeout.test.mjs
       - name: Enforce persistent art learning evidence and regression tests

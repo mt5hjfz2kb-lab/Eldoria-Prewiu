@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'pipeline/visual-authority-routing-v1.json'
+      - 'pipeline/active-workstreams.json'
+      - '.github/workflows/valoria-visual-authority-routing.yml'
       - 'tools/check-valoria-visual-authority-routing.mjs'
       - 'AGENTS.md'
       - 'references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg'
@@ -18,6 +20,8 @@ on:
   pull_request:
     paths:
       - 'pipeline/visual-authority-routing-v1.json'
+      - 'pipeline/active-workstreams.json'
+      - '.github/workflows/valoria-visual-authority-routing.yml'
       - 'tools/check-valoria-visual-authority-routing.mjs'
       - 'AGENTS.md'
       - 'references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg'
@@ -35,6 +39,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/development-baseline.json
+            /pipeline/visual-authority-routing-v1.json
+            /pipeline/active-workstreams.json
+            /pipeline/unity-publish-request.json
+            /tools/check-valoria-visual-authority-routing.mjs
+            /references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs.meta
+            /Unity/ProjectSettings/EditorBuildSettings.asset
+            /Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegratedWebBuild.cs
+            /.github/workflows/valoria-reference-clean.yml
+            /Unity/Assets/Eldoria/Scripts/Presentation/ValoriaCanonicalRuntimeGuard.cs
       - uses: actions/setup-node@v4
         with:
           node-version: 22
