@@ -326,6 +326,16 @@ namespace Eldoria.ReferenceClean.Editor {
    // A real finger cannot touch in that same immediate C# call stack.
    yield return null;
    yield return new WaitForSecondsRealtime(.20f);
+   // The actual Bastion II narrative has priority over an independent
+   // management destination. Finish its real pages before training, allowing
+   // the suspended destination to reappear on the same city/camera.
+   for(int page=0;page<12&&h.Hud.NarrativeOpen;page++)
+   {
+    Click(h.Hud.Modal.Extra);
+    yield return new WaitForSecondsRealtime(.18f);
+   }
+   yield return null;
+   yield return new WaitForSecondsRealtime(.18f);
    Check(()=>{
     var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
     Need(management!=null&&management.IsOpen&&

@@ -10,6 +10,9 @@ namespace Eldoria.UI.RoyalGold {
   RoyalHudLayout layout;Canvas canvas;readonly Vector3[] corners=new Vector3[4];
   public string SelectedBuildingId=>selected;
   public event Action<string> SelectionChanged;
+  // Announce a real cinematic before displaying its modal so other destinations
+  // can yield input synchronously; this does not change gameplay state.
+  public event Action NarrativeOpening;
   void Awake(){group=GetComponent<CanvasGroup>();canvas=GetComponent<Canvas>();layout=GetComponentInChildren<RoyalHudLayout>(true);cinematic=Modal?Modal.GetComponent<RoyalNarrativePresentation>():null;SetBound(session!=null);}
   void SetBound(bool bound){if(!group)group=GetComponent<CanvasGroup>();group.alpha=bound?1:0;group.interactable=group.blocksRaycasts=bound;}
   public void Bind(IRoyalSession source,IRoyalNavigation navigation=null){session=source??throw new ArgumentNullException(nameof(source));host=navigation;SetBound(true);Refresh();}
@@ -70,6 +73,7 @@ namespace Eldoria.UI.RoyalGold {
    if(turns==null||turns.Length==0||NarrativeOpen)return;
    if(!cinematic)cinematic=Modal.GetComponent<RoyalNarrativePresentation>();
    if(!cinematic)throw new InvalidOperationException("Royal Gold narrative presentation missing from its own ModalWindow prefab");
+   NarrativeOpening?.Invoke();
    narrative=true;Modal.Show("","");
    cinematic.Begin(turns,english,()=>{
     narrative=false;

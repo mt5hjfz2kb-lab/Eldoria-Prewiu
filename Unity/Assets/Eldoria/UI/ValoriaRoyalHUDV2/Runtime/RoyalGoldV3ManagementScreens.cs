@@ -36,6 +36,8 @@ namespace Eldoria.UI.RoyalGold.V2
         string notice = "";
         string observedTask = "";
         int observedCount;
+        bool deferredForModal;
+        Destination deferredDestination;
         static readonly Color Ivory = new Color(.95f,.925f,.865f);
         static readonly Color Gold = new Color(.89f,.73f,.46f);
         static readonly Color Muted = new Color(.78f,.82f,.84f);
@@ -43,17 +45,52 @@ namespace Eldoria.UI.RoyalGold.V2
         public void Initialize(RoyalHUD hud, ICommandGateway authoritativeGateway,
             Func<long> authoritativeUtcTicks, Action refreshed)
         {
-            if(Hud != hud && Hud != null) Hud.SelectionChanged -= OnSelection;
-            if(Hud != hud && hud != null) hud.SelectionChanged += OnSelection;
+            if(Hud != hud && Hud != null)
+            {
+                Hud.SelectionChanged -= OnSelection;
+                Hud.NarrativeOpening -= SuspendForNarrative;
+            }
+            if(Hud != hud && hud != null)
+            {
+                hud.SelectionChanged += OnSelection;
+                hud.NarrativeOpening += SuspendForNarrative;
+            }
             Hud = hud;
             gateway = authoritativeGateway;
             utcTicks = authoritativeUtcTicks;
             onCommand = refreshed;
         }
 
+        void SuspendForNarrative()
+        {
+            // Invoked before the RoyalHUD narrative draws: the actual dialogue
+            // Continue button must outrank every management destination.
+            if(!IsOpen)return;
+            deferredDestination=CurrentDestination;
+            deferredForModal=true;
+            root.gameObject.SetActive(false);
+        }
+
         void OnSelection(string id)
         {
             if(gateway == null) return;
+            if(string.IsNullOrEmpty(id))
+            {
+                deferredForModal=false;
+                if(IsOpen){root.gameObject.SetActive(false);notice="";}
+                return;
+            }
+            if(Hud != null && (Hud.NarrativeOpen ||
+                (Hud.Modal != null && Hud.Modal.gameObject.activeSelf)))
+            {
+                if(id=="barracks" || id=="march-main")
+                {
+                    deferredDestination=id=="barracks"?Destination.Training:Destination.March;
+                    deferredForModal=true;
+                    if(IsOpen)root.gameObject.SetActive(false);
+                }
+                return;
+            }
             // Canonical navigation clears selection before switching world/city.
             // Never leave a full-screen management destination over the world.
             if(IsOpen)
@@ -77,7 +114,11 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void OnDestroy()
         {
-            if(Hud != null) Hud.SelectionChanged -= OnSelection;
+            if(Hud != null)
+            {
+                Hud.SelectionChanged -= OnSelection;
+                Hud.NarrativeOpening -= SuspendForNarrative;
+            }
         }
 
         // Invoked from the canonical IRoyalSession, not by a duplicate HUD or modal.
@@ -105,6 +146,14 @@ namespace Eldoria.UI.RoyalGold.V2
             if (gateway == null || Hud == null) return;
             var s = gateway.Snapshot();
             if (s.BastionLevel < 2 || s.BarracksLevel < 1) return;
+            if(Hud.NarrativeOpen || (Hud.Modal != null && Hud.Modal.gameObject.activeSelf))
+            {
+                deferredDestination=destination;
+                deferredForModal=true;
+                if(IsOpen)root.gameObject.SetActive(false);
+                return;
+            }
+            deferredForModal=false;
             EnsureView();
             CurrentDestination = destination;
             destinationArtwork.MarchTheme = destination == Destination.March;
@@ -124,6 +173,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
         public void Close()
         {
+            deferredForModal=false;
             if (root != null) root.gameObject.SetActive(false);
             notice = "";
             // World -> city is a canonical navigation request, never a scene reload.
@@ -144,7 +194,20 @@ namespace Eldoria.UI.RoyalGold.V2
 
         void Update()
         {
-            if (!IsOpen || gateway == null) return;
+            if(gateway == null || Hud == null)return;
+            if(Hud.NarrativeOpen || (Hud.Modal != null && Hud.Modal.gameObject.activeSelf))
+            {
+                SuspendForNarrative();
+                return;
+            }
+            if(deferredForModal && !IsOpen)
+            {
+                deferredForModal=false;
+                string selected=Hud.SelectedBuildingId;
+                if(selected=="barracks" || selected=="march-main")
+                    Open(deferredDestination);
+            }
+            if(!IsOpen)return;
             root.SetAsLastSibling(); // Ensure the city and every other HUD layer stay behind.
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) { Close(); return; }
             if (Mathf.Abs(lastWidth-root.rect.width) > .5f ||
