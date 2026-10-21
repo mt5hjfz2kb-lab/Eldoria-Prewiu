@@ -80,6 +80,18 @@ jobs:
           node tools/tripo-art-brain/verify-mesh-context.mjs \
             "$OUT/mesh/mesh-context.json" "$OUT/mesh/verification.json"
           /usr/bin/python3 tools/tripo-art-brain/prepare-real-inputs.py "$OUT/photos"
+          python3 - <<'PY'
+          import json,os,pathlib
+          root=pathlib.Path(os.environ['OUT'])/'photos'
+          data=json.loads((root/'genuine-image-provenance.json').read_text())
+          assert data['reference']['source'].endswith('/Finished/finished_face.png')
+          assert data['reference']['authentic_crop_rect'] is not None
+          assert data['reference']['derivative_dimensions_px'][0] <= 512
+          assert data['before']['source'].endswith('/after-local-900x1600.png')
+          assert data['before']['authentic_crop_rect'] is None
+          assert data['before']['derivative_dimensions_px'][1] <= 512
+          print('GENUINE_FACE_CROP_AND_STRATEGIC_UNITY_FRAME_PINNED_NO_SYNTHETIC_PIXELS')
+          PY
 
       - name: Local CPU Ollama and real Qwen3-VL-2B (no paid cloud)
         timeout-minutes: 12
@@ -95,19 +107,19 @@ jobs:
           docker exec eldoria-tripo-real-qwen ollama pull qwen3-vl:2b-instruct
 
       - name: REAL Qwen vision authoring on existing Engendro, isolated
-        timeout-minutes: 13
+        timeout-minutes: 21
         shell: bash
         run: |
           set -euo pipefail
           python3 tools/art-direction/ai-authoring/author_brief.py \
-            --subject-kind creature --reference "$OUT/photos/reference-cpu640.jpg" \
-            --unity-before "$OUT/photos/before-cpu640.jpg" \
+            --subject-kind creature --reference "$OUT/photos/reference-cpu512.jpg" \
+            --unity-before "$OUT/photos/before-cpu512.jpg" \
             --target-object "$TARGET_MESH" --target-mode existing \
             --inventory "$OUT/prepared/qwen-inventory.txt" \
             --mesh-context "$OUT/mesh/mesh-context.json" \
-            --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1400 \
+            --model qwen3-vl:2b-instruct --num-ctx 10240 --num-predict 1000 \
             --max-actions 1 --cpu-compact --repair-attempts 1 \
-            --request-timeout 400 --out "$OUT/qwen" | tee "$OUT/real-qwen.log"
+            --request-timeout 500 --out "$OUT/qwen" | tee "$OUT/real-qwen.log"
           node tools/art-direction/ai-authoring/verify-artist-cycle.mjs \
             --preflight-plan "$OUT/qwen/artist-plan.json" "$TARGET_MESH" existing
 
