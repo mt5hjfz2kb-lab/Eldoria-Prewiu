@@ -19,6 +19,16 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/Assets/Eldoria/Scripts/Domain/GameState.cs
+            /Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs
+            /Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs
+            /tools/ui-v3-domain-smoke/Smoke.csproj
+            /tools/ui-v3-domain-smoke/Program.cs
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
