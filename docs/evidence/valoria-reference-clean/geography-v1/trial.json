@@ -1,6 +1,6 @@
 {
     "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
-    "tool_sha256": "e7523d5b2b1449491a0c6ceb43fd54c87f183cd84eac78bf512d061e9e925273",
+    "tool_sha256": "38e5da4b9f104df02cfc0aec8d9e95fef304a29554458842404faa4eeb5733ab",
     "method": "Identical city/world camera pose and projection, exact retained UV atlas/roads/corruption, inverse UV-world biomes and bounded soil contacts",
     "world_ground_source": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-0.asset",
     "original_poi_ids": [
@@ -37,10 +37,10 @@
         "after-world-engendro-valoria-mobile.png"
     ],
     "image_sha256": [
-        "6315e6742cfb2f18c95c63fe206d5235465a09ee2cc0e63996a5cdd5373a6775",
-        "655a1c9d0b24a92ebdfc81428e1be60f4737f1a0ca285ad736095aeaa4b0e669",
-        "0ca3409c1bf04a12e419a7ec8a05af1d1aa639d429cda76803e50f9ceee0d5e4",
-        "c4616a54d776e879adc0bee2c29a5d8a0b4b965a542446c6baa285492bcb6103",
+        "e545bcf5fdb2943db1da018a989dfb86948b24e54e18f8bbbf290fbb8fa7f31d",
+        "f1495c07bb125ff34e2e9490a06c05e78a144e3fd76218fce1848aa51fafefb3",
+        "84d50024d88927ff9d51d7f594fd53d12b703a93074aa6e20913ae506e7f051f",
+        "7ab61f0906f939e89496b623c0b3a0ceaed6dc419ee4650ca4207ec009edf00a",
         "b9a8179762ace6a88cb172244eb6db7fe83db2364b79725ff78cd2cfeccdb9d3",
         "c2982d9db03af811ae429e5776fda299c1e8f9e220257f77e116a73cb61836aa",
         "260ca84f2129096e7fe6839bf9fbd579f88ec9f8c0feda03f8464165bfe01656",
