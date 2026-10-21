@@ -22,6 +22,8 @@ namespace Eldoria.UI.RoyalGold.V2
         ICommandGateway gateway;
         Func<long> utcTicks;
         Action onCommand;
+        // Optional host navigation; same scene, preserving the city camera state.
+        public Action ReturnToCity {get;set;}
         public Action ReturnToCity { get; set; }
         RectTransform root, header, left, right, footer, quantityRow;
         RoyalGoldV3ManagementBackdropGraphic destinationArtwork;
@@ -128,6 +130,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // World -> city is a canonical navigation request, never a scene reload.
             ReturnToCity?.Invoke();
             if (Hud != null) Hud.SelectBuilding("");
+            ReturnToCity?.Invoke();
         }
 
         // Called by the native acceptance capture after switching the existing
