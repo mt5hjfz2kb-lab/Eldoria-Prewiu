@@ -1120,6 +1120,11 @@
       "path": "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md",
       "status": "review_pending",
       "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
     }
   ]
 }
