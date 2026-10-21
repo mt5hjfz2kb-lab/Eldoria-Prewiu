@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'pipeline/active-workstreams.json'
+      - '.github/workflows/art-production-governance.yml'
       - 'pipeline/art-production-request.json'
       - 'pipeline/art-production-requests/**'
       - 'tools/plan-art-production.mjs'
@@ -26,6 +27,7 @@ on:
     branches: [main]
     paths:
       - 'pipeline/active-workstreams.json'
+      - '.github/workflows/art-production-governance.yml'
       - 'pipeline/art-production-requests/**'
       - 'tools/plan-art-production.mjs'
       - 'tools/check-art-production-governance.mjs'
@@ -48,13 +50,45 @@ concurrency:
 jobs:
   governance:
     runs-on: ubuntu-latest
-    # Retain full history for the ownership diff. Fetch plus checkout exceeded
-    # the former three-minute budget before any art rule could run.
+    # Retain full Git history for ownership diffs; fetch asset bodies only when
+    # formal approval proof requires them. All original checks remain below.
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /AGENTS.md
+            /tools/
+            /pipeline/
+            /references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg
+      - name: Materialize complete repository for formal artist approval proof
+        shell: bash
+        run: |
+          evidence_mode=$(node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const registry=JSON.parse(fs.readFileSync('pipeline/active-workstreams.json','utf8'));
+          let full=false;
+          for(const work of registry.active || []){
+            if(work.art_production_routing!=='required') continue;
+            const request=work.art_production_request ||
+              path.join('pipeline/art-production-requests',work.id+'.json');
+            // Unknown/missing request inputs never justify a reduced checkout.
+            if(!fs.existsSync(request)){full=true;break;}
+            const req=JSON.parse(fs.readFileSync(request,'utf8'));
+            if(['ART_APPROVED','MOBILE_VALIDATED','GAMEPLAY_VALIDATED','RELEASED']
+              .includes(String(req.visual_gate_state||'').toUpperCase())) full=true;
+          }
+          console.log(full?'full':'metadata');
+          JS
+          )
+          if [ "$evidence_mode" = full ]; then
+            git sparse-checkout disable
+          elif [ "$evidence_mode" != metadata ]; then
+            echo "Unknown evidence mode; cannot validate art safely"; exit 1
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
