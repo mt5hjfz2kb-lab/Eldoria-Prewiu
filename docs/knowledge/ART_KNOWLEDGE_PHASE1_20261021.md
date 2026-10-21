@@ -1,6 +1,6 @@
 # Eldoria — memoria artística operativa, fase 1 ampliada
 
-**Versión de conocimiento:** 21-10-2026. **Estado:** `READ_ONLY`, incorporada en rama documental separada y candidata a `main`. **No es un pipeline nuevo**, no concede autoridad para escribir en el juego y no ejecuta automáticamente Blender/Qwen/Tripo/Unity.
+**Versión de conocimiento:** 21-10-2026. **Estado:** `READ_ONLY`, consolidada en la rama canónica `main` tras PR #92; no es una ruta ejecutable. **No es un pipeline nuevo**, no concede autoridad para escribir en el juego y no ejecuta automáticamente Blender/Qwen/Tripo/Unity.
 
 **Memoria de casos:** [`pipeline/art-knowledge/catalog-v1.json`](../../pipeline/art-knowledge/catalog-v1.json) (54 fichas). De ellas, **27** corresponden al inventario inicial y **27** se han recuperado de ramas históricas fijadas a SHA.
 
