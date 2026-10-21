@@ -674,7 +674,11 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs.meta",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs.meta"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs.meta",
+        "tools/valoria-reference-clean/request.json",
+        "tools/valoria-reference-clean/browser-qa-request.json",
+        ".github/workflows/valoria-windows-chromium-qa.yml",
+        "pipeline/playtest-delivery.json"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -713,7 +717,8 @@
         "deliverable": "Interfaz V3 aprobada integrada y prueba restringida jugable actualizada",
         "evidence": "Unity Edit/Play, capturas reales horizontal/vertical, flujo I-II y persistencia; QA WebGL exacto y entrega verificada",
         "handoff": "Enlace jugable, SHA y evidencias; conservar arte y guardados"
-      }
+      },
+      "delivery_sequence": "Existing canonical native workflow delegated for UI final build only, after PR87 accepted; then existing Chromium QA and restricted itch channel. No art/scene/package mutation, Android build, or old PR85 pins."
     }
   ],
   "history": [
