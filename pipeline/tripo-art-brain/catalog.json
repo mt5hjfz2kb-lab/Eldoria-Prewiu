@@ -7,7 +7,7 @@
     "spawnling": {
       "label": "Engendro de la Fisura — Bastion II",
       "role": "Bastion II common enemy spawnling; single gameplay hotspot engendro-valoria",
-      "planner_profile": "environment_composition",
+      "planner_profile": "animated_asset",
       "source_report": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
       "source": {
         "task_id": "351d1034-25ec-4300-a2e0-d03a0e68175a",
@@ -61,7 +61,7 @@
     "boar": {
       "label": "Jabalí de roca — World4X",
       "role": "Boar prey of chapter III in legacy vertical slice; not in current playable I–II",
-      "planner_profile": "environment_composition",
+      "planner_profile": "animated_asset",
       "source_report": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
       "source": {
         "task_id": "28f57ff9-b978-468c-8c2a-6136e0a65ea1",
