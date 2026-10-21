@@ -153,7 +153,7 @@ namespace Eldoria.ReferenceClean {
    var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+.012f,safe.xMax-.012f,safe.yMax-.012f);
    for(int attempt=0;attempt<5;attempt++){
     if(!ProjectFocus(camera,points,out projected))break;
-    if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax)return;
+    if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax){var context=Hud.GetComponent<RoyalGoldV3ContextHud>();if(context)context.SynchronizeNow();return;}
     if(camera.orthographic){
      float required=Mathf.Max(projected.width/padded.width,projected.height/padded.height);
      if(required>1.001f){
