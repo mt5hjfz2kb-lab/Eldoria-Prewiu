@@ -40,49 +40,55 @@
     "camera_visibility_gate": "REJECT_NOT_VISIBLE",
     "review": "Same head/silhouette in both genuine images; no meaningful visual gain. Do not promote."
   },
-  "lesson": "Qwen said head/neck but sculpted centre=[0,0,0] with radius .088m and delta .015m: 206 changed vertices, only 2/307200 changed camera pixels. Avoid near-origin invisible edits. Historic Blender mesh anchors had mislabeled terrain/cliff names; supply verified +X face-direction vertices.",
-  "next_action": "Use authentic face photo and genuine positive-X Blender source-vertex anchors; author one camera-visible localized facial/muzzle change. Compare matched Blender hero AND strategic views, then independent Unity art review. Preserve original.",
+  "lesson": "After real Qwen plan (center 0,0,0; 0.088m radius; 0.015m Z) modified 206 vertices, original strategic A/B changed only 2/307200 pixels. Source-locked close-up replay from five views yielded just 485 changed frontal pixels (0.158%), and independent comparison shows no recognizable anatomical/silhouette improvement. 'Pixels changed' is not visual quality; do not repeat near-origin micro-sculpts. Verify head +X semantic locality and require independently recognizable form before creating more variants.",
+  "next_action": "Change hypothesis, NOT amplitude: verify actual head +X anatomy / projected camera correspondence using archived source and authentic face image; deliver semantic head-region anchors to existing Qwen and attempt a genuine face/muzzle geometry change only on an isolated copy. If another fail, stop repeating 2B small-sculpt route and try a materially different artist technique (larger semantic mesh edit or verified material/rig strategy), always compare hero and strategic same-camera A/B.",
   "art_approved": false,
   "mobile_profiled": false,
   "unity_ab_pass": false,
   "integrated": false,
   "credits_spent_new": 0,
   "replay": {
-    "run_id": 39639377365,
+    "same_candidate": true,
+    "proof_run": 39639377365,
     "artifact_id": 12363503143,
-    "source_blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
+    "experiment": "Five matched Blender clay A/B views of exact previously generated Qwen/Blender candidate. Never reinferred, resculpted, charged, changed scene, or promoted.",
+    "input_blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
     "candidate_blend_sha256": "301303b8763095729b3f0707c7b621e226b5dbbdfd65a1901b71fe4bbe2022fb",
-    "views": {
-      "isometric_original": {
+    "pixels_total_per_view": 307200,
+    "matches": [
+      {
+        "view": "isometric-original",
         "changed_pixels": 2,
-        "changed_fraction": 0.00000651,
-        "verdict": "REJECT_NOT_VISIBLE"
+        "visibility": "REJECT_NOT_VISIBLE"
       },
-      "isometric_close": {
+      {
+        "view": "isometric-close",
         "changed_pixels": 24,
-        "changed_fraction": 0.00007813,
-        "verdict": "REJECT_NOT_VISIBLE"
+        "visibility": "REJECT_NOT_VISIBLE"
       },
-      "face_close": {
+      {
+        "view": "face-close",
         "changed_pixels": 485,
-        "changed_fraction": 0.00157878,
-        "verdict": "MINIMAL_VISIBLE_NOT_ART_APPROVED"
+        "visibility": "REVIEW_REQUIRED_PIXEL_ONLY"
       },
-      "side_close": {
+      {
+        "view": "side-close",
         "changed_pixels": 158,
-        "changed_fraction": 0.00051432,
-        "verdict": "REJECT_NOT_VISIBLE"
+        "visibility": "REJECT_NOT_VISIBLE"
       },
-      "rear_close": {
+      {
+        "view": "rear-close",
         "changed_pixels": 90,
-        "changed_fraction": 0.00029297,
-        "verdict": "REJECT_NOT_VISIBLE"
+        "visibility": "REJECT_NOT_VISIBLE"
       }
-    },
-    "independent_visual_review": "I inspected authentic five-view before/after render pairs. Both character silhouette and facial anatomy remain practically unchanged, including close-up. The only changed close-up barely exceeds a low pixel threshold and cannot establish improvement. Reject this candidate for production; genuine geometry changed 206 vertices but geometry location was center origin rather than positively localized front face.",
-    "final_verdict": "ART_REJECTED_NO_MEANINGFUL_VISUAL_UPLIFT",
-    "no_new_tripo_credits": true,
-    "new_qwen_inference": false,
-    "originals_preserved": true
+    ],
+    "technical_replay": "PASS",
+    "structural_gate": "STRUCTURAL_CANDIDATE_INDEPENDENT_VISUAL_REVIEW_REQUIRED",
+    "independent_art_observation": "BEFORE and AFTER show effectively same creature and face. The frontal 485-pixel change is sparse (0.158%) and does not deliver a recognizable new head, muzzle, anatomical mass or strategic silhouette. No upgrade to ART_APPROVED.",
+    "independent_art_verdict": "ART_REJECTED_INSUFFICIENT_VISIBLE_GAIN",
+    "visual_approval": false,
+    "unity_ab": false,
+    "mobile": false,
+    "new_credits": 0
   }
 }
