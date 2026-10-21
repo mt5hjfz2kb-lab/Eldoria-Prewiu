@@ -156,16 +156,462 @@ namespace Eldoria.ReferenceClean.Editor
             }
         }
 
-        // Integration methods are gated separately. The first native pass is a strict
-        // read-only survey of the actual scene and masks; no candidates may be
-        // promoted or accepted until their source scene/hash and A/B are recorded.
-        public static void Trial()
+
+        // The native survey is immutable evidence. A trial only changes objects in
+        // memory and always restores the original scene. Integration requires a
+        // reviewer-signed acceptance file linked to its exact A/B image bytes.
+        [Serializable] public class Approval
         {
-            throw new InvalidOperationException("GEOGRAPHY_TRIAL_REQUIRES_SURVEY_AND_AUTHORED_MASKS");
+            public bool accepted;
+            public string source_scene_sha256, tool_sha256, reviewer, review_path;
+            public string[] image_names, image_sha256;
         }
-        public static void Integrate()
+        [Serializable] public class Candidate
         {
-            throw new InvalidOperationException("GEOGRAPHY_INTEGRATION_REQUIRES_ACCEPTED_REAL_UNITY_AB");
+            public string source_scene_sha256, tool_sha256, method, world_ground_source;
+            public string[] original_poi_ids, after_poi_ids, images, image_sha256;
+            public int source_world_triangles, candidate_world_triangles, sampled_conifer_renderers;
+            public int source_height_resolution, candidate_height_resolution, changed_city_height_samples;
+            public bool previous_scene_untouched, city_terrain_collider_unchanged, world_source_mesh_unchanged;
+            public bool native_unity_ab, art_approved, physical_mobile_profiled, published;
+        }
+        sealed class GeographicRoad
+        {
+            readonly float z0, z1;
+            readonly Vector3[] section;
+            public GeographicRoad(MeshFilter f)
+            {
+                var v = f.sharedMesh.vertices.Select(q => f.transform.TransformPoint(q)).ToArray();
+                z0 = v.Min(q => q.z); z1 = v.Max(q => q.z);
+                int n = Mathf.CeilToInt((z1 - z0) * 2) + 1;
+                section = new Vector3[n];
+                for (int i = 0; i < n; i++)
+                {
+                    var range = v.Where(q => Mathf.Abs(q.z - (z0 + i * .5f)) < .6f).ToArray();
+                    Need(range.Length > 0, "Existing paving sampling failed");
+                    section[i] = new Vector3(range.Min(q => q.x), range.Max(q => q.x), 0);
+                }
+            }
+            public float Edge(float x, float z)
+            {
+                if (z < z0 || z > z1) return 0;
+                var slice = section[Mathf.Clamp(Mathf.RoundToInt((z - z0) * 2), 0, section.Length - 1)];
+                return Mathf.Max(slice.x - x, x - slice.y);
+            }
+        }
+        static float Smooth(float lo, float hi, float v)
+        {
+            float a = Mathf.Clamp01((v - lo) / Mathf.Max(.0001f, hi - lo));
+            return a * a * (3 - 2 * a);
+        }
+        static float Noise(float x, float z)
+        {
+            return .63f * Mathf.PerlinNoise(x * .024f + 16, z * .024f + 8) +
+                .26f * Mathf.PerlinNoise(x * .063f + 3, z * .063f + 23) +
+                .11f * Mathf.PerlinNoise(x * .19f + 91, z * .19f + 52);
+        }
+        static float PlanarDistance(Vector3 a, Vector3 b)
+        {
+            float x = a.x - b.x, z = a.z - b.z;
+            return Mathf.Sqrt(x * x + z * z);
+        }
+        static TerrainData AuthorCityTerrain(ValoriaReferenceCleanGameplay city, Terrain terrain)
+        {
+            TerrainData data = Object.Instantiate(terrain.terrainData);
+            data.name = "Valoria organic prairie / existing height and paths";
+            var filters = Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None);
+            var roads = new[] { "Axial_Paving", "Outer_Road" }.Select(name =>
+                new GeographicRoad(filters.Single(f => f.name == name && f.sharedMesh != null))).ToArray();
+            int size = data.alphamapResolution;
+            var alphas = data.GetAlphamaps(0, 0, size, size);
+            Need(alphas.GetLength(2) >= 3, "Existing soil/grass blend layers unavailable");
+            var buildings = new[] { city.Parcels.LeftBuilt, city.Parcels.RightBuilt }
+                .Where(g => g != null).Select(g =>
+                {
+                    var rs = g.GetComponentsInChildren<Renderer>(true);
+                    if (rs.Length == 0) return new Bounds(g.transform.position, Vector3.one);
+                    var box = rs[0].bounds;
+                    foreach (var rr in rs.Skip(1)) box.Encapsulate(rr.bounds);
+                    return box;
+                }).ToArray();
+            for (int iz = 0; iz < size; iz++)
+                for (int ix = 0; ix < size; ix++)
+                {
+                    float x = terrain.transform.position.x + data.size.x * ix / (size - 1f);
+                    float z = terrain.transform.position.z + data.size.z * iz / (size - 1f);
+                    float warp = (Mathf.PerlinNoise(x * .19f + 14, z * .19f + 37) - .5f) * 1.1f;
+                    float shoulder = 0;
+                    foreach (var road in roads)
+                    {
+                        float edge = road.Edge(x, z);
+                        shoulder = Mathf.Max(shoulder, 1f - Smooth(-.4f, 2.5f + warp, edge));
+                    }
+                    // Only worn shoulders of EXISTING paving, never four plot imprints.
+                    float river = -23f + 1.5f * Mathf.Sin(x * .065f) +
+                        .85f * Mathf.Sin(x * .19f + .4f) * Smooth(6, 17, Mathf.Abs(x));
+                    float riverEdge = Mathf.Abs(z - river) - 7.2f;
+                    float bank = 1f - Smooth(.7f, 6.2f + warp, riverEdge);
+                    float contact = 0;
+                    foreach (var b in buildings)
+                    {
+                        float dx = Mathf.Max(Mathf.Abs(x - b.center.x) - b.extents.x, 0);
+                        float dz = Mathf.Max(Mathf.Abs(z - b.center.z) - b.extents.z, 0);
+                        contact = Mathf.Max(contact, 1f - Smooth(.2f, 2.3f + warp, Mathf.Sqrt(dx * dx + dz * dz)));
+                    }
+                    float paint = Mathf.Clamp01(.17f * shoulder + .11f * bank + .07f * contact);
+                    // No erosion that changes navigation, terrain height or hidden parcel geometry.
+                    float available = alphas[iz, ix, 0] + alphas[iz, ix, 1];
+                    float transferred = available * paint;
+                    if (available > .0001f)
+                    {
+                        float r = alphas[iz, ix, 0] / available;
+                        alphas[iz, ix, 0] -= transferred * r;
+                        alphas[iz, ix, 1] -= transferred * (1f - r);
+                        alphas[iz, ix, 2] += transferred;
+                    }
+                    float detail = Noise(x + 73, z - 121) - .5f;
+                    float swap = Mathf.Min(alphas[iz, ix, 0], alphas[iz, ix, 1]);
+                    float local = detail * .34f * swap;
+                    alphas[iz, ix, 0] = Mathf.Clamp01(alphas[iz, ix, 0] + local);
+                    alphas[iz, ix, 1] = Mathf.Clamp01(alphas[iz, ix, 1] - local);
+                }
+            data.SetAlphamaps(0, 0, alphas);
+            return data;
+        }
+        static float[,] Density(ValoriaIntegratedWorld host, Bounds bounds, out int trees)
+        {
+            const int size = 128;
+            float[,] result = new float[size, size];
+            var sources = host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(m => m.enabled && m.gameObject.activeInHierarchy &&
+                (m.name.IndexOf("Conifer", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 m.name.IndexOf("pine", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 m.name.IndexOf("understory", StringComparison.OrdinalIgnoreCase) >= 0))
+                .Select(r => r.bounds.center).ToArray();
+            trees = sources.Length;
+            if (trees < 8)
+            {
+                // Measured forest POI provides a conservative seed if mesh-family
+                // naming changed; the existing individual trees stay untouched.
+                sources = Hotspots(host).Where(h => h.Id == "forest-valoria")
+                    .Select(h => h.transform.position).ToArray();
+            }
+            foreach (var p in sources)
+            {
+                int centerX = Mathf.RoundToInt((p.x - bounds.min.x) / bounds.size.x * (size - 1));
+                int centerZ = Mathf.RoundToInt((p.z - bounds.min.z) / bounds.size.z * (size - 1));
+                float pxRadius = 17f * (size - 1) / bounds.size.x;
+                float pzRadius = 17f * (size - 1) / bounds.size.z;
+                for (int z = Mathf.Max(0, Mathf.FloorToInt(centerZ - pzRadius)); z <= Mathf.Min(size - 1, Mathf.CeilToInt(centerZ + pzRadius)); z++)
+                    for (int x = Mathf.Max(0, Mathf.FloorToInt(centerX - pxRadius)); x <= Mathf.Min(size - 1, Mathf.CeilToInt(centerX + pxRadius)); x++)
+                    {
+                        float distance = Mathf.Sqrt(Mathf.Pow((x - centerX) / pxRadius, 2f) +
+                                                    Mathf.Pow((z - centerZ) / pzRadius, 2f));
+                        float weight = 1f - Smooth(.15f, 1f, distance);
+                        result[z, x] = Mathf.Min(2.2f, result[z, x] + .36f * weight);
+                    }
+            }
+            return result;
+        }
+        static float ReadDensity(float[,] mask, float u, float v)
+        {
+            int size = mask.GetLength(0);
+            float x = Mathf.Clamp01(u) * (size - 1), z = Mathf.Clamp01(v) * (size - 1);
+            int ix = Mathf.FloorToInt(x), iz = Mathf.FloorToInt(z);
+            int ax = Mathf.Min(ix + 1, size - 1), az = Mathf.Min(iz + 1, size - 1);
+            return Mathf.Lerp(Mathf.Lerp(mask[iz, ix], mask[iz, ax], x - ix),
+                              Mathf.Lerp(mask[az, ix], mask[az, ax], x - ix), z - iz);
+        }
+        static Texture2D ReadableTexture(Texture texture)
+        {
+            if (!texture) return null;
+            var rt = RenderTexture.GetTemporary(512, 512, 0, RenderTextureFormat.ARGB32);
+            var previous = RenderTexture.active;
+            try
+            {
+                Graphics.Blit(texture, rt);
+                RenderTexture.active = rt;
+                var sample = new Texture2D(512, 512, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Repeat };
+                sample.ReadPixels(new Rect(0, 0, 512, 512), 0, 0);
+                sample.Apply();
+                return sample;
+            }
+            finally { RenderTexture.active = previous; RenderTexture.ReleaseTemporary(rt); }
+        }
+        static Mesh AuthorWorldMesh(MeshFilter source, WorldHotspot[] spots)
+        {
+            var original = source.sharedMesh;
+            var next = Object.Instantiate(original);
+            next.name = "Region1 continuous authored macrorelief / original 4X topology";
+            var v = original.vertices;
+            var warped = new Vector3[v.Length];
+            var uv = new Vector2[v.Length];
+            var b = source.GetComponent<Renderer>().bounds;
+            Need(b.size.x > 100 && b.size.z > 100, "Unexpected Region1 real terrain extent");
+            for (int i = 0; i < v.Length; i++)
+            {
+                Vector3 world = source.transform.TransformPoint(v[i]);
+                float nearest = spots.Min(h => PlanarDistance(world, h.transform.position));
+                float anchor = Smooth(10f, 28f, nearest);
+                // Wide shallow ridges extend the existing eastern quarry geology
+                // into surrounding open grass. Existing POIs and roads remain in place.
+                float geology = 1.25f * Mathf.Exp(-Mathf.Pow((world.x - 1097f) / 36f, 2f) -
+                                                 Mathf.Pow((world.z + 52f) / 43f, 2f));
+                float rolling = (Noise(world.x, world.z) - .5f) * 2.15f;
+                float deltaY = anchor * (rolling + geology);
+                Vector3 altered = world + Vector3.up * deltaY;
+                warped[i] = source.transform.InverseTransformPoint(altered);
+                uv[i] = new Vector2((world.x - b.min.x) / b.size.x,
+                                    (world.z - b.min.z) / b.size.z);
+            }
+            next.vertices = warped;
+            next.uv = uv;
+            next.RecalculateNormals();
+            next.RecalculateBounds();
+            Need(next.triangles.Length == original.triangles.Length &&
+                next.vertexCount == original.vertexCount, "World topology changed");
+            return next;
+        }
+        static Texture2D AuthorWorldAlbedo(ValoriaIntegratedWorld host, MeshFilter source, out int trees)
+        {
+            var renderer = source.GetComponent<Renderer>();
+            var bounds = renderer.bounds;
+            var ids = Hotspots(host).ToDictionary(h => h.Id, h => h.transform.position);
+            var forest = Density(host, bounds, out trees);
+            var existing = renderer.sharedMaterial;
+            Texture diffuse = existing && existing.HasProperty("_BaseMap") ? existing.GetTexture("_BaseMap") :
+                existing && existing.HasProperty("_MainTex") ? existing.GetTexture("_MainTex") : null;
+            Texture2D sample = ReadableTexture(diffuse);
+            Vector2[] originalUV = source.sharedMesh.uv;
+            float uMin = originalUV.Min(p => p.x), uMax = originalUV.Max(p => p.x);
+            float vMin = originalUV.Min(p => p.y), vMax = originalUV.Max(p => p.y);
+            const int size = 1024;
+            var result = new Texture2D(size, size, TextureFormat.RGB24, true, false)
+            {
+                name = "Region1 continuous soil / forest / quarry / corrupted ecology",
+                wrapMode = TextureWrapMode.Clamp, filterMode = FilterMode.Trilinear, anisoLevel = 4
+            };
+            var pixels = new Color[size * size];
+            try
+            {
+                for (int iz = 0; iz < size; iz++)
+                    for (int ix = 0; ix < size; ix++)
+                    {
+                        float u = ix / (size - 1f), v = iz / (size - 1f);
+                        float wx = Mathf.Lerp(bounds.min.x, bounds.max.x, u);
+                        float wz = Mathf.Lerp(bounds.min.z, bounds.max.z, v);
+                        float micro = Mathf.PerlinNoise(wx * .59f + 9, wz * .59f + 37);
+                        float warpX = (Mathf.PerlinNoise(wx * .075f + 8, wz * .075f + 10) - .5f) * 7f;
+                        float warpZ = (Mathf.PerlinNoise(wx * .075f + 46, wz * .075f + 26) - .5f) * 7f;
+                        Vector3 warped = new Vector3(wx + warpX, 0, wz + warpZ);
+                        float quarry = 1f - Smooth(13f, 43f, PlanarDistance(warped, ids["quarry-valoria"]));
+                        float corruption = Mathf.Max(1f - Smooth(18f, 42f, PlanarDistance(warped, ids["corrupt-scout"])),
+                                                     1f - Smooth(16f, 40f, PlanarDistance(warped, ids["engendro-valoria"])));
+                        float treesFloor = Smooth(.18f, 1.1f, ReadDensity(forest, u, v));
+                        Color baseColor = sample ? sample.GetPixelBilinear(
+                                Mathf.Repeat(Mathf.Lerp(uMin, uMax, u), 1f),
+                                Mathf.Repeat(Mathf.Lerp(vMin, vMax, v), 1f)) :
+                                new Color(.55f, .59f, .32f);
+                        float variation = (Noise(wx, wz) - .5f) * .27f + (micro - .5f) * .045f;
+                        baseColor *= 1f + variation;
+                        // Author region-scale environmental continuity rather than a
+                        // ring, flat blob, overlay decal or extra artificial prefabs.
+                        baseColor = Color.Lerp(baseColor,
+                            new Color(baseColor.r * .79f, baseColor.g * .91f, baseColor.b * .71f),
+                            treesFloor * .57f);
+                        baseColor = Color.Lerp(baseColor,
+                            new Color(baseColor.r * 1.03f, baseColor.g * .91f, baseColor.b * .79f),
+                            quarry * .65f);
+                        baseColor = Color.Lerp(baseColor,
+                            new Color(baseColor.r * .80f, baseColor.g * .80f, baseColor.b * .84f),
+                            corruption * .40f);
+                        baseColor.a = 1f;
+                        pixels[iz * size + ix] = baseColor;
+                    }
+                result.SetPixels(pixels);
+                result.Apply(true, false);
+                return result;
+            }
+            finally { if (sample) Object.DestroyImmediate(sample); }
+        }
+        static void WriteImages(string prefix, string[] imageNames)
+        {
+            foreach (string suffix in new[] { "-city-I-wide.png", "-city-I-mobile.png",
+                "-city-II-wide.png", "-city-II-mobile.png", "-world-REGION1-ENTIRE-2048x1152.png",
+                "-world-strategic-wide.png", "-world-strategic-mobile.png",
+                "-world-forest-valoria-wide.png", "-world-forest-valoria-mobile.png",
+                "-world-quarry-valoria-wide.png", "-world-quarry-valoria-mobile.png",
+                "-world-corrupt-scout-wide.png", "-world-corrupt-scout-mobile.png",
+                "-world-engendro-valoria-wide.png", "-world-engendro-valoria-mobile.png" })
+                imageNames[Array.IndexOf(new[] { "-city-I-wide.png", "-city-I-mobile.png",
+                  "-city-II-wide.png", "-city-II-mobile.png", "-world-REGION1-ENTIRE-2048x1152.png",
+                  "-world-strategic-wide.png", "-world-strategic-mobile.png",
+                  "-world-forest-valoria-wide.png", "-world-forest-valoria-mobile.png",
+                  "-world-quarry-valoria-wide.png", "-world-quarry-valoria-mobile.png",
+                  "-world-corrupt-scout-wide.png", "-world-corrupt-scout-mobile.png",
+                  "-world-engendro-valoria-wide.png", "-world-engendro-valoria-mobile.png" }, suffix)] = prefix + suffix;
+        }
+        static string[] ImageNames(string prefix)
+        {
+            return new[] { "city-I-wide", "city-I-mobile", "city-II-wide", "city-II-mobile",
+                "world-REGION1-ENTIRE-2048x1152", "world-strategic-wide", "world-strategic-mobile",
+                "world-forest-valoria-wide", "world-forest-valoria-mobile",
+                "world-quarry-valoria-wide", "world-quarry-valoria-mobile",
+                "world-corrupt-scout-wide", "world-corrupt-scout-mobile",
+                "world-engendro-valoria-wide", "world-engendro-valoria-mobile" }
+                .Select(s => prefix + "-" + s + ".png").ToArray();
+        }
+        public static void Trial() { AuthorAndCapture(false); }
+        public static void Integrate() { AuthorAndCapture(true); }
+        static void AuthorAndCapture(bool integrate)
+        {
+            TerrainData newCity = null;
+            Mesh worldMesh = null;
+            Texture2D albedo = null;
+            Material worldMat = null;
+            GameObject terrainVisual = null;
+            Terrain terrain = null;
+            TerrainData originalTerrain = null;
+            Renderer oldRenderer = null;
+            bool oldEnabled = false;
+            bool saved = false;
+            try
+            {
+                Directory.CreateDirectory(Evidence);
+                string sceneHash = Sha(ScenePath);
+                string toolHash = Sha("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs");
+                var surveyFile = Path.Combine(Evidence, "survey.json");
+                Need(File.Exists(surveyFile), "Real current Unity source survey required");
+                var survey = JsonUtility.FromJson<SurveyRecord>(File.ReadAllText(surveyFile));
+                Need(survey.source_scene_sha256 == sceneHash, "Canonical scene differs from measured source");
+                Approval approval = null;
+                if (integrate)
+                {
+                    var approvalPath = Path.Combine(Evidence, "accepted-candidate.json");
+                    Need(File.Exists(approvalPath), "Independent review approval missing");
+                    approval = JsonUtility.FromJson<Approval>(File.ReadAllText(approvalPath));
+                    Need(approval.accepted && approval.source_scene_sha256 == sceneHash &&
+                        approval.tool_sha256 == toolHash &&
+                        !string.IsNullOrEmpty(approval.reviewer) &&
+                        !string.IsNullOrEmpty(approval.review_path),
+                        "Independent source-pinned art acceptance required");
+                }
+                var host = Load(out var city);
+                terrain = Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Single();
+                originalTerrain = terrain.terrainData;
+                var originalCollider = terrain.GetComponent<TerrainCollider>();
+                Need(originalCollider != null, "Existing city terrain collider missing");
+                var originalPhysicsData = originalCollider.terrainData;
+                MeshFilter ground = WorldGround(host);
+                Mesh originalWorldMesh = ground.sharedMesh;
+                oldRenderer = ground.GetComponent<Renderer>();
+                oldEnabled = oldRenderer.enabled;
+                int beforeColliders = host.WorldRoot.GetComponentsInChildren<Collider>(true).Length;
+                var beforePOI = Hotspots(host).Select(s => s.Id + "=" + s.transform.position.ToString("R")).ToArray();
+                var beforeWorldTriangles = originalWorldMesh.triangles.Length / 3;
+                string[] imgs = ImageNames("after");
+                CityViews(city, "before");
+                WorldViews(host, "before", true);
+                newCity = AuthorCityTerrain(city, terrain);
+                worldMesh = AuthorWorldMesh(ground, Hotspots(host));
+                albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
+                worldMat = new Material(Shader.Find("Universal Render Pipeline/Lit"))
+                    { name = "Region1 grounded biomes / editable URP PBR" };
+                Need(worldMat.shader != null, "URP Lit shader unavailable");
+                worldMat.SetTexture("_BaseMap", albedo);
+                worldMat.SetColor("_BaseColor", Color.white);
+                worldMat.SetFloat("_Metallic", 0f);
+                worldMat.SetFloat("_Smoothness", .065f);
+                terrain.terrainData = newCity;
+                terrain.Flush();
+                terrainVisual = new GameObject("Region1 organic macrogeography / visual only");
+                terrainVisual.layer = ground.gameObject.layer;
+                terrainVisual.transform.SetParent(ground.transform, false);
+                terrainVisual.transform.localPosition = Vector3.zero;
+                terrainVisual.transform.localRotation = Quaternion.identity;
+                terrainVisual.transform.localScale = Vector3.one;
+                terrainVisual.AddComponent<MeshFilter>().sharedMesh = worldMesh;
+                var newRenderer = terrainVisual.AddComponent<MeshRenderer>();
+                newRenderer.sharedMaterial = worldMat;
+                newRenderer.shadowCastingMode = oldRenderer.shadowCastingMode;
+                newRenderer.receiveShadows = oldRenderer.receiveShadows;
+                newRenderer.lightmapIndex = -1;
+                oldRenderer.enabled = false;
+                var afterPOI = Hotspots(host).Select(s => s.Id + "=" + s.transform.position.ToString("R")).ToArray();
+                Need(beforePOI.SequenceEqual(afterPOI), "Original POI identities or positions changed");
+                Need(host.WorldRoot.GetComponentsInChildren<Collider>(true).Length == beforeColliders,
+                    "New gameplay collider introduced");
+                Need(originalCollider.terrainData == originalPhysicsData && ground.sharedMesh == originalWorldMesh,
+                    "Existing city/world collision or underlying mesh changed");
+                CityViews(city, "after");
+                WorldViews(host, "after", true);
+                Candidate candidate = new Candidate
+                {
+                    source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
+                    method = "Existing city TerrainLayers / continuous world-source 121x121 mesh plus biome albedo, reversible in Unity",
+                    world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
+                    original_poi_ids = beforePOI, after_poi_ids = afterPOI,
+                    images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
+                    source_world_triangles = beforeWorldTriangles,
+                    candidate_world_triangles = worldMesh.triangles.Length / 3,
+                    sampled_conifer_renderers = treeCount,
+                    source_height_resolution = originalTerrain.heightmapResolution,
+                    candidate_height_resolution = newCity.heightmapResolution,
+                    changed_city_height_samples = 0,
+                    previous_scene_untouched = true,
+                    city_terrain_collider_unchanged = originalCollider.terrainData == originalPhysicsData,
+                    world_source_mesh_unchanged = ground.sharedMesh == originalWorldMesh,
+                    native_unity_ab = true, art_approved = false, physical_mobile_profiled = false, published = false
+                };
+                Need(sceneHash == Sha(ScenePath), "Trial unexpectedly modified scene bytes");
+                if (integrate)
+                {
+                    Need(approval.image_names != null && approval.image_sha256 != null &&
+                        approval.image_names.Length == imgs.Length &&
+                        approval.image_names.SequenceEqual(imgs) &&
+                        approval.image_sha256.SequenceEqual(candidate.image_sha256),
+                        "Accepted original Unity A/B bytes do not match integrated result");
+                    Need(!AssetDatabase.IsValidFolder(AssetFolder), "Refuse overwriting previously integrated terrain assets");
+                    Directory.CreateDirectory(AssetFolder);
+                    AssetDatabase.Refresh();
+                    AssetDatabase.CreateAsset(newCity, AssetFolder + "/ValoriaSurface.asset");
+                    AssetDatabase.CreateAsset(worldMesh, AssetFolder + "/Region1Macroterrain.asset");
+                    AssetDatabase.CreateAsset(albedo, AssetFolder + "/Region1Biomes.asset");
+                    AssetDatabase.CreateAsset(worldMat, AssetFolder + "/Region1Biomes.mat");
+                    AssetDatabase.SaveAssets();
+                    EditorSceneManager.MarkSceneDirty(host.gameObject.scene);
+                    Need(EditorSceneManager.SaveScene(host.gameObject.scene, ScenePath), "Canonical Unity save refused");
+                    saved = true;
+                    candidate.art_approved = false; // independent acceptance remains in the separate signed report
+                    File.WriteAllText(Path.Combine(Evidence, "integrated.json"), JsonUtility.ToJson(candidate, true));
+                    Debug.Log("VALORIA_REFERENCE_CLEAN_GEOGRAPHY_INTEGRATE_COMPLETE " + candidate.images.Length + " real images");
+                }
+                else
+                {
+                    File.WriteAllText(Path.Combine(Evidence, "trial.json"), JsonUtility.ToJson(candidate, true));
+                    Debug.Log("VALORIA_REFERENCE_CLEAN_GEOGRAPHY_TRIAL_COMPLETE " + candidate.images.Length + " matched Unity A/B images");
+                }
+                EditorApplication.Exit(0);
+            }
+            catch (Exception error)
+            {
+                Debug.LogException(error);
+                EditorApplication.Exit(1);
+            }
+            finally
+            {
+                // Never allow a failed trial to mutate the native source scene.
+                if (!saved)
+                {
+                    if (terrain && originalTerrain) { terrain.terrainData = originalTerrain; terrain.Flush(); }
+                    if (oldRenderer) oldRenderer.enabled = oldEnabled;
+                    if (terrainVisual) Object.DestroyImmediate(terrainVisual);
+                    if (worldMat) Object.DestroyImmediate(worldMat);
+                    if (albedo) Object.DestroyImmediate(albedo);
+                    if (worldMesh) Object.DestroyImmediate(worldMesh);
+                    if (newCity) Object.DestroyImmediate(newCity);
+                }
+            }
         }
 
         public static void Survey()
