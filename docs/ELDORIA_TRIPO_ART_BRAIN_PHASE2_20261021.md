@@ -28,7 +28,19 @@ Workflow exclusivo, sin modificar el juego: [`.github/workflows/tripo-art-brain-
 - Intenta producir un A/B auténtico de Blender clay a misma cámara. Se exige diferencia real para comprobar visibilidad, pero **no es ART_APPROVED ni un A/B Unity**.
 - Todo resultado se conserva en artifacts con el run ID; no se fusiona geometría automáticamente, no hay cambios jugables.
 
-**Ejecución lanzada:** [run 39628068735](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39628068735). Estado en esta edición documental: EN CURSO; inspeccionar conclusión y evidencias antes de declarar verdadera dirección Qwen o progreso artístico.
+### Primer ciclo Qwen real: ejecutado, pero ART REJECTED
+
+[Run 39628068735](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39628068735) completó REAL Qwen 2B (346,211 s, 312 tokens), plan tipado, edición Blender, GLB/BLEND temporales y auténticas imágenes comparables. El éxito técnico fue **insuficiente**: el plan desplazó los 9.753 vértices con `sculpt_region center=[0,0,0], radius=10.24, delta=[0.5,0.5,0.5]`. La fuente mide solo 1,469 m de diagonal. El A/B cambió 2,8024 % de píxeles, pero el centro de la malla se movió 0,8607 m, y sus tres dimensiones cambiaron menos de 0,3 %. **Veredicto independiente: REJECT_NOT_MEANINGFUL_CREATURE_SHAPE; no mejora anatómica real, no art-approved ni integración.**
+
+Recibo reproducible: [pipeline/tripo-art-brain/verified-failures/spawnling-qwen2b-global-move-20261021.json](../pipeline/tripo-art-brain/verified-failures/spawnling-qwen2b-global-move-20261021.json). Los originales y el Engendro de producción siguen intactos.
+
+### Corrección permanente y reensayo
+
+- `author_brief.py` ahora lee las dimensiones reales del Engendro y rechaza radios/movimientos globales desproporcionados **antes de ejecutar Blender**; devuelve a Qwen una corrección apropiada para criatura, sin recomendaciones de acantilado.
+- `tools/tripo-art-brain/shape-change-gate.mjs` detecta desplazamiento dominante de figura con dimensiones casi invariantes aun si los píxeles cambian. El gate nunca concede `ART_APPROVED`.
+- `preflight.mjs` alimenta la siguiente solicitud Qwen con el error verdadero del run anterior como memoria específica de esta fuente, y verifica su relación con el `.blend` original.
+- [Prueba real de fuente + simulación controlada](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39631782575) cerró satisfactoriamente sin llamar al Qwen real: protege la ruta de entrada y los límites, preserva el modo terreno anterior.
+- **Segundo Qwen real iniciado:** [run 39631639948](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39631639948). Aún sin veredicto confirmado en esta edición. Si falla, no aceptar ni integrar el candidato y conservar diagnóstico auténtico.
 
 ## Limitaciones reales y siguiente gate
 
