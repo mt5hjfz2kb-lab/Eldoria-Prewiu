@@ -38,7 +38,7 @@ jobs:
       - name: Install open Blender without commercial services
         run: |
           sudo apt-get update -qq
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
           blender --version | head -2
       - name: Finish existing model - real geometry, LODs, PBR and source
         shell: bash
