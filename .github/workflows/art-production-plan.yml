@@ -45,6 +45,7 @@ jobs:
             /pipeline/art-production-request.json
             /pipeline/art-production-requests/
             /pipeline/art-knowledge/catalog-v1.json
+            /pipeline/art-knowledge/reviewed-lessons-v1.json
             /pipeline/art-knowledge/legacy-workflow-names-v1.json
             /.github/workflows/
             /pipeline/visual-fallback-policy.json
