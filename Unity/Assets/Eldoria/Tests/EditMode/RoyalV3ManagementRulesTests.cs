@@ -30,7 +30,11 @@ namespace Eldoria.Tests
             {
                 BastionLevel=2,BarracksLevel=1,
                 Resources=new ResourceWallet{Wood=9000,Stone=9000},
-                Available=new ArmyRoster{ArcherT1=36}
+                Available=new ArmyRoster{ArcherT1=36},
+                // An already-built Bastion II/Cuartel has received these rewards in a real save.
+                ChapterProgress=new ChapterProgressState{
+                    GrantedRewards=new System.Collections.Generic.List<string>{
+                        "c1-bastion","chapter-1","c2-barracks"}}
             };
         }
         [SetUp] public void OwnerProfile()
