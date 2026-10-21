@@ -774,9 +774,12 @@ namespace Eldoria.ReferenceClean.Editor
             additions=0;
             int considered = 0;
             for(int l=0;l<lobes.Length;l++)
-            for(int j=0;j<16;j++)
+            // Search further along each existing ecological lobe when the
+            // inner sites are occupied. Keep the 21-tree cap, 7.7m spacing,
+            // road/POI buffers and exact ground contact unchanged.
+            for(int j=0;j<64;j++)
             {
-                int index=l*16+j;
+                int index=l*64+j;
                 // Golden-angle sampling plus bounded jitter avoids rows,
                 // perfect rings or repeated prefab silhouettes.
                 float angle = index*2.3999632f + l*.7f;
