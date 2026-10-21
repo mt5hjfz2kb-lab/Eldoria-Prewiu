@@ -720,20 +720,22 @@
         ".github/workflows/tripo-artist-replay-ab.yml",
         ".github/workflows/tripo-spawnling-free-rig-probe.yml",
         ".github/workflows/tripo-spawnling-free-rig-probe-v2.yml",
-        ".github/workflows/tripo-spawnling-rig-v3.yml"
+        ".github/workflows/tripo-spawnling-rig-v3.yml",
+        ".github/workflows/tripo-spawnling-rig-v4.yml",
+        "pipeline/tripo-art-brain/verified-rig-probes/spawnling-blender-rig-elbow-v4-20261021.json"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "RIG_V3_SOURCE_LOCKED_PRODUCTION_CANDIDATE",
+      "phase": "RIG_V4_EXPRESSIVE_SWIPE_COPY_ONLY",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Generate source-locked v3 rig with forearm and shin bones, smooth localized weights and genuine attack animation, isolate Blender QA pose screenshots and glTF skin/clip checks, compare V2/V3; preserve existing game and cost 0.",
+      "next": "Run genuine Blender V4 rig animation with twelve existing V3 bones and stronger claw swipe while keeping normalized skin and exact rest; compare V3/V4 same-camera imagery. Preserve technical/art boundaries and original game; if no improvement, reject.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
