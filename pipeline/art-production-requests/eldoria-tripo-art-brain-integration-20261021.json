@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "COMPLETED",
   "workstream_id": "eldoria-tripo-art-brain-integration-20261021",
   "request_id": "eldoria-tripo-art-brain-integration-20261021",
   "asset_or_sector": "Tripo source audit and Qwen/Blender/Unity zero-credit preflight for existing Spawnling, RockBoar and RiftFocus",
   "profile": "environment_surface",
-  "visual_gate_state": "PREFLIGHT_ZERO_SPEND",
+  "visual_gate_state": "ZERO_CREDIT_PREFLIGHT_VERIFIED_NOT_ART_APPROVED",
   "ai_authorship_policy": "required",
   "geometry_gap_proven": false,
   "allow_tripo": false,
@@ -24,5 +24,21 @@
     "source_gate": "Verify real SHA256 of immutable GLBs and Blender sources against preserved provenance, inspect GLB topology and UnityQA genuine captures; restrict inputs/outputs to safe paths and reject unmaterialized sources.",
     "final_gate": "Preflight manifests and local unit/CI gate proven at zero credits; full Qwen infer + Blender edit + Unity visual and Android QA remain distinct separately authorized future operations. No ART_APPROVED or MOBILE_PASS declared."
   },
-  "notes": "Production workstream is scoped to tools/tripo-art-brain/**, pipeline/tripo-art-brain/**, this request, docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md and lightweight preflight workflow. Respect existing Valoria and UI ownership. Never run Tripo API or paid rigging from these tools."
+  "notes": "Production workstream is scoped to tools/tripo-art-brain/**, pipeline/tripo-art-brain/**, this request, docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md and lightweight preflight workflow. Respect existing Valoria and UI ownership. Never run Tripo API or paid rigging from these tools.",
+  "closure": {
+    "status": "CLOSED_ZERO_CREDIT",
+    "run_id": 39622621426,
+    "artifact_id": 12356305853,
+    "tests_passed": 12,
+    "assets_verified": 3,
+    "new_credits": 0,
+    "rig_check_live": false,
+    "rigging": false,
+    "animations": false,
+    "qwen_inference": false,
+    "blender_new_authoring": false,
+    "unity_new_integration": false,
+    "device_performance": false,
+    "art_approved": false
+  }
 }
