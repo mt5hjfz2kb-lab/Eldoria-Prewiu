@@ -91,3 +91,18 @@ Se reanudó el trabajo expresamente pedido tras la interrupción sin regenerar T
 **Inspección artística independiente de los PNG:** el gesto es visible, más expresivo que el idle básico y retorna a reposo, pero la inclinación del cuerpo se propaga demasiado a otras zonas y el brazo de ataque se percibe rígido; no está animado con codo, muñeca ni weight-paint anatómico suficiente para producción. Rechazar su integración directa. Una prueba estructural verde no es calidad 8/10, ART_APPROVED o verificación de móvil.
 
 **Siguiente fase genuina:** retocar las influencias de los brazos/hombros y elaborar animaciones en clips apropiados; comprobar **importación animada** con Unity 6000.3, misma cámara estratégica del juego, selección y \`EngendroDefeated\`, y rendimiento Android antes de considerar sustituir el prefab. El runner Windows compartido no se ha ocupado porque otra interfaz posee su reserva. La llamada gratuita de Tripo Rig Check sigue pendiente de la credencial API, pero no es requisito para la prueba Blender v2.
+
+
+## Rig experimental V3 — doce huesos y comparación auténtica (21-10-2026)
+
+La V3 ya se ejecutó sobre una copia del Engendro integrado, sin gastar créditos ni modificar el juego. Añade cuatro segmentos independientes a los ocho huesos de V2: dos antebrazos y dos espinillas. Los pesos se distribuyen progresivamente entre huesos sin modificar las mallas fuente.
+
+- [GitHub Actions 39648933188 — SUCCESS](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39648933188): fuente inmutable SHA-256 4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d. El GLB animado tiene 12 huesos, un skin, un clip y 9.863 vértices con pesos válidos. El inicio y final vuelven al reposo exactamente.
+- GLB candidato SHA-256 78bb80b33b7cacedc8c7d4785e721935b3d2c6184dfacc66f12c2b6f9bedef92; artefacto GitHub ID 12368023881 (temporal). Siete capturas originales de Blender a la misma cámara para V2 y V3.
+- Ataque fotograma 27: deformación máxima 0,335203 m respecto al reposo (V2: 0,344238 m). Entre V2 y V3 hay 3.132 píxeles diferentes sobre 288.000; el cambio de píxeles no acredita por sí solo una mejora artística.
+- Se descarta el primer V3 de desplazamiento demasiado corto (run 39648439390, máximo 0,162744 m). El resultado posterior recupera el alcance de la garra con huesos articulados.
+- [Registro independiente, incluidas versiones rechazadas](../pipeline/tripo-art-brain/verified-rig-probes/spawnling-blender-rig-elbow-v3-20261021.json).
+
+**Evaluación artística:** el esqueleto y el gesto son técnicamente válidos; no hay evidencia de un salto visual suficientemente claro sobre V2 para certificar ART_APPROVED. Ningún render Blender implica haber importado un clip en Unity o demostrado rendimiento Android.
+
+**Siguiente prueba necesaria:** usar el GLB exacto en un proyecto aislado de Unity 6000.3, reproducir la animación desde cámara estratégica real, comprobar deformación/selección y solo después plantear integración. El recurso windows-runner-heavy está reservado por la tarea activa de interfaz V3; no interrumpirla ni ocuparlo concurrentemente. Evitar nuevas inferencias Qwen/retocar amplitudes sin una hipótesis artística distinta. No se han gastado créditos ni publicado cambios.
