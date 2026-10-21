@@ -35,7 +35,14 @@ namespace Eldoria.UI.RoyalGold.V2
         public bool BuildingVisible => buildingVisible;
         public RoyalButton VisibleObjectiveButton => objectiveAction;
         public RoyalButton VisibleChapterButton => objectivesButton;
-        public RoyalButton VisibleBuildingButton => buildingAction;
+        public RoyalButton VisibleBuildingButton
+        {
+            get
+            {
+                var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                return v3 && v3.IsConfigured ? v3.VisibleActionButton : buildingAction;
+            }
+        }
         public RoyalButton VisibleBuildingCloseButton => buildingClose;
         public bool ObjectiveVisible => objectiveGroup && objectiveGroup.blocksRaycasts;
         public bool BuildingActionVisible => BuildingVisible && buildingActionGroup && buildingActionGroup.blocksRaycasts;
@@ -494,6 +501,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // input or obscure the actual Valoria scene.
             if (Source.Building && Source.Building.gameObject.activeSelf)
                 Source.Building.gameObject.SetActive(false);
+            // Existing native gameplay/capture harness calls this synchronously;
+            // the reprojected V3 button must be the actual hittable button.
+            var v3 = GetComponent<RoyalGoldV3ContextHud>();
+            if (v3 && v3.IsConfigured) v3.SynchronizeNow();
         }
 
         /// <summary>
