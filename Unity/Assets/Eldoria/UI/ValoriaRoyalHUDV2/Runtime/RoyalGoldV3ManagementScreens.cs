@@ -206,9 +206,17 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             if(s.BastionLevel<2 || s.BarracksLevel<1){Close();return;}
             bool training=CurrentDestination==Destination.Training;
+            bool trainingActive=training && s.RecruitmentCompletesUtcTicks>0;
             maxCount=training?Mathf.Min(500,SliceRules.MaxAffordableArchers(s)):
                 s.Available.ArcherT1;
-            if(maxCount>0)selectedCount=Mathf.Clamp(selectedCount,1,maxCount);
+            // A pending operation has already spent its resources. Show the
+            // real saved quantity rather than a newly affordable quantity.
+            if(trainingActive)
+            {
+                selectedCount=Mathf.Clamp(s.PendingRecruitArchers,1,500);
+                maxCount=Mathf.Max(maxCount,selectedCount);
+            }
+            else if(maxCount>0)selectedCount=Mathf.Clamp(selectedCount,1,maxCount);
             else selectedCount=1;
             slider.minValue=1;
             slider.maxValue=Mathf.Max(1,maxCount);
