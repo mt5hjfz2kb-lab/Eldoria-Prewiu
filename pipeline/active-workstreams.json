@@ -685,8 +685,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "FINAL_UI_NATIVE244_WEBGL_BUILD",
-      "next": "Build exact canonical main containing accepted PR87, then same-byte Windows Chromium I-II and restricted itch release. No native243 pins or art changes.",
+      "phase": "FINAL_UI_NATIVE244_EXACT_BROWSER_QA",
+      "next": "Compiled native244 SUCCESS run39605933465. Exact Chromium QA39607571030 queued behind general Unity editor gate39606507642 on same PC; retain controls/normal-clock/save assertions, then restricted itch delivery. Do not rebuild native243 or alter art.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
       "handoff": {
         "owner_instruction": "Asume tú los trabajos y organízalos",
@@ -728,7 +728,16 @@
         "artifact_id": 12347707207,
         "visual_review": "Canonical full Aldric text and Continue label inspected in genuine portrait Unity render; landscape/contextual controls retained. No global art quality score."
       },
-      "ci_recovery": "General source-preflight checkout is still downloading the entire repository after UI native 40/20/36 passed. Narrow only its checkout to actual Python-preflight inputs; preserve all assertions and explicitly request the pending full editor gate for the same final UI runtime."
+      "ci_recovery": "General source-preflight checkout is still downloading the entire repository after UI native 40/20/36 passed. Narrow only its checkout to actual Python-preflight inputs; preserve all assertions and explicitly request the pending full editor gate for the same final UI runtime.",
+      "web_candidate": {
+        "revision": "native244",
+        "source_sha": "d280965a3276e99843ec6bc767a13dd805e4fac3",
+        "native_run": 39605933465,
+        "raw_artifact_id": 12349440623,
+        "qa_run": 39607571030,
+        "qa_source_sha": "6b7b873f0a74bf5984685bcfc9f8d3424e9bc272",
+        "published": false
+      }
     }
   ],
   "history": [
