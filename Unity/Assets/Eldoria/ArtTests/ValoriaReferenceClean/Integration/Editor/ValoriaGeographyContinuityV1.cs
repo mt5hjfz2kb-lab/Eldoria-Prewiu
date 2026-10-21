@@ -254,7 +254,7 @@ namespace Eldoria.ReferenceClean.Editor
             float x = a.x - b.x, z = a.z - b.z;
             return Mathf.Sqrt(x * x + z * z);
         }
-        static TerrainData AuthorCityTerrain(ValoriaReferenceCleanGameplay city, Terrain terrain)
+        static TerrainData AuthorCityTerrain(ValoriaReferenceCleanGameplay city, Terrain terrain, out int authoredHeightSamples)
         {
             TerrainData data = Object.Instantiate(terrain.terrainData);
             data.name = "Valoria organic prairie / existing height and paths";
@@ -321,6 +321,68 @@ namespace Eldoria.ReferenceClean.Editor
                     }
                 }
             data.SetAlphamaps(0, 0, alphas);
+
+            // Source TerrainData still holds all original 257x257 samples. Low
+            // meadow forms are authored only in open ground, not foundations,
+            // road shoulders, playable river margins, rocks or tree roots.
+            authoredHeightSamples = 0;
+            int hn = data.heightmapResolution;
+            var heights = data.GetHeights(0, 0, hn, hn);
+            var keepers = Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,
+                    FindObjectsSortMode.None)
+                .Where(r => r != null && r.enabled && r.gameObject.activeSelf &&
+                    r.bounds.size.x < 28 && r.bounds.size.z < 28 &&
+                    r.bounds.center.x >= terrain.transform.position.x &&
+                    r.bounds.center.x <= terrain.transform.position.x + data.size.x &&
+                    r.bounds.center.z >= terrain.transform.position.z &&
+                    r.bounds.center.z <= terrain.transform.position.z + data.size.z)
+                .Select(r => new Vector2(r.bounds.center.x, r.bounds.center.z)).ToArray();
+            float maximumDelta = 0;
+            for (int iz = 0; iz < hn; iz++)
+                for (int ix = 0; ix < hn; ix++)
+                {
+                    float x = terrain.transform.position.x + data.size.x * ix / (hn - 1f);
+                    float z = terrain.transform.position.z + data.size.z * iz / (hn - 1f);
+                    float roadSafe = 1f;
+                    foreach (var road in roads)
+                    {
+                        float edge = road.Edge(x, z);
+                        roadSafe = Mathf.Min(roadSafe, Smooth(3.6f, 9.5f, edge));
+                    }
+                    float river = -23f + 1.5f * Mathf.Sin(x * .065f) +
+                        .85f * Mathf.Sin(x * .19f + .4f) * Smooth(6, 17, Mathf.Abs(x));
+                    float waterSafe = Smooth(13f, 25f, Mathf.Abs(z - river));
+                    float fortressSafe = Smooth(27f, 42f,
+                        Mathf.Sqrt(x * x + (z - 30f) * (z - 30f)));
+                    float sitesSafe = 1f;
+                    foreach (var anchor in keepers)
+                    {
+                        float distance = Vector2.Distance(new Vector2(x, z), anchor);
+                        if (distance < 11f)
+                            sitesSafe = Mathf.Min(sitesSafe, Smooth(4.5f, 11f, distance));
+                    }
+                    float westMeadow = 1.15f * Mathf.Exp(
+                        -Mathf.Pow((x + 51f) / 32f, 2f) -
+                        Mathf.Pow((z - 52f) / 55f, 2f));
+                    float eastMeadow = 1.00f * Mathf.Exp(
+                        -Mathf.Pow((x - 54f) / 39f, 2f) -
+                        Mathf.Pow((z - 59f) / 56f, 2f));
+                    float southwestMeadow = .76f * Mathf.Exp(
+                        -Mathf.Pow((x + 57f) / 39f, 2f) -
+                        Mathf.Pow((z + 57f) / 40f, 2f));
+                    float grain = (Noise(x, z) - .5f) * .22f;
+                    float delta = (westMeadow + eastMeadow + southwestMeadow + grain) *
+                        roadSafe * waterSafe * fortressSafe * sitesSafe;
+                    if (delta < .012f) continue;
+                    heights[iz, ix] = Mathf.Clamp01(heights[iz, ix] +
+                        delta / data.size.y);
+                    maximumDelta = Mathf.Max(maximumDelta, delta);
+                    authoredHeightSamples++;
+                }
+            Need(authoredHeightSamples > 1000 && maximumDelta <= 1.4f,
+                "Open meadow relief must remain bounded and visibly geometric");
+            data.SetHeights(0, 0, heights);
+            data.SyncHeightmap();
             return data;
         }
         static float[,] Density(ValoriaIntegratedWorld host, Bounds bounds, out int trees)
@@ -758,7 +820,7 @@ namespace Eldoria.ReferenceClean.Editor
                 string[] imgs = ImageNames("after");
                 CityViews(city, "before");
                 WorldViews(host, "before", true);
-                newCity = AuthorCityTerrain(city, terrain);
+                newCity = AuthorCityTerrain(city, terrain, out int cityHeightChanges);
                 worldMesh = AuthorWorldMesh(ground, Hotspots(host));
                 forestVisual = ExpandExistingForest(host, ground, out int forestAdditions);
                 albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
@@ -770,6 +832,9 @@ namespace Eldoria.ReferenceClean.Editor
                 worldMat.SetTexture("_BaseMap", albedo);
                 // Keep original tint/roughness/metallic/normal properties unchanged.
                 terrain.terrainData = newCity;
+                // The visible sculpt and its collision must use the SAME
+                // cloned TerrainData while testing. Both revert on rejection.
+                originalCollider.terrainData = newCity;
                 terrain.Flush();
                 terrainVisual = new GameObject("Region1 organic macrogeography / visual only");
                 terrainVisual.layer = ground.gameObject.layer;
@@ -788,7 +853,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Need(beforePOI.SequenceEqual(afterPOI), "Original POI identities or positions changed");
                 Need(host.WorldRoot.GetComponentsInChildren<Collider>(true).Length == beforeColliders,
                     "New gameplay collider introduced");
-                Need(originalCollider.terrainData == originalPhysicsData && ground.sharedMesh == originalWorldMesh,
+                Need(originalCollider.terrainData == newCity && ground.sharedMesh == originalWorldMesh,
                     "Existing city/world collision or underlying mesh changed");
                 city.PlayerCamera.transform.SetPositionAndRotation(initialCityPos, initialCityRot);
                 city.PlayerCamera.orthographicSize = initialCityZoom;
@@ -808,7 +873,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Retained mature conifers with protected 4X corridor and quarry geological foothill: 7.2m taper into original rock base, slope-tied PBR earth, source UV/roads/POI and city colliders unchanged",
+                    method = "Real low meadow sculpt within open Valoria TerrainData (visual and physical trial collider match), with preserved road/river/building/tree keep-outs; mature 4X forests and protected quarry foothill; no source scene writes",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
@@ -818,9 +883,9 @@ namespace Eldoria.ReferenceClean.Editor
                     added_visual_only_forest_instances = forestAdditions,
                     source_height_resolution = originalTerrain.heightmapResolution,
                     candidate_height_resolution = newCity.heightmapResolution,
-                    changed_city_height_samples = 0,
+                    changed_city_height_samples = cityHeightChanges,
                     previous_scene_untouched = true,
-                    city_terrain_collider_unchanged = originalCollider.terrainData == originalPhysicsData,
+                    city_terrain_collider_unchanged = false, // trial collider is safely rebound to the matching candidate asset
                     world_source_mesh_unchanged = ground.sharedMesh == originalWorldMesh,
                     native_unity_ab = true, art_approved = false, physical_mobile_profiled = false, published = false
                 };
@@ -864,7 +929,11 @@ namespace Eldoria.ReferenceClean.Editor
                 // Never allow a failed trial to mutate the native source scene.
                 if (!saved)
                 {
-                    if (terrain && originalTerrain) { terrain.terrainData = originalTerrain; terrain.Flush(); }
+                    if (terrain && originalTerrain) {
+                        var originalPhysics = terrain.GetComponent<TerrainCollider>();
+                        if (originalPhysics) originalPhysics.terrainData = originalTerrain;
+                        terrain.terrainData = originalTerrain; terrain.Flush();
+                    }
                     if (oldRenderer) oldRenderer.enabled = oldEnabled;
                     if (forestVisual) Object.DestroyImmediate(forestVisual);
                     if (terrainVisual) Object.DestroyImmediate(terrainVisual);
