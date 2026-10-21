@@ -56,7 +56,7 @@
     "verdict": "TECHNICALLY_VALID_BUT_NOT_VISUALLY_ACCEPTED_FOR_ATTACK",
     "art_approved": false
   },
-  "next_hypothesis": "Keep 12-bone skin/weights from v3 and design v4 attack with stronger upper-arm reaching action plus controlled forearm bend, while preventing torso-wide dragging. Do authentic matched v3-v4 frames and check source/clip and no-credit gates.",
+  "next_hypothesis": "First use refined v3 source and captured same-camera A/B as technical candidate. Avoid rerunning Qwen or replacing production. Do not automatically generate V4 solely to chase pixel-count; the next material quality test is Unity animated-import/strategic game framing and if failed then targeted Blender character direction.",
   "disallowed": [
     "do_not_integrate_game",
     "do_not_release",
@@ -66,5 +66,33 @@
   "new_credits_spent": 0,
   "api_calls": 0,
   "gameplay_integrated": false,
-  "mobile_device_profiled": false
+  "mobile_device_profiled": false,
+  "follow_up_same_day_refined_pose": {
+    "status": "RIG_V3_REVISION_TECH_PASS_AESTHETIC_REVIEW_REQUIRED",
+    "run_id": 39648933188,
+    "run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39648933188",
+    "artifact_id": 12368023881,
+    "artifact_name": "spawnling-rig-elbows-v3-zero-credit-qa",
+    "source_same_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+    "glb_sha256": "78bb80b33b7cacedc8c7d4785e721935b3d2c6184dfacc66f12c2b6f9bedef92",
+    "bone_count": 12,
+    "skin_count": 1,
+    "clips": 1,
+    "frame27_max_displacement_m": 0.335203,
+    "frame27_difference_vs_v2_pixels": 3132,
+    "camera_px": [
+      600,
+      480
+    ],
+    "frame1_and_65_match_v2": 0,
+    "weight_errors": 0,
+    "cost_new_credits": 0,
+    "visual_review": "Later refined run restores the long forward claw reach comparable to V2 while retaining distinct elbow/knee skinning. From locked isometric Blender preview a clear improvement over V2 in character acting is NOT yet evident, though segmented-bone technical potential is proved.",
+    "technical_pass": true,
+    "art_approved": false,
+    "unity_import_pass": false,
+    "mobile_pass": false,
+    "gameplay_integrated": false,
+    "next_gate": "Isolated Unity 6000.3 animated GLB/glTFast import, clip playback and true tactical camera A/B; Windows runner currently reserved by UI workstream. No game mutation."
+  }
 }
