@@ -1,0 +1,78 @@
+name: Tripo v3 free rig check for existing Spawnling (zero spend only)
+
+# One initial bounded attempt on main. Subsequent probes require an explicit manual dispatch.
+on:
+  push:
+    paths:
+      - '.github/workflows/tripo-free-rig-check-once.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tripo-spawnling-free-rig-check-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  check-existing-source:
+    name: Free eligibility only - no new models, no rigging, no Windows
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    env:
+      OUT: /tmp/eldoria-tripo-free-rig-check
+    steps:
+      - name: Exact existing source and inspection code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/tripo-art-brain/
+            pipeline/tripo-art-brain/
+            ArtSource/World4X/Spawnling_v1/
+            docs/evidence/spawnling-bastion2/native-integration.json
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity
+
+      - name: Verify source provenance and that rig CHECK is the only permitted call
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT"
+          node --test tools/tripo-art-brain/rig-check-v3.test.mjs > "$OUT/preflight-tests.log"
+          node tools/tripo-art-brain/preflight.mjs audit spawnling > "$OUT/existing-spawnling-audit.json"
+          node tools/tripo-art-brain/rig-check-v3.mjs spawnling --dry-run > "$OUT/free-check-intent.json"
+
+      - name: Try the officially free rig-check only with an existing GitHub API secret
+        shell: bash
+        env:
+          TRIPO_API_KEY: ${{ secrets.TRIPO_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TRIPO_API_KEY:-}" ]; then
+            node -e 'require("fs").writeFileSync(process.env.OUT+"/result.json",JSON.stringify({status:"BLOCKED_GITHUB_ACTIONS_API_KEY_ABSENT",credits_spent:0,paid_calls:0,rig_check_executed:false,asset:"spawnling",next:"Existing Tripo CLI authentication is runner-local, not a GitHub-hosted secret. Wait for released Windows claim or authorised secure API-key connector."},null,2)+"\n")'
+            echo "FREE_RIG_CHECK_BLOCKED: no GitHub secret; no API call, no spend."
+          else
+            # Exactly ONE free POST via existing reviewed script. No post-generation,
+            # rig, retarget, upload, retry, or fallback to a paid API task.
+            set +e
+            node tools/tripo-art-brain/rig-check-v3.mjs spawnling --live-free --out "$OUT/free-rig-check-response.json" > "$OUT/free-check-cli.log" 2>&1
+            code=$?
+            set -e
+            if [ "$code" -ne 0 ]; then
+              node -e 'require("fs").writeFileSync(process.env.OUT+"/result.json",JSON.stringify({status:"FREE_RIG_CHECK_FAILED_OR_UNCONFIRMED",asset:"spawnling",riggable:null,credits_spent:"UNCONFIRMED",no_paid_calls_by_workflow:true,no_automatic_retry:true,reason:"Inspect free-check-cli.log and original task v2-v3 compatibility. Never treat failure as an invitation to re-generate."},null,2)+"\n")'
+              echo "::warning::Free-only rig-check did not produce confirmed 0-credit eligibility; no retry."
+            else
+              cp "$OUT/free-rig-check-response.json" "$OUT/result.json"
+              echo "FREE_RIG_CHECK_COMPLETE: result recorded with confirmed zero credits."
+            fi
+          fi
+
+      - name: Preserve exact result without touching Eldoria runtime
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tripo-free-rig-check-${{ github.run_id }}
+          path: /tmp/eldoria-tripo-free-rig-check/
+          retention-days: 14
+          if-no-files-found: error
