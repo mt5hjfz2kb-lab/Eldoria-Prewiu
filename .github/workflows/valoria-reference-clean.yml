@@ -139,6 +139,14 @@ jobs:
           $destination='docs/evidence/valoria-reference-clean/roof-junction226'
           New-Item -ItemType Directory -Force $destination | Out-Null
           Copy-Item (Join-Path $sources[0].DirectoryName '*') $destination -Recurse -Force
+      - name: Retrieve exact native264 artist reference pixels
+        if: contains(github.event.head_commit.message, '[geography-artist]')
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-geography-real-unity-39658026450
+          run-id: 39658026450
+          github-token: ${{ github.token }}
+          path: geography-artist-reference
       - name: Execute requested stage in native Unity
         id: native_stage
         shell: powershell
@@ -266,6 +274,21 @@ jobs:
           if($req.world_contact -and $req.stage -eq 'world_art_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Trial'}
           if($req.world_contact -and $req.stage -eq 'world_art_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Integrate'}
           if($req.stage -eq 'world_art_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Survey'}
+          if($req.author_geography){
+            if($req.stage -ne 'geography_trial'){throw 'New artist inference is allowed only for a reversible trial'}
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if(-not $blender){throw 'Existing Blender installation unavailable'}
+            $python=Get-ChildItem (Split-Path $blender) -Filter python.exe -Recurse|Select-Object -First 1 -ExpandProperty FullName
+            if(-not $python){throw 'Existing Blender Python unavailable'}
+            & $python tools/valoria-reference-clean/author_geography_plan.py --reference "$env:GITHUB_WORKSPACE/geography-artist-reference" --output docs/evidence/valoria-reference-clean/geography-v1
+            if($LASTEXITCODE){throw 'Local artist terrain plan rejected; original scene unchanged'}
+            $env:VALORIA_GEOGRAPHY_PLAN=(Resolve-Path docs/evidence/valoria-reference-clean/geography-v1/artist-plan.json).Path
+          } elseif($req.reuse_geography_plan){
+            $env:VALORIA_GEOGRAPHY_PLAN=(Resolve-Path docs/evidence/valoria-reference-clean/geography-v1/artist-plan.json).Path
+          } else {
+            Remove-Item Env:VALORIA_GEOGRAPHY_PLAN -ErrorAction SilentlyContinue
+          }
           if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
           if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
           if($req.stage -eq 'geography_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
