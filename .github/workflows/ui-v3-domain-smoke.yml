@@ -1,0 +1,24 @@
+name: V3 management domain smoke (no Unity/Windows lease)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs'
+      - 'tools/ui-v3-domain-smoke/**'
+      - '.github/workflows/ui-v3-domain-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile authoritative Unity domain and exercise offline contracts
+        run: dotnet run --project tools/ui-v3-domain-smoke/Smoke.csproj --configuration Release
