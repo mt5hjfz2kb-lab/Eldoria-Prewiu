@@ -1,0 +1,15 @@
+{
+  "revision": 1,
+  "stage": "isolated_unity_skin_import",
+  "workstream": "eldoria-tripo-art-brain-phase2-20261021",
+  "artifact_id": 12368972822,
+  "source_run": 39651422644,
+  "source_sha256": "86ec1c93a222d58b89b9f393d39c8e5e912b14516ff5298500e5aca80048f631",
+  "budget_eur": 0,
+  "credits_added": 0,
+  "canonical_scene_mutation": false,
+  "integration": false,
+  "expected_unity": "6000.3.23f1",
+  "expected_urp": "17.3.0",
+  "reason": "Owner-directed completion; exact existing V4 archive, disposable animation-enabled project and canonical mobile renderer, no game writes"
+}
