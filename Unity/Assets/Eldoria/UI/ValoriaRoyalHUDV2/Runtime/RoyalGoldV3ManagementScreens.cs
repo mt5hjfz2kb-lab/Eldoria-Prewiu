@@ -88,6 +88,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if (s.BastionLevel < 2 || s.BarracksLevel < 1) return;
             EnsureView();
             CurrentDestination = destination;
+            submitAfter = 0f;
             selectedCount = destination == Destination.Training
                 ? Mathf.Min(SliceRules.RecruitArchers, Math.Max(1, SliceRules.MaxAffordableArchers(s)))
                 : Mathf.Min(Math.Max(1, s.Available.ArcherT1),
