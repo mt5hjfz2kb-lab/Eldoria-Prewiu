@@ -184,11 +184,15 @@ namespace Eldoria.SpawnlingBastion2.Editor
                     PersistSkin(root,folder,oldNear.Concat(oldFar).ToArray(),ref added,ref reused);
                 }
                 var renderers=root.GetComponentsInChildren<Renderer>(true);
+                await Frame();
                 var bounds=GeometryBounds(renderers);Need(bounds.size.y>.2f,"Imported source height implausible");
                 root.transform.localScale*=oldBounds.size.y/bounds.size.y;
+                await Frame();
                 bounds=GeometryBounds(renderers);root.transform.position+=new Vector3(oldBounds.center.x-bounds.center.x,
                     oldBounds.min.y-bounds.min.y,oldBounds.center.z-bounds.center.z);
+                await Frame();
                 var fitted=GeometryBounds(renderers);
+                Debug.Log("V4_ACTUAL_GEOMETRY_FIT old="+oldBounds.ToString("R")+" fitted="+fitted.ToString("R"));
                 Need(Mathf.Abs(fitted.size.y-oldBounds.size.y)<.01f&&
                     Mathf.Abs(fitted.min.y-oldBounds.min.y)<.01f,"Actual sampled height/base must match original");
                 // Cache the full real clip envelope so near-camera skin culling cannot cut off a swipe.
