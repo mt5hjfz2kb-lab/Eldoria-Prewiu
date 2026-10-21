@@ -1,0 +1,31 @@
+{
+  "stage": "native_unity_existing_scene_visual_replacement",
+  "asset": "Eldoria_Spawnling_Bastion2_v1",
+  "workstream": "eldoria-spawnling-bastion2-finish-20261021",
+  "target_hotspot": "engendro-valoria",
+  "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+  "source_glb_sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
+  "near_glb_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+  "far_glb_sha256": "dd698116c7cb517d9fdf95154f6b8c275235d7f6e241cab1a04b2302b67fecbd",
+  "credits_added": 0,
+  "budget_eur": 0,
+  "allow_gameplay_change": false,
+  "allow_save_change": false,
+  "allow_publication": false,
+  "required_gates": [
+    "native_import_pbr_lod",
+    "same_camera_unity_ab",
+    "existing_hotspot_unchanged",
+    "original_bastion_i_ii_runtime_play_save"
+  ],
+  "owner_authorization": "2026-10-21 user explicitly requested finishing and replacing the Bastion II enemy silhouette in-game; no additional monetized Tripo generation.",
+  "stage_revision": 8,
+  "preflight_description": "Retain canonical existing Zone1 authored engendro-valoria gameplay hierarchy; hide only legacy renderers after real Unity before captures; add distinct Bastion II Tripo PBR Near/Far creature visual, no new collider/hotspot, exact save/play QA. Source in isolated verified checkout.",
+  "executor_safety": {
+    "shared_windows_runner": "single serial concurrency group, never cancel running processes",
+    "paid_credits": 0,
+    "auto_publish": false,
+    "canonical_ui_v3": "preserve PR #83"
+  },
+  "failure_repair_source_run": 39576101372
+}

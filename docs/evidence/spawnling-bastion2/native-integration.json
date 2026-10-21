@@ -1,0 +1,29 @@
+{
+    "scene_sha_before": "4c8bbdc6ccb1273bcf24c0e94fa102d88077faac71869598a0e215b88a1cb2bb",
+    "scene_sha_after": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
+    "source_glb_sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
+    "near_glb_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+    "far_glb_sha256": "dd698116c7cb517d9fdf95154f6b8c275235d7f6e241cab1a04b2302b67fecbd",
+    "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "unity_version": "6000.3.23f1",
+    "status": "SCENE_INTEGRATED_NATIVE_GAMEPLAY_PROBE_REQUIRED",
+    "near_triangles": 12040,
+    "far_triangles": 2900,
+    "hotspot_count": 6,
+    "gameplay_collider_count": 6,
+    "visual_renderers": 4,
+    "visual_colliders": 0,
+    "hotspot_preserved": true,
+    "gameplay_unchanged": true,
+    "save_untouched": true,
+    "physical_mobile_tested": false,
+    "local_changed_fraction": 0.8658847212791443,
+    "regional_changed_fraction": 0.0026090277824550869,
+    "actual_unity_pixels_changed": true,
+    "captures": [
+        "before-local-900x1600.png",
+        "after-local-900x1600.png",
+        "before-region-1600x900.png",
+        "after-region-1600x900.png"
+    ]
+}

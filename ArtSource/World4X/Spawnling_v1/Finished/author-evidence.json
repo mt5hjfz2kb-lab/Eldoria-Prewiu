@@ -1,0 +1,57 @@
+{
+  "bounds_min": [
+    -0.5,
+    -0.3783169686794281,
+    -0.39123231172561646
+  ],
+  "bounds_max": [
+    0.5,
+    0.3782844543457031,
+    0.3912200331687927
+  ],
+  "source_triangles": 49800,
+  "head_axis_convention": "corrected to +X after real captured art review",
+  "note": "Geometry changes do not imply artistic approval.",
+  "tail_vertices_moved": 1354,
+  "anatomical_axis": "head +X; tail -X; Blender real four-view diagnosis",
+  "surface_grounded_eyes": 2,
+  "source_sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
+  "near_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+  "far_sha256": "dd698116c7cb517d9fdf95154f6b8c275235d7f6e241cab1a04b2302b67fecbd",
+  "blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
+  "triangles_near_body": 12000,
+  "triangles_far_body": 2900,
+  "face_parts": 2,
+  "texture_grade": "PBR albedo darker violet; actual source retained",
+  "materials": [
+    {
+      "material": "tripo_material_351d1034-25ec-4300-a2e0-d03a0e68175a.001",
+      "images": [
+        {
+          "role": "retained_albedo_regraded",
+          "w": 1024,
+          "h": 1024
+        },
+        {
+          "role": "retained_pbr",
+          "w": 1024,
+          "h": 1024
+        },
+        {
+          "role": "retained_pbr",
+          "w": 1024,
+          "h": 1024
+        },
+        {
+          "role": "retained_pbr",
+          "w": 1024,
+          "h": 1024
+        }
+      ]
+    }
+  ],
+  "blender": "4.0.2",
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "tripo_credits_added": 0
+}
