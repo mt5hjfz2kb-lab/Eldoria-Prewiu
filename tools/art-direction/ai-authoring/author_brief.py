@@ -96,6 +96,8 @@ def main():
  if not 1<=a.max_actions<=8:raise ValueError('max-actions must be within 1..8')
  if not 60<=a.request_timeout<=540:raise ValueError('Ollama per-attempt timeout must be 60..540 seconds')
  if not 0<=a.camera_min_radius<=40 or not 0<=a.camera_min_displacement<=10:raise ValueError('Unsafe camera footprint goals')
+ if a.subject_kind!='terrain' and (a.camera_min_radius or a.camera_min_displacement):
+  raise ValueError('Cliff-size camera footprint minima are invalid for creatures and props')
  if (a.camera_min_radius or a.camera_min_displacement) and not (a.cpu_compact and a.target_mode=='existing'):
   raise ValueError('Source-camera footprint controls apply only to verified existing-mesh compact trials')
  uri=urllib.parse.urlsplit(a.endpoint)
@@ -145,7 +147,7 @@ def main():
   topology=json.loads(mesh_context)
   if topology.get('schema_version')!=1 or topology.get('target')!=a.target_object or not isinstance(topology.get('boundary_loops'),list):raise ValueError('Mesh topology manifest target/schema mismatch')
   mesh_context_sha=digest(mesh_context.encode('utf8'))
- if a.cpu_compact and a.mesh_context:
+ if a.cpu_compact and a.mesh_context and a.subject_kind=='terrain':
   # The camera enters Valoria from SOUTH (negative local Y). Earlier Qwen
   # repeatedly edited invisible extreme corners because a naive [:16] anchor
   # selection spent its whole context on AABB extremes and far-away vertices.
@@ -291,7 +293,7 @@ def main():
    errors.append(f'Invalid complete JSON at character {exc.pos}; planned_actions must be an ARRAY and no face-index dumps')
   if design is not None:
    errors.extend(inspect_artist_plan(design,a.target_object,a.target_mode,a.max_actions,
-      topology if a.mesh_context else None,require_geometry=a.cpu_compact,require_camera_effect=a.cpu_compact and a.target_mode=='existing'))
+      topology if a.mesh_context else None,require_geometry=a.cpu_compact,require_camera_effect=a.cpu_compact and a.subject_kind=='terrain' and a.target_mode=='existing'))
    errors.extend(distinct_strategy_errors(design,failures))
    errors.extend(camera_footprint_errors(design,a.camera_min_radius,a.camera_min_displacement))
   log={'attempt':attempt_index+1,'model':a.model,'request_prompt_sha256':digest(payload['messages'][-1]['content'].encode('utf8')),
