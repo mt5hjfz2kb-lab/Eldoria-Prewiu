@@ -9,6 +9,14 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs'
       - 'Unity/Assets/Eldoria/Tests/EditMode/**'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/**'
+  # Reuse the existing Unity EditMode/PlayMode gate for proposed HUD updates.
+  # PRs must be checked before they can replace the current playable main.
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/**'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs'
   workflow_dispatch:
 
 permissions:
@@ -24,6 +32,15 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 30
     steps:
+      - name: Respect shared Windows native-editor lease
+        shell: powershell
+        run: |
+          $registry=Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
+          $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($claims.Count){throw "Windows runner is already claimed by $($claims.id -join ', ')"}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Unity or Blender already running; UI gate must not interrupt another job'
+          }
       - name: Expose Git installed with GitHub Desktop
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
