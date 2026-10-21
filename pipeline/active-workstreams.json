@@ -19,10 +19,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-geography-visual-production-20261021",
+      "owner": null,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-21T15:01:25.122Z",
+      "claimed_at": null,
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -55,8 +55,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "GEOGRAPHIC_INTEGRATION_ART_PRODUCTION",
-      "next": "Create a representative organic city-ground and continuous World4X geography intervention on current canonical scene, validate matched native Unity city/world whole-frame plus forest/quarry/breach and I–II/gameplay, accept only visually substantial change then promote; no publication",
+      "phase": "GEOGRAPHY_NATIVE262_WAITING_UI_WINDOWS_LEASE",
+      "next": "Owner-authorized successor: claim same canonical Valoria art ID/revision; after UI V3 releases windows-runner-heavy recheck main scene SHA 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237 and request revision262; reserve runner and dispatch geography_trial with review_scope geography_v1 and auxiliary_review true, fixed camera & 15 source-hashed A/B. If art visibly accepted, integrate once on current main and run actual native I-II/state/POI/Android-appropriate QA; no publication. If rejected, revise geography hypothesis and repeat. Preserve original content and exact reference.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -547,7 +547,7 @@
           "handoff_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677"
         }
       },
-      "previous_owner": "chatgpt-eldoria-visual-recovery-20261020",
+      "previous_owner": "chatgpt-eldoria-geography-visual-production-20261021",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md",
@@ -671,11 +671,18 @@
           "phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
           "released_at": "2026-10-21T14:58:50.649Z",
           "reason": "Four art phases delivered; no runner reservation; owner requests removing stale chat ownership barriers. Canonical work ID and all sources/evidence retained."
+        },
+        {
+          "owner": "chatgpt-eldoria-geography-visual-production-20261021",
+          "claimed_at": "2026-10-21T15:01:25.122Z",
+          "released_at": "2026-10-21T18:06:33.791Z",
+          "phase": "GEOGRAPHIC_INTEGRATION_ART_PRODUCTION",
+          "reason": "Art native260/261 visual trials saved; native262 true city TerrainData sculpt remains not executed because UI V3 owns windows-runner-heavy. New local Qwen geography independent-review route added, not yet executed. No gameplay scene art promotion, no publication."
         }
       ],
-      "ownership_revision": 3,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 4,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
       "last_claimed_at": "2026-10-16",
       "current_assignment": {
@@ -695,7 +702,17 @@
         "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
         "owner_authorized": "2026-10-21"
       },
-      "runner_lease_note": "Temporary cooperative release for owner-prioritized UI V3 management native validation; art owner/scope/work remain intact. No current native jobs were running at handoff. Claim again after UI tests finish."
+      "runner_lease_note": "Temporary cooperative release for owner-prioritized UI V3 management native validation; art owner/scope/work remain intact. No current native jobs were running at handoff. Claim again after UI tests finish.",
+      "pending_art_validation": {
+        "last_visual_source": "native261 run39641901228 (forest gains local, entire region below requested quality)",
+        "last_true_unity_probe": "geography_trial native261",
+        "awaiting": "native262 city 257x257 TerrainData true sculpt + synchronized candidate TerrainCollider; 4X forest/quarry; compare real captures",
+        "independent_critic": "tools/valoria-reference-clean/review_capture.py geography_v1 3 review groups, not yet executed",
+        "blocked_resource": "windows-runner-heavy",
+        "resource_holder": "eldoria-ui-v3-management-completion-20261021",
+        "review_status": "ART_REVIEW_REQUIRED",
+        "canonical_scene_unchanged": true
+      }
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
