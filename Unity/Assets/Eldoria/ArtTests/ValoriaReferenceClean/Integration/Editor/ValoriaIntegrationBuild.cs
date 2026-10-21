@@ -336,7 +336,17 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-march-landscape.png",1600,900);
     Capture(h,"integration-march-portrait.png",900,1600);
    },"Royal march management real independent landscape and portrait");
-   Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().MarchConfigured,"March configuration missing");},"Royal march confirmation via visible primary button");
+   Check(()=>{
+    Click(h.Hud.Building.Primary.Button);
+    Need(city.Gateway.Snapshot().MarchConfigured,"March configuration missing");
+    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    if(management!=null&&management.IsOpen){
+      var back=GameObject.Find("Return to Valoria")?.GetComponent<RoyalButton>();
+      Need(back&&back.interactable,"V3 return-to-city button unavailable");
+      Click(back);
+      Need(!management.IsOpen,"Return to city failed to dismiss V3 management destination");
+    }
+   },"Royal march confirmation and real return-to-city button");
    yield return new WaitForSecondsRealtime(.4f);
    h.SetWorld(true);h.Select("engendro-valoria");yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
