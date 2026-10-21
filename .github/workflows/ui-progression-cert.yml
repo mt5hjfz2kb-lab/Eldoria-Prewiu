@@ -65,12 +65,90 @@ jobs:
         with:
           clean: false
 
+      - name: Restore exact tracked Unity project when self-hosted checkout was partial
+        shell: powershell
+        run: |
+          # Existing unity-slice.yml has proven missing Assets after checkout.
+          # Recover only files tracked by THIS exact PR merge SHA, never
+          # untracked Blender sources or somebody else's Unity Library.
+          $actual=(& git rev-parse HEAD).Trim()
+          if($actual -ne $env:GITHUB_SHA){throw "Unity PR source SHA mismatch: $actual"}
+          $tracked=@(& git ls-tree -r --full-tree --name-only $env:GITHUB_SHA -- Unity/Assets Unity/Packages Unity/ProjectSettings)
+          if($LASTEXITCODE -ne 0 -or $tracked.Count -lt 500){
+            throw "Invalid Unity project tracked manifest: $($tracked.Count) paths"
+          }
+          $missing=@($tracked | Where-Object { -not (Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $_)) })
+          Write-Host "ELDORIA_V3_SOURCE tracked=$($tracked.Count) missing=$($missing.Count)"
+          if($missing.Count -gt 0){
+            Write-Host "Recovering exact Git commit tracked Unity source, preserving all untracked caches."
+            & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- Unity/Assets Unity/Packages Unity/ProjectSettings
+            if($LASTEXITCODE){throw 'Cannot restore exact tracked project files'}
+            $remaining=@($tracked | Where-Object { -not (Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $_)) })
+            if($remaining.Count){throw "Still missing $($remaining.Count) tracked Unity source files"}
+          }
+          foreach($required in @(
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity',
+            'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs',
+            'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs',
+            'Unity/Packages/manifest.json'
+          )){
+            if(-not(Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $required))){
+              throw "Integrated UI V3 candidate input missing: $required"
+            }
+          }
+          Write-Host "ELDORIA_V3_EXACT_TRACKED_PROJECT_READY"
+
       - name: Verify Unity 6.3.23f1
         shell: powershell
         run: |
           if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
+
+      - name: Capture and validate existing real integrated I-II scene in Unity
+        shell: powershell
+        run: |
+          # The existing ValoriaIntegrationBuild.ValidateCurrent test plays the
+          # real scene with a probe-only disposable save and checks real pointer
+          # raycasts, both orientations, story, construction, World and I-II.
+          # Do not modify any art, prefab, saved game or canonical publication.
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-V3-Native-I-II-Visual.log'
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent',
+            '-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if(-not $process.WaitForExit(1800000)){
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            throw 'Native I-II viewport/capture probe exceeded 30 minutes'
+          }
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw "Native I-II visual probe failed: $($process.ExitCode)"
+          }
+          $e=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
+          foreach($file in @(
+            'integration-story-aldric.png',
+            'integration-city-16x9.png',
+            'integration-construction-landscape.png',
+            'integration-construction-portrait.png',
+            'integration-world-16x9.png',
+            'integration-world-portrait.png',
+            'integration-bastion-upgrade.png',
+            'integration-training-portrait.png',
+            'integration-chapter2-complete.png',
+            'integration-result.json'
+          )){
+            if(-not(Test-Path (Join-Path $e $file))){throw "Missing real Unity evidence: $file"}
+          }
+          $result=Get-Content (Join-Path $e 'integration-result.json') -Raw|ConvertFrom-Json
+          if($result.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){
+            throw "Existing I-II probe not accepted: $($result.status) $($result.error)"
+          }
+          Write-Host "ELDORIA_V3_REAL_NATIVE_I_II_PROBE=$($result.status)"
+          Write-Host "ELDORIA_V3_CHECKS=$(@($result.checks).Count) CAPTURES=$(@(Get-ChildItem $e -Filter 'integration*.png').Count)"
+          Write-Host "Native visual evidence still requires owner inspection before merge/publish."
 
       - name: EditMode
         shell: powershell
@@ -126,50 +204,6 @@ jobs:
           [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
 
-      - name: Capture and validate existing real integrated I-II scene in Unity
-        shell: powershell
-        run: |
-          # The existing ValoriaIntegrationBuild.ValidateCurrent test plays the
-          # real scene with a probe-only disposable save and checks real pointer
-          # raycasts, both orientations, story, construction, World and I-II.
-          # Do not modify any art, prefab, saved game or canonical publication.
-          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-V3-Native-I-II-Visual.log'
-          Remove-Item $log -Force -ErrorAction SilentlyContinue
-          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
-            '-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent',
-            '-logFile',$log)
-          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
-          if(-not $process.WaitForExit(1800000)){
-            if(Test-Path $log){Get-Content $log -Tail 180}
-            & taskkill.exe /PID $process.Id /T /F | Out-Null
-            throw 'Native I-II viewport/capture probe exceeded 30 minutes'
-          }
-          if($process.ExitCode -ne 0){
-            if(Test-Path $log){Get-Content $log -Tail 180}
-            throw "Native I-II visual probe failed: $($process.ExitCode)"
-          }
-          $e=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
-          foreach($file in @(
-            'integration-story-aldric.png',
-            'integration-city-16x9.png',
-            'integration-construction-landscape.png',
-            'integration-construction-portrait.png',
-            'integration-world-16x9.png',
-            'integration-world-portrait.png',
-            'integration-bastion-upgrade.png',
-            'integration-training-portrait.png',
-            'integration-chapter2-complete.png',
-            'integration-result.json'
-          )){
-            if(-not(Test-Path (Join-Path $e $file))){throw "Missing real Unity evidence: $file"}
-          }
-          $result=Get-Content (Join-Path $e 'integration-result.json') -Raw|ConvertFrom-Json
-          if($result.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){
-            throw "Existing I-II probe not accepted: $($result.status) $($result.error)"
-          }
-          Write-Host "ELDORIA_V3_REAL_NATIVE_I_II_PROBE=$($result.status)"
-          Write-Host "ELDORIA_V3_CHECKS=$(@($result.checks).Count) CAPTURES=$(@(Get-ChildItem $e -Filter 'integration*.png').Count)"
-          Write-Host "Native visual evidence still requires owner inspection before merge/publish."
       - name: Summarize certified checks
         shell: powershell
         run: |
