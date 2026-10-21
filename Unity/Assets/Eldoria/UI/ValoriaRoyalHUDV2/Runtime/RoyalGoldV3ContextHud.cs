@@ -32,6 +32,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private readonly Dictionary<string, RoyalBuilding> live = new Dictionary<string, RoyalBuilding>();
         private float nextRead;
         private bool ready;
+        private string lastProbeMismatch = "";
         private static readonly string[] TimedTargets =
         {
             "sawmill", "barracks", "bastion", "forest-valoria",
@@ -67,8 +68,22 @@ namespace Eldoria.UI.RoyalGold.V2
         }
 
         private void Awake() { if (!Source) Source = GetComponent<RoyalHUD>(); }
+        private void OnEnable()
+        {
+            if (!Source) Source = GetComponent<RoyalHUD>();
+            if (Source) Source.SelectionChanged += OnSelectionChanged;
+        }
+        private void OnSelectionChanged(string id)
+        {
+            // An exact new selection needs an exact offer immediately. A
+            // quarter-second cached offer can belong to the previous target
+            // and leave an otherwise authorised world action untouchable.
+            nextRead = 0f;
+            lastProbeMismatch = "";
+        }
         private void OnDisable()
         {
+            if (Source) Source.SelectionChanged -= OnSelectionChanged;
             Visible(cardGroup, false, true);
             Visible(closeGroup, false, true);
             foreach (var t in timers.Values) Visible(t.Visibility, false, false);
@@ -306,6 +321,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 Visible(cardGroup, false, true);
                 return;
             }
+            // Force a fresh gateway projection for the selected target if
+            // the canonical button and cached status disagree, including
+            // just-finished tasks and resumed/offline operations.
+            if (Source.Building && Source.Building.Primary &&
+                Source.Building.Primary.Button &&
+                live.TryGetValue(id, out var cached))
+            {
+                bool canonical = Source.Building.Primary.Button.interactable &&
+                    Source.Building.Offer != null;
+                bool offered = cached.Action != null && !cached.OperationActive &&
+                    cached.Action.Enabled;
+                if (canonical != offered) live.Remove(id);
+            }
             // The canonical host may expose additional read-only world POIs
             // such as old-watch-ruin; no extra actions or state are invented.
             if (!live.TryGetValue(id, out var selected)) selected = ReadBuilding(id);
@@ -317,7 +345,11 @@ namespace Eldoria.UI.RoyalGold.V2
             var target = FindAnchor(id == "march-main" ? "barracks" : id);
             if (!CanProject(target, camera, safe, false, out var screen))
             {
+                // Never leave a stale enabled button on the canvas when the
+                // selection anchor is temporarily outside the camera.
+                actionButton.interactable = false;
                 Visible(cardGroup, false, true);
+                ProbeMismatch(id, value, "TARGET_NOT_PROJECTABLE");
                 return;
             }
             bool offered = value.Action != null && !value.OperationActive;
@@ -336,6 +368,7 @@ namespace Eldoria.UI.RoyalGold.V2
             actionButton.interactable = offered && value.Action.Enabled &&
                 Source.Building && Source.Building.Primary && Source.Building.Primary.Button &&
                 Source.Building.Primary.Button.interactable && Source.Building.Offer != null;
+            if (!actionButton.interactable) ProbeMismatch(id, value, "OFFER_DISABLED");
             cardButton.gameObject.SetActive(offered);
             float width = Mathf.Min(290f, safe.rect.width - 24f);
             float contentWidth = width - 24f;
@@ -372,6 +405,29 @@ namespace Eldoria.UI.RoyalGold.V2
         /// canonical offer. It calls RoyalHUD.SelectBuilding and is present
         /// next to the object card or its ongoing real timer, never globally.
         /// </summary>
+        // A diagnostic only for the project's existing disposable native QA.
+        // Do not log each frame, alter the offer or write any gameplay state.
+        private void ProbeMismatch(string id, RoyalBuilding value, string reason)
+        {
+#if UNITY_EDITOR
+            if (Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE") != "1") return;
+            var source = Source && Source.Building ? Source.Building : null;
+            bool canonical = source && source.Primary && source.Primary.Button &&
+                source.Primary.Button.interactable && source.Offer != null;
+            if (!canonical) return;
+            string signature = id + ":" + reason;
+            if (lastProbeMismatch == signature) return;
+            lastProbeMismatch = signature;
+            Debug.LogWarning("ELDORIA_V3_AUTHORITATIVE_OFFER_MISMATCH id=" + id +
+                " reason=" + reason + " cachedAction=" +
+                (value != null && value.Action != null ? value.Action.Kind : "none") +
+                " cachedEnabled=" +
+                (value != null && value.Action != null && value.Action.Enabled) +
+                " operationActive=" + (value != null && value.OperationActive) +
+                " canonicalEnabled=" + canonical);
+#endif
+        }
+
         private void RenderClose(bool blocked)
         {
             if (blocked || string.IsNullOrEmpty(Source.SelectedBuildingId))
