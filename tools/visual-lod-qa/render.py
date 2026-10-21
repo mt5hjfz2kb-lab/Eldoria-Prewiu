@@ -23,6 +23,7 @@ def args():
     p.add_argument("--lod-dir", required=True)
     p.add_argument("--out", required=True)
     p.add_argument("--size", type=int, default=640)
+    p.add_argument("--texture-variant", default="", help="Optional static extra LOD2 texture-only GLB candidate")
     result = p.parse_args(a)
     if result.size < 256 or result.size > 1024:
         raise ValueError("Invalid QA render size")
@@ -31,6 +32,8 @@ def args():
     for i in range(3):
         if not os.path.isfile(os.path.join(result.lod_dir, f"lod{i}.glb")):
             raise FileNotFoundError(f"lod{i}.glb")
+    if result.texture_variant and not os.path.isfile(result.texture_variant):
+        raise FileNotFoundError(result.texture_variant)
     os.makedirs(result.out, exist_ok=True)
     return result
 
@@ -137,8 +140,10 @@ def main():
         "strategic": (1.30, -1.35, 2.20),
     }
     outputs = []
-    for lod in range(3):
-        source_path = os.path.join(a.lod_dir, f"lod{lod}.glb")
+    models = [(str(lod), os.path.join(a.lod_dir, f"lod{lod}.glb")) for lod in range(3)]
+    if a.texture_variant:
+        models.append(("2_1k", a.texture_variant))
+    for lod, source_path in models:
         imported = import_asset(source_path)
         for label, axis in views.items():
             camera.location = center + Vector(axis).normalized() * diagonal * 2.7
@@ -170,6 +175,7 @@ def main():
         "visual_verdict": "REVIEW_REQUIRED",
         "mobile_device_profiled": False,
         "tripo_credits_used": 0,
+        "texture_variant_previewed": bool(a.texture_variant),
         "captures": outputs
     }
     with open(os.path.join(a.out, "render-evidence.json"), "w", encoding="utf-8") as f:
