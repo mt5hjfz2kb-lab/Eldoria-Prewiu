@@ -214,13 +214,87 @@ namespace Eldoria.ReferenceClean.Editor
         }
         [Serializable] public class Candidate
         {
-            public string source_scene_sha256, tool_sha256, method, world_ground_source;
+            public string source_scene_sha256, tool_sha256, method, world_ground_source, artist_plan_sha256;
             public string[] original_poi_ids, after_poi_ids, images, image_sha256;
             public int source_world_triangles, candidate_world_triangles, sampled_conifer_renderers, added_visual_only_forest_instances;
             public int source_height_resolution, candidate_height_resolution, changed_city_height_samples;
             public bool previous_scene_untouched, city_terrain_collider_unchanged, world_source_mesh_unchanged;
             public bool native_unity_ab, art_approved, physical_mobile_profiled, published;
         }
+
+        [Serializable] public class SculptParameters { public float x,z,radius_x,radius_z,height; }
+        [Serializable] public class SculptAction { public string type,target; public SculptParameters parameters; }
+        [Serializable] public class ArtistPlan {
+            public string source_scene_sha256; public bool qwen_artist_authored; public SculptAction[] planned_actions;
+        }
+        static ArtistPlan activeArtistPlan;
+        static string activeArtistPlanHash;
+        static void LoadArtistPlan(string sceneHash)
+        {
+            activeArtistPlan=null;activeArtistPlanHash="";
+            string path=Environment.GetEnvironmentVariable("VALORIA_GEOGRAPHY_PLAN");
+            if(string.IsNullOrEmpty(path))return;
+            Need(File.Exists(path),"Requested local artist plan missing");
+            var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(path));
+            Need(plan!=null&&plan.qwen_artist_authored&&plan.source_scene_sha256==sceneHash,
+                "Local artist decisions must match frozen actual scene");
+            Need(plan.planned_actions!=null&&plan.planned_actions.Length>=4&&plan.planned_actions.Length<=8,
+                "Expected four to eight bounded sculpt regions");
+            foreach(string target in new[]{"city","world"})
+                Need(plan.planned_actions.Count(a=>a.target==target)>=2&&
+                    plan.planned_actions.Count(a=>a.target==target)<=4,"Two to four regions per landscape");
+            foreach(var a in plan.planned_actions) {
+                Need(a.type=="sculpt_region"&&(a.target=="city"||a.target=="world")&&a.parameters!=null,
+                    "Only typed edits to existing terrain");
+                var q=a.parameters;bool city=a.target=="city";
+                Need(q.x>=(city?-80:895)&&q.x<=(city?80:1105)&&q.z>=(city?-75:-105)&&q.z<=(city?100:105)&&
+                    q.radius_x>=(city?15:22)&&q.radius_x<=(city?40:65)&&
+                    q.radius_z>=(city?18:25)&&q.radius_z<=(city?55:75)&&
+                    q.height>=(city?1.5f:5)&&q.height<=(city?4:16),"Artist region outside safe metric domain");
+            }
+            activeArtistPlan=plan;activeArtistPlanHash=Sha(path);
+        }
+        static float ArtistHeight(string target,float x,float z)
+        {
+            float value=0;
+            foreach(var a in activeArtistPlan.planned_actions.Where(a=>a.target==target)) {
+                var q=a.parameters;
+                value+=q.height*Mathf.Exp(-Mathf.Pow((x-q.x)/q.radius_x,2)-Mathf.Pow((z-q.z)/q.radius_z,2));
+            }
+            // Smooth, bounded height addition; no clipped plateau or new topology.
+            return target=="city"?5f*(1f-Mathf.Exp(-value/5f)):24f*(1f-Mathf.Exp(-value/24f));
+        }
+        static MeshRenderer[] CityDecorativeProps(Terrain terrain)
+        {
+            Vector3 lo=terrain.transform.position,hi=lo+terrain.terrainData.size;
+            return Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+                .Where(r=>{
+                    if(!r||!r.enabled||r.GetComponentInParent<Collider>()||
+                       r.GetComponentInParent<WorldHotspot>()||
+                       r.GetComponentsInChildren<Renderer>(true).Length!=1)return false;
+                    string n=r.name.ToLowerInvariant();
+                    bool natural=new[]{"pine","conifer","tree","rock","shrub","bush","grass","fern","ruin"}.Any(n.Contains);
+                    return natural&&r.bounds.size.x<28&&r.bounds.size.z<28&&
+                        r.bounds.center.x>lo.x&&r.bounds.center.x<hi.x&&r.bounds.center.z>lo.z&&r.bounds.center.z<hi.z;
+                }).ToArray();
+        }
+        static Dictionary<Transform,Vector3> SeatCityDecoration(Terrain terrain,TerrainData original,TerrainData candidate)
+        {
+            var moved=new Dictionary<Transform,Vector3>();
+            foreach(var r in CityDecorativeProps(terrain)) {
+                Vector3 center=r.bounds.center;
+                float u=(center.x-terrain.transform.position.x)/original.size.x;
+                float v=(center.z-terrain.transform.position.z)/original.size.z;
+                float delta=candidate.GetInterpolatedHeight(u,v)-original.GetInterpolatedHeight(u,v);
+                if(Mathf.Abs(delta)<.001f)continue;
+                moved[r.transform]=r.transform.position;
+                r.transform.position+=Vector3.up*delta;
+            }
+            foreach(var group in Object.FindObjectsByType<LODGroup>(FindObjectsSortMode.None))group.RecalculateBounds();
+            Debug.Log("VALORIA_GEOGRAPHY_CITY_DECORATION_SEATED "+moved.Count+" original visual props");
+            return moved;
+        }
+
         sealed class GeographicRoad
         {
             readonly float z0, z1;
@@ -347,9 +421,10 @@ namespace Eldoria.ReferenceClean.Editor
             authoredHeightSamples = 0;
             int hn = data.heightmapResolution;
             var heights = data.GetHeights(0, 0, hn, hn);
+            var movable = activeArtistPlan!=null ? new HashSet<MeshRenderer>(CityDecorativeProps(terrain)) : new HashSet<MeshRenderer>();
             var keepers = Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,
                     FindObjectsSortMode.None)
-                .Where(r => r != null && r.enabled && r.gameObject.activeSelf &&
+                .Where(r => r != null && r.enabled && r.gameObject.activeSelf && !movable.Contains(r) &&
                     r.bounds.size.x < 28 && r.bounds.size.z < 28 &&
                     r.bounds.center.x >= terrain.transform.position.x &&
                     r.bounds.center.x <= terrain.transform.position.x + data.size.x &&
@@ -410,7 +485,8 @@ namespace Eldoria.ReferenceClean.Editor
                         -Mathf.Pow((x + 57f) / 39f, 2f) -
                         Mathf.Pow((z + 57f) / 40f, 2f));
                     float grain = (Noise(x, z) - .5f) * .22f;
-                    float delta = (westMeadow + eastMeadow + southwestMeadow + grain) *
+                    float authoredHeight=activeArtistPlan!=null?ArtistHeight("city",x,z):westMeadow+eastMeadow+southwestMeadow+grain;
+                    float delta = authoredHeight *
                         smoothBorder * roadSafe * waterSafe * fortressSafe * sitesSafe;
                     if (delta < .012f) continue;
                     heights[iz, ix] = Mathf.Clamp01(heights[iz, ix] +
@@ -418,7 +494,7 @@ namespace Eldoria.ReferenceClean.Editor
                     maximumDelta = Mathf.Max(maximumDelta, delta);
                     authoredHeightSamples++;
                 }
-            Need(authoredHeightSamples > 1000 && maximumDelta <= 1.4f,
+            Need(authoredHeightSamples > 1000 && maximumDelta <= (activeArtistPlan!=null?5f:1.4f),
                 "Open meadow relief must remain bounded and visibly geometric");
             data.SetHeights(0, 0, heights);
             data.SyncHeightmap();
@@ -471,14 +547,15 @@ namespace Eldoria.ReferenceClean.Editor
         static Texture2D ReadableTexture(Texture texture)
         {
             if (!texture) return null;
-            var rt = RenderTexture.GetTemporary(512, 512, 0, RenderTextureFormat.ARGB32);
+            int resolution=Mathf.Min(2048,Mathf.Max(texture.width,texture.height));
+            var rt = RenderTexture.GetTemporary(resolution, resolution, 0, RenderTextureFormat.ARGB32);
             var previous = RenderTexture.active;
             try
             {
                 Graphics.Blit(texture, rt);
                 RenderTexture.active = rt;
-                var sample = new Texture2D(512, 512, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Repeat };
-                sample.ReadPixels(new Rect(0, 0, 512, 512), 0, 0);
+                var sample = new Texture2D(resolution, resolution, TextureFormat.RGBA32, false) { wrapMode = TextureWrapMode.Repeat };
+                sample.ReadPixels(new Rect(0, 0, resolution, resolution), 0, 0);
                 sample.Apply();
                 return sample;
             }
@@ -508,6 +585,12 @@ namespace Eldoria.ReferenceClean.Editor
                 .Select(rr => new Vector2(rr.bounds.center.x, rr.bounds.center.z))
                 .Distinct().ToArray();
             Need(existingTreeBases.Length > 12, "Missing retained forest anchors for 4X terrain contact protection");
+            var fixedProps=host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(rr=>rr.enabled&&rr.bounds.size.x<65&&rr.bounds.size.z<65&&
+                    rr.bounds.center.x>b.min.x&&rr.bounds.center.x<b.max.x&&
+                    rr.bounds.center.z>b.min.z&&rr.bounds.center.z<b.max.z)
+                .Select(rr=>new Vector3(rr.bounds.center.x,rr.bounds.center.z,
+                    Mathf.Max(rr.bounds.extents.x,rr.bounds.extents.z))).ToArray();
             for (int i = 0; i < v.Length; i++)
             {
                 Vector3 world = source.transform.TransformPoint(v[i]);
@@ -547,8 +630,16 @@ namespace Eldoria.ReferenceClean.Editor
                     nearestTrunkSqr = Mathf.Min(nearestTrunkSqr, dx * dx + dz * dz);
                 }
                 float trunkSafe = Smooth(2.5f, 8f, Mathf.Sqrt(nearestTrunkSqr));
-                float deltaY = edgeProtect * anchor * rockProtect * trunkSafe *
-                    (quarryFoothill + northForestRise + corruptionValley + reliefGrain);
+                if(activeArtistPlan!=null) {
+                    float propDistance=float.PositiveInfinity;
+                    foreach(var prop in fixedProps)
+                        propDistance=Mathf.Min(propDistance,Vector2.Distance(
+                            new Vector2(world.x,world.z),new Vector2(prop.x,prop.y))-prop.z);
+                    trunkSafe=Mathf.Min(trunkSafe,Smooth(3f,18f,propDistance));
+                }
+                float geography=activeArtistPlan!=null?ArtistHeight("world",world.x,world.z):
+                    quarryFoothill+northForestRise+corruptionValley+reliefGrain;
+                float deltaY = edgeProtect * anchor * rockProtect * trunkSafe * geography;
                 Vector3 altered = world + Vector3.up * deltaY;
                 warped[i] = source.transform.InverseTransformPoint(altered);
             }
@@ -625,7 +716,7 @@ namespace Eldoria.ReferenceClean.Editor
             Texture2D sample = ReadableTexture(diffuse);
             Need(sample != null, "Original baked World4X roads/corruption albedo missing");
             Vector3[] atlas = OriginalUvWorldMapping(source, existing);
-            const int size = 1024;
+            const int size = 2048;
             var result = new Texture2D(size, size, TextureFormat.RGB24, true, false)
             {
                 name = "Region1 continuous soil / forest / quarry / corrupted ecology",
@@ -898,10 +989,12 @@ namespace Eldoria.ReferenceClean.Editor
             Renderer oldRenderer = null;
             bool oldEnabled = false;
             bool saved = false;
+            var movedCityDecoration=new Dictionary<Transform,Vector3>();
             try
             {
                 Directory.CreateDirectory(Evidence);
                 string sceneHash = Sha(ScenePath);
+                LoadArtistPlan(sceneHash);
                 string toolHash = Sha("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs");
                 var surveyFile = Path.Combine(Evidence, "survey.json");
                 Need(File.Exists(surveyFile), "Real current Unity source survey required");
@@ -947,6 +1040,7 @@ namespace Eldoria.ReferenceClean.Editor
                 CityViews(city, "before");
                 WorldViews(host, "before", true);
                 newCity = AuthorCityTerrain(city, terrain, out int cityHeightChanges);
+                if(activeArtistPlan!=null)movedCityDecoration=SeatCityDecoration(terrain,originalTerrain,newCity);
                 worldMesh = AuthorWorldMesh(host, ground, Hotspots(host));
                 forestVisual = ExpandExistingForest(host, ground, worldMesh, out int forestAdditions);
                 albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
@@ -998,7 +1092,7 @@ namespace Eldoria.ReferenceClean.Editor
                     "Native A/B camera pose changed; no artistic acceptance possible");
                 Candidate candidate = new Candidate
                 {
-                    source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
+                    source_scene_sha256 = sceneHash, tool_sha256 = toolHash, artist_plan_sha256=activeArtistPlanHash,
                     method = "Open-meadow TerrainData sculpt with synced trial physics; Region1 retained-tree roots anchored to original ground, mature forest additions seated on the candidate visual macroterrain; original atlas/POIs intact",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
@@ -1055,6 +1149,7 @@ namespace Eldoria.ReferenceClean.Editor
                 // Never allow a failed trial to mutate the native source scene.
                 if (!saved)
                 {
+                    foreach(var entry in movedCityDecoration)if(entry.Key)entry.Key.position=entry.Value;
                     if (terrain && originalTerrain) {
                         var originalPhysics = terrain.GetComponent<TerrainCollider>();
                         if (originalPhysics) originalPhysics.terrainData = originalTerrain;
