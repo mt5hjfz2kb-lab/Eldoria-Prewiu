@@ -50,7 +50,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private void LateUpdate()
         {
-            if (!Application.isPlaying || !Source) return;
+            if (!UnityEngine.Application.isPlaying || !Source) return;
             if (!Source.NarrativeOpen)
             {
                 // Do not leave Orín's supernatural treatment over normal gameplay.

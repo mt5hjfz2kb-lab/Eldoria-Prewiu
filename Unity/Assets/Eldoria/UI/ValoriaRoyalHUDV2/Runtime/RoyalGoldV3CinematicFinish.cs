@@ -136,7 +136,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
         public void SynchronizeNow()
         {
-            if (!Application.isPlaying || !Source) return;
+            if (!UnityEngine.Application.isPlaying || !Source) return;
             if (!Source.NarrativeOpen)
             {
                 Restore();

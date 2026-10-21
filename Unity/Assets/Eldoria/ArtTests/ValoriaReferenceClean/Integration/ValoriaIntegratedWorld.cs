@@ -81,7 +81,13 @@ namespace Eldoria.ReferenceClean {
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
   }
-  void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);}
+  void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);
+    // Rebind to the one canonical gateway after resets; never create another session.
+    var management=Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
+    management.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,()=>city.Presenter.RefreshState());
+    management.ReturnToCity=()=>{if(InWorld)TrySetWorld(false);};
+   }
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
    if(!Ready)return;
@@ -139,7 +145,11 @@ namespace Eldoria.ReferenceClean {
   public void Pan(Vector2 delta){if(!InWorld){city.Pan(delta);return;}var p=new Vector2(Screen.width*.5f,Screen.height*.5f);if(WorldNavigation.GroundPoint(p,out var a)&&WorldNavigation.GroundPoint(p-delta,out var b))WorldNavigation.PanTo(WorldNavigation.target+b-a);}
   public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
   public WorldHotspot FindTarget(string id)=>(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None)).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
-  void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;observedFocusStage=FocusStage(id);StartCoroutine(FocusAfterLayout(id,version));}
+  void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;
+    // A management destination is not a request to move the world camera.
+    var management=Hud?Hud.GetComponent<RoyalGoldV3ManagementScreens>():null;
+    if(management&&management.IsOpen)return;
+    observedFocusStage=FocusStage(id);StartCoroutine(FocusAfterLayout(id,version));}
   int FocusStage(string id){
    // These are the visual states already applied to the real scene. A completed
    // model can need a different frame even when the landscape HUD rect is unchanged.

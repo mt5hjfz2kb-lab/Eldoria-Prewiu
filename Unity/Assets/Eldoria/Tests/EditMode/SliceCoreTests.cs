@@ -309,7 +309,8 @@ namespace Eldoria.Tests
                 g=new LocalGateway(clock,store);
             }
             Assert.That(g.Execute(Cmd(g,"e2e-recruit","Recruit","archer:t1")).Ok,Is.True);
-            clock.Add(SliceRules.RecruitSeconds);
+            // OWNER_I_II now uses proportional recruit pacing; QA_FAST retains its accelerated profile.
+            clock.Add(SliceRules.RecruitSecondsFor(SliceRules.RecruitArchers));
             g=new LocalGateway(clock,store);
             Assert.That(g.Snapshot().ChapterProgress.TrainedArchers,
                 Is.GreaterThanOrEqualTo(SliceContentProfiles.Active.Chapter2TrainArchers));

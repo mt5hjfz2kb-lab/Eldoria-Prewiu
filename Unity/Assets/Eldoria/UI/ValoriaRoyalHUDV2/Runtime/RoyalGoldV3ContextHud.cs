@@ -220,7 +220,7 @@ namespace Eldoria.UI.RoyalGold.V2
         /// capture resize; ordinary frames also call this from LateUpdate.</summary>
         public void SynchronizeNow()
         {
-            if (!Application.isPlaying || !IsConfigured || !Source) return;
+            if (!UnityEngine.Application.isPlaying || !IsConfigured || !Source) return;
             EnsureView();
             if (!ready || safe.rect.width < 200 || safe.rect.height < 260) return;
             if (Time.unscaledTime >= nextRead)
@@ -243,6 +243,22 @@ namespace Eldoria.UI.RoyalGold.V2
             RenderSelection(camera, blocked);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
             RenderClose(blocked);
+
+            // A live V3 selection button can retain Graphic.depth == -1 after
+            // a native 640x480 / portrait Canvas resize, despite remaining
+            // interactable. The parent card then receives the raycast instead
+            // of the real offer. Re-register the active graphical hierarchy
+            // on that canvas; no gameplay, focus, or input-handler replacement.
+            bool cardVisible = cardGroup && cardGroup.alpha > .5f &&
+                cardButton && cardButton.gameObject.activeInHierarchy;
+            var offerGraphic = cardVisible
+                ? cardButton.GetComponent<RoyalGoldV2FrameGraphic>() : null;
+            bool staleOfferGraphic = offerGraphic && offerGraphic.depth < 0;
+            if (cardVisible && (resized || staleOfferGraphic))
+            {
+                RebindGraphics(card);
+                Canvas.ForceUpdateCanvases();
+            }
             if (resized)
             {
                 // Dynamic timer graphics were registered on the previous

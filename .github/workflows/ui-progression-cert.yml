@@ -16,6 +16,7 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/**'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs'
   workflow_dispatch:
 
@@ -23,8 +24,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: eldoria-ui-progression-cert
-  cancel-in-progress: true
+  # Exact Unity certification must finish once started; branch updates should
+  # replace pending candidates rather than kill a running Windows Editor.
+  group: eldoria-ui-progression-cert-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
 
 jobs:
   certify:
@@ -103,7 +106,7 @@ jobs:
           # Read current main, never a stale PR merge snapshot's old reservation.
           $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-contextual-20261021' -and $_.status -eq 'active'})
+          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
           # An active UI owner may validate its own reservation. With no
           # reservations, preserve the existing ordinary progression CI path.
           # Never couple future tests to one temporary executor's identity.
@@ -233,6 +236,8 @@ jobs:
             'integration-world-portrait.png',
             'integration-bastion-upgrade.png',
             'integration-training-portrait.png',
+            'integration-march-landscape.png',
+            'integration-march-portrait.png',
             'integration-chapter2-complete.png',
             'integration-result.json'
           )){
@@ -250,8 +255,10 @@ jobs:
             'integration-construction-landscape.png',
             'integration-construction-portrait.png',
             'integration-bastion-upgrade.png',
-            'integration-training.png',
-            'integration-training-portrait.png',
+            # Training deliberately leaves the city for an opaque management
+            # destination. Do NOT test the city viewport behind that screen:
+            # the correct acceptance gate is native PlayMode full-screen,
+            # topmost raycast, camera restoration and screenshot presence.
             'integration-art-forest-valoria-landscape.png',
             'integration-art-forest-valoria-portrait.png'
           )
@@ -295,6 +302,18 @@ jobs:
             if($gain -lt .08){
               throw "V3 did not reclaim at least 8 percentage points of real free scene: $capture"
             }
+          }
+          # Independent destinations have no visible city viewport by design;
+          # verify actual native screenshots instead of pretending camera space
+          # is visible behind their opaque artwork.
+          foreach($capture in @('integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
+            $path=Join-Path $e $capture
+            if(-not(Test-Path $path)){throw "Missing genuine full-screen management capture: $capture"}
+            if((Get-Item $path).Length -lt 4096){throw "Management capture too small: $capture"}
+            if(@($result.framing | Where-Object {$_.capture -eq $capture}).Count -ne 0){
+              throw "Management screen was wrongly certified as exposed-city camera: $capture"
+            }
+            Write-Host "ELDORIA_V3_NATIVE_MANAGEMENT_SCREEN=$capture"
           }
           Write-Host "ELDORIA_V3_REAL_NATIVE_I_II_PROBE=$($result.status)"
           Write-Host "ELDORIA_V3_CHECKS=$(@($result.checks).Count) CAPTURES=$(@(Get-ChildItem $e -Filter 'integration*.png').Count)"

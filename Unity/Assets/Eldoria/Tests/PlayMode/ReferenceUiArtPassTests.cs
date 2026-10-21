@@ -105,12 +105,52 @@ namespace Eldoria.Tests
                 for(int step=0;step<40;step++)
                 {
                     var state=gateway.Snapshot();
+                    // An actual paid training batch temporarily disables the
+                    // guided primary CTA. Do not demand another purchase during
+                    // the countdown: finish this existing job with the disposable
+                    // test clock, then let the real gateway deliver it once.
+                    if(state.RecruitmentCompletesUtcTicks>clock.UtcTicks)
+                    {
+                        Assert.That(state.PendingRecruitArchers,Is.GreaterThan(0));
+                        Assert.That(state.Available.ArcherT1,Is.GreaterThanOrEqualTo(0));
+                        clock.UtcTicks=state.RecruitmentCompletesUtcTicks+
+                            System.TimeSpan.FromSeconds(1).Ticks;
+                        gateway.Advance();
+                        typeof(Eldoria.Presentation.SlicePresenter).
+                            GetMethod("Refresh",flags).Invoke(presenter,null);
+                        yield return null;
+                        continue;
+                    }
                     if(Eldoria.Domain.SliceRules.CurrentObjectiveKey(state)=="b2.complete"&&
                        state.March.Phase=="idle"&&SceneManager.GetActiveScene().name=="Valoria")break;
                     var primaryObject=GameObject.Find("CONTINUAR");
                     Assert.That(primaryObject,Is.Not.Null,"Guided HUD missing at "+Eldoria.Domain.SliceRules.CurrentObjectiveKey(state));
                     var primary=primaryObject.GetComponent<Button>();
-                    Assert.That(primary.interactable,Is.True,"Guided action stalled at "+Eldoria.Domain.SliceRules.CurrentObjectiveKey(state));
+                    // In OWNER_I_II the training batch takes 10 real minutes.
+                    // A disabled CTA while a real timer/march is pending means
+                    // the clock must be advanced, not another purchase emitted.
+                    if(!primary.interactable)
+                    {
+                        long deadline=0;
+                        if(state.RecruitmentCompletesUtcTicks>0)deadline=state.RecruitmentCompletesUtcTicks;
+                        else if(state.March.Phase!="idle")deadline=state.March.PhaseEndsUtcTicks;
+                        else if(state.BuildingCompletesUtcTicks>0)deadline=state.BuildingCompletesUtcTicks;
+                        else if(state.BastionUpgradeCompletesUtcTicks>0)deadline=state.BastionUpgradeCompletesUtcTicks;
+                        if(deadline>0)
+                        {
+                            clock.UtcTicks=System.Math.Max(clock.UtcTicks,deadline)+System.TimeSpan.FromSeconds(1).Ticks;
+                            gateway.Advance();
+                            typeof(Eldoria.Presentation.SlicePresenter).
+                                GetMethod("Refresh",flags).Invoke(presenter,null);
+                            yield return null;
+                            continue;
+                        }
+                    }
+                    Assert.That(primary.interactable,Is.True,
+                        "Guided action stalled at "+Eldoria.Domain.SliceRules.CurrentObjectiveKey(state)+
+                        " wood="+state.Resources.Wood+" stone="+state.Resources.Stone+
+                        " marching="+state.March.Phase+" recruits="+state.PendingRecruitArchers+
+                        " recruitDue="+state.RecruitmentCompletesUtcTicks+" clock="+clock.UtcTicks);
                     primary.onClick.Invoke();
                     yield return null;
                     var panel=GameObject.Find("Building interaction panel");

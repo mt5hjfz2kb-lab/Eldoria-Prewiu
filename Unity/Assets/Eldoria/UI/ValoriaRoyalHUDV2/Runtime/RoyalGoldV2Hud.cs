@@ -78,7 +78,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private void Awake()
         {
             if (!Source) Source = GetComponent<RoyalHUD>();
-            if (Application.isPlaying) EnsureView();
+            if (UnityEngine.Application.isPlaying) EnsureView();
         }
 
         private void OnEnable()
@@ -597,7 +597,7 @@ namespace Eldoria.UI.RoyalGold.V2
         /// changes. Identical to the normal Unity LateUpdate rendering path.</summary>
         public void SynchronizeNow()
         {
-            if (!Application.isPlaying) return;
+            if (!UnityEngine.Application.isPlaying) return;
             EnsureView();
             if (!ready) return;
             bool resized = !hasGeometry || Mathf.Abs(safe.rect.width - lastWidth) > .5f ||

@@ -92,7 +92,7 @@ namespace Eldoria.UI.RoyalGold {
    }else if(id=="barracks"){
     b.Name=L(en,"Cuartel","Barracks");b.Level=s.BarracksLevel;b.Function=L(en,"Recluta y prepara a tus arqueros.","Recruit and prepare your archers.");
     if(b.Level==0){wood=SliceRules.BarracksWoodCost;stone=SliceRules.BarracksStoneCost;duration=SliceRules.BarracksBuildSeconds;command="Build";action=L(en,"Construir","Build");if(s.BastionLevel<2)reason=L(en,"Requiere Bastión II.","Requires Bastion II.");else if(constructionBusy)reason=L(en,"Otra obra está en curso.","Another construction is in progress.");}
-    else{wood=SliceRules.RecruitWoodCost;stone=SliceRules.RecruitStoneCost;duration=SliceRules.RecruitSeconds;command="Recruit";target="archer:t1";action=L(en,"Entrenar ","Train ")+SliceRules.RecruitArchers+L(en," arqueros"," archers");deadline=s.RecruitmentCompletesUtcTicks;}
+    else{int count=s.RecruitmentCompletesUtcTicks>0&&s.PendingRecruitArchers>0?s.PendingRecruitArchers:SliceRules.RecruitArchers;wood=SliceRules.RecruitWoodCostFor(count);stone=SliceRules.RecruitStoneCostFor(count);duration=SliceRules.RecruitSecondsFor(count);command="Recruit";target="archer:t1";action=L(en,"Entrenar ","Train ")+SliceRules.RecruitArchers+L(en," arqueros"," archers");deadline=s.RecruitmentCompletesUtcTicks;}
     if((s.BuildingTaskId??"").StartsWith("barracks:",StringComparison.Ordinal))deadline=s.BuildingCompletesUtcTicks;
    }else if(id=="bastion"){
     b.Name=L(en,"Bastión","Bastion");b.Level=s.BastionLevel;b.Function=L(en,"Centro de gobierno y progreso de Valoria.","Valoria's centre of government and progression.");
