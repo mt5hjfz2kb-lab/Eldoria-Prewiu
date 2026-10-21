@@ -650,7 +650,7 @@
     {
       "id": "eldoria-ui-v3-contextual-20261021",
       "title": "UI V3 contextual — existing PR #83 (registry reconciliation)",
-      "owner": "chatgpt-eldoria-ui-v3-takeover-20261021",
+      "owner": "codex-ui-v3-completion-takeover-20261021",
       "owner_reference": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/83",
       "branch": "main",
       "status": "active",
@@ -693,8 +693,16 @@
         "source_branch": "ui/eldoria-v3-cinematic-art-20261021",
         "pr": 87,
         "stale_candidate_pr": 85,
-        "writer_exclusivity": "Previous UI chat must stop new writes and respect this recorded owner takeover; repository registry does not remotely stop its session.",
+        "writer_exclusivity": "Current owner request transfers UI writes to codex-ui-v3-completion-takeover-20261021; earlier UI executors must stop new writes. Registry cannot remotely stop chat sessions.",
         "windows_lease": "Wait for explicit Valoria art runner release; do not cancel others."
+      },
+      "previous_executor": "chatgpt-eldoria-ui-v3-takeover-20261021",
+      "takeover_at": "2026-10-21T12:36:53.923Z",
+      "takeover_authorization": "Owner explicitly asks this chat to assume interface work and continue to complete delivery without intermediate stopping.",
+      "delivery_definition": {
+        "deliverable": "Interfaz V3 aprobada integrada y prueba restringida jugable actualizada",
+        "evidence": "Unity Edit/Play, capturas reales horizontal/vertical, flujo I-II y persistencia; QA WebGL exacto y entrega verificada",
+        "handoff": "Enlace jugable, SHA y evidencias; conservar arte y guardados"
       }
     }
   ],
