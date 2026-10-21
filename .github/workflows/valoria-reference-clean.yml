@@ -266,6 +266,9 @@ jobs:
           if($req.world_contact -and $req.stage -eq 'world_art_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Trial'}
           if($req.world_contact -and $req.stage -eq 'world_art_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Integrate'}
           if($req.stage -eq 'world_art_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Survey'}
+          if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
+          if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
+          if($req.stage -eq 'geography_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'architecture_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Survey'}
           if($req.terrain_polish){$env:VALORIA_TERRAIN_POLISH='1'}
           if($req.stage -eq 'terrain_bank_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainBankAuthoring.Survey'}
@@ -471,7 +474,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui','experience_finish','experience_validate','visual_leap','owner_city_cliffs_probe','city_bank_meadow_trial','terrain_bank_survey','terrain_bank_trial','terrain_bank_integrate','architecture_survey','architecture_trial','architecture_integrate','world_art_survey','world_art_trial','world_art_integrate','final_environment_trial','final_environment_integrate')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui','experience_finish','experience_validate','visual_leap','owner_city_cliffs_probe','city_bank_meadow_trial','terrain_bank_survey','terrain_bank_trial','terrain_bank_integrate','architecture_survey','architecture_trial','architecture_integrate','world_art_survey','world_art_trial','world_art_integrate','geography_survey','geography_trial','geography_integrate','final_environment_trial','final_environment_integrate')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
           if($req.stage -eq 'web_playtest'){$args+=@('-buildTarget','WebGL')}
 
@@ -718,6 +721,18 @@ jobs:
             valoria-layered-source/docs/evidence/valoria-reference-clean/terrain-polish218/integrated.json
           if-no-files-found: warn
           retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: always() && (steps.native_stage.outputs.stage == 'geography_survey' || steps.native_stage.outputs.stage == 'geography_trial' || steps.native_stage.outputs.stage == 'geography_integrate')
+        with:
+          name: valoria-geography-real-unity-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/geography-v1/*.png
+            valoria-layered-source/docs/evidence/valoria-reference-clean/geography-v1/*.json
+            valoria-layered-source/docs/evidence/valoria-reference-clean/native-unity.log
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
+
       # Compact visual evidence for the REAL owner-facing uGUI V2. The legacy
       # review artifact carries nearly a gigabyte of old Blender/source files
       # and exceeds connector limits; retain it unchanged, add PNGs separately.
@@ -819,7 +834,7 @@ jobs:
           if-no-files-found: warn
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest'
+        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
