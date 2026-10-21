@@ -101,6 +101,11 @@ async function verifyExistingQwenContract(id,kind,{compact=false,invalidFirst=fa
     assert.match(prompt,/Existing|existing/);
     if(kind==='creature'){
       assert.match(prompt,/CREATURE ART:/);
+      // The actual 2B null delta and whole-animal shift must both reach
+      // the artist before any subsequent inference (including compact mode).
+      assert.ok(fs.readFileSync(inventory,'utf8').length <= 3200);
+      assert.match(prompt,/ART_REJECTED_GLOBAL_TRANSLATION_LIKE/);
+      assert.match(prompt,/QWEN_PLAN_REJECTED_NON_EXECUTABLE/);
       if(realContext){
         const raw=fs.readFileSync(realContext);
         const actual=JSON.parse(raw);
