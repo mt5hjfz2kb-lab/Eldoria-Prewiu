@@ -16,6 +16,7 @@ function argsToMap(list){
   const key=list[i++];
   assert(!['--inventory','--endpoint','--failed-plan','--failed-review'].includes(key),'Use canonical memory inventory; complex prior-failure inputs must stay in their owning workflow');
   assert(!(key in result),'Duplicate Qwen option '+key);
+  if(key==='--cpu-compact'){result[key]=true;i--;continue;}
   result[key]=list[i];
  }
  return result;
