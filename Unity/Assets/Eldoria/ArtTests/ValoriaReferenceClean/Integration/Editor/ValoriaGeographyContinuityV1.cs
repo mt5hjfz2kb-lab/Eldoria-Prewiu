@@ -361,6 +361,16 @@ namespace Eldoria.ReferenceClean.Editor
                         if (distance < 11f)
                             sitesSafe = Mathf.Min(sitesSafe, Smooth(4.5f, 11f, distance));
                     }
+                    // Protect the exact complete footprints of the sawmill and
+                    // barracks even when they are locked/inactive at Bastion I.
+                    // Parent inactive states must not make foundations float.
+                    foreach (var footprint in buildings)
+                    {
+                        float dx = Mathf.Max(Mathf.Abs(x - footprint.center.x) - footprint.extents.x, 0f);
+                        float dz = Mathf.Max(Mathf.Abs(z - footprint.center.z) - footprint.extents.z, 0f);
+                        sitesSafe = Mathf.Min(sitesSafe,
+                            Smooth(4f, 12f, Mathf.Sqrt(dx * dx + dz * dz)));
+                    }
                     float westMeadow = 1.15f * Mathf.Exp(
                         -Mathf.Pow((x + 51f) / 32f, 2f) -
                         Mathf.Pow((z - 52f) / 55f, 2f));
