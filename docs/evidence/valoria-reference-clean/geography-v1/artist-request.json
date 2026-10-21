@@ -129,9 +129,9 @@
       "physical_mobile_tested": false
     },
     "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
-    "native_source_run": 39658026450,
-    "review": "Native264 changed38548 city samples but no convincing visible city relief; world still a flat lawn board. Forest additions alone did not solve composition. Change the terrain spatial composition, not lighting, camera, buildings, fog, rectangular plots or painted spots.",
-    "brief": "Images are actual unchanged cityII and ENTIRE region. Choose 2-4 connected broad sculpted meadow forms for city and 2-4 stronger regional hills for world. This is a typed Unity terrain tool of the SAME artist: X/Z horizontal,Y up. Each sculpt_region adds height*exp(-((x-centerX)/radius_x)^2-((z-centerZ)/radius_z)^2). Choose exact centres/radii/heights from the images and measured coordinates, NOT random noise. City screenshot sees castle near(0,30), main road alongX0, river nearZ-23, sawmill west and barracks east. Put visible shoulders on either side of retained architecture. World empty north/west/south regions need a coherent regional silhouette and connected geology; forest(1065,42),city(1018,30),quarry(1064,-33),corrupt enemy(933,-23). Avoid lifting under POIs or existing quarry rocks. Preserve exact UV/roads, gameplay anchors and original mesh topology. Fixed implementation keeps road/river/foundations/border safe; decorative city foliage and rocks may follow the new terrain vertically, with gameplay colliders left unchanged. World retains all prop contact with broad keepouts. No new geometry/assets/buildings, no budget cost, no self-approval. These parameters drive real native vertices, then matched Unity images decide acceptance.",
+    "native_source_run": 39661331858,
+    "review": "Image1 is unchanged city source. Image2 shows REJECTED native265 world candidate: broad hill centered on city/quarry creates deep unnatural ring-shaped craters where fixed targets are protected. Do not repeat central hill x1000,z0 or quarry-centered hill. City foliage also needs complete LOD-root seating, now corrected in implementation.",
+    "brief": "Author a new spatial composition using COMPACT finite-footprint landforms instead of infinite Gaussian tails. Each action adds height*max(0,1-r2)^3 where r2=((x-centerX)/radius_x)^2+((z-centerZ)/radius_z)^2. Outside ellipse ZERO height change. Select hills in EMPTY regions so fixed city, quarry, ruin, enemy and forest stay on natural open valleys, NEVER at the bottom of ring-shaped bowls. Candidate areas: northwest x925..965 z65..100, north x995..1035 z85..105, southwest x910..950 z-100..-75, south x990..1020 z-105..-85; choose coherent 3-4 regional forms and exact radii/heights from real images. Existing POIs forest(1065,42),city(1018,30),quarry(1064.5,-32.9),enemy(933,-23),(926,-27),ruin(997,-34). Validator requires total UNMASKED added height at every POI <=0.6m; do not rely on protected holes to fix overlapping hills. Use 2-4 city shoulders visibly outside castle footprint: west/east meadows near X+-50,Z35..70; castle(0,30),roadX0,riverZ-23. Preserve roads, UV, architecture, camera, gameplay anchors, topology and saves. Complete decorative city LOD roots follow terrain once without changing LOD size. No new buildings, plots, assets or spending. Typed parameters execute real native vertices; actual captures determine acceptance.",
     "strict_bounds": "CITY x[-80,80],z[-75,100],radius_x[15,40],radius_z[18,55],height[1.5,4]. WORLD x[895,1105],z[-105,105],radius_x[22,65],radius_z[25,75],height[5,16]. Exactly2-4 actions per target. Height is metres positive. 4-8 actions total. Meaningful short rationale each. Do not output source-space Blender coordinates."
   },
   "schema": {
@@ -249,11 +249,11 @@
   "images": [
     {
       "name": "before-city-II-wide.png",
-      "sha256": "b0452915eb773be9060d899fb1c5fbe37a2280e46b0b0fc0a017d0facdb64e54"
+      "sha256": "66a9463a0cfcec2ce1d540a13a89093d516760708ece3739b04fa6bf5f23463e"
     },
     {
-      "name": "before-world-REGION1-ENTIRE-2048x1152.png",
-      "sha256": "58255a0c06e92d5441c37849b4713f94a4bdd10f1ac1059b5cb4773b10bbd827"
+      "name": "after-world-REGION1-ENTIRE-2048x1152.png",
+      "sha256": "dd6b118d8b53d9dd5f0bcd63d7993e356ba342fb4c393351edae39585b905e4b"
     }
   ],
   "model": "qwen3-vl:8b-instruct-q4_K_M"

@@ -1,66 +1,67 @@
 {
-  "observed_defect": "City terrain lacks sculpted relief and regional geology, causing flat, unconvincing composition despite existing architecture.",
-  "design_intent": "Create 2-4 connected sculpted meadow forms for city and 2-4 stronger regional hills for world using terrain sculpting, preserving gameplay anchors and original mesh topology.",
+  "observed_defect": "City terrain lacks sculpted shoulders and world hills exceed height limits",
+  "design_intent": "Add 2-4 compact city shoulders and cap world hills to 16m max",
   "asset_decision": "MODIFY",
-  "reason_for_new_geometry": "The current terrain is a flat lawn board; sculpting will establish visual hierarchy, ground contact, and regional silhouette without adding new assets or altering gameplay.",
+  "reason_for_new_geometry": "City needs visible terrain continuity; world hills must comply with validation bounds",
   "planned_actions": [
     {
-      "id": "city_meadow_1",
+      "id": "city-shoulder-west",
       "type": "sculpt_region",
       "target": "city",
-      "rationale": "Establish primary city meadow form near castle and main road.",
+      "rationale": "Add visible shoulder for west meadow",
       "parameters": {
-        "x": 0.0,
-        "z": 30.0,
-        "radius_x": 40.0,
-        "radius_z": 55.0,
-        "height": 4.0
+        "x": -50,
+        "z": 50,
+        "radius_x": 30,
+        "radius_z": 35,
+        "height": 3.5
       }
     },
     {
-      "id": "city_meadow_2",
+      "id": "city-shoulder-east",
       "type": "sculpt_region",
       "target": "city",
-      "rationale": "Add secondary meadow form to balance composition and support river approach.",
+      "rationale": "Add visible shoulder for east meadow",
       "parameters": {
-        "x": -20.0,
-        "z": 60.0,
-        "radius_x": 35.0,
-        "radius_z": 45.0,
-        "height": 3.0
+        "x": 50,
+        "z": 50,
+        "radius_x": 30,
+        "radius_z": 35,
+        "height": 3.5
       }
     },
     {
-      "id": "world_hill_1",
+      "id": "world-hill-northwest",
       "type": "sculpt_region",
       "target": "world",
-      "rationale": "Create dominant regional hill to anchor world north of city.",
+      "rationale": "Cap hill height to 16m in northwest",
       "parameters": {
-        "x": 1000.0,
-        "z": 0.0,
-        "radius_x": 65.0,
-        "radius_z": 75.0,
-        "height": 16.0
+        "x": 940,
+        "z": 75,
+        "radius_x": 30,
+        "radius_z": 35,
+        "height": 16
       }
     },
     {
-      "id": "world_hill_2",
+      "id": "world-hill-southwest",
       "type": "sculpt_region",
       "target": "world",
-      "rationale": "Add secondary hill to support quarry and forest regions.",
+      "rationale": "Cap hill height to 16m in southwest",
       "parameters": {
-        "x": 1060.0,
-        "z": -30.0,
-        "radius_x": 50.0,
-        "radius_z": 60.0,
-        "height": 12.0
+        "x": 930,
+        "z": -80,
+        "radius_x": 30,
+        "radius_z": 35,
+        "height": 16
       }
     }
   ],
-  "expected_visual_difference": "Visible sculpted meadow forms in city and stronger regional hills in world, creating coherent silhouette and ground contact without altering architecture or gameplay anchors.",
-  "mobile_risks": "Low; sculpting is vertex-level and does not add new geometry or assets. Rendering cost remains minimal as no new materials or lights are introduced.",
+  "expected_visual_difference": "City shoulders will appear as gentle slopes; world hills will be capped at 16m, eliminating unnatural ring-shaped craters",
+  "mobile_risks": "Minimal risk; height changes are within validated bounds and localized to avoid excessive vertex count",
+  "sculpt_kernel": "compact_cubic_v2",
   "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
-  "source_run": 39658026450,
+  "source_run": 39661331858,
   "qwen_artist_authored": true,
   "art_approved": false
 }
