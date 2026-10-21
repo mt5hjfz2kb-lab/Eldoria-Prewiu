@@ -41,7 +41,7 @@ jobs:
 
       - name: Test fail-closed zero-credit protection (no API credentials)
         shell: bash
-        run: node --test tools/tripo-art-brain/preflight.test.mjs
+        run: node --test tools/tripo-art-brain/*.test.mjs
 
       - name: Audit immutable GLB originals, optimizations and genuine Unity QA
         shell: bash
@@ -51,6 +51,9 @@ jobs:
           for id in spawnling boar focus; do
             node tools/tripo-art-brain/preflight.mjs prepare "$id" --out "$OUT/$id"
             node tools/plan-art-production.mjs "$OUT/$id/art-production-request.json" "$OUT/$id/canonical-planner.json" > "$OUT/$id/planner-console.txt"
+          done
+          for id in spawnling boar; do
+            node tools/tripo-art-brain/rig-check-v3.mjs "$id" --dry-run > "$OUT/$id/free-rig-check-dry-run.json"
           done
 
       - name: Verify current Qwen artist accepts this context without model inference
