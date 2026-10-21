@@ -20,8 +20,26 @@ jobs:
       run:
         shell: powershell
     steps:
+      - name: Expose existing GitHub Desktop Git before large Unity checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName 'resources\app\git\cmd\git.exe' } |
+              Where-Object { Test-Path $_ } | Select-Object -First 1
+            if(-not $candidate){throw 'Required existing GitHub Desktop Git unavailable; avoid automatic multi-GB REST archive fallback'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+          git --version
       - uses: actions/checkout@v4
         with:
+          clean: false
           fetch-depth: 1
           filter: blob:none
           sparse-checkout: |
