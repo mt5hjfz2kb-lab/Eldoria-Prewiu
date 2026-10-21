@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T19:39:39.231Z",
+  "updated_at": "2026-10-21T19:53:15.793Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -50,15 +50,13 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NATIVE266_FINITE_FOOTPRINT_ARTIST_RELIEF",
-      "next": "Validate compact artist landforms with native265 rejection images as feedback; reject plans with unmasked hill height>0.6m at original POIs. Seat whole city foliage LOD roots once, preserve bounds/relative geometry. Review actual15 A/B pairs.",
+      "phase": "NATIVE267_ARTIST_REQUEST_HTTP400_RECOVERY",
+      "next": "Native266 stopped before authoring on mismatched native265 cityPNG pin; verified and fixed. Native267 accepted all input hashes then local Ollama returned HTTP400 on expanded4-image request, before geometry. Restore proven2-image context with exact rejected-world feedback and log server error body. No candidate integration; native265 visually rejected.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -703,7 +701,7 @@
           "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -741,7 +739,7 @@
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": "codex-three-workstreams-completion-20261021",
-      "ownership_revision": 16,
+      "ownership_revision": 17,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -769,18 +767,20 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "V41_FEET_FIXED_UPPER_ARM_WEIGHT_FALLOFF_REPAIR",
+      "phase": "V42_MEASURED_FOOT_REPAIR_UNITY_VISUAL_PROOF",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Unity39662577843 PASS and foot stretch removed in exact images; upper arm skin crease remains where repair transferred weights above measured foot region. Restrict transfer to measured low leg region, retaining original upper-arm weights. Canonical scene unchanged.",
+      "next": "Linux39663648455 PASS; GLB eef82ab48b8e512a39b3f87b5b282f5bc493ec119a7e21c2149a2437c1448128. Independent exactGLB comparison:1230footvertices zero arm weights,7626 upper/forward vertices unchanged,foot maxmotion0.013674m. Native isolated V4.2 proof next.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
