@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "UI_V3_NATIVE245_EXACT_QA_PASS_PROMOTION_REQUESTED",
+  "state": "UI_V3_NATIVE245_UPLOAD_ACCEPTED_REMOTE_PROCESSING_HOST_CHECK_BLOCKED",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -39,7 +39,7 @@
     "physical_mobile_pass": false,
     "physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Promote only verified native245 original artifact through the existing Restricted web channel. Unity integrated40/Edit20/Play37 PASS, complete general Editor/Windows gate PASS, exact Chromium I-II normal clock + identical save/reload PASS, zero legacy navigation callbacks. Confirm remote activation separately; do not repeat an accepted upload merely because processing is pending. Preserve privacy, Android and PC delivery settings.",
+  "instructions": "Exact native245 QA and transport PASS; one Restricted web upload already accepted (build2177569/version native245-585451deffe0). Only inspect read-only Butler remote_status until this build is active; never re-upload to repair an activation timeout. Preserve published242 as last independently confirmed active revision until245 confirmed. Hosted browser sign-in blocked by Cloudflare after one retry. No Unity/Windows/Android/PC changes pending.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -57,33 +57,35 @@
     "authorization": "Current owner explicitly instructs this executor to assume UI work and complete its verified existing restricted delivery without stopping at intermediate reports. Publish the exact certified native245 only; no public access change."
   },
   "last_attempt": {
-    "run_id": 39511020125,
+    "run_id": 39614581796,
     "prepare": "success",
     "transport_tests": "success",
     "publish": "upload_accepted_remote_processing",
-    "remote_build": 2172967,
+    "remote_build": 2177569,
     "hosted_verified": false,
-    "reason": "Butler accepted upload; remote activation still pending at22:57:10UTC. Never repeat upload to resolve processing delay."
+    "reason": "Butler accepted the single upload at14:12:04UTC. Publish step's short activation poll expired; do not repeat upload. Read-only remote-status attempt confirms old242 active/new245 processing."
   },
   "uploaded": {
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native242",
-    "run_id": 39511020125,
-    "remote_build": 2172967,
-    "version": "native242-3ba026d54e2e",
+    "revision": "native245",
+    "run_id": 39614581796,
+    "remote_build": 2177569,
+    "version": "native245-585451deffe0",
     "upload_accepted": true,
+    "upload_accepted_at": "2026-10-21T14:12:04Z",
     "hosted_verified": false,
-    "processing_status": "ACTIVE",
+    "processing_status": "PROCESSING",
     "transport_adapter": "itch-decoded-stream-v3",
     "physical_mobile_tested": false,
-    "remote_active_confirmed": true,
+    "remote_active_confirmed": false,
+    "zip_sha256": "585451deffe03061ffa265845e1301921303b23d31c1f60d01da879f41a97f33",
     "latest_remote_check": {
-      "run_id": 39511020125,
-      "job_id": 119261533056,
-      "checked_at": "2026-10-21T13:50:58Z",
-      "result": "NATIVE242_ACTIVE"
+      "run_id": 39614581796,
+      "job_id": 119274875277,
+      "checked_at": "2026-10-21T14:16:13Z",
+      "result": "NATIVE242_ACTIVE_NATIVE245_PROCESSING"
     }
   },
   "manual_fallback": {
@@ -196,8 +198,11 @@
     "hosted_chrome_tested": false,
     "ios_safari_tested": false,
     "art_approved": false,
-    "transport_reader_actual_unity_pass": false,
-    "transport_status": "PENDING_EXACT_DELIVERY_ADAPTER_CHECK"
+    "transport_reader_actual_unity_pass": true,
+    "transport_status": "EXACT_DECODED_UNITY_TRANSPORT_PASS",
+    "original_unity_files_validated": 5,
+    "unity_decoded_bytes_unchanged": true,
+    "decoded_data_sha256": "644af37496d29bd2bfbaa4455f08a1fd89da6edb4faf698d2f26c4ef69af84ab"
   },
   "published_history": [
     {
@@ -219,5 +224,39 @@
     "reason": "itch.io login displays Cloudflare verification; persists after one reload. No credentials requested, no privacy changes and no HOSTED_GAMEPLAY_PASS.",
     "observed_at": "2026-10-21T14:05:00Z",
     "retry_count": 1
-  }
+  },
+  "uploaded_history": [
+    {
+      "provider": "itch.io",
+      "target": "chrismad/eldoria-pruebas",
+      "channel": "web",
+      "revision": "native242",
+      "run_id": 39511020125,
+      "remote_build": 2172967,
+      "version": "native242-3ba026d54e2e",
+      "upload_accepted": true,
+      "hosted_verified": false,
+      "processing_status": "ACTIVE",
+      "transport_adapter": "itch-decoded-stream-v3",
+      "physical_mobile_tested": false,
+      "remote_active_confirmed": true,
+      "latest_remote_check": {
+        "run_id": 39511020125,
+        "job_id": 119261533056,
+        "checked_at": "2026-10-21T13:50:58Z",
+        "result": "NATIVE242_ACTIVE"
+      }
+    }
+  ],
+  "attempt_history": [
+    {
+      "run_id": 39511020125,
+      "prepare": "success",
+      "transport_tests": "success",
+      "publish": "upload_accepted_remote_processing",
+      "remote_build": 2172967,
+      "hosted_verified": false,
+      "reason": "Butler accepted upload; remote activation still pending at22:57:10UTC. Never repeat upload to resolve processing delay."
+    }
+  ]
 }
