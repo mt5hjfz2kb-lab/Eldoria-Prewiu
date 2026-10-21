@@ -62,6 +62,8 @@ namespace Eldoria.Tests
         [UnityTest]
         public IEnumerator FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave()
         {
+            if(Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE")!="1")
+                Assert.Ignore("Requires a disposable Unity native gameplay-probe save");
             string previousProfile=SliceContentProfiles.ActiveRuntimeProfile;
             SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
             try
