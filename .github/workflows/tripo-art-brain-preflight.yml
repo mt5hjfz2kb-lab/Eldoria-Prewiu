@@ -1,0 +1,90 @@
+name: Tripo art brain source preflight (zero credits)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/tripo-art-brain/**"
+      - "pipeline/tripo-art-brain/**"
+      - ".github/workflows/tripo-art-brain-preflight.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tripo-art-brain-light-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-saved-art:
+    name: Verify saved sources and existing artist handoff
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      OUT: ${{ runner.temp }}/tripo-art-brain
+    steps:
+      - name: Sparse checkout only existing source assets and zero-credit tooling
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/tripo-art-brain/
+            tools/plan-art-production.mjs
+            pipeline/tripo-art-brain/
+            ArtSource/World4X/
+            docs/evidence/spawnling-bastion2/native-integration.json
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity
+
+      - name: Test fail-closed zero-credit protection (no API credentials)
+        shell: bash
+        run: node --test tools/tripo-art-brain/preflight.test.mjs
+
+      - name: Audit immutable GLB originals, optimizations and genuine Unity QA
+        shell: bash
+        run: |
+          mkdir -p "$OUT"
+          node tools/tripo-art-brain/preflight.mjs audit all > "$OUT/source-audit.json"
+          for id in spawnling boar focus; do
+            node tools/tripo-art-brain/preflight.mjs prepare "$id" --out "$OUT/$id"
+            node tools/plan-art-production.mjs "$OUT/$id/art-production-request.json" "$OUT/$id/canonical-planner.json" > "$OUT/$id/planner-console.txt"
+          done
+
+      - name: Verify the art director remains independent and Tripo spending is blocked
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          const out = process.env.OUT;
+          const audit = JSON.parse(fs.readFileSync(path.join(out, 'source-audit.json')));
+          if (audit.status !== 'ZERO_CREDIT_SOURCE_AUDIT_PASS' || audit.results.length !== 3) {
+            throw new Error('Incomplete audit result');
+          }
+          for (const id of ['spawnling', 'boar', 'focus']) {
+            const p = path.join(out, id);
+            const report = JSON.parse(fs.readFileSync(path.join(p, 'preflight-report.json')));
+            const req = JSON.parse(fs.readFileSync(path.join(p, 'art-production-request.json')));
+            const planner = JSON.parse(fs.readFileSync(path.join(p, 'canonical-planner.json')));
+            if (req.enabled || req.allow_tripo || req.credit_authorization.approved ||
+                req.credit_authorization.authorized_credit_cost !== 0 ||
+                report.art_approved || report.mobile_profile_pass ||
+                report.follow_up_advanced_tripo.ready_for_paid_call ||
+                report.qwen_inference_run !== 'NOT_EXECUTED' ||
+                (!planner.stop_before_credit_spend && req.profile === 'animated_asset') ||
+                planner.tripo_allowed || planner.credit_authorized) {
+              throw new Error(id + ': paid or visual gate in unsafe state');
+            }
+          }
+          console.log('THREE_SOURCES_VERIFIED: ZERO_CREDITS, NO_FALSE_ART_APPROVAL, NO_RUNTIME_CHANGES');
+          NODE
+
+      - name: Preserve zero-credit evidence bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tripo-art-brain-zero-credit-${{ github.run_id }}
+          path: ${{ runner.temp }}/tripo-art-brain/
+          retention-days: 14
+          if-no-files-found: warn
