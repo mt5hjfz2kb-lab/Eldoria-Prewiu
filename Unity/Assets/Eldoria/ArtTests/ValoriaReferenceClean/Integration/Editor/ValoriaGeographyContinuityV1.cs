@@ -66,14 +66,22 @@ namespace Eldoria.ReferenceClean.Editor
         }
         internal static void CityViews(ValoriaReferenceCleanGameplay city, string prefix)
         {
-            var cam = city.PlayerCamera;
-            var origPos = cam.transform.position;
-            var origRot = cam.transform.rotation;
-            float origZoom = cam.orthographicSize;
-            float origAspect = cam.aspect;
+            // Only the review copy renders. The actual gameplay camera is never
+            // allowed to re-fit itself to terrain/aspect between two A/B captures.
+            var actual = city.PlayerCamera;
+            var originalPos = actual.transform.position;
+            var originalRot = actual.transform.rotation;
+            float originalZoom = actual.orthographicSize;
+            var obj = new GameObject("Temporary city A-B audit camera / not saved");
+            obj.hideFlags = HideFlags.HideAndDontSave;
+            var cam = obj.AddComponent<Camera>();
+            cam.CopyFrom(actual);
+            cam.enabled = false;
+            cam.transform.SetPositionAndRotation(originalPos, originalRot);
+            cam.orthographicSize = originalZoom;
             var groups = new[] { city.BastionOne, city.BastionTwo, city.Parcels.LeftBuilt, city.Parcels.RightBuilt };
             Need(groups.All(o => o != null), "Missing protected Bastion I–II or unlocked buildings");
-            bool[] origActive = groups.Select(g => g.activeSelf).ToArray();
+            bool[] originalActive = groups.Select(g => g.activeSelf).ToArray();
             try
             {
                 for (int stage = 0; stage < 2; stage++)
@@ -82,19 +90,23 @@ namespace Eldoria.ReferenceClean.Editor
                     groups[1].SetActive(stage == 1);
                     groups[2].SetActive(stage == 1);
                     groups[3].SetActive(stage == 1);
-                    cam.transform.SetPositionAndRotation(origPos, origRot);
-                    cam.orthographicSize = origZoom;
                     string suffix = stage == 0 ? "I" : "II";
+                    cam.transform.SetPositionAndRotation(originalPos, originalRot);
+                    cam.orthographicSize = originalZoom;
                     CameraShot(cam, prefix + "-city-" + suffix + "-wide.png", 1600, 900);
+                    cam.transform.SetPositionAndRotation(originalPos, originalRot);
+                    cam.orthographicSize = originalZoom;
                     CameraShot(cam, prefix + "-city-" + suffix + "-mobile.png", 900, 1600);
                 }
+                Need(actual.transform.position == originalPos &&
+                    actual.transform.rotation == originalRot &&
+                    Mathf.Abs(actual.orthographicSize - originalZoom) < .0001f,
+                    "Original player camera changed during isolated comparison");
             }
             finally
             {
-                cam.transform.SetPositionAndRotation(origPos, origRot);
-                cam.orthographicSize = origZoom;
-                cam.aspect = origAspect;
-                for (int i = 0; i < groups.Length; i++) groups[i].SetActive(origActive[i]);
+                for (int i = 0; i < groups.Length; i++) groups[i].SetActive(originalActive[i]);
+                Object.DestroyImmediate(obj);
             }
         }
         internal static void WorldViews(ValoriaIntegratedWorld host, string prefix, bool extended)
