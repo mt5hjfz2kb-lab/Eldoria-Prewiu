@@ -46,5 +46,43 @@
   "mobile_profiled": false,
   "unity_ab_pass": false,
   "integrated": false,
-  "credits_spent_new": 0
+  "credits_spent_new": 0,
+  "replay": {
+    "run_id": 39639377365,
+    "artifact_id": 12363503143,
+    "source_blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
+    "candidate_blend_sha256": "301303b8763095729b3f0707c7b621e226b5dbbdfd65a1901b71fe4bbe2022fb",
+    "views": {
+      "isometric_original": {
+        "changed_pixels": 2,
+        "changed_fraction": 0.00000651,
+        "verdict": "REJECT_NOT_VISIBLE"
+      },
+      "isometric_close": {
+        "changed_pixels": 24,
+        "changed_fraction": 0.00007813,
+        "verdict": "REJECT_NOT_VISIBLE"
+      },
+      "face_close": {
+        "changed_pixels": 485,
+        "changed_fraction": 0.00157878,
+        "verdict": "MINIMAL_VISIBLE_NOT_ART_APPROVED"
+      },
+      "side_close": {
+        "changed_pixels": 158,
+        "changed_fraction": 0.00051432,
+        "verdict": "REJECT_NOT_VISIBLE"
+      },
+      "rear_close": {
+        "changed_pixels": 90,
+        "changed_fraction": 0.00029297,
+        "verdict": "REJECT_NOT_VISIBLE"
+      }
+    },
+    "independent_visual_review": "I inspected authentic five-view before/after render pairs. Both character silhouette and facial anatomy remain practically unchanged, including close-up. The only changed close-up barely exceeds a low pixel threshold and cannot establish improvement. Reject this candidate for production; genuine geometry changed 206 vertices but geometry location was center origin rather than positively localized front face.",
+    "final_verdict": "ART_REJECTED_NO_MEANINGFUL_VISUAL_UPLIFT",
+    "no_new_tripo_credits": true,
+    "new_qwen_inference": false,
+    "originals_preserved": true
+  }
 }
