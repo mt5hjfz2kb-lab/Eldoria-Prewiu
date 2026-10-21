@@ -1,12 +1,12 @@
 {
   "stage": "geography_trial",
   "validate_play": false,
-  "revision": 264,
+  "revision": 265,
   "budget_eur": 0,
   "validated_runtime_source": "a1e0fb7b71632c175a396d8c3aadf2e71dee0a80",
   "validated_run": 39609160363,
-  "checks": "Repair native263 measured failure: only 11 valid tree locations in inner search. Expand existing five lobe search to 64 candidates each, retaining 15-21 mature trees, 7.7m spacing, original road/POI buffers, exact triangle grounding and all source/camera invariants. Full matched city/world A/B required; 0 EUR, no publication.",
-  "art_correction": "Change method after repeated texture-only rejection: real spatial low meadow relief from existing Unity height field and exact synchronized collision on candidate, preserve architecture and source save. Larger view-space variation from geometry instead of flat paint. 4X candidate retains previously tested geological shoulder and adult forest.",
+  "checks": "Native264 technical PASS but independent art review rejected weak relief and flat World4X. Use installed local Qwen, exact native264 source images and typed bounded sculpt_region plan; enforce source scene, original cameras, roads, POIs, collider and topology preservation. Full15 A/B pairs, no integration/publication,0EUR.",
+  "art_correction": "Artist-authored coherent city relief and stronger world geological forms; preserve original high-resolution albedo, seat only decorative props, protect all gameplay targets and roads.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
   "ground_treatment": "all_surface",
@@ -36,5 +36,7 @@
   "roof_junction": false,
   "reuse_roof_candidate": true,
   "city_surface": false,
-  "browser_backend": "windows"
+  "browser_backend": "windows",
+  "author_geography": true,
+  "reuse_geography_plan": false
 }
