@@ -595,13 +595,16 @@ namespace Eldoria.Presentation
                     var group=content.GetComponent<VerticalLayoutGroup>();
                     group.padding=new RectOffset(18,18,18,18);group.spacing=12;
                     group.childForceExpandHeight=false;
+                    group.childControlHeight=true;
                     var title=Label("Management heading",content.transform,20,new Color(.96f,.88f,.69f),46);
                     title.text="CUARTEL";
                     var details=Label("Management details",content.transform,14,new Color(.86f,.89f,.90f),135);
                     var action=Button(content.transform,"ENTRENAR",()=>buildingAction.onClick.Invoke());
                     action.gameObject.name="Management primary action";
+                    action.GetComponent<LayoutElement>().preferredHeight=52;
                     var back=Button(content.transform,"VOLVER A LA CIUDAD",CloseBuildingPanel);
                     back.gameObject.name="Management back";
+                    back.GetComponent<LayoutElement>().preferredHeight=44;
                 }
                 var labels=managementScreen.GetComponentsInChildren<Text>(true);
                 foreach(var label in labels)
