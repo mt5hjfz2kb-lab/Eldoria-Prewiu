@@ -49,7 +49,9 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -689,6 +691,10 @@
         "deliverable": "Valoria and Region1 terrain/biomes visibly integrated in canonical Unity scene, preserving prior architecture/UI V3/Engendro and interactive systems",
         "evidence": "Same-camera real Unity A/B screenshots full scene/entire world 4X area and portrait; independent visual assessment, native progression/save/march tests, editable sources and SHA",
         "handoff": "Approved visual results, real screenshots, objective scores and exact main SHA; no new APK/itch upload"
+      },
+      "active_runner_claim": {
+        "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
+        "owner_authorized": "2026-10-21"
       }
     },
     {
