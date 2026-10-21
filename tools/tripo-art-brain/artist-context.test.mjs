@@ -129,7 +129,7 @@ async function verifyExistingQwenContract(id,kind,{compact=false,invalidFirst=fa
     }
     assert.equal(evidence.reference_sha256,sha(actualBytes[0]));
     assert.equal(evidence.unity_before_sha256,sha(actualBytes[1]));
-    assert.equal(evidence.asset_inventory_sha256,sha(Buffer.from(fs.readFileSync(inventory,'utf8').slice(0,compact?1800:4000))));
+    assert.equal(evidence.asset_inventory_sha256,sha(Buffer.from(fs.readFileSync(inventory,'utf8').slice(0,compact?(kind==='terrain'?1800:3200):4000))));
     assert.equal(evidence.cpu_compact,compact);
     if(realContext)assert.equal(evidence.mesh_context_sha256,sha(fs.readFileSync(realContext)));
     if(kind==='terrain')assert.ok(!('subject_kind' in evidence));
