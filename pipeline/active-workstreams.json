@@ -645,7 +645,8 @@
         "release_condition": "Release after exact final UI build/QA; preserve canonical art owner and sources",
         "ui_executor": "codex-ui-v3-completion-takeover-20261021",
         "status": "native245_exact_browser_qa_complete_resource_released",
-        "evidence": "Native39610358759 SUCCESS; exact Chromium39612300155 PASS I-II, normal clock, save identical, zero legacy fallback. General Windows39611381736 SUCCESS. No native work pending for UI."
+        "evidence": "Native39610358759 SUCCESS; exact Chromium39612300155 PASS I-II, normal clock, save identical, zero legacy fallback. General Windows39611381736 SUCCESS. No native work pending for UI.",
+        "ui_delivery_observation": "Existing art preserved in native245 UI build; exact QA PASS and Restricted channel activation confirmed by Butler14:31:34UTC. No art approval or new art production."
       },
       "delegated_ui_navigation_fix": {
         "owner": "codex-ui-v3-completion-takeover-20261021",
@@ -697,8 +698,8 @@
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "UI_V3_QA_COMPLETE_ITCH_ACTIVATION_PENDING",
-      "next": "Only read-only remote status of accepted build2177569/version native245-585451deffe0; never repeat upload for short activation timeout. Once active reconcile delivery manifest. Hosted sign-in independently blocked by Cloudflare in this cloud browser. No Unity/Windows work pending.",
+      "phase": "UI_V3_INTEGRATED_CERTIFIED_REMOTE_ACTIVE_HOSTED_REVIEW_BLOCKED",
+      "next": "Only hosted page load/save review once itch.io admits this cloud browser. Current sign-in blocked by Cloudflare after one reload; no credentials requested. Native245 exact build2177569/version native245-585451deffe0 is active, all native/general/Chromium/transport QA PASS. Do not rebuild, re-upload, change privacy or reactivate old production.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
       "handoff": {
         "owner_instruction": "Asume tú los trabajos y organízalos",
@@ -762,22 +763,50 @@
         "artifact_id": 12352445055,
         "artifact_name": "valoria-verified-private-site-windows-39612300155",
         "artifact_sha256": "642e74165f1aee68022b7c8459aa52bed3a61ad91837b75235bf825e0538e47b",
-        "published": false,
+        "published": true,
         "delivery_run": 39614581796,
         "delivery_artifact_id": 12351708257,
         "delivery_zip_sha256": "585451deffe03061ffa265845e1301921303b23d31c1f60d01da879f41a97f33",
         "remote_build": 2177569,
         "remote_version": "native245-585451deffe0",
         "upload_accepted": true,
-        "remote_active_confirmed": false,
-        "hosted_gameplay_verified": false
+        "remote_active_confirmed": true,
+        "hosted_gameplay_verified": false,
+        "remote_activation_evidence": {
+          "run_id": 39614581796,
+          "job_id": 119282343868,
+          "checked_at": "2026-10-21T14:31:34Z",
+          "result": "NATIVE245_ACTIVE",
+          "remote_build": 2177569,
+          "version": "native245-585451deffe0"
+        }
       },
       "obsolete_trigger_recovery": "SlicePresenter UI touch launched legacy SHARP/visible-parcel production from an Oct6 stale pending request. Current AGENTS and canonical Oct18 scene supersede it. Preserve historical source/config but disable legacy execution and remove shared-core automatic triggers; cancel only our queued legacy run via its existing concurrency when config changes. Confirmed run39609160173 cancelled before legacy production; historical execution disabled.",
       "hosted_verification": {
         "status": "BLOCKED_CURRENT_CLOUD_BROWSER_SIGN_IN",
         "reason": "itch.io login displays Cloudflare verification; persists after one reload. No credentials requested, no privacy changes and no HOSTED_GAMEPLAY_PASS.",
         "observed_at": "2026-10-21T14:05:00Z",
-        "retry_count": 1
+        "retry_count": 1,
+        "remote_activation_confirmed": true,
+        "hosted_gameplay_verified": false
+      },
+      "completion": {
+        "ui_implementation": true,
+        "main_integration": true,
+        "native_and_general_qa": true,
+        "exact_webgl_qa": true,
+        "restricted_channel_active": true,
+        "hosted_browser_review": false,
+        "physical_mobile_pass": false
+      },
+      "blocker": {
+        "scope": "Only hosted browser review",
+        "type": "SITE_SIGN_IN_BOT_VERIFICATION",
+        "site": "itch.io",
+        "observed_at": "2026-10-21T14:05:00Z",
+        "evidence": "Cloudflare security verification persisted after one reload; botDetection sign_in_blocked reported; further attempts stopped.",
+        "source": "docs/ui-v3/OWNER_APPROVED_DIRECTION.md",
+        "no_windows_or_code_work_pending": true
       }
     }
   ],
