@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "kind": "read_only_knowledge_index",
+  "date": "2026-10-21",
+  "scope": "Audit of previously documented Eldoria art methods, not a new authoring pipeline or permission to mutate game.",
+  "provenance": {
+    "baseline": "main at audit; sources require revalidation at time of use",
+    "governing_paths": [
+      "AGENTS.md",
+      "docs/DOCUMENTATION_INDEX.md",
+      "pipeline/active-workstreams.json",
+      "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md"
+    ],
+    "reference_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d"
+  },
+  "safe_defaults": {
+    "enabled": false,
+    "allow_paid_operations": false,
+    "may_claim_workstream": false,
+    "may_modify_unity": false,
+    "may_publish": false,
+    "does_not_auto_approve_art": true
+  },
+  "status_definitions": {
+    "canonical_policy": "Present routing or safety rule, not evidence of aesthetic improvement.",
+    "technical_verified": "Technical operation/asset demonstrated but no integrated artistic certification.",
+    "integrated_technical": "An implementation integrated in scope with practical checks; not formal ART_APPROVED.",
+    "art_rejected": "Attempt explicitly rejected for art; method and defect are negative lessons.",
+    "historical_reference": "Historical technique useful for lookup, not default approved production route."
+  },
+  "records": [
+    {
+      "id": "K01",
+      "family": "routing",
+      "problem": "La escena parece vacía, mal encuadrada o desunida.",
+      "recommended_route": "Primero composición/cámara/materiales en Unity y fuentes existentes; no solicitar geometría nueva por defecto.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Regla vigente del planificador de producción, no ensayo de mejora estética.",
+      "source_paths": [
+        "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+        "pipeline/visual-fallback-policy.json"
+      ],
+      "avoid": "Tripo como respuesta automática a composición.",
+      "conditions": "Comprobar cámara real y trabajo activo.",
+      "run_ids": []
+    },
+    {
+      "id": "K02",
+      "family": "routing",
+      "problem": "Materiales, superficie o relieve no encajan visualmente.",
+      "recommended_route": "Diagnóstico URP/Unity; Blender para UV, bake, malla o soporte si se demuestra necesario.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Jerarquía de herramientas separa defectos de superficies y silueta.",
+      "source_paths": [
+        "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
+        "docs/UNITY_ART_FINISHING_PROFESSIONAL_PLAYBOOK.md"
+      ],
+      "avoid": "Recrear un modelo completo si solo falla su importación de materiales.",
+      "conditions": "Conservar mapa/albedo original y comparar en Unity.",
+      "run_ids": []
+    },
+    {
+      "id": "K03",
+      "family": "routing",
+      "problem": "Falta geometría o la silueta de una pieza es pobre.",
+      "recommended_route": "Inspeccionar donante/prefab y .blend; si no sirven, autoría Blender profesional y revisión aislada; Tripo solo condicionado.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Método normativo sobre alcance actual, sin ART PASS implícito.",
+      "source_paths": [
+        "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
+        "docs/ELDORIA_PRODUCTION_ART_SOURCE_PIPELINE.md"
+      ],
+      "avoid": "Pilas de primitivas repetitivas como arquitectura terminada; generación por defecto.",
+      "conditions": "Silueta visible desde cámara jugable, fuente editable, aprobación antes de integrar.",
+      "run_ids": []
+    },
+    {
+      "id": "K04",
+      "family": "authority",
+      "problem": "Se pretende recuperar el estilo de Valoria Bastión I–II.",
+      "recommended_route": "Fijar JPEG canónico y alcance: bastión, puente/río, pradera, ribera; parcelas de imagen NO visibles.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Referencia y excepción sobre parcelas ratificadas 20-10-2026.",
+      "source_paths": [
+        "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md",
+        "AGENTS.md"
+      ],
+      "avoid": "Acantilados monumentales, campamentos, barrios o las cuatro parcelas reintroducidas.",
+      "conditions": "La imagen tiene cuatro parcelas históricas, pero su visibilidad está expresamente revocada.",
+      "run_ids": []
+    },
+    {
+      "id": "K05",
+      "family": "validation",
+      "problem": "Un workflow termina SUCCESS pero se desconoce si el arte mejora.",
+      "recommended_route": "A/B PNG genuino Unity a misma cámara y luz, veredicto independiente, QA funcional y registro por separado.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Contrato formal distingue TECH PASS, ART PASS, MOBILE PASS e integración.",
+      "source_paths": [
+        "docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md",
+        "pipeline/art-visual-approvals/README.md"
+      ],
+      "avoid": "Porcentaje de píxeles o CI verde como prueba estética.",
+      "conditions": "Ninguna aprobación formal se infiere del catálogo.",
+      "run_ids": []
+    },
+    {
+      "id": "K06",
+      "family": "environment",
+      "problem": "Orillas/terreno se ven planas y sin contacto.",
+      "recommended_route": "Reautoría localizada de orilla con geometría real y materiales compatibles, retención solo tras A/B Unity.",
+      "evidence_status": "integrated_technical",
+      "art_status": "provisional_visual_gain",
+      "observed_result": "Fase terreno/ribera retenida en Valoria; QA nativo y fuentes editables archivadas, sin calidad global certificada.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_DELIVERY_20261020.md",
+        "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md"
+      ],
+      "avoid": "Reemplazar riberas por acantilados enormes o solo recolorear el suelo.",
+      "conditions": "Se conservan referencias/parcelas y jugabilidad del Bastión I–II.",
+      "run_ids": [
+        39450899545,
+        39485567981
+      ]
+    },
+    {
+      "id": "K07",
+      "family": "environment",
+      "problem": "Puente/puerta/bastión presentan piezas desconectadas o poca profundidad.",
+      "recommended_route": "Corregir apoyos pétreos/cubierta real sobre fuentes Blender existentes, siguiendo escala y encuadre canónicos.",
+      "evidence_status": "integrated_technical",
+      "art_status": "provisional_visual_gain",
+      "observed_result": "Fase puente/puerta/Bastión retenida, con A/B real y persistencia nativa; sin 8/10 formal.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_DELIVERY_20261020.md"
+      ],
+      "avoid": "Añadir arcos o enormes acantilados no autorizados.",
+      "conditions": "No destruir progresión I–II ni interacciones.",
+      "run_ids": [
+        39453446158,
+        39492819273,
+        39506119472
+      ]
+    },
+    {
+      "id": "K08",
+      "family": "environment",
+      "problem": "Bosque y cantera resultan sintéticos o no apoyan bien en el suelo.",
+      "recommended_route": "Reutilizar coníferas originales, modificar ramificación/atlas/LOD; cantera con estratos y contacto de terreno.",
+      "evidence_status": "integrated_technical",
+      "art_status": "provisional_visual_gain",
+      "observed_result": "Bosque/cantera retenidos en entrega native229, con comparaciones y 40 checks; no calidad final móvil.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_DELIVERY_20261020.md"
+      ],
+      "avoid": "Pinos sobredimensionados y scatter sin criterio de cámara.",
+      "conditions": "Priorizar masa, escala y suelo visible.",
+      "run_ids": [
+        39459840985,
+        39487451858
+      ]
+    },
+    {
+      "id": "K09",
+      "family": "environment",
+      "problem": "La Brecha y los contactos de edificios parecen superpuestos.",
+      "recommended_route": "Fracturas moderadas, terreno conectado y elementos ya autorizados; QA jugable con cámara original.",
+      "evidence_status": "integrated_technical",
+      "art_status": "provisional_visual_gain",
+      "observed_result": "Tratamiento Brecha/ciudad funcional integrado en las cuatro fases; revisión visual global pendiente.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_DELIVERY_20261020.md"
+      ],
+      "avoid": "Brecha radial/neón, campamentos o nuevos nodos.",
+      "conditions": "Respetar narrativa, hotspots y las reglas de desbloqueo.",
+      "run_ids": [
+        39469515439
+      ]
+    },
+    {
+      "id": "K10",
+      "family": "architecture",
+      "problem": "Aserradero incompleto o de baja legibilidad.",
+      "recommended_route": "Reutilizar fuente STATE2, reparar techo/estructura y componer piedra/madera para cámara real.",
+      "evidence_status": "integrated_technical",
+      "art_status": "provisional_visual_gain",
+      "observed_result": "Aserradero retenido tras Qwen+BlenderMCP y A/B nativo; mejora localizada, no ART_APPROVED global.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md"
+      ],
+      "avoid": "Reinventar edificio desde cero o confundir material bonito con contacto físico demostrado.",
+      "conditions": "Mantener accesos, construcción e interacción.",
+      "run_ids": [
+        39133202399,
+        39138751241
+      ]
+    },
+    {
+      "id": "K11",
+      "family": "architecture",
+      "problem": "Cuartel/tejado de lona muestra normales defectuosas o intersecciones.",
+      "recommended_route": "Reutilizar y reparar fuente CampFamily: soldadura de normales, pliegues y anclajes, luego A/B Unity.",
+      "evidence_status": "integrated_technical",
+      "art_status": "provisional_visual_gain",
+      "observed_result": "Fuente reparada en native87–91 y retención jugable; sin aprobación artística formal.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md"
+      ],
+      "avoid": "Aplicar otra vez normales acolchadas ni cruzar tela con soportes.",
+      "conditions": "Mantener etapa Bastión II, fotos comparables.",
+      "run_ids": [
+        39124004194
+      ]
+    },
+    {
+      "id": "K12",
+      "family": "creature",
+      "problem": "Se necesita fuente de fauna/criatura 3D con silueta inicial.",
+      "recommended_route": "Tripo API H3.1 solo con autorización por pieza; archivar GLB raw/task; Blender; QA Unity glTFast BaseColor real.",
+      "evidence_status": "technical_verified",
+      "art_status": "review_pending",
+      "observed_result": "Tres fuentes Tripo H3.1 generadas y verificadas en Unity aislado; no escalabilidad ni móvil probados.",
+      "source_paths": [
+        "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
+        "docs/TRIPO_API_NORMA_PRODUCCION_V1.md"
+      ],
+      "avoid": "Regenerar el mismo recurso tras fallo de importador; gasto implícito.",
+      "conditions": "Coste histórico 20 créditos por pieza observado, NO tarifa futura ni autorización.",
+      "run_ids": [
+        39505056649,
+        39512910985,
+        39554609943
+      ]
+    },
+    {
+      "id": "K13",
+      "family": "creature",
+      "problem": "Engendro debe verse como criatura estática del Bastión II.",
+      "recommended_route": "Reutilizar GLB pagado, remodelar color/silueta en Blender, dos LOD y preservar WorldHotspot/guardados.",
+      "evidence_status": "integrated_technical",
+      "art_status": "provisional_visual_gain",
+      "observed_result": "Reemplazo 3D estático incorporado en juego con QA I–II; rostro/animación y perfil físico pendientes.",
+      "source_paths": [
+        "docs/evidence/spawnling-bastion2/ART_AND_INTEGRATION_REVIEW.md",
+        "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md"
+      ],
+      "avoid": "Nido/campamento/hotspot nuevo; duplicar colisionadores.",
+      "conditions": "No confundir su integración estática con rig integrado.",
+      "run_ids": [
+        39582719835
+      ]
+    },
+    {
+      "id": "K14",
+      "family": "creature",
+      "problem": "Engendro necesita un gesto animado sin gastar créditos.",
+      "recommended_route": "Reusar mesh fuente y probar rig/skin de Blender; validar deformación y retorno a reposo en Unity aislado.",
+      "evidence_status": "technical_verified",
+      "art_status": "review_pending",
+      "observed_result": "V4.2 reparó influencias de pies/brazos y pasó revisión aislada Unity rest/swipe/return; no integrado en canon ni móvil.",
+      "source_paths": [
+        "docs/evidence/spawnling-animation-v4-review-20261021/unity-approved.json",
+        "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md"
+      ],
+      "avoid": "Promover el primer V4 con pies deformados o afirmar animación ya presente en partida.",
+      "conditions": "Falta encuentro real, clips y QA de Android.",
+      "run_ids": [
+        39665538385
+      ]
+    },
+    {
+      "id": "K15",
+      "family": "creature",
+      "problem": "Jabalí rocoso para futuro capítulo.",
+      "recommended_route": "Conservar único GLB original Tripo y someterlo a escala, LOD, animación y prueba Unity al autorizar Bastión III.",
+      "evidence_status": "technical_verified",
+      "art_status": "review_pending",
+      "observed_result": "Fuente aislada legible, QA material 2K/raycast PASS; no integrado ni perfilado.",
+      "source_paths": [
+        "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
+        "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md"
+      ],
+      "avoid": "Activar Bastión III o presentar 7/10 estimado como aprobado.",
+      "conditions": "No gastar Tripo para repetir el QA ya resuelto.",
+      "run_ids": [
+        39505056649
+      ]
+    },
+    {
+      "id": "K16",
+      "family": "environment",
+      "problem": "Foco de corrupción requiere identidad visual.",
+      "recommended_route": "Reusar fuente Tripo existente; rediseñar silueta/fisuras en Blender antes de plantear integración.",
+      "evidence_status": "technical_verified",
+      "art_status": "review_pending",
+      "observed_result": "QA Unity aislado real PASS; juicio artístico provisional ~5/10 y no integrado.",
+      "source_paths": [
+        "docs/TRIPO_API_FOCO_RESULTADO_20261021.md"
+      ],
+      "avoid": "Inventar nodo/campamento o confundir rocas brillantes con narrativa lograda.",
+      "conditions": "Prop experimental fuera de la escena jugable.",
+      "run_ids": [
+        39554609943
+      ]
+    },
+    {
+      "id": "K17",
+      "family": "optimization",
+      "problem": "Mallas Tripo con ~50k triángulos pesan demasiado para repetición móvil.",
+      "recommended_route": "Generar LOD sobre copias de fuente congelada y comparar cámara estratégica/iso con UV y mapas intactos.",
+      "evidence_status": "technical_verified",
+      "art_status": "review_pending",
+      "observed_result": "Jabalí y Foco: LOD0/1/2 y mapas 1K probados en Blender; faltan Unity integrado, FPS/batería físicos y ART PASS.",
+      "source_paths": [
+        "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md",
+        "pipeline/tripo-mobile-lod-profiles.json"
+      ],
+      "avoid": "Declarar presupuesto móvil por solo reducción de triángulos.",
+      "conditions": "Materiales y silueta deben mantener lectura a distancia.",
+      "run_ids": [
+        39629479262
+      ]
+    },
+    {
+      "id": "K18",
+      "family": "artificial_intelligence",
+      "problem": "Qwen cambia geometría pero no el significado de la pieza.",
+      "recommended_route": "Comparar intención/imagen/forma con operaciones semánticas existentes, límites espaciales de malla y crítica independiente.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "La revisión forense identificó habilidades arquitectónicas históricas útiles, no validadas como ruta presente para todo asset.",
+      "source_paths": [
+        "docs/evidence/ELDORIA_ARTIST_FAILURE_FORENSICS_20261015.md"
+      ],
+      "avoid": "Assumir que sculpt arbitrario en vértices equivale a autoría profesional.",
+      "conditions": "Recuperar herramientas semánticas selectivamente y medir A/B antes de reactivarlas.",
+      "run_ids": [
+        38754996414
+      ]
+    },
+    {
+      "id": "K19",
+      "family": "artificial_intelligence",
+      "problem": "Qwen criatura mueve toda la malla en vez de corregir anatomía.",
+      "recommended_route": "Preflight de escala y límites sobre fuente, filtro de traslación dominante y rechazo antes de Blender.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Ensayo Qwen2B desplazó casi todos los vértices: ART_REJECTED; regla preventiva añadida.",
+      "source_paths": [
+        "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
+        "tools/tripo-art-brain/shape-change-gate.mjs"
+      ],
+      "avoid": "Interpretar movimiento global/cambio de píxeles como una mejora morfológica.",
+      "conditions": "Mantener centro/anatomía local real y fuente inmutable.",
+      "run_ids": [
+        39628068735
+      ]
+    },
+    {
+      "id": "K20",
+      "family": "artificial_intelligence",
+      "problem": "Esculpido Qwen localizado invisible desde la cámara estratégica.",
+      "recommended_route": "Inspeccionar orientación de rostro, selección de vértices real, visibilidad multiángulo y rechazar cambios microscópicos.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Tercer Qwen sobre Engendro modificó 206 vértices pero solo 2 píxeles estratégicos; no mejora visible.",
+      "source_paths": [
+        "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md"
+      ],
+      "avoid": "Repetir microesculturas infinitamente en la zona equivocada.",
+      "conditions": "Cambiar hipótesis ante rechazos; no dar por aprobado por un A/B numérico.",
+      "run_ids": [
+        39639377365
+      ]
+    },
+    {
+      "id": "K21",
+      "family": "rejection",
+      "problem": "Cambio de pradera/ribera parece grande en métricas, pero no arregla composición.",
+      "recommended_route": "Descartar mezcla superficial como mejora suficiente; centrarse en formas/escala y contacto verdaderos.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "OWNER179 alteró ~10,8% píxeles, pero mejora insuficiente y no integrado.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/OWNER179_BANK_MEADOW_VISUAL_VERDICT_20261020.md"
+      ],
+      "avoid": "Repetir tintes de terreno sin resolver el problema espacial.",
+      "conditions": "El informe histórico contiene una indicación ya revocada sobre parcelas: prevalece canon 20-10.",
+      "run_ids": [
+        39402773463
+      ]
+    },
+    {
+      "id": "K22",
+      "family": "rejection",
+      "problem": "Camino claro superpuesto a ciudad parece una tira artificial.",
+      "recommended_route": "No reutilizar V12; corregir continuidad de plataforma/terreno con diseño y A/B.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Native160 rechazado artísticamente pese a 32 pruebas I–II; revertido.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/NATIVE160_ART_REJECTION_AND_ROLLBACK_20261019.md"
+      ],
+      "avoid": "Empedrado/tira plana aislada y de color descontextualizado.",
+      "conditions": "La cámara y navegación deben conservarse.",
+      "run_ids": [
+        39322150028
+      ]
+    },
+    {
+      "id": "K23",
+      "family": "rejection",
+      "problem": "Ciudad se llena de piezas sueltas sin tejido funcional.",
+      "recommended_route": "Rechazar dispersión de muros/casas/ruinas y respetar escena actual; recuperar solo método bajo nuevo diseño autorizado.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Urban V7 y compact V15 rechazados y revertidos; no autorizan añadir barrios posteriormente.",
+      "source_paths": [
+        "docs/evidence/valoria-reference-clean/URBAN_V7_ART_REJECTION_20261019.md",
+        "docs/evidence/valoria-reference-clean/NATIVE165_COMPACT_QUARTER_ART_REJECTION_20261019.md"
+      ],
+      "avoid": "Reintroducir barrios/parcelas/campamentos prohibidos por el canon posterior.",
+      "conditions": "Separar lección metodológica del contenido revocado.",
+      "run_ids": [
+        39311035638,
+        39330844141
+      ]
+    },
+    {
+      "id": "K24",
+      "family": "operations",
+      "problem": "Un modelo/captura de GitHub Actions desaparece y se pierde el resultado.",
+      "recommended_route": "Anotar commit/run/hash y preservar copias permanentes de fuente + evidencias críticas, no solo artifacts efímeros.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Fuentes detallan expiración de artifacts y procedencia SHA; medida de continuidad.",
+      "source_paths": [
+        "docs/ELDORIA_ART_LEARNING_EVIDENCE_V1.md",
+        "tools/art-direction/ARTIST_LEARNING_JOURNAL.md"
+      ],
+      "avoid": "Afirmar hashes verificados sin volver a leer bytes originales.",
+      "conditions": "Catálogo no almacena binarios ni convierte informe en prueba original.",
+      "run_ids": []
+    },
+    {
+      "id": "K25",
+      "family": "operations",
+      "problem": "La siguiente sesión ignora aprendizajes o recibe instrucciones antiguas.",
+      "recommended_route": "Leer AGENTS/current main/workstreams y documentación específica; recuperar brief y errores antes de Qwen.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Protocolo de arranque y memoria existente; conexión automática del hook de memoria general no acreditada.",
+      "source_paths": [
+        "docs/DOCUMENTATION_INDEX.md",
+        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+        "docs/ELDORIA_ART_LEARNING_EVIDENCE_V1.md"
+      ],
+      "avoid": "Adoptar textos históricos con ACTIVE o el dueño del chat anterior como autoridad.",
+      "conditions": "Esta fase inventaría, no cambia ownership ni activa hooks.",
+      "run_ids": []
+    },
+    {
+      "id": "K26",
+      "family": "operations",
+      "problem": "Un método conocido falla y se inicia nueva investigación de herramientas.",
+      "recommended_route": "Clasificar fallo, consultar fallback evidenciado y excluir rutas rechazadas; parar si la causa es ambigua.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Router de fallback probado en capa independiente; integración end-to-end con flujo visual central no acreditada.",
+      "source_paths": [
+        "docs/ELDORIA_VISUAL_FALLBACK_ORCHESTRATOR_V1.md",
+        "pipeline/visual-fallback-policy.json"
+      ],
+      "avoid": "Declarar fallback integrado automáticamente en todos los jobs.",
+      "conditions": "Ningún gasto/experimentación externa sin autorización.",
+      "run_ids": []
+    },
+    {
+      "id": "K27",
+      "family": "operations",
+      "problem": "Un candidato se publica o entra al juego por CI verde.",
+      "recommended_route": "Separar QA fuente, revisión visual, QA Unity jugable, dispositivo, promoción de release, y verificar destinatario.",
+      "evidence_status": "canonical_policy",
+      "art_status": "not_applicable",
+      "observed_result": "Contratos vigentes separan aprobación artística y entrega funcional.",
+      "source_paths": [
+        "docs/WORKFLOW_INDEX.md",
+        "docs/ELDORIA_ANDROID_FAMILY_UPDATES.md",
+        "docs/ELDORIA_PLAYTEST_DELIVERY.md"
+      ],
+      "avoid": "Confundir APK construido, publicación y versión activada o afirmar QA físico.",
+      "conditions": "Fase 1 no toca escenas, APK, WebGL ni builds.",
+      "run_ids": []
+    }
+  ]
+}
