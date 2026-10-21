@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T07:33:00Z",
+  "updated_at": "2026-10-21T08:00:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -653,13 +653,15 @@
         ".github/workflows/eldoria-spawnling-bastion2.yml",
         "docs/evidence/spawnling-bastion2/**",
         "Unity/Assets/Eldoria/SpawnlingBastion2/**",
-        ".github/workflows/eldoria-spawnling-native.yml"
+        ".github/workflows/eldoria-spawnling-native.yml",
+        "Unity/Assets/Eldoria/ArtTests/SpawnlingB2/**",
+        "Unity/Assets/Eldoria/Resources/SpawnlingB2/**"
       ],
       "resources": [],
       "budget_eur": 0,
       "art_production_routing": "required",
       "dependency": "Canonical Unity scene and runner remain under valoria-master-plan-layered-construction-20261016; prepare complete visual asset, integrate only through reviewed PR/serialized scene change without overwriting live owner/UI V3.",
-      "next": "Authored two mobile GLBs; validate focused art correction, then use NEW Unity/Assets/Eldoria/SpawnlingBastion2 adapter to replace engendro-valoria in the existing scene via controlled scene-owner serialized integration and true I-II probe."
+      "next": "Produce vetted Blender LOD source; build standalone Unity prefab in new SpawnlingB2 directory and attach through scene-independent runtime hook. Validate native camera/play and coordinate scene owner before main promotion."
     }
   ],
   "history": [
