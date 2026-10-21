@@ -1,0 +1,51 @@
+name: Eldoria concise work status
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/active-workstreams.json'
+      - 'pipeline/playtest-delivery.json'
+      - 'updates/android/family.json'
+      - 'tools/work-status/**'
+      - '.github/workflows/eldoria-work-status.yml'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-concise-work-status
+  cancel-in-progress: true
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/work-status/
+            /pipeline/active-workstreams.json
+            /pipeline/playtest-delivery.json
+            /updates/android/family.json
+      - name: Generate a read-only view of canonical records and live Actions jobs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('node:fs'),path=require('node:path');
+            const {pathToFileURL}=require('node:url');
+            const {fromRoot,collectLive,summarize,markdown}=await import(
+              pathToFileURL(path.resolve('tools/work-status/report.mjs')).href);
+            const inputs=fromRoot(process.cwd());
+            const live=await collectLive({github,repo:context.repo,active:inputs.registry.active});
+            const report=summarize({...inputs,live});
+            fs.mkdirSync('work-status',{recursive:false});
+            fs.writeFileSync('work-status/status.json',JSON.stringify(report,null,2)+'\n');
+            fs.writeFileSync('work-status/status.md',markdown(report));
+            await core.summary.addRaw(markdown(report)).write();
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-work-status-${{ github.run_id }}
+          path: work-status/
+          if-no-files-found: error
+          retention-days: 14

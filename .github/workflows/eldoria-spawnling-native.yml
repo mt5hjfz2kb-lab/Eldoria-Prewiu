@@ -52,7 +52,12 @@ jobs:
             Unity
             ArtSource/World4X/Spawnling_v1
             docs/evidence/spawnling-bastion2
+            tools/workflow-recovery
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
       - name: Verify signed-off source and exclusive runner availability
+        id: native_preflight
         run: |
           Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
@@ -109,6 +114,7 @@ jobs:
           }
           Write-Host 'SPAWNLING_CI_SEARCH_INDEX_ISOLATED original settings preserved and temporary roots empty'
       - name: Import real PBR+LOD scene without changing game rules or hotspots
+        id: import_scene
         run: |
           Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
@@ -139,6 +145,7 @@ jobs:
           foreach($name in @($data.captures)){if(-not(Test-Path "docs/evidence/spawnling-bastion2/$name")){throw "Missing real Unity image $name"}}
           Write-Host 'SPAWNLING_B2_SAVED_SCENE_AND_REAL_UNITY_CAPTURES_PASS'
       - name: Replay exact canonical Bastion I-II buttons combat rewards and save
+        id: native_qa
         run: |
           Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
@@ -163,23 +170,38 @@ jobs:
           if(@($e.checks).Count -lt 30){throw 'Canonical I-II gameplay coverage incomplete'}
           $e|ConvertTo-Json -Depth 16|Set-Content 'docs/evidence/spawnling-bastion2/native-full-i-ii-result.json'
           Write-Host "SPAWNLING_B2_FULL_I_II_PLAY_SAVE_PASS checks=$(@($e.checks).Count)"
-      - name: Commit only isolated asset and saved game scene after green native QA
+      - name: Checkpoint exact generated outputs before any branch publication
+        id: checkpoint
+        if: always() && steps.native_preflight.outcome == 'success'
         run: |
-          Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Unity/Assets/Eldoria/SpawnlingBastion2
-          git add Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity
-          git add docs/evidence/spawnling-bastion2
-          if(git diff --cached --quiet){throw 'No actual integrated scene and assets changed'}
-          git commit -m 'feat(spawnling): actual Bastion II enemy visual integrated with I-II QA'
-          git fetch origin art/spawnling-bastion2-finish-20261021
-          if($LASTEXITCODE){throw 'Could not refresh current feature-branch head'}
-          git rebase 'origin/art/spawnling-bastion2-finish-20261021'
-          if($LASTEXITCODE){throw 'Concurrent source edit conflict; do not force-push or overwrite work'}
-          git push origin 'HEAD:refs/heads/art/spawnling-bastion2-finish-20261021'
-          Write-Host 'SPAWNLING_B2_GREEN_NATIVE_BRANCH_COMMITTED'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree'
+          $checkpoint=Join-Path $env:RUNNER_TEMP "spawnling-recovery-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          Set-Location $root
+          $checkpointArgs=@('tools/workflow-recovery/checkpoint.mjs','capture','--root',$root,
+            '--config','tools/workflow-recovery/spawnling.json','--out',$checkpoint)
+          if('${{ steps.import_scene.outcome }}' -eq 'success' -and '${{ steps.native_qa.outcome }}' -eq 'success'){
+            $checkpointArgs+='--validated'
+          }
+          node @checkpointArgs
+          if($LASTEXITCODE -ne 0){throw 'Checkpoint capture failed; preserve original working directory'}
+      - name: Preserve recoverable native outputs independently of Git publication
+        if: always() && steps.native_preflight.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: spawnling-native-recovery-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/spawnling-recovery-${{ github.run_id }}-${{ github.run_attempt }}/
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Publish only checkpointed native outputs after green QA
+        if: success() && steps.import_scene.outcome == 'success' && steps.native_qa.outcome == 'success'
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree'
+          $checkpoint=Join-Path $env:RUNNER_TEMP "spawnling-recovery-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          Set-Location $root
+          node tools/workflow-recovery/checkpoint.mjs publish --root $root --config tools/workflow-recovery/spawnling.json --checkpoint $checkpoint
+          if($LASTEXITCODE -ne 0){throw 'Safe publication stopped; recovery artifact retains generated source and original QA identity'}
       - name: Restore original Unity Editor Search preferences and cache
         if: always()
         run: |
@@ -205,3 +227,4 @@ jobs:
             spawnling-native-worktree/docs/evidence/spawnling-bastion2/
           if-no-files-found: warn
           retention-days: 14
+

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-spawnling-bastion2-finish-20261021",
+  "branch": "art/spawnling-bastion2-finish-20261021",
+  "outputs": [
+    "Unity/Assets/Eldoria/SpawnlingBastion2",
+    "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "docs/evidence/spawnling-bastion2"
+  ],
+  "inputs": [
+    "Unity",
+    "ArtSource/World4X/Spawnling_v1",
+    "tools/spawnling-bastion2",
+    "tools/workflow-recovery",
+    "pipeline/art-production-requests/eldoria-spawnling-bastion2-finish-20261021.json"
+  ]
+}

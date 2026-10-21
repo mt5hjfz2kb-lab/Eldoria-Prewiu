@@ -19,6 +19,8 @@
 
 | Familia | Ruta | Qué comprueba |
 | --- | --- | --- |
+| Estado breve de los trabajos | [eldoria-work-status.yml](../.github/workflows/eldoria-work-status.yml) | Informe derivado de las fuentes vigentes y jobs observados; permisos de lectura, sin segundo registro ni publicación. El informe es una instantánea con fecha. |
+| Recuperación de resultados nativos | [Guía de checkpoint](../tools/workflow-recovery/README.md) | Integrado en el flujo nativo del engendro. Conserva resultados antes de enviar cambios; exige QA e identidad y rechaza conflictos sin sobrescribir el editor. |
 | Arquitectura y documentos | [repository-architecture-guard.yml](../.github/workflows/repository-architecture-guard.yml) | Estructura del árbol Git exacto, catálogo, navegación, pruebas de errores y memoria artística. Descarga solo los contenidos leídos; ejecución local por defecto conserva inspección de archivos del árbol de trabajo. |
 | Propiedad y autoría artística | [art-production-governance.yml](../.github/workflows/art-production-governance.yml) | Solicitudes, ownership y evidencias obligatorias. No determina belleza. |
 | Autoridad visual | [valoria-visual-authority-routing.yml](../.github/workflows/valoria-visual-authority-routing.yml) | Escena, referencia y responsable canónicos; permite otros trabajos autorizados sin crear una segunda autoridad visual. |

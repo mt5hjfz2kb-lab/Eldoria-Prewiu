@@ -17,8 +17,7 @@ concurrency:
 jobs:
   architecture:
     runs-on: ubuntu-latest
-    # The complete guarded trees still need >177 s to materialize after the
-    # sparse metadata fetch. Preserve all checks and allow their checkout to finish.
+    # Keep all structural/documentary checks; download only their source inputs.
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
@@ -43,6 +42,8 @@ jobs:
             /tools/check-repository-architecture*
             /tools/check-documentation-governance*
             /tools/closeout/
+            /tools/workflow-recovery/
+            /tools/work-status/
             /tools/art-direction/learning-evidence/
             /tools/art-direction/ai-authoring/unity_pixel_diff.mjs
       - name: Enforce repository architecture invariants
@@ -55,6 +56,8 @@ jobs:
         run: ELDORIA_CI_TRACKED_TREE=1 node --test tools/check-documentation-governance.test.mjs
       - name: Test read-only closeout diagnostics (no Windows, no game build)
         run: node --test tools/closeout/closeout.test.mjs
+      - name: Test recoverable native outputs and bounded read-only status
+        run: node --test tools/workflow-recovery/*.test.mjs tools/work-status/*.test.mjs
       - name: Enforce persistent art learning evidence and regression tests
         run: |
           node tools/art-direction/learning-evidence/learning.mjs audit
