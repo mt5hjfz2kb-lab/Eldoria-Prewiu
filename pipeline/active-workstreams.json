@@ -706,7 +706,8 @@
         "docs/DOCUMENTATION_POLICY.md",
         "docs/WORKFLOW_INDEX.md",
         "SESSION_HANDOFF.md",
-        "PROJECT_STATE.md"
+        "PROJECT_STATE.md",
+        ".github/workflows/art-production-governance.yml"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
