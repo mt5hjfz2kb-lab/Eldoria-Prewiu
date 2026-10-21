@@ -1,15 +1,15 @@
 {
-  "revision": 5,
+  "revision": 6,
   "stage": "isolated_unity_skin_import",
   "workstream": "eldoria-tripo-art-brain-phase2-20261021",
-  "artifact_id": 12368972822,
-  "source_run": 39651422644,
-  "source_sha256": "86ec1c93a222d58b89b9f393d39c8e5e912b14516ff5298500e5aca80048f631",
+  "artifact_id": 12373524457,
+  "source_run": 39661910094,
+  "source_sha256": "c846969f98c838f9a4c6b0436097d729135109eabaa573210096a6b11332f1db",
   "budget_eur": 0,
   "credits_added": 0,
   "canonical_scene_mutation": false,
   "integration": false,
   "expected_unity": "6000.3.23f1",
   "expected_urp": "17.3.0",
-  "reason": "V4 CPU deformation verified0.336879m and exact return0, 12bones/3textures. Independent image inspection found synchronous GPU captures identical; await genuine editor player-loop skin update and reject identical PNGs before visual acceptance."
+  "reason": "Measured original feet incorrectly share arm weights. V4.1 source-rest/geometry/12bones/clip unchanged; smooth limb repartition removes attack foot stretch in genuine Blender image, full1230footvertices maxmotion0.013674m. Verify exact repaired GLB native import, deformation, maps and distinct GPU poses in disposable Unity project."
 }
