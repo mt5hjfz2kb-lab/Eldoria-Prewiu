@@ -225,7 +225,7 @@ namespace Eldoria.ReferenceClean.Editor
         [Serializable] public class SculptParameters { public float x,z,radius_x,radius_z,height; }
         [Serializable] public class SculptAction { public string type,target; public SculptParameters parameters; }
         [Serializable] public class ArtistPlan {
-            public string source_scene_sha256; public bool qwen_artist_authored; public SculptAction[] planned_actions;
+            public string source_scene_sha256, sculpt_kernel; public bool qwen_artist_authored; public SculptAction[] planned_actions;
         }
         static ArtistPlan activeArtistPlan;
         static string activeArtistPlanHash;
@@ -238,6 +238,7 @@ namespace Eldoria.ReferenceClean.Editor
             var plan=JsonUtility.FromJson<ArtistPlan>(File.ReadAllText(path));
             Need(plan!=null&&plan.qwen_artist_authored&&plan.source_scene_sha256==sceneHash,
                 "Local artist decisions must match frozen actual scene");
+            Need(plan.sculpt_kernel=="compact_cubic_v2","Use finite-footprint artist terrain plan, not rejected central Gaussian field");
             Need(plan.planned_actions!=null&&plan.planned_actions.Length>=4&&plan.planned_actions.Length<=8,
                 "Expected four to eight bounded sculpt regions");
             foreach(string target in new[]{"city","world"})
@@ -259,39 +260,50 @@ namespace Eldoria.ReferenceClean.Editor
             float value=0;
             foreach(var a in activeArtistPlan.planned_actions.Where(a=>a.target==target)) {
                 var q=a.parameters;
-                value+=q.height*Mathf.Exp(-Mathf.Pow((x-q.x)/q.radius_x,2)-Mathf.Pow((z-q.z)/q.radius_z,2));
+                float radiusSquared=Mathf.Pow((x-q.x)/q.radius_x,2)+Mathf.Pow((z-q.z)/q.radius_z,2);
+                value+=q.height*Mathf.Pow(Mathf.Max(0,1-radiusSquared),3);
             }
             // Smooth, bounded height addition; no clipped plateau or new topology.
             return target=="city"?5f*(1f-Mathf.Exp(-value/5f)):24f*(1f-Mathf.Exp(-value/24f));
         }
-        static MeshRenderer[] CityDecorativeProps(Terrain terrain)
+        static Transform[] CityDecorationRoots(Terrain terrain)
         {
             Vector3 lo=terrain.transform.position,hi=lo+terrain.terrainData.size;
             return Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
-                .Where(r=>{
-                    if(!r||!r.enabled||r.GetComponentInParent<Collider>()||
-                       r.GetComponentInParent<WorldHotspot>()||
-                       r.GetComponentsInChildren<Renderer>(true).Length!=1)return false;
-                    string n=r.name.ToLowerInvariant();
-                    bool natural=new[]{"pine","conifer","tree","rock","shrub","bush","grass","fern","ruin"}.Any(n.Contains);
-                    return natural&&r.bounds.size.x<28&&r.bounds.size.z<28&&
-                        r.bounds.center.x>lo.x&&r.bounds.center.x<hi.x&&r.bounds.center.z>lo.z&&r.bounds.center.z<hi.z;
+                .Where(r=>r&&r.enabled&&new[]{"pine","conifer","tree","rock","shrub","bush","grass","fern","ruin"}
+                    .Any(n=>r.name.ToLowerInvariant().Contains(n)))
+                .Select(r=>{var lod=r.GetComponentInParent<LODGroup>();return lod?lod.transform:r.transform;})
+                .Distinct().Where(root=>{
+                    if(root.GetComponentInParent<WorldHotspot>()||root.GetComponentInParent<Collider>()||
+                        root.GetComponentsInChildren<Collider>(true).Length>0)return false;
+                    var rs=root.GetComponentsInChildren<Renderer>(true);
+                    if(rs.Length==0)return false;
+                    var bounds=rs[0].bounds;foreach(var r in rs.Skip(1))bounds.Encapsulate(r.bounds);
+                    return bounds.size.x<28&&bounds.size.z<28&&bounds.center.x>lo.x&&
+                        bounds.center.x<hi.x&&bounds.center.z>lo.z&&bounds.center.z<hi.z;
                 }).ToArray();
+        }
+        static MeshRenderer[] CityDecorativeProps(Terrain terrain)
+        {
+            return CityDecorationRoots(terrain).SelectMany(t=>t.GetComponentsInChildren<MeshRenderer>(true))
+                .Distinct().ToArray();
         }
         static Dictionary<Transform,Vector3> SeatCityDecoration(Terrain terrain,TerrainData original,TerrainData candidate)
         {
             var moved=new Dictionary<Transform,Vector3>();
-            foreach(var r in CityDecorativeProps(terrain)) {
-                Vector3 center=r.bounds.center;
+            foreach(var root in CityDecorationRoots(terrain)) {
+                var rs=root.GetComponentsInChildren<Renderer>(true);
+                var bounds=rs[0].bounds;foreach(var r in rs.Skip(1))bounds.Encapsulate(r.bounds);
+                Vector3 center=bounds.center;
                 float u=(center.x-terrain.transform.position.x)/original.size.x;
                 float v=(center.z-terrain.transform.position.z)/original.size.z;
                 float delta=candidate.GetInterpolatedHeight(u,v)-original.GetInterpolatedHeight(u,v);
                 if(Mathf.Abs(delta)<.001f)continue;
-                moved[r.transform]=r.transform.position;
-                r.transform.position+=Vector3.up*delta;
+                moved[root]=root.position;root.position+=Vector3.up*delta;
             }
-            foreach(var group in Object.FindObjectsByType<LODGroup>(FindObjectsSortMode.None))group.RecalculateBounds();
-            Debug.Log("VALORIA_GEOGRAPHY_CITY_DECORATION_SEATED "+moved.Count+" original visual props");
+            // Move each complete LOD group once; preserve size/reference point and
+            // relative mesh transforms so camera-identical trials retain the same LOD.
+            Debug.Log("VALORIA_GEOGRAPHY_CITY_DECORATION_SEATED "+moved.Count+" original visual roots");
             return moved;
         }
 
