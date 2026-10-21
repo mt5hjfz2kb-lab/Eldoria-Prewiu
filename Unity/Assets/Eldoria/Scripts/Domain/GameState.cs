@@ -178,6 +178,39 @@ namespace Eldoria.Domain
         public static int RecruitArchers => SliceContentProfiles.Active.RecruitArchers;
         public static int BarracksBuildSeconds => SliceContentProfiles.Active.BarracksBuildSeconds;
         public static int RecruitSeconds => SliceContentProfiles.Active.RecruitSeconds;
+        // Production pacing: 10 T1 = 300 s, 20 = 600 s, 30 = 900 s.
+        // QA_FAST preserves its accelerated per-batch profile for existing tests.
+        public static int RecruitSecondsFor(int count)
+        {
+            if(count < 1 || count > 500) throw new ArgumentOutOfRangeException(nameof(count));
+            if(SliceContentProfiles.ActiveRuntimeProfile == SliceContentProfiles.OwnerIiiId)
+                return checked(count * 30);
+            return (int)Math.Ceiling((double)SliceContentProfiles.Active.RecruitSeconds *
+                count / SliceContentProfiles.Active.RecruitArchers);
+        }
+        public static int RecruitWoodCostFor(int count)
+        {
+            if(count < 1 || count > 500) throw new ArgumentOutOfRangeException(nameof(count));
+            return (int)Math.Ceiling((double)RecruitWoodCost * count / RecruitArchers);
+        }
+        public static int RecruitStoneCostFor(int count)
+        {
+            if(count < 1 || count > 500) throw new ArgumentOutOfRangeException(nameof(count));
+            return (int)Math.Ceiling((double)RecruitStoneCost * count / RecruitArchers);
+        }
+        public static int MaxAffordableArchers(PlayerState state)
+        {
+            if(state == null || state.Resources == null) return 0;
+            int lo=0,hi=500;
+            while(lo<hi)
+            {
+                int mid=(lo+hi+1)/2;
+                if(RecruitWoodCostFor(mid)<=state.Resources.Wood &&
+                   RecruitStoneCostFor(mid)<=state.Resources.Stone) lo=mid;
+                else hi=mid-1;
+            }
+            return lo;
+        }
         public static int ForestLoad => SliceContentProfiles.Active.ForestLoad;
         public static int QuarryLoad => SliceContentProfiles.Active.QuarryLoad;
         public static int SawmillBuildSeconds => SliceContentProfiles.Active.SawmillBuildSeconds;
