@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T08:00:00Z",
+  "updated_at": "2026-10-21T08:12:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -660,8 +660,8 @@
       "resources": [],
       "budget_eur": 0,
       "art_production_routing": "required",
-      "dependency": "Canonical Unity scene and runner remain under valoria-master-plan-layered-construction-20261016; prepare complete visual asset, integrate only through reviewed PR/serialized scene change without overwriting live owner/UI V3.",
-      "next": "Produce vetted Blender LOD source; build standalone Unity prefab in new SpawnlingB2 directory and attach through scene-independent runtime hook. Validate native camera/play and coordinate scene owner before main promotion."
+      "dependency": "Scene integration staged exclusively in PR #84 (draft); existing valoria-master-plan workstream retains authority over Valoria_City_World_UI.unity and Windows runner. Coordinate main merge after native QA and UI V3 PR #83 conflict checks. Zero Tripo credits, no release.",
+      "next": "Await runner availability; native scene GLB PBR + LOD import with before/after images, canonical I-II save/raycast tests, review PR #83, then safe main promotion without publishing."
     }
   ],
   "history": [
