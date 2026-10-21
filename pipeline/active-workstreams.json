@@ -9,8 +9,7 @@
     "reason": "Owner retires independent experimental production; current integrated main is the sole development baseline.",
     "allowed_work": "Continue city/world/UI/gameplay on main under existing owner; historical branches read-only by project policy.",
     "authorized_workstream_ids": [
-      "valoria-master-plan-layered-construction-20261016",
-      "eldoria-tripo-art-brain-integration-20261021"
+      "valoria-master-plan-layered-construction-20261016"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
@@ -696,13 +695,15 @@
         "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
         "owner_authorized": "2026-10-21"
       }
-    },
+    }
+  ],
+  "history": [
     {
       "id": "eldoria-tripo-art-brain-integration-20261021",
       "title": "Tripo API + cerebro artístico — preproducción y pruebas sin créditos",
       "owner": "chatgpt-eldoria-tripo-brain-zero-spend-20261021",
       "branch": "main",
-      "status": "active",
+      "status": "completed",
       "claimed_at": "2026-10-21",
       "base_main_sha": "55985f0e279a2e0f6a3949d5bff0a217a8d8ea44",
       "scope": [
@@ -716,13 +717,13 @@
       "art_production_routing": "required",
       "art_production_routing_reason": "Extender el flujo existente mediante preflight trazable de fuentes Tripo, memoria para Qwen y decisiones de mejora, sin sustituir pipelines ni tocar assets/escenas de otros propietarios.",
       "dependency": "Usar solo los GLB ya pagados en ArtSource y la integración existente del Engendro; no crear tareas API, no activar runner pesado, no mutar Unity ni publicar. Tripo rigging/motion requieren coste y autorización expresa separados.",
-      "phase": "ZERO_CREDIT_BRIDGE_VERIFIED_AWAITING_FREE_RIG_CHECK_SESSION",
+      "phase": "ZERO_CREDIT_SOURCE_BRIDGE_AND_FREE_RIG_CHECK_DRY_RUN_VERIFIED",
       "delivery_definition": {
         "deliverable": "Herramienta ejecutable que audita tres activos Tripo mediante SHA, informa QA y estados separados, prepara briefs/memoria verificables para el Qwen existente y decisiones seguras para Blender, Unity y rigging, con pruebas CI sin gasto.",
         "evidence": "Pruebas locales y Actions focalizadas + outputs reales bajo SHA, sin credenciales ni facturación; comparación contra resultados de QA preservados.",
         "handoff": "Código y documentación de uso en main; pasos de animación/pago segregados y bloqueados hasta autorización."
       },
-      "next": "Zero-credit bridge and dry-run Rig Check for Spawnling/Boar are verified. To continue the original full animated-creature goal, run the one official free API v3 Rig Check from an already authenticated safe Tripo session; then obtain fresh explicit approval for any 25-credit rig + 10-credit animation(s), coordinate Windows/Valoria scene ownership, require Qwen authorship, genuine Blender/Unity A/B and Android profile. Do not assume those stages ran or auto-spend.",
+      "next": "Actual Qwen inference, Blender/Unity A/B, device QA and Tripo v3 rig-check LIVE were not executed. New owner/workstream must explicitly claim isolated work and verify access, source compatibility and new credit approval for any rig/animation. No ongoing processor, runner or Tripo task created.",
       "last_verified": {
         "sha": "c21f9a568c1c0f868597c948e683a1e01ffa482d",
         "run_id": 39622621426,
@@ -738,10 +739,25 @@
         "skipped_qwen_inference": true,
         "skipped_blender_authoring": true,
         "skipped_unity_integration": true
+      },
+      "completed_at": "2026-10-21",
+      "closure": {
+        "delivered": "source SHA/GLB/BLEND/UnityQA preflight, Qwen --inventory CLI verified, planner guarded, dry-run rig-check with no network, evidence docs",
+        "source_head": "c21f9a568c1c0f868597c948e683a1e01ffa482d",
+        "run_id": 39622621426,
+        "artifact_id": 12356305853,
+        "unit_tests": 12,
+        "source_assets": 3,
+        "credits_new": 0,
+        "qwen_inference": "NOT_EXECUTED",
+        "blender_new_authoring": "NOT_EXECUTED",
+        "unity_new_integration": "NOT_EXECUTED",
+        "rig_check_live": "NOT_EXECUTED",
+        "rig_or_animation": "NOT_EXECUTED",
+        "physical_mobile_profile": "NOT_EXECUTED",
+        "art_approved": false
       }
-    }
-  ],
-  "history": [
+    },
     {
       "id": "valoria-scene-method-breakthrough-20261016",
       "title": "Bastion I clean-scene whole-frame 3D versus bounded 2.5D experiment",
