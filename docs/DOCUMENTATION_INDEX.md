@@ -1,6 +1,6 @@
 # Eldoria — Índice documental único
 
-> **Vigencia:** 2026-10-13 · **Rol:** navegación, no autorización de desarrollo. Este índice reemplaza los mapas de navegación dispersos, pero no reemplaza las reglas técnicas ni los criterios de calidad.
+> **Vigencia operativa revisada:** 2026-10-21 · **Rol:** navegación, no autorización de desarrollo. Este índice reemplaza los mapas de navegación dispersos, pero no reemplaza las reglas técnicas ni los criterios de calidad.
 
 ## Arranque de un chat o agente (menos de dos minutos)
 
@@ -20,9 +20,10 @@
 | Código y gameplay vigente | [Unity](../Unity/) y [Arquitectura Unity](../UNITY_ARCHITECTURE.md) | [Contrato Unity](../UNITY_CORE_CONTRACT.md), [QA](../QA_AND_DEPLOY.md) |
 | Calidad y composición Valoria | **[JPEG canónico aprobado y verificado](../references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg)** y [reglas de composición confirmadas 20-10-2026](VALORIA_VISUAL_REFERENCE_CANON_20261020.md) — SHA-256 `86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d` | [Biblia histórica](VALORIA_VISUAL_BIBLE.md); las imágenes de grandes acantilados y campamentos previas son históricas, no canon. ART PASS sigue requiriendo capturas reales de Unity. |
 | Método de producción visual | [Reglas de producción](ELDORIA_VISUAL_PRODUCTION_RULES.md) | [Manual de acabado Unity](UNITY_ART_FINISHING_PROFESSIONAL_PLAYBOOK.md); sujetos a AGENTS |
-| Planes de contingencia visual (NO activados) | [Alternativas Valoria — 14 rutas y gates de decisión](VALORIA_VISUAL_FALLBACK_DECISION_PLAYBOOK_20261017.md) | **Reserva documental:** no cambia la prioridad exclusiva vigente, no pausa al constructor y exige autorización del propietario para ejecutar un pivote. |
+| Planes de contingencia visual (NO activados) | [Alternativas Valoria — 14 rutas y gates de decisión](VALORIA_VISUAL_FALLBACK_DECISION_PLAYBOOK_20261017.md) | **Reserva documental:** no cambia los alcances y las reservas vigentes, no pausa al constructor y exige autorización del propietario para ejecutar un pivote. |
+| Assets Tripo ya autorizados | [Norma de producción y trazabilidad](TRIPO_API_NORMA_PRODUCCION_V1.md) | Reutilizar la task pagada; ninguna lectura o integración autoriza nuevos créditos. |
 | Autoría IA Qwen/Blender/Unity | [AGENTS §7](../AGENTS.md) y el **código vivo** en `tools/art-direction/ai-authoring/` | [Guía técnica](ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md) con **cabecera desactualizada**; [Issue #34](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/34) y último ensayo real; no asumir ART APPROVED |
-| Publicación, QA y apps | [QA_AND_DEPLOY.md](../QA_AND_DEPLOY.md) | [Catálogo de workflows](WORKFLOW_INDEX.md), resultado de la ejecución y artefacto exacto |
+| Publicación, QA y apps | [Entrega WebGL/itch](ELDORIA_PLAYTEST_DELIVERY.md), [manifiesto WebGL](../pipeline/playtest-delivery.json) y [actualizaciones Android](ELDORIA_ANDROID_FAMILY_UPDATES.md) | [QA](../QA_AND_DEPLOY.md), [catálogo de workflows](WORKFLOW_INDEX.md), run y artefacto exactos. Pages histórico no es el canal actual. |
 | Evidencias e historial | [docs/evidence](evidence/) y [docs/archive](archive/) | No conceden permisos, reservas, ni hacen revivir tareas cerradas |
 
 ## Qué está realmente activo

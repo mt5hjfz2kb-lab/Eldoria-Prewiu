@@ -1,6 +1,6 @@
 # Eldoria — Política de vigencia y mantenimiento documental
 
-**Estado:** `current` · **Versión:** 1 · **Fecha:** 2026-10-13 · **Alcance:** únicamente documentación y navegación; NO cambia dirección artística, presupuesto, juego ni autorización de publicación.
+**Estado:** `current` · **Versión:** 2 · **Fecha:** 2026-10-21 · **Alcance:** únicamente documentación y navegación; NO cambia dirección artística, presupuesto, juego ni autorización de publicación.
 
 ## 1. Jerarquía y resolución de conflictos
 
@@ -31,10 +31,17 @@ El fichero [documentation-catalog.json](documentation-catalog.json) conserva el 
 
 ## 4. Verificaciones automáticas
 
-El guard de arquitectura ejecuta `node tools/check-documentation-governance.mjs` y sus pruebas. Valida catálogo JSON, rutas existentes, estados controlados, exhaustividad de los Markdown directos en `docs/` y los enlaces locales de las páginas de entrada. No necesita Unity, Windows ni servicios externos.
+El guard de arquitectura ejecuta `node tools/check-documentation-governance.mjs --tracked-tree` y sus pruebas. En CI, los archivos y enlaces se contrastan con el árbol exacto de Git del candidato; solo se descargan los contenidos que las pruebas leen. La ejecución local sin esa opción conserva la inspección del árbol de trabajo, incluidas eliminaciones sin commit. Valida catálogo JSON, rutas existentes, estados controlados, exhaustividad de los Markdown directos en `docs/` y los enlaces locales de las páginas de entrada. No necesita Unity, Windows ni servicios externos.
 
-**Límites:** el checker NO determina la verdad semántica de 178 documentos, no comprueba datos en vivo de GitHub ni declara calidad artística. Los documentos `review_pending` requieren intervención sustantiva. Cualquier fallo documental no justifica borrar archivos o reiniciar los trabajos del juego.
+**Límites:** el checker NO determina la verdad semántica de todos los documentos, no comprueba datos en vivo de GitHub ni declara calidad artística. Los documentos `review_pending` requieren intervención sustantiva. Cualquier fallo documental no justifica borrar archivos o reiniciar los trabajos del juego.
 
-## 5. Cambio de responsabilidades
+## 5. Responsabilidades vigentes
 
-Este trabajo se realiza en una rama documental aislada; no edita `pipeline/active-workstreams.json`, `SESSION_HANDOFF.md`, `PROJECT_STATE.md`, el núcleo Qwen de Bastión I ni workflows de ese propietario. Antes de fusionarlo, releer `main`, validar CI y verificar conflictos con el scope vivo. El responsable del Bastión decidirá cuándo actualizar la cabecera de `ELDORIA_AI_AUTHORING_ENFORCEMENT_V1.md`; el catálogo actual deja constancia de su desfase sin invadir esa propiedad.
+Esta política es permanente y no impone la rama o las reservas de la tarea documental de 2026-10-13. El ejecutor de mantenimiento debe registrar un alcance concreto en el registro vivo, respetar archivos reservados y conservar las decisiones y evidencias históricas. Los trabajos del juego mantienen su titularidad y sus gates.
+
+Al cerrar mantenimiento, distinguir explícitamente:
+- **Integridad documental:** catálogo, existencia de rutas, enlaces y pruebas automáticas.
+- **Coherencia operativa:** reglas de arranque, concurrencia, herramientas y rutas de entrega revisadas contra código y configuración actuales.
+- **Archivo histórico o pendiente de revisión:** no se declara semánticamente actualizado por un CI verde, ni se usa como una nueva orden.
+
+No copiar estados de publicación en todos los índices. Para WebGL, consultar `pipeline/playtest-delivery.json` y la guía de entrega; para Android, el canal y solicitudes específicos. Una build verde, un upload aceptado y una versión activada son estados distintos.
