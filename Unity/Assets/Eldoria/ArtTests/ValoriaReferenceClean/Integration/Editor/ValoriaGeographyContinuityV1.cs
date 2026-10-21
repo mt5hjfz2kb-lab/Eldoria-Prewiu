@@ -65,10 +65,15 @@ namespace Eldoria.ReferenceClean.Editor
             ValoriaReferenceCleanBuilder.Capture(c, Path.Combine(Evidence, name), width, height);
         }
 
+        [Serializable] public sealed class CityCameraProof
+        {
+            public string kind, stamp;
+            public int width, height;
+        }
         static readonly Dictionary<string,string> CityComparisonStamps = new Dictionary<string,string>();
         static void VerifyCityCameraStamp(Camera c, string prefix, string kind, int width, int height)
         {
-            // Calibration uses an independent temporary Unity camera.
+            // Calibration uses a temporary camera; preserve full matrix precision.
             c.aspect = width / (float)height;
             c.ResetProjectionMatrix();
             string stamp = c.transform.position.ToString("R") + "|" +
@@ -76,11 +81,13 @@ namespace Eldoria.ReferenceClean.Editor
                 c.orthographicSize.ToString("R") + "|" +
                 c.projectionMatrix.ToString("F7") + "|" +
                 c.worldToCameraMatrix.ToString("F7");
-            File.WriteAllText(Path.Combine(Evidence,
-                prefix + "-" + kind + "-camera.json"),
-                "{\"kind\":\"" + kind + "\",\"width\":" + width +
-                ",\"height\":" + height + ",\"stamp\":\"" +
-                stamp.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n") + "\"}");
+            // Unity matrix string contains CR/LF. JsonUtility escapes these
+            // properly, unlike the old hand-built JSON (native260 evidence).
+            var proof = new CityCameraProof {
+                kind = kind, stamp = stamp, width = width, height = height
+            };
+            File.WriteAllText(Path.Combine(Evidence, prefix + "-" + kind + "-camera.json"),
+                JsonUtility.ToJson(proof, true));
             if (prefix == "before") CityComparisonStamps[kind] = stamp;
             else if (prefix == "after")
             {
