@@ -4,7 +4,7 @@ Fecha: 2026-10-21. Autoridad: `AGENTS.md` y `main`. Estado: **preflight de fuent
 
 ## Qué se ha incorporado
 
-- **Herramienta reutilizable, no un segundo pipeline:** `tools/tripo-art-brain/preflight.mjs`. Comprueba SHA-256 verdadero de GLB raw/optimizado, estructura GLB y conteo real de triángulos, UV0/normales, métricas Unity verificadas, PNG de las cuatro vistas y fallos de materiales 4×4. En el Engendro comprueba además las mallas de dos LOD y los hashes de la integración existente (se conservan hotspot, colisiones y guardados).
+- **Herramienta reutilizable, no un segundo pipeline:** `tools/tripo-art-brain/preflight.mjs`. Comprueba SHA-256 verdadero de GLB raw/optimizado y .blend originales/editables, estructura GLB y conteo real de triángulos, UV0/normales, métricas Unity verificadas, PNG de las cuatro vistas y fallos de materiales 4×4. En el Engendro comprueba además las mallas de dos LOD y los hashes de la integración existente (se conservan hotspot, colisiones y guardados).
 - **Catálogo de fuentes exactas:** `pipeline/tripo-art-brain/catalog.json`, con tres task IDs y 60 créditos históricos, sus originales y defectos documentados. El Engendro ya tiene near/far en el runtime de Bastión II; el Jabalí pertenece al alcance futuro de Bastión III y el Foco es arte experimental sin nodo jugable.
 - **Puente al artista Qwen:** comando `prepare` genera `qwen-inventory.txt` con proveniencia, contexto espacial/narrativo, defectos y rutas de mejora; el artista ya existente lo acepta como `--inventory` en `tools/art-direction/ai-authoring/author_brief.py`. **La preparación no ejecuta Ollama/Qwen, Blender ni Unity** y no debe registrarse como inferencia o mejora.
 - **Planificador canónico:** genera una solicitud inerte con `allow_tripo=false`, `credit_authorization.approved=false`, `authorized_credit_cost=0`, `enabled=false`, perfiles correctos (`animated_asset` para bestias, `environment_surface` para el Foco). Se prueba con `tools/plan-art-production.mjs` sin cambiarlo.
@@ -12,7 +12,7 @@ Fecha: 2026-10-21. Autoridad: `AGENTS.md` y `main`. Estado: **preflight de fuent
 
 ## Evidencia real
 
-- [Run de integración (PASS)](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39620738184): tests de fail-closed y las tres fuentes reales PASS. Artefacto `tripo-art-brain-zero-credit-39620738184` contiene informes, tres inventarios Qwen y las decisiones del planificador.
+- [Run de preflight reforzado (PASS)](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39621777443): 8 pruebas locales de protección, SHA de GLB originales/optimizados y BLEND editables, importaciones QA de las tres fuentes y dos LOD del Engendro. Artefacto conservado `tripo-art-brain-zero-credit-39621777443` (GitHub artifact `12354687786`) con informes, tres inventarios Qwen y decisiones del planificador; 0 nuevos créditos.
 - Origen: [resultados de 3 generaciones](TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md), [postmortem jabalí](TRIPO_API_JABALI_LECCIONES_20261021.md), [Engendro](TRIPO_API_ENGENDRO_RESULTADO_20261021.md), [Foco](TRIPO_API_FOCO_RESULTADO_20261021.md).
 - [Engendro ya integrado con 12.040/2.900 tris, no animado](evidence/spawnling-bastion2/ART_AND_INTEGRATION_REVIEW.md) y [PR original #84](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/84). No reiterar esa integración ni declarar su calidad formal como 8/10.
 
