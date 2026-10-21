@@ -190,6 +190,19 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
     lods = { near, far, finished_blend: finishedBlend, provenance: asset.integration.evidence };
     integrated = true;
   }
+  const verifiedFailures = (asset.verified_failures || []).map(failurePath => {
+    const record = readJson(root, failurePath);
+    if (record.asset !== id || record.art_approved !== false ||
+        record.classification !== 'ART_REJECTED_GLOBAL_TRANSLATION_LIKE' ||
+        record.source?.source_blend_sha256 !== asset.integration?.editable?.sha256 ||
+        !Number.isInteger(record.source?.repo_run) ||
+        !record.lesson || !record.next_action) {
+      throw new Error('UNTRUSTED_REJECTED_ART_LEARNING: ' + failurePath);
+    }
+    return { path: failurePath, run_id: record.source.repo_run,
+      classification: record.classification, lesson: record.lesson,
+      next_action: record.next_action };
+  });
   return {
     id, label: asset.label, role: asset.role, task_id: asset.source.task_id,
     historical_credits: asset.source.credits_consumed, new_credits: 0,
@@ -200,7 +213,7 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
     has_skin: Boolean(lods?.near.skins || optimized.skins),
     has_animation: Boolean(lods?.near.animations || optimized.animations),
     art_approved: false, physical_mobile_profiled: false,
-    defects: asset.defects, next_actions: asset.next_actions,
+    defects: asset.defects, next_actions: asset.next_actions, verified_failures: verifiedFailures,
     source_report: asset.source_report, allowed_destination: asset.allowed_destination,
     protected: asset.protected
   };
@@ -258,6 +271,10 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
     'Finished editable Blender: ' + (item.lods ? item.lods.finished_blend.path + ' SHA256 ' + item.lods.finished_blend.sha256 : 'NOT INTEGRATED'),
     'Actual rig/skin/animation in these GLBs: ' + item.has_skin + '/' + item.has_animation + '.',
     'Known visual issues (documented; Qwen MUST verify from genuine images):\n' + diagnosis,
+    'VERIFIED REAL REJECTED QWEN ART CYCLES, NOT APPROVED (never repeat):\n' +
+      (item.verified_failures.length ? item.verified_failures.map(f => 'Run ' + f.run_id +
+       ' => ' + f.classification + ': ' + f.lesson + ' Next: ' + f.next_action).join('\n') :
+       'No source-specific reviewed failures.'),
     'Current evidence-aware next actions (not scripted edits):\n' + actions,
     'Preserve: ' + (item.protected || []).join('; '),
     'External Tripo API is NOT authorized. Do not generate, regenerate, animate, retarget or upload from this bundle.',
@@ -266,6 +283,7 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
   ].join('\n\n') + '\n';
   const report = {
     schema_version: 1, status: 'ZERO_CREDIT_PREFLIGHT_PASS', item,
+    reviewed_failed_qwen_cycles: item.verified_failures.length,
     follow_up_advanced_tripo: {
       ready_for_paid_call: false, credits_authorized: 0,
       rig_check_api_task: 'NOT_EXECUTED',
