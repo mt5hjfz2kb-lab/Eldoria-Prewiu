@@ -1,0 +1,786 @@
+{
+  "schema_version": 1,
+  "base": "main",
+  "offset": 30,
+  "items": [
+    {
+      "name": "dev/v0.20.1-onboarding",
+      "sha": "2fa1b24402d8ff4b7b4b72811eebd10d81030a51",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8285,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "dev/v020-impl",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8288,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "development/recovered-visual-base",
+      "sha": "a05b62307d1db68c50263f693a427822e9d67a54",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8168,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "development/v0.23-clean",
+      "sha": "4add36966957b1553595b03652a5d6f361a9267a",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 7984,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "diagnostic/chatgpt-cuartel-reference-20261015",
+      "sha": "5d55e605ec2d476a67fd0a6b311d3176473eb3d4",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 7,
+      "behind": 1635,
+      "files_count": 10,
+      "total_commits": 7,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 3,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-chatgpt-cuartel-study.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/chatgpt-cuartel-20261015/RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "tools/chatgpt-cuartel-proof/build.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "diagnostic/eldoria-artist-capability-bridge-20261015",
+      "sha": "de278fae8d015250a91228bdc61df0ae22b34e3e",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 242,
+      "behind": 1697,
+      "files_count": 150,
+      "total_commits": 242,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 149,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-art-brain-safe-handoff.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capability-bridge-static.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-complete-pc-local-qwen-blender-cycle.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-pc-addons-and-custom-model-inspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-professional-cycle-contract-tests.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-qwen-full-cycle-pc-native.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-qwen-plan-on-windows-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-windows-blendermcp-transport-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-world-placement-regressions.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-advanced-toolbox-and-qwen-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-local-blender-connection-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-context-hardware.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-memory-ab.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-custom-artist-model-native-blendermcp-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-director-evidence-gate-unit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-exterior-visible-architecture-qa.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-eyes-brain-vision-diagnostic.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-fresh-qwen-art-material-to-pc-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-isolated-tower-copy-art-calibration.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-local-director-inventory.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-native-pc-world-space-artist-inspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-new-ai-authored-architecture-pc-proof.yml",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "diagnostic/eldoria-grounded-beam-tool-20261015",
+      "sha": "e429daed7d229e333059ead58ad6c7de2364262a",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 282,
+      "behind": 1697,
+      "files_count": 155,
+      "total_commits": 282,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 154,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-art-brain-safe-handoff.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-beam-and-14b-static-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capabilities-one-tower-real-qwen-test.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capability-bridge-static.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-complete-pc-local-qwen-blender-cycle.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-mcp-vs-direct-parity-20261015.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-pc-addons-and-custom-model-inspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-professional-cycle-contract-tests.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-qwen-full-cycle-pc-native.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-qwen-plan-on-windows-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-windows-blendermcp-transport-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-world-placement-regressions.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-advanced-toolbox-and-qwen-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-local-blender-connection-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-context-hardware.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-memory-ab.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-custom-artist-model-native-blendermcp-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-director-evidence-gate-unit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-exterior-visible-architecture-qa.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-eyes-brain-vision-diagnostic.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-fresh-qwen-art-material-to-pc-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-isolated-tower-copy-art-calibration.yml",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "diagnostic/eldoria-real-world-contact-context-20261015",
+      "sha": "4a42b988ba8b9fb010cab1c70f5561daf9b0908f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 246,
+      "behind": 1697,
+      "files_count": 152,
+      "total_commits": 246,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 151,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-art-brain-safe-handoff.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capabilities-one-tower-real-qwen-test.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capability-bridge-static.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-complete-pc-local-qwen-blender-cycle.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-mcp-vs-direct-parity-20261015.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-pc-addons-and-custom-model-inspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-professional-cycle-contract-tests.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-qwen-full-cycle-pc-native.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-qwen-plan-on-windows-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-windows-blendermcp-transport-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-world-placement-regressions.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-advanced-toolbox-and-qwen-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-local-blender-connection-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-context-hardware.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-memory-ab.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-custom-artist-model-native-blendermcp-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-director-evidence-gate-unit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-exterior-visible-architecture-qa.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-eyes-brain-vision-diagnostic.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-fresh-qwen-art-material-to-pc-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-isolated-tower-copy-art-calibration.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-local-director-inventory.yml",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "diagnostic/gpt6-vs-qwen-valoria-tower-20261015",
+      "sha": "451509815660bce4cb1970946d65e1471ebe0209",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 284,
+      "behind": 1697,
+      "files_count": 173,
+      "total_commits": 284,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 172,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-art-brain-safe-handoff.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capabilities-one-tower-real-qwen-test.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capability-bridge-static.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-complete-pc-local-qwen-blender-cycle.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-mcp-vs-direct-parity-20261015.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-pc-addons-and-custom-model-inspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-professional-cycle-contract-tests.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-qwen-full-cycle-pc-native.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-qwen-plan-on-windows-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-windows-blendermcp-transport-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-world-placement-regressions.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-advanced-toolbox-and-qwen-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-local-blender-connection-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-context-hardware.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-memory-ab.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-custom-artist-model-native-blendermcp-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-director-evidence-gate-unit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-exterior-visible-architecture-qa.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-eyes-brain-vision-diagnostic.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-fresh-qwen-art-material-to-pc-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-gpt6-critic-v2-phase2.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-gpt6-critic-v2-replay.yml",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "diagnostic/valoria-ai-eyes-brain-20261015",
+      "sha": "f0fed53e4e58d85dd7b51033a92a2bb28fd2c046",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 254,
+      "behind": 1697,
+      "files_count": 171,
+      "total_commits": 254,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 170,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-art-brain-safe-handoff.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capabilities-one-tower-real-qwen-test.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-capability-bridge-static.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-complete-pc-local-qwen-blender-cycle.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-mcp-vs-direct-parity-20261015.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-pc-addons-and-custom-model-inspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-professional-cycle-contract-tests.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-qwen-full-cycle-pc-native.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-qwen-plan-on-windows-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-windows-blendermcp-transport-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-world-placement-regressions.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-advanced-toolbox-and-qwen-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-local-blender-connection-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-context-hardware.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-brain-memory-ab.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-custom-artist-model-native-blendermcp-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-director-evidence-gate-unit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-exterior-visible-architecture-qa.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-eyes-brain-vision-diagnostic.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-fresh-qwen-art-material-to-pc-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-isolated-tower-copy-art-calibration.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-local-director-inventory.yml",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "docs/art-brain-blender-vision-consolidation-20261010",
+      "sha": "235e20cc45eca3a354c6bdc84d4d739368e2c2a3",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 1,
+      "behind": 1888,
+      "files_count": 1,
+      "total_commits": 1,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": "docs/art/BLENDER_LOCAL_VISION_PRODUCTION_METHOD_V1.md",
+          "status": "added"
+        }
+      ],
+      "families": [
+        "docs"
+      ]
+    },
+    {
+      "name": "docs/current-state-cleanup-2026-09-28",
+      "sha": "4d40d8f136f709a0d3e820690319acb55759c03a",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 6483,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "docs/eldoria-documentation-consolidation-20261013",
+      "sha": "5d89ecc827139ea56d7491ba3502f575ed0daf30",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 1,
+      "behind": 1725,
+      "files_count": 10,
+      "total_commits": 1,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 4,
+      "highlights": [
+        {
+          "path": ".github/workflows/repository-architecture-guard.yml",
+          "status": "modified"
+        },
+        {
+          "path": "docs/ELDORIA_ART_PIPELINE_INDEX.md",
+          "status": "modified"
+        },
+        {
+          "path": "tools/check-documentation-governance.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/check-documentation-governance.test.mjs",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "docs/eldoria-verify-project-capabilities-20261011",
+      "sha": "db9728edb7b0008a7740bc3a0b44811922ee11ea",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 3,
+      "behind": 1888,
+      "files_count": 1,
+      "total_commits": 3,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "eldoria-recovery-backup-20261009",
+      "sha": "e13e6cb9311bed388447d21c39548f26c5c677bc",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 2022,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "eldoria-recovery-oct07-playable",
+      "sha": "b5046f98c0fef689c109190611271ecce6d001ea",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 2158,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    }
+  ]
+}
