@@ -4,7 +4,6 @@ using System.Collections;
 using System.Reflection;
 using Eldoria.Application;
 using Eldoria.Domain;
-using Eldoria.SpawnlingBastion2;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -32,10 +31,17 @@ namespace Eldoria.Tests
             clip=new AnimationClip{legacy=true,name="verified visual sample",wrapMode=WrapMode.Once};
             clip.SetCurve("joint",typeof(Transform),"localPosition.x",AnimationCurve.Linear(0,0,2.7f,1));
             animation.AddClip(clip,clip.name);animation.clip=clip;
-            var actor=root.AddComponent<SpawnlingEncounterVisual>();
-            actor.ModelRoot=model;actor.MotionPivot=root.transform;actor.SkeletalAnimation=animation;actor.SwipeClip=clip.name;
+            // Presentation lives in Assembly-CSharp; the domain test asmdef must
+            // exercise that real component through its serialized boundary.
+            var actorType=Type.GetType("Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual, Assembly-CSharp");
+            Assert.IsNotNull(actorType,"Canonical encounter presentation type missing");
+            var actor=root.AddComponent(actorType);
+            actorType.GetField("ModelRoot").SetValue(actor,model);
+            actorType.GetField("MotionPivot").SetValue(actor,root.transform);
+            actorType.GetField("SkeletalAnimation").SetValue(actor,animation);
+            actorType.GetField("SwipeClip").SetValue(actor,clip.name);
             root.SetActive(true);yield return null;
-            var apply=typeof(SpawnlingEncounterVisual).GetMethod("ApplySnapshot",BindingFlags.NonPublic|BindingFlags.Instance);
+            var apply=actorType.GetMethod("ApplySnapshot",BindingFlags.NonPublic|BindingFlags.Instance);
             void Present(PlayerState state,bool world=true){
                 string before=JsonUtility.ToJson(state);int writes=store.Writes;
                 apply.Invoke(actor,new object[]{state,clock.UtcTicks,world});
