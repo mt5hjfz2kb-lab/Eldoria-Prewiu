@@ -50,6 +50,17 @@ A Bastion level should not read as merely “two more menus unlocked”. From VI
 - **IX — Independent mastery:** no step-by-step teaching. Player solves a multi-system preparation problem and uses the two-hero March requirement/trial as an autonomy check.
 - **X — Prologue finale / graduation:** learned loop is applied in a meaningful expedition; Herald/Hospital loop teaches combat wear/recovery; immediate frontier danger resolves while the larger Breach mystery opens. End state communicates **CAPÍTULO I COMPLETADO**, not game completion.
 
+## Decisión del propietario — 2026-10-21: hito visual de edificios al nivel 5 (migración Bastiones III–V)
+
+**CONDICIÓN VINCULANTE PARA CERRAR LA MIGRACIÓN DE BASTIÓN V A UNITY; no es una orden de ejecución inmediata.** Al desarrollar consecutivamente Bastiones III, IV y V, preparar e integrar la transformación visual de los edificios cuando **cada edificio individual** alcance su **nivel 5**. No confundir *Bastión V* (momento previsto para integrar y comprobar la característica) con *nivel 5 de un edificio* (desencadenante de su transformación): ascender a Bastión V no sube automáticamente los edificios de nivel.
+
+- El salto 4→5 ha de ser **claramente perceptible desde la cámara real del juego**, con un modelo/variante más elaborado y coherente con el estilo de Eldoria. Los niveles intermedios pueden mostrar cambios menores; nivel 5 representa una evolución mayor, no un mero cambio de número o icono.
+- **Vía de autoría elegida por el propietario: Tripo** para crear la versión visual de nivel 5; integrar el resultado en el cerebro artístico existente y perfeccionarlo con Blender/BlenderMCP antes de incorporarlo a Unity. Reutilizar fuentes y modelos existentes cuando proceda, sin sustituciones arbitrarias ni regresiones de calidad.
+- Mantener **0 € de presupuesto**: sin gastar créditos de pago, generar por vías gratuitas/autorizadas únicamente. Si Tripo no permite materializar un modelo de calidad sin pago o credenciales no disponibles, documentar el impedimento y resolverlo con el propietario; **no** gastar ni marcar el hito como cumplido por usar otra solución sin autorización.
+- Verificar en Unity la comparación del **mismo edificio nivel 4 vs. nivel 5** con cámara e iluminación equivalentes, mejora de silueta y detalle visible en encuadre móvil, fuentes editables, coherencia artística y rendimiento/LOD adecuados; preservar hotspots, posición, colisiones, economía, niveles y guardados. Puede acompañarse de transición/celebración breve si cabe en el presupuesto de rendimiento.
+- **Criterio de cierre de Bastión V:** el sistema de apariencia de nivel 5 ha de estar integrado y demostrado en al menos un edificio elegible (prototipo preferente: Aserradero), con ruta de producción documentada y reproducible para los demás edificios que puedan alcanzar dicho nivel. No se considerará terminada la incorporación del hito por disponer solo de una imagen o un modelo Tripo no validado en escena. La extensión a edificios adicionales se efectuará a medida que puedan alcanzar nivel 5 en la progresión. Los posibles hitos de nivel 10 o 15 fueron una idea orientativa, **no** una condición aprobada.
+- Este requisito **se añade** a la migración de las mecánicas canónicas III–V; no reabre decisiones cerradas ni habilita por sí solo producción concurrente en archivos reservados a otro trabajo.
+
 ## Resource/building responsibility
 - **Aserradero = wood production.**
 - **Granero = food economy.**
