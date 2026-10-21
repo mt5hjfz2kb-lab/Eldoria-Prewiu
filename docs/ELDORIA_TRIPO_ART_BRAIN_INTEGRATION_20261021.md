@@ -12,9 +12,13 @@ Fecha: 2026-10-21. Autoridad: `AGENTS.md` y `main`. Estado: **preflight de fuent
 
 ## Evidencia real
 
-- [Run de preflight reforzado (PASS)](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39621777443): 8 pruebas locales de protección, SHA de GLB originales/optimizados y BLEND editables, importaciones QA de las tres fuentes y dos LOD del Engendro. Artefacto conservado `tripo-art-brain-zero-credit-39621777443` (GitHub artifact `12354687786`) con informes, tres inventarios Qwen y decisiones del planificador; 0 nuevos créditos.
+- [Último ensayo integrado (PASS, main)](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39622621426): **12 pruebas unitarias aprobadas**, SHA de GLB y BLEND editables (incluidos formatos comprimidos), UnityQA de las tres fuentes, LOD del Engendro, compatibilidad real del CLI Qwen `--inventory` sin inferencia y pruebas negativas/dry-run de Rig Check V3. Artefacto conservado `tripo-art-brain-zero-credit-39622621426` (artifact `12356305853`) con inventarios, informes y planes; **0 nuevos créditos**.
 - Origen: [resultados de 3 generaciones](TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md), [postmortem jabalí](TRIPO_API_JABALI_LECCIONES_20261021.md), [Engendro](TRIPO_API_ENGENDRO_RESULTADO_20261021.md), [Foco](TRIPO_API_FOCO_RESULTADO_20261021.md).
 - [Engendro ya integrado con 12.040/2.900 tris, no animado](evidence/spawnling-bastion2/ART_AND_INTEGRATION_REVIEW.md) y [PR original #84](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/84). No reiterar esa integración ni declarar su calidad formal como 8/10.
+
+## Rig Check de V3 sin gasto ni generación nueva
+
+`tools/tripo-art-brain/rig-check-v3.mjs` tiene modo `--dry-run` sin red y sin clave; el workflow certifica ese modo y sus cuatro pruebas de seguridad. El modo `--live-free` **NO se ha ejecutado**: requiere una API key válida, conexión operativa y comprobación de compatibilidad del identificador de tarea original. Los task IDs H3.1 que tenemos son UUID históricos; la documentación de la API V3 ilustra identificadores `task_...` y también acepta `file_token`. No asumir que V3 admite automáticamente los UUID antiguos; si son incompatibles, estudiar la subida segura del GLB existente, **sin regenerarlo**. El test gratuito no indica que el rig o sus animaciones hayan sido producidos. [Especificación oficial de Rig Check](https://developers.tripo3d.ai/en/docs/animations-rig-check).
 
 ## Comandos para la siguiente intervención artística permitida
 
