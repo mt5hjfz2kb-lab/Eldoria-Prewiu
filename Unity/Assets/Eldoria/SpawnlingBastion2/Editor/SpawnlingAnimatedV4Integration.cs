@@ -38,6 +38,22 @@ namespace Eldoria.SpawnlingBastion2.Editor
             Need(renderers.Length>0,"Renderer set empty");var b=renderers[0].bounds;
             foreach(var r in renderers.Skip(1))b.Encapsulate(r.bounds);return b;
         }
+        // Fit the actual sampled vertices, never glTF skin culling bounds.
+        static Bounds GeometryBounds(Renderer[] renderers){
+            Bounds bounds=default;bool first=true;
+            foreach(var renderer in renderers){
+                Mesh baked=null;
+                var skin=renderer as SkinnedMeshRenderer;
+                var mesh=skin? (baked=new Mesh()):renderer.GetComponent<MeshFilter>().sharedMesh;
+                if(skin)skin.BakeMesh(baked,false);
+                foreach(var vertex in mesh.vertices){
+                    var point=renderer.transform.TransformPoint(vertex);
+                    if(first){bounds=new Bounds(point,Vector3.zero);first=false;}else bounds.Encapsulate(point);
+                }
+                if(baked)Object.DestroyImmediate(baked);
+            }
+            Need(!first,"No actual geometry to fit");return bounds;
+        }
         static Texture2D CopyTexture(Texture texture){
             bool linear=!UnityEngine.Experimental.Rendering.GraphicsFormatUtility.IsSRGBFormat(texture.graphicsFormat);
             var rt=RenderTexture.GetTemporary(texture.width,texture.height,0,RenderTextureFormat.ARGB32,
@@ -137,7 +153,7 @@ namespace Eldoria.SpawnlingBastion2.Editor
                 var levels=lod.GetLODs();Need(levels.Length==2,"Retain original near/far LOD contract");
                 var oldNear=levels[0].renderers;var oldFar=levels[1].renderers;
                 Need(oldNear.All(r=>r)&&oldFar.All(r=>r),"Existing LOD renderers missing");
-                var oldBounds=BoundsOf(oldNear);
+                var oldBounds=GeometryBounds(oldNear);
                 var spots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true);
                 var identities=spots.Select(h=>h.Id+"="+h.transform.position.ToString("R")).OrderBy(x=>x).ToArray();
                 int colliders=host.WorldRoot.GetComponentsInChildren<Collider>(true).Length;
@@ -168,10 +184,13 @@ namespace Eldoria.SpawnlingBastion2.Editor
                     PersistSkin(root,folder,oldNear.Concat(oldFar).ToArray(),ref added,ref reused);
                 }
                 var renderers=root.GetComponentsInChildren<Renderer>(true);
-                var bounds=BoundsOf(renderers);Need(bounds.size.y>.2f,"Imported source height implausible");
+                var bounds=GeometryBounds(renderers);Need(bounds.size.y>.2f,"Imported source height implausible");
                 root.transform.localScale*=oldBounds.size.y/bounds.size.y;
-                bounds=BoundsOf(renderers);root.transform.position+=new Vector3(oldBounds.center.x-bounds.center.x,
+                bounds=GeometryBounds(renderers);root.transform.position+=new Vector3(oldBounds.center.x-bounds.center.x,
                     oldBounds.min.y-bounds.min.y,oldBounds.center.z-bounds.center.z);
+                var fitted=GeometryBounds(renderers);
+                Need(Mathf.Abs(fitted.size.y-oldBounds.size.y)<.01f&&
+                    Mathf.Abs(fitted.min.y-oldBounds.min.y)<.01f,"Actual sampled height/base must match original");
                 // Cache the full real clip envelope so near-camera skin culling cannot cut off a swipe.
                 var skinRenderers=root.GetComponentsInChildren<SkinnedMeshRenderer>(true);
                 foreach(var skin in skinRenderers) {
