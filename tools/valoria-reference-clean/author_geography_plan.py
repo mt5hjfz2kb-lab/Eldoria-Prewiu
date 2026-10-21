@@ -81,6 +81,9 @@ def main():
     def target_actions(target,minimum):
         shape=json.loads(json.dumps(action))
         shape["properties"]["target"]["enum"]=[target]
+        limits={"city":{"x":(-80,80),"z":(-75,100),"radius_x":(15,40),"radius_z":(18,55),"height":(1.5,4)},
+                "world":{"x":(895,1105),"z":(-105,105),"radius_x":(22,65),"radius_z":(25,75),"height":(5,16)}}[target]
+        shape["properties"]["parameters"]=record({key:number(*bounds) for key,bounds in limits.items()})
         return {"type":"array","minItems":minimum,"maxItems":4,"items":shape}
     schema=record({"observed_defect":{"type":"string"},"design_intent":{"type":"string"},
         "asset_decision":{"type":"string","enum":["MODIFY"]},
