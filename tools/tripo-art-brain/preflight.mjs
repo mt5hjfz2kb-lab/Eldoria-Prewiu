@@ -259,29 +259,33 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
   const request = makePlannerRequest(id, item, catalog);
   const diagnosis = item.defects.map((s, i) => String(i + 1) + '. ' + s).join('\n');
   const actions = item.next_actions.map((s, i) => String(i + 1) + '. ' + s).join('\n');
+  // Qwen CPU compact mode only reads the first 3200 characters of --inventory.
+  // Keep BOTH true failure lessons and source identity ahead of optional advice.
+  // Never truncate a lesson silently, which would turn the retry into blind work.
+  const sourceFailureLessons = item.verified_failures.length
+    ? item.verified_failures.map(f =>
+        'Run ' + f.run_id + ' => ' + f.classification + ': ' + f.lesson).join(' | ')
+    : 'No source-specific reviewed failures';
   const context = [
     'ELDORIA / TRIPO — VERIFIED SOURCE INVENTORY FOR EXISTING QWEN ARTIST (not a model inference).',
-    'Target: ' + item.label + '. Gameplay role: ' + item.role + '.',
-    'Original Tripo task: ' + item.task_id + '. Historical spend: 20 API credits; new credits: ZERO.',
-    'Immutable raw: ' + item.raw.path + ' SHA256 ' + item.raw.sha256 + '; ' + item.raw.triangles + ' tris.',
-    'Certified isolated-Unity source: ' + item.optimized.path + ' SHA256 ' + item.optimized.sha256
-      + '; ' + item.optimized.triangles + ' tris; BaseColor ' + item.imported_basecolor_px.join('x') + '.',
-    'Editable Blender: ' + item.source_editable.path + ' SHA256 ' + item.source_editable.sha256 + '.',
-    'Integrated in game: ' + item.integrated_in_game + '. True Unity tech QA: ' + item.unity_technical_pass + '.',
+    'Target: ' + item.label + ' | role: ' + item.role,
+    'Tripo task ' + item.task_id + ' | historic 20 credits | new credits ZERO.',
+    'Editable Blender SHA256 ' + item.source_editable.sha256 + ' | ' + item.source_editable.path,
+    'Optimized GLB SHA256 ' + item.optimized.sha256 + ' | ' + item.optimized.path +
+      ' | ' + item.optimized.triangles + ' tris, Unity BaseColor ' + item.imported_basecolor_px.join('x'),
+    'Original GLB SHA256 ' + item.raw.sha256 + ' | ' + item.raw.path,
     'Existing runtime LOD triangles: ' + (item.lods ? item.lods.near.triangles + '/' + item.lods.far.triangles : 'NONE, only isolated source'),
     'Finished editable Blender: ' + (item.lods ? item.lods.finished_blend.path + ' SHA256 ' + item.lods.finished_blend.sha256 : 'NOT INTEGRATED'),
-    'Actual rig/skin/animation in these GLBs: ' + item.has_skin + '/' + item.has_animation + '.',
-    'Known visual issues (documented; Qwen MUST verify from genuine images):\n' + diagnosis,
-    'VERIFIED REAL REJECTED QWEN ART CYCLES, NOT APPROVED (never repeat):\n' +
-      (item.verified_failures.length ? item.verified_failures.map(f => 'Run ' + f.run_id +
-       ' => ' + f.classification + ': ' + f.lesson + ' Next: ' + f.next_action).join('\n') :
-       'No source-specific reviewed failures.'),
-    'Current evidence-aware next actions (not scripted edits):\n' + actions,
-    'Preserve: ' + (item.protected || []).join('; '),
-    'External Tripo API is NOT authorized. Do not generate, regenerate, animate, retarget or upload from this bundle.',
-    'Require owner camera reference, genuine Unity before image, mesh inspection and independent visual comparison.',
-    'Do not infer visual approval from SHA/technical QA. Art approval=false; mobile profiling=false.'
-  ].join('\n\n') + '\n';
+    'Already integrated: ' + item.integrated_in_game + ' | rig/animation: ' + item.has_skin + '/' + item.has_animation,
+    'VERIFIED REAL REJECTED QWEN ART CYCLES — never repeat: ' + sourceFailureLessons,
+    'Known visual issues (verify from REAL photos): ' + item.defects.join(' | '),
+    'Suggested next actions (requires Qwen decision): ' + item.next_actions.join(' | '),
+    'Preserve gameplay: ' + (item.protected || []).join('; '),
+    'External Tripo API is NOT authorized. No regenerate/rig/retarget/upload. Use existing source on copy.',
+    'Require real images, inspected source mesh and independent Unity A/B before any art approval.',
+    'Art approval=false; mobile profiling=false.'
+  ].join('\n') + '\n';
+  if (context.length > 3200) throw new Error('QWEN_CPU_INVENTORY_EXCEEDS_BOUND: ' + context.length);
   const report = {
     schema_version: 1, status: 'ZERO_CREDIT_PREFLIGHT_PASS', item,
     reviewed_failed_qwen_cycles: item.verified_failures.length,
