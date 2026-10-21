@@ -130,6 +130,17 @@ namespace Eldoria.UI.RoyalGold.V2
             if (Hud != null) Hud.SelectBuilding("");
         }
 
+        // Called by the native acceptance capture after switching the existing
+        // canvas between real landscape/portrait render targets in one frame.
+        // No scene/camera/gameplay mutation; runtime Update still handles resizing.
+        public void SynchronizeLayout()
+        {
+            if(!IsOpen) return;
+            Canvas.ForceUpdateCanvases();
+            Reflow();
+            Refresh();
+        }
+
         void Update()
         {
             if (!IsOpen || gateway == null) return;
