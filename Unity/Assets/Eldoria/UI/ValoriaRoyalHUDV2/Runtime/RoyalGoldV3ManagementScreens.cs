@@ -22,6 +22,7 @@ namespace Eldoria.UI.RoyalGold.V2
         ICommandGateway gateway;
         Func<long> utcTicks;
         Action onCommand;
+        public Action ReturnToCity { get; set; }
         RectTransform root, header, left, right, footer, quantityRow;
         RoyalGoldV3ManagementBackdropGraphic destinationArtwork;
         RoyalText heading, subheading, unitTitle, unitDetail, selectedText, summary, status, feedback;
@@ -108,6 +109,8 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if (root != null) root.gameObject.SetActive(false);
             notice = "";
+            // World -> city is a canonical navigation request, never a scene reload.
+            ReturnToCity?.Invoke();
             if (Hud != null) Hud.SelectBuilding("");
         }
 
