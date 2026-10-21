@@ -3,6 +3,78 @@ import bpy,base64,hashlib,json,os,pathlib,tempfile,time,urllib.request
 root=pathlib.Path.cwd();ev=root/'docs/evidence/valoria-reference-clean'
 result={'role':'AUXILIARY_CRITIQUE_OF_ACTUAL_UNITY_CAPTURE','art_approved':False,'new_model_downloads':0,'source_sha':os.environ.get('GITHUB_SHA')}
 
+# The geography trial has its own exact A/B evidence; do not review old
+# roof/world PNGs and incorrectly transfer their score to a new candidate.
+request_config=json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf-8-sig'))
+if request_config.get('review_scope')=='geography_v1':
+ import sys
+ result.update(role='GEOGRAPHY_INDEPENDENT_VISUAL_CRITIQUE',
+               status='ART_REVIEW_REQUIRED',reviews=[],art_approved=False)
+ folder=ev/'geography-v1'
+ try:
+  meta=json.loads((folder/'trial.json').read_text('utf-8'))
+  assert meta['source_scene_sha256']==json.loads((folder/'survey.json').read_text('utf-8'))['source_scene_sha256']
+  assert meta.get('native_unity_ab') and not meta.get('art_approved')
+  for kind in ['city-I-wide','city-I-mobile','city-II-wide','city-II-mobile']:
+   b=json.loads((folder/('before-'+kind+'-camera.json')).read_text('utf-8'))
+   a=json.loads((folder/('after-'+kind+'-camera.json')).read_text('utf-8'))
+   if b.get('stamp')!=a.get('stamp') or b.get('width')!=a.get('width') or b.get('height')!=a.get('height'):
+    raise ValueError('Native city camera A/B not identical: '+kind)
+  tags=json.load(urllib.request.urlopen('http://127.0.0.1:11434/api/tags',timeout=10))
+  installed=[x['name'] for x in tags.get('models',[])]
+  result['installed_models']=installed
+  model=next(m for m in ['qwen3-vl:8b-instruct-q4_K_M','qwen3-vl:4b-instruct'] if m in installed)
+  group=[
+   ('city',
+    [root/'references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg', folder/'before-city-II-wide.png',
+     folder/'after-city-II-wide.png',folder/'after-city-II-mobile.png'],
+    'Approved medieval Valoria reference, followed by REAL Unity Bastion II BEFORE, AFTER (same fixed camera), and AFTER mobile portrait. Four patches/plots visible in reference are expressly REMOVED and MUST NOT be recreated. Compare ONLY retained compact bastion, bridge, blue river, road shoulder wear, meadow topography/ground contact, vegetation, visual cohesion and legibility. Do not invent construction or change camera.'),
+   ('world_overview',
+    [folder/'before-world-REGION1-ENTIRE-2048x1152.png', folder/'after-world-REGION1-ENTIRE-2048x1152.png',
+     folder/'before-world-forest-valoria-wide.png',folder/'after-world-forest-valoria-wide.png'],
+    'REAL Unity Region1 entirety BEFORE/AFTER using same orthographic audit pose, then forest BEFORE/AFTER. The sector is a mobile 4X strategic map, not open-world exploration. Evaluate visual continuity and macrogeographic relief, actual forest masses and clearings, intact roads/cities/resources/POIs and mobile readability. Do not rate based on triangle counts or changed-pixel percentage.'),
+   ('world_contacts',
+    [folder/'before-world-quarry-valoria-wide.png',folder/'after-world-quarry-valoria-wide.png',
+     folder/'before-world-corrupt-scout-wide.png',folder/'after-world-corrupt-scout-wide.png'],
+    'REAL Unity strategic quarry BEFORE/AFTER followed by corrupt zone BEFORE/AFTER at matched cameras. Check quarry-rock-ground geological continuity, path alignment, soil transitions, unnatural dark planar halos, visual medieval dark fantasy coherence and actual visible improvement.')
+  ]
+  result['source_scene_sha256']=meta['source_scene_sha256']
+  result['candidate_tool_sha256']=meta['tool_sha256']
+  result['candidate_method']=meta.get('method')
+  for scope,files,context in group:
+   identities=[{'file':f.relative_to(root).as_posix(),'sha256':hashlib.sha256(f.read_bytes()).hexdigest()} for f in files]
+   if scope=='city' and identities[0]['sha256']!='86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d':
+    raise ValueError('Canonical reference JPEG changed')
+   images=[]
+   with tempfile.TemporaryDirectory(prefix='eldoria-geography-review-') as scratch:
+    for ix,path in enumerate(files):
+     im=bpy.data.images.load(str(path),check_existing=False)
+     w,h=im.size;scale=680/max(w,h)
+     im.scale(max(1,round(w*scale)),max(1,round(h*scale)))
+     f=pathlib.Path(scratch)/(str(ix)+'.jpg')
+     im.filepath_raw=str(f);im.file_format='JPEG';im.save()
+     bpy.data.images.remove(im);images.append(base64.b64encode(f.read_bytes()).decode())
+   prompt=(context+' You are a reviewer who did NOT author these changes. Cite visual evidence only, and distinguish genuine quality gain from mere perceptibility. '
+      'Provide separate rubric scores 0-10 for composition, surfaces/geography, materials, contacts/cohesion, lighting/depth, artistic identity, mobile legibility and commercial impression, a weighted overall BEFORE and AFTER estimate, and whether improvement is meaningfully visible at full screen. '
+      'Identify three most serious remaining defects with concrete production fixes, any regressions, and uncertainty. Do not mark ART_APPROVED or performance certified, do not invent absent details. '
+      'Return JSON object with keys: visual_observations, scores_before, scores_after, improved_full_screen, regressions, three_remaining_defects, uncertainty.')
+   payload={'model':model,'stream':False,'format':'json',
+            'messages':[{'role':'user','content':prompt,'images':images}],
+            'options':{'temperature':.1,'num_ctx':8192,'num_predict':1700},'keep_alive':'0s'}
+   started=time.monotonic()
+   raw=json.load(urllib.request.urlopen(urllib.request.Request(
+       'http://127.0.0.1:11434/api/chat',data=json.dumps(payload).encode(),
+       headers={'Content-Type':'application/json'}),timeout=240))
+   result['reviews'].append({'scope':scope,'model':model,'images':identities,
+       'duration_seconds':round(time.monotonic()-started,2),
+       'advisory_review':json.loads(raw['message']['content'])})
+  result['status']='GEOGRAPHY_INDEPENDENT_VISUAL_CRITIQUE_RECORDED'
+ except Exception as ex:
+  result.update(status='AUXILIARY_UNAVAILABLE_NOT_AN_ART_PASS',error=str(ex))
+ (folder/'independent-review.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
+ print('ELDORIA_GEOGRAPHY_INDEPENDENT_QWEN_REVIEW',result['status'])
+ sys.exit(0)
+
 # Final production review uses current integrated evidence, never legacy plot captures.
 if json.loads((root/'tools/valoria-reference-clean/request.json').read_text('utf-8-sig')).get('review_scope') in ('production_final','production_final_city'):
  import sys
