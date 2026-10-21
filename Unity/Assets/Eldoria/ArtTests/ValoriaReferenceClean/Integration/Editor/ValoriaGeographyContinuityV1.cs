@@ -209,7 +209,7 @@ namespace Eldoria.ReferenceClean.Editor
         {
             public string source_scene_sha256, tool_sha256, method, world_ground_source;
             public string[] original_poi_ids, after_poi_ids, images, image_sha256;
-            public int source_world_triangles, candidate_world_triangles, sampled_conifer_renderers;
+            public int source_world_triangles, candidate_world_triangles, sampled_conifer_renderers, added_visual_only_forest_instances;
             public int source_height_resolution, candidate_height_resolution, changed_city_height_samples;
             public bool previous_scene_untouched, city_terrain_collider_unchanged, world_source_mesh_unchanged;
             public bool native_unity_ab, art_approved, physical_mobile_profiled, published;
@@ -415,7 +415,12 @@ namespace Eldoria.ReferenceClean.Editor
                     Mathf.Min(world.x - b.min.x, b.max.x - world.x),
                     Mathf.Min(world.z - b.min.z, b.max.z - world.z));
                 float edgeProtect = Smooth(1.5f, 16f, edgeDist);
-                float deltaY = edgeProtect * anchor *
+                // Preserve the original geology base directly under its source
+                // meshes; the new hillside must not swallow authored rocks.
+                float rockDist = Mathf.Sqrt(Mathf.Pow((world.x - 1098f) / 35f, 2f) +
+                                            Mathf.Pow((world.z + 83f) / 39f, 2f));
+                float rockProtect = Smooth(.8f, 1.8f, rockDist);
+                float deltaY = edgeProtect * anchor * rockProtect *
                     (quarryFoothill + northForestRise + corruptionValley + reliefGrain);
                 Vector3 altered = world + Vector3.up * deltaY;
                 warped[i] = source.transform.InverseTransformPoint(altered);
@@ -541,6 +546,72 @@ namespace Eldoria.ReferenceClean.Editor
             }
             finally { if (sample) Object.DestroyImmediate(sample); }
         }
+
+        static GameObject ExpandExistingForest(ValoriaIntegratedWorld host, MeshFilter worldGround, out int additions)
+        {
+            var forest = Hotspots(host).Single(p => p.Id == "forest-valoria").transform.position;
+            var original = host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(x => x.enabled &&
+                    (x.name.StartsWith("Conifer / retained tree position") ||
+                     x.name.StartsWith("Forest retained Valoria pine")))
+                .OrderBy(x => x.name).ToArray();
+            Need(original.Length >= 3 && original.Length <= 60,
+                "Existing validated forest family not found; refuse synthetic prefabs");
+            var root = new GameObject("Forest ecological continuity / approved source meshes only");
+            root.transform.SetParent(host.WorldRoot.transform, false);
+            var terrainVerts = worldGround.sharedMesh.vertices
+                .Select(q => worldGround.transform.TransformPoint(q)).ToArray();
+            float GroundHeight(float x,float z)
+            {
+                float nearest = float.MaxValue, height = 0;
+                foreach(var p in terrainVerts)
+                {
+                    float d=(p.x-x)*(p.x-x)+(p.z-z)*(p.z-z);
+                    if(d<nearest){nearest=d;height=p.y;}
+                }
+                Need(nearest<11f,"Tree site lies beyond surveyed ground resolution");
+                return height;
+            }
+            var placed = new List<Vector3>(original.Select(x => x.bounds.center));
+            Vector2[] offsets = {
+                new Vector2(-29f,9f), new Vector2(-22f,24f),
+                new Vector2(-8f,31f), new Vector2(16f,29f),
+                new Vector2(30f,15f), new Vector2(28f,-9f),
+                new Vector2(9f,-24f), new Vector2(-16f,-23f),
+                new Vector2(-35f,-8f), new Vector2(3f,17f)
+            };
+            additions=0;
+            for(int i=0;i<offsets.Length;i++)
+            {
+                Vector3 target = forest + new Vector3(offsets[i].x,0,offsets[i].y);
+                float nearest = placed.Min(v=>PlanarDistance(v,target));
+                if(nearest<8.0f)continue;  // retained natural clearings
+                var donor=original[i%original.Length];
+                var meshFilter=donor.GetComponent<MeshFilter>();
+                if(!meshFilter||!meshFilter.sharedMesh)continue;
+                float footOffset=donor.bounds.min.y-donor.transform.position.y;
+                target.y=GroundHeight(target.x,target.z)-footOffset+.045f;
+                var obj=new GameObject("Existing conifer canopy / distributed cluster "+i);
+                obj.transform.SetParent(root.transform,true);
+                obj.transform.position=target;
+                obj.transform.rotation=donor.transform.rotation;
+                obj.transform.localScale=donor.transform.lossyScale *
+                    (i%3==0?.91f:i%3==1?1.04f:.98f);
+                obj.AddComponent<MeshFilter>().sharedMesh=meshFilter.sharedMesh;
+                var rr=obj.AddComponent<MeshRenderer>();
+                rr.sharedMaterials=donor.sharedMaterials;
+                rr.shadowCastingMode=donor.shadowCastingMode;
+                rr.receiveShadows=donor.receiveShadows;
+                rr.lightProbeUsage=donor.lightProbeUsage;
+                rr.reflectionProbeUsage=donor.reflectionProbeUsage;
+                rr.renderingLayerMask=donor.renderingLayerMask;
+                // Absolutely no collider, WorldHotspot, army marker, or LOD
+                // owner is cloned: only compatible visual source geometry.
+                placed.Add(target);additions++;
+            }
+            Need(additions>=3&&additions<=10,"Forest expansion did not produce a useful silhouette");
+            return root;
+        }
         static string[] ImageNames(string prefix)
         {
             return new[] { "city-I-wide", "city-I-mobile", "city-II-wide", "city-II-mobile",
@@ -560,6 +631,7 @@ namespace Eldoria.ReferenceClean.Editor
             Texture2D albedo = null;
             Material worldMat = null;
             GameObject terrainVisual = null;
+            GameObject forestVisual = null;
             Terrain terrain = null;
             TerrainData originalTerrain = null;
             Renderer oldRenderer = null;
@@ -638,6 +710,7 @@ namespace Eldoria.ReferenceClean.Editor
                 newRenderer.receiveShadows = oldRenderer.receiveShadows;
                 newRenderer.lightmapIndex = -1;
                 oldRenderer.enabled = false;
+                forestVisual = ExpandExistingForest(host, ground, out int forestAdditions);
                 var afterPOI = Hotspots(host).Select(s => s.Id + "=" + s.transform.position.ToString("R")).ToArray();
                 Need(beforePOI.SequenceEqual(afterPOI), "Original POI identities or positions changed");
                 Need(host.WorldRoot.GetComponentsInChildren<Collider>(true).Length == beforeColliders,
@@ -662,13 +735,14 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Site-specific quarry foothill, forest plateau and corrupted shallow valley with smooth untouched map perimeter; canonical UV/road and six POIs/colliders retained; no procedural blanket noise",
+                    method = "Retained-source conifer silhouette masses, original forest POI and safe clearings; three site-specific smooth macroforms and protected quarry rock base; original UV/roads/6 POIs preserved",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
                     source_world_triangles = beforeWorldTriangles,
                     candidate_world_triangles = worldMesh.triangles.Length / 3,
                     sampled_conifer_renderers = treeCount,
+                    added_visual_only_forest_instances = forestAdditions,
                     source_height_resolution = originalTerrain.heightmapResolution,
                     candidate_height_resolution = newCity.heightmapResolution,
                     changed_city_height_samples = 0,
@@ -719,6 +793,7 @@ namespace Eldoria.ReferenceClean.Editor
                 {
                     if (terrain && originalTerrain) { terrain.terrainData = originalTerrain; terrain.Flush(); }
                     if (oldRenderer) oldRenderer.enabled = oldEnabled;
+                    if (forestVisual) Object.DestroyImmediate(forestVisual);
                     if (terrainVisual) Object.DestroyImmediate(terrainVisual);
                     if (worldMat) Object.DestroyImmediate(worldMat);
                     if (albedo) Object.DestroyImmediate(albedo);
