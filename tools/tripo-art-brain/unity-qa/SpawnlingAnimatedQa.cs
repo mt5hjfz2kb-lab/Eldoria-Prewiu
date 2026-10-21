@@ -17,7 +17,8 @@ public static class SpawnlingAnimatedQa
     [Serializable] public class Result
     {
         public string status, source_sha256, unity, clip, error;
-        public int skins, joints, vertices;
+        public int skins, joints, vertices, retained_textures;
+        public string[] material_names;
         public float duration, attack_delta, return_delta;
         public bool canonical_scene_changed, integrated, art_approved;
     }
@@ -96,9 +97,18 @@ public static class SpawnlingAnimatedQa
                     foreach(var material in skin.sharedMaterials)
                     {
                         Need(material && material.shader && !material.shader.name.Contains("InternalError"),"Invalid material");
-                        Need(material.GetTexturePropertyNames().Any(p=>material.GetTexture(p)!=null),"PBR textures missing");
+                        bool textured=material.GetTexturePropertyNames().Any(p=>material.GetTexture(p)!=null);
+                        // The pinned source intentionally uses a solid emissive gaze
+                        // material; only its body requires the retained PBR maps.
+                        Need(textured||material.name.StartsWith("Rift violet / tiny recessed gaze"),
+                            "Unexpected untextured material: "+material.name);
                     }
                 }
+                var materials=skins.SelectMany(s=>s.sharedMaterials).Distinct().ToArray();
+                result.material_names=materials.Select(m=>m.name).ToArray();
+                result.retained_textures=materials.SelectMany(m=>m.GetTexturePropertyNames()
+                    .Select(p=>m.GetTexture(p))).Where(t=>t!=null).Distinct().Count();
+                Need(result.retained_textures>=3,"Original body albedo/normal/ORM maps missing");
                 var times=new[]{1f/24f,27f/24f,65f/24f};
                 var labels=new[]{"rest","swipe","return"};
                 var poses=new List<Vector3[]>();
