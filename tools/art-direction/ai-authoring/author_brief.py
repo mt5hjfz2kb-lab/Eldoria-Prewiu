@@ -21,6 +21,7 @@ def creature_spatial_scale_errors(design,topology,kind):
  if not .1<=diag<=100:return ['CREATURE_SOURCE_BOUNDS_INVALID: inspect scale before editing']
  max_radius=.6*diag;max_delta=.18*diag
  errors=[]
+ face_min_x=lo[0]+.66*(hi[0]-lo[0]) # source verified head +X; no fabricated mesh indices
  for op in design.get('planned_actions',[]):
   if not isinstance(op,dict):continue
   p=op.get('parameters') or {}
@@ -35,6 +36,14 @@ def creature_spatial_scale_errors(design,topology,kind):
     mag=math.sqrt(sum(n*n for n in delta))
     if mag>max_delta:
      errors.append(f'CREATURE_GLOBAL_SHIFT_REJECT: {mag:.3f}m motion exceeds {max_delta:.3f}m safe source-relative movement; do not translate entire creature.')
+    # Run39636058045: radius .088, delta .015 => only 2 strategic pixels.
+    if isinstance(radius,(int,float)) and radius<=.07*diag and mag<=.012*diag:
+     errors.append('CREATURE_INVISIBLE_MICROSCULPT_REJECT: source-linked run39636058045 proved this small radius/delta ineffective at strategic camera.')
+   label=(' '.join(str(op.get(k,'')) for k in ('rationale','type'))+' '+str(design.get('design_intent',''))).lower()
+   if any(term in label for term in ('head','face','facial','muzzle','jaw','snout','mandible','rostro','cabeza','hocico','mandibula')):
+    center=one.get('center')
+    if isinstance(center,list) and len(center)==3 and isinstance(center[0],(int,float)) and center[0]<face_min_x:
+     errors.append(f'CREATURE_HEAD_MISLOCALIZED_REJECT: edited region x={center[0]:.3f} lies behind source-verified +X head zone (forward starting x>{face_min_x:.3f}); select actual geometry, not center_mass.')
  return errors
 
 
@@ -139,6 +148,8 @@ def main():
   if len(raw)>10_000_000:raise ValueError('Input image too large')
   hashes[key]=digest(raw);inputs.append(base64.b64encode(raw).decode())
  role=(HERE.parent/'VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md').read_bytes()
+ if a.subject_kind=='creature':
+  role+=b'\n\n'+(HERE.parents[2]/'tools/tripo-art-brain/CREATURE_ARTIST_SYSTEM_ADDENDUM_V1.md').read_bytes()
  # The artist must see actual source candidates, not a fictional generic inventory.
  repo=HERE.parents[2]
  if a.inventory:
