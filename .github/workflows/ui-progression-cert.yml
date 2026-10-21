@@ -16,6 +16,7 @@ on:
     paths:
       - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/**'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs'
   workflow_dispatch:
 
