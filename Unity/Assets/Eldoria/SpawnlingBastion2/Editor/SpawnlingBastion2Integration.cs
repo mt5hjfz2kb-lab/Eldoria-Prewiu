@@ -28,6 +28,9 @@ namespace Eldoria.SpawnlingBastion2.Editor
         const string CanonicalId = "engendro-valoria";
         const string SourceSha = "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a";
         static readonly string Evidence = Path.GetFullPath("../docs/evidence/spawnling-bastion2");
+        // Near/far GLBs carry equivalent body materials; do not duplicate 2K
+        // PBR textures in the mobile build just because they were loaded twice.
+        static readonly Dictionary<string,Material> SharedPbrAcrossLods = new Dictionary<string,Material>();
         static void Need(bool ok,string message){if(!ok) throw new InvalidOperationException("Spawnling B2: "+message);}
         static string Hash(string path)
         {
@@ -79,21 +82,25 @@ namespace Eldoria.SpawnlingBastion2.Editor
                         "Bad Tripo material or shader on "+renderer.name);
                     if(!mats.TryGetValue(source,out var saved))
                     {
-                        saved=new Material(source){name="Engendro B2 / "+source.name};
-                        foreach(string property in source.GetTexturePropertyNames())
+                        if(!SharedPbrAcrossLods.TryGetValue(source.name,out saved))
                         {
-                            Texture texture=source.GetTexture(property);
-                            if(texture==null)continue;
-                            if(!textures.TryGetValue(texture,out var copy))
+                            saved=new Material(source){name="Engendro B2 / "+source.name};
+                            foreach(string property in source.GetTexturePropertyNames())
                             {
-                                copy=ReadableTexture(texture);
-                                copy.name="Engendro B2 / retained PBR "+property;
-                                AssetDatabase.CreateAsset(copy,folder+"/tex-"+(counter++)+".asset");
-                                textures.Add(texture,copy);
+                                Texture texture=source.GetTexture(property);
+                                if(texture==null)continue;
+                                if(!textures.TryGetValue(texture,out var copy))
+                                {
+                                    copy=ReadableTexture(texture);
+                                    copy.name="Engendro B2 / retained PBR "+property;
+                                    AssetDatabase.CreateAsset(copy,folder+"/tex-"+(counter++)+".asset");
+                                    textures.Add(texture,copy);
+                                }
+                                saved.SetTexture(property,copy);
                             }
-                            saved.SetTexture(property,copy);
+                            AssetDatabase.CreateAsset(saved,folder+"/mat-"+(counter++)+".mat");
+                            SharedPbrAcrossLods.Add(source.name,saved);
                         }
-                        AssetDatabase.CreateAsset(saved,folder+"/mat-"+(counter++)+".mat");
                         mats.Add(source,saved);
                     }
                     assigned[index]=saved;
@@ -243,6 +250,7 @@ namespace Eldoria.SpawnlingBastion2.Editor
                 string folder=AssetRoot+"/Run-"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local");
                 Need(!Directory.Exists(folder),"Never overwrite earlier generated imported art");
                 Directory.CreateDirectory(folder);
+                SharedPbrAcrossLods.Clear();
                 AssetDatabase.Refresh();
                 var root=new GameObject(VisualName);
                 root.transform.SetParent(host.WorldRoot.transform,true);
