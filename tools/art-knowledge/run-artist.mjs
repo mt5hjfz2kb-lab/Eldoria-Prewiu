@@ -11,13 +11,14 @@ const PYTHON='tools/art-direction/ai-authoring/author_brief.py';
 const assert=(condition,msg)=>{if(!condition)throw Error(msg)};
 function argsToMap(list){
  const result={};
- for(let i=0;i<list.length;i++){
-  assert(list[i].startsWith('--')&&list[i+1]&&!list[i+1].startsWith('--'),'Expected --key value pairs for Qwen');
+ for(let i=0;i<list.length;){
   const key=list[i++];
+  assert(key?.startsWith('--'),'Expected Qwen option');
   assert(!['--inventory','--endpoint','--failed-plan','--failed-review'].includes(key),'Use canonical memory inventory; complex prior-failure inputs must stay in their owning workflow');
   assert(!(key in result),'Duplicate Qwen option '+key);
-  if(key==='--cpu-compact'){result[key]=true;i--;continue;}
-  result[key]=list[i];
+  if(key==='--cpu-compact'){result[key]=true;continue;}
+  assert(list[i]&&!list[i].startsWith('--'),'Missing Qwen value for '+key);
+  result[key]=list[i++];
  }
  return result;
 }
