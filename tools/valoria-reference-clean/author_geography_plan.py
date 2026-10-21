@@ -25,7 +25,7 @@ def validate(plan):
     if not 4<=len(actions)<=8: errors.append("4-8 actions required")
     for target in ("city","world"):
         selected=[a for a in actions if a.get("target")==target]
-        if not (3 if target=="world" else 2)<=len(selected)<=4: errors.append("World needs3-4 connected forms, city2-4")
+        if not (3 if target=="world" else 2)<=len(selected)<=4: errors.append(target+" has "+str(len(selected))+" actions; requires "+("3-4" if target=="world" else "2-4"))
     for a in actions:
         if a.get("type")!="sculpt_region" or a.get("target") not in ("city","world"):
             errors.append("Only existing city/world sculpt_region actions"); continue
@@ -78,10 +78,14 @@ def main():
                        "radius_z":number(18,75),"height":number(1.5,16)})
     action=record({"id":{"type":"string"},"type":{"type":"string","enum":["sculpt_region"]},
         "target":{"type":"string","enum":["city","world"]},"rationale":{"type":"string"},"parameters":parameters})
+    def target_actions(target,minimum):
+        shape=json.loads(json.dumps(action))
+        shape["properties"]["target"]["enum"]=[target]
+        return {"type":"array","minItems":minimum,"maxItems":4,"items":shape}
     schema=record({"observed_defect":{"type":"string"},"design_intent":{"type":"string"},
         "asset_decision":{"type":"string","enum":["MODIFY"]},
         "reason_for_new_geometry":{"type":"string"},
-        "planned_actions":{"type":"array","minItems":4,"maxItems":8,"items":action},
+        "city_actions":target_actions("city",2),"world_actions":target_actions("world",3),
         "expected_visual_difference":{"type":"string"},"mobile_risks":{"type":"string"}})
     brief={
         "target":{"mode":"MODIFY","name":"existing city TerrainData and Region1 original mesh"},
@@ -117,13 +121,16 @@ def main():
         for attempt in (1,2):
             response=api("/api/chat",payload,420);write(out/("artist-response-"+str(attempt)+".json"),response)
             try:
-                plan=json.loads(response["message"]["content"]);errors=validate(plan)
+                plan=json.loads(response["message"]["content"])
+                plan["planned_actions"]=plan.pop("city_actions",[])+plan.pop("world_actions",[])
+                errors=validate(plan)
             except (ValueError,KeyError,TypeError) as e: errors=[str(e)]
             if response.get("done_reason")!="stop": errors.append("Incomplete model response")
             write(out/"artist-validation.json",{"attempt":attempt,"errors":errors,"geometry_executed":False})
             if not errors: break
             if attempt==2: raise RuntimeError("Local artist plan rejected: "+str(errors))
-            payload["messages"]=[messages[0],dict(messages[1],content=json.dumps(brief)+"\nCorrect these validation errors: "+str(errors))]
+            payload["messages"]=messages+[{"role":"assistant","content":response["message"]["content"]},
+                {"role":"user","content":"Correct your previous JSON plan while retaining the two input images and original brief. Keep two separately typed arrays city_actions(2-4) and world_actions(3-4). Validation errors: "+str(errors)}]
         plan["sculpt_kernel"]="compact_cubic_v2"
         plan["source_scene_sha256"]=identity["source_scene_sha256"]
         plan["source_run"]=39669656633
