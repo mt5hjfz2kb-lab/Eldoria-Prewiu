@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-21",
+  "status": "technical_experiment_not_mobile_budget",
+  "method": "Reuse tools/blender_capability_proof.py, one archived GLB per asset; ratios are test hypotheses, not device budgets",
+  "mobile_profile_confirmed": false,
+  "art_approved": false,
+  "no_api_spend": true,
+  "assets": {
+    "boar": {
+      "label": "Jabalí de roca",
+      "source": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb",
+      "sha256": "897c8d02a445c6c760376031c38618698740e9593346099fafb4c3a0b93c1dc3",
+      "source_triangles": 49800,
+      "lod_ratios": [
+        1,
+        0.25,
+        0.08
+      ],
+      "lod_max_triangles": [
+        49800,
+        16000,
+        6500
+      ],
+      "notes": "Chapter III animal; no rig, anim or current I-II changes."
+    },
+    "focus": {
+      "label": "Foco de corrupción",
+      "source": "ArtSource/World4X/RiftFocus_v1/Optimized_Source.glb",
+      "sha256": "00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e",
+      "source_triangles": 49799,
+      "lod_ratios": [
+        1,
+        0.25,
+        0.08
+      ],
+      "lod_max_triangles": [
+        49799,
+        16000,
+        6500
+      ],
+      "notes": "Not a new gameplay hotspot; art candidate only."
+    }
+  }
+}
