@@ -46,6 +46,20 @@ jobs:
           mkdir -p "$OUT"
           node tools/tripo-art-brain/preflight.mjs audit spawnling > "$OUT/source-audit.json"
           node tools/tripo-art-brain/preflight.mjs prepare spawnling --out "$OUT/prepared"
+          python3 - <<'PY'
+          import json,os,pathlib
+          root=pathlib.Path(os.environ['OUT'])
+          audit=json.loads((root/'source-audit.json').read_text('utf8'))
+          report=json.loads((root/'prepared/preflight-report.json').read_text('utf8'))
+          assert audit['status']=='ZERO_CREDIT_SOURCE_AUDIT_PASS'
+          assert report['reviewed_failed_qwen_cycles'] >= 2, 'Prior real Qwen rejections must reach artist memory'
+          assert report['follow_up_advanced_tripo']['ready_for_paid_call'] is False
+          assert report['art_approved'] is False
+          inventory=(root/'prepared/qwen-inventory.txt').read_text('utf8')
+          assert 'QWEN_PLAN_REJECTED_NON_EXECUTABLE' in inventory
+          assert 'ART_REJECTED_GLOBAL_TRANSLATION_LIKE' in inventory
+          print('TWO_REAL_REJECTIONS_FED_TO_QWEN_NO_PAID_API')
+          PY
 
       - name: Install existing open Blender and PIL
         shell: bash
