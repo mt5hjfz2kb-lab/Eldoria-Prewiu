@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      OUT: ${{ runner.temp }}/tripo-art-brain
+      OUT: /tmp/eldoria-tripo-art-brain
     steps:
       - name: Sparse checkout only existing source assets and zero-credit tooling
         uses: actions/checkout@v4
