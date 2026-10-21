@@ -678,7 +678,9 @@
         "tools/valoria-reference-clean/request.json",
         "tools/valoria-reference-clean/browser-qa-request.json",
         ".github/workflows/valoria-windows-chromium-qa.yml",
-        "pipeline/playtest-delivery.json"
+        "pipeline/playtest-delivery.json",
+        ".github/workflows/unity-slice.yml",
+        "scripts/check_unity_slice.py"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
@@ -725,7 +727,8 @@
         "play_mode": 36,
         "artifact_id": 12347707207,
         "visual_review": "Canonical full Aldric text and Continue label inspected in genuine portrait Unity render; landscape/contextual controls retained. No global art quality score."
-      }
+      },
+      "ci_recovery": "General source-preflight checkout is still downloading the entire repository after UI native 40/20/36 passed. Narrow only its checkout to actual Python-preflight inputs; preserve all assertions and explicitly request the pending full editor gate for the same final UI runtime."
     }
   ],
   "history": [
