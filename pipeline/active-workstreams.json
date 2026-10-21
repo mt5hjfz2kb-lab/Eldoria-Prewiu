@@ -700,8 +700,8 @@
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-eldoria-tripo-brain-replay-continuation-20261021",
-      "ownership_revision": 4,
+      "owner": "chatgpt-eldoria-tripo-replay-review-20261021",
+      "ownership_revision": 5,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -723,14 +723,14 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "REPLAY_ARTIFACT_WORKFLOW_RECOVERY",
+      "phase": "REPLAY_VISUAL_REVIEW_AND_ZERO_CREDIT_CLOSEOUT",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Rig check zero-credit execution or documented access blocker, plus authenticated detailed asset profile and testable input binding to existing Qwen artist; retain game untouched.",
         "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
-      "next": "Diagnose GitHub Actions 39639275976 zero-job failure, fix isolated replay on main, validate exact previous Qwen candidate (close-up cameras, no re-inference), record verdict and close without modifying Unity or spending.",
+      "next": "Inspect real existing five-view A/B artifact 12363503143, register independent artistic rejection/acceptance, preserve original Qwen output and source. No paid API, no new inference without changed visual hypothesis, no Unity scene edit.",
       "handoff_note": "Owner explicitly requested continue same Tripo+art-brain job; no active phase2 job at claim time. Do not touch Valoria scene or runner. Previous chat may not be remotely interrupted: re-read live registry before any further writes.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
