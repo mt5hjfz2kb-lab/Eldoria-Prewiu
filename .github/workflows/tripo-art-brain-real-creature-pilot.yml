@@ -1,0 +1,142 @@
+name: Tripo art brain - real Qwen vision creature Blender pilot (zero credits)
+
+on:
+  push:
+    paths:
+      - '.github/workflows/tripo-art-brain-real-creature-pilot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tripo-real-qwen-cpu-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  actual-qwen-blender:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      OUT: /tmp/eldoria-tripo-qwen-real
+      SOURCE_BLEND: ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend
+      TARGET_MESH: Spawnling_Near_Authored
+    steps:
+      - name: Read-only existing sources (no runtime/Windows)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/tripo-art-brain/
+            tools/art-direction/ai-authoring/
+            tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md
+            tools/art-direction/ARTIST_LEARNING_JOURNAL.md
+            pipeline/tripo-art-brain/
+            ArtSource/World4X/Spawnling_v1/
+            docs/evidence/spawnling-bastion2/native-integration.json
+            docs/evidence/spawnling-bastion2/after-local-900x1600.png
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity
+
+      - name: Validate immutable sources, then prepare inherited artist context
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT"
+          node tools/tripo-art-brain/preflight.mjs audit spawnling > "$OUT/source-audit.json"
+          node tools/tripo-art-brain/preflight.mjs prepare spawnling --out "$OUT/prepared"
+
+      - name: Install existing open Blender and PIL
+        shell: bash
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+
+      - name: Inspect real immutable Blender geometry, preserve actual input photos
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT/mesh"
+          blender --background --disable-autoexec -t 2 --python-exit-code 1 \
+            --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source "$SOURCE_BLEND" --inspect --inspect-target-object "$TARGET_MESH" \
+            --out "$OUT/mesh" > "$OUT/blender-mesh-inspection.log" 2>&1
+          node tools/tripo-art-brain/verify-mesh-context.mjs \
+            "$OUT/mesh/mesh-context.json" "$OUT/mesh/verification.json"
+          /usr/bin/python3 tools/tripo-art-brain/prepare-real-inputs.py "$OUT/photos"
+
+      - name: Local CPU Ollama and real Qwen3-VL-2B (no paid cloud)
+        timeout-minutes: 12
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm -d --name eldoria-tripo-real-qwen -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 75); do
+            if curl -fsS http://127.0.0.1:11434/api/version > "$OUT/ollama-version.json"; then break; fi
+            sleep 2
+          done
+          test -s "$OUT/ollama-version.json"
+          docker exec eldoria-tripo-real-qwen ollama pull qwen3-vl:2b-instruct
+
+      - name: REAL Qwen vision authoring on existing Engendro, isolated
+        timeout-minutes: 13
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/art-direction/ai-authoring/author_brief.py \
+            --subject-kind creature --reference "$OUT/photos/reference-cpu640.jpg" \
+            --unity-before "$OUT/photos/before-cpu640.jpg" \
+            --target-object "$TARGET_MESH" --target-mode existing \
+            --inventory "$OUT/prepared/qwen-inventory.txt" \
+            --mesh-context "$OUT/mesh/mesh-context.json" \
+            --model qwen3-vl:2b-instruct --num-ctx 12288 --num-predict 1400 \
+            --max-actions 1 --cpu-compact --repair-attempts 1 \
+            --request-timeout 400 --out "$OUT/qwen" | tee "$OUT/real-qwen.log"
+          node tools/art-direction/ai-authoring/verify-artist-cycle.mjs \
+            --preflight-plan "$OUT/qwen/artist-plan.json" "$TARGET_MESH" existing
+
+      - name: Apply Qwen-selected structural plan in Blender to copy only
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC_SHA=$(sha256sum "$SOURCE_BLEND" | awk '{print $1}')
+          blender --background --disable-autoexec -t 2 --python-exit-code 1 \
+            --python tools/art-direction/ai-authoring/execute_artist_plan.py -- \
+            --source "$SOURCE_BLEND" --plan "$OUT/qwen/artist-plan.json" \
+            --expected-source-sha256 "$SRC_SHA" \
+            --out "$OUT/blender-output" --transport direct | tee "$OUT/real-blender.log"
+          python3 - <<'PY'
+          import os,pathlib,json,hashlib
+          p=pathlib.Path(os.environ["OUT"])
+          ai=json.loads((p/"qwen/artist-inference.json").read_text())
+          op=json.loads((p/"blender-output/artist-execution.json").read_text())
+          assert ai["model"]=="qwen3-vl:2b-instruct" and ai["subject_kind"]=="creature"
+          assert ai["self_approval"] is False
+          assert op["source_mesh_sha256"]!=op["result_mesh_sha256"]
+          assert op["source_sha256"]==hashlib.sha256(pathlib.Path(os.environ["SOURCE_BLEND"]).read_bytes()).hexdigest()
+          assert any(z.get("changed_vertices",0)>0 or z.get("changed_faces",0)>0 for z in op["executed_actions"])
+          print("REAL_QWEN_GEOMETRY_CHANGED_COPY_ONLY_NO_ART_APPROVAL")
+          PY
+
+      - name: Real Blender clay BEFORE/AFTER, not Unity approval
+        timeout-minutes: 8
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender --background --disable-autoexec -t 2 --python-exit-code 1 \
+            --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
+            --before "$SOURCE_BLEND" --after "$OUT/blender-output/artist-output.blend" \
+            --target "$TARGET_MESH" --out "$OUT/blender-ab" | tee "$OUT/blender-ab.log"
+          echo "REAL_BLENDER_AB_ONLY_VISUAL_REVIEW_REQUIRED"
+
+      - name: Preserve real Qwen plans and Blender evidence, never modify current game
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tripo-qwen-real-creature-${{ github.run_id }}
+          path: /tmp/eldoria-tripo-qwen-real/
+          retention-days: 14
+          if-no-files-found: warn
