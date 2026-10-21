@@ -1,0 +1,123 @@
+name: Tripo archived models mobile LOD technical proof (zero credits)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/tripo-mobile-lod-proof.yml"
+      - "tools/visual-lod-qa/**"
+      - "pipeline/tripo-mobile-lod-profiles.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tripo-mobile-lod-tech-main
+  cancel-in-progress: true
+
+jobs:
+  candidates:
+    name: Existing Blender LOD route and genuine static previews, not an art gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      OUT: /tmp/eldoria-tripo-mobile-lod
+    steps:
+      - name: Checkout exact source GLBs and existing Blender/GLB tooling only
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/blender_capability_proof.py
+            tools/art-rd/audit_glb.py
+            tools/visual-lod-qa/
+            pipeline/tripo-mobile-lod-profiles.json
+            ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb
+            ArtSource/World4X/RiftFocus_v1/Optimized_Source.glb
+
+      - name: Fail-closed source pins and Python syntax before Blender
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/visual-lod-qa/*.py tools/art-rd/audit_glb.py
+          python3 - <<'PY'
+          import hashlib, json, pathlib
+          config=json.loads(pathlib.Path("pipeline/tripo-mobile-lod-profiles.json").read_text())
+          assert config["no_api_spend"] is True and config["art_approved"] is False
+          assert set(config["assets"])=={"boar","focus"}
+          for name, asset in config["assets"].items():
+              source=pathlib.Path(asset["source"])
+              assert source.is_file()
+              assert hashlib.sha256(source.read_bytes()).hexdigest()==asset["sha256"], name+": SHA mismatch"
+              assert asset["lod_ratios"]==[1,0.25,0.08]
+          print("EXACT_SOURCE_GLBS_PINNED_AND_TRIPO_SPENDING_DISABLED")
+          PY
+
+      - name: Install existing free Blender production dependency on hosted Linux
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender
+          blender --version | head -2
+
+      - name: Create detached LOD candidates with existing certified Blender script
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT"
+          python3 - <<'PY' > "$OUT/asset-source-list.tsv"
+          import json
+          c=json.load(open("pipeline/tripo-mobile-lod-profiles.json"))
+          for k, a in c["assets"].items():
+              print(k+"\t"+a["source"]+"\t"+",".join(str(r) for r in a["lod_ratios"]))
+          PY
+          while IFS=$'\t' read -r id source ratios; do
+            mkdir -p "$OUT/$id/lods" "$OUT/$id/renders"
+            blender -b -t 4 --python-exit-code 1 --python tools/blender_capability_proof.py -- \
+              --input "$source" \
+              --output-dir "$OUT/$id/lods" \
+              --report "$OUT/$id/lods/blender-lods.json" \
+              --ratios "$ratios" > "$OUT/$id/blender-lod-console.txt"
+            blender -b -t 4 --python-exit-code 1 --python tools/visual-lod-qa/render.py -- \
+              --source "$source" \
+              --lod-dir "$OUT/$id/lods" \
+              --out "$OUT/$id/renders" \
+              --size 640 > "$OUT/$id/blender-preview-console.txt"
+            python3 tools/visual-lod-qa/verify.py --asset "$id" \
+              --profiles pipeline/tripo-mobile-lod-profiles.json \
+              --lod-dir "$OUT/$id/lods" \
+              --renders "$OUT/$id/renders" \
+              --out "$OUT/$id/verified-lod-manifest.json"
+          done < "$OUT/asset-source-list.tsv"
+
+      - name: Prove nothing published or marked artistically/mobile approved
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          root=pathlib.Path(os.environ["OUT"])
+          for name in ("boar","focus"):
+              report=json.loads((root/name/"verified-lod-manifest.json").read_text())
+              assert report["technical_qa"]=="PASS",name
+              assert report["new_credits_spent"]==0
+              assert report["art_approved"] is False
+              assert report["mobile_device_profiled"] is False
+              assert report["release_eligible"] is False
+              assert report["qwen_art_authoring"]=="NOT_EXECUTED"
+              assert len(report["captures"])==6
+              print(name,"LOD triangles",*[v["triangles"] for v in report["lod_candidates"]])
+          print("TWO_REAL_SOURCE_LOD_FAMILIES_TECHNICALLY_VALIDATED_NOT_ART_APPROVED")
+          PY
+
+      - name: Archive authentic candidate LODs, PBR and camera-locked previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tripo-boar-focus-mobile-lod-qa-verified
+          path: /tmp/eldoria-tripo-mobile-lod/
+          retention-days: 14
+          if-no-files-found: error
