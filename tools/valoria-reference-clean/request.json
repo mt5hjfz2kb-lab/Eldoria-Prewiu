@@ -1,11 +1,11 @@
 {
   "stage": "geography_trial",
   "validate_play": false,
-  "revision": 263,
+  "revision": 264,
   "budget_eur": 0,
   "validated_runtime_source": "a1e0fb7b71632c175a396d8c3aadf2e71dee0a80",
   "validated_run": 39609160363,
-  "checks": "True geometry sculpt test: Original Valoria city 257x257 TerrainData height changed only in open meadow with measured road/river/Bastion/building/props keepouts, max 1.4m, 1000+ height samples; trial TerrainCollider assigned identical candidate TerrainData then restored. Need pixel-aligned A/B City I-II portrait/wide and original world UV/POIs/6 colliders/forest/quarry preserved. Gameplay QA still required before any integration, 0€ no publication.",
+  "checks": "Repair native263 measured failure: only 11 valid tree locations in inner search. Expand existing five lobe search to 64 candidates each, retaining 15-21 mature trees, 7.7m spacing, original road/POI buffers, exact triangle grounding and all source/camera invariants. Full matched city/world A/B required; 0 EUR, no publication.",
   "art_correction": "Change method after repeated texture-only rejection: real spatial low meadow relief from existing Unity height field and exact synchronized collision on candidate, preserve architecture and source save. Larger view-space variation from geometry instead of flat paint. 4X candidate retains previously tested geological shoulder and adult forest.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
