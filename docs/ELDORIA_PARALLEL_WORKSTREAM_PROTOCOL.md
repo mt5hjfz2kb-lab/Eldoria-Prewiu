@@ -57,7 +57,21 @@ Live ownership is stored in:
 
 `pipeline/active-workstreams.json`
 
-Every substantive session reads it before mutation and claims exactly one coherent workstream before beginning execution.
+Every substantive session reads it before mutation and claims exactly one coherent workstream before beginning execution. Entries explicitly marked `ownership_state: available`, with `owner: null` and no resources, retain canonical work identity/evidence but are not exclusive writing claims.
+
+## Relevo autorizado entre chats — vigente 21-10-2026
+
+La orden actual del propietario de continuar o mejorar el mismo trabajo en un chat nuevo ya autoriza resolver su relevo. No exigir permiso del chat anterior ni otra confirmación del propietario únicamente por su nombre. Esta regla prevalece sobre identidades personales fijadas en notas históricas; no revoca pausas de contenido, límites de gasto ni gates de entrega.
+
+1. Leer `main`, la entrada viva, cambios pendientes/concurrentes conocidos y runs/jobs pertinentes. Una cola vacía por sí sola no prueba que otro chat haya dejado de editar. No cancelar jobs ni sobrescribir cambios para hacerse con el trabajo. Si hay ejecución/edición incompatible concreta, continuar partes independientes y reconciliar ese conflicto.
+2. Reutilizar el **mismo ID canónico**. Conservar alcance, fuentes, evidencias y pendientes; registrar el responsable previo en `ownership_history`, el nuevo `owner`, `ownership_state: claimed`, `write_scope_released: false` y aumentar `ownership_revision` (ausente equivale a 0). Registrar la instrucción actual que autoriza el relevo y la hora. Delimitar el alcance de la nueva mejora sin reabrir ni repetir fases ya certificadas.
+3. Publicar el cambio con el SHA del archivo/HEAD leído, sin force. Si cambia, releer y fusionar solo el relevo autorizado. El nuevo chat puede entonces continuar; no debe volver a preguntar por una autorización ya recibida.
+4. Todos los escritores deben releer responsable y revisión antes de cada commit o dispatch y abandonar la escritura si fueron relevados. El registro no interrumpe físicamente otro chat: las comprobaciones no sustituyen ese requisito. Un run preparado antes del cambio de responsable/revisión/alcance queda rechazado por el guard de ejecución.
+5. Reservar `windows-runner-heavy` únicamente cuando haga falta. Los flujos canónicos leen el registro del commit del run **y `main` vivo**: `tools/workstream-lease/check.mjs` exige misma identidad/revisión/alcance, un solo responsable del recurso y reserva vigente. A continuación conservan su comprobación de procesos Unity/Blender. El nombre del chat no está fijado en esos flujos.
+
+Al terminar una fase entregada sin próximo trabajo encargado, liberar la asignación. Para el ID canónico de Valoria, conservar su entrada de enrutado con `ownership_state: available`, `owner: null`, `write_scope_released: true`, recursos vacíos y revisión aumentada; el siguiente chat autorizado la reclama. El responsable anterior permanece en el historial. Las demás tareas terminadas o bloqueadas pasan a `history` con su pendiente exacto. Un bloqueo externo de acceso a una página no reserva la escena, los archivos artísticos ni Windows.
+
+No hay caducidad automática por minutos de inactividad: podría desplazar a un chat que está editando. La disponibilidad explícita o el relevo autorizado resuelven el caso sin esa pérdida de protección.
 
 ## Claim procedure
 
@@ -92,7 +106,7 @@ Example active entry:
 
 ## Conflict rules
 
-A conflict exists when two active workstreams would mutate or control the same logical production surface. Exact filename overlap is sufficient but not required.
+A conflict exists when two claimed active workstreams would mutate or control the same logical production surface. An explicitly available canonical entry is not such a claim. Exact filename overlap is sufficient but not required. An owner-directed handoff of the same work uses the procedure above rather than a permanent conflict based on the previous chat name.
 
 Treat these as exclusive unless explicitly narrowed:
 
@@ -112,7 +126,7 @@ One workstream may use outputs already committed/promoted by another. It may als
 
 If work A discovers that the correct next step belongs to active work B:
 
-- do not execute B;
+- do not execute B independently or under a second conflicting claim; an owner-directed continuation may transfer B using the procedure above;
 - record the dependency in A if useful;
 - continue A only where scopes remain independent;
 - consume B's result after B releases/completes it.
@@ -150,7 +164,7 @@ When the workstream is done, move it out of `active` into `history` and record, 
 
 Allowed terminal states: `completed`, `blocked`, `handoff`, `cancelled`.
 
-Do not leave stale claims merely because a chat ended. A resumed session must inspect and either reclaim/continue its matching entry or clean it up based on real repo/workflow state.
+Do not leave stale claims merely because a chat ended. A resumed session must inspect and either reclaim/continue its matching entry or clean it up based on real repo/workflow state. For the persistent canonical Valoria routing entry, release its owner/resources to the explicitly available state above instead of deleting its ID or evidence.
 
 ## Scope naming guidance
 

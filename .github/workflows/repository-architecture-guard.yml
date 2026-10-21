@@ -44,12 +44,17 @@ jobs:
             /tools/closeout/
             /tools/workflow-recovery/
             /tools/work-status/
+            /tools/workstream-lease/
+            /.github/workflows/valoria-reference-clean.yml
+            /.github/workflows/valoria-windows-chromium-qa.yml
             /tools/art-direction/learning-evidence/
             /tools/art-direction/ai-authoring/unity_pixel_diff.mjs
       - name: Enforce repository architecture invariants
         run: |
           node tools/check-repository-architecture.mjs --tracked-tree
           node --test tools/check-repository-architecture.test.mjs
+      - name: Test transferable ownership and stale queued-run rejection
+        run: node --test tools/workstream-lease/*.test.mjs
       - name: Validate documentation catalogue and local links
         run: node tools/check-documentation-governance.mjs --tracked-tree
       - name: Test documentation governance (positive and negative cases)

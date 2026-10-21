@@ -25,8 +25,14 @@ assert.ok(builder.includes('INTEGRATION_PASS_ART_REVIEW_REQUIRED'),'Native gamep
 read(routing.canonical_visual_authority.production_workflow);
 const registry=JSON.parse(read('pipeline/active-workstreams.json'));
 const canonicalOwners=registry.active.filter(w=>w.id==='valoria-master-plan-layered-construction-20261016');
-assert.equal(canonicalOwners.length,1,'Exactly one registered integrated Valoria owner is required');
+assert.equal(canonicalOwners.length,1,'Exactly one registered integrated Valoria workstream is required');
 assert.equal(canonicalOwners[0].branch,'main','Canonical integrated production must remain on main');
+if(canonicalOwners[0].ownership_state==='available'){
+  assert.equal(canonicalOwners[0].owner,null,'Available canonical work has no exclusive chat owner');
+  assert.deepEqual(canonicalOwners[0].resources,[],'Available canonical work cannot reserve resources');
+}else{
+  assert.ok(typeof canonicalOwners[0].owner==='string'&&canonicalOwners[0].owner.trim(),'Claimed canonical work needs its current owner');
+}
 assert.equal(JSON.parse(read('pipeline/unity-publish-request.json')).enabled,false,'Historical Pages publication must remain explicitly retired');
 assert.ok(routing.current_screenshot_policy.forbidden_as_canonical.includes('eldoria-valoria-captures-*'));
 read(routing.legacy_fallback.fail_closed_guard);

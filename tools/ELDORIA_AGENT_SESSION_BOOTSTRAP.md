@@ -5,10 +5,11 @@ Actualizado el 21-10-2026 por encargo de reducir esperas sin alterar el juego.
 ## Arranque mínimo
 
 1. Leer `main/AGENTS.md`, HEAD de la rama encargada, solo cabeceras pertinentes de `SESSION_HANDOFF.md` y `PROJECT_STATE.md`, y solo `active` de `pipeline/active-workstreams.json`.
-2. La base de integración es `main`. Las pausas diagnósticas de 14–16 de octubre son históricas, no una nueva prohibición global. Respetar las pausas y reservas actuales por alcance. UI V3 y engendro no se consideran terminados por este mantenimiento.
+2. La base de integración es `main`. Las pausas diagnósticas de 14–16 de octubre son históricas, no una nueva prohibición global. Respetar las pausas y reservas actuales por alcance. Consultar el estado vigente de UI/engendro; esta guía no reabre tareas cerradas.
 3. Comprobar herramientas disponibles en esta sesión y consultar únicamente los workflows/runs del trabajo pertinente. No descargar ni releer toda la historia por defecto.
 4. Con checkout y Node: `node tools/eldoria-agent-preflight.mjs` ofrece diagnóstico local de solo lectura. Con conector GitHub, leer rutas y jobs; no afirmar que el diagnóstico se ejecutó en Windows.
 5. Antes de una operación pesada, contrastar reserva y job real. No cancelar procesos ajenos ni asumir disponibilidad por una cola aparentemente vacía.
+6. Una orden del propietario de continuar el mismo trabajo en este chat autoriza su relevo seguro, sin pedirle otra confirmación por el nombre anterior. Reclamar el mismo ID y actualizar responsable/revisión con SHA vigente. `ownership_state: available` y `owner: null` significan alcance disponible, no bloqueo. Ver el procedimiento de relevo del protocolo; las ediciones concurrentes y procesos reales siguen protegidos.
 
 ## Consulta breve del estado y recuperación de resultados
 
@@ -16,7 +17,7 @@ Actualizado el 21-10-2026 por encargo de reducir esperas sin alterar el juego.
 - En GitHub: workflow `eldoria-work-status.yml`, pestaña Summary y artefacto `eldoria-work-status-RUN_ID`. Añade ramas y jobs Windows observados. Una reserva declarada, un job observado y un proceso del PC son hechos distintos; un fallo de API se muestra como información parcial, nunca como PC libre.
 - El flujo nativo del engendro conserva una copia de los archivos generados antes de publicarlos, con SHA fuente, identidad del run, hashes y resultado de QA. Si falla Git, recuperar su artefacto `spawnling-native-recovery-RUN_ID-ATTEMPT` antes de repetir Unity.
 - La publicación de esa copia requiere su configuración versionada, QA correcta y el workstream activo original. Rechaza cambios concurrentes de Unity y nunca fuerza el remoto ni limpia, cambia o rebasa el directorio del editor. Un artefacto retenido tampoco equivale a integración ni a aprobación artística.
-- Guía de uso: `tools/workflow-recovery/README.md`. La escena y el workflow de Valoria y los archivos de UI conservan sus propietarios; no conectar otros productores sin reconciliar su alcance.
+- Guía de uso: `tools/workflow-recovery/README.md`. Escena, workflows y UI siguen sus alcances vivos; los responsables pueden cambiar mediante el relevo autorizado. Una identidad histórica no bloquea la continuación; reconciliar antes de conectar otros productores.
 
 ## Capacidades existentes
 

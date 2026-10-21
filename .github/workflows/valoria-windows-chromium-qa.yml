@@ -34,18 +34,24 @@ jobs:
           sparse-checkout: |
             /tools/valoria-reference-clean/
             /tools/closeout/
+            /tools/workstream-lease/
             /docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png
             /pipeline/active-workstreams.json
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: valoria-qa-live-main
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - name: Honor current Windows runner owner and no shared Unity/Blender process
         shell: powershell
         run: |
-          $registry=Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
-          $claim=@($registry.active|Where-Object {
-            $_.id -eq 'valoria-master-plan-layered-construction-20261016' -and
-            $_.owner -eq 'chatgpt-eldoria-visual-recovery-20261020' -and
-            $_.resources -contains 'windows-runner-heavy'
-          })
-          if($claim.Count -ne 1){throw 'Live integrated main Windows claim not held'}
+          node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-qa-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
+          if($LASTEXITCODE){throw 'Live runner lease or queued ownership changed; refuse stale execution'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC native editing resources occupied; refuse interference'}
       - uses: actions/download-artifact@v4
         with:
@@ -53,9 +59,6 @@ jobs:
           run-id: 39610358759
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: unity-raw
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

@@ -18,10 +18,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-visual-recovery-20261020",
+      "owner": null,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-16",
+      "claimed_at": null,
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -54,8 +54,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
-      "next": "Four art phases integrated; native241 PASS40/Play/reload, native242 build and Windows QA39509184788 PASS. No publication. City near7 but not certified; future artistic gain: prairie/ground transitions and world base detail, preserve exact validated sources.",
+      "phase": "AVAILABLE_FOR_AUTHORIZED_ART_CONTINUATION",
+      "next": "The next owner-authorized art chat may claim this same canonical ID without permission from the previous chat: set its owner, ownership_state=claimed, write_scope_released=false and increment ownership_revision atomically before mutation. Preserve certified sources and use dynamic live runner guards; no replay of completed phases.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -546,7 +546,7 @@
           "handoff_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677"
         }
       },
-      "previous_owner": "codex-work-valoria-integration-continuation-20261018",
+      "previous_owner": "chatgpt-eldoria-visual-recovery-20261020",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md",
@@ -662,7 +662,21 @@
         "owner": "codex-coordination-handoff-repair-20261021",
         "authorization": "Owner: Resuélvelo porque se está convirtiendo en un freno",
         "scope": "Only live ownership/runner gate and stale responsibility release after completion evidence; preserve scene/art/runtime and every source/evidence."
-      }
+      },
+      "ownership_history": [
+        {
+          "owner": "chatgpt-eldoria-visual-recovery-20261020",
+          "claimed_at": "2026-10-16",
+          "phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
+          "released_at": "2026-10-21T14:58:50.649Z",
+          "reason": "Four art phases delivered; no runner reservation; owner requests removing stale chat ownership barriers. Canonical work ID and all sources/evidence retained."
+        }
+      ],
+      "ownership_revision": 1,
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
+      "last_claimed_at": "2026-10-16"
     },
     {
       "id": "eldoria-tripo-art-brain-integration-20261021",
@@ -717,7 +731,17 @@
         "deliverable": "Transferable work ownership and dynamic runner guards without stale chat-name locks",
         "evidence": "Positive/negative lease and workflow binding tests; architecture and governance checks",
         "handoff": "Existing artistic work can be claimed safely from available state; old evidence preserved"
-      }
+      },
+      "phase": "VALIDATING_DYNAMIC_OWNER_GATES",
+      "validation": {
+        "local_tests": 8,
+        "workflow_files_scanned": 230,
+        "fixed_name_guards": 2,
+        "workflow_governance": "PASS",
+        "all_workflow_yaml_parse": "PASS",
+        "unity_or_blender_jobs_dispatched": 0
+      },
+      "next": "Wait for lightweight CI of this change and close maintenance. Art can claim the available canonical workstream now; no reservation of art scene/code or Windows by maintenance."
     }
   ],
   "history": [
@@ -6406,12 +6430,14 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "active_owner_claimed",
-    "owner": "codex-work-valoria-integration-continuation-20261018",
+    "status": "canonical_workstream_available",
+    "owner": null,
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
     "branch": "main",
-    "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits."
+    "restrictions": "Preserve native111 baseline; staged improvements with focused tests. No old independent branch production. No paid credits.",
+    "previous_owner": "codex-work-valoria-integration-continuation-20261018",
+    "ownership_source": "active[id=valoria-master-plan-layered-construction-20261016]; transferable owner-directed claim"
   }
 }
