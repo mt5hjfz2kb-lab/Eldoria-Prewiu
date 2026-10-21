@@ -165,10 +165,25 @@ jobs:
             '-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent',
             '-logFile',$log)
           $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
-          if(-not $process.WaitForExit(1800000)){
-            if(Test-Path $log){Get-Content $log -Tail 180}
-            & taskkill.exe /PID $process.Id /T /F | Out-Null
-            throw 'Native I-II viewport/capture probe exceeded 30 minutes'
+          # A known editor-only SearchDatabase crash previously left this
+          # exact test running until its 30-minute timeout (run 39564761151).
+          # Detect it early AFTER the reversible Search-index recovery, so a
+          # genuine remaining infrastructure problem does not hoard the PC.
+          $deadline=(Get-Date).AddMinutes(30)
+          while(-not $process.WaitForExit(10000)){
+            if(Test-Path $log){
+              $tail=Get-Content -LiteralPath $log -Tail 700 -ErrorAction SilentlyContinue|Out-String
+              if($tail.Contains('ArgumentOutOfRangeException') -and
+                 $tail.Contains('UnityEditor.Search.SearchDatabase')){
+                & taskkill.exe /PID $process.Id /T /F | Out-Null
+                throw 'Unity SearchDatabase indexing fault persisted despite the exact reversible workaround'
+              }
+            }
+            if((Get-Date) -ge $deadline){
+              if(Test-Path $log){Get-Content $log -Tail 180}
+              & taskkill.exe /PID $process.Id /T /F | Out-Null
+              throw 'Native I-II viewport/capture probe exceeded 30 minutes'
+            }
           }
           if($process.ExitCode -ne 0){
             if(Test-Path $log){Get-Content $log -Tail 180}
