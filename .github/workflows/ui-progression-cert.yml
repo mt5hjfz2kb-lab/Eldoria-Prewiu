@@ -250,8 +250,10 @@ jobs:
             'integration-construction-landscape.png',
             'integration-construction-portrait.png',
             'integration-bastion-upgrade.png',
-            'integration-training.png',
-            'integration-training-portrait.png',
+            # Training deliberately leaves the city for an opaque management
+            # destination. Do NOT test the city viewport behind that screen:
+            # the correct acceptance gate is native PlayMode full-screen,
+            # topmost raycast, camera restoration and screenshot presence.
             'integration-art-forest-valoria-landscape.png',
             'integration-art-forest-valoria-portrait.png'
           )
