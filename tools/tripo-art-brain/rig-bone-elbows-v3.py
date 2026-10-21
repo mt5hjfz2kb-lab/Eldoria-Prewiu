@@ -144,17 +144,17 @@ def animate(arm):
         pose = {name: tuple(values) for name, values in baseline.items()}
         # Lower upper-arm swing; a new hinged forearm provides attack articulation.
         if frame == 19:
-            pose["R_arm"] = (-.20, .045, .06)
+            pose["R_arm"] = (-.27, .07, .095)
         if frame == 27:
-            pose["R_arm"] = (.29, -.08, -.22)
-            pose["L_arm"] = (.13, -.025, -.09)
+            pose["R_arm"] = (.46, -.11, -.25)
+            pose["L_arm"] = (.17, -.035, -.12)
         pose.update({
             "L_forearm": {
                 1:(0,0,0),10:(.02,0,0),19:(-.07,0,.03),27:(.08,-.04,-.09),
                 34:(.06,0,-.035),46:(-.02,0,.015),65:(0,0,0)
             }[frame],
             "R_forearm": {
-                1:(0,0,0),10:(-.035,0,-.025),19:(-.27,.11,.06),27:(-.42,.18,.14),
+                1:(0,0,0),10:(-.035,0,-.025),19:(-.27,.11,.06),27:(.16,.10,.07),
                 34:(-.13,.04,.025),46:(-.025,0,0),65:(0,0,0)
             }[frame],
             "L_shin": {
