@@ -719,7 +719,8 @@
         "tools/art-direction/ai-authoring/render_artist_ab.py",
         ".github/workflows/tripo-artist-replay-ab.yml",
         ".github/workflows/tripo-spawnling-free-rig-probe.yml",
-        ".github/workflows/tripo-spawnling-free-rig-probe-v2.yml"
+        ".github/workflows/tripo-spawnling-free-rig-probe-v2.yml",
+        ".github/workflows/tripo-spawnling-rig-v3.yml"
       ],
       "resources": [],
       "art_production_routing": "required",
@@ -732,7 +733,7 @@
         "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
-      "next": "Inspeccionar imágenes reales de siete poses del artefacto v2, registrar dictamen independiente y seguridad del GLB; preparar importación aislada en Unity sin ocupar el runner reservado; cerrar la prueba aislada sin prometer integración jugable.",
+      "next": "Source-locked v3 elbow/knee-weighted Blender rig, compare v2/v3 real pose PNG, enforce no spend and no game changes; accept only if genuinely better, then schedule isolated Unity import when runner is free.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
