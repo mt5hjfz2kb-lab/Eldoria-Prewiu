@@ -74,6 +74,7 @@ def main():
  p.add_argument('--unity-before',type=pathlib.Path,required=True)
  p.add_argument('--target-object',required=True)
  p.add_argument('--target-mode',choices=['existing','new'],default='existing',help='new allows the artist to create a previously absent mesh')
+ p.add_argument('--subject-kind',choices=['terrain','creature','mineral_prop'],default='terrain',help='Optional Tripo subject, legacy terrain remains unchanged')
  p.add_argument('--inventory',type=pathlib.Path)
  p.add_argument('--mesh-context',type=pathlib.Path,help='Optional existing Blender mesh vertex indices, border loops and anchoring coordinates')
  p.add_argument('--prior-visual-review',type=pathlib.Path,help='Optional real previous Blender matched-camera comparison JSON for Qwen-directed visual correction')
@@ -215,6 +216,40 @@ def main():
    'Choose a specific deformation within these bounds with measurable camera-visible effect, '
    'explain the original defect and desired silhouette in 35-120 chars each; use exactly one or two concise actions, '
    'and no repeated data. A visible large cliff needs a region radius >=1.0 local meters and a NONZERO delta >=0.2 local meters; independently choose the actual local position, shape and displacement from the images, never copy these minimum values as defaults. Respond only well-formed JSON matching supplied schema.')
+ if a.subject_kind in ('creature','mineral_prop'):
+  # Explicit opt-in for existing asset art. Preserve the legacy terrain prompt,
+  # spatial validator, real Qwen model and Blender executor unmodified.
+  if a.subject_kind=='creature':
+   focus=('CREATURE ART: analyse a recognisable head/face, anatomy, limbs, posture, '
+     'body and floor contact, silhouette at strategic camera distance and joints '
+     'suitable for future skeletal deformation. Preserve original fantasy identity '
+     'and the canonical limb count. Never sculpt terrain, cliffs, create extra limbs, '
+     'or imply that a successful mesh import is a successful character rig. ')
+  else:
+   focus=('MINERAL ENVIRONMENT PROP ART: analyse readable connected stone masses, '
+     'surface and crack continuity, natural ground contact and distinctive dark '
+     'fantasy silhouette from the high strategic camera. Do not introduce an altar, '
+     'building, camp, new gameplay node, enormous crystal or arbitrary floating details. ')
+  prompt=('Compare first owner/source reference against second GENUINE UNITY screenshot. '
+   +focus+
+   'You are the existing Eldoria Qwen artistic author; direct ORIGINAL actual 3D Blender '
+   'changes, not fixed numerical presets, guessed vertex IDs or generic shape noise. '
+   'Existing-mesh typed actions: sculpt_region with center:[x,y,z],radius,delta:[x,y,z]; '
+   'sculpt_path with knots:[{center:[x,y,z],delta:[x,y,z],radius},...]; '
+   'reprofile_crest with axis:x|y,height_axis:y|z,control_points:[[pos,height],...],band_min,band_max; '
+   'assign_material with rgb:[r,g,b],roughness; '
+   'place_existing_asset with source_object,location:[x,y,z],rotation:[x,y,z],scale:[x,y,z]. '
+   'Only use boundary loops supplied by topology. '
+   f'Exact source target {a.target_object}; mode {a.target_mode}. '
+   'In new mode, construct_mesh must be the first actual model-authored action. '
+   f'Exact verified Tripo source inventory and scene constraints: {inventory[:3500]}. '
+   f'Verified artist feedback: {memory[:1400]}. '
+   f'Mesh bounds and source-local topology: {mesh_context_for_artist[:7000]}. '
+   f'{failure_feedback} {prior_review_feedback} '
+   f'Produce at most {a.max_actions} actions and explain observed_defect and design_intent '
+   '(at least 35 characters each); return strictly valid JSON with a planned_actions array. '
+   'Never mutate frozen source, scene gameplay or claim Rig Check, rigged animation, '
+   'ART_APPROVED, device QA or a new Tripo spend from the visual direction alone. ')
  if forbidden_methods:
   prompt += (' ORIGINAL camera evidence forbids all of these failed structural methods: '
     +', '.join(sorted(forbidden_methods))+
@@ -290,6 +325,7 @@ def main():
  evidence={'model':a.model,'system_role':'system','system_prompt_sha256':digest(role),'reference_sha256':hashes['reference'],
   'unity_before_sha256':hashes['unity_before'],'artist_learning_journal_sha256':memory_hash,
    'asset_inventory_sha256':digest(inventory.encode('utf8')),'mesh_context_sha256':mesh_context_sha,'cpu_compact':a.cpu_compact,'artist_brief_sha256':digest(prompt.encode('utf8')),'prior_visual_review_sha256':prior_review_hash,'rejected_visual_cycle_evidence':failures,'camera_footprint_contract':{'min_radius_m':a.camera_min_radius,'min_displacement_m':a.camera_min_displacement},'forbidden_visual_failure_methods':sorted(forbidden_methods),'inference_seconds':inference_seconds,'attempt_history':attempts,'repaired_after_rejection':len(attempts)>1,'target_object':a.target_object,'target_mode':a.target_mode,'direction':design,'self_approval':False}
+ if a.subject_kind != 'terrain': evidence['subject_kind']=a.subject_kind
  (a.out/'artist-inference.json').write_text(json.dumps(evidence,indent=2)+'\n','utf8')
  (a.out/'artist-plan.json').write_text(json.dumps(ops,indent=2)+'\n','utf8')
  print('REAL_LOCAL_ARTIST_DIRECTION_RECORDED',len(ops),'actions')
