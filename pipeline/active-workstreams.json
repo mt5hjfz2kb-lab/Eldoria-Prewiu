@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T19:24:04.636Z",
+  "updated_at": "2026-10-21T19:32:25.910Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -50,15 +50,13 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NATIVE265_QWEN_GEOGRAPHY_PLAN_AND_TRIAL",
-      "next": "Native264 rejected visually despite technical PASS. Native265 uses installed local Qwen with pinned original screenshots to author bounded relief; preserve gameplay/cameras/POIs and inspect all matched A/B pairs before integration.",
+      "phase": "NATIVE265_VISUAL_REJECTED_CENTRAL_TERRAIN_CRATERS",
+      "next": "Run39661331858 technical PASS, artifact12375705082. Actual strategic and quarry captures show strong artificial depressions from broad central hill intersecting protected POIs; reject integration. Refine artist finite-footprint off-anchor landforms with candidate feedback; review city decoration seating. Runner yielded to V4.1 Unity proof.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -703,7 +701,7 @@
           "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -741,7 +739,7 @@
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": "codex-three-workstreams-completion-20261021",
-      "ownership_revision": 14,
+      "ownership_revision": 15,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -769,18 +767,20 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "V4_UNITY_SKIN_PASS_ATTACK_LEG_VISUAL_REVIEW_PENDING",
+      "phase": "V41_FOOT_WEIGHT_REPAIR_UNITY_VALIDATION",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Run39660259305 passed actual distinct GPU captures,12bones/9863verts/3maps/2.708s and exact recovery. Independent view observes extended leg silhouette at attack; inspect animation before canonical integration. Scene untouched. Runner released to native265 artist geography.",
+      "next": "Blender run39661910094 PASS; exact repaired GLB c846969f98c838f9a4c6b0436097d729135109eabaa573210096a6b11332f1db. 1230 actual foot vertices move<=0.013675m while claw swipe retained. Blender attack image inspected: foot stretch removed. Validate exact archived variant in isolated Unity before integration.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
