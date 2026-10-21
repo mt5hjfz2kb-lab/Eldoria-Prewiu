@@ -29,9 +29,20 @@ concurrency:
 jobs:
   independent-art-evidence-contract:
     runs-on: ubuntu-latest
-    timeout-minutes: 4
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/art-visual-acceptance
+            pipeline/art-visual-approvals
+      - name: Materialize all real evidence when an approval is declared
+        shell: bash
+        run: |
+          # Approval PNGs may live anywhere in the repository: never skip bytes.
+          if find pipeline/art-visual-approvals -maxdepth 1 -name '*.json' -print -quit | grep -q .; then
+            git sparse-checkout disable
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: '24'

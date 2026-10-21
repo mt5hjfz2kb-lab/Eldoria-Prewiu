@@ -1,11 +1,22 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const manifestPath = 'pipeline/repository-architecture-invariants.json';
 const failures = [];
+// CI can inspect the exact committed tree without downloading binary asset bodies.
+// Default local checks still inspect the working tree, including uncommitted deletions.
+const trackedMode = process.argv.includes('--tracked-tree');
+const tracked = trackedMode ? new Set(execFileSync('git',
+  ['ls-tree','-r','--name-only','-z','HEAD'], {encoding:'utf8',maxBuffer:64*1024*1024})
+  .split('\0').filter(Boolean)) : null;
+const hasFile = p => tracked ? tracked.has(p) : fs.existsSync(p) && fs.statSync(p).isFile();
+const hasDir = p => tracked ? [...tracked].some(f=>f.startsWith(p.replace(/\/$/,'')+'/')) :
+  fs.existsSync(p) && fs.statSync(p).isDirectory();
 
 function fail(message){ failures.push(message); }
 function countFiles(root){
+  if(tracked) return [...tracked].filter(f=>f.startsWith(root.replace(/\/$/,'')+'/')).length;
   let count=0;
   const stack=[root];
   while(stack.length){
@@ -28,10 +39,10 @@ if(!fs.existsSync(manifestPath)){
 const manifest=JSON.parse(fs.readFileSync(manifestPath,'utf8'));
 
 for(const file of manifest.requiredFiles||[]){
-  if(!fs.existsSync(file) || !fs.statSync(file).isFile()) fail(`required file missing: ${file}`);
+  if(!hasFile(file)) fail(`required file missing: ${file}`);
 }
 for(const dir of manifest.requiredDirectories||[]){
-  if(!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) fail(`required directory missing: ${dir}`);
+  if(!hasDir(dir)) fail(`required directory missing: ${dir}`);
 }
 for(const [dir,min] of Object.entries(manifest.minimumFileCounts||{})){
   const actual=countFiles(dir);
@@ -59,7 +70,7 @@ if(registryPath && fs.existsSync(registryPath)){
   }
 }
 
-console.log('Repository architecture guard');
+console.log('Repository architecture guard: '+(trackedMode?'committed HEAD tree':'local working tree'));
 console.log(`Required files: ${(manifest.requiredFiles||[]).length}`);
 console.log(`Required directories: ${(manifest.requiredDirectories||[]).length}`);
 

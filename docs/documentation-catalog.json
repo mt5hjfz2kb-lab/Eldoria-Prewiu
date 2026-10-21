@@ -1083,45 +1083,38 @@
     },
     {
       "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",
-      "domain": "operations",
       "status": "review_pending",
-      "note": "Inventariado para el guard documental; no implica aprobacion artistica ni autoridad de produccion."
+      "domain": "infrastructure"
     },
     {
       "path": "docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md",
-      "domain": "art",
       "status": "review_pending",
-      "note": "Inventariado para el guard documental; no implica aprobacion artistica ni autoridad de produccion."
+      "domain": "art"
     },
     {
       "path": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
-      "domain": "art",
       "status": "review_pending",
-      "note": "Inventariado para el guard documental; no implica aprobacion artistica ni autoridad de produccion."
+      "domain": "art"
     },
     {
       "path": "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
-      "domain": "art",
       "status": "review_pending",
-      "note": "Inventariado para el guard documental; no implica aprobacion artistica ni autoridad de produccion."
+      "domain": "art"
     },
     {
       "path": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
-      "domain": "art",
       "status": "review_pending",
-      "note": "Inventariado para el guard documental; no implica aprobacion artistica ni autoridad de produccion."
+      "domain": "art"
     },
     {
       "path": "docs/TRIPO_API_NORMA_PRODUCCION_V1.md",
-      "domain": "art",
       "status": "review_pending",
-      "note": "Inventariado para el guard documental; no implica aprobacion artistica ni autoridad de produccion."
+      "domain": "art"
     },
     {
       "path": "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
-      "domain": "art",
       "status": "review_pending",
-      "note": "Inventariado para el guard documental; no implica aprobacion artistica ni autoridad de produccion."
+      "domain": "art"
     }
   ]
 }

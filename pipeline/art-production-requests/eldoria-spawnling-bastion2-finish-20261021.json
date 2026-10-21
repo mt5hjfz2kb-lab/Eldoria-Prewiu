@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-spawnling-bastion2-finish-20261021",
+  "request_id": "eldoria-spawnling-bastion2-finish-20261021",
+  "asset_or_sector": "Engendro de la Fisura existente / Bastión II (único destino engendro-valoria del mapa 4X)",
+  "profile": "environment_new_geometry",
+  "visual_gate_state": "AUTHORING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "La silueta del encuentro Bastión II no presenta el enemigo. Un Tripo GLB existente (20 créditos ya consumidos, ningún gasto autorizado adicional) se refinó en Blender, con cola más corta, albedo violeta con material PBR retenido y ojos sobre superficie. El cuerpo 49.800 -> 12.000/2.900 triángulos por dos LOD. Siguen pendientes A/B del auténtico mapa Unity, evaluación visual independiente y perfil móvil.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": true,
+    "blender_bake": false,
+    "unity_material_blending": true
+  },
+  "artist": {
+    "system_prompt": "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md",
+    "environment_adapter": "tools/spawnling-bastion2/finish_existing_spawnling.py",
+    "execution": "Zero-credit artist direction based on inspected authentic original Unity captures; Python/Blender 4.0.2 authored tail edit, near/far LOD, PBR grade, grounded eye details. Existing Tripo source remains immutable. Genuine Qwen inference cycle NOT claimed as completed.",
+    "technical_repairs": "Repair only measurable visual defects after saved Blender/native Unity A/B. Keep evidence hashes; use existing local Qwen/Blender when independent visual direction is necessary."
+  },
+  "validation": {
+    "source_gate": "Actual Blender source .blend, 2 near/far GLBs with exact sha256 and four real Blender PNG frames. No newly paid model or rigging.",
+    "final_gate": "Actual Unity 6000.3.23f1 URP saved integrated city/world I-II scene; source+imported textures persist; no new gameplay target/collider, same EngendroDefeated saved state, real engine camera before/after portrait/landscape, exact pointer, march, loot, reload and performance verification."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "PENDING",
+  "physical_mobile_tested": false,
+  "owner_authorization": "Explicit owner order 2026-10-21: improve existing Tripo Spawnling and replace provisional Bastion II enemy visuals in playable game; preserve combat, rewards, saves; no paid services.",
+  "notes": "Same game, no Bastion III, no new hotspot, no camp. Native runner/scene claims remain owned by Valoria's workstream; prepare scene change on separate PR #84 and merge only after actual QA and coordination with UI PR #83. No release until source exists in main and browser/mobile tests when needed."
+}

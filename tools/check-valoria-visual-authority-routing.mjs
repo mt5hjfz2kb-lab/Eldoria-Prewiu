@@ -24,7 +24,9 @@ assert.ok(builder.includes(baseline.scene),'Builder must compile selected scene'
 assert.ok(builder.includes('INTEGRATION_PASS_ART_REVIEW_REQUIRED'),'Native gameplay proof required');
 read(routing.canonical_visual_authority.production_workflow);
 const registry=JSON.parse(read('pipeline/active-workstreams.json'));
-assert.equal(registry.active.length,1);assert.equal(registry.active[0].branch,'main');
+const canonicalOwners=registry.active.filter(w=>w.id==='valoria-master-plan-layered-construction-20261016');
+assert.equal(canonicalOwners.length,1,'Exactly one registered integrated Valoria owner is required');
+assert.equal(canonicalOwners[0].branch,'main','Canonical integrated production must remain on main');
 assert.equal(JSON.parse(read('pipeline/unity-publish-request.json')).enabled,false,'Historical Pages publication must remain explicitly retired');
 assert.ok(routing.current_screenshot_policy.forbidden_as_canonical.includes('eldoria-valoria-captures-*'));
 read(routing.legacy_fallback.fail_closed_guard);

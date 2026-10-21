@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {execFileSync} from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const STATUS = new Set(['current','reference','historical','review_pending']);
@@ -18,10 +19,14 @@ export function localLinks(markdown) {
   return links;
 }
 
-export function auditDocs(root) {
+export function auditDocs(root, trackedPaths=null) {
   const errors = [], warnings = [];
   const abs = p => path.resolve(root,p);
-  const file = p => fs.existsSync(abs(p)) && fs.statSync(abs(p)).isFile();
+  const file = p => trackedPaths ? trackedPaths.has(p) : fs.existsSync(abs(p)) && fs.statSync(abs(p)).isFile();
+  const directDocs = trackedPaths ? [...trackedPaths].filter(p=>/^docs\/[^/]+\.md$/.test(p)).map(p=>p.slice(5)) :
+    (fs.existsSync(abs('docs')) ? fs.readdirSync(abs('docs')).filter(n=>n.endsWith('.md') && fs.statSync(abs('docs/'+n)).isFile()) : []);
+  const exists = dest => trackedPaths ? trackedPaths.has(path.relative(root,dest).split(path.sep).join('/')) ||
+    [...trackedPaths].some(p=>p.startsWith(path.relative(root,dest).split(path.sep).join('/')+'/')) : fs.existsSync(dest);
   let catalog;
   try { catalog = JSON.parse(fs.readFileSync(abs('docs/documentation-catalog.json'),'utf8')); }
   catch (e) { return { errors: ['Catalog missing or invalid: '+e.message], warnings, counts: {} }; }
@@ -38,9 +43,9 @@ export function auditDocs(root) {
   }
   for (const required of REQUIRED) if (!seen.has(required)) errors.push('Mandatory document missing in catalog: '+required);
   const docsDir = abs('docs');
-  if (!fs.existsSync(docsDir)) errors.push('docs/ missing');
-  else for (const name of fs.readdirSync(docsDir)) {
-    if (name.endsWith('.md') && fs.statSync(path.join(docsDir,name)).isFile() && !seen.has('docs/'+name))
+  if (trackedPaths ? ![...trackedPaths].some(p=>p.startsWith('docs/')) : !fs.existsSync(docsDir)) errors.push('docs/ missing');
+  else for (const name of directDocs) {
+    if (!seen.has('docs/'+name))
       errors.push('Direct docs Markdown is not inventoried: docs/'+name);
   }
   for (const pg of START_PAGES) {
@@ -49,7 +54,7 @@ export function auditDocs(root) {
       const dest = path.resolve(path.dirname(abs(pg)),link);
       const prefix = root.endsWith(path.sep) ? root : root+path.sep;
       if (dest !== root && !dest.startsWith(prefix)) { errors.push('Link escapes repository: '+pg+' -> '+link); continue; }
-      if (!fs.existsSync(dest)) errors.push('Broken start-page link: '+pg+' -> '+link);
+      if (!exists(dest)) errors.push('Broken start-page link: '+pg+' -> '+link);
     }
   }
   if (seen.get('AGENTS.md')?.status !== 'current') errors.push('AGENTS.md must stay current');
@@ -57,12 +62,14 @@ export function auditDocs(root) {
   if (file('docs/ELDORIA_ART_PIPELINE_INDEX.md') && !fs.readFileSync(abs('docs/ELDORIA_ART_PIPELINE_INDEX.md'),'utf8').includes('HISTÓRICO'))
     errors.push('Legacy art index lacks visible historical banner');
   for (const item of entries) if (item.status === 'review_pending') warnings.push(item.path);
-  return {errors,warnings,counts:{catalogued:entries.length,review_pending:warnings.length,direct_docs:fs.existsSync(docsDir)?fs.readdirSync(docsDir).filter(n=>n.endsWith('.md')).length:0}};
+  return {errors,warnings,counts:{catalogued:entries.length,review_pending:warnings.length,direct_docs:directDocs.length}};
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const root = path.resolve(process.cwd());
-  const result = auditDocs(root);
+  const tracked = process.argv.includes('--tracked-tree') ?
+    new Set(execFileSync('git',['ls-tree','-r','--name-only','-z','HEAD'],{encoding:'utf8',maxBuffer:64*1024*1024}).split('\0').filter(Boolean)) : null;
+  const result = auditDocs(root,tracked);
   console.log('Documentation governance:',JSON.stringify(result.counts));
   if (result.warnings.length) console.log('NOTE: review_pending is non-authoritative; entries:',result.warnings.length);
   if (result.errors.length) { for (const s of result.errors) console.error('FAIL:',s); process.exitCode=1; }
