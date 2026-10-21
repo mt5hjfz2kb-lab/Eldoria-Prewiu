@@ -1,0 +1,28 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-tripo-mobile-lod-proof-20261021",
+  "workstream_id": "eldoria-tripo-mobile-lod-proof-20261021",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Jabalí de roca (no integrado, capítulo III) y Foco de corrupción (prop experimental): LOD visuales y métricas de coste para móviles",
+  "profile": "environment_surface",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "ai_authorship_policy": "required",
+  "visual_gate_state": "TECHNICAL_LOD_CANDIDATES_UNDER_QA",
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "diagnosis": "Las fuentes Tripo optimizadas para revisión aislada tienen ~49.800 triángulos cada una; esa cifra no es una aprobación móvil ni un perfil de instancias repetidas. Elaborar LOD en copias sin perder UV/PBR y registrar capturas reales de Blender, hashes y métricas, manteniendo materiales fuente. Qwen y Unity en escena quedan fuera de este ensayo técnico.",
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_lod_generation": true,
+    "unity_material_blending": false
+  },
+  "validation": {
+    "source_gate": "GLB existente protegido por SHA-256, procesado con tools/blender_capability_proof.py; no Tripo API ni modelo nuevo.",
+    "final_gate": "LOD0/1/2 resultantes deben conservar triángulos descendentes, UV0, PBR y textura embebida, con PNG Blender mismos ángulos y reporte original. NO ART_APPROVED ni MOBILE_PASS sin comparación Unity real y dispositivo."
+  },
+  "notes": "Trabajo aditivo separado de artista Tripo phase2 (Engendro/Qwen) y escena Valoria. Solo GitHub-hosted Ubuntu, no Windows runner. No integrar ni publicar."
+}
