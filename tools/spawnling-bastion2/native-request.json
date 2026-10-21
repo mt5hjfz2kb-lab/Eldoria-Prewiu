@@ -19,8 +19,8 @@
     "original_bastion_i_ii_runtime_play_save"
   ],
   "owner_authorization": "2026-10-21 user explicitly requested finishing and replacing the Bastion II enemy silhouette in-game; no additional monetized Tripo generation.",
-  "stage_revision": 7,
-  "preflight_description": "Actual Unity 39576101372 confirmed existing canonical named visual Zone1 authored engendro-valoria; preserve node/hotspot/physics and disable old mesh renderers, integrate finished Tripo visual under unique name, matched player camera A/B; use isolated clean worktree.",
+  "stage_revision": 8,
+  "preflight_description": "Retain canonical existing Zone1 authored engendro-valoria gameplay hierarchy; hide only legacy renderers after real Unity before captures; add distinct Bastion II Tripo PBR Near/Far creature visual, no new collider/hotspot, exact save/play QA. Source in isolated verified checkout.",
   "executor_safety": {
     "shared_windows_runner": "single serial concurrency group, never cancel running processes",
     "paid_credits": 0,
