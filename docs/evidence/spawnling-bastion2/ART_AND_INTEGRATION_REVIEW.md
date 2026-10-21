@@ -35,5 +35,12 @@ La mejora observada frente al modelo Tripo de base es **moderada**, no una trans
 - **Inspección visual real**: `after-local-900x1600.png` muestra de forma clara al enemigo violeta y `after-region-1600x900.png` lo sitúa en el lugar correcto entre los árboles. El cambio regional es **0,2609 %** de píxeles, supera el umbral 0,1 % de mera visibilidad. El cambio local **86,59 % NO demuestra por sí mismo mejora artística**, porque el fotograma previo presenta un fondo/suelo mucho más oscuro: el A/B local no está perfectamente estabilizado. La aprobación artística formal sigue **pendiente**.
 - **Juicio artístico**: sustitución sustancial frente a la silueta/provisional antigua, apta como criatura temprana en la cámara del mundo, pero no certificada como 8/10. Persiste rostro poco expresivo y ausencia de rig/ataques animados; no se han probado FPS ni termales en Android físico.
 
-## Cierre
-La entrega en rama es comprobable y la integración del juego I–II pasó sus pruebas nativas. Restan la fusión coordinada de [PR #84](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/84) a `main` sin sobrescribir la UI V3 en [PR #83](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/83), las verificaciones posteriores a la fusión y cualquier publicación móvil/web. **No confundir la fusión de código con la entrega publicada o con QA de un móvil real.**
+## Cierre de la misión — incorporado en main
+
+**COMPLETADO COMO SUSTITUCIÓN VISUAL JUGABLE.** El [PR #84](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/84) se fusionó en la rama canónica `main` por squash SHA `56970cea8a8ae4f45540e708079912e4cb612a4c`. El juego ya contiene el Engendro 3D mejorado en su escena integrada real, con materiales y meshes persistentes, LODs y un único encuentro `engendro-valoria`. No se tocó el PR #83 de interfaz V3.
+
+**Pruebas completadas:** 40 verificaciones genuinas de I–II/guardados/recompensas en Unity 6000.3.23f1 (run 39578889927), evidencia de presencia local y regional en capturas A/B; guardado de escena y verificación de archivo real en `main`. El run 39582719835 recuperó el mismo commit sin rehacer ni pagar modelos. Se verificó que la escena y los assets persistentes existen en `main`.
+
+**Alcance separado:** no se ha publicado de forma explícita APK/WebGL en este trabajo; la disponibilidad para testers dependerá de la próxima compilación/publicación del canal correspondiente. No se ha demostrado rendimiento en Android físico, rig/animaciones de combate ni calidad 8/10. Estas limitaciones no invalidan la integración visual solicitada, pero no se deben presentar como tareas realizadas. Un CI global posterior a la fusión puede seguir validando el repositorio; si detecta una regresión atribuible a este cambio debe abrirse incidencia específica.
+
+**Coste nuevo:** 0 €. **Estado de este workstream:** CERRADO; no dejar un procesador de recuperación en cola ni volver a gastar créditos de Tripo para este mismo modelo.

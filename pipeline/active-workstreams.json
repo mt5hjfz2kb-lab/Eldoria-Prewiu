@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T09:50:00Z",
+  "updated_at": "2026-10-21",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -638,32 +638,6 @@
         "physical_mobile_tested": false,
         "published": false
       }
-    },
-    {
-      "id": "eldoria-spawnling-bastion2-finish-20261021",
-      "title": "Engendro de la Fisura / Tripo source finishing and safe Bastion II integration",
-      "owner": "chatgpt-engendro-integration-20261021",
-      "branch": "art/spawnling-bastion2-finish-20261021",
-      "status": "active",
-      "claimed_at": "2026-10-21",
-      "base_main_sha": "fd3bb108c26716fec3aa530006107c764e62e91d",
-      "scope": [
-        "ArtSource/World4X/Spawnling_v1/Finished/**",
-        "tools/spawnling-bastion2/**",
-        ".github/workflows/eldoria-spawnling-bastion2.yml",
-        "docs/evidence/spawnling-bastion2/**",
-        "Unity/Assets/Eldoria/SpawnlingBastion2/**",
-        ".github/workflows/eldoria-spawnling-native.yml",
-        "Unity/Assets/Eldoria/ArtTests/SpawnlingB2/**",
-        "Unity/Assets/Eldoria/Resources/SpawnlingB2/**",
-        "pipeline/art-production-requests/eldoria-spawnling-bastion2-finish-20261021.json"
-      ],
-      "resources": [],
-      "budget_eur": 0,
-      "art_production_routing": "required",
-      "dependency": "Scene integration staged exclusively in PR #84 (draft); existing valoria-master-plan workstream retains authority over Valoria_City_World_UI.unity and Windows runner. Coordinate main merge after native QA and UI V3 PR #83 conflict checks. Zero Tripo credits, no release.",
-      "next": "Source art and LOD production pass; native Windows source scene integration started run 39568710360, must prove actual scene, I-II save/rewards, independent art screenshots; guard routing request now authored in main; coordinate PR #83 without overwriting.",
-      "art_production_request": "pipeline/art-production-requests/eldoria-spawnling-bastion2-finish-20261021.json"
     },
     {
       "id": "eldoria-ui-v3-contextual-20261021",
@@ -6083,6 +6057,29 @@
         "full_evidence_fallback_tests": "PASS: missing request and all formal approval states require full checkout; malformed inputs fail."
       },
       "scope_limits": "Operational documentation and known workflow bottlenecks reconciled; no claim that historical/reference/review_pending documents have all been semantically revalidated. No runtime, art asset, save, build request, release or credential changes."
+    },
+    {
+      "id": "eldoria-spawnling-bastion2-finish-20261021",
+      "title": "Bastión II — Engendro Tripo 3D integrado en la escena canónica Unity",
+      "status": "completed",
+      "closed_at": "2026-10-21",
+      "owner": "chatgpt-engendro-integration-20261021",
+      "branch": "main",
+      "result": "Visual replacement integrated by PR #84 into main, with persistent PBR/LOD Unity meshes, original engendro-valoria hotspot intact and 40 real Bastion I-II gameplay/save checks PASS.",
+      "merge_commit": "56970cea8a8ae4f45540e708079912e4cb612a4c",
+      "native_qa_run": 39578889927,
+      "recovered_commit_run": 39582719835,
+      "visual_evidence": "docs/evidence/spawnling-bastion2/native-integration.json",
+      "gameplay_evidence": "docs/evidence/spawnling-bastion2/native-full-i-ii-result.json",
+      "art_status": "usable 3D enemy ~7/10; art_approved global pending, rig not authored",
+      "pending_unrelated": "physical Android GPU/device QA and publication are separate unclaimed future deliverables",
+      "budget_eur": 0,
+      "new_tripo_credits": 0,
+      "preserved_scope": [
+        "PR #83 UI V3 untouched",
+        "Bastion III not added",
+        "original combat/loot/saves untouched"
+      ]
     }
   ],
   "owner_specific_pauses": [
