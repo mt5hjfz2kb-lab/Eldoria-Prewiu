@@ -1,0 +1,145 @@
+name: Spawnling expressive V4 articulated swipe zero-credit proof
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/tripo-spawnling-rig-v4.yml"
+      - "tools/tripo-art-brain/rig-expressive-swipe-v4.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+concurrency:
+  group: spawnling-rig-v4-copy-proof
+  cancel-in-progress: true
+
+jobs:
+  expressive-rig:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    env:
+      OUT: /tmp/eldoria-spawnling-rig-v4
+      MODEL: ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+      MODEL_SHA: 4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d
+    steps:
+      - name: Source-pinned checkout of existing rig tools; no production game
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+            tools/tripo-art-brain/rig-feasibility-blender.py
+            tools/tripo-art-brain/rig-finish-prototype-v2.py
+            tools/tripo-art-brain/rig-bone-elbows-v3.py
+            tools/tripo-art-brain/rig-expressive-swipe-v4.py
+            pipeline/active-workstreams.json
+
+      - name: Verify source, V4 owner/revision and zero-spend scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT/v3" "$OUT/v4"
+          test "$(sha256sum "$MODEL" | awk '{print $1}')" = "$MODEL_SHA"
+          python3 -m py_compile tools/tripo-art-brain/rig-*.py
+          ! grep -E 'openapi[.]tripo3d|TRIPO_API_KEY|requests[.]post|/animations/rig' tools/tripo-art-brain/rig-expressive-swipe-v4.py
+          python3 - <<'PY'
+          import json
+          d=json.load(open('pipeline/active-workstreams.json'))
+          a=next(x for x in d['active'] if x['id']=='eldoria-tripo-art-brain-phase2-20261021')
+          assert a['ownership_state']=='claimed'
+          assert a['owner']=='chatgpt-eldoria-spawnling-rig-integration-20261021'
+          assert a['ownership_revision']==10
+          assert a['resources']==[]
+          print('EXACT_OWNER_AND_FREE_RIG_SCOPE_VERIFIED')
+          PY
+
+      - name: Install free Blender with NumPy/PIL (Linux, not shared Windows)
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+
+      - name: Generate real V3 and V4 from the identical archived GLB
+        timeout-minutes: 14
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b --disable-autoexec -t 4 --python-exit-code 1 \
+            --python tools/tripo-art-brain/rig-bone-elbows-v3.py -- \
+            --input "$MODEL" --source-sha256 "$MODEL_SHA" --out "$OUT/v3" > "$OUT/v3/console.log" 2>&1 \
+            || { tail -85 "$OUT/v3/console.log"; exit 1; }
+          blender -b --disable-autoexec -t 4 --python-exit-code 1 \
+            --python tools/tripo-art-brain/rig-expressive-swipe-v4.py -- \
+            --input "$MODEL" --source-sha256 "$MODEL_SHA" --out "$OUT/v4" > "$OUT/v4/console.log" 2>&1 \
+            || { tail -95 "$OUT/v4/console.log"; exit 1; }
+
+      - name: Independently validate 12 bones, normalized weights, pose cycle, GLB animation and images
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 - <<'PY'
+          import os,hashlib,json,pathlib,struct
+          from PIL import Image,ImageChops
+          root=pathlib.Path(os.environ['OUT'])
+          old=json.loads((root/'v3/rig-elbow-knee-v3-report.json').read_text())
+          new=json.loads((root/'v4/rig-expressive-v4-report.json').read_text())
+          expected=os.environ['MODEL_SHA']
+          assert old['source_sha256']==new['source_sha256']==expected
+          assert new['source_unchanged'] and old['source_unchanged']
+          assert old['bone_count']==new['bone_count']==12
+          assert new['skin_weights']['invalid']==0
+          assert new['source_vertices']==old['source_vertices']==9863
+          assert new['tripo_api_calls']==new['credits_spent']==0
+          assert not new['independent_art_approved'] and not new['gameplay_integrated'] and not new['mobile_pass']
+          assert new['deformation_by_pose']['65']['max_m']<=.002
+          assert new['deformation_by_pose']['27']['max_m']>old['deformation_by_pose']['27']['max_m']
+          target=root/'v4/spawnling-rig-expressive-swipe-v4.glb'
+          raw=target.read_bytes()
+          assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
+          n,chunk=struct.unpack_from('<I4s',raw,12)
+          assert chunk==b'JSON'
+          gltf=json.loads(raw[20:20+n].decode().strip())
+          assert len(gltf.get('skins',[]))==1
+          assert len(gltf['skins'][0]['joints'])==12
+          assert len(gltf.get('animations',[]))==1 and len(gltf['animations'][0]['channels'])>=33
+          assert any('JOINTS_0' in p['attributes'] and 'WEIGHTS_0' in p['attributes']
+             for m in gltf.get('meshes',[]) for p in m.get('primitives',[]))
+          diffs={}
+          for frame in [1,10,19,27,34,46,65]:
+              a=Image.open(root/f'v3/spawnling-pose-{frame:02}.png').convert('RGB')
+              b=Image.open(root/f'v4/spawnling-pose-{frame:02}.png').convert('RGB')
+              assert a.size==b.size==(600,480)
+              delta=ImageChops.difference(a,b)
+              diffs[str(frame)]=sum(max(px)>30 for px in delta.getdata())
+          assert diffs['27']>500, 'V4 attack is not visually distinguishable from V3 in locked Blender camera'
+          assert diffs['1']<25 and diffs['65']<25, 'V4 modifies idle/rest state'
+          report={
+              'schema_version':1,'status':'V4_TECH_PASS_VISUAL_INDEPENDENT_REVIEW_PENDING',
+              'source_sha256':expected,'v3_glb_sha256':old['glb_sha256'],
+              'v4_glb_sha256':new['glb_sha256'],'v4_blend_sha256':new['blend_sha256'],
+              'bones':12,'skin':1,'animations':1,'v4_weight_invalid':0,
+              'pose_pixels_v3_vs_v4':diffs,
+              'strike_v3_max_m':old['deformation_by_pose']['27']['max_m'],
+              'strike_v4_max_m':new['deformation_by_pose']['27']['max_m'],
+              'png_provenance':'AUTHENTIC_BLENDER_FIXED_CAMERA_NOT_UNITY',
+              'art_approved':False,'unity_animation_tested':False,
+              'mobile_pass':False,'integrated_in_game':False,'tripo_credits':0,
+              'merge_allowed':False
+          }
+          (root/'v3-v4-technical-comparison.json').write_text(json.dumps(report,indent=2)+'\n')
+          print('SPAWNLING_V4_BONES_REAL_AND_NO_SPEND',json.dumps(report))
+          PY
+
+      - name: Preserve GLB, editable blend, 14 genuine Blender PNGs and exact QA
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spawnling-expressive-rig-v4-zero-credit-proof
+          path: /tmp/eldoria-spawnling-rig-v4/
+          retention-days: 14
+          if-no-files-found: error
