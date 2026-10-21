@@ -1,0 +1,30 @@
+{
+    "asset": "Eldoria_RiftFocus_v1",
+    "unityVersion": "6000.3.23f1",
+    "source": "Assets/TripoSubject.glb",
+    "meshes": 1,
+    "renderers": 1,
+    "materials": 1,
+    "textures": 3,
+    "triangles": 49799,
+    "vertices": 28951,
+    "importedBaseColorWidth": 2048,
+    "importedBaseColorHeight": 2048,
+    "uv0AllMeshes": true,
+    "normalsAllMeshes": true,
+    "fullResolutionTexturePass": true,
+    "positiveSelection": true,
+    "emptySelectionMiss": true,
+    "worldBounds": {
+        "x": 1.9590598344802857,
+        "y": 1.3537031412124634,
+        "z": 2.5999999046325685
+    },
+    "captures": [
+        "iso.png",
+        "side.png",
+        "front.png",
+        "strategic.png"
+    ],
+    "status": "UNITY_TECH_ONLY_ART_REVIEW_PENDING"
+}
