@@ -765,7 +765,8 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3Management*.cs.meta",
         "tools/ui-v3-domain-smoke/**",
         ".github/workflows/ui-v3-domain-smoke.yml",
-        "docs/ui-v3/MANAGEMENT_SCREENS_V3_IMPLEMENTATION_20261021.md"
+        "docs/ui-v3/MANAGEMENT_SCREENS_V3_IMPLEMENTATION_20261021.md",
+        ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [
         "windows-runner-heavy"
