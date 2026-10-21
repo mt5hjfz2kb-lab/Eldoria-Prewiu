@@ -240,9 +240,18 @@ namespace Eldoria.ReferenceClean.Editor
             }
             public float Edge(float x, float z)
             {
-                if (z < z0 || z > z1) return 0;
+                // A road has NO shoulder outside its measured longitudinal
+                // extent. Zero means touching the pavement: returning zero
+                // here previously painted distant meadow as worn path and
+                // suppressed real height sculpt outside the road.
+                if (z < z0 || z > z1) return float.PositiveInfinity;
                 var slice = section[Mathf.Clamp(Mathf.RoundToInt((z - z0) * 2), 0, section.Length - 1)];
                 return Mathf.Max(slice.x - x, x - slice.y);
+            }
+            public bool OutsideDomainIsUnpainted()
+            {
+                return float.IsPositiveInfinity(Edge(0, z0 - 1f)) &&
+                       float.IsPositiveInfinity(Edge(0, z1 + 1f));
             }
         }
         static float Smooth(float lo, float hi, float v)
@@ -268,6 +277,8 @@ namespace Eldoria.ReferenceClean.Editor
             var filters = Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None);
             var roads = new[] { "Axial_Paving", "Outer_Road" }.Select(name =>
                 new GeographicRoad(filters.Single(f => f.name == name && f.sharedMesh != null))).ToArray();
+            Need(roads.All(r => r.OutsideDomainIsUnpainted()),
+                "Measured road domain must not repaint distant meadow or block height sculpt");
             int size = data.alphamapResolution;
             var alphas = data.GetAlphamaps(0, 0, size, size);
             Need(alphas.GetLength(2) >= 3, "Existing soil/grass blend layers unavailable");
