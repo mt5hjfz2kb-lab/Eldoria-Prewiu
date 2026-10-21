@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "asset": "spawnling",
+  "classification": "ART_REJECTED_INVISIBLE_LOCALIZED_EDIT",
+  "reviewed_at": "2026-10-21",
+  "source": {
+    "repo_run": 39636058045,
+    "artifact_id": 12362650211,
+    "source_blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
+    "candidate_blend_sha256": "301303b8763095729b3f0707c7b621e226b5dbbdfd65a1901b71fe4bbe2022fb",
+    "candidate_glb_sha256": "76932c7b726fa0a0196056663e19d1aec1cf96882a3548432284718c487be48f",
+    "plan_sha256": "914474e154c95fc36f0fac14ccab0ac2700758e59da53a136269f0d3bbdfe399",
+    "model": "qwen3-vl:2b-instruct",
+    "inference_seconds": 377.338
+  },
+  "action": {
+    "type": "sculpt_region",
+    "target": "Spawnling_Near_Authored",
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "radius": 0.088,
+    "delta": [
+      0,
+      0,
+      0.015
+    ],
+    "changed_vertices": 206,
+    "total_target_vertices": 9753
+  },
+  "visual": {
+    "camera": "Blender clay fixed orthographic, NOT game/Unity",
+    "before_png_sha256": "cfa410a38b45adf8e140813ed7957d03cb8f6e6ce58b7a577ea57e3c70512975",
+    "after_png_sha256": "9fb04e6088e2976c6f5d01f0ee7317d1cb382f3e8fabfd41932f41c0f9478c16",
+    "changed_pixels": 2,
+    "total_pixels": 307200,
+    "changed_fraction": 0.00000651,
+    "camera_visibility_gate": "REJECT_NOT_VISIBLE",
+    "review": "Same head/silhouette in both genuine images; no meaningful visual gain. Do not promote."
+  },
+  "lesson": "Qwen said head/neck but sculpted centre=[0,0,0] with radius .088m and delta .015m: 206 changed vertices, only 2/307200 changed camera pixels. Avoid near-origin invisible edits. Historic Blender mesh anchors had mislabeled terrain/cliff names; supply verified +X face-direction vertices.",
+  "next_action": "Use authentic face photo and genuine positive-X Blender source-vertex anchors; author one camera-visible localized facial/muzzle change. Compare matched Blender hero AND strategic views, then independent Unity art review. Preserve original.",
+  "art_approved": false,
+  "mobile_profiled": false,
+  "unity_ab_pass": false,
+  "integrated": false,
+  "credits_spent_new": 0
+}
