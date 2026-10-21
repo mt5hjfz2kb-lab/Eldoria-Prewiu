@@ -1,0 +1,128 @@
+name: Spawnling v2 free skeletal gesture candidate (zero credits)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/tripo-spawnling-free-rig-probe-v2.yml"
+      - "tools/tripo-art-brain/rig-finish-prototype-v2.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: spawnling-free-rig-gesture-v2-main
+  cancel-in-progress: true
+
+jobs:
+  gesture-probe:
+    name: Actual Blender skin, animated swipe and pose comparison without changing the game
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OUT: /tmp/eldoria-spawnling-free-rig-v2
+      MODEL: ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+      MODEL_SHA: 4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d
+    steps:
+      - name: Checkout immutable source, existing v1 rig and v2 Blender extension only
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+            tools/tripo-art-brain/rig-feasibility-blender.py
+            tools/tripo-art-brain/rig-finish-prototype-v2.py
+
+      - name: Block source drift, accidental GPU/Tripo generation and malformed Python
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT"
+          python3 -m py_compile tools/tripo-art-brain/rig-feasibility-blender.py tools/tripo-art-brain/rig-finish-prototype-v2.py
+          test "$(sha256sum "$MODEL" | cut -d ' ' -f 1)" = "$MODEL_SHA"
+          ! grep -Ei 'openapi\.tripo3d|TRIPO_API_KEY|requests\.post' tools/tripo-art-brain/rig-finish-prototype-v2.py
+          echo 'PINNED_SOURCE_NO_PAID_API_NO_PRODUCTION_SCENE'
+
+      - name: Install open-source Blender, NumPy and image pixel verifier
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+
+      - name: Make real armature, bounded gesture and seven authentic pose renders
+        timeout-minutes: 12
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender --background --disable-autoexec -t 4 --python-exit-code 1 \
+            --python tools/tripo-art-brain/rig-finish-prototype-v2.py -- \
+            --input "$MODEL" --source-sha256 "$MODEL_SHA" --out "$OUT" \
+            > "$OUT/blender-gesture-v2-console.txt" 2>&1 || {
+              tail -100 "$OUT/blender-gesture-v2-console.txt"
+              exit 1
+            }
+
+      - name: Check actual glTF bones/skin/clip and honest source-locked motion evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 - <<'PY'
+          import hashlib, json, os, pathlib, struct
+          from PIL import Image, ImageChops
+          root=pathlib.Path(os.environ['OUT'])
+          d=json.loads((root/'rig-gesture-v2-report.json').read_text('utf8'))
+          source=pathlib.Path(os.environ['MODEL'])
+          glb=(root/'spawnling-rig-gesture-v2.glb').read_bytes()
+          assert glb[:4]==b'glTF'
+          version,length=struct.unpack_from('<II',glb,4)
+          assert version==2 and length==len(glb)
+          n,k=struct.unpack_from('<I4s',glb,12)
+          assert k==b'JSON'
+          data=json.loads(glb[20:20+n].decode('utf8').strip())
+          assert len(data.get('skins',[]))==1
+          assert len(data['skins'][0]['joints'])>=8
+          clips=data.get('animations',[])
+          assert clips and any(len(a.get('channels',[]))>=7 for a in clips)
+          assert any('JOINTS_0' in p.get('attributes',{}) and 'WEIGHTS_0' in p.get('attributes',{})
+                     for m in data.get('meshes',[]) for p in m.get('primitives',[]))
+          assert d['paid_credits']==0 and d['tripo_api_calls']==0
+          assert d['source_unchanged'] is True and d['art_approved'] is False
+          assert d['unity_animated_import'] is False and d['gameplay_integrated'] is False
+          assert d['source_sha256']==hashlib.sha256(source.read_bytes()).hexdigest()==os.environ['MODEL_SHA']
+          assert d['output_glb_sha256']==hashlib.sha256(glb).hexdigest()
+          assert d['output_blend_sha256']==hashlib.sha256((root/'spawnling-rig-gesture-v2.blend').read_bytes()).hexdigest()
+          assert d['skin_weights']['invalid']==0
+          assert d['deformation_by_pose']['27']['moving_samples_gt2mm']>=150
+          assert d['deformation_by_pose']['65']['max_m']<=.002
+          assert len(d['visual']['captures'])==7
+          for p in d['visual']['captures']:
+              filename=root/p['filename']
+              assert filename.stat().st_size>4000 and hashlib.sha256(filename.read_bytes()).hexdigest()==p['sha256']
+          def changed(frame):
+              before=Image.open(root/'spawnling-pose-01.png').convert('RGB')
+              after=Image.open(root/f'spawnling-pose-{frame:02d}.png').convert('RGB')
+              assert before.size==after.size==(600,480)
+              diff=ImageChops.difference(before,after)
+              return sum(max(diff.getpixel((x,y)))>30 for y in range(0,480,3) for x in range(0,600,3))
+          visible=changed(27)
+          assert visible>30, 'Strike must be visible in real isolated Blender render'
+          print('GENUINE_SPAWNLING_V2_TECH_PASS',
+                'bones',d['bones'],'clips',len(clips),'frames',d['clip_frames'],
+                'strike_delta_m',d['deformation_by_pose']['27']['max_m'],
+                'review_pixels_sampled',visible,
+                'ART_APPROVED=false MOBILE_PASS=false UNITY_IMPORT_PENDING ZERO_TRIPO_CREDITS')
+          PY
+
+      - name: Preserve complete GLB, editable Blender, 7 PNGs and original source evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spawnling-free-blender-rig-gesture-v2
+          path: /tmp/eldoria-spawnling-free-rig-v2/
+          retention-days: 14
+          if-no-files-found: error
