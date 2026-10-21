@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-20T22:43:00Z",
+  "updated_at": "2026-10-21T07:33:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -638,6 +638,26 @@
         "physical_mobile_tested": false,
         "published": false
       }
+    },
+    {
+      "id": "eldoria-spawnling-bastion2-finish-20261021",
+      "title": "Engendro de la Fisura / Tripo source finishing and safe Bastion II integration",
+      "owner": "chatgpt-engendro-integration-20261021",
+      "branch": "art/spawnling-bastion2-finish-20261021",
+      "status": "active",
+      "claimed_at": "2026-10-21",
+      "base_main_sha": "fd3bb108c26716fec3aa530006107c764e62e91d",
+      "scope": [
+        "ArtSource/World4X/Spawnling_v1/Finished/**",
+        "tools/spawnling-bastion2/**",
+        ".github/workflows/eldoria-spawnling-bastion2.yml",
+        "docs/evidence/spawnling-bastion2/**"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "art_production_routing": "required",
+      "dependency": "Canonical Unity scene and runner remain under valoria-master-plan-layered-construction-20261016; prepare complete visual asset, integrate only through reviewed PR/serialized scene change without overwriting live owner/UI V3.",
+      "next": "Author revised, mobile-fitted GLB and source in zero-credit Blender run; then native Unity integration and gameplay QA after scene owner / runner lease available."
     }
   ],
   "history": [
