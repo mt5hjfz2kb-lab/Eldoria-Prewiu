@@ -816,7 +816,8 @@
         }
       ],
       "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
-      "phase": "UI_V3_NATIVE_CERTIFICATION"
+      "phase": "UI_V3_NATIVE_CERTIFICATION",
+      "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner."
     }
   ],
   "history": [
