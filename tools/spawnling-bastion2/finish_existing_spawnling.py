@@ -85,9 +85,9 @@ def process_materials(objects,out):
                 # Preserve texture micro-details and alpha; suppress the washed-out lavender.
                 lum=px[:,:3].mean(axis=1)
                 shade=np.clip(.92+(lum-.52)*.32,.79,1.08)
-                px[:,0]*=.63*shade
-                px[:,1]*=.48*shade
-                px[:,2]*=.76*shade
+                px[:,0]*=.83*shade
+                px[:,1]*=.62*shade
+                px[:,2]*=.91*shade
                 np.clip(px[:,:3],0,1,out=px[:,:3])
                 grade.pixels.foreach_set(values)
               else:
@@ -95,7 +95,7 @@ def process_materials(objects,out):
                 for i in range(0,len(pixels),4):
                   bright=sum(pixels[i:i+3])/3
                   shade=max(.79,min(1.08,.92+(bright-.52)*.32))
-                  pixels[i]*=.63*shade;pixels[i+1]*=.48*shade;pixels[i+2]*=.76*shade
+                  pixels[i]*=.83*shade;pixels[i+1]*=.62*shade;pixels[i+2]*=.91*shade
                 grade.pixels[:]=pixels
               grade.pack()
               linked[0].from_node.image=grade
@@ -156,7 +156,7 @@ def main():
     lo,hi=world_bounds(meshes);center=(lo+hi)/2;size=hi-lo
     require(min(size)>0.1 and max(size)<5,"Source scale unexpected "+str(tuple(size)))
     diag={"bounds_min":list(lo),"bounds_max":list(hi),"source_triangles":before,
-          "head_axis_convention":"Blender -Y assumed, verified by four views",
+          "head_axis_convention":"corrected to +X after real captured art review",
           "note":"Geometry changes do not imply artistic approval."}
     # Keep original mesh editable in the saved Blender, but never export it to Unity.
     original.name="Original paid Tripo / preserved untouched"
@@ -165,25 +165,25 @@ def main():
     near=original.copy();near.data=original.data.copy();bpy.context.collection.objects.link(near)
     near.name="Spawnling_Near_Authored"
     near.hide_render=False;near.hide_set(False)
-    # Shorten the distal rear tail rather than making a completely new creature:
-    # identify the tapered rear by low-Z cross section beyond 70% longitudinal depth.
-    # A paired before/after camera must confirm the sign and effect.
+    # Actual inspected Blender views locate the face towards +X and the
+    # large tapering tail towards -X (not +/-Y). Target only rear-centre,
+    # mid-height vertices: no claws, cheek, brow or torso repositioned.
     coords=[v.co for v in near.data.vertices]
     ylo=min(v.y for v in coords);yhi=max(v.y for v in coords)
     zlo=min(v.z for v in coords);zhi=max(v.z for v in coords)
     xlo=min(v.x for v in coords);xhi=max(v.x for v in coords)
-    # Conservative deformation: only extreme rear low vertices move; no claws/arms/head.
-    # Blender glTF convention has head towards -Y and tail towards +Y for this asset.
     edits=0
     for v in near.data.vertices:
-        along=(v.co.y-ylo)/max(.001,yhi-ylo)
+        rear=(xhi-v.co.x)/max(.001,xhi-xlo)
         height=(v.co.z-zlo)/max(.001,zhi-zlo)
-        if along>.77 and height<.64 and abs(v.co.x-(xlo+xhi)/2)<.25*(xhi-xlo):
-            t=(along-.77)/.23
-            v.co.y-=.22*(yhi-ylo)*t*t
+        sideways=abs(v.co.y-(ylo+yhi)*.5)/max(.001,yhi-ylo)
+        if rear>.79 and .29<height<.73 and sideways<.26:
+            t=(rear-.79)/.21
+            v.co.x+=.13*(xhi-xlo)*t*t
             edits+=1
     near.data.update()
     diag["tail_vertices_moved"]=edits
+    diag["anatomical_axis"]="head +X; tail -X; Blender real four-view diagnosis"
     mats=process_materials([near],out)
     count_near=decimate(near,12000)
     # The far LOD is a distinct mesh with the same UV and material family.
@@ -191,22 +191,30 @@ def main():
     far.name="Spawnling_Far_Authored"
     count_far=decimate(far,2900)
     far.hide_render=True
-    # Distinct eyes: a concentrated visual cue on the face; kept restrained in scale.
-    # These are separate objects and will be included in near GLB only.
+    # Place understated rift pupils on the actual sculpted head surface.
+    # The previous ungrounded guess used +/-X as eye separation and visibly
+    # floated outside the shoulders; no arbitrary jaw strip is allowed.
     lo2,hi2=world_bounds([near])
-    eye_mat=make_emissive("Rift violet / twin eye luminescence",(.53,.085,.87),1.6)
-    eyey=lo2.y+(hi2.y-lo2.y)*.22
-    eyez=lo2.z+(hi2.z-lo2.z)*.70
-    halfx=(hi2.x-lo2.x)*.14
-    rad=max(.012,min(.045,(hi2.x-lo2.x)*.043))
-    eyes=[add_eye("Rift eye left",(center.x-halfx,eyey,eyez),rad,eye_mat),
-          add_eye("Rift eye right",(center.x+halfx,eyey,eyez),rad,eye_mat)]
-    # A shadowed, short cheek/mouth accent creates readable facial separation.
-    jaw_mat=make_emissive("Rift face / deep violet",(.075,.02,.15),.18)
-    jaw=add_eye("Shadowed maw",(center.x,eyey-.025*(hi2.y-lo2.y),eyez-.14*(hi2.z-lo2.z)),
-                rad*1.85,jaw_mat)
-    jaw.scale=(2.1,.5,.48)
-    face_parts=eyes+[jaw]
+    eye_mat=make_emissive("Rift violet / tiny recessed gaze",(.22,.045,.43),.28)
+    desired_x=hi2.x-.22*(hi2.x-lo2.x)
+    desired_z=lo2.z+.72*(hi2.z-lo2.z)
+    rad=.015*(hi2.x-lo2.x)
+    face_parts=[]
+    for sign,label in [(-1,"left"),(1,"right")]:
+        candidates=[]
+        for vert in near.data.vertices:
+            p=near.matrix_world @ vert.co
+            if sign*p.y<.035*(hi2.y-lo2.y):continue
+            if abs(p.x-desired_x)>.15*(hi2.x-lo2.x):continue
+            if abs(p.z-desired_z)>.14*(hi2.z-lo2.z):continue
+            candidates.append(p)
+        if not candidates:continue
+        surf=max(candidates,key=lambda p:sign*p.y)
+        loc=surf+Vector((0,sign*rad*.18,0))
+        eye=add_eye("Rift pupil grounded "+label,loc,rad,eye_mat)
+        eye.scale=(.9,.44,.76)
+        face_parts.append(eye)
+    diag["surface_grounded_eyes"]=len(face_parts)
     # Save editable artistic source with original + two actual LODs.
     for obj in [near,far]+face_parts: obj.hide_set(False)
     bpy.ops.file.pack_all()
