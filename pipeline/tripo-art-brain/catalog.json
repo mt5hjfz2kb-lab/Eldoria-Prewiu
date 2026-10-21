@@ -64,6 +64,9 @@
         "No nuevo hotspot, campamento o nodo",
         "No tocar combate, recompensas, persistencia, interfaz ni escena de otro propietario",
         "No reemplazar la versión integrada antes de un A/B y QA independientes"
+      ],
+      "verified_failures": [
+        "pipeline/tripo-art-brain/verified-failures/spawnling-qwen2b-global-move-20261021.json"
       ]
     },
     "boar": {
