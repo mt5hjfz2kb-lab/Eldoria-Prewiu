@@ -551,9 +551,10 @@ namespace Eldoria.ReferenceClean.Editor
         {
             var forest = Hotspots(host).Single(p => p.Id == "forest-valoria").transform.position;
             var original = host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
-                .Where(x => x.enabled &&
-                    (x.name.StartsWith("Conifer / retained tree position") ||
-                     x.name.StartsWith("Forest retained Valoria pine")))
+                .Where(x => x.enabled && x.GetComponent<MeshFilter>() != null &&
+                    (x.name.IndexOf("Conifer", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                     x.name.IndexOf("pine", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                     x.name.IndexOf("understory", StringComparison.OrdinalIgnoreCase) >= 0))
                 .OrderBy(x => x.name).ToArray();
             Need(original.Length >= 3 && original.Length <= 60,
                 "Existing validated forest family not found; refuse synthetic prefabs");
