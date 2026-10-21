@@ -21,15 +21,31 @@ def image(p, out):
     compressed=data.getvalue();out.write_bytes(compressed)
     return {'source':str(p),'source_sha256':digest(raw),'generated_jpeg_sha256':digest(compressed),'source_bytes':len(raw),'jpeg_bytes':len(compressed)}
 def generate(messages,maxsec=410):
-    body={'model':MODEL,'stream':False,'think':False,'format':'json',
-     'options':{'num_ctx':4096,'num_predict':230,'temperature':0},
+    schema={'type':'object','properties':{
+      'problem':{'type':'string','maxLength':150},
+      'candidate_operation':{'type':'string','enum':['inspect','sculpt_region','assign_material','no_edit']},
+      'spatial_safety':{'type':'string','maxLength':150},
+      'visual_limit':{'type':'string','maxLength':150}
+     },'required':['problem','candidate_operation','spatial_safety','visual_limit'],
+     'additionalProperties':False}
+    body={'model':MODEL,'stream':False,'think':False,'format':schema,
+     'options':{'num_ctx':4096,'num_predict':620,'temperature':0},
      'messages':messages}
     started=time.monotonic()
     try:
         req=urllib.request.Request(ENDPOINT,data=json.dumps(body).encode(),headers={'Content-Type':'application/json'})
         with urllib.request.urlopen(req,timeout=maxsec) as res:reply=json.load(res)
         txt=reply.get('message',{}).get('content','')
-        response=json.loads(txt)
+        try: response=json.loads(txt)
+        except json.JSONDecodeError as ex:
+            return {'status':'REAL_QWEN_RETURNED_INVALID_JSON','seconds':round(time.monotonic()-started,3),
+                    'error':str(ex)[:220],'raw':txt[:5000],
+                    'eval_count':reply.get('eval_count'),'prompt_eval_count':reply.get('prompt_eval_count'),
+                    'response_sha256':digest(txt.encode())}
+        if not isinstance(response,dict) or not {'problem','candidate_operation','spatial_safety','visual_limit'}.issubset(response):
+            return {'status':'REAL_QWEN_RETURNED_INCOMPLETE_SCHEMA',
+                    'seconds':round(time.monotonic()-started,3),'raw':txt[:5000],
+                    'response_sha256':digest(txt.encode())}
         return {'status':'INFERRED','seconds':round(time.monotonic()-started,3),
                 'raw':txt[:5000],'json':response,'eval_count':reply.get('eval_count'),
                 'prompt_eval_count':reply.get('prompt_eval_count'),
