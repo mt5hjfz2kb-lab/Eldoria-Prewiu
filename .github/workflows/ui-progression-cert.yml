@@ -35,15 +35,6 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     steps:
-      - name: Respect shared Windows native-editor lease
-        shell: powershell
-        run: |
-          $registry=Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
-          $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($claims.Count){throw "Windows runner is already claimed by $($claims.id -join ', ')"}
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
-            throw 'Unity or Blender already running; UI gate must not interrupt another job'
-          }
       - name: Expose Git installed with GitHub Desktop
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -98,6 +89,15 @@ jobs:
           }
           Write-Host "ELDORIA_V3_EXACT_TRACKED_PROJECT_READY"
 
+      - name: Respect shared Windows native-editor lease
+        shell: powershell
+        run: |
+          $registry=Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
+          $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($claims.Count){throw "Windows runner is already claimed by $($claims.id -join ', ')"}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Unity or Blender already running; UI gate must not interrupt another job'
+          }
       - name: Verify Unity 6.3.23f1
         shell: powershell
         run: |
