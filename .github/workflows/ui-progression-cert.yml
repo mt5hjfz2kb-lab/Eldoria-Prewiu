@@ -298,6 +298,18 @@ jobs:
               throw "V3 did not reclaim at least 8 percentage points of real free scene: $capture"
             }
           }
+          # Independent destinations have no visible city viewport by design;
+          # verify actual native screenshots instead of pretending camera space
+          # is visible behind their opaque artwork.
+          foreach($capture in @('integration-training.png','integration-training-portrait.png')){
+            $path=Join-Path $e $capture
+            if(-not(Test-Path $path)){throw "Missing genuine full-screen management capture: $capture"}
+            if((Get-Item $path).Length -lt 4096){throw "Management capture too small: $capture"}
+            if(@($result.framing | Where-Object {$_.capture -eq $capture}).Count -ne 0){
+              throw "Management screen was wrongly certified as exposed-city camera: $capture"
+            }
+            Write-Host "ELDORIA_V3_NATIVE_MANAGEMENT_SCREEN=$capture"
+          }
           Write-Host "ELDORIA_V3_REAL_NATIVE_I_II_PROBE=$($result.status)"
           Write-Host "ELDORIA_V3_CHECKS=$(@($result.checks).Count) CAPTURES=$(@(Get-ChildItem $e -Filter 'integration*.png').Count)"
           Write-Host "Native visual evidence still requires owner inspection before merge/publish."
