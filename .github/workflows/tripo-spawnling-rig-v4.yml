@@ -97,7 +97,7 @@ jobs:
           assert new['tripo_api_calls']==new['credits_spent']==0
           assert not new['independent_art_approved'] and not new['gameplay_integrated'] and not new['mobile_pass']
           assert new['deformation_by_pose']['65']['max_m']<=.002
-          assert new['deformation_by_pose']['27']['max_m']>old['deformation_by_pose']['27']['max_m']
+          assert .22 <= new['deformation_by_pose']['27']['max_m'] <= .35, 'Unbounded/weak swipe; do not confuse total displacement with visual quality'
           target=root/'v4/spawnling-rig-expressive-swipe-v4.glb'
           raw=target.read_bytes()
           assert raw[:4]==b'glTF' and struct.unpack_from('<I',raw,8)[0]==len(raw)
