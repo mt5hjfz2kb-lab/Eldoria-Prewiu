@@ -1,0 +1,29 @@
+name: Eldoria Spawnling retire superseded QUEUED run
+on:
+  push:
+    branches: ['art/spawnling-bastion2-finish-20261021']
+    paths: ['.github/workflows/eldoria-spawnling-retire-stale.yml']
+permissions:
+  actions: write
+  contents: read
+jobs:
+  retire-only-own-queued:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Cancel ONLY this exact obsolete queued art native job
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="repos/$GITHUB_REPOSITORY/actions/runs/39565315185"
+          status="$(gh api "$api" --jq '.status')"
+          conclusion="$(gh api "$api" --jq '.conclusion')"
+          echo "OBSOLETE_OWN_NATIVE id=39565315185 status=$status conclusion=$conclusion"
+          if [[ "$status" == 'queued' || "$status" == 'pending' ]]; then
+            gh api -X POST "$api/cancel" >/dev/null
+            echo "CANCELLED_OWN_QUEUED_ONLY"
+          else
+            echo "NOT_QUEUED_SKIP / never touch running or completed process"
+          fi
