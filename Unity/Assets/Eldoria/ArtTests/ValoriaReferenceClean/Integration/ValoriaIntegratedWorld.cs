@@ -55,7 +55,15 @@ namespace Eldoria.ReferenceClean {
    var context=Hud.GetComponent<RoyalGoldV3ContextHud>();
    if(!context)context=Hud.gameObject.AddComponent<RoyalGoldV3ContextHud>();
    context.Source=Hud;
-   context.FindAnchor=id=>{var spot=FindTarget(id);return spot?spot.transform:null;};
+   context.FindAnchor=id=>{
+    // Recruitment belongs visually to the built barracks, not the logical
+    // parcel hotspot, which can lie outside the portrait camera frame.
+    // Selection/raycast/authoritative gameplay still use FindTarget unchanged.
+    if(!InWorld&&id=="barracks"&&city.Parcels!=null&&
+       city.Parcels.RightBuilt&&city.Parcels.RightBuilt.activeInHierarchy)
+      return city.Parcels.RightBuilt.transform;
+    var spot=FindTarget(id);return spot?spot.transform:null;
+   };
    context.ActiveCamera=()=>PlayerCamera;
    context.ReadBuilding=id=>Read(id,English).Building;
    if(!Hud.GetComponent<EldoriaV3VisualDirection>())
