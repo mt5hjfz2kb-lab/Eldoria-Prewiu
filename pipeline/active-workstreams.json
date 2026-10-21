@@ -666,6 +666,28 @@
       "phase": "EXISTING_DRAFT_PR_NATIVE_VALIDATION_PENDING",
       "next": "Existing UI executor continues PR #83 from its live HEAD and reconciles current main before promotion; retain native/visual/gameplay acceptance gates.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch."
+    },
+    {
+      "id": "work-status-delivery-timings-20261021",
+      "title": "Entrega concreta, tiempos observados y versiones en el resumen existente",
+      "owner": "codex-process-maintenance",
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-21T11:30:29.378Z",
+      "scope": [
+        "tools/work-status/**",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only reporting and operating guidance; no art, gameplay, release or native execution.",
+      "phase": "IMPLEMENTATION",
+      "next": "Extend existing report, validate offline fixtures and existing Linux CI, close claim.",
+      "delivery_definition": {
+        "deliverable": "Resumen existente con tiempos de Actions y estados de versión explícitos",
+        "evidence": "Pruebas Node y ejecución del workflow de resumen",
+        "handoff": "Commit y Summary de GitHub comprobados"
+      }
     }
   ],
   "history": [
