@@ -462,6 +462,10 @@ namespace Eldoria.UI.RoyalGold.V2
             button.onClick.AddListener(()=>click());
             return button;
         }
+        static void Place(RoyalText label,float x,float y,float w,float h)
+        {
+            Place(label.rectTransform,x,y,w,h);
+        }
         static void Place(RectTransform r,float x,float y,float w,float h)
         {
             r.anchorMin=r.anchorMax=r.pivot=new Vector2(0,1);
