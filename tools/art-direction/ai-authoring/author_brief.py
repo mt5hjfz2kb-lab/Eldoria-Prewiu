@@ -190,6 +190,37 @@ def main():
    'boundary_loops':topology['boundary_loops'][:4]}
   # Verification still uses the FULL on-disk topology; no unproven loop may be used.
   mesh_context_for_artist=json.dumps(compact,ensure_ascii=False,separators=(',',':'))
+ elif a.cpu_compact and a.mesh_context and a.subject_kind in ('creature','mineral_prop'):
+  # The canonical inspector started life as a TERRAIN inspector: generic
+  # source points carry historical names like east_join and cliff_center.
+  # Those ARE actual vertices, but their LABELS are not anatomy. NEVER feed
+  # cliff roles as if they described head, neck or an animal joint.
+  bbox=topology.get('local_aabb') or {}
+  lo,hi=bbox.get('min'),bbox.get('max')
+  if not all(isinstance(v,list) and len(v)==3 for v in (lo,hi)):
+   raise ValueError('Non-terrain artist needs verified source-local mesh AABB')
+  raw_samples=[v for v in topology.get('sample_vertices',[])
+    if isinstance(v,dict) and isinstance(v.get('index'),int)
+       and isinstance(v.get('position'),list) and len(v['position'])==3
+       and all(isinstance(n,(int,float)) and math.isfinite(n) for n in v['position'])]
+  positive=sorted(raw_samples,key=lambda v:(-v['position'][0],-v['position'][2]))[:9]
+  context=sorted(raw_samples,key=lambda v:abs(v['position'][0]-(lo[0]+hi[0])/2))[:4]
+  selected={v['index']:v for v in positive+context}
+  points=[{'index':v['index'],'position':v['position'],
+           'role':('verified_positive_x_candidate' if v['position'][0]>(lo[0]+hi[0])/2
+                   else 'verified_source_vertex')}
+          for v in selected.values()]
+  compact={'schema_version':topology['schema_version'],
+   'source_sha256':topology.get('source_sha256'),'target':topology['target'],
+   'vertices':topology.get('vertices'),'faces':topology.get('faces'),
+   'local_aabb':bbox,'dimensions':topology.get('dimensions'),
+   'sample_vertices':points,'boundary_loops':[],
+   'source_axis_hint':('The historical author evidence confirms HEAD +X and TAIL -X. '
+     'These coordinates are actual Blender source vertices, NOT fabricated head centres. '
+     'Use the genuine face reference image to choose a nearby localized anatomical '
+     'change; never place face edits at [0,0,0] simply because it is the origin. '
+     'Legacy cliff/masonry labels are intentionally excluded.')}
+  mesh_context_for_artist=json.dumps(compact,ensure_ascii=False,separators=(',',':'))
  else:
   mesh_context_for_artist=mesh_context
  failures=load_failed_cycles(a.failed_plan,a.failed_review,a.target_object)
