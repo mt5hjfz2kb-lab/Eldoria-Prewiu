@@ -2,7 +2,10 @@
 # world-pack 4x comparison concurrency handoff 2026-09-29
 # world-pack audit concurrency handoff 2026-09-29
 #!/usr/bin/env python3
-"""Offline source preflight. This does not compile or launch the Unity player."""
+"""Offline source preflight. Its sparse CI inputs retain every assertion below.
+
+This does not compile or launch the Unity player.
+"""
 import json
 from pathlib import Path
 
@@ -23,3 +26,4 @@ for module in ("Domain", "Application", "Infrastructure", "Presentation"):
 for layer in ("EditMode", "PlayMode"):
     assert list((root / f"Assets/Eldoria/Tests/{layer}").glob("*Tests.cs")), layer
 print("PASS source preflight: editor patch, packages, versioned scenes, modules and tests")
+
