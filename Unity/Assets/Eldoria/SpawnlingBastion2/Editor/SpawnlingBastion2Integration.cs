@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Eldoria.ReferenceClean;
+using Eldoria.Presentation;
 using Eldoria.SpawnlingBastion2;
 using Eldoria.World4XPrototype;
 using GLTFast;
@@ -263,10 +264,14 @@ namespace Eldoria.SpawnlingBastion2.Editor
                 float modelHeight=VisibleBounds(near).size.y;
                 Need(modelHeight>.3f,"Imported original y-up model height implausible");
                 root.transform.localScale=Vector3.one*(3.0f/modelHeight);
-                // Camera-facing pose, not a new enemy location. Preserve exact hotspot.
-                Vector3 horizontal=host.WorldCamera.transform.position-location;horizontal.y=0;
+                // The genuine sculpt faces local +X (verified in Blender captures).
+                // Turn that axis toward Valoria, preserving this enemy's original anchor.
+                var playerCity=hotspots.FirstOrDefault(h=>h.Id=="valoria-map-city");
+                Vector3 horizontal=(playerCity?playerCity.transform.position:
+                    host.WorldCamera.transform.position)-location;
+                horizontal.y=0;
                 if(horizontal.sqrMagnitude>.1f)
-                    root.transform.rotation=Quaternion.LookRotation(horizontal.normalized,Vector3.up);
+                    root.transform.rotation=Quaternion.FromToRotation(Vector3.right,horizontal.normalized);
                 Bounds fitted=VisibleBounds(near);
                 float ground=GroundAt(host,location);
                 root.transform.position+=new Vector3(location.x-fitted.center.x,ground-fitted.min.y,
