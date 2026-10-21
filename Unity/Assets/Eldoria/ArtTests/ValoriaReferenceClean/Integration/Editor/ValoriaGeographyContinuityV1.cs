@@ -528,6 +528,17 @@ namespace Eldoria.ReferenceClean.Editor
                         "Independent source-pinned art acceptance required");
                 }
                 var host = Load(out var city);
+                // Editor rendering and Terrain.Flush may re-frame the live camera.
+                // The A/B must restore the exact initial pose and projection on
+                // both legs; a different beauty angle is not valid evidence.
+                var initialCityPos = city.PlayerCamera.transform.position;
+                var initialCityRot = city.PlayerCamera.transform.rotation;
+                float initialCityZoom = city.PlayerCamera.orthographicSize;
+                float initialCityAspect = city.PlayerCamera.aspect;
+                var initialWorldPos = host.WorldCamera.transform.position;
+                var initialWorldRot = host.WorldCamera.transform.rotation;
+                float initialWorldZoom = host.WorldCamera.orthographicSize;
+                float initialWorldAspect = host.WorldCamera.aspect;
                 terrain = Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None).Single();
                 originalTerrain = terrain.terrainData;
                 var originalCollider = terrain.GetComponent<TerrainCollider>();
@@ -574,12 +585,25 @@ namespace Eldoria.ReferenceClean.Editor
                     "New gameplay collider introduced");
                 Need(originalCollider.terrainData == originalPhysicsData && ground.sharedMesh == originalWorldMesh,
                     "Existing city/world collision or underlying mesh changed");
+                city.PlayerCamera.transform.SetPositionAndRotation(initialCityPos, initialCityRot);
+                city.PlayerCamera.orthographicSize = initialCityZoom;
+                city.PlayerCamera.aspect = initialCityAspect;
+                host.WorldCamera.transform.SetPositionAndRotation(initialWorldPos, initialWorldRot);
+                host.WorldCamera.orthographicSize = initialWorldZoom;
+                host.WorldCamera.aspect = initialWorldAspect;
                 CityViews(city, "after");
                 WorldViews(host, "after", true);
+                Need(city.PlayerCamera.transform.position == initialCityPos &&
+                    city.PlayerCamera.transform.rotation == initialCityRot &&
+                    Mathf.Abs(city.PlayerCamera.orthographicSize - initialCityZoom) < .0001f &&
+                    host.WorldCamera.transform.position == initialWorldPos &&
+                    host.WorldCamera.transform.rotation == initialWorldRot &&
+                    Mathf.Abs(host.WorldCamera.orthographicSize - initialWorldZoom) < .0001f,
+                    "Native A/B camera pose changed; no artistic acceptance possible");
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Exact retained authored UV atlas and baked roads/corruption; source-pinned inverse texture-to-world biome mapping and reversible city soil contacts",
+                    method = "Identical city/world camera pose and projection, exact retained UV atlas/roads/corruption, inverse UV-world biomes and bounded soil contacts",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
