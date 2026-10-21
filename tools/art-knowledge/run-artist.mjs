@@ -3,6 +3,7 @@
 // Fails closed on missing memory; never executes Blender/Tripo/Unity or approves art.
 import fs from 'node:fs';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import crypto from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {readCatalog,selectKnowledge} from './select.mjs';
@@ -87,7 +88,7 @@ export function verifyArtistConsumption(invocation){
  uniqueWrite(invocation.manifest,JSON.stringify(result,null,2)+'\n');
  return result;
 }
-if(process.argv[1]&&path.resolve(process.argv[1])===new URL(import.meta.url).pathname){
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{
   const a=process.argv.slice(2),sep=a.indexOf('--');assert(sep>=0,'Expected -- separator before Qwen args');
   let requestFile,prefix,run=false,sourceInventoryPath=null;
