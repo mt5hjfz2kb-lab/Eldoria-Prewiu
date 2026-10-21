@@ -84,6 +84,15 @@ export function inspectGLB(bytes) {
   };
 }
 
+export function auditEditableBlend(root, spec) {
+  if (!spec || !spec.path?.endsWith('.blend')) throw new Error('INVALID_EDITABLE_BLEND_PIN');
+  const bytes = pinnedBytes(root, spec);
+  if (bytes.length < 12 || bytes.subarray(0, 7).toString('ascii') !== 'BLENDER') {
+    throw new Error('INVALID_EDITABLE_BLEND_HEADER: ' + spec.path);
+  }
+  return { path: spec.path, sha256: spec.sha256, file_bytes: bytes.length };
+}
+
 function readJson(root, relativePath) {
   return JSON.parse(fs.readFileSync(confined(root, relativePath), 'utf8'));
 }
@@ -116,11 +125,12 @@ function auditModel(root, model) {
 export function auditAsset(root, id, catalog = loadCatalog(root)) {
   const asset = catalog.assets[id];
   if (!asset) throw new Error('UNKNOWN_ASSET: ' + id);
-  if (!asset.source?.raw || !asset.source?.optimized ||
+  if (!asset.source?.raw || !asset.source?.optimized || !asset.source?.editable ||
       !asset.qa?.metrics || !Array.isArray(asset.defects)) throw new Error('INVALID_ASSET_CONFIG: ' + id);
   if (asset.source.credits_consumed !== 20) throw new Error('UNEXPECTED_HISTORICAL_COST');
   const raw = auditModel(root, asset.source.raw);
   const optimized = auditModel(root, asset.source.optimized);
+  const editable = auditEditableBlend(root, asset.source.editable);
   const metrics = readJson(root, asset.qa.metrics);
   const qaCaptures = metrics.captureFiles || metrics.captures;
   if (!Array.isArray(qaCaptures) || qaCaptures.length < 4) throw new Error('INCOMPLETE_UNITY_CAPTURES: ' + id);
@@ -149,6 +159,8 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
       throw new Error('INTEGRATION_PROVENANCE_FAIL: ' + id);
     }
     const near = auditModel(root, asset.integration.near);
+    const finishedBlend = auditEditableBlend(root, asset.integration.editable);
+    if (finishedBlend.sha256 !== author.blend_sha256) throw new Error('FINISHED_BLEND_PROVENANCE_FAIL: ' + id);
     const far = auditModel(root, asset.integration.far);
     if (near.sha256 !== evidence.near_glb_sha256 || far.sha256 !== evidence.far_glb_sha256 ||
         near.sha256 !== author.near_sha256 || far.sha256 !== author.far_sha256 ||
@@ -157,13 +169,13 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
     }
     const scene = confined(root, asset.integration.scene);
     if (!fs.statSync(scene).isFile()) throw new Error('MISSING_INTEGRATED_SCENE: ' + id);
-    lods = { near, far, provenance: asset.integration.evidence };
+    lods = { near, far, finished_blend: finishedBlend, provenance: asset.integration.evidence };
     integrated = true;
   }
   return {
     id, label: asset.label, role: asset.role, task_id: asset.source.task_id,
     historical_credits: asset.source.credits_consumed, new_credits: 0,
-    raw, optimized, unity_technical_pass: true, unity_captures: captures,
+    raw, optimized, source_editable: editable, unity_technical_pass: true, unity_captures: captures,
     unity_version: metrics.unityVersion, imported_basecolor_px:
       [metrics.importedBaseColorWidth, metrics.importedBaseColorHeight],
     integrated_in_game: integrated, lods,
@@ -222,8 +234,10 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
     'Immutable raw: ' + item.raw.path + ' SHA256 ' + item.raw.sha256 + '; ' + item.raw.triangles + ' tris.',
     'Certified isolated-Unity source: ' + item.optimized.path + ' SHA256 ' + item.optimized.sha256
       + '; ' + item.optimized.triangles + ' tris; BaseColor ' + item.imported_basecolor_px.join('x') + '.',
+    'Editable Blender: ' + item.source_editable.path + ' SHA256 ' + item.source_editable.sha256 + '.',
     'Integrated in game: ' + item.integrated_in_game + '. True Unity tech QA: ' + item.unity_technical_pass + '.',
     'Existing runtime LOD triangles: ' + (item.lods ? item.lods.near.triangles + '/' + item.lods.far.triangles : 'NONE, only isolated source'),
+    'Finished editable Blender: ' + (item.lods ? item.lods.finished_blend.path + ' SHA256 ' + item.lods.finished_blend.sha256 : 'NOT INTEGRATED'),
     'Actual rig/skin/animation in these GLBs: ' + item.has_skin + '/' + item.has_animation + '.',
     'Known visual issues (documented; Qwen MUST verify from genuine images):\n' + diagnosis,
     'Current evidence-aware next actions (not scripted edits):\n' + actions,
