@@ -203,6 +203,7 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
     }
     return { path: failurePath, run_id: record.source.repo_run,
       classification: record.classification, lesson: record.lesson,
+      qwen_brief: typeof record.qwen_brief === 'string' && record.qwen_brief.length <= 400 ? record.qwen_brief : record.lesson,
       next_action: record.next_action };
   });
   return {
@@ -265,7 +266,7 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
   // Never truncate a lesson silently, which would turn the retry into blind work.
   const sourceFailureLessons = item.verified_failures.length
     ? item.verified_failures.map(f =>
-        'Run ' + f.run_id + ' => ' + f.classification + ': ' + f.lesson).join(' | ')
+        'Run ' + f.run_id + ' => ' + f.classification + ': ' + f.qwen_brief).join(' | ')
     : 'No source-specific reviewed failures';
   const context = [
     'ELDORIA / TRIPO — VERIFIED SOURCE INVENTORY FOR EXISTING QWEN ARTIST (not a model inference).',
