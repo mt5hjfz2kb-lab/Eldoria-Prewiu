@@ -782,7 +782,9 @@
           "checks": 29
         }
       },
-      "next": "After art owner releases Windows lease, certify exact candidate in Unity, reconcile main/gameplay files, merge PR #90, inspect renders and publish playable if gates pass."
+      "next": "After art owner releases Windows lease, certify exact candidate in Unity, reconcile main/gameplay files, merge PR #90, inspect renders and publish playable if gates pass.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity."
     }
   ],
   "history": [
