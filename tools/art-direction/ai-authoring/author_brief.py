@@ -103,6 +103,7 @@ def main():
  p.add_argument('--target-object',required=True)
  p.add_argument('--target-mode',choices=['existing','new'],default='existing',help='new allows the artist to create a previously absent mesh')
  p.add_argument('--subject-kind',choices=['terrain','creature','mineral_prop'],default='terrain',help='Optional Tripo subject, legacy terrain remains unchanged')
+ p.add_argument('--anatomy-focus',choices=['none','face'],default='none',help='Optional genuine +X face-only target, source-verified before Blender')
  p.add_argument('--inventory',type=pathlib.Path)
  p.add_argument('--mesh-context',type=pathlib.Path,help='Optional existing Blender mesh vertex indices, border loops and anchoring coordinates')
  p.add_argument('--prior-visual-review',type=pathlib.Path,help='Optional real previous Blender matched-camera comparison JSON for Qwen-directed visual correction')
@@ -220,6 +221,8 @@ def main():
      'Use the genuine face reference image to choose a nearby localized anatomical '
      'change; never place face edits at [0,0,0] simply because it is the origin. '
      'Legacy cliff/masonry labels are intentionally excluded.')}
+  if a.subject_kind=='creature' and isinstance(topology.get('creature_anatomy'),dict):
+   compact['creature_anatomy']=topology['creature_anatomy']
   mesh_context_for_artist=json.dumps(compact,ensure_ascii=False,separators=(',',':'))
  else:
   mesh_context_for_artist=mesh_context
@@ -277,6 +280,12 @@ def main():
    'Choose a specific deformation within these bounds with measurable camera-visible effect, '
    'explain the original defect and desired silhouette in 35-120 chars each; use exactly one or two concise actions, '
    'and no repeated data. A visible large cliff needs a region radius >=1.0 local meters and a NONZERO delta >=0.2 local meters; independently choose the actual local position, shape and displacement from the images, never copy these minimum values as defaults. Respond only well-formed JSON matching supplied schema.')
+ if a.anatomy_focus=='face':
+  if a.subject_kind!='creature' or not a.mesh_context or not isinstance(topology.get('creature_anatomy'),dict):
+   raise ValueError('Verified real creature face source geometry required')
+  face=topology['creature_anatomy']
+  if face.get('role')!='FRONTAL_FACE_SEARCH_ONLY_NOT_ANATOMICALLY_CERTIFIED' or face.get('source_blend_sha256')!=topology.get('source_sha256'):
+   raise ValueError('Untrusted source face region')
  if a.subject_kind in ('creature','mineral_prop'):
   # Explicit opt-in for existing asset art. Preserve the legacy terrain prompt,
   # spatial validator, real Qwen model and Blender executor unmodified.
@@ -349,6 +358,12 @@ def main():
     'Previously smaller REAL player-camera sculptures were invisible and rejected. '
     'Independently select the spatial positions, profile and displacement from source evidence. '
     'These are BOUNDS, never script-generated sculpt coordinates; preserve all playable parcels.')
+ if a.anatomy_focus=='face':
+  prompt += (' FACE-ONLY SOURCE GEOMETRY GATE: inspect creature_anatomy in verified topology. '
+   'Use +X frontal region as the only sculpt target. Choose center near an ACTUAL source face vertex '
+   '(not [0,0,0]), a locally bounded 0.07..0.22m radius and meaningful NONZERO delta >=0.03m. '
+   'Independently choose real center, radius and displacement from the face photo and source, '
+   'not from defaults. No tail or terrain edit. ')
  format_spec=cpu_artist_schema(a.target_object,a.target_mode,a.max_actions,forbidden_methods,a.camera_min_radius) if a.cpu_compact else 'json'
  payload={'model':a.model,'stream':False,'think':False,'format':format_spec,
   'options':{'temperature':0.25,'num_predict':a.num_predict,'num_ctx':a.num_ctx},
@@ -382,6 +397,22 @@ def main():
    errors.extend(creature_spatial_scale_errors(design,topology if a.mesh_context else None,a.subject_kind))
    errors.extend(distinct_strategy_errors(design,failures))
    errors.extend(camera_footprint_errors(design,a.camera_min_radius,a.camera_min_displacement))
+   if a.anatomy_focus=='face':
+    box=topology['creature_anatomy']['allowed_face_sculpt_center_aabb']
+    lo,hi=box.get('min'),box.get('max')
+    if not all(isinstance(v,list) and len(v)==3 for v in (lo,hi)):raise ValueError('Invalid face bounds')
+    for op in design.get('planned_actions',[]):
+     if op.get('type')!='sculpt_region':
+      errors.append('FACE_ONLY_REQUIRES_SCULPT_REGION: do not move entire creature')
+      continue
+     par=op.get('parameters') or {}
+     center,delta,radius=par.get('center'),par.get('delta'),par.get('radius')
+     if not isinstance(center,list) or len(center)!=3 or any(not isinstance(n,(int,float)) or not math.isfinite(n) for n in center) or any(center[i]<lo[i]-.03 or center[i]>hi[i]+.03 for i in range(3)):
+      errors.append('FACE_REGION_MISS: choose true source face vertex/nearby point, not mesh origin')
+     if not isinstance(radius,(int,float)) or not .07<=radius<=.22:
+      errors.append('FACE_RADIUS_UNSUITABLE: choose a local facial deformation')
+     if not isinstance(delta,list) or len(delta)!=3 or any(not isinstance(n,(int,float)) or not math.isfinite(n) for n in delta) or math.dist(delta,[0,0,0])<.03:
+      errors.append('FACE_DISPLACEMENT_INVISIBLE: design significant nonzero >=0.03m face change')
   log={'attempt':attempt_index+1,'model':a.model,'request_prompt_sha256':digest(payload['messages'][-1]['content'].encode('utf8')),
    'raw_response_sha256':response_sha,'raw_response_file':f'artist-response-attempt-{attempt_index+1}.txt',
    'eval_count':reply.get('eval_count'),'prompt_eval_count':reply.get('prompt_eval_count'),
