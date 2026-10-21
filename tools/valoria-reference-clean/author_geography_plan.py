@@ -1,4 +1,4 @@
-"""Bounded terrain decisions by the existing local artist from pinned native264 pixels.
+"""Bounded terrain decisions by the existing local artist from pinned native265 pixels.
 No API credits, generated code, production scene writes, or self-approval.
 """
 import argparse, base64, hashlib, json, math, os, pathlib, subprocess, time, urllib.request
@@ -31,19 +31,33 @@ def validate(plan):
             value=a.get("parameters",{}).get(key)
             if not isinstance(value,(int,float)) or not math.isfinite(value) or not lo<=value<=hi:
                 errors.append(a["target"]+"."+key+" outside "+str((lo,hi)))
+    # Landforms must not peak around immutable targets and create artificial craters.
+    spots=[(933,-23),(926,-27),(1065,42),(997,-34),(1064.5,-32.9),(1018,30)]
+    for x,z in spots:
+        height=0
+        for a in actions:
+            if a.get("target")!="world":continue
+            q=a.get("parameters",{})
+            try:
+                r2=((x-q["x"])/q["radius_x"])**2+((z-q["z"])/q["radius_z"])**2
+                height+=q["height"]*max(0,1-r2)**3
+            except (KeyError,ZeroDivisionError,TypeError):continue
+        if height>0.6:errors.append("Landform overlaps protected POI "+str((x,z))+"; move centre into empty north/west/south landscape, not onto targets.")
     return errors
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--reference",required=True);parser.add_argument("--output",required=True)
     args=parser.parse_args()
     ref=pathlib.Path(args.reference); out=pathlib.Path(args.output); out.mkdir(parents=True,exist_ok=True)
-    trials=list(ref.rglob("trial.json")); assert len(trials)==1,"Pinned native264 artifact ambiguous"
+    trials=list(ref.rglob("trial.json")); assert len(trials)==1,"Pinned native265 artifact ambiguous"
     trial=trials[0]; ev=trial.parent
-    assert sha(trial)=="27d23f276fd390095c28783b643fdb5a1535efb44fe542974c4430f608d7dff0"
+    assert sha(trial)=="568c6c67417d5fba827f18da5f9ab6c71292c9f19111f4d652a7b9518efc19b6"
     identity=json.loads(trial.read_text(encoding="utf-8-sig"))
-    images=[ev/"before-city-II-wide.png",ev/"before-world-REGION1-ENTIRE-2048x1152.png"]
+    images=[ev/"before-city-II-wide.png",ev/"before-world-REGION1-ENTIRE-2048x1152.png",ev/"after-world-REGION1-ENTIRE-2048x1152.png",ev/"after-world-quarry-valoria-wide.png"]
     expected=["b0452915eb773be9060d899fb1c5fbe37a2280e46b0b0fc0a017d0facdb64e54",
-              "58255a0c06e92d5441c37849b4713f94a4bdd10f1ac1059b5cb4773b10bbd827"]
+              "58255a0c06e92d5441c37849b4713f94a4bdd10f1ac1059b5cb4773b10bbd827",
+              "dd6b118d8b53d9dd5f0bcd63d7993e356ba342fb4c393351edae39585b905e4b",
+              "efaee2525fbffe9d01783bbc4aea4593e72701557ed7a783767f6c1fde66b035"]
     assert [sha(p) for p in images]==expected,"Real source screenshots differ"
     system=pathlib.Path("tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md")
     survey=json.loads((ev/"survey.json").read_text(encoding="utf-8-sig"))
@@ -59,9 +73,9 @@ def main():
     brief={
         "target":{"mode":"MODIFY","name":"existing city TerrainData and Region1 original mesh"},
         "actual_survey":survey,"source_scene_sha256":identity["source_scene_sha256"],
-        "native_source_run":39658026450,
-        "review":"Native264 changed38548 city samples but no convincing visible city relief; world still a flat lawn board. Forest additions alone did not solve composition. Change the terrain spatial composition, not lighting, camera, buildings, fog, rectangular plots or painted spots.",
-        "brief":"Images are actual unchanged cityII and ENTIRE region. Choose 2-4 connected broad sculpted meadow forms for city and 2-4 stronger regional hills for world. This is a typed Unity terrain tool of the SAME artist: X/Z horizontal,Y up. Each sculpt_region adds height*exp(-((x-centerX)/radius_x)^2-((z-centerZ)/radius_z)^2). Choose exact centres/radii/heights from the images and measured coordinates, NOT random noise. City screenshot sees castle near(0,30), main road alongX0, river nearZ-23, sawmill west and barracks east. Put visible shoulders on either side of retained architecture. World empty north/west/south regions need a coherent regional silhouette and connected geology; forest(1065,42),city(1018,30),quarry(1064,-33),corrupt enemy(933,-23). Avoid lifting under POIs or existing quarry rocks. Preserve exact UV/roads, gameplay anchors and original mesh topology. Fixed implementation keeps road/river/foundations/border safe; decorative city foliage and rocks may follow the new terrain vertically, with gameplay colliders left unchanged. World retains all prop contact with broad keepouts. No new geometry/assets/buildings, no budget cost, no self-approval. These parameters drive real native vertices, then matched Unity images decide acceptance.",
+        "native_source_run":39661331858,
+        "review":"Images1-2 are unchanged source. Images3-4 show REJECTED native265 candidate: broad hill centered on city/quarry creates deep unnatural ring-shaped craters where fixed targets are protected. Do not repeat central hill x1000,z0 or quarry-centered hill. City foliage also needs complete LOD-root seating, now corrected in implementation.",
+        "brief":"Author a new spatial composition using COMPACT finite-footprint landforms instead of infinite Gaussian tails. Each action adds height*max(0,1-r2)^3 where r2=((x-centerX)/radius_x)^2+((z-centerZ)/radius_z)^2. Outside ellipse ZERO height change. Select hills in EMPTY regions so fixed city, quarry, ruin, enemy and forest stay on natural open valleys, NEVER at the bottom of ring-shaped bowls. Candidate areas: northwest x925..965 z65..100, north x995..1035 z85..105, southwest x910..950 z-100..-75, south x990..1020 z-105..-85; choose coherent 3-4 regional forms and exact radii/heights from real images. Existing POIs forest(1065,42),city(1018,30),quarry(1064.5,-32.9),enemy(933,-23),(926,-27),ruin(997,-34). Validator requires total UNMASKED added height at every POI <=0.6m; do not rely on protected holes to fix overlapping hills. Use 2-4 city shoulders visibly outside castle footprint: west/east meadows near X+-50,Z35..70; castle(0,30),roadX0,riverZ-23. Preserve roads, UV, architecture, camera, gameplay anchors, topology and saves. Complete decorative city LOD roots follow terrain once without changing LOD size. No new buildings, plots, assets or spending. Typed parameters execute real native vertices; actual captures determine acceptance.",
         "strict_bounds":"CITY x[-80,80],z[-75,100],radius_x[15,40],radius_z[18,55],height[1.5,4]. WORLD x[895,1105],z[-105,105],radius_x[22,65],radius_z[25,75],height[5,16]. Exactly2-4 actions per target. Height is metres positive. 4-8 actions total. Meaningful short rationale each. Do not output source-space Blender coordinates."
     }
     messages=[{"role":"system","content":system.read_text(encoding="utf8")},
@@ -97,8 +111,9 @@ def main():
             if not errors: break
             if attempt==2: raise RuntimeError("Local artist plan rejected: "+str(errors))
             payload["messages"]=[messages[0],dict(messages[1],content=json.dumps(brief)+"\nCorrect these validation errors: "+str(errors))]
+        plan["sculpt_kernel"]="compact_cubic_v2"
         plan["source_scene_sha256"]=identity["source_scene_sha256"]
-        plan["source_run"]=39658026450
+        plan["source_run"]=39661331858
         plan["qwen_artist_authored"]=True
         plan["art_approved"]=False
         write(out/"artist-plan.json",plan)
