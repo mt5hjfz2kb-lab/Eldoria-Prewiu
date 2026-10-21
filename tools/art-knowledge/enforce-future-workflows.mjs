@@ -12,6 +12,10 @@ export function checkNewQwenWorkflows(root,knownNames){
   if(directlyCallsQwen&&!/tools\/art-knowledge\/run-artist\.mjs/.test(text)){
    problems.push('New Qwen workflow bypasses art-memory adapter: '+file);
   }
+  if(/tools\/art-knowledge\/run-artist\.mjs/.test(text) &&
+      (!/actions\/upload-artifact@/.test(text)||!/cycle-feedback\.json/.test(text))){
+   problems.push('New Qwen workflow must preserve its automatic cycle-feedback artifact: '+file);
+  }
  }
  return problems;
 }
