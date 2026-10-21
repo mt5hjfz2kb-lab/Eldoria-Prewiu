@@ -763,16 +763,16 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-eldoria-ui-v3-current-continuation-20261021",
+      "owner": "chatgpt-eldoria-ui-v3-resume-20261021b",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
       "base_main_sha": "4c871bcebaa40030bac745852438d249d06ba8ad",
       "branch": "feature/ui-v3-management-completion-20261021",
       "pr": 90,
-      "owner_instruction": "El propietario ordenó continuar hasta entrega funcional verificada; asumir PR #90 sobre main sin invadir arte 3D o runner ajeno.",
+      "owner_instruction": "Explicit owner direction to continue full-screen V3 barracks/training and marches to real Unity QA and main release; resume same canonical workstream.",
       "scope": [
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs.meta",
@@ -806,7 +806,7 @@
           "checks": 29
         }
       },
-      "next": "Fix native Unity compilation diagnostics from exact PR #90 run39645243995, rerun true native UI I-II and PlayMode, inspect real captures, integrate on live main, publish only if gates pass.",
+      "next": "Repair exact native Unity I-II failure in PR90 without altering real economy; run mandatory Unity UI/visual gates; reconcile canonical main before merge.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -824,6 +824,11 @@
           "owner": "chatgpt-eldoria-ui-v3-management-current-chat-20261021",
           "revision": 4,
           "reason": "Owner's explicit continued UI management execution and completed native run requiring compile fixes on PR #90."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-current-continuation-20261021",
+          "revision": 5,
+          "reason": "Owner-directed continuation of unfinished management UI after chat interruption (2026-10-21)."
         }
       ],
       "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
