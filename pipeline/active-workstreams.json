@@ -57,8 +57,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "GEOGRAPHY_NATIVE263_QUEUED_AFTER_GENERAL_MAIN_GATE",
-      "next": "Execute source-preserving native263 geography_trial on existing candidate262 with latest exact triangle root-contact fixes. Serial Windows queue behind general main gate39655724743; inspect true 15-pair A/B and source invariants, then accept or repair based on actual visuals. No publication from trial.",
+      "phase": "GEOGRAPHY_NATIVE264_PLACEMENT_REPAIR_IN_PROGRESS",
+      "next": "Run39658026450: native263 failed because only11 tree sites passed original spacing/road constraints. Search extended; quality/count/contact gates retained. Review only fresh native264 images with source/tool hashes; source scene unchanged.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -947,7 +947,7 @@
           "status": "SUCCESS"
         }
       },
-      "next": "Observe post-merge Unity gates39655724788/39655724743 without duplicates; release shared runner for geography and exact V4 isolated import, then one exact WebGL build/QA/delivery. No physical mobile certificate.",
+      "next": "PR90 merged; original merge native26 EditMode+38 PlayMode and images pass. Read-only management WebGL observations and real control harness committed8454c3c, source1887658. Full exact WebGL gameplay/delivery pending consolidated art/rig outcome.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -988,9 +988,20 @@
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "MERGED_NATIVE_PASS_MAIN_REGRESSION_AND_PLAYABLE_DELIVERY",
+      "phase": "MERGED_NATIVE_PASS_WEBGL_OBSERVATION_READY",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
-      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
+      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
+      "general_main_gate": {
+        "run": 39655724743,
+        "source": "284ef398e078021f4eeef42f852730714c0bd48b",
+        "editmode": "success",
+        "playmode": "success",
+        "windows_build": "success",
+        "artifact_id": 12371064139,
+        "artifact_sha256": "6e514f81bbb3a621abe93072aa529150d8d27216f4b835bae41d7e5a2a2fe59d",
+        "run_conclusion": "cancelled",
+        "note": "New source push superseded run during final upload/cleanup; tests/build steps passed and artifact finalized. Overall run must not be reported SUCCESS."
+      }
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
