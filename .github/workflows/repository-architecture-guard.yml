@@ -43,6 +43,7 @@ jobs:
             /tools/check-documentation-governance*
             /tools/closeout/
             /tools/art-direction/learning-evidence/
+            /tools/art-direction/ai-authoring/unity_pixel_diff.mjs
       - name: Enforce repository architecture invariants
         run: |
           node tools/check-repository-architecture.mjs --tracked-tree
