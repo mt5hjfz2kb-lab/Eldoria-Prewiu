@@ -16,7 +16,7 @@ import { makeBundle } from './preflight.mjs';
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 
-async function verifyExistingQwenContract(id,kind,{compact=false}={}) {
+async function verifyExistingQwenContract(id,kind,{compact=false,invalidFirst=false}={}) {
   const base=path.join(ROOT,'ArtSource/World4X',
     id==='spawnling'?'Spawnling_v1':'RiftFocus_v1','UnityQA');
   const reference=path.join(base,'front.png');
@@ -40,6 +40,7 @@ async function verifyExistingQwenContract(id,kind,{compact=false}={}) {
       try {
         const body=JSON.parse(Buffer.concat(chunks).toString('utf8'));
         received.push(body);
+        const wrong=invalidFirst&&received.length===1;
         const plan={
           observed_defect:'The current fantasy asset has a camera-visible silhouette defect requiring real modelling review.',
           design_intent:'Improve the existing subject silhouette with one bounded spatial Blender edit while preserving the original.',
@@ -47,7 +48,7 @@ async function verifyExistingQwenContract(id,kind,{compact=false}={}) {
           planned_actions:[{
             id:'contract-one',type:'sculpt_region',target,
             rationale:'Representative typed edit for contract only; never executed in Blender',
-            parameters:{center:[0,0,0],radius:0.4,delta:[0,0.06,0.03]}
+            parameters:wrong?{center:[0,0,0],radius:10.24,delta:[0.5,0.5,0.5]}:{center:[0,0,0],radius:0.4,delta:[0,0.06,0.03]}
           }]
         };
         res.writeHead(200,{'content-type':'application/json'});
@@ -65,7 +66,7 @@ async function verifyExistingQwenContract(id,kind,{compact=false}={}) {
       '--target-object',target,
       '--target-mode','existing','--inventory',inventory,
       '--out',output,'--endpoint','http://127.0.0.1:'+port+'/api/chat',
-      '--repair-attempts','0','--max-actions','2'
+      '--repair-attempts',invalidFirst?'1':'0','--max-actions','2'
     ];
     if(kind!=='terrain') args.push('--subject-kind',kind);
     if(compact)args.push('--cpu-compact');
@@ -80,7 +81,13 @@ async function verifyExistingQwenContract(id,kind,{compact=false}={}) {
       setTimeout(()=>child.kill('SIGKILL'),20000).unref();
     });
     assert.equal(spawned.code,0,spawned.stderr||spawned.stdout);
-    assert.equal(received.length,1);
+    assert.equal(received.length,invalidFirst?2:1);
+    if(invalidFirst){
+      const feedback=received[1].messages.at(-1).content;
+      assert.match(feedback,/CREATURE_GLOBAL_SCULPT_REJECT/);
+      assert.match(feedback,/CREATURE_GLOBAL_SHIFT_REJECT/);
+      assert.doesNotMatch(feedback,/cliff crest\/slope anchors/);
+    }
     const body=received[0];
     assert.equal(body.model,'qwen3-vl:4b-instruct');
     assert.equal(body.messages[0].role,'system');
@@ -115,6 +122,11 @@ async function verifyExistingQwenContract(id,kind,{compact=false}={}) {
     }
     const evidence=JSON.parse(fs.readFileSync(path.join(output,'artist-inference.json'),'utf8'));
     assert.equal(evidence.self_approval,false);
+    if(invalidFirst){
+      assert.equal(evidence.repaired_after_rejection,true);
+      assert.equal(evidence.attempt_history.length,2);
+      assert.ok(evidence.attempt_history[0].validation_errors.length>=2);
+    }
     assert.equal(evidence.reference_sha256,sha(actualBytes[0]));
     assert.equal(evidence.unity_before_sha256,sha(actualBytes[1]));
     assert.equal(evidence.asset_inventory_sha256,sha(Buffer.from(fs.readFileSync(inventory,'utf8').slice(0,compact?1800:4000))));
@@ -143,4 +155,8 @@ test('MOCK ONLY: legacy terrain prompt contract remains available and unchanged 
 
 test('MOCK ONLY: small animated creature compact schema never inherits 1-metre Valoria cliff limits',async()=>{
   await verifyExistingQwenContract('spawnling','creature',{compact:true});
+});
+
+test('MOCK ONLY: actual 2B global-shift plan is rejected BEFORE any Blender edit and corrected on model retry',{skip:!process.env.TRIPO_SOURCE_MESH_CONTEXT},async()=>{
+  await verifyExistingQwenContract('spawnling','creature',{compact:true,invalidFirst:true});
 });
