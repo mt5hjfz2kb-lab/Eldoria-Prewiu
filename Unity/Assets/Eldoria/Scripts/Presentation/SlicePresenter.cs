@@ -622,6 +622,20 @@ namespace Eldoria.Presentation
             else if(managementScreen!=null)managementScreen.SetActive(false);
         }
 
+        void RefreshManagementScreenLabels()
+        {
+            if(managementScreen==null||!managementScreen.activeSelf||buildingPanel==null)return;
+            foreach(var label in managementScreen.GetComponentsInChildren<Text>(true))
+            {
+                if(label.gameObject.name=="Management heading")label.text=buildingTitle.text;
+                else if(label.gameObject.name=="Management details")label.text=buildingBody.text;
+                else if(label.gameObject.name=="Text"&&label.transform.parent.name=="Management primary action")
+                    label.text=buildingAction.GetComponentInChildren<Text>().text;
+            }
+            var button=managementScreen.transform.Find("Management content/Management primary action")?.GetComponent<Button>();
+            if(button!=null)button.interactable=buildingAction.interactable;
+        }
+
         void OpenBuildingPanel(string id)
         {
             if(buildingPanel==null)return;
@@ -770,6 +784,8 @@ namespace Eldoria.Presentation
 
         void RefreshBuildingPanelClock(PlayerState s)
         {
+            // Keep the full-screen destination in sync with training timers and costs.
+            if(managementScreen!=null&&managementScreen.activeSelf)RefreshManagementScreenLabels();
             if(buildingPanel==null||(!buildingPanel.activeInHierarchy&&(managementScreen==null||!managementScreen.activeInHierarchy))||string.IsNullOrEmpty(currentBuildingId))return;
             if(currentBuildingId=="bastion"&&s.BastionUpgradeCompletesUtcTicks>0)
             {
