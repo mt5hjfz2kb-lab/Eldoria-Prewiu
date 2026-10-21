@@ -267,7 +267,7 @@ jobs:
           if($req.world_contact -and $req.stage -eq 'world_art_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldContactFinishing.Integrate'}
           if($req.stage -eq 'world_art_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaWorldArtFinishing.Survey'}
           if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
-          if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyTerrainCandidateV1.Trial'}
+          if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
           if($req.stage -eq 'geography_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'architecture_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Survey'}
           if($req.terrain_polish){$env:VALORIA_TERRAIN_POLISH='1'}
@@ -688,8 +688,18 @@ jobs:
               git fetch origin main
               if($LASTEXITCODE){throw 'Cannot read live main for safe evidence integration'}
               $changes=@(git diff --name-only "$env:GITHUB_SHA" origin/main)
+              # Registry writes from an independent Tripo workstream are not a
+              # Valoria scene conflict. Compare the exact live lease instead
+              # of interpreting any registry edit as another art owner.
+              if($changes -contains 'pipeline/active-workstreams.json'){
+                $newLease=Join-Path $env:RUNNER_TEMP "valoria-live-after-native-$env:GITHUB_RUN_ID.json"
+                git show 'origin/main:pipeline/active-workstreams.json' | Set-Content $newLease -Encoding UTF8
+                if($LASTEXITCODE){throw 'Live post-capture ownership cannot be verified'}
+                node tools/workstream-lease/check.mjs pipeline/active-workstreams.json $newLease valoria-master-plan-layered-construction-20261016
+                if($LASTEXITCODE){throw 'Valoria lease changed while native capture ran; preserve artifacts'}
+              }
               $protected=@($changes|Where-Object {
-                $_ -match '^(Unity/|tools/valoria-reference-clean/|docs/evidence/valoria-reference-clean/|pipeline/development-baseline\.json$|pipeline/active-workstreams\.json$|AGENTS\.md$|PROJECT_STATE\.md$|SESSION_HANDOFF\.md$)'
+                $_ -match '^(Unity/|tools/valoria-reference-clean/|docs/evidence/valoria-reference-clean/|pipeline/development-baseline\.json$|AGENTS\.md$|PROJECT_STATE\.md$|SESSION_HANDOFF\.md$)'
               })
               if($protected.Count){
                 throw ('Concurrent protected gameplay/art change; preserve artifacts without integration: '+($protected -join ', '))
