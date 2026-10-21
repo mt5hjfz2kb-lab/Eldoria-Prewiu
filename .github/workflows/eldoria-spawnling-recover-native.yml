@@ -28,6 +28,7 @@ jobs:
               Where-Object {Test-Path $_} | Select-Object -First 1
             if(-not $candidate){throw 'Existing Git executable missing'}
             $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
             $env:PATH="$dir;$env:PATH"
           }
           git --version
