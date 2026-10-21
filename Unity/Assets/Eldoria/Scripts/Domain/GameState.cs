@@ -177,7 +177,11 @@ namespace Eldoria.Domain
         public static int RecruitStoneCost => SliceContentProfiles.Active.RecruitStoneCost;
         public static int RecruitArchers => SliceContentProfiles.Active.RecruitArchers;
         public static int BarracksBuildSeconds => SliceContentProfiles.Active.BarracksBuildSeconds;
-        public static int RecruitSeconds => SliceContentProfiles.Active.RecruitSeconds;
+        // Legacy callers and native I-II probes must see the same duration as
+        // the canonical Recruit command for its default batch size.
+        public static int RecruitSeconds => SliceContentProfiles.ActiveRuntimeProfile ==
+            SliceContentProfiles.OwnerIiiId ? RecruitSecondsFor(RecruitArchers) :
+            SliceContentProfiles.Active.RecruitSeconds;
         // Production pacing: 10 T1 = 300 s, 20 = 600 s, 30 = 900 s.
         // QA_FAST preserves its accelerated per-batch profile for existing tests.
         public static int RecruitSecondsFor(int count)
