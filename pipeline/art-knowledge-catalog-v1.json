@@ -1,0 +1,424 @@
+{
+  "schema_version": 1,
+  "registry_id": "eldoria-art-knowledge-reference-v1",
+  "created_date": "2026-10-21",
+  "snapshot_main_sha": "f8cd9ac757ae2702bd4660b44381f849a9b757c9",
+  "record_kind": "curated_read_only_reference",
+  "governance": "AGENTS.md",
+  "scope": "Fase 1 - inventario de experiencia; no producción ni despacho, no reentrenamiento de modelo",
+  "authority": "NON_NORMATIVE_EVIDENCE_REFERENCE",
+  "art_approval_registry": "pipeline/art-visual-approvals",
+  "rules": [
+    "Consultar HEAD main, owner vigente y fuentes originales antes de ejecutar cualquier técnica",
+    "ART_REJECTED nunca puede presentarse como receta aprobada; registrar por qué fue rechazado",
+    "TECH_PASS y A/B con píxeles distintos NO equivalen a ART_APPROVED",
+    "No trasladar métodos de geografía históricamente rechazados a la referencia actual de Valoria",
+    "No usar Tripo/servicios pagados sin autorización explícita y vigente por pieza",
+    "Estado histórico/snapshot puede caducar: cotejar runs actuales y activos en main",
+    "Fase 1 no se enchufa automáticamente a Qwen ni activa ningún workflow"
+  ],
+  "case_count": 23,
+  "cases": [
+    {
+      "id": "ART-001",
+      "domain": "source-reuse",
+      "trigger": "new_3d_asset",
+      "verdict": "REUSABLE_METHOD",
+      "method": "Inventario de prefabs, .blend, GLB y evidencias antes de modelar o regenerar",
+      "observation": "Reutilizar y reautorizar una fuente existente; medir forma en pantalla y cambios en Unity",
+      "limits": "No convertir una fuente histórica en estética vigente ni inferir calidad de sus polígonos",
+      "evidence": [
+        "docs/ELDORIA_BLENDER_PROFESSIONAL_AUTHORING_PIPELINE_V1.md",
+        "AGENTS.md"
+      ],
+      "run_ids": [],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-002",
+      "domain": "camera-visual-gates",
+      "trigger": "any_visual_change",
+      "verdict": "REUSABLE_METHOD",
+      "method": "Comparar cámara e iluminación idénticas en Unity y obtener juicio independiente",
+      "observation": "Separar TECH PASS, BLENDER SOURCE PASS y revisión visual integrada",
+      "limits": "Los porcentajes de píxeles no miden belleza; no aprobar sin imágenes originales",
+      "evidence": [
+        "docs/ELDORIA_ART_QUALITY_ACCEPTANCE_CONTRACT_V1.md",
+        "tools/art-direction/ai-authoring/verify-artist-cycle.mjs"
+      ],
+      "run_ids": [],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-003",
+      "domain": "environment-terrain",
+      "trigger": "valoria_bank_and_contacts",
+      "verdict": "VISUAL_RETAINED_NOT_FORMALLY_APPROVED",
+      "method": "Reautoría de ribera, relieve bajo y contactos basados en fuente real, con revisión en escena",
+      "observation": "Mejora conservada dentro de las cuatro fases artísticas integradas; contacto y persistencia comprobados",
+      "limits": "Usar solo el método para roca/ribera; NO reintroducir acantilados altos, parcelas ni cambiar el canon",
+      "evidence": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_DELIVERY_20261020.md",
+        "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md"
+      ],
+      "run_ids": [
+        39450899545,
+        39485567981
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-004",
+      "domain": "environment-world",
+      "trigger": "forest_quarry_ground_contacts",
+      "verdict": "VISUAL_RETAINED_NOT_FORMALLY_APPROVED",
+      "method": "Coníferas con atlas/LOD; cantera estratificada y contacto físicamente anclado",
+      "observation": "Fuente y pruebas Unity integradas; 16 renders comparables y controles funcionales según entrega",
+      "limits": "El PASS de escena no prueba tasa de fotogramas móvil ni calidad global 8/10",
+      "evidence": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_DELIVERY_20261020.md"
+      ],
+      "run_ids": [
+        39459840985,
+        39487451858
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-005",
+      "domain": "architecture",
+      "trigger": "sawmill_existing_source",
+      "verdict": "VISUAL_RETAINED_NOT_FORMALLY_APPROVED",
+      "method": "Reutilizar aserradero existente con plan Qwen, reautoría Blender y A/B a misma cámara",
+      "observation": "Cubierta cerrada, mayor legibilidad y materiales coherentes; mejora local retenida",
+      "limits": "No confundir prueba de mejora local con ART_APPROVED global o contacto al suelo demostrado",
+      "evidence": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md"
+      ],
+      "run_ids": [
+        39138751241
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-006",
+      "domain": "architecture",
+      "trigger": "cloth_barracks",
+      "verdict": "VISUAL_RETAINED_NOT_FORMALLY_APPROVED",
+      "method": "Corrección focalizada de lona/soportes sobre fuente existente; reparar normales y cruces antes de integrar",
+      "observation": "Iteraciones native87-91 mejoraron la silueta y corrigieron penetración de soportes",
+      "limits": "No universalizar una solución específica de tela ni asumir evaluación estética >=8/10",
+      "evidence": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md"
+      ],
+      "run_ids": [
+        39124004194
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-007",
+      "domain": "environment-materials",
+      "trigger": "flat_light_access_roads",
+      "verdict": "ART_REJECTED",
+      "method": "Tiras claras de caminos sobre terreno con costuras y huecos",
+      "observation": "TECH PASS pero regresión visual; fue revertido conservando pruebas",
+      "limits": "NO repetir caminos superpuestos planos sin conexión arquitectónica y material",
+      "evidence": [
+        "docs/evidence/valoria-reference-clean/NATIVE160_ART_REJECTION_AND_ROLLBACK_20261019.md"
+      ],
+      "run_ids": [
+        39322150028
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-008",
+      "domain": "environment-materials",
+      "trigger": "invisible_microground_paint",
+      "verdict": "ART_REJECTED",
+      "method": "Pintado extenso de suelo sin efecto apreciable desde cámara jugable",
+      "observation": "V13 rechazado pese a 1.707 celdas procesadas y tests verdes",
+      "limits": "Cambiar hipótesis a forma/composición macroscópica; no perseguir tintes imperceptibles",
+      "evidence": [
+        "docs/evidence/valoria-reference-clean/NATIVE162_ORGANIC_GROUND_ART_REJECT_20261019.md"
+      ],
+      "run_ids": [
+        39327566889
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-009",
+      "domain": "architecture-composition",
+      "trigger": "disconnected_prefab_quarter",
+      "verdict": "ART_REJECTED",
+      "method": "Añadido de unidades aisladas de distrito sin continuidad espacial ni historia de desbloqueos",
+      "observation": "V15 ART_REJECTED; rollback de escena validada",
+      "limits": "No recuperar esa topología, casas/campamentos, ni confundir variedad de edificios con composición aprobada",
+      "evidence": [
+        "docs/evidence/valoria-reference-clean/NATIVE165_COMPACT_QUARTER_ART_REJECTION_20261019.md",
+        "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md"
+      ],
+      "run_ids": [
+        39330844141
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-010",
+      "domain": "creature-geometry",
+      "trigger": "tripo_h31_three_source_assets",
+      "verdict": "SOURCE_AND_ISOLATED_UNITY_TECH_PASS",
+      "method": "Generación individual H3.1 -> raw GLB preservado -> Blender editable -> QA Unity real 2K",
+      "observation": "Tres fuentes creadas y probadas aisladamente con 60 créditos históricos; no prueban producción masiva",
+      "limits": "0 permiso para nueva API; precio de 20 créditos histórico no extrapolable; no asumir aprobado arte/móvil",
+      "evidence": [
+        "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
+        "docs/TRIPO_API_NORMA_PRODUCCION_V1.md"
+      ],
+      "run_ids": [
+        39505056649,
+        39512910985,
+        39554609943
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-011",
+      "domain": "asset-import",
+      "trigger": "gltfast_albedo_4x4",
+      "verdict": "TECH_REPAIR_VERIFIED",
+      "method": "Corregir módulos imageconversion/unitywebrequest/unitywebrequesttexture del proyecto QA para importar albedo 2048 real",
+      "observation": "Falló con albedo provisional 4×4 y se recuperó con módulos correctos sin pagar otra generación",
+      "limits": "No regenerar Tripo ni cambiar shader a ciegas si el defecto es importación; revisar textura real",
+      "evidence": [
+        "docs/TRIPO_API_JABALI_LECCIONES_20261021.md"
+      ],
+      "run_ids": [
+        39505056649
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-012",
+      "domain": "creature-rigging",
+      "trigger": "spawnling_blender_rig_v4",
+      "verdict": "TECH_VALIDATED_ART_REJECTED",
+      "method": "Armature Blender de 12 huesos, skin, clip de zarpazo y fuente editable sin nueva Tripo API",
+      "observation": "Deformación y recuperación demostradas técnicamente; evaluación artística V4 insuficiente para reemplazo",
+      "limits": "No importar en producción sin juicio visual Unity/combat/save/Android; evaluar entregas nuevas de trabajo activo",
+      "evidence": [
+        "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md"
+      ],
+      "run_ids": [
+        39651422644
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-013",
+      "domain": "ai-art-direction",
+      "trigger": "creature_qwen_global_or_invisible_sculpt",
+      "verdict": "ART_REJECTED",
+      "method": "Qwen2B desplazó globalmente 9.753 vértices y después propuso cambio local casi invisible",
+      "observation": "Bloqueadores por radio/escala y movimientos nulos se añadieron tras los rechazos",
+      "limits": "No repetir esculpido por delta global, cero o invisible; cambiar a región semántica realmente visible",
+      "evidence": [
+        "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
+        "tools/tripo-art-brain/shape-change-gate.mjs"
+      ],
+      "run_ids": [
+        39628068735,
+        39631639948,
+        39639377365
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-014",
+      "domain": "ai-art-direction",
+      "trigger": "qwen4b_cpu_timeout",
+      "verdict": "CAPACITY_LIMIT_VERIFIED",
+      "method": "Qwen3-VL 4B excedió límite de tiempo en runner Linux CPU sin producir plan",
+      "observation": "El fallo corresponde a latencia del entorno, no calidad de Blender",
+      "limits": "No repetir la misma inferencia en CPU sin cambiar recurso, modelo o estrategia",
+      "evidence": [
+        "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md"
+      ],
+      "run_ids": [
+        39641404559
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-015",
+      "domain": "ai-art-direction",
+      "trigger": "semantic-skills_vs_raw_vertex_sculpt",
+      "verdict": "HISTORICAL_METHOD_TO_EVALUATE",
+      "method": "Catálogo de operaciones artísticas semánticas sobre primitives de Blender y comparación con sculpt directo",
+      "observation": "Informe forense detectó contratos/acciones incompatibles e importancia de visión→intención→herramienta",
+      "limits": "No asumir que antiguos resultados valen en main ni fusionar un artista histórico entero",
+      "evidence": [
+        "docs/evidence/ELDORIA_ARTIST_FAILURE_FORENSICS_20261015.md",
+        "docs/evidence/ELDORIA_ARTIST_CAPABILITY_MAIN_RECONCILIATION_20261015.md"
+      ],
+      "run_ids": [
+        38766521237
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-016",
+      "domain": "model-import",
+      "trigger": "source_identity_and_lod_budget",
+      "verdict": "TECH_METHOD_VERIFIED",
+      "method": "Conservar raw/optimizado/BLEND por SHA; QA UV, normales, texturas, distancias y colisiones",
+      "observation": "Proveniencia recuperable y preflight sin gasto verificados para tres fuentes de Tripo",
+      "limits": "49.800 triángulos no es presupuesto universal; LOD/FPS móvil no están certificados",
+      "evidence": [
+        "docs/TRIPO_API_NORMA_PRODUCCION_V1.md",
+        "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md"
+      ],
+      "run_ids": [
+        39622621426
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-017",
+      "domain": "knowledge-loop",
+      "trigger": "memory_evidence_adapter",
+      "verdict": "TOOL_AVAILABLE_INTEGRATION_NOT_UNIVERSAL",
+      "method": "Inventario append-only de 6 casos Bastión I, hook prepare/stage y diario local de lecciones",
+      "observation": "Herramienta lee casos y conserva procedencia; integración obligatoria completa no acreditada",
+      "limits": "No atribuir entrenamiento de pesos ni inferir que todos los workflows consumen esa memoria",
+      "evidence": [
+        "docs/ELDORIA_ART_LEARNING_EVIDENCE_V1.md",
+        "tools/art-direction/learning-evidence/README.md",
+        "tools/art-direction/ai-authoring/author_brief.py"
+      ],
+      "run_ids": [],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-018",
+      "domain": "orchestration",
+      "trigger": "known_failure_fallback",
+      "verdict": "ROUTER_AVAILABLE_NOT_UNIVERSAL",
+      "method": "Clasificador/planificador para elegir rutas auditadas según clase de fallo",
+      "observation": "Hay rutas preparadas y algunas integraciones verificables; fuente específica de fallos puede no emitir la señal",
+      "limits": "No activar investigaciones, componentes condicionales o métodos rechazados automáticamente",
+      "evidence": [
+        "docs/ELDORIA_VISUAL_FALLBACK_ORCHESTRATOR_V1.md",
+        "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md"
+      ],
+      "run_ids": [],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-019",
+      "domain": "runtime-art-preservation",
+      "trigger": "unity_scene_serialization_render_parity",
+      "verdict": "TECH_METHOD_VERIFIED",
+      "method": "Tras guardar y reabrir en Unity, repetir imágenes, examinar atlas/materiales y persistencia TerrainData",
+      "observation": "Native238-241 corrigió reaparición de atlas viejo y divergencia de alphamap; controles reabiertos PASS",
+      "limits": "No declarar aprobado visual/mobile por una escena que solo compila o por capturas previas al guardado",
+      "evidence": [
+        "docs/evidence/valoria-reference-clean/PRODUCTION_DELIVERY_20261020.md"
+      ],
+      "run_ids": [
+        39506119472
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "ART-020",
+      "domain": "asset-design",
+      "trigger": "corruption_focus_lacks_semantics",
+      "verdict": "SOURCE_AND_ISOLATED_UNITY_TECH_PASS_ART_PENDING",
+      "method": "Roca corrompida PBR importada; falta lectura narrativa desde cámara de juego",
+      "observation": "Fuente y QA 2K auténtica disponibles para reautoría, no para añadir nodo jugable",
+      "limits": "No crear altar/campamento/hotspot ni aprobar forma genérica como foco definitivo",
+      "evidence": [
+        "docs/TRIPO_API_FOCO_RESULTADO_20261021.md"
+      ],
+      "run_ids": [
+        39554609943
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "OPS-001",
+      "domain": "continuity",
+      "trigger": "ownership_chat_handoff",
+      "verdict": "EXISTING_PROTOCOL",
+      "method": "Consultar main HEAD, active registry, alcance y jobs antes de asumir o escribir",
+      "observation": "Protocolo de relevo evita duplicar autores, pero no cancela otros chats automáticamente",
+      "limits": "Nunca apropiarse del runner por ver cola vacía ni reactivar historia archivada",
+      "evidence": [
+        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+        "docs/DOCUMENTATION_INDEX.md"
+      ],
+      "run_ids": [],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "OPS-002",
+      "domain": "delivery",
+      "trigger": "android_signed_family_updates",
+      "verdict": "TECH_PROCEDURE_DOCUMENTED",
+      "method": "APK firmada/bytes exactos/canal monotónico, separación compilación-publicación-prueba en dispositivo",
+      "observation": "Proceso de actualización y pruebas de firma documentados; comprobación física siempre aparte",
+      "limits": "No editar canal ni activar publicación automáticamente al agregar conocimiento",
+      "evidence": [
+        "docs/ELDORIA_ANDROID_FAMILY_UPDATES.md"
+      ],
+      "run_ids": [
+        39504548347
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    },
+    {
+      "id": "OPS-003",
+      "domain": "delivery",
+      "trigger": "itch_gzip_memory_delivery",
+      "verdict": "TECH_PROCEDURE_DOCUMENTED",
+      "method": "Separar empaquetado gzip completo, SHA del contenido original, publicación remota y verificación real de juego",
+      "observation": "Se han documentado fallos gzip/fragmentación/memoria y correcciones verificadas a nivel transporte",
+      "limits": "Un upload aceptado no acredita arranque en teléfono o disponibilidad del último candidato",
+      "evidence": [
+        "docs/ELDORIA_PLAYTEST_DELIVERY.md",
+        "pipeline/playtest-delivery.json"
+      ],
+      "run_ids": [
+        39511020125
+      ],
+      "art_approved": false,
+      "auto_execute": false
+    }
+  ],
+  "followup_phase2": "Conectar lectura selectiva al planificador/artista vigente en un ámbito aislado, con pruebas y sin duplicar autoridad"
+}
