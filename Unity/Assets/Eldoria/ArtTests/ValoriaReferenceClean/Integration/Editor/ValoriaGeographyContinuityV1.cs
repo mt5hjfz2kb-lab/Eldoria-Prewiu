@@ -723,16 +723,28 @@ namespace Eldoria.ReferenceClean.Editor
                  "Forest contact requires topologically identical candidate ground");
             var terrainVerts = candidateSurface.vertices
                 .Select(q => worldGround.transform.TransformPoint(q)).ToArray();
+            var terrainTriangles = candidateSurface.triangles;
             float GroundHeight(float x,float z)
             {
-                float nearest = float.MaxValue, height = 0;
-                foreach(var p in terrainVerts)
+                // Barycentric height from the EXACT candidate triangles:
+                // nearest-vertex lookups can bury/floats trees on slopes.
+                // This is read-only geometry mathematics, not a new collider.
+                const float tolerance = .0002f;
+                for(int i=0;i<terrainTriangles.Length;i+=3)
                 {
-                    float d=(p.x-x)*(p.x-x)+(p.z-z)*(p.z-z);
-                    if(d<nearest){nearest=d;height=p.y;}
+                    Vector3 a=terrainVerts[terrainTriangles[i]],
+                        b=terrainVerts[terrainTriangles[i+1]],
+                        c=terrainVerts[terrainTriangles[i+2]];
+                    float denominator=(b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);
+                    if(Mathf.Abs(denominator)<.0000001f)continue;
+                    float aa=((b.z-c.z)*(x-c.x)+(c.x-b.x)*(z-c.z))/denominator;
+                    float bb=((c.z-a.z)*(x-c.x)+(a.x-c.x)*(z-c.z))/denominator;
+                    float cc=1f-aa-bb;
+                    if(aa>=-tolerance&&bb>=-tolerance&&cc>=-tolerance)
+                        return aa*a.y+bb*b.y+cc*c.y;
                 }
-                Need(nearest<11f,"Tree site lies beyond surveyed ground resolution");
-                return height;
+                throw new InvalidOperationException(
+                    "Tree site outside exact candidate macroterrain triangle coverage");
             }
             var placed = new List<Vector3>(original.Select(x => x.bounds.center));
             // Three irregular, geographically connected forest shoulders:
@@ -849,7 +861,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Need((host.WorldCamera.cullingMask & (1<<obj.layer)) != 0,
                      "Mature canopy not included in real strategic camera culling mask");
                 Need(PlanarDistance(actualCenter,target)<3.5f &&
-                     Mathf.Abs(rr.bounds.min.y-GroundHeight(target.x,target.z))<2.5f,
+                     Mathf.Abs(rr.bounds.min.y-GroundHeight(target.x,target.z))<.75f,
                      "Cloned conifer must actually render grounded inside surveyed forest");
                 // Absolutely no collider, WorldHotspot, army marker, or LOD
                 // owner is cloned: only compatible visual source geometry.
