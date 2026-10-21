@@ -9,7 +9,8 @@
     "reason": "Owner retires independent experimental production; current integrated main is the sole development baseline.",
     "allowed_work": "Continue city/world/UI/gameplay on main under existing owner; historical branches read-only by project policy.",
     "authorized_workstream_ids": [
-      "valoria-master-plan-layered-construction-20261016"
+      "valoria-master-plan-layered-construction-20261016",
+      "eldoria-tripo-art-brain-integration-20261021"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
@@ -808,6 +809,33 @@
         "source": "docs/ui-v3/OWNER_APPROVED_DIRECTION.md",
         "no_windows_or_code_work_pending": true
       }
+    },
+    {
+      "id": "eldoria-tripo-art-brain-integration-20261021",
+      "title": "Tripo API + cerebro artístico — preproducción y pruebas sin créditos",
+      "owner": "chatgpt-eldoria-tripo-brain-zero-spend-20261021",
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-21",
+      "base_main_sha": "55985f0e279a2e0f6a3949d5bff0a217a8d8ea44",
+      "scope": [
+        "tools/tripo-art-brain/**",
+        "pipeline/tripo-art-brain/**",
+        "pipeline/art-production-requests/eldoria-tripo-art-brain-integration-20261021.json",
+        "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md",
+        ".github/workflows/tripo-art-brain-preflight.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Extender el flujo existente mediante preflight trazable de fuentes Tripo, memoria para Qwen y decisiones de mejora, sin sustituir pipelines ni tocar assets/escenas de otros propietarios.",
+      "dependency": "Usar solo los GLB ya pagados en ArtSource y la integración existente del Engendro; no crear tareas API, no activar runner pesado, no mutar Unity ni publicar. Tripo rigging/motion requieren coste y autorización expresa separados.",
+      "phase": "ZERO_SPEND_IMPLEMENTATION",
+      "delivery_definition": {
+        "deliverable": "Herramienta ejecutable que audita tres activos Tripo mediante SHA, informa QA y estados separados, prepara briefs/memoria verificables para el Qwen existente y decisiones seguras para Blender, Unity y rigging, con pruebas CI sin gasto.",
+        "evidence": "Pruebas locales y Actions focalizadas + outputs reales bajo SHA, sin credenciales ni facturación; comparación contra resultados de QA preservados.",
+        "handoff": "Código y documentación de uso en main; pasos de animación/pago segregados y bloqueados hasta autorización."
+      },
+      "next": "Implementar preflight y memoria consumible por el cerebro artístico, añadir tests y workflow ligero, ejecutar pruebas; la fase de rigging de pago queda bloqueada."
     }
   ],
   "history": [
