@@ -15,6 +15,12 @@ if request_config.get('review_scope')=='geography_v1':
   meta=json.loads((folder/'trial.json').read_text('utf-8'))
   assert meta['source_scene_sha256']==json.loads((folder/'survey.json').read_text('utf-8'))['source_scene_sha256']
   assert meta.get('native_unity_ab') and not meta.get('art_approved')
+  if len(meta.get('images',[]))!=15 or len(meta.get('image_sha256',[]))!=15:
+   raise ValueError('Expected 15 exact native geography A/B output images')
+  for name,expected_hash in zip(meta['images'],meta['image_sha256']):
+   candidate=folder/name
+   if not candidate.is_file() or hashlib.sha256(candidate.read_bytes()).hexdigest()!=expected_hash:
+    raise ValueError('Native geography image does not match reviewed candidate: '+name)
   for kind in ['city-I-wide','city-I-mobile','city-II-wide','city-II-mobile']:
    b=json.loads((folder/('before-'+kind+'-camera.json')).read_text('utf-8'))
    a=json.loads((folder/('after-'+kind+'-camera.json')).read_text('utf-8'))
