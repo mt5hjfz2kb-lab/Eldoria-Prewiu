@@ -1,0 +1,1019 @@
+{
+  "schema_version": 1,
+  "base": "main",
+  "offset": 94,
+  "items": [
+    {
+      "name": "ops/visual-fast-rejection-gate-20261013",
+      "sha": "5c125e1a9d990709deef8d75d53bce9624b7169f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 1,
+      "behind": 1705,
+      "files_count": 1,
+      "total_commits": 1,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "pilot/eldoria-r1-qa-trigger",
+      "sha": "005d58eefc64a2ac0774c4637526428ba351fb9a",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 28,
+      "behind": 2023,
+      "files_count": 33,
+      "total_commits": 28,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 19,
+      "highlights": [
+        {
+          "path": ".github/workflows/m16-pilot-negative-gate.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/m16-pilot-two-jobs.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/pages.yml",
+          "status": "modified"
+        },
+        {
+          "path": "docs/evidence/valoria-bastion-i-ii-presentation-parity-correction-v1/FINAL_CLOSURE_2026-10-08.md",
+          "status": "modified"
+        },
+        {
+          "path": "pipeline/active-workstreams.json",
+          "status": "modified"
+        },
+        {
+          "path": "pipeline/certification/candidate.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/certificate.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/evaluation.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/evidence.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/gates.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/policy.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/m04/incident-policy-v1.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/m16a/catalog-v1.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/unity-publish-request.json",
+          "status": "modified"
+        },
+        {
+          "path": "tools/m03/certify.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/m03/github-evidence.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/m03/publication-history.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/m04/incidents.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/m16a/evaluate.mjs",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "pipeline/mission-continuity-guard-v1-20261014",
+      "sha": "15728c5bab143161a7b01c308295be1ce1a10156",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 9,
+      "behind": 1701,
+      "files_count": 8,
+      "total_commits": 9,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 6,
+      "highlights": [
+        {
+          "path": ".github/workflows/mission-continuity-guard.yml",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/active-workstreams.json",
+          "status": "modified"
+        },
+        {
+          "path": "pipeline/mission-continuity-policy-v1.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/mission-continuity/core.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/mission-continuity/core.test.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/mission-continuity/watch.mjs",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "pipeline/promote-toolchain-v2-canonical",
+      "sha": "91503886f759d74da311b8ba076836c20a6f462b",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 3,
+      "behind": 5328,
+      "files_count": 3,
+      "total_commits": 3,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "pipeline/toolchain-automation-v2",
+      "sha": "ac7dfd9cce88f9c7caa99376af968e31e0825709",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 56,
+      "behind": 5358,
+      "files_count": 20,
+      "total_commits": 56,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 18,
+      "highlights": [
+        {
+          "path": ".github/workflows/art-production-plan.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/tripo-module-pipeline.yml",
+          "status": "modified"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ImageTo3D/Editor/TripoGenericModuleReview.cs",
+          "status": "modified"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ToolchainProof/Editor/BlenderLODReview.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ToolchainProof/Editor/UnityEnvironmentCapabilitiesAudit.cs",
+          "status": "added"
+        },
+        {
+          "path": "docs/ELDORIA_ART_PIPELINE_INDEX.md",
+          "status": "modified"
+        },
+        {
+          "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/art-production-request.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/blender-bake-capability-proof-request.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/blender-capability-proof-request.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/toolchain-capabilities.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/tripo-advanced-probe-request.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/unity-environment-capabilities-audit-request.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/audit-unity-environment-capabilities.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/blender_bake_capability_proof.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/blender_capability_proof.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/plan-art-production.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/tripo-advanced-capability-probe.mjs",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "production/eldoria-gameplay-first-20261009",
+      "sha": "e179519f7db4391029b51702b8b8a9e223fd8e1d",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 12,
+      "behind": 2023,
+      "files_count": 18,
+      "total_commits": 12,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 11,
+      "highlights": [
+        {
+          "path": "pipeline/active-workstreams.json",
+          "status": "modified"
+        },
+        {
+          "path": "pipeline/certification/candidate.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/certificate.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/evaluation.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/evidence.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/gates.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/policy.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/m16a/catalog-v1.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/unity-publish-request.json",
+          "status": "modified"
+        },
+        {
+          "path": "tools/m03/certify.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/m16a/evaluate.mjs",
+          "status": "added"
+        }
+      ],
+      "families": [
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "production/mid-tier-citywide-rollout-v2",
+      "sha": "1281089aeb69ae492e7d6e86452b1d020a088b96",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 4,
+      "behind": 5314,
+      "files_count": 2,
+      "total_commits": 4,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "production/mid-tier-district-rollout-v1",
+      "sha": "d04e65c8ad24c23df74248868f43dfdab6507556",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 5317,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "production/valoria-nation1-authored-v1",
+      "sha": "f693d323e8fa1617c416674d17a4974160b0e521",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 206,
+      "behind": 4331,
+      "files_count": 71,
+      "total_commits": 206,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 44,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-flat-citadel-art-consolidation-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-flat-citadel-production-uplift-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-nation1-authored-production-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-audit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-comparison.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-hero-segmentation.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-visual-quality-breakthrough-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-functional-source-audit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-secondary-lineup.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-vqb-wall-lineup.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_ASSET_COHERENCE_GAME_PRESENTATION_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_FLAT_CITADEL_ART_CONSOLIDATION_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_FLAT_CITADEL_PRODUCTION_UPLIFT_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/VALORIA_VISUAL_QUALITY_BREAKTHROUGH_V1_RESEARCH.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/Coherence-HUD-PlayMode.xml",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/asset-audit.txt",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/coherence-metrics.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-12.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-19.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-9.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/compare-mobile.jpg",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/evidence.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-asset-coherence-v1/manifest.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/active-workstreams.json",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "promotion/asset-library-reprocessing-pass-v1",
+      "sha": "4cca292fc835ef6bbe73051b38bbbde46c385b99",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 26,
+      "behind": 5312,
+      "files_count": 14,
+      "total_commits": 26,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 5,
+      "highlights": [
+        {
+          "path": ".github/workflows/asset-library-reprocessing-promotion-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/cancel-conflicting-promotion-v2.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/cancel-stale-hero-persist.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/ELDORIA_ART_PIPELINE_INDEX.md",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs"
+      ]
+    },
+    {
+      "name": "promotion/eldoria-ai-authoring-core-20261012",
+      "sha": "668e339f5ecac993edbb7de3a0b829f0385b1246",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 1732,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "prototype/bastion1-camera-silhouette-alternative-20261013",
+      "sha": "02c3f9ab55e66e08795088f3c7369cc29bde3325",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 80,
+      "behind": 1875,
+      "files_count": 28,
+      "total_commits": 80,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 25,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-bastion1-ai-artist-consumer.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-ai-mesh-city-merge.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-browser-qa.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-evidence-image-review.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-gpt-directed-camera-alternative.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-player-scene-integration.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-qwen-different-plan-replay.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-qwen-replay-visibility.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-typed-merge-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1MaterialBindings.cs",
+          "status": "modified"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1ReferenceCapture.cs",
+          "status": "modified"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/ValoriaBastion1MeshCandidateBuild.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/ValoriaBastion1MeshCandidateBuild.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/ValoriaBastion1MeshPlayerScene.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/ValoriaBastion1MeshPlayerScene.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/barracks-locked-mobile-qa-38360174604.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/qwen-artist-first-cycle.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-bastion1-player-scene-integration-20261012/qwen-unity-visual-review-20261013.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/render_artist_ab.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/valoria-bastion1-assembly/apply_qwen_artist_mesh.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/valoria-bastion1-assembly/assemble.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/valoria-bastion1-assembly/gpt_directed_environment_sculpt.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/valoria-bastion1-assembly/materials.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/valoria-bastion1-assembly/terrain_finish.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "prototype/reference-first-zero-budget-visual-pilot-20261015",
+      "sha": "2959d743e7aab966bafa12a89bd3529c39141959",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 106,
+      "behind": 1633,
+      "files_count": 135,
+      "total_commits": 106,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 135,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-backbone-donor-ab-reference-first.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-canonical-blender-geology-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-reference-first-proof-recovery.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-reference-first-zero-budget-pilot.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-terrain-donor-ab-reference-first.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-terrain-family-source-comparison.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-transition-close-up-study.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-transition-donor-ab-reference-first.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-transition-neutral-material-diagnostic.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-transition-stone-material-study.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-v4-evidence-recovery.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/reference-first-v4-static-source.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/reference-first-zero-budget-pilot.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstBackboneDonorPreview.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV10Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV11Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV12Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV13Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV14Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV15Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV20Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV2Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV3Capture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ReferenceFirstPilot/Editor/ReferenceFirstCompositionV4Capture.cs",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "prototype/valoria-bastion1-no-sharp-20261010",
+      "sha": "777ead312387b1be6b59bf2a565d1a4725678d89",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 165,
+      "behind": 1933,
+      "files_count": 53,
+      "total_commits": 165,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 51,
+      "highlights": [
+        {
+          "path": ".github/workflows/art-glb-preflight.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-ai-mcp-geometry.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-blender-agent-capability.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-blender-mcp-windows-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-curated-architecture.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-existing-assets-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-fortification-family.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-gatehouse-reference.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-local-ai-readiness.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-local-art-agent-source.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-local-vision-bootstrap.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-local-vision-lookdev.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mcp-tcp-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mcp-transport-introspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mesh-only-preview.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mesh-only-prototype.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mesh-only-unity-qa.yml",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/production/gatehouse-reference/gate_before_same_camera.png",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/production/gatehouse-reference/gate_reference_assembled.png",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/production/gatehouse-reference/gate_reference_hero.png",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/production/gatehouse-reference/gate_reference_manifest.json",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/production/gatehouse-reference/gate_reference_mobile.png",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/production/gatehouse-reference/valoria_gate_reference.blend",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/production/gatehouse-reference/valoria_gate_reference.glb",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "art-source",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "prototype/valoria-modular-fortress-library-20261015",
+      "sha": "cecc352ec187d4a3321be618c2aba818476052d8",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 7,
+      "behind": 1629,
+      "files_count": 3,
+      "total_commits": 7,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 3,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-modular-fortress-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-modular-fortress-static.yml",
+          "status": "added"
+        },
+        {
+          "path": "tools/valoria-modular-fortress/build_blender.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "tools"
+      ]
+    },
+    {
+      "name": "prototype/world4x-zone1-zoom-reference-20261013",
+      "sha": "f3ccc8d0b7767472ef09b02c3091f6d676f204ee",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 113,
+      "behind": 1702,
+      "files_count": 300,
+      "total_commits": 113,
+      "too_large": false,
+      "suspect_truncation": true,
+      "art_path_count": 113,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-world4x-qwen-contract-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-world4x-qwen-plan-replay.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-world4x-stabilization.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-brecha-landform.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-contact-sheets.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-full-studio-ground.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-authoring.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-material-replay.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-native-capture.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-relief-revision.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-surface.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-multizoom-review.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-production-window.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-recover-and-test.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-source-recovery.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneNativeCandidate.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneNativeCandidate.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneSectorScene.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneSectorScene.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/source-identity.json",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs"
+      ]
+    }
+  ]
+}
