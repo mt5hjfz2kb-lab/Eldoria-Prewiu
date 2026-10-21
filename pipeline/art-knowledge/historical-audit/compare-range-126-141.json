@@ -1,0 +1,1049 @@
+{
+  "schema_version": 1,
+  "base": "main",
+  "offset": 126,
+  "items": [
+    {
+      "name": "stabilization/eldoria-art-learning-visual-context-20261014",
+      "sha": "7ce798bc9da0aac88fdea0046b1c9c7d75ec2957",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 43,
+      "behind": 1697,
+      "files_count": 33,
+      "total_commits": 43,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 32,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-toolchain-stabilization.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/ARTIST_LEARNING_STABILIZATION_20261014.md",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/artist_loop.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/blender_toolbox.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/composition_health.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/consumer_handoff.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/curate_learning.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/extended_ops.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/glb_mobile_preflight.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/inspect_source.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/learning_cases.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/learning_context.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/screen_impact.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/generate_reuse_smoke.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/smoke_plan.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_artist_learning_improvements.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_artist_learning_promotion.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_artist_scope.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_asset_import_contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_composition_health.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "stabilization/eldoria-artist-native-pc-bridge-20261014",
+      "sha": "08ffaac9e4fb9eafb6dcef8227eb8d1cc0c09faa",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 32,
+      "behind": 1697,
+      "files_count": 32,
+      "total_commits": 32,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 31,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-artist-native-windows-ollama-qwen-blender-manual.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-toolchain-stabilization.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/ELDORIA_NATIVE_PC_ARTIST_BRIDGE_20261014.md",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/artist_loop.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/blender_toolbox.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/composition_health.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/consumer_handoff.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/extended_ops.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/glb_mobile_preflight.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/inspect_source.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/learning_cases.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/learning_context.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/pc_local_qwen_blender_cycle.ps1",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/screen_impact.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/generate_reuse_smoke.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/smoke_plan.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_artist_scope.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_asset_import_contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_composition_health.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_consumer_handoff.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "stabilization/eldoria-bastion-guard-20261014",
+      "sha": "97e9ee9ebde3eed6788a2abff58c8ef710de2973",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 243,
+      "behind": 1875,
+      "files_count": 118,
+      "total_commits": 243,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 113,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-bastion-stabilization.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-ai-architectural-proposal.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-ai-artist-consumer.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-ai-mesh-city-merge.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-browser-qa.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-evidence-image-review.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-exact-candidate-build.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-global-two-ai-compositions.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-player-scene-integration.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-qwen-different-plan-replay.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-qwen-finishing.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-qwen-replay-visibility.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-selected-asset-review.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-bastion1-typed-merge-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1ExistingRoadIntegration.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1ExistingRoadIntegration.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1MaterialBindings.cs",
+          "status": "modified"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1ReferenceCapture.cs",
+          "status": "modified"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1RoadClearance.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1RoadClearance.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/ValoriaBastion1MeshCandidateBuild.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/ValoriaBastion1MeshCandidateBuild.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/ValoriaBastion1MeshPlayerScene.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/ValoriaBastion1MeshPlayerScene.cs.meta",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "stabilization/eldoria-chat-capability-bootstrap-20261014",
+      "sha": "d76452d58af9a3adbc9395b59dfa9a31c8215950",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 1679,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "stabilization/eldoria-owner-artist-single-lane-20261014",
+      "sha": "1f05e33a9cb722d3ed01f6289f7f9863f1924e1b",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 2,
+      "behind": 1677,
+      "files_count": 2,
+      "total_commits": 2,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": "pipeline/active-workstreams.json",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        "pipeline"
+      ]
+    },
+    {
+      "name": "stabilization/eldoria-toolchain-20261014",
+      "sha": "cee63a65cd211361cbe7667886b1f14654be3ad0",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 27,
+      "behind": 1697,
+      "files_count": 29,
+      "total_commits": 27,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 28,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-toolchain-stabilization.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/artist_loop.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/blender_toolbox.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/composition_health.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/consumer_handoff.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/extended_ops.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/glb_mobile_preflight.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/inspect_source.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/learning_cases.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/learning_context.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/screen_impact.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/generate_reuse_smoke.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/smoke_plan.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_artist_scope.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_asset_import_contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_composition_health.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_consumer_handoff.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_extended_contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/tests/test_glb_mobile_preflight.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "stabilization/eldoria-world4x-contracts-20261014",
+      "sha": "fef258ace15daa5311332721787f33c3dfdcdbcb",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 88,
+      "behind": 1702,
+      "files_count": 300,
+      "total_commits": 88,
+      "too_large": false,
+      "suspect_truncation": true,
+      "art_path_count": 107,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-world4x-qwen-contract-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-world4x-qwen-plan-replay.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-world4x-stabilization.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-brecha-landform.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-contact-sheets.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-full-studio-ground.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-authoring.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-material-replay.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-native-capture.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-relief-revision.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-ground-surface.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-multizoom-review.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/world4x-zone1-source-recovery.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneSectorScene.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Editor/ZoneOneSectorScene.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/ZoneOnePrairieCandidate.glb",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/Ground/source-identity.json",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOnePreview.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOnePreview.cs.meta",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs"
+      ]
+    },
+    {
+      "name": "stable/visual-good-f139968c",
+      "sha": "12318696267e9114d996d7f55128ffaaf0e21b49",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8183,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "stable/visual-good-live-before-recovered-flow",
+      "sha": "12318696267e9114d996d7f55128ffaaf0e21b49",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8183,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "stone-architecture-gate-trigger",
+      "sha": "d60ba79580dd737b79033c3a6a24612fb0d90ba3",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 1,
+      "behind": 5523,
+      "files_count": 1,
+      "total_commits": 1,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "tmp/v020",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8288,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "ui/eldoria-royal-gold-v1-20261018",
+      "sha": "236a81aac894ea0845b85c90310b92dddb32d10f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 14,
+      "behind": 1537,
+      "files_count": 187,
+      "total_commits": 14,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 33,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-ui-royal-gold-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/ui-royal-gold-v1/recovered-art-contact-small.png",
+          "status": "added"
+        },
+        {
+          "path": "docs/ui-royal-gold-v1/recovered-art-contact.base64.txt",
+          "status": "added"
+        },
+        {
+          "path": "docs/ui-royal-gold-v1/recovered-art-contact.png",
+          "status": "added"
+        },
+        {
+          "path": "docs/ui-royal-gold-v1/recovered-art.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/eldoria-ui-royal-gold-v1-native-request.json",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/Tests/AdapterTests.cs",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/Tests/AdapterTests.csproj",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/Tests/TimingTests.cs",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/Tests/TimingTests.csproj",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/art_inventory.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/materialize.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/read_contracts.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/6043301ad238ef62b417d2baeefed8ac84738571.png",
+          "status": "added"
+        },
+        {
+          "path": "tools/eldoria-ui-royal-gold-v1/recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "v0.20.0",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8288,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "v020-final",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8288,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "validation/artist-windows-pc-bridge-20261014",
+      "sha": "6e1ff24bb15329d40ad374e87bbe7c45c6e4f9ae",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 55,
+      "behind": 1697,
+      "files_count": 44,
+      "total_commits": 55,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 43,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-artist-complete-pc-local-qwen-blender-cycle.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-pc-addons-and-custom-model-inspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-professional-cycle-contract-tests.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-qwen-full-cycle-pc-native.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-qwen-plan-on-windows-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-windows-blendermcp-transport-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-advanced-toolbox-and-qwen-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-local-blender-connection-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-custom-artist-model-native-blendermcp-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-fresh-qwen-art-material-to-pc-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-ollama-local-installation-discovery.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-ollama-pc-start-cached-model-bridge.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-ollama-windows-safe-local-start-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-toolchain-stabilization.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/artist_loop.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/blender_toolbox.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/composition_health.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/consumer_handoff.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/extended_ops.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/glb_mobile_preflight.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "validation/eldoria-artist-blender-professional-tool-contracts-20261014",
+      "sha": "d4a7a95f18456fb161f657816d8542f10e880e0e",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 58,
+      "behind": 1697,
+      "files_count": 42,
+      "total_commits": 58,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 41,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-artist-professional-cycle-contract-tests.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-qwen-full-cycle-pc-native.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-real-qwen-plan-on-windows-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-repeated-qwen-contract.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-strict-native-tool-contract-regression.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-advanced-toolbox-and-qwen-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-artist-windows-local-blender-connection-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-fresh-qwen-art-material-to-pc-blender.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-full-artist-studio.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-ollama-local-installation-discovery.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-ollama-pc-start-cached-model-bridge.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-ollama-windows-safe-local-start-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-professional-qwen-pc-typed-tool-cycle.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-toolchain-stabilization.yml",
+          "status": "added"
+        },
+        {
+          "path": "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/artist_loop.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/blender_toolbox.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/composition_health.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/consumer_handoff.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/contract.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/extended_ops.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/glb_mobile_preflight.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/inspect_source.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/full-studio/learning_cases.json",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "docs",
+        "tools"
+      ]
+    }
+  ]
+}

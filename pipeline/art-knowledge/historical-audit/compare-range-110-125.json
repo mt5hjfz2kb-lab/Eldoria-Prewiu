@@ -1,0 +1,372 @@
+{
+  "schema_version": 1,
+  "base": "main",
+  "offset": 110,
+  "items": [
+    {
+      "name": "publish-r7",
+      "sha": "fafb5988fdca9540763655e333c4ad4d87b7f794",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8301,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "recovery/eldoria-2026-10-08-1400",
+      "sha": "bdeef4038d03a62dcc207c93005bbad868fd7909",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 2023,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "recovery/known-good-6f35edb",
+      "sha": "6f35edba82e5d906c0d13e4668efb2980d81b387",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 91,
+      "behind": 8184,
+      "files_count": 4,
+      "total_commits": 91,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": ".github/workflows/pages.yml",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github"
+      ]
+    },
+    {
+      "name": "recovery/last-authored-visual-e34cbd8",
+      "sha": "e34cbd8c006ef35fe6b7d012c02985f2ccfc6f62",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 88,
+      "behind": 8184,
+      "files_count": 2,
+      "total_commits": 88,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": ".github/workflows/pages.yml",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github"
+      ]
+    },
+    {
+      "name": "recovery/last-certified-unity-2026-10-08",
+      "sha": "7063fd36c0d2840f22ad2d1290fbccfe074ffd49",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 2023,
+      "files_count": 14,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 10,
+      "highlights": [
+        {
+          "path": "pipeline/certification/candidate.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/certificate.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/evaluation.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/evidence.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/gates.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/policy.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/m16a/catalog-v1.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/unity-publish-request.json",
+          "status": "modified"
+        },
+        {
+          "path": "tools/m03/certify.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/m16a/evaluate.mjs",
+          "status": "added"
+        }
+      ],
+      "families": [
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "recovery/main-before-prebreak-publish",
+      "sha": "db4cbe031592c5b165b0015f8f3ad7cc3564f89d",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 93,
+      "behind": 8184,
+      "files_count": 5,
+      "total_commits": 93,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": ".github/workflows/pages.yml",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github"
+      ]
+    },
+    {
+      "name": "recovery/oct08-1500-candidate-2026",
+      "sha": "7063fd36c0d2840f22ad2d1290fbccfe074ffd49",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 2023,
+      "files_count": 14,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 10,
+      "highlights": [
+        {
+          "path": "pipeline/certification/candidate.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/certificate.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/evaluation.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/evidence.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/gates.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/certification/policy.schema.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/m16a/catalog-v1.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/unity-publish-request.json",
+          "status": "modified"
+        },
+        {
+          "path": "tools/m03/certify.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/m16a/evaluate.mjs",
+          "status": "added"
+        }
+      ],
+      "families": [
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "recovery/pages-success-f139968c",
+      "sha": "f139968ccbfdeb3e1d37f58568187374faf6d1f2",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8184,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "recovery/playable-pre-break",
+      "sha": "0b3bd53dedc33ff9f978667d701a96f0891896ad",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 98,
+      "behind": 8184,
+      "files_count": 5,
+      "total_commits": 98,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": ".github/workflows/pages.yml",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github"
+      ]
+    },
+    {
+      "name": "recovery/pre-15-departments-candidate-20261007",
+      "sha": "81f438c94ec8b6f36d34d3172920a421bf35e8f9",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 2069,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "recovery/pre-broken-test-2fb0be1",
+      "sha": "2fb0be1bb677d8f8b05d34e00daa9560fafdbe61",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 95,
+      "behind": 8184,
+      "files_count": 4,
+      "total_commits": 95,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": ".github/workflows/pages.yml",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github"
+      ]
+    },
+    {
+      "name": "recovery/visual-known-good-65dc609",
+      "sha": "65dc6096f0ead38817f24e41993447afaadc6d29",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 80,
+      "behind": 8184,
+      "files_count": 2,
+      "total_commits": 80,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 1,
+      "highlights": [
+        {
+          "path": ".github/workflows/pages.yml",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github"
+      ]
+    },
+    {
+      "name": "recovery/visual-v022",
+      "sha": "b5a0589214d42572917337a2ed961f2c4befdaf5",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 187,
+      "behind": 8184,
+      "files_count": 8,
+      "total_commits": 187,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 2,
+      "highlights": [
+        {
+          "path": ".github/workflows/browser-playtest.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/pages.yml",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        ".github"
+      ]
+    },
+    {
+      "name": "release/v0.20.0",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8288,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "release-v020-final",
+      "sha": "15fc8145cef1b60bbddc4cffea7b02d730b0d90f",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8288,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "review-v09-package",
+      "sha": "20fac33d37872f18055c12d12aef11aa0b90e1f7",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 8416,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    }
+  ]
+}
