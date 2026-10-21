@@ -209,12 +209,12 @@ namespace Eldoria.ReferenceClean.Editor
         [Serializable] public class Approval
         {
             public bool accepted;
-            public string source_scene_sha256, tool_sha256, reviewer, review_path;
+            public string source_scene_sha256, tool_sha256, reviewer, review_path, geometry_sha256;
             public string[] image_names, image_sha256;
         }
         [Serializable] public class Candidate
         {
-            public string source_scene_sha256, tool_sha256, method, world_ground_source, artist_plan_sha256;
+            public string source_scene_sha256, tool_sha256, method, world_ground_source, artist_plan_sha256, geometry_sha256;
             public string[] original_poi_ids, after_poi_ids, images, image_sha256;
             public int source_world_triangles, candidate_world_triangles, sampled_conifer_renderers, added_visual_only_forest_instances;
             public int source_height_resolution, candidate_height_resolution, changed_city_height_samples;
@@ -1036,6 +1036,51 @@ namespace Eldoria.ReferenceClean.Editor
                 "world-engendro-valoria-wide", "world-engendro-valoria-mobile" }
                 .Select(s => prefix + "-" + s + ".png").ToArray();
         }
+        static string GeometryFingerprint(TerrainData terrain,Mesh world,Texture2D albedo,Transform root,Dictionary<Transform,Vector3> cityRoots)
+        {
+            using(var buffer=new MemoryStream())using(var w=new BinaryWriter(buffer)) {
+                void Vec(Vector3 p){w.Write(p.x);w.Write(p.y);w.Write(p.z);}
+                void Pose(Transform t){
+                    w.Write(t.name);w.Write(t.GetSiblingIndex());Vec(t.localPosition);Vec(t.localScale);
+                    var q=t.localRotation;w.Write(q.x);w.Write(q.y);w.Write(q.z);w.Write(q.w);
+                }
+                w.Write(terrain.heightmapResolution);Vec(terrain.size);
+                foreach(float value in terrain.GetHeights(0,0,terrain.heightmapResolution,terrain.heightmapResolution))w.Write(value);
+                foreach(float value in terrain.GetAlphamaps(0,0,terrain.alphamapWidth,terrain.alphamapHeight))w.Write(value);
+                foreach(var p in world.vertices)Vec(p);foreach(var p in world.normals)Vec(p);
+                foreach(var p in world.uv){w.Write(p.x);w.Write(p.y);}
+                foreach(int i in world.triangles)w.Write(i);
+                w.Write(albedo.GetRawTextureData());
+                foreach(var t in root.GetComponentsInChildren<Transform>(true))Pose(t);
+                foreach(var t in cityRoots.Keys.OrderBy(t=>t.position.x).ThenBy(t=>t.position.z).ThenBy(t=>t.name))Pose(t);
+                w.Flush();using(var hash=SHA256.Create())
+                    return BitConverter.ToString(hash.ComputeHash(buffer.ToArray())).Replace("-","").ToLowerInvariant();
+            }
+        }
+        static void VerifyReviewedRender(byte[] approved,byte[] current,string name)
+        {
+            var a=new Texture2D(2,2,TextureFormat.RGBA32,false);
+            var b=new Texture2D(2,2,TextureFormat.RGBA32,false);
+            try {
+                Need(a.LoadImage(approved)&&b.LoadImage(current),"Review PNG decode failed: "+name);
+                Need(a.width==b.width&&a.height==b.height,"Reviewed camera dimensions changed: "+name);
+                var x=a.GetPixels32();var y=b.GetPixels32();long total=0;int changed=0,maximum=0;
+                bool city=name.StartsWith("after-city-",StringComparison.Ordinal);
+                for(int i=0;i<x.Length;i++){
+                    int dr=Math.Abs(x[i].r-y[i].r),dg=Math.Abs(x[i].g-y[i].g),db=Math.Abs(x[i].b-y[i].b);
+                    int delta=Math.Max(dr,Math.Max(dg,db));total+=dr+dg+db;maximum=Math.Max(maximum,delta);
+                    if(delta>5){changed++;
+                        // GetPixels32 starts at the bottom; observed water/riparian variation is in bottom35%.
+                        Need(city&&i/a.width<a.height*.35f,"Material render change outside reviewed water/riparian band: "+name);
+                    }
+                }
+                double fraction=changed/(double)x.Length,mae=total/(double)(x.Length*3);
+                Need(city?(fraction<=.0002&&mae<=.005&&maximum<=24):(maximum<=1&&mae<=.0001),
+                    "Rendered candidate differs materially from reviewed pixels: "+name+" changed="+fraction+" mae="+mae+" max="+maximum);
+                Debug.Log("VALORIA_GEOGRAPHY_REVIEWED_RENDER "+name+" changed="+fraction+" mae="+mae+" max="+maximum);
+            } finally {Object.DestroyImmediate(a);Object.DestroyImmediate(b);}
+        }
+
         public static void Trial() { AuthorAndCapture(false); }
         public static void Integrate() { AuthorAndCapture(true); }
         static void AuthorAndCapture(bool integrate)
@@ -1064,6 +1109,7 @@ namespace Eldoria.ReferenceClean.Editor
                 var survey = JsonUtility.FromJson<SurveyRecord>(File.ReadAllText(surveyFile));
                 Need(survey.source_scene_sha256 == sceneHash, "Canonical scene differs from measured source");
                 Approval approval = null;
+                var approvedImages=new Dictionary<string,byte[]>();
                 if (integrate)
                 {
                     var approvalPath = Path.Combine(Evidence, "accepted-candidate.json");
@@ -1074,6 +1120,16 @@ namespace Eldoria.ReferenceClean.Editor
                         !string.IsNullOrEmpty(approval.reviewer) &&
                         !string.IsNullOrEmpty(approval.review_path),
                         "Independent source-pinned art acceptance required");
+                    Need(!string.IsNullOrEmpty(approval.geometry_sha256)&&approval.image_names!=null&&
+                        approval.image_sha256!=null&&approval.image_names.Length==approval.image_sha256.Length,
+                        "Exact candidate geometry and original reviewed PNG hashes required");
+                    for(int i=0;i<approval.image_names.Length;i++){
+                        string name=approval.image_names[i];
+                        Need(Path.GetFileName(name)==name,"Invalid reviewed image path");
+                        string file=Path.Combine(Evidence,name);
+                        Need(Sha(file)==approval.image_sha256[i],"Original independently reviewed PNG bytes changed: "+name);
+                        approvedImages.Add(name,File.ReadAllBytes(file));
+                    }
                 }
                 var host = Load(out var city);
                 // Editor rendering and Terrain.Flush may re-frame the live camera.
@@ -1168,6 +1224,7 @@ namespace Eldoria.ReferenceClean.Editor
                     source_height_resolution = originalTerrain.heightmapResolution,
                     candidate_height_resolution = newCity.heightmapResolution,
                     changed_city_height_samples = cityHeightChanges,
+                    geometry_sha256=GeometryFingerprint(newCity,worldMesh,albedo,host.WorldRoot.transform,movedCityDecoration),
                     previous_scene_untouched = true,
                     city_terrain_collider_unchanged = false, // trial collider is safely rebound to the matching candidate asset
                     world_source_mesh_unchanged = ground.sharedMesh == originalWorldMesh,
@@ -1176,11 +1233,10 @@ namespace Eldoria.ReferenceClean.Editor
                 Need(sceneHash == Sha(ScenePath), "Trial unexpectedly modified scene bytes");
                 if (integrate)
                 {
-                    Need(approval.image_names != null && approval.image_sha256 != null &&
-                        approval.image_names.Length == imgs.Length &&
-                        approval.image_names.SequenceEqual(imgs) &&
-                        approval.image_sha256.SequenceEqual(candidate.image_sha256),
-                        "Accepted original Unity A/B bytes do not match integrated result");
+                    Need(approval.image_names.SequenceEqual(imgs)&&approval.geometry_sha256==candidate.geometry_sha256,
+                        "Reviewed candidate geometry, terrain, texture or scene transforms changed");
+                    foreach(string name in imgs)
+                        VerifyReviewedRender(approvedImages[name],File.ReadAllBytes(Path.Combine(Evidence,name)),name);
                     Need(!AssetDatabase.IsValidFolder(AssetFolder), "Refuse overwriting previously integrated terrain assets");
                     Directory.CreateDirectory(AssetFolder);
                     AssetDatabase.Refresh();

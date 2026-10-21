@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T20:49:20.182Z",
+  "updated_at": "2026-10-21T20:55:55.213Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -57,8 +57,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NATIVE272_BOUNDED_ACCEPTANCE_INTEGRATING",
-      "next": "Native272 all15 actual A/B reviewed; bounded improvement accepted, no global score claim. Integrate exact source/tool/images, then V42 skin and combined gameplay/browser QA.",
+      "phase": "NATIVE274_EXACT_GEOMETRY_RENDER_REPRODUCIBILITY",
+      "next": "273 integration refused before scene save due minute render nondeterminism. Add exact geometry/texture/transform fingerprint plus original reviewed PNG-byte validation and bounded water/rounding pixel comparison; record fresh same-plan trial274 before accepting new tool hash.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
