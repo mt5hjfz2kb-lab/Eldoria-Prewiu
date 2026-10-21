@@ -125,11 +125,6 @@ namespace Eldoria.SpawnlingBastion2.Editor
             }
             finally{RenderTexture.active=previous;RenderTexture.ReleaseTemporary(rt);}
         }
-        static async Task<GameObject> Import(string path,string name,Transform parent,
-            string folder,ref int counter)
-        {
-            throw new NotSupportedException("ref int cannot be used in async; call ImportAsync below");
-        }
         static async Task<GameObject> ImportAsync(string path,string name,Transform parent,
             string folder,Action<GameObject> persist)
         {
