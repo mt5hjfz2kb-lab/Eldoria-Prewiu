@@ -83,6 +83,59 @@ def animate_v4(arm):
     arm.animation_data.action.name=CLIP
     scene.frame_set(1)
 
+def corrected_limb_weights(point,center,scale,original_weights=V1.weights):
+    """V4.1 technical weight repair from measured source mesh connectivity.
+    Feet occupy normalized x<=.13 below z=-.15; forearms start x>=.20.
+    Original x>-.01 split incorrectly bound toes to a swiping arm.
+    Smoothly transfer that existing influence to the same-side leg; keep
+    positions, topology, bones, poses, materials and total weight unchanged.
+    """
+    ws=original_weights(point,center,scale)
+    x=(point[0]-center[0])/scale[0]
+    blend=V3.smoother((x-.14)/.12)
+    for side in ("L","R"):
+        arm=side+"_arm";leg=side+"_leg"
+        transferred=ws.get(arm,0.0)*(1.0-blend)
+        if transferred:
+            ws[arm]-=transferred
+            ws[leg]=ws.get(leg,0.0)+transferred
+    return {name:w for name,w in ws.items() if w>.0000001}
+
+def rig_with_repaired_weights(meshes,arm,center,scale):
+    original=V1.weights
+    V1.weights=corrected_limb_weights
+    try:return V1.rig_mesh(meshes,arm,center,scale)
+    finally:V1.weights=original
+
+def verify_feet(meshes,center,scale):
+    """Compare every actual evaluated foot vertex, never a sparse sample."""
+    scene=bpy.context.scene
+    feet={}
+    for ob in meshes:
+        ids=[]
+        for v in ob.data.vertices:
+            p=ob.matrix_world@v.co
+            x=(p.x-center[0])/scale[0];z=(p.z-center[2])/scale[2]
+            if -.19<x<.14 and z<-.28:ids.append(v.index)
+        if ids:feet[ob.name]=ids
+    def capture(frame):
+        scene.frame_set(frame);dg=bpy.context.evaluated_depsgraph_get();out=[]
+        for ob in meshes:
+            ids=feet.get(ob.name,[])
+            if not ids:continue
+            ev=ob.evaluated_get(dg);mesh=ev.to_mesh()
+            try:out.extend(ev.matrix_world@mesh.vertices[i].co for i in ids)
+            finally:ev.to_mesh_clear()
+        return out
+    base=capture(1)
+    if len(base)<150:raise RuntimeError("INSUFFICIENT_ACTUAL_FOOT_VERTICES")
+    maximum=0.0
+    for frame in [10,19,27,34,46,65]:
+        maximum=max(maximum,max((a-b).length for a,b in zip(base,capture(frame))))
+    scene.frame_set(1)
+    if maximum>.055:raise RuntimeError("FOOT_STILL_DRIVEN_BY_ATTACK_ARM:"+str(maximum))
+    return {"vertices":len(base),"max_displacement_m":maximum,"limit_m":.055}
+
 def main():
     a=V3.parse()
     source=Path(a.input)
@@ -100,7 +153,7 @@ def main():
     arm=bpy.data.objects.new("Eldoria_Spawnling_V4_Armature",rig)
     bpy.context.scene.collection.objects.link(arm)
     center,scale=V1.coordinate_bones(arm,lo,hi)
-    original_weights=V1.rig_mesh(meshes,arm,center,scale)
+    original_weights=rig_with_repaired_weights(meshes,arm,center,scale)
     bone_segments=V3.add_bone_segments(arm)
     distal_weights=V3.split_weight_groups(meshes,arm,bone_segments)
     weight_qa=V2.validate_rest_weights(meshes)
@@ -108,6 +161,7 @@ def main():
         raise RuntimeError("RIG_MISSING_BONES_OR_WEIGHTS")
     animate_v4(arm)
     displacements=V2.all_displacements(meshes,1,[10,19,27,34,46,65])
+    feet=verify_feet(meshes,center,scale)
     attack=displacements["27"]
     if not .17<=attack["max_m"]<=.35 or attack["moving_samples_gt2mm"]<300:
         raise RuntimeError("V4_STRIKE_NOT_SUITABLE_FOR_VISUAL_REVIEW:"+str(attack))
@@ -120,7 +174,8 @@ def main():
     bpy.ops.wm.save_as_mainfile(filepath=str(blend))
     poses=V1.render_proof(str(out),center,scale,[1,10,19,27,34,46,65])
     report={
-        "schema_version":4,"asset":"spawnling",
+        "schema_version":4,"asset":"spawnling","weight_revision":"V4.1_FOOT_ARM_SEPARATION",
+        "foot_motion":feet,
         "status":"V4_BLENDER_TECH_CANDIDATE_INDEPENDENT_ART_REVIEW_REQUIRED",
         "source_sha256":a.source_sha256,"source_unchanged":V1.digest(str(source))==a.source_sha256,
         "glb_sha256":V1.digest(str(glb)),"blend_sha256":V1.digest(str(blend)),

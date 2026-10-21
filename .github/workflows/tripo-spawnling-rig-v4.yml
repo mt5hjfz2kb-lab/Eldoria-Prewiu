@@ -50,8 +50,8 @@ jobs:
           d=json.load(open('pipeline/active-workstreams.json'))
           a=next(x for x in d['active'] if x['id']=='eldoria-tripo-art-brain-phase2-20261021')
           assert a['ownership_state']=='claimed'
-          assert a['owner']=='chatgpt-eldoria-spawnling-rig-integration-20261021'
-          assert a['ownership_revision']==10
+          assert a['owner']=='codex-three-workstreams-completion-20261021'
+          assert a['ownership_revision']==14
           assert a['resources']==[]
           print('EXACT_OWNER_AND_FREE_RIG_SCOPE_VERIFIED')
           PY
@@ -93,6 +93,8 @@ jobs:
           assert new['source_unchanged'] and old['source_unchanged']
           assert old['bone_count']==new['bone_count']==12
           assert new['skin_weights']['invalid']==0
+          assert new['weight_revision']=='V4.1_FOOT_ARM_SEPARATION'
+          assert new['foot_motion']['max_displacement_m']<=.055
           assert new['source_vertices']==old['source_vertices']==9863
           assert new['tripo_api_calls']==new['credits_spent']==0
           assert not new['independent_art_approved'] and not new['gameplay_integrated'] and not new['mobile_pass']
