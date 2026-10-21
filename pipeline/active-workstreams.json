@@ -680,7 +680,10 @@
         "tools/check-repository-architecture.mjs",
         "tools/check-repository-architecture.test.mjs",
         "docs/documentation-catalog.json",
-        "docs/archive/process-efficiency-20261021/**"
+        "docs/archive/process-efficiency-20261021/**",
+        "tools/check-valoria-visual-authority-routing.mjs",
+        ".github/workflows/valoria-visual-authority-routing.yml",
+        ".github/workflows/eldoria-art-visual-acceptance.yml"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
