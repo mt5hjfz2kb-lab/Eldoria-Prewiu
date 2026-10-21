@@ -463,7 +463,7 @@ namespace Eldoria.ReferenceClean.Editor
             }
             finally { RenderTexture.active = previous; RenderTexture.ReleaseTemporary(rt); }
         }
-        static Mesh AuthorWorldMesh(MeshFilter source, WorldHotspot[] spots)
+        static Mesh AuthorWorldMesh(ValoriaIntegratedWorld host, MeshFilter source, WorldHotspot[] spots)
         {
             var original = source.sharedMesh;
             var next = Object.Instantiate(original);
@@ -472,6 +472,21 @@ namespace Eldoria.ReferenceClean.Editor
             var warped = new Vector3[v.Length];
             var b = source.GetComponent<Renderer>().bounds;
             Need(b.size.x > 100 && b.size.z > 100, "Unexpected Region1 real terrain extent");
+            // Preserve contact at the feet of existing mature trees. Their
+            // meshes are NOT relocated by this visual-only landform authoring.
+            // Candidate trees are grounded separately on the candidate mesh.
+            var existingTreeBases = host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(rr => rr.enabled &&
+                    (rr.name.StartsWith("Tree01_LOD", StringComparison.OrdinalIgnoreCase) ||
+                     rr.name == "Near branches" ||
+                     rr.name.StartsWith("Forest retained", StringComparison.OrdinalIgnoreCase) ||
+                     rr.name.StartsWith("Conifer", StringComparison.OrdinalIgnoreCase)) &&
+                    rr.bounds.size.y > 3f && rr.bounds.size.y < 28f &&
+                    rr.bounds.center.x >= b.min.x && rr.bounds.center.x <= b.max.x &&
+                    rr.bounds.center.z >= b.min.z && rr.bounds.center.z <= b.max.z)
+                .Select(rr => new Vector2(rr.bounds.center.x, rr.bounds.center.z))
+                .Distinct().ToArray();
+            Need(existingTreeBases.Length > 12, "Missing retained forest anchors for 4X terrain contact protection");
             for (int i = 0; i < v.Length; i++)
             {
                 Vector3 world = source.transform.TransformPoint(v[i]);
@@ -504,7 +519,14 @@ namespace Eldoria.ReferenceClean.Editor
                 float rockDist = Mathf.Sqrt(Mathf.Pow((world.x - 1098f) / 35f, 2f) +
                                             Mathf.Pow((world.z + 83f) / 39f, 2f));
                 float rockProtect = Smooth(.8f, 1.8f, rockDist);
-                float deltaY = edgeProtect * anchor * rockProtect *
+                float nearestTrunkSqr = float.PositiveInfinity;
+                foreach (var tree in existingTreeBases)
+                {
+                    float dx = world.x - tree.x, dz = world.z - tree.y;
+                    nearestTrunkSqr = Mathf.Min(nearestTrunkSqr, dx * dx + dz * dz);
+                }
+                float trunkSafe = Smooth(2.5f, 8f, Mathf.Sqrt(nearestTrunkSqr));
+                float deltaY = edgeProtect * anchor * rockProtect * trunkSafe *
                     (quarryFoothill + northForestRise + corruptionValley + reliefGrain);
                 Vector3 altered = world + Vector3.up * deltaY;
                 warped[i] = source.transform.InverseTransformPoint(altered);
@@ -889,7 +911,7 @@ namespace Eldoria.ReferenceClean.Editor
                 CityViews(city, "before");
                 WorldViews(host, "before", true);
                 newCity = AuthorCityTerrain(city, terrain, out int cityHeightChanges);
-                worldMesh = AuthorWorldMesh(ground, Hotspots(host));
+                worldMesh = AuthorWorldMesh(host, ground, Hotspots(host));
                 forestVisual = ExpandExistingForest(host, ground, worldMesh, out int forestAdditions);
                 albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
                 var existingWorldMat = oldRenderer.sharedMaterial;
@@ -941,7 +963,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Open-meadow Unity TerrainData sculpt with synchronized trial collider and protected foundations; 4X mature forest cloned from validated source and grounded to the ACTUAL candidate macroterrain mesh; original atlas and POIs unchanged",
+                    method = "Open-meadow TerrainData sculpt with synced trial physics; Region1 retained-tree roots anchored to original ground, mature forest additions seated on the candidate visual macroterrain; original atlas/POIs intact",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
