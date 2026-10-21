@@ -49,6 +49,37 @@ jobs:
           if($art.art_approved -or $art.tripo_credits_added -ne 0 -or $art.triangles_near_body -gt 12500 -or $art.triangles_far_body -gt 3200){throw 'Art preflight failed'}
           New-Item -ItemType Directory -Force docs/evidence/spawnling-bastion2|Out-Null
           Write-Host 'SPAWNLING_B2_ZERO_CREDIT_PREFLIGHT_PASS'
+      - name: Isolate known Unity 6.3 Editor Search-index startup corruption (CI only)
+        run: |
+          $ErrorActionPreference='Stop'
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "spawnling-search-settings-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "spawnling-search-created-$env:GITHUB_RUN_ID.flag"
+          if(Test-Path $settings){
+            Copy-Item $settings $backup -Force
+            $saved=Get-Content $settings -Raw -Encoding UTF8
+            $config=$saved|ConvertFrom-Json -ErrorAction Stop
+            if($config.PSObject.Properties['roots']){
+              $config.roots=@()
+              $config|ConvertTo-Json -Depth 32|Set-Content $settings -Encoding UTF8
+            }else{throw 'Preexisting Unity Search.index has no roots property; original backed up, no replacement'}
+          }else{
+            New-Item -ItemType Directory -Force (Split-Path $settings)|Out-Null
+            $config=[ordered]@{name='Assets';type='asset';roots=@();includes=@();excludes=@('Assets/Temp/','Assets/External/','Temp/')
+              options=@{disabled=$false;types=$true;properties=$true;extended=$true;dependencies=$true};baseScore=999}
+            $config|ConvertTo-Json -Depth 16|Set-Content $settings -Encoding UTF8
+            'TEMPORARY'|Set-Content $created -Encoding ASCII
+          }
+          $current=Get-Content $settings -Raw -Encoding UTF8|ConvertFrom-Json
+          if($current.PSObject.Properties['roots'] -and @($current.roots).Count -ne 0){throw 'Search index roots not disabled'}
+          $cache=Join-Path $project 'Library/Search'
+          $cacheBackup=Join-Path $env:RUNNER_TEMP "spawnling-search-cache-$env:GITHUB_RUN_ID"
+          if(Test-Path $cache){
+            if(Test-Path $cacheBackup){throw 'Refuse to overwrite earlier original Search cache'}
+            Move-Item -LiteralPath $cache -Destination $cacheBackup -ErrorAction Stop
+          }
+          Write-Host 'SPAWNLING_CI_SEARCH_INDEX_ISOLATED original settings preserved and temporary roots empty'
       - name: Import real PBR+LOD scene without changing game rules or hotspots
         run: |
           $ErrorActionPreference='Stop'
@@ -118,6 +149,22 @@ jobs:
           if($LASTEXITCODE){throw 'Concurrent source edit conflict; do not force-push or overwrite work'}
           git push origin 'HEAD:refs/heads/art/spawnling-bastion2-finish-20261021'
           Write-Host 'SPAWNLING_B2_GREEN_NATIVE_BRANCH_COMMITTED'
+      - name: Restore original Unity Editor Search preferences and cache
+        if: always()
+        run: |
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "spawnling-search-settings-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "spawnling-search-created-$env:GITHUB_RUN_ID.flag"
+          if(Test-Path $backup){ Copy-Item $backup $settings -Force }
+          elseif(Test-Path $created){ Remove-Item $settings -Force -ErrorAction SilentlyContinue }
+          $cache=Join-Path $project 'Library/Search'
+          $cacheBackup=Join-Path $env:RUNNER_TEMP "spawnling-search-cache-$env:GITHUB_RUN_ID"
+          if(Test-Path $cacheBackup){
+            if(Test-Path $cache){ Remove-Item -LiteralPath $cache -Recurse -Force -ErrorAction Stop }
+            Move-Item -LiteralPath $cacheBackup -Destination $cache -ErrorAction Stop
+          }
+          Write-Host 'SPAWNLING_CI_EDITOR_SEARCH_PREFERENCES_RESTORED'
       - name: Preserve exact authentic Unity screenshots and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
