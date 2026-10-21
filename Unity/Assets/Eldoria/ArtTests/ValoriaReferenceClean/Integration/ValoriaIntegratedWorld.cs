@@ -86,6 +86,7 @@ namespace Eldoria.ReferenceClean {
     var management=Hud.GetComponent<RoyalGoldV3ManagementScreens>();
     if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
     management.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,()=>city.Presenter.RefreshState());
+    management.ReturnToCity=()=>{if(InWorld)TrySetWorld(false);};
    }
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
