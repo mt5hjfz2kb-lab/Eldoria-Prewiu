@@ -139,12 +139,12 @@ jobs:
           $destination='docs/evidence/valoria-reference-clean/roof-junction226'
           New-Item -ItemType Directory -Force $destination | Out-Null
           Copy-Item (Join-Path $sources[0].DirectoryName '*') $destination -Recurse -Force
-      - name: Retrieve exact native264 artist reference pixels
+      - name: Retrieve exact native265 rejected candidate and original artist pixels
         if: contains(github.event.head_commit.message, '[geography-artist]')
         uses: actions/download-artifact@v4
         with:
-          name: valoria-geography-real-unity-39658026450
-          run-id: 39658026450
+          name: valoria-geography-real-unity-39661331858
+          run-id: 39661331858
           github-token: ${{ github.token }}
           path: geography-artist-reference
       - name: Execute requested stage in native Unity
