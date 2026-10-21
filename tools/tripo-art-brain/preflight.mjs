@@ -179,7 +179,7 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
 export function makePlannerRequest(assetId, item, catalog) {
   const asset = catalog.assets[assetId];
   const profile = asset.planner_profile;
-  if (!['environment_composition', 'environment_surface'].includes(profile)) {
+  if (!['environment_composition', 'environment_surface', 'animated_asset'].includes(profile)) {
     throw new Error('UNSAFE_PLANNER_PROFILE');
   }
   return {
