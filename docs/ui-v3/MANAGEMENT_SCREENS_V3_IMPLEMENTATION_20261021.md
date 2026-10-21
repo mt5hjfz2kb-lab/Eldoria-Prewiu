@@ -23,3 +23,11 @@ Marchas: Sir Aldric, cantidad seleccionable exclusivamente entre arqueros reales
 ## Concurrencia
 
 La rama `feature/ui-v3-management-completion-20261021` aísla estos cambios mientras `valoria-master-plan-layered-construction-20261016` posea recursos y archivos comunes sobre `main`. Antes de integrar: reconciliar la revisión de `main`, confirmar la liberación o el relevo autorizado del recurso `windows-runner-heavy`, ejecutar Unity con el código final y comprobar la vista en pantalla real. Ninguna publicación automática forma parte del primer commit de esta candidata.
+
+## Native closure and canonical integration
+
+PR #90 merged as `284ef398e078021f4eeef42f852730714c0bd48b`; obsolete prototype PR #89 closed without merging. All existing art and rig candidates retained.
+
+- Native run39653618057 / artifact12370981749: downloaded original ZIP, 26/26 EditMode and 38/38 PlayMode passed with no skips. Native integrated I–II probe passed. Independently inspected actual training landscape/portrait and march portrait captures: opaque destination fully hides city, royal framing and labels readable, quantities/costs/countdown and return controls present. This is native evidence, not physical-phone or hosted-WebGL certification.
+- Reconciled source `889ebdc05401a3808f4296db1888fca155bd7bd4`: full native run39654505571 also SUCCESS, artifact12370039251. No original geography or rig source replaced.
+- Post-merge main checks running separately. Playable WebGL packaging/QA/delivery remains pending; no publication is claimed by this record.
