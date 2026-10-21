@@ -768,14 +768,14 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "V4_ARTIFACT_INDEPENDENT_REVIEW_PASS_WAITING_UNITY_GATE",
+      "phase": "V4_ISOLATED_UNITY_PROBE_PREPARED_WAITING_MAIN_REGRESSION",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Safely run an isolated genuine Unity 6000.3.23f1 animated import/clip/skin/matched rest-swipe-return QA with exact archived V4 SHA86ec1c93... ONLY when UI V3 releases windows-runner-heavy; current UI workstream owns it. New Unity C# QA write attempt blocked by platform safety controls, do not reroute around denial. Current main Engendro remains static. Do not spend Tripo or claim gameplay integration.",
+      "next": "After live Unity main gates release Windows, lease this same ID and increment pipeline/tripo-art-brain/unity-qa-request.json with [spawnling-unity-qa]. Nonexecuting tool source and new lease-gated workflow accepted on main; disposable project uses exact V4 archive and canonical URP, animation module only in disposable manifest. Review skin/clip/PBR/three native poses before production integration.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -867,10 +867,9 @@
         "credits_new": 0
       },
       "blocker": {
-        "dependency": "UI V3 active workstream owns windows-runner-heavy",
-        "runner_owner": "eldoria-ui-v3-management-completion-20261021",
-        "platform_write_denial": "GitHub connector create_file attempt for isolated Unity C# QA source blocked by OpenAI safety controls; no alternate route attempted",
-        "next_allowed_action": "Continue once ownership/runner reconciled; preserve existing V4 artifact source and QA verdict; no bypass of denied write."
+        "dependency": "Current post-merge UI/main Unity gates hold shared Windows",
+        "prior_denial_preserved": true,
+        "safer_preparation": "Standalone tool source outside Unity assets accepted; gated disposable-project workflow accepted. No canonical scene or runtime mutation."
       },
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
     },
@@ -929,9 +928,22 @@
             "OwnerFreshSaveCompletesIAndIIThroughGuidedHud",
             "RoyalV3ManagementIntegrationTests.FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave"
           ]
-        }
+        },
+        "native_certification": {
+          "run": 39653618057,
+          "editmode_passed": 26,
+          "playmode_passed": 38,
+          "artifact": 12370981749,
+          "images_independently_reviewed": true
+        },
+        "reconciled_native": {
+          "run": 39654505571,
+          "status": "SUCCESS",
+          "artifact": 12370039251
+        },
+        "main_merge": "284ef398e078021f4eeef42f852730714c0bd48b"
       },
-      "next": "Repair exact native PlayMode failures (guided Chapter II recruitment + modal navigation), revalidate full Unity, coordinate selective merge into main and final playable delivery",
+      "next": "Observe post-merge Unity gates39655724788/39655724743 without duplicates; release shared runner for geography and exact V4 isolated import, then one exact WebGL build/QA/delivery. No physical mobile certificate.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -972,7 +984,7 @@
         }
       ],
       "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
-      "phase": "UI_V3_NATIVE_FAILURE_REPAIR",
+      "phase": "MERGED_NATIVE_PASS_MAIN_REGRESSION_AND_PLAYABLE_DELIVERY",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
     },
