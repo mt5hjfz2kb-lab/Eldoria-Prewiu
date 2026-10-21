@@ -4,6 +4,7 @@ using Eldoria.Domain;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 namespace Eldoria.UI.RoyalGold.V2
 {
@@ -39,10 +40,25 @@ namespace Eldoria.UI.RoyalGold.V2
         public void Initialize(RoyalHUD hud, ICommandGateway authoritativeGateway,
             Func<long> authoritativeUtcTicks, Action refreshed)
         {
+            if(Hud != hud && Hud != null) Hud.SelectionChanged -= OnSelection;
+            if(Hud != hud && hud != null) hud.SelectionChanged += OnSelection;
             Hud = hud;
             gateway = authoritativeGateway;
             utcTicks = authoritativeUtcTicks;
             onCommand = refreshed;
+        }
+
+        void OnSelection(string id)
+        {
+            if(gateway == null || IsOpen) return;
+            var s = gateway.Snapshot();
+            if(s.BastionLevel < 2 || s.BarracksLevel < 1) return;
+            if(id == "barracks") Open(Destination.Training);
+            else if(id == "march-main") Open(Destination.March);
+        }
+        void OnDestroy()
+        {
+            if(Hud != null) Hud.SelectionChanged -= OnSelection;
         }
 
         // Invoked from the canonical IRoyalSession, not by a duplicate HUD or modal.
@@ -88,14 +104,14 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if (root != null) root.gameObject.SetActive(false);
             notice = "";
-            if (Hud != null) Hud.Refresh();
+            if (Hud != null) Hud.SelectBuilding("");
         }
 
         void Update()
         {
             if (!IsOpen || gateway == null) return;
             root.SetAsLastSibling(); // Ensure the city and every other HUD layer stay behind.
-            if (Input.GetKeyDown(KeyCode.Escape)) { Close(); return; }
+            if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) { Close(); return; }
             if (Mathf.Abs(lastWidth-root.rect.width) > .5f ||
                 Mathf.Abs(lastHeight-root.rect.height) > .5f) Reflow();
             if (Time.unscaledTime >= nextRefresh)
