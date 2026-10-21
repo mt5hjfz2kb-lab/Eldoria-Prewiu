@@ -147,6 +147,14 @@ jobs:
           run-id: 39661331858
           github-token: ${{ github.token }}
           path: geography-artist-reference
+      - name: Retrieve reviewed Spawnling skin without regeneration
+        if: contains(github.event.head_commit.message, '[spawnling-integrate]')
+        uses: actions/download-artifact@v4
+        with:
+          name: spawnling-expressive-rig-v4-zero-credit-proof
+          run-id: 39663648455
+          github-token: ${{ github.token }}
+          path: spawnling-reviewed-input
       - name: Execute requested stage in native Unity
         id: native_stage
         shell: powershell
@@ -288,6 +296,12 @@ jobs:
             $env:VALORIA_GEOGRAPHY_PLAN=(Resolve-Path docs/evidence/valoria-reference-clean/geography-v1/artist-plan.json).Path
           } else {
             Remove-Item Env:VALORIA_GEOGRAPHY_PLAN -ErrorAction SilentlyContinue
+          }
+          if($req.stage -eq 'spawnling_animated_integrate'){
+            $glbs=@(Get-ChildItem (Join-Path $env:GITHUB_WORKSPACE 'spawnling-reviewed-input') -Recurse -Filter 'spawnling-rig-expressive-swipe-v4.glb')
+            if($glbs.Count -ne 1){throw 'Exact reviewed Spawnling source missing or ambiguous'}
+            $env:ELDORIA_V4_INTEGRATION_INPUT=$glbs[0].FullName
+            $method='Eldoria.SpawnlingBastion2.Editor.SpawnlingAnimatedV4Integration.Integrate'
           }
           if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
           if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
@@ -497,7 +511,7 @@ jobs:
           $settingsPath=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity/ProjectSettings/ProjectSettings.asset'
           $settingsBefore=@{}
           foreach($name in @('ProjectSettings.asset','GraphicsSettings.asset','QualitySettings.asset')){$q=Join-Path (Split-Path $settingsPath) $name;$settingsBefore[$q]=[IO.File]::ReadAllBytes($q)}
-          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui','experience_finish','experience_validate','visual_leap','owner_city_cliffs_probe','city_bank_meadow_trial','terrain_bank_survey','terrain_bank_trial','terrain_bank_integrate','architecture_survey','architecture_trial','architecture_integrate','world_art_survey','world_art_trial','world_art_integrate','geography_survey','geography_trial','geography_integrate','final_environment_trial','final_environment_integrate')){$args+=@('-buildTarget','Win64')}
+          if($req.stage -in @('lighting','river_lighting','finalize','package','ground_trial','bank_patch','bank_integrate','contact_trial','shrub_trial','bastion_ensemble','ground_diagnose','bastion_environment','bastion_ground_finish','bastion_integrate','pine_volume','gameplay','gameplay_validate','bastion_two','bastion_two_integrate','camp_trial','camp_integrate','content_validate','sawmill_trial','city_world_ui','experience_finish','experience_validate','visual_leap','owner_city_cliffs_probe','city_bank_meadow_trial','terrain_bank_survey','terrain_bank_trial','terrain_bank_integrate','architecture_survey','architecture_trial','architecture_integrate','world_art_survey','world_art_trial','world_art_integrate','geography_survey','geography_trial','geography_integrate','spawnling_animated_integrate','final_environment_trial','final_environment_integrate')){$args+=@('-buildTarget','Win64')}
           if($req.stage -eq 'android'){$args+=@('-buildTarget','Android')}
           if($req.stage -eq 'web_playtest'){$args+=@('-buildTarget','WebGL')}
 
@@ -566,6 +580,17 @@ jobs:
             Copy-Item $gameLog docs/evidence/valoria-reference-clean/gameplay78-native.log
             Get-Content $gameLog -Tail 100
             if($gp.ExitCode -ne 0 -or -not(Select-String $gameLog -Pattern 'VALORIA_REFERENCE_CLEAN_GAMEPLAY_PROBE_COMPLETE EXISTING_UI_RULES_SAVE_I_II_PASS' -Quiet)){throw 'Gameplay I-II probe failed'}
+          }
+          if($req.stage -eq 'spawnling_animated_integrate'){
+            $skinLog=Join-Path $env:RUNNER_TEMP 'spawnling-arrival-playmode.log'
+            $skinResult=Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean/spawnling-v4-integration') 'playmode.xml'
+            $skinArgs=@('-batchmode','-force-d3d11','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.SpawnlingAnimatedV4Tests','-testResults',$skinResult,'-logFile',$skinLog)
+            $skinTests=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $skinArgs -PassThru
+            if(-not $skinTests.WaitForExit(600000)){& taskkill.exe /PID $skinTests.Id /T /F|Out-Null;throw 'Own Spawnling tests timed out'}
+            Copy-Item $skinLog docs/evidence/valoria-reference-clean/spawnling-v4-integration/playmode.log
+            if(-not(Test-Path $skinResult)){throw 'Spawnling test evidence missing'}
+            [xml]$skinXml=Get-Content $skinResult
+            if($skinTests.ExitCode -ne 0 -or $skinXml.'test-run'.result -ne 'Passed' -or [int]$skinXml.'test-run'.passed -lt 1){throw 'Actual Spawnling arrival/persistence test failed'}
           }
           if($req.validate_core_tests){
             $testLog=Join-Path $env:RUNNER_TEMP 'valoria-core-tests.log'
@@ -698,6 +723,7 @@ jobs:
           git config user.name 'Valoria reference clean builder'
           git config user.email 'valoria-clean@users.noreply.github.com'
           git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/ docs/evidence/valoria-reference-clean/
+          if(Test-Path 'Unity/Assets/Eldoria/SpawnlingBastion2/Generated'){git add -f -- Unity/Assets/Eldoria/SpawnlingBastion2/Generated/ Unity/Assets/Eldoria/SpawnlingBastion2/Generated.meta}
           git add -- Unity/Packages/packages-lock.json
           if(Test-Path 'tools/valoria-reference-clean/content-channel.json'){git add -- tools/valoria-reference-clean/content-channel.json}
           if(-not(git diff --cached --quiet)){
@@ -766,6 +792,17 @@ jobs:
           retention-days: 30
           compression-level: 1
 
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.native_stage.outputs.stage == 'spawnling_animated_integrate'
+        with:
+          name: spawnling-canonical-unity-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/spawnling-v4-integration/**
+            valoria-layered-source/docs/evidence/valoria-reference-clean/native-unity.log
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 1
+
       # Compact visual evidence for the REAL owner-facing uGUI V2. The legacy
       # review artifact carries nearly a gigabyte of old Blender/source files
       # and exceeds connector limits; retain it unchanged, add PNGs separately.
@@ -789,7 +826,7 @@ jobs:
           compression-level: 1
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate'
+        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
         with:
           name: valoria-review-small-${{ github.run_id }}
           path: |
@@ -867,7 +904,7 @@ jobs:
           if-no-files-found: warn
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate'
+        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |

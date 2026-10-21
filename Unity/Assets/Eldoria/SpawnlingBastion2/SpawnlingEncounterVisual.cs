@@ -1,3 +1,5 @@
+using System;
+using Eldoria.Domain;
 using Eldoria.ReferenceClean;
 using UnityEngine;
 
@@ -13,6 +15,9 @@ namespace Eldoria.SpawnlingBastion2
         public ValoriaIntegratedWorld Host;
         public Transform MotionPivot;
         public GameObject ModelRoot;
+        public Animation SkeletalAnimation;
+        public string SwipeClip = "";
+        bool wasAttacking;
         [Range(0f, 0.10f)] public float BreatheAmplitude = .028f;
         [Range(0f, 8f)] public float SwayDegrees = 3.5f;
 
@@ -43,9 +48,7 @@ namespace Eldoria.SpawnlingBastion2
                 var city = Host.City;
                 if (city != null && city.Gateway != null)
                 {
-                    bool shouldAppear = !city.Gateway.Snapshot().EngendroDefeated;
-                    if (ModelRoot.activeSelf != shouldAppear)
-                        ModelRoot.SetActive(shouldAppear);
+                    ApplySnapshot(city.Gateway.Snapshot(),city.Clock.UtcTicks,Host.InWorld);
                 }
             }
             if (!ModelRoot.activeSelf || !Host.InWorld) return;
@@ -57,8 +60,35 @@ namespace Eldoria.SpawnlingBastion2
                     SwayDegrees * Mathf.Sin(t * .62f), 0f);
         }
 
+        // The original gateway resolves combat directly from outbound to returning.
+        // Start the visual windup during the last 1.5 seconds of approach; never
+        // add a combat phase, delay victory, or write to the persisted state.
+        void ApplySnapshot(PlayerState state,long now,bool inWorld)
+        {
+            bool shouldAppear=!state.EngendroDefeated;
+            double remaining=(state.March.PhaseEndsUtcTicks-now)/(double)TimeSpan.TicksPerSecond;
+            bool attacking=shouldAppear&&inWorld&&state.March.TargetId=="engendro-valoria"&&
+                state.March.Phase=="outbound"&&remaining>0&&remaining<=1.5;
+            if(SkeletalAnimation&&!string.IsNullOrEmpty(SwipeClip)) {
+                if(attacking&&!wasAttacking)SkeletalAnimation.Play(SwipeClip,PlayMode.StopAll);
+                if(!shouldAppear)ResetSkinPose();
+            }
+            wasAttacking=attacking;
+            if(ModelRoot.activeSelf!=shouldAppear)ModelRoot.SetActive(shouldAppear);
+        }
+
+        void ResetSkinPose()
+        {
+            if(!SkeletalAnimation)return;
+            SkeletalAnimation.Stop();
+            var clip=SkeletalAnimation.GetClip(SwipeClip);
+            if(clip)clip.SampleAnimation(SkeletalAnimation.gameObject,0);
+        }
+
         void OnDisable()
         {
+            wasAttacking=false;
+            ResetSkinPose();
             if (!MotionPivot) return;
             MotionPivot.localPosition = restPosition;
             MotionPivot.localRotation = restRotation;
