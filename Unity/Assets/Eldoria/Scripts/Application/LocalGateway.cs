@@ -152,6 +152,14 @@ namespace Eldoria.Application
                     state.PreparedHeroId = "aldric";
                     state.PreparedTroops = state.Available.Copy();
                     state.PreparedTroops.ArcherT1 = marchArchers;
+                    // Only the expressly selected unlocked T1 unit is assigned
+                    // in the new composition editor. Legacy full-stack marches
+                    // retain their historical behavior and save compatibility.
+                    if(command.TargetId != "march-main")
+                    {
+                        state.PreparedTroops.ArcherT2 = 0;
+                        state.PreparedTroops.ArcherT3 = 0;
+                    }
                     state.MarchConfigured = true;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.MarchConfirmed = true;
