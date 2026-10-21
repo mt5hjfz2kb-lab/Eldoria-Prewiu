@@ -19,10 +19,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-eldoria-geography-continuation-20261021",
       "branch": "main",
       "status": "active",
-      "claimed_at": null,
+      "claimed_at": "2026-10-21T18:18:21.870Z",
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -55,8 +55,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "GEOGRAPHY_NATIVE262_PENDING_UI_WINDOWS_LEASE",
-      "next": "Authorized successor may reclaim this SAME canonical Valoria art ID (revision 6), never a duplicate. Tested native260/261 A/B and baseline scene hash 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237. Source fixes bc42c984/15ba6535 keep new forest trunks grounded on candidate ground and existing tree roots anchored; lightweight source gate PASS. geography_trial request rev262 remains unrun because UI V3 owns Windows. After UI releases Windows, recheck scene/main/lease, claim runner, update request revision and run exact native Unity A/B and independent Qwen review, then gameplay/Android-relevant QA before any accepted integration. Do not publish and do not claim scores.",
+      "phase": "GEOGRAPHY_NATIVE262_SOURCE_REVIEW_WHILE_UI_LEASE",
+      "next": "Preserve native261 and run native262 authentic Unity trial with locked camera/unchanged gameplay only when UI V3 owner releases Windows; then independent artistic review, integrate only if accepted; produce before-after whole Region1 and Valoria.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -687,19 +687,19 @@
           "reason": "Completed source-safe tree/landform contact corrections; native262 rendering still blocked by current protected UI V3 Windows lease. Existing main scene unchanged and no ART_APPROVED; release writer reservation to avoid stale chat locks while preserving exact workstream."
         }
       ],
-      "ownership_revision": 6,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 7,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
       "last_claimed_at": "2026-10-16",
       "current_assignment": {
         "owner": "chatgpt-eldoria-geography-continuation-20261021",
-        "base_main_sha": "ed4a9c5ff20bbbe976b195e7d372011368879296",
-        "owner_instruction": "Continuar hoy el gran salto gráfico Valoria y Región1 con autonomía, preservando UI V3, Engendro, juego y 0€",
-        "scope": "Current canonical Valoria geography source and 4X Region1 only, same existing art workstream",
-        "candidate": "native262 was guarded by UI Windows lease; recover and test once runner free",
-        "source": "Existing survey of canonical city/world scene SHA 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
-        "safety": "no Windows runner claim, no paid Tripo, no APK/itch publishing"
+        "base_main_sha": "3ef7da0bc04f8965e40790fe53a087bbe2f25931",
+        "scope": "Continue exact geography V1 city/world 4X A/B; source review and corrections independently while UI V3 holds Windows",
+        "owner_instruction": "User 2026-10-21 repeatedly requested continue unfinished Valoria + Region1 graphic quality work; zero euros, no publication or gameplay changes.",
+        "protected_resources": "windows-runner-heavy held by UI V3; do not reserve until released",
+        "existing_artifacts": "native260/261 A/B, canonical scene 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
+        "next": "Rev262 Unity scene trial only after UI lease release; audit/correct algorithm in independent existing code now"
       },
       "delivery_definition": {
         "deliverable": "Valoria and Region1 terrain/biomes visibly integrated in canonical Unity scene, preserving prior architecture/UI V3/Engendro and interactive systems",
