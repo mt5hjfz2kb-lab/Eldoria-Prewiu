@@ -18,10 +18,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-eldoria-geography-visual-production-20261021",
       "branch": "main",
       "status": "active",
-      "claimed_at": null,
+      "claimed_at": "2026-10-21T15:01:25.122Z",
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -54,8 +54,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "AVAILABLE_FOR_AUTHORIZED_ART_CONTINUATION",
-      "next": "The next owner-authorized art chat may claim this same canonical ID without permission from the previous chat: set its owner, ownership_state=claimed, write_scope_released=false and increment ownership_revision atomically before mutation. Preserve certified sources and use dynamic live runner guards; no replay of completed phases.",
+      "phase": "GEOGRAPHIC_INTEGRATION_ART_PRODUCTION",
+      "next": "Create a representative organic city-ground and continuous World4X geography intervention on current canonical scene, validate matched native Unity city/world whole-frame plus forest/quarry/breach and I–II/gameplay, accept only visually substantial change then promote; no publication",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -672,11 +672,24 @@
           "reason": "Four art phases delivered; no runner reservation; owner requests removing stale chat ownership barriers. Canonical work ID and all sources/evidence retained."
         }
       ],
-      "ownership_revision": 1,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 2,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
-      "last_claimed_at": "2026-10-16"
+      "last_claimed_at": "2026-10-16",
+      "current_assignment": {
+        "owner": "chatgpt-eldoria-geography-visual-production-20261021",
+        "base_main_sha": "36ebdaf971cefed05d4317d3d9f8006303956e33",
+        "owner_instruction": "21-10-2026: continuar autónomamente mejorando calidad gráfica global de terreno ciudad Valoria y macrogeografía Región 1; no gastar, no tocar UI V3, Engendro, progresión ni publicar",
+        "scope": "Organic Valoria prairie-path-bank contact and Region 1 continuous world macroterrain/biomes; visual A/B, Unity QA and screenshots",
+        "preserve": "Certified native241/native242 art sources and merged PR #83 UI/PR #84 Engendro",
+        "note": "Same canonical art workstream, transfer from explicitly available state; no previous phases replayed"
+      },
+      "delivery_definition": {
+        "deliverable": "Valoria and Region1 terrain/biomes visibly integrated in canonical Unity scene, preserving prior architecture/UI V3/Engendro and interactive systems",
+        "evidence": "Same-camera real Unity A/B screenshots full scene/entire world 4X area and portrait; independent visual assessment, native progression/save/march tests, editable sources and SHA",
+        "handoff": "Approved visual results, real screenshots, objective scores and exact main SHA; no new APK/itch upload"
+      }
     },
     {
       "id": "eldoria-tripo-art-brain-integration-20261021",
