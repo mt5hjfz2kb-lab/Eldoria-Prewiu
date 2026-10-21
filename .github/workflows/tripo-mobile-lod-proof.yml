@@ -82,15 +82,23 @@ jobs:
               --output-dir "$OUT/$id/lods" \
               --report "$OUT/$id/lods/blender-lods.json" \
               --ratios "$ratios" > "$OUT/$id/blender-lod-console.txt"
+            blender -b -t 4 --python-exit-code 1 --python tools/visual-lod-qa/texture_candidate.py -- \
+              --input "$OUT/$id/lods/lod2.glb" \
+              --output "$OUT/$id/lods/lod2_1k.glb" \
+              --report "$OUT/$id/lods/texture-1k.json" --max-size 1024 \
+              > "$OUT/$id/blender-texture-console.txt"
             blender -b -t 4 --python-exit-code 1 --python tools/visual-lod-qa/render.py -- \
               --source "$source" \
               --lod-dir "$OUT/$id/lods" \
               --out "$OUT/$id/renders" \
-              --size 640 > "$OUT/$id/blender-preview-console.txt"
+              --size 640 \
+              --texture-variant "$OUT/$id/lods/lod2_1k.glb" > "$OUT/$id/blender-preview-console.txt"
             python3 tools/visual-lod-qa/verify.py --asset "$id" \
               --profiles pipeline/tripo-mobile-lod-profiles.json \
               --lod-dir "$OUT/$id/lods" \
               --renders "$OUT/$id/renders" \
+              --texture-candidate "$OUT/$id/lods/lod2_1k.glb" \
+              --texture-report "$OUT/$id/lods/texture-1k.json" \
               --out "$OUT/$id/verified-lod-manifest.json"
           done < "$OUT/asset-source-list.tsv"
 
@@ -108,8 +116,11 @@ jobs:
               assert report["mobile_device_profiled"] is False
               assert report["release_eligible"] is False
               assert report["qwen_art_authoring"]=="NOT_EXECUTED"
-              assert len(report["captures"])==6
-              print(name,"LOD triangles",*[v["triangles"] for v in report["lod_candidates"]])
+              assert len(report["captures"])==8
+              assert report["texture_1k_candidate"]["max_texture_dimension_px"]==1024
+              assert report["texture_1k_candidate"]["glb_bytes_saved_percent"]>0
+              print(name,"LOD triangles",*[v["triangles"] for v in report["lod_candidates"]],
+                    "1K texture storage saved%",report["texture_1k_candidate"]["glb_bytes_saved_percent"])
           print("TWO_REAL_SOURCE_LOD_FAMILIES_TECHNICALLY_VALIDATED_NOT_ART_APPROVED")
           PY
 
