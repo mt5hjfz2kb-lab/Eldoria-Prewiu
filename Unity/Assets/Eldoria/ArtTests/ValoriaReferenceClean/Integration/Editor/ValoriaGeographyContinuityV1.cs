@@ -547,17 +547,37 @@ namespace Eldoria.ReferenceClean.Editor
             finally { if (sample) Object.DestroyImmediate(sample); }
         }
 
+        [Serializable] public class DonorDescription
+        {
+            public string name; public Vector3 center,size;
+            public int mesh_triangles,source_layer;
+        }
+        [Serializable] public class DonorInventory {public DonorDescription[] sources;}
         static GameObject ExpandExistingForest(ValoriaIntegratedWorld host, MeshFilter worldGround, out int additions)
         {
             var forest = Hotspots(host).Single(p => p.Id == "forest-valoria").transform.position;
+            // The seven 'conifer' renderers found previously are saplings:
+            // copying them 47 times produced tiny specks at 4X zoom.
+            // Select only EXISTING mature trees by their actual world bounds,
+            // excluding the nearby player city, quarry and scripted hotspots.
+            Vector3 cityPosition=Hotspots(host).Single(p=>p.Id=="valoria-map-city").transform.position;
             var original = host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(x => x.enabled && x.GetComponent<MeshFilter>() != null &&
-                    (x.name.IndexOf("Conifer", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                     x.name.IndexOf("pine", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                     x.name.IndexOf("understory", StringComparison.OrdinalIgnoreCase) >= 0))
-                .OrderBy(x => x.name).ToArray();
-            Need(original.Length >= 3 && original.Length <= 60,
-                "Existing validated forest family not found; refuse synthetic prefabs");
+                     PlanarDistance(x.bounds.center,forest)<49f &&
+                     PlanarDistance(x.bounds.center,cityPosition)>22f &&
+                     x.bounds.size.y >= 5f && x.bounds.size.y <= 32f &&
+                     x.bounds.size.x >= 2f && x.bounds.size.x <= 19f &&
+                     x.bounds.size.z >= 2f && x.bounds.size.z <= 19f)
+                .OrderByDescending(x=>x.bounds.size.y).ThenBy(x=>x.name).ToArray();
+            var inventory = original.Take(100).Select(x=> new DonorDescription{
+                name=x.name, center=x.bounds.center, size=x.bounds.size,
+                mesh_triangles=x.GetComponent<MeshFilter>().sharedMesh.triangles.Length/3,
+                source_layer=x.gameObject.layer
+            }).ToArray();
+            File.WriteAllText(Path.Combine(Evidence,"forest-source-inventory.json"),
+                JsonUtility.ToJson(new DonorInventory{sources=inventory},true));
+            Need(original.Length >= 4 && original.Length <= 150,
+                "Measured mature source trees not found; reject rather than copying miniature understory: "+original.Length);
             var root = new GameObject("Forest ecological continuity / approved source meshes only");
             root.transform.SetParent(host.WorldRoot.transform, false);
             var terrainVerts = worldGround.sharedMesh.vertices
@@ -616,6 +636,7 @@ namespace Eldoria.ReferenceClean.Editor
                 if(placed.Any(v=>PlanarDistance(v,target)<7.7f))continue;
                 float canopy = Mathf.PerlinNoise(target.x*.085f+21,target.z*.085f+67);
                 if(canopy<.25f)continue; // irregular clearings, not solid wall
+                if(additions>=25)continue;
                 var donor=original[(l*3+j)%original.Length];
                 considered++;
                 var meshFilter=donor.GetComponent<MeshFilter>();
@@ -623,6 +644,7 @@ namespace Eldoria.ReferenceClean.Editor
                 float baseToCenter=donor.bounds.center.y-donor.bounds.min.y;
                 target.y=GroundHeight(target.x,target.z)+baseToCenter+.045f;
                 var obj=new GameObject("Existing conifer canopy / forest ecological lobe "+l+" tree "+j);
+                obj.layer=donor.gameObject.layer;
                 obj.transform.SetParent(root.transform,true);
                 // Preserve the original mesh's pivot, even if source vertices
                 // are stored in world coordinates relative to its donor.
@@ -639,6 +661,8 @@ namespace Eldoria.ReferenceClean.Editor
                 rr.reflectionProbeUsage=donor.reflectionProbeUsage;
                 rr.renderingLayerMask=donor.renderingLayerMask;
                 Vector3 actualCenter=rr.bounds.center;
+                Need((host.WorldCamera.cullingMask & (1<<obj.layer)) != 0,
+                     "Mature canopy not included in real strategic camera culling mask");
                 Need(PlanarDistance(actualCenter,target)<3.5f &&
                      Mathf.Abs(rr.bounds.min.y-GroundHeight(target.x,target.z))<2.5f,
                      "Cloned conifer must actually render grounded inside surveyed forest");
@@ -646,7 +670,7 @@ namespace Eldoria.ReferenceClean.Editor
                 // owner is cloned: only compatible visual source geometry.
                 placed.Add(actualCenter);additions++;
             }
-            Need(additions>=18&&additions<=62,"Forest extension did not create meaningful continuous masses: "+additions+" trees from "+considered+" measured sites");
+            Need(additions>=15&&additions<=25,"Forest extension did not create bounded mature canopy masses: "+additions+" trees from "+considered+" measured sites");
             return root;
         }
         static string[] ImageNames(string prefix)
