@@ -1,0 +1,28 @@
+{
+  "approved": true,
+  "source_sha256": "eef82ab48b8e512a39b3f87b5b282f5bc493ec119a7e21c2149a2437c1448128",
+  "reviewer": "codex-three-workstreams-completion-20261021 / independent actual pixel inspection",
+  "scope": "Bounded isolated Unity V4.2 skin animation and retained material appearance only; canonical camera/gameplay QA remains required",
+  "unity_run": 39665538385,
+  "artifact_id": 12377033828,
+  "archive_sha256": "cf57a5848e018882f68f81e864d2d3276eaf1d4705a01769076eec33f8b8e2db",
+  "images": {
+    "rest": "5b51de6895b8ce803bb868aeadefcfd8660f280daa571b005b6063920dc517cd",
+    "swipe": "2ced85a9294326a0a282963762b4dbe7214cbcfcc4e43d3325bd01f2a1aa26c9",
+    "return": "5b51de6895b8ce803bb868aeadefcfd8660f280daa571b005b6063920dc517cd"
+  },
+  "bones": 12,
+  "vertices": 9863,
+  "retained_maps": 3,
+  "duration_seconds": 2.7083332538604736,
+  "attack_delta_m": 0.3368789553642273,
+  "return_delta_m": 0,
+  "physical_mobile_qa": false,
+  "canonical_integrated": false,
+  "new_paid_credits": 0,
+  "rejected_predecessors": [
+    "Original V4: foot vertices share up to0.7596685 arm influence and visibly stretch during attack.",
+    "V4.1: feet repaired but overbroad weight transfer creases upper arm; superseded."
+  ],
+  "accepted_repair": "V4.2 exact GLB weights:1230 foot vertices have zero arm weight;7626 upper/forward vertices keep original arm weights. Genuine GPU rest/swipe distinct, return PNG byte-identical to rest. Blender full foot max displacement0.013674m."
+}
