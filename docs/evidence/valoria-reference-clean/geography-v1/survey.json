@@ -1,0 +1,124 @@
+{
+    "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
+    "tool_sha256": "b7b084d865d79ac370a30cd2822b180c1e74ec21cedd4f9812091e4e29fae2ae",
+    "region_ground_name": "ZoneOne continuous prairie source",
+    "terrain_origin": {
+        "x": -100.0,
+        "y": -5.0,
+        "z": -100.0
+    },
+    "terrain_size": {
+        "x": 200.0,
+        "y": 18.0,
+        "z": 220.0
+    },
+    "world_ground_min": {
+        "x": 880.0,
+        "y": -2.7970035076141359,
+        "z": -120.0
+    },
+    "world_ground_max": {
+        "x": 1120.0,
+        "y": 4.600191116333008,
+        "z": 120.0
+    },
+    "city_height_resolution": 257,
+    "city_splat_resolution": 256,
+    "city_layers": 7,
+    "world_vertices": 14641,
+    "world_triangles": 28800,
+    "world_uvs": 14641,
+    "world_renderers": 475,
+    "world_materials": [
+        "material-11"
+    ],
+    "poi": [
+        {
+            "id": "corrupt-scout",
+            "position": {
+                "x": 933.0,
+                "y": 16.29309844970703,
+                "z": -22.999980926513673
+            },
+            "bounds": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "id": "engendro-valoria",
+            "position": {
+                "x": 926.0000610351563,
+                "y": 7.314421653747559,
+                "z": -27.00003433227539
+            },
+            "bounds": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "id": "forest-valoria",
+            "position": {
+                "x": 1065.0,
+                "y": -1.0832440853118897,
+                "z": 41.9999885559082
+            },
+            "bounds": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "id": "old-watch-ruin",
+            "position": {
+                "x": 997.0,
+                "y": 8.047276496887207,
+                "z": -33.999996185302737
+            },
+            "bounds": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "id": "quarry-valoria",
+            "position": {
+                "x": 1064.4998779296875,
+                "y": 3.306429386138916,
+                "z": -32.8910026550293
+            },
+            "bounds": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        {
+            "id": "valoria-map-city",
+            "position": {
+                "x": 1018.0,
+                "y": 6.24946928024292,
+                "z": 30.000001907348634
+            },
+            "bounds": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        }
+    ],
+    "world_home_zoom": 60.0,
+    "world_tilt": 55.0,
+    "world_camera_distance": 140.0,
+    "preexisting_city_terrain_collider": true,
+    "world_ground_mesh_collider": false,
+    "same_scene_bytes": true,
+    "camera_pose_restored": true,
+    "art_approved": false,
+    "physical_mobile_tested": false
+}
