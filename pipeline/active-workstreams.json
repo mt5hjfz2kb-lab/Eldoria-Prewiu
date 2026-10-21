@@ -48,9 +48,7 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -645,7 +643,9 @@
         "delegated_by": "Current owner instructs UI work takeover and completion; UI native 39605046441 SUCCESS",
         "reserved_for": "Same existing Valoria native build and Chromium QA, no authoring or scene mutation",
         "release_condition": "Release after exact final UI build/QA; preserve canonical art owner and sources",
-        "ui_executor": "codex-ui-v3-completion-takeover-20261021"
+        "ui_executor": "codex-ui-v3-completion-takeover-20261021",
+        "status": "native244_browser_defect_identified_returned_to_UI_native_fix",
+        "evidence": "UI-only navigation ownership repair a1e0fb7; exact native244 failed strict legacy shadow-navigation check, never published."
       },
       "delegated_ui_navigation_fix": {
         "owner": "codex-ui-v3-completion-takeover-20261021",
@@ -692,11 +692,13 @@
         "scripts/check_unity_slice.py",
         "Unity/Assets/Eldoria/Scripts/Presentation/SlicePresenter.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "REPAIR_WEBGL_DOUBLE_NAVIGATION",
-      "next": "Native244 exact QA completes I-II and byte-identical save/reload but correctly rejects 3 legacy navigation fallbacks triggered by final bottom-right Continue touches. Repair external UI navigation ownership in SlicePresenter, preserve legacy default behavior, native regressions then new exact WebGL native245.",
+      "phase": "NAVIGATION_FIX_NATIVE_REGRESSION",
+      "next": "Native certificate of a1e0fb7 UI navigation fix including closing-dialogue ownership regression; then native245 WebGL rebuild and unchanged strict Chromium test. Native244 remains rejected and unpublished.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
       "handoff": {
         "owner_instruction": "Asume tú los trabajos y organízalos",
