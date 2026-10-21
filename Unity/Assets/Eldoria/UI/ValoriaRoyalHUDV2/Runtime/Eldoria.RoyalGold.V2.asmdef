@@ -5,6 +5,8 @@
     "Eldoria.RoyalGold.Core",
     "Eldoria.RoyalGold.UI",
     "Unity.ugui",
-    "Unity.InputSystem"
+    "Unity.InputSystem",
+    "Eldoria.Domain",
+    "Eldoria.Application"
   ]
 }
