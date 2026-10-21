@@ -235,6 +235,8 @@ jobs:
             'integration-world-portrait.png',
             'integration-bastion-upgrade.png',
             'integration-training-portrait.png',
+            'integration-march-landscape.png',
+            'integration-march-portrait.png',
             'integration-chapter2-complete.png',
             'integration-result.json'
           )){
@@ -303,7 +305,7 @@ jobs:
           # Independent destinations have no visible city viewport by design;
           # verify actual native screenshots instead of pretending camera space
           # is visible behind their opaque artwork.
-          foreach($capture in @('integration-training.png','integration-training-portrait.png')){
+          foreach($capture in @('integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
             $path=Join-Path $e $capture
             if(-not(Test-Path $path)){throw "Missing genuine full-screen management capture: $capture"}
             if((Get-Item $path).Length -lt 4096){throw "Management capture too small: $capture"}
