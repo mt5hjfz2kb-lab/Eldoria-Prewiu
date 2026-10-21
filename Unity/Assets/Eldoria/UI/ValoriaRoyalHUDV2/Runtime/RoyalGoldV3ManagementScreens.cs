@@ -23,6 +23,7 @@ namespace Eldoria.UI.RoyalGold.V2
         Func<long> utcTicks;
         Action onCommand;
         RectTransform root, header, left, right, footer, quantityRow;
+        RoyalGoldV3ManagementBackdropGraphic destinationArtwork;
         RoyalText heading, subheading, unitTitle, unitDetail, selectedText, summary, status, feedback;
         RoyalButton minus, plus, action, back, switchDestination;
         RoyalText actionLabel, switchLabel;
@@ -88,6 +89,8 @@ namespace Eldoria.UI.RoyalGold.V2
             if (s.BastionLevel < 2 || s.BarracksLevel < 1) return;
             EnsureView();
             CurrentDestination = destination;
+            destinationArtwork.MarchTheme = destination == Destination.March;
+            destinationArtwork.SetVerticesDirty();
             submitAfter = 0f;
             selectedCount = destination == Destination.Training
                 ? Mathf.Min(SliceRules.RecruitArchers, Math.Max(1, SliceRules.MaxAffordableArchers(s)))
@@ -143,6 +146,14 @@ namespace Eldoria.UI.RoyalGold.V2
             var backdrop=artwork.gameObject.AddComponent<RoyalGoldV3ManagementBackdrop>();
             backdrop.color=Color.white;
             backdrop.raycastTarget=false;
+            var themeArt=Rect("V3 / Training bow and marching compass",root);
+            themeArt.anchorMin=Vector2.zero;
+            themeArt.anchorMax=Vector2.one;
+            themeArt.offsetMin=themeArt.offsetMax=Vector2.zero;
+            themeArt.gameObject.AddComponent<CanvasRenderer>();
+            destinationArtwork=themeArt.gameObject.AddComponent<RoyalGoldV3ManagementBackdropGraphic>();
+            destinationArtwork.color=Color.white;
+            destinationArtwork.raycastTarget=false;
             header = Frame("V3 / Destination header",root,false);
             left = Frame("V3 / Featured military unit",root,false);
             right = Frame("V3 / Authoritative status and cost",root,false);
