@@ -270,7 +270,7 @@ namespace Eldoria.ReferenceClean.Editor
                         float dz = Mathf.Max(Mathf.Abs(z - b.center.z) - b.extents.z, 0);
                         contact = Mathf.Max(contact, 1f - Smooth(.2f, 2.3f + warp, Mathf.Sqrt(dx * dx + dz * dz)));
                     }
-                    float paint = Mathf.Clamp01(.17f * shoulder + .11f * bank + .07f * contact);
+                    float paint = Mathf.Clamp01(.33f * shoulder + .20f * bank + .12f * contact);
                     // No erosion that changes navigation, terrain height or hidden parcel geometry.
                     float available = alphas[iz, ix, 0] + alphas[iz, ix, 1];
                     float transferred = available * paint;
@@ -281,11 +281,17 @@ namespace Eldoria.ReferenceClean.Editor
                         alphas[iz, ix, 1] -= transferred * (1f - r);
                         alphas[iz, ix, 2] += transferred;
                     }
-                    float detail = Noise(x + 73, z - 121) - .5f;
-                    float swap = Mathf.Min(alphas[iz, ix, 0], alphas[iz, ix, 1]);
-                    float local = detail * .34f * swap;
-                    alphas[iz, ix, 0] = Mathf.Clamp01(alphas[iz, ix, 0] + local);
-                    alphas[iz, ix, 1] = Mathf.Clamp01(alphas[iz, ix, 1] - local);
+                    // Broad interwoven grass families rather than tiny random spots.
+                    // Preserve the original combined grass weight and all other layers.
+                    float green = alphas[iz, ix, 0] + alphas[iz, ix, 1];
+                    if (green > .0001f)
+                    {
+                        float mix = alphas[iz, ix, 1] / green;
+                        float detail = Noise(x + 73, z - 121) - .5f;
+                        mix = Mathf.Clamp01(mix + detail * .22f);
+                        alphas[iz, ix, 0] = green * (1f - mix);
+                        alphas[iz, ix, 1] = green * mix;
+                    }
                 }
             data.SetAlphamaps(0, 0, alphas);
             return data;
@@ -366,10 +372,12 @@ namespace Eldoria.ReferenceClean.Editor
                 float anchor = Smooth(10f, 28f, nearest);
                 // Wide shallow ridges extend the existing eastern quarry geology
                 // into surrounding open grass. Existing POIs and roads remain in place.
-                float geology = 1.25f * Mathf.Exp(-Mathf.Pow((world.x - 1097f) / 36f, 2f) -
-                                                 Mathf.Pow((world.z + 52f) / 43f, 2f));
-                float rolling = (Noise(world.x, world.z) - .5f) * 2.15f;
-                float deltaY = anchor * (rolling + geology);
+                float geology = 3.45f * Mathf.Exp(-Mathf.Pow((world.x - 1097f) / 49f, 2f) -
+                                                  Mathf.Pow((world.z + 52f) / 55f, 2f));
+                float valley = -1.25f * Mathf.Exp(-Mathf.Pow((world.x - 985f) / 38f, 2f) -
+                                                  Mathf.Pow((world.z + 69f) / 65f, 2f));
+                float rolling = (Noise(world.x, world.z) - .5f) * 6.35f;
+                float deltaY = anchor * (rolling + geology + valley);
                 Vector3 altered = world + Vector3.up * deltaY;
                 warped[i] = source.transform.InverseTransformPoint(altered);
             }
@@ -615,7 +623,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Identical city/world camera pose and projection, exact retained UV atlas/roads/corruption, inverse UV-world biomes and bounded soil contacts",
+                    method = "Broader low 4X macrorelief on original 121x121 terrain and real quarry foothills; original UV/roads/POIs intact; city broad grass mixes and bounded soil contacts; no new gameplay colliders",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
