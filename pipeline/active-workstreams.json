@@ -666,27 +666,6 @@
       "phase": "EXISTING_DRAFT_PR_NATIVE_VALIDATION_PENDING",
       "next": "Existing UI executor continues PR #83 from its live HEAD and reconciles current main before promotion; retain native/visual/gameplay acceptance gates.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch."
-    },
-    {
-      "id": "eldoria-workflow-continuity-20261021",
-      "title": "Recoverable native results and concise live work status",
-      "owner": "chatgpt-workflow-continuity-20261021",
-      "branch": "main",
-      "status": "active",
-      "claimed_at": "2026-10-21",
-      "scope": [
-        "tools/workflow-recovery/**",
-        "tools/work-status/**",
-        ".github/workflows/eldoria-work-status.yml",
-        ".github/workflows/eldoria-spawnling-native.yml",
-        ".github/workflows/repository-architecture-guard.yml",
-        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
-        "docs/WORKFLOW_INDEX.md"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Owner-authorized infrastructure improvement: preserve exact generated results without switching or cleaning worktrees, and derive a read-only concise status from existing canonical sources. No Unity execution, model changes, release or credits.",
-      "dependency": "Canonical Valoria and UI owners retain their live workflow/source scopes; only unclaimed completed Spawnling workflow receives an additive recovery integration."
     }
   ],
   "history": [
@@ -6101,6 +6080,40 @@
         "Bastion III not added",
         "original combat/loot/saves untouched"
       ]
+    },
+    {
+      "id": "eldoria-workflow-continuity-20261021",
+      "title": "Recoverable native results and concise live work status",
+      "owner": "chatgpt-workflow-continuity-20261021",
+      "branch": "main",
+      "status": "completed",
+      "claimed_at": "2026-10-21",
+      "scope": [
+        "tools/workflow-recovery/**",
+        "tools/work-status/**",
+        ".github/workflows/eldoria-work-status.yml",
+        ".github/workflows/eldoria-spawnling-native.yml",
+        ".github/workflows/repository-architecture-guard.yml",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
+        "docs/WORKFLOW_INDEX.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Owner-authorized infrastructure improvement: preserve exact generated results without switching or cleaning worktrees, and derive a read-only concise status from existing canonical sources. No Unity execution, model changes, release or credits.",
+      "dependency": "Canonical Valoria and UI owners retain their live workflow/source scopes; only unclaimed completed Spawnling workflow receives an additive recovery integration.",
+      "completed_at": "2026-10-21",
+      "result_commit": "ea330c91ef1a27237ffda2bd69f551e4440c7ffe",
+      "evidence": {
+        "architecture_and_ten_regression_tests_run": 39590920719,
+        "workflow_governance_run": 39590920617,
+        "workflow_quarantine_run": 39590920870,
+        "live_read_only_report_run": 39590920681,
+        "status_artifact_id": 12341277235,
+        "status_json_bytes": 5877,
+        "observed_windows_job": 119190999219,
+        "recovery_validation": "Real temporary Git repositories: binary/new/deleted outputs, unchanged original index/worktree, concurrent docs preserved, protected source/output changes rejected, rejected remote push then successful recovery, invalid QA/hashes/ownership/symlinks rejected. No Unity job needed or dispatched."
+      },
+      "limits": "Checkpoint integration applies to unclaimed Spawnling native workflow only; active Valoria/UI producer files not modified. Report is derived/read-only, no second registry. No claim of new game/release/device QA or recovery of artifacts that predate these checkpoints."
     }
   ],
   "owner_specific_pauses": [
