@@ -89,6 +89,13 @@ namespace Eldoria.Tests
                 Call(management,"Initialize",hud,fake,new Func<long>(()=>clock.UtcTicks),new Action(()=>{}));
                 var destination=management.GetType().GetNestedType("Destination");
                 Assert.That(destination,Is.Not.Null);
+                // A fresh integrated boot may still be displaying Aldric's
+                // real opening narrative. This test isolates management UI and
+                // does not advance or alter the player's saved story.
+                var guidance=Member(host,"Guidance") as Behaviour;
+                if(guidance)guidance.enabled=false;
+                var modal=Member(hud,"Modal") as Component;
+                if(modal && modal.gameObject.activeInHierarchy)Call(modal,"Hide");
                 // Exercise the actual RoyalHUD → Cuartel navigation event,
                 // not a direct artificial call into the screen component.
                 Call(hud,"SelectBuilding","barracks");
