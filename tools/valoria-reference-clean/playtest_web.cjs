@@ -651,7 +651,11 @@ async function main() {
         await capture(`completed-${activeOperation.kind}`, activeOperation.completion_framing_check || null); activeOperation = null;
       }
       if (activeOperation || latest.busy || phase(latest) !== 'idle') {
-        if (activeOperation) need(elapsed() - activeOperation.started_elapsed_s < 90, `Operation stalled: ${activeOperation.kind}`);
+        if (activeOperation) {
+          const operationLimit = Math.max(90, (activeOperation.expected_seconds || 0) + 60);
+          need(elapsed() - activeOperation.started_elapsed_s < operationLimit,
+            `Operation stalled: ${activeOperation.kind} after ${operationLimit}s`);
+        }
         const key = `${report.marches.length}-${phase(latest)}-${latest.busy}-${latest.selected}`;
         if (!capturedPhases.has(key)) { capturedPhases.add(key); await capture(`operation-${target(latest) || latest.selected}-${phase(latest)}${latest.busy ? '-working' : ''}`); }
         await sleep(100); continue;
