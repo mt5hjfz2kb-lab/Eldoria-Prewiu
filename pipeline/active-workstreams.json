@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T21:07:27.984Z",
+  "updated_at": "2026-10-21T21:22:08.725Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -57,8 +57,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NATIVE275_GEOGRAPHY_INTEGRATED_V42_INTEGRATION",
-      "next": "Geography integrated and exact geometry verified in successful39675227542; now canonicalV42 then combinedWebGL.",
+      "phase": "NATIVE281_COMBINED_WEBGL_BUILD",
+      "next": "Accepted geography275 and actual V4.2 canonical280 with same height/base. Build combinedWebGL then exact browser QA and restricted delivery.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -778,14 +778,14 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "NATIVE277_VISUAL_SCALE_REJECTED_278_CORRECTION",
+      "phase": "CANONICAL_NATIVE280_VISUAL_AND_RUNTIME_PASS",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "277 technicalPASS but image review shows smaller actor. Restore exact geography275 scene, retain generated assets/evidence, fit actual sampled vertices; rerun canonical integration.",
+      "next": "Combined281 WebGL and original-flow browserQA pending.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
