@@ -15,5 +15,7 @@
   "budget_eur": 0,
   "allow_force_push": false,
   "expected_original_hitbox": "engendro-valoria",
-  "method": "Remote new checkout receives local object and cherry-picks without modifying the preserved source worktree; refuses conflicts."
+  "method": "Recover vetted local Git commit 1682d87 using authenticated GitHub Desktop Git across Windows steps; stash unrelated tracked editor changes safely, rebase and fast-forward only, never rerun Unity or incur Tripo credits",
+  "recovery_revision": 2,
+  "duplicate_recovery_disabled": true
 }
