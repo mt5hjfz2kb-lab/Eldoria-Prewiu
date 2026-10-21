@@ -700,8 +700,8 @@
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-eldoria-rig-verified-delivery-20261021",
-      "ownership_revision": 8,
+      "owner": "chatgpt-eldoria-rig-v3-continuation-20261021",
+      "ownership_revision": 9,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -726,14 +726,14 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "RIG_V2_INDEPENDENT_VISUAL_REVIEW_AND_HANDOFF",
+      "phase": "RIG_V3_SOURCE_LOCKED_PRODUCTION_CANDIDATE",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
-        "deliverable": "Reproducible improved idle/attack rig candidate with independent anatomy and animation QA; no Unity scene mutation, no Tripo credit spend.",
-        "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
-        "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
+        "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
+        "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
+        "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Source-locked v3 elbow/knee-weighted Blender rig, compare v2/v3 real pose PNG, enforce no spend and no game changes; accept only if genuinely better, then schedule isolated Unity import when runner is free.",
+      "next": "Generate source-locked v3 rig with forearm and shin bones, smooth localized weights and genuine attack animation, isolate Blender QA pose screenshots and glTF skin/clip checks, compare V2/V3; preserve existing game and cost 0.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
