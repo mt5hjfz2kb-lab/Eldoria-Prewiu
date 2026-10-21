@@ -12,20 +12,20 @@
   "source_triangles": 49800,
   "head_axis_convention": "corrected to +X after real captured art review",
   "note": "Geometry changes do not imply artistic approval.",
-  "tail_vertices_moved": 548,
+  "tail_vertices_moved": 1354,
   "anatomical_axis": "head +X; tail -X; Blender real four-view diagnosis",
   "surface_grounded_eyes": 2,
   "source_sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
-  "near_sha256": "c603149bee3dbf425f5c94d255f7f219cef9774dc08e5dcb9fba03dadba144a6",
-  "far_sha256": "53fa54bb399a60134f5a22a22679ff8db9bb4c69aea8e3dbb0c7fce2218b04cd",
-  "blend_sha256": "7c82e30e57a9300f47c6c0c4b9d39d729573dcacd973852ffef458a8e402830e",
+  "near_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+  "far_sha256": "dd698116c7cb517d9fdf95154f6b8c275235d7f6e241cab1a04b2302b67fecbd",
+  "blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
   "triangles_near_body": 12000,
   "triangles_far_body": 2900,
   "face_parts": 2,
   "texture_grade": "PBR albedo darker violet; actual source retained",
   "materials": [
     {
-      "material": "tripo_material_351d1034-25ec-4300-a2e0-d03a0e68175a",
+      "material": "tripo_material_351d1034-25ec-4300-a2e0-d03a0e68175a.001",
       "images": [
         {
           "role": "retained_albedo_regraded",
