@@ -19,6 +19,9 @@ namespace Eldoria.UI.RoyalGold.V2
         private Graphic originalFrame;
         private RoyalText role;
         private Vector2 savedAnchorMin, savedAnchorMax, savedPivot;
+        private Vector2 savedPosition, savedSize;
+        private Color savedTitleColor, savedBodyColor, savedExtraLabelColor;
+        private int savedTitleSize, savedBodySize, savedExtraLabelSize;
         private bool captured;
         private static readonly Color Sepia = new Color(.19f, .15f, .11f, 1f);
         private static readonly Color Brown = new Color(.38f, .25f, .13f, 1f);
@@ -49,8 +52,27 @@ namespace Eldoria.UI.RoyalGold.V2
                 frame.anchorMin = savedAnchorMin;
                 frame.anchorMax = savedAnchorMax;
                 frame.pivot = savedPivot;
-                // The canonical presenter owns the original anchored position,
-                // content and game callback when the narrative ends.
+                frame.anchoredPosition = savedPosition;
+                frame.sizeDelta = savedSize;
+            }
+            if (Source && Source.Modal)
+            {
+                var modal = Source.Modal;
+                if (modal.Title)
+                {
+                    modal.Title.color = savedTitleColor;
+                    modal.Title.fontSize = savedTitleSize;
+                }
+                if (modal.Body)
+                {
+                    modal.Body.color = savedBodyColor;
+                    modal.Body.fontSize = savedBodySize;
+                }
+                if (modal.ExtraLabel)
+                {
+                    modal.ExtraLabel.color = savedExtraLabelColor;
+                    modal.ExtraLabel.fontSize = savedExtraLabelSize;
+                }
             }
             captured = false;
         }
@@ -107,6 +129,17 @@ namespace Eldoria.UI.RoyalGold.V2
                 savedAnchorMin = frame.anchorMin;
                 savedAnchorMax = frame.anchorMax;
                 savedPivot = frame.pivot;
+                savedPosition = frame.anchoredPosition;
+                savedSize = frame.sizeDelta;
+                savedTitleColor = modal.Title.color;
+                savedBodyColor = modal.Body.color;
+                savedTitleSize = modal.Title.fontSize;
+                savedBodySize = modal.Body.fontSize;
+                if (modal.ExtraLabel)
+                {
+                    savedExtraLabelColor = modal.ExtraLabel.color;
+                    savedExtraLabelSize = modal.ExtraLabel.fontSize;
+                }
                 captured = true;
             }
             if (originalFrame) originalFrame.enabled = false;
