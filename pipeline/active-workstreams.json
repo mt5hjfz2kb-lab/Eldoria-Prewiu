@@ -19,10 +19,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-eldoria-geography-source-validation-20261021",
       "branch": "main",
       "status": "active",
-      "claimed_at": null,
+      "claimed_at": "2026-10-21T18:27:50.616Z",
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -55,7 +55,7 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "GEOGRAPHY_NATIVE262_PENDING_UI_WINDOWS_LEASE",
+      "phase": "GEOGRAPHY_NATIVE262_SOURCE_QA_UI_WINDOWS_DEPENDENCY",
       "next": "Current art candidate 262 is SOURCE-ONLY, NOT UNITY/ART_APPROVED. Reclaim this SAME canonical ID after UI V3 releases windows-runner-heavy, verify current scene SHA against survey 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237, increment tools/valoria-reference-clean/request.json geography_trial revision from 262 with [valoria-native], review true city I-II/mobile and whole Region1 A/B (new meadow sculpt, candidate forest ground and existing tree roots), get independent art review; integrate only if accepted and full gameplay/save/URP/device constraints pass. Current extra evidence: docs/evidence/valoria-reference-clean/geography-v1/NATIVE261_OBJECTIVE_AB_AUDIT_20261021.md, native261 run39641901228/artifact12365323917. No new APK/itch publication.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
@@ -696,16 +696,22 @@
           "handoff": "On explicit UI release, reclaim same ID and reserve Windows after current live checks; run request geography_trial rev262 incrementing revision in request; review 15 real A/B images and live gameplay before integration."
         }
       ],
-      "ownership_revision": 8,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 9,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
       "last_claimed_at": "2026-10-16",
-      "current_assignment": null,
+      "current_assignment": {
+        "owner": "chatgpt-eldoria-geography-source-validation-20261021",
+        "base_main_sha": "ec5e763be5ff074ae844a8c83b0e69883e064a6c",
+        "owner_instruction": "21-10-2026: continuar encargo artístico Valoria/Región 1 tras interrupción de chat",
+        "scope": "Read existing candidate262 and improve source-only reversible protections/tests pending authorized Windows Unity runner release; do not modify UI V3, Spawnling, gameplay or publishing",
+        "preserve": "Unity source scene, source UV/colliders, 6 POIs, UI V3 native QA, no paid services"
+      },
       "delivery_definition": {
-        "deliverable": "Valoria and Region1 terrain/biomes visibly integrated in canonical Unity scene, preserving prior architecture/UI V3/Engendro and interactive systems",
-        "evidence": "Same-camera real Unity A/B screenshots full scene/entire world 4X area and portrait; independent visual assessment, native progression/save/march tests, editable sources and SHA",
-        "handoff": "Approved visual results, real screenshots, objective scores and exact main SHA; no new APK/itch upload"
+        "deliverable": "Geographic candidate62 source safety independently reviewed; native A/B and artistic approval only when live UI Windows lease releases",
+        "evidence": "Static source evidence and CI for candidate plus 15 same-source real Unity matched A/B once runner free; independent visual acceptance and progression checks",
+        "handoff": "Exact source SHA, trial revision, tests and untouched canonical art; no APK/itch publication"
       },
       "active_runner_claim": {
         "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
