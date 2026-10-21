@@ -66,7 +66,8 @@
         "No reemplazar la versión integrada antes de un A/B y QA independientes"
       ],
       "verified_failures": [
-        "pipeline/tripo-art-brain/verified-failures/spawnling-qwen2b-global-move-20261021.json"
+        "pipeline/tripo-art-brain/verified-failures/spawnling-qwen2b-global-move-20261021.json",
+        "pipeline/tripo-art-brain/verified-failures/spawnling-qwen2b-zero-delta-20261021.json"
       ]
     },
     "boar": {
