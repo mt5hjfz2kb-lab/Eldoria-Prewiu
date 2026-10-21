@@ -1,0 +1,72 @@
+name: Eldoria art knowledge real zero-credit A/B
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    paths:
+      - 'tools/art-knowledge/**'
+      - '.github/workflows/eldoria-art-knowledge-controlled-ab.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-ab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 42
+    env:
+      BENCH_OUT: /tmp/eldoria-memory-real-qwen-ab
+    steps:
+      - name: Isolated read-only art benchmark checkout
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/art-knowledge/
+            /pipeline/art-knowledge/catalog-v1.json
+            /pipeline/art-knowledge/reviewed-lessons-v1.json
+            /pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json
+            /ArtSource/World4X/Spawnling_v1/Finished/finished_face.png
+            /docs/evidence/spawnling-bastion2/after-local-900x1600.png
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validate memory safety and Qwen adapter
+        run: node --test tools/art-knowledge/*.test.mjs
+      - name: Install local image reader
+        run: python3 -m pip install --disable-pip-version-check --no-input Pillow
+      - name: Start free local Ollama and Qwen3-VL-2B
+        timeout-minutes: 12
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm -d --name eldoria-art-memory-ab-ollama -p 127.0.0.1:11434:11434 ollama/ollama:latest
+          for n in $(seq 1 75); do
+            if curl -fsS http://127.0.0.1:11434/api/version > /tmp/eldoria-ollama-version.json; then break; fi
+            sleep 2
+          done
+          test -s /tmp/eldoria-ollama-version.json
+          docker exec eldoria-art-memory-ab-ollama ollama pull qwen3-vl:2b-instruct
+      - name: Two genuine visual Qwen inferences, memory/no-memory, fixed inputs
+        timeout-minutes: 22
+        run: python3 tools/art-knowledge/benchmark-qwen.py
+      - name: Confirm no fabricated success or game mutation
+        run: |
+          python3 - <<'PY'
+          import json, os
+          r=json.load(open(os.environ['BENCH_OUT']+'/report.json',encoding='utf8'))
+          assert r['art_approved'] is False and r['game_mutated'] is False
+          assert r['quality_impact']=='UNDETERMINED_NO_BLENDER_OR_UNITY_AB'
+          assert len(r['arms'])==2 and all(v['status']=='INFERRED' for v in r['arms'].values()), 'Both real Qwen arms must finish; no mock results accepted'
+          assert r['arms']['qwen_without_memory']['prompt_sha256']!=r['arms']['qwen_with_memory']['prompt_sha256']
+          print('ELDORIA_QWEN_TRUE_TWO_ARM_DIAGNOSTIC_PASS')
+          PY
+      - name: Preserve exact reports, source hashes, images and failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-art-knowledge-real-ab-${{ github.run_id }}
+          path: /tmp/eldoria-memory-real-qwen-ab/
+          retention-days: 14
+          if-no-files-found: warn

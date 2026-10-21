@@ -45,6 +45,9 @@ jobs:
             /pipeline/art-production-request.json
             /pipeline/art-production-requests/
             /pipeline/art-knowledge/catalog-v1.json
+            /pipeline/art-knowledge/reviewed-lessons-v1.json
+            /pipeline/art-knowledge/legacy-workflow-names-v1.json
+            /.github/workflows/
             /pipeline/visual-fallback-policy.json
             /pipeline/toolchain-capabilities.json
             /pipeline/blender-professional-authoring-standard.json
@@ -59,6 +62,8 @@ jobs:
         run: node tools/check-art-production-governance.mjs
       - name: Verify safe historical memory selection
         run: node --test tools/art-knowledge/*.test.mjs
+      - name: Forbid new Qwen workflow bypasses
+        run: node tools/art-knowledge/enforce-future-workflows.mjs
       - name: Build deterministic plans
         shell: bash
         run: |
