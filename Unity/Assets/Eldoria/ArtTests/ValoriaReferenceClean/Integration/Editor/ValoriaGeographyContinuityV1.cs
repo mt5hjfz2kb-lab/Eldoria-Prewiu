@@ -64,6 +64,31 @@ namespace Eldoria.ReferenceClean.Editor
         {
             ValoriaReferenceCleanBuilder.Capture(c, Path.Combine(Evidence, name), width, height);
         }
+
+        static readonly Dictionary<string,string> CityComparisonStamps = new Dictionary<string,string>();
+        static void VerifyCityCameraStamp(Camera c, string prefix, string kind, int width, int height)
+        {
+            // Calibration uses an independent temporary Unity camera.
+            c.aspect = width / (float)height;
+            c.ResetProjectionMatrix();
+            string stamp = c.transform.position.ToString("R") + "|" +
+                c.transform.rotation.ToString("R") + "|" +
+                c.orthographicSize.ToString("R") + "|" +
+                c.projectionMatrix.ToString("F7") + "|" +
+                c.worldToCameraMatrix.ToString("F7");
+            File.WriteAllText(Path.Combine(Evidence,
+                prefix + "-" + kind + "-camera.json"),
+                "{\"kind\":\"" + kind + "\",\"width\":" + width +
+                ",\"height\":" + height + ",\"stamp\":\"" +
+                stamp.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n") + "\"}");
+            if (prefix == "before") CityComparisonStamps[kind] = stamp;
+            else if (prefix == "after")
+            {
+                Need(CityComparisonStamps.ContainsKey(kind) &&
+                    CityComparisonStamps[kind] == stamp,
+                    "CITY_AB_CAMERA_MATRIX_MISMATCH " + kind);
+            }
+        }
         internal static void CityViews(ValoriaReferenceCleanGameplay city, string prefix)
         {
             // Only the review copy renders. The actual gameplay camera is never
@@ -93,9 +118,11 @@ namespace Eldoria.ReferenceClean.Editor
                     string suffix = stage == 0 ? "I" : "II";
                     cam.transform.SetPositionAndRotation(originalPos, originalRot);
                     cam.orthographicSize = originalZoom;
+                    VerifyCityCameraStamp(cam, prefix, "city-" + suffix + "-wide", 1600, 900);
                     CameraShot(cam, prefix + "-city-" + suffix + "-wide.png", 1600, 900);
                     cam.transform.SetPositionAndRotation(originalPos, originalRot);
                     cam.orthographicSize = originalZoom;
+                    VerifyCityCameraStamp(cam, prefix, "city-" + suffix + "-mobile", 900, 1600);
                     CameraShot(cam, prefix + "-city-" + suffix + "-mobile.png", 900, 1600);
                 }
                 Need(actual.transform.position == originalPos &&
@@ -372,12 +399,24 @@ namespace Eldoria.ReferenceClean.Editor
                 float anchor = Smooth(10f, 28f, nearest);
                 // Wide shallow ridges extend the existing eastern quarry geology
                 // into surrounding open grass. Existing POIs and roads remain in place.
-                float geology = 3.45f * Mathf.Exp(-Mathf.Pow((world.x - 1097f) / 49f, 2f) -
-                                                  Mathf.Pow((world.z + 52f) / 55f, 2f));
-                float valley = -1.25f * Mathf.Exp(-Mathf.Pow((world.x - 985f) / 38f, 2f) -
-                                                  Mathf.Pow((world.z + 69f) / 65f, 2f));
-                float rolling = (Noise(world.x, world.z) - .5f) * 6.35f;
-                float deltaY = anchor * (rolling + geology + valley);
+                // Author three low, connected macroforms around existing
+                // geographic landmarks, rather than noise over the entire map.
+                float quarryFoothill = 3.7f * Mathf.Exp(
+                    -Mathf.Pow((world.x - 1092f) / 54f, 2f) -
+                    Mathf.Pow((world.z + 73f) / 67f, 2f));
+                float northForestRise = 1.65f * Mathf.Exp(
+                    -Mathf.Pow((world.x - 1051f) / 76f, 2f) -
+                    Mathf.Pow((world.z - 78f) / 58f, 2f));
+                float corruptionValley = -1.55f * Mathf.Exp(
+                    -Mathf.Pow((world.x - 933f) / 45f, 2f) -
+                    Mathf.Pow((world.z + 26f) / 65f, 2f));
+                float reliefGrain = (Noise(world.x, world.z) - .5f) * .6f;
+                float edgeDist = Mathf.Min(
+                    Mathf.Min(world.x - b.min.x, b.max.x - world.x),
+                    Mathf.Min(world.z - b.min.z, b.max.z - world.z));
+                float edgeProtect = Smooth(1.5f, 16f, edgeDist);
+                float deltaY = edgeProtect * anchor *
+                    (quarryFoothill + northForestRise + corruptionValley + reliefGrain);
                 Vector3 altered = world + Vector3.up * deltaY;
                 warped[i] = source.transform.InverseTransformPoint(altered);
             }
@@ -623,7 +662,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Broader low 4X macrorelief on original 121x121 terrain and real quarry foothills; original UV/roads/POIs intact; city broad grass mixes and bounded soil contacts; no new gameplay colliders",
+                    method = "Site-specific quarry foothill, forest plateau and corrupted shallow valley with smooth untouched map perimeter; canonical UV/road and six POIs/colliders retained; no procedural blanket noise",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
