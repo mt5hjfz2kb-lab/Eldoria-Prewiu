@@ -1,0 +1,260 @@
+{
+  "brief": {
+    "target": {
+      "mode": "MODIFY",
+      "name": "existing city TerrainData and Region1 original mesh"
+    },
+    "actual_survey": {
+      "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
+      "tool_sha256": "b7b084d865d79ac370a30cd2822b180c1e74ec21cedd4f9812091e4e29fae2ae",
+      "region_ground_name": "ZoneOne continuous prairie source",
+      "terrain_origin": {
+        "x": -100.0,
+        "y": -5.0,
+        "z": -100.0
+      },
+      "terrain_size": {
+        "x": 200.0,
+        "y": 18.0,
+        "z": 220.0
+      },
+      "world_ground_min": {
+        "x": 880.0,
+        "y": -2.7970035076141357,
+        "z": -120.0
+      },
+      "world_ground_max": {
+        "x": 1120.0,
+        "y": 4.600191116333008,
+        "z": 120.0
+      },
+      "city_height_resolution": 257,
+      "city_splat_resolution": 256,
+      "city_layers": 7,
+      "world_vertices": 14641,
+      "world_triangles": 28800,
+      "world_uvs": 14641,
+      "world_renderers": 475,
+      "world_materials": [
+        "material-11"
+      ],
+      "poi": [
+        {
+          "id": "corrupt-scout",
+          "position": {
+            "x": 933.0,
+            "y": 16.29309844970703,
+            "z": -22.999980926513672
+          },
+          "bounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "id": "engendro-valoria",
+          "position": {
+            "x": 926.0000610351562,
+            "y": 7.314421653747559,
+            "z": -27.00003433227539
+          },
+          "bounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "id": "forest-valoria",
+          "position": {
+            "x": 1065.0,
+            "y": -1.0832440853118896,
+            "z": 41.9999885559082
+          },
+          "bounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "id": "old-watch-ruin",
+          "position": {
+            "x": 997.0,
+            "y": 8.047276496887207,
+            "z": -33.999996185302734
+          },
+          "bounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "id": "quarry-valoria",
+          "position": {
+            "x": 1064.4998779296875,
+            "y": 3.306429386138916,
+            "z": -32.8910026550293
+          },
+          "bounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        },
+        {
+          "id": "valoria-map-city",
+          "position": {
+            "x": 1018.0,
+            "y": 6.24946928024292,
+            "z": 30.000001907348633
+          },
+          "bounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          }
+        }
+      ],
+      "world_home_zoom": 60.0,
+      "world_tilt": 55.0,
+      "world_camera_distance": 140.0,
+      "preexisting_city_terrain_collider": true,
+      "world_ground_mesh_collider": false,
+      "same_scene_bytes": true,
+      "camera_pose_restored": true,
+      "art_approved": false,
+      "physical_mobile_tested": false
+    },
+    "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
+    "native_source_run": 39658026450,
+    "review": "Native264 changed38548 city samples but no convincing visible city relief; world still a flat lawn board. Forest additions alone did not solve composition. Change the terrain spatial composition, not lighting, camera, buildings, fog, rectangular plots or painted spots.",
+    "brief": "Images are actual unchanged cityII and ENTIRE region. Choose 2-4 connected broad sculpted meadow forms for city and 2-4 stronger regional hills for world. This is a typed Unity terrain tool of the SAME artist: X/Z horizontal,Y up. Each sculpt_region adds height*exp(-((x-centerX)/radius_x)^2-((z-centerZ)/radius_z)^2). Choose exact centres/radii/heights from the images and measured coordinates, NOT random noise. City screenshot sees castle near(0,30), main road alongX0, river nearZ-23, sawmill west and barracks east. Put visible shoulders on either side of retained architecture. World empty north/west/south regions need a coherent regional silhouette and connected geology; forest(1065,42),city(1018,30),quarry(1064,-33),corrupt enemy(933,-23). Avoid lifting under POIs or existing quarry rocks. Preserve exact UV/roads, gameplay anchors and original mesh topology. Fixed implementation keeps road/river/foundations/border safe; decorative city foliage and rocks may follow the new terrain vertically, with gameplay colliders left unchanged. World retains all prop contact with broad keepouts. No new geometry/assets/buildings, no budget cost, no self-approval. These parameters drive real native vertices, then matched Unity images decide acceptance.",
+    "strict_bounds": "CITY x[-80,80],z[-75,100],radius_x[15,40],radius_z[18,55],height[1.5,4]. WORLD x[895,1105],z[-105,105],radius_x[22,65],radius_z[25,75],height[5,16]. Exactly2-4 actions per target. Height is metres positive. 4-8 actions total. Meaningful short rationale each. Do not output source-space Blender coordinates."
+  },
+  "schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "observed_defect",
+      "design_intent",
+      "asset_decision",
+      "reason_for_new_geometry",
+      "planned_actions",
+      "expected_visual_difference",
+      "mobile_risks"
+    ],
+    "properties": {
+      "observed_defect": {
+        "type": "string"
+      },
+      "design_intent": {
+        "type": "string"
+      },
+      "asset_decision": {
+        "type": "string",
+        "enum": [
+          "MODIFY"
+        ]
+      },
+      "reason_for_new_geometry": {
+        "type": "string"
+      },
+      "planned_actions": {
+        "type": "array",
+        "minItems": 4,
+        "maxItems": 8,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "type",
+            "target",
+            "rationale",
+            "parameters"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "sculpt_region"
+              ]
+            },
+            "target": {
+              "type": "string",
+              "enum": [
+                "city",
+                "world"
+              ]
+            },
+            "rationale": {
+              "type": "string"
+            },
+            "parameters": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "x",
+                "z",
+                "radius_x",
+                "radius_z",
+                "height"
+              ],
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "minimum": -80,
+                  "maximum": 1105
+                },
+                "z": {
+                  "type": "number",
+                  "minimum": -105,
+                  "maximum": 105
+                },
+                "radius_x": {
+                  "type": "number",
+                  "minimum": 15,
+                  "maximum": 65
+                },
+                "radius_z": {
+                  "type": "number",
+                  "minimum": 18,
+                  "maximum": 75
+                },
+                "height": {
+                  "type": "number",
+                  "minimum": 1.5,
+                  "maximum": 16
+                }
+              }
+            }
+          }
+        }
+      },
+      "expected_visual_difference": {
+        "type": "string"
+      },
+      "mobile_risks": {
+        "type": "string"
+      }
+    }
+  },
+  "system_sha256": "33656f575e2dd3eca73472b48555257f9f5e3450c8e73ca9e3d1397aecbf7346",
+  "images": [
+    {
+      "name": "before-city-II-wide.png",
+      "sha256": "b0452915eb773be9060d899fb1c5fbe37a2280e46b0b0fc0a017d0facdb64e54"
+    },
+    {
+      "name": "before-world-REGION1-ENTIRE-2048x1152.png",
+      "sha256": "58255a0c06e92d5441c37849b4713f94a4bdd10f1ac1059b5cb4773b10bbd827"
+    }
+  ],
+  "model": "qwen3-vl:8b-instruct-q4_K_M"
+}
