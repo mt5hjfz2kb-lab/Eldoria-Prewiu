@@ -103,7 +103,7 @@ jobs:
           # Read current main, never a stale PR merge snapshot's old reservation.
           $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-contextual-20261021' -and $_.status -eq 'active'})
+          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
           # An active UI owner may validate its own reservation. With no
           # reservations, preserve the existing ordinary progression CI path.
           # Never couple future tests to one temporary executor's identity.
