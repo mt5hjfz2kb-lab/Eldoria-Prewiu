@@ -280,7 +280,7 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
     'Already integrated: ' + item.integrated_in_game + ' | rig/animation: ' + item.has_skin + '/' + item.has_animation,
     'VERIFIED REAL REJECTED QWEN ART CYCLES — never repeat: ' + sourceFailureLessons,
     'Known visual issues (verify from REAL photos): ' + item.defects.join(' | '),
-    'Suggested next actions (Qwen must independently decide): ' + item.next_actions.slice(0,2).join(' | '),
+    'Suggested next action (Qwen must independently decide): ' + item.next_actions.slice(0,1).join(' | '),
     'Preserve gameplay: ' + (item.protected || []).slice(0,2).join('; '),
     'External Tripo API is NOT authorized. No regenerate/rig/retarget/upload. Use existing source on copy.',
     'Real images, source mesh and independent Unity A/B required before art approval.',
