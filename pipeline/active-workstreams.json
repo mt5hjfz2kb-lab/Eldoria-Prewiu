@@ -657,6 +657,11 @@
         ],
         "scope": "Only suppress archived WebGL coordinate navigation while the canonical RoyalHUD explicitly owns navigation; no art, scene, economy or save changes",
         "evidence": "Native244 browser run39607571030 detects three actual legacy fallback calls after Continue; all I-II/save checks passed"
+      },
+      "coordination_fix_delegation": {
+        "owner": "codex-coordination-handoff-repair-20261021",
+        "authorization": "Owner: Resuélvelo porque se está convirtiendo en un freno",
+        "scope": "Only live ownership/runner gate and stale responsibility release after completion evidence; preserve scene/art/runtime and every source/evidence."
       }
     },
     {
@@ -685,6 +690,33 @@
         "handoff": "Código y documentación de uso en main; pasos de animación/pago segregados y bloqueados hasta autorización."
       },
       "next": "Implementar preflight y memoria consumible por el cerebro artístico, añadir tests y workflow ligero, ejecutar pruebas; la fase de rigging de pago queda bloqueada."
+    },
+    {
+      "id": "eldoria-coordination-handoff-repair-20261021",
+      "title": "Remove stale chat ownership barriers while preserving live writer and runner exclusion",
+      "owner": "codex-coordination-handoff-repair-20261021",
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-21T14:46:58.162Z",
+      "scope": [
+        "AGENTS.md",
+        "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md",
+        ".github/workflows/valoria-reference-clean.yml",
+        ".github/workflows/valoria-windows-chromium-qa.yml",
+        "tools/workstream-lease/**",
+        ".github/workflows/repository-architecture-guard.yml",
+        "tools/work-status/report.mjs",
+        "tools/work-status/report.test.mjs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Owner explicitly requests resolving stale ownership and chat-name barriers. Coordination guards/docs/tests only; no artwork, gameplay, saves, heavy PC jobs or publication.",
+      "delivery_definition": {
+        "deliverable": "Transferable work ownership and dynamic runner guards without stale chat-name locks",
+        "evidence": "Positive/negative lease and workflow binding tests; architecture and governance checks",
+        "handoff": "Existing artistic work can be claimed safely from available state; old evidence preserved"
+      }
     }
   ],
   "history": [
