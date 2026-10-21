@@ -279,10 +279,10 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
     'Already integrated: ' + item.integrated_in_game + ' | rig/animation: ' + item.has_skin + '/' + item.has_animation,
     'VERIFIED REAL REJECTED QWEN ART CYCLES — never repeat: ' + sourceFailureLessons,
     'Known visual issues (verify from REAL photos): ' + item.defects.join(' | '),
-    'Suggested next actions (requires Qwen decision): ' + item.next_actions.join(' | '),
-    'Preserve gameplay: ' + (item.protected || []).join('; '),
+    'Suggested next actions (Qwen must independently decide): ' + item.next_actions.slice(0,2).join(' | '),
+    'Preserve gameplay: ' + (item.protected || []).slice(0,2).join('; '),
     'External Tripo API is NOT authorized. No regenerate/rig/retarget/upload. Use existing source on copy.',
-    'Require real images, inspected source mesh and independent Unity A/B before any art approval.',
+    'Real images, source mesh and independent Unity A/B required before art approval.',
     'Art approval=false; mobile profiling=false.'
   ].join('\n') + '\n';
   if (context.length > 3200) throw new Error('QWEN_CPU_INVENTORY_EXCEEDS_BOUND: ' + context.length);
