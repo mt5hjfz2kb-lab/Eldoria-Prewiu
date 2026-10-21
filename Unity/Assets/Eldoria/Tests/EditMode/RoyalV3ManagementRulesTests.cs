@@ -136,7 +136,12 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().SchemaVersion,Is.EqualTo(1));
             Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(56));
             Assert.That(g.Snapshot().CompletedTaskIds,Does.Contain("recruit:legacy"));
-            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(9000));
+            // OWNER_I_II awards its Chapter-II training mission once when the
+            // old in-flight 20-archer task completes; this is NOT a second debit.
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(9220));
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(56));
+            Assert.That(g.Snapshot().Resources.Wood,Is.EqualTo(9220));
         }
     }
 }
