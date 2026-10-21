@@ -209,6 +209,7 @@ def main():
     face_parts=eyes+[jaw]
     # Save editable artistic source with original + two actual LODs.
     for obj in [near,far]+face_parts: obj.hide_set(False)
+    bpy.ops.file.pack_all()
     bpy.ops.wm.save_as_mainfile(filepath=str(out/"Spawnling_B2_Finished.blend"))
     export_named(out/"Spawnling_B2_Near.glb",[near]+face_parts)
     export_named(out/"Spawnling_B2_Far.glb",[far])
@@ -216,6 +217,10 @@ def main():
     sc=bpy.context.scene
     sc.render.engine="CYCLES"
     sc.cycles.samples=8
+    sc.cycles.use_denoising=False
+    for layer in sc.view_layers:
+        if hasattr(layer, "cycles"):
+            layer.cycles.use_denoising=False
     sc.render.resolution_x=960;sc.render.resolution_y=720;sc.render.resolution_percentage=100
     sc.render.image_settings.file_format="PNG"
     sc.render.film_transparent=False
