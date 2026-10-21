@@ -76,6 +76,12 @@ def set_world_and_camera(center, diag, size):
     # Cycles CPU is stable on headless GitHub Ubuntu; no GPU/display needed.
     scene.render.engine = "CYCLES"
     scene.cycles.samples = 12
+    # Ubuntu's free Blender 4.0.2 build does not include OpenImageDenoiser.
+    # Explicitly disable render denoising; do not install paid/GPU dependencies.
+    if hasattr(scene.cycles, "use_denoising"):
+        scene.cycles.use_denoising = False
+    if hasattr(bpy.context.view_layer.cycles, "use_denoising"):
+        bpy.context.view_layer.cycles.use_denoising = False
     scene.render.threads_mode = "FIXED"
     scene.render.threads = 4
     scene.render.resolution_x = size
