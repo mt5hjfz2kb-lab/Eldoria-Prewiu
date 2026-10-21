@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -115,15 +116,48 @@ namespace Eldoria.Tests
             Assert.That(Member(candidate, "State"), Is.EqualTo(sourceState));
             Call(hud, "SelectBuilding", "sawmill");
             yield return null;
+            yield return null; // allow the canonical camera focus coroutine to finish
+            Canvas.ForceUpdateCanvases();
+            Call(v3, "SynchronizeNow");
             Assert.That(Member(hud, "SelectedBuildingId"), Is.EqualTo("sawmill"));
+            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(true),
+                "Selected building must have a visible contextual offer");
+            Assert.That(Member(v2, "BuildingActionVisible"), Is.EqualTo(true),
+                "Existing browser telemetry must discover the genuine V3 action");
+            Assert.That(Member(v2, "VisibleBuildingButton"),
+                Is.SameAs(Member(v3, "VisibleActionButton")));
+            Assert.That(Member(v3, "CloseVisible"), Is.EqualTo(true),
+                "The mobile player must be able to close selection without Escape");
+            var actualClose = Member(v2, "VisibleBuildingCloseButton") as Button;
+            Assert.That(actualClose, Is.Not.Null);
+            Assert.That(actualClose, Is.SameAs(Member(v3, "VisibleCloseButton")));
+            var closeCorners = new Vector3[4];
+            ((RectTransform)actualClose.transform).GetWorldCorners(closeCorners);
+            var closePoint = RectTransformUtility.WorldToScreenPoint(null,
+                (closeCorners[0] + closeCorners[2]) * .5f);
+            var pointer = new PointerEventData(EventSystem.current)
+            {
+                button = PointerEventData.InputButton.Left,
+                position = closePoint
+            };
+            var hits = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(pointer, hits);
+            Assert.That(hits.Count, Is.GreaterThan(0));
+            Assert.That(ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject),
+                Is.SameAs(actualClose.gameObject), "V3 close must be the topmost touch target");
             var offer = Member(candidate, "Action");
             var actualOffer = Member(read.DynamicInvoke("sawmill"), "Action");
             Assert.That(actualOffer == null ? null : Member(actualOffer, "Kind"),
                 Is.EqualTo(offer == null ? null : Member(offer, "Kind")),
                 "V3 must use the actual gateway action and not an invented one");
-            Call(hud, "SelectBuilding", "");
+            // Exercise the original single-HUD selection API through the
+            // new actual visible Close button, not an invented dismiss command.
+            actualClose.onClick.Invoke();
             yield return null;
+            Assert.That(Member(hud, "SelectedBuildingId"), Is.EqualTo(""));
             Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false));
+            Assert.That(Member(v3, "CloseVisible"), Is.EqualTo(false));
         }
     }
 }
