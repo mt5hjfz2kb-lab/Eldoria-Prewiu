@@ -9,7 +9,8 @@
     "reason": "Owner retires independent experimental production; current integrated main is the sole development baseline.",
     "allowed_work": "Continue city/world/UI/gameplay on main under existing owner; historical branches read-only by project policy.",
     "authorized_workstream_ids": [
-      "valoria-master-plan-layered-construction-20261016"
+      "valoria-master-plan-layered-construction-20261016",
+      "eldoria-tripo-art-brain-phase2-20261021"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
@@ -695,6 +696,36 @@
         "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
         "owner_authorized": "2026-10-21"
       }
+    },
+    {
+      "id": "eldoria-tripo-art-brain-phase2-20261021",
+      "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
+      "owner": "chatgpt-eldoria-tripo-brain-phase2-20261021",
+      "ownership_revision": 1,
+      "ownership_state": "claimed",
+      "status": "active",
+      "branch": "main",
+      "claimed_at": "2026-10-21",
+      "base_main_sha": "aff74900f2cc38996b49be85da3b39ccf9d33d5a",
+      "scope": [
+        "tools/tripo-art-brain/**",
+        ".github/workflows/tripo-art-brain-preflight.yml",
+        "pipeline/tripo-art-brain/**",
+        "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
+        "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md"
+      ],
+      "resources": [],
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
+      "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
+      "phase": "PHASE2_FREE_INSPECTION_AND_ARTIST_CONTEXT",
+      "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA.",
+      "delivery_definition": {
+        "deliverable": "Rig check zero-credit execution or documented access blocker, plus authenticated detailed asset profile and testable input binding to existing Qwen artist; retain game untouched.",
+        "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
+        "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
+      },
+      "next": "Verify API free check security/availability then test only previously generated Engendro. Validate artist context with actual input path. No new paid tasks."
     }
   ],
   "history": [
