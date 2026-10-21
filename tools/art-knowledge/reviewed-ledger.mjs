@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const HEX=/^[0-9a-f]{64}$/;
 function read(file){const b=fs.readFileSync(file);if(!b.length||b.length>25_000_000)throw Error('ART_REVIEW_INVALID_SOURCE_BYTES');return b;}
@@ -57,7 +58,7 @@ export function ingestReviewed({journal,stagedEvent,feedback,review,beforeBytes,
  });
  return validateJournal(next);
 }
-if(process.argv[1]&&path.resolve(process.argv[1])===new URL(import.meta.url).pathname){
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{
   const [input,staged,feedback,review,before,after,out]=process.argv.slice(2);
   if(!out)throw Error('Usage: node reviewed-ledger.mjs ORIGINAL_JOURNAL.json STAGED.json FEEDBACK.json REVIEW.json before.png after.png OUT.json');
