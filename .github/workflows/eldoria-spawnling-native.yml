@@ -4,6 +4,8 @@ on:
     branches: ['art/spawnling-bastion2-finish-20261021']
     paths:
       - '.github/workflows/eldoria-spawnling-native.yml'
+      - 'Unity/Assets/Eldoria/SpawnlingBastion2/Editor/SpawnlingBastion2Integration.cs'
+      - 'ArtSource/World4X/Spawnling_v1/Finished/author-evidence.json'
 permissions:
   contents: write
   actions: read
