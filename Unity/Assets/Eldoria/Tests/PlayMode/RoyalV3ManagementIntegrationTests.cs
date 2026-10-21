@@ -89,7 +89,9 @@ namespace Eldoria.Tests
                 Call(management,"Initialize",hud,fake,new Func<long>(()=>clock.UtcTicks),new Action(()=>{}));
                 var destination=management.GetType().GetNestedType("Destination");
                 Assert.That(destination,Is.Not.Null);
-                Call(management,"Open",Enum.Parse(destination,"Training"));
+                // Exercise the actual RoyalHUD → Cuartel navigation event,
+                // not a direct artificial call into the screen component.
+                Call(hud,"SelectBuilding","barracks");
                 yield return null;
                 Canvas.ForceUpdateCanvases();
                 Assert.That(Member(management,"IsOpen"),Is.True);
@@ -129,8 +131,11 @@ namespace Eldoria.Tests
                 fake.Advance();
                 yield return null;
                 Assert.That(fake.Snapshot().Available.ArcherT1,Is.EqualTo(56));
-                Call(management,"Open",Enum.Parse(destination,"March"));
+                var switchAction=GameObject.Find("Switch destination")?.GetComponent<Button>();
+                Assert.That(switchAction,Is.Not.Null,"V3 must navigate between destinations");
+                switchAction.onClick.Invoke();
                 yield return null;
+                Assert.That(Member(management,"CurrentDestination").ToString(),Is.EqualTo("March"));
                 var slider=GameObject.Find("Quantity slider")?.GetComponent<Slider>();
                 Assert.That(slider,Is.Not.Null);
                 slider.value=7;
