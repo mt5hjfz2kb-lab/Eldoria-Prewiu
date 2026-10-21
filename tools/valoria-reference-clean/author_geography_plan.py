@@ -1,7 +1,7 @@
 """Bounded terrain decisions by the existing local artist from pinned native265 pixels.
 No API credits, generated code, production scene writes, or self-approval.
 """
-import argparse, base64, hashlib, json, math, os, pathlib, subprocess, time, urllib.request
+import argparse, base64, hashlib, json, math, os, pathlib, subprocess, time, urllib.request, urllib.error
 
 def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def write(p, value): p.write_text(json.dumps(value, indent=2), encoding="utf8")
@@ -9,7 +9,11 @@ def api(path, data=None, timeout=5):
     req=urllib.request.Request("http://127.0.0.1:11434"+path,
         data=None if data is None else json.dumps(data).encode(),
         headers={"Content-Type":"application/json"})
-    with urllib.request.urlopen(req, timeout=timeout) as response: return json.load(response)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as response: return json.load(response)
+    except urllib.error.HTTPError as error:
+        detail=error.read().decode("utf8",errors="replace")[:4000]
+        raise RuntimeError("Local artist HTTP "+str(error.code)+": "+detail) from error
 def record(fields):
     return {"type":"object","additionalProperties":False,"required":list(fields),"properties":fields}
 def number(lo,hi): return {"type":"number","minimum":lo,"maximum":hi}
@@ -59,6 +63,8 @@ def main():
               "dd6b118d8b53d9dd5f0bcd63d7993e356ba342fb4c393351edae39585b905e4b",
               "efaee2525fbffe9d01783bbc4aea4593e72701557ed7a783767f6c1fde66b035"]
     assert [sha(p) for p in images]==expected,"Real source screenshots differ"
+    # Preserve all four exact provenance checks, but send two images as in the proven native265 call.
+    images=[images[0],images[2]]
     system=pathlib.Path("tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md")
     survey=json.loads((ev/"survey.json").read_text(encoding="utf-8-sig"))
     parameters=record({"x":number(-80,1105),"z":number(-105,105),"radius_x":number(15,65),
@@ -74,14 +80,14 @@ def main():
         "target":{"mode":"MODIFY","name":"existing city TerrainData and Region1 original mesh"},
         "actual_survey":survey,"source_scene_sha256":identity["source_scene_sha256"],
         "native_source_run":39661331858,
-        "review":"Images1-2 are unchanged source. Images3-4 show REJECTED native265 candidate: broad hill centered on city/quarry creates deep unnatural ring-shaped craters where fixed targets are protected. Do not repeat central hill x1000,z0 or quarry-centered hill. City foliage also needs complete LOD-root seating, now corrected in implementation.",
+        "review":"Image1 is unchanged city source. Image2 shows REJECTED native265 world candidate: broad hill centered on city/quarry creates deep unnatural ring-shaped craters where fixed targets are protected. Do not repeat central hill x1000,z0 or quarry-centered hill. City foliage also needs complete LOD-root seating, now corrected in implementation.",
         "brief":"Author a new spatial composition using COMPACT finite-footprint landforms instead of infinite Gaussian tails. Each action adds height*max(0,1-r2)^3 where r2=((x-centerX)/radius_x)^2+((z-centerZ)/radius_z)^2. Outside ellipse ZERO height change. Select hills in EMPTY regions so fixed city, quarry, ruin, enemy and forest stay on natural open valleys, NEVER at the bottom of ring-shaped bowls. Candidate areas: northwest x925..965 z65..100, north x995..1035 z85..105, southwest x910..950 z-100..-75, south x990..1020 z-105..-85; choose coherent 3-4 regional forms and exact radii/heights from real images. Existing POIs forest(1065,42),city(1018,30),quarry(1064.5,-32.9),enemy(933,-23),(926,-27),ruin(997,-34). Validator requires total UNMASKED added height at every POI <=0.6m; do not rely on protected holes to fix overlapping hills. Use 2-4 city shoulders visibly outside castle footprint: west/east meadows near X+-50,Z35..70; castle(0,30),roadX0,riverZ-23. Preserve roads, UV, architecture, camera, gameplay anchors, topology and saves. Complete decorative city LOD roots follow terrain once without changing LOD size. No new buildings, plots, assets or spending. Typed parameters execute real native vertices; actual captures determine acceptance.",
         "strict_bounds":"CITY x[-80,80],z[-75,100],radius_x[15,40],radius_z[18,55],height[1.5,4]. WORLD x[895,1105],z[-105,105],radius_x[22,65],radius_z[25,75],height[5,16]. Exactly2-4 actions per target. Height is metres positive. 4-8 actions total. Meaningful short rationale each. Do not output source-space Blender coordinates."
     }
     messages=[{"role":"system","content":system.read_text(encoding="utf8")},
               {"role":"user","content":json.dumps(brief),"images":[base64.b64encode(p.read_bytes()).decode() for p in images]}]
     payload={"model":"qwen3-vl:8b-instruct-q4_K_M","stream":False,"format":schema,"messages":messages,
-             "keep_alive":0,"options":{"temperature":.15,"num_ctx":8192,"num_predict":2400}}
+             "keep_alive":0,"options":{"temperature":.15,"num_ctx":12288,"num_predict":2400}}
     write(out/"artist-request.json",{"brief":brief,"schema":schema,"system_sha256":sha(system),
         "images":[{"name":p.name,"sha256":sha(p)} for p in images],"model":payload["model"]})
     server=None;log=None
