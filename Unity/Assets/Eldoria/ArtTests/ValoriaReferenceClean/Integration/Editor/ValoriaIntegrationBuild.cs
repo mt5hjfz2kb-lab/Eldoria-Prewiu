@@ -211,7 +211,17 @@ namespace Eldoria.ReferenceClean.Editor {
    Check(()=>{Need(!h.CanOpen(RoyalSection.Heroes)&&!h.CanOpen(RoyalSection.Army),"Premature menus visible");Need(!string.IsNullOrWhiteSpace(h.Guidance.Story),"Original narrative missing");Need(Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(r=>r.name.StartsWith("Plot_")).All(r=>!r.enabled),"Plot slab remains visible");Click(h.Hud.Mission.Open);Need(h.Read("sawmill",false).Building!=null&&!h.InWorld,"Objective construction navigation failed");},"mechanic-gated menus, narrative, no slabs, objective navigation");
    yield return null;
    Check(()=>{h.Guidance.ShowStory();},"story modal opened");yield return new WaitForSecondsRealtime(.4f);
-   Check(()=>{Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR","Narrative overwritten by HUD refresh");h.Hud.Modal.Hide();},"dialogue survives refresh without gaining a duplicate milestone");
+   Check(()=>{
+    Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="Sir Aldric","World-unlock narrative overwritten by HUD refresh");
+    // Dismissing the modal directly silently skips AcknowledgeNarrative("world").
+    // The Guidance LateUpdate then reopens the unpaid narrative over the World
+    // objective, incorrectly failing the next real World-selection assertion.
+    // Exercise the same visible Continue action a human uses until it truly ends.
+    for(int turn=0;turn<4&&h.Hud.NarrativeOpen;turn++)Click(h.Hud.Modal.Extra);
+    Need(!h.Hud.NarrativeOpen,"World-unlock dialogue cannot be acknowledged");
+    Need(city.Gateway.Snapshot().ChapterProgress.SeenNarrative.Contains("world"),
+     "World-unlock narration was not persisted by its canonical callback");
+   },"world-unlock dialogue survives refresh and is genuinely acknowledged");
    var initial=JsonUtility.ToJson(city.Gateway.Snapshot());
    Check(()=>{
     Need(!h.CanOpen(RoyalSection.World),"Initial world button unlocked");
