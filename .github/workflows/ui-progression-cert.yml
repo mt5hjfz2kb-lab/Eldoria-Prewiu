@@ -178,7 +178,7 @@ jobs:
           if($original.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED' -or @($original.framing).Count -lt 10){
             throw 'Original exact-Git V2 baseline is not an acceptable full I-II capture'
           }
-          [IO.File]::WriteAllText($baselineFile,$baselineText,(New-Object Text.UTF8Encoding $false))
+          [IO.File]::WriteAllText($baselineFile,$baselineText,([System.Text.UTF8Encoding]::new($false)))
           Write-Host "ELDORIA_V2_SOURCE_BASELINE_FROM_EXACT_GIT_TREE $($env:GITHUB_SHA)"
           $log=Join-Path $env:RUNNER_TEMP 'Eldoria-V3-Native-I-II-Visual.log'
           Remove-Item $log -Force -ErrorAction SilentlyContinue
