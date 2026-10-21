@@ -710,13 +710,29 @@
       "art_production_routing": "required",
       "art_production_routing_reason": "Extender el flujo existente mediante preflight trazable de fuentes Tripo, memoria para Qwen y decisiones de mejora, sin sustituir pipelines ni tocar assets/escenas de otros propietarios.",
       "dependency": "Usar solo los GLB ya pagados en ArtSource y la integración existente del Engendro; no crear tareas API, no activar runner pesado, no mutar Unity ni publicar. Tripo rigging/motion requieren coste y autorización expresa separados.",
-      "phase": "ZERO_SPEND_IMPLEMENTATION",
+      "phase": "ZERO_CREDIT_BRIDGE_VERIFIED_AWAITING_FREE_RIG_CHECK_SESSION",
       "delivery_definition": {
         "deliverable": "Herramienta ejecutable que audita tres activos Tripo mediante SHA, informa QA y estados separados, prepara briefs/memoria verificables para el Qwen existente y decisiones seguras para Blender, Unity y rigging, con pruebas CI sin gasto.",
         "evidence": "Pruebas locales y Actions focalizadas + outputs reales bajo SHA, sin credenciales ni facturación; comparación contra resultados de QA preservados.",
         "handoff": "Código y documentación de uso en main; pasos de animación/pago segregados y bloqueados hasta autorización."
       },
-      "next": "Implementar preflight y memoria consumible por el cerebro artístico, añadir tests y workflow ligero, ejecutar pruebas; la fase de rigging de pago queda bloqueada."
+      "next": "Zero-credit bridge and dry-run Rig Check for Spawnling/Boar are verified. To continue the original full animated-creature goal, run the one official free API v3 Rig Check from an already authenticated safe Tripo session; then obtain fresh explicit approval for any 25-credit rig + 10-credit animation(s), coordinate Windows/Valoria scene ownership, require Qwen authorship, genuine Blender/Unity A/B and Android profile. Do not assume those stages ran or auto-spend.",
+      "last_verified": {
+        "sha": "c21f9a568c1c0f868597c948e683a1e01ffa482d",
+        "run_id": 39622621426,
+        "tests_passed": 12,
+        "source_assets_verified": [
+          "spawnling",
+          "boar",
+          "focus"
+        ],
+        "github_actions_success": true,
+        "credits_spent": 0,
+        "skipped_paid_api": true,
+        "skipped_qwen_inference": true,
+        "skipped_blender_authoring": true,
+        "skipped_unity_integration": true
+      }
     }
   ],
   "history": [
