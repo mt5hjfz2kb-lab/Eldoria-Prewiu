@@ -2,7 +2,7 @@ name: Eldoria art knowledge real zero-credit A/B
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, reopened]
     paths:
       - 'tools/art-knowledge/**'
       - '.github/workflows/eldoria-art-knowledge-controlled-ab.yml'
@@ -25,6 +25,7 @@ jobs:
           sparse-checkout: |
             /tools/art-knowledge/
             /pipeline/art-knowledge/catalog-v1.json
+            /pipeline/art-knowledge/reviewed-lessons-v1.json
             /pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json
             /ArtSource/World4X/Spawnling_v1/Finished/finished_face.png
             /docs/evidence/spawnling-bastion2/after-local-900x1600.png
