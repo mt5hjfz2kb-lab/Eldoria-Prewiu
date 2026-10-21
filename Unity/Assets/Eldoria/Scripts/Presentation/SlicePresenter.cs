@@ -32,7 +32,7 @@ namespace Eldoria.Presentation
         ValoriaParcelPresentation productionParcels;
         RectTransform safe;
         Text heading, resources, stoneResource, power, objective, description, message, buildingTitle, buildingBody, primaryActionText, sawmillLevelBadge, barracksLevelBadge, bastionLevelBadge, resetButtonText;
-        GameObject buildingPanel, objectiveDock, cityAmbientLayer, constructionActivityFx;
+        GameObject buildingPanel, objectiveDock, cityAmbientLayer, constructionActivityFx, managementScreen;
         string currentBuildingId="";
         RectTransform[] ambientMotes=Array.Empty<RectTransform>();
         Vector2[] ambientMoteOrigins=Array.Empty<Vector2>();
@@ -147,7 +147,7 @@ namespace Eldoria.Presentation
             HandlePointerInput();
             AnimateCityAmbientation();
             UpdateBuildingLevelBadgePositions();
-            if(buildingPanel!=null&&buildingPanel.activeInHierarchy&&city&&!(currentBuildingId=="barracks"&&gateway.Snapshot().BarracksLevel>0)) PositionBuildingPanel(currentBuildingId);
+            if(buildingPanel!=null&&buildingPanel.activeInHierarchy&&city) PositionBuildingPanel(currentBuildingId);
         }
         void HandlePointerInput()
         {
@@ -508,6 +508,7 @@ namespace Eldoria.Presentation
 
         void SetBuildingPanelOpen(bool open)
         {
+            if(managementScreen!=null&&managementScreen.activeSelf)managementScreen.SetActive(false);
             if(buildingPanel!=null)buildingPanel.SetActive(open);
             if(objectiveDock!=null)objectiveDock.SetActive(!open);
         }
@@ -571,20 +572,51 @@ namespace Eldoria.Presentation
         {
             if(buildingPanel==null)return;
             var rt=buildingPanel.GetComponent<RectTransform>();
+            rt.anchorMin=rt.anchorMax=new Vector2(.5f,.5f);
+            rt.sizeDelta=new Vector2(276,178);
+            rt.anchoredPosition=new Vector2(0,-70);
             if(management)
             {
-                rt.anchorMin=Vector2.zero;rt.anchorMax=Vector2.one;
-                rt.offsetMin=new Vector2(14,84);rt.offsetMax=new Vector2(-14,-84);
-                rt.anchoredPosition=Vector2.zero;
+                if(managementScreen==null)
+                {
+                    managementScreen=new GameObject("Management screen",typeof(RectTransform),typeof(Image));
+                    var screenRt=managementScreen.GetComponent<RectTransform>();
+                    screenRt.SetParent(safe,false);
+                    screenRt.anchorMin=Vector2.zero;screenRt.anchorMax=Vector2.one;
+                    screenRt.offsetMin=screenRt.offsetMax=Vector2.zero;
+                    managementScreen.GetComponent<Image>().color=new Color(.035f,.055f,.075f,1f);
+                    // This is a separate visual destination, not a resized building popup.
+                    var content=new GameObject("Management content",typeof(RectTransform),typeof(Image),typeof(VerticalLayoutGroup));
+                    content.transform.SetParent(managementScreen.transform,false);
+                    var contentRt=content.GetComponent<RectTransform>();
+                    contentRt.anchorMin=new Vector2(.08f,.12f);contentRt.anchorMax=new Vector2(.92f,.88f);
+                    contentRt.offsetMin=contentRt.offsetMax=Vector2.zero;
+                    content.GetComponent<Image>().color=new Color(.065f,.085f,.105f,1f);
+                    var group=content.GetComponent<VerticalLayoutGroup>();
+                    group.padding=new RectOffset(18,18,18,18);group.spacing=12;
+                    group.childForceExpandHeight=false;
+                    var title=Label("Management heading",content.transform,20,new Color(.96f,.88f,.69f),46);
+                    title.text="CUARTEL";
+                    var details=Label("Management details",content.transform,14,new Color(.86f,.89f,.90f),135);
+                    var action=Button(content.transform,"ENTRENAR",()=>buildingAction.onClick.Invoke());
+                    action.gameObject.name="Management primary action";
+                    var back=Button(content.transform,"VOLVER A LA CIUDAD",CloseBuildingPanel);
+                    back.gameObject.name="Management back";
+                }
+                var labels=managementScreen.GetComponentsInChildren<Text>(true);
+                foreach(var label in labels)
+                {
+                    if(label.gameObject.name=="Management heading")label.text=buildingTitle.text;
+                    if(label.gameObject.name=="Management details")label.text=buildingBody.text;
+                    if(label.gameObject.name=="Text"&&label.transform.parent.name=="Management primary action")label.text=buildingAction.GetComponentInChildren<Text>().text;
+                }
+                var button=managementScreen.transform.Find("Management content/Management primary action")?.GetComponent<Button>();
+                if(button!=null)button.interactable=buildingAction.interactable;
+                managementScreen.transform.SetAsLastSibling();
+                managementScreen.SetActive(true);
+                buildingPanel.SetActive(false);
             }
-            else
-            {
-                rt.anchorMin=rt.anchorMax=new Vector2(.5f,.5f);
-                rt.sizeDelta=new Vector2(276,178);
-                rt.anchoredPosition=new Vector2(0,-70);
-            }
-            if(buildingBody!=null)
-                buildingBody.GetComponent<LayoutElement>().preferredHeight=management?128:56;
+            else if(managementScreen!=null)managementScreen.SetActive(false);
         }
 
         void OpenBuildingPanel(string id)
@@ -757,6 +789,7 @@ namespace Eldoria.Presentation
                 buildingAction.GetComponentInChildren<Text>().text="CONSTRUYENDO · "+seconds+" s";
                 buildingAction.interactable=false;
             }
+            ApplyManagementScreen(id=="barracks"&&s.BarracksLevel>0);
         }
 
         void OpenMarchPanel()
@@ -780,6 +813,7 @@ namespace Eldoria.Presentation
 #if UNITY_WEBGL && !UNITY_EDITOR
             StartCoroutine(LogPlayableButtonCenterNextFrame("buildingAction",buildingAction));
 #endif
+            ApplyManagementScreen(true);
         }
         void Send(string kind,string target)
         {
