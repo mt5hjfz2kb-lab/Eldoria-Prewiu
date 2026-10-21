@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "updated": "2026-10-21",
+  "purpose": "Three archived Tripo API sources, same artists/pipelines; zero-credit audit only",
+  "no_auto_tripo_call": true,
+  "assets": {
+    "spawnling": {
+      "label": "Engendro de la Fisura — Bastion II",
+      "role": "Bastion II common enemy spawnling; single gameplay hotspot engendro-valoria",
+      "planner_profile": "environment_composition",
+      "source_report": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
+      "source": {
+        "task_id": "351d1034-25ec-4300-a2e0-d03a0e68175a",
+        "credits_consumed": 20,
+        "raw": {
+          "path": "ArtSource/World4X/Spawnling_v1/Tripo_H31_Original.glb",
+          "sha256": "5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f",
+          "triangles": 80268
+        },
+        "optimized": {
+          "path": "ArtSource/World4X/Spawnling_v1/Optimized_Source.glb",
+          "sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
+          "triangles": 49800
+        }
+      },
+      "qa": {
+        "metrics": "ArtSource/World4X/Spawnling_v1/UnityQA/metrics.json"
+      },
+      "integration": {
+        "evidence": "docs/evidence/spawnling-bastion2/native-integration.json",
+        "author": "ArtSource/World4X/Spawnling_v1/Finished/author-evidence.json",
+        "scene": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+        "near": {
+          "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb",
+          "sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+          "triangles": 12040
+        },
+        "far": {
+          "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Far.glb",
+          "sha256": "dd698116c7cb517d9fdf95154f6b8c275235d7f6e241cab1a04b2302b67fecbd",
+          "triangles": 2900
+        }
+      },
+      "defects": [
+        "El rostro aún es poco expresivo desde cámara de juego; comprobar frontal, ojos y línea mandíbula antes de modificar.",
+        "Silueta encorvada útil pero cola/anatomía aún transmiten apariencia reptiliana; conservar identidad pequeña violeta, solo dos brazos y dos piernas.",
+        "Rig/skinning y animaciones esqueléticas ausentes. La respiración por transform no equivale a un rig."
+      ],
+      "next_actions": [
+        "Tomar capturas oficiales actuales y decidir corrección anatómica concreta con Qwen, nunca retocar a ciegas.",
+        "Conservar la integración BII de 12k/2.9k LOD y editar solo copia aislada; comparar en misma cámara Unity sin tocar hotspot ni guardados.",
+        "Comprobar compatibilidad de rig mediante malla existente y Rig Check API antes de gastar; después solicitar presupuesto puntual para rig y retarget; nunca iniciar automáticamente."
+      ],
+      "allowed_destination": "Bastion II existing engendro-valoria visual only",
+      "protected": [
+        "No nuevo hotspot, campamento o nodo",
+        "No tocar combate, recompensas, persistencia, interfaz ni escena de otro propietario",
+        "No reemplazar la versión integrada antes de un A/B y QA independientes"
+      ]
+    },
+    "boar": {
+      "label": "Jabalí de roca — World4X",
+      "role": "Boar prey of chapter III in legacy vertical slice; not in current playable I–II",
+      "planner_profile": "environment_composition",
+      "source_report": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
+      "source": {
+        "task_id": "28f57ff9-b978-468c-8c2a-6136e0a65ea1",
+        "credits_consumed": 20,
+        "raw": {
+          "path": "ArtSource/World4X/RockBoar_v1/Tripo_RockBoar_H31_Original.glb",
+          "sha256": "166c32e7f0b86d3212aa1fdc2c30ee67bc4ce2a0994bbf15a30a42050cfd4dd5",
+          "triangles": 84178
+        },
+        "optimized": {
+          "path": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb",
+          "sha256": "897c8d02a445c6c760376031c38618698740e9593346099fafb4c3a0b93c1dc3",
+          "triangles": 49800
+        }
+      },
+      "qa": {
+        "metrics": "ArtSource/World4X/RockBoar_v1/UnityQA/boar-unity-metrics.json"
+      },
+      "defects": [
+        "Placas rocosas parecen superpuestas; revisar transiciones orgánicas y cuerpo desde zoom táctico.",
+        "Contacto pies/suelo dudoso e irregularidad anatómica; diagnosticar antes de modelar.",
+        "49.800 triángulos solo es revisión LOD0, no cifra válida para fauna replicada; no hay rig ni animaciones."
+      ],
+      "next_actions": [
+        "Conservar el original sin regenerar y probar LOD progresivos/Bake normal en Blender sobre copias.",
+        "Comparar legibilidad estratégica en una vista oficial con perfil de distancia y número de instancias medido.",
+        "La ruta cuadrúpeda requiere gate de rig compatible y capítulo III explícitamente autorizado; no integrar ahora."
+      ],
+      "allowed_destination": "World4X future chapter III only",
+      "protected": [
+        "No adelantar Bastion III al actual juego I–II",
+        "No añadir jabalí al mundo actual por existir el GLB",
+        "No publicar ni crear comportamientos nuevos"
+      ]
+    },
+    "focus": {
+      "label": "Foco de corrupción — prop experimental",
+      "role": "Standalone environment-art candidate; no functional gameplay node",
+      "planner_profile": "environment_surface",
+      "source_report": "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
+      "source": {
+        "task_id": "3800e44b-2718-454d-b904-dbe56a842c33",
+        "credits_consumed": 20,
+        "raw": {
+          "path": "ArtSource/World4X/RiftFocus_v1/Tripo_H31_Original.glb",
+          "sha256": "c1d0e458b1eb52f1a31a04361f18985cb3e14967ad4f8abf99073a696be07ae0",
+          "triangles": 82446
+        },
+        "optimized": {
+          "path": "ArtSource/World4X/RiftFocus_v1/Optimized_Source.glb",
+          "sha256": "00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e",
+          "triangles": 49799
+        }
+      },
+      "qa": {
+        "metrics": "ArtSource/World4X/RiftFocus_v1/UnityQA/metrics.json"
+      },
+      "defects": [
+        "La corrupción púrpura no se distingue a zoom estratégico; parece una roca convencional.",
+        "La silueta acumula piedras redondeadas y el centro violeta parece un cristal pegado, no una transformación gradual.",
+        "La superficie está demasiado clara con la luz neutra y las transiciones minerales no son coherentes."
+      ],
+      "next_actions": [
+        "Primero look-dev y materiales/PBR existentes en Blender/Unity, sin Tripo ni nueva geometría.",
+        "Si hace falta cambiar masa, que Qwen dirija dos planos pétreos conectados y fisuras continuas en Blender, conservando source.",
+        "Comparar en suelo real 4X; rechazar si sigue pareciendo roca genérica. No crear punto jugable ni efectos para tapar el defecto."
+      ],
+      "allowed_destination": "Art-only sandbox; no runtime/gameplay",
+      "protected": [
+        "No campamento, altar, nido, misión o hotspot nuevo",
+        "No publicar sin nueva decisión de integración",
+        "No fingir aprobación visual por CI PASS"
+      ]
+    }
+  }
+}
