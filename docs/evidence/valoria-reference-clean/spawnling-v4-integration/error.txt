@@ -1,0 +1,3 @@
+System.InvalidOperationException: V4 integration: Actual sampled height/base must match original
+  at Eldoria.SpawnlingBastion2.Editor.SpawnlingAnimatedV4Integration.Need (System.Boolean ok, System.String message) [0x00014] in C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Assets\Eldoria\SpawnlingBastion2\Editor\SpawnlingAnimatedV4Integration.cs:34 
+  at Eldoria.SpawnlingBastion2.Editor.SpawnlingAnimatedV4Integration.Integrate () [0x00990] in C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Assets\Eldoria\SpawnlingBastion2\Editor\SpawnlingAnimatedV4Integration.cs:196 

@@ -2,7 +2,7 @@
     "status": "V4_CANONICAL_SKIN_INTEGRATED_GAMEPLAY_QA_REQUIRED",
     "source_sha256": "eef82ab48b8e512a39b3f87b5b282f5bc493ec119a7e21c2149a2437c1448128",
     "scene_before": "a6c82250a743d8c9559a55cf66d60f830e465936c806e931a414d2e0f7e28244",
-    "scene_after": "429a7912d5b6d1ed02ee331320cfdfd4cfe25a7278160536aff499a85430185a",
+    "scene_after": "1d6a7d6e22664b7f54cb92cd269708ad8577403c74b6c4cd2f0ce004cbbf6a68",
     "clip": "ExpressiveClawSwipeV4",
     "bones": 12,
     "near_triangles": 12040,
