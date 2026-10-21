@@ -746,16 +746,16 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-eldoria-management-finalization-20261021",
+      "owner": "chatgpt-eldoria-ui-v3-management-resume-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
       "base_main_sha": "4c871bcebaa40030bac745852438d249d06ba8ad",
       "branch": "feature/ui-v3-management-completion-20261021",
       "pr": 90,
-      "owner_instruction": "Explicit owner order 2026-10-21: finalize UI V3 management screens and PR #89 with autonomous implementation and verification; preserve art workstreams.",
+      "owner_instruction": "User requested current executor continue unfinished Eldoria management screens through test, integration and verification without stopping at PR or CI.",
       "scope": [
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs.meta",
@@ -784,7 +784,14 @@
       },
       "next": "After art owner releases Windows lease, certify exact candidate in Unity, reconcile main/gameplay files, merge PR #90, inspect renders and publish playable if gates pass.",
       "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity."
+      "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-eldoria-management-finalization-20261021",
+          "revision": 1,
+          "reason": "Owner requested continued V3 implementation after chat interruption."
+        }
+      ]
     }
   ],
   "history": [
