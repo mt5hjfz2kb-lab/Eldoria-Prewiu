@@ -24,7 +24,10 @@ namespace Eldoria.SpawnlingBastion2.Editor
         const string ScenePath = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
         const string FinishedSource = "../ArtSource/World4X/Spawnling_v1/Finished/";
         const string AssetRoot = "Assets/Eldoria/SpawnlingBastion2/Generated";
+        // That identifier ALREADY exists in the canonical scene as the old visual.
+        // Preserve its gameplay-bearing hierarchy and hide its RENDERERS only.
         const string VisualName = "Zone1 authored engendro-valoria";
+        const string ReplacementName = "Bastion II / Tripo Spawnling creature visual";
         const string CanonicalId = "engendro-valoria";
         const string SourceSha = "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a";
         static readonly string Evidence = Path.GetFullPath("../docs/evidence/spawnling-bastion2");
@@ -266,8 +269,17 @@ namespace Eldoria.SpawnlingBastion2.Editor
                 var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
                 Need(host && host.WorldRoot && host.WorldCamera && host.City==null,
                     "Expected existing edit-mode canonical city/world host");
-                Need(Named(host.WorldRoot,VisualName)==null,
-                    "An engendro has already been integrated. Refuse duplicated model");
+                // The canonical scene already contains a source-authored placeholder with
+                // VisualName; it is NOT the finished Tripo creature. Check only the
+                // new, distinct replacement identity to forbid two genuine creatures.
+                Need(Named(host.WorldRoot,ReplacementName)==null,
+                    "Finished Tripo Spawnling already present; refuse duplicate");
+                var legacy=Named(host.WorldRoot,VisualName);
+                Need(legacy!=null, "Canonical pre-existing visual for Engendro missing");
+                Need(legacy.GetComponentInChildren<SpawnlingEncounterVisual>(true)==null,
+                    "Existing enemy presentation unexpectedly contains a Tripo actor");
+                var legacyRenderers=legacy.GetComponentsInChildren<Renderer>(true);
+                Need(legacyRenderers.Length>0, "Cannot prove the target has a drawable old silhouette");
                 var hotspots=host.WorldRoot.GetComponentsInChildren<WorldHotspot>(true);
                 var targets=hotspots.Where(h=>h.Id==CanonicalId).ToArray();
                 Need(targets.Length==1,"Original engendro hotspot duplicated/missing");
@@ -285,7 +297,9 @@ namespace Eldoria.SpawnlingBastion2.Editor
                 Directory.CreateDirectory(folder);
                 SharedPbrAcrossLods.Clear();
                 AssetDatabase.Refresh();
-                var root=new GameObject(VisualName);
+                // Keep old GameObject, hotspot and existing physics untouched; only
+                // replace its visible surface once the new model is validated.
+                var root=new GameObject(ReplacementName);
                 root.transform.SetParent(host.WorldRoot.transform,true);
                 var animator=root.AddComponent<SpawnlingEncounterVisual>();
                 animator.Host=host;
@@ -324,6 +338,13 @@ namespace Eldoria.SpawnlingBastion2.Editor
                 lod.RecalculateBounds();
                 Need(root.GetComponentsInChildren<Collider>(true).Length==0,
                     "Visual replacement must not add its own trigger or collider");
+                // The old named target already exists. Keep its GameObject,
+                // colliders, hotspot/selection and other components intact, but
+                // suppress ONLY the legacy renderers; preserve its exact location.
+                foreach(var oldRenderer in legacyRenderers)
+                    oldRenderer.enabled=false;
+                Need(legacy.GetComponentsInChildren<Renderer>(true).All(r=>!r.enabled),
+                    "Failed to suppress earlier engendro rendering");
                 // Former speculative tent structures must remain hidden, not be recreated.
                 foreach(string name in new[]{"Zone1 hostile camp engendro-valoria",
                     "Zone1 hostile camp rear shelter","Enemy camp existing shelter"})
