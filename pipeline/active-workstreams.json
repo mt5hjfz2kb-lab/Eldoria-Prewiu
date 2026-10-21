@@ -19,10 +19,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-geography-continuation-20261021",
+      "owner": null,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-21T18:18:21.870Z",
+      "claimed_at": null,
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -55,8 +55,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "GEOGRAPHY_NATIVE262_SOURCE_REVIEW_WHILE_UI_LEASE",
-      "next": "Preserve native261 and run native262 authentic Unity trial with locked camera/unchanged gameplay only when UI V3 owner releases Windows; then independent artistic review, integrate only if accepted; produce before-after whole Region1 and Valoria.",
+      "phase": "GEOGRAPHY_NATIVE262_PENDING_UI_WINDOWS_LEASE",
+      "next": "Current art candidate 262 is SOURCE-ONLY, NOT UNITY/ART_APPROVED. Reclaim this SAME canonical ID after UI V3 releases windows-runner-heavy, verify current scene SHA against survey 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237, increment tools/valoria-reference-clean/request.json geography_trial revision from 262 with [valoria-native], review true city I-II/mobile and whole Region1 A/B (new meadow sculpt, candidate forest ground and existing tree roots), get independent art review; integrate only if accepted and full gameplay/save/URP/device constraints pass. Current extra evidence: docs/evidence/valoria-reference-clean/geography-v1/NATIVE261_OBJECTIVE_AB_AUDIT_20261021.md, native261 run39641901228/artifact12365323917. No new APK/itch publication.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -547,7 +547,7 @@
           "handoff_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677"
         }
       },
-      "previous_owner": "chatgpt-eldoria-geography-visual-production-20261021",
+      "previous_owner": "chatgpt-eldoria-geography-continuation-20261021",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md",
@@ -685,22 +685,23 @@
           "released_at": "2026-10-21T18:13:57.876Z",
           "phase": "GEOGRAPHY_INDEPENDENT_REVIEW_THEN_NATIVE",
           "reason": "Completed source-safe tree/landform contact corrections; native262 rendering still blocked by current protected UI V3 Windows lease. Existing main scene unchanged and no ART_APPROVED; release writer reservation to avoid stale chat locks while preserving exact workstream."
+        },
+        {
+          "owner": "chatgpt-eldoria-geography-continuation-20261021",
+          "claimed_at": "2026-10-21T18:18:21.870Z",
+          "released_at": "2026-10-21T18:26:22.973Z",
+          "phase": "NATIVE261_INDEPENDENT_PIXEL_AUDIT_AND_NATIVE262_PRESERVED",
+          "reason": "Native262 requires shared Windows runner currently exclusively held by UI V3. No valid zero-cost independent native Unity route to certify or integrate. Kept scene unchanged, source candidate untouched and wrote native261 quantitative visual review on main.",
+          "evidence": "docs/evidence/valoria-reference-clean/geography-v1/NATIVE261_OBJECTIVE_AB_AUDIT_20261021.md",
+          "handoff": "On explicit UI release, reclaim same ID and reserve Windows after current live checks; run request geography_trial rev262 incrementing revision in request; review 15 real A/B images and live gameplay before integration."
         }
       ],
-      "ownership_revision": 7,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 8,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
       "last_claimed_at": "2026-10-16",
-      "current_assignment": {
-        "owner": "chatgpt-eldoria-geography-continuation-20261021",
-        "base_main_sha": "3ef7da0bc04f8965e40790fe53a087bbe2f25931",
-        "scope": "Continue exact geography V1 city/world 4X A/B; source review and corrections independently while UI V3 holds Windows",
-        "owner_instruction": "User 2026-10-21 repeatedly requested continue unfinished Valoria + Region1 graphic quality work; zero euros, no publication or gameplay changes.",
-        "protected_resources": "windows-runner-heavy held by UI V3; do not reserve until released",
-        "existing_artifacts": "native260/261 A/B, canonical scene 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
-        "next": "Rev262 Unity scene trial only after UI lease release; audit/correct algorithm in independent existing code now"
-      },
+      "current_assignment": null,
       "delivery_definition": {
         "deliverable": "Valoria and Region1 terrain/biomes visibly integrated in canonical Unity scene, preserving prior architecture/UI V3/Engendro and interactive systems",
         "evidence": "Same-camera real Unity A/B screenshots full scene/entire world 4X area and portrait; independent visual assessment, native progression/save/march tests, editable sources and SHA",
