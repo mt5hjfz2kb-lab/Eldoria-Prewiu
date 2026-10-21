@@ -117,7 +117,7 @@ jobs:
           $settings=Join-Path $project 'UserSettings/Search.index'
           $backup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-original-$env:GITHUB_RUN_ID.json"
           $created=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-created-$env:GITHUB_RUN_ID.flag"
-          if(Test-Path $backup -or Test-Path $created){
+          if((Test-Path $backup) -or (Test-Path $created)){
             throw 'Existing current-run Search-index backup must be reconciled before rerun'
           }
           if(Test-Path $settings){
