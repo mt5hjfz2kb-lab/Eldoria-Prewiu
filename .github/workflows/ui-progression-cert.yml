@@ -89,12 +89,22 @@ jobs:
           }
           Write-Host "ELDORIA_V3_EXACT_TRACKED_PROJECT_READY"
 
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: ui-live-ownership
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
       - name: Respect shared Windows native-editor lease
         shell: powershell
         run: |
-          $registry=Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
+          # Ownership changes independently of the exact candidate source.
+          # Read current main, never a stale PR merge snapshot's old reservation.
+          $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          if($claims.Count){throw "Windows runner is already claimed by $($claims.id -join ', ')"}
+          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-contextual-20261021' -and $_.owner -eq 'codex-ui-v3-completion-takeover-20261021' -and $_.status -eq 'active'})
+          if($claims.Count -ne 1 -or $ui.Count -ne 1){throw "Current exclusive UI native lease missing or contested: $($claims.id -join ', ')"}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
             throw 'Unity or Blender already running; UI gate must not interrupt another job'
           }
@@ -395,3 +405,4 @@ jobs:
             docs/evidence/valoria-reference-clean/integration-result.json
           if-no-files-found: warn
           retention-days: 30
+
