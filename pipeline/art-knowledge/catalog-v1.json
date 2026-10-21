@@ -11,7 +11,10 @@
       "pipeline/active-workstreams.json",
       "docs/VALORIA_VISUAL_REFERENCE_CANON_20261020.md"
     ],
-    "reference_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d"
+    "reference_sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d",
+    "historical_screening": "pipeline/art-knowledge/historical-branch-screening-v1.json",
+    "historical_tree_check": "pipeline/art-knowledge/historical-audit/truncated-tree-crosscheck.json",
+    "historical_addition_note": "Historical techniques are read-only references, not currently approved art, and all historical SHA/refs are pinned."
   },
   "safe_defaults": {
     "enabled": false,
@@ -496,6 +499,571 @@
       "avoid": "Confundir APK construido, publicación y versión activada o afirmar QA físico.",
       "conditions": "Fase 1 no toca escenas, APK, WebGL ni builds.",
       "run_ids": []
+    },
+    {
+      "id": "K28",
+      "family": "artificial_intelligence",
+      "problem": "Qwen solo dispone de unas pocas operaciones de Blender y no puede diseñar libremente un modelo complejo.",
+      "recommended_route": "Consultar catálogo de operaciones tipadas del antiguo full-studio; seleccionar herramienta realmente ejecutable tras validar interfaz, sin incorporar su pipeline entero.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Estudio archivado ofrece una caja de herramientas Blender significativamente más amplia y schemas progresivos, pero fue implementación aislada sin calidad visual final certificada.",
+      "source_paths": [
+        "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+        "tools/art-direction/full-studio/professional_source_schema.py"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/eldoria-full-blender-artist-studio-20261014",
+          "sha": "65add927cde3722407906808f93f22035c975d4c",
+          "path": "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/65add927cde3722407906808f93f22035c975d4c/docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md"
+        },
+        {
+          "ref": "art/eldoria-full-blender-artist-studio-20261014",
+          "sha": "65add927cde3722407906808f93f22035c975d4c",
+          "path": "tools/art-direction/full-studio/professional_source_schema.py",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/65add927cde3722407906808f93f22035c975d4c/tools/art-direction/full-studio/professional_source_schema.py"
+        }
+      ],
+      "avoid": "Asumir que el estudio permite todas las funciones de Blender o fusionarlo sin pruebas.",
+      "conditions": "Reutilizar métodos solo tras contratos exactos, source QA y Unity A/B.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K29",
+      "family": "operations",
+      "problem": "Reinventamos modelos aunque exista una fuente local adecuada.",
+      "recommended_route": "Recuperar la receta de catálogo con archivo GLB/GLTF, SHA, licencia, atribución, reutilización autorizada e importación controlada.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "El full-studio histórico demostró técnicamente import_asset sobre una fuente propia con SHA y preservación geométrica; no valida arte final.",
+      "source_paths": [
+        "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/eldoria-full-blender-artist-studio-20261014",
+          "sha": "65add927cde3722407906808f93f22035c975d4c",
+          "path": "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/65add927cde3722407906808f93f22035c975d4c/docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md"
+        }
+      ],
+      "avoid": "Importar texturas/donantes sin procedencia o confundir fuente importable con fuente aprobada.",
+      "conditions": "Respetar OWNED/CC0/CC-BY y interfaces del juego.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K30",
+      "family": "artificial_intelligence",
+      "problem": "Las lecciones de un acantilado contaminan un brief de torre o criatura.",
+      "recommended_route": "Seleccionar lecciones transferibles por relevancia y quitar coordenadas e IDs específicos del modelo anterior, manteniendo SHA y procedencia.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "El estudio encontró que Qwen2B recicló antiguas coordenadas de roca en una torre; extractor learning_context.py prioriza lecciones sin arrastrar planes espaciales obsoletos.",
+      "source_paths": [
+        "tools/art-direction/full-studio/learning_context.py",
+        "tools/art-direction/full-studio/ARTIST_LEARNING_STABILIZATION_20261014.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/eldoria-full-blender-artist-studio-20261014",
+          "sha": "65add927cde3722407906808f93f22035c975d4c",
+          "path": "tools/art-direction/full-studio/learning_context.py",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/65add927cde3722407906808f93f22035c975d4c/tools/art-direction/full-studio/learning_context.py"
+        },
+        {
+          "ref": "art/eldoria-full-blender-artist-studio-20261014",
+          "sha": "65add927cde3722407906808f93f22035c975d4c",
+          "path": "tools/art-direction/full-studio/ARTIST_LEARNING_STABILIZATION_20261014.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/65add927cde3722407906808f93f22035c975d4c/tools/art-direction/full-studio/ARTIST_LEARNING_STABILIZATION_20261014.md"
+        }
+      ],
+      "avoid": "Copiar diarios y planes completos al prompt de nuevos activos.",
+      "conditions": "No perder referencias, hashes ni excepciones del canon vigente.",
+      "run_ids": [
+        38558877838
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K31",
+      "family": "architecture",
+      "problem": "El plan geométrico produce piezas enterradas, cubiertas desconectadas o volúmenes repetidos.",
+      "recommended_route": "Usar preflight de salud de composición sobre fuente/Blender antes de pasar a Unity.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "El estudio registró un asset Qwen que pasó ejecución pero falló coherencia física; composición-health añade rechazos tempranos.",
+      "source_paths": [
+        "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+        "tools/art-direction/full-studio/composition_health.py"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/eldoria-full-blender-artist-studio-20261014",
+          "sha": "65add927cde3722407906808f93f22035c975d4c",
+          "path": "docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/65add927cde3722407906808f93f22035c975d4c/docs/ELDORIA_FULL_ARTIST_STUDIO_V1.md"
+        },
+        {
+          "ref": "art/eldoria-full-blender-artist-studio-20261014",
+          "sha": "65add927cde3722407906808f93f22035c975d4c",
+          "path": "tools/art-direction/full-studio/composition_health.py",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/65add927cde3722407906808f93f22035c975d4c/tools/art-direction/full-studio/composition_health.py"
+        }
+      ],
+      "avoid": "Gastar tiempo de Unity en modelos cuya geometría ya es incoherente.",
+      "conditions": "El gate filtra defectos técnicos, no sustituye evaluación artística.",
+      "run_ids": [
+        38568103614
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K32",
+      "family": "architecture",
+      "problem": "Crear una familia consistente de arquitectura defensiva con Qwen/Blender en vez de prefabs aislados.",
+      "recommended_route": "Recuperar decisiones de las siete fuentes artísticas, interfaces y LOD del estudio histórico como ejemplos individuales, no como escena actual.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Rama de familia V2 documenta siete fuentes que superaron su mínimo de puerta V3 en revisión aislada y 21 GLB LOD; NO equivale a ART_APPROVED actual ni integración Unity.",
+      "source_paths": [
+        "docs/evidence/valoria-asset-family-v2/QUALITY_TAKEOVER.md",
+        "docs/evidence/valoria-first-hero-asset-v1/FINAL_REVIEW.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/valoria-asset-family-v2-ai-authorship-20261011",
+          "sha": "4519a2773ab1d7cc5cac21203c420f3a81faa9d9",
+          "path": "docs/evidence/valoria-asset-family-v2/QUALITY_TAKEOVER.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/4519a2773ab1d7cc5cac21203c420f3a81faa9d9/docs/evidence/valoria-asset-family-v2/QUALITY_TAKEOVER.md"
+        },
+        {
+          "ref": "art/valoria-asset-family-v2-ai-authorship-20261011",
+          "sha": "4519a2773ab1d7cc5cac21203c420f3a81faa9d9",
+          "path": "docs/evidence/valoria-first-hero-asset-v1/FINAL_REVIEW.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/4519a2773ab1d7cc5cac21203c420f3a81faa9d9/docs/evidence/valoria-first-hero-asset-v1/FINAL_REVIEW.md"
+        }
+      ],
+      "avoid": "Reintegrar su topología o canon visual histórico sin verificar la referencia actual.",
+      "conditions": "Fuente por fuente, evidencia original, licencia y cámara Unity antes de reutilizar.",
+      "run_ids": [
+        38184974032
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K33",
+      "family": "architecture",
+      "problem": "Piedra heroica demasiado regular y coronaciones con aspecto de juguete.",
+      "recommended_route": "Reutilizar procedimiento de biseles/arrises irregulares, sillería coherente, PBR mate, LOD que no destruya silueta.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Revisión histórica V2 describe mejoras visibles sobre 775 sillares y cobertura: rework retenido como fuente, LOD2 destructivo y manchas de óxido repetidas rechazados; Unity pendiente.",
+      "source_paths": [
+        "docs/evidence/valoria-hero-surface-v2/ART_REVIEW.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/valoria-asset-family-v2-ai-authorship-20261011",
+          "sha": "4519a2773ab1d7cc5cac21203c420f3a81faa9d9",
+          "path": "docs/evidence/valoria-hero-surface-v2/ART_REVIEW.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/4519a2773ab1d7cc5cac21203c420f3a81faa9d9/docs/evidence/valoria-hero-surface-v2/ART_REVIEW.md"
+        }
+      ],
+      "avoid": "Patrones de óxido tipo ruido o decimación destructiva de hero.",
+      "conditions": "La cámara estratégica debe conservar lectura y la fuente canónica no debe sobrescribirse.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K34",
+      "family": "optimization",
+      "problem": "Biblioteca modular parece lista pero tiene errores de UV, pivot o shader URP.",
+      "recommended_route": "Aplicar preflight glTF de UV0, bounds, pivotes, extensiones PBR y coste real antes de Unity.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "QA histórico de 63 GLB detectó nueve componentes sin TEXCOORD_0, cuatro dovelas fuera del origen y agua con KHR_materials_transmission/ior; no certificó importación Unity.",
+      "source_paths": [
+        "docs/evidence/valoria-modular-63-individual-quality/QA_TECNICO_GLB_63_PIVOTES_UV_20261016.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/valoria-63-individual-quality-uplift-20261015",
+          "sha": "22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4",
+          "path": "docs/evidence/valoria-modular-63-individual-quality/QA_TECNICO_GLB_63_PIVOTES_UV_20261016.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4/docs/evidence/valoria-modular-63-individual-quality/QA_TECNICO_GLB_63_PIVOTES_UV_20261016.md"
+        }
+      ],
+      "avoid": "Promover biblioteca por tener 63 archivos y puntuaciones de estudio.",
+      "conditions": "Verificar Y-up/Blender Z-up y comprobar materiales glTFast URP.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K35",
+      "family": "environment",
+      "problem": "Roca parece un poliedro y escalera es una tira pintada.",
+      "recommended_route": "Usar malla real/candidatos CC0 adaptados y volumen funcional con conexiones físicas; validar en cámara y topología.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Recuperación modular reseña cliff_rock_column con donante fotogramétrico CC0 como mejora local y stair_step de cinco sólidos, con corrección Y-up vs Z-up. Scores solo provisionales.",
+      "source_paths": [
+        "docs/evidence/valoria-modular-63-individual-quality/RECUPERACION_GPT6_20261016_63_GLBS_CONTINUIDAD.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/valoria-63-individual-quality-uplift-20261015",
+          "sha": "22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4",
+          "path": "docs/evidence/valoria-modular-63-individual-quality/RECUPERACION_GPT6_20261016_63_GLBS_CONTINUIDAD.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4/docs/evidence/valoria-modular-63-individual-quality/RECUPERACION_GPT6_20261016_63_GLBS_CONTINUIDAD.md"
+        }
+      ],
+      "avoid": "Siluetas rocosas de primitivos o simples tiras con textura de madera.",
+      "conditions": "No restaurar antiguos acantilados en escena, solo reutilizar técnica donde esté permitido.",
+      "run_ids": [
+        38935700073
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K36",
+      "family": "operations",
+      "problem": "Se elige automáticamente la última versión de un asset aunque sea peor.",
+      "recommended_route": "Comparar por identidad SHA y veredicto real cada iteración, no por fecha, status SUCCESS ni numeración V.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Caso 63 módulos: dovelas V9 preferidas a V10, agua de run parcial retenida pese a fallo del mortero; enseña selección por evidencia aislada.",
+      "source_paths": [
+        "docs/evidence/valoria-modular-63-individual-quality/RECUPERACION_GPT6_20261016_63_GLBS_CONTINUIDAD.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/valoria-63-individual-quality-uplift-20261015",
+          "sha": "22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4",
+          "path": "docs/evidence/valoria-modular-63-individual-quality/RECUPERACION_GPT6_20261016_63_GLBS_CONTINUIDAD.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4/docs/evidence/valoria-modular-63-individual-quality/RECUPERACION_GPT6_20261016_63_GLBS_CONTINUIDAD.md"
+        }
+      ],
+      "avoid": "Suponer que el run nuevo reemplaza al ganador antiguo.",
+      "conditions": "Conservar fuente/editables exactos y registro explícito de ganadores.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K37",
+      "family": "rejection",
+      "problem": "Dovelas, mortero y superficie fotográfica parecen damero o bandas artificiales.",
+      "recommended_route": "No promover V6/9 defectuosas; mantener geometría de cuña y corregir material/UV con referencia pétrea y A/B macro.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Rama 63 documenta falso damero fotográfico V6, mortero V10 con bandas oscuras y biseles que salieron de su sobre espacial; rechazos artísticos/geométricos explícitos.",
+      "source_paths": [
+        "docs/evidence/valoria-modular-63-individual-quality/REVIEW_7_WEAKEST_V8_V10_20261016.md",
+        "docs/evidence/valoria-modular-63-individual-quality/CHECKPOINT_20261016.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "art/valoria-63-individual-quality-uplift-20261015",
+          "sha": "22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4",
+          "path": "docs/evidence/valoria-modular-63-individual-quality/REVIEW_7_WEAKEST_V8_V10_20261016.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4/docs/evidence/valoria-modular-63-individual-quality/REVIEW_7_WEAKEST_V8_V10_20261016.md"
+        },
+        {
+          "ref": "art/valoria-63-individual-quality-uplift-20261015",
+          "sha": "22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4",
+          "path": "docs/evidence/valoria-modular-63-individual-quality/CHECKPOINT_20261016.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/22db6d0d539b2baa8ca4f4eeeb42b6a25bb5fed4/docs/evidence/valoria-modular-63-individual-quality/CHECKPOINT_20261016.md"
+        }
+      ],
+      "avoid": "Rehacer biseles fuera de la envolvente ni usar vetas de madera como piedra.",
+      "conditions": "No extrapolar notas 6/10 de fuente a aspecto de ciudad.",
+      "run_ids": [
+        38902465156,
+        38905895962
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K38",
+      "family": "artificial_intelligence",
+      "problem": "Qwen ve imágenes pero inventa geometría o interpreta mal tejados multivista.",
+      "recommended_route": "Atar cada afirmación a fuente XYZ, múltiples cámaras y topología, pedir contradicciones explícitas y veredicto independiente.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Diagnóstico archivado: Qwen 4B y 8B aciertan 7/7 reglas explícitas de fuente pero ambos fallan razonamiento arquitectónico libre; no se valida dirección autónoma.",
+      "source_paths": [
+        "docs/evidence/VALORIA_SPATIAL_DIRECTOR_INDEPENDENT_VERDICT_20261015.md",
+        "docs/evidence/VALORIA_EYES_BRAIN_INDEPENDENT_DIAGNOSIS_20261015.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "diagnostic/valoria-ai-eyes-brain-20261015",
+          "sha": "f0fed53e4e58d85dd7b51033a92a2bb28fd2c046",
+          "path": "docs/evidence/VALORIA_SPATIAL_DIRECTOR_INDEPENDENT_VERDICT_20261015.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/f0fed53e4e58d85dd7b51033a92a2bb28fd2c046/docs/evidence/VALORIA_SPATIAL_DIRECTOR_INDEPENDENT_VERDICT_20261015.md"
+        },
+        {
+          "ref": "diagnostic/valoria-ai-eyes-brain-20261015",
+          "sha": "f0fed53e4e58d85dd7b51033a92a2bb28fd2c046",
+          "path": "docs/evidence/VALORIA_EYES_BRAIN_INDEPENDENT_DIAGNOSIS_20261015.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/f0fed53e4e58d85dd7b51033a92a2bb28fd2c046/docs/evidence/VALORIA_EYES_BRAIN_INDEPENDENT_DIAGNOSIS_20261015.md"
+        }
+      ],
+      "avoid": "Permitir planes destructivos basados en narrativas no sustentadas de cámaras.",
+      "conditions": "Memoria selectiva y test estructural no equivalen a cerebro con criterio artístico.",
+      "run_ids": [
+        38701710879
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K39",
+      "family": "artificial_intelligence",
+      "problem": "Se inyectan recuerdos sin saber si reducen errores.",
+      "recommended_route": "Usar recuerdo selectivo con procedencia y A/B emparejados, reportar ganancias y regresiones.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Herramientas antiguas selective_memory.py y memory_regression_gate.py filtran siete errores conocidos y comparan resultados contra baseline sin autorizar Blender; no demuestran ganancia general sostenida.",
+      "source_paths": [
+        "tools/art-direction/director-control/selective_memory.py",
+        "tools/art-direction/director-control/memory_regression_gate.py"
+      ],
+      "historical_sources": [
+        {
+          "ref": "diagnostic/valoria-ai-eyes-brain-20261015",
+          "sha": "f0fed53e4e58d85dd7b51033a92a2bb28fd2c046",
+          "path": "tools/art-direction/director-control/selective_memory.py",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/f0fed53e4e58d85dd7b51033a92a2bb28fd2c046/tools/art-direction/director-control/selective_memory.py"
+        },
+        {
+          "ref": "diagnostic/valoria-ai-eyes-brain-20261015",
+          "sha": "f0fed53e4e58d85dd7b51033a92a2bb28fd2c046",
+          "path": "tools/art-direction/director-control/memory_regression_gate.py",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/f0fed53e4e58d85dd7b51033a92a2bb28fd2c046/tools/art-direction/director-control/memory_regression_gate.py"
+        }
+      ],
+      "avoid": "Considerar recuperación de memoria como reentrenamiento o mejora automática.",
+      "conditions": "No integrar sin pruebas negativas y referencia canónica.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K40",
+      "family": "rejection",
+      "problem": "Traslado de una celda Golden a zona de producción pierde salto visual.",
+      "recommended_route": "No reutilizar el ensamblaje de transferencia como arquitectura premium; conservar validadores de costes y composición solo como técnica.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Experimento Golden Transfer: TECH PASS/VISUAL FAIL, no merge; PBR no compensó macrogeometría insuficiente.",
+      "source_paths": [
+        "docs/VALORIA_PRODUCTION_CELL_GOLDEN_TRANSFER_V1_RESULT.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "visual-proof/valoria-production-cell-golden-transfer-v1",
+          "sha": "5f7f389148186b42d20f3673bc4e3f093557c941",
+          "path": "docs/VALORIA_PRODUCTION_CELL_GOLDEN_TRANSFER_V1_RESULT.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/5f7f389148186b42d20f3673bc4e3f093557c941/docs/VALORIA_PRODUCTION_CELL_GOLDEN_TRANSFER_V1_RESULT.md"
+        }
+      ],
+      "avoid": "Suponer que añadir material PBR o muchos renderers crea una arquitectura de categoría superior.",
+      "conditions": "El canon estético actual sustituye sus objetivos de escena antiguos.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K41",
+      "family": "rejection",
+      "problem": "Camino o conector de materiales busca lenguaje visual único y crea barras oscuras.",
+      "recommended_route": "No reactivar rutas de parche de acceso ni conectores superficiales rechazados.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Unified Visual Language ensayó dos variantes Unity con gates funcionales PASS y visual FAIL, sin promoción.",
+      "source_paths": [
+        "docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1_RESULT.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "visual-proof/valoria-unified-visual-language-proof-v1",
+          "sha": "9565ca577eb920abcb76b2b09b69022686685a12",
+          "path": "docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1_RESULT.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/9565ca577eb920abcb76b2b09b69022686685a12/docs/VALORIA_UNIFIED_VISUAL_LANGUAGE_PROOF_V1_RESULT.md"
+        }
+      ],
+      "avoid": "Más trazos planos o uniformar color global sin reelaborar relaciones arquitectura-suelo.",
+      "conditions": "Preferir corrección de fuente, escala y composición actuales.",
+      "run_ids": [
+        37152534859,
+        37152713806
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K42",
+      "family": "rejection",
+      "problem": "Geometría Hero recibe tiras brillantes o wrappers vacíos que la empobrecen.",
+      "recommended_route": "Evitar fundas primitivas y reautoría superficial; diagnosticar interfaces espaciales y formas mayores.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Source-Level Art Direction: TECH PASS/VISUAL FAIL en Unity móvil y zoom 9 histórico, rechazó strip brillante y masa pálida.",
+      "source_paths": [
+        "docs/VALORIA_SOURCE_LEVEL_ART_DIRECTION_PROOF_V1_RESULT.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "visual-proof/valoria-source-level-art-direction-proof-v1",
+          "sha": "ee51cfbbb4752b631a099e32da1b361ce568dd1e",
+          "path": "docs/VALORIA_SOURCE_LEVEL_ART_DIRECTION_PROOF_V1_RESULT.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/ee51cfbbb4752b631a099e32da1b361ce568dd1e/docs/VALORIA_SOURCE_LEVEL_ART_DIRECTION_PROOF_V1_RESULT.md"
+        }
+      ],
+      "avoid": "Envolver fuente rica con geometría lisa de baja fidelidad.",
+      "conditions": "No extrapolar zoom histórico al runtime presente sin medir cámara.",
+      "run_ids": [
+        37155891705
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K43",
+      "family": "environment",
+      "problem": "Necesitamos recuperar material rico de fuente secundaria sin rehacer toda una geometría Hero.",
+      "recommended_route": "Reutilizar selección semántica de UV/PBR y zonas de material solo donde la fuente conserva detalle y la revisión individual lo avala.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Semantic Source Reauthoring consiguió cierta lectura material en Aserradero aislado, pero Hero+muros no armonizaron: TECH PASS/VISUAL FAIL, no promoción.",
+      "source_paths": [
+        "docs/VALORIA_SEMANTIC_SOURCE_REAUTHORING_PROOF_V1_RESULT.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "visual-proof/valoria-semantic-source-reauthoring-proof-v1",
+          "sha": "64675d692ac45318743b4d34d7aae7aff0917d7f",
+          "path": "docs/VALORIA_SEMANTIC_SOURCE_REAUTHORING_PROOF_V1_RESULT.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/64675d692ac45318743b4d34d7aae7aff0917d7f/docs/VALORIA_SEMANTIC_SOURCE_REAUTHORING_PROOF_V1_RESULT.md"
+        }
+      ],
+      "avoid": "Trasladar una técnica útil en prop secundario a Hero como solución universal.",
+      "conditions": "Identidad de GLB original y A/B Unity antes de incorporar.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K44",
+      "family": "rejection",
+      "problem": "Montaje híbrido 3D/2.5D parece mejor en objetos sueltos pero empeora suelo/luz.",
+      "recommended_route": "No escalar mezcla 2.5D ni repetir dispersión de columnas/UV erróneas; hacer primero continuidad del suelo y profundidad real.",
+      "evidence_status": "art_rejected",
+      "art_status": "art_rejected",
+      "observed_result": "Escena método breakthrough comparó baseline 5,0 vs híbridos 4,5 aproximados, NO_VISUAL_WIN; QA funcional parcial, ninguna publicación.",
+      "source_paths": [
+        "docs/evidence/valoria-scene-breakthrough-20261016/FINAL_VISUAL_REVIEW.json",
+        "docs/evidence/valoria-scene-breakthrough-20261016/HYBRID_FIRST_REVIEW.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "experiment/valoria-scene-method-breakthrough-20261016",
+          "sha": "2f4e0a166d2ef18810ac0ef48b5bac5b089fc779",
+          "path": "docs/evidence/valoria-scene-breakthrough-20261016/FINAL_VISUAL_REVIEW.json",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/2f4e0a166d2ef18810ac0ef48b5bac5b089fc779/docs/evidence/valoria-scene-breakthrough-20261016/FINAL_VISUAL_REVIEW.json"
+        },
+        {
+          "ref": "experiment/valoria-scene-method-breakthrough-20261016",
+          "sha": "2f4e0a166d2ef18810ac0ef48b5bac5b089fc779",
+          "path": "docs/evidence/valoria-scene-breakthrough-20261016/HYBRID_FIRST_REVIEW.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/2f4e0a166d2ef18810ac0ef48b5bac5b089fc779/docs/evidence/valoria-scene-breakthrough-20261016/HYBRID_FIRST_REVIEW.md"
+        }
+      ],
+      "avoid": "Aceptar bloques/caminos flotantes o texturas rayadas como nueva base visual.",
+      "conditions": "La referencia usada en ese experimento quedó sustituida por canon 20-10.",
+      "run_ids": [
+        38952589240
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K45",
+      "family": "operations",
+      "problem": "Se quieren 63 módulos en una escena limpia pero la documentación confunde fuentes recuperadas con Unity ejecutado.",
+      "recommended_route": "Reutilizar método de reconstrucción/validación de fuentes GLB y GUID de metadatos; tratar builder como candidato aislado hasta Unity.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Rama modular limpió y verificó procedencia de 63 GLB, pero su README certifica solo staging, no escena Unity/composición aprobada.",
+      "source_paths": [
+        "docs/evidence/valoria63-clean-scene-20261016/README.md",
+        "docs/evidence/valoria63-clean-scene-20261016/NATIVE_EXECUTION_HANDOFF.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "experiment/valoria-63-clean-composition-20261016",
+          "sha": "47049355befde55a33b2358502f58176cc1ab548",
+          "path": "docs/evidence/valoria63-clean-scene-20261016/README.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/47049355befde55a33b2358502f58176cc1ab548/docs/evidence/valoria63-clean-scene-20261016/README.md"
+        },
+        {
+          "ref": "experiment/valoria-63-clean-composition-20261016",
+          "sha": "47049355befde55a33b2358502f58176cc1ab548",
+          "path": "docs/evidence/valoria63-clean-scene-20261016/NATIVE_EXECUTION_HANDOFF.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/47049355befde55a33b2358502f58176cc1ab548/docs/evidence/valoria63-clean-scene-20261016/NATIVE_EXECUTION_HANDOFF.md"
+        }
+      ],
+      "avoid": "Reactivar escena completa o llamar ART_APPROVED a un builder que compila.",
+      "conditions": "Las tareas históricas del handoff NO autorizan nuevas ejecuciones.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K46",
+      "family": "operations",
+      "problem": "En pruebas aisladas Unity se pierden referencias al recargar escena.",
+      "recommended_route": "Forzar conservación de .meta/GUID y comparar reapertura idéntica antes de certificar.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Experimento SceneBreakthrough detectó persistencia insuficiente de .meta y necesidad de comprobar objetos después de segunda apertura.",
+      "source_paths": [
+        "docs/evidence/valoria-scene-breakthrough-20261016/BLOCKOUT_REVIEW.md"
+      ],
+      "historical_sources": [
+        {
+          "ref": "experiment/valoria-scene-method-breakthrough-20261016",
+          "sha": "2f4e0a166d2ef18810ac0ef48b5bac5b089fc779",
+          "path": "docs/evidence/valoria-scene-breakthrough-20261016/BLOCKOUT_REVIEW.md",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/2f4e0a166d2ef18810ac0ef48b5bac5b089fc779/docs/evidence/valoria-scene-breakthrough-20261016/BLOCKOUT_REVIEW.md"
+        }
+      ],
+      "avoid": "Creer que una escena guardada es portable sin sus GUID.",
+      "conditions": "Método técnico genérico, no permiso para alterar proyectos en marcha.",
+      "run_ids": [
+        38946722924
+      ],
+      "provenance_level": "archived_primary_file_read"
+    },
+    {
+      "id": "K47",
+      "family": "operations",
+      "problem": "Se recupera parcialmente una escena World4X y se anuncia como trabajo completo.",
+      "recommended_route": "Registrar exactamente assets recuperados, hashes y estado parcial antes de reutilizar en Unity.",
+      "evidence_status": "historical_reference",
+      "art_status": "review_pending",
+      "observed_result": "Rama World4X incluye manifiesto PARTIAL_RECOVERY_NOT_COMPLETE con GLB/Unity/meta y SHA, pero no certificación artística global.",
+      "source_paths": [
+        "docs/world4x-zone1/PARTIAL_SOURCE_RECOVERY_20261014.json"
+      ],
+      "historical_sources": [
+        {
+          "ref": "prototype/world4x-zone1-zoom-reference-20261013",
+          "sha": "f3ccc8d0b7767472ef09b02c3091f6d676f204ee",
+          "path": "docs/world4x-zone1/PARTIAL_SOURCE_RECOVERY_20261014.json",
+          "https_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/f3ccc8d0b7767472ef09b02c3091f6d676f204ee/docs/world4x-zone1/PARTIAL_SOURCE_RECOVERY_20261014.json"
+        }
+      ],
+      "avoid": "Promover un paquete parcial sin comprobar faltantes ni ejecución.",
+      "conditions": "Comprobar objetos reales en `main` antes de copiar arte legado.",
+      "run_ids": [],
+      "provenance_level": "archived_primary_file_read"
     }
   ]
 }
