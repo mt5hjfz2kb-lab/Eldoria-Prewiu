@@ -48,7 +48,9 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -639,13 +641,11 @@
         "published": false
       },
       "release_lease": {
-        "purpose": "UI V3 WebGL revision 243, existing Valoria native workflow without art mutation",
-        "delegated_by": "Owner order to finish Eldoria UI V3 and prepare verified playtest",
-        "reserved_for": "valoria-reference-clean web_playtest and exact browser QA",
-        "release_condition": "After WebGL+QA completion or failure; no other Windows native jobs",
-        "status": "superseded_by_owner_UI87_sequence",
-        "released_at": "2026-10-21T12:38:05.412Z",
-        "evidence": "native243 run39592544222 completed SUCCESS; no active native Actions observed; current owner prioritizes PR87 before final WebGL QA"
+        "purpose": "Final UI V3 cinematic native244 WebGL and exact browser QA only",
+        "delegated_by": "Current owner instructs UI work takeover and completion; UI native 39605046441 SUCCESS",
+        "reserved_for": "Same existing Valoria native build and Chromium QA, no authoring or scene mutation",
+        "release_condition": "Release after exact final UI build/QA; preserve canonical art owner and sources",
+        "ui_executor": "codex-ui-v3-completion-takeover-20261021"
       }
     },
     {
@@ -680,13 +680,11 @@
         ".github/workflows/valoria-windows-chromium-qa.yml",
         "pipeline/playtest-delivery.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "PR87_CINEMATIC_NATIVE_VALIDATION",
-      "next": "Validate PR87 cinematic on current main + exact UI change; gate checks live exclusive UI lease and actual processes. Then visual inspection, merge, final WebGL QA and restricted delivery.",
+      "phase": "FINAL_UI_NATIVE244_WEBGL_BUILD",
+      "next": "Build exact canonical main containing accepted PR87, then same-byte Windows Chromium I-II and restricted itch release. No native243 pins or art changes.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
       "handoff": {
         "owner_instruction": "Asume tú los trabajos y organízalos",
@@ -718,7 +716,16 @@
         "evidence": "Unity Edit/Play, capturas reales horizontal/vertical, flujo I-II y persistencia; QA WebGL exacto y entrega verificada",
         "handoff": "Enlace jugable, SHA y evidencias; conservar arte y guardados"
       },
-      "delivery_sequence": "Existing canonical native workflow delegated for UI final build only, after PR87 accepted; then existing Chromium QA and restricted itch channel. No art/scene/package mutation, Android build, or old PR85 pins."
+      "delivery_sequence": "Existing canonical native workflow delegated for UI final build only, after PR87 accepted; then existing Chromium QA and restricted itch channel. No art/scene/package mutation, Android build, or old PR85 pins.",
+      "validation": {
+        "native_run": 39603905525,
+        "main_native_run": 39605046441,
+        "native_checks": 40,
+        "edit_mode": 20,
+        "play_mode": 36,
+        "artifact_id": 12347707207,
+        "visual_review": "Canonical full Aldric text and Continue label inspected in genuine portrait Unity render; landscape/contextual controls retained. No global art quality score."
+      }
     }
   ],
   "history": [
