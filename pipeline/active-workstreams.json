@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21",
+  "updated_at": "2026-10-21T19:24:04.636Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -50,13 +50,15 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NATIVE264_PASS_INDEPENDENT_IMAGE_REVIEW",
-      "next": "Native264 run39658026450 SUCCESS, artifact12373020171; review exact fresh15 A/B pairs before acceptance. Release shared Windows runner to isolated archived V4 rig probe.",
+      "phase": "NATIVE265_QWEN_GEOGRAPHY_PLAN_AND_TRIAL",
+      "next": "Native264 rejected visually despite technical PASS. Native265 uses installed local Qwen with pinned original screenshots to author bounded relief; preserve gameplay/cameras/POIs and inspect all matched A/B pairs before integration.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -701,7 +703,7 @@
           "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 12,
+      "ownership_revision": 13,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -719,7 +721,7 @@
         "handoff": "Exact source SHA, trial revision, tests and untouched canonical art; no APK/itch publication"
       },
       "active_runner_claim": {
-        "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
+        "purpose": "Native265 local Qwen geography plan and reversible city/world trial",
         "owner_authorized": "2026-10-21"
       },
       "runner_lease_note": "Same owner controls UI/general gate and art. Reserve NEXT serial native geography job, with existing main regression39655724743 preserved ahead; no cancellation or simultaneous editor use.",
@@ -739,7 +741,7 @@
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": "codex-three-workstreams-completion-20261021",
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -767,20 +769,18 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "V4_NUMERIC_SKIN_PASS_GPU_FRAME_CAPTURE_REPAIR",
+      "phase": "V4_UNITY_SKIN_PASS_ATTACK_LEG_VISUAL_REVIEW_PENDING",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Run39659567808 proved12bones/9863vertices/3textures/2.708s clip, deformation0.336879m and exact rest recovery. Image inspection found cached identical GPU frames; revision5 waits for actual player-loop updates and rejects identical captures. Integration source may be prepared but canonical scene untouched until visual acceptance.",
+      "next": "Run39660259305 passed actual distinct GPU captures,12bones/9863verts/3maps/2.708s and exact recovery. Independent view observes extended leg silhouette at attack; inspect animation before canonical integration. Scene untouched. Runner released to native265 artist geography.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -869,7 +869,13 @@
         "isolated_unity_import_tested": false,
         "mobile_profile_pass": false,
         "game_integrated": false,
-        "credits_new": 0
+        "credits_new": 0,
+        "unity_run": 39660259305,
+        "unity_artifact": 12374415423,
+        "archive_sha256": "bf5af059f2d7b9017abb045c034725b882f1318d14af92e940297f734f21b75b",
+        "gpu_frames_distinct": true,
+        "canonical_integrated": false,
+        "visual_acceptance": false
       },
       "blocker": {
         "dependency": "Current post-merge UI/main Unity gates hold shared Windows",
