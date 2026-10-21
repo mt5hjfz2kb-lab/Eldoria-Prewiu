@@ -39,7 +39,10 @@ jobs:
           git --version
       - uses: actions/checkout@v4
         with:
-          clean: false
+          # Dedicated checkout: never re-use or overwrite UI V3 or a previous
+          # self-hosted job's uncommitted canonical scene working tree.
+          path: spawnling-native-worktree
+          clean: true
           fetch-depth: 1
           filter: blob:none
           sparse-checkout-cone-mode: false
@@ -51,8 +54,13 @@ jobs:
             docs/evidence/spawnling-bastion2
       - name: Verify signed-off source and exclusive runner availability
         run: |
+          Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
           if($env:GITHUB_REF_NAME -ne 'art/spawnling-bastion2-finish-20261021'){throw 'Wrong work branch'}
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Dedicated worktree source SHA mismatch'}
+          git diff --exit-code -- 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
+          if($LASTEXITCODE -ne 0){throw 'Dedicated checkout canonical scene has local edits before integration'}
+          Write-Host 'SPAWNLING_DEDICATED_CHECKOUT_PRISTINE_CANONICAL_SCENE_PASS'
           $active=(Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json).active
           if(@($active|Where-Object {$_.id -eq 'eldoria-spawnling-bastion2-finish-20261021' -and $_.status -eq 'active'}).Count -ne 1){throw 'Spawnling workstream claim missing'}
           if(@($active|Where-Object {$_.id -ne 'eldoria-spawnling-bastion2-finish-20261021' -and $_.resources -contains 'windows-runner-heavy'}).Count -ne 0){throw 'Another workstream owns Windows runner'}
@@ -70,8 +78,9 @@ jobs:
           Write-Host 'SPAWNLING_B2_ZERO_CREDIT_PREFLIGHT_PASS'
       - name: Isolate known Unity 6.3 Editor Search-index startup corruption (CI only)
         run: |
+          Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
-          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $project=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree/Unity'
           $settings=Join-Path $project 'UserSettings/Search.index'
           $backup=Join-Path $env:RUNNER_TEMP "spawnling-search-settings-$env:GITHUB_RUN_ID.json"
           $created=Join-Path $env:RUNNER_TEMP "spawnling-search-created-$env:GITHUB_RUN_ID.flag"
@@ -101,9 +110,10 @@ jobs:
           Write-Host 'SPAWNLING_CI_SEARCH_INDEX_ISOLATED original settings preserved and temporary roots empty'
       - name: Import real PBR+LOD scene without changing game rules or hotspots
         run: |
+          Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
           $log=Join-Path $env:RUNNER_TEMP 'spawnling-unity-import.log'
-          $unityProject=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $unityProject=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree/Unity'
           $args=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',$unityProject,
             '-executeMethod','Eldoria.SpawnlingBastion2.Editor.SpawnlingBastion2Integration.Integrate',
             '-logFile',$log)
@@ -130,9 +140,10 @@ jobs:
           Write-Host 'SPAWNLING_B2_SAVED_SCENE_AND_REAL_UNITY_CAPTURES_PASS'
       - name: Replay exact canonical Bastion I-II buttons combat rewards and save
         run: |
+          Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
           $log=Join-Path $env:RUNNER_TEMP 'spawnling-unity-probe.log'
-          $unityProject=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $unityProject=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree/Unity'
           $args=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',$unityProject,
             '-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent',
             '-logFile',$log)
@@ -154,6 +165,7 @@ jobs:
           Write-Host "SPAWNLING_B2_FULL_I_II_PLAY_SAVE_PASS checks=$(@($e.checks).Count)"
       - name: Commit only isolated asset and saved game scene after green native QA
         run: |
+          Set-Location (Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree')
           $ErrorActionPreference='Stop'
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -171,7 +183,7 @@ jobs:
       - name: Restore original Unity Editor Search preferences and cache
         if: always()
         run: |
-          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $project=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree/Unity'
           $settings=Join-Path $project 'UserSettings/Search.index'
           $backup=Join-Path $env:RUNNER_TEMP "spawnling-search-settings-$env:GITHUB_RUN_ID.json"
           $created=Join-Path $env:RUNNER_TEMP "spawnling-search-created-$env:GITHUB_RUN_ID.flag"
@@ -190,6 +202,6 @@ jobs:
         with:
           name: spawnling-b2-unity-proof
           path: |
-            docs/evidence/spawnling-bastion2/
+            spawnling-native-worktree/docs/evidence/spawnling-bastion2/
           if-no-files-found: warn
           retention-days: 14
