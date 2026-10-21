@@ -64,6 +64,9 @@ public static class SpawnlingAnimatedQa
             Need(File.Exists(input),"Exact archived V4 GLB missing");
             result.source_sha256=Hash(input);Need(result.source_sha256==Expected,"V4 source digest mismatch");
             EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
+            var pipeline=AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>("Assets/QA/EldoriaMobileURP.asset");
+            Need(pipeline!=null,"Canonical mobile URP asset missing");
+            GraphicsSettings.defaultRenderPipeline=pipeline;QualitySettings.renderPipeline=pipeline;
             RenderSettings.ambientMode=AmbientMode.Flat;
             RenderSettings.ambientLight=new Color(.52f,.55f,.62f);
             var light=new GameObject("QA key light").AddComponent<Light>();
@@ -99,14 +102,14 @@ public static class SpawnlingAnimatedQa
                 var times=new[]{1f/24f,27f/24f,65f/24f};
                 var labels=new[]{"rest","swipe","return"};
                 var poses=new List<Vector3[]>();
-                var bounds=new Bounds();
+                var bounds=new Bounds();bool firstVertex=true;
                 for(int i=0;i<times.Length;i++)
                 {
                     clip.SampleAnimation(anim.gameObject,times[i]);
                     var vertices=Vertices(skins);poses.Add(vertices);
                     foreach(var v in vertices) {
                         Need(!float.IsNaN(v.x)&&!float.IsNaN(v.y)&&!float.IsNaN(v.z),"Nonfinite skin");
-                        if(i==0 && v==vertices[0])bounds=new Bounds(v,Vector3.zero);else bounds.Encapsulate(v);
+                        if(firstVertex){bounds=new Bounds(v,Vector3.zero);firstVertex=false;}else bounds.Encapsulate(v);
                     }
                 }
                 result.vertices=poses[0].Length;
