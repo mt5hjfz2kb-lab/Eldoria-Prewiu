@@ -2,7 +2,7 @@
 """Create REAL scene-aware Qwen artistic direction using local Ollama and versioned system role.
 Requires two genuine images; it does not execute Blender or certify art by itself.
 """
-import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,urllib.error,time
+import argparse,base64,hashlib,json,pathlib,urllib.request,urllib.parse,urllib.error,time,math
 from artist_plan_validation import inspect_artist_plan,bounded_repair_feedback,camera_footprint_errors
 from artistic_learning_feedback import (load_failed_cycles, feedback_for_failed_cycles,
                                         distinct_strategy_errors, select_journal_lessons,
@@ -10,6 +10,34 @@ from artistic_learning_feedback import (load_failed_cycles, feedback_for_failed_
 HERE=pathlib.Path(__file__).resolve().parent
 ALLOWED={'sculpt_region','reprofile_crest','sculpt_path','bridge_boundary_loops','construct_mesh','assign_material','place_existing_asset'}
 def digest(data):return hashlib.sha256(data).hexdigest()
+def creature_spatial_scale_errors(design,topology,kind):
+ """Keep Qwen creature edits local to real Blender geometry; no fabricated coordinates."""
+ if kind!='creature' or not isinstance(topology,dict) or not isinstance(design,dict):return []
+ bbox=topology.get('local_aabb') or {}
+ lo,hi=bbox.get('min'),bbox.get('max')
+ if not all(isinstance(v,list) and len(v)==3 and all(isinstance(n,(int,float)) and math.isfinite(n) for n in v) for v in (lo,hi)):
+  return ['CREATURE_SOURCE_BOUNDS_MISSING: no verified Blender source-local AABB']
+ diag=math.sqrt(sum((hi[k]-lo[k])**2 for k in range(3)))
+ if not .1<=diag<=100:return ['CREATURE_SOURCE_BOUNDS_INVALID: inspect scale before editing']
+ max_radius=.6*diag;max_delta=.18*diag
+ errors=[]
+ for op in design.get('planned_actions',[]):
+  if not isinstance(op,dict):continue
+  p=op.get('parameters') or {}
+  inputs=[p] if op.get('type')=='sculpt_region' else (p.get('knots') or []) if op.get('type')=='sculpt_path' else []
+  for one in inputs:
+   if not isinstance(one,dict):continue
+   radius=one.get('radius')
+   delta=one.get('delta')
+   if isinstance(radius,(int,float)) and math.isfinite(radius) and radius>max_radius:
+    errors.append(f'CREATURE_GLOBAL_SCULPT_REJECT: {radius:g}m radius exceeds real source anatomy bound {max_radius:.3f}m; target only head/back/tail/limbs.')
+   if isinstance(delta,list) and len(delta)==3 and all(isinstance(n,(int,float)) and math.isfinite(n) for n in delta):
+    mag=math.sqrt(sum(n*n for n in delta))
+    if mag>max_delta:
+     errors.append(f'CREATURE_GLOBAL_SHIFT_REJECT: {mag:.3f}m motion exceeds {max_delta:.3f}m safe source-relative movement; do not translate entire creature.')
+ return errors
+
+
 def prioritize_foreground_anchors(anchors,limit=14):
  """Favor source-verified SOUTH scarp nodes over misleading AABB extrema.
 
@@ -137,7 +165,7 @@ def main():
  memory=select_journal_lessons(journal.read_text('utf8'),1800) if journal.is_file() else 'NO PREVIOUS LEARNING JOURNAL AVAILABLE; record this limitation.'
  memory_hash=digest(journal.read_bytes()) if journal.is_file() else None
  if a.cpu_compact:
-  inventory=inventory[:1800]
+  inventory=inventory[:3200] if a.subject_kind!='terrain' else inventory[:1800]
   memory=memory[:1200]
  mesh_context='NO MESH TOPOLOGY MANIFEST; DO NOT GUESS VERTEX IDS FOR BRIDGE OPERATIONS.'
  mesh_context_sha=None
@@ -294,6 +322,7 @@ def main():
   if design is not None:
    errors.extend(inspect_artist_plan(design,a.target_object,a.target_mode,a.max_actions,
       topology if a.mesh_context else None,require_geometry=a.cpu_compact,require_camera_effect=a.cpu_compact and a.subject_kind=='terrain' and a.target_mode=='existing'))
+   errors.extend(creature_spatial_scale_errors(design,topology if a.mesh_context else None,a.subject_kind))
    errors.extend(distinct_strategy_errors(design,failures))
    errors.extend(camera_footprint_errors(design,a.camera_min_radius,a.camera_min_displacement))
   log={'attempt':attempt_index+1,'model':a.model,'request_prompt_sha256':digest(payload['messages'][-1]['content'].encode('utf8')),
@@ -311,7 +340,12 @@ def main():
   if attempt_index>=a.repair_attempts:
    raise ValueError('Local Qwen artist plan rejected without executable geometry after '
     +str(len(attempts))+' honest authored attempts; errors: '+' | '.join(errors[:8]))
-  feedback=bounded_repair_feedback(errors)
+  feedback=bounded_repair_feedback(errors) if a.subject_kind=='terrain' else (
+   'Your previous CREATURE/PROP plan is REJECTED; no geometry was executed. '+
+   ' | '.join(errors[:8])+
+   '. Use REAL original Blender mesh-local anatomical coordinates and small source-proportional effects. '
+   'Choose a specific head, back, tail or limb edit; never translate the entire animal or model cliffs. '
+   'Return COMPLETE typed JSON with planned_actions ARRAY, not made-up mesh faces.')
   # The model, never Python, must propose a different correction; original source
   # images and versioned SYSTEM role remain in the SAME conversation.
   payload['messages'].append({'role':'assistant','content':raw_content[:2400]})
