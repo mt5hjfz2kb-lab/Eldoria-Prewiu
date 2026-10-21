@@ -84,18 +84,21 @@ def animate_v4(arm):
     scene.frame_set(1)
 
 def corrected_limb_weights(point,center,scale,original_weights=V1.weights):
-    """V4.1 technical weight repair from measured source mesh connectivity.
+    """V4.2 technical weight repair from measured source mesh connectivity.
     Feet occupy normalized x<=.13 below z=-.15; forearms start x>=.20.
     Original x>-.01 split incorrectly bound toes to a swiping arm.
-    Smoothly transfer that existing influence to the same-side leg; keep
+    Transfer only below the measured upper-leg separation; never change
+    the original shoulder/upper-arm weights. Smoothly transfer that influence to the same-side leg; keep
     positions, topology, bones, poses, materials and total weight unchanged.
     """
     ws=original_weights(point,center,scale)
     x=(point[0]-center[0])/scale[0]
-    blend=V3.smoother((x-.14)/.12)
+    blend=V3.smoother((x-.14)/.06)
+    z=(point[2]-center[2])/scale[2]
+    lower_leg=V3.smoother((-.10-z)/.10)
     for side in ("L","R"):
         arm=side+"_arm";leg=side+"_leg"
-        transferred=ws.get(arm,0.0)*(1.0-blend)
+        transferred=ws.get(arm,0.0)*(1.0-blend)*lower_leg
         if transferred:
             ws[arm]-=transferred
             ws[leg]=ws.get(leg,0.0)+transferred
@@ -174,7 +177,7 @@ def main():
     bpy.ops.wm.save_as_mainfile(filepath=str(blend))
     poses=V1.render_proof(str(out),center,scale,[1,10,19,27,34,46,65])
     report={
-        "schema_version":4,"asset":"spawnling","weight_revision":"V4.1_FOOT_ARM_SEPARATION",
+        "schema_version":4,"asset":"spawnling","weight_revision":"V4.2_FOOT_ARM_SEPARATION",
         "foot_motion":feet,
         "status":"V4_BLENDER_TECH_CANDIDATE_INDEPENDENT_ART_REVIEW_REQUIRED",
         "source_sha256":a.source_sha256,"source_unchanged":V1.digest(str(source))==a.source_sha256,
