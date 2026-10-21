@@ -38,19 +38,27 @@ namespace Eldoria.SpawnlingBastion2.Editor
             Need(renderers.Length>0,"Renderer set empty");var b=renderers[0].bounds;
             foreach(var r in renderers.Skip(1))b.Encapsulate(r.bounds);return b;
         }
-        // Fit the actual sampled vertices, never glTF skin culling bounds.
+        // Measure actual world vertices with the skinning matrices, avoiding
+        // BakeMesh's scale-dependent coordinate conversion under scaled ancestors.
         static Bounds GeometryBounds(Renderer[] renderers){
             Bounds bounds=default;bool first=true;
             foreach(var renderer in renderers){
-                Mesh baked=null;
                 var skin=renderer as SkinnedMeshRenderer;
-                var mesh=skin? (baked=new Mesh()):renderer.GetComponent<MeshFilter>().sharedMesh;
-                if(skin)skin.BakeMesh(baked,false);
-                foreach(var vertex in mesh.vertices){
-                    var point=renderer.transform.TransformPoint(vertex);
+                var mesh=skin?skin.sharedMesh:renderer.GetComponent<MeshFilter>().sharedMesh;
+                var vertices=mesh.vertices;
+                var weights=skin?mesh.boneWeights:null;
+                var matrices=skin?skin.bones.Select((bone,index)=>bone.localToWorldMatrix*mesh.bindposes[index]).ToArray():null;
+                for(int i=0;i<vertices.Length;i++){
+                    Vector3 point;
+                    if(skin){
+                        var w=weights[i];var v=vertices[i];
+                        point=matrices[w.boneIndex0].MultiplyPoint3x4(v)*w.weight0+
+                            matrices[w.boneIndex1].MultiplyPoint3x4(v)*w.weight1+
+                            matrices[w.boneIndex2].MultiplyPoint3x4(v)*w.weight2+
+                            matrices[w.boneIndex3].MultiplyPoint3x4(v)*w.weight3;
+                    }else point=renderer.transform.TransformPoint(vertices[i]);
                     if(first){bounds=new Bounds(point,Vector3.zero);first=false;}else bounds.Encapsulate(point);
                 }
-                if(baked)Object.DestroyImmediate(baked);
             }
             Need(!first,"No actual geometry to fit");return bounds;
         }

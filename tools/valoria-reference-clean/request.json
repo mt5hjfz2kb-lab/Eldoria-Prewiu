@@ -1,7 +1,7 @@
 {
   "stage": "spawnling_animated_integrate",
   "validate_play": false,
-  "revision": 279,
+  "revision": 280,
   "budget_eur": 0,
   "validated_runtime_source": "623de76ca7a7742d59e97c3b5a160de75e68af89",
   "validated_run": 39666405366,
