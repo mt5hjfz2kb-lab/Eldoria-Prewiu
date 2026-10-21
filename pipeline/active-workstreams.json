@@ -700,8 +700,8 @@
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-eldoria-tripo-replay-review-20261021",
-      "ownership_revision": 5,
+      "owner": "chatgpt-eldoria-tripo-rig-continuation-20261021",
+      "ownership_revision": 6,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -724,19 +724,24 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "ISOLATED_ZERO_CREDIT_BLENDER_RIG_FEASIBILITY",
+      "phase": "ISOLATED_FREE_BLENDER_RIG_QA_RECOVERY",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Rig check zero-credit execution or documented access blocker, plus authenticated detailed asset profile and testable input binding to existing Qwen artist; retain game untouched.",
         "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
-      "next": "Author isolated zero-credit Blender skeletal deformation pilot on exact existing Spawnling LOD GLB, verify weighted bones + animation and preserve proof. No Tripo paid operations, no Unity, no scene or saved state changes.",
+      "next": "Recover failed Blender rig candidate from run39642306967 (scene.world None in render) by fixing only isolated script, rerun exact hosted CI; preserve in-progress Qwen run39641404559 and consume result read-only, no duplicate Qwen or Tripo request.",
       "handoff_note": "Owner explicitly requested continue same Tripo+art-brain job; no active phase2 job at claim time. Do not touch Valoria scene or runner. Previous chat may not be remotely interrupted: re-read live registry before any further writes.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
       "previous_owner": "chatgpt-eldoria-tripo-brain-chat-recovery-20261021",
-      "coordination_note": "Explicit user request to continue exact prior Tripo work; read main and claim revision before mutating. Other chats must reread registry. Valoria retains windows-runner-heavy."
+      "coordination_note": "Explicit user request to continue exact prior Tripo work; read main and claim revision before mutating. Other chats must reread registry. Valoria retains windows-runner-heavy.",
+      "last_owner_handoff": {
+        "date": "2026-10-21",
+        "reason": "Propietario solicita continuar el trabajo desde streaming interrumpido; un único ID canónico, sin detener trabajos existentes.",
+        "recovery_source_run": 39642306967
+      }
     },
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
