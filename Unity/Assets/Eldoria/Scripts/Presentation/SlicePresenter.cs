@@ -708,6 +708,7 @@ namespace Eldoria.Presentation
                 }
             }
             RefreshBuildingPanelClock(s);
+            if(id=="barracks"&&s.BarracksLevel>0)ApplyManagementScreen(true);
 #if UNITY_WEBGL && !UNITY_EDITOR
             StartCoroutine(LogPlayableButtonCenterNextFrame("buildingAction",buildingAction));
             StartCoroutine(LogPlayableButtonCenterNextFrame("buildingClose",buildingPanel.transform.Find("Cerrar")?.GetComponent<Button>()));
@@ -769,7 +770,7 @@ namespace Eldoria.Presentation
 
         void RefreshBuildingPanelClock(PlayerState s)
         {
-            if(buildingPanel==null||!buildingPanel.activeInHierarchy||string.IsNullOrEmpty(currentBuildingId))return;
+            if(buildingPanel==null||(!buildingPanel.activeInHierarchy&&(managementScreen==null||!managementScreen.activeInHierarchy))||string.IsNullOrEmpty(currentBuildingId))return;
             if(currentBuildingId=="bastion"&&s.BastionUpgradeCompletesUtcTicks>0)
             {
                 int left=Math.Max(0,(int)Math.Ceiling((s.BastionUpgradeCompletesUtcTicks-UtcNowTicks())/(double)TimeSpan.TicksPerSecond));
@@ -791,7 +792,7 @@ namespace Eldoria.Presentation
                 buildingAction.GetComponentInChildren<Text>().text="CONSTRUYENDO · "+seconds+" s";
                 buildingAction.interactable=false;
             }
-            ApplyManagementScreen(id=="barracks"&&s.BarracksLevel>0);
+            
         }
 
         void OpenMarchPanel()
