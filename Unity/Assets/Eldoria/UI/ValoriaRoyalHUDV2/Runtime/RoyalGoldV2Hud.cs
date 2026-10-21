@@ -230,8 +230,10 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = safe.rect.width, height = safe.rect.height;
             if (width < 120 || height < 120) return;
             portrait = height > width;
-            float goalWidth = Mathf.Min(portrait ? width - 28f : 330f, width - 26f);
-            float goalTop = portrait ? 150f : 106f;
+            float goalWidth = Mathf.Min(portrait ? 382f : 330f, width - 26f);
+            // Existing header/resources/feedback occupy up to 280 units
+            // on a portrait handset; never place the chapter over them.
+            float goalTop = portrait ? 291f : 136f;
             Top(objectiveCard, portrait ? 14 : 18, goalTop, goalWidth, 119f);
             Top(chapterText.rectTransform, 13, 9, goalWidth - 114, 22);
             chapterText.fontSize = 17;
