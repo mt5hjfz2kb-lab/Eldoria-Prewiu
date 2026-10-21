@@ -15,12 +15,12 @@ namespace Eldoria.UI.RoyalGold.V2
         public bool Primary;
         public bool DecorativeCorners = true;
 
-        private static readonly Color Shadow = new Color(.006f, .012f, .021f, .93f);
-        private static readonly Color RimLow = new Color(.30f, .24f, .16f, 1f);
-        private static readonly Color RimHigh = new Color(.81f, .67f, .40f, 1f);
+        private static readonly Color Shadow = new Color(.006f, .012f, .021f, .80f);
+        private static readonly Color RimLow = new Color(.27f, .21f, .125f, 1f);
+        private static readonly Color RimHigh = new Color(.79f, .64f, .365f, 1f);
         private static readonly Color Edge = new Color(.065f, .095f, .135f, 1f);
-        private static readonly Color Ink = new Color(.038f, .055f, .088f, .965f);
-        private static readonly Color Slate = new Color(.071f, .108f, .175f, .975f);
+        private static readonly Color Ink = new Color(.029f, .046f, .077f, .865f);
+        private static readonly Color Slate = new Color(.065f, .105f, .159f, .925f);
         private static readonly Color ActionBase = new Color(.082f, .172f, .265f, 1f);
         private static readonly Color ActionTop = new Color(.13f, .30f, .435f, 1f);
 
