@@ -173,6 +173,9 @@ namespace Eldoria.ReferenceClean {
      else camera.transform.position+=shift;
     }else break;
    }
+   // Reproject once after a native synchronous camera adjustment; the
+   // existing capture harness renders in the same frame without LateUpdate.
+   var v3=Hud.GetComponent<RoyalGoldV3ContextHud>();if(v3)v3.SynchronizeNow();
   }
   /// <summary>Checks every visible model-bound corner against the actual unoccluded UI viewport.</summary>
   public bool IsTargetFramed(GameObject target,out Rect projected,out Rect visible){
