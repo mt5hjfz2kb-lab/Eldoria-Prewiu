@@ -105,6 +105,53 @@ jobs:
           $version = & $env:UNITY_EDITOR_PATH -version
           if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
 
+      - name: Work around verified Unity 6.3 Search-index startup corruption without changing art
+        shell: powershell
+        run: |
+          # Reuse the proven valoria-reference-clean native-editor recovery:
+          # UnityEditor.Search.SearchDatabase.IndexationOnStartup threw
+          # ArgumentOutOfRangeException on the exact V3 candidate in run 39564761151.
+          # This alters only temporary editor preferences/cache, never assets,
+          # gameplay, scene bytes, source, progression, or owner saves.
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-original-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-created-$env:GITHUB_RUN_ID.flag"
+          if(Test-Path $backup -or Test-Path $created){
+            throw 'Existing current-run Search-index backup must be reconciled before rerun'
+          }
+          if(Test-Path $settings){
+            Copy-Item -LiteralPath $settings -Destination $backup
+            try{$config=Get-Content -LiteralPath $settings -Raw -Encoding UTF8|ConvertFrom-Json -ErrorAction Stop}
+            catch{throw 'Original Unity Editor Search.index malformed; preserve original and refuse blind replacement'}
+            if($config.PSObject.Properties['roots']){
+              $config.roots=@()
+              $config|ConvertTo-Json -Depth 32|Set-Content $settings -Encoding UTF8
+            }
+          }else{
+            New-Item -ItemType Directory -Force (Split-Path $settings)|Out-Null
+            $config=[ordered]@{
+              name='Assets';type='asset';roots=@();includes=@();
+              excludes=@('Assets/Temp/','Assets/External/','Temp/')
+              options=@{disabled=$false;types=$true;properties=$true;extended=$true;dependencies=$true}
+              baseScore=999
+            }
+            $config|ConvertTo-Json -Depth 16|Set-Content $settings -Encoding UTF8
+            'created only for V3 CI'|Set-Content $created -Encoding ASCII
+          }
+          $current=Get-Content $settings -Raw -Encoding UTF8|ConvertFrom-Json
+          if($current.PSObject.Properties['roots'] -and @($current.roots).Count -ne 0){
+            throw 'Editor-only search index roots must be empty during V3 validation'
+          }
+          $cache=Join-Path $project 'Library/Search'
+          $cacheBackup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-cache-$env:GITHUB_RUN_ID"
+          if(Test-Path $cacheBackup){throw 'Existing same-run Search cache backup must not be overwritten'}
+          if(Test-Path $cache){
+            Move-Item -LiteralPath $cache -Destination $cacheBackup -ErrorAction Stop
+            Write-Host "ELDORIA_V3_SEARCH_CACHE_ISOLATED $cacheBackup"
+          }
+          Write-Host "ELDORIA_V3_PROVEN_SEARCH_INDEX_RECOVERY_APPLIED"
+
       - name: Capture and validate existing real integrated I-II scene in Unity
         shell: powershell
         run: |
@@ -214,6 +261,34 @@ jobs:
           Write-Host "PLAYMODE_TOTAL=$($play.'test-run'.total) PASSED=$($play.'test-run'.passed) FAILED=$($play.'test-run'.failed)"
           Write-Host "REFERENCE_UI_TEST=ReferenceUiArtPassTests"
           Write-Host "PROGRESSION_TEST=ValoriaProgressionContractGatesCuartelVisualAndInteraction"
+
+      - name: Restore original Unity Editor Search preferences and cache after native checks
+        if: always()
+        shell: powershell
+        run: |
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-original-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-created-$env:GITHUB_RUN_ID.flag"
+          if(Test-Path $backup){
+            Copy-Item -LiteralPath $backup -Destination $settings -Force
+            Write-Host 'Original Unity Search.index restored without rewriting source'
+          }elseif(Test-Path $created){
+            if(Test-Path $settings){Remove-Item -LiteralPath $settings -Force}
+            Write-Host 'Temporary Unity Search.index removed; original did not exist'
+          }
+          $cache=Join-Path $project 'Library/Search'
+          $cacheBackup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-cache-$env:GITHUB_RUN_ID"
+          if(Test-Path $cacheBackup){
+            if(Test-Path $cache){
+              $post=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-new-$env:GITHUB_RUN_ID"
+              if(Test-Path $post){throw 'Refuse overwriting an existing post-validation Search cache'}
+              Move-Item -LiteralPath $cache -Destination $post -ErrorAction Stop
+            }
+            Move-Item -LiteralPath $cacheBackup -Destination $cache -ErrorAction Stop
+            Write-Host 'Existing Editor Search cache restored; temporary new index isolated'
+          }
+          Write-Host 'ELDORIA_V3_EDITOR_SEARCH_RECOVERY_RESTORED'
 
       - uses: actions/upload-artifact@v4
         if: always()
