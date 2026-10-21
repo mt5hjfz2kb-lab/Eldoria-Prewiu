@@ -19,12 +19,13 @@
     "original_bastion_i_ii_runtime_play_save"
   ],
   "owner_authorization": "2026-10-21 user explicitly requested finishing and replacing the Bastion II enemy silhouette in-game; no additional monetized Tripo generation.",
-  "stage_revision": 6,
-  "preflight_description": "Use a dedicated new working tree (spawnling-native-worktree) to guarantee exact Git SHA and pristine canonical Unity scene. Do not reuse any UI/earlier dirty scene in the shared self-hosted checkout. Compile/import existing near/far GLB, camera A/B, I-II save QA, no paid credits.",
+  "stage_revision": 7,
+  "preflight_description": "Actual Unity 39576101372 confirmed existing canonical named visual Zone1 authored engendro-valoria; preserve node/hotspot/physics and disable old mesh renderers, integrate finished Tripo visual under unique name, matched player camera A/B; use isolated clean worktree.",
   "executor_safety": {
     "shared_windows_runner": "single serial concurrency group, never cancel running processes",
     "paid_credits": 0,
     "auto_publish": false,
     "canonical_ui_v3": "preserve PR #83"
-  }
+  },
+  "failure_repair_source_run": 39576101372
 }
