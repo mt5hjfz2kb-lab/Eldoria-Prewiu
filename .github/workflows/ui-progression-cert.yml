@@ -29,6 +29,9 @@ concurrency:
 jobs:
   certify:
     if: vars.UNITY_RUNNER_READY == 'true'
+    # Use disposable probe-only saves for EVERY native UI test on the owner's PC.
+    env:
+      VALORIA_GAMEPLAY_PROBE: '1'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     steps:
