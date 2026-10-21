@@ -40,7 +40,15 @@ namespace Eldoria.UI.RoyalGold.V2
             r.sizeDelta = new Vector2(Mathf.Max(0, w), Mathf.Max(0, h));
         }
 
-        private void OnDisable() => Restore();
+        // Canvas dimensions also change during offscreen native captures and
+        // phone rotation between LateUpdate and rendering. Reflow from the
+        // actual current canvas before it is drawn, not last frame's width.
+        private void OnEnable() => Canvas.willRenderCanvases += SynchronizeNow;
+        private void OnDisable()
+        {
+            Canvas.willRenderCanvases -= SynchronizeNow;
+            Restore();
+        }
 
         private void Restore()
         {
@@ -115,7 +123,9 @@ namespace Eldoria.UI.RoyalGold.V2
             return true;
         }
 
-        private void LateUpdate()
+        private void LateUpdate() => SynchronizeNow();
+
+        public void SynchronizeNow()
         {
             if (!Application.isPlaying || !Source) return;
             if (!Source.NarrativeOpen)
