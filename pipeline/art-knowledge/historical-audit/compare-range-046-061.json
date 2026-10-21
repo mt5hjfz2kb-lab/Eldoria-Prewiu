@@ -1,0 +1,869 @@
+{
+  "schema_version": 1,
+  "base": "main",
+  "offset": 46,
+  "items": [
+    {
+      "name": "eldoria-snapshot-20261008",
+      "sha": "bdeef4038d03a62dcc207c93005bbad868fd7909",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 2023,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "experiment/eldoria-three-visual-styles-20261017",
+      "sha": "b2b87d52fe297152669b7071777acdd3c7aa3115",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 47,
+      "behind": 1579,
+      "files_count": 98,
+      "total_commits": 47,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 98,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-gate-wall-showcase-unity.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/eldoria-three-styles-unity-capture.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/GateWallShowcase/Editor/GateWallShowcaseCapture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/01_FantasyStrategy.unity",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/01_FantasyStrategy.unity.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/02_DetailedMedieval.unity",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/02_DetailedMedieval.unity.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/03_ColorfulCastle.unity",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/03_ColorfulCastle.unity.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Editor.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Editor/ThreeVisualStylesCapture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Editor/ThreeVisualStylesCapture.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/README.md",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/VENDOR_LICENSES.md",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/ValoriaThreeStylesScene.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/ValoriaThreeStylesScene.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor/Kenney.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor/Kenney/castle.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor/Kenney/castle/Textures/colormap.png",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor/Kenney/castle/bridge-straight.glb",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor/Kenney/castle/bridge-straight.glb.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/ThreeVisualStyles/Vendor/Kenney/castle/flag-banner-long.glb",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity"
+      ]
+    },
+    {
+      "name": "experiment/valoria-63-clean-assembly-20261016",
+      "sha": "3939d495b357d36391555100c7539f8eb700e31e",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 0,
+      "behind": 1599,
+      "files_count": 0,
+      "total_commits": 0,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 0,
+      "highlights": [],
+      "families": []
+    },
+    {
+      "name": "experiment/valoria-63-clean-composition-20261016",
+      "sha": "47049355befde55a33b2358502f58176cc1ab548",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 31,
+      "behind": 1598,
+      "files_count": 300,
+      "total_commits": 31,
+      "too_large": false,
+      "suspect_truncation": true,
+      "art_path_count": 300,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria63-clean-scene.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria63-native-unity.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Editor/Valoria63CleanSceneBuilder.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00000.mat",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00000.mat.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00001.mat",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00001.mat.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00002.mat",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00002.mat.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00003.mat",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00003.mat.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00004.mat",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00004.mat.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00005.mat",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00005.mat.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00006.asset",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00006.asset.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00007.asset",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00007.asset.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00008.asset",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00008.asset.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00009.asset",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00009.asset.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/Valoria63CleanScene/Generated/00010.asset",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity"
+      ]
+    },
+    {
+      "name": "experiment/valoria-cliff-ai-authorship-ab-20261011",
+      "sha": "306f0d7e757573a95c15ef7ac3accc11ad16ba19",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 271,
+      "behind": 1933,
+      "files_count": 169,
+      "total_commits": 271,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 166,
+      "highlights": [
+        {
+          "path": ".github/workflows/art-glb-preflight.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-ai-mcp-geometry.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-art-brain-bridge.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-blender-agent-capability.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-blender-mcp-windows-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-cliff-ab-resume.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-cliff-ai-authorship-ab.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-curated-architecture.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-existing-assets-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-family-evidence-slim.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-first-asset-family-v1.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-first-hero-asset.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-fortification-family.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-gatehouse-reference.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-hero-v3-recover.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-local-ai-readiness.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-local-art-agent-source.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-local-vision-bootstrap.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-local-vision-lookdev.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mcp-tcp-proof.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mcp-transport-introspection.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mesh-only-preview.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mesh-only-prototype.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-mesh-only-unity-qa.yml",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "art-source",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "experiment/valoria-scene-breakthrough-20261016",
+      "sha": "f8a9d3ec03784386b396c79d985f5180825a59fb",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 1602,
+      "files_count": 5,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 5,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-scene-breakthrough.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BreakthroughCamera.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/BreakthroughCapture.cs",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-scene-breakthrough-20261016/DUPLICATE_SESSION_HANDOFF.md",
+          "status": "added"
+        },
+        {
+          "path": "tools/valoria-scene-breakthrough/run.json",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity",
+        "docs",
+        "tools"
+      ]
+    },
+    {
+      "name": "experiment/valoria-scene-method-breakthrough-20261016",
+      "sha": "2f4e0a166d2ef18810ac0ef48b5bac5b089fc779",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 13,
+      "behind": 1603,
+      "files_count": 300,
+      "total_commits": 13,
+      "too_large": false,
+      "suspect_truncation": true,
+      "art_path_count": 300,
+      "highlights": [
+        {
+          "path": ".github/workflows/valoria-scene-breakthrough.yml",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Blockout.unity",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Blockout.unity.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_FrozenBaseline_MatchedReview.unity",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_FrozenBaseline_MatchedReview.unity.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Hybrid25D_Final.unity",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Hybrid25D_Final.unity.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Hybrid3D.unity",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Hybrid3D.unity.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Hybrid3D_Final.unity",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/BastionI_Hybrid3D_Final.unity.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/CompareCapture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/CompareCapture.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/FinishCapture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/FinishCapture.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/HybridCapture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/HybridCapture.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/ReviewCandidate.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/ReviewCandidate.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/SceneCapture.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/SceneCapture.cs.meta",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/SceneMaterials.cs",
+          "status": "added"
+        },
+        {
+          "path": "Unity/Assets/Eldoria/ArtTests/SceneBreakthrough/Editor/SceneMaterials.cs.meta",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "Unity"
+      ]
+    },
+    {
+      "name": "experiment/valoria-v5-android-apk-20261012",
+      "sha": "2efd346034bdb89ae063406558f0343d753e489a",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 106,
+      "behind": 1883,
+      "files_count": 32,
+      "total_commits": 106,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 19,
+      "highlights": [
+        {
+          "path": ".github/workflows/eldoria-first-zone-webgl-audit.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-cliff-preserve-variant.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-cliff-unity-artist-variant.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-compact-experimental-webgl.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-first-zone-coherent-v5.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-first-zone-structural-candidate.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-first-zone-webgl-candidate.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-v3-unity-lookdev-probe.yml",
+          "status": "added"
+        },
+        {
+          "path": ".github/workflows/valoria-v5-android-apk.yml",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/variants/cliff-unity-v1/cliff_rocks-unity-v1.blend",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/variants/cliff-unity-v1/cliff_rocks-unity-v1.glb",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/variants/cliff-unity-v1/direction.json",
+          "status": "added"
+        },
+        {
+          "path": "art-source/valoria/variants/cliff-unity-v1/edit-proof.json",
+          "status": "added"
+        },
+        {
+          "path": "docs/UNITY_ART_FINISHING_PROFESSIONAL_PLAYBOOK.md",
+          "status": "modified"
+        },
+        {
+          "path": "docs/evidence/valoria-v3-unity-lookdev/ARTISTIC_REVIEW_V1.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-v3-unity-lookdev/INTEGRATION.md",
+          "status": "added"
+        },
+        {
+          "path": "docs/evidence/valoria-v3-unity-lookdev/RESULT.json",
+          "status": "added"
+        },
+        {
+          "path": "pipeline/active-workstreams.json",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-rd/valoria_cliff_unity_variant.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "art-source",
+        "docs",
+        "pipeline",
+        "tools"
+      ]
+    },
+    {
+      "name": "fix/artist-camera-scale-contract-20261013",
+      "sha": "f1aa38b6d128dc1d189f57f4ea54cdc62ecb36bf",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 4,
+      "behind": 1727,
+      "files_count": 4,
+      "total_commits": 4,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 3,
+      "highlights": [
+        {
+          "path": "tools/art-direction/ai-authoring/artist_plan_validation.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/author_brief.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/test_cpu_artist_schema.py",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        "tools"
+      ]
+    },
+    {
+      "name": "fix/artist-camera-schema-after-footprint-20261013",
+      "sha": "85f2d3e2d1e3d82817d41b303f6ccadc4c4e983b",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 3,
+      "behind": 1726,
+      "files_count": 3,
+      "total_commits": 3,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 2,
+      "highlights": [
+        {
+          "path": "tools/art-direction/ai-authoring/author_brief.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/test_cpu_artist_schema.py",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        "tools"
+      ]
+    },
+    {
+      "name": "fix/artist-evidence-learning-gate-20261013",
+      "sha": "0af5f68f19247e40a48caab98609fc269c197237",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 11,
+      "behind": 1731,
+      "files_count": 5,
+      "total_commits": 11,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 4,
+      "highlights": [
+        {
+          "path": ".github/workflows/art-production-governance.yml",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/artistic_learning_feedback.py",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/author_brief.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/test_artistic_learning_feedback.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "tools"
+      ]
+    },
+    {
+      "name": "fix/artist-last-four-camera-failure-memory-20261013",
+      "sha": "af9e4ef39660249385a516b223cfa861f8d5629c",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 4,
+      "behind": 1725,
+      "files_count": 3,
+      "total_commits": 4,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 2,
+      "highlights": [
+        {
+          "path": "tools/art-direction/ai-authoring/artistic_learning_feedback.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/test_artistic_learning_feedback.py",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        "tools"
+      ]
+    },
+    {
+      "name": "fix/artist-strategy-schema-20261013",
+      "sha": "4d928620cb83dde9dad0d4e62a34c3d37a982a8c",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 1728,
+      "files_count": 5,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 4,
+      "highlights": [
+        {
+          "path": "tools/art-direction/ai-authoring/artistic_learning_feedback.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/author_brief.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/test_artistic_learning_feedback.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/test_cpu_artist_schema.py",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        "tools"
+      ]
+    },
+    {
+      "name": "fix/artist-unity-ab-visual-proof-20261013",
+      "sha": "e03740bb315bd35ebaadb727ee9a0a447580f12c",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 1731,
+      "files_count": 5,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 3,
+      "highlights": [
+        {
+          "path": "tools/art-direction/ai-authoring/unity_pixel_diff.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/verify-artist-cycle.mjs",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        "tools"
+      ]
+    },
+    {
+      "name": "fix/artist-unity-visual-gate-reconcile-20261013",
+      "sha": "cf0829a2d9fb63d1041181ada39ff7bc0bc0f33e",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 1729,
+      "files_count": 5,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 3,
+      "highlights": [
+        {
+          "path": "tools/art-direction/ai-authoring/unity_pixel_diff.mjs",
+          "status": "added"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/verify-artist-cycle.mjs",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs",
+          "status": "modified"
+        }
+      ],
+      "families": [
+        "tools"
+      ]
+    },
+    {
+      "name": "fix/artist-visible-camera-footprint-20261013",
+      "sha": "2bec82605603b56f173e3b210c710ba24e6d81ea",
+      "audit": "github_compare_main_to_archived_sha",
+      "ahead": 5,
+      "behind": 1727,
+      "files_count": 5,
+      "total_commits": 5,
+      "too_large": false,
+      "suspect_truncation": false,
+      "art_path_count": 4,
+      "highlights": [
+        {
+          "path": ".github/workflows/art-production-governance.yml",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/artist_plan_validation.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/author_brief.py",
+          "status": "modified"
+        },
+        {
+          "path": "tools/art-direction/ai-authoring/test_camera_footprint_contract.py",
+          "status": "added"
+        }
+      ],
+      "families": [
+        ".github",
+        "tools"
+      ]
+    }
+  ]
+}
