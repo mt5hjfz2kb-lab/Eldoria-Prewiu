@@ -283,7 +283,7 @@ namespace Eldoria.ReferenceClean.Editor
             const int size = 128;
             float[,] result = new float[size, size];
             var sources = host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
-                .Where(m => m.enabled && m.gameObject.activeInHierarchy &&
+                .Where(m => m.enabled &&
                 (m.name.IndexOf("Conifer", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  m.name.IndexOf("pine", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  m.name.IndexOf("understory", StringComparison.OrdinalIgnoreCase) >= 0))
@@ -345,7 +345,6 @@ namespace Eldoria.ReferenceClean.Editor
             next.name = "Region1 continuous authored macrorelief / original 4X topology";
             var v = original.vertices;
             var warped = new Vector3[v.Length];
-            var uv = new Vector2[v.Length];
             var b = source.GetComponent<Renderer>().bounds;
             Need(b.size.x > 100 && b.size.z > 100, "Unexpected Region1 real terrain extent");
             for (int i = 0; i < v.Length; i++)
@@ -361,16 +360,67 @@ namespace Eldoria.ReferenceClean.Editor
                 float deltaY = anchor * (rolling + geology);
                 Vector3 altered = world + Vector3.up * deltaY;
                 warped[i] = source.transform.InverseTransformPoint(altered);
-                uv[i] = new Vector2((world.x - b.min.x) / b.size.x,
-                                    (world.z - b.min.z) / b.size.z);
             }
             next.vertices = warped;
-            next.uv = uv;
+            Need(next.uv.SequenceEqual(original.uv), "Region1 source UV atlas changed");
             next.RecalculateNormals();
             next.RecalculateBounds();
             Need(next.triangles.Length == original.triangles.Length &&
                 next.vertexCount == original.vertexCount, "World topology changed");
             return next;
+        }
+
+        static Vector3[] OriginalUvWorldMapping(MeshFilter filter, Material originalMaterial)
+        {
+            var uv = filter.sharedMesh.uv;
+            var verts = filter.sharedMesh.vertices;
+            Need(uv.Length == verts.Length && verts.Length >= 100,
+                "Real world UV/source mesh cardinality mismatch");
+            Vector2 tiling = originalMaterial.GetTextureScale("_BaseMap");
+            Vector2 offset = originalMaterial.GetTextureOffset("_BaseMap");
+            Need((tiling - Vector2.one).sqrMagnitude < .0001f && offset.sqrMagnitude < .0001f,
+                "Repeating UV atlas cannot carry geographic masks without road displacement");
+            int n = uv.Length;
+            double su=0,sv=0,sx=0,sz=0;
+            float umin=float.MaxValue,umax=float.MinValue,vmin=float.MaxValue,vmax=float.MinValue;
+            for(int i=0;i<n;i++)
+            {
+                Vector3 p=filter.transform.TransformPoint(verts[i]);
+                su+=uv[i].x;sv+=uv[i].y;sx+=p.x;sz+=p.z;
+                umin=Mathf.Min(umin,uv[i].x);umax=Mathf.Max(umax,uv[i].x);
+                vmin=Mathf.Min(vmin,uv[i].y);vmax=Mathf.Max(vmax,uv[i].y);
+            }
+            Need(umin>=-.005f&&umax<=1.005f&&vmin>=-.005f&&vmax<=1.005f,
+                "UVs exceed one unique world atlas; reject rather than move original paths");
+            double mu=su/n,mv=sv/n,mx=sx/n,mz=sz/n;
+            double uu=0,vv=0,uvv=0,ux=0,vx=0,uz=0,vz=0;
+            for(int i=0;i<n;i++)
+            {
+                Vector3 p=filter.transform.TransformPoint(verts[i]);
+                double u=uv[i].x-mu,v=uv[i].y-mv;
+                uu+=u*u;vv+=v*v;uvv+=u*v;
+                ux+=u*(p.x-mx);vx+=v*(p.x-mx);
+                uz+=u*(p.z-mz);vz+=v*(p.z-mz);
+            }
+            double det=uu*vv-uvv*uvv;
+            Need(det>.0000001,"Degenerate world UV coverage");
+            double ax=(ux*vv-vx*uvv)/det,bx=(vx*uu-ux*uvv)/det;
+            double az=(uz*vv-vz*uvv)/det,bz=(vz*uu-uz*uvv)/det;
+            double squared=0;
+            for(int i=0;i<n;i++)
+            {
+                Vector3 p=filter.transform.TransformPoint(verts[i]);
+                double dx=ax*uv[i].x+bx*uv[i].y+mx-ax*mu-bx*mv-p.x;
+                double dz=az*uv[i].x+bz*uv[i].y+mz-az*mu-bz*mv-p.z;
+                squared+=dx*dx+dz*dz;
+            }
+            double rmse=Math.Sqrt(squared/n);
+            Need(rmse<1.5,"Actual source UV not geographic/affine. Reject road/corruption remapping. RMS="+rmse);
+            Debug.Log("ELDORIA_REGION1_UV_WORLD_FIT_PASS rms="+rmse);
+            return new[] {
+                new Vector3((float)ax,(float)bx,(float)(mx-ax*mu-bx*mv)),
+                new Vector3((float)az,(float)bz,(float)(mz-az*mu-bz*mv))
+            };
         }
         static Texture2D AuthorWorldAlbedo(ValoriaIntegratedWorld host, MeshFilter source, out int trees)
         {
@@ -382,9 +432,8 @@ namespace Eldoria.ReferenceClean.Editor
             Texture diffuse = existing && existing.HasProperty("_BaseMap") ? existing.GetTexture("_BaseMap") :
                 existing && existing.HasProperty("_MainTex") ? existing.GetTexture("_MainTex") : null;
             Texture2D sample = ReadableTexture(diffuse);
-            Vector2[] originalUV = source.sharedMesh.uv;
-            float uMin = originalUV.Min(p => p.x), uMax = originalUV.Max(p => p.x);
-            float vMin = originalUV.Min(p => p.y), vMax = originalUV.Max(p => p.y);
+            Need(sample != null, "Original baked World4X roads/corruption albedo missing");
+            Vector3[] atlas = OriginalUvWorldMapping(source, existing);
             const int size = 1024;
             var result = new Texture2D(size, size, TextureFormat.RGB24, true, false)
             {
@@ -398,8 +447,10 @@ namespace Eldoria.ReferenceClean.Editor
                     for (int ix = 0; ix < size; ix++)
                     {
                         float u = ix / (size - 1f), v = iz / (size - 1f);
-                        float wx = Mathf.Lerp(bounds.min.x, bounds.max.x, u);
-                        float wz = Mathf.Lerp(bounds.min.z, bounds.max.z, v);
+                        float wx = atlas[0].x * u + atlas[0].y * v + atlas[0].z;
+                        float wz = atlas[1].x * u + atlas[1].y * v + atlas[1].z;
+                        float wu = (wx - bounds.min.x) / bounds.size.x;
+                        float wv = (wz - bounds.min.z) / bounds.size.z;
                         float micro = Mathf.PerlinNoise(wx * .59f + 9, wz * .59f + 37);
                         float warpX = (Mathf.PerlinNoise(wx * .075f + 8, wz * .075f + 10) - .5f) * 7f;
                         float warpZ = (Mathf.PerlinNoise(wx * .075f + 46, wz * .075f + 26) - .5f) * 7f;
@@ -407,24 +458,21 @@ namespace Eldoria.ReferenceClean.Editor
                         float quarry = 1f - Smooth(13f, 43f, PlanarDistance(warped, ids["quarry-valoria"]));
                         float corruption = Mathf.Max(1f - Smooth(18f, 42f, PlanarDistance(warped, ids["corrupt-scout"])),
                                                      1f - Smooth(16f, 40f, PlanarDistance(warped, ids["engendro-valoria"])));
-                        float treesFloor = Smooth(.18f, 1.1f, ReadDensity(forest, u, v));
-                        Color baseColor = sample ? sample.GetPixelBilinear(
-                                Mathf.Repeat(Mathf.Lerp(uMin, uMax, u), 1f),
-                                Mathf.Repeat(Mathf.Lerp(vMin, vMax, v), 1f)) :
-                                new Color(.55f, .59f, .32f);
-                        float variation = (Noise(wx, wz) - .5f) * .27f + (micro - .5f) * .045f;
+                        float treesFloor = Smooth(.18f, 1.1f, ReadDensity(forest, wu, wv));
+                        Color baseColor = sample.GetPixelBilinear(u, v);
+                        float variation = (Noise(wx, wz) - .5f) * .16f + (micro - .5f) * .025f;
                         baseColor *= 1f + variation;
                         // Author region-scale environmental continuity rather than a
                         // ring, flat blob, overlay decal or extra artificial prefabs.
                         baseColor = Color.Lerp(baseColor,
                             new Color(baseColor.r * .79f, baseColor.g * .91f, baseColor.b * .71f),
-                            treesFloor * .57f);
+                            treesFloor * .48f);
                         baseColor = Color.Lerp(baseColor,
                             new Color(baseColor.r * 1.03f, baseColor.g * .91f, baseColor.b * .79f),
-                            quarry * .65f);
+                            quarry * .36f);
                         baseColor = Color.Lerp(baseColor,
                             new Color(baseColor.r * .80f, baseColor.g * .80f, baseColor.b * .84f),
-                            corruption * .40f);
+                            corruption * .18f);
                         baseColor.a = 1f;
                         pixels[iz * size + ix] = baseColor;
                     }
@@ -498,13 +546,13 @@ namespace Eldoria.ReferenceClean.Editor
                 newCity = AuthorCityTerrain(city, terrain);
                 worldMesh = AuthorWorldMesh(ground, Hotspots(host));
                 albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
-                worldMat = new Material(Shader.Find("Universal Render Pipeline/Lit"))
-                    { name = "Region1 grounded biomes / editable URP PBR" };
+                var existingWorldMat = oldRenderer.sharedMaterial;
+                Need(existingWorldMat && existingWorldMat.HasProperty("_BaseMap"), "Original URP world material unavailable");
+                worldMat = new Material(existingWorldMat)
+                    { name = "Region1 original roads/biomes retained plus organic dressing" };
                 Need(worldMat.shader != null, "URP Lit shader unavailable");
                 worldMat.SetTexture("_BaseMap", albedo);
-                worldMat.SetColor("_BaseColor", Color.white);
-                worldMat.SetFloat("_Metallic", 0f);
-                worldMat.SetFloat("_Smoothness", .065f);
+                // Keep original tint/roughness/metallic/normal properties unchanged.
                 terrain.terrainData = newCity;
                 terrain.Flush();
                 terrainVisual = new GameObject("Region1 organic macrogeography / visual only");
@@ -531,7 +579,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Existing city TerrainLayers / continuous world-source 121x121 mesh plus biome albedo, reversible in Unity",
+                    method = "Exact retained authored UV atlas and baked roads/corruption; source-pinned inverse texture-to-world biome mapping and reversible city soil contacts",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
