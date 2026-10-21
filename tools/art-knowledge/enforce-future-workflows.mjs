@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 const ROOT='.github/workflows';
 const BASE='pipeline/art-knowledge/legacy-workflow-names-v1.json';
 export function checkNewQwenWorkflows(root,knownNames){
@@ -14,7 +15,7 @@ export function checkNewQwenWorkflows(root,knownNames){
  }
  return problems;
 }
-if(process.argv[1]&&path.resolve(process.argv[1])===new URL(import.meta.url).pathname){
+if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{
   const base=JSON.parse(fs.readFileSync(BASE,'utf8'));
   if(base.schema_version!==1||!Array.isArray(base.workflows)||base.workflows.length<150)
