@@ -5,6 +5,7 @@
 """Offline source preflight. Its sparse CI inputs retain every assertion below.
 
 This does not compile or launch the Unity player, or delete shared worktrees.
+The separate native PlayMode gate uses the existing disposable game fixture.
 """
 import json
 from pathlib import Path

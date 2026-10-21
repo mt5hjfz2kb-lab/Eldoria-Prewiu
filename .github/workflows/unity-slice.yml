@@ -10,7 +10,6 @@ on:
       - '!Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs'
       - '!Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
       - 'scripts/check_unity_slice.py'
-      - '.github/workflows/unity-slice.yml'
   workflow_dispatch:
 
 concurrency:
