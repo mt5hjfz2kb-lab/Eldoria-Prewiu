@@ -700,8 +700,8 @@
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-eldoria-tripo-rig-handoff-20261021",
-      "ownership_revision": 7,
+      "owner": "chatgpt-eldoria-rig-verified-delivery-20261021",
+      "ownership_revision": 8,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -725,15 +725,15 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "SPAWNLING_BLENDER_V2_ANIMATED_GESTURE_TECH_PASS_UNITY_ART_PENDING",
+      "phase": "RIG_V2_INDEPENDENT_VISUAL_REVIEW_AND_HANDOFF",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Reproducible improved idle/attack rig candidate with independent anatomy and animation QA; no Unity scene mutation, no Tripo credit spend.",
         "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
-      "next": "Run39646134910 PASS: exact original source + 8 skinned bones, 1 GLB clip AlertSwipe Recover with 7 real Blender poses, max strike deformation 0.344238m and exact loop return, 0 Tripo credits. Independent visual review flags stiff arms and broad torso deformation. Do not integrate until anatomical weight cleanup, actual Unity animated import/PlayMode and Android QA; Windows runner remains owned by UI V3.",
-      "handoff_note": "Owner explicitly requested continue same Tripo+art-brain job; no active phase2 job at claim time. Do not touch Valoria scene or runner. Previous chat may not be remotely interrupted: re-read live registry before any further writes.",
+      "next": "Inspeccionar imágenes reales de siete poses del artefacto v2, registrar dictamen independiente y seguridad del GLB; preparar importación aislada en Unity sin ocupar el runner reservado; cerrar la prueba aislada sin prometer integración jugable.",
+      "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
       "previous_owner": "chatgpt-eldoria-tripo-brain-chat-recovery-20261021",
@@ -772,7 +772,17 @@
         "art_approved": false,
         "physical_mobile_qa": false,
         "credits_added": 0
-      }
+      },
+      "ownership_history": [
+        {
+          "from": "chatgpt-eldoria-tripo-rig-handoff-20261021",
+          "to": "chatgpt-eldoria-rig-verified-delivery-20261021",
+          "date": "2026-10-21",
+          "reason": "El propietario vuelve a pedir continuar el mismo trabajo tras interrupción; verificar resultado v2, revisar 7 poses reales y preparar gate de importación sin invadir Unity ni gastar créditos.",
+          "revision": 8
+        }
+      ],
+      "write_scope_released": false
     },
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
