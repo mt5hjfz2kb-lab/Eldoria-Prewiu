@@ -1,11 +1,11 @@
 {
   "stage": "geography_trial",
   "validate_play": false,
-  "revision": 270,
+  "revision": 271,
   "budget_eur": 0,
   "validated_runtime_source": "623de76ca7a7742d59e97c3b5a160de75e68af89",
   "validated_run": 39666405366,
-  "checks": "Native269 stopped before geometry because actual artist responses omitted all city actions despite valid four world shoulders. Native270 schema requires separate city_actions(2-4) and world_actions(3-4), flattened only after inference; correction turn includes actual previous JSON. Preserve exact native268 feedback, all slope/contact/POI gates and0EUR. No integration.",
+  "checks": "Native270 provided both target arrays but four world heights failed5..16m range before geometry. Native271 typed target schemas now encode their own city/world coordinates, radii and height units, matching unchanged validator. Keep exact native268 feedback; all slope, source, contact and POI gates.0EUR,reversible trial only.",
   "art_correction": "Replace isolated peaks and decorative contact cutouts with connected low shoulders and actual noninteractive root seating.",
   "auxiliary_review": false,
   "stone_treatment": "all_pbr",
