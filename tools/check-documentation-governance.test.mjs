@@ -18,7 +18,7 @@ function fixture() {
 test('real repository catalog is internally consistent',()=>{
   const root=path.resolve(path.dirname(new URL(import.meta.url).pathname),'..');
   const tracked=process.env.ELDORIA_CI_TRACKED_TREE==='1' ?
-    new Set(execFileSync('git',['ls-tree','-r','--name-only','-z','HEAD'],{cwd:root,encoding:'utf8'}).split('\0').filter(Boolean)) : null;
+    new Set(execFileSync('git',['ls-tree','-r','--name-only','-z','HEAD'],{cwd:root,encoding:'utf8',maxBuffer:64*1024*1024}).split('\0').filter(Boolean)) : null;
   const result=auditDocs(root,tracked);
   assert.deepEqual(result.errors,[],result.errors.join('\n'));
   assert.ok(result.counts.catalogued>100);
