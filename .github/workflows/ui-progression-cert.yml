@@ -23,8 +23,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: eldoria-ui-progression-cert
-  cancel-in-progress: true
+  # Exact Unity certification must finish once started; branch updates should
+  # replace pending candidates rather than kill a running Windows Editor.
+  group: eldoria-ui-progression-cert-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
 
 jobs:
   certify:
