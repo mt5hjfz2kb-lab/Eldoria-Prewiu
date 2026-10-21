@@ -5,8 +5,8 @@ OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'es' Physical Memory: 16314 
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-10-21T20:24:00Z
-[Licensing::Module] Successfully launched the LicensingClient (PId: 41340)
+Date: 2026-10-21T20:44:02Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 30328)
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Unity.exe
@@ -58,31 +58,31 @@ C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-so
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [29408]  Target information:
+Player connection [30860]  Target information:
 
-Player connection [29408]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 3394423733 [EditorId] 3394423733 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [30860]  * "[IP] 192.168.1.45 [Port] 55504 [Flags] 2 [Guid] 1107089568 [EditorId] 1107089568 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [29408]  * "[IP] 169.254.83.107 [Port] 55504 [Flags] 2 [Guid] 3394423733 [EditorId] 3394423733 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [30860]  * "[IP] 169.254.83.107 [Port] 55504 [Flags] 2 [Guid] 1107089568 [EditorId] 1107089568 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-R10PE55) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [29408] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [29408] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [30860] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [30860] Host joined alternative multi-casting on [225.0.0.222:34997]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-21T20:24:01.0783909Z"
-[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 41340, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
-[Licensing::Module] LicensingClient has failed validation; ignoring
-[Package Manager] Connected to IPC stream "Upm-41124" after 0.2 seconds.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist" at "2026-10-21T20:44:03.0671618Z"
+[Package Manager] Connected to IPC stream "Upm-39184" after 0.2 seconds.
 [Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 30328, path: "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              af98961f82ce4496bb00f515eb03f425
-  Correlation Id:          11565c31205b3c2169e9cf012a40c58f
-  External correlation Id: 6814213972889574292
+  Session Id:              ce54fad20f0949dfb2a7e8104567f74a
+  Correlation Id:          3528fc9b85a85b27d23a7f8c28f14aaa
+  External correlation Id: 6224549491806803971
   Machine Id:              2f5r11GGPSmasE3evuSWjGpcpFg=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.27s, validation: 0.09s, handshake: 0.02s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-21T20:24:01.1932667Z"
-[Licensing::Module] Connected to LicensingClient (PId: 41340, launch time: 0.00, total connection time: 0.38s)
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-crist" (connect: 0.26s, validation: 0.04s, handshake: 0.34s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-crist-notifications" at "2026-10-21T20:44:03.4424046Z"
+[Licensing::Module] Connected to LicensingClient (PId: 30328, launch time: 0.00, total connection time: 0.63s)
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
@@ -92,8 +92,8 @@ Input System module state changed to: Initialized.
   Expiration: Unlimited
 [Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
 [Licensing::Client] Successfully resolved entitlement details
-[Licensing::Module] Licensing Background thread has ended after 0.41s
-[Licensing::Module] Licensing is initialized (took 0.06s).
+[Licensing::Module] Licensing Background thread has ended after 0.66s
+[Licensing::Module] Licensing is initialized (took 0.31s).
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
 FMOD initialized on nosound output
@@ -104,7 +104,7 @@ FMOD initialized on nosound output
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
 Targeting platform: Win64
-Refreshing native plugins compatible for Editor in 8.21 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 1.98 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Resources/UnitySubsystems
@@ -121,7 +121,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56124
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56184
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -134,8 +134,8 @@ Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 [Licensing::Client] Successfully resolved entitlement details
 Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.006067 seconds.
-- Loaded All Assemblies, in  0.386 seconds
+Registered in 0.005946 seconds.
+- Loaded All Assemblies, in  0.437 seconds
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
@@ -143,35 +143,35 @@ Native extension for WebGL target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.392 seconds
-Domain Reload Profiling: 776ms
-	BeginReloadAssembly (115ms)
+- Finished resetting the current domain, in  0.377 seconds
+Domain Reload Profiling: 812ms
+	BeginReloadAssembly (166ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (2ms)
+		CreateAndSetChildDomain (31ms)
 	RebuildCommonClasses (35ms)
 	RebuildNativeTypeToScriptingClass (13ms)
 	initialDomainReloadingComplete (47ms)
-	LoadAllAssembliesAndSetupDomain (173ms)
-		LoadAssemblies (112ms)
+	LoadAllAssembliesAndSetupDomain (174ms)
+		LoadAssemblies (124ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (170ms)
-			TypeCache.Refresh (168ms)
-				TypeCache.ScanAssembly (155ms)
+		AnalyzeDomain (171ms)
+			TypeCache.Refresh (169ms)
+				TypeCache.ScanAssembly (156ms)
 			BuildScriptInfoCaches (0ms)
 			ResolveRequiredComponents (0ms)
-	FinalizeReload (392ms)
+	FinalizeReload (377ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (357ms)
+		SetupLoadedEditorAssemblies (340ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (63ms)
+			InitializePlatformSupportModulesInManaged (64ms)
 			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (80ms)
-			ProcessInitializeOnLoadAttributes (128ms)
-			ProcessInitializeOnLoadMethodAttributes (81ms)
+			BeforeProcessingInitializeOnLoad (82ms)
+			ProcessInitializeOnLoadAttributes (120ms)
+			ProcessInitializeOnLoadMethodAttributes (70ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -179,45 +179,6 @@ Domain Reload Profiling: 776ms
 [Licensing::Client] Successfully resolved entitlement details
 Application.AssetDatabase Initial Refresh Start
 [Package Manager] Restoring resolved packages state from cache
-[Licensing::Client] Successfully resolved entitlement details
-[Package Manager] Registered 30 packages:
-  Packages from [https://package.openupm.com]:
-    com.netpyoung.webp@0.3.22 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.netpyoung.webp@e87336693c4a)
-  Packages from [https://packages.unity.com]:
-    com.unity.cloud.gltfast@6.14.1 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.cloud.gltfast@0847aee0f6da)
-    com.unity.inputsystem@1.17.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.inputsystem@02433b2481ab)
-    com.unity.burst@1.8.30 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.burst@2f3d916873ea)
-    com.unity.collections@2.6.8 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.collections@84e8eb3fc12e)
-    com.unity.mathematics@1.3.3 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.mathematics@19a9377c4ffa)
-    com.unity.searcher@4.9.5 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.searcher@a463122f2c00)
-    com.unity.nuget.mono-cecil@1.11.6 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
-    com.unity.test-framework.performance@3.5.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.test-framework.performance@8b56083ec0f0)
-  Built-in packages:
-    com.unity.modules.androidjni@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.androidjni)
-    com.unity.modules.assetbundle@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.assetbundle)
-    com.unity.modules.imageconversion@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.imageconversion)
-    com.unity.modules.terrainphysics@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.terrainphysics)
-    com.unity.modules.unitywebrequest@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.unitywebrequest)
-    com.unity.modules.unitywebrequesttexture@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
-    com.unity.render-pipelines.universal@17.3.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.render-pipelines.universal@7865b6b91f8a)
-    com.unity.test-framework@1.6.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.test-framework@bd7f943e9647)
-    com.unity.ugui@2.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.ugui@27635d171b1a)
-    com.unity.modules.ui@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.ui)
-    com.unity.modules.imgui@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.imgui)
-    com.unity.ext.nunit@2.0.5 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.ext.nunit@d8c07649098d)
-    com.unity.modules.jsonserialize@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.jsonserialize)
-    com.unity.render-pipelines.core@17.3.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.render-pipelines.core@0bb36005e9ba)
-    com.unity.shadergraph@17.3.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.shadergraph@b4b75cc00891)
-    com.unity.render-pipelines.universal-config@17.0.3 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d)
-    com.unity.modules.physics@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.physics)
-    com.unity.modules.terrain@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.terrain)
-    com.unity.modules.uielements@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.uielements)
-    com.unity.modules.hierarchycore@1.0.0 (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.unity.modules.hierarchycore)
-  Git packages:
-    com.arloopa.unitysplats@https://github.com/arloopa/UnitySplats.git (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.arloopa.unitysplats@6c0258189a2b)
-[Subsystems] No new subsystems found in resolved package list.
-[Package Manager] Done registering packages in 0.02 seconds
-[Package Manager] Done resolving packages in 2.60 seconds
 [Licensing::Client] Successfully resolved entitlement details
 [Package Manager] Registered 31 packages:
   Packages from [https://package.openupm.com]:
@@ -256,1016 +217,20 @@ Application.AssetDatabase Initial Refresh Start
   Git packages:
     com.arloopa.unitysplats@https://github.com/arloopa/UnitySplats.git (location: C:\actions-runner-eldoria\_work\Eldoria-Prewiu\Eldoria-Prewiu\valoria-layered-source\Unity\Library\PackageCache\com.arloopa.unitysplats@6c0258189a2b)
 [Subsystems] No new subsystems found in resolved package list.
-[Package Manager] Done registering packages in 0.00 seconds
+[Package Manager] Done registering packages in 0.01 seconds
 A meta data file (.meta) exists but its asset 'Assets/EmaceArt/Slavic World Free/URP_Support/URP/URP_Material.unitypackage' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
 [ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
 Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
 DisplayProgressbar: Compiling Scripts
-ExitCode: 4 Duration: 7s549ms
-[502/864    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.TestRunner.dll
-[503/864    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.TestRunner.pdb
-[510/864    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.TestRunner.pdb
-[511/864    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.TestRunner.dll
-[570/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Burst.CodeGen.dll
-[571/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Burst.CodeGen.pdb
-[609/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.CodeGen.pdb
-[610/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.CodeGen.dll
-Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
-[669/864    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-*** Tundra requires additional run (7.52 seconds), 10 items updated, 668 evaluated
-Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
-WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
-ExitCode: 0 Duration: 1s303ms
-Starting: C:\Program Files\Unity\Hub\Editor\6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
-WorkingDir: C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/valoria-layered-source/Unity
-ExitCode: 0 Duration: 14s
-Finished compiling graph: 868 nodes, 15146 flattened edges (12222 ToBuild, 136 ToUse), maximum node priority 944
-[171/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.rsp
-[174/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.rsp
-[175/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEngine.TestRunner.dll.mvfrm.rsp
-[176/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.dll.mvfrm.rsp
-[177/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.dll.mvfrm.rsp
-[197/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEngine.TestRunner.rsp
-[198/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.rsp
-[199/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.dll.mvfrm.rsp
-[200/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.rsp
-[201/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.rsp
-[203/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.dll.mvfrm.rsp
-[204/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.dll.mvfrm.rsp
-[205/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.dll.mvfrm.rsp
-[212/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.rsp
-[213/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.rsp
-[214/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.GPUDriven.Runtime.dll.mvfrm.rsp
-[217/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.UnifiedRayTracing.Runtime.dll.mvfrm.rsp
-[222/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.Shared.dll.mvfrm.rsp
-[225/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipeline.Universal.ShaderLibrary.dll.mvfrm.rsp
-[244/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.GPUDriven.Runtime.rsp
-[247/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipeline.Universal.ShaderLibrary.rsp
-[249/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.UnifiedRayTracing.Runtime.rsp
-[256/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.Shared.rsp
-[259/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Config.Runtime.dll.mvfrm.rsp
-[264/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Config.Runtime.rsp
-[265/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Runtime.dll.mvfrm.rsp
-[266/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Domain.dll.mvfrm.rsp
-[272/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Runtime.rsp
-[282/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/4747638433968585886.rsp
-[284/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Application.dll.mvfrm.rsp
-[285/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Domain.rsp
-[286/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.dll.mvfrm.rsp
-[287/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.rsp
-[288/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Application.rsp
-[297/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Runtime.dll.mvfrm.rsp
-[299/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/unity.webp.dll.mvfrm.rsp
-[300/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.dll.mvfrm.rsp
-[301/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/unity.webp.rsp
-[302/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Runtime.rsp
-[311/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.dll.mvfrm.rsp
-[323/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.UI.dll.mvfrm.rsp
-[329/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.rsp
-[331/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.UI.rsp
-[332/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Infrastructure.dll.mvfrm.rsp
-[333/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Gsplat.dll.mvfrm.rsp
-[338/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.rsp
-[339/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Infrastructure.rsp
-[340/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.Export.dll.mvfrm.rsp
-[341/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.V2.dll.mvfrm.rsp
-[342/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Gsplat.rsp
-[343/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Preview.dll.mvfrm.rsp
-[345/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll.mvfrm.rsp
-[361/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.ForUI.dll.mvfrm.rsp
-[363/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Preview.rsp
-[364/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.ShaderLibrary.dll.mvfrm.rsp
-[365/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.V2.rsp
-[367/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.ForUI.rsp
-[370/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Shaders.dll.mvfrm.rsp
-[375/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.Export.rsp
-[386/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.ShaderLibrary.rsp
-[387/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.rsp
-[388/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Shaders.rsp
-[389/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.dll.mvfrm.rsp
-[390/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Presentation.dll.mvfrm.rsp
-[391/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.dots.dll.mvfrm.rsp
-[396/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Presentation.rsp
-[403/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.Editor.rsp
-[404/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll.mvfrm.rsp
-[407/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.dots.rsp
-[421/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.Newtonsoft.rsp
-[422/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Tests.PlayMode.dll.mvfrm.rsp
-[423/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.rsp
-[424/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp
-[425/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.Documentation.Examples.dll.mvfrm.rsp
-[426/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.Newtonsoft.dll.mvfrm.rsp
-[427/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.TestFramework.dll.mvfrm.rsp
-[428/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/10397561839769426034.rsp
-[429/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/10411718816959651794.rsp
-[432/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/glTFast.Documentation.Examples.rsp
-[433/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Eldoria.Tests.PlayMode.rsp
-[434/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/17525389461119239690.rsp
-[435/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.TestFramework.rsp
-[436/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/13686715218353603589.rsp
-[437/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/15085861467720516389.rsp
-[438/864    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.rsp
-[439/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/10007465151786007910.rsp
-[440/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/1237274906319909237.rsp
-[441/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/4014436084419441659.rsp
-[442/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/5157513541206766071.rsp
-[443/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/7606483801609891643.rsp
-[444/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/5803490648119114145.rsp
-[445/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/18218310762646611085.rsp
-[446/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/1532672532507007911.rsp
-[447/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/10678863128556690338.rsp
-[448/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/10010842633742469623.rsp
-[450/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/3064155424177982801.rsp
-[451/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/5546506141355401238.rsp
-[452/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/10749037743957494357.rsp
-[453/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/3146723808361885781.rsp
-[454/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/2897256077774953845.rsp
-[455/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/11294775302662683298.rsp
-[456/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/14586597354760925952.rsp
-[457/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/17923285327036797829.rsp
-[458/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/4923507924066844879.rsp
-[464/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/6735538016345881174.rsp
-[465/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/5506394847714251547.rsp
-[472/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/9630950048426576611.rsp
-[484/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/10131660672807692368.rsp
-[485/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/3676569134375922281.rsp
-[486/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/11514999120054182182.rsp
-[487/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/9870516708743257357.rsp
-[488/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/5916180605834378387.rsp
-[489/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/2157608619508796868.rsp
-[490/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/13909235412005675431.rsp
-[491/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/16800515999216397072.rsp
-[492/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/1418726328684876121.rsp
-[493/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/17346584914308636752.rsp
-[494/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/12812556936427222528.rsp
-[495/864    0s] WriteResponseFile Library/Bee/artifacts/rsp/4824701561327399296.rsp
-[496/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.dll.mvfrm
-[497/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/UnityEngine.TestRunner.dll.mvfrm
-[497/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEngine.TestRunner.dll (+2 others) [CacheHit 05045ca9821ac4839bc9b5e99ff6d49d00000000000000000000000000000005]
-[498/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEngine.TestRunner.dll (+2 others)
-[498/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.dll (+2 others) [CacheHit efd9de14903d31816666330558b2116100000000000000000000000000000005]
-[500/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.dll (+2 others)
-[502/864    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.TestRunner.pdb
-[509/864    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.TestRunner.dll
-[510/864    0s] MovedFromExtractor Library/Bee/artifacts/mvdfrm/UnityEngine.UI.ref.dll_08FEAA520A2EFD60.mvfrm
-[511/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.dll.mvfrm
-[509/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.dll (+2 others) [CacheHit 1e487d23e1acc4ea3373a2258b806f6f00000000000000000000000000000005]
-[512/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.dll (+2 others)
-[515/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/unity.webp.dll.mvfrm
-[516/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.dll.mvfrm
-[517/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.dll.mvfrm
-[518/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/glTFast.Newtonsoft.dll.mvfrm
-[519/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Shaders.dll.mvfrm
-[520/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.dll.mvfrm
-[521/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.Application.dll.mvfrm
-[522/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll.mvfrm
-[523/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.ShaderLibrary.dll.mvfrm
-[524/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.dll.mvfrm
-[525/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.Domain.dll.mvfrm
-[526/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.ShaderGraph.Utilities.dll.mvfrm
-[527/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.dll.mvfrm
-[528/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.Infrastructure.dll.mvfrm
-[529/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.Searcher.Editor.dll.mvfrm
-[530/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.Rendering.LightTransport.Editor.dll.mvfrm
-[527/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll (+2 others) [CacheHit 0d513776740c8eb591e5942d34e8f88100000000000000000000000000000005]
-[531/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll (+2 others)
-[534/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.Tests.PlayMode.dll.mvfrm
-[535/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.Tests.EditMode.dll.mvfrm
-[531/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/unity.webp.dll (+2 others) [CacheHit d4dc0cec30cdbb3bc1718073ffb3603900000000000000000000000000000005]
-[536/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/unity.webp.dll (+2 others)
-[532/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.dll (+2 others) [CacheHit eaafb79cbc4bb8527545acbe0b63bee400000000000000000000000000000005]
-[532/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.dll (+2 others) [CacheHit 2db13ce8b2588f0ced6cb04c489e425000000000000000000000000000000005]
-[538/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.dll (+2 others)
-[540/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.dll (+2 others)
-[534/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.ShaderLibrary.dll (+2 others) [CacheHit dca47ef6ebd60466537bf56a2256833e00000000000000000000000000000005]
-[542/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.ShaderLibrary.dll (+2 others)
-[535/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Shaders.dll (+2 others) [CacheHit 4cdc8412fa2e29c8a09d508e86e0a7b100000000000000000000000000000005]
-[544/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Shaders.dll (+2 others)
-[536/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.dll (+2 others) [CacheHit 1e0d986cb3177b65b3d7fb3e9eb4369e00000000000000000000000000000005]
-[546/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.dll (+2 others)
-[537/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.dll (+2 others) [CacheHit f80de5e091984f691b9a87479d53ea4900000000000000000000000000000005]
-[548/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.dll (+2 others)
-[538/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.ShaderGraph.Utilities.dll (+2 others) [CacheHit d9c8c1e676fbd8e718efdd246a55b1d200000000000000000000000000000005]
-[550/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.ShaderGraph.Utilities.dll (+2 others)
-[539/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.dll (+2 others) [CacheHit 5057c30759abf94f4057d1e14dc07a0000000000000000000000000000000005]
-[552/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.dll (+2 others)
-[540/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Rendering.LightTransport.Editor.dll (+2 others) [CacheHit 41471cf81dc71ac00cd0095c002dbf5900000000000000000000000000000005]
-[540/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Searcher.Editor.dll (+2 others) [CacheHit af39a68c8bb1ec951bcd554f134dc49000000000000000000000000000000005]
-[554/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Rendering.LightTransport.Editor.dll (+2 others)
-[556/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Searcher.Editor.dll (+2 others)
-[558/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/WebP.Editor.dll.mvfrm
-[571/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.V2.dll.mvfrm
-[555/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/WebP.Editor.dll (+2 others) [CacheHit 1e4e5f1d161d5f3a1d1772343c504f2d00000000000000000000000000000005]
-[572/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/WebP.Editor.dll (+2 others)
-[574/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.UI.dll.mvfrm
-[575/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.ForUI.dll.mvfrm
-[576/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Preview.dll.mvfrm
-[579/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Editor.dll.mvfrm
-[580/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.V2.Editor.dll.mvfrm
-[581/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.dll.mvfrm
-[582/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.dll.mvfrm
-[583/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.Editor.dll.mvfrm
-[584/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/glTFast.Editor.dll.mvfrm
-[568/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.ForUI.dll (+2 others) [CacheHit 2fb5c53c187df0c273ce28b7da13172600000000000000000000000000000005]
-[585/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.ForUI.dll (+2 others)
-[587/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/glTFast.Documentation.Examples.dll.mvfrm
-[588/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Gsplat.Editor.dll.mvfrm
-[589/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.Editor.dll.mvfrm
-[590/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.TestFramework.dll.mvfrm
-[592/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.DocCodeSamples.dll.mvfrm
-[593/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.Editor.dll.mvfrm
-[576/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.dll (+2 others) [CacheHit 7749e32b308d0aaf48b8c8619b56bc1d00000000000000000000000000000005]
-[594/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.dll (+2 others)
-[577/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.dll (+2 others) [CacheHit b56f17ab8b62acd331516bfced458b9200000000000000000000000000000005]
-[596/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.dll (+2 others)
-[578/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.Editor.dll (+2 others) [CacheHit 06b7d42f0956408480b3f31d99e5f86500000000000000000000000000000005]
-[598/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.Editor.dll (+2 others)
-[579/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.Editor.dll (+2 others) [CacheHit 68669898dc353dd2c6b15be0a40aab9d00000000000000000000000000000005]
-[600/864   1792614267s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.Editor.dll (+2 others)
-[609/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.dll.mvfrm
-[610/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.dll.mvfrm
-[611/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/glTFast.dots.dll.mvfrm
-[612/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.UnifiedRayTracing.Runtime.dll.mvfrm
-[613/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.Editor.dll.mvfrm
-[592/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.TestFramework.dll (+2 others) [CacheHit 4acd6353615a1547adf373c4218c922400000000000000000000000000000005]
-[614/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.TestFramework.dll (+2 others)
-[594/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.DocCodeSamples.dll (+2 others) [CacheHit 89a52bddc6abe1de74733874b54072ab00000000000000000000000000000005]
-[617/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.DocCodeSamples.dll (+2 others)
-[595/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.Editor.dll (+2 others) [CacheHit 3c99fe79f3e44ed892f63997a22d7e5700000000000000000000000000000005]
-[619/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.Editor.dll (+2 others)
-[596/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.dll (+2 others) [CacheHit 48520c194194efd13fe89394c7db497500000000000000000000000000000005]
-[621/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.dll (+2 others)
-[598/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.Editor.dll (+2 others) [CacheHit 797388da645bb729515a2a9d1881eab100000000000000000000000000000005]
-[624/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.Editor.dll (+2 others)
-[599/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.UnifiedRayTracing.Runtime.dll (+2 others) [CacheHit 34924de5904fefc978410670061287d700000000000000000000000000000005]
-[626/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.UnifiedRayTracing.Runtime.dll (+2 others)
-[601/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.dll (+2 others) [CacheHit 32691ec50fd7104268d729ea014ce8b100000000000000000000000000000005]
-[629/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.dll (+2 others)
-[633/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipeline.Universal.ShaderLibrary.dll.mvfrm
-[634/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.Shared.dll.mvfrm
-[635/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Config.Runtime.dll.mvfrm
-[636/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.GPUDriven.Runtime.dll.mvfrm
-[637/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.dll.mvfrm
-[638/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.UI.dll (+2 others)
-[639/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.Domain.dll (+2 others)
-[611/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipeline.Universal.ShaderLibrary.dll (+2 others) [CacheHit 25e40334b280d4c44babc977b9100f4d00000000000000000000000000000005]
-[640/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipeline.Universal.ShaderLibrary.dll (+2 others)
-[612/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.Shared.dll (+2 others) [CacheHit 4a63459dbd9ed6c63abdfb5f73c0701500000000000000000000000000000005]
-[642/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.Shared.dll (+2 others)
-[613/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Config.Runtime.dll (+2 others) [CacheHit 9ec6dc32e24c7284d0ddf3399da861f600000000000000000000000000000005]
-[644/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Config.Runtime.dll (+2 others)
-[614/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.GPUDriven.Runtime.dll (+2 others) [CacheHit b00b61cbf91e17b2b317ec5522c4edf600000000000000000000000000000005]
-[646/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.GPUDriven.Runtime.dll (+2 others)
-[615/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.dll (+2 others) [CacheHit f7ec6d06d1e5224a3f039b8120c3032d00000000000000000000000000000005]
-[648/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.dll (+2 others)
-[655/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.Application.dll (+2 others)
-[657/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Runtime.dll.mvfrm
-[658/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.dll.mvfrm
-[625/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Runtime.dll (+2 others) [CacheHit cf1444089685a108f4b43577b09098f400000000000000000000000000000005]
-[659/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Runtime.dll (+2 others)
-[626/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.dll (+2 others) [CacheHit 223745a5abe8f83f485c991a55f0f43700000000000000000000000000000005]
-[661/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.dll (+2 others)
-[665/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Runtime.dll.mvfrm
-[666/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/glTFast.dll.mvfrm
-[667/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/glTFast.Export.dll.mvfrm
-[668/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Eldoria.Presentation.dll.mvfrm
-[669/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Gsplat.dll.mvfrm
-[670/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.ShaderGraph.Editor.dll.mvfrm
-[671/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.Shared.dll.mvfrm
-[672/864    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[637/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.Shared.dll (+2 others) [CacheHit c6a26a3a33e2a1d6cd89856bd2a47bf000000000000000000000000000000005]
-[673/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.Shared.dll (+2 others)
-[638/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.dll (+2 others) [CacheHit 67bd827f2ca96b6b28e146bcddf8ec9600000000000000000000000000000005]
-[675/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.dll (+2 others)
-[639/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.ShaderGraph.Editor.dll (+2 others) [CacheHit deadc7ba6be035d7c201e1a299764d9400000000000000000000000000000005]
-[677/864   1792614268s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.ShaderGraph.Editor.dll (+2 others)
-[640/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Runtime.dll (+2 others) [CacheHit 336eba32e910690fc8f343a38544c63a00000000000000000000000000000005]
-[679/864   1792614269s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Runtime.dll (+2 others)
-[641/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Gsplat.dll (+2 others) [CacheHit c306aadd9294cf3465496e86ea3c56bd00000000000000000000000000000005]
-[681/864   1792614269s] Csc Library/Bee/artifacts/1900b0aE.dag/Gsplat.dll (+2 others)
-[683/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.Infrastructure.dll (+2 others)
-[684/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Preview.dll (+2 others)
-[644/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.Export.dll (+2 others) [CacheHit 11a990df88ead5cbbea8131bc9b2c1ae00000000000000000000000000000005]
-[685/864   1792614269s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.Export.dll (+2 others)
-[687/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/unity.webp.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/unity.webp.dll, with 140 defines and 245 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[688/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.Domain.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.Domain.dll, with 140 defines and 250 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[689/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.PerformanceTesting.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.dll, with 141 defines and 242 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[645/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Gsplat.Editor.dll (+2 others) [CacheHit 3882008990256325c1914c1c96306c7000000000000000000000000000000005]
-[690/864   1792614269s] Csc Library/Bee/artifacts/1900b0aE.dag/Gsplat.Editor.dll (+2 others)
-[649/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.dots.dll (+2 others) [CacheHit edef7e33f6c7fef0956d6f3d151fa2ec00000000000000000000000000000005]
-[692/864   1792614269s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.dots.dll (+2 others)
-[650/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.Newtonsoft.dll (+2 others) [CacheHit 196bb49ee3c9f068e6a1a4ae219438fd00000000000000000000000000000005]
-[694/864   1792614269s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.Newtonsoft.dll (+2 others)
-[696/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.Infrastructure.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.Infrastructure.dll, with 140 defines and 252 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[697/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Gsplat.ZstdSharp.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Gsplat.ZstdSharp.dll, with 140 defines and 128 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[698/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.UI.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.UI.dll, with 140 defines and 252 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[700/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.Preview.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Preview.dll, with 140 defines and 256 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[701/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Universal.Config.Runtime.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Config.Runtime.dll, with 140 defines and 251 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[702/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Universal.Shaders.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Shaders.dll, with 140 defines and 250 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[657/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.Editor.dll (+2 others) [CacheHit 40724c0afde2ae6c1b8d3d6ec2818f5400000000000000000000000000000005]
-[703/864   1792614269s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.Editor.dll (+2 others)
-[705/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipeline.Universal.ShaderLibrary.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipeline.Universal.ShaderLibrary.dll, with 140 defines and 251 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[706/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.Burst.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.dll, with 140 defines and 246 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[707/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll, with 140 defines and 250 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[708/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.Collections.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.dll, with 142 defines and 252 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[709/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.Application.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.Application.dll, with 140 defines and 251 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[710/864    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.V2.dll (+2 others)
-[711/864    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Editor.dll (+2 others)
-[712/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.InputSystem.ForUI.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.ForUI.dll, with 140 defines and 251 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[666/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.Documentation.Examples.dll (+2 others) [CacheHit 1df5ba974b2973b80472075b4f1c06fe00000000000000000000000000000005]
-[713/864   1792614270s] Csc Library/Bee/artifacts/1900b0aE.dag/glTFast.Documentation.Examples.dll (+2 others)
-[715/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.Bindings.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Bindings.dll, with 140 defines and 135 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[716/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/UnityEngine.UI.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.dll, with 144 defines and 248 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[717/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Core.ShaderLibrary.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.ShaderLibrary.dll, with 140 defines and 250 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[718/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Core.Runtime.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.dll, with 141 defines and 254 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[719/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.Mathematics.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.dll, with 140 defines and 250 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[720/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.InputSystem.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.dll, with 148 defines and 250 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[723/864    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.V2.Editor.dll (+2 others)
-[724/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.InternalAPIEngineBridge.004.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.dll, with 140 defines and 250 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[725/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.TextMeshPro.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.dll, with 141 defines and 251 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[726/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.Core.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Core.dll, with 140 defines and 132 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[727/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Gsplat.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Gsplat.dll, with 141 defines and 255 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[728/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Editor.dll.mvfrm
-[682/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Editor.dll (+2 others) [CacheHit 979db03a2070e9e4d250064bdee3a43800000000000000000000000000000005]
-[729/864   1792614272s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Editor.dll (+2 others)
-[731/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Core.Runtime.Shared.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Runtime.Shared.dll, with 140 defines and 251 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[732/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/glTFast.Export.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/glTFast.Export.dll, with 145 defines and 255 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[733/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.V2.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.V2.dll, with 140 defines and 255 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[734/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.UnifiedRayTracing.Runtime.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.UnifiedRayTracing.Runtime.dll, with 141 defines and 253 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[735/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/glTFast.dots.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/glTFast.dots.dll, with 141 defines and 254 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[736/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/glTFast.Newtonsoft.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/glTFast.Newtonsoft.dll, with 141 defines and 251 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[737/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/glTFast.Documentation.Examples.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/glTFast.Documentation.Examples.dll, with 140 defines and 254 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[738/864    3s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.Presentation.dll (+2 others)
-Assets\Eldoria\Scripts\Presentation\ValoriaWebGLSplatStateLoader.cs(27,15): warning CS0414: The field 'ValoriaWebGLSplatStateLoader.lastLoggedPanY' is assigned but its value is never used
-
-Assets\Eldoria\Scripts\Presentation\ValoriaWebGLSplatStateLoader.cs(28,15): warning CS0414: The field 'ValoriaWebGLSplatStateLoader.lastLoggedFov' is assigned but its value is never used
-
-Assets\Eldoria\Scripts\Presentation\ValoriaWebGLSplatStateLoader.cs(26,15): warning CS0414: The field 'ValoriaWebGLSplatStateLoader.lastLoggedPanX' is assigned but its value is never used
-
-Assets\Eldoria\Scripts\Presentation\ValoriaWebGLSplatStateLoader.cs(30,16): warning CS0414: The field 'ValoriaWebGLSplatStateLoader.requestedVisualKey' is assigned but its value is never used
-[739/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Universal.Runtime.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Runtime.dll, with 143 defines and 258 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[740/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.V2.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.V2.Editor.dll, with 138 defines and 285 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[741/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Universal.2D.Runtime.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Runtime.dll, with 140 defines and 255 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[742/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/glTFast.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/glTFast.dll, with 150 defines and 254 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[743/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.RoyalGold.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.RoyalGold.Editor.dll, with 138 defines and 287 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[744/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.GPUDriven.Runtime.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.GPUDriven.Runtime.dll, with 140 defines and 254 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[745/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.InputSystem.TestFramework.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.TestFramework.dll, with 141 defines and 244 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[746/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.Searcher.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.Searcher.Editor.dll, with 138 defines and 281 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[747/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.PerformanceTesting.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.PerformanceTesting.Editor.dll, with 139 defines and 277 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[748/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.ShaderGraph.Utilities.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.ShaderGraph.Utilities.dll, with 138 defines and 281 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[749/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/UnityEditor.UI.Analytics.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.dll, with 138 defines and 282 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[750/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.ShaderGraph.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.ShaderGraph.Editor.dll, with 138 defines and 285 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[751/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.Presentation.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.Presentation.dll, with 140 defines and 257 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[752/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Core.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.dll, with 139 defines and 287 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[753/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/UnityEditor.UI.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.dll, with 140 defines and 280 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[754/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Mathematics.dll
-[755/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.V2.dll
-[756/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Bindings.dll
-[757/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.Export.dll
-[758/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.Burst.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.Burst.Editor.dll, with 138 defines and 282 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[759/864    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.dll
-[760/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.dll
-[761/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.dll
-[762/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.TestFramework.dll
-[763/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Shared.dll
-[764/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.UI.dll
-[765/864    0s] CopyFiles Library/ScriptAssemblies/Gsplat.dll
-[766/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.004.dll
-[767/864    0s] CopyFiles Library/ScriptAssemblies/Unity.PerformanceTesting.dll
-[768/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.dll
-[769/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/glTFast.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/glTFast.Editor.dll, with 140 defines and 284 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[770/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.Rendering.LightTransport.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.Rendering.LightTransport.Editor.dll, with 138 defines and 281 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[771/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Burst.dll
-[772/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Domain.dll
-[773/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.Newtonsoft.dll
-[774/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.dll
-[775/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.dll
-[776/864    0s] CopyFiles Library/ScriptAssemblies/Gsplat.ZstdSharp.dll
-[777/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.dll
-[778/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.dots.dll
-[779/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.dll
-[780/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Infrastructure.dll
-[781/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.Documentation.Examples.dll
-[782/864    0s] CopyFiles Library/ScriptAssemblies/unity.webp.dll
-[783/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll
-[784/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll
-[785/864    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.UI.dll
-[786/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Application.dll
-[787/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Preview.dll
-[788/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Core.dll
-[789/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.ForUI.dll
-[790/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.dll
-[791/864    0s] CopyFiles Library/ScriptAssemblies/Unity.UnifiedRayTracing.Runtime.dll
-[792/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Presentation.dll
-[793/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Rendering.LightTransport.Editor.dll
-[794/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Rendering.LightTransport.Editor.pdb
-[795/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.Editor.pdb
-[796/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Burst.Editor.dll
-[797/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Burst.Editor.pdb
-[798/864    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.dll
-[799/864    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.pdb
-[800/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.pdb
-[801/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Gsplat.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Gsplat.Editor.dll, with 138 defines and 283 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[802/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.2D.Runtime.dll
-[803/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.Editor.dll
-[804/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Presentation.pdb
-[805/864    3s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Editor.Overrides.dll.mvfrm
-[806/864    0s] CopyFiles Library/ScriptAssemblies/Unity.ShaderGraph.Editor.dll
-[807/864    0s] CopyFiles Library/ScriptAssemblies/Unity.ShaderGraph.Editor.pdb
-[808/864    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.Analytics.dll
-[809/864    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.Analytics.pdb
-[810/864    0s] CopyFiles Library/ScriptAssemblies/Unity.ShaderGraph.Utilities.pdb
-[811/864    0s] CopyFiles Library/ScriptAssemblies/Unity.ShaderGraph.Utilities.dll
-[764/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Editor.Overrides.dll (+2 others) [CacheHit ef68c3c11917abf51872a5ec150ea99e00000000000000000000000000000005]
-[812/864   1792614275s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Editor.Overrides.dll (+2 others)
-[814/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.Collections.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.Collections.Editor.dll, with 139 defines and 282 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[815/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Core.Editor.Shared.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Core.Editor.Shared.dll, with 138 defines and 282 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[816/864    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.Tests.EditMode.dll (+2 others)
-[817/864    0s] CopyFiles Library/ScriptAssemblies/Gsplat.Editor.dll
-[818/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.InputSystem.DocCodeSamples.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.InputSystem.DocCodeSamples.dll, with 138 defines and 277 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[820/864    0s] CopyFiles Library/ScriptAssemblies/Gsplat.Editor.pdb
-[821/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.Shared.dll
-[822/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.dll
-[823/864    0s] CopyFiles Library/ScriptAssemblies/Unity.PerformanceTesting.Editor.pdb
-[824/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Searcher.Editor.pdb
-[825/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Searcher.Editor.dll
-[826/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.TestFramework.pdb
-[827/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.pdb
-[828/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Editor.dll
-[829/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Editor.pdb
-[830/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.pdb
-[831/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.2D.Runtime.pdb
-[832/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.V2.Editor.pdb
-[833/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Editor.pdb
-[834/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.V2.Editor.dll
-[835/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.Documentation.Examples.pdb
-[836/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Runtime.pdb
-[837/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.Newtonsoft.pdb
-[838/864    0s] CopyFiles Library/ScriptAssemblies/Unity.UnifiedRayTracing.Runtime.pdb
-[839/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.dots.pdb
-[840/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.V2.pdb
-[841/864    0s] CopyFiles Library/ScriptAssemblies/glTFast.Export.pdb
-[842/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.Shared.pdb
-[843/864    0s] CopyFiles Library/ScriptAssemblies/Gsplat.pdb
-[844/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.004.pdb
-[845/864    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.pdb
-[846/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Core.pdb
-[847/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Mathematics.pdb
-[848/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.pdb
-[849/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Runtime.pdb
-[850/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.ShaderLibrary.pdb
-[851/864    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.UI.pdb
-[852/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Bindings.pdb
-[853/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Application.pdb
-[854/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.ForUI.pdb
-[855/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Burst.pdb
-[856/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.pdb
-[857/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.pdb
-[858/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.pdb
-[859/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Config.Runtime.pdb
-[860/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Shaders.pdb
-[861/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.Preview.pdb
-[862/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.RoyalGold.UI.pdb
-[863/864    0s] CopyFiles Library/ScriptAssemblies/Gsplat.ZstdSharp.pdb
-[864/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Infrastructure.pdb
-[865/864    0s] CopyFiles Library/ScriptAssemblies/Unity.PerformanceTesting.pdb
-[866/864    0s] CopyFiles Library/ScriptAssemblies/unity.webp.pdb
-[867/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Domain.pdb
-[868/864    2s] Csc Library/Bee/artifacts/1900b0aE.dag/Eldoria.Tests.PlayMode.dll (+2 others)
-[869/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.dll
-[870/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.DocCodeSamples.dll
-[871/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.TextMeshPro.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.dll, with 138 defines and 283 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[872/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.Mathematics.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.Mathematics.Editor.dll, with 138 defines and 282 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[873/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Collections.Editor.dll
-[874/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.Tests.EditMode.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.Tests.EditMode.dll, with 138 defines and 280 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[875/864    0s] CopyFiles Library/ScriptAssemblies/Unity.PerformanceTesting.Editor.dll
-[876/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Mathematics.Editor.dll
-[877/864    0s] CopyFiles Library/ScriptAssemblies/Unity.InputSystem.DocCodeSamples.pdb
-[878/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Tests.EditMode.dll
-[879/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Core.Editor.Shared.pdb
-[880/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Universal.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.Editor.dll, with 138 defines and 291 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[881/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Eldoria.Tests.PlayMode.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Eldoria.Tests.PlayMode.dll, with 140 defines and 248 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[882/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Tests.EditMode.pdb
-[883/864    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.Editor.pdb
-[884/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.pdb
-[885/864    0s] CopyFiles Library/ScriptAssemblies/Unity.Mathematics.Editor.pdb
-[886/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Tests.PlayMode.dll
-[887/864    1s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/WebP.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/WebP.Editor.dll, with 138 defines and 277 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[888/864    0s] CopyFiles Library/ScriptAssemblies/WebP.Editor.dll
-[889/864    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
-[890/864    0s] CopyFiles Library/ScriptAssemblies/Eldoria.Tests.PlayMode.pdb
-[891/864    0s] CopyFiles Library/ScriptAssemblies/WebP.Editor.pdb
-[892/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Unity.RenderPipelines.Universal.2D.Editor.Overrides.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.RenderPipelines.Universal.2D.Editor.Overrides.dll, with 138 defines and 291 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[894/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.2D.Editor.Overrides.dll
-[895/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.2D.Editor.Overrides.pdb
-[896/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll.mvfrm
-[897/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/PPv2URPConverters.dll.mvfrm
-[898/864    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll.mvfrm
-[899/864    0s] CopyFiles Library/ScriptAssemblies/Unity.RenderPipelines.Universal.Editor.dll
-[851/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/PPv2URPConverters.dll (+2 others) [CacheHit b970022c385bfa85e9bf40bf57a6550500000000000000000000000000000005]
-[900/864   1792614277s] Csc Library/Bee/artifacts/1900b0aE.dag/PPv2URPConverters.dll (+2 others)
-[902/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/PPv2URPConverters.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/PPv2URPConverters.dll, with 138 defines and 285 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[903/864    0s] CopyFiles Library/ScriptAssemblies/PPv2URPConverters.dll
-[904/864    0s] CopyFiles Library/ScriptAssemblies/PPv2URPConverters.pdb
-[905/864    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Blur.cs(51,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(182,25): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(316,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ContrastStretch.cs(94,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(326,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(347,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Tonemapping.cs(237,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ImageEffectBase.cs(20,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(24,18): warning CS0618: 'SystemInfo.supportsRenderTextures' is obsolete: 'supportsRenderTextures always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\DepthOfField.cs(136,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\DepthOfField.cs(142,5): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\NoiseAndScratches.cs(54,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(54,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(69,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\PostEffectsBase.cs(97,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\PostEffectsBase.cs(97,54): warning CS0618: 'SystemInfo.supportsRenderTextures' is obsolete: 'supportsRenderTextures always returns true, no need to call it'
-
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ScreenSpaceAmbientOcclusion.cs(64,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,27): warning CS0414: The field 'EldoriaAndroidAutoUpdater.downloaded' is assigned but its value is never used
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,59): warning CS0414: The field 'EldoriaAndroidAutoUpdater.dismissed' is assigned but its value is never used
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(57,14): warning CS0414: The field 'EldoriaAndroidAutoUpdater.downloadId' is assigned but its value is never used
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,80): warning CS0414: The field 'EldoriaAndroidAutoUpdater.waitingForWifi' is assigned but its value is never used
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,39): warning CS0414: The field 'EldoriaAndroidAutoUpdater.awaitingPermission' is assigned but its value is never used
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,96): warning CS0414: The field 'EldoriaAndroidAutoUpdater.downloadFailed' is assigned but its value is never used
-[906/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll, with 140 defines and 293 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[907/864    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
-[908/864    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
-[909/864    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnvironment.cs(69,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanPineVolume.cs(44,314): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-
+ExitCode: 0 Duration: 4s423ms
+[670/864    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[860/864    2s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionIntegrate.cs(40,328): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
 
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(57,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
+
+Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnvironment.cs(69,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
 
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(66,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
 
@@ -1274,7 +239,9 @@ Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastio
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Integration\Editor\ValoriaIntegrationBuild.cs(84,28): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
 
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-[910/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
+
+Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanPineVolume.cs(44,314): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
+[861/864    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp-Editor.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll, with 138 defines and 330 references
 
 processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
@@ -1282,160 +249,154 @@ processors: Unity.Jobs.CodeGen.JobsILPostProcessor, zzzUnity.Burst.CodeGen.Burst
 running Unity.Jobs.CodeGen.JobsILPostProcessor
 
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[911/864    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
-[912/864    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
-*** Tundra build success (14.46 seconds), 390 items updated, 864 evaluated
-Assets\Eldoria\Scripts\Presentation\ValoriaWebGLSplatStateLoader.cs(27,15): warning CS0414: The field 'ValoriaWebGLSplatStateLoader.lastLoggedPanY' is assigned but its value is never used
-Assets\Eldoria\Scripts\Presentation\ValoriaWebGLSplatStateLoader.cs(28,15): warning CS0414: The field 'ValoriaWebGLSplatStateLoader.lastLoggedFov' is assigned but its value is never used
-Assets\Eldoria\Scripts\Presentation\ValoriaWebGLSplatStateLoader.cs(26,15): warning CS0414: The field 'ValoriaWebGLSplatStateLoader.lastLoggedPanX' is assigned but its value is never used
-Assets\Eldoria\Scripts\Presentation\ValoriaWebGLSplatStateLoader.cs(30,16): warning CS0414: The field 'ValoriaWebGLSplatStateLoader.requestedVisualKey' is assigned but its value is never used
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Blur.cs(51,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(182,25): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(316,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ContrastStretch.cs(94,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(326,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Bloom.cs(347,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\Tonemapping.cs(237,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ImageEffectBase.cs(20,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(24,18): warning CS0618: 'SystemInfo.supportsRenderTextures' is obsolete: 'supportsRenderTextures always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\DepthOfField.cs(136,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\DepthOfField.cs(142,5): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\NoiseAndScratches.cs(54,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(54,17): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\MotionBlur.cs(69,13): warning CS0618: 'RenderTexture.MarkRestoreExpected()' is obsolete: 'This function has no effect.'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\PostEffectsBase.cs(97,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\PostEffectsBase.cs(97,54): warning CS0618: 'SystemInfo.supportsRenderTextures' is obsolete: 'supportsRenderTextures always returns true, no need to call it'
-Assets\NatureStarterKit2\Standard Assets\Effects\ImageEffects\Scripts\ScreenSpaceAmbientOcclusion.cs(64,18): warning CS0618: 'SystemInfo.supportsImageEffects' is obsolete: 'supportsImageEffects always returns true, no need to call it'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,27): warning CS0414: The field 'EldoriaAndroidAutoUpdater.downloaded' is assigned but its value is never used
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,59): warning CS0414: The field 'EldoriaAndroidAutoUpdater.dismissed' is assigned but its value is never used
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(57,14): warning CS0414: The field 'EldoriaAndroidAutoUpdater.downloadId' is assigned but its value is never used
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,80): warning CS0414: The field 'EldoriaAndroidAutoUpdater.waitingForWifi' is assigned but its value is never used
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,39): warning CS0414: The field 'EldoriaAndroidAutoUpdater.awaitingPermission' is assigned but its value is never used
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\EldoriaAndroidAutoUpdater.cs(56,96): warning CS0414: The field 'EldoriaAndroidAutoUpdater.downloadFailed' is assigned but its value is never used
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnvironment.cs(69,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanPineVolume.cs(44,314): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
+[862/864    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+[863/864    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+*** Tundra build success (4.40 seconds), 5 items updated, 864 evaluated
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionIntegrate.cs(40,328): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnsemble.cs(57,300): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
+Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionEnvironment.cs(69,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(66,317): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanBastionGroundFinish.cs(59,27): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Integration\Editor\ValoriaIntegrationBuild.cs(84,28): warning CS1998: This async method lacks 'await' operators and will run synchronously. Consider using the 'await' operator to await non-blocking API calls, or 'await Task.Run(...)' to do CPU-bound work on a background thread.
 Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanLightingPass.cs(117,88): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
-AssetDatabase: script compilation time: 23.752985s
+Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\ValoriaReferenceCleanPineVolume.cs(44,314): warning CS0618: 'Lightmapping.giWorkflowMode' is obsolete: 'Lightmapping.giWorkflowMode is obsolete.'
+AssetDatabase: script compilation time: 4.762405s
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  8.488 seconds
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0166529 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0014293 seconds
-Start importing Packages/com.unity.modules.animation using Guid(1158e311a3101950348dcecb1bebc42d) (DefaultImporter) -> (artifact id: 'ad15220686cb46a8486da5a82128437e') in 0.0004723 seconds
-Start importing Packages/com.unity.modules.animation/package.ModuleCompilationTrigger using Guid(db8e609a39b9b231fccc54e5fa4cbd1b) (DefaultImporter) -> (artifact id: '76194af19b6b83e46d258b902c79f26f') in 0.0307123 seconds
-Refreshing native plugins compatible for Editor in 283.14 ms, found 4 plugins.
+- Loaded All Assemblies, in  1.453 seconds
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '03f03623babc6b3191cdfe89d2ab3679') in 0.0106844 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: 'f4fdb4516fb21947363c1c8d061ba67f') in 0.0014591 seconds
+Refreshing native plugins compatible for Editor in 7.41 ms, found 4 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
 Native extension for WindowsStandalone target not found
 Native extension for WebGL target not found
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  6.857 seconds
-Domain Reload Profiling: 15341ms
-	BeginReloadAssembly (406ms)
+- Finished resetting the current domain, in  2.642 seconds
+Domain Reload Profiling: 4092ms
+	BeginReloadAssembly (310ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (36ms)
+		DisableScriptedObjects (25ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (239ms)
-	RebuildCommonClasses (36ms)
-	RebuildNativeTypeToScriptingClass (14ms)
+		CreateAndSetChildDomain (155ms)
+	RebuildCommonClasses (35ms)
+	RebuildNativeTypeToScriptingClass (13ms)
 	initialDomainReloadingComplete (24ms)
-	LoadAllAssembliesAndSetupDomain (8004ms)
-		LoadAssemblies (7934ms)
+	LoadAllAssembliesAndSetupDomain (1066ms)
+		LoadAssemblies (995ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
 		AnalyzeDomain (160ms)
 			TypeCache.Refresh (107ms)
 				TypeCache.ScanAssembly (96ms)
 			BuildScriptInfoCaches (40ms)
 			ResolveRequiredComponents (10ms)
-	FinalizeReload (6857ms)
+	FinalizeReload (2643ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (6650ms)
+		SetupLoadedEditorAssemblies (2439ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (35ms)
+			InitializePlatformSupportModulesInManaged (36ms)
 			SetLoadedEditorAssemblies (3ms)
 			BeforeProcessingInitializeOnLoad (143ms)
-			ProcessInitializeOnLoadAttributes (2844ms)
-			ProcessInitializeOnLoadMethodAttributes (3619ms)
-			AfterProcessingInitializeOnLoad (5ms)
-			EditorAssembliesLoaded (0ms)
+			ProcessInitializeOnLoadAttributes (2091ms)
+			ProcessInitializeOnLoadMethodAttributes (158ms)
+			AfterProcessingInitializeOnLoad (6ms)
+			EditorAssembliesLoaded (1ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (22ms)
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png using Guid(d0c9556f5cc0ca18fea90fdaa3823991) (TextureImporter) -> (artifact id: '5658bd88c96ff4d946ad00f88b3549d3') in 0.0893548 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png using Guid(719f29c5d9fa983a45280bdba238194b) (TextureImporter) -> (artifact id: 'f94eb5434b66f70c61e3ba9c4c45263b') in 0.0051271 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png using Guid(f1a4ead5895cee17df5be53da0484f6f) (TextureImporter) -> (artifact id: 'c94caa34e604893bb3aa8959fe076225') in 0.0177341 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png using Guid(022d549855c3dfaa70e5760fbe9becc0) (TextureImporter) -> (artifact id: '66348d587891b7f947060955e21bed03') in 0.0188856 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png using Guid(a4918cb9eb52a2c4becac0e7a18bc44a) (TextureImporter) -> (artifact id: '3785bbf35245538b7f41b153a5f54aa5') in 0.0176351 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png using Guid(d5066a919a1f589b3b63650b1c7b8230) (TextureImporter) -> (artifact id: '003b1f2a1de94292552a53bfa121ce75') in 0.02978 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png using Guid(57dd687066cdc3bdfb64c7de861f56ab) (TextureImporter) -> (artifact id: '0bee5839f72af29ef3458ce813df402f') in 0.0104611 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png using Guid(189eb84d40be3d7816973ce5b25f2cfe) (TextureImporter) -> (artifact id: 'a332c8b430bb453f4d14770f863be144') in 0.0240884 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png using Guid(28eeb9270a3e8984fa92ef4c55471a5f) (TextureImporter) -> (artifact id: 'fa0748c48e2749ece92e4f971f42bfe9') in 0.0155403 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png using Guid(981760fd70593dc5727a640da799dc99) (TextureImporter) -> (artifact id: '58d5b82b54028940d98726cd56f1eef2') in 0.016142 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png using Guid(f88695073ca7897a3cb0a553047b08a2) (TextureImporter) -> (artifact id: '54ed101d3eae35aee031fdeee7aa4c47') in 0.0101555 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png using Guid(1ae172588cc7a3be66164008eb1b7cd3) (TextureImporter) -> (artifact id: 'b8c7e61ae80297f62f3e2b1712dd6d1d') in 0.0113779 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png using Guid(2a90ae10e8213c2e8b230c72d215f5b3) (TextureImporter) -> (artifact id: 'e25a85e51bb60891d04b67071926690c') in 0.0185749 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png using Guid(6ac48fc21388830be58a908280df5a8b) (TextureImporter) -> (artifact id: '099439c77f7d50e9bc164727599aa9df') in 0.0148552 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png using Guid(9b40c33bc6012eb92eb761ff85f59cba) (TextureImporter) -> (artifact id: '7ad1b4c9b43d02791eb1101600220c66') in 0.0097475 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png using Guid(0cc8565597f8e13b40e06ffcd65cbe4d) (TextureImporter) -> (artifact id: 'e9d121ad97eaec91fc65b32c5d0206f2') in 0.0113483 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png using Guid(5cff41e3a556b49f54d1f43391bf745f) (TextureImporter) -> (artifact id: '8db9349ac86b4687cd5da71e7384f031') in 0.0257546 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png using Guid(1df8613645789f22b7624fc2271cf165) (TextureImporter) -> (artifact id: '2f83263b5c682715d7eb4391b861fcb1') in 0.0097999 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png using Guid(7dd8175d34f883b95d97dfc72f700e82) (TextureImporter) -> (artifact id: 'b6e7a253037213f84e6aa4b713d2dff5') in 0.0104747 seconds
-Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png using Guid(eed111b269a9c90a9fee86ac5c533746) (TextureImporter) -> (artifact id: 'cf9dce4b2f590a3f1c60ca9ec6af75a1') in 0.010277 seconds
-Start importing Packages/com.unity.modules.animation/package.json using Guid(7ef8348b8ea834d7e1bc214b07f7fb87) (PackageManifestImporter) -> (artifact id: '0ce165297b0905ed3c714c8d81c161e8') in 0.0016535 seconds
+		AwakeInstancesAfterBackupRestoration (24ms)
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/9f99c1930e3952d23a516e70e0867aa424031840.png using Guid(d0c9556f5cc0ca18fea90fdaa3823991) (TextureImporter) -> (artifact id: '5658bd88c96ff4d946ad00f88b3549d3') in 0.0154187 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/7b6848358871a30918c4842349c301c9fc0b722c.png using Guid(719f29c5d9fa983a45280bdba238194b) (TextureImporter) -> (artifact id: 'f94eb5434b66f70c61e3ba9c4c45263b') in 0.00392 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0ae5cda562b231f7d8ef7675cefc845f0379a0e3.png using Guid(f1a4ead5895cee17df5be53da0484f6f) (TextureImporter) -> (artifact id: 'c94caa34e604893bb3aa8959fe076225') in 0.009583 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5e7ef7c03cb0f9c10c2df31cb690ec9950f2195c.png using Guid(022d549855c3dfaa70e5760fbe9becc0) (TextureImporter) -> (artifact id: '66348d587891b7f947060955e21bed03') in 0.0093077 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png using Guid(a4918cb9eb52a2c4becac0e7a18bc44a) (TextureImporter) -> (artifact id: '3785bbf35245538b7f41b153a5f54aa5') in 0.0037074 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/69e84cc6421486a43699ec47282e7a6272dd2d83.png using Guid(d5066a919a1f589b3b63650b1c7b8230) (TextureImporter) -> (artifact id: '003b1f2a1de94292552a53bfa121ce75') in 0.0114792 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/6043301ad238ef62b417d2baeefed8ac84738571.png using Guid(57dd687066cdc3bdfb64c7de861f56ab) (TextureImporter) -> (artifact id: '0bee5839f72af29ef3458ce813df402f') in 0.0092192 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5a7a2191c98f3ded4fd02d5839a352b7d316612.png using Guid(189eb84d40be3d7816973ce5b25f2cfe) (TextureImporter) -> (artifact id: 'a332c8b430bb453f4d14770f863be144') in 0.008659 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/de2514e4480e1c590de14765da4854cfac3c5157.png using Guid(28eeb9270a3e8984fa92ef4c55471a5f) (TextureImporter) -> (artifact id: 'fa0748c48e2749ece92e4f971f42bfe9') in 0.0090424 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/a4599f4ad6d5e2ec45e961b5fa6d4872b9b776f8.png using Guid(981760fd70593dc5727a640da799dc99) (TextureImporter) -> (artifact id: '58d5b82b54028940d98726cd56f1eef2') in 0.0037351 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/75eceae72c3fbd48e2ba51d93a91885b2080b860.png using Guid(f88695073ca7897a3cb0a553047b08a2) (TextureImporter) -> (artifact id: '54ed101d3eae35aee031fdeee7aa4c47') in 0.0036128 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5fbc98ff6a7e71858eb407a77cc5c94fcc4717e3.png using Guid(1ae172588cc7a3be66164008eb1b7cd3) (TextureImporter) -> (artifact id: 'b8c7e61ae80297f62f3e2b1712dd6d1d') in 0.0035881 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/371ea4cbee26ce47c0f6d086edccae097a74e921.png using Guid(2a90ae10e8213c2e8b230c72d215f5b3) (TextureImporter) -> (artifact id: 'e25a85e51bb60891d04b67071926690c') in 0.0036137 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0f317cfd9dae387cf6b154ed623b9c700762edd0.png using Guid(6ac48fc21388830be58a908280df5a8b) (TextureImporter) -> (artifact id: '099439c77f7d50e9bc164727599aa9df') in 0.0088375 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/f87f5ed5f4c059864855106ee339d761b913f0b1.png using Guid(9b40c33bc6012eb92eb761ff85f59cba) (TextureImporter) -> (artifact id: '7ad1b4c9b43d02791eb1101600220c66') in 0.0092718 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/d5ab68274bb848b27a08c26e9751b94b656bfe22.png using Guid(0cc8565597f8e13b40e06ffcd65cbe4d) (TextureImporter) -> (artifact id: 'e9d121ad97eaec91fc65b32c5d0206f2') in 0.0040675 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/0c0df987935c1d1544a9e52da33325edb19f5f98.png using Guid(5cff41e3a556b49f54d1f43391bf745f) (TextureImporter) -> (artifact id: '8db9349ac86b4687cd5da71e7384f031') in 0.0103584 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/5b052e69fc6c091f74e1815a64e2c92f243997ca.png using Guid(1df8613645789f22b7624fc2271cf165) (TextureImporter) -> (artifact id: '2f83263b5c682715d7eb4391b861fcb1') in 0.0037541 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png using Guid(7dd8175d34f883b95d97dfc72f700e82) (TextureImporter) -> (artifact id: 'b6e7a253037213f84e6aa4b713d2dff5') in 0.0038236 seconds
+Start importing Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/74a843ad16e3deb30b6035d168fe4ef5570c0d24.png using Guid(eed111b269a9c90a9fee86ac5c533746) (TextureImporter) -> (artifact id: 'cf9dce4b2f590a3f1c60ca9ec6af75a1') in 0.0041043 seconds
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
-Refreshing native plugins compatible for Editor in 7.52 ms, found 4 plugins.
+Refreshing native plugins compatible for Editor in 7.02 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=ed7e89a94bf448d4a8516e37099f3a88): Total: 53.853 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+Asset Pipeline Refresh (id=f678392d6c18c8940bc1a464abe4eb80): Total: 10.033 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
-		Imports: total=25 (actual=25, local cache=0, cache server=0)
-		Asset DB Process Time: managed=12 ms, native=15451 ms
-		Asset DB Callback time: managed=642 ms, native=5461 ms
-		Scripting: domain reloads=1, domain reload time=8488 ms, compile time=23754 ms, other=41 ms
+		Imports: total=22 (actual=22, local cache=0, cache server=0)
+		Asset DB Process Time: managed=7 ms, native=3272 ms
+		Asset DB Callback time: managed=331 ms, native=161 ms
+		Scripting: domain reloads=1, domain reload time=1453 ms, compile time=4764 ms, other=42 ms
 		Project Asset Count: scripts=1289, non-scripts=6625
-		Asset File Changes: new=5, changed=29, moved=0, deleted=0
+		Asset File Changes: new=0, changed=23, moved=0, deleted=0
 		Scan Filter Count: 0
-	InvokeCustomDependenciesCallbacks: 0.001ms
-	InvokePackagesCallback: 2644.677ms
-	ApplyChangesToAssetFolders: 0.444ms
-	Scan: 5088.386ms
-	OnSourceAssetsModified: 0.599ms
-	CategorizeAssetsWithTransientArtifact: 837.212ms
-	ProcessAssetsWithTransientArtifactChanges: 47.833ms
-	CategorizeAssets: 762.125ms
-	ImportOutOfDateAssets: 7976.474ms (-16382.357ms without children)
-		ImportManagerImport: 600.215ms (4.155ms without children)
-			ImportInProcess: 595.869ms
-			UpdateCategorizedAssets: 0.192ms
-		CompileScripts: 23754.419ms
-		ReloadNativeAssets: 0.038ms
-		UnloadImportedAssets: 0.783ms
-		ReloadImportedAssets: 0.003ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.829ms
+	InvokeCustomDependenciesCallbacks: 0.002ms
+	InvokePackagesCallback: 11.342ms
+	ApplyChangesToAssetFolders: 0.518ms
+	Scan: 117.109ms
+	OnSourceAssetsModified: 0.742ms
+	CategorizeAssetsWithTransientArtifact: 22.698ms
+	ProcessAssetsWithTransientArtifactChanges: 46.864ms
+	CategorizeAssets: 128.366ms
+	ImportOutOfDateAssets: 2829.301ms (-2098.335ms without children)
+		ImportManagerImport: 159.311ms (2.373ms without children)
+			ImportInProcess: 156.747ms
+			UpdateCategorizedAssets: 0.191ms
+		CompileScripts: 4764.001ms
+		ReloadNativeAssets: 0.042ms
+		UnloadImportedAssets: 0.791ms
+		ReloadImportedAssets: 0.001ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 1.924ms
 		InitializingProgressBar: 0.006ms
 		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
-		OnDemandSchedulerStart: 1.537ms
-	PostProcessAllAssets: 3507.858ms
-	Hotreload: 9.457ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.295ms
-	UnloadStreamsBegin: 3.285ms
-	PersistCurrentRevisions: 0.568ms
+		OnDemandSchedulerStart: 1.558ms
+	PostProcessAllAssets: 537.771ms
+	Hotreload: 8.313ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.455ms
+	UnloadStreamsBegin: 3.289ms
+	PersistCurrentRevisions: 0.589ms
 	UnloadStreamsEnd: 0.002ms
-	GenerateScriptTypeHashes: 2.958ms
-	Untracked: 32973.772ms
+	GenerateScriptTypeHashes: 3.759ms
+	Untracked: 6326.037ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 3.002ms
+Scanning for USB devices : 2.996ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-Unity
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV7Integration.Build' because a menu item with the same name already exists.
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV6Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV8Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Build isolated existing-system playable entry' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV2.Build' because a menu item with the same name already exists.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1448,6 +409,30 @@ UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
 UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
 Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV5Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV4Integration.Build' because a menu item with the same name already exists.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:LogWarning (object)
+UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
+UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
+UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
+UnityEditor.MenuService:GetMenuItemsFromAttributes ()
+
+Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV7Integration.Build' because a menu item with the same name already exists.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1483,74 +468,25 @@ UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
 UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
 UnityEditor.MenuService:GetMenuItemsFromAttributes ()
 
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV4Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Build isolated existing-system playable entry' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryPlayableV2.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV8Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
-Cannot add menu item 'Eldoria/Valoria/Integrate source-derived entry zone V1' for method 'Eldoria.ValoriaLayered.Editor.ValoriaEntryZoneV2Integration.Build' because a menu item with the same name already exists.
-UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
-UnityEngine.StackTraceUtility:ExtractStackTrace ()
-UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
-UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
-UnityEngine.Logger:Log (UnityEngine.LogType,object)
-UnityEngine.Debug:LogWarning (object)
-UnityEditor.MenuItemScriptCommand:Update (UnityEditor.MenuItem,System.Reflection.MethodInfo)
-UnityEditor.MenuService:ExtractMenuItemsFromAttributes ()
-UnityEditor.MenuService:GetMenuItemsFromAttributesById (string)
-UnityEditor.MenuService:GetMenuItemsFromAttributes ()
-
 Unloading 35 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 4396 unused Assets / (4.9 MB). Loaded Objects now: 5317.
-Memory consumption went from 216.9 MB to 211.9 MB.
-Total: 9.478000 ms (FindLiveObjects: 0.532600 ms CreateObjectMapping: 0.502000 ms MarkObjects: 6.410000 ms  DeleteObjects: 2.032800 ms)
+Memory consumption went from 211.3 MB to 206.4 MB.
+Total: 9.088200 ms (FindLiveObjects: 0.507400 ms CreateObjectMapping: 0.484700 ms MarkObjects: 6.071300 ms  DeleteObjects: 2.024300 ms)
 
 Opening scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
 Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
 LightingSettings: switching bake backend from 2 to 1.
 Loaded scene 'Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'
-	Deserialize:            85.550 ms
-	Integration:            5104.926 ms
-	Integration of assets:  3.369 ms
-	Thread Wait Time:       0.007 ms
-	Total Operation Time:   5193.853 ms
-[Licensing::Client] Successfully resolved entitlement details
+	Deserialize:            54.604 ms
+	Integration:            1539.920 ms
+	Integration of assets:  3.148 ms
+	Thread Wait Time:       0.393 ms
+	Total Operation Time:   1598.066 ms
 Unloading 4 unused Assets / (5.8 KB). Loaded Objects now: 9363.
-Memory consumption went from 446.9 MB to 446.9 MB.
-Total: 9.721900 ms (FindLiveObjects: 0.773600 ms CreateObjectMapping: 0.314900 ms MarkObjects: 8.557300 ms  DeleteObjects: 0.075000 ms)
+Memory consumption went from 446.8 MB to 446.8 MB.
+Total: 6.938100 ms (FindLiveObjects: 0.706300 ms CreateObjectMapping: 0.268700 ms MarkObjects: 5.896800 ms  DeleteObjects: 0.065200 ms)
 
-VALORIA_GEOGRAPHY_CITY_DECORATION_SEATED 2 original visual roots
+VALORIA_GEOGRAPHY_CITY_DECORATION_SEATED 4 original visual roots
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
 UnityEngine.StackTraceUtility:ExtractStackTrace ()
 UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
@@ -1558,10 +494,23 @@ UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,st
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
 Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:SeatCityDecoration (UnityEngine.Terrain,UnityEngine.TerrainData,UnityEngine.TerrainData) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:306)
-Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorAndCapture (bool) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1055)
-Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:Trial () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:989)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorAndCapture (bool) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1106)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:Trial () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1039)
 
 (Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs Line: 306)
+
+VALORIA_GEOGRAPHY_WORLD_DECORATION_SEATED 81 complete original visual roots
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:SeatWorldDecoration (Eldoria.ReferenceClean.ValoriaIntegratedWorld,UnityEngine.MeshFilter,UnityEngine.Mesh) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:619)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorAndCapture (bool) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1108)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:Trial () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1039)
+
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs Line: 619)
 
 ELDORIA_REGION1_UV_WORLD_FIT_PASS rms=7,51246640646624E-06
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1570,12 +519,12 @@ UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOpt
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:OriginalUvWorldMapping (UnityEngine.MeshFilter,UnityEngine.Material) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:713)
-Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorWorldAlbedo (Eldoria.ReferenceClean.ValoriaIntegratedWorld,UnityEngine.MeshFilter,int&) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:730)
-Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorAndCapture (bool) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1058)
-Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:Trial () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:989)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:OriginalUvWorldMapping (UnityEngine.MeshFilter,UnityEngine.Material) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:763)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorWorldAlbedo (Eldoria.ReferenceClean.ValoriaIntegratedWorld,UnityEngine.MeshFilter,int&) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:780)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorAndCapture (bool) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1110)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:Trial () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1039)
 
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs Line: 713)
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs Line: 763)
 
 VALORIA_REFERENCE_CLEAN_GEOGRAPHY_TRIAL_COMPLETE 15 matched Unity A/B images
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -1584,17 +533,17 @@ UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOpt
 UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
 UnityEngine.Logger:Log (UnityEngine.LogType,object)
 UnityEngine.Debug:Log (object)
-Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorAndCapture (bool) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1150)
-Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:Trial () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:989)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:AuthorAndCapture (bool) (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1202)
+Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1:Trial () (at Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs:1039)
 
-(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs Line: 1150)
+(Filename: Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaGeographyContinuityV1.cs Line: 1202)
 
-Killing ADB server in 2,1462395 seconds.
-Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.004378 seconds
-Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '140f0b49d81c91091551a2c318405d85') in 0.001296 seconds
-Refreshing native plugins compatible for Editor in 5.88 ms, found 4 plugins.
+Killing ADB server in 2,1479626 seconds.
+Start importing ProjectSettings/ProjectSettings.asset using Guid(00000000000000004000000000000000) (LibraryAssetImporter) -> (artifact id: '09956df14b6b2e55dde7b44a66e9b3ba') in 0.0273998 seconds
+Start importing ProjectSettings/QualitySettings.asset using Guid(00000000000000009000000000000000) (LibraryAssetImporter) -> (artifact id: '140f0b49d81c91091551a2c318405d85') in 0.0051908 seconds
+Refreshing native plugins compatible for Editor in 5.98 ms, found 4 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Asset Pipeline Refresh (id=26d61eaac7c3a9047a29747bd5a1c4de): Total: 0.098 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=95d6f5e1aab28354b8d3222407ff55d2): Total: 0.147 seconds - Initiated by StopAssetImportingV2(NoUpdateAssetOptions)
 [Physics::Module] Cleanup current backend.
 [Physics::Module] Id: 0xf2b8ea05
 Input System module state changed to: ShutdownInProgress.
@@ -1607,4 +556,4 @@ Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792614341450,"processId":41124,"allocatedMemory":20123505,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67651},{"Thread":4230384},{"Manager":821616},{"VertexData":3224},{"Geometry":816},{"Texture":160},{"Shader":81701},{"Material":24},{"GfxDevice":57888},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1629680},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":6890},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":49843},{"DynamicArray":128010},{"HashMap":80370},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":16672},{"WebRequest":4721},{"VR":47994},{"SceneManager":504},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":133263},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366162},{"EditorGi":328},{"UnityConnect":29208},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1792615477779,"processId":39184,"allocatedMemory":20106629,"memoryLabels":[{"Default":29313},{"Permanent":15236},{"NewDelete":67651},{"Thread":4230344},{"Manager":821616},{"VertexData":3224},{"Geometry":816},{"Texture":160},{"Shader":81701},{"Material":24},{"GfxDevice":57888},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":464},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1629680},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":6890},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":46616},{"DynamicArray":128010},{"HashMap":80370},{"Utility":2660822},{"Curl":2559},{"PoolAlloc":2344},{"AI":80},{"TypeTree":18389},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":16528},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":124047},{"VersionControl":4},{"Undo":947},{"AssetDatabase":9366082},{"EditorGi":328},{"UnityConnect":29208},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":211},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3498},{"Licensing":1264},{"AssetReference":32},{"IPCStream":32}]}
