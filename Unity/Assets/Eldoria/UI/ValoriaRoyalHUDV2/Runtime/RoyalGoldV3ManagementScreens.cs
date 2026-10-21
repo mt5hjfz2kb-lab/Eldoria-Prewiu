@@ -135,6 +135,14 @@ namespace Eldoria.UI.RoyalGold.V2
             var bg = go.GetComponent<Image>();
             bg.color = new Color(.026f,.045f,.075f,1f);
             bg.raycastTarget = true;
+            var artwork=Rect("V3 / Royal military hall artwork",root);
+            artwork.anchorMin=Vector2.zero;
+            artwork.anchorMax=Vector2.one;
+            artwork.offsetMin=artwork.offsetMax=Vector2.zero;
+            artwork.gameObject.AddComponent<CanvasRenderer>();
+            var backdrop=artwork.gameObject.AddComponent<RoyalGoldV3ManagementBackdrop>();
+            backdrop.color=Color.white;
+            backdrop.raycastTarget=false;
             header = Frame("V3 / Destination header",root,false);
             left = Frame("V3 / Featured military unit",root,false);
             right = Frame("V3 / Authoritative status and cost",root,false);
