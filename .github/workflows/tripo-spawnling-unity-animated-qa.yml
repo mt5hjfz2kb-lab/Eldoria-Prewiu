@@ -62,7 +62,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $req=Get-Content rig-qa-source/pipeline/tripo-art-brain/unity-qa-request.json -Raw|ConvertFrom-Json
-          if($req.artifact_id -ne 12373524457 -or $req.source_sha256 -ne 'c846969f98c838f9a4c6b0436097d729135109eabaa573210096a6b11332f1db'){throw 'Unexpected V4 source'}
+          if($req.artifact_id -ne 12375647341 -or $req.source_sha256 -ne 'eef82ab48b8e512a39b3f87b5b282f5bc493ec119a7e21c2149a2437c1448128'){throw 'Unexpected V4 source'}
           $project=Join-Path $env:RUNNER_TEMP "eldoria-rig-qa-$env:GITHUB_RUN_ID"
           if(Test-Path $project){throw 'Refuse reuse of existing probe project'}
           New-Item -ItemType Directory -Force "$project/Assets/Editor","$project/Assets/QA","$project/Packages","$project/ProjectSettings","$project/UserSettings","$project/evidence","$project/input"|Out-Null
@@ -75,7 +75,7 @@ jobs:
           [IO.File]::WriteAllText("$project/Packages/manifest.json",($manifest|ConvertTo-Json -Depth 8),(New-Object Text.UTF8Encoding($false)))
           '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"disabled":false}}'|Set-Content "$project/UserSettings/Search.index" -Encoding UTF8
           $zip=Join-Path $project 'v4.zip'
-          Invoke-WebRequest -UseBasicParsing -Headers @{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'} -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/12373524457/zip" -OutFile $zip
+          Invoke-WebRequest -UseBasicParsing -Headers @{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'} -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/12375647341/zip" -OutFile $zip
           Expand-Archive $zip "$project/input"
           $glbs=@(Get-ChildItem "$project/input" -Recurse -Filter 'spawnling-rig-expressive-swipe-v4.glb')
           if($glbs.Count -ne 1){throw 'Exact V4 GLB absent or duplicated'}
