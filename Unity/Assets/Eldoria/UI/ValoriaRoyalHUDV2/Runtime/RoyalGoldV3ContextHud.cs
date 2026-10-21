@@ -199,23 +199,54 @@ namespace Eldoria.UI.RoyalGold.V2
             RenderSelection(camera, blocked);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
         }
-        private static bool CanProject(Transform target, Camera camera, RectTransform safe, out Vector2 local)
+        private static bool CanProject(Transform target, Camera camera, RectTransform safe,
+            bool aboveBuilding, out Vector2 local)
         {
             local = Vector2.zero;
-            if (!target || !target.gameObject.activeInHierarchy || !camera || !camera.enabled) return false;
-            Vector3 position = target.position;
-            var hit = target.GetComponent<Collider>();
-            if (!hit) hit = target.GetComponentInChildren<Collider>();
-            if (hit && hit.enabled)
+            if (!target || !target.gameObject.activeInHierarchy || !camera || !camera.enabled)
+                return false;
+            var collider = target.GetComponent<Collider>();
+            if (!collider) collider = target.GetComponentInChildren<Collider>();
+            Vector3 screen;
+            if (collider && collider.enabled)
             {
-                var b = hit.bounds;
-                position = new Vector3(b.center.x, b.max.y + .2f, b.center.z);
+                // Build/Upgrade sits BELOW the entire projected structure;
+                // the timer sits ABOVE. Project all eight collider corners
+                // instead of a top-centre guess that can cover the building.
+                var b = collider.bounds;
+                var min = b.min;
+                var max = b.max;
+                float left = float.PositiveInfinity, right = float.NegativeInfinity;
+                float bottom = float.PositiveInfinity, top = float.NegativeInfinity;
+                bool projected = false;
+                for (int i = 0; i < 8; ++i)
+                {
+                    var corner = new Vector3((i & 1) == 0 ? min.x : max.x,
+                        (i & 2) == 0 ? min.y : max.y, (i & 4) == 0 ? min.z : max.z);
+                    var point = camera.WorldToScreenPoint(corner);
+                    if (point.z <= camera.nearClipPlane || point.z >= camera.farClipPlane)
+                        continue;
+                    left = Mathf.Min(left, point.x);
+                    right = Mathf.Max(right, point.x);
+                    bottom = Mathf.Min(bottom, point.y);
+                    top = Mathf.Max(top, point.y);
+                    projected = true;
+                }
+                if (!projected) return false;
+                screen = new Vector3((left + right) * .5f,
+                    aboveBuilding ? top : bottom, camera.nearClipPlane + .1f);
             }
-            var screen = camera.WorldToScreenPoint(position);
-            if (screen.z <= camera.nearClipPlane || screen.z >= camera.farClipPlane) return false;
+            else
+            {
+                screen = camera.WorldToScreenPoint(target.position);
+                if (screen.z <= camera.nearClipPlane || screen.z >= camera.farClipPlane)
+                    return false;
+            }
             var canvas = safe.GetComponentInParent<Canvas>();
-            var uiCamera = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
-            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(safe, screen, uiCamera, out local)) return false;
+            var uiCamera = canvas && canvas.renderMode != RenderMode.ScreenSpaceOverlay
+                ? canvas.worldCamera : null;
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(safe, screen, uiCamera, out local))
+                return false;
             var bounds = safe.rect;
             return local.x >= bounds.xMin - 36 && local.x <= bounds.xMax + 36 &&
                 local.y >= bounds.yMin - 36 && local.y <= bounds.yMax + 36;
@@ -260,7 +291,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private void RenderSelectedBuilding(string id, RoyalBuilding value, Camera camera)
         {
             var target = FindAnchor(id == "march-main" ? "barracks" : id);
-            if (!CanProject(target, camera, safe, out var screen))
+            if (!CanProject(target, camera, safe, false, out var screen))
             {
                 Visible(cardGroup, false, true);
                 return;
@@ -321,7 +352,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 return;
             }
             var target = FindAnchor(id);
-            if (!CanProject(target, camera, safe, out var screen))
+            if (!CanProject(target, camera, safe, true, out var screen))
             {
                 Visible(timer.Visibility, false, false);
                 return;
