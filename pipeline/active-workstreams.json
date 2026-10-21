@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T19:53:15.793Z",
+  "updated_at": "2026-10-21T20:01:26.686Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -739,7 +739,7 @@
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
       "owner": "codex-three-workstreams-completion-20261021",
-      "ownership_revision": 17,
+      "ownership_revision": 18,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -767,20 +767,18 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/SpawnlingAnimatedV4Tests.cs.meta"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "V42_MEASURED_FOOT_REPAIR_UNITY_VISUAL_PROOF",
+      "phase": "V42_ISOLATED_UNITY_VISUAL_ACCEPTED_CANONICAL_PENDING",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Linux39663648455 PASS; GLB eef82ab48b8e512a39b3f87b5b282f5bc493ec119a7e21c2149a2437c1448128. Independent exactGLB comparison:1230footvertices zero arm weights,7626 upper/forward vertices unchanged,foot maxmotion0.013674m. Native isolated V4.2 proof next.",
+      "next": "Run39665538385 SUCCESS,artifact12377033828. Independently viewed genuine rest/swipe/return: feet stable, original upper-arm shape retained, coherent claw swipe and exact numerical rest recovery. Accept bounded isolated skin, not scene/mobile. Source/runtime/integration gates committed; consolidate geography then integrate reviewed asset and test actual encounter.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -889,7 +887,7 @@
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
       "owner": "codex-three-workstreams-completion-20261021",
       "ownership_state": "claimed",
-      "ownership_revision": 10,
+      "ownership_revision": 11,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-21T17:11:00Z",
@@ -916,7 +914,9 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -956,7 +956,7 @@
           "status": "SUCCESS"
         }
       },
-      "next": "PR90 merged; original merge native26 EditMode+38 PlayMode and images pass. Read-only management WebGL observations and real control harness committed8454c3c, source1887658. Full exact WebGL gameplay/delivery pending consolidated art/rig outcome.",
+      "next": "Native source tests automatically queued by explicit skin support commit; retain UI lease while UI/general editor tests run serially. Current tested source623de76 uses reflection at existing Assembly-CSharp boundary. Then release native runner to geography268 and final combined WebGL QA.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -997,7 +997,7 @@
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "MERGED_NATIVE_PASS_WEBGL_OBSERVATION_READY",
+      "phase": "AUTOMATIC_SOURCE_CERT_AFTER_ANIMATION_SUPPORT",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
