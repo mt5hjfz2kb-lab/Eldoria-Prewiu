@@ -1,0 +1,31 @@
+name: Eldoria Spawnling retire superseded queued native run V2
+on:
+  push:
+    branches: ['art/spawnling-bastion2-finish-20261021']
+    paths: ['.github/workflows/eldoria-spawnling-retire-queued-v2.yml']
+permissions:
+  actions: write
+  contents: read
+jobs:
+  cleanup-own-old-queued:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Retire ONLY the old, exact-identity queued Spawnling run
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="repos/$GITHUB_REPOSITORY/actions/runs/39578889927"
+          expected="8cdfb1fccb5a5a610a801418e9a3fa3fecb2c779"
+          state="$(gh api "$api" --jq '.status')"
+          actual="$(gh api "$api" --jq '.head_sha')"
+          echo "OLDER_SPAWNLING_RUN id=39578889927 status=$state sha=$actual"
+          test "$actual" = "$expected" || { echo 'Refuse cancel of unexpected run identity'; exit 1; }
+          if [[ "$state" == 'queued' || "$state" == 'pending' ]]; then
+            gh api -X POST "$api/cancel" >/dev/null
+            echo 'RETIRED_ONLY_SUPERSEDED_PENDING_RUN'
+          else
+            echo 'LEAVE_STARTED_OR_TERMINAL_RUN_UNTOUCHED'
+          fi
