@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-21T22:17:27.643Z",
+  "updated_at": "2026-10-21T22:21:08.259Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -50,15 +50,13 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "NATIVE281_EXACT_BROWSER_PASS_RESTRICTED_DELIVERY",
-      "next": "Browser39683431955PASS,10 real operations including600.748s training,full I-II,exact save/reload,0 runtime/network errors. Independent actual training portrait/march landscape capture reviewPASS. Promote exact artifact12385344486 then verifyactivation.",
+      "phase": "NATIVE281_UPLOADED_REMOTE_ACTIVATION_PENDING",
+      "next": "Exact native/browser/transportPASS. Upload39685413878 accepted build2180594 native281-d1b3e22066e1; read-only activation pending. Windows released; no repeated upload or new native work.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -703,7 +701,7 @@
           "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 17,
+      "ownership_revision": 18,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -778,14 +776,14 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "NATIVE281_EXACT_BROWSER_PASS_RESTRICTED_DELIVERY",
+      "phase": "NATIVE281_UPLOADED_REMOTE_ACTIVATION_PENDING",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
         "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
         "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
         "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Browser39683431955PASS,10 real operations including600.748s training,full I-II,exact save/reload,0 runtime/network errors. Independent actual training portrait/march landscape capture reviewPASS. Promote exact artifact12385344486 then verifyactivation.",
+      "next": "Exact native/browser/transportPASS. Upload39685413878 accepted build2180594 native281-d1b3e22066e1; read-only activation pending. Windows released; no repeated upload or new native work.",
       "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
       "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
       "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
@@ -961,7 +959,7 @@
           "status": "SUCCESS"
         }
       },
-      "next": "Browser39683431955PASS,10 real operations including600.748s training,full I-II,exact save/reload,0 runtime/network errors. Independent actual training portrait/march landscape capture reviewPASS. Promote exact artifact12385344486 then verifyactivation.",
+      "next": "Exact native/browser/transportPASS. Upload39685413878 accepted build2180594 native281-d1b3e22066e1; read-only activation pending. Windows released; no repeated upload or new native work.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1002,7 +1000,7 @@
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "NATIVE281_EXACT_BROWSER_PASS_RESTRICTED_DELIVERY",
+      "phase": "NATIVE281_UPLOADED_REMOTE_ACTIVATION_PENDING",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {

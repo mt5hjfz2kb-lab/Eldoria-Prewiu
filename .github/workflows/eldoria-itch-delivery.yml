@@ -150,8 +150,12 @@ jobs:
   remote_status:
     runs-on: ubuntu-latest
     environment: eldoria-playtest
-    timeout-minutes: 5
+    timeout-minutes: 25
     steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: pipeline/playtest-delivery.json
+          sparse-checkout-cone-mode: false
       - name: Inspect remote channel without uploading
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
@@ -159,7 +163,27 @@ jobs:
           curl --fail --location --retry 2 https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default -o butler.zip
           unzip -q butler.zip -d butler-bin
           chmod +x butler-bin/butler
-          butler-bin/butler status --show-all-files chrismad/eldoria-pruebas
+          python3 - <<'PY'
+          import json, subprocess, time
+          cfg=json.load(open('pipeline/playtest-delivery.json'))
+          request=cfg.get('remote_verification_request')
+          target=cfg['target']
+          assert target=='chrismad/eldoria-pruebas'
+          if not request:
+              subprocess.run(['butler-bin/butler','status','--show-all-files',target],check=True)
+          else:
+              assert request['target']==target and request['upload_run']==cfg['uploaded']['run_id']
+              assert request['version']==cfg['uploaded']['version'] and request['build']==cfg['uploaded']['remote_build']
+              for attempt in range(40):
+                  result=subprocess.run(['butler-bin/butler','status',target+':web'],capture_output=True,text=True,check=True)
+                  print(result.stdout,flush=True)
+                  active=any(request['version'] in line and str(request['build']) in line and '✓' in line and '•' not in line for line in result.stdout.splitlines())
+                  if active:
+                      print('ELDORIA_REMOTE_ACTIVE '+json.dumps(request),flush=True)
+                      break
+                  if attempt==39:raise RuntimeError('Accepted upload still not active within bounded read-only checks; do not upload again')
+                  time.sleep(30)
+          PY
 
   configure_pc:
     if: needs.prepare.outputs.should_configure_pc == 'true'

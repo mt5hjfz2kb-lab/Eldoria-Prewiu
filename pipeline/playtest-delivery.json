@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "NATIVE281_COMBINED_QA_PASS_RESTRICTED_PROMOTION_REQUESTED",
+  "state": "NATIVE281_UPLOAD_ACCEPTED_REMOTE_PROCESSING",
   "publish_enabled": true,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
@@ -63,48 +63,31 @@
     "authorization": "Owner explicitly asks this executor to assume and finish all three works, including existing restricted delivery after exact QA. Publish certified native281 only to existing Restricted web channel;0EUR."
   },
   "last_attempt": {
-    "run_id": 39614581796,
+    "run_id": 39685413878,
     "prepare": "success",
     "transport_tests": "success",
-    "publish": "upload_accepted_remote_active_confirmed",
-    "remote_build": 2177569,
-    "hosted_verified": false,
-    "reason": "Single upload accepted14:12:04UTC; independent read-only Butler status at14:31:34UTC confirms exact native245-585451deffe0/build2177569 active. Original publish step ended early while server processed; no duplicate upload. Hosted browser review separately blocked by Cloudflare.",
+    "publish": "upload_accepted_remote_processing",
+    "remote_build": 2180594,
     "publish_job_conclusion": "failure_short_activation_wait",
-    "remote_active_confirmed": true,
-    "remote_status_evidence": {
-      "run_id": 39614581796,
-      "job_id": 119282343868,
-      "checked_at": "2026-10-21T14:31:34Z",
-      "result": "NATIVE245_ACTIVE",
-      "remote_build": 2177569,
-      "version": "native245-585451deffe0"
-    }
+    "remote_active_confirmed": false,
+    "reason": "Single upload accepted22:18:49UTC; original30-second activation wait ended while serverprocessing. No repeatedupload. Read-only exact version/build polling requested."
   },
   "uploaded": {
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native245",
-    "run_id": 39614581796,
-    "remote_build": 2177569,
-    "version": "native245-585451deffe0",
+    "revision": "native281",
+    "run_id": 39685413878,
+    "remote_build": 2180594,
+    "version": "native281-d1b3e22066e1",
     "upload_accepted": true,
-    "upload_accepted_at": "2026-10-21T14:12:04Z",
+    "upload_accepted_at": "2026-10-21T22:18:49Z",
     "hosted_verified": false,
-    "processing_status": "ACTIVE",
+    "processing_status": "PROCESSING",
     "transport_adapter": "itch-decoded-stream-v3",
     "physical_mobile_tested": false,
-    "remote_active_confirmed": true,
-    "zip_sha256": "585451deffe03061ffa265845e1301921303b23d31c1f60d01da879f41a97f33",
-    "latest_remote_check": {
-      "run_id": 39614581796,
-      "job_id": 119282343868,
-      "checked_at": "2026-10-21T14:31:34Z",
-      "result": "NATIVE245_ACTIVE",
-      "remote_build": 2177569,
-      "version": "native245-585451deffe0"
-    }
+    "remote_active_confirmed": false,
+    "zip_sha256": "d1b3e22066e106b6d48ceffe48fdee07badf61721ebd184405d7ecf3eb6fed77"
   },
   "manual_fallback": {
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
@@ -215,7 +198,9 @@
     "hosted_chrome_tested": false,
     "ios_safari_tested": false,
     "art_approved": false,
-    "transport_reader_actual_unity_pass": false
+    "transport_reader_actual_unity_pass": true,
+    "transport_status": "EXACT_DECODED_UNITY_TRANSPORT_PASS",
+    "unity_decoded_bytes_unchanged": true
   },
   "published_history": [
     {
@@ -277,6 +262,31 @@
         "checked_at": "2026-10-21T13:50:58Z",
         "result": "NATIVE242_ACTIVE"
       }
+    },
+    {
+      "provider": "itch.io",
+      "target": "chrismad/eldoria-pruebas",
+      "channel": "web",
+      "revision": "native245",
+      "run_id": 39614581796,
+      "remote_build": 2177569,
+      "version": "native245-585451deffe0",
+      "upload_accepted": true,
+      "upload_accepted_at": "2026-10-21T14:12:04Z",
+      "hosted_verified": false,
+      "processing_status": "ACTIVE",
+      "transport_adapter": "itch-decoded-stream-v3",
+      "physical_mobile_tested": false,
+      "remote_active_confirmed": true,
+      "zip_sha256": "585451deffe03061ffa265845e1301921303b23d31c1f60d01da879f41a97f33",
+      "latest_remote_check": {
+        "run_id": 39614581796,
+        "job_id": 119282343868,
+        "checked_at": "2026-10-21T14:31:34Z",
+        "result": "NATIVE245_ACTIVE",
+        "remote_build": 2177569,
+        "version": "native245-585451deffe0"
+      }
     }
   ],
   "attempt_history": [
@@ -289,5 +299,12 @@
       "hosted_verified": false,
       "reason": "Butler accepted upload; remote activation still pending at22:57:10UTC. Never repeat upload to resolve processing delay."
     }
-  ]
+  ],
+  "remote_verification_request": {
+    "id": "native281-read-only-activation-20261021",
+    "target": "chrismad/eldoria-pruebas",
+    "upload_run": 39685413878,
+    "version": "native281-d1b3e22066e1",
+    "build": 2180594
+  }
 }
