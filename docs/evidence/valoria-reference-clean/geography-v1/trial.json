@@ -1,6 +1,6 @@
 {
     "source_scene_sha256": "4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237",
-    "tool_sha256": "fe76682526b74521b170286d733c6d0eb77595dab722c79fbd90758a42d0e2c7",
+    "tool_sha256": "9e4878a6c996fc853567396b5e71a06de6f464775a6c29469b42913820bf81de",
     "method": "Retained-source conifer silhouette masses, original forest POI and safe clearings; three site-specific smooth macroforms and protected quarry rock base; original UV/roads/6 POIs preserved",
     "world_ground_source": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Generated-39138751241/mesh-0.asset",
     "original_poi_ids": [
@@ -37,15 +37,15 @@
         "after-world-engendro-valoria-mobile.png"
     ],
     "image_sha256": [
-        "6b843062e7c66496f6a84ba8fe9555906ddafb3491aa6424390a3a5b3b6715bf",
-        "287e65543ba4bab6e341b60c3fcb42b94b0b0cf2b1ea455d899b702c3e2892f1",
-        "0e06bae8da47870b60a1f6f422567dbaa0419ecee985bd9434c0ba2a39c7fbfe",
-        "3f51d6f67d1ce69db3bab47ae29d588e2c6b11a4544b245a5e59b9db30a63654",
-        "83dd2637e67f8ac464ab3489222ade1f95548dd9f90cdf682b1400064253a4ed",
-        "7a5028f472a1663e1a28641e6e95a8cf1bd43274ee8d91320083359bfc89c6d1",
-        "91f63bb3b163a29366791fc272a453a0f43796ed382d0ac69c14fbc0a80302d8",
-        "17640bf42520a10d2ffe36392ecec9cbc3ea194ff53d857cebf851f650eb3804",
-        "ba26b1bac13557b5780c3c481da2aadbc60c75862f1abcaed3dd59679c47a868",
+        "16bd4c5885bfc7bb3690479eac5dc344157aa9bb700537f81cfbf81258e50df3",
+        "547b138e3bbf13d34d8c20b0db2428ad1badd8e0fcb363aa2ec2b558b160c439",
+        "919e3342325ca1cbfbaf7f328285dba8784cc0b1e8efb29e142ade8e79b3c24b",
+        "ca9f6b2b9c92e1a55f8fe729c349b8fdf6b77b3779d37de7338dde8bb4f76aa6",
+        "f1d5d2d4cd50520b266cab879860e98886fc3a39d8a21cc7e46f9e656fe26865",
+        "751b620ae089952cd8aedc7f72fd65a9a2a46ea28e00c3f572f94eaa36c4b07f",
+        "ed086daf05176cac2c51aff61bb4d8b7eda5cee98eff40cceaf7b47f1e958833",
+        "7eedfc77368aabd6d5f56d556a905153913896e35102edd32873c3d216a00782",
+        "6458bd5f08cc78e6d4cfca9de5e1eb9a6ad68aebc2dbbce9acecbf016d6713b1",
         "ac0eafbac7855bc9724bcf3d527ff4050a4186ec60b858a73ce82f501bd45b5e",
         "b37996a240987daf3c906d20f66e98bbd98725a8fac31237fa66274b8c67a16c",
         "8ac6befb5df95e16944743e48a4246e7878217564111b1998efc6bd29fd2a743",
