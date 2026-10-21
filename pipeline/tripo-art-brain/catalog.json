@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "updated": "2026-10-21",
-  "purpose": "Three archived Tripo API sources, same artists/pipelines; zero-credit audit only",
+  "purpose": "Read-only provenance for three existing Tripo API sources, Blender editable files and Unity technical evidence. No API or Unity write.",
   "no_auto_tripo_call": true,
   "assets": {
     "spawnling": {
@@ -21,6 +21,10 @@
           "path": "ArtSource/World4X/Spawnling_v1/Optimized_Source.glb",
           "sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
           "triangles": 49800
+        },
+        "editable": {
+          "path": "ArtSource/World4X/Spawnling_v1/Optimized_Editable.blend",
+          "sha256": "7aa6521ea27b5996851aea7d78f0d30caee15e3ec77797df5ac09d0ff10f7edf"
         }
       },
       "qa": {
@@ -39,6 +43,10 @@
           "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Far.glb",
           "sha256": "dd698116c7cb517d9fdf95154f6b8c275235d7f6e241cab1a04b2302b67fecbd",
           "triangles": 2900
+        },
+        "editable": {
+          "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend",
+          "sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01"
         }
       },
       "defects": [
@@ -75,6 +83,10 @@
           "path": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb",
           "sha256": "897c8d02a445c6c760376031c38618698740e9593346099fafb4c3a0b93c1dc3",
           "triangles": 49800
+        },
+        "editable": {
+          "path": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.blend",
+          "sha256": "91e8385dc4229b963289b4f1356056fc34e88fca67af18d86ca03675ded7cab7"
         }
       },
       "qa": {
@@ -114,6 +126,10 @@
           "path": "ArtSource/World4X/RiftFocus_v1/Optimized_Source.glb",
           "sha256": "00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e",
           "triangles": 49799
+        },
+        "editable": {
+          "path": "ArtSource/World4X/RiftFocus_v1/Optimized_Editable.blend",
+          "sha256": "560006c58071139c582bb3ddcae07eac7bcb822d32a98deebbc9f71a20b86a2b"
         }
       },
       "qa": {
