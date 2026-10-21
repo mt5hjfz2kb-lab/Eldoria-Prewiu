@@ -623,7 +623,7 @@ namespace Eldoria.Presentation
                 }
                 else if((s.ChapterProgress?.TrainedArchers??0)<SliceContentProfiles.Active.Chapter2TrainArchers)
                 {
-                    buildingBody.text="ENTRENAMIENTO DE TROPAS  ·  ARQUEROS T1\\n"+
+                    buildingBody.text="ENTRENAMIENTO DE TROPAS  ·  ARQUEROS T1\n"+
                         "Guarnición activa · "+s.Available.Total+" arqueros disponibles · "+
                         (s.ChapterProgress?.TrainedArchers??0)+"/"+SliceContentProfiles.Active.Chapter2TrainArchers+" entrenados en este capítulo. "+
                         "Entrenar "+SliceRules.RecruitArchers+" arqueros cuesta "+SliceRules.RecruitWoodCost+" madera / "+SliceRules.RecruitStoneCost+" piedra.";
