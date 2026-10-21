@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import zlib from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 
 const sha256 = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -87,10 +88,27 @@ export function inspectGLB(bytes) {
 export function auditEditableBlend(root, spec) {
   if (!spec || !spec.path?.endsWith('.blend')) throw new Error('INVALID_EDITABLE_BLEND_PIN');
   const bytes = pinnedBytes(root, spec);
-  if (bytes.length < 12 || bytes.subarray(0, 7).toString('ascii') !== 'BLENDER') {
-    throw new Error('INVALID_EDITABLE_BLEND_HEADER: ' + spec.path);
+  let storage = 'uncompressed';
+  const magic = bytes.subarray(0, 7).toString('ascii');
+  if (bytes.length < 12) throw new Error('INVALID_EDITABLE_BLEND_HEADER: ' + spec.path);
+  if (magic !== 'BLENDER') {
+    if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
+      // Blender can save .blend directly as gzip. Validate bounded unpacked magic.
+      const decoded = zlib.gunzipSync(bytes, { maxOutputLength: 250_000_000 });
+      if (decoded.subarray(0, 7).toString('ascii') !== 'BLENDER') {
+        throw new Error('INVALID_EDITABLE_BLEND_HEADER: ' + spec.path);
+      }
+      storage = 'gzip';
+    } else if (bytes.subarray(0, 4).toString('hex') === '28b52ffd') {
+      // Zstd-compressed Blender files: SHA is exact/pinned; do not pretend to
+      // inspect the inner body when this runtime lacks a zstd decoder.
+      storage = 'zstd_sha_pinned';
+    } else {
+      throw new Error('INVALID_EDITABLE_BLEND_HEADER: ' + spec.path +
+        ' prefix=' + bytes.subarray(0, 8).toString('hex'));
+    }
   }
-  return { path: spec.path, sha256: spec.sha256, file_bytes: bytes.length };
+  return { path: spec.path, sha256: spec.sha256, file_bytes: bytes.length, storage };
 }
 
 function readJson(root, relativePath) {
