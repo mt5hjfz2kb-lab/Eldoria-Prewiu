@@ -1130,6 +1130,12 @@
       "path": "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
       "status": "review_pending",
       "domain": "art"
+    },
+    {
+      "path": "docs/ELDORIA_ART_KNOWLEDGE_PHASE1_20261021.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Inventario de técnicas y resultados curados, solo consulta; no autorización ni ejecución automática."
     }
   ]
 }
