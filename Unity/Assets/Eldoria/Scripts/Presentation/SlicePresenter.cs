@@ -625,7 +625,6 @@ namespace Eldoria.Presentation
             var s=gateway.Snapshot();
             currentBuildingId=id;
             SetBuildingPanelOpen(true);
-            ApplyManagementScreen(id=="barracks"&&s.BarracksLevel>0);
             if(id!="barracks"||s.BarracksLevel==0)PositionBuildingPanel(id);
             buildingAction.onClick.RemoveAllListeners();
             if(id=="sawmill")
