@@ -10,7 +10,8 @@
     "allowed_work": "Continue city/world/UI/gameplay on main under existing owner; historical branches read-only by project policy.",
     "authorized_workstream_ids": [
       "valoria-master-plan-layered-construction-20261016",
-      "eldoria-tripo-art-brain-phase2-20261021"
+      "eldoria-tripo-art-brain-phase2-20261021",
+      "eldoria-spawnling-qwen-semantic-visual-qa-20261021"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
@@ -818,6 +819,33 @@
       "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
       "phase": "UI_V3_NATIVE_CERTIFICATION",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner."
+    },
+    {
+      "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
+      "title": "Engendro — contraste independiente de cabeza Qwen nueva",
+      "owner": "chatgpt-eldoria-semantic-independent-review-20261021",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-21",
+      "scope": [
+        ".github/workflows/eldoria-spawnling-semantic-qa.yml",
+        "pipeline/art-production-requests/eldoria-spawnling-qwen-semantic-visual-qa-20261021.json",
+        "docs/evidence/spawnling-qwen-semantic-qa-20261021/RESULT.md"
+      ],
+      "resources": [],
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/eldoria-spawnling-qwen-semantic-visual-qa-20261021.json",
+      "art_production_routing_reason": "Análisis visual read-only con 5 vistas auténticas del candidato Qwen ya generado, sin mutar Blender ni proyectos reservados",
+      "dependency": "Descargar run39643146556 y revisar en Linux GitHub hosted, no inferencia, no Tripo API, no Unity, no Windows; usar source SHA y candidate SHA; fase2 de rigging y arte conserva su owner",
+      "phase": "EXISTING_QWEN_RESULT_CLOSEUP_REVIEW",
+      "next": "Comparar cabeza/figura desde camera hero y estratégica, registrar rechazo o candidato en scope independiente, cerrar sin ART_APPROVED.",
+      "delivery_definition": {
+        "deliverable": "Cinco parejas PNG A/B auténticas del Qwen aceptado técnicamente 39643146556, más veredicto de visibilidad y revisión artística separada",
+        "evidence": "Run GitHub actions y ZIP de screenshots contra hashes originales inmutables",
+        "handoff": "Entregar resultado exacto para el otro propietario artístico; nunca fusionar la malla ni reclamarla aprobada."
+      }
     }
   ],
   "history": [
