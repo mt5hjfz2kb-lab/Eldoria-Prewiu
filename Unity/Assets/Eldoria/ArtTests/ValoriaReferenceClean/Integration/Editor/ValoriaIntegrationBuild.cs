@@ -232,7 +232,7 @@ namespace Eldoria.ReferenceClean.Editor {
    // incorrectly reports a runtime regression for the legitimate narrator.
    yield return new WaitForSecondsRealtime(.36f);
    Check(()=>{
-    if(!h.Hud.NarrativeOpen)h.Guidance.ShowStory();
+    if(!h.Hud.NarrativeOpen)h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="Sir Aldric",
       "Actual Aserradero-unlocked World narrative missing");
     for(int turn=0;turn<4&&h.Hud.NarrativeOpen;turn++)Click(h.Hud.Modal.Extra);
