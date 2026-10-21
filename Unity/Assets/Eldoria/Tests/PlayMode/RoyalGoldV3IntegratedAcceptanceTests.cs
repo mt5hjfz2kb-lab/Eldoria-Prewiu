@@ -101,6 +101,13 @@ namespace Eldoria.Tests
             yield return Boot((h, v) => { host = h; hud = v; });
             var v3 = FindComponent(hud.gameObject, "RoyalGoldV3ContextHud");
             Assert.That(Member(v3, "IsConfigured"), Is.EqualTo(true));
+            // Selection UI is intentionally hidden during the genuine opening
+            // cinematic. Isolate interaction presentation without acknowledging
+            // narrative, modifying gameplay or writing the owner's save.
+            var guidance = Member(host, "Guidance") as Behaviour;
+            if (guidance) guidance.enabled = false;
+            var modal = Member(hud, "Modal") as Component;
+            if (modal && modal.gameObject.activeInHierarchy) Call(modal, "Hide");
             var sawmill = Call(host, "FindTarget", "sawmill") as Component;
             Assert.That(sawmill, Is.Not.Null, "Original sawmill hotspot must survive");
             var anchor = Member(v3, "FindAnchor") as Delegate;
