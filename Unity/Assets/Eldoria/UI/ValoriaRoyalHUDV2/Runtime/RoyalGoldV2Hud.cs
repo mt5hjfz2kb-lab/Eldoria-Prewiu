@@ -20,6 +20,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private RectTransform safe, objectiveCard, buildingCard, scrollContent, scrollViewport;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
+        private RoyalText objectiveActionLabel, objectivesButtonLabel;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
@@ -32,13 +33,47 @@ namespace Eldoria.UI.RoyalGold.V2
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
 
         public bool ChapterExpanded => expanded;
-        public bool BuildingVisible => buildingVisible;
+        public bool BuildingVisible
+        {
+            get
+            {
+                var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                return v3 && v3.IsConfigured ? v3.CloseVisible : buildingVisible;
+            }
+        }
         public RoyalButton VisibleObjectiveButton => objectiveAction;
         public RoyalButton VisibleChapterButton => objectivesButton;
-        public RoyalButton VisibleBuildingButton => buildingAction;
-        public RoyalButton VisibleBuildingCloseButton => buildingClose;
+        public RoyalButton VisibleBuildingButton
+        {
+            get
+            {
+                var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                return v3 && v3.IsConfigured ? v3.VisibleActionButton : buildingAction;
+            }
+        }
+        public RoyalButton VisibleBuildingCloseButton
+        {
+            get
+            {
+                var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                return v3 && v3.IsConfigured ? v3.VisibleCloseButton : buildingClose;
+            }
+        }
         public bool ObjectiveVisible => objectiveGroup && objectiveGroup.blocksRaycasts;
-        public bool BuildingActionVisible => BuildingVisible && buildingActionGroup && buildingActionGroup.blocksRaycasts;
+        public bool BuildingActionVisible
+        {
+            get
+            {
+                var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                // The established WebGL telemetry reads this boolean before
+                // clicking the actual V3 button. Do not silently mask it by
+                // the intentionally hidden V2 building sheet CanvasGroup.
+                return v3 && v3.IsConfigured
+                    ? v3.ContextVisible && v3.VisibleActionButton &&
+                        v3.VisibleActionButton.gameObject.activeInHierarchy
+                    : buildingVisible && buildingActionGroup && buildingActionGroup.blocksRaycasts;
+            }
+        }
 
         private void Awake()
         {
@@ -76,10 +111,24 @@ namespace Eldoria.UI.RoyalGold.V2
             chapterText = Text("Chapter", objectiveCard, 18, Gold, true);
             objectiveText = Text("Current real objective", objectiveCard, 25, Ivory, true);
             progressText = Text("Objective progress", objectiveCard, 17, Muted);
-            objectiveAction = Button("Go to existing objective", objectiveCard, out var goText, true);
-            objectivesButton = Button("Open current chapter", objectiveCard, out var moreText, false);
-            goText.Put("Ir al objetivo");
-            moreText.Put("Misiones");
+            objectiveAction = Button("Go to existing objective", objectiveCard, out objectiveActionLabel, true);
+            objectivesButton = Button("Open current chapter", objectiveCard, out objectivesButtonLabel, false);
+            objectiveActionLabel.Put("Ir al objetivo");
+            objectivesButtonLabel.Put("Misiones");
+            // Unity offscreen portrait captures exposed a uGUI canvas ordering
+            // defect: the original Text children were clipped to blank blue
+            // button frames even though both real Button raycasts worked.
+            // Keep the SAME Text objects, but draw them as later, non-raycast
+            // siblings of the objective buttons on the one existing canvas.
+            // This adds no duplicate action, EventSystem or touch surface.
+            objectiveActionLabel.rectTransform.SetParent(objectiveCard, false);
+            objectivesButtonLabel.rectTransform.SetParent(objectiveCard, false);
+            objectiveActionLabel.raycastTarget = false;
+            objectivesButtonLabel.raycastTarget = false;
+            objectiveActionLabel.fontSize = 18;
+            objectivesButtonLabel.fontSize = 18;
+            objectiveActionLabel.alignment = TextAnchor.MiddleCenter;
+            objectivesButtonLabel.alignment = TextAnchor.MiddleCenter;
             objectiveAction.onClick.AddListener(() =>
             {
                 if (Source && Source.Mission && Source.Mission.Open)
@@ -230,16 +279,22 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = safe.rect.width, height = safe.rect.height;
             if (width < 120 || height < 120) return;
             portrait = height > width;
-            float goalWidth = Mathf.Min(portrait ? width - 36f : 360f, width - 32f);
-            float goalTop = portrait ? Mathf.Min(248f, height * .23f) : 146f;
-            Top(objectiveCard, portrait ? 18 : 24, goalTop, goalWidth, 174f);
-            Top(chapterText.rectTransform, 17, 13, goalWidth - 130, 25);
-            Top(progressText.rectTransform, goalWidth - 108, 13, 93, 25);
+            float goalWidth = Mathf.Min(portrait ? 382f : 330f, width - 26f);
+            // Existing header/resources/feedback occupy up to 280 units
+            // on a portrait handset; never place the chapter over them.
+            float goalTop = portrait ? 291f : 136f;
+            Top(objectiveCard, portrait ? 14 : 18, goalTop, goalWidth, 119f);
+            Top(chapterText.rectTransform, 13, 9, goalWidth - 114, 22);
+            chapterText.fontSize = 17;
+            Top(progressText.rectTransform, goalWidth - 98, 9, 84, 22);
+            progressText.fontSize = 16;
             progressText.alignment = TextAnchor.MiddleRight;
-            Top(objectiveText.rectTransform, 17, 43, goalWidth - 34, 51);
-            Top((RectTransform)objectiveAction.transform, 14, 108, (goalWidth - 40f) * .59f, 52);
-            Top((RectTransform)objectivesButton.transform, 20 + (goalWidth - 40f) * .59f,
-                108, (goalWidth - 40f) * .41f, 52);
+            Top(objectiveText.rectTransform, 13, 31, goalWidth - 26, 41);
+            objectiveText.fontSize = 20;
+            Top((RectTransform)objectiveAction.transform, 10, 76, (goalWidth - 32f) * .58f, 39);
+            Top((RectTransform)objectivesButton.transform, 16 + (goalWidth - 32f) * .58f,
+                76, (goalWidth - 32f) * .42f, 39);
+            PositionObjectiveActionLabels();
             // Reflow selected objectives after every orientation/size change.
             compactObjective = false;
             // Explicitly expanded chapter panels are allowed to be larger; the
@@ -284,34 +339,48 @@ namespace Eldoria.UI.RoyalGold.V2
         private void ReflowSelectedObjective(bool compact)
         {
             if (!hasGeometry || compactObjective == compact) return;
+            // V3 never expands an objective simply because a building was selected.
+            // The original expanded checklist remains behind the explicit Misiones action.
             compactObjective = compact;
             float w = objectiveCard.rect.width;
-            if (compact)
-            {
-                objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 126f);
-                Top(chapterText.rectTransform, 17, 8, w - 130, 24);
-                Top(progressText.rectTransform, w - 108, 8, 93, 24);
-                Top(objectiveText.rectTransform, 17, 32, w - 34, 37);
-                objectiveText.fontSize = 22;
-                Top((RectTransform)objectiveAction.transform, 14, 75,
-                    (w - 40f) * .59f, 43f);
-                Top((RectTransform)objectivesButton.transform,
-                    20 + (w - 40f) * .59f, 75,
-                    (w - 40f) * .41f, 43f);
-            }
-            else
-            {
-                objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 174f);
-                Top(chapterText.rectTransform, 17, 13, w - 130, 25);
-                Top(progressText.rectTransform, w - 108, 13, 93, 25);
-                Top(objectiveText.rectTransform, 17, 43, w - 34, 51);
-                objectiveText.fontSize = 25;
-                Top((RectTransform)objectiveAction.transform, 14, 108,
-                    (w - 40f) * .59f, 52f);
-                Top((RectTransform)objectivesButton.transform,
-                    20 + (w - 40f) * .59f, 108,
-                    (w - 40f) * .41f, 52f);
-            }
+            objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 119f);
+            Top(chapterText.rectTransform, 13, 9, w - 114f, 22f);
+            Top(progressText.rectTransform, w - 98f, 9, 84f, 22f);
+            Top(objectiveText.rectTransform, 13, 31, w - 26f, 41f);
+            objectiveText.fontSize = 20;
+            Top((RectTransform)objectiveAction.transform, 10, 76, (w - 32f) * .58f, 39f);
+            Top((RectTransform)objectivesButton.transform,
+                16 + (w - 32f) * .58f, 76, (w - 32f) * .42f, 39f);
+            PositionObjectiveActionLabels();
+        }
+
+        /// <summary>
+        /// One visible native uGUI label per original clickable button.
+        /// The labels are non-interactive siblings to avoid the portrait
+        /// offscreen MaskableGraphic ordering/clip regression.
+        /// </summary>
+        private void PositionObjectiveActionLabels()
+        {
+            if (!objectiveActionLabel || !objectivesButtonLabel ||
+                !objectiveAction || !objectivesButton) return;
+            PlaceObjectiveLabel(objectiveActionLabel, (RectTransform)objectiveAction.transform);
+            PlaceObjectiveLabel(objectivesButtonLabel, (RectTransform)objectivesButton.transform);
+            objectiveActionLabel.transform.SetAsLastSibling();
+            objectivesButtonLabel.transform.SetAsLastSibling();
+        }
+
+        private static void PlaceObjectiveLabel(RoyalText label, RectTransform button)
+        {
+            var x = button.anchoredPosition.x + 7f;
+            var top = -button.anchoredPosition.y + 3f;
+            Top(label.rectTransform, x, top,
+                Mathf.Max(40f, button.rect.width - 14f),
+                Mathf.Max(30f, button.rect.height - 6f));
+            label.fontSize = 18;
+            label.alignment = TextAnchor.MiddleCenter;
+            label.horizontalOverflow = HorizontalWrapMode.Wrap;
+            label.verticalOverflow = VerticalWrapMode.Overflow;
+            label.raycastTarget = false;
         }
 
         private static string Safe(RoyalText value) => value ? value.text ?? "" : "";
@@ -319,6 +388,16 @@ namespace Eldoria.UI.RoyalGold.V2
         private void RenderBuilding(bool narrativeOrModal)
         {
             var source = Source.Building;
+            // V3 attaches to the same HUD: the old, oversized V2 sheet is
+            // display-only and must never compete with object-anchored controls.
+            var contextual = GetComponent<RoyalGoldV3ContextHud>();
+            if (contextual && contextual.IsConfigured)
+            {
+                buildingVisible = false;
+                SetVisible(buildingGroup, false);
+                SetVisible(buildingActionGroup, false);
+                return;
+            }
             bool show = !narrativeOrModal && !string.IsNullOrEmpty(Source.SelectedBuildingId) &&
                 source && source.Title && !string.IsNullOrWhiteSpace(source.Title.text);
             buildingVisible = show;
@@ -400,22 +479,22 @@ namespace Eldoria.UI.RoyalGold.V2
             if (count == 0) return;
             float space = Mathf.Max(250f, safe.rect.width - 30f);
             float gap = portrait ? 7f : 9f;
-            float width = Mathf.Min(portrait ? 110f : 122f, (space - gap * (count - 1)) / count);
+            float width = Mathf.Min(portrait ? 108f : 110f, (space - gap * (count - 1)) / count);
             float total = width * count + gap * (count - 1);
             var navRect = nav.transform as RectTransform;
             if (navRect)
             {
-                SetWidthAndHeight(navRect, total, 104f);
+                SetWidthAndHeight(navRect, total, 77f);
                 if ((navRect.anchoredPosition - new Vector2(0, 10f)).sqrMagnitude > .1f)
                     navRect.anchoredPosition = new Vector2(0, 10f);
             }
-            float icon = Mathf.Min(68f, width - 10f);
+            float icon = Mathf.Min(43f, width - 10f);
             int index = 0;
             foreach (var item in nav.Items)
             {
                 if (!item.Button || !item.Button.gameObject.activeSelf) continue;
                 var cell = (RectTransform)item.Button.transform;
-                SetWidthAndHeight(cell, width, 104f);
+                SetWidthAndHeight(cell, width, 77f);
                 float x = -total * .5f + width * .5f + index++ * (width + gap);
                 if ((cell.anchoredPosition - new Vector2(x, 0)).sqrMagnitude > .1f)
                     cell.anchoredPosition = new Vector2(x, 0);
@@ -431,14 +510,46 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (item.Label)
                 {
                     var label = item.Label.rectTransform;
-                    SetWidthAndHeight(label, width, 27f);
-                    Vector2 position = new Vector2(0, -74f);
+                    SetWidthAndHeight(label, width, 22f);
+                    Vector2 position = new Vector2(0, -49f);
                     if ((label.anchoredPosition - position).sqrMagnitude > .1f)
                         label.anchoredPosition = position;
-                    if (item.Label.fontSize != 19) item.Label.fontSize = 19;
+                    if (item.Label.fontSize != 17) item.Label.fontSize = 17;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                 }
             }
+        }
+
+        /// <summary>
+        /// Long live feedback must wrap inside the actual mobile safe area,
+        /// rather than projecting beyond the right edge over the city.
+        /// This only affects the existing text component; no new HUD/toast.
+        /// </summary>
+        private void ConfigureFeedbackReadability()
+        {
+            if (!Source || !Source.Feedback || !safe) return;
+            var feedback = Source.Feedback;
+            feedback.raycastTarget = false;
+            feedback.alignment = TextAnchor.MiddleCenter;
+            feedback.horizontalOverflow = HorizontalWrapMode.Wrap;
+            feedback.verticalOverflow = VerticalWrapMode.Truncate;
+            int size = portrait ? 19 : 20;
+            if (feedback.fontSize != size) feedback.fontSize = size;
+            var rect = feedback.rectTransform;
+            float width = Mathf.Min(portrait ? safe.rect.width - 36f : 690f,
+                safe.rect.width - 26f);
+            SetWidthAndHeight(rect, Mathf.Max(240f, width), portrait ? 56f : 48f);
+        }
+
+        private static void RebindObjectiveLabel(RoyalText label)
+        {
+            if (!label) return;
+            // Never remove/recreate a button or listener. UI.Graphic.OnEnable
+            // re-registers this same child on the current canvas after the
+            // orientation/camera switch (including the native capture path).
+            label.enabled = false;
+            label.enabled = true;
+            label.SetAllDirty();
         }
 
         private void LateUpdate() => SynchronizeNow();
@@ -452,9 +563,24 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!ready) return;
             bool resized = !hasGeometry || Mathf.Abs(safe.rect.width - lastWidth) > .5f ||
                 Mathf.Abs(safe.rect.height - lastHeight) > .5f;
-            if (resized) Layout();
+            if (resized)
+            {
+                Layout();
+                // Native portrait captures and live orientation switches alter
+                // the stretched button rectangles while the text string stays
+                // unchanged. Explicitly rebuild their uGUI vertices so these
+                // genuine mission labels cannot render as empty gold frames.
+                // A camera-backed offscreen portrait capture can leave the
+                // dynamic child Text registered at Graphic.depth=-1 after
+                // switching from landscape. Re-register its Graphic rather
+                // than merely marking cached geometry dirty: without this,
+                // the actual clickable mission buttons render WITHOUT text.
+                RebindObjectiveLabel(objectiveActionLabel);
+                RebindObjectiveLabel(objectivesButtonLabel);
+            }
             if (!hasGeometry) return;
             LayoutNavigation();
+            ConfigureFeedbackReadability();
             bool modalOpen = Source.Modal && Source.Modal.gameObject.activeSelf;
 
             chapterText.Put(Safe(Source.Mission.Chapter));
@@ -495,6 +621,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // input or obscure the actual Valoria scene.
             if (Source.Building && Source.Building.gameObject.activeSelf)
                 Source.Building.gameObject.SetActive(false);
+            // Existing native gameplay/capture harness calls this synchronously;
+            // the reprojected V3 button must be the actual hittable button.
+            var v3 = GetComponent<RoyalGoldV3ContextHud>();
+            if (v3 && v3.IsConfigured) v3.SynchronizeNow();
         }
 
         /// <summary>
@@ -508,11 +638,13 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
             float padding = .025f;
-            if (portrait && BuildingVisible)
+            if (portrait && buildingVisible)
                 free.yMin = Mathf.Max(free.yMin,
                     (buildingCard.anchoredPosition.y + buildingCard.rect.height) / height + padding);
-            else if (!portrait && BuildingVisible)
+            else if (!portrait && buildingVisible)
                 free.xMax = Mathf.Min(free.xMax, 1f - buildingCard.rect.width / width - padding);
+            // The V3 selected control follows the object itself and does not
+            // reduce a whole side of the playable camera rectangle.
             if (objectiveGroup && objectiveGroup.blocksRaycasts)
             {
                 if (portrait)

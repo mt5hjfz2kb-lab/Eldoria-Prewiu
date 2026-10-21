@@ -49,6 +49,25 @@ namespace Eldoria.ReferenceClean {
    // One authoritative Royal Gold session; V2 alters presentation only.
    if(!Hud.GetComponent<RoyalGoldV2Hud>())Hud.gameObject.AddComponent<RoyalGoldV2Hud>();
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
+   // V3 shares the one RoyalHUD and receives only read-only target/camera
+   // projections and the exact existing IRoyalSession building snapshot.
+   // No second Canvas, controller, timer, EventSystem or gameplay rules.
+   var context=Hud.GetComponent<RoyalGoldV3ContextHud>();
+   if(!context)context=Hud.gameObject.AddComponent<RoyalGoldV3ContextHud>();
+   context.Source=Hud;
+   context.FindAnchor=id=>{
+    // Recruitment belongs visually to the built barracks, not the logical
+    // parcel hotspot, which can lie outside the portrait camera frame.
+    // Selection/raycast/authoritative gameplay still use FindTarget unchanged.
+    if(!InWorld&&id=="barracks"&&city.Parcels!=null&&
+       city.Parcels.RightBuilt&&city.Parcels.RightBuilt.activeInHierarchy)
+      return city.Parcels.RightBuilt.transform;
+    var spot=FindTarget(id);return spot?spot.transform:null;
+   };
+   context.ActiveCamera=()=>PlayerCamera;
+   context.ReadBuilding=id=>Read(id,English).Building;
+   if(!Hud.GetComponent<EldoriaV3VisualDirection>())
+     Hud.gameObject.AddComponent<EldoriaV3VisualDirection>();
    BindSession();Hud.SelectionChanged+=SelectionChanged;
    // Keep the original presenter ticking the authoritative gateway and gestures.
    legacyCanvas.enabled=false;legacyRaycaster.enabled=false;
@@ -142,7 +161,7 @@ namespace Eldoria.ReferenceClean {
    var padded=Rect.MinMaxRect(safe.xMin+.012f,safe.yMin+.012f,safe.xMax-.012f,safe.yMax-.012f);
    for(int attempt=0;attempt<5;attempt++){
     if(!ProjectFocus(camera,points,out projected))break;
-    if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax)return;
+    if(projected.xMin>=padded.xMin&&projected.xMax<=padded.xMax&&projected.yMin>=padded.yMin&&projected.yMax<=padded.yMax){var context=Hud.GetComponent<RoyalGoldV3ContextHud>();if(context)context.SynchronizeNow();return;}
     if(camera.orthographic){
      float required=Mathf.Max(projected.width/padded.width,projected.height/padded.height);
      if(required>1.001f){
@@ -162,6 +181,9 @@ namespace Eldoria.ReferenceClean {
      else camera.transform.position+=shift;
     }else break;
    }
+   // Reproject once after a native synchronous camera adjustment; the
+   // existing capture harness renders in the same frame without LateUpdate.
+   var v3=Hud.GetComponent<RoyalGoldV3ContextHud>();if(v3)v3.SynchronizeNow();
   }
   /// <summary>Checks every visible model-bound corner against the actual unoccluded UI viewport.</summary>
   public bool IsTargetFramed(GameObject target,out Rect projected,out Rect visible){

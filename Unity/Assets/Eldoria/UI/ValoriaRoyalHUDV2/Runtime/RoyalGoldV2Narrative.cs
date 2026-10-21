@@ -1,3 +1,4 @@
+using System;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,6 +19,8 @@ namespace Eldoria.UI.RoyalGold.V2
         private RoyalText role;
         private RectTransform portrait, sigil;
         private bool cached;
+        private EldoriaV3VisualDirection visualDirection;
+        private bool previousOrin;
 
         private void Awake()
         {
@@ -30,6 +33,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var a = Source.GetComponentInChildren<RoyalHudLayout>(true);
             safe = a ? a.transform as RectTransform : null;
             cached = safe;
+            visualDirection = Source.GetComponent<EldoriaV3VisualDirection>();
         }
 
         private static void Top(RectTransform rect, float x, float top, float width, float height)
@@ -41,7 +45,14 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private void LateUpdate()
         {
-            if (!Application.isPlaying || !Source || !Source.NarrativeOpen) return;
+            if (!Application.isPlaying || !Source) return;
+            if (!Source.NarrativeOpen)
+            {
+                // Do not leave Orín's supernatural treatment over normal gameplay.
+                if (previousOrin && visualDirection) visualDirection.RestoreRoyal();
+                previousOrin = false;
+                return;
+            }
             if (!cached) Cache();
             if (!cached) return;
 
@@ -60,44 +71,74 @@ namespace Eldoria.UI.RoyalGold.V2
             float frameWidth = Mathf.Min(availableWidth - 34f, portraitScreen ? 646f : 760f);
             float textWidth = frameWidth - 52f;
             float bodyTop = portraitScreen ? 147f : 150f;
+            string speaker = Source.NarrativeSpeaker ?? "";
+            bool aldric = string.Equals(speaker, "Sir Aldric", StringComparison.OrdinalIgnoreCase);
+            bool orin = string.Equals(speaker, "Orín", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(speaker, "Orin", StringComparison.OrdinalIgnoreCase);
+            bool lyra = string.Equals(speaker, "Lyra", StringComparison.OrdinalIgnoreCase);
+            if (visualDirection)
+            {
+                if (orin && !previousOrin)
+                    visualDirection.ApplyFromCanonicalEvent(EldoriaV3VisualDirection.NarrativeTreatment.Orin);
+                else if (!orin && previousOrin)
+                    visualDirection.RestoreRoyal();
+            }
+            previousOrin = orin;
             // A dialogue can contain up to 218 characters with explicit
             // paragraph breaks. A short fixed 222/298px text region clips
             // Aldric's very first speech when the font is enlarged.
             // Prioritise COMPLETE legibility over an artificially short box.
-            float maxReadable = Mathf.Max(185f, availableHeight - bodyTop - 100f);
-            float minimumReadable = portraitScreen ? 385f : 325f;
-            float bodyHeight = Mathf.Min(maxReadable, minimumReadable);
+            float maxReadable = Mathf.Max(115f, availableHeight - bodyTop - 102f);
+            float preferredRegion = portraitScreen ? 385f : 325f;
+            float bodyHeight = Mathf.Min(maxReadable, preferredRegion);
             float actionTop = bodyTop + bodyHeight + 12f;
             frame.sizeDelta = new Vector2(frameWidth, actionTop + 82f);
+            float portraitSize = Mathf.Clamp(frameWidth * .18f, 68f, 112f);
+            float titleX = portraitSize + 38f;
 
-            modal.Title.fontSize = portraitScreen ? 31 : 33;
-            modal.Title.color = new Color(.96f, .88f, .73f);
+            modal.Title.fontSize = frameWidth < 380f ? 25 : (portraitScreen ? 31 : 33);
+            modal.Title.color = orin ? new Color(.94f, .82f, 1f) : new Color(.96f, .88f, .73f);
             modal.Title.fontStyle = FontStyle.Bold;
-            Top(modal.Title.rectTransform, 136, 27, frameWidth - 155f, 47);
+            Top(modal.Title.rectTransform, titleX, 27, frameWidth - titleX - 14f, 47);
 
             if (!role)
                 role = frame.Find("Narrative character role") ?
                     frame.Find("Narrative character role").GetComponent<RoyalText>() : null;
             if (role)
             {
-                role.fontSize = 21;
-                role.color = new Color(.80f, .79f, .75f);
-                Top(role.rectTransform, 138, 76, frameWidth - 164f, 32);
+                role.fontSize = 20;
+                role.color = orin ? new Color(.84f, .72f, .97f) : new Color(.80f, .79f, .75f);
+                if (lyra || orin) role.Put(speaker);
+                Top(role.rectTransform, titleX, 76, frameWidth - titleX - 14f, 32);
             }
 
             if (!portrait)
                 portrait = frame.Find("Canonical Aldric portrait") as RectTransform;
-            if (portrait) Top(portrait, 25, 21, 98, 98);
+            bool actualAldricPortrait = false;
+            if (portrait)
+            {
+                var image = portrait.GetComponent<RawImage>();
+                actualAldricPortrait = aldric && image && image.texture;
+                portrait.gameObject.SetActive(actualAldricPortrait);
+                Top(portrait, 24, 20, portraitSize, portraitSize);
+            }
             if (!sigil) sigil = frame.Find("Narrator sigil") as RectTransform;
             if (sigil)
             {
-                Top(sigil, 25, 21, 98, 98);
+                sigil.gameObject.SetActive(!actualAldricPortrait);
+                Top(sigil, 24, 20, portraitSize, portraitSize);
                 var label = sigil.GetComponent<RoyalText>();
-                if (label) label.fontSize = 60;
+                if (label)
+                {
+                    // Never show Aldric's portrait for a different canonical speaker.
+                    label.Put(orin ? "◈" : lyra ? "✧" : speaker == "NARRADOR" ? "✦" : "♜");
+                    label.fontSize = Mathf.RoundToInt(portraitSize * .54f);
+                    label.color = orin ? new Color(.79f, .56f, .96f) : new Color(.89f, .75f, .45f);
+                }
             }
 
             modal.Body.fontSize = availableHeight < 590f ? 25 : (portraitScreen ? 29 : 30);
-            modal.Body.color = new Color(.95f, .93f, .88f);
+            modal.Body.color = orin ? new Color(.97f, .92f, 1f) : new Color(.95f, .93f, .88f);
             modal.Body.lineSpacing = 1.18f;
             modal.Body.alignment = TextAnchor.UpperLeft;
             modal.Body.horizontalOverflow = HorizontalWrapMode.Wrap;
@@ -106,9 +147,17 @@ namespace Eldoria.UI.RoyalGold.V2
             // Auto-extend for real measured content (including hard line breaks)
             // when space allows. Do NOT crop a dialogue to fit a mockup.
             float required = Mathf.Ceil(modal.Body.preferredHeight) + 12f;
-            if (required > bodyHeight && maxReadable > bodyHeight)
+            if (required > bodyHeight)
             {
                 bodyHeight = Mathf.Min(maxReadable, required);
+                // When the device is exceptionally short, adapt the type size
+                // rather than clipping text behind the Continue button.
+                while (modal.Body.preferredHeight + 12f > bodyHeight && modal.Body.fontSize > 21)
+                {
+                    modal.Body.fontSize--;
+                    required = Mathf.Ceil(modal.Body.preferredHeight) + 12f;
+                }
+                if (required <= maxReadable) bodyHeight = Mathf.Max(bodyHeight, required);
                 actionTop = bodyTop + bodyHeight + 12f;
                 Top(modal.Body.rectTransform, 26, bodyTop, textWidth, bodyHeight);
                 frame.sizeDelta = new Vector2(frameWidth, actionTop + 82f);
