@@ -645,7 +645,7 @@ namespace Eldoria.ReferenceClean.Editor
             public int mesh_triangles,source_layer;
         }
         [Serializable] public class DonorInventory {public DonorDescription[] sources;}
-        static GameObject ExpandExistingForest(ValoriaIntegratedWorld host, MeshFilter worldGround, out int additions)
+        static GameObject ExpandExistingForest(ValoriaIntegratedWorld host, MeshFilter worldGround, Mesh candidateSurface, out int additions)
         {
             var forest = Hotspots(host).Single(p => p.Id == "forest-valoria").transform.position;
             // The seven 'conifer' renderers found previously are saplings:
@@ -672,7 +672,13 @@ namespace Eldoria.ReferenceClean.Editor
                 "Measured mature source trees not found; reject rather than copying miniature understory: "+original.Length);
             var root = new GameObject("Forest ecological continuity / approved source meshes only");
             root.transform.SetParent(host.WorldRoot.transform, false);
-            var terrainVerts = worldGround.sharedMesh.vertices
+            // Contact must be measured against the FINAL visual macroterrain,
+            // not the retained original world mesh. Otherwise new canopy trunks
+            // appear to float when the authored forest rise lifts the surface.
+            Need(candidateSurface != null &&
+                 candidateSurface.vertexCount == worldGround.sharedMesh.vertexCount,
+                 "Forest contact requires topologically identical candidate ground");
+            var terrainVerts = candidateSurface.vertices
                 .Select(q => worldGround.transform.TransformPoint(q)).ToArray();
             float GroundHeight(float x,float z)
             {
@@ -884,7 +890,7 @@ namespace Eldoria.ReferenceClean.Editor
                 WorldViews(host, "before", true);
                 newCity = AuthorCityTerrain(city, terrain, out int cityHeightChanges);
                 worldMesh = AuthorWorldMesh(ground, Hotspots(host));
-                forestVisual = ExpandExistingForest(host, ground, out int forestAdditions);
+                forestVisual = ExpandExistingForest(host, ground, worldMesh, out int forestAdditions);
                 albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
                 var existingWorldMat = oldRenderer.sharedMaterial;
                 Need(existingWorldMat && existingWorldMat.HasProperty("_BaseMap"), "Original URP world material unavailable");
@@ -935,7 +941,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Real low meadow sculpt within open Valoria TerrainData (visual and physical trial collider match), with preserved road/river/building/tree keep-outs; mature 4X forests and protected quarry foothill; no source scene writes",
+                    method = "Open-meadow Unity TerrainData sculpt with synchronized trial collider and protected foundations; 4X mature forest cloned from validated source and grounded to the ACTUAL candidate macroterrain mesh; original atlas and POIs unchanged",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
