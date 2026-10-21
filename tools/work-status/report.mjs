@@ -6,12 +6,50 @@ import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
 
 const short=(v,n=360)=>typeof v==='string'?v.slice(0,n):null;
+const seconds=(start,end)=>{
+  const a=Date.parse(start),b=Date.parse(end);
+  return Number.isFinite(a)&&Number.isFinite(b)&&b>=a?(b-a)/1000:null;
+};
+export function jobTiming(job,observedAt=new Date().toISOString()){
+  const stages={preparation:0,build:0,test:0,delivery:0,other:0};
+  let measured=0,unmeasured=0;
+  for(const s of job.steps||[]){
+    if(s.status!=='completed'||s.conclusion==='skipped'){unmeasured++;continue;}
+    const duration=seconds(s.started_at,s.completed_at);
+    if(duration===null){unmeasured++;continue;}
+    const name=String(s.name||'');
+    const category=/upload|publish|publication|attach|commit|push/i.test(name)?'delivery':
+      /test|\bqa\b|probe|validat|verify/i.test(name)?'test':
+      /build|compil|import.*unity|unity.*import/i.test(name)?'build':
+      /checkout|set.?up|prepar|restore|download|install|preflight/i.test(name)?'preparation':'other';
+    stages[category]+=duration;measured++;
+  }
+  return {queue_seconds:seconds(job.created_at,job.started_at),
+    observed_wait_seconds:job.status==='queued'?seconds(job.created_at,observedAt):null,
+    elapsed_seconds:seconds(job.started_at,job.status==='completed'?job.completed_at:observedAt),
+    duration_final:job.status==='completed',stage_seconds:measured?stages:null,
+    measured_steps:measured,unmeasured_steps:unmeasured,
+    method:'Step-name categories are estimates; job timings are not summed across parallel jobs. Missing timestamps are unknown.'};
+}
+
+export function versionStates({head,delivery,android}){
+  const qa=delivery?.current_revision_qa,candidate=delivery?.candidate;
+  return {development:{source_sha:head||null,status:'development_not_certified_by_this_report'},
+    web_candidate:{revision:candidate?.revision||null,source_sha:candidate?.source_sha||null,
+      technical_qa_recorded:!!(candidate?.revision&&qa?.revision===candidate.revision&&qa.native_unity_pass===true&&qa.windows_gpu_webgl_pass===true),
+      qa_revision:qa?.revision||null},
+    web_available:{revision:delivery?.published?.remote_active_confirmed===true?delivery.published.revision||null:null,
+      basis:'recorded_remote_confirmation_not_a_fresh_test'},
+    android_channel:{version:android?.enabled===true?android.versionName||null:null,
+      basis:'enabled_channel_manifest_not_installed_device_verification'}};
+}
 export function summarize({registry,delivery=null,android=null,head=null,live=null,checkedAt=new Date().toISOString()}){
   if(!Array.isArray(registry?.active))throw Error('Canonical registry active array missing');
-  const active=registry.active.map(w=>({id:w.id,title:short(w.title),owner:short(w.owner),branch:short(w.branch),declared_status:w.status,declared_phase:short(w.phase),declared_next:short(w.next),declared_resources:Array.isArray(w.resources)?w.resources:[],live_branch:live?.branches?.[w.branch]||{status:'not_checked'}}));
+  const active=registry.active.map(w=>({id:w.id,title:short(w.title),owner:short(w.owner),branch:short(w.branch),declared_status:w.status,declared_phase:short(w.phase),declared_next:short(w.next),declared_resources:Array.isArray(w.resources)?w.resources:[],delivery_definition:{deliverable:short(w.delivery_definition?.deliverable),evidence:short(w.delivery_definition?.evidence),handoff:short(w.delivery_definition?.handoff)},live_branch:live?.branches?.[w.branch]||{status:'not_checked'}}));
   return {schema_version:1,checked_at:checkedAt,source_head:head,read_only:true,
     authority:'pipeline/active-workstreams.json; pipeline/playtest-delivery.json; updates/android/family.json',
     active,windows:live?.windows||{observation:'not_checked',running:[],queued:[],errors:[]},
+    versions:versionStates({head,delivery,android}),
     web:delivery?{recorded_state:delivery.state,candidate_revision:delivery.candidate?.revision||null,candidate_source:delivery.candidate?.source_sha||null,confirmed_revision:delivery.published?.remote_active_confirmed===true?delivery.published.revision:null,uploaded_revision:delivery.uploaded?.revision||null,uploaded_activation_confirmed:delivery.uploaded?.remote_active_confirmed===true,last_remote_check:delivery.uploaded?.latest_remote_check?.checked_at||null,hosted_gameplay_verified:delivery.published?.hosted_gameplay_verified===true}:{recorded_state:'source_missing'},
     android:android?{enabled:android.enabled===true,version_code:android.versionCode,version_name:android.versionName,source_sha:android.sourceSha}:{enabled:null,status:'source_missing'},
     limits:['Declared resources are reservations, not a measurement of PC activity.','Live Actions jobs do not detect processes started outside Actions.','Recorded delivery is not a fresh remote-host or physical-device test.','No historical workstream is reactivated or certified by this report.']};
@@ -24,6 +62,17 @@ export async function collectLive({github,repo,active,now=()=>new Date().toISOSt
       const head=(await github.rest.repos.getBranch({...repo,branch})).data.commit.sha;
       const response=(await github.rest.actions.listWorkflowRunsForRepo({...repo,branch,per_page:20})).data;
       branches[branch]={status:'observed',head,checks:(response.workflow_runs||[]).filter(r=>r.head_sha===head&&r.name!=='Eldoria concise work status').map(r=>({run_id:r.id,name:r.name,status:r.status,conclusion:r.conclusion||null})),checks_window:'latest_20_runs_for_branch'};
+      // One recent substantive run per branch, including older source revisions.
+      // Separate from HEAD checks so an old successful build cannot certify new code.
+      const sample=(response.workflow_runs||[]).find(r=>/native|unity|android|webgl|progression/i.test(r.name||''));
+      branches[branch].timing_sample={status:'no_matching_run_in_latest_20'};
+      if(sample){
+        try{
+          const data=(await github.rest.actions.listJobsForWorkflowRun({...repo,run_id:sample.id,per_page:100,filter:'latest'})).data;
+          branches[branch].timing_sample={status:(data.total_count||0)>100?'partial':'observed',run_id:sample.id,source_sha:sample.head_sha||null,run_attempt:sample.run_attempt||null,
+            jobs:(data.jobs||[]).slice(0,100).map(j=>({job_id:j.id,name:short(j.name),status:j.status,conclusion:j.conclusion||null,timing:jobTiming(j,now())}))};
+        }catch{branches[branch].timing_sample={status:'unavailable',run_id:sample.id};}
+      }
     }catch{branches[branch]={status:'unavailable'};errors.push('branch:'+branch);}
   }
   const runs=new Map();
@@ -44,7 +93,7 @@ export async function collectLive({github,repo,active,now=()=>new Date().toISOSt
         const labels=(j.labels||[]).map(x=>String(x).toLowerCase());
         if(!labels.length){windows.errors.push('job_labels_unknown:'+j.id);continue;}
         if(!labels.includes('self-hosted')||!labels.includes('windows'))continue;
-        const item={run_id:run.id,job_id:j.id,branch:run.head_branch,job:j.name,status:j.status,started_at:j.started_at||null};
+        const item={run_id:run.id,job_id:j.id,branch:run.head_branch,job:j.name,status:j.status,started_at:j.started_at||null,timing:jobTiming(j,now())};
         (j.status==='in_progress'?windows.running:windows.queued).push(item);
       }
     }catch{windows.errors.push('jobs_unavailable:'+run.id);}
@@ -58,10 +107,21 @@ export function markdown(report){
   let out='# Eldoria — estado operativo\n\nConsulta: '+md(report.checked_at)+' · HEAD: '+md(report.source_head)+'\n\n';
   out+='| Trabajo activo | Rama | Fase declarada | Observación de rama |\n| --- | --- | --- | --- |\n';
   for(const w of report.active)out+='| '+md(w.title||w.id)+' | '+md(w.branch)+' | '+md(w.declared_phase||w.declared_status)+' | '+md(w.live_branch.status)+' |\n';
+  for(const w of report.active){
+    out+='\nEntrega de '+md(w.title||w.id)+': '+md(w.delivery_definition.deliverable||'sin definición explícita registrada')+'; evidencia: '+md(w.delivery_definition.evidence)+'; cierre: '+md(w.delivery_definition.handoff)+'.\n';
+    const sample=w.live_branch.timing_sample;
+    if(sample){
+      out+='\nMuestra de tiempos: '+md(sample.status)+'; run '+md(sample.run_id)+'; SHA '+md(sample.source_sha)+'. No certifica el HEAD actual.\n';
+      if(sample.jobs?.length)out+='\n| Job | Espera (s) | Transcurrido (s) | Preparación | Build | Pruebas | Entrega | Otros |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n';
+      for(const j of sample.jobs||[]){const t=j.timing,s=t.stage_seconds;out+='| '+md(j.name)+' | '+md(t.queue_seconds)+' | '+md(t.elapsed_seconds)+(t.duration_final?'':' (en curso)')+' | '+['preparation','build','test','delivery','other'].map(k=>md(s?.[k])).join(' | ')+' |\n';}
+    }
+  }
+  out+='\nTiempos en segundos; categorías estimadas por nombre de paso. — = desconocido. No sumar jobs paralelos; las muestras no incluyen procesos externos a Actions.\n';
   out+='\nWindows: '+md(report.windows.observation)+'; '+report.windows.running.length+' jobs en ejecución observados, '+report.windows.queued.length+' en espera observados.\n';
   for(const j of [...report.windows.running,...report.windows.queued])out+='- Run '+j.run_id+', job '+j.job_id+': '+md(j.job)+' — '+md(j.status)+' — '+md(j.branch)+'\n';
   out+='\nWebGL: candidata '+md(report.web.candidate_revision)+'; última revisión confirmada en el manifiesto '+md(report.web.confirmed_revision)+'; subida '+md(report.web.uploaded_revision)+'; activación de esa subida confirmada: '+report.web.uploaded_activation_confirmed+'.\n';
   out+='\nAndroid: canal habilitado '+report.android.enabled+'; versión '+md(report.android.version_name)+' / código '+md(report.android.version_code)+'.\n';
+  out+='\nVersiones: desarrollo '+md(report.versions.development.source_sha)+'; candidata WebGL '+md(report.versions.web_candidate.revision)+' con QA técnica registrada para esa revisión: '+report.versions.web_candidate.technical_qa_recorded+'; disponible WebGL según confirmación registrada: '+md(report.versions.web_available.revision)+'; canal Android habilitado: '+md(report.versions.android_channel.version)+'. No se deduce equivalencia entre estas versiones.\n';
   out+='\nLas fases son declaraciones del registro; los jobs y conclusiones del JSON son observaciones separadas. Este resumen no aprueba arte, juego, móvil ni publicaciones. La ausencia de jobs observados no demuestra que el PC esté libre.\n';
   return out;
 }

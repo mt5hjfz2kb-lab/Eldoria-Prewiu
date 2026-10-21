@@ -29,9 +29,14 @@ Distinguir siempre: declarado, probado históricamente, accesible ahora en el ch
 
 ## Ejecución y cierre
 
+Para cada encargo nuevo, definir brevemente en su entrada del registro existente `delivery_definition`: `deliverable` (resultado concreto), `evidence` (pruebas que lo demostrarán) y `handoff` (qué se entregará al cerrar). Aplicar los gates vigentes según el alcance; esta definición no concede publicación ni sustituye criterios técnicos o artísticos. No reescribir encargos de otros propietarios para completar campos. El resumen muestra las definiciones ausentes sin bloquear la ejecución ni inventarlas.
+
+El mismo resumen separa desarrollo, candidata con QA técnica registrada para su revisión y disponibilidad confirmada en el manifiesto. Un resultado verde de otro SHA, una subida o un canal habilitado no prueban por sí solos que el usuario tenga esa candidata. Las observaciones de Actions incluyen una muestra acotada de tiempos por rama; las categorías de pasos son estimaciones, los datos ausentes son desconocidos y los jobs paralelos no se suman como tiempo de espera del usuario. Ver `tools/work-status/README.md`.
+
 - Coste 0 por defecto; ningún descubrimiento autoriza compras, créditos, descargas de modelos o producción ajena.
 - Reutilizar evidencia válida cuando sus entradas y superficies no hayan cambiado. Agrupar correcciones coherentes antes del siguiente ensayo pesado; no repetir builds completos por cambios exclusivamente documentales.
 - Para arte, consultar los contratos vigentes y fuentes existentes; conservar autoría, pruebas A/B y revisión independiente. Un PASS técnico no es ART_APPROVED.
+- Revisar primero el efecto global desde la cámara del jugador y corregir la hipótesis visual antes de afinar detalles. Agrupar cambios coherentes del mismo candidato antes del siguiente gate pesado, conservando las comprobaciones focalizadas que detecten regresiones y el QA exacto necesario para entregarlo.
 - Un fallo requiere diagnóstico concreto; una denegación de seguridad no se elude por otra API. Continuar trabajo independiente permitido.
 - Mensajes de progreso no son pausas. No pedir «continúa» para pasos ya autorizados. No afirmar ejecución de fondo al terminar un turno.
 - Cerrar solo con resultado solicitado comprobado o bloqueo real; registrar rama/SHA, evidencia y pendiente exacto. No modificar los estados de entrega de otros propietarios.
@@ -39,3 +44,4 @@ Distinguir siempre: declarado, probado históricamente, accesible ahora en el ch
 ## Historia bajo demanda
 
 [Bootstrap completo anterior, con hashes, modelos y ensayos diagnósticos](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/3dcbea127105bbd765c7c24dcd5da7084ea1fe75/tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md). Es evidencia histórica, no una orden para reiniciar pruebas ni reactivar ramas.
+
