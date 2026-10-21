@@ -48,7 +48,9 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -639,13 +641,13 @@
         "published": false
       },
       "release_lease": {
-        "purpose": "Final UI V3 cinematic native244 WebGL and exact browser QA only",
+        "purpose": "Final UI V3 native245 WebGL with certified final-touch navigation repair",
         "delegated_by": "Current owner instructs UI work takeover and completion; UI native 39605046441 SUCCESS",
         "reserved_for": "Same existing Valoria native build and Chromium QA, no authoring or scene mutation",
         "release_condition": "Release after exact final UI build/QA; preserve canonical art owner and sources",
         "ui_executor": "codex-ui-v3-completion-takeover-20261021",
-        "status": "native244_browser_defect_identified_returned_to_UI_native_fix",
-        "evidence": "UI-only navigation ownership repair a1e0fb7; exact native244 failed strict legacy shadow-navigation check, never published."
+        "status": "delegated_native245_build_then_exact_browser_qa",
+        "evidence": "UI fix a1e0fb7 native run39609160363 SUCCESS: integrated probe, Edit20/Play37; obsolete run39609160173 cancelled."
       },
       "delegated_ui_navigation_fix": {
         "owner": "codex-ui-v3-completion-takeover-20261021",
@@ -694,13 +696,11 @@
         ".github/workflows/valoria-first-playable-city-slice-v1.yml",
         "pipeline/valoria-first-playable-city-slice-v1.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Existing owner-authorized uGUI interface integration; this entry records observed PR ownership without 3D authorship, publication or new runner reservations.",
-      "phase": "NAVIGATION_FIX_NATIVE_REGRESSION",
-      "next": "Native certificate of a1e0fb7 UI navigation fix including closing-dialogue ownership regression; then native245 WebGL rebuild and unchanged strict Chromium test. Native244 remains rejected and unpublished.",
+      "phase": "NATIVE245_FINAL_WEB_BUILD",
+      "next": "Build certified cinematic UI and final-touch navigation fix as native245, then unchanged strict browser I-II/save QA and restricted itch delivery.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch.",
       "handoff": {
         "owner_instruction": "Asume tú los trabajos y organízalos",
@@ -738,9 +738,12 @@
         "main_native_run": 39605046441,
         "native_checks": 40,
         "edit_mode": 20,
-        "play_mode": 36,
+        "play_mode": 37,
         "artifact_id": 12347707207,
-        "visual_review": "Canonical full Aldric text and Continue label inspected in genuine portrait Unity render; landscape/contextual controls retained. No global art quality score."
+        "visual_review": "Canonical full Aldric text and Continue label inspected in genuine portrait Unity render; landscape/contextual controls retained. No global art quality score.",
+        "navigation_fix_source": "a1e0fb7b71632c175a396d8c3aadf2e71dee0a80",
+        "navigation_fix_native_run": 39609160363,
+        "navigation_fix_artifact_id": 12350227186
       },
       "ci_recovery": "General source-preflight checkout is still downloading the entire repository after UI native 40/20/36 passed. Narrow only its checkout to actual Python-preflight inputs; preserve all assertions and explicitly request the pending full editor gate for the same final UI runtime.",
       "web_candidate": {
@@ -752,7 +755,7 @@
         "qa_source_sha": "6b7b873f0a74bf5984685bcfc9f8d3424e9bc272",
         "published": false
       },
-      "obsolete_trigger_recovery": "SlicePresenter UI touch launched legacy SHARP/visible-parcel production from an Oct6 stale pending request. Current AGENTS and canonical Oct18 scene supersede it. Preserve historical source/config but disable legacy execution and remove shared-core automatic triggers; cancel only our queued legacy run via its existing concurrency when config changes."
+      "obsolete_trigger_recovery": "SlicePresenter UI touch launched legacy SHARP/visible-parcel production from an Oct6 stale pending request. Current AGENTS and canonical Oct18 scene supersede it. Preserve historical source/config but disable legacy execution and remove shared-core automatic triggers; cancel only our queued legacy run via its existing concurrency when config changes. Confirmed run39609160173 cancelled before legacy production; historical execution disabled."
     }
   ],
   "history": [
