@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
-  "scope": "NATIVE242_FINAL_INTEGRATED_ART_EXACT_WEBGL_QA",
-  "source_sha": "f8e294dda9a829316eb0dec764f8e2b1ce7d20d0",
-  "artifact_run": 39506996242,
-  "artifact_name": "valoria-integrated-web-playtest-39506996242",
+  "scope": "ELDORIA_UI_V3_MERGED_MAIN_EXACT_WEBGL_QA",
+  "source_sha": "21ef5001a0ca6a99bb0b68efcb052299a5e39046",
+  "artifact_run": 39592544222,
+  "artifact_name": "valoria-integrated-web-playtest-39592544222",
   "tester": "existing Windows Chromium/Edge with GPU; actual pointer and touch, landscape and portrait",
   "controls": [
-    "dialogues",
-    "chapter I-II progression",
-    "world pan all directions",
-    "zoom",
-    "march animations",
-    "save/reload",
-    "video and real frames"
+    "real V3 contextual Build and Upgrade buttons",
+    "authentic building-associated timers",
+    "narrative portrait, reveal and advance",
+    "Bastion I-II progression and real-world travel",
+    "world pan/zoom and save/reload",
+    "landscape and portrait screenshots",
+    "zero runtime/network errors"
   ],
   "constraints": [
     "reuse original WebGL bytes and owner workspace",
@@ -21,11 +21,11 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Final native241 integrated scene4c8bbdc6... with stable saved/reopened finish. Validate new native242 compiled bytes using existing strict GPU controls, direct screenshots and SystemClock. Do not reuse native217 certification, rebuild Unity, publish or alter gameplay.",
+  "reason": "Unity V3 is integrated in canonical main and native QA run39586129212 PASS40/20/35; compile WebGL source 21ef5001a0ca6a99bb0b68efcb052299a5e39046 native run 39592544222 and validate genuine visible controls, normal clock I-II, saved/reloaded state and both orientations on the SAME binary. Do not publish until PASS.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 17,
-  "method_note": "Exact native242 output, existing browser QA assertions unchanged; pointer/touch, normal clock, direct GPU images, exact save/reload.",
+  "attempt": 18,
+  "method_note": "Run live Windows Chromium/Edge + hardware GPU on exact native243 bits; preserve all original frames, screenshots, reports and hashes. Current V3 contextual actions must be actually clickable in normal clock.",
   "gameplay_source_unchanged": false
 }
