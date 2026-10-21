@@ -1,0 +1,79 @@
+{
+  "schema_version": 4,
+  "asset": "spawnling",
+  "date": "2026-10-21",
+  "workstream_id": "eldoria-tripo-art-brain-phase2-20261021",
+  "user_condition": "Replace current Bastion II Spawnling ONLY if V4 animated model is demonstrably good in actual game and certified.",
+  "status": "V4_REAL_BLENDER_TECH_PASS_VISUAL_IMPROVEMENT_INSUFFICIENT_GAME_REPLACEMENT_BLOCKED",
+  "source": {
+    "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb",
+    "sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+    "frozen": true
+  },
+  "candidate": {
+    "workflow": ".github/workflows/tripo-spawnling-rig-v4.yml",
+    "script": "tools/tripo-art-brain/rig-expressive-swipe-v4.py",
+    "run_id": 39651422644,
+    "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39651422644",
+    "artifact_id": 12368972822,
+    "artifact_name": "spawnling-expressive-rig-v4-zero-credit-proof",
+    "artifact_retention_days": 14,
+    "glb_sha256": "86ec1c93a222d58b89b9f393d39c8e5e912b14516ff5298500e5aca80048f631",
+    "blend_sha256": "6dd0bff3e226b443cc5dcf356fac3172b84fe16066a86721c0a75a4d23efe716",
+    "bones": 12,
+    "skins": 1,
+    "clips": 1,
+    "normalized_skin_vertices": 9863,
+    "invalid_skin_vertices": 0,
+    "source_unchanged": true,
+    "original_rest_equal_frame65": true,
+    "attack_frame": 27,
+    "attack_max_deformation_m": 0.333634,
+    "comparative_v3_max_deformation_m": 0.335203,
+    "changed_pixels_v3_vs_v4": {
+      "frame1": 0,
+      "frame10": 373,
+      "frame19": 5838,
+      "frame27": 10657,
+      "frame34": 5007,
+      "frame46": 350,
+      "frame65": 0
+    },
+    "camera": "Matched 600x480 Blender camera with same lighting and source; not in-game Unity camera.",
+    "additional_tripo_credits": 0,
+    "api_calls": 0
+  },
+  "review": {
+    "independent_viewed_genuine_blender_stills": true,
+    "technical_result": "PASS",
+    "visual_result": "REVIEW_REJECTED_FOR_RUNTIME_PROMOTION",
+    "positive": "V4 visibly changes preparation and zarpazo with no extra whole-body drift, preserves character source and returns exactly to rest. Its arm pose is more stretched than V3.",
+    "issues": [
+      "Attack/anticipation still look mechanical and the main claws/shoulder do not read as a polished, dangerous motion.",
+      "Visible image differences prove changed posture, not professional animation quality.",
+      "Unity 6000.3.23f1 skinned import, gameplay WorldCamera, collision/targeting, EngendroDefeated, save reload and physical Android FPS have NOT been tested."
+    ],
+    "art_approved": false,
+    "unity_skinned_import_tested": false,
+    "unity_same_camera_ab": false,
+    "native_bastion_i_ii_gameplay_qa": false,
+    "physical_mobile_profiled": false,
+    "replacement_authorized_by_qc": false
+  },
+  "integration": {
+    "canonical_scene": "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "hotspot": "engendro-valoria",
+    "existing_model_preserved": true,
+    "scene_untouched": true,
+    "save_schema_untouched": true,
+    "published_playtest_untouched": true,
+    "status": "NOT_INTEGRATED",
+    "concurrency_blocker": "windows-runner-heavy owned by eldoria-ui-v3-management-completion-20261021 in live active-workstreams at run review"
+  },
+  "next": [
+    "Make a stronger artistically-reviewed arm/claw windup/release and weight-paint refinement, not another paid model generation.",
+    "Only after genuine art evidence, import exact skinned GLB/animation into isolated Unity, inspect original UV/PBR and clip playback.",
+    "Capture real WorldCamera A/B, test targeting/fight/reward/EngendroDefeated persistence and evaluate mobile performance.",
+    "Promote into the existing visual ONLY after all technical, visual, gameplay and ownership gates pass."
+  ]
+}

@@ -64,6 +64,38 @@ namespace Eldoria.ReferenceClean.Editor
         {
             ValoriaReferenceCleanBuilder.Capture(c, Path.Combine(Evidence, name), width, height);
         }
+
+        [Serializable] public sealed class CityCameraProof
+        {
+            public string kind, stamp;
+            public int width, height;
+        }
+        static readonly Dictionary<string,string> CityComparisonStamps = new Dictionary<string,string>();
+        static void VerifyCityCameraStamp(Camera c, string prefix, string kind, int width, int height)
+        {
+            // Calibration uses a temporary camera; preserve full matrix precision.
+            c.aspect = width / (float)height;
+            c.ResetProjectionMatrix();
+            string stamp = c.transform.position.ToString("R") + "|" +
+                c.transform.rotation.ToString("R") + "|" +
+                c.orthographicSize.ToString("R") + "|" +
+                c.projectionMatrix.ToString("F7") + "|" +
+                c.worldToCameraMatrix.ToString("F7");
+            // Unity matrix string contains CR/LF. JsonUtility escapes these
+            // properly, unlike the old hand-built JSON (native260 evidence).
+            var proof = new CityCameraProof {
+                kind = kind, stamp = stamp, width = width, height = height
+            };
+            File.WriteAllText(Path.Combine(Evidence, prefix + "-" + kind + "-camera.json"),
+                JsonUtility.ToJson(proof, true));
+            if (prefix == "before") CityComparisonStamps[kind] = stamp;
+            else if (prefix == "after")
+            {
+                Need(CityComparisonStamps.ContainsKey(kind) &&
+                    CityComparisonStamps[kind] == stamp,
+                    "CITY_AB_CAMERA_MATRIX_MISMATCH " + kind);
+            }
+        }
         internal static void CityViews(ValoriaReferenceCleanGameplay city, string prefix)
         {
             // Only the review copy renders. The actual gameplay camera is never
@@ -93,9 +125,11 @@ namespace Eldoria.ReferenceClean.Editor
                     string suffix = stage == 0 ? "I" : "II";
                     cam.transform.SetPositionAndRotation(originalPos, originalRot);
                     cam.orthographicSize = originalZoom;
+                    VerifyCityCameraStamp(cam, prefix, "city-" + suffix + "-wide", 1600, 900);
                     CameraShot(cam, prefix + "-city-" + suffix + "-wide.png", 1600, 900);
                     cam.transform.SetPositionAndRotation(originalPos, originalRot);
                     cam.orthographicSize = originalZoom;
+                    VerifyCityCameraStamp(cam, prefix, "city-" + suffix + "-mobile", 900, 1600);
                     CameraShot(cam, prefix + "-city-" + suffix + "-mobile.png", 900, 1600);
                 }
                 Need(actual.transform.position == originalPos &&
@@ -182,7 +216,7 @@ namespace Eldoria.ReferenceClean.Editor
         {
             public string source_scene_sha256, tool_sha256, method, world_ground_source;
             public string[] original_poi_ids, after_poi_ids, images, image_sha256;
-            public int source_world_triangles, candidate_world_triangles, sampled_conifer_renderers;
+            public int source_world_triangles, candidate_world_triangles, sampled_conifer_renderers, added_visual_only_forest_instances;
             public int source_height_resolution, candidate_height_resolution, changed_city_height_samples;
             public bool previous_scene_untouched, city_terrain_collider_unchanged, world_source_mesh_unchanged;
             public bool native_unity_ab, art_approved, physical_mobile_profiled, published;
@@ -206,9 +240,18 @@ namespace Eldoria.ReferenceClean.Editor
             }
             public float Edge(float x, float z)
             {
-                if (z < z0 || z > z1) return 0;
+                // A road has NO shoulder outside its measured longitudinal
+                // extent. Zero means touching the pavement: returning zero
+                // here previously painted distant meadow as worn path and
+                // suppressed real height sculpt outside the road.
+                if (z < z0 || z > z1) return float.PositiveInfinity;
                 var slice = section[Mathf.Clamp(Mathf.RoundToInt((z - z0) * 2), 0, section.Length - 1)];
                 return Mathf.Max(slice.x - x, x - slice.y);
+            }
+            public bool OutsideDomainIsUnpainted()
+            {
+                return float.IsPositiveInfinity(Edge(0, z0 - 1f)) &&
+                       float.IsPositiveInfinity(Edge(0, z1 + 1f));
             }
         }
         static float Smooth(float lo, float hi, float v)
@@ -227,13 +270,15 @@ namespace Eldoria.ReferenceClean.Editor
             float x = a.x - b.x, z = a.z - b.z;
             return Mathf.Sqrt(x * x + z * z);
         }
-        static TerrainData AuthorCityTerrain(ValoriaReferenceCleanGameplay city, Terrain terrain)
+        static TerrainData AuthorCityTerrain(ValoriaReferenceCleanGameplay city, Terrain terrain, out int authoredHeightSamples)
         {
             TerrainData data = Object.Instantiate(terrain.terrainData);
             data.name = "Valoria organic prairie / existing height and paths";
             var filters = Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None);
             var roads = new[] { "Axial_Paving", "Outer_Road" }.Select(name =>
                 new GeographicRoad(filters.Single(f => f.name == name && f.sharedMesh != null))).ToArray();
+            Need(roads.All(r => r.OutsideDomainIsUnpainted()),
+                "Measured road domain must not repaint distant meadow or block height sculpt");
             int size = data.alphamapResolution;
             var alphas = data.GetAlphamaps(0, 0, size, size);
             Need(alphas.GetLength(2) >= 3, "Existing soil/grass blend layers unavailable");
@@ -270,7 +315,8 @@ namespace Eldoria.ReferenceClean.Editor
                         float dz = Mathf.Max(Mathf.Abs(z - b.center.z) - b.extents.z, 0);
                         contact = Mathf.Max(contact, 1f - Smooth(.2f, 2.3f + warp, Mathf.Sqrt(dx * dx + dz * dz)));
                     }
-                    float paint = Mathf.Clamp01(.17f * shoulder + .11f * bank + .07f * contact);
+                    float paintGrain = .85f + .15f * Mathf.PerlinNoise(x*.12f+49f,z*.13f+17f);
+                     float paint = Mathf.Clamp01((.46f * shoulder + .28f * bank + .14f * contact) * paintGrain);
                     // No erosion that changes navigation, terrain height or hidden parcel geometry.
                     float available = alphas[iz, ix, 0] + alphas[iz, ix, 1];
                     float transferred = available * paint;
@@ -281,13 +327,101 @@ namespace Eldoria.ReferenceClean.Editor
                         alphas[iz, ix, 1] -= transferred * (1f - r);
                         alphas[iz, ix, 2] += transferred;
                     }
-                    float detail = Noise(x + 73, z - 121) - .5f;
-                    float swap = Mathf.Min(alphas[iz, ix, 0], alphas[iz, ix, 1]);
-                    float local = detail * .34f * swap;
-                    alphas[iz, ix, 0] = Mathf.Clamp01(alphas[iz, ix, 0] + local);
-                    alphas[iz, ix, 1] = Mathf.Clamp01(alphas[iz, ix, 1] - local);
+                    // Broad interwoven grass families rather than tiny random spots.
+                    // Preserve the original combined grass weight and all other layers.
+                    float green = alphas[iz, ix, 0] + alphas[iz, ix, 1];
+                    if (green > .0001f)
+                    {
+                        float mix = alphas[iz, ix, 1] / green;
+                        float detail = Noise(x + 73, z - 121) - .5f;
+                        mix = Mathf.Clamp01(mix + detail * .26f);
+                        alphas[iz, ix, 0] = green * (1f - mix);
+                        alphas[iz, ix, 1] = green * mix;
+                    }
                 }
             data.SetAlphamaps(0, 0, alphas);
+
+            // Source TerrainData still holds all original 257x257 samples. Low
+            // meadow forms are authored only in open ground, not foundations,
+            // road shoulders, playable river margins, rocks or tree roots.
+            authoredHeightSamples = 0;
+            int hn = data.heightmapResolution;
+            var heights = data.GetHeights(0, 0, hn, hn);
+            var keepers = Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,
+                    FindObjectsSortMode.None)
+                .Where(r => r != null && r.enabled && r.gameObject.activeSelf &&
+                    r.bounds.size.x < 28 && r.bounds.size.z < 28 &&
+                    r.bounds.center.x >= terrain.transform.position.x &&
+                    r.bounds.center.x <= terrain.transform.position.x + data.size.x &&
+                    r.bounds.center.z >= terrain.transform.position.z &&
+                    r.bounds.center.z <= terrain.transform.position.z + data.size.z)
+                .Select(r => new Vector2(r.bounds.center.x, r.bounds.center.z)).ToArray();
+            float maximumDelta = 0;
+            for (int iz = 0; iz < hn; iz++)
+                for (int ix = 0; ix < hn; ix++)
+                {
+                    float x = terrain.transform.position.x + data.size.x * ix / (hn - 1f);
+                    float z = terrain.transform.position.z + data.size.z * iz / (hn - 1f);
+                    // Outer city TerrainData bounds are shared with the original
+                    // landscape. Never lift border vertices or create abrupt cuts
+                    // between the authored meadow and untouched surroundings.
+                    if (ix == 0 || iz == 0 || ix == hn-1 || iz == hn-1) continue;
+                    float edgeDistance = Mathf.Min(
+                        Mathf.Min(x - terrain.transform.position.x,
+                                  terrain.transform.position.x + data.size.x - x),
+                        Mathf.Min(z - terrain.transform.position.z,
+                                  terrain.transform.position.z + data.size.z - z));
+                    float smoothBorder = Smooth(2f, 16f, edgeDistance);
+                    float roadSafe = 1f;
+                    foreach (var road in roads)
+                    {
+                        float edge = road.Edge(x, z);
+                        roadSafe = Mathf.Min(roadSafe, Smooth(3.6f, 9.5f, edge));
+                    }
+                    float river = -23f + 1.5f * Mathf.Sin(x * .065f) +
+                        .85f * Mathf.Sin(x * .19f + .4f) * Smooth(6, 17, Mathf.Abs(x));
+                    float waterSafe = Smooth(13f, 25f, Mathf.Abs(z - river));
+                    float fortressSafe = Smooth(27f, 42f,
+                        Mathf.Sqrt(x * x + (z - 30f) * (z - 30f)));
+                    float sitesSafe = 1f;
+                    foreach (var anchor in keepers)
+                    {
+                        float distance = Vector2.Distance(new Vector2(x, z), anchor);
+                        if (distance < 11f)
+                            sitesSafe = Mathf.Min(sitesSafe, Smooth(4.5f, 11f, distance));
+                    }
+                    // Protect the exact complete footprints of the sawmill and
+                    // barracks even when they are locked/inactive at Bastion I.
+                    // Parent inactive states must not make foundations float.
+                    foreach (var footprint in buildings)
+                    {
+                        float dx = Mathf.Max(Mathf.Abs(x - footprint.center.x) - footprint.extents.x, 0f);
+                        float dz = Mathf.Max(Mathf.Abs(z - footprint.center.z) - footprint.extents.z, 0f);
+                        sitesSafe = Mathf.Min(sitesSafe,
+                            Smooth(4f, 12f, Mathf.Sqrt(dx * dx + dz * dz)));
+                    }
+                    float westMeadow = 1.15f * Mathf.Exp(
+                        -Mathf.Pow((x + 51f) / 32f, 2f) -
+                        Mathf.Pow((z - 52f) / 55f, 2f));
+                    float eastMeadow = 1.00f * Mathf.Exp(
+                        -Mathf.Pow((x - 54f) / 39f, 2f) -
+                        Mathf.Pow((z - 59f) / 56f, 2f));
+                    float southwestMeadow = .76f * Mathf.Exp(
+                        -Mathf.Pow((x + 57f) / 39f, 2f) -
+                        Mathf.Pow((z + 57f) / 40f, 2f));
+                    float grain = (Noise(x, z) - .5f) * .22f;
+                    float delta = (westMeadow + eastMeadow + southwestMeadow + grain) *
+                        smoothBorder * roadSafe * waterSafe * fortressSafe * sitesSafe;
+                    if (delta < .012f) continue;
+                    heights[iz, ix] = Mathf.Clamp01(heights[iz, ix] +
+                        delta / data.size.y);
+                    maximumDelta = Mathf.Max(maximumDelta, delta);
+                    authoredHeightSamples++;
+                }
+            Need(authoredHeightSamples > 1000 && maximumDelta <= 1.4f,
+                "Open meadow relief must remain bounded and visibly geometric");
+            data.SetHeights(0, 0, heights);
+            data.SyncHeightmap();
             return data;
         }
         static float[,] Density(ValoriaIntegratedWorld host, Bounds bounds, out int trees)
@@ -350,7 +484,7 @@ namespace Eldoria.ReferenceClean.Editor
             }
             finally { RenderTexture.active = previous; RenderTexture.ReleaseTemporary(rt); }
         }
-        static Mesh AuthorWorldMesh(MeshFilter source, WorldHotspot[] spots)
+        static Mesh AuthorWorldMesh(ValoriaIntegratedWorld host, MeshFilter source, WorldHotspot[] spots)
         {
             var original = source.sharedMesh;
             var next = Object.Instantiate(original);
@@ -359,6 +493,21 @@ namespace Eldoria.ReferenceClean.Editor
             var warped = new Vector3[v.Length];
             var b = source.GetComponent<Renderer>().bounds;
             Need(b.size.x > 100 && b.size.z > 100, "Unexpected Region1 real terrain extent");
+            // Preserve contact at the feet of existing mature trees. Their
+            // meshes are NOT relocated by this visual-only landform authoring.
+            // Candidate trees are grounded separately on the candidate mesh.
+            var existingTreeBases = host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(rr => rr.enabled &&
+                    (rr.name.StartsWith("Tree01_LOD", StringComparison.OrdinalIgnoreCase) ||
+                     rr.name == "Near branches" ||
+                     rr.name.StartsWith("Forest retained", StringComparison.OrdinalIgnoreCase) ||
+                     rr.name.StartsWith("Conifer", StringComparison.OrdinalIgnoreCase)) &&
+                    rr.bounds.size.y > 3f && rr.bounds.size.y < 28f &&
+                    rr.bounds.center.x >= b.min.x && rr.bounds.center.x <= b.max.x &&
+                    rr.bounds.center.z >= b.min.z && rr.bounds.center.z <= b.max.z)
+                .Select(rr => new Vector2(rr.bounds.center.x, rr.bounds.center.z))
+                .Distinct().ToArray();
+            Need(existingTreeBases.Length > 12, "Missing retained forest anchors for 4X terrain contact protection");
             for (int i = 0; i < v.Length; i++)
             {
                 Vector3 world = source.transform.TransformPoint(v[i]);
@@ -366,10 +515,40 @@ namespace Eldoria.ReferenceClean.Editor
                 float anchor = Smooth(10f, 28f, nearest);
                 // Wide shallow ridges extend the existing eastern quarry geology
                 // into surrounding open grass. Existing POIs and roads remain in place.
-                float geology = 1.25f * Mathf.Exp(-Mathf.Pow((world.x - 1097f) / 36f, 2f) -
-                                                 Mathf.Pow((world.z + 52f) / 43f, 2f));
-                float rolling = (Noise(world.x, world.z) - .5f) * 2.15f;
-                float deltaY = anchor * (rolling + geology);
+                // Author three low, connected macroforms around existing
+                // geographic landmarks, rather than noise over the entire map.
+                // One readable topographic shoulder joining the retained
+                // quarry/existing rock formation. Unlike broad random noise,
+                // this is a coherent landform, with its original quarry base
+                // and sector edge untouched by the existing keep-outs.
+                float quarryFoothill = 7.2f * Mathf.Exp(
+                    -Mathf.Pow((world.x - 1092f) / 61f, 2f) -
+                    Mathf.Pow((world.z + 73f) / 73f, 2f));
+                float northForestRise = 1.65f * Mathf.Exp(
+                    -Mathf.Pow((world.x - 1051f) / 76f, 2f) -
+                    Mathf.Pow((world.z - 78f) / 58f, 2f));
+                float corruptionValley = -1.55f * Mathf.Exp(
+                    -Mathf.Pow((world.x - 933f) / 45f, 2f) -
+                    Mathf.Pow((world.z + 26f) / 65f, 2f));
+                float reliefGrain = (Noise(world.x, world.z) - .5f) * .6f;
+                float edgeDist = Mathf.Min(
+                    Mathf.Min(world.x - b.min.x, b.max.x - world.x),
+                    Mathf.Min(world.z - b.min.z, b.max.z - world.z));
+                float edgeProtect = Smooth(1.5f, 16f, edgeDist);
+                // Preserve the original geology base directly under its source
+                // meshes; the new hillside must not swallow authored rocks.
+                float rockDist = Mathf.Sqrt(Mathf.Pow((world.x - 1098f) / 35f, 2f) +
+                                            Mathf.Pow((world.z + 83f) / 39f, 2f));
+                float rockProtect = Smooth(.8f, 1.8f, rockDist);
+                float nearestTrunkSqr = float.PositiveInfinity;
+                foreach (var tree in existingTreeBases)
+                {
+                    float dx = world.x - tree.x, dz = world.z - tree.y;
+                    nearestTrunkSqr = Mathf.Min(nearestTrunkSqr, dx * dx + dz * dz);
+                }
+                float trunkSafe = Smooth(2.5f, 8f, Mathf.Sqrt(nearestTrunkSqr));
+                float deltaY = edgeProtect * anchor * rockProtect * trunkSafe *
+                    (quarryFoothill + northForestRise + corruptionValley + reliefGrain);
                 Vector3 altered = world + Vector3.up * deltaY;
                 warped[i] = source.transform.InverseTransformPoint(altered);
             }
@@ -479,9 +658,17 @@ namespace Eldoria.ReferenceClean.Editor
                         baseColor = Color.Lerp(baseColor,
                             new Color(baseColor.r * .79f, baseColor.g * .91f, baseColor.b * .71f),
                             treesFloor * .48f);
+                        // The same authored foothill controls material change:
+                        // subtle rock/dry-soil only where the terrain actually
+                        // rises toward the retained quarry formation.
+                        float upland = Mathf.Exp(
+                            -Mathf.Pow((wx - 1092f) / 62f, 2f) -
+                            Mathf.Pow((wz + 73f) / 74f, 2f));
+                        float grain = .65f + .35f * Mathf.PerlinNoise(wx*.14f+72,wz*.14f+33);
+                        float earth = Mathf.Clamp01(upland * grain * .37f + quarry * .2f);
                         baseColor = Color.Lerp(baseColor,
-                            new Color(baseColor.r * 1.03f, baseColor.g * .91f, baseColor.b * .79f),
-                            quarry * .36f);
+                            new Color(baseColor.r * .94f, baseColor.g * .81f, baseColor.b * .68f),
+                            earth);
                         baseColor = Color.Lerp(baseColor,
                             new Color(baseColor.r * .80f, baseColor.g * .80f, baseColor.b * .84f),
                             corruption * .18f);
@@ -493,6 +680,195 @@ namespace Eldoria.ReferenceClean.Editor
                 return result;
             }
             finally { if (sample) Object.DestroyImmediate(sample); }
+        }
+
+        [Serializable] public class DonorDescription
+        {
+            public string name; public Vector3 center,size;
+            public int mesh_triangles,source_layer;
+        }
+        [Serializable] public class DonorInventory {public DonorDescription[] sources;}
+        static GameObject ExpandExistingForest(ValoriaIntegratedWorld host, MeshFilter worldGround, Mesh candidateSurface, out int additions)
+        {
+            var forest = Hotspots(host).Single(p => p.Id == "forest-valoria").transform.position;
+            // The seven 'conifer' renderers found previously are saplings:
+            // copying them 47 times produced tiny specks at 4X zoom.
+            // Select only EXISTING mature trees by their actual world bounds,
+            // excluding the nearby player city, quarry and scripted hotspots.
+            Vector3 cityPosition=Hotspots(host).Single(p=>p.Id=="valoria-map-city").transform.position;
+            var original = host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(x => x.enabled && x.GetComponent<MeshFilter>() != null &&
+                     PlanarDistance(x.bounds.center,forest)<49f &&
+                     PlanarDistance(x.bounds.center,cityPosition)>22f &&
+                     x.bounds.size.y >= 5f && x.bounds.size.y <= 32f &&
+                     x.bounds.size.x >= 2f && x.bounds.size.x <= 19f &&
+                     x.bounds.size.z >= 2f && x.bounds.size.z <= 19f)
+                .OrderByDescending(x=>x.bounds.size.y).ThenBy(x=>x.name).ToArray();
+            var inventory = original.Take(100).Select(x=> new DonorDescription{
+                name=x.name, center=x.bounds.center, size=x.bounds.size,
+                mesh_triangles=x.GetComponent<MeshFilter>().sharedMesh.triangles.Length/3,
+                source_layer=x.gameObject.layer
+            }).ToArray();
+            File.WriteAllText(Path.Combine(Evidence,"forest-source-inventory.json"),
+                JsonUtility.ToJson(new DonorInventory{sources=inventory},true));
+            Need(original.Length >= 4 && original.Length <= 150,
+                "Measured mature source trees not found; reject rather than copying miniature understory: "+original.Length);
+            var root = new GameObject("Forest ecological continuity / approved source meshes only");
+            root.transform.SetParent(host.WorldRoot.transform, false);
+            // Contact must be measured against the FINAL visual macroterrain,
+            // not the retained original world mesh. Otherwise new canopy trunks
+            // appear to float when the authored forest rise lifts the surface.
+            Need(candidateSurface != null &&
+                 candidateSurface.vertexCount == worldGround.sharedMesh.vertexCount,
+                 "Forest contact requires topologically identical candidate ground");
+            var terrainVerts = candidateSurface.vertices
+                .Select(q => worldGround.transform.TransformPoint(q)).ToArray();
+            var terrainTriangles = candidateSurface.triangles;
+            float GroundHeight(float x,float z)
+            {
+                // Barycentric height from the EXACT candidate triangles:
+                // nearest-vertex lookups can bury/floats trees on slopes.
+                // This is read-only geometry mathematics, not a new collider.
+                const float tolerance = .0002f;
+                for(int i=0;i<terrainTriangles.Length;i+=3)
+                {
+                    Vector3 a=terrainVerts[terrainTriangles[i]],
+                        b=terrainVerts[terrainTriangles[i+1]],
+                        c=terrainVerts[terrainTriangles[i+2]];
+                    float denominator=(b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);
+                    if(Mathf.Abs(denominator)<.0000001f)continue;
+                    float aa=((b.z-c.z)*(x-c.x)+(c.x-b.x)*(z-c.z))/denominator;
+                    float bb=((c.z-a.z)*(x-c.x)+(a.x-c.x)*(z-c.z))/denominator;
+                    float cc=1f-aa-bb;
+                    if(aa>=-tolerance&&bb>=-tolerance&&cc>=-tolerance)
+                        return aa*a.y+bb*b.y+cc*c.y;
+                }
+                throw new InvalidOperationException(
+                    "Tree site outside exact candidate macroterrain triangle coverage");
+            }
+            var placed = new List<Vector3>(original.Select(x => x.bounds.center));
+            // Three irregular, geographically connected forest shoulders:
+            // the current source has attractive trees but too much open board
+            // between canopy groups. Extend existing canopy clusters, not POIs.
+            var city = Hotspots(host).Single(p => p.Id == "valoria-map-city").transform.position;
+            // Revise native261's isolated NE saplings: new adult crowns now
+            // extend measured existing canopy clusters, not the map edge.
+            Vector2[] lobes = {
+                new Vector2(-17f,10f), new Vector2(-6f,22f),
+                new Vector2(16f,14f), new Vector2(19f,-12f),
+                new Vector2(-12f,-17f)
+            };
+            var playable = worldGround.GetComponent<Renderer>().bounds;
+            var otherPOIs = Hotspots(host).Where(p => p.Id != "forest-valoria")
+                .Select(p => p.transform.position).ToArray();
+            // A retained open corridor from Valoria's gate to the lumber
+            // destination remains visible and usable in the 4X camera.
+            float DistanceToRoad(Vector3 q)
+            {
+                Vector2 a = new Vector2(city.x,city.z);
+                Vector2 b = new Vector2(forest.x,forest.z);
+                Vector2 c = new Vector2(q.x,q.z);
+                float t=Mathf.Clamp01(Vector2.Dot(c-a,b-a)/Mathf.Max(.001f,(b-a).sqrMagnitude));
+                return Vector2.Distance(c,Vector2.Lerp(a,b,t));
+            }
+            additions=0;
+            int considered = 0;
+            for(int l=0;l<lobes.Length;l++)
+            for(int j=0;j<16;j++)
+            {
+                int index=l*16+j;
+                // Golden-angle sampling plus bounded jitter avoids rows,
+                // perfect rings or repeated prefab silhouettes.
+                float angle = index*2.3999632f + l*.7f;
+                float spread=3.5f + Mathf.Sqrt(j+.4f)*2.95f;
+                float jitter = (Mathf.PerlinNoise(index*.37f+14,l*.71f+29)-.5f)*5f;
+                Vector2 offset=lobes[l] + new Vector2(Mathf.Cos(angle),Mathf.Sin(angle))*(spread+jitter);
+                Vector3 target=forest+new Vector3(offset.x,0,offset.y);
+                if(target.x<playable.min.x+9||target.x>playable.max.x-9||
+                   target.z<playable.min.z+9||target.z>playable.max.z-9)continue;
+                if(DistanceToRoad(target)<10f)continue;
+                if(otherPOIs.Any(q=>PlanarDistance(q,target)<15f))continue;
+                if(placed.Any(v=>PlanarDistance(v,target)<7.7f))continue;
+                float canopy = Mathf.PerlinNoise(target.x*.085f+21,target.z*.085f+67);
+                if(canopy<.25f)continue; // irregular clearings, not solid wall
+                if(additions>=21)continue;
+                var donor=original[(l*3+j)%original.Length];
+                considered++;
+                var meshFilter=donor.GetComponent<MeshFilter>();
+                if(!meshFilter||!meshFilter.sharedMesh)continue;
+                float baseToCenter=donor.bounds.center.y-donor.bounds.min.y;
+                target.y=GroundHeight(target.x,target.z)+baseToCenter+.045f;
+                var obj=new GameObject("Existing conifer canopy / forest ecological lobe "+l+" tree "+j);
+                obj.layer=donor.gameObject.layer;
+                obj.transform.SetParent(root.transform,true);
+                // Preserve the original mesh's pivot, even if source vertices
+                // are stored in world coordinates relative to its donor.
+                Vector3 displacement=target-donor.bounds.center;
+                obj.transform.position=donor.transform.position+displacement;
+                obj.transform.rotation=donor.transform.rotation;
+                obj.transform.localScale=donor.transform.lossyScale;
+                obj.AddComponent<MeshFilter>().sharedMesh=meshFilter.sharedMesh;
+                var rr=obj.AddComponent<MeshRenderer>();
+                rr.sharedMaterials=donor.sharedMaterials;
+                rr.shadowCastingMode=donor.shadowCastingMode;
+                rr.receiveShadows=donor.receiveShadows;
+                rr.lightProbeUsage=donor.lightProbeUsage;
+                rr.reflectionProbeUsage=donor.reflectionProbeUsage;
+                rr.renderingLayerMask=donor.renderingLayerMask;
+                // Preserve the already-reviewed two-stage Unity LOD contract.
+                // Copying Near branches or Strategic silhouette alone at every
+                // distance needlessly cost mobile triangles or sacrifices detail.
+                if((donor.name=="Near branches"||donor.name=="Strategic silhouette")
+                    && donor.transform.parent!=null)
+                {
+                    string partnerName=donor.name=="Near branches"
+                        ?"Strategic silhouette":"Near branches";
+                    Transform partner=donor.transform.parent.Find(partnerName);
+                    if(partner!=null)
+                    {
+                        var sourceRenderer=partner.GetComponent<MeshRenderer>();
+                        var sourceMesh=partner.GetComponent<MeshFilter>();
+                        Need(sourceRenderer!=null && sourceMesh!=null &&
+                            sourceMesh.sharedMesh!=null,
+                            "Retained near/far conifer partner lacks original mesh");
+                        var other=new GameObject("Retained "+partnerName+" / mobile LOD");
+                        other.layer=partner.gameObject.layer;
+                        other.transform.SetParent(obj.transform,false);
+                        other.transform.localPosition=Vector3.zero;
+                        other.transform.localRotation=Quaternion.identity;
+                        other.transform.localScale=Vector3.one;
+                        other.AddComponent<MeshFilter>().sharedMesh=sourceMesh.sharedMesh;
+                        var alternate=other.AddComponent<MeshRenderer>();
+                        alternate.sharedMaterials=sourceRenderer.sharedMaterials;
+                        alternate.shadowCastingMode=sourceRenderer.shadowCastingMode;
+                        alternate.receiveShadows=sourceRenderer.receiveShadows;
+                        alternate.lightProbeUsage=sourceRenderer.lightProbeUsage;
+                        alternate.reflectionProbeUsage=sourceRenderer.reflectionProbeUsage;
+                        alternate.renderingLayerMask=sourceRenderer.renderingLayerMask;
+                        MeshRenderer near=donor.name=="Near branches"?rr:alternate;
+                        MeshRenderer far=donor.name=="Strategic silhouette"?rr:alternate;
+                        var nearMesh=near.GetComponent<MeshFilter>().sharedMesh;
+                        var farMesh=far.GetComponent<MeshFilter>().sharedMesh;
+                        Need(farMesh.triangles.Length<=nearMesh.triangles.Length,
+                            "Repeated forest silhouette is more expensive than near variant");
+                        var lod=obj.AddComponent<LODGroup>();
+                        lod.SetLODs(new[]{new LOD(.16f,new Renderer[]{near}),
+                            new LOD(.012f,new Renderer[]{far})});
+                        lod.RecalculateBounds();
+                    }
+                }
+                Vector3 actualCenter=rr.bounds.center;
+                Need((host.WorldCamera.cullingMask & (1<<obj.layer)) != 0,
+                     "Mature canopy not included in real strategic camera culling mask");
+                Need(PlanarDistance(actualCenter,target)<3.5f &&
+                     Mathf.Abs(rr.bounds.min.y-GroundHeight(target.x,target.z))<.75f,
+                     "Cloned conifer must actually render grounded inside surveyed forest");
+                // Absolutely no collider, WorldHotspot, army marker, or LOD
+                // owner is cloned: only compatible visual source geometry.
+                placed.Add(actualCenter);additions++;
+            }
+            Need(additions>=15&&additions<=21,"Forest silhouettes are too sparse or excessively expensive: "+additions+" mature trees from "+considered+" surveyed locations");
+            return root;
         }
         static string[] ImageNames(string prefix)
         {
@@ -513,6 +889,7 @@ namespace Eldoria.ReferenceClean.Editor
             Texture2D albedo = null;
             Material worldMat = null;
             GameObject terrainVisual = null;
+            GameObject forestVisual = null;
             Terrain terrain = null;
             TerrainData originalTerrain = null;
             Renderer oldRenderer = null;
@@ -566,8 +943,9 @@ namespace Eldoria.ReferenceClean.Editor
                 string[] imgs = ImageNames("after");
                 CityViews(city, "before");
                 WorldViews(host, "before", true);
-                newCity = AuthorCityTerrain(city, terrain);
-                worldMesh = AuthorWorldMesh(ground, Hotspots(host));
+                newCity = AuthorCityTerrain(city, terrain, out int cityHeightChanges);
+                worldMesh = AuthorWorldMesh(host, ground, Hotspots(host));
+                forestVisual = ExpandExistingForest(host, ground, worldMesh, out int forestAdditions);
                 albedo = AuthorWorldAlbedo(host, ground, out int treeCount);
                 var existingWorldMat = oldRenderer.sharedMaterial;
                 Need(existingWorldMat && existingWorldMat.HasProperty("_BaseMap"), "Original URP world material unavailable");
@@ -577,6 +955,9 @@ namespace Eldoria.ReferenceClean.Editor
                 worldMat.SetTexture("_BaseMap", albedo);
                 // Keep original tint/roughness/metallic/normal properties unchanged.
                 terrain.terrainData = newCity;
+                // The visible sculpt and its collision must use the SAME
+                // cloned TerrainData while testing. Both revert on rejection.
+                originalCollider.terrainData = newCity;
                 terrain.Flush();
                 terrainVisual = new GameObject("Region1 organic macrogeography / visual only");
                 terrainVisual.layer = ground.gameObject.layer;
@@ -595,7 +976,7 @@ namespace Eldoria.ReferenceClean.Editor
                 Need(beforePOI.SequenceEqual(afterPOI), "Original POI identities or positions changed");
                 Need(host.WorldRoot.GetComponentsInChildren<Collider>(true).Length == beforeColliders,
                     "New gameplay collider introduced");
-                Need(originalCollider.terrainData == originalPhysicsData && ground.sharedMesh == originalWorldMesh,
+                Need(originalCollider.terrainData == newCity && ground.sharedMesh == originalWorldMesh,
                     "Existing city/world collision or underlying mesh changed");
                 city.PlayerCamera.transform.SetPositionAndRotation(initialCityPos, initialCityRot);
                 city.PlayerCamera.orthographicSize = initialCityZoom;
@@ -615,18 +996,19 @@ namespace Eldoria.ReferenceClean.Editor
                 Candidate candidate = new Candidate
                 {
                     source_scene_sha256 = sceneHash, tool_sha256 = toolHash,
-                    method = "Identical city/world camera pose and projection, exact retained UV atlas/roads/corruption, inverse UV-world biomes and bounded soil contacts",
+                    method = "Open-meadow TerrainData sculpt with synced trial physics; Region1 retained-tree roots anchored to original ground, mature forest additions seated on the candidate visual macroterrain; original atlas/POIs intact",
                     world_ground_source = AssetDatabase.GetAssetPath(originalWorldMesh),
                     original_poi_ids = beforePOI, after_poi_ids = afterPOI,
                     images = imgs, image_sha256 = imgs.Select(x => Sha(Path.Combine(Evidence, x))).ToArray(),
                     source_world_triangles = beforeWorldTriangles,
                     candidate_world_triangles = worldMesh.triangles.Length / 3,
                     sampled_conifer_renderers = treeCount,
+                    added_visual_only_forest_instances = forestAdditions,
                     source_height_resolution = originalTerrain.heightmapResolution,
                     candidate_height_resolution = newCity.heightmapResolution,
-                    changed_city_height_samples = 0,
+                    changed_city_height_samples = cityHeightChanges,
                     previous_scene_untouched = true,
-                    city_terrain_collider_unchanged = originalCollider.terrainData == originalPhysicsData,
+                    city_terrain_collider_unchanged = false, // trial collider is safely rebound to the matching candidate asset
                     world_source_mesh_unchanged = ground.sharedMesh == originalWorldMesh,
                     native_unity_ab = true, art_approved = false, physical_mobile_profiled = false, published = false
                 };
@@ -670,8 +1052,13 @@ namespace Eldoria.ReferenceClean.Editor
                 // Never allow a failed trial to mutate the native source scene.
                 if (!saved)
                 {
-                    if (terrain && originalTerrain) { terrain.terrainData = originalTerrain; terrain.Flush(); }
+                    if (terrain && originalTerrain) {
+                        var originalPhysics = terrain.GetComponent<TerrainCollider>();
+                        if (originalPhysics) originalPhysics.terrainData = originalTerrain;
+                        terrain.terrainData = originalTerrain; terrain.Flush();
+                    }
                     if (oldRenderer) oldRenderer.enabled = oldEnabled;
+                    if (forestVisual) Object.DestroyImmediate(forestVisual);
                     if (terrainVisual) Object.DestroyImmediate(terrainVisual);
                     if (worldMat) Object.DestroyImmediate(worldMat);
                     if (albedo) Object.DestroyImmediate(albedo);

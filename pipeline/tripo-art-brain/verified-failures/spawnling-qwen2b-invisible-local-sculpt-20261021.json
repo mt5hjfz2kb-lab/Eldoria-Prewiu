@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "asset": "spawnling",
+  "classification": "ART_REJECTED_INVISIBLE_LOCALIZED_EDIT",
+  "reviewed_at": "2026-10-21",
+  "source": {
+    "repo_run": 39636058045,
+    "artifact_id": 12362650211,
+    "source_blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
+    "candidate_blend_sha256": "301303b8763095729b3f0707c7b621e226b5dbbdfd65a1901b71fe4bbe2022fb",
+    "candidate_glb_sha256": "76932c7b726fa0a0196056663e19d1aec1cf96882a3548432284718c487be48f",
+    "plan_sha256": "914474e154c95fc36f0fac14ccab0ac2700758e59da53a136269f0d3bbdfe399",
+    "model": "qwen3-vl:2b-instruct",
+    "inference_seconds": 377.338
+  },
+  "action": {
+    "type": "sculpt_region",
+    "target": "Spawnling_Near_Authored",
+    "center": [
+      0,
+      0,
+      0
+    ],
+    "radius": 0.088,
+    "delta": [
+      0,
+      0,
+      0.015
+    ],
+    "changed_vertices": 206,
+    "total_target_vertices": 9753
+  },
+  "visual": {
+    "camera": "Blender clay fixed orthographic, NOT game/Unity",
+    "before_png_sha256": "cfa410a38b45adf8e140813ed7957d03cb8f6e6ce58b7a577ea57e3c70512975",
+    "after_png_sha256": "9fb04e6088e2976c6f5d01f0ee7317d1cb382f3e8fabfd41932f41c0f9478c16",
+    "changed_pixels": 2,
+    "total_pixels": 307200,
+    "changed_fraction": 0.00000651,
+    "camera_visibility_gate": "REJECT_NOT_VISIBLE",
+    "review": "Same head/silhouette in both genuine images; no meaningful visual gain. Do not promote."
+  },
+  "lesson": "After real Qwen plan (center 0,0,0; 0.088m radius; 0.015m Z) modified 206 vertices, original strategic A/B changed only 2/307200 pixels. Source-locked close-up replay from five views yielded just 485 changed frontal pixels (0.158%), and independent comparison shows no recognizable anatomical/silhouette improvement. 'Pixels changed' is not visual quality; do not repeat near-origin micro-sculpts. Verify head +X semantic locality and require independently recognizable form before creating more variants.",
+  "next_action": "Change hypothesis, NOT amplitude: verify actual head +X anatomy / projected camera correspondence using archived source and authentic face image; deliver semantic head-region anchors to existing Qwen and attempt a genuine face/muzzle geometry change only on an isolated copy. If another fail, stop repeating 2B small-sculpt route and try a materially different artist technique (larger semantic mesh edit or verified material/rig strategy), always compare hero and strategic same-camera A/B.",
+  "art_approved": false,
+  "mobile_profiled": false,
+  "unity_ab_pass": false,
+  "integrated": false,
+  "credits_spent_new": 0,
+  "replay": {
+    "same_candidate": true,
+    "proof_run": 39639377365,
+    "artifact_id": 12363503143,
+    "experiment": "Five matched Blender clay A/B views of exact previously generated Qwen/Blender candidate. Never reinferred, resculpted, charged, changed scene, or promoted.",
+    "input_blend_sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01",
+    "candidate_blend_sha256": "301303b8763095729b3f0707c7b621e226b5dbbdfd65a1901b71fe4bbe2022fb",
+    "pixels_total_per_view": 307200,
+    "matches": [
+      {
+        "view": "isometric-original",
+        "changed_pixels": 2,
+        "visibility": "REJECT_NOT_VISIBLE"
+      },
+      {
+        "view": "isometric-close",
+        "changed_pixels": 24,
+        "visibility": "REJECT_NOT_VISIBLE"
+      },
+      {
+        "view": "face-close",
+        "changed_pixels": 485,
+        "visibility": "REVIEW_REQUIRED_PIXEL_ONLY"
+      },
+      {
+        "view": "side-close",
+        "changed_pixels": 158,
+        "visibility": "REJECT_NOT_VISIBLE"
+      },
+      {
+        "view": "rear-close",
+        "changed_pixels": 90,
+        "visibility": "REJECT_NOT_VISIBLE"
+      }
+    ],
+    "technical_replay": "PASS",
+    "structural_gate": "STRUCTURAL_CANDIDATE_INDEPENDENT_VISUAL_REVIEW_REQUIRED",
+    "independent_art_observation": "BEFORE and AFTER show effectively same creature and face. The frontal 485-pixel change is sparse (0.158%) and does not deliver a recognizable new head, muzzle, anatomical mass or strategic silhouette. No upgrade to ART_APPROVED.",
+    "independent_art_verdict": "ART_REJECTED_INSUFFICIENT_VISIBLE_GAIN",
+    "visual_approval": false,
+    "unity_ab": false,
+    "mobile": false,
+    "new_credits": 0
+  },
+  "qwen_brief": "Real Qwen 2B sculpted 206 vertices at torso centre [0,0,0], radius .088m, delta .015m despite claiming to fix head. Strategic A/B changed 2/307200 pixels; frontal-close replay 485/307200, independently ART_REJECTED. Change hypothesis: verify actual +X head anchor; do not repeat near-origin micro-sculpt."
+}

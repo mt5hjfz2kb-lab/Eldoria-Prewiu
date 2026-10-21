@@ -1,0 +1,158 @@
+name: Tripo Spawnling - replay existing Qwen art in matched Blender cameras (zero credits)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/tripo-artist-replay-ab.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: tripo-spawnling-replay
+  cancel-in-progress: true
+
+jobs:
+  same-artist-output:
+    name: Exact prior Qwen candidate, no API and no reinference
+    runs-on: ubuntu-latest
+    timeout-minutes: 24
+    env:
+      OUT: /tmp/eldoria-spawnling-qwen-replay
+      ORIGINAL_BLEND_SHA: e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01
+      QWEN_CANDIDATE_SHA: 301303b8763095729b3f0707c7b621e226b5dbbdfd65a1901b71fe4bbe2022fb
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/art-direction/ai-authoring/render_artist_ab.py
+            tools/art-direction/ai-authoring/visibility_metrics.py
+            tools/tripo-art-brain/shape-change-gate.mjs
+            tools/tripo-art-brain/preflight.mjs
+            pipeline/tripo-art-brain/catalog.json
+            ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend
+
+      - name: Download exact existing artifact without new Ollama or Tripo calls
+        uses: actions/download-artifact@v4
+        with:
+          name: tripo-qwen-real-creature-39636058045
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          run-id: 39636058045
+          github-token: ${{ github.token }}
+          path: /tmp/eldoria-spawnling-qwen-replay/previous
+
+      - name: Authenticate existing Qwen plan, Blender execution and frozen sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          out=pathlib.Path(os.environ["OUT"])
+          source=pathlib.Path("ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend")
+          candidate=out/"previous/blender-output/artist-output.blend"
+          plan=out/"previous/qwen/artist-plan.json"
+          inference=out/"previous/qwen/artist-inference.json"
+          execution=out/"previous/blender-output/artist-execution.json"
+          h=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+          for file in [source,candidate,plan,inference,execution]:
+              assert file.is_file() and file.stat().st_size>=100, file
+          assert h(source)==os.environ["ORIGINAL_BLEND_SHA"]
+          assert h(candidate)==os.environ["QWEN_CANDIDATE_SHA"]
+          ai=json.loads(inference.read_text())
+          ex=json.loads(execution.read_text())
+          actions=json.loads(plan.read_text())
+          assert ai["model"]=="qwen3-vl:2b-instruct" and ai["self_approval"] is False
+          assert ex["source_sha256"]==h(source) and ex["source_mesh_sha256"]!=ex["result_mesh_sha256"]
+          assert len(actions)>=1 and len(ex["executed_actions"])>=1
+          print("REUSED_GENUINE_QWEN_AND_BLENDER_BYTES; NO_NEW_INFERENCE_OR_CREDITS")
+          PY
+
+      - name: Install free headless Blender for neutral camera replay
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          blender --version | head -2
+
+      - name: Render five A/B pairs (original + anatomy-close cameras)
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC=ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend
+          CANDIDATE="$OUT/previous/blender-output/artist-output.blend"
+          mkdir -p "$OUT/replay"
+          while read -r view frame key; do
+            mkdir -p "$OUT/replay/$key"
+            if blender --background --disable-autoexec -t 4 --python-exit-code 1 \
+              --python tools/art-direction/ai-authoring/render_artist_ab.py -- \
+              --before "$SRC" --after "$CANDIDATE" \
+              --target Spawnling_Near_Authored \
+              --camera-view "$view" --min-frame-size "$frame" \
+              --out "$OUT/replay/$key" > "$OUT/replay/$key/render.log" 2>&1; then
+              echo "PIXEL_GATE_REVIEW_REQUIRED $key"
+            else
+              test -s "$OUT/replay/$key/comparison.json" || { cat "$OUT/replay/$key/render.log"; exit 2; }
+              echo "PIXEL_GATE_REJECT_NOT_VISIBLE $key"
+            fi
+          done <<'VIEWS'
+          isometric 3 isometric-original
+          isometric 0.8 isometric-close
+          face 0.8 face-close
+          side 0.8 side-close
+          rear 0.8 rear-close
+          VIEWS
+
+      - name: 'Independent view manifest: visible change is never ART_APPROVED'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import {evaluateCreatureShape} from './tools/tripo-art-brain/shape-change-gate.mjs';
+          const out=process.env.OUT;
+          const plan=JSON.parse(fs.readFileSync(path.join(out,'previous/qwen/artist-plan.json'),'utf8'));
+          const views=['isometric-original','isometric-close','face-close','side-close','rear-close'];
+          const results=[];
+          for (const view of views){
+            const d=path.join(out,'replay',view);
+            const cmp=JSON.parse(fs.readFileSync(path.join(d,'comparison.json'),'utf8'));
+            if (cmp.source_file_sha256!==process.env.ORIGINAL_BLEND_SHA ||
+                cmp.result_file_sha256!==process.env.QWEN_CANDIDATE_SHA ||
+                !fs.statSync(path.join(d,'before-blender-clay.png')).size ||
+                !fs.statSync(path.join(d,'after-blender-clay.png')).size) throw Error('INVALID_AUTHENTIC_AB: '+view);
+            const shape=evaluateCreatureShape(cmp,plan);
+            results.push({view,pixels_changed:cmp.camera_visibility.changed_pixels,
+              changed_fraction:cmp.camera_visibility.changed_fraction,
+              visibility:cmp.camera_visibility.camera_visibility_gate,
+              structure:shape.verdict,original_source_sha256:cmp.source_file_sha256,
+              authentic_candidate_sha256:cmp.result_file_sha256});
+          }
+          const detected=results.some(r=>r.visibility==='REVIEW_REQUIRED');
+          const structural=results.every(r=>!r.structure.startsWith('REJECT_'));
+          const verdict=!structural?'REJECT_GLOBAL_OR_NONLOCAL_SHAPE':
+            !detected?'REJECT_NOT_CAMERA_VISIBLE':'BLENDER_STRUCTURAL_AND_PIXEL_CANDIDATE_REVIEW_REQUIRED';
+          const report={schema_version:1,original_run:39636058045,
+            original_qwen_model:'qwen3-vl:2b-instruct',
+            new_qwen_inference:false,new_blender_sculpt:false,tripo_credits_spent:0,
+            result:verdict,camera_views:results,art_approved:false,
+            unity_qa:false,mobile_profiled:false,runtime_integrated:false};
+          fs.writeFileSync(path.join(out,'replay/verdict.json'),JSON.stringify(report,null,2)+'\n',{flag:'wx'});
+          console.log('AUTHENTIC_QWEN_ARTIST_REPLAY '+JSON.stringify({verdict,results:results.map(r=>[r.view,r.pixels_changed,r.visibility])}));
+          JS
+
+      - name: Archive all five authentic pairs and rejection or review verdict
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tripo-spawnling-existing-qwen-replay
+          path: /tmp/eldoria-spawnling-qwen-replay/replay/
+          retention-days: 14
+          if-no-files-found: error

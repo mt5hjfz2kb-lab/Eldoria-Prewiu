@@ -1,0 +1,98 @@
+{
+  "schema_version": 3,
+  "asset": "spawnling",
+  "reviewed_at": "2026-10-21",
+  "status": "RIG_V3_TECH_PASS_GESTURE_ART_REVIEW_REJECTED",
+  "workstream": "eldoria-tripo-art-brain-phase2-20261021",
+  "source": {
+    "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb",
+    "sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d"
+  },
+  "execution": {
+    "url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39648439390",
+    "run_id": 39648439390,
+    "artifact_id": 12368103030,
+    "artifact_name": "spawnling-rig-elbows-v3-zero-credit-qa",
+    "script": "tools/tripo-art-brain/rig-bone-elbows-v3.py"
+  },
+  "technical": {
+    "bones_v2": 8,
+    "bones_v3": 12,
+    "added": [
+      "L_forearm",
+      "R_forearm",
+      "L_shin",
+      "R_shin"
+    ],
+    "skin_count": 1,
+    "clips": 1,
+    "weighted_vertices": 9863,
+    "invalid_weights": 0,
+    "weights_max_sum_error": 7e-8,
+    "glb_sha256": "b1124508c02cb68e726028aa4b221b59869e45fe718a5ddf16a41330845bb106",
+    "blend_sha256": "c4c243ca9757325d66549342d917285cf4620a28df9754a4e3fc3b55a27cc92f",
+    "v2_attack_max_displacement_m": 0.344238,
+    "v3_attack_max_displacement_m": 0.162744,
+    "attack_v2_vs_v3_changed_pixels": 5605,
+    "camera_px": [
+      600,
+      480
+    ],
+    "frame65_exact_rest": true,
+    "source_sha_retained": true
+  },
+  "actual_blender_pose_review": {
+    "views": "7 aligned genuine Blender PBR stills per version, fixed camera and light, sampled 1/10/19/27/34/46/65",
+    "strengths": [
+      "Distinct 12-bone armature with elbow and knee child segments and smooth distal influence",
+      "No artificial translation of the root, idle start and end remain identical",
+      "No obvious tearing in sampled broad poses at 600x480"
+    ],
+    "problems": [
+      "Compared with V2 at attack frame 27, the active claw does not extend nearly as far: the pose reads as crouch rather than forceful swipe.",
+      "Most distal articulation differences remain local and the overall silhouette improvement is not clearly stronger from this view.",
+      "PBR isolated images and structural checks do not certify animation quality in strategic Unity gameplay."
+    ],
+    "verdict": "TECHNICALLY_VALID_BUT_NOT_VISUALLY_ACCEPTED_FOR_ATTACK",
+    "art_approved": false
+  },
+  "next_hypothesis": "First use refined v3 source and captured same-camera A/B as technical candidate. Avoid rerunning Qwen or replacing production. Do not automatically generate V4 solely to chase pixel-count; the next material quality test is Unity animated-import/strategic game framing and if failed then targeted Blender character direction.",
+  "disallowed": [
+    "do_not_integrate_game",
+    "do_not_release",
+    "do_not_call_tripo_paid",
+    "do_not_claim_mobile_pass"
+  ],
+  "new_credits_spent": 0,
+  "api_calls": 0,
+  "gameplay_integrated": false,
+  "mobile_device_profiled": false,
+  "follow_up_same_day_refined_pose": {
+    "status": "RIG_V3_REVISION_TECH_PASS_AESTHETIC_REVIEW_REQUIRED",
+    "run_id": 39648933188,
+    "run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39648933188",
+    "artifact_id": 12368023881,
+    "artifact_name": "spawnling-rig-elbows-v3-zero-credit-qa",
+    "source_same_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+    "glb_sha256": "78bb80b33b7cacedc8c7d4785e721935b3d2c6184dfacc66f12c2b6f9bedef92",
+    "bone_count": 12,
+    "skin_count": 1,
+    "clips": 1,
+    "frame27_max_displacement_m": 0.335203,
+    "frame27_difference_vs_v2_pixels": 3132,
+    "camera_px": [
+      600,
+      480
+    ],
+    "frame1_and_65_match_v2": 0,
+    "weight_errors": 0,
+    "cost_new_credits": 0,
+    "visual_review": "Later refined run restores the long forward claw reach comparable to V2 while retaining distinct elbow/knee skinning. From locked isometric Blender preview a clear improvement over V2 in character acting is NOT yet evident, though segmented-bone technical potential is proved.",
+    "technical_pass": true,
+    "art_approved": false,
+    "unity_import_pass": false,
+    "mobile_pass": false,
+    "gameplay_integrated": false,
+    "next_gate": "Isolated Unity 6000.3 animated GLB/glTFast import, clip playback and true tactical camera A/B; Windows runner currently reserved by UI workstream. No game mutation."
+  }
+}

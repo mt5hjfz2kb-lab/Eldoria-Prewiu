@@ -10,7 +10,8 @@
     "allowed_work": "Continue city/world/UI/gameplay on main under existing owner; historical branches read-only by project policy.",
     "authorized_workstream_ids": [
       "valoria-master-plan-layered-construction-20261016",
-      "eldoria-tripo-art-brain-phase2-20261021"
+      "eldoria-tripo-art-brain-phase2-20261021",
+      "eldoria-spawnling-qwen-semantic-visual-qa-20261021"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
@@ -18,10 +19,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-geography-visual-production-20261021",
+      "owner": "codex-three-workstreams-completion-20261021",
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-21T15:01:25.122Z",
+      "claimed_at": "2026-10-21T18:27:50.616Z",
       "base_main_sha": "489889a873bfe376694a0289d7ee1382acfe7637",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -49,15 +50,13 @@
         "Unity/ProjectSettings/EditorBuildSettings.asset",
         "pipeline/development-baseline.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "GEOGRAPHIC_INTEGRATION_ART_PRODUCTION",
-      "next": "Create a representative organic city-ground and continuous World4X geography intervention on current canonical scene, validate matched native Unity city/world whole-frame plus forest/quarry/breach and I–II/gameplay, accept only visually substantial change then promote; no publication",
+      "phase": "GEOGRAPHY_NATIVE262_SOURCE_QA_UI_WINDOWS_DEPENDENCY",
+      "next": "Current art candidate 262 is SOURCE-ONLY, NOT UNITY/ART_APPROVED. Reclaim this SAME canonical ID after UI V3 releases windows-runner-heavy, verify current scene SHA against survey 4c39edeb8fa03f6b7235dc7bad0a041b06de9384b8e8bd6f1e3c23e8cf860237, increment tools/valoria-reference-clean/request.json geography_trial revision from 262 with [valoria-native], review true city I-II/mobile and whole Region1 A/B (new meadow sculpt, candidate forest ground and existing tree roots), get independent art review; integrate only if accepted and full gameplay/save/URP/device constraints pass. Current extra evidence: docs/evidence/valoria-reference-clean/geography-v1/NATIVE261_OBJECTIVE_AB_AUDIT_20261021.md, native261 run39641901228/artifact12365323917. No new APK/itch publication.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -548,7 +547,7 @@
           "handoff_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677"
         }
       },
-      "previous_owner": "chatgpt-eldoria-visual-recovery-20261020",
+      "previous_owner": "chatgpt-eldoria-geography-continuation-20261021",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md",
@@ -672,36 +671,75 @@
           "phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
           "released_at": "2026-10-21T14:58:50.649Z",
           "reason": "Four art phases delivered; no runner reservation; owner requests removing stale chat ownership barriers. Canonical work ID and all sources/evidence retained."
+        },
+        {
+          "owner": "chatgpt-eldoria-geography-visual-production-20261021",
+          "claimed_at": "2026-10-21T15:01:25.122Z",
+          "released_at": "2026-10-21T18:06:33.791Z",
+          "phase": "GEOGRAPHIC_INTEGRATION_ART_PRODUCTION",
+          "reason": "Art native260/261 visual trials saved; native262 true city TerrainData sculpt remains not executed because UI V3 owns windows-runner-heavy. New local Qwen geography independent-review route added, not yet executed. No gameplay scene art promotion, no publication."
+        },
+        {
+          "owner": "chatgpt-eldoria-geography-continuation-20261021",
+          "claimed_at": "2026-10-21T18:09:05.965Z",
+          "released_at": "2026-10-21T18:13:57.876Z",
+          "phase": "GEOGRAPHY_INDEPENDENT_REVIEW_THEN_NATIVE",
+          "reason": "Completed source-safe tree/landform contact corrections; native262 rendering still blocked by current protected UI V3 Windows lease. Existing main scene unchanged and no ART_APPROVED; release writer reservation to avoid stale chat locks while preserving exact workstream."
+        },
+        {
+          "owner": "chatgpt-eldoria-geography-continuation-20261021",
+          "claimed_at": "2026-10-21T18:18:21.870Z",
+          "released_at": "2026-10-21T18:26:22.973Z",
+          "phase": "NATIVE261_INDEPENDENT_PIXEL_AUDIT_AND_NATIVE262_PRESERVED",
+          "reason": "Native262 requires shared Windows runner currently exclusively held by UI V3. No valid zero-cost independent native Unity route to certify or integrate. Kept scene unchanged, source candidate untouched and wrote native261 quantitative visual review on main.",
+          "evidence": "docs/evidence/valoria-reference-clean/geography-v1/NATIVE261_OBJECTIVE_AB_AUDIT_20261021.md",
+          "handoff": "On explicit UI release, reclaim same ID and reserve Windows after current live checks; run request geography_trial rev262 incrementing revision in request; review 15 real A/B images and live gameplay before integration."
+        },
+        {
+          "owner": "chatgpt-eldoria-geography-source-validation-20261021",
+          "revision": 9,
+          "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
         }
       ],
-      "ownership_revision": 2,
+      "ownership_revision": 10,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
       "last_claimed_at": "2026-10-16",
       "current_assignment": {
-        "owner": "chatgpt-eldoria-geography-visual-production-20261021",
-        "base_main_sha": "36ebdaf971cefed05d4317d3d9f8006303956e33",
-        "owner_instruction": "21-10-2026: continuar autónomamente mejorando calidad gráfica global de terreno ciudad Valoria y macrogeografía Región 1; no gastar, no tocar UI V3, Engendro, progresión ni publicar",
-        "scope": "Organic Valoria prairie-path-bank contact and Region 1 continuous world macroterrain/biomes; visual A/B, Unity QA and screenshots",
-        "preserve": "Certified native241/native242 art sources and merged PR #83 UI/PR #84 Engendro",
-        "note": "Same canonical art workstream, transfer from explicitly available state; no previous phases replayed"
+        "owner": "chatgpt-eldoria-geography-source-validation-20261021",
+        "base_main_sha": "ec5e763be5ff074ae844a8c83b0e69883e064a6c",
+        "owner_instruction": "21-10-2026: continuar encargo artístico Valoria/Región 1 tras interrupción de chat",
+        "scope": "Read existing candidate262 and improve source-only reversible protections/tests pending authorized Windows Unity runner release; do not modify UI V3, Spawnling, gameplay or publishing",
+        "preserve": "Unity source scene, source UV/colliders, 6 POIs, UI V3 native QA, no paid services"
       },
       "delivery_definition": {
-        "deliverable": "Valoria and Region1 terrain/biomes visibly integrated in canonical Unity scene, preserving prior architecture/UI V3/Engendro and interactive systems",
-        "evidence": "Same-camera real Unity A/B screenshots full scene/entire world 4X area and portrait; independent visual assessment, native progression/save/march tests, editable sources and SHA",
-        "handoff": "Approved visual results, real screenshots, objective scores and exact main SHA; no new APK/itch upload"
+        "deliverable": "Geographic candidate62 source safety independently reviewed; native A/B and artistic approval only when live UI Windows lease releases",
+        "evidence": "Static source evidence and CI for candidate plus 15 same-source real Unity matched A/B once runner free; independent visual acceptance and progression checks",
+        "handoff": "Exact source SHA, trial revision, tests and untouched canonical art; no APK/itch publication"
       },
       "active_runner_claim": {
         "purpose": "Native geographic survey of existing canonical city and World4X; no scene mutation or publication",
         "owner_authorized": "2026-10-21"
-      }
+      },
+      "runner_lease_note": "Temporary cooperative release for owner-prioritized UI V3 management native validation; art owner/scope/work remain intact. No current native jobs were running at handoff. Claim again after UI tests finish.",
+      "pending_art_validation": {
+        "last_visual_source": "native261 run39641901228 (forest gains local, entire region below requested quality)",
+        "last_true_unity_probe": "geography_trial native261",
+        "awaiting": "native262 city 257x257 TerrainData true sculpt + synchronized candidate TerrainCollider; 4X forest/quarry; compare real captures",
+        "independent_critic": "tools/valoria-reference-clean/review_capture.py geography_v1 3 review groups, not yet executed",
+        "blocked_resource": "windows-runner-heavy",
+        "resource_holder": "eldoria-ui-v3-management-completion-20261021",
+        "review_status": "ART_REVIEW_REQUIRED",
+        "canonical_scene_unchanged": true
+      },
+      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
       "title": "Tripo + cerebro artístico Fase 2: prueba gratuita y diagnóstico real del Engendro",
-      "owner": "chatgpt-eldoria-tripo-brain-continuation-20261021",
-      "ownership_revision": 2,
+      "owner": "codex-three-workstreams-completion-20261021",
+      "ownership_revision": 12,
       "ownership_state": "claimed",
       "status": "active",
       "branch": "main",
@@ -715,21 +753,255 @@
         "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
         "tools/art-direction/ai-authoring/author_brief.py",
         ".github/workflows/tripo-free-rig-check-once.yml",
-        ".github/workflows/tripo-art-brain-real-creature-pilot.yml"
+        ".github/workflows/tripo-art-brain-real-creature-pilot.yml",
+        "tools/art-direction/ai-authoring/render_artist_ab.py",
+        ".github/workflows/tripo-artist-replay-ab.yml",
+        ".github/workflows/tripo-spawnling-free-rig-probe.yml",
+        ".github/workflows/tripo-spawnling-free-rig-probe-v2.yml",
+        ".github/workflows/tripo-spawnling-rig-v3.yml",
+        ".github/workflows/tripo-spawnling-rig-v4.yml",
+        "pipeline/tripo-art-brain/verified-rig-probes/spawnling-blender-rig-elbow-v4-20261021.json",
+        ".github/workflows/tripo-spawnling-unity-animated-qa.yml",
+        "docs/evidence/spawnling-animation-v4-review-20261021/**"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-tripo-art-brain-phase2-20261021.json",
       "art_production_routing_reason": "Continuación explícita del propietario: aprovechar el catálogo y conectar diagnósticos de rigging sin nuevos créditos ni ocupar la escena/runner Valoria.",
-      "phase": "REAL_QWEN_SOURCE_EVIDENCE_REPAIR_AND_RETRY",
+      "phase": "V4_ARTIFACT_INDEPENDENT_REVIEW_PASS_WAITING_UNITY_GATE",
       "dependency": "Valoria owns windows-runner-heavy and canonical player scene; no Windows/Qwen live, Unity scene mutation or production artifact promotion while owned. Rig check API is documented free; no rigging/animation paid task. Reuse existing original task and source SHA. Qwen author_brief.py is shared; additive --subject-kind only, default terrain path byte-for-byte equivalent. Retain existing Valoria workflows.",
       "delivery_definition": {
-        "deliverable": "Rig check zero-credit execution or documented access blocker, plus authenticated detailed asset profile and testable input binding to existing Qwen artist; retain game untouched.",
-        "evidence": "GitHub Actions source run, task ID/0-credit receipt if available, SHA-pinned GLB/BLEND and zero-credit tests.",
-        "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
+        "deliverable": "Engendro experimental rig v3: codos/espinillas y deformación anatómica mejorada sin tocar juego",
+        "evidence": "Blender glTF real JOINTS/WEIGHTS/animation and locked-camera PNG, structural limb/torso metrics, GH Actions run and hashes",
+        "handoff": "Source-locked v3 candidate artifacts; only pass to native Unity when separately coordinated"
       },
-      "next": "Reconcile second authentic Qwen FAIL (39631639948) and treat zero displacement as non-art. Keep fixed source/pictures and audit constraints; improve Qwen creature direction with new hypothesis and isolated rerun. No paid API, runtime/Windows.",
-      "handoff_note": "Owner explicitly requested continue same Tripo+art-brain job; no active phase2 job at claim time. Do not touch Valoria scene or runner. Previous chat may not be remotely interrupted: re-read live registry before any further writes."
+      "next": "Safely run an isolated genuine Unity 6000.3.23f1 animated import/clip/skin/matched rest-swipe-return QA with exact archived V4 SHA86ec1c93... ONLY when UI V3 releases windows-runner-heavy; current UI workstream owns it. New Unity C# QA write attempt blocked by platform safety controls, do not reroute around denial. Current main Engendro remains static. Do not spend Tripo or claim gameplay integration.",
+      "handoff_note": "Relevo por orden explícita 'Continua' tras streaming interrumpido. Source v2 PASS run39646134910; artifact12366723084 descargado y revisado. No hay run activo de fase2 según consulta; se respetan UI/Valoria.",
+      "handoff_from": "chatgpt-eldoria-tripo-brain-continuation-20261021",
+      "handoff_reason": "Owner explicitly requests continue after outdated chat. Replay previously generated Qwen artist result with close-up matched-camera tests without reinference, Tripo spend, Windows, or source replacement.",
+      "previous_owner": "chatgpt-eldoria-tripo-brain-chat-recovery-20261021",
+      "coordination_note": "Explicit user request to continue exact prior Tripo work; read main and claim revision before mutating. Other chats must reread registry. Valoria retains windows-runner-heavy.",
+      "last_owner_handoff": {
+        "date": "2026-10-21",
+        "reason": "Propietario solicita continuar el trabajo desde streaming interrumpido; un único ID canónico, sin detener trabajos existentes.",
+        "recovery_source_run": 39642306967
+      },
+      "last_verified_rig": {
+        "run": 39642770488,
+        "artifact": 12364689083,
+        "source_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+        "glb_sha256": "d092ead354eb1cc30a11bfe5f29f29b6715cd44af484d113b4bfaebf04b56c7e",
+        "bone_count": 8,
+        "skins": 1,
+        "clips": 1,
+        "animated": true,
+        "blender_preview": true,
+        "unity_import": false,
+        "art_approved": false,
+        "physical_mobile_profiled": false,
+        "credits_spent": 0,
+        "provenance": "pipeline/tripo-art-brain/verified-rig-probes/spawnling-blender-rig-v1-20261021.json"
+      },
+      "last_verified": {
+        "run_id": 39646134910,
+        "artifact_id": 12366723084,
+        "source_sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+        "glb_sha256": "9137474fa2995a803bcfb9575350d6d2589e0a3fcb7ab21aff9587d8633ba111",
+        "blend_sha256": "88d3a4b4c6a4bfc6eb5a6430f9b22791c93fa4ae8df29d9f744f73e7c8e680a0",
+        "blender_technical_pass": true,
+        "animation_clips": 1,
+        "bones": 8,
+        "unity_animated_import_tested": false,
+        "art_approved": false,
+        "physical_mobile_qa": false,
+        "credits_added": 0
+      },
+      "ownership_history": [
+        {
+          "from": "chatgpt-eldoria-tripo-rig-handoff-20261021",
+          "to": "chatgpt-eldoria-rig-verified-delivery-20261021",
+          "date": "2026-10-21",
+          "reason": "El propietario vuelve a pedir continuar el mismo trabajo tras interrupción; verificar resultado v2, revisar 7 poses reales y preparar gate de importación sin invadir Unity ni gastar créditos.",
+          "revision": 8
+        },
+        {
+          "owner": "chatgpt-eldoria-rig-v3-continuation-20261021",
+          "revision": 9,
+          "released_at": "2026-10-21T20:06:00+02:00",
+          "reason": "Owner explicitly requests this chat to verify rigged Spawnling and replace existing ONLY if real artistic, Unity and gameplay QA pass; safe same-workstream handoff."
+        },
+        {
+          "owner": "chatgpt-eldoria-spawnling-rig-finish-20261021",
+          "revision": 11,
+          "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
+        }
+      ],
+      "write_scope_released": false,
+      "handoff_authorization": {
+        "source": "Owner chat 2026-10-21: Comprueba eso y si sale bien incorpóralo sustituyendo al que ya tenemos.",
+        "scope": "Existing Spawnling V3/V4 rig and conditional replacement in Bastion II",
+        "spend_credits": 0,
+        "unity_scene_changes": "Only after technical+visual and gameplay certification",
+        "date": "2026-10-21"
+      },
+      "last_handoff": {
+        "from_owner": "chatgpt-eldoria-spawnling-rig-integration-20261021",
+        "to_owner": "chatgpt-eldoria-spawnling-rig-finish-20261021",
+        "from_run": 39651422644,
+        "artifact_id": 12368972822,
+        "windows_lease_claimed": false
+      },
+      "review_evidence": {
+        "source_run": 39651422644,
+        "source_artifact_id": 12368972822,
+        "glb_sha256": "86ec1c93a222d58b89b9f393d39c8e5e912b14516ff5298500e5aca80048f631",
+        "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
+        "rig_joint_count": 12,
+        "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
+        "skin_weights_sum_max_error": 1.1920929e-7,
+        "static_retained": true,
+        "art_approved": false,
+        "isolated_unity_import_tested": false,
+        "mobile_profile_pass": false,
+        "game_integrated": false,
+        "credits_new": 0
+      },
+      "blocker": {
+        "dependency": "UI V3 active workstream owns windows-runner-heavy",
+        "runner_owner": "eldoria-ui-v3-management-completion-20261021",
+        "platform_write_denial": "GitHub connector create_file attempt for isolated Unity C# QA source blocked by OpenAI safety controls; no alternate route attempted",
+        "next_allowed_action": "Continue once ownership/runner reconciled; preserve existing V4 artifact source and QA verdict; no bypass of denied write."
+      },
+      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
+    },
+    {
+      "id": "eldoria-ui-v3-management-completion-20261021",
+      "title": "Eldoria V3 full-screen management — T1 training and troop marches",
+      "owner": "codex-three-workstreams-completion-20261021",
+      "ownership_state": "claimed",
+      "ownership_revision": 9,
+      "write_scope_released": false,
+      "status": "active",
+      "claimed_at": "2026-10-21T17:11:00Z",
+      "base_main_sha": "4c871bcebaa40030bac745852438d249d06ba8ad",
+      "branch": "feature/ui-v3-management-completion-20261021",
+      "pr": 90,
+      "owner_instruction": "Explicit owner direction to continue full-screen V3 barracks/training and marches to real Unity QA and main release; resume same canonical workstream.",
+      "scope": [
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/Eldoria.RoyalGold.V2.asmdef",
+        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3Management*.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/RoyalV3Management*.cs.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3Management*.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalV3Management*.cs.meta",
+        "tools/ui-v3-domain-smoke/**",
+        ".github/workflows/ui-v3-domain-smoke.yml",
+        "docs/ui-v3/MANAGEMENT_SCREENS_V3_IMPLEMENTATION_20261021.md",
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "dependencies": [
+        {
+          "workstream": "valoria-master-plan-layered-construction-20261016",
+          "reason": "Owns heavy Windows Unity runner and canonical GameState, LocalGateway and ValoriaIntegratedWorld integration files; candidate remains isolated until live handoff/release."
+        }
+      ],
+      "last_verified": {
+        "domain_smoke": {
+          "run_id": 39641171771,
+          "result": "success",
+          "checks": 29
+        },
+        "latest_native_run": {
+          "id": 39651216087,
+          "sha": "6a380fdc704dbf0852ba0e9cc30daeb817fc0882",
+          "status": "FAILED_PLAYMODE",
+          "failed": [
+            "OwnerFreshSaveCompletesIAndIIThroughGuidedHud",
+            "RoyalV3ManagementIntegrationTests.FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave"
+          ]
+        }
+      },
+      "next": "Repair exact native PlayMode failures (guided Chapter II recruitment + modal navigation), revalidate full Unity, coordinate selective merge into main and final playable delivery",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-eldoria-management-finalization-20261021",
+          "revision": 1,
+          "reason": "Owner requested continued V3 implementation after chat interruption."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-management-resume-20261021",
+          "revision": 2,
+          "reason": "Propietario ordena continuar en el chat actual; relevo autorizado sin alterar al ejecutor de arte."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-management-current-chat-20261021",
+          "revision": 4,
+          "reason": "Owner's explicit continued UI management execution and completed native run requiring compile fixes on PR #90."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-current-continuation-20261021",
+          "revision": 5,
+          "reason": "Owner-directed continuation of unfinished management UI after chat interruption (2026-10-21)."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-resume-20261021b",
+          "revision": 6,
+          "reason": "Owner explicitly orders this chat to continue V3 management finalization, no additional approval required."
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-management-final-run-20261021",
+          "revision": 7,
+          "reason": "Owner authorized this chat to resume and finish UI V3 after latest Unity run 39651216087 ended with concrete PlayMode failures"
+        },
+        {
+          "owner": "chatgpt-eldoria-ui-v3-management-resumed-20261021",
+          "revision": 8,
+          "reason": "Owner explicitly requests this chat assume and finish all three stalled jobs; preserve running UI certification 39653618057 and existing candidates."
+        }
+      ],
+      "runner_lease_note": "Owner-authorized temporary exclusive Unity certification window for UI V3 management; return runner to art after native UI gates. Do not cancel existing processes or use paid credits.",
+      "phase": "UI_V3_NATIVE_FAILURE_REPAIR",
+      "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
+      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA."
+    },
+    {
+      "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
+      "title": "Engendro — contraste independiente de cabeza Qwen nueva",
+      "owner": "chatgpt-eldoria-semantic-independent-review-20261021",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-21",
+      "scope": [
+        ".github/workflows/eldoria-spawnling-semantic-qa.yml",
+        "pipeline/art-production-requests/eldoria-spawnling-qwen-semantic-visual-qa-20261021.json",
+        "docs/evidence/spawnling-qwen-semantic-qa-20261021/RESULT.md"
+      ],
+      "resources": [],
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/eldoria-spawnling-qwen-semantic-visual-qa-20261021.json",
+      "art_production_routing_reason": "Análisis visual read-only con 5 vistas auténticas del candidato Qwen ya generado, sin mutar Blender ni proyectos reservados",
+      "dependency": "Descargar run39643146556 y revisar en Linux GitHub hosted, no inferencia, no Tripo API, no Unity, no Windows; usar source SHA y candidate SHA; fase2 de rigging y arte conserva su owner",
+      "phase": "EXISTING_QWEN_RESULT_CLOSEUP_REVIEW",
+      "next": "Comparar cabeza/figura desde camera hero y estratégica, registrar rechazo o candidato en scope independiente, cerrar sin ART_APPROVED.",
+      "delivery_definition": {
+        "deliverable": "Cinco parejas PNG A/B auténticas del Qwen aceptado técnicamente 39643146556, más veredicto de visibilidad y revisión artística separada",
+        "evidence": "Run GitHub actions y ZIP de screenshots contra hashes originales inmutables",
+        "handoff": "Entregar resultado exacto para el otro propietario artístico; nunca fusionar la malla ni reclamarla aprobada."
+      }
     }
   ],
   "history": [

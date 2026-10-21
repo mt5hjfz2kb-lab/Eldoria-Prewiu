@@ -1,0 +1,82 @@
+{
+  "schema_version": 2,
+  "asset": "spawnling",
+  "date": "2026-10-21",
+  "classification": "BLENDER_FREE_RIG_V2_TECH_PASS_VISUAL_REVIEW_REQUIRED",
+  "owner_workstream": "eldoria-tripo-art-brain-phase2-20261021",
+  "source": {
+    "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb",
+    "sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+    "mesh_count": 3
+  },
+  "tool": "tools/tripo-art-brain/rig-finish-prototype-v2.py",
+  "workflow": ".github/workflows/tripo-spawnling-free-rig-probe-v2.yml",
+  "evidence": {
+    "run_id": 39646134910,
+    "run_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39646134910",
+    "artifact_id": 12366723084,
+    "artifact_name": "spawnling-free-blender-rig-gesture-v2",
+    "retention_days": 14
+  },
+  "outputs": {
+    "skinned_glb": "spawnling-rig-gesture-v2.glb",
+    "glb_sha256": "9137474fa2995a803bcfb9575350d6d2589e0a3fcb7ab21aff9587d8633ba111",
+    "editable_blend": "spawnling-rig-gesture-v2.blend",
+    "blend_sha256": "88d3a4b4c6a4bfc6eb5a6430f9b22791c93fa4ae8df29d9f744f73e7c8e680a0",
+    "report": "rig-gesture-v2-report.json",
+    "report_sha256": "e4c0bffb15bc7348bb89aa32b5301d772151860d785c494cf23e65971e3e4575",
+    "bones": 8,
+    "gltf_skins": 1,
+    "gltf_animation_clips": 1,
+    "clip_name": "Eldoria_Spawnling_AlertSwipe_Recover_TechV2",
+    "fps": 24,
+    "clip_frame_range": [
+      1,
+      65
+    ],
+    "pose_frames": [
+      1,
+      10,
+      19,
+      27,
+      34,
+      46,
+      65
+    ],
+    "pngs": 7
+  },
+  "actual_measurements": {
+    "weighted_vertices": 9863,
+    "invalid_weights": 0,
+    "max_weight_sum_error": 4e-8,
+    "max_attack_displacement_m": 0.344238,
+    "attack_mean_sample_displacement_m": 0.065752,
+    "attack_moving_samples_gt_2mm": 3366,
+    "total_samples": 3368,
+    "loop_return_error_m": 0,
+    "changed_camera_pixels_sampled_on_3x3_grid": 1651
+  },
+  "quality_review": {
+    "geometry_motion_visible_in_isolated_blender": true,
+    "arm_swipe_direction_readable": true,
+    "limb_anatomy_production_ready": false,
+    "concerns": [
+      "A single long influence per arm yields stiff elbows and possible unnatural shoulder stretching.",
+      "Spine's broad influence moves much of torso during the strike; requires bone-local weight painting.",
+      "Seven stills and GLB clip validate only a technical motion sample, not final combat timing or strategic-camera legibility."
+    ],
+    "art_approved": false,
+    "unity_animated_import_pass": false,
+    "gameplay_integrated": false,
+    "physical_mobile_profiled": false
+  },
+  "safety": {
+    "new_tripo_credits": 0,
+    "tripo_api_calls": 0,
+    "source_immutable": true,
+    "unity_scene_untouched": true,
+    "save_and_hotspot_unchanged": true,
+    "published": false
+  },
+  "next_stage": "Refine per-limb weights/gesture after true art critique; then isolated Unity 6000.3 glTFast skin+clip import and PlayMode QA when Windows runner is legitimately released, followed by gameplay camera/mobile profile and separate authorized integration."
+}

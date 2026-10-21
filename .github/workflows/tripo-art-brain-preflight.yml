@@ -44,6 +44,11 @@ jobs:
         shell: bash
         run: node --test tools/tripo-art-brain/*.test.mjs
 
+      - name: Check actual creature Qwen semantic region and nonrepetition tests
+        shell: bash
+        run: |
+          python3 tools/tripo-art-brain/test_creature_art_spatial_gate.py
+
       - name: Audit immutable GLB originals, optimizations and genuine Unity QA
         shell: bash
         run: |

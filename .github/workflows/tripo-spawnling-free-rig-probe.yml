@@ -1,0 +1,109 @@
+name: Spawnling free Blender skeleton and animation feasibility (zero Tripo credits)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/tripo-spawnling-free-rig-probe.yml"
+      - "tools/tripo-art-brain/rig-feasibility-blender.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: spawnling-free-rig-tech-main
+  cancel-in-progress: true
+
+jobs:
+  blender-probe:
+    name: Genuine Blender skin and deform probe, never production approval
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      OUT: /tmp/eldoria-spawnling-free-rig
+      MODEL: ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+      MODEL_SHA: 4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d
+    steps:
+      - name: Checkout only existing source and standalone Blender feasibility script
+        uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+            tools/tripo-art-brain/rig-feasibility-blender.py
+
+      - name: Exact source gate, no Tripo credentials or paid endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT"
+          python3 -m py_compile tools/tripo-art-brain/rig-feasibility-blender.py
+          test "$(sha256sum "$MODEL" | awk '{print $1}')" = "$MODEL_SHA"
+          echo "ORIGINAL_SOURCE_HASH_PASS_NO_TRIPO_API"
+
+      - name: Install zero-cost Blender and glTF numeric import dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy
+          blender --version | head -2
+
+      - name: Produce actual skinned GLB, editable rig and animated-pose Blender PNGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender --background --disable-autoexec -t 4 --python-exit-code 1 \
+            --python tools/tripo-art-brain/rig-feasibility-blender.py -- \
+            --input "$MODEL" --source-sha256 "$MODEL_SHA" --out "$OUT" \
+            > "$OUT/blender-rig-console.txt" 2>&1 || {
+              tail -100 "$OUT/blender-rig-console.txt"
+              exit 1
+            }
+
+      - name: Reject false rigging or approval based on claims without actual glTF skin and animation
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, struct
+          out=pathlib.Path(os.environ['OUT'])
+          src=pathlib.Path(os.environ['MODEL'])
+          report=json.loads((out/'rig-proof.json').read_text('utf8'))
+          glb=(out/'spawnling-rig-tech-test.glb').read_bytes()
+          assert glb[:4]==b'glTF'
+          version,length=struct.unpack_from('<II',glb,4)
+          assert version==2 and length==len(glb)
+          json_len,json_tag=struct.unpack_from('<I4s',glb,12)
+          assert json_tag==b'JSON'
+          scene=json.loads(glb[20:20+json_len].decode('utf8').strip())
+          skins=scene.get('skins',[])
+          clips=scene.get('animations',[])
+          assert skins and all(len(s.get('joints',[]))>=7 for s in skins), 'No real deform bones'
+          assert clips and any(a.get('channels') for a in clips), 'No actual glTF animation channels'
+          assert any('JOINTS_0' in p.get('attributes',{}) and 'WEIGHTS_0' in p.get('attributes',{})
+                     for m in scene.get('meshes',[]) for p in m.get('primitives',[])), 'No skinned mesh vertices'
+          assert report['paid_credits']==0 and report['tripo_api_calls']==0
+          assert report['art_approved'] is False and report['gameplay_integrated'] is False
+          assert report['mobile_profiled'] is False and report['unity_import_tested'] is False
+          assert report['deformation']['moving_sample_vertices_gt2mm']>20
+          assert report['output_glb_sha256']==hashlib.sha256(glb).hexdigest()
+          assert hashlib.sha256(src.read_bytes()).hexdigest()==report['source_sha256']==os.environ['MODEL_SHA']
+          assert len(report['visual']['captures'])==2
+          assert all((out/x['filename']).stat().st_size>4000 for x in report['visual']['captures'])
+          print('SPAWNLING_GENUINE_SKINNED_ANIMATION_TECH_PROBE_PASS',
+                'bones',report['bones'],'skins',len(skins),'clips',len(clips),
+                'max_motion',report['deformation']['max_sample_displacement_m'],
+                'NOT_ART_APPROVED_NOT_MOBILE_NOT_IN_GAME')
+          PY
+
+      - name: Archive real experimental rig GLB/BLEND and pose evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spawnling-free-blender-rig-probe
+          path: /tmp/eldoria-spawnling-free-rig/
+          retention-days: 14
+          if-no-files-found: warn

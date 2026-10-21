@@ -194,7 +194,8 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
     const record = readJson(root, failurePath);
     if (record.asset !== id || record.art_approved !== false ||
         !['ART_REJECTED_GLOBAL_TRANSLATION_LIKE',
-          'QWEN_PLAN_REJECTED_NON_EXECUTABLE'].includes(record.classification) ||
+          'QWEN_PLAN_REJECTED_NON_EXECUTABLE',
+          'ART_REJECTED_INVISIBLE_LOCALIZED_EDIT'].includes(record.classification) ||
         record.source?.source_blend_sha256 !== asset.integration?.editable?.sha256 ||
         !Number.isInteger(record.source?.repo_run) ||
         !record.lesson || !record.next_action) {
@@ -202,6 +203,7 @@ export function auditAsset(root, id, catalog = loadCatalog(root)) {
     }
     return { path: failurePath, run_id: record.source.repo_run,
       classification: record.classification, lesson: record.lesson,
+      qwen_brief: typeof record.qwen_brief === 'string' && record.qwen_brief.length <= 400 ? record.qwen_brief : record.lesson,
       next_action: record.next_action };
   });
   return {
@@ -264,7 +266,7 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
   // Never truncate a lesson silently, which would turn the retry into blind work.
   const sourceFailureLessons = item.verified_failures.length
     ? item.verified_failures.map(f =>
-        'Run ' + f.run_id + ' => ' + f.classification + ': ' + f.lesson).join(' | ')
+        'Run ' + f.run_id + ' => ' + f.classification + ': ' + f.qwen_brief).join(' | ')
     : 'No source-specific reviewed failures';
   const context = [
     'ELDORIA / TRIPO — VERIFIED SOURCE INVENTORY FOR EXISTING QWEN ARTIST (not a model inference).',
@@ -273,13 +275,13 @@ export function makeBundle(root, id, catalog = loadCatalog(root)) {
     'Editable Blender SHA256 ' + item.source_editable.sha256 + ' | ' + item.source_editable.path,
     'Optimized GLB SHA256 ' + item.optimized.sha256 + ' | ' + item.optimized.path +
       ' | ' + item.optimized.triangles + ' tris, Unity BaseColor ' + item.imported_basecolor_px.join('x'),
-    'Original GLB SHA256 ' + item.raw.sha256 + ' | ' + item.raw.path,
+    'Raw original GLB SHA256 ' + item.raw.sha256 + '.',
     'Existing runtime LOD triangles: ' + (item.lods ? item.lods.near.triangles + '/' + item.lods.far.triangles : 'NONE, only isolated source'),
-    'Finished editable Blender: ' + (item.lods ? item.lods.finished_blend.path + ' SHA256 ' + item.lods.finished_blend.sha256 : 'NOT INTEGRATED'),
+    'Finished Blender SHA256 ' + (item.lods ? item.lods.finished_blend.sha256 : 'NOT INTEGRATED'),
     'Already integrated: ' + item.integrated_in_game + ' | rig/animation: ' + item.has_skin + '/' + item.has_animation,
     'VERIFIED REAL REJECTED QWEN ART CYCLES — never repeat: ' + sourceFailureLessons,
-    'Known visual issues (verify from REAL photos): ' + item.defects.join(' | '),
-    'Suggested next actions (Qwen must independently decide): ' + item.next_actions.slice(0,2).join(' | '),
+    'Known visual issues (verify from REAL photos): ' + item.defects.slice(0,2).join(' | '),
+    'Suggested next action (Qwen must independently decide): ' + item.next_actions.slice(0,1).join(' | '),
     'Preserve gameplay: ' + (item.protected || []).slice(0,2).join('; '),
     'External Tripo API is NOT authorized. No regenerate/rig/retarget/upload. Use existing source on copy.',
     'Real images, source mesh and independent Unity A/B required before art approval.',

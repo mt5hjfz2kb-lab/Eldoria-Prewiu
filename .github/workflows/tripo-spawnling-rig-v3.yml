@@ -1,0 +1,138 @@
+name: Spawnling free segmented-limb rig v3 QA (zero credits)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/tripo-spawnling-rig-v3.yml"
+      - "tools/tripo-art-brain/rig-bone-elbows-v3.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: spawnling-segmented-rig-v3-main
+  cancel-in-progress: true
+
+jobs:
+  segmented-rig:
+    name: Authentic elbow-knee Blender source, glTF skin, motion and v2-v3 images
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      OUT: /tmp/eldoria-spawnling-rig-v3
+      MODEL: ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+      MODEL_SHA: 4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d
+    steps:
+      - name: Source-pinned minimal checkout only, no Unity/Tripo APIs
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+            tools/tripo-art-brain/rig-feasibility-blender.py
+            tools/tripo-art-brain/rig-finish-prototype-v2.py
+            tools/tripo-art-brain/rig-bone-elbows-v3.py
+
+      - name: Check immutable source and local script syntax, forbid charged Tripo
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT/v2" "$OUT/v3"
+          python3 -m py_compile tools/tripo-art-brain/rig-*.py
+          test "$(sha256sum "$MODEL" | cut -d ' ' -f 1)" = "$MODEL_SHA"
+          ! grep -E 'openapi[.]tripo3d|TRIPO_API_KEY|requests[.]post' tools/tripo-art-brain/rig-bone-elbows-v3.py
+          echo "SOURCE_SHA_VERIFIED_ZERO_PAID_CALLS"
+
+      - name: Install existing open-source Blender/NumPy/Pillow
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq blender python3-numpy python3-pil
+          blender --version | head -2
+
+      - name: Reproduce frozen v2 gesture and separate v3 elbows on source copies
+        timeout-minutes: 12
+        shell: bash
+        run: |
+          set -euo pipefail
+          blender -b --disable-autoexec -t 4 --python-exit-code 1 \
+            --python tools/tripo-art-brain/rig-finish-prototype-v2.py -- \
+            --input "$MODEL" --source-sha256 "$MODEL_SHA" --out "$OUT/v2" \
+            > "$OUT/v2/console.log" 2>&1 || { tail -100 "$OUT/v2/console.log"; exit 1; }
+          blender -b --disable-autoexec -t 4 --python-exit-code 1 \
+            --python tools/tripo-art-brain/rig-bone-elbows-v3.py -- \
+            --input "$MODEL" --source-sha256 "$MODEL_SHA" --out "$OUT/v3" \
+            > "$OUT/v3/console.log" 2>&1 || { tail -120 "$OUT/v3/console.log"; exit 1; }
+
+      - name: Validate actual 12-bone joints/weights and camera-locked v2-v3 differences
+        shell: bash
+        run: |
+          set -euo pipefail
+          /usr/bin/python3 - <<'PY'
+          import os,json,hashlib,struct,pathlib
+          from PIL import Image,ImageChops
+          root=pathlib.Path(os.environ['OUT'])
+          old=json.loads((root/'v2/rig-gesture-v2-report.json').read_text())
+          new=json.loads((root/'v3/rig-elbow-knee-v3-report.json').read_text())
+          original=pathlib.Path(os.environ['MODEL'])
+          assert new['source_sha256']==old['source_sha256']==os.environ['MODEL_SHA']
+          assert hashlib.sha256(original.read_bytes()).hexdigest()==os.environ['MODEL_SHA']
+          assert new['source_unchanged'] and old['source_unchanged']
+          assert new['bone_count']==12 and old['bones']==8
+          assert new['skin_weights']['invalid']==0
+          assert all(x['vertex_count']>=25 for x in new['new_distal_weight_coverage']['distal_influences'].values())
+          assert new['new_tripo_credits']==0 and new['tripo_api_calls']==0 and not new['art_approved'] and not new['gameplay_integrated'] and not new['mobile_profiled']
+          assert new['deformation_by_pose']['65']['max_m']<=.002
+          p=root/'v3/spawnling-rig-elbow-knee-v3.glb'
+          data=p.read_bytes()
+          assert data[:4]==b'glTF' and struct.unpack_from('<I',data,8)[0]==len(data)
+          n,k=struct.unpack_from('<I4s',data,12)
+          assert k==b'JSON'
+          gltf=json.loads(data[20:20+n].decode('utf8').strip())
+          assert len(gltf['skins'])==1 and len(gltf['skins'][0]['joints'])==12
+          clips=gltf.get('animations',[])
+          assert len(clips)==1 and len(clips[0]['channels'])>=33
+          assert any('JOINTS_0' in primitive.get('attributes',{}) and 'WEIGHTS_0' in primitive.get('attributes',{})
+                  for mesh in gltf['meshes'] for primitive in mesh.get('primitives',[]))
+          def img(k,frame):
+              x=Image.open(root/k/f"spawnling-pose-{frame:02d}.png").convert('RGB')
+              assert x.size==(600,480)
+              return x
+          diffs={}
+          for frame in [1,10,19,27,34,46,65]:
+              a,b=img('v2',frame),img('v3',frame)
+              diff=ImageChops.difference(a,b)
+              count=sum(max(rgb)>30 for rgb in diff.getdata())
+              diffs[str(frame)]=count
+          assert diffs['27']>120, 'Articulated strike insufficiently different from v2'
+          report={
+              'schema_version':1,'source_sha256':os.environ['MODEL_SHA'],
+              'v2_original_animation_sha256':old['output_glb_sha256'],
+              'v3_candidate_glb_sha256':new['glb_sha256'],
+              'rig_bones_before':8,'rig_bones_after':12,
+              'new_child_joints':['L_forearm','R_forearm','L_shin','R_shin'],
+              'before_after_changed_pixels_by_frame':diffs,
+              'v2_attack_max_deformation_m':old['deformation_by_pose']['27']['max_m'],
+              'v3_attack_max_deformation_m':new['deformation_by_pose']['27']['max_m'],
+              'camera_size':[600,480],'preview_type':'GENUINE_BLENDER_SAMPLED_POSES_NOT_UNITY',
+              'technical_pass':True,'art_approved':False,
+              'unity_import_pass':False,'mobile_pass':False,'gameplay_integrated':False,
+              'new_tripo_credits':0,'independent_aesthetic_review':'PENDING'
+          }
+          (root/'source-locked-v2-v3-comparison.json').write_text(json.dumps(report,indent=2)+'\n')
+          print('SEGMENTED_BONE_ANIMATION_PROOF_PASS',json.dumps(report))
+          PY
+
+      - name: Archive exact independent images, .blend and skinned glTF source
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spawnling-rig-elbows-v3-zero-credit-qa
+          path: /tmp/eldoria-spawnling-rig-v3/
+          retention-days: 14
+          if-no-files-found: error
