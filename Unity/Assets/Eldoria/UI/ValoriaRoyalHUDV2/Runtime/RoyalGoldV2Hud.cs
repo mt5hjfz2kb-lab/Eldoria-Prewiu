@@ -541,6 +541,17 @@ namespace Eldoria.UI.RoyalGold.V2
             SetWidthAndHeight(rect, Mathf.Max(240f, width), portrait ? 56f : 48f);
         }
 
+        private static void RebindObjectiveLabel(RoyalText label)
+        {
+            if (!label) return;
+            // Never remove/recreate a button or listener. UI.Graphic.OnEnable
+            // re-registers this same child on the current canvas after the
+            // orientation/camera switch (including the native capture path).
+            label.enabled = false;
+            label.enabled = true;
+            label.SetAllDirty();
+        }
+
         private void LateUpdate() => SynchronizeNow();
 
         /// <summary>Explicit native QA sync after temporary canvas resolution
@@ -559,8 +570,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 // the stretched button rectangles while the text string stays
                 // unchanged. Explicitly rebuild their uGUI vertices so these
                 // genuine mission labels cannot render as empty gold frames.
-                if (objectiveActionLabel) objectiveActionLabel.SetAllDirty();
-                if (objectivesButtonLabel) objectivesButtonLabel.SetAllDirty();
+                // A camera-backed offscreen portrait capture can leave the
+                // dynamic child Text registered at Graphic.depth=-1 after
+                // switching from landscape. Re-register its Graphic rather
+                // than merely marking cached geometry dirty: without this,
+                // the actual clickable mission buttons render WITHOUT text.
+                RebindObjectiveLabel(objectiveActionLabel);
+                RebindObjectiveLabel(objectivesButtonLabel);
             }
             if (!hasGeometry) return;
             LayoutNavigation();
