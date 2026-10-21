@@ -48,7 +48,7 @@ def structural_report(glb):
     return row
 
 
-def validate(name, profile_path, lod_dir, renders):
+def validate(name, profile_path, lod_dir, renders, texture_candidate=None, texture_report=None):
     if name not in IDS:
         raise ValueError("Unsupported QA asset")
     config = json.loads(pathlib.Path(profile_path).read_text("utf8"))
@@ -94,21 +94,58 @@ def validate(name, profile_path, lod_dir, renders):
             "meshes": row["meshes"], "materials": row["materials"], "embedded_images": row["images"]
         })
         last_tris = tris
+    texture_summary = None
+    if texture_candidate or texture_report:
+        if not texture_candidate or not texture_report:
+            raise ValueError("Both texture candidate and report must be supplied")
+        candidate = structural_report(texture_candidate)
+        texture_info = json.loads(pathlib.Path(texture_report).read_text("utf8"))
+        if (candidate["triangles_estimated"] != actual[2]["triangles"] or
+            candidate["images"] < source["images"] or
+            texture_info["source_sha256"] != actual[2]["sha256"] or
+            texture_info["output_sha256"] != sha256(texture_candidate) or
+            texture_info["source_triangles"] != texture_info["output_triangles"] or
+            texture_info["output_triangles"] != candidate["triangles_estimated"] or
+            texture_info["max_texture_dimension"] != 1024 or
+            texture_info["changed_images"] < 1 or
+            texture_info["new_tripo_credits"] != 0 or
+            texture_info["art_approved"] is not False or
+            texture_info["unity_tested"] is not False):
+            raise ValueError("1K texture experiment provenance/geometry failure")
+        if any(max(row["resized"]) > 1024 for row in texture_info["images"]):
+            raise ValueError("Texture cap not applied to all maps")
+        if texture_info["output_bytes"] >= texture_info["source_bytes"]:
+            raise ValueError("1K material candidate did not save storage bytes")
+        texture_summary = {
+            "candidate_sha256": texture_info["output_sha256"],
+            "triangles": candidate["triangles_estimated"],
+            "embedded_images": candidate["images"],
+            "glb_bytes": texture_info["output_bytes"],
+            "glb_bytes_saved_percent": round(
+                100 * (1-texture_info["output_bytes"]/texture_info["source_bytes"]), 2),
+            "source_lod2_sha256": actual[2]["sha256"],
+            "max_texture_dimension_px": 1024,
+            "mobile_approved": False, "art_approved": False
+        }
     previews = []
     for i in range(3):
         for view in ["isometric", "strategic"]:
             previews.append(valid_png(pathlib.Path(renders) / f"lod{i}-{view}.png"))
+    if texture_summary:
+        for view in ["isometric", "strategic"]:
+            previews.append(valid_png(pathlib.Path(renders) / f"lod2_1k-{view}.png"))
     render_evidence = json.loads((pathlib.Path(renders) / "render-evidence.json").read_text("utf8"))
     if render_evidence.get("visual_verdict") != "REVIEW_REQUIRED" or render_evidence.get("tripo_credits_used") != 0:
         raise ValueError("False visual-approval metadata")
-    if render_evidence.get("source_sha256") != item["sha256"] or len(render_evidence.get("captures", [])) != 6:
+    expected_frames = 8 if texture_summary else 6
+    if render_evidence.get("source_sha256") != item["sha256"] or len(render_evidence.get("captures", [])) != expected_frames:
         raise ValueError("Mismatched camera/source evidence")
     if {row["sha256"] for row in render_evidence["captures"]} != {x["sha256"] for x in previews}:
         raise ValueError("Preview SHA mismatch")
     return {
         "asset": name, "model": item["label"], "original_glb_sha256": item["sha256"],
         "original_triangles": source["triangles_estimated"], "source_bytes": source_path.stat().st_size,
-        "lod_candidates": actual, "captures": previews,
+        "lod_candidates": actual, "texture_1k_candidate": texture_summary, "captures": previews,
         "same_locked_blender_camera": True,
         "new_credits_spent": 0,
         "qwen_art_authoring": "NOT_EXECUTED",
@@ -126,9 +163,12 @@ def main():
     p.add_argument("--profiles", required=True)
     p.add_argument("--lod-dir", required=True)
     p.add_argument("--renders", required=True)
+    p.add_argument("--texture-candidate", default=None)
+    p.add_argument("--texture-report", default=None)
     p.add_argument("--out", required=True)
     a = p.parse_args()
-    result = validate(a.asset, a.profiles, a.lod_dir, a.renders)
+    result = validate(a.asset, a.profiles, a.lod_dir, a.renders,
+                      texture_candidate=a.texture_candidate, texture_report=a.texture_report)
     target = pathlib.Path(a.out)
     if target.exists():
         raise FileExistsError("Never overwrite existing LOD evidence")
