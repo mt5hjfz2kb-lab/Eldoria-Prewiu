@@ -1,5 +1,5 @@
 {
-  "revision": 4,
+  "revision": 5,
   "stage": "isolated_unity_skin_import",
   "workstream": "eldoria-tripo-art-brain-phase2-20261021",
   "artifact_id": 12368972822,
@@ -11,5 +11,5 @@
   "integration": false,
   "expected_unity": "6000.3.23f1",
   "expected_urp": "17.3.0",
-  "reason": "Correct repeated-checkout cone mode for file paths; previous retry stopped before Unity. Same pinned source and material-aware skin QA."
+  "reason": "V4 CPU deformation verified0.336879m and exact return0, 12bones/3textures. Independent image inspection found synchronous GPU captures identical; await genuine editor player-loop skin update and reject identical PNGs before visual acceptance."
 }
