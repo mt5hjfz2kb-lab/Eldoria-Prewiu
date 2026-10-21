@@ -1,0 +1,109 @@
+name: Spawnling archived V4 isolated Unity skin QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'pipeline/tripo-art-brain/unity-qa-request.json'
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-spawnling-isolated-unity-qa
+  cancel-in-progress: false
+jobs:
+  validate:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[spawnling-unity-qa]')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 40
+    steps:
+      - name: Expose existing Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $g=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*'|Sort-Object Name -Descending|ForEach-Object{Join-Path $_.FullName 'resources/app/git/cmd/git.exe'}|Where-Object{Test-Path $_}|Select-Object -First 1
+            if(-not $g){throw 'Installed Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $g)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: rig-qa-source
+          persist-credentials: false
+          sparse-checkout: |
+            tools/tripo-art-brain/unity-qa
+            tools/workstream-lease
+            pipeline/active-workstreams.json
+            pipeline/tripo-art-brain/unity-qa-request.json
+            Unity/Assets/Eldoria/Content
+            Unity/ProjectSettings/ProjectVersion.txt
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: rig-qa-live
+          persist-credentials: false
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify exclusive live lease and existing native editor
+        shell: powershell
+        run: |
+          node rig-qa-source/tools/workstream-lease/check.mjs rig-qa-source/pipeline/active-workstreams.json rig-qa-live/pipeline/active-workstreams.json eldoria-tripo-art-brain-phase2-20261021
+          if($LASTEXITCODE){throw 'Stale or incompatible Windows claim'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity unavailable'}
+          $v=& $env:UNITY_EDITOR_PATH -version
+          if($v -notmatch '6000\.3\.23f1'){throw "Incorrect Unity version $v"}
+      - name: Prepare disposable project and exact archived V4
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $req=Get-Content rig-qa-source/pipeline/tripo-art-brain/unity-qa-request.json -Raw|ConvertFrom-Json
+          if($req.artifact_id -ne 12368972822 -or $req.source_sha256 -ne '86ec1c93a222d58b89b9f393d39c8e5e912b14516ff5298500e5aca80048f631'){throw 'Unexpected V4 source'}
+          $project=Join-Path $env:RUNNER_TEMP "eldoria-rig-qa-$env:GITHUB_RUN_ID"
+          if(Test-Path $project){throw 'Refuse reuse of existing probe project'}
+          New-Item -ItemType Directory -Force "$project/Assets/Editor","$project/Assets/QA","$project/Packages","$project/ProjectSettings","$project/UserSettings","$project/evidence","$project/input"|Out-Null
+          Copy-Item rig-qa-source/tools/tripo-art-brain/unity-qa/SpawnlingAnimatedQa.cs "$project/Assets/Editor/"
+          foreach($file in @('EldoriaMobileURP.asset','EldoriaMobileURP.asset.meta','EldoriaForwardRenderer.asset','EldoriaForwardRenderer.asset.meta')){
+            Copy-Item "rig-qa-source/Unity/Assets/Eldoria/Content/$file" "$project/Assets/QA/"
+          }
+          Copy-Item rig-qa-source/Unity/ProjectSettings/ProjectVersion.txt "$project/ProjectSettings/"
+          $manifest=@{dependencies=@{'com.unity.cloud.gltfast'='6.14.1';'com.unity.render-pipelines.universal'='17.3.0';'com.unity.modules.animation'='1.0.0';'com.unity.modules.imageconversion'='1.0.0';'com.unity.modules.jsonserialize'='1.0.0'}}
+          [IO.File]::WriteAllText("$project/Packages/manifest.json",($manifest|ConvertTo-Json -Depth 8),(New-Object Text.UTF8Encoding($false)))
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"disabled":false}}'|Set-Content "$project/UserSettings/Search.index" -Encoding UTF8
+          $zip=Join-Path $project 'v4.zip'
+          Invoke-WebRequest -UseBasicParsing -Headers @{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'} -Uri "https://api.github.com/repos/$env:GITHUB_REPOSITORY/actions/artifacts/12368972822/zip" -OutFile $zip
+          Expand-Archive $zip "$project/input"
+          $glbs=@(Get-ChildItem "$project/input" -Recurse -Filter 'spawnling-rig-expressive-swipe-v4.glb')
+          if($glbs.Count -ne 1){throw 'Exact V4 GLB absent or duplicated'}
+          $actual=(Get-FileHash $glbs[0].FullName -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($actual -ne $req.source_sha256){throw 'Archived V4 digest mismatch'}
+          "ELDORIA_RIG_QA_INPUT=$($glbs[0].FullName)"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ELDORIA_RIG_QA_PROJECT=$project"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          "ELDORIA_RIG_QA_OUTPUT=$project/evidence"|Out-File $env:GITHUB_ENV -Append -Encoding utf8
+      - name: Import and measure actual Unity skin poses
+        shell: powershell
+        run: |
+          $log=Join-Path $env:ELDORIA_RIG_QA_OUTPUT 'unity.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"{0}"' -f $env:ELDORIA_RIG_QA_PROJECT),'-executeMethod','SpawnlingAnimatedQa.Run','-logFile',('"{0}"' -f $log))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1800000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            throw 'Isolated QA editor exceeded its 30 minute limit'
+          }
+          if(Test-Path $log){Get-Content $log -Tail 100}
+          if($p.ExitCode -ne 0){throw "Unity skin QA failed $($p.ExitCode)"}
+          $r=Get-Content "$env:ELDORIA_RIG_QA_OUTPUT/result.json" -Raw|ConvertFrom-Json
+          if($r.status -ne 'UNITY_SKIN_CLIP_IMPORT_PASS_VISUAL_REVIEW_REQUIRED'){throw 'Missing exact import PASS'}
+          foreach($image in @('rest.png','swipe.png','return.png')){
+            if(-not(Test-Path "$env:ELDORIA_RIG_QA_OUTPUT/$image")){throw "Missing genuine Unity capture $image"}
+          }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spawnling-v4-isolated-unity-${{ github.run_id }}
+          path: ${{ runner.temp }}/eldoria-rig-qa-${{ github.run_id }}/evidence/
+          if-no-files-found: warn
+          retention-days: 30
