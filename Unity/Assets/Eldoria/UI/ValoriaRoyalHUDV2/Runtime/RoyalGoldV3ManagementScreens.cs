@@ -25,7 +25,9 @@ namespace Eldoria.UI.RoyalGold.V2
         // Optional host navigation; same scene, preserving the city camera state.
         public Action ReturnToCity { get; set; }
         RectTransform root, header, left, right, footer, quantityRow;
-        RoyalGoldV3ManagementBackdropGraphic destinationArtwork;
+        RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork;
+        RectTransform trainingProgress;
+        RectTransform trainingProgressFill;
         RoyalText heading, subheading, unitTitle, unitDetail, selectedText, summary, status, feedback;
         RoyalButton minus, plus, action, back, switchDestination;
         RoyalText actionLabel, switchLabel;
@@ -158,6 +160,8 @@ namespace Eldoria.UI.RoyalGold.V2
             CurrentDestination = destination;
             destinationArtwork.MarchTheme = destination == Destination.March;
             destinationArtwork.SetVerticesDirty();
+            featuredUnitArtwork.MarchTheme = destination == Destination.March;
+            featuredUnitArtwork.SetVerticesDirty();
             submitAfter = 0f;
             selectedCount = destination == Destination.Training
                 ? Mathf.Min(SliceRules.RecruitArchers, Math.Max(1, SliceRules.MaxAffordableArchers(s)))
@@ -252,6 +256,18 @@ namespace Eldoria.UI.RoyalGold.V2
             left = Frame("V3 / Featured military unit",root,false);
             right = Frame("V3 / Authoritative status and cost",root,false);
             footer = Frame("V3 / Destination actions",root,false);
+            // The world-sized tapestry is obscured by opaque readable cards.
+            // Repeat its actual authored gold military heraldry INSIDE the
+            // unit card, behind real controls: no placeholder empty expanse,
+            // no new unit, external texture, canvas or paid image asset.
+            var featured=Rect("V3 / Large unit heraldry",left);
+            featured.anchorMin=Vector2.zero;
+            featured.anchorMax=Vector2.one;
+            featured.offsetMin=featured.offsetMax=Vector2.zero;
+            featured.gameObject.AddComponent<CanvasRenderer>();
+            featuredUnitArtwork=featured.gameObject.AddComponent<RoyalGoldV3ManagementBackdropGraphic>();
+            featuredUnitArtwork.color=Color.white;
+            featuredUnitArtwork.raycastTarget=false;
             heading = Text("Destination title",header,27,Gold,true);
             subheading = Text("Royal gold description",header,15,Muted);
             unitTitle = Text("Unit or hero title",left,26,Ivory,true);
@@ -284,6 +300,22 @@ namespace Eldoria.UI.RoyalGold.V2
             handleImage.color=Ivory;slider.handleRect=handle;
             slider.targetGraphic=handleImage;
             slider.onValueChanged.AddListener(v=>SetQuantity(Mathf.RoundToInt(v)));
+            // All animation and progress derive from the persisted UTC
+            // deadline; closing the screen does not reset the training.
+            trainingProgress=Rect("V3 / Training countdown progress",right);
+            trainingProgress.gameObject.AddComponent<CanvasRenderer>();
+            var progressBack=trainingProgress.gameObject.AddComponent<Image>();
+            progressBack.color=new Color(.13f,.20f,.26f,.93f);
+            progressBack.raycastTarget=false;
+            trainingProgressFill=Rect("V3 / Real elapsed training progress",trainingProgress);
+            trainingProgressFill.anchorMin=new Vector2(0,0);
+            trainingProgressFill.anchorMax=new Vector2(0,1);
+            trainingProgressFill.pivot=new Vector2(0,.5f);
+            trainingProgressFill.anchoredPosition=Vector2.zero;
+            trainingProgressFill.sizeDelta=Vector2.zero;
+            trainingProgressFill.gameObject.AddComponent<CanvasRenderer>();
+            var progressInk=trainingProgressFill.gameObject.AddComponent<Image>();
+            progressInk.color=Gold; progressInk.raycastTarget=false;
             summary=Text("Training or expedition breakdown",right,20,Ivory);
             status=Text("Available and pending troops",right,16,Muted);
             feedback=Text("Command feedback",footer,15,Gold);
@@ -357,6 +389,14 @@ namespace Eldoria.UI.RoyalGold.V2
                     (s.RecruitmentCompletesUtcTicks-utcTicks())/(double)TimeSpan.TicksPerSecond)):0;
                 summary.Put("COSTE DEL ENTRENAMIENTO\n\nMadera   "+wood+
                     "\nPiedra   "+stone+"\n\nTIEMPO TOTAL\n"+Clock(seconds));
+                trainingProgress.gameObject.SetActive(busy);
+                if(busy)
+                {
+                    var elapsed=Mathf.Clamp01(1f-leftSeconds/(float)Math.Max(1,
+                        SliceRules.RecruitSecondsFor(s.PendingRecruitArchers)));
+                    trainingProgressFill.sizeDelta=new Vector2(
+                        trainingProgress.rect.width*elapsed,0f);
+                }
                 status.Put("DISPONIBLES  "+s.Available.ArcherT1+
                     "\nENTRENANDO  "+s.PendingRecruitArchers+
                     (busy?"\n\nCUENTA ATRÁS  "+Clock(leftSeconds):"\n\nSin entrenamiento activo"));
@@ -365,6 +405,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else
             {
+                trainingProgress.gameObject.SetActive(false);
                 var troops=s.Available.Copy();
                 troops.ArcherT1=maxCount>0?selectedCount:0;
                 var power=SliceRules.Expedition(troops,"aldric");
@@ -463,6 +504,8 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(summary.rectTransform,landscape?14:19,landscape?10:18,rw-(landscape?28:38),
                 rh-statusH-(landscape?18:22));
             Place(status.rectTransform,landscape?14:19,rh-statusH-4,rw-(landscape?28:38),statusH);
+            Place(trainingProgress,landscape?21:23,rh-statusH-(landscape?44:49),
+                rw-(landscape?42:46),13);
             float fw=footer.rect.width;
             Place(feedback.rectTransform,14,4,fw-28,landscape?20:25);
             float bw=Mathf.Max(90,(fw-42)*.48f);
