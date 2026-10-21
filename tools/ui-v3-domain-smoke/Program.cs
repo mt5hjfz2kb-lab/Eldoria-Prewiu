@@ -28,7 +28,10 @@ internal static class Program
         return new PlayerState{
             BastionLevel=2,BarracksLevel=1,
             Resources=new ResourceWallet{Wood=9000,Stone=9000},
-            Available=new ArmyRoster{ArcherT1=36}};
+            Available=new ArmyRoster{ArcherT1=36},
+            ChapterProgress=new ChapterProgressState{
+                GrantedRewards=new System.Collections.Generic.List<string>{
+                    "c1-bastion","chapter-1","c2-barracks"}}};
     }
     static GameCommand Cmd(LocalGateway g,string id,string kind,string target)
     {
