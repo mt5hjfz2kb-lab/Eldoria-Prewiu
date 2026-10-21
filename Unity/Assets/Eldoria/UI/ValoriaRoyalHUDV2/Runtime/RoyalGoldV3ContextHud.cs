@@ -220,7 +220,7 @@ namespace Eldoria.UI.RoyalGold.V2
         /// capture resize; ordinary frames also call this from LateUpdate.</summary>
         public void SynchronizeNow()
         {
-            if (!Application.isPlaying || !IsConfigured || !Source) return;
+            if (!UnityEngine.Application.isPlaying || !IsConfigured || !Source) return;
             EnsureView();
             if (!ready || safe.rect.width < 200 || safe.rect.height < 260) return;
             if (Time.unscaledTime >= nextRead)
