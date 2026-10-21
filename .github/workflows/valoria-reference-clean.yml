@@ -561,7 +561,8 @@ jobs:
           Select-String $log -Pattern "Exception:|error CS|Shader error|^Error|TERRAIN_ROUTE_DIAGNOSTIC|TerrainCollider component deleted" -Context 1,2
           Get-Content $log -Tail 100
           if($p.ExitCode -ne 0){throw "Native Unity failed $($p.ExitCode)"}
-          if(-not(Select-String $log -Pattern 'VALORIA_REFERENCE_CLEAN_.*_COMPLETE' -Quiet)){throw 'Completion marker missing'}
+          $completionPattern=if($req.stage -eq 'spawnling_animated_integrate'){'ELDORIA_SPAWNLING_V4_ANIMATED_INTEGRATION_COMPLETE'}else{'VALORIA_REFERENCE_CLEAN_.*_COMPLETE'}
+          if(-not(Select-String $log -Pattern $completionPattern -Quiet)){throw 'Completion marker missing'}
           if($req.validate_loader_cases -and -not $loaderCasesDone){Test-ValoriaContentLoaderCases}
           if($req.export_package){
             $packageLog=Join-Path $env:RUNNER_TEMP 'valoria-package-refresh.log'
