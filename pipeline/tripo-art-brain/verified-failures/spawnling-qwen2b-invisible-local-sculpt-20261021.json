@@ -90,5 +90,6 @@
     "unity_ab": false,
     "mobile": false,
     "new_credits": 0
-  }
+  },
+  "qwen_brief": "Real Qwen 2B sculpted 206 vertices at torso centre [0,0,0], radius .088m, delta .015m despite claiming to fix head. Strategic A/B changed 2/307200 pixels; frontal-close replay 485/307200, independently ART_REJECTED. Change hypothesis: verify actual +X head anchor; do not repeat near-origin micro-sculpt."
 }
