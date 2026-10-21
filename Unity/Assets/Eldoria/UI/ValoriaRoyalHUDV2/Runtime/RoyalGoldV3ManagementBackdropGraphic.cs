@@ -53,7 +53,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             mesh.Clear();var r=rectTransform.rect;float w=r.width,h=r.height;
             if(w<50||h<50)return;
-            Box(mesh,r.xMin,r.yMin,w,h,Navy,Slate);
+            Box(mesh,r.xMin,r.yMin,w,h,new Color(Navy.r,Navy.g,Navy.b,.12f),new Color(Slate.r,Slate.g,Slate.b,.12f));
             // Military tapestry / quiet banding in the same approved V3 colors.
             for(int i=0;i<14;i++)
             {
