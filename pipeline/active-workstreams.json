@@ -674,28 +674,6 @@
       "phase": "INTEGRATED_NATIVE_40_20_35_PASS_WEBGL_DELIVERY_RUNNING",
       "next": "V3 merged PR83 on main; native 39586129212 passes 40+20+35 and 7 viewport comparisons; compile WebGL revision243, verify exact browser build, preserve Restricted release until QA.",
       "coordination_note": "Observed existing work, not a takeover or new task. Canonical scene owner retains main integration; UI scope limited to the existing PR changes. No running job cancelled. Documentation catalogue must be merged with current main, never replaced from old branch."
-    },
-    {
-      "id": "work-status-delivery-timings-20261021",
-      "title": "Entrega concreta, tiempos observados y versiones en el resumen existente",
-      "owner": "codex-process-maintenance",
-      "branch": "main",
-      "status": "active",
-      "claimed_at": "2026-10-21T11:30:29.378Z",
-      "scope": [
-        "tools/work-status/**",
-        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Read-only reporting and operating guidance; no art, gameplay, release or native execution.",
-      "phase": "IMPLEMENTATION",
-      "next": "Extend existing report, validate offline fixtures and existing Linux CI, close claim.",
-      "delivery_definition": {
-        "deliverable": "Resumen existente con tiempos de Actions y estados de versión explícitos",
-        "evidence": "Pruebas Node y ejecución del workflow de resumen",
-        "handoff": "Commit y Summary de GitHub comprobados"
-      }
     }
   ],
   "history": [
@@ -6144,6 +6122,36 @@
         "recovery_validation": "Real temporary Git repositories: binary/new/deleted outputs, unchanged original index/worktree, concurrent docs preserved, protected source/output changes rejected, rejected remote push then successful recovery, invalid QA/hashes/ownership/symlinks rejected. No Unity job needed or dispatched."
       },
       "limits": "Checkpoint integration applies to unclaimed Spawnling native workflow only; active Valoria/UI producer files not modified. Report is derived/read-only, no second registry. No claim of new game/release/device QA or recovery of artifacts that predate these checkpoints."
+    },
+    {
+      "id": "work-status-delivery-timings-20261021",
+      "title": "Entrega concreta, tiempos observados y versiones en el resumen existente",
+      "owner": "codex-process-maintenance",
+      "branch": "main",
+      "status": "completed",
+      "claimed_at": "2026-10-21T11:30:29.378Z",
+      "scope": [
+        "tools/work-status/**",
+        "tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only reporting and operating guidance; no art, gameplay, release or native execution.",
+      "phase": "CLOSED_VERIFIED",
+      "next": "No follow-up action required for this bounded reporting change.",
+      "delivery_definition": {
+        "deliverable": "Resumen existente con tiempos de Actions y estados de versión explícitos",
+        "evidence": "Pruebas Node y ejecución del workflow de resumen",
+        "handoff": "Commit y Summary de GitHub comprobados"
+      },
+      "completed_at": "2026-10-21T11:34:11.108Z",
+      "result_commit": "0bdbe610eefa23b28179032a7bbbeb6a581b7933",
+      "workflow_runs": [
+        39592756432,
+        39592756648
+      ],
+      "artifact_id": 12341953333,
+      "result": "Existing read-only report now exposes optional delivery definitions, bounded Actions timings and distinct development/recorded-QA/available versions. 14 Node tests passed locally and in CI; architecture guard and report workflow passed; actual JSON artifact inspected (9238 bytes). No native build/release/runner mutation."
     }
   ],
   "owner_specific_pauses": [
