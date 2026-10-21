@@ -1,0 +1,103 @@
+name: Eldoria Spawnling recover certified Unity commit
+on:
+  push:
+    branches: ['art/spawnling-bastion2-finish-20261021']
+    paths:
+      - 'tools/spawnling-bastion2/recover-native-request.json'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: spawnling-b2-windows-scene-owner
+  cancel-in-progress: false
+jobs:
+  native-commit-recovery:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      - name: Expose already installed Git before checkout
+        run: |
+          $ErrorActionPreference='Stop'
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem (Join-Path $env:LOCALAPPDATA 'GitHubDesktop') -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Installed desktop git missing'}
+            $dir=Split-Path $candidate
+            Add-Content $env:GITHUB_PATH $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+          git --version
+      - name: Inspect native verified commit in original dedicated worktree
+        run: |
+          $ErrorActionPreference='Stop'
+          $src=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree'
+          if(-not(Test-Path (Join-Path $src '.git'))){throw 'RECOVERY_SOURCE_GONE: existing validated native commit workspace no longer exists'}
+          git config --global --add safe.directory $src
+          $sha=(& git -C $src rev-parse HEAD).Trim()
+          $subject=(& git -C $src show -s --format=%s HEAD).Trim()
+          if(-not $sha.StartsWith('1682d87') -or $subject -ne 'feat(spawnling): actual Bastion II enemy visual integrated with I-II QA'){
+            throw "Unexpected source HEAD; expected tested native commit, found $sha $subject"
+          }
+          $paths=@(& git -C $src diff-tree --no-commit-id --name-only -r HEAD)
+          if($paths.Count -lt 10){throw 'Actual authored Unity asset files missing from local commit'}
+          foreach($p in $paths){
+            if(-not ($p -like 'Unity/Assets/Eldoria/SpawnlingBastion2/*' -or
+               $p -eq 'Unity/Assets/Eldoria/SpawnlingBastion2.meta' -or
+               $p -eq 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity' -or
+               $p -like 'docs/evidence/spawnling-bastion2/*')){
+              throw "OUT_OF_SCOPE_NATIVE_COMMIT_FILE $p"
+            }
+          }
+          if($paths -notcontains 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity'){
+            throw 'Actual gameplay scene was not committed'
+          }
+          $game=(& git -C $src show 'HEAD:docs/evidence/spawnling-bastion2/native-full-i-ii-result.json') | Out-String | ConvertFrom-Json
+          $art=(& git -C $src show 'HEAD:docs/evidence/spawnling-bastion2/native-integration.json') | Out-String | ConvertFrom-Json
+          if($game.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED' -or @($game.checks).Count -lt 30){
+            throw 'Gameplay, rewards, raycast and exact save proof missing from local commit'
+          }
+          if($art.status -ne 'SCENE_INTEGRATED_NATIVE_GAMEPLAY_PROBE_REQUIRED' -or
+             -not $art.hotspot_preserved -or -not $art.gameplay_unchanged -or $art.visual_colliders -ne 0){
+            throw 'Visual-only scene integration proof missing'
+          }
+          foreach($n in @('before-local-900x1600.png','after-local-900x1600.png','before-region-1600x900.png','after-region-1600x900.png')){
+            if($paths -notcontains "docs/evidence/spawnling-bastion2/$n"){throw "Missing genuine Unity matched capture $n"}
+          }
+          Write-Host "LOCAL_NATIVE_GLTF_AND_I_II_GAMEPLAY_PASS exact_commit=$sha files=$($paths.Count)"
+      - uses: actions/checkout@v4
+        with:
+          path: spawnling-native-recover-39578889927
+          clean: false
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            Unity/Assets/Eldoria/SpawnlingBastion2
+            Unity/Assets/Eldoria/SpawnlingBastion2.meta
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity
+            docs/evidence/spawnling-bastion2
+      - name: Apply ONLY exact tested local Unity commit to current remote head and push
+        run: |
+          $ErrorActionPreference='Stop'
+          $src=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-worktree'
+          $dest=Join-Path $env:GITHUB_WORKSPACE 'spawnling-native-recover-39578889927'
+          git config --global --add safe.directory $dest
+          git -C $dest config user.name 'github-actions[bot]'
+          git -C $dest config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          $sha=(& git -C $src rev-parse HEAD).Trim()
+          git -C $dest fetch --no-tags --no-write-fetch-head $src $sha
+          if($LASTEXITCODE){throw 'Exact validated commit object could not be transferred locally'}
+          git -C $dest cat-file -t $sha
+          if($LASTEXITCODE){throw 'Transferred object missing'}
+          git -C $dest cherry-pick $sha
+          if($LASTEXITCODE){throw 'Concurrent conflicting repository changes; never overwrite or force'}
+          $report=Get-Content (Join-Path $dest 'docs/evidence/spawnling-bastion2/native-integration.json') -Raw | ConvertFrom-Json
+          if($report.status -ne 'SCENE_INTEGRATED_NATIVE_GAMEPLAY_PROBE_REQUIRED'){throw 'Post-cherry-pick report identity changed'}
+          git -C $dest push origin 'HEAD:refs/heads/art/spawnling-bastion2-finish-20261021'
+          if($LASTEXITCODE){throw 'Remote moved or authorization prevented fast-forward; do not force'}
+          Write-Host "SPAWNLING_NATIVE_VERIFIED_COMMIT_RECOVERED_PUSHED $sha"
