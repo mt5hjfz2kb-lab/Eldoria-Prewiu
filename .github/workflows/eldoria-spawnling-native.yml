@@ -3,9 +3,8 @@ on:
   push:
     branches: ['art/spawnling-bastion2-finish-20261021']
     paths:
-      - '.github/workflows/eldoria-spawnling-native.yml'
-      - 'Unity/Assets/Eldoria/SpawnlingBastion2/Editor/SpawnlingBastion2Integration.cs'
-      - 'ArtSource/World4X/Spawnling_v1/Finished/author-evidence.json'
+      - 'tools/spawnling-bastion2/native-request.json'
+  workflow_dispatch:
 permissions:
   contents: write
   actions: read
@@ -43,6 +42,9 @@ jobs:
           $digest=(Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant()
           if($digest -ne '2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a'){throw 'Tripo source hash changed'}
           $art=(Get-Content 'ArtSource/World4X/Spawnling_v1/Finished/author-evidence.json' -Raw|ConvertFrom-Json)
+          $near=(Get-FileHash 'ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb' -Algorithm SHA256).Hash.ToLowerInvariant()
+          $far=(Get-FileHash 'ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Far.glb' -Algorithm SHA256).Hash.ToLowerInvariant()
+          if($near -ne $art.near_sha256 -or $far -ne $art.far_sha256){throw 'Finished GLB changed after Blender evidence'}
           if($art.art_approved -or $art.tripo_credits_added -ne 0 -or $art.triangles_near_body -gt 12500 -or $art.triangles_far_body -gt 3200){throw 'Art preflight failed'}
           New-Item -ItemType Directory -Force docs/evidence/spawnling-bastion2|Out-Null
           Write-Host 'SPAWNLING_B2_ZERO_CREDIT_PREFLIGHT_PASS'
