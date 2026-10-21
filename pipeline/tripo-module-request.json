@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Rift corruption focus is an environmental ROCK+PURPLE CORRUPTION PROP ONLY, not a new game node/camp/altar/building. Low grounded irregular mineral mass with distinct native stone and subtle dark purple fissures, no platform, no floating fragments or giant crystals. One standalone GLB plus raw GLB, editable .blend, UV/PBR/albedo 2K when imported in isolated Unity, four true-camera captures. No gameplay/hotspot edits, no auto-promote to runtime, no publication.",
-  "run_nonce": "20261021-rift-focus-qa-only-from-paid-model-no-credit",
-  "notes": "Rift Focus one-time H3.1 Tripo API source generated exactly once task 3800e44b-2718-454d-b904-dbe56a842c33, 20 credits in run 39513703787. Raw GLB sha c1d0e458b1eb52f1a31a04361f18985cb3e14967ad4f8abf99073a696be07ae0, optimized GLB sha 00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e. Run isolated zero-credit Unity image/UV/raycast gate on existing artifact only; never regenerate.",
+  "run_nonce": "rift-focus-archive-only-zero-credit-same-paid-task-20261021",
+  "notes": "Zero-spend archive of exactly one already-generated Tripo H3.1 RiftFocus v1 source (run 39513703787, task 3800e44b-2718-454d-b904-dbe56a842c33, 20 credits) and exact minimal Unity 2K material/collider captures (run 39554609943). Never issue any new paid tasks. Preserve all sources only in ArtSource/World4X/RiftFocus_v1 (not Unity Assets).",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
@@ -40,5 +40,18 @@
     "source_run_id": 39513703787,
     "artifact_name": "eldoria-tripo-module-eldoria-rift-focus-h31-one-20261021-617d94564a36d7ab3516284b432ad82e5598d1e1",
     "expected_sha256": "00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e"
+  },
+  "archive": {
+    "asset_name": "Eldoria_RiftFocus_v1",
+    "source_run_id": 39513703787,
+    "qa_run_id": 39554609943,
+    "raw_sha": "c1d0e458b1eb52f1a31a04361f18985cb3e14967ad4f8abf99073a696be07ae0",
+    "optimized_sha": "00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e",
+    "blend_sha": "560006c58071139c582bb3ddcae07eac7bcb822d32a98deebbc9f71a20b86a2b",
+    "raw_artifact": "tripo-raw-eldoria-rift-focus-h31-one-20261021-617d94564a36d7ab3516284b432ad82e5598d1e1",
+    "optimized_artifact": "eldoria-tripo-module-eldoria-rift-focus-h31-one-20261021-617d94564a36d7ab3516284b432ad82e5598d1e1",
+    "qa_artifact": "tripo-source-qa-Eldoria_RiftFocus_v1-49a8b2e2e246f5432b3801323cd1b0a43b98c895",
+    "task_id": "3800e44b-2718-454d-b904-dbe56a842c33",
+    "credits_consumed": 20
   }
 }
