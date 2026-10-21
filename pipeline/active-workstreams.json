@@ -10,7 +10,8 @@
     "allowed_work": "Continue city/world/UI/gameplay on main under existing owner; historical branches read-only by project policy.",
     "authorized_workstream_ids": [
       "valoria-master-plan-layered-construction-20261016",
-      "eldoria-tripo-art-brain-phase2-20261021"
+      "eldoria-tripo-art-brain-phase2-20261021",
+      "eldoria-tripo-mobile-lod-proof-20261021"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
@@ -728,6 +729,35 @@
         "handoff": "Source-locked report with actual riggability status or precise blocker, QA and next actions without new credits."
       },
       "next": "Validate opt-in Qwen creature context on genuine archived images and execute at most ONE official free rig-check on preserved Spawnling via GitHub Actions if an existing secret is available, otherwise record exact key-access blocker; zero paid credits and no Windows/Unity scene edits."
+    },
+    {
+      "id": "eldoria-tripo-mobile-lod-proof-20261021",
+      "title": "Tripo—LOD móviles de Jabalí y Foco, prueba sin créditos",
+      "owner": "chatgpt-eldoria-mobile-lod-20261021",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-21",
+      "scope": [
+        ".github/workflows/tripo-mobile-lod-proof.yml",
+        "pipeline/tripo-mobile-lod-profiles.json",
+        "pipeline/art-production-requests/eldoria-tripo-mobile-lod-proof-20261021.json",
+        "tools/visual-lod-qa/**",
+        "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md"
+      ],
+      "resources": [],
+      "art_production_routing": "required",
+      "art_production_routing_reason": "QA técnica aislada y perfiles LOD de los GLB originales de Jabalí y Foco usando Blender canónico; no altera obra principal, Qwen/Engendro ni consume Tripo.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-tripo-mobile-lod-proof-20261021.json",
+      "dependency": "No modificar tools/tripo-art-brain/** ni Qwen (fase2 activa), no Windows runner (Valoria activo). Solo Blender Linux/Actions y fuentes conservadas en modo lectura; sin publicar ni integrar LOD como art approved.",
+      "phase": "SOURCE_MOBILE_LOD_QA_ZERO_CREDIT",
+      "delivery_definition": {
+        "deliverable": "Prueba reproducible de LOD reales de Jabalí y Foco con proporciones precisas, archivos GLB y capturas Blender (sin autoría artística), métricas e informe en artefacto QA; sin tocar escenas ni assets canónicos.",
+        "evidence": "Blender en runner GitHub Ubuntu y auditoría estructural GLB con SHA + presupuestos visibles + imágenes originales por LOD. Revisor independiente pendiente.",
+        "handoff": "Enlace a job/artifact, números reales de tris y condiciones de siguiente A/B Unity."
+      },
+      "next": "Use existing certified Blender capability proof on archived Jabalí/Foco sources, compare measurable 3 LODs, preserve artifacts and no-spend evidence."
     }
   ],
   "history": [
