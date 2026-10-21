@@ -132,6 +132,16 @@ jobs:
             --target "$TARGET_MESH" --out "$OUT/blender-ab" | tee "$OUT/blender-ab.log"
           echo "REAL_BLENDER_AB_ONLY_VISUAL_REVIEW_REQUIRED"
 
+      - name: Reject misleading translated-whole-creature Blender A/B
+        shell: bash
+        run: |
+          set -euo pipefail
+          node tools/tripo-art-brain/shape-change-gate.mjs \
+            "$OUT/blender-ab/comparison.json" "$OUT/qwen/artist-plan.json" \
+            "$OUT/blender-output/artist-output.blend" \
+            "$OUT/blender-ab/shape-evaluation.json"
+          echo "SHAPE_STRUCTURAL_GATE_PASS_ONLY_ART_REVIEW_REQUIRED"
+
       - name: Preserve real Qwen plans and Blender evidence, never modify current game
         if: always()
         uses: actions/upload-artifact@v4
