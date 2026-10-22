@@ -747,7 +747,10 @@ namespace Eldoria.World4XCanon
             var donors=original.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
                     r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal) ||
-                    r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal))
+                    r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal) ||
+                    r.name.StartsWith("Existing conifer canopy / forest ecological lobe ",StringComparison.Ordinal) ||
+                    r.name=="Forest understory / young conifer" ||
+                    r.name.StartsWith("Region1 · reused-tree ",StringComparison.Ordinal))
                 .OrderBy(r=>r.transform.position.x).ThenBy(r=>r.transform.position.z).ToArray();
             if(donors.Length==0){Debug.LogWarning("REGION1_LOCAL_CANOPY_NO_MATCH");return;}
             var vertices=new List<Vector3>();var uv=new List<Vector2>();

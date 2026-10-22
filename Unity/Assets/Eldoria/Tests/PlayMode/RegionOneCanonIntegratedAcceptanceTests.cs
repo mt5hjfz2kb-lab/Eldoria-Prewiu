@@ -73,7 +73,10 @@ namespace Eldoria.Tests
             var retainedTreeSources=world.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
                     r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal) ||
-                    r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal)).ToArray();
+                    r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal) ||
+                    r.name.StartsWith("Existing conifer canopy / forest ecological lobe ",StringComparison.Ordinal) ||
+                    r.name=="Forest understory / young conifer" ||
+                    r.name.StartsWith("Region1 · reused-tree ",StringComparison.Ordinal)).ToArray();
             Assert.That(retainedTreeSources.Count(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)),Is.EqualTo(98));
             Assert.That(retainedTreeSources.SelectMany(r=>r.GetComponentsInChildren<LODGroup>(true))
                 .Any(lod=>lod.enabled),Is.False,"Replaced source LODs must not revive legacy foliage during culling.");
