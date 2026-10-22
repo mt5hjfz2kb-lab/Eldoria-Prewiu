@@ -7,7 +7,6 @@ on:
       - 'Unity/Assets/Eldoria/World4XCanon/**'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta'
-      - '.github/workflows/world4x-canon-native.yml'
       - 'docs/evidence/world4x-canon-20261022/authoring/**'
   pull_request:
     types: [opened, synchronize, reopened]
