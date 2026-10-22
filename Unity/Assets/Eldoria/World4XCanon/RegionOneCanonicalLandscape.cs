@@ -494,19 +494,28 @@ namespace Eldoria.World4XCanon
             foreach (var line in RegionOneAuthoredComposition.Faults)
             for(int step=1;step<line.Length;step++)
             {
-                Vector2 previous=centre+line[step-1], next=centre+line[step];
-                float halfWidth=.40f*Mathf.Lerp(1f,.35f,Mathf.Clamp01(line[step].magnitude/85f));
-                Vector2 perpendicular=(next-previous).normalized;
-                perpendicular=new Vector2(-perpendicular.y,perpendicular.x)*halfWidth;
-                int index=points.Count;
-                foreach(Vector2 location in new[]{previous-perpendicular,previous+perpendicular,
-                                                   next-perpendicular,next+perpendicular})
+                Vector2 start=centre+line[step-1], end=centre+line[step];
+                int pieces=Mathf.Max(1,Mathf.CeilToInt(Vector2.Distance(start,end)/1.5f));
+                for(int part=0;part<pieces;part++)
                 {
-                    float h=Mathf.Max(SampleHeight(location.x,location.y)+.20f,.19f);
-                    points.Add(new Vector3(origin.x+location.x,h,origin.z+location.y));
+                    Vector2 previous=Vector2.Lerp(start,end,part/(float)pieces);
+                    Vector2 next=Vector2.Lerp(start,end,(part+1f)/pieces);
+                    if(!RegionOneAuthoredComposition.FaultAllowed(previous.x,previous.y) ||
+                       !RegionOneAuthoredComposition.FaultAllowed(next.x,next.y))continue;
+                    float halfWidth=.40f*Mathf.Lerp(1f,.35f,
+                        Mathf.Clamp01(Vector2.Distance(next,centre)/85f));
+                    Vector2 perpendicular=(next-previous).normalized;
+                    perpendicular=new Vector2(-perpendicular.y,perpendicular.x)*halfWidth;
+                    int index=points.Count;
+                    foreach(Vector2 location in new[]{previous-perpendicular,previous+perpendicular,
+                                                       next-perpendicular,next+perpendicular})
+                    {
+                        float h=Mathf.Max(SampleHeight(location.x,location.y)+.20f,.19f);
+                        points.Add(new Vector3(origin.x+location.x,h,origin.z+location.y));
+                    }
+                    indices.Add(index);indices.Add(index+1);indices.Add(index+2);
+                    indices.Add(index+1);indices.Add(index+3);indices.Add(index+2);
                 }
-                indices.Add(index);indices.Add(index+1);indices.Add(index+2);
-                indices.Add(index+1);indices.Add(index+3);indices.Add(index+2);
             }
             var mesh = new Mesh { name = "Region1 surface fracture only", vertices = points.ToArray(), triangles = indices.ToArray() };
             mesh.RecalculateBounds();

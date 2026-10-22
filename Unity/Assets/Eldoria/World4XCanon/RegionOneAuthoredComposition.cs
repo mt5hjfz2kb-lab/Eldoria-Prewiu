@@ -93,12 +93,18 @@ namespace Eldoria.World4XCanon
             new[]{new Vector2(-32,-24),new Vector2(-37,-42),new Vector2(-48,-51)},
             new[]{new Vector2(29,-23),new Vector2(23,-39),new Vector2(34,-54)}
         };
+        public static bool FaultAllowed(float x,float z)
+        {
+            // Preserve the established Valoria approach and all visible water.
+            return x*x+z*z>=48f*48f && !RegionOneHybridTerrainArt.IsOpenWater(x,z) &&
+                !RegionOneCanonicalLandscape.IsCoast(x,z);
+        }
         public static Color Breach(Color ground,float x,float z)
         {
             Vector2 p=new Vector2(x-RegionOneCanonicalLandscape.BreachOffsetX,
                                   z-RegionOneCanonicalLandscape.BreachOffsetZ);
             float radius=p.magnitude;
-            if(radius>90f)return ground;
+            if(radius>90f || x*x+z*z<48f*48f)return ground;
             float nearest=1000f;
             foreach(var line in Faults)for(int i=1;i<line.Length;i++)
             {
