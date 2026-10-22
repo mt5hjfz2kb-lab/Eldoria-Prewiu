@@ -47,7 +47,7 @@ namespace Eldoria.World4XCanon
                     float dy=(y-size*.50f)/(size*.47f);
                     float a=Mathf.Atan2(dy,dx);
                     float radius=Mathf.Sqrt(dx*dx+dy*dy);
-                    float jitter=Random01(x,y,39f.GetHashCode());
+                    float jitter=Random01(x,y,39);
                     float edge=1f+.13f*Mathf.Sin(a*7f)+
                                   .10f*Mathf.Sin(a*13f+1.7f)+
                                   .09f*(jitter-.5f);
