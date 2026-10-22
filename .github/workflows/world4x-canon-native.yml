@@ -96,7 +96,7 @@ jobs:
         run: |
           $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-unity-source.log'
-          "ELDORIA_REGION1_SOURCE_EVIDENCE=$env:RUNNER_TEMP/eldoria-region1-source-gate.json" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $env:ELDORIA_REGION1_SOURCE_EVIDENCE=Join-Path $env:RUNNER_TEMP 'eldoria-region1-source-gate.json'
           $args=@('-batchmode','-quit','-projectPath',('"' + $project + '"'),'-executeMethod','Eldoria.World4XCanon.Editor.RegionOneCanonicalSourceGate.Validate','-logFile',('"' + $log + '"'))
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity source gate timeout' }
