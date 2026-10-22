@@ -65,6 +65,12 @@ jobs:
           path: world4x-source
           clean: false
           persist-credentials: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /Unity/**
+            /tools/workstream-lease/**
+            /pipeline/active-workstreams.json
       - uses: actions/checkout@v4
         with:
           ref: main
