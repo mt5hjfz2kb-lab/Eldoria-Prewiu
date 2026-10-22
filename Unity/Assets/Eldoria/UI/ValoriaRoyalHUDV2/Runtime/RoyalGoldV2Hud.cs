@@ -516,44 +516,64 @@ namespace Eldoria.UI.RoyalGold.V2
             foreach (var item in nav.Items)
                 if (item.Button && item.Button.gameObject.activeSelf) count++;
             if (count == 0) return;
-            float space = Mathf.Max(250f, safe.rect.width - 30f);
-            float gap = portrait ? 7f : 9f;
-            float width = Mathf.Min(portrait ? 108f : 110f, (space - gap * (count - 1)) / count);
-            float total = width * count + gap * (count - 1);
+
+            // Owner approved Interface 1: the landscape, not a permanent
+            // bottom-wide HUD, is the hero. Move the SAME functional navigation
+            // buttons into a quiet, narrow left rail below the chapter.
+            // Nothing is cloned, unlocked, removed or given a fake listener.
+            float available = Mathf.Max(160f, safe.rect.height -
+                (portrait ? 442f : 290f) - 88f);
+            float gap = 6f;
+            float cellHeight = Mathf.Clamp(
+                (available - gap * (count - 1)) / count, 52f, 67f);
+            float cellWidth = portrait ? 75f : 78f;
+            float total = cellHeight * count + gap * (count - 1);
+            float top = portrait ? 430f : 277f;
+            // Extremely short landscape screens must keep the genuine bottom
+            // region navigable even if the rail needs to start higher.
+            top = Mathf.Min(top, Mathf.Max(10f, safe.rect.height - total - 15f));
             var navRect = nav.transform as RectTransform;
             if (navRect)
             {
-                SetWidthAndHeight(navRect, total, 77f);
-                if ((navRect.anchoredPosition - new Vector2(0, 10f)).sqrMagnitude > .1f)
-                    navRect.anchoredPosition = new Vector2(0, 10f);
+                navRect.anchorMin = navRect.anchorMax = new Vector2(0f, 1f);
+                navRect.pivot = new Vector2(.5f, .5f);
+                SetWidthAndHeight(navRect, cellWidth, total);
+                Vector2 rail = new Vector2(12f + cellWidth * .5f,
+                    -top - total * .5f);
+                if ((navRect.anchoredPosition - rail).sqrMagnitude > .1f)
+                    navRect.anchoredPosition = rail;
             }
-            float icon = Mathf.Min(43f, width - 10f);
+            float icon = Mathf.Min(36f, cellWidth - 10f);
             int index = 0;
             foreach (var item in nav.Items)
             {
                 if (!item.Button || !item.Button.gameObject.activeSelf) continue;
                 var cell = (RectTransform)item.Button.transform;
-                SetWidthAndHeight(cell, width, 77f);
-                float x = -total * .5f + width * .5f + index++ * (width + gap);
-                if ((cell.anchoredPosition - new Vector2(x, 0)).sqrMagnitude > .1f)
-                    cell.anchoredPosition = new Vector2(x, 0);
-                // The canonical prefab has one medallion child and one label.
-                // Icons retain the existing medieval artwork and listeners.
+                cell.anchorMin = cell.anchorMax = cell.pivot = new Vector2(.5f, .5f);
+                SetWidthAndHeight(cell, cellWidth, cellHeight);
+                float y = total * .5f - cellHeight * .5f -
+                    index++ * (cellHeight + gap);
+                Vector2 location = new Vector2(0, y);
+                if ((cell.anchoredPosition - location).sqrMagnitude > .1f)
+                    cell.anchoredPosition = location;
+                // The original action medallion and label stay inside the
+                // same native uGUI button and retain its existing navigation.
                 if (cell.childCount > 0 && cell.GetChild(0) is RectTransform medallion)
                 {
                     SetWidthAndHeight(medallion, icon, icon);
-                    Vector2 position = new Vector2((width - icon) * .5f, -2f);
-                    if ((medallion.anchoredPosition - position).sqrMagnitude > .1f)
-                        medallion.anchoredPosition = position;
+                    Vector2 medallionLocation =
+                        new Vector2((cellWidth - icon) * .5f, -1f);
+                    if ((medallion.anchoredPosition - medallionLocation).sqrMagnitude > .1f)
+                        medallion.anchoredPosition = medallionLocation;
                 }
                 if (item.Label)
                 {
                     var label = item.Label.rectTransform;
-                    SetWidthAndHeight(label, width, 22f);
-                    Vector2 position = new Vector2(0, -49f);
-                    if ((label.anchoredPosition - position).sqrMagnitude > .1f)
-                        label.anchoredPosition = position;
-                    if (item.Label.fontSize != 17) item.Label.fontSize = 17;
+                    SetWidthAndHeight(label, cellWidth, 22f);
+                    Vector2 labelLocation = new Vector2(0, -cellHeight + 27f);
+                    if ((label.anchoredPosition - labelLocation).sqrMagnitude > .1f)
+                        label.anchoredPosition = labelLocation;
+                    if (item.Label.fontSize != 14) item.Label.fontSize = 14;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                 }
             }
@@ -674,6 +694,11 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             Rect free = Source ? Source.GetVisibleSceneViewport() : new Rect(.07f, .12f, .86f, .78f);
             if (!safe || !hasGeometry) return free;
+            // Compact real action rail replaces the horizontal bottom strip.
+            // Camera focus avoids the rail but keeps the rest of the landscape.
+            if (Source && Source.Navigation && Source.Navigation.gameObject.activeInHierarchy)
+                free.xMin = Mathf.Max(free.xMin,
+                    Mathf.Min(.15f, 104f / Mathf.Max(1f, safe.rect.width)));
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
             float padding = .025f;
