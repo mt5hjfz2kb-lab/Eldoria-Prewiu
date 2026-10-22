@@ -142,12 +142,12 @@ namespace Eldoria.World4XCanon
                             Vector3 right=new Vector3(Mathf.Cos(direction),0f,
                                 Mathf.Sin(direction))*(width*scale*.5f);
                             Vector3 forward=new Vector3(-right.z,0f,right.x);
-                            Vector3 centre=p+Vector3.up*(layer==0?.15f:1.10f);
+                            Vector3 canopyCentre=p+Vector3.up*(layer==0?.15f:1.10f);
                             int start=vertices.Count;
-                            vertices.Add(centre-right-forward);
-                            vertices.Add(centre+right-forward);
-                            vertices.Add(centre+right+forward);
-                            vertices.Add(centre-right+forward);
+                            vertices.Add(canopyCentre-right-forward);
+                            vertices.Add(canopyCentre+right-forward);
+                            vertices.Add(canopyCentre+right+forward);
+                            vertices.Add(canopyCentre-right+forward);
                             uvs.Add(new Vector2(0,0));
                             uvs.Add(new Vector2(1,0));
                             uvs.Add(new Vector2(1,1));
