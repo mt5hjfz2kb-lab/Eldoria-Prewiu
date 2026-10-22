@@ -18,10 +18,14 @@ namespace Eldoria.World4XCanon
     public sealed class RegionOneCanonicalLandscape : MonoBehaviour
     {
         public const int LandscapeVersion = 1;
+        // The strategic Region 1 fits in a landscape panorama. The much wider
+        // textured continuation masks the outer bounds without forming an island.
+        public const float CoreHalfWidth = 425f;
+        public const float CoreHalfDepth = 260f;
         public const float LandscapeHalfWidth = 910f;
         public const float LandscapeHalfDepth = 780f;
         public const float BreachOffsetX = 18f;
-        public const float BreachOffsetZ = 92f;
+        public const float BreachOffsetZ = 44f;
         public const float LocalThreshold = 41f;
         public const float RegionalThreshold = 152f;
 
@@ -38,7 +42,11 @@ namespace Eldoria.World4XCanon
             new Vector2(130,270),new Vector2(325,210),new Vector2(385,55),
             new Vector2(270,-125),new Vector2(100,-240),new Vector2(-170,390),
             new Vector2(190,385),new Vector2(-410,340),new Vector2(-355,-340),
-            new Vector2(385,-330),new Vector2(-65,465),new Vector2(340,440)
+            new Vector2(385,-330),new Vector2(-65,465),new Vector2(340,440),
+            // Scale-specific regional and near-horizon vegetation: keep the
+            // gameplay corridor clear; don't populate its selectable centre.
+            new Vector2(-115,65),new Vector2(105,80),new Vector2(-125,-75),
+            new Vector2(118,-92),new Vector2(-20,125)
         };
 
         ValoriaIntegratedWorld host;
