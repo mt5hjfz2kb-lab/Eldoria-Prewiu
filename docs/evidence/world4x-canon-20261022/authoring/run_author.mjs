@@ -11,7 +11,7 @@ const {prepareInvocation,verifyArtistConsumption}=await import(pathToFileURL(pat
 const {recordInference}=await import(pathToFileURL(path.join(root,'tools/art-knowledge/cycle-feedback.mjs')));
 const inventory=path.join(output,'source-inventory.txt');
 fs.writeFileSync(inventory,
-  'REGION 1 WORLD MAP, NOT VALORIA CLIFF OR CITY. Frozen actual Unity terrain scaled: 1 Blender unit=10 Unity metres. Blender X east, Y north, Z up. Bounds X +/-91 Y +/-78. Core X +/-42.5 Y +/-26. Existing broad low hills, no large mountains. Preserve central radius 12 around (0,0), ground Breach (0.8,6.1), rivers and coastal water; preserve XY and UV, edit Z only. Reference is an art direction, not a texture to project. Choose ONE coherent macro relief improvement in outer land, not scattered noise, color tweaks or new buildings. Max 3 actions, use measured anchors. Prior repeated procedural microsteps and coastal ribbons failed visual parity. This is a COPY; never self-approve.');
+  'REJECTED REAL CYCLE 39828569968: center[-90,0,0],radius15,delta[0,0.5,0] moved terrain sideways OUTSIDE camera; zero useful relief. DO NOT REPEAT. Blender Z is UP: delta must be [0,0,positiveHeight], NEVER [0,height,0]. Author visible low connected hills IN the photographed core: centers X[-42,42],Y[-26,26]; coordinates beyond this are OFFSCREEN, even if mesh exists. WORLD MAP, not Valoria cliff/city. 1 Blender unit=10 Unity metres. Preserve XY, UV and central circle radius12. Choose precise visible land centres from reference/screenshot, radius8..22 and vertical lift1..3 Blender units, avoiding coast/rivers and protected centre. Use sculpt_region or sculpt_path only, up to3 coherent actions. No color noise, new objects or enormous peaks. Actual source extended mesh X+/-91 Y+/-78 is NOT the visible region. Prior procedural microsteps/coastal ribbons failed. This is a COPY; never self-approve.');
 const invocation=prepareInvocation({
   requestFile:'pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json',
   prefix:path.join(output,'memory'),sourceInventoryPath:inventory,
@@ -30,3 +30,18 @@ recordInference({invocation,outFile:invocation.feedback,exitStatus:proc.status??
 if(proc.error)throw proc.error;
 if(proc.status!==0)throw Error('Typed Qwen author failed; no geometry or approval inferred');
 console.log(JSON.stringify(verifyArtistConsumption(invocation)));
+// Reject the demonstrated coordinate/visibility error before Blender executes.
+// Values remain Qwen's decisions; the task supplies only the protected envelope.
+const plan=JSON.parse(fs.readFileSync(path.join(output,'direction/artist-plan.json'),'utf8'));
+for(const op of plan){
+  const points=op.type==='sculpt_region'?[op.parameters]:op.type==='sculpt_path'?op.parameters.knots:null;
+  if(!Array.isArray(points)||!points.length)throw Error('Only bounded terrain sculpt operations allowed');
+  for(const p of points){
+    const [x,y]=p.center||[],[dx,dy,dz]=p.delta||[];
+    if(![x,y,dx,dy,dz,p.radius].every(Number.isFinite)||Math.abs(x)>42||Math.abs(y)>26||
+       dx!==0||dy!==0||dz<1||dz>3||p.radius<8||p.radius>22)
+      throw Error('Artist operation outside visible region or not a bounded Z-up relief edit');
+    if(Math.hypot(x,y)-p.radius<12)
+      throw Error('Artist operation intersects protected central gameplay circle');
+  }
+}
