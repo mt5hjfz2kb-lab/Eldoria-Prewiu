@@ -30,7 +30,7 @@ namespace Eldoria.SpawnlingBastion2
 
         Vector3 restPosition, restScale;
         Quaternion restRotation;
-        Vector3 restAnchorOffset;
+        Vector3 restAnchorOffset, groundFootParent;
         bool restAnchorReady;
         float nextStateCheck;
 
@@ -43,29 +43,102 @@ namespace Eldoria.SpawnlingBastion2
             CacheRestAnchor();
         }
 
-        // The imported V4 skeleton was aligned in WORLD SPACE before skinning.
-        // Its actual geometry can be offset laterally from the idle pivot.
-        // Compensate all three axes while scaling, not only Y: otherwise a
-        // 4.5x version walks many metres away from the original hotspot.
-        // Resolve lazily as well, because initially inactive LOD renderers
-        // can have zero bounds until the real player scene is enabled.
+        // Unity's SkinnedMeshRenderer.bounds can include a very large
+        // precomputed animation envelope. It is NOT the creature's feet:
+        // relying on that envelope displaced the enlarged model into the sky.
+        // Sample the true skinned mesh vertices ONCE, using the same bind-pose
+        // matrices as the original approved V4 Blender/Unity integration.
+        bool TryGeometryFoot(out Vector3 foot)
+        {
+            foot = Vector3.zero;
+            if (!ModelRoot) return false;
+            bool found = false;
+            Bounds joined = default;
+            foreach (var renderer in ModelRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+            {
+                var mesh = renderer ? renderer.sharedMesh : null;
+                if (!mesh || !mesh.isReadable) continue;
+                var vertices = mesh.vertices;
+                var weights = mesh.boneWeights;
+                var bindposes = mesh.bindposes;
+                var bones = renderer.bones;
+                if (vertices.Length == 0 || weights.Length != vertices.Length ||
+                    bones.Length == 0 || bindposes.Length != bones.Length) continue;
+                var matrices = new Matrix4x4[bones.Length];
+                bool valid = true;
+                for (int j = 0; j < bones.Length; j++)
+                {
+                    if (!bones[j]) { valid = false; break; }
+                    matrices[j] = bones[j].localToWorldMatrix * bindposes[j];
+                }
+                if (!valid) continue;
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    var w = weights[i];
+                    var v = vertices[i];
+                    Vector3 point =
+                        matrices[w.boneIndex0].MultiplyPoint3x4(v) * w.weight0 +
+                        matrices[w.boneIndex1].MultiplyPoint3x4(v) * w.weight1 +
+                        matrices[w.boneIndex2].MultiplyPoint3x4(v) * w.weight2 +
+                        matrices[w.boneIndex3].MultiplyPoint3x4(v) * w.weight3;
+                    if (!found) { joined = new Bounds(point, Vector3.zero); found = true; }
+                    else joined.Encapsulate(point);
+                }
+            }
+            if (!found) return false;
+            foot = new Vector3(joined.center.x, joined.min.y, joined.center.z);
+            return true;
+        }
+
+        // Compute actual existing prairie Y at this ONE encounter coordinate.
+        // Read geometry without adding MeshColliders, new raycast targets,
+        // gameplay terrain or saving anything. No runtime recurring scan.
+        bool TryGroundHeight(Vector3 point, out float height)
+        {
+            height = 0f;
+            if (!Host || !Host.WorldRoot) return false;
+            foreach (var filter in Host.WorldRoot.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (!filter || filter.name != "ZoneOne continuous prairie source" ||
+                    !filter.sharedMesh || !filter.sharedMesh.isReadable) continue;
+                var vertices = filter.sharedMesh.vertices;
+                var triangles = filter.sharedMesh.triangles;
+                var matrix = filter.transform.localToWorldMatrix;
+                bool found = false;
+                for (int i = 0; i + 2 < triangles.Length; i += 3)
+                {
+                    Vector3 a = matrix.MultiplyPoint3x4(vertices[triangles[i]]);
+                    Vector3 b = matrix.MultiplyPoint3x4(vertices[triangles[i + 1]]);
+                    Vector3 d = matrix.MultiplyPoint3x4(vertices[triangles[i + 2]]);
+                    float det = (b.z - d.z) * (a.x - d.x) +
+                                (d.x - b.x) * (a.z - d.z);
+                    if (Mathf.Abs(det) < .00001f) continue;
+                    float u = ((b.z - d.z) * (point.x - d.x) +
+                               (d.x - b.x) * (point.z - d.z)) / det;
+                    float v = ((d.z - a.z) * (point.x - d.x) +
+                               (a.x - d.x) * (point.z - d.z)) / det;
+                    if (u < -.0001f || v < -.0001f || u + v > 1.0001f) continue;
+                    float y = u * a.y + v * b.y + (1f - u - v) * d.y;
+                    if (!found || y > height) height = y;
+                    found = true;
+                }
+                if (found) return true;
+            }
+            return false;
+        }
+
         void CacheRestAnchor()
         {
-            if (restAnchorReady || !MotionPivot || !ModelRoot) return;
-            var rs = ModelRoot.GetComponentsInChildren<Renderer>(true);
-            bool seen = false;
-            Bounds joined = default;
-            foreach (var r in rs)
-            {
-                if (!r || r.bounds.size.y <= .001f) continue;
-                if (!seen) { joined = r.bounds; seen = true; }
-                else joined.Encapsulate(r.bounds);
-            }
-            if (!seen) return;
-            Vector3 worldFoot = new Vector3(joined.center.x, joined.min.y, joined.center.z);
-            Vector3 parentFoot = MotionPivot.parent
-                ? MotionPivot.parent.InverseTransformPoint(worldFoot) : worldFoot;
-            restAnchorOffset = parentFoot - restPosition;
+            if (restAnchorReady || !MotionPivot || !ModelRoot || !Host) return;
+            if (!TryGeometryFoot(out var sourceFoot)) return;
+            var hotspot = Host.FindTarget("engendro-valoria");
+            if (!hotspot) return;
+            Vector3 destination = hotspot.transform.position;
+            if (TryGroundHeight(destination, out var groundY)) destination.y = groundY;
+            var parent = MotionPivot.parent;
+            Vector3 originalFoot = parent ? parent.InverseTransformPoint(sourceFoot) : sourceFoot;
+            restAnchorOffset = originalFoot - restPosition;
+            groundFootParent = parent ? parent.InverseTransformPoint(destination) : destination;
             restAnchorReady = true;
         }
 
@@ -98,8 +171,11 @@ namespace Eldoria.SpawnlingBastion2
             float presence = PresenceAtZoom(zoom);
             MotionPivot.localScale = restScale * presence;
             float t = Time.unscaledTime;
-            MotionPivot.localPosition = restPosition -
-                restAnchorOffset * (presence - 1f) +
+            // With the actual skinned foot in parent coordinates, compensate
+            // both the pre-existing source offset and every zoom-dependent
+            // enlargement. The feet stay directly on the original hotspot.
+            MotionPivot.localPosition = groundFootParent -
+                restAnchorOffset * presence +
                 Vector3.up * (BreatheAmplitude * Mathf.Sin(t * 1.55f));
             MotionPivot.localRotation = restRotation *
                 Quaternion.Euler(1.1f * Mathf.Sin(t * 1.2f),
