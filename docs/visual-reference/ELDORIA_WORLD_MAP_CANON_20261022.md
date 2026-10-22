@@ -13,7 +13,23 @@ El **conjunto binario original de cuatro PNG** está conservado en la Biblioteca
 | `02_vista_regional.png` | 512×1024 | `82a38cf89e9a8ad249739496de4c972a8008df29ec4efc946c3a22273f88f316` |
 | `03_vista_panoramica.png` | 512×1024 | `68cd5b898cf3675db537b7ddceb8082befe955895864079a0ac26bdf4fb37144` |
 
-**Alcance del archivado actual:** los PNG están materialmente en la Biblioteca de ChatGPT. **Los binarios PNG no están todavía copiados al árbol Git de este repositorio**; no inventar rutas GitHub a PNG inexistentes ni declarar ese paso cerrado. Para obtenerlos desde otra sesión de trabajo, recuperar los cuatro archivos de la carpeta exacta y validar sus hashes antes de usarlos. Este contrato textual sí reside en el repositorio.
+**Conservación dual verificada:** los cuatro PNG exactos permanecen en la Biblioteca de ChatGPT y están añadidos como binarios al árbol Git en `docs/visual-reference/world-map/`. Cada copia Git ha pasado la comparación de SHA-1 de objeto Git con el PNG archivado, además de los SHA-256 de la tabla. Los agentes que trabajen directamente en `main` **deben leer estas imágenes originales y este contrato** antes de modificar el mundo; no regenerar ilustraciones aproximadas en lugar de ellas.
+
+### Vistas visuales aprobadas (archivos binarios del repositorio)
+
+**Vista cercana** — objetivos jugables legibles, sin campamentos inventados:
+
+![Referencia canónica Eldoria, vista cercana](world-map/01_vista_cercana.png)
+
+**Vista regional** — relieve moderado, Brecha en el suelo, sin niebla:
+
+![Referencia canónica Eldoria, vista regional](world-map/02_vista_regional.png)
+
+**Vista panorámica** — Región 1 casi completa, niebla solo periférica, agua reducida:
+
+![Referencia canónica Eldoria, vista panorámica](world-map/03_vista_panoramica.png)
+
+**Composición original sin recortar:** [tríptico aprobado](world-map/00_triptych_aprobado_2026-10-22.png).
 
 ## Canon visual por escala
 
