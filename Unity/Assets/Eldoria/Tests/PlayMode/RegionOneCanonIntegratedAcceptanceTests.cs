@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.IO;
+using System.Security.Cryptography;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -126,5 +128,125 @@ namespace Eldoria.Tests
             Assert.That(b.size.z, Is.GreaterThan(25f));
             Assert.That(fracture.GetComponentsInChildren<Collider>(true), Is.Empty);
         }
+        [Serializable]
+        sealed class RenderIdentity
+        {
+            public string sourceScene, version, label, sha256, context;
+            public bool actualUnityCamera, playMode, physicalIphone;
+            public int width, height;
+            public float zoom, aspect;
+            public Vector3 cameraPosition, worldTarget;
+        }
+
+        [UnityTest]
+        public IEnumerator ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe()
+        {
+            // Do not purchase anything on the owner's save. This is the same
+            // opt-in disposable CI store already used by the game's own tests.
+            if (Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE") != "1")
+                Assert.Ignore("Real-camera capture requires disposable Valoria native probe store.");
+            var outdir = Environment.GetEnvironmentVariable("ELDORIA_REGION1_CAPTURE_OUT");
+            if (string.IsNullOrEmpty(outdir))
+                Assert.Ignore("Capture gate needs a new explicit artifacts directory.");
+            Assert.That(Directory.Exists(outdir) && Directory.GetFileSystemEntries(outdir).Length != 0,
+                Is.False, "Never replace previous evidence.");
+            Directory.CreateDirectory(outdir);
+            MonoBehaviour host = null; GameObject world = null; Component navigation = null; Camera camera = null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            // All interactions below are the ACTUAL gateway, never a presentation unlock.
+            bool opened = (bool)Call(host, "TrySetWorld", true);
+            if (!opened)
+            {
+                var snapshot = Call(host, "Read", "sawmill", false);
+                var building = Member(snapshot, "Building");
+                var realOffer = Member(building, "Action");
+                Assert.That(realOffer, Is.Not.Null,
+                    "Disposable test needs an authorized real sawmill offer; never force world access.");
+                Assert.That(Member(realOffer, "Kind"), Is.EqualTo("Build"),
+                    "Only the actual gameplay sawmill purchase may unlock World.");
+                Call(host, "Submit", realOffer);
+                yield return null;
+                opened = (bool)Call(host, "TrySetWorld", true);
+            }
+            Assert.That(opened, Is.True, "The real session still cannot enter Mundo after a real gateway action.");
+            Assert.That((bool)Member(host, "InWorld"), Is.True);
+            Assert.That(world.activeInHierarchy, Is.True);
+            Assert.That(camera.enabled, Is.True);
+            var geo = world.transform.Find("Region 1 canonical continuous geography");
+            Assert.That(geo, Is.Not.Null);
+            var adapter = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .FirstOrDefault(x=>x && x.GetType().Name == "RegionOneCanonicalLandscape");
+            Assert.That(adapter, Is.Not.Null);
+            var home = (Vector3)Member(host, "WorldHome");
+            float originalZoom = camera.orthographicSize, originalAspect = camera.aspect;
+            Vector3 originalTarget = (Vector3)Member(navigation,"target");
+            RenderTexture originalRT = camera.targetTexture;
+            RenderTexture originalActive = RenderTexture.active;
+            try
+            {
+                foreach (var format in new[]{(1280,720,"horizontal"),(390,844,"vertical")})
+                {
+                    camera.aspect = format.Item1 / (float)format.Item2;
+                    foreach(var stage in new[]{(2,"cercana"),(1,"regional"),(0,"panoramica")})
+                    {
+                        Call(navigation, "SetZoomLevel", stage.Item1, true);
+                        Call(navigation, "PanTo", home);
+                        Call(adapter, "RefreshForCapture");
+                        yield return null;
+                        Call(adapter, "RefreshForCapture");
+                        var texture = new RenderTexture(format.Item1,format.Item2,24,
+                            RenderTextureFormat.ARGB32);
+                        var pixels = new Texture2D(format.Item1,format.Item2,TextureFormat.RGB24,false);
+                        try
+                        {
+                            camera.targetTexture=texture;
+                            camera.Render();
+                            RenderTexture.active=texture;
+                            pixels.ReadPixels(new Rect(0,0,format.Item1,format.Item2),0,0);
+                            pixels.Apply(false);
+                            var png = pixels.EncodeToPNG();
+                            Assert.That(png.Length, Is.GreaterThan(2500),
+                                "Unity produced an implausibly empty game camera image.");
+                            string name=stage.Item2+"-"+format.Item3;
+                            File.WriteAllBytes(Path.Combine(outdir,name+"-unity.png"),png);
+                            string hash;
+                            using(var sha=SHA256.Create())
+                                hash=BitConverter.ToString(sha.ComputeHash(png)).Replace("-","").ToLowerInvariant();
+                            var metadata=new RenderIdentity {
+                                sourceScene=SceneManager.GetActiveScene().path,
+                                version=Application.unityVersion,
+                                context="Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+                                label=name, sha256=hash,
+                                actualUnityCamera=true,playMode=Application.isPlaying,
+                                physicalIphone=false,width=format.Item1,height=format.Item2,
+                                zoom=camera.orthographicSize,aspect=camera.aspect,
+                                cameraPosition=camera.transform.position,
+                                worldTarget=(Vector3)Member(navigation,"target")
+                            };
+                            File.WriteAllText(Path.Combine(outdir,name+"-source.json"),
+                                JsonUtility.ToJson(metadata,true));
+                        }
+                        finally
+                        {
+                            camera.targetTexture=originalRT;
+                            RenderTexture.active=originalActive;
+                            texture.Release();
+                            Object.Destroy(texture);
+                            Object.Destroy(pixels);
+                        }
+                    }
+                }
+                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(6));
+                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=6 real_scene=1 disposable_gateway=1 physical_iphone=0");
+            }
+            finally
+            {
+                camera.aspect=originalAspect;
+                camera.targetTexture=originalRT;
+                RenderTexture.active=originalActive;
+                Call(navigation,"RestoreView",originalTarget,originalZoom);
+            }
+        }
+
     }
 }
