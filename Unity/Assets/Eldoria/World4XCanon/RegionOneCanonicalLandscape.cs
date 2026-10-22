@@ -25,13 +25,13 @@ namespace Eldoria.World4XCanon
         public const float CoreHalfDepth = 260f;
         public const float LandscapeHalfWidth = 910f;
         public const float LandscapeHalfDepth = 780f;
-        public const float BreachOffsetX = 30f;
-        public const float BreachOffsetZ = 92f;
+        public const float BreachOffsetX = 60f;
+        public const float BreachOffsetZ = 53f;
         public const float LocalThreshold = 41f;
         public const float RegionalThreshold = 152f;
 
-        static readonly Color Grass = new Color(.51f, .52f, .30f);
-        static readonly Color DryGrass = new Color(.62f, .56f, .33f);
+        static readonly Color Grass = new Color(.49f, .56f, .33f);
+        static readonly Color DryGrass = new Color(.69f, .61f, .34f);
         static readonly Color DarkForest = new Color(.25f, .39f, .23f);
         static readonly Color Road = new Color(.67f, .54f, .32f);
         static readonly Color Rock = new Color(.52f, .49f, .40f);
@@ -60,6 +60,7 @@ namespace Eldoria.World4XCanon
         readonly List<Renderer> existingGameRenderers = new List<Renderer>();
         readonly List<bool> existingGameRendererStates = new List<bool>();
         GameObject distantForestSilhouettes;
+        GameObject distantGeology;
         Mesh terrainMesh;
         Texture2D terrainTexture;
         Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial;
@@ -152,6 +153,7 @@ namespace Eldoria.World4XCanon
             BuildBreach(root);
             BuildTreeDetail(root, existingWorld);
             BuildDistantForests(root);
+            BuildDistantGeology(root);
             BuildEdgeFog(root);
         }
 
@@ -290,15 +292,19 @@ namespace Eldoria.World4XCanon
 
         public static bool IsRoad(float x, float z)
         {
-            // Curved road network in one shared coordinate system. The close
-            // 3D route remains the authoritative interactable route surface.
-            Vector2 p = new Vector2(x + 13f * Mathf.Sin(z * .017f) +
-                                         5f * Mathf.Sin(z * .037f),
+            // Organic corridors lead through this one physical region.
+            // All distant branches are terrain marks, not fake march targets.
+            Vector2 p = new Vector2(x + 10f * Mathf.Sin(z * .022f) +
+                                         5f * Mathf.Sin(z * .046f),
                                      z + 8f * Mathf.Sin(x * .013f));
-            return DistanceToSegment(p, new Vector2(0,0), new Vector2(-365,310)) < 3.0f ||
-                   DistanceToSegment(p, new Vector2(0,0), new Vector2(370,305)) < 3.0f ||
-                   DistanceToSegment(p, new Vector2(0,0), new Vector2(-305,-370)) < 3.0f ||
-                   DistanceToSegment(p, new Vector2(0,0), new Vector2(400,-262)) < 3.0f;
+            return DistanceToSegment(p,new Vector2(0,0),new Vector2(-110,102)) < 3f ||
+                   DistanceToSegment(p,new Vector2(-110,102),new Vector2(-365,310)) < 3f ||
+                   DistanceToSegment(p,new Vector2(0,0),new Vector2(135,91)) < 3f ||
+                   DistanceToSegment(p,new Vector2(135,91),new Vector2(370,305)) < 3f ||
+                   DistanceToSegment(p,new Vector2(0,0),new Vector2(-126,-155)) < 3f ||
+                   DistanceToSegment(p,new Vector2(-126,-155),new Vector2(-305,-370)) < 3f ||
+                   DistanceToSegment(p,new Vector2(0,0),new Vector2(152,-76)) < 3f ||
+                   DistanceToSegment(p,new Vector2(152,-76),new Vector2(400,-262)) < 3f;
         }
 
         public static bool IsRiver(float x, float z)
@@ -379,7 +385,7 @@ namespace Eldoria.World4XCanon
             // Thin branching cracks follow the terrain. No upright towers or enemy proxies.
             for (int branch = 0; branch < 21; branch++)
             {
-                float angle = branch * Mathf.PI * 2f / 21f;
+                float angle = branch * Mathf.PI * 2f / 21f + .16f * Mathf.Sin(branch * 2.41f);
                 float extent = 16f + (branch % 5) * 3.8f;
                 Vector2 previous = centre + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 1.5f;
                 for (int step = 1; step <= 3; step++)
@@ -486,6 +492,7 @@ namespace Eldoria.World4XCanon
         }
 
         readonly List<Material> farForestMaterials = new List<Material>();
+        readonly List<Material> farGeologyMaterials = new List<Material>();
 
         void BuildDistantForests(Transform parent)
         {
@@ -555,6 +562,62 @@ namespace Eldoria.World4XCanon
                 renderer.shadowCastingMode = ShadowCastingMode.Off;
             }
             distantForestSilhouettes.SetActive(false);
+        }
+
+        void BuildDistantGeology(Transform parent)
+        {
+            distantGeology = new GameObject("Region1 · four low-cost mountain outcrops");
+            distantGeology.transform.SetParent(parent, true);
+            // Few 3D peaks, batched by light-facing side. Never add new enemy,
+            // city, resource hotspot, colliders or expensive mountain LODs.
+            var vertices = new List<Vector3>();
+            var lightTris = new List<int>();
+            var shadeTris = new List<int>();
+            var sites = new [] {
+                new Vector2(-330f, 190f), new Vector2(326f,215f),
+                new Vector2(-320f,-220f), new Vector2(267f,-170f)
+            };
+            for (int i=0;i<sites.Length;i++)
+                for (int peak=0;peak<3;peak++)
+                {
+                    float theta=peak*2.399963f+i*.74f;
+                    float off=peak==0?0f:14f+peak*2f;
+                    float x=sites[i].x+Mathf.Cos(theta)*off;
+                    float z=sites[i].y+Mathf.Sin(theta)*off;
+                    float y=SampleHeight(x,z)+.2f;
+                    float width=8.5f+peak*3.8f+(i%2)*1.3f;
+                    float height=9f+peak*3.3f;
+                    int n=vertices.Count;
+                    vertices.Add(new Vector3(origin.x+x,y+height,origin.z+z));
+                    vertices.Add(new Vector3(origin.x+x-width,y,origin.z+z-width*.53f));
+                    vertices.Add(new Vector3(origin.x+x+width,y,origin.z+z-width*.61f));
+                    vertices.Add(new Vector3(origin.x+x+width*.85f,y,origin.z+z+width));
+                    vertices.Add(new Vector3(origin.x+x-width*.58f,y,origin.z+z+width*.83f));
+                    lightTris.Add(n);lightTris.Add(n+2);lightTris.Add(n+1);
+                    lightTris.Add(n);lightTris.Add(n+3);lightTris.Add(n+2);
+                    shadeTris.Add(n);shadeTris.Add(n+4);shadeTris.Add(n+3);
+                    shadeTris.Add(n);shadeTris.Add(n+1);shadeTris.Add(n+4);
+                }
+            for (int batch=0;batch<2;batch++)
+            {
+                var mesh=new Mesh{name="Region1 tiny ridges " + batch,
+                    vertices=vertices.ToArray(),
+                    triangles=(batch==0?lightTris:shadeTris).ToArray()};
+                mesh.RecalculateNormals();
+                mesh.RecalculateBounds();
+                generatedMeshes.Add(mesh);
+                var obj=new GameObject("Region1 · mountain facets " + batch);
+                obj.transform.SetParent(distantGeology.transform,true);
+                obj.AddComponent<MeshFilter>().sharedMesh=mesh;
+                var material=MakeMaterial("Region1 restrained mountain " + batch,
+                    batch==0?new Color(.59f,.54f,.40f):new Color(.41f,.41f,.34f),false);
+                farGeologyMaterials.Add(material);
+                var renderer=obj.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial=material;
+                renderer.receiveShadows=false;
+                renderer.shadowCastingMode=ShadowCastingMode.Off;
+            }
+            distantGeology.SetActive(false);
         }
 
         void BuildEdgeFog(Transform parent)
@@ -679,6 +742,7 @@ namespace Eldoria.World4XCanon
                 farMode = distant;
                 if (detailTrees) detailTrees.SetActive(!distant);
                 if (distantForestSilhouettes) distantForestSilhouettes.SetActive(distant);
+                if (distantGeology) distantGeology.SetActive(distant);
                 for (int i = 0; i < originalGround.Count; i++)
                     if (originalGround[i])
                         originalGround[i].enabled = distant ? false : originalGroundInitiallyEnabled[i];
@@ -705,6 +769,7 @@ namespace Eldoria.World4XCanon
             if (breachCoreMaterial) Destroy(breachCoreMaterial);
             if (fogMaterial) Destroy(fogMaterial);
             foreach (var mat in farForestMaterials) if (mat) Destroy(mat);
+            foreach (var mat in farGeologyMaterials) if (mat) Destroy(mat);
         }
     }
 }
