@@ -40,7 +40,7 @@
       ],
       "authorization": "Owner 2026-10-22 explicitly directs chat takeover of stalled World4X hybrid workstream and continuation of existing PR #100, 0€, no main promotion",
       "phase": "HYBRID_PANORAMA_MACRO_COMPOSITION_UNRESOLVED",
-      "next": "Starting from World4X art source 0e6b8b712b9730762893c8b96ec2bda50268dcf5 and native A/B run 39800024614: correct macro map composition and genuine 2.5D depth/forest silhouettes (not extra micro-noise), then re-capture 12 Unity views at both orientations; validate portrait panorama coverage against owner 03 PNG and region scale 850x520; preserve main, UI, gameplay and iPhone issue #96.",
+      "next": "Keep tested tapered 2.5D conifer silhouettes from 20a0d965 (native 39802639848, 7/7 PlayMode, 12 same-camera Unity PNGs); next tackle macro regional landscape composition, unconvincing repeated forest silhouettes/roads, and portrait panorama coverage with an actual Unity A/B. No UI/gameplay edits, merge, release or iPhone stability claim.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -51,13 +51,13 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "0e6b8b712b9730762893c8b96ec2bda50268dcf5",
-        "unity_run": 39800024614,
-        "unity_playmode": "7_OF_7_PASS_XML_AND_GITHUB_UNITY_JOB_SUCCESS",
+        "sha": "20a0d965ca681120d956489571ed9faeef56c0df",
+        "unity_run": 39802639848,
+        "unity_playmode": "7_OF_7_PASS_NATIVE_XML",
         "real_unity_captures": 12,
         "art_approved": false,
         "physical_iphone_tested": false,
-        "visual_gap": "CANON_NOT_MET: panorama still flat, dot-like woodland and undersized region in portrait; regional/near dominated by initial building.",
+        "visual_gap": "CANON_NOT_MET: regional/local still scene-centred; panorama cropped and under-composed especially portrait; groves remain systematically distributed",
         "playable_published": false,
         "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
         "latest_native_failure_run": 39795241792,
@@ -68,7 +68,8 @@
         "camera_trial_rejected_run": 39799182467,
         "macro_terrain_success_run": 39800024614,
         "landcover_art_source_sha": "0e6b8b712b9730762893c8b96ec2bda50268dcf5",
-        "portrait_panorama_coverage": "At 390x844 with zoom244, horizontal projected footprint ≈225 world units vs conceptual core width 850 (~26.5%), full-region portrait not solved."
+        "portrait_panorama_coverage": "At 390x844 with zoom244, horizontal projected footprint ≈225 world units vs conceptual core width 850 (~26.5%), full-region portrait not solved.",
+        "last_visual_experiment": "TAPERED_2_5D_SPRUCE_RETAINED_AS_VISIBLE_STEP_FORWARD; panorama 7.58% and portrait 8.80% pixels change versus 0e6; not an art-quality score"
       },
       "ownership_history": [
         {
