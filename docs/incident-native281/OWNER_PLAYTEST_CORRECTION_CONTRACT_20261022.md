@@ -46,6 +46,13 @@ Referencia vinculante: `docs/ui-v3/OWNER_APPROVED_DIRECTION.md`. En **ciudad y m
 
 **Evidencia exigida:** siete pares de imágenes A/B en cámaras/safe areas iguales: ciudad sin selección; ciudad con edificio seleccionable; temporizador activo; mundo abierto; diálogo cinematográfico; entrenamiento; preparación de marcha. Anotar % del frame oculto por HUD, rectángulos de controles y posiciones proyectadas, legibilidad y éxito del toque en dispositivo. **El propietario debe poder aprobar visualmente la versión**, no solamente el CI.
 
+## Instrumentación entregada en rama de revisión (NO publicada)
+
+- Código: `tools/delivery/optional-iphone-lifecycle-diagnostics.js`; integrado **solo para futuros paquetes** en `tools/delivery/prepare.py`.
+- Se mantiene **inactivo por defecto**. `?eldoria_diag=1` en la URL del marco real de juego habilita botón local **Diagnóstico** y diario circular de hasta 48 eventos; `?eldoria_diag=0` lo desactiva. El flag queda en almacenamiento local del origen, sin usar el guardado del juego; el botón permite consultar eventos anteriores tras una recarga en el mismo origen. Si itch.io no transmite parámetros al iframe, hay que instrumentar el marco real en una compilación de QA; no asumir que la query externa llega al contenido.
+- No recopila contenido del error ni URL, solo categorías `memory`, `graphics`, `network` u `other`. No transfiere datos fuera del navegador.
+- Test automatizado reutilizable: `node tools/delivery/test-optional-iphone-lifecycle-diagnostics.mjs`. Comprobación JavaScript aislada en V8: sintaxis, arranque detectado como reload, error clasificado sin texto sensible, contextlost/pagehide, límite de 48 eventos, exclusión explícita: **PASS**. La prueba Node/Unity/Chrome y **una prueba física del teléfono** siguen pendientes. La nueva instrumentación nunca se ha ejecutado sobre la 281 ya publicada; no se realiza otra subida.
+
 ## Orden de integración sin interferencias
 
 1. **Congelar la referencia exacta de la 281** (hash fuente/carga/asset si es verificable, etiqueta observada por propietario). Preservar `main` y recursos de los workstreams vigentes; no alterar el hosting para investigar la página.
