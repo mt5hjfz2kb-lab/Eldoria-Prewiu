@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-eldoria-world4x-canon-20261022",
-      "ownership_state": "claimed",
-      "write_scope_released": false,
-      "ownership_revision": 3,
+      "owner": null,
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "ownership_revision": 4,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -37,7 +37,7 @@
       ],
       "resources": [],
       "authorization": "Explicit owner order 22-10-2026 to implement Region 1 canonical world; isolated source, non-overlap with issue95's active integrated scene/ZoneOneStrategicCamera/UI/Spawnling; any integration touch requires live reconciliation.",
-      "phase": "PR100_NATIVE_UNITY_7_PASS_ART_REVIEW_NOT_APPROVED",
+      "phase": "AVAILABLE_FOR_AUTHORIZED_CONTINUATION_PR100_ART_MOBILE_PENDING",
       "next": "Scoped Unity source gate and 7/7 integrated PlayMode tests PASS on exact feature source d381bac101fe221a709a1d6b8c6adfdd2b356caf, native run 39783401434; 8 authentic horizontal/vertical camera PNG with wood node. NEXT: correct terrain/forest/close city and panorama art against 4 owner canonical PNG; run full Bastion I-II functional/save, WebGL and mobile performance; issue #96 physical iPhone 30min and owner visual acceptance still pending. NEVER merge or publish as approved.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
@@ -57,7 +57,14 @@
         "physical_iphone_tested": false,
         "visual_gap": "significant: distant geography underdetailed; near composition not canonical",
         "playable_published": false
-      }
+      },
+      "ownership_history": [
+        {
+          "owner": "chatgpt-eldoria-world4x-canon-20261022",
+          "released_at": "2026-10-22",
+          "outcome": "Draft PR #100 retained; 7/7 Unity integration PASS; visual/mobile/release gates pending"
+        }
+      ]
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
