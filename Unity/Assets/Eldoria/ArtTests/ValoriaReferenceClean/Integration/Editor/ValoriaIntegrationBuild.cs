@@ -438,6 +438,13 @@ namespace Eldoria.ReferenceClean.Editor {
     return b;
    }
    void VerifyFoot(Bounds before,Bounds after,string level){
+    Debug.Log("ISSUE95_B2_FOOT_SURVEY level="+level+" ground="+groundY.ToString("F4")+
+     " beforeMin="+before.min.y.ToString("F4")+
+     " afterMin="+after.min.y.ToString("F4")+
+     " beforeXZ="+before.center.x.ToString("F3")+","+before.center.z.ToString("F3")+
+     " afterXZ="+after.center.x.ToString("F3")+","+after.center.z.ToString("F3")+
+     " hotspot="+spawnTarget.transform.position.ToString("F3")+
+     " afterSize="+after.size.ToString("F3"));
     Need(Mathf.Abs(before.min.y-after.min.y)<.4f &&
      Vector2.Distance(new Vector2(before.center.x,before.center.z),
       new Vector2(after.center.x,after.center.z))<.6f,
