@@ -129,7 +129,7 @@ jobs:
           if($nodes.Count -lt 4){throw "Expected 4 integrated tests including six real-world cameras, got $($nodes.Count)"}
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
-          if($captures.Count -ne 6){throw "Six actual game camera PNGs missing: $($captures.Count)"}
+          if($captures.Count -ne 8){throw "Eight actual game camera PNGs missing (six scales + two real wood target views): $($captures.Count)"}
           Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) (NOT art/mobile QA)"
       - name: Upload logs and measured tests
         if: always()
