@@ -264,6 +264,19 @@ namespace Eldoria.Tests
                 Call(adapter,"RefreshForCapture");
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Regional view must not retain the legacy rectangular terrain edge.");
+                Assert.That(simplified.gameObject.activeSelf, Is.True,
+                    "Regional view must retain shared woodland canopies, not only flat forest masks.");
+                foreach (float intermediateZoom in new [] { 55f, 90f, 145f, 153f, 113f })
+                {
+                    Call(navigation,"RestoreView",target,intermediateZoom);
+                    Call(adapter,"RefreshForCapture");
+                    Assert.That(simplified.gameObject.activeSelf, Is.True,
+                        "Woodland must not disappear between regional and panoramic marker LODs.");
+                }
+                Call(navigation,"SetZoomLevel",2,true);
+                Call(adapter,"RefreshForCapture");
+                Assert.That(simplified.gameObject.activeSelf, Is.False,
+                    "Local view must restore its existing 3D vegetation representation.");
                 Assert.That(world.GetComponentsInChildren<Collider>(true).Length,
                     Is.EqualTo(existingColliderCount),
                     "Regional visual LOD must preserve every original gameplay collider.");

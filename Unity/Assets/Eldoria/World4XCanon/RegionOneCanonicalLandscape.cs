@@ -93,6 +93,7 @@ namespace Eldoria.World4XCanon
         Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial, breachHaloMaterial;
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
+        bool woodlandMode;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap()
@@ -1016,6 +1017,26 @@ namespace Eldoria.World4XCanon
             float size = navigation.View.orthographicSize;
             bool distant = size >= RegionalThreshold;
             bool modeChanged = distant != farMode;
+            // Woodland has a different LOD boundary from gameplay markers.
+            // The regional camera is 113, below the 152 marker threshold:
+            // coupling both hid every batched canopy in the regional view.
+            // Blend the SAME forest geography into view as local ground ends.
+            float woodlandAlpha = Mathf.SmoothStep(0f, 1f,
+                Mathf.InverseLerp(LocalThreshold - 7f, LocalThreshold + 14f, size));
+            bool showWoodland = woodlandAlpha > .001f;
+            if (force || showWoodland != woodlandMode)
+            {
+                woodlandMode = showWoodland;
+                if (distantForestSilhouettes) distantForestSilhouettes.SetActive(showWoodland);
+            }
+            foreach (var material in farForestMaterials)
+            {
+                if (!material || !material.HasProperty("_Color")) continue;
+                Color tint = material.GetColor("_Color");
+                if (Mathf.Abs(tint.a - woodlandAlpha) < .001f) continue;
+                tint.a = woodlandAlpha;
+                material.SetColor("_Color", tint);
+            }
             bool hideOldSquare = size >= LocalThreshold;
             // Border strips are authored near the complete region's edge.
             // They would cross the middle of the new portrait overview as
@@ -1054,7 +1075,6 @@ namespace Eldoria.World4XCanon
             {
                 farMode = distant;
                 if (detailTrees) detailTrees.SetActive(!distant);
-                if (distantForestSilhouettes) distantForestSilhouettes.SetActive(distant);
                 if (distantGeology) distantGeology.SetActive(distant);
             }
             // Reassert AFTER gameplay renderers are restored on panorama exit.
