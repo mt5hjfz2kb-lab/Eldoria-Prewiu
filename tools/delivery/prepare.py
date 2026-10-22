@@ -130,7 +130,11 @@ def prepare(archive, destination, config):
         # Normal browser HTTP caching and game saves remain independent.
         adapted = adapted.replace(needle, 'cacheControl:()=>"no-store",'+needle)
         helper = (ROOT/'tools/delivery/exact-decoded-transport.js').read_text()
-        play.write_text(helper+'\n'+adapted)
+        # Dormant unless ?eldoria_diag=1; no remote logging and no save reads.
+        # This wraps only the HTML5 bootstrap, never the Unity engine bytes.
+        diagnostic = (ROOT/'tools/delivery/optional-iphone-lifecycle-diagnostics.js').read_text()
+        revision = 'window.__eldoriaDiagnosticRevision=' + json.dumps(expected['revision']) + ';'
+        play.write_text(revision+'\\n'+diagnostic+'\\n'+helper+'\\n'+adapted)
 
         files = sorted(p for p in dist.rglob('*') if p.is_file())
         if not (dist / 'index.html').is_file() or len(files) > 1000 or any(p.stat().st_size > 200_000_000 for p in files):
