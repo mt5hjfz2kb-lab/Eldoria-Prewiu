@@ -420,8 +420,8 @@ namespace Eldoria.World4XCanon
                         }
                         for (int k = 0; k < 6; k++)
                         {
-                            indices.Add(begin); indices.Add(begin + 1 + k);
-                            indices.Add(begin + 1 + (k + 1) % 6);
+                            indices.Add(begin); indices.Add(begin + 1 + (k + 1) % 6);
+                            indices.Add(begin + 1 + k);
                         }
                     }
                 }
