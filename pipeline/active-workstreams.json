@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-hybrid-resume-82901015",
+      "owner": "chatgpt-world4x-p0-composition-20261022",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner current request: continue latest hybrid World4X task from other chat, use canonical references and updated memory; no spend or release.",
-      "phase": "WORLD4X_ART_NATIVE_A_B_NEXT",
-      "next": "From native-verified candidate 5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d and Unity 39822981117 (7/7), correct a dominant visible geography/terrain macro-composition discrepancy against the three immutable PNGs, retain only genuine A/B improvement, then continue zoom/UX fidelity, mobile and iPhone #96 independent QA; no duplicate Unity Windows jobs, no main merge/release.",
+      "authorization": "Owner 2026-10-22 explicitly orders this chat to conduct the P0 artistic experiment autonomously, continuing until verified result, preserving PR #100, 0 EUR.",
+      "phase": "P0_REFERENCE_AUTHORED_COMPOSITION_IN_UNITY",
+      "next": "Replace overly regular macro terrain/forest composition with editable reference-guided geographic layer in existing World4XCanon, capture real Unity horizontal and portrait A/B, inspect and retain only obvious visual improvement; preserve gameplay, saves and 7/7, no merge/release.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -51,13 +51,13 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d",
-        "unity_run": 39822981117,
-        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_WORKFLOW_SUCCESS",
+        "sha": "336328b92479d08421686fef587a4e5821390fc8",
+        "unity_run": 39842389820,
+        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_UNITY_JOB_SUCCESS",
         "real_unity_captures": 12,
         "art_approved": false,
         "physical_iphone_tested": false,
-        "visual_gap": "Real panorama remains too schematic/flat compared with canonical owner PNG; linear painted roads, repeated dark pine silhouettes and rudimentary coast. Portrait only ~49% core-width visible. Close scene still castle-dominated. Technical pass does not imply art acceptance.",
+        "visual_gap": "Retained visible broad improvement: connected low ridges, continuous coast, connected tributaries, raised forest cards and clearer paths. Still below reference fidelity, mixed regional legacy geometry scales and portrait 49.58% core width unresolved.",
         "playable_published": false,
         "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
         "latest_native_failure_run": 39795241792,
@@ -76,7 +76,7 @@
         "forest_corridor_art_source_sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
         "forest_corridor_first_run": 39805121152,
         "forest_corridor_water_corrected_run": 39805826900,
-        "unity_artifact": 12440189969,
+        "unity_artifact": 12453951277,
         "portrait_zoom_run": 39810954619,
         "portrait_zoom_sha": "7b224f0d75caaed536f9d2d6a135c806467729d5",
         "fog_coast_run": 39811994026,
@@ -95,7 +95,12 @@
         "recovery_run": 39822981117,
         "recovery_artifact_id": 12445257357,
         "baseline_comparison_run": 39819239685,
-        "approved_world_pngs": "docs/visual-reference/world-map/01_vista_cercana.png;02_vista_regional.png;03_vista_panoramica.png"
+        "approved_world_pngs": "docs/visual-reference/world-map/01_vista_cercana.png;02_vista_regional.png;03_vista_panoramica.png",
+        "artist": "ChatGPT direct author per explicit owner; Qwen removed from this task only",
+        "atlas_runtime_bake_removed": "Exact 2048 reviewed PNG loaded; seven PREBAKED=True logs. Editor suite 206.758s ->13.639s; panorama landscape pixels identical. Not physical mobile performance.",
+        "forest_geometry": "840 trees, 3 meshes, 3360 triangles, 1 atlas",
+        "macro_art_evidence": "docs/evidence/world4x-canon-20261022/MACRO_RELIEF_CANOPY_REVIEW_20261022.md",
+        "regional_scale_correction": "3 positively identified decorative mountain renderers hidden at regional/panorama, restored close; quarry/real targets preserved. Near and panoramas unchanged >5/255."
       },
       "ownership_history": [
         {
@@ -119,6 +124,11 @@
           "owner": "chatgpt-world4x-continuation-20261022-1925",
           "relieved_at": "2026-10-22T17:48:00Z",
           "reason": "Owner explicitly asks this chat to continue the latest hybrid World4X work; existing PR100 and all evidence preserved."
+        },
+        {
+          "owner": "chatgpt-world4x-hybrid-resume-82901015",
+          "relieved_at": "2026-10-22",
+          "reason": "Explicit owner-directed continuation: perform P0 authored reference-composition experiment to real Unity screenshot acceptance, preserve same PR #100 and workstream."
         }
       ]
     },
