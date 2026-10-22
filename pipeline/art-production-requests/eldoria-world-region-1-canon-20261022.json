@@ -8,7 +8,7 @@
   "profile": "environment_composition",
   "visual_gate_state": "AUTHORING",
   "ai_authorship_policy": "required",
-  "diagnosis": "Owner-approved Oct 22 concept requires one continuous much larger territory in the existing ValoriaIntegratedWorld, including fracture in ground, sparse trees, roads, minimal coast, three true scales and mobile optimization. Existing gameplay and save remain authority. No independent artistic approval; source-code candidate requires Unity real-camera A/B review. Consult existing Qwen/Blender lessons before promoted art.",
+  "diagnosis": "PR #100 OWNER P0 FIRST: do not continue unrelated procedural microadjustments as substitute for visual quality. Existing Unity terrain/forest noise produces technical variety, not the authored geographic composition of immutable owner world-map references. Reconstruct panoramic macro layout from 03_vista_panoramica.png (forest/biome masses, terrain relief, roads, water/coast and ground Breach) in editable layered shared-world coordinates, never pasted image or invented gameplay. Existing gameplay/saves/UI owners remain authoritative; 0 EUR.",
   "geometry_gap_proven": true,
   "allow_tripo": false,
   "credit_authorization": {
@@ -22,15 +22,15 @@
   },
   "artist": {
     "system_prompt": "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md",
-    "execution": "Existing local Qwen/Ollama plus Blender when justified by canonical A/B error; selected art knowledge only, no spending or claims of AI-generated new art in this procedural geometry candidate."
+    "execution": "Owner P0 next artistic work item: produce an EDITABLE authored geography/biome composition layout aligned to docs/visual-reference/world-map/ and use it to drive one unified 2.5D/3D terrain/vegetation prototype in the current integrated Unity world. Use existing zero-cost Qwen/Blender/assets as justified, no paid assets/Tripo. Explicitly evaluate against 03_vista_panoramica.png before extending work to regional/near. Source-only or isolated tree tweaks are NOT evidence of macrocomposition parity."
   },
   "validation": {
     "source_gate": "RegionOneCanonicalSourceGate on actual Unity 6000.3.23f1",
-    "final_gate": "Real PlayMode integrated game captures at all three scales plus genuine game loop and real iPhone stability; compare exact SHA-256 owner PNG references. No owner approval until validated."
+    "final_gate": "P0 experiment MUST deliver real Unity 6000.3.23f1 PlayMode A/B PNG for (A) previous horizontal panorama and (B) authored layout variant, exactly same camera/framing, with original canonical 03 PNG separately shown, plus exact candidate commit, action run, artifact link and PlayMode XML. Include real 390x844 vertical panorama, measured map width coverage and framing trade-off. Written comparison of four attributes: terrain hierarchy/silhouette, forest masses, road-water continuity, Breach clarity/centrality. Visual leap must be obvious and owner approved; 7/7 tests alone are insufficient. Preserve 3 scales, gameplay/save/UI, other owners, and iPhone issue #96 release gate. If A/B has no visible leap, mark NO_CONVERGENCE and stop repetitive microiterations to reassess art pipeline. PR #100 remains DRAFT/NO MERGE/NO RELEASE."
   },
   "art_approved": false,
   "unity_visual_acceptance": "PENDING",
   "physical_mobile_tested": false,
   "owner_authorization": "docs/visual-reference/ELDORIA_WORLD_MAP_CANON_20261022.md",
-  "notes": "Linked draft PR #100. No save/UI/Spawnling changes or paid Tripo. ART_APPROVED requires full Qwen-memory actual consumption evidence if/when pursuing approval; no such evidence or approval currently claimed."
+  "notes": "P0 visual-method experiment (owner direction 2026-10-22) is the NEXT required workstream milestone, detailed as mandatory acceptance checklist in PR #100: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100 . Assigned to existing live owner chatgpt-world4x-relevo-20261022, without opening parallel branch/workstream or writing its World4X Unity files. CURRENT STATE: REQUIRED_NOT_YET_EVIDENCED; do not claim experiment completed until Unity A/B artifact and comparison exist. ART_APPROVED false, owner acceptance pending. No changes to saves/UI/Spawnling, no paid Tripo. Qwen-memory use evidence still required before approval."
 }
