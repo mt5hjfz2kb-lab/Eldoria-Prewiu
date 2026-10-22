@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-world-region-1-canon-20261022",
+  "request_id": "eldoria-world-region-1-canon-20261022",
+  "asset_or_sector": "Single integrated Region 1 canonical 4X world geography with local, regional and panoramic LOD without invented hotspots",
+  "profile": "environment_composition",
+  "visual_gate_state": "AUTHORING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Owner-approved Oct 22 concept requires one continuous much larger territory in the existing ValoriaIntegratedWorld, including fracture in ground, sparse trees, roads, minimal coast, three true scales and mobile optimization. Existing gameplay and save remain authority. No independent artistic approval; source-code candidate requires Unity real-camera A/B review. Consult existing Qwen/Blender lessons before promoted art.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": true,
+    "unity_material_blending": true
+  },
+  "artist": {
+    "system_prompt": "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md",
+    "execution": "Existing local Qwen/Ollama plus Blender when justified by canonical A/B error; selected art knowledge only, no spending or claims of AI-generated new art in this procedural geometry candidate."
+  },
+  "validation": {
+    "source_gate": "RegionOneCanonicalSourceGate on actual Unity 6000.3.23f1",
+    "final_gate": "Real PlayMode integrated game captures at all three scales plus genuine game loop and real iPhone stability; compare exact SHA-256 owner PNG references. No owner approval until validated."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "PENDING",
+  "physical_mobile_tested": false,
+  "owner_authorization": "docs/visual-reference/ELDORIA_WORLD_MAP_CANON_20261022.md",
+  "notes": "Linked draft PR #100. No save/UI/Spawnling changes or paid Tripo. ART_APPROVED requires full Qwen-memory actual consumption evidence if/when pursuing approval; no such evidence or approval currently claimed."
+}
