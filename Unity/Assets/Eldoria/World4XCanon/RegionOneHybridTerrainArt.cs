@@ -17,8 +17,11 @@ namespace Eldoria.World4XCanon
     {
         public const int StyleRevision = 1;
         static readonly Color Moss = new Color(.35f,.45f,.23f);
-        static readonly Color YellowGrass = new Color(.71f,.63f,.34f);
-        static readonly Color Prairie = new Color(.56f,.57f,.30f);
+        // The first real panoramic Unity A/B was too grey-olive versus the
+        // owner's ochre/golden grassland. Warm only the two grass bases;
+        // retain existing sage/forest shading, water and gameplay geography.
+        static readonly Color YellowGrass = new Color(.77f,.62f,.31f);
+        static readonly Color Prairie = new Color(.63f,.55f,.28f);
         static readonly Color BareEarth = new Color(.64f,.49f,.30f);
         static readonly Color Shale = new Color(.50f,.50f,.40f);
         static readonly Color PineFloor = new Color(.24f,.37f,.21f);
