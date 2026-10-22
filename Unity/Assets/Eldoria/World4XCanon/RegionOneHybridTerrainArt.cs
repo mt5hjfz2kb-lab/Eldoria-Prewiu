@@ -195,52 +195,12 @@ namespace Eldoria.World4XCanon
                     // visually almost flat from the strategic camera.
                     float basin=Mathf.PerlinNoise(x*.013f+123f,z*.014f+195f);
                     float hills=Mathf.PerlinNoise(x*.019f+91f,z*.017f+41f);
-                    Color ground=Lerp(Prairie,YellowGrass,.23f+.58f*n);
-                    float verdant=Mathf.SmoothStep(.36f,.68f,basin);
-                    ground=Lerp(ground,new Color(.35f,.52f,.28f),.42f*(1f-verdant));
-                    ground=Lerp(ground,new Color(.81f,.69f,.38f),.37f*verdant);
-                    float patchwork=Mathf.PerlinNoise(x*.029f+87f,z*.027f+46f);
-                    ground=Lerp(ground,new Color(.37f,.48f,.26f),
-                        Mathf.Clamp01((.40f-patchwork)*1.9f)*.33f);
-                    ground=Lerp(ground,new Color(.75f,.65f,.40f),
-                        Mathf.Clamp01((patchwork-.62f)*1.7f)*.34f);
-                    // Panoramic composition must read as interconnected
-                    // meadow biomes, not uniformly beige terrain with dots.
-                    // These broad, warped chromatic regions are pure landcover:
-                    // no gameplay resources, artificial field grid or buildings.
-                    float ochreRegion=Mathf.PerlinNoise(
-                        (x+15f*Mathf.Sin(z*.011f))*.0071f+217f,
-                        (z+17f*Mathf.Sin(x*.009f))*.0082f+63f);
-                    float sageRegion=Mathf.PerlinNoise(
-                        (x-23f*Mathf.Sin(z*.010f))*.0096f+42f,
-                        (z+19f*Mathf.Sin(x*.012f))*.0077f+187f);
-                    float sunMeadow=Mathf.SmoothStep(.43f,.69f,ochreRegion);
-                    float coolMeadow=Mathf.SmoothStep(.45f,.71f,sageRegion)
-                        *(1f-.62f*sunMeadow);
-                    ground=Lerp(ground,new Color(.86f,.71f,.39f),sunMeadow*.60f);
-                    ground=Lerp(ground,new Color(.39f,.56f,.29f),coolMeadow*.52f);
-                    ground=Lerp(ground,Moss,Mathf.Clamp01((.45f-m)*.36f));
-                    ground=Lerp(ground,new Color(.78f,.65f,.42f),.10f*v);
-                    float meadow=Mathf.Clamp01((.65f-m)*1.7f);
-                    ground=Lerp(ground,new Color(.40f,.53f,.27f),meadow*.13f);
-                    // Affordable directional hillshade is baked into the
-                    // SAME terrain atlas. URP unlit would otherwise erase
-                    // the shallow hills from the distant strategic camera.
-                    float hillsideWest=Mathf.PerlinNoise(
-                        (x-13f)*.019f+91f,z*.017f+41f);
-                    float hillsideEast=Mathf.PerlinNoise(
-                        (x+13f)*.019f+91f,z*.017f+41f);
-                    float hillsideSouth=Mathf.PerlinNoise(
-                        x*.019f+91f,(z-13f)*.017f+41f);
-                    float hillsideNorth=Mathf.PerlinNoise(
-                        x*.019f+91f,(z+13f)*.017f+41f);
-                    float lightSlope=(hillsideWest-hillsideEast)*.86f+
-                        (hillsideNorth-hillsideSouth)*.48f;
-                    // A large 20% modulation read as camouflage blotches
-                    // in the genuine A/B capture. Reduce it; the landscape
-                    // requires many small authored-looking transitions, not
-                    // dark smooth circles or fake volumetric shadows.
-                    ground*=Mathf.Clamp(1f+lightSlope*.36f, .925f,1.075f);
+                    Color ground=RegionOneAuthoredComposition.Ground(x,z,n);
+                    // Light follows the existing real ridge forms, rather than
+                    // broad unrelated noise patches across every meadow.
+                    float sx=(RidgeElevation(x-5f,z)-RidgeElevation(x+5f,z))*.018f;
+                    float sz=(RidgeElevation(x,z+5f)-RidgeElevation(x,z-5f))*.012f;
+                    ground*=Mathf.Clamp(1f+sx+sz,.88f,1.10f);
                     float brush=Mathf.PerlinNoise(
                         x*.126f+72f,z*.143f+186f);
                     float eroded=Mathf.PerlinNoise(
@@ -280,7 +240,7 @@ namespace Eldoria.World4XCanon
                     if(RegionOneCanonicalLandscape.IsForest(x,z))
                     {
                         float gaps=Mathf.PerlinNoise(x*.116f+13f,z*.117f+27f);
-                        ground=Lerp(ground,PineFloor,.43f+.23f*gaps);
+                        ground=Lerp(ground,PineFloor,RegionOneAuthoredComposition.Woodland(x,z)*(.22f+.10f*gaps));
                     }
                     float road=RoadMask(x,z);
                     if(road>0f)ground=Lerp(ground,new Color(.69f,.57f,.35f),road);
@@ -298,16 +258,7 @@ namespace Eldoria.World4XCanon
                         if(water<.70f)ground=Lerp(ground,new Color(.75f,.65f,.42f),.46f);
                         ground=Lerp(ground,Lerp(River,Ripples,v*.31f),water);
                     }
-                    float d=Mathf.Sqrt((x-breachX)*(x-breachX)+(z-breachZ)*(z-breachZ));
-                    if(d<53f)
-                    {
-                        float strength=Mathf.SmoothStep(0f,1f,
-                            Mathf.Clamp01((53f-d)/45f));
-                        float fractures=Mathf.Abs(Mathf.Sin(
-                            Mathf.Atan2(z-breachZ,x-breachX)*17f + d*.095f));
-                        ground=Lerp(ground,RiftGround,strength*(.57f+.20f*fractures));
-                        if(d<8f)ground=Lerp(ground,RiftGlow,(8f-d)/8f*.52f);
-                    }
+                    if(water<.05f)ground=RegionOneAuthoredComposition.Breach(ground,x,z);
                     // Tiny blue-green herb and ochre highlights survive high
                     // zoom as terrain texture, not fake 3D buildings.
                     float fleck=Hash01(ix,iy,117);

@@ -23,7 +23,7 @@ namespace Eldoria.World4XCanon.Editor
             if (RegionOneCanonicalLandscape.SampleHeight(0f, 0f) > -2.5f)
                 throw new InvalidOperationException("Overlay would obstruct original hotspot geometry");
             if (!RegionOneCanonicalLandscape.IsForest(-310f, 230f) ||
-                !RegionOneCanonicalLandscape.IsForest(-245f,197.5f) ||
+                !RegionOneCanonicalLandscape.IsForest(-208f,153f) ||
                 RegionOneCanonicalLandscape.IsForest(0f, 0f))
                 throw new InvalidOperationException("Forest coverage lost geographic anchors");
             if (!RegionOneCanonicalLandscape.IsRoad(0f, 0f) ||

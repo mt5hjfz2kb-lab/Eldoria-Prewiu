@@ -42,33 +42,8 @@ namespace Eldoria.World4XCanon
         static readonly Color Rock = new Color(.52f, .49f, .40f);
         static readonly Color Water = new Color(.19f, .43f, .58f);
         static readonly Color Rift = new Color(.21f, .15f, .22f);
-        static readonly Vector2[] ForestCentres = {
-            new Vector2(-310,230),new Vector2(-180,165),new Vector2(-390,-100),
-            new Vector2(-235,-220),new Vector2(-105,-310),new Vector2(-25,230),
-            new Vector2(130,270),new Vector2(325,210),new Vector2(385,55),
-            new Vector2(270,-125),new Vector2(100,-240),new Vector2(-170,390),
-            new Vector2(190,385),new Vector2(-410,340),new Vector2(-355,-340),
-            new Vector2(385,-330),new Vector2(-65,465),new Vector2(340,440),
-            // Scale-specific regional and near-horizon vegetation: keep the
-            // gameplay corridor clear; don't populate its selectable centre.
-            new Vector2(-115,65),new Vector2(105,80),new Vector2(-125,-75),
-            new Vector2(118,-92),new Vector2(-20,125),
-            // Broad natural woodland corridors join existing biomes. These
-            // are only forest visual anchors in the same geographic mask,
-            // never resources, camps, invented gameplay nodes or colliders.
-            // Deliberately outside the existing active central corridor.
-            new Vector2(-260,202),new Vector2(-315,-164),
-            new Vector2(-174,-266),new Vector2(58,256),
-            new Vector2(225,245),new Vector2(349,128),
-            new Vector2(184,-181)
-        };
-        // Authored links between existing woodland centres. These are visual
-        // biome shapes, not roads, interactable locations or new game content.
-        // Shared with the impostor builder so the 2.5D trees inhabit the
-        // same geography as the painted terrain rather than isolated stamps.
-        internal static readonly int[] ForestCorridorPairs = {
-            0,1, 6,7, 3,4, 9,8
-        };
+        static readonly Vector2[] ForestCentres = RegionOneAuthoredComposition.Centres();
+        internal static readonly int[] ForestCorridorPairs = new int[0];
 
         ValoriaIntegratedWorld host;
         ZoneOneStrategicCamera navigation;
@@ -324,57 +299,9 @@ namespace Eldoria.World4XCanon
             }
         }
 
-        public static bool IsForest(float x, float z)
+        public static bool IsForest(float x,float z)
         {
-            float rx=x-BreachOffsetX, rz=z-BreachOffsetZ;
-            if(rx*rx+rz*rz < 37f*37f) return false;
-            // Distinct, irregular authored-looking groves rather than circles
-            // stamped at predictable radii across a strategic board.
-            for (int i = 0; i < ForestCentres.Length; i++)
-            {
-                var centre = ForestCentres[i];
-                float width = 36f + (i % 4) * 8.5f;
-                float depth = 27f + (i % 3) * 7.6f;
-                // Coherent domain warp turns near-circular resource-style
-                // patches into complex woodland silhouettes. Repeatable on
-                // every zoom because the same function paints the terrain
-                // and drives the 3D canopy batching.
-                float warpX = 13f * Mathf.Sin(z * .037f + i * 1.47f) +
-                              6f * Mathf.Sin(x * .082f + z * .026f);
-                float warpZ = 11f * Mathf.Cos(x * .044f - i * .97f) +
-                              7f * Mathf.Sin(z * .077f - x * .018f);
-                float dx = (x + warpX - centre.x) / (width * 1.3f);
-                float dz = (z + warpZ - centre.y) / (depth * 1.2f);
-                float d = dx * dx + dz * dz;
-                if (d < .075f) return true; // Preserve each authored grove's core anchor.
-                if (d > 1.65f) continue;
-                float density = Mathf.PerlinNoise(i * 6.17f + x * .044f,
-                                                   i * 3.91f + z * .042f);
-                // Reserve irregular clearings in each woodland mass. A few
-                // groves join into believable corridors rather than disks.
-                float edge = .66f + .65f * density;
-                if (d < edge && density > .34f) return true;
-            }
-            // Link selected adjacent groves into four long, winding woodland
-            // belts. Domain-warp their edges and reserve natural clearings.
-            // Preserve the open gameplay centre and grounded Breach basin.
-            if (x*x+z*z > 95f*95f)
-            for(int pair=0;pair<ForestCorridorPairs.Length;pair+=2)
-            {
-                Vector2 start=ForestCentres[ForestCorridorPairs[pair]];
-                Vector2 end=ForestCentres[ForestCorridorPairs[pair+1]];
-                Vector2 ab=end-start;
-                float len2=Mathf.Max(1f,Vector2.Dot(ab,ab));
-                float along=Mathf.Clamp01(Vector2.Dot(new Vector2(x,z)-start,ab)/len2);
-                Vector2 projected=start+ab*along;
-                float warp=6f*Mathf.Sin(x*.037f+z*.029f+pair);
-                float across=Vector2.Distance(new Vector2(x+warp,z-warp*.40f),projected);
-                float edgeNoise=Mathf.PerlinNoise(x*.035f+pair*11f,z*.038f+37f);
-                float beltWidth=18f+11f*(edgeNoise-.5f);
-                float clearing=Mathf.PerlinNoise(x*.071f+pair*7f,z*.063f+91f);
-                if(across<beltWidth && (across<7f || clearing>.30f))return true;
-            }
-            return false;
+            return RegionOneAuthoredComposition.Woodland(x,z)>.32f;
         }
 
         public static float CoastWaterMask(float x, float z)
@@ -564,39 +491,22 @@ namespace Eldoria.World4XCanon
             var indices = new List<int>();
             var centre = new Vector2(BreachOffsetX, BreachOffsetZ);
             // Thin branching cracks follow the terrain. No upright towers or enemy proxies.
-            for (int branch = 0; branch < 21; branch++)
+            foreach (var line in RegionOneAuthoredComposition.Faults)
+            for(int step=1;step<line.Length;step++)
             {
-                float angle = branch * Mathf.PI * 2f / 21f + .16f * Mathf.Sin(branch * 2.41f);
-                // Keep the physical decal narrow and grounded. The long
-                // radial-arm trial made obvious straight black spikes across
-                // the regional landscape; only the painterly terrain atlas
-                // may carry broader, naturally faded geological veins.
-                float extent=16f+(branch%5)*3.8f;
-                Vector2 previous = centre + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 1.5f;
-                for (int step = 1; step <= 3; step++)
+                Vector2 previous=centre+line[step-1], next=centre+line[step];
+                float halfWidth=.40f*Mathf.Lerp(1f,.35f,Mathf.Clamp01(line[step].magnitude/85f));
+                Vector2 perpendicular=(next-previous).normalized;
+                perpendicular=new Vector2(-perpendicular.y,perpendicular.x)*halfWidth;
+                int index=points.Count;
+                foreach(Vector2 location in new[]{previous-perpendicular,previous+perpendicular,
+                                                   next-perpendicular,next+perpendicular})
                 {
-                    float distance = extent * step / 3f;
-                    float jitter = Mathf.Sin((branch + 1) * step * 1.7f) * distance * .13f;
-                    Vector2 next = centre + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance +
-                                   new Vector2(-Mathf.Sin(angle), Mathf.Cos(angle)) * jitter;
-                    float halfWidth = .37f * (1f - .18f * step);
-                    Vector2 perpendicular = (next - previous).normalized;
-                    perpendicular = new Vector2(-perpendicular.y, perpendicular.x) * halfWidth;
-                    int index = points.Count;
-                    foreach (Vector2 location in new [] { previous - perpendicular, previous + perpendicular,
-                                                           next - perpendicular, next + perpendicular })
-                    {
-                        // The legacy local prairie is higher than the low-cost
-                        // regional substrate: keep the same grounded decal just
-                        // above whichever terrain is visible at this zoom.
-                        float h = Mathf.Max(SampleHeight(location.x, location.y) + .20f,
-                                            .19f);
-                        points.Add(new Vector3(origin.x + location.x, h, origin.z + location.y));
-                    }
-                    indices.Add(index); indices.Add(index + 1); indices.Add(index + 2);
-                    indices.Add(index + 1); indices.Add(index + 3); indices.Add(index + 2);
-                    previous = next;
+                    float h=Mathf.Max(SampleHeight(location.x,location.y)+.20f,.19f);
+                    points.Add(new Vector3(origin.x+location.x,h,origin.z+location.y));
                 }
+                indices.Add(index);indices.Add(index+1);indices.Add(index+2);
+                indices.Add(index+1);indices.Add(index+3);indices.Add(index+2);
             }
             var mesh = new Mesh { name = "Region1 surface fracture only", vertices = points.ToArray(), triangles = indices.ToArray() };
             mesh.RecalculateBounds();
@@ -651,8 +561,8 @@ namespace Eldoria.World4XCanon
             breachHaloMaterial=new Material(shader){name="Region1 ground-level Rift feathered scar"};
             breachHaloMaterial.renderQueue=3000;
             const int sectors=36;
-            float[] radii={4.5f,12.5f,23f,37f};
-            float[] opacity={.79f,.55f,.23f,0f};
+            float[] radii={4.5f,10f,18f,29f};
+            float[] opacity={.38f,.25f,.08f,0f};
             var vertices=new List<Vector3>();
             var colors=new List<Color>();
             var triangles=new List<int>();

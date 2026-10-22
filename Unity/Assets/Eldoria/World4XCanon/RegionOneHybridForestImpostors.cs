@@ -138,7 +138,7 @@ namespace Eldoria.World4XCanon
                         ? (centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link]]+
                            centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link+1]])*.5f
                         : centres[cluster];
-                    const int count=105;
+                    const int count=58;
                     for(int k=0;k<count;k++)
                     {
                         float angle=k*2.3999632f+cluster*.93f;
@@ -159,15 +159,18 @@ namespace Eldoria.World4XCanon
                         }
                         else
                         {
-                            x=centre.x+Mathf.Cos(angle)*radius*(49f+(cluster%4)*11f);
-                            z=centre.y+Mathf.Sin(angle)*radius*(38f+(cluster%3)*10f);
+                            var grove=RegionOneAuthoredComposition.Groves[cluster];
+                            float u=Mathf.Cos(angle)*radius*grove.width*1.22f;
+                            float v=Mathf.Sin(angle)*radius*grove.depth*1.22f;
+                            x=centre.x+Mathf.Cos(grove.angle)*u-Mathf.Sin(grove.angle)*v;
+                            z=centre.y+Mathf.Sin(grove.angle)*u+Mathf.Cos(grove.angle)*v;
                         }
                         // Slight spatial domain warp breaks repeated circular
                         // grove outlines while the original woodland/water/
                         // road masks remain final placement authority.
                         float seedJitter=Random01(cluster,k,913)-.5f;
-                        x+=6f*Mathf.Sin(z*.040f+cluster*.69f)+seedJitter*5f;
-                        z+=5f*Mathf.Cos(x*.037f-cluster*.43f)-seedJitter*4f;
+                        x+=1.5f*Mathf.Sin(z*.040f+cluster*.69f)+seedJitter*2f;
+                        z+=1.5f*Mathf.Cos(x*.037f-cluster*.43f)-seedJitter*2f;
                         // Exact same geographic forest definition as 2D texture.
                         // Keep genuine interaction corridor and river paths free.
                         if(!woodland(x,z)||water(x,z)||roads(x,z)||coast(x,z)||
@@ -175,7 +178,7 @@ namespace Eldoria.World4XCanon
                         // Nonalternating deterministic species distribution avoids
                         // a checkerboard pattern across close-set trees.
                         int variety=Mathf.Min(2,(int)(Random01(cluster,k,829)*3f));
-                        float width=(6.0f+Random01(cluster,k,277)*5.2f)*
+                        float width=(8.0f+Random01(cluster,k,277)*5.8f)*
                             (variety==0?.91f:1.12f);
                         float rotation=(Random01(cluster,k,313)-.5f)*.26f;
                         float groundY=elevation(x,z)+.25f;

@@ -165,59 +165,20 @@ jobs:
           $capture=Join-Path $env:RUNNER_TEMP "region1-author-source-$env:GITHUB_RUN_ID/region1-canon-captures-39831626822"
           if(-not(Test-Path "$capture/terrain-source.json")){throw 'Measured source mesh missing'}
           "ELDORIA_REGION1_ARTIST_CAPTURE=$capture" >> $env:GITHUB_ENV
-      - name: Authored macro relief from measured Unity source and canonical memory
-        if: success() && (contains(github.event.head_commit.message, 'author(world4x):') || contains(github.event.head_commit.message, 'author-retry(world4x):'))
-        timeout-minutes: 22
+      - name: Blender review of assistant-authored composition without Qwen
         shell: powershell
         run: |
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Do not contend with existing Unity or Blender'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing heavy process active'}
           $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
           if(-not $blender){
-            foreach($root in @('C:\Program Files\Blender Foundation',"${env:LOCALAPPDATA}\Programs\Blender Foundation")){
-              if(-not $blender -and (Test-Path $root)){
-                $blender=Get-ChildItem $root -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
-              }
-            }
+            $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
           }
-          if(-not $blender){throw 'Existing installed Blender not found; no duplicate install'}
-          $env:ELDORIA_REGION1_PYTHON=Get-ChildItem "$(Split-Path $blender)/*/python/bin/python.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-          if(-not $env:ELDORIA_REGION1_PYTHON){throw 'Installed Blender Python unavailable; no Windows Store alias or reinstall'}
-          # Reuse the proven local Ollama recovery from author_geography_plan.py.
-          # Start only the existing installation when its loopback API is down.
-          try {$tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 5}
-          catch {
-            $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
-            if(-not $ollama){$ollama=Get-ChildItem "$env:SystemDrive/Users/*/AppData/Local/Programs/Ollama/ollama.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
-            if(-not $ollama){throw 'Existing Ollama installation unavailable; no reinstall'}
-            $env:OLLAMA_HOST='127.0.0.1:11434'
-            $models=Get-ChildItem "$env:SystemDrive/Users/*/.ollama/models" -Directory -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-            if($models){$env:OLLAMA_MODELS=$models}
-            Start-Process -FilePath $ollama -ArgumentList 'serve' -RedirectStandardOutput "$env:RUNNER_TEMP/region1-ollama-$env:GITHUB_RUN_ID.log" -RedirectStandardError "$env:RUNNER_TEMP/region1-ollama-$env:GITHUB_RUN_ID.err"
-            for($attempt=0;$attempt -lt 30;$attempt++){
-              try {$tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 3;break}
-              catch {Start-Sleep -Seconds 1}
-            }
-            if(-not $tags){throw 'Existing Ollama failed to become ready'}
-          }
-          $model=@($tags.models | Where-Object {$_.name -match '^qwen3-vl:(4b|8b|2b)'} | Sort-Object size | Select-Object -First 1).name
-          $preferred=@($tags.models | Where-Object {$_.name -match '^qwen3-vl:8b'} | Select-Object -First 1).name
-          if($preferred){$model=$preferred}
-          if(-not $model){throw 'No installed Qwen3 vision model; no download or paid fallback'}
+          if(-not $blender){throw 'Existing Blender unavailable; no duplicate install'}
           $capture=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
-          if($env:ELDORIA_REGION1_ARTIST_CAPTURE){$capture=$env:ELDORIA_REGION1_ARTIST_CAPTURE}
           $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring'
-          $memory=Join-Path $env:GITHUB_WORKSPACE 'world4x-live'
           & $blender --background --python-exit-code 1 --python "$helpers/freeze_terrain.py" -- "$capture/terrain-source.json" $out
-          if($LASTEXITCODE){throw 'Measured Unity terrain could not be frozen in Blender'}
-          & $blender --background --python-exit-code 1 --python "$memory/tools/art-direction/ai-authoring/execute_artist_plan.py" -- --source "$out/terrain-source.blend" --inspect --inspect-target-object RegionOneCanonicalTerrain --out "$out/topology"
-          if($LASTEXITCODE){throw 'Actual Blender topology inspection failed'}
-          node "$helpers/run_author.mjs" $memory $capture $out $model
-          if($LASTEXITCODE){throw 'Canonical memory / real Qwen author failed; no promotion'}
-          & $blender --background --python-exit-code 1 --python "$memory/tools/art-direction/ai-authoring/execute_artist_plan.py" -- --source "$out/terrain-source.blend" --plan "$out/direction/artist-plan.json" --out "$out/variant" --transport direct
-          if($LASTEXITCODE){throw 'Typed artist edit failed; retain source and evidence'}
-          & $blender --background "$out/variant/artist-output.blend" --render-output "$out/terrain-clay-after-" --render-frame 1
-          if($LASTEXITCODE){throw 'Matched Blender review render failed'}
+          if($LASTEXITCODE){throw 'Blender textured source review failed'}
       - name: Upload logs and measured tests
         if: always()
         uses: actions/upload-artifact@v4
