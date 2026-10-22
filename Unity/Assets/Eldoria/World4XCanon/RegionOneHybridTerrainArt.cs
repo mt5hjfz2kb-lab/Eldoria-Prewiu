@@ -63,8 +63,7 @@ namespace Eldoria.World4XCanon
 
         static float RiverCentre(float z)
         {
-            return -104f + .25f*z + 27f*Mathf.Sin(z*.016f) +
-                12f*Mathf.Sin(z*.042f);
+            return RegionOneCanonicalLandscape.RiverCentre(z);
         }
 
         static float WaterMask(float x,float z)
@@ -72,13 +71,13 @@ namespace Eldoria.World4XCanon
             float bank=0f;
             if(z>-450f&&z<460f)
             {
-                float width=3.2f + Mathf.Sin(z*.034f)*.65f;
+                float width=4.0f + Mathf.Sin(z*.034f)*.95f;
                 float dx=Mathf.Abs(x-RiverCentre(z));
                 bank=Mathf.Max(bank,Mathf.Clamp01((width+1.5f-dx)/2.7f));
             }
             // Short, non-parallel tributaries, all tied to the primary river:
             // geography only; no new gathering opportunities.
-            float tributary1=-104f+.25f*222f+27f*Mathf.Sin(222f*.016f)+12f*Mathf.Sin(222f*.042f);
+            float tributary1=RiverCentre(222f);
             if(z>215f&&z<380f)
             {
                 float t=(z-215f)/165f;
@@ -285,6 +284,13 @@ namespace Eldoria.World4XCanon
                     }
                     float road=RoadMask(x,z);
                     if(road>0f)ground=Lerp(ground,new Color(.69f,.57f,.35f),road);
+                    // Subtle damp meadow corridors make river valleys read as
+                    // continuous geography at 244 zoom; no new water node.
+                    if(z>-445f&&z<455f)
+                    {
+                        float riparian=Mathf.Clamp01((21f-Mathf.Abs(x-RiverCentre(z)))/18f);
+                        ground=Lerp(ground,new Color(.41f,.53f,.28f),riparian*.17f);
+                    }
                     float water=WaterMask(x,z);
                     if(water>0f)
                     {
