@@ -134,7 +134,7 @@ def prepare(archive, destination, config):
         # This wraps only the HTML5 bootstrap, never the Unity engine bytes.
         diagnostic = (ROOT/'tools/delivery/optional-iphone-lifecycle-diagnostics.js').read_text()
         revision = 'window.__eldoriaDiagnosticRevision=' + json.dumps(expected['revision']) + ';'
-        play.write_text(revision+'\\n'+diagnostic+'\\n'+helper+'\\n'+adapted)
+        play.write_text(revision+'\n'+diagnostic+'\n'+helper+'\n'+adapted)
 
         files = sorted(p for p in dist.rglob('*') if p.is_file())
         if not (dist / 'index.html').is_file() or len(files) > 1000 or any(p.stat().st_size > 200_000_000 for p in files):
