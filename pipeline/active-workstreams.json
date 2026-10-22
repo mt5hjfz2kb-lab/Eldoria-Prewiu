@@ -22,7 +22,7 @@
       "owner": "chatgpt-world4x-hybrid-canon-20261022",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -35,10 +35,12 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta",
         ".github/workflows/world4x-canon-native.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Owner 2026-10-22 instructed continued PR #100 world 4X hybrid 2.5D/3D art recovery",
-      "phase": "PANORAMA_HYBRID_2_5D_AB_VISUAL_GATE",
-      "next": "Owner-directed 22-Oct correction: priority high-quality panoramic source, 2.5D/3D hybrid authored static texture and terrain with A/B Unity real capture; regional and local only after artistic improvement. No merge/publication and no exclusive runner until actual QA.",
+      "phase": "HYBRID_PANORAMA_REAL_UNITY_A_B_GATE",
+      "next": "Compile hybrid texture painter and capture 12 genuine same-camera panorama/regional/local images on Unity Windows under lease; compare macros against canon; no main promotion or release.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
