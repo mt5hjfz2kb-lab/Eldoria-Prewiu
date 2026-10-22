@@ -147,6 +147,7 @@ const plan = {
     prepared_inventory_path:out?out+'.knowledge.txt':null,
     legacy_qwen_contract:'--inventory',
     artist_memory_consumption_verified:false,
+    qwen_consumption_verified:false, // legacy read-only compatibility; Qwen is NOT required
     historical_methods_not_auto_approved:true,
     evidence_capture:'Existing tools/art-direction/learning-evidence/cycle-hooks.mjs stage (pending verification)',
     policy:memory.qa_boundary
