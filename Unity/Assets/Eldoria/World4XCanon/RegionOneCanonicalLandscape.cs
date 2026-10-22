@@ -377,6 +377,75 @@ namespace Eldoria.World4XCanon
                 }
         }
 
+        readonly List<Material> farForestMaterials = new List<Material>();
+
+        void BuildDistantForests(Transform parent)
+        {
+            distantForestSilhouettes = new GameObject("Region1 · batched distant organic forest canopies");
+            distantForestSilhouettes.transform.SetParent(parent, true);
+            // These are distant-scale tree silhouettes, never gameplay entities.
+            // A handful of low-poly canopy batches keeps draw calls predictable,
+            // unlike thousands of individual forest prefab renderers on iPhone.
+            for (int band = 0; band < 3; band++)
+            {
+                var positions = new List<Vector3>();
+                var indices = new List<int>();
+                for (int cluster = band; cluster < ForestCentres.Length; cluster += 3)
+                {
+                    Vector2 centre = ForestCentres[cluster];
+                    const int count = 18;
+                    for (int j = 0; j < count; j++)
+                    {
+                        // Golden-angle positions form irregular groves, not stamped disks.
+                        float radial = Mathf.Sqrt((j + .7f) / count);
+                        float theta = j * 2.399963f + cluster * 1.37f;
+                        float radiusX = 13f + (cluster % 4) * 3.2f;
+                        float radiusZ = 12f + (cluster % 3) * 3.3f;
+                        float x = centre.x + Mathf.Cos(theta) * radiusX * radial;
+                        float z = centre.y + Mathf.Sin(theta) * radiusZ * radial;
+                        if (Mathf.Sqrt(x * x + z * z) < 95f || IsRiver(x,z) || IsCoast(x,z)) continue;
+                        float y = SampleHeight(x, z) + .1f;
+                        float width = 1.65f + Noise(cluster * 31, j * 19) * 1.8f;
+                        float height = 4.8f + Noise(j * 11, cluster * 43) * 3f;
+                        // Triangular tapering spruce crown, with two independent
+                        // fronds and no upright surface monument.
+                        int begin = positions.Count;
+                        positions.Add(new Vector3(origin.x+x, y+height, origin.z+z));
+                        for (int k = 0; k < 6; k++)
+                        {
+                            float angle = k * Mathf.PI / 3f + .2f * cluster;
+                            float radius = width * (k % 2 == 0 ? 1f : .80f);
+                            positions.Add(new Vector3(origin.x+x + Mathf.Cos(angle)*radius,
+                                y+1.05f, origin.z+z + Mathf.Sin(angle)*radius));
+                        }
+                        for (int k = 0; k < 6; k++)
+                        {
+                            indices.Add(begin); indices.Add(begin + 1 + k);
+                            indices.Add(begin + 1 + (k + 1) % 6);
+                        }
+                    }
+                }
+                if (positions.Count == 0) continue;
+                var mesh = new Mesh { name = "Region1 · distant spruce grove batch " + band,
+                    vertices = positions.ToArray(), triangles = indices.ToArray() };
+                mesh.RecalculateBounds();
+                mesh.RecalculateNormals();
+                generatedMeshes.Add(mesh);
+                var forest = new GameObject("Region1 · strategic tree batch " + band);
+                forest.transform.SetParent(distantForestSilhouettes.transform, true);
+                forest.AddComponent<MeshFilter>().sharedMesh = mesh;
+                var material = MakeMaterial("Region1 strategic spruce " + band,
+                    band == 0 ? new Color(.15f,.31f,.16f) :
+                    band == 1 ? new Color(.22f,.36f,.17f) : new Color(.29f,.41f,.21f), false);
+                farForestMaterials.Add(material);
+                var renderer = forest.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = material;
+                renderer.receiveShadows = false;
+                renderer.shadowCastingMode = ShadowCastingMode.Off;
+            }
+            distantForestSilhouettes.SetActive(false);
+        }
+
         void BuildEdgeFog(Transform parent)
         {
             peripheralFog = new GameObject("Region1 · panoramic border haze only");
@@ -492,6 +561,7 @@ namespace Eldoria.World4XCanon
             if (surfaceMaterial) Destroy(surfaceMaterial);
             if (riftMaterial) Destroy(riftMaterial);
             if (fogMaterial) Destroy(fogMaterial);
+            foreach (var mat in farForestMaterials) if (mat) Destroy(mat);
         }
     }
 }
