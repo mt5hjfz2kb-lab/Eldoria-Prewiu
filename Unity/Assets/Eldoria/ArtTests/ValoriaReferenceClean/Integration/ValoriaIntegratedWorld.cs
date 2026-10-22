@@ -127,7 +127,7 @@ namespace Eldoria.ReferenceClean {
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
    RenderSettings.fog=open?false:cityFog;
-   if(open&&!worldVisited){WorldNavigation.PanTo(WorldHome);WorldNavigation.SetZoomLevel(1,true);worldVisited=true;}
+   if(open&&!worldVisited){WorldNavigation.EnterStrategicView(WorldHome);worldVisited=true;}
    if(open)WorldNavigation.FitToAuthoredBounds();
    SyncWorldCity();Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
   }
@@ -141,7 +141,7 @@ namespace Eldoria.ReferenceClean {
   public void Open(RoyalSection section){if(section==RoyalSection.World)TrySetWorld(!InWorld);}
   public void Navigate(string target){TrySetWorld(target=="Frontier");}
   public void Apply(PlayerState state)=>city.Apply(state);
-  public void Home(){if(InWorld){WorldNavigation.PanTo(WorldHome);WorldNavigation.SetZoomLevel(1,true);}else city.Home();}
+  public void Home(){if(InWorld)WorldNavigation.EnterStrategicView(WorldHome);else city.Home();}
   public void Pan(Vector2 delta){if(!InWorld){city.Pan(delta);return;}var p=new Vector2(Screen.width*.5f,Screen.height*.5f);if(WorldNavigation.GroundPoint(p,out var a)&&WorldNavigation.GroundPoint(p-delta,out var b))WorldNavigation.PanTo(WorldNavigation.target+b-a);}
   public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
   public WorldHotspot FindTarget(string id)=>(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None)).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
