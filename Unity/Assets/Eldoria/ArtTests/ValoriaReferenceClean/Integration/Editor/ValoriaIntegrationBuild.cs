@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Eldoria.Domain;
 using Eldoria.Presentation;
+using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using Eldoria.World4XPrototype;
@@ -407,18 +408,53 @@ namespace Eldoria.ReferenceClean.Editor {
    h.SetWorld(true);
    var spawnTarget=h.FindTarget("engendro-valoria");
    Need(spawnTarget!=null,"Authored Spawnling destination missing before battle");
+   var animated=h.WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+   Need(animated&&animated.ModelRoot&&animated.ModelRoot.activeInHierarchy,
+    "Real animated Spawnling not visible before its existing Bastion II fight");
+   float nearPresence=animated.NearPresence,farPresence=animated.StrategicPresence;
+   Bounds CreatureBounds(){
+    var rs=animated.ModelRoot.GetComponentsInChildren<Renderer>(true).Where(r=>r&&r.enabled&&r.bounds.size.y>.001f).ToArray();
+    Need(rs.Length>0,"Animated enemy LOD/render bounds absent");
+    var b=rs[0].bounds;foreach(var rr in rs.Skip(1))b.Encapsulate(rr.bounds);
+    return b;
+   }
+   void VerifyFoot(Bounds before,Bounds after,string level){
+    Need(Mathf.Abs(before.min.y-after.min.y)<.4f &&
+     Vector2.Distance(new Vector2(before.center.x,before.center.z),
+      new Vector2(after.center.x,after.center.z))<.6f,
+      "Enlarged Engendro lost original foot/XY contact at "+level);
+    Need(after.size.y>before.size.y*1.7f,"B2 visual growth insignificant at "+level);
+   }
    h.Select("");
    h.WorldNavigation.EnterStrategicView(spawnTarget.transform.position);
    h.Focus(spawnTarget.gameObject);
    yield return null;
-   Check(()=>Capture(h,"integration-art-engendro-prebattle-strategic.png",1600,900),
-    "real prebattle B2 strategic creature capture");
+   animated.NearPresence=animated.StrategicPresence=1f;
+   yield return null;
+   var regionalBefore=CreatureBounds();
+   Check(()=>Capture(h,"integration-art-engendro-before-strategic.png",1600,900),
+    "real old-size model, fixed strategic camera before enlargement");
+   animated.NearPresence=nearPresence;animated.StrategicPresence=farPresence;
+   yield return null;
+   Check(()=>{
+    VerifyFoot(regionalBefore,CreatureBounds(),"strategic");
+    Capture(h,"integration-art-engendro-prebattle-strategic.png",1600,900);
+   },"real B2 strategic enlarged silhouette AND exact grounded anchor");
    h.WorldNavigation.SetZoomLevel(2,true);
    h.WorldNavigation.PanTo(spawnTarget.transform.position);
    h.Focus(spawnTarget.gameObject);
    yield return null;
-   Check(()=>Capture(h,"integration-art-engendro-prebattle-close.png",1600,900),
-    "real prebattle B2 local creature capture");
+   animated.NearPresence=animated.StrategicPresence=1f;
+   yield return null;
+   var localBefore=CreatureBounds();
+   Check(()=>Capture(h,"integration-art-engendro-before-close.png",1600,900),
+    "real original 3m close-size comparison at identical camera");
+   animated.NearPresence=nearPresence;animated.StrategicPresence=farPresence;
+   yield return null;
+   Check(()=>{
+    VerifyFoot(localBefore,CreatureBounds(),"local");
+    Capture(h,"integration-art-engendro-prebattle-close.png",1600,900);
+   },"real B2 local enlarged silhouette AND exact grounded anchor");
    h.Select("engendro-valoria");yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");

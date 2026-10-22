@@ -30,7 +30,8 @@ namespace Eldoria.SpawnlingBastion2
 
         Vector3 restPosition, restScale;
         Quaternion restRotation;
-        float restFootOffset;
+        Vector3 restAnchorOffset;
+        bool restAnchorReady;
         float nextStateCheck;
 
         void Awake()
@@ -39,19 +40,33 @@ namespace Eldoria.SpawnlingBastion2
             restPosition = MotionPivot.localPosition;
             restRotation = MotionPivot.localRotation;
             restScale = MotionPivot.localScale;
-            // V4 uses a retained ground-aligned pivot. Cache its original foot
-            // offset before changing scale, to keep the creature on the terrain.
-            if (ModelRoot)
+            CacheRestAnchor();
+        }
+
+        // The imported V4 skeleton was aligned in WORLD SPACE before skinning.
+        // Its actual geometry can be offset laterally from the idle pivot.
+        // Compensate all three axes while scaling, not only Y: otherwise a
+        // 4.5x version walks many metres away from the original hotspot.
+        // Resolve lazily as well, because initially inactive LOD renderers
+        // can have zero bounds until the real player scene is enabled.
+        void CacheRestAnchor()
+        {
+            if (restAnchorReady || !MotionPivot || !ModelRoot) return;
+            var rs = ModelRoot.GetComponentsInChildren<Renderer>(true);
+            bool seen = false;
+            Bounds joined = default;
+            foreach (var r in rs)
             {
-                float lower = float.PositiveInfinity;
-                foreach (var visual in ModelRoot.GetComponentsInChildren<Renderer>(true))
-                    if (visual && visual.bounds.size.y > .001f)
-                        lower = Mathf.Min(lower, visual.bounds.min.y);
-                if (!float.IsInfinity(lower))
-                    restFootOffset = Mathf.Clamp(
-                        (lower - MotionPivot.position.y) /
-                        Mathf.Max(.0001f, Mathf.Abs(MotionPivot.lossyScale.y)), -5f, 5f);
+                if (!r || r.bounds.size.y <= .001f) continue;
+                if (!seen) { joined = r.bounds; seen = true; }
+                else joined.Encapsulate(r.bounds);
             }
+            if (!seen) return;
+            Vector3 worldFoot = new Vector3(joined.center.x, joined.min.y, joined.center.z);
+            Vector3 parentFoot = MotionPivot.parent
+                ? MotionPivot.parent.InverseTransformPoint(worldFoot) : worldFoot;
+            restAnchorOffset = parentFoot - restPosition;
+            restAnchorReady = true;
         }
 
         void OnEnable()
@@ -77,13 +92,15 @@ namespace Eldoria.SpawnlingBastion2
             // A small enemy disappears when the whole authored region is shown.
             // Increase its visual-only footprint with camera distance. It is
             // still a single original encounter, not a second strategic icon.
+            if (!restAnchorReady) CacheRestAnchor();
+            if (!restAnchorReady) return;
             float zoom = Host.WorldCamera ? Host.WorldCamera.orthographicSize : NearOrthographicZoom;
             float presence = PresenceAtZoom(zoom);
             MotionPivot.localScale = restScale * presence;
-            float groundCorrection = -restFootOffset * restScale.y * (presence - 1f);
             float t = Time.unscaledTime;
-            MotionPivot.localPosition = restPosition +
-                Vector3.up * (groundCorrection + BreatheAmplitude * Mathf.Sin(t * 1.55f));
+            MotionPivot.localPosition = restPosition -
+                restAnchorOffset * (presence - 1f) +
+                Vector3.up * (BreatheAmplitude * Mathf.Sin(t * 1.55f));
             MotionPivot.localRotation = restRotation *
                 Quaternion.Euler(1.1f * Mathf.Sin(t * 1.2f),
                     SwayDegrees * Mathf.Sin(t * .62f), 0f);
