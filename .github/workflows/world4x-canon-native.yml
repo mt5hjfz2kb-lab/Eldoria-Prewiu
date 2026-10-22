@@ -1,0 +1,128 @@
+name: World4X Region 1 canonical candidate source and PlayMode QA
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'Unity/Assets/Eldoria/World4XCanon/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta'
+      - '.github/workflows/world4x-canon-native.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: world4x-canon-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  canon-source:
+    if: github.event.pull_request.number == 100
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            docs/visual-reference/world-map
+            docs/visual-reference/ELDORIA_WORLD_MAP_CANON_20261022.md
+            Unity/Assets/Eldoria/World4XCanon
+            Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs
+      - name: Assert frozen owner PNG reference binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'bb053cf3099a202eff472a53207169dfba522b93c0c5b7bff0fed05b96438fd9  docs/visual-reference/world-map/01_vista_cercana.png' | sha256sum -c -
+          echo '82a38cf89e9a8ad249739496de4c972a8008df29ec4efc946c3a22273f88f316  docs/visual-reference/world-map/02_vista_regional.png' | sha256sum -c -
+          echo '68cd5b898cf3675db537b7ddceb8082befe955895864079a0ac26bdf4fb37144  docs/visual-reference/world-map/03_vista_panoramica.png' | sha256sum -c -
+          test -f Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+          test -f Unity/Assets/Eldoria/World4XCanon/Editor/RegionOneCanonicalCapture.cs
+          test -f Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs
+          grep -q 'RegionOneCanonicalLandscape' Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs
+          echo 'SOURCE_CANON_BLOBS_AND_FILES_PASS (not a Unity compile)'
+
+  unity-source-playmode:
+    needs: canon-source
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 50
+    steps:
+      - name: Find installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: world4x-source
+          clean: false
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: world4x-live
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            pipeline/active-workstreams.json
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Lease-check and real Unity preflight
+        shell: powershell
+        run: |
+          node world4x-source/tools/workstream-lease/check.mjs world4x-source/pipeline/active-workstreams.json world4x-live/pipeline/active-workstreams.json eldoria-world-region-1-canon-20261022
+          if($LASTEXITCODE){throw 'World4X owner scope or Windows lease no longer current'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing Unity or Blender job active: no concurrent overwrite'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity missing'}
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity version: $version"}
+      - name: Actual Editor import + integrated source gate
+        shell: powershell
+        run: |
+          $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-unity-source.log'
+          "ELDORIA_REGION1_SOURCE_EVIDENCE=$env:RUNNER_TEMP/eldoria-region1-source-gate.json" | Out-File $env:GITHUB_ENV -Append -Encoding utf8
+          $args=@('-batchmode','-quit','-projectPath',('"' + $project + '"'),'-executeMethod','Eldoria.World4XCanon.Editor.RegionOneCanonicalSourceGate.Validate','-logFile',('"' + $log + '"'))
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity source gate timeout' }
+          if(Test-Path $log){Get-Content $log -Tail 90}
+          if($p.ExitCode -ne 0){throw "Unity import/source gate failed: $($p.ExitCode)"}
+          if(-not(Test-Path "$env:RUNNER_TEMP/eldoria-region1-source-gate.json")){throw 'Source gate did not execute'}
+      - name: Actual integrated scene PlayMode test
+        shell: powershell
+        run: |
+          $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
+          $log=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-playmode.log'
+          $xml=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-tests.xml'
+          $args=@('-batchmode','-nographics','-projectPath',('"' + $project + '"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests','-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
+          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity PlayMode test timeout' }
+          if(Test-Path $log){Get-Content $log -Tail 90}
+          if($p.ExitCode -ne 0){throw "Integrated PlayMode test failed: $($p.ExitCode)"}
+          if(-not(Test-Path $xml)){throw 'Missing actual Unity PlayMode result'}
+          [xml]$result=Get-Content $xml -Raw
+          $nodes=@($result.SelectNodes('//test-case'))
+          if($nodes.Count -lt 3){throw "Expected 3 integrated tests, got $($nodes.Count)"}
+          if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
+          Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) (NOT art/mobile QA)"
+      - name: Upload logs and measured tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: region1-canon-native-${{ github.run_id }}
+          if-no-files-found: warn
+          path: |
+            ${{ runner.temp }}/eldoria-region1-canon-unity-source.log
+            ${{ runner.temp }}/eldoria-region1-canon-playmode.log
+            ${{ runner.temp }}/eldoria-region1-canon-tests.xml
+            ${{ runner.temp }}/eldoria-region1-source-gate.json
