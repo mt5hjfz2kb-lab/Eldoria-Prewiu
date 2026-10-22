@@ -208,7 +208,9 @@ namespace Eldoria.Tests
                     x.bounds.size.x > 100f && x.bounds.size.z > 100f).ToArray();
             Assert.That(terrain.Length, Is.GreaterThan(0),
                 "Must identify the genuinely imported local ground; do not hide arbitrary art.");
-            bool[] originalStates = terrain.Select(x => x.enabled).ToArray();
+            // Boot can already be in regional mode, where old prairie is
+            // deliberately hidden. Its current visibility is not its authored
+            // initial state; test visibility at each explicit camera scale.
             int existingColliderCount = world.GetComponentsInChildren<Collider>(true).Length;
             float zoom = camera.orthographicSize;
             var target = (Vector3)Member(navigation,"target");
@@ -216,9 +218,8 @@ namespace Eldoria.Tests
             {
                 Call(navigation, "SetZoomLevel", 2, true);
                 Call(adapter,"RefreshForCapture");
-                for (int i=0;i<terrain.Length;i++)
-                    Assert.That(terrain[i].enabled, Is.EqualTo(originalStates[i]),
-                        "The close-up camera must retain imported prairie detail.");
+                Assert.That(terrain.Any(x => x.enabled), Is.True,
+                    "The close-up camera must restore the imported prairie detail.");
                 float nearPitch = (float)Member(navigation,"tilt");
                 Call(navigation, "SetZoomLevel", 0, true);
                 Call(adapter,"RefreshForCapture");
