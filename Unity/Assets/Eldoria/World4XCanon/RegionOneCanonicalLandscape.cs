@@ -504,6 +504,8 @@ namespace Eldoria.World4XCanon
                        !RegionOneAuthoredComposition.FaultAllowed(next.x,next.y))continue;
                     float halfWidth=.40f*Mathf.Lerp(1f,.35f,
                         Mathf.Clamp01(Vector2.Distance(next,centre)/85f));
+                    halfWidth*=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(48f,65f,next.magnitude));
+                    if(halfWidth<.005f)continue;
                     Vector2 perpendicular=(next-previous).normalized;
                     perpendicular=new Vector2(-perpendicular.y,perpendicular.x)*halfWidth;
                     int index=points.Count;

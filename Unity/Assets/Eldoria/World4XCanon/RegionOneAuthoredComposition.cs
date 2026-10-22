@@ -105,6 +105,8 @@ namespace Eldoria.World4XCanon
                                   z-RegionOneCanonicalLandscape.BreachOffsetZ);
             float radius=p.magnitude;
             if(radius>90f || x*x+z*z<48f*48f)return ground;
+            Color originalGround=ground;
+            float approachFade=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(48f,70f,Mathf.Sqrt(x*x+z*z)));
             float nearest=1000f;
             foreach(var line in Faults)for(int i=1;i<line.Length;i++)
             {
@@ -121,7 +123,8 @@ namespace Eldoria.World4XCanon
             ground=Color.Lerp(ground,new Color(.15f,.12f,.21f),crack*.95f);
             float glow=Mathf.Clamp01((.9f-nearest)/.9f)*
                 Mathf.Clamp01((28f-radius)/24f);
-            return Color.Lerp(ground,new Color(.75f,.27f,.78f),glow*.85f);
+            Color result=Color.Lerp(ground,new Color(.75f,.27f,.78f),glow*.85f);
+            return Color.Lerp(originalGround,result,approachFade);
         }
     }
 }
