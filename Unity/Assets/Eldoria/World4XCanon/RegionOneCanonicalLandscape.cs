@@ -55,6 +55,9 @@ namespace Eldoria.World4XCanon
         Vector3 origin;
         GameObject detailTrees;
         GameObject peripheralFog;
+        readonly List<Renderer> originalGround = new List<Renderer>();
+        readonly List<bool> originalGroundInitiallyEnabled = new List<bool>();
+        GameObject distantForestSilhouettes;
         Mesh terrainMesh;
         Texture2D terrainTexture;
         Material surfaceMaterial, riftMaterial, fogMaterial;
@@ -126,7 +129,7 @@ namespace Eldoria.World4XCanon
             root.SetParent(existingWorld, true);
             // Existing hotspot transforms remain the only gameplay coordinate authority.
             surfaceMaterial = MakeMaterial("Region1 ground texture", Color.white, false);
-            terrainTexture = MakeTerrainTexture(768);
+            terrainTexture = MakeTerrainTexture(1024);
             if (surfaceMaterial.HasProperty("_BaseMap")) surfaceMaterial.SetTexture("_BaseMap", terrainTexture);
             if (surfaceMaterial.HasProperty("_MainTex")) surfaceMaterial.SetTexture("_MainTex", terrainTexture);
             var land = new GameObject("Region1 · one coherent terrain mesh");
@@ -138,10 +141,33 @@ namespace Eldoria.World4XCanon
             renderer.sharedMaterial = surfaceMaterial;
             renderer.shadowCastingMode = ShadowCastingMode.Off;
             renderer.receiveShadows = false;
+            // Preserve all original hotspots/colliders. Render-only LOD turns off
+            // the *legacy prairie sheet* at panorama scale, otherwise that
+            // square visually cuts the same Region 1 into two maps.
+            CollectLegacyGround(existingWorld);
             // No terrain collider: world node selection continues to hit original WorldHotspots.
             BuildBreach(root);
             BuildTreeDetail(root, existingWorld);
+            BuildDistantForests(root);
             BuildEdgeFog(root);
+        }
+
+        void CollectLegacyGround(Transform existingWorld)
+        {
+            foreach (var renderer in existingWorld.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                if (!renderer || renderer.transform.IsChildOf(transform)) continue;
+                string name = renderer.name.ToLowerInvariant();
+                bool isPrairie = name.Contains("continuous prairie") ||
+                    (name.Contains("ground") && name.Contains("zoneone"));
+                // Do not infer that the city, quarry, real trees or enemy rocks
+                // are background; only the positively identified prairie.
+                if (!isPrairie || renderer.bounds.size.x < 100f ||
+                                  renderer.bounds.size.z < 100f) continue;
+                originalGround.Add(renderer);
+                originalGroundInitiallyEnabled.Add(renderer.enabled);
+            }
+            Debug.Log("REGION1_CANON_LEGACY_PRAIRIE_RENDERERS=" + originalGround.Count);
         }
 
         Mesh MakeLandscapeMesh(int resolution)
@@ -445,6 +471,10 @@ namespace Eldoria.World4XCanon
             {
                 farMode = distant;
                 if (detailTrees) detailTrees.SetActive(!distant);
+                if (distantForestSilhouettes) distantForestSilhouettes.SetActive(distant);
+                for (int i = 0; i < originalGround.Count; i++)
+                    if (originalGround[i])
+                        originalGround[i].enabled = distant ? false : originalGroundInitiallyEnabled[i];
             }
             if (force || showFog != fogMode)
             {
@@ -455,6 +485,8 @@ namespace Eldoria.World4XCanon
 
         void OnDestroy()
         {
+            for (int i = 0; i < originalGround.Count; i++)
+                if (originalGround[i]) originalGround[i].enabled = originalGroundInitiallyEnabled[i];
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
             if (terrainTexture) Destroy(terrainTexture);
             if (surfaceMaterial) Destroy(surfaceMaterial);
