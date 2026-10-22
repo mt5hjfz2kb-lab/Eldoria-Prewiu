@@ -78,12 +78,16 @@ namespace Eldoria.Tests
             float oldRegion = camera.orthographicSize;
             Call(navigation, "EnterStrategicView", worldHome);
             float overview = camera.orthographicSize;
+            Assert.That((float)Member(navigation, "EffectiveTilt"), Is.GreaterThanOrEqualTo(60f),
+                "Macroscopic 4X should read more top-down than the detailed camera.");
             Assert.That(overview, Is.GreaterThan(oldRegion * 1.45f),
                 "The new entry must expose >2.1x regional map AREA, not a 10% zoom tweak.");
             Assert.That((float)Call(navigation, "StrategicEntryZoom"), Is.GreaterThan(0f));
             // Nearby world details must remain reachable by deliberate zoom.
             Call(navigation, "SetZoomLevel", 2, true);
             Assert.That(camera.orthographicSize, Is.LessThan(oldRegion));
+            Assert.That((float)Member(navigation, "EffectiveTilt"), Is.LessThan(60f),
+                "The existing near-view camera must not be permanently raised.");
             // Returning to the overview uses the existing bounded terrain.
             Call(navigation, "EnterStrategicView", worldHome);
             Assert.That(camera.orthographicSize, Is.EqualTo(overview).Within(.01f));
