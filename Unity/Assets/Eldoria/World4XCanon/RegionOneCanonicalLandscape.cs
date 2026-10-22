@@ -65,7 +65,7 @@ namespace Eldoria.World4XCanon
         GameObject distantForestSilhouettes;
         GameObject distantGeology;
         Mesh terrainMesh;
-        Texture2D terrainTexture, legacyCompareTexture;
+        Texture2D terrainTexture, legacyCompareTexture, localEcologyMask;
         Texture2D hybridForestAtlas;
         Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial, breachHaloMaterial;
         Renderer[] paintedBreachFallbacks;
@@ -201,6 +201,8 @@ namespace Eldoria.World4XCanon
             BuildBreach(root);
             BuildTreeDetail(root, existingWorld);
             BuildLocalCanopies(root, existingWorld);
+            BuildLocalEcology();
+            if(nearGroundMaterial) renderer.sharedMaterial=nearGroundMaterial;
             BuildDistantForests(root);
             // Authored ridges now belong to the continuous terrain itself.
             BuildEdgeFog(root);
@@ -737,6 +739,68 @@ namespace Eldoria.World4XCanon
             renderer.shadowCastingMode=ShadowCastingMode.Off;
         }
 
+        void BuildLocalEcology()
+        {
+            if(!nearGroundMaterial)return;
+            const int resolution=192;
+            const float span=384f;
+            var roots=localCanopyDonors.Where(r=>r &&
+                (r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
+                 r.name.StartsWith("Existing conifer canopy / forest ecological lobe ",StringComparison.Ordinal) ||
+                 r.name=="Forest understory / young conifer"))
+                .Select(r=>new Vector3(r.bounds.center.x-origin.x,r.bounds.center.z-origin.z,
+                    Mathf.Clamp(Mathf.Max(r.bounds.size.x,r.bounds.size.z)*.55f,2f,7f))).ToArray();
+            var city=host.FindTarget("valoria-map-city");
+            Vector2 home=city ? new Vector2(city.transform.position.x-origin.x,city.transform.position.z-origin.z):Vector2.zero;
+            var routes=new List<Vector2>();
+            foreach(var id in new[]{"forest-valoria","quarry-valoria","old-watch-ruin"})
+            {
+                var target=host.FindTarget(id);if(!target)continue;
+                var end=new Vector2(target.transform.position.x-origin.x,target.transform.position.z-origin.z);
+                // A restrained curved footpath between actual destinations.
+                // No decorative POIs or roads through the violet encounter.
+                var d=end-home;var bend=new Vector2(-d.y,d.x).normalized*4f;
+                for(int k=0;k<6;k++)
+                {
+                    float a=k/6f,b=(k+1)/6f;
+                    routes.Add(Vector2.Lerp(home,end,a)+bend*Mathf.Sin(a*Mathf.PI));
+                    routes.Add(Vector2.Lerp(home,end,b)+bend*Mathf.Sin(b*Mathf.PI));
+                }
+            }
+            var pixels=new Color[resolution*resolution];
+            for(int z=0;z<resolution;z++)for(int x=0;x<resolution;x++)
+            {
+                var p=new Vector2(((x+.5f)/resolution-.5f)*span,((z+.5f)/resolution-.5f)*span);
+                float edge=1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(165f,190f,Mathf.Max(Mathf.Abs(p.x),Mathf.Abs(p.y))));
+                if(edge<=0f||RegionOneHybridTerrainArt.IsOpenWater(p.x,p.y)){pixels[z*resolution+x]=Color.clear;continue;}
+                float forest=0f;
+                foreach(var root in roots)
+                {
+                    float radius=root.z+2f;float sq=(p-new Vector2(root.x,root.y)).sqrMagnitude;
+                    forest=Mathf.Max(forest,1f-Mathf.SmoothStep(0f,1f,Mathf.Clamp01(sq/(radius*radius))));
+                }
+                float distance=1000f;
+                for(int k=0;k<routes.Count;k+=2)
+                {
+                    var a=routes[k];var ab=routes[k+1]-a;
+                    float t=Mathf.Clamp01(Vector2.Dot(p-a,ab)/Mathf.Max(.001f,ab.sqrMagnitude));
+                    distance=Mathf.Min(distance,Vector2.Distance(p,a+ab*t));
+                }
+                float grain=Mathf.PerlinNoise(p.x*.16f+19f,p.y*.16f+37f);
+                float path=1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.8f,2.5f,distance+(grain-.5f)*.7f));
+                path*=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(9f,14f,Vector2.Distance(home,p)));
+                float meadow=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.38f,.64f,
+                    Mathf.PerlinNoise(p.x*.065f+41f,p.y*.065f+17f)+.15f*(grain-.5f)));
+                pixels[z*resolution+x]=new Color(path,forest,meadow,edge);
+            }
+            localEcologyMask=new Texture2D(resolution,resolution,TextureFormat.RGBA32,false,true)
+                {name="Region1 actual-node soil and retained-tree ecology",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
+            localEcologyMask.SetPixels(pixels);localEcologyMask.Apply(false,true);
+            nearGroundMaterial.SetTexture("_EcologyMap",localEcologyMask);
+            nearGroundMaterial.SetFloat("_EcologySpan",1f/span);
+            Debug.Log("REGION1_ECOLOGY_RETAINED_ROOTS="+roots.Length+" route_segments="+routes.Count/2);
+        }
+
         void BuildLocalCanopies(Transform parent,Transform original)
         {
             var atlas=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");
@@ -1082,6 +1146,7 @@ namespace Eldoria.World4XCanon
                 legacyCompareTexture=MakeTerrainTexture(1024);
             var selected=baseline ? legacyCompareTexture : terrainTexture;
             RefreshForCapture();
+            if(nearGroundMaterial)nearGroundMaterial.SetTexture("_BaseMap",selected);
             if (surfaceMaterial.HasProperty("_BaseMap"))
                 surfaceMaterial.SetTexture("_BaseMap",selected);
             if (surfaceMaterial.HasProperty("_MainTex"))
@@ -1290,6 +1355,7 @@ namespace Eldoria.World4XCanon
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
             if (terrainTexture && ownsTerrainTexture) Destroy(terrainTexture);
             if (legacyCompareTexture) Destroy(legacyCompareTexture);
+            if(localEcologyMask)Destroy(localEcologyMask);
             if (hybridForestAtlas) Destroy(hybridForestAtlas);
             if (surfaceMaterial) Destroy(surfaceMaterial);
             if (riftMaterial) Destroy(riftMaterial);
