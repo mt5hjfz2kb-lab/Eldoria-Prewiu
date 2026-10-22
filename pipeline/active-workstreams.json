@@ -22,24 +22,34 @@
       "owner": "chatgpt-eldoria-world4x-canon-20261022",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 1,
-      "branch": "feature/world4x-region1-canon-20261022",
+      "ownership_revision": 2,
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
       "base_main_sha": "54703262a47a1ece6d233470582d4162d3d7c0b1",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
-        "docs/evidence/world4x-canon-20261022/**"
+        "docs/evidence/world4x-canon-20261022/**",
+        "Unity/Assets/Eldoria/World4XCanon.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta",
+        ".github/workflows/world4x-canon-native.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Explicit owner order 22-10-2026 to implement Region 1 canonical world; isolated source, non-overlap with issue95's active integrated scene/ZoneOneStrategicCamera/UI/Spawnling; any integration touch requires live reconciliation.",
-      "phase": "CANON_SOURCE_AUTHORING",
-      "next": "Create opt-in/auto-binding presentation-only continuous Region1 layer, verify Unity, compare real captures; never touch UI, gameplay or saves; no publication without gates.",
+      "phase": "NATIVE_CANDIDATE_SOURCE_AND_PLAYMODE_QA",
+      "next": "Test PR #100 on actual Unity 6000.3.23f1 runner with scoped lease and integrated PlayMode tests, not a publication; preserve issue95 shared scene, UI and Spawnling.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
         "eldoria-spawnling-qwen-semantic-visual-qa-20261021"
-      ]
+      ],
+      "candidate_branch": "feature/world4x-region1-canon-20261022",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
+      "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json"
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
