@@ -77,6 +77,7 @@ namespace Eldoria.World4XCanon
   public void Refresh()
   {
    if(!host||!host.WorldCamera)return;float zoom=host.WorldCamera.orthographicSize;bool far=zoom>=152;float near=host.WorldCamera.aspect<.8f?72:41;
+   for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=before&&lodStates[i];
    for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=before&&!far&&states[i]&&(!mountains[i]||zoom<=near);
    for(int i=0;i<current.Count;i++)if(current[i])current[i].enabled=!before&&!far&&(!gates[i]||gates[i].activeInHierarchy);
   }

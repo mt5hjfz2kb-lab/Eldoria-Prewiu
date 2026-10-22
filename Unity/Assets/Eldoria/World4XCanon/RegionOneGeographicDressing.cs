@@ -27,7 +27,7 @@ namespace Eldoria.World4XCanon
    {Vector2 a=coast[i],b=coast[(i+1)%coast.Length],direction=(b-a).normalized,inward=new Vector2(direction.y,-direction.x);int count=Mathf.CeilToInt(Vector2.Distance(a,b)/7);
     for(int k=0;k<count;k++)
     {Vector2 p=Vector2.Lerp(a,b,k/(float)count),q=Vector2.Lerp(a,b,(k+1f)/count);float tone=Next(.83f,1.12f);var topA=P(p+inward*2.6f,-4.02f);var topB=P(q+inward*2.6f,-4.02f);
-     var shoulderA=P(p-inward*.5f,-6.6f),shoulderB=P(q-inward*.5f,-6.6f);var footA=P(p-inward*2.3f,-20.02f),footB=P(q-inward*2.3f,-20.02f);
+     Vector3 shoulderA=P(p-inward*.5f,-6.6f),shoulderB=P(q-inward*.5f,-6.6f);Vector3 footA=P(p-inward*2.3f,-20.02f),footB=P(q-inward*2.3f,-20.02f);
      Quad(topA,topB,shoulderB,shoulderA,new Color(.82f,.70f,.43f)*tone);
      Quad(shoulderA,shoulderB,footB,footA,rock*tone);
     }
