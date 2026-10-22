@@ -68,3 +68,50 @@ Ruta limpia opcional mediante `ELDORIA_REGION1_CAPTURE_OUT`. Nunca sobrescribir 
 
 ## Puertas de aceptación pendientes
 `UNITY_COMPILE`, `PLAYMODE_INTEGRATED`, `CAMERA_THREE_VIEWS`, `ART_AB_REFERENCE`, `I_II_FUNCTIONAL_REGRESSION`, `WEBGL_PLAYTEST`, `IPHONE_96_30MIN`, `OWNER_VISUAL_ACCEPTANCE`, `AUTHORIZED_RELEASE`: todas **PENDING**. PR de trabajo debe permanecer **draft** hasta su prueba.
+
+
+## CI nativa automática incorporada (sin aprobación implícita)
+
+El **PR #100** posee un workflow acotado `.github/workflows/world4x-canon-native.yml`.
+La primera puerta independiente `canon-source` verifica los **SHA-256 verdaderos**
+de las tres imágenes aprobadas, y ya ha pasado en varios commits, incluido
+`d7d7a054`. Los controles de gobernanza artística, arquitectura y workflows
+han vuelto a **PASS** tras registrar la petición artística obligatoria de
+coste cero en `pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json`.
+
+La segunda puerta solo se ejecuta en el Windows self-hosted existente, previa
+reserva exclusiva del runner; hace checkout restringido a `Unity/**` más el
+contrato del lease, valida la importación real del Unity Editor y ejecuta la
+clase `RegionOneCanonIntegratedAcceptanceTests` en la escena
+`Valoria_City_World_UI`.
+
+**Captura automatizada (nueva):** el cuarto test, en el almacén desechable
+`VALORIA_GAMEPLAY_PROBE=1`, llama a la entrada real al mundo. Si necesita
+aserradero, usa solo la oferta `Build` que devuelve el gateway auténtico:
+no establece `InWorld` por reflexión ni altera guardados del propietario.
+Entonces renderiza seis PNG de `WorldCamera` en las tres escalas,
+1280×720 y 390×844, con hash SHA-256 e identidad de cámara. Si no puede abrir
+Mundo por la progresión permitida, el test falla sin fingir apertura.
+
+**Estado de las capturas:** aún no están verificadas hasta que la ejecución
+nativa complete e incluya seis archivos con metadatos y tests aprobados.
+Ni una captura de Unity Editor sustituye rendimiento o estabilidad iPhone.
+
+### Puntos visuales todavía sin medir
+
+- Desde el panorama en **paisaje horizontal**, el territorio esencial mide
+  aproximadamente 850×520 unidades y el objetivo ortográfico 244 puede
+  encuadrarlo; la malla continúa mucho más allá para ocultar límites.
+- En **portrait iPhone**, la proporción 390×844 impide de entrada el mismo
+  encuadre horizontal. Es un asunto de cámara que debe corregirse o diseñarse
+  tras inspeccionar los seis PNG; no afirmar a priori que la Región 1 completa
+  esté visible en ambas orientaciones.
+- Los bosques interiores y la costa pequeña en el borde oriental se han
+  desplazado al área encuadrada; composición, legibilidad y rendimiento son
+  únicamente hipótesis hasta visualizar las capturas reales.
+- La Brecha es una fractura geológica sin collider: se han corregido las
+  normales de la malla para que su cara apunte a la cámara cenital.
+- El adaptador escucha `SceneManager.sceneLoaded` además del primer arranque:
+  se ha corregido una omisión que lo habría dejado fuera de escenas cargadas
+  después del bootstrap. Falta la prueba de ejecución para certificarlo.
+
