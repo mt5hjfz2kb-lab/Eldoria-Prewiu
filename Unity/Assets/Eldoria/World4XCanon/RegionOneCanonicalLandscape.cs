@@ -142,8 +142,12 @@ namespace Eldoria.World4XCanon
         {
             // Bounds enclose a larger real terrain mesh, not a zoom onto empty sky.
             // The current integration sets regionalZoom=32 and localZoom=14 in Start.
-            navigation.localZoom = 17f;
-            navigation.regionalZoom = 84f;
+            // The previous 17-unit close zoom filled the view with Valoria's
+            // castle and prevented players from reading the surrounding 4X
+            // territory. Widen both scales, retaining one real camera and
+            // strong near -> regional -> panorama separation.
+            navigation.localZoom = 36f;
+            navigation.regionalZoom = 113f;
             navigation.globalZoom = navigation.View.aspect < .80f
                 ? PortraitPanoramaZoom : LandscapePanoramaZoom;
             navigation.tilt = 66f;
