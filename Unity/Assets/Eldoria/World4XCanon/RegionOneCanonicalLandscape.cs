@@ -62,6 +62,13 @@ namespace Eldoria.World4XCanon
             new Vector2(225,245),new Vector2(349,128),
             new Vector2(184,-181)
         };
+        // Authored links between existing woodland centres. These are visual
+        // biome shapes, not roads, interactable locations or new game content.
+        // Shared with the impostor builder so the 2.5D trees inhabit the
+        // same geography as the painted terrain rather than isolated stamps.
+        internal static readonly int[] ForestCorridorPairs = {
+            0,1, 6,7, 3,4, 9,8
+        };
 
         ValoriaIntegratedWorld host;
         ZoneOneStrategicCamera navigation;
@@ -342,6 +349,25 @@ namespace Eldoria.World4XCanon
                 // groves join into believable corridors rather than disks.
                 float edge = .66f + .65f * density;
                 if (d < edge && density > .34f) return true;
+            }
+            // Link selected adjacent groves into four long, winding woodland
+            // belts. Domain-warp their edges and reserve natural clearings.
+            // Preserve the open gameplay centre and grounded Breach basin.
+            if (x*x+z*z > 95f*95f)
+            for(int pair=0;pair<ForestCorridorPairs.Length;pair+=2)
+            {
+                Vector2 start=ForestCentres[ForestCorridorPairs[pair]];
+                Vector2 end=ForestCentres[ForestCorridorPairs[pair+1]];
+                Vector2 ab=end-start;
+                float len2=Mathf.Max(1f,Vector2.Dot(ab,ab));
+                float along=Mathf.Clamp01(Vector2.Dot(new Vector2(x,z)-start,ab)/len2);
+                Vector2 projected=start+ab*along;
+                float warp=6f*Mathf.Sin(x*.037f+z*.029f+pair);
+                float across=Vector2.Distance(new Vector2(x+warp,z-warp*.40f),projected);
+                float edgeNoise=Mathf.PerlinNoise(x*.035f+pair*11f,z*.038f+37f);
+                float beltWidth=18f+11f*(edgeNoise-.5f);
+                float clearing=Mathf.PerlinNoise(x*.071f+pair*7f,z*.063f+91f);
+                if(across<beltWidth && (across<7f || clearing>.30f))return true;
             }
             return false;
         }
@@ -655,11 +681,18 @@ namespace Eldoria.World4XCanon
                  f.name.IndexOf("pine", StringComparison.OrdinalIgnoreCase) >= 0));
             if (!donor) return;
             var oldRenderer = donor.GetComponent<MeshRenderer>();
-            for (int i = 0; i < ForestCentres.Length; i++)
+            for (int i = 0; i < ForestCentres.Length + ForestCorridorPairs.Length/2; i++)
                 for (int j = 0; j < 5; j++)
                 {
                     float theta = (j * 2.39f + i) * Mathf.PI;
-                    var centre = ForestCentres[i];
+                    Vector2 centre;
+                    if(i<ForestCentres.Length)centre=ForestCentres[i];
+                    else
+                    {
+                        int link=(i-ForestCentres.Length)*2;
+                        centre=(ForestCentres[ForestCorridorPairs[link]]+
+                                ForestCentres[ForestCorridorPairs[link+1]])*.5f;
+                    }
                     float x = centre.x + Mathf.Cos(theta) * (11f + j * 6f);
                     float z = centre.y + Mathf.Sin(theta) * (9f + j * 4f);
                     var tree = new GameObject("Region1 · reused-tree " + i + "-" + j);

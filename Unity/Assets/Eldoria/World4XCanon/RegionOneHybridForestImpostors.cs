@@ -124,16 +124,39 @@ namespace Eldoria.World4XCanon
                 var uvs=new List<Vector2>();
                 var colors=new List<Color32>();
                 var triangles=new List<int>();
-                for(int cluster=band;cluster<centres.Length;cluster+=3)
+                int connectors=RegionOneCanonicalLandscape.ForestCorridorPairs.Length/2;
+                for(int cluster=band;cluster<centres.Length+connectors;cluster+=3)
                 {
-                    var centre=centres[cluster];
+                    bool isCorridor=cluster>=centres.Length;
+                    int link=(cluster-centres.Length)*2;
+                    var centre=isCorridor
+                        ? (centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link]]+
+                           centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link+1]])*.5f
+                        : centres[cluster];
                     const int count=105;
                     for(int k=0;k<count;k++)
                     {
                         float angle=k*2.3999632f+cluster*.93f;
                         float radius=Mathf.Sqrt((k+.45f)/count);
-                        float x=centre.x+Mathf.Cos(angle)*radius*(49f+(cluster%4)*11f);
-                        float z=centre.y+Mathf.Sin(angle)*radius*(38f+(cluster%3)*10f);
+                        float x,z;
+                        if(isCorridor)
+                        {
+                            // Populate the newly connected organic strips
+                            // with the SAME atlas and three existing batches.
+                            Vector2 start=centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link]];
+                            Vector2 end=centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link+1]];
+                            Vector2 segment=end-start;
+                            float t=Random01(cluster,k,431);
+                            float lateral=(Random01(cluster,k,613)-.5f)*33f;
+                            float length=Mathf.Max(.01f,segment.magnitude);
+                            x=Mathf.Lerp(start.x,end.x,t)-segment.y/length*lateral;
+                            z=Mathf.Lerp(start.y,end.y,t)+segment.x/length*lateral;
+                        }
+                        else
+                        {
+                            x=centre.x+Mathf.Cos(angle)*radius*(49f+(cluster%4)*11f);
+                            z=centre.y+Mathf.Sin(angle)*radius*(38f+(cluster%3)*10f);
+                        }
                         // Slight spatial domain warp breaks repeated circular
                         // grove outlines while the original woodland/water/
                         // road masks remain final placement authority.
