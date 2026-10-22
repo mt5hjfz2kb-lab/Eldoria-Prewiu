@@ -451,10 +451,13 @@ namespace Eldoria.World4XCanon
 
         public static float RoadDistance(float x,float z)
         {
-            // Original world hotspots/routes keep their existing coordinates:
-            // these are only economical textured geographic tracks.
-            float curvatureX=7f*Mathf.Sin(z*.022f)+3f*Mathf.Sin(z*.073f);
-            float curvatureZ=5f*Mathf.Sin(x*.018f);
+            // These are render-only paths. The previous low-amplitude
+            // distortion left long almost straight radial lines; use broad,
+            // continuous bends on the same established route network.
+            // Identical mask drives terrain paint and forest clearances;
+            // native march routes, WorldHotspots and save positions untouched.
+            float curvatureX=16f*Mathf.Sin(z*.018f)+6f*Mathf.Sin(z*.061f);
+            float curvatureZ=12f*Mathf.Sin(x*.013f)+4f*Mathf.Sin(x*.055f);
             Vector2 p=new Vector2(x+curvatureX,z+curvatureZ);
             float nearest=float.PositiveInfinity;
             for(int route=0;route<LandTracks.Length;route++)

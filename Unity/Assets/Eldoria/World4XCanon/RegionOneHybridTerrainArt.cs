@@ -223,28 +223,24 @@ namespace Eldoria.World4XCanon
                     ground=Lerp(ground,new Color(.78f,.65f,.42f),.10f*v);
                     float meadow=Mathf.Clamp01((.65f-m)*1.7f);
                     ground=Lerp(ground,new Color(.40f,.53f,.27f),meadow*.13f);
-                    // Bake directional hill light from the SAME low-frequency
-                    // elevation field as RegionOneCanonicalLandscape.SampleHeight
-                    // (x*.009+13, z*.010+31). The old unrelated noise field
-                    // produced disconnected camouflage-like blotches.
-                    // Four Perlin samples, same cost as the previous shade.
+                    // Affordable directional hillshade is baked into the
+                    // SAME terrain atlas. URP unlit would otherwise erase
+                    // the shallow hills from the distant strategic camera.
                     float hillsideWest=Mathf.PerlinNoise(
-                        (x-23f)*.009f+13f,z*.010f+31f);
+                        (x-13f)*.019f+91f,z*.017f+41f);
                     float hillsideEast=Mathf.PerlinNoise(
-                        (x+23f)*.009f+13f,z*.010f+31f);
+                        (x+13f)*.019f+91f,z*.017f+41f);
                     float hillsideSouth=Mathf.PerlinNoise(
-                        x*.009f+13f,(z-23f)*.010f+31f);
+                        x*.019f+91f,(z-13f)*.017f+41f);
                     float hillsideNorth=Mathf.PerlinNoise(
-                        x*.009f+13f,(z+23f)*.010f+31f);
-                    float reliefSlope=(hillsideWest-hillsideEast)*.78f+
-                        (hillsideNorth-hillsideSouth)*.46f;
-                    float distanceFromHome=Mathf.Sqrt(x*x+z*z);
-                    float distantRelief=Mathf.SmoothStep(0f,1f,
-                        Mathf.Clamp01((distanceFromHome-225f)/240f));
-                    // Real gameplay near the city stays on its already
-                    // approved level ground; relief is purely distant art.
-                    ground*=Mathf.Clamp(1f+reliefSlope*.60f*distantRelief,
-                        .91f,1.09f);
+                        x*.019f+91f,(z+13f)*.017f+41f);
+                    float lightSlope=(hillsideWest-hillsideEast)*.86f+
+                        (hillsideNorth-hillsideSouth)*.48f;
+                    // A large 20% modulation read as camouflage blotches
+                    // in the genuine A/B capture. Reduce it; the landscape
+                    // requires many small authored-looking transitions, not
+                    // dark smooth circles or fake volumetric shadows.
+                    ground*=Mathf.Clamp(1f+lightSlope*.36f, .925f,1.075f);
                     float brush=Mathf.PerlinNoise(
                         x*.126f+72f,z*.143f+186f);
                     float eroded=Mathf.PerlinNoise(
