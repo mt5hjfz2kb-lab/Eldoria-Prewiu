@@ -273,8 +273,8 @@ namespace Eldoria.World4XCanon
                                                            next - perpendicular, next + perpendicular })
                         points.Add(new Vector3(origin.x + location.x, SampleHeight(location.x, location.y) + .20f,
                                                origin.z + location.y));
-                    indices.Add(index); indices.Add(index + 2); indices.Add(index + 1);
-                    indices.Add(index + 1); indices.Add(index + 2); indices.Add(index + 3);
+                    indices.Add(index); indices.Add(index + 1); indices.Add(index + 2);
+                    indices.Add(index + 1); indices.Add(index + 3); indices.Add(index + 2);
                     previous = next;
                 }
             }
