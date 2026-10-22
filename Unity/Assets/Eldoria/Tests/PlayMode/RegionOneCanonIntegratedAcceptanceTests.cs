@@ -80,6 +80,31 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain()
+        {
+            MonoBehaviour host = null; GameObject world = null;
+            Component navigation = null; Camera camera = null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var originals = world.GetComponentsInChildren<Transform>(true);
+            foreach (var donor in new[]{
+                ("Enemy camp provisional existing canvas","corrupt-scout"),
+                ("Enemy camp existing shelter","engendro-valoria")})
+            {
+                var root=originals.FirstOrDefault(t => t.name==donor.Item1);
+                Assert.That(root, Is.Not.Null, "Existing named donor was not retained in real integrated World");
+                var art=root.GetComponentsInChildren<MeshRenderer>(true);
+                Assert.That(art.Length, Is.GreaterThan(0), "Original camp donor mesh missing");
+                Assert.That(art.All(z=>!z.enabled), Is.True,
+                    "Provisional enemy camp must not masquerade as an encounter");
+                var logicalTarget=Call(host,"FindTarget",donor.Item2) as Component;
+                Assert.That(logicalTarget, Is.Not.Null,
+                    "Removing visual placeholders must not remove real enemy hotspots");
+                Assert.That(logicalTarget.GetComponent<Collider>(), Is.Not.Null,
+                    "Selection physics must remain unchanged");
+            }
+        }
+
+        [UnityTest]
         public IEnumerator ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds()
         {
             MonoBehaviour host = null; GameObject world = null; Component navigation = null; Camera camera = null;
