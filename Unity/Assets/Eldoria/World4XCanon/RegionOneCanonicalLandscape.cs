@@ -76,6 +76,8 @@ namespace Eldoria.World4XCanon
         Renderer localCanopyRenderer;
         readonly List<Renderer> localCanopyDonors=new List<Renderer>();
         readonly List<bool> localCanopyDonorStates=new List<bool>();
+        readonly List<LODGroup> localCanopyLODs=new List<LODGroup>();
+        readonly List<bool> localCanopyLODStates=new List<bool>();
         readonly List<Material[]> nearGroundOriginalMaterials=new List<Material[]>();
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
@@ -753,6 +755,10 @@ namespace Eldoria.World4XCanon
             for(int i=0;i<donors.Length;i++)
             {
                 var donor=donors[i];var b=donor.bounds;
+                // Unity LOD culling can re-enable child renderers after LateUpdate.
+                // Suspend only these replaced visual groups, then hide their meshes.
+                foreach(var lod in donor.GetComponentsInChildren<LODGroup>(true))
+                {localCanopyLODs.Add(lod);localCanopyLODStates.Add(lod.enabled);lod.enabled=false;}
                 // Include any already-authored child LODs in reversible hide.
                 foreach(var r in donor.GetComponentsInChildren<Renderer>(true))
                 {localCanopyDonors.Add(r);localCanopyDonorStates.Add(r.enabled);r.enabled=false;}
@@ -1274,6 +1280,8 @@ namespace Eldoria.World4XCanon
                 if(originalGround[i]) originalGround[i].sharedMaterials=nearGroundOriginalMaterials[i];
             for(int i=0;i<localCanopyDonors.Count;i++)
                 if(localCanopyDonors[i])localCanopyDonors[i].enabled=localCanopyDonorStates[i];
+            for(int i=0;i<localCanopyLODs.Count;i++)
+                if(localCanopyLODs[i])localCanopyLODs[i].enabled=localCanopyLODStates[i];
             if(localCanopyMaterial)Destroy(localCanopyMaterial);
             if(nearGroundMaterial) Destroy(nearGroundMaterial);
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);

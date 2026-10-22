@@ -75,6 +75,8 @@ namespace Eldoria.Tests
                     r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal) ||
                     r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal)).ToArray();
             Assert.That(retainedTreeSources.Count(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)),Is.EqualTo(98));
+            Assert.That(retainedTreeSources.SelectMany(r=>r.GetComponentsInChildren<LODGroup>(true))
+                .Any(lod=>lod.enabled),Is.False,"Replaced source LODs must not revive legacy foliage during culling.");
             Assert.That(retainedCanopy.sharedMesh.vertexCount,Is.EqualTo(retainedTreeSources.Length*4),
                 "Replace each measured retained tree once, including both existing edge groups.");
             Assert.That(geo.GetComponentsInChildren<Collider>(true), Is.Empty,
@@ -375,7 +377,6 @@ namespace Eldoria.Tests
             // Record exact existing renderer identity + extents, so visual
             // comparison can remove only terrain sheets, never resources.
             var survey = world.GetComponentsInChildren<Renderer>(true)
-                .Where(r => r.bounds.size.x > 10f || r.bounds.size.z > 10f)
                 .OrderByDescending(r => r.bounds.size.x * r.bounds.size.z)
                 .Select(r => string.Join("\t", r.name,
                     r.bounds.size.x.ToString("F2"), r.bounds.size.y.ToString("F2"),
