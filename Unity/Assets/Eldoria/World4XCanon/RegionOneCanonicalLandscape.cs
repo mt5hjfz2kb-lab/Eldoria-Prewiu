@@ -72,7 +72,10 @@ namespace Eldoria.World4XCanon
         bool compareLegacyAtlas;
         Renderer paintedBreachRenderer;
         Material paintedBreachMaterial;
-        Material nearGroundMaterial;
+        Material nearGroundMaterial, localCanopyMaterial;
+        Renderer localCanopyRenderer;
+        readonly List<Renderer> localCanopyDonors=new List<Renderer>();
+        readonly List<bool> localCanopyDonorStates=new List<bool>();
         readonly List<Material[]> nearGroundOriginalMaterials=new List<Material[]>();
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
@@ -195,6 +198,7 @@ namespace Eldoria.World4XCanon
             // No terrain collider: world node selection continues to hit original WorldHotspots.
             BuildBreach(root);
             BuildTreeDetail(root, existingWorld);
+            BuildLocalCanopies(root, existingWorld);
             BuildDistantForests(root);
             // Authored ridges now belong to the continuous terrain itself.
             BuildEdgeFog(root);
@@ -731,6 +735,51 @@ namespace Eldoria.World4XCanon
             renderer.shadowCastingMode=ShadowCastingMode.Off;
         }
 
+        void BuildLocalCanopies(Transform parent,Transform original)
+        {
+            var atlas=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");
+            var shader=Shader.Find("Eldoria/World4X/LocalCanopy");
+            if(!atlas || !shader || !shader.isSupported)return;
+            // Exact existing forest sources only. One image per retained tree;
+            // no density increase, new resource, collider, or changed transform.
+            var donors=original.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal))
+                .OrderBy(r=>r.transform.position.x).ThenBy(r=>r.transform.position.z).ToArray();
+            if(donors.Length==0){Debug.LogWarning("REGION1_LOCAL_CANOPY_NO_MATCH");return;}
+            var vertices=new List<Vector3>();var uv=new List<Vector2>();
+            var offsets=new List<Vector2>();var indices=new List<int>();
+            for(int i=0;i<donors.Length;i++)
+            {
+                var donor=donors[i];var b=donor.bounds;
+                // Include any already-authored child LODs in reversible hide.
+                foreach(var r in donor.GetComponentsInChildren<Renderer>(true))
+                {localCanopyDonors.Add(r);localCanopyDonorStates.Add(r.enabled);r.enabled=false;}
+                float h=Mathf.Clamp(b.size.y,1f,18f);
+                float w=Mathf.Clamp(Mathf.Max(b.size.x,b.size.z),h*.55f,h*1.1f);
+                var foot=new Vector3(b.center.x,b.min.y+.03f,b.center.z);
+                int start=vertices.Count;int species=i%3;
+                for(int k=0;k<4;k++)
+                {
+                    bool right=k==1||k==2,top=k>=2;
+                    vertices.Add(foot);
+                    offsets.Add(new Vector2((right?.5f:-.5f)*w,top?h:-h*.04f));
+                    uv.Add(new Vector2((species+(right?.995f:.005f))/3f,top?1f:0f));
+                }
+                indices.AddRange(new[]{start,start+1,start+2,start,start+2,start+3});
+            }
+            var mesh=new Mesh{name="Region1 retained forest silhouettes",vertices=vertices.ToArray(),
+                uv=uv.ToArray(),uv2=offsets.ToArray(),triangles=indices.ToArray()};
+            mesh.RecalculateBounds();var bounds=mesh.bounds;bounds.Expand(40f);mesh.bounds=bounds;
+            generatedMeshes.Add(mesh);
+            localCanopyMaterial=new Material(shader){name="Region1 local faceted woodland"};
+            localCanopyMaterial.mainTexture=atlas;
+            var go=new GameObject("Region1 · retained local forest canopy");go.transform.SetParent(parent,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            localCanopyRenderer=go.AddComponent<MeshRenderer>();localCanopyRenderer.sharedMaterial=localCanopyMaterial;
+            localCanopyRenderer.shadowCastingMode=ShadowCastingMode.Off;localCanopyRenderer.receiveShadows=false;
+            Debug.Log("REGION1_LOCAL_CANOPY_RETAINED_TREES="+donors.Length);
+        }
+
         void BuildTreeDetail(Transform parent, Transform original)
         {
             detailTrees = new GameObject("Region1 · reusable midrange forest silhouettes");
@@ -1182,6 +1231,8 @@ namespace Eldoria.World4XCanon
                 if (detailTrees) detailTrees.SetActive(!distant);
                 if (distantGeology) distantGeology.SetActive(distant);
             }
+            if(localCanopyRenderer)localCanopyRenderer.enabled=!distant;
+            foreach(var r in localCanopyDonors)if(r)r.enabled=false;
             // Reassert AFTER gameplay renderers are restored on panorama exit.
             // Only visuals are affected; never disable colliders or hotspots.
             if (force || modeChanged || hideOldSquare != legacyGroundHidden)
@@ -1219,6 +1270,9 @@ namespace Eldoria.World4XCanon
                 if(regionalLegacyGeology[i])regionalLegacyGeology[i].enabled=regionalLegacyGeologyStates[i];
             for(int i=0;i<nearGroundOriginalMaterials.Count;i++)
                 if(originalGround[i]) originalGround[i].sharedMaterials=nearGroundOriginalMaterials[i];
+            for(int i=0;i<localCanopyDonors.Count;i++)
+                if(localCanopyDonors[i])localCanopyDonors[i].enabled=localCanopyDonorStates[i];
+            if(localCanopyMaterial)Destroy(localCanopyMaterial);
             if(nearGroundMaterial) Destroy(nearGroundMaterial);
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
             if (terrainTexture && ownsTerrainTexture) Destroy(terrainTexture);

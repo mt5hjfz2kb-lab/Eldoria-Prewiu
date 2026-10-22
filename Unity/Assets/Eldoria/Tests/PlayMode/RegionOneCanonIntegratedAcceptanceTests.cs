@@ -67,6 +67,11 @@ namespace Eldoria.Tests
             Assert.That(geo, Is.Not.Null);
             Assert.That(geo.GetComponentsInChildren<MeshFilter>(true)
                 .Count(f => f && f.name == "Region1 · one coherent terrain mesh"), Is.EqualTo(1));
+            var retainedCanopy=geo.GetComponentsInChildren<MeshFilter>(true)
+                .SingleOrDefault(f=>f.name=="Region1 · retained local forest canopy");
+            Assert.That(retainedCanopy,Is.Not.Null,"Known local trees must receive the candidate visual.");
+            Assert.That(retainedCanopy.sharedMesh.vertexCount,Is.EqualTo(98*4),
+                "Preserve all 98 existing tree positions without adding a new forest population.");
             Assert.That(geo.GetComponentsInChildren<Collider>(true), Is.Empty,
                 "Art layer must never steal taps or replace gameplay colliders");
             Assert.That(geo.GetComponentsInChildren<MonoBehaviour>(true)
