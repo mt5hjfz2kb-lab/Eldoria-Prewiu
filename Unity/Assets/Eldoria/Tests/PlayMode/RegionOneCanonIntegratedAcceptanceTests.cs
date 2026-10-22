@@ -261,8 +261,7 @@ namespace Eldoria.Tests
                     x.sharedMaterial.shader.name=="Eldoria/World4X/WorldAlignedPaintedGround" &&
                     x.sharedMaterial.shader.isSupported),Is.True,
                     "Near ground must render the same geographic pigment through a supported shader.");
-                Assert.That(camera.orthographicSize*2f*(390f/844f),Is.GreaterThan(55f),
-                    "Near portrait framing must include context around real gameplay nodes.");
+
                 float nearPitch = (float)Member(navigation,"tilt");
                 Call(navigation, "SetZoomLevel", 0, true);
                 Call(adapter,"RefreshForCapture");
@@ -411,6 +410,9 @@ namespace Eldoria.Tests
                         Call(adapter, "RefreshForCapture");
                         yield return null;
                         Call(adapter, "RefreshForCapture");
+                        if(stage.Item2=="cercana" && format.Item3=="vertical")
+                            Assert.That(camera.orthographicSize*2f*camera.aspect,Is.GreaterThan(55f),
+                                "Near portrait must include context around actual gameplay nodes.");
                         if(stage.Item2=="panoramica" && format.Item3=="vertical")
                         {
                             // Core Region1 is 850 units across; the previous

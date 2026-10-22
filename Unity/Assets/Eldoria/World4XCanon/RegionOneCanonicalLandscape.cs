@@ -27,7 +27,7 @@ namespace Eldoria.World4XCanon
         public const float LandscapeHalfDepth = 780f;
         public const float BreachOffsetX = 8f;
         public const float BreachOffsetZ = 61f;
-        public const float LocalThreshold = 72f;
+        public const float LocalThreshold = 41f;
         public const float RegionalThreshold = 152f;
         public const float LandscapePanoramaZoom = 244f;
         // Portrait requires a wider orthographic overview of the SAME XYZ
@@ -131,7 +131,7 @@ namespace Eldoria.World4XCanon
             // castle and prevented players from reading the surrounding 4X
             // territory. Widen both scales, retaining one real camera and
             // strong near -> regional -> panorama separation.
-            navigation.localZoom = 64f;
+            navigation.localZoom = 36f;
             navigation.regionalZoom = 113f;
             navigation.globalZoom = navigation.View.aspect < .80f
                 ? PortraitPanoramaZoom : LandscapePanoramaZoom;
@@ -232,8 +232,8 @@ namespace Eldoria.World4XCanon
             nearGroundMaterial.SetTexture("_DetailMap",detail);
             nearGroundMaterial.SetVector("_WorldMap",new Vector4(origin.x,origin.z,
                 1f/(LandscapeHalfWidth*2f),1f/(LandscapeHalfDepth*2f)));
-            nearGroundMaterial.SetFloat("_TileScale",1f/48f);
-            nearGroundMaterial.SetFloat("_DetailStrength",.55f);
+            nearGroundMaterial.SetFloat("_TileScale",1f/32f);
+            nearGroundMaterial.SetFloat("_DetailStrength",.32f);
             foreach(var renderer in originalGround)
             {
                 var previous=renderer.sharedMaterials;
@@ -1102,6 +1102,16 @@ namespace Eldoria.World4XCanon
                 // regional/near zoom and player pan/selection stay untouched.
                 if (wasPanoramic) navigation.SetZoomLevel(0, true);
             }
+            // Portrait needs context around real nodes; landscape retains
+            // the established three-scale separation and vegetation transition.
+            float wantedLocal=navigation.View.aspect<.80f ? 64f : 36f;
+            if(Mathf.Abs(navigation.localZoom-wantedLocal)>.5f)
+            {
+                bool wasLocal=navigation.View.orthographicSize<=navigation.localZoom+.5f;
+                navigation.localZoom=wantedLocal;
+                if(wasLocal) navigation.SetZoomLevel(2,true);
+            }
+            float localGroundThreshold=navigation.View.aspect<.80f ? 72f : LocalThreshold;
             float size = navigation.View.orthographicSize;
             bool distant = size >= RegionalThreshold;
             bool modeChanged = distant != farMode;
@@ -1110,7 +1120,7 @@ namespace Eldoria.World4XCanon
             // coupling both hid every batched canopy in the regional view.
             // Blend the SAME forest geography into view as local ground ends.
             float woodlandAlpha = Mathf.SmoothStep(0f, 1f,
-                Mathf.InverseLerp(navigation.localZoom, LocalThreshold + 14f, size));
+                Mathf.InverseLerp(navigation.localZoom, localGroundThreshold + 14f, size));
             bool showWoodland = woodlandAlpha > .001f;
             if (force || showWoodland != woodlandMode)
             {
@@ -1125,7 +1135,7 @@ namespace Eldoria.World4XCanon
                 tint.a = woodlandAlpha;
                 material.SetColor("_Color", tint);
             }
-            bool hideOldSquare = size >= LocalThreshold;
+            bool hideOldSquare = size >= localGroundThreshold;
             // Independent pigment replaces the duplicate old fracture only
             // where the painted ground is visible. Near/fallback retains it.
             bool paintedScar=paintedBreachRenderer && terrainTexture &&
