@@ -338,13 +338,19 @@ namespace Eldoria.Tests
                         (2,"cercana",home),
                         (1,"regional",home),
                         (0,"panoramica",home),
-                        (2,"cercana-recurso-madera",forestFocus)})
+                        (2,"cercana-recurso-madera",forestFocus),
+                        (0,"panoramica-antes-hibrido",home),
+                        (1,"regional-antes-hibrido",home)})
                     {
                         Call(navigation, "SetZoomLevel", stage.Item1, true);
                         Call(navigation, "PanTo", stage.Item3);
                         Call(adapter, "RefreshForCapture");
                         yield return null;
                         Call(adapter, "RefreshForCapture");
+                        // Genuine A/B: SAME WorldCamera, XYZ, tilt, terrain,
+                        // original gameplay and LOD. Only the diffuse atlas
+                        // changes. No owner-reference image is projected.
+                        Call(adapter, "CompareAtlas", stage.Item2.EndsWith("-antes-hibrido"));
                         var texture = new RenderTexture(format.Item1,format.Item2,24,
                             RenderTextureFormat.ARGB32);
                         var pixels = new Texture2D(format.Item1,format.Item2,TextureFormat.RGB24,false);
@@ -387,11 +393,12 @@ namespace Eldoria.Tests
                         }
                     }
                 }
-                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(8));
-                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=8 real_scene=1 disposable_gateway=1 physical_iphone=0");
+                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(12));
+                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=12 (8 genuine views + 4 exact-camera old-atlas comparisons) real_scene=1 disposable_gateway=1 physical_iphone=0");
             }
             finally
             {
+                Call(adapter, "CompareAtlas", false);
                 camera.aspect=originalAspect;
                 camera.targetTexture=originalRT;
                 RenderTexture.active=originalActive;
