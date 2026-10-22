@@ -93,6 +93,12 @@ namespace Eldoria.Tests
                 "The inland edge of the southeastern coast remains dry.");
             Assert.That(sea,Is.GreaterThan(.95f),
                 "The southeast shoreline must blend into genuine painted sea.");
+            float inlet=(float)coastMask.Invoke(null,new object[]{290f,-255f});
+            float mainland=(float)coastMask.Invoke(null,new object[]{70f,-200f});
+            Assert.That(inlet,Is.GreaterThan(.95f),
+                "The broad strategic view must include its limited eastern coastal inlet.");
+            Assert.That(mainland,Is.EqualTo(0f).Within(.001f),
+                "The bay must not flood the existing central landmass.");
         }
 
         [UnityTest]

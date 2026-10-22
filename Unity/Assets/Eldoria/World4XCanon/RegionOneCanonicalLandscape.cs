@@ -396,9 +396,20 @@ namespace Eldoria.World4XCanon
             float southWestLimit = -90f + 18f * Mathf.Sin(z*.018f);
             float eastDepth = z < southEdge ? x-coast : -10000f;
             float southDepth = x > southWestLimit ? southShore-z : -10000f;
+            // A restrained winding inlet connects the actual eastern coast
+            // with Region 1's southeast foreground. It only changes the
+            // deterministic atlas and existing terrain elevations; no new
+            // sea objects or gameplay are introduced. Its soft westward taper
+            // avoids a geometric stripe across the bottom of the map.
+            float bayShore = -214f + 15f*Mathf.Sin(x*.018f) +
+                             8f*Mathf.Sin(x*.052f);
+            float bayBlend = Mathf.SmoothStep(0f,1f,
+                Mathf.Clamp01((x-95f)/110f));
+            float bayDepth = (bayShore-z)*bayBlend - 10f*(1f-bayBlend);
             // Ten geographic units (~9 portrait pixels) of shallow coast
             // transition; same deterministic map for all view distances.
-            return Mathf.Clamp01(Mathf.Max(eastDepth,southDepth)/10f);
+            return Mathf.Clamp01(Mathf.Max(Mathf.Max(eastDepth,southDepth),
+                                             bayDepth)/10f);
         }
 
         public static bool IsCoast(float x,float z)
