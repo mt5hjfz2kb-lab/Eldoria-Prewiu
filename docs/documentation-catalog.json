@@ -110,6 +110,12 @@
       "note": "Dirección global de arte y fuentes; no aprobación visual de escena"
     },
     {
+      "path": "docs/ELDORIA_ART_KNOWLEDGE_PHASE1_20261021.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Inventario de técnicas y resultados curados, solo consulta; no autorización ni ejecución automática."
+    },
+    {
       "path": "docs/ELDORIA_ART_LEARNING_EVIDENCE_V1.md",
       "domain": "art",
       "status": "reference",
@@ -229,6 +235,17 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Decisión del propietario: Qwen opcional, no obligatorio para autoría artística; validación visual y técnica conservada"
+    },
+    {
+      "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",
+      "status": "review_pending",
+      "domain": "infrastructure"
+    },
+    {
       "path": "docs/ELDORIA_STABILIZATION_HANDOFF_20261014.md",
       "domain": "operations",
       "status": "current",
@@ -248,6 +265,16 @@
       "path": "docs/ELDORIA_TOOLCHAIN_AUTOMATION_V2.md",
       "domain": "project",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
     },
     {
       "path": "docs/ELDORIA_VALORIA_LAYERED_CONSTRUCTION_EXCLUSIVE_PRIORITY_20261016.md",
@@ -340,6 +367,12 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/ROYAL_GOLD_V2_LIVE_DELIVERY_20261020.md",
+      "domain": "quality",
+      "status": "reference",
+      "note": "Exact native191 delivery evidence; not art approval or physical device certification."
+    },
+    {
       "path": "docs/STONE_ARCHITECTURE_KIT_V1_FINAL_GATE.md",
       "domain": "art",
       "status": "review_pending"
@@ -348,6 +381,41 @@
       "path": "docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md",
       "domain": "art",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_NORMA_PRODUCCION_V1.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
+    },
+    {
+      "path": "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md",
+      "status": "review_pending",
+      "domain": "art"
     },
     {
       "path": "docs/TRIPO_MODULE_PIPELINE.md",
@@ -1074,68 +1142,6 @@
       "domain": "engineering",
       "status": "current",
       "note": "Contrato de componentes Unity"
-    },
-    {
-      "path": "docs/ROYAL_GOLD_V2_LIVE_DELIVERY_20261020.md",
-      "domain": "quality",
-      "status": "reference",
-      "note": "Exact native191 delivery evidence; not art approval or physical device certification."
-    },
-    {
-      "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",
-      "status": "review_pending",
-      "domain": "infrastructure"
-    },
-    {
-      "path": "docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_NORMA_PRODUCCION_V1.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_API_TRES_ACTIVOS_RESULTADO_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/ELDORIA_TRIPO_ART_BRAIN_INTEGRATION_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/TRIPO_MOBILE_LOD_PROOF_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/ELDORIA_TRIPO_ART_BRAIN_PHASE2_20261021.md",
-      "status": "review_pending",
-      "domain": "art"
-    },
-    {
-      "path": "docs/ELDORIA_ART_KNOWLEDGE_PHASE1_20261021.md",
-      "domain": "art",
-      "status": "reference",
-      "note": "Inventario de técnicas y resultados curados, solo consulta; no autorización ni ejecución automática."
     }
   ]
 }
