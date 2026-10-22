@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Eldoria.Domain;
 using Eldoria.Presentation;
+using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
 
@@ -117,6 +118,18 @@ namespace Eldoria.ReferenceClean {
     visible&=host.Selected!=pair.Key;
     if(!town)visible&=pair.Key==objective||pair.Key=="valoria-map-city"||host.WorldCamera.orthographicSize<=22;
     pair.Value.gameObject.SetActive(visible);
+    if(visible&&pair.Key=="engendro-valoria"){
+     // The canonical label previously crossed the larger animated creature
+     // and concealed its head at 4X distance. Lift ONLY this real existing
+     // label above the model instead of scaling a second HUD marker.
+     // Near model original height=3.0m from the pinned finished V4
+     // integration; use the same zoom-dependent visual-only presence.
+     var actor=host.WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+     if(actor&&actor.ModelRoot&&actor.ModelRoot.activeInHierarchy){
+      float height=3f*actor.PresenceAtZoom(host.WorldCamera.orthographicSize);
+      pair.Value.WorldOffset=Vector3.up*(height+3f);
+     }
+    }
     string title=Name(pair.Key,host.English);
     bool ownBuild=(s.BuildingTaskId??"").StartsWith(pair.Key+":",StringComparison.Ordinal)&&s.BuildingCompletesUtcTicks>0;
     if(town&&!built)title=ownBuild?(host.English?"Building: ":"En obras: ")+title:(host.English?"Build here: ":"Construir aquí: ")+title;
