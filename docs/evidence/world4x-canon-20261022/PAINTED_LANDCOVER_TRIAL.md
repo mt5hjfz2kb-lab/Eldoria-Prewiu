@@ -1,0 +1,7 @@
+# Grouped artist-painted local landcover
+
+Reject crisp procedural-island trials be4625/native39864636702 and bc6da8/native39865078502 as an insufficient artistic advance: first too large/flat, second uniform camouflage. Both7/7 technical PASS, neither reference approval. Restore192pixel actual-node ecology mask (higher384mask raised observed suite duration14.54s→23.31s; not isolated device benchmark).
+
+New asset generated with built-in imagegen, no paid external API or Qwen: RegionOnePaintedLandcover.png, Git blob b8541498d5407615f0226cf4a9479967b81c85c1. Prompt: top-down diffuse game-ground pigment, golden exposed earth through deliberately grouped olive-green meadow islands, crisp painterly facets, asymmetrical large and small masses,65%grass/35%earth; no trees, buildings, water, roads, POIs, text or shadows. Mirrored32m world tiles keep boundaries continuous; existing root/actual-node path masks integrate pigment. Local blend90%, fade out before panorama unchanged. Must inspect native captures before retaining; generated texture alone is not evidence of Unity improvement.
+
+Owner additionally explicitly requested replacing old world node visuals with reference counterparts. Preserve real target IDs, positions and mechanics; inspect reusable existing boar/spawnling assets and replace old visual representation through this adapter, not invented POIs. No main merge/publication/ART_APPROVED.

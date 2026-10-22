@@ -4,6 +4,7 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
     {
         [MainTexture] _BaseMap("Geographic pigment", 2D) = "white" {}
         _DetailMap("Painted meadow detail", 2D) = "gray" {}
+        _SurfaceMap("Artist painted land-cover",2D)="white"{}
         _EcologyMap("Actual-node soil / forest / meadow",2D)="black"{}
         _EcologySpan("Local field inverse extent",Float)=.002604167
         _EcologyStrength("Local scale ecology",Range(0,1))=1
@@ -27,6 +28,7 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
             TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
             TEXTURE2D(_DetailMap); SAMPLER(sampler_DetailMap);
             TEXTURE2D(_EcologyMap); SAMPLER(sampler_EcologyMap);
+            TEXTURE2D(_SurfaceMap); SAMPLER(sampler_SurfaceMap);
             CBUFFER_START(UnityPerMaterial)
                 float _EcologySpan;
                 float _EcologyStrength;
@@ -63,37 +65,18 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
                     half3 meadow=half3(.223,.274,.051),forest=half3(.078,.126,.025),soil=half3(.477,.307,.113);
                 #endif
                 half weight=ecology.a*dry*_EcologyStrength;
-                // Authored land-cover hierarchy: exposed ochre earth between
-                // coherent meadow islands, rooted shade, then actual-node paths.
-                // Derivative antialiasing keeps edges readable at every scale.
-                half meadowAA=max(.018h,fwidth(ecology.b)*.8h);
-                half meadowCover=smoothstep(.48h-meadowAA,.48h+meadowAA,ecology.b);
-                half rootAA=max(.025h,fwidth(ecology.g));
-                half rootCover=smoothstep(.28h-rootAA,.28h+rootAA,ecology.g);
-                half pathAA=max(.035h,fwidth(ecology.r));
-                half pathCover=smoothstep(.32h-pathAA,.32h+pathAA,ecology.r);
-                #if defined(UNITY_COLORSPACE_GAMMA)
-                    half3 earth=half3(.69,.58,.33);
-                    half3 grass=half3(.46,.53,.23);
-                    half3 roots=half3(.32,.41,.18);
-                    half3 path=half3(.76,.64,.39);
-                #else
-                    half3 earth=half3(.434,.296,.089);
-                    half3 grass=half3(.179,.243,.043);
-                    half3 roots=half3(.084,.140,.027);
-                    half3 path=half3(.539,.367,.126);
-                #endif
-                half grassTone=lerp(.88h,1.12h,smoothstep(.48h,.93h,ecology.b));
-                half3 local=lerp(earth,grass*grassTone,meadowCover);
-                local=lerp(local,roots,rootCover*.66h);
-                local=lerp(local,path,pathCover*.92h);
-                // Retain a little authored pigment variation, without the
-                // previous blurred atlas dominating the near land-cover shapes.
-                local*=lerp(half3(1,1,1),variation,.18h);
-                pigment=lerp(pigment,local,weight*.86h);
+                // Mirrored world-space sampling keeps color continuous at tile
+                // boundaries. Final shapes come from authored pigment, not noise.
+                float2 surfaceUV=abs(frac((relative+float2(17,31))/64.0)*2.0-1.0);
+                half3 local=SAMPLE_TEXTURE2D(_SurfaceMap,sampler_SurfaceMap,surfaceUV).rgb;
+                local=lerp(local,forest,ecology.g*.42h);
+                half pathAA=max(.045h,fwidth(ecology.r));
+                half pathCover=smoothstep(.28h-pathAA,.28h+pathAA,ecology.r);
+                local=lerp(local,soil,pathCover*.88h);
+                pigment=lerp(pigment,local,weight*.90h);
                 half footprint=max(length(ddx(relative)),length(ddy(relative)));
                 half detailFade=1-smoothstep(.16,.75,footprint);
-                half detailAmount=lerp(_DetailStrength,.055h,weight);
+                half detailAmount=_DetailStrength*(1-weight);
                 half3 color=pigment*lerp(half3(1,1,1),variation,detailAmount*dry*detailFade);
                 Light sun=GetMainLight();
                 half flat=.70h+.30h*saturate(sun.direction.y);

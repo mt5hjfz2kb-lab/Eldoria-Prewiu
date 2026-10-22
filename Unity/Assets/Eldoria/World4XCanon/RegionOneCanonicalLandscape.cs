@@ -238,6 +238,7 @@ namespace Eldoria.World4XCanon
             nearGroundMaterial=new Material(shader){name="Region1 same-geography near meadow"};
             nearGroundMaterial.SetTexture("_BaseMap",terrainTexture);
             nearGroundMaterial.SetTexture("_DetailMap",detail);
+            nearGroundMaterial.SetTexture("_SurfaceMap",Resources.Load<Texture2D>("World4X/RegionOnePaintedLandcover"));
             nearGroundMaterial.SetVector("_WorldMap",new Vector4(origin.x,origin.z,
                 1f/(LandscapeHalfWidth*2f),1f/(LandscapeHalfDepth*2f)));
             nearGroundMaterial.SetFloat("_TileScale",1f/32f);
@@ -742,7 +743,7 @@ namespace Eldoria.World4XCanon
         void BuildLocalEcology()
         {
             if(!nearGroundMaterial)return;
-            const int resolution=384;
+            const int resolution=192;
             const float span=384f;
             var roots=localCanopyDonors.Where(r=>r &&
                 (r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
@@ -789,12 +790,8 @@ namespace Eldoria.World4XCanon
                 float grain=Mathf.PerlinNoise(p.x*.16f+19f,p.y*.16f+37f);
                 float path=1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.8f,2.5f,distance+(grain-.5f)*.7f));
                 path*=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(9f,14f,Vector2.Distance(home,p)));
-                // Smaller interlocking meadow islands with two boundary scales.
-                // Higher mask resolution preserves actual footpaths and root beds.
-                float meadowNoise=.72f*Mathf.PerlinNoise(p.x*.145f+41f,p.y*.145f+17f)
-                    +.20f*Mathf.PerlinNoise(p.x*.31f+73f,p.y*.31f+29f)
-                    +.08f*Mathf.PerlinNoise(p.x*.69f+11f,p.y*.69f+89f);
-                float meadow=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.36f,.63f,meadowNoise));
+                float meadow=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(.38f,.64f,
+                    Mathf.PerlinNoise(p.x*.065f+41f,p.y*.065f+17f)+.15f*(grain-.5f)));
                 pixels[z*resolution+x]=new Color(path,forest,meadow,edge);
             }
             localEcologyMask=new Texture2D(resolution,resolution,TextureFormat.RGBA32,false,true)
