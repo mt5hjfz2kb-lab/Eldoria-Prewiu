@@ -101,7 +101,7 @@ namespace Eldoria.World4XCanon
             if(result.material.HasProperty("_MainTex"))
                 result.material.SetTexture("_MainTex",result.atlas);
             result.material.enableInstancing=true;
-            result.root=new GameObject("Region1 · hybrid forest painterly 2.5D LOD");
+            result.root=new GameObject("Region1 · batched distant organic forest canopies");
             result.root.transform.SetParent(parent,true);
             for(int band=0;band<3;band++)
             {
