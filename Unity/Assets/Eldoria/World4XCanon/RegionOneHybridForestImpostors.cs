@@ -192,12 +192,19 @@ namespace Eldoria.World4XCanon
                         for(int layer=0;layer<2;layer++)
                         {
                             float direction=rotation+layer*.055f;
-                            float scale=layer==0?1f:.63f;
+                            float scale=1f;
                             Vector3 right=new Vector3(Mathf.Cos(direction),0f,
                                 Mathf.Sin(direction))*(width*scale*.5f);
-                            Vector3 forward=new Vector3(-right.z,0f,right.x);
-                            float canopyLift=layer==0?.15f:2.85f;
-                            Vector3 canopyCentre=p+Vector3.up*canopyLift;
+                            Vector3 along=new Vector3(-Mathf.Sin(direction),0f,Mathf.Cos(direction));
+                            // Ground-contact shadow plus a raised, inclined tree
+                            // card. Formerly BOTH cards lay flat on the terrain,
+                            // making entire groves read as stacked stickers.
+                            Vector3 forward=layer==0
+                                ? along*(width*.43f)
+                                : (along*.82f+Vector3.up*.57f)*(width*.68f);
+                            Vector3 canopyCentre=layer==0
+                                ? p+along*(width*.17f)+Vector3.up*.08f
+                                : p+forward+Vector3.up*.12f;
                             int start=vertices.Count;
                             vertices.Add(canopyCentre-right-forward);
                             vertices.Add(canopyCentre+right-forward);
@@ -214,11 +221,12 @@ namespace Eldoria.World4XCanon
                             // Dark undergrowth, mid-green needles, sunlit tips.
                             // The painted silhouette remains transparent and
                             // consistent with the forest underlay at all zooms.
-                            float layerLight=layer==0?.81f:1.06f;
+                            float layerLight=layer==0?.27f:1.03f;
                             var crownTint=new Color32(
                                 (byte)Mathf.Clamp(Mathf.RoundToInt(tint.r*layerLight),0,255),
                                 (byte)Mathf.Clamp(Mathf.RoundToInt(tint.g*layerLight),0,255),
-                                (byte)Mathf.Clamp(Mathf.RoundToInt(tint.b*layerLight),0,255),255);
+                                (byte)Mathf.Clamp(Mathf.RoundToInt(tint.b*layerLight),0,255),
+                                (byte)(layer==0?72:255));
                             for(int i=0;i<4;i++)colors.Add(crownTint);
                             // Upward-facing winding is essential with
                             // the overhead orthographic strategy camera.
