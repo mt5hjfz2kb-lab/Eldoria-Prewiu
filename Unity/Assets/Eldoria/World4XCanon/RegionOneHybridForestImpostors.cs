@@ -40,8 +40,13 @@ namespace Eldoria.World4XCanon
             // 2.5D impostors: broad serrated lower boughs, narrow tapered top.
             // It stays one alpha atlas and is not a gameplay object or POI.
             const int size=96;
-            var pixels=new Color32[size*size];
-            for(int y=0;y<size;y++)
+            // Two painted conifer profiles in ONE shared 192x96 atlas.
+            // No additional materials or renderer batches; avoid repeating
+            // the same triangular shape across every distant woodland.
+            const int atlasWidth=size*2;
+            var pixels=new Color32[atlasWidth*size];
+            for(int species=0;species<2;species++)
+              for(int y=0;y<size;y++)
                 for(int x=0;x<size;x++)
                 {
                     float dx=(x-size*.50f)/(size*.48f);
@@ -52,13 +57,16 @@ namespace Eldoria.World4XCanon
                     // circular green-dot silhouette even at overview zoom.
                     float boughs=.11f*Mathf.Sin(t*36f+dx*1.7f)+
                                   .047f*Mathf.Sin(t*72f-dx*3f);
-                    float width=(.91f*(1f-t)+.065f)*
+                    float profile=species==0
+                        ? (.91f*(1f-t)+.065f)
+                        : (.73f*(1f-t)+.16f+.085f*Mathf.Sin(t*5.5f));
+                    float width=profile*
                                 (.93f+.11f*Mathf.Sin(t*17f+1.4f));
                     float edge=width+boughs*(1f-.38f*t);
                     float within=edge-Mathf.Abs(dx);
                     if(dy<-.93f||dy>.95f||within<=0f)
                     {
-                        pixels[y*size+x]=new Color32(0,0,0,0);
+                        pixels[y*atlasWidth+species*size+x]=new Color32(0,0,0,0);
                         continue;
                     }
                     // Branch tiers and left/right directional light suggest
@@ -66,7 +74,8 @@ namespace Eldoria.World4XCanon
                     float needles=Mathf.Sin(t*44f+dx*6f)*.12f+
                         Mathf.Sin(t*73f-dx*9f)*.06f;
                     float light=Mathf.Clamp01(.46f-.20f*dx+
-                        .17f*t+needles+.16f*(jitter-.5f));
+                        .17f*t+needles+.16f*(jitter-.5f)+
+                        (species==1?.055f:0f));
                     light*=1f-.28f*Mathf.SmoothStep(0f,1f,
                         Mathf.Clamp01((.22f-within)/.22f));
                     byte rr=(byte)Mathf.Clamp(Mathf.RoundToInt(
@@ -78,10 +87,10 @@ namespace Eldoria.World4XCanon
                     byte alpha=(byte)Mathf.RoundToInt(255f*
                         Mathf.Clamp01(within*15f)*
                         Mathf.Clamp01((.97f-dy)*17f));
-                    pixels[y*size+x]=new Color32(rr,gg,bb,alpha);
+                    pixels[y*atlasWidth+species*size+x]=new Color32(rr,gg,bb,alpha);
                 }
-            var atlas=new Texture2D(size,size,TextureFormat.RGBA32,true,false)
-                {name="Region 1 painterly oblique tapered conifer crowns"};
+            var atlas=new Texture2D(atlasWidth,size,TextureFormat.RGBA32,true,false)
+                {name="Region 1 painted dual-profile organic conifers / single atlas"};
             atlas.SetPixels32(pixels);
             atlas.Apply(true,true);
             atlas.wrapMode=TextureWrapMode.Clamp;
@@ -125,11 +134,19 @@ namespace Eldoria.World4XCanon
                         float radius=Mathf.Sqrt((k+.45f)/count);
                         float x=centre.x+Mathf.Cos(angle)*radius*(49f+(cluster%4)*11f);
                         float z=centre.y+Mathf.Sin(angle)*radius*(38f+(cluster%3)*10f);
+                        // Slight spatial domain warp breaks repeated circular
+                        // grove outlines while the original woodland/water/
+                        // road masks remain final placement authority.
+                        float seedJitter=Random01(cluster,k,913)-.5f;
+                        x+=6f*Mathf.Sin(z*.040f+cluster*.69f)+seedJitter*5f;
+                        z+=5f*Mathf.Cos(x*.037f-cluster*.43f)-seedJitter*4f;
                         // Exact same geographic forest definition as 2D texture.
                         // Keep genuine interaction corridor and river paths free.
                         if(!woodland(x,z)||water(x,z)||roads(x,z)||coast(x,z)||
                             x*x+z*z<95f*95f)continue;
-                        float width=6.0f+Random01(cluster,k,277)*5.2f;
+                        int variety=(cluster*13+k*7)&1;
+                        float width=(6.0f+Random01(cluster,k,277)*5.2f)*
+                            (variety==0?.91f:1.12f);
                         float rotation=(Random01(cluster,k,313)-.5f)*.26f;
                         float groundY=elevation(x,z)+.25f;
                         var p=new Vector3(origin.x+x,groundY,origin.z+z);
@@ -153,10 +170,14 @@ namespace Eldoria.World4XCanon
                             vertices.Add(canopyCentre+right-forward);
                             vertices.Add(canopyCentre+right+forward);
                             vertices.Add(canopyCentre-right+forward);
-                            uvs.Add(new Vector2(0,0));
-                            uvs.Add(new Vector2(1,0));
-                            uvs.Add(new Vector2(1,1));
-                            uvs.Add(new Vector2(0,1));
+                            // Each tree uses one of two atlas cells, with
+                            // tiny insets to avoid mipmap seams at the join.
+                            float uMin=variety*.5f+.006f;
+                            float uMax=(variety+1)*.5f-.006f;
+                            uvs.Add(new Vector2(uMin,0));
+                            uvs.Add(new Vector2(uMax,0));
+                            uvs.Add(new Vector2(uMax,1));
+                            uvs.Add(new Vector2(uMin,1));
                             // Dark undergrowth, mid-green needles, sunlit tips.
                             // The painted silhouette remains transparent and
                             // consistent with the forest underlay at all zooms.
