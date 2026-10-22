@@ -185,7 +185,7 @@ namespace Eldoria.World4XCanon
     if(r is MeshRenderer && r.sharedMaterials.Any(m=>m&&m.shader&&m.shader.name=="Eldoria/World4X/WorldAlignedPaintedGround") && r.name!="Region1 · one coherent terrain mesh")
     {prairie.Add(r);prairieMaterials.Add(r.sharedMaterials);}
    }
-   BuildTerrain();BuildGroves(false);innerForest=BuildGroves(true);BuildRetainedNear();BuildHeroBreach();
+   BuildTerrain();RegionOneGeographicDressing.Install(art.transform,origin);BuildGroves(false);innerForest=BuildGroves(true);BuildRetainedNear();BuildHeroBreach();
    Debug.Log("REGION1_DIRECTED_GEOGRAPHY polygon="+Coast.Length+" river_layers="+Rivers.Length+" roads="+Roads.Length+" groves="+Groves.Length+" replaced="+replaced.Count);
    Refresh();
   }
@@ -220,6 +220,15 @@ namespace Eldoria.World4XCanon
     {float a=k*2.399963f+i*.7f,r=Mathf.Sqrt((k+.5f)/count)*.93f;float x=g.x+Mathf.Cos(a)*g.z*r,z=g.y+Mathf.Sin(a)*g.w*r;
      if(Shore(x,z)<7 || Water(x,z)>.05f || Road(x,z)>.3f)continue;
      float h=11.5f+(i*7+k*3)%5*1.15f;Quad(v,uv,offsets,tris,origin+new Vector3(x,Height(x,z)+.06f,z),h*.72f,h,(i+k)%3);
+    }
+   }
+   if(!inner)
+   {
+    var rng=new System.Random(19211);
+    for(int k=0;k<420;k++)
+    {float x=-185+(float)rng.NextDouble()*370,z=-320+(float)rng.NextDouble()*650;
+     if(new Vector2(x,z).magnitude<140||Shore(x,z)<10||Water(x,z)>.02f||Road(x,z)>.1f||Mathf.PerlinNoise(x*.028f+7,z*.028f+11)<.54f)continue;
+     float h=3.5f+(float)rng.NextDouble()*4.5f;Quad(v,uv,offsets,tris,origin+new Vector3(x,Height(x,z)+.08f,z),h*.58f,h,k%2);
     }
    }
    return MeshObject(inner?"Directed inner grove silhouettes":"Directed outer grove silhouettes",v.ToArray(),uv.ToArray(),offsets.ToArray(),tris.ToArray(),forestMaterial);

@@ -13,6 +13,7 @@ namespace Eldoria.World4XCanon
  {
   ValoriaIntegratedWorld host;Material nodes,trees;bool before;
   readonly List<Renderer> old=new List<Renderer>();readonly List<bool> states=new List<bool>();readonly List<bool> mountains=new List<bool>();
+  readonly List<LODGroup> lods=new List<LODGroup>();readonly List<bool> lodStates=new List<bool>();
   readonly List<Renderer> current=new List<Renderer>();readonly List<GameObject> gates=new List<GameObject>();readonly List<Mesh> meshes=new List<Mesh>();
   public static RegionOneReferenceNodes Install(Transform parent,ValoriaIntegratedWorld host)
   {
@@ -27,14 +28,20 @@ namespace Eldoria.World4XCanon
   Bounds BoundsOf(GameObject go)
   {var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(go.transform.position,Vector3.one);var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
   void Hide(GameObject go,bool mountain=false)
-  {if(!go)return;foreach(var r in go.GetComponentsInChildren<Renderer>(true))if(!old.Contains(r)){old.Add(r);states.Add(r.enabled);mountains.Add(mountain);}}
+  {if(!go)return;foreach(var lod in go.GetComponentsInChildren<LODGroup>(true))if(!lods.Contains(lod)){lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}foreach(var r in go.GetComponentsInChildren<Renderer>(true))if(!old.Contains(r)){old.Add(r);states.Add(r.enabled);mountains.Add(mountain);}}
   static Vector3 Foot(Bounds b)=>new Vector3(b.center.x,b.min.y+.04f,b.min.z);
   void Build()
   {
    if(host.WorldBastionOne){var b=BoundsOf(host.WorldBastionOne);Sprite("Reference city Bastion I",Foot(b),24,0,host.WorldBastionOne);Hide(host.WorldBastionOne);}
    if(host.WorldBastionTwo){var b=BoundsOf(host.WorldBastionTwo);Sprite("Reference city Bastion II",Foot(b),28,0,host.WorldBastionTwo);Hide(host.WorldBastionTwo);}
    Hide(host.WorldSawmill);
-   var quarry=Find("Existing Holotna rock.001");if(quarry){var b=BoundsOf(quarry.gameObject);Sprite("Reference existing quarry",Foot(b),8,1,null);Hide(quarry.gameObject);}
+   var quarry=host.FindTarget("quarry-valoria");if(quarry){var f=quarry.transform.position;f.y=host.WorldHome.y+RegionOneDirectedGeography.Height(f.x-host.WorldHome.x,f.z-host.WorldHome.z)+.1f;Sprite("Reference existing quarry",f,13,1,null);}
+   foreach(var t in host.WorldRoot.GetComponentsInChildren<Transform>(true))
+   {
+    if(t.name.StartsWith("Existing Holotna rock",StringComparison.Ordinal))
+    {var b=BoundsOf(t.gameObject);if(t.gameObject.activeInHierarchy&&t.name!="Existing Holotna rock.001")Sprite("Reference pale field rock "+t.name,Foot(b),Mathf.Clamp(b.size.x,4,9),1,null);Hide(t.gameObject);}
+    if(t.name.StartsWith("Valoria map / retained ruins",StringComparison.Ordinal)||t.name.StartsWith("Zone1 quarry /",StringComparison.Ordinal)||t.name.StartsWith("Retained functional quarry equipment /",StringComparison.Ordinal)||t.name=="pile_of_planks")Hide(t.gameObject);
+   }
    var ruin=host.FindTarget("old-watch-ruin");
    if(ruin)
    {var f=ruin.transform.position;f.y=-1;Sprite("Reference existing neutral watch ruin",f,11,2,null);
@@ -74,6 +81,6 @@ namespace Eldoria.World4XCanon
    for(int i=0;i<current.Count;i++)if(current[i])current[i].enabled=!before&&!far&&(!gates[i]||gates[i].activeInHierarchy);
   }
   void LateUpdate(){Refresh();}
-  void OnDestroy(){for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=states[i];foreach(var r in current)if(r)Destroy(r.gameObject);foreach(var m in meshes)if(m)Destroy(m);if(nodes)Destroy(nodes);if(trees)Destroy(trees);}
+  void OnDestroy(){for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=lodStates[i];for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=states[i];foreach(var r in current)if(r)Destroy(r.gameObject);foreach(var m in meshes)if(m)Destroy(m);if(nodes)Destroy(nodes);if(trees)Destroy(trees);}
  }
 }
