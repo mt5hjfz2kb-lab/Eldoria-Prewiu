@@ -89,7 +89,7 @@ namespace Eldoria.World4XCanon
         {
             unchecked
             {
-                uint k=(uint)(x*1597334677 ^ z*3812015801 ^ salt*265443576);
+                uint k=(uint)x*1597334677u ^ (uint)z*3812015801u ^ (uint)salt*2654435761u;
                 k^=k>>16; k*=2246822519; k^=k>>13; k*=3266489917;k^=k>>16;
                 return k;
             }
