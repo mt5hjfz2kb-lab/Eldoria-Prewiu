@@ -604,11 +604,27 @@ namespace Eldoria.World4XCanon
                     float z = centre.y + Mathf.Sin(theta) * (9f + j * 4f);
                     var tree = new GameObject("Region1 · reused-tree " + i + "-" + j);
                     tree.transform.SetParent(detailTrees.transform, true);
-                    tree.transform.position = new Vector3(origin.x + x, SampleHeight(x,z) + .2f, origin.z + z);
                     tree.transform.rotation = Quaternion.Euler(0, (i * 67 + j * 53) % 360, 0);
-                    float originalHeight = Mathf.Max(.15f, donor.sharedMesh.bounds.size.y);
-                    float height = 2.2f + .4f * ((i + j) % 4);
-                    tree.transform.localScale = Vector3.one * Mathf.Clamp(height / originalHeight, .08f, 3.5f);
+                    // Real Unity renderer survey showed 70m-wide, 39m-tall
+                    // borrowed tree meshes in regional view: the old .08 minimum
+                    // scale was much too large for the donor's source units.
+                    // Bound BOTH height and footprint; do not touch the shared
+                    // donor mesh, colliders, POIs, or any gameplay transform.
+                    var sourceBounds = donor.sharedMesh.bounds;
+                    float targetHeight = 2.2f + .4f * ((i + j) % 4);
+                    float originalHeight = Mathf.Max(.01f, sourceBounds.size.y);
+                    float originalFootprint = Mathf.Max(.01f,
+                        Mathf.Max(sourceBounds.size.x,sourceBounds.size.z));
+                    float scale = Mathf.Min(targetHeight/originalHeight,
+                        (targetHeight*1.10f)/originalFootprint);
+                    scale = Mathf.Clamp(scale,.0001f,3.5f);
+                    tree.transform.localScale = Vector3.one*scale;
+                    // Put the actual donor mesh base at ground height even if
+                    // its geometry has a large, off-centre legacy pivot.
+                    Vector3 sourceBase = new Vector3(sourceBounds.center.x,
+                        sourceBounds.min.y,sourceBounds.center.z);
+                    var ground = new Vector3(origin.x+x,SampleHeight(x,z)+.2f,origin.z+z);
+                    tree.transform.position = ground-tree.transform.rotation*(sourceBase*scale);
                     tree.AddComponent<MeshFilter>().sharedMesh = donor.sharedMesh;
                     var meshRenderer = tree.AddComponent<MeshRenderer>();
                     meshRenderer.sharedMaterials = oldRenderer.sharedMaterials;
