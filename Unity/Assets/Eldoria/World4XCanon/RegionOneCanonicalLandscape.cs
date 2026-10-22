@@ -195,6 +195,7 @@ namespace Eldoria.World4XCanon
             BuildTreeDetail(root, existingWorld);
             BuildDistantForests(root);
             BuildDistantGeology(root);
+            BuildCoastRim(root);
             BuildEdgeFog(root);
         }
 
@@ -889,6 +890,98 @@ namespace Eldoria.World4XCanon
                 renderer.shadowCastingMode=ShadowCastingMode.Off;
             }
             distantGeology.SetActive(false);
+        }
+
+        // A physical, inexpensive coastal silhouette is absent from a flat
+        // blue/green terrain atlas. Extract just the existing sea boundary
+        // (NOT rivers/lakes) into two batched ribbons. Pale inland stone and
+        // ochre seaward ledge remain on the same XYZ terrain; there are no
+        // colliders, POIs, water gameplay, textures or per-frame updates.
+        void BuildCoastRim(Transform parent)
+        {
+            const float cell=12f;
+            const float threshold=.50f;
+            var landVerts=new List<Vector3>();
+            var seaVerts=new List<Vector3>();
+            var landTris=new List<int>();
+            var seaTris=new List<int>();
+            var intersections=new List<Vector2>(4);
+            for(float z=-440f;z<320f;z+=cell)
+                for(float x=-480f;x<520f;x+=cell)
+                {
+                    var corners=new [] {
+                        new Vector2(x,z),new Vector2(x+cell,z),
+                        new Vector2(x+cell,z+cell),new Vector2(x,z+cell)
+                    };
+                    float[] depths=new float[4];
+                    for(int i=0;i<4;i++)
+                        depths[i]=CoastWaterMask(corners[i].x,corners[i].y);
+                    intersections.Clear();
+                    for(int side=0;side<4;side++)
+                    {
+                        int next=(side+1)%4;
+                        bool inWater=depths[side]>=threshold;
+                        if(inWater==(depths[next]>=threshold))continue;
+                        float delta=depths[next]-depths[side];
+                        if(Mathf.Abs(delta)<.0001f)continue;
+                        float t=Mathf.Clamp01((threshold-depths[side])/delta);
+                        intersections.Add(Vector2.Lerp(corners[side],corners[next],t));
+                    }
+                    for(int edge=0;edge+1<intersections.Count;edge+=2)
+                    {
+                        Vector2 p0=intersections[edge],p1=intersections[edge+1];
+                        Vector2 along=p1-p0;
+                        if(along.sqrMagnitude<.1f)continue;
+                        Vector2 normal=new Vector2(-along.y,along.x).normalized;
+                        Vector2 mid=(p0+p1)*.5f;
+                        // Normal always points seaward. The pale top ribbon
+                        // then lies inland and cannot conceal the blue water.
+                        if(CoastWaterMask(mid.x+normal.x*5f,mid.y+normal.y*5f)<
+                           CoastWaterMask(mid.x-normal.x*5f,mid.y-normal.y*5f))
+                            normal=-normal;
+                        int landStart=landVerts.Count,seaStart=seaVerts.Count;
+                        foreach(var p in new [] {p0,p1})
+                        {
+                            Vector2 inland=p-normal*6.5f;
+                            Vector2 offshore=p+normal*4.5f;
+                            landVerts.Add(new Vector3(origin.x+inland.x,
+                                SampleHeight(inland.x,inland.y)+.90f,origin.z+inland.y));
+                            landVerts.Add(new Vector3(origin.x+p.x,
+                                SampleHeight(p.x,p.y)+1.00f,origin.z+p.y));
+                            seaVerts.Add(new Vector3(origin.x+p.x,
+                                SampleHeight(p.x,p.y)+.96f,origin.z+p.y));
+                            seaVerts.Add(new Vector3(origin.x+offshore.x,
+                                SampleHeight(offshore.x,offshore.y)+.65f,origin.z+offshore.y));
+                        }
+                        landTris.Add(landStart);landTris.Add(landStart+1);landTris.Add(landStart+2);
+                        landTris.Add(landStart+1);landTris.Add(landStart+3);landTris.Add(landStart+2);
+                        seaTris.Add(seaStart);seaTris.Add(seaStart+1);seaTris.Add(seaStart+2);
+                        seaTris.Add(seaStart+1);seaTris.Add(seaStart+3);seaTris.Add(seaStart+2);
+                    }
+                }
+            if(landVerts.Count==0)return;
+            for(int band=0;band<2;band++)
+            {
+                var verts=band==0?landVerts:seaVerts;
+                var indices=band==0?landTris:seaTris;
+                var mesh=new Mesh {
+                    name=band==0?"Region1 pale coastal sandstone rim":"Region1 ochre sea ledge",
+                    vertices=verts.ToArray(),triangles=indices.ToArray()
+                };
+                mesh.RecalculateNormals();mesh.RecalculateBounds();
+                generatedMeshes.Add(mesh);
+                var material=MakeMaterial(mesh.name,
+                    band==0?new Color(.78f,.66f,.43f):new Color(.48f,.41f,.29f),false);
+                farGeologyMaterials.Add(material);
+                var go=new GameObject(mesh.name);
+                go.transform.SetParent(parent,true);
+                go.AddComponent<MeshFilter>().sharedMesh=mesh;
+                var renderer=go.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial=material;
+                renderer.shadowCastingMode=ShadowCastingMode.Off;
+                renderer.receiveShadows=false;
+            }
+            Debug.Log("REGION1_COAST_RIM no_colliders=1 batches=2 segments="+landVerts.Count/4);
         }
 
         void BuildEdgeFog(Transform parent)
