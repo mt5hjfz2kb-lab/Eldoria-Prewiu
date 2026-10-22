@@ -321,21 +321,59 @@ namespace Eldoria.World4XCanon
             return Vector2.Distance(point, a + ab * t);
         }
 
+        static readonly Vector2[][] LandTracks = {
+            new [] {new Vector2(0,0),new Vector2(-28,29),
+                new Vector2(-82,73),new Vector2(-142,93),
+                new Vector2(-220,130),new Vector2(-284,199),new Vector2(-401,247)},
+            new [] {new Vector2(0,0),new Vector2(38,36),
+                new Vector2(99,71),new Vector2(142,127),
+                new Vector2(218,154),new Vector2(279,215),new Vector2(391,251)},
+            new [] {new Vector2(0,0),new Vector2(-37,-41),
+                new Vector2(-100,-91),new Vector2(-126,-151),
+                new Vector2(-201,-210),new Vector2(-249,-291),new Vector2(-333,-359)},
+            new [] {new Vector2(0,0),new Vector2(51,-31),
+                new Vector2(117,-74),new Vector2(163,-112),
+                new Vector2(224,-178),new Vector2(307,-208),new Vector2(409,-269)},
+            new [] {new Vector2(-253,214),new Vector2(-190,267),
+                new Vector2(-99,296),new Vector2(-11,284),new Vector2(55,289),
+                new Vector2(150,235),new Vector2(258,214)},
+            new [] {new Vector2(-244,-286),new Vector2(-123,-255),
+                new Vector2(-31,-283),new Vector2(65,-267),new Vector2(163,-243),
+                new Vector2(307,-207)},
+            new [] {new Vector2(-96,94),new Vector2(-166,36),
+                new Vector2(-219,-12),new Vector2(-280,-48)},
+            new [] {new Vector2(146,118),new Vector2(197,62),
+                new Vector2(252,25),new Vector2(334,-1)}
+        };
+
+        public static float RoadDistance(float x,float z)
+        {
+            // Original world hotspots/routes keep their existing coordinates:
+            // these are only economical textured geographic tracks.
+            float curvatureX=7f*Mathf.Sin(z*.022f)+3f*Mathf.Sin(z*.073f);
+            float curvatureZ=5f*Mathf.Sin(x*.018f);
+            Vector2 p=new Vector2(x+curvatureX,z+curvatureZ);
+            float nearest=float.PositiveInfinity;
+            for(int route=0;route<LandTracks.Length;route++)
+            {
+                var points=LandTracks[route];
+                for(int i=0;i<points.Length-1;i++)
+                {
+                    Vector2 a=points[i],d=points[i+1];
+                    if(p.x<Mathf.Min(a.x,d.x)-15f||
+                       p.x>Mathf.Max(a.x,d.x)+15f||
+                       p.y<Mathf.Min(a.y,d.y)-15f||
+                       p.y>Mathf.Max(a.y,d.y)+15f)continue;
+                    float distance=DistanceToSegment(p,a,d);
+                    if(distance<nearest)nearest=distance;
+                }
+            }
+            return nearest;
+        }
+
         public static bool IsRoad(float x, float z)
         {
-            // Organic corridors lead through this one physical region.
-            // All distant branches are terrain marks, not fake march targets.
-            Vector2 p = new Vector2(x + 10f * Mathf.Sin(z * .022f) +
-                                         5f * Mathf.Sin(z * .046f),
-                                     z + 8f * Mathf.Sin(x * .013f));
-            return DistanceToSegment(p,new Vector2(0,0),new Vector2(-110,102)) < 3f ||
-                   DistanceToSegment(p,new Vector2(-110,102),new Vector2(-365,310)) < 3f ||
-                   DistanceToSegment(p,new Vector2(0,0),new Vector2(135,91)) < 3f ||
-                   DistanceToSegment(p,new Vector2(135,91),new Vector2(370,305)) < 3f ||
-                   DistanceToSegment(p,new Vector2(0,0),new Vector2(-126,-155)) < 3f ||
-                   DistanceToSegment(p,new Vector2(-126,-155),new Vector2(-305,-370)) < 3f ||
-                   DistanceToSegment(p,new Vector2(0,0),new Vector2(152,-76)) < 3f ||
-                   DistanceToSegment(p,new Vector2(152,-76),new Vector2(400,-262)) < 3f;
+            return RoadDistance(x,z)<2.6f;
         }
 
         public static bool IsRiver(float x, float z)
