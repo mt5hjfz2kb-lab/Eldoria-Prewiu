@@ -101,9 +101,11 @@ jobs:
         shell: powershell
         run: |
           $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
+          $env:VALORIA_GAMEPLAY_PROBE='1'
+          $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-playmode.log'
           $xml=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-tests.xml'
-          $args=@('-batchmode','-nographics','-projectPath',('"' + $project + '"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests','-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
+          $args=@('-batchmode','-projectPath',('"' + $project + '"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests','-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity PlayMode test timeout' }
           if(Test-Path $log){Get-Content $log -Tail 90}
@@ -111,9 +113,11 @@ jobs:
           if(-not(Test-Path $xml)){throw 'Missing actual Unity PlayMode result'}
           [xml]$result=Get-Content $xml -Raw
           $nodes=@($result.SelectNodes('//test-case'))
-          if($nodes.Count -lt 3){throw "Expected 3 integrated tests, got $($nodes.Count)"}
+          if($nodes.Count -lt 4){throw "Expected 4 integrated tests including six real-world cameras, got $($nodes.Count)"}
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
-          Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) (NOT art/mobile QA)"
+          $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
+          if($captures.Count -ne 6){throw "Six actual game camera PNGs missing: $($captures.Count)"}
+          Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) (NOT art/mobile QA)"
       - name: Upload logs and measured tests
         if: always()
         uses: actions/upload-artifact@v4
@@ -125,3 +129,4 @@ jobs:
             ${{ runner.temp }}/eldoria-region1-canon-playmode.log
             ${{ runner.temp }}/eldoria-region1-canon-tests.xml
             ${{ runner.temp }}/eldoria-region1-source-gate.json
+            ${{ runner.temp }}/region1-canon-captures-*/**
