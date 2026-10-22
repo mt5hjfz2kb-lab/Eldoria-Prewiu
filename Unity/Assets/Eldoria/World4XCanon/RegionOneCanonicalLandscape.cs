@@ -273,12 +273,23 @@ namespace Eldoria.World4XCanon
 
         public static float SampleHeight(float x, float z)
         {
-            // Always below original near-field targets and authored 3D terrain.
-            float near = Mathf.Clamp01((Mathf.Sqrt(x * x + z * z) - 62f) / 140f);
+            // Preserve near-field gameplay and native surface at ground level.
+            // Only distant, non-interactive countryside gets smooth, genuine
+            // 3D broad undulation. One deterministic XYZ for all zooms; no
+            // extra colliders, assets or invented mountains.
+            float radius = Mathf.Sqrt(x*x+z*z);
+            float near = Mathf.Clamp01((radius - 62f) / 140f);
             float contour = Mathf.Sin(x * .017f) * Mathf.Cos(z * .014f) * .95f +
                             Mathf.Sin(z * .009f + x * .006f) * .55f;
             float distantRidge = Mathf.Clamp01((Mathf.Abs(x) - 330f) / 290f) * 3.5f;
-            return -4.0f + near * (contour + distantRidge);
+            float outlands=Mathf.SmoothStep(0f,1f,
+                Mathf.Clamp01((radius-225f)/240f));
+            float slowRoll=(Mathf.PerlinNoise(x*.009f+13f,z*.010f+31f)-.5f)*18f+
+                (Mathf.PerlinNoise(x*.021f+53f,z*.018f+71f)-.5f)*5f;
+            // Never sculpt ocean surfaces into hills at the southeastern coast.
+            float landFactor=IsCoast(x,z)?0f:1f;
+            return -4.0f + near * (contour + distantRidge) +
+                landFactor*outlands*slowRoll;
         }
 
         static float Noise(int x, int z)
