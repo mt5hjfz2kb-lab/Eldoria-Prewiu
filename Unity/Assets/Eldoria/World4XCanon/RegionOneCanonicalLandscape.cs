@@ -159,6 +159,10 @@ namespace Eldoria.World4XCanon
                 if (!renderer || renderer.transform.IsChildOf(transform)) continue;
                 string name = renderer.name.ToLowerInvariant();
                 bool isPrairie = name.Contains("continuous prairie") ||
+                    name.Contains("organic macrogeography") ||
+                    (renderer.transform.parent != null &&
+                     renderer.transform.parent.name.IndexOf("continuous prairie",
+                         StringComparison.OrdinalIgnoreCase) >= 0) ||
                     (name.Contains("ground") && name.Contains("zoneone"));
                 // Do not infer that the city, quarry, real trees or enemy rocks
                 // are background; only the positively identified prairie.

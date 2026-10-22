@@ -140,8 +140,10 @@ namespace Eldoria.Tests
                 .FirstOrDefault(x => x && x.GetType().Name == "RegionOneCanonicalLandscape");
             Assert.That(adapter, Is.Not.Null);
             var terrain = world.GetComponentsInChildren<MeshRenderer>(true)
-                .Where(x => x.name.IndexOf("continuous prairie",
-                    StringComparison.OrdinalIgnoreCase) >= 0 &&
+                .Where(x => (x.name.IndexOf("continuous prairie",
+                    StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    x.name.IndexOf("organic macrogeography",
+                    StringComparison.OrdinalIgnoreCase) >= 0) &&
                     x.bounds.size.x > 100f && x.bounds.size.z > 100f).ToArray();
             Assert.That(terrain.Length, Is.GreaterThan(0),
                 "Must identify the genuinely imported local ground; do not hide arbitrary art.");
