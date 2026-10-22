@@ -1278,8 +1278,8 @@ namespace Eldoria.World4XCanon
                 navigation.View.aspect >= .80f;
             // Progressive pitch: local remains readable, panoramas become
             // more top-down. The same stable geographical XYZ is retained.
-            float desiredTilt = Mathf.Lerp(56f, 74f,
-                Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(17f, 244f, size)));
+            float desiredTilt = Mathf.Lerp(42f, 64f,
+                Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(36f, 244f, size)));
             float nextTilt = force ? desiredTilt : Mathf.Lerp(navigation.tilt,
                 desiredTilt, 1f - Mathf.Exp(-7f * Time.unscaledDeltaTime));
             if (Mathf.Abs(nextTilt - navigation.tilt) > .04f)
