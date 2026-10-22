@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-hybrid-canon-20261022",
+      "owner": "chatgpt-world4x-relevo-20261022",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner 2026-10-22 instructed continued PR #100 world 4X hybrid 2.5D/3D art recovery",
+      "authorization": "Owner 2026-10-22 explicitly directs chat takeover of stalled World4X hybrid workstream and continuation of existing PR #100, 0€, no main promotion",
       "phase": "HYBRID_PANORAMA_REAL_UNITY_A_B_GATE",
-      "next": "Compile hybrid texture painter and capture 12 genuine same-camera panorama/regional/local images on Unity Windows under lease; compare macros against canon; no main promotion or release.",
+      "next": "Fix exact CS0136 canopy local variable conflict in RegionOneHybridForestImpostors.cs; run existing native workflow without duplicate Unity launch; inspect same-camera 12 PNG A/B; retain draft and no publication.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -58,13 +58,24 @@
         "art_approved": false,
         "physical_iphone_tested": false,
         "visual_gap": "significant: distant geography underdetailed; near composition not canonical",
-        "playable_published": false
+        "playable_published": false,
+        "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
+        "latest_native_failure_run": 39795241792,
+        "latest_native_failure": "UNITY_CS0136 local centre shadowing line 145; source-only pass is not Unity pass",
+        "previous_ab_run": 39794053393,
+        "previous_ab_state": "12 real Unity 3-scale orientation/A-B PNG; visual parity not achieved"
       },
       "ownership_history": [
         {
           "owner": "chatgpt-eldoria-world4x-canon-20261022",
           "released_at": "2026-10-22",
           "outcome": "Draft PR #100 retained; 7/7 Unity integration PASS; visual/mobile/release gates pending"
+        },
+        {
+          "owner": "chatgpt-world4x-hybrid-canon-20261022",
+          "relieved_at": "2026-10-22",
+          "reason": "Explicit owner-directed chat recovery; same PR #100 and workstream retained; previous Unity jobs not cancelled",
+          "outcome": "Hybrid canopy code retained, Unity compiler CS0136 verified in artifact 12433312016; existing jobs preserved."
         }
       ]
     },
