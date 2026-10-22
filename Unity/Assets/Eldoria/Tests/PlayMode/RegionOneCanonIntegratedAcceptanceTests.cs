@@ -112,6 +112,11 @@ namespace Eldoria.Tests
                 .Select(a=>a.GetType("Eldoria.World4XCanon.RegionOneCanonicalLandscape",false))
                 .FirstOrDefault(t=>t!=null);
             Assert.That(coastlineType,Is.Not.Null);
+            var directedHeight=directedType.GetMethod("Height",BindingFlags.Public|BindingFlags.Static);
+            var controlHeight=coastlineType.GetMethod("SampleHeight",BindingFlags.Public|BindingFlags.Static);
+            Assert.That((float)directedHeight.Invoke(null,new object[]{8f,61f}),
+                Is.LessThanOrEqualTo((float)controlHeight.Invoke(null,new object[]{8f,61f})+.03f),
+                "The authored land cannot bury the grounded Breach pigment at its real anchor.");
             var coastMask=coastlineType.GetMethod("CoastWaterMask",
                 BindingFlags.Public | BindingFlags.Static);
             Assert.That(coastMask,Is.Not.Null);

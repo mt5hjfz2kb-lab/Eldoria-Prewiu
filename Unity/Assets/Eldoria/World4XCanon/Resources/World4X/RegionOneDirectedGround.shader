@@ -16,6 +16,8 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
    TEXTURE2D(_Mask);SAMPLER(sampler_Mask);TEXTURE2D(_Pigment);SAMPLER(sampler_Pigment);
    CBUFFER_START(UnityPerMaterial) float4 _Origin;float _Near; CBUFFER_END
    V vert(A v){V o;float3 w=TransformObjectToWorld(v.positionOS);o.positionCS=TransformWorldToHClip(w);o.p=w.xz-_Origin.xy;o.n=TransformObjectToWorldNormal(v.normalOS);return o;}
+   float hash21(float2 p){return frac(sin(dot(p,float2(127.1,311.7)))*43758.5453);}
+   float noise21(float2 p){float2 k=floor(p),f=frac(p);f=f*f*(3-2*f);return lerp(lerp(hash21(k),hash21(k+float2(1,0)),f.x),lerp(hash21(k+float2(0,1)),hash21(k+1),f.x),f.y);}
    half4 frag(V i):SV_Target
    {
     float2 uv=i.p/float2(500,1040)+.5;
@@ -28,21 +30,29 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     half3 land=lerp(earth,tex,.26h+_Near*.52h);
     land*=1-m.a*.16h;
     land=lerp(land,soil,m.b*.72h);
-    land=lerp(land,river,m.g);
+    half bank=smoothstep(.02h,.18h,m.g)*(1-smoothstep(.25h,.65h,m.g));
+    land=lerp(land,sand,bank*.8h);
+    half3 freshWater=lerp(shallow,river,smoothstep(.35h,.96h,m.g));
+    freshWater*=.94h+.12h*noise21(i.p*.16);
+    land=lerp(land,freshWater,smoothstep(.16h,.75h,m.g));
     half light=.82h+.18h*saturate(dot(normalize(i.n),normalize(float3(-.6,1,-.4))));
     half3 coast=lerp(sand*.73h,sand,light);
     half landWeight=smoothstep(.49h,.54h,m.r);
     half3 water=lerp(sea,shallow,smoothstep(.02h,.49h,m.r));
-    half ripple=sin(i.p.x*.17+i.p.y*.1)*sin(i.p.y*.3)*.017;
+    half ripple=(noise21(i.p*.13)-.5h)*.012h;
     water+=ripple;
-    half3 c=lerp(water,lerp(coast,land,smoothstep(.55h,.66h,m.r)),landWeight);
+    half foam=smoothstep(.42h,.47h,m.r)*(1-smoothstep(.47h,.50h,m.r));
+    water=lerp(water,sand,foam*.38h);
+    half3 c=lerp(water,lerp(coast,land,smoothstep(.55h,.68h,m.r)),landWeight);
     float edgeWave=sin(i.p.y*.035)*8+sin(i.p.y*.087+i.p.x*.03)*4;
     half fog=max(smoothstep(164,232,-i.p.x+edgeWave),max(smoothstep(420,505,i.p.y+edgeWave),smoothstep(418,505,-i.p.y+edgeWave)));
     half3 mist=half3(.78,.83,.85);
     #if !defined(UNITY_COLORSPACE_GAMMA)
      mist=SRGBToLinear(mist);
     #endif
-    return half4(lerp(c,mist,fog*.88h),1);
+    half cloud=.68h*noise21(i.p*.026)+.32h*noise21(i.p*.071+17);
+    half cloudAlpha=smoothstep(.15h,.76h,fog*(.46h+.80h*cloud));
+    return half4(lerp(c,mist*(.88h+.12h*cloud),cloudAlpha*.94h),1);
    }
    ENDHLSL
   }

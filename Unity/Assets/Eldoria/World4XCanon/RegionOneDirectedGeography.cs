@@ -21,12 +21,16 @@ namespace Eldoria.World4XCanon
    new Vector2(18,476),new Vector2(45,451),new Vector2(42,427),new Vector2(73,413),
    new Vector2(71,391),new Vector2(104,375),new Vector2(97,351),new Vector2(132,334),
    new Vector2(125,312),new Vector2(158,289),new Vector2(149,270),new Vector2(176,244),
-   new Vector2(166,225),new Vector2(190,199),new Vector2(176,175),new Vector2(188,151),
-   new Vector2(169,128),new Vector2(184,100),new Vector2(171,77),new Vector2(190,47),
-   new Vector2(180,21),new Vector2(190,-9),new Vector2(176,-33),new Vector2(189,-62),
-   new Vector2(174,-89),new Vector2(183,-117),new Vector2(168,-142),new Vector2(179,-171),
-   new Vector2(161,-194),new Vector2(170,-225),new Vector2(153,-248),new Vector2(165,-277),
-   new Vector2(146,-300),new Vector2(150,-325),new Vector2(125,-347),new Vector2(129,-371),
+   new Vector2(165,232),new Vector2(182,220),new Vector2(187,202),new Vector2(170,188),
+   new Vector2(167,169),new Vector2(175,150),new Vector2(182,141),new Vector2(176,115),
+   new Vector2(164,101),new Vector2(170,84),new Vector2(190,74),new Vector2(194,50),
+   new Vector2(180,35),new Vector2(179,15),new Vector2(191,7),new Vector2(187,-17),
+   new Vector2(170,-26),new Vector2(168,-46),new Vector2(184,-56),new Vector2(190,-75),
+   new Vector2(179,-97),new Vector2(161,-106),new Vector2(167,-124),new Vector2(182,-139),
+   new Vector2(177,-160),new Vector2(157,-173),new Vector2(159,-197),new Vector2(174,-209),
+   new Vector2(168,-230),new Vector2(148,-245),new Vector2(152,-270),new Vector2(165,-281),
+   new Vector2(157,-302),new Vector2(136,-317),new Vector2(140,-343),new Vector2(119,-357),
+   new Vector2(119,-378),
    new Vector2(101,-385),new Vector2(92,-409),new Vector2(60,-413),new Vector2(39,-437),
    new Vector2(5,-432),new Vector2(-20,-453),new Vector2(-52,-443)
   };
@@ -87,27 +91,44 @@ namespace Eldoria.World4XCanon
     if((a.y>z)!=(b.y>z) && x<(b.x-a.x)*(z-a.y)/(b.y-a.y)+a.x)inside=!inside;}
    return inside?d:-d;
   }
+  static readonly Vector2[][] CurvedRivers=Smooth(Rivers),CurvedRoads=Smooth(Roads);
+  static Vector2[][] Smooth(Vector2[][] input)
+  {
+   var result=new Vector2[input.Length][];
+   for(int k=0;k<input.Length;k++)
+   {var line=input[k];var points=new List<Vector2>();
+    for(int i=0;i<line.Length-1;i++)
+    {var a=line[Mathf.Max(0,i-1)];var b=line[i];var c=line[i+1];var d=line[Mathf.Min(line.Length-1,i+2)];
+     for(int j=0;j<5;j++){float t=j/5f;points.Add(.5f*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t));}}
+    points.Add(line[line.Length-1]);result[k]=points.ToArray();
+   }return result;
+  }
   static float LinesDistance(Vector2 p,Vector2[][] paths)
-  {float d=10000;foreach(var line in paths)for(int i=1;i<line.Length;i++)d=Mathf.Min(d,Segment(p,line[i-1],line[i]));return d;}
+  {float distance=3f;foreach(var line in paths)for(int i=1;i<line.Length;i++)
+   {var a=line[i-1];var b=line[i];if(p.x<Mathf.Min(a.x,b.x)-3 || p.x>Mathf.Max(a.x,b.x)+3 || p.y<Mathf.Min(a.y,b.y)-3 || p.y>Mathf.Max(a.y,b.y)+3)continue;
+    distance=Mathf.Min(distance,Segment(p,a,b));}return distance;
+  }
   public static float Water(float x,float z)
   {
-   float d=LinesDistance(new Vector2(x,z),Rivers);
+   float d=LinesDistance(new Vector2(x,z),CurvedRivers);
    float river=1f-Mathf.SmoothStep(0,1,Mathf.InverseLerp(1.15f,2.4f,d));
-   float a=Mathf.Sqrt(Mathf.Pow((x+43)/19f,2)+Mathf.Pow((z-240)/15f,2));
-   float b=Mathf.Sqrt(Mathf.Pow((x-61)/27f,2)+Mathf.Pow((z+235)/19f,2));
+   float angleA=Mathf.Atan2((z-240)/15f,(x+43)/19f);
+   float a=Mathf.Sqrt(Mathf.Pow((x+43)/19f,2)+Mathf.Pow((z-240)/15f,2))/(1+.12f*Mathf.Sin(angleA*5)+.06f*Mathf.Cos(angleA*8));
+   float angleB=Mathf.Atan2((z+235)/19f,(x-61)/27f);
+   float b=Mathf.Sqrt(Mathf.Pow((x-61)/27f,2)+Mathf.Pow((z+235)/19f,2))/(1+.13f*Mathf.Sin(angleB*4)+.07f*Mathf.Cos(angleB*7));
    return Mathf.Max(river,1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.92f,1.05f,Mathf.Min(a,b))));
   }
-  public static float Road(float x,float z){return 1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.5f,1.5f,LinesDistance(new Vector2(x,z),Roads)));}
+  public static float Road(float x,float z){return 1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.5f,1.5f,LinesDistance(new Vector2(x,z),CurvedRoads)));}
   static float GroveMask(float x,float z)
   {float f=0;foreach(var g in Groves){float d=Mathf.Pow((x-g.x)/g.z,2)+Mathf.Pow((z-g.y)/g.w,2);f=Mathf.Max(f,Mathf.Clamp01(1-d));}return f;}
   public static float Height(float x,float z)
   {
-   float shore=Shore(x,z);if(shore< -4)return -5;
+   float shore=Shore(x,z);if(shore< -4)return -13;
    float land=Mathf.SmoothStep(0,1,Mathf.InverseLerp(-3,3,shore));
    float ridge=0;
    foreach(var p in new[]{new Vector3(-146,303,22),new Vector3(151,151,18),new Vector3(-148,-312,19)})
     ridge+=4f*Mathf.Max(0,1-Mathf.Pow((x-p.x)/p.z,2)-Mathf.Pow((z-p.y)/(p.z*1.5f),2));
-   return -5+land*(5+ridge);
+   return -13+land*(9+ridge);
   }
   static Texture2D mask;
   static Texture2D Mask()
@@ -165,7 +186,7 @@ namespace Eldoria.World4XCanon
    {float px=(x/(float)nx-.5f)*500,pz=(z/(float)nz-.5f)*1040;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,Height(px,pz),pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
    int n=0;for(int z=0;z<nz;z++)for(int x=0;x<nx;x++){int i=z*(nx+1)+x;t[n++]=i;t[n++]=i+nx+1;t[n++]=i+1;t[n++]=i+1;t[n++]=i+nx+1;t[n++]=i+nx+2;}
    MeshObject("Directed terrain continuous coast relief",v,uv,null,t,ground);
-   MeshObject("Directed ocean continuation",new[]{origin+new Vector3(-1000,-5.1f,-900),origin+new Vector3(1000,-5.1f,-900),origin+new Vector3(1000,-5.1f,900),origin+new Vector3(-1000,-5.1f,900)},new Vector2[4],null,new[]{0,2,1,0,3,2},ground);
+   MeshObject("Directed ocean continuation",new[]{origin+new Vector3(-1000,-13.1f,-900),origin+new Vector3(1000,-13.1f,-900),origin+new Vector3(1000,-13.1f,900),origin+new Vector3(-1000,-13.1f,900)},new Vector2[4],null,new[]{0,2,1,0,3,2},ground);
   }
   Renderer MeshObject(string name,Vector3[] v,Vector2[] uv,Vector2[] offsets,int[] t,Material mat)
   {
@@ -188,7 +209,7 @@ namespace Eldoria.World4XCanon
     for(int k=0;k<15;k++)
     {float a=k*2.399963f+i*.7f,r=Mathf.Sqrt((k+.5f)/15f)*.93f;float x=g.x+Mathf.Cos(a)*g.z*r,z=g.y+Mathf.Sin(a)*g.w*r;
      if(Shore(x,z)<7 || Water(x,z)>.05f || Road(x,z)>.3f)continue;
-     float h=5.2f+(i*7+k*3)%5*.7f;Quad(v,uv,offsets,tris,origin+new Vector3(x,Height(x,z)+.06f,z),h*.72f,h,(i+k)%3);
+     float h=11.5f+(i*7+k*3)%5*1.15f;Quad(v,uv,offsets,tris,origin+new Vector3(x,Height(x,z)+.06f,z),h*.72f,h,(i+k)%3);
     }
    }
    return MeshObject(inner?"Directed inner grove silhouettes":"Directed outer grove silhouettes",v.ToArray(),uv.ToArray(),offsets.ToArray(),tris.ToArray(),forestMaterial);
