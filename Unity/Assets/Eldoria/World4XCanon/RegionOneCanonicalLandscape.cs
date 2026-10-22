@@ -6,6 +6,7 @@ using Eldoria.ReferenceClean;
 using Eldoria.World4XPrototype;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 namespace Eldoria.World4XCanon
 {
@@ -63,10 +64,26 @@ namespace Eldoria.World4XCanon
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Bootstrap()
         {
+            // AfterSceneLoad alone runs once per application, not on later
+            // scene transitions. The real player can enter Valoria after a
+            // bootstrap scene, and PlayMode tests also LoadScene dynamically.
+            SceneManager.sceneLoaded -= WhenSceneLoaded;
+            SceneManager.sceneLoaded += WhenSceneLoaded;
+            AttachToCurrentIntegratedScene();
+        }
+
+        static void WhenSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            AttachToCurrentIntegratedScene();
+        }
+
+        static void AttachToCurrentIntegratedScene()
+        {
             var host = UnityEngine.Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
             if (!host || UnityEngine.Object.FindFirstObjectByType<RegionOneCanonicalLandscape>()) return;
-            new GameObject("Region 1 canonical world · presentation adapter")
-                .AddComponent<RegionOneCanonicalLandscape>().host = host;
+            var adapter = new GameObject("Region 1 canonical world · presentation adapter")
+                .AddComponent<RegionOneCanonicalLandscape>();
+            adapter.host = host;
         }
 
         IEnumerator Start()
