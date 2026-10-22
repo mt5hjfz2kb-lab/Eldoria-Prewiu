@@ -162,6 +162,7 @@ namespace Eldoria.World4XCanon
   readonly List<Mesh> meshes=new List<Mesh>();readonly List<Renderer> replaced=new List<Renderer>();
   readonly List<bool> prairieStates=new List<bool>();
   readonly List<Renderer> prairie=new List<Renderer>();readonly List<Material[]> prairieMaterials=new List<Material[]>();
+  Vector3[] scarBase;float scarScale=-1;
   Renderer retainedNear,innerForest;MeshFilter breachFilter;Mesh originalScar,directedScar;bool before,prairieDirected;
   public static RegionOneDirectedGeography Install(Transform parent,ValoriaIntegratedWorld host)
   {
@@ -246,17 +247,24 @@ namespace Eldoria.World4XCanon
   {
    breachFilter=transform.GetComponentsInChildren<MeshFilter>(true).FirstOrDefault(f=>f.name=="Region1 · authored Breach pigment at actual world anchor");
    if(!breachFilter)return;originalScar=breachFilter.sharedMesh;directedScar=Instantiate(originalScar);directedScar.name="Directed central geological scar";
-   var v=directedScar.vertices;var colors=directedScar.colors;
+   scarBase=originalScar.vertices;meshes.Add(directedScar);UpdateScar(244);
+  }
+  void UpdateScar(float zoom)
+  {
+   if(!directedScar)return;float scale=Mathf.Lerp(1f,2.1f,Mathf.SmoothStep(0,1,Mathf.InverseLerp(80,152,zoom)));
+   if(Mathf.Abs(scale-scarScale)<.001f)return;scarScale=scale;
+   var v=new Vector3[scarBase.Length];var colors=new Color[v.Length];
    for(int i=0;i<v.Length;i++)
-   {v[i].x*=2.1f;v[i].z*=2.1f;float x=8+v[i].x,z=61+v[i].z;v[i].y=Height(x,z)+.12f;
+   {v[i]=scarBase[i];v[i].x*=scale;v[i].z*=scale;float x=8+v[i].x,z=61+v[i].z;v[i].y=Height(x,z)+.12f;
     float approach=Mathf.SmoothStep(0,1,Mathf.InverseLerp(32,48,new Vector2(x,z).magnitude));colors[i]=new Color(1,1,1,approach*(1-Water(x,z)));}
-   directedScar.vertices=v;directedScar.colors=colors;directedScar.RecalculateBounds();meshes.Add(directedScar);
+   directedScar.vertices=v;directedScar.colors=colors;directedScar.RecalculateBounds();
   }
   public void SetBefore(bool value){before=value;Refresh();}
   public void Refresh()
   {
    if(!art||!host||!host.WorldCamera)return;
    float zoom=host.WorldCamera.orthographicSize;art.SetActive(!before);
+   if(!before)UpdateScar(zoom);
    if(breachFilter)breachFilter.sharedMesh=before?originalScar:directedScar;
    if(!before)
    {foreach(var r in replaced)if(r)r.enabled=false;

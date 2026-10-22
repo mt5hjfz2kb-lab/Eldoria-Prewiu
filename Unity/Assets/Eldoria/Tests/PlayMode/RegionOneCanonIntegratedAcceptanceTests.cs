@@ -295,7 +295,7 @@ namespace Eldoria.Tests
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Candidate near ground must not overlap the old rectangular prairie.");
                 var continuous=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Directed terrain continuous coast relief");
-                Assert.That(continuous.enabled&&continuous.gameObject.activeInHierarchy&&continuous.sharedMaterial&&
+                Assert.That(continuous.enabled&&continuous.gameObject.activeSelf&&continuous.transform.parent.gameObject.activeSelf&&continuous.sharedMaterial&&
                     continuous.sharedMaterial.shader.name=="Eldoria/World4X/DirectedGeographicLayers"&&continuous.sharedMaterial.shader.isSupported,Is.True,
                     "A supported continuous terrain must actually replace the hidden near ground.");
                 Call(adapter,"CompareDirectedLayout",true);
@@ -479,6 +479,11 @@ namespace Eldoria.Tests
                         // The authored geography layers change, never a backdrop.
                         Call(adapter, "CompareAtlas", false);
                         Call(adapter, "CompareDirectedLayout", stage.Item2.EndsWith("-antes-composicion"));
+                        if(!stage.Item2.EndsWith("-antes-composicion"))
+                        {
+                            var actualTerrain=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Directed terrain continuous coast relief");
+                            Assert.That(actualTerrain.enabled&&actualTerrain.gameObject.activeInHierarchy,Is.True,"Continuous candidate terrain must be active after genuine world entry, before capture.");
+                        }
                         var texture = new RenderTexture(format.Item1,format.Item2,24,
                             RenderTextureFormat.ARGB32);
                         var pixels = new Texture2D(format.Item1,format.Item2,TextureFormat.RGB24,false);
