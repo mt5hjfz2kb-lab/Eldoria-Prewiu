@@ -13,7 +13,7 @@ namespace Eldoria.World4XCanon
     /// </summary>
     public static class RegionOneHybridForestImpostors
     {
-        public const int Revision = 1;
+        public const int Revision = 2;
         public sealed class Output
         {
             public GameObject root;
@@ -40,26 +40,31 @@ namespace Eldoria.World4XCanon
             // 2.5D impostors: broad serrated lower boughs, narrow tapered top.
             // It stays one alpha atlas and is not a gameplay object or POI.
             const int size=96;
-            // Two painted conifer profiles in ONE shared 192x96 atlas.
-            // No additional materials or renderer batches; avoid repeating
-            // the same triangular shape across every distant woodland.
-            const int atlasWidth=size*2;
+            // Three hand-painted evergreen profiles in ONE shared 288x96 atlas.
+            // The third is a wider asymmetric cedar/evergreen canopy, not
+            // a new tree object or paid asset. Keep the same three batches.
+            const int atlasWidth=size*3;
             var pixels=new Color32[atlasWidth*size];
-            for(int species=0;species<2;species++)
+            for(int species=0;species<3;species++)
               for(int y=0;y<size;y++)
                 for(int x=0;x<size;x++)
                 {
                     float dx=(x-size*.50f)/(size*.48f);
                     float dy=(y-size*.49f)/(size*.48f);
                     float t=Mathf.Clamp01((dy+.94f)/1.88f);
-                    float jitter=Random01(x,y,39);
+                    float jitter=Random01(x,y,39+species*191);
                     // Sawtooth boughs and asymmetrical needles break the
                     // circular green-dot silhouette even at overview zoom.
-                    float boughs=.11f*Mathf.Sin(t*36f+dx*1.7f)+
-                                  .047f*Mathf.Sin(t*72f-dx*3f);
+                    float tierFrequency=species==2?27f:36f;
+                    float boughs=(species==2?.16f:.11f)*
+                                  Mathf.Sin(t*tierFrequency+dx*1.7f)+
+                                  .047f*Mathf.Sin(t*(species==2?52f:72f)-dx*3f);
                     float profile=species==0
                         ? (.91f*(1f-t)+.065f)
-                        : (.73f*(1f-t)+.16f+.085f*Mathf.Sin(t*5.5f));
+                        : species==1
+                        ? (.73f*(1f-t)+.16f+.085f*Mathf.Sin(t*5.5f))
+                        : (.85f*Mathf.Pow(1f-t,.68f)+.08f+
+                           .045f*Mathf.Sin(t*12f+dx*3f));
                     float width=profile*
                                 (.93f+.11f*Mathf.Sin(t*17f+1.4f));
                     float edge=width+boughs*(1f-.38f*t);
@@ -75,22 +80,22 @@ namespace Eldoria.World4XCanon
                         Mathf.Sin(t*73f-dx*9f)*.06f;
                     float light=Mathf.Clamp01(.46f-.20f*dx+
                         .17f*t+needles+.16f*(jitter-.5f)+
-                        (species==1?.055f:0f));
+                        (species==1?.055f:species==2?.035f:0f));
                     light*=1f-.28f*Mathf.SmoothStep(0f,1f,
                         Mathf.Clamp01((.22f-within)/.22f));
                     byte rr=(byte)Mathf.Clamp(Mathf.RoundToInt(
-                        Mathf.Lerp(20f,91f,light)),0,255);
+                        Mathf.Lerp(species==2?29f:20f,species==2?106f:91f,light)),0,255);
                     byte gg=(byte)Mathf.Clamp(Mathf.RoundToInt(
-                        Mathf.Lerp(63f,154f,light)),0,255);
+                        Mathf.Lerp(species==2?72f:63f,species==2?142f:154f,light)),0,255);
                     byte bb=(byte)Mathf.Clamp(Mathf.RoundToInt(
-                        Mathf.Lerp(24f,80f,light)),0,255);
+                        Mathf.Lerp(species==2?31f:24f,species==2?82f:80f,light)),0,255);
                     byte alpha=(byte)Mathf.RoundToInt(255f*
                         Mathf.Clamp01(within*15f)*
                         Mathf.Clamp01((.97f-dy)*17f));
                     pixels[y*atlasWidth+species*size+x]=new Color32(rr,gg,bb,alpha);
                 }
             var atlas=new Texture2D(atlasWidth,size,TextureFormat.RGBA32,true,false)
-                {name="Region 1 painted dual-profile organic conifers / single atlas"};
+                {name="Region 1 painted triple-profile organic evergreens / single atlas"};
             atlas.SetPixels32(pixels);
             atlas.Apply(true,true);
             atlas.wrapMode=TextureWrapMode.Clamp;
@@ -167,7 +172,9 @@ namespace Eldoria.World4XCanon
                         // Keep genuine interaction corridor and river paths free.
                         if(!woodland(x,z)||water(x,z)||roads(x,z)||coast(x,z)||
                             x*x+z*z<95f*95f)continue;
-                        int variety=(cluster*13+k*7)&1;
+                        // Nonalternating deterministic species distribution avoids
+                        // a checkerboard pattern across close-set trees.
+                        int variety=Mathf.Min(2,(int)(Random01(cluster,k,829)*3f));
                         float width=(6.0f+Random01(cluster,k,277)*5.2f)*
                             (variety==0?.91f:1.12f);
                         float rotation=(Random01(cluster,k,313)-.5f)*.26f;
@@ -193,10 +200,10 @@ namespace Eldoria.World4XCanon
                             vertices.Add(canopyCentre+right-forward);
                             vertices.Add(canopyCentre+right+forward);
                             vertices.Add(canopyCentre-right+forward);
-                            // Each tree uses one of two atlas cells, with
-                            // tiny insets to avoid mipmap seams at the join.
-                            float uMin=variety*.5f+.006f;
-                            float uMax=(variety+1)*.5f-.006f;
+                            // Each tree uses one of three atlas cells. Keep a thin
+                            // gutter to avoid mipmap bleeding at tile joins.
+                            float uMin=variety/3f+.004f;
+                            float uMax=(variety+1)/3f-.004f;
                             uvs.Add(new Vector2(uMin,0));
                             uvs.Add(new Vector2(uMax,0));
                             uvs.Add(new Vector2(uMax,1));
