@@ -151,18 +151,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 39827508494
-          name: region1-canon-native-39827508494
+          run-id: 39831626822
+          name: region1-canon-native-39831626822
           path: ${{ runner.temp }}/region1-author-source-${{ github.run_id }}
       - name: Verify recovered source identity without rerunning unchanged Unity
         if: contains(github.event.head_commit.message, 'author-retry(world4x):')
         shell: powershell
         run: |
-          git -C world4x-source fetch --depth=1 origin 1132e559aed4683c678aa4c0fafdbe25195185bb
+          git -C world4x-source fetch --depth=1 origin b277320e35d0268d556fe2d540ae07d5535629a3
           if($LASTEXITCODE){throw 'Cannot verify pinned original terrain source'}
-          git -C world4x-source diff --exit-code 1132e559aed4683c678aa4c0fafdbe25195185bb HEAD -- Unity/
+          git -C world4x-source diff --exit-code b277320e35d0268d556fe2d540ae07d5535629a3 HEAD -- Unity/
           if($LASTEXITCODE){throw 'Unity changed: cached captures cannot certify this source'}
-          $capture=Join-Path $env:RUNNER_TEMP "region1-author-source-$env:GITHUB_RUN_ID/region1-canon-captures-39827508494"
+          $capture=Join-Path $env:RUNNER_TEMP "region1-author-source-$env:GITHUB_RUN_ID/region1-canon-captures-39831626822"
           if(-not(Test-Path "$capture/terrain-source.json")){throw 'Measured source mesh missing'}
           "ELDORIA_REGION1_ARTIST_CAPTURE=$capture" >> $env:GITHUB_ENV
       - name: Authored macro relief from measured Unity source and canonical memory

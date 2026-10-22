@@ -31,9 +31,13 @@ atlas=source.parent/'terrain-atlas.png'
 if not atlas.is_file():raise RuntimeError('Measured Unity atlas missing')
 mat.use_nodes=True
 nodes=mat.node_tree.nodes
+nodes.clear()
+shader=nodes.new('ShaderNodeBsdfPrincipled')
+output_node=nodes.new('ShaderNodeOutputMaterial')
+mat.node_tree.links.new(shader.outputs['BSDF'],output_node.inputs['Surface'])
 tex=nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(atlas.resolve()));tex.image.pack()
-mat.node_tree.links.new(tex.outputs['Color'],nodes.get('Principled BSDF').inputs['Base Color'])
-nodes.get('Principled BSDF').inputs['Roughness'].default_value=1.0
+mat.node_tree.links.new(tex.outputs['Color'],shader.inputs['Base Color'])
+shader.inputs['Roughness'].default_value=1.0
 scene=bpy.context.scene
 scene.render.engine='BLENDER_EEVEE_NEXT' if bpy.app.version<(4,2,0) else 'CYCLES'
 scene.cycles.samples=8
