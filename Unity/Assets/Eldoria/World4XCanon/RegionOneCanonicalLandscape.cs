@@ -42,7 +42,15 @@ namespace Eldoria.World4XCanon
         static readonly Color Rock = new Color(.52f, .49f, .40f);
         static readonly Color Water = new Color(.19f, .43f, .58f);
         static readonly Color Rift = new Color(.21f, .15f, .22f);
-        static readonly Vector2[] ForestCentres = RegionOneAuthoredComposition.Centres();
+        // Constant world remapping, shared at every scale. Central gameplay stays fixed.
+        public const float ProtectedAuthoredHalfWidth=110f;
+        public const float OuterWidthScale=.26f;
+        public static float AuthoredToWorldX(float x)
+        {return Mathf.Abs(x)<=ProtectedAuthoredHalfWidth ? x : Mathf.Sign(x)*(ProtectedAuthoredHalfWidth+(Mathf.Abs(x)-ProtectedAuthoredHalfWidth)*OuterWidthScale);}
+        public static float WorldToAuthoredX(float x)
+        {return Mathf.Abs(x)<=ProtectedAuthoredHalfWidth ? x : Mathf.Sign(x)*(ProtectedAuthoredHalfWidth+(Mathf.Abs(x)-ProtectedAuthoredHalfWidth)/OuterWidthScale);}
+        static readonly Vector2[] ForestCentres = RegionOneAuthoredComposition.Centres()
+            .Select(p=>new Vector2(AuthoredToWorldX(p.x),p.y)).ToArray();
         internal static readonly int[] ForestCorridorPairs = new int[0];
 
         ValoriaIntegratedWorld host;
@@ -240,6 +248,7 @@ namespace Eldoria.World4XCanon
             nearGroundMaterial.SetTexture("_DetailMap",detail);
             nearGroundMaterial.SetVector("_WorldMap",new Vector4(origin.x,origin.z,
                 1f/(LandscapeHalfWidth*2f),1f/(LandscapeHalfDepth*2f)));
+            nearGroundMaterial.SetVector("_AuthoredDomain",new Vector4(ProtectedAuthoredHalfWidth,OuterWidthScale,0,0));
             nearGroundMaterial.SetFloat("_TileScale",1f/32f);
             nearGroundMaterial.SetFloat("_DetailStrength",.32f);
             foreach(var renderer in originalGround)
@@ -312,11 +321,16 @@ namespace Eldoria.World4XCanon
                 for (int x = 0; x <= resolution; x++)
                 {
                     float u = x / (float)resolution, v = z / (float)resolution;
-                    float localX = (u * 2 - 1) * LandscapeHalfWidth;
+                    // Keep the real +/-910m support mesh, concentrating70%
+                    // of its unchanged200 columns on the authored geography.
+                    float mappedEdge=AuthoredToWorldX(LandscapeHalfWidth);
+                    float localX=u<.15f ? Mathf.Lerp(-LandscapeHalfWidth,-mappedEdge,u/.15f) :
+                        u>.85f ? Mathf.Lerp(mappedEdge,LandscapeHalfWidth,(u-.85f)/.15f) :
+                        AuthoredToWorldX(((u-.15f)/.70f*2f-1f)*LandscapeHalfWidth);
                     float localZ = (v * 2 - 1) * LandscapeHalfDepth;
                     int index = z * row + x;
                     vertices[index] = new Vector3(origin.x + localX, SampleHeight(localX, localZ), origin.z + localZ);
-                    uv[index] = new Vector2(u, v);
+                    uv[index] = new Vector2(WorldToAuthoredX(localX)/(LandscapeHalfWidth*2f)+.5f, v);
                 }
             int t = 0;
             for (int z = 0; z < resolution; z++)
@@ -342,13 +356,14 @@ namespace Eldoria.World4XCanon
             // extra colliders, assets or invented mountains.
             float radius = Mathf.Sqrt(x*x+z*z);
             float near = Mathf.Clamp01((radius - 62f) / 140f);
-            float contour = Mathf.Sin(x * .017f) * Mathf.Cos(z * .014f) * .95f +
-                            Mathf.Sin(z * .009f + x * .006f) * .55f;
-            float distantRidge = Mathf.Clamp01((Mathf.Abs(x) - 330f) / 290f) * 3.5f;
+            float authoredX=WorldToAuthoredX(x);
+            float contour = Mathf.Sin(authoredX * .017f) * Mathf.Cos(z * .014f) * .95f +
+                            Mathf.Sin(z * .009f + authoredX * .006f) * .55f;
+            float distantRidge = Mathf.Clamp01((Mathf.Abs(authoredX) - 330f) / 290f) * 3.5f;
             float outlands=Mathf.SmoothStep(0f,1f,
                 Mathf.Clamp01((radius-225f)/240f));
-            float slowRoll=(Mathf.PerlinNoise(x*.009f+13f,z*.010f+31f)-.5f)*18f+
-                (Mathf.PerlinNoise(x*.021f+53f,z*.018f+71f)-.5f)*5f;
+            float slowRoll=(Mathf.PerlinNoise(authoredX*.009f+13f,z*.010f+31f)-.5f)*18f+
+                (Mathf.PerlinNoise(authoredX*.021f+53f,z*.018f+71f)-.5f)*5f;
             // Coastal interpolation uses the SAME painted water transition.
             // The old binary IsCoast toggle made an artificial cliff at the
             // edge even though the diffuse coast was progressively blended.
@@ -357,7 +372,7 @@ namespace Eldoria.World4XCanon
             // Extend the atlas's four restrained stone ridges into actual
             // low 3D hills. This changes presentation only and preserves the
             // real central gameplay corridor and all original colliders.
-            float ridgeLift=RegionOneHybridTerrainArt.RidgeElevation(x,z);
+            float ridgeLift=RegionOneHybridTerrainArt.RidgeElevation(authoredX,z);
             return -4.0f - 14f*Mathf.SmoothStep(0f,1f,coastalWater) +
                 landFactor*(near*(contour+distantRidge)+outlands*slowRoll+ridgeLift);
         }
@@ -374,7 +389,7 @@ namespace Eldoria.World4XCanon
 
         public static bool IsForest(float x,float z)
         {
-            return RegionOneAuthoredComposition.Woodland(x,z)>.32f;
+            return RegionOneAuthoredComposition.Woodland(WorldToAuthoredX(x),z)>.32f;
         }
 
         // Continuous signed distance: positive toward sea. No binary X/Z
@@ -408,6 +423,7 @@ namespace Eldoria.World4XCanon
         }
         public static float CoastDistance(float x, float z)
         {
+            x=WorldToAuthoredX(x);
             float derivative=(CoastShore(z+2f)-CoastShore(z-2f))/4f;
             return (x-CoastShore(z))/Mathf.Sqrt(1f+derivative*derivative);
         }
@@ -461,6 +477,7 @@ namespace Eldoria.World4XCanon
             // continuous bends on the same established route network.
             // Identical mask drives terrain paint and forest clearances;
             // native march routes, WorldHotspots and save positions untouched.
+            x=WorldToAuthoredX(x);
             float curvatureX=16f*Mathf.Sin(z*.018f)+6f*Mathf.Sin(z*.061f);
             float curvatureZ=12f*Mathf.Sin(x*.013f)+4f*Mathf.Sin(x*.055f);
             Vector2 p=new Vector2(x+curvatureX,z+curvatureZ);
@@ -491,8 +508,8 @@ namespace Eldoria.World4XCanon
         // A/B baseline. One water geography for all zooms, no new hotspots.
         public static float RiverCentre(float z)
         {
-            return -104f + .19f*z + 49f*Mathf.Sin(z*.013f) +
-                17f*Mathf.Sin(z*.034f);
+            return AuthoredToWorldX(-104f + .19f*z + 49f*Mathf.Sin(z*.013f) +
+                17f*Mathf.Sin(z*.034f));
         }
 
         public static bool IsRiver(float x, float z)
@@ -880,7 +897,7 @@ namespace Eldoria.World4XCanon
                         centre=(ForestCentres[ForestCorridorPairs[link]]+
                                 ForestCentres[ForestCorridorPairs[link+1]])*.5f;
                     }
-                    float x = centre.x + Mathf.Cos(theta) * (11f + j * 6f);
+                    float x = AuthoredToWorldX(WorldToAuthoredX(centre.x) + Mathf.Cos(theta) * (11f + j * 6f));
                     float z = centre.y + Mathf.Sin(theta) * (9f + j * 4f);
                     var tree = new GameObject("Region1 · reused-tree " + i + "-" + j);
                     tree.transform.SetParent(detailTrees.transform, true);

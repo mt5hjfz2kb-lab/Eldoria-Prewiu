@@ -8,6 +8,7 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
         _EcologySpan("Local field inverse extent",Float)=.002604167
         _EcologyStrength("Local scale ecology",Range(0,1))=1
         _WorldMap("Origin XZ and inverse extents", Vector) = (0,0,1,1)
+        _AuthoredDomain("Protected width / outer width ratio",Vector)=(110,1,0,0)
         _TileScale("Detail world scale", Float) = 0.0208333
         _DetailStrength("Detail strength", Range(0,1)) = 0.55
     }
@@ -31,6 +32,7 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
                 float _EcologySpan;
                 float _EcologyStrength;
                 float4 _WorldMap;
+                float4 _AuthoredDomain;
                 float _TileScale;
                 float _DetailStrength;
             CBUFFER_END
@@ -46,7 +48,10 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
             half4 frag(Varyings i) : SV_Target
             {
                 float2 relative=i.worldXZ-_WorldMap.xy;
-                float2 uv=relative*_WorldMap.zw+0.5;
+                float2 authored=relative;
+                authored.x=sign(relative.x)*(_AuthoredDomain.x+max(0,abs(relative.x)-_AuthoredDomain.x)/max(.01,_AuthoredDomain.y));
+                if(abs(relative.x)<=_AuthoredDomain.x)authored.x=relative.x;
+                float2 uv=authored*_WorldMap.zw+0.5;
                 half3 pigment=SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,uv).rgb;
                 half3 detail=SAMPLE_TEXTURE2D(_DetailMap,sampler_DetailMap,relative*_TileScale).rgb;
                 #if defined(UNITY_COLORSPACE_GAMMA)
