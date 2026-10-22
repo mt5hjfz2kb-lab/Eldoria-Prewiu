@@ -130,6 +130,48 @@ namespace Eldoria.Tests
                 "Surface cracks must face the top-down strategy camera, never backface-culled.");
             Assert.That(fracture.GetComponentsInChildren<Collider>(true), Is.Empty);
         }
+        [UnityTest]
+        public IEnumerator PanoramaHidesOldSquareWithoutRemovingWorldGameObjects()
+        {
+            MonoBehaviour host = null; GameObject world = null;
+            Component navigation = null; Camera camera = null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var adapter = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .FirstOrDefault(x => x && x.GetType().Name == "RegionOneCanonicalLandscape");
+            Assert.That(adapter, Is.Not.Null);
+            var terrain = world.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(x => x.name.IndexOf("continuous prairie",
+                    StringComparison.OrdinalIgnoreCase) >= 0 &&
+                    x.bounds.size.x > 100f && x.bounds.size.z > 100f).ToArray();
+            Assert.That(terrain.Length, Is.GreaterThan(0),
+                "Must identify the genuinely imported local ground; do not hide arbitrary art.");
+            bool[] originalStates = terrain.Select(x => x.enabled).ToArray();
+            float zoom = camera.orthographicSize;
+            var target = (Vector3)Member(navigation,"target");
+            try
+            {
+                Call(navigation, "SetZoomLevel", 0, true);
+                Call(adapter,"RefreshForCapture");
+                Assert.That(terrain.All(x => !x.enabled), Is.True,
+                    "Panorama must not reveal the old hard-edged rectangular prairie.");
+                var simplified = world.transform.Find("Region 1 canonical continuous geography")
+                    .Find("Region1 · batched distant organic forest canopies");
+                Assert.That(simplified, Is.Not.Null);
+                Assert.That(simplified.gameObject.activeSelf, Is.True,
+                    "Panorama must retain forest silhouettes, not blank green circles.");
+                Call(navigation, "SetZoomLevel", 1, true);
+                Call(adapter,"RefreshForCapture");
+                for (int i=0;i<terrain.Length;i++)
+                    Assert.That(terrain[i].enabled, Is.EqualTo(originalStates[i]),
+                        "Regional scale must preserve native terrain and interactivity.");
+            }
+            finally
+            {
+                Call(navigation,"RestoreView",target,zoom);
+                Call(adapter,"RefreshForCapture");
+            }
+        }
+
         [Serializable]
         sealed class RenderIdentity
         {
