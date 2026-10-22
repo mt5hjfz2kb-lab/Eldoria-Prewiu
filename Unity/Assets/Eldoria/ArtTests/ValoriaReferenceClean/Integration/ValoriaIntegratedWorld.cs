@@ -222,8 +222,12 @@ namespace Eldoria.ReferenceClean {
       // Follow the actual scaled animated silhouette rather than its hidden
       // camp or tiny original hotspot. Keep gameplay physics untouched.
       var actor=WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
-      if(actor&&actor.ModelRoot&&actor.ModelRoot.activeInHierarchy)
-       AddFocusRenderers(actor.ModelRoot,points);
+      if(actor&&actor.ModelRoot&&actor.ModelRoot.activeInHierarchy){
+       // V4's renderer bounds include a huge baked animation culling
+       // envelope. Only true skinned geometry may steer the player camera.
+       if(actor.TryGeometryBounds(out var visible))AddFocusBox(visible,Matrix4x4.identity,points);
+       else AddFocusRenderers(actor.ModelRoot,points);
+      }
      }
      if(points.Count==0){
       var authored=WorldRoot.GetComponentsInChildren<Transform>().FirstOrDefault(t=>t.name=="Zone1 authored "+id||t.name=="Zone1 hostile camp "+id);
@@ -273,10 +277,9 @@ namespace Eldoria.ReferenceClean {
    if(hit)return hit;
    var actor=WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
    if(!actor||!actor.ModelRoot||!actor.ModelRoot.activeInHierarchy)return null;
-   var rs=actor.ModelRoot.GetComponentsInChildren<Renderer>(true);
-   if(rs.Length==0)return null;
-   Bounds b=rs[0].bounds;
-   foreach(var r in rs.Skip(1))if(r)b.Encapsulate(r.bounds);
+   // Picking the 150m culling envelope would select this monster while
+   // the user touches unrelated forest, bridge or quarry terrain.
+   if(!actor.TryGeometryBounds(out var b))return null;
    var min=b.min;var max=b.max;
    float left=float.PositiveInfinity,right=float.NegativeInfinity;
    float bottom=float.PositiveInfinity,top=float.NegativeInfinity;
