@@ -64,7 +64,7 @@ namespace Eldoria.World4XCanon
         GameObject distantForestSilhouettes;
         GameObject distantGeology;
         Mesh terrainMesh;
-        Texture2D terrainTexture;
+        Texture2D terrainTexture, legacyCompareTexture;
         Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial, breachHaloMaterial;
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
@@ -134,7 +134,12 @@ namespace Eldoria.World4XCanon
             root.SetParent(existingWorld, true);
             // Existing hotspot transforms remain the only gameplay coordinate authority.
             surfaceMaterial = MakeMaterial("Region1 ground texture", Color.white, false);
-            terrainTexture = MakeTerrainTexture(1024);
+            // Controlled hybrid trial: legacy mode is opt-in for exact
+            // same-camera A/B only; the real game uses the richer surface.
+            bool legacyOnly = Environment.GetEnvironmentVariable("ELDORIA_REGION1_HYBRID_BASELINE")=="1";
+            terrainTexture = legacyOnly ? MakeTerrainTexture(1024)
+                : RegionOneHybridTerrainArt.Bake(1024,LandscapeHalfWidth,
+                    LandscapeHalfDepth,BreachOffsetX,BreachOffsetZ);
             if (surfaceMaterial.HasProperty("_BaseMap")) surfaceMaterial.SetTexture("_BaseMap", terrainTexture);
             if (surfaceMaterial.HasProperty("_MainTex")) surfaceMaterial.SetTexture("_MainTex", terrainTexture);
             var land = new GameObject("Region1 · one coherent terrain mesh");
@@ -769,6 +774,24 @@ namespace Eldoria.World4XCanon
             return material;
         }
 
+        /// <summary>
+        /// Switches only the painted diffuse surface in the SAME genuine
+        /// integrated Unity game camera, for before/after art comparison.
+        /// No gameplay state, camera poses, meshes, saves or UI are mutated.
+        /// Legacy texture is lazy and only built for opt-in capture/testing.
+        /// </summary>
+        public void CompareAtlas(bool baseline)
+        {
+            if (!surfaceMaterial || !terrainTexture) return;
+            if (baseline && !legacyCompareTexture)
+                legacyCompareTexture=MakeTerrainTexture(1024);
+            var selected=baseline ? legacyCompareTexture : terrainTexture;
+            if (surfaceMaterial.HasProperty("_BaseMap"))
+                surfaceMaterial.SetTexture("_BaseMap",selected);
+            if (surfaceMaterial.HasProperty("_MainTex"))
+                surfaceMaterial.SetTexture("_MainTex",selected);
+        }
+
         // Explicitly synchronize representations before a manually rendered Unity capture.
         public void RefreshForCapture()
         {
@@ -843,6 +866,7 @@ namespace Eldoria.World4XCanon
                 if (originalGround[i]) originalGround[i].enabled = originalGroundInitiallyEnabled[i];
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
             if (terrainTexture) Destroy(terrainTexture);
+            if (legacyCompareTexture) Destroy(legacyCompareTexture);
             if (surfaceMaterial) Destroy(surfaceMaterial);
             if (riftMaterial) Destroy(riftMaterial);
             if (breachCoreMaterial) Destroy(breachCoreMaterial);
