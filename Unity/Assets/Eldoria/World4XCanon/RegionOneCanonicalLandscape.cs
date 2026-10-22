@@ -399,6 +399,12 @@ namespace Eldoria.World4XCanon
             return material;
         }
 
+        // Explicitly synchronize representations before a manually rendered Unity capture.
+        public void RefreshForCapture()
+        {
+            if (built) UpdateLevelOfDetail(true);
+        }
+
         void LateUpdate()
         {
             if (built) UpdateLevelOfDetail(false);
