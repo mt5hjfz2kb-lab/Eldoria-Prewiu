@@ -432,10 +432,13 @@ namespace Eldoria.ReferenceClean.Editor {
     else groundCollider.sharedMesh=savedGroundMesh;
    }
    Bounds CreatureBounds(){
-    var rs=animated.ModelRoot.GetComponentsInChildren<Renderer>(true).Where(r=>r&&r.enabled&&r.bounds.size.y>.001f).ToArray();
-    Need(rs.Length>0,"Animated enemy LOD/render bounds absent");
-    var b=rs[0].bounds;foreach(var rr in rs.Skip(1))b.Encapsulate(rr.bounds);
-    return b;
+    // The V4 rig has precomputed renderer animation culling bounds much
+    // larger than the mesh itself. Measure actual transformed skin vertices,
+    // exactly as original animated-model integration did. Otherwise a
+    // false 160m bounding volume is mistaken for the creature's visible foot.
+    Need(animated.TryGeometryBounds(out var geometry),"Animated V4 skin geometry not CPU-readable");
+    Need(geometry.size.y>.05f,"Animated enemy mesh geometry is degenerate");
+    return geometry;
    }
    void VerifyFoot(Bounds before,Bounds after,string level){
     Debug.Log("ISSUE95_B2_FOOT_SURVEY level="+level+" ground="+groundY.ToString("F4")+
