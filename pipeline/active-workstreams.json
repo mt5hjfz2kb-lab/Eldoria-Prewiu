@@ -30,12 +30,14 @@
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
         "docs/evidence/world4x-canon-20261022/**",
-        "Unity/Assets/Eldoria/World4XCanon.meta"
+        "Unity/Assets/Eldoria/World4XCanon.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta"
       ],
       "resources": [],
       "authorization": "Explicit owner order 22-10-2026 to implement Region 1 canonical world; isolated source, non-overlap with issue95's active integrated scene/ZoneOneStrategicCamera/UI/Spawnling; any integration touch requires live reconciliation.",
       "phase": "SOURCE_CANDIDATE_AWAITING_NATIVE_UNITY_VERIFICATION",
-      "next": "Source implemented in feature/world4x-region1-canon-20261022; execute integrated Unity Editor source gate and PlayMode, obtain actual 3 Unity captures, compare canonical images, run mobile and iPhone stability. Do not merge or publish without validated results; no UI/Engendro file ownership.",
+      "next": "Feature PR #100 draft: native source validation and PlayMode integrated acceptance test, screenshot A/B and mobile QA pending. Canonical 3 PNG inspected, no authorized publication.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
