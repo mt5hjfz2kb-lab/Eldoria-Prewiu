@@ -77,6 +77,7 @@ jobs:
             /Unity/**
             /tools/workstream-lease/**
             /pipeline/active-workstreams.json
+            /docs/evidence/world4x-canon-20261022/authoring/**
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -84,6 +85,11 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             pipeline/active-workstreams.json
+            /tools/art-knowledge/**
+            /tools/art-direction/**
+            /pipeline/art-knowledge/**
+            /pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json
+            /docs/visual-reference/world-map/**
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -137,6 +143,38 @@ jobs:
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
           if($captures.Count -ne 12){throw "Missing exact-camera hybrid A/B PNGs: expected twelve genuine Unity captures, got $($captures.Count)"}
           Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) SAME_CAMERA_HYBRID_A_B (NOT art/mobile QA)"
+      - name: Authored macro relief from measured Unity source and canonical memory
+        if: success() && contains(github.event.head_commit.message, 'author(world4x):')
+        timeout-minutes: 22
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Do not contend with existing Unity or Blender'}
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){
+            foreach($root in @('C:\Program Files\Blender Foundation',"${env:LOCALAPPDATA}\Programs\Blender Foundation")){
+              if(-not $blender -and (Test-Path $root)){
+                $blender=Get-ChildItem $root -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+              }
+            }
+          }
+          if(-not $blender){throw 'Existing installed Blender not found; no duplicate install'}
+          $tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 15
+          $model=@($tags.models | Where-Object {$_.name -match '^qwen3-vl:(4b|8b|2b)'} | Sort-Object size | Select-Object -First 1).name
+          if(-not $model){throw 'No installed Qwen3 vision model; no download or paid fallback'}
+          $capture=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
+          $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring'
+          $memory=Join-Path $env:GITHUB_WORKSPACE 'world4x-live'
+          & $blender --background --python-exit-code 1 --python "$helpers/freeze_terrain.py" -- "$capture/terrain-source.json" $out
+          if($LASTEXITCODE){throw 'Measured Unity terrain could not be frozen in Blender'}
+          & $blender --background --python-exit-code 1 --python "$memory/tools/art-direction/ai-authoring/execute_artist_plan.py" -- --source "$out/terrain-source.blend" --inspect --inspect-target-object RegionOneCanonicalTerrain --out "$out/topology"
+          if($LASTEXITCODE){throw 'Actual Blender topology inspection failed'}
+          node "$helpers/run_author.mjs" $memory $capture $out $model
+          if($LASTEXITCODE){throw 'Canonical memory / real Qwen author failed; no promotion'}
+          & $blender --background --python-exit-code 1 --python "$memory/tools/art-direction/ai-authoring/execute_artist_plan.py" -- --source "$out/terrain-source.blend" --plan "$out/direction/artist-plan.json" --out "$out/variant" --transport direct
+          if($LASTEXITCODE){throw 'Typed artist edit failed; retain source and evidence'}
+          & $blender --background "$out/variant/artist-output.blend" --render-output "$out/terrain-clay-after-" --render-frame 1
+          if($LASTEXITCODE){throw 'Matched Blender review render failed'}
       - name: Upload logs and measured tests
         if: always()
         uses: actions/upload-artifact@v4
@@ -149,3 +187,5 @@ jobs:
             ${{ runner.temp }}/eldoria-region1-canon-tests.xml
             ${{ runner.temp }}/eldoria-region1-source-gate.json
             ${{ runner.temp }}/region1-canon-captures-*/**
+            ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/**
+            ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/*.cycle-feedback.json

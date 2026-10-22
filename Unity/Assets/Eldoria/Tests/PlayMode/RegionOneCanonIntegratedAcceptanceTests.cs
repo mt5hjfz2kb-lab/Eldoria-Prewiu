@@ -357,6 +357,7 @@ namespace Eldoria.Tests
             var adapter = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
                 .FirstOrDefault(x=>x && x.GetType().Name == "RegionOneCanonicalLandscape");
             Assert.That(adapter, Is.Not.Null);
+            Call(adapter, "ExportAuthoringSnapshot", outdir);
             var home = (Vector3)Member(host, "WorldHome");
             var realForest = Call(host, "FindTarget", "forest-valoria") as Component;
             Assert.That(realForest, Is.Not.Null,

@@ -992,6 +992,34 @@ namespace Eldoria.World4XCanon
             if (built) UpdateLevelOfDetail(true);
         }
 
+#if UNITY_EDITOR
+        [Serializable]
+        sealed class AuthoringSnapshot
+        {
+            public Vector3 origin;
+            public Vector3[] vertices;
+            public Vector2[] uv;
+            public int[] triangles;
+            public string context = "Actual integrated Unity terrain; no gameplay or save snapshot";
+        }
+
+        // Export exact existing geometry for the established Qwen/Blender
+        // author. This is opt-in CI evidence, never player runtime I/O.
+        public void ExportAuthoringSnapshot(string directory)
+        {
+            if (!built || !terrainMesh || !terrainTexture)
+                throw new InvalidOperationException("Real terrain must exist before authoring export.");
+            string file = System.IO.Path.Combine(directory, "terrain-source.json");
+            if (System.IO.File.Exists(file))
+                throw new InvalidOperationException("Do not overwrite frozen authoring evidence.");
+            System.IO.Directory.CreateDirectory(directory);
+            System.IO.File.WriteAllText(file, JsonUtility.ToJson(new AuthoringSnapshot {
+                origin=origin, vertices=terrainMesh.vertices,
+                uv=terrainMesh.uv, triangles=terrainMesh.triangles
+            }));
+        }
+#endif
+
         void LateUpdate()
         {
             if (built) UpdateLevelOfDetail(false);
