@@ -78,10 +78,7 @@ namespace Eldoria.SpawnlingBastion2
             // Increase its visual-only footprint with camera distance. It is
             // still a single original encounter, not a second strategic icon.
             float zoom = Host.WorldCamera ? Host.WorldCamera.orthographicSize : NearOrthographicZoom;
-            float denominator = Mathf.Max(1f, FarOrthographicZoom - NearOrthographicZoom);
-            float fraction = Mathf.Clamp01((zoom - NearOrthographicZoom) / denominator);
-            float smooth = fraction * fraction * (3f - 2f * fraction);
-            float presence = Mathf.Lerp(NearPresence, StrategicPresence, smooth);
+            float presence = PresenceAtZoom(zoom);
             MotionPivot.localScale = restScale * presence;
             float groundCorrection = -restFootOffset * restScale.y * (presence - 1f);
             float t = Time.unscaledTime;
@@ -90,6 +87,15 @@ namespace Eldoria.SpawnlingBastion2
             MotionPivot.localRotation = restRotation *
                 Quaternion.Euler(1.1f * Mathf.Sin(t * 1.2f),
                     SwayDegrees * Mathf.Sin(t * .62f), 0f);
+        }
+
+        // Deterministic for editor/unit QA, even before the scene can be opened.
+        public float PresenceAtZoom(float zoom)
+        {
+            float denominator = Mathf.Max(1f, FarOrthographicZoom - NearOrthographicZoom);
+            float fraction = Mathf.Clamp01((zoom - NearOrthographicZoom) / denominator);
+            float smooth = fraction * fraction * (3f - 2f * fraction);
+            return Mathf.Lerp(NearPresence, StrategicPresence, smooth);
         }
 
         // The original gateway resolves combat directly from outbound to returning.
