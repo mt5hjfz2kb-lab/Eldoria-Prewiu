@@ -226,6 +226,18 @@ namespace Eldoria.Tests
             Assert.That(camera.enabled, Is.True);
             var geo = world.transform.Find("Region 1 canonical continuous geography");
             Assert.That(geo, Is.Not.Null);
+            // Record exact existing renderer identity + extents, so visual
+            // comparison can remove only terrain sheets, never resources.
+            var survey = world.GetComponentsInChildren<Renderer>(true)
+                .Where(r => r.bounds.size.x > 55f && r.bounds.size.z > 55f)
+                .OrderByDescending(r => r.bounds.size.x * r.bounds.size.z)
+                .Select(r => string.Join("\t", r.name,
+                    r.bounds.size.x.ToString("F2"), r.bounds.size.y.ToString("F2"),
+                    r.bounds.size.z.ToString("F2"), r.enabled.ToString(),
+                    r.gameObject.activeInHierarchy.ToString(),
+                    r.sharedMaterial ? r.sharedMaterial.name : "none",
+                    r.transform.parent ? r.transform.parent.name : "root")).ToArray();
+            File.WriteAllLines(Path.Combine(outdir, "world-wide-renderer-survey.tsv"), survey);
             var adapter = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
                 .FirstOrDefault(x=>x && x.GetType().Name == "RegionOneCanonicalLandscape");
             Assert.That(adapter, Is.Not.Null);
