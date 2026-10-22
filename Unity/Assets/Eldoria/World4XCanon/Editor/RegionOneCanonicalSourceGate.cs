@@ -17,8 +17,9 @@ namespace Eldoria.World4XCanon.Editor
         [MenuItem("Eldoria/Region 1/Validate canonical world source")]
         public static void Validate()
         {
-            if (RegionOneCanonicalLandscape.LandscapeVersion != 1)
-                throw new InvalidOperationException("Unexpected canonical world version");
+            if (RegionOneCanonicalLandscape.LandscapeVersion != 1 ||
+                RegionOneHybridTerrainArt.StyleRevision != 1)
+                throw new InvalidOperationException("Unexpected or missing hybrid-world art style version");
             if (RegionOneCanonicalLandscape.SampleHeight(0f, 0f) > -2.5f)
                 throw new InvalidOperationException("Overlay would obstruct original hotspot geometry");
             if (!RegionOneCanonicalLandscape.IsForest(-310f, 230f) ||
