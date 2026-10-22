@@ -13,12 +13,13 @@ namespace Eldoria.World4XCanon
     /// </summary>
     public static class RegionOneHybridForestImpostors
     {
-        public const int Revision = 2;
+        public const int Revision = 3;
         public sealed class Output
         {
             public GameObject root;
             public readonly List<Mesh> meshes=new List<Mesh>();
             public Texture2D atlas;
+            public bool ownsAtlas;
             public Material material;
             public int trees, triangles;
         }
@@ -115,7 +116,10 @@ namespace Eldoria.World4XCanon
                 return null;
             }
             var result=new Output();
-            result.atlas=PaintConiferAtlas();
+            result.atlas=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");
+            result.ownsAtlas=!result.atlas;
+            if(!result.atlas) result.atlas=PaintConiferAtlas();
+            Debug.Log("REGION1_FOREST_PAINTED="+(!result.ownsAtlas));
             result.material=new Material(shader)
                 {name="Region1 2.5D aerial woodland canopy material"};
             if(result.material.HasProperty("_MainTex"))

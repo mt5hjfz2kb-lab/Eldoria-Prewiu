@@ -153,7 +153,8 @@ namespace Eldoria.World4XCanon
             // rebake; entering the world must not repaint four million pixels.
             bool rebake=Environment.GetEnvironmentVariable("ELDORIA_REGION1_REBAKE_ATLAS")=="1";
             if(!legacyOnly && !rebake)
-                terrainTexture=Resources.Load<Texture2D>("World4X/RegionOneTerrainAtlas");
+                terrainTexture=Resources.Load<Texture2D>("World4X/RegionOnePaintedTerrain")
+                    ?? Resources.Load<Texture2D>("World4X/RegionOneTerrainAtlas");
             ownsTerrainTexture=!terrainTexture;
             if(!terrainTexture)
                 terrainTexture=legacyOnly ? MakeTerrainTexture(1024)
@@ -723,7 +724,7 @@ namespace Eldoria.World4XCanon
             if(hybrid!=null && hybrid.trees>0)
             {
                 distantForestSilhouettes=hybrid.root;
-                hybridForestAtlas=hybrid.atlas;
+                hybridForestAtlas=hybrid.ownsAtlas ? hybrid.atlas : null;
                 farForestMaterials.Add(hybrid.material);
                 generatedMeshes.AddRange(hybrid.meshes);
                 return;
