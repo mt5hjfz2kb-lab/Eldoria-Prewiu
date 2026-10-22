@@ -26,6 +26,10 @@ namespace Eldoria.World4XCanon
         static readonly Color Ripples = new Color(.33f,.62f,.68f);
         static readonly Color RiftGround = new Color(.21f,.17f,.24f);
         static readonly Color RiftGlow = new Color(.57f,.18f,.55f);
+        static readonly Vector2[] RidgeSites = {
+            new Vector2(-330f,190f),new Vector2(326f,215f),
+            new Vector2(-320f,-220f),new Vector2(267f,-170f)
+        };
 
         static float Fractal(float x, float z, float seed)
         {
@@ -177,14 +181,10 @@ namespace Eldoria.World4XCanon
                     // Terraced stony slopes paint restrained physical relief,
                     // while reused 3D ridges supply silhouettes at far zoom.
                     float hillValue=0f,side=0f;
-                    var ridges=new [] {
-                        new Vector2(-330f,190f), new Vector2(326f,215f),
-                        new Vector2(-320f,-220f), new Vector2(267f,-170f)
-                    };
-                    for(int ridge=0;ridge<ridges.Length;ridge++)
+                    for(int ridge=0;ridge<RidgeSites.Length;ridge++)
                     {
-                        float dx=(x-ridges[ridge].x)/58f;
-                        float dz=(z-ridges[ridge].y)/47f;
+                        float dx=(x-RidgeSites[ridge].x)/58f;
+                        float dz=(z-RidgeSites[ridge].y)/47f;
                         float dist=dx*dx+dz*dz;
                         if(dist>=1f)continue;
                         float weight=(1f-dist)*(1f-dist);
