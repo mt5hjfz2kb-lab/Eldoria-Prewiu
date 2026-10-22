@@ -57,6 +57,8 @@ namespace Eldoria.World4XCanon
         GameObject peripheralFog;
         readonly List<Renderer> originalGround = new List<Renderer>();
         readonly List<bool> originalGroundInitiallyEnabled = new List<bool>();
+        readonly List<MeshRenderer> hiddenProvisionalCamps = new List<MeshRenderer>();
+        readonly List<bool> hiddenProvisionalCampsOriginalStates = new List<bool>();
         readonly List<Renderer> existingGameRenderers = new List<Renderer>();
         readonly List<bool> existingGameRendererStates = new List<bool>();
         GameObject distantForestSilhouettes;
@@ -148,6 +150,7 @@ namespace Eldoria.World4XCanon
             // the *legacy prairie sheet* at panorama scale, otherwise that
             // square visually cuts the same Region 1 into two maps.
             CollectLegacyGround(existingWorld);
+            HideProvisionalEnemyCampDonors(existingWorld);
             CacheGameplayArtRenderers(existingWorld, root);
             // No terrain collider: world node selection continues to hit original WorldHotspots.
             BuildBreach(root);
@@ -177,6 +180,26 @@ namespace Eldoria.World4XCanon
                 originalGroundInitiallyEnabled.Add(renderer.enabled);
             }
             Debug.Log("REGION1_CANON_LEGACY_PRAIRIE_RENDERERS=" + originalGround.Count);
+        }
+
+        void HideProvisionalEnemyCampDonors(Transform existingWorld)
+        {
+            // The source GLB contains canvas/shelter placeholders labelled
+            // as enemy camps. They are NOT the existing encounters. Hide only
+            // those old donor meshes, leaving their WorldHotspots, colliders,
+            // targeting, animated Spawnling and saved gameplay unchanged.
+            foreach (Transform node in existingWorld.GetComponentsInChildren<Transform>(true))
+            {
+                if (node.name != "Enemy camp provisional existing canvas" &&
+                    node.name != "Enemy camp existing shelter") continue;
+                foreach (var renderer in node.GetComponentsInChildren<MeshRenderer>(true))
+                {
+                    hiddenProvisionalCamps.Add(renderer);
+                    hiddenProvisionalCampsOriginalStates.Add(renderer.enabled);
+                    renderer.enabled = false;
+                }
+            }
+            Debug.Log("REGION1_CANON_OLD_CAMP_MESHES_HIDDEN="+hiddenProvisionalCamps.Count);
         }
 
         void CacheGameplayArtRenderers(Transform existingWorld, Transform canonicalArt)
@@ -809,6 +832,9 @@ namespace Eldoria.World4XCanon
 
         void OnDestroy()
         {
+            for (int i=0;i<hiddenProvisionalCamps.Count;i++)
+                if (hiddenProvisionalCamps[i])
+                    hiddenProvisionalCamps[i].enabled=hiddenProvisionalCampsOriginalStates[i];
             if (farMode)
                 for (int i=0; i<existingGameRenderers.Count; i++)
                     if (existingGameRenderers[i])
