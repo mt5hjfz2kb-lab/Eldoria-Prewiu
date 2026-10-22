@@ -717,7 +717,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     free.yMax = Mathf.Min(free.yMax, 1f - fromTop / height - padding);
                 }
                 else
-                    free.xMin = Mathf.Max(free.xMin, objectiveCard.rect.width / width + padding);
+                {
+                    // The chapter occupies only the TOP-LEFT. Rejecting that
+                    // entire horizontal strip even at the middle of the screen
+                    // prevented genuine world POIs from being selected/framed.
+                    // Exclude its top band instead; the separate left nav rail
+                    // already protects its own narrow hit targets.
+                    float fromTop = -objectiveCard.anchoredPosition.y +
+                        objectiveCard.rect.height;
+                    free.yMax = Mathf.Min(free.yMax, 1f - fromTop / height - padding);
+                }
             }
             return free;
         }
