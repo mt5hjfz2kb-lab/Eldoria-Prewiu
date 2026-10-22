@@ -40,7 +40,7 @@
       ],
       "authorization": "Owner 2026-10-22 explicitly directs chat takeover of stalled World4X hybrid workstream and continuation of existing PR #100, 0€, no main promotion",
       "phase": "HYBRID_MACRO_REFERENCE_PARITY_AND_PORTRAIT_PENDING",
-      "next": "Starting PR #100 source dc0ac527c1bc5381478b14843134d12acf4a0655 and native Unity run 39805826900 (7/7, 12 screenshots), improve region-wide panoramic terrain art composition and close/regional fidelity to the three owner PNGs. Specific remaining defect: full-region panorama currently shows only a central crop in portrait (~26.5% width, 390x844), pine silhouettes remain graphic triangles, terrain underdetailed, nearby city composition differs. Do not change UI owners, gameplay, saves or native runner concurrently; source/art acceptance independent of 7/7. Keep PR draft, no merge/release; iPhone #96 requires independent physical stability.",
+      "next": "From candidate 338366e94dd0967424f18feb3d8a0d8fd14d2dc7 and authentic native artifact 12440189969 on run 39813965828: improve large-scale geographic composition/forest variety, coastline silhouette and true 3D visual depth versus the three owner PNGs; not micro-noise. Portrait panorama real camera improved to 451.917 orthographic, shows ~418/850 (~49%) of core vs old 225 (~26.5%); full-region portrait remains UNSOLVED within existing camera limits. PR #100 remains DRAFT; do not publish or merge before owner art approval and full gameplay/WebGL/iPhone #96 QA. Continue as same workstream, owner rev7; no duplicate runner jobs.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -51,13 +51,13 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
-        "unity_run": 39805826900,
-        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_JOB_SUCCESS",
+        "sha": "338366e94dd0967424f18feb3d8a0d8fd14d2dc7",
+        "unity_run": 39813965828,
+        "unity_playmode": "7_OF_7_PASS_FROM_AUTHENTIC_NUNIT_XML; Github run may still be finalizing",
         "real_unity_captures": 12,
         "art_approved": false,
         "physical_iphone_tested": false,
-        "visual_gap": "CANON_NOT_MET: original regional 240m square removed and 70m tree donors bounded; panorama forest groves now more continuous but still schematic regular pine triangles, flat terrain, too sparse/misaligned geography vs owner image; vertical panorama shows only central strip, not entire core.",
+        "visual_gap": "CANON_NOT_MET: portrait camera width 418/850 (~49%); geography still flat/schematic, pines repeated, golden palette increment small, coast now blended and fog seams cleared; close/regional need richer detail, camera limitation limits near-whole-region portrait.",
         "playable_published": false,
         "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
         "latest_native_failure_run": 39795241792,
@@ -75,7 +75,18 @@
         "latest_water_qa": "dc0ac527: water mask shared by terrain+forest rejects conifer impostors on both approved decorative lakes, river tributaries and coast; real Unity A/B 39805826900 7/7 source/playmode; no new gameplay objects.",
         "forest_corridor_art_source_sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
         "forest_corridor_first_run": 39805121152,
-        "forest_corridor_water_corrected_run": 39805826900
+        "forest_corridor_water_corrected_run": 39805826900,
+        "unity_artifact": 12440189969,
+        "portrait_zoom_run": 39810954619,
+        "portrait_zoom_sha": "7b224f0d75caaed536f9d2d6a135c806467729d5",
+        "fog_coast_run": 39811994026,
+        "fog_coast_sha": "b1468ac19d2328abbfc1f39c5533f2de7a7a0d7d",
+        "warmer_grass_run": 39812825276,
+        "warmer_grass_sha": "06598a718fa689ca4f297b34ec021a3c0254fec1",
+        "coastal_blend_run": 39813965828,
+        "coastal_blend_sha": "338366e94dd0967424f18feb3d8a0d8fd14d2dc7",
+        "coastal_blend_visual": "Authored real Unity 390x844 portrait screenshot observed: softened shoreline; owner concept parity still not reached",
+        "latest_recoverable_failure": "1b518ee9 Unity CS0234 from direct test assembly reference; corrected with reflection 338366; subsequent native NUnit XML 7/7 pass."
       },
       "ownership_history": [
         {
