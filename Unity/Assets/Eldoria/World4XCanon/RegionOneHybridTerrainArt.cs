@@ -77,12 +77,13 @@ namespace Eldoria.World4XCanon
 
         static float RoadMask(float x,float z)
         {
-            // Substantially narrower than the earlier schematic, with
-            // imperfect shoulders and warm worn areas rather than straight X.
+            // Paths trace actual winding corridors with pale earth shoulders.
+            // No stacked X lines or icons at panoramic zoom.
             float w=Mathf.PerlinNoise(x*.078f+37f,z*.079f+19f);
-            float dx=(w-.5f)*2.2f;
-            return RegionOneCanonicalLandscape.IsRoad(x+dx,z)
-                ? Mathf.Lerp(.63f,.87f,w) : 0f;
+            float d=RegionOneCanonicalLandscape.RoadDistance(x+(w-.5f)*1.3f,z);
+            float centre=Mathf.Clamp01((2.7f-d)/1.8f);
+            float shoulder=Mathf.Clamp01((5.2f-d)/3.1f)*.22f;
+            return Mathf.Clamp01(centre*.77f+shoulder);
         }
 
         static uint Hash(int x,int z,int salt)
@@ -155,11 +156,49 @@ namespace Eldoria.World4XCanon
                     float v=Mathf.PerlinNoise(x*.19f+41f,z*.16f+83f);
                     // Stylized tonal variation: readable olive/honey/sage
                     // countryside rather than a uniform brown wash.
-                    Color ground=Lerp(Prairie,YellowGrass,.27f+.51f*n);
-                    ground=Lerp(ground,Moss,Mathf.Clamp01((.47f-m)*.55f));
-                    ground=Lerp(ground,new Color(.75f,.66f,.41f),.18f*v);
-                    float meadow=Mathf.Clamp01((.62f-m)*1.3f);
-                    ground=Lerp(ground,new Color(.40f,.53f,.27f),meadow*.23f);
+                    // Large readable patches of contrasting natural biomes.
+                    // Earlier candidate changed only fine noise and was
+                    // visually almost flat from the strategic camera.
+                    float basin=Mathf.PerlinNoise(x*.013f+123f,z*.014f+195f);
+                    float hills=Mathf.PerlinNoise(x*.019f+91f,z*.017f+41f);
+                    Color ground=Lerp(Prairie,YellowGrass,.23f+.58f*n);
+                    float verdant=Mathf.SmoothStep(.36f,.68f,basin);
+                    ground=Lerp(ground,new Color(.35f,.52f,.28f),.42f*(1f-verdant));
+                    ground=Lerp(ground,new Color(.81f,.69f,.38f),.37f*verdant);
+                    float patchwork=Mathf.PerlinNoise(x*.029f+87f,z*.027f+46f);
+                    ground=Lerp(ground,new Color(.37f,.48f,.26f),
+                        Mathf.Clamp01((.40f-patchwork)*1.9f)*.33f);
+                    ground=Lerp(ground,new Color(.75f,.65f,.40f),
+                        Mathf.Clamp01((patchwork-.62f)*1.7f)*.34f);
+                    ground=Lerp(ground,Moss,Mathf.Clamp01((.45f-m)*.36f));
+                    ground=Lerp(ground,new Color(.78f,.65f,.42f),.10f*v);
+                    float meadow=Mathf.Clamp01((.65f-m)*1.7f);
+                    ground=Lerp(ground,new Color(.40f,.53f,.27f),meadow*.13f);
+                    // Terraced stony slopes paint restrained physical relief,
+                    // while reused 3D ridges supply silhouettes at far zoom.
+                    float hillValue=0f,side=0f;
+                    var ridges=new [] {
+                        new Vector2(-330f,190f), new Vector2(326f,215f),
+                        new Vector2(-320f,-220f), new Vector2(267f,-170f)
+                    };
+                    for(int ridge=0;ridge<ridges.Length;ridge++)
+                    {
+                        float dx=(x-ridges[ridge].x)/58f;
+                        float dz=(z-ridges[ridge].y)/47f;
+                        float dist=dx*dx+dz*dz;
+                        if(dist>=1f)continue;
+                        float weight=(1f-dist)*(1f-dist);
+                        hillValue=Mathf.Max(hillValue,weight);
+                        side=Mathf.Max(side,weight*(-dx*.65f+dz*.35f));
+                    }
+                    if(hillValue>.01f)
+                    {
+                        Color ridgeRock=Lerp(new Color(.46f,.48f,.32f),
+                            new Color(.72f,.65f,.47f),hills);
+                        ground=Lerp(ground,ridgeRock,hillValue*.64f);
+                        ground=Lerp(ground,new Color(.29f,.32f,.24f),
+                            Mathf.Clamp01(-side)*.21f);
+                    }
                     float radius=Mathf.Sqrt(x*x+z*z);
                     if(radius<180f)ground=Lerp(ground,new Color(.48f,.53f,.29f),
                         (1f-Mathf.SmoothStep(45f,180f,radius))*.33f);
@@ -216,7 +255,7 @@ namespace Eldoria.World4XCanon
             }
             // Scattered small rocks on distant slopes, nowhere near an
             // interactable quarry node. These are 2.5D geology not resources.
-            for(int k=0;k<size*size/440;k++)
+            for(int k=0;k<size*size/1450;k++)
             {
                 int ix=(int)(Hash(k,931,212)%((uint)size));
                 int iy=(int)(Hash(k,839,373)%((uint)size));
