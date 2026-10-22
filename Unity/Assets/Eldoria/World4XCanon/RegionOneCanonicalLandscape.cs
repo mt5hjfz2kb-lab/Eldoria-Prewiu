@@ -891,7 +891,7 @@ namespace Eldoria.World4XCanon
             distantGeology.SetActive(false);
         }
 
-        // A physical, inexpensivrm parent)
+        void BuildEdgeFog(Transform parent)
         {
             peripheralFog = new GameObject("Region1 · panoramic border haze only");
             peripheralFog.transform.SetParent(parent, true);
