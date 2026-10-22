@@ -257,7 +257,7 @@ namespace Eldoria.ReferenceClean.Editor {
      "; point="+center+"; hits="+string.Join(",",hits.Select(x=>x.gameObject.name)));
    },"World navigation is touchable even while a building sheet is open");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
-   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
+   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{
     var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
@@ -412,6 +412,25 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(animated&&animated.ModelRoot&&animated.ModelRoot.activeInHierarchy,
     "Real animated Spawnling not visible before its existing Bastion II fight");
    float nearPresence=animated.NearPresence,farPresence=animated.StrategicPresence;
+   // Compare against the genuine world ground, not only the old mesh height.
+   var prairie=h.WorldRoot.GetComponentsInChildren<MeshFilter>(true)
+    .FirstOrDefault(f=>f.name=="ZoneOne continuous prairie source");
+   Need(prairie&&prairie.sharedMesh,"Original world ground absent for Engendro foot test");
+   var groundCollider=prairie.GetComponent<MeshCollider>();
+   bool disposableGround=groundCollider==null;
+   if(disposableGround)groundCollider=prairie.gameObject.AddComponent<MeshCollider>();
+   var savedGroundMesh=groundCollider.sharedMesh;
+   float groundY;
+   try{
+    groundCollider.sharedMesh=prairie.sharedMesh;Physics.SyncTransforms();
+    Need(groundCollider.Raycast(new Ray(new Vector3(spawnTarget.transform.position.x,200,
+      spawnTarget.transform.position.z),Vector3.down),out var hit,400),
+      "No original terrain directly beneath Engendro");
+    groundY=hit.point.y;
+   }finally{
+    if(disposableGround)Object.DestroyImmediate(groundCollider);
+    else groundCollider.sharedMesh=savedGroundMesh;
+   }
    Bounds CreatureBounds(){
     var rs=animated.ModelRoot.GetComponentsInChildren<Renderer>(true).Where(r=>r&&r.enabled&&r.bounds.size.y>.001f).ToArray();
     Need(rs.Length>0,"Animated enemy LOD/render bounds absent");
@@ -424,6 +443,11 @@ namespace Eldoria.ReferenceClean.Editor {
       new Vector2(after.center.x,after.center.z))<.6f,
       "Enlarged Engendro lost original foot/XY contact at "+level);
     Need(after.size.y>before.size.y*1.7f,"B2 visual growth insignificant at "+level);
+    Need(Mathf.Abs(after.min.y-groundY)<.55f,
+      "Engendro has lost CONTACT with actual existing terrain at "+level);
+    Need(Vector2.Distance(new Vector2(after.center.x,after.center.z),
+      new Vector2(spawnTarget.transform.position.x,spawnTarget.transform.position.z))<1.5f,
+      "Engendro visual no longer aligned to real encounter hotspot at "+level);
    }
    h.Select("");
    h.WorldNavigation.EnterStrategicView(spawnTarget.transform.position);
@@ -441,8 +465,10 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-art-engendro-prebattle-strategic.png",1600,900);
    },"real B2 strategic enlarged silhouette AND exact grounded anchor");
    h.WorldNavigation.SetZoomLevel(2,true);
-   h.WorldNavigation.PanTo(spawnTarget.transform.position);
-   h.Focus(spawnTarget.gameObject);
+   // This is an explicit local zoom (not a Focus() auto-fit back to macro).
+   // Offset toward the screen's open centre while retaining the hotspot.
+   h.WorldNavigation.PanTo(spawnTarget.transform.position+new Vector3(0,0,3f));
+   Need(h.WorldCamera.orthographicSize<=17f,"Local view zoom was silently lost");
    yield return null;
    animated.NearPresence=animated.StrategicPresence=1f;
    yield return null;
