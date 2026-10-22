@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 namespace Eldoria.World4XCanon
 {
     /// <summary>
-    /// Genuine hybrid 2.5D: painted conifer cards stand in 3D terrain XYZ,
+    /// Genuine hybrid 2.5D: top-down painted conifer canopies in 3D terrain XYZ,
     /// grouped into three meshes / one alpha material. Only visual LODs.
     /// They are NOT POIs, resources, camps or world cities. No physics.
     /// No web sprites, paid assets, Tripo or alternate Unity scene.
@@ -35,47 +35,48 @@ namespace Eldoria.World4XCanon
 
         static Texture2D PaintConiferAtlas()
         {
-            const int width=64,height=96;
-            var pixels=new Color32[width*height];
-            for(int y=0;y<height;y++)
-            {
-                float t=(y-18f)/73f;
-                for(int x=0;x<width;x++)
+            // Strategic overview is nearly top-down. Paint a canopy seen
+            // from ABOVE rather than an upright tree, which becomes a black
+            // 2-pixel line when projected by the 74-degree world camera.
+            const int size=96;
+            var pixels=new Color32[size*size];
+            for(int y=0;y<size;y++)
+                for(int x=0;x<size;x++)
                 {
-                    float dx=x-32f;
-                    float sw=Random01(x,y,31);
-                    var color=new Color32(0,0,0,0);
-                    bool trunk=y>=5 && y<38 && Mathf.Abs(dx)<3.25f;
-                    if(trunk)
+                    float dx=(x-size*.50f)/(size*.47f);
+                    float dy=(y-size*.50f)/(size*.47f);
+                    float a=Mathf.Atan2(dy,dx);
+                    float radius=Mathf.Sqrt(dx*dx+dy*dy);
+                    float jitter=Random01(x,y,39f.GetHashCode());
+                    float edge=1f+.13f*Mathf.Sin(a*7f)+
+                                  .10f*Mathf.Sin(a*13f+1.7f)+
+                                  .09f*(jitter-.5f);
+                    if(radius>edge)
                     {
-                        float shade=sw*.22f;
-                        color=new Color32((byte)(77+shade*44),
-                            (byte)(57+shade*21),(byte)(33+shade*12),255);
+                        pixels[y*size+x]=new Color32(0,0,0,0);
+                        continue;
                     }
-                    if(t>=0f && t<=1f)
-                    {
-                        // Branch crowns layered at three natural intervals.
-                        // Uneven jagged needles rather than triangular 3D cones.
-                        float widthAtHeight=(1f-t)*27f+2.5f;
-                        float sweep=2.3f*Mathf.Sin(y*.21f)+.7f*Mathf.Sin(y*.49f);
-                        float tier=Mathf.Abs(Mathf.Sin((t*3.6f+.12f)*Mathf.PI));
-                        float outline=widthAtHeight*(.65f+.35f*tier);
-                        outline+=1.8f*(sw-.5f);
-                        if(Mathf.Abs(dx-sweep)<=outline)
-                        {
-                            float light=Mathf.Clamp01(.43f + (32f-x)*.011f
-                                            + .27f*(sw-.5f)+.14f*tier);
-                            byte red=(byte)Mathf.RoundToInt(Mathf.Lerp(24f,71f,light));
-                            byte green=(byte)Mathf.RoundToInt(Mathf.Lerp(62f,132f,light));
-                            byte blue=(byte)Mathf.RoundToInt(Mathf.Lerp(30f,66f,light));
-                            color=new Color32(red,green,blue,255);
-                        }
-                    }
-                    pixels[y*width+x]=color;
+                    // Painterly needle patches, lighter on the northwest
+                    // facing canopy and with a darker grounded perimeter.
+                    float branches=Mathf.Sin(a*9f+radius*12f)*.10f+
+                        Mathf.Sin(a*15f-radius*7f)*.06f;
+                    float light=Mathf.Clamp01(.47f-.21f*dx+.20f*dy+
+                        branches+.24f*(jitter-.5f));
+                    float edgeShade=Mathf.SmoothStep(0f,1f,
+                        Mathf.Clamp01((radius-.55f)/.45f));
+                    light*=1f-.32f*edgeShade;
+                    byte rr=(byte)Mathf.Clamp(Mathf.RoundToInt(
+                        Mathf.Lerp(22f,91f,light)),0,255);
+                    byte gg=(byte)Mathf.Clamp(Mathf.RoundToInt(
+                        Mathf.Lerp(65f,151f,light)),0,255);
+                    byte bb=(byte)Mathf.Clamp(Mathf.RoundToInt(
+                        Mathf.Lerp(27f,77f,light)),0,255);
+                    byte alpha=(byte)Mathf.RoundToInt(255f*
+                        Mathf.Clamp01((edge-radius)*13f));
+                    pixels[y*size+x]=new Color32(rr,gg,bb,alpha);
                 }
-            }
-            var atlas=new Texture2D(width,height,TextureFormat.RGBA32,true,false)
-                {name="Region1 painterly evergreen alpha silhouette"};
+            var atlas=new Texture2D(size,size,TextureFormat.RGBA32,true,false)
+                {name="Region 1 painterly aerial evergreen crowns"};
             atlas.SetPixels32(pixels);
             atlas.Apply(true,true);
             atlas.wrapMode=TextureWrapMode.Clamp;
@@ -97,7 +98,7 @@ namespace Eldoria.World4XCanon
             var result=new Output();
             result.atlas=PaintConiferAtlas();
             result.material=new Material(shader)
-                {name="Region1 2.5D shared painted conifer sheet"};
+                {name="Region1 2.5D aerial woodland canopy material"};
             if(result.material.HasProperty("_MainTex"))
                 result.material.SetTexture("_MainTex",result.atlas);
             result.material.enableInstancing=true;
@@ -123,37 +124,43 @@ namespace Eldoria.World4XCanon
                         // Keep genuine interaction corridor and river paths free.
                         if(!woodland(x,z)||water(x,z)||roads(x,z)||coast(x,z)||
                             x*x+z*z<95f*95f)continue;
-                        float height=5.5f+Random01(cluster,k,131)*5.0f;
-                        float width=2.2f+Random01(cluster,k,277)*2.0f;
+                        float width=6.0f+Random01(cluster,k,277)*5.2f;
                         float rotation=(cluster*43f+k*17f)*Mathf.Deg2Rad;
-                        float groundY=elevation(x,z)+.16f;
+                        float groundY=elevation(x,z)+.25f;
                         var p=new Vector3(origin.x+x,groundY,origin.z+z);
                         var tint=new Color32((byte)(217+Random01(cluster,k,111)*37f),
                             (byte)(216+Random01(cluster,k,141)*39f),
                             (byte)(203+Random01(cluster,k,191)*52f),255);
-                        // Crossed upright planes: parallax when camera pans or
-                        // tilts; no radial billboarding updates per frame.
-                        for(int card=0;card<2;card++)
+                        // Two horizontal textured canopy planes at slightly
+                        // different heights create light parallax/shading from
+                        // the true 3D camera without tall black billboard
+                        // silhouettes or hundreds of per-tree renderers.
+                        for(int layer=0;layer<2;layer++)
                         {
-                            float direction=rotation+card*Mathf.PI*.5f;
-                            Vector3 right=new Vector3(Mathf.Cos(direction),0,
-                                Mathf.Sin(direction))*(width*.5f);
+                            float direction=rotation+(layer==0?0f:.22f);
+                            float scale=(layer==0?1f:.67f);
+                            Vector3 right=new Vector3(Mathf.Cos(direction),0f,
+                                Mathf.Sin(direction))*(width*scale*.5f);
+                            Vector3 forward=new Vector3(-right.z,0f,right.x);
+                            Vector3 centre=p+Vector3.up*(layer==0?.15f:1.10f);
                             int start=vertices.Count;
-                            vertices.Add(p-right);
-                            vertices.Add(p+right);
-                            vertices.Add(p+right+Vector3.up*height);
-                            vertices.Add(p-right+Vector3.up*height);
+                            vertices.Add(centre-right-forward);
+                            vertices.Add(centre+right-forward);
+                            vertices.Add(centre+right+forward);
+                            vertices.Add(centre-right+forward);
                             uvs.Add(new Vector2(0,0));
                             uvs.Add(new Vector2(1,0));
                             uvs.Add(new Vector2(1,1));
                             uvs.Add(new Vector2(0,1));
                             for(int i=0;i<4;i++)colors.Add(tint);
+                            // Upward-facing winding is essential with
+                            // the overhead orthographic strategy camera.
                             triangles.Add(start);
+                            triangles.Add(start+2);
                             triangles.Add(start+1);
-                            triangles.Add(start+2);
                             triangles.Add(start);
-                            triangles.Add(start+2);
                             triangles.Add(start+3);
+                            triangles.Add(start+2);
                         }
                         result.trees++;
                     }
