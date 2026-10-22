@@ -83,13 +83,14 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
                     half3 roots=half3(.084,.140,.027);
                     half3 path=half3(.539,.367,.126);
                 #endif
-                half3 local=lerp(earth,grass,meadowCover);
+                half grassTone=lerp(.88h,1.12h,smoothstep(.48h,.93h,ecology.b));
+                half3 local=lerp(earth,grass*grassTone,meadowCover);
                 local=lerp(local,roots,rootCover*.66h);
                 local=lerp(local,path,pathCover*.92h);
                 // Retain a little authored pigment variation, without the
                 // previous blurred atlas dominating the near land-cover shapes.
-                local*=lerp(half3(1,1,1),variation,.07h);
-                pigment=lerp(pigment,local,weight*.94h);
+                local*=lerp(half3(1,1,1),variation,.18h);
+                pigment=lerp(pigment,local,weight*.86h);
                 half footprint=max(length(ddx(relative)),length(ddy(relative)));
                 half detailFade=1-smoothstep(.16,.75,footprint);
                 half detailAmount=lerp(_DetailStrength,.055h,weight);
