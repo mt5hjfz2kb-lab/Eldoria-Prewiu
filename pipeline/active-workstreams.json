@@ -17,6 +17,31 @@
   },
   "active": [
     {
+      "id": "eldoria-world-region-1-canon-20261022",
+      "title": "Región 1 — geografía canónica continua y representación por zoom",
+      "owner": "chatgpt-eldoria-world4x-canon-20261022",
+      "ownership_state": "claimed",
+      "write_scope_released": false,
+      "ownership_revision": 1,
+      "branch": "feature/world4x-region1-canon-20261022",
+      "status": "active",
+      "claimed_at": "2026-10-22",
+      "base_main_sha": "54703262a47a1ece6d233470582d4162d3d7c0b1",
+      "scope": [
+        "Unity/Assets/Eldoria/World4XCanon/**",
+        "docs/evidence/world4x-canon-20261022/**"
+      ],
+      "resources": [],
+      "authorization": "Explicit owner order 22-10-2026 to implement Region 1 canonical world; isolated source, non-overlap with issue95's active integrated scene/ZoneOneStrategicCamera/UI/Spawnling; any integration touch requires live reconciliation.",
+      "phase": "CANON_SOURCE_AUTHORING",
+      "next": "Create opt-in/auto-binding presentation-only continuous Region1 layer, verify Unity, compare real captures; never touch UI, gameplay or saves; no publication without gates.",
+      "dependencies": [
+        "valoria-master-plan-layered-construction-20261016",
+        "eldoria-ui-v3-management-completion-20261021",
+        "eldoria-spawnling-qwen-semantic-visual-qa-20261021"
+      ]
+    },
+    {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-issue95-visual-experience-20261022",
