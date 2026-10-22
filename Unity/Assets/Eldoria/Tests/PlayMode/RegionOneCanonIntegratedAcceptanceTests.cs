@@ -257,6 +257,12 @@ namespace Eldoria.Tests
                 Call(adapter,"RefreshForCapture");
                 Assert.That(terrain.Any(x => x.enabled), Is.True,
                     "The close-up camera must restore the imported prairie detail.");
+                Assert.That(terrain.Where(x=>x.enabled).All(x=>x.sharedMaterial &&
+                    x.sharedMaterial.shader.name=="Eldoria/World4X/WorldAlignedPaintedGround" &&
+                    x.sharedMaterial.shader.isSupported),Is.True,
+                    "Near ground must render the same geographic pigment through a supported shader.");
+                Assert.That(camera.orthographicSize*2f*(390f/844f),Is.GreaterThan(55f),
+                    "Near portrait framing must include context around real gameplay nodes.");
                 float nearPitch = (float)Member(navigation,"tilt");
                 Call(navigation, "SetZoomLevel", 0, true);
                 Call(adapter,"RefreshForCapture");

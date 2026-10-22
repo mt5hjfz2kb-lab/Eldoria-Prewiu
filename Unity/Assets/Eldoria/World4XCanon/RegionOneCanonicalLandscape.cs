@@ -27,7 +27,7 @@ namespace Eldoria.World4XCanon
         public const float LandscapeHalfDepth = 780f;
         public const float BreachOffsetX = 8f;
         public const float BreachOffsetZ = 61f;
-        public const float LocalThreshold = 41f;
+        public const float LocalThreshold = 72f;
         public const float RegionalThreshold = 152f;
         public const float LandscapePanoramaZoom = 244f;
         // Portrait requires a wider orthographic overview of the SAME XYZ
@@ -72,6 +72,8 @@ namespace Eldoria.World4XCanon
         bool compareLegacyAtlas;
         Renderer paintedBreachRenderer;
         Material paintedBreachMaterial;
+        Material nearGroundMaterial;
+        readonly List<Material[]> nearGroundOriginalMaterials=new List<Material[]>();
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
         bool ownsTerrainTexture;
@@ -129,7 +131,7 @@ namespace Eldoria.World4XCanon
             // castle and prevented players from reading the surrounding 4X
             // territory. Widen both scales, retaining one real camera and
             // strong near -> regional -> panorama separation.
-            navigation.localZoom = 36f;
+            navigation.localZoom = 64f;
             navigation.regionalZoom = 113f;
             navigation.globalZoom = navigation.View.aspect < .80f
                 ? PortraitPanoramaZoom : LandscapePanoramaZoom;
@@ -186,6 +188,7 @@ namespace Eldoria.World4XCanon
             // the continuous terrain carries regional and panoramic scales.
             // All original hotspot colliders and logic remain intact.
             CollectLegacyGround(existingWorld);
+            ApplyNearGroundPigment();
             CollectRegionalLegacyGeology(existingWorld);
             HideProvisionalEnemyCampDonors(existingWorld);
             CacheGameplayArtRenderers(existingWorld, root);
@@ -217,6 +220,28 @@ namespace Eldoria.World4XCanon
                 originalGroundInitiallyEnabled.Add(renderer.enabled);
             }
             Debug.Log("REGION1_CANON_LEGACY_PRAIRIE_RENDERERS=" + originalGround.Count);
+        }
+
+        void ApplyNearGroundPigment()
+        {
+            var shader=Resources.Load<Shader>("World4X/RegionOneGroundDetail");
+            var detail=Resources.Load<Texture2D>("World4X/RegionOneMeadowDetail");
+            if(!shader || !detail || !terrainTexture) return;
+            nearGroundMaterial=new Material(shader){name="Region1 same-geography near meadow"};
+            nearGroundMaterial.SetTexture("_BaseMap",terrainTexture);
+            nearGroundMaterial.SetTexture("_DetailMap",detail);
+            nearGroundMaterial.SetVector("_WorldMap",new Vector4(origin.x,origin.z,
+                1f/(LandscapeHalfWidth*2f),1f/(LandscapeHalfDepth*2f)));
+            nearGroundMaterial.SetFloat("_TileScale",1f/48f);
+            nearGroundMaterial.SetFloat("_DetailStrength",.55f);
+            foreach(var renderer in originalGround)
+            {
+                var previous=renderer.sharedMaterials;
+                nearGroundOriginalMaterials.Add(previous);
+                var replacement=new Material[previous.Length];
+                for(int i=0;i<replacement.Length;i++) replacement[i]=nearGroundMaterial;
+                renderer.sharedMaterials=replacement;
+            }
         }
 
         void CollectRegionalLegacyGeology(Transform existingWorld)
@@ -1182,6 +1207,9 @@ namespace Eldoria.World4XCanon
                 if (originalGround[i]) originalGround[i].enabled = originalGroundInitiallyEnabled[i];
             for(int i=0;i<regionalLegacyGeology.Count;i++)
                 if(regionalLegacyGeology[i])regionalLegacyGeology[i].enabled=regionalLegacyGeologyStates[i];
+            for(int i=0;i<nearGroundOriginalMaterials.Count;i++)
+                if(originalGround[i]) originalGround[i].sharedMaterials=nearGroundOriginalMaterials[i];
+            if(nearGroundMaterial) Destroy(nearGroundMaterial);
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
             if (terrainTexture && ownsTerrainTexture) Destroy(terrainTexture);
             if (legacyCompareTexture) Destroy(legacyCompareTexture);
