@@ -306,20 +306,37 @@ namespace Eldoria.World4XCanon
 
         // Continuous signed distance: positive toward sea. No binary X/Z
         // gates, which previously produced right-angle atlas cutoffs.
+        // One authored continental coast, ordered south-to-north (Z, X).
+        // A monotone cubic keeps every inlet connected without the former
+        // rectangular intersection of separate sea masks.
+        static readonly Vector2[] CoastKnots = {
+            new Vector2(-780f,-610f),new Vector2(-500f,-300f),
+            new Vector2(-420f,-90f),new Vector2(-370f,30f),
+            new Vector2(-300f,90f),new Vector2(-240f,180f),
+            new Vector2(-200f,320f),new Vector2(-80f,370f),
+            new Vector2(100f,500f),new Vector2(360f,650f),
+            new Vector2(780f,950f)
+        };
+        static float CoastShore(float z)
+        {
+            int i=0;
+            while(i<CoastKnots.Length-2 && z>CoastKnots[i+1].x)i++;
+            Vector2 a=CoastKnots[i],b=CoastKnots[i+1];
+            float span=b.x-a.x,t=Mathf.Clamp01((z-a.x)/span);
+            float slope=(b.y-a.y)/span;
+            float before=i==0?slope:(a.y-CoastKnots[i-1].y)/(a.x-CoastKnots[i-1].x);
+            float after=i==CoastKnots.Length-2?slope:
+                (CoastKnots[i+2].y-b.y)/(CoastKnots[i+2].x-b.x);
+            float m0=Mathf.Min(slope,before),m1=Mathf.Min(slope,after);
+            float t2=t*t,t3=t2*t;
+            return (2*t3-3*t2+1)*a.y+(t3-2*t2+t)*span*m0+
+                (-2*t3+3*t2)*b.y+(t3-t2)*span*m1+
+                10f*Mathf.Sin(z*.037f)+5f*Mathf.Sin(z*.091f);
+        }
         public static float CoastDistance(float x, float z)
         {
-            float eastShore=366f+12f*Mathf.Sin(z*.032f)+7f*Mathf.Sin(z*.083f);
-            float northLimit=-68f-.22f*(x-366f)+10f*Mathf.Sin(x*.022f);
-            float east=Mathf.Min(x-eastShore,northLimit-z);
-            float southShore=-370f+12f*Mathf.Sin(x*.020f)+7f*Mathf.Sin(x*.071f);
-            float westLimit=-90f+18f*Mathf.Sin(z*.018f);
-            float south=Mathf.Min(x-westLimit,southShore-z);
-            // An oblique inlet turns into the southern shore without the
-            // old vertical straight line at the bay's artificial X cutoff.
-            float bayShore=-214f+15f*Mathf.Sin(x*.018f)+8f*Mathf.Sin(x*.052f);
-            float bayWest=122f+.27f*(z+214f)+18f*Mathf.Sin(z*.021f);
-            float bay=Mathf.Min(x-bayWest,bayShore-z);
-            return Mathf.Max(east,Mathf.Max(south,bay));
+            float derivative=(CoastShore(z+2f)-CoastShore(z-2f))/4f;
+            return (x-CoastShore(z))/Mathf.Sqrt(1f+derivative*derivative);
         }
 
         public static float CoastWaterMask(float x, float z)
