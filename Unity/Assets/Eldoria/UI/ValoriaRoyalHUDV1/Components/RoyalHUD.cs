@@ -58,7 +58,11 @@ namespace Eldoria.UI.RoyalGold {
    // far left. This authoritative free-viewport check is also used by native
    // I-II gameplay and offscreen camera framing, not only by HUD decoration.
    var navRect=Navigation?(RectTransform)Navigation.transform:null;
-   bool leftRail=navRect&&navRect.rect.height>navRect.rect.width*2f;
+   // A single currently unlocked action makes this rail SHORTER than
+   // its width. Detect from its anchor, never from its current item count.
+   // Otherwise one legitimate left-side Mundo button gets mistaken for a
+   // bottom bar and eliminates nearly the entire available camera height.
+   bool leftRail=navRect&&navRect.anchorMax.x<.05f&&navRect.anchorMin.y>.95f;
    foreach(var item in Navigation.Items)if(item.Button.gameObject.activeInHierarchy){
     var bounds=ScreenBounds((RectTransform)item.Button.transform,camera);
     if(leftRail)area.xMin=Mathf.Max(area.xMin,bounds.xMax+gap);
