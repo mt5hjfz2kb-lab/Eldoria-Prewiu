@@ -22,7 +22,7 @@
       "owner": "chatgpt-eldoria-world4x-canon-20261022",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -35,12 +35,10 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta",
         ".github/workflows/world4x-canon-native.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Explicit owner order 22-10-2026 to implement Region 1 canonical world; isolated source, non-overlap with issue95's active integrated scene/ZoneOneStrategicCamera/UI/Spawnling; any integration touch requires live reconciliation.",
-      "phase": "NATIVE_CANDIDATE_SOURCE_AND_PLAYMODE_QA",
-      "next": "Test PR #100 on actual Unity 6000.3.23f1 runner with scoped lease and integrated PlayMode tests, not a publication; preserve issue95 shared scene, UI and Spawnling.",
+      "phase": "PR100_NATIVE_UNITY_7_PASS_ART_REVIEW_NOT_APPROVED",
+      "next": "Scoped Unity source gate and 7/7 integrated PlayMode tests PASS on exact feature source d381bac101fe221a709a1d6b8c6adfdd2b356caf, native run 39783401434; 8 authentic horizontal/vertical camera PNG with wood node. NEXT: correct terrain/forest/close city and panorama art against 4 owner canonical PNG; run full Bastion I-II functional/save, WebGL and mobile performance; issue #96 physical iPhone 30min and owner visual acceptance still pending. NEVER merge or publish as approved.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -49,7 +47,17 @@
       "candidate_branch": "feature/world4x-region1-canon-20261022",
       "art_production_routing": "required",
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
-      "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json"
+      "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
+      "last_verified": {
+        "sha": "d381bac101fe221a709a1d6b8c6adfdd2b356caf",
+        "unity_run": 39783401434,
+        "unity_playmode": "7_OF_7_PASS",
+        "real_unity_captures": 8,
+        "art_approved": false,
+        "physical_iphone_tested": false,
+        "visual_gap": "significant: distant geography underdetailed; near composition not canonical",
+        "playable_published": false
+      }
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
