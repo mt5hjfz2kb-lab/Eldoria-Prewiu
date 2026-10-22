@@ -561,19 +561,34 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (cell.childCount > 0 && cell.GetChild(0) is RectTransform medallion)
                 {
                     SetWidthAndHeight(medallion, icon, icon);
-                    Vector2 medallionLocation =
-                        new Vector2((cellWidth - icon) * .5f, -1f);
+                    // Original 82px medal contains an independent 56px glyph.
+                    // Resize and centre BOTH; shrinking only the medal
+                    // previously left the World action as a clipped blue dot.
+                    medallion.anchorMin = medallion.anchorMax =
+                        medallion.pivot = new Vector2(.5f, .5f);
+                    Vector2 medallionLocation = new Vector2(0f, cellHeight * .18f);
                     if ((medallion.anchoredPosition - medallionLocation).sqrMagnitude > .1f)
                         medallion.anchoredPosition = medallionLocation;
+                    if (medallion.childCount > 0 &&
+                        medallion.GetChild(0) is RectTransform glyph)
+                    {
+                        glyph.anchorMin = glyph.anchorMax =
+                            glyph.pivot = new Vector2(.5f, .5f);
+                        SetWidthAndHeight(glyph, icon * .66f, icon * .66f);
+                        if (glyph.anchoredPosition.sqrMagnitude > .1f)
+                            glyph.anchoredPosition = Vector2.zero;
+                    }
                 }
                 if (item.Label)
                 {
                     var label = item.Label.rectTransform;
-                    SetWidthAndHeight(label, cellWidth, 22f);
-                    Vector2 labelLocation = new Vector2(0, -cellHeight + 27f);
+                    label.anchorMin = label.anchorMax =
+                        label.pivot = new Vector2(.5f, .5f);
+                    SetWidthAndHeight(label, cellWidth - 4f, 19f);
+                    Vector2 labelLocation = new Vector2(0f, -cellHeight * .32f);
                     if ((label.anchoredPosition - labelLocation).sqrMagnitude > .1f)
                         label.anchoredPosition = labelLocation;
-                    if (item.Label.fontSize != 14) item.Label.fontSize = 14;
+                    if (item.Label.fontSize != 15) item.Label.fontSize = 15;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                 }
             }

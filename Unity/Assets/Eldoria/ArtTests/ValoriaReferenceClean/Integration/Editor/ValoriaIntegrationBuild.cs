@@ -409,11 +409,13 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(spawnTarget!=null,"Authored Spawnling destination missing before battle");
    h.Select("");
    h.WorldNavigation.EnterStrategicView(spawnTarget.transform.position);
+   h.Focus(spawnTarget.gameObject);
    yield return null;
    Check(()=>Capture(h,"integration-art-engendro-prebattle-strategic.png",1600,900),
     "real prebattle B2 strategic creature capture");
    h.WorldNavigation.SetZoomLevel(2,true);
    h.WorldNavigation.PanTo(spawnTarget.transform.position);
+   h.Focus(spawnTarget.gameObject);
    yield return null;
    Check(()=>Capture(h,"integration-art-engendro-prebattle-close.png",1600,900),
     "real prebattle B2 local creature capture");

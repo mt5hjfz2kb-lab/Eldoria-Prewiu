@@ -218,11 +218,16 @@ namespace Eldoria.ReferenceClean {
     if(id=="valoria-map-city"){
      AddFocusRenderers(WorldBastionOne,points);AddFocusRenderers(WorldBastionTwo,points);AddFocusRenderers(WorldSawmill,points);
     }else{
-     var authored=WorldRoot.GetComponentsInChildren<Transform>().FirstOrDefault(t=>t.name=="Zone1 authored "+id||t.name=="Zone1 hostile camp "+id);
-     if(authored)AddFocusRenderers(authored.gameObject,points);
      if(id=="engendro-valoria"){
-      var rear=WorldRoot.GetComponentsInChildren<Transform>().FirstOrDefault(t=>t.name=="Zone1 hostile camp rear shelter");
-      if(rear)AddFocusRenderers(rear.gameObject,points);
+      // Follow the actual scaled animated silhouette rather than its hidden
+      // camp or tiny original hotspot. Keep gameplay physics untouched.
+      var actor=WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+      if(actor&&actor.ModelRoot&&actor.ModelRoot.activeInHierarchy)
+       AddFocusRenderers(actor.ModelRoot,points);
+     }
+     if(points.Count==0){
+      var authored=WorldRoot.GetComponentsInChildren<Transform>().FirstOrDefault(t=>t.name=="Zone1 authored "+id||t.name=="Zone1 hostile camp "+id);
+      if(authored)AddFocusRenderers(authored.gameObject,points);
      }
     }
     if(points.Count==0){
