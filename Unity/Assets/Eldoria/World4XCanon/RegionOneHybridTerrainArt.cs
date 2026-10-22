@@ -348,7 +348,13 @@ namespace Eldoria.World4XCanon
                 StampStone(pixels,size,ix,iy,1+(k%2),Hash01(k,739,833));
             }
             texture.SetPixels32(pixels);
+            // Editor-only evidence export needs CPU pixels. Player builds still
+            // discard the CPU copy after upload, preserving mobile memory.
+#if UNITY_EDITOR
+            texture.Apply(true,false);
+#else
             texture.Apply(true,true);
+#endif
             texture.filterMode=FilterMode.Bilinear;
             texture.wrapMode=TextureWrapMode.Clamp;
             return texture;
