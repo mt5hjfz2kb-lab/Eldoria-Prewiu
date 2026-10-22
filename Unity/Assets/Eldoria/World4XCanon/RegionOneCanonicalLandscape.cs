@@ -563,7 +563,12 @@ namespace Eldoria.World4XCanon
             for (int branch = 0; branch < 21; branch++)
             {
                 float angle = branch * Mathf.PI * 2f / 21f + .16f * Mathf.Sin(branch * 2.41f);
-                float extent = 16f + (branch % 5) * 3.8f;
+                // Give the existing ground fissure a legible regional
+                // footprint, while keeping its southern arms short so no
+                // painted crack crosses Valoria's playable city corridor.
+                float awayFromCity=Mathf.Clamp01((Mathf.Sin(angle)+.25f)*1.1f);
+                float extent=Mathf.Lerp(22f+(branch%5)*3f,
+                                        50f+(branch%5)*10.5f,awayFromCity);
                 Vector2 previous = centre + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 1.5f;
                 for (int step = 1; step <= 3; step++)
                 {

@@ -299,14 +299,31 @@ namespace Eldoria.World4XCanon
                         ground=Lerp(ground,Lerp(River,Ripples,v*.31f),water);
                     }
                     float d=Mathf.Sqrt((x-breachX)*(x-breachX)+(z-breachZ)*(z-breachZ));
-                    if(d<53f)
+                    if(d<105f)
                     {
-                        float strength=Mathf.SmoothStep(0f,1f,
-                            Mathf.Clamp01((53f-d)/45f));
-                        float fractures=Mathf.Abs(Mathf.Sin(
-                            Mathf.Atan2(z-breachZ,x-breachX)*17f + d*.095f));
-                        ground=Lerp(ground,RiftGround,strength*(.57f+.20f*fractures));
-                        if(d<8f)ground=Lerp(ground,RiftGlow,(8f-d)/8f*.52f);
+                        // The approved panoramic Breach is a geological scar
+                        // with irregular radial arms, not a dark circular pond.
+                        // Bias the longest cracks northward, AWAY from the
+                        // real initial city to the south; no new geometry,
+                        // collider, encounter or vertical portal is created.
+                        float angle=Mathf.Atan2(z-breachZ,x-breachX);
+                        float northward=Mathf.SmoothStep(0f,1f,
+                            Mathf.Clamp01((z-breachZ+20f)/65f));
+                        float reach=Mathf.Lerp(38f,104f,northward);
+                        if(d<reach)
+                        {
+                            float falloff=Mathf.Clamp01((reach-d)/45f);
+                            float twist=.34f*Mathf.Sin(d*.035f+angle*3f);
+                            float radial=1f-Mathf.Abs(Mathf.Sin(angle*11f+d*.024f+twist));
+                            float veins=Mathf.Pow(Mathf.Clamp01(radial),7f);
+                            float deepCore=Mathf.SmoothStep(0f,1f,
+                                Mathf.Clamp01((40f-d)/34f));
+                            float fractureShade=Mathf.Clamp01(deepCore*.55f+
+                                veins*falloff*.70f);
+                            ground=Lerp(ground,RiftGround,fractureShade);
+                            if(d<9f)
+                                ground=Lerp(ground,RiftGlow,(9f-d)/9f*.60f);
+                        }
                     }
                     // Tiny blue-green herb and ochre highlights survive high
                     // zoom as terrain texture, not fake 3D buildings.
