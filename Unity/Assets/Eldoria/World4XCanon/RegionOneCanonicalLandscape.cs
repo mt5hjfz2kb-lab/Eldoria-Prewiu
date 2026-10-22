@@ -1000,6 +1000,7 @@ namespace Eldoria.World4XCanon
             public Vector3[] vertices;
             public Vector2[] uv;
             public int[] triangles;
+            public bool[] protectedWater;
             public string context = "Actual integrated Unity terrain; no gameplay or save snapshot";
         }
 
@@ -1013,9 +1014,16 @@ namespace Eldoria.World4XCanon
             if (System.IO.File.Exists(file))
                 throw new InvalidOperationException("Do not overwrite frozen authoring evidence.");
             System.IO.Directory.CreateDirectory(directory);
+            var positions=terrainMesh.vertices;
+            var water=new bool[positions.Length];
+            for(int i=0;i<positions.Length;i++)
+                water[i]=RegionOneHybridTerrainArt.IsOpenWater(positions[i].x-origin.x,
+                    positions[i].z-origin.z) || IsCoast(positions[i].x-origin.x,positions[i].z-origin.z);
+            System.IO.File.WriteAllBytes(System.IO.Path.Combine(directory,"terrain-atlas.png"),
+                terrainTexture.EncodeToPNG());
             System.IO.File.WriteAllText(file, JsonUtility.ToJson(new AuthoringSnapshot {
                 origin=origin, vertices=terrainMesh.vertices,
-                uv=terrainMesh.uv, triangles=terrainMesh.triangles
+                uv=terrainMesh.uv, triangles=terrainMesh.triangles, protectedWater=water
             }));
         }
 #endif

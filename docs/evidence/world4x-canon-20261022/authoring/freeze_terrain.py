@@ -27,6 +27,13 @@ for polygon in mesh.polygons:
         uv.data[loop].uv=(v['x'],v['y'])
 mat=bpy.data.materials.new('Neutral clay for matched geometry review')
 mat.diffuse_color=(.50,.53,.39,1);obj.data.materials.append(mat)
+atlas=source.parent/'terrain-atlas.png'
+if not atlas.is_file():raise RuntimeError('Measured Unity atlas missing')
+mat.use_nodes=True
+nodes=mat.node_tree.nodes
+tex=nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(atlas.resolve()));tex.image.pack()
+mat.node_tree.links.new(tex.outputs['Color'],nodes.get('Principled BSDF').inputs['Base Color'])
+nodes.get('Principled BSDF').inputs['Roughness'].default_value=1.0
 scene=bpy.context.scene
 scene.render.engine='BLENDER_EEVEE_NEXT' if bpy.app.version<(4,2,0) else 'CYCLES'
 scene.cycles.samples=8
@@ -49,5 +56,6 @@ bpy.ops.render.render(write_still=True)
     'blend_sha256':hashlib.sha256(dest.read_bytes()).hexdigest(),
     'vertices':len(vertices),'triangles':len(faces),'unity_units_per_blender_unit':10,
     'artistic_operations':0,'gameplay_modified':False,
-    'render_scope':'Blender terrain-only clay; NOT full Unity gameplay or art approval'
+    'render_scope':'Blender terrain with measured Unity atlas; NOT full Unity gameplay or art approval',
+    'atlas_sha256':hashlib.sha256(atlas.read_bytes()).hexdigest()
 },indent=2))
