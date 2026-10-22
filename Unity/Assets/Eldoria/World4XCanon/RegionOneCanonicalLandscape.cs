@@ -47,7 +47,15 @@ namespace Eldoria.World4XCanon
             // Scale-specific regional and near-horizon vegetation: keep the
             // gameplay corridor clear; don't populate its selectable centre.
             new Vector2(-115,65),new Vector2(105,80),new Vector2(-125,-75),
-            new Vector2(118,-92),new Vector2(-20,125)
+            new Vector2(118,-92),new Vector2(-20,125),
+            // Broad natural woodland corridors join existing biomes. These
+            // are only forest visual anchors in the same geographic mask,
+            // never resources, camps, invented gameplay nodes or colliders.
+            // Deliberately outside the existing active central corridor.
+            new Vector2(-260,202),new Vector2(-315,-164),
+            new Vector2(-174,-266),new Vector2(58,256),
+            new Vector2(225,245),new Vector2(349,128),
+            new Vector2(184,-181)
         };
 
         ValoriaIntegratedWorld host;
