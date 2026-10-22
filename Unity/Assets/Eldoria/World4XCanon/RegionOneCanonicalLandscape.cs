@@ -55,6 +55,10 @@ namespace Eldoria.World4XCanon
         Vector3 origin;
         GameObject detailTrees;
         GameObject peripheralFog;
+        // Render-only LOD: the imported prairie is retained at local zoom,
+        // but removed at regional/panorama where its hard square edge cuts
+        // across the shared World4X territory. No collider is modified.
+        bool legacyGroundHidden;
         readonly List<Renderer> originalGround = new List<Renderer>();
         readonly List<bool> originalGroundInitiallyEnabled = new List<bool>();
         readonly List<MeshRenderer> hiddenProvisionalCamps = new List<MeshRenderer>();
@@ -152,9 +156,9 @@ namespace Eldoria.World4XCanon
             renderer.sharedMaterial = surfaceMaterial;
             renderer.shadowCastingMode = ShadowCastingMode.Off;
             renderer.receiveShadows = false;
-            // Preserve all original hotspots/colliders. Render-only LOD turns off
-            // the *legacy prairie sheet* at panorama scale, otherwise that
-            // square visually cuts the same Region 1 into two maps.
+            // Imported close-up prairie remains available only for local zoom;
+            // the continuous terrain carries regional and panoramic scales.
+            // All original hotspot colliders and logic remain intact.
             CollectLegacyGround(existingWorld);
             HideProvisionalEnemyCampDonors(existingWorld);
             CacheGameplayArtRenderers(existingWorld, root);
@@ -865,6 +869,8 @@ namespace Eldoria.World4XCanon
             if (!navigation || !navigation.View) return;
             float size = navigation.View.orthographicSize;
             bool distant = size >= RegionalThreshold;
+            bool modeChanged = distant != farMode;
+            bool hideOldSquare = size >= LocalThreshold;
             bool showFog = size >= 190f && host.InWorld;
             // Progressive pitch: local remains readable, panoramas become
             // more top-down. The same stable geographical XYZ is retained.
@@ -877,7 +883,7 @@ namespace Eldoria.World4XCanon
                 navigation.tilt = nextTilt;
                 navigation.FitToAuthoredBounds();
             }
-            if (distant != farMode)
+            if (modeChanged)
             {
                 // At panoramic scale every tiny existing 3D resource/city/
                 // enemy representation is omitted *visually*, as the owner
@@ -893,15 +899,21 @@ namespace Eldoria.World4XCanon
                     else existingGameRenderers[i].enabled = existingGameRendererStates[i];
                 }
             }
-            if (force || distant != farMode)
+            if (force || modeChanged)
             {
                 farMode = distant;
                 if (detailTrees) detailTrees.SetActive(!distant);
                 if (distantForestSilhouettes) distantForestSilhouettes.SetActive(distant);
                 if (distantGeology) distantGeology.SetActive(distant);
+            }
+            // Reassert AFTER gameplay renderers are restored on panorama exit.
+            // Only visuals are affected; never disable colliders or hotspots.
+            if (force || modeChanged || hideOldSquare != legacyGroundHidden)
+            {
+                legacyGroundHidden = hideOldSquare;
                 for (int i = 0; i < originalGround.Count; i++)
                     if (originalGround[i])
-                        originalGround[i].enabled = distant ? false : originalGroundInitiallyEnabled[i];
+                        originalGround[i].enabled = !hideOldSquare && originalGroundInitiallyEnabled[i];
             }
             if (force || showFog != fogMode)
             {

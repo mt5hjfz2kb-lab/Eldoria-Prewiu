@@ -209,12 +209,16 @@ namespace Eldoria.Tests
             Assert.That(terrain.Length, Is.GreaterThan(0),
                 "Must identify the genuinely imported local ground; do not hide arbitrary art.");
             bool[] originalStates = terrain.Select(x => x.enabled).ToArray();
+            int existingColliderCount = world.GetComponentsInChildren<Collider>(true).Length;
             float zoom = camera.orthographicSize;
             var target = (Vector3)Member(navigation,"target");
             try
             {
                 Call(navigation, "SetZoomLevel", 2, true);
                 Call(adapter,"RefreshForCapture");
+                for (int i=0;i<terrain.Length;i++)
+                    Assert.That(terrain[i].enabled, Is.EqualTo(originalStates[i]),
+                        "The close-up camera must retain imported prairie detail.");
                 float nearPitch = (float)Member(navigation,"tilt");
                 Call(navigation, "SetZoomLevel", 0, true);
                 Call(adapter,"RefreshForCapture");
@@ -235,9 +239,11 @@ namespace Eldoria.Tests
                     "Panorama must retain forest silhouettes, not blank green circles.");
                 Call(navigation, "SetZoomLevel", 1, true);
                 Call(adapter,"RefreshForCapture");
-                for (int i=0;i<terrain.Length;i++)
-                    Assert.That(terrain[i].enabled, Is.EqualTo(originalStates[i]),
-                        "Regional scale must preserve native terrain and interactivity.");
+                Assert.That(terrain.All(x => !x.enabled), Is.True,
+                    "Regional view must not retain the legacy rectangular terrain edge.");
+                Assert.That(world.GetComponentsInChildren<Collider>(true).Length,
+                    Is.EqualTo(existingColliderCount),
+                    "Regional visual LOD must preserve every original gameplay collider.");
             }
             finally
             {
