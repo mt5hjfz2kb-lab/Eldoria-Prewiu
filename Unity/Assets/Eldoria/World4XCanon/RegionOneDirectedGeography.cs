@@ -159,6 +159,7 @@ namespace Eldoria.World4XCanon
   public Texture2D GeographicMask=>mask;
   ValoriaIntegratedWorld host;Vector3 origin;GameObject art;Material ground,forestMaterial;
   readonly List<Mesh> meshes=new List<Mesh>();readonly List<Renderer> replaced=new List<Renderer>();
+  readonly List<bool> prairieStates=new List<bool>();
   readonly List<Renderer> prairie=new List<Renderer>();readonly List<Material[]> prairieMaterials=new List<Material[]>();
   Renderer retainedNear,innerForest;MeshFilter breachFilter;Mesh originalScar,directedScar;bool before,prairieDirected;
   public static RegionOneDirectedGeography Install(Transform parent,ValoriaIntegratedWorld host)
@@ -183,7 +184,7 @@ namespace Eldoria.World4XCanon
        r.name.StartsWith("Region1 2.5D forest band",StringComparison.Ordinal) ||
        r.name.StartsWith("Region1 · mountain facets",StringComparison.Ordinal))replaced.Add(r);
     if(r is MeshRenderer && r.sharedMaterials.Any(m=>m&&m.shader&&m.shader.name=="Eldoria/World4X/WorldAlignedPaintedGround") && r.name!="Region1 · one coherent terrain mesh")
-    {prairie.Add(r);prairieMaterials.Add(r.sharedMaterials);}
+    {prairie.Add(r);prairieStates.Add(r.enabled);prairieMaterials.Add(r.sharedMaterials);}
    }
    BuildTerrain();RegionOneGeographicDressing.Install(art.transform,origin);BuildGroves(false);innerForest=BuildGroves(true);BuildRetainedNear();BuildHeroBreach();
    Debug.Log("REGION1_DIRECTED_GEOGRAPHY polygon="+Coast.Length+" river_layers="+Rivers.Length+" roads="+Roads.Length+" groves="+Groves.Length+" replaced="+replaced.Count);
@@ -237,7 +238,7 @@ namespace Eldoria.World4XCanon
   {
    var v=new List<Vector3>();var uv=new List<Vector2>();var offsets=new List<Vector2>();var tris=new List<int>();int i=0;
    foreach(var r in host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)||r.name.StartsWith("Existing conifer canopy / forest ecological lobe ",StringComparison.Ordinal)||r.name=="Forest understory / young conifer"))
-   {var b=r.bounds;float h=Mathf.Clamp(b.size.y,1,18),w=Mathf.Clamp(Mathf.Max(b.size.x,b.size.z),h*.55f,h*1.1f);Quad(v,uv,offsets,tris,new Vector3(b.center.x,b.min.y+.03f,b.center.z),w,h,i++%3);}
+   {var b=r.bounds;float h=Mathf.Clamp(b.size.y,1,18),w=Mathf.Clamp(Mathf.Max(b.size.x,b.size.z),h*.55f,h*1.1f);Quad(v,uv,offsets,tris,new Vector3(b.center.x,origin.y+Height(b.center.x-origin.x,b.center.z-origin.z)+.06f,b.center.z),w,h,i++%3);}
    retainedNear=MeshObject("Directed retained actual near trees",v.ToArray(),uv.ToArray(),offsets.ToArray(),tris.ToArray(),forestMaterial);
   }
   void BuildHeroBreach()
@@ -258,13 +259,15 @@ namespace Eldoria.World4XCanon
    if(breachFilter)breachFilter.sharedMesh=before?originalScar:directedScar;
    if(!before)
    {foreach(var r in replaced)if(r)r.enabled=false;
+    foreach(var r in prairie)if(r)r.enabled=false;
     if(!prairieDirected){for(int i=0;i<prairie.Count;i++)if(prairie[i]){var mats=new Material[prairieMaterials[i].Length];for(int k=0;k<mats.Length;k++)mats[k]=ground;prairie[i].sharedMaterials=mats;}prairieDirected=true;}
     if(retainedNear)retainedNear.enabled=zoom<152;
     if(innerForest)innerForest.enabled=zoom>=152;
     ground.SetFloat("_Near",1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(80,152,zoom)));
    }
    else
-   {foreach(var r in replaced)if(r)r.enabled=r.name=="Region1 · retained local forest canopy"?zoom<152:true;
+   {for(int i=0;i<prairie.Count;i++)if(prairie[i])prairie[i].enabled=prairieStates[i]&&zoom<(host.WorldCamera.aspect<.8f?72:41);
+    foreach(var r in replaced)if(r)r.enabled=r.name=="Region1 · retained local forest canopy"?zoom<152:true;
     if(prairieDirected){for(int i=0;i<prairie.Count;i++)if(prairie[i])prairie[i].sharedMaterials=prairieMaterials[i];prairieDirected=false;}}
   }
   void LateUpdate(){Refresh();}

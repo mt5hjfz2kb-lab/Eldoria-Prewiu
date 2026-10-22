@@ -35,13 +35,14 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     half bank=smoothstep(.02h,.18h,m.g)*(1-smoothstep(.25h,.65h,m.g));
     land=lerp(land,sand,bank*.8h);
     half3 freshWater=lerp(shallow,river,smoothstep(.35h,.96h,m.g));
-    freshWater*=.94h+.12h*noise21(i.p*.16);
+    freshWater*=.86h+.23h*noise21(i.p*float2(.10,.22));
     land=lerp(land,freshWater,smoothstep(.16h,.75h,m.g));
     half light=.82h+.18h*saturate(dot(normalize(i.n),normalize(float3(-.6,1,-.4))));
     half3 coast=lerp(sand*.73h,sand,light);
     half landWeight=smoothstep(.40h,.49h,m.r);
     half3 water=lerp(sea,shallow,smoothstep(.38h,.49h,m.r));
-    half ripple=(noise21(i.p*.13)-.5h)*.012h;
+    water=lerp(water,shallow,(.10h+.18h*noise21(i.p*.027)+.09h*noise21(i.p*.08))*(1-landWeight));
+    half ripple=(noise21(i.p*float2(.10,.24))-.5h)*.032h;
     water+=ripple;
     half foam=smoothstep(.42h,.47h,m.r)*(1-smoothstep(.47h,.50h,m.r));
     water=lerp(water,sand,foam*.38h);

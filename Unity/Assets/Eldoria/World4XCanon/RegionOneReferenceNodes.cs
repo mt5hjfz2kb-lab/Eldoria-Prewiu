@@ -29,7 +29,8 @@ namespace Eldoria.World4XCanon
   {var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(go.transform.position,Vector3.one);var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
   void Hide(GameObject go,bool mountain=false)
   {if(!go)return;foreach(var lod in go.GetComponentsInChildren<LODGroup>(true))if(!lods.Contains(lod)){lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}foreach(var r in go.GetComponentsInChildren<Renderer>(true))if(!old.Contains(r)){old.Add(r);states.Add(r.enabled);mountains.Add(mountain);}}
-  static Vector3 Foot(Bounds b)=>new Vector3(b.center.x,b.min.y+.04f,b.min.z);
+  Vector3 GroundFoot(Vector3 p){p.y=host.WorldHome.y+RegionOneDirectedGeography.Height(p.x-host.WorldHome.x,p.z-host.WorldHome.z)+.08f;return p;}
+  Vector3 Foot(Bounds b)=>GroundFoot(new Vector3(b.center.x,b.min.y,b.min.z));
   void Build()
   {
    if(host.WorldBastionOne){var b=BoundsOf(host.WorldBastionOne);Sprite("Reference city Bastion I",Foot(b),24,0,host.WorldBastionOne);Hide(host.WorldBastionOne);}
@@ -40,14 +41,14 @@ namespace Eldoria.World4XCanon
    {
     if(t.name.StartsWith("Existing Holotna rock",StringComparison.Ordinal))
     {var b=BoundsOf(t.gameObject);if(t.gameObject.activeInHierarchy&&t.name!="Existing Holotna rock.001")Sprite("Reference pale field rock "+t.name,Foot(b),Mathf.Clamp(b.size.x,4,9),1,null);Hide(t.gameObject);}
-    if(t.name.StartsWith("Valoria map / retained ruins",StringComparison.Ordinal)||t.name.StartsWith("Zone1 quarry /",StringComparison.Ordinal)||t.name.StartsWith("Retained functional quarry equipment /",StringComparison.Ordinal)||t.name=="pile_of_planks"||t.name.StartsWith("Quarry Geological Scarp /",StringComparison.Ordinal)||t.name=="Forest cut timber and sawbuck"||t.name=="Forest fallen timber / retained clearing")Hide(t.gameObject);
+    if(t.name.StartsWith("Valoria map / retained ruins",StringComparison.Ordinal)||t.name.StartsWith("Zone1 quarry /",StringComparison.Ordinal)||t.name.StartsWith("Retained functional quarry equipment /",StringComparison.Ordinal)||t.name=="pile_of_planks"||t.name.StartsWith("Quarry ",StringComparison.Ordinal)||t.name=="Connected graded extraction apron"||t.name=="Forest cut timber and sawbuck"||t.name=="Forest fallen timber / retained clearing")Hide(t.gameObject);
    }
    var ruin=host.FindTarget("old-watch-ruin");
    if(ruin)
-   {var f=ruin.transform.position;f.y=-1;Sprite("Reference existing neutral watch ruin",f,11,2,null);
+   {var f=ruin.transform.position;f=GroundFoot(f);Sprite("Reference existing neutral watch ruin",f,11,2,null);
     foreach(var name in new[]{"Recovered neutral ruin Arch_Gothic.fbx","Recovered neutral ruin Wall_Broken.fbx","Recovered neutral ruin Column_Round.fbx"}){var t=Find(name);if(t)Hide(t.gameObject);}}
    var timber=Find("Wood resource existing timber stock");var wood=host.FindTarget("forest-valoria");
-   if(timber&&wood){var b=BoundsOf(timber.gameObject);BuildWoodGrove(new Vector3(wood.transform.position.x,b.min.y+.04f,wood.transform.position.z));Hide(timber.gameObject);}
+   if(timber&&wood){var b=BoundsOf(timber.gameObject);BuildWoodGrove(GroundFoot(wood.transform.position));Hide(timber.gameObject);}
    foreach(var t in host.WorldRoot.GetComponentsInChildren<Transform>(true))
     if(t.name.StartsWith("Existing Holotna mountain",StringComparison.Ordinal))Hide(t.gameObject,true);
    Debug.Log("REGION1_REFERENCE_NODES visuals="+current.Count+" old_renderers="+old.Count+" new_hotspots=0 new_colliders=0");Refresh();
