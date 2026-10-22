@@ -63,6 +63,9 @@ namespace Eldoria.World4XCanon.Editor
                         nav.SetZoomLevel(stage.Item1, true);
                         nav.PanTo(host.WorldHome);
                         nav.FitToAuthoredBounds();
+                        var canon = UnityEngine.Object.FindFirstObjectByType<RegionOneCanonicalLandscape>();
+                        if (!canon) throw new InvalidOperationException("Canonical runtime adapter disappeared before capture.");
+                        canon.RefreshForCapture();
                         Canvas.ForceUpdateCanvases();
                         CaptureCamera(output, camera, nav, stage.Item2, size.Item3, size.Item1, size.Item2);
                     }
