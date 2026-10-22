@@ -167,6 +167,14 @@ namespace Eldoria.Tests
                 Assert.That(Member(realOffer, "Kind"), Is.EqualTo("Build"),
                     "Only the actual gameplay sawmill purchase may unlock World.");
                 Call(host, "Submit", realOffer);
+                // Sawmill is a genuine timed construction. Only a COMPLETE
+                // building satisfies the real world's progression gate.
+                // Advance the existing disposable gameplay clock, never the
+                // player's save or the production rules.
+                var city = Member(host, "City");
+                var clock = Member(city, "Clock");
+                Call(clock, "Step", Eldoria.Domain.SliceRules.SawmillBuildSeconds + 1);
+                Call(Member(city, "Gateway"), "Advance");
                 yield return null;
                 opened = (bool)Call(host, "TrySetWorld", true);
             }

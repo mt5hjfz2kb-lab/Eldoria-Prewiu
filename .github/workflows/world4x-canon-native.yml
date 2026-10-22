@@ -115,6 +115,13 @@ jobs:
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity PlayMode test timeout' }
           if(Test-Path $log){Get-Content $log -Tail 90}
+          if(Test-Path $xml){
+            [xml]$diagnostic=Get-Content $xml -Raw
+            foreach($failure in @($diagnostic.SelectNodes('//test-case[@result!="Passed"]'))){
+              Write-Host ("NUNIT_RESULT "+$failure.name+" => "+$failure.result)
+              if($failure.failure){Write-Host ("NUNIT_FAILURE "+$failure.failure.message.InnerText)}
+            }
+          }
           if($p.ExitCode -ne 0){throw "Integrated PlayMode test failed: $($p.ExitCode)"}
           if(-not(Test-Path $xml)){throw 'Missing actual Unity PlayMode result'}
           [xml]$result=Get-Content $xml -Raw
