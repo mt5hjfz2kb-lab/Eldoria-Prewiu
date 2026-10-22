@@ -25,8 +25,8 @@ namespace Eldoria.World4XCanon
         public const float CoreHalfDepth = 260f;
         public const float LandscapeHalfWidth = 910f;
         public const float LandscapeHalfDepth = 780f;
-        public const float BreachOffsetX = 60f;
-        public const float BreachOffsetZ = 53f;
+        public const float BreachOffsetX = 8f;
+        public const float BreachOffsetZ = 61f;
         public const float LocalThreshold = 41f;
         public const float RegionalThreshold = 152f;
 
@@ -63,7 +63,7 @@ namespace Eldoria.World4XCanon
         GameObject distantGeology;
         Mesh terrainMesh;
         Texture2D terrainTexture;
-        Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial;
+        Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial, breachHaloMaterial;
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
 
@@ -246,6 +246,8 @@ namespace Eldoria.World4XCanon
 
         public static bool IsForest(float x, float z)
         {
+            float rx=x-BreachOffsetX, rz=z-BreachOffsetZ;
+            if(rx*rx+rz*rz < 37f*37f) return false;
             // Distinct, irregular authored-looking groves rather than circles
             // stamped at predictable radii across a strategic board.
             for (int i = 0; i < ForestCentres.Length; i++)
@@ -455,6 +457,56 @@ namespace Eldoria.World4XCanon
             var coreRenderer=coreGo.AddComponent<MeshRenderer>();
             coreRenderer.sharedMaterial=breachCoreMaterial;
             coreRenderer.shadowCastingMode=ShadowCastingMode.Off;
+            BuildBreachHalo(fracture);
+        }
+
+        void BuildBreachHalo(Transform fracture)
+        {
+            // Low-opacity geometry sits in the ground plane: one shared rift,
+            // not an elevated portal and without terrain/target colliders.
+            var shader=Shader.Find("Sprites/Default");
+            if(!shader) return;
+            breachHaloMaterial=new Material(shader){name="Region1 ground-level Rift feathered scar"};
+            breachHaloMaterial.renderQueue=3000;
+            const int sectors=36;
+            float[] radii={4.5f,12.5f,23f,37f};
+            float[] opacity={.79f,.55f,.23f,0f};
+            var vertices=new List<Vector3>();
+            var colors=new List<Color>();
+            var triangles=new List<int>();
+            var originPoint=new Vector3(origin.x+BreachOffsetX,
+                Mathf.Max(SampleHeight(BreachOffsetX,BreachOffsetZ)+.22f,.18f),
+                origin.z+BreachOffsetZ);
+            for(int layer=0;layer<radii.Length;layer++)
+            {
+                for(int i=0;i<sectors;i++)
+                {
+                    float a=i*2f*Mathf.PI/sectors;
+                    float rough=1f+.11f*Mathf.Sin(i*1.83f+layer*.41f)+
+                                    .07f*Mathf.Sin(i*.69f-layer*1.31f);
+                    vertices.Add(originPoint+new Vector3(Mathf.Cos(a)*radii[layer]*rough,
+                        -.055f,Mathf.Sin(a)*radii[layer]*rough));
+                    colors.Add(new Color(.24f,.19f,.22f,opacity[layer]));
+                    if(layer==0)continue;
+                    int a0=(layer-1)*sectors+i,a1=(layer-1)*sectors+(i+1)%sectors;
+                    int b0=layer*sectors+i,b1=layer*sectors+(i+1)%sectors;
+                    triangles.Add(a0);triangles.Add(a1);triangles.Add(b0);
+                    triangles.Add(a1);triangles.Add(b1);triangles.Add(b0);
+                }
+            }
+            var mesh=new Mesh{name="Region1 irregular in-soil Breach halo",
+                vertices=vertices.ToArray(),colors=colors.ToArray(),
+                triangles=triangles.ToArray()};
+            mesh.RecalculateBounds();
+            mesh.RecalculateNormals();
+            generatedMeshes.Add(mesh);
+            var go=new GameObject("Region1 geological fractured earth alpha / no collider");
+            go.transform.SetParent(fracture,true);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            var renderer=go.AddComponent<MeshRenderer>();
+            renderer.sharedMaterial=breachHaloMaterial;
+            renderer.receiveShadows=false;
+            renderer.shadowCastingMode=ShadowCastingMode.Off;
         }
 
         void BuildTreeDetail(Transform parent, Transform original)
@@ -768,6 +820,7 @@ namespace Eldoria.World4XCanon
             if (surfaceMaterial) Destroy(surfaceMaterial);
             if (riftMaterial) Destroy(riftMaterial);
             if (breachCoreMaterial) Destroy(breachCoreMaterial);
+            if (breachHaloMaterial) Destroy(breachHaloMaterial);
             if (fogMaterial) Destroy(fogMaterial);
             foreach (var mat in farForestMaterials) if (mat) Destroy(mat);
             foreach (var mat in farGeologyMaterials) if (mat) Destroy(mat);
