@@ -947,6 +947,16 @@ namespace Eldoria.World4XCanon
                 surfaceMaterial.SetTexture("_MainTex",selected);
         }
 
+        // Capture-only evaluation of the other chat's exact mask-pigment bake.
+        // The default world never selects this independent experiment.
+        public void CompareP0Atlas()
+        {
+            var candidate=Resources.Load<Texture2D>("World4X/RegionOneP0Terrain");
+            if(!candidate) throw new InvalidOperationException("P0 comparison atlas missing");
+            if(surfaceMaterial.HasProperty("_BaseMap")) surfaceMaterial.SetTexture("_BaseMap",candidate);
+            if(surfaceMaterial.HasProperty("_MainTex")) surfaceMaterial.SetTexture("_MainTex",candidate);
+        }
+
         // Explicitly synchronize representations before a manually rendered Unity capture.
         public void RefreshForCapture()
         {

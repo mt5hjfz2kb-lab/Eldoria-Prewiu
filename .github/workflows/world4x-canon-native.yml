@@ -56,6 +56,8 @@ jobs:
     if: github.event_name == 'push' && vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 50
+    env:
+      ELDORIA_REGION1_P0_COMPARE: '1'
     steps:
       - name: Find installed Git
         shell: powershell
@@ -144,7 +146,7 @@ jobs:
           if($nodes.Count -lt 4){throw "Expected 4 integrated tests including six real-world cameras, got $($nodes.Count)"}
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
-          if($captures.Count -ne 12){throw "Missing exact-camera hybrid A/B PNGs: expected twelve genuine Unity captures, got $($captures.Count)"}
+          if($captures.Count -ne 16){throw "Missing exact-camera hybrid A/B PNGs: expected sixteen genuine Unity captures, got $($captures.Count)"}
           Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) SAME_CAMERA_HYBRID_A_B (NOT art/mobile QA)"
       - name: Recover exact already verified Unity authoring snapshot
         if: contains(github.event.head_commit.message, 'author-retry(world4x):')
