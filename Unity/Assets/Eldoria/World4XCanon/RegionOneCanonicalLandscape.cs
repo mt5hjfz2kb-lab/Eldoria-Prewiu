@@ -251,14 +251,22 @@ namespace Eldoria.World4XCanon
                 var centre = ForestCentres[i];
                 float width = 24f + (i % 4) * 5.5f;
                 float depth = 20f + (i % 3) * 5.8f;
-                float dx = (x - centre.x) / width;
-                float dz = (z - centre.y) / depth;
+                // Coherent domain warp turns near-circular resource-style
+                // patches into complex woodland silhouettes. Repeatable on
+                // every zoom because the same function paints the terrain
+                // and drives the 3D canopy batching.
+                float warpX = 13f * Mathf.Sin(z * .037f + i * 1.47f) +
+                              6f * Mathf.Sin(x * .082f + z * .026f);
+                float warpZ = 11f * Mathf.Cos(x * .044f - i * .97f) +
+                              7f * Mathf.Sin(z * .077f - x * .018f);
+                float dx = (x + warpX - centre.x) / (width * 1.3f);
+                float dz = (z + warpZ - centre.y) / (depth * 1.2f);
                 float d = dx * dx + dz * dz;
-                if (d >= 1.45f) continue;
-                float irregularity = .19f * Mathf.Sin(x * .16f + i * 1.2f) *
-                                    Mathf.Cos(z * .11f - i * .7f) +
-                                    .13f * Mathf.Sin(x * .07f + z * .12f + i);
-                if (d < 1f + irregularity) return true;
+                if (d > 1.65f) continue;
+                float density = Mathf.PerlinNoise(i * 6.17f + x * .044f,
+                                                   i * 3.91f + z * .042f);
+                float edge = .73f + .56f * density;
+                if (d < edge && density > .27f) return true;
             }
             return false;
         }
@@ -493,20 +501,23 @@ namespace Eldoria.World4XCanon
                 for (int cluster = band; cluster < ForestCentres.Length; cluster += 3)
                 {
                     Vector2 centre = ForestCentres[cluster];
-                    const int count = 18;
+                    const int count = 80;
                     for (int j = 0; j < count; j++)
                     {
-                        // Golden-angle positions form irregular groves, not stamped disks.
+                        // Low-discrepancy placement, then reject candidates
+                        // beyond the same organic woodland outline used by
+                        // the terrain shader. Geometry stays 3 renderer batches.
                         float radial = Mathf.Sqrt((j + .7f) / count);
                         float theta = j * 2.399963f + cluster * 1.37f;
-                        float radiusX = 13f + (cluster % 4) * 3.2f;
-                        float radiusZ = 12f + (cluster % 3) * 3.3f;
+                        float radiusX = 41f + (cluster % 4) * 8.4f;
+                        float radiusZ = 32f + (cluster % 3) * 7.3f;
                         float x = centre.x + Mathf.Cos(theta) * radiusX * radial;
                         float z = centre.y + Mathf.Sin(theta) * radiusZ * radial;
-                        if (Mathf.Sqrt(x * x + z * z) < 95f || IsRiver(x,z) || IsCoast(x,z)) continue;
+                        if (!IsForest(x,z) || Mathf.Sqrt(x * x + z * z) < 95f ||
+                            IsRiver(x,z) || IsRoad(x,z) || IsCoast(x,z)) continue;
                         float y = SampleHeight(x, z) + .1f;
-                        float width = 1.65f + Noise(cluster * 31, j * 19) * 1.8f;
-                        float height = 4.8f + Noise(j * 11, cluster * 43) * 3f;
+                        float width = 1.35f + Noise(cluster * 31, j * 19) * 2.05f;
+                        float height = 3.8f + Noise(j * 11, cluster * 43) * 3.8f;
                         // Triangular tapering spruce crown, with two independent
                         // fronds and no upright surface monument.
                         int begin = positions.Count;
