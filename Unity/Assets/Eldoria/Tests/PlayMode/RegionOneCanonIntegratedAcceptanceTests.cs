@@ -216,10 +216,10 @@ namespace Eldoria.Tests
                                 hash=BitConverter.ToString(sha.ComputeHash(png)).Replace("-","").ToLowerInvariant();
                             var metadata=new RenderIdentity {
                                 sourceScene=SceneManager.GetActiveScene().path,
-                                version=Application.unityVersion,
+                                version=UnityEngine.Application.unityVersion,
                                 context="Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
                                 label=name, sha256=hash,
-                                actualUnityCamera=true,playMode=Application.isPlaying,
+                                actualUnityCamera=true,playMode=UnityEngine.Application.isPlaying,
                                 physicalIphone=false,width=format.Item1,height=format.Item2,
                                 zoom=camera.orthographicSize,aspect=camera.aspect,
                                 cameraPosition=camera.transform.position,

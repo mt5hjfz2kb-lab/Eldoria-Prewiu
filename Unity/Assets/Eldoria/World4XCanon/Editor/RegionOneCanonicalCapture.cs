@@ -104,12 +104,12 @@ namespace Eldoria.World4XCanon.Editor
                 {
                     view = view, environment = "Unity Editor PlayMode integrated Valoria",
                     scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().path,
-                    unityVersion = Application.unityVersion, sha256 = hash,
+                    unityVersion = UnityEngine.Application.unityVersion, sha256 = hash,
                     width = width, height = height,
                     visibleRenderers = UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None).Length,
                     orthographicSize = camera.orthographicSize, aspect = camera.aspect,
                     worldTarget = nav.target, cameraPosition = camera.transform.position,
-                    isActualUnityCamera = true, isPlayMode = Application.isPlaying,
+                    isActualUnityCamera = true, isPlayMode = UnityEngine.Application.isPlaying,
                     isPhysicalIphone = false
                 };
                 File.WriteAllText(Path.Combine(output,name + "-source.json"),JsonUtility.ToJson(evidence,true));
