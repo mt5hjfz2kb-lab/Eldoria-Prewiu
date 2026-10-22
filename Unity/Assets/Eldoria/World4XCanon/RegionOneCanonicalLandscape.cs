@@ -60,7 +60,7 @@ namespace Eldoria.World4XCanon
         GameObject distantForestSilhouettes;
         Mesh terrainMesh;
         Texture2D terrainTexture;
-        Material surfaceMaterial, riftMaterial, fogMaterial;
+        Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial;
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
 
@@ -366,8 +366,14 @@ namespace Eldoria.World4XCanon
                     int index = points.Count;
                     foreach (Vector2 location in new [] { previous - perpendicular, previous + perpendicular,
                                                            next - perpendicular, next + perpendicular })
-                        points.Add(new Vector3(origin.x + location.x, SampleHeight(location.x, location.y) + .20f,
-                                               origin.z + location.y));
+                    {
+                        // The legacy local prairie is higher than the low-cost
+                        // regional substrate: keep the same grounded decal just
+                        // above whichever terrain is visible at this zoom.
+                        float h = Mathf.Max(SampleHeight(location.x, location.y) + .20f,
+                                            .19f);
+                        points.Add(new Vector3(origin.x + location.x, h, origin.z + location.y));
+                    }
                     indices.Add(index); indices.Add(index + 1); indices.Add(index + 2);
                     indices.Add(index + 1); indices.Add(index + 3); indices.Add(index + 2);
                     previous = next;
@@ -384,6 +390,36 @@ namespace Eldoria.World4XCanon
             renderer.sharedMaterial = riftMaterial;
             renderer.shadowCastingMode = ShadowCastingMode.Off;
             renderer.receiveShadows = false;
+            // A low, luminous scar visible from the high-altitude strategy
+            // camera, not an upright portal or selectable enemy.
+            var core = new Mesh { name = "Region1 · Breach surface core" };
+            var coreVertices = new Vector3[25];
+            var coreIndices = new int[24 * 3];
+            float coreY = Mathf.Max(SampleHeight(BreachOffsetX,BreachOffsetZ)+.23f,.22f);
+            coreVertices[0] = new Vector3(origin.x+BreachOffsetX, coreY, origin.z+BreachOffsetZ);
+            for (int i=0; i<24; i++)
+            {
+                float a=i*Mathf.PI/12f;
+                float radius=5.2f+1.5f*Mathf.Sin(i*5.6f);
+                coreVertices[i+1]=new Vector3(origin.x+BreachOffsetX+Mathf.Cos(a)*radius,
+                    coreY-.025f, origin.z+BreachOffsetZ+Mathf.Sin(a)*radius);
+                coreIndices[i*3]=0;
+                coreIndices[i*3+1]=1+(i+1)%24;
+                coreIndices[i*3+2]=i+1;
+            }
+            core.vertices=coreVertices;
+            core.triangles=coreIndices;
+            core.RecalculateBounds();
+            core.RecalculateNormals();
+            generatedMeshes.Add(core);
+            var coreGo = new GameObject("Region1 · horizontal Breach luminous fissure heart");
+            coreGo.transform.SetParent(fracture,true);
+            coreGo.AddComponent<MeshFilter>().sharedMesh=core;
+            breachCoreMaterial=MakeMaterial("Region1 grounded bright fissure",
+                new Color(.83f,.22f,.78f),true);
+            var coreRenderer=coreGo.AddComponent<MeshRenderer>();
+            coreRenderer.sharedMaterial=breachCoreMaterial;
+            coreRenderer.shadowCastingMode=ShadowCastingMode.Off;
         }
 
         void BuildTreeDetail(Transform parent, Transform original)
@@ -604,6 +640,7 @@ namespace Eldoria.World4XCanon
             if (terrainTexture) Destroy(terrainTexture);
             if (surfaceMaterial) Destroy(surfaceMaterial);
             if (riftMaterial) Destroy(riftMaterial);
+            if (breachCoreMaterial) Destroy(breachCoreMaterial);
             if (fogMaterial) Destroy(fogMaterial);
             foreach (var mat in farForestMaterials) if (mat) Destroy(mat);
         }
