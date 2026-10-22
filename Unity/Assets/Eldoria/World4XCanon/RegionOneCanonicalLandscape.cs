@@ -65,6 +65,7 @@ namespace Eldoria.World4XCanon
         GameObject distantGeology;
         Mesh terrainMesh;
         Texture2D terrainTexture, legacyCompareTexture;
+        Texture2D hybridForestAtlas;
         Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial, breachHaloMaterial;
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
@@ -617,6 +618,22 @@ namespace Eldoria.World4XCanon
 
         void BuildDistantForests(Transform parent)
         {
+            // Controlled 2.5D alternative to primitive dots / tiny cones:
+            // three forest draw batches, one reusable alpha texture, no new
+            // physics, node IDs or mobile per-frame billboard work.
+            var hybrid=RegionOneHybridForestImpostors.Build(
+                parent,origin,ForestCentres,SampleHeight,IsForest,
+                IsRiver,IsRoad,IsCoast);
+            if(hybrid!=null && hybrid.trees>0)
+            {
+                distantForestSilhouettes=hybrid.root;
+                hybridForestAtlas=hybrid.atlas;
+                farForestMaterials.Add(hybrid.material);
+                generatedMeshes.AddRange(hybrid.meshes);
+                return;
+            }
+            // Keep the earlier cheap 3D batches as a safe fallback if
+            // the sprite shader is not supported on this URP platform.
             distantForestSilhouettes = new GameObject("Region1 · batched distant organic forest canopies");
             distantForestSilhouettes.transform.SetParent(parent, true);
             // These are distant-scale tree silhouettes, never gameplay entities.
@@ -907,6 +924,7 @@ namespace Eldoria.World4XCanon
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
             if (terrainTexture) Destroy(terrainTexture);
             if (legacyCompareTexture) Destroy(legacyCompareTexture);
+            if (hybridForestAtlas) Destroy(hybridForestAtlas);
             if (surfaceMaterial) Destroy(surfaceMaterial);
             if (riftMaterial) Destroy(riftMaterial);
             if (breachCoreMaterial) Destroy(breachCoreMaterial);
