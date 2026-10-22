@@ -180,6 +180,8 @@ jobs:
             }
           }
           if(-not $blender){throw 'Existing installed Blender not found; no duplicate install'}
+          $env:ELDORIA_REGION1_PYTHON=Get-ChildItem "$(Split-Path $blender)/*/python/bin/python.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $env:ELDORIA_REGION1_PYTHON){throw 'Installed Blender Python unavailable; no Windows Store alias or reinstall'}
           # Reuse the proven local Ollama recovery from author_geography_plan.py.
           # Start only the existing installation when its loopback API is down.
           try {$tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 5}

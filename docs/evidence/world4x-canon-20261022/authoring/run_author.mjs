@@ -23,7 +23,9 @@ const invocation=prepareInvocation({
     '--num-ctx','8192','--num-predict','1800','--max-actions','3',
     '--repair-attempts','1','--request-timeout','420']
 });
-const proc=spawnSync('python',invocation.command.slice(1),{stdio:'inherit',shell:false,timeout:950000});
+const python=process.env.ELDORIA_REGION1_PYTHON;
+if(!python||!fs.existsSync(python))throw Error('Verified existing Blender Python required; do not invoke Windows Store alias');
+const proc=spawnSync(python,invocation.command.slice(1),{stdio:'inherit',shell:false,timeout:950000});
 recordInference({invocation,outFile:invocation.feedback,exitStatus:proc.status??1});
 if(proc.error)throw proc.error;
 if(proc.status!==0)throw Error('Typed Qwen author failed; no geometry or approval inferred');
