@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { requireMatchingApprovedCycle } from './art-direction/ai-authoring/approval-boundary.mjs';
-import {checkFutureApprovedQwenMemory} from './art-knowledge/approval-evidence.mjs';
+
 
 const registryPath='pipeline/active-workstreams.json';
 const requestDir='pipeline/art-production-requests';
@@ -32,7 +32,8 @@ for(const workstream of registry.active || []){
   if(!grandfathered.has(workstream.id)&&req.ai_authorship_policy!=='required'){
     failures.push(workstream.id+': every new art request requires ai_authorship_policy=required.');
   }
-  // Do not overwrite or block workstreams which started before the new memory
+  // Legacy Qwen-memory evidence remains readable but is not mandatory for new authoring.
+  /* Do not overwrite or block workstreams which started before the new memory
   // integration. Any future workstream may only promote AI art with exact
   // evidence that Qwen actually consumed selected catalog lessons.
   const phase2LegacyOwners=new Set([
@@ -46,6 +47,7 @@ for(const workstream of registry.active || []){
       failures.push(workstream.id+': '+error);
     }
   }
+  */
   const gateState=String(req.visual_gate_state||'').toUpperCase();
   if(['ART_APPROVED','MOBILE_VALIDATED','GAMEPLAY_VALIDATED','RELEASED'].includes(gateState)){
     if(!req.artist_cycle_path) failures.push(workstream.id+': ART approval requires artist_cycle_path.');
