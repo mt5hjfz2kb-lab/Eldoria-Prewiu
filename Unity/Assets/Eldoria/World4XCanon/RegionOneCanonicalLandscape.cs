@@ -73,6 +73,7 @@ namespace Eldoria.World4XCanon
         Renderer paintedBreachRenderer;
         Material paintedBreachMaterial;
         Material nearGroundMaterial, localCanopyMaterial;
+        RegionOneDirectedGeography directedGeography;
         Renderer localCanopyRenderer;
         readonly List<Renderer> localCanopyDonors=new List<Renderer>();
         readonly List<bool> localCanopyDonorStates=new List<bool>();
@@ -206,6 +207,7 @@ namespace Eldoria.World4XCanon
             BuildDistantForests(root);
             // Authored ridges now belong to the continuous terrain itself.
             BuildEdgeFog(root);
+            directedGeography=RegionOneDirectedGeography.Install(root,host);
         }
 
         void CollectLegacyGround(Transform existingWorld)
@@ -1165,9 +1167,15 @@ namespace Eldoria.World4XCanon
         }
 
         // Explicitly synchronize representations before a manually rendered Unity capture.
+        public void CompareDirectedLayout(bool before)
+        {
+            if(directedGeography)directedGeography.SetBefore(before);
+        }
+
         public void RefreshForCapture()
         {
             if (built) UpdateLevelOfDetail(true);
+            if(directedGeography)directedGeography.Refresh();
         }
 
 #if UNITY_EDITOR
@@ -1192,16 +1200,19 @@ namespace Eldoria.World4XCanon
             if (System.IO.File.Exists(file))
                 throw new InvalidOperationException("Do not overwrite frozen authoring evidence.");
             System.IO.Directory.CreateDirectory(directory);
-            var positions=terrainMesh.vertices;
+            var exportMesh=directedGeography ? directedGeography.DirectedTerrain : terrainMesh;
+            var positions=exportMesh.vertices;
             var water=new bool[positions.Length];
             for(int i=0;i<positions.Length;i++)
-                water[i]=RegionOneHybridTerrainArt.IsOpenWater(positions[i].x-origin.x,
-                    positions[i].z-origin.z) || IsCoast(positions[i].x-origin.x,positions[i].z-origin.z);
-            System.IO.File.WriteAllBytes(System.IO.Path.Combine(directory,"terrain-atlas.png"),
-                terrainTexture.EncodeToPNG());
+                water[i]=directedGeography
+                    ? RegionOneDirectedGeography.Water(positions[i].x-origin.x,positions[i].z-origin.z)>.05f || RegionOneDirectedGeography.Shore(positions[i].x-origin.x,positions[i].z-origin.z)<0
+                    : RegionOneHybridTerrainArt.IsOpenWater(positions[i].x-origin.x,positions[i].z-origin.z) || IsCoast(positions[i].x-origin.x,positions[i].z-origin.z);
+            var exportTexture=directedGeography ? directedGeography.GeographicMask : terrainTexture;
+            System.IO.File.WriteAllBytes(System.IO.Path.Combine(directory,"terrain-atlas.png"),exportTexture.EncodeToPNG());
             System.IO.File.WriteAllText(file, JsonUtility.ToJson(new AuthoringSnapshot {
-                origin=origin, vertices=terrainMesh.vertices,
-                uv=terrainMesh.uv, triangles=terrainMesh.triangles, protectedWater=water
+                origin=origin, vertices=exportMesh.vertices,
+                uv=exportMesh.uv, triangles=exportMesh.triangles, protectedWater=water,
+                context=directedGeography ? "Actual directed Unity terrain; atlas is SEMANTIC RGBA masks (land/water/routes/groves), not final shader pigment. Unity screenshots are visual evidence." : "Actual integrated legacy Unity terrain"
             }));
         }
 #endif

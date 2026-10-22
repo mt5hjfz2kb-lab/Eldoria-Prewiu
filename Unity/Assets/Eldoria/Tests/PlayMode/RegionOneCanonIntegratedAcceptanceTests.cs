@@ -92,6 +92,19 @@ namespace Eldoria.Tests
             Assert.That(colliders.Length, Is.GreaterThanOrEqualTo(3));
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "forest-valoria"), Is.True);
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "quarry-valoria"), Is.True);
+            var directed=geo.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(x=>x&&x.GetType().Name=="RegionOneDirectedGeography");
+            Assert.That(directed,Is.Not.Null,"The reference-directed geography must be physically installed.");
+            var directedType=directed.GetType();
+            var directedShore=directedType.GetMethod("Shore",BindingFlags.Public|BindingFlags.Static);
+            var directedWater=directedType.GetMethod("Water",BindingFlags.Public|BindingFlags.Static);
+            var actualHome=(Vector3)Member(host,"WorldHome");
+            foreach(var node in colliders)
+            {
+                var p=node.transform.position-actualHome;
+                Assert.That((float)directedShore.Invoke(null,new object[]{p.x,p.z}),Is.GreaterThan(5f),"Existing node must remain on the authored land: "+Member(node,"Id"));
+                Assert.That((float)directedWater.Invoke(null,new object[]{p.x,p.z}),Is.LessThan(.1f),"Authored rivers/lakes cannot flood an existing node: "+Member(node,"Id"));
+            }
+            Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Count(x=>x.name=="Directed terrain continuous coast relief"),Is.EqualTo(1));
             // Art runtime belongs to a separate Unity assembly. Match the
             // existing test's reflection-only contract rather than adding an
             // unsupported direct assembly reference to this PlayMode suite.
@@ -273,7 +286,7 @@ namespace Eldoria.Tests
                 Assert.That(terrain.Any(x => x.enabled), Is.True,
                     "The close-up camera must restore the imported prairie detail.");
                 Assert.That(terrain.Where(x=>x.enabled).All(x=>x.sharedMaterial &&
-                    x.sharedMaterial.shader.name=="Eldoria/World4X/WorldAlignedPaintedGround" &&
+                    x.sharedMaterial.shader.name=="Eldoria/World4X/DirectedGeographicLayers" &&
                     x.sharedMaterial.shader.isSupported),Is.True,
                     "Near ground must render the same geographic pigment through a supported shader.");
 
@@ -331,6 +344,7 @@ namespace Eldoria.Tests
             public int width, height;
             public float zoom, aspect;
             public Vector3 cameraPosition, worldTarget;
+            public Quaternion cameraRotation;
         }
 
         [UnityTest]
@@ -416,8 +430,8 @@ namespace Eldoria.Tests
                         (1,"regional",home),
                         (0,"panoramica",home),
                         (2,"cercana-recurso-madera",forestFocus),
-                        (0,"panoramica-antes-hibrido",home),
-                        (1,"regional-antes-hibrido",home)})
+                        (0,"panoramica-antes-composicion",home),
+                        (1,"regional-antes-composicion",home)})
                     {
                         Call(navigation, "SetZoomLevel", stage.Item1, true);
                         Call(navigation, "PanTo", stage.Item3);
@@ -448,10 +462,10 @@ namespace Eldoria.Tests
                         if(stage.Item2=="panoramica" && format.Item3=="horizontal")
                             Assert.That(camera.orthographicSize,Is.InRange(239f,249f),
                                 "Landscape overview must retain existing framing.");
-                        // Genuine A/B: SAME WorldCamera, XYZ, tilt, terrain,
-                        // original gameplay and LOD. Only the diffuse atlas
-                        // changes. No owner-reference image is projected.
-                        Call(adapter, "CompareAtlas", stage.Item2.EndsWith("-antes-hibrido"));
+                        // Genuine layout A/B: SAME actual camera and gameplay.
+                        // The authored geography layers change, never a backdrop.
+                        Call(adapter, "CompareAtlas", false);
+                        Call(adapter, "CompareDirectedLayout", stage.Item2.EndsWith("-antes-composicion"));
                         var texture = new RenderTexture(format.Item1,format.Item2,24,
                             RenderTextureFormat.ARGB32);
                         var pixels = new Texture2D(format.Item1,format.Item2,TextureFormat.RGB24,false);
@@ -479,6 +493,7 @@ namespace Eldoria.Tests
                                 physicalIphone=false,width=format.Item1,height=format.Item2,
                                 zoom=camera.orthographicSize,aspect=camera.aspect,
                                 cameraPosition=camera.transform.position,
+                                cameraRotation=camera.transform.rotation,
                                 worldTarget=(Vector3)Member(navigation,"target")
                             };
                             File.WriteAllText(Path.Combine(outdir,name+"-source.json"),
@@ -495,11 +510,12 @@ namespace Eldoria.Tests
                     }
                 }
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(12));
-                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=12 (8 genuine views + 4 exact-camera old-atlas comparisons) real_scene=1 disposable_gateway=1 physical_iphone=0");
+                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=12 (8 genuine views + 4 exact-camera old-geography comparisons) real_scene=1 disposable_gateway=1 physical_iphone=0");
             }
             finally
             {
                 Call(adapter, "CompareAtlas", false);
+                Call(adapter, "CompareDirectedLayout", false);
                 camera.aspect=originalAspect;
                 camera.targetTexture=originalRT;
                 RenderTexture.active=originalActive;
