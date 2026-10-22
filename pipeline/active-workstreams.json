@@ -46,7 +46,10 @@
         "eldoria-ui-v3-management-completion-20261021",
         "eldoria-spawnling-qwen-semantic-visual-qa-20261021"
       ],
-      "candidate_branch": "feature/world4x-region1-canon-20261022"
+      "candidate_branch": "feature/world4x-region1-canon-20261022",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
+      "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json"
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
