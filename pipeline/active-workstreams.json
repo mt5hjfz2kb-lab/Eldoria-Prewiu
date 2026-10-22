@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-22",
+  "updated_at": "2026-10-22T19:56:46.778Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -35,10 +35,12 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta",
         ".github/workflows/world4x-canon-native.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Owner current request: continue latest hybrid World4X task from other chat, use canonical references and updated memory; no spend or release.",
-      "phase": "WORLD4X_DIRECT_MACRO_ART_VERIFIED_REFERENCE_GAP_REMAINS",
-      "next": "Retained macro relief/coast/raised canopies/network and precomputed 2048 atlas; regional oversized decorative mountain LOD native 39842389820 7/7. Next highest impact: regional legacy foliage/strategic canopy coherence and portrait framing. Reclaim Windows heavy resource before native execution; no live heavy run remains. Same workstream/PR100, direct assistant artist, no Qwen. No merge/release or art autoapproval.",
+      "phase": "WORLD4X_PAINTED_MATERIAL_NATIVE_TRIAL",
+      "next": "Direct artist generated painterly terrain and evergreen atlas; verify genuine Unity screenshots and geographic drift before retaining. No Qwen, paid external credits, merge or release.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
