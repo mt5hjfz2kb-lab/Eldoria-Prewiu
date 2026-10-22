@@ -400,7 +400,24 @@ namespace Eldoria.ReferenceClean.Editor {
     }
    },"Royal march confirmation and real return-to-city button");
    yield return new WaitForSecondsRealtime(.4f);
-   h.SetWorld(true);h.Select("engendro-valoria");yield return null;
+   // Issue #95: preserve two controlled, authentic Unity frames of the
+   // ALIVE Bastion II enemy, before the real existing combat/loot/clock probe.
+   // Selection is restored before the existing authorization and march action.
+   // No invented rival, shortcut, rewards or changed gameplay transitions.
+   h.SetWorld(true);
+   var spawnTarget=h.FindTarget("engendro-valoria");
+   Need(spawnTarget!=null,"Authored Spawnling destination missing before battle");
+   h.Select("");
+   h.WorldNavigation.EnterStrategicView(spawnTarget.transform.position);
+   yield return null;
+   Check(()=>Capture(h,"integration-art-engendro-prebattle-strategic.png",1600,900),
+    "real prebattle B2 strategic creature capture");
+   h.WorldNavigation.SetZoomLevel(2,true);
+   h.WorldNavigation.PanTo(spawnTarget.transform.position);
+   yield return null;
+   Check(()=>Capture(h,"integration-art-engendro-prebattle-close.png",1600,900),
+    "real prebattle B2 local creature capture");
+   h.Select("engendro-valoria");yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");
    // Render the actual authored destinations through the same Royal UI and
