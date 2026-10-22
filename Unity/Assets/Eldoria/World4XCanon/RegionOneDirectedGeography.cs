@@ -91,7 +91,17 @@ namespace Eldoria.World4XCanon
     if((a.y>z)!=(b.y>z) && x<(b.x-a.x)*(z-a.y)/(b.y-a.y)+a.x)inside=!inside;}
    return inside?d:-d;
   }
-  static readonly Vector2[][] CurvedRivers=Smooth(Rivers),CurvedRoads=Smooth(Roads);
+  static readonly Vector2[][] CurvedRivers,CurvedRoads;
+  static float ComposeZ(float z){return Mathf.Abs(z)<=130?z:Mathf.Sign(z)*(130+(Mathf.Abs(z)-130)*.6f);}
+  static RegionOneDirectedGeography()
+  {
+   // Author vector control points at reference-like proportions. The actual
+   // central gameplay corridor stays fixed; pigment and tree shapes never stretch.
+   for(int i=0;i<Coast.Length;i++)Coast[i]=new Vector2(Coast[i].x,ComposeZ(Coast[i].y));
+   foreach(var paths in new[]{Rivers,Roads})foreach(var line in paths)for(int i=0;i<line.Length;i++)line[i]=new Vector2(line[i].x,ComposeZ(line[i].y));
+   for(int i=0;i<Groves.Length;i++){var g=Groves[i];g.y=ComposeZ(g.y);Groves[i]=g;}
+   CurvedRivers=Smooth(Rivers);CurvedRoads=Smooth(Roads);
+  }
   static Vector2[][] Smooth(Vector2[][] input)
   {
    var result=new Vector2[input.Length][];
@@ -112,10 +122,10 @@ namespace Eldoria.World4XCanon
   {
    float d=LinesDistance(new Vector2(x,z),CurvedRivers);
    float river=1f-Mathf.SmoothStep(0,1,Mathf.InverseLerp(1.15f,2.4f,d));
-   float angleA=Mathf.Atan2((z-240)/15f,(x+43)/19f);
-   float a=Mathf.Sqrt(Mathf.Pow((x+43)/19f,2)+Mathf.Pow((z-240)/15f,2))/(1+.12f*Mathf.Sin(angleA*5)+.06f*Mathf.Cos(angleA*8));
-   float angleB=Mathf.Atan2((z+235)/19f,(x-61)/27f);
-   float b=Mathf.Sqrt(Mathf.Pow((x-61)/27f,2)+Mathf.Pow((z+235)/19f,2))/(1+.13f*Mathf.Sin(angleB*4)+.07f*Mathf.Cos(angleB*7));
+   float angleA=Mathf.Atan2((z-ComposeZ(240))/15f,(x+43)/19f);
+   float a=Mathf.Sqrt(Mathf.Pow((x+43)/19f,2)+Mathf.Pow((z-ComposeZ(240))/15f,2))/(1+.12f*Mathf.Sin(angleA*5)+.06f*Mathf.Cos(angleA*8));
+   float angleB=Mathf.Atan2((z-ComposeZ(-235))/19f,(x-61)/27f);
+   float b=Mathf.Sqrt(Mathf.Pow((x-61)/27f,2)+Mathf.Pow((z-ComposeZ(-235))/19f,2))/(1+.13f*Mathf.Sin(angleB*4)+.07f*Mathf.Cos(angleB*7));
    return Mathf.Max(river,1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.92f,1.05f,Mathf.Min(a,b))));
   }
   public static float Road(float x,float z){return 1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.5f,1.5f,LinesDistance(new Vector2(x,z),CurvedRoads)));}
@@ -127,7 +137,7 @@ namespace Eldoria.World4XCanon
    float land=Mathf.SmoothStep(0,1,Mathf.InverseLerp(-3,3,shore));
    float ridge=0;
    foreach(var p in new[]{new Vector3(-146,303,22),new Vector3(151,151,18),new Vector3(-148,-312,19)})
-    ridge+=4f*Mathf.Max(0,1-Mathf.Pow((x-p.x)/p.z,2)-Mathf.Pow((z-p.y)/(p.z*1.5f),2));
+    ridge+=4f*Mathf.Max(0,1-Mathf.Pow((x-p.x)/p.z,2)-Mathf.Pow((z-ComposeZ(p.y))/(p.z*1.5f),2));
    return -13+land*(9+ridge);
   }
   static Texture2D mask;
@@ -150,7 +160,7 @@ namespace Eldoria.World4XCanon
   ValoriaIntegratedWorld host;Vector3 origin;GameObject art;Material ground,forestMaterial;
   readonly List<Mesh> meshes=new List<Mesh>();readonly List<Renderer> replaced=new List<Renderer>();
   readonly List<Renderer> prairie=new List<Renderer>();readonly List<Material[]> prairieMaterials=new List<Material[]>();
-  Renderer retainedNear,innerForest;bool before,prairieDirected;
+  Renderer retainedNear,innerForest;MeshFilter breachFilter;Mesh originalScar,directedScar;bool before,prairieDirected;
   public static RegionOneDirectedGeography Install(Transform parent,ValoriaIntegratedWorld host)
   {
    var shader=Resources.Load<Shader>("World4X/RegionOneDirectedGround");
@@ -175,7 +185,7 @@ namespace Eldoria.World4XCanon
     if(r is MeshRenderer && r.sharedMaterials.Any(m=>m&&m.shader&&m.shader.name=="Eldoria/World4X/WorldAlignedPaintedGround") && r.name!="Region1 · one coherent terrain mesh")
     {prairie.Add(r);prairieMaterials.Add(r.sharedMaterials);}
    }
-   BuildTerrain();BuildGroves(false);innerForest=BuildGroves(true);BuildRetainedNear();
+   BuildTerrain();BuildGroves(false);innerForest=BuildGroves(true);BuildRetainedNear();BuildHeroBreach();
    Debug.Log("REGION1_DIRECTED_GEOGRAPHY polygon="+Coast.Length+" river_layers="+Rivers.Length+" roads="+Roads.Length+" groves="+Groves.Length+" replaced="+replaced.Count);
    Refresh();
   }
@@ -221,11 +231,22 @@ namespace Eldoria.World4XCanon
    {var b=r.bounds;float h=Mathf.Clamp(b.size.y,1,18),w=Mathf.Clamp(Mathf.Max(b.size.x,b.size.z),h*.55f,h*1.1f);Quad(v,uv,offsets,tris,new Vector3(b.center.x,b.min.y+.03f,b.center.z),w,h,i++%3);}
    retainedNear=MeshObject("Directed retained actual near trees",v.ToArray(),uv.ToArray(),offsets.ToArray(),tris.ToArray(),forestMaterial);
   }
+  void BuildHeroBreach()
+  {
+   breachFilter=transform.GetComponentsInChildren<MeshFilter>(true).FirstOrDefault(f=>f.name=="Region1 · authored Breach pigment at actual world anchor");
+   if(!breachFilter)return;originalScar=breachFilter.sharedMesh;directedScar=Instantiate(originalScar);directedScar.name="Directed central geological scar";
+   var v=directedScar.vertices;var colors=directedScar.colors;
+   for(int i=0;i<v.Length;i++)
+   {v[i].x*=2.1f;v[i].z*=2.1f;float x=8+v[i].x,z=61+v[i].z;v[i].y=Height(x,z)+.12f;
+    float approach=Mathf.SmoothStep(0,1,Mathf.InverseLerp(32,48,new Vector2(x,z).magnitude));colors[i]=new Color(1,1,1,approach*(1-Water(x,z)));}
+   directedScar.vertices=v;directedScar.colors=colors;directedScar.RecalculateBounds();meshes.Add(directedScar);
+  }
   public void SetBefore(bool value){before=value;Refresh();}
   public void Refresh()
   {
    if(!art||!host||!host.WorldCamera)return;
    float zoom=host.WorldCamera.orthographicSize;art.SetActive(!before);
+   if(breachFilter)breachFilter.sharedMesh=before?originalScar:directedScar;
    if(!before)
    {foreach(var r in replaced)if(r)r.enabled=false;
     if(!prairieDirected){for(int i=0;i<prairie.Count;i++)if(prairie[i]){var mats=new Material[prairieMaterials[i].Length];for(int k=0;k<mats.Length;k++)mats[k]=ground;prairie[i].sharedMaterials=mats;}prairieDirected=true;}
@@ -238,6 +259,6 @@ namespace Eldoria.World4XCanon
     if(prairieDirected){for(int i=0;i<prairie.Count;i++)if(prairie[i])prairie[i].sharedMaterials=prairieMaterials[i];prairieDirected=false;}}
   }
   void LateUpdate(){Refresh();}
-  void OnDestroy(){for(int i=0;i<prairie.Count;i++)if(prairie[i])prairie[i].sharedMaterials=prairieMaterials[i];if(art)Destroy(art);foreach(var m in meshes)if(m)Destroy(m);if(ground)Destroy(ground);if(forestMaterial)Destroy(forestMaterial);}
+  void OnDestroy(){if(breachFilter)breachFilter.sharedMesh=originalScar;for(int i=0;i<prairie.Count;i++)if(prairie[i])prairie[i].sharedMaterials=prairieMaterials[i];if(art)Destroy(art);foreach(var m in meshes)if(m)Destroy(m);if(ground)Destroy(ground);if(forestMaterial)Destroy(forestMaterial);}
  }
 }

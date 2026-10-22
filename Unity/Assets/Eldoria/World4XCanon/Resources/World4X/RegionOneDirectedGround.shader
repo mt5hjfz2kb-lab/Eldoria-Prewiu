@@ -23,7 +23,7 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     float2 uv=i.p/float2(500,1040)+.5;
     half4 m=SAMPLE_TEXTURE2D(_Mask,sampler_Mask,uv);
     half3 tex=SAMPLE_TEXTURE2D(_Pigment,sampler_Pigment,abs(frac((i.p+float2(17,31))/64)*2-1)).rgb;
-    half3 earth=half3(.69,.68,.33),sand=half3(.80,.70,.43),sea=half3(.045,.25,.36),shallow=half3(.07,.46,.56),river=half3(.06,.47,.64),soil=half3(.80,.70,.43);
+    half3 earth=half3(.72,.66,.30),sand=half3(.80,.70,.43),sea=half3(.045,.25,.36),shallow=half3(.07,.46,.56),river=half3(.06,.47,.64),soil=half3(.80,.70,.43);
     #if !defined(UNITY_COLORSPACE_GAMMA)
      earth=SRGBToLinear(earth);sand=SRGBToLinear(sand);sea=SRGBToLinear(sea);shallow=SRGBToLinear(shallow);river=SRGBToLinear(river);soil=SRGBToLinear(soil);
     #endif
@@ -45,7 +45,7 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     water=lerp(water,sand,foam*.38h);
     half3 c=lerp(water,lerp(coast,land,smoothstep(.55h,.68h,m.r)),landWeight);
     float edgeWave=sin(i.p.y*.035)*8+sin(i.p.y*.087+i.p.x*.03)*4;
-    half fog=max(smoothstep(164,232,-i.p.x+edgeWave),max(smoothstep(420,505,i.p.y+edgeWave),smoothstep(418,505,-i.p.y+edgeWave)));
+    half fog=max(smoothstep(164,232,-i.p.x+edgeWave),max(smoothstep(322,405,i.p.y+edgeWave),smoothstep(308,395,-i.p.y+edgeWave)));
     half3 mist=half3(.78,.83,.85);
     #if !defined(UNITY_COLORSPACE_GAMMA)
      mist=SRGBToLinear(mist);
