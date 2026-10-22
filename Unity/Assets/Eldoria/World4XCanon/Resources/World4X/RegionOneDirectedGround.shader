@@ -28,7 +28,7 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
      earth=SRGBToLinear(earth);sand=SRGBToLinear(sand);sea=SRGBToLinear(sea);shallow=SRGBToLinear(shallow);river=SRGBToLinear(river);soil=SRGBToLinear(soil);
     #endif
     half3 land=lerp(earth,tex,.26h+_Near*.52h);
-    land*=1-m.a*.16h;
+    land*=1-m.a*.28h;
     land=lerp(land,soil,m.b*.72h);
     half bank=smoothstep(.02h,.18h,m.g)*(1-smoothstep(.25h,.65h,m.g));
     land=lerp(land,sand,bank*.8h);
@@ -37,13 +37,15 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     land=lerp(land,freshWater,smoothstep(.16h,.75h,m.g));
     half light=.82h+.18h*saturate(dot(normalize(i.n),normalize(float3(-.6,1,-.4))));
     half3 coast=lerp(sand*.73h,sand,light);
-    half landWeight=smoothstep(.49h,.54h,m.r);
-    half3 water=lerp(sea,shallow,smoothstep(.02h,.49h,m.r));
+    half landWeight=smoothstep(.40h,.49h,m.r);
+    half3 water=lerp(sea,shallow,smoothstep(.38h,.49h,m.r));
     half ripple=(noise21(i.p*.13)-.5h)*.012h;
     water+=ripple;
     half foam=smoothstep(.42h,.47h,m.r)*(1-smoothstep(.47h,.50h,m.r));
     water=lerp(water,sand,foam*.38h);
     half3 c=lerp(water,lerp(coast,land,smoothstep(.55h,.68h,m.r)),landWeight);
+    half side=1-saturate(normalize(i.n).y);
+    c=lerp(c,sand*(.49h+.30h*light),side*landWeight*.92h);
     float edgeWave=sin(i.p.y*.035)*8+sin(i.p.y*.087+i.p.x*.03)*4;
     half fog=max(smoothstep(164,232,-i.p.x+edgeWave),max(smoothstep(322,405,i.p.y+edgeWave),smoothstep(308,395,-i.p.y+edgeWave)));
     half3 mist=half3(.78,.83,.85);

@@ -74,6 +74,7 @@ namespace Eldoria.World4XCanon
         Material paintedBreachMaterial;
         Material nearGroundMaterial, localCanopyMaterial;
         RegionOneDirectedGeography directedGeography;
+        RegionOneReferenceNodes referenceNodes;
         Renderer localCanopyRenderer;
         readonly List<Renderer> localCanopyDonors=new List<Renderer>();
         readonly List<bool> localCanopyDonorStates=new List<bool>();
@@ -207,6 +208,7 @@ namespace Eldoria.World4XCanon
             BuildDistantForests(root);
             // Authored ridges now belong to the continuous terrain itself.
             BuildEdgeFog(root);
+            referenceNodes=RegionOneReferenceNodes.Install(root,host);
             directedGeography=RegionOneDirectedGeography.Install(root,host);
         }
 
@@ -1170,12 +1172,14 @@ namespace Eldoria.World4XCanon
         public void CompareDirectedLayout(bool before)
         {
             if(directedGeography)directedGeography.SetBefore(before);
+            if(referenceNodes)referenceNodes.SetBefore(before);
         }
 
         public void RefreshForCapture()
         {
             if (built) UpdateLevelOfDetail(true);
             if(directedGeography)directedGeography.Refresh();
+            if(referenceNodes)referenceNodes.Refresh();
         }
 
 #if UNITY_EDITOR

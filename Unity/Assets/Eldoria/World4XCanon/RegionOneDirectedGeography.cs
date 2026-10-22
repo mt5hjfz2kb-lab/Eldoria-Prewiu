@@ -99,7 +99,7 @@ namespace Eldoria.World4XCanon
    // central gameplay corridor stays fixed; pigment and tree shapes never stretch.
    for(int i=0;i<Coast.Length;i++)Coast[i]=new Vector2(Coast[i].x,ComposeZ(Coast[i].y));
    foreach(var paths in new[]{Rivers,Roads})foreach(var line in paths)for(int i=0;i<line.Length;i++)line[i]=new Vector2(line[i].x,ComposeZ(line[i].y));
-   for(int i=0;i<Groves.Length;i++){var g=Groves[i];g.y=ComposeZ(g.y);Groves[i]=g;}
+   for(int i=0;i<Groves.Length;i++){var g=Groves[i];g.y=ComposeZ(g.y);g.z*=i%3==0?1.35f:.95f;g.w*=i%4==0?1.15f:.82f;Groves[i]=g;}
    CurvedRivers=Smooth(Rivers);CurvedRoads=Smooth(Roads);
   }
   static Vector2[][] Smooth(Vector2[][] input)
@@ -133,12 +133,12 @@ namespace Eldoria.World4XCanon
   {float f=0;foreach(var g in Groves){float d=Mathf.Pow((x-g.x)/g.z,2)+Mathf.Pow((z-g.y)/g.w,2);f=Mathf.Max(f,Mathf.Clamp01(1-d));}return f;}
   public static float Height(float x,float z)
   {
-   float shore=Shore(x,z);if(shore< -4)return -13;
-   float land=Mathf.SmoothStep(0,1,Mathf.InverseLerp(-3,3,shore));
+   float shore=Shore(x,z);if(shore< -4)return -20;
+   float land=Mathf.SmoothStep(0,1,Mathf.InverseLerp(-1.5f,2f,shore));
    float ridge=0;
    foreach(var p in new[]{new Vector3(-146,303,22),new Vector3(151,151,18),new Vector3(-148,-312,19)})
     ridge+=4f*Mathf.Max(0,1-Mathf.Pow((x-p.x)/p.z,2)-Mathf.Pow((z-ComposeZ(p.y))/(p.z*1.5f),2));
-   return -13+land*(9+ridge);
+   return -20+land*(16+ridge);
   }
   static Texture2D mask;
   static Texture2D Mask()
@@ -175,7 +175,7 @@ namespace Eldoria.World4XCanon
    ground=new Material(shader){name="Region1 authored land water paths forest ground"};
    ground.SetTexture("_Mask",Mask());ground.SetTexture("_Pigment",Resources.Load<Texture2D>("World4X/RegionOnePaintedLandcover"));
    ground.SetVector("_Origin",new Vector4(origin.x,origin.z,0,0));
-   forestMaterial=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){name="Region1 directed grove art"};forestMaterial.mainTexture=trees;
+   forestMaterial=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){name="Region1 directed grove art"};forestMaterial.mainTexture=trees;forestMaterial.SetColor("_Tint",new Color(.76f,.91f,.94f,1));
    foreach(var r in host.WorldRoot.GetComponentsInChildren<Renderer>(true))
    {
     if(r.transform.IsChildOf(art.transform))continue;
@@ -196,7 +196,7 @@ namespace Eldoria.World4XCanon
    {float px=(x/(float)nx-.5f)*500,pz=(z/(float)nz-.5f)*1040;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,Height(px,pz),pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
    int n=0;for(int z=0;z<nz;z++)for(int x=0;x<nx;x++){int i=z*(nx+1)+x;t[n++]=i;t[n++]=i+nx+1;t[n++]=i+1;t[n++]=i+1;t[n++]=i+nx+1;t[n++]=i+nx+2;}
    MeshObject("Directed terrain continuous coast relief",v,uv,null,t,ground);
-   MeshObject("Directed ocean continuation",new[]{origin+new Vector3(-1000,-13.1f,-900),origin+new Vector3(1000,-13.1f,-900),origin+new Vector3(1000,-13.1f,900),origin+new Vector3(-1000,-13.1f,900)},new Vector2[4],null,new[]{0,2,1,0,3,2},ground);
+   MeshObject("Directed ocean continuation",new[]{origin+new Vector3(-1000,-20.1f,-900),origin+new Vector3(1000,-20.1f,-900),origin+new Vector3(1000,-20.1f,900),origin+new Vector3(-1000,-20.1f,900)},new Vector2[4],null,new[]{0,2,1,0,3,2},ground);
   }
   Renderer MeshObject(string name,Vector3[] v,Vector2[] uv,Vector2[] offsets,int[] t,Material mat)
   {
@@ -216,8 +216,8 @@ namespace Eldoria.World4XCanon
    var v=new List<Vector3>();var uv=new List<Vector2>();var offsets=new List<Vector2>();var tris=new List<int>();
    for(int i=0;i<Groves.Length;i++)
    {var g=Groves[i];if((new Vector2(g.x,g.y).magnitude<135)!=inner)continue;
-    for(int k=0;k<15;k++)
-    {float a=k*2.399963f+i*.7f,r=Mathf.Sqrt((k+.5f)/15f)*.93f;float x=g.x+Mathf.Cos(a)*g.z*r,z=g.y+Mathf.Sin(a)*g.w*r;
+    int count=9+(i*7)%17;for(int k=0;k<count;k++)
+    {float a=k*2.399963f+i*.7f,r=Mathf.Sqrt((k+.5f)/count)*.93f;float x=g.x+Mathf.Cos(a)*g.z*r,z=g.y+Mathf.Sin(a)*g.w*r;
      if(Shore(x,z)<7 || Water(x,z)>.05f || Road(x,z)>.3f)continue;
      float h=11.5f+(i*7+k*3)%5*1.15f;Quad(v,uv,offsets,tris,origin+new Vector3(x,Height(x,z)+.06f,z),h*.72f,h,(i+k)%3);
     }

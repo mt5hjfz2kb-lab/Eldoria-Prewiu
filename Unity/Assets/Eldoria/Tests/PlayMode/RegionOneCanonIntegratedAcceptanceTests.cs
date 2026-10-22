@@ -92,6 +92,8 @@ namespace Eldoria.Tests
             Assert.That(colliders.Length, Is.GreaterThanOrEqualTo(3));
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "forest-valoria"), Is.True);
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "quarry-valoria"), Is.True);
+            foreach(var name in new[]{"Reference city Bastion I","Reference existing quarry","Reference existing neutral watch ruin","Reference existing wood grove"})
+                Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Any(f=>f.name==name),Is.True,"Reference-derived real node art missing: "+name);
             var directed=geo.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(x=>x&&x.GetType().Name=="RegionOneDirectedGeography");
             Assert.That(directed,Is.Not.Null,"The reference-directed geography must be physically installed.");
             var directedType=directed.GetType();
