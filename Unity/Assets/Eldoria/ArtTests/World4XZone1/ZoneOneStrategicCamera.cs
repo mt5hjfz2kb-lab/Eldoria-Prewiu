@@ -14,6 +14,20 @@ namespace Eldoria.World4XPrototype
         public Vector3 target = new Vector3(-18, 0, 30);
         public float localZoom = 32, regionalZoom = 60, globalZoom = 110;
         [Range(35, 80)] public float tilt = 55;
+        // The owner-approved 2026-10-22 three-distance world direction uses
+        // a more top-down cartographic view at macro scale. Preserve the
+        // existing local/regional perspective and gameplay coordinates.
+        [Range(55, 80)] public float strategicTilt = 70f;
+        public float EffectiveTilt
+        {
+            get
+            {
+                float far = Mathf.Min(globalZoom, Mathf.Max(regionalZoom + 1f, regionalZoom * 2.1f));
+                float t = Mathf.InverseLerp(regionalZoom, far, View.orthographicSize);
+                t = t * t * (3f - 2f * t);
+                return Mathf.Lerp(tilt, strategicTilt, t);
+            }
+        }
         public float edgeMargin = 2, dragThresholdPixels = 8;
         // Orthographic framing depends on zoom, not this depth offset.
         // Integrated Valoria sets 140 to keep visible ground inside URP shadows.
@@ -176,7 +190,7 @@ namespace Eldoria.World4XPrototype
         }
         void ApplyPose()
         {
-            transform.rotation = Quaternion.Euler(tilt, 0, 0);
+            transform.rotation = Quaternion.Euler(EffectiveTilt, 0, 0);
             transform.position = target - transform.forward * cameraDistance;
         }
     }
