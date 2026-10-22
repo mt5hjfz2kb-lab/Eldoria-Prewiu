@@ -77,11 +77,21 @@ namespace Eldoria.Tests
             Assert.That(colliders.Length, Is.GreaterThanOrEqualTo(3));
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "forest-valoria"), Is.True);
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "quarry-valoria"), Is.True);
-            Assert.That(Eldoria.World4XCanon.RegionOneCanonicalLandscape.CoastWaterMask(0f,-360f),
-                Is.EqualTo(0f).Within(.001f),
+            // Art runtime belongs to a separate Unity assembly. Match the
+            // existing test's reflection-only contract rather than adding an
+            // unsupported direct assembly reference to this PlayMode suite.
+            var coastlineType=AppDomain.CurrentDomain.GetAssemblies()
+                .Select(a=>a.GetType("Eldoria.World4XCanon.RegionOneCanonicalLandscape",false))
+                .FirstOrDefault(t=>t!=null);
+            Assert.That(coastlineType,Is.Not.Null);
+            var coastMask=coastlineType.GetMethod("CoastWaterMask",
+                BindingFlags.Public | BindingFlags.Static);
+            Assert.That(coastMask,Is.Not.Null);
+            float dry=(float)coastMask.Invoke(null,new object[]{0f,-360f});
+            float sea=(float)coastMask.Invoke(null,new object[]{0f,-395f});
+            Assert.That(dry,Is.EqualTo(0f).Within(.001f),
                 "The inland edge of the southeastern coast remains dry.");
-            Assert.That(Eldoria.World4XCanon.RegionOneCanonicalLandscape.CoastWaterMask(0f,-395f),
-                Is.GreaterThan(.95f),
+            Assert.That(sea,Is.GreaterThan(.95f),
                 "The southeast shoreline must blend into genuine painted sea.");
         }
 
