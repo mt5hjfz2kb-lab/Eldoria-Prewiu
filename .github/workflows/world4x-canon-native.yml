@@ -7,6 +7,8 @@ on:
       - 'Unity/Assets/Eldoria/World4XCanon/**'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta'
+      - '.github/workflows/world4x-canon-native.yml'
+      - 'docs/evidence/world4x-canon-20261022/authoring/**'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
@@ -104,6 +106,7 @@ jobs:
           $version=& $env:UNITY_EDITOR_PATH -version
           if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity version: $version"}
       - name: Actual Editor import + integrated source gate
+        if: "!contains(github.event.head_commit.message, 'author-retry(world4x):')"
         shell: powershell
         run: |
           $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
@@ -116,6 +119,7 @@ jobs:
           if($p.ExitCode -ne 0){throw "Unity import/source gate failed: $($p.ExitCode)"}
           if(-not(Test-Path "$env:RUNNER_TEMP/eldoria-region1-source-gate.json")){throw 'Source gate did not execute'}
       - name: Actual integrated scene PlayMode test
+        if: "!contains(github.event.head_commit.message, 'author-retry(world4x):')"
         shell: powershell
         run: |
           $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
@@ -143,8 +147,27 @@ jobs:
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
           if($captures.Count -ne 12){throw "Missing exact-camera hybrid A/B PNGs: expected twelve genuine Unity captures, got $($captures.Count)"}
           Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) SAME_CAMERA_HYBRID_A_B (NOT art/mobile QA)"
+      - name: Recover exact already verified Unity authoring snapshot
+        if: contains(github.event.head_commit.message, 'author-retry(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 39827508494
+          name: region1-canon-native-39827508494
+          path: ${{ runner.temp }}/region1-author-source-${{ github.run_id }}
+      - name: Verify recovered source identity without rerunning unchanged Unity
+        if: contains(github.event.head_commit.message, 'author-retry(world4x):')
+        shell: powershell
+        run: |
+          git -C world4x-source fetch --depth=1 origin 1132e559aed4683c678aa4c0fafdbe25195185bb
+          if($LASTEXITCODE){throw 'Cannot verify pinned original terrain source'}
+          git -C world4x-source diff --exit-code 1132e559aed4683c678aa4c0fafdbe25195185bb HEAD -- Unity/
+          if($LASTEXITCODE){throw 'Unity changed: cached captures cannot certify this source'}
+          $capture=Join-Path $env:RUNNER_TEMP "region1-author-source-$env:GITHUB_RUN_ID/region1-canon-captures-39827508494"
+          if(-not(Test-Path "$capture/terrain-source.json")){throw 'Measured source mesh missing'}
+          "ELDORIA_REGION1_ARTIST_CAPTURE=$capture" >> $env:GITHUB_ENV
       - name: Authored macro relief from measured Unity source and canonical memory
-        if: success() && contains(github.event.head_commit.message, 'author(world4x):')
+        if: success() && (contains(github.event.head_commit.message, 'author(world4x):') || contains(github.event.head_commit.message, 'author-retry(world4x):'))
         timeout-minutes: 22
         shell: powershell
         run: |
@@ -158,10 +181,27 @@ jobs:
             }
           }
           if(-not $blender){throw 'Existing installed Blender not found; no duplicate install'}
-          $tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 15
+          # Reuse the proven local Ollama recovery from author_geography_plan.py.
+          # Start only the existing installation when its loopback API is down.
+          try {$tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 5}
+          catch {
+            $ollama=(Get-Command ollama.exe -ErrorAction SilentlyContinue).Source
+            if(-not $ollama){$ollama=Get-ChildItem "$env:SystemDrive/Users/*/AppData/Local/Programs/Ollama/ollama.exe" -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName}
+            if(-not $ollama){throw 'Existing Ollama installation unavailable; no reinstall'}
+            $env:OLLAMA_HOST='127.0.0.1:11434'
+            $models=Get-ChildItem "$env:SystemDrive/Users/*/.ollama/models" -Directory -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+            if($models){$env:OLLAMA_MODELS=$models}
+            Start-Process -FilePath $ollama -ArgumentList 'serve' -RedirectStandardOutput "$env:RUNNER_TEMP/region1-ollama-$env:GITHUB_RUN_ID.log" -RedirectStandardError "$env:RUNNER_TEMP/region1-ollama-$env:GITHUB_RUN_ID.err"
+            for($attempt=0;$attempt -lt 30;$attempt++){
+              try {$tags=Invoke-RestMethod -Uri 'http://127.0.0.1:11434/api/tags' -TimeoutSec 3;break}
+              catch {Start-Sleep -Seconds 1}
+            }
+            if(-not $tags){throw 'Existing Ollama failed to become ready'}
+          }
           $model=@($tags.models | Where-Object {$_.name -match '^qwen3-vl:(4b|8b|2b)'} | Sort-Object size | Select-Object -First 1).name
           if(-not $model){throw 'No installed Qwen3 vision model; no download or paid fallback'}
           $capture=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
+          if($env:ELDORIA_REGION1_ARTIST_CAPTURE){$capture=$env:ELDORIA_REGION1_ARTIST_CAPTURE}
           $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring'
           $memory=Join-Path $env:GITHUB_WORKSPACE 'world4x-live'
@@ -189,3 +229,4 @@ jobs:
             ${{ runner.temp }}/region1-canon-captures-*/**
             ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/**
             ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/*.cycle-feedback.json
+            ${{ runner.temp }}/region1-ollama-${{ github.run_id }}.*
