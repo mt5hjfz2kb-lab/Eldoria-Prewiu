@@ -255,6 +255,12 @@ namespace Eldoria.Tests
                 .FirstOrDefault(x=>x && x.GetType().Name == "RegionOneCanonicalLandscape");
             Assert.That(adapter, Is.Not.Null);
             var home = (Vector3)Member(host, "WorldHome");
+            var realForest = Call(host, "FindTarget", "forest-valoria") as Component;
+            Assert.That(realForest, Is.Not.Null,
+                "A genuine selectable wood resource must exist in the integrated region.");
+            Assert.That(realForest.gameObject.activeInHierarchy, Is.True,
+                "Never showcase an unavailable or invented resource target.");
+            Vector3 forestFocus = realForest.transform.position;
             float originalZoom = camera.orthographicSize, originalAspect = camera.aspect;
             Vector3 originalTarget = (Vector3)Member(navigation,"target");
             RenderTexture originalRT = camera.targetTexture;
@@ -264,10 +270,17 @@ namespace Eldoria.Tests
                 foreach (var format in new[]{(1280,720,"horizontal"),(390,844,"vertical")})
                 {
                     camera.aspect = format.Item1 / (float)format.Item2;
-                    foreach(var stage in new[]{(2,"cercana"),(1,"regional"),(0,"panoramica")})
+                    // The fourth image is another genuine part of the SAME
+                    // territory: move the actual camera to an existing wood
+                    // hotspot, never manufacture a drawable resource.
+                    foreach(var stage in new[]{
+                        (2,"cercana",home),
+                        (1,"regional",home),
+                        (0,"panoramica",home),
+                        (2,"cercana-recurso-madera",forestFocus)})
                     {
                         Call(navigation, "SetZoomLevel", stage.Item1, true);
-                        Call(navigation, "PanTo", home);
+                        Call(navigation, "PanTo", stage.Item3);
                         Call(adapter, "RefreshForCapture");
                         yield return null;
                         Call(adapter, "RefreshForCapture");
@@ -313,8 +326,8 @@ namespace Eldoria.Tests
                         }
                     }
                 }
-                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(6));
-                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=6 real_scene=1 disposable_gateway=1 physical_iphone=0");
+                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(8));
+                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=8 real_scene=1 disposable_gateway=1 physical_iphone=0");
             }
             finally
             {
