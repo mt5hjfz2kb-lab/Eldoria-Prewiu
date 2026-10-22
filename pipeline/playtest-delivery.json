@@ -301,10 +301,11 @@
     }
   ],
   "remote_verification_request": {
-    "id": "native281-read-only-activation-20261021",
+    "id": "native281-read-only-activation-20261022-issue95",
     "target": "chrismad/eldoria-pruebas",
     "upload_run": 39685413878,
     "version": "native281-d1b3e22066e1",
-    "build": 2180594
+    "build": 2180594,
+    "reason": "Check previously accepted existing Restricted native281 remote channel; no upload or new Unity build. Keep native245 history until status confirmed."
   }
 }
