@@ -133,8 +133,15 @@ namespace Eldoria.ReferenceClean {
      // objective) rather than covering a whole region with tiny badges.
      // All original hotspots, selection commands and gameplay remain intact;
      // players can zoom towards them or use the real objective control.
-     bool panorama=host.WorldCamera&&host.WorldNavigation&&
-      host.WorldCamera.orthographicSize>=64f;
+     // The separately authorized Region1 geographic layer can expand
+     // the real camera from ~32/110 to ~84/244. A fixed 64-unit cutoff
+     // would incorrectly erase all REGIONAL POIs. Derive the panoramic
+     // break from the current live regional/global camera contract.
+     float regional=host.WorldNavigation?host.WorldNavigation.regionalZoom:32f;
+     float global=host.WorldNavigation?host.WorldNavigation.globalZoom:110f;
+     float panoramaAt=Mathf.Max(64f,Mathf.Lerp(regional,global,.67f));
+     bool panorama=host.WorldCamera&&
+      host.WorldCamera.orthographicSize>=panoramaAt;
      visible&=!panorama&&
       (pair.Key==objective||pair.Key=="valoria-map-city"||
        host.WorldCamera.orthographicSize<=22f);
