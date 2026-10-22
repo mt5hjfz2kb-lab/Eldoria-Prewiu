@@ -35,48 +35,53 @@ namespace Eldoria.World4XCanon
 
         static Texture2D PaintConiferAtlas()
         {
-            // Strategic overview is nearly top-down. Paint a canopy seen
-            // from ABOVE rather than an upright tree, which becomes a black
-            // 2-pixel line when projected by the 74-degree world camera.
+            // The overhead radial crown A/B was too coin-like. Author a
+            // conifer side-silhouette painted into oblique ground-oriented
+            // 2.5D impostors: broad serrated lower boughs, narrow tapered top.
+            // It stays one alpha atlas and is not a gameplay object or POI.
             const int size=96;
             var pixels=new Color32[size*size];
             for(int y=0;y<size;y++)
                 for(int x=0;x<size;x++)
                 {
-                    float dx=(x-size*.50f)/(size*.47f);
-                    float dy=(y-size*.50f)/(size*.47f);
-                    float a=Mathf.Atan2(dy,dx);
-                    float radius=Mathf.Sqrt(dx*dx+dy*dy);
+                    float dx=(x-size*.50f)/(size*.48f);
+                    float dy=(y-size*.49f)/(size*.48f);
+                    float t=Mathf.Clamp01((dy+.94f)/1.88f);
                     float jitter=Random01(x,y,39);
-                    float edge=1f+.13f*Mathf.Sin(a*7f)+
-                                  .10f*Mathf.Sin(a*13f+1.7f)+
-                                  .09f*(jitter-.5f);
-                    if(radius>edge)
+                    // Sawtooth boughs and asymmetrical needles break the
+                    // circular green-dot silhouette even at overview zoom.
+                    float boughs=.11f*Mathf.Sin(t*36f+dx*1.7f)+
+                                  .047f*Mathf.Sin(t*72f-dx*3f);
+                    float width=(.91f*(1f-t)+.065f)*
+                                (.93f+.11f*Mathf.Sin(t*17f+1.4f));
+                    float edge=width+boughs*(1f-.38f*t);
+                    float within=edge-Mathf.Abs(dx);
+                    if(dy<-.93f||dy>.95f||within<=0f)
                     {
                         pixels[y*size+x]=new Color32(0,0,0,0);
                         continue;
                     }
-                    // Painterly needle patches, lighter on the northwest
-                    // facing canopy and with a darker grounded perimeter.
-                    float branches=Mathf.Sin(a*9f+radius*12f)*.10f+
-                        Mathf.Sin(a*15f-radius*7f)*.06f;
-                    float light=Mathf.Clamp01(.47f-.21f*dx+.20f*dy+
-                        branches+.24f*(jitter-.5f));
-                    float edgeShade=Mathf.SmoothStep(0f,1f,
-                        Mathf.Clamp01((radius-.55f)/.45f));
-                    light*=1f-.32f*edgeShade;
+                    // Branch tiers and left/right directional light suggest
+                    // evergreen volume without distant per-tree meshes.
+                    float needles=Mathf.Sin(t*44f+dx*6f)*.12f+
+                        Mathf.Sin(t*73f-dx*9f)*.06f;
+                    float light=Mathf.Clamp01(.46f-.20f*dx+
+                        .17f*t+needles+.16f*(jitter-.5f));
+                    light*=1f-.28f*Mathf.SmoothStep(0f,1f,
+                        Mathf.Clamp01((.22f-within)/.22f));
                     byte rr=(byte)Mathf.Clamp(Mathf.RoundToInt(
-                        Mathf.Lerp(22f,91f,light)),0,255);
+                        Mathf.Lerp(20f,91f,light)),0,255);
                     byte gg=(byte)Mathf.Clamp(Mathf.RoundToInt(
-                        Mathf.Lerp(65f,151f,light)),0,255);
+                        Mathf.Lerp(63f,154f,light)),0,255);
                     byte bb=(byte)Mathf.Clamp(Mathf.RoundToInt(
-                        Mathf.Lerp(27f,77f,light)),0,255);
+                        Mathf.Lerp(24f,80f,light)),0,255);
                     byte alpha=(byte)Mathf.RoundToInt(255f*
-                        Mathf.Clamp01((edge-radius)*13f));
+                        Mathf.Clamp01(within*15f)*
+                        Mathf.Clamp01((.97f-dy)*17f));
                     pixels[y*size+x]=new Color32(rr,gg,bb,alpha);
                 }
             var atlas=new Texture2D(size,size,TextureFormat.RGBA32,true,false)
-                {name="Region 1 painterly aerial evergreen crowns"};
+                {name="Region 1 painterly oblique tapered conifer crowns"};
             atlas.SetPixels32(pixels);
             atlas.Apply(true,true);
             atlas.wrapMode=TextureWrapMode.Clamp;
@@ -125,25 +130,23 @@ namespace Eldoria.World4XCanon
                         if(!woodland(x,z)||water(x,z)||roads(x,z)||coast(x,z)||
                             x*x+z*z<95f*95f)continue;
                         float width=6.0f+Random01(cluster,k,277)*5.2f;
-                        float rotation=(cluster*43f+k*17f)*Mathf.Deg2Rad;
+                        float rotation=(Random01(cluster,k,313)-.5f)*.26f;
                         float groundY=elevation(x,z)+.25f;
                         var p=new Vector3(origin.x+x,groundY,origin.z+z);
                         var tint=new Color32((byte)(217+Random01(cluster,k,111)*37f),
                             (byte)(216+Random01(cluster,k,141)*39f),
                             (byte)(203+Random01(cluster,k,191)*52f),255);
-                        // Three tapered overhead crown strata occupy true 3D
-                        // heights (0.2/2.4/5.4 units). They create a cheap,
-                        // readable conifer profile under strategic perspective
-                        // instead of one flat coin-like canopy; still one atlas,
-                        // three mesh batches and no per-tree renderer or physics.
-                        for(int layer=0;layer<3;layer++)
+                        // Two staggered tapered 2.5D impostor layers produce
+                        // depth while preserving a side-like spruce silhouette.
+                        // Avoid the rejected three concentric circular crowns.
+                        for(int layer=0;layer<2;layer++)
                         {
-                            float direction=rotation+layer*.14f;
-                            float scale=layer==0?1f:layer==1?.72f:.42f;
+                            float direction=rotation+layer*.055f;
+                            float scale=layer==0?1f:.63f;
                             Vector3 right=new Vector3(Mathf.Cos(direction),0f,
                                 Mathf.Sin(direction))*(width*scale*.5f);
                             Vector3 forward=new Vector3(-right.z,0f,right.x);
-                            float canopyLift=layer==0?.15f:layer==1?2.40f:5.40f;
+                            float canopyLift=layer==0?.15f:2.85f;
                             Vector3 canopyCentre=p+Vector3.up*canopyLift;
                             int start=vertices.Count;
                             vertices.Add(canopyCentre-right-forward);
@@ -157,7 +160,7 @@ namespace Eldoria.World4XCanon
                             // Dark undergrowth, mid-green needles, sunlit tips.
                             // The painted silhouette remains transparent and
                             // consistent with the forest underlay at all zooms.
-                            float layerLight=layer==0?.72f:layer==1?.90f:1.06f;
+                            float layerLight=layer==0?.81f:1.06f;
                             var crownTint=new Color32(
                                 (byte)Mathf.Clamp(Mathf.RoundToInt(tint.r*layerLight),0,255),
                                 (byte)Mathf.Clamp(Mathf.RoundToInt(tint.g*layerLight),0,255),
