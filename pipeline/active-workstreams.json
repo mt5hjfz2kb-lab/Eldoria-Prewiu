@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-22T19:56:46.778Z",
+  "updated_at": "2026-10-22",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-hybrid-resume-82901015",
+      "owner": "chatgpt-world4x-p0-composition-20261022",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 9,
+      "ownership_revision": 10,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner current request: continue latest hybrid World4X task from other chat, use canonical references and updated memory; no spend or release.",
-      "phase": "WORLD4X_PAINTED_MATERIAL_NATIVE_TRIAL",
-      "next": "Direct artist generated painterly terrain and evergreen atlas; verify genuine Unity screenshots and geographic drift before retaining. No Qwen, paid external credits, merge or release.",
+      "authorization": "Owner 2026-10-22 explicitly orders this chat to conduct the P0 artistic experiment autonomously, continuing until verified result, preserving PR #100, 0 EUR.",
+      "phase": "P0_REFERENCE_AUTHORED_COMPOSITION_IN_UNITY",
+      "next": "Replace overly regular macro terrain/forest composition with editable reference-guided geographic layer in existing World4XCanon, capture real Unity horizontal and portrait A/B, inspect and retain only obvious visual improvement; preserve gameplay, saves and 7/7, no merge/release.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -124,6 +124,11 @@
           "owner": "chatgpt-world4x-continuation-20261022-1925",
           "relieved_at": "2026-10-22T17:48:00Z",
           "reason": "Owner explicitly asks this chat to continue the latest hybrid World4X work; existing PR100 and all evidence preserved."
+        },
+        {
+          "owner": "chatgpt-world4x-hybrid-resume-82901015",
+          "relieved_at": "2026-10-22",
+          "reason": "Explicit owner-directed continuation: perform P0 authored reference-composition experiment to real Unity screenshot acceptance, preserve same PR #100 and workstream."
         }
       ]
     },
