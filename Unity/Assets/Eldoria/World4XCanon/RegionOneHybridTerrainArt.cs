@@ -1,0 +1,239 @@
+using System;
+using UnityEngine;
+
+namespace Eldoria.World4XCanon
+{
+    /// <summary>
+    /// 2.5D/3D hybrid atlas: a purpose-made geographical *surface texture*,
+    /// not a projection of the owner's reference screenshot. The real terrain,
+    /// selectable 3D entities, camera, persistence and gameplay are unchanged.
+    /// One deterministic atlas represents the same XYZ at every zoom.
+    ///
+    /// All world coordinates are local to Valoria's actual WorldHome; terrain
+    /// bounds/offsets come from RegionOneCanonicalLandscape.
+    /// No GameObjects, save data, dynamic textures per frame or fake POIs.
+    /// </summary>
+    public static class RegionOneHybridTerrainArt
+    {
+        public const int StyleRevision = 1;
+        static readonly Color Moss = new Color(.35f,.45f,.23f);
+        static readonly Color YellowGrass = new Color(.71f,.63f,.34f);
+        static readonly Color Prairie = new Color(.56f,.57f,.30f);
+        static readonly Color BareEarth = new Color(.64f,.49f,.30f);
+        static readonly Color Shale = new Color(.50f,.50f,.40f);
+        static readonly Color PineFloor = new Color(.24f,.37f,.21f);
+        static readonly Color River = new Color(.16f,.43f,.57f);
+        static readonly Color Ripples = new Color(.33f,.62f,.68f);
+        static readonly Color RiftGround = new Color(.21f,.17f,.24f);
+        static readonly Color RiftGlow = new Color(.57f,.18f,.55f);
+
+        static float Fractal(float x, float z, float seed)
+        {
+            float a=Mathf.PerlinNoise(x*.008f+seed,z*.009f+seed*.37f);
+            float b=Mathf.PerlinNoise(x*.036f+seed*1.19f,z*.034f+seed*2.23f);
+            float c=Mathf.PerlinNoise(x*.113f+seed*3.11f,z*.104f+seed*4.19f);
+            return a*.55f+b*.32f+c*.13f;
+        }
+
+        static float RiverCentre(float z)
+        {
+            return -104f + .25f*z + 27f*Mathf.Sin(z*.016f) +
+                12f*Mathf.Sin(z*.042f);
+        }
+
+        static float WaterMask(float x,float z)
+        {
+            float bank=0f;
+            if(z>-450f&&z<460f)
+            {
+                float width=3.2f + Mathf.Sin(z*.034f)*.65f;
+                float dx=Mathf.Abs(x-RiverCentre(z));
+                bank=Mathf.Max(bank,Mathf.Clamp01((width+1.5f-dx)/2.7f));
+            }
+            // Short, non-parallel tributaries, all tied to the primary river:
+            // geography only; no new gathering opportunities.
+            float tributary1=-104f+.25f*222f+27f*Mathf.Sin(222f*.016f)+12f*Mathf.Sin(222f*.042f);
+            if(z>215f&&z<380f)
+            {
+                float t=(z-215f)/165f;
+                float tributaryX=tributary1 + 9f + t*154f + 11f*Mathf.Sin(t*9f);
+                bank=Mathf.Max(bank,Mathf.Clamp01((2.9f-Mathf.Abs(x-tributaryX))/1.9f));
+            }
+            if(z<-110f&&z>-270f)
+            {
+                float t=(-z-110f)/160f;
+                float x0=RiverCentre(-110f);
+                float tributaryX=x0 - 12f-t*145f+8f*Mathf.Sin(t*8.7f);
+                bank=Mathf.Max(bank,Mathf.Clamp01((2.9f-Mathf.Abs(x-tributaryX))/1.9f));
+            }
+            float lake1=Mathf.Pow((x-145f)/30f,2f)+Mathf.Pow((z+175f)/18f,2f);
+            float lake2=Mathf.Pow((x+222f)/18f,2f)+Mathf.Pow((z-135f)/13f,2f);
+            float lacustre=1f-.12f*Mathf.Sin(x*.19f)*Mathf.Cos(z*.17f);
+            if(lake1<lacustre)bank=Mathf.Max(bank,Mathf.Clamp01((lacustre-lake1)*12f));
+            if(lake2<lacustre)bank=Mathf.Max(bank,Mathf.Clamp01((lacustre-lake2)*12f));
+            if(RegionOneCanonicalLandscape.IsCoast(x,z))bank=1f;
+            return bank;
+        }
+
+        static float RoadMask(float x,float z)
+        {
+            // Substantially narrower than the earlier schematic, with
+            // imperfect shoulders and warm worn areas rather than straight X.
+            float w=Mathf.PerlinNoise(x*.078f+37f,z*.079f+19f);
+            float dx=(w-.5f)*2.2f;
+            return RegionOneCanonicalLandscape.IsRoad(x+dx,z)
+                ? Mathf.Lerp(.63f,.87f,w) : 0f;
+        }
+
+        static uint Hash(int x,int z,int salt)
+        {
+            unchecked
+            {
+                uint k=(uint)(x*1597334677 ^ z*3812015801 ^ salt*265443576);
+                k^=k>>16; k*=2246822519; k^=k>>13; k*=3266489917;k^=k>>16;
+                return k;
+            }
+        }
+        static float Hash01(int x,int z,int salt)
+        {
+            return (Hash(x,z,salt)&65535u)/65535f;
+        }
+        static Color Lerp(Color a,Color b,float t) { return Color.Lerp(a,b,Mathf.Clamp01(t)); }
+
+        static void StampTree(Color32[] px,int size,int x,int y,int radius,float variation)
+        {
+            if(x<radius+2||x>=size-radius-2||y<radius+2||y>=size-radius-2)return;
+            Color shade=Lerp(new Color(.10f,.18f,.11f),new Color(.22f,.33f,.16f),variation);
+            Color light=Lerp(new Color(.30f,.46f,.20f),new Color(.42f,.49f,.25f),variation);
+            int r=Mathf.Max(1,radius);
+            for(int dz=-r-1;dz<=r+1;dz++)
+                for(int dx=-r-1;dx<=r+1;dx++)
+                {
+                    int pxX=x+dx,pxY=y+dz;
+                    float d=(dx*dx+dz*dz)/(float)(r*r);
+                    int idx=pxY*size+pxX;
+                    if(d<1f)
+                    {
+                        float north=(-dz+dx*.24f)/(r*1.8f);
+                        Color c=Lerp(shade,light,.45f+north*.40f);
+                        px[idx]=Lerp(px[idx],c,.90f);
+                    }
+                    else if(dx>=0&&dz<=0&&d<1.46f)
+                        px[idx]=Lerp(px[idx],new Color(.16f,.20f,.12f),.18f);
+                }
+        }
+
+        static void StampStone(Color32[] px,int size,int x,int y,int radius,float variation)
+        {
+            if(x<radius+2||x>=size-radius-2||y<radius+2||y>=size-radius-2)return;
+            var pale=Lerp(new Color(.60f,.58f,.45f),new Color(.76f,.68f,.49f),variation);
+            var dark=Lerp(new Color(.34f,.34f,.29f),new Color(.50f,.46f,.34f),variation);
+            for(int dy=-radius;dy<=radius;dy++)
+                for(int dx=-radius;dx<=radius;dx++)
+                {
+                    if(Mathf.Abs(dx)*.9f+Mathf.Abs(dy)*1.1f>radius*1.45f)continue;
+                    Color c=(dy>0||dx>0)?dark:pale;
+                    px[(y+dy)*size+x+dx]=c;
+                }
+        }
+
+        public static Texture2D Bake(int size,float halfWidth,float halfDepth,
+                                     float breachX,float breachZ)
+        {
+            // No external procedural models, shader dependencies or paid API.
+            // Generated once at world entry; CPU copy discarded after bake.
+            var texture=new Texture2D(size,size,TextureFormat.RGB24,true,false)
+            {name="Region 1 original painterly strategic atlas / shared geography"};
+            var pixels=new Color32[size*size];
+            for(int iy=0;iy<size;iy++)
+                for(int ix=0;ix<size;ix++)
+                {
+                    float x=((ix+.5f)/size*2f-1f)*halfWidth;
+                    float z=((iy+.5f)/size*2f-1f)*halfDepth;
+                    float n=Fractal(x,z,12f);
+                    float m=Mathf.PerlinNoise(x*.057f+87f,z*.053f+36f);
+                    float v=Mathf.PerlinNoise(x*.19f+41f,z*.16f+83f);
+                    // Stylized tonal variation: readable olive/honey/sage
+                    // countryside rather than a uniform brown wash.
+                    Color ground=Lerp(Prairie,YellowGrass,.27f+.51f*n);
+                    ground=Lerp(ground,Moss,Mathf.Clamp01((.47f-m)*.55f));
+                    ground=Lerp(ground,new Color(.75f,.66f,.41f),.18f*v);
+                    float meadow=Mathf.Clamp01((.62f-m)*1.3f);
+                    ground=Lerp(ground,new Color(.40f,.53f,.27f),meadow*.23f);
+                    float radius=Mathf.Sqrt(x*x+z*z);
+                    if(radius<180f)ground=Lerp(ground,new Color(.48f,.53f,.29f),
+                        (1f-Mathf.SmoothStep(45f,180f,radius))*.33f);
+                    // Small natural exposed-earth bands, not fake resources.
+                    float scuff=Mathf.PerlinNoise(x*.078f+223f,z*.069f+183f);
+                    if(scuff>.68f)ground=Lerp(ground,BareEarth,(scuff-.68f)*.95f);
+                    if(RegionOneCanonicalLandscape.IsForest(x,z))
+                    {
+                        float gaps=Mathf.PerlinNoise(x*.116f+13f,z*.117f+27f);
+                        ground=Lerp(ground,PineFloor,.43f+.23f*gaps);
+                    }
+                    float road=RoadMask(x,z);
+                    if(road>0f)ground=Lerp(ground,new Color(.69f,.57f,.35f),road);
+                    float water=WaterMask(x,z);
+                    if(water>0f)
+                    {
+                        // Tan shoreline attenuates harsh flat blue borders.
+                        if(water<.70f)ground=Lerp(ground,new Color(.75f,.65f,.42f),.46f);
+                        ground=Lerp(ground,Lerp(River,Ripples,v*.31f),water);
+                    }
+                    float d=Mathf.Sqrt((x-breachX)*(x-breachX)+(z-breachZ)*(z-breachZ));
+                    if(d<53f)
+                    {
+                        float strength=Mathf.SmoothStep(0f,1f,
+                            Mathf.Clamp01((53f-d)/45f));
+                        float fractures=Mathf.Abs(Mathf.Sin(
+                            Mathf.Atan2(z-breachZ,x-breachX)*17f + d*.095f));
+                        ground=Lerp(ground,RiftGround,strength*(.57f+.20f*fractures));
+                        if(d<8f)ground=Lerp(ground,RiftGlow,(8f-d)/8f*.52f);
+                    }
+                    // Tiny blue-green herb and ochre highlights survive high
+                    // zoom as terrain texture, not fake 3D buildings.
+                    float fleck=Hash01(ix,iy,117);
+                    if(fleck>.984f && water<.15f && road<.1f)
+                        ground=Lerp(ground, v>.5f ? new Color(.30f,.40f,.24f) :
+                            new Color(.81f,.69f,.47f),.25f);
+                    pixels[iy*size+ix]=ground;
+                }
+            // Light 2.5D tree crowns only where the actual geographic
+            // forest mask says forest, consistent with batched 3D LODs.
+            // At zoom 244 they provide painterly foliage texture, not icons.
+            int crowns=(size*size)/180;
+            for(int k=0;k<crowns;k++)
+            {
+                int ix=(int)(Hash(k,301,312)%((uint)size));
+                int iy=(int)(Hash(k,521,913)%((uint)size));
+                float x=((ix+.5f)/size*2f-1f)*halfWidth;
+                float z=((iy+.5f)/size*2f-1f)*halfDepth;
+                if(!RegionOneCanonicalLandscape.IsForest(x,z) ||
+                    WaterMask(x,z)>.05f || RoadMask(x,z)>.1f ||
+                    x*x+z*z<75f*75f)continue;
+                int rad=1+(int)(Hash01(k,39,731)*2.99f);
+                StampTree(pixels,size,ix,iy,rad,Hash01(k,423,818));
+            }
+            // Scattered small rocks on distant slopes, nowhere near an
+            // interactable quarry node. These are 2.5D geology not resources.
+            for(int k=0;k<size*size/440;k++)
+            {
+                int ix=(int)(Hash(k,931,212)%((uint)size));
+                int iy=(int)(Hash(k,839,373)%((uint)size));
+                float x=((ix+.5f)/size*2f-1f)*halfWidth;
+                float z=((iy+.5f)/size*2f-1f)*halfDepth;
+                if(x*x+z*z<120f*120f ||
+                    WaterMask(x,z)>.02f || RegionOneCanonicalLandscape.IsForest(x,z) ||
+                    RoadMask(x,z)>.01f)continue;
+                if(Mathf.Abs(x)<290f && Mathf.Abs(z)<205f &&
+                   Hash01(k,43,774)<.86f)continue;
+                StampStone(pixels,size,ix,iy,1+(k%2),Hash01(k,739,833));
+            }
+            texture.SetPixels32(pixels);
+            texture.Apply(true,true);
+            texture.filterMode=FilterMode.Bilinear;
+            texture.wrapMode=TextureWrapMode.Clamp;
+            return texture;
+        }
+    }
+}
