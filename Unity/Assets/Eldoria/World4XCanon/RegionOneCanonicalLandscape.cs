@@ -152,7 +152,10 @@ namespace Eldoria.World4XCanon
             var root = new GameObject("Region 1 canonical continuous geography").transform;
             root.SetParent(existingWorld, true);
             // Existing hotspot transforms remain the only gameplay coordinate authority.
-            surfaceMaterial = MakeMaterial("Region1 ground texture", Color.white, false);
+            // Lit terrain A/B trial: the real single mesh already has broad
+            // shallow relief, but an Unlit surface hides its topography at
+            // world-camera scale. No light, geometry, gameplay or HUD changes.
+            surfaceMaterial = MakeTerrainMaterial();
             // Controlled hybrid trial: legacy mode is opt-in for exact
             // same-camera A/B only; the real game uses the richer surface.
             bool legacyOnly = Environment.GetEnvironmentVariable("ELDORIA_REGION1_HYBRID_BASELINE")=="1";
@@ -886,6 +889,27 @@ namespace Eldoria.World4XCanon
             var renderer = go.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = fogMaterial;
             renderer.shadowCastingMode = ShadowCastingMode.Off;
+        }
+
+        static Material MakeTerrainMaterial()
+        {
+            // URP Simple Lit uses existing scene lighting and mesh normals to
+            // expose rolling terrain; no extra light or postprocess required.
+            // Fallback preserves the known-good unlit renderer on platforms
+            // that do not ship the lit shader variant.
+            var shader=Shader.Find("Universal Render Pipeline/Simple Lit") ??
+                       Shader.Find("Universal Render Pipeline/Lit");
+            if(!shader) return MakeMaterial("Region1 ground texture unlit fallback",
+                                            Color.white,false);
+            var material=new Material(shader)
+                {name="Region1 lit landcover / low-cost 3D terrain",enableInstancing=true};
+            if(material.HasProperty("_BaseColor"))
+                material.SetColor("_BaseColor",Color.white);
+            if(material.HasProperty("_Color"))
+                material.SetColor("_Color",Color.white);
+            if(material.HasProperty("_Smoothness"))material.SetFloat("_Smoothness",0f);
+            if(material.HasProperty("_Metallic"))material.SetFloat("_Metallic",0f);
+            return material;
         }
 
         static Material MakeMaterial(string name, Color color, bool emissive)
