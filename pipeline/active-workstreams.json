@@ -39,8 +39,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner 2026-10-22 explicitly directs chat takeover of stalled World4X hybrid workstream and continuation of existing PR #100, 0€, no main promotion",
-      "phase": "HYBRID_PANORAMA_REAL_UNITY_A_B_GATE",
-      "next": "Fix exact CS0136 canopy local variable conflict in RegionOneHybridForestImpostors.cs; run existing native workflow without duplicate Unity launch; inspect same-camera 12 PNG A/B; retain draft and no publication.",
+      "phase": "HYBRID_PANORAMA_MACRO_COMPOSITION_UNRESOLVED",
+      "next": "Starting from World4X art source 0e6b8b712b9730762893c8b96ec2bda50268dcf5 and native A/B run 39800024614: correct macro map composition and genuine 2.5D depth/forest silhouettes (not extra micro-noise), then re-capture 12 Unity views at both orientations; validate portrait panorama coverage against owner 03 PNG and region scale 850x520; preserve main, UI, gameplay and iPhone issue #96.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -51,19 +51,24 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "d381bac101fe221a709a1d6b8c6adfdd2b356caf",
-        "unity_run": 39783401434,
-        "unity_playmode": "7_OF_7_PASS",
-        "real_unity_captures": 8,
+        "sha": "0e6b8b712b9730762893c8b96ec2bda50268dcf5",
+        "unity_run": 39800024614,
+        "unity_playmode": "7_OF_7_PASS_XML_AND_GITHUB_UNITY_JOB_SUCCESS",
+        "real_unity_captures": 12,
         "art_approved": false,
         "physical_iphone_tested": false,
-        "visual_gap": "significant: distant geography underdetailed; near composition not canonical",
+        "visual_gap": "CANON_NOT_MET: panorama still flat, dot-like woodland and undersized region in portrait; regional/near dominated by initial building.",
         "playable_published": false,
         "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
         "latest_native_failure_run": 39795241792,
         "latest_native_failure": "UNITY_CS0136 local centre shadowing line 145; source-only pass is not Unity pass",
         "previous_ab_run": 39794053393,
-        "previous_ab_state": "12 real Unity 3-scale orientation/A-B PNG; visual parity not achieved"
+        "previous_ab_state": "12 real Unity 3-scale orientation/A-B PNG; visual parity not achieved",
+        "visual_review": "b881 large meadow blotches improved chromatic variation but camo-like shadow rejected; 0e6b toned down and retained after genuine Unity same-view screenshots; camera 65deg trial 3a800d rejected due 6/7 test and negligible visual gain, original 74deg restored in 76b510.",
+        "camera_trial_rejected_run": 39799182467,
+        "macro_terrain_success_run": 39800024614,
+        "landcover_art_source_sha": "0e6b8b712b9730762893c8b96ec2bda50268dcf5",
+        "portrait_panorama_coverage": "At 390x844 with zoom244, horizontal projected footprint ≈225 world units vs conceptual core width 850 (~26.5%), full-region portrait not solved."
       },
       "ownership_history": [
         {
