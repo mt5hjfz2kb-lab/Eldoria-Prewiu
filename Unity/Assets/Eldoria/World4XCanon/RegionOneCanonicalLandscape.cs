@@ -194,7 +194,7 @@ namespace Eldoria.World4XCanon
         public static bool IsCoast(float x, float z)
         {
             // A *small eastern edge* only; never a cut-out or floating island.
-            return x > 440f + 28f * Mathf.Sin(z * .014f) && z < -68f;
+            return x > 365f + 18f * Mathf.Sin(z * .014f) && z < -68f;
         }
 
         static float DistanceToSegment(Vector2 point, Vector2 a, Vector2 b)
