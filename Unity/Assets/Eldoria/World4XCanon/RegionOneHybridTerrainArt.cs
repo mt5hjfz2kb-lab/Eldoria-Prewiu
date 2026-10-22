@@ -206,7 +206,20 @@ namespace Eldoria.World4XCanon
                         x*.019f+91f,(z+13f)*.017f+41f);
                     float lightSlope=(hillsideWest-hillsideEast)*.86f+
                         (hillsideNorth-hillsideSouth)*.48f;
-                    ground*=Mathf.Clamp(1f+lightSlope, .82f,1.17f);
+                    // A large 20% modulation read as camouflage blotches
+                    // in the genuine A/B capture. Reduce it; the landscape
+                    // requires many small authored-looking transitions, not
+                    // dark smooth circles or fake volumetric shadows.
+                    ground*=Mathf.Clamp(1f+lightSlope*.36f, .925f,1.075f);
+                    float brush=Mathf.PerlinNoise(
+                        x*.126f+72f,z*.143f+186f);
+                    float eroded=Mathf.PerlinNoise(
+                        x*.062f+205f,z*.054f+42f);
+                    // High-frequency dry grass and green brush textures
+                    // cohere to the existing biome atlas at all three zooms.
+                    float grazing=Mathf.Clamp01((brush-.49f)*.80f)*
+                        Mathf.Clamp01((eroded-.30f)*1.6f);
+                    ground=Lerp(ground,new Color(.73f,.63f,.39f),grazing*.21f);
                     // Terraced stony slopes paint restrained physical relief,
                     // while reused 3D ridges supply silhouettes at far zoom.
                     float hillValue=0f,side=0f;
