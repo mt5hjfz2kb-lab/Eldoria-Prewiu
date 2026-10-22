@@ -77,6 +77,12 @@ namespace Eldoria.Tests
             Assert.That(colliders.Length, Is.GreaterThanOrEqualTo(3));
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "forest-valoria"), Is.True);
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "quarry-valoria"), Is.True);
+            Assert.That(Eldoria.World4XCanon.RegionOneCanonicalLandscape.CoastWaterMask(0f,-360f),
+                Is.EqualTo(0f).Within(.001f),
+                "The inland edge of the southeastern coast remains dry.");
+            Assert.That(Eldoria.World4XCanon.RegionOneCanonicalLandscape.CoastWaterMask(0f,-395f),
+                Is.GreaterThan(.95f),
+                "The southeast shoreline must blend into genuine painted sea.");
         }
 
         [UnityTest]

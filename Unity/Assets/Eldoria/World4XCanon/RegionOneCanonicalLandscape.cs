@@ -325,8 +325,11 @@ namespace Eldoria.World4XCanon
             return false;
         }
 
-        public static bool IsCoast(float x, float z)
+        public static float CoastWaterMask(float x, float z)
         {
+            // Fractional water depth for a soft, painted shoreline. The
+            // previous boolean mask formed an unnaturally hard blue block.
+            // Geography-only texture; there is no new sea collider or travel.
             // A narrow southeastern shore, never an island outline.
             float coast = 366f + 12f * Mathf.Sin(z * .032f) +
                           7f * Mathf.Sin(z * .083f);
@@ -339,9 +342,17 @@ namespace Eldoria.World4XCanon
             // landscape border instead of an all-green central strip.
             float southShore = -370f + 12f * Mathf.Sin(x*.020f) +
                                7f * Mathf.Sin(x*.071f);
-            bool southeastern = z < southShore &&
-                x > -90f + 18f * Mathf.Sin(z*.018f);
-            return (x > coast && z < southEdge) || southeastern;
+            float southWestLimit = -90f + 18f * Mathf.Sin(z*.018f);
+            float eastDepth = z < southEdge ? x-coast : -10000f;
+            float southDepth = x > southWestLimit ? southShore-z : -10000f;
+            // Ten geographic units (~9 portrait pixels) of shallow coast
+            // transition; same deterministic map for all view distances.
+            return Mathf.Clamp01(Mathf.Max(eastDepth,southDepth)/10f);
+        }
+
+        public static bool IsCoast(float x,float z)
+        {
+            return CoastWaterMask(x,z)>0f;
         }
 
         static float DistanceToSegment(Vector2 point, Vector2 a, Vector2 b)

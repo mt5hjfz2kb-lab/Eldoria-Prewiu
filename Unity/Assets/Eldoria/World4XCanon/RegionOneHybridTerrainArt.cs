@@ -78,7 +78,7 @@ namespace Eldoria.World4XCanon
             float lacustre=1f-.12f*Mathf.Sin(x*.19f)*Mathf.Cos(z*.17f);
             if(lake1<lacustre)bank=Mathf.Max(bank,Mathf.Clamp01((lacustre-lake1)*12f));
             if(lake2<lacustre)bank=Mathf.Max(bank,Mathf.Clamp01((lacustre-lake2)*12f));
-            if(RegionOneCanonicalLandscape.IsCoast(x,z))bank=1f;
+            bank=Mathf.Max(bank,RegionOneCanonicalLandscape.CoastWaterMask(x,z));
             return bank;
         }
 
