@@ -35,12 +35,10 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta",
         ".github/workflows/world4x-canon-native.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Owner current request: continue latest hybrid World4X task from other chat, use canonical references and updated memory; no spend or release.",
-      "phase": "WORLD4X_DIRECT_ART_REGIONAL_SCALE_REVIEW",
-      "next": "Owner asks high-impact art improvements first. Retained native macro relief/coast/raised canopy/network and precomputed atlas at 34d4245, 7/7 Unity. Inspect next regional-only decorative mountain LOD run 39842389820; preserve actual quarry and targets. Portrait/core framing and reference fidelity remain unresolved. Qwen removed from task. No merge/release.",
+      "phase": "WORLD4X_DIRECT_MACRO_ART_VERIFIED_REFERENCE_GAP_REMAINS",
+      "next": "Retained macro relief/coast/raised canopies/network and precomputed 2048 atlas; regional oversized decorative mountain LOD native 39842389820 7/7. Next highest impact: regional legacy foliage/strategic canopy coherence and portrait framing. Reclaim Windows heavy resource before native execution; no live heavy run remains. Same workstream/PR100, direct assistant artist, no Qwen. No merge/release or art autoapproval.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -51,9 +49,9 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "34d4245ab790edd5f5e26f114c641285cac7d582",
-        "unity_run": 39841339374,
-        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_WORKFLOW_SUCCESS",
+        "sha": "336328b92479d08421686fef587a4e5821390fc8",
+        "unity_run": 39842389820,
+        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_UNITY_JOB_SUCCESS",
         "real_unity_captures": 12,
         "art_approved": false,
         "physical_iphone_tested": false,
@@ -76,7 +74,7 @@
         "forest_corridor_art_source_sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
         "forest_corridor_first_run": 39805121152,
         "forest_corridor_water_corrected_run": 39805826900,
-        "unity_artifact": 12453910210,
+        "unity_artifact": 12453951277,
         "portrait_zoom_run": 39810954619,
         "portrait_zoom_sha": "7b224f0d75caaed536f9d2d6a135c806467729d5",
         "fog_coast_run": 39811994026,
@@ -99,7 +97,8 @@
         "artist": "ChatGPT direct author per explicit owner; Qwen removed from this task only",
         "atlas_runtime_bake_removed": "Exact 2048 reviewed PNG loaded; seven PREBAKED=True logs. Editor suite 206.758s ->13.639s; panorama landscape pixels identical. Not physical mobile performance.",
         "forest_geometry": "840 trees, 3 meshes, 3360 triangles, 1 atlas",
-        "macro_art_evidence": "docs/evidence/world4x-canon-20261022/MACRO_RELIEF_CANOPY_REVIEW_20261022.md"
+        "macro_art_evidence": "docs/evidence/world4x-canon-20261022/MACRO_RELIEF_CANOPY_REVIEW_20261022.md",
+        "regional_scale_correction": "3 positively identified decorative mountain renderers hidden at regional/panorama, restored close; quarry/real targets preserved. Near and panoramas unchanged >5/255."
       },
       "ownership_history": [
         {
