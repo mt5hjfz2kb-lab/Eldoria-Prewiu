@@ -345,7 +345,7 @@ namespace Eldoria.Tests
             // Record exact existing renderer identity + extents, so visual
             // comparison can remove only terrain sheets, never resources.
             var survey = world.GetComponentsInChildren<Renderer>(true)
-                .Where(r => r.bounds.size.x > 55f && r.bounds.size.z > 55f)
+                .Where(r => r.bounds.size.x > 10f || r.bounds.size.z > 10f)
                 .OrderByDescending(r => r.bounds.size.x * r.bounds.size.z)
                 .Select(r => string.Join("\t", r.name,
                     r.bounds.size.x.ToString("F2"), r.bounds.size.y.ToString("F2"),

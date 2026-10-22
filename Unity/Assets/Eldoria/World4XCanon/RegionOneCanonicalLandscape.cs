@@ -56,6 +56,8 @@ namespace Eldoria.World4XCanon
         bool legacyGroundHidden;
         readonly List<Renderer> originalGround = new List<Renderer>();
         readonly List<bool> originalGroundInitiallyEnabled = new List<bool>();
+        readonly List<Renderer> regionalLegacyGeology = new List<Renderer>();
+        readonly List<bool> regionalLegacyGeologyStates = new List<bool>();
         readonly List<MeshRenderer> hiddenProvisionalCamps = new List<MeshRenderer>();
         readonly List<bool> hiddenProvisionalCampsOriginalStates = new List<bool>();
         readonly List<Renderer> existingGameRenderers = new List<Renderer>();
@@ -179,6 +181,7 @@ namespace Eldoria.World4XCanon
             // the continuous terrain carries regional and panoramic scales.
             // All original hotspot colliders and logic remain intact.
             CollectLegacyGround(existingWorld);
+            CollectRegionalLegacyGeology(existingWorld);
             HideProvisionalEnemyCampDonors(existingWorld);
             CacheGameplayArtRenderers(existingWorld, root);
             // No terrain collider: world node selection continues to hit original WorldHotspots.
@@ -209,6 +212,23 @@ namespace Eldoria.World4XCanon
                 originalGroundInitiallyEnabled.Add(renderer.enabled);
             }
             Debug.Log("REGION1_CANON_LEGACY_PRAIRIE_RENDERERS=" + originalGround.Count);
+        }
+
+        void CollectRegionalLegacyGeology(Transform existingWorld)
+        {
+            foreach(var r in existingWorld.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                bool decorative=false;
+                for(Transform t=r.transform;t && t!=existingWorld;t=t.parent)
+                    if(t.name.StartsWith("Existing Holotna mountain",StringComparison.Ordinal))
+                        decorative=true;
+                // Only positively identified background mountains. The actual
+                // quarry ("Existing Holotna rock.001") and every target remain.
+                if(!decorative)continue;
+                regionalLegacyGeology.Add(r);
+                regionalLegacyGeologyStates.Add(r.enabled);
+            }
+            Debug.Log("REGION1_REGIONAL_DECORATIVE_MOUNTAIN_LOD="+regionalLegacyGeology.Count);
         }
 
         void HideProvisionalEnemyCampDonors(Transform existingWorld)
@@ -1062,6 +1082,12 @@ namespace Eldoria.World4XCanon
                     if (originalGround[i])
                         originalGround[i].enabled = !hideOldSquare && originalGroundInitiallyEnabled[i];
             }
+            // Regional terrain already provides shared low ridges. Do not
+            // overlay the old 62m background mountain on tiny gameplay art.
+            for(int i=0;i<regionalLegacyGeology.Count;i++)
+                if(regionalLegacyGeology[i])
+                    regionalLegacyGeology[i].enabled=
+                        !hideOldSquare && regionalLegacyGeologyStates[i];
             if (force || showFog != fogMode)
             {
                 fogMode = showFog;
@@ -1080,6 +1106,8 @@ namespace Eldoria.World4XCanon
                         existingGameRenderers[i].enabled = existingGameRendererStates[i];
             for (int i = 0; i < originalGround.Count; i++)
                 if (originalGround[i]) originalGround[i].enabled = originalGroundInitiallyEnabled[i];
+            for(int i=0;i<regionalLegacyGeology.Count;i++)
+                if(regionalLegacyGeology[i])regionalLegacyGeology[i].enabled=regionalLegacyGeologyStates[i];
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
             if (terrainTexture && ownsTerrainTexture) Destroy(terrainTexture);
             if (legacyCompareTexture) Destroy(legacyCompareTexture);
