@@ -40,6 +40,28 @@ namespace Eldoria.World4XPrototype
             float depth = Mathf.Max(.2f, maximum.y - minimum.y - edgeMargin * 2);
             return Mathf.Max(.1f, .5f * Mathf.Min(width / Mathf.Max(.1f, View.aspect), depth * Mathf.Sin(tilt * Mathf.Deg2Rad)));
         }
+        /// <summary>
+        /// Wide, bounded first entry. Leave maneuvering margin rather than
+        /// filling the entire map and making 4-way panning impossible.
+        /// Existing terrain bounds (not invented world geometry) are authoritative.
+        /// </summary>
+        public float StrategicEntryZoom()
+        {
+            float max = Mathf.Min(globalZoom, MaximumFittingZoom());
+            float minimumWide = Mathf.Min(max, Mathf.Max(localZoom, regionalZoom * 1.65f));
+            return Mathf.Max(minimumWide, max * .82f);
+        }
+
+        public void EnterStrategicView(Vector3 anchor)
+        {
+            target = anchor;
+            desiredZoom = StrategicEntryZoom();
+            zoomAnchored = false;
+            View.orthographicSize = desiredZoom;
+            ApplyPose();
+            FitToAuthoredBounds();
+        }
+
         public void SetZoomLevel(int level, bool immediate = false)
         {
             if (level < 0 || level > 2) throw new ArgumentOutOfRangeException(nameof(level));
