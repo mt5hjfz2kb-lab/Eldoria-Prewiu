@@ -29,6 +29,11 @@ namespace Eldoria.World4XCanon
         public const float BreachOffsetZ = 61f;
         public const float LocalThreshold = 41f;
         public const float RegionalThreshold = 152f;
+        public const float LandscapePanoramaZoom = 244f;
+        // Portrait requires a wider orthographic overview of the SAME XYZ
+        // geography. 456 is bounded by the existing 1200x1070 camera travel
+        // envelope and shared landscape mesh; no separate map or mobile HUD.
+        public const float PortraitPanoramaZoom = 456f;
 
         static readonly Color Grass = new Color(.49f, .56f, .33f);
         static readonly Color DryGrass = new Color(.69f, .61f, .34f);
@@ -132,7 +137,8 @@ namespace Eldoria.World4XCanon
             // The current integration sets regionalZoom=32 and localZoom=14 in Start.
             navigation.localZoom = 17f;
             navigation.regionalZoom = 84f;
-            navigation.globalZoom = 244f;
+            navigation.globalZoom = navigation.View.aspect < .80f
+                ? PortraitPanoramaZoom : LandscapePanoramaZoom;
             navigation.tilt = 66f;
             navigation.cameraDistance = Mathf.Max(navigation.cameraDistance, 540f);
             navigation.minimum = new Vector2(origin.x - 600f, origin.z - 535f);
@@ -892,6 +898,20 @@ namespace Eldoria.World4XCanon
         void UpdateLevelOfDetail(bool force)
         {
             if (!navigation || !navigation.View) return;
+            // Retain complete horizontal panorama and show almost twice as
+            // much of Region 1 in portrait. Orthographic width is
+            // 2*zoom*aspect; the old 244 yielded only ~225 of 850 world units.
+            // Keep all real world coordinates, touch hit tests and POIs intact.
+            float wantedPanorama = navigation.View.aspect < .80f
+                ? PortraitPanoramaZoom : LandscapePanoramaZoom;
+            if (Mathf.Abs(navigation.globalZoom - wantedPanorama) > .5f)
+            {
+                bool wasPanoramic = navigation.View.orthographicSize >= 190f;
+                navigation.globalZoom = wantedPanorama;
+                // On live orientation changes only global view re-frames;
+                // regional/near zoom and player pan/selection stay untouched.
+                if (wasPanoramic) navigation.SetZoomLevel(0, true);
+            }
             float size = navigation.View.orthographicSize;
             bool distant = size >= RegionalThreshold;
             bool modeChanged = distant != farMode;

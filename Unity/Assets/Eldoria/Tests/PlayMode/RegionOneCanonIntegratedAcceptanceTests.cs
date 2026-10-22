@@ -354,6 +354,19 @@ namespace Eldoria.Tests
                         Call(adapter, "RefreshForCapture");
                         yield return null;
                         Call(adapter, "RefreshForCapture");
+                        if(stage.Item2=="panoramica" && format.Item3=="vertical")
+                        {
+                            // Core Region1 is 850 units across; the previous
+                            // portrait overview displayed ~225 (26.5%). The
+                            // orientation-adaptive real camera must now show
+                            // >=400 units without a second map or fake image.
+                            Assert.That(camera.orthographicSize*2f*camera.aspect,
+                                Is.GreaterThanOrEqualTo(400f),
+                                "Portrait panorama still crops the full world to a narrow strip.");
+                        }
+                        if(stage.Item2=="panoramica" && format.Item3=="horizontal")
+                            Assert.That(camera.orthographicSize,Is.InRange(239f,249f),
+                                "Landscape overview must retain existing framing.");
                         // Genuine A/B: SAME WorldCamera, XYZ, tilt, terrain,
                         // original gameplay and LOD. Only the diffuse atlas
                         // changes. No owner-reference image is projected.
