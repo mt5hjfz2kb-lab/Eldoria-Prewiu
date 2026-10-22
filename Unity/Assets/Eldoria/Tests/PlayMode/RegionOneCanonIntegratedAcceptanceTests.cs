@@ -126,6 +126,8 @@ namespace Eldoria.Tests
             Assert.That(b.size.y, Is.LessThan(8f), "Fracture is drawn along the ground, not a tower.");
             Assert.That(b.size.x, Is.GreaterThan(25f));
             Assert.That(b.size.z, Is.GreaterThan(25f));
+            Assert.That(filter.sharedMesh.normals.Count(n => n.y > .5f), Is.GreaterThan(80),
+                "Surface cracks must face the top-down strategy camera, never backface-culled.");
             Assert.That(fracture.GetComponentsInChildren<Collider>(true), Is.Empty);
         }
         [Serializable]
