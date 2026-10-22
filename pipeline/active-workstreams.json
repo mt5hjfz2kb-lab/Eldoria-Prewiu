@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": null,
-      "ownership_state": "available",
-      "write_scope_released": true,
-      "ownership_revision": 4,
+      "owner": "chatgpt-world4x-hybrid-canon-20261022",
+      "ownership_state": "claimed",
+      "write_scope_released": false,
+      "ownership_revision": 5,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -36,9 +36,9 @@
         ".github/workflows/world4x-canon-native.yml"
       ],
       "resources": [],
-      "authorization": "Explicit owner order 22-10-2026 to implement Region 1 canonical world; isolated source, non-overlap with issue95's active integrated scene/ZoneOneStrategicCamera/UI/Spawnling; any integration touch requires live reconciliation.",
-      "phase": "AVAILABLE_FOR_AUTHORIZED_CONTINUATION_PR100_ART_MOBILE_PENDING",
-      "next": "Scoped Unity source gate and 7/7 integrated PlayMode tests PASS on exact feature source d381bac101fe221a709a1d6b8c6adfdd2b356caf, native run 39783401434; 8 authentic horizontal/vertical camera PNG with wood node. NEXT: correct terrain/forest/close city and panorama art against 4 owner canonical PNG; run full Bastion I-II functional/save, WebGL and mobile performance; issue #96 physical iPhone 30min and owner visual acceptance still pending. NEVER merge or publish as approved.",
+      "authorization": "Owner 2026-10-22 instructed continued PR #100 world 4X hybrid 2.5D/3D art recovery",
+      "phase": "PANORAMA_HYBRID_2_5D_AB_VISUAL_GATE",
+      "next": "Owner-directed 22-Oct correction: priority high-quality panoramic source, 2.5D/3D hybrid authored static texture and terrain with A/B Unity real capture; regional and local only after artistic improvement. No merge/publication and no exclusive runner until actual QA.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
