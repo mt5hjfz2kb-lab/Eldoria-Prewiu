@@ -39,8 +39,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner 2026-10-22 explicitly directs chat takeover of stalled World4X hybrid workstream and continuation of existing PR #100, 0€, no main promotion",
-      "phase": "HYBRID_MACRO_COMPOSITION_AND_PORTRAIT_GAP",
-      "next": "From PR #100 candidate 37abf7c987e6735b44d2891025e763ea2cc479b9 and authentic native Unity 39803930076 (7/7): compare 12 scale/orientation PNG to original owner canon; fix remaining panoramic composition, organic forest landcover/biome silhouettes and portrait full-region coverage without changing gameplay/UI, duplicated Unity runs, or current owner. Keep draft; independently verify iPhone #96 and WebGL/mobile before any merge.",
+      "phase": "HYBRID_MACRO_REFERENCE_PARITY_AND_PORTRAIT_PENDING",
+      "next": "Starting PR #100 source dc0ac527c1bc5381478b14843134d12acf4a0655 and native Unity run 39805826900 (7/7, 12 screenshots), improve region-wide panoramic terrain art composition and close/regional fidelity to the three owner PNGs. Specific remaining defect: full-region panorama currently shows only a central crop in portrait (~26.5% width, 390x844), pine silhouettes remain graphic triangles, terrain underdetailed, nearby city composition differs. Do not change UI owners, gameplay, saves or native runner concurrently; source/art acceptance independent of 7/7. Keep PR draft, no merge/release; iPhone #96 requires independent physical stability.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -51,13 +51,13 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "37abf7c987e6735b44d2891025e763ea2cc479b9",
-        "unity_run": 39803930076,
-        "unity_playmode": "7_OF_7_PASS_NATIVE_XML",
+        "sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
+        "unity_run": 39805826900,
+        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_JOB_SUCCESS",
         "real_unity_captures": 12,
         "art_approved": false,
         "physical_iphone_tested": false,
-        "visual_gap": "CANON_NOT_MET: legacy 240x240 hard prairie rectangle eliminated at regional zoom and oversize donor trees scaled to ~3m bounds; authentic Unity shows continuous but sparse flat/low-resolution terrain; panorama remains schematic, pines still regular, portrait exposes only ~26% core width.",
+        "visual_gap": "CANON_NOT_MET: original regional 240m square removed and 70m tree donors bounded; panorama forest groves now more continuous but still schematic regular pine triangles, flat terrain, too sparse/misaligned geography vs owner image; vertical panorama shows only central strip, not entire core.",
         "playable_published": false,
         "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
         "latest_native_failure_run": 39795241792,
@@ -71,7 +71,11 @@
         "portrait_panorama_coverage": "At 390x844 with zoom244, horizontal projected footprint ≈225 world units vs conceptual core width 850 (~26.5%), full-region portrait not solved.",
         "last_visual_experiment": "TAPERED_2_5D_SPRUCE_RETAINED_AS_VISIBLE_STEP_FORWARD; panorama 7.58% and portrait 8.80% pixels change versus 0e6; not an art-quality score",
         "regional_ground_recovery": "37ab 39803930076: 7/7 Unity tests verify original prairie stays in close zoom, hidden at regional/panorama, collider count unchanged; no gameplay/save edits.",
-        "oversized_tree_recovery": "37ab donor XZ mesh width up to 70m corrected via footprint-aware scale and true ground pivot; visible regional camera gain observed; ART_NOT_APPROVED"
+        "oversized_tree_recovery": "37ab donor XZ mesh width up to 70m corrected via footprint-aware scale and true ground pivot; visible regional camera gain observed; ART_NOT_APPROVED",
+        "latest_water_qa": "dc0ac527: water mask shared by terrain+forest rejects conifer impostors on both approved decorative lakes, river tributaries and coast; real Unity A/B 39805826900 7/7 source/playmode; no new gameplay objects.",
+        "forest_corridor_art_source_sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
+        "forest_corridor_first_run": 39805121152,
+        "forest_corridor_water_corrected_run": 39805826900
       },
       "ownership_history": [
         {
