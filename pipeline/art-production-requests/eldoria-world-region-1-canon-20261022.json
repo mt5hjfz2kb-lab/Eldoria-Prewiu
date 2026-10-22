@@ -22,7 +22,7 @@
   },
   "artist": {
     "system_prompt": "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md",
-    "execution": "Owner P0 next artistic work item: produce an EDITABLE authored geography/biome composition layout aligned to docs/visual-reference/world-map/ and use it to drive one unified 2.5D/3D terrain/vegetation prototype in the current integrated Unity world. Use existing zero-cost Qwen/Blender/assets as justified, no paid assets/Tripo. Explicitly evaluate against 03_vista_panoramica.png before extending work to regional/near. Source-only or isolated tree tweaks are NOT evidence of macrocomposition parity."
+    "execution": "Owner directive 2026-10-22: ChatGPT is the artist for this work; Qwen is removed from this workstream's production and review. Retain canonical memory, immutable reference PNGs, existing zero-cost Blender/assets and actual Unity validation. Author an EDITABLE geography/biome composition layout in shared-world coordinates and drive the existing integrated 2.5D/3D world. No paid assets/Tripo, isolated tree proof, pasted image, self-approval or release. Evaluate genuine panorama A/B before extending regional/near."
   },
   "validation": {
     "source_gate": "RegionOneCanonicalSourceGate on actual Unity 6000.3.23f1",
@@ -32,5 +32,5 @@
   "unity_visual_acceptance": "PENDING",
   "physical_mobile_tested": false,
   "owner_authorization": "docs/visual-reference/ELDORIA_WORLD_MAP_CANON_20261022.md",
-  "notes": "P0 visual-method experiment (owner direction 2026-10-22) is the NEXT required workstream milestone, detailed as mandatory acceptance checklist in PR #100: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100 . Assigned to existing live owner chatgpt-world4x-relevo-20261022, without opening parallel branch/workstream or writing its World4X Unity files. CURRENT STATE: REQUIRED_NOT_YET_EVIDENCED; do not claim experiment completed until Unity A/B artifact and comparison exist. ART_APPROVED false, owner acceptance pending. No changes to saves/UI/Spawnling, no paid Tripo. Qwen-memory use evidence still required before approval."
+  "notes": "P0 visual-method experiment (owner direction 2026-10-22) is the NEXT required workstream milestone, detailed as mandatory acceptance checklist in PR #100: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100 . Assigned to existing live owner chatgpt-world4x-relevo-20261022, without opening parallel branch/workstream or writing its World4X Unity files. CURRENT STATE: REQUIRED_NOT_YET_EVIDENCED; do not claim experiment completed until Unity A/B artifact and comparison exist. ART_APPROVED false, owner acceptance pending. No changes to saves/UI/Spawnling, no paid Tripo. Owner explicitly supersedes Qwen-use requirement: direct ChatGPT artistic authorship, retained project memory and actual Blender/Unity evidence are required. Qwen remains untouched for other workstreams."
 }
