@@ -1022,7 +1022,7 @@ namespace Eldoria.World4XCanon
             // coupling both hid every batched canopy in the regional view.
             // Blend the SAME forest geography into view as local ground ends.
             float woodlandAlpha = Mathf.SmoothStep(0f, 1f,
-                Mathf.InverseLerp(LocalThreshold - 7f, LocalThreshold + 14f, size));
+                Mathf.InverseLerp(navigation.localZoom, LocalThreshold + 14f, size));
             bool showWoodland = woodlandAlpha > .001f;
             if (force || showWoodland != woodlandMode)
             {
