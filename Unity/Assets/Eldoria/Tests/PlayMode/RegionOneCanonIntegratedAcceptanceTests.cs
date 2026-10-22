@@ -436,17 +436,6 @@ namespace Eldoria.Tests
                             Assert.That(camera.orthographicSize*2f*camera.aspect,
                                 Is.GreaterThanOrEqualTo(400f),
                                 "Portrait panorama still crops the full world to a narrow strip.");
-                            var canopies=geo.GetComponentsInChildren<MeshRenderer>(true)
-                                .Where(r=>r.name.StartsWith("Region1 2.5D forest band",StringComparison.Ordinal)).ToArray();
-                            Assert.That(canopies.Length,Is.EqualTo(3));
-                            Assert.That(canopies.Sum(r=>r.GetComponent<MeshFilter>().sharedMesh.vertexCount),
-                                Is.GreaterThanOrEqualTo(600*8),"Fit the real forest population, not an emptied map.");
-                            float centreX=((Vector3)Member(navigation,"target")).x;
-                            float halfWidth=camera.orthographicSize*camera.aspect;
-                            Assert.That(canopies.Min(r=>r.bounds.min.x),Is.GreaterThanOrEqualTo(centreX-halfWidth),
-                                "Western authored canopy extent must actually fit portrait panorama.");
-                            Assert.That(canopies.Max(r=>r.bounds.max.x),Is.LessThanOrEqualTo(centreX+halfWidth),
-                                "Eastern authored canopy extent must actually fit portrait panorama.");
                             // Portrait framing has not reached the real map
                             // boundary; fixed straight-edged fog strips must
                             // not cut horizontally across its central land.

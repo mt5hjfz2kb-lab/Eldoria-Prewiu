@@ -142,7 +142,6 @@ namespace Eldoria.World4XCanon
                         ? (centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link]]+
                            centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link+1]])*.5f
                         : centres[cluster];
-                    centre.x=RegionOneCanonicalLandscape.WorldToAuthoredX(centre.x);
                     int count=isCorridor ? 24 : RegionOneAuthoredComposition.Groves[cluster].stems;
                     for(int k=0;k<count;k++)
                     {
@@ -176,7 +175,6 @@ namespace Eldoria.World4XCanon
                         float seedJitter=Random01(cluster,k,913)-.5f;
                         x+=1.5f*Mathf.Sin(z*.040f+cluster*.69f)+seedJitter*2f;
                         z+=1.5f*Mathf.Cos(x*.037f-cluster*.43f)-seedJitter*2f;
-                        x=RegionOneCanonicalLandscape.AuthoredToWorldX(x);
                         // Exact same geographic forest definition as 2D texture.
                         // Keep genuine interaction corridor and river paths free.
                         if(!woodland(x,z)||water(x,z)||roads(x,z)||coast(x,z)||
@@ -271,4 +269,3 @@ namespace Eldoria.World4XCanon
         }
     }
 }
-

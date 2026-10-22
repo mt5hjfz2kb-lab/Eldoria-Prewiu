@@ -68,23 +68,23 @@ namespace Eldoria.World4XCanon
             return a*.55f+b*.32f+c*.13f;
         }
 
-        static float AuthoredRiverCentre(float z)
+        static float RiverCentre(float z)
         {
-            return RegionOneCanonicalLandscape.WorldToAuthoredX(RegionOneCanonicalLandscape.RiverCentre(z));
+            return RegionOneCanonicalLandscape.RiverCentre(z);
         }
 
-        static float AuthoredWaterMask(float x,float z)
+        static float WaterMask(float x,float z)
         {
             float bank=0f;
             if(z>-450f&&z<460f)
             {
                 float width=4.2f + Mathf.Sin(z*.034f)*.75f + Mathf.Sin(z*.013f)*.65f;
-                float dx=Mathf.Abs(x-AuthoredRiverCentre(z));
+                float dx=Mathf.Abs(x-RiverCentre(z));
                 bank=Mathf.Max(bank,Mathf.Clamp01((width+1.5f-dx)/2.7f));
             }
             // Short, non-parallel tributaries, all tied to the primary river:
             // geography only; no new gathering opportunities.
-            float tributary1=AuthoredRiverCentre(215f);
+            float tributary1=RiverCentre(215f);
             if(z>215f&&z<380f)
             {
                 float t=(z-215f)/165f;
@@ -94,7 +94,7 @@ namespace Eldoria.World4XCanon
             if(z<-110f&&z>-270f)
             {
                 float t=(-z-110f)/160f;
-                float x0=AuthoredRiverCentre(-110f);
+                float x0=RiverCentre(-110f);
                 float tributaryX=x0-t*145f+8f*Mathf.Sin(t*8.7f);
                 bank=Mathf.Max(bank,Mathf.Clamp01((2.9f-Mathf.Abs(x-tributaryX))/1.9f));
             }
@@ -103,12 +103,9 @@ namespace Eldoria.World4XCanon
             float lacustre=1f-.12f*Mathf.Sin(x*.19f)*Mathf.Cos(z*.17f);
             if(lake1<lacustre)bank=Mathf.Max(bank,Mathf.Clamp01((lacustre-lake1)*12f));
             if(lake2<lacustre)bank=Mathf.Max(bank,Mathf.Clamp01((lacustre-lake2)*12f));
-            bank=Mathf.Max(bank,RegionOneCanonicalLandscape.CoastWaterMask(RegionOneCanonicalLandscape.AuthoredToWorldX(x),z));
+            bank=Mathf.Max(bank,RegionOneCanonicalLandscape.CoastWaterMask(x,z));
             return bank;
         }
-
-        static float WaterMask(float x,float z)
-        {return AuthoredWaterMask(RegionOneCanonicalLandscape.WorldToAuthoredX(x),z);}
 
         // The SAME water mask paints rivers, tributaries, small lakes and
         // the limited coast in the canonical terrain atlas. All strategic
@@ -273,7 +270,7 @@ namespace Eldoria.World4XCanon
                     // continuous geography at 244 zoom; no new water node.
                     if(z>-445f&&z<455f)
                     {
-                        float riverDistance=Mathf.Abs(x-RegionOneCanonicalLandscape.RiverCentre(z));
+                        float riverDistance=Mathf.Abs(x-RiverCentre(z));
                         float bankRim=Mathf.Clamp01((8.5f-riverDistance)/3f);
                         ground=Lerp(ground,new Color(.76f,.66f,.42f),bankRim*.70f);
                         float riparian=Mathf.Clamp01((21f-riverDistance)/18f);
@@ -341,4 +338,3 @@ namespace Eldoria.World4XCanon
         }
     }
 }
-
