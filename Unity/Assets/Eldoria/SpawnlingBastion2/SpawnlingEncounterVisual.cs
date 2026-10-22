@@ -48,12 +48,11 @@ namespace Eldoria.SpawnlingBastion2
         // relying on that envelope displaced the enlarged model into the sky.
         // Sample the true skinned mesh vertices ONCE, using the same bind-pose
         // matrices as the original approved V4 Blender/Unity integration.
-        bool TryGeometryFoot(out Vector3 foot)
+        public bool TryGeometryBounds(out Bounds joined)
         {
-            foot = Vector3.zero;
+            joined = default;
             if (!ModelRoot) return false;
             bool found = false;
-            Bounds joined = default;
             foreach (var renderer in ModelRoot.GetComponentsInChildren<SkinnedMeshRenderer>(true))
             {
                 var mesh = renderer ? renderer.sharedMesh : null;
@@ -85,8 +84,14 @@ namespace Eldoria.SpawnlingBastion2
                     else joined.Encapsulate(point);
                 }
             }
-            if (!found) return false;
-            foot = new Vector3(joined.center.x, joined.min.y, joined.center.z);
+            return found;
+        }
+
+        bool TryGeometryFoot(out Vector3 foot)
+        {
+            foot = default;
+            if (!TryGeometryBounds(out var bounds)) return false;
+            foot = new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
             return true;
         }
 
