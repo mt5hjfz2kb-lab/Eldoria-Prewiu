@@ -80,6 +80,42 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator RealWoodNodeRemainsReachableWithBothMobileCameraAspects()
+        {
+            MonoBehaviour host = null; GameObject world = null;
+            Component navigation = null; Camera camera = null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var wood=Call(host,"FindTarget","forest-valoria") as Component;
+            Assert.That(wood, Is.Not.Null,
+                "The real wood resource must remain available in the 4X world.");
+            Assert.That(wood.GetComponent<Collider>(), Is.Not.Null,
+                "Do not replace the clickable wood hotspot with painted terrain.");
+            float oldAspect=camera.aspect;
+            float oldZoom=camera.orthographicSize;
+            var oldTarget=(Vector3)Member(navigation,"target");
+            try
+            {
+                foreach (float aspect in new[]{1280f/720f,390f/844f})
+                {
+                    camera.aspect=aspect;
+                    Call(navigation,"SetZoomLevel",2,true);
+                    Call(navigation,"PanTo",wood.transform.position);
+                    var pos=camera.WorldToViewportPoint(wood.transform.position);
+                    Assert.That(pos.z, Is.GreaterThan(camera.nearClipPlane));
+                    Assert.That(pos.x, Is.InRange(.10f,.90f),
+                        "Actual wood target cannot be centred within horizontally bounded near view.");
+                    Assert.That(pos.y, Is.InRange(.10f,.90f),
+                        "Actual wood target cannot be centred within vertically bounded near view.");
+                }
+            }
+            finally
+            {
+                camera.aspect=oldAspect;
+                Call(navigation,"RestoreView",oldTarget,oldZoom);
+            }
+        }
+
+        [UnityTest]
         public IEnumerator EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain()
         {
             MonoBehaviour host = null; GameObject world = null;
