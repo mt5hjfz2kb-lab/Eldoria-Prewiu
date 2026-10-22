@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-continuation-20261022-1925",
+      "owner": "chatgpt-world4x-hybrid-resume-82901015",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 8,
+      "ownership_revision": 9,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -38,7 +38,7 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner 2026-10-22 explicitly requested continuation in this chat; formal rev8 handoff of PR #100 and the same Region1 workstream, no spend, no release.",
+      "authorization": "Owner current request: continue latest hybrid World4X task from other chat, use canonical references and updated memory; no spend or release.",
       "phase": "WORLD4X_ART_NATIVE_A_B_NEXT",
       "next": "From native-verified candidate 5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d and Unity 39822981117 (7/7), correct a dominant visible geography/terrain macro-composition discrepancy against the three immutable PNGs, retain only genuine A/B improvement, then continue zoom/UX fidelity, mobile and iPhone #96 independent QA; no duplicate Unity Windows jobs, no main merge/release.",
       "dependencies": [
@@ -114,6 +114,11 @@
           "relieved_at": "2026-10-22",
           "reason": "Owner request: continue the stalled previous conversation and finish the same World4X work, preserving candidate PR #100 and latest Unity pass.",
           "outcome": "Existing coast rim experiment reverted safely; candidate 5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d tested by native run 39822981117, 7/7 PASS; no main merge."
+        },
+        {
+          "owner": "chatgpt-world4x-continuation-20261022-1925",
+          "relieved_at": "2026-10-22T17:48:00Z",
+          "reason": "Owner explicitly asks this chat to continue the latest hybrid World4X work; existing PR100 and all evidence preserved."
         }
       ]
     },
