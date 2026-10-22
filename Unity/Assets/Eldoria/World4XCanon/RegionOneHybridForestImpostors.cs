@@ -131,18 +131,20 @@ namespace Eldoria.World4XCanon
                         var tint=new Color32((byte)(217+Random01(cluster,k,111)*37f),
                             (byte)(216+Random01(cluster,k,141)*39f),
                             (byte)(203+Random01(cluster,k,191)*52f),255);
-                        // Two horizontal textured canopy planes at slightly
-                        // different heights create light parallax/shading from
-                        // the true 3D camera without tall black billboard
-                        // silhouettes or hundreds of per-tree renderers.
-                        for(int layer=0;layer<2;layer++)
+                        // Three tapered overhead crown strata occupy true 3D
+                        // heights (0.2/2.4/5.4 units). They create a cheap,
+                        // readable conifer profile under strategic perspective
+                        // instead of one flat coin-like canopy; still one atlas,
+                        // three mesh batches and no per-tree renderer or physics.
+                        for(int layer=0;layer<3;layer++)
                         {
-                            float direction=rotation+(layer==0?0f:.22f);
-                            float scale=(layer==0?1f:.67f);
+                            float direction=rotation+layer*.14f;
+                            float scale=layer==0?1f:layer==1?.72f:.42f;
                             Vector3 right=new Vector3(Mathf.Cos(direction),0f,
                                 Mathf.Sin(direction))*(width*scale*.5f);
                             Vector3 forward=new Vector3(-right.z,0f,right.x);
-                            Vector3 canopyCentre=p+Vector3.up*(layer==0?.15f:1.10f);
+                            float canopyLift=layer==0?.15f:layer==1?2.40f:5.40f;
+                            Vector3 canopyCentre=p+Vector3.up*canopyLift;
                             int start=vertices.Count;
                             vertices.Add(canopyCentre-right-forward);
                             vertices.Add(canopyCentre+right-forward);
@@ -152,7 +154,15 @@ namespace Eldoria.World4XCanon
                             uvs.Add(new Vector2(1,0));
                             uvs.Add(new Vector2(1,1));
                             uvs.Add(new Vector2(0,1));
-                            for(int i=0;i<4;i++)colors.Add(tint);
+                            // Dark undergrowth, mid-green needles, sunlit tips.
+                            // The painted silhouette remains transparent and
+                            // consistent with the forest underlay at all zooms.
+                            float layerLight=layer==0?.72f:layer==1?.90f:1.06f;
+                            var crownTint=new Color32(
+                                (byte)Mathf.Clamp(Mathf.RoundToInt(tint.r*layerLight),0,255),
+                                (byte)Mathf.Clamp(Mathf.RoundToInt(tint.g*layerLight),0,255),
+                                (byte)Mathf.Clamp(Mathf.RoundToInt(tint.b*layerLight),0,255),255);
+                            for(int i=0;i<4;i++)colors.Add(crownTint);
                             // Upward-facing winding is essential with
                             // the overhead orthographic strategy camera.
                             triangles.Add(start);
