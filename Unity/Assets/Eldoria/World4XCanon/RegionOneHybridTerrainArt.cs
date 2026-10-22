@@ -79,6 +79,15 @@ namespace Eldoria.World4XCanon
             return bank;
         }
 
+        // The SAME water mask paints rivers, tributaries, small lakes and
+        // the limited coast in the canonical terrain atlas. All strategic
+        // forest impostors (including the fallback) must respect it, rather
+        // than testing only the primary river and placing trees in lakes.
+        public static bool IsOpenWater(float x,float z)
+        {
+            return WaterMask(x,z) > .05f;
+        }
+
         static float RoadMask(float x,float z)
         {
             // Paths trace actual winding corridors with pale earth shoulders.

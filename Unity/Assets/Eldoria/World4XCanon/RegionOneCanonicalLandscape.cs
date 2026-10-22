@@ -651,7 +651,7 @@ namespace Eldoria.World4XCanon
             // physics, node IDs or mobile per-frame billboard work.
             var hybrid=RegionOneHybridForestImpostors.Build(
                 parent,origin,ForestCentres,SampleHeight,IsForest,
-                IsRiver,IsRoad,IsCoast);
+                RegionOneHybridTerrainArt.IsOpenWater,IsRoad,IsCoast);
             if(hybrid!=null && hybrid.trees>0)
             {
                 distantForestSilhouettes=hybrid.root;
@@ -687,7 +687,8 @@ namespace Eldoria.World4XCanon
                         float x = centre.x + Mathf.Cos(theta) * radiusX * radial;
                         float z = centre.y + Mathf.Sin(theta) * radiusZ * radial;
                         if (!IsForest(x,z) || Mathf.Sqrt(x * x + z * z) < 95f ||
-                            IsRiver(x,z) || IsRoad(x,z) || IsCoast(x,z)) continue;
+                            RegionOneHybridTerrainArt.IsOpenWater(x,z) ||
+                            IsRoad(x,z) || IsCoast(x,z)) continue;
                         float y = SampleHeight(x, z) + .1f;
                         float width = 1.35f + Noise(cluster * 31, j * 19) * 2.05f;
                         float height = 3.8f + Noise(j * 11, cluster * 43) * 3.8f;
