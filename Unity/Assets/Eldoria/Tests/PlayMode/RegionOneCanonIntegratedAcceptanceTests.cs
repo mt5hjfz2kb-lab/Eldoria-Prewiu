@@ -152,8 +152,19 @@ namespace Eldoria.Tests
             var target = (Vector3)Member(navigation,"target");
             try
             {
+                Call(navigation, "SetZoomLevel", 2, true);
+                Call(adapter,"RefreshForCapture");
+                float nearPitch = (float)Member(navigation,"tilt");
                 Call(navigation, "SetZoomLevel", 0, true);
                 Call(adapter,"RefreshForCapture");
+                float panoramicPitch = (float)Member(navigation,"tilt");
+                Assert.That(panoramicPitch, Is.GreaterThan(nearPitch + 12f),
+                    "Wide world must also become more top-down, not only zoom farther.");
+                var allActualArt = world.GetComponentsInChildren<Renderer>(true)
+                    .Where(x => !x.transform.IsChildOf(
+                        world.transform.Find("Region 1 canonical continuous geography"))).ToArray();
+                Assert.That(allActualArt.All(x => !x.enabled), Is.True,
+                    "Panorama must hide tiny existing resource, enemy and city geometry without disabling colliders.");
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Panorama must not reveal the old hard-edged rectangular prairie.");
                 var simplified = world.transform.Find("Region 1 canonical continuous geography")
