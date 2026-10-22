@@ -40,7 +40,7 @@ namespace Eldoria.World4XCanon
    {
     if(t.name.StartsWith("Existing Holotna rock",StringComparison.Ordinal))
     {var b=BoundsOf(t.gameObject);if(t.gameObject.activeInHierarchy&&t.name!="Existing Holotna rock.001")Sprite("Reference pale field rock "+t.name,Foot(b),Mathf.Clamp(b.size.x,4,9),1,null);Hide(t.gameObject);}
-    if(t.name.StartsWith("Valoria map / retained ruins",StringComparison.Ordinal)||t.name.StartsWith("Zone1 quarry /",StringComparison.Ordinal)||t.name.StartsWith("Retained functional quarry equipment /",StringComparison.Ordinal)||t.name=="pile_of_planks")Hide(t.gameObject);
+    if(t.name.StartsWith("Valoria map / retained ruins",StringComparison.Ordinal)||t.name.StartsWith("Zone1 quarry /",StringComparison.Ordinal)||t.name.StartsWith("Retained functional quarry equipment /",StringComparison.Ordinal)||t.name=="pile_of_planks"||t.name.StartsWith("Quarry Geological Scarp /",StringComparison.Ordinal)||t.name=="Forest cut timber and sawbuck"||t.name=="Forest fallen timber / retained clearing")Hide(t.gameObject);
    }
    var ruin=host.FindTarget("old-watch-ruin");
    if(ruin)
