@@ -13,7 +13,7 @@ namespace Eldoria.World4XCanon
     /// </summary>
     public static class RegionOneHybridForestImpostors
     {
-        public const int Revision = 3;
+        public const int Revision = 4;
         public sealed class Output
         {
             public GameObject root;
@@ -142,7 +142,7 @@ namespace Eldoria.World4XCanon
                         ? (centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link]]+
                            centres[RegionOneCanonicalLandscape.ForestCorridorPairs[link+1]])*.5f
                         : centres[cluster];
-                    const int count=58;
+                    int count=isCorridor ? 24 : RegionOneAuthoredComposition.Groves[cluster].stems;
                     for(int k=0;k<count;k++)
                     {
                         float angle=k*2.3999632f+cluster*.93f;

@@ -7,31 +7,69 @@ namespace Eldoria.World4XCanon
     // No Qwen output, gameplay objects, colliders, alternate scene or image backdrop.
     public static class RegionOneAuthoredComposition
     {
-        public const string Revision = "director-layout-20261022-v1";
+        public const string Revision = "director-layout-20261022-p0-composition-v2";
         public struct Grove
         {
             public Vector2 centre;
             public float width, depth, angle;
-            public Grove(float x,float z,float w,float d,float degrees)
-            { centre=new Vector2(x,z);width=w;depth=d;angle=degrees*Mathf.Deg2Rad; }
+            public int stems;
+            public Grove(float x,float z,float w,float d,float degrees,int stems=58)
+            { centre=new Vector2(x,z);width=w;depth=d;angle=degrees*Mathf.Deg2Rad;this.stems=stems; }
         }
         // Varied grove sizes leave broad meadow corridors between river, paths
         // and the Breach. Outer groves continue the SAME land beyond the frame.
+        // P0 director composition: six unequal woodland gestures and small
+        // satellites frame broad navigable meadows. Counts are art decisions,
+        // not a fixed 58 trees stamped into every circular grove.
         public static readonly Grove[] Groves = {
-            new Grove(-315,218,43,25,-22),new Grove(-208,153,31,22,18),
-            new Grove(-365,-72,39,23,30),new Grove(-255,-203,42,26,-18),
-            new Grove(-113,-306,29,21,22),new Grove(-28,231,27,19,-15),
-            new Grove(126,270,41,23,12),new Grove(315,204,43,25,-28),
-            new Grove(367,61,31,23,36),new Grove(274,-112,39,25,-25),
-            new Grove(91,-241,36,24,20),new Grove(-176,389,39,25,-12),
-            new Grove(188,386,44,28,15),new Grove(-410,338,37,22,31),
-            new Grove(-351,-337,43,25,-24),new Grove(382,-327,39,26,16),
-            new Grove(-65,464,34,22,-20),new Grove(338,441,40,25,32),
-            new Grove(-116,67,25,17,18),new Grove(114,93,30,20,-22),
-            new Grove(-132,-76,31,19,24),new Grove(127,-92,29,21,-28),
-            new Grove(-21,137,24,17,15),new Grove(-300,100,22,17,-16),
-            new Grove(218,21,24,16,27),new Grove(-241,-17,28,18,-12),
-            new Grove(22,-161,25,17,22),new Grove(209,175,26,18,16)
+            // North-west: a long broken shoulder around the lake clearing.
+            new Grove(-330,248,62,23,-18,72),
+            new Grove(-256,221,38,17,28,36),
+            new Grove(-215,166,46,20,-38,44),
+            new Grove(-288,131,18,12,12,12),
+            new Grove(-362,173,22,13,-15,17),
+            // North-east: diagonal escarpment woodlands with open hilltops.
+            new Grove(310,251,55,24,-34,64),
+            new Grove(258,205,36,18,-25,34),
+            new Grove(197,172,27,14,21,22),
+            new Grove(358,141,31,16,30,28),
+            new Grove(381,70,20,12,-18,14),
+            // Northern river bank: narrow riparian ribbons, never across water.
+            new Grove(-24,254,18,39,11,42),
+            new Grove(7,179,28,14,-13,24),
+            new Grove(93,285,31,18,14,26),
+            new Grove(145,316,19,12,-21,12),
+            // Western sweep: irregular edge, large meadow between its arms.
+            new Grove(-359,-38,58,21,34,65),
+            new Grove(-302,-81,32,16,13,29),
+            new Grove(-234,-20,23,14,-29,19),
+            new Grove(-178,92,22,13,25,16),
+            new Grove(-134,152,17,11,-17,12),
+            // Southern river valley: extended woods with scattered outliers.
+            new Grove(-250,-223,63,25,-23,75),
+            new Grove(-192,-169,34,19,28,37),
+            new Grove(-143,-102,30,15,30,29),
+            new Grove(-308,-162,19,12,-8,12),
+            new Grove(-105,-297,34,18,-24,28),
+            new Grove(-47,-249,18,12,14,12),
+            // Eastern lake ring leaves clear water and an open central approach.
+            new Grove(266,-117,55,20,-29,61),
+            new Grove(203,-74,26,16,-36,24),
+            new Grove(151,-105,20,13,21,17),
+            new Grove(100,-258,49,17,12,44),
+            new Grove(36,-192,24,13,-28,18),
+            new Grove(178,-210,18,11,18,10),
+            new Grove(298,-202,23,12,-21,17),
+            // Quiet framing accents around the Breach, not a uniform ring.
+            new Grove(119,114,35,16,-27,28),
+            new Grove(190,48,17,12,24,11),
+            // Continued real geography beyond the overview frame.
+            new Grove(-410,356,47,20,29,45),
+            new Grove(-192,397,55,24,-16,58),
+            new Grove(-58,469,31,17,19,26),
+            new Grove(183,405,62,23,14,63),
+            new Grove(335,457,35,18,-23,32),
+            new Grove(-355,-342,51,21,-22,48)
         };
         public static Vector2[] Centres()
         {
