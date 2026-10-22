@@ -286,10 +286,17 @@ namespace Eldoria.World4XCanon
                 Mathf.Clamp01((radius-225f)/240f));
             float slowRoll=(Mathf.PerlinNoise(x*.009f+13f,z*.010f+31f)-.5f)*18f+
                 (Mathf.PerlinNoise(x*.021f+53f,z*.018f+71f)-.5f)*5f;
-            // Never sculpt ocean surfaces into hills at the southeastern coast.
-            float landFactor=IsCoast(x,z)?0f:1f;
+            // Coastal interpolation uses the SAME painted water transition.
+            // The old binary IsCoast toggle made an artificial cliff at the
+            // edge even though the diffuse coast was progressively blended.
+            float coastalWater=CoastWaterMask(x,z);
+            float landFactor=1f-Mathf.SmoothStep(0f,1f,coastalWater);
+            // Extend the atlas's four restrained stone ridges into actual
+            // low 3D hills. This changes presentation only and preserves the
+            // real central gameplay corridor and all original colliders.
+            float ridgeLift=RegionOneHybridTerrainArt.RidgeElevation(x,z);
             return -4.0f + near * (contour + distantRidge) +
-                landFactor*outlands*slowRoll;
+                landFactor*(outlands*slowRoll+ridgeLift);
         }
 
         static float Noise(int x, int z)

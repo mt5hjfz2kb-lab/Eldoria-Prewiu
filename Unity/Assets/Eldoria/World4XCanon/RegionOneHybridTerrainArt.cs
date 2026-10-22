@@ -34,6 +34,25 @@ namespace Eldoria.World4XCanon
             new Vector2(-320f,-220f),new Vector2(267f,-170f)
         };
 
+        // Four natural topographic landmarks reuse the existing rock ridge
+        // anchors already painted in the atlas. Their subtle 3D elevation
+        // brings actual geographic silhouettes to the oblique panorama.
+        // Shared with the real terrain mesh: one deterministic geography.
+        public static float RidgeElevation(float x, float z)
+        {
+            float lift=0f;
+            for(int i=0;i<RidgeSites.Length;i++)
+            {
+                float dx=(x-RidgeSites[i].x)/100f;
+                float dz=(z-RidgeSites[i].y)/88f;
+                float d2=dx*dx+dz*dz;
+                if(d2>=2.7f)continue;
+                float crown=1f-d2/2.7f;
+                lift=Mathf.Max(lift,15f*crown*crown);
+            }
+            return lift;
+        }
+
         static float Fractal(float x, float z, float seed)
         {
             float a=Mathf.PerlinNoise(x*.008f+seed,z*.009f+seed*.37f);
