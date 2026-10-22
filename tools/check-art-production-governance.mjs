@@ -32,22 +32,7 @@ for(const workstream of registry.active || []){
   if(!grandfathered.has(workstream.id)&&req.ai_authorship_policy!=='required'){
     failures.push(workstream.id+': every new art request requires ai_authorship_policy=required.');
   }
-  // Legacy Qwen-memory evidence remains readable but is not mandatory for new authoring.
-  /* Do not overwrite or block workstreams which started before the new memory
-  // integration. Any future workstream may only promote AI art with exact
-  // evidence that Qwen actually consumed selected catalog lessons.
-  const phase2LegacyOwners=new Set([
-    'valoria-master-plan-layered-construction-20261016',
-    'eldoria-tripo-art-brain-phase2-20261021',
-    'eldoria-ui-v3-management-completion-20261021',
-    'eldoria-spawnling-qwen-semantic-visual-qa-20261021'
-  ]);
-  if(!phase2LegacyOwners.has(workstream.id)&&req.ai_authorship_policy==='required'){
-    for(const error of checkFutureApprovedQwenMemory(req,workstream.id,process.cwd())){
-      failures.push(workstream.id+': '+error);
-    }
-  }
-  */
+  // Qwen consumption proofs are historical optional evidence, never a mandatory gate.
   const gateState=String(req.visual_gate_state||'').toUpperCase();
   if(['ART_APPROVED','MOBILE_VALIDATED','GAMEPLAY_VALIDATED','RELEASED'].includes(gateState)){
     if(!req.artist_cycle_path) failures.push(workstream.id+': ART approval requires artist_cycle_path.');
