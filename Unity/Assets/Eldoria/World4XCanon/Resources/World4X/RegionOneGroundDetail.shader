@@ -63,12 +63,37 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
                     half3 meadow=half3(.223,.274,.051),forest=half3(.078,.126,.025),soil=half3(.477,.307,.113);
                 #endif
                 half weight=ecology.a*dry*_EcologyStrength;
-                pigment=lerp(pigment,meadow,ecology.b*weight*.62);
-                pigment=lerp(pigment,forest,ecology.g*weight*.68);
-                pigment=lerp(pigment,soil,ecology.r*weight*.95);
+                // Authored land-cover hierarchy: exposed ochre earth between
+                // coherent meadow islands, rooted shade, then actual-node paths.
+                // Derivative antialiasing keeps edges readable at every scale.
+                half meadowAA=max(.018h,fwidth(ecology.b)*.8h);
+                half meadowCover=smoothstep(.48h-meadowAA,.48h+meadowAA,ecology.b);
+                half rootAA=max(.025h,fwidth(ecology.g));
+                half rootCover=smoothstep(.28h-rootAA,.28h+rootAA,ecology.g);
+                half pathAA=max(.035h,fwidth(ecology.r));
+                half pathCover=smoothstep(.32h-pathAA,.32h+pathAA,ecology.r);
+                #if defined(UNITY_COLORSPACE_GAMMA)
+                    half3 earth=half3(.69,.58,.33);
+                    half3 grass=half3(.46,.53,.23);
+                    half3 roots=half3(.32,.41,.18);
+                    half3 path=half3(.76,.64,.39);
+                #else
+                    half3 earth=half3(.434,.296,.089);
+                    half3 grass=half3(.179,.243,.043);
+                    half3 roots=half3(.084,.140,.027);
+                    half3 path=half3(.539,.367,.126);
+                #endif
+                half3 local=lerp(earth,grass,meadowCover);
+                local=lerp(local,roots,rootCover*.66h);
+                local=lerp(local,path,pathCover*.92h);
+                // Retain a little authored pigment variation, without the
+                // previous blurred atlas dominating the near land-cover shapes.
+                local*=lerp(half3(1,1,1),variation,.07h);
+                pigment=lerp(pigment,local,weight*.94h);
                 half footprint=max(length(ddx(relative)),length(ddy(relative)));
                 half detailFade=1-smoothstep(.16,.75,footprint);
-                half3 color=pigment*lerp(half3(1,1,1),variation,_DetailStrength*dry*detailFade);
+                half detailAmount=lerp(_DetailStrength,.055h,weight);
+                half3 color=pigment*lerp(half3(1,1,1),variation,detailAmount*dry*detailFade);
                 Light sun=GetMainLight();
                 half flat=.70h+.30h*saturate(sun.direction.y);
                 half relief=(.70h+.30h*saturate(dot(normalize(i.normalWS),sun.direction)))/max(.7h,flat);
