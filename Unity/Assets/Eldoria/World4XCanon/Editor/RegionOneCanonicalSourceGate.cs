@@ -30,6 +30,11 @@ namespace Eldoria.World4XCanon.Editor
                 !RegionOneCanonicalLandscape.IsCoast(520f, -200f))
                 throw new InvalidOperationException("Geographic continuity contract failed");
 
+            if (RegionOneCanonicalLandscape.LandscapeHalfWidth < 800f ||
+                RegionOneCanonicalLandscape.LandscapeHalfDepth < 700f ||
+                RegionOneCanonicalLandscape.BreachOffsetX * RegionOneCanonicalLandscape.BreachOffsetX +
+                RegionOneCanonicalLandscape.BreachOffsetZ * RegionOneCanonicalLandscape.BreachOffsetZ > 160f * 160f)
+                throw new InvalidOperationException("Region 1 cannot regress to an isolated local diorama or an off-centre Breach.");
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             if (!scene.IsValid()) throw new InvalidOperationException("Canonical integrated scene is missing");
             var host = UnityEngine.Object.FindFirstObjectByType<ValoriaIntegratedWorld>(FindObjectsInactive.Include);
