@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: world4x-canon-pr-${{ github.event.pull_request.number }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   canon-source:
