@@ -17,8 +17,6 @@ namespace Eldoria.World4XCanon.Editor
         [MenuItem("Eldoria/Region 1/Validate canonical world source")]
         public static void Validate()
         {
-            if(Environment.GetEnvironmentVariable("ELDORIA_REGION1_P0_COMPARE")=="1")
-                RegionOneP0BakeAuthorialAtlas.Bake();
             if (RegionOneCanonicalLandscape.LandscapeVersion != 1 ||
                 RegionOneHybridTerrainArt.StyleRevision != 1)
                 throw new InvalidOperationException("Unexpected or missing hybrid-world art style version");
@@ -59,3 +57,4 @@ namespace Eldoria.World4XCanon.Editor
     }
 }
 #endif
+

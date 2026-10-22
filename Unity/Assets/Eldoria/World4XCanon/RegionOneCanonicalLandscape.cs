@@ -68,6 +68,10 @@ namespace Eldoria.World4XCanon
         Texture2D terrainTexture, legacyCompareTexture;
         Texture2D hybridForestAtlas;
         Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial, breachHaloMaterial;
+        Renderer[] paintedBreachFallbacks;
+        bool compareLegacyAtlas;
+        Renderer paintedBreachRenderer;
+        Material paintedBreachMaterial;
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
         bool ownsTerrainTexture;
@@ -601,6 +605,56 @@ namespace Eldoria.World4XCanon
             coreRenderer.sharedMaterial=breachCoreMaterial;
             coreRenderer.shadowCastingMode=ShadowCastingMode.Off;
             BuildBreachHalo(fracture);
+            paintedBreachFallbacks=fracture.GetComponentsInChildren<Renderer>(true);
+            BuildPaintedBreach(fracture);
+        }
+
+        void BuildPaintedBreach(Transform parent)
+        {
+            // The luminous heart has a measured UV pivot, so image editing
+            // cannot move this independent layer's actual world anchor.
+            var atlas=Resources.Load<Texture2D>("World4X/RegionOneBreachDecal");
+            var shader=Shader.Find("Sprites/Default");
+            if(!atlas || !shader) return;
+            paintedBreachMaterial=new Material(shader){name="Region1 anchored geological pigment"};
+            paintedBreachMaterial.mainTexture=atlas;
+            paintedBreachMaterial.SetColor("_Color",Color.white);
+            paintedBreachMaterial.renderQueue=3001;
+            const int cells=16;
+            const float width=100f;
+            var vertices=new Vector3[(cells+1)*(cells+1)];
+            var uv=new Vector2[vertices.Length];
+            var colors=new Color[vertices.Length];
+            var triangles=new int[cells*cells*6];
+            for(int z=0;z<=cells;z++)
+            for(int x=0;x<=cells;x++)
+            {
+                int i=z*(cells+1)+x;
+                float u=x/(float)cells,v=z/(float)cells;
+                float wx=BreachOffsetX+(u-.505458f)*width;
+                float wz=BreachOffsetZ+(v-.439022f)*width;
+                vertices[i]=new Vector3(wx-BreachOffsetX,SampleHeight(wx,wz)+.09f,wz-BreachOffsetZ);
+                uv[i]=new Vector2(u,v);
+                float dry=RegionOneHybridTerrainArt.IsOpenWater(wx,wz) ? 0f : 1f;
+                float approach=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(32f,48f,
+                    Mathf.Sqrt(wx*wx+wz*wz)));
+                colors[i]=new Color(1f,1f,1f,dry*approach);
+                if(x==cells || z==cells) continue;
+                int t=(z*cells+x)*6;
+                triangles[t]=i;triangles[t+1]=i+cells+1;triangles[t+2]=i+1;
+                triangles[t+3]=i+1;triangles[t+4]=i+cells+1;triangles[t+5]=i+cells+2;
+            }
+            var mesh=new Mesh{name="Region1 anchored ground scar",vertices=vertices,uv=uv,
+                colors=colors,triangles=triangles};
+            mesh.RecalculateNormals();mesh.RecalculateBounds();generatedMeshes.Add(mesh);
+            var go=new GameObject("Region1 · authored Breach pigment at actual world anchor");
+            go.transform.SetParent(parent,true);
+            go.transform.position=new Vector3(origin.x+BreachOffsetX,0f,origin.z+BreachOffsetZ);
+            go.AddComponent<MeshFilter>().sharedMesh=mesh;
+            paintedBreachRenderer=go.AddComponent<MeshRenderer>();
+            paintedBreachRenderer.sharedMaterial=paintedBreachMaterial;
+            paintedBreachRenderer.shadowCastingMode=ShadowCastingMode.Off;
+            paintedBreachRenderer.receiveShadows=false;
         }
 
         void BuildBreachHalo(Transform fracture)
@@ -937,10 +991,12 @@ namespace Eldoria.World4XCanon
         /// </summary>
         public void CompareAtlas(bool baseline)
         {
+            compareLegacyAtlas=baseline;
             if (!surfaceMaterial || !terrainTexture) return;
             if (baseline && !legacyCompareTexture)
                 legacyCompareTexture=MakeTerrainTexture(1024);
             var selected=baseline ? legacyCompareTexture : terrainTexture;
+            RefreshForCapture();
             if (surfaceMaterial.HasProperty("_BaseMap"))
                 surfaceMaterial.SetTexture("_BaseMap",selected);
             if (surfaceMaterial.HasProperty("_MainTex"))
@@ -1045,6 +1101,13 @@ namespace Eldoria.World4XCanon
                 material.SetColor("_Color", tint);
             }
             bool hideOldSquare = size >= LocalThreshold;
+            // Independent pigment replaces the duplicate old fracture only
+            // where the painted ground is visible. Near/fallback retains it.
+            bool paintedScar=paintedBreachRenderer && terrainTexture &&
+                terrainTexture.name=="RegionOnePaintedTerrain" && hideOldSquare && !compareLegacyAtlas;
+            if(paintedBreachRenderer) paintedBreachRenderer.enabled=paintedScar;
+            if(paintedBreachFallbacks!=null)
+                foreach(var r in paintedBreachFallbacks) if(r) r.enabled=!paintedScar;
             // Border strips are authored near the complete region's edge.
             // They would cross the middle of the new portrait overview as
             // two straight pale seams. Only show them when the horizontal
@@ -1127,9 +1190,11 @@ namespace Eldoria.World4XCanon
             if (riftMaterial) Destroy(riftMaterial);
             if (breachCoreMaterial) Destroy(breachCoreMaterial);
             if (breachHaloMaterial) Destroy(breachHaloMaterial);
+            if (paintedBreachMaterial) Destroy(paintedBreachMaterial);
             if (fogMaterial) Destroy(fogMaterial);
             foreach (var mat in farForestMaterials) if (mat) Destroy(mat);
             foreach (var mat in farGeologyMaterials) if (mat) Destroy(mat);
         }
     }
 }
+

@@ -212,6 +212,21 @@ namespace Eldoria.Tests
             Assert.That(filter.sharedMesh.normals.Count(n => n.y > .5f), Is.GreaterThan(80),
                 "Surface cracks must face the top-down strategy camera, never backface-culled.");
             Assert.That(fracture.GetComponentsInChildren<Collider>(true), Is.Empty);
+            var pigment=fracture.Find("Region1 · authored Breach pigment at actual world anchor");
+            Assert.That(pigment,Is.Not.Null,"The painted scar must have an independent world anchor.");
+            var scar=pigment.GetComponent<MeshRenderer>();
+            var home=(Vector3)Member(host,"WorldHome");
+            Assert.That(scar.transform.position.x-home.x,Is.EqualTo(8f).Within(.01f));
+            Assert.That(scar.transform.position.z-home.z,Is.EqualTo(61f).Within(.01f));
+            Assert.That(scar.bounds.size.y,Is.LessThan(8f));
+            Assert.That(scar.sharedMaterial.mainTexture,Is.Not.Null);
+            var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .First(x=>x && x.GetType().Name=="RegionOneCanonicalLandscape");
+            Call(navigation,"SetZoomLevel",1,true);
+            Call(adapter,"RefreshForCapture");
+            Assert.That(scar.enabled,Is.True);
+            Assert.That(filter.GetComponent<MeshRenderer>().enabled,Is.False,
+                "Do not superimpose legacy fractures on the authored scar.");
         }
         [UnityTest]
         public IEnumerator PanoramaHidesOldSquareWithoutRemovingWorldGameObjects()
@@ -383,9 +398,7 @@ namespace Eldoria.Tests
                         (0,"panoramica",home),
                         (2,"cercana-recurso-madera",forestFocus),
                         (0,"panoramica-antes-hibrido",home),
-                        (1,"regional-antes-hibrido",home),
-                        (0,"panoramica-p0-mascaras",home),
-                        (1,"regional-p0-mascaras",home)})
+                        (1,"regional-antes-hibrido",home)})
                     {
                         Call(navigation, "SetZoomLevel", stage.Item1, true);
                         Call(navigation, "PanTo", stage.Item3);
@@ -417,7 +430,6 @@ namespace Eldoria.Tests
                         // original gameplay and LOD. Only the diffuse atlas
                         // changes. No owner-reference image is projected.
                         Call(adapter, "CompareAtlas", stage.Item2.EndsWith("-antes-hibrido"));
-                        if(stage.Item2.EndsWith("-p0-mascaras")) Call(adapter,"CompareP0Atlas");
                         var texture = new RenderTexture(format.Item1,format.Item2,24,
                             RenderTextureFormat.ARGB32);
                         var pixels = new Texture2D(format.Item1,format.Item2,TextureFormat.RGB24,false);
@@ -460,8 +472,8 @@ namespace Eldoria.Tests
                         }
                     }
                 }
-                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(16));
-                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=16 (8 genuine views + 4 old-atlas + 4 P0 mask comparisons) real_scene=1 disposable_gateway=1 physical_iphone=0");
+                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(12));
+                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=12 (8 genuine views + 4 exact-camera old-atlas comparisons) real_scene=1 disposable_gateway=1 physical_iphone=0");
             }
             finally
             {
@@ -475,3 +487,4 @@ namespace Eldoria.Tests
 
     }
 }
+
