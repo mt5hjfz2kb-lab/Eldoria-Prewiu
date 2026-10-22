@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Eldoria.Domain;
 using Eldoria.Presentation;
+using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using Eldoria.World4XPrototype;
@@ -256,7 +257,7 @@ namespace Eldoria.ReferenceClean.Editor {
      "; point="+center+"; hits="+string.Join(",",hits.Select(x=>x.gameObject.name)));
    },"World navigation is touchable even while a building sheet is open");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
-   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
+   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{
     var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
@@ -400,7 +401,97 @@ namespace Eldoria.ReferenceClean.Editor {
     }
    },"Royal march confirmation and real return-to-city button");
    yield return new WaitForSecondsRealtime(.4f);
-   h.SetWorld(true);h.Select("engendro-valoria");yield return null;
+   // Issue #95: preserve two controlled, authentic Unity frames of the
+   // ALIVE Bastion II enemy, before the real existing combat/loot/clock probe.
+   // Selection is restored before the existing authorization and march action.
+   // No invented rival, shortcut, rewards or changed gameplay transitions.
+   h.SetWorld(true);
+   var spawnTarget=h.FindTarget("engendro-valoria");
+   Need(spawnTarget!=null,"Authored Spawnling destination missing before battle");
+   var animated=h.WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+   Need(animated&&animated.ModelRoot&&animated.ModelRoot.activeInHierarchy,
+    "Real animated Spawnling not visible before its existing Bastion II fight");
+   float nearPresence=animated.NearPresence,farPresence=animated.StrategicPresence;
+   // Compare against the genuine world ground, not only the old mesh height.
+   var prairie=h.WorldRoot.GetComponentsInChildren<MeshFilter>(true)
+    .FirstOrDefault(f=>f.name=="ZoneOne continuous prairie source");
+   Need(prairie&&prairie.sharedMesh,"Original world ground absent for Engendro foot test");
+   var groundCollider=prairie.GetComponent<MeshCollider>();
+   bool disposableGround=groundCollider==null;
+   if(disposableGround)groundCollider=prairie.gameObject.AddComponent<MeshCollider>();
+   var savedGroundMesh=groundCollider.sharedMesh;
+   float groundY;
+   try{
+    groundCollider.sharedMesh=prairie.sharedMesh;Physics.SyncTransforms();
+    Need(groundCollider.Raycast(new Ray(new Vector3(spawnTarget.transform.position.x,200,
+      spawnTarget.transform.position.z),Vector3.down),out var hit,400),
+      "No original terrain directly beneath Engendro");
+    groundY=hit.point.y;
+   }finally{
+    if(disposableGround)Object.DestroyImmediate(groundCollider);
+    else groundCollider.sharedMesh=savedGroundMesh;
+   }
+   Bounds CreatureBounds(){
+    // The V4 rig has precomputed renderer animation culling bounds much
+    // larger than the mesh itself. Measure actual transformed skin vertices,
+    // exactly as original animated-model integration did. Otherwise a
+    // false 160m bounding volume is mistaken for the creature's visible foot.
+    Need(animated.TryGeometryBounds(out var geometry),"Animated V4 skin geometry not CPU-readable");
+    Need(geometry.size.y>.05f,"Animated enemy mesh geometry is degenerate");
+    return geometry;
+   }
+   void VerifyFoot(Bounds before,Bounds after,string level){
+    Debug.Log("ISSUE95_B2_FOOT_SURVEY level="+level+" ground="+groundY.ToString("F4")+
+     " beforeMin="+before.min.y.ToString("F4")+
+     " afterMin="+after.min.y.ToString("F4")+
+     " beforeXZ="+before.center.x.ToString("F3")+","+before.center.z.ToString("F3")+
+     " afterXZ="+after.center.x.ToString("F3")+","+after.center.z.ToString("F3")+
+     " hotspot="+spawnTarget.transform.position.ToString("F3")+
+     " afterSize="+after.size.ToString("F3"));
+    Need(Mathf.Abs(before.min.y-after.min.y)<.4f &&
+     Vector2.Distance(new Vector2(before.center.x,before.center.z),
+      new Vector2(after.center.x,after.center.z))<.6f,
+      "Enlarged Engendro lost original foot/XY contact at "+level);
+    Need(after.size.y>before.size.y*1.7f,"B2 visual growth insignificant at "+level);
+    Need(Mathf.Abs(after.min.y-groundY)<.55f,
+      "Engendro has lost CONTACT with actual existing terrain at "+level);
+    Need(Vector2.Distance(new Vector2(after.center.x,after.center.z),
+      new Vector2(spawnTarget.transform.position.x,spawnTarget.transform.position.z))<1.5f,
+      "Engendro visual no longer aligned to real encounter hotspot at "+level);
+   }
+   h.Select("");
+   h.WorldNavigation.EnterStrategicView(spawnTarget.transform.position);
+   h.Focus(spawnTarget.gameObject);
+   yield return null;
+   animated.NearPresence=animated.StrategicPresence=1f;
+   yield return null;
+   var regionalBefore=CreatureBounds();
+   Check(()=>Capture(h,"integration-art-engendro-before-strategic.png",1600,900),
+    "real old-size model, fixed strategic camera before enlargement");
+   animated.NearPresence=nearPresence;animated.StrategicPresence=farPresence;
+   yield return null;
+   Check(()=>{
+    VerifyFoot(regionalBefore,CreatureBounds(),"strategic");
+    Capture(h,"integration-art-engendro-prebattle-strategic.png",1600,900);
+   },"real B2 strategic enlarged silhouette AND exact grounded anchor");
+   h.WorldNavigation.SetZoomLevel(2,true);
+   // This is an explicit local zoom (not a Focus() auto-fit back to macro).
+   // Offset toward the screen's open centre while retaining the hotspot.
+   h.WorldNavigation.PanTo(spawnTarget.transform.position+new Vector3(0,0,3f));
+   Need(h.WorldCamera.orthographicSize<=17f,"Local view zoom was silently lost");
+   yield return null;
+   animated.NearPresence=animated.StrategicPresence=1f;
+   yield return null;
+   var localBefore=CreatureBounds();
+   Check(()=>Capture(h,"integration-art-engendro-before-close.png",1600,900),
+    "real original 3m close-size comparison at identical camera");
+   animated.NearPresence=nearPresence;animated.StrategicPresence=farPresence;
+   yield return null;
+   Check(()=>{
+    VerifyFoot(localBefore,CreatureBounds(),"local");
+    Capture(h,"integration-art-engendro-prebattle-close.png",1600,900);
+   },"real B2 local enlarged silhouette AND exact grounded anchor");
+   h.Select("engendro-valoria");yield return null;
    Check(()=>{Click(h.Hud.Building.Primary.Button);Need(city.Gateway.Snapshot().March.Phase=="outbound","Engendro march missing");((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(120);city.Gateway.Advance();city.Presenter.RefreshState();Need(SliceRules.CurrentObjectiveKey(city.Gateway.Snapshot())=="b2.complete","Bastion II content boundary not reached");Need(h.Read("",false).MissionSteps.Length==5&&h.Read("",false).MissionSteps.All(step=>step.Done),"Completed Bastion II checklist does not reflect actual saved progression");h.SetWorld(false);h.Hud.Refresh();Capture(h,"integration-chapter2-complete.png",1600,900);var saved=JsonUtility.ToJson(city.Gateway.Snapshot());city.ReloadForProbe();Need(saved==JsonUtility.ToJson(city.Gateway.Snapshot()),"Final save/rewards mismatch");},"Royal I-II chapter complete and reload");
    Check(()=>{foreach(string name in new[]{"eldoria-unity-slice-v1.json","eldoria-unity-slice-owner-i-ii-v1.json"})Need(SessionState.GetString(Flag+name,"")==FileHash(Path.Combine(UnityEngine.Application.persistentDataPath,name)),"Canonical save changed: "+name);},"canonical save byte hashes preserved");
    // Render the actual authored destinations through the same Royal UI and

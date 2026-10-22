@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Eldoria.Domain;
 using Eldoria.Presentation;
+using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
 
@@ -111,12 +112,34 @@ namespace Eldoria.ReferenceClean {
     bool built=pair.Key=="sawmill"?s.SawmillLevel>0:s.BarracksLevel>0;
     if(town&&built)visible&=pair.Key==objective;
     if(pair.Key=="barracks")visible&=s.BastionLevel>=2;
-    if(pair.Key=="engendro-valoria")visible&=s.BastionLevel>=2;
+    if(pair.Key=="engendro-valoria"){
+     visible&=s.BastionLevel>=2;
+     // The enemy now remains legible at several strategic zooms. A label
+     // pinned to the old 3m hotspot covered its actual violet head/torso.
+     // Move the SAME clickable label above the silhouette: the rise is
+     // proportional to orthographic zoom, so clearance remains roughly
+     // constant in screen pixels in close, regional and panoramic views.
+     // This changes no target, combat collider, unlock or narrative command.
+     if(host.WorldCamera)pair.Value.WorldOffset=Vector3.up*
+      (3f+Mathf.Clamp(host.WorldCamera.orthographicSize*.30f,4f,40f));
+    }
     if(pair.Key=="corrupt-scout")visible&=!s.ScoutDefeated;
     // Selection already has a named contextual panel. Labels identify only useful targets.
     visible&=host.Selected!=pair.Key;
     if(!town)visible&=pair.Key==objective||pair.Key=="valoria-map-city"||host.WorldCamera.orthographicSize<=22;
     pair.Value.gameObject.SetActive(visible);
+    if(visible&&pair.Key=="engendro-valoria"){
+     // The canonical label previously crossed the larger animated creature
+     // and concealed its head at 4X distance. Lift ONLY this real existing
+     // label above the model instead of scaling a second HUD marker.
+     // Near model original height=3.0m from the pinned finished V4
+     // integration; use the same zoom-dependent visual-only presence.
+     var actor=host.WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+     if(actor&&actor.ModelRoot&&actor.ModelRoot.activeInHierarchy){
+      float height=3f*actor.PresenceAtZoom(host.WorldCamera.orthographicSize);
+      pair.Value.WorldOffset=Vector3.up*(height+3f);
+     }
+    }
     string title=Name(pair.Key,host.English);
     bool ownBuild=(s.BuildingTaskId??"").StartsWith(pair.Key+":",StringComparison.Ordinal)&&s.BuildingCompletesUtcTicks>0;
     if(town&&!built)title=ownBuild?(host.English?"Building: ":"En obras: ")+title:(host.English?"Build here: ":"Construir aquí: ")+title;

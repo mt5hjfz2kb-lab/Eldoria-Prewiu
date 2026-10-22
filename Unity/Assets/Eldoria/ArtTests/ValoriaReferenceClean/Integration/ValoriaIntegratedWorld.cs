@@ -4,6 +4,7 @@ using System.Linq;
 using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.Presentation;
+using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using Eldoria.World4XPrototype;
@@ -127,7 +128,7 @@ namespace Eldoria.ReferenceClean {
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
    RenderSettings.fog=open?false:cityFog;
-   if(open&&!worldVisited){WorldNavigation.PanTo(WorldHome);WorldNavigation.SetZoomLevel(1,true);worldVisited=true;}
+   if(open&&!worldVisited){WorldNavigation.EnterStrategicView(WorldHome);worldVisited=true;}
    if(open)WorldNavigation.FitToAuthoredBounds();
    SyncWorldCity();Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
   }
@@ -141,7 +142,7 @@ namespace Eldoria.ReferenceClean {
   public void Open(RoyalSection section){if(section==RoyalSection.World)TrySetWorld(!InWorld);}
   public void Navigate(string target){TrySetWorld(target=="Frontier");}
   public void Apply(PlayerState state)=>city.Apply(state);
-  public void Home(){if(InWorld){WorldNavigation.PanTo(WorldHome);WorldNavigation.SetZoomLevel(1,true);}else city.Home();}
+  public void Home(){if(InWorld)WorldNavigation.EnterStrategicView(WorldHome);else city.Home();}
   public void Pan(Vector2 delta){if(!InWorld){city.Pan(delta);return;}var p=new Vector2(Screen.width*.5f,Screen.height*.5f);if(WorldNavigation.GroundPoint(p,out var a)&&WorldNavigation.GroundPoint(p-delta,out var b))WorldNavigation.PanTo(WorldNavigation.target+b-a);}
   public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
   public WorldHotspot FindTarget(string id)=>(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None)).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
@@ -217,11 +218,20 @@ namespace Eldoria.ReferenceClean {
     if(id=="valoria-map-city"){
      AddFocusRenderers(WorldBastionOne,points);AddFocusRenderers(WorldBastionTwo,points);AddFocusRenderers(WorldSawmill,points);
     }else{
-     var authored=WorldRoot.GetComponentsInChildren<Transform>().FirstOrDefault(t=>t.name=="Zone1 authored "+id||t.name=="Zone1 hostile camp "+id);
-     if(authored)AddFocusRenderers(authored.gameObject,points);
      if(id=="engendro-valoria"){
-      var rear=WorldRoot.GetComponentsInChildren<Transform>().FirstOrDefault(t=>t.name=="Zone1 hostile camp rear shelter");
-      if(rear)AddFocusRenderers(rear.gameObject,points);
+      // Follow the actual scaled animated silhouette rather than its hidden
+      // camp or tiny original hotspot. Keep gameplay physics untouched.
+      var actor=WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+      if(actor&&actor.ModelRoot&&actor.ModelRoot.activeInHierarchy){
+       // V4's renderer bounds include a huge baked animation culling
+       // envelope. Only true skinned geometry may steer the player camera.
+       if(actor.TryGeometryBounds(out var visible))AddFocusBox(visible,Matrix4x4.identity,points);
+       else AddFocusRenderers(actor.ModelRoot,points);
+      }
+     }
+     if(points.Count==0){
+      var authored=WorldRoot.GetComponentsInChildren<Transform>().FirstOrDefault(t=>t.name=="Zone1 authored "+id||t.name=="Zone1 hostile camp "+id);
+      if(authored)AddFocusRenderers(authored.gameObject,points);
      }
     }
     if(points.Count==0){
@@ -257,7 +267,34 @@ namespace Eldoria.ReferenceClean {
   public string TargetName(string id)=>ValoriaJourneyGuidance.Name(id,englishInterface);
   public WorldHotspot Pick(Vector2 point){
    if(!InWorld)return city.Pick(point);
-   return Physics.RaycastAll(PlayerCamera.ScreenPointToRay(point),900,1<<8).OrderBy(h=>h.distance).Select(h=>h.collider.GetComponent<WorldHotspot>()).FirstOrDefault(h=>h!=null&&h.transform.IsChildOf(WorldRoot.transform));
+   // Keep canonical hotspot physics as first authority (including resource
+   // gathering, navigation and quests). The larger visual-only creature may
+   // project beyond its pre-existing, deliberately untouched hotspot collider.
+   var ray=PlayerCamera.ScreenPointToRay(point);
+   var hit=Physics.RaycastAll(ray,900,1<<8).OrderBy(h=>h.distance)
+    .Select(h=>h.collider.GetComponent<WorldHotspot>())
+    .FirstOrDefault(h=>h!=null&&h.transform.IsChildOf(WorldRoot.transform));
+   if(hit)return hit;
+   var actor=WorldRoot.GetComponentInChildren<SpawnlingEncounterVisual>(true);
+   if(!actor||!actor.ModelRoot||!actor.ModelRoot.activeInHierarchy)return null;
+   // Picking the 150m culling envelope would select this monster while
+   // the user touches unrelated forest, bridge or quarry terrain.
+   if(!actor.TryGeometryBounds(out var b))return null;
+   var min=b.min;var max=b.max;
+   float left=float.PositiveInfinity,right=float.NegativeInfinity;
+   float bottom=float.PositiveInfinity,top=float.NegativeInfinity;
+   for(int i=0;i<8;i++){
+    Vector3 p=new Vector3((i&1)==0?min.x:max.x,(i&2)==0?min.y:max.y,(i&4)==0?min.z:max.z);
+    var v=PlayerCamera.WorldToScreenPoint(p);
+    if(v.z<=PlayerCamera.nearClipPlane||v.z>=PlayerCamera.farClipPlane)return null;
+    left=Mathf.Min(left,v.x);right=Mathf.Max(right,v.x);
+    bottom=Mathf.Min(bottom,v.y);top=Mathf.Max(top,v.y);
+   }
+   // The projected silhouette is a selection fallback, not new gameplay
+   // geometry or a second encounter. A generous box enables touch on mobile.
+   if(point.x>=left-8&&point.x<=right+8&&point.y>=bottom-8&&point.y<=top+8)
+    return FindTarget("engendro-valoria");
+   return null;
   }
   public RoyalSnapshot Read(string selected,bool english){
    englishInterface=english;var data=binding.Read(selected,english);if(InWorld)data.Realm=L("ZONA 1","ZONE 1");

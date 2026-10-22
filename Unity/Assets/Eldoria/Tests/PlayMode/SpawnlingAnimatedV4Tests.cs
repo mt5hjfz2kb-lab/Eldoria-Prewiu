@@ -15,6 +15,25 @@ namespace Eldoria.Tests
         sealed class Store:IStateStore {public PlayerState State;public int Writes;public PlayerState Load()=>State;public void Save(PlayerState state){State=state;Writes++;}}
         GameObject root;AnimationClip clip;string previousProfile;
         [UnityTearDown]public IEnumerator Cleanup(){SliceContentProfiles.SetRuntimeProfileOverride(previousProfile);if(root)UnityEngine.Object.Destroy(root);if(clip)UnityEngine.Object.Destroy(clip);yield return null;}
+        [Test]public void ExistingEnemyRemainsSubstantiallyLegibleAcrossAuthenticCameraZoom()
+        {
+            var actorType=Type.GetType("Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual, Assembly-CSharp");
+            Assert.IsNotNull(actorType);
+            root=new GameObject("Existing animated Spawnling visual only");
+            var actor=root.AddComponent(actorType);
+            var presence=actorType.GetMethod("PresenceAtZoom",BindingFlags.Public|BindingFlags.Instance);
+            Assert.IsNotNull(presence);
+            float close=(float)presence.Invoke(actor,new object[]{14f});
+            float far=(float)presence.Invoke(actor,new object[]{70f});
+            Assert.That(close,Is.GreaterThanOrEqualTo(1.75f),
+                "An insignificant 10–20% close-up change is rejected by the owner");
+            Assert.That(far,Is.GreaterThanOrEqualTo(4f),
+                "Macro 4X must keep the enemy readable while zooming out");
+            Assert.That(far,Is.GreaterThan(close*2f));
+            Assert.That((float)presence.Invoke(actor,new object[]{40f}),
+                Is.InRange(close,far),"Presence must interpolate without replacing the model or collider");
+        }
+
         [UnityTest]public IEnumerator OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave()
         {
             previousProfile=SliceContentProfiles.ActiveRuntimeProfile;

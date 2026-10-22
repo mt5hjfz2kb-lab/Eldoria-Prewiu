@@ -63,6 +63,33 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator AuthoredWorldOpensWithMateriallyWiderStrategicFraming()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            var navigation = Member(host, "WorldNavigation") as Component;
+            var camera = Member(host, "WorldCamera") as Camera;
+            Assert.That(navigation, Is.Not.Null);
+            Assert.That(camera, Is.Not.Null);
+            var worldHome = (Vector3)Member(host, "WorldHome");
+            // Only view controls; do not purchase the sawmill, unlock an
+            // objective, reset the save or mutate the canonical gateway.
+            Call(navigation, "SetZoomLevel", 1, true);
+            float oldRegion = camera.orthographicSize;
+            Call(navigation, "EnterStrategicView", worldHome);
+            float overview = camera.orthographicSize;
+            Assert.That(overview, Is.GreaterThan(oldRegion * 1.45f),
+                "The new entry must expose >2.1x regional map AREA, not a 10% zoom tweak.");
+            Assert.That((float)Call(navigation, "StrategicEntryZoom"), Is.GreaterThan(0f));
+            // Nearby world details must remain reachable by deliberate zoom.
+            Call(navigation, "SetZoomLevel", 2, true);
+            Assert.That(camera.orthographicSize, Is.LessThan(oldRegion));
+            // Returning to the overview uses the existing bounded terrain.
+            Call(navigation, "EnterStrategicView", worldHome);
+            Assert.That(camera.orthographicSize, Is.EqualTo(overview).Within(.01f));
+        }
+
+        [UnityTest]
         public IEnumerator SingleHudCompactObjectiveAndNoOverlayAtRest()
         {
             Component host = null, hud = null;

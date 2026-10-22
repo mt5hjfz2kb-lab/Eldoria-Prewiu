@@ -53,7 +53,21 @@ namespace Eldoria.UI.RoyalGold {
    foreach(var header in new[]{(RectTransform)Realm.transform,(RectTransform)Resources.transform,(RectTransform)Settings.transform})
     if(header.gameObject.activeInHierarchy)area.yMax=Mathf.Min(area.yMax,ScreenBounds(header,camera).yMin-gap);
    if(Feedback&&Feedback.gameObject.activeInHierarchy&&!string.IsNullOrWhiteSpace(Feedback.text))area.yMax=Mathf.Min(area.yMax,ScreenBounds(Feedback.rectTransform,camera).yMin-gap);
-   foreach(var item in Navigation.Items)if(item.Button.gameObject.activeInHierarchy)area.yMin=Mathf.Max(area.yMin,ScreenBounds((RectTransform)item.Button.transform,camera).yMax+gap);
+   // The approved compact V3 action rail is VERTICAL, not a bottom dock.
+   // Never reserve the entire lower screen for controls positioned on the
+   // far left. This authoritative free-viewport check is also used by native
+   // I-II gameplay and offscreen camera framing, not only by HUD decoration.
+   var navRect=Navigation?(RectTransform)Navigation.transform:null;
+   // A single currently unlocked action makes this rail SHORTER than
+   // its width. Detect from its anchor, never from its current item count.
+   // Otherwise one legitimate left-side Mundo button gets mistaken for a
+   // bottom bar and eliminates nearly the entire available camera height.
+   bool leftRail=navRect&&navRect.anchorMax.x<.05f&&navRect.anchorMin.y>.95f;
+   foreach(var item in Navigation.Items)if(item.Button.gameObject.activeInHierarchy){
+    var bounds=ScreenBounds((RectTransform)item.Button.transform,camera);
+    if(leftRail)area.xMin=Mathf.Max(area.xMin,bounds.xMax+gap);
+    else area.yMin=Mathf.Max(area.yMin,bounds.yMax+gap);
+   }
    bool bottomSheet=Building.IsBottomSheet;
    if(Mission.gameObject.activeInHierarchy){var mission=ScreenBounds((RectTransform)Mission.transform,camera);if(bottomSheet)area.yMax=Mathf.Min(area.yMax,mission.yMin-gap);else area.xMin=Mathf.Max(area.xMin,mission.xMax+gap);}
    if(Building.gameObject.activeInHierarchy){var panel=ScreenBounds((RectTransform)Building.transform,camera);if(bottomSheet)area.yMin=Mathf.Max(area.yMin,panel.yMax+gap);else area.xMax=Mathf.Min(area.xMax,panel.xMin-gap);}
