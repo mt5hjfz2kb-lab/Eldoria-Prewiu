@@ -1,6 +1,12 @@
 name: World4X Region 1 canonical candidate source and PlayMode QA
 
 on:
+  push:
+    branches: [feature/world4x-region1-canon-20261022]
+    paths:
+      - 'Unity/Assets/Eldoria/World4XCanon/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
@@ -13,12 +19,12 @@ permissions:
   actions: read
 
 concurrency:
-  group: world4x-canon-pr-${{ github.event.pull_request.number }}
+  group: world4x-canon-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 jobs:
   canon-source:
-    if: github.event.pull_request.number == 100
+    if: github.event_name == 'push' || github.event.pull_request.number == 100
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
@@ -46,7 +52,7 @@ jobs:
 
   unity-source-playmode:
     needs: canon-source
-    if: vars.UNITY_RUNNER_READY == 'true'
+    if: github.event_name == 'push' && vars.UNITY_RUNNER_READY == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 50
     steps:
