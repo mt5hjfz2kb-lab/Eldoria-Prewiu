@@ -743,7 +743,9 @@ namespace Eldoria.World4XCanon
             // Exact existing forest sources only. One image per retained tree;
             // no density increase, new resource, collider, or changed transform.
             var donors=original.GetComponentsInChildren<MeshRenderer>(true)
-                .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal))
+                .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
+                    r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal) ||
+                    r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal))
                 .OrderBy(r=>r.transform.position.x).ThenBy(r=>r.transform.position.z).ToArray();
             if(donors.Length==0){Debug.LogWarning("REGION1_LOCAL_CANOPY_NO_MATCH");return;}
             var vertices=new List<Vector3>();var uv=new List<Vector2>();

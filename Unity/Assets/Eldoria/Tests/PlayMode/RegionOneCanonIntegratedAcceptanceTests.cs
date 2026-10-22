@@ -70,8 +70,13 @@ namespace Eldoria.Tests
             var retainedCanopy=geo.GetComponentsInChildren<MeshFilter>(true)
                 .SingleOrDefault(f=>f.name=="Region1 · retained local forest canopy");
             Assert.That(retainedCanopy,Is.Not.Null,"Known local trees must receive the candidate visual.");
-            Assert.That(retainedCanopy.sharedMesh.vertexCount,Is.EqualTo(98*4),
-                "Preserve all 98 existing tree positions without adding a new forest population.");
+            var retainedTreeSources=world.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
+                    r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal) ||
+                    r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal)).ToArray();
+            Assert.That(retainedTreeSources.Count(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)),Is.EqualTo(98));
+            Assert.That(retainedCanopy.sharedMesh.vertexCount,Is.EqualTo(retainedTreeSources.Length*4),
+                "Replace each measured retained tree once, including both existing edge groups.");
             Assert.That(geo.GetComponentsInChildren<Collider>(true), Is.Empty,
                 "Art layer must never steal taps or replace gameplay colliders");
             Assert.That(geo.GetComponentsInChildren<MonoBehaviour>(true)
