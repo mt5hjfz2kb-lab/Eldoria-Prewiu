@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-relevo-20261022",
+      "owner": "chatgpt-world4x-continuation-20261022-1925",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 7,
+      "ownership_revision": 8,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner 2026-10-22 explicitly directs chat takeover of stalled World4X hybrid workstream and continuation of existing PR #100, 0€, no main promotion",
-      "phase": "HYBRID_MACRO_REFERENCE_PARITY_AND_PORTRAIT_PENDING",
-      "next": "From candidate 338366e94dd0967424f18feb3d8a0d8fd14d2dc7 and authentic native artifact 12440189969 on run 39813965828: improve large-scale geographic composition/forest variety, coastline silhouette and true 3D visual depth versus the three owner PNGs; not micro-noise. Portrait panorama real camera improved to 451.917 orthographic, shows ~418/850 (~49%) of core vs old 225 (~26.5%); full-region portrait remains UNSOLVED within existing camera limits. PR #100 remains DRAFT; do not publish or merge before owner art approval and full gameplay/WebGL/iPhone #96 QA. Continue as same workstream, owner rev7; no duplicate runner jobs.",
+      "authorization": "Owner 2026-10-22 explicitly requested continuation in this chat; formal rev8 handoff of PR #100 and the same Region1 workstream, no spend, no release.",
+      "phase": "WORLD4X_ART_NATIVE_A_B_NEXT",
+      "next": "From native-verified candidate 5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d and Unity 39822981117 (7/7), correct a dominant visible geography/terrain macro-composition discrepancy against the three immutable PNGs, retain only genuine A/B improvement, then continue zoom/UX fidelity, mobile and iPhone #96 independent QA; no duplicate Unity Windows jobs, no main merge/release.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -51,13 +51,13 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "338366e94dd0967424f18feb3d8a0d8fd14d2dc7",
-        "unity_run": 39813965828,
-        "unity_playmode": "7_OF_7_PASS_FROM_AUTHENTIC_NUNIT_XML; Github run may still be finalizing",
+        "sha": "5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d",
+        "unity_run": 39822981117,
+        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_WORKFLOW_SUCCESS",
         "real_unity_captures": 12,
         "art_approved": false,
         "physical_iphone_tested": false,
-        "visual_gap": "CANON_NOT_MET: portrait camera width 418/850 (~49%); geography still flat/schematic, pines repeated, golden palette increment small, coast now blended and fog seams cleared; close/regional need richer detail, camera limitation limits near-whole-region portrait.",
+        "visual_gap": "Real panorama remains too schematic/flat compared with canonical owner PNG; linear painted roads, repeated dark pine silhouettes and rudimentary coast. Portrait only ~49% core-width visible. Close scene still castle-dominated. Technical pass does not imply art acceptance.",
         "playable_published": false,
         "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
         "latest_native_failure_run": 39795241792,
@@ -86,7 +86,16 @@
         "coastal_blend_run": 39813965828,
         "coastal_blend_sha": "338366e94dd0967424f18feb3d8a0d8fd14d2dc7",
         "coastal_blend_visual": "Authored real Unity 390x844 portrait screenshot observed: softened shoreline; owner concept parity still not reached",
-        "latest_recoverable_failure": "1b518ee9 Unity CS0234 from direct test assembly reference; corrected with reflection 338366; subsequent native NUnit XML 7/7 pass."
+        "latest_recoverable_failure": "1b518ee9 Unity CS0234 from direct test assembly reference; corrected with reflection 338366; subsequent native NUnit XML 7/7 pass.",
+        "last_rejected_trial": "50cb39945964bcc6462b33b21451bfe4da0dae9b 2 batched coastal ribbons yielded obvious stepped tan blocks in actual 39822061158 Unity A/B; ART_REJECTED. Rollback ff8c accidentally cut method header; exact byte-for-byte restoration 5ac728b was native reverified 7/7.",
+        "forest_three_species_sha": "7d31682fd25166d85be264afb990e37e1efd30f8",
+        "forest_three_species_run": 39820853781,
+        "forest_three_species_reference_comparison": "7d same camera showed small tree shape variety (<4% significant pixel difference overall including Breach edits), source retained as experimental, not art approved",
+        "coast_step_rejected_run": 39822061158,
+        "recovery_run": 39822981117,
+        "recovery_artifact_id": 12445257357,
+        "baseline_comparison_run": 39819239685,
+        "approved_world_pngs": "docs/visual-reference/world-map/01_vista_cercana.png;02_vista_regional.png;03_vista_panoramica.png"
       },
       "ownership_history": [
         {
@@ -99,6 +108,12 @@
           "relieved_at": "2026-10-22",
           "reason": "Explicit owner-directed chat recovery; same PR #100 and workstream retained; previous Unity jobs not cancelled",
           "outcome": "Hybrid canopy code retained, Unity compiler CS0136 verified in artifact 12433312016; existing jobs preserved."
+        },
+        {
+          "owner": "chatgpt-world4x-relevo-20261022",
+          "relieved_at": "2026-10-22",
+          "reason": "Owner request: continue the stalled previous conversation and finish the same World4X work, preserving candidate PR #100 and latest Unity pass.",
+          "outcome": "Existing coast rim experiment reverted safely; candidate 5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d tested by native run 39822981117, 7/7 PASS; no main merge."
         }
       ]
     },
