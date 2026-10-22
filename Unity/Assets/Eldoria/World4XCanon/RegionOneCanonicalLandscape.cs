@@ -264,6 +264,7 @@ namespace Eldoria.World4XCanon
                 float dx = (x + warpX - centre.x) / (width * 1.3f);
                 float dz = (z + warpZ - centre.y) / (depth * 1.2f);
                 float d = dx * dx + dz * dz;
+                if (d < .075f) return true; // Preserve each authored grove's core anchor.
                 if (d > 1.65f) continue;
                 float density = Mathf.PerlinNoise(i * 6.17f + x * .044f,
                                                    i * 3.91f + z * .042f);
