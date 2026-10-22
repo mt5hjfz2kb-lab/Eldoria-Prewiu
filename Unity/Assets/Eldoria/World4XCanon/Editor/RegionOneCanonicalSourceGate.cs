@@ -22,8 +22,15 @@ namespace Eldoria.World4XCanon.Editor
                 throw new InvalidOperationException("Unexpected or missing hybrid-world art style version");
             if (RegionOneCanonicalLandscape.SampleHeight(0f, 0f) > -2.5f)
                 throw new InvalidOperationException("Overlay would obstruct original hotspot geometry");
-            if (!RegionOneCanonicalLandscape.IsForest(-310f, 230f) ||
-                !RegionOneCanonicalLandscape.IsForest(-208f,153f) ||
+            // Explicit world coordinates for the deliberately remapped outer
+            // groves: authored(-310,230)->(-162,230), (-208,153)->(-135.48,153).
+            // Keep central geography fixed and verify the inverse source anchor.
+            if(Mathf.Abs(RegionOneCanonicalLandscape.AuthoredToWorldX(80f)-80f)>.001f ||
+               Mathf.Abs(RegionOneCanonicalLandscape.AuthoredToWorldX(-80f)+80f)>.001f ||
+               Mathf.Abs(RegionOneCanonicalLandscape.WorldToAuthoredX(-162f)+310f)>.001f)
+                throw new InvalidOperationException("Protected geography or inverse authored domain changed");
+            if (!RegionOneCanonicalLandscape.IsForest(-162f, 230f) ||
+                !RegionOneCanonicalLandscape.IsForest(-135.48f,153f) ||
                 RegionOneCanonicalLandscape.IsForest(0f, 0f))
                 throw new InvalidOperationException("Forest coverage lost geographic anchors");
             if (!RegionOneCanonicalLandscape.IsRoad(0f, 0f) ||
@@ -57,4 +64,5 @@ namespace Eldoria.World4XCanon.Editor
     }
 }
 #endif
+
 
