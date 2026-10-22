@@ -332,7 +332,16 @@ namespace Eldoria.World4XCanon
                           7f * Mathf.Sin(z * .083f);
             float southEdge = -68f - .22f * (x - 366f) +
                               10f * Mathf.Sin(x * .022f);
-            return x > coast && z < southEdge;
+            // Keep the established eastern edge and connect a short,
+            // irregular southeast shoreline to it. Panorama-only geography:
+            // no invented POIs, mesh colliders, ports or new water gameplay.
+            // In portrait this reveals the coast near the *actual* southern
+            // landscape border instead of an all-green central strip.
+            float southShore = -370f + 12f * Mathf.Sin(x*.020f) +
+                               7f * Mathf.Sin(x*.071f);
+            bool southeastern = z < southShore &&
+                x > -90f + 18f * Mathf.Sin(z*.018f);
+            return (x > coast && z < southEdge) || southeastern;
         }
 
         static float DistanceToSegment(Vector2 point, Vector2 a, Vector2 b)
@@ -916,7 +925,12 @@ namespace Eldoria.World4XCanon
             bool distant = size >= RegionalThreshold;
             bool modeChanged = distant != farMode;
             bool hideOldSquare = size >= LocalThreshold;
-            bool showFog = size >= 190f && host.InWorld;
+            // Border strips are authored near the complete region's edge.
+            // They would cross the middle of the new portrait overview as
+            // two straight pale seams. Only show them when the horizontal
+            // panorama actually reaches the outer geographic margins.
+            bool showFog = size >= 190f && host.InWorld &&
+                navigation.View.aspect >= .80f;
             // Progressive pitch: local remains readable, panoramas become
             // more top-down. The same stable geographical XYZ is retained.
             float desiredTilt = Mathf.Lerp(56f, 74f,

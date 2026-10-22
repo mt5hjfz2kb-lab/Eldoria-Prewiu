@@ -363,6 +363,14 @@ namespace Eldoria.Tests
                             Assert.That(camera.orthographicSize*2f*camera.aspect,
                                 Is.GreaterThanOrEqualTo(400f),
                                 "Portrait panorama still crops the full world to a narrow strip.");
+                            // Portrait framing has not reached the real map
+                            // boundary; fixed straight-edged fog strips must
+                            // not cut horizontally across its central land.
+                            var portraitFog=world.transform.Find(
+                                "Region 1 canonical continuous geography/Region1 · panoramic border haze only");
+                            Assert.That(portraitFog,Is.Not.Null);
+                            Assert.That(portraitFog.gameObject.activeSelf,Is.False,
+                                "No hard fog seams may cross portrait map interior.");
                         }
                         if(stage.Item2=="panoramica" && format.Item3=="horizontal")
                             Assert.That(camera.orthographicSize,Is.InRange(239f,249f),
