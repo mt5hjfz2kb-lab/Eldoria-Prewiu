@@ -112,7 +112,17 @@ namespace Eldoria.ReferenceClean {
     bool built=pair.Key=="sawmill"?s.SawmillLevel>0:s.BarracksLevel>0;
     if(town&&built)visible&=pair.Key==objective;
     if(pair.Key=="barracks")visible&=s.BastionLevel>=2;
-    if(pair.Key=="engendro-valoria")visible&=s.BastionLevel>=2;
+    if(pair.Key=="engendro-valoria"){
+     visible&=s.BastionLevel>=2;
+     // The enemy now remains legible at several strategic zooms. A label
+     // pinned to the old 3m hotspot covered its actual violet head/torso.
+     // Move the SAME clickable label above the silhouette: the rise is
+     // proportional to orthographic zoom, so clearance remains roughly
+     // constant in screen pixels in close, regional and panoramic views.
+     // This changes no target, combat collider, unlock or narrative command.
+     if(host.WorldCamera)pair.Value.WorldOffset=Vector3.up*
+      (3f+Mathf.Clamp(host.WorldCamera.orthographicSize*.30f,4f,40f));
+    }
     if(pair.Key=="corrupt-scout")visible&=!s.ScoutDefeated;
     // Selection already has a named contextual panel. Labels identify only useful targets.
     visible&=host.Selected!=pair.Key;
