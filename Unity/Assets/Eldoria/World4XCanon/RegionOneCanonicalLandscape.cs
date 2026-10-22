@@ -1238,6 +1238,8 @@ namespace Eldoria.World4XCanon
             }
             float localGroundThreshold=navigation.View.aspect<.80f ? 72f : LocalThreshold;
             float size = navigation.View.orthographicSize;
+            if(nearGroundMaterial)nearGroundMaterial.SetFloat("_EcologyStrength",
+                1f-Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(125f,RegionalThreshold,size)));
             bool distant = size >= RegionalThreshold;
             bool modeChanged = distant != farMode;
             // Woodland has a different LOD boundary from gameplay markers.

@@ -6,6 +6,7 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
         _DetailMap("Painted meadow detail", 2D) = "gray" {}
         _EcologyMap("Actual-node soil / forest / meadow",2D)="black"{}
         _EcologySpan("Local field inverse extent",Float)=.002604167
+        _EcologyStrength("Local scale ecology",Range(0,1))=1
         _WorldMap("Origin XZ and inverse extents", Vector) = (0,0,1,1)
         _TileScale("Detail world scale", Float) = 0.0208333
         _DetailStrength("Detail strength", Range(0,1)) = 0.55
@@ -28,6 +29,7 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
             TEXTURE2D(_EcologyMap); SAMPLER(sampler_EcologyMap);
             CBUFFER_START(UnityPerMaterial)
                 float _EcologySpan;
+                float _EcologyStrength;
                 float4 _WorldMap;
                 float _TileScale;
                 float _DetailStrength;
@@ -56,16 +58,16 @@ Shader "Eldoria/World4X/WorldAlignedPaintedGround"
                 half dry=1-smoothstep(.01,.10,pigment.b-max(pigment.r,pigment.g));
                 half4 ecology=SAMPLE_TEXTURE2D(_EcologyMap,sampler_EcologyMap,relative*_EcologySpan+.5);
                 #if defined(UNITY_COLORSPACE_GAMMA)
-                    half3 meadow=half3(.51,.56,.25),forest=half3(.31,.39,.17),soil=half3(.65,.53,.32);
+                    half3 meadow=half3(.51,.56,.25),forest=half3(.31,.39,.17),soil=half3(.72,.59,.37);
                 #else
-                    half3 meadow=half3(.223,.274,.051),forest=half3(.078,.126,.025),soil=half3(.380,.243,.084);
+                    half3 meadow=half3(.223,.274,.051),forest=half3(.078,.126,.025),soil=half3(.477,.307,.113);
                 #endif
-                half weight=ecology.a*dry;
+                half weight=ecology.a*dry*_EcologyStrength;
                 pigment=lerp(pigment,meadow,ecology.b*weight*.62);
                 pigment=lerp(pigment,forest,ecology.g*weight*.68);
-                pigment=lerp(pigment,soil,ecology.r*weight*.88);
+                pigment=lerp(pigment,soil,ecology.r*weight*.95);
                 half footprint=max(length(ddx(relative)),length(ddy(relative)));
-                half detailFade=1-smoothstep(.8,2.8,footprint);
+                half detailFade=1-smoothstep(.16,.75,footprint);
                 half3 color=pigment*lerp(half3(1,1,1),variation,_DetailStrength*dry*detailFade);
                 Light sun=GetMainLight();
                 half flat=.70h+.30h*saturate(sun.direction.y);
