@@ -68,6 +68,7 @@ namespace Eldoria.World4XCanon
         Material surfaceMaterial, riftMaterial, fogMaterial, breachCoreMaterial, breachHaloMaterial;
         readonly List<Mesh> generatedMeshes = new List<Mesh>();
         bool built, farMode, fogMode;
+        bool ownsTerrainTexture;
         bool woodlandMode;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -146,9 +147,23 @@ namespace Eldoria.World4XCanon
             // Controlled hybrid trial: legacy mode is opt-in for exact
             // same-camera A/B only; the real game uses the richer surface.
             bool legacyOnly = Environment.GetEnvironmentVariable("ELDORIA_REGION1_HYBRID_BASELINE")=="1";
-            terrainTexture = legacyOnly ? MakeTerrainTexture(1024)
-                : RegionOneHybridTerrainArt.Bake(2048,LandscapeHalfWidth,
-                    LandscapeHalfDepth,BreachOffsetX,BreachOffsetZ);
+            // Reuse the exact native-reviewed atlas. Authoring can explicitly
+            // rebake; entering the world must not repaint four million pixels.
+            bool rebake=Environment.GetEnvironmentVariable("ELDORIA_REGION1_REBAKE_ATLAS")=="1";
+            if(!legacyOnly && !rebake)
+                terrainTexture=Resources.Load<Texture2D>("World4X/RegionOneTerrainAtlas");
+            ownsTerrainTexture=!terrainTexture;
+            if(!terrainTexture)
+                terrainTexture=legacyOnly ? MakeTerrainTexture(1024)
+                    : RegionOneHybridTerrainArt.Bake(2048,LandscapeHalfWidth,
+                        LandscapeHalfDepth,BreachOffsetX,BreachOffsetZ);
+#if !UNITY_EDITOR
+            // The shared imported asset stays GPU-resident across world visits;
+            // only editor evidence needs its CPU pixels for EncodeToPNG.
+            if(!ownsTerrainTexture && terrainTexture.isReadable)
+                terrainTexture.Apply(false,true);
+#endif
+            Debug.Log("REGION1_ATLAS_PREBAKED="+(!ownsTerrainTexture));
             if (surfaceMaterial.HasProperty("_BaseMap")) surfaceMaterial.SetTexture("_BaseMap", terrainTexture);
             if (surfaceMaterial.HasProperty("_MainTex")) surfaceMaterial.SetTexture("_MainTex", terrainTexture);
             var land = new GameObject("Region1 · one coherent terrain mesh");
@@ -1066,7 +1081,7 @@ namespace Eldoria.World4XCanon
             for (int i = 0; i < originalGround.Count; i++)
                 if (originalGround[i]) originalGround[i].enabled = originalGroundInitiallyEnabled[i];
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
-            if (terrainTexture) Destroy(terrainTexture);
+            if (terrainTexture && ownsTerrainTexture) Destroy(terrainTexture);
             if (legacyCompareTexture) Destroy(legacyCompareTexture);
             if (hybridForestAtlas) Destroy(hybridForestAtlas);
             if (surfaceMaterial) Destroy(surfaceMaterial);
