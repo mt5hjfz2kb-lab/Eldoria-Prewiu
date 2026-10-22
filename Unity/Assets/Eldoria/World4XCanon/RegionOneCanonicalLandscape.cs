@@ -224,20 +224,33 @@ namespace Eldoria.World4XCanon
 
         public static bool IsForest(float x, float z)
         {
+            // Distinct, irregular authored-looking groves rather than circles
+            // stamped at predictable radii across a strategic board.
             for (int i = 0; i < ForestCentres.Length; i++)
             {
                 var centre = ForestCentres[i];
-                float dx = (x - centre.x) / (45f + (i % 4) * 12f);
-                float dz = (z - centre.y) / (30f + (i % 3) * 15f);
-                if (dx * dx + dz * dz < 1f) return true;
+                float width = 24f + (i % 4) * 5.5f;
+                float depth = 20f + (i % 3) * 5.8f;
+                float dx = (x - centre.x) / width;
+                float dz = (z - centre.y) / depth;
+                float d = dx * dx + dz * dz;
+                if (d >= 1.45f) continue;
+                float irregularity = .19f * Mathf.Sin(x * .16f + i * 1.2f) *
+                                    Mathf.Cos(z * .11f - i * .7f) +
+                                    .13f * Mathf.Sin(x * .07f + z * .12f + i);
+                if (d < 1f + irregularity) return true;
             }
             return false;
         }
 
         public static bool IsCoast(float x, float z)
         {
-            // A *small eastern edge* only; never a cut-out or floating island.
-            return x > 365f + 18f * Mathf.Sin(z * .014f) && z < -68f;
+            // A narrow southeastern shore, never an island outline.
+            float coast = 366f + 12f * Mathf.Sin(z * .032f) +
+                          7f * Mathf.Sin(z * .083f);
+            float southEdge = -68f - .22f * (x - 366f) +
+                              10f * Mathf.Sin(x * .022f);
+            return x > coast && z < southEdge;
         }
 
         static float DistanceToSegment(Vector2 point, Vector2 a, Vector2 b)
@@ -249,23 +262,28 @@ namespace Eldoria.World4XCanon
 
         public static bool IsRoad(float x, float z)
         {
-            Vector2 p = new Vector2(x, z);
-            return DistanceToSegment(p, new Vector2(0, 0), new Vector2(-380, 305)) < 4.8f ||
-                   DistanceToSegment(p, new Vector2(0, 0), new Vector2(380, 350)) < 4.8f ||
-                   DistanceToSegment(p, new Vector2(0, 0), new Vector2(-300, -370)) < 4.8f ||
-                   DistanceToSegment(p, new Vector2(0, 0), new Vector2(405, -265)) < 4.8f;
+            // Curved road network in one shared coordinate system. The close
+            // 3D route remains the authoritative interactable route surface.
+            Vector2 p = new Vector2(x + 13f * Mathf.Sin(z * .017f) +
+                                         5f * Mathf.Sin(z * .037f),
+                                     z + 8f * Mathf.Sin(x * .013f));
+            return DistanceToSegment(p, new Vector2(0,0), new Vector2(-365,310)) < 3.0f ||
+                   DistanceToSegment(p, new Vector2(0,0), new Vector2(370,305)) < 3.0f ||
+                   DistanceToSegment(p, new Vector2(0,0), new Vector2(-305,-370)) < 3.0f ||
+                   DistanceToSegment(p, new Vector2(0,0), new Vector2(400,-262)) < 3.0f;
         }
 
         public static bool IsRiver(float x, float z)
         {
-            float riverX = -104f + .30f * z + 35f * Mathf.Sin(z * .012f);
-            return Mathf.Abs(x - riverX) < 3.6f && z > -450f && z < 465f;
+            float riverX = -104f + .25f * z +
+                27f * Mathf.Sin(z * .016f) + 12f * Mathf.Sin(z * .042f);
+            return Mathf.Abs(x - riverX) < 3.2f && z > -440f && z < 450f;
         }
 
         Texture2D MakeTerrainTexture(int size)
         {
             var image = new Texture2D(size, size, TextureFormat.RGB24, true, false);
-            image.name = "Region1 0-cost procedural coherent geographic color";
+            image.name = "Region1 continuous textured geography one shared space";
             var pixels = new Color32[size * size];
             Vector2 rift = new Vector2(BreachOffsetX, BreachOffsetZ);
             for (int z = 0; z < size; z++)
@@ -273,24 +291,50 @@ namespace Eldoria.World4XCanon
                 {
                     float worldX = ((x + .5f) / size * 2 - 1) * LandscapeHalfWidth;
                     float worldZ = ((z + .5f) / size * 2 - 1) * LandscapeHalfDepth;
-                    float n = Noise(x / 4, z / 4) * .5f + Noise(x / 13, z / 13) * .5f;
-                    Color c = Color.Lerp(Grass, DryGrass, Mathf.Clamp01(n * .75f));
-                    if (IsForest(worldX, worldZ)) c = Color.Lerp(c, DarkForest, .49f + .18f * n);
-                    if (Mathf.Abs(worldX) > 520f && n > .70f)
-                        c = Color.Lerp(c, Rock, .24f);
-                    if (IsRoad(worldX, worldZ)) c = Color.Lerp(c, Road, .70f);
-                    if (IsRiver(worldX, worldZ)) c = Water;
-                    if (IsCoast(worldX, worldZ)) c = Water;
-                    float d = Vector2.Distance(new Vector2(worldX, worldZ), rift);
-                    if (d < 40f)
+                    // Smooth multiscale ground removes square pixel blocks.
+                    float broad = Mathf.PerlinNoise(22f + worldX * .0065f, 55f + worldZ * .007f);
+                    float mottling = Mathf.PerlinNoise(106f + worldX * .045f, 78f + worldZ * .05f);
+                    float grain = Mathf.PerlinNoise(216f + worldX * .18f, 312f + worldZ * .17f);
+                    float n = .46f * broad + .38f * mottling + .16f * grain;
+                    Color c = Color.Lerp(Grass, DryGrass, Mathf.Clamp01(.10f + n * .85f));
+                    // Colour continuity from the actual player-city biome to
+                    // the surrounding region, without adding a separate map.
+                    float radius = Mathf.Sqrt(worldX * worldX + worldZ * worldZ);
+                    float meadowTransition = 1f - Mathf.SmoothStep(85f, 230f, radius);
+                    c = Color.Lerp(c, new Color(.42f,.46f,.28f),
+                        meadowTransition * .33f);
+                    if (IsForest(worldX, worldZ))
                     {
-                        float strength = Mathf.Clamp01((40f - d) / 33f);
-                        c = Color.Lerp(c, Rift, strength * .80f);
+                        float canopy = .42f + .20f * mottling;
+                        c = Color.Lerp(c, DarkForest, canopy);
+                        if (grain > .68f) c = Color.Lerp(c, Grass, .27f);
+                    }
+                    if (Mathf.Abs(worldX) > 430f && broad > .70f)
+                        c = Color.Lerp(c, Rock, .12f + .12f * grain);
+                    if (IsRoad(worldX, worldZ))
+                        c = Color.Lerp(c, Road, .62f + .13f * grain);
+                    float waterbank = .0f;
+                    float riverX = -104f + .25f * worldZ +
+                        27f * Mathf.Sin(worldZ * .016f) + 12f * Mathf.Sin(worldZ * .042f);
+                    if (worldZ > -445f && worldZ < 455f)
+                        waterbank = Mathf.Clamp01((5.4f - Mathf.Abs(worldX - riverX)) / 4f);
+                    if (waterbank > 0) c = Color.Lerp(c, Water, waterbank * .91f);
+                    if (IsCoast(worldX, worldZ))
+                        c = Color.Lerp(Water, new Color(.25f,.48f,.61f), grain * .18f);
+                    float d = Vector2.Distance(new Vector2(worldX, worldZ), rift);
+                    if (d < 54f)
+                    {
+                        float strength = Mathf.Clamp01((54f - d) / 47f);
+                        float cracks = Mathf.Abs(Mathf.Sin(
+                            Mathf.Atan2(worldZ - rift.y, worldX - rift.x) * 12f + d * .035f));
+                        c = Color.Lerp(c, Rift, strength * (.58f + .22f * cracks));
+                        if (d < 10f) c = Color.Lerp(c, new Color(.60f,.18f,.68f),
+                            Mathf.Clamp01((10f - d) / 8f) * .68f);
                     }
                     pixels[z * size + x] = c;
                 }
             image.SetPixels32(pixels);
-            image.Apply(true, true); // discard CPU copy: important for iPhone/WebGL memory.
+            image.Apply(true, true); // do not retain the CPU pixel array on mobile
             image.wrapMode = TextureWrapMode.Clamp;
             image.filterMode = FilterMode.Bilinear;
             return image;
