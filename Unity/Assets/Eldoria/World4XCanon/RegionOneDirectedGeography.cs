@@ -155,6 +155,7 @@ namespace Eldoria.World4XCanon
    mask=new Texture2D(w,h,TextureFormat.RGBA32,true,true){name="Directed coastline water routes grove masks",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
    mask.SetPixels32(pixels);mask.Apply(true,false);return mask;
   }
+  public bool IsBefore=>before;
   public Mesh DirectedTerrain {get;private set;}
   public Texture2D GeographicMask=>mask;
   ValoriaIntegratedWorld host;Vector3 origin;GameObject art;Material ground,forestMaterial;

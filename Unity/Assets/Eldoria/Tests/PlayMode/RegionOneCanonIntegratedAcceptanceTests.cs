@@ -292,12 +292,16 @@ namespace Eldoria.Tests
             {
                 Call(navigation, "SetZoomLevel", 2, true);
                 Call(adapter,"RefreshForCapture");
-                Assert.That(terrain.Any(x => x.enabled), Is.True,
-                    "The close-up camera must restore the imported prairie detail.");
-                Assert.That(terrain.Where(x=>x.enabled).All(x=>x.sharedMaterial &&
-                    x.sharedMaterial.shader.name=="Eldoria/World4X/DirectedGeographicLayers" &&
-                    x.sharedMaterial.shader.isSupported),Is.True,
-                    "Near ground must render the same geographic pigment through a supported shader.");
+                Assert.That(terrain.All(x => !x.enabled), Is.True,
+                    "Candidate near ground must not overlap the old rectangular prairie.");
+                var continuous=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Directed terrain continuous coast relief");
+                Assert.That(continuous.enabled&&continuous.gameObject.activeInHierarchy&&continuous.sharedMaterial&&
+                    continuous.sharedMaterial.shader.name=="Eldoria/World4X/DirectedGeographicLayers"&&continuous.sharedMaterial.shader.isSupported,Is.True,
+                    "A supported continuous terrain must actually replace the hidden near ground.");
+                Call(adapter,"CompareDirectedLayout",true);
+                Assert.That(terrain.Any(x=>x.enabled),Is.True,"Before control must still restore imported near prairie.");
+                Call(adapter,"CompareDirectedLayout",false);
+                Assert.That(terrain.All(x=>!x.enabled),Is.True,"Candidate must re-hide the old rectangle after A/B.");
 
                 float nearPitch = (float)Member(navigation,"tilt");
                 Call(navigation, "SetZoomLevel", 0, true);

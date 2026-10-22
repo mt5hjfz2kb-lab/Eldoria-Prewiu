@@ -1173,6 +1173,7 @@ namespace Eldoria.World4XCanon
         {
             if(directedGeography)directedGeography.SetBefore(before);
             if(referenceNodes)referenceNodes.SetBefore(before);
+            RefreshForCapture();
         }
 
         public void RefreshForCapture()
@@ -1282,7 +1283,8 @@ namespace Eldoria.World4XCanon
             // Independent pigment replaces the duplicate old fracture only
             // where the painted ground is visible. Near/fallback retains it.
             bool paintedScar=paintedBreachRenderer && terrainTexture &&
-                terrainTexture.name=="RegionOnePaintedTerrain" && hideOldSquare && !compareLegacyAtlas;
+                terrainTexture.name=="RegionOnePaintedTerrain" && !compareLegacyAtlas &&
+                (hideOldSquare || (directedGeography && !directedGeography.IsBefore));
             if(paintedBreachRenderer) paintedBreachRenderer.enabled=paintedScar;
             if(paintedBreachFallbacks!=null)
                 foreach(var r in paintedBreachFallbacks) if(r) r.enabled=!paintedScar;
