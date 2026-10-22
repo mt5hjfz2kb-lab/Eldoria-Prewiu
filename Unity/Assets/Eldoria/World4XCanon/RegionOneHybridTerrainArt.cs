@@ -78,24 +78,24 @@ namespace Eldoria.World4XCanon
             float bank=0f;
             if(z>-450f&&z<460f)
             {
-                float width=4.0f + Mathf.Sin(z*.034f)*.95f;
+                float width=4.2f + Mathf.Sin(z*.034f)*.75f + Mathf.Sin(z*.013f)*.65f;
                 float dx=Mathf.Abs(x-RiverCentre(z));
                 bank=Mathf.Max(bank,Mathf.Clamp01((width+1.5f-dx)/2.7f));
             }
             // Short, non-parallel tributaries, all tied to the primary river:
             // geography only; no new gathering opportunities.
-            float tributary1=RiverCentre(222f);
+            float tributary1=RiverCentre(215f);
             if(z>215f&&z<380f)
             {
                 float t=(z-215f)/165f;
-                float tributaryX=tributary1 + 9f + t*154f + 11f*Mathf.Sin(t*9f);
+                float tributaryX=tributary1 + t*154f + 11f*Mathf.Sin(t*9f);
                 bank=Mathf.Max(bank,Mathf.Clamp01((2.9f-Mathf.Abs(x-tributaryX))/1.9f));
             }
             if(z<-110f&&z>-270f)
             {
                 float t=(-z-110f)/160f;
                 float x0=RiverCentre(-110f);
-                float tributaryX=x0 - 12f-t*145f+8f*Mathf.Sin(t*8.7f);
+                float tributaryX=x0-t*145f+8f*Mathf.Sin(t*8.7f);
                 bank=Mathf.Max(bank,Mathf.Clamp01((2.9f-Mathf.Abs(x-tributaryX))/1.9f));
             }
             float lake1=Mathf.Pow((x-145f)/30f,2f)+Mathf.Pow((z+175f)/18f,2f);
@@ -265,12 +265,15 @@ namespace Eldoria.World4XCanon
                         ground=Lerp(ground,PineFloor,RegionOneAuthoredComposition.Woodland(x,z)*(.22f+.10f*gaps));
                     }
                     float road=RoadMask(x,z);
-                    if(road>0f)ground=Lerp(ground,new Color(.69f,.57f,.35f),road);
+                    if(road>0f)ground=Lerp(ground,new Color(.82f,.70f,.43f),road);
                     // Subtle damp meadow corridors make river valleys read as
                     // continuous geography at 244 zoom; no new water node.
                     if(z>-445f&&z<455f)
                     {
-                        float riparian=Mathf.Clamp01((21f-Mathf.Abs(x-RiverCentre(z)))/18f);
+                        float riverDistance=Mathf.Abs(x-RiverCentre(z));
+                        float bankRim=Mathf.Clamp01((8.5f-riverDistance)/3f);
+                        ground=Lerp(ground,new Color(.76f,.66f,.42f),bankRim*.70f);
+                        float riparian=Mathf.Clamp01((21f-riverDistance)/18f);
                         ground=Lerp(ground,new Color(.41f,.53f,.28f),riparian*.17f);
                     }
                     float water=WaterMask(x,z);
@@ -292,7 +295,8 @@ namespace Eldoria.World4XCanon
             // Light 2.5D tree crowns only where the actual geographic
             // forest mask says forest, consistent with batched 3D LODs.
             // At zoom 244 they provide painterly foliage texture, not icons.
-            int crowns=(size*size)/180;
+            int stampScale=Mathf.Max(1,size/1024);
+            int crowns=(1024*1024)/180;
             for(int k=0;k<crowns;k++)
             {
                 int ix=(int)(Hash(k,301,312)%((uint)size));
@@ -302,12 +306,12 @@ namespace Eldoria.World4XCanon
                 if(!RegionOneCanonicalLandscape.IsForest(x,z) ||
                     WaterMask(x,z)>.05f || RoadMask(x,z)>.1f ||
                     x*x+z*z<75f*75f)continue;
-                int rad=1+(int)(Hash01(k,39,731)*2.99f);
+                int rad=(1+(int)(Hash01(k,39,731)*2.99f))*stampScale;
                 StampTree(pixels,size,ix,iy,rad,Hash01(k,423,818));
             }
             // Scattered small rocks on distant slopes, nowhere near an
             // interactable quarry node. These are 2.5D geology not resources.
-            for(int k=0;k<size*size/1450;k++)
+            for(int k=0;k<1024*1024/1450;k++)
             {
                 int ix=(int)(Hash(k,931,212)%((uint)size));
                 int iy=(int)(Hash(k,839,373)%((uint)size));
@@ -318,7 +322,7 @@ namespace Eldoria.World4XCanon
                     RoadMask(x,z)>.01f)continue;
                 if(Mathf.Abs(x)<290f && Mathf.Abs(z)<205f &&
                    Hash01(k,43,774)<.86f)continue;
-                StampStone(pixels,size,ix,iy,1+(k%2),Hash01(k,739,833));
+                StampStone(pixels,size,ix,iy,(1+(k%2))*stampScale,Hash01(k,739,833));
             }
             texture.SetPixels32(pixels);
             // Editor-only evidence export needs CPU pixels. Player builds still

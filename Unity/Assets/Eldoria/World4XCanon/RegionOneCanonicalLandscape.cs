@@ -147,7 +147,7 @@ namespace Eldoria.World4XCanon
             // same-camera A/B only; the real game uses the richer surface.
             bool legacyOnly = Environment.GetEnvironmentVariable("ELDORIA_REGION1_HYBRID_BASELINE")=="1";
             terrainTexture = legacyOnly ? MakeTerrainTexture(1024)
-                : RegionOneHybridTerrainArt.Bake(1024,LandscapeHalfWidth,
+                : RegionOneHybridTerrainArt.Bake(2048,LandscapeHalfWidth,
                     LandscapeHalfDepth,BreachOffsetX,BreachOffsetZ);
             if (surfaceMaterial.HasProperty("_BaseMap")) surfaceMaterial.SetTexture("_BaseMap", terrainTexture);
             if (surfaceMaterial.HasProperty("_MainTex")) surfaceMaterial.SetTexture("_MainTex", terrainTexture);
@@ -311,7 +311,7 @@ namespace Eldoria.World4XCanon
         // rectangular intersection of separate sea masks.
         static readonly Vector2[] CoastKnots = {
             new Vector2(-780f,-610f),new Vector2(-500f,-300f),
-            new Vector2(-420f,-90f),new Vector2(-370f,30f),
+            new Vector2(-420f,-105f),new Vector2(-395f,-45f),new Vector2(-370f,30f),
             new Vector2(-300f,90f),new Vector2(-240f,180f),
             new Vector2(-200f,320f),new Vector2(-80f,370f),
             new Vector2(100f,500f),new Vector2(360f,650f),
