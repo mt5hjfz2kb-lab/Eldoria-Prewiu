@@ -39,8 +39,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner current request: continue latest hybrid World4X task from other chat, use canonical references and updated memory; no spend or release.",
-      "phase": "WORLD4X_DIRECT_ART_MACRO_RELIEF_UNITY_REVIEW",
-      "next": "Owner requests highest visual impact first, no small detail work. Direct assistant authorship; Qwen removed from this task. Review native 39837781648 against actual previous 39836229500 and canonical triptych: continuous coast, physical shelf, connected ridges and terrain-driven lighting. Retain only meaningful improvement. No merge/release or art autoapproval.",
+      "phase": "WORLD4X_DIRECT_ART_REGIONAL_SCALE_REVIEW",
+      "next": "Owner asks high-impact art improvements first. Retained native macro relief/coast/raised canopy/network and precomputed atlas at 34d4245, 7/7 Unity. Inspect next regional-only decorative mountain LOD run 39842389820; preserve actual quarry and targets. Portrait/core framing and reference fidelity remain unresolved. Qwen removed from task. No merge/release.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -51,13 +51,13 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "6f45eb8dac5eda5a58278ffc2a83747e945bc10d",
-        "unity_run": 39836229500,
+        "sha": "34d4245ab790edd5f5e26f114c641285cac7d582",
+        "unity_run": 39841339374,
         "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_WORKFLOW_SUCCESS",
         "real_unity_captures": 12,
         "art_approved": false,
         "physical_iphone_tested": false,
-        "visual_gap": "Direct authored groves and branching Breach retained; terrain/coast still schematic. Portrait 49.58% core width. Next broad composition trial 893ce65 native 39837781648 in progress.",
+        "visual_gap": "Retained visible broad improvement: connected low ridges, continuous coast, connected tributaries, raised forest cards and clearer paths. Still below reference fidelity, mixed regional legacy geometry scales and portrait 49.58% core width unresolved.",
         "playable_published": false,
         "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
         "latest_native_failure_run": 39795241792,
@@ -76,7 +76,7 @@
         "forest_corridor_art_source_sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
         "forest_corridor_first_run": 39805121152,
         "forest_corridor_water_corrected_run": 39805826900,
-        "unity_artifact": 12449809663,
+        "unity_artifact": 12453910210,
         "portrait_zoom_run": 39810954619,
         "portrait_zoom_sha": "7b224f0d75caaed536f9d2d6a135c806467729d5",
         "fog_coast_run": 39811994026,
@@ -96,7 +96,10 @@
         "recovery_artifact_id": 12445257357,
         "baseline_comparison_run": 39819239685,
         "approved_world_pngs": "docs/visual-reference/world-map/01_vista_cercana.png;02_vista_regional.png;03_vista_panoramica.png",
-        "artist": "ChatGPT direct author per explicit owner; Qwen removed from this task only"
+        "artist": "ChatGPT direct author per explicit owner; Qwen removed from this task only",
+        "atlas_runtime_bake_removed": "Exact 2048 reviewed PNG loaded; seven PREBAKED=True logs. Editor suite 206.758s ->13.639s; panorama landscape pixels identical. Not physical mobile performance.",
+        "forest_geometry": "840 trees, 3 meshes, 3360 triangles, 1 atlas",
+        "macro_art_evidence": "docs/evidence/world4x-canon-20261022/MACRO_RELIEF_CANOPY_REVIEW_20261022.md"
       },
       "ownership_history": [
         {
