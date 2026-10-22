@@ -142,8 +142,8 @@ namespace Eldoria.World4XCanon
                 ? PortraitPanoramaZoom : LandscapePanoramaZoom;
             navigation.tilt = 66f;
             navigation.cameraDistance = Mathf.Max(navigation.cameraDistance, 540f);
-            navigation.minimum = new Vector2(origin.x - 600f, origin.z - 535f);
-            navigation.maximum = new Vector2(origin.x + 600f, origin.z + 535f);
+            navigation.minimum = new Vector2(origin.x - 600f, origin.z - 700f);
+            navigation.maximum = new Vector2(origin.x + 600f, origin.z + 700f);
             navigation.edgeMargin = 12f;
             navigation.FitToAuthoredBounds();
         }
