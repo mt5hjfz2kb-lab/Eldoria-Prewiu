@@ -281,8 +281,8 @@ namespace Eldoria.World4XCanon
             for (int i = 0; i < ForestCentres.Length; i++)
             {
                 var centre = ForestCentres[i];
-                float width = 24f + (i % 4) * 5.5f;
-                float depth = 20f + (i % 3) * 5.8f;
+                float width = 36f + (i % 4) * 8.5f;
+                float depth = 27f + (i % 3) * 7.6f;
                 // Coherent domain warp turns near-circular resource-style
                 // patches into complex woodland silhouettes. Repeatable on
                 // every zoom because the same function paints the terrain
@@ -298,8 +298,10 @@ namespace Eldoria.World4XCanon
                 if (d > 1.65f) continue;
                 float density = Mathf.PerlinNoise(i * 6.17f + x * .044f,
                                                    i * 3.91f + z * .042f);
-                float edge = .73f + .56f * density;
-                if (d < edge && density > .27f) return true;
+                // Reserve irregular clearings in each woodland mass. A few
+                // groves join into believable corridors rather than disks.
+                float edge = .66f + .65f * density;
+                if (d < edge && density > .34f) return true;
             }
             return false;
         }
