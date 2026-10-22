@@ -154,7 +154,7 @@ namespace Eldoria.World4XCanon
             var land = new GameObject("Region1 · one coherent terrain mesh");
             land.transform.SetParent(root, true);
             var filter = land.AddComponent<MeshFilter>();
-            terrainMesh = MakeLandscapeMesh(80);
+            terrainMesh = MakeLandscapeMesh(200);
             filter.sharedMesh = terrainMesh;
             var renderer = land.AddComponent<MeshRenderer>();
             renderer.sharedMaterial = surfaceMaterial;
@@ -170,7 +170,7 @@ namespace Eldoria.World4XCanon
             BuildBreach(root);
             BuildTreeDetail(root, existingWorld);
             BuildDistantForests(root);
-            BuildDistantGeology(root);
+            // Authored ridges now belong to the continuous terrain itself.
             BuildEdgeFog(root);
         }
 
@@ -285,8 +285,8 @@ namespace Eldoria.World4XCanon
             // low 3D hills. This changes presentation only and preserves the
             // real central gameplay corridor and all original colliders.
             float ridgeLift=RegionOneHybridTerrainArt.RidgeElevation(x,z);
-            return -4.0f + near * (contour + distantRidge) +
-                landFactor*(outlands*slowRoll+ridgeLift);
+            return -4.0f - 14f*Mathf.SmoothStep(0f,1f,coastalWater) +
+                landFactor*(near*(contour+distantRidge)+outlands*slowRoll+ridgeLift);
         }
 
         static float Noise(int x, int z)
@@ -304,40 +304,27 @@ namespace Eldoria.World4XCanon
             return RegionOneAuthoredComposition.Woodland(x,z)>.32f;
         }
 
+        // Continuous signed distance: positive toward sea. No binary X/Z
+        // gates, which previously produced right-angle atlas cutoffs.
+        public static float CoastDistance(float x, float z)
+        {
+            float eastShore=366f+12f*Mathf.Sin(z*.032f)+7f*Mathf.Sin(z*.083f);
+            float northLimit=-68f-.22f*(x-366f)+10f*Mathf.Sin(x*.022f);
+            float east=Mathf.Min(x-eastShore,northLimit-z);
+            float southShore=-370f+12f*Mathf.Sin(x*.020f)+7f*Mathf.Sin(x*.071f);
+            float westLimit=-90f+18f*Mathf.Sin(z*.018f);
+            float south=Mathf.Min(x-westLimit,southShore-z);
+            // An oblique inlet turns into the southern shore without the
+            // old vertical straight line at the bay's artificial X cutoff.
+            float bayShore=-214f+15f*Mathf.Sin(x*.018f)+8f*Mathf.Sin(x*.052f);
+            float bayWest=122f+.27f*(z+214f)+18f*Mathf.Sin(z*.021f);
+            float bay=Mathf.Min(x-bayWest,bayShore-z);
+            return Mathf.Max(east,Mathf.Max(south,bay));
+        }
+
         public static float CoastWaterMask(float x, float z)
         {
-            // Fractional water depth for a soft, painted shoreline. The
-            // previous boolean mask formed an unnaturally hard blue block.
-            // Geography-only texture; there is no new sea collider or travel.
-            // A narrow southeastern shore, never an island outline.
-            float coast = 366f + 12f * Mathf.Sin(z * .032f) +
-                          7f * Mathf.Sin(z * .083f);
-            float southEdge = -68f - .22f * (x - 366f) +
-                              10f * Mathf.Sin(x * .022f);
-            // Keep the established eastern edge and connect a short,
-            // irregular southeast shoreline to it. Panorama-only geography:
-            // no invented POIs, mesh colliders, ports or new water gameplay.
-            // In portrait this reveals the coast near the *actual* southern
-            // landscape border instead of an all-green central strip.
-            float southShore = -370f + 12f * Mathf.Sin(x*.020f) +
-                               7f * Mathf.Sin(x*.071f);
-            float southWestLimit = -90f + 18f * Mathf.Sin(z*.018f);
-            float eastDepth = z < southEdge ? x-coast : -10000f;
-            float southDepth = x > southWestLimit ? southShore-z : -10000f;
-            // A restrained winding inlet connects the actual eastern coast
-            // with Region 1's southeast foreground. It only changes the
-            // deterministic atlas and existing terrain elevations; no new
-            // sea objects or gameplay are introduced. Its soft westward taper
-            // avoids a geometric stripe across the bottom of the map.
-            float bayShore = -214f + 15f*Mathf.Sin(x*.018f) +
-                             8f*Mathf.Sin(x*.052f);
-            float bayBlend = Mathf.SmoothStep(0f,1f,
-                Mathf.Clamp01((x-95f)/110f));
-            float bayDepth = (bayShore-z)*bayBlend - 10f*(1f-bayBlend);
-            // Ten geographic units (~9 portrait pixels) of shallow coast
-            // transition; same deterministic map for all view distances.
-            return Mathf.Clamp01(Mathf.Max(Mathf.Max(eastDepth,southDepth),
-                                             bayDepth)/10f);
+            return Mathf.Clamp01(CoastDistance(x,z)/12f);
         }
 
         public static bool IsCoast(float x,float z)

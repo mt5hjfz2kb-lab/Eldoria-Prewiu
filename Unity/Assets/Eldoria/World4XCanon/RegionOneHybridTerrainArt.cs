@@ -43,12 +43,19 @@ namespace Eldoria.World4XCanon
             float lift=0f;
             for(int i=0;i<RidgeSites.Length;i++)
             {
-                float dx=(x-RidgeSites[i].x)/100f;
-                float dz=(z-RidgeSites[i].y)/88f;
-                float d2=dx*dx+dz*dz;
-                if(d2>=2.7f)continue;
-                float crown=1f-d2/2.7f;
-                lift=Mathf.Max(lift,15f*crown*crown);
+                float angle=(i%2==0?-.48f:.63f);
+                float dx=x-RidgeSites[i].x, dz=z-RidgeSites[i].y;
+                float along=dx*Mathf.Cos(angle)+dz*Mathf.Sin(angle);
+                float across=-dx*Mathf.Sin(angle)+dz*Mathf.Cos(angle);
+                // Long, asymmetric connected shoulders; a few low ranges,
+                // rather than identical circles with pyramids sitting on top.
+                float bend=10f*Mathf.Sin(along*.035f+i);
+                float d2=along*along/(108f*108f)+
+                    (across-bend)*(across-bend)/(44f*44f);
+                if(d2>=1f)continue;
+                float shoulder=1f-d2;
+                float crest=.80f+.20f*Mathf.Cos(along*.065f+i);
+                lift=Mathf.Max(lift,(i==2?24f:31f)*shoulder*shoulder*crest);
             }
             return lift;
         }
@@ -198,9 +205,24 @@ namespace Eldoria.World4XCanon
                     Color ground=RegionOneAuthoredComposition.Ground(x,z,n);
                     // Light follows the existing real ridge forms, rather than
                     // broad unrelated noise patches across every meadow.
-                    float sx=(RidgeElevation(x-5f,z)-RidgeElevation(x+5f,z))*.018f;
-                    float sz=(RidgeElevation(x,z+5f)-RidgeElevation(x,z-5f))*.012f;
-                    ground*=Mathf.Clamp(1f+sx+sz,.88f,1.10f);
+                    // Bake broad directional light from the actual shared
+                    // heightfield. Keeps mobile Unlit rendering but makes
+                    // every slope (including coastal escarpments) legible.
+                    float hx=(RegionOneCanonicalLandscape.SampleHeight(x+3f,z)-
+                        RegionOneCanonicalLandscape.SampleHeight(x-3f,z))/6f;
+                    float hz=(RegionOneCanonicalLandscape.SampleHeight(x,z+3f)-
+                        RegionOneCanonicalLandscape.SampleHeight(x,z-3f))/6f;
+                    Vector3 normal=new Vector3(-hx,1f,-hz).normalized;
+                    float diffuse=Vector3.Dot(normal,new Vector3(-.48f,.80f,.36f).normalized);
+                    ground*=Mathf.Clamp(.50f+.64f*diffuse,.60f,1.16f);
+                    float coast=RegionOneCanonicalLandscape.CoastDistance(x,z);
+                    if(coast>-5f && coast<12f)
+                    {
+                        float rim=1f-Mathf.Abs(coast-3f)/9f;
+                        Color sand=Lerp(new Color(.42f,.35f,.24f),
+                            new Color(.84f,.69f,.42f),Mathf.Clamp01(diffuse));
+                        ground=Lerp(ground,sand,Mathf.Clamp01(rim)*.92f);
+                    }
                     float brush=Mathf.PerlinNoise(
                         x*.126f+72f,z*.143f+186f);
                     float eroded=Mathf.PerlinNoise(
