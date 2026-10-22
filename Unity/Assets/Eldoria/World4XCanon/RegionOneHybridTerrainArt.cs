@@ -174,10 +174,39 @@ namespace Eldoria.World4XCanon
                         Mathf.Clamp01((.40f-patchwork)*1.9f)*.33f);
                     ground=Lerp(ground,new Color(.75f,.65f,.40f),
                         Mathf.Clamp01((patchwork-.62f)*1.7f)*.34f);
+                    // Panoramic composition must read as interconnected
+                    // meadow biomes, not uniformly beige terrain with dots.
+                    // These broad, warped chromatic regions are pure landcover:
+                    // no gameplay resources, artificial field grid or buildings.
+                    float ochreRegion=Mathf.PerlinNoise(
+                        (x+15f*Mathf.Sin(z*.011f))*.0071f+217f,
+                        (z+17f*Mathf.Sin(x*.009f))*.0082f+63f);
+                    float sageRegion=Mathf.PerlinNoise(
+                        (x-23f*Mathf.Sin(z*.010f))*.0096f+42f,
+                        (z+19f*Mathf.Sin(x*.012f))*.0077f+187f);
+                    float sunMeadow=Mathf.SmoothStep(.43f,.69f,ochreRegion);
+                    float coolMeadow=Mathf.SmoothStep(.45f,.71f,sageRegion)
+                        *(1f-.62f*sunMeadow);
+                    ground=Lerp(ground,new Color(.86f,.71f,.39f),sunMeadow*.60f);
+                    ground=Lerp(ground,new Color(.39f,.56f,.29f),coolMeadow*.52f);
                     ground=Lerp(ground,Moss,Mathf.Clamp01((.45f-m)*.36f));
                     ground=Lerp(ground,new Color(.78f,.65f,.42f),.10f*v);
                     float meadow=Mathf.Clamp01((.65f-m)*1.7f);
                     ground=Lerp(ground,new Color(.40f,.53f,.27f),meadow*.13f);
+                    // Affordable directional hillshade is baked into the
+                    // SAME terrain atlas. URP unlit would otherwise erase
+                    // the shallow hills from the distant strategic camera.
+                    float hillsideWest=Mathf.PerlinNoise(
+                        (x-13f)*.019f+91f,z*.017f+41f);
+                    float hillsideEast=Mathf.PerlinNoise(
+                        (x+13f)*.019f+91f,z*.017f+41f);
+                    float hillsideSouth=Mathf.PerlinNoise(
+                        x*.019f+91f,(z-13f)*.017f+41f);
+                    float hillsideNorth=Mathf.PerlinNoise(
+                        x*.019f+91f,(z+13f)*.017f+41f);
+                    float lightSlope=(hillsideWest-hillsideEast)*.86f+
+                        (hillsideNorth-hillsideSouth)*.48f;
+                    ground*=Mathf.Clamp(1f+lightSlope, .82f,1.17f);
                     // Terraced stony slopes paint restrained physical relief,
                     // while reused 3D ridges supply silhouettes at far zoom.
                     float hillValue=0f,side=0f;
