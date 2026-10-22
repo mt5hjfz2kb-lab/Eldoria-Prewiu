@@ -25,8 +25,8 @@ namespace Eldoria.World4XCanon
         public const float CoreHalfDepth = 260f;
         public const float LandscapeHalfWidth = 910f;
         public const float LandscapeHalfDepth = 780f;
-        public const float BreachOffsetX = 18f;
-        public const float BreachOffsetZ = 44f;
+        public const float BreachOffsetX = 30f;
+        public const float BreachOffsetZ = 92f;
         public const float LocalThreshold = 41f;
         public const float RegionalThreshold = 152f;
 
@@ -57,6 +57,8 @@ namespace Eldoria.World4XCanon
         GameObject peripheralFog;
         readonly List<Renderer> originalGround = new List<Renderer>();
         readonly List<bool> originalGroundInitiallyEnabled = new List<bool>();
+        readonly List<Renderer> existingGameRenderers = new List<Renderer>();
+        readonly List<bool> existingGameRendererStates = new List<bool>();
         GameObject distantForestSilhouettes;
         Mesh terrainMesh;
         Texture2D terrainTexture;
@@ -145,6 +147,7 @@ namespace Eldoria.World4XCanon
             // the *legacy prairie sheet* at panorama scale, otherwise that
             // square visually cuts the same Region 1 into two maps.
             CollectLegacyGround(existingWorld);
+            CacheGameplayArtRenderers(existingWorld, root);
             // No terrain collider: world node selection continues to hit original WorldHotspots.
             BuildBreach(root);
             BuildTreeDetail(root, existingWorld);
@@ -172,6 +175,19 @@ namespace Eldoria.World4XCanon
                 originalGroundInitiallyEnabled.Add(renderer.enabled);
             }
             Debug.Log("REGION1_CANON_LEGACY_PRAIRIE_RENDERERS=" + originalGround.Count);
+        }
+
+        void CacheGameplayArtRenderers(Transform existingWorld, Transform canonicalArt)
+        {
+            foreach (var renderer in existingWorld.GetComponentsInChildren<Renderer>(true))
+            {
+                if (!renderer || renderer.transform.IsChildOf(canonicalArt)) continue;
+                // Only renderer.enabled changes at a distant scale; every
+                // WorldHotspot, collider, save, march and scene object remains.
+                existingGameRenderers.Add(renderer);
+                existingGameRendererStates.Add(renderer.enabled);
+            }
+            Debug.Log("REGION1_CANON_PANORAMA_GAME_ART_LOD=" + existingGameRenderers.Count);
         }
 
         Mesh MakeLandscapeMesh(int resolution)
@@ -348,15 +364,15 @@ namespace Eldoria.World4XCanon
         {
             var fracture = new GameObject("Region1 · grounded geologic Breach (not a portal)").transform;
             fracture.SetParent(parent, true);
-            riftMaterial = MakeMaterial("Region1 fracture violet", new Color(.51f, .16f, .56f), true);
+            riftMaterial = MakeMaterial("Region1 dark geological fracture", new Color(.24f, .13f, .25f), false);
             var points = new List<Vector3>();
             var indices = new List<int>();
             var centre = new Vector2(BreachOffsetX, BreachOffsetZ);
             // Thin branching cracks follow the terrain. No upright towers or enemy proxies.
-            for (int branch = 0; branch < 28; branch++)
+            for (int branch = 0; branch < 21; branch++)
             {
-                float angle = branch * Mathf.PI * 2f / 28f;
-                float extent = 20f + (branch % 5) * 4.5f;
+                float angle = branch * Mathf.PI * 2f / 21f;
+                float extent = 16f + (branch % 5) * 3.8f;
                 Vector2 previous = centre + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * 1.5f;
                 for (int step = 1; step <= 3; step++)
                 {
@@ -364,7 +380,7 @@ namespace Eldoria.World4XCanon
                     float jitter = Mathf.Sin((branch + 1) * step * 1.7f) * distance * .13f;
                     Vector2 next = centre + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance +
                                    new Vector2(-Mathf.Sin(angle), Mathf.Cos(angle)) * jitter;
-                    float halfWidth = .65f * (1f - .18f * step);
+                    float halfWidth = .37f * (1f - .18f * step);
                     Vector2 perpendicular = (next - previous).normalized;
                     perpendicular = new Vector2(-perpendicular.y, perpendicular.x) * halfWidth;
                     int index = points.Count;
@@ -404,7 +420,7 @@ namespace Eldoria.World4XCanon
             for (int i=0; i<24; i++)
             {
                 float a=i*Mathf.PI/12f;
-                float radius=5.2f+1.5f*Mathf.Sin(i*5.6f);
+                float radius=3.0f+.9f*Mathf.Sin(i*5.6f);
                 coreVertices[i+1]=new Vector3(origin.x+BreachOffsetX+Mathf.Cos(a)*radius,
                     coreY-.025f, origin.z+BreachOffsetZ+Mathf.Sin(a)*radius);
                 coreIndices[i*3]=0;
@@ -420,7 +436,7 @@ namespace Eldoria.World4XCanon
             coreGo.transform.SetParent(fracture,true);
             coreGo.AddComponent<MeshFilter>().sharedMesh=core;
             breachCoreMaterial=MakeMaterial("Region1 grounded bright fissure",
-                new Color(.83f,.22f,.78f),true);
+                new Color(.72f,.23f,.70f),true);
             var coreRenderer=coreGo.AddComponent<MeshRenderer>();
             coreRenderer.sharedMaterial=breachCoreMaterial;
             coreRenderer.shadowCastingMode=ShadowCastingMode.Off;
@@ -546,7 +562,7 @@ namespace Eldoria.World4XCanon
 
         void AddFogStrip(Transform parent, int sx, int sz)
         {
-            const float westEast = 425f, northSouth = 285f, thickness = 85f;
+            const float westEast = 373f, northSouth = 222f, thickness = 84f;
             var verts = new List<Vector3>();
             var colors = new List<Color>();
             var indices = new List<int>();
@@ -620,6 +636,33 @@ namespace Eldoria.World4XCanon
             float size = navigation.View.orthographicSize;
             bool distant = size >= RegionalThreshold;
             bool showFog = size >= 190f && host.InWorld;
+            // Progressive pitch: local remains readable, panoramas become
+            // more top-down. The same stable geographical XYZ is retained.
+            float desiredTilt = Mathf.Lerp(56f, 74f,
+                Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(17f, 244f, size)));
+            float nextTilt = force ? desiredTilt : Mathf.Lerp(navigation.tilt,
+                desiredTilt, 1f - Mathf.Exp(-7f * Time.unscaledDeltaTime));
+            if (Mathf.Abs(nextTilt - navigation.tilt) > .04f)
+            {
+                navigation.tilt = nextTilt;
+                navigation.FitToAuthoredBounds();
+            }
+            if (distant != farMode)
+            {
+                // At panoramic scale every tiny existing 3D resource/city/
+                // enemy representation is omitted *visually*, as the owner
+                // approved. Preserve the state of renderers for the return.
+                for (int i=0; i<existingGameRenderers.Count; i++)
+                {
+                    if (!existingGameRenderers[i]) continue;
+                    if (distant)
+                    {
+                        existingGameRendererStates[i] = existingGameRenderers[i].enabled;
+                        existingGameRenderers[i].enabled = false;
+                    }
+                    else existingGameRenderers[i].enabled = existingGameRendererStates[i];
+                }
+            }
             if (force || distant != farMode)
             {
                 farMode = distant;
@@ -638,6 +681,10 @@ namespace Eldoria.World4XCanon
 
         void OnDestroy()
         {
+            if (farMode)
+                for (int i=0; i<existingGameRenderers.Count; i++)
+                    if (existingGameRenderers[i])
+                        existingGameRenderers[i].enabled = existingGameRendererStates[i];
             for (int i = 0; i < originalGround.Count; i++)
                 if (originalGround[i]) originalGround[i].enabled = originalGroundInitiallyEnabled[i];
             foreach (var mesh in generatedMeshes) if (mesh) Destroy(mesh);
