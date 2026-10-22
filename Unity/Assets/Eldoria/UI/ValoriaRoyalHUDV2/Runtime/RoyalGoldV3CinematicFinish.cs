@@ -190,7 +190,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 portraitOrientation ? 725f : 1120f);
             float panelHeight = Mathf.Min(availableHeight - 24f,
                 portraitOrientation ? 440f : 356f);
-            float column = Mathf.Clamp(panelWidth * .245f, 120f, 270f);
+            float column = Mathf.Clamp(panelWidth * .29f, 132f, 360f);
             // Dialogues rest in the bottom cinematic strip. Unlike V2, they
             // never create a central opaque rectangle covering the whole city.
             frame.anchorMin = frame.anchorMax = new Vector2(.5f, 0f);
@@ -203,7 +203,10 @@ namespace Eldoria.UI.RoyalGold.V2
             float titleTop = 22f;
             float bodyTop = portraitOrientation ? 116f : 102f;
             float bodyHeight = panelHeight - bodyTop - 78f;
-            float portraitSize = Mathf.Min(column - 25f, panelHeight - 60f);
+            // Interface 1 concept places Aldric as a substantial cinematic
+            // presence beside his real text, not a small account avatar.
+            // Reuse the actual approved asset; never invent a different face.
+            float portraitSize = Mathf.Min(column - 18f, panelHeight - 35f);
             portraitSize = Mathf.Max(90f, portraitSize);
             float portraitLeft = 11f + (column - portraitSize) * .5f;
             float portraitTop = Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
