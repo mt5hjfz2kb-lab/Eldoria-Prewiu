@@ -10,8 +10,9 @@ process.chdir(root);
 const {prepareInvocation,verifyArtistConsumption}=await import(pathToFileURL(path.join(root,'tools/art-knowledge/run-artist.mjs')));
 const {recordInference}=await import(pathToFileURL(path.join(root,'tools/art-knowledge/cycle-feedback.mjs')));
 const inventory=path.join(output,'source-inventory.txt');
-fs.writeFileSync(inventory,
-  'MEASURED SOURCE ANCHORS: existing mountain landmarks are [-33,19], [32.6,21.5], [-32,-22], [26.7,-17] in Blender XY. Improve ONE existing visible ridge, not new arbitrary compass-edge bumps. Previous 39830118330 edits at [-42,0], [42,0], [0,26] were technically valid but visually insufficient. The atlas is now preserved in Blender for honest geographic review. Existing water vertices are protected and a plan intersecting them fails. Choose a coherent sculpt_path or region around an existing mountain anchor; heights stay Z-up. LATEST REJECTION 39829726922: ridge_center at [-1,0,0] radius12 intersects protected gameplay and was NOT executed. NO CENTRAL RIDGE. Every centre/radius MUST satisfy sqrt(x*x+y*y)-radius >=12. Choose peripheral existing landforms, not the centre and not river. One coherent peripheral edit is enough; do not fill max-actions with central bumps. SCHEMA FEEDBACK from actual cycle 39829192368: every action id MUST be a unique nonempty STRING, e.g. "ridge_west", NEVER numeric 1. Keep parameters nested. The schema rejected numeric ids twice; do not repeat. REJECTED REAL CYCLE 39828569968: center[-90,0,0],radius15,delta[0,0.5,0] moved terrain sideways OUTSIDE camera; zero useful relief. DO NOT REPEAT. Blender Z is UP: delta must be [0,0,positiveHeight], NEVER [0,height,0]. Author visible low connected hills IN the photographed core: centers X[-42,42],Y[-26,26]; coordinates beyond this are OFFSCREEN, even if mesh exists. WORLD MAP, not Valoria cliff/city. 1 Blender unit=10 Unity metres. Preserve XY, UV and central circle radius12. Choose precise visible land centres from reference/screenshot, radius8..22 and vertical lift1..3 Blender units, avoiding coast/rivers and protected centre. Use sculpt_region or sculpt_path only, up to3 coherent actions. No color noise, new objects or enormous peaks. Actual source extended mesh X+/-91 Y+/-78 is NOT the visible region. Prior procedural microsteps/coastal ribbons failed. This is a COPY; never self-approve.');
+const brief="ACTUAL Unity terrain in Blender: Z UP; 1 unit=10 Unity metres. Author ONE visible existing mountain ridge, target RegionOneCanonicalTerrain. Source landmarks XY: NW[-33,19], NE[32.6,21.5], SW[-32,-22], SE[26.7,-17]. Measured nearest protected water distances: NW11.56, NE25.21, SW4.16, SE6.44 units. Water must remain untouched. Use sculpt_region or sculpt_path only, unique STRING id. Each point: center[x,y,0], radius8..22, delta[0,0,h] with h1..3. NO lateral displacement. abs(x)<=42,abs(y)<=26; sqrt(x*x+y*y)-radius>=12 protects gameplay. Preserve XY/topology/UV. Pick actual geometry from images, not arbitrary compass bumps. Prior rejected edits: sideways delta[0,.2,0]; central bumps; offscreen x=-90; imperceptible compass-edge hills. Do not repeat. Terrain atlas is preserved in Blender. One coherent reference-linked landform; no city, new objects, fog tricks or self-approval.";
+if(brief.length>1100)throw Error('Terrain constraints exceed verified source context budget');
+fs.writeFileSync(inventory,brief);
 const invocation=prepareInvocation({
   requestFile:'pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json',
   prefix:path.join(output,'memory'),sourceInventoryPath:inventory,
@@ -20,9 +21,12 @@ const invocation=prepareInvocation({
     '--target-object','RegionOneCanonicalTerrain','--target-mode','existing',
     '--subject-kind','terrain','--mesh-context',path.join(output,'topology/mesh-context.json'),
     '--out',path.join(output,'direction'),'--model',model,
-    '--num-ctx','8192','--num-predict','1800','--max-actions','3',
+    '--num-ctx','8192','--num-predict','1800','--max-actions','1',
     '--repair-attempts','1','--request-timeout','420']
 });
+const consumedInventory=fs.readFileSync(invocation.inventory,'utf8');
+if(!consumedInventory.includes(brief))
+  throw Error('Canonical adapter truncated essential terrain constraints; refuse inference');
 const python=process.env.ELDORIA_REGION1_PYTHON;
 if(!python||!fs.existsSync(python))throw Error('Verified existing Blender Python required; do not invoke Windows Store alias');
 const proc=spawnSync(python,invocation.command.slice(1),{stdio:'inherit',shell:false,timeout:950000});
