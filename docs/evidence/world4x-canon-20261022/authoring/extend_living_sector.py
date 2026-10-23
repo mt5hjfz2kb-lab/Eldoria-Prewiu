@@ -66,19 +66,19 @@ def distance(x,y):
    best=min(best,math.hypot(x-ax-t*(bx-ax),y-ay-t*(by-ay)))
  return best
 # New UV material only on new faces: old loops, topology and all AG vertices survive.
-W,H=1024,512;X,Y=np.meshgrid(np.linspace(-96,96,W),np.linspace(170,270,H))
+W,H=2048,1024;X,Y=np.meshgrid(np.linspace(-96,96,W),np.linspace(170,270,H))
 pigment=.028*np.sin(X/23+Y/31)+.018*np.sin(X/11-Y/25)
 # Broken broad washes follow the eastern shoulder and western swale.
 pigment+=.025*np.exp(-((X-65)/29)**2-((Y-217)/32)**2)-.02*np.exp(-((X+15)/24)**2-((Y-225)/20)**2)
 rng_pigment=np.random.default_rng(781)
-fine=rng_pigment.normal(0,.006,X.shape)+.005*np.sin(X*8+np.sin(Y*4))*np.sin(Y*7)
-rgba=np.ones((H,W,4),np.float32);rgba[:,:,:3]=np.array([.54,.55,.25])+(pigment+fine)[:,:,None]
+fine=rng_pigment.normal(0,.027,X.shape)+.005*np.sin(X*8+np.sin(Y*4))*np.sin(Y*7)
+rgba=np.ones((H,W,4),np.float32);rgba[:,:,:3]=np.array([.545,.54,.265])+(pigment+fine)[:,:,None]
 road=np.full(X.shape,1e9)
 for points in routes:
  for (ax,ay),(bx,by) in zip(points,points[1:]):
   t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1)
   road=np.minimum(road,np.hypot(X-ax-t*(bx-ax),Y-ay-t*(by-ay)))
-mask=np.clip((1.85-road)/1.0,0,1);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+np.array([.55,.46,.27])*mask[:,:,None]
+mask=np.clip((1.85-road)/1.0,0,1);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(np.array([.55,.46,.27])+fine[:,:,None]*.35)*mask[:,:,None]
 # Match the exact retained pigment at the join, then open into broad meadow tones.
 prior=bpy.data.images.get('AF broad meadow flows')
 if prior:
@@ -92,7 +92,7 @@ if prior:
  old_road=(patch[:,:,0]-patch[:,:,1]>.035)&(Y>170.5)
  patch[old_road]=rgba[:,:,:3][old_road]
  rgba[:,:,:3]=patch*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
- rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+np.array([.55,.46,.27])*mask[:,:,None]
+ rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(np.array([.55,.46,.27])+fine[:,:,None]*.35)*mask[:,:,None]
 im=bpy.data.images.new('AI open northern grassland',W,H);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'AI_meadow.png');im.file_format='PNG';im.save();im.pack()
 mat=bpy.data.materials.new('AI open meadow paths');mat.use_nodes=True;bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.92;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 terrain.data.materials.append(mat);mi=len(terrain.data.materials)-1
