@@ -297,7 +297,7 @@ namespace Eldoria.World4XCanon
   static void FadeEcologicalUnderstory(GameObject root,float size)
   {
    float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(42,57,size));
-   foreach(var r in root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.name.StartsWith("Z retained-sector woodland understory",StringComparison.Ordinal))) {
+   foreach(var r in root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>(r.name.StartsWith("Z retained-sector woodland understory",StringComparison.Ordinal)||r.name.StartsWith("AE wild meadow ecology",StringComparison.Ordinal)))) {
     r.enabled=fade<.999f;
     r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
     var properties=new MaterialPropertyBlock();r.GetPropertyBlock(properties);properties.SetFloat("_Fade",fade);r.SetPropertyBlock(properties);

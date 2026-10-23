@@ -229,6 +229,46 @@ for k,(label,rgb) in enumerate([('AB sandstone warm upper facets',(.46,.42,.32))
 for k,index in enumerate(rock_material):rock_mesh.polygons[k].material_index=index
 rock_object=bpy.data.objects.new('AB authored ridge rock shelves',rock_mesh)
 coll.objects.link(rock_object)
+# AE: designed wild-meadow ground layer in the camera-visible clearings south
+# of the new woodland. Actual editable stylized blade meshes, no foliage spam on O.
+# Selection, roads and all old trees stay untouched.
+grass_rng=np.random.default_rng(17092026)
+meadow_v=[];meadow_f=[];meadow_m=[];meadow_bunches=0
+meadow_lobes=[(-53,86,22,9,70),(-18,89,21,10,75),(24,88,21,11,75),(60,93,17,11,65)]
+for group,(cx,cy,rx,ry,count) in enumerate(meadow_lobes):
+ grown=0
+ for attempt in range(4000):
+  if grown>=count:break
+  a=float(grass_rng.uniform(0,2*math.pi));r=math.sqrt(float(grass_rng.random()))
+  x=float(cx+rx*r*math.cos(a));y=float(cy+ry*r*math.sin(a))
+  if not(-88<x<88 and 80.3<y<112):continue
+  ix=int((x+96)/192*(W-1));iy=int((y-78)/92*(H-1))
+  if path[iy,ix]>.04:continue
+  if any((x-o.location.x)**2+(y-o.location.y)**2<3.0**2 for o in trees):continue
+  # Two crossing irregular leaf sheaves, a few centimeters above one terrain ray.
+  base=ground(x,y)+.035;h=float(grass_rng.uniform(.45,1.15))
+  width=float(grass_rng.uniform(.25,.58))
+  ang=float(grass_rng.uniform(0,2*math.pi))
+  for plane in range(2):
+   angle=ang+plane*math.pi/2
+   dx=math.cos(angle)*width;dy=math.sin(angle)*width
+   start=len(meadow_v)
+   meadow_v.extend([(x-dx,y-dy,base),(x+dx,y+dy,base),
+                    (x+.20*dx,y+.20*dy,base+h)])
+   meadow_f.append((start,start+1,start+2));meadow_m.append((group+grown+plane)%3)
+  meadow_bunches+=1;grown+=1
+ assert grown>=35,('Meadow clumps cannot occupy an unblocked glade',group,grown)
+assert meadow_bunches>=180
+meadow_mesh=bpy.data.meshes.new('AE meadow flora merged geometry')
+meadow_mesh.from_pydata(meadow_v,[],meadow_f);meadow_mesh.update()
+for label,tone in [('AE mellow rye',(.38,.46,.16)),('AE dried straw',(.59,.55,.25)),('AE wild sage',(.28,.42,.21))]:
+ mat=bpy.data.materials.new(label);mat.use_nodes=True
+ bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED')
+ bs.inputs['Base Color'].default_value=(*tone,1);bs.inputs['Roughness'].default_value=.96
+ meadow_mesh.materials.append(mat)
+for k,ix in enumerate(meadow_m):meadow_mesh.polygons[k].material_index=ix
+meadow_object=bpy.data.objects.new('AE wild meadow ecology near O boundary',meadow_mesh)
+coll.objects.link(meadow_object)
 mask=np.zeros((H,W),np.float32)
 for o in trees:
  x,y=o.location.xy;r=((X-x)/6.7)**2+((Y-y)/6.7)**2;mask=np.maximum(mask,np.clip(1-r,0,1)*.44)
@@ -334,15 +374,27 @@ pix[:,:,:3]=pix[:,:,:3]*(1-cool_grass[:,:,None])+np.array([.31,.43,.25])*cool_gr
 # sunlit earth without restoring the old mechanical uniform edge.
 route_light=np.clip(path*.48*seam,0,.48)
 pix[:,:,:3]=pix[:,:,:3]*(1-route_light[:,:,None])+np.array([.58,.50,.34])*route_light[:,:,None]
-for name,data,noncolor in [('AD camera-authored pigment',pix,False),('AD editable slope glaze mask',paint,True),('AD editable connected litter mask',mask,True)]:
+# AE: broad fractured glade highlights are explicitly tied to the grass beds,
+# not random per-pixel camouflage. Worn edges interrupt the geometric road ribbon.
+grassbed=np.zeros((H,W),np.float32)
+for cx,cy,rx,ry,_ in meadow_lobes:
+ centre=cy+2.0*np.sin((X-cx)*.10)
+ ridge=np.exp(-((X-cx)/rx)**4)*np.exp(-((Y-centre)/ry)**4)
+ grassbed=np.maximum(grassbed,ridge)
+grasslight=np.clip(grassbed*.36*(1-path)*(1-mask*.65)*seam,0,.38)
+grasslight*=.81+.19*np.sin(X*.29+Y*.17)*np.cos(Y*.35-X*.12)
+pix[:,:,:3]=pix[:,:,:3]*(1-grasslight[:,:,None])+np.array([.57,.55,.30])*grasslight[:,:,None]
+broken_boundary=np.clip(path*(1-path)*(.65+.25*np.sin(X*.71+Y*.41)+.10*np.cos(X*.23-Y*.67)),0,.35)*seam
+pix[:,:,:3]=pix[:,:,:3]*(1-broken_boundary[:,:,None])+np.array([.34,.45,.25])*broken_boundary[:,:,None]
+for name,data,noncolor in [('AE grassland painted surface',pix,False),('AE editable slope glaze mask',paint,True),('AE editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AD camera-authored pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AE grassland painted surface'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='AD true on-camera ridge and connected forest composition; O immutable'
+scene['finishing_stage']='AE physical glade ground flora over AD projected forest, sculpt and O seam'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -350,4 +402,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'AD','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'camera_band_trees_added':camera_band_added,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AD corrects previously off-screen ridges and forest using native camera-projected X/Y; O vertices/156 pines and all gameplay unchanged'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AE','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'camera_band_trees_added':camera_band_added,'grounded_meadow_bunches':meadow_bunches,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AE visible glade meadow flora and weathered path edges over AD camera-composed geomorphic forest; O and all gameplay immutable'},indent=2))
