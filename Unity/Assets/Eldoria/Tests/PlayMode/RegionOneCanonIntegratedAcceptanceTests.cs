@@ -558,6 +558,27 @@ namespace Eldoria.Tests
             public Quaternion cameraRotation;
         }
 
+        static void SaveRetainedSectorFrame(Camera camera,string path,int width,int height)
+        {
+            var previous=camera.targetTexture;var active=RenderTexture.active;
+            var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
+            var pixels=new Texture2D(width,height,TextureFormat.RGB24,false);
+            try
+            {
+                camera.aspect=width/(float)height;camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;
+                pixels.ReadPixels(new Rect(0,0,width,height),0,0);pixels.Apply();var png=pixels.EncodeToPNG();
+                Assert.That(png.Length,Is.GreaterThan(2500));File.WriteAllBytes(path+".png",png);
+                string hash;using(var sha=SHA256.Create())hash=BitConverter.ToString(sha.ComputeHash(png)).Replace("-","").ToLowerInvariant();
+                File.WriteAllText(path+".json",JsonUtility.ToJson(new RenderIdentity{
+                    sourceScene=SceneManager.GetActiveScene().path,version=UnityEngine.Application.unityVersion,
+                    context="AF/AG camera and sector coordinates; integrated production lighting and materials",label=Path.GetFileName(path),
+                    sha256=hash,actualUnityCamera=true,playMode=UnityEngine.Application.isPlaying,physicalIphone=false,
+                    width=width,height=height,zoom=camera.orthographicSize,aspect=camera.aspect,
+                    cameraPosition=camera.transform.position,cameraRotation=camera.transform.rotation},true));
+            }
+            finally{camera.targetTexture=previous;RenderTexture.active=active;rt.Release();Object.DestroyImmediate(rt);Object.DestroyImmediate(pixels);}
+        }
+
         [UnityTest]
         public IEnumerator ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe()
         {
@@ -736,6 +757,32 @@ namespace Eldoria.Tests
                         }
                     }
                 }
+                // Same AF/AG sector coordinates and cameras, now inside the production continent.
+                // These retain production lighting/materials: camera-matched evidence, not a claim of pixel parity.
+                var sectorDirectory=Path.Combine(outdir,"retained-sector");Directory.CreateDirectory(sectorDirectory);
+                Call(adapter,"SetBlockout",false);
+                foreach(bool portrait in new[]{false,true})
+                {
+                    string orientation=portrait?"portrait":"landscape";
+                    for(int level=0;level<3;level++)
+                    {
+                        float size=portrait?new[]{32f,52f,74f}[level]:new[]{24f,38f,52f}[level];
+                        var focus=home+new Vector3(Mathf.Lerp(20,0,level/2f),2,Mathf.Lerp(95,50,level/2f));
+                        camera.transform.position=focus+new Vector3(0,130,-145);camera.transform.LookAt(focus);
+                        camera.orthographicSize=size;
+                        SaveRetainedSectorFrame(camera,Path.Combine(sectorDirectory,orientation+"-"+new[]{"close","regional","panorama"}[level]),portrait?720:1280,portrait?1280:720);
+                    }
+                    string sequence=Path.Combine(sectorDirectory,orientation+"-zoom");Directory.CreateDirectory(sequence);
+                    for(int frame=0;frame<=24;frame++)
+                    {
+                        float t=Mathf.SmoothStep(0,1,frame/24f);
+                        var focus=home+new Vector3(Mathf.Lerp(20,0,t),2,Mathf.Lerp(95,50,t));
+                        camera.transform.position=focus+new Vector3(0,130,-145);camera.transform.LookAt(focus);
+                        camera.orthographicSize=portrait?Mathf.Lerp(32,74,t):Mathf.Lerp(24,52,t);
+                        SaveRetainedSectorFrame(camera,Path.Combine(sequence,"frame-"+frame.ToString("D3")),portrait?540:960,portrait?960:540);
+                    }
+                }
+                Assert.That(Directory.GetFiles(sectorDirectory,"*.png").Length,Is.EqualTo(6));
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(16));
                 if(Environment.GetEnvironmentVariable("ELDORIA_RIBERA_PILOT")=="1")
                 {

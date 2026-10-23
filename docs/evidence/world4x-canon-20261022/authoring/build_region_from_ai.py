@@ -2,6 +2,7 @@
 Director-authored prototype: requires subsequent Qwen/Blender authorship and independent Unity review.
 """
 import bpy,bmesh,sys,pathlib,hashlib,json,math,gzip,struct
+from collections import Counter
 import numpy as np
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
@@ -146,27 +147,51 @@ crossing_banks={}
 for bx in [-550.,0.,450.]:
  by=rivercentre(bx) if abs(bx)>96 else sum(v.co.y for v in river.data.vertices if abs(v.co.x)<.1)/len([v for v in river.data.vertices if abs(v.co.x)<.1])
  crossing_banks[bx]=(by,height(bx,by-22),height(bx,by+22))
-# Re-author only grass top-face material across the retained and extended land.
-# Steep river banks retain their reviewed source pigment and UVs.
+# Preserve the authored AF/AG/AI material assignments and every active UV value.
+# Joining differently named layers creates empty UV0s; normalize the layer NAME,
+# never its coordinates. Original .blend remains pinned and immutable.
+def face_signature(obj, poly):
+ layer=obj.data.uv_layers.active
+ corners=[]
+ for li in poly.loop_indices:
+  q=obj.data.vertices[obj.data.loops[li].vertex_index].co
+  uv=layer.data[li].uv
+  corners.append(tuple(round(float(v),4) for v in (*q,*uv)))
+ return (obj.data.materials[poly.material_index].name,tuple(sorted(corners)))
+core_faces=Counter(face_signature(obj,poly) for obj in land for poly in obj.data.polygons)
+core_images={}
 for obj in land:
- obj.data.materials.append(mat);index=len(obj.data.materials)-1
- layer=obj.data.uv_layers.active;layer.name="Continental pigment"
- for poly in obj.data.polygons:
-  if poly.normal.z<.75:continue
-  poly.material_index=index
-  for li in poly.loop_indices:
-   q=obj.data.vertices[obj.data.loops[li].vertex_index].co;layer.data[li].uv=((q.x+910)/1820,(q.y+1000)/2000)
+ for material in obj.data.materials:
+  if not material or not material.use_nodes:continue
+  for node in material.node_tree.nodes:
+   if node.type=='TEX_IMAGE' and node.image:
+    image=node.image
+    pixels=np.array(image.pixels[:],dtype=np.float32)
+    assert pixels.size>16 and np.ptp(pixels[::4])>.01,('Missing retained pigment',image.name)
+    core_images[image.name]=hashlib.sha256(pixels.tobytes()).hexdigest()
+for obj in land+[outer]:
+ layer=obj.data.uv_layers.active
+ assert layer is not None,('Missing source UV',obj.name)
+ if obj.data.uv_layers.get('UVMap') and obj.data.uv_layers.get('UVMap')!=layer:
+  obj.data.uv_layers['UVMap'].name='Preserved secondary UV'
+ layer.name='UVMap'
+ layer.active_render=True
 # Join ground meshes, preserving AI material slots/UV; remove unused interior grid vertices.
 bpy.ops.object.select_all(action='DESELECT')
 for o in land+[outer]:o.select_set(True)
 bpy.context.view_layer.objects.active=outer;bpy.ops.object.join();terrain=outer;terrain.name='BLD_Terrain'
 bm=bmesh.new();bm.from_mesh(terrain.data);bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.001);bm.to_mesh(terrain.data);bm.free();terrain.data.update()
-# glTF material UV0 must be populated after joining meshes with historical UV names.
-# Never let the retained sector sample a single texture corner.
-for poly in terrain.data.polygons:
- if terrain.data.materials[poly.material_index]!=mat:continue
- for li in poly.loop_indices:
-  q=terrain.data.vertices[terrain.data.loops[li].vertex_index].co;terrain.data.uv_layers[0].data[li].uv=((q.x+910)/1820,(q.y+1000)/2000)
+# BMesh weld and join must not silently repaint or remap the historical sector.
+terrain.data.uv_layers.active=terrain.data.uv_layers['UVMap']
+joined_faces=Counter(face_signature(terrain,poly) for poly in terrain.data.polygons)
+missing=core_faces-joined_faces
+assert not missing,('Retained sector material/UV/geometry changed',len(missing))
+core_proof={'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
+ 'retained_faces':sum(core_faces.values()),'missing_or_changed_faces':0,
+ 'image_float_pixel_sha256':core_images,'method':'original material slots and UV coordinates retained; common UVMap name for join',
+ 'art_approved':False}
+(out/'retained-core-integrity.json').write_text(json.dumps(core_proof,indent=2))
+print('AF_AG_CORE_MATERIAL_UV_INTEGRITY_PASS',sum(core_faces.values()),len(core_images))
 # Certify a real welded source/extension seam outside the river-bank section.
 seam_levels={}
 for vertex in terrain.data.vertices:

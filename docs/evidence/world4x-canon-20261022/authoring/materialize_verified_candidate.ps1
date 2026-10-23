@@ -6,7 +6,9 @@ $repo='https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu'
 $raw=Invoke-RestMethod -Headers $headers -Uri "$repo/contents/pipeline/active-workstreams.json?ref=main"
 $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
 $lease=@($registry.active|Where-Object {$_.id -eq 'eldoria-world-region-1-canon-20261022'})
-if($lease.Count -ne 1 -or $lease[0].owner -ne 'codex-world-production-20261023' -or $lease[0].write_scope_released -or $lease[0].resources -notcontains 'windows-runner-heavy'){throw 'World ownership changed'}
+$sourceRegistry=Get-Content (Join-Path $env:GITHUB_WORKSPACE 'world4x-source/pipeline/active-workstreams.json') -Raw | ConvertFrom-Json
+$sourceLease=@($sourceRegistry.active|Where-Object {$_.id -eq 'eldoria-world-region-1-canon-20261022'})
+if($lease.Count -ne 1 -or $sourceLease.Count -ne 1 -or $lease[0].owner -ne $sourceLease[0].owner -or $lease[0].ownership_revision -ne $sourceLease[0].ownership_revision -or $lease[0].write_scope_released -or $lease[0].resources -notcontains 'windows-runner-heavy'){throw 'World ownership changed'}
 [xml]$tests=Get-Content (Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-tests.xml')
 $cases=@($tests.SelectNodes('//test-case'))
 if($cases.Count -lt 26 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Actual candidate tests must pass before materialization'}

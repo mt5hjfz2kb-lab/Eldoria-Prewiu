@@ -300,6 +300,19 @@ jobs:
             }
           }
           @{adb_available=[bool]$adb;physical_android_count=$devices.Count;inventory_error=$inventoryError;devices=$devices;physical_profiled=$false;ios_profiled=$false} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $env:RUNNER_TEMP 'region1-physical-device-inventory.json')
+      - name: Upload compact genuine Unity review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: region1-visual-review-${{ github.run_id }}
+          if-no-files-found: error
+          path: |
+            ${{ runner.temp }}/eldoria-region1-canon-tests.xml
+            ${{ runner.temp }}/region1-physical-device-inventory.json
+            ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/retained-core-integrity.json
+            ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/*.png
+            ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/*-source.json
+            ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/retained-sector/**
       - name: Upload logs and measured tests
         if: always()
         uses: actions/upload-artifact@v4
