@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-22T20:09:04.998Z",
+  "updated_at": "2026-10-23",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,13 +19,13 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "codex-world4x-professional-resolution-95183774",
+      "owner": "chatgpt-world4x-ribera-o-sector-relay-20261023",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 12,
+      "ownership_revision": 13,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-22",
+      "claimed_at": "2026-10-23",
       "base_main_sha": "54703262a47a1ece6d233470582d4162d3d7c0b1",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Explicit owner instruction 2026-10-23 ELDORIA — RESOLUCIÓN PROFESIONAL DEFINITIVA DEL MUNDO 4X",
-      "phase": "RESEARCH_AND_REFERENCE_BLOCKOUT",
-      "next": "Read original references and manuals; correct continental land/coast structure with same-camera native verification; preserve gameplay.",
+      "authorization": "Owner-directed handoff 2026-10-23: finish the bounded O-to-connected-sector Blender/Unity pilot; no full Region 1 expansion, preserve recoverable O K I.",
+      "phase": "BOUNDED_RIBERA_O_CONNECTED_SECTOR_S",
+      "next": "Repair S missing Q path mask from canonical guide curves; rerun Blender+Unity native at 3 zooms H/V; compare true captures and preserve reference state.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -139,6 +139,13 @@
           "owner": "chatgpt-world4x-hybrid-resume-82901015",
           "revision": 11,
           "reason": "Owner-directed handoff 2026-10-23: professional research and root composition correction in PR100, no Qwen, no merge/publication."
+        },
+        {
+          "owner": "codex-world4x-professional-resolution-95183774",
+          "revision": 12,
+          "relieved_at": "2026-10-23",
+          "reason": "Owner explicitly authorizes continuation of the existing O to connected-sector assignment in new chat while preserving other scopes and unfinished workflows.",
+          "outcome": "Retain O/K/I and P/Q/R; S failed in native Blender on absent Q path mask (run 39976346632), no native artistic acceptance."
         }
       ],
       "delivery_definition": {
