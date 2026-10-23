@@ -2,6 +2,7 @@
 import bpy,sys,pathlib,hashlib,json,math
 import numpy as np
 from mathutils import Vector
+from mathutils.geometry import interpolate_bezier
 out,src=map(pathlib.Path,sys.argv[sys.argv.index('--')+1:]);out.mkdir(parents=True,exist_ok=True)
 assert hashlib.sha256(src.read_bytes()).hexdigest()=='6a28e42db779bff8af5ec10a13bac87d38b97e594c9528aad8f7cbd211a5828e'
 bpy.ops.wm.open_mainfile(filepath=str(src));scene=bpy.context.scene;terrain=bpy.data.objects['Pilot_Terrain_1'];coll=bpy.data.collections['16 Connected sector P - forest meadow low ridge'];N=193*85
@@ -34,7 +35,26 @@ for o in scene.objects:
    for p in sp.bezier_points:p.co.z=ground(p.co.x,p.co.y)+.03
 # Hand-directed broad pigment strokes follow slope, meadow clearings and the canopy footprint.
 im0=bpy.data.images['Q continuous sector meadow pigment'];W,H=im0.size;pix=np.array(im0.pixels[:],np.float32).reshape(H,W,4);X,Y=np.meshgrid(np.linspace(-96,96,W),np.linspace(78,170,H));seam=np.clip((Y-78)/12,0,1);seam=seam*seam*(3-2*seam)
-path=np.array(bpy.data.images['Q editable path mask'].pixels[:],np.float32).reshape(H,W,4)[:,:,0]
+# The Q road mask was an unused Blender image datablock and can be purged on
+# save/reopen. Recover it deterministically from the still-editable Bezier routes.
+# Match Q's original raster and widths; do not invent another road network.
+path=np.zeros((H,W),np.float32)
+for k in range(3):
+ route=bpy.data.objects['Editable P connected path '+str(k)].data.splines[0]
+ sampled=[]
+ for a,b in zip(route.bezier_points,route.bezier_points[1:]):
+  sampled.extend(interpolate_bezier(a.co,a.handle_right,b.handle_left,b.co,32)[:-1])
+ sampled.append(route.bezier_points[-1].co.copy())
+ for p in sampled:
+  xx=(p.x+96)/192*(W-1);yy=(p.y-78)/92*(H-1)
+  rx=1.65/192*W;ry=1.65/92*H
+  a=max(0,int(xx-rx-1));b=min(W,int(xx+rx+2))
+  c=max(0,int(yy-ry-1));d=min(H,int(yy+ry+2))
+  if a>=b or c>=d:continue
+  iy,ix=np.mgrid[c:d,a:b]
+  dist=np.sqrt(((ix-xx)/rx)**2+((iy-yy)/ry)**2)
+  path[c:d,a:b]=np.maximum(path[c:d,a:b],np.clip((1-dist)*2.1,0,1))
+assert np.any(path>0),'Recovered editable paths generated no pigment mask'
 mask=np.zeros((H,W),np.float32)
 for o in trees:
  x,y=o.location.xy;r=((X-x)/6.7)**2+((Y-y)/6.7)**2;mask=np.maximum(mask,np.clip(1-r,0,1)*.44)
@@ -54,6 +74,7 @@ for name,data,noncolor in [('S slope and canopy painted pigment',pix,False),('S 
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
+ im.use_fake_user=True # Retain editable masks when the .blend is reopened
 mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['S slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
 scene['finishing_stage']='S proportional sculpt, cohesive forest crowns and directed slope/litter paint over Q'
