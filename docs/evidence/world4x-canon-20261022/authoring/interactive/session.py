@@ -5,6 +5,9 @@ addon=next((m for m in addon_utils.modules() if m.__name__=='blender_mcp'),None)
 assert addon is not None,'Existing BlenderMCP addon not found'
 p=pathlib.Path(addon.__file__);digest=hashlib.sha256(p.read_bytes()).hexdigest()
 assert digest=='eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5','Unexpected existing addon identity'
+spec=importlib.util.spec_from_file_location('eldoria_interactive_verified_mcp',str(p))
+addon=importlib.util.module_from_spec(spec);sys.modules[spec.name]=addon;spec.loader.exec_module(addon)
+assert hashlib.sha256(source.read_bytes()).hexdigest()=='a86c14e78252c84c2182656656ba3848de4182cebd6c59df08d0621adc90a337'
 bpy.ops.wm.open_mainfile(filepath=str(source))
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'working-copy.blend'))
 for provider in ('polyhaven','hyper3d','sketchfab','polypizza','hunyuan3d','tripo'):
