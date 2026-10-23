@@ -69,15 +69,31 @@ for points,width,strength,colour in strokes:
   t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1);d=np.sqrt((X-ax-t*(bx-ax))**2+(Y-ay-t*(by-ay))**2);u=(j+t)/(len(points)-1);taper=np.sin(u*np.pi)**.6
   a=np.maximum(a,np.clip(1-d/width,0,1)**1.6*taper*strength)
  a*=seam*(1-path)* (1-mask);paint=np.maximum(paint,a);pix[:,:,:3]=pix[:,:,:3]*(1-a[:,:,None])+np.array(colour)*a[:,:,None]
-for name,data,noncolor in [('T slope and canopy painted pigment',pix,False),('T editable slope glaze mask',paint,True),('T editable connected litter mask',mask,True)]:
+# U: directed microhabitats within the retained meadow, never a global noise field.
+# These strokes follow the three authored paths and the shoulder's lower contours.
+habitats=[
+ ([(5,94),(9,106),(17,118),(22,133)],5.5,.17,[.43,.49,.25]),
+ ([(63,92),(57,105),(63,120),(75,137)],8.0,.13,[.72,.65,.39]),
+ ([(0,150),(12,154),(26,162),(42,167)],7.0,.14,[.49,.55,.28]),
+ ([(45,91),(52,102),(49,114)],4.5,.15,[.48,.42,.27])]
+for points,width,strength,colour in habitats:
+ a=np.zeros((H,W),np.float32)
+ for j,((ax,ay),(bx,by)) in enumerate(zip(points,points[1:])):
+  t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1)
+  d=np.sqrt((X-ax-t*(bx-ax))**2+(Y-ay-t*(by-ay))**2)
+  u=(j+t)/(len(points)-1)
+  a=np.maximum(a,np.clip(1-d/width,0,1)**2*np.sin(np.pi*u)**.8*strength)
+ a*=seam*(1-path)*(1-mask)
+ pix[:,:,:3]=pix[:,:,:3]*(1-a[:,:,None])+np.array(colour)*a[:,:,None]
+for name,data,noncolor in [('U slope and canopy painted pigment',pix,False),('U editable slope glaze mask',paint,True),('U editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['T slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['U slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='T broad softened shoulder, cohesive forest crowns, restrained rock scale and slope paint over Q'
+scene['finishing_stage']='U authored meadow microhabitats on retained T geometry and forest'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -85,4 +101,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'T','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':len(trees),'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; 3 broader and shallower sculpt strokes, 4 slope pigment strokes, canopy litter and 8 restrained ridge rocks; S retained in native run 39977858676'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'U','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':len(trees),'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; 3 broader and shallower sculpt strokes, 4 slope pigment strokes, canopy litter and 8 restrained ridge rocks; S retained in native run 39977858676'},indent=2))
