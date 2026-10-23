@@ -76,6 +76,7 @@ namespace Eldoria.World4XCanon
    instance.ValidateImportedSurface(host.WorldHome);
    instance.BuildContactSurface(host.WorldHome);
    RegionOneProductionLod.Install(instance.artwork);
+   RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
    Debug.Log("REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150");
    return instance;
   }

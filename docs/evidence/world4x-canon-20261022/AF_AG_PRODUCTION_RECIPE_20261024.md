@@ -12,7 +12,7 @@ Estado: producción abierta. No es aprobación artística, certificación móvil
 | AF → AG | Tres lóbulos forestales conectados, exclusión de caminos y LOD híbrido | AG run 40012204581; commit 84ce3ae48b1818b6bee7b4420d32ce5fa3df4169; 429 árboles; transición ortográfica 37–47 | Retener AG; AH introduce placas rocosas rechazadas |
 | AG → AI | Extensión soldada de 100 m al norte, UV nuevos solo en caras nuevas | `extend_living_sector.py`; fuente AI SHA256 28f5bc9665145244fb3b3ac400983e184ef664afdd6da0b8c04dac6fae5a23fc, run 40024930128 | Conservar fuente como entrada continental |
 | AI → continente, defecto identificado | Se asignó `Region1 broad continental pigment` a caras originales y se reemplazó su UV | `build_region_from_ai.py`, anterior a ac87016f | Regresión: vértices preservados no garantizan materiales preservados |
-| Reparación del relevo | Conservar asignaciones originales; normalizar solo nombre de capa UV; comparar caras/material/UV después de unión | `retained-core-integrity.json`; caras y hashes de píxeles de imágenes; nueva captura nativa requerida | Resultado pendiente hasta comprobar run y PNG |
+| Reparación del relevo | Conservar asignaciones originales; normalizar solo nombre de capa UV; comparar caras/material/UV después de unión | `retained-core-integrity.json`; caras y hashes de píxeles de imágenes; nueva captura nativa requerida | 50688 caras y 30 imágenes preservadas; 96 muestras de importación y 26 pruebas pasan en run 40040528055. PNG originales AG y reparación revisados: pigmento recuperado, iluminación aún más brillante antes del siguiente pase. |
 
 ## Receta AF que se debe transferir, no sustituir por ruido global
 
@@ -39,3 +39,13 @@ La captura continental conserva sus 16 PNG y añade `retained-sector/`: seis PNG
 Se conservan LocalGateway, PlayerState y rutas sobre triángulos importados. La ejecución 40038480141 validó rutas, recolección, reaparición tras reinicio y demás suites existentes; una nueva modificación geométrica exige revalidarlas. La selección de una ubicación tiene que demostrar acceso real, además de terreno plano y ausencia de exclusiones.
 
 Antes de integración: comprobar restauración artística en el sector; elevar el continente con masas diseñadas, relieve/riberas y máscaras específicas; revisar tres escalas/dos orientaciones y zoom; reconciliar main y ejecutar regresiones; identificar límites físicos y obtener aprobación del propietario. El estado del encargo sigue abierto hasta cumplir esos criterios.
+
+## Pase continental dirigido tras revisión nativa 40040528055
+
+La comparación de los PNG auténticos muestra una mejora real del núcleo pero rechaza el continente anterior: placa rectangular perceptible, praderas sin diseño, 25 agrupaciones forestales aisladas y oclusión del río junto a los bordes del sector. El shader PBR de producción ilumina las copas más que el shader AG. Esta observación precede a las operaciones siguientes; no es una puntuación ni aprobación.
+
+Decisiones ejecutables: mantener el 100 % del núcleo; extender su color de borde mediante raycast + material + UV originales en una franja nueva de 55 m; pintar nueve flujos de pradera y tres glaseados sobre las elevaciones existentes, con máscaras independientes guardadas en Blender; ampliar y romper las siluetas forestales conservando caminos, riberas y reservas de ciudad; usar sus dos fuentes de copa editables con colocación no reticular y variación de escala. Continuar la sección transversal real del río desde el primer vértice, sin el retraso anterior de 60 m; terminar el agua en la costa. Igualar exclusión fluvial al ancho visible. Conservar todos los tests de rutas reales.
+
+Restauración de look development: clonar la receta de shader AG sobre materiales de geografía, conservar textura/factor originales y aplicar el sol histórico solo durante el render de la cámara de mundo. Restaurar estado de luz y distancia de sombras al terminar; no editar ciudad ni UI ni el material fuente. Añadir 25 fotogramas por orientación de la transición cercana → continente, aparte de los 50 del sector. Evaluar coste físico por separado: el inventario de run 40040528055 encontró ADB disponible pero **cero dispositivos Android físicos**; iOS no medido.
+
+Pendiente de revisar el resultado de este pase; no confundir decisiones de autoría con mejora ya demostrada. La forma exterior de la región y la calidad final de Brecha todavía deben evaluarse después de las correcciones anteriores.

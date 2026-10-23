@@ -565,13 +565,17 @@ namespace Eldoria.Tests
             var pixels=new Texture2D(width,height,TextureFormat.RGB24,false);
             try
             {
-                camera.aspect=width/(float)height;camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;
+                camera.aspect=width/(float)height;camera.targetTexture=rt;
+                var sceneSun=RenderSettings.sun;var sunRotation=sceneSun?sceneSun.transform.rotation:Quaternion.identity;
+                camera.Render();
+                if(sceneSun)Assert.That(Quaternion.Angle(sceneSun.transform.rotation,sunRotation),Is.LessThan(.001f),"World rendering must restore city sun state");
+                RenderTexture.active=rt;
                 pixels.ReadPixels(new Rect(0,0,width,height),0,0);pixels.Apply();var png=pixels.EncodeToPNG();
                 Assert.That(png.Length,Is.GreaterThan(2500));File.WriteAllBytes(path+".png",png);
                 string hash;using(var sha=SHA256.Create())hash=BitConverter.ToString(sha.ComputeHash(png)).Replace("-","").ToLowerInvariant();
                 File.WriteAllText(path+".json",JsonUtility.ToJson(new RenderIdentity{
                     sourceScene=SceneManager.GetActiveScene().path,version=UnityEngine.Application.unityVersion,
-                    context="AF/AG camera and sector coordinates; integrated production lighting and materials",label=Path.GetFileName(path),
+                    context=path.Contains("continent-zoom")?"Continuous actual production camera journey across Region 1":"AF/AG camera and sector coordinates; restored scoped AG shader and lighting",label=Path.GetFileName(path),
                     sha256=hash,actualUnityCamera=true,playMode=UnityEngine.Application.isPlaying,physicalIphone=false,
                     width=width,height=height,zoom=camera.orthographicSize,aspect=camera.aspect,
                     cameraPosition=camera.transform.position,cameraRotation=camera.transform.rotation},true));
@@ -781,6 +785,20 @@ namespace Eldoria.Tests
                         camera.orthographicSize=portrait?Mathf.Lerp(32,74,t):Mathf.Lerp(24,52,t);
                         SaveRetainedSectorFrame(camera,Path.Combine(sequence,"frame-"+frame.ToString("D3")),portrait?540:960,portrait?960:540);
                     }
+                }
+                foreach(bool portrait in new[]{false,true})
+                {
+                    camera.aspect=portrait?9f/16:16f/9;Call(adapter,"RefreshForCapture");
+                    float far=(float)Member(navigation,"globalZoom");
+                    string sequence=Path.Combine(sectorDirectory,(portrait?"portrait":"landscape")+"-continent-zoom");Directory.CreateDirectory(sequence);
+                    for(int frame=0;frame<=24;frame++)
+                    {
+                        float t=Mathf.SmoothStep(0,1,frame/24f);
+                        Call(navigation,"RestoreView",home,Mathf.Lerp(portrait?64:36,far,t));Call(adapter,"RefreshForCapture");
+                        yield return null;
+                        SaveRetainedSectorFrame(camera,Path.Combine(sequence,"frame-"+frame.ToString("D3")),portrait?540:960,portrait?960:540);
+                    }
+                    Assert.That(Directory.GetFiles(sequence,"*.png").Length,Is.EqualTo(25));
                 }
                 Assert.That(Directory.GetFiles(sectorDirectory,"*.png").Length,Is.EqualTo(6));
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(16));
