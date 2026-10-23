@@ -60,13 +60,13 @@ namespace Eldoria.World4XCanon
    foreach(var p in positions)
    {
     var local=p-origin;var key=new Vector2Int(Mathf.FloorToInt(local.x*4),Mathf.FloorToInt(local.z*4));
-    int found=-1;float nearest=.002f*.002f;
+    bool found=false;const float toleranceSquared=.002f*.002f;
     for(int dz=-1;dz<=1;dz++)for(int dx=-1;dx<=1;dx++)
      if(sourceVertices.TryGetValue(key+new Vector2Int(dx,dz),out var bucket))
       foreach(var vertex in bucket)
-      {float distance=(vertex.position-local).sqrMagnitude;if(distance<nearest){nearest=distance;found=vertex.index;}}
-    if(found<0)throw new InvalidOperationException("Imported terrain vertex differs from Blender source at "+local);
-    matched.Add(found);
+      {float distance=(vertex.position-local).sqrMagnitude;if(distance<toleranceSquared){found=true;matched.Add(vertex.index);}}
+    if(!found)throw new InvalidOperationException("Imported terrain vertex differs from Blender source at "+local);
+    // Import/world transforms may collapse sub-millimetre separations; cover every source position within the unchanged tolerance.
    }
    if(matched.Count!=sourceVertexCount)throw new InvalidOperationException("Incomplete imported Blender surface.");
   }

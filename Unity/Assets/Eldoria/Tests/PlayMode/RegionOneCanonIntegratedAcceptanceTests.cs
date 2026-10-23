@@ -536,6 +536,11 @@ namespace Eldoria.Tests
                     }
                 }
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(14));
+                if(Environment.GetEnvironmentVariable("ELDORIA_RIBERA_PILOT")=="1")
+                {
+                    var pilot=AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType("Eldoria.World4XCanon.RegionOneRiberaPilot")).First(t=>t!=null);
+                    pilot.GetMethod("Capture").Invoke(null,new object[]{camera,world.transform,home,Path.Combine(outdir,"ribera-pilot")});
+                }
                 Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=14 (8 actual views + 2 historical-camera panorama controls + 4 blockout views) real_scene=1 disposable_gateway=1 physical_iphone=0");
             }
             finally
