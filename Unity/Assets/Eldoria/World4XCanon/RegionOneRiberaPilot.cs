@@ -15,6 +15,16 @@ namespace Eldoria.World4XCanon
    var prior=world.GetComponentsInChildren<Renderer>(true).Where(r=>r.enabled).ToArray();
    var root=UnityEngine.Object.Instantiate(prefab,world);root.name="Ribera hybrid art study (opt in)";root.layer=world.gameObject.layer;root.transform.position=home;root.transform.rotation=Quaternion.Euler(0,180,0);
    foreach(var r in root.GetComponentsInChildren<Renderer>())r.gameObject.layer=world.gameObject.layer;
+   var surfaceCache=new System.Collections.Generic.Dictionary<Material,Material>();
+   var studyShader=Shader.Find("Eldoria/RiberaFade");
+   foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())renderer.sharedMaterials=renderer.sharedMaterials.Select(old=>{
+    if(surfaceCache.TryGetValue(old,out var cached))return cached;
+    var material=new Material(studyShader);Color c=Color.white;
+    if(old.HasProperty("baseColorFactor"))c=old.GetColor("baseColorFactor");else if(old.HasProperty("_BaseColor"))c=old.GetColor("_BaseColor");
+    material.SetColor("_BaseColor",c);
+    for(int p=0;p<old.shader.GetPropertyCount();p++)if(old.shader.GetPropertyType(p)==UnityEngine.Rendering.ShaderPropertyType.Texture){string name=old.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",old.GetTexture(name));}
+    surfaceCache.Add(old,material);return material;
+   }).ToArray();
    if(root.GetComponentsInChildren<Collider>().Length!=0)throw new InvalidOperationException("Pilot must not introduce gameplay colliders");
    // Existing playable objects remain alive and retain IDs/colliders. Study hides prior renderers only, restoring in finally.
    foreach(var r in prior)r.enabled=false;

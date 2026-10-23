@@ -7,7 +7,7 @@ bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=Fals
 rng=random.Random(73)
 def mat(n,c):
  m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True;m.node_tree.nodes.clear();bs=m.node_tree.nodes.new('ShaderNodeBsdfPrincipled');bs.name='Principled BSDF';output=m.node_tree.nodes.new('ShaderNodeOutputMaterial');m.node_tree.links.new(bs.outputs['BSDF'],output.inputs['Surface']);bs.inputs['Base Color'].default_value=(*c,1);bs.inputs['Roughness'].default_value=.95;return m
-soil=mat('Ochre meadow',(0.39,.43,.11));bank=mat('Warm cut riverbank',(.40,.32,.18));water=mat('River turquoise',(.025,.32,.40));sand=mat('Worn path',(.58,.44,.22));rock=mat('Warm grey stone',(.39,.40,.32));bark=mat('Pine bark',(.18,.12,.065));greens=[mat('Needles '+str(i),c) for i,c in enumerate([(.055,.19,.09),(.11,.28,.12),(.23,.36,.13),(.16,.32,.16)])]
+soil=mat('Ochre meadow',(0.39,.43,.11));bank=mat('Warm cut riverbank',(.40,.32,.18));water=mat('River turquoise',(.025,.32,.40));sand=mat('Worn path',(.58,.44,.22));rock=mat('Warm grey stone',(.39,.40,.32));bark=mat('Pine bark',(.18,.12,.065));greens=[mat('Needles '+str(i),c) for i,c in enumerate([(.028,.115,.035),(.045,.16,.045),(.08,.21,.055),(.06,.18,.055)])]
 def mesh(n,v,f,m):
  d=bpy.data.meshes.new(n);d.from_pydata(v,[],f);d.update();o=bpy.data.objects.new(n,d);bpy.context.collection.objects.link(o);o.data.materials.append(m);return o
 # Authorial river follows an editable Bezier guide; banks are explicit continuous cross sections.
@@ -79,22 +79,32 @@ for name,offset,width,material in [('Pilot_Deep',0,1.6,deep),('Pilot_RimSouth',-
   vv.extend([(x,cy-width,.34),(x,cy+width,.34)])
  for i in range(192):ff.append((2*i,2*i+2,2*i+3,2*i+1))
  mesh(name,vv,ff,material)
-# Recognizable conifers: solid irregular lobed boughs, dark gaps, woody trunk, tapered crown.
-masters=[]
-for family in range(3):
- parts=[]
- bpy.ops.mesh.primitive_cone_add(vertices=9,radius1=.24,radius2=.10,depth=5.7,location=(0,0,2.85));tr=bpy.context.object;tr.data.materials.append(bark);parts.append(tr)
- families=[[(1.4,1.8),(2.8,1.45),(4.25,.90)],[(1.5,1.35),(2.5,1.22),(3.5,.98),(4.4,.68),(5.2,.38)],[(1.3,1.65),(2.5,1.40),(3.7,1.05),(4.8,.60)]]
- for tier,(h,w) in enumerate(families[family]):
-  vs=[];fs=[];segments=12
-  for ring,(z,rr) in enumerate([(h-.25,w*.68),(h,w),(h+.48,w*.68),(h+1.3,0.04)]):
-   for j in range(segments):a=j*2*pi/segments+family*.3;rad=rr*(1+.07*sin(j*2.8+tier));vs.append((cos(a)*rad,sin(a)*rad,z+.12*sin(j*2.1)))
-  for ring in range(3):
-   for j in range(segments):a=ring*segments+j;b=ring*segments+(j+1)%segments;fs.append((a,b,b+segments,a+segments))
-  o=mesh('Bough',vs,fs,greens[(tier+family)%4]);parts.append(o)
- bpy.ops.object.select_all(action='DESELECT')
- for o in parts:o.select_set(True)
- bpy.context.view_layer.objects.active=tr;bpy.ops.object.join();tr.name='Pilot_TreeSource_'+str(family);tr.location=(0,0,2.85);bpy.context.scene.cursor.location=(0,0,0);bpy.ops.object.origin_set(type='ORIGIN_CURSOR');masters.append(tr)
+# Change of asset method: extract a previously sculpted crown from the project's editable art.
+# This is a copy of an existing asset; no external generation/model invocation or source mutation.
+asset=pathlib.Path('world4x-source/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Sources/PineCanopy77.glb').resolve()
+if not asset.exists():raise RuntimeError('Existing sculpted canopy asset missing')
+before=set(bpy.data.objects);bpy.ops.import_scene.gltf(filepath=str(asset));imported=[o for o in bpy.data.objects if o not in before];vs=[];fs=[];mi=[]
+for obj in imported:
+ if obj.type!='MESH':continue
+ for poly in obj.data.polygons:
+  m=obj.data.materials[poly.material_index]
+  if not m or not m.name.startswith('Native77 sculpted pine'):continue
+  if sum(obj.data.vertices[i].co.x for i in poly.vertices)/len(poly.vertices)<20:continue
+  ids=[]
+  for i in poly.vertices:ids.append(len(vs));vs.append(obj.matrix_world@obj.data.vertices[i].co)
+  fs.append(ids);mi.append(int(m.name.split('pine ')[-1].split('.')[0])%4)
+if not fs:raise RuntimeError('No source crown extracted; never replace with formula fallback')
+lo=Vector([min(v[k] for v in vs) for k in range(3)]);hi=Vector([max(v[k] for v in vs) for k in range(3)]);centre=(lo+hi)*.5;scale=5.5/(hi.z-lo.z)
+vs=[((v.x-centre.x)*scale,(v.y-centre.y)*scale,(v.z-lo.z)*scale+.9) for v in vs]
+for obj in imported:bpy.data.objects.remove(obj,do_unlink=True)
+master=mesh('Pilot_SculptedPine',vs,fs,greens[0]);master.data.materials.clear()
+for material in greens:master.data.materials.append(material)
+for poly,idx in zip(master.data.polygons,mi):poly.material_index=idx;poly.use_smooth=True
+import bmesh
+bm=bmesh.new();bm.from_mesh(master.data);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.0001);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(master.data);bm.free()
+bpy.context.view_layer.objects.active=master;master.select_set(True);dec=master.modifiers.new('Mobile crown reduction','DECIMATE');dec.ratio=.45;bpy.ops.object.modifier_apply(modifier=dec.name)
+bpy.ops.mesh.primitive_cone_add(vertices=9,radius1=.22,radius2=.09,depth=4.5,location=(0,0,2.25));tr=bpy.context.object;tr.data.materials.append(bark)
+bpy.ops.object.select_all(action='DESELECT');master.select_set(True);tr.select_set(True);bpy.context.view_layer.objects.active=master;bpy.ops.object.join();master.name='Pilot_SculptedPine';masters=[master]
 # Deliberately arranged clusters with clearing/path and river exclusions.
 centres=[(-70,52,12,10),(-36,36,10,9),(28,31,13,11),(65,47,13,12),(-63,-55,13,8),(-9,-66,14,7),(51,-57,12,8),(-10,65,12,8),(-72,-9,9,6),(65,15,12,7)]
 positions=[]
@@ -102,7 +112,7 @@ for cx,cy,rx,ry in centres:
  for j in range(26):
   a=rng.random()*2*pi;d=math.sqrt(rng.random());x=cx+cos(a)*rx*d;y=cy+sin(a)*ry*d
   if abs(y-river(x))<7 or min((x-X)**2+(y-Y)**2 for sample in path_samples for X,Y in sample)<9 or any((x-X)**2+(y-Y)**2<6 for X,Y in positions):continue
-  positions.append((x,y));dab(x,y,3.2,(.36,.46,.17),.45);dab(x+.6,y+.5,1.9,(.28,.36,.12),.38);src=masters[rng.randrange(3)];o=src.copy();o.data=src.data;bpy.context.collection.objects.link(o);o.name='Pilot_Pine';o.location=(x,y,ground(x,y));s=rng.uniform(.70,1.23);o.scale=(s,s,s);o.rotation_euler.z=rng.uniform(-pi,pi)
+  positions.append((x,y));dab(x,y,3.2,(.36,.46,.17),.45);dab(x+.6,y+.5,1.9,(.28,.36,.12),.38);src=masters[0];o=src.copy();o.data=src.data;bpy.context.collection.objects.link(o);o.name='Pilot_Pine';o.location=(x,y,ground(x,y));s=rng.uniform(.70,1.23);o.scale=(s,s,s);o.rotation_euler.z=rng.uniform(-pi,pi)
 for o in masters:bpy.data.objects.remove(o,do_unlink=True)
 for cx,cy in [(-36,23),(56,32),(-73,-43),(28,-46)]:
  for j in range(7):
