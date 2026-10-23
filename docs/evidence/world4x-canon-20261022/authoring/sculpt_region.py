@@ -23,17 +23,27 @@ def focus(obj):
 lattice=bpy.data.lattices.new('Continental composition control cage');lattice.points_u=17;lattice.points_v=17;lattice.points_w=2
 lattice.interpolation_type_u='KEY_LINEAR';lattice.interpolation_type_v='KEY_LINEAR';lattice.interpolation_type_w='KEY_LINEAR'
 cage=bpy.data.objects.new('AUTHOR · western continental shoulder and northern depth',lattice)
-scene.collection.objects.link(cage);cage.scale=(1820,2000,200);cage.hide_render=True
+scene.collection.objects.link(cage)
+# Blender expands lattice rest coordinates when point counts grow; calibrate its real rest span.
+span_x=max(p.co.x for p in lattice.points)-min(p.co.x for p in lattice.points)
+span_y=max(p.co.y for p in lattice.points)-min(p.co.y for p in lattice.points)
+span_z=max(p.co.z for p in lattice.points)-min(p.co.z for p in lattice.points)
+cage.scale=(1820/span_x,2000/span_y,200/span_z);cage.hide_render=True
+protected_vertices={v.index:v.co.copy() for v in terrain.data.vertices if abs(v.co.x)<110 and abs(v.co.y)<125}
 west=[-910,-885,-850,-800,-720,-600,-430,-113.75,0,113.75,227.5,341.25,455,568.75,682.5,796.25,910]
 north=[-1000,-930,-850,-750,-620,-430,-260,-125,0,125,250,390,580,730,850,950,1000]
 for w in range(2):
     for v in range(17):
         for u in range(17):
-            p=lattice.points[(w*17+v)*17+u];p.co_deform.x=west[u]/1820;p.co_deform.y=north[v]/2000
+            p=lattice.points[(w*17+v)*17+u];p.co_deform.x=west[u]/cage.scale.x;p.co_deform.y=north[v]/cage.scale.y
 cage['intent']='Expand the western geographic shoulder and move the southern sea out of the composition; preserve central real targets.'
 objects=[o for o in list(bpy.data.objects) if o.name.startswith('BLD_') and o.type=='MESH']
 for obj in objects:
     focus(obj);mod=obj.modifiers.new('Authored continental composition','LATTICE');mod.object=cage;bpy.ops.object.modifier_apply(modifier=mod.name)
+for index,original in protected_vertices.items():
+    if (terrain.data.vertices[index].co-original).length>.002:raise RuntimeError('Lattice changed protected gameplay core')
+if min(v.co.x for v in terrain.data.vertices)>-900 or max(v.co.x for v in terrain.data.vertices)<900:
+    raise RuntimeError('Lattice failed metric extent preservation')
 # Transform the editable guide curves through the same cage and preserve them as editable curves.
 for obj in [o for o in list(bpy.data.objects) if o.type=='CURVE']:
     mod=obj.modifiers.new('Shared continental composition','LATTICE');mod.object=cage

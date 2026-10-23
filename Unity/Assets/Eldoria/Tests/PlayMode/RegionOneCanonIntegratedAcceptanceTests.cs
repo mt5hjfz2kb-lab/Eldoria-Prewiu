@@ -136,11 +136,11 @@ namespace Eldoria.Tests
                 BindingFlags.Public | BindingFlags.Static);
             Assert.That(coastMask,Is.Not.Null);
             float dry=(float)coastMask.Invoke(null,new object[]{0f,-360f});
-            float sea=(float)coastMask.Invoke(null,new object[]{0f,-510f});
+            float sea=(float)coastMask.Invoke(null,new object[]{0f,-700f});
             Assert.That(dry,Is.EqualTo(0f).Within(.001f),
                 "The inland edge of the southeastern coast remains dry.");
             Assert.That(sea,Is.GreaterThan(.95f),
-                "The southeast shoreline must blend into genuine painted sea.");
+                "The extended southern continental shelf must still end in genuine sea.");
             float inlet=(float)coastMask.Invoke(null,new object[]{290f,-255f});
             float mainland=(float)coastMask.Invoke(null,new object[]{70f,-200f});
             Assert.That(inlet,Is.GreaterThan(.95f),
