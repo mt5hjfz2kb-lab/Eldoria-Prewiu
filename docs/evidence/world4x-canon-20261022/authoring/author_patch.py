@@ -6,7 +6,7 @@ out=pathlib.Path(sys.argv[sys.argv.index('--')+1]);out.mkdir(parents=True,exist_
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 rng=random.Random(73)
 def mat(n,c):
- m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True;m.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(*c,1);m.node_tree.nodes.get('Principled BSDF').inputs['Roughness'].default_value=.95;return m
+ m=bpy.data.materials.new(n);m.diffuse_color=(*c,1);m.use_nodes=True;m.node_tree.nodes.clear();bs=m.node_tree.nodes.new('ShaderNodeBsdfPrincipled');bs.name='Principled BSDF';output=m.node_tree.nodes.new('ShaderNodeOutputMaterial');m.node_tree.links.new(bs.outputs['BSDF'],output.inputs['Surface']);bs.inputs['Base Color'].default_value=(*c,1);bs.inputs['Roughness'].default_value=.95;return m
 soil=mat('Ochre meadow',(0.39,.43,.11));bank=mat('Warm cut riverbank',(.40,.32,.18));water=mat('River turquoise',(.025,.32,.40));sand=mat('Worn path',(.58,.44,.22));rock=mat('Warm grey stone',(.39,.40,.32));bark=mat('Pine bark',(.18,.12,.065));greens=[mat('Needles '+str(i),c) for i,c in enumerate([(.055,.19,.09),(.11,.28,.12),(.23,.36,.13),(.16,.32,.16)])]
 def mesh(n,v,f,m):
  d=bpy.data.meshes.new(n);d.from_pydata(v,[],f);d.update();o=bpy.data.objects.new(n,d);bpy.context.collection.objects.link(o);o.data.materials.append(m);return o
@@ -89,6 +89,13 @@ for o in masters:bpy.data.objects.remove(o,do_unlink=True)
 for cx,cy in [(-36,23),(56,32),(-73,-43),(28,-46)]:
  for j in range(7):
   x=cx+rng.uniform(-5,5);y=cy+rng.uniform(-4,4);bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(x,y,ground(x,y)+.5));o=bpy.context.object;o.name='Pilot_Rock';o.scale=(rng.uniform(1,2.6),rng.uniform(1,2),rng.uniform(1,3));o.rotation_euler=(.2,.3,rng.random());o.data.materials.append(rock)
+# Organize editable authoring layers, retaining curves independently of final meshes.
+for name,prefixes in [('01_Terrain',('Pilot_Terrain',)),('02_Water_Banks',('Pilot_River','Pilot_Cutbank')),('03_Paths',('Pilot_Path',)),('04_Forest',('Pilot_Pine',)),('05_Rocks',('Pilot_Rock',)),('00_Editable_Guides',('Editable',))]:
+ collection=bpy.data.collections.new(name);bpy.context.scene.collection.children.link(collection)
+ for obj in list(bpy.context.scene.objects):
+  if obj.name.startswith(prefixes):
+   for old in list(obj.users_collection):old.objects.unlink(obj)
+   collection.objects.link(obj)
 # Save source and export the exact authored geography, not a runtime reconstruction.
 bpy.ops.object.select_all(action='DESELECT')
 for o in bpy.context.scene.objects:
