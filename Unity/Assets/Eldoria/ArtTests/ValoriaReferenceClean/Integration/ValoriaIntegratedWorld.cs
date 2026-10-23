@@ -271,7 +271,7 @@ namespace Eldoria.ReferenceClean {
    // gathering, navigation and quests). The larger visual-only creature may
    // project beyond its pre-existing, deliberately untouched hotspot collider.
    var ray=PlayerCamera.ScreenPointToRay(point);
-   var hit=Physics.RaycastAll(ray,900,1<<8).OrderBy(h=>h.distance)
+   var hit=Physics.RaycastAll(ray,PlayerCamera.farClipPlane,1<<8).OrderBy(h=>h.distance)
     .Select(h=>h.collider.GetComponent<WorldHotspot>())
     .FirstOrDefault(h=>h!=null&&h.transform.IsChildOf(WorldRoot.transform));
    if(hit)return hit;

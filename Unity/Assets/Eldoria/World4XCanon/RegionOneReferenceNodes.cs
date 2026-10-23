@@ -12,6 +12,7 @@ namespace Eldoria.World4XCanon
  public sealed class RegionOneReferenceNodes : MonoBehaviour
  {
   ValoriaIntegratedWorld host;Material nodes,trees;bool before;
+  readonly Dictionary<string,Vector3> resourceOrigins=new Dictionary<string,Vector3>();
   readonly List<Renderer> old=new List<Renderer>();readonly List<bool> states=new List<bool>();readonly List<bool> mountains=new List<bool>();
   readonly List<LODGroup> lods=new List<LODGroup>();readonly List<bool> lodStates=new List<bool>();
   readonly List<Renderer> current=new List<Renderer>();readonly List<GameObject> gates=new List<GameObject>();readonly List<Mesh> meshes=new List<Mesh>();
@@ -51,6 +52,7 @@ namespace Eldoria.World4XCanon
    if(timber&&wood){var b=BoundsOf(timber.gameObject);BuildWoodGrove(GroundFoot(wood.transform.position));Hide(timber.gameObject);}
    foreach(var t in host.WorldRoot.GetComponentsInChildren<Transform>(true))
     if(t.name.StartsWith("Existing Holotna mountain",StringComparison.Ordinal))Hide(t.gameObject,true);
+   foreach(var id in new[]{"forest-valoria","quarry-valoria"}){var t=host.FindTarget(id);if(t)resourceOrigins[id]=t.transform.position;}
    Debug.Log("REGION1_REFERENCE_NODES visuals="+current.Count+" old_renderers="+old.Count+" new_hotspots=0 new_colliders=0");Refresh();
   }
   void Sprite(string name,Vector3 foot,float width,int cell,GameObject gate)
@@ -80,7 +82,13 @@ namespace Eldoria.World4XCanon
    if(!host||!host.WorldCamera)return;float zoom=host.WorldCamera.orthographicSize;bool far=zoom>=152;float near=host.WorldCamera.aspect<.8f?72:41;
    for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=before&&lodStates[i];
    for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=before&&!far&&states[i]&&(!mountains[i]||zoom<=near);
-   for(int i=0;i<current.Count;i++)if(current[i])current[i].enabled=!before&&!far&&(!gates[i]||gates[i].activeInHierarchy);
+   var state=host.City.Gateway.Snapshot();
+   for(int i=0;i<current.Count;i++)if(current[i]){
+    string id=current[i].name=="Reference existing quarry"?"quarry-valoria":current[i].name=="Reference existing wood grove"?"forest-valoria":null;
+    bool available=id==null||(id=="forest-valoria"?state.ForestRemaining>0:state.QuarryRemaining>0);
+    if(id!=null&&resourceOrigins.TryGetValue(id,out var original)){var target=host.FindTarget(id);if(target)current[i].transform.position=target.transform.position-original;}
+    current[i].enabled=!before&&!far&&available&&(!gates[i]||gates[i].activeInHierarchy);
+   }
   }
   void LateUpdate(){Refresh();}
   void OnDestroy(){for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=lodStates[i];for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=states[i];foreach(var r in current)if(r)Destroy(r.gameObject);foreach(var m in meshes)if(m)Destroy(m);if(nodes)Destroy(nodes);if(trees)Destroy(trees);}

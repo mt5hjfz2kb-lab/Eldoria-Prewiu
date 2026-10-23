@@ -61,6 +61,9 @@ namespace Eldoria.World4XCanon
             }
             InstallCameraLimits();
             Build(host.WorldRoot.transform);
+            foreach(var renderer in host.WorldRoot.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
+            host.WorldRoot.layer=29;
+            host.WorldCamera.cullingMask=1<<29;
             ConfigureRegionCoverage();
             built = true;
             UpdateLevelOfDetail(true);
@@ -136,6 +139,7 @@ namespace Eldoria.World4XCanon
    var root=new GameObject("Region 1 canonical continuous geography").transform;root.SetParent(existingWorld,true);
    geography=RegionOneBlenderLandscape.Install(root,host);
    nodes=RegionOneReferenceNodes.Install(root,host);
+   RegionOneResourcePlacement.Install(root,host,geography);
   }
   void UpdateLevelOfDetail(bool force)
   {
@@ -145,7 +149,7 @@ namespace Eldoria.World4XCanon
    float near=navigation.View.aspect<.8f?64:36;
    if(Mathf.Abs(navigation.localZoom-near)>.5f){bool was=navigation.View.orthographicSize<=navigation.localZoom+.5f;navigation.localZoom=near;if(was)navigation.SetZoomLevel(2,true);}
    float size=navigation.View.orthographicSize;
-   if(size>=navigation.globalZoom*.98f)navigation.PanTo(regionBounds.center);
+   if(size>=navigation.globalZoom*.98f)navigation.PanTo(new Vector3(regionBounds.center.x,origin.y,regionBounds.center.z));
    float desired=Mathf.Lerp(42,64,Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,244,size)));
    float tilt=force?desired:Mathf.Lerp(navigation.tilt,desired,1-Mathf.Exp(-7*Time.unscaledDeltaTime));
    if(Mathf.Abs(tilt-navigation.tilt)>.04f){navigation.tilt=tilt;navigation.FitToAuthoredBounds();}

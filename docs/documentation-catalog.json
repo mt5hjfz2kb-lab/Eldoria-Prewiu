@@ -1136,6 +1136,12 @@
       "domain": "art",
       "status": "reference",
       "note": "Inventario de técnicas y resultados curados, solo consulta; no autorización ni ejecución automática."
+    },
+    {
+      "path": "docs/ELDORIA_WORLD4X_REUSE_EXISTING_CREATURES_20261023.md",
+      "status": "reference",
+      "domain": "art",
+      "note": "Owner creature reuse and progression constraints; no new credit authorization."
     }
   ]
 }
