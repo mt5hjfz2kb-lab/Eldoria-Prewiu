@@ -53,7 +53,7 @@ jobs:
 
   unity-source-playmode:
     needs: canon-source
-    if: github.event_name == 'push' && vars.UNITY_RUNNER_READY == 'true'
+    if: github.event_name == 'push' && vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, 'blender-interactive(world4x):')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 50
     steps:
@@ -210,3 +210,57 @@ jobs:
             ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/*.cycle-feedback.json
             ${{ runner.temp }}/region1-ollama-${{ github.run_id }}.*
 
+
+  blender-interactive:
+    needs: canon-source
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, 'blender-interactive(world4x):')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 15
+    steps:
+      - name: Find installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git unavailable'}
+            Add-Content $env:GITHUB_PATH (Split-Path $candidate)
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: world4x-source
+          persist-credentials: false
+          sparse-checkout: |
+            docs/evidence/world4x-canon-20261022/authoring/interactive
+            tools/workstream-lease
+            pipeline
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: world4x-live
+          persist-credentials: false
+          sparse-checkout: pipeline
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check live ownership before touching the retained Blender session
+        shell: powershell
+        run: |
+          node world4x-source/tools/workstream-lease/check.mjs world4x-source/pipeline/active-workstreams.json world4x-live/pipeline/active-workstreams.json eldoria-world-region-1-canon-20261022
+          if($LASTEXITCODE){throw 'Live workstream lease mismatch'}
+      - uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 39930695744
+          name: region1-canon-native-39930695744
+          path: ${{ runner.temp }}/interactive-source
+      - name: Send this observed decision to the persistent local BlenderMCP session
+        shell: powershell
+        run: '& world4x-source/docs/evidence/world4x-canon-20261022/authoring/interactive/relay.ps1'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: region1-interactive-${{ github.run_id }}
+          path: ${{ env.ELDORIA_INTERACTIVE_OUT }}/**
+          if-no-files-found: error
