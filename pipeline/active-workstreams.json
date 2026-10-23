@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-23",
+  "updated_at": "2026-10-23T21:24:23.134Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -16,164 +16,6 @@
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
   "active": [
-    {
-      "id": "eldoria-world-region-1-canon-20261022",
-      "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "codex-world4x-living-sector-b4b06f1a",
-      "ownership_state": "claimed",
-      "write_scope_released": false,
-      "ownership_revision": 16,
-      "branch": "main",
-      "status": "active",
-      "claimed_at": "2026-10-23",
-      "base_main_sha": "54703262a47a1ece6d233470582d4162d3d7c0b1",
-      "scope": [
-        "Unity/Assets/Eldoria/World4XCanon/**",
-        "docs/evidence/world4x-canon-20261022/**",
-        "Unity/Assets/Eldoria/World4XCanon.meta",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta",
-        ".github/workflows/world4x-canon-native.yml"
-      ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
-      "authorization": "Explicit owner request: connected living 4X sector, bounded expansion from AG; preserve gameplay ownership, 0 EUR, no merge/publication.",
-      "phase": "AG_BOUNDED_EXTENSION_AND_DYNAMIC_CAPACITY",
-      "next": "Preserve AG; extend terrain and validate actual mesh contact, navigation, city clearances and isolated population proof using existing content.",
-      "dependencies": [
-        "valoria-master-plan-layered-construction-20261016",
-        "eldoria-ui-v3-management-completion-20261021",
-        "eldoria-spawnling-qwen-semantic-visual-qa-20261021"
-      ],
-      "candidate_branch": "feature/world4x-region1-canon-20261022",
-      "art_production_routing": "required",
-      "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
-      "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
-      "last_verified": {
-        "sha": "336328b92479d08421686fef587a4e5821390fc8",
-        "unity_run": 39842389820,
-        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_UNITY_JOB_SUCCESS",
-        "real_unity_captures": 12,
-        "art_approved": false,
-        "physical_iphone_tested": false,
-        "visual_gap": "Retained visible broad improvement: connected low ridges, continuous coast, connected tributaries, raised forest cards and clearer paths. Still below reference fidelity, mixed regional legacy geometry scales and portrait 49.58% core width unresolved.",
-        "playable_published": false,
-        "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
-        "latest_native_failure_run": 39795241792,
-        "latest_native_failure": "UNITY_CS0136 local centre shadowing line 145; source-only pass is not Unity pass",
-        "previous_ab_run": 39794053393,
-        "previous_ab_state": "12 real Unity 3-scale orientation/A-B PNG; visual parity not achieved",
-        "visual_review": "b881 large meadow blotches improved chromatic variation but camo-like shadow rejected; 0e6b toned down and retained after genuine Unity same-view screenshots; camera 65deg trial 3a800d rejected due 6/7 test and negligible visual gain, original 74deg restored in 76b510.",
-        "camera_trial_rejected_run": 39799182467,
-        "macro_terrain_success_run": 39800024614,
-        "landcover_art_source_sha": "0e6b8b712b9730762893c8b96ec2bda50268dcf5",
-        "portrait_panorama_coverage": "At 390x844 with zoom244, horizontal projected footprint ≈225 world units vs conceptual core width 850 (~26.5%), full-region portrait not solved.",
-        "last_visual_experiment": "TAPERED_2_5D_SPRUCE_RETAINED_AS_VISIBLE_STEP_FORWARD; panorama 7.58% and portrait 8.80% pixels change versus 0e6; not an art-quality score",
-        "regional_ground_recovery": "37ab 39803930076: 7/7 Unity tests verify original prairie stays in close zoom, hidden at regional/panorama, collider count unchanged; no gameplay/save edits.",
-        "oversized_tree_recovery": "37ab donor XZ mesh width up to 70m corrected via footprint-aware scale and true ground pivot; visible regional camera gain observed; ART_NOT_APPROVED",
-        "latest_water_qa": "dc0ac527: water mask shared by terrain+forest rejects conifer impostors on both approved decorative lakes, river tributaries and coast; real Unity A/B 39805826900 7/7 source/playmode; no new gameplay objects.",
-        "forest_corridor_art_source_sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
-        "forest_corridor_first_run": 39805121152,
-        "forest_corridor_water_corrected_run": 39805826900,
-        "unity_artifact": 12453951277,
-        "portrait_zoom_run": 39810954619,
-        "portrait_zoom_sha": "7b224f0d75caaed536f9d2d6a135c806467729d5",
-        "fog_coast_run": 39811994026,
-        "fog_coast_sha": "b1468ac19d2328abbfc1f39c5533f2de7a7a0d7d",
-        "warmer_grass_run": 39812825276,
-        "warmer_grass_sha": "06598a718fa689ca4f297b34ec021a3c0254fec1",
-        "coastal_blend_run": 39813965828,
-        "coastal_blend_sha": "338366e94dd0967424f18feb3d8a0d8fd14d2dc7",
-        "coastal_blend_visual": "Authored real Unity 390x844 portrait screenshot observed: softened shoreline; owner concept parity still not reached",
-        "latest_recoverable_failure": "1b518ee9 Unity CS0234 from direct test assembly reference; corrected with reflection 338366; subsequent native NUnit XML 7/7 pass.",
-        "last_rejected_trial": "50cb39945964bcc6462b33b21451bfe4da0dae9b 2 batched coastal ribbons yielded obvious stepped tan blocks in actual 39822061158 Unity A/B; ART_REJECTED. Rollback ff8c accidentally cut method header; exact byte-for-byte restoration 5ac728b was native reverified 7/7.",
-        "forest_three_species_sha": "7d31682fd25166d85be264afb990e37e1efd30f8",
-        "forest_three_species_run": 39820853781,
-        "forest_three_species_reference_comparison": "7d same camera showed small tree shape variety (<4% significant pixel difference overall including Breach edits), source retained as experimental, not art approved",
-        "coast_step_rejected_run": 39822061158,
-        "recovery_run": 39822981117,
-        "recovery_artifact_id": 12445257357,
-        "baseline_comparison_run": 39819239685,
-        "approved_world_pngs": "docs/visual-reference/world-map/01_vista_cercana.png;02_vista_regional.png;03_vista_panoramica.png",
-        "artist": "ChatGPT direct author per explicit owner; Qwen removed from this task only",
-        "atlas_runtime_bake_removed": "Exact 2048 reviewed PNG loaded; seven PREBAKED=True logs. Editor suite 206.758s ->13.639s; panorama landscape pixels identical. Not physical mobile performance.",
-        "forest_geometry": "840 trees, 3 meshes, 3360 triangles, 1 atlas",
-        "macro_art_evidence": "docs/evidence/world4x-canon-20261022/MACRO_RELIEF_CANOPY_REVIEW_20261022.md",
-        "regional_scale_correction": "3 positively identified decorative mountain renderers hidden at regional/panorama, restored close; quarry/real targets preserved. Near and panoramas unchanged >5/255."
-      },
-      "ownership_history": [
-        {
-          "owner": "chatgpt-eldoria-world4x-canon-20261022",
-          "released_at": "2026-10-22",
-          "outcome": "Draft PR #100 retained; 7/7 Unity integration PASS; visual/mobile/release gates pending"
-        },
-        {
-          "owner": "chatgpt-world4x-hybrid-canon-20261022",
-          "relieved_at": "2026-10-22",
-          "reason": "Explicit owner-directed chat recovery; same PR #100 and workstream retained; previous Unity jobs not cancelled",
-          "outcome": "Hybrid canopy code retained, Unity compiler CS0136 verified in artifact 12433312016; existing jobs preserved."
-        },
-        {
-          "owner": "chatgpt-world4x-relevo-20261022",
-          "relieved_at": "2026-10-22",
-          "reason": "Owner request: continue the stalled previous conversation and finish the same World4X work, preserving candidate PR #100 and latest Unity pass.",
-          "outcome": "Existing coast rim experiment reverted safely; candidate 5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d tested by native run 39822981117, 7/7 PASS; no main merge."
-        },
-        {
-          "owner": "chatgpt-world4x-continuation-20261022-1925",
-          "relieved_at": "2026-10-22T17:48:00Z",
-          "reason": "Owner explicitly asks this chat to continue the latest hybrid World4X work; existing PR100 and all evidence preserved."
-        },
-        {
-          "owner": "chatgpt-world4x-hybrid-resume-82901015",
-          "relieved_at": "2026-10-22",
-          "reason": "Explicit owner-directed continuation: perform P0 authored reference-composition experiment to real Unity screenshot acceptance, preserve same PR #100 and workstream."
-        },
-        {
-          "owner": "chatgpt-world4x-p0-composition-20261022",
-          "relieved_at": "2026-10-22T20:09:04.998Z",
-          "reason": "Owner explicitly centralizes execution in this chat; inspect P0 results, retain useful work, discard unsuccessful trial and continue."
-        },
-        {
-          "owner": "chatgpt-world4x-hybrid-resume-82901015",
-          "revision": 11,
-          "reason": "Owner-directed handoff 2026-10-23: professional research and root composition correction in PR100, no Qwen, no merge/publication."
-        },
-        {
-          "owner": "codex-world4x-professional-resolution-95183774",
-          "revision": 12,
-          "relieved_at": "2026-10-23",
-          "reason": "Owner explicitly authorizes continuation of the existing O to connected-sector assignment in new chat while preserving other scopes and unfinished workflows.",
-          "outcome": "Retain O/K/I and P/Q/R; S failed in native Blender on absent Q path mask (run 39976346632), no native artistic acceptance."
-        },
-        {
-          "owner": "chatgpt-world4x-ribera-o-sector-relay-20261023",
-          "revision": 13,
-          "relieved_at": "2026-10-23",
-          "reason": "Explicit owner continuation and completion of existing sector T and subsequent U without expanding Region 1",
-          "outcome": "T verified native; U run 39981878592 completed success, pending visual review"
-        },
-        {
-          "owner": "chatgpt-world4x-sector-final-20261023",
-          "revision": 14,
-          "relieved_at": "2026-10-23",
-          "reason": "Owner explicitly authorizes a new chat to take over unfinished W sector production within existing PR100.",
-          "outcome": "W Unity/Blender native 39987173786 succeeded, heights and artistic acceptance not yet certified."
-        },
-        {
-          "owner": "chatgpt-world4x-sector-finish-relay-20261023",
-          "revision": 15,
-          "relieved_at": "2026-10-23",
-          "reason": "Owner directs continuation in PR100 from restored AG with bounded geographic extension and isolated dynamic capacity validation."
-        }
-      ],
-      "delivery_definition": {
-        "deliverable": "Bounded connected extension from AG and isolated capacity demonstration",
-        "evidence": "Editable Blender, real Unity three scales, terrain navigation/contact/city population checks; no simulated device certification",
-        "handoff": "PR100 sources and exact verified native artifact; preserve all references; no merge/release"
-      }
-    },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
@@ -7080,6 +6922,206 @@
         "new_owner_status_run": 39622037654,
         "real_handoff": "canonical Valoria workstream claimed by chatgpt-eldoria-geography-visual-production-20261021, ownership_revision2; no geometry/source/evidence reset",
         "no_heavy_pc_job_for_maintenance": true
+      }
+    },
+    {
+      "id": "eldoria-world-region-1-canon-20261022",
+      "title": "Región 1 — geografía canónica continua y representación por zoom",
+      "owner": null,
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "ownership_revision": 17,
+      "branch": "main",
+      "status": "blocked",
+      "claimed_at": "2026-10-23",
+      "base_main_sha": "54703262a47a1ece6d233470582d4162d3d7c0b1",
+      "scope": [
+        "Unity/Assets/Eldoria/World4XCanon/**",
+        "docs/evidence/world4x-canon-20261022/**",
+        "Unity/Assets/Eldoria/World4XCanon.meta",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs.meta",
+        ".github/workflows/world4x-canon-native.yml"
+      ],
+      "resources": [],
+      "authorization": "Explicit owner request: connected living 4X sector, bounded expansion from AG; preserve gameplay ownership, 0 EUR, no merge/publication.",
+      "phase": "AI_NATIVE_EVIDENCE_DELIVERED__LIVE_STATE_SCOPE_DEPENDENCY",
+      "next": "Consume Valoria owner's live-state/march integration, or reconcile an explicit handoff of that separate scope. Retain AI source cb0ef556, AG input hash and PR100 evidence; do not publish the disposable fixture as gameplay.",
+      "dependencies": [
+        "valoria-master-plan-layered-construction-20261016",
+        "eldoria-ui-v3-management-completion-20261021",
+        "eldoria-spawnling-qwen-semantic-visual-qa-20261021"
+      ],
+      "candidate_branch": "feature/world4x-region1-canon-20261022",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
+      "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
+      "last_verified": {
+        "sha": "336328b92479d08421686fef587a4e5821390fc8",
+        "unity_run": 39842389820,
+        "unity_playmode": "7_OF_7_PASS_NATIVE_XML_AND_UNITY_JOB_SUCCESS",
+        "real_unity_captures": 12,
+        "art_approved": false,
+        "physical_iphone_tested": false,
+        "visual_gap": "Retained visible broad improvement: connected low ridges, continuous coast, connected tributaries, raised forest cards and clearer paths. Still below reference fidelity, mixed regional legacy geometry scales and portrait 49.58% core width unresolved.",
+        "playable_published": false,
+        "latest_hybrid_head_observed": "d832e493e796e446c69ef2b70cf5774d74243b81",
+        "latest_native_failure_run": 39795241792,
+        "latest_native_failure": "UNITY_CS0136 local centre shadowing line 145; source-only pass is not Unity pass",
+        "previous_ab_run": 39794053393,
+        "previous_ab_state": "12 real Unity 3-scale orientation/A-B PNG; visual parity not achieved",
+        "visual_review": "b881 large meadow blotches improved chromatic variation but camo-like shadow rejected; 0e6b toned down and retained after genuine Unity same-view screenshots; camera 65deg trial 3a800d rejected due 6/7 test and negligible visual gain, original 74deg restored in 76b510.",
+        "camera_trial_rejected_run": 39799182467,
+        "macro_terrain_success_run": 39800024614,
+        "landcover_art_source_sha": "0e6b8b712b9730762893c8b96ec2bda50268dcf5",
+        "portrait_panorama_coverage": "At 390x844 with zoom244, horizontal projected footprint ≈225 world units vs conceptual core width 850 (~26.5%), full-region portrait not solved.",
+        "last_visual_experiment": "TAPERED_2_5D_SPRUCE_RETAINED_AS_VISIBLE_STEP_FORWARD; panorama 7.58% and portrait 8.80% pixels change versus 0e6; not an art-quality score",
+        "regional_ground_recovery": "37ab 39803930076: 7/7 Unity tests verify original prairie stays in close zoom, hidden at regional/panorama, collider count unchanged; no gameplay/save edits.",
+        "oversized_tree_recovery": "37ab donor XZ mesh width up to 70m corrected via footprint-aware scale and true ground pivot; visible regional camera gain observed; ART_NOT_APPROVED",
+        "latest_water_qa": "dc0ac527: water mask shared by terrain+forest rejects conifer impostors on both approved decorative lakes, river tributaries and coast; real Unity A/B 39805826900 7/7 source/playmode; no new gameplay objects.",
+        "forest_corridor_art_source_sha": "dc0ac527c1bc5381478b14843134d12acf4a0655",
+        "forest_corridor_first_run": 39805121152,
+        "forest_corridor_water_corrected_run": 39805826900,
+        "unity_artifact": 12453951277,
+        "portrait_zoom_run": 39810954619,
+        "portrait_zoom_sha": "7b224f0d75caaed536f9d2d6a135c806467729d5",
+        "fog_coast_run": 39811994026,
+        "fog_coast_sha": "b1468ac19d2328abbfc1f39c5533f2de7a7a0d7d",
+        "warmer_grass_run": 39812825276,
+        "warmer_grass_sha": "06598a718fa689ca4f297b34ec021a3c0254fec1",
+        "coastal_blend_run": 39813965828,
+        "coastal_blend_sha": "338366e94dd0967424f18feb3d8a0d8fd14d2dc7",
+        "coastal_blend_visual": "Authored real Unity 390x844 portrait screenshot observed: softened shoreline; owner concept parity still not reached",
+        "latest_recoverable_failure": "1b518ee9 Unity CS0234 from direct test assembly reference; corrected with reflection 338366; subsequent native NUnit XML 7/7 pass.",
+        "last_rejected_trial": "50cb39945964bcc6462b33b21451bfe4da0dae9b 2 batched coastal ribbons yielded obvious stepped tan blocks in actual 39822061158 Unity A/B; ART_REJECTED. Rollback ff8c accidentally cut method header; exact byte-for-byte restoration 5ac728b was native reverified 7/7.",
+        "forest_three_species_sha": "7d31682fd25166d85be264afb990e37e1efd30f8",
+        "forest_three_species_run": 39820853781,
+        "forest_three_species_reference_comparison": "7d same camera showed small tree shape variety (<4% significant pixel difference overall including Breach edits), source retained as experimental, not art approved",
+        "coast_step_rejected_run": 39822061158,
+        "recovery_run": 39822981117,
+        "recovery_artifact_id": 12445257357,
+        "baseline_comparison_run": 39819239685,
+        "approved_world_pngs": "docs/visual-reference/world-map/01_vista_cercana.png;02_vista_regional.png;03_vista_panoramica.png",
+        "artist": "ChatGPT direct author per explicit owner; Qwen removed from this task only",
+        "atlas_runtime_bake_removed": "Exact 2048 reviewed PNG loaded; seven PREBAKED=True logs. Editor suite 206.758s ->13.639s; panorama landscape pixels identical. Not physical mobile performance.",
+        "forest_geometry": "840 trees, 3 meshes, 3360 triangles, 1 atlas",
+        "macro_art_evidence": "docs/evidence/world4x-canon-20261022/MACRO_RELIEF_CANOPY_REVIEW_20261022.md",
+        "regional_scale_correction": "3 positively identified decorative mountain renderers hidden at regional/panorama, restored close; quarry/real targets preserved. Near and panoramas unchanged >5/255.",
+        "living_sector_ai": {
+          "source_sha": "cb0ef556dcaef508f140f431e450e4b279687bfc",
+          "evidence_commit": "5b0b7525ea9ecceb0563804f1ef0ad7e201c1f3f",
+          "native_run": 40024930128,
+          "artifact_id": 12532955069,
+          "native_zip_sha256": "a9f48707e61701f6c8e73f1a5648045c350a01acb80bc7db08f85e394cd0ac16",
+          "tests": "18/18 PASS",
+          "extension_m2": 19200,
+          "retained_AG_vertices": 25283,
+          "city_reserves": 4,
+          "city_radius_m": 15,
+          "fixture_instances": 17,
+          "relocated": 5,
+          "duplicates": 0,
+          "original_player_snapshot_unchanged": true,
+          "physical_device_tested": false,
+          "production_respawn": false,
+          "shared_authority_certified": false,
+          "full_animation_envelope_certified": false,
+          "art_approved": false,
+          "report": "docs/evidence/world4x-canon-20261022/LIVING_SECTOR_AI.md",
+          "persistent_package": "Eldoria_AI_20261023_fuentes_y_pruebas.zip",
+          "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
+        }
+      },
+      "ownership_history": [
+        {
+          "owner": "chatgpt-eldoria-world4x-canon-20261022",
+          "released_at": "2026-10-22",
+          "outcome": "Draft PR #100 retained; 7/7 Unity integration PASS; visual/mobile/release gates pending"
+        },
+        {
+          "owner": "chatgpt-world4x-hybrid-canon-20261022",
+          "relieved_at": "2026-10-22",
+          "reason": "Explicit owner-directed chat recovery; same PR #100 and workstream retained; previous Unity jobs not cancelled",
+          "outcome": "Hybrid canopy code retained, Unity compiler CS0136 verified in artifact 12433312016; existing jobs preserved."
+        },
+        {
+          "owner": "chatgpt-world4x-relevo-20261022",
+          "relieved_at": "2026-10-22",
+          "reason": "Owner request: continue the stalled previous conversation and finish the same World4X work, preserving candidate PR #100 and latest Unity pass.",
+          "outcome": "Existing coast rim experiment reverted safely; candidate 5ac728b4cf6d9ac0896826ec65a1a7bba0ab4e5d tested by native run 39822981117, 7/7 PASS; no main merge."
+        },
+        {
+          "owner": "chatgpt-world4x-continuation-20261022-1925",
+          "relieved_at": "2026-10-22T17:48:00Z",
+          "reason": "Owner explicitly asks this chat to continue the latest hybrid World4X work; existing PR100 and all evidence preserved."
+        },
+        {
+          "owner": "chatgpt-world4x-hybrid-resume-82901015",
+          "relieved_at": "2026-10-22",
+          "reason": "Explicit owner-directed continuation: perform P0 authored reference-composition experiment to real Unity screenshot acceptance, preserve same PR #100 and workstream."
+        },
+        {
+          "owner": "chatgpt-world4x-p0-composition-20261022",
+          "relieved_at": "2026-10-22T20:09:04.998Z",
+          "reason": "Owner explicitly centralizes execution in this chat; inspect P0 results, retain useful work, discard unsuccessful trial and continue."
+        },
+        {
+          "owner": "chatgpt-world4x-hybrid-resume-82901015",
+          "revision": 11,
+          "reason": "Owner-directed handoff 2026-10-23: professional research and root composition correction in PR100, no Qwen, no merge/publication."
+        },
+        {
+          "owner": "codex-world4x-professional-resolution-95183774",
+          "revision": 12,
+          "relieved_at": "2026-10-23",
+          "reason": "Owner explicitly authorizes continuation of the existing O to connected-sector assignment in new chat while preserving other scopes and unfinished workflows.",
+          "outcome": "Retain O/K/I and P/Q/R; S failed in native Blender on absent Q path mask (run 39976346632), no native artistic acceptance."
+        },
+        {
+          "owner": "chatgpt-world4x-ribera-o-sector-relay-20261023",
+          "revision": 13,
+          "relieved_at": "2026-10-23",
+          "reason": "Explicit owner continuation and completion of existing sector T and subsequent U without expanding Region 1",
+          "outcome": "T verified native; U run 39981878592 completed success, pending visual review"
+        },
+        {
+          "owner": "chatgpt-world4x-sector-final-20261023",
+          "revision": 14,
+          "relieved_at": "2026-10-23",
+          "reason": "Owner explicitly authorizes a new chat to take over unfinished W sector production within existing PR100.",
+          "outcome": "W Unity/Blender native 39987173786 succeeded, heights and artistic acceptance not yet certified."
+        },
+        {
+          "owner": "chatgpt-world4x-sector-finish-relay-20261023",
+          "revision": 15,
+          "relieved_at": "2026-10-23",
+          "reason": "Owner directs continuation in PR100 from restored AG with bounded geographic extension and isolated dynamic capacity validation."
+        },
+        {
+          "owner": "codex-world4x-living-sector-b4b06f1a",
+          "ownership_revision": 16,
+          "ended_at": "2026-10-23T21:24:23.134Z",
+          "reason": "AI geography and native evidence delivered on PR100; genuine dependency on reserved live-state/march scope. No merge or publication."
+        }
+      ],
+      "delivery_definition": {
+        "deliverable": "Bounded connected extension from AG and isolated capacity demonstration",
+        "evidence": "Editable Blender, real Unity three scales, terrain navigation/contact/city population checks; no simulated device certification",
+        "handoff": "PR100 sources and exact verified native artifact; preserve all references; no merge/release"
+      },
+      "closed_at": "2026-10-23T21:24:23.134Z",
+      "blocking_dependency": {
+        "id": "valoria-master-plan-layered-construction-20261016",
+        "owner": "chatgpt-issue95-visual-experience-20261022",
+        "ownership_revision": 19,
+        "scope": [
+          "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+          "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+          "Unity/Assets/Eldoria/Scripts/Domain/SliceContentProfiles.cs",
+          "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
+          "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
+        ],
+        "reason": "Production persistent instance IDs, shared occupancy/revision, respawn/save migration and obstacle-aware marches belong to this active claim; no parallel gateway created."
       }
     }
   ],
