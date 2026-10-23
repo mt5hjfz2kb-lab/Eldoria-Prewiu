@@ -49,7 +49,7 @@ namespace Eldoria.World4XCanon
    new Vector4(-482,-328,35,21),new Vector4(-441,-347,27,18),new Vector4(92,-336,22,17),new Vector4(-132,-363,26,17),new Vector4(-174,-380,23,15),
    new Vector4(-34,-425,20,13),new Vector4(-261,-435,28,18),new Vector4(-351,-458,30,18),new Vector4(-553,430,30,22),new Vector4(-544,-455,34,22)
   };
-  static readonly Vector4[] Hills={new Vector4(-150,435,66,17),new Vector4(-350,310,80,15),new Vector4(171,286,55,12),new Vector4(-270,9,75,13),new Vector4(-433,-168,92,16),new Vector4(-155,-352,63,15),new Vector4(139,-303,49,12),new Vector4(-387,-460,74,17)};
+  static readonly Vector4[] Hills={new Vector4(-150,435,48,22),new Vector4(-350,310,58,18),new Vector4(171,286,38,16),new Vector4(-270,9,48,19),new Vector4(-433,-168,65,22),new Vector4(-155,-352,42,21),new Vector4(139,-303,32,16),new Vector4(-387,-460,50,23)};
   static readonly Vector2[][] Channels=Smooth(Rivers),Routes=Smooth(Roads);
   static Vector2[][] Smooth(Vector2[][] paths)
   {return paths.Select(line=>{var pts=new List<Vector2>();for(int i=0;i<line.Length-1;i++){var a=line[Mathf.Max(0,i-1)];var b=line[i];var c=line[i+1];var d=line[Mathf.Min(line.Length-1,i+2)];for(int j=0;j<5;j++){float t=j/5f;pts.Add(.5f*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t));}}pts.Add(line.Last());return pts.ToArray();}).ToArray();}
@@ -72,13 +72,13 @@ namespace Eldoria.World4XCanon
   public static float Height(float x,float z)
   {
    float shore=Shore(x,z);if(shore< -5)return -18;
-   float h=-4;foreach(var p in Hills){float r=Mathf.Pow((x-p.x)/p.z,2)+Mathf.Pow((z-p.y)/(p.z*.7f),2);h+=p.w*Mathf.Exp(-r*2.3f);}
+   float h=-4;foreach(var p in Hills){float r=Mathf.Pow((x-p.x)/p.z,2)+Mathf.Pow((z-p.y)/(p.z*.7f),2);h+=p.w*Mathf.Exp(-r*2.3f);float shoulder=Mathf.Pow((x-p.x-p.z*.55f)/(p.z*.7f),2)+Mathf.Pow((z-p.y-p.z*.15f)/(p.z*.5f),2);h+=p.w*.43f*Mathf.Exp(-shoulder*2);}
    // Keep all original central interactions on their established datum.
    float guard=Mathf.SmoothStep(0,1,Mathf.InverseLerp(130,185,new Vector2(x,z).magnitude));h=Mathf.Lerp(-4,h,guard);
    h-=1.8f*(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(-2,9,ChannelEdge(x,z))));
    return Mathf.Lerp(-18,h,Mathf.SmoothStep(0,1,Mathf.InverseLerp(-3,2,shore)));
   }
-  static Texture2D mask;
+  static Texture2D mask;static bool contactGroundPainted;
   static Texture2D Mask()
   {
    if(mask)return mask;const int w=1536,h=1280;var pixels=new Color32[w*h];
@@ -102,7 +102,26 @@ namespace Eldoria.World4XCanon
    for(int z=0;z<=nz;z++)for(int x=0;x<=nx;x++){float px=(x/(float)nx-.5f)*DomainWidth,pz=(z/(float)nz-.5f)*DomainDepth;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,Height(px,pz),pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
    int n=0;for(int z=0;z<nz;z++)for(int x=0;x<nx;x++){int i=z*(nx+1)+x;indices[n++]=i;indices[n++]=i+nx+1;indices[n++]=i+1;indices[n++]=i+1;indices[n++]=i+nx+1;indices[n++]=i+nx+2;}
    var r=Create("Clean terrain — sole geographic surface",v,uv,null,indices,ground);DirectedTerrain=r.GetComponent<MeshFilter>().sharedMesh;
-   BuildForests();BuildBreach();Refresh();
+   BuildForests();PaintRetainedGround();BuildBreach();Refresh();
+  }
+  void PaintRetainedGround()
+  {
+   if(contactGroundPainted)return;var texture=Mask();var pixels=texture.GetPixels32();int w=texture.width,h=texture.height;
+   // Paint ecological contact directly into the SAME semantic surface, using actual retained roots.
+   foreach(var renderer in foliage)
+   {
+    var mesh=renderer.GetComponent<MeshFilter>().sharedMesh;var vertices=mesh.vertices;var offsets=mesh.uv2;
+    for(int point=0;point<vertices.Length;point+=4)
+    {
+    float height=offsets[point+2].y;float x=vertices[point].x-origin.x+height*.18f,z=vertices[point].z-origin.z-height*.12f;
+    float radius=Mathf.Clamp(Mathf.Abs(offsets[point].x)*1.5f,2,7);
+    int x0=Mathf.Max(0,Mathf.FloorToInt((x-radius)/DomainWidth*w+w*.5f)),x1=Mathf.Min(w-1,Mathf.CeilToInt((x+radius)/DomainWidth*w+w*.5f));
+    int z0=Mathf.Max(0,Mathf.FloorToInt((z-radius)/DomainDepth*h+h*.5f)),z1=Mathf.Min(h-1,Mathf.CeilToInt((z+radius)/DomainDepth*h+h*.5f));
+    for(int iz=z0;iz<=z1;iz++)for(int ix=x0;ix<=x1;ix++)
+    {float px=((ix+.5f)/w-.5f)*DomainWidth,pz=((iz+.5f)/h-.5f)*DomainDepth;float d=Mathf.Pow((px-x)/radius,2)+Mathf.Pow((pz-z)/radius,2);int k=iz*w+ix;var c=pixels[k];float f=Mathf.Clamp01(1-d)*.9f*(1-c.g/255f)*(1-c.b/255f);c.a=(byte)Mathf.Max(c.a,Mathf.RoundToInt(f*255));pixels[k]=c;}
+   }
+   }
+   texture.SetPixels32(pixels);texture.Apply(true,false);contactGroundPainted=true;
   }
   Renderer Create(string name,Vector3[] v,Vector2[] uv,Vector2[] offsets,int[] t,Material mat,Transform parent=null)
   {
@@ -149,17 +168,29 @@ namespace Eldoria.World4XCanon
     Line(-3,23,8,34,5,47,16,58),
     Line(-20,-6,-24,-19,-35,-25,-32,-38)
    };
-   for(int layer=0;layer<3;layer++)foreach(var path in faults)
-    for(int i=1;i<path.Length;i++)
+   int faultIndex=0;
+   foreach(var path in faults)
+   {
+    var points=new List<Vector2>();
+    for(int segment=1;segment<path.Length;segment++)
     {
-     var a=path[i-1];var b=path[i];var tangent=(b-a).normalized;var side=new Vector2(-tangent.y,tangent.x);
-     float taper=Mathf.Lerp(1,.18f,Mathf.Clamp01(b.magnitude/85));
-     float width=(layer==0?2.5f:layer==1?.90f:.24f)*taper;
-     Color tint=layer==0?new Color(.24f,.16f,.23f,.32f):layer==1?new Color(.19f,.055f,.25f,.95f):new Color(.79f,.24f,.87f,.9f);
-     int n=v.Count;foreach(var q in new[]{a-side*width,a+side*width,b-side*width,b+side*width})
-     {float x=8+q.x,z=61+q.y;float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(34,49,new Vector2(x,z).magnitude));v.Add(new Vector3(q.x,Height(x,z)+.10f+layer*.025f,q.y));uv.Add(Vector2.zero);colors.Add(new Color(tint.r,tint.g,tint.b,tint.a*fade*(1-Water(x,z))));}
-     indices.AddRange(new[]{n,n+1,n+2,n+1,n+3,n+2});
+     var a=path[segment-1];var b=path[segment];var dir=(b-a).normalized;var normal=new Vector2(-dir.y,dir.x);
+     int steps=Mathf.Max(2,Mathf.CeilToInt(Vector2.Distance(a,b)/1.4f));
+     for(int j=0;j<steps;j++){float t=j/(float)steps;float jag=Mathf.Sin((j+segment*17+faultIndex*31)*2.17f)*.65f*Mathf.Sin(t*Mathf.PI);points.Add(Vector2.Lerp(a,b,t)+normal*jag);}
     }
+    points.Add(path.Last());faultIndex++;
+    int start=v.Count;
+    for(int i=0;i<points.Count;i++)
+    {
+     var q=points[i];var direction=(points[Mathf.Min(i+1,points.Count-1)]-points[Mathf.Max(i-1,0)]).normalized;var normal=new Vector2(-direction.y,direction.x);
+     float taper=Mathf.Lerp(1,.12f,Mathf.Clamp01(q.magnitude/85));float irregular=.78f+.22f*Mathf.Sin(i*1.87f+faultIndex);
+     float[] widths={-1.7f,-.70f,-.13f,0,.13f,.70f,1.7f};
+     Color[] tones={new Color(.26f,.16f,.25f,0),new Color(.25f,.12f,.27f,.37f),new Color(.16f,.045f,.21f,.95f),new Color(.69f,.22f,.82f,.94f),new Color(.16f,.045f,.21f,.95f),new Color(.25f,.12f,.27f,.37f),new Color(.26f,.16f,.25f,0)};
+     for(int rank=0;rank<7;rank++)
+     {var p=q+normal*widths[rank]*taper*irregular;float x=8+p.x,z=61+p.y;float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(34,49,new Vector2(x,z).magnitude));var tint=tones[rank];tint.a*=fade*(1-Water(x,z));v.Add(new Vector3(p.x,Height(x,z)+.14f,p.y));uv.Add(Vector2.zero);colors.Add(tint);}
+     if(i==0)continue;for(int rank=0;rank<6;rank++){int k=start+(i-1)*7+rank;indices.AddRange(new[]{k,k+1,k+7,k+1,k+8,k+7});}
+    }
+   }
    // Small luminous heart with fading perimeter, always flush with the ground.
    int heart=v.Count;v.Add(new Vector3(0,Height(8,61)+.19f,0));uv.Add(Vector2.zero);colors.Add(new Color(.96f,.45f,1,1));
    for(int i=0;i<=24;i++){float angle=i*Mathf.PI/12,r=5.5f+.7f*Mathf.Sin(i*4.7f);float x=Mathf.Cos(angle)*r,z=Mathf.Sin(angle)*r;v.Add(new Vector3(x,Height(8+x,61+z)+.18f,z));uv.Add(Vector2.zero);colors.Add(new Color(.59f,.06f,.75f,0));if(i>0)indices.AddRange(new[]{heart,heart+i+1,heart+i});}

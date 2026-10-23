@@ -38,7 +38,7 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     #if !defined(UNITY_COLORSPACE_GAMMA)
      woodland=SRGBToLinear(woodland);
     #endif
-    land=lerp(land,woodland,m.a*.65h);
+    land=lerp(land,woodland,m.a*.65h);land*=1-m.a*.23h;
     land=lerp(land,soil,m.b*.46h);
     Light sun=GetMainLight();
     half lambert=saturate(dot(normalize(i.n),sun.direction));
