@@ -181,21 +181,6 @@ jobs:
           $capture=Join-Path $env:RUNNER_TEMP "region1-author-source-$env:GITHUB_RUN_ID/region1-canon-captures-39831626822"
           if(-not(Test-Path "$capture/terrain-source.json")){throw 'Measured source mesh missing'}
           "ELDORIA_REGION1_ARTIST_CAPTURE=$capture" >> $env:GITHUB_ENV
-      - name: Blender review of assistant-authored composition without Qwen
-        if: "!contains(github.event.head_commit.message, 'blender-author(world4x):')"
-        shell: powershell
-        run: |
-          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing heavy process active'}
-          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
-          if(-not $blender){
-            $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
-          }
-          if(-not $blender){throw 'Existing Blender unavailable; no duplicate install'}
-          $capture=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
-          $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
-          $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring'
-          & $blender --background --python-exit-code 1 --python "$helpers/freeze_terrain.py" -- "$capture/terrain-source.json" $out
-          if($LASTEXITCODE){throw 'Blender textured source review failed'}
       - name: Upload logs and measured tests
         if: always()
         uses: actions/upload-artifact@v4

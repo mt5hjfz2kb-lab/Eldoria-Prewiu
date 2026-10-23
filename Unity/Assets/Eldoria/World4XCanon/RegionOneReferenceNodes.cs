@@ -29,14 +29,14 @@ namespace Eldoria.World4XCanon
   {var rs=go.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(go.transform.position,Vector3.one);var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
   void Hide(GameObject go,bool mountain=false)
   {if(!go)return;foreach(var lod in go.GetComponentsInChildren<LODGroup>(true))if(!lods.Contains(lod)){lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}foreach(var r in go.GetComponentsInChildren<Renderer>(true))if(!old.Contains(r)){old.Add(r);states.Add(r.enabled);mountains.Add(mountain);}}
-  Vector3 GroundFoot(Vector3 p){p.y=host.WorldHome.y+RegionOneDirectedGeography.Height(p.x-host.WorldHome.x,p.z-host.WorldHome.z)+.08f;return p;}
+  Vector3 GroundFoot(Vector3 p){p.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(p.x-host.WorldHome.x,p.z-host.WorldHome.z)+.08f;return p;}
   Vector3 Foot(Bounds b)=>GroundFoot(new Vector3(b.center.x,b.min.y,b.min.z));
   void Build()
   {
    if(host.WorldBastionOne){var b=BoundsOf(host.WorldBastionOne);Sprite("Reference city Bastion I",Foot(b),24,0,host.WorldBastionOne);Hide(host.WorldBastionOne);}
    if(host.WorldBastionTwo){var b=BoundsOf(host.WorldBastionTwo);Sprite("Reference city Bastion II",Foot(b),28,0,host.WorldBastionTwo);Hide(host.WorldBastionTwo);}
    Hide(host.WorldSawmill);
-   var quarry=host.FindTarget("quarry-valoria");if(quarry){var f=quarry.transform.position;f.y=host.WorldHome.y+RegionOneDirectedGeography.Height(f.x-host.WorldHome.x,f.z-host.WorldHome.z)+.1f;Sprite("Reference existing quarry",f,13,1,null);}
+   var quarry=host.FindTarget("quarry-valoria");if(quarry){var f=quarry.transform.position;f.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(f.x-host.WorldHome.x,f.z-host.WorldHome.z)+.1f;Sprite("Reference existing quarry",f,13,1,null);}
    foreach(var t in host.WorldRoot.GetComponentsInChildren<Transform>(true))
    {
     if(t.name.StartsWith("Existing Holotna rock",StringComparison.Ordinal))

@@ -11,14 +11,14 @@ namespace Eldoria.World4XCanon
  // One presentation owner. The former stacked terrain/ecology builders are not constructed.
  public sealed class RegionOneCanonicalLandscape : MonoBehaviour
  {
-  public const int LandscapeVersion=2;
-  public const float LandscapeHalfWidth=910,LandscapeHalfDepth=780;
+  public const int LandscapeVersion=3;
+  public const float LandscapeHalfWidth=910,LandscapeHalfDepth=1000;
   public const float BreachOffsetX=8,BreachOffsetZ=61;
   public const float LandscapePanoramaZoom=500,PortraitPanoramaZoom=620;
   internal static readonly int[] ForestCorridorPairs=new int[0];
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
   bool built;
-  RegionOneDirectedGeography geography;RegionOneReferenceNodes nodes;
+  RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   readonly List<Renderer> originals=new List<Renderer>();
   readonly List<bool> states=new List<bool>();readonly HashSet<Renderer> background=new HashSet<Renderer>();
   readonly List<LODGroup> lods=new List<LODGroup>();readonly List<bool> lodStates=new List<bool>();
@@ -104,7 +104,7 @@ namespace Eldoria.World4XCanon
     if(lod.GetComponentsInChildren<Renderer>(true).Any(background.Contains))
     {lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}
    var root=new GameObject("Region 1 canonical continuous geography").transform;root.SetParent(existingWorld,true);
-   geography=RegionOneDirectedGeography.Install(root,host);
+   geography=RegionOneBlenderLandscape.Install(root,host);
    nodes=RegionOneReferenceNodes.Install(root,host);
   }
   void UpdateLevelOfDetail(bool force)
@@ -128,14 +128,14 @@ namespace Eldoria.World4XCanon
   // Historical callers must not silently reconstruct old layers.
   public void CompareAtlas(bool baseline){if(baseline)throw new InvalidOperationException("Use the archived exact-commit baseline run; clean presentation has no legacy atlas.");}
   public void CompareDirectedLayout(bool before){if(before)throw new InvalidOperationException("Old composition is archived in Git, not built beneath this world.");}
-  public static float SampleHeight(float x,float z)=>RegionOneDirectedGeography.Height(x,z);
-  public static bool IsCoast(float x,float z)=>RegionOneDirectedGeography.Shore(x,z)<0;
-  public static float CoastDistance(float x,float z)=>RegionOneDirectedGeography.Shore(x,z);
+  public static float SampleHeight(float x,float z)=>RegionOneBlenderLandscape.Height(x,z);
+  public static bool IsCoast(float x,float z)=>RegionOneBlenderLandscape.Shore(x,z)<0;
+  public static float CoastDistance(float x,float z)=>RegionOneBlenderLandscape.Shore(x,z);
   public static float CoastWaterMask(float x,float z)=>1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(-2,2,CoastDistance(x,z)));
-  public static bool IsForest(float x,float z)=>RegionOneDirectedGeography.Forest(x,z)>.1f;
-  public static bool IsRiver(float x,float z)=>RegionOneDirectedGeography.Water(x,z)>.1f;
-  public static bool IsRoad(float x,float z)=>RegionOneDirectedGeography.Road(x,z)>.1f;
-  public static float RoadDistance(float x,float z)=>RegionOneDirectedGeography.RoadDistance(x,z);
+  public static bool IsForest(float x,float z)=>RegionOneBlenderLandscape.Forest(x,z)>.1f;
+  public static bool IsRiver(float x,float z)=>RegionOneBlenderLandscape.Water(x,z)>.1f;
+  public static bool IsRoad(float x,float z)=>RegionOneBlenderLandscape.Road(x,z)>.1f;
+  public static float RoadDistance(float x,float z)=>RegionOneBlenderLandscape.RoadDistance(x,z);
   public static float RiverCentre(float z)=>-104; // Legacy authoring API, not used by this presentation.
 #if UNITY_EDITOR
   [Serializable] sealed class AuthoringSnapshot
@@ -145,10 +145,10 @@ namespace Eldoria.World4XCanon
    if(!built||!geography)throw new InvalidOperationException("Clean geography must be built before export.");
    string file=System.IO.Path.Combine(directory,"terrain-source.json");
    if(System.IO.File.Exists(file))throw new InvalidOperationException("Do not overwrite frozen evidence.");
-   System.IO.Directory.CreateDirectory(directory);var mesh=geography.DirectedTerrain;var positions=mesh.vertices;
+   System.IO.Directory.CreateDirectory(directory);var mesh=geography.DirectedTerrain;var positions=geography.WorldVertices;
    var water=positions.Select(p=>IsCoast(p.x-origin.x,p.z-origin.z)||IsRiver(p.x-origin.x,p.z-origin.z)).ToArray();
    System.IO.File.WriteAllBytes(System.IO.Path.Combine(directory,"terrain-atlas.png"),geography.GeographicMask.EncodeToPNG());
-   System.IO.File.WriteAllText(file,JsonUtility.ToJson(new AuthoringSnapshot{origin=origin,vertices=positions,uv=mesh.uv,triangles=mesh.triangles,protectedWater=water,context="Clean single-surface Unity geography. RGBA semantic masks, not final color. Actual Unity captures are the visual evidence."}));
+   System.IO.File.WriteAllText(file,JsonUtility.ToJson(new AuthoringSnapshot{origin=origin,vertices=positions,uv=mesh.uv,triangles=mesh.triangles,protectedWater=water,context="Imported Blender GLB mesh transformed to actual Unity world coordinates. Semantic masks exported by Blender. This is verification, not authorship."}));
   }
 #endif
   void OnDestroy(){for(int i=0;i<originals.Count;i++)if(originals[i])originals[i].enabled=states[i];for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=lodStates[i];}

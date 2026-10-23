@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.IO;
+using System.Linq;
 using Eldoria.ReferenceClean;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -17,46 +18,19 @@ namespace Eldoria.World4XCanon.Editor
         [MenuItem("Eldoria/Region 1/Validate canonical world source")]
         public static void Validate()
         {
-            if (RegionOneCanonicalLandscape.LandscapeVersion != 2 ||
-                RegionOneHybridTerrainArt.StyleRevision != 1)
-                throw new InvalidOperationException("Unexpected or missing clean-world art style version");
-            if (RegionOneCanonicalLandscape.SampleHeight(0f, 0f) > -2.5f)
-                throw new InvalidOperationException("Overlay would obstruct original hotspot geometry");
-            if (!RegionOneCanonicalLandscape.IsForest(-310f, 230f) ||
-                !RegionOneCanonicalLandscape.IsForest(-208f,153f) ||
-                RegionOneCanonicalLandscape.IsForest(0f, 0f))
-                throw new InvalidOperationException("Forest coverage lost geographic anchors");
-            if (!RegionOneCanonicalLandscape.IsRoad(0f, 0f) ||
-                !RegionOneCanonicalLandscape.IsRiver(-104f, 0f) ||
-                RegionOneCanonicalLandscape.IsCoast(0f, 0f) ||
-                !RegionOneCanonicalLandscape.IsCoast(520f, -200f))
-                throw new InvalidOperationException("Geographic continuity contract failed");
-
-            if (RegionOneCanonicalLandscape.LandscapeHalfWidth < 800f ||
-                RegionOneCanonicalLandscape.LandscapeHalfDepth < 700f ||
-                RegionOneCanonicalLandscape.BreachOffsetX * RegionOneCanonicalLandscape.BreachOffsetX +
-                RegionOneCanonicalLandscape.BreachOffsetZ * RegionOneCanonicalLandscape.BreachOffsetZ > 160f * 160f)
-                throw new InvalidOperationException("Region 1 cannot regress to an isolated local diorama or an off-centre Breach.");
-            RegionOneDirectedGeography.ValidateBakedTerrain();
-            var masks=Resources.Load<Texture2D>("World4X/RegionOneCleanGeographyMask");
-            if(!masks || masks.width!=1536 || masks.height!=1280)
-                throw new InvalidOperationException("Validated clean semantic masks must be packaged at native resolution.");
-            var maskImporter=AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(masks)) as TextureImporter;
-            if(!maskImporter || maskImporter.sRGBTexture || maskImporter.textureCompression!=TextureImporterCompression.Uncompressed)
-                throw new InvalidOperationException("Geographic masks are linear data; do not color-convert or lossy-compress their channels.");
-            var maskPixels=masks.GetPixels32();
-            for(int iz=11;iz<masks.height;iz+=31)for(int ix=7;ix<masks.width;ix+=37)
-            {
-                float x=((ix+.5f)/masks.width-.5f)*RegionOneDirectedGeography.DomainWidth;
-                float z=((iz+.5f)/masks.height-.5f)*RegionOneDirectedGeography.DomainDepth;
-                float shore=RegionOneDirectedGeography.Shore(x,z);
-                float water=shore> -4 ? RegionOneDirectedGeography.Water(x,z):0;
-                float road=shore> -4 ? RegionOneDirectedGeography.Road(x,z)*(1-water):0;
-                Color32 expected=new Color(Mathf.Clamp01(.5f+shore/32),water,road,0);
-                var actual=maskPixels[iz*masks.width+ix];
-                if(Mathf.Abs(actual.r-expected.r)>1 || Mathf.Abs(actual.g-expected.g)>1 || Mathf.Abs(actual.b-expected.b)>1)
-                    throw new InvalidOperationException("Stale clean mask: regenerate from current authorial geography before validation.");
-            }
+            if (RegionOneCanonicalLandscape.LandscapeVersion != 3)
+                throw new InvalidOperationException("Expected Blender-authored presentation");
+            var prefab=Resources.Load<GameObject>("World4X/Blender/RegionOneBlenderWorld");
+            if(!prefab || prefab.GetComponentsInChildren<MeshFilter>(true).Count(f=>f.name=="BLD_Terrain")!=1)
+                throw new InvalidOperationException("Blender GLB did not import with exactly one terrain");
+            if(prefab.GetComponentsInChildren<Collider>(true).Length!=0)
+                throw new InvalidOperationException("Blender export must not replace gameplay colliders");
+            if(RegionOneCanonicalLandscape.SampleHeight(0,0)>-2.5f ||
+               RegionOneCanonicalLandscape.CoastDistance(0,0)<5 ||
+               RegionOneCanonicalLandscape.CoastDistance(410,0)>-5)
+                throw new InvalidOperationException("Exported Blender ground data lost city datum or eastern coast");
+            var forest=prefab.GetComponentsInChildren<MeshFilter>(true).Where(f=>f.name.StartsWith("BLD_ForestMass_")).ToArray();
+            if(forest.Length<20)throw new InvalidOperationException("Authored forest mass export incomplete");
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             if (!scene.IsValid()) throw new InvalidOperationException("Canonical integrated scene is missing");
             var host = UnityEngine.Object.FindFirstObjectByType<ValoriaIntegratedWorld>(FindObjectsInactive.Include);

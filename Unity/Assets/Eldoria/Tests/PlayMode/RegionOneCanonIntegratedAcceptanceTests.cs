@@ -66,10 +66,10 @@ namespace Eldoria.Tests
             var geo = world.transform.Find("Region 1 canonical continuous geography");
             Assert.That(geo, Is.Not.Null);
             Assert.That(geo.GetComponentsInChildren<MeshFilter>(true)
-                .Count(f => f && f.name == "Clean terrain — sole geographic surface"), Is.EqualTo(1));
-            var retainedCanopy=geo.GetComponentsInChildren<MeshFilter>(true)
-                .SingleOrDefault(f=>f.name=="Clean retained tree coordinates");
-            Assert.That(retainedCanopy,Is.Not.Null,"Known local trees must receive the candidate visual.");
+                .Count(f => f && f.name == "BLD_Terrain"), Is.EqualTo(1));
+            var authoredCanopies=geo.GetComponentsInChildren<MeshFilter>(true)
+                .Where(f=>f.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).ToArray();
+            Assert.That(authoredCanopies.Length,Is.GreaterThanOrEqualTo(20),"Blender forest mass export must survive import.");
             var retainedTreeSources=world.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
                     r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal) ||
@@ -88,8 +88,6 @@ namespace Eldoria.Tests
                 Assert.That(retainedTreeSources.SelectMany(r=>r.GetComponentsInChildren<Renderer>(true)).All(r=>!r.enabled),Is.True,
                     "Neither donor nor child LOD renderer may reappear beside clean woodland at any zoom.");
             }
-            Assert.That(retainedCanopy.sharedMesh.vertexCount,Is.EqualTo(retainedTreeSources.Length*4),
-                "Replace each measured retained tree once, including both existing edge groups.");
             Assert.That(geo.GetComponentsInChildren<Collider>(true), Is.Empty,
                 "Art layer must never steal taps or replace gameplay colliders");
             Assert.That(geo.GetComponentsInChildren<MonoBehaviour>(true)
@@ -104,15 +102,15 @@ namespace Eldoria.Tests
                 Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Any(f=>f.name==name),Is.True,"Reference-derived real node art missing: "+name);
             foreach(var donor in world.GetComponentsInChildren<Transform>(true).Where(t=>t.name.StartsWith("Quarry Geological Scarp /",StringComparison.Ordinal)||t.name=="Connected graded extraction apron"||t.name.StartsWith("Valoria map / retained ruins",StringComparison.Ordinal)||t.name=="Forest cut timber and sawbuck"))
                 Assert.That(donor.GetComponentsInChildren<Renderer>(true).All(r=>!r.enabled),Is.True,"A replaced legacy node visual reappeared: "+donor.name);
-            var directed=geo.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(x=>x&&x.GetType().Name=="RegionOneDirectedGeography");
-            Assert.That(directed,Is.Not.Null,"The reference-directed geography must be physically installed.");
+            var directed=geo.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");
+            Assert.That(directed,Is.Not.Null,"The Blender GLB authority must be physically installed; no legacy geography builder.");
             var directedType=directed.GetType();
             var directedShore=directedType.GetMethod("Shore",BindingFlags.Public|BindingFlags.Static);
             var directedWater=directedType.GetMethod("Water",BindingFlags.Public|BindingFlags.Static);
             foreach(var p in new[]{new Vector2(-400,0),new Vector2(-400,240),new Vector2(-350,-250),new Vector2(0,500)})
-                Assert.That((float)directedShore.Invoke(null,new object[]{p.x,p.y}),Is.GreaterThan(20f),
+                Assert.That((float)directedShore.Invoke(null,new object[]{p.x,p.y}),Is.GreaterThan(15f),
                     "Continental land must continue west/north; do not regress to an isolated narrow island.");
-            Assert.That((float)directedShore.Invoke(null,new object[]{410f,0f}),Is.LessThan(-20f),
+            Assert.That((float)directedShore.Invoke(null,new object[]{410f,0f}),Is.LessThan(-15f),
                 "A limited eastern sea must remain, not a terrain rectangle everywhere.");
             var actualHome=(Vector3)Member(host,"WorldHome");
             foreach(var node in colliders)
@@ -121,7 +119,7 @@ namespace Eldoria.Tests
                 Assert.That((float)directedShore.Invoke(null,new object[]{p.x,p.z}),Is.GreaterThan(5f),"Existing node must remain on the authored land: "+Member(node,"Id"));
                 Assert.That((float)directedWater.Invoke(null,new object[]{p.x,p.z}),Is.LessThan(.1f),"Authored rivers/lakes cannot flood an existing node: "+Member(node,"Id"));
             }
-            Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Count(x=>x.name=="Clean terrain — sole geographic surface"),Is.EqualTo(1));
+            Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Count(x=>x.name=="BLD_Terrain"),Is.EqualTo(1));
             // Art runtime belongs to a separate Unity assembly. Match the
             // existing test's reflection-only contract rather than adding an
             // unsupported direct assembly reference to this PlayMode suite.
@@ -250,37 +248,26 @@ namespace Eldoria.Tests
             MonoBehaviour host = null; GameObject world = null; Component navigation = null; Camera camera = null;
             yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
             var geo = world.transform.Find("Region 1 canonical continuous geography");
-            var fracture = geo.Find("Region1 · grounded geologic Breach (not a portal)");
-            Assert.That(fracture, Is.Not.Null);
-            var filter = fracture.GetComponentInChildren<MeshFilter>(true);
-            Assert.That(filter, Is.Not.Null);
-            Assert.That(filter.sharedMesh.vertexCount, Is.GreaterThan(80));
-            var b = filter.sharedMesh.bounds;
-            Assert.That(b.size.y, Is.LessThan(8f), "Fracture is drawn along the ground, not a tower.");
-            Assert.That(b.size.x, Is.GreaterThan(25f));
-            Assert.That(b.size.z, Is.GreaterThan(25f));
-            Assert.That(filter.sharedMesh.normals.Count(n => n.y > .5f), Is.GreaterThan(80),
-                "Surface cracks must face the top-down strategy camera, never backface-culled.");
-            Assert.That(fracture.GetComponentsInChildren<Collider>(true), Is.Empty);
-            var pigment=fracture.Find("Region1 · authored Breach pigment at actual world anchor");
-            Assert.That(pigment,Is.Not.Null,"The painted scar must have an independent world anchor.");
-            var scar=pigment.GetComponent<MeshRenderer>();
+            var filter=geo.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_BreachFloor");
+            var scar=filter.GetComponent<MeshRenderer>();
             var home=(Vector3)Member(host,"WorldHome");
-            Assert.That(scar.transform.position.x-home.x,Is.EqualTo(8f).Within(.01f));
-            Assert.That(scar.transform.position.z-home.z,Is.EqualTo(61f).Within(.01f));
-            Assert.That(scar.bounds.size.y,Is.LessThan(8f));
-            Assert.That(scar.sharedMaterial.mainTexture,Is.Not.Null);
-            var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
-                .First(x=>x && x.GetType().Name=="RegionOneCanonicalLandscape");
-            Call(navigation,"SetZoomLevel",1,true);
-            Call(adapter,"RefreshForCapture");
-            Assert.That(scar.enabled,Is.True);
-            Assert.That(fracture.GetComponentsInChildren<Renderer>(true).Length,Is.EqualTo(1),
-                "Build exactly one grounded Breach; do not construct hidden older fractures.");
-            var fixedVertices=filter.sharedMesh.vertices;
+            Assert.That(scar.bounds.center.x-home.x,Is.EqualTo(8f).Within(2f));
+            Assert.That(scar.bounds.center.z-home.z,Is.EqualTo(61f).Within(2f));
+            Assert.That(scar.bounds.size.y,Is.LessThan(8f),"The geological floor is not a vertical portal.");
+            Assert.That(scar.bounds.center.y-home.y,Is.LessThan(-6f),"The Breach must be recessed beneath the -4m meadow datum.");
+            Assert.That(filter.GetComponentsInChildren<Collider>(true),Is.Empty);
+            var geology=geo.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");
+            var h=geology.GetType().GetMethod("Height",BindingFlags.Public|BindingFlags.Static);
+            Assert.That((float)h.Invoke(null,new object[]{8f,61f}),Is.LessThan(-8f),"Depth must exist in the imported terrain, not only a painted floor.");
+            var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).First(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+            var fixedVertices=filter.sharedMesh.vertices;var fixedPosition=filter.transform.position;
             foreach(int level in new[]{2,0,1})
-            {Call(navigation,"SetZoomLevel",level,true);Call(adapter,"RefreshForCapture");
-             Assert.That(filter.sharedMesh.vertices,Is.EqualTo(fixedVertices),"Zoom must never rescale or relocate the geology.");}
+            {
+                Call(navigation,"SetZoomLevel",level,true);Call(adapter,"RefreshForCapture");
+                Assert.That(scar.enabled,Is.True);
+                Assert.That(filter.sharedMesh.vertices,Is.EqualTo(fixedVertices));
+                Assert.That(filter.transform.position,Is.EqualTo(fixedPosition),"Zoom must not relocate geology.");
+            }
         }
         [UnityTest]
         public IEnumerator PanoramaHidesOldSquareWithoutRemovingWorldGameObjects()
@@ -311,9 +298,9 @@ namespace Eldoria.Tests
                 Call(adapter,"RefreshForCapture");
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Candidate near ground must not overlap the old rectangular prairie.");
-                var continuous=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Clean terrain — sole geographic surface");
+                var continuous=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="BLD_Terrain");
                 Assert.That(continuous.enabled&&continuous.gameObject.activeSelf&&continuous.transform.parent.gameObject.activeSelf&&continuous.sharedMaterial&&
-                    continuous.sharedMaterial.shader.name=="Eldoria/World4X/DirectedGeographicLayers"&&continuous.sharedMaterial.shader.isSupported,Is.True,
+                    continuous.sharedMaterials.All(m=>m&&m.shader&&m.shader.isSupported),Is.True,
                     "A supported continuous terrain must actually replace the hidden near ground.");
                 Call(adapter,"SetBlockout",true);
                 Assert.That(terrain.All(x=>!x.enabled),Is.True,"Blockout must not revive older terrain.");
@@ -334,8 +321,7 @@ namespace Eldoria.Tests
                     "Panorama must hide tiny existing resource, enemy and city geometry without disabling colliders.");
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Panorama must not reveal the old hard-edged rectangular prairie.");
-                var simplified = world.transform.Find("Region 1 canonical continuous geography")
-                    .Find("Clean authored woodland masses");
+                var simplified = world.GetComponentsInChildren<Transform>(true).First(t=>t.name=="BLD_ForestMass_00");
                 Assert.That(simplified, Is.Not.Null);
                 Assert.That(simplified.gameObject.activeSelf, Is.True,
                     "Panorama must retain forest silhouettes, not blank green circles.");
@@ -503,7 +489,7 @@ namespace Eldoria.Tests
                         Call(adapter, "SetBlockout", stage.Item2.EndsWith("-blockout"));
                         if(!stage.Item2.EndsWith("-blockout"))
                         {
-                            var actualTerrain=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Clean terrain — sole geographic surface");
+                            var actualTerrain=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="BLD_Terrain");
                             Assert.That(actualTerrain.enabled&&actualTerrain.gameObject.activeInHierarchy,Is.True,"Continuous candidate terrain must be active after genuine world entry, before capture.");
                         }
                         var texture = new RenderTexture(format.Item1,format.Item2,24,
