@@ -1,4 +1,4 @@
-"""T: softened connected hillside and restrained outcrops on Q; O stays untouched."""
+"""X: macro-sculpted continuous ridges, canopy stands and authored ground masses on Q; O untouched."""
 import bpy,sys,pathlib,hashlib,json,math
 import numpy as np
 from mathutils import Vector
@@ -25,6 +25,19 @@ for v in terrain.data.vertices[N:]:
  d2=((x-3)/27)**2+((y-147)/25)**2
  shoulder=max(0,1-d2)**2
  v.co.z+=fade*(3.4*saddle+1.7*shoulder)
+# X: author three interconnected landforms, with a shallow swale between them.
+# Sculpt vertices only in the new extension; the O mesh, seams and gameplay datum are immutable.
+# Long oblique ridges and asymmetric hollows make silhouette changes legible from camera.
+for v in terrain.data.vertices[N:]:
+ x,y,z=v.co
+ u=max(0,min(1,(y-83)/20));fade=u*u*(3-2*u)
+ north=max(0,min(1,(166-y)/17))
+ spine_x=36+11*math.sin((y-101)/35)
+ spine=math.exp(-((x-spine_x)/24)**2)*math.exp(-((y-132)/39)**4)
+ west=math.exp(-((x+24+6*math.sin(y/19))/25)**2)*math.exp(-((y-143)/30)**4)
+ hollow=math.exp(-((x-5)/13)**2)*math.exp(-((y-118)/24)**2)
+ eastern_toe=math.exp(-((x-65)/22)**2)*math.exp(-((y-111)/32)**4)
+ v.co.z+=fade*north*(8.8*spine+5.8*west+3.9*eastern_toe-2.6*hollow)
 terrain.data.update();bpy.context.view_layer.update()
 def ground(x,y):
  # Avoid numerical ray/triangle ambiguity exactly on the open mesh boundary.
@@ -65,6 +78,28 @@ for k in range(3):
   dist=np.sqrt(((ix-xx)/rx)**2+((iy-yy)/ry)**2)
   path[c:d,a:b]=np.maximum(path[c:d,a:b],np.clip((1-dist)*2.1,0,1))
 assert np.any(path>0),'Recovered editable paths generated no pigment mask'
+# X: complete the forest structure before painting the same texture, using editable pine meshes.
+# Build three interlocking stands with visible trail clearings; never scatter global noise.
+rng=np.random.default_rng(20261023);old_new_sector_count=len(trees);new_trees=[]
+for group,(cx,cy,rx,ry,quota) in enumerate([(-13,112,24,19,12),(20,138,23,19,12),(62,119,22,23,12)]):
+ made=0
+ for attempt in range(1100):
+  if made>=quota:break
+  angle=float(rng.uniform(0,2*math.pi));radius=math.sqrt(float(rng.random()))
+  x=float(cx+rx*radius*math.cos(angle));y=float(cy+ry*radius*math.sin(angle))
+  if not(-90<x<90 and 91<y<160):continue
+  if any((x-o.location.x)**2+(y-o.location.y)**2<5.1**2 for o in trees):continue
+  ix=int((x+96)/192*(W-1));iy=int((y-78)/92*(H-1))
+  px=max(2,int(3.7/192*W));py=max(2,int(3.7/92*H))
+  if np.max(path[max(0,iy-py):min(H,iy+py+1),max(0,ix-px):min(W,ix+px+1)])>.08:continue
+  donor=trees[(group*13+made*7)%old_new_sector_count]
+  o=donor.copy();o.data=donor.data;coll.objects.link(o)
+  o.name='Pilot_Pine_X_'+str(group)+'_'+str(made)
+  o.location=(x,y,ground(x,y))
+  scale=float(rng.uniform(.86,1.15));o.scale=donor.scale*scale;o.rotation_euler.z=float(rng.uniform(-math.pi,math.pi))
+  trees.append(o);new_trees.append(o);made+=1
+ assert made>=10,('Forest stand cannot be planted without crossing an authored road',group,made)
+assert len(trees)+156<=256,'Pilot atlas limit; never silently drop authored trees'
 mask=np.zeros((H,W),np.float32)
 for o in trees:
  x,y=o.location.xy;r=((X-x)/6.7)**2+((Y-y)/6.7)**2;mask=np.maximum(mask,np.clip(1-r,0,1)*.44)
@@ -106,15 +141,25 @@ for points,width,strength,colour in habitats:
   a=np.maximum(a,np.clip(1-d/width,0,1)**2*np.sin(np.pi*u)**.8*strength)
  a*=seam*(1-path)*(1-mask)
  pix[:,:,:3]=pix[:,:,:3]*(1-a[:,:,None])+np.array(colour)*a[:,:,None]
-for name,data,noncolor in [('W slope and canopy painted pigment',pix,False),('W editable slope glaze mask',paint,True),('W editable connected litter mask',mask,True)]:
+# X: one topography-directed ecological color hierarchy, not isolated pigment speckles.
+r1=np.exp(-((X-(36+11*np.sin((Y-101)/35)))/29)**2)*np.exp(-((Y-132)/40)**4)
+r2=np.exp(-((X+24+6*np.sin(Y/19))/28)**2)*np.exp(-((Y-143)/34)**4)
+v1=np.exp(-((X-6)/27)**2)*np.exp(-((Y-112)/32)**2)
+ridge=np.clip((r1*.62+r2*.51)*seam*(1-path)*(1-mask*.55),0,.72)
+valley=np.clip(v1*.37*seam*(1-path)*(1-mask*.62),0,.45)
+strata=.76+.24*np.sin(X*.31+Y*.17+np.sin(Y*.09))*np.sin(Y*.29-X*.11)
+ridge*=strata
+pix[:,:,:3]=pix[:,:,:3]*(1-ridge[:,:,None])+np.array([.56,.50,.30])*ridge[:,:,None]
+pix[:,:,:3]=pix[:,:,:3]*(1-valley[:,:,None])+np.array([.32,.40,.22])*valley[:,:,None]
+for name,data,noncolor in [('X slope and canopy painted pigment',pix,False),('X editable slope glaze mask',paint,True),('X editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['W slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['X slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='W asymmetric physical saddle and shoulder on retained sector'
+scene['finishing_stage']='X interconnected ridges, woodland corridors and ecological material masses'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -122,4 +167,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'W','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':len(trees),'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; 3 broader and shallower sculpt strokes, 4 slope pigment strokes, canopy litter and 8 restrained ridge rocks; S retained in native run 39977858676'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'X','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; W preserved then X large-scale connected ridges, three forest stands, material hierarchy; O 16405 vertices and 156 trees unchanged'},indent=2))
