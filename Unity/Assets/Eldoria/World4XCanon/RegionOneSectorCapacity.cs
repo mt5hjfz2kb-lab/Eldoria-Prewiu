@@ -50,7 +50,7 @@ namespace Eldoria.World4XCanon
   public static void Capture(Camera camera,GameObject root,Transform world,Vector3 home,string output) {
    var asset=Resources.Load<TextAsset>("World4X/Pilot/LivingSectorLayout");if(!asset)return;
    var layout=JsonUtility.FromJson<Layout>(asset.text);var dir=Path.Combine(output,"living-sector");Directory.CreateDirectory(dir);
-   var temporary=new List<GameObject>();var surfaces=new List<MeshCollider>();var displays=new List<GameObject>();var meshes=new List<Mesh>();Material clearanceMaterial=null;Mesh enemyMesh=null,enemyFarMesh=null;Material[] enemyMaterials=null,enemyFarMaterials=null;var enemyDisplays=new List<GameObject>();
+   var temporary=new List<GameObject>();var surfaces=new List<MeshCollider>();var displays=new List<GameObject>();var meshes=new List<Mesh>();Material clearanceMaterial=null;Mesh enemyMesh=null,enemyFarMesh=null;Material[] enemyMaterials=null,enemyFarMaterials=null;var enemyDisplays=new List<GameObject>();var enemyPositions=new Dictionary<GameObject,Vector3>();
    var oldPosition=camera.transform.position;var oldRotation=camera.transform.rotation;float oldZoom=camera.orthographicSize,oldAspect=camera.aspect;
    var oldTarget=camera.targetTexture;var oldActive=RenderTexture.active;
    var report=new Report{cities=layout.cities};
@@ -161,7 +161,7 @@ namespace Eldoria.World4XCanon
      } else {
       // Bake the actual approved skeleton in world coordinates, matching TryGeometryBounds.
       // BakeMesh on an arbitrary renderer included a flattened non-model donor in the rejected trial.
-      var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.position=sites[i.site].position+Vector3.up*.08f;go.AddComponent<MeshFilter>().sharedMesh=enemyMesh;var rr=go.AddComponent<MeshRenderer>();rr.sharedMaterials=enemyMaterials;enemyDisplays.Add(go);
+      var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.position=sites[i.site].position+Vector3.up*.08f;go.AddComponent<MeshFilter>().sharedMesh=enemyMesh;var rr=go.AddComponent<MeshRenderer>();rr.sharedMaterials=enemyMaterials;enemyDisplays.Add(go);enemyPositions.Add(go,sites[i.site].position);
       float required=float.NegativeInfinity;
       foreach(var vertex in enemyMesh.vertices.Where(v=>v.y<enemyMesh.bounds.min.y+.25f)){var foot=go.transform.TransformPoint(vertex);if(!Sample(foot.x-home.x,foot.z-home.z,out var ground))throw new InvalidOperationException("Enemy foot outside terrain");required=Mathf.Max(required,ground.point.y+.08f-foot.y);}
       go.transform.position+=Vector3.up*required;
@@ -175,14 +175,31 @@ namespace Eldoria.World4XCanon
      for(int k=0;k<48;k++){float a=k*Mathf.PI*2/48;float x=city.x+Mathf.Cos(a)*city.radius,z=city.z+Mathf.Sin(a)*city.radius;if(!Sample(x,z,out var hit))throw new InvalidOperationException("City perimeter outside terrain");line.SetPosition(k,hit.point+Vector3.up*.10f);}
     }
     if(report.maxContactError>.03f)throw new InvalidOperationException("Population floats above actual mesh");
+    void EnemyLod(){
+     bool distant=camera.orthographicSize>=47f;var mesh=distant?enemyFarMesh:enemyMesh;
+     foreach(var enemy in enemyDisplays){
+      enemy.GetComponent<MeshFilter>().sharedMesh=mesh;enemy.GetComponent<MeshRenderer>().sharedMaterials=distant?enemyFarMaterials:enemyMaterials;enemy.transform.position=enemyPositions[enemy]+Vector3.up*.08f;
+      float lift=float.NegativeInfinity;foreach(var v in mesh.vertices.Where(v=>v.y<mesh.bounds.min.y+.25f)){var p=enemy.transform.TransformPoint(v);if(!Sample(p.x-home.x,p.z-home.z,out var ground))throw new InvalidOperationException("LOD foot outside terrain");lift=Mathf.Max(lift,ground.point.y+.08f-p.y);}enemy.transform.position+=Vector3.up*lift;
+      float contact=float.PositiveInfinity;foreach(var v in mesh.vertices.Where(v=>v.y<mesh.bounds.min.y+.25f)){var p=enemy.transform.TransformPoint(v);Sample(p.x-home.x,p.z-home.z,out var ground);contact=Mathf.Min(contact,p.y-ground.point.y-.08f);}report.maxContactError=Mathf.Max(report.maxContactError,Mathf.Abs(contact));
+     }
+    }
     foreach(bool populated in new[]{false,true})foreach(bool portrait in new[]{false,true})for(int level=0;level<3;level++) {
      foreach(var go in displays)go.SetActive(populated);
      var target=home+new Vector3(0,4,level==0?220:level==1?(portrait?190:210):(portrait?157:190));camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=(portrait?new[]{32f,52f,74f}:new[]{24f,38f,52f})[level];
      float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(37,47,camera.orthographicSize));
      foreach(var rr in root.GetComponentsInChildren<MeshRenderer>())if(rr.name=="Pilot_NearBatch"||rr.name=="Pilot_FarBatch"){rr.enabled=rr.name=="Pilot_NearBatch"?fade<.999f:fade>0;foreach(var material in rr.sharedMaterials)material.SetFloat("_Fade",fade);}
-     foreach(var enemy in enemyDisplays){enemy.GetComponent<MeshFilter>().sharedMesh=level==2?enemyFarMesh:enemyMesh;enemy.GetComponent<MeshRenderer>().sharedMaterials=level==2?enemyFarMaterials:enemyMaterials;}
+     EnemyLod();
      Frame(camera,Path.Combine(dir,(populated?"TEST-population-":"geography-")+(portrait?"portrait-":"landscape-")+new[]{"close","regional","panorama"}[level]),portrait?720:1280,portrait?1280:720);
     }
+    // Continuous source-camera trajectory with the SAME world and fixture; no regenerated geography.
+    var sequence=Path.Combine(dir,"TEST-population-zoom");Directory.CreateDirectory(sequence);
+    foreach(var go in displays)go.SetActive(true);
+    for(int frame=0;frame<=24;frame++){
+     float t=frame/24f;var target=home+new Vector3(0,4,Mathf.Lerp(220,190,t));camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=Mathf.Lerp(24,52,t);
+     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(37,47,camera.orthographicSize));foreach(var rr in root.GetComponentsInChildren<MeshRenderer>())if(rr.name=="Pilot_NearBatch"||rr.name=="Pilot_FarBatch"){rr.enabled=rr.name=="Pilot_NearBatch"?fade<.999f:fade>0;foreach(var material in rr.sharedMaterials)material.SetFloat("_Fade",fade);}
+     EnemyLod();Frame(camera,Path.Combine(sequence,"frame-"+frame.ToString("D3")),960,540);
+    }
+    if(report.maxContactError>.03f)throw new InvalidOperationException("Zoom-dependent visual contact error");
     report.originalSaveUntouched=playerBefore==JsonUtility.ToJson(host.City.Gateway.Snapshot());if(!report.originalSaveUntouched)throw new InvalidOperationException("Population fixture changed player state");
     File.WriteAllText(Path.Combine(dir,"capacity.json"),JsonUtility.ToJson(report,true));
    } catch(Exception){File.WriteAllText(Path.Combine(dir,"capacity-failed.json"),JsonUtility.ToJson(report,true));throw;} finally {foreach(var go in displays)UnityEngine.Object.DestroyImmediate(go);foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);foreach(var m in meshes)UnityEngine.Object.DestroyImmediate(m);if(clearanceMaterial)UnityEngine.Object.DestroyImmediate(clearanceMaterial);camera.transform.SetPositionAndRotation(oldPosition,oldRotation);camera.orthographicSize=oldZoom;camera.aspect=oldAspect;camera.targetTexture=oldTarget;RenderTexture.active=oldActive;}
