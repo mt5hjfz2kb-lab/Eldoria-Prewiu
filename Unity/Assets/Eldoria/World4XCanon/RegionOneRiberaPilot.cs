@@ -286,7 +286,7 @@ namespace Eldoria.World4XCanon
     if(actorPivot)actorPivot.localPosition=actorOriginalPivot;
     foreach(var r in actorRenderers)if(r)r.enabled=false;
    }
-   for(int i=0;i<originalColliders.Length;i++if(!originalColliders[i]||originalColliders[i].transform.position!=positions[i])throw new InvalidOperationException("Sector capture moved or removed a logical collider");
+   for(int i=0;i<originalColliders.Length;i++)if(!originalColliders[i]||originalColliders[i].transform.position!=positions[i])throw new InvalidOperationException("Sector capture moved or removed a logical collider");
    stats.logicalPositionsUnchanged=true;
    stats.lodSamples=lodReadings.ToArray();
    var close=lodReadings.First(p=>p.orientation=="landscape"&&p.scale=="close").visibleTriangles;
