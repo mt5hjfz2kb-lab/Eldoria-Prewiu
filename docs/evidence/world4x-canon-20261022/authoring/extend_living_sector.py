@@ -46,6 +46,18 @@ for points in controls:
   for t in np.linspace(0,1,9,endpoint=False):
    p=.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t*t+(-p0+3*p1-3*p2+p3)*t*t*t);line.append(tuple(p))
  line.append(points[-1]);routes.append(line)
+# Reserve a connected approach for every future city, ending outside its clear pad.
+main_routes=list(routes)
+for cx,cy,r in cities:
+ closest=None;best=1e9
+ for points in main_routes:
+  for (ax,ay),(bx,by) in zip(points,points[1:]):
+   t=max(0,min(1,((cx-ax)*(bx-ax)+(cy-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2)))
+   q=np.array([ax+t*(bx-ax),ay+t*(by-ay)]);d=float(np.linalg.norm(np.array([cx,cy])-q))
+   if d<best:best=d;closest=q
+ if best>r+2:
+  direction=(np.array([cx,cy])-closest)/best
+  routes.append([tuple(closest),tuple(np.array([cx,cy])-direction*(r+2))])
 def distance(x,y):
  best=1e9
  for points in routes:
@@ -76,7 +88,10 @@ if prior:
  ix=np.clip(np.rint((X+96)/192*(pw-1)).astype(int),0,pw-1)
  iy=np.clip(np.rint((1-(Y-170)/92)*(ph-1)).astype(int),0,ph-1)
  blend=np.clip((Y-170)/18,0,1);blend=blend*blend*(3-2*blend)
- rgba[:,:,:3]=pp[iy,ix,:3]*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
+ patch=pp[iy,ix,:3].copy()
+ old_road=(patch[:,:,0]-patch[:,:,1]>.035)&(Y>170.5)
+ patch[old_road]=rgba[:,:,:3][old_road]
+ rgba[:,:,:3]=patch*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
  rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+np.array([.55,.46,.27])*mask[:,:,None]
 im=bpy.data.images.new('AI open northern grassland',W,H);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'AI_meadow.png');im.file_format='PNG';im.save();im.pack()
 mat=bpy.data.materials.new('AI open meadow paths');mat.use_nodes=True;bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.92;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
@@ -86,7 +101,7 @@ prev=[bm.verts[v.index] for v in boundary]
 for y in range(172,251,2):
  row=[bm.verts.new((float(x),y,height(float(x),y))) for x in xs]
  for i in range(len(row)-1):
-  f=bm.faces.new((prev[i],prev[i+1],row[i+1],row[i]));f.material_index=mi
+  f=bm.faces.new((prev[i],prev[i+1],row[i+1],row[i]));f.material_index=mi;f.smooth=True
   for loop in f.loops:loop[uv].uv=((loop.vert.co.x+96)/192,(loop.vert.co.y-170)/80)
  prev=row
 bm.to_mesh(terrain.data);bm.free();terrain.data.update();bpy.context.view_layer.update()

@@ -74,7 +74,7 @@ namespace Eldoria.World4XCanon
      bool footprint=true;foreach(var d in new[]{new Vector2(-1.5f,0),new Vector2(1.5f,0),new Vector2(0,-1.5f),new Vector2(0,1.5f)})if(!Sample(x+d.x,z+d.y,out var h)||Mathf.Abs(h.point.y-hit.point.y)>.6f)footprint=false;
      if(!footprint)continue;
      float treeDistance=layout.trees.Min(t=>Distance(x,z,t));
-     sites.Add(new Site{index=sites.Count,position=hit.point,slope=Vector3.Angle(hit.normal,Vector3.up),clearRadius=Mathf.Min(Mathf.Min(Mathf.Min(x+96,96-x),Mathf.Min(z-170,250-z)),Mathf.Min(Road(layout,x,z)-2,Mathf.Min(layout.cities.Min(c=>Distance(x,z,c)-c.radius),layout.trees.Min(t=>Distance(x,z,t)-t.radius)))),wood=treeDistance<35,stone=x>20||treeDistance>22});
+     sites.Add(new Site{index=sites.Count,position=hit.point,slope=Vector3.Angle(hit.normal,Vector3.up),clearRadius=Mathf.Min(Mathf.Min(Mathf.Min(x+96,96-x),Mathf.Min(z-170,250-z)),Mathf.Min(Road(layout,x,z)-3,Mathf.Min(layout.cities.Min(c=>Distance(x,z,c)-c.radius),layout.trees.Min(t=>Distance(x,z,t)-t.radius)))),wood=treeDistance<35,stone=x>20||treeDistance>22});
     }
     report.sites=sites.ToArray();report.validSites=sites.Count;
     if(sites.Count<150)throw new InvalidOperationException("Insufficient actual-mesh capacity: "+sites.Count);
@@ -126,7 +126,7 @@ namespace Eldoria.World4XCanon
     while(queue.Count>0){var at=queue.Dequeue();foreach(var offset in new[]{Vector2Int.up,Vector2Int.down,Vector2Int.left,Vector2Int.right}){var next=at+offset;if(free.ContainsKey(next)&&!reached.Contains(next)&&Mathf.Abs(free[next].y-free[at].y)<.94f){reached.Add(next);queue.Enqueue(next);}}}
     report.walkableSamples=free.Count;report.reachableSamples=reached.Count;
     foreach(var city in layout.cities)if(reached.Any(key=>Vector2.Distance(new Vector2(free[key].x-home.x,free[key].z-home.z),new Vector2(city.x,city.z))<=city.radius+4))report.reachableCities++;
-    report.fullSizeNavigation=report.reachableCities==layout.cities.Length;if(!report.fullSizeNavigation)throw new InvalidOperationException("Populated terrain cuts off a reserved city approach");
+    report.fullSizeNavigation=report.reachableCities==layout.cities.Length;if(!report.fullSizeNavigation){File.WriteAllText(Path.Combine(dir,"capacity-failed.json"),JsonUtility.ToJson(report,true));throw new InvalidOperationException("Populated terrain cuts off a reserved city approach: "+report.reachableCities+"/"+layout.cities.Length+", reached "+reached.Count+"/"+free.Count);}
     // Render mesh donors only; no scripts, colliders, hotspots, rewards or save IDs are cloned.
     var donors=world.GetComponentsInChildren<MeshRenderer>(true);
     foreach(var i in fstate.instances) {
