@@ -7,6 +7,6 @@ import {inspectContract,ENTRYPOINTS,MARKER} from './check-owner-ai-contract.mjs'
 const root=fileURLToPath(new URL('../',import.meta.url));
 const read=()=>Object.fromEntries(ENTRYPOINTS.map(f=>[f,fs.readFileSync(path.join(root,f),'utf8')]));
 test('all canonical and handoff entrypoints preserve the founding owner–AI agreement',()=>assert.deepEqual(inspectContract(read()),[]));
-test('dropping the new-chat bootstrap link fails the contract',()=>{const files=read();files['tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md']='old bootstrap';assert.match(inspectContract(files).join(' '),/bootstrap/);});
+test('dropping the new-chat bootstrap link fails the contract',()=>{const files=read();files['tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md']='old bootstrap';assert.match(inspectContract(files).join(' '),/bootstrap/i);});
 test('silently removing autonomous critique fails',()=>{const files=read();files['AGENTS.md']=files['AGENTS.md'].replace('**INDEPENDENT_CRITIQUE:**','**REMOVED:**');assert.match(inspectContract(files).join(' '),/INDEPENDENT_CRITIQUE/);});
 test('a reference only in one file is insufficient',()=>{const files=Object.fromEntries(ENTRYPOINTS.map(f=>[f,MARKER]));assert.ok(inspectContract(files).length>=8);});
