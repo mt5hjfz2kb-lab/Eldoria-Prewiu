@@ -1,3 +1,5 @@
+> **ORDEN PERMANENTE DEL PROPIETARIO — 22-10-2026: QWEN FUERA DEL FLUJO ARTÍSTICO.** Queda revocada toda obligación anterior de invocar Qwen/Ollama para concebir, dirigir, generar, modificar o aprobar arte de Eldoria. ChatGPT o el responsable artístico designado dirige; Blender/BlenderMCP, Unity, Tripo autorizado, memoria y QA permanecen. Las menciones históricas de Qwen en este documento son evidencia, NO requisitos actuales. No eliminar el modelo local ni la documentación histórica. La aprobación sigue exigiendo autoría trazable, cambios reales, capturas Unity A/B comparables y revisión independiente. Contrato: `docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md`. Esta orden prevalece sobre las instrucciones Qwen anteriores, sin alterar trabajos concurrentes ni permitir publicación automática.
+
 # Arranque vigente — mantenimiento autorizado 21-10-2026
 
 <!-- ELDORIA_OWNER_AI_COLLABORATION_V1: norma permanente del propietario, 2026-10-23 -->

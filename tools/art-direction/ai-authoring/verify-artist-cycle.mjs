@@ -89,15 +89,16 @@ export function verifyCycle(c,root=process.cwd()){
  const NON_APPROVED=new Set(['REQUESTED','AUTHORING','TECH_VALIDATED','VISUAL_REJECTED','PROTOTYPE_NO_AI_AUTHORSHIP']);
  need(APPROVED.has(c?.state)||NON_APPROVED.has(c?.state),'unknown artist cycle state');
  if(!APPROVED.has(c?.state))return errors; // WIP and prototype explicitly are NOT artistic approvals.
- need(c?.authorship?.mode==='AI_DIRECTED_BLENDER','AI_DIRECTED_BLENDER required');
- need(c?.artist?.system_role==='system','Ollama artist profile must be actual system role');
- need(nonempty(c?.artist?.model),'local model identity required');
+ need(['AI_DIRECTED_BLENDER','DIRECT_ARTIST_BLENDER'].includes(c?.authorship?.mode),'traceable Blender authorship required');
+ const legacy=c?.authorship?.mode==='AI_DIRECTED_BLENDER';
+ if(legacy)need(c?.artist?.system_role==='system','legacy artist profile must be actual system role');
+ need(nonempty(c?.artist?.model),'artist identity required');
  need((c?.artist?.observed_defect||'').length>=35,'specific visual diagnosis required');
  need((c?.artist?.design_intent||'').length>=35,'artistic design intent required');
  need(['REUSE','MODIFY','NEW'].includes(c?.artist?.asset_decision),'reuse/modify/new decision required');
  need(nonempty(c?.artist?.reason_for_new_geometry),'asset reuse/new rationale required');
  for(const [name,item] of Object.entries({
-  artist_system_prompt:c?.artist?.system_prompt,artist_inference:c?.artist?.inference_log,
+  ...(legacy?{artist_system_prompt:c?.artist?.system_prompt,artist_inference:c?.artist?.inference_log}:{}),
   owner_reference:c?.reference,unity_before:c?.unity?.before,source_blend:c?.authorship?.source_blend,
   output_blend:c?.authorship?.result_blend,output_glb:c?.authorship?.result_glb,
   artist_plan:c?.authorship?.plan_file,
@@ -113,11 +114,11 @@ export function verifyCycle(c,root=process.cwd()){
  const inference=parseProof(c?.artist?.inference_log,'artist_inference');
  const plan=parseProof(c?.authorship?.plan_file,'artist_plan');
  const execution=parseProof(c?.authorship?.execution_log,'blender_execution');
- if(inference){
+ if(legacy&&inference){
   need(inference.system_role==='system'&&inference.model===c?.artist?.model,'artist inference role/model mismatch');
   need(inference.system_prompt_sha256===c?.artist?.system_prompt?.sha256,'artist inference profile hash mismatch');
   need(inference.reference_sha256===c?.reference?.sha256&&inference.unity_before_sha256===c?.unity?.before?.sha256,'artist inference input images mismatch');
-  need(JSON.stringify(inference.direction?.planned_actions)===JSON.stringify(c?.authorship?.planned_actions),'recorded Qwen decisions mismatch planned actions');
+  need(JSON.stringify(inference.direction?.planned_actions)===JSON.stringify(c?.authorship?.planned_actions),'recorded artist decisions mismatch planned actions');
  }
  if(plan)need(JSON.stringify(plan)===JSON.stringify(c?.authorship?.planned_actions),'saved pre-execution plan mismatch');
  if(execution){
