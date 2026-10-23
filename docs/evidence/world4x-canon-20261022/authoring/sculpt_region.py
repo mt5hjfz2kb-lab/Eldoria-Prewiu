@@ -80,7 +80,7 @@ strokes=[(-310,405,8,33),(-337,390,4,23),(215,405,10,27),(232,384,5,18),
          (245,118,9,28),(-530,66,8,35),(-480,-365,12,32),(-457,-388,5,19),(-70,-450,9,26)]
 for x,y,dz,radius in strokes:
     focus(terrain)
-    for v in terrain.data.vertices:v.select=False
+    bpy.ops.object.mode_set(mode='EDIT');bpy.ops.mesh.select_mode(type='VERT');bpy.ops.mesh.select_all(action='DESELECT');bpy.ops.object.mode_set(mode='OBJECT')
     nearest=min(terrain.data.vertices,key=lambda v:(v.co.x-x)**2+(v.co.y-y)**2)
     if nearest.co.z< -8:continue
     nearest.select=True;bpy.ops.object.mode_set(mode='EDIT')
@@ -89,6 +89,8 @@ for x,y,dz,radius in strokes:
 record('Sculpt ridge shoulders with native proportional edit strokes',[terrain.name],
        'Shape asymmetric modest rock crests instead of applying another global noise function; protect the city and its surrounding targets.')
 terrain.data.update()
+for index,original in protected_vertices.items():
+    if (terrain.data.vertices[index].co-original).length>.002:raise RuntimeError('Sculpt stroke changed protected gameplay core')
 verts=[v.co.copy() for v in terrain.data.vertices];faces=[tuple(p.vertices) for p in terrain.data.polygons]
 bvh=BVHTree.FromPolygons(verts,faces,all_triangles=True)
 def hit(x,y):
