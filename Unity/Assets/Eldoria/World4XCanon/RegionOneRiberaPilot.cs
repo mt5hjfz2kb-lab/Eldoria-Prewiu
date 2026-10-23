@@ -15,6 +15,7 @@ namespace Eldoria.World4XCanon
    var prior=world.GetComponentsInChildren<Renderer>(true).Where(r=>r.enabled).ToArray();
    var root=UnityEngine.Object.Instantiate(prefab,world);root.name="Ribera hybrid art study (opt in)";root.layer=world.gameObject.layer;root.transform.position=home;root.transform.rotation=Quaternion.Euler(0,180,0);
    foreach(var r in root.GetComponentsInChildren<Renderer>())r.gameObject.layer=world.gameObject.layer;
+   var ownedMarkerMeshes=new System.Collections.Generic.List<Mesh>();
    var surfaceCache=new System.Collections.Generic.Dictionary<Material,Material>();
    var studyShader=Shader.Find("Eldoria/RiberaFade");
    foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())renderer.sharedMaterials=renderer.sharedMaterials.Select(old=>{
@@ -56,7 +57,7 @@ namespace Eldoria.World4XCanon
      camera.targetTexture=oldRT;RenderTexture.active=oldActive;rt.Release();UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(tex);
      }
     }
-    CaptureSector(camera,root,world,home,hybrid,output,prior);
+    CaptureSector(camera,root,world,home,hybrid,output,prior,ownedMarkerMeshes);
     RegionOneSectorCapacity.Capture(camera,root,world,home,output);
     if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone"))) {
     // Sample a continuous camera trajectory, not a slideshow of the four QA stills.
@@ -74,7 +75,7 @@ namespace Eldoria.World4XCanon
     }}finally{camera.targetTexture=oldRT;RenderTexture.active=oldActive;seqRT.Release();UnityEngine.Object.DestroyImmediate(seqRT);UnityEngine.Object.DestroyImmediate(seqTex);}
     File.WriteAllText(Path.Combine(sequence,"sequence.json"),"{\"frames\":97,\"fps\":16,\"width\":960,\"height\":720,\"source\":\"actual Unity Camera.Render along continuous zoom trajectory; not runtime FPS benchmark\"}");
     }
-   } finally {if(sun){sun.transform.rotation=sunRotation;sun.shadows=sunShadows;sun.shadowStrength=sunStrength;}if(pipeline)pipeline.shadowDistance=shadowDistance;foreach(var r in prior)if(r)r.enabled=true;UnityEngine.Object.DestroyImmediate(root);camera.transform.SetPositionAndRotation(oldPos,oldRot);camera.orthographicSize=oldSize;camera.aspect=oldAspect;camera.targetTexture=oldRT;RenderTexture.active=oldActive;}
+   } finally {if(sun){sun.transform.rotation=sunRotation;sun.shadows=sunShadows;sun.shadowStrength=sunStrength;}if(pipeline)pipeline.shadowDistance=shadowDistance;foreach(var r in prior)if(r)r.enabled=true;UnityEngine.Object.DestroyImmediate(root);foreach(var mesh in ownedMarkerMeshes)UnityEngine.Object.DestroyImmediate(mesh);camera.transform.SetPositionAndRotation(oldPos,oldRot);camera.orthographicSize=oldSize;camera.aspect=oldAspect;camera.targetTexture=oldRT;RenderTexture.active=oldActive;}
   }
 
   static Material[] BuildImpostors(GameObject root,Camera view,string output)
@@ -156,7 +157,7 @@ namespace Eldoria.World4XCanon
    File.WriteAllText(Path.Combine(output,"batching.json"),"{\"renderers_before\":"+before+",\"renderers_after\":"+after+",\"source_stone_renderers\":"+sources.Count+",\"spatial_batches\":"+groups.Count+",\"cell_metres\":32,\"physical_mobile_tested\":false}");
   }
 
-  static void CaptureSector(Camera camera,GameObject root,Transform world,Vector3 home,Material[] hybrid,string output,Renderer[] originalEnabledRenderers)
+  static void CaptureSector(Camera camera,GameObject root,Transform world,Vector3 home,Material[] hybrid,string output,Renderer[] originalEnabledRenderers,System.Collections.Generic.List<Mesh> ownedMarkerMeshes)
   {
    if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone")))return;
    root.SetActive(true);string dir=Path.Combine(output,"sector");Directory.CreateDirectory(dir);
@@ -173,7 +174,7 @@ namespace Eldoria.World4XCanon
     foreach(var c in originalColliders){var pos=c.transform.position;float dx=pos.x-home.x,dz=pos.z-home.z;if(Mathf.Abs(dx)>95||dz< -77||dz>169)continue;
      foreach(var go in temporary)if(go.GetComponent<MeshCollider>().Raycast(new Ray(new Vector3(pos.x,home.y+250,pos.z),Vector3.down),out var hit,500)){probes.Add(new HeightProbe{name=c.name,isTrigger=c.isTrigger,colliderType=c.GetType().Name,logicalPosition=pos,authoredSurface=hit.point,heightDifference=hit.point.y-c.bounds.min.y,hotspotId=HotspotId(c),boundsMin=c.bounds.min,boundsMax=c.bounds.max});break;}
     }
-   } finally {foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);}
+   } catch {foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);throw;}
    // The old 2.5D node markers used the procedural world-height sampler rather than this
    // imported Blender surface. Clone their RENDER MESHES ONLY, not their logical targets.
    // Keep the collider-based discrepancy in heightProbes as an independent unresolved measurement.
@@ -185,7 +186,7 @@ namespace Eldoria.World4XCanon
     new {id="quarry-valoria",prefix="Reference existing quarry"},
     new {id="old-watch-ruin",prefix="Reference existing neutral watch ruin"}
    };
-   foreach(var spec in markers) {
+   try {foreach(var spec in markers) {
     var probe=probes.FirstOrDefault(p=>p.hotspotId==spec.id);
     if(probe==null)continue;
     foreach(var donor in sourceMarkers.Where(r=>r&&r.name.StartsWith(spec.prefix,StringComparison.Ordinal))) {
@@ -198,14 +199,21 @@ namespace Eldoria.World4XCanon
      proxy.transform.SetParent(root.transform,true);
      proxy.transform.SetPositionAndRotation(donor.transform.position+Vector3.up*delta,donor.transform.rotation);
      proxy.transform.localScale=donor.transform.lossyScale;
-     proxy.AddComponent<MeshFilter>().sharedMesh=mf.sharedMesh;
-     proxy.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;
-     float measuredFoot=proxy.transform.TransformPoint(mf.sharedMesh.vertices[0]).y;
-     float error=measuredFoot-(probe.authoredSurface.y+.08f);
-     if(Mathf.Abs(error)>.03f)throw new InvalidOperationException("Ribera node visual contact error: "+spec.id+" "+error);
-     groundedVisualMarkers.Add(new GroundedMarkerProbe{id=spec.id,sourceRenderer=donor.name,originalVisualFootY=sourceFoot.y,authoredGroundY=probe.authoredSurface.y,groundedVisualFootY=measuredFoot,visualCorrectionMeters=delta,contactErrorMeters=error});
+     var mesh=UnityEngine.Object.Instantiate(mf.sharedMesh);ownedMarkerMeshes.Add(mesh);var vertices=mesh.vertices;float firstGround=0,maxError=0;int anchors=0;
+     foreach(var point in vertices.Select(v=>proxy.transform.TransformPoint(v)).Distinct())anchors++;
+     for(int k=0;k<vertices.Length;k++){
+      var point=proxy.transform.TransformPoint(vertices[k]);bool found=false;float ground=float.NegativeInfinity;
+      foreach(var surface in temporary)if(surface.GetComponent<MeshCollider>().Raycast(new Ray(new Vector3(point.x,home.y+250,point.z),Vector3.down),out var hit,500)){ground=Mathf.Max(ground,hit.point.y);found=true;}
+      if(!found)throw new InvalidOperationException("Original visual anchor outside authored surface: "+spec.id);
+      if(k==0)firstGround=ground;point.y=ground+.08f;vertices[k]=proxy.transform.InverseTransformPoint(point);maxError=Mathf.Max(maxError,Mathf.Abs(proxy.transform.TransformPoint(vertices[k]).y-ground-.08f));
+     }
+     mesh.vertices=vertices;proxy.AddComponent<MeshFilter>().sharedMesh=mesh;proxy.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;
+     float measuredFoot=proxy.transform.TransformPoint(mesh.vertices[0]).y;float error=measuredFoot-(firstGround+.08f);
+     if(maxError>.03f)throw new InvalidOperationException("Ribera node visual anchor contact error: "+spec.id+" "+maxError);
+     groundedVisualMarkers.Add(new GroundedMarkerProbe{id=spec.id,sourceRenderer=donor.name,originalVisualFootY=sourceFoot.y,authoredGroundY=firstGround,groundedVisualFootY=measuredFoot,visualCorrectionMeters=measuredFoot-sourceFoot.y,contactErrorMeters=error,measuredAnchors=anchors,maxAnchorContactError=maxError});
     }
    }
+   } finally {foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);}
    if(groundedVisualMarkers.Count!=5)throw new InvalidOperationException("Expected five contact-verified visual node instances; found "+groundedVisualMarkers.Count);
    // Preserve the original animated Spawnling when the connected sector is captured.
    // Its source visual is independently grounded to the imported mesh for this
@@ -320,7 +328,7 @@ namespace Eldoria.World4XCanon
   [Serializable] class SectorCamera {public Vector3 position;public Quaternion rotation;public float orthoSize;public int width,height;public bool playMode;}
   static string HotspotId(Collider c) {if(!c)return "";foreach(var b in c.GetComponents<MonoBehaviour>()){if(b&&b.GetType().Name=="WorldHotspot")return b.GetType().GetField("Id")?.GetValue(b) as string??"";}return "";}
   [Serializable] class PickProbe {public string expectedId,selectedId;public bool portrait,aimAtAuthoredGround,inViewport,matched;}
-  [Serializable] class GroundedMarkerProbe {public string id,sourceRenderer;public float originalVisualFootY,authoredGroundY,groundedVisualFootY,visualCorrectionMeters,contactErrorMeters;}
+  [Serializable] class GroundedMarkerProbe {public int measuredAnchors;public float maxAnchorContactError;public string id,sourceRenderer;public float originalVisualFootY,authoredGroundY,groundedVisualFootY,visualCorrectionMeters,contactErrorMeters;}
   [Serializable] class HeightProbe {public bool isTrigger;public string name,hotspotId,colliderType;public Vector3 logicalPosition,authoredSurface,boundsMin,boundsMax;public float heightDifference;}
   [Serializable] class SectorLodSample {public string orientation,scale;public float zoom;public int visibleRenderers,visibleTriangles;}
   [Serializable] class SectorStats {public bool actorVisualContactMeasured;public float actorVisualContactError;public int animatedOriginalRenderersRetained;public SectorLodSample[] lodSamples;public HeightProbe[] heightProbes;public GroundedMarkerProbe[] groundedVisualMarkers;public int groundedVisualMarkerCount;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public PickProbe[] selectionProbes;public bool heightDeltaIsGroundingVerdict,logicalPositionsUnchanged,physicalMobileTested;}

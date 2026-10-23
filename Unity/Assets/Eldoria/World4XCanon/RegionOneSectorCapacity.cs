@@ -177,7 +177,7 @@ namespace Eldoria.World4XCanon
     if(report.maxContactError>.03f)throw new InvalidOperationException("Population floats above actual mesh");
     foreach(bool populated in new[]{false,true})foreach(bool portrait in new[]{false,true})for(int level=0;level<3;level++) {
      foreach(var go in displays)go.SetActive(populated);
-     var target=home+new Vector3(0,4,level==0?200:level==1?(portrait?170:180):(portrait?135:160));camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=(portrait?new[]{32f,52f,74f}:new[]{24f,38f,52f})[level];
+     var target=home+new Vector3(0,4,level==0?220:level==1?(portrait?190:210):(portrait?157:190));camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=(portrait?new[]{32f,52f,74f}:new[]{24f,38f,52f})[level];
      float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(37,47,camera.orthographicSize));
      foreach(var rr in root.GetComponentsInChildren<MeshRenderer>())if(rr.name=="Pilot_NearBatch"||rr.name=="Pilot_FarBatch"){rr.enabled=rr.name=="Pilot_NearBatch"?fade<.999f:fade>0;foreach(var material in rr.sharedMaterials)material.SetFloat("_Fade",fade);}
      foreach(var enemy in enemyDisplays){enemy.GetComponent<MeshFilter>().sharedMesh=level==2?enemyFarMesh:enemyMesh;enemy.GetComponent<MeshRenderer>().sharedMaterials=level==2?enemyFarMaterials:enemyMaterials;}
