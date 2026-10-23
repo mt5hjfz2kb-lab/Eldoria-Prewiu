@@ -101,6 +101,11 @@ namespace Eldoria.Tests
             var directedType=directed.GetType();
             var directedShore=directedType.GetMethod("Shore",BindingFlags.Public|BindingFlags.Static);
             var directedWater=directedType.GetMethod("Water",BindingFlags.Public|BindingFlags.Static);
+            foreach(var p in new[]{new Vector2(-400,0),new Vector2(-400,240),new Vector2(-350,-250),new Vector2(0,500)})
+                Assert.That((float)directedShore.Invoke(null,new object[]{p.x,p.y}),Is.GreaterThan(20f),
+                    "Continental land must continue west/north; do not regress to an isolated narrow island.");
+            Assert.That((float)directedShore.Invoke(null,new object[]{410f,0f}),Is.LessThan(-20f),
+                "A limited eastern sea must remain, not a terrain rectangle everywhere.");
             var actualHome=(Vector3)Member(host,"WorldHome");
             foreach(var node in colliders)
             {
@@ -543,4 +548,3 @@ namespace Eldoria.Tests
 
     }
 }
-

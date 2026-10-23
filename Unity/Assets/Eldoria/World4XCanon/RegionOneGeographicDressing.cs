@@ -51,7 +51,7 @@ namespace Eldoria.World4XCanon
     for(int j=0;j<8;j++){var p=centre+new Vector2(Next(-15,15),Next(-19,19));if(Clear(p,4))Rock(p,Next(4,8),Next(5,13),new Color(.80f,.70f,.47f));}
    // Clusters with large empty areas: a spatial ecological field, not uniform dots.
    for(int i=0;i<1050;i++)
-   {var p=new Vector2(Next(-188,185),Next(-324,334));if(!Clear(p))continue;
+   {var p=new Vector2(Next(-560,265),Next(-450,500));if(!Clear(p))continue;
     float habitat=Mathf.PerlinNoise(p.x*.023f+17,p.y*.023f+9);if(habitat<.48f)continue;
     bool stone=i%5==0;int count=stone?2:3;
     for(int j=0;j<count;j++){var q=p+new Vector2(Next(-2.4f,2.4f),Next(-2.4f,2.4f));if(!Clear(q))continue;float r=Next(.45f,1.3f);Rock(q,r,stone?r*.65f:r*.9f,stone?rock:grass*Next(.85f,1.12f));}
