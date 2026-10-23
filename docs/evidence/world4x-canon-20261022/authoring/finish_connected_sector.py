@@ -16,6 +16,8 @@ for v in terrain.data.vertices[N:]:
  v.co.z+=delta*fade
 terrain.data.update();bpy.context.view_layer.update()
 def ground(x,y):
+ # Avoid numerical ray/triangle ambiguity exactly on the open mesh boundary.
+ x=max(-95.999,min(95.999,x));y=max(-77.999,min(169.999,y))
  ok,p,n,i=terrain.ray_cast(Vector((x,y,100)),Vector((0,0,-1)));assert ok,(x,y);return p.z
 # Scale existing new-sector fir crowns as cohesive groves, keeping the authored glade and planting points.
 trees=sorted([o for o in scene.objects if o.name.startswith('Pilot_Pine_P_')],key=lambda o:o.name)
