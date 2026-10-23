@@ -164,12 +164,12 @@ namespace Eldoria.World4XCanon
     }
     Physics.SyncTransforms();
     foreach(var c in originalColliders){var pos=c.transform.position;float dx=pos.x-home.x,dz=pos.z-home.z;if(Mathf.Abs(dx)>95||dz< -77||dz>169)continue;
-     foreach(var go in temporary)if(go.GetComponent<MeshCollider>().Raycast(new Ray(new Vector3(pos.x,home.y+250,pos.z),Vector3.down),out var hit,500)){probes.Add(new HeightProbe{name=c.name,logicalPosition=pos,authoredSurface=hit.point,heightDifference=hit.point.y-pos.y,hotspotId=HotspotId(c),boundsMin=c.bounds.min,boundsMax=c.bounds.max});break;}
+     foreach(var go in temporary)if(go.GetComponent<MeshCollider>().Raycast(new Ray(new Vector3(pos.x,home.y+250,pos.z),Vector3.down),out var hit,500)){probes.Add(new HeightProbe{name=c.name,logicalPosition=pos,authoredSurface=hit.point,heightDifference=hit.point.y-c.bounds.min.y,hotspotId=HotspotId(c),boundsMin=c.bounds.min,boundsMax=c.bounds.max});break;}
     }
    } finally {foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);}
    var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false};
    stats.maxHeightDifference=probes.Count>0?probes.Max(p=>Mathf.Abs(p.heightDifference)):0;
-   // Collider origins are selection-box centres, not ground anchors. Delta is descriptive only.
+   // Collider transform origins are not ground anchors: use bounds.min.y as a provisional foot-contact proxy.\n   // This diagnostic does not alter transforms, gameplay colliders, saves or navigation.\n   // The proxy still needs per-asset mesh-contact validation before certifying grounding.
    stats.heightDeltaIsGroundingVerdict=false;
    var pickResults=new System.Collections.Generic.List<PickProbe>();
    foreach(bool portrait in new[]{false,true}) {
