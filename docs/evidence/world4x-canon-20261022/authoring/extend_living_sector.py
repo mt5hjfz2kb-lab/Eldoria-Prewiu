@@ -83,16 +83,12 @@ mask=np.clip((1.85-road)/1.0,0,1);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(
 prior=bpy.data.images.get('AF broad meadow flows')
 if prior:
  pw,ph=prior.size;pp=np.array(prior.pixels[:]).reshape(ph,pw,4);edge=np.array([np.interp(np.linspace(0,pw-1,W),np.arange(pw),pp[-1,:,k]) for k in range(3)]).T
- # Continue the local pigment at the weld using a short reflected edge patch,
- # then blend into newly authored washes; do not extrude a single row into stripes.
- ix=np.clip(np.rint((X+96)/192*(pw-1)).astype(int),0,pw-1)
- iy=np.clip(np.rint((1-(Y-170)/92)*(ph-1)).astype(int),0,ph-1)
- blend=np.clip((Y-170)/18,0,1);blend=blend*blend*(3-2*blend)
- patch=pp[iy,ix,:3].copy()
- old_road=(patch[:,:,0]-patch[:,:,1]>.035)&(Y>170.5)
- patch[old_road]=rgba[:,:,:3][old_road]
- rgba[:,:,:3]=patch*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
+ # Match the retained boundary over one narrow weld band. Never mirror AG's old
+ # road into the extension: its reflected paint made a false diagonal branch.
+ blend=np.clip((Y-170)/3,0,1);blend=blend*blend*(3-2*blend)
+ rgba[:,:,:3]=edge[None,:,:]*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
  rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(np.array([.55,.46,.27])+fine[:,:,None]*.35)*mask[:,:,None]
+
 im=bpy.data.images.new('AI open northern grassland',W,H);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'AI_meadow.png');im.file_format='PNG';im.save();im.pack()
 mat=bpy.data.materials.new('AI open meadow paths');mat.use_nodes=True;bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.92;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 terrain.data.materials.append(mat);mi=len(terrain.data.materials)-1
