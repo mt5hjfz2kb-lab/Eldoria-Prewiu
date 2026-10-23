@@ -55,7 +55,9 @@ def distance(x,y):
  return best
 # New UV material only on new faces: old loops, topology and all AG vertices survive.
 W,H=1024,512;X,Y=np.meshgrid(np.linspace(-96,96,W),np.linspace(170,250,H))
-pigment=.014*np.sin(X/18+Y/29)+.010*np.sin(X/7-Y/19)
+pigment=.028*np.sin(X/23+Y/31)+.018*np.sin(X/11-Y/25)
+# Broken broad washes follow the eastern shoulder and western swale.
+pigment+=.025*np.exp(-((X-65)/29)**2-((Y-217)/32)**2)-.02*np.exp(-((X+15)/24)**2-((Y-225)/20)**2)
 rng_pigment=np.random.default_rng(781)
 fine=rng_pigment.normal(0,.006,X.shape)+.005*np.sin(X*8+np.sin(Y*4))*np.sin(Y*7)
 rgba=np.ones((H,W,4),np.float32);rgba[:,:,:3]=np.array([.54,.55,.25])+(pigment+fine)[:,:,None]
@@ -69,7 +71,13 @@ mask=np.clip((1.85-road)/1.0,0,1);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+n
 prior=bpy.data.images.get('AF broad meadow flows')
 if prior:
  pw,ph=prior.size;pp=np.array(prior.pixels[:]).reshape(ph,pw,4);edge=np.array([np.interp(np.linspace(0,pw-1,W),np.arange(pw),pp[-1,:,k]) for k in range(3)]).T
- blend=np.clip((Y-170)/2,0,1);blend=blend*blend*(3-2*blend);rgba[:,:,:3]=edge[None,:,:]*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
+ # Continue the local pigment at the weld using a short reflected edge patch,
+ # then blend into newly authored washes; do not extrude a single row into stripes.
+ ix=np.clip(np.rint((X+96)/192*(pw-1)).astype(int),0,pw-1)
+ iy=np.clip(np.rint((1-(Y-170)/92)*(ph-1)).astype(int),0,ph-1)
+ blend=np.clip((Y-170)/18,0,1);blend=blend*blend*(3-2*blend)
+ rgba[:,:,:3]=pp[iy,ix,:3]*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
+ rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+np.array([.55,.46,.27])*mask[:,:,None]
 im=bpy.data.images.new('AI open northern grassland',W,H);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'AI_meadow.png');im.file_format='PNG';im.save();im.pack()
 mat=bpy.data.materials.new('AI open meadow paths');mat.use_nodes=True;bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.92;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 terrain.data.materials.append(mat);mi=len(terrain.data.materials)-1

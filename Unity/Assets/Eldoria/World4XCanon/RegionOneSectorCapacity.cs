@@ -13,13 +13,13 @@ namespace Eldoria.World4XCanon
   [Serializable] public class Point { public float x,z,radius; }
   [Serializable] public class Route { public Point[] points; }
   [Serializable] public class Layout { public string stage; public float minX,maxX,minZ,maxZ; public Point[] cities,trees; public Route[] routes; }
-  [Serializable] public class Site { public int index; public Vector3 position; public float slope; public bool wood,stone; }
+  [Serializable] public class Site { public int index; public Vector3 position; public float slope,clearRadius; public bool wood,stone; }
   [Serializable] public class Instance { public string id,content; public int site,generation; public long due; public bool active=true; }
   [Serializable] public class Fixture { public string authority="TEST_ONLY_NOT_LIVE_WORLD"; public long revision; public List<Instance> instances=new List<Instance>(); }
   [Serializable] public class Report {
    public string scope="Disposable capacity and relocation fixture; NOT production respawn or network multiplayer";
    public int validSites,instances,citySpaces,routeSamples,respawned,duplicateCount,meshHits;
-   public float maxContactError,maxCityRelief;public float testMarkerScale=.30f;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched,physicalDevice=false;
+   public float maxContactError,maxCityRelief;public float testMarkerScale=1f;public float conservativeFootprintRadius=7f;public int woodInstances,stoneInstances,enemyInstances;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched,physicalDevice=false;
    public Site[] sites;public Point[] cities; public Fixture population;
   }
   static float Segment(float x,float z,Point a,Point b) {
@@ -38,7 +38,7 @@ namespace Eldoria.World4XCanon
   // Stateless placement: callers must supply a common authoritative occupancy snapshot.
   // No client-local timer, save schema or second gameplay gateway is introduced here.
   static int Choose(Site[] sites,string content,int bastion,HashSet<int> occupied,int old,int start) {
-   for(int n=0;n<sites.Length;n++){int k=(start+n)%sites.Length;var s=sites[k];if(s.index!=old&&!occupied.Contains(s.index)&&Allowed(s,content,bastion))return s.index;}return -1;
+   for(int n=0;n<sites.Length;n++){int k=(start+n)%sites.Length;var s=sites[k];if(s.index!=old&&!occupied.Contains(s.index)&&s.clearRadius>=7f&&!sites.Any(other=>occupied.Contains(other.index)&&Vector2.Distance(new Vector2(other.position.x,other.position.z),new Vector2(s.position.x,s.position.z))<14f)&&Allowed(s,content,bastion))return s.index;}return -1;
   }
   static void TickFixture(Fixture f,Site[] sites,long now) {
    var occupied=new HashSet<int>(f.instances.Where(i=>i.active).Select(i=>i.site));
@@ -74,7 +74,7 @@ namespace Eldoria.World4XCanon
      bool footprint=true;foreach(var d in new[]{new Vector2(-1.5f,0),new Vector2(1.5f,0),new Vector2(0,-1.5f),new Vector2(0,1.5f)})if(!Sample(x+d.x,z+d.y,out var h)||Mathf.Abs(h.point.y-hit.point.y)>.6f)footprint=false;
      if(!footprint)continue;
      float treeDistance=layout.trees.Min(t=>Distance(x,z,t));
-     sites.Add(new Site{index=sites.Count,position=hit.point,slope=Vector3.Angle(hit.normal,Vector3.up),wood=treeDistance<27,stone=x>20||treeDistance>22});
+     sites.Add(new Site{index=sites.Count,position=hit.point,slope=Vector3.Angle(hit.normal,Vector3.up),clearRadius=Mathf.Min(Mathf.Min(Mathf.Min(x+96,96-x),Mathf.Min(z-170,250-z)),Mathf.Min(Road(layout,x,z)-2,Mathf.Min(layout.cities.Min(c=>Distance(x,z,c)-c.radius),layout.trees.Min(t=>Distance(x,z,t)-t.radius)))),wood=treeDistance<35,stone=x>20||treeDistance>22});
     }
     report.sites=sites.ToArray();report.validSites=sites.Count;
     if(sites.Count<150)throw new InvalidOperationException("Insufficient actual-mesh capacity: "+sites.Count);
@@ -90,17 +90,17 @@ namespace Eldoria.World4XCanon
     // March corridor sampled at 1 m spacing, with a 2 m clear width and actual slope.
     foreach(var r in layout.routes)for(int i=1;i<r.points.Length;i++) {
      var a=new Vector2(r.points[i-1].x,r.points[i-1].z);var b=new Vector2(r.points[i].x,r.points[i].z);var side=new Vector2(-(b-a).y,(b-a).x).normalized;
-     int steps=Mathf.CeilToInt(Vector2.Distance(a,b));for(int n=1;n<steps;n++)foreach(float offset in new[]{-1f,0f,1f}) {
+     int steps=Mathf.CeilToInt(Vector2.Distance(a,b));for(int n=0;n<=steps;n++)foreach(float offset in new[]{-1f,0f,1f}) {
       var p=Vector2.Lerp(a,b,n/(float)steps)+side*offset;if(p.x<=-95||p.x>=95||p.y<=171||p.y>=249)continue;
       if(!Sample(p.x,p.y,out var h)||Vector3.Angle(h.normal,Vector3.up)>25||layout.trees.Any(t=>Distance(p.x,p.y,t)<t.radius))throw new InvalidOperationException("Blocked march corridor");report.routeSamples++;
      }
     }
     var fstate=new Fixture();var occupied=new HashSet<int>();
-    foreach(string content in new[]{"forest-valoria","quarry-valoria","engendro-valoria"})for(int n=0;n<40;n++) {
-     int k=Choose(report.sites,content,2,occupied,-1,n*11%sites.Count);if(k<0)throw new InvalidOperationException("Insufficient biome capacity: "+content);
+    for(int n=0;n<40;n++)foreach(string content in new[]{"forest-valoria","quarry-valoria","engendro-valoria"}) {
+     int k=Choose(report.sites,content,2,occupied,-1,n*11%sites.Count);if(k<0)continue;
      occupied.Add(k);fstate.instances.Add(new Instance{id="qa:"+content+":"+n,content=content,site=k});
     }
-    report.instances=fstate.instances.Count;
+    report.instances=fstate.instances.Count;report.woodInstances=fstate.instances.Count(i=>i.content=="forest-valoria");report.stoneInstances=fstate.instances.Count(i=>i.content=="quarry-valoria");report.enemyInstances=fstate.instances.Count(i=>i.content=="engendro-valoria");if(report.instances<15)throw new InvalidOperationException("Insufficient full-size population capacity");
     if(Choose(report.sites,"engendro-valoria",1,new HashSet<int>(),-1,0)!=-1)throw new InvalidOperationException("Progression exclusion failed");
     report.occupiedRejected=Choose(report.sites,"corrupt-scout",2,new HashSet<int>(sites.Select(s=>s.index)),-1,0)==-1;
     var depleted=fstate.instances.Where((i,n)=>n%4==0).ToArray();var oldSites=depleted.ToDictionary(i=>i.id,i=>i.site);
@@ -111,7 +111,7 @@ namespace Eldoria.World4XCanon
     TickFixture(fstate,report.sites,100);report.respawned=fstate.instances.Count(i=>i.generation==1);report.changedPosition=fstate.instances.Where(i=>oldSites.ContainsKey(i.id)).All(i=>i.site!=oldSites[i.id]);
     string after=JsonUtility.ToJson(fstate);fstate=JsonUtility.FromJson<Fixture>(after);TickFixture(fstate,report.sites,100);report.repeatedTickIdempotent=after==JsonUtility.ToJson(fstate);
     report.duplicateCount=fstate.instances.Count-fstate.instances.Select(i=>i.id).Distinct().Count()+fstate.instances.Count(i=>i.active)-fstate.instances.Where(i=>i.active).Select(i=>i.site).Distinct().Count();
-    if(report.respawned!=30||!report.changedPosition||!report.saveReloadStable||!report.repeatedTickIdempotent||report.duplicateCount!=0||!report.occupiedRejected)throw new InvalidOperationException("Capacity fixture state invariant failed");
+    if(report.respawned!=depleted.Length||!report.changedPosition||!report.saveReloadStable||!report.repeatedTickIdempotent||report.duplicateCount!=0||!report.occupiedRejected)throw new InvalidOperationException("Capacity fixture state invariant failed");
     report.population=fstate;
     // Render mesh donors only; no scripts, colliders, hotspots, rewards or save IDs are cloned.
     var donors=world.GetComponentsInChildren<MeshRenderer>(true);
@@ -120,9 +120,9 @@ namespace Eldoria.World4XCanon
      var donor=prefix==null?null:donors.FirstOrDefault(r=>r.name.StartsWith(prefix,StringComparison.Ordinal));
      if(donor) {
       var mf=donor.GetComponent<MeshFilter>();var foot=donor.transform.TransformPoint(mf.sharedMesh.vertices[0]);
-      var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.SetPositionAndRotation(donor.transform.position+sites[i.site].position-foot+Vector3.up*.08f,donor.transform.rotation);go.transform.localScale=donor.transform.lossyScale*.30f;
+      var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.SetPositionAndRotation(donor.transform.position+sites[i.site].position-foot+Vector3.up*.08f,donor.transform.rotation);go.transform.localScale=donor.transform.lossyScale;
       go.transform.position+=sites[i.site].position+Vector3.up*.08f-go.transform.TransformPoint(mf.sharedMesh.vertices[0]);
-      var markerMesh=UnityEngine.Object.Instantiate(mf.sharedMesh);meshes.Add(markerMesh);markerMesh.uv2=markerMesh.uv2.Select(v=>v*.30f).ToArray();
+      var markerMesh=UnityEngine.Object.Instantiate(mf.sharedMesh);meshes.Add(markerMesh);
       var vertices=markerMesh.vertices;
       for(int k=0;k<vertices.Length;k++){
        var point=go.transform.TransformPoint(vertices[k]);
@@ -132,10 +132,19 @@ namespace Eldoria.World4XCanon
       }
       markerMesh.vertices=vertices;go.AddComponent<MeshFilter>().sharedMesh=markerMesh;go.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;
      } else {
-      // Existing animated Spawnling's measured pose, baked once per fixture specimen; no new monster.
-      var actor=world.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(r=>r.name.ToLowerInvariant().Contains("spawn")||r.transform.GetComponentsInParent<MonoBehaviour>(true).Any(c=>c&&c.GetType().Name=="SpawnlingEncounterVisual"));
-      if(!actor)throw new InvalidOperationException("Existing enemy mesh unavailable for capacity display");
-      if(!enemyMesh){enemyMesh=new Mesh();actor.BakeMesh(enemyMesh);meshes.Add(enemyMesh);}var mesh=enemyMesh;var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.SetPositionAndRotation(actor.transform.position,actor.transform.rotation);go.transform.localScale=actor.transform.lossyScale*.30f;go.AddComponent<MeshFilter>().sharedMesh=mesh;var rr=go.AddComponent<MeshRenderer>();rr.sharedMaterials=actor.sharedMaterials;go.transform.position+=sites[i.site].position-new Vector3(rr.bounds.center.x,rr.bounds.min.y,rr.bounds.center.z)+Vector3.up*.08f;
+      // Bake the actual approved skeleton in world coordinates, matching TryGeometryBounds.
+      // BakeMesh on an arbitrary renderer included a flattened non-model donor in the rejected trial.
+      var component=world.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(c=>c&&c.GetType().Name=="SpawnlingEncounterVisual");
+      var model=component?.GetType().GetField("ModelRoot")?.GetValue(component) as GameObject;
+      var actor=model?model.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(r=>r.sharedMesh&&r.bones.Length>0):null;
+      if(!actor)throw new InvalidOperationException("Existing enemy model unavailable");
+      if(!enemyMesh){
+       enemyMesh=UnityEngine.Object.Instantiate(actor.sharedMesh);meshes.Add(enemyMesh);var source=actor.sharedMesh.vertices;var weights=actor.sharedMesh.boneWeights;var binds=actor.sharedMesh.bindposes;var bones=actor.bones;var matrices=bones.Select((bone,k)=>bone.localToWorldMatrix*binds[k]).ToArray();
+       for(int k=0;k<source.Length;k++){var w=weights[k];var v=source[k];source[k]=matrices[w.boneIndex0].MultiplyPoint3x4(v)*w.weight0+matrices[w.boneIndex1].MultiplyPoint3x4(v)*w.weight1+matrices[w.boneIndex2].MultiplyPoint3x4(v)*w.weight2+matrices[w.boneIndex3].MultiplyPoint3x4(v)*w.weight3;}
+       var bounds=new Bounds(source[0],Vector3.zero);foreach(var v in source)bounds.Encapsulate(v);var foot=new Vector3(bounds.center.x,bounds.min.y,bounds.center.z);enemyMesh.vertices=source.Select(v=>v-foot).ToArray();enemyMesh.RecalculateBounds();enemyMesh.RecalculateNormals();
+       if(Mathf.Max(enemyMesh.bounds.extents.x,enemyMesh.bounds.extents.z)>7)throw new InvalidOperationException("Enemy exceeds reserved full-size footprint");
+      }
+      var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.position=sites[i.site].position+Vector3.up*.08f;go.AddComponent<MeshFilter>().sharedMesh=enemyMesh;var rr=go.AddComponent<MeshRenderer>();rr.sharedMaterials=actor.sharedMaterials;
       report.maxContactError=Mathf.Max(report.maxContactError,Mathf.Abs(rr.bounds.min.y-sites[i.site].position.y-.08f));
      }
     }
