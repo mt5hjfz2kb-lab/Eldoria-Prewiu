@@ -9,6 +9,10 @@ Prevent two ChatGPT/agent sessions from silently converging onto the same Eldori
 
 The repository remains the source of truth. This protocol adds a small coordination layer; it does not replace project-state documents or certified evidence. Example file paths below are illustrative, not a source of runtime authority; actual Unity presentation and visual authority are decided by current code and canonical routing.
 
+## Continuidad del pacto propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1)
+
+En todo relevo, el nuevo responsable recupera del HEAD de `main` el pacto obligatorio de [AGENTS.md](../AGENTS.md). **El propietario no es programador**: el agente conserva la responsabilidad de investigar, anticipar defectos, cuestionar métodos fallidos y proponer soluciones de oficio, aunque nadie le haya señalado aún el error. El relevo debe incluir objetivo del propietario, resultado visual/jugable realmente comprobado, hipótesis descartadas, estrategia elegida con su motivo, pruebas y siguiente acción segura. Progreso técnico no equivale a cumplimiento del objetivo; una sucesión de reintentos sin mejora exige pivotar tras dos ciclos. No alterar titularidad ni autorizaciones por este pacto.
+
 ## Estado actual frente a histórico
 
 El campo `active` del registro delimita exclusivamente los trabajos vivos. `history` documenta tareas antiguas, incluidos `STOP`, `handoff`, `blocked`, `review pending` y `cancelled`: **no es una lista de órdenes aplicables al siguiente chat**. Las cabeceras vigentes de `SESSION_HANDOFF.md` y `PROJECT_STATE.md` tienen prioridad sobre sus entradas cronológicas antiguas. No consultar todo el historial para decidir la próxima acción salvo que el trabajo exija recuperar una prueba o una decisión concreta.

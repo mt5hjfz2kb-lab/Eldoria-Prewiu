@@ -1,5 +1,7 @@
 # Eldoria — desarrollo principal
 
+> **Regla fundacional para todas las etapas (ELDORIA_OWNER_AI_COLLABORATION_V1):** el propietario no es programador; la IA investiga, ejecuta y cuestiona métodos por iniciativa propia, explica con claridad y no confunde CI verde con resultado útil. [Pacto obligatorio completo en AGENTS.md](AGENTS.md) y [arranque de agentes](tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md).
+
 La base vigente es **Valoria integrada native111 en main**: ciudad, Royal Gold y Zona1 4X. [Estado y reglas actuales](docs/ELDORIA_MAIN_BASELINE_20261018.md) · [Revisión y prioridades](docs/ELDORIA_PLAYER_REVIEW_20261018.md) · [Prueba privada](https://valoria-city-world.kbkvc5c45n.chatgpt.site).
 
 Las demás ramas se conservan como referencia histórica; no son líneas de producción activas. Calidad artística y validación física móvil todavía pendientes.

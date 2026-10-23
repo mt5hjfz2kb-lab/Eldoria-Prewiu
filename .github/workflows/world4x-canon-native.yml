@@ -300,6 +300,14 @@ jobs:
             }
           }
           @{adb_available=[bool]$adb;physical_android_count=$devices.Count;inventory_error=$inventoryError;devices=$devices;physical_profiled=$false;ios_profiled=$false} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $env:RUNNER_TEMP 'region1-physical-device-inventory.json')
+      - name: Recover original AG camera evidence for comparison
+        if: success() && contains(github.event.head_commit.message, '[recover-ag-review]')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40012204581
+          name: region1-canon-native-40012204581
+          path: ${{ runner.temp }}/original-ag-review
       - name: Upload compact genuine Unity review evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -313,6 +321,8 @@ jobs:
             ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/*.png
             ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/*-source.json
             ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/retained-sector/**
+            ${{ runner.temp }}/original-ag-review/region1-canon-captures-40012204581/ribera-pilot/sector/*.png
+            ${{ runner.temp }}/original-ag-review/region1-canon-captures-40012204581/ribera-pilot/sector/*.json
       - name: Upload logs and measured tests
         if: always()
         uses: actions/upload-artifact@v4

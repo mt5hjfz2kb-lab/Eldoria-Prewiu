@@ -167,7 +167,10 @@ for obj in land:
    if node.type=='TEX_IMAGE' and node.image:
     image=node.image
     pixels=np.array(image.pixels[:],dtype=np.float32)
-    assert pixels.size>16 and np.ptp(pixels[::4])>.01,('Missing retained pigment',image.name)
+    assert pixels.size>16 and np.isfinite(pixels).all(),('Invalid retained image',image.name)
+    # AO may correctly be constant; unused historical texture nodes are not albedo.
+    active_albedo=any(link.from_node==node and link.to_socket.name=='Base Color' for link in material.node_tree.links)
+    if active_albedo:assert np.ptp(pixels[::4])>.01,('Missing active retained pigment',image.name)
     core_images[image.name]=hashlib.sha256(pixels.tobytes()).hexdigest()
 for obj in land+[outer]:
  layer=obj.data.uv_layers.active

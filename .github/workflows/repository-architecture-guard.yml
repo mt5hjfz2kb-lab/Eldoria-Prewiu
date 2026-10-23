@@ -41,6 +41,9 @@ jobs:
             /pipeline/active-workstreams.json
             /tools/check-repository-architecture*
             /tools/check-documentation-governance*
+            /tools/check-owner-ai-contract*
+            /tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md
+            /docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md
             /tools/closeout/
             /tools/workflow-recovery/
             /tools/work-status/
@@ -53,6 +56,10 @@ jobs:
         run: |
           node tools/check-repository-architecture.mjs --tracked-tree
           node --test tools/check-repository-architecture.test.mjs
+      - name: Preserve founding owner–AI roles across chat handoffs
+        run: |
+          node tools/check-owner-ai-contract.mjs
+          node --test tools/check-owner-ai-contract.test.mjs
       - name: Test transferable ownership and stale queued-run rejection
         run: node --test tools/workstream-lease/*.test.mjs
       - name: Validate documentation catalogue and local links

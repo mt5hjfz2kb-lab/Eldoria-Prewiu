@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-world-region-1-canon-20261022",
+  "request_id": "eldoria-world-region-1-canon-20261022",
+  "asset_or_sector": "Single integrated Region 1 canonical 4X world geography with local, regional and panoramic LOD without invented hotspots",
+  "profile": "environment_composition",
+  "visual_gate_state": "AUTHORING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "PR #100 OWNER P0 FIRST: do not continue unrelated procedural microadjustments as substitute for visual quality. Existing Unity terrain/forest noise produces technical variety, not the authored geographic composition of immutable owner world-map references. Reconstruct panoramic macro layout from 03_vista_panoramica.png (forest/biome masses, terrain relief, roads, water/coast and ground Breach) in editable layered shared-world coordinates, never pasted image or invented gameplay. Existing gameplay/saves/UI owners remain authoritative; 0 EUR.",
+  "geometry_gap_proven": true,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": true,
+    "unity_material_blending": true
+  },
+  "artist": {
+    "system_prompt": "tools/art-direction/VALORIA_LOCAL_ARTIST_SYSTEM_PROMPT.md",
+    "execution": "Owner directive 2026-10-22: ChatGPT is the artist for this work; Qwen is removed from this workstream's production and review. Retain canonical memory, immutable reference PNGs, existing zero-cost Blender/assets and actual Unity validation. Author an EDITABLE geography/biome composition layout in shared-world coordinates and drive the existing integrated 2.5D/3D world. No paid assets/Tripo, isolated tree proof, pasted image, self-approval or release. Evaluate genuine panorama A/B before extending regional/near."
+  },
+  "validation": {
+    "source_gate": "RegionOneCanonicalSourceGate on actual Unity 6000.3.23f1",
+    "final_gate": "P0 experiment MUST deliver real Unity 6000.3.23f1 PlayMode A/B PNG for (A) previous horizontal panorama and (B) authored layout variant, exactly same camera/framing, with original canonical 03 PNG separately shown, plus exact candidate commit, action run, artifact link and PlayMode XML. Include real 390x844 vertical panorama, measured map width coverage and framing trade-off. Written comparison of four attributes: terrain hierarchy/silhouette, forest masses, road-water continuity, Breach clarity/centrality. Visual leap must be obvious and owner approved; 7/7 tests alone are insufficient. Preserve 3 scales, gameplay/save/UI, other owners, and iPhone issue #96 release gate. If A/B has no visible leap, mark NO_CONVERGENCE and stop repetitive microiterations to reassess art pipeline. PR #100 remains DRAFT/NO MERGE/NO RELEASE."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "PENDING",
+  "physical_mobile_tested": false,
+  "owner_authorization": "docs/visual-reference/ELDORIA_WORLD_MAP_CANON_20261022.md",
+  "notes": "P0 visual-method experiment (owner direction 2026-10-22) is the NEXT required workstream milestone, detailed as mandatory acceptance checklist in PR #100: https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100 . Assigned to existing live owner chatgpt-world4x-relevo-20261022, without opening parallel branch/workstream or writing its World4X Unity files. CURRENT STATE: REQUIRED_NOT_YET_EVIDENCED; do not claim experiment completed until Unity A/B artifact and comparison exist. ART_APPROVED false, owner acceptance pending. No changes to saves/UI/Spawnling, no paid Tripo. Owner explicitly supersedes Qwen-use requirement: direct ChatGPT artistic authorship, retained project memory and actual Blender/Unity evidence are required. Qwen remains untouched for other workstreams."
+}
