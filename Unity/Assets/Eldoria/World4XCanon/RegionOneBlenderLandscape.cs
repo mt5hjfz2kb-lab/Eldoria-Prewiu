@@ -22,8 +22,8 @@ namespace Eldoria.World4XCanon
   {
    contactVertices=WorldVertices.Select(p=>p-origin).ToArray();contactTriangles=terrain.sharedMesh.triangles;
    for(int i=0;i<contactTriangles.Length;i+=3){var a=contactVertices[contactTriangles[i]];var b=contactVertices[contactTriangles[i+1]];var c=contactVertices[contactTriangles[i+2]];
-    int x0=Mathf.FloorToInt(Mathf.Min(a.x,b.x,c.x)/16),x1=Mathf.FloorToInt(Mathf.Max(a.x,b.x,c.x)/16);
-    int z0=Mathf.FloorToInt(Mathf.Min(a.z,b.z,c.z)/16),z1=Mathf.FloorToInt(Mathf.Max(a.z,b.z,c.z)/16);
+    int x0=Mathf.FloorToInt(Mathf.Min(a.x,Mathf.Min(b.x,c.x))/16),x1=Mathf.FloorToInt(Mathf.Max(a.x,Mathf.Max(b.x,c.x))/16);
+    int z0=Mathf.FloorToInt(Mathf.Min(a.z,Mathf.Min(b.z,c.z))/16),z1=Mathf.FloorToInt(Mathf.Max(a.z,Mathf.Max(b.z,c.z))/16);
     for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++){var k=new Vector2Int(x,z);if(!contactCells.TryGetValue(k,out var list)){list=new List<int>();contactCells[k]=list;}list.Add(i);}
    }
    activeSurface=this;

@@ -64,6 +64,7 @@ namespace Eldoria.World4XCanon
             foreach(var renderer in host.WorldRoot.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
             host.WorldRoot.layer=29;
             host.WorldCamera.cullingMask=1<<29;
+            host.WorldCamera.backgroundColor=new Color(.48f,.53f,.35f,1); // continental boundary haze, never implied surrounding sea
             ConfigureRegionCoverage();
             built = true;
             UpdateLevelOfDetail(true);
@@ -79,7 +80,7 @@ namespace Eldoria.World4XCanon
             // territory. Widen both scales, retaining one real camera and
             // strong near -> regional -> panorama separation.
             navigation.localZoom = 36f;
-            navigation.regionalZoom = 113f;
+            navigation.regionalZoom = Mathf.Max(280f,400f/navigation.View.aspect);
             navigation.globalZoom = navigation.View.aspect < .80f
                 ? PortraitPanoramaZoom : LandscapePanoramaZoom;
             navigation.tilt = 66f;
@@ -145,6 +146,8 @@ namespace Eldoria.World4XCanon
   void UpdateLevelOfDetail(bool force)
   {
    if(!navigation||!navigation.View)return;
+   float regional=Mathf.Max(280f,400f/navigation.View.aspect);
+   if(Mathf.Abs(navigation.regionalZoom-regional)>.5f){bool was=Mathf.Abs(navigation.View.orthographicSize-navigation.regionalZoom)<1;navigation.regionalZoom=regional;if(was)navigation.SetZoomLevel(1,true);}
    float far=OverviewSize(navigation.View.aspect);
    if(Mathf.Abs(navigation.globalZoom-far)>.5f){bool was=navigation.View.orthographicSize>=navigation.regionalZoom*2;navigation.globalZoom=far;if(was)navigation.SetZoomLevel(0,true);}
    float near=navigation.View.aspect<.8f?64:36;

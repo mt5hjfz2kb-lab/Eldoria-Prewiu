@@ -122,7 +122,7 @@ for bx in [-550.,0.,450.]:
 # Steep river banks retain their reviewed source pigment and UVs.
 for obj in land:
  obj.data.materials.append(mat);index=len(obj.data.materials)-1
- layer=obj.data.uv_layers.active
+ layer=obj.data.uv_layers.active;layer.name="Continental pigment"
  for poly in obj.data.polygons:
   if poly.normal.z<.75:continue
   poly.material_index=index
@@ -133,6 +133,12 @@ bpy.ops.object.select_all(action='DESELECT')
 for o in land+[outer]:o.select_set(True)
 bpy.context.view_layer.objects.active=outer;bpy.ops.object.join();terrain=outer;terrain.name='BLD_Terrain'
 bm=bmesh.new();bm.from_mesh(terrain.data);bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.001);bm.to_mesh(terrain.data);bm.free();terrain.data.update()
+# glTF material UV0 must be populated after joining meshes with historical UV names.
+# Never let the retained sector sample a single texture corner.
+for poly in terrain.data.polygons:
+ if terrain.data.materials[poly.material_index]!=mat:continue
+ for li in poly.loop_indices:
+  q=terrain.data.vertices[terrain.data.loops[li].vertex_index].co;terrain.data.uv_layers[0].data[li].uv=((q.x+910)/1820,(q.y+1000)/2000)
 # Three authored crossings connect both continental banks. Decks follow measured
 # bank heights and carry visible planks; they are not invisible collider offsets.
 bridge_specs=[]
@@ -155,7 +161,7 @@ for cx in [-550.,0.,450.]:
 for tree in oldtrees:
  x,y=tree.location.x,tree.location.y
  crossing=any(abs(x-cx)<12 and abs(y-cy)<length/2+8 for cx,cy,w,length in bridge_specs)
- destination=any(math.hypot(x-cx,y-cy)<r for cx,cy,r in [(36,6,16),(83,18,9),(82.5,-56.891,10),(-49,-47,8),(-56,-51,8)])
+ destination=any(math.hypot(x-cx,y-cy)<r for cx,cy,r in [(0,0,16),(47,12,9),(46.5,-62.891,10),(-85,-53,8),(-92,-57,8)])
  if crossing or destination:tree.hide_render=True;tree.hide_set(True)
 # Integrated geological fracture, not an upright monument. Keep city/real targets south of it.
 for v in terrain.data.vertices:
@@ -196,9 +202,9 @@ masters=[bpy.data.objects['Editable Layered fir source'],bpy.data.objects['Edita
 for index,(cx,cy,rx,ry) in enumerate(groves):
  parts=[]
  for k in range(27):
-  a=k*2.39996;r=math.sqrt((k+.5)/27);x=cx+math.cos(a)*rx*r*.58;y=cy+math.sin(a)*ry*r*.58
+  a=k*2.39996;r=math.sqrt((k+.5)/27);x=cx+math.cos(a)*rx*r*.8;y=cy+math.sin(a)*ry*r*.8
   if float(line_distance(np.array(x),np.array(y)))<9 or math.hypot(x+260,y-150)<120:continue
-  donor=masters[k%2];o=donor.copy();o.data=donor.data.copy();scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));scale=1.6+(k%5)*.18;o.scale=(scale,scale,scale);o.rotation_euler.z=k*.71;parts.append(o)
+  donor=masters[k%2];o=donor.copy();o.data=donor.data.copy();scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));scale=2.8+(k%5)*.2;o.scale=(scale,scale,scale);o.rotation_euler.z=k*.71;parts.append(o)
  if not parts:continue
  bpy.ops.object.select_all(action='DESELECT')
  for o in parts:o.select_set(True)

@@ -193,7 +193,7 @@ jobs:
           & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py -- $out $source
           if($LASTEXITCODE){throw 'Reusable resource Blender authoring failed'}
           $dest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
-          foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json','RegionOneResources.glb')){Copy-Item (Join-Path $out $file) (Join-Path $dest $file) -Force}
+          foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json','RegionOneResources.glb','RegionOneResourceImpostors.png')){Copy-Item (Join-Path $out $file) (Join-Path $dest $file) -Force}
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell

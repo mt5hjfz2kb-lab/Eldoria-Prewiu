@@ -77,7 +77,15 @@ namespace Eldoria.World4XCanon
                     previous[b]=a;queue.Enqueue(b);
                 }
             }
-            if(!previous.ContainsKey(goal)){Debug.LogWarning("REGION1_ROUTE_DISCONNECTED start="+start+" goal="+goal+" reachable="+previous.Count+" walkable="+cells.Count);return false;}
+            if(!previous.ContainsKey(goal)){
+                // A destination has an approach area, not one arbitrarily chosen grid cell.
+                // Search only already reached, collision-free terrain cells in the same 24m limit.
+                float best=24*24;bool found=false;
+                foreach(var pair in previous){var p=cells[pair.Key];float d=(new Vector2(p.x-destination.x,p.z-destination.z)).sqrMagnitude;
+                    if(d<best){best=d;goal=pair.Key;found=true;}}
+                if(!found){Debug.LogWarning("REGION1_ROUTE_DISCONNECTED start="+start+" goal="+goal+" reachable="+previous.Count+" walkable="+cells.Count);return false;}
+                Debug.Log("REGION1_ROUTE_APPROACH alternate_reachable_cell="+goal+" distance_m="+Mathf.Sqrt(best));
+            }
             var points=new List<Vector2Int>();for(var p=goal;;p=previous[p]){points.Add(p);if(p==start)break;}points.Reverse();
             route=points.Select(k=>{var p=cells[k];return new WorldRoutePoint{X=p.x,Y=p.y,Z=p.z};}).ToList();
             return route.Count>1;

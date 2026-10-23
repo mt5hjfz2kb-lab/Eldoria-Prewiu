@@ -56,3 +56,21 @@ for o in roots+objects:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneResources.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Resource_Library.blend'))
 (out/'resource-library.json').write_text(json.dumps({'families':['wood','stone'],'variants_per_family':3,'unlocked_content':'existing Bastion I-II wood and stone only','food_field_not_represented_as_harvest_node':True,'creatures_generated':0,'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'art_approved':False},indent=2))
+# Genuine orthographic impostors rendered from this exact reusable library.
+# They depict the same authorized wood/stone models, never a second geography.
+scene.render.engine='BLENDER_EEVEE';scene.render.resolution_x=256;scene.render.resolution_y=256;scene.render.resolution_percentage=100
+scene.render.film_transparent=True;scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA';scene.use_nodes=False
+for obj in scene.objects:obj.hide_render=True
+for root in roots:root.hide_render=False
+camera_data=bpy.data.cameras.new('Resource impostor orthographic camera');camera=bpy.data.objects.new(camera_data.name,camera_data);scene.collection.objects.link(camera);camera.hide_render=False;camera_data.type='ORTHO';camera_data.ortho_scale=12;camera.location=(10,-16,16);camera.rotation_euler=(Vector((0,0,3))-camera.location).to_track_quat('-Z','Y').to_euler();scene.camera=camera
+light_data=bpy.data.lights.new('Resource impostor soft key','AREA');light_data.energy=1800;light_data.shape='DISK';light_data.size=8;light=bpy.data.objects.new(light_data.name,light_data);scene.collection.objects.link(light);light.hide_render=False;light.location=(-8,-10,18);light.rotation_euler=(Vector((0,0,2))-light.location).to_track_quat('-Z','Y').to_euler()
+scene.world.use_nodes=True;scene.world.node_tree.nodes.get('Background').inputs[0].default_value=(.45,.53,.64,1);scene.world.node_tree.nodes.get('Background').inputs[1].default_value=.65
+import numpy as np
+atlas=np.zeros((256,512,4),np.float32)
+for column,family in enumerate(['Wood','Stone']):
+ for obj in objects:obj.hide_render=obj.parent.name!='Resource_'+family+'_0'
+ path=out/('Resource_'+family+'_impostor.png');scene.render.filepath=str(path);bpy.ops.render.render(write_still=True)
+ picture=bpy.data.images.load(str(path));atlas[:,column*256:(column+1)*256,:]=np.array(picture.pixels[:]).reshape(256,256,4)
+im=bpy.data.images.new('RegionOneResourceImpostors',512,256,alpha=True);im.pixels.foreach_set(atlas.ravel());im.filepath_raw=str(out/'RegionOneResourceImpostors.png');im.file_format='PNG';im.save();im.pack()
+for obj in objects:obj.hide_render=False
+bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Resource_Library.blend'),compress=True)

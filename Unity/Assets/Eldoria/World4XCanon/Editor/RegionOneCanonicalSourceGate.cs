@@ -30,6 +30,12 @@ namespace Eldoria.World4XCanon.Editor
                RegionOneCanonicalLandscape.CoastDistance(0,0)<5 ||
                RegionOneCanonicalLandscape.CoastDistance(850,0)>-5)
                 throw new InvalidOperationException("Exported Blender ground data lost city datum or eastern coast");
+            var ground=prefab.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_Terrain");
+            var mesh=ground.sharedMesh;var positions=mesh.vertices;var uv=mesh.uv;var materials=ground.GetComponent<Renderer>().sharedMaterials;
+            for(int sub=0;sub<mesh.subMeshCount;sub++)if(materials[sub].name.Contains("Region1 open meadows")){
+                var core=mesh.GetIndices(sub).Distinct().Where(i=>Mathf.Abs(positions[i].x)<90&&Mathf.Abs(positions[i].z)<60).ToArray();
+                if(core.Length<100||core.Any(i=>uv[i].x<.4f||uv[i].x>.6f||uv[i].y<.4f||uv[i].y>.6f))throw new InvalidOperationException("Retained meadow UV0 must sample the same continental atlas, not a texture corner");
+            }
             var forest=prefab.GetComponentsInChildren<MeshFilter>(true).Where(f=>f.name.StartsWith("BLD_ForestMass_")).ToArray();
             if(forest.Length<20)throw new InvalidOperationException("Authored forest mass export incomplete");
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
