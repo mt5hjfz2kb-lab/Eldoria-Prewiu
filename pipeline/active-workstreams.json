@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-ribera-o-sector-relay-20261023",
+      "owner": "chatgpt-world4x-sector-final-20261023",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 13,
+      "ownership_revision": 14,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-23",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner-directed handoff 2026-10-23: finish the bounded O-to-connected-sector Blender/Unity pilot; no full Region 1 expansion, preserve recoverable O K I.",
-      "phase": "BOUNDED_RIBERA_O_CONNECTED_SECTOR_S",
-      "next": "Repair S missing Q path mask from canonical guide curves; rerun Blender+Unity native at 3 zooms H/V; compare true captures and preserve reference state.",
+      "authorization": "Owner explicit 2026-10-23 finalization of connected sector T, PR100, zero cost, no merge or publication.",
+      "phase": "BOUNDED_SECTOR_ART_FINALIZATION",
+      "next": "Review U real Unity captures, then improve sector art and playable height validation; retain O K I; do not expand Region1.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -146,6 +146,13 @@
           "relieved_at": "2026-10-23",
           "reason": "Owner explicitly authorizes continuation of the existing O to connected-sector assignment in new chat while preserving other scopes and unfinished workflows.",
           "outcome": "Retain O/K/I and P/Q/R; S failed in native Blender on absent Q path mask (run 39976346632), no native artistic acceptance."
+        },
+        {
+          "owner": "chatgpt-world4x-ribera-o-sector-relay-20261023",
+          "revision": 13,
+          "relieved_at": "2026-10-23",
+          "reason": "Explicit owner continuation and completion of existing sector T and subsequent U without expanding Region 1",
+          "outcome": "T verified native; U run 39981878592 completed success, pending visual review"
         }
       ],
       "delivery_definition": {
