@@ -3,18 +3,20 @@ $root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/95183774-20261023'
 $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring/interactive'
 "ELDORIA_INTERACTIVE_OUT=$root" >> $env:GITHUB_ENV
 $ready=Join-Path $root 'ready.json'
+if(Test-Path $ready){
+ $saved=Get-Content $ready -Raw | ConvertFrom-Json
+ if(-not(Get-Process -Id $saved.pid -ErrorAction SilentlyContinue)){Move-Item $ready (Join-Path $root "ready-ended-$env:GITHUB_RUN_ID.json")}
+}
 if(-not(Test-Path $ready)){
  if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another production process is active'}
  New-Item -ItemType Directory -Force $root | Out-Null
  $source=Get-ChildItem "$env:RUNNER_TEMP/interactive-source" -Recurse -Filter eldoria-region1-author.blend | Select-Object -First 1 -ExpandProperty FullName
  if(-not $source){throw 'Verified landscape source unavailable'}
  $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
- $tracking=$env:RUNNER_TRACKING_ID
- try{
-  $env:RUNNER_TRACKING_ID=''
-  $p=Start-Process $blender -ArgumentList @('--background','--python-exit-code','1','--python',('"'+$helpers+'/session.py"'),'--',('"'+$root+'"'),('"'+$source+'"')) -RedirectStandardOutput "$root/server.log" -RedirectStandardError "$root/server-error.log" -PassThru
- }finally{$env:RUNNER_TRACKING_ID=$tracking}
- for($i=0;$i -lt 60 -and -not(Test-Path $ready);$i++){Start-Sleep -Seconds 1;if($p.HasExited){throw 'Blender session failed to start'}}
+ $command='"'+$blender+'" --background --python-exit-code 1 --python "'+$helpers+'/session.py" -- "'+$root+'" "'+$source+'"'
+ $created=Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine=$command}
+ if($created.ReturnValue -ne 0){throw 'Cannot launch independent owned Blender session'}
+ for($i=0;$i -lt 60 -and -not(Test-Path $ready);$i++){Start-Sleep -Seconds 1;if(-not(Get-Process -Id $created.ProcessId -ErrorAction SilentlyContinue)){throw 'Blender session failed to start'}}
 }
 $session=Get-Content $ready -Raw | ConvertFrom-Json
 $p=Get-Process -Id $session.pid -ErrorAction Stop
