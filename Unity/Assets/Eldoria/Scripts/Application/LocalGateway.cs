@@ -35,6 +35,10 @@ namespace Eldoria.Application
         bool TryChoose(PlayerState snapshot, string targetId, string previousSiteId,
             int generation, out WorldResourceLocation location);
     }
+    public interface IWorldMarchRoutes
+    {
+        bool TryRoute(PlayerState snapshot,string targetId,out System.Collections.Generic.List<WorldRoutePoint> route);
+    }
     public sealed class LocalGateway : ICommandGateway
     {
         private readonly IClock clock;
@@ -42,6 +46,8 @@ namespace Eldoria.Application
         private PlayerState state;
         private IWorldResourcePlacement resourcePlacement;
         private long resourceRespawnTicks;
+        private IWorldMarchRoutes marchRoutes;
+        public void ConfigureLocalMarchRoutes(IWorldMarchRoutes routes){if(state.WorldId!="world-local")throw new InvalidOperationException("Remote route authority required");marchRoutes=routes??throw new ArgumentNullException(nameof(routes));}
         public void ConfigureLocalResourceRespawn(IWorldResourcePlacement placement, TimeSpan delay)
         {
             if (placement == null) throw new ArgumentNullException(nameof(placement));
@@ -174,6 +180,7 @@ namespace Eldoria.Application
                 PreparedTroops=s.PreparedTroops.Copy(),
                 March=new MarchState { MarchId=s.March.MarchId, OwnerId=s.March.OwnerId,
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
+                    Route=s.March.Route?.ConvertAll(x=>x.Copy())??new System.Collections.Generic.List<WorldRoutePoint>(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
                     PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
                 WorldResourceLocations=s.WorldResourceLocations.ConvertAll(x=>x.Copy()),
@@ -232,7 +239,7 @@ namespace Eldoria.Application
                     if (IsStoneTarget(command.TargetId) && ResourceRemaining(state,command.TargetId)<=0)
                         return Fail("La cantera está agotada");
                     if (!CanDepart()) return Fail("Marcha no disponible");
-                    Depart(command.TargetId);
+                    if(!Depart(command.TargetId))return Fail("No hay una ruta transitable hasta el objetivo");
                     if(IsWoodTarget(command.TargetId)) state.CorruptionDiscovered=true;
                     break;
                 case "ConfigureMarch":
@@ -287,7 +294,7 @@ namespace Eldoria.Application
                     }
                     else return Fail("Amenaza desconocida");
                     if (!CanDepart()) return Fail("Marcha no disponible");
-                    Depart(command.TargetId); break;
+                    if(!Depart(command.TargetId))return Fail("No hay una ruta transitable hasta el objetivo"); break;
                 case "AdvanceBastion":
                     if (command.TargetId != "bastion") return Fail("El Bastión todavía no puede ascender");
                     BastionProgressionDefinition next;
@@ -358,9 +365,13 @@ namespace Eldoria.Application
             return new CommandResult(true, "Acción iniciada", state.Revision);
         }
         private bool CanDepart() => state.March.Phase == "idle" && state.Available.ArcherT1 > 0;
-        private void Depart(string targetId)
+        private bool Depart(string targetId)
         {
+            var planned=new System.Collections.Generic.List<WorldRoutePoint>();
+            if(marchRoutes!=null&&!marchRoutes.TryRoute(Snapshot(),targetId,out planned))return false;
+            if(planned==null)return false;
             var m = state.March;
+            m.Route=planned;
             bool usePrepared = targetId == "engendro-valoria" && state.MarchConfigured;
             m.Troops = usePrepared ? state.PreparedTroops.Copy() : state.Available.Copy();
             m.HeroId = usePrepared ? state.PreparedHeroId : "aldric";
@@ -370,6 +381,7 @@ namespace Eldoria.Application
             m.TargetId = targetId; m.Phase = "outbound";
             m.PendingWood = m.PendingStone = 0;
             m.PhaseEndsUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
+            return true;
         }
         public bool Advance()
         {

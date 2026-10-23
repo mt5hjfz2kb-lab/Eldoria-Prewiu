@@ -146,6 +146,23 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator RealTerrainRoutesReachPopulationAndReserveCities()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var placement=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneResourcePlacement");
+            Assert.That((int)Member(placement,"ValidatedCityCount"),Is.GreaterThanOrEqualTo(12),"City footprints require measured real mesh clearance");
+            var routes=(Eldoria.Application.IWorldMarchRoutes)Member(placement,"MarchRoutes");
+            var gateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");var snapshot=gateway.Snapshot();
+            var ids=new[]{"forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"}.Concat(snapshot.WorldResourceLocations.Where(x=>x.TargetId.StartsWith("region1:")).Select(x=>x.TargetId));
+            foreach(var id in ids){
+                Assert.That(routes.TryRoute(snapshot,id,out var route),Is.True,"No terrain route to "+id);
+                Assert.That(route.Count,Is.GreaterThan(1));
+                for(int i=1;i<route.Count;i++)Assert.That(Vector3.Distance(new Vector3(route[i].X,route[i].Y,route[i].Z),new Vector3(route[i-1].X,route[i-1].Y,route[i-1].Z)),Is.LessThan(9));
+            }
+        }
+
+        [UnityTest]
         public IEnumerator OneGeographyAndNoInventedGameplayHotspots()
         {
             MonoBehaviour host = null; GameObject world = null; Component navigation = null; Camera camera = null;
@@ -187,6 +204,7 @@ namespace Eldoria.Tests
             Assert.That(colliders.Any(x => (string)Member(x, "Id") == "quarry-valoria"), Is.True);
             foreach(var name in new[]{"Reference city Bastion I","Reference existing quarry","Reference existing neutral watch ruin","Reference existing wood grove"})
                 Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Any(f=>f.name==name),Is.True,"Reference-derived real node art missing: "+name);
+            foreach(var oldResource in geo.GetComponentsInChildren<Renderer>(true).Where(r=>r.name=="Reference existing quarry"||r.name=="Reference existing wood grove")) Assert.That(oldResource.enabled,Is.False,"Replaced resource graphic must stay hidden during capture too");
             foreach(var donor in world.GetComponentsInChildren<Transform>(true).Where(t=>t.name.StartsWith("Quarry Geological Scarp /",StringComparison.Ordinal)||t.name=="Connected graded extraction apron"||t.name.StartsWith("Valoria map / retained ruins",StringComparison.Ordinal)||t.name=="Forest cut timber and sawbuck"))
                 Assert.That(donor.GetComponentsInChildren<Renderer>(true).All(r=>!r.enabled),Is.True,"A replaced legacy node visual reappeared: "+donor.name);
             var directed=geo.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");

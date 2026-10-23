@@ -11,13 +11,19 @@ namespace Eldoria.World4XCanon
     // Geometry service for the existing LocalGateway. Owns no timer or save file.
     public sealed class RegionOneResourcePlacement : MonoBehaviour, IWorldResourcePlacement
     {
+        [Serializable] public sealed class CityReserve {public float x,z,radius;}
+        [Serializable] sealed class RegionLayout {public CityReserve[] cities;}
+        CityReserve[] cities=Array.Empty<CityReserve>();
+        public int ValidatedCityCount {get;private set;}
         sealed class Site { public string Id; public Vector3 Point; public bool Wood; }
         readonly List<Site> sites = new List<Site>();
         readonly Dictionary<string,Vector3> initial = new Dictionary<string,Vector3>();
         ValoriaIntegratedWorld host;
         LocalGateway bound;
+        RegionOneTerrainRoutes routes;
         float nextRefresh;
         public int VerifiedSiteCount => sites.Count;
+        public IWorldMarchRoutes MarchRoutes=>routes;
         public static void Install(Transform root, ValoriaIntegratedWorld host, RegionOneBlenderLandscape landscape)
         {
             var service=root.gameObject.AddComponent<RegionOneResourcePlacement>();
@@ -32,6 +38,8 @@ namespace Eldoria.World4XCanon
                 var target=host.FindTarget(id);
                 if(target)initial[id]=target.transform.position;
             }
+            var layout=Resources.Load<TextAsset>("World4X/Blender/production-region");
+            if(layout)cities=JsonUtility.FromJson<RegionLayout>(layout.text).cities??Array.Empty<CityReserve>();
             var floor=landscape.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_Terrain");
             var query=new GameObject("Temporary exact resource surface validation");
             query.layer=2; query.transform.SetPositionAndRotation(floor.transform.position,floor.transform.rotation);
@@ -40,6 +48,16 @@ namespace Eldoria.World4XCanon
             Physics.SyncTransforms();
             try
             {
+                foreach(var city in cities)
+                {
+                    float low=float.MaxValue,high=float.MinValue;bool valid=true;
+                    for(int i=0;i<=16;i++){
+                        float a=i*Mathf.PI/8;float x=city.x+(i==16?0:Mathf.Cos(a)*city.radius),z=city.z+(i==16?0:Mathf.Sin(a)*city.radius);
+                        if(!collider.Raycast(new Ray(host.WorldHome+new Vector3(x,250,z),Vector3.down),out var hit,500)){valid=false;break;}
+                        low=Mathf.Min(low,hit.point.y);high=Mathf.Max(high,hit.point.y);
+                    }
+                    if(valid&&high-low<.5f)ValidatedCityCount++;
+                }
                 for(int z=-700;z<=800;z+=32)for(int x=-750;x<=600;x+=32)
                 {
                     bool safe=true;float low=float.MaxValue,high=float.MinValue;Vector3 centre=default;
@@ -57,7 +75,7 @@ namespace Eldoria.World4XCanon
                     sites.Add(new Site{Id="region1:"+x+":"+z,Point=centre,Wood=wood});
                 }
             }
-            finally {DestroyImmediate(query);}
+            finally {if(routes==null)routes=new RegionOneTerrainRoutes(host,collider);DestroyImmediate(query);}
         }
         public bool TryChoose(PlayerState snapshot,string targetId,string previousSiteId,int generation,out WorldResourceLocation location)
         {
@@ -71,6 +89,7 @@ namespace Eldoria.World4XCanon
                 var site=sites[(offset+generation*17)%sites.Count];
                 if(site.Wood!=wood||site.Id==previousSiteId||(initial.TryGetValue(targetId,out var original)&&Vector3.Distance(site.Point,original)<24))continue;
                 bool occupied=Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(host.WorldHome.x,host.WorldHome.z))<32;
+                foreach(var city in cities)if(Vector2.Distance(new Vector2(site.Point.x-host.WorldHome.x,site.Point.z-host.WorldHome.z),new Vector2(city.x,city.z))<city.radius+9)occupied=true;
                 foreach(var item in snapshot.WorldResourceLocations)
                     if(item.TargetId!=targetId&&item.Generation>0&&Vector3.Distance(site.Point,new Vector3(item.X,item.Y,item.Z))<20)occupied=true;
                 foreach(var hotspot in host.WorldRoot.GetComponentsInChildren<Eldoria.Presentation.WorldHotspot>(true))
@@ -100,6 +119,7 @@ namespace Eldoria.World4XCanon
                 bound=gateway;
                 if(bound.Snapshot().WorldId=="world-local")
                 {
+                    bound.ConfigureLocalMarchRoutes(routes);
                     bound.ConfigureLocalResourceRespawn(this,TimeSpan.FromMinutes(30));
                     if(Resources.Load<GameObject>("World4X/Blender/RegionOneResources"))bound.EnsureLocalRenewablePopulation(24,24);
                 }

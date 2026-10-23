@@ -86,8 +86,8 @@ namespace Eldoria.World4XCanon
    for(int i=0;i<current.Count;i++)if(current[i]){
     string id=current[i].name=="Reference existing quarry"?"quarry-valoria":current[i].name=="Reference existing wood grove"?"forest-valoria":null;
     bool available=id==null||(id=="forest-valoria"?state.ForestRemaining>0:state.QuarryRemaining>0);
-    if(id!=null&&resourceOrigins.TryGetValue(id,out var original)){var target=host.FindTarget(id);if(target)current[i].transform.position=target.transform.position-original;}
-    current[i].enabled=!before&&!far&&available&&(!gates[i]||gates[i].activeInHierarchy);
+    if(id!=null&&resourceOrigins.TryGetValue(id,out var original)){var target=host.FindTarget(id);if(target){var delta=target.transform.position-original;var saved=state.WorldResourceLocations.Find(x=>x.TargetId==id);if(saved!=null&&saved.Generation>0)delta.y=target.transform.position.y-GroundFoot(original).y;current[i].transform.position=delta;}}
+    current[i].enabled=!(id!=null&&Resources.Load<GameObject>("World4X/Blender/RegionOneResources"))&&!before&&!far&&available&&(!gates[i]||gates[i].activeInHierarchy);
    }
   }
   void LateUpdate(){Refresh();}

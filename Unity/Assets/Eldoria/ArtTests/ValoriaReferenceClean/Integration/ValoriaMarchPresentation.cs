@@ -45,11 +45,11 @@ namespace Eldoria.ReferenceClean {
    Vector3 a=origin.transform.position,b=target.transform.position;
    float fraction=phase=="gathering"?1:(float)ZoneOneGatewayHost.TravelFraction(host.City.Clock.UtcTicks,s.March.PhaseEndsUtcTicks,SliceRules.TravelSeconds);
    if(phase=="returning")fraction=1-fraction;
-   ObservedPosition=Vector3.Lerp(a,b,fraction)+Vector3.up*3;
+   ObservedPosition=RoutePosition(s.March,a,b,fraction)+Vector3.up*3;
    var canvas=layer.GetComponentInParent<Canvas>();var uiCamera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
    var points=new List<Vector2>();
    for(int i=0;i<=24;i++){
-    var world=Vector3.Lerp(a,b,i/24f)+Vector3.up*1.5f;var screen=host.WorldCamera.WorldToScreenPoint(world);
+    var world=RoutePosition(s.March,a,b,i/24f)+Vector3.up*1.5f;var screen=host.WorldCamera.WorldToScreenPoint(world);
     if(screen.z>0&&RectTransformUtility.ScreenPointToLocalPointInRectangle(layer,screen,uiCamera,out var local))points.Add(local);
    }
    route.SetPoints(points.ToArray());
@@ -59,6 +59,14 @@ namespace Eldoria.ReferenceClean {
    standard.localScale=Vector3.one*(phase=="gathering"?1+Mathf.Sin(Time.unscaledTime*4)*.05f:1);
    label.Put((host.English?"Aldric · ":"Aldric · ")+s.March.Troops.Total);
   }
+  static Vector3 RoutePosition(MarchState march,Vector3 from,Vector3 to,float t){
+   var route=march.Route;if(route==null||route.Count<2)return Vector3.Lerp(from,to,t); // pre-migration saved march only
+   float total=0;for(int i=1;i<route.Count;i++)total+=Vector3.Distance(Point(route[i-1]),Point(route[i]));
+   float remaining=Mathf.Clamp01(t)*total;
+   for(int i=1;i<route.Count;i++){var a=Point(route[i-1]);var b=Point(route[i]);float length=Vector3.Distance(a,b);if(remaining<=length)return Vector3.Lerp(a,b,length>0?remaining/length:0);remaining-=length;}
+   return Point(route[route.Count-1]);
+  }
+  static Vector3 Point(WorldRoutePoint p)=>new Vector3(p.X,p.Y,p.Z);
   void OnDestroy(){if(layer)Destroy(layer.gameObject);}
  }
  public sealed class ValoriaMarchRouteGraphic:MaskableGraphic {

@@ -25,8 +25,10 @@ namespace Eldoria.Domain
         public int Total => ArcherT1 + ArcherT2 + ArcherT3;
         public ArmyRoster Copy() => new ArmyRoster { ArcherT1 = ArcherT1, ArcherT2 = ArcherT2, ArcherT3 = ArcherT3 };
     }
+    [Serializable] public sealed class WorldRoutePoint { public float X,Y,Z; public WorldRoutePoint Copy()=>(WorldRoutePoint)MemberwiseClone(); }
     [Serializable] public sealed class MarchState
     {
+        public List<WorldRoutePoint> Route = new List<WorldRoutePoint>();
         public string MarchId = "march-main";
         public string OwnerId = "player-local";
         public string TargetId = "";
