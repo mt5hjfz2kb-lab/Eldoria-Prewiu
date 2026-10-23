@@ -49,6 +49,17 @@ for v in terrain.data.vertices[N:]:
  ridge_b=math.exp(-((x-55-9*math.sin((y-116)/26))/22)**2)*math.exp(-((y-133)/37)**4)
  dry_swale=math.exp(-((x-5-7*math.sin((y-116)/24))/17)**2)*math.exp(-((y-133)/31)**4)
  v.co.z+=fade*north*(5.9*ridge_a+6.8*ridge_b-3.3*dry_swale)
+# AD: camera-authored geomorphic relief in the ACTUALLY VISIBLE new-sector strip.
+# Region panorama and regional projected y=85..112; previous northern ridges were
+# mostly outside the picture. Fade to ZERO at y=78 to retain O exactly.
+for v in terrain.data.vertices[N:]:
+ x,y,z=v.co
+ u=max(0,min(1,(y-79)/12));blend=u*u*(3-2*u)
+ band=math.exp(-((y-97)/17)**4)
+ west_ridge=math.exp(-((x+17+5*math.sin((y-86)/12))/21)**2)
+ east_ridge=math.exp(-((x-37-4*math.sin((y-86)/15))/22)**2)
+ trough=math.exp(-((x-8)/11)**2)
+ v.co.z+=blend*band*(5.4*west_ridge+8.1*east_ridge-2.4*trough)
 terrain.data.update();bpy.context.view_layer.update()
 def ground(x,y):
  # Avoid numerical ray/triangle ambiguity exactly on the open mesh boundary.
@@ -114,6 +125,31 @@ for group,(cx,cy,rx,ry,quota) in enumerate([
   scale=float(rng.uniform(.86,1.15));o.scale=donor.scale*scale;o.rotation_euler.z=float(rng.uniform(-math.pi,math.pi))
   trees.append(o);new_trees.append(o);made+=1
  assert made>=min(quota-4,16),('Forest stand cannot be planted without crossing an authored road',group,made)
+# AD: plant from the actual native camera projection, where X/Y previously
+# showed disconnected forest on both sides of an empty central meadow.
+# The five Y lobes north of frame remain; the authored clear path is preserved.
+camera_band_added=0
+for group,(cx,cy,rx,ry,quota) in enumerate([
+ (-19,101,19,12,21),(27,99,21,12,25),(52,105,20,11,21)]):
+ made=0
+ for trial in range(2500):
+  if made>=quota:break
+  angle=float(rng.uniform(0,2*math.pi));radius=math.sqrt(float(rng.random()))
+  x=float(cx+rx*radius*math.cos(angle));y=float(cy+ry*radius*math.sin(angle))
+  if not(-88<x<88 and 85<y<116):continue
+  if any((x-o.location.x)**2+(y-o.location.y)**2<3.6**2 for o in trees):continue
+  ix=int((x+96)/192*(W-1));iy=int((y-78)/92*(H-1))
+  px=max(2,int(3.4/192*W));py=max(2,int(3.4/92*H))
+  if np.max(path[max(0,iy-py):min(H,iy+py+1),max(0,ix-px):min(W,ix+px+1)])>.11:continue
+  donor=trees[(group*17+made*11)%old_new_sector_count]
+  o=donor.copy();o.data=donor.data;coll.objects.link(o)
+  o.name='Pilot_Pine_AD_visible_'+str(group)+'_'+str(made)
+  o.location=(x,y,ground(x,y))
+  amount=float(rng.uniform(.8,1.22));o.scale=donor.scale*amount
+  o.rotation_euler.z=float(rng.uniform(-math.pi,math.pi))
+  trees.append(o);new_trees.append(o);made+=1
+ camera_band_added+=made
+ assert made>=10,('Cannot fill camera-projected forest gap without crossing approved routes',group,made)
 assert len(trees)+156<=1024,'Pilot atlas capacity; never silently drop authored trees'
 # Z: actual editable low understorey and meadow clumps bind the authored pine stands.
 # There are no colliders or navigation objects; O's former forest and river are untouched.
@@ -283,15 +319,30 @@ pix[:,:,:3]=pix[:,:,:3]*(1-lush[:,:,None])+np.array([.26,.36,.20])*lush[:,:,None
 roadwear=.73+.17*np.sin(X*.31+Y*.49)+.10*np.sin(Y*.64-X*.28)
 roadfill=np.clip(path*roadwear*seam,0,.9)
 pix[:,:,:3]=pix[:,:,:3]*(1-roadfill[:,:,None])+np.array([.48,.40,.26])*roadfill[:,:,None]
-for name,data,noncolor in [('AC slope and canopy painted pigment',pix,False),('AC editable slope glaze mask',paint,True),('AC editable connected litter mask',mask,True)]:
+# AD: readable topographic pigment exactly where the integrated Unity camera looks.
+# These two palette masses are physical-ridge aligned and leave the route legible.
+band_visible=np.exp(-((Y-97)/17)**4)*seam
+western=np.exp(-((X+17+5*np.sin((Y-86)/12))/28)**2)
+eastern=np.exp(-((X-37-4*np.sin((Y-86)/15))/30)**2)
+pale_earth=np.clip((western*.48+eastern*.65)*band_visible*(1-path)*(1-mask*.65),0,.67)
+pale_earth*=.88+.12*np.sin(X*.24+Y*.31)*np.sin(Y*.18-X*.22)
+pix[:,:,:3]=pix[:,:,:3]*(1-pale_earth[:,:,None])+np.array([.61,.56,.36])*pale_earth[:,:,None]
+glade=np.exp(-((X-7)/19)**2)*band_visible
+cool_grass=np.clip(glade*.33*(1-path)*(1-mask*.8),0,.35)
+pix[:,:,:3]=pix[:,:,:3]*(1-cool_grass[:,:,None])+np.array([.31,.43,.25])*cool_grass[:,:,None]
+# AC's dark route-core trial read as a muddy ribbon: rebalance to dusty,
+# sunlit earth without restoring the old mechanical uniform edge.
+route_light=np.clip(path*.48*seam,0,.48)
+pix[:,:,:3]=pix[:,:,:3]*(1-route_light[:,:,None])+np.array([.58,.50,.34])*route_light[:,:,None]
+for name,data,noncolor in [('AD camera-authored pigment',pix,False),('AD editable slope glaze mask',paint,True),('AD editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AC slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AD camera-authored pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='AC designed meadow-strata palette and worn routes, AB outcrops, same O'
+scene['finishing_stage']='AD true on-camera ridge and connected forest composition; O immutable'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -299,4 +350,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'AC','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AC macro landcover and weathered route core plus AB real outcrops and high-performance far canopy; no gameplay changes'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AD','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'camera_band_trees_added':camera_band_added,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AD corrects previously off-screen ridges and forest using native camera-projected X/Y; O vertices/156 pines and all gameplay unchanged'},indent=2))
