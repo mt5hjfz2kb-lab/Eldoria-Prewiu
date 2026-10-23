@@ -1,0 +1,24 @@
+{
+  "run": 39941757944,
+  "commit": "865ddaaa71ce5ff105ea71c0426d973849158556",
+  "artifact": 12496576481,
+  "zip_sha256": "adf6f43f22b370971151cc85cec23c7980e2603225e21003c93da961fc138405",
+  "native_exit": 0,
+  "tests": "18/18",
+  "art_approved": false,
+  "camera_pairs": {
+    "34": true,
+    "40": true,
+    "46": true,
+    "52": true
+  },
+  "files": {
+    "Eldoria_Ribera_Pilot.blend": "259932e1ac071417ba579edde228890c74ee97d0e0d6c3fee92ace894df113a4",
+    "RiberaPilot.glb": "3e764b4b17d20f6f050bdb429f8c1f477c24733fbb1abdfc605301f127112d82",
+    "meadow.png": "d329cd08221cbdeff9e81eb1700b3dbd32df761bd07738618545b4da405059d3",
+    "ribera-34-unity.png": "52424ed855b7539f37ee01203e8aa2ff6b8aae9c3646b731dc3094fe21fedb45",
+    "ribera-46-unity.png": "c033f40d750b2088611b436b3d4420ac0f9a957de595afc7c50ec062ec180f6d",
+    "ribera-40-unity.png": "3181fe842139172ae3fe8c49efc549e07acc0242453c6f56cc4c31f7c52743e5",
+    "ribera-52-unity.png": "e20c4b560b09ddefa588d39437ee07f66fbd0a2e65431acbe3846fa80052cd54"
+  }
+}
