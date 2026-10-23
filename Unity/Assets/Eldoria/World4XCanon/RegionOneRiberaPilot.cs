@@ -46,6 +46,7 @@ namespace Eldoria.World4XCanon
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
      foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=true;renderer.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
      camera.orthographicSize=size;
+     FadeEcologicalUnderstory(root,size);
      foreach(bool before in new[]{true,false}) {
      root.SetActive(!before);foreach(var r in prior)if(r)r.enabled=before;
      var rt=new RenderTexture(1280,960,24);var tex=new Texture2D(1280,960,TextureFormat.RGB24,false);
@@ -66,7 +67,7 @@ namespace Eldoria.World4XCanon
      float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
      foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=true;renderer.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
-     camera.orthographicSize=size;camera.aspect=4f/3;camera.targetTexture=seqRT;camera.Render();RenderTexture.active=seqRT;seqTex.ReadPixels(new Rect(0,0,960,720),0,0);seqTex.Apply();
+     camera.orthographicSize=size;camera.aspect=4f/3;FadeEcologicalUnderstory(root,size);camera.targetTexture=seqRT;camera.Render();RenderTexture.active=seqRT;seqTex.ReadPixels(new Rect(0,0,960,720),0,0);seqTex.Apply();
      File.WriteAllBytes(Path.Combine(sequence,"frame-"+frame.ToString("D3")+".png"),seqTex.EncodeToPNG());
      File.WriteAllText(Path.Combine(sequence,"frame-"+frame.ToString("D3")+".json"),JsonUtility.ToJson(new Evidence{zoom=size,position=camera.transform.position,rotation=camera.transform.rotation,unity=UnityEngine.Application.unityVersion,playMode=UnityEngine.Application.isPlaying,trees=treeCount},true));
     }}finally{camera.targetTexture=oldRT;RenderTexture.active=oldActive;seqRT.Release();UnityEngine.Object.DestroyImmediate(seqRT);UnityEngine.Object.DestroyImmediate(seqTex);}
@@ -204,6 +205,7 @@ namespace Eldoria.World4XCanon
      groundedVisualMarkers.Add(new GroundedMarkerProbe{id=spec.id,sourceRenderer=donor.name,originalVisualFootY=sourceFoot.y,authoredGroundY=probe.authoredSurface.y,groundedVisualFootY=measuredFoot,visualCorrectionMeters=delta,contactErrorMeters=error});
     }
    }
+   if(groundedVisualMarkers.Count!=5)throw new InvalidOperationException("Expected five contact-verified visual node instances; found "+groundedVisualMarkers.Count);
    var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false,groundedVisualMarkers=groundedVisualMarkers.ToArray(),groundedVisualMarkerCount=groundedVisualMarkers.Count};
    stats.maxHeightDifference=probes.Count>0?probes.Max(p=>Mathf.Abs(p.heightDifference)):0;
    // Collider bounds.min.y is only a provisional contact proxy. Mesh-contact certification remains pending.
@@ -226,15 +228,20 @@ namespace Eldoria.World4XCanon
     }
    }
    stats.selectionProbes=pickResults.ToArray();
+   if(pickResults.Count<20||pickResults.Any(p=>p.inViewport&&!p.matched))throw new InvalidOperationException("Ground-aware gameplay target picking regressed");
    var meshes=root.GetComponentsInChildren<MeshFilter>();stats.meshInstances=meshes.Length;stats.rendererCount=root.GetComponentsInChildren<Renderer>().Length;
    stats.submittedMeshTriangles=meshes.Sum(m=>m.sharedMesh.triangles.Length/3);stats.editorAllocatedBytes=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong();
    var oldRT=camera.targetTexture;var oldActive=RenderTexture.active;
+   var lodReadings=new System.Collections.Generic.List<SectorLodSample>();
    try {
     foreach(bool portrait in new[]{false,true}) {
      string orientation=portrait?"portrait":"landscape";int width=portrait?720:1280,height=portrait?1280:720;
      for(int level=0;level<3;level++) {
       float size=portrait?new[]{32f,52f,74f}[level]:new[]{24f,38f,52f}[level];
       Vector3 target=home+new Vector3(Mathf.Lerp(20,0,level/2f),2,Mathf.Lerp(95,50,level/2f));SetSectorCamera(camera,root,hybrid,target,size,width/(float)height);
+      var rendered=root.GetComponentsInChildren<MeshRenderer>().Where(r=>r.enabled).ToArray();
+      lodReadings.Add(new SectorLodSample{orientation=orientation,scale=new[]{"close","regional","panorama"}[level],zoom=size,
+        visibleRenderers=rendered.Length,visibleTriangles=rendered.Sum(r=>{var f=r.GetComponent<MeshFilter>();return f&&f.sharedMesh?f.sharedMesh.triangles.Length/3:0;})});
       SaveSectorFrame(camera,Path.Combine(dir,orientation+"-"+new[]{"close","regional","panorama"}[level]),width,height);
      }
      // Continuous zoom and pan from the new forest edge towards the connected sector, same authored geography.
@@ -248,11 +255,22 @@ namespace Eldoria.World4XCanon
    } finally {camera.targetTexture=oldRT;RenderTexture.active=oldActive;}
    for(int i=0;i<originalColliders.Length;i++)if(!originalColliders[i]||originalColliders[i].transform.position!=positions[i])throw new InvalidOperationException("Sector capture moved or removed a logical collider");
    stats.logicalPositionsUnchanged=true;
+   stats.lodSamples=lodReadings.ToArray();
    File.WriteAllText(Path.Combine(dir,"integration-and-cost.json"),JsonUtility.ToJson(stats,true));
+  }
+  static void FadeEcologicalUnderstory(GameObject root,float size)
+  {
+   float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(42,57,size));
+   foreach(var r in root.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.name.StartsWith("Z retained-sector woodland understory",StringComparison.Ordinal))) {
+    r.enabled=fade<.999f;
+    r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+    var properties=new MaterialPropertyBlock();r.GetPropertyBlock(properties);properties.SetFloat("_Fade",fade);r.SetPropertyBlock(properties);
+   }
   }
   static void SetSectorCamera(Camera camera,GameObject root,Material[] hybrid,Vector3 target,float size,float aspect)
   {
    camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=size;camera.aspect=aspect;
+   FadeEcologicalUnderstory(root,size);
    float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));foreach(var m in hybrid)m.SetFloat("_Fade",fade);
    foreach(var r in root.GetComponentsInChildren<MeshRenderer>())if(r.name=="Pilot_NearBatch"){r.enabled=true;r.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(r.name=="Pilot_FarBatch")r.enabled=fade>0;
   }
@@ -267,7 +285,8 @@ namespace Eldoria.World4XCanon
   [Serializable] class PickProbe {public string expectedId,selectedId;public bool portrait,aimAtAuthoredGround,inViewport,matched;}
   [Serializable] class GroundedMarkerProbe {public string id,sourceRenderer;public float originalVisualFootY,authoredGroundY,groundedVisualFootY,visualCorrectionMeters,contactErrorMeters;}
   [Serializable] class HeightProbe {public string name,hotspotId;public Vector3 logicalPosition,authoredSurface,boundsMin,boundsMax;public float heightDifference;}
-  [Serializable] class SectorStats {public HeightProbe[] heightProbes;public GroundedMarkerProbe[] groundedVisualMarkers;public int groundedVisualMarkerCount;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public PickProbe[] selectionProbes;public bool heightDeltaIsGroundingVerdict,logicalPositionsUnchanged,physicalMobileTested;}
+  [Serializable] class SectorLodSample {public string orientation,scale;public float zoom;public int visibleRenderers,visibleTriangles;}
+  [Serializable] class SectorStats {public SectorLodSample[] lodSamples;public HeightProbe[] heightProbes;public GroundedMarkerProbe[] groundedVisualMarkers;public int groundedVisualMarkerCount;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public PickProbe[] selectionProbes;public bool heightDeltaIsGroundingVerdict,logicalPositionsUnchanged,physicalMobileTested;}
 
   [Serializable] class Evidence {public float zoom;public Vector3 position;public Quaternion rotation;public string unity;public bool playMode;public int trees;}
  }

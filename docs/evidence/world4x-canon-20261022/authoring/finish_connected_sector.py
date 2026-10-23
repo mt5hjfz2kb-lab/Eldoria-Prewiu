@@ -38,6 +38,17 @@ for v in terrain.data.vertices[N:]:
  hollow=math.exp(-((x-5)/13)**2)*math.exp(-((y-118)/24)**2)
  eastern_toe=math.exp(-((x-65)/22)**2)*math.exp(-((y-111)/32)**4)
  v.co.z+=fade*north*(8.8*spine+5.8*west+3.9*eastern_toe-2.6*hollow)
+# AA: two diagonal authored shoulders and a carved dry swale. These are actual mesh
+# heights, taper to zero at O's seam and at the extension's northern outside edge.
+# The central playable datum and all inherited O vertices remain unchanged.
+for v in terrain.data.vertices[N:]:
+ x,y,z=v.co
+ u=max(0,min(1,(y-87)/18));fade=u*u*(3-2*u)
+ north=max(0,min(1,(168-y)/15))
+ ridge_a=math.exp(-((x+35+7*math.sin((y-119)/27))/18)**2)*math.exp(-((y-126)/38)**4)
+ ridge_b=math.exp(-((x-55-9*math.sin((y-116)/26))/22)**2)*math.exp(-((y-133)/37)**4)
+ dry_swale=math.exp(-((x-5-7*math.sin((y-116)/24))/17)**2)*math.exp(-((y-133)/31)**4)
+ v.co.z+=fade*north*(5.9*ridge_a+6.8*ridge_b-3.3*dry_swale)
 terrain.data.update();bpy.context.view_layer.update()
 def ground(x,y):
  # Avoid numerical ray/triangle ambiguity exactly on the open mesh boundary.
@@ -201,15 +212,33 @@ strata=.76+.24*np.sin(X*.31+Y*.17+np.sin(Y*.09))*np.sin(Y*.29-X*.11)
 ridge*=strata
 pix[:,:,:3]=pix[:,:,:3]*(1-ridge[:,:,None])+np.array([.56,.50,.30])*ridge[:,:,None]
 pix[:,:,:3]=pix[:,:,:3]*(1-valley[:,:,None])+np.array([.32,.40,.22])*valley[:,:,None]
-for name,data,noncolor in [('Z slope and canopy painted pigment',pix,False),('Z editable slope glaze mask',paint,True),('Z editable connected litter mask',mask,True)]:
+# AA: landscape-scale weathering follows the sculpted ridge axes and lower hollows.
+# Avoid repeated circular stamps and keep trails, grassy glades and O seam readable.
+warp=3.0*np.sin(Y*.085)+1.9*np.sin(X*.13+Y*.061)
+shoulder1=np.exp(-((X+35+7*np.sin((Y-119)/27)+warp)/25)**2)*np.exp(-((Y-126)/46)**4)
+shoulder2=np.exp(-((X-55-9*np.sin((Y-116)/26)+warp)/29)**2)*np.exp(-((Y-133)/40)**4)
+damp=np.exp(-((X-5-7*np.sin((Y-116)/24))/22)**2)*np.exp(-((Y-133)/35)**4)
+rock_band=np.clip((shoulder1*.68+shoulder2*.66)*seam*(1-path)*(1-mask*.7),0,.83)
+rock_variation=.76+.24*(.5+.5*np.sin(X*.23+Y*.31)*np.cos(Y*.27-X*.17))
+rock_band*=rock_variation
+pix[:,:,:3]=pix[:,:,:3]*(1-rock_band[:,:,None])+np.array([.62,.55,.36])*rock_band[:,:,None]
+cool_valley=np.clip(damp*.52*seam*(1-path)*(1-mask*.6),0,.55)
+pix[:,:,:3]=pix[:,:,:3]*(1-cool_valley[:,:,None])+np.array([.30,.39,.24])*cool_valley[:,:,None]
+# Uneven external path shoulders instead of the perfectly clean sand ribbon.
+shift=5
+road_outer=np.maximum.reduce((path,np.roll(path,shift,0),np.roll(path,-shift,0),np.roll(path,shift,1),np.roll(path,-shift,1)))
+broken=.58+.23*np.sin(X*.36+Y*.77)+.19*np.sin(Y*.51-X*.49)
+weather=np.clip((road_outer-path)*broken*seam*(1-mask*.6),0,.50)
+pix[:,:,:3]=pix[:,:,:3]*(1-weather[:,:,None])+np.array([.49,.43,.29])*weather[:,:,None]
+for name,data,noncolor in [('AA slope and canopy painted pigment',pix,False),('AA editable slope glaze mask',paint,True),('AA editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['Z slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AA slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='Z authored physical forest understory and eroded route margins over Y'
+scene['finishing_stage']='AA connected faceted shoulders and path-edge weathering over Z retained forest'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -217,4 +246,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'Z','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; W/X relief, Y five woodland stands and Z low shrub understory with road-edge weathering; O 16405 vertices and 156 trees unchanged'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AA','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AA physical ridges, weathered path shoulders and landcover; preserve O/K/I/Z and gameplay untouched'},indent=2))
