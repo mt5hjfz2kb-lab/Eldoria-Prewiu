@@ -57,6 +57,7 @@ namespace Eldoria.World4XCanon
      }
     }
     CaptureSector(camera,root,world,home,hybrid,output,prior);
+    RegionOneSectorCapacity.Capture(camera,root,world,home,output);
     if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone"))) {
     // Sample a continuous camera trajectory, not a slideshow of the four QA stills.
     root.SetActive(true);foreach(var r in prior)if(r)r.enabled=false;
