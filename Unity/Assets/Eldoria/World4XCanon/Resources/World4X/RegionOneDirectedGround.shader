@@ -44,12 +44,21 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     half lambert=saturate(dot(normalize(i.n),sun.direction));
     half light=.60h+.48h*lambert;
     land*=light;
+    // Geological material is tied to the actual sculpted surface normal, not scattered prefab rocks.
+    half slope=smoothstep(.025h,.14h,1-saturate(normalize(i.n).y));
+    half strata=.82h+.18h*noise21(i.p*float2(.13,.29));
+    land=lerp(land,sand*light*strata,slope*.90h);
+    // Fine grass and stony interruptions remain subordinate to the large fields.
+    half fleck=smoothstep(.75h,.88h,noise21(i.p*.8));
+    land=lerp(land,sand*light,fleck*(.08h+.12h*_Near));
     half bank=smoothstep(.01h,.16h,m.g)*(1-smoothstep(.30h,.72h,m.g));
     land=lerp(land,sand*light,bank*.80h);
     half3 freshWater=lerp(shallow,river,smoothstep(.4h,.96h,m.g));
     freshWater*=.94h+.10h*noise21(i.p*float2(.08,.21));
     land=lerp(land,freshWater,smoothstep(.25h,.80h,m.g));
-    land=lerp(land,half3(.30,.34,.27)*light,_Blockout);
+    half3 blocked=lerp(half3(.30,.34,.27),half3(.09,.18,.10),m.a);
+    blocked=lerp(blocked,half3(.09,.25,.35),smoothstep(.25h,.80h,m.g));
+    land=lerp(land,blocked*light,_Blockout);
     half3 coast=lerp(sand*.73h,sand,light);
     half landWeight=smoothstep(.40h,.49h,m.r);
     half3 water=lerp(sea,shallow,smoothstep(.38h,.49h,m.r));

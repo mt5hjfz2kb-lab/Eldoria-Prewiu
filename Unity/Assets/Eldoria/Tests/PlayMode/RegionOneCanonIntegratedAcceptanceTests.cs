@@ -80,6 +80,14 @@ namespace Eldoria.Tests
             Assert.That(retainedTreeSources.Count(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)),Is.EqualTo(98));
             Assert.That(retainedTreeSources.SelectMany(r=>r.GetComponentsInChildren<LODGroup>(true))
                 .Any(lod=>lod.enabled),Is.False,"Replaced source LODs must not revive legacy foliage during culling.");
+            foreach(int level in new[]{2,1,0,2})
+            {
+                Call(navigation,"SetZoomLevel",level,true);
+                var activeAdapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).First(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+                Call(activeAdapter,"RefreshForCapture");
+                Assert.That(retainedTreeSources.SelectMany(r=>r.GetComponentsInChildren<Renderer>(true)).All(r=>!r.enabled),Is.True,
+                    "Neither donor nor child LOD renderer may reappear beside clean woodland at any zoom.");
+            }
             Assert.That(retainedCanopy.sharedMesh.vertexCount,Is.EqualTo(retainedTreeSources.Length*4),
                 "Replace each measured retained tree once, including both existing edge groups.");
             Assert.That(geo.GetComponentsInChildren<Collider>(true), Is.Empty,

@@ -97,12 +97,12 @@ namespace Eldoria.World4XCanon
     bool oldGround=(n.Contains("continuous prairie")||n.Contains("organic macrogeography")||(n.Contains("ground")&&n.Contains("zoneone")))&&r.bounds.size.x>100&&r.bounds.size.z>100;
     bool oldScenery=RegionOneDirectedGeography.IsTreeDonor(r);
     for(var p=r.transform;p&&p!=existingWorld;p=p.parent)
-     oldScenery|=p.name.StartsWith("Existing Holotna mountain",StringComparison.Ordinal)||p.name=="Enemy camp provisional existing canvas"||p.name=="Enemy camp existing shelter";
+     oldScenery|=RegionOneDirectedGeography.IsTreeName(p.name)||p.name.StartsWith("Existing Holotna mountain",StringComparison.Ordinal)||p.name=="Enemy camp provisional existing canvas"||p.name=="Enemy camp existing shelter";
     if(oldGround||oldScenery)background.Add(r);
    }
-   foreach(var r in background)
-    foreach(var lod in r.GetComponentsInChildren<LODGroup>(true))
-     if(!lods.Contains(lod)){lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}
+   foreach(var lod in existingWorld.GetComponentsInChildren<LODGroup>(true))
+    if(lod.GetComponentsInChildren<Renderer>(true).Any(background.Contains))
+    {lods.Add(lod);lodStates.Add(lod.enabled);lod.enabled=false;}
    var root=new GameObject("Region 1 canonical continuous geography").transform;root.SetParent(existingWorld,true);
    geography=RegionOneDirectedGeography.Install(root,host);
    nodes=RegionOneReferenceNodes.Install(root,host);

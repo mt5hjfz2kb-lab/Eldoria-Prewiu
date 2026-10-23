@@ -57,9 +57,11 @@ namespace Eldoria.World4XCanon
   public static float Shore(float x,float z)
   {var p=new Vector2(x,z);float dist=10000;bool inside=false;for(int i=0,j=Coast.Length-1;i<Coast.Length;j=i++){var a=Coast[j];var b=Coast[i];dist=Mathf.Min(dist,Segment(p,a,b));if((a.y>z)!=(b.y>z)&&x<(b.x-a.x)*(z-a.y)/(b.y-a.y)+a.x)inside=!inside;}return inside?dist:-dist;}
   static float ChannelEdge(float x,float z)
-  {var p=new Vector2(x,z);float edge=12;for(int k=0;k<Channels.Length;k++){var line=Channels[k];for(int i=1;i<line.Length;i++){var a=line[i-1];var b=line[i];if(x<Mathf.Min(a.x,b.x)-14||x>Mathf.Max(a.x,b.x)+14||z<Mathf.Min(a.y,b.y)-14||z>Mathf.Max(a.y,b.y)+14)continue;float t=i/(float)(line.Length-1);float width=k==0?Mathf.Lerp(1.1f,3.8f,t):Mathf.Lerp(.35f,k==7?3.5f:2.2f,Mathf.Sqrt(t));edge=Mathf.Min(edge,Segment(p,a,b)-width);}}
-   float lakeA=(Mathf.Sqrt(Mathf.Pow((x+49)/24,2)+Mathf.Pow((z-232)/18,2))-1)*18;
-   float lakeB=(Mathf.Sqrt(Mathf.Pow((x-67)/29,2)+Mathf.Pow((z+239)/22,2))-1)*22;
+  {var p=new Vector2(x,z);float edge=12;for(int k=0;k<Channels.Length;k++){var line=Channels[k];for(int i=1;i<line.Length;i++){var a=line[i-1];var b=line[i];if(x<Mathf.Min(a.x,b.x)-14||x>Mathf.Max(a.x,b.x)+14||z<Mathf.Min(a.y,b.y)-14||z>Mathf.Max(a.y,b.y)+14)continue;float t=i/(float)(line.Length-1);float width=k==0?Mathf.Lerp(.65f,2.1f,t):Mathf.Lerp(.20f,k==7?2f:1.35f,Mathf.Sqrt(t));edge=Mathf.Min(edge,Segment(p,a,b)-width);}}
+   float angleA=Mathf.Atan2((z-232)/18,(x+49)/24);
+   float lakeA=(Mathf.Sqrt(Mathf.Pow((x+49)/24,2)+Mathf.Pow((z-232)/18,2))-(1+.14f*Mathf.Sin(angleA*5)+.08f*Mathf.Cos(angleA*8)))*18;
+   float angleB=Mathf.Atan2((z+239)/22,(x-67)/29);
+   float lakeB=(Mathf.Sqrt(Mathf.Pow((x-67)/29,2)+Mathf.Pow((z+239)/22,2))-(1+.16f*Mathf.Sin(angleB*4)+.07f*Mathf.Cos(angleB*7)))*22;
    return Mathf.Min(edge,Mathf.Min(lakeA,lakeB));}
   public static float Water(float x,float z)=>1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(-.6f,1.3f,ChannelEdge(x,z)));
   public static float RoadDistance(float x,float z)
@@ -73,6 +75,7 @@ namespace Eldoria.World4XCanon
    float h=-4;foreach(var p in Hills){float r=Mathf.Pow((x-p.x)/p.z,2)+Mathf.Pow((z-p.y)/(p.z*.7f),2);h+=p.w*Mathf.Exp(-r*2.3f);}
    // Keep all original central interactions on their established datum.
    float guard=Mathf.SmoothStep(0,1,Mathf.InverseLerp(130,185,new Vector2(x,z).magnitude));h=Mathf.Lerp(-4,h,guard);
+   h-=1.8f*(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(-2,9,ChannelEdge(x,z))));
    return Mathf.Lerp(-18,h,Mathf.SmoothStep(0,1,Mathf.InverseLerp(-3,2,shore)));
   }
   static Texture2D mask;
@@ -106,7 +109,8 @@ namespace Eldoria.World4XCanon
    var mesh=new Mesh{name=name,indexFormat=v.Length>65535?IndexFormat.UInt32:IndexFormat.UInt16};mesh.vertices=v;mesh.uv=uv;if(offsets!=null)mesh.uv2=offsets;mesh.triangles=t;mesh.RecalculateNormals();mesh.RecalculateBounds();if(offsets!=null){var b=mesh.bounds;b.Expand(40);mesh.bounds=b;}meshes.Add(mesh);
    var go=new GameObject(name);go.transform.SetParent(parent?parent:transform,true);go.AddComponent<MeshFilter>().sharedMesh=mesh;var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=mat;r.shadowCastingMode=ShadowCastingMode.Off;r.receiveShadows=false;return r;
   }
-  public static bool IsTreeDonor(Renderer r)=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)||r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal)||r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal)||r.name.StartsWith("Existing conifer canopy / forest ecological lobe ",StringComparison.Ordinal)||r.name=="Forest understory / young conifer";
+  public static bool IsTreeDonor(Renderer r)=>IsTreeName(r.name);
+  public static bool IsTreeName(string name)=>name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)||name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal)||name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal)||name.StartsWith("Existing conifer canopy / forest ecological lobe ",StringComparison.Ordinal)||name=="Forest understory / young conifer";
   static void Tree(List<Vector3> v,List<Vector2> uv,List<Vector2> offsets,List<int> t,Vector3 p,float h,float w,int species)
   {int n=v.Count;for(int k=0;k<4;k++){bool right=k==1||k==2,top=k>=2;v.Add(p);uv.Add(new Vector2((species+(right?.995f:.005f))/3,top?1:0));offsets.Add(new Vector2((right?.5f:-.5f)*w,top?h:-h*.04f));}t.AddRange(new[]{n,n+1,n+2,n,n+2,n+3});}
   void BuildForests()
@@ -128,11 +132,38 @@ namespace Eldoria.World4XCanon
   }
   void BuildBreach()
   {
+   // Author a branching geological fault, not a zoom-scaled slab of purple rock.
    var parent=new GameObject("Region1 · grounded geologic Breach (not a portal)").transform;parent.SetParent(transform,true);
-   scarMaterial=new Material(Shader.Find("Sprites/Default")){name="Clean single anchored Breach"};scarMaterial.mainTexture=Resources.Load<Texture2D>("World4X/RegionOneBreachDecal");scarMaterial.renderQueue=3001;
-   const int n=24;const float width=160;var v=new Vector3[(n+1)*(n+1)];var uv=new Vector2[v.Length];var colors=new Color[v.Length];var t=new int[n*n*6];
-   for(int z=0;z<=n;z++)for(int x=0;x<=n;x++){int i=z*(n+1)+x;float u=x/(float)n,w=z/(float)n;float wx=8+(u-.505458f)*width,wz=61+(w-.439022f)*width;v[i]=new Vector3(wx-8,Height(wx,wz)+.12f,wz-61);uv[i]=new Vector2(u,w);colors[i]=new Color(1,1,1,Mathf.SmoothStep(0,1,Mathf.InverseLerp(32,48,new Vector2(wx,wz).magnitude))*(1-Water(wx,wz)));if(x==n||z==n)continue;int j=(z*n+x)*6;t[j]=i;t[j+1]=i+n+1;t[j+2]=i+1;t[j+3]=i+1;t[j+4]=i+n+1;t[j+5]=i+n+2;}
-   scar=Create("Region1 · authored Breach pigment at actual world anchor",v,uv,null,t,scarMaterial,parent);scar.transform.position=new Vector3(origin.x+8,origin.y,origin.z+61);scar.GetComponent<MeshFilter>().sharedMesh.colors=colors;
+   scarMaterial=new Material(Shader.Find("Sprites/Default")){name="Clean grounded branching fault"};scarMaterial.mainTexture=Texture2D.whiteTexture;scarMaterial.renderQueue=3001;
+   var v=new List<Vector3>();var uv=new List<Vector2>();var colors=new List<Color>();var indices=new List<int>();
+   var faults=new[]{
+    Line(0,0,-7,12,-3,23,-11,32,-8,43,-17,55,-14,71),
+    Line(0,0,10,8,14,18,27,23,30,34,45,41,49,53),
+    Line(0,0,15,-5,25,-2,37,-13,49,-12,60,-25,75,-23),
+    Line(0,0,-13,3,-20,-6,-32,-4,-42,-15,-54,-12,-69,-20),
+    Line(0,0,4,-13,-3,-23,5,-34,1,-44,10,-58),
+    Line(-11,32,-25,35,-33,46,-47,43,-59,53),
+    Line(27,23,39,17,51,23,64,18,76,27),
+    Line(-32,-4,-35,9,-48,15,-52,29),
+    Line(37,-13,37,-27,49,-35,46,-46),
+    Line(-3,23,8,34,5,47,16,58),
+    Line(-20,-6,-24,-19,-35,-25,-32,-38)
+   };
+   for(int layer=0;layer<3;layer++)foreach(var path in faults)
+    for(int i=1;i<path.Length;i++)
+    {
+     var a=path[i-1];var b=path[i];var tangent=(b-a).normalized;var side=new Vector2(-tangent.y,tangent.x);
+     float taper=Mathf.Lerp(1,.18f,Mathf.Clamp01(b.magnitude/85));
+     float width=(layer==0?2.5f:layer==1?.90f:.24f)*taper;
+     Color tint=layer==0?new Color(.24f,.16f,.23f,.32f):layer==1?new Color(.19f,.055f,.25f,.95f):new Color(.79f,.24f,.87f,.9f);
+     int n=v.Count;foreach(var q in new[]{a-side*width,a+side*width,b-side*width,b+side*width})
+     {float x=8+q.x,z=61+q.y;float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(34,49,new Vector2(x,z).magnitude));v.Add(new Vector3(q.x,Height(x,z)+.10f+layer*.025f,q.y));uv.Add(Vector2.zero);colors.Add(new Color(tint.r,tint.g,tint.b,tint.a*fade*(1-Water(x,z))));}
+     indices.AddRange(new[]{n,n+1,n+2,n+1,n+3,n+2});
+    }
+   // Small luminous heart with fading perimeter, always flush with the ground.
+   int heart=v.Count;v.Add(new Vector3(0,Height(8,61)+.19f,0));uv.Add(Vector2.zero);colors.Add(new Color(.96f,.45f,1,1));
+   for(int i=0;i<=24;i++){float angle=i*Mathf.PI/12,r=5.5f+.7f*Mathf.Sin(i*4.7f);float x=Mathf.Cos(angle)*r,z=Mathf.Sin(angle)*r;v.Add(new Vector3(x,Height(8+x,61+z)+.18f,z));uv.Add(Vector2.zero);colors.Add(new Color(.59f,.06f,.75f,0));if(i>0)indices.AddRange(new[]{heart,heart+i+1,heart+i});}
+   scar=Create("Region1 · authored Breach pigment at actual world anchor",v.ToArray(),uv.ToArray(),null,indices.ToArray(),scarMaterial,parent);scar.transform.position=new Vector3(origin.x+8,origin.y,origin.z+61);scar.GetComponent<MeshFilter>().sharedMesh.colors=colors.ToArray();
   }
   public void SetBlockout(bool value){blockout=value;Refresh();}
   public void Refresh(){if(!ground||!host||!host.WorldCamera)return;float zoom=host.WorldCamera.orthographicSize;ground.SetFloat("_Panorama",Mathf.SmoothStep(0,1,Mathf.InverseLerp(152,220,zoom)));ground.SetFloat("_Near",1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(80,152,zoom)));ground.SetFloat("_Blockout",blockout?1:0);foreach(var r in foliage)r.enabled=!blockout;if(scar)scar.enabled=true;}

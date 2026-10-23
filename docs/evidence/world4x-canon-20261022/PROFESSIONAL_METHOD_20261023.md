@@ -60,3 +60,11 @@ Decisiones previas a la nueva captura:
 - Se mantienen selección, colliders, progreso, guardados, UI y escena. Las pruebas estructurales pasan a exigir ausencia de la vieja malla y Brecha única, además de conservar todos los controles funcionales. Se amplía el filtro nativo con las suites existentes de interfaz, gestión y aceptación V3.
 
 Estado: nueva implementación pendiente de ejecución y revisión visual. No ART_APPROVED; no resultado 9/10, ni perfil físico móvil, ni autorización de merge/publicación.
+
+### Primera ejecución de la base limpia: b104df0
+
+Run [39916484244](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39916484244), artefacto 12485161721, ZIP SHA256 `361d4c5d61a808bcad5710adadac697e90ad268bf22bdf6f715ddc60039930ca`: 16/16 PlayMode, fuente Unity y Blender completados. Descarga y CRC verificados; seis cámaras idénticas a 745f252c. Inspección de PNG real, no solo logs.
+
+Rechazo como acabado: hijos de algunos árboles importados reaparecen por la política general de visibilidad; los cauces siguen excesivamente gruesos, lagos demasiado circulares, relieve apenas legible. La Brecha de roca pintada, al conservar tamaño físico entre zooms, invade la cercana. La base única sí funciona, pero todavía no demuestra fidelidad artística suficiente.
+
+Siguiente decisión sobre esta misma base limpia: clasificar también descendientes y suspender únicamente sus LODs; probar ausencia de cada renderer hijo en los tres zooms. Tallar depresiones de ribera en el campo de altura compartido, reducir ancho fluvial, romper el contorno lacustre y vincular roca a pendientes reales. Sustituir el antiguo decal pétreo por una fractura ramificada autoral de geometría superficial: trazos oscuros, interior violeta fino y corazón luminoso pequeño, todo en una sola malla con cota y ancla constantes. Es una sustitución de representación, no otra Brecha superpuesta ni un cambio de nodos jugables.
