@@ -104,6 +104,44 @@ for group,(cx,cy,rx,ry,quota) in enumerate([
   trees.append(o);new_trees.append(o);made+=1
  assert made>=min(quota-4,16),('Forest stand cannot be planted without crossing an authored road',group,made)
 assert len(trees)+156<=1024,'Pilot atlas capacity; never silently drop authored trees'
+# Z: actual editable low understorey and meadow clumps bind the authored pine stands.
+# There are no colliders or navigation objects; O's former forest and river are untouched.
+tuft_verts=[];tuft_faces=[];tuft_mat=[];shrub_count=0
+rng_floor=np.random.default_rng(20261024)
+for o in trees:
+ cx,cy=o.location.xy
+ if cy<92:continue
+ for k in range(5):
+  a=float(rng_floor.uniform(0,2*math.pi));r=float(rng_floor.uniform(1.1,5.4))
+  tx=float(cx+r*math.cos(a));ty=float(cy+r*math.sin(a))
+  if not(-92<tx<92 and 90<ty<166):continue
+  ix=int((tx+96)/192*(W-1));iy=int((ty-78)/92*(H-1))
+  if path[iy,ix]>.07:continue
+  base=ground(tx,ty);height=float(rng_floor.uniform(.55,1.55));radius=float(rng_floor.uniform(.65,1.6))
+  first=len(tuft_verts)
+  # Six-sided irregular leaf mound: broad at the ground, tapered and faceted at crest.
+  skew=float(rng_floor.uniform(-1.0,1.0))
+  for q in range(6):
+   ang=2*math.pi*q/6+skew
+   rim=radius*(.79+.20*math.sin(q*2+tx))
+   xx=tx+rim*math.cos(ang);yy=ty+rim*math.sin(ang)
+   tuft_verts.append((xx,yy,ground(xx,yy)+.04))
+  tuft_verts.append((tx+.2*math.sin(skew),ty+.2*math.cos(skew),base+height))
+  for q in range(6):tuft_faces.append((first+q,first+(q+1)%6,first+6));tuft_mat.append(shrub_count%3)
+  shrub_count+=1
+assert shrub_count>350,('Missing ecological woodland mass',shrub_count)
+under=bpy.data.meshes.new('Z authored linked woodland understory mesh')
+under.from_pydata(tuft_verts,[],tuft_faces);under.update()
+for shade in [(0.14,.23,.09),(0.18,.29,.11),(0.23,.34,.14)]:
+ mat0=bpy.data.materials.new('Z woodland understory '+str(len(under.materials)))
+ mat0.use_nodes=True
+ bs0=next(node for node in mat0.node_tree.nodes if node.type=='BSDF_PRINCIPLED')
+ bs0.inputs['Base Color'].default_value=(*shade,1)
+ bs0.inputs['Roughness'].default_value=.93
+ under.materials.append(mat0)
+for q,material_index in enumerate(tuft_mat):under.polygons[q].material_index=material_index
+undergo=bpy.data.objects.new('Z retained-sector woodland understory',under);coll.objects.link(undergo)
+
 mask=np.zeros((H,W),np.float32)
 for o in trees:
  x,y=o.location.xy;r=((X-x)/6.7)**2+((Y-y)/6.7)**2;mask=np.maximum(mask,np.clip(1-r,0,1)*.44)
@@ -145,6 +183,14 @@ for points,width,strength,colour in habitats:
   a=np.maximum(a,np.clip(1-d/width,0,1)**2*np.sin(np.pi*u)**.8*strength)
  a*=seam*(1-path)*(1-mask)
  pix[:,:,:3]=pix[:,:,:3]*(1-a[:,:,None])+np.array(colour)*a[:,:,None]
+# Z: soften the formerly perfect ribbon edges using continuous, irregular worn turf.
+# The existing editable road network remains geometrically identical and walkable.
+erosion_wave=.5+.25*np.sin(X*.61+Y*.35+np.sin(Y*.13))+.25*np.cos(X*.43-Y*.54)
+frayed=np.clip(path*(1-path)*erosion_wave*1.25,0,.38)*seam
+pix[:,:,:3]=pix[:,:,:3]*(1-frayed[:,:,None])+np.array([.37,.43,.23])*frayed[:,:,None]
+# Coherent forest understory pigment is grounded in exactly the planted groves, not random meadows.
+understain=np.clip(mask*.82*(1-path)*seam,0,.30)
+pix[:,:,:3]=pix[:,:,:3]*(1-understain[:,:,None])+np.array([.27,.35,.18])*understain[:,:,None]
 # X: one topography-directed ecological color hierarchy, not isolated pigment speckles.
 r1=np.exp(-((X-(36+11*np.sin((Y-101)/35)))/29)**2)*np.exp(-((Y-132)/40)**4)
 r2=np.exp(-((X+24+6*np.sin(Y/19))/28)**2)*np.exp(-((Y-143)/34)**4)
@@ -155,15 +201,15 @@ strata=.76+.24*np.sin(X*.31+Y*.17+np.sin(Y*.09))*np.sin(Y*.29-X*.11)
 ridge*=strata
 pix[:,:,:3]=pix[:,:,:3]*(1-ridge[:,:,None])+np.array([.56,.50,.30])*ridge[:,:,None]
 pix[:,:,:3]=pix[:,:,:3]*(1-valley[:,:,None])+np.array([.32,.40,.22])*valley[:,:,None]
-for name,data,noncolor in [('Y slope and canopy painted pigment',pix,False),('Y editable slope glaze mask',paint,True),('Y editable connected litter mask',mask,True)]:
+for name,data,noncolor in [('Z slope and canopy painted pigment',pix,False),('Z editable slope glaze mask',paint,True),('Z editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['Y slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['Z slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='Y denser connected macro-forest canopy over X edited relief with O preserved'
+scene['finishing_stage']='Z authored physical forest understory and eroded route margins over Y'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -171,4 +217,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'Y','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; X physical macro ridges plus Y five interlocking woodland stands; O 16405 vertices and 156 trees unchanged'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'Z','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; W/X relief, Y five woodland stands and Z low shrub understory with road-edge weathering; O 16405 vertices and 156 trees unchanged'},indent=2))
