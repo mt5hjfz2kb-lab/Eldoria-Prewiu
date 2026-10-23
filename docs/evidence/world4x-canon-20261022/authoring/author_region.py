@@ -39,7 +39,12 @@ mats={}
 for name,value in palette.items():
     color=tuple(linear(int(value[i:i+2],16)/255) for i in (1,3,5))
     m=bpy.data.materials.new('Eldoria_'+name);m.diffuse_color=(*color,1);m.use_nodes=True
-    bsdf=m.node_tree.nodes.get('Principled BSDF');bsdf.inputs['Base Color'].default_value=(*color,1)
+    # Explicit node creation is independent of UI language and startup defaults.
+    m.node_tree.nodes.clear()
+    bsdf=m.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
+    output=m.node_tree.nodes.new('ShaderNodeOutputMaterial')
+    m.node_tree.links.new(bsdf.outputs['BSDF'],output.inputs['Surface'])
+    bsdf.inputs['Base Color'].default_value=(*color,1)
     bsdf.inputs['Roughness'].default_value=.92 if name not in ['Water','Sea'] else .48
     mats[name]=m
 
@@ -257,7 +262,12 @@ mesh_object('BLD_BreachFloor',v,[(0,j+1,(j+1)%len(outline)+1) for j in range(len
 
 sun_data=bpy.data.lights.new('Key · readable morning light','SUN');sun_data.energy=2.2;sun_data.angle=.15
 sun=bpy.data.objects.new(sun_data.name,sun_data);collections['90'].objects.link(sun);sun.rotation_euler=(math.radians(28),math.radians(-24),math.radians(-25))
-scene.world.use_nodes=True;scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.24,.30,.36,1);scene.world.node_tree.nodes['Background'].inputs[1].default_value=.65
+scene.world=bpy.data.worlds.new('Eldoria_AuthoringSky');scene.world.use_nodes=True
+scene.world.node_tree.nodes.clear()
+background=scene.world.node_tree.nodes.new('ShaderNodeBackground')
+world_output=scene.world.node_tree.nodes.new('ShaderNodeOutputWorld')
+scene.world.node_tree.links.new(background.outputs[0],world_output.inputs['Surface'])
+background.inputs[0].default_value=(.24,.30,.36,1);background.inputs[1].default_value=.65
 scene.render.engine='CYCLES';scene.cycles.samples=12;scene.cycles.use_denoising=True
 scene.view_settings.view_transform='Standard';scene.render.image_settings.file_format='PNG'
 cameras=json.loads(camera_file.read_text());camera_records={}
