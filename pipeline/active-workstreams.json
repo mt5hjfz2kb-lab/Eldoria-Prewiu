@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-hybrid-resume-82901015",
+      "owner": "codex-world4x-professional-resolution-95183774",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 11,
+      "ownership_revision": 12,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner: Centralizamos aquí, revisar resultados P0, descartar si no aprovechable y continuar trabajo artístico.",
-      "phase": "PAINTED_WORLD_CONTINUATION_AFTER_P0_REVIEW",
-      "next": "P0 head014e only changed registry; no new art relative to our verified 2c2443 run39844714605. Preserve painted assets; correct Breach spill/duplicate fracture overlay and near-scale composition. Sole writer this chat, others cease writes.",
+      "authorization": "Explicit owner instruction 2026-10-23 ELDORIA — RESOLUCIÓN PROFESIONAL DEFINITIVA DEL MUNDO 4X",
+      "phase": "RESEARCH_AND_REFERENCE_BLOCKOUT",
+      "next": "Read original references and manuals; correct continental land/coast structure with same-camera native verification; preserve gameplay.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -134,8 +134,18 @@
           "owner": "chatgpt-world4x-p0-composition-20261022",
           "relieved_at": "2026-10-22T20:09:04.998Z",
           "reason": "Owner explicitly centralizes execution in this chat; inspect P0 results, retain useful work, discard unsuccessful trial and continue."
+        },
+        {
+          "owner": "chatgpt-world4x-hybrid-resume-82901015",
+          "revision": 11,
+          "reason": "Owner-directed handoff 2026-10-23: professional research and root composition correction in PR100, no Qwen, no merge/publication."
         }
-      ]
+      ],
+      "delivery_definition": {
+        "deliverable": "Substantially improved reference-directed World4X candidate in PR100",
+        "evidence": "Actual Unity three zooms H/V, matched baseline cameras, focused regression and honest artistic review",
+        "handoff": "Research, diagnosis, implementation and exact evidence; owner retains artistic approval; no merge or publication"
+      }
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
