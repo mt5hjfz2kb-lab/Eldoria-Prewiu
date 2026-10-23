@@ -1,0 +1,38 @@
+{
+  "stage": "O",
+  "passed": 18,
+  "total": 18,
+  "preserved_pine_horizontal_positions_rotation_scale": 156,
+  "regrounded_tree_names": [
+    "Pilot_Pine.001",
+    "Pilot_Pine.002",
+    "Pilot_Pine.006",
+    "Pilot_Pine.012",
+    "Pilot_Pine.015",
+    "Pilot_Pine.053",
+    "Pilot_Pine.068",
+    "Pilot_Pine.074",
+    "Pilot_Pine.077",
+    "Pilot_Pine.080",
+    "Pilot_Pine.083",
+    "Pilot_Pine.106",
+    "Pilot_Pine.111",
+    "Pilot_Pine.112",
+    "Pilot_Pine.113",
+    "Pilot_Pine.114"
+  ],
+  "camera_baseline": "K",
+  "matched_camera_zooms": [
+    34,
+    40,
+    46,
+    52
+  ],
+  "zoom_frames": 97,
+  "first_last_frame_byte_identical": true,
+  "glb_sha256": "129ad3bcd71c64481d1e405aa5fadb7b9df9ab053b5b51e0bc0fd8a96639729b",
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "portrait_pilot_tested": false,
+  "published": false
+}
