@@ -18,7 +18,7 @@ namespace Eldoria.World4XCanon
   [Serializable] public class Fixture { public string authority="TEST_ONLY_NOT_LIVE_WORLD"; public long revision; public List<Instance> instances=new List<Instance>(); }
   [Serializable] public class Report {
    public string scope="Disposable capacity and relocation fixture; NOT production respawn or network multiplayer";
-   public int validSites,instances,citySpaces,routeSamples,respawned,duplicateCount,meshHits;
+   public int packableInstances,reservedRelocationSites;public int validSites,instances,citySpaces,routeSamples,respawned,duplicateCount,meshHits;
    public float maxContactError,maxCityRelief;public float testMarkerScale=1f;public float conservativeFootprintRadius=7f;public int woodInstances,stoneInstances,enemyInstances;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched,physicalDevice=false;
    public int walkableSamples,reachableSamples,reachableCities,dynamicNearTriangles,dynamicFarTriangles;public bool fullSizeNavigation;public Site[] sites;public Point[] cities; public Fixture population;
   }
@@ -42,7 +42,7 @@ namespace Eldoria.World4XCanon
   }
   static void TickFixture(Fixture f,Site[] sites,long now) {
    var occupied=new HashSet<int>(f.instances.Where(i=>i.active).Select(i=>i.site));
-   foreach(var i in f.instances.Where(i=>!i.active&&i.due<=now).OrderBy(i=>i.id,StringComparer.Ordinal)) {
+   foreach(var i in f.instances.Where(i=>!i.active&&i.due<=now).OrderBy(i=>sites.Count(site=>Allowed(site,i.content,2))).ThenBy(i=>i.id,StringComparer.Ordinal)) {
     int next=Choose(sites,i.content,2,occupied,i.site,(i.site+37+i.generation)%sites.Length);
     if(next<0)continue;i.site=next;i.generation++;i.active=true;i.due=0;occupied.Add(next);f.revision++;
    }
@@ -100,7 +100,8 @@ namespace Eldoria.World4XCanon
      int k=Choose(report.sites,content,2,occupied,-1,n*11%sites.Count);if(k<0)continue;
      occupied.Add(k);fstate.instances.Add(new Instance{id="qa:"+content+":"+n,content=content,site=k});
     }
-    report.instances=fstate.instances.Count;report.woodInstances=fstate.instances.Count(i=>i.content=="forest-valoria");report.stoneInstances=fstate.instances.Count(i=>i.content=="quarry-valoria");report.enemyInstances=fstate.instances.Count(i=>i.content=="engendro-valoria");if(report.instances<15)throw new InvalidOperationException("Insufficient full-size population capacity");
+    report.packableInstances=fstate.instances.Count;fstate.instances=fstate.instances.Where((i,n)=>n%4!=3).ToList();report.reservedRelocationSites=report.packableInstances-fstate.instances.Count;
+    report.instances=fstate.instances.Count;report.woodInstances=fstate.instances.Count(i=>i.content=="forest-valoria");report.stoneInstances=fstate.instances.Count(i=>i.content=="quarry-valoria");report.enemyInstances=fstate.instances.Count(i=>i.content=="engendro-valoria");if(report.instances<12)throw new InvalidOperationException("Insufficient full-size population capacity");
     if(Choose(report.sites,"engendro-valoria",1,new HashSet<int>(),-1,0)!=-1)throw new InvalidOperationException("Progression exclusion failed");
     report.occupiedRejected=Choose(report.sites,"corrupt-scout",2,new HashSet<int>(sites.Select(s=>s.index)),-1,0)==-1;
     var depleted=fstate.instances.Where((i,n)=>n%4==0).ToArray();var oldSites=depleted.ToDictionary(i=>i.id,i=>i.site);
@@ -111,7 +112,7 @@ namespace Eldoria.World4XCanon
     TickFixture(fstate,report.sites,100);report.respawned=fstate.instances.Count(i=>i.generation==1);report.changedPosition=fstate.instances.Where(i=>oldSites.ContainsKey(i.id)).All(i=>i.site!=oldSites[i.id]);
     string after=JsonUtility.ToJson(fstate);fstate=JsonUtility.FromJson<Fixture>(after);TickFixture(fstate,report.sites,100);report.repeatedTickIdempotent=after==JsonUtility.ToJson(fstate);
     report.duplicateCount=fstate.instances.Count-fstate.instances.Select(i=>i.id).Distinct().Count()+fstate.instances.Count(i=>i.active)-fstate.instances.Where(i=>i.active).Select(i=>i.site).Distinct().Count();
-    if(report.respawned!=depleted.Length||!report.changedPosition||!report.saveReloadStable||!report.repeatedTickIdempotent||report.duplicateCount!=0||!report.occupiedRejected)throw new InvalidOperationException("Capacity fixture state invariant failed");
+    if(report.respawned!=depleted.Length||!report.changedPosition||!report.saveReloadStable||!report.repeatedTickIdempotent||report.duplicateCount!=0||!report.occupiedRejected)throw new InvalidOperationException("Capacity fixture state invariant failed: respawned="+report.respawned+" expected="+depleted.Length+" changed="+report.changedPosition+" duplicates="+report.duplicateCount);
     report.population=fstate;
     // Actual-mesh flood fill of the populated extension, with one metre agent clearance.
     // This measures geometry connectivity; it is deliberately not a replacement march pathfinder.

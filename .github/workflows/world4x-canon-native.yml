@@ -212,6 +212,12 @@ jobs:
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
           if($captures.Count -ne 14){throw "Missing actual clean-world and blockout PNGs: expected fourteen genuine Unity captures, got $($captures.Count)"}
+          if($env:ELDORIA_RIBERA_PILOT -eq '1' -and (Test-Path "$project/Assets/Eldoria/World4XCanon/Resources/World4X/Pilot/LivingSectorLayout.json")){
+            $living=Join-Path $env:ELDORIA_REGION1_CAPTURE_OUT 'ribera-pilot/living-sector'
+            $proof=Get-Content "$living/capacity.json" -Raw | ConvertFrom-Json
+            if(-not $proof.fullSizeNavigation -or -not $proof.originalSaveUntouched -or $proof.testMarkerScale -ne 1 -or $proof.duplicateCount -ne 0){throw 'Living sector proof incomplete'}
+            if(@(Get-ChildItem $living -Filter '*.png').Count -ne 12){throw 'Missing living sector camera captures'}
+          }
           Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) CLEAN_WORLD_AND_BLOCKOUT (NOT art/mobile QA)"
       - name: Recover exact already verified Unity authoring snapshot
         if: contains(github.event.head_commit.message, 'author-retry(world4x):')
