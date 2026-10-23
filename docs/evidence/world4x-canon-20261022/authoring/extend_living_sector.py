@@ -14,7 +14,7 @@ xs=np.array([v.co.x for v in boundary]);zs=np.array([v.co.z for v in boundary])
 def oldground(x,y):
  ok,p,n,i=terrain.ray_cast(Vector((max(-95.999,min(95.999,x)),y,150)),Vector((0,0,-1)));assert ok;return p.z
 slopes=np.array([(v.co.z-oldground(v.co.x,168))/2 for v in boundary])
-cities=[(-62,204,11),(-18,236,11),(38,202,11),(67,232,11)]
+cities=[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]
 def baseheight(x,y):
  return 3.8+3.6*math.exp(-((x-76)/23)**2-((y-219)/44)**2)+1.5*math.exp(-((x+76)/29)**2-((y-239)/24)**2)-.7*math.exp(-((x+4)/22)**2)
 def height(x,y):
@@ -35,7 +35,7 @@ for o in scene.objects:
     p=max(sp.bezier_points,key=lambda p:p.co.y)
     if p.co.y>160:ends.append((float(p.co.x),float(p.co.y)))
 entry=min(ends,key=lambda p:abs(p[0]))[0] if ends else 0
-routes=[[(entry,170),(entry+6,182),(8,198),(4,218),(12,250)],[(4,218),(-30,216),(-63,228),(-96,231)],[(8,198),(36,182),(66,185),(96,193)]]
+routes=[[(entry,170),(entry+6,182),(8,198),(4,218),(12,270)],[(4,218),(-30,216),(-63,228),(-96,231)],[(8,198),(36,182),(66,185),(96,193)]]
 # Smooth each road through its authored control points; retain exact junctions.
 controls=routes
 routes=[]
@@ -66,7 +66,7 @@ def distance(x,y):
    best=min(best,math.hypot(x-ax-t*(bx-ax),y-ay-t*(by-ay)))
  return best
 # New UV material only on new faces: old loops, topology and all AG vertices survive.
-W,H=1024,512;X,Y=np.meshgrid(np.linspace(-96,96,W),np.linspace(170,250,H))
+W,H=1024,512;X,Y=np.meshgrid(np.linspace(-96,96,W),np.linspace(170,270,H))
 pigment=.028*np.sin(X/23+Y/31)+.018*np.sin(X/11-Y/25)
 # Broken broad washes follow the eastern shoulder and western swale.
 pigment+=.025*np.exp(-((X-65)/29)**2-((Y-217)/32)**2)-.02*np.exp(-((X+15)/24)**2-((Y-225)/20)**2)
@@ -98,28 +98,28 @@ mat=bpy.data.materials.new('AI open meadow paths');mat.use_nodes=True;bs=next(n 
 terrain.data.materials.append(mat);mi=len(terrain.data.materials)-1
 bm=bmesh.new();bm.from_mesh(terrain.data);bm.verts.ensure_lookup_table();uv=bm.loops.layers.uv.active
 prev=[bm.verts[v.index] for v in boundary]
-for y in range(172,251,2):
+for y in range(172,271,2):
  row=[bm.verts.new((float(x),y,height(float(x),y))) for x in xs]
  for i in range(len(row)-1):
   f=bm.faces.new((prev[i],prev[i+1],row[i+1],row[i]));f.material_index=mi;f.smooth=True
-  for loop in f.loops:loop[uv].uv=((loop.vert.co.x+96)/192,(loop.vert.co.y-170)/80)
+  for loop in f.loops:loop[uv].uv=((loop.vert.co.x+96)/192,(loop.vert.co.y-170)/100)
  prev=row
 bm.to_mesh(terrain.data);bm.free();terrain.data.update();bpy.context.view_layer.update()
 assert [tuple(v.co) for v in terrain.data.vertices[:len(original)]]==original
 # Sparse asymmetrical perimeter groves, leaving city circles and wide circulation open.
 rng=np.random.default_rng(164);donors=[o for o in scene.objects if o.name.startswith('Pilot_Pine')];added=[]
-for cx,cy,rx,ry,count in [(-80,184,13,10,12),(-75,244,16,7,10),(82,213,10,18,14),(35,244,12,6,8)]:
+for cx,cy,rx,ry,count in [(-80,184,13,10,12),(-75,264,16,7,10),(82,213,10,18,14),(35,264,12,6,8)]:
  for attempt in range(500):
   if sum(o.get('grove')==str((cx,cy)) for o in added)>=count:break
   x=float(rng.uniform(cx-rx,cx+rx));y=float(rng.uniform(cy-ry,cy+ry))
-  if not(-92<x<92 and 175<y<248) or distance(x,y)<5:continue
+  if not(-92<x<92 and 175<y<268) or distance(x,y)<5:continue
   if any(math.hypot(x-a,y-b)<r+5 for a,b,r in cities) or any(math.hypot(x-o.location.x,y-o.location.y)<3.5 for o in added):continue
   o=donors[len(added)%len(donors)].copy();o.data=donors[len(added)%len(donors)].data;scene.collection.objects.link(o);o.name='Pilot_Pine_AI_'+str(len(added));o.location=(x,y,height(x,y));o.scale*=.8;o['grove']=str((cx,cy));added.append(o)
 bpy.context.view_layer.update()
 def tree_radius(o):
  return max(math.hypot((o.matrix_world@Vector(c)).x-o.location.x,(o.matrix_world@Vector(c)).y-o.location.y) for c in o.bound_box)
 # Export semantic authoring hints separately. Runtime must still raycast the real imported mesh.
-meta={'stage':'AI','minX':-96,'maxX':96,'minZ':170,'maxZ':250,'cities':[{'x':x,'z':y,'radius':r} for x,y,r in cities], 'routes':[{'points':[{'x':x,'z':y} for x,y in line]} for line in routes], 'trees':[{'x':o.location.x,'z':o.location.y,'radius':tree_radius(o)} for o in added], 'source':'restored AG 40014366595','testPopulationOnly':True}
+meta={'stage':'AI','minX':-96,'maxX':96,'minZ':170,'maxZ':270,'cities':[{'x':x,'z':y,'radius':r} for x,y,r in cities], 'routes':[{'points':[{'x':x,'z':y} for x,y in line]} for line in routes], 'trees':[{'x':o.location.x,'z':o.location.y,'radius':tree_radius(o)} for o in added], 'source':'restored AG 40014366595','testPopulationOnly':True}
 (out/'LivingSectorLayout.json').write_text(json.dumps(meta,indent=2))
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.pack()
@@ -129,4 +129,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'))
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'AI','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'AG_vertices_unchanged':len(original),'added_vertices':len(terrain.data.vertices)-len(original),'extension_area_m2':192*80,'previous_extent_area_m2':192*248,'city_clearances':len(cities),'added_trees':len(added),'dynamic_objects_baked':0,'art_approved':False},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AI','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'AG_vertices_unchanged':len(original),'added_vertices':len(terrain.data.vertices)-len(original),'extension_area_m2':192*100,'previous_extent_area_m2':192*248,'city_clearances':len(cities),'added_trees':len(added),'dynamic_objects_baked':0,'art_approved':False},indent=2))

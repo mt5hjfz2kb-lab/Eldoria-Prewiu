@@ -19,7 +19,7 @@ namespace Eldoria.World4XCanon
   [Serializable] public class Report {
    public string scope="Disposable capacity and relocation fixture; NOT production respawn or network multiplayer";
    public int packableInstances,reservedRelocationSites;public int validSites,instances,citySpaces,routeSamples,respawned,duplicateCount,meshHits;
-   public float maxContactError,maxCityRelief;public float testMarkerScale=1f;public float conservativeFootprintRadius,woodRadius,stoneRadius,enemyRadius;public int woodInstances,stoneInstances,enemyInstances;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched,physicalDevice=false;
+   public float maxContactError,maxCityRelief,minimumCityRadius;public float testMarkerScale=1f;public float conservativeFootprintRadius,woodRadius,stoneRadius,enemyRadius;public int woodInstances,stoneInstances,enemyInstances;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched,physicalDevice=false;
    public int walkableSamples,reachableSamples,reachableCities,dynamicNearTriangles,dynamicFarTriangles;public bool fullSizeNavigation;public Site[] sites;public Point[] cities; public Fixture population;
   }
   static float Segment(float x,float z,Point a,Point b) {
@@ -42,7 +42,7 @@ namespace Eldoria.World4XCanon
   }
   static void TickFixture(Fixture f,Site[] sites,Dictionary<string,float> radii,long now) {
    var occupied=f.instances.Where(i=>i.active).ToDictionary(i=>i.site,i=>radii[i.content]);
-   foreach(var i in f.instances.Where(i=>!i.active&&i.due<=now).OrderBy(i=>sites.Count(site=>Allowed(site,i.content,2))).ThenBy(i=>i.id,StringComparer.Ordinal)) {
+   foreach(var i in f.instances.Where(i=>!i.active&&i.due<=now).OrderBy(i=>sites.Count(site=>Allowed(site,i.content,2)&&site.clearRadius>=radii[i.content])).ThenBy(i=>i.id,StringComparer.Ordinal)) {
     int next=Choose(sites,i.content,2,occupied,radii,i.site,(i.site+37+i.generation)%sites.Length);
     if(next<0)continue;i.site=next;i.generation++;i.active=true;i.due=0;occupied.Add(next,radii[i.content]);f.revision++;
    }
@@ -78,18 +78,20 @@ namespace Eldoria.World4XCanon
     report.woodRadius=MarkerRadius("Reference existing wood grove");report.stoneRadius=MarkerRadius("Reference existing quarry");report.enemyRadius=Mathf.Max(enemyMesh.vertices.Max(v=>new Vector2(v.x,v.z).magnitude),enemyFarMesh.vertices.Max(v=>new Vector2(v.x,v.z).magnitude))+.5f;
     var radii=new Dictionary<string,float>{{"forest-valoria",report.woodRadius},{"quarry-valoria",report.stoneRadius},{"engendro-valoria",report.enemyRadius},{"corrupt-scout",report.enemyRadius}};report.conservativeFootprintRadius=radii.Values.Max();
     var sites=new List<Site>();
-    for(float z=176;z<=246;z+=5)for(float x=-90;x<=90;x+=5) {
+    for(float z=layout.minZ+6;z<=layout.maxZ-4;z+=5)for(float x=layout.minX+6;x<=layout.maxX-6;x+=5) {
      if(layout.cities.Any(c=>Distance(x,z,c)<c.radius+4)||Road(layout,x,z)<4||layout.trees.Any(t=>Distance(x,z,t)<t.radius+2))continue;
      if(!Sample(x,z,out var hit)||Vector3.Angle(hit.normal,Vector3.up)>20)continue;
      bool footprint=true;foreach(var d in new[]{new Vector2(-1.5f,0),new Vector2(1.5f,0),new Vector2(0,-1.5f),new Vector2(0,1.5f)})if(!Sample(x+d.x,z+d.y,out var h)||Mathf.Abs(h.point.y-hit.point.y)>.6f)footprint=false;
      if(!footprint)continue;
      float treeDistance=layout.trees.Min(t=>Distance(x,z,t));
-     sites.Add(new Site{index=sites.Count,position=hit.point,slope=Vector3.Angle(hit.normal,Vector3.up),clearRadius=Mathf.Min(Mathf.Min(Mathf.Min(x+96,96-x),Mathf.Min(z-170,250-z)),Mathf.Min(Road(layout,x,z)-3,Mathf.Min(layout.cities.Min(c=>Distance(x,z,c)-c.radius),layout.trees.Min(t=>Distance(x,z,t)-t.radius)))),wood=treeDistance<35,stone=x>20||treeDistance>22});
+     sites.Add(new Site{index=sites.Count,position=hit.point,slope=Vector3.Angle(hit.normal,Vector3.up),clearRadius=Mathf.Min(Mathf.Min(Mathf.Min(x-layout.minX,layout.maxX-x),Mathf.Min(z-layout.minZ,layout.maxZ-z)),Mathf.Min(Road(layout,x,z)-3,Mathf.Min(layout.cities.Min(c=>Distance(x,z,c)-c.radius),layout.trees.Min(t=>Distance(x,z,t)-t.radius)))),wood=treeDistance<35,stone=x>20||treeDistance>22});
     }
     report.sites=sites.ToArray();report.validSites=sites.Count;
     if(sites.Count<150)throw new InvalidOperationException("Insufficient actual-mesh capacity: "+sites.Count);
     // City footprints are reserved empty ground, not decorative city models or player settlements.
+    var cityCollider=host.FindTarget("valoria-map-city").GetComponent<Collider>();if(!cityCollider)throw new InvalidOperationException("Existing city footprint missing");report.minimumCityRadius=new Vector2(cityCollider.bounds.extents.x,cityCollider.bounds.extents.z).magnitude+.5f;
     foreach(var c in layout.cities) {
+     if(c.radius<report.minimumCityRadius)throw new InvalidOperationException("Reserved city pad smaller than existing city interaction footprint");
      var heights=new List<float>();for(int z=-1;z<=1;z++)for(int x=-1;x<=1;x++) {
       float px=c.x+x*c.radius*.7f,pz=c.z+z*c.radius*.7f;
       if(!Sample(px,pz,out var h))throw new InvalidOperationException("City footprint outside terrain");heights.Add(h.point.y);
@@ -101,7 +103,7 @@ namespace Eldoria.World4XCanon
     foreach(var r in layout.routes)for(int i=1;i<r.points.Length;i++) {
      var a=new Vector2(r.points[i-1].x,r.points[i-1].z);var b=new Vector2(r.points[i].x,r.points[i].z);var side=new Vector2(-(b-a).y,(b-a).x).normalized;
      int steps=Mathf.CeilToInt(Vector2.Distance(a,b));for(int n=0;n<=steps;n++)foreach(float offset in new[]{-1f,0f,1f}) {
-      var p=Vector2.Lerp(a,b,n/(float)steps)+side*offset;if(p.x<=-95||p.x>=95||p.y<=171||p.y>=249)continue;
+      var p=Vector2.Lerp(a,b,n/(float)steps)+side*offset;if(p.x<=layout.minX+1||p.x>=layout.maxX-1||p.y<=layout.minZ+1||p.y>=layout.maxZ-1)continue;
       if(!Sample(p.x,p.y,out var h)||Vector3.Angle(h.normal,Vector3.up)>25||layout.trees.Any(t=>Distance(p.x,p.y,t)<t.radius))throw new InvalidOperationException("Blocked march corridor");report.routeSamples++;
      }
     }
@@ -127,8 +129,8 @@ namespace Eldoria.World4XCanon
     // Actual-mesh flood fill of the populated extension, with one metre agent clearance.
     // This measures geometry connectivity; it is deliberately not a replacement march pathfinder.
     var free=new Dictionary<Vector2Int,Vector3>();
-    for(int iz=0;iz<=38;iz++)for(int ix=0;ix<=94;ix++){
-     float x=-94+ix*2,z=172+iz*2;
+    for(int iz=0;iz<=(layout.maxZ-layout.minZ-4)/2;iz++)for(int ix=0;ix<=(layout.maxX-layout.minX-4)/2;ix++){
+     float x=layout.minX+2+ix*2,z=layout.minZ+2+iz*2;
      if(layout.trees.Any(t=>Distance(x,z,t)<t.radius+1)||layout.cities.Any(c=>Distance(x,z,c)<c.radius+1)||fstate.instances.Any(i=>i.active&&Vector2.Distance(new Vector2(x+home.x,z+home.z),new Vector2(sites[i.site].position.x,sites[i.site].position.z))<radii[i.content]+1))continue;
      if(Sample(x,z,out var h)&&Vector3.Angle(h.normal,Vector3.up)<=25)free.Add(new Vector2Int(ix,iz),h.point);
     }
