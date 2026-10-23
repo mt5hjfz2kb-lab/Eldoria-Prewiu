@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-sector-final-20261023",
+      "owner": "chatgpt-world4x-sector-finish-relay-20261023",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 14,
+      "ownership_revision": 15,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-23",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner explicit 2026-10-23 finalization of connected sector T, PR100, zero cost, no merge or publication.",
-      "phase": "BOUNDED_SECTOR_ART_FINALIZATION",
-      "next": "Review U real Unity captures, then improve sector art and playable height validation; retain O K I; do not expand Region1.",
+      "authorization": "Owner explicit 2026-10-23 takeover of unfinished W and sector completion; same PR100, 0 EUR, no merge/publication.",
+      "phase": "CONNECTED_SECTOR_W_GROUNDING_AND_MACRO_ART",
+      "next": "Author macro forest/terrain correction from preserved Q/O; run actual Blender+Unity A/B; certify visual mesh contact without modifying playable colliders/IDs.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -153,6 +153,13 @@
           "relieved_at": "2026-10-23",
           "reason": "Explicit owner continuation and completion of existing sector T and subsequent U without expanding Region 1",
           "outcome": "T verified native; U run 39981878592 completed success, pending visual review"
+        },
+        {
+          "owner": "chatgpt-world4x-sector-final-20261023",
+          "revision": 14,
+          "relieved_at": "2026-10-23",
+          "reason": "Owner explicitly authorizes a new chat to take over unfinished W sector production within existing PR100.",
+          "outcome": "W Unity/Blender native 39987173786 succeeded, heights and artistic acceptance not yet certified."
         }
       ],
       "delivery_definition": {
