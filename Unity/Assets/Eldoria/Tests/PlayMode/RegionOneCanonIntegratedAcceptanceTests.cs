@@ -66,9 +66,9 @@ namespace Eldoria.Tests
             var geo = world.transform.Find("Region 1 canonical continuous geography");
             Assert.That(geo, Is.Not.Null);
             Assert.That(geo.GetComponentsInChildren<MeshFilter>(true)
-                .Count(f => f && f.name == "Region1 · one coherent terrain mesh"), Is.EqualTo(1));
+                .Count(f => f && f.name == "Clean terrain — sole geographic surface"), Is.EqualTo(1));
             var retainedCanopy=geo.GetComponentsInChildren<MeshFilter>(true)
-                .SingleOrDefault(f=>f.name=="Region1 · retained local forest canopy");
+                .SingleOrDefault(f=>f.name=="Clean retained tree coordinates");
             Assert.That(retainedCanopy,Is.Not.Null,"Known local trees must receive the candidate visual.");
             var retainedTreeSources=world.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
@@ -113,7 +113,7 @@ namespace Eldoria.Tests
                 Assert.That((float)directedShore.Invoke(null,new object[]{p.x,p.z}),Is.GreaterThan(5f),"Existing node must remain on the authored land: "+Member(node,"Id"));
                 Assert.That((float)directedWater.Invoke(null,new object[]{p.x,p.z}),Is.LessThan(.1f),"Authored rivers/lakes cannot flood an existing node: "+Member(node,"Id"));
             }
-            Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Count(x=>x.name=="Directed terrain continuous coast relief"),Is.EqualTo(1));
+            Assert.That(geo.GetComponentsInChildren<MeshFilter>(true).Count(x=>x.name=="Clean terrain — sole geographic surface"),Is.EqualTo(1));
             // Art runtime belongs to a separate Unity assembly. Match the
             // existing test's reflection-only contract rather than adding an
             // unsupported direct assembly reference to this PlayMode suite.
@@ -130,7 +130,7 @@ namespace Eldoria.Tests
                 BindingFlags.Public | BindingFlags.Static);
             Assert.That(coastMask,Is.Not.Null);
             float dry=(float)coastMask.Invoke(null,new object[]{0f,-360f});
-            float sea=(float)coastMask.Invoke(null,new object[]{0f,-395f});
+            float sea=(float)coastMask.Invoke(null,new object[]{0f,-510f});
             Assert.That(dry,Is.EqualTo(0f).Within(.001f),
                 "The inland edge of the southeastern coast remains dry.");
             Assert.That(sea,Is.GreaterThan(.95f),
@@ -267,8 +267,12 @@ namespace Eldoria.Tests
             Call(navigation,"SetZoomLevel",1,true);
             Call(adapter,"RefreshForCapture");
             Assert.That(scar.enabled,Is.True);
-            Assert.That(filter.GetComponent<MeshRenderer>().enabled,Is.False,
-                "Do not superimpose legacy fractures on the authored scar.");
+            Assert.That(fracture.GetComponentsInChildren<Renderer>(true).Length,Is.EqualTo(1),
+                "Build exactly one grounded Breach; do not construct hidden older fractures.");
+            var fixedVertices=filter.sharedMesh.vertices;
+            foreach(int level in new[]{2,0,1})
+            {Call(navigation,"SetZoomLevel",level,true);Call(adapter,"RefreshForCapture");
+             Assert.That(filter.sharedMesh.vertices,Is.EqualTo(fixedVertices),"Zoom must never rescale or relocate the geology.");}
         }
         [UnityTest]
         public IEnumerator PanoramaHidesOldSquareWithoutRemovingWorldGameObjects()
@@ -299,14 +303,15 @@ namespace Eldoria.Tests
                 Call(adapter,"RefreshForCapture");
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Candidate near ground must not overlap the old rectangular prairie.");
-                var continuous=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Directed terrain continuous coast relief");
+                var continuous=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Clean terrain — sole geographic surface");
                 Assert.That(continuous.enabled&&continuous.gameObject.activeSelf&&continuous.transform.parent.gameObject.activeSelf&&continuous.sharedMaterial&&
                     continuous.sharedMaterial.shader.name=="Eldoria/World4X/DirectedGeographicLayers"&&continuous.sharedMaterial.shader.isSupported,Is.True,
                     "A supported continuous terrain must actually replace the hidden near ground.");
-                Call(adapter,"CompareDirectedLayout",true);
-                Assert.That(terrain.Any(x=>x.enabled),Is.True,"Before control must still restore imported near prairie.");
-                Call(adapter,"CompareDirectedLayout",false);
-                Assert.That(terrain.All(x=>!x.enabled),Is.True,"Candidate must re-hide the old rectangle after A/B.");
+                Call(adapter,"SetBlockout",true);
+                Assert.That(terrain.All(x=>!x.enabled),Is.True,"Blockout must not revive older terrain.");
+                Call(adapter,"SetBlockout",false);
+                Assert.That(world.GetComponentsInChildren<MeshFilter>(true).Any(f=>f.name=="Region1 · one coherent terrain mesh"),Is.False,
+                    "The retired terrain must not be constructed beneath the clean surface.");
 
                 float nearPitch = (float)Member(navigation,"tilt");
                 Call(navigation, "SetZoomLevel", 0, true);
@@ -322,7 +327,7 @@ namespace Eldoria.Tests
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Panorama must not reveal the old hard-edged rectangular prairie.");
                 var simplified = world.transform.Find("Region 1 canonical continuous geography")
-                    .Find("Region1 · batched distant organic forest canopies");
+                    .Find("Clean authored woodland masses");
                 Assert.That(simplified, Is.Not.Null);
                 Assert.That(simplified.gameObject.activeSelf, Is.True,
                     "Panorama must retain forest silhouettes, not blank green circles.");
@@ -341,8 +346,8 @@ namespace Eldoria.Tests
                 }
                 Call(navigation,"SetZoomLevel",2,true);
                 Call(adapter,"RefreshForCapture");
-                Assert.That(simplified.gameObject.activeSelf, Is.False,
-                    "Local view must restore its existing 3D vegetation representation.");
+                Assert.That(simplified.gameObject.activeSelf, Is.True,
+                    "Near view must keep the same woodland geography, without replacing it at a zoom threshold.");
                 Assert.That(world.GetComponentsInChildren<Collider>(true).Length,
                     Is.EqualTo(existingColliderCount),
                     "Regional visual LOD must preserve every original gameplay collider.");
@@ -448,8 +453,8 @@ namespace Eldoria.Tests
                         (1,"regional",home),
                         (0,"panoramica",home),
                         (2,"cercana-recurso-madera",forestFocus),
-                        (0,"panoramica-antes-composicion",home),
-                        (1,"regional-antes-composicion",home)})
+                        (0,"panoramica-blockout",home),
+                        (1,"regional-blockout",home)})
                     {
                         Call(navigation, "SetZoomLevel", stage.Item1, true);
                         Call(navigation, "PanTo", stage.Item3);
@@ -473,20 +478,18 @@ namespace Eldoria.Tests
                             // not cut horizontally across its central land.
                             var portraitFog=world.transform.Find(
                                 "Region 1 canonical continuous geography/Region1 · panoramic border haze only");
-                            Assert.That(portraitFog,Is.Not.Null);
-                            Assert.That(portraitFog.gameObject.activeSelf,Is.False,
-                                "No hard fog seams may cross portrait map interior.");
+                            Assert.That(portraitFog,Is.Null,"Clean world must not construct old opaque fog strips.");
                         }
                         if(stage.Item2=="panoramica" && format.Item3=="horizontal")
                             Assert.That(camera.orthographicSize,Is.InRange(239f,249f),
                                 "Landscape overview must retain existing framing.");
-                        // Genuine layout A/B: SAME actual camera and gameplay.
-                        // The authored geography layers change, never a backdrop.
+                        // Clean blockout/full review: SAME actual geometry and camera.
+                        // Before/after uses archived runs, never a hidden old terrain.
                         Call(adapter, "CompareAtlas", false);
-                        Call(adapter, "CompareDirectedLayout", stage.Item2.EndsWith("-antes-composicion"));
-                        if(!stage.Item2.EndsWith("-antes-composicion"))
+                        Call(adapter, "SetBlockout", stage.Item2.EndsWith("-blockout"));
+                        if(!stage.Item2.EndsWith("-blockout"))
                         {
-                            var actualTerrain=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Directed terrain continuous coast relief");
+                            var actualTerrain=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="Clean terrain — sole geographic surface");
                             Assert.That(actualTerrain.enabled&&actualTerrain.gameObject.activeInHierarchy,Is.True,"Continuous candidate terrain must be active after genuine world entry, before capture.");
                         }
                         var texture = new RenderTexture(format.Item1,format.Item2,24,
@@ -533,12 +536,12 @@ namespace Eldoria.Tests
                     }
                 }
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(12));
-                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=12 (8 genuine views + 4 exact-camera old-geography comparisons) real_scene=1 disposable_gateway=1 physical_iphone=0");
+                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=12 (8 genuine views + 4 same-camera blockout views; before comparison uses archived run) real_scene=1 disposable_gateway=1 physical_iphone=0");
             }
             finally
             {
                 Call(adapter, "CompareAtlas", false);
-                Call(adapter, "CompareDirectedLayout", false);
+                Call(adapter, "SetBlockout", false);
                 camera.aspect=originalAspect;
                 camera.targetTexture=originalRT;
                 RenderTexture.active=originalActive;

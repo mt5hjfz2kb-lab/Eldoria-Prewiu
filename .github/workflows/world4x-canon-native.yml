@@ -126,7 +126,7 @@ jobs:
           $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-playmode.log'
           $xml=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-tests.xml'
-          $args=@('-batchmode','-projectPath',('"' + $project + '"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests','-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
+          $args=@('-batchmode','-projectPath',('"' + $project + '"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests;Eldoria.Tests.ReferenceUiArtPassTests;Eldoria.Tests.RoyalV3ManagementIntegrationTests;Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests','-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity PlayMode test timeout' }
           if(Test-Path $log){Get-Content $log -Tail 90}
@@ -144,8 +144,8 @@ jobs:
           if($nodes.Count -lt 4){throw "Expected 4 integrated tests including six real-world cameras, got $($nodes.Count)"}
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
-          if($captures.Count -ne 12){throw "Missing exact-camera hybrid A/B PNGs: expected twelve genuine Unity captures, got $($captures.Count)"}
-          Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) SAME_CAMERA_HYBRID_A_B (NOT art/mobile QA)"
+          if($captures.Count -ne 12){throw "Missing actual clean-world and blockout PNGs: expected twelve genuine Unity captures, got $($captures.Count)"}
+          Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) CLEAN_WORLD_AND_BLOCKOUT (NOT art/mobile QA)"
       - name: Recover exact already verified Unity authoring snapshot
         if: contains(github.event.head_commit.message, 'author-retry(world4x):')
         uses: actions/download-artifact@v4

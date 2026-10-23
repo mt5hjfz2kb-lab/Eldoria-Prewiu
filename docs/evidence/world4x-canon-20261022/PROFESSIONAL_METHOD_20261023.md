@@ -42,3 +42,21 @@ Composición 30%, geografía/agua 20%, bosques 15%, relieve 10%, estilo/material
 ## Estado de ejecución
 
 Investigación y diseño registrados antes del push artístico. Ensayo preparado para Unity; resultados y decisiones se añadirán tras descargar sus PNG auténticos. Sin resultado visual nuevo todavía. Ningún PASS previo certifica este cambio.
+
+## Revisión del ensayo y orden posterior: folio en blanco
+
+El ensayo 745f252c766648048f084bee8dc1d399cb48dd0c se ejecutó en Unity [39914683678](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39914683678), artefacto 12484397421. Sus siete pruebas pasaron. ZIP descargado, CRC correcto; las seis cámaras coinciden exactamente con 39874832548 en resolución, pose, objetivo, aspecto y zoom. La revisión visual detectó tierra dominante, pero cabeceras vacías, ríos uniformes con desembocaduras interiores, escasa lectura de relieve y bosques repetitivos. No es el resultado solicitado ni se acepta como final. La compresión ComposeZ aplicada a las nuevas rutas prueba que conservar el montaje estaba perpetuando decisiones equivocadas.
+
+El propietario ordenó expresamente reconstruir la presentación sobre un folio en blanco, manteniendo lo funcional. La implementación siguiente reemplaza los constructores activos de RegionOneCanonicalLandscape y RegionOneDirectedGeography. No crea primero la geografía antigua para cubrirla: hay una sola malla continua, una máscara semántica y una representación por árbol. La escena integrada conserva sus objetos funcionales y colliders; los renderers importados de fondo se desactivan mediante el adaptador de integración, sin borrar objetos de gameplay. Es la frontera necesaria con la escena compartida, no un segundo paisaje construido bajo el nuevo.
+
+Decisiones previas a la nueva captura:
+
+- Costa oriental/sur y continuidad occidental/norte definidas en metros finales. Se elimina ComposeZ por completo del camino activo.
+- Red fluvial nueva con tronco, cabeceras estrechas, confluencias y salidas al mar; lagos conectados. Las rutas usan las mismas coordenadas.
+- Hombros bajos independientes, datum central protegido, normales usadas por la luz principal URP en el suelo. El shader anterior calculaba iluminación que apenas aplicaba a la tierra.
+- Bosques con lóbulos autorales, rechazo determinista por densidad, separación y exclusiones; no se afirma implementar el algoritmo Poisson de Blender. Se reutilizan las posiciones medidas de los árboles locales una sola vez y el atlas existente como recurso, no como distribución autoral global.
+- Una única Brecha anclada, sin fracturas antiguas ocultas y sin crecer al alejar la cámara. Los tres zooms ven la misma geometría.
+- Las capturas de blockout muestran el mismo mundo sin follaje ni pigmento de detalle; NO se llaman «antes». El antes auténtico proviene del commit y run archivados. Se preservan las cámaras del primer control para comparación causal.
+- Se mantienen selección, colliders, progreso, guardados, UI y escena. Las pruebas estructurales pasan a exigir ausencia de la vieja malla y Brecha única, además de conservar todos los controles funcionales. Se amplía el filtro nativo con las suites existentes de interfaz, gestión y aceptación V3.
+
+Estado: nueva implementación pendiente de ejecución y revisión visual. No ART_APPROVED; no resultado 9/10, ni perfil físico móvil, ni autorización de merge/publicación.

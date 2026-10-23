@@ -4,310 +4,138 @@ using System.Linq;
 using Eldoria.ReferenceClean;
 using UnityEngine;
 using UnityEngine.Rendering;
-
 namespace Eldoria.World4XCanon
 {
- // Explicitly authored geography in final world units, never a compressed atlas.
- // The coastline, river graph, lakes, roads, groves and relief share this domain.
+ // Clean authorial scene. All coordinates below are final metres in one X/Z space.
+ // No ComposeZ, inherited terrain, duplicated near ground, or zoom-dependent geography.
  [DefaultExecutionOrder(1000)]
  public sealed class RegionOneDirectedGeography : MonoBehaviour
  {
-  // The western/northern edge is a land continuation, not a coast around an island.
-  // All points are world X/Z; the player anchors are deliberately unchanged.
-  public const float DomainWidth=1820f, DomainDepth=1560f;
-  public static readonly Vector2[] Coast = {
-   new Vector2(-900,-760),new Vector2(-900,760),new Vector2(350,760),
-   new Vector2(330,580),new Vector2(306,490),new Vector2(320,415),
-   new Vector2(287,356),new Vector2(302,312),new Vector2(275,267),
-   new Vector2(297,226),new Vector2(278,185),new Vector2(300,153),
-   new Vector2(279,110),new Vector2(289,76),new Vector2(272,42),
-   new Vector2(295,12),new Vector2(288,-22),new Vector2(270,-43),
-   new Vector2(282,-75),new Vector2(263,-110),new Vector2(278,-141),
-   new Vector2(258,-173),new Vector2(264,-206),new Vector2(245,-234),
-   new Vector2(252,-268),new Vector2(222,-298),new Vector2(229,-327),
-   new Vector2(201,-351),new Vector2(205,-383),new Vector2(171,-404),
-   new Vector2(142,-436),new Vector2(105,-431),new Vector2(73,-460),
-   new Vector2(32,-451),new Vector2(-9,-477),new Vector2(-59,-466),
-   new Vector2(-108,-491),new Vector2(-171,-480),new Vector2(-224,-505),
-   new Vector2(-291,-492),new Vector2(-347,-517),new Vector2(-417,-506),
-   new Vector2(-490,-535),new Vector2(-560,-521),new Vector2(-635,-548),
-   new Vector2(-710,-536),new Vector2(-794,-564),new Vector2(-900,-555)
-  };
+  public const float DomainWidth=1820,DomainDepth=1560;
+  static Vector2[] Line(params float[] v){var a=new Vector2[v.Length/2];for(int i=0;i<a.Length;i++)a[i]=new Vector2(v[i*2],v[i*2+1]);return a;}
+  public static readonly Vector2[] Coast=Line(-900,-760,-900,760,110,760,120,615,105,560,145,525,133,480,174,449,163,419,197,390,177,362,207,328,194,303,224,275,204,246,234,213,216,184,243,155,225,126,249,94,228,65,254,34,233,2,258,-28,239,-59,260,-88,238,-120,254,-147,230,-175,247,-208,220,-237,235,-264,209,-289,219,-320,188,-342,196,-371,161,-393,133,-420,104,-414,76,-443,43,-433,12,-461,-26,-447,-59,-476,-97,-462,-133,-493,-174,-478,-217,-509,-261,-492,-308,-523,-358,-509,-410,-542,-467,-528,-531,-556,-603,-541,-682,-572,-774,-558,-900,-589);
+  // Channel hierarchy: 0 is trunk; tributaries start at upland springs and join explicitly.
   public static readonly Vector2[][] Rivers={
-   Line(0,438,-12,409,5,379,-17,352,-6,327,-34,307,-30,279,-54,255,-41,235,
-        -80,212,-111,193,-132,162,-119,137,-142,111,-133,88,-154,64,-145,37,
-        -120,14,-108,-12,-123,-38,-103,-64,-109,-91,-83,-118,-91,-144,
-        -75,-171,-94,-199,-82,-225,-105,-252,-93,-278,-61,-300,-67,-323,
-        -34,-338,-12,-358,20,-367,40,-387,57,-414),
-   Line(-178,167,-158,155,-146,142,-119,137),
-   Line(-177,-38,-152,-46,-123,-38),
-   Line(-91,-144,-56,-152,-36,-172,-11,-179,10,-201,34,-212,61,-235),
-   Line(61,-235,90,-253,115,-262,146,-287),
-   Line(-6,327,24,313,34,289,65,276,86,249),
-   Line(-41,235,-8,217,9,196,36,183,51,155),
-   Line(98,80,75,94,62,113,51,155),
-   Line(-61,-300,-36,-278,-18,-252,13,-244,34,-212),
-   Line(-405,560,-383,482,-410,417,-369,354,-382,291,-341,222,-322,169,-282,121,-271,69,-229,23,-177,-38),
-   Line(-548,290,-512,251,-473,233,-445,197,-398,186,-360,156,-322,169),
-   Line(-560,-170,-512,-198,-463,-190,-421,-222,-379,-230,-338,-269,-294,-284,-249,-321,-208,-356,-155,-402,-108,-491),
-   Line(-382,291,-344,318,-297,309,-252,286,-217,251,-178,167),
-   Line(146,-287,173,-309,191,-334,214,-349),
-   Line(57,-414,73,-460)
+   Line(5,585,-12,540,8,499,-12,458,7,420,-18,384,-12,349,-40,312,-34,280,-56,250,-48,222,-79,198,-107,176,-117,145,-104,115,-124,83,-116,54,-130,28,-104,0,-116,-29,-101,-59,-111,-89,-87,-119,-98,-150,-80,-180,-95,-212,-81,-242,-98,-269,-72,-300,-76,-328,-42,-350,-23,-380,12,-399,40,-425,65,-451,91,-481),
+   Line(-390,405,-367,362,-381,317,-344,276,-327,232,-284,196,-259,152,-217,128,-197,86,-158,53,-130,28),
+   Line(-541,191,-493,177,-453,151,-412,164,-371,143,-328,158,-284,196),
+   Line(153,400,121,380,103,347,76,330,63,295,30,280,-5,250,-48,222),
+   Line(189,120,155,141,126,164,91,182,65,206,27,211,-8,228,-48,222),
+   Line(176,-61,147,-86,133,-117,104,-139,86,-169,60,-184,34,-210,-8,-224,-43,-244,-81,-242),
+   Line(-98,-150,-59,-159,-30,-180,2,-187,34,-210),
+   Line(34,-210,67,-237,96,-259,119,-290,151,-313,173,-342,207,-374),
+   Line(-484,-131,-447,-151,-401,-143,-363,-172,-318,-185,-286,-214,-243,-230,-211,-265,-168,-281,-134,-318,-76,-328)
   };
   public static readonly Vector2[][] Roads={
-   Line(-134,-370,-119,-320,-139,-270,-127,-215,-151,-166,-139,-110,-157,-65,-147,-13,-164,40,-156,103,-145,150,-153,214,-129,271,-115,321,-75,375,-31,420),
-   Line(80,-370,109,-328,104,-286,124,-244,111,-188,139,-146,126,-102,146,-55,136,-8,156,39,140,88,150,137,130,182,145,229,113,271,90,319,53,355,21,405),
-   Line(-134,-370,-84,-356,-34,-375,13,-354,80,-370),
-   Line(-139,-270,-83,-286,-34,-268,15,-281,55,-262,104,-286),
-   Line(-151,-166,-106,-181,-51,-166,0,-183,53,-165,111,-188),
-   Line(-139,-110,-92,-101,-48,-119,1,-105,58,-120,126,-102),
-   Line(-147,-13,-99,-25,-53,-12,0,-20,52,-5,96,-19,136,-8),
-   Line(-164,40,-117,51,-65,33,-35,20),
-   Line(48,35,89,43,113,29,156,39),
-   Line(-156,103,-107,120,-70,105,-35,124,15,112,58,130,103,112,140,88),
-   Line(-153,214,-109,227,-72,210,-28,226,11,212,54,230,94,214,145,229),
-   Line(-115,321,-70,338,-31,319,15,336,57,320,90,319),
-   Line(-35,-375,-49,-330,-34,-268,-48,-218,-51,-166,-48,-119,-33,-72,-53,-12),
-   Line(53,-165,42,-119,58,-120,70,-72,52,-5,48,35),
-   Line(-35,124,-51,171,-28,226,-42,267,-31,319),
-   Line(-480,410,-443,347,-461,279,-418,227,-442,162,-407,96,-421,36,-395,-34,-414,-94,-377,-161,-392,-224,-349,-287,-368,-349,-321,-415),
-   Line(-285,442,-261,371,-278,313,-243,251,-256,191,-224,125,-239,62,-208,2,-225,-61,-198,-121,-219,-187,-188,-246,-209,-309,-173,-372),
-   Line(-518,278,-461,279,-403,298,-347,282,-278,313,-221,294,-129,271),
-   Line(-518,86,-463,106,-407,96,-348,118,-290,101,-224,125,-156,103),
-   Line(-509,-107,-461,-82,-414,-94,-351,-77,-293,-99,-225,-61,-157,-65),
-   Line(-481,-283,-431,-301,-392,-224,-326,-241,-263,-224,-219,-187,-151,-166)
+   Line(-40,-550,-61,-463,-45,-391,-57,-316,-35,-247,-52,-176,-29,-103,0,0,23,91,4,176,28,253,11,338,38,422,17,511,38,603),
+   Line(155,-350,139,-278,157,-208,142,-139,160,-62,145,9,165,79,149,149,170,227,152,303,174,367),
+   Line(-325,-488,-301,-413,-324,-341,-302,-266,-326,-192,-301,-116,-320,-43,-298,31,-319,103,-295,178,-310,230,-289,302,-310,380,-291,463),
+   Line(-550,285,-476,303,-405,282,-337,309,-265,289,-196,309,-126,285,-55,305,11,338,84,317,152,303),
+   Line(-540,95,-469,111,-395,91,-319,103,-247,81,-174,104,-98,83,-35,103,23,91,94,112,165,79),
+   Line(-529,-94,-461,-79,-388,-103,-320,-43,-245,-63,-177,-84,-104,-73,-29,-103,45,-86,117,-108,160,-62),
+   Line(-511,-275,-439,-294,-367,-271,-302,-266,-228,-289,-156,-269,-82,-290,-35,-247,39,-269,100,-245,157,-208),
+   Line(-469,-433,-399,-411,-325,-432,-252,-410,-180,-433,-107,-414,-45,-391,26,-414,99,-389,155,-350)
   };
-  // Centre x,z, lateral radius, longitudinal radius. Deliberate bands/openings.
+  // Forest lobes intentionally follow shoulders, shelter and river corridors; gaps are designed.
   public static readonly Vector4[] Groves={
-   new Vector4(-28,418,10,13),new Vector4(-68,371,15,12),new Vector4(10,370,12,11),
-   new Vector4(42,322,15,12),new Vector4(-103,309,17,12),new Vector4(-136,266,15,10),
-   new Vector4(-87,267,12,10),new Vector4(96,267,17,11),new Vector4(142,216,13,11),
-   new Vector4(-143,206,18,10),new Vector4(11,197,13,12),new Vector4(66,169,15,11),
-   new Vector4(-61,165,19,13),new Vector4(-143,121,17,10),new Vector4(131,119,15,10),
-   new Vector4(-112,74,17,11),new Vector4(126,49,13,10),new Vector4(-143,6,16,11),
-   new Vector4(113,-31,17,11),new Vector4(-144,-76,18,12),new Vector4(10,-105,13,9),
-   new Vector4(114,-103,17,13),new Vector4(-115,-139,15,10),new Vector4(-9,-151,18,11),
-   new Vector4(82,-166,13,10),new Vector4(-151,-211,19,13),new Vector4(-40,-215,16,10),
-   new Vector4(130,-216,13,10),new Vector4(-129,-284,16,12),new Vector4(-32,-289,13,10),
-   new Vector4(94,-291,16,11),new Vector4(-73,-337,19,11),new Vector4(40,-327,15,10),
-   new Vector4(-113,-376,14,10),new Vector4(1,-395,18,11),new Vector4(81,-371,12,9),
-   new Vector4(-470,373,34,17),new Vector4(-427,354,26,23),new Vector4(-293,392,30,18),
-   new Vector4(-337,338,33,17),new Vector4(-490,221,32,22),new Vector4(-454,199,25,16),
-   new Vector4(-290,223,30,18),new Vector4(-254,199,27,21),new Vector4(-359,141,34,16),
-   new Vector4(-497,72,32,20),new Vector4(-464,56,27,17),new Vector4(-291,43,29,18),
-   new Vector4(-254,17,24,16),new Vector4(-367,-37,32,19),new Vector4(-337,-54,26,17),
-   new Vector4(-489,-143,34,20),new Vector4(-452,-158,28,17),new Vector4(-278,-150,31,19),
-   new Vector4(-244,-173,22,18),new Vector4(-350,-275,36,19),new Vector4(-313,-295,26,18),
-   new Vector4(-475,-351,33,18),new Vector4(-434,-337,26,15),new Vector4(-236,-367,30,20),
-   new Vector4(219,301,26,14),new Vector4(238,183,22,17),new Vector4(216,71,24,15),
-   new Vector4(237,-57,24,17),new Vector4(213,-211,28,16),new Vector4(166,-341,24,17)
+   new Vector4(-32,550,22,16),new Vector4(50,493,19,14),new Vector4(-72,477,25,16),new Vector4(-135,425,29,17),new Vector4(18,409,22,15),new Vector4(114,366,24,15),
+   new Vector4(-85,353,24,18),new Vector4(-204,363,30,18),new Vector4(-270,421,28,17),new Vector4(-360,449,35,21),new Vector4(-428,365,34,20),new Vector4(-465,337,27,18),
+   new Vector4(-143,286,22,16),new Vector4(79,269,22,16),new Vector4(-310,230,31,19),new Vector4(-351,217,25,17),new Vector4(-473,239,37,20),new Vector4(-515,224,27,17),
+   new Vector4(-208,153,23,15),new Vector4(-181,173,18,13),new Vector4(128,213,24,16),new Vector4(-52,167,23,14),new Vector4(-390,72,32,18),new Vector4(-437,57,29,20),
+   new Vector4(-147,107,24,17),new Vector4(168,57,26,16),new Vector4(-283,32,33,17),new Vector4(-242,13,24,19),new Vector4(-514,43,31,21),
+   new Vector4(-174,-25,26,18),new Vector4(175,-49,26,17),new Vector4(-366,-56,32,18),new Vector4(-401,-79,28,19),new Vector4(-502,-137,30,18),
+   new Vector4(21,-116,21,16),new Vector4(111,-124,24,17),new Vector4(-211,-143,27,19),new Vector4(-250,-164,24,19),new Vector4(-390,-216,32,17),
+   new Vector4(-135,-216,24,17),new Vector4(151,-213,27,16),new Vector4(-29,-275,24,17),new Vector4(-278,-298,31,20),new Vector4(-315,-315,27,17),
+   new Vector4(-482,-328,35,21),new Vector4(-441,-347,27,18),new Vector4(92,-336,22,17),new Vector4(-132,-363,26,17),new Vector4(-174,-380,23,15),
+   new Vector4(-34,-425,20,13),new Vector4(-261,-435,28,18),new Vector4(-351,-458,30,18),new Vector4(-553,430,30,22),new Vector4(-544,-455,34,22)
   };
-  static Vector2[] Line(params float[] v){var a=new Vector2[v.Length/2];for(int i=0;i<a.Length;i++)a[i]=new Vector2(v[i*2],v[i*2+1]);return a;}
+  static readonly Vector4[] Hills={new Vector4(-150,435,66,17),new Vector4(-350,310,80,15),new Vector4(171,286,55,12),new Vector4(-270,9,75,13),new Vector4(-433,-168,92,16),new Vector4(-155,-352,63,15),new Vector4(139,-303,49,12),new Vector4(-387,-460,74,17)};
+  static readonly Vector2[][] Channels=Smooth(Rivers),Routes=Smooth(Roads);
+  static Vector2[][] Smooth(Vector2[][] paths)
+  {return paths.Select(line=>{var pts=new List<Vector2>();for(int i=0;i<line.Length-1;i++){var a=line[Mathf.Max(0,i-1)];var b=line[i];var c=line[i+1];var d=line[Mathf.Min(line.Length-1,i+2)];for(int j=0;j<5;j++){float t=j/5f;pts.Add(.5f*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t));}}pts.Add(line.Last());return pts.ToArray();}).ToArray();}
   static float Segment(Vector2 p,Vector2 a,Vector2 b){var d=b-a;return Vector2.Distance(p,a+d*Mathf.Clamp01(Vector2.Dot(p-a,d)/Mathf.Max(.001f,d.sqrMagnitude)));}
   public static float Shore(float x,float z)
-  {
-   var p=new Vector2(x,z);float d=10000;bool inside=false;
-   for(int i=0,j=Coast.Length-1;i<Coast.Length;j=i++)
-   {var a=Coast[j];var b=Coast[i];d=Mathf.Min(d,Segment(p,a,b));
-    if((a.y>z)!=(b.y>z) && x<(b.x-a.x)*(z-a.y)/(b.y-a.y)+a.x)inside=!inside;}
-   return inside?d:-d;
-  }
-  static readonly Vector2[][] CurvedRivers,CurvedRoads;
-  static float ComposeZ(float z){return Mathf.Abs(z)<=130?z:Mathf.Sign(z)*(130+(Mathf.Abs(z)-130)*.6f);}
-  static RegionOneDirectedGeography()
-  {
-   // Author vector control points at reference-like proportions. The actual
-   // central gameplay corridor stays fixed; pigment and tree shapes never stretch.
-   // Coast is already authored in final units; do not compress it with the old island layout.
-   foreach(var paths in new[]{Rivers,Roads})foreach(var line in paths)for(int i=0;i<line.Length;i++)line[i]=new Vector2(line[i].x,ComposeZ(line[i].y));
-   for(int i=0;i<Groves.Length;i++){var g=Groves[i];g.y=ComposeZ(g.y);g.z*=i%3==0?1.35f:.95f;g.w*=i%4==0?1.15f:.82f;Groves[i]=g;}
-   CurvedRivers=Smooth(Rivers);CurvedRoads=Smooth(Roads);
-  }
-  static Vector2[][] Smooth(Vector2[][] input)
-  {
-   var result=new Vector2[input.Length][];
-   for(int k=0;k<input.Length;k++)
-   {var line=input[k];var points=new List<Vector2>();
-    for(int i=0;i<line.Length-1;i++)
-    {var a=line[Mathf.Max(0,i-1)];var b=line[i];var c=line[i+1];var d=line[Mathf.Min(line.Length-1,i+2)];
-     for(int j=0;j<5;j++){float t=j/5f;points.Add(.5f*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t));}}
-    points.Add(line[line.Length-1]);result[k]=points.ToArray();
-   }return result;
-  }
-  static float LinesDistance(Vector2 p,Vector2[][] paths)
-  {float distance=3f;foreach(var line in paths)for(int i=1;i<line.Length;i++)
-   {var a=line[i-1];var b=line[i];if(p.x<Mathf.Min(a.x,b.x)-3 || p.x>Mathf.Max(a.x,b.x)+3 || p.y<Mathf.Min(a.y,b.y)-3 || p.y>Mathf.Max(a.y,b.y)+3)continue;
-    distance=Mathf.Min(distance,Segment(p,a,b));}return distance;
-  }
-  public static float Water(float x,float z)
-  {
-   float d=LinesDistance(new Vector2(x,z),CurvedRivers);
-   float river=1f-Mathf.SmoothStep(0,1,Mathf.InverseLerp(1.15f,2.4f,d));
-   float angleA=Mathf.Atan2((z-ComposeZ(240))/15f,(x+43)/19f);
-   float a=Mathf.Sqrt(Mathf.Pow((x+43)/19f,2)+Mathf.Pow((z-ComposeZ(240))/15f,2))/(1+.12f*Mathf.Sin(angleA*5)+.06f*Mathf.Cos(angleA*8));
-   float angleB=Mathf.Atan2((z-ComposeZ(-235))/19f,(x-61)/27f);
-   float b=Mathf.Sqrt(Mathf.Pow((x-61)/27f,2)+Mathf.Pow((z-ComposeZ(-235))/19f,2))/(1+.13f*Mathf.Sin(angleB*4)+.07f*Mathf.Cos(angleB*7));
-   return Mathf.Max(river,1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.92f,1.05f,Mathf.Min(a,b))));
-  }
-  public static float Road(float x,float z){return 1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.5f,1.5f,LinesDistance(new Vector2(x,z),CurvedRoads)));}
-  static float GroveMask(float x,float z)
-  {float f=0;foreach(var g in Groves){float d=Mathf.Pow((x-g.x)/g.z,2)+Mathf.Pow((z-g.y)/g.w,2);f=Mathf.Max(f,Mathf.Clamp01(1-d));}return f;}
+  {var p=new Vector2(x,z);float dist=10000;bool inside=false;for(int i=0,j=Coast.Length-1;i<Coast.Length;j=i++){var a=Coast[j];var b=Coast[i];dist=Mathf.Min(dist,Segment(p,a,b));if((a.y>z)!=(b.y>z)&&x<(b.x-a.x)*(z-a.y)/(b.y-a.y)+a.x)inside=!inside;}return inside?dist:-dist;}
+  static float ChannelEdge(float x,float z)
+  {var p=new Vector2(x,z);float edge=12;for(int k=0;k<Channels.Length;k++){var line=Channels[k];for(int i=1;i<line.Length;i++){var a=line[i-1];var b=line[i];if(x<Mathf.Min(a.x,b.x)-14||x>Mathf.Max(a.x,b.x)+14||z<Mathf.Min(a.y,b.y)-14||z>Mathf.Max(a.y,b.y)+14)continue;float t=i/(float)(line.Length-1);float width=k==0?Mathf.Lerp(1.1f,3.8f,t):Mathf.Lerp(.35f,k==7?3.5f:2.2f,Mathf.Sqrt(t));edge=Mathf.Min(edge,Segment(p,a,b)-width);}}
+   float lakeA=(Mathf.Sqrt(Mathf.Pow((x+49)/24,2)+Mathf.Pow((z-232)/18,2))-1)*18;
+   float lakeB=(Mathf.Sqrt(Mathf.Pow((x-67)/29,2)+Mathf.Pow((z+239)/22,2))-1)*22;
+   return Mathf.Min(edge,Mathf.Min(lakeA,lakeB));}
+  public static float Water(float x,float z)=>1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(-.6f,1.3f,ChannelEdge(x,z)));
+  public static float RoadDistance(float x,float z)
+  {var p=new Vector2(x,z);float distance=4;foreach(var line in Routes)for(int i=1;i<line.Length;i++){var a=line[i-1];var b=line[i];if(x<Mathf.Min(a.x,b.x)-4||x>Mathf.Max(a.x,b.x)+4||z<Mathf.Min(a.y,b.y)-4||z>Mathf.Max(a.y,b.y)+4)continue;distance=Mathf.Min(distance,Segment(p,a,b));}return distance;}
+  public static float Road(float x,float z)=>1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.45f,1.65f,RoadDistance(x,z)));
+  public static float Forest(float x,float z)
+  {float f=0;foreach(var g in Groves){float r=Mathf.Pow((x-g.x)/g.z,2)+Mathf.Pow((z-g.y)/g.w,2);f=Mathf.Max(f,Mathf.Clamp01(1-r));}return f;}
   public static float Height(float x,float z)
   {
-   float shore=Shore(x,z);if(shore< -4)return -20;
-   float land=Mathf.SmoothStep(0,1,Mathf.InverseLerp(-1.5f,2f,shore));
-   float ridge=0;
-   foreach(var p in new[]{new Vector3(-146,303,22),new Vector3(151,151,18),new Vector3(-148,-312,19)})
-    ridge+=4f*Mathf.Max(0,1-Mathf.Pow((x-p.x)/p.z,2)-Mathf.Pow((z-ComposeZ(p.y))/(p.z*1.5f),2));
-   // Low authored rolling shoulders. Central gameplay and scar datum stay exact.
-   float protect=Mathf.SmoothStep(0,1,Mathf.InverseLerp(130,190,new Vector2(x,z).magnitude));
-   float rolling=0;
-   foreach(var hill in new[]{new Vector4(-330,175,95,8),new Vector4(-420,-115,110,10),new Vector4(-245,-285,80,7),new Vector4(215,235,65,7),new Vector4(-210,400,100,9)})
-   {float r2=Mathf.Pow((x-hill.x)/hill.z,2)+Mathf.Pow((z-hill.y)/(hill.z*.65f),2);rolling+=hill.w*Mathf.Exp(-r2*2);}
-   return -20+land*(16+ridge+rolling*protect);
+   float shore=Shore(x,z);if(shore< -5)return -18;
+   float h=-4;foreach(var p in Hills){float r=Mathf.Pow((x-p.x)/p.z,2)+Mathf.Pow((z-p.y)/(p.z*.7f),2);h+=p.w*Mathf.Exp(-r*2.3f);}
+   // Keep all original central interactions on their established datum.
+   float guard=Mathf.SmoothStep(0,1,Mathf.InverseLerp(130,185,new Vector2(x,z).magnitude));h=Mathf.Lerp(-4,h,guard);
+   return Mathf.Lerp(-18,h,Mathf.SmoothStep(0,1,Mathf.InverseLerp(-3,2,shore)));
   }
   static Texture2D mask;
   static Texture2D Mask()
   {
-   if(mask)return mask;
-   const int w=1536,h=1280;var pixels=new Color32[w*h];
+   if(mask)return mask;const int w=1536,h=1280;var pixels=new Color32[w*h];
    for(int iy=0;iy<h;iy++)for(int ix=0;ix<w;ix++)
-   {
-    float x=((ix+.5f)/w-.5f)*DomainWidth,z=((iy+.5f)/h-.5f)*DomainDepth;
-    float shore=Shore(x,z),water=0,road=0,forest=0;
-    if(shore> -3){water=Water(x,z);road=Road(x,z)*(1-water);forest=GroveMask(x,z)*(1-water);}
-    pixels[iy*w+ix]=new Color(Mathf.Clamp01(.5f+shore/32f),water,road,forest);
-   }
-   mask=new Texture2D(w,h,TextureFormat.RGBA32,true,true){name="Directed coastline water routes grove masks",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};
-   mask.SetPixels32(pixels);mask.Apply(true,false);return mask;
+   {float x=((ix+.5f)/w-.5f)*DomainWidth,z=((iy+.5f)/h-.5f)*DomainDepth,s=Shore(x,z);float water=0,road=0,forest=0;
+    if(s> -4){water=Water(x,z);road=Road(x,z)*(1-water);forest=Forest(x,z)*(1-water);}
+    pixels[iy*w+ix]=new Color(Mathf.Clamp01(.5f+s/32),water,road,forest);}
+   mask=new Texture2D(w,h,TextureFormat.RGBA32,true,true){name="Clean authored semantic masks",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};mask.SetPixels32(pixels);mask.Apply(true,false);return mask;
   }
-  public bool IsBefore=>before;
-  public Mesh DirectedTerrain {get;private set;}
+  ValoriaIntegratedWorld host;Vector3 origin;Material ground,trees,scarMaterial;bool blockout;
+  readonly List<Mesh> meshes=new List<Mesh>();readonly List<Renderer> foliage=new List<Renderer>();Renderer scar;
+  public Mesh DirectedTerrain{get;private set;}
   public Texture2D GeographicMask=>mask;
-  ValoriaIntegratedWorld host;Vector3 origin;GameObject art;Material ground,forestMaterial;
-  readonly List<Mesh> meshes=new List<Mesh>();readonly List<Renderer> replaced=new List<Renderer>();
-  readonly List<bool> prairieStates=new List<bool>();
-  readonly List<Renderer> prairie=new List<Renderer>();readonly List<Material[]> prairieMaterials=new List<Material[]>();
-  Vector3[] scarBase;float scarScale=-1;
-  Renderer retainedNear,innerForest;MeshFilter breachFilter;Mesh originalScar,directedScar;bool before,prairieDirected;
   public static RegionOneDirectedGeography Install(Transform parent,ValoriaIntegratedWorld host)
+  {var c=parent.gameObject.AddComponent<RegionOneDirectedGeography>();c.host=host;c.origin=host.WorldHome;c.Build();return c;}
+  void Build()
   {
-   var shader=Resources.Load<Shader>("World4X/RegionOneDirectedGround");
-   var trees=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");
-   if(!shader||!trees){Debug.LogError("DIRECTED_GEOGRAPHY_ASSETS_MISSING");return null;}
-   var owner=parent.gameObject.AddComponent<RegionOneDirectedGeography>();owner.host=host;owner.origin=host.WorldHome;
-   owner.Build(shader,trees);return owner;
+   ground=new Material(Resources.Load<Shader>("World4X/RegionOneDirectedGround")){name="Clean single terrain surface"};ground.SetTexture("_Mask",Mask());ground.SetTexture("_Pigment",Resources.Load<Texture2D>("World4X/RegionOnePaintedLandcover"));ground.SetVector("_Origin",new Vector4(origin.x,origin.z,0,0));ground.SetVector("_Domain",new Vector4(DomainWidth,DomainDepth,0,0));
+   trees=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){name="Clean shared woodland"};trees.mainTexture=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");trees.SetColor("_Tint",new Color(.83f,.93f,.86f,1));
+   const int nx=320,nz=280;var v=new Vector3[(nx+1)*(nz+1)];var uv=new Vector2[v.Length];var indices=new int[nx*nz*6];
+   for(int z=0;z<=nz;z++)for(int x=0;x<=nx;x++){float px=(x/(float)nx-.5f)*DomainWidth,pz=(z/(float)nz-.5f)*DomainDepth;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,Height(px,pz),pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
+   int n=0;for(int z=0;z<nz;z++)for(int x=0;x<nx;x++){int i=z*(nx+1)+x;indices[n++]=i;indices[n++]=i+nx+1;indices[n++]=i+1;indices[n++]=i+1;indices[n++]=i+nx+1;indices[n++]=i+nx+2;}
+   var r=Create("Clean terrain — sole geographic surface",v,uv,null,indices,ground);DirectedTerrain=r.GetComponent<MeshFilter>().sharedMesh;
+   BuildForests();BuildBreach();Refresh();
   }
-  void Build(Shader shader,Texture2D trees)
+  Renderer Create(string name,Vector3[] v,Vector2[] uv,Vector2[] offsets,int[] t,Material mat,Transform parent=null)
   {
-   art=new GameObject("Region1 expressly directed geographic layers");art.transform.SetParent(transform,true);
-   ground=new Material(shader){name="Region1 authored land water paths forest ground"};
-   ground.SetTexture("_Mask",Mask());ground.SetTexture("_Pigment",Resources.Load<Texture2D>("World4X/RegionOnePaintedLandcover"));
-   ground.SetVector("_Origin",new Vector4(origin.x,origin.z,0,0));
-   ground.SetVector("_Domain",new Vector4(DomainWidth,DomainDepth,0,0));
-   forestMaterial=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){name="Region1 directed grove art"};forestMaterial.mainTexture=trees;forestMaterial.SetColor("_Tint",new Color(.76f,.91f,.94f,1));
-   foreach(var r in host.WorldRoot.GetComponentsInChildren<Renderer>(true))
-   {
-    if(r.transform.IsChildOf(art.transform))continue;
-    if(r.name=="Region1 · one coherent terrain mesh" || r.name=="Region1 · retained local forest canopy" ||
-       r.name.StartsWith("Region1 2.5D forest band",StringComparison.Ordinal) ||
-       r.name.StartsWith("Region1 · mountain facets",StringComparison.Ordinal))replaced.Add(r);
-    if(r is MeshRenderer && r.sharedMaterials.Any(m=>m&&m.shader&&m.shader.name=="Eldoria/World4X/WorldAlignedPaintedGround") && r.name!="Region1 · one coherent terrain mesh")
-    {prairie.Add(r);prairieStates.Add(r.enabled);prairieMaterials.Add(r.sharedMaterials);}
-   }
-   BuildTerrain();RegionOneGeographicDressing.Install(art.transform,origin);BuildGroves(false);innerForest=BuildGroves(true);BuildRetainedNear();BuildHeroBreach();
-   Debug.Log("REGION1_DIRECTED_GEOGRAPHY polygon="+Coast.Length+" river_layers="+Rivers.Length+" roads="+Roads.Length+" groves="+Groves.Length+" replaced="+replaced.Count);
-   Refresh();
+   var mesh=new Mesh{name=name,indexFormat=v.Length>65535?IndexFormat.UInt32:IndexFormat.UInt16};mesh.vertices=v;mesh.uv=uv;if(offsets!=null)mesh.uv2=offsets;mesh.triangles=t;mesh.RecalculateNormals();mesh.RecalculateBounds();if(offsets!=null){var b=mesh.bounds;b.Expand(40);mesh.bounds=b;}meshes.Add(mesh);
+   var go=new GameObject(name);go.transform.SetParent(parent?parent:transform,true);go.AddComponent<MeshFilter>().sharedMesh=mesh;var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=mat;r.shadowCastingMode=ShadowCastingMode.Off;r.receiveShadows=false;return r;
   }
-  void BuildTerrain()
+  public static bool IsTreeDonor(Renderer r)=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)||r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal)||r.name.StartsWith("Zone1 woodland edge / retained pine ",StringComparison.Ordinal)||r.name.StartsWith("Existing conifer canopy / forest ecological lobe ",StringComparison.Ordinal)||r.name=="Forest understory / young conifer";
+  static void Tree(List<Vector3> v,List<Vector2> uv,List<Vector2> offsets,List<int> t,Vector3 p,float h,float w,int species)
+  {int n=v.Count;for(int k=0;k<4;k++){bool right=k==1||k==2,top=k>=2;v.Add(p);uv.Add(new Vector2((species+(right?.995f:.005f))/3,top?1:0));offsets.Add(new Vector2((right?.5f:-.5f)*w,top?h:-h*.04f));}t.AddRange(new[]{n,n+1,n+2,n,n+2,n+3});}
+  void BuildForests()
   {
-   const int nx=250,nz=250;var v=new Vector3[(nx+1)*(nz+1)];var uv=new Vector2[v.Length];var t=new int[nx*nz*6];
-   for(int z=0;z<=nz;z++)for(int x=0;x<=nx;x++)
-   {float px=(x/(float)nx-.5f)*DomainWidth,pz=(z/(float)nz-.5f)*DomainDepth;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,Height(px,pz),pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
-   int n=0;for(int z=0;z<nz;z++)for(int x=0;x<nx;x++){int i=z*(nx+1)+x;t[n++]=i;t[n++]=i+nx+1;t[n++]=i+1;t[n++]=i+1;t[n++]=i+nx+1;t[n++]=i+nx+2;}
-   MeshObject("Directed terrain continuous coast relief",v,uv,null,t,ground);
-   MeshObject("Directed ocean continuation",new[]{origin+new Vector3(-1000,-20.1f,-900),origin+new Vector3(1000,-20.1f,-900),origin+new Vector3(1000,-20.1f,900),origin+new Vector3(-1000,-20.1f,900)},new Vector2[4],null,new[]{0,2,1,0,3,2},ground);
-  }
-  Renderer MeshObject(string name,Vector3[] v,Vector2[] uv,Vector2[] offsets,int[] t,Material mat)
-  {
-   var mesh=new Mesh{name=name,vertices=v,uv=uv,triangles=t};if(offsets!=null)mesh.uv2=offsets;
-   if(name=="Directed terrain continuous coast relief")DirectedTerrain=mesh;
-   mesh.RecalculateNormals();mesh.RecalculateBounds();if(offsets!=null){var b=mesh.bounds;b.Expand(40);mesh.bounds=b;}meshes.Add(mesh);
-   var go=new GameObject(name);go.transform.SetParent(art.transform,true);go.AddComponent<MeshFilter>().sharedMesh=mesh;
-   var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=mat;r.shadowCastingMode=ShadowCastingMode.Off;r.receiveShadows=false;return r;
-  }
-  static void Quad(List<Vector3> v,List<Vector2> uv,List<Vector2> offsets,List<int> tris,Vector3 foot,float width,float height,int species)
-  {
-   int n=v.Count;for(int k=0;k<4;k++){bool right=k==1||k==2,top=k>=2;v.Add(foot);offsets.Add(new Vector2((right?.5f:-.5f)*width,top?height:-height*.04f));uv.Add(new Vector2((species+(right?.995f:.005f))/3f,top?1:0));}
-   tris.AddRange(new[]{n,n+1,n+2,n,n+2,n+3});
-  }
-  Renderer BuildGroves(bool inner)
-  {
-   var v=new List<Vector3>();var uv=new List<Vector2>();var offsets=new List<Vector2>();var tris=new List<int>();
+   // Reuse measured near-tree positions once, not an old generated forest layer.
+   var v=new List<Vector3>();var uv=new List<Vector2>();var off=new List<Vector2>();var t=new List<int>();int index=0;
+   foreach(var r in host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true).Where(IsTreeDonor).OrderBy(r=>r.transform.position.x).ThenBy(r=>r.transform.position.z))
+   {var b=r.bounds;float h=Mathf.Clamp(b.size.y,1,18),w=Mathf.Clamp(Mathf.Max(b.size.x,b.size.z),h*.55f,h*1.1f);Tree(v,uv,off,t,new Vector3(b.center.x,origin.y+Height(b.center.x-origin.x,b.center.z-origin.z)+.07f,b.center.z),h,w,index++%3);}
+   foliage.Add(Create("Clean retained tree coordinates",v.ToArray(),uv.ToArray(),off.ToArray(),t.ToArray(),trees));v.Clear();uv.Clear();off.Clear();t.Clear();
+   var rng=new System.Random(231023);
    for(int i=0;i<Groves.Length;i++)
-   {var g=Groves[i];if((new Vector2(g.x,g.y).magnitude<135)!=inner)continue;
-    int count=Mathf.Clamp(Mathf.RoundToInt(g.z*g.w*.075f),12,65);for(int k=0;k<count;k++)
-    {float a=k*2.399963f+i*.7f,r=Mathf.Sqrt((k+.5f)/count)*.93f;float x=g.x+Mathf.Cos(a)*g.z*r,z=g.y+Mathf.Sin(a)*g.w*r;
-     if(Shore(x,z)<7 || Water(x,z)>.05f || Road(x,z)>.3f)continue;
-     float h=11.5f+(i*7+k*3)%5*1.15f;Quad(v,uv,offsets,tris,origin+new Vector3(x,Height(x,z)+.06f,z),h*.72f,h,(i+k)%3);
-    }
+   {var g=Groves[i];int count=Mathf.RoundToInt(g.z*g.w*.055f);var accepted=new List<Vector2>();
+    for(int k=0;k<count*6&&accepted.Count<count;k++)
+    {float x=g.x+((float)rng.NextDouble()*2-1)*g.z,z=g.y+((float)rng.NextDouble()*2-1)*g.w;var p=new Vector2(x,z);float f=Forest(x,z);
+     if(p.magnitude<130||f<.08f||rng.NextDouble()>Mathf.Sqrt(f)||Shore(x,z)<9||Water(x,z)>.03f||Road(x,z)>.15f||accepted.Any(a=>(a-p).sqrMagnitude<13))continue;
+     accepted.Add(p);float h=7.5f+(float)rng.NextDouble()*8;Tree(v,uv,off,t,origin+new Vector3(x,Height(x,z)+.07f,z),h,h*.64f,(i+k)%3);}
    }
-   if(!inner)
-   {
-    var rng=new System.Random(19211);
-    for(int k=0;k<420;k++)
-    {float x=-560+(float)rng.NextDouble()*820,z=-430+(float)rng.NextDouble()*920;
-     if(new Vector2(x,z).magnitude<140||Shore(x,z)<10||Water(x,z)>.02f||Road(x,z)>.1f||Mathf.PerlinNoise(x*.028f+7,z*.028f+11)<.54f)continue;
-     float h=3.5f+(float)rng.NextDouble()*4.5f;Quad(v,uv,offsets,tris,origin+new Vector3(x,Height(x,z)+.08f,z),h*.58f,h,k%2);
-    }
-   }
-   return MeshObject(inner?"Directed inner grove silhouettes":"Directed outer grove silhouettes",v.ToArray(),uv.ToArray(),offsets.ToArray(),tris.ToArray(),forestMaterial);
+   foliage.Add(Create("Clean authored woodland masses",v.ToArray(),uv.ToArray(),off.ToArray(),t.ToArray(),trees));
   }
-  void BuildRetainedNear()
+  void BuildBreach()
   {
-   var v=new List<Vector3>();var uv=new List<Vector2>();var offsets=new List<Vector2>();var tris=new List<int>();int i=0;
-   foreach(var r in host.WorldRoot.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal)||r.name.StartsWith("Existing conifer canopy / forest ecological lobe ",StringComparison.Ordinal)||r.name=="Forest understory / young conifer"))
-   {var b=r.bounds;float h=Mathf.Clamp(b.size.y,1,18),w=Mathf.Clamp(Mathf.Max(b.size.x,b.size.z),h*.55f,h*1.1f);Quad(v,uv,offsets,tris,new Vector3(b.center.x,origin.y+Height(b.center.x-origin.x,b.center.z-origin.z)+.06f,b.center.z),w,h,i++%3);}
-   retainedNear=MeshObject("Directed retained actual near trees",v.ToArray(),uv.ToArray(),offsets.ToArray(),tris.ToArray(),forestMaterial);
+   var parent=new GameObject("Region1 · grounded geologic Breach (not a portal)").transform;parent.SetParent(transform,true);
+   scarMaterial=new Material(Shader.Find("Sprites/Default")){name="Clean single anchored Breach"};scarMaterial.mainTexture=Resources.Load<Texture2D>("World4X/RegionOneBreachDecal");scarMaterial.renderQueue=3001;
+   const int n=24;const float width=160;var v=new Vector3[(n+1)*(n+1)];var uv=new Vector2[v.Length];var colors=new Color[v.Length];var t=new int[n*n*6];
+   for(int z=0;z<=n;z++)for(int x=0;x<=n;x++){int i=z*(n+1)+x;float u=x/(float)n,w=z/(float)n;float wx=8+(u-.505458f)*width,wz=61+(w-.439022f)*width;v[i]=new Vector3(wx-8,Height(wx,wz)+.12f,wz-61);uv[i]=new Vector2(u,w);colors[i]=new Color(1,1,1,Mathf.SmoothStep(0,1,Mathf.InverseLerp(32,48,new Vector2(wx,wz).magnitude))*(1-Water(wx,wz)));if(x==n||z==n)continue;int j=(z*n+x)*6;t[j]=i;t[j+1]=i+n+1;t[j+2]=i+1;t[j+3]=i+1;t[j+4]=i+n+1;t[j+5]=i+n+2;}
+   scar=Create("Region1 · authored Breach pigment at actual world anchor",v,uv,null,t,scarMaterial,parent);scar.transform.position=new Vector3(origin.x+8,origin.y,origin.z+61);scar.GetComponent<MeshFilter>().sharedMesh.colors=colors;
   }
-  void BuildHeroBreach()
-  {
-   breachFilter=transform.GetComponentsInChildren<MeshFilter>(true).FirstOrDefault(f=>f.name=="Region1 · authored Breach pigment at actual world anchor");
-   if(!breachFilter)return;originalScar=breachFilter.sharedMesh;directedScar=Instantiate(originalScar);directedScar.name="Directed central geological scar";
-   scarBase=originalScar.vertices;meshes.Add(directedScar);UpdateScar(244);
-  }
-  void UpdateScar(float zoom)
-  {
-   if(!directedScar)return;float scale=Mathf.Lerp(1f,2.1f,Mathf.SmoothStep(0,1,Mathf.InverseLerp(80,152,zoom)));
-   if(Mathf.Abs(scale-scarScale)<.001f)return;scarScale=scale;
-   var v=new Vector3[scarBase.Length];var colors=new Color[v.Length];
-   for(int i=0;i<v.Length;i++)
-   {v[i]=scarBase[i];v[i].x*=scale;v[i].z*=scale;float x=8+v[i].x,z=61+v[i].z;v[i].y=Height(x,z)+.12f;
-    float approach=Mathf.SmoothStep(0,1,Mathf.InverseLerp(32,48,new Vector2(x,z).magnitude));colors[i]=new Color(1,1,1,approach*(1-Water(x,z)));}
-   directedScar.vertices=v;directedScar.colors=colors;directedScar.RecalculateBounds();
-  }
-  public void SetBefore(bool value){before=value;Refresh();}
-  public void Refresh()
-  {
-   if(!art||!host||!host.WorldCamera)return;
-   float zoom=host.WorldCamera.orthographicSize;art.SetActive(!before);
-   if(!before)UpdateScar(zoom);
-   if(breachFilter)breachFilter.sharedMesh=before?originalScar:directedScar;
-   if(!before)
-   {foreach(var r in replaced)if(r)r.enabled=false;
-    foreach(var r in prairie)if(r)r.enabled=false;
-    if(!prairieDirected){for(int i=0;i<prairie.Count;i++)if(prairie[i]){var mats=new Material[prairieMaterials[i].Length];for(int k=0;k<mats.Length;k++)mats[k]=ground;prairie[i].sharedMaterials=mats;}prairieDirected=true;}
-    if(retainedNear)retainedNear.enabled=zoom<152;
-    if(innerForest)innerForest.enabled=zoom>=152;
-    ground.SetFloat("_Panorama",Mathf.SmoothStep(0,1,Mathf.InverseLerp(152,220,zoom)));
-    ground.SetFloat("_Near",1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(80,152,zoom)));
-   }
-   else
-   {for(int i=0;i<prairie.Count;i++)if(prairie[i])prairie[i].enabled=prairieStates[i]&&zoom<(host.WorldCamera.aspect<.8f?72:41);
-    foreach(var r in replaced)if(r)r.enabled=r.name=="Region1 · retained local forest canopy"?zoom<152:true;
-    if(prairieDirected){for(int i=0;i<prairie.Count;i++)if(prairie[i])prairie[i].sharedMaterials=prairieMaterials[i];prairieDirected=false;}}
-  }
-  void LateUpdate(){Refresh();}
-  void OnDestroy(){if(breachFilter)breachFilter.sharedMesh=originalScar;for(int i=0;i<prairie.Count;i++)if(prairie[i])prairie[i].sharedMaterials=prairieMaterials[i];if(art)Destroy(art);foreach(var m in meshes)if(m)Destroy(m);if(ground)Destroy(ground);if(forestMaterial)Destroy(forestMaterial);}
+  public void SetBlockout(bool value){blockout=value;Refresh();}
+  public void Refresh(){if(!ground||!host||!host.WorldCamera)return;float zoom=host.WorldCamera.orthographicSize;ground.SetFloat("_Panorama",Mathf.SmoothStep(0,1,Mathf.InverseLerp(152,220,zoom)));ground.SetFloat("_Near",1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(80,152,zoom)));ground.SetFloat("_Blockout",blockout?1:0);foreach(var r in foliage)r.enabled=!blockout;if(scar)scar.enabled=true;}
+  void OnDestroy(){foreach(var mesh in meshes)if(mesh)Destroy(mesh);if(ground)Destroy(ground);if(trees)Destroy(trees);if(scarMaterial)Destroy(scarMaterial);}
  }
 }
