@@ -19,7 +19,7 @@ namespace Eldoria.World4XCanon
    var studyShader=Shader.Find("Eldoria/RiberaFade");
    foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())renderer.sharedMaterials=renderer.sharedMaterials.Select(old=>{
     if(surfaceCache.TryGetValue(old,out var cached))return cached;
-    var material=new Material(studyShader);Color c=Color.white;
+    var material=new Material(studyShader);material.name=old.name;material.SetFloat("_Foliage",old.name.Contains("Needles")?1:0);Color c=Color.white;
     if(old.HasProperty("baseColorFactor"))c=old.GetColor("baseColorFactor");else if(old.HasProperty("_BaseColor"))c=old.GetColor("_BaseColor");
     material.SetColor("_BaseColor",c);
     for(int p=0;p<old.shader.GetPropertyCount();p++)if(old.shader.GetPropertyType(p)==UnityEngine.Rendering.ShaderPropertyType.Texture){string name=old.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",old.GetTexture(name));}
@@ -89,7 +89,7 @@ namespace Eldoria.World4XCanon
       if(materialCache.TryGetValue(old,out var existing))return existing;
       var m=new Material(shader);materialCache.Add(old,m);Color c=Color.white;
       if(old.HasProperty("baseColorFactor"))c=old.GetColor("baseColorFactor");else if(old.HasProperty("_BaseColorFactor"))c=old.GetColor("_BaseColorFactor");else if(old.HasProperty("_BaseColor"))c=old.GetColor("_BaseColor");
-      m.SetColor("_BaseColor",c);mats.Add(m);return m;
+      m.SetColor("_BaseColor",c);m.SetFloat("_Foliage",old.HasProperty("_Foliage")?old.GetFloat("_Foliage"):0);mats.Add(m);return m;
      }).ToArray();r.sharedMaterials=converted;
      var copy=new GameObject("Atlas tree");copy.layer=30;copy.AddComponent<MeshFilter>().sharedMesh=r.GetComponent<MeshFilter>().sharedMesh;var cr=copy.AddComponent<MeshRenderer>();cr.sharedMaterials=converted;
      copy.transform.SetPositionAndRotation(new Vector3(0,-10000,0),r.transform.rotation);copy.transform.localScale=r.transform.lossyScale;

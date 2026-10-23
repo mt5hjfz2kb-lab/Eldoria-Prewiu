@@ -1,12 +1,12 @@
 Shader "Eldoria/RiberaFade" {
- Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 }
+ Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _Foliage("Painted foliage response",Float)=0 }
  SubShader {Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest"}
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
  TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
  CBUFFER_START(UnityPerMaterial)
- float4 _BaseColor;float4 _BaseMap_ST;float _Fade;float _Baked;
+ float4 _BaseColor;float4 _BaseMap_ST;float _Fade;float _Baked;float _Foliage;
  CBUFFER_END
  struct A{float4 positionOS:POSITION;float3 normalOS:NORMAL;float2 uv:TEXCOORD0;};
  struct V{float4 p:SV_POSITION;float3 normal:TEXCOORD0;float2 uv:TEXCOORD1;float3 world:TEXCOORD2;};
@@ -24,6 +24,7 @@ Shader "Eldoria/RiberaFade" {
  Light l=GetMainLight(TransformWorldToShadowCoord(i.world));
  float diffuse=saturate(dot(normalize(i.normal),l.direction));
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*l.shadowAttenuation);
+ if(_Baked<.5 && _Foliage>.5)c.rgb=lerp(half3(.025,.11,.075),half3(.26,.36,.075),smoothstep(.1,.9,diffuse))*lerp(.65,1,l.shadowAttenuation)*( .88+.12*saturate(c.g/.2));
  return half4(c.rgb,1);
  }
  ENDHLSL
