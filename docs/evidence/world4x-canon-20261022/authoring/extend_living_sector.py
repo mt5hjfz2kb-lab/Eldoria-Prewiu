@@ -115,8 +115,11 @@ for cx,cy,rx,ry,count in [(-80,184,13,10,12),(-75,244,16,7,10),(82,213,10,18,14)
   if not(-92<x<92 and 175<y<248) or distance(x,y)<5:continue
   if any(math.hypot(x-a,y-b)<r+5 for a,b,r in cities) or any(math.hypot(x-o.location.x,y-o.location.y)<3.5 for o in added):continue
   o=donors[len(added)%len(donors)].copy();o.data=donors[len(added)%len(donors)].data;scene.collection.objects.link(o);o.name='Pilot_Pine_AI_'+str(len(added));o.location=(x,y,height(x,y));o.scale*=.8;o['grove']=str((cx,cy));added.append(o)
+bpy.context.view_layer.update()
+def tree_radius(o):
+ return max(math.hypot((o.matrix_world@Vector(c)).x-o.location.x,(o.matrix_world@Vector(c)).y-o.location.y) for c in o.bound_box)
 # Export semantic authoring hints separately. Runtime must still raycast the real imported mesh.
-meta={'stage':'AI','minX':-96,'maxX':96,'minZ':170,'maxZ':250,'cities':[{'x':x,'z':y,'radius':r} for x,y,r in cities], 'routes':[{'points':[{'x':x,'z':y} for x,y in line]} for line in routes], 'trees':[{'x':o.location.x,'z':o.location.y,'radius':2.4} for o in added], 'source':'restored AG 40014366595','testPopulationOnly':True}
+meta={'stage':'AI','minX':-96,'maxX':96,'minZ':170,'maxZ':250,'cities':[{'x':x,'z':y,'radius':r} for x,y,r in cities], 'routes':[{'points':[{'x':x,'z':y} for x,y in line]} for line in routes], 'trees':[{'x':o.location.x,'z':o.location.y,'radius':tree_radius(o)} for o in added], 'source':'restored AG 40014366595','testPopulationOnly':True}
 (out/'LivingSectorLayout.json').write_text(json.dumps(meta,indent=2))
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.pack()

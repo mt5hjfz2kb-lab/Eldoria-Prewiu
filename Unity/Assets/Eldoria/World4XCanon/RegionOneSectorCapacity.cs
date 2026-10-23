@@ -19,7 +19,7 @@ namespace Eldoria.World4XCanon
   [Serializable] public class Report {
    public string scope="Disposable capacity and relocation fixture; NOT production respawn or network multiplayer";
    public int packableInstances,reservedRelocationSites;public int validSites,instances,citySpaces,routeSamples,respawned,duplicateCount,meshHits;
-   public float maxContactError,maxCityRelief;public float testMarkerScale=1f;public float conservativeFootprintRadius=7f;public int woodInstances,stoneInstances,enemyInstances;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched,physicalDevice=false;
+   public float maxContactError,maxCityRelief;public float testMarkerScale=1f;public float conservativeFootprintRadius,woodRadius,stoneRadius,enemyRadius;public int woodInstances,stoneInstances,enemyInstances;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched,physicalDevice=false;
    public int walkableSamples,reachableSamples,reachableCities,dynamicNearTriangles,dynamicFarTriangles;public bool fullSizeNavigation;public Site[] sites;public Point[] cities; public Fixture population;
   }
   static float Segment(float x,float z,Point a,Point b) {
@@ -37,14 +37,14 @@ namespace Eldoria.World4XCanon
   }
   // Stateless placement: callers must supply a common authoritative occupancy snapshot.
   // No client-local timer, save schema or second gameplay gateway is introduced here.
-  static int Choose(Site[] sites,string content,int bastion,HashSet<int> occupied,int old,int start) {
-   for(int n=0;n<sites.Length;n++){int k=(start+n)%sites.Length;var s=sites[k];if(s.index!=old&&!occupied.Contains(s.index)&&s.clearRadius>=7f&&!sites.Any(other=>occupied.Contains(other.index)&&Vector2.Distance(new Vector2(other.position.x,other.position.z),new Vector2(s.position.x,s.position.z))<14f)&&Allowed(s,content,bastion))return s.index;}return -1;
+  static int Choose(Site[] sites,string content,int bastion,Dictionary<int,float> occupied,Dictionary<string,float> radii,int old,int start) {
+   for(int n=0;n<sites.Length;n++){int k=(start+n)%sites.Length;var s=sites[k];if(s.index!=old&&!occupied.ContainsKey(s.index)&&s.clearRadius>=radii[content]&&!sites.Any(other=>occupied.ContainsKey(other.index)&&Vector2.Distance(new Vector2(other.position.x,other.position.z),new Vector2(s.position.x,s.position.z))<radii[content]+occupied[other.index])&&Allowed(s,content,bastion))return s.index;}return -1;
   }
-  static void TickFixture(Fixture f,Site[] sites,long now) {
-   var occupied=new HashSet<int>(f.instances.Where(i=>i.active).Select(i=>i.site));
+  static void TickFixture(Fixture f,Site[] sites,Dictionary<string,float> radii,long now) {
+   var occupied=f.instances.Where(i=>i.active).ToDictionary(i=>i.site,i=>radii[i.content]);
    foreach(var i in f.instances.Where(i=>!i.active&&i.due<=now).OrderBy(i=>sites.Count(site=>Allowed(site,i.content,2))).ThenBy(i=>i.id,StringComparer.Ordinal)) {
-    int next=Choose(sites,i.content,2,occupied,i.site,(i.site+37+i.generation)%sites.Length);
-    if(next<0)continue;i.site=next;i.generation++;i.active=true;i.due=0;occupied.Add(next);f.revision++;
+    int next=Choose(sites,i.content,2,occupied,radii,i.site,(i.site+37+i.generation)%sites.Length);
+    if(next<0)continue;i.site=next;i.generation++;i.active=true;i.due=0;occupied.Add(next,radii[i.content]);f.revision++;
    }
   }
   public static void Capture(Camera camera,GameObject root,Transform world,Vector3 home,string output) {
@@ -67,6 +67,16 @@ namespace Eldoria.World4XCanon
      foreach(var c in surfaces)if(c.Raycast(ray,out var hit,500)&&(!found||hit.distance<result.distance)){result=hit;found=true;}
      if(found)report.meshHits++;return found;
     }
+    // Measure imported visual footprints BEFORE placement, including every part of the enemy.
+    var component=world.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(c=>c&&c.GetType().Name=="SpawnlingEncounterVisual");
+    var model=component?.GetType().GetField("ModelRoot")?.GetValue(component) as GameObject;
+    if(!model)throw new InvalidOperationException("Existing enemy model unavailable");
+    enemyMesh=BakeVisual(model.GetComponentsInChildren<SkinnedMeshRenderer>(true),out enemyMaterials);meshes.Add(enemyMesh);
+    var lod=component.GetComponent<LODGroup>();if(!lod||lod.GetLODs().Length<2)throw new InvalidOperationException("Existing enemy LOD missing");
+    enemyFarMesh=BakeVisual(lod.GetLODs()[1].renderers,out enemyFarMaterials);meshes.Add(enemyFarMesh);
+    float MarkerRadius(string prefix){var renderer=world.GetComponentsInChildren<MeshRenderer>(true).First(r=>r.name.StartsWith(prefix,StringComparison.Ordinal));var mesh=renderer.GetComponent<MeshFilter>().sharedMesh;var foot=renderer.transform.TransformPoint(mesh.vertices[0]);return mesh.vertices.Max(v=>{var p=renderer.transform.TransformPoint(v)-foot;return new Vector2(p.x,p.z).magnitude;})+mesh.uv2.Max(v=>Mathf.Abs(v.x))+.5f;}
+    report.woodRadius=MarkerRadius("Reference existing wood grove");report.stoneRadius=MarkerRadius("Reference existing quarry");report.enemyRadius=Mathf.Max(enemyMesh.vertices.Max(v=>new Vector2(v.x,v.z).magnitude),enemyFarMesh.vertices.Max(v=>new Vector2(v.x,v.z).magnitude))+.5f;
+    var radii=new Dictionary<string,float>{{"forest-valoria",report.woodRadius},{"quarry-valoria",report.stoneRadius},{"engendro-valoria",report.enemyRadius},{"corrupt-scout",report.enemyRadius}};report.conservativeFootprintRadius=radii.Values.Max();
     var sites=new List<Site>();
     for(float z=176;z<=246;z+=5)for(float x=-90;x<=90;x+=5) {
      if(layout.cities.Any(c=>Distance(x,z,c)<c.radius+4)||Road(layout,x,z)<4||layout.trees.Any(t=>Distance(x,z,t)<t.radius+2))continue;
@@ -95,22 +105,22 @@ namespace Eldoria.World4XCanon
       if(!Sample(p.x,p.y,out var h)||Vector3.Angle(h.normal,Vector3.up)>25||layout.trees.Any(t=>Distance(p.x,p.y,t)<t.radius))throw new InvalidOperationException("Blocked march corridor");report.routeSamples++;
      }
     }
-    var fstate=new Fixture();var occupied=new HashSet<int>();
+    var fstate=new Fixture();var occupied=new Dictionary<int,float>();
     for(int n=0;n<40;n++)foreach(string content in new[]{"forest-valoria","quarry-valoria","engendro-valoria"}) {
-     int k=Choose(report.sites,content,2,occupied,-1,n*11%sites.Count);if(k<0)continue;
-     occupied.Add(k);fstate.instances.Add(new Instance{id="qa:"+content+":"+n,content=content,site=k});
+     int k=Choose(report.sites,content,2,occupied,radii,-1,n*11%sites.Count);if(k<0)continue;
+     occupied.Add(k,radii[content]);fstate.instances.Add(new Instance{id="qa:"+content+":"+n,content=content,site=k});
     }
     report.packableInstances=fstate.instances.Count;fstate.instances=fstate.instances.Where((i,n)=>n%4!=3).ToList();report.reservedRelocationSites=report.packableInstances-fstate.instances.Count;
-    report.instances=fstate.instances.Count;report.woodInstances=fstate.instances.Count(i=>i.content=="forest-valoria");report.stoneInstances=fstate.instances.Count(i=>i.content=="quarry-valoria");report.enemyInstances=fstate.instances.Count(i=>i.content=="engendro-valoria");if(report.instances<12)throw new InvalidOperationException("Insufficient full-size population capacity");
-    if(Choose(report.sites,"engendro-valoria",1,new HashSet<int>(),-1,0)!=-1)throw new InvalidOperationException("Progression exclusion failed");
-    report.occupiedRejected=Choose(report.sites,"corrupt-scout",2,new HashSet<int>(sites.Select(s=>s.index)),-1,0)==-1;
+    report.instances=fstate.instances.Count;report.woodInstances=fstate.instances.Count(i=>i.content=="forest-valoria");report.stoneInstances=fstate.instances.Count(i=>i.content=="quarry-valoria");report.enemyInstances=fstate.instances.Count(i=>i.content=="engendro-valoria");if(report.instances<12||report.woodInstances==0||report.stoneInstances==0||report.enemyInstances==0)throw new InvalidOperationException("Insufficient measured population capacity: "+report.instances+" wood="+report.woodInstances+" stone="+report.stoneInstances+" enemy="+report.enemyInstances+" radii="+report.woodRadius+","+report.stoneRadius+","+report.enemyRadius);
+    if(Choose(report.sites,"engendro-valoria",1,new Dictionary<int,float>(),radii,-1,0)!=-1)throw new InvalidOperationException("Progression exclusion failed");
+    report.occupiedRejected=Choose(report.sites,"corrupt-scout",2,sites.ToDictionary(site=>site.index,site=>1f),radii,-1,0)==-1;
     var depleted=fstate.instances.Where((i,n)=>n%4==0).ToArray();var oldSites=depleted.ToDictionary(i=>i.id,i=>i.site);
     foreach(var i in depleted){i.active=false;i.due=100;}fstate.revision++;
     string saved=JsonUtility.ToJson(fstate);File.WriteAllText(Path.Combine(dir,"fixture-before-respawn.json"),saved);
     fstate=JsonUtility.FromJson<Fixture>(File.ReadAllText(Path.Combine(dir,"fixture-before-respawn.json")));report.saveReloadStable=JsonUtility.ToJson(fstate)==saved;
-    TickFixture(fstate,report.sites,99);if(fstate.instances.Count(i=>!i.active)!=depleted.Length)throw new InvalidOperationException("Premature respawn");
-    TickFixture(fstate,report.sites,100);report.respawned=fstate.instances.Count(i=>i.generation==1);report.changedPosition=fstate.instances.Where(i=>oldSites.ContainsKey(i.id)).All(i=>i.site!=oldSites[i.id]);
-    string after=JsonUtility.ToJson(fstate);fstate=JsonUtility.FromJson<Fixture>(after);TickFixture(fstate,report.sites,100);report.repeatedTickIdempotent=after==JsonUtility.ToJson(fstate);
+    TickFixture(fstate,report.sites,radii,99);if(fstate.instances.Count(i=>!i.active)!=depleted.Length)throw new InvalidOperationException("Premature respawn");
+    TickFixture(fstate,report.sites,radii,100);report.respawned=fstate.instances.Count(i=>i.generation==1);report.changedPosition=fstate.instances.Where(i=>oldSites.ContainsKey(i.id)).All(i=>i.site!=oldSites[i.id]);
+    string after=JsonUtility.ToJson(fstate);fstate=JsonUtility.FromJson<Fixture>(after);TickFixture(fstate,report.sites,radii,100);report.repeatedTickIdempotent=after==JsonUtility.ToJson(fstate);
     report.duplicateCount=fstate.instances.Count-fstate.instances.Select(i=>i.id).Distinct().Count()+fstate.instances.Count(i=>i.active)-fstate.instances.Where(i=>i.active).Select(i=>i.site).Distinct().Count();
     if(report.respawned!=depleted.Length||!report.changedPosition||!report.saveReloadStable||!report.repeatedTickIdempotent||report.duplicateCount!=0||!report.occupiedRejected)throw new InvalidOperationException("Capacity fixture state invariant failed: respawned="+report.respawned+" expected="+depleted.Length+" changed="+report.changedPosition+" duplicates="+report.duplicateCount);
     report.population=fstate;
@@ -119,7 +129,7 @@ namespace Eldoria.World4XCanon
     var free=new Dictionary<Vector2Int,Vector3>();
     for(int iz=0;iz<=38;iz++)for(int ix=0;ix<=94;ix++){
      float x=-94+ix*2,z=172+iz*2;
-     if(layout.trees.Any(t=>Distance(x,z,t)<t.radius+1)||layout.cities.Any(c=>Distance(x,z,c)<c.radius+1)||fstate.instances.Any(i=>i.active&&Vector2.Distance(new Vector2(x+home.x,z+home.z),new Vector2(sites[i.site].position.x,sites[i.site].position.z))<8))continue;
+     if(layout.trees.Any(t=>Distance(x,z,t)<t.radius+1)||layout.cities.Any(c=>Distance(x,z,c)<c.radius+1)||fstate.instances.Any(i=>i.active&&Vector2.Distance(new Vector2(x+home.x,z+home.z),new Vector2(sites[i.site].position.x,sites[i.site].position.z))<radii[i.content]+1))continue;
      if(Sample(x,z,out var h)&&Vector3.Angle(h.normal,Vector3.up)<=25)free.Add(new Vector2Int(ix,iz),h.point);
     }
     var entry=home+new Vector3(layout.routes[0].points[0].x,0,172);var start=free.OrderBy(p=>new Vector2(p.Value.x-entry.x,p.Value.z-entry.z).sqrMagnitude).First().Key;
@@ -149,17 +159,6 @@ namespace Eldoria.World4XCanon
      } else {
       // Bake the actual approved skeleton in world coordinates, matching TryGeometryBounds.
       // BakeMesh on an arbitrary renderer included a flattened non-model donor in the rejected trial.
-      var component=world.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(c=>c&&c.GetType().Name=="SpawnlingEncounterVisual");
-      var model=component?.GetType().GetField("ModelRoot")?.GetValue(component) as GameObject;
-      if(!model)throw new InvalidOperationException("Existing enemy model unavailable");
-      if(!enemyMesh){
-       enemyMesh=BakeVisual(model.GetComponentsInChildren<SkinnedMeshRenderer>(true),out enemyMaterials);meshes.Add(enemyMesh);
-       var lod=component.GetComponentsInChildren<LODGroup>(true).FirstOrDefault();
-       if(!lod)lod=component.GetComponentInParent<LODGroup>();
-       if(!lod||lod.GetLODs().Length<2)throw new InvalidOperationException("Existing enemy LOD missing");
-       enemyFarMesh=BakeVisual(lod.GetLODs()[1].renderers,out enemyFarMaterials);meshes.Add(enemyFarMesh);
-       if(Mathf.Max(enemyMesh.bounds.extents.x,enemyMesh.bounds.extents.z)>7)throw new InvalidOperationException("Enemy exceeds reserved full-size footprint");
-      }
       var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.position=sites[i.site].position+Vector3.up*.08f;go.AddComponent<MeshFilter>().sharedMesh=enemyMesh;var rr=go.AddComponent<MeshRenderer>();rr.sharedMaterials=enemyMaterials;enemyDisplays.Add(go);
       float required=float.NegativeInfinity;
       foreach(var vertex in enemyMesh.vertices.Where(v=>v.y<enemyMesh.bounds.min.y+.25f)){var foot=go.transform.TransformPoint(vertex);if(!Sample(foot.x-home.x,foot.z-home.z,out var ground))throw new InvalidOperationException("Enemy foot outside terrain");required=Mathf.Max(required,ground.point.y+.08f-foot.y);}
@@ -184,7 +183,7 @@ namespace Eldoria.World4XCanon
     }
     report.originalSaveUntouched=playerBefore==JsonUtility.ToJson(host.City.Gateway.Snapshot());if(!report.originalSaveUntouched)throw new InvalidOperationException("Population fixture changed player state");
     File.WriteAllText(Path.Combine(dir,"capacity.json"),JsonUtility.ToJson(report,true));
-   } finally {foreach(var go in displays)UnityEngine.Object.DestroyImmediate(go);foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);foreach(var m in meshes)UnityEngine.Object.DestroyImmediate(m);if(clearanceMaterial)UnityEngine.Object.DestroyImmediate(clearanceMaterial);camera.transform.SetPositionAndRotation(oldPosition,oldRotation);camera.orthographicSize=oldZoom;camera.aspect=oldAspect;camera.targetTexture=oldTarget;RenderTexture.active=oldActive;}
+   } catch(Exception){File.WriteAllText(Path.Combine(dir,"capacity-failed.json"),JsonUtility.ToJson(report,true));throw;} finally {foreach(var go in displays)UnityEngine.Object.DestroyImmediate(go);foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);foreach(var m in meshes)UnityEngine.Object.DestroyImmediate(m);if(clearanceMaterial)UnityEngine.Object.DestroyImmediate(clearanceMaterial);camera.transform.SetPositionAndRotation(oldPosition,oldRotation);camera.orthographicSize=oldZoom;camera.aspect=oldAspect;camera.targetTexture=oldTarget;RenderTexture.active=oldActive;}
   }
   static Mesh BakeVisual(Renderer[] renderers,out Material[] materials) {
    var pieces=new List<Mesh>();var combines=new List<CombineInstance>();var mats=new List<Material>();var vertices=new List<Vector3>();
