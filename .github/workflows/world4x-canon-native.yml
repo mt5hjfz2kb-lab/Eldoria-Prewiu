@@ -105,7 +105,9 @@ jobs:
           $version=& $env:UNITY_EDITOR_PATH -version
           if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity version: $version"}
       - name: Author editable Blender composition from original references
-        if: contains(github.event.head_commit.message, 'blender-author(world4x):')
+        env:
+          ELDORIA_DIRECT_SCULPT: ${{ contains(github.event.head_commit.message, 'blender-sculpt(world4x):') }}
+        if: contains(github.event.head_commit.message, 'blender-author(world4x):') || contains(github.event.head_commit.message, 'blender-sculpt(world4x):')
         shell: powershell
         run: |
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another heavy process is active'}
@@ -116,10 +118,21 @@ jobs:
           $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring'
           $refs=Join-Path $env:GITHUB_WORKSPACE 'world4x-live/docs/visual-reference/world-map'
-          & $blender --background --python-exit-code 1 --python "$helpers/author_region.py" -- $out $refs "$helpers/blender-cameras-input.json"
+          if($env:ELDORIA_DIRECT_SCULPT -eq 'true'){
+            & $blender --background --python-exit-code 1 --python "$helpers/sculpt_region.py" -- $out "$helpers/sources/region1-blockout-b.blend" "$helpers/blender-cameras-input.json"
+          }else{
+            & $blender --background --python-exit-code 1 --python "$helpers/author_region.py" -- $out $refs "$helpers/blender-cameras-input.json"
+          }
           if($LASTEXITCODE){throw 'Blender authoring failed'}
           if(-not(Test-Path "$out/eldoria-region1-author.blend")){throw 'Editable Blender source missing'}
           if(-not(Test-Path "$out/RegionOneBlenderWorld.glb")){throw 'Blender export missing'}
+          if($env:ELDORIA_DIRECT_SCULPT -eq 'true'){
+            $destination=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+            foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','blender-authoring-manifest.json')){
+              Copy-Item (Join-Path $out $file) (Join-Path $destination $file) -Force
+            }
+            Write-Host 'Actual native tests consume the freshly sculpted Blender export; artifact hashes identify these generated inputs.'
+          }
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Collections.Generic;
 using Eldoria.ReferenceClean;
 using UnityEngine;
 
@@ -11,7 +12,8 @@ namespace Eldoria.World4XCanon
  public sealed class RegionOneBlenderLandscape : MonoBehaviour
  {
   const string AssetRoot="World4X/Blender/";
-  static int nx,nz; static float width,depth; static float[] heights; static byte[] masks;
+  static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static Dictionary<Vector2Int,System.Collections.Generic.List<VerificationVertex>> sourceVertices; static int sourceVertexCount;
+  struct VerificationVertex { public Vector3 position; public int index; }
   GameObject artwork; MeshFilter terrain;
   public Mesh DirectedTerrain=>terrain.sharedMesh;
   public Vector3[] WorldVertices=>terrain.sharedMesh.vertices.Select(terrain.transform.TransformPoint).ToArray();
@@ -52,11 +54,23 @@ namespace Eldoria.World4XCanon
   void ValidateImportedSurface(Vector3 origin)
   {
    var positions=WorldVertices;
-   if(positions.Length<60000)throw new InvalidOperationException("Incomplete Blender terrain import.");
-   foreach(var p in positions.Where((v,i)=>i%197==0))
-    if(Mathf.Abs(p.y-origin.y-Height(p.x-origin.x,p.z-origin.z))>.06f)
-     throw new InvalidOperationException("Blender query/mesh scale or orientation mismatch at "+p);
+   if(positions.Length<10000)throw new InvalidOperationException("Incomplete Blender terrain import.");
+   if(sourceVertices==null)throw new InvalidOperationException("Exact Blender vertex verification data missing.");
+   var matched=new HashSet<int>();
+   foreach(var p in positions)
+   {
+    var local=p-origin;var key=new Vector2Int(Mathf.FloorToInt(local.x*4),Mathf.FloorToInt(local.z*4));
+    int found=-1;float nearest=.002f*.002f;
+    for(int dz=-1;dz<=1;dz++)for(int dx=-1;dx<=1;dx++)
+     if(sourceVertices.TryGetValue(key+new Vector2Int(dx,dz),out var bucket))
+      foreach(var vertex in bucket)
+      {float distance=(vertex.position-local).sqrMagnitude;if(distance<nearest){nearest=distance;found=vertex.index;}}
+    if(found<0)throw new InvalidOperationException("Imported terrain vertex differs from Blender source at "+local);
+    matched.Add(found);
+   }
+   if(matched.Count!=sourceVertexCount)throw new InvalidOperationException("Incomplete imported Blender surface.");
   }
+
   public void Refresh() {} // Phase A uses the same meshes at every zoom.
   public void SetBlockout(bool value) {} // This entire candidate IS the composition blockout.
   static void EnsureData()
@@ -71,6 +85,16 @@ namespace Eldoria.World4XCanon
     if(nx<2||nz<2||nx*nz>2000000||width!=1820||depth!=2000)throw new InvalidDataException("Unexpected Blender terrain dimensions");
     var data=new float[nx*nz];for(int i=0;i<data.Length;i++)data[i]=reader.ReadSingle();
     masks=reader.ReadBytes(data.Length*4);if(masks.Length!=data.Length*4)throw new InvalidDataException("Truncated Blender masks");
+    if(reader.ReadInt32()!=0x32564c45)throw new InvalidDataException("Exact Blender source vertices missing");
+    int vertexCount=reader.ReadInt32();if(vertexCount<10000||vertexCount>1000000)throw new InvalidDataException("Unexpected source vertex count");
+    sourceVertices=new Dictionary<Vector2Int,List<VerificationVertex>>();sourceVertexCount=vertexCount;
+    for(int i=0;i<vertexCount;i++)
+    {
+     float x=reader.ReadSingle(),y=reader.ReadSingle(),z=reader.ReadSingle();
+     var key=new Vector2Int(Mathf.FloorToInt(x*4),Mathf.FloorToInt(z*4));
+     if(!sourceVertices.TryGetValue(key,out var bucket)){bucket=new List<VerificationVertex>();sourceVertices[key]=bucket;}
+     bucket.Add(new VerificationVertex{position=new Vector3(x,y,z),index=i});
+    }
     heights=data;
    }
   }

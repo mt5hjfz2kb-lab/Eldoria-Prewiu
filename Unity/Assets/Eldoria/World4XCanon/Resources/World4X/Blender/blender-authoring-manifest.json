@@ -73,11 +73,11 @@
       "artistic_intent": "Trace the approved panorama in one calibrated image-to-ground coordinate system; preserve live target anchors."
     },
     {
-      "operation": "Sculpt terrain vertices and write semantic mesh attributes",
+      "operation": "Conform terrain topology to editable geographic curves",
       "objects": [
         "BLD_Terrain"
       ],
-      "artistic_intent": "Continuous land and real coastal scarp, ridge shoulders, carved riverbeds and recessed geological fault; no duplicate terrain."
+      "artistic_intent": "Replace coarse square cells with explicit shore, riverbank and fault edges. Interpolate biome colours at vertices; physically incise branching fault instead of circular pigment."
     },
     {
       "operation": "Model river surfaces, lake basins and terrain-following paths",
@@ -153,11 +153,11 @@
     61
   ],
   "objects": 52,
-  "terrain_vertices": 62901,
+  "terrain_vertices": 18577,
   "source_assets": {
-    "eldoria-region1-author.blend": "febe9698a6767b38d6c9283e97dd0cb4157d5d3bb1e2e85e02f09a7fe2f5f5a4",
-    "RegionOneBlenderWorld.glb": "c5a4cc12083c6ad3b80d45f81eebbd11d8db943e1692559965102e3577b4a01c",
-    "RegionOneBlenderQueries.bytes": "b5b0e831b79d6414cb68fd32cccddadb7c826a68bbb272b3c246f3c7682fc17b"
+    "eldoria-region1-author.blend": "d7bdbbf91c05db69dc5f8ee1c933de3e98f1a8bdc154abd8efaf3de08917dbee",
+    "RegionOneBlenderWorld.glb": "7736e105fa22cab57a6adaaea1d7b8379efc06b36bce53dc8c774c7374b56f4a",
+    "RegionOneBlenderQueries.bytes": "a4257c0f91aafa08a33be1d6a756ae1f367170f7ed574af3812a5406a947b11a"
   },
   "camera_records": "blender-cameras.json"
 }
