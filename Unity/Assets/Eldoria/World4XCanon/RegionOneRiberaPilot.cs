@@ -40,6 +40,7 @@ namespace Eldoria.World4XCanon
     var target=home+new Vector3(0,2,0);camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);
     int treeCount=root.GetComponentsInChildren<Renderer>().Count(r=>r.name.StartsWith("Pilot_Pine"));
     var hybrid=BuildImpostors(root,camera,output);
+    BatchSectorDecorations(root,camera,output);
     foreach(float size in new[]{34f,40f,46f,52f}) {
      float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
@@ -122,6 +123,32 @@ namespace Eldoria.World4XCanon
    }finally{bake.targetTexture=null;RenderTexture.active=previousActive;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(camObject);}
    return mats.ToArray();
   }
+  static void BatchSectorDecorations(GameObject root,Camera camera,string output)
+  {
+   if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone")))return;
+   camera.orthographicSize=34;SaveSectorFrame(camera,Path.Combine(output,"batching-before"),1280,960);
+   int before=root.GetComponentsInChildren<MeshRenderer>().Length;
+   var groups=new System.Collections.Generic.Dictionary<string,System.Collections.Generic.List<CombineInstance>>();
+   var materials=new System.Collections.Generic.Dictionary<string,Material>();var sources=new System.Collections.Generic.List<MeshRenderer>();
+   foreach(var r in root.GetComponentsInChildren<MeshRenderer>()) {
+    if(!(r.name.StartsWith("Bank forest stone")||r.name.StartsWith("Pilot_Rock")||r.name.StartsWith("P ridge exposed stone")))continue;
+    var filter=r.GetComponent<MeshFilter>();if(!filter)continue;var centre=root.transform.InverseTransformPoint(r.bounds.center);
+    for(int sub=0;sub<r.sharedMaterials.Length;sub++) {
+     var mat=r.sharedMaterials[sub];string key=mat.GetInstanceID()+":"+Mathf.FloorToInt(centre.x/32)+":"+Mathf.FloorToInt(centre.z/32);
+     if(!groups.ContainsKey(key)){groups.Add(key,new System.Collections.Generic.List<CombineInstance>());materials.Add(key,mat);}
+     groups[key].Add(new CombineInstance{mesh=filter.sharedMesh,subMeshIndex=sub,transform=root.transform.worldToLocalMatrix*r.transform.localToWorldMatrix});
+    }
+    sources.Add(r);
+   }
+   foreach(var pair in groups) {
+    var mesh=new Mesh();mesh.indexFormat=UnityEngine.Rendering.IndexFormat.UInt32;mesh.CombineMeshes(pair.Value.ToArray(),true,true);
+    var go=new GameObject("Sector stone batch "+pair.Key);go.layer=root.layer;go.transform.SetParent(root.transform,false);go.AddComponent<MeshFilter>().sharedMesh=mesh;go.AddComponent<MeshRenderer>().sharedMaterial=materials[pair.Key];
+   }
+   foreach(var r in sources){UnityEngine.Object.DestroyImmediate(r.GetComponent<MeshFilter>());UnityEngine.Object.DestroyImmediate(r);}
+   int after=root.GetComponentsInChildren<MeshRenderer>().Length;SaveSectorFrame(camera,Path.Combine(output,"batching-after"),1280,960);
+   File.WriteAllText(Path.Combine(output,"batching.json"),"{\"renderers_before\":"+before+",\"renderers_after\":"+after+",\"source_stone_renderers\":"+sources.Count+",\"spatial_batches\":"+groups.Count+",\"cell_metres\":32,\"physical_mobile_tested\":false}");
+  }
+
   static void CaptureSector(Camera camera,GameObject root,Transform world,Vector3 home,Material[] hybrid,string output)
   {
    if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone")))return;
