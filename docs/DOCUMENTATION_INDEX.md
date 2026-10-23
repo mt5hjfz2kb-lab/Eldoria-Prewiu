@@ -2,6 +2,8 @@
 
 > **Vigencia operativa revisada:** 2026-10-21 · **Rol:** navegación, no autorización de desarrollo. Este índice reemplaza los mapas de navegación dispersos, pero no reemplaza las reglas técnicas ni los criterios de calidad.
 
+> **Pacto fundacional propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1):** el dueño no programa; cualquier chat o agente ha de aportar iniciativa, criterio técnico propio, crítica, alternativa cuando un método falle y evidencia real, como obliga [AGENTS.md](../AGENTS.md). Se mantiene vigente en todos los relevos; no reemplaza las autorizaciones.
+
 ## Arranque de un chat o agente (menos de dos minutos)
 
 1. Leer [AGENTS.md](../AGENTS.md) como única norma operativa general; prevalecen las instrucciones actuales del propietario y el estado vivo del repositorio.

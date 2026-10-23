@@ -1,5 +1,7 @@
 # Eldoria — arranque técnico vigente
 
+> **Pacto fundacional permanente (ELDORIA_OWNER_AI_COLLABORATION_V1):** leer la sección «Pacto fundacional propietario–IA» de [AGENTS.md](../AGENTS.md) **antes de empezar o continuar cualquier trabajo**. El propietario no programa; la IA debe tomar iniciativa, ejercer juicio crítico independiente, contrastar el resultado real con el objetivo y reconocer errores, sin esperar a que el propietario diagnostique los problemas. No confundir éxito técnico con calidad del juego. Esta responsabilidad subsiste en todos los relevos.
+
 Actualizado el 21-10-2026 por encargo de reducir esperas sin alterar el juego.
 
 ## Arranque mínimo
