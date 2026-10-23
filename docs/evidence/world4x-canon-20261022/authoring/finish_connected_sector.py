@@ -221,14 +221,19 @@ undergo=bpy.data.objects.new('Z retained-sector woodland understory',under);coll
 # Do not lay slabs over an existing path, O ground, or gameplay nodes.
 outcrop_centres=[(-72,132),(-61,154),(-54,120),(-43,147),(-31,156),
                   (-26,108),(-14,144),(3,156),(18,149),(30,129),
-                  (44,152),(55,111),(62,155),(76,134),(80,155)]
+                  (44,152),(55,111),(62,155),(76,134),(80,155),
+                  (-68,99),(-43,100),(-9,110),(37,105),(70,97)]
 rock_v=[];rock_f=[];rock_material=[];placed=[]
 for ixcentre,(cx,cy) in enumerate(outcrop_centres):
  pi=int((cx+96)/192*(W-1));pj=int((cy-78)/92*(H-1))
  if path[pj,pi]>.12:continue
  # Exposed rock can thread between trunks; no level-of-detail collision mesh is added.
  if sum((cx-o.location.x)**2+(cy-o.location.y)**2<3.4**2 for o in trees)>2:continue
- radius=5.7+((ixcentre*7)%5)*.8
+ # Camera-visible lower shelves are broader, naturally irregular and raised
+ # enough to cast an actual silhouette at regional scale.
+ on_camera=cy<=112
+ radius=(7.6 if on_camera else 5.7)+((ixcentre*7)%5)*(.92 if on_camera else .8)
+ ledge_height=1.15 if on_camera else .39
  a0=ixcentre*.71
  vertex0=len(rock_v)
  for ring in range(2):
@@ -236,9 +241,9 @@ for ixcentre,(cx,cy) in enumerate(outcrop_centres):
    a=2*math.pi*k/9+a0
    r=radius*(.7+.20*math.sin(k*2.1+ixcentre*.89))*(1 if ring==0 else .57)
    x=cx+r*math.cos(a);y=cy+r*math.sin(a)
-   z=ground(x,y)+(.045 if ring==0 else .39+.18*math.sin(k*1.7+ixcentre))
+   z=ground(x,y)+(.045 if ring==0 else ledge_height+.28*math.sin(k*1.7+ixcentre))
    rock_v.append((x,y,z))
- rock_v.append((cx,cy,ground(cx,cy)+.75+.20*(ixcentre%3)))
+ rock_v.append((cx,cy,ground(cx,cy)+(1.85 if on_camera else .75)+.20*(ixcentre%3)))
  for k in range(9):
   j=(k+1)%9
   rock_f.append((vertex0+k,vertex0+j,vertex0+9+j));rock_material.append(1)
@@ -442,7 +447,7 @@ for name,data,noncolor in [('AF broad meadow flows',pix,False),('AF editable slo
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
 mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AF broad meadow flows'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='AG connected real-3D woodland front + AF broad meadow; no early regional cards'
+scene['finishing_stage']='AH sculpt-tied visible low rock escarpments + AG connected canopy'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -450,4 +455,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'AG','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'camera_band_trees_added':camera_band_added,'grounded_meadow_bunches_in_source_only':meadow_bunches,'dark_meadow_blades_exported':False,'forest_front_added':forest_front_added,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AG connects front of forest with authored groves while retaining AF broad grass masses; O/K/I/AE source and gameplay safe'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AH','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'visible_lower_shelves':sum(y<=112 for x,y in placed),'camera_band_trees_added':camera_band_added,'grounded_meadow_bunches_in_source_only':meadow_bunches,'dark_meadow_blades_exported':False,'forest_front_added':forest_front_added,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AH raises physical rock anatomy specifically within native Unity camera; keeps AG canopy, O/K/I and gameplay unmodified'},indent=2))
