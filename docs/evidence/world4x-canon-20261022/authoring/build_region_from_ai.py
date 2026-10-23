@@ -22,6 +22,23 @@ def rivercentre(x):
  return ends[side]+36*math.sin(d/140)*float(smooth(d/65))
 # Paths authored as connected corridors with explicit sector exits and urban approaches.
 routes=[[(12,270),(42,350),(20,480),(58,650),(15,950)],[(96,193),(180,205),(320,260),(460,330),(710,360)],[(-96,231),(-220,250),(-350,330),(-520,390),(-860,420)],[(0,-78),(30,-180),(4,-350),(-80,-520),(-20,-940)],[(-520,390),(-580,160),(-530,-120),(-600,-400),(-480,-740)],[(460,330),(420,140),(480,-120),(390,-350),(440,-760)],[(-530,-120),(-320,-180),(-120,-210),(30,-180),(220,-150),(480,-120)],[(-350,330),(-270,560),(-60,720),(200,760),(380,680),(620,750)]]
+# Smooth the authored road control points into connected, unequal bends.
+def organic_route(points):
+ if len(points)<3:return points
+ result=[]
+ for i in range(len(points)-1):
+  p0=np.array(points[max(0,i-1)],float);p1=np.array(points[i],float);p2=np.array(points[i+1],float);p3=np.array(points[min(len(points)-1,i+2)],float)
+  for t in np.linspace(0,1,7,endpoint=False):
+   q=.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t*t+(-p0+3*p1-3*p2+p3)*t*t*t);result.append(tuple(q))
+ result.append(points[-1]);return result
+routes=[organic_route(r) for r in routes]
+faults=[[(-385,260),(-345,218),(-308,206),(-280,165),(-260,150),(-222,137),(-195,86),(-135,40)],[(-308,206),(-350,140),(-365,110)],[(-222,137),(-175,187),(-150,230)]]
+def fault_distance(X,Y):
+ distance=np.full(np.shape(X),1e6)
+ for path in faults:
+  for (ax,ay),(bx,by) in zip(path,path[1:]):
+   t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1);distance=np.minimum(distance,np.hypot(X-ax-t*(bx-ax),Y-ay-t*(by-ay)))
+ return distance
 groves=[(-220,420,42,65),(-430,680,62,40),(-650,790,65,50),(-750,500,48,70),(-440,210,55,50),(-730,90,60,65),(-280,90,50,38),(-410,-280,55,45),(-750,-370,52,62),(-270,-470,60,45),(-610,-800,65,48),(-130,-800,45,60),(120,-610,60,50),(330,-820,45,60),(650,-650,45,70),(600,-370,45,50),(230,-320,55,48),(240,30,45,65),(540,70,55,45),(300,420,60,50),(580,540,55,65),(100,600,50,45),(-130,900,55,45),(390,910,65,45),(630,900,40,60)]
 cities=[]
 for y in [-740,-480,-250,330,530,810]:
@@ -113,7 +130,7 @@ rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=np.array([.53,.55,.255])+(wash+gra
 forest=np.zeros(X.shape)
 for cx,cy,rx,ry in groves:forest=np.maximum(forest,np.clip(1-((X-cx)/rx)**2-((Y-cy)/ry)**2,0,1))
 rgba[:,:,:3]*=(1-forest[:,:,None]*np.array([.18,.12,.12]))
-fracture=smooth((110-np.hypot(X+260,Y-150))/70)*.75
+fracture=smooth((48-fault_distance(X,Y))/38)*.7
 rgba[:,:,:3]=rgba[:,:,:3]*(1-fracture[:,:,None])+np.array([.32,.265,.33])*fracture[:,:,None]
 mask=smooth((4-road)/2);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(np.array([.58,.49,.29])+grain[:,:,None]) * mask[:,:,None]
 # One pigment material for all meadow top faces eliminates source-tile boundaries.
@@ -183,9 +200,8 @@ for tree in oldtrees:
  destination=any(math.hypot(x-cx,y-cy)<r for cx,cy,r in [(0,0,16),(47,12,9),(46.5,-62.891,10),(-85,-53,8),(-92,-57,8)])
  if crossing or destination:tree.hide_render=True;tree.hide_set(True)
 # Integrated geological fracture, not an upright monument. Keep city/real targets south of it.
-for v in terrain.data.vertices:
- x,y,z=v.co;dx=x+260;dy=y-150;r=math.hypot(dx,dy)
- if r<110:v.co.z-=11*(1-r/110)**2
+positions=np.array([tuple(v.co) for v in terrain.data.vertices]);distance=fault_distance(positions[:,0],positions[:,1]);incision=12*np.clip(1-distance/24,0,1)**2
+for vertex,cut in zip(terrain.data.vertices,incision):vertex.co.z-=float(cut)
 # Grounded fracture ribbons on the actual terrain follow six unequal branches.
 def simplemat(name,color):
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True;b=next(n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED');b.inputs['Base Color'].default_value=(*color,1);b.inputs['Roughness'].default_value=.85;return m
@@ -194,11 +210,17 @@ bpy.context.view_layer.update();bv=BVHTree.FromObject(terrain,bpy.context.evalua
 def surface(x,y):
  p,n,i,d=bv.ray_cast(Vector((x,y,200)),Vector((0,0,-1)));return p.z if p else -.6
 v=[];f=[]
-for arm in range(7):
- a=arm*math.tau/7
- for i in range(13):
-  r=i*9.;angle=a+.13*math.sin(i*1.6+arm);cx=-260+math.cos(angle)*r;cy=150+math.sin(angle)*r;w=max(.35,3.2-i*.23)
-  for side in [-1,1]:x=cx+side*w*math.sin(angle);y=cy-side*w*math.cos(angle);v.append((x,y,surface(x,y)+.025))
+for branch,path in enumerate(faults):
+ points=[]
+ for aa,bb in zip(path,path[1:]):
+  length=math.dist(aa,bb);steps=max(2,int(length/5))
+  for t in np.linspace(0,1,steps,endpoint=False):points.append((aa[0]+(bb[0]-aa[0])*t,aa[1]+(bb[1]-aa[1])*t))
+ points.append(path[-1]);start=len(v)
+ for i,(cx,cy) in enumerate(points):
+  previous=points[max(0,i-1)];following=points[min(len(points)-1,i+1)];angle=math.atan2(following[1]-previous[1],following[0]-previous[0]);t=i/(len(points)-1)
+  w=(.5+3.2*math.sin(math.pi*t)**.7)*(1 if branch==0 else .6)*(1+.15*math.sin(i*1.3+branch))
+  for side in [-1,1]:
+   x=cx+side*w*math.sin(angle);y=cy-side*w*math.cos(angle);v.append((x,y,surface(x,y)+.025))
   if i:f.append((len(v)-4,len(v)-3,len(v)-1,len(v)-2))
 me=bpy.data.meshes.new('Ground fracture ribbons');me.from_pydata(v,[],f);me.materials.append(shale);o=bpy.data.objects.new('BLD_BreachFloor',me);scene.collection.objects.link(o)
 # Anchor is recorded explicitly, rather than inferring it from asymmetrical bounds.
@@ -222,7 +244,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
  parts=[]
  for k in range(27):
   a=k*2.39996;r=math.sqrt((k+.5)/27);x=cx+math.cos(a)*rx*r*.8;y=cy+math.sin(a)*ry*r*.8
-  if float(line_distance(np.array(x),np.array(y)))<9 or math.hypot(x+260,y-150)<120:continue
+  if float(line_distance(np.array(x),np.array(y)))<9 or float(fault_distance(np.array(x),np.array(y)))<36:continue
   donor=masters[k%2];o=donor.copy();o.data=donor.data.copy();scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));scale=2.8+(k%5)*.2;o.scale=(scale,scale,scale);o.rotation_euler.z=k*.71;parts.append(o)
  if not parts:continue
  bpy.ops.object.select_all(action='DESELECT')
@@ -268,5 +290,5 @@ masks=MM.tobytes()
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as f:
  f.write(struct.pack('<iiiff',0x31424c45,NX,NZ,1820.,2000.));f.write(np.array(data,dtype='<f4').tobytes());f.write(bytes(masks));f.write(struct.pack('<ii',0x32564c45,len(terrain.data.vertices)))
  for v in terrain.data.vertices:f.write(struct.pack('<fff',v.co.x,v.co.z,v.co.y))
-(out/'production-region.json').write_text(json.dumps({'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'bounds':[-910,-1000,910,1000],'terrain_vertices':len(terrain.data.vertices),'city_reserves':cities,'cities':[{'x':x,'z':y,'radius':rad} for x,y,rad in cities+[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]],'forest_groups':len(groves),'bridges':[{'x':x,'z':y,'width':w,'length':l} for x,y,w,l in bridge_specs],'source_seam_max_spread_m':seam_spread,'dynamic_gameplay_baked':0,'art_status':'PROTOTYPE_NO_QWEN_AUTHORSHIP_NOT_APPROVED','physical_device':False},indent=2))
+(out/'production-region.json').write_text(json.dumps({'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'bounds':[-910,-1000,910,1000],'terrain_vertices':len(terrain.data.vertices),'faults':[{'ax':a[0],'az':a[1],'bx':b[0],'bz':b[1],'radius':28} for path in faults for a,b in zip(path,path[1:])],'city_reserves':cities,'cities':[{'x':x,'z':y,'radius':rad} for x,y,rad in cities+[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]],'forest_groups':len(groves),'bridges':[{'x':x,'z':y,'width':w,'length':l} for x,y,w,l in bridge_specs],'source_seam_max_spread_m':seam_spread,'dynamic_gameplay_baked':0,'art_status':'PROTOTYPE_NO_QWEN_AUTHORSHIP_NOT_APPROVED','physical_device':False},indent=2))
 print('REGION1_AI_CONTINENT_EXPORTED',len(terrain.data.vertices))

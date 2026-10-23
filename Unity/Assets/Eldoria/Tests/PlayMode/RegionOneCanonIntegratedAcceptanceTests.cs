@@ -705,7 +705,7 @@ namespace Eldoria.Tests
                         }
                     }
                 }
-                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(14));
+                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(16));
                 if(Environment.GetEnvironmentVariable("ELDORIA_RIBERA_PILOT")=="1")
                 {
                     var pilot=AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType("Eldoria.World4XCanon.RegionOneRiberaPilot")).First(t=>t!=null);

@@ -13,17 +13,18 @@ namespace Eldoria.World4XCanon
     {
         readonly Dictionary<Vector2Int,Vector3> cells=new Dictionary<Vector2Int,Vector3>();
         readonly ValoriaIntegratedWorld host;
+        readonly RegionOneResourcePlacement.FaultSegment[] faults;
         static readonly Vector2Int[] directions={Vector2Int.left,Vector2Int.right,Vector2Int.up,Vector2Int.down};
         public int WalkableCells=>cells.Count;
-        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,MeshCollider terrain)
+        public RegionOneTerrainRoutes(ValoriaIntegratedWorld host,MeshCollider terrain,RegionOneResourcePlacement.FaultSegment[] faults)
         {
-            this.host=host;
+            this.host=host;this.faults=faults;
             var obstacles=host.WorldRoot.GetComponentsInChildren<Renderer>(true)
                 .Where(x=>x.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)||x.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).Select(x=>x.bounds).ToArray();
             for(int z=-124;z<=124;z++)for(int x=-112;x<=112;x++)
             {
                 float xx=x*8,zz=z*8;
-                if(RegionOneBlenderLandscape.Shore(xx,zz)<4||RegionOneBlenderLandscape.Water(xx,zz)>.08f)continue;
+                if(RegionOneResourcePlacement.FaultExcluded(faults,xx,zz,2)||RegionOneBlenderLandscape.Shore(xx,zz)<4||RegionOneBlenderLandscape.Water(xx,zz)>.08f)continue;
                 var ray=new Ray(host.WorldHome+new Vector3(xx,250,zz),Vector3.down);
                 if(!terrain.Raycast(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.9f)continue;
                 bool blocked=false;
@@ -73,7 +74,7 @@ namespace Eldoria.World4XCanon
                     var b=a+d;if(previous.ContainsKey(b)||!cells.TryGetValue(b,out var p)||occupied.Contains(b)||Mathf.Abs(p.y-cells[a].y)>3.2f)continue;
                     // Mid-edge semantic checks prevent stepping across a narrow river missed by endpoint samples.
                     var mid=(p+cells[a])*.5f-host.WorldHome;
-                    if(RegionOneBlenderLandscape.Water(mid.x,mid.z)>.08f)continue;
+                    if(RegionOneResourcePlacement.FaultExcluded(faults,mid.x,mid.z,2)||RegionOneBlenderLandscape.Water(mid.x,mid.z)>.08f)continue;
                     previous[b]=a;queue.Enqueue(b);
                 }
             }

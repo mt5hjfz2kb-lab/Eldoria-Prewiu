@@ -12,7 +12,16 @@ namespace Eldoria.World4XCanon
     public sealed class RegionOneResourcePlacement : MonoBehaviour, IWorldResourcePlacement
     {
         [Serializable] public sealed class CityReserve {public float x,z,radius;[NonSerialized] public bool Validated;}
-        [Serializable] sealed class RegionLayout {public CityReserve[] cities;}
+        [Serializable] public sealed class FaultSegment {public float ax,az,bx,bz,radius;}
+        [Serializable] sealed class RegionLayout {public CityReserve[] cities; public FaultSegment[] faults;}
+        FaultSegment[] faults=Array.Empty<FaultSegment>();
+        public static bool FaultExcluded(FaultSegment[] segments,float x,float z,float clearance=0)
+        {
+            foreach(var f in segments){var a=new Vector2(f.ax,f.az);var d=new Vector2(f.bx-f.ax,f.bz-f.az);
+                float t=d.sqrMagnitude>0?Mathf.Clamp01(Vector2.Dot(new Vector2(x,z)-a,d)/d.sqrMagnitude):0;
+                if(Vector2.Distance(new Vector2(x,z),a+d*t)<=f.radius+clearance)return true;}
+            return false;
+        }
         CityReserve[] cities=Array.Empty<CityReserve>();
         public int ValidatedCityCount {get;private set;}
         public int AccessibleCityCount {get;private set;}
@@ -40,7 +49,7 @@ namespace Eldoria.World4XCanon
                 if(target)initial[id]=target.transform.position;
             }
             var layout=Resources.Load<TextAsset>("World4X/Blender/production-region");
-            if(layout)cities=JsonUtility.FromJson<RegionLayout>(layout.text).cities??Array.Empty<CityReserve>();
+            if(layout){var data=JsonUtility.FromJson<RegionLayout>(layout.text);cities=data.cities??Array.Empty<CityReserve>();faults=data.faults??Array.Empty<FaultSegment>();}
             var floor=landscape.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_Terrain");
             var query=new GameObject("Temporary exact resource surface validation");
             query.layer=2; query.transform.SetPositionAndRotation(floor.transform.position,floor.transform.rotation);
@@ -51,7 +60,7 @@ namespace Eldoria.World4XCanon
             {
                 foreach(var city in cities)
                 {
-                    float low=float.MaxValue,high=float.MinValue;bool valid=true;
+                    float low=float.MaxValue,high=float.MinValue;bool valid=!FaultExcluded(faults,city.x,city.z,city.radius);
                     for(int i=0;i<=16;i++){
                         float a=i*Mathf.PI/8;float x=city.x+(i==16?0:Mathf.Cos(a)*city.radius),z=city.z+(i==16?0:Mathf.Sin(a)*city.radius);
                         if(!collider.Raycast(new Ray(host.WorldHome+new Vector3(x,250,z),Vector3.down),out var hit,500)){valid=false;break;}
@@ -61,6 +70,7 @@ namespace Eldoria.World4XCanon
                 }
                 for(int z=-700;z<=800;z+=32)for(int x=-750;x<=600;x+=32)
                 {
+                    if(FaultExcluded(faults,x,z,8))continue;
                     bool safe=true;float low=float.MaxValue,high=float.MinValue;Vector3 centre=default;
                     for(int i=0;i<=8;i++)
                     {
@@ -76,7 +86,7 @@ namespace Eldoria.World4XCanon
                     sites.Add(new Site{Id="region1:"+x+":"+z,Point=centre,Wood=wood});
                 }
             }
-            finally {if(routes==null)routes=new RegionOneTerrainRoutes(host,collider);DestroyImmediate(query);}
+            finally {if(routes==null)routes=new RegionOneTerrainRoutes(host,collider,faults);DestroyImmediate(query);}
             var snapshot=host.City.Gateway.Snapshot();
             foreach(var city in cities)if(city.Validated&&routes.TryRouteTo(snapshot,host.WorldHome+new Vector3(city.x,0,city.z),out var route))AccessibleCityCount++;
         }

@@ -271,8 +271,13 @@ jobs:
             if(Test-Path $candidate){$adb=$candidate}
           }
           $devices=@()
+          $inventoryError=$null
           if($adb){
-            $lines=& $adb devices -l 2>$null
+            # Windows PowerShell treats ADB daemon startup stderr as a terminating error.
+            # Redirect native stderr to a file and still check the actual exit status.
+            $stderr=Join-Path $env:RUNNER_TEMP 'region1-adb-stderr.txt'
+            $lines=cmd /d /c "`"$adb`" devices -l 2>`"$stderr`""
+            if($LASTEXITCODE -ne 0){$inventoryError="adb devices failed: $LASTEXITCODE";$lines=@()}
             foreach($line in $lines){
               if($line -match '^(\S+)\s+device(?:\s|$)'){
                 $serial=$Matches[1]
@@ -284,7 +289,7 @@ jobs:
               }
             }
           }
-          @{adb_available=[bool]$adb;physical_android_count=$devices.Count;devices=$devices;physical_profiled=$false;ios_profiled=$false} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $env:RUNNER_TEMP 'region1-physical-device-inventory.json')
+          @{adb_available=[bool]$adb;physical_android_count=$devices.Count;inventory_error=$inventoryError;devices=$devices;physical_profiled=$false;ios_profiled=$false} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $env:RUNNER_TEMP 'region1-physical-device-inventory.json')
       - name: Upload logs and measured tests
         if: always()
         uses: actions/upload-artifact@v4
