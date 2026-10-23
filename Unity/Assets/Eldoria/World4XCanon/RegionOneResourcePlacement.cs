@@ -114,6 +114,8 @@ namespace Eldoria.World4XCanon
                     if(renderer.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal))
                     {var b=renderer.bounds;b.Expand(18);if(site.Point.x>=b.min.x&&site.Point.x<=b.max.x&&site.Point.z>=b.min.z&&site.Point.z<=b.max.z)occupied=true;}
                 if(occupied)continue;
+                // A flat, clear footprint is insufficient if the actual terrain disconnects its approach.
+                if(routes==null||!routes.TryRouteTo(snapshot,site.Point,out var approach))continue;
                 var p=site.Point;
                 location=new WorldResourceLocation{TargetId=targetId,SiteId=site.Id,X=p.x,Y=p.y,Z=p.z,Generation=generation};
                 return true;

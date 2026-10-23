@@ -12,9 +12,10 @@ land=[o for o in scene.objects if o.name.startswith('Pilot_Terrain') and o.type=
 assert len(land)==2
 original={o.name:[tuple(v.co) for v in o.data.vertices] for o in land}
 oldtrees=[o for o in scene.objects if o.name.startswith('Pilot_Pine') and o.type=='MESH']
-river=bpy.data.objects['Pilot_River'];ends=[]
+river=bpy.data.objects['Pilot_River'];ends=[];river_widths=[]
+water_height=sum(v.co.z for v in river.data.vertices)/len(river.data.vertices)
 for x in [-96,96]:
- pts=[v.co.y for v in river.data.vertices if abs(v.co.x-x)<.1];ends.append(sum(pts)/len(pts))
+ pts=[v.co.y for v in river.data.vertices if abs(v.co.x-x)<.1];ends.append(sum(pts)/len(pts));river_widths.append((max(pts)-min(pts))/2)
 def smooth(t):t=np.clip(t,0,1);return t*t*(3-2*t)
 def coast(x,y):return 760+38*np.sin(y/157)+17*np.sin(y/57)-x
 def rivercentre(x):
@@ -75,7 +76,7 @@ def height(x,y):
  qx=max(-95.999,min(95.999,x));qy=max(-77.999,min(269.999,y));d=math.hypot(x-qx,y-qy)
  blend=float(smooth(d/42));h=boundaryheight(qx,qy)*(1-blend)+rawheight(x,y)*blend
  if abs(x)>96:
-  dr=abs(y-rivercentre(x));h=h*(1-float(smooth((8-dr)/4)))+.02*float(smooth((8-dr)/4))
+  dr=abs(y-rivercentre(x));rivercut=float(smooth((9-dr)/5))*float(smooth((abs(x)-96)/60));h=h*(1-rivercut)+.02*rivercut
  for cx,cy,radius in cities:
   distance=math.hypot(x-cx,y-cy)
   if distance<radius+14:
@@ -84,7 +85,7 @@ def height(x,y):
  return h
 # Sample every actual perimeter vertex so the seam has matching edge coordinates.
 xs=set(float(x) for x in np.arange(-910,911,10));ys=set(float(y) for y in np.arange(-1000,1001,10))
-xs.update([-96.,96.]);ys.update([-78.,270.])
+xs.update([-96.,96.]);ys.update([-78.,270.]);ys.update(float(y) for y in range(-120,121,2))
 for o in land:
  for v in o.data.vertices:
   x,y,z=v.co
@@ -202,7 +203,7 @@ for tree in oldtrees:
 # Integrated geological fracture, not an upright monument. Keep city/real targets south of it.
 positions=np.array([tuple(v.co) for v in terrain.data.vertices]);distance=fault_distance(positions[:,0],positions[:,1]);incision=12*np.clip(1-distance/24,0,1)**2
 for vertex,cut in zip(terrain.data.vertices,incision):vertex.co.z-=float(cut)
-# Grounded fracture ribbons on the actual terrain follow six unequal branches.
+# Grounded fracture ribbons follow the authored main fault and two unequal branches.
 def simplemat(name,color):
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True;b=next(n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED');b.inputs['Base Color'].default_value=(*color,1);b.inputs['Roughness'].default_value=.85;return m
 shale=simplemat('Fracture dark violet shale',(.08,.045,.11));watermat=simplemat('Continental river teal',(.055,.25,.30))
@@ -227,11 +228,16 @@ me=bpy.data.meshes.new('Ground fracture ribbons');me.from_pydata(v,[],f);me.mate
 # Two connected river extensions, with no overlapping geography inside the retained sector.
 for side in [-1,1]:
  vv=[];ff=[]
- for i in range(165):
-  x=side*(96+i*5);cy=rivercentre(x)
-  for sign in [-1,1]:vv.append((x,cy+sign*4.4,.15))
+ for i in range(329):
+  x=side*(96+i*2.5);cy=rivercentre(x);d=abs(x)-96
+  width=river_widths[0 if side<0 else 1]+(.65+.35*math.sin(d/53))*float(smooth(d/80))
+  for sign in [-1,1]:vv.append((x,cy+sign*width,water_height))
   if i:ff.append((2*i,2*i+1,2*i-1,2*i-2) if side>0 else (2*i-2,2*i-1,2*i+1,2*i))
- me=bpy.data.meshes.new('Connected water');me.from_pydata(vv,[],ff);me.materials.append(watermat);o=bpy.data.objects.new('BLD_RiverExtension_'+str(side),me);scene.collection.objects.link(o)
+ me=bpy.data.meshes.new('Connected water');me.from_pydata(vv,[],ff);me.materials.append(river.data.materials[0]);uv=me.uv_layers.new(name='River flow')
+ for loop in me.loops:
+  q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x+96)/192,loop.vertex_index%2)
+ for face in me.polygons:face.use_smooth=True
+ o=bpy.data.objects.new('BLD_RiverExtension_'+str(side),me);scene.collection.objects.link(o)
 # Sea only at the east edge, shaped by the same coastline rather than a rectangle beneath land.
 vv=[];ff=[]
 for i,y in enumerate(range(-1000,1001,10)):

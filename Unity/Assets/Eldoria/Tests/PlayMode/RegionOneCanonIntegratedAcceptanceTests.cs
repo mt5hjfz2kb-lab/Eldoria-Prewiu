@@ -14,7 +14,7 @@ namespace Eldoria.Tests
 {
     /// <summary>
     /// End-to-end structural assertions in the playable integrated scene.
-    /// No save writes, constructed fake targets or forced gameplay unlocks.
+    /// Disposable test stores exercise real gateway commands; player saves are not modified.
     /// This is not visual-approval or mobile hardware evidence.
     /// </summary>
     public sealed class RegionOneCanonIntegratedAcceptanceTests
@@ -177,6 +177,37 @@ namespace Eldoria.Tests
                 for(int i=1;i<route.Count;i++)Assert.That(Vector3.Distance(new Vector3(route[i].X,route[i].Y,route[i].Z),new Vector3(route[i-1].X,route[i-1].Y,route[i-1].Z)),Is.LessThan(9));
             }
             Assert.That(unreachable,Is.Empty,"No terrain route to: "+string.Join(",",unreachable));
+        }
+
+        [UnityTest]
+        public IEnumerator RealTerrainRespawnSurvivesGatewayRestartWithoutDuplicatingSites()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var component=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneResourcePlacement");
+            var placement=(Eldoria.Application.IWorldResourcePlacement)component;
+            var original=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");
+            var state=original.Snapshot();var item=state.WorldResourceLocations.First(x=>x.TargetId.StartsWith("region1:wood:"));
+            string id=item.TargetId,oldSite=item.SiteId;int generation=item.Generation;item.Remaining=1;
+            var clock=new PopulationClock();var store=new PopulationStore();store.Save(state);
+            var gateway=new Eldoria.Application.LocalGateway(clock,store);
+            gateway.ConfigureLocalMarchRoutes((Eldoria.Application.IWorldMarchRoutes)Member(component,"MarchRoutes"));
+            gateway.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));
+            var before=gateway.Snapshot();
+            Assert.That(gateway.Execute(new Eldoria.Application.GameCommand("real-terrain-deplete",before.PlayerId,"Gather",id,before.Revision)).Ok,Is.True);
+            clock.UtcTicks+=TimeSpan.FromSeconds(Eldoria.Domain.SliceRules.TravelSeconds*2+Eldoria.Domain.SliceRules.GatherSeconds+1).Ticks;
+            gateway.Advance();Assert.That(Eldoria.Application.LocalGateway.ResourceRemaining(gateway.Snapshot(),id),Is.Zero);
+            clock.UtcTicks+=TimeSpan.FromMinutes(31).Ticks;
+            var resumed=new Eldoria.Application.LocalGateway(clock,store);resumed.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));
+            var relocated=resumed.Snapshot().WorldResourceLocations.Single(x=>x.TargetId==id);
+            Assert.That(relocated.Generation,Is.EqualTo(generation+1));Assert.That(relocated.SiteId,Is.Not.EqualTo(oldSite));
+            Assert.That(relocated.Remaining,Is.GreaterThan(0));
+            var restarted=new Eldoria.Application.LocalGateway(clock,store);restarted.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));
+            var final=restarted.Snapshot();Assert.That(final.WorldResourceLocations.Single(x=>x.TargetId==id).SiteId,Is.EqualTo(relocated.SiteId));
+            Assert.That(final.WorldResourceLocations.Select(x=>x.TargetId).Distinct().Count(),Is.EqualTo(final.WorldResourceLocations.Count));
+            foreach(var other in final.WorldResourceLocations.Where(x=>x.TargetId!=id&&x.Generation>0))
+                Assert.That(Vector2.Distance(new Vector2(relocated.X,relocated.Z),new Vector2(other.X,other.Z)),Is.GreaterThanOrEqualTo(20));
+            Debug.Log("REGION1_REAL_TERRAIN_RESPAWN_RESTART old="+oldSite+" new="+relocated.SiteId+" generation="+relocated.Generation);
         }
 
         [UnityTest]
