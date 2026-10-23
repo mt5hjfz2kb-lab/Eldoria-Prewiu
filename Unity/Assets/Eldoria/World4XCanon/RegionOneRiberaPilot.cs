@@ -33,7 +33,7 @@ namespace Eldoria.World4XCanon
      var rt=new RenderTexture(1280,960,24);var tex=new Texture2D(1280,960,TextureFormat.RGB24,false);
      camera.aspect=1280f/960;camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,1280,960),0,0);tex.Apply();
      File.WriteAllBytes(Path.Combine(output,(before?"previous-":"ribera-")+size+"-unity.png"),tex.EncodeToPNG());
-     File.WriteAllText(Path.Combine(output,(before?"previous-":"ribera-")+size+"-camera.json"),JsonUtility.ToJson(new Evidence{zoom=size,position=camera.transform.position,rotation=camera.transform.rotation,unity=Application.unityVersion,playMode=Application.isPlaying,trees=treeCount},true));
+     File.WriteAllText(Path.Combine(output,(before?"previous-":"ribera-")+size+"-camera.json"),JsonUtility.ToJson(new Evidence{zoom=size,position=camera.transform.position,rotation=camera.transform.rotation,unity=UnityEngine.Application.unityVersion,playMode=UnityEngine.Application.isPlaying,trees=treeCount},true));
      camera.targetTexture=oldRT;RenderTexture.active=oldActive;rt.Release();UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(tex);
      }
     }
