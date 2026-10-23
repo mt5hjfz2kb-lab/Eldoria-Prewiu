@@ -54,6 +54,8 @@ namespace Eldoria.World4XCanon
      camera.targetTexture=oldRT;RenderTexture.active=oldActive;rt.Release();UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(tex);
      }
     }
+    CaptureSector(camera,root,world,home,hybrid,output);
+    if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone"))) {
     // Sample a continuous camera trajectory, not a slideshow of the four QA stills.
     root.SetActive(true);foreach(var r in prior)if(r)r.enabled=false;
     string sequence=Path.Combine(output,"zoom-sequence");Directory.CreateDirectory(sequence);
@@ -68,6 +70,7 @@ namespace Eldoria.World4XCanon
      File.WriteAllText(Path.Combine(sequence,"frame-"+frame.ToString("D3")+".json"),JsonUtility.ToJson(new Evidence{zoom=size,position=camera.transform.position,rotation=camera.transform.rotation,unity=UnityEngine.Application.unityVersion,playMode=UnityEngine.Application.isPlaying,trees=treeCount},true));
     }}finally{camera.targetTexture=oldRT;RenderTexture.active=oldActive;seqRT.Release();UnityEngine.Object.DestroyImmediate(seqRT);UnityEngine.Object.DestroyImmediate(seqTex);}
     File.WriteAllText(Path.Combine(sequence,"sequence.json"),"{\"frames\":97,\"fps\":16,\"width\":960,\"height\":720,\"source\":\"actual Unity Camera.Render along continuous zoom trajectory; not runtime FPS benchmark\"}");
+    }
    } finally {if(sun){sun.transform.rotation=sunRotation;sun.shadows=sunShadows;sun.shadowStrength=sunStrength;}if(pipeline)pipeline.shadowDistance=shadowDistance;foreach(var r in prior)if(r)r.enabled=true;UnityEngine.Object.DestroyImmediate(root);camera.transform.SetPositionAndRotation(oldPos,oldRot);camera.orthographicSize=oldSize;camera.aspect=oldAspect;camera.targetTexture=oldRT;RenderTexture.active=oldActive;}
   }
 
@@ -119,6 +122,67 @@ namespace Eldoria.World4XCanon
    }finally{bake.targetTexture=null;RenderTexture.active=previousActive;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(camObject);}
    return mats.ToArray();
   }
+  static void CaptureSector(Camera camera,GameObject root,Transform world,Vector3 home,Material[] hybrid,string output)
+  {
+   if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone")))return;
+   root.SetActive(true);string dir=Path.Combine(output,"sector");Directory.CreateDirectory(dir);
+   var originalColliders=world.GetComponentsInChildren<Collider>(true).Where(c=>!c.transform.IsChildOf(root.transform)).ToArray();
+   var positions=originalColliders.Select(c=>c.transform.position).ToArray();
+   var probes=new System.Collections.Generic.List<HeightProbe>();
+   var temporary=new System.Collections.Generic.List<GameObject>();
+   try {
+    // Disposable surface queries use the imported authored meshes; no gameplay collider or navigation mutation.
+    foreach(var mf in root.GetComponentsInChildren<MeshFilter>().Where(m=>m.name.StartsWith("Pilot_Terrain"))) {
+     var go=new GameObject("Temporary authored-height query");temporary.Add(go);go.layer=31;go.transform.SetPositionAndRotation(mf.transform.position,mf.transform.rotation);go.transform.localScale=mf.transform.lossyScale;go.AddComponent<MeshCollider>().sharedMesh=mf.sharedMesh;
+    }
+    Physics.SyncTransforms();
+    foreach(var c in originalColliders){var pos=c.transform.position;float dx=pos.x-home.x,dz=pos.z-home.z;if(Mathf.Abs(dx)>95||dz< -77||dz>169)continue;
+     foreach(var go in temporary)if(go.GetComponent<MeshCollider>().Raycast(new Ray(new Vector3(pos.x,home.y+250,pos.z),Vector3.down),out var hit,500)){probes.Add(new HeightProbe{name=c.name,logicalPosition=pos,authoredSurface=hit.point,heightDifference=hit.point.y-pos.y});break;}
+    }
+   } finally {foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);}
+   var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false};
+   stats.maxHeightDifference=probes.Count>0?probes.Max(p=>Mathf.Abs(p.heightDifference)):0;
+   stats.integrationHeightReady=probes.Count>0&&stats.maxHeightDifference<=.35f;
+   var meshes=root.GetComponentsInChildren<MeshFilter>();stats.meshInstances=meshes.Length;stats.rendererCount=root.GetComponentsInChildren<Renderer>().Length;
+   stats.submittedMeshTriangles=meshes.Sum(m=>m.sharedMesh.triangles.Length/3);stats.editorAllocatedBytes=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong();
+   var oldRT=camera.targetTexture;var oldActive=RenderTexture.active;
+   try {
+    foreach(bool portrait in new[]{false,true}) {
+     string orientation=portrait?"portrait":"landscape";int width=portrait?720:1280,height=portrait?1280:720;
+     for(int level=0;level<3;level++) {
+      float size=portrait?new[]{32f,52f,74f}[level]:new[]{24f,38f,52f}[level];
+      Vector3 target=home+new Vector3(Mathf.Lerp(20,0,level/2f),2,Mathf.Lerp(95,50,level/2f));SetSectorCamera(camera,root,hybrid,target,size,width/(float)height);
+      SaveSectorFrame(camera,Path.Combine(dir,orientation+"-"+new[]{"close","regional","panorama"}[level]),width,height);
+     }
+     // Continuous zoom and pan from the new forest edge towards the connected sector, same authored geography.
+     string seq=Path.Combine(dir,orientation+"-zoom");Directory.CreateDirectory(seq);
+     for(int frame=0;frame<=48;frame++) {
+      float t=Mathf.SmoothStep(0,1,frame/48f);float size=portrait?Mathf.Lerp(32,74,t):Mathf.Lerp(24,52,t);
+      SetSectorCamera(camera,root,hybrid,home+new Vector3(Mathf.Lerp(20,0,t),2,Mathf.Lerp(95,50,t)),size,portrait?9f/16:16f/9);
+      SaveSectorFrame(camera,Path.Combine(seq,"frame-"+frame.ToString("D3")),portrait?540:960,portrait?960:540);
+     }
+    }
+   } finally {camera.targetTexture=oldRT;RenderTexture.active=oldActive;}
+   for(int i=0;i<originalColliders.Length;i++)if(!originalColliders[i]||originalColliders[i].transform.position!=positions[i])throw new InvalidOperationException("Sector capture moved or removed a logical collider");
+   stats.logicalPositionsUnchanged=true;
+   File.WriteAllText(Path.Combine(dir,"integration-and-cost.json"),JsonUtility.ToJson(stats,true));
+  }
+  static void SetSectorCamera(Camera camera,GameObject root,Material[] hybrid,Vector3 target,float size,float aspect)
+  {
+   camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=size;camera.aspect=aspect;
+   float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));foreach(var m in hybrid)m.SetFloat("_Fade",fade);
+   foreach(var r in root.GetComponentsInChildren<MeshRenderer>())if(r.name=="Pilot_NearBatch"){r.enabled=true;r.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(r.name=="Pilot_FarBatch")r.enabled=fade>0;
+  }
+  static void SaveSectorFrame(Camera camera,string path,int width,int height)
+  {
+   var rt=new RenderTexture(width,height,24);var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
+   try {camera.aspect=width/(float)height;camera.targetTexture=rt;camera.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(path+".png",tex.EncodeToPNG());File.WriteAllText(path+".json",JsonUtility.ToJson(new SectorCamera{position=camera.transform.position,rotation=camera.transform.rotation,orthoSize=camera.orthographicSize,width=width,height=height,playMode=UnityEngine.Application.isPlaying},true));}
+   finally {camera.targetTexture=null;RenderTexture.active=null;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(tex);}
+  }
+  [Serializable] class SectorCamera {public Vector3 position;public Quaternion rotation;public float orthoSize;public int width,height;public bool playMode;}
+  [Serializable] class HeightProbe {public string name;public Vector3 logicalPosition,authoredSurface;public float heightDifference;}
+  [Serializable] class SectorStats {public HeightProbe[] heightProbes;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public bool integrationHeightReady,logicalPositionsUnchanged,physicalMobileTested;}
+
   [Serializable] class Evidence {public float zoom;public Vector3 position;public Quaternion rotation;public string unity;public bool playMode;public int trees;}
  }
 }
