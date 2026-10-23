@@ -19,6 +19,53 @@ namespace Eldoria.Tests
     /// </summary>
     public sealed class RegionOneCanonIntegratedAcceptanceTests
     {
+        sealed class PopulationClock : Eldoria.Application.IClock { public long UtcTicks {get;set;} = TimeSpan.FromDays(2).Ticks; }
+        sealed class PopulationStore : Eldoria.Application.IStateStore
+        {
+            public string Json; public int Writes;
+            public Eldoria.Domain.PlayerState Load()=>Json==null?null:JsonUtility.FromJson<Eldoria.Domain.PlayerState>(Json);
+            public void Save(Eldoria.Domain.PlayerState state){Json=JsonUtility.ToJson(state);Writes++;}
+        }
+        sealed class PopulationPlacement : Eldoria.Application.IWorldResourcePlacement
+        {
+            public bool Occupied;
+            public bool TryChoose(Eldoria.Domain.PlayerState state,string id,string previous,int generation,out Eldoria.Domain.WorldResourceLocation site)
+            {
+                site=new Eldoria.Domain.WorldResourceLocation{TargetId=id,SiteId=id+"/site-"+generation,X=generation*20,Y=4,Z=80};
+                return !Occupied && state.BastionLevel>=1;
+            }
+        }
+        [Test]
+        public void RealGatewayResourceRespawnPersistsWithoutDuplicatingOrRevivingCampaign()
+        {
+            var clock=new PopulationClock();var store=new PopulationStore();
+            store.Save(new Eldoria.Domain.PlayerState{ForestRemaining=0,QuarryRemaining=0,ScoutDefeated=true,EngendroDefeated=true});
+            var placement=new PopulationPlacement();
+            var gateway=new Eldoria.Application.LocalGateway(clock,store);
+            gateway.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));
+            var waiting=gateway.Snapshot();Assert.That(waiting.WorldResourceLocations.Count,Is.EqualTo(2));
+            long due=waiting.WorldResourceLocations[0].RespawnUtcTicks;
+            clock.UtcTicks=due-1;gateway.Advance();Assert.That(gateway.Snapshot().ForestRemaining,Is.Zero);
+            // A process restart reconstructs from real serialized PlayerState, not fixture positions.
+            gateway=new Eldoria.Application.LocalGateway(clock,store);
+            gateway.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));
+            placement.Occupied=true;clock.UtcTicks=due;gateway.Advance();
+            Assert.That(gateway.Snapshot().ForestRemaining,Is.Zero,"No valid unoccupied placement means defer");
+            placement.Occupied=false;gateway.Advance();var respawn=gateway.Snapshot();
+            Assert.That(respawn.ForestRemaining,Is.EqualTo(1250));Assert.That(respawn.QuarryRemaining,Is.EqualTo(5200));
+            Assert.That(respawn.WorldResourceLocations.All(x=>x.Generation==1&&!string.IsNullOrEmpty(x.SiteId)),Is.True);
+            int writes=store.Writes;gateway.Advance();gateway.Advance();Assert.That(store.Writes,Is.EqualTo(writes));
+            respawn.WorldResourceLocations[0].SiteId="mutated snapshot";
+            Assert.That(gateway.Snapshot().WorldResourceLocations[0].SiteId,Is.Not.EqualTo("mutated snapshot"));
+            gateway=new Eldoria.Application.LocalGateway(clock,store);gateway.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));
+            var loaded=gateway.Snapshot();Assert.That(loaded.WorldResourceLocations.Count,Is.EqualTo(2));
+            Assert.That(loaded.WorldResourceLocations.All(x=>x.Generation==1),Is.True);
+            Assert.That(loaded.ScoutDefeated&&loaded.EngendroDefeated,Is.True,"Campaign victories remain permanent");
+            loaded.WorldId="shared-world";store.Save(loaded);
+            var shared=new Eldoria.Application.LocalGateway(clock,store);
+            Assert.Throws<InvalidOperationException>(()=>shared.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30)));
+        }
+
         static object Member(object component, string name)
         {
             Assert.That(component, Is.Not.Null);
@@ -477,12 +524,17 @@ namespace Eldoria.Tests
                                 "Region 1 canonical continuous geography/Region1 · panoramic border haze only");
                             Assert.That(portraitFog,Is.Null,"Clean world must not construct old opaque fog strips.");
                         }
-                        if(stage.Item2=="panoramica" && format.Item3=="horizontal")
-                            Assert.That(camera.orthographicSize,Is.InRange(495f,505f),
-                                "Landscape overview must now frame the principal region without changing world geometry.");
                         if(stage.Item2=="panoramica")
-                            foreach(var landmark in new[]{new Vector3(-190,-4,-430),new Vector3(180,-4,500)})
-                            {var framed=camera.WorldToViewportPoint(home+landmark);Assert.That(framed.x,Is.InRange(.01f,.99f));Assert.That(framed.y,Is.InRange(.01f,.99f),"Panorama must include the principal north/south extent in both orientations.");}
+                        {
+                            var terrain=world.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_Terrain");
+                            foreach(var vertex in terrain.sharedMesh.vertices)
+                            {
+                                var framed=camera.WorldToViewportPoint(terrain.transform.TransformPoint(vertex));
+                                Assert.That(framed.z,Is.InRange(camera.nearClipPlane,camera.farClipPlane),"Region clipped by camera depth");
+                                Assert.That(framed.x,Is.InRange(.005f,.995f),"Panorama crops actual regional mesh horizontally");
+                                Assert.That(framed.y,Is.InRange(.005f,.995f),"Panorama crops actual regional mesh vertically");
+                            }
+                        }
                         // Clean blockout/full review: SAME actual geometry and camera.
                         // Before/after uses archived runs, never a hidden old terrain.
                         Call(adapter, "CompareAtlas", false);

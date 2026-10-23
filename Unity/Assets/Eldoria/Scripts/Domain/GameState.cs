@@ -3,6 +3,16 @@ using System.Collections.Generic;
 
 namespace Eldoria.Domain
 {
+    // Persisted with the existing PlayerState/FileStateStore, never in an art asset.
+    [Serializable] public sealed class WorldResourceLocation
+    {
+        public string TargetId;
+        public string SiteId;
+        public float X, Y, Z;
+        public int Generation;
+        public long RespawnUtcTicks;
+        public WorldResourceLocation Copy() => (WorldResourceLocation)MemberwiseClone();
+    }
     [Serializable] public sealed class ResourceWallet { public int Wood; public int Stone; public int Food; }
     [Serializable] public sealed class ArmyRoster
     {
@@ -79,6 +89,7 @@ namespace Eldoria.Domain
         public bool MarchConfigured;
         public string PreparedHeroId = "aldric";
         public ArmyRoster PreparedTroops = new ArmyRoster();
+        public List<WorldResourceLocation> WorldResourceLocations = new List<WorldResourceLocation>();
         public int ForestRemaining = 1250;
         public int QuarryRemaining = 5200;
         public long BuildingCompletesUtcTicks;

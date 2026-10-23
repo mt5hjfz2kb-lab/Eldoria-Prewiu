@@ -28,16 +28,77 @@ namespace Eldoria.Application
         public CommandResult(bool ok, string message, long revision)
         { Ok = ok; Message = message; Revision = revision; }
     }
+    // The local authority receives sites verified against the imported terrain. A
+    // remote world must supply its own authoritative snapshot; clients never roll sites.
+    public interface IWorldResourcePlacement
+    {
+        bool TryChoose(PlayerState snapshot, string targetId, string previousSiteId,
+            int generation, out WorldResourceLocation location);
+    }
     public sealed class LocalGateway : ICommandGateway
     {
         private readonly IClock clock;
         private readonly IStateStore store;
         private PlayerState state;
+        private IWorldResourcePlacement resourcePlacement;
+        private long resourceRespawnTicks;
+        public void ConfigureLocalResourceRespawn(IWorldResourcePlacement placement, TimeSpan delay)
+        {
+            if (placement == null) throw new ArgumentNullException(nameof(placement));
+            if (delay <= TimeSpan.Zero) throw new ArgumentOutOfRangeException(nameof(delay));
+            if (state.WorldId != "world-local")
+                throw new InvalidOperationException("Shared worlds require a remote authoritative population snapshot.");
+            resourcePlacement = placement;
+            resourceRespawnTicks = delay.Ticks;
+            Advance();
+        }
+        // Only the two canonical renewable resources participate. Unique campaign
+        // encounters deliberately have no population record and never respawn here.
+        private bool AdvanceResourcePopulation()
+        {
+            if (resourcePlacement == null) return false;
+            bool changed = false;
+            foreach (string id in new[] { "forest-valoria", "quarry-valoria" })
+            {
+                bool depleted = id == "forest-valoria" ? state.ForestRemaining <= 0 : state.QuarryRemaining <= 0;
+                if (!depleted) continue;
+                var item = state.WorldResourceLocations.Find(x => x.TargetId == id);
+                if (item == null)
+                {
+                    item = new WorldResourceLocation { TargetId = id };
+                    state.WorldResourceLocations.Add(item);
+                }
+                if (item.RespawnUtcTicks == 0)
+                {
+                    item.RespawnUtcTicks = checked(clock.UtcTicks + resourceRespawnTicks);
+                    changed = true;
+                }
+                // Keep the return leg anchored to its original destination.
+                if (item.RespawnUtcTicks > clock.UtcTicks || state.March.TargetId == id) continue;
+                if (!resourcePlacement.TryChoose(Snapshot(), id, item.SiteId, item.Generation + 1, out var next)) continue;
+                if (next == null || next.TargetId != id || string.IsNullOrEmpty(next.SiteId) ||
+                    next.SiteId == item.SiteId || float.IsNaN(next.X) || float.IsInfinity(next.X) ||
+                    float.IsNaN(next.Y) || float.IsInfinity(next.Y) || float.IsNaN(next.Z) || float.IsInfinity(next.Z))
+                    throw new InvalidOperationException("Invalid authoritative resource placement");
+                item.SiteId = next.SiteId; item.X = next.X; item.Y = next.Y; item.Z = next.Z;
+                item.Generation++; item.RespawnUtcTicks = 0;
+                if (id == "forest-valoria") state.ForestRemaining = 1250;
+                else state.QuarryRemaining = 5200;
+                changed = true;
+            }
+            return changed;
+        }
         public LocalGateway(IClock clock, IStateStore store)
         {
             this.clock = clock; this.store = store;
             state = store.Load() ?? new PlayerState();
             if (state.SchemaVersion != 1) throw new InvalidOperationException("Unsupported Eldoria save schema");
+            if (state.WorldResourceLocations == null)
+                state.WorldResourceLocations = new System.Collections.Generic.List<WorldResourceLocation>();
+            var resourceIds = new System.Collections.Generic.HashSet<string>();
+            foreach (var item in state.WorldResourceLocations)
+                if (item == null || (item.TargetId != "forest-valoria" && item.TargetId != "quarry-valoria") || !resourceIds.Add(item.TargetId))
+                    throw new InvalidOperationException("Invalid or duplicate persisted resource identity");
             NormalizeMissionProgress();
             Advance();
         }
@@ -78,6 +139,7 @@ namespace Eldoria.Application
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
                     PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
+                WorldResourceLocations=s.WorldResourceLocations.ConvertAll(x=>x.Copy()),
                 ForestRemaining=s.ForestRemaining, QuarryRemaining=s.QuarryRemaining, BuildingCompletesUtcTicks=s.BuildingCompletesUtcTicks,
                 BuildingTaskId=s.BuildingTaskId,
                 BastionUpgradeStartedUtcTicks=s.BastionUpgradeStartedUtcTicks,
@@ -415,6 +477,7 @@ namespace Eldoria.Application
                 if (chapterOneReady) { state.JourneyComplete = true; changed = true; }
             }
             if (GrantWebMissionRewards()) changed = true;
+            changed |= AdvanceResourcePopulation();
             if (changed) Commit();
             return changed;
         }

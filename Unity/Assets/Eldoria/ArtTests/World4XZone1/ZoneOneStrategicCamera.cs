@@ -14,6 +14,7 @@ namespace Eldoria.World4XPrototype
         public Vector3 target = new Vector3(-18, 0, 30);
         public float localZoom = 32, regionalZoom = 60, globalZoom = 110;
         [Range(35, 80)] public float tilt = 55;
+        public bool AllowWholeRegionOverview;
         public float edgeMargin = 2, dragThresholdPixels = 8;
         // Orthographic framing depends on zoom, not this depth offset.
         // Integrated Valoria sets 140 to keep visible ground inside URP shadows.
@@ -30,7 +31,7 @@ namespace Eldoria.World4XPrototype
 
         void Awake()
         {
-            View.orthographic = true; View.nearClipPlane = .3f; View.farClipPlane = 900;
+            View.orthographic = true; View.nearClipPlane = .3f; View.farClipPlane = Mathf.Max(900, cameraDistance * 2.5f);
             desiredZoom = regionalZoom; View.orthographicSize = desiredZoom;
             ApplyPose(); FitToAuthoredBounds();
         }
@@ -47,7 +48,7 @@ namespace Eldoria.World4XPrototype
         /// </summary>
         public float StrategicEntryZoom()
         {
-            float max = Mathf.Min(globalZoom, MaximumFittingZoom());
+            float max = AllowWholeRegionOverview ? globalZoom : Mathf.Min(globalZoom, MaximumFittingZoom());
             float minimumWide = Mathf.Min(max, Mathf.Max(localZoom, regionalZoom * 1.65f));
             return Mathf.Max(minimumWide, max * .82f);
         }
@@ -65,8 +66,8 @@ namespace Eldoria.World4XPrototype
         public void SetZoomLevel(int level, bool immediate = false)
         {
             if (level < 0 || level > 2) throw new ArgumentOutOfRangeException(nameof(level));
-            View.orthographic = true; View.nearClipPlane = .3f; View.farClipPlane = 900;
-            desiredZoom = Mathf.Min(level == 0 ? globalZoom : level == 1 ? regionalZoom : localZoom, MaximumFittingZoom());
+            View.orthographic = true; View.nearClipPlane = .3f; View.farClipPlane = Mathf.Max(900, cameraDistance * 2.5f);
+            desiredZoom = AllowWholeRegionOverview ? (level == 0 ? globalZoom : level == 1 ? regionalZoom : localZoom) : Mathf.Min(level == 0 ? globalZoom : level == 1 ? regionalZoom : localZoom, MaximumFittingZoom());
             zoomAnchored = false;
             if (immediate) View.orthographicSize = desiredZoom;
             ApplyPose(); FitToAuthoredBounds();
@@ -81,7 +82,7 @@ namespace Eldoria.World4XPrototype
         public void ZoomAt(Vector2 screen, float factor, bool immediate = false)
         {
             if (factor <= 0 || float.IsNaN(factor) || float.IsInfinity(factor)) throw new ArgumentOutOfRangeException(nameof(factor));
-            float max = Mathf.Min(globalZoom, MaximumFittingZoom());
+            float max = AllowWholeRegionOverview ? globalZoom : Mathf.Min(globalZoom, MaximumFittingZoom());
             desiredZoom = Mathf.Clamp(desiredZoom * factor, Mathf.Min(localZoom, max), max);
             zoomFocus = screen; zoomAnchored = true;
             if (immediate) ApplyZoom(desiredZoom);
@@ -103,7 +104,7 @@ namespace Eldoria.World4XPrototype
         }
         public void FitToAuthoredBounds()
         {
-            float fit = MaximumFittingZoom();
+            float fit = AllowWholeRegionOverview ? globalZoom : MaximumFittingZoom();
             View.orthographicSize = Mathf.Min(View.orthographicSize, fit);
             desiredZoom = Mathf.Min(desiredZoom, fit);
             float halfX = View.orthographicSize * View.aspect;

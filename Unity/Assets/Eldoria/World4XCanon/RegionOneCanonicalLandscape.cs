@@ -61,6 +61,7 @@ namespace Eldoria.World4XCanon
             }
             InstallCameraLimits();
             Build(host.WorldRoot.transform);
+            ConfigureRegionCoverage();
             built = true;
             UpdateLevelOfDetail(true);
             Debug.Log("REGION1_CANON_WORLD_INSTALLED presentation_only=1 geography=1 save_changes=0");
@@ -87,6 +88,35 @@ namespace Eldoria.World4XCanon
         }
 
 
+  Bounds regionBounds;
+  void ConfigureRegionCoverage()
+  {
+   var vertices=geography.WorldVertices;
+   regionBounds=new Bounds(vertices[0],Vector3.zero);
+   foreach(var p in vertices)regionBounds.Encapsulate(p);
+   navigation.AllowWholeRegionOverview=true;
+   navigation.minimum=new Vector2(regionBounds.min.x,regionBounds.min.z);
+   navigation.maximum=new Vector2(regionBounds.max.x,regionBounds.max.z);
+   navigation.cameraDistance=Mathf.Max(540,regionBounds.size.magnitude);
+   navigation.View.farClipPlane=navigation.cameraDistance*2.5f;
+   navigation.globalZoom=OverviewSize(navigation.View.aspect);
+  }
+  float OverviewSize(float aspect)
+  {
+   // Panorama tilt converges to 64 degrees. Fit all eight bounds corners at
+   // that real orientation; portrait is governed by horizontal coverage.
+   var rotation=Quaternion.Euler(64,0,0);
+   var right=rotation*Vector3.right;var up=rotation*Vector3.up;
+   float horizontal=0,vertical=0;
+   for(int i=0;i<8;i++){
+    var p=new Vector3((i&1)==0?-regionBounds.extents.x:regionBounds.extents.x,
+      (i&2)==0?-regionBounds.extents.y:regionBounds.extents.y,
+      (i&4)==0?-regionBounds.extents.z:regionBounds.extents.z);
+    horizontal=Mathf.Max(horizontal,Mathf.Abs(Vector3.Dot(p,right)));
+    vertical=Mathf.Max(vertical,Mathf.Abs(Vector3.Dot(p,up)));
+   }
+   return Mathf.Max(horizontal/Mathf.Max(.1f,aspect),vertical)*1.04f;
+  }
   void Build(Transform existingWorld)
   {
    // Capture existing scene integration state ONCE, before creating the clean presentation.
@@ -110,15 +140,16 @@ namespace Eldoria.World4XCanon
   void UpdateLevelOfDetail(bool force)
   {
    if(!navigation||!navigation.View)return;
-   float far=navigation.View.aspect<.8f?PortraitPanoramaZoom:LandscapePanoramaZoom;
-   if(Mathf.Abs(navigation.globalZoom-far)>.5f){bool was=navigation.View.orthographicSize>=190;navigation.globalZoom=far;if(was)navigation.SetZoomLevel(0,true);}
+   float far=OverviewSize(navigation.View.aspect);
+   if(Mathf.Abs(navigation.globalZoom-far)>.5f){bool was=navigation.View.orthographicSize>=navigation.regionalZoom*2;navigation.globalZoom=far;if(was)navigation.SetZoomLevel(0,true);}
    float near=navigation.View.aspect<.8f?64:36;
    if(Mathf.Abs(navigation.localZoom-near)>.5f){bool was=navigation.View.orthographicSize<=navigation.localZoom+.5f;navigation.localZoom=near;if(was)navigation.SetZoomLevel(2,true);}
    float size=navigation.View.orthographicSize;
+   if(size>=navigation.globalZoom*.98f)navigation.PanTo(regionBounds.center);
    float desired=Mathf.Lerp(42,64,Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,244,size)));
    float tilt=force?desired:Mathf.Lerp(navigation.tilt,desired,1-Mathf.Exp(-7*Time.unscaledDeltaTime));
    if(Mathf.Abs(tilt-navigation.tilt)>.04f){navigation.tilt=tilt;navigation.FitToAuthoredBounds();}
-   for(int i=0;i<originals.Count;i++)if(originals[i])originals[i].enabled=states[i]&&size<152&&!background.Contains(originals[i]);
+   for(int i=0;i<originals.Count;i++)if(originals[i])originals[i].enabled=states[i]&&size<152&&originals[i].GetComponentInParent<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>()!=null;
    // Node adapter runs after the general visibility policy; it preserves the real stage gates.
    if(nodes)nodes.Refresh();if(geography)geography.Refresh();
   }
