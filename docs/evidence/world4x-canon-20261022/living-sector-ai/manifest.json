@@ -1,0 +1,21 @@
+{
+  "repository": "mt5hjfz2kb-lab/Eldoria-Prewiu",
+  "pr": 100,
+  "workstream": "eldoria-world-region-1-canon-20261022",
+  "source_commit": "cb0ef556dcaef508f140f431e450e4b279687bfc",
+  "native_run": 40024930128,
+  "artifact_id": 12532955069,
+  "native_zip_sha256": "a9f48707e61701f6c8e73f1a5648045c350a01acb80bc7db08f85e394cd0ac16",
+  "AG_input_sha256": "4b1a71c502302172017867d646f52d7abce0bcc53901264be2461da86e3f4a2d",
+  "AI_blend_sha256": "28f5bc9665145244fb3b3ac400983e184ef664afdd6da0b8c04dac6fae5a23fc",
+  "AI_glb_sha256": "bb14900f96348dc70f7185ac97ee04861546a6b24d35ad99d346de2794012bff",
+  "scope": "Editable connected geography and disposable native QA only; no production respawn, shared-state or physical-device certification",
+  "video": "25 actual Unity Camera.Render frames, encoded at 8 fps for review; NOT measured runtime FPS",
+  "visual_surface_offset_m": 0.08,
+  "artifact_expires_at": "2027-01-21",
+  "status": "GEOGRAPHY_AND_DISPOSABLE_QA_DELIVERED; LIVE_STATE_AND_MARCH_INTEGRATION_BLOCKED_BY_OTHER_CLAIM",
+  "contact_error_definition": "Measured residual relative to surface + inherited 0.08 m visual lift, not zero physical clearance",
+  "persistent_package_name": "Eldoria_AI_20261023_fuentes_y_pruebas.zip",
+  "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726",
+  "enemy_scope": "Frozen sampled pose; full animation envelope not certified"
+}
