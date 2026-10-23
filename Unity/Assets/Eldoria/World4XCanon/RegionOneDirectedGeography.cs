@@ -17,7 +17,7 @@ namespace Eldoria.World4XCanon
   // Closed corner-cutting rounds authorial coves without changing the shared world space.
   public static readonly Vector2[] Coast=RoundCoast(CoastControls);
   static Vector2[] RoundCoast(Vector2[] controls)
-  {var points=controls;for(int pass=0;pass<2;pass++){var result=new Vector2[points.Length*2];for(int i=0;i<points.Length;i++){var a=points[i];var b=points[(i+1)%points.Length];result[i*2]=Vector2.Lerp(a,b,.22f);result[i*2+1]=Vector2.Lerp(a,b,.78f);}points=result;}return points;}
+  {var points=controls;for(int pass=0;pass<2;pass++){var result=new Vector2[points.Length*2];for(int i=0;i<points.Length;i++){var a=points[i];var b=points[(i+1)%points.Length];bool continuation=a.x< -700||b.x< -700||a.y>600||b.y>600;result[i*2]=continuation?a:Vector2.Lerp(a,b,.22f);result[i*2+1]=continuation?b:Vector2.Lerp(a,b,.78f);}points=result;}return points;}
   // Channel hierarchy: 0 is trunk; tributaries start at upland springs and join explicitly.
   public static readonly Vector2[][] Rivers={
    Line(5,585,-12,540,8,499,-12,458,7,420,-18,384,-12,349,-40,312,-34,280,-56,250,-48,222,-79,198,-107,176,-117,145,-104,115,-124,83,-116,54,-130,28,-104,0,-116,-29,-101,-59,-111,-89,-87,-119,-98,-150,-80,-180,-95,-212,-81,-242,-98,-269,-72,-300,-76,-328,-42,-350,-23,-380,12,-399,40,-425,65,-451,91,-481),
@@ -108,6 +108,7 @@ namespace Eldoria.World4XCanon
    float h=-4+relief;
    // Keep all original central interactions on their established datum.
    float guard=Mathf.SmoothStep(0,1,Mathf.InverseLerp(130,185,new Vector2(x,z).magnitude));h=Mathf.Lerp(-4,h,guard);
+   float scarRadius=Vector2.Distance(location,new Vector2(8,61));h-=3.6f*Mathf.Pow(Mathf.Clamp01(1-scarRadius/41),1.4f);
    h-=1.8f*(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(-2,9,ChannelEdge(x,z))));
    return Mathf.Lerp(-18,h,Mathf.SmoothStep(0,1,Mathf.InverseLerp(-3,2,shore)));
   }
@@ -221,13 +222,13 @@ namespace Eldoria.World4XCanon
      float[] widths={-1.7f,-.70f,-.13f,0,.13f,.70f,1.7f};
      Color[] tones={new Color(.26f,.16f,.25f,0),new Color(.25f,.12f,.27f,.37f),new Color(.16f,.045f,.21f,.95f),new Color(.69f,.22f,.82f,.94f),new Color(.16f,.045f,.21f,.95f),new Color(.25f,.12f,.27f,.37f),new Color(.26f,.16f,.25f,0)};
      for(int rank=0;rank<7;rank++)
-     {var p=q+normal*widths[rank]*taper*irregular;float x=8+p.x,z=61+p.y;float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(34,49,new Vector2(x,z).magnitude));var tint=tones[rank];tint.a*=fade*(1-Water(x,z));v.Add(new Vector3(p.x,Height(x,z)+.14f,p.y));uv.Add(Vector2.zero);colors.Add(tint);}
+     {var p=q+normal*widths[rank]*taper*irregular;float x=8+p.x,z=61+p.y;float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(34,49,new Vector2(x,z).magnitude));var tint=tones[rank];tint.a*=fade*(1-Water(x,z));v.Add(new Vector3(p.x,Height(x,z)+.32f,p.y));uv.Add(Vector2.zero);colors.Add(tint);}
      if(i==0)continue;for(int rank=0;rank<6;rank++){int k=start+(i-1)*7+rank;indices.AddRange(new[]{k,k+1,k+7,k+1,k+8,k+7});}
     }
    }
    // Small luminous heart with fading perimeter, always flush with the ground.
-   int heart=v.Count;v.Add(new Vector3(0,Height(8,61)+.19f,0));uv.Add(Vector2.zero);colors.Add(new Color(.96f,.45f,1,1));
-   for(int i=0;i<=24;i++){float angle=i*Mathf.PI/12,r=5.5f+.7f*Mathf.Sin(i*4.7f);float x=Mathf.Cos(angle)*r,z=Mathf.Sin(angle)*r;v.Add(new Vector3(x,Height(8+x,61+z)+.18f,z));uv.Add(Vector2.zero);colors.Add(new Color(.59f,.06f,.75f,0));if(i>0)indices.AddRange(new[]{heart,heart+i+1,heart+i});}
+   int heart=v.Count;v.Add(new Vector3(0,Height(8,61)+.35f,0));uv.Add(Vector2.zero);colors.Add(new Color(.96f,.45f,1,1));
+   for(int i=0;i<=24;i++){float angle=i*Mathf.PI/12,r=5.5f+.7f*Mathf.Sin(i*4.7f);float x=Mathf.Cos(angle)*r,z=Mathf.Sin(angle)*r;v.Add(new Vector3(x,Height(8+x,61+z)+.34f,z));uv.Add(Vector2.zero);colors.Add(new Color(.59f,.06f,.75f,0));if(i>0)indices.AddRange(new[]{heart,heart+i+1,heart+i});}
    scar=Create("Region1 · authored Breach pigment at actual world anchor",v.ToArray(),uv.ToArray(),null,indices.ToArray(),scarMaterial,parent);scar.transform.position=new Vector3(origin.x+8,origin.y,origin.z+61);scar.GetComponent<MeshFilter>().sharedMesh.colors=colors.ToArray();
   }
   void BuildBridge()

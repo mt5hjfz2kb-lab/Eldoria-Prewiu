@@ -56,6 +56,22 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     half slope=smoothstep(.025h,.14h,1-saturate(normalize(i.n).y));
     half strata=.82h+.18h*noise21(i.p*float2(.13,.29));
     land=lerp(land,sand*light*strata,slope*.90h);
+    // Fractured mineral bed belongs to this terrain, centred on the same immutable fault anchor.
+    float2 fault=i.p-float2(8,61);
+    float damage=saturate(1-length(fault*float2(1,.94))/48);
+    if(damage>0)
+    {
+     float2 cell=floor(i.p/6),local=frac(i.p/6);float first=10,second=10;
+     for(int cy=-1;cy<=1;cy++)for(int cx=-1;cx<=1;cx++)
+     {float2 neighbour=float2(cx,cy);float seed=hash21(cell+neighbour);float2 site=neighbour+float2(seed,hash21(cell+neighbour+37))*.7+.15;float distance=length(site-local);if(distance<first){second=first;first=distance;}else second=min(second,distance);}
+     half joint=1-smoothstep(.025h,.12h,second-first);
+     half3 shale=half3(.35,.30,.35),faultDark=half3(.21,.13,.27);
+     #if !defined(UNITY_COLORSPACE_GAMMA)
+      shale=SRGBToLinear(shale);faultDark=SRGBToLinear(faultDark);
+     #endif
+     half damaged=smoothstep(0,.7,damage)*(.60h+.40h*noise21(i.p*.18));
+     land=lerp(land,lerp(shale,faultDark,joint)*light,damaged*.90h);
+    }
     // Fine grass and stony interruptions remain subordinate to the large fields.
     half fleck=smoothstep(.75h,.88h,noise21(i.p*.8));
     land=lerp(land,sand*light,fleck*(.08h+.12h*_Near));
