@@ -5,7 +5,7 @@ import bpy,sys,pathlib,hashlib,math,json
 from mathutils import Vector
 out,src=map(pathlib.Path,sys.argv[sys.argv.index('--')+1:]);out.mkdir(parents=True,exist_ok=True)
 assert hashlib.sha256(src.read_bytes()).hexdigest()=='28f5bc9665145244fb3b3ac400983e184ef664afdd6da0b8c04dac6fae5a23fc'
-bpy.ops.wm.open_mainfile(filepath=str(src));scene=bpy.context.scene
+bpy.ops.wm.open_mainfile(filepath=str(src));bpy.context.preferences.filepaths.save_version=0;scene=bpy.context.scene
 fir=bpy.data.objects['Editable Layered fir source'];slender=bpy.data.objects['Editable Slender fir source'];rock=next(o for o in scene.objects if o.name.startswith('Pilot_Rock') and o.type=='MESH')
 collection=bpy.data.collections.new('Dynamic resource library - authored separately from geography');scene.collection.children.link(collection)
 objects=[];roots=[]

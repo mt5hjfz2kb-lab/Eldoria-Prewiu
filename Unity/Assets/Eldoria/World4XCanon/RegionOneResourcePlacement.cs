@@ -20,7 +20,7 @@ namespace Eldoria.World4XCanon
         readonly List<Site> sites = new List<Site>();
         readonly Dictionary<string,Vector3> initial = new Dictionary<string,Vector3>();
         ValoriaIntegratedWorld host;
-        LocalGateway bound;
+        ICommandGateway bound;
         RegionOneTerrainRoutes routes;
         float nextRefresh;
         public int VerifiedSiteCount => sites.Count;
@@ -118,19 +118,24 @@ namespace Eldoria.World4XCanon
         }
         void Synchronize()
         {
-            var gateway=host.City.Gateway as LocalGateway;
+            var gateway=host.City.Gateway;
             if(gateway==null)return;
             if(!ReferenceEquals(bound,gateway))
             {
                 bound=gateway;
-                if(bound.Snapshot().WorldId=="world-local")
+                if(bound is LocalGateway local&&bound.Snapshot().WorldId=="world-local")
                 {
-                    bound.ConfigureLocalMarchRoutes(routes);
-                    bound.ConfigureLocalResourceRespawn(this,TimeSpan.FromMinutes(30));
-                    if(Resources.Load<GameObject>("World4X/Blender/RegionOneResources"))bound.EnsureLocalRenewablePopulation(24,24);
+                    local.ConfigureLocalMarchRoutes(routes);
+                    local.ConfigureLocalResourceRespawn(this,TimeSpan.FromMinutes(30));
+                    if(Resources.Load<GameObject>("World4X/Blender/RegionOneResources"))local.EnsureLocalRenewablePopulation(24,24);
                 }
             }
             var state=bound.Snapshot();
+            foreach(var existing in host.WorldRoot.GetComponentsInChildren<Eldoria.Presentation.WorldHotspot>(true))
+                if(existing.Id!=null&&existing.Id.StartsWith("region1:",StringComparison.Ordinal)){
+                    bool alive=state.WorldResourceLocations.Any(x=>x.TargetId==existing.Id&&x.Generation>0&&LocalGateway.ResourceRemaining(state,x.TargetId)>0);
+                    if(existing.gameObject.activeSelf!=alive)existing.gameObject.SetActive(alive);
+                }
             foreach(var item in state.WorldResourceLocations)
             {
                 var target=host.FindTarget(item.TargetId);
@@ -141,6 +146,7 @@ namespace Eldoria.World4XCanon
                     var box=go.AddComponent<BoxCollider>();box.isTrigger=true;box.center=new Vector3(0,3,0);box.size=new Vector3(10,6,10);
                 }
                 if(!target)continue;
+                if(item.TargetId.StartsWith("region1:",StringComparison.Ordinal))target.gameObject.SetActive(item.Generation>0&&LocalGateway.ResourceRemaining(state,item.TargetId)>0);
                 if(target.GetComponent<Collider>())target.GetComponent<Collider>().enabled=LocalGateway.ResourceRemaining(state,item.TargetId)>0;
                 if(item.Generation>0)target.transform.position=new Vector3(item.X,item.Y,item.Z);
             }

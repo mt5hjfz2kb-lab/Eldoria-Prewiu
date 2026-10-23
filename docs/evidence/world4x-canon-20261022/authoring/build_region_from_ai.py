@@ -7,7 +7,7 @@ from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 out,src=map(pathlib.Path,sys.argv[sys.argv.index('--')+1:]);out.mkdir(parents=True,exist_ok=True)
 assert hashlib.sha256(src.read_bytes()).hexdigest()=='28f5bc9665145244fb3b3ac400983e184ef664afdd6da0b8c04dac6fae5a23fc'
-bpy.ops.wm.open_mainfile(filepath=str(src));scene=bpy.context.scene
+bpy.ops.wm.open_mainfile(filepath=str(src));bpy.context.preferences.filepaths.save_version=0;scene=bpy.context.scene
 land=[o for o in scene.objects if o.name.startswith('Pilot_Terrain') and o.type=='MESH']
 assert len(land)==2
 original={o.name:[tuple(v.co) for v in o.data.vertices] for o in land}
@@ -33,7 +33,17 @@ def rawheight(x,y):
  for cx,cy,rx,ry,amp in [(-490,520,100,160,28),(380,680,90,145,23),(-580,-570,100,95,19)]:h+=amp*math.exp(-((x-cx)/rx)**2-((y-cy)/ry)**2)
  return h
 # Broad measured-boundary blend; no second surface below AI.
+edge_exact={}
+for obj in land:
+ for vertex in obj.data.vertices:
+  x,y,z=vertex.co
+  if abs(abs(x)-96)<.002 or abs(y+78)<.002 or abs(y-270)<.002:edge_exact[(round(x,5),round(y,5))]=z
 def oldheight(x,y):
+ key=(round(x,5),round(y,5))
+ if key in edge_exact:return edge_exact[key]
+ # Exact boundary rays can miss Blender triangles by floating-point rounding.
+ # Use the measured edge vertices above, and an interior ray for intermediate samples.
+ x=max(-95.999,min(95.999,x));y=max(-77.999,min(269.999,y))
  for o in land:
   hit,p,n,i=o.ray_cast(Vector((x,y,150)),Vector((0,0,-1)))
   if hit:return p.z
@@ -139,6 +149,15 @@ for poly in terrain.data.polygons:
  if terrain.data.materials[poly.material_index]!=mat:continue
  for li in poly.loop_indices:
   q=terrain.data.vertices[terrain.data.loops[li].vertex_index].co;terrain.data.uv_layers[0].data[li].uv=((q.x+910)/1820,(q.y+1000)/2000)
+# Certify a real welded source/extension seam outside the river-bank section.
+seam_levels={}
+for vertex in terrain.data.vertices:
+ x,y,z=vertex.co
+ if (abs(abs(x)-96)<.002 or abs(y+78)<.002 or abs(y-270)<.002) and abs(y-rivercentre(x))>14:
+  seam_levels.setdefault((round(x,4),round(y,4)),[]).append(z)
+seam_spread=max((max(values)-min(values) for values in seam_levels.values()),default=0)
+assert seam_spread<.01,('Vertical seam discontinuity',seam_spread)
+print('REGION1_SOURCE_SEAM_MAX_SPREAD_M',seam_spread)
 # Three authored crossings connect both continental banks. Decks follow measured
 # bank heights and carry visible planks; they are not invisible collider offsets.
 bridge_specs=[]
@@ -249,5 +268,5 @@ masks=MM.tobytes()
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as f:
  f.write(struct.pack('<iiiff',0x31424c45,NX,NZ,1820.,2000.));f.write(np.array(data,dtype='<f4').tobytes());f.write(bytes(masks));f.write(struct.pack('<ii',0x32564c45,len(terrain.data.vertices)))
  for v in terrain.data.vertices:f.write(struct.pack('<fff',v.co.x,v.co.z,v.co.y))
-(out/'production-region.json').write_text(json.dumps({'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'bounds':[-910,-1000,910,1000],'terrain_vertices':len(terrain.data.vertices),'city_reserves':cities,'cities':[{'x':x,'z':y,'radius':rad} for x,y,rad in cities+[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]],'forest_groups':len(groves),'bridges':[{'x':x,'z':y,'width':w,'length':l} for x,y,w,l in bridge_specs],'dynamic_gameplay_baked':0,'art_status':'PROTOTYPE_NO_QWEN_AUTHORSHIP_NOT_APPROVED','physical_device':False},indent=2))
+(out/'production-region.json').write_text(json.dumps({'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'bounds':[-910,-1000,910,1000],'terrain_vertices':len(terrain.data.vertices),'city_reserves':cities,'cities':[{'x':x,'z':y,'radius':rad} for x,y,rad in cities+[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]],'forest_groups':len(groves),'bridges':[{'x':x,'z':y,'width':w,'length':l} for x,y,w,l in bridge_specs],'source_seam_max_spread_m':seam_spread,'dynamic_gameplay_baked':0,'art_status':'PROTOTYPE_NO_QWEN_AUTHORSHIP_NOT_APPROVED','physical_device':False},indent=2))
 print('REGION1_AI_CONTINENT_EXPORTED',len(terrain.data.vertices))

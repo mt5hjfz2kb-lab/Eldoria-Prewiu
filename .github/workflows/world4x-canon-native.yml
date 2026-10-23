@@ -234,7 +234,7 @@ jobs:
           if($nodes.Count -lt 18){throw "Expected at least 18 integrated, progression, UI and combat cases, got $($nodes.Count)"}
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
-          if($captures.Count -ne 14){throw "Missing actual clean-world and blockout PNGs: expected fourteen genuine Unity captures, got $($captures.Count)"}
+          if($captures.Count -ne 16){throw "Missing actual clean-world and blockout PNGs: expected sixteen genuine Unity captures, got $($captures.Count)"}
           if($env:ELDORIA_RIBERA_PILOT -eq '1' -and (Test-Path "$project/Assets/Eldoria/World4XCanon/Resources/World4X/Pilot/LivingSectorLayout.json")){
             $living=Join-Path $env:ELDORIA_REGION1_CAPTURE_OUT 'ribera-pilot/living-sector'
             $proof=Get-Content "$living/capacity.json" -Raw | ConvertFrom-Json
@@ -261,6 +261,30 @@ jobs:
           $capture=Join-Path $env:RUNNER_TEMP "region1-author-source-$env:GITHUB_RUN_ID/region1-canon-captures-39831626822"
           if(-not(Test-Path "$capture/terrain-source.json")){throw 'Measured source mesh missing'}
           "ELDORIA_REGION1_ARTIST_CAPTURE=$capture" >> $env:GITHUB_ENV
+      - name: Inventory physical Android availability without installing or changing applications
+        if: always()
+        shell: powershell
+        run: |
+          $adb=Get-Command adb.exe -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source
+          if(-not $adb -and $env:UNITY_EDITOR_PATH){
+            $candidate=Join-Path (Split-Path $env:UNITY_EDITOR_PATH) 'Data/PlaybackEngines/AndroidPlayer/SDK/platform-tools/adb.exe'
+            if(Test-Path $candidate){$adb=$candidate}
+          }
+          $devices=@()
+          if($adb){
+            $lines=& $adb devices -l 2>$null
+            foreach($line in $lines){
+              if($line -match '^(\S+)\s+device(?:\s|$)'){
+                $serial=$Matches[1]
+                $virtual=(& $adb -s $serial shell getprop ro.kernel.qemu 2>$null | Out-String).Trim()
+                if($virtual -ne '1'){
+                  $model=(& $adb -s $serial shell getprop ro.product.model 2>$null | Out-String).Trim()
+                  $devices+=@{model=$model;profiled=$false;candidate_installed=$false}
+                }
+              }
+            }
+          }
+          @{adb_available=[bool]$adb;physical_android_count=$devices.Count;devices=$devices;physical_profiled=$false;ios_profiled=$false} | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $env:RUNNER_TEMP 'region1-physical-device-inventory.json')
       - name: Upload logs and measured tests
         if: always()
         uses: actions/upload-artifact@v4
@@ -271,6 +295,7 @@ jobs:
             ${{ runner.temp }}/eldoria-region1-canon-unity-source.log
             ${{ runner.temp }}/eldoria-region1-canon-playmode.log
             ${{ runner.temp }}/eldoria-region1-canon-tests.xml
+            ${{ runner.temp }}/region1-physical-device-inventory.json
             ${{ runner.temp }}/eldoria-region1-source-gate.json
             ${{ runner.temp }}/region1-canon-captures-*/**
             ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/**

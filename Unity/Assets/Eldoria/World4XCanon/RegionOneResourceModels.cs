@@ -10,11 +10,26 @@ namespace Eldoria.World4XCanon
     [DefaultExecutionOrder(1400)]
     public sealed class RegionOneResourceModels : MonoBehaviour
     {
-        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; }
+        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Vector3 LastPosition; public bool Grounded; }
         readonly List<Node> nodes=new List<Node>();
         ValoriaIntegratedWorld host;
         GameObject library;
+        Eldoria.Domain.PlayerState cachedState;ICommandGateway cachedGateway;float nextState;
         Material impostorMaterial;readonly Mesh[] impostorMeshes=new Mesh[2];
+        public void RefreshNow()=>LateUpdate();
+        void GroundParts(Node node,Vector3 position)
+        {
+            if(node.Grounded&&(node.LastPosition-position).sqrMagnitude<.000001f)return;
+            if(node.Parts==null){node.Parts=node.Visual.GetComponentsInChildren<MeshFilter>(true);node.BasePositions=node.Parts.Select(x=>x.transform.localPosition).ToArray();}
+            for(int i=0;i<node.Parts.Length;i++){
+                var part=node.Parts[i];part.transform.localPosition=node.BasePositions[i];var vertices=part.sharedMesh.vertices;
+                float bottom=vertices.Min(v=>part.transform.TransformPoint(v).y),maximum=float.NegativeInfinity;
+                foreach(var vertex in vertices){var p=part.transform.TransformPoint(vertex);if(p.y>bottom+.03f)continue;
+                    float terrain=host.WorldHome.y+RegionOneBlenderLandscape.Height(p.x-host.WorldHome.x,p.z-host.WorldHome.z);maximum=Mathf.Max(maximum,p.y-terrain);}
+                if(!float.IsNegativeInfinity(maximum))part.transform.position-=Vector3.up*maximum;
+            }
+            node.LastPosition=position;node.Grounded=true;
+        }
         Renderer MakeImpostor(string id,Transform parent)
         {
             if(!impostorMaterial)return null;
@@ -49,7 +64,8 @@ namespace Eldoria.World4XCanon
         void LateUpdate()
         {
             if(!host||!host.Ready)return;
-            var state=host.City.Gateway.Snapshot();float zoom=host.WorldCamera.orthographicSize;bool near=zoom<110;bool regional=zoom>=110&&zoom<host.WorldNavigation.globalZoom*.85f;
+            if(cachedState==null||!ReferenceEquals(cachedGateway,host.City.Gateway)||Time.unscaledTime>=nextState){cachedGateway=host.City.Gateway;cachedState=cachedGateway.Snapshot();nextState=Time.unscaledTime+.25f;}
+            var state=cachedState;float zoom=host.WorldCamera.orthographicSize;bool near=zoom<110;bool regional=zoom>=110&&zoom<host.WorldNavigation.globalZoom*.85f;
             foreach(var item in state.WorldResourceLocations)
             {
                 if(!item.TargetId.StartsWith("region1:",StringComparison.Ordinal)||item.Generation<=0||nodes.Any(x=>x.Id==item.TargetId))continue;
@@ -65,8 +81,9 @@ namespace Eldoria.World4XCanon
                 var p=node.Logical.position;
                 p.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(p.x-host.WorldHome.x,p.z-host.WorldHome.z);
                 node.Visual.transform.position=p;
+                GroundParts(node,p);
                 bool alive=LocalGateway.ResourceRemaining(state,node.Id)>0;
-                foreach(var renderer in node.Renderers)renderer.enabled=alive&&near;
+                foreach(var renderer in node.Renderers)if(renderer.enabled!=(alive&&near))renderer.enabled=alive&&near;
                 if(node.Impostor){node.Impostor.transform.position=p;node.Impostor.enabled=alive&&regional;}
             }
             foreach(var renderer in GetComponentsInChildren<Renderer>(true))

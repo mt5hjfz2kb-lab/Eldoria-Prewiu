@@ -201,6 +201,26 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator ResourceModelsHaveMeasuredTerrainSupportWithoutMovingColliders()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var modelService=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneResourceModels");
+            var originalColliders=world.GetComponentsInChildren<Collider>(true).ToDictionary(x=>x,x=>x.transform.position);
+            Call(modelService,"RefreshNow");
+            var origin=(Vector3)Member(host,"WorldHome");var geology=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");var height=geology.GetType().GetMethod("Height",BindingFlags.Public|BindingFlags.Static);
+            float minimum=0,maximum=0;int parts=0;
+            foreach(var root in world.GetComponentsInChildren<Transform>(true).Where(x=>x.name.StartsWith("Production resource visual ")))
+            foreach(var part in root.GetComponentsInChildren<MeshFilter>(true)){
+                var points=part.sharedMesh.vertices.Select(part.transform.TransformPoint).ToArray();float bottom=points.Min(p=>p.y);
+                foreach(var p in points.Where(p=>p.y<bottom+.03f)){float ground=origin.y+(float)height.Invoke(null,new object[]{p.x-origin.x,p.z-origin.z});minimum=Mathf.Min(minimum,p.y-ground);maximum=Mathf.Max(maximum,p.y-ground);}parts++;
+            }
+            Assert.That(parts,Is.GreaterThan(200));Assert.That(maximum,Is.LessThan(.005f),"Floating resource supports");Assert.That(minimum,Is.GreaterThan(-.65f),"Excessive burial must be repaired, not hidden with collider offsets");
+            foreach(var pair in originalColliders)Assert.That(pair.Key.transform.position,Is.EqualTo(pair.Value));
+            Debug.Log("REGION1_RESOURCE_CONTACT parts="+parts+" min_gap_m="+minimum+" max_gap_m="+maximum+" collider_movement=0");
+        }
+
+        [UnityTest]
         public IEnumerator OneGeographyAndNoInventedGameplayHotspots()
         {
             MonoBehaviour host = null; GameObject world = null; Component navigation = null; Camera camera = null;
@@ -573,6 +593,7 @@ namespace Eldoria.Tests
             Assert.That(realForest.gameObject.activeInHierarchy, Is.True,
                 "Never showcase an unavailable or invented resource target.");
             Vector3 forestFocus = realForest.transform.position;
+            Vector3 stoneFocus = ((Component)Call(host,"FindTarget","quarry-valoria")).transform.position;
             float originalZoom = camera.orthographicSize, originalAspect = camera.aspect;
             Vector3 originalTarget = (Vector3)Member(navigation,"target");
             RenderTexture originalRT = camera.targetTexture;
@@ -590,6 +611,7 @@ namespace Eldoria.Tests
                         (1,"regional",home),
                         (0,"panoramica",home),
                         (2,"cercana-recurso-madera",forestFocus),
+                        (2,"cercana-recurso-piedra",stoneFocus),
                         (0,"panoramica-control",home),
                         (0,"panoramica-blockout",home),
                         (1,"regional-blockout",home)})
@@ -689,7 +711,7 @@ namespace Eldoria.Tests
                     var pilot=AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType("Eldoria.World4XCanon.RegionOneRiberaPilot")).First(t=>t!=null);
                     pilot.GetMethod("Capture").Invoke(null,new object[]{camera,world.transform,home,Path.Combine(outdir,"ribera-pilot")});
                 }
-                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=14 (8 actual views + 2 historical-camera panorama controls + 4 blockout views) real_scene=1 disposable_gateway=1 physical_iphone=0");
+                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=16 (10 actual views + 2 historical-camera panorama controls + 4 blockout views) real_scene=1 disposable_gateway=1 physical_iphone=0");
             }
             finally
             {
