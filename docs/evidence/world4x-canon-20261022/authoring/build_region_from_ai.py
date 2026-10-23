@@ -97,8 +97,8 @@ def line_distance(X,Y):
    t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1);d=np.minimum(d,np.hypot(X-ax-t*(bx-ax),Y-ay-t*(by-ay)))
  return d
 S=2048;X,Y=np.meshgrid(np.linspace(-910,910,S),np.linspace(-1000,1000,S));road=line_distance(X,Y)
-wash=.025*np.sin(X/93+Y/123)+.016*np.sin(Y/47-X/61)+.01*np.cos(X/21+Y/35)
-rng=np.random.default_rng(791);grain=rng.normal(0,.013,X.shape)
+wash=.012*np.sin(X/93+Y/123)+.008*np.sin(Y/47-X/61)+.005*np.cos(X/21+Y/35)
+rng=np.random.default_rng(791);grain=rng.normal(0,.006,X.shape)
 rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=np.array([.53,.55,.255])+(wash+grain)[:,:,None]
 forest=np.zeros(X.shape)
 for cx,cy,rx,ry in groves:forest=np.maximum(forest,np.clip(1-((X-cx)/rx)**2-((Y-cy)/ry)**2,0,1))
@@ -106,38 +106,8 @@ rgba[:,:,:3]*=(1-forest[:,:,None]*np.array([.18,.12,.12]))
 fracture=smooth((110-np.hypot(X+260,Y-150))/70)*.75
 rgba[:,:,:3]=rgba[:,:,:3]*(1-fracture[:,:,None])+np.array([.32,.265,.33])*fracture[:,:,None]
 mask=smooth((4-road)/2);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(np.array([.58,.49,.29])+grain[:,:,None]) * mask[:,:,None]
-# Continue exact source edge colours into a 72m transition; source UVs remain intact.
-from mathutils.geometry import barycentric_transform
-pixels={}
-def source_colour(x,y):
- for obj in land:
-  hit,p,n,face=obj.ray_cast(Vector((x,y,150)),Vector((0,0,-1)))
-  if not hit:continue
-  poly=obj.data.polygons[face];material=obj.data.materials[poly.material_index]
-  bs=next((n for n in material.node_tree.nodes if n.type=='BSDF_PRINCIPLED'),None)
-  if bs is None:return np.array([.53,.55,.255])
-  inp=bs.inputs['Base Color'];tex=inp.links[0].from_node if inp.is_linked else None
-  if tex is None or tex.type!='TEX_IMAGE':return np.array(inp.default_value[:3])
-  im=tex.image
-  if im.name not in pixels:pixels[im.name]=np.array(im.pixels[:]).reshape(im.size[1],im.size[0],4)
-  loops=list(poly.loop_indices);li=loops[:3]
-  a,b,c=[obj.data.vertices[obj.data.loops[i].vertex_index].co for i in li]
-  uv=[Vector((*obj.data.uv_layers.active.data[i].uv,0)) for i in li]
-  q=barycentric_transform(p,a,b,c,*uv);arr=pixels[im.name]
-  return arr[int(np.clip(q.y,0,1)*(im.size[1]-1)),int(np.clip(q.x,0,1)*(im.size[0]-1)),:3]
- return np.array([.53,.55,.255])
-qx=np.clip(X,-95.99,95.99);qy=np.clip(Y,-77.99,269.99)
-d=np.hypot(X-qx,Y-qy);transition=smooth(d/72)
-# Four sampled boundary strips avoid per-pixel Blender raycasts.
-for axis,edge,lo,hi in [('x',-95.99,-77.99,269.99),('x',95.99,-77.99,269.99),('y',-77.99,-95.99,95.99),('y',269.99,-95.99,95.99)]:
- coords=np.linspace(lo,hi,512)
- colors=np.array([source_colour(edge,t) if axis=='x' else source_colour(t,edge) for t in coords])
- along=qy if axis=='x' else qx
- patch=np.stack([np.interp(along,coords,colors[:,k]) for k in range(3)],axis=-1)
- selected=((X<-96) if edge<0 else (X>96)) if axis=='x' else (((Y<-78)&(X>=-96)&(X<=96)) if edge<0 else ((Y>270)&(X>=-96)&(X<=96)))
- weight=np.where(selected,1-transition,0)[:,:,None]
- rgba[:,:,:3]=rgba[:,:,:3]*(1-weight)+patch*weight
-
+# One pigment material for all meadow top faces eliminates source-tile boundaries.
+# The certified source remains immutable; banks and original geometry keep their materials.
 im=bpy.data.images.new('Region1 broad continental pigment',S,S);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'Region1_continental.png');im.file_format='PNG';im.save();im.pack()
 mat=bpy.data.materials.new('Region1 open meadows');mat.use_nodes=True;bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.9;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color']);mesh.materials.append(mat)
 uv=mesh.uv_layers.new(name='Continental pigment')
@@ -148,6 +118,16 @@ crossing_banks={}
 for bx in [-550.,0.,450.]:
  by=rivercentre(bx) if abs(bx)>96 else sum(v.co.y for v in river.data.vertices if abs(v.co.x)<.1)/len([v for v in river.data.vertices if abs(v.co.x)<.1])
  crossing_banks[bx]=(by,height(bx,by-22),height(bx,by+22))
+# Re-author only grass top-face material across the retained and extended land.
+# Steep river banks retain their reviewed source pigment and UVs.
+for obj in land:
+ obj.data.materials.append(mat);index=len(obj.data.materials)-1
+ layer=obj.data.uv_layers.active
+ for poly in obj.data.polygons:
+  if poly.normal.z<.75:continue
+  poly.material_index=index
+  for li in poly.loop_indices:
+   q=obj.data.vertices[obj.data.loops[li].vertex_index].co;layer.data[li].uv=((q.x+910)/1820,(q.y+1000)/2000)
 # Join ground meshes, preserving AI material slots/UV; remove unused interior grid vertices.
 bpy.ops.object.select_all(action='DESELECT')
 for o in land+[outer]:o.select_set(True)
@@ -163,11 +143,20 @@ for cx in [-550.,0.,450.]:
  length=44.;half=length/2;vv=[];ff=[]
  for i in range(45):
   t=i/44;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
-  vv.extend([(cx-6,cy-half+i,z),(cx+6,cy-half+i,z)])
+  vv.extend([(cx-4,cy-half+i,z),(cx+4,cy-half+i,z)])
   if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))
- me=bpy.data.meshes.new('True plank deck');me.from_pydata(vv,[],ff);me.materials.append(bridge_mat);obj=bpy.data.objects.new('Authored crossing '+str(cx),me);scene.collection.objects.link(obj)
+ me=bpy.data.meshes.new('True plank deck');me.from_pydata(vv,[],ff);me.materials.append(bridge_mat);plank=bridge_mat.copy();plank.name='Bridge alternate weathered plank';next(n for n in plank.node_tree.nodes if n.type=='BSDF_PRINCIPLED').inputs['Base Color'].default_value=(.25,.17,.09,1);me.materials.append(plank)
+ for face in me.polygons:face.material_index=face.index%2
+ obj=bpy.data.objects.new('Authored crossing '+str(cx),me);scene.collection.objects.link(obj)
  bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);terrain.select_set(True);bpy.context.view_layer.objects.active=terrain;bpy.ops.object.join()
- bridge_specs.append((cx,cy,12,length))
+ bridge_specs.append((cx,cy,8,length))
+# Actual vegetation clearance at authored crossings and existing logical destinations.
+# These source objects remain recoverable in the certified AI file and this .blend.
+for tree in oldtrees:
+ x,y=tree.location.x,tree.location.y
+ crossing=any(abs(x-cx)<12 and abs(y-cy)<length/2+8 for cx,cy,w,length in bridge_specs)
+ destination=any(math.hypot(x-cx,y-cy)<r for cx,cy,r in [(36,6,16),(83,18,9),(82.5,-56.891,10),(-49,-47,8),(-56,-51,8)])
+ if crossing or destination:tree.hide_render=True;tree.hide_set(True)
 # Integrated geological fracture, not an upright monument. Keep city/real targets south of it.
 for v in terrain.data.vertices:
  x,y,z=v.co;dx=x+260;dy=y-150;r=math.hypot(dx,dy)
@@ -207,13 +196,14 @@ masters=[bpy.data.objects['Editable Layered fir source'],bpy.data.objects['Edita
 for index,(cx,cy,rx,ry) in enumerate(groves):
  parts=[]
  for k in range(27):
-  a=k*2.39996;r=math.sqrt((k+.5)/27);x=cx+math.cos(a)*rx*r;y=cy+math.sin(a)*ry*r
+  a=k*2.39996;r=math.sqrt((k+.5)/27);x=cx+math.cos(a)*rx*r*.58;y=cy+math.sin(a)*ry*r*.58
   if float(line_distance(np.array(x),np.array(y)))<9 or math.hypot(x+260,y-150)<120:continue
   donor=masters[k%2];o=donor.copy();o.data=donor.data.copy();scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));scale=1.6+(k%5)*.18;o.scale=(scale,scale,scale);o.rotation_euler.z=k*.71;parts.append(o)
  if not parts:continue
  bpy.ops.object.select_all(action='DESELECT')
  for o in parts:o.select_set(True)
  bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join();parts[0].name='BLD_ForestMass_'+str(index).zfill(2)
+ mod=parts[0].modifiers.new('Shared regional canopy simplification','DECIMATE');mod.ratio=.4;bpy.ops.object.modifier_apply(modifier=mod.name)
 # Distant LODs are simplified copies of the same silhouettes; no canopy substitutions.
 far_cache={}
 for near in list(scene.objects):

@@ -67,7 +67,7 @@ namespace Eldoria.World4XCanon
             ConfigureRegionCoverage();
             built = true;
             UpdateLevelOfDetail(true);
-            Debug.Log("REGION1_CANON_WORLD_INSTALLED presentation_only=1 geography=1 save_changes=0");
+            Debug.Log("REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState");
         }
 
         void InstallCameraLimits()

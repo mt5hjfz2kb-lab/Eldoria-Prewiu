@@ -90,6 +90,20 @@ namespace Eldoria.Tests
             Assert.That(Eldoria.Application.LocalGateway.ResourceRemaining(restarted.Snapshot(),id),Is.EqualTo(Eldoria.Application.LocalGateway.ResourceRemaining(after,id)));
         }
 
+        [Test]
+        public void OfflineDepletionUsesSavedDeadlineInsteadOfRestartTime()
+        {
+            var clock=new PopulationClock();var store=new PopulationStore();
+            var state=new Eldoria.Domain.PlayerState{ForestRemaining=0};
+            state.WorldResourceLocations.Add(new Eldoria.Domain.WorldResourceLocation{TargetId="forest-valoria",SiteId="old-site",Generation=1,DepletedUtcTicks=clock.UtcTicks-TimeSpan.FromHours(1).Ticks});
+            store.Save(state);var gateway=new Eldoria.Application.LocalGateway(clock,store);
+            gateway.ConfigureLocalResourceRespawn(new PopulationPlacement(),TimeSpan.FromMinutes(30));
+            var after=gateway.Snapshot();Assert.That(after.ForestRemaining,Is.EqualTo(1250));
+            Assert.That(after.WorldResourceLocations.Single(x=>x.TargetId=="forest-valoria").Generation,Is.EqualTo(2));
+            var restarted=new Eldoria.Application.LocalGateway(clock,store);restarted.ConfigureLocalResourceRespawn(new PopulationPlacement(),TimeSpan.FromMinutes(30));
+            Assert.That(restarted.Snapshot().WorldResourceLocations.Single(x=>x.TargetId=="forest-valoria").Generation,Is.EqualTo(2));
+        }
+
         static object Member(object component, string name)
         {
             Assert.That(component, Is.Not.Null);
@@ -152,14 +166,17 @@ namespace Eldoria.Tests
             yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
             var placement=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneResourcePlacement");
             Assert.That((int)Member(placement,"ValidatedCityCount"),Is.GreaterThanOrEqualTo(12),"City footprints require measured real mesh clearance");
+            Assert.That((int)Member(placement,"AccessibleCityCount"),Is.GreaterThanOrEqualTo(12),"Urban reserves require actual access from Valoria");
             var routes=(Eldoria.Application.IWorldMarchRoutes)Member(placement,"MarchRoutes");
             var gateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");var snapshot=gateway.Snapshot();
             var ids=new[]{"forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"}.Concat(snapshot.WorldResourceLocations.Where(x=>x.TargetId.StartsWith("region1:")).Select(x=>x.TargetId));
+            var unreachable=new System.Collections.Generic.List<string>();
             foreach(var id in ids){
-                Assert.That(routes.TryRoute(snapshot,id,out var route),Is.True,"No terrain route to "+id);
+                if(!routes.TryRoute(snapshot,id,out var route)){unreachable.Add(id);continue;}
                 Assert.That(route.Count,Is.GreaterThan(1));
                 for(int i=1;i<route.Count;i++)Assert.That(Vector3.Distance(new Vector3(route[i].X,route[i].Y,route[i].Z),new Vector3(route[i-1].X,route[i-1].Y,route[i-1].Z)),Is.LessThan(9));
             }
+            Assert.That(unreachable,Is.Empty,"No terrain route to: "+string.Join(",",unreachable));
         }
 
         [UnityTest]

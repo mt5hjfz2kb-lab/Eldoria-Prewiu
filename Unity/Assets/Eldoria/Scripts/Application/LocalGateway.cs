@@ -114,7 +114,7 @@ namespace Eldoria.Application
                 }
                 if (item.RespawnUtcTicks == 0)
                 {
-                    item.RespawnUtcTicks = checked(clock.UtcTicks + resourceRespawnTicks);
+                    item.RespawnUtcTicks = checked((item.DepletedUtcTicks>0?item.DepletedUtcTicks:clock.UtcTicks) + resourceRespawnTicks);
                     changed = true;
                 }
                 // Keep the return leg anchored to its original destination.
@@ -125,7 +125,7 @@ namespace Eldoria.Application
                     float.IsNaN(next.Y) || float.IsInfinity(next.Y) || float.IsNaN(next.Z) || float.IsInfinity(next.Z))
                     throw new InvalidOperationException("Invalid authoritative resource placement");
                 item.SiteId = next.SiteId; item.X = next.X; item.Y = next.Y; item.Z = next.Z;
-                item.Generation++; item.RespawnUtcTicks = 0;
+                item.Generation++; item.RespawnUtcTicks = 0; item.DepletedUtcTicks=0;
                 SetResourceRemaining(id,IsWoodTarget(id)?1250:5200);
                 changed = true;
             }
@@ -484,6 +484,11 @@ namespace Eldoria.Application
                     {
                         m.PendingWood = Math.Min(SliceRules.ForestLoad,ResourceRemaining(state,m.TargetId));
                         SetResourceRemaining(m.TargetId,ResourceRemaining(state,m.TargetId)-m.PendingWood);
+                    }
+                    if(ResourceRemaining(state,m.TargetId)==0){
+                        var depleted=state.WorldResourceLocations.Find(x=>x.TargetId==m.TargetId);
+                        if(depleted==null){depleted=new WorldResourceLocation{TargetId=m.TargetId};state.WorldResourceLocations.Add(depleted);}
+                        depleted.DepletedUtcTicks=due; // actual gathering deadline, including offline advancement
                     }
                     m.Phase = "returning";
                     m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;

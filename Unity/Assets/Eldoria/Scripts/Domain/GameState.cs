@@ -14,6 +14,7 @@ namespace Eldoria.Domain
         public float X, Y, Z;
         public int Generation;
         public long RespawnUtcTicks;
+        public long DepletedUtcTicks;
         public WorldResourceLocation Copy() => (WorldResourceLocation)MemberwiseClone();
     }
     [Serializable] public sealed class ResourceWallet { public int Wood; public int Stone; public int Food; }

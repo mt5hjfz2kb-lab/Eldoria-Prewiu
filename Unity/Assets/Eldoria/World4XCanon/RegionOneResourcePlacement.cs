@@ -11,10 +11,11 @@ namespace Eldoria.World4XCanon
     // Geometry service for the existing LocalGateway. Owns no timer or save file.
     public sealed class RegionOneResourcePlacement : MonoBehaviour, IWorldResourcePlacement
     {
-        [Serializable] public sealed class CityReserve {public float x,z,radius;}
+        [Serializable] public sealed class CityReserve {public float x,z,radius;[NonSerialized] public bool Validated;}
         [Serializable] sealed class RegionLayout {public CityReserve[] cities;}
         CityReserve[] cities=Array.Empty<CityReserve>();
         public int ValidatedCityCount {get;private set;}
+        public int AccessibleCityCount {get;private set;}
         sealed class Site { public string Id; public Vector3 Point; public bool Wood; }
         readonly List<Site> sites = new List<Site>();
         readonly Dictionary<string,Vector3> initial = new Dictionary<string,Vector3>();
@@ -56,7 +57,7 @@ namespace Eldoria.World4XCanon
                         if(!collider.Raycast(new Ray(host.WorldHome+new Vector3(x,250,z),Vector3.down),out var hit,500)){valid=false;break;}
                         low=Mathf.Min(low,hit.point.y);high=Mathf.Max(high,hit.point.y);
                     }
-                    if(valid&&high-low<.5f)ValidatedCityCount++;
+                    if(valid&&high-low<.5f){city.Validated=true;ValidatedCityCount++;}
                 }
                 for(int z=-700;z<=800;z+=32)for(int x=-750;x<=600;x+=32)
                 {
@@ -76,6 +77,8 @@ namespace Eldoria.World4XCanon
                 }
             }
             finally {if(routes==null)routes=new RegionOneTerrainRoutes(host,collider);DestroyImmediate(query);}
+            var snapshot=host.City.Gateway.Snapshot();
+            foreach(var city in cities)if(city.Validated&&routes.TryRouteTo(snapshot,host.WorldHome+new Vector3(city.x,0,city.z),out var route))AccessibleCityCount++;
         }
         public bool TryChoose(PlayerState snapshot,string targetId,string previousSiteId,int generation,out WorldResourceLocation location)
         {
@@ -83,17 +86,20 @@ namespace Eldoria.World4XCanon
             if(snapshot.WorldId!="world-local"||snapshot.BastionLevel<1)return false;
             bool wood=LocalGateway.ResourceKind(snapshot,targetId)=="wood";
             if(!wood&&LocalGateway.ResourceKind(snapshot,targetId)!="stone")return false;
-            // Stable ordering and a persisted chosen site: no client random seed.
+            // Stable identity-specific ordering spreads resources over valid biomes.
+            // The chosen site remains authoritative persisted state, never client randomness.
+            uint identity=2166136261;foreach(char c in targetId)identity=unchecked((identity^c)*16777619);
+            int first=(int)(identity%(uint)Math.Max(1,sites.Count));
             for(int offset=0;offset<sites.Count;offset++)
             {
-                var site=sites[(offset+generation*17)%sites.Count];
-                if(site.Wood!=wood||site.Id==previousSiteId||(initial.TryGetValue(targetId,out var original)&&Vector3.Distance(site.Point,original)<24))continue;
+                var site=sites[(first+offset+generation*17)%sites.Count];
+                if(site.Wood!=wood||site.Id==previousSiteId||(initial.TryGetValue(targetId,out var original)&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(original.x,original.z))<24))continue;
                 bool occupied=Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(host.WorldHome.x,host.WorldHome.z))<32;
                 foreach(var city in cities)if(Vector2.Distance(new Vector2(site.Point.x-host.WorldHome.x,site.Point.z-host.WorldHome.z),new Vector2(city.x,city.z))<city.radius+9)occupied=true;
                 foreach(var item in snapshot.WorldResourceLocations)
-                    if(item.TargetId!=targetId&&item.Generation>0&&Vector3.Distance(site.Point,new Vector3(item.X,item.Y,item.Z))<20)occupied=true;
+                    if(item.TargetId!=targetId&&item.Generation>0&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(item.X,item.Z))<20)occupied=true;
                 foreach(var hotspot in host.WorldRoot.GetComponentsInChildren<Eldoria.Presentation.WorldHotspot>(true))
-                    if(hotspot.Id!=targetId&&Vector3.Distance(site.Point,hotspot.transform.position)<24)occupied=true;
+                    if(hotspot.Id!=targetId&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(hotspot.transform.position.x,hotspot.transform.position.z))<24)occupied=true;
                 foreach(var renderer in host.WorldRoot.GetComponentsInChildren<Renderer>(true))
                     if(renderer.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal))
                     {var b=renderer.bounds;b.Expand(18);if(site.Point.x>=b.min.x&&site.Point.x<=b.max.x&&site.Point.z>=b.min.z&&site.Point.z<=b.max.z)occupied=true;}

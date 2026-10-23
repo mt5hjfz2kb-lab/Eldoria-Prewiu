@@ -56,8 +56,13 @@ namespace Eldoria.World4XCanon
         }
         public bool TryRoute(PlayerState snapshot,string targetId,out List<WorldRoutePoint> route)
         {
-            route=null;var occupied=OccupiedCells(snapshot);var source=host.FindTarget("valoria-map-city");var target=host.FindTarget(targetId);
-            if(!source||!target||!Nearest(source.transform.position,occupied,out var start)||!Nearest(target.transform.position,occupied,out var goal))return false;
+            route=null;var target=host.FindTarget(targetId);
+            return target&&TryRouteTo(snapshot,target.transform.position,out route);
+        }
+        public bool TryRouteTo(PlayerState snapshot,Vector3 destination,out List<WorldRoutePoint> route)
+        {
+            route=null;var occupied=OccupiedCells(snapshot);var source=host.FindTarget("valoria-map-city");
+            if(!source||!Nearest(source.transform.position,occupied,out var start)||!Nearest(destination,occupied,out var goal))return false;
             // Uniform-cost BFS over orthogonal edges. No diagonal corner cutting.
             var queue=new Queue<Vector2Int>();var previous=new Dictionary<Vector2Int,Vector2Int>();queue.Enqueue(start);previous[start]=start;
             while(queue.Count>0)
@@ -72,7 +77,7 @@ namespace Eldoria.World4XCanon
                     previous[b]=a;queue.Enqueue(b);
                 }
             }
-            if(!previous.ContainsKey(goal))return false;
+            if(!previous.ContainsKey(goal)){Debug.LogWarning("REGION1_ROUTE_DISCONNECTED start="+start+" goal="+goal+" reachable="+previous.Count+" walkable="+cells.Count);return false;}
             var points=new List<Vector2Int>();for(var p=goal;;p=previous[p]){points.Add(p);if(p==start)break;}points.Reverse();
             route=points.Select(k=>{var p=cells[k];return new WorldRoutePoint{X=p.x,Y=p.y,Z=p.z};}).ToList();
             return route.Count>1;
