@@ -28,7 +28,14 @@ namespace Eldoria.World4XCanon
    if(root.GetComponentsInChildren<Collider>().Length!=0)throw new InvalidOperationException("Pilot must not introduce gameplay colliders");
    // Existing playable objects remain alive and retain IDs/colliders. Study hides prior renderers only, restoring in finally.
    foreach(var r in prior)r.enabled=false;
+   var sun=RenderSettings.sun;
+   if(!sun)sun=UnityEngine.Object.FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.enabled&&l.type==LightType.Directional).OrderByDescending(l=>l.intensity).FirstOrDefault();
+   var sunRotation=sun?sun.transform.rotation:Quaternion.identity;var sunShadows=sun?sun.shadows:LightShadows.None;float sunStrength=sun?sun.shadowStrength:0;
+   var pipeline=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline as UnityEngine.Rendering.Universal.UniversalRenderPipelineAsset;
+   float shadowDistance=pipeline?pipeline.shadowDistance:0;
    try {
+    if(sun){sun.transform.rotation=Quaternion.Euler(48,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}
+    if(pipeline)pipeline.shadowDistance=300;
     Directory.CreateDirectory(output);
     var target=home+new Vector3(0,2,0);camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);
     int treeCount=root.GetComponentsInChildren<Renderer>().Count(r=>r.name.StartsWith("Pilot_Pine"));
@@ -36,7 +43,7 @@ namespace Eldoria.World4XCanon
     foreach(float size in new[]{34f,40f,46f,52f}) {
      float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
-     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch")renderer.enabled=fade<1;else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
+     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=true;renderer.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
      camera.orthographicSize=size;
      foreach(bool before in new[]{true,false}) {
      root.SetActive(!before);foreach(var r in prior)if(r)r.enabled=before;
@@ -47,7 +54,21 @@ namespace Eldoria.World4XCanon
      camera.targetTexture=oldRT;RenderTexture.active=oldActive;rt.Release();UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(tex);
      }
     }
-   } finally {foreach(var r in prior)if(r)r.enabled=true;UnityEngine.Object.DestroyImmediate(root);camera.transform.SetPositionAndRotation(oldPos,oldRot);camera.orthographicSize=oldSize;camera.aspect=oldAspect;camera.targetTexture=oldRT;RenderTexture.active=oldActive;}
+    // Sample a continuous camera trajectory, not a slideshow of the four QA stills.
+    root.SetActive(true);foreach(var r in prior)if(r)r.enabled=false;
+    string sequence=Path.Combine(output,"zoom-sequence");Directory.CreateDirectory(sequence);
+    var seqRT=new RenderTexture(960,720,24);var seqTex=new Texture2D(960,720,TextureFormat.RGB24,false);
+    try {for(int frame=0;frame<=96;frame++) {
+     float t=frame<=48?frame/48f:(96-frame)/48f;float size=Mathf.Lerp(34,52,Mathf.SmoothStep(0,1,t));
+     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
+     foreach(var m in hybrid)m.SetFloat("_Fade",fade);
+     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=true;renderer.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
+     camera.orthographicSize=size;camera.aspect=4f/3;camera.targetTexture=seqRT;camera.Render();RenderTexture.active=seqRT;seqTex.ReadPixels(new Rect(0,0,960,720),0,0);seqTex.Apply();
+     File.WriteAllBytes(Path.Combine(sequence,"frame-"+frame.ToString("D3")+".png"),seqTex.EncodeToPNG());
+     File.WriteAllText(Path.Combine(sequence,"frame-"+frame.ToString("D3")+".json"),JsonUtility.ToJson(new Evidence{zoom=size,position=camera.transform.position,rotation=camera.transform.rotation,unity=UnityEngine.Application.unityVersion,playMode=UnityEngine.Application.isPlaying,trees=treeCount},true));
+    }}finally{camera.targetTexture=oldRT;RenderTexture.active=oldActive;seqRT.Release();UnityEngine.Object.DestroyImmediate(seqRT);UnityEngine.Object.DestroyImmediate(seqTex);}
+    File.WriteAllText(Path.Combine(sequence,"sequence.json"),"{\"frames\":97,\"fps\":16,\"width\":960,\"height\":720,\"source\":\"actual Unity Camera.Render along continuous zoom trajectory; not runtime FPS benchmark\"}");
+   } finally {if(sun){sun.transform.rotation=sunRotation;sun.shadows=sunShadows;sun.shadowStrength=sunStrength;}if(pipeline)pipeline.shadowDistance=shadowDistance;foreach(var r in prior)if(r)r.enabled=true;UnityEngine.Object.DestroyImmediate(root);camera.transform.SetPositionAndRotation(oldPos,oldRot);camera.orthographicSize=oldSize;camera.aspect=oldAspect;camera.targetTexture=oldRT;RenderTexture.active=oldActive;}
   }
 
   static Material[] BuildImpostors(GameObject root,Camera view,string output)
