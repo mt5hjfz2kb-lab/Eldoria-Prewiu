@@ -56,7 +56,7 @@ namespace Eldoria.World4XCanon
      camera.targetTexture=oldRT;RenderTexture.active=oldActive;rt.Release();UnityEngine.Object.Destroy(rt);UnityEngine.Object.Destroy(tex);
      }
     }
-    CaptureSector(camera,root,world,home,hybrid,output);
+    CaptureSector(camera,root,world,home,hybrid,output,prior);
     if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone"))) {
     // Sample a continuous camera trajectory, not a slideshow of the four QA stills.
     root.SetActive(true);foreach(var r in prior)if(r)r.enabled=false;
@@ -155,7 +155,7 @@ namespace Eldoria.World4XCanon
    File.WriteAllText(Path.Combine(output,"batching.json"),"{\"renderers_before\":"+before+",\"renderers_after\":"+after+",\"source_stone_renderers\":"+sources.Count+",\"spatial_batches\":"+groups.Count+",\"cell_metres\":32,\"physical_mobile_tested\":false}");
   }
 
-  static void CaptureSector(Camera camera,GameObject root,Transform world,Vector3 home,Material[] hybrid,string output)
+  static void CaptureSector(Camera camera,GameObject root,Transform world,Vector3 home,Material[] hybrid,string output,Renderer[] originalEnabledRenderers)
   {
    if(!root.GetComponentsInChildren<Transform>().Any(t=>t.name.StartsWith("P ridge exposed stone")))return;
    root.SetActive(true);string dir=Path.Combine(output,"sector");Directory.CreateDirectory(dir);
@@ -206,7 +206,36 @@ namespace Eldoria.World4XCanon
     }
    }
    if(groundedVisualMarkers.Count!=5)throw new InvalidOperationException("Expected five contact-verified visual node instances; found "+groundedVisualMarkers.Count);
-   var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false,groundedVisualMarkers=groundedVisualMarkers.ToArray(),groundedVisualMarkerCount=groundedVisualMarkers.Count};
+   // Preserve the original animated Spawnling when the connected sector is captured.
+   // Its source visual is independently grounded to the imported mesh for this
+   // disposable capture only. The encounter, animator, collider and persistence stay untouched.
+   var actor=world.GetComponentsInChildren<MonoBehaviour>(true).FirstOrDefault(c=>c&&c.GetType().Name=="SpawnlingEncounterVisual");
+   var actorType=actor?actor.GetType():null;
+   var actorModel=actorType?.GetField("ModelRoot")?.GetValue(actor) as GameObject;
+   var actorPivot=actorType?.GetField("MotionPivot")?.GetValue(actor) as Transform;
+   var actorOriginalPivot=actorPivot?actorPivot.localPosition:Vector3.zero;
+   var actorRenderers=actorModel&&actorModel.activeInHierarchy?
+    originalEnabledRenderers.Where(r=>r&&r.transform.IsChildOf(actorModel.transform)).ToArray():Array.Empty<Renderer>();
+   var actorGroundingError=0f;bool actorContactMeasured=false;
+   foreach(var r in actorRenderers)r.enabled=true;
+   var actorProbe=probes.FirstOrDefault(p=>p.hotspotId=="engendro-valoria");
+   if(actorPivot&&actorProbe!=null&&actorRenderers.Length>0&&actorPivot.GetComponentsInChildren<Collider>(true).Length==0) {
+    var method=actorType.GetMethod("TryGeometryBounds");
+    if(method!=null) {
+     var args=new object[]{new Bounds()};
+     if(method.Invoke(actor,args) is bool measured&&measured) {
+      var bounds=(Bounds)args[0];
+      actorPivot.position+=Vector3.up*(actorProbe.authoredSurface.y+.08f-bounds.min.y);
+      args[0]=new Bounds();
+      if(method.Invoke(actor,args) is bool checkedBounds&&checkedBounds) {
+       actorGroundingError=((Bounds)args[0]).min.y-actorProbe.authoredSurface.y-.08f;
+       actorContactMeasured=true;
+       if(Mathf.Abs(actorGroundingError)>.15f)throw new InvalidOperationException("Animated visual contact not grounded on actual Blender terrain");
+      }
+     }
+    }
+   }
+   var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false,groundedVisualMarkers=groundedVisualMarkers.ToArray(),groundedVisualMarkerCount=groundedVisualMarkers.Count,actorVisualContactMeasured=actorContactMeasured,actorVisualContactError=actorGroundingError,animatedOriginalRenderersRetained=actorRenderers.Length};
    stats.maxHeightDifference=probes.Count>0?probes.Max(p=>Mathf.Abs(p.heightDifference)):0;
    // Collider bounds.min.y is only a provisional contact proxy. Mesh-contact certification remains pending.
    stats.heightDeltaIsGroundingVerdict=false;
@@ -252,8 +281,12 @@ namespace Eldoria.World4XCanon
       SaveSectorFrame(camera,Path.Combine(seq,"frame-"+frame.ToString("D3")),portrait?540:960,portrait?960:540);
      }
     }
-   } finally {camera.targetTexture=oldRT;RenderTexture.active=oldActive;}
-   for(int i=0;i<originalColliders.Length;i++)if(!originalColliders[i]||originalColliders[i].transform.position!=positions[i])throw new InvalidOperationException("Sector capture moved or removed a logical collider");
+   } finally {
+    camera.targetTexture=oldRT;RenderTexture.active=oldActive;
+    if(actorPivot)actorPivot.localPosition=actorOriginalPivot;
+    foreach(var r in actorRenderers)if(r)r.enabled=false;
+   }
+   for(int i=0;i<originalColliders.Length;i++if(!originalColliders[i]||originalColliders[i].transform.position!=positions[i])throw new InvalidOperationException("Sector capture moved or removed a logical collider");
    stats.logicalPositionsUnchanged=true;
    stats.lodSamples=lodReadings.ToArray();
    var close=lodReadings.First(p=>p.orientation=="landscape"&&p.scale=="close").visibleTriangles;
@@ -289,7 +322,7 @@ namespace Eldoria.World4XCanon
   [Serializable] class GroundedMarkerProbe {public string id,sourceRenderer;public float originalVisualFootY,authoredGroundY,groundedVisualFootY,visualCorrectionMeters,contactErrorMeters;}
   [Serializable] class HeightProbe {public string name,hotspotId;public Vector3 logicalPosition,authoredSurface,boundsMin,boundsMax;public float heightDifference;}
   [Serializable] class SectorLodSample {public string orientation,scale;public float zoom;public int visibleRenderers,visibleTriangles;}
-  [Serializable] class SectorStats {public SectorLodSample[] lodSamples;public HeightProbe[] heightProbes;public GroundedMarkerProbe[] groundedVisualMarkers;public int groundedVisualMarkerCount;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public PickProbe[] selectionProbes;public bool heightDeltaIsGroundingVerdict,logicalPositionsUnchanged,physicalMobileTested;}
+  [Serializable] class SectorStats {public bool actorVisualContactMeasured;public float actorVisualContactError;public int animatedOriginalRenderersRetained;public SectorLodSample[] lodSamples;public HeightProbe[] heightProbes;public GroundedMarkerProbe[] groundedVisualMarkers;public int groundedVisualMarkerCount;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public PickProbe[] selectionProbes;public bool heightDeltaIsGroundingVerdict,logicalPositionsUnchanged,physicalMobileTested;}
 
   [Serializable] class Evidence {public float zoom;public Vector3 position;public Quaternion rotation;public string unity;public bool playMode;public int trees;}
  }

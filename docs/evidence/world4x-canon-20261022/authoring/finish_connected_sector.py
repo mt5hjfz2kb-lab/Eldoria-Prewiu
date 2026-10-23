@@ -270,15 +270,28 @@ road_outer=np.maximum.reduce((path,np.roll(path,shift,0),np.roll(path,-shift,0),
 broken=.58+.23*np.sin(X*.36+Y*.77)+.19*np.sin(Y*.51-X*.49)
 weather=np.clip((road_outer-path)*broken*seam*(1-mask*.6),0,.50)
 pix[:,:,:3]=pix[:,:,:3]*(1-weather[:,:,None])+np.array([.49,.43,.29])*weather[:,:,None]
-for name,data,noncolor in [('AA slope and canopy painted pigment',pix,False),('AA editable slope glaze mask',paint,True),('AA editable connected litter mask',mask,True)]:
+# AC: read as deliberately designed ochre rock backs and darker meadow hollows.
+# The silhouettes follow the same physical ridges, with broken contour borders.
+# No uniform camouflage, broad independent atlas or changes inside O.
+contour_break=.73+.17*np.sin(X*.19+Y*.16)+.10*np.sin(Y*.37-X*.14)
+highs=np.clip((shoulder1*.89+shoulder2*.84)*contour_break*seam*(1-path)*(1-mask*.69),0,.82)
+pix[:,:,:3]=pix[:,:,:3]*(1-highs[:,:,None])+np.array([.65,.57,.38])*highs[:,:,None]
+lush=np.clip(damp*.33*seam*(1-path)*(1-mask*.6),0,.34)
+pix[:,:,:3]=pix[:,:,:3]*(1-lush[:,:,None])+np.array([.26,.36,.20])*lush[:,:,None]
+# The three original winding Bezier routes remain in place, but the visual
+# centre now wears through irregular ochre/taupe rather than a pristine flat ribbon.
+roadwear=.73+.17*np.sin(X*.31+Y*.49)+.10*np.sin(Y*.64-X*.28)
+roadfill=np.clip(path*roadwear*seam,0,.9)
+pix[:,:,:3]=pix[:,:,:3]*(1-roadfill[:,:,None])+np.array([.48,.40,.26])*roadfill[:,:,None]
+for name,data,noncolor in [('AC slope and canopy painted pigment',pix,False),('AC editable slope glaze mask',paint,True),('AC editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AA slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AC slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='AB visible low rock anatomy, AA ridges, meadow palette and canopy on retained O'
+scene['finishing_stage']='AC designed meadow-strata palette and worn routes, AB outcrops, same O'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -286,4 +299,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'AB','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AB exposed modeled rock shelves over AA physical relief and Z canopy; no gameplay mutations; preserve O/K/I/Z'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AC','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AC macro landcover and weathered route core plus AB real outcrops and high-performance far canopy; no gameplay changes'},indent=2))
