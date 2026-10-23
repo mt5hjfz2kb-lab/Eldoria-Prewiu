@@ -7,7 +7,8 @@ Run: blender -b --python author_region.py -- OUTPUT REFERENCES CAMERAS_JSON
 import bpy, sys, math, json, pathlib, hashlib, gzip, struct
 import numpy as np
 from mathutils import Vector
-from mathutils.geometry import interpolate_bezier
+from mathutils.geometry import interpolate_bezier, delaunay_2d_cdt
+from mathutils.bvhtree import BVHTree
 from bpy_extras.object_utils import world_to_camera_view
 
 out, refs, camera_file = map(pathlib.Path, sys.argv[sys.argv.index('--')+1:])
@@ -163,57 +164,103 @@ def polygon_field(points, path):
         if abs(float(b[1]-a[1]))<1e-8:continue
         inside^=((a[1]>points[:,1])!=(b[1]>points[:,1])) & (points[:,0]<(b[0]-a[0])*(points[:,1]-a[1])/(b[1]-a[1])+a[0])
     return distance(points,path)*np.where(inside,1,-1)
+# Second macroscopic construction: feature-conforming triangulation, not a coarse height grid.
 NX,NZ=240,260;WIDTH,DEPTH=1820.,2000.
-xs=np.linspace(-WIDTH/2,WIDTH/2,NX+1,dtype=np.float32);zs=np.linspace(-DEPTH/2,DEPTH/2,NZ+1,dtype=np.float32)
-xx,zz=np.meshgrid(xs,zs);points=np.column_stack([xx.ravel(),zz.ravel()])
-shore=polygon_field(points,sample(coast));river_edge=np.full(len(points),1000,dtype=np.float32)
-river_samples=[]
-for i,c in enumerate(rivers):
-    path=sample(c);river_samples.append(path)
-    # Width evolves along authored radius; explicit hierarchy is shared with water meshes.
+river_samples=[sample(c,8) for c in rivers]
+road_samples=[sample(c,8) for c in roads]
+fault_samples=[sample(c,8) for c in faults]
+coast_path=sample(coast,8)
+constraints=[];layout_points=[]
+def constrain(path,closed=False):
+    start=len(layout_points);layout_points.extend((float(p[0]),float(p[1])) for p in path)
+    constraints.extend((start+i,start+i+1) for i in range(len(path)-1))
+    if closed:constraints.append((start+len(path)-1,start))
+def offset(path,width,closed=False):
+    d=np.roll(path,-1,axis=0)-np.roll(path,1,axis=0)
+    if not closed:d[0]=path[1]-path[0];d[-1]=path[-1]-path[-2]
+    d/=np.maximum(np.linalg.norm(d,axis=1)[:,None],.001)
+    return path+np.column_stack([-d[:,1],d[:,0]])*np.asarray(width).reshape(-1,1)
+constrain(coast_path,True)
+for delta in [-4,4,9]:constrain(offset(coast_path,np.full(len(coast_path),delta),True),True)
+for i,path in enumerate(river_samples):
     widths=np.linspace(1.4,4.1,len(path)) if i==0 else np.linspace(.6,2.3,len(path))
-    for j,(a,b) in enumerate(zip(path[:-1],path[1:])):river_edge=np.minimum(river_edge,distance(points,np.array([a,b]))-widths[j])
+    constrain(path)
+    for side in [-1,1]:
+        constrain(offset(path,side*widths));constrain(offset(path,side*(widths+3)))
+for path in road_samples:
+    constrain(path)
+    for side in [-1,1]:constrain(offset(path,np.full(len(path),side*2)))
+for path in fault_samples:
+    constrain(path)
+    for side in [-1,1]:
+        constrain(offset(path,np.full(len(path),side*1.5)));constrain(offset(path,np.full(len(path),side*5)))
+for c in forest_curves:constrain(sample(c,4),True)
 for x,y,rx,ry in [(224,265,22,12),(278,571,26,16)]:
-    centre=point(x,y);q=(points-centre)/[rx*1.44,ry*1.6]
-    river_edge=np.minimum(river_edge,(np.linalg.norm(q,axis=1)-1)*ry*1.6)
-road_distance=np.minimum.reduce([distance(points,sample(c)) for c in roads])
-forest_distance=np.maximum.reduce([polygon_field(points,sample(c,5)) for c in forest_curves])
-fault_distance=np.minimum.reduce([distance(points,sample(c,6)) for c in faults])
+    centre=point(x,y)
+    for radius in [1,1.16]:
+        ring=np.array([(centre[0]+math.cos(j*math.tau/40)*rx*1.44*radius,centre[1]+math.sin(j*math.tau/40)*ry*1.6*radius) for j in range(40)])
+        constrain(ring,True)
+# Coarse open meadow sampling; density is spent at shores, channels and faults.
+for z in np.linspace(-1000,1000,101):
+    for x in np.linspace(-910,910,92):layout_points.append((float(x),float(z)))
+coords,_,faces,_,_,_=delaunay_2d_cdt([Vector(p) for p in layout_points],constraints,[],0,.005,False)
+points=np.array(coords,dtype=np.float32)
+shore=polygon_field(points,coast_path)
+def fields(points):
+    river_edge=np.full(len(points),1000,dtype=np.float32)
+    for i,path in enumerate(river_samples):
+        widths=np.linspace(1.4,4.1,len(path)) if i==0 else np.linspace(.6,2.3,len(path))
+        for j,(a,b) in enumerate(zip(path[:-1],path[1:])):river_edge=np.minimum(river_edge,distance(points,np.array([a,b]))-widths[j])
+    for x,y,rx,ry in [(224,265,22,12),(278,571,26,16)]:
+        centre=point(x,y);q=(points-centre)/[rx*1.44,ry*1.6]
+        river_edge=np.minimum(river_edge,(np.linalg.norm(q,axis=1)-1)*ry*1.6)
+    road_distance=np.minimum.reduce([distance(points,path) for path in road_samples])
+    forest_distance=np.maximum.reduce([polygon_field(points,sample(c,5)) for c in forest_curves])
+    fault_distance=np.minimum.reduce([distance(points,path) for path in fault_samples])
+    return river_edge,road_distance,forest_distance,fault_distance
+river_edge,road_distance,forest_distance,fault_distance=fields(points)
 heights=np.full(len(points),-4,dtype=np.float32)
 for ridge in ridges:
-    path=sample(ridge);dist=distance(points,path);heights+=np.clip(1-dist/float(ridge['influence_width']),0,1)**1.5*max(ridge['crest_heights'])
-protected=np.linalg.norm(points,axis=1)<100
-heights[protected]=-4
-heights-=np.clip(1-np.maximum(river_edge,0)/7,0,1)*2.7
-scar=np.clip(1-np.linalg.norm((points-[8,61])/[1,.85],axis=1)/58,0,1)
-heights-=scar**1.25*5.5
-heights-=np.clip(1-fault_distance/3,0,1)*np.clip(1-np.linalg.norm(points-[8,61],axis=1)/100,0,1)*3
-heights=np.where(shore<0,-18,np.where(shore<5,-18+(heights+18)*shore/5,heights))
-def height(x,y):
-    ix=np.clip((x/WIDTH+.5)*NX,0,NX-.001);iz=np.clip((y/DEPTH+.5)*NZ,0,NZ-.001)
-    a=int(ix);b=int(iz);u=ix-a;v=iz-b;h=heights.reshape(NZ+1,NX+1)
-    return float((1-v)*((1-u)*h[b,a]+u*h[b,a+1])+v*((1-u)*h[b+1,a]+u*h[b+1,a+1]))
+    path=sample(ridge);dist=np.full(len(points),10000,dtype=np.float32);crest=np.zeros(len(points),dtype=np.float32)
+    profile=np.interp(np.linspace(0,1,len(path)),np.linspace(0,1,len(ridge['crest_heights'])),ridge['crest_heights'])
+    for j,(a,b) in enumerate(zip(path[:-1],path[1:])):
+        q=distance(points,np.array([a,b]));near=q<dist;dist=np.minimum(dist,q);crest[near]=profile[j]
+    heights+=np.clip(1-dist/float(ridge['influence_width']),0,1)**1.5*crest
+heights[np.linalg.norm(points,axis=1)<100]=-4
+heights-=np.clip(1-np.maximum(river_edge,0)/3,0,1)*2.7
+# Fracture branches determine depth and colour. No circular dark disk.
+scar=np.clip(1-fault_distance/9,0,1)*np.clip(1-np.linalg.norm(points-[8,61],axis=1)/100,0,1)
+heights-=scar*2+np.clip(1-fault_distance/1.5,0,1)*np.clip(1-np.linalg.norm(points-[8,61],axis=1)/100,0,1)*5
+heights=np.where(shore<0,-18,np.where(shore<4,-18+(heights+18)*shore/4,heights))
 vertices=[(float(p[0]),float(p[1]),float(h)) for p,h in zip(points,heights)]
-faces=[]
-for z in range(NZ):
-    for x in range(NX):
-        a=z*(NX+1)+x;faces.append((a,a+1,a+NX+2,a+NX+1))
-mesh=bpy.data.meshes.new('Editable sculpted continuous land');mesh.from_pydata(vertices,[],faces);mesh.update()
+mesh=bpy.data.meshes.new('Editable feature-conforming terrain');mesh.from_pydata(vertices,[],faces);mesh.update()
 terrain=bpy.data.objects.new('BLD_Terrain',mesh);collections['20'].objects.link(terrain)
-terrain['source_authority']='Blender editable mesh sculpted from authored curves. No Unity mesh input.'
-names=['Meadow','DryMeadow','ForestGround','Rock','Cliff','Shale','BreachInterior','Sea']
-for name in names:mesh.materials.append(mats[name])
-for poly in mesh.polygons:
-    ids=list(poly.vertices);s=shore[ids].mean();f=forest_distance[ids].mean();r=river_edge[ids].mean();damage=scar[ids].mean();h=heights[ids].mean()
-    poly.material_index=7 if s<0 else 4 if s<7 else 6 if damage>.6 else 5 if damage>.15 else 3 if h>3 else 2 if f> -8 else 1 if r<12 else 0
+terrain['source_authority']='Blender authored curves constrain actual terrain edges; no Unity mesh input.'
+terrain['construction']='Constrained Delaunay: coast, channel banks, routes and physical fissures are explicit mesh edges.'
+# Exportable vertex colour transitions replace block-shaped face material boundaries.
+mat=bpy.data.materials.new('Eldoria_AuthoredTerrain');mat.use_nodes=True;mat.node_tree.nodes.clear()
+bs=mat.node_tree.nodes.new('ShaderNodeBsdfPrincipled');bs.inputs['Roughness'].default_value=.94
+vc=mat.node_tree.nodes.new('ShaderNodeVertexColor');vc.layer_name='Color'
+output=mat.node_tree.nodes.new('ShaderNodeOutputMaterial');mat.node_tree.links.new(vc.outputs['Color'],bs.inputs['Base Color']);mat.node_tree.links.new(bs.outputs['BSDF'],output.inputs['Surface']);mesh.materials.append(mat)
+def colour(name):return np.array(mats[name].diffuse_color[:3])
+colors=np.tile(colour('Meadow'),(len(points),1))
+for name,weight in [('ForestGround',np.clip((forest_distance+6)/12,0,1)),('DryMeadow',np.clip(1-np.maximum(river_edge,0)/9,0,1)*.6),('Rock',np.clip((heights+1)/13,0,1)),('Cliff',np.clip(1-np.maximum(shore,0)/8,0,1)),('Sea',(shore<0).astype(float)),('Shale',scar),('BreachInterior',np.clip(1-fault_distance/2,0,1)*scar)]:
+    colors=colors*(1-weight[:,None])+colour(name)*weight[:,None]
+attr=mesh.color_attributes.new(name='Color',type='FLOAT_COLOR',domain='POINT');attr.data.foreach_set('color',np.column_stack([colors,np.ones(len(points))]).astype(np.float32).ravel())
 uv=mesh.uv_layers.new(name='WorldUV')
-for p in mesh.polygons:
-    for l in p.loop_indices:
+for poly in mesh.polygons:
+    poly.use_smooth=True
+    for l in poly.loop_indices:
         i=mesh.loops[l].vertex_index;uv.data[l].uv=(points[i,0]/WIDTH+.5,points[i,1]/DEPTH+.5)
 for name,values in [('forest_density',np.clip(forest_distance/10,0,1)),('river_mask',(river_edge<0).astype(float)),('path_mask',(road_distance<2).astype(float)),('land_mask',(shore>0).astype(float)),('breach_damage',scar)]:
     attr=mesh.attributes.new(name,'FLOAT','POINT');attr.data.foreach_set('value',values.astype(np.float32))
-record('Sculpt terrain vertices and write semantic mesh attributes',[terrain.name],
-       'Continuous land and real coastal scarp, ridge shoulders, carved riverbeds and recessed geological fault; no duplicate terrain.')
+bvh=BVHTree.FromPolygons([Vector(v) for v in vertices],faces,all_triangles=True)
+def height(x,y):
+    hit=bvh.ray_cast(Vector((float(x),float(y),200)),Vector((0,0,-1)))
+    if hit[0] is None:raise RuntimeError('Authored terrain sample outside mesh: '+str((x,y)))
+    return float(hit[0].z)
+record('Conform terrain topology to editable geographic curves',[terrain.name],
+       'Replace coarse square cells with explicit shore, riverbank and fault edges. Interpolate biome colours at vertices; physically incise branching fault instead of circular pigment.')
 
 exports=[terrain]
 def mesh_object(name,verts,faces,material,key):
@@ -224,7 +271,7 @@ def ribbon(name,path,widths,material,water=False):
     for i,p in enumerate(path):
         d=path[min(i+1,len(path)-1)]-path[max(i-1,0)];d=d/max(np.linalg.norm(d),.001);n=np.array([-d[1],d[0]])
         for side in [-1,1]:
-            q=p+n*widths[i]*side;v.append((float(q[0]),float(q[1]),-4.9 if water else height(*q)+.10))
+            q=p+n*widths[i]*side;v.append((float(q[0]),float(q[1]),(-4.9 + .002*int(name.rsplit("_",1)[-1])) if water else height(*q)+.10))
         if i:f.append((2*i-2,2*i,2*i+1,2*i-1))
     return mesh_object(name,v,f,material,'30')
 for i,path in enumerate(river_samples):
@@ -235,7 +282,7 @@ for i,c in enumerate(roads):
 for i,(x,y,rx,ry) in enumerate([(224,265,22,12),(278,571,26,16)]):
     c=point(x,y);v=[(*c,-4.9)];n=22
     for j in range(n):
-        a=j*math.tau/n;radius=1+.11*math.sin(j*2.1);v.append((c[0]+math.cos(a)*rx*1.44*radius,c[1]+math.sin(a)*ry*1.6*radius,-4.9))
+        a=j*math.tau/n;radius=1;v.append((c[0]+math.cos(a)*rx*1.44*radius,c[1]+math.sin(a)*ry*1.6*radius,-4.9))
     mesh_object('BLD_Lake_%02d'%i,v,[(0,j+1,(j+1)%n+1) for j in range(n)],'Water','30')
 record('Model river surfaces, lake basins and terrain-following paths',[o.name for o in exports if o!=terrain],
        'Water and routes derive from the same editable layout curves used to carve terrain.')
@@ -290,8 +337,13 @@ for o in exports:o.select_set(True)
 bpy.context.view_layer.objects.active=terrain
 bpy.ops.export_scene.gltf(filepath=str((out/'RegionOneBlenderWorld.glb').resolve()),export_format='GLB',use_selection=True,export_yup=True,export_apply=True,export_materials='EXPORT',export_cameras=False,export_lights=False)
 # Query data is sampled from the actual authored Blender terrain, never rebuilt in Unity.
-flags=np.column_stack([np.clip(.5+shore/32,0,1),np.clip(1-river_edge/3,0,1),np.clip(1-road_distance/3,0,1),np.clip(forest_distance/10,0,1)])
-raw=struct.pack('<iiiff',0x31424c45,NX+1,NZ+1,WIDTH,DEPTH)+heights.astype('<f4').tobytes()+np.round(flags*255).astype('uint8').tobytes()
+query_x,query_z=np.meshgrid(np.linspace(-WIDTH/2,WIDTH/2,NX+1),np.linspace(-DEPTH/2,DEPTH/2,NZ+1))
+query_points=np.column_stack([query_x.ravel(),query_z.ravel()]).astype(np.float32)
+query_heights=np.array([height(*p) for p in query_points],dtype='<f4')
+query_shore=polygon_field(query_points,coast_path)
+query_river,query_road,query_forest,_=fields(query_points)
+flags=np.column_stack([np.clip(.5+query_shore/32,0,1),np.clip(1-query_river/3,0,1),np.clip(1-query_road/3,0,1),np.clip(query_forest/10,0,1)])
+raw=struct.pack('<iiiff',0x31424c45,NX+1,NZ+1,WIDTH,DEPTH)+query_heights.tobytes()+np.round(flags*255).astype('uint8').tobytes()
 (out/'RegionOneBlenderQueries.bytes').write_bytes(gzip.compress(raw,mtime=0))
 (out/'blender-cameras.json').write_text(json.dumps(camera_records,indent=2))
 manifest={'phase':'A_COMPOSITION_NOT_ART_APPROVED','blender_version':bpy.app.version_string,'source':'Blank Blender scene; no terrain imported from Unity','artistic_operations':len(operations),'operations':operations,'reference_sha256':reference_hashes,'units':'1 Blender metre = 1 Unity metre; GLB Y-up conversion; X unchanged, Blender Y becomes Unity Z','breach_anchor_unity':[8,61],'objects':len(exports),'terrain_vertices':len(mesh.vertices),'source_assets':{},'camera_records':'blender-cameras.json'}
