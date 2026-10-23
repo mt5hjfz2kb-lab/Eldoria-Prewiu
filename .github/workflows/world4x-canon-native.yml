@@ -104,8 +104,24 @@ jobs:
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Installed Unity missing'}
           $version=& $env:UNITY_EDITOR_PATH -version
           if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity version: $version"}
+      - name: Author editable Blender composition from original references
+        if: contains(github.event.head_commit.message, 'blender-author(world4x):')
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another heavy process is active'}
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender not found'}
+          & $blender --version
+          $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring'
+          $refs=Join-Path $env:GITHUB_WORKSPACE 'world4x-live/docs/visual-reference/world-map'
+          & $blender --background --python-exit-code 1 --python "$helpers/author_region.py" -- $out $refs "$helpers/blender-cameras-input.json"
+          if($LASTEXITCODE){throw 'Blender authoring failed'}
+          if(-not(Test-Path "$out/eldoria-region1-author.blend")){throw 'Editable Blender source missing'}
+          if(-not(Test-Path "$out/RegionOneBlenderWorld.glb")){throw 'Blender export missing'}
       - name: Actual Editor import + integrated source gate
-        if: "!contains(github.event.head_commit.message, 'author-retry(world4x):')"
+        if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell
         run: |
           $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
@@ -118,7 +134,7 @@ jobs:
           if($p.ExitCode -ne 0){throw "Unity import/source gate failed: $($p.ExitCode)"}
           if(-not(Test-Path "$env:RUNNER_TEMP/eldoria-region1-source-gate.json")){throw 'Source gate did not execute'}
       - name: Actual integrated scene PlayMode test
-        if: "!contains(github.event.head_commit.message, 'author-retry(world4x):')"
+        if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell
         run: |
           $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
@@ -166,6 +182,7 @@ jobs:
           if(-not(Test-Path "$capture/terrain-source.json")){throw 'Measured source mesh missing'}
           "ELDORIA_REGION1_ARTIST_CAPTURE=$capture" >> $env:GITHUB_ENV
       - name: Blender review of assistant-authored composition without Qwen
+        if: "!contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell
         run: |
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing heavy process active'}

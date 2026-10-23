@@ -1,0 +1,182 @@
+{
+  "cercana-horizontal": {
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "cercana-horizontal",
+    "sha256": "fedd43d0af1008bff68e25ae4e24cf5af04c118254ffa4d1a12fa3503906c58f",
+    "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 1280,
+    "height": 720,
+    "zoom": 36.0,
+    "aspect": 1.7777777910232544,
+    "cameraPosition": {
+      "x": 1018.0,
+      "y": 361.33056640625,
+      "z": -371.29815673828125
+    },
+    "worldTarget": {
+      "x": 1018.0,
+      "y": 0.0,
+      "z": 30.000001907348633
+    },
+    "cameraRotation": {
+      "x": 0.3583679795265198,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 0.9335804581642151
+    }
+  },
+  "cercana-vertical": {
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "cercana-vertical",
+    "sha256": "93e12596478587fc140019520c7d615f99e794f73c42bff4d2091ad816371506",
+    "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 390,
+    "height": 844,
+    "zoom": 64.0,
+    "aspect": 0.4620853066444397,
+    "cameraPosition": {
+      "x": 1018.0,
+      "y": 368.889892578125,
+      "z": -364.3605651855469
+    },
+    "worldTarget": {
+      "x": 1018.0,
+      "y": 0.0,
+      "z": 30.000001907348633
+    },
+    "cameraRotation": {
+      "x": 0.36722108721733093,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 0.9301337003707886
+    }
+  },
+  "regional-horizontal": {
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "regional-horizontal",
+    "sha256": "6065e4f59691f5fb54689be241ebc5fc52faf226fe47637b943be4b7bce4d688",
+    "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 1280,
+    "height": 720,
+    "zoom": 113.0,
+    "aspect": 1.7777777910232544,
+    "cameraPosition": {
+      "x": 1018.0,
+      "y": 406.3821716308594,
+      "z": -325.6030578613281
+    },
+    "worldTarget": {
+      "x": 1018.0,
+      "y": 0.0,
+      "z": 30.000001907348633
+    },
+    "cameraRotation": {
+      "x": 0.41320446133613586,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 0.9106382727622986
+    }
+  },
+  "regional-vertical": {
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "regional-vertical",
+    "sha256": "df52ed280413cdf3d763915aa5db40c26551869f2d6cc19ef5240c48724ffdbb",
+    "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 390,
+    "height": 844,
+    "zoom": 113.0,
+    "aspect": 0.4620853066444397,
+    "cameraPosition": {
+      "x": 1018.0,
+      "y": 406.3821716308594,
+      "z": -325.6030578613281
+    },
+    "worldTarget": {
+      "x": 1018.0,
+      "y": 0.0,
+      "z": 30.000001907348633
+    },
+    "cameraRotation": {
+      "x": 0.41320446133613586,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 0.9106382727622986
+    }
+  },
+  "panoramica-horizontal": {
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "panoramica-horizontal",
+    "sha256": "b180cce7e95ad4ba6dfe5fe18a259884e54f4647558b749990caeec2a3c4c112",
+    "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 1280,
+    "height": 720,
+    "zoom": 500.0,
+    "aspect": 1.7777777910232544,
+    "cameraPosition": {
+      "x": 1018.0,
+      "y": 485.3487854003906,
+      "z": -206.7204132080078
+    },
+    "worldTarget": {
+      "x": 1018.0,
+      "y": 0.0,
+      "z": 30.000001907348633
+    },
+    "cameraRotation": {
+      "x": 0.5299192667007446,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 0.8480480909347534
+    }
+  },
+  "panoramica-vertical": {
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "panoramica-vertical",
+    "sha256": "a7aa856a85eb27b68ac20148304c6cf28d253b1c565fa87f026fe3f57aa7d52b",
+    "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 390,
+    "height": 844,
+    "zoom": 577.9657592773438,
+    "aspect": 0.4620853066444397,
+    "cameraPosition": {
+      "x": 1018.0,
+      "y": 485.3487854003906,
+      "z": -206.7204132080078
+    },
+    "worldTarget": {
+      "x": 1018.0,
+      "y": 0.0,
+      "z": 30.0
+    },
+    "cameraRotation": {
+      "x": 0.5299192667007446,
+      "y": 0.0,
+      "z": 0.0,
+      "w": 0.8480480909347534
+    }
+  }
+}
