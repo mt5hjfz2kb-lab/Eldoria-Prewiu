@@ -4,7 +4,9 @@ out=pathlib.Path(bpy.app.driver_namespace['interactive_output'])
 assert (out/'02-cycle.blend').exists() and not (out/'03-cycle.blend').exists()
 names=['BLD_ForestMass_04','BLD_ForestMass_09','BLD_ForestMass_14','BLD_ForestMass_19','BLD_ForestMass_28']
 # Reject folded silhouettes observed in cycle 2; recover only these objects, not the scene.
-with bpy.data.libraries.load(str(out/'01-cycle.blend'),link=False) as (src,dst):dst.objects=names
+for obj in list(bpy.data.objects):
+ if obj.users==0 and any(obj.name.startswith(n+'.') for n in names):bpy.data.objects.remove(obj)
+with bpy.data.libraries.load(str(out/'01-cycle.blend'),link=False) as (src,dst):dst.objects=list(names)
 for name,recovered in zip(names,dst.objects):
  old=bpy.data.objects[name];collections=list(old.users_collection);bpy.data.objects.remove(old,do_unlink=True);recovered.name=name
  for collection in collections:collection.objects.link(recovered)
