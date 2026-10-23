@@ -164,12 +164,27 @@ namespace Eldoria.World4XCanon
     }
     Physics.SyncTransforms();
     foreach(var c in originalColliders){var pos=c.transform.position;float dx=pos.x-home.x,dz=pos.z-home.z;if(Mathf.Abs(dx)>95||dz< -77||dz>169)continue;
-     foreach(var go in temporary)if(go.GetComponent<MeshCollider>().Raycast(new Ray(new Vector3(pos.x,home.y+250,pos.z),Vector3.down),out var hit,500)){probes.Add(new HeightProbe{name=c.name,logicalPosition=pos,authoredSurface=hit.point,heightDifference=hit.point.y-pos.y});break;}
+     foreach(var go in temporary)if(go.GetComponent<MeshCollider>().Raycast(new Ray(new Vector3(pos.x,home.y+250,pos.z),Vector3.down),out var hit,500)){probes.Add(new HeightProbe{name=c.name,logicalPosition=pos,authoredSurface=hit.point,heightDifference=hit.point.y-pos.y,hotspotId=HotspotId(c),boundsMin=c.bounds.min,boundsMax=c.bounds.max});break;}
     }
    } finally {foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);}
    var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false};
    stats.maxHeightDifference=probes.Count>0?probes.Max(p=>Mathf.Abs(p.heightDifference)):0;
-   stats.integrationHeightReady=probes.Count>0&&stats.maxHeightDifference<=.35f;
+   // Collider origins are selection-box centres, not ground anchors. Delta is descriptive only.
+   stats.heightDeltaIsGroundingVerdict=false;
+   var pickResults=new System.Collections.Generic.List<PickProbe>();
+   foreach(bool portrait in new[]{false,true}) {
+    SetSectorCamera(camera,root,hybrid,home+new Vector3(-15,2,0),portrait?160:70,portrait?9f/16:16f/9);
+    foreach(var p in probes.Where(p=>!string.IsNullOrEmpty(p.hotspotId))) {
+     foreach(bool groundAim in new[]{false,true}) {
+      var aim=groundAim?p.authoredSurface:p.logicalPosition;
+      var viewport=camera.WorldToViewportPoint(aim);
+      var hits=Physics.RaycastAll(camera.ViewportPointToRay(viewport),1000,1<<8,QueryTriggerInteraction.Collide).OrderBy(h=>h.distance).ToArray();
+      string selected=hits.Length>0?HotspotId(hits[0].collider):"";
+      pickResults.Add(new PickProbe{expectedId=p.hotspotId,selectedId=selected,portrait=portrait,aimAtAuthoredGround=groundAim,inViewport=viewport.x>=0&&viewport.x<=1&&viewport.y>=0&&viewport.y<=1&&viewport.z>0,matched=selected==p.hotspotId});
+     }
+    }
+   }
+   stats.selectionProbes=pickResults.ToArray();
    var meshes=root.GetComponentsInChildren<MeshFilter>();stats.meshInstances=meshes.Length;stats.rendererCount=root.GetComponentsInChildren<Renderer>().Length;
    stats.submittedMeshTriangles=meshes.Sum(m=>m.sharedMesh.triangles.Length/3);stats.editorAllocatedBytes=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong();
    var oldRT=camera.targetTexture;var oldActive=RenderTexture.active;
@@ -207,8 +222,10 @@ namespace Eldoria.World4XCanon
    finally {camera.targetTexture=null;RenderTexture.active=null;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(tex);}
   }
   [Serializable] class SectorCamera {public Vector3 position;public Quaternion rotation;public float orthoSize;public int width,height;public bool playMode;}
-  [Serializable] class HeightProbe {public string name;public Vector3 logicalPosition,authoredSurface;public float heightDifference;}
-  [Serializable] class SectorStats {public HeightProbe[] heightProbes;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public bool integrationHeightReady,logicalPositionsUnchanged,physicalMobileTested;}
+  static string HotspotId(Collider c) {if(!c)return "";foreach(var b in c.GetComponents<MonoBehaviour>()){if(b&&b.GetType().Name=="WorldHotspot")return b.GetType().GetField("Id")?.GetValue(b) as string??"";}return "";}
+  [Serializable] class PickProbe {public string expectedId,selectedId;public bool portrait,aimAtAuthoredGround,inViewport,matched;}
+  [Serializable] class HeightProbe {public string name,hotspotId;public Vector3 logicalPosition,authoredSurface,boundsMin,boundsMax;public float heightDifference;}
+  [Serializable] class SectorStats {public HeightProbe[] heightProbes;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public PickProbe[] selectionProbes;public bool heightDeltaIsGroundingVerdict,logicalPositionsUnchanged,physicalMobileTested;}
 
   [Serializable] class Evidence {public float zoom;public Vector3 position;public Quaternion rotation;public string unity;public bool playMode;public int trees;}
  }
