@@ -15,6 +15,16 @@ for v in terrain.data.vertices[N:]:
   r=((x-cx)/rx)**2+((y-cy)/ry)**2
   if r<1:delta+=amp*(1-r)**2
  v.co.z+=delta*fade
+# W: physically sculpt an elongated secondary saddle instead of more nearly invisible pigment.
+# All edits remain north of O's exact boundary; asymmetry avoids a radial hill.
+for v in terrain.data.vertices[N:]:
+ x,y,z=v.co
+ fade=max(0,min(1,(y-80)/20));fade=fade*fade*(3-2*fade)
+ d=((x-57)/37)**2+((y-133)/31)**2
+ saddle=max(0,1-d)**2
+ d2=((x-3)/27)**2+((y-147)/25)**2
+ shoulder=max(0,1-d2)**2
+ v.co.z+=fade*(3.4*saddle+1.7*shoulder)
 terrain.data.update();bpy.context.view_layer.update()
 def ground(x,y):
  # Avoid numerical ray/triangle ambiguity exactly on the open mesh boundary.
@@ -96,15 +106,15 @@ for points,width,strength,colour in habitats:
   a=np.maximum(a,np.clip(1-d/width,0,1)**2*np.sin(np.pi*u)**.8*strength)
  a*=seam*(1-path)*(1-mask)
  pix[:,:,:3]=pix[:,:,:3]*(1-a[:,:,None])+np.array(colour)*a[:,:,None]
-for name,data,noncolor in [('V slope and canopy painted pigment',pix,False),('V editable slope glaze mask',paint,True),('V editable connected litter mask',mask,True)]:
+for name,data,noncolor in [('W slope and canopy painted pigment',pix,False),('W editable slope glaze mask',paint,True),('W editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['V slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['W slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='V path edge erosion and forest ground transition on retained U sector'
+scene['finishing_stage']='W asymmetric physical saddle and shoulder on retained sector'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -112,4 +122,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'V','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':len(trees),'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; 3 broader and shallower sculpt strokes, 4 slope pigment strokes, canopy litter and 8 restrained ridge rocks; S retained in native run 39977858676'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'W','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':len(trees),'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; 3 broader and shallower sculpt strokes, 4 slope pigment strokes, canopy litter and 8 restrained ridge rocks; S retained in native run 39977858676'},indent=2))
