@@ -175,7 +175,8 @@ for group,(cx,cy,rx,ry,quota) in enumerate([
   o.rotation_euler.z=float(rng.uniform(-math.pi,math.pi))
   trees.append(o);new_trees.append(o);made+=1
  forest_front_added+=made
- assert made>=8,('Protected path leaves no space for a connected grove',group,made)
+ # Some interlocking glades are already filled by the AD trees. Keep roads and existing forest clearances authoritative; do not plant over them.
+assert forest_front_added>=18,('Insufficient suitable, path-safe woodland front',forest_front_added)
 assert len(trees)+156<=1024,'Atlas cap while building connected groves'
 # Z: actual editable low understorey and meadow clumps bind the authored pine stands.
 # There are no colliders or navigation objects; O's former forest and river are untouched.
