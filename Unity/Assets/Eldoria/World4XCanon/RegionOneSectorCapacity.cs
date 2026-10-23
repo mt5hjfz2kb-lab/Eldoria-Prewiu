@@ -19,7 +19,7 @@ namespace Eldoria.World4XCanon
   [Serializable] public class Report {
    public string scope="Disposable capacity and relocation fixture; NOT production respawn or network multiplayer";
    public int validSites,instances,citySpaces,routeSamples,respawned,duplicateCount,meshHits;
-   public float maxContactError,maxCityRelief;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched=true,physicalDevice=false;
+   public float maxContactError,maxCityRelief;public float testMarkerScale=.30f;public bool saveReloadStable,repeatedTickIdempotent,occupiedRejected,changedPosition,originalSaveUntouched,physicalDevice=false;
    public Site[] sites;public Point[] cities; public Fixture population;
   }
   static float Segment(float x,float z,Point a,Point b) {
@@ -50,10 +50,12 @@ namespace Eldoria.World4XCanon
   public static void Capture(Camera camera,GameObject root,Transform world,Vector3 home,string output) {
    var asset=Resources.Load<TextAsset>("World4X/Pilot/LivingSectorLayout");if(!asset)return;
    var layout=JsonUtility.FromJson<Layout>(asset.text);var dir=Path.Combine(output,"living-sector");Directory.CreateDirectory(dir);
-   var temporary=new List<GameObject>();var surfaces=new List<MeshCollider>();var displays=new List<GameObject>();var meshes=new List<Mesh>();Mesh enemyMesh=null;
+   var temporary=new List<GameObject>();var surfaces=new List<MeshCollider>();var displays=new List<GameObject>();var meshes=new List<Mesh>();Mesh enemyMesh=null;var markerMeshes=new Dictionary<Mesh,Mesh>();
    var oldPosition=camera.transform.position;var oldRotation=camera.transform.rotation;float oldZoom=camera.orthographicSize,oldAspect=camera.aspect;
    var oldTarget=camera.targetTexture;var oldActive=RenderTexture.active;
    var report=new Report{cities=layout.cities};
+   var host=UnityEngine.Object.FindFirstObjectByType<Eldoria.ReferenceClean.ValoriaIntegratedWorld>();
+   string playerBefore=JsonUtility.ToJson(host.City.Gateway.Snapshot());
    try {
     foreach(var f in root.GetComponentsInChildren<MeshFilter>().Where(f=>f.name.StartsWith("Pilot_Terrain"))) {
      var go=new GameObject("QA only actual surface");temporary.Add(go);go.layer=31;go.transform.SetPositionAndRotation(f.transform.position,f.transform.rotation);go.transform.localScale=f.transform.lossyScale;
@@ -120,7 +122,8 @@ namespace Eldoria.World4XCanon
       var mf=donor.GetComponent<MeshFilter>();var foot=donor.transform.TransformPoint(mf.sharedMesh.vertices[0]);
       var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.SetPositionAndRotation(donor.transform.position+sites[i.site].position-foot+Vector3.up*.08f,donor.transform.rotation);go.transform.localScale=donor.transform.lossyScale*.30f;
       go.transform.position+=sites[i.site].position+Vector3.up*.08f-go.transform.TransformPoint(mf.sharedMesh.vertices[0]);
-      go.AddComponent<MeshFilter>().sharedMesh=mf.sharedMesh;go.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;
+      if(!markerMeshes.TryGetValue(mf.sharedMesh,out var markerMesh)){markerMesh=UnityEngine.Object.Instantiate(mf.sharedMesh);markerMesh.uv2=markerMesh.uv2.Select(v=>v*.30f).ToArray();markerMeshes.Add(mf.sharedMesh,markerMesh);meshes.Add(markerMesh);}
+      go.AddComponent<MeshFilter>().sharedMesh=markerMesh;go.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;
       report.maxContactError=Mathf.Max(report.maxContactError,Mathf.Abs(go.transform.TransformPoint(mf.sharedMesh.vertices[0]).y-sites[i.site].position.y-.08f));
      } else {
       // Existing animated Spawnling's measured pose, baked once per fixture specimen; no new monster.
@@ -133,11 +136,12 @@ namespace Eldoria.World4XCanon
     if(report.maxContactError>.03f)throw new InvalidOperationException("Population floats above actual mesh");
     foreach(bool populated in new[]{false,true})foreach(bool portrait in new[]{false,true})for(int level=0;level<3;level++) {
      foreach(var go in displays)go.SetActive(populated);
-     var target=home+new Vector3(0,4,level==0?205:level==1?180:125);camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=(portrait?new[]{54f,105f,175f}:new[]{32f,65f,108f})[level];
+     var target=home+new Vector3(0,4,level==0?205:level==1?195:175);camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=(portrait?new[]{32f,52f,74f}:new[]{24f,38f,52f})[level];
      float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(37,47,camera.orthographicSize));
      foreach(var rr in root.GetComponentsInChildren<MeshRenderer>())if(rr.name=="Pilot_NearBatch"||rr.name=="Pilot_FarBatch"){rr.enabled=rr.name=="Pilot_NearBatch"?fade<.999f:fade>0;foreach(var material in rr.sharedMaterials)material.SetFloat("_Fade",fade);}
      Frame(camera,Path.Combine(dir,(populated?"TEST-population-":"geography-")+(portrait?"portrait-":"landscape-")+new[]{"close","regional","panorama"}[level]),portrait?720:1280,portrait?1280:720);
     }
+    report.originalSaveUntouched=playerBefore==JsonUtility.ToJson(host.City.Gateway.Snapshot());if(!report.originalSaveUntouched)throw new InvalidOperationException("Population fixture changed player state");
     File.WriteAllText(Path.Combine(dir,"capacity.json"),JsonUtility.ToJson(report,true));
    } finally {foreach(var go in displays)UnityEngine.Object.DestroyImmediate(go);foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);foreach(var m in meshes)UnityEngine.Object.DestroyImmediate(m);camera.transform.SetPositionAndRotation(oldPosition,oldRotation);camera.orthographicSize=oldZoom;camera.aspect=oldAspect;camera.targetTexture=oldTarget;RenderTexture.active=oldActive;}
   }
