@@ -81,25 +81,29 @@ assert np.any(path>0),'Recovered editable paths generated no pigment mask'
 # X: complete the forest structure before painting the same texture, using editable pine meshes.
 # Build three interlocking stands with visible trail clearings; never scatter global noise.
 rng=np.random.default_rng(20261023);old_new_sector_count=len(trees);new_trees=[]
-for group,(cx,cy,rx,ry,quota) in enumerate([(-13,112,24,19,12),(20,138,23,19,12),(62,119,22,23,12)]):
+# Y: author interlocking macro-forest stands, not individual decorative islands.
+# Forest massing responds to the ridgelines, keeps three original routes open and preserves O.
+for group,(cx,cy,rx,ry,quota) in enumerate([
+ (-47,124,23,27,23),(-15,116,25,21,26),(16,144,26,20,28),
+ (60,130,26,25,29),(70,104,22,18,21)]):
  made=0
- for attempt in range(1100):
+ for attempt in range(3200):
   if made>=quota:break
   angle=float(rng.uniform(0,2*math.pi));radius=math.sqrt(float(rng.random()))
   x=float(cx+rx*radius*math.cos(angle));y=float(cy+ry*radius*math.sin(angle))
   if not(-90<x<90 and 91<y<160):continue
-  if any((x-o.location.x)**2+(y-o.location.y)**2<5.1**2 for o in trees):continue
+  if any((x-o.location.x)**2+(y-o.location.y)**2<3.7**2 for o in trees):continue
   ix=int((x+96)/192*(W-1));iy=int((y-78)/92*(H-1))
   px=max(2,int(3.7/192*W));py=max(2,int(3.7/92*H))
-  if np.max(path[max(0,iy-py):min(H,iy+py+1),max(0,ix-px):min(W,ix+px+1)])>.08:continue
+  if np.max(path[max(0,iy-py):min(H,iy+py+1),max(0,ix-px):min(W,ix+px+1)])>.10:continue
   donor=trees[(group*13+made*7)%old_new_sector_count]
   o=donor.copy();o.data=donor.data;coll.objects.link(o)
   o.name='Pilot_Pine_X_'+str(group)+'_'+str(made)
   o.location=(x,y,ground(x,y))
   scale=float(rng.uniform(.86,1.15));o.scale=donor.scale*scale;o.rotation_euler.z=float(rng.uniform(-math.pi,math.pi))
   trees.append(o);new_trees.append(o);made+=1
- assert made>=10,('Forest stand cannot be planted without crossing an authored road',group,made)
-assert len(trees)+156<=256,'Pilot atlas limit; never silently drop authored trees'
+ assert made>=min(quota-4,16),('Forest stand cannot be planted without crossing an authored road',group,made)
+assert len(trees)+156<=1024,'Pilot atlas capacity; never silently drop authored trees'
 mask=np.zeros((H,W),np.float32)
 for o in trees:
  x,y=o.location.xy;r=((X-x)/6.7)**2+((Y-y)/6.7)**2;mask=np.maximum(mask,np.clip(1-r,0,1)*.44)
@@ -151,15 +155,15 @@ strata=.76+.24*np.sin(X*.31+Y*.17+np.sin(Y*.09))*np.sin(Y*.29-X*.11)
 ridge*=strata
 pix[:,:,:3]=pix[:,:,:3]*(1-ridge[:,:,None])+np.array([.56,.50,.30])*ridge[:,:,None]
 pix[:,:,:3]=pix[:,:,:3]*(1-valley[:,:,None])+np.array([.32,.40,.22])*valley[:,:,None]
-for name,data,noncolor in [('X slope and canopy painted pigment',pix,False),('X editable slope glaze mask',paint,True),('X editable connected litter mask',mask,True)]:
+for name,data,noncolor in [('Y slope and canopy painted pigment',pix,False),('Y editable slope glaze mask',paint,True),('Y editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['X slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['Y slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='X interconnected ridges, woodland corridors and ecological material masses'
+scene['finishing_stage']='Y denser connected macro-forest canopy over X edited relief with O preserved'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -167,4 +171,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'X','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; W preserved then X large-scale connected ridges, three forest stands, material hierarchy; O 16405 vertices and 156 trees unchanged'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'Y','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; X physical macro ridges plus Y five interlocking woodland stands; O 16405 vertices and 156 trees unchanged'},indent=2))
