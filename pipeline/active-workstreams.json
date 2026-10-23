@@ -1123,13 +1123,13 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "codex-world-production-20261023",
+      "owner": "codex-world4x-afag-recovery-20261024",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 18,
+      "ownership_revision": 19,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-23T21:54:45.623Z",
+      "claimed_at": "2026-10-23T23:19:45.062Z",
       "base_main_sha": "54703262a47a1ece6d233470582d4162d3d7c0b1",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -1147,9 +1147,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner full world replacement order followed by explicit 'Tienes mi autorización' on 2026-10-23. No merge, publication or expenditure.",
-      "phase": "AI_CONTINENTAL_AUTHORING_NATIVE",
-      "next": "Recover AI and original reference pixels; build continuous region and replacement node library; integrate with existing state under transferred narrow scope; actual Blender/Unity verification.",
+      "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
+      "phase": "RESTORE_AF_AG_MATERIALS_AFTER_NATIVE_26_PASS",
+      "next": "Preserve tested routes and materialized sources; restore source materials/UV/images and verify matched sector cameras before continental artistic continuation.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1232,6 +1232,15 @@
           "report": "docs/evidence/world4x-canon-20261022/LIVING_SECTOR_AI.md",
           "persistent_package": "Eldoria_AI_20261023_fuentes_y_pruebas.zip",
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
+        },
+        "latest_production": {
+          "source": "49b72a87eef7ff085f32c8efc2657258ad1c037d",
+          "assets_commit": "9a3587642176a52d1071d67430b6a4309b95b012",
+          "run": 40038480141,
+          "tests": 26,
+          "captures": 16,
+          "result": "success",
+          "art_approved": false
         }
       },
       "ownership_history": [
@@ -1310,6 +1319,12 @@
           "revision": 17,
           "released_at": "2026-10-23T21:24:23.134Z",
           "reason": "Previous bounded AI delivery preserved; owner authorizes complete visual replacement and integration handoff on 2026-10-23."
+        },
+        {
+          "owner": "codex-world-production-20261023",
+          "revision": 18,
+          "relieved_at": "2026-10-23T23:19:45.062Z",
+          "reason": "Owner explicit immediate handoff and completion order. Existing run 40038480141 finished successfully and materialized 9a3587642176a52d1071d67430b6a4309b95b012 before transfer; no active job cancelled."
         }
       ],
       "delivery_definition": {
