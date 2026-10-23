@@ -159,6 +159,17 @@ def face_signature(obj, poly):
   corners.append(tuple(round(float(v),4) for v in (*q,*uv)))
  return (obj.data.materials[poly.material_index].name,tuple(sorted(corners)))
 core_faces=Counter(face_signature(obj,poly) for obj in land for poly in obj.data.polygons)
+core_samples=[];sample_counts={}
+for obj in land:
+ for poly in obj.data.polygons:
+  material=obj.data.materials[poly.material_index].name
+  if sample_counts.get(material,0)>=32:continue
+  li=poly.loop_indices[0];q=obj.data.vertices[obj.data.loops[li].vertex_index].co
+  if abs(q.x)>94 or q.y<-76 or q.y>268:continue
+  texcoord=obj.data.uv_layers.active.data[li].uv
+  core_samples.append({'material':material,'x':q.x,'y':q.z,'z':q.y,'u':texcoord.x,'v':texcoord.y})
+  sample_counts[material]=sample_counts.get(material,0)+1
+assert len(core_samples)>=64,('Insufficient retained material samples',len(core_samples))
 core_images={}
 for obj in land:
  for material in obj.data.materials:
@@ -166,6 +177,7 @@ for obj in land:
   for node in material.node_tree.nodes:
    if node.type=='TEX_IMAGE' and node.image:
     image=node.image
+    if image.name in core_images:continue
     pixels=np.array(image.pixels[:],dtype=np.float32)
     assert pixels.size>16 and np.isfinite(pixels).all(),('Invalid retained image',image.name)
     # AO may correctly be constant; unused historical texture nodes are not albedo.
@@ -324,5 +336,5 @@ masks=MM.tobytes()
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as f:
  f.write(struct.pack('<iiiff',0x31424c45,NX,NZ,1820.,2000.));f.write(np.array(data,dtype='<f4').tobytes());f.write(bytes(masks));f.write(struct.pack('<ii',0x32564c45,len(terrain.data.vertices)))
  for v in terrain.data.vertices:f.write(struct.pack('<fff',v.co.x,v.co.z,v.co.y))
-(out/'production-region.json').write_text(json.dumps({'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'bounds':[-910,-1000,910,1000],'terrain_vertices':len(terrain.data.vertices),'faults':[{'ax':a[0],'az':a[1],'bx':b[0],'bz':b[1],'radius':28} for path in faults for a,b in zip(path,path[1:])],'city_reserves':cities,'cities':[{'x':x,'z':y,'radius':rad} for x,y,rad in cities+[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]],'forest_groups':len(groves),'bridges':[{'x':x,'z':y,'width':w,'length':l} for x,y,w,l in bridge_specs],'source_seam_max_spread_m':seam_spread,'dynamic_gameplay_baked':0,'art_status':'PROTOTYPE_NO_QWEN_AUTHORSHIP_NOT_APPROVED','physical_device':False},indent=2))
+(out/'production-region.json').write_text(json.dumps({'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'bounds':[-910,-1000,910,1000],'terrain_vertices':len(terrain.data.vertices),'retained_material_samples':core_samples,'faults':[{'ax':a[0],'az':a[1],'bx':b[0],'bz':b[1],'radius':28} for path in faults for a,b in zip(path,path[1:])],'city_reserves':cities,'cities':[{'x':x,'z':y,'radius':rad} for x,y,rad in cities+[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]],'forest_groups':len(groves),'bridges':[{'x':x,'z':y,'width':w,'length':l} for x,y,w,l in bridge_specs],'source_seam_max_spread_m':seam_spread,'dynamic_gameplay_baked':0,'art_status':'PROTOTYPE_NO_QWEN_AUTHORSHIP_NOT_APPROVED','physical_device':False},indent=2))
 print('REGION1_AI_CONTINENT_EXPORTED',len(terrain.data.vertices))

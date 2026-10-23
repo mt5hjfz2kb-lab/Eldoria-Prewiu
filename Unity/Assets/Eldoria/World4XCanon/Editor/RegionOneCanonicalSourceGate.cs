@@ -13,6 +13,8 @@ namespace Eldoria.World4XCanon.Editor
     /// <summary>Source contract smoke gate. NOT a visual, mobile or functional acceptance test.</summary>
     public static class RegionOneCanonicalSourceGate
     {
+        [Serializable] sealed class CoreMaterialSample {public string material;public float x,y,z,u,v;}
+        [Serializable] sealed class CoreMaterialProof {public CoreMaterialSample[] retained_material_samples;}
         const string ScenePath = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
 
         [MenuItem("Eldoria/Region 1/Validate canonical world source")]
@@ -32,10 +34,36 @@ namespace Eldoria.World4XCanon.Editor
                 throw new InvalidOperationException("Exported Blender ground data lost city datum or eastern coast");
             var ground=prefab.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_Terrain");
             var mesh=ground.sharedMesh;var positions=mesh.vertices;var uv=mesh.uv;var materials=ground.GetComponent<Renderer>().sharedMaterials;
-            for(int sub=0;sub<mesh.subMeshCount;sub++)if(materials[sub].name.Contains("Region1 open meadows")){
-                var core=mesh.GetIndices(sub).Distinct().Where(i=>Mathf.Abs(positions[i].x)<90&&Mathf.Abs(positions[i].z)<60).ToArray();
-                if(core.Length<100||core.Any(i=>uv[i].x<.4f||uv[i].x>.6f||uv[i].y<.4f||uv[i].y>.6f))throw new InvalidOperationException("Retained meadow UV0 must sample the same continental atlas, not a texture corner");
+            var layout=Resources.Load<TextAsset>("World4X/Blender/production-region");
+            var proof=layout?JsonUtility.FromJson<CoreMaterialProof>(layout.text):null;
+            if(proof?.retained_material_samples==null||proof.retained_material_samples.Length<64)
+                throw new InvalidOperationException("Original material/UV sample evidence missing");
+            var anchor=prefab.GetComponentsInChildren<Transform>(true).Single(t=>t.name=="BLD_BreachAnchor");
+            var anchorPoint=prefab.transform.InverseTransformPoint(anchor.position);
+            float sign=anchorPoint.x>0?-1:1;
+            var localPositions=positions.Select(p=>prefab.transform.InverseTransformPoint(ground.transform.TransformPoint(p))).ToArray();
+            foreach(var sample in proof.retained_material_samples)
+            {
+                bool matched=false;
+                var expected=new Vector3(sign*sample.x,sample.y,sign*sample.z);
+                for(int sub=0;sub<mesh.subMeshCount&&!matched;sub++)
+                {
+                    if(!materials[sub].name.StartsWith(sample.material,StringComparison.Ordinal))continue;
+                    foreach(int i in mesh.GetIndices(sub))
+                        if((localPositions[i]-expected).sqrMagnitude<.002f*.002f&&
+                           (uv[i]-new Vector2(sample.u,sample.v)).sqrMagnitude<.0001f*.0001f){matched=true;break;}
+                }
+                if(!matched)throw new InvalidOperationException("Original core material/UV lost in actual GLB import: "+sample.material+" at "+expected);
             }
+            for(int sub=0;sub<mesh.subMeshCount;sub++)if(materials[sub].name.Contains("Region1 open meadows"))
+            {
+                var indices=mesh.GetIndices(sub).Distinct().ToArray();
+                if(indices.Any(i=>Mathf.Abs(localPositions[i].x)<94&&sign*localPositions[i].z>-76&&sign*localPositions[i].z<268))
+                    throw new InvalidOperationException("Continental atlas has overwritten the original AF/AG/AI core");
+                if(indices.Any(i=>!float.IsFinite(uv[i].x)||!float.IsFinite(uv[i].y)))
+                    throw new InvalidOperationException("Continental UV0 is invalid");
+            }
+            Debug.Log("AF_AG_IMPORTED_MATERIAL_UV_PASS samples="+proof.retained_material_samples.Length);
             var forest=prefab.GetComponentsInChildren<MeshFilter>(true).Where(f=>f.name.StartsWith("BLD_ForestMass_")).ToArray();
             if(forest.Length<20)throw new InvalidOperationException("Authored forest mass export incomplete");
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
@@ -58,4 +86,3 @@ namespace Eldoria.World4XCanon.Editor
     }
 }
 #endif
-
