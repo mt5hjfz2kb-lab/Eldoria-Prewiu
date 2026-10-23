@@ -144,6 +144,10 @@ uv=mesh.uv_layers.new(name='Continental pigment')
 for loop in mesh.loops:
  p=mesh.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((p.x+910)/1820,(p.y+1000)/2000)
 for p in mesh.polygons:p.use_smooth=True
+crossing_banks={}
+for bx in [-550.,0.,450.]:
+ by=rivercentre(bx) if abs(bx)>96 else sum(v.co.y for v in river.data.vertices if abs(v.co.x)<.1)/len([v for v in river.data.vertices if abs(v.co.x)<.1])
+ crossing_banks[bx]=(by,height(bx,by-22),height(bx,by+22))
 # Join ground meshes, preserving AI material slots/UV; remove unused interior grid vertices.
 bpy.ops.object.select_all(action='DESELECT')
 for o in land+[outer]:o.select_set(True)
@@ -155,8 +159,8 @@ bridge_specs=[]
 bridge_mat=bpy.data.materials.new('Bridge weathered timber');bridge_mat.use_nodes=True
 bridge_bs=next(n for n in bridge_mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bridge_bs.inputs['Base Color'].default_value=(.31,.22,.12,1);bridge_bs.inputs['Roughness'].default_value=.94
 for cx in [-550.,0.,450.]:
- cy=rivercentre(cx) if abs(cx)>96 else sum(v.co.y for v in river.data.vertices if abs(v.co.x)<.1)/len([v for v in river.data.vertices if abs(v.co.x)<.1])
- length=44.;half=length/2;z0=height(cx,cy-half);z1=height(cx,cy+half);vv=[];ff=[]
+ cy,z0,z1=crossing_banks[cx]
+ length=44.;half=length/2;vv=[];ff=[]
  for i in range(45):
   t=i/44;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
   vv.extend([(cx-6,cy-half+i,z),(cx+6,cy-half+i,z)])

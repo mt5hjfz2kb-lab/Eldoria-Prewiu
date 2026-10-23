@@ -163,6 +163,27 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator ContactQueriesMatchActualImportedTriangles()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var floor=world.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_Terrain");
+            var geology=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");
+            var height=geology.GetType().GetMethod("Height",BindingFlags.Public|BindingFlags.Static);var origin=(Vector3)Member(host,"WorldHome");
+            var query=new GameObject("Test only exact surface raycast");query.layer=2;query.transform.SetPositionAndRotation(floor.transform.position,floor.transform.rotation);query.transform.localScale=floor.transform.lossyScale;
+            var collider=query.AddComponent<MeshCollider>();collider.sharedMesh=floor.sharedMesh;Physics.SyncTransforms();
+            float maximum=0;int samples=0;
+            try{
+                for(float z=-720;z<=820;z+=77)for(float x=-750;x<=650;x+=73){
+                    Assert.That(collider.Raycast(new Ray(origin+new Vector3(x,250,z),Vector3.down),out var hit,500),Is.True);
+                    float expected=origin.y+(float)height.Invoke(null,new object[]{x,z});maximum=Mathf.Max(maximum,Mathf.Abs(expected-hit.point.y));samples++;
+                }
+                Assert.That(maximum,Is.LessThan(.003f),"Contact height must match visible triangles, without collider displacement");
+                Debug.Log("REGION1_EXACT_CONTACT samples="+samples+" max_error_m="+maximum);
+            }finally{Object.DestroyImmediate(query);}
+        }
+
+        [UnityTest]
         public IEnumerator OneGeographyAndNoInventedGameplayHotspots()
         {
             MonoBehaviour host = null; GameObject world = null; Component navigation = null; Camera camera = null;
