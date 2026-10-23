@@ -37,3 +37,10 @@ try{
 }finally{$client.Dispose()}
 "ELDORIA_INTERACTIVE_OUT=$root" >> $env:GITHUB_ENV
 Write-Host "Persistent BlenderMCP pid=$($session.pid) port=$($session.port)"
+
+if(Test-Path (Join-Path $root 'stop.request')){
+ for($i=0;$i -lt 30 -and (Get-Process -Id $session.pid -ErrorAction SilentlyContinue);$i++){Start-Sleep -Seconds 1}
+ if(Get-Process -Id $session.pid -ErrorAction SilentlyContinue){throw 'Owned Blender session did not close after save'}
+ @{pid=$session.pid;closed=$true;run=$env:GITHUB_RUN_ID} | ConvertTo-Json | Set-Content "$root/session-closed.json"
+ Write-Host 'Owned Blender session saved and closed; production PC released.'
+}

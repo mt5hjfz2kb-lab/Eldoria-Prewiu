@@ -4,11 +4,15 @@ from mathutils.bvhtree import BVHTree
 out=pathlib.Path(bpy.app.driver_namespace['interactive_output'])
 assert (out/'03-cycle.blend').exists()
 names=['panoramica-horizontal','panoramica-vertical'];current={n:bpy.data.objects[n] for n in names}
+for obj in list(bpy.data.objects):
+ if obj.users==0 and any(obj.name.startswith(n+'.') for n in names):bpy.data.objects.remove(obj)
 with bpy.data.libraries.load(str(out/'00-observe.blend'),link=False) as (src,dst):dst.objects=list(names)
+for obj in dst.objects:bpy.context.scene.collection.objects.link(obj)
+bpy.context.view_layer.update()
 audit={}
 for name,original in zip(names,dst.objects):
  obj=current[name];error=max(abs(obj.matrix_world[i][j]-original.matrix_world[i][j]) for i in range(4) for j in range(4))
- assert error<1e-6 and obj.data.ortho_scale==original.data.ortho_scale and obj.data.type==original.data.type
+ assert error<1e-6 and obj.data.ortho_scale==original.data.ortho_scale and obj.data.type==original.data.type, str({'camera':name,'matrix_error':error,'current':list(obj.location),'original':list(original.location),'current_rotation':list(obj.rotation_euler),'original_rotation':list(original.rotation_euler)})
  audit[name]={'same_as_initial_observation':True,'matrix_error':error,'ortho_scale':obj.data.ortho_scale,'matrix_world':[list(r) for r in obj.matrix_world]}
  bpy.data.objects.remove(original,do_unlink=True)
 terrain=bpy.data.objects['BLD_Terrain'];bvh=BVHTree.FromPolygons([v.co for v in terrain.data.vertices],[tuple(p.vertices) for p in terrain.data.polygons],all_triangles=True)
