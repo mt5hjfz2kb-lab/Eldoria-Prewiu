@@ -78,7 +78,11 @@ namespace Eldoria.World4XCanon
   static Material[] BuildImpostors(GameObject root,Camera view,string output)
   {
    var trees=root.GetComponentsInChildren<MeshRenderer>().Where(r=>r.name.StartsWith("Pilot_Pine")).ToArray();
-   if(trees.Length>256)throw new InvalidOperationException("Pilot atlas capacity exceeded");
+   // Y retains the same atlas memory footprint, using 64px cells only if >256
+   // source pines are authored. Preserve original 128px near-study baseline otherwise.
+   int atlasColumns=trees.Length>256?32:16;
+   int tilePixels=2048/atlasColumns;
+   if(trees.Length>atlasColumns*atlasColumns)throw new InvalidOperationException("Pilot atlas capacity exceeded");
    var shader=Shader.Find("Eldoria/RiberaFade");if(!shader)throw new InvalidOperationException("Pilot fade shader missing");
    var atlas=new Texture2D(2048,2048,TextureFormat.RGBA32,false);atlas.SetPixels(new Color[2048*2048]);
    var far=new Material(shader);far.SetFloat("_Baked",1);far.SetTexture("_BaseMap",atlas);
@@ -86,7 +90,7 @@ namespace Eldoria.World4XCanon
    var materialCache=new System.Collections.Generic.Dictionary<Material,Material>();
    var camObject=new GameObject("Temporary tree atlas camera");var bake=camObject.AddComponent<Camera>();bake.orthographic=true;bake.aspect=1;bake.clearFlags=CameraClearFlags.SolidColor;bake.backgroundColor=Color.clear;bake.cullingMask=1<<30;bake.nearClipPlane=.1f;bake.farClipPlane=100;
    bake.transform.rotation=view.transform.rotation;
-   var previousActive=RenderTexture.active;var rt=new RenderTexture(128,128,24,RenderTextureFormat.ARGB32);bake.targetTexture=rt;
+   var previousActive=RenderTexture.active;var rt=new RenderTexture(tilePixels,tilePixels,24,RenderTextureFormat.ARGB32);bake.targetTexture=rt;
    try {
     for(int index=0;index<trees.Length;index++) {
      var r=trees[index];var converted=r.sharedMaterials.Select(old=>{
@@ -100,10 +104,11 @@ namespace Eldoria.World4XCanon
      var b=cr.bounds;float extent=0;
      for(int k=0;k<8;k++){var v=new Vector3((k&1)==0?-b.extents.x:b.extents.x,(k&2)==0?-b.extents.y:b.extents.y,(k&4)==0?-b.extents.z:b.extents.z);extent=Mathf.Max(extent,Mathf.Abs(Vector3.Dot(v,bake.transform.right)),Mathf.Abs(Vector3.Dot(v,bake.transform.up)));}
      extent*=1.08f;bake.orthographicSize=extent;bake.transform.position=b.center-bake.transform.forward*30;bake.Render();RenderTexture.active=rt;
-     int col=index%16,row=index/16;atlas.ReadPixels(new Rect(0,0,128,128),col*128,row*128,false);
+     int col=index%atlasColumns,row=index/atlasColumns;
+     atlas.ReadPixels(new Rect(0,0,tilePixels,tilePixels),col*tilePixels,row*tilePixels,false);
      var card=new GameObject("Pilot_Impostor_"+index);card.transform.SetParent(root.transform,true);card.layer=r.gameObject.layer;card.transform.position=r.bounds.center;card.transform.rotation=view.transform.rotation;
      var mesh=new Mesh();mesh.vertices=new[]{new Vector3(-extent,-extent,0),new Vector3(extent,-extent,0),new Vector3(extent,extent,0),new Vector3(-extent,extent,0)};mesh.triangles=new[]{0,2,1,0,3,2};
-     float u=col/16f,vv=row/16f,d=1/16f;mesh.uv=new[]{new Vector2(u,vv),new Vector2(u+d,vv),new Vector2(u+d,vv+d),new Vector2(u,vv+d)};mesh.RecalculateNormals();mesh.RecalculateBounds();card.AddComponent<MeshFilter>().sharedMesh=mesh;card.AddComponent<MeshRenderer>().sharedMaterial=far;
+     float u=col/(float)atlasColumns,vv=row/(float)atlasColumns,d=1f/atlasColumns;mesh.uv=new[]{new Vector2(u,vv),new Vector2(u+d,vv),new Vector2(u+d,vv+d),new Vector2(u,vv+d)};mesh.RecalculateNormals();mesh.RecalculateBounds();card.AddComponent<MeshFilter>().sharedMesh=mesh;card.AddComponent<MeshRenderer>().sharedMaterial=far;
      UnityEngine.Object.DestroyImmediate(copy);
     }
     atlas.Apply();
