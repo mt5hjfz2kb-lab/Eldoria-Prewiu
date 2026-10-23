@@ -19,9 +19,7 @@ namespace Eldoria.World4XCanon
    var studyShader=Shader.Find("Eldoria/RiberaFade");
    foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())renderer.sharedMaterials=renderer.sharedMaterials.Select(old=>{
     if(surfaceCache.TryGetValue(old,out var cached))return cached;
-    var selectedShader=old.name.StartsWith("N River surface",StringComparison.Ordinal)?Shader.Find("Eldoria/RiberaWater"):studyShader;
-    if(!selectedShader)throw new InvalidOperationException("Missing authored pilot surface shader");
-    var material=new Material(selectedShader);Color c=Color.white;
+    var material=new Material(studyShader);Color c=Color.white;
     if(old.HasProperty("baseColorFactor"))c=old.GetColor("baseColorFactor");else if(old.HasProperty("_BaseColor"))c=old.GetColor("_BaseColor");
     material.SetColor("_BaseColor",c);
     for(int p=0;p<old.shader.GetPropertyCount();p++)if(old.shader.GetPropertyType(p)==UnityEngine.Rendering.ShaderPropertyType.Texture){string name=old.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",old.GetTexture(name));}
