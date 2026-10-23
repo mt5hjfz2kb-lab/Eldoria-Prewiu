@@ -1,11 +1,25 @@
 """J: local river look development on owner-retained I, with editable pigment masks."""
-import bpy,sys,pathlib,hashlib,json,math
+import bpy,sys,pathlib,hashlib,json,math,struct
 import numpy as np
 from mathutils.geometry import interpolate_bezier
 args=sys.argv[sys.argv.index('--')+1:];out=pathlib.Path(args[0]);src=pathlib.Path(args[1]);out.mkdir(parents=True,exist_ok=True)
 assert hashlib.sha256(src.read_bytes()).hexdigest()=='878f14116db4159b0b354dbff8b97e47a9d92180d345eb7fe4e728b530599642'
 bpy.ops.wm.open_mainfile(filepath=str(src));scene=bpy.context.scene
 assert scene.get('finishing_stage','').startswith('I retained G')
+# I's generated image was exported to GLB but not packed by the old IMAGE-only loop.
+# Recover the exact exported pixels, without repainting or changing the I baseline.
+glb=src.with_name('RiberaPilot.glb').read_bytes()
+assert hashlib.sha256(glb).hexdigest()=='76f5129b09f788e0e3c9f57d6a255ba3ad9f8317ea8e80e174e7231874e75f2a'
+jn=struct.unpack_from('<I',glb,12)[0];gj=json.loads(glb[20:20+jn]);binary=glb[28+jn:]
+entry=next(i for i in gj['images'] if i['name']=='I retained surface new contact');bv=gj['bufferViews'][entry['bufferView']];start=bv.get('byteOffset',0)
+png=out/'I_retained_surface_new_contact.png';png.write_bytes(binary[start:start+bv['byteLength']])
+old=bpy.data.images['I retained surface new contact'];recovered=bpy.data.images.load(str(png),check_existing=False);recovered.name='I recovered exact retained surface';recovered.pack()
+for mat in bpy.data.materials:
+ if mat.use_nodes:
+  for node in mat.node_tree.nodes:
+   if node.type=='TEX_IMAGE' and node.image==old:node.image=recovered
+bpy.data.images.remove(old)
+
 guides=bpy.data.collections.new('10_River_pigment_guides');scene.collection.children.link(guides)
 H,W=384,2048;Y,X=np.mgrid[0:H,0:W].astype(np.float32);X/=W;Y/=H
 # Author UV shapes as editable Bezier curves; the meshes and UVs are the inherited river.
@@ -79,12 +93,14 @@ for k,(side,x,layout) in enumerate([(-1,-30,[(-2,.2,1.8),(0,.6,2.2),(2.1,-.1,1.2
   o=bpy.data.objects.new('J shore stone %d_%d'%(k,j),master.data);coll.objects.link(o);o.location=(xx,v.y-side*push,.25+s*.12);o.scale=(s,s*(.7 if j%2 else 1.0),s);o.rotation_euler[2]=[.3,1.1,-.4,2.2][j%4];placements.append({'name':o.name,'position':list(o.location),'scale':list(o.scale)})
 scene['finishing_stage']='J authored pools shallow gravel and marginal rock-clay surfaces on retained I';scene['J_source_I_sha256']=hashlib.sha256(src.read_bytes()).hexdigest()
 for im in bpy.data.images:
- if im.type=='IMAGE' and im.size[0]>0:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
+ if im.type in {'IMAGE','UV_TEST'} and im.size[0]>0 or im.source=='GENERATED':im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
 visible=[o for o in scene.objects if o.type=='MESH' and not o.hide_render]
 for o in visible:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
-bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.cycles.samples=24;scene.render.filepath=str(out/'blender-ribera.png');bpy.ops.render.render(write_still=True)
+bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));bpy.ops.wm.open_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene=bpy.context.scene
+check=bpy.data.images['I recovered exact retained surface'];assert check.packed_file and max(check.pixels[0:16384])>.1
+scene.cycles.samples=24;scene.render.filepath=str(out/'blender-ribera.png');bpy.ops.render.render(write_still=True)
 (out/'finishing.json').write_text(json.dumps({'stage':'J','source_I_sha256':scene['J_source_I_sha256'],'retained':'all I geography terrain trees camera paths','changes':'separate bank paint, localized pools/shallow masks, tapered flow marks, bevelled inherited shore rocks','shore_stones':placements,'art_approved':False},indent=2))
 manifest={'source_units':'metres','Blender_up':'Z','Unity_up':'Y','authoritative_geography':'editable I meshes; river and terrain boundary untouched in J','origin':[0,0,0],'meshes':[{'name':o.name,'vertices':len(o.data.vertices),'polygons':len(o.data.polygons),'position':list(o.location),'scale':list(o.scale),'materials':[m.name for m in o.data.materials if m],'uv_maps':[u.name for u in o.data.uv_layers]} for o in visible],'textures':[{'name':im.name,'width':im.size[0],'height':im.size[1],'packed':bool(im.packed_file)} for im in bpy.data.images if im.type=='IMAGE'],'gameplay_colliders':0,'Unity_hybrid':'existing mesh-derived atlas and 36–50 ortho fade; no new runtime geography'}
 (out/'RiberaAssetManifest.json').write_text(json.dumps(manifest,indent=2))
