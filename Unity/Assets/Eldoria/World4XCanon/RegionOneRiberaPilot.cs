@@ -44,7 +44,7 @@ namespace Eldoria.World4XCanon
     foreach(float size in new[]{34f,40f,46f,52f}) {
      float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
-     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=true;renderer.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
+     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=fade<.999f;renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
      camera.orthographicSize=size;
      FadeEcologicalUnderstory(root,size);
      foreach(bool before in new[]{true,false}) {
@@ -66,7 +66,7 @@ namespace Eldoria.World4XCanon
      float t=frame<=48?frame/48f:(96-frame)/48f;float size=Mathf.Lerp(34,52,Mathf.SmoothStep(0,1,t));
      float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
-     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=true;renderer.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
+     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=fade<.999f;renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
      camera.orthographicSize=size;camera.aspect=4f/3;FadeEcologicalUnderstory(root,size);camera.targetTexture=seqRT;camera.Render();RenderTexture.active=seqRT;seqTex.ReadPixels(new Rect(0,0,960,720),0,0);seqTex.Apply();
      File.WriteAllBytes(Path.Combine(sequence,"frame-"+frame.ToString("D3")+".png"),seqTex.EncodeToPNG());
      File.WriteAllText(Path.Combine(sequence,"frame-"+frame.ToString("D3")+".json"),JsonUtility.ToJson(new Evidence{zoom=size,position=camera.transform.position,rotation=camera.transform.rotation,unity=UnityEngine.Application.unityVersion,playMode=UnityEngine.Application.isPlaying,trees=treeCount},true));
@@ -256,6 +256,9 @@ namespace Eldoria.World4XCanon
    for(int i=0;i<originalColliders.Length;i++)if(!originalColliders[i]||originalColliders[i].transform.position!=positions[i])throw new InvalidOperationException("Sector capture moved or removed a logical collider");
    stats.logicalPositionsUnchanged=true;
    stats.lodSamples=lodReadings.ToArray();
+   var close=lodReadings.First(p=>p.orientation=="landscape"&&p.scale=="close").visibleTriangles;
+   var far=lodReadings.First(p=>p.orientation=="portrait"&&p.scale=="panorama").visibleTriangles;
+   if(far>=close*.80f)throw new InvalidOperationException("Mobile far LOD failed to reduce authored triangle submission: "+far+" versus "+close);
    File.WriteAllText(Path.Combine(dir,"integration-and-cost.json"),JsonUtility.ToJson(stats,true));
   }
   static void FadeEcologicalUnderstory(GameObject root,float size)
@@ -272,7 +275,7 @@ namespace Eldoria.World4XCanon
    camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=size;camera.aspect=aspect;
    FadeEcologicalUnderstory(root,size);
    float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));foreach(var m in hybrid)m.SetFloat("_Fade",fade);
-   foreach(var r in root.GetComponentsInChildren<MeshRenderer>())if(r.name=="Pilot_NearBatch"){r.enabled=true;r.shadowCastingMode=fade>=1?UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly:UnityEngine.Rendering.ShadowCastingMode.On;}else if(r.name=="Pilot_FarBatch")r.enabled=fade>0;
+   foreach(var r in root.GetComponentsInChildren<MeshRenderer>())if(r.name=="Pilot_NearBatch"){r.enabled=fade<.999f;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}else if(r.name=="Pilot_FarBatch")r.enabled=fade>0;
   }
   static void SaveSectorFrame(Camera camera,string path,int width,int height)
   {

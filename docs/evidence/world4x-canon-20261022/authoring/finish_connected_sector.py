@@ -153,6 +153,46 @@ for shade in [(0.14,.23,.09),(0.18,.29,.11),(0.23,.34,.14)]:
 for q,material_index in enumerate(tuft_mat):under.polygons[q].material_index=material_index
 undergo=bpy.data.objects.new('Z retained-sector woodland understory',under);coll.objects.link(undergo)
 
+# AB: small linked fields of actual exposed strata along the newly sculpted ridges.
+# One editable faceted mesh, zero colliders; all vertices rest on Blender's sculpted terrain.
+# Do not lay slabs over an existing path, O ground, or gameplay nodes.
+outcrop_centres=[(-72,132),(-61,154),(-54,120),(-43,147),(-31,156),
+                  (-26,108),(-14,144),(3,156),(18,149),(30,129),
+                  (44,152),(55,111),(62,155),(76,134),(80,155)]
+rock_v=[];rock_f=[];rock_material=[];placed=[]
+for ixcentre,(cx,cy) in enumerate(outcrop_centres):
+ pi=int((cx+96)/192*(W-1));pj=int((cy-78)/92*(H-1))
+ if path[pj,pi]>.12:continue
+ # Exposed rock can thread between trunks; no level-of-detail collision mesh is added.
+ if sum((cx-o.location.x)**2+(cy-o.location.y)**2<3.4**2 for o in trees)>2:continue
+ radius=5.7+((ixcentre*7)%5)*.8
+ a0=ixcentre*.71
+ vertex0=len(rock_v)
+ for ring in range(2):
+  for k in range(9):
+   a=2*math.pi*k/9+a0
+   r=radius*(.7+.20*math.sin(k*2.1+ixcentre*.89))*(1 if ring==0 else .57)
+   x=cx+r*math.cos(a);y=cy+r*math.sin(a)
+   z=ground(x,y)+(.045 if ring==0 else .39+.18*math.sin(k*1.7+ixcentre))
+   rock_v.append((x,y,z))
+ rock_v.append((cx,cy,ground(cx,cy)+.75+.20*(ixcentre%3)))
+ for k in range(9):
+  j=(k+1)%9
+  rock_f.append((vertex0+k,vertex0+j,vertex0+9+j));rock_material.append(1)
+  rock_f.append((vertex0+k,vertex0+9+j,vertex0+9+k));rock_material.append(1)
+  rock_f.append((vertex0+9+k,vertex0+9+j,vertex0+18));rock_material.append(0)
+ placed.append((cx,cy))
+assert len(placed)>=7,('No sufficient terrain-tied rock anatomy authored',placed)
+rock_mesh=bpy.data.meshes.new('AB ridge-side exposed strata mesh')
+rock_mesh.from_pydata(rock_v,[],rock_f);rock_mesh.update()
+for k,(label,rgb) in enumerate([('AB sandstone warm upper facets',(.46,.42,.32)),('AB grey moss-streaked stone flanks',(.32,.35,.29))]):
+ mat0=bpy.data.materials.new(label);mat0.use_nodes=True
+ bs0=next(n for n in mat0.node_tree.nodes if n.type=='BSDF_PRINCIPLED')
+ bs0.inputs['Base Color'].default_value=(*rgb,1);bs0.inputs['Roughness'].default_value=.94
+ rock_mesh.materials.append(mat0)
+for k,index in enumerate(rock_material):rock_mesh.polygons[k].material_index=index
+rock_object=bpy.data.objects.new('AB authored ridge rock shelves',rock_mesh)
+coll.objects.link(rock_object)
 mask=np.zeros((H,W),np.float32)
 for o in trees:
  x,y=o.location.xy;r=((X-x)/6.7)**2+((Y-y)/6.7)**2;mask=np.maximum(mask,np.clip(1-r,0,1)*.44)
@@ -238,7 +278,7 @@ for name,data,noncolor in [('AA slope and canopy painted pigment',pix,False),('A
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
 mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AA slope and canopy painted pigment'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='AA connected faceted shoulders and path-edge weathering over Z retained forest'
+scene['finishing_stage']='AB visible low rock anatomy, AA ridges, meadow palette and canopy on retained O'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -246,4 +286,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'AA','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AA physical ridges, weathered path shoulders and landcover; preserve O/K/I/Z and gameplay untouched'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AB','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AB exposed modeled rock shelves over AA physical relief and Z canopy; no gameplay mutations; preserve O/K/I/Z'},indent=2))
