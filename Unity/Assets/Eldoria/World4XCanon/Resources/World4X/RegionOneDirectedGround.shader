@@ -34,11 +34,15 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     // Broad quiet meadows, fine pigment subordinate; no repeated mirrored camouflage.
     half3 land=lerp(earth*.86h,earth*1.10h,meadow);
     land=lerp(land,broad,.13h);land=lerp(land,tex,.09h+_Near*.13h);
-    half3 woodland=half3(.39,.48,.22);
+    half3 woodland=half3(.48,.57,.26);
     #if !defined(UNITY_COLORSPACE_GAMMA)
      woodland=SRGBToLinear(woodland);
     #endif
-    land=lerp(land,woodland,m.a*.65h);land*=1-m.a*.23h;
+    half drainage=SAMPLE_TEXTURE2D_LOD(_Mask,sampler_Mask,uv,3).g;
+    half wet=smoothstep(.015h,.12h,drainage)*(1-m.g);
+    half irregular=smoothstep(.25h,.65h,noise21(i.p*.12)+wet*.28h);
+    half growth=saturate(m.a*1.35h+wet*irregular*.55h);
+    land=lerp(land,woodland,growth);land*=1-m.a*.23h;
     land=lerp(land,soil,m.b*.46h);
     Light sun=GetMainLight();
     half lambert=saturate(dot(normalize(i.n),sun.direction));

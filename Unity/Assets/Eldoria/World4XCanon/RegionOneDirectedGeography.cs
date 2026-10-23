@@ -24,7 +24,8 @@ namespace Eldoria.World4XCanon
    Line(176,-61,147,-86,133,-117,104,-139,86,-169,60,-184,34,-210,-8,-224,-43,-244,-81,-242),
    Line(-98,-150,-59,-159,-30,-180,2,-187,34,-210),
    Line(34,-210,67,-237,96,-259,119,-290,151,-313,173,-342,207,-374),
-   Line(-484,-131,-447,-151,-401,-143,-363,-172,-318,-185,-286,-214,-243,-230,-211,-265,-168,-281,-134,-318,-76,-328)
+   Line(-484,-131,-447,-151,-401,-143,-363,-172,-318,-185,-286,-214,-243,-230,-211,-265,-168,-281,-134,-318,-76,-328),
+   Line(175,-49,132,-22,99,-35,71,-21,44,-27,18,-17,-8,-28,-33,-17,-63,-29,-86,-23,-116,-29)
   };
   public static readonly Vector2[][] Roads={
    Line(-40,-550,-61,-463,-45,-391,-57,-316,-35,-247,-52,-176,-29,-103,0,0,23,91,4,176,28,253,11,338,38,422,17,511,38,603),
@@ -49,6 +50,21 @@ namespace Eldoria.World4XCanon
    new Vector4(-482,-328,35,21),new Vector4(-441,-347,27,18),new Vector4(92,-336,22,17),new Vector4(-132,-363,26,17),new Vector4(-174,-380,23,15),
    new Vector4(-34,-425,20,13),new Vector4(-261,-435,28,18),new Vector4(-351,-458,30,18),new Vector4(-553,430,30,22),new Vector4(-544,-455,34,22)
   };
+  // Meadow islands are authored independently of canopy density; open ground can be green.
+  static readonly Vector4[] Meadows={
+   new Vector4(-30,-15,18,12),new Vector4(27,-8,16,20),new Vector4(-20,30,20,13),new Vector4(17,35,12,10),new Vector4(8,-48,12,11),new Vector4(38,-42,18,10),
+   new Vector4(-61,505,54,35),new Vector4(78,447,42,32),new Vector4(-208,473,60,34),new Vector4(-378,511,61,36),
+   new Vector4(-106,381,52,36),new Vector4(-287,352,58,33),new Vector4(-475,395,55,37),new Vector4(128,319,44,30),
+   new Vector4(-78,287,41,31),new Vector4(-228,260,55,34),new Vector4(-427,267,56,33),new Vector4(68,178,46,30),
+   new Vector4(-176,181,48,34),new Vector4(-353,176,59,36),new Vector4(-500,121,56,40),new Vector4(145,79,44,32),
+   new Vector4(-229,72,48,30),new Vector4(-429,20,55,33),new Vector4(-133,15,40,31),
+   new Vector4(-291,-60,55,32),new Vector4(-491,-75,59,35),new Vector4(128,-88,47,29),new Vector4(-162,-116,50,30),
+   new Vector4(-354,-153,60,31),new Vector4(-484,-226,55,37),new Vector4(30,-160,45,28),new Vector4(-192,-218,52,31),
+   new Vector4(-350,-324,61,37),new Vector4(-121,-300,48,32),new Vector4(130,-290,41,30),new Vector4(-33,-365,45,30),
+   new Vector4(-244,-383,53,33),new Vector4(-447,-426,59,35),new Vector4(-152,-455,47,29)
+  };
+  static float Meadow(float x,float z)
+  {float cover=0;foreach(var g in Meadows){float dx=(x-g.x)/g.z,dz=(z-g.y)/g.w;if(Mathf.Abs(dx)>1.2f||Mathf.Abs(dz)>1.2f)continue;float edge=dx*dx+dz*dz+(Mathf.PerlinNoise(x*.12f+19,z*.12f+7)-.5f)*.38f;cover=Mathf.Max(cover,.58f*(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.55f,1.1f,edge))));}return cover;}
   static readonly Vector4[] Hills={new Vector4(-150,435,48,22),new Vector4(-350,310,58,18),new Vector4(171,286,38,16),new Vector4(-270,9,48,19),new Vector4(-433,-168,65,22),new Vector4(-155,-352,42,21),new Vector4(139,-303,32,16),new Vector4(-387,-460,50,23)};
   static readonly Vector2[][] Channels=Smooth(Rivers),Routes=Smooth(Roads);
   static Vector2[][] Smooth(Vector2[][] paths)
@@ -84,11 +100,11 @@ namespace Eldoria.World4XCanon
    if(mask)return mask;const int w=1536,h=1280;var pixels=new Color32[w*h];
    for(int iy=0;iy<h;iy++)for(int ix=0;ix<w;ix++)
    {float x=((ix+.5f)/w-.5f)*DomainWidth,z=((iy+.5f)/h-.5f)*DomainDepth,s=Shore(x,z);float water=0,road=0,forest=0;
-    if(s> -4){water=Water(x,z);road=Road(x,z)*(1-water);forest=Forest(x,z)*(1-water);}
+    if(s> -4){water=Water(x,z);road=Road(x,z)*(1-water);forest=Mathf.Max(Forest(x,z),Meadow(x,z))*(1-water)*(1-road*.9f);}
     pixels[iy*w+ix]=new Color(Mathf.Clamp01(.5f+s/32),water,road,forest);}
    mask=new Texture2D(w,h,TextureFormat.RGBA32,true,true){name="Clean authored semantic masks",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};mask.SetPixels32(pixels);mask.Apply(true,false);return mask;
   }
-  ValoriaIntegratedWorld host;Vector3 origin;Material ground,trees,scarMaterial;bool blockout;
+  ValoriaIntegratedWorld host;Vector3 origin;Material ground,trees,scarMaterial,bridgeMaterial;bool blockout;
   readonly List<Mesh> meshes=new List<Mesh>();readonly List<Renderer> foliage=new List<Renderer>();Renderer scar;
   public Mesh DirectedTerrain{get;private set;}
   public Texture2D GeographicMask=>mask;
@@ -102,7 +118,7 @@ namespace Eldoria.World4XCanon
    for(int z=0;z<=nz;z++)for(int x=0;x<=nx;x++){float px=(x/(float)nx-.5f)*DomainWidth,pz=(z/(float)nz-.5f)*DomainDepth;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,Height(px,pz),pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
    int n=0;for(int z=0;z<nz;z++)for(int x=0;x<nx;x++){int i=z*(nx+1)+x;indices[n++]=i;indices[n++]=i+nx+1;indices[n++]=i+1;indices[n++]=i+1;indices[n++]=i+nx+1;indices[n++]=i+nx+2;}
    var r=Create("Clean terrain — sole geographic surface",v,uv,null,indices,ground);DirectedTerrain=r.GetComponent<MeshFilter>().sharedMesh;
-   BuildForests();PaintRetainedGround();BuildBreach();Refresh();
+   BuildForests();PaintRetainedGround();BuildBreach();BuildBridge();Refresh();
   }
   void PaintRetainedGround()
   {
@@ -196,8 +212,21 @@ namespace Eldoria.World4XCanon
    for(int i=0;i<=24;i++){float angle=i*Mathf.PI/12,r=5.5f+.7f*Mathf.Sin(i*4.7f);float x=Mathf.Cos(angle)*r,z=Mathf.Sin(angle)*r;v.Add(new Vector3(x,Height(8+x,61+z)+.18f,z));uv.Add(Vector2.zero);colors.Add(new Color(.59f,.06f,.75f,0));if(i>0)indices.AddRange(new[]{heart,heart+i+1,heart+i});}
    scar=Create("Region1 · authored Breach pigment at actual world anchor",v.ToArray(),uv.ToArray(),null,indices.ToArray(),scarMaterial,parent);scar.transform.position=new Vector3(origin.x+8,origin.y,origin.z+61);scar.GetComponent<MeshFilter>().sharedMesh.colors=colors.ToArray();
   }
+  void BuildBridge()
+  {
+   // Non-interactive crossing where the authored local road meets the connected brook.
+   bridgeMaterial=new Material(Resources.Load<Shader>("World4X/RegionOneGeographicFacets")){name="Clean local timber crossing"};
+   var v=new List<Vector3>();var colors=new List<Color>();var t=new List<int>();var axis=new Vector2(.50f,.8660254f);var side=new Vector2(-axis.y,axis.x);var centre=new Vector2(-8,-28);
+   Action<Vector3,Vector3,Vector3,Vector3,Color> quad=(a,b,c,d,tint)=>{int n=v.Count;v.Add(origin+a);v.Add(origin+b);v.Add(origin+c);v.Add(origin+d);for(int k=0;k<4;k++)colors.Add(tint);t.AddRange(new[]{n,n+1,n+2,n,n+2,n+3});};
+   Func<float,float,float,Vector3> point=(along,across,height)=>{var p=centre+axis*along+side*across;return new Vector3(p.x,height,p.y);};
+   for(int i=0;i<24;i++){float a=-5+i*10f/24,b=a+.38f;float y=-3.6f+.65f*(1-Mathf.Pow((a+.19f)/5,2));var tint=Color.Lerp(new Color(.41f,.29f,.16f),new Color(.68f,.53f,.32f),(i%4)/3f);quad(point(a,-1.8f,y),point(a,1.8f,y),point(b,1.8f,y),point(b,-1.8f,y),tint);}
+   foreach(float across in new[]{-1.7f,1.7f})
+   {quad(point(-5,across,-2.5f),point(-5,across,-2.25f),point(5,across,-2.25f),point(5,across,-2.5f),new Color(.46f,.34f,.20f));
+    foreach(float along in new[]{-4f,0f,4f})quad(point(along-.10f,across,-3.6f),point(along-.10f,across,-2.15f),point(along+.10f,across,-2.15f),point(along+.10f,across,-3.6f),new Color(.42f,.30f,.17f));}
+   var r=Create("Clean road crossing — no gameplay collider",v.ToArray(),new Vector2[v.Count],null,t.ToArray(),bridgeMaterial);r.GetComponent<MeshFilter>().sharedMesh.colors=colors.ToArray();
+  }
   public void SetBlockout(bool value){blockout=value;Refresh();}
   public void Refresh(){if(!ground||!host||!host.WorldCamera)return;float zoom=host.WorldCamera.orthographicSize;ground.SetFloat("_Panorama",Mathf.SmoothStep(0,1,Mathf.InverseLerp(152,220,zoom)));ground.SetFloat("_Near",1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(80,152,zoom)));ground.SetFloat("_Blockout",blockout?1:0);foreach(var r in foliage)r.enabled=!blockout;if(scar)scar.enabled=true;}
-  void OnDestroy(){foreach(var mesh in meshes)if(mesh)Destroy(mesh);if(ground)Destroy(ground);if(trees)Destroy(trees);if(scarMaterial)Destroy(scarMaterial);}
+  void OnDestroy(){foreach(var mesh in meshes)if(mesh)Destroy(mesh);if(ground)Destroy(ground);if(trees)Destroy(trees);if(scarMaterial)Destroy(scarMaterial);if(bridgeMaterial)Destroy(bridgeMaterial);}
  }
 }

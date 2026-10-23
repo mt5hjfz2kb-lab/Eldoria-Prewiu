@@ -1,4 +1,4 @@
-"""Freeze actual Unity mesh for the existing typed Qwen/Blender author.
+"""Freeze the actual clean Unity mesh as an editable Blender source.
 This script copies measured geometry; it makes NO artistic deformation.
 One Blender unit is ten Unity metres, retaining all vertex indices.
 """
@@ -36,7 +36,9 @@ shader=nodes.new('ShaderNodeBsdfPrincipled')
 output_node=nodes.new('ShaderNodeOutputMaterial')
 mat.node_tree.links.new(shader.outputs['BSDF'],output_node.inputs['Surface'])
 tex=nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images.load(str(atlas.resolve()));tex.image.pack()
-mat.node_tree.links.new(tex.outputs['Color'],shader.inputs['Base Color'])
+tex.image.colorspace_settings.name='Non-Color'
+tex.label='SEMANTIC masks, not final shader color'
+shader.inputs['Base Color'].default_value=(.50,.53,.39,1)
 shader.inputs['Roughness'].default_value=1.0
 scene=bpy.context.scene
 scene.render.engine='BLENDER_EEVEE_NEXT' if bpy.app.version<(4,2,0) else 'CYCLES'
@@ -53,13 +55,13 @@ scene.world.color=(.25,.25,.25)
 dest=output/'terrain-source.blend'
 if dest.exists():raise RuntimeError('Refuse to replace frozen Blender source')
 bpy.ops.wm.save_as_mainfile(filepath=str(dest.resolve()))
-scene.render.filepath=str((output/'terrain-clay-before.png').resolve())
+scene.render.filepath=str((output/'terrain-clay-current.png').resolve())
 bpy.ops.render.render(write_still=True)
 (output/'source-provenance.json').write_text(json.dumps({
     'unity_mesh_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),
     'blend_sha256':hashlib.sha256(dest.read_bytes()).hexdigest(),
     'vertices':len(vertices),'triangles':len(faces),'unity_units_per_blender_unit':10,
     'artistic_operations':0,'gameplay_modified':False,
-    'render_scope':'Blender terrain with measured Unity atlas; NOT full Unity gameplay or art approval',
+    'render_scope':'Neutral-clay geometry review of current Unity mesh; packed atlas is semantic DATA, not diffuse color; NOT Unity gameplay or art approval',
     'atlas_sha256':hashlib.sha256(atlas.read_bytes()).hexdigest()
 },indent=2))
