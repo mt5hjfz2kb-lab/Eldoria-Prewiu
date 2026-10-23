@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-23T21:54:45.623Z",
+  "updated_at": "2026-10-23T21:58:14.636Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -770,7 +770,13 @@
         ],
         "authorization": "Owner full world replacement order followed by explicit 'Tienes mi autorización' on 2026-10-23. No merge, publication or expenditure.",
         "limits": "Only world visual replacement/population integration; preserve city, UI, saves, identifiers and I-II progression. No merge/publication."
-      }
+      },
+      "scope_exclusions": [
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
+      ]
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -1137,9 +1143,11 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Owner full world replacement order followed by explicit 'Tienes mi autorización' on 2026-10-23. No merge, publication or expenditure.",
-      "phase": "REGION1_PRODUCTION_AND_AUTHORIZED_INTEGRATION_HANDOFF",
+      "phase": "PRODUCTION_GATEWAY_AND_FULL_REGION_CAMERA_NATIVE",
       "next": "Recover AI and original reference pixels; build continuous region and replacement node library; integrate with existing state under transferred narrow scope; actual Blender/Unity verification.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
