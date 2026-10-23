@@ -138,8 +138,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 39950025008
-          name: region1-canon-native-39950025008
+          run-id: 39951461473
+          name: region1-canon-native-39951461473
           path: ${{ runner.temp }}/ribera-pinned-source
       - name: Finish existing ribera surfaces and banks in Blender
         if: contains(github.event.head_commit.message, 'ribera-finish(world4x):')
@@ -149,8 +149,8 @@ jobs:
           $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
           if(-not $blender){throw 'Installed Blender missing'}
           $out=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
-          $source=Join-Path $env:RUNNER_TEMP 'ribera-pinned-source/region1-authoring-39950025008/Eldoria_Ribera_Finished.blend'
-          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/ribera_material_finish.py -- $out $source
+          $source=Join-Path $env:RUNNER_TEMP 'ribera-pinned-source/region1-authoring-39951461473/Eldoria_Ribera_Finished.blend'
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/ribera_environment_finish.py -- $out $source
           if($LASTEXITCODE){throw 'Ribera finishing failed'}
           $dest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Pilot'
           New-Item -ItemType Directory -Force $dest | Out-Null
