@@ -23,8 +23,8 @@ namespace Eldoria.World4XCanon
     var target=home+new Vector3(0,2,0);camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);
     int treeCount=root.GetComponentsInChildren<Renderer>().Count(r=>r.name.StartsWith("Pilot_Pine"));
     var hybrid=BuildImpostors(root,camera,output);
-    foreach(float size in new[]{46f,60f,76f,96f}) {
-     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(52,86,size));
+    foreach(float size in new[]{34f,40f,46f,52f}) {
+     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
      foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch")renderer.enabled=fade<1;else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
      camera.orthographicSize=size;
@@ -57,7 +57,7 @@ namespace Eldoria.World4XCanon
      var r=trees[index];var converted=r.sharedMaterials.Select(old=>{
       if(materialCache.TryGetValue(old,out var existing))return existing;
       var m=new Material(shader);materialCache.Add(old,m);Color c=Color.white;
-      if(old.HasProperty("_BaseColorFactor"))c=old.GetColor("_BaseColorFactor");else if(old.HasProperty("_BaseColor"))c=old.GetColor("_BaseColor");
+      if(old.HasProperty("baseColorFactor"))c=old.GetColor("baseColorFactor");else if(old.HasProperty("_BaseColorFactor"))c=old.GetColor("_BaseColorFactor");else if(old.HasProperty("_BaseColor"))c=old.GetColor("_BaseColor");
       m.SetColor("_BaseColor",c);mats.Add(m);return m;
      }).ToArray();r.sharedMaterials=converted;
      var copy=new GameObject("Atlas tree");copy.layer=30;copy.AddComponent<MeshFilter>().sharedMesh=r.GetComponent<MeshFilter>().sharedMesh;var cr=copy.AddComponent<MeshRenderer>();cr.sharedMaterials=converted;

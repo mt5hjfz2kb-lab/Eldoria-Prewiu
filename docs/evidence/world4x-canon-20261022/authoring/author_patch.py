@@ -11,12 +11,12 @@ soil=mat('Ochre meadow',(0.39,.43,.11));bank=mat('Warm cut riverbank',(.40,.32,.
 def mesh(n,v,f,m):
  d=bpy.data.meshes.new(n);d.from_pydata(v,[],f);d.update();o=bpy.data.objects.new(n,d);bpy.context.collection.objects.link(o);o.data.materials.append(m);return o
 # Authorial river follows an editable Bezier guide; banks are explicit continuous cross sections.
-knots=[(-94,-25),(-70,-31),(-48,-25),(-25,-33),(-5,-20),(20,-24),(43,-15),(68,-20),(94,-9)]
+knots=[(-94,21),(-70,9),(-48,2),(-25,-12),(-5,-18),(20,-31),(43,-33),(68,-44),(94,-52)]
 def river(x):
  for (a,b),(c,d) in zip(knots,knots[1:]):
   if a<=x<=c:t=(x-a)/(c-a);t=t*t*(3-2*t);return b+(d-b)*t
  return knots[0][1] if x<knots[0][0] else knots[-1][1]
-def ground(x,y):return 1.8+6.5*exp(-((x+35)/25)**2-((y-25)/20)**2)+4*exp(-((x-53)/23)**2-((y-35)/26)**2)+.24*sin(x*.18)*cos(y*.15)
+def ground(x,y):return 3.0+7.5*exp(-((x+35)/25)**2-((y-25)/20)**2)+4*exp(-((x-53)/23)**2-((y-35)/26)**2)+.24*sin(x*.18)*cos(y*.15)
 def guide(n,pts):
  c=bpy.data.curves.new(n,'CURVE');c.dimensions='3D';s=c.splines.new('BEZIER');s.bezier_points.add(len(pts)-1)
  for p,co in zip(s.bezier_points,pts):p.co=co;p.handle_left_type='AUTO';p.handle_right_type='AUTO'
@@ -29,7 +29,7 @@ for side in [-1,1]:
   x=-96+i;cy=river(x);w=3.2+.55*sin(x*.13)
   for j in range(M+1):
    t=j/M;y=cy+side*(w+(78-side*cy-w)*t);z=ground(x,y)
-   if t<.045:z=.65+(z-.65)*t/.045
+   if t<.045:z=2.7+(z-2.7)*t/.045
    v.append((x,y,z))
  for i in range(N):
   for j in range(M):a=i*(M+1)+j;f.append((a,a+M+1,a+M+2,a+1) if side==1 else (a+1,a+M+2,a+M+1,a))
@@ -40,7 +40,7 @@ for side in [-1,1]:
  # shore wall has actual height and irregular boundary
  vv=[];ff=[]
  for i in range(N+1):
-  x=-96+i;y=river(x)+side*(3.2+.55*sin(x*.13));vv.extend([(x,y,.65),(x,y,.1)])
+  x=-96+i;y=river(x)+side*(3.2+.55*sin(x*.13));vv.extend([(x,y,2.7),(x,y,.1)])
  for i in range(N):ff.append((2*i,2*i+1,2*i+3,2*i+2))
  mesh('Pilot_Cutbank_'+str(side),vv,ff,bank)
 v=[];f=[]
@@ -48,29 +48,47 @@ for i in range(193):
  x=-96+i;w=3.2+.55*sin(x*.13);v.extend([(x,river(x)-w,.32),(x,river(x)+w,.32)])
 for i in range(192):f.append((i*2,i*2+2,i*2+3,i*2+1))
 mesh('Pilot_River',v,f,water)
-# Winding main footpath and a fork climb round the hill, never across water.
-for k,pts in enumerate([[(-96,3),(-67,8),(-49,-1),(-25,5),(0,2),(28,9),(58,8),(96,22)],[(0,2),(8,24),(0,43),(15,78)]]):
- guide('Editable path '+str(k),[(x,y,ground(x,y)+.04) for x,y in pts]);v=[];f=[]
- for (x,y),(xx,yy) in zip(pts,pts[1:]):
-  for j in range(18):
-   t=j/18;a=x+(xx-x)*t;b=y+(yy-y)*t;dx=xx-x;dy=yy-y;L=math.hypot(dx,dy)
-   for s in [-1,1]:X=a-s*dy/L*1.15;Y=b+s*dx/L*1.15;v.append((X,Y,ground(X,Y)+.065))
- for i in range(len(v)//2-1):f.append((2*i,2*i+1,2*i+3,2*i+2))
- mesh('Pilot_Path_'+str(k),v,f,sand)
-# Paint a real reusable meadow image with directional ochre/olive pigment and fine grain.
+# Actual Bezier paths provide paint strokes on the UV terrain; no floating angular ribbons.
+from mathutils.geometry import interpolate_bezier
+path_samples=[]
+paths=[[(-96,45),(-67,35),(-49,23),(-25,13),(0,10),(28,4),(58,-3),(96,-15)],[(0,10),(10,26),(0,46),(15,78)],[(-96,-18),(-70,-25),(-48,-39),(-25,-46),(0,-52),(23,-61),(68,-70)]]
+for k,pts in enumerate(paths):
+ curve=guide('Editable path '+str(k),[(x,y,ground(x,y)+.04) for x,y in pts]);bpy.context.view_layer.update();bp=curve.data.splines[0].bezier_points;sample=[]
+ for a,b in zip(bp,bp[1:]):sample.extend(interpolate_bezier(a.co,a.handle_right,b.handle_left,b.co,48)[:-1])
+ path_samples.append([(v.x,v.y) for v in sample])
+# Pigment is painted in strokes following the landscape: openings, forest floor, winding paths.
 import numpy as np
-S=1024;yy,xx=np.mgrid[0:S,0:S];r=np.random.default_rng(73);p=.035*np.sin(xx*.035+np.sin(yy*.018)*2)+.025*np.cos(yy*.065)+r.normal(0,.008,(S,S));rgba=np.ones((S,S,4),dtype=np.float32)
-for c,base in enumerate([.59,.60,.28]):rgba[:,:,c]=np.clip(base+p*(1 if c<2 else .6),0,1)
-im=bpy.data.images.new('Meadow painted pigment',width=S,height=S);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'meadow.png');im.file_format='PNG';im.save();im.pack();tex=soil.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;soil.node_tree.links.new(tex.outputs['Color'],soil.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+S=1536;yy,xx=np.mgrid[0:S,0:S];rand=np.random.default_rng(73);rgba=np.ones((S,S,4),dtype=np.float32);rgba[:,:,:3]=(.62,.65,.29);rgba[:,:,:3]+=rand.normal(0,.012,(S,S,1))
+def dab(x,y,radius,colour,opacity=1):
+ px=(x+96)/192*S;py=(y+78)/156*S;rx=radius/192*S;ry=radius/156*S
+ x0=max(0,int(px-rx-1));x1=min(S,int(px+rx+2));y0=max(0,int(py-ry-1));y1=min(S,int(py+ry+2))
+ if x0>=x1 or y0>=y1:return
+ Y,X=np.mgrid[y0:y1,x0:x1];d=np.sqrt(((X-px)/rx)**2+((Y-py)/ry)**2);a=(np.clip((1-d)*4,0,1)*opacity)[:,:,None];rgba[y0:y1,x0:x1,:3]=rgba[y0:y1,x0:x1,:3]*(1-a)+np.array(colour)*a
+# Broken grass patches and ochre openings, not sinusoidal bands or uniform fill.
+for i in range(1800):
+ x=rng.uniform(-96,96);y=rng.uniform(-78,78);rad=rng.uniform(.45,2.2);c=rng.choice([(.56,.61,.22),(.67,.67,.30),(.49,.58,.23),(.71,.66,.35)])
+ dab(x,y,rad,c,rng.uniform(.18,.45))
+for sample in path_samples:
+ for x,y in sample:dab(x,y,2.0,(.68,.58,.34),.45);dab(x,y,1.12,(.74,.62,.38),.92)
+# Separate shallow rim and deeper channel, both mesh surfaces exported from the source.
+shallow=mat('Shallow turquoise',(.06,.46,.49));deep=mat('Deep current',(.025,.26,.36));foam=mat('Pale river edge',(.30,.62,.59))
+for name,offset,width,material in [('Pilot_Deep',0,1.6,deep),('Pilot_RimSouth',-1,.22,foam),('Pilot_RimNorth',1,.22,foam)]:
+ vv=[];ff=[]
+ for i in range(193):
+  x=-96+i;w=3.2+.55*sin(x*.13);cy=river(x)+offset*(w-.32)
+  vv.extend([(x,cy-width,.34),(x,cy+width,.34)])
+ for i in range(192):ff.append((2*i,2*i+2,2*i+3,2*i+1))
+ mesh(name,vv,ff,material)
 # Recognizable conifers: solid irregular lobed boughs, dark gaps, woody trunk, tapered crown.
 masters=[]
 for family in range(3):
  parts=[]
  bpy.ops.mesh.primitive_cone_add(vertices=9,radius1=.24,radius2=.10,depth=5.7,location=(0,0,2.85));tr=bpy.context.object;tr.data.materials.append(bark);parts.append(tr)
- for tier,(h,w) in enumerate([(1.5,1.65),(2.5,1.48),(3.5,1.18),(4.4,.86),(5.2,.48)]):
+ families=[[(1.4,1.8),(2.8,1.45),(4.25,.90)],[(1.5,1.35),(2.5,1.22),(3.5,.98),(4.4,.68),(5.2,.38)],[(1.3,1.65),(2.5,1.40),(3.7,1.05),(4.8,.60)]]
+ for tier,(h,w) in enumerate(families[family]):
   vs=[];fs=[];segments=12
   for ring,(z,rr) in enumerate([(h-.25,w*.68),(h,w),(h+.48,w*.68),(h+1.3,0.04)]):
-   for j in range(segments):a=j*2*pi/segments+family*.3;rad=rr*(1+.14*sin(j*2.8+tier));vs.append((cos(a)*rad,sin(a)*rad,z+.12*sin(j*2.1)))
+   for j in range(segments):a=j*2*pi/segments+family*.3;rad=rr*(1+.07*sin(j*2.8+tier));vs.append((cos(a)*rad,sin(a)*rad,z+.12*sin(j*2.1)))
   for ring in range(3):
    for j in range(segments):a=ring*segments+j;b=ring*segments+(j+1)%segments;fs.append((a,b,b+segments,a+segments))
   o=mesh('Bough',vs,fs,greens[(tier+family)%4]);parts.append(o)
@@ -78,19 +96,28 @@ for family in range(3):
  for o in parts:o.select_set(True)
  bpy.context.view_layer.objects.active=tr;bpy.ops.object.join();tr.name='Pilot_TreeSource_'+str(family);tr.location=(0,0,2.85);bpy.context.scene.cursor.location=(0,0,0);bpy.ops.object.origin_set(type='ORIGIN_CURSOR');masters.append(tr)
 # Deliberately arranged clusters with clearing/path and river exclusions.
-centres=[(-65,26,12,10),(-36,36,10,9),(28,31,13,11),(65,47,13,12),(-63,-55,13,8),(-9,-57,14,9),(51,-48,15,10),(-10,65,12,8)]
+centres=[(-70,52,12,10),(-36,36,10,9),(28,31,13,11),(65,47,13,12),(-63,-55,13,8),(-9,-66,14,7),(51,-57,12,8),(-10,65,12,8),(-72,-9,9,6),(65,15,12,7)]
 positions=[]
 for cx,cy,rx,ry in centres:
  for j in range(26):
   a=rng.random()*2*pi;d=math.sqrt(rng.random());x=cx+cos(a)*rx*d;y=cy+sin(a)*ry*d
-  if abs(y-river(x))<7 or any((x-X)**2+(y-Y)**2<6 for X,Y in positions):continue
-  positions.append((x,y));src=masters[rng.randrange(3)];o=src.copy();o.data=src.data;bpy.context.collection.objects.link(o);o.name='Pilot_Pine';o.location=(x,y,ground(x,y));s=rng.uniform(.70,1.23);o.scale=(s,s,s);o.rotation_euler.z=rng.uniform(-pi,pi)
+  if abs(y-river(x))<7 or min((x-X)**2+(y-Y)**2 for sample in path_samples for X,Y in sample)<9 or any((x-X)**2+(y-Y)**2<6 for X,Y in positions):continue
+  positions.append((x,y));dab(x,y,3.2,(.36,.46,.17),.45);dab(x+.6,y+.5,1.9,(.28,.36,.12),.38);src=masters[rng.randrange(3)];o=src.copy();o.data=src.data;bpy.context.collection.objects.link(o);o.name='Pilot_Pine';o.location=(x,y,ground(x,y));s=rng.uniform(.70,1.23);o.scale=(s,s,s);o.rotation_euler.z=rng.uniform(-pi,pi)
 for o in masters:bpy.data.objects.remove(o,do_unlink=True)
 for cx,cy in [(-36,23),(56,32),(-73,-43),(28,-46)]:
  for j in range(7):
   x=cx+rng.uniform(-5,5);y=cy+rng.uniform(-4,4);bpy.ops.mesh.primitive_ico_sphere_add(subdivisions=1,radius=1,location=(x,y,ground(x,y)+.5));o=bpy.context.object;o.name='Pilot_Rock';o.scale=(rng.uniform(1,2.6),rng.uniform(1,2),rng.uniform(1,3));o.rotation_euler=(.2,.3,rng.random());o.data.materials.append(rock)
+# Pack the completed painted surface after forest-floor strokes.
+im=bpy.data.images.new('Ribera painted meadow',width=S,height=S);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'meadow.png');im.file_format='PNG';im.save();im.pack();tex=soil.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;soil.node_tree.links.new(tex.outputs['Color'],soil.node_tree.nodes.get('Principled BSDF').inputs['Base Color'])
+# Fine upright grass punctuation and bank stones, grouped in the source for efficient export.
+vs=[];fs=[]
+for i in range(950):
+ x=rng.uniform(-94,94);y=rng.uniform(-76,76)
+ if abs(y-river(x))<5 or min((x-X)**2+(y-Y)**2 for sample in path_samples for X,Y in sample)<2:continue
+ z=ground(x,y);h=rng.uniform(.25,.8);a=len(vs);vs.extend([(x-.16,y,z),(x+.16,y,z),(x+.04,y,z+h),(x,y-.16,z),(x,y+.16,z),(x,y+.06,z+h*.8)]);fs.extend([(a,a+1,a+2),(a+3,a+4,a+5)])
+mesh('Pilot_Grass',vs,fs,greens[2])
 # Organize editable authoring layers, retaining curves independently of final meshes.
-for name,prefixes in [('01_Terrain',('Pilot_Terrain',)),('02_Water_Banks',('Pilot_River','Pilot_Cutbank')),('03_Paths',('Pilot_Path',)),('04_Forest',('Pilot_Pine',)),('05_Rocks',('Pilot_Rock',)),('00_Editable_Guides',('Editable',))]:
+for name,prefixes in [('01_Terrain',('Pilot_Terrain',)),('02_Water_Banks',('Pilot_River','Pilot_Cutbank','Pilot_Rim','Pilot_Deep')),('03_Paths',('Pilot_Path',)),('04_Forest',('Pilot_Pine','Pilot_Grass')),('05_Rocks',('Pilot_Rock',)),('00_Editable_Guides',('Editable',))]:
  collection=bpy.data.collections.new(name);bpy.context.scene.collection.children.link(collection)
  for obj in list(bpy.context.scene.objects):
   if obj.name.startswith(prefixes):
