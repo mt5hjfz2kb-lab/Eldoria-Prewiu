@@ -66,7 +66,7 @@ mask=np.ones((S,S,4),np.float32);mask[:,:,:3]=coverage[:,:,None];new_image('H ed
 # Low curved leaf fans, composed at forest margins. One combined mesh, three shared pigments.
 materials=[]
 for name,c in [('Understory shade',(.13,.23,.055,1)),('Understory green',(.24,.35,.08,1)),('Understory tips',(.43,.46,.13,1))]:
- m=bpy.data.materials.new(name);m.diffuse_color=c;m.use_nodes=True;m.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=c;materials.append(m)
+ m=bpy.data.materials.new(name);m.diffuse_color=c;m.use_nodes=True;m.node_tree.nodes.clear();shader=m.node_tree.nodes.new('ShaderNodeBsdfPrincipled');shader.inputs['Base Color'].default_value=c;output=m.node_tree.nodes.new('ShaderNodeOutputMaterial');m.node_tree.links.new(shader.outputs[0],output.inputs['Surface']);materials.append(m)
 verts=[];faces=[];mi=[];plants=0
 edge_sites=[(-45,-13),(-40,-18),(-35,-13),(-37,-8),(-11,-4),(-6,-5),(12,-17),(17,-18),(21,-14),(23,-21),(37,-24),(42,-25),(46,-18),(-13,-38),(-7,-42),(44,-48),(48,-51),(54,-49),(-28,6),(-23,13),(-10,6),(5,11),(15,14),(21,8),(29,-35),(36,-32)]
 for idx,(cx,cy) in enumerate(edge_sites):
