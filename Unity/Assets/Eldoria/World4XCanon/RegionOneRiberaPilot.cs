@@ -167,7 +167,39 @@ namespace Eldoria.World4XCanon
      foreach(var go in temporary)if(go.GetComponent<MeshCollider>().Raycast(new Ray(new Vector3(pos.x,home.y+250,pos.z),Vector3.down),out var hit,500)){probes.Add(new HeightProbe{name=c.name,logicalPosition=pos,authoredSurface=hit.point,heightDifference=hit.point.y-c.bounds.min.y,hotspotId=HotspotId(c),boundsMin=c.bounds.min,boundsMax=c.bounds.max});break;}
     }
    } finally {foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);}
-   var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false};
+   // The old 2.5D node markers used the procedural world-height sampler rather than this
+   // imported Blender surface. Clone their RENDER MESHES ONLY, not their logical targets.
+   // Keep the collider-based discrepancy in heightProbes as an independent unresolved measurement.
+   var groundedVisualMarkers=new System.Collections.Generic.List<GroundedMarkerProbe>();
+   var sourceMarkers=world.GetComponentsInChildren<MeshRenderer>(true);
+   var markers=new[]{
+    new {id="valoria-map-city",prefix="Reference city Bastion"},
+    new {id="forest-valoria",prefix="Reference existing wood grove"},
+    new {id="quarry-valoria",prefix="Reference existing quarry"},
+    new {id="old-watch-ruin",prefix="Reference existing neutral watch ruin"}
+   };
+   foreach(var spec in markers) {
+    var probe=probes.FirstOrDefault(p=>p.hotspotId==spec.id);
+    if(probe==null)continue;
+    foreach(var donor in sourceMarkers.Where(r=>r&&r.name.StartsWith(spec.prefix,StringComparison.Ordinal))) {
+     var mf=donor.GetComponent<MeshFilter>();
+     if(!mf||!mf.sharedMesh||mf.sharedMesh.vertexCount==0)continue;
+     var sourceFoot=donor.transform.TransformPoint(mf.sharedMesh.vertices[0]);
+     float delta=probe.authoredSurface.y+.08f-sourceFoot.y;
+     var proxy=new GameObject("Pilot grounded visual "+donor.name);
+     proxy.layer=root.layer;
+     proxy.transform.SetParent(root.transform,true);
+     proxy.transform.SetPositionAndRotation(donor.transform.position+Vector3.up*delta,donor.transform.rotation);
+     proxy.transform.localScale=donor.transform.lossyScale;
+     proxy.AddComponent<MeshFilter>().sharedMesh=mf.sharedMesh;
+     proxy.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;
+     float measuredFoot=proxy.transform.TransformPoint(mf.sharedMesh.vertices[0]).y;
+     float error=measuredFoot-(probe.authoredSurface.y+.08f);
+     if(Mathf.Abs(error)>.03f)throw new InvalidOperationException("Ribera node visual contact error: "+spec.id+" "+error);
+     groundedVisualMarkers.Add(new GroundedMarkerProbe{id=spec.id,sourceRenderer=donor.name,originalVisualFootY=sourceFoot.y,authoredGroundY=probe.authoredSurface.y,groundedVisualFootY=measuredFoot,visualCorrectionMeters=delta,contactErrorMeters=error});
+    }
+   }
+   var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false,groundedVisualMarkers=groundedVisualMarkers.ToArray(),groundedVisualMarkerCount=groundedVisualMarkers.Count};
    stats.maxHeightDifference=probes.Count>0?probes.Max(p=>Mathf.Abs(p.heightDifference)):0;
    // Collider bounds.min.y is only a provisional contact proxy. Mesh-contact certification remains pending.
    stats.heightDeltaIsGroundingVerdict=false;
@@ -228,8 +260,9 @@ namespace Eldoria.World4XCanon
   [Serializable] class SectorCamera {public Vector3 position;public Quaternion rotation;public float orthoSize;public int width,height;public bool playMode;}
   static string HotspotId(Collider c) {if(!c)return "";foreach(var b in c.GetComponents<MonoBehaviour>()){if(b&&b.GetType().Name=="WorldHotspot")return b.GetType().GetField("Id")?.GetValue(b) as string??"";}return "";}
   [Serializable] class PickProbe {public string expectedId,selectedId;public bool portrait,aimAtAuthoredGround,inViewport,matched;}
+  [Serializable] class GroundedMarkerProbe {public string id,sourceRenderer;public float originalVisualFootY,authoredGroundY,groundedVisualFootY,visualCorrectionMeters,contactErrorMeters;}
   [Serializable] class HeightProbe {public string name,hotspotId;public Vector3 logicalPosition,authoredSurface,boundsMin,boundsMax;public float heightDifference;}
-  [Serializable] class SectorStats {public HeightProbe[] heightProbes;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public PickProbe[] selectionProbes;public bool heightDeltaIsGroundingVerdict,logicalPositionsUnchanged,physicalMobileTested;}
+  [Serializable] class SectorStats {public HeightProbe[] heightProbes;public GroundedMarkerProbe[] groundedVisualMarkers;public int groundedVisualMarkerCount;public int logicalColliderCount,meshInstances,rendererCount,submittedMeshTriangles;public long editorAllocatedBytes;public float maxHeightDifference;public PickProbe[] selectionProbes;public bool heightDeltaIsGroundingVerdict,logicalPositionsUnchanged,physicalMobileTested;}
 
   [Serializable] class Evidence {public float zoom;public Vector3 position;public Quaternion rotation;public string unity;public bool playMode;public int trees;}
  }
