@@ -41,7 +41,8 @@ for i,o in enumerate(trees):
  rgb=rgb*(1-a[:,:,None])+np.array([.55,.48,.25])*a[:,:,None]
 rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=np.clip(rgb,0,1)
 def image(name,a):
- h,w=a.shape[:2];im=bpy.data.images.new(name,width=w,height=h);im.pixels.foreach_set(a.ravel());im.colorspace_settings.name='sRGB';im.filepath_raw=str(out/(name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack();return im
+ h,w=a.shape[:2];im=bpy.data.images.new(name,width=w,height=h);im.colorspace_settings.name='sRGB';im.pixels.foreach_set(a.ravel());assert float(np.max(np.array(im.pixels[:])))>.1;im.filepath_raw=str(out/(name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack();return im
+assert np.isfinite(rgba).all() and float(rgb.mean())>.05, ('Invalid material canvas',float(rgb.mean()))
 soil=bpy.data.materials['Ochre meadow'];nodes=soil.node_tree.nodes;bs=next(n for n in nodes if n.type=='BSDF_PRINCIPLED');n=nodes.new('ShaderNodeTexImage');n.image=image('G stylized grass and earth finish',rgba);soil.node_tree.links.new(n.outputs['Color'],bs.inputs['Base Color']);nodes.active=n
 # Sculpt and place inherited rock copies at the foot of existing forest clusters, not gameplay nodes.
 rocks=sorted([o for o in scene.objects if o.name.startswith('Pilot_Rock')],key=lambda o:o.name)
