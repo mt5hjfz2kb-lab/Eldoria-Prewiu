@@ -13,7 +13,11 @@ namespace Eldoria.World4XCanon
  {
   public const float DomainWidth=1820,DomainDepth=1560;
   static Vector2[] Line(params float[] v){var a=new Vector2[v.Length/2];for(int i=0;i<a.Length;i++)a[i]=new Vector2(v[i*2],v[i*2+1]);return a;}
-  public static readonly Vector2[] Coast=Line(-900,-760,-900,760,110,760,120,615,105,560,145,525,133,480,174,449,163,419,197,390,177,362,207,328,194,303,224,275,204,246,234,213,216,184,243,155,225,126,249,94,228,65,254,34,233,2,258,-28,239,-59,260,-88,238,-120,254,-147,230,-175,247,-208,220,-237,235,-264,209,-289,219,-320,188,-342,196,-371,161,-393,133,-420,104,-414,76,-443,43,-433,12,-461,-26,-447,-59,-476,-97,-462,-133,-493,-174,-478,-217,-509,-261,-492,-308,-523,-358,-509,-410,-542,-467,-528,-531,-556,-603,-541,-682,-572,-774,-558,-900,-589);
+  static readonly Vector2[] CoastControls=Line(-900,-760,-900,760,110,760,120,615,105,560,145,525,132,480,160,450,168,414,154,390,180,361,207,328,198,301,180,281,207,251,231,218,235,180,212,159,230,127,249,94,236,68,220,54,240,26,258,-8,251,-50,226,-72,238,-101,260,-128,250,-154,220,-170,231,-201,247,-220,223,-250,206,-264,224,-295,214,-328,185,-342,196,-371,161,-393,133,-420,104,-414,76,-443,43,-433,12,-461,-26,-447,-59,-476,-97,-462,-133,-493,-174,-478,-217,-509,-261,-492,-308,-523,-358,-509,-410,-542,-467,-528,-531,-556,-603,-541,-682,-572,-774,-558,-900,-589);
+  // Closed corner-cutting rounds authorial coves without changing the shared world space.
+  public static readonly Vector2[] Coast=RoundCoast(CoastControls);
+  static Vector2[] RoundCoast(Vector2[] controls)
+  {var points=controls;for(int pass=0;pass<2;pass++){var result=new Vector2[points.Length*2];for(int i=0;i<points.Length;i++){var a=points[i];var b=points[(i+1)%points.Length];result[i*2]=Vector2.Lerp(a,b,.22f);result[i*2+1]=Vector2.Lerp(a,b,.78f);}points=result;}return points;}
   // Channel hierarchy: 0 is trunk; tributaries start at upland springs and join explicitly.
   public static readonly Vector2[][] Rivers={
    Line(5,585,-12,540,8,499,-12,458,7,420,-18,384,-12,349,-40,312,-34,280,-56,250,-48,222,-79,198,-107,176,-117,145,-104,115,-124,83,-116,54,-130,28,-104,0,-116,-29,-101,-59,-111,-89,-87,-119,-98,-150,-80,-180,-95,-212,-81,-242,-98,-269,-72,-300,-76,-328,-42,-350,-23,-380,12,-399,40,-425,65,-451,91,-481),
@@ -110,7 +114,8 @@ namespace Eldoria.World4XCanon
   static Texture2D mask;static bool contactGroundPainted;
   static Texture2D Mask()
   {
-   if(mask)return mask;const int w=1536,h=1280;var pixels=new Color32[w*h];
+   if(mask)return mask;
+   const int w=1536,h=1280;var pixels=new Color32[w*h];
    for(int iy=0;iy<h;iy++)for(int ix=0;ix<w;ix++)
    {float x=((ix+.5f)/w-.5f)*DomainWidth,z=((iy+.5f)/h-.5f)*DomainDepth,s=Shore(x,z);float water=0,road=0,forest=0;
     if(s> -4){water=Water(x,z);road=Road(x,z)*(1-water);forest=Mathf.Max(Forest(x,z),Meadow(x,z))*(1-water)*(1-road*.9f);}
@@ -131,7 +136,7 @@ namespace Eldoria.World4XCanon
    for(int z=0;z<=nz;z++)for(int x=0;x<=nx;x++){float px=(x/(float)nx-.5f)*DomainWidth,pz=(z/(float)nz-.5f)*DomainDepth;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,Height(px,pz),pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
    int n=0;for(int z=0;z<nz;z++)for(int x=0;x<nx;x++){int i=z*(nx+1)+x;indices[n++]=i;indices[n++]=i+nx+1;indices[n++]=i+1;indices[n++]=i+1;indices[n++]=i+nx+1;indices[n++]=i+nx+2;}
    var r=Create("Clean terrain — sole geographic surface",v,uv,null,indices,ground);DirectedTerrain=r.GetComponent<MeshFilter>().sharedMesh;
-   BuildForests();PaintRetainedGround();BuildBreach();BuildBridge();Refresh();
+   BuildForests();PaintRetainedGround();BuildBreach();BuildBridge();BuildGroundCover();Refresh();
   }
   void PaintRetainedGround()
   {
@@ -237,6 +242,41 @@ namespace Eldoria.World4XCanon
    {quad(point(-5,across,-2.5f),point(-5,across,-2.25f),point(5,across,-2.25f),point(5,across,-2.5f),new Color(.46f,.34f,.20f));
     foreach(float along in new[]{-4f,0f,4f})quad(point(along-.10f,across,-3.6f),point(along-.10f,across,-2.15f),point(along+.10f,across,-2.15f),point(along+.10f,across,-3.6f),new Color(.42f,.30f,.17f));}
    var r=Create("Clean road crossing — no gameplay collider",v.ToArray(),new Vector2[v.Count],null,t.ToArray(),bridgeMaterial);r.GetComponent<MeshFilter>().sharedMesh.colors=colors.ToArray();
+  }
+  void BuildGroundCover()
+  {
+   // Sparse mineral and grass clusters relate to existing forest/meadow masks; no gameplay objects.
+   var v=new List<Vector3>();var col=new List<Color>();var tri=new List<int>();
+   var rng=new System.Random(231024);
+   Action<Vector3,Vector3,Vector3,Color> face=(a,b,c,tint)=>{int k=v.Count;v.Add(origin+a);v.Add(origin+b);v.Add(origin+c);col.Add(tint);col.Add(tint);col.Add(tint);tri.AddRange(new[]{k,k+1,k+2});};
+   var targets=new[]{new Vector2(0,0),new Vector2(47,12),new Vector2(46.5f,-62.9f),new Vector2(-21,-64),new Vector2(-85,-53),new Vector2(-92,-57)};
+   for(int n=0;n<17000;n++)
+   {
+    float x=-580+(float)rng.NextDouble()*840,z=-510+(float)rng.NextDouble()*1060;
+    var p=new Vector2(x,z);float forest=Forest(x,z),meadow=Meadow(x,z);
+    if(Shore(x,z)<8||Water(x,z)>.015f||RoadDistance(x,z)<3||targets.Any(t=>(t-p).sqrMagnitude<100)||(p-new Vector2(8,61)).sqrMagnitude<650)continue;
+    if(rng.NextDouble()>.10+meadow*.65+forest*.35)continue;
+    bool rock=rng.NextDouble()<.34;int count=2+rng.Next(3);
+    for(int j=0;j<count;j++)
+    {
+     float px=x+((float)rng.NextDouble()-.5f)*4,pz=z+((float)rng.NextDouble()-.5f)*4;
+     if(Water(px,pz)>.01f||RoadDistance(px,pz)<2)continue;
+     float y=Height(px,pz)+.04f,size=.28f+(float)rng.NextDouble()*(rock?.9f:.6f);var root=new Vector3(px,y,pz);
+     if(rock)
+     {
+      float angle=(float)rng.NextDouble()*6.283f;var ring=new Vector3[5];for(int k=0;k<5;k++){float a=angle+k*6.283f/5;ring[k]=root+new Vector3(Mathf.Cos(a)*size,0,Mathf.Sin(a)*size*.65f);}
+      var top=root+new Vector3(size*.22f,size*(.48f+(float)rng.NextDouble()*.45f),size*.12f);
+      var tint=Color.Lerp(new Color(.40f,.48f,.38f),new Color(.63f,.65f,.48f),(float)rng.NextDouble());
+      for(int k=0;k<5;k++)face(ring[k],top,ring[(k+1)%5],tint*(.77f+k*.055f));
+     }
+     else
+     {
+      var tint=Color.Lerp(new Color(.33f,.43f,.19f),new Color(.53f,.59f,.25f),(float)rng.NextDouble());
+      for(int k=0;k<3;k++){float a=k*2.094f;var d=new Vector3(Mathf.Cos(a),0,Mathf.Sin(a));face(root-d*size*.3f,root+Vector3.up*size*(1.3f-k*.22f)+d*size*.28f,root+d*size*.3f,tint);}
+     }
+    }
+   }
+   var r=Create("Clean ecological ground cover — one static batch",v.ToArray(),new Vector2[v.Count],null,tri.ToArray(),bridgeMaterial);r.GetComponent<MeshFilter>().sharedMesh.colors=col.ToArray();foliage.Add(r);
   }
   public void SetBlockout(bool value){blockout=value;Refresh();}
   public void Refresh(){if(!ground||!host||!host.WorldCamera)return;float zoom=host.WorldCamera.orthographicSize;ground.SetFloat("_Panorama",Mathf.SmoothStep(0,1,Mathf.InverseLerp(152,220,zoom)));ground.SetFloat("_Near",1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(80,152,zoom)));ground.SetFloat("_Blockout",blockout?1:0);foreach(var r in foliage)r.enabled=!blockout;if(scar)scar.enabled=true;}

@@ -28,7 +28,7 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     float2 uv=i.p/_Domain.xy+.5;
     half4 m=SAMPLE_TEXTURE2D(_Mask,sampler_Mask,uv);
     half3 tex=SAMPLE_TEXTURE2D(_Pigment,sampler_Pigment,abs(frac((i.p+float2(17,31))/64)*2-1)).rgb;
-    half3 earth=half3(.72,.66,.30),sand=half3(.80,.70,.43),sea=half3(.045,.25,.36),shallow=half3(.07,.46,.56),river=half3(.06,.47,.64),soil=half3(.80,.70,.43);
+    half3 earth=half3(.72,.66,.30),sand=half3(.80,.70,.43),sea=half3(.045,.25,.36),shallow=half3(.07,.46,.56),river=half3(.055,.36,.47),soil=half3(.80,.70,.43);
     #if !defined(UNITY_COLORSPACE_GAMMA)
      earth=SRGBToLinear(earth);sand=SRGBToLinear(sand);sea=SRGBToLinear(sea);shallow=SRGBToLinear(shallow);river=SRGBToLinear(river);soil=SRGBToLinear(soil);
     #endif
@@ -60,9 +60,11 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     half fleck=smoothstep(.75h,.88h,noise21(i.p*.8));
     land=lerp(land,sand*light,fleck*(.08h+.12h*_Near));
     half bank=smoothstep(.01h,.16h,m.g)*(1-smoothstep(.30h,.72h,m.g));
-    land=lerp(land,sand*light,bank*.80h);
+    land=lerp(land,sand*light,bank*(.20h+.35h*noise21(i.p*.19)));
     half3 freshWater=lerp(shallow,river,smoothstep(.4h,.96h,m.g));
-    freshWater*=.94h+.10h*noise21(i.p*float2(.08,.21));
+    freshWater*=.86h+.24h*noise21(i.p*float2(.18,.31));
+    half flow=smoothstep(.83h,.94h,noise21(i.p*float2(.85,2.1)))*smoothstep(.60h,.90h,m.g);
+    freshWater=lerp(freshWater,shallow*1.25h,flow*.32h*_Near);
     land=lerp(land,freshWater,smoothstep(.25h,.80h,m.g));
     half3 blocked=lerp(half3(.30,.34,.27),half3(.09,.18,.10),m.a);
     blocked=lerp(blocked,half3(.09,.25,.35),smoothstep(.25h,.80h,m.g));
@@ -75,7 +77,7 @@ Shader "Eldoria/World4X/DirectedGeographicLayers"
     water+=ripple;
     half foam=smoothstep(.42h,.47h,m.r)*(1-smoothstep(.47h,.50h,m.r));
     water=lerp(water,sand,foam*.38h);
-    half3 c=lerp(water,lerp(coast,land,smoothstep(.55h,.68h,m.r)),landWeight);
+    half3 c=lerp(water,lerp(coast,land,smoothstep(.52h,.59h,m.r)),landWeight);
     half side=1-saturate(normalize(i.n).y);
     c=lerp(c,sand*(.49h+.30h*light),side*landWeight*.92h);
     // Atmospheric continuation lies beyond the readable region, never on regional terrain.
