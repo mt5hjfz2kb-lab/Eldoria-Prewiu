@@ -151,6 +151,32 @@ for group,(cx,cy,rx,ry,quota) in enumerate([
  camera_band_added+=made
  assert made>=10,('Cannot fill camera-projected forest gap without crossing approved routes',group,made)
 assert len(trees)+156<=1024,'Pilot atlas capacity; never silently drop authored trees'
+# AG: connect the lower forest front to the northern established woodland masses.
+# Real Blender mesh instances, not 2.5D cards or independent dots. Three compact,
+# overlapping lobes leave the path clear and maintain the O seam at y=78.
+forest_front_added=0
+for group,(cx,cy,rx,ry,quota) in enumerate([
+ (-58,101,17,12,16),(-19,99,19,13,14),(56,101,18,12,18)]):
+ made=0
+ for trial in range(2200):
+  if made>=quota:break
+  ang=float(rng.uniform(0,2*math.pi));rad=math.sqrt(float(rng.random()))
+  x=float(cx+rx*rad*math.cos(ang));y=float(cy+ry*rad*math.sin(ang))
+  if not(-88<x<88 and 87<y<120):continue
+  if any((x-o.location.x)**2+(y-o.location.y)**2<3.6**2 for o in trees):continue
+  ix=int((x+96)/192*(W-1));iy=int((y-78)/92*(H-1))
+  px=max(1,int(3.2/192*W));py=max(1,int(3.2/92*H))
+  if np.max(path[max(0,iy-py):min(H,iy+py+1),max(0,ix-px):min(W,ix+px+1)])>.12:continue
+  donor=trees[(group*19+made*5)%old_new_sector_count]
+  o=donor.copy();o.data=donor.data;coll.objects.link(o)
+  o.name='Pilot_Pine_AG_connected_front_'+str(group)+'_'+str(made)
+  o.location=(x,y,ground(x,y))
+  size=float(rng.uniform(.87,1.17));o.scale=donor.scale*size
+  o.rotation_euler.z=float(rng.uniform(-math.pi,math.pi))
+  trees.append(o);new_trees.append(o);made+=1
+ forest_front_added+=made
+ assert made>=8,('Protected path leaves no space for a connected grove',group,made)
+assert len(trees)+156<=1024,'Atlas cap while building connected groves'
 # Z: actual editable low understorey and meadow clumps bind the authored pine stands.
 # There are no colliders or navigation objects; O's former forest and river are untouched.
 tuft_verts=[];tuft_faces=[];tuft_mat=[];shrub_count=0
@@ -415,7 +441,7 @@ for name,data,noncolor in [('AF broad meadow flows',pix,False),('AF editable slo
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
 mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AF broad meadow flows'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='AF broad authored meadow contours; discard AE speckles; O intact'
+scene['finishing_stage']='AG connected real-3D woodland front + AF broad meadow; no early regional cards'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -423,4 +449,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'AF','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'camera_band_trees_added':camera_band_added,'grounded_meadow_bunches_in_source_only':meadow_bunches,'dark_meadow_blades_exported':False,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AF broad multi-lobed meadow landcover replaces rejected AE pepper-like 3D grass; O/K/I and all gameplay remain unchanged'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AG','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'camera_band_trees_added':camera_band_added,'grounded_meadow_bunches_in_source_only':meadow_bunches,'dark_meadow_blades_exported':False,'forest_front_added':forest_front_added,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AG connects front of forest with authored groves while retaining AF broad grass masses; O/K/I/AE source and gameplay safe'},indent=2))
