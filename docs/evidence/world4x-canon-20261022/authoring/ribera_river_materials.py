@@ -99,8 +99,9 @@ visible=[o for o in scene.objects if o.type=='MESH' and not o.hide_render]
 for o in visible:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));bpy.ops.wm.open_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene=bpy.context.scene
-check=bpy.data.images['I recovered exact retained surface'];assert check.packed_file and max(check.pixels[0:16384])>.1
+check=bpy.data.images['I recovered exact retained surface'];assert check.packed_file and max(check.pixels[0:16384:4])>.1
 scene.cycles.samples=24;scene.render.filepath=str(out/'blender-ribera.png');bpy.ops.render.render(write_still=True)
 (out/'finishing.json').write_text(json.dumps({'stage':'J','source_I_sha256':scene['J_source_I_sha256'],'retained':'all I geography terrain trees camera paths','changes':'separate bank paint, localized pools/shallow masks, tapered flow marks, bevelled inherited shore rocks','shore_stones':placements,'art_approved':False},indent=2))
+visible=[o for o in scene.objects if o.type=='MESH' and not o.hide_render]
 manifest={'source_units':'metres','Blender_up':'Z','Unity_up':'Y','authoritative_geography':'editable I meshes; river and terrain boundary untouched in J','origin':[0,0,0],'meshes':[{'name':o.name,'vertices':len(o.data.vertices),'polygons':len(o.data.polygons),'position':list(o.location),'scale':list(o.scale),'materials':[m.name for m in o.data.materials if m],'uv_maps':[u.name for u in o.data.uv_layers]} for o in visible],'textures':[{'name':im.name,'width':im.size[0],'height':im.size[1],'packed':bool(im.packed_file)} for im in bpy.data.images if im.type=='IMAGE'],'gameplay_colliders':0,'Unity_hybrid':'existing mesh-derived atlas and 36–50 ortho fade; no new runtime geography'}
 (out/'RiberaAssetManifest.json').write_text(json.dumps(manifest,indent=2))
