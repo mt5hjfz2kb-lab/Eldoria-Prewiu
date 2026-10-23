@@ -116,13 +116,61 @@ namespace Eldoria.World4XCanon
   static Texture2D Mask()
   {
    if(mask)return mask;
+   if(Environment.GetEnvironmentVariable("ELDORIA_REGION1_REBAKE_CLEAN_MASK")!="1")
+   {
+    mask=Resources.Load<Texture2D>("World4X/RegionOneCleanGeographyMask");
+    if(mask)
+    {
+     contactGroundPainted=true;
+#if !UNITY_EDITOR
+     if(mask.isReadable)mask.Apply(false,true);
+#endif
+     return mask;
+    }
+   }
+#if !UNITY_EDITOR
+   throw new InvalidOperationException("Clean geography mask must be baked and packaged; never repaint millions of pixels on mobile startup.");
+#else
    const int w=1536,h=1280;var pixels=new Color32[w*h];
    for(int iy=0;iy<h;iy++)for(int ix=0;ix<w;ix++)
    {float x=((ix+.5f)/w-.5f)*DomainWidth,z=((iy+.5f)/h-.5f)*DomainDepth,s=Shore(x,z);float water=0,road=0,forest=0;
     if(s> -4){water=Water(x,z);road=Road(x,z)*(1-water);forest=Mathf.Max(Forest(x,z),Meadow(x,z))*(1-water)*(1-road*.9f);}
     pixels[iy*w+ix]=new Color(Mathf.Clamp01(.5f+s/32),water,road,forest);}
    mask=new Texture2D(w,h,TextureFormat.RGBA32,true,true){name="Clean authored semantic masks",wrapMode=TextureWrapMode.Clamp,filterMode=FilterMode.Bilinear};mask.SetPixels32(pixels);mask.Apply(true,false);return mask;
+#endif
   }
+  static float[] bakedHeights;
+  static float[] BakedHeights()
+  {
+   if(bakedHeights!=null)return bakedHeights;
+   if(Environment.GetEnvironmentVariable("ELDORIA_REGION1_REBAKE_CLEAN_MASK")=="1")return null;
+   var asset=Resources.Load<TextAsset>("World4X/RegionOneCleanTerrainHeights");
+   if(!asset)
+   {
+#if UNITY_EDITOR
+    return null;
+#else
+    throw new InvalidOperationException("Clean terrain heights must be baked before packaging.");
+#endif
+   }
+   using(var input=new System.IO.MemoryStream(asset.bytes))
+   using(var gzip=new System.IO.Compression.GZipStream(input,System.IO.Compression.CompressionMode.Decompress))
+   using(var reader=new System.IO.BinaryReader(gzip))
+   {
+    if(reader.ReadInt32()!=0x31583445||reader.ReadInt32()!=321||reader.ReadInt32()!=281||reader.ReadSingle()!=DomainWidth||reader.ReadSingle()!=DomainDepth)
+     throw new InvalidOperationException("Invalid clean terrain bake format or domain.");
+    bakedHeights=new float[321*281];for(int i=0;i<bakedHeights.Length;i++)bakedHeights[i]=reader.ReadSingle();
+   }
+   return bakedHeights;
+  }
+#if UNITY_EDITOR
+  public static void ValidateBakedTerrain()
+  {
+   var heights=BakedHeights();if(heights==null)throw new InvalidOperationException("Missing clean terrain height bake.");
+   for(int z=0;z<=280;z+=13)for(int x=0;x<=320;x+=17)
+   {float px=(x/320f-.5f)*DomainWidth,pz=(z/280f-.5f)*DomainDepth;if(Mathf.Abs(heights[z*321+x]-Height(px,pz))>.002f)throw new InvalidOperationException("Stale terrain height bake; regenerate with current authorial geography.");}
+  }
+#endif
   ValoriaIntegratedWorld host;Vector3 origin;Material ground,trees,scarMaterial,bridgeMaterial;bool blockout;
   readonly List<Mesh> meshes=new List<Mesh>();readonly List<Renderer> foliage=new List<Renderer>();Renderer scar;
   public Mesh DirectedTerrain{get;private set;}
@@ -133,8 +181,9 @@ namespace Eldoria.World4XCanon
   {
    ground=new Material(Resources.Load<Shader>("World4X/RegionOneDirectedGround")){name="Clean single terrain surface"};ground.SetTexture("_Mask",Mask());ground.SetTexture("_Pigment",Resources.Load<Texture2D>("World4X/RegionOnePaintedLandcover"));ground.SetVector("_Origin",new Vector4(origin.x,origin.z,0,0));ground.SetVector("_Domain",new Vector4(DomainWidth,DomainDepth,0,0));
    trees=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){name="Clean shared woodland"};trees.mainTexture=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");trees.SetColor("_Tint",new Color(.83f,.93f,.86f,1));
+   var heights=BakedHeights();
    const int nx=320,nz=280;var v=new Vector3[(nx+1)*(nz+1)];var uv=new Vector2[v.Length];var indices=new int[nx*nz*6];
-   for(int z=0;z<=nz;z++)for(int x=0;x<=nx;x++){float px=(x/(float)nx-.5f)*DomainWidth,pz=(z/(float)nz-.5f)*DomainDepth;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,Height(px,pz),pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
+   for(int z=0;z<=nz;z++)for(int x=0;x<=nx;x++){float px=(x/(float)nx-.5f)*DomainWidth,pz=(z/(float)nz-.5f)*DomainDepth;int i=z*(nx+1)+x;v[i]=origin+new Vector3(px,heights==null?Height(px,pz):heights[i],pz);uv[i]=new Vector2(x/(float)nx,z/(float)nz);}
    int n=0;for(int z=0;z<nz;z++)for(int x=0;x<nx;x++){int i=z*(nx+1)+x;indices[n++]=i;indices[n++]=i+nx+1;indices[n++]=i+1;indices[n++]=i+1;indices[n++]=i+nx+1;indices[n++]=i+nx+2;}
    var r=Create("Clean terrain — sole geographic surface",v,uv,null,indices,ground);DirectedTerrain=r.GetComponent<MeshFilter>().sharedMesh;
    BuildForests();PaintRetainedGround();BuildBreach();BuildBridge();BuildGroundCover();Refresh();
