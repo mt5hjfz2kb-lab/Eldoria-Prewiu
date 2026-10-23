@@ -19,7 +19,7 @@ namespace Eldoria.World4XCanon
    var studyShader=Shader.Find("Eldoria/RiberaFade");
    foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())renderer.sharedMaterials=renderer.sharedMaterials.Select(old=>{
     if(surfaceCache.TryGetValue(old,out var cached))return cached;
-    var material=new Material(studyShader);material.name=old.name;material.SetFloat("_Foliage",old.name.Contains("Needles")?1:0);Color c=Color.white;
+    var material=new Material(studyShader);Color c=Color.white;
     if(old.HasProperty("baseColorFactor"))c=old.GetColor("baseColorFactor");else if(old.HasProperty("_BaseColor"))c=old.GetColor("_BaseColor");
     material.SetColor("_BaseColor",c);
     for(int p=0;p<old.shader.GetPropertyCount();p++)if(old.shader.GetPropertyType(p)==UnityEngine.Rendering.ShaderPropertyType.Texture){string name=old.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",old.GetTexture(name));}
@@ -82,14 +82,14 @@ namespace Eldoria.World4XCanon
    var materialCache=new System.Collections.Generic.Dictionary<Material,Material>();
    var camObject=new GameObject("Temporary tree atlas camera");var bake=camObject.AddComponent<Camera>();bake.orthographic=true;bake.aspect=1;bake.clearFlags=CameraClearFlags.SolidColor;bake.backgroundColor=Color.clear;bake.cullingMask=1<<30;bake.nearClipPlane=.1f;bake.farClipPlane=100;
    bake.transform.rotation=view.transform.rotation;
-   var rt=new RenderTexture(128,128,24,RenderTextureFormat.ARGB32);bake.targetTexture=rt;
+   var previousActive=RenderTexture.active;var rt=new RenderTexture(128,128,24,RenderTextureFormat.ARGB32);bake.targetTexture=rt;
    try {
     for(int index=0;index<trees.Length;index++) {
      var r=trees[index];var converted=r.sharedMaterials.Select(old=>{
       if(materialCache.TryGetValue(old,out var existing))return existing;
       var m=new Material(shader);materialCache.Add(old,m);Color c=Color.white;
       if(old.HasProperty("baseColorFactor"))c=old.GetColor("baseColorFactor");else if(old.HasProperty("_BaseColorFactor"))c=old.GetColor("_BaseColorFactor");else if(old.HasProperty("_BaseColor"))c=old.GetColor("_BaseColor");
-      m.SetColor("_BaseColor",c);m.SetFloat("_Foliage",old.HasProperty("_Foliage")?old.GetFloat("_Foliage"):0);mats.Add(m);return m;
+      m.SetColor("_BaseColor",c);mats.Add(m);return m;
      }).ToArray();r.sharedMaterials=converted;
      var copy=new GameObject("Atlas tree");copy.layer=30;copy.AddComponent<MeshFilter>().sharedMesh=r.GetComponent<MeshFilter>().sharedMesh;var cr=copy.AddComponent<MeshRenderer>();cr.sharedMaterials=converted;
      copy.transform.SetPositionAndRotation(new Vector3(0,-10000,0),r.transform.rotation);copy.transform.localScale=r.transform.lossyScale;
@@ -116,7 +116,7 @@ namespace Eldoria.World4XCanon
     }
     foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>().Where(r=>r.name.StartsWith("Pilot_Pine")||r.name.StartsWith("Pilot_Impostor")).ToArray())UnityEngine.Object.DestroyImmediate(renderer.gameObject);
     File.WriteAllBytes(Path.Combine(output,"trees-baked-from-actual-meshes.png"),atlas.EncodeToPNG());
-   }finally{bake.targetTexture=null;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(camObject);}
+   }finally{bake.targetTexture=null;RenderTexture.active=previousActive;rt.Release();UnityEngine.Object.DestroyImmediate(rt);UnityEngine.Object.DestroyImmediate(camObject);}
    return mats.ToArray();
   }
   [Serializable] class Evidence {public float zoom;public Vector3 position;public Quaternion rotation;public string unity;public bool playMode;public int trees;}
