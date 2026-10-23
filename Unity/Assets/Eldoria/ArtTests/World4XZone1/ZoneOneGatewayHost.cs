@@ -39,6 +39,11 @@ namespace Eldoria.World4XPrototype
             if (state == null) return new ZoneOneTargetAction(targetId, "", "Partida no disponible", false);
             bool idle = state.March != null && state.March.Phase == "idle";
             bool troops = state.Available != null && state.Available.ArcherT1 > 0;
+            if(targetId!=null&&targetId.StartsWith("region1:",StringComparison.Ordinal))
+            {
+                string kind=LocalGateway.ResourceKind(state,targetId);int remaining=LocalGateway.ResourceRemaining(state,targetId);
+                if(kind=="wood"||kind=="stone")return new ZoneOneTargetAction(targetId,"Gather",remaining<=0?"Recurso agotado":kind=="wood"?"Recoger madera":"Recoger piedra",idle&&troops&&remaining>0);
+            }
             switch (targetId)
             {
                 case "valoria-map-city":

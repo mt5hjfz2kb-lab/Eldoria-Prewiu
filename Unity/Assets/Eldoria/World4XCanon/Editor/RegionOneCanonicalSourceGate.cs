@@ -25,9 +25,10 @@ namespace Eldoria.World4XCanon.Editor
                 throw new InvalidOperationException("Blender GLB did not import with exactly one terrain");
             if(prefab.GetComponentsInChildren<Collider>(true).Length!=0)
                 throw new InvalidOperationException("Blender export must not replace gameplay colliders");
-            if(RegionOneCanonicalLandscape.SampleHeight(0,0)>-2.5f ||
+            if(!float.IsFinite(RegionOneCanonicalLandscape.SampleHeight(36,6)) ||
+               RegionOneCanonicalLandscape.SampleHeight(36,6)<2.5f || RegionOneCanonicalLandscape.SampleHeight(36,6)>4f ||
                RegionOneCanonicalLandscape.CoastDistance(0,0)<5 ||
-               RegionOneCanonicalLandscape.CoastDistance(410,0)>-5)
+               RegionOneCanonicalLandscape.CoastDistance(850,0)>-5)
                 throw new InvalidOperationException("Exported Blender ground data lost city datum or eastern coast");
             var forest=prefab.GetComponentsInChildren<MeshFilter>(true).Where(f=>f.name.StartsWith("BLD_ForestMass_")).ToArray();
             if(forest.Length<20)throw new InvalidOperationException("Authored forest mass export incomplete");

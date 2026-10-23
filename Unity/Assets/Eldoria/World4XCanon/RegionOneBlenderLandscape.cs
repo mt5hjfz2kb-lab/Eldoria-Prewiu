@@ -32,11 +32,12 @@ namespace Eldoria.World4XCanon
    // glTF is right handed. Resolve the importer conversion using an authored asymmetrical anchor,
    // never by changing vertices or reconstructing any geographic feature.
    var floor=instance.artwork.GetComponentsInChildren<MeshRenderer>(true).Single(x=>x.name=="BLD_BreachFloor");
-   var anchor=floor.bounds.center-host.WorldHome;
-   if(Vector2.Distance(new Vector2(anchor.x,anchor.z),new Vector2(-8,-61))<3)
+   var datum=instance.artwork.GetComponentsInChildren<Transform>(true).Single(x=>x.name=="BLD_BreachAnchor");
+   var anchor=datum.position-host.WorldHome;
+   if(Vector2.Distance(new Vector2(anchor.x,anchor.z),new Vector2(260,-150))<3)
     instance.artwork.transform.rotation=Quaternion.Euler(0,180,0);
-   anchor=floor.bounds.center-host.WorldHome;
-   if(Vector2.Distance(new Vector2(anchor.x,anchor.z),new Vector2(8,61))>3)
+   anchor=datum.position-host.WorldHome;
+   if(Vector2.Distance(new Vector2(anchor.x,anchor.z),new Vector2(-260,150))>3)
     throw new InvalidOperationException("GLB axis conversion does not preserve Blender's Breach anchor.");
    instance.terrain=instance.artwork.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_Terrain");
    foreach(var r in instance.artwork.GetComponentsInChildren<Renderer>(true))
@@ -48,7 +49,8 @@ namespace Eldoria.World4XCanon
    if(instance.artwork.GetComponentsInChildren<Collider>(true).Length!=0)
     throw new InvalidOperationException("Art export must not add gameplay colliders.");
    instance.ValidateImportedSurface(host.WorldHome);
-   Debug.Log("REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=8,61");
+   RegionOneProductionLod.Install(instance.artwork);
+   Debug.Log("REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150");
    return instance;
   }
   void ValidateImportedSurface(Vector3 origin)

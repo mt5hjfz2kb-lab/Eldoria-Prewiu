@@ -66,6 +66,30 @@ namespace Eldoria.Tests
             Assert.Throws<InvalidOperationException>(()=>shared.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30)));
         }
 
+        [Test]
+        public void AdditionalResourcesUseRealGatherCommandAndPersistIndependentQuantities()
+        {
+            var clock=new PopulationClock();var store=new PopulationStore();var placement=new PopulationPlacement();
+            var gateway=new Eldoria.Application.LocalGateway(clock,store);
+            gateway.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));
+            gateway.EnsureLocalRenewablePopulation(24,24);
+            var before=gateway.Snapshot();Assert.That(before.WorldResourceLocations.Count,Is.EqualTo(48));
+            Assert.That(before.WorldResourceLocations.Select(x=>x.TargetId).Distinct().Count(),Is.EqualTo(48));
+            var id="region1:wood:001";
+            var command=new Eldoria.Application.GameCommand("dynamic-resource-gather",before.PlayerId,"Gather",id,before.Revision);
+            Assert.That(gateway.Execute(command).Ok,Is.True);
+            Assert.That(gateway.Execute(command).Ok,Is.True,"Same request remains idempotent");
+            clock.UtcTicks+=TimeSpan.FromSeconds(Eldoria.Domain.SliceRules.TravelSeconds*2+Eldoria.Domain.SliceRules.GatherSeconds+1).Ticks;
+            gateway.Advance();var after=gateway.Snapshot();
+            Assert.That(after.March.Phase,Is.EqualTo("idle"));
+            Assert.That(after.ForestRemaining,Is.EqualTo(before.ForestRemaining),"The original node is not silently charged for another instance");
+            Assert.That(Eldoria.Application.LocalGateway.ResourceRemaining(after,id),Is.EqualTo(1250-Eldoria.Domain.SliceRules.ForestLoad));
+            Assert.That(after.Resources.Wood,Is.GreaterThan(before.Resources.Wood));
+            var restarted=new Eldoria.Application.LocalGateway(clock,store);restarted.ConfigureLocalResourceRespawn(placement,TimeSpan.FromMinutes(30));restarted.EnsureLocalRenewablePopulation(24,24);
+            Assert.That(restarted.Snapshot().WorldResourceLocations.Count,Is.EqualTo(48));
+            Assert.That(Eldoria.Application.LocalGateway.ResourceRemaining(restarted.Snapshot(),id),Is.EqualTo(Eldoria.Application.LocalGateway.ResourceRemaining(after,id)));
+        }
+
         static object Member(object component, string name)
         {
             Assert.That(component, Is.Not.Null);
@@ -103,6 +127,22 @@ namespace Eldoria.Tests
                 yield break;
             }
             Assert.Fail("Canonical adapter did not attach to the actual integrated scene");
+        }
+
+        [UnityTest]
+        public IEnumerator ProductionResourcesHavePersistentDistinctTerrainSites()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var city=Member(host,"City");var gateway=(Eldoria.Application.LocalGateway)Member(city,"Gateway");
+            var snapshot=gateway.Snapshot();var resources=snapshot.WorldResourceLocations.Where(x=>x.TargetId.StartsWith("region1:")).ToArray();
+            Assert.That(resources.Length,Is.EqualTo(48),"24 wood + 24 stone identities must persist in the existing state");
+            Assert.That(resources.Count(x=>x.Generation>0),Is.EqualTo(48),"Do not claim capacity from unplaced records");
+            Assert.That(resources.Select(x=>x.SiteId).Distinct().Count(),Is.EqualTo(48));
+            for(int i=0;i<resources.Length;i++)for(int j=i+1;j<resources.Length;j++)
+                Assert.That(Vector2.Distance(new Vector2(resources[i].X,resources[i].Z),new Vector2(resources[j].X,resources[j].Z)),Is.GreaterThanOrEqualTo(20));
+            foreach(var item in resources)
+                Assert.That(Call(host,"FindTarget",item.TargetId),Is.Not.Null,"Saved resource must have a real selectable target");
         }
 
         [UnityTest]
@@ -176,8 +216,8 @@ namespace Eldoria.Tests
             Assert.That(coastlineType,Is.Not.Null);
             var directedHeight=directedType.GetMethod("Height",BindingFlags.Public|BindingFlags.Static);
             var controlHeight=coastlineType.GetMethod("SampleHeight",BindingFlags.Public|BindingFlags.Static);
-            Assert.That((float)directedHeight.Invoke(null,new object[]{8f,61f}),
-                Is.LessThanOrEqualTo((float)controlHeight.Invoke(null,new object[]{8f,61f})+.03f),
+            Assert.That((float)directedHeight.Invoke(null,new object[]{-260f,150f}),
+                Is.LessThanOrEqualTo((float)controlHeight.Invoke(null,new object[]{-260f,150f})+.03f),
                 "The authored land cannot bury the grounded Breach pigment at its real anchor.");
             var coastMask=coastlineType.GetMethod("CoastWaterMask",
                 BindingFlags.Public | BindingFlags.Static);
@@ -298,14 +338,14 @@ namespace Eldoria.Tests
             var filter=geo.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_BreachFloor");
             var scar=filter.GetComponent<MeshRenderer>();
             var home=(Vector3)Member(host,"WorldHome");
-            Assert.That(scar.bounds.center.x-home.x,Is.EqualTo(8f).Within(2f));
-            Assert.That(scar.bounds.center.z-home.z,Is.EqualTo(61f).Within(2f));
-            Assert.That(scar.bounds.size.y,Is.LessThan(8f),"The geological floor is not a vertical portal.");
-            Assert.That(scar.bounds.center.y-home.y,Is.LessThan(-6f),"The Breach must be recessed beneath the -4m meadow datum.");
+            Assert.That(scar.bounds.center.x-home.x,Is.EqualTo(-260f).Within(6f));
+            Assert.That(scar.bounds.center.z-home.z,Is.EqualTo(150f).Within(6f));
+            Assert.That(scar.bounds.size.y,Is.LessThan(14f),"The geological floor is not a vertical portal.");
+            Assert.That(scar.bounds.min.y-home.y,Is.LessThan(1.5f),"The Breach must cut below the certified AI meadow, not stand above it.");
             Assert.That(filter.GetComponentsInChildren<Collider>(true),Is.Empty);
             var geology=geo.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");
             var h=geology.GetType().GetMethod("Height",BindingFlags.Public|BindingFlags.Static);
-            Assert.That((float)h.Invoke(null,new object[]{8f,61f}),Is.LessThan(-8f),"Depth must exist in the imported terrain, not only a painted floor.");
+            Assert.That((float)h.Invoke(null,new object[]{-260f,150f}),Is.LessThan(-4f),"Depth must exist in the imported terrain, not only a painted floor.");
             var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).First(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
             var fixedVertices=filter.sharedMesh.vertices;var fixedPosition=filter.transform.position;
             foreach(int level in new[]{2,0,1})

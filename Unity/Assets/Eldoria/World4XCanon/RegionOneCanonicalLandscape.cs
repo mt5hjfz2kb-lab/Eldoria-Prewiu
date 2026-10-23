@@ -13,7 +13,7 @@ namespace Eldoria.World4XCanon
  {
   public const int LandscapeVersion=3;
   public const float LandscapeHalfWidth=910,LandscapeHalfDepth=1000;
-  public const float BreachOffsetX=8,BreachOffsetZ=61;
+  public const float BreachOffsetX=-260,BreachOffsetZ=150;
   public const float LandscapePanoramaZoom=500,PortraitPanoramaZoom=620;
   internal static readonly int[] ForestCorridorPairs=new int[0];
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
@@ -140,6 +140,7 @@ namespace Eldoria.World4XCanon
    geography=RegionOneBlenderLandscape.Install(root,host);
    nodes=RegionOneReferenceNodes.Install(root,host);
    RegionOneResourcePlacement.Install(root,host,geography);
+   RegionOneResourceModels.Install(root,host);
   }
   void UpdateLevelOfDetail(bool force)
   {
@@ -149,6 +150,7 @@ namespace Eldoria.World4XCanon
    float near=navigation.View.aspect<.8f?64:36;
    if(Mathf.Abs(navigation.localZoom-near)>.5f){bool was=navigation.View.orthographicSize<=navigation.localZoom+.5f;navigation.localZoom=near;if(was)navigation.SetZoomLevel(2,true);}
    float size=navigation.View.orthographicSize;
+   navigation.cameraDistance=Mathf.Max(140,size*2.5f);navigation.View.farClipPlane=Mathf.Max(900,navigation.cameraDistance*2.5f);
    if(size>=navigation.globalZoom*.98f)navigation.PanTo(new Vector3(regionBounds.center.x,origin.y,regionBounds.center.z));
    float desired=Mathf.Lerp(42,64,Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,244,size)));
    float tilt=force?desired:Mathf.Lerp(navigation.tilt,desired,1-Mathf.Exp(-7*Time.unscaledDeltaTime));

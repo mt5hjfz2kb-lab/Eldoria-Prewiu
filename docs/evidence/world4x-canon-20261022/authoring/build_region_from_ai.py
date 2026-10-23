@@ -84,6 +84,8 @@ rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=np.array([.53,.55,.255])+(wash+gra
 forest=np.zeros(X.shape)
 for cx,cy,rx,ry in groves:forest=np.maximum(forest,np.clip(1-((X-cx)/rx)**2-((Y-cy)/ry)**2,0,1))
 rgba[:,:,:3]*=(1-forest[:,:,None]*np.array([.18,.12,.12]))
+fracture=smooth((110-np.hypot(X+260,Y-150))/70)*.75
+rgba[:,:,:3]=rgba[:,:,:3]*(1-fracture[:,:,None])+np.array([.32,.265,.33])*fracture[:,:,None]
 mask=smooth((4-road)/2);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(np.array([.58,.49,.29])+grain[:,:,None]) * mask[:,:,None]
 # Match each edge to the measured AI material with a 2-D, non-repeating blend deferred to visual QA.
 im=bpy.data.images.new('Region1 broad continental pigment',S,S);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'Region1_continental.png');im.file_format='PNG';im.save();im.pack()
@@ -99,8 +101,8 @@ bpy.context.view_layer.objects.active=outer;bpy.ops.object.join();terrain=outer;
 bm=bmesh.new();bm.from_mesh(terrain.data);bmesh.ops.delete(bm,geom=[v for v in bm.verts if not v.link_faces],context='VERTS');bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.001);bm.to_mesh(terrain.data);bm.free();terrain.data.update()
 # Integrated geological fracture, not an upright monument. Keep city/real targets south of it.
 for v in terrain.data.vertices:
- x,y,z=v.co;dx=x-8;dy=y-61;r=math.hypot(dx,dy)
- if r<28:v.co.z-=3.8*(1-r/28)**2
+ x,y,z=v.co;dx=x+260;dy=y-150;r=math.hypot(dx,dy)
+ if r<110:v.co.z-=11*(1-r/110)**2
 # Grounded fracture ribbons on the actual terrain follow six unequal branches.
 def simplemat(name,color):
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True;b=next(n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED');b.inputs['Base Color'].default_value=(*color,1);b.inputs['Roughness'].default_value=.85;return m
@@ -112,7 +114,7 @@ v=[];f=[]
 for arm in range(7):
  a=arm*math.tau/7
  for i in range(13):
-  r=i*3.;angle=a+.13*math.sin(i*1.6+arm);cx=8+math.cos(angle)*r;cy=61+math.sin(angle)*r;w=max(.18,1.4-i*.09)
+  r=i*9.;angle=a+.13*math.sin(i*1.6+arm);cx=-260+math.cos(angle)*r;cy=150+math.sin(angle)*r;w=max(.35,3.2-i*.23)
   for side in [-1,1]:x=cx+side*w*math.sin(angle);y=cy-side*w*math.cos(angle);v.append((x,y,surface(x,y)+.025))
   if i:f.append((len(v)-4,len(v)-3,len(v)-1,len(v)-2))
 me=bpy.data.meshes.new('Ground fracture ribbons');me.from_pydata(v,[],f);me.materials.append(shale);o=bpy.data.objects.new('BLD_BreachFloor',me);scene.collection.objects.link(o)
@@ -137,14 +139,28 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
  parts=[]
  for k in range(27):
   a=k*2.39996;r=math.sqrt((k+.5)/27);x=cx+math.cos(a)*rx*r;y=cy+math.sin(a)*ry*r
-  if float(line_distance(np.array(x),np.array(y)))<9:continue
+  if float(line_distance(np.array(x),np.array(y)))<9 or math.hypot(x+260,y-150)<120:continue
   donor=masters[k%2];o=donor.copy();o.data=donor.data.copy();scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));scale=1.6+(k%5)*.18;o.scale=(scale,scale,scale);o.rotation_euler.z=k*.71;parts.append(o)
+ if not parts:continue
  bpy.ops.object.select_all(action='DESELECT')
  for o in parts:o.select_set(True)
  bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join();parts[0].name='BLD_ForestMass_'+str(index).zfill(2)
+# Distant LODs are simplified copies of the same silhouettes; no canopy substitutions.
+far_cache={}
+for near in list(scene.objects):
+ if near.type!='MESH' or not (near.name.startswith('BLD_ForestMass_') or near.name.startswith('Pilot_Pine')):continue
+ if near.hide_render:continue
+ far=near.copy();far.data=near.data.copy();scene.collection.objects.link(far)
+ far.name=near.name.replace('BLD_ForestMass_','BLD_ForestFar_') if near.name.startswith('BLD_ForestMass_') else 'Far_'+near.name
+ key=near.data.name
+ if key in far_cache:far.data=far_cache[key]
+ else:
+  bpy.ops.object.select_all(action='DESELECT');far.select_set(True);bpy.context.view_layer.objects.active=far
+  mod=far.modifiers.new('Mobile distant silhouette','DECIMATE');mod.ratio=.16;bpy.ops.object.modifier_apply(modifier=mod.name);far_cache[key]=far.data
 # Source meshes remain editable but excluded from export; remove no historical file.
 # Export includes only genuinely visible scene geometry and the assembled geography.
-selected=[]
+anchor=bpy.data.objects.new('BLD_BreachAnchor',None);scene.collection.objects.link(anchor);anchor.location=(-260,150,0)
+selected=[anchor]
 for o in scene.objects:
  if o.type=='MESH' and not o.hide_render and not o.hide_get():selected.append(o)
 bpy.ops.object.select_all(action='DESELECT')

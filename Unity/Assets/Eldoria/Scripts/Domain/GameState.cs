@@ -8,6 +8,9 @@ namespace Eldoria.Domain
     {
         public string TargetId;
         public string SiteId;
+        public string ResourceKind;
+        public int Remaining;
+        public int Capacity;
         public float X, Y, Z;
         public int Generation;
         public long RespawnUtcTicks;

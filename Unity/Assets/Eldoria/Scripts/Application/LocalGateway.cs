@@ -52,15 +52,53 @@ namespace Eldoria.Application
             resourceRespawnTicks = delay.Ticks;
             Advance();
         }
-        // Only the two canonical renewable resources participate. Unique campaign
+        public void EnsureLocalRenewablePopulation(int woodCount, int stoneCount)
+        {
+            if(resourcePlacement==null||state.WorldId!="world-local")throw new InvalidOperationException("Local terrain authority required");
+            if(woodCount<0||stoneCount<0||woodCount>100||stoneCount>100)throw new ArgumentOutOfRangeException("population");
+            bool changed=false;
+            foreach(string kind in new[]{"wood","stone"})
+                for(int n=1;n<=(kind=="wood"?woodCount:stoneCount);n++)
+                {
+                    string id="region1:"+kind+":"+n.ToString("D3",System.Globalization.CultureInfo.InvariantCulture);
+                    if(state.WorldResourceLocations.Exists(x=>x.TargetId==id))continue;
+                    state.WorldResourceLocations.Add(new WorldResourceLocation{TargetId=id,ResourceKind=kind,Capacity=kind=="wood"?1250:5200,RespawnUtcTicks=clock.UtcTicks});changed=true;
+                }
+            changed|=AdvanceResourcePopulation();if(changed)Commit();
+        }
+        public static string ResourceKind(PlayerState snapshot,string targetId)
+        {
+            if(targetId=="forest-valoria")return "wood";
+            if(targetId=="quarry-valoria")return "stone";
+            var item=snapshot.WorldResourceLocations?.Find(x=>x.TargetId==targetId);
+            return item?.ResourceKind=="wood"||item?.ResourceKind=="stone"?item.ResourceKind:null;
+        }
+        public static int ResourceRemaining(PlayerState snapshot,string targetId)
+        {
+            if(targetId=="forest-valoria")return snapshot.ForestRemaining;
+            if(targetId=="quarry-valoria")return snapshot.QuarryRemaining;
+            return snapshot.WorldResourceLocations?.Find(x=>x.TargetId==targetId)?.Remaining??0;
+        }
+        bool IsWoodTarget(string id)=>ResourceKind(state,id)=="wood";
+        bool IsStoneTarget(string id)=>ResourceKind(state,id)=="stone";
+        void SetResourceRemaining(string id,int amount)
+        {
+            if(id=="forest-valoria")state.ForestRemaining=amount;
+            else if(id=="quarry-valoria")state.QuarryRemaining=amount;
+            else state.WorldResourceLocations.Find(x=>x.TargetId==id).Remaining=amount;
+        }
+        // Only canonical wood/stone families participate. Unique campaign
         // encounters deliberately have no population record and never respawn here.
         private bool AdvanceResourcePopulation()
         {
             if (resourcePlacement == null) return false;
             bool changed = false;
-            foreach (string id in new[] { "forest-valoria", "quarry-valoria" })
+            var ids=new System.Collections.Generic.List<string>{"forest-valoria","quarry-valoria"};
+            foreach(var existing in state.WorldResourceLocations)
+                if(existing.TargetId!="forest-valoria"&&existing.TargetId!="quarry-valoria")ids.Add(existing.TargetId);
+            foreach (string id in ids)
             {
-                bool depleted = id == "forest-valoria" ? state.ForestRemaining <= 0 : state.QuarryRemaining <= 0;
+                bool depleted = ResourceRemaining(state,id)<=0;
                 if (!depleted) continue;
                 var item = state.WorldResourceLocations.Find(x => x.TargetId == id);
                 if (item == null)
@@ -82,8 +120,7 @@ namespace Eldoria.Application
                     throw new InvalidOperationException("Invalid authoritative resource placement");
                 item.SiteId = next.SiteId; item.X = next.X; item.Y = next.Y; item.Z = next.Z;
                 item.Generation++; item.RespawnUtcTicks = 0;
-                if (id == "forest-valoria") state.ForestRemaining = 1250;
-                else state.QuarryRemaining = 5200;
+                SetResourceRemaining(id,IsWoodTarget(id)?1250:5200);
                 changed = true;
             }
             return changed;
@@ -97,7 +134,7 @@ namespace Eldoria.Application
                 state.WorldResourceLocations = new System.Collections.Generic.List<WorldResourceLocation>();
             var resourceIds = new System.Collections.Generic.HashSet<string>();
             foreach (var item in state.WorldResourceLocations)
-                if (item == null || (item.TargetId != "forest-valoria" && item.TargetId != "quarry-valoria") || !resourceIds.Add(item.TargetId))
+                if (item == null || string.IsNullOrEmpty(item.TargetId) || (item.TargetId != "forest-valoria" && item.TargetId != "quarry-valoria" && !(item.TargetId.StartsWith("region1:wood:",StringComparison.Ordinal)&&item.ResourceKind=="wood") && !(item.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal)&&item.ResourceKind=="stone")) || !resourceIds.Add(item.TargetId))
                     throw new InvalidOperationException("Invalid or duplicate persisted resource identity");
             NormalizeMissionProgress();
             Advance();
@@ -188,15 +225,15 @@ namespace Eldoria.Application
             switch (command.Kind)
             {
                 case "Gather":
-                    if (command.TargetId!="forest-valoria" && command.TargetId!="quarry-valoria")
+                    if (!IsWoodTarget(command.TargetId) && !IsStoneTarget(command.TargetId))
                         return Fail("Nodo desconocido");
-                    if (command.TargetId=="forest-valoria" && state.ForestRemaining<=0)
+                    if (IsWoodTarget(command.TargetId) && ResourceRemaining(state,command.TargetId)<=0)
                         return Fail("El bosque está agotado");
-                    if (command.TargetId=="quarry-valoria" && state.QuarryRemaining<=0)
+                    if (IsStoneTarget(command.TargetId) && ResourceRemaining(state,command.TargetId)<=0)
                         return Fail("La cantera está agotada");
                     if (!CanDepart()) return Fail("Marcha no disponible");
                     Depart(command.TargetId);
-                    if(command.TargetId=="forest-valoria") state.CorruptionDiscovered=true;
+                    if(IsWoodTarget(command.TargetId)) state.CorruptionDiscovered=true;
                     break;
                 case "ConfigureMarch":
                     if (state.BastionLevel < 2 || state.BarracksLevel < 1)
@@ -383,7 +420,7 @@ namespace Eldoria.Application
                 long due = m.PhaseEndsUtcTicks;
                 if (m.Phase == "outbound")
                 {
-                    if (m.TargetId=="forest-valoria" || m.TargetId=="quarry-valoria")
+                    if (IsWoodTarget(m.TargetId) || IsStoneTarget(m.TargetId))
                     { m.Phase = "gathering"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.GatherSeconds).Ticks; }
                     else
                     {
@@ -426,15 +463,15 @@ namespace Eldoria.Application
                 }
                 else if (m.Phase == "gathering")
                 {
-                    if(m.TargetId=="quarry-valoria")
+                    if(IsStoneTarget(m.TargetId))
                     {
-                        m.PendingStone = Math.Min(SliceRules.QuarryLoad,state.QuarryRemaining);
-                        state.QuarryRemaining -= m.PendingStone;
+                        m.PendingStone = Math.Min(SliceRules.QuarryLoad,ResourceRemaining(state,m.TargetId));
+                        SetResourceRemaining(m.TargetId,ResourceRemaining(state,m.TargetId)-m.PendingStone);
                     }
                     else
                     {
-                        m.PendingWood = Math.Min(SliceRules.ForestLoad, state.ForestRemaining);
-                        state.ForestRemaining -= m.PendingWood;
+                        m.PendingWood = Math.Min(SliceRules.ForestLoad,ResourceRemaining(state,m.TargetId));
+                        SetResourceRemaining(m.TargetId,ResourceRemaining(state,m.TargetId)-m.PendingWood);
                     }
                     m.Phase = "returning";
                     m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
@@ -447,12 +484,12 @@ namespace Eldoria.Application
                         state.CompletedTaskIds.Add(id);
                         state.Resources.Wood += m.PendingWood;
                         state.Resources.Stone += m.PendingStone;
-                        if (m.TargetId == "forest-valoria" && m.PendingWood > 0)
+                        if (IsWoodTarget(m.TargetId) && m.PendingWood > 0)
                         {
                             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                             state.ChapterProgress.GatheredWood += m.PendingWood;
                         }
-                        if (m.TargetId == "quarry-valoria" && m.PendingStone > 0)
+                        if (IsStoneTarget(m.TargetId) && m.PendingStone > 0)
                         {
                             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                             state.ChapterProgress.GatheredStone += m.PendingStone;
