@@ -256,6 +256,9 @@ for name,values in [('forest_density',np.clip(forest_distance/10,0,1)),('river_m
     attr=mesh.attributes.new(name,'FLOAT','POINT');attr.data.foreach_set('value',values.astype(np.float32))
 bvh=BVHTree.FromPolygons([Vector(v) for v in vertices],faces,all_triangles=True)
 def height(x,y):
+    # Rays exactly on the outer hull can miss through floating-point edge tests.
+    # Move only outer-boundary queries inward by one millimetre; interior misses still fail.
+    x=np.clip(x,-WIDTH/2+.001,WIDTH/2-.001);y=np.clip(y,-DEPTH/2+.001,DEPTH/2-.001)
     hit=bvh.ray_cast(Vector((float(x),float(y),200)),Vector((0,0,-1)))
     if hit[0] is None:raise RuntimeError('Authored terrain sample outside mesh: '+str((x,y)))
     return float(hit[0].z)
@@ -344,6 +347,8 @@ query_shore=polygon_field(query_points,coast_path)
 query_river,query_road,query_forest,_=fields(query_points)
 flags=np.column_stack([np.clip(.5+query_shore/32,0,1),np.clip(1-query_river/3,0,1),np.clip(1-query_road/3,0,1),np.clip(query_forest/10,0,1)])
 raw=struct.pack('<iiiff',0x31424c45,NX+1,NZ+1,WIDTH,DEPTH)+query_heights.tobytes()+np.round(flags*255).astype('uint8').tobytes()
+# Preserve exact source positions for import validation; grid heights are only gameplay queries.
+raw+=struct.pack('<ii',0x32564c45,len(vertices))+np.array([(v[0],v[2],v[1]) for v in vertices],dtype='<f4').tobytes()
 (out/'RegionOneBlenderQueries.bytes').write_bytes(gzip.compress(raw,mtime=0))
 (out/'blender-cameras.json').write_text(json.dumps(camera_records,indent=2))
 manifest={'phase':'A_COMPOSITION_NOT_ART_APPROVED','blender_version':bpy.app.version_string,'source':'Blank Blender scene; no terrain imported from Unity','artistic_operations':len(operations),'operations':operations,'reference_sha256':reference_hashes,'units':'1 Blender metre = 1 Unity metre; GLB Y-up conversion; X unchanged, Blender Y becomes Unity Z','breach_anchor_unity':[8,61],'objects':len(exports),'terrain_vertices':len(mesh.vertices),'source_assets':{},'camera_records':'blender-cameras.json'}
