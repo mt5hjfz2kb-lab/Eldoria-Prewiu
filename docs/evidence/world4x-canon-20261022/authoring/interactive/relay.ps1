@@ -20,7 +20,7 @@ $session=Get-Content $ready -Raw | ConvertFrom-Json
 $p=Get-Process -Id $session.pid -ErrorAction Stop
 if($p.ProcessName -ne 'blender'){throw 'Saved session PID is not Blender'}
 if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue | Where-Object {$_.Id -ne $session.pid}).Count){throw 'Conflicting production process'}
-$code=Get-Content "$helpers/command.py" -Raw
+$code=[System.IO.File]::ReadAllText("$helpers/command.py")
 $request=@{type='execute_code';params=@{code=$code}} | ConvertTo-Json -Depth 5 -Compress
 $request | Set-Content "$root/request-$env:GITHUB_RUN_ID.json" -Encoding UTF8
 $client=New-Object System.Net.Sockets.TcpClient
