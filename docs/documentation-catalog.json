@@ -1136,6 +1136,18 @@
       "domain": "art",
       "status": "reference",
       "note": "Inventario de técnicas y resultados curados, solo consulta; no autorización ni ejecución automática."
+    },
+    {
+      "path": "docs/ELDORIA_WORLD4X_REUSE_EXISTING_CREATURES_20261023.md",
+      "status": "reference",
+      "domain": "art",
+      "note": "Nota del propietario para futuros World4X: Engendro 3D integrado en Bastión II, Jabalí de roca archivado para capítulo III y separación terreno/población dinámica; no nueva misión ni permiso de gasto."
+    },
+    {
+      "path": "docs/ELDORIA_WORLD4X_GRAPHICS_BREAKTHROUGH_PLAYBOOK_20261024.md",
+      "status": "reference",
+      "domain": "art",
+      "note": "Guía contrastada del desbloqueo gráfico World4X: Blender fuente editable, GLB/Unity, cámaras e híbrido 2,5D/3D, mejoras I/K/O/AG/AI, fracasos y requisitos 4X vivo. Método reutilizable, no ART_APPROVED ni estado en vivo."
     }
   ]
 }
