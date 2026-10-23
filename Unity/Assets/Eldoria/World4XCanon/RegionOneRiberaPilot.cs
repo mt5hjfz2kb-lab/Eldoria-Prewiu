@@ -169,7 +169,7 @@ namespace Eldoria.World4XCanon
    } finally {foreach(var go in temporary)UnityEngine.Object.DestroyImmediate(go);}
    var stats=new SectorStats{heightProbes=probes.ToArray(),logicalColliderCount=originalColliders.Length,physicalMobileTested=false};
    stats.maxHeightDifference=probes.Count>0?probes.Max(p=>Mathf.Abs(p.heightDifference)):0;
-   // Collider transform origins are not ground anchors: use bounds.min.y as a provisional foot-contact proxy.\n   // This diagnostic does not alter transforms, gameplay colliders, saves or navigation.\n   // The proxy still needs per-asset mesh-contact validation before certifying grounding.
+   // Collider bounds.min.y is only a provisional contact proxy. Mesh-contact certification remains pending.
    stats.heightDeltaIsGroundingVerdict=false;
    // Explicitly flag discrepancies; collider bounds are not authoritative feet.
    // Preserve every logical object and report the full raw evidence for mesh-contact review.
