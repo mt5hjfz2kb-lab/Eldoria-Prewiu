@@ -461,6 +461,7 @@ namespace Eldoria.Tests
                         (1,"regional",home),
                         (0,"panoramica",home),
                         (2,"cercana-recurso-madera",forestFocus),
+                        (0,"panoramica-control",home),
                         (0,"panoramica-blockout",home),
                         (1,"regional-blockout",home)})
                     {
@@ -469,6 +470,8 @@ namespace Eldoria.Tests
                         Call(adapter, "RefreshForCapture");
                         yield return null;
                         Call(adapter, "RefreshForCapture");
+                        if(stage.Item2=="panoramica-control")
+                        {Call(navigation,"RestoreView",home,format.Item3=="vertical"?456f:244f);Call(adapter,"RefreshForCapture");}
                         if(stage.Item2=="cercana" && format.Item3=="vertical")
                             Assert.That(camera.orthographicSize*2f*camera.aspect,Is.GreaterThan(55f),
                                 "Near portrait must include context around actual gameplay nodes.");
@@ -489,8 +492,11 @@ namespace Eldoria.Tests
                             Assert.That(portraitFog,Is.Null,"Clean world must not construct old opaque fog strips.");
                         }
                         if(stage.Item2=="panoramica" && format.Item3=="horizontal")
-                            Assert.That(camera.orthographicSize,Is.InRange(239f,249f),
-                                "Landscape overview must retain existing framing.");
+                            Assert.That(camera.orthographicSize,Is.InRange(495f,505f),
+                                "Landscape overview must now frame the principal region without changing world geometry.");
+                        if(stage.Item2=="panoramica")
+                            foreach(var landmark in new[]{new Vector3(-190,-4,-430),new Vector3(180,-4,500)})
+                            {var framed=camera.WorldToViewportPoint(home+landmark);Assert.That(framed.x,Is.InRange(.01f,.99f));Assert.That(framed.y,Is.InRange(.01f,.99f),"Panorama must include the principal north/south extent in both orientations.");}
                         // Clean blockout/full review: SAME actual geometry and camera.
                         // Before/after uses archived runs, never a hidden old terrain.
                         Call(adapter, "CompareAtlas", false);
@@ -543,8 +549,8 @@ namespace Eldoria.Tests
                         }
                     }
                 }
-                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(12));
-                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=12 (8 genuine views + 4 same-camera blockout views; before comparison uses archived run) real_scene=1 disposable_gateway=1 physical_iphone=0");
+                Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(14));
+                Debug.Log("REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=14 (8 actual views + 2 historical-camera panorama controls + 4 blockout views) real_scene=1 disposable_gateway=1 physical_iphone=0");
             }
             finally
             {

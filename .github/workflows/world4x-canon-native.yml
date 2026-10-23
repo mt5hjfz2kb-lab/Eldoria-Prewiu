@@ -144,7 +144,7 @@ jobs:
           if($nodes.Count -lt 4){throw "Expected 4 integrated tests including six real-world cameras, got $($nodes.Count)"}
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
-          if($captures.Count -ne 12){throw "Missing actual clean-world and blockout PNGs: expected twelve genuine Unity captures, got $($captures.Count)"}
+          if($captures.Count -ne 14){throw "Missing actual clean-world and blockout PNGs: expected fourteen genuine Unity captures, got $($captures.Count)"}
           Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) CLEAN_WORLD_AND_BLOCKOUT (NOT art/mobile QA)"
       - name: Recover exact already verified Unity authoring snapshot
         if: contains(github.event.head_commit.message, 'author-retry(world4x):')

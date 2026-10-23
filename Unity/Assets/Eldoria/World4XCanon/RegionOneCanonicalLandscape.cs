@@ -14,7 +14,7 @@ namespace Eldoria.World4XCanon
   public const int LandscapeVersion=2;
   public const float LandscapeHalfWidth=910,LandscapeHalfDepth=780;
   public const float BreachOffsetX=8,BreachOffsetZ=61;
-  public const float LandscapePanoramaZoom=244,PortraitPanoramaZoom=456;
+  public const float LandscapePanoramaZoom=500,PortraitPanoramaZoom=620;
   internal static readonly int[] ForestCorridorPairs=new int[0];
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
   bool built;
@@ -80,8 +80,8 @@ namespace Eldoria.World4XCanon
                 ? PortraitPanoramaZoom : LandscapePanoramaZoom;
             navigation.tilt = 66f;
             navigation.cameraDistance = Mathf.Max(navigation.cameraDistance, 540f);
-            navigation.minimum = new Vector2(origin.x - 600f, origin.z - 700f);
-            navigation.maximum = new Vector2(origin.x + 600f, origin.z + 700f);
+            navigation.minimum = new Vector2(origin.x - 910f, origin.z - 780f);
+            navigation.maximum = new Vector2(origin.x + 910f, origin.z + 780f);
             navigation.edgeMargin = 12f;
             navigation.FitToAuthoredBounds();
         }

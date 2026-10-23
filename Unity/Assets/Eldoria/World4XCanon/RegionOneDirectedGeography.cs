@@ -64,8 +64,18 @@ namespace Eldoria.World4XCanon
    new Vector4(-244,-383,53,33),new Vector4(-447,-426,59,35),new Vector4(-152,-455,47,29)
   };
   static float Meadow(float x,float z)
-  {float cover=0;foreach(var g in Meadows){float dx=(x-g.x)/g.z,dz=(z-g.y)/g.w;if(Mathf.Abs(dx)>1.2f||Mathf.Abs(dz)>1.2f)continue;float edge=dx*dx+dz*dz+(Mathf.PerlinNoise(x*.12f+19,z*.12f+7)-.5f)*.38f;cover=Mathf.Max(cover,.58f*(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.55f,1.1f,edge))));}return cover;}
-  static readonly Vector4[] Hills={new Vector4(-150,435,48,22),new Vector4(-350,310,58,18),new Vector4(171,286,38,16),new Vector4(-270,9,48,19),new Vector4(-433,-168,65,22),new Vector4(-155,-352,42,21),new Vector4(139,-303,32,16),new Vector4(-387,-460,50,23)};
+  {float cover=0;foreach(var g in Meadows){float dx=(x-g.x)/g.z,dz=(z-g.y)/g.w;if(Mathf.Abs(dx)>1.2f||Mathf.Abs(dz)>1.2f)continue;float edge=dx*dx+dz*dz+(Mathf.PerlinNoise(x*.12f+19,z*.12f+7)-.5f)*.38f;cover=Mathf.Max(cover,.58f*(.40f+.60f*Mathf.PerlinNoise(x*.075f+3,z*.075f+29))*(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(.35f,1.15f,edge))));}return cover;}
+  // Authorial ridge axes: x,z, lateral falloff, crest height. Thin shoulders, not circular mounds.
+  static readonly Vector4[][] Ridges={
+   new[]{new Vector4(-184,452,17,3),new Vector4(-164,445,19,21),new Vector4(-148,431,16,16),new Vector4(-129,415,14,2)},
+   new[]{new Vector4(-384,330,20,2),new Vector4(-362,320,22,17),new Vector4(-345,302,18,22),new Vector4(-320,287,16,2)},
+   new[]{new Vector4(145,308,15,2),new Vector4(165,292,16,18),new Vector4(184,272,14,12),new Vector4(195,251,11,1)},
+   new[]{new Vector4(-295,31,16,2),new Vector4(-278,17,19,20),new Vector4(-260,-5,15,13),new Vector4(-241,-18,12,1)},
+   new[]{new Vector4(-471,-148,19,2),new Vector4(-447,-157,21,22),new Vector4(-428,-179,18,16),new Vector4(-398,-194,15,2)},
+   new[]{new Vector4(-182,-331,14,2),new Vector4(-161,-344,17,20),new Vector4(-146,-361,14,15),new Vector4(-123,-378,12,2)},
+   new[]{new Vector4(117,-285,13,2),new Vector4(133,-296,14,15),new Vector4(147,-312,12,19),new Vector4(160,-331,10,1)},
+   new[]{new Vector4(-423,-435,16,2),new Vector4(-400,-452,21,22),new Vector4(-380,-471,17,15),new Vector4(-356,-487,13,2)}
+  };
   static readonly Vector2[][] Channels=Smooth(Rivers),Routes=Smooth(Roads);
   static Vector2[][] Smooth(Vector2[][] paths)
   {return paths.Select(line=>{var pts=new List<Vector2>();for(int i=0;i<line.Length-1;i++){var a=line[Mathf.Max(0,i-1)];var b=line[i];var c=line[i+1];var d=line[Mathf.Min(line.Length-1,i+2)];for(int j=0;j<5;j++){float t=j/5f;pts.Add(.5f*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t*t+(-a+3*b-3*c+d)*t*t*t));}}pts.Add(line.Last());return pts.ToArray();}).ToArray();}
@@ -88,7 +98,10 @@ namespace Eldoria.World4XCanon
   public static float Height(float x,float z)
   {
    float shore=Shore(x,z);if(shore< -5)return -18;
-   float h=-4;foreach(var p in Hills){float r=Mathf.Pow((x-p.x)/p.z,2)+Mathf.Pow((z-p.y)/(p.z*.7f),2);h+=p.w*Mathf.Exp(-r*2.3f);float shoulder=Mathf.Pow((x-p.x-p.z*.55f)/(p.z*.7f),2)+Mathf.Pow((z-p.y-p.z*.15f)/(p.z*.5f),2);h+=p.w*.43f*Mathf.Exp(-shoulder*2);}
+   float relief=0;var location=new Vector2(x,z);
+   foreach(var ridge in Ridges)for(int i=1;i<ridge.Length;i++)
+   {var a=ridge[i-1];var b=ridge[i];var start=new Vector2(a.x,a.y);var end=new Vector2(b.x,b.y);var d=end-start;float t=Mathf.Clamp01(Vector2.Dot(location-start,d)/d.sqrMagnitude);float distance=Vector2.Distance(location,start+d*t);float width=Mathf.Lerp(a.z,b.z,t);float crest=Mathf.Lerp(a.w,b.w,t);relief=Mathf.Max(relief,crest*Mathf.Pow(Mathf.Clamp01(1-distance/width),1.35f));}
+   float h=-4+relief;
    // Keep all original central interactions on their established datum.
    float guard=Mathf.SmoothStep(0,1,Mathf.InverseLerp(130,185,new Vector2(x,z).magnitude));h=Mathf.Lerp(-4,h,guard);
    h-=1.8f*(1-Mathf.SmoothStep(0,1,Mathf.InverseLerp(-2,9,ChannelEdge(x,z))));
