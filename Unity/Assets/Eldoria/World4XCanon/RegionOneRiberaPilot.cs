@@ -171,6 +171,10 @@ namespace Eldoria.World4XCanon
    stats.maxHeightDifference=probes.Count>0?probes.Max(p=>Mathf.Abs(p.heightDifference)):0;
    // Collider transform origins are not ground anchors: use bounds.min.y as a provisional foot-contact proxy.\n   // This diagnostic does not alter transforms, gameplay colliders, saves or navigation.\n   // The proxy still needs per-asset mesh-contact validation before certifying grounding.
    stats.heightDeltaIsGroundingVerdict=false;
+   // Explicitly flag discrepancies; collider bounds are not authoritative feet.
+   // Preserve every logical object and report the full raw evidence for mesh-contact review.
+   if(stats.maxHeightDifference>1f)
+    Debug.LogWarning("RIBERA_GROUNDING_REVIEW_REQUIRED max collider-foot delta="+stats.maxHeightDifference.ToString("F3")+"m; not a corrected grounding PASS");
    var pickResults=new System.Collections.Generic.List<PickProbe>();
    foreach(bool portrait in new[]{false,true}) {
     SetSectorCamera(camera,root,hybrid,home+new Vector3(-15,2,0),portrait?160:70,portrait?9f/16:16f/9);
