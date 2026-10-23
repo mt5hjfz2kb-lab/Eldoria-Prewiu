@@ -15,14 +15,16 @@ def oldground(x,y):
  ok,p,n,i=terrain.ray_cast(Vector((max(-95.999,min(95.999,x)),y,150)),Vector((0,0,-1)));assert ok;return p.z
 slopes=np.array([(v.co.z-oldground(v.co.x,168))/2 for v in boundary])
 cities=[(-62,204,11),(-18,236,11),(38,202,11),(67,232,11)]
+def baseheight(x,y):
+ return 3.8+3.6*math.exp(-((x-76)/23)**2-((y-219)/44)**2)+1.5*math.exp(-((x+76)/29)**2-((y-239)/24)**2)-.7*math.exp(-((x+4)/22)**2)
 def height(x,y):
  t=(y-170)/80;u=min(1,(y-170)/22);s=u*u*(3-2*u)
  edge=float(np.interp(x,xs,zs));slope=float(np.interp(x,xs,slopes))
- base=3.8+3.6*math.exp(-((x-76)/23)**2-((y-219)/44)**2)+1.5*math.exp(-((x+76)/29)**2-((y-239)/24)**2)-.7*math.exp(-((x+4)/22)**2)
+ base=baseheight(x,y)
  z=(edge+slope*(y-170)*(1-u))*(1-s)+base*s
  for cx,cy,r in cities:
-  d=math.hypot(x-cx,y-cy);v=max(0,min(1,(d-r)/5));v=v*v*(3-2*v)
-  if d<r+5:z=3.8+(z-3.8)*v
+  d=math.hypot(x-cx,y-cy);v=max(0,min(1,(d-r)/10));v=v*v*(3-2*v)
+  if d<r+10:z=baseheight(cx,cy)+(z-baseheight(cx,cy))*v
  return z
 # Continue the existing northern path at its actual endpoint, not a copied river.
 ends=[]
@@ -34,6 +36,16 @@ for o in scene.objects:
     if p.co.y>160:ends.append((float(p.co.x),float(p.co.y)))
 entry=min(ends,key=lambda p:abs(p[0]))[0] if ends else 0
 routes=[[(entry,170),(entry+6,182),(8,198),(4,218),(12,250)],[(4,218),(-30,216),(-63,228),(-96,231)],[(8,198),(36,182),(66,185),(96,193)]]
+# Smooth each road through its authored control points; retain exact junctions.
+controls=routes
+routes=[]
+for points in controls:
+ line=[]
+ for i in range(len(points)-1):
+  p0=np.array(points[max(0,i-1)],float);p1=np.array(points[i],float);p2=np.array(points[i+1],float);p3=np.array(points[min(len(points)-1,i+2)],float)
+  for t in np.linspace(0,1,9,endpoint=False):
+   p=.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t*t+(-p0+3*p1-3*p2+p3)*t*t*t);line.append(tuple(p))
+ line.append(points[-1]);routes.append(line)
 def distance(x,y):
  best=1e9
  for points in routes:
@@ -43,15 +55,21 @@ def distance(x,y):
  return best
 # New UV material only on new faces: old loops, topology and all AG vertices survive.
 W,H=1024,512;X,Y=np.meshgrid(np.linspace(-96,96,W),np.linspace(170,250,H))
-pigment=.035*np.sin(X/18+Y/29)+.025*np.sin(X/7-Y/19)
-rgba=np.ones((H,W,4),np.float32);rgba[:,:,:3]=np.array([.35,.40,.13])+pigment[:,:,None]
-road=np.array([[distance(float(x),float(y)) for x in row] for row,y in zip(X,Y[:,0])])
-mask=np.clip((2-road)/1.1,0,1);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+np.array([.47,.38,.20])*mask[:,:,None]
+pigment=.014*np.sin(X/18+Y/29)+.010*np.sin(X/7-Y/19)
+rng_pigment=np.random.default_rng(781)
+fine=rng_pigment.normal(0,.006,X.shape)+.005*np.sin(X*8+np.sin(Y*4))*np.sin(Y*7)
+rgba=np.ones((H,W,4),np.float32);rgba[:,:,:3]=np.array([.54,.55,.25])+(pigment+fine)[:,:,None]
+road=np.full(X.shape,1e9)
+for points in routes:
+ for (ax,ay),(bx,by) in zip(points,points[1:]):
+  t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1)
+  road=np.minimum(road,np.hypot(X-ax-t*(bx-ax),Y-ay-t*(by-ay)))
+mask=np.clip((1.85-road)/1.0,0,1);rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+np.array([.55,.46,.27])*mask[:,:,None]
 # Match the exact retained pigment at the join, then open into broad meadow tones.
 prior=bpy.data.images.get('AF broad meadow flows')
 if prior:
  pw,ph=prior.size;pp=np.array(prior.pixels[:]).reshape(ph,pw,4);edge=np.array([np.interp(np.linspace(0,pw-1,W),np.arange(pw),pp[-1,:,k]) for k in range(3)]).T
- blend=np.clip((Y-170)/12,0,1);blend=blend*blend*(3-2*blend);rgba[:,:,:3]=edge[None,:,:]*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
+ blend=np.clip((Y-170)/2,0,1);blend=blend*blend*(3-2*blend);rgba[:,:,:3]=edge[None,:,:]*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
 im=bpy.data.images.new('AI open northern grassland',W,H);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'AI_meadow.png');im.file_format='PNG';im.save();im.pack()
 mat=bpy.data.materials.new('AI open meadow paths');mat.use_nodes=True;bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.92;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 terrain.data.materials.append(mat);mi=len(terrain.data.materials)-1
