@@ -269,6 +269,10 @@ for label,tone in [('AE mellow rye',(.38,.46,.16)),('AE dried straw',(.59,.55,.2
 for k,ix in enumerate(meadow_m):meadow_mesh.polygons[k].material_index=ix
 meadow_object=bpy.data.objects.new('AE wild meadow ecology near O boundary',meadow_mesh)
 coll.objects.link(meadow_object)
+# AF: AE small foliage blades failed same-camera artistic review (dark pepper).
+# Keep the authored object editable for evidence, but do not export/render it.
+meadow_object.hide_render=True
+meadow_object.hide_set(True)
 mask=np.zeros((H,W),np.float32)
 for o in trees:
  x,y=o.location.xy;r=((X-x)/6.7)**2+((Y-y)/6.7)**2;mask=np.maximum(mask,np.clip(1-r,0,1)*.44)
@@ -386,15 +390,32 @@ grasslight*=.81+.19*np.sin(X*.29+Y*.17)*np.cos(Y*.35-X*.12)
 pix[:,:,:3]=pix[:,:,:3]*(1-grasslight[:,:,None])+np.array([.57,.55,.30])*grasslight[:,:,None]
 broken_boundary=np.clip(path*(1-path)*(.65+.25*np.sin(X*.71+Y*.41)+.10*np.cos(X*.23-Y*.67)),0,.35)*seam
 pix[:,:,:3]=pix[:,:,:3]*(1-broken_boundary[:,:,None])+np.array([.34,.45,.25])*broken_boundary[:,:,None]
-for name,data,noncolor in [('AE grassland painted surface',pix,False),('AE editable slope glaze mask',paint,True),('AE editable connected litter mask',mask,True)]:
+# AF: broad broken hand-authored meadow flows visible from all three Unity scales.
+# The widths and meandering centres follow the landform and forest-edge clearings,
+# not a global random layer. Terrain mesh is left unified; no new walkable objects.
+masses=[
+ (-55,98,30,19,.39,[.53,.53,.31]),
+ (-6,91,37,17,.43,[.44,.50,.27]),
+ (52,93,31,21,.39,[.56,.52,.30])]
+for n,(cx,cy,rx,ry,mix,tone) in enumerate(masses):
+ crest=cy+4.5*np.sin((X-cx)/19+n*.7)+2.5*np.sin((X-cx)/9+n*1.3)
+ spine=np.exp(-((X-cx)/rx)**4)*np.exp(-((Y-crest)/ry)**4)
+ edges=.86+.14*np.sin(X*.24+Y*.11+n*1.1)*np.cos(Y*.29-X*.08)
+ a=np.clip(spine*edges*mix*seam*(1-path)*(1-mask*.52),0,.47)
+ pix[:,:,:3]=pix[:,:,:3]*(1-a[:,:,None])+np.array(tone)*a[:,:,None]
+# Exposed, weathered line around the real road curves; the pass is restricted
+# to a fringe and never widens gameplay, changes Bezier paths or touches O.
+weathered=np.clip((road_outer-path)*(.47+.21*np.sin(X*.62+Y*.31))*seam,0,.32)
+pix[:,:,:3]=pix[:,:,:3]*(1-weathered[:,:,None])+np.array([.46,.45,.30])*weathered[:,:,None]
+for name,data,noncolor in [('AF broad meadow flows',pix,False),('AF editable slope glaze mask',paint,True),('AF editable connected litter mask',mask,True)]:
  im=bpy.data.images.new(name,width=W,height=H);im.colorspace_settings.name='Non-Color' if noncolor else 'sRGB'
  if data.ndim==2:
   a=np.ones((H,W,4),np.float32);a[:,:,:3]=data[:,:,None];data=a
  im.pixels.foreach_set(data.astype(np.float32).ravel())
  im.use_fake_user=True # Retain editable masks when the .blend is reopened
-mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AE grassland painted surface'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials['P connected meadow forest floor paths'];bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=bpy.data.images['AF broad meadow flows'];mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 assert all(tuple(v.co)==original[i] for i,v in enumerate(terrain.data.vertices[:N]))
-scene['finishing_stage']='AE physical glade ground flora over AD projected forest, sculpt and O seam'
+scene['finishing_stage']='AF broad authored meadow contours; discard AE speckles; O intact'
 for im in bpy.data.images:
  if im.size[0]>0 and im.source in {'GENERATED','FILE'}:im.filepath_raw=str(out/(im.name.replace(' ','_')+'.png'));im.file_format='PNG';im.save();im.pack()
 bpy.ops.object.select_all(action='DESELECT')
@@ -402,4 +423,4 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render:o.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RiberaPilot.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Ribera_Finished.blend'));scene.render.filepath=str(out/'blender-sector.png');bpy.ops.render.render(write_still=True)
-(out/'sector-authoring.json').write_text(json.dumps({'stage':'AE','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'camera_band_trees_added':camera_band_added,'grounded_meadow_bunches':meadow_bunches,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AE visible glade meadow flora and weathered path edges over AD camera-composed geomorphic forest; O and all gameplay immutable'},indent=2))
+(out/'sector-authoring.json').write_text(json.dumps({'stage':'AF','source_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'O_vertices_unchanged':N,'sculpt_brushes':brushes,'new_trees_modified':old_new_sector_count,'new_trees_added':len(new_trees),'new_grounded_shrubs':shrub_count,'exposed_rock_shelves':len(placed),'camera_band_trees_added':camera_band_added,'grounded_meadow_bunches_in_source_only':meadow_bunches,'dark_meadow_blades_exported':False,'total_trees':len(trees)+156,'O_trees_unchanged':156,'art_approved':False,'scope':'Q extension only; AF broad multi-lobed meadow landcover replaces rejected AE pepper-like 3D grass; O/K/I and all gameplay remain unchanged'},indent=2))

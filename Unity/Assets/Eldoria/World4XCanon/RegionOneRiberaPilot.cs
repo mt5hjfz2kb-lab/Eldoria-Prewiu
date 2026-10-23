@@ -42,7 +42,7 @@ namespace Eldoria.World4XCanon
     var hybrid=BuildImpostors(root,camera,output);
     BatchSectorDecorations(root,camera,output);
     foreach(float size in new[]{34f,40f,46f,52f}) {
-     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
+     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(27,38,size));
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
      foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=fade<.999f;renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
      camera.orthographicSize=size;
@@ -64,7 +64,7 @@ namespace Eldoria.World4XCanon
     var seqRT=new RenderTexture(960,720,24);var seqTex=new Texture2D(960,720,TextureFormat.RGB24,false);
     try {for(int frame=0;frame<=96;frame++) {
      float t=frame<=48?frame/48f:(96-frame)/48f;float size=Mathf.Lerp(34,52,Mathf.SmoothStep(0,1,t));
-     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));
+     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(27,38,size));
      foreach(var m in hybrid)m.SetFloat("_Fade",fade);
      foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>())if(renderer.name=="Pilot_NearBatch"){renderer.enabled=fade<.999f;renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}else if(renderer.name=="Pilot_FarBatch")renderer.enabled=fade>0;
      camera.orthographicSize=size;camera.aspect=4f/3;FadeEcologicalUnderstory(root,size);camera.targetTexture=seqRT;camera.Render();RenderTexture.active=seqRT;seqTex.ReadPixels(new Rect(0,0,960,720),0,0);seqTex.Apply();
@@ -307,7 +307,7 @@ namespace Eldoria.World4XCanon
   {
    camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=size;camera.aspect=aspect;
    FadeEcologicalUnderstory(root,size);
-   float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,50,size));foreach(var m in hybrid)m.SetFloat("_Fade",fade);
+   float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(27,38,size));foreach(var m in hybrid)m.SetFloat("_Fade",fade);
    foreach(var r in root.GetComponentsInChildren<MeshRenderer>())if(r.name=="Pilot_NearBatch"){r.enabled=fade<.999f;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;}else if(r.name=="Pilot_FarBatch")r.enabled=fade>0;
   }
   static void SaveSectorFrame(Camera camera,string path,int width,int height)
