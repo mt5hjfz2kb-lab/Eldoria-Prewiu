@@ -118,14 +118,15 @@ namespace Eldoria.World4XCanon
      var donor=prefix==null?null:donors.FirstOrDefault(r=>r.name.StartsWith(prefix,StringComparison.Ordinal));
      if(donor) {
       var mf=donor.GetComponent<MeshFilter>();var foot=donor.transform.TransformPoint(mf.sharedMesh.vertices[0]);
-      var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.SetPositionAndRotation(donor.transform.position+sites[i.site].position-foot+Vector3.up*.08f,donor.transform.rotation);go.transform.localScale=donor.transform.lossyScale;
+      var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.SetPositionAndRotation(donor.transform.position+sites[i.site].position-foot+Vector3.up*.08f,donor.transform.rotation);go.transform.localScale=donor.transform.lossyScale*.30f;
+      go.transform.position+=sites[i.site].position+Vector3.up*.08f-go.transform.TransformPoint(mf.sharedMesh.vertices[0]);
       go.AddComponent<MeshFilter>().sharedMesh=mf.sharedMesh;go.AddComponent<MeshRenderer>().sharedMaterials=donor.sharedMaterials;
       report.maxContactError=Mathf.Max(report.maxContactError,Mathf.Abs(go.transform.TransformPoint(mf.sharedMesh.vertices[0]).y-sites[i.site].position.y-.08f));
      } else {
       // Existing animated Spawnling's measured pose, baked once per fixture specimen; no new monster.
       var actor=world.GetComponentsInChildren<SkinnedMeshRenderer>(true).FirstOrDefault(r=>r.name.ToLowerInvariant().Contains("spawn")||r.transform.GetComponentsInParent<MonoBehaviour>(true).Any(c=>c&&c.GetType().Name=="SpawnlingEncounterVisual"));
       if(!actor)throw new InvalidOperationException("Existing enemy mesh unavailable for capacity display");
-      if(!enemyMesh){enemyMesh=new Mesh();actor.BakeMesh(enemyMesh);meshes.Add(enemyMesh);}var mesh=enemyMesh;var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.SetPositionAndRotation(actor.transform.position,actor.transform.rotation);go.transform.localScale=actor.transform.lossyScale;go.AddComponent<MeshFilter>().sharedMesh=mesh;var rr=go.AddComponent<MeshRenderer>();rr.sharedMaterials=actor.sharedMaterials;go.transform.position+=sites[i.site].position-new Vector3(rr.bounds.center.x,rr.bounds.min.y,rr.bounds.center.z)+Vector3.up*.08f;
+      if(!enemyMesh){enemyMesh=new Mesh();actor.BakeMesh(enemyMesh);meshes.Add(enemyMesh);}var mesh=enemyMesh;var go=new GameObject("TEST ONLY "+i.id);displays.Add(go);go.layer=root.layer;go.transform.SetParent(root.transform,true);go.transform.SetPositionAndRotation(actor.transform.position,actor.transform.rotation);go.transform.localScale=actor.transform.lossyScale*.30f;go.AddComponent<MeshFilter>().sharedMesh=mesh;var rr=go.AddComponent<MeshRenderer>();rr.sharedMaterials=actor.sharedMaterials;go.transform.position+=sites[i.site].position-new Vector3(rr.bounds.center.x,rr.bounds.min.y,rr.bounds.center.z)+Vector3.up*.08f;
       report.maxContactError=Mathf.Max(report.maxContactError,Mathf.Abs(rr.bounds.min.y-sites[i.site].position.y-.08f));
      }
     }
@@ -133,6 +134,8 @@ namespace Eldoria.World4XCanon
     foreach(bool populated in new[]{false,true})foreach(bool portrait in new[]{false,true})for(int level=0;level<3;level++) {
      foreach(var go in displays)go.SetActive(populated);
      var target=home+new Vector3(0,4,level==0?205:level==1?180:125);camera.transform.position=target+new Vector3(0,130,-145);camera.transform.LookAt(target);camera.orthographicSize=(portrait?new[]{54f,105f,175f}:new[]{32f,65f,108f})[level];
+     float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(37,47,camera.orthographicSize));
+     foreach(var rr in root.GetComponentsInChildren<MeshRenderer>())if(rr.name=="Pilot_NearBatch"||rr.name=="Pilot_FarBatch"){rr.enabled=rr.name=="Pilot_NearBatch"?fade<.999f:fade>0;foreach(var material in rr.sharedMaterials)material.SetFloat("_Fade",fade);}
      Frame(camera,Path.Combine(dir,(populated?"TEST-population-":"geography-")+(portrait?"portrait-":"landscape-")+new[]{"close","regional","panorama"}[level]),portrait?720:1280,portrait?1280:720);
     }
     File.WriteAllText(Path.Combine(dir,"capacity.json"),JsonUtility.ToJson(report,true));

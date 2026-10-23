@@ -53,7 +53,7 @@ if prior:
  pw,ph=prior.size;pp=np.array(prior.pixels[:]).reshape(ph,pw,4);edge=np.array([np.interp(np.linspace(0,pw-1,W),np.arange(pw),pp[-1,:,k]) for k in range(3)]).T
  blend=np.clip((Y-170)/12,0,1);blend=blend*blend*(3-2*blend);rgba[:,:,:3]=edge[None,:,:]*(1-blend[:,:,None])+rgba[:,:,:3]*blend[:,:,None]
 im=bpy.data.images.new('AI open northern grassland',W,H);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'AI_meadow.png');im.file_format='PNG';im.save();im.pack()
-mat=bpy.data.materials.new('AI open meadow paths');mat.use_nodes=True;bs=mat.node_tree.nodes.get('Principled BSDF');bs.inputs['Roughness'].default_value=.92;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
+mat=bpy.data.materials.new('AI open meadow paths');mat.use_nodes=True;bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.92;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color'])
 terrain.data.materials.append(mat);mi=len(terrain.data.materials)-1
 bm=bmesh.new();bm.from_mesh(terrain.data);bm.verts.ensure_lookup_table();uv=bm.loops.layers.uv.active
 prev=[bm.verts[v.index] for v in boundary]
