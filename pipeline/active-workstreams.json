@@ -19,10 +19,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-sector-finish-relay-20261023",
+      "owner": "codex-world4x-living-sector-b4b06f1a",
       "ownership_state": "claimed",
       "write_scope_released": false,
-      "ownership_revision": 15,
+      "ownership_revision": 16,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-23",
@@ -38,9 +38,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner explicit 2026-10-23 takeover of unfinished W and sector completion; same PR100, 0 EUR, no merge/publication.",
-      "phase": "CONNECTED_SECTOR_W_GROUNDING_AND_MACRO_ART",
-      "next": "Author macro forest/terrain correction from preserved Q/O; run actual Blender+Unity A/B; certify visual mesh contact without modifying playable colliders/IDs.",
+      "authorization": "Explicit owner request: connected living 4X sector, bounded expansion from AG; preserve gameplay ownership, 0 EUR, no merge/publication.",
+      "phase": "AG_BOUNDED_EXTENSION_AND_DYNAMIC_CAPACITY",
+      "next": "Preserve AG; extend terrain and validate actual mesh contact, navigation, city clearances and isolated population proof using existing content.",
       "dependencies": [
         "valoria-master-plan-layered-construction-20261016",
         "eldoria-ui-v3-management-completion-20261021",
@@ -160,12 +160,18 @@
           "relieved_at": "2026-10-23",
           "reason": "Owner explicitly authorizes a new chat to take over unfinished W sector production within existing PR100.",
           "outcome": "W Unity/Blender native 39987173786 succeeded, heights and artistic acceptance not yet certified."
+        },
+        {
+          "owner": "chatgpt-world4x-sector-finish-relay-20261023",
+          "revision": 15,
+          "relieved_at": "2026-10-23",
+          "reason": "Owner directs continuation in PR100 from restored AG with bounded geographic extension and isolated dynamic capacity validation."
         }
       ],
       "delivery_definition": {
-        "deliverable": "Substantially improved reference-directed World4X candidate in PR100",
-        "evidence": "Actual Unity three zooms H/V, matched baseline cameras, focused regression and honest artistic review",
-        "handoff": "Research, diagnosis, implementation and exact evidence; owner retains artistic approval; no merge or publication"
+        "deliverable": "Bounded connected extension from AG and isolated capacity demonstration",
+        "evidence": "Editable Blender, real Unity three scales, terrain navigation/contact/city population checks; no simulated device certification",
+        "handoff": "PR100 sources and exact verified native artifact; preserve all references; no merge/release"
       }
     },
     {
