@@ -481,17 +481,17 @@ for cx in [-550.,0.,450.]:
  deck_centre=cy if abs(cx)>1 else cy+(length-44.)/2
  segments=int(round(length));vv=[];ff=[]
  if abs(cx)<=1:
-  # The original AI objects in 'land' were joined into BLD_Terrain above:
-  # their bpy Object pointers are invalid. Measure the CURRENT joined mesh.
-  shore=[]
+  # The castle end MUST keep the originally authored AI/AF access elevation
+  # (z0 from crossing_banks measured before the join). Raycasting the joined
+  # terrain here instead sinks the near edge below its gate, making an air gap.
+  # Only the shortened far end needs a newly measured actual bank elevation.
   terrain_inverse=terrain.matrix_world.inverted()
-  for yshore in (deck_centre-half,deck_centre+half):
-   origin_local=terrain_inverse @ Vector((cx,yshore,150))
-   direction_local=terrain_inverse.to_3x3() @ Vector((0,0,-1))
-   hit,point,normal,index=terrain.ray_cast(origin_local,direction_local,distance=400)
-   assert hit,('Central bridge must meet actual joined land at its bank',cx,yshore)
-   shore.append((terrain.matrix_world @ point).z)
-  z0,z1=shore
+  yshore=deck_centre+half
+  origin_local=terrain_inverse @ Vector((cx,yshore,150))
+  direction_local=terrain_inverse.to_3x3() @ Vector((0,0,-1))
+  hit,point,normal,index=terrain.ray_cast(origin_local,direction_local,distance=400)
+  assert hit,('Central bridge far end must meet joined land',cx,yshore)
+  z1=(terrain.matrix_world @ point).z
  for i in range(segments+1):
   t=i/segments;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
   vv.extend([(cx-4,deck_centre-half+length*t,z),(cx+4,deck_centre-half+length*t,z)])
