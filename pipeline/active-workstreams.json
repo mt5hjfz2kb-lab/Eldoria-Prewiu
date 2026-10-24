@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T07:06:43.496Z",
+  "updated_at": "2026-10-24T07:09:52.015Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1127,7 +1127,7 @@
       "write_scope_released": true,
       "ownership_revision": 20,
       "branch": "main",
-      "status": "available",
+      "status": "active",
       "claimed_at": "2026-10-23T23:19:45.062Z",
       "base_main_sha": "54703262a47a1ece6d233470582d4162d3d7c0b1",
       "scope": [
