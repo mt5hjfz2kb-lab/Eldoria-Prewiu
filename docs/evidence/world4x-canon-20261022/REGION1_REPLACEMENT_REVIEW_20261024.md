@@ -75,8 +75,13 @@ El código certificado se reconcilió con main `9a3865296f3a94c121c635f1e1676d68
 
 El workflow general `.github/workflows/ui-progression-cert.yml` ejecuta PlayMode con `-nographics` y sin carpeta de capturas, por lo que omite una prueba de captura y su gate estricto falla. La ruta nativa propiedad de este workstream ya ejecuta las 57 pruebas con GPU sin omisiones. Está preparado [el parche mínimo](UI_CERT_GPU_CAPTURE_PROPOSED.patch): usar D3D11, carpeta única por run/attempt y adjuntar esas capturas; conserva las aserciones y exige Passed. `git apply --check` pasó sobre el blob vigente.
 
-El último gate UI automático, 40069968005, terminó en su protección de reserva y no llegó a probar Unity. La ejecución anterior 40061480616 sí demostró el defecto headless: 56 Passed, cero Failed y una captura Ignored; el workflow falló y no se presenta como PASS.
+El gate UI automático del HEAD documental, 40071887223, pasó el recorrido nativo I–II y EditMode, y terminó con `PlayMode tests did not pass: Skipped:Ignored` (log 07:05:26 UTC). Es FAILURE, no PASS. El anterior 40069968005 había terminado en la protección de reserva sin llegar a probar Unity. La ejecución anterior 40061480616 sí demostró el defecto headless: 56 Passed, cero Failed y una captura Ignored; el workflow falló y no se presenta como PASS.
 
 Ese archivo permanece reservado por `eldoria-ui-v3-management-completion-20261021`, revisión 13. No se ha modificado ni apropiado su alcance. La conciliación de ese archivo requiere relevo acotado autorizado o liberación de su responsable, conforme a `docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md`.
 
 No hay dispositivo Android conectado ni prueba física iOS verificada. No se certifican FPS, memoria térmica o rendimiento físico, no se consumen servicios de pago, no se publica en itch.io y no se concede aprobación de integración en nombre del propietario.
+
+
+### Identidad canónica disponible tras liberar la reserva
+
+La reclamación del ejecutor, revisión 19, permanece en `history` con el bloqueo exacto. Para que el guard existente pueda atribuir los cambios de arte del PR todavía abierto, `active` conserva el mismo ID como identidad de enrutado **disponible**, revisión 20: `owner:null`, `ownership_state:available`, `write_scope_released:true` y `resources:[]`. El protocolo permite estas identidades no exclusivas. No se vuelve a reservar Windows, ningún archivo, ni el alcance de UI; no se modifica o debilita el guard.
