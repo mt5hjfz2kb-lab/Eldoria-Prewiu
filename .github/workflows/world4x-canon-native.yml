@@ -224,6 +224,59 @@ jobs:
             if(-not(Test-Path "$out/$file") -or (Get-Item "$out/$file").Length -lt 100000){throw "Missing actual Tripo LOD: $file"}
           }
           Write-Host 'REGION1_TRIPO_ORIGINALS_REUSED 4 real GLBs / 2 immutable original families / zero API credits'
+      - name: Recover exact preview-authored Blender assets for same-scene Unity recheck
+        if: contains(github.event.head_commit.message, 'region-recheck(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40136252743
+          name: region1-canon-native-40136252743
+          path: ${{ runner.temp }}/region1-recheck-source
+      - name: Verify pinned original art and recheck exact pre-PlayMode source
+        if: contains(github.event.head_commit.message, 'region-recheck(world4x):')
+        shell: powershell
+        run: |
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-recheck-source/region1-authoring-40136252743'
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          New-Item -ItemType Directory -Path $destination -Force | Out-Null
+          $verified=[ordered]@{
+            'RegionOneBlenderWorld.glb'='abb4e14f528eed09b37eae4b0d5f078471884b1f9c7f88d14cf6ce1284413cef'
+            'RegionOneBlenderQueries.bytes'='d2cd28e64243976c7d5c9f75329e5c27d96e0ab4ca08c95170155ebb9a83ed3e'
+            'production-region.json'='29b06708c2e001db320a4c62925d976825d5b84eed876ff1c7f869a6c65202ce'
+            'RegionOneResources.glb'='3e79bfb0985e0bed8687ab5f4e9c9ba59d4486799084102fa8e2a6a346e1319d'
+            'RegionOneResourceImpostors.png'='bc408bc094085087cf1abf44c272e31f13c426c65f0b8be181413ca123517869'
+            'RegionOneGrassDetail.png'='4428879cb0f76f7ccb400b77f3c194b3c1398ba8bacd57226f71819306dc15c8'
+          }
+          foreach($pair in $verified.GetEnumerator()){
+            $source=Join-Path $origin $pair.Key
+            if(-not(Test-Path $source)){throw "Pinned run 40136252743 missing source $($pair.Key)"}
+            if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pair.Value){
+              throw "Original real Blender output changed: $($pair.Key)"
+            }
+            Copy-Item -LiteralPath $source -Destination (Join-Path $destination $pair.Key)
+            Copy-Item -LiteralPath $source -Destination (Join-Path $unityDest $pair.Key) -Force
+          }
+          foreach($name in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend',
+            'RockBoar_Far_LOD.blend','retained-core-integrity.json')){
+            $source=Join-Path $origin $name
+            if(-not(Test-Path $source)){throw "Pinned editable source or integrity proof absent: $name"}
+            Copy-Item -LiteralPath $source -Destination (Join-Path $destination $name)
+          }
+          $creatureDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures'
+          New-Item -ItemType Directory -Path $creatureDest -Force | Out-Null
+          $rock='world4x-source/ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb'
+          $spawnNear='world4x-source/ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb'
+          $spawnFar='world4x-source/ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Far.glb'
+          foreach($f in @($rock,$spawnNear,$spawnFar)){if(-not(Test-Path $f)){throw "Protected Tripo original missing: $f"}}
+          Copy-Item $rock "$creatureDest/RockBoarNear.glb" -Force
+          Copy-Item $spawnNear "$creatureDest/SpawnlingNear.glb" -Force
+          Copy-Item $spawnFar "$creatureDest/SpawnlingFar.glb" -Force
+          $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Installed Blender required for original boar far LOD'}
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/make_boar_far_lod.py -- $rock "$creatureDest/RockBoarFar.glb" "$destination/RockBoar_Far_LOD.blend"
+          if($LASTEXITCODE){throw 'Original boar far LOD rebuild did not succeed'}
+          Write-Host 'REGION1_PINNED_BLENDER_RECHECK_SOURCE_PASS unchanged_6_hashes=1 art_approved=false repeat_native_playmode_required=1'
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell

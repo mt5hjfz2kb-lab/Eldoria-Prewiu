@@ -301,7 +301,7 @@ namespace Eldoria.Tests
             Assert.That(model,Is.Not.Null);
             Assert.That(model.activeSelf,Is.False,
                 "Even with the collider disabled, the original Pick() fallback must be gated");
-            Assert.That(model.GetComponentsInChildren<Renderer>(true).All(x=>!x.enabled),Is.True,
+            Assert.That(model.GetComponentsInChildren<Renderer>(true).All(x=>!x.enabled||!x.gameObject.activeInHierarchy),Is.True,
                 "The engendro remained visible in panorama");
             Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(initial),
                 "Visual zoom changed authoritative save/gameplay");
@@ -768,8 +768,8 @@ namespace Eldoria.Tests
                 var allActualArt = world.GetComponentsInChildren<Renderer>(true)
                     .Where(x => !x.transform.IsChildOf(
                         world.transform.Find("Region 1 canonical continuous geography"))).ToArray();
-                Assert.That(allActualArt.All(x => !x.enabled), Is.True,
-                    "Panorama must hide tiny existing resource, enemy and city geometry without disabling colliders.");
+                Assert.That(allActualArt.All(x => !x.enabled || !x.gameObject.activeInHierarchy), Is.True,
+                    "Panorama must not render old scenery, enemy meshes or cast their shadows. Inactive Tripo model roots are deliberately preserved, not deleted.");
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Panorama must not reveal the old hard-edged rectangular prairie.");
                 var canopies = world.GetComponentsInChildren<MeshFilter>(true).Where(t=>t.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)||t.name.StartsWith("BLD_ForestFar_",StringComparison.Ordinal)).ToArray();
@@ -1085,6 +1085,30 @@ namespace Eldoria.Tests
                         SaveRetainedSectorFrame(camera,Path.Combine(continentalDetails,kind+"-"+(portrait?"portrait":"landscape")),portrait?720:1280,portrait?1280:720,item.TargetId);
                     }
                 }
+                                // Actual two-family Tripo evidence on the same continuous regional and
+                // near game map. No fake copies or manually drawn proof frames.
+                string creatureDir=Path.Combine(sectorDirectory,"creature-details");
+                Directory.CreateDirectory(creatureDir);
+                var creatureSnapshot=playableGateway.Snapshot();
+                foreach(var kind in new[]{"boar","spawnling"})
+                {
+                    var entry=creatureSnapshot.WorldCreatureLocations
+                        .FirstOrDefault(x=>x.Alive&&x.CreatureKind==kind);
+                    Assert.That(entry,Is.Not.Null,"Real Tripo family missing from persistent playable world: "+kind);
+                    var hotspot=(Component)Call(host,"FindTarget",entry.TargetId);
+                    Assert.That(hotspot,Is.Not.Null,"Creature must have a real gameplay target: "+entry.TargetId);
+                    foreach(bool portrait in new[]{false,true})
+                    {
+                        camera.aspect=portrait?9f/16:16f/9;
+                        Call(navigation,"RestoreView",hotspot.transform.position,portrait?64f:36f);
+                        Call(adapter,"RefreshForCapture");
+                        yield return null;
+                        SaveRetainedSectorFrame(camera,Path.Combine(creatureDir,kind+"-"+(portrait?"portrait":"landscape")),
+                            portrait?720:1280,portrait?1280:720,entry.TargetId);
+                    }
+                }
+                Assert.That(Directory.GetFiles(creatureDir,"*.png").Length,Is.EqualTo(4),
+                    "Genuine near Tripo boar and engendro camera captures are required");
                 Assert.That(Directory.GetFiles(continentalDetails,"*.png").Length,Is.EqualTo(4));
                 Assert.That(Directory.GetFiles(sectorDirectory,"*.png").Length,Is.EqualTo(6));
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(16));

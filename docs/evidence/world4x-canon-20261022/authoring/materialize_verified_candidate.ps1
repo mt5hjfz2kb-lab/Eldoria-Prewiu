@@ -65,6 +65,11 @@ foreach($file in Get-ChildItem (Join-Path $captures 'retained-sector') -File | W
 foreach($file in Get-ChildItem (Join-Path $captures 'retained-sector/continental-details') -File){
  $path="$review/continent-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path
 }
+$creatureCaptures=Join-Path $captures 'retained-sector/creature-details'
+if(-not(Test-Path $creatureCaptures)){throw 'Actual Tripo creature screenshots missing'}
+foreach($file in Get-ChildItem $creatureCaptures -File){
+ $path="$review/creature-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path
+}
 # General proof must be fresh and belong to this exact native source.
 $general=Join-Path $env:RUNNER_TEMP "region1-general-proof-$env:GITHUB_RUN_ID"
 $proof=Get-Content (Join-Path $general 'general-proof.json') -Raw|ConvertFrom-Json
