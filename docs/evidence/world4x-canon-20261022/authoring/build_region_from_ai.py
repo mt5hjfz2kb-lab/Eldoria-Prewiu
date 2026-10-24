@@ -63,12 +63,12 @@ for i,sx,sy in [(1,1.65,.85),(2,1.3,1.1),(5,.85,1.6),(8,.85,1.55),(10,1.6,.9),(1
  x,y,rx,ry=groves[i];groves[i]=(x,y,rx*sx,ry*sy)
 def grove_field(X,Y,index):
  cx,cy,rx,ry=groves[index]
- wx=X-cx+18*np.sin((Y-cy)/41+index*.8)
- wy=Y-cy+15*np.sin((X-cx)/37+index*.6)
+ wx=X-cx+(26+index%4*4)*np.sin((Y-cy)/67+index*.8)+13*np.sin((Y-cy)/143-index*.2)
+ wy=Y-cy+(24+index%3*5)*np.sin((X-cx)/79+index*.6)
  angle=np.arctan2(wy/ry,wx/rx)
- rim=1+.16*np.sin(3*angle+index)+.10*np.sin(5*angle-index*.7)
+ rim=1+.23*np.sin(3*angle+index)+.11*np.sin(5*angle-index*.7)+.055*np.cos(7*angle+index*.4)
  d=(wx/rx)**2+(wy/ry)**2
- return np.clip((rim-d)*2.0,0,1)
+ return np.clip((rim-d)*1.8,0,1)
 def forest_field(X,Y):
  result=np.zeros(np.shape(X))
  for index in range(len(groves)):result=np.maximum(result,grove_field(X,Y,index))
@@ -221,6 +221,9 @@ for cx,cy,rx,ry in [(-490,520,100,160),(380,680,90,145),(-580,-570,100,95)]:
  ridge=np.maximum(ridge,np.exp(-((X-cx)/rx)**2-((Y-cy)/ry)**2))
 ridge*=.38*(.87+.13*np.sin(X*.08+Y*.05))
 rgba[:,:,:3]=rgba[:,:,:3]*(1-ridge[:,:,None])+np.array([.61,.56,.39])*ridge[:,:,None]
+# Paint authored, irregular grassland-scale fields on NEW extension ground only.
+exec(compile(pathlib.Path(__file__).with_name('author_continental_macro_pigment.py').read_text(encoding='utf-8'),'author_continental_macro_pigment.py','exec'),globals())
+paint_canonical_macro_pigment(rgba,X,Y,(-910,-1800,910,1800),meadow_mean)
 # Directed AF strokes at terrain scale, rather than soft repeating continental
 # waves. These are pigment only: no invented fields, props or resource markers.
 # Their centres follow the authored route corridors, but stay off the worn path.

@@ -90,6 +90,7 @@ def context_forest(x,y):
 context_pixels=np.ones((CS,CS,4),np.float32)
 flow=.004*np.sin(CX/93+CY/123)+.003*np.sin(CY/47-CX/61)+.002*np.sin(CX/19+CY/37)
 context_pixels[:,:,:3]=meadow_mean+flow[:,:,None]
+paint_canonical_macro_pigment(context_pixels,CX,CY,(-1710,-2600,1710,2600),meadow_mean)
 context_litter=context_forest(CX,CY)*.69
 context_pixels[:,:,:3]=context_pixels[:,:,:3]*(1-context_litter[:,:,None])+np.array([.25,.34,.19])*context_litter[:,:,None]
 shore=smooth((26-coast(CX,CY))/24)*.45
