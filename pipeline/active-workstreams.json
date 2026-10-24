@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T07:24:15.320Z",
+  "updated_at": "2026-10-24T07:46:23.119Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1142,10 +1142,12 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "docs/documentation-catalog.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Owner instruction on 2026-10-24: resume and complete PR #100, protect AF/AG, keep UI owner reservations, no merge without artistic acceptance; zero spend.",
-      "phase": "RECONCILE_UI_DEPENDENCY_AND_MACRO_ART_WITHOUT_ACTIVE_RUNNER_LEASE",
-      "next": "Inspect original three approved references versus genuine six-view Unity 40069960813; use owned World4X files for macro art improvement and new native evidence after existing UI job completes; do not touch reserved UI workflow; obtain explicit owner art approval before merge.",
+      "phase": "MACRO_ART_NATIVE_AB_RESERVED_AFTER_UI_RUN_40074059376_FINISHED",
+      "next": "Native region-production trial of preserved AF/AG-compatible continental macro pigment, compare six real captures against reference and certified 40069960813, require unchanged 57+26+44 tests; UI workflow reserved by separate rev13 owner.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1394,6 +1396,12 @@
         "editmode": "success",
         "playmode_root": "Skipped:Ignored",
         "meaning": "Existing headless gate reproduced; not a PASS. World GPU certificate remains all57 passed."
+      },
+      "native_trial": {
+        "detached_sha": "ce740f6417cedc6858e47863a4690b7a029abc78",
+        "parent_before_lease": "278d5fe1a9830dab8f50af8710661f3e906d33c7",
+        "ui_run_finished": 40074059376,
+        "status": "RESERVED_NOT_VERIFIED"
       }
     }
   ],
