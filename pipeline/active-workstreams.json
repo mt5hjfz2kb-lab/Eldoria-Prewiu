@@ -1433,13 +1433,14 @@
         "tools/art-knowledge/select.test.mjs",
         "tools/mission-continuity/core.mjs",
         "tools/mission-continuity/core.test.mjs",
-        ".github/workflows/repository-architecture-guard.yml"
+        ".github/workflows/repository-architecture-guard.yml",
+        ".github/workflows/tester-qa.yml"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Read-only selection and continuity decision modules only; no art authoring, model changes, game mutation or credits.",
       "phase": "ISOLATED_BOUNDED_SAFE_HARDENING",
-      "next": "Improve evidence-first art memory and paused/stale workflow classification; add tests in existing lightweight repository guard (no new workflow, Windows/Unity or credit). Leave changes isolated until verification.",
+      "next": "Memory preflight and continuity classification with Ubuntu tests. Extend the existing exact read-only tool allowlist for legacy tester QA; never skip for workflow self-change or unknown paths.",
       "budget_eur": 0,
       "delivery_definition": {
         "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
