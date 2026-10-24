@@ -1443,7 +1443,9 @@
         "deliverable": "Small verified safety/performance improvements to existing reporting scripts",
         "evidence": "Dedicated node:test regression and GitHub PR checks",
         "handoff": "Draft PR with exact change list, no automatic promotion"
-      }
+      },
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "No art content, authoring, Unity changes or use of artistic tooling; report and documentation guard only."
     }
   ],
   "history": [
