@@ -501,7 +501,10 @@ namespace Eldoria.ReferenceClean.Editor {
    // This is an explicit local zoom (not a Focus() auto-fit back to macro).
    // Offset toward the screen's open centre while retaining the hotspot.
    h.WorldNavigation.PanTo(spawnTarget.transform.position+new Vector3(0,0,3f));
-   Need(h.WorldCamera.orthographicSize<=17f,"Local view zoom was silently lost");
+   Need(Mathf.Abs(h.WorldCamera.orthographicSize-h.WorldNavigation.localZoom)<.02f&&
+    h.WorldCamera.orthographicSize<h.WorldNavigation.regionalZoom*.25f,
+    "Local view zoom was silently lost: actual="+h.WorldCamera.orthographicSize+
+    " configuredLocal="+h.WorldNavigation.localZoom);
    yield return null;
    animated.NearPresence=animated.StrategicPresence=1f;
    yield return null;

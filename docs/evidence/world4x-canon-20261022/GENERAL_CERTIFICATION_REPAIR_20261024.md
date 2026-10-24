@@ -12,3 +12,10 @@ El presentador usa tiempo real a 46 caracteres/s. El probe espera un segundo y p
 GuardedProbe avanza la coroutine y captura cualquier excepción que escape de ella; escribe la excepción y sale con código 1, sin esperar 30 minutos. No suprime Need, Check ni ninguna prueba. Los pasos posteriores todavía deben pasar nativamente; esta reparación es pendiente de validación, no un PASS anticipado.
 
 El pase artístico posterior está preparado aparte, aún sin enviar. No se cambia el workflow de UI reservado por el otro workstream ni sus archivos de producto.
+
+## Segunda ejecución y navegación
+Run 40059877404 sobre d3a5e0fd41add8e99252f8aa1caf26ff1457efb3 (merge 956f7e01a12172596c41c28e7effb0a1c149e5a3) falla en ~84 s de probe, sin timeout. La apertura narrativa ya pasa. Nuevo primer fallo: Vertical map pan blocked. Artefacto 12547261820, ZIP SHA256 0453840dbf79ec632258e75ff30e403e381b7751328d0d52d5d1d50b84ed49b7 según workflow (no descarga independiente aún).
+
+Causa de producto: StrategicEntryZoom usa 82 % del zoom global cuando AllowWholeRegionOverview está activo. La panorámica completa tiene ajuste propio de aspecto/rumbo y puede exceder el rectángulo navegable; FitToAuthoredBounds centra el eje sin margen. Corrección: entrada al 82 % del mínimo entre zoom global y MaximumFittingZoom real, manteniendo la panorámica completa explícita. Las cuatro pruebas de pan, retorno, amplitud estratégica y no escritura de save permanecen intactas.
+
+La segunda aserción mantenía el umbral histórico <=17 tras cambiar el preset local del continente a 36/64. Se exige ahora igualdad al preset local con tolerancia 0,02 y zoom local menor que un cuarto del regional. No se sustituye por un límite arbitrario más alto ni se elimina la comprobación de zoom; se prueba el contrato vigente. Verificación nativa pendiente.

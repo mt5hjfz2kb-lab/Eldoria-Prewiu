@@ -51,6 +51,11 @@ namespace Eldoria.World4XPrototype
         /// </summary>
         public float StrategicEntryZoom()
         {
+            // Whole-region overview may exceed the navigable footprint, but
+            // first entry must retain room to pan on BOTH ground axes. The
+            // panorama's aspect/heading-specific zoom is not that limit.
+            if (AllowWholeRegionOverview)
+                return Mathf.Max(.1f, Mathf.Min(globalZoom, MaximumFittingZoom()) * .82f);
             float max = AllowWholeRegionOverview ? globalZoom : Mathf.Min(globalZoom, MaximumFittingZoom());
             float minimumWide = Mathf.Min(max, Mathf.Max(localZoom, regionalZoom * 1.65f));
             return Mathf.Max(minimumWide, max * .82f);
