@@ -13,6 +13,45 @@ def material(name,color):
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True;b=next(n for n in m.node_tree.nodes if n.type=='BSDF_PRINCIPLED');b.inputs['Base Color'].default_value=(*color,1);b.inputs['Roughness'].default_value=.95;return m
 stone=[material('Stone warm limestone',(.48,.44,.33)),material('Stone weathered planes',(.35,.34,.29)),material('Stone pale broken faces',(.64,.59,.46))]
 bark=material('Wood deeply grooved bark',(.19,.115,.055));heart=material('Wood cut heart',(.58,.37,.17))
+# Hand-worked resource features use ONLY the real root/model, no fake nodes.
+# Faceted low-poly geometry is shared by the three editable Blender variants.
+def finished_mesh(root,name,points,faces,mats,face_mats):
+ me=bpy.data.meshes.new(name+' mesh')
+ me.from_pydata(points,[],faces);me.update()
+ for mat in mats:me.materials.append(mat)
+ for face,index in zip(me.polygons,face_mats):face.material_index=index
+ ob=bpy.data.objects.new(name,me);collection.objects.link(ob)
+ ob.parent=root;objects.append(ob)
+ return ob
+
+def chopped_stump(root,x,y,height,radius,variant,number):
+ sides=12;lower=[];upper=[]
+ for i in range(sides):
+  angle=math.tau*i/sides
+  jitter=1+.07*math.sin(i*2.71+variant+number)
+  lower.append((x+radius*math.cos(angle)*jitter,y+radius*math.sin(angle)*jitter,0))
+  upper.append((x+radius*.89*math.cos(angle)*jitter,y+radius*.89*math.sin(angle)*jitter,height+.055*math.cos(angle*3+variant)))
+ points=lower+upper+[(x,y,height)]
+ faces=[];ids=[]
+ for i in range(sides):
+  j=(i+1)%sides
+  faces.append((i,j,j+sides,i+sides));ids.append(0)
+  faces.append((i+sides,j+sides,2*sides));ids.append(1)
+ finished_mesh(root,'Hand-cut timber stump '+str(number),points,faces,[bark,heart],ids)
+
+def dressed_stone(root,name,x,y,z,dx,dy,dz,variant):
+ # Eight chamfered perimeter corners: carved ledges, not generic stone cubes.
+ profile=[(-1,-.71),(-.72,-1),(.75,-1),(1,-.70),(1,.72),(.73,1),(-.77,1),(-1,.72)]
+ bottom=[(x+u*dx/2,y+v*dy/2,z) for u,v in profile]
+ top=[(x+u*dx*.48,y+v*dy*.48,z+dz+.035*math.sin(variant+u*4+v*2)) for u,v in profile]
+ pts=bottom+top+[(x,y,z+dz+.035)]
+ faces=[];ids=[]
+ for k in range(8):
+  j=(k+1)%8
+  faces.append((k,j,8+j,8+k));ids.append((k//3+variant)%3)
+  faces.append((8+k,8+j,16));ids.append((1+variant)%3)
+ finished_mesh(root,name,pts,faces,stone,ids)
+
 def clone(donor,name,root,position,scale,rotation):
  o=donor.copy();o.data=donor.data.copy();collection.objects.link(o);o.name=name;o.parent=root;o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=position;o.scale=scale;o.rotation_euler=(0,0,rotation);objects.append(o);return o
 for family in ['Wood','Stone']:
@@ -22,6 +61,11 @@ for family in ['Wood','Stone']:
    for k,(x,y,s) in enumerate([(-2.6,.7,.92),(.8,2.1,1.18),(2.3,-.4,.78),(-.8,-1.9,.67)]):
     a=variant*.65;xx=x*math.cos(a)-y*math.sin(a);yy=x*math.sin(a)+y*math.cos(a)
     clone(fir if k%2==0 else slender,'Wood crown '+str(k),root,(xx,yy,0),(s*1.5,s*1.5,s*1.7),variant+k*1.7)
+   # Wood nodes need harvest identity, unlike the surrounding decorative firs.
+   # Three cut stumps show worked timber in the very same resource model.
+   chopped_stump(root,-3.6,-2.1,.66,.73,variant,0)
+   chopped_stump(root,3.45,-2.35,.44,.51,variant,1)
+   chopped_stump(root,2.95,2.55,.90,.62,variant,2)
    # Curved/tapered trunk loft with exposed end grain, not a stack of cylinder primitives.
    for log in range(2):
     vv=[];ff=[]
@@ -46,6 +90,15 @@ for family in ['Wood','Stone']:
     o.data.materials.clear()
     for m in stone:o.data.materials.append(m)
     for p in o.data.polygons:p.material_index=(p.index+k+variant)%3;p.use_smooth=False
+# Carved extraction benches and prepared masonry change the quarry silhouette.
+# The original rock donor still supplies the central weathered geology.
+for variant in range(3):
+ root=next(x for x in roots if x.name=='Resource_Stone_'+str(variant))
+ dressed_stone(root,'Quarry exposed lower bench',-.55,-2.35,.02,5.3,2.6,.46,variant)
+ dressed_stone(root,'Quarry weathered second bench',-.65,-1.8,.44,4.4,1.9,.48,variant+1)
+ dressed_stone(root,'Quarry stepped cut face',-.85,-1.33,.87,3.1,1.15,.42,variant+2)
+ for i,(x,y,z) in enumerate([(-3.45,-2.55,.08),(3.45,-2.05,.07),(2.85,2.45,.07)]):
+  dressed_stone(root,'Quarry worked stone '+str(i),x,y,z,1.22,1.0,.74+.12*i,variant+i)
 # Place all variant bases exactly on z=0, preserving individual silhouettes and meaningful pivots.
 for root in roots:
  children=list(root.children);bpy.context.view_layer.update()

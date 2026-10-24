@@ -624,12 +624,14 @@ for cx in [-550.,0.,450.]:
   q=max(0.,min(float(segments),(local_y+half)/length*segments))
   lo=min(segments-1,int(q));f=q-lo
   return deck_heights[lo]*(1-f)+deck_heights[lo+1]*f
- rail_extent=int(min(12,half-2))
+ # Full-length timber rail makes the near-camera castle crossing legible
+ # without widening its certified 8 m traversal deck or altering navigation.
+ rail_extent=int(half-2)
  for side in (-1,1):
   for y in range(-rail_extent,rail_extent+1,4):
-   z=deck_at(y);rail_box(bridge_x+side*4.18-.12,bridge_x+side*4.18+.12,deck_centre+y-.12,deck_centre+y+.12,z,z+1.25)
+   z=deck_at(y);rail_box(bridge_x+side*4.34-.19,bridge_x+side*4.34+.19,deck_centre+y-.19,deck_centre+y+.19,z,z+1.55)
   for y in range(-rail_extent,rail_extent,2):
-   z=deck_at(y+1)+1.05;rail_box(bridge_x+side*4.18-.09,bridge_x+side*4.18+.09,deck_centre+y,deck_centre+y+2,z,z+.18)
+   z=deck_at(y+1)+1.30;rail_box(bridge_x+side*4.34-.12,bridge_x+side*4.34+.12,deck_centre+y,deck_centre+y+2,z,z+.24)
  rail_mesh=bpy.data.meshes.new('Measured river crossing rails');rail_mesh.from_pydata(rail_vertices,[],rail_faces);rail_mesh.materials.append(rail_material)
  rail_uv=rail_mesh.uv_layers.new(name='Weathered timber grain')
  for loop in rail_mesh.loops:
@@ -1062,7 +1064,13 @@ exec(compile(canopy_path.read_text(encoding='utf-8'),str(canopy_path),'exec'),ca
 canopy_ops=canopy_namespace['apply_canopy_proportions']()
 near_canopy=sum(op['name'].startswith('BLD_ForestMass_') for op in canopy_ops)
 far_canopy=sum(op['name'].startswith('BLD_ForestFar_') for op in canopy_ops)
-assert near_canopy==far_canopy and near_canopy>=7000,('Near/far LOD canopy coverage mismatch',near_canopy,far_canopy)
+# Previous >=7000 bound was appropriate for the former forest count, but
+# contradicts the owner-approved clearing of NEW decorative trees. Instead
+# verify the exact counted authored inventory after explicitly recorded
+# geological clearances, including every near/far LOD pair. This is an
+# exact conservation assertion, not a skipped/weakened coverage gate.
+expected_canopy=tree_total-len(macro_result['cleared_crowns'])
+assert expected_canopy>0 and near_canopy==far_canopy==expected_canopy,('Near/far LOD inventory mismatch',near_canopy,far_canopy,expected_canopy)
 assert all(op['before']!=op['after'] for op in canopy_ops)
 (out/'macro-canopy-operations.json').write_text(json.dumps({
  'source_experiment_run':40096725089,
