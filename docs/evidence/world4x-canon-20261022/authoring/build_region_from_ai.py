@@ -232,6 +232,26 @@ rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(np.array([.56,.49,.33])+grain[:,:,
 brush=(.5+.5*np.sin(X*.37+Y*.21+2*np.sin(Y*.053))*np.sin(Y*.29-X*.16))**2
 grass_ink=brush*(1-forest)*(1-mask)*.12
 rgba[:,:,:3]=rgba[:,:,:3]*(1-grass_ink[:,:,None])+np.array([.62,.59,.33])*grass_ink[:,:,None]
+# Reuse AF's accepted directed meadow strokes at actual woodland clearings.
+# Evaluate small bounded patches, not a global random/noise overlay or repeated tile.
+habitat_paint=np.zeros(X.shape,np.float32)
+for n,(gx,gy,grx,gry) in enumerate(groves):
+ for side in range(2):
+  angle=n*.73+side*2.37
+  cx=gx+math.cos(angle)*grx*1.04;cy=gy+math.sin(angle)*gry*1.04
+  rx=38+(n*17+side*13)%34;ry=19+(n*7+side*11)%19
+  ix0=max(0,int((cx-rx*1.8+910)/1820*(S-1)));ix1=min(S,int((cx+rx*1.8+910)/1820*(S-1))+2)
+  iy0=max(0,int((cy-ry*2.5+1800)/3600*(S-1)));iy1=min(S,int((cy+ry*2.5+1800)/3600*(S-1))+2)
+  if ix1<=ix0 or iy1<=iy0:continue
+  area=np.s_[iy0:iy1,ix0:ix1];px=X[area];py=Y[area]
+  crest=cy+4.5*np.sin((px-cx)/19+n*.7)+2.5*np.sin((px-cx)/9+n*1.3)
+  spine=np.exp(-((px-cx)/rx)**4)*np.exp(-((py-crest)/ry)**4)
+  broken=.86+.14*np.sin(px*.24+py*.11+n*1.1)*np.cos(py*.29-px*.08)
+  weight=np.clip(spine*broken*.43*(1-mask[area])*(1-forest[area]*.52),0,.47)
+  weight*=smooth((dr[area]-np.broadcast_to(river_half,X.shape)[area]-3)/9)*smooth(coast(px,py)/20)
+  tone=np.array([( .66,.59,.34),(.44,.50,.27),(.56,.52,.30)][(n+side)%3])
+  rgba[area][:,:,:3]=rgba[area][:,:,:3]*(1-weight[:,:,None])+tone*weight[:,:,None]
+  habitat_paint[area]=np.maximum(habitat_paint[area],weight)
 # Raycast the actual original polygons, interpolate their original UVs, then read
 # their active image. Only NEW extension pixels receive this 110 m boundary glaze.
 image_cache={}
@@ -272,7 +292,7 @@ for side in range(4):
   broad=np.interp(axis,grid,soft_edges[side][:,channel]);fine=np.interp(axis,grid,edges[side][:,channel])
   colour=broad+(fine-broad)*(1-smooth(distance/2.5))
   rgba[:,:,channel]=rgba[:,:,channel]*(1-weight)+colour*weight
-for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental broken grass brush mask',grass_ink),('Continental original-edge glaze',glaze)]:
+for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental broken grass brush mask',grass_ink),('Continental original-edge glaze',glaze),('AF directed woodland clearing strokes',habitat_paint)]:
  edit=bpy.data.images.new(name,S,S);edit.colorspace_settings.name='Non-Color';edit.use_fake_user=True
  values=np.ones((S,S,4),np.float32);values[:,:,:3]=data[:,:,None];edit.pixels.foreach_set(values.ravel());edit.pack()
 im=bpy.data.images.new('Region1 authored meadow and woodland pigment',S,S);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'Region1_continental.png');im.file_format='PNG';im.save();im.pack()

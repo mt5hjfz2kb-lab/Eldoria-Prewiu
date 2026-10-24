@@ -52,7 +52,7 @@ namespace Eldoria.World4XCanon
             float overview=Mathf.Max(910/Mathf.Max(.1f,camera.aspect),1625)*1.04f;
             float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(overview*.85f,overview,camera.orthographicSize));
             foreach(var material in owned)material.SetFloat("_BoundaryWeight",atmosphere);
-            background=camera.backgroundColor;camera.backgroundColor=Color.Lerp(background,new Color(.66f,.71f,.67f,1),atmosphere);
+            background=camera.backgroundColor; // Preserve the existing continental clear colour; grey increased the tile silhouette.
             sun=RenderSettings.sun;
             if(!sun)sun=FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.enabled&&l.type==LightType.Directional).OrderByDescending(l=>l.intensity).FirstOrDefault();
             if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;sun.transform.rotation=Quaternion.Euler(48,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}

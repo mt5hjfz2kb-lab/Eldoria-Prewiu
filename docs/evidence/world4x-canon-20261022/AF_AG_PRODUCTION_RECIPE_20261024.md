@@ -142,3 +142,13 @@ Dos arboledas pequeñas enlazan la composición exterior; su tamaño crece gradu
 
 ### Resultado de sombras y guardados antiguos
 Fuente `0901ac3cd9df17d1b29f4c218477faa317d80444`, run 40049855982, materialización `adb788ab0d2ae99e48d5e9ce485ba43b3626758a`: **27/27 PASS**, cero omitidos, 167,74 s de Editor. ZIP visual 12543690827, SHA256 `213d0c9722735c4f4d62edcd910d90c2a44852ac38e4a66338134a62eb988246`. El PNG regional horizontal confirma la desaparición de las líneas negras tras respetar el fade de sombras URP. Las copas cercanas y la proporción del recurso de madera mejoran; la panorámica aún presenta un contorno demasiado regular y el empalme del núcleo continúa reconocible. El siguiente experimento descrito arriba sigue siendo necesario; no se declara aprobación artística.
+
+
+### Transferencia AF de claros y bordes de bosque
+Preparado para el pase siguiente: se reutiliza la construcción exacta de trazos AF de `finish_connected_sector.py` (espina exp(-x⁴), centros ondulados 4,5/2,5 m, borde quebrado 0,86±0,14 y paletas aceptadas I/AF). Dos trazos dirigidos por arboleda se sitúan en su borde real, con anchuras desiguales de 38–71 m y 19–37 m y mezcla máxima 0,43. Conservan caminos, agua, costa y sotobosque mediante máscaras independientes; no son círculos repetidos ni una capa global de ruido. Se evalúan solo sus rectángulos locales y se guarda `AF directed woodland clearing strokes` en el BLEND.
+
+Su propósito es recuperar variedad pictórica a escala de claros en la ampliación, donde los lavados continentales todavía resultan demasiado uniformes en las capturas cercanas. No cambia UV/textura/malla originales, terreno físico, colliders, recursos o navegación. Necesita nueva construcción e inspección nativa antes de considerarse aceptado.
+
+
+### Revisión nativa del empalme
+Fuente `9b0d58ff14e128f2e39d60a5ee0e794f4aee0d71`, run 40051179268, materialización `9bd55a0b9f737ecd2076da7661f97454c69fdd90`: 27 pruebas satisfactorias, ninguna omitida. Artefacto visual 12543708162, SHA256 `ff164798799466194a29069b57c625b57f0e4a2c9df6c8cccd05acc56df8746c`. Se conserva el empalme ampliado y la vegetación de transición. Se rechaza el cambio de fondo a gris: la imagen panorámica auténtica muestra que aumenta el contraste del contorno rectangular. El siguiente pase conserva el color continental previo y la restauración comprobada de cámara, junto con los trazos locales AF descritos arriba. La geografía no se recorta ni se oculta para alterar las pruebas de cobertura.
