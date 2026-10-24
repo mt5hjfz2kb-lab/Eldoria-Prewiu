@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T12:05:00Z",
+  "updated_at": "2026-10-24T12:10:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1433,13 +1433,14 @@
         "tools/art-knowledge/select.test.mjs",
         "tools/mission-continuity/core.mjs",
         "tools/mission-continuity/core.test.mjs",
-        "docs/evidence/art-memory-continuity-safety-20261024/**"
+        "docs/evidence/art-memory-continuity-safety-20261024/**",
+        ".github/workflows/repository-architecture-guard.yml"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Only read-only selection and continuity decisions; no artistic edits, generation, Unity scene, credits or hardware reservation.",
       "phase": "ISOLATED_UNIT_TESTS_AND_REVIEW",
-      "next": "Harden art-memory preflight to surface verified rejection and pivot warnings; ensure explicit pauses cannot trigger artificial recovery. Verify Node unit tests on Ubuntu. Open draft PR; do not merge on incomplete/failing checks, run Unity, publish, or modify other owners.",
+      "next": "Run art-memory and pause-continuity unit tests in existing lightweight Ubuntu repository architecture guard; preserve other checks and never access Unity/Windows or publish. Open draft PR with exact SHA and verify.",
       "budget_eur": 0,
       "delivery_definition": {
         "deliverable": "Validated improvements in existing memory selection and mission recovery policy",
