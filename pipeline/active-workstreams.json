@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T08:39:55.146Z",
+  "updated_at": "2026-10-24T12:05:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1418,6 +1418,33 @@
         "parent_before_lease": "278d5fe1a9830dab8f50af8710661f3e906d33c7",
         "ui_run_finished": 40074059376,
         "status": "RESERVED_NOT_VERIFIED"
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-safety-20261024",
+      "title": "Memoria artística priorizada y continuidad sin falsas recuperaciones",
+      "owner": "chatgpt-art-memory-continuity-20261024",
+      "branch": "chore/art-memory-continuity-safety-20261024",
+      "status": "active",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        "docs/evidence/art-memory-continuity-safety-20261024/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only read-only selection and continuity decisions; no artistic edits, generation, Unity scene, credits or hardware reservation.",
+      "phase": "ISOLATED_UNIT_TESTS_AND_REVIEW",
+      "next": "Harden art-memory preflight to surface verified rejection and pivot warnings; ensure explicit pauses cannot trigger artificial recovery. Verify Node unit tests on Ubuntu. Open draft PR; do not merge on incomplete/failing checks, run Unity, publish, or modify other owners.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Validated improvements in existing memory selection and mission recovery policy",
+        "evidence": "Exact tests of selected/rejected art knowledge and paused workstream classification",
+        "handoff": "Draft PR; retain review pending without touching game"
       }
     }
   ],
