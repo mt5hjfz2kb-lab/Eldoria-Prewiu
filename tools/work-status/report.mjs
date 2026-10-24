@@ -43,9 +43,15 @@ export function versionStates({head,delivery,android}){
     android_channel:{version:android?.enabled===true?android.versionName||null:null,
       basis:'enabled_channel_manifest_not_installed_device_verification'}};
 }
+// This is a declared registry state, not evidence that an agent or machine is running.
+export function declaredOperatingState(workstream){
+  if(/^OWNER_PAUSED_/i.test(workstream?.phase||'') || /^PAUSED BY OWNER\b/i.test(workstream?.next||'')) return 'paused_by_owner';
+  if(!workstream?.owner) return 'unassigned_in_registry';
+  return 'claimed_in_registry';
+}
 export function summarize({registry,delivery=null,android=null,head=null,live=null,checkedAt=new Date().toISOString()}){
   if(!Array.isArray(registry?.active))throw Error('Canonical registry active array missing');
-  const active=registry.active.map(w=>({id:w.id,title:short(w.title),owner:short(w.owner),branch:short(w.branch),declared_status:w.status,declared_phase:short(w.phase),declared_next:short(w.next),declared_resources:Array.isArray(w.resources)?w.resources:[],delivery_definition:{deliverable:short(w.delivery_definition?.deliverable),evidence:short(w.delivery_definition?.evidence),handoff:short(w.delivery_definition?.handoff)},live_branch:live?.branches?.[w.branch]||{status:'not_checked'}}));
+  const active=registry.active.map(w=>({id:w.id,title:short(w.title),owner:short(w.owner),branch:short(w.branch),declared_status:w.status,declared_phase:short(w.phase),declared_operating_state:declaredOperatingState(w),declared_next:short(w.next),declared_resources:Array.isArray(w.resources)?w.resources:[],delivery_definition:{deliverable:short(w.delivery_definition?.deliverable),evidence:short(w.delivery_definition?.evidence),handoff:short(w.delivery_definition?.handoff)},live_branch:live?.branches?.[w.branch]||{status:'not_checked'}}));
   return {schema_version:1,checked_at:checkedAt,source_head:head,read_only:true,
     authority:'pipeline/active-workstreams.json; pipeline/playtest-delivery.json; updates/android/family.json',
     active,windows:live?.windows||{observation:'not_checked',running:[],queued:[],errors:[]},
@@ -105,13 +111,16 @@ export async function collectLive({github,repo,active,now=()=>new Date().toISOSt
 const md=v=>String(v??'—').replace(/[\r\n]/g,' ').replace(/[|<>\[\]`]/g,' ').slice(0,500);
 export function markdown(report){
   let out='# Eldoria — estado operativo\n\nConsulta: '+md(report.checked_at)+' · HEAD: '+md(report.source_head)+'\n\n';
-  out+='| Trabajo activo | Rama | Fase declarada | Observación de rama |\n| --- | --- | --- | --- |\n';
-  for(const w of report.active)out+='| '+md(w.title||w.id)+' | '+md(w.branch)+' | '+md(w.declared_phase||w.declared_status)+' | '+md(w.live_branch.status)+' |\n';
+  out+='| Trabajo registrado | Rama | Situación declarada | Fase | Observación de rama |\n| --- | --- | --- | --- | --- |\n';
+  for(const w of report.active)out+='| '+md(w.title||w.id)+' | '+md(w.branch)+' | '+md(w.declared_operating_state)+' | '+md(w.declared_phase||w.declared_status)+' | '+md(w.live_branch.status)+' |\n';
+  const timedBranches=new Set();
   for(const w of report.active){
     out+='\nEntrega de '+md(w.title||w.id)+': '+md(w.delivery_definition.deliverable||'sin definición explícita registrada')+'; evidencia: '+md(w.delivery_definition.evidence)+'; cierre: '+md(w.delivery_definition.handoff)+'.\n';
     const sample=w.live_branch.timing_sample;
-    if(sample){
-      out+='\nMuestra de tiempos: '+md(sample.status)+'; run '+md(sample.run_id)+'; SHA '+md(sample.source_sha)+'. No certifica el HEAD actual.\n';
+    // A branch can have several workstreams. Show its timing evidence once, not once per owner.
+    if(sample && !timedBranches.has(w.branch)){
+      timedBranches.add(w.branch);
+      out+='\nMuestra de tiempos (rama '+md(w.branch)+'): '+md(sample.status)+'; run '+md(sample.run_id)+'; SHA '+md(sample.source_sha)+'. No certifica el HEAD actual.\n';
       if(sample.jobs?.length)out+='\n| Job | Espera (s) | Transcurrido (s) | Preparación | Build | Pruebas | Entrega | Otros |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n';
       for(const j of sample.jobs||[]){const t=j.timing,s=t.stage_seconds;out+='| '+md(j.name)+' | '+md(t.queue_seconds)+' | '+md(t.elapsed_seconds)+(t.duration_final?'':' (en curso)')+' | '+['preparation','build','test','delivery','other'].map(k=>md(s?.[k])).join(' | ')+' |\n';}
     }
@@ -122,6 +131,7 @@ export function markdown(report){
   out+='\nWebGL: candidata '+md(report.web.candidate_revision)+'; última revisión confirmada en el manifiesto '+md(report.web.confirmed_revision)+'; subida '+md(report.web.uploaded_revision)+'; activación de esa subida confirmada: '+report.web.uploaded_activation_confirmed+'.\n';
   out+='\nAndroid: canal habilitado '+report.android.enabled+'; versión '+md(report.android.version_name)+' / código '+md(report.android.version_code)+'.\n';
   out+='\nVersiones: desarrollo '+md(report.versions.development.source_sha)+'; candidata WebGL '+md(report.versions.web_candidate.revision)+' con QA técnica registrada para esa revisión: '+report.versions.web_candidate.technical_qa_recorded+'; disponible WebGL según confirmación registrada: '+md(report.versions.web_available.revision)+'; canal Android habilitado: '+md(report.versions.android_channel.version)+'. No se deduce equivalencia entre estas versiones.\n';
+  out+='\nSituación declarada: paused_by_owner = pausa explícita; unassigned_in_registry = sin titular registrado (NO significa disponible); claimed_in_registry = titular registrado (NO implica agente ejecutándose).\n';
   out+='\nLas fases son declaraciones del registro; los jobs y conclusiones del JSON son observaciones separadas. Este resumen no aprueba arte, juego, móvil ni publicaciones. La ausencia de jobs observados no demuestra que el PC esté libre.\n';
   return out;
 }
