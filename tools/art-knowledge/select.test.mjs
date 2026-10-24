@@ -55,7 +55,7 @@ test('rejects unknown request profiles and malformed identifiers',()=>{
  assert.throws(()=>selectKnowledge({profile:'animated_asset',request_id:'../../bad'},source),/INVALID_WORKSTREAM_ID/);
 });
 
-test('rejected technique remains visible in truncated 1800-character Qwen memory',()=>{
+test('rejected technique remains visible in a compact model-independent art brief',()=>{
  const base=source.catalog.records.find(x=>x.evidence_status==='art_rejected')||source.catalog.records[0];
  const bad={...base,id:'K999',family:'environment',evidence_status:'art_rejected',
    problem:'bridge terrain shoreline camera world4x',
@@ -95,4 +95,14 @@ test('two independent, admitted negative reviews for the same request signal a s
  assert.equal(foreign.pivot_advisory.method_change_required,false,'Never transfer failures from another workstream');
  const duplicate=selectKnowledge(base,{...modified,journal:{...modified.journal,records:[sample('1'),{...sample('2'),review_sha256:'1'.repeat(64)}]}});
  assert.equal(duplicate.pivot_advisory.method_change_required,false,'Duplicated review evidence is not two independent failures');
+});
+
+
+test('art-memory briefing no longer requires Qwen as the artistic director',()=>{
+ const result=selectKnowledge(req('environment_composition','bosque pradera', 'composición de Región 1'),source);
+ assert.equal(result.qa_boundary.mode,'READ_ONLY_ART_DIRECTION_BRIEF_NO_MODEL_DEPENDENCY');
+ assert.match(result.inventory_text,/ChatGPT; Qwen and Ollama are NOT required/);
+ assert.equal(result.qa_boundary.artist_decisions_executed,false);
+ assert.equal(result.qa_boundary.art_approved,false);
+ assert.equal(result.qa_boundary.qwen_has_received_inventory,false); // historical compatibility only
 });
