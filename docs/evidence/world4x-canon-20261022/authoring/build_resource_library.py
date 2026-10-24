@@ -21,7 +21,7 @@ for family in ['Wood','Stone']:
   if family=='Wood':
    for k,(x,y,s) in enumerate([(-2.6,.7,.92),(.8,2.1,1.18),(2.3,-.4,.78),(-.8,-1.9,.67)]):
     a=variant*.65;xx=x*math.cos(a)-y*math.sin(a);yy=x*math.sin(a)+y*math.cos(a)
-    clone(fir if k%2==0 else slender,'Wood crown '+str(k),root,(xx,yy,0),(s*1.15,s*1.15,s*2.0),variant+k*1.7)
+    clone(fir if k%2==0 else slender,'Wood crown '+str(k),root,(xx,yy,0),(s*1.5,s*1.5,s*1.7),variant+k*1.7)
    # Curved/tapered trunk loft with exposed end grain, not a stack of cylinder primitives.
    for log in range(2):
     vv=[];ff=[]

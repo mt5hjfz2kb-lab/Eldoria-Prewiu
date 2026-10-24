@@ -221,8 +221,17 @@ coastal=smooth((26-coast(X,Y))/24)*.45
 rgba[:,:,:3]=rgba[:,:,:3]*(1-coastal[:,:,None])+np.array([.59,.54,.37])*coastal[:,:,None]
 fracture=smooth((36-fault_distance(X,Y))/28)*.58
 rgba[:,:,:3]=rgba[:,:,:3]*(1-fracture[:,:,None])+np.array([.37,.32,.36])*fracture[:,:,None]
-mask=smooth((3.8-road)/2.1)*(.86+.14*np.sin(X*.35+Y*.21))
+# Grounded violet mineral stain at the actual fracture anchor, not a portal.
+fracture_heart=np.exp(-((X+260)/55)**2-((Y-150)/65)**2)*.65
+fracture_heart*=.85+.15*np.sin(X*.23+Y*.19)*np.cos(Y*.17-X*.11)
+rgba[:,:,:3]=rgba[:,:,:3]*(1-fracture_heart[:,:,None])+np.array([.22,.09,.29])*fracture_heart[:,:,None]
+mask=smooth((3.8-road+.3*np.sin(X*.72+Y*.29))/2.1)*(.73+.17*np.sin(X*.31+Y*.49)+.10*np.cos(Y*.64-X*.28))
 rgba[:,:,:3]=rgba[:,:,:3]*(1-mask[:,:,None])+(np.array([.56,.49,.33])+grain[:,:,None])*mask[:,:,None]
+# Transfer AF's broken middle-scale brush language, between macro washes and
+# source-derived fine grass. Keep roads, forest litter and original UVs separate.
+brush=(.5+.5*np.sin(X*.37+Y*.21+2*np.sin(Y*.053))*np.sin(Y*.29-X*.16))**2
+grass_ink=brush*(1-forest)*(1-mask)*.12
+rgba[:,:,:3]=rgba[:,:,:3]*(1-grass_ink[:,:,None])+np.array([.62,.59,.33])*grass_ink[:,:,None]
 # Raycast the actual original polygons, interpolate their original UVs, then read
 # their active image. Only NEW extension pixels receive this 55 m boundary glaze.
 image_cache={}
@@ -263,7 +272,7 @@ for side in range(4):
   broad=np.interp(axis,grid,soft_edges[side][:,channel]);fine=np.interp(axis,grid,edges[side][:,channel])
   colour=broad+(fine-broad)*(1-smooth(distance/2.5))
   rgba[:,:,channel]=rgba[:,:,channel]*(1-weight)+colour*weight
-for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental original-edge glaze',glaze)]:
+for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental broken grass brush mask',grass_ink),('Continental original-edge glaze',glaze)]:
  edit=bpy.data.images.new(name,S,S);edit.colorspace_settings.name='Non-Color';edit.use_fake_user=True
  values=np.ones((S,S,4),np.float32);values[:,:,:3]=data[:,:,None];edit.pixels.foreach_set(values.ravel());edit.pack()
 im=bpy.data.images.new('Region1 authored meadow and woodland pigment',S,S);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'Region1_continental.png');im.file_format='PNG';im.save();im.pack()
@@ -460,7 +469,7 @@ shared_masters=[]
 for master in masters:
  derived=master.copy();derived.data=master.data.copy();scene.collection.objects.link(derived)
  derived.hide_render=True;derived.hide_set(False);bpy.ops.object.select_all(action='DESELECT');derived.select_set(True);bpy.context.view_layer.objects.active=derived
- mod=derived.modifiers.new('Continental shared crown LOD0','DECIMATE');mod.ratio=.4;bpy.ops.object.modifier_apply(modifier=mod.name)
+ mod=derived.modifiers.new('Continental shared crown LOD0','DECIMATE');mod.ratio=.7;bpy.ops.object.modifier_apply(modifier=mod.name)
  shared_masters.append(derived)
 masters=shared_masters
 tree_total=0
@@ -478,7 +487,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   if any((x-a)**2+(y-b)**2<9.0**2 for a,b in positions):continue
   positions.append((x,y));k=len(positions)
   donor=masters[k%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_'+str(index).zfill(2)+'_'+str(k).zfill(3)
-  scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));o.scale=(scale*random.uniform(.88,1.15),scale,scale*random.uniform(.88,1.2));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
+  scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));o.scale=(scale*random.uniform(1.15,1.5),scale*1.25,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
   if len(parts)>=(240 if index<25 else 155):break
  if not parts:continue
  tree_total+=len(parts)
@@ -496,7 +505,7 @@ for near in list(scene.objects):
  else:
   far.data=near.data.copy()
   bpy.ops.object.select_all(action='DESELECT');far.select_set(True);bpy.context.view_layer.objects.active=far
-  mod=far.modifiers.new('Mobile distant silhouette','DECIMATE');mod.ratio=.16;bpy.ops.object.modifier_apply(modifier=mod.name);far_cache[key]=far.data
+  mod=far.modifiers.new('Mobile distant silhouette','DECIMATE');mod.ratio=.09 if near.name.startswith('BLD_ForestMass_') else .16;bpy.ops.object.modifier_apply(modifier=mod.name);far_cache[key]=far.data
 # Source meshes remain editable but excluded from export; remove no historical file.
 # Export includes only genuinely visible scene geometry and the assembled geography.
 anchor=bpy.data.objects.new('BLD_BreachAnchor',None);scene.collection.objects.link(anchor);anchor.location=(-260,150,0)

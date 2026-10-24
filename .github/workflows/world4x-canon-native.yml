@@ -234,7 +234,7 @@ jobs:
           if(-not(Test-Path $xml)){throw 'Missing actual Unity PlayMode result'}
           [xml]$result=Get-Content $xml -Raw
           $nodes=@($result.SelectNodes('//test-case'))
-          if($nodes.Count -lt 18){throw "Expected at least 18 integrated, progression, UI and combat cases, got $($nodes.Count)"}
+          if($nodes.Count -lt 27){throw "Expected at least 27 integrated, legacy-save, progression, UI and combat cases, got $($nodes.Count)"}
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
           if($captures.Count -ne 16){throw "Missing actual clean-world and blockout PNGs: expected sixteen genuine Unity captures, got $($captures.Count)"}
@@ -244,7 +244,7 @@ jobs:
             if(-not $proof.fullSizeNavigation -or -not $proof.originalSaveUntouched -or $proof.testMarkerScale -ne 1 -or $proof.duplicateCount -ne 0){throw 'Living sector proof incomplete'}
             if(@(Get-ChildItem $living -Filter '*.png').Count -ne 12){throw 'Missing living sector camera captures'}
           }
-          Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) CLEAN_WORLD_AND_BLOCKOUT (NOT art/mobile QA)"
+          Write-Host "REGION1_CANON_INTEGRATED_PLAYMODE_PASS cases=$($nodes.Count) captures=$($captures.Count) NATIVE_TECHNICAL_PASS (NOT artistic approval or physical mobile QA)"
       - name: Recover exact already verified Unity authoring snapshot
         if: contains(github.event.head_commit.message, 'author-retry(world4x):')
         uses: actions/download-artifact@v4

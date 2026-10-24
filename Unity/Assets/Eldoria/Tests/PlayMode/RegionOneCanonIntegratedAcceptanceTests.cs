@@ -36,6 +36,28 @@ namespace Eldoria.Tests
             }
         }
         [Test]
+        public void LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot()
+        {
+            var clock=new PopulationClock();var store=new PopulationStore();
+            store.Save(new Eldoria.Domain.PlayerState{BastionLevel=2,ScoutDefeated=true,EngendroDefeated=true});
+            var prepared=new Eldoria.Application.LocalGateway(clock,store).Snapshot();
+            store.Save(prepared);string baseline=store.Json;
+            Assert.That(baseline,Does.Contain(",\"WorldResourceLocations\":[]"));
+            // Exact legacy field absence, through the real JSON store and gateway constructor.
+            store.Json=baseline.Replace(",\"WorldResourceLocations\":[]","");
+            Assert.That(store.Json,Does.Not.Contain("WorldResourceLocations"));
+            var loaded=new Eldoria.Application.LocalGateway(clock,store);
+            Assert.That(JsonUtility.ToJson(loaded.Snapshot()),Is.EqualTo(baseline),"Loading legacy schema 1 must preserve every existing serialized field");
+            loaded.ConfigureLocalResourceRespawn(new PopulationPlacement(),TimeSpan.FromMinutes(30));loaded.EnsureLocalRenewablePopulation(24,24);
+            var after=loaded.Snapshot();Assert.That(after.WorldResourceLocations.Count,Is.EqualTo(48));
+            Assert.That(after.BastionLevel,Is.EqualTo(prepared.BastionLevel));
+            Assert.That(after.ScoutDefeated&&after.EngendroDefeated,Is.True);
+            Assert.That(JsonUtility.ToJson(after.Resources),Is.EqualTo(JsonUtility.ToJson(prepared.Resources)));
+            var restarted=new Eldoria.Application.LocalGateway(clock,store).Snapshot();
+            Assert.That(restarted.WorldResourceLocations.Select(x=>x.TargetId).Distinct().Count(),Is.EqualTo(48));
+        }
+
+        [Test]
         public void RealGatewayResourceRespawnPersistsWithoutDuplicatingOrRevivingCampaign()
         {
             var clock=new PopulationClock();var store=new PopulationStore();

@@ -32,14 +32,22 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  #endif
  half4 c=SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,i.uv)*_BaseColor*UNITY_ACCESS_INSTANCED_PROP(PerTree,_InstanceTint);clip(c.a-.35);
  float d=frac(52.9829189*frac(dot(floor(i.p.xy),float2(.06711056,.00583715))));clip(_Baked>.5?_Fade-d:d-_Fade);
- Light l=GetMainLight(TransformWorldToShadowCoord(i.world));
+ #if defined(_MAIN_LIGHT_SHADOWS_SCREEN)
+ float4 shadowCoord=ComputeScreenPos(TransformWorldToHClip(i.world));
+ #else
+ float4 shadowCoord=TransformWorldToShadowCoord(i.world);
+ #endif
+ Light l=GetMainLight(shadowCoord);
+ // The AG sector camera is within 300 m; continental cameras are not.
+ // Respect URP shadow distance instead of sampling beyond its cascade coverage.
+ float shadow=lerp(l.shadowAttenuation,1,GetMainLightShadowFade(i.world));
  float diffuse=saturate(dot(normalize(i.normal),l.direction));
  float2 detailUV=(i.world.xz-_RegionOrigin.xz)/float2(21.12,14.72);
  float2 rotatedDetail=float2(detailUV.x*.8-detailUV.y*.6,detailUV.x*.6+detailUV.y*.8)*.73+float2(.37,.61);
  half3 grain=(SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV).rgb+SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,rotatedDetail).rgb);
  float detailFootprint=max(length(ddx(detailUV)),length(ddy(detailUV)));
  c.rgb*=lerp(half3(1,1,1),grain,_GroundDetailStrength*(1-smoothstep(.018,.1,detailFootprint)));
- if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*l.shadowAttenuation);
+ if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);
  float2 region=i.world.xz-_RegionOrigin.xz;
  // Thin peripheral atmosphere only at whole-region overview, never regional fog.
  float west=910+region.x, east=910-region.x, north=1800-region.y, south=1800+region.y;
@@ -59,9 +67,9 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  float3 _LightDirection;
  V shadowVert(A a){V o=vert(a);o.p=TransformWorldToHClip(ApplyShadowBias(o.world,o.normal,_LightDirection));
  #if UNITY_REVERSED_Z
- o.p.z=min(o.p.z,UNITY_NEAR_CLIP_VALUE);
+ o.p.z=min(o.p.z,o.p.w*UNITY_NEAR_CLIP_VALUE);
  #else
- o.p.z=max(o.p.z,UNITY_NEAR_CLIP_VALUE);
+ o.p.z=max(o.p.z,o.p.w*UNITY_NEAR_CLIP_VALUE);
  #endif
  return o;}
  half4 shadowFrag(V i):SV_Target {
