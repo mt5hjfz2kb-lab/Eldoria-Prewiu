@@ -1144,10 +1144,12 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "docs/documentation-catalog.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "GENERAL_INTEGRATION_NATIVE_CAMERA_REPAIR",
-      "next": "Native world 40056123101 remains 27/27 +126 verified PNG, AF/AG preserved. General cert 40057377057 exposed time-dependent reveal probe and uncaught coroutine error (fixed d3a5e0f). 40059877404/40060419399/40060939669 exposed strategic pan; exact numeric pose ruled out heading/bounds as remaining cause. Current 97e949d applies camera depth synchronously with zoom; general cert 40061480616 RUNNING. Await actual result before native art pass; do not claim general PASS. Continental AF prairie/peripheral continuity changes and same-frame gesture rays are prepared but not committed; same PR100. No merge/publication.",
+      "phase": "FULL_GPU_CERTIFICATION_AND_AF_CONTINENTAL_PRAIRIE",
+      "next": "General run 40061480616 verified 44 real I-II checks +26/26 EditMode +56/57 PlayMode, 0 failed, 1 graphics capture intentionally ignored without output directory; UI aggregate rejects Skipped:Ignored. Run the full 57-case GPU suite, same I-II/framing probe and all EditMode in owned world native workflow, no omitted tests or UI workflow edits. Combine bounded new-terrain AF prairie/peripheral continuity pass; preserve original AF/AG. Require 126 world PNG +34 fresh UI PNG and exact proof before materializing. No merge/publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1257,14 +1259,16 @@
         },
         "general_integration": {
           "source": "97e949d1f2cc3f689343e8c3bea734e6c747bac3",
+          "merge_source": "6fcc928be4a2998e0f9f579139644667e65623d8",
           "run": 40061480616,
-          "status": "running_not_certified",
-          "previous_failed_runs": [
-            40057377057,
-            40059877404,
-            40060419399,
-            40060939669
-          ],
+          "status": "SCENE_44_AND_EDIT_26_PASS_PLAY_56_PASS_1_CAPTURE_IGNORED_WORKFLOW_FAILED",
+          "editmode_passed": 26,
+          "playmode_passed": 56,
+          "playmode_failed": 0,
+          "playmode_skipped": 1,
+          "probe_checks": 44,
+          "artifact": 12547563891,
+          "artifact_sha256": "e57486f248dbb86ca20a4b633227433794cc5c7b7ef44be112ef3f2d7fe25f36",
           "report": "docs/evidence/world4x-canon-20261022/GENERAL_CERTIFICATION_REPAIR_20261024.md"
         }
       },
