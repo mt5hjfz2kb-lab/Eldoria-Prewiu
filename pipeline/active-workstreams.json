@@ -1432,13 +1432,14 @@
         "tools/art-knowledge/select.mjs",
         "tools/art-knowledge/select.test.mjs",
         "tools/mission-continuity/core.mjs",
-        "tools/mission-continuity/core.test.mjs"
+        "tools/mission-continuity/core.test.mjs",
+        ".github/workflows/repository-architecture-guard.yml"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Read-only selection and continuity decision modules only; no art authoring, model changes, game mutation or credits.",
       "phase": "ISOLATED_BOUNDED_SAFE_HARDENING",
-      "next": "Add provenance-preserving priority of rejected lessons in existing art-memory preflight and pause-aware mission watcher. Run pure Node tests; no Windows/Unity/publishing; leave PR draft if any gate fails.",
+      "next": "Improve evidence-first art memory and paused/stale workflow classification; add tests in existing lightweight repository guard (no new workflow, Windows/Unity or credit). Leave changes isolated until verification.",
       "budget_eur": 0,
       "delivery_definition": {
         "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
