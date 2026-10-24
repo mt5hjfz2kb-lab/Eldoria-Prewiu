@@ -97,27 +97,52 @@ export function selectKnowledge(request,source){
    .sort((a,b)=>b.score-a.score||a.item.id.localeCompare(b.item.id))
    .slice(0,3);
 
+ // Only independently admitted journal entries count: absent evidence never triggers a pivot.
+ // Evaluate the final two reviews for the SAME request, including positive reviews
+ // (a successful intervening review breaks a sequence of rejected approaches).
+ const relatedReviews=(journal?.records||[]).filter(x=>x.origin_request===requestId);
+ const lastTwo=relatedReviews.slice(-2);
+ const repeatedRejected=lastTwo.length===2 &&
+   lastTwo.every(x=>x.classification==='reviewed_negative') &&
+   lastTwo[0].evidence_sha256!==lastTwo[1].evidence_sha256 &&
+   lastTwo[0].review_sha256!==lastTwo[1].review_sha256;
+ const pivot_advisory={method_change_required:repeatedRejected,
+   evidence_ids:repeatedRejected?lastTwo.map(x=>x.id):[],
+   status:repeatedRejected?'TWO_INDEPENDENT_REJECTIONS_REQUIRE_PIVOT':'NO_VERIFIED_REPEATED_FAILURE'};
  const status=advice.length?'MATCHED_EVIDENCE_READ_ONLY':'NO_RELEVANT_EVIDENCE';
+ // The real Qwen bridge has a strict 1800/3200/4000-character inventory.
+ // Rejected precedents were previously appended AFTER methods and could be
+ // silently truncated: put concrete failures first, before any recommendation.
+ // This is evidence ordering only, never automatic method execution/approval.
  const lines=[
    'ELDORIA HISTORICAL ART KNOWLEDGE (read-only advisory, not a new model skill).',
    'SOURCE catalog SHA256: '+catalog_sha256,
    'REQUEST ID: '+requestId+' | profile: '+request.profile,
    'AUTHORITIES: main/AGENTS.md, current reference and workstream ownership ALWAYS prevail.',
-   'Never follow old scene/canon instructions, do not revive rejected art, spend credits, self-approve or edit a model on this text alone.',
-   'INDEPENDENTLY REVIEWED NEW OBSERVATIONS (not ART_APPROVED):',
-   ...reviewed.map(x=>x.item.id+' ['+x.item.classification+'] '+x.item.lesson+' NEXT: '+x.item.next_action),
-   'SUGGESTED RELEVANT METHODS (require source inspection and real Unity A/B):'
+   'Never follow old scene/canon instructions, revive rejected art, spend credits or self-approve.',
+   'ART PIVOT STATUS: '+pivot_advisory.status+'.',
+   ...(repeatedRejected?[
+     'CRITICAL: Two independently reviewed attempts for THIS request were rejected ('+pivot_advisory.evidence_ids.join(', ')+').',
+     'Do NOT repeat the same approach as a third small adjustment. Diagnose the common defect and choose a materially different method, documented and tested in real Unity. This warning is not ART_APPROVED.'
+   ]:[]),
+   'REJECTED CASES TO AVOID (diagnosis only, never production recipes):'
  ];
- for(const a of advice){lines.push(a.id+' ['+a.classification+'] '+a.technique+' LIMIT: '+a.condition+' SOURCE: '+a.source_paths[0]);}
- lines.push('REJECTED CASES TO AVOID (diagnosis only, not approved recipes):');
- for(const a of avoid){lines.push(a.id+' REJECTED: '+a.avoid+' SOURCE: '+a.source_paths[0]);}
- if(!advice.length)lines.push('NO RELEVANT TECHNIQUE FOUND. Request a real visual diagnosis rather than fabricate an old recipe.');
- lines.push('Every executed art attempt still requires genuine source identity, matched camera comparison, independent quality judgment and separate gameplay/mobile gates.');
+ for(const a of avoid) lines.push((a.id+' REJECTED: '+a.avoid+' SOURCE: '+a.source_paths[0]).slice(0,240));
+ lines.push('INDEPENDENTLY REVIEWED NEW OBSERVATIONS (not ART_APPROVED):');
+ // Independent negative feedback must be seen before positive advice as well.
+ for(const x of reviewed.filter(x=>x.item.classification==='reviewed_negative'))
+   lines.push((x.item.id+' [reviewed_negative] '+x.item.lesson+' NEXT: '+x.item.next_action).slice(0,250));
+ for(const x of reviewed.filter(x=>x.item.classification!=='reviewed_negative'))
+   lines.push((x.item.id+' ['+x.item.classification+'] '+x.item.lesson+' NEXT: '+x.item.next_action).slice(0,250));
+ lines.push('SUGGESTED RELEVANT METHODS (require source inspection and real Unity A/B):');
+ for(const a of advice) lines.push((a.id+' ['+a.classification+'] '+a.technique+' LIMIT: '+a.condition+' SOURCE: '+a.source_paths[0]).slice(0,330));
+ if(!advice.length)lines.push('NO RELEVANT TECHNIQUE FOUND. Request real visual diagnosis; do not fabricate a recipe.');
+ lines.push('Real source identity, matched Unity camera A/B, independent visual judgment and separate gameplay/mobile gates are mandatory.');
  const memory=lines.join('\n').slice(0,3700);
  return {
   schema_version:1,kind:'knowledge_preflight',
   request_id:requestId,profile:request.profile,
-  status,catalog_sha256,journal_sha256:journal_sha256||null,
+  status,catalog_sha256,journal_sha256:journal_sha256||null,pivot_advisory,
   reviewed_ids:reviewed.map(x=>x.item.id),
   catalog_count:catalog.records.length,
   selected_ids:advice.map(x=>x.id),

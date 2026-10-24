@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T11:51:00Z",
+  "updated_at": "2026-10-24T13:18:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -7579,6 +7579,93 @@
         "visual_routing_run": 40091470161,
         "technical_sha": "a73c2416284689e2a35853551ab5bb7f2a81e9f9",
         "qa_boundary": "No Unity, art, mobile or publishing claim; web tester workflow is unrelated and was launched by conservative path filter."
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Lecciones artísticas prioritarias y continuidad sin falsas alarmas",
+      "owner": "chatgpt-art-memory-pr103-pr104-reconciliation-20261024",
+      "branch": "chore/knowledge-continuity-safe-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        ".github/workflows/repository-architecture-guard.yml",
+        ".github/workflows/tester-qa.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only selection and continuity decision modules only; no art authoring, model changes, game mutation or credits.",
+      "phase": "PR104_PIVOT_SHA_PAUSE_CONSOLIDATED_READY_FOR_CI",
+      "next": "Implementation consolidated into PR #104. No restart of older workflows or other workstreams; merge after current SHA checks. No art or device quality certified.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "prior_pr103": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103",
+        "validated_before_close": "ebf1f14d4e2b6c160f669c3ece4e1273b7aa94f8",
+        "architecture_run": 40098043791,
+        "art_governance_run": 40098043707,
+        "original_qwen_smoke_earlier_run": 40093194093,
+        "kind": "read_only_tooling",
+        "gameplay_modified": false
+      },
+      "ownership_revision": 2,
+      "resume_context": {
+        "prior_delivered_pr": 104,
+        "prior_state": "completed_in_branch",
+        "source_pr": 103
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-safety-20261024",
+      "title": "Memoria artística priorizada y continuidad sin falsas recuperaciones",
+      "owner": "chatgpt-art-memory-continuity-20261024",
+      "branch": "chore/art-memory-continuity-safety-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        "docs/evidence/art-memory-continuity-safety-20261024/**",
+        ".github/workflows/repository-architecture-guard.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only read-only selection and continuity decisions; no artistic edits, generation, Unity scene, credits or hardware reservation.",
+      "phase": "SUPERSEDED_WITHOUT_MERGE_BY_PR104",
+      "next": "PR #103 closed as duplicate; behavior and adversarial tests retained in PR #104. Historical branch and evidence remain accessible.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Validated improvements in existing memory selection and mission recovery policy",
+        "evidence": "Exact tests of selected/rejected art knowledge and paused workstream classification",
+        "handoff": "Draft PR; retain review pending without touching game"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103",
+        "verified_sha": "af5d21263d8616f3f281ff608cad2488e102dc2f",
+        "architecture_gate": 40092850243,
+        "art_planner_gate": 40092850216,
+        "governance_gate": 40092850208,
+        "art_quality": "NOT_APPLICABLE_NO_ART_PRODUCED",
+        "physical_mobile": "NOT_TESTED",
+        "gameplay_modified": false,
+        "note": "Older head failed a text compatibility assertion; fixed before the cited gate. Exact scope limited to 6 files including current registry.",
+        "superseded_by": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "original_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103"
       }
     }
   ],
