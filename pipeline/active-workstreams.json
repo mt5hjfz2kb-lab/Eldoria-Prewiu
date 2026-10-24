@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T01:47:01.392Z",
+  "updated_at": "2026-10-24T02:23:39.429Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1148,8 +1148,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "AF_AG_PRESERVED_27_PASS_CORE_CONTINUITY_NATIVE",
-      "next": "Inspect native 40051179268 from 9b0d58f; continuity of new terrain/pigment at original core and scoped panoramic atmosphere. Then safely release heavy resource for exact final UI/progression certification; no merge without owner integration approval.",
+      "phase": "AF_AG_PRESERVED_27_PASS_SINGLE_RIVER_CONTACT_REPAIR",
+      "next": "Inspect c3fe392 native 40053788522: remove abandoned straight source-river incision, verify real mesh and regional PNG, opaque peripheral blend. Then release only this workstream heavy resource for exact general UI/progression certification. No merge/publication; owner integration authorization still required.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1234,9 +1234,9 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "0901ac3cd9df17d1b29f4c218477faa317d80444",
-          "assets_commit": "adb788ab0d2ae99e48d5e9ce485ba43b3626758a",
-          "run": 40049855982,
+          "source": "a7368d0661c1414587f045b208a4335531369cbc",
+          "assets_commit": "06a9535c94c26dbc6fe052dc167b7617a7d2e5b3",
+          "run": 40052558503,
           "tests": 27,
           "captures": 126,
           "result": "success",
@@ -1245,13 +1245,13 @@
           "retained_original_faces": 50688,
           "original_images": 30,
           "imported_material_uv_samples": 96,
-          "continental_tree_instances": 6417,
+          "continental_tree_instances": 6526,
           "shared_near_meshes": 2,
-          "visual_artifact": 12543690827,
-          "artifact_sha256": "213d0c9722735c4f4d62edcd910d90c2a44852ac38e4a66338134a62eb988246",
+          "visual_artifact": 12544392143,
+          "artifact_sha256": "1862587a0e16f0bfa0642bd5aa189622afc9c570f4d6fb94a1b980e702584e53",
           "art_approved": false,
           "physical_mobile_tested": false,
-          "visual_gap": "Regional shadow line corrected in real PNG; exact close AG pigment retained. Core boundary and regular panoramic perimeter under active refinement; no final artistic acceptance."
+          "visual_gap": "Core AF/AG near camera conserved (MAE .381/255); AF clearing strokes retained. Straight edge-channel imprint remains in last verified geometry and is under explicit repair; no final art acceptance."
         }
       },
       "ownership_history": [
