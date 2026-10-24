@@ -21,6 +21,7 @@ namespace Eldoria.World4XCanon
   bool built;
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;
+  Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual originalTripoActor;
   bool previousPanorama;
   readonly List<Renderer> originals=new List<Renderer>();
   readonly List<bool> states=new List<bool>();readonly HashSet<Renderer> background=new HashSet<Renderer>();
@@ -148,6 +149,7 @@ namespace Eldoria.World4XCanon
    RegionOneResourceModels.Install(root,host);
    placement=root.GetComponent<RegionOneResourcePlacement>();
    resourceModels=root.GetComponent<RegionOneResourceModels>();
+   originalTripoActor=existingWorld.GetComponentInChildren<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>(true);
   }
   void UpdateLevelOfDetail(bool force)
   {
@@ -168,6 +170,19 @@ namespace Eldoria.World4XCanon
    float heading=desiredHeading; // Actual zoom already interpolates; do not add a second lag to pointer anchoring.
    if(Mathf.Abs(tilt-navigation.tilt)>.04f||Mathf.Abs(Mathf.DeltaAngle(heading,navigation.heading))>.04f){navigation.SetOrientation(tilt,heading);}
    bool panorama=RegionOneResourcePlacement.IsPanoramic(size,navigation.globalZoom);
+   // The integrated Pick() has an additional creature geometry hit-test that
+   // bypasses the hotspot collider. Deactivate the SAME source ModelRoot while
+   // panoramic, otherwise an invisible engendro remains selectable.
+   // This changes visibility only; its existing combat, rewards, actor pivot
+   // and saved campaign defeat flag remain authoritative.
+   if(originalTripoActor&&originalTripoActor.ModelRoot)
+   {
+    var model=originalTripoActor.ModelRoot;
+    if(panorama&&model.activeSelf)model.SetActive(false);
+    else if(!panorama&&previousPanorama&&!model.activeSelf&&
+      host.City!=null&&host.City.Gateway!=null&&
+      !host.City.Gateway.Snapshot().EngendroDefeated)model.SetActive(true);
+   }
    // The existing Tripo spawnling remains visible in regional view. No second
    // creature, placeholder camp or gameplay authority is ever instantiated.
    for(int i=0;i<originals.Count;i++)if(originals[i])

@@ -208,12 +208,16 @@ namespace Eldoria.Tests
             Assert.That(actor,Is.Not.Null,"The original Tripo engendro is required");
             var model=Member(actor,"ModelRoot") as GameObject;
             Assert.That(model,Is.Not.Null);
+            Assert.That(model.activeSelf,Is.False,
+                "Even with the collider disabled, the original Pick() fallback must be gated");
             Assert.That(model.GetComponentsInChildren<Renderer>(true).All(x=>!x.enabled),Is.True,
                 "The engendro remained visible in panorama");
             Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(initial),
                 "Visual zoom changed authoritative save/gameplay");
             Call(navigation,"SetZoomLevel",1,true);
             Call(adapter,"RefreshForCapture");
+            if(!snapshot.EngendroDefeated)
+                Assert.That(model.activeSelf,Is.True,"The original actor did not return in regional view");
             Assert.That(visuals.SelectMany(x=>x.GetComponentsInChildren<Renderer>(true))
                 .Any(x=>x.enabled&&x.name.StartsWith("Production resource impostor ",StringComparison.Ordinal)),Is.True);
             foreach(var id in ids)
