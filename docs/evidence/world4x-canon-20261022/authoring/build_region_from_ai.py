@@ -258,8 +258,9 @@ river_half=np.array([riverwidth(float(x)) for x in X[0]])[None,:]
 dr=np.abs(Y-river_axis)
 forest*=smooth((dr-river_half-8)/12)
 for bx in [-550.,0.,450.]:forest*=smooth(np.maximum(np.abs(X-bx)-12,np.abs(Y-rivercentre(bx))-30)/6)
-litter=forest*.69
-rgba[:,:,:3]=rgba[:,:,:3]*(1-litter[:,:,None])+np.array([.25,.34,.19])*litter[:,:,None]
+# Woodland floor grading uses the existing grove mask, no new obstruction.
+litter=forest*.53
+rgba[:,:,:3]=rgba[:,:,:3]*(1-litter[:,:,None])+np.array([.305,.365,.225])*litter[:,:,None]
 banks=(1-smooth((dr-river_half-1)/10))*.5
 rgba[:,:,:3]=rgba[:,:,:3]*(1-banks[:,:,None])+np.array([.55,.51,.34])*banks[:,:,None]
 coastal=smooth((26-coast(X,Y))/24)*.45
