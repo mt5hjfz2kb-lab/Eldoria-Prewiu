@@ -1419,34 +1419,6 @@
         "ui_run_finished": 40074059376,
         "status": "RESERVED_NOT_VERIFIED"
       }
-    },
-    {
-      "id": "eldoria-art-memory-continuity-hardening-20261024",
-      "title": "Lecciones artísticas prioritarias y continuidad sin falsas alarmas",
-      "owner": "chatgpt-memory-continuity-20261024",
-      "branch": "chore/knowledge-continuity-safe-20261024",
-      "status": "active",
-      "claimed_at": "2026-10-24",
-      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
-      "scope": [
-        "tools/art-knowledge/select.mjs",
-        "tools/art-knowledge/select.test.mjs",
-        "tools/mission-continuity/core.mjs",
-        "tools/mission-continuity/core.test.mjs",
-        ".github/workflows/repository-architecture-guard.yml",
-        ".github/workflows/tester-qa.yml"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Read-only selection and continuity decision modules only; no art authoring, model changes, game mutation or credits.",
-      "phase": "ISOLATED_BOUNDED_SAFE_HARDENING",
-      "next": "Memory preflight and continuity classification with Ubuntu tests. Extend the existing exact read-only tool allowlist for legacy tester QA; never skip for workflow self-change or unknown paths.",
-      "budget_eur": 0,
-      "delivery_definition": {
-        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
-        "evidence": "Node unit tests and architecture CI exact head",
-        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
-      }
     }
   ],
   "history": [
@@ -7558,8 +7530,8 @@
         ".github/workflows/tester-qa.yml"
       ],
       "resources": [],
-      "phase": "PROPOSED_IN_PR102_NOT_MERGED",
-      "next": "PR #102 is draft, not merged. Relevant Ubuntu architecture and art-governance PASS on a73c2416284689e2a35853551ab5bb7f2a81e9f9; verify final PR head/checks before promotion. No source or runtime changes and no Windows/Unity executed.",
+      "phase": "MERGED_TO_MAIN_PR102",
+      "next": "Completed and merged as PR #102; no pending maintenance in this scope.",
       "budget_eur": 0,
       "delivery_definition": {
         "deliverable": "Small verified safety/performance improvements to existing reporting scripts",
@@ -7575,7 +7547,47 @@
         "art_governance_run": 40091470093,
         "visual_routing_run": 40091470161,
         "technical_sha": "a73c2416284689e2a35853551ab5bb7f2a81e9f9",
-        "qa_boundary": "No Unity, art, mobile or publishing claim; web tester workflow is unrelated and was launched by conservative path filter."
+        "qa_boundary": "No Unity, art, mobile or publishing claim; web tester workflow is unrelated and was launched by conservative path filter.",
+        "merged_commit": "0cd9013442386331e589b81cae4df73b1b71f341"
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Lecciones artísticas prioritarias y continuidad sin falsas alarmas",
+      "owner": "chatgpt-memory-continuity-20261024",
+      "branch": "chore/knowledge-continuity-safe-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        ".github/workflows/repository-architecture-guard.yml",
+        ".github/workflows/tester-qa.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only selection and continuity decision modules only; no art authoring, model changes, game mutation or credits.",
+      "phase": "IMPLEMENTED_TESTED_IN_PR104",
+      "next": "Scope delivered in PR #104. Final promotion subject to unchanged SHA, current CI and GitHub mergeability; no Windows, game source or owner-art approval involved.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pull_request": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "technical_head": "0ca59440cece603c6bb92e96caa56c4834423553",
+        "architecture_run": 40093671897,
+        "art_governance_run": 40093671905,
+        "workflow_governance_run": 40093672011,
+        "visual_authority_run": 40093671896,
+        "real_qwen_memory_benchmark_run": 40093194093,
+        "benchmark_boundary": "Earlier exact art-memory source; not an art pass. Latest architecture CI includes Node tests for art-memory and continuity."
       }
     }
   ],
