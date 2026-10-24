@@ -229,28 +229,28 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40136252743
-          name: region1-canon-native-40136252743
+          run-id: 40139606596
+          name: region1-canon-native-40139606596
           path: ${{ runner.temp }}/region1-recheck-source
       - name: Verify pinned original art and recheck exact pre-PlayMode source
         if: contains(github.event.head_commit.message, 'region-recheck(world4x):')
         shell: powershell
         run: |
-          $origin=Join-Path $env:RUNNER_TEMP 'region1-recheck-source/region1-authoring-40136252743'
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-recheck-source/region1-authoring-40139606596'
           $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
           New-Item -ItemType Directory -Path $destination -Force | Out-Null
           $verified=[ordered]@{
-            'RegionOneBlenderWorld.glb'='abb4e14f528eed09b37eae4b0d5f078471884b1f9c7f88d14cf6ce1284413cef'
-            'RegionOneBlenderQueries.bytes'='d2cd28e64243976c7d5c9f75329e5c27d96e0ab4ca08c95170155ebb9a83ed3e'
+            'RegionOneBlenderWorld.glb'='cb1f428e5754ea702096ac9e936741ecd1e3149bbbc38b3b66bf17ebf268dc1d'
+            'RegionOneBlenderQueries.bytes'='b8e6cf7badd66c08af97f6db5ce592aba3684236c3cdf1695a39ba0044eeb388'
             'production-region.json'='29b06708c2e001db320a4c62925d976825d5b84eed876ff1c7f869a6c65202ce'
-            'RegionOneResources.glb'='3e79bfb0985e0bed8687ab5f4e9c9ba59d4486799084102fa8e2a6a346e1319d'
-            'RegionOneResourceImpostors.png'='bc408bc094085087cf1abf44c272e31f13c426c65f0b8be181413ca123517869'
+            'RegionOneResources.glb'='298d9e75f3836becae6777e6cb71c080fc4ec93efd3af7b46a89c0c93123eaaa'
+            'RegionOneResourceImpostors.png'='f8a840ccf3717c019b2e97b1070763163108e16443cb217de54a315036d567f1'
             'RegionOneGrassDetail.png'='4428879cb0f76f7ccb400b77f3c194b3c1398ba8bacd57226f71819306dc15c8'
           }
           foreach($pair in $verified.GetEnumerator()){
             $source=Join-Path $origin $pair.Key
-            if(-not(Test-Path $source)){throw "Pinned run 40136252743 missing source $($pair.Key)"}
+            if(-not(Test-Path $source)){throw "Pinned run 40139606596 missing source $($pair.Key)"}
             if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pair.Value){
               throw "Original real Blender output changed: $($pair.Key)"
             }
