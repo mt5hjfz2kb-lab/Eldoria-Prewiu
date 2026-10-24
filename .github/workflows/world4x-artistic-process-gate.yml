@@ -1,6 +1,11 @@
 name: World4X artistic process evidence
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/world4x-artistic-process/**'
+      - '.github/workflows/world4x-artistic-process-gate.yml'
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     branches: [main]
@@ -20,6 +25,23 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  smoke-test:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            tools/world4x-artistic-process
+      - name: Syntax and end-to-end positive/negative verifier tests
+        run: |
+          node --check tools/world4x-artistic-process/verify.mjs
+          node --check tools/world4x-artistic-process/test.mjs
+          node tools/world4x-artistic-process/test.mjs
+
   verify-artistic-process:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 100
     runs-on: ubuntu-latest
@@ -35,6 +57,7 @@ jobs:
           sparse-checkout: |
             tools/world4x-artistic-process/verify.mjs
             tools/world4x-artistic-process/README.md
+            tools/world4x-artistic-process/test.mjs
       - name: Read exact PR candidate and Git history (no Unity or Blender lease)
         uses: actions/checkout@v4
         with:
@@ -48,5 +71,7 @@ jobs:
             docs/evidence/world4x-canon-20261022
       - name: Verify evidence validator source
         run: node --check policy/tools/world4x-artistic-process/verify.mjs
+      - name: Verify complete, missing, wrong-camera and post-certification drift scenarios
+        run: (cd policy && node tools/world4x-artistic-process/test.mjs)
       - name: Fail closed on missing artistic process and matched Unity A/B evidence
         run: node policy/tools/world4x-artistic-process/verify.mjs candidate
