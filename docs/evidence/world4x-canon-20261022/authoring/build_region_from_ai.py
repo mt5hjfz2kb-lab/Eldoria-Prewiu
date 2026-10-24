@@ -93,6 +93,30 @@ def connecting_woodland(X,Y):
   result=np.maximum(result,.78*np.clip((1-(dist/np.maximum(radius,15))**2)*1.45,0,1))
  return result
 
+
+# Four deliberately placed regional woodland bodies. The first two frame
+# the central south meadow instead of merging into a blocking forest wall.
+# Their sculpted silhouette includes asymmetric bays and clearings.
+REGIONAL_COPSES=(
+ (-152,-183,93,97,.25),(162,-196,100,92,-.40),
+ (-304,-70,80,92,.30),(300,-95,88,92,-.20))
+def regional_copse_field(X,Y):
+ result=np.zeros(np.shape(X))
+ for n,(cx,cy,rx,ry,rotation) in enumerate(REGIONAL_COPSES):
+  dx=X-cx+18*np.sin((Y-cy)/56+n)
+  dy=Y-cy+12*np.sin((X-cx)/70+n)
+  ca,sa=math.cos(rotation),math.sin(rotation)
+  u=ca*dx+sa*dy;v=-sa*dx+ca*dy
+  theta=np.arctan2(v/ry,u/rx)
+  rim=1+.19*np.sin(3*theta+n*.8)+.11*np.sin(5*theta-2*n)
+  body=np.clip((rim-(u/rx)**2-(v/ry)**2)*1.5,0,1)
+  # A pair of small open glades in selected bodies creates natural breakup.
+  if n in (0,1):
+   cx2=cx+(37 if n==0 else -33);cy2=cy-24
+   body*=1-.63*np.exp(-((X-cx2)/22)**2-((Y-cy2)/31)**2)
+  result=np.maximum(result,body)
+ return result
+
 def forest_field(X,Y):
  result=np.zeros(np.shape(X))
  for index in range(len(groves)):result=np.maximum(result,grove_field(X,Y,index))
@@ -100,7 +124,7 @@ def forest_field(X,Y):
 # Decorative woodland connections are deliberately NOT part of the gameplay
 # occupancy/navigation query mask; resource nodes retain their own state.
 def visual_forest_field(X,Y):
- return np.maximum(forest_field(X,Y),connecting_woodland(X,Y))
+ return np.maximum(np.maximum(forest_field(X,Y),connecting_woodland(X,Y)),regional_copse_field(X,Y))
 cities=[]
 for y in [-1500,-1180,-740,-480,-250,330,530,810,1120,1530]:
  for x in [-650,-330,170,520]:
@@ -787,6 +811,34 @@ for belt_idx,((ax,ay),(bx,by),width) in enumerate(FOREST_CONNECTIONS):
    o.scale=(size*random.uniform(1.18,1.46)*canopy,size*1.22*canopy,size*random.uniform(.80,1.10))
    o.rotation_euler.z=random.uniform(0,math.tau);tree_total+=1;planted+=1
 
+
+# The lower centre of the regional camera is not empty grassland any longer:
+# staggered editable conifers outline human-authored woodland masses.
+for copse_idx,(cx,cy,rx,ry,rotation) in enumerate(REGIONAL_COPSES):
+ random=np.random.default_rng(281020+copse_idx)
+ placed=[]
+ for attempt in range(1200):
+  x=cx+random.uniform(-rx*1.18,rx*1.18)
+  y=cy+random.uniform(-ry*1.18,ry*1.18)
+  if float(regional_copse_field(np.array(x),np.array(y)))<random.uniform(.12,.84):continue
+  if -99<x<99 and -81<y<273:continue
+  if abs(x)>875 or abs(y)>1770 or float(coast(x,y))<22:continue
+  if float(line_distance(np.array(x),np.array(y)))<19:continue
+  if float(fault_distance(np.array(x),np.array(y)))<47:continue
+  if abs(y-rivercentre(x))<riverwidth(x)+15:continue
+  if any(math.hypot(x-a,y-b)<r+17 for a,b,r in cities):continue
+  if any((x-a)**2+(y-b)**2<10.5**2 for a,b in placed):continue
+  if any(abs(x-qx)<17 and abs(y-qy)<span/2+13 for qx,qy,w,span in bridge_specs):continue
+  k=len(placed);placed.append((x,y))
+  donor=masters[(k+copse_idx)%2]
+  o=donor.copy();o.data=donor.data;scene.collection.objects.link(o)
+  o.hide_render=False;o.hide_viewport=False;o.hide_set(False)
+  o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_Regional_'+str(copse_idx).zfill(2)+'_'+str(k).zfill(3)
+  scale=random.uniform(2.0,4.2)
+  o.scale=(scale*random.uniform(1.13,1.42),scale*1.22,scale*random.uniform(.82,1.14))
+  o.rotation_euler.z=random.uniform(0,math.tau);tree_total+=1
+  if len(placed)>=185:break
+
 # Neighbouring ground carries actual editable fir instances, never forest cards.
 for x,y,z,cluster,index in context_tree_roots:
  random=np.random.default_rng(93214+cluster*1000+index)
@@ -885,6 +937,38 @@ for material in detail_mats:detail_mesh.materials.append(material)
 for poly,idx in zip(detail_mesh.polygons,near_mat):poly.material_index=idx
 detail_ob=bpy.data.objects.new('BLD_NearMeadowHabitat',detail_mesh)
 scene.collection.objects.link(detail_ob)
+
+
+# Near-view authored mixed undergrowth: low-poly rounded native shrubs
+# clustered close enough to contribute at the actual near camera, with no
+# collider, selectable ID, persistent state, or retained-source alteration.
+shrubs_mat=[simplemat('Near underbrush deep fir',(.205,.315,.175)),
+            simplemat('Near riverbank living shrubs',(.29,.405,.23)),
+            simplemat('Near dry scrub silver olive',(.37,.405,.275))]
+shrubs_v=[];shrubs_f=[];shrubs_m=[];rng=np.random.default_rng(261024)
+for n in range(260):
+ x=rng.uniform(-87,87);y=rng.uniform(-64,230)
+ if math.hypot(x,y-112)<25 or math.hypot(x,y)<19:continue
+ if float(line_distance(np.array(x),np.array(y)))<9:continue
+ if any(abs(x-qx)<13 and abs(y-qy)<span/2+14 for qx,qy,w,span in bridge_specs):continue
+ hit,_,_,_=river.ray_cast(Vector((x,y,150)),Vector((0,0,-1)))
+ if hit:continue
+ z=surface(x,y);size=rng.uniform(.55,1.75)
+ # Unequal five-sided crown, eight faces per clump, no billboards.
+ radius=size*rng.uniform(.62,1.05);pts=[]
+ for k in range(5):
+  angle=k*math.tau/5+.19*n
+  r=radius*rng.uniform(.78,1.16)
+  pts.append(len(shrubs_v));shrubs_v.append((x+math.cos(angle)*r,y+math.sin(angle)*r,z+.08))
+ top=len(shrubs_v);shrubs_v.append((x+rng.uniform(-.32,.32),y+rng.uniform(-.32,.32),z+size*rng.uniform(.8,1.25)))
+ for k in range(5):
+  shrubs_f.append((pts[k],pts[(k+1)%5],top))
+  shrubs_m.append((n//6+k//3)%3)
+shrubs_mesh=bpy.data.meshes.new('Lowpoly native underbrush crowns')
+shrubs_mesh.from_pydata(shrubs_v,[],shrubs_f);shrubs_mesh.update()
+for mat in shrubs_mat:shrubs_mesh.materials.append(mat)
+for face,mat in zip(shrubs_mesh.polygons,shrubs_m):face.material_index=mat
+shrubs_obj=bpy.data.objects.new('BLD_NearUndergrowth',shrubs_mesh);scene.collection.objects.link(shrubs_obj)
 
 # Apply the previously observed regional forest-silhouette A/B as a coherent
 # part of the geological composition candidate. This changes object.scale ONLY:
