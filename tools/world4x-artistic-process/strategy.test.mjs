@@ -37,10 +37,15 @@ try{
     ]
   };
   file(decision,JSON.stringify({...plan,responds_to_sha:'a'.repeat(40)}));check(false,'decision is stale');
+  // Single critical blocker gets at most one narrowly focused exception,
+  // never a renewable permit for unlimited same-object tweaking.
+  const critical={...plan,decision:'ONE_LAST_CRITICAL_FIX',critical_blocker:'A real navigation route is blocked by the castle bridge; a specific Unity PlayMode reproduction and screenshot require the geometry to be corrected.',one_retry_limit:'Maximum one last focused attempt before requiring a broader root-cause pivot.'};
+  file(decision,JSON.stringify(critical));check(true,'WORLD4X_STRATEGIC_DIRECTION_REVIEW_PASS');
   file(decision,JSON.stringify(plan));check(true,'WORLD4X_STRATEGIC_DIRECTION_REVIEW_PASS');
   file(decision,JSON.stringify({...plan,next_batch:[]}));check(false,'pivot must group >=2');
   file(decision,JSON.stringify(plan));
-  change('region-production(world4x): one more bridge micro-fix');check(false,'decision is stale');
+  const extra=change('region-production(world4x): one more bridge micro-fix');check(false,'decision is stale');
+  file(decision,JSON.stringify({...critical,responds_to_sha:extra}));check(false,'single critical fix exception exhausted');
   change('region-production(world4x): reshape continental panorama and forests');
   check(true,'WORLD4X_DIRECTION_OK');
   console.log('WORLD4X_DIRECTION_TESTS_ALL_PASS');
