@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T13:52:00Z",
+  "updated_at": "2026-10-24T13:18:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1139,12 +1139,12 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": null,
-      "write_scope_released": true,
-      "ownership_revision": 23,
+      "owner": "chatgpt-world4x-continuation-20261024",
+      "write_scope_released": false,
+      "ownership_revision": 24,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-24T12:19:41.820Z",
+      "claimed_at": "2026-10-24T13:27:33.271Z",
       "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -1159,9 +1159,9 @@
         "docs/documentation-catalog.json"
       ],
       "resources": [],
-      "authorization": "Owner instruction on 2026-10-24: resume and complete PR #100, protect AF/AG, keep UI owner reservations, no merge without artistic acceptance; zero spend.",
-      "phase": "OWNER_REQUESTED_SAFE_HANDOFF_NATIVE_PENDING",
-      "next": "Read docs/evidence/world4x-canon-20261022/EXECUTIVE_SAFE_HANDOFF_20261024.md; claim same PR100/workstream through authorized handoff, verify live runs, then certify pending bank-query/packed-image fixes and reviewed macro composition. No UI, merge or publication.",
+      "authorization": "Owner instruction 2026-10-24: authorized successor-chat claim of existing PR #100/World4X same workstream; $0, no merge/publication, no Valoria/UI edits. Preserve AF/AG; native candidate and real Unity QA required.",
+      "phase": "NATIVE_CANDIDATE_REVALIDATION",
+      "next": "Confirm handoff blend hashes; integrate reviewed macro batch and optional approved canopy transform on certified source; dispatch native [materialize-candidate] only with free Windows runner; inspect six real Unity views and certify Play/Edit/I-II.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1405,6 +1405,13 @@
           "relieved_at": "2026-10-24T13:19:35.194Z",
           "reason": "Owner explicitly requests safe successor-chat handoff because session time is ending.",
           "outcome": "MCP40097362906 saved/reopened corrected packed pigment and closed owned PID9624; no new native Unity certificate. Same PR100 preserved."
+        },
+        {
+          "owner": null,
+          "revision": 23,
+          "transferred_at": "2026-10-24T13:27:33.271Z",
+          "to_owner": "chatgpt-world4x-continuation-20261024",
+          "reason": "Successor chat explicitly authorized by project owner; previous owner released, resources []. No runner reserved until readiness checked."
         }
       ],
       "delivery_definition": {
@@ -1426,7 +1433,7 @@
       },
       "release_note": "Owner-requested safe handoff, not task completion. Run40097362906 SUCCESS confirms corrected editable pigment after save/reopen and orderly close of PID9624. Windows reservation released; full new Unity certification and visual acceptance remain pending.",
       "previous_owner": "codex-world4x-executive-e5c63ba475cd",
-      "ownership_state": "available",
+      "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
         "run": 40071887223,
