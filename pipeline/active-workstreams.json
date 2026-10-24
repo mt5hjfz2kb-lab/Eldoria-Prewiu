@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T07:09:52.015Z",
+  "updated_at": "2026-10-24T07:24:15.320Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1123,13 +1123,13 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": null,
-      "write_scope_released": true,
-      "ownership_revision": 20,
+      "owner": "chatgpt-world4x-integration-20261024",
+      "write_scope_released": false,
+      "ownership_revision": 21,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-23T23:19:45.062Z",
-      "base_main_sha": "54703262a47a1ece6d233470582d4162d3d7c0b1",
+      "claimed_at": "2026-10-24T07:24:15.320Z",
+      "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
         "docs/evidence/world4x-canon-20261022/**",
@@ -1139,17 +1139,17 @@
         ".github/workflows/world4x-canon-native.yml",
         "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "docs/documentation-catalog.json"
       ],
       "resources": [],
-      "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "OPEN_PR_CANONICAL_ROUTING_AVAILABLE_NO_RESERVATION",
-      "next": "No native or source writer reserved. A future authorized executor reclaims this same ID; the exact reserved UI workflow dependency remains recorded in history. Do not infer permission to edit another active workstream's file.",
+      "authorization": "Owner instruction on 2026-10-24: resume and complete PR #100, protect AF/AG, keep UI owner reservations, no merge without artistic acceptance; zero spend.",
+      "phase": "RECONCILE_UI_DEPENDENCY_AND_MACRO_ART_WITHOUT_ACTIVE_RUNNER_LEASE",
+      "next": "Inspect original three approved references versus genuine six-view Unity 40069960813; use owned World4X files for macro art improvement and new native evidence after existing UI job completes; do not touch reserved UI workflow; obtain explicit owner art approval before merge.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
-        "Physical device verification requires an accessible device; never infer from PlayMode."
+        "Physical device verification requires an accessible device; never infer from PlayMode.",
+        "The broad ValoriaReferenceClean/** path belongs to active valoria-master-plan-layered-construction-20261016; World4X claim explicitly excludes its nested Integration/** path, code remains unchanged. Owner of UI workflow remains unchanged."
       ],
       "candidate_branch": "feature/world4x-region1-canon-20261022",
       "art_production_routing": "required",
@@ -1357,6 +1357,12 @@
           "revision": 18,
           "relieved_at": "2026-10-23T23:19:45.062Z",
           "reason": "Owner explicit immediate handoff and completion order. Existing run 40038480141 finished successfully and materialized 9a3587642176a52d1071d67430b6a4309b95b012 before transfer; no active job cancelled."
+        },
+        {
+          "owner": null,
+          "revision": 20,
+          "relieved_at": "2026-10-24T07:24:15.317Z",
+          "reason": "The same owner explicitly directs continuation and completion of existing PR #100; canonical World4X workstream is available with no resources reserved."
         }
       ],
       "delivery_definition": {
@@ -1378,7 +1384,7 @@
       },
       "release_note": "World native production and independent evidence verification completed for source009e285a; no Windows reservation retained while waiting for the separate reserved-file authorization. This is a specific integration blocker, not completion of the owner's whole replacement request.",
       "previous_owner": "codex-world4x-afag-recovery-20261024",
-      "ownership_state": "available",
+      "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
         "run": 40071887223,
