@@ -490,11 +490,19 @@ for cx in [-550.,0.,450.]:
   # The end at positive Y faces the castle; z1 is its original AF/AI
   # bank/gate elevation. Negative Y meets the distant bank.
   terrain_inverse=terrain.matrix_world.inverted()
-  def joined_land_height(x,y):
+  def joined_land_height(x,y,allow_river_span=False):
    origin_local=terrain_inverse @ Vector((x,y,150))
    direction_local=terrain_inverse.to_3x3() @ Vector((0,0,-1))
    hit,point,normal,index=terrain.ray_cast(origin_local,direction_local,distance=400)
-   assert hit,('Bridge must meet actual joined terrain',x,y)
+   if not hit and allow_river_span:
+    # The retained river has an intentionally open channel. The deck spans
+    # water; only the two abutments must raycast solid joined ground.
+    # Accept a missing land hit ONLY where the actual retained river mesh hits.
+    river_inverse=river.matrix_world.inverted()
+    water_hit,_,_,_=river.ray_cast(river_inverse @ Vector((x,y,150)),river_inverse.to_3x3() @ Vector((0,0,-1)),distance=400)
+    assert water_hit,('Missing terrain outside real river span',x,y)
+    return None
+   assert hit,('Bridge abutment must meet actual joined terrain',x,y)
    return (terrain.matrix_world @ point).z
   z0=joined_land_height(bridge_x,deck_centre-half)+.15
   z1=max(z1,joined_land_height(bridge_x,deck_centre+half)+.15)
@@ -503,7 +511,9 @@ for cx in [-550.,0.,450.]:
   z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
   # Clamp the deck to real ground: previous trial let terrain occlude
   # the middle planks, visually splitting the crossing into two pieces.
-  if abs(cx)<=1:z=max(z,joined_land_height(bridge_x,yy)+.18)
+  if abs(cx)<=1:
+   ground=joined_land_height(bridge_x,yy,allow_river_span=True)
+   if ground is not None:z=max(z,ground+.18)
   deck_heights.append(z)
   vv.extend([(bridge_x-4,yy,z),(bridge_x+4,yy,z)])
   if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))

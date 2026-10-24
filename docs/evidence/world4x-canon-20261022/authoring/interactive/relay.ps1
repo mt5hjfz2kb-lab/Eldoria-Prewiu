@@ -1,5 +1,5 @@
 $ErrorActionPreference='Stop'
-$root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/95183774-20261023'
+$root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/executive-e5c63ba475cd-20261024'
 $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring/interactive'
 "ELDORIA_INTERACTIVE_OUT=$root" >> $env:GITHUB_ENV
 $ready=Join-Path $root 'ready.json'
@@ -10,10 +10,12 @@ if(Test-Path $ready){
 if(-not(Test-Path $ready)){
  if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another production process is active'}
  New-Item -ItemType Directory -Force $root | Out-Null
- $source=Get-ChildItem "$env:RUNNER_TEMP/interactive-source" -Recurse -Filter eldoria-region1-author.blend | Select-Object -First 1 -ExpandProperty FullName
+ $source=Get-ChildItem "$env:RUNNER_TEMP/interactive-source" -Recurse -Filter Eldoria_Region1_Production.blend | Select-Object -First 1 -ExpandProperty FullName
  if(-not $source){throw 'Verified landscape source unavailable'}
  $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
- $command='"'+$blender+'" --background --python-exit-code 1 --python "'+$helpers+'/session.py" -- "'+$root+'" "'+$source+'"'
+ $requestConfig=Get-Content "$helpers/review-request.json" -Raw | ConvertFrom-Json
+ if((Get-FileHash $source -Algorithm SHA256).Hash.ToLower() -ne $requestConfig.source_sha256){throw 'Source identity mismatch'}
+ $command='"'+$blender+'" --background --python-exit-code 1 --python "'+$helpers+'/session.py" -- "'+$root+'" "'+$source+'" '+$requestConfig.source_sha256
  $created=Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{CommandLine=$command}
  if($created.ReturnValue -ne 0){throw 'Cannot launch independent owned Blender session'}
  for($i=0;$i -lt 60 -and -not(Test-Path $ready);$i++){Start-Sleep -Seconds 1;if(-not(Get-Process -Id $created.ProcessId -ErrorAction SilentlyContinue)){throw 'Blender session failed to start'}}

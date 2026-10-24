@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-world-region-1-canon-20261022",
+  "repeated_topic": "bridge",
+  "responds_to_sha": "110f2793bd31efd9fa040daa8e840d8c0c015a1a",
+  "decision": "PIVOT_TO_HIGH_IMPACT",
+  "visual_evidence": "Six genuine Unity PNGs from run40087460002 compared directly with the three approved originals. Near view retains the AF/AG language; regional and panorama show isolated dark forest clusters, weak geological hierarchy and large uniform grass corridors. The prior bridge has terrain occlusion; the already prepared 110f279 candidate is being certified once without another geometry edit.",
+  "root_cause": "The terrain expansion preserves near assets but scales their visual vocabulary poorly across a 1820 by3600 metre region. Breach span and secondary relief occupy too little screen area; dense tree groups resolve into dots. Repeated local crossing edits cannot change those relationships.",
+  "reason_for_priority": "The regional and panoramic frames occupy most navigation time and carry the identity of Region1. A coherent hierarchy of geological form, woodland margins and open routes matters more than further decorative finish of one crossing.",
+  "competing_problems": [
+    {
+      "view": "panoramica",
+      "defect": "Breach loses prominence and forest groups collapse into dots across broad olive landcover.",
+      "impact": 5
+    },
+    {
+      "view": "regional",
+      "defect": "Disconnected masses and weak relief make the expanded core boundary and forest clusters dominate.",
+      "impact": 5
+    },
+    {
+      "view": "cercana",
+      "defect": "Prior bridge is partially occluded; certify the already committed repair before further decisions.",
+      "impact": 3
+    }
+  ],
+  "preserve_AF_AG": true,
+  "next_batch": [
+    {
+      "view": "panoramica",
+      "visual_change": "Inspect the retained editable continent through BlenderMCP; author a broader connected geological hierarchy using existing terrain, preserving the AF/AG core and real navigation corridors."
+    },
+    {
+      "view": "regional",
+      "visual_change": "Review woodland silhouettes and ground relationships together with the geological hierarchy, preserve open city and resource areas; reject preliminary edits before another full Unity run if no visible gain."
+    }
+  ],
+  "art_approved": false,
+  "heavy_run_rule": "QUICK_VISUAL_PREVIEW_FIRST",
+  "shared_artistic_goal": "Restore a readable continental hierarchy from real terrain and canopy silhouettes, with the geological breach as focal point and open navigation corridors preserved across continuous zoom."
+}
