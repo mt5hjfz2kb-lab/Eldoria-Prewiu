@@ -110,15 +110,15 @@ export function selectKnowledge(request,source){
    evidence_ids:repeatedRejected?lastTwo.map(x=>x.id):[],
    status:repeatedRejected?'TWO_INDEPENDENT_REJECTIONS_REQUIRE_PIVOT':'NO_VERIFIED_REPEATED_FAILURE'};
  const status=advice.length?'MATCHED_EVIDENCE_READ_ONLY':'NO_RELEVANT_EVIDENCE';
- // The real Qwen bridge has a strict 1800/3200/4000-character inventory.
- // Rejected precedents were previously appended AFTER methods and could be
- // silently truncated: put concrete failures first, before any recommendation.
- // This is evidence ordering only, never automatic method execution/approval.
+ // Compact review briefs can be truncated by downstream consumers, regardless
+ // of which artistic director reads them. Put verified rejected precedents
+ // before optional recommendations. No inference engine is required or called.
  const lines=[
    'ELDORIA HISTORICAL ART KNOWLEDGE (read-only advisory, not a new model skill).',
    'SOURCE catalog SHA256: '+catalog_sha256,
    'REQUEST ID: '+requestId+' | profile: '+request.profile,
-   'AUTHORITIES: main/AGENTS.md, current reference and workstream ownership ALWAYS prevail.',
+   'AUTHORITIES: current owner decision, approved references, scope and workstream ownership prevail.',
+   'ART DIRECTION: designated artist/ChatGPT; Qwen and Ollama are NOT required for artistic decisions.',
    'Never follow old scene/canon instructions, revive rejected art, spend credits or self-approve.',
    'ART PIVOT STATUS: '+pivot_advisory.status+'.',
    ...(repeatedRejected?[
@@ -152,7 +152,7 @@ export function selectKnowledge(request,source){
   inventory_text:memory,inventory_sha256:sha(Buffer.from(memory,'utf8')),
   qa_boundary:{artist_decisions_executed:false,qwen_has_received_inventory:false,
     art_approved:false,paid_calls_authorized:false,unity_modified:false,
-    mode:'PREPARE_ONLY_EXISTING_QWEN_--inventory_INTERFACE'}
+    mode:'READ_ONLY_ART_DIRECTION_BRIEF_NO_MODEL_DEPENDENCY'}
  };
 }
 export function writePrepared(selected,outPrefix){
