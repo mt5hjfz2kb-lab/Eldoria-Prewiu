@@ -55,4 +55,17 @@ def paint_canonical_macro_pigment(rgba, X, Y, bounds, meadow_mean):
         rgb=rgba[area][:,:,:3]
         rgb*=1-weight[:,:,None]
         rgb+=palette[None,None,:]*weight[:,:,None]
+    # The macro elevation is already sculpted: shade those existing five hills.
+    # Pigment only; no new terrain, roads, objects, blockers or model topology.
+    for cx,cy,rx,ry in ((-490,520,100,160),(380,680,90,145),
+                        (-580,-570,100,95),(-390,1470,150,210),
+                        (320,-1510,180,160)):
+        area=(np.abs(X-cx)<rx*2)&(np.abs(Y-cy)<ry*2)
+        if not np.any(area):continue
+        dx=(X[area]-cx)/rx;dy=(Y[area]-cy)/ry
+        hill=np.exp(-(dx*dx+dy*dy))
+        light=np.clip((-.52*dx+.74*dy)*hill,-.26,.26)
+        rgb=rgba[:,:,:3][area]
+        rgb=np.clip(rgb+light[:,None]*np.array((.24,.18,.11)),.015,.96)
+        rgba[:,:,:3][area]=rgb
     return rgba
