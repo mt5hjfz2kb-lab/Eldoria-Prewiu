@@ -473,14 +473,19 @@ for cx in [-550.,0.,450.]:
  # The source-sector castle occupies the same close camera as this crossing.
  # Match the actual measured river width rather than spanning 44 metres of
  # dry grass like a ramp into the castle gate. Other crossing profiles stay.
- length=44. if abs(cx)>1 else max(24.,min(34.,2*float(riverwidth(cx))+8.))
- half=length/2;segments=int(round(length));vv=[];ff=[]
+ # Keep the north end of the castle bridge at its previously proven
+ # approach (cy-22m). Shorten only excess southern approach, with an
+ # explicit bank-safe allowance beyond the retained river half-width.
+ length=44. if abs(cx)>1 else max(34.,min(40.,22.+float(riverwidth(cx))+4.))
+ half=length/2
+ deck_centre=cy if abs(cx)>1 else cy+(length-44.)/2
+ segments=int(round(length));vv=[];ff=[]
  if abs(cx)<=1:
   # The original AI objects in 'land' were joined into BLD_Terrain above:
   # their bpy Object pointers are invalid. Measure the CURRENT joined mesh.
   shore=[]
   terrain_inverse=terrain.matrix_world.inverted()
-  for yshore in (cy-half,cy+half):
+  for yshore in (deck_centre-half,deck_centre+half):
    origin_local=terrain_inverse @ Vector((cx,yshore,150))
    direction_local=terrain_inverse.to_3x3() @ Vector((0,0,-1))
    hit,point,normal,index=terrain.ray_cast(origin_local,direction_local,distance=400)
@@ -489,13 +494,13 @@ for cx in [-550.,0.,450.]:
   z0,z1=shore
  for i in range(segments+1):
   t=i/segments;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
-  vv.extend([(cx-4,cy-half+i,z),(cx+4,cy-half+i,z)])
+  vv.extend([(cx-4,deck_centre-half+length*t,z),(cx+4,deck_centre-half+length*t,z)])
   if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))
  me=bpy.data.meshes.new('True plank deck');me.from_pydata(vv,[],ff);me.materials.append(bridge_mat);plank=bridge_mat.copy();plank.name='Bridge alternate weathered plank';next(n for n in plank.node_tree.nodes if n.type=='BSDF_PRINCIPLED').inputs['Base Color'].default_value=(.92,.92,.92,1);me.materials.append(plank)
  for face in me.polygons:face.material_index=face.index%2
  uv=me.uv_layers.new(name='UVMap') # Same active layer name as the joined certified terrain
  for loop in me.loops:
-  q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x-cx+4)/8,(q.y-cy+half)/length)
+  q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x-cx+4)/8,(q.y-deck_centre+half)/length)
  obj=bpy.data.objects.new('Authored crossing '+str(cx),me);scene.collection.objects.link(obj)
  bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);terrain.select_set(True);bpy.context.view_layer.objects.active=terrain;bpy.ops.object.join()
  # Simple measured timber rails beside the river span, outside the full 8 m route.
@@ -510,15 +515,15 @@ for cx in [-550.,0.,450.]:
  rail_extent=int(min(12,half-2))
  for side in (-1,1):
   for y in range(-rail_extent,rail_extent+1,4):
-   z=deck_at(y);rail_box(cx+side*4.18-.12,cx+side*4.18+.12,cy+y-.12,cy+y+.12,z,z+1.25)
+   z=deck_at(y);rail_box(cx+side*4.18-.12,cx+side*4.18+.12,deck_centre+y-.12,deck_centre+y+.12,z,z+1.25)
   for y in range(-rail_extent,rail_extent,2):
-   z=deck_at(y+1)+1.05;rail_box(cx+side*4.18-.09,cx+side*4.18+.09,cy+y,cy+y+2,z,z+.18)
+   z=deck_at(y+1)+1.05;rail_box(cx+side*4.18-.09,cx+side*4.18+.09,deck_centre+y,deck_centre+y+2,z,z+.18)
  rail_mesh=bpy.data.meshes.new('Measured river crossing rails');rail_mesh.from_pydata(rail_vertices,[],rail_faces);rail_mesh.materials.append(rail_material)
  rail_uv=rail_mesh.uv_layers.new(name='Weathered timber grain')
  for loop in rail_mesh.loops:
-  q=rail_mesh.vertices[loop.vertex_index].co;rail_uv.data[loop.index].uv=((q.x-cx+4.5)/9,(q.y-cy+half)/length)
+  q=rail_mesh.vertices[loop.vertex_index].co;rail_uv.data[loop.index].uv=((q.x-cx+4.5)/9,(q.y-deck_centre+half)/length)
  rail_object=bpy.data.objects.new('BLD_CrossingRails_'+str(cx),rail_mesh);scene.collection.objects.link(rail_object)
- bridge_specs.append((cx,cy,8,length))
+ bridge_specs.append((cx,deck_centre,8,length))
 # Actual vegetation clearance at authored crossings and existing logical destinations.
 # These source objects remain recoverable in the certified AI file and this .blend.
 for tree in oldtrees:
