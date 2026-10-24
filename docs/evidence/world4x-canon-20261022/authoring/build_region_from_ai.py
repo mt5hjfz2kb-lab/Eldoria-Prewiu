@@ -113,6 +113,16 @@ def height(x,y):
  elif x>96:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx-2,qy))/2))*(x-96)
  if y<-78:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx,qy+2))/2))*(-78-y)
  elif y>270:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx,qy-2))/2))*(y-270)
+ # Do not extrude the old edge river incision straight through the new meander.
+ # Replace that abandoned cross-section with its measured bank shoulders; the
+ # actual curved channel below is then carved once along rivercentre(x).
+ if abs(x)>96:
+  side=0 if x<0 else 1;axis=ends[side];rw0=river_widths[side];shoulder=rw0+14
+  old_channel=(1-float(smooth((abs(qy-axis)-rw0-5)/10)))*float(smooth(d/24))
+  lo=boundaryheight(qx,axis-shoulder);hi=boundaryheight(qx,axis+shoulder)
+  fraction=max(0,min(1,(qy-axis+shoulder)/(2*shoulder)))
+  edge=edge*(1-old_channel)+(lo*(1-fraction)+hi*fraction)*old_channel
+  tangent*=1-old_channel
  h=(edge+tangent*math.exp(-d/48))*(1-blend)+rawheight(x,y)*blend
  if abs(x)>96:
   dr=abs(y-rivercentre(x));rw=riverwidth(x)
@@ -288,6 +298,9 @@ qx=np.clip(X,-96,96);qy=np.clip(Y,-78,270);distance=np.hypot(X-qx,Y-qy);glaze=(1
 for side in range(4):
  choose=((X<-96) if side==0 else (X>96) if side==1 else (Y<-78)&(np.abs(X)<=96) if side==2 else (Y>270)&(np.abs(X)<=96))
  weight=glaze*choose*(1-mask*smooth(distance/3));axis=qy if side<2 else qx;grid=edgeY if side<2 else edgeX
+ if side<2:
+  old_channel=(1-smooth((np.abs(qy-ends[side])-river_widths[side]-5)/10))*smooth(distance/24)
+  weight*=1-old_channel
  for channel in range(3):
   broad=np.interp(axis,grid,soft_edges[side][:,channel]);fine=np.interp(axis,grid,edges[side][:,channel])
   colour=broad+(fine-broad)*(1-smooth(distance/2.5))

@@ -2,6 +2,28 @@
 
 Estado: producción abierta. No es aprobación artística, certificación móvil ni permiso de fusión. Relevo autorizado del mismo PR #100, revisión 19; se conservó íntegra la ejecución 40038480141 (26 pruebas, 16 capturas) y su commit de binarios 9a3587642176a52d1071d67430b6a4309b95b012.
 
+## Parámetros vigentes de reproducción
+
+Esta tabla describe la receta del script actual; cada modificación necesita su propia ejecución nativa. Los resultados históricos de abajo no certifican automáticamente una modificación posterior.
+
+| Componente | Parámetro reproducible |
+|---|---|
+| Fuente editable | AI fijado por SHA256, derivado de AG/AF; abrir copia, no sobrescribir originales |
+| Herramientas | Blender 5.2.2 LTS, Unity 6000.3.23f1, URP 17.3.0 |
+| Territorio | x ±910 m, z ±1800 m; metros reales, núcleo x ±96 / z -78…270 intacto |
+| Unión | Soldadura 0,001 m; altura/pigmento nuevos se integran en 110 m; pendiente amortiguada a 48 m |
+| Río | Sección original preservada al contacto; cauce curvo único; retirada gradual del perfil abandonado en 24 m |
+| Pintura | Atlas nuevo 3072²; máscaras independientes y empaquetadas; UV/material original por cara sin remapeo |
+| Detalle AF | Fragmento original u 0,02–0,075 / v 0,90–0,98; normalización de baja frecuencia sigma 7; dos muestras giradas; repetición física 21,12 ×14,72 m con mipmaps |
+| Claros AF | Espinas y bordes del procedimiento aceptado, localizados en claros reales; mezcla máxima 0,43, exclusión de caminos/agua/costa/sotobosque |
+| Vegetación | Dos donantes originales compartidos; continente cercano 70 %, lejano 9 %; copas cercanas del núcleo sin simplificación y lejanas 16 % |
+| Transición AG | Banda ortográfica espacial 37–47 m; misma geografía y silueta, sin sustitución temprana por placas |
+| Luz del mundo | Sol (48,-35,0), sombras suaves 0,9 / 300 m; fade URP por distancia; restauración exacta al terminar la cámara |
+| Periferia | Solo último 15 % del zoom global, ancho 107 ±60 m; mezcla opaca al color continental, regional sin niebla |
+| Contacto y rutas | Consulta de triángulos reales; cuadrícula de consulta 4 m, navegación 8 m; pendiente 0,9, escalón 3,2 m, agua y obstáculos conservados |
+| Recursos | Autoridad LocalGateway/PlayerState; 48 IDs persistentes, huella 8 m, separación de copas 9 m; sin trasladar colliders para disimular apoyo |
+| Evidencia esperada | 27 pruebas sin omisiones; 16 PNG principales +6 históricos coincidentes +100 de zoom +4 detalles continentales =126 actuales; AG archivado aparte |
+
 ## Fuentes y decisiones de fabricación
 
 | Etapa | Herramienta y operación verificadas | Parámetros/fuentes recuperables | Decisión |
@@ -152,3 +174,16 @@ Su propósito es recuperar variedad pictórica a escala de claros en la ampliaci
 
 ### Revisión nativa del empalme
 Fuente `9b0d58ff14e128f2e39d60a5ee0e794f4aee0d71`, run 40051179268, materialización `9bd55a0b9f737ecd2076da7661f97454c69fdd90`: 27 pruebas satisfactorias, ninguna omitida. Artefacto visual 12543708162, SHA256 `ff164798799466194a29069b57c625b57f0e4a2c9df6c8cccd05acc56df8746c`. Se conserva el empalme ampliado y la vegetación de transición. Se rechaza el cambio de fondo a gris: la imagen panorámica auténtica muestra que aumenta el contraste del contorno rectangular. El siguiente pase conserva el color continental previo y la restauración comprobada de cámara, junto con los trazos locales AF descritos arriba. La geografía no se recorta ni se oculta para alterar las pruebas de cobertura.
+
+
+### Cauce único en el empalme: defecto geométrico aislado
+La revisión de 40051179268 identifica una segunda marca junto al río. El perfil de borde medido mantiene su incisión en y=21 m a la izquierda y y=-52 m a la derecha, mientras `rivercentre(x)` desplaza el río nuevo. Prolongar todo el perfil a 110 m duplicaba parcialmente esa depresión en línea recta. La tabla nativa de alturas (muestras sobre triángulos reales, interpolación de la cuadrícula de 4 m) mide a x=-174/y=21 una cota 2,948 m frente a hombros 3,795/3,395 m; a x=174/y=-52, 4,891 frente a 5,383/5,638 m. Esta marca es distinta del defecto de sombras ya corregido.
+
+Corrección preparada: fuera del núcleo, sustituir únicamente la incisión abandonada por la interpolación de sus dos hombros medidos (semiancho del cauce original +14 m), con entrada gradual en 24 m. Después se excava una sola vez el cauce curvo existente. La veladura exterior deja también de prolongar el pigmento del cauce abandonado. El contacto original conserva exactamente su perfil, material y UV; no se tapa con una segunda superficie ni se cambia el criterio de navegabilidad. La siguiente ejecución debe comprobar las cotas, rutas y PNG auténticos antes de registrar el defecto como corregido.
+
+
+La atmósfera periférica del siguiente pase mezcla color de forma opaca, como niebla, en lugar de volver transparentes las superficies. Así no depende del orden de dibujo entre suelo, costa y copas superpuestas. Usa el color continental existente convertido explícitamente al espacio lineal mediante un vector; no modifica el fondo de cámara. Continúa restringida al último 15 % del zoom panorámico, con la misma anchura espacial; la vista regional permanece sin niebla. Comprobación visual nativa pendiente.
+
+
+### Pase AF de claros verificado
+Fuente `a7368d0661c1414587f045b208a4335531369cbc`, run 40052558503, materialización `06a9535c94c26dbc6fe052dc167b7617a7d2e5b3`: **27/27 PASS**, cero omitidas, 158,05 s de Editor. Artefacto visual 12544392143, SHA256 `1862587a0e16f0bfa0642bd5aa189622afc9c570f4d6fb94a1b980e702584e53`. Se conserva el tratamiento localizado de claros; el efecto es moderado y no equivale a resolver toda la diferencia con la referencia. Las marcas del cauce original siguen visibles en este pase, por lo que se aplica la reparación geométrica descrita, sin declarar cierre anticipado.

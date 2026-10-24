@@ -1,5 +1,5 @@
 Shader "Eldoria/RegionOneAuthoredSurface" {
- Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 }
+ Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 }
  SubShader {Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest"}
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -7,7 +7,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
  TEXTURE2D(_GroundDetail); SAMPLER(sampler_GroundDetail);
  CBUFFER_START(UnityPerMaterial)
- float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;
+ float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;
  CBUFFER_END
  UNITY_INSTANCING_BUFFER_START(PerTree)
  UNITY_DEFINE_INSTANCED_PROP(float4, _InstanceTint)
@@ -54,7 +54,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  float edge=min(min(west,east),min(north,south));
  float irregular=40*sin(region.y*.011)+20*cos(region.x*.017-region.y*.006);
  float atmosphere=(1-smoothstep(0,107+irregular,edge))*_BoundaryWeight;
- return half4(c.rgb,1-atmosphere);
+ return half4(lerp(c.rgb,_BoundaryColour.rgb,atmosphere),1);
  }
  ENDHLSL
  }
