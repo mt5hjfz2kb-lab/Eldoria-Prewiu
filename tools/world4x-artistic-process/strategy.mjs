@@ -82,6 +82,7 @@ function evaluate(){
       if(unique.size<2)fail('next_batch must contain distinct concrete improvements');
     }
   } else {
+    if(repeated.length>threshold)fail('single critical fix exception exhausted after the first narrow rework threshold; pivot to a root-cause/visual batch instead');
     if(!validSentence(p.critical_blocker,60))fail('single-fix exception requires a genuinely blocking navigability/gameplay fault and evidence');
     if(!validSentence(p.one_retry_limit,40))fail('single-fix exception must state one remaining focused cycle maximum');
   }
