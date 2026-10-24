@@ -77,3 +77,41 @@ Un `WORLD4X_ARTISTIC_PROCESS_EVIDENCE_PASS` certifica **documentación e integri
 La aceptación estética sigue siendo un juicio visual independiente conforme al contrato del propietario. Tampoco se puede garantizar que un check impida pulsar «Merge» si no está configurado como **required status check** en la protección de `main`; la protección de rama es una configuración separada. Hasta tenerla, mantener PR #100 en borrador y no fusionar sin revisión.
 
 Las pruebas del mundo 57 PlayMode / 26 EditMode / 44 de progresión se mantienen independientes e intactas. **No cancelar los trabajos actuales ni reclamar su ámbito artístico para rellenar el informe.** El responsable actual debe producir la prueba durante su siguiente ciclo seguro.
+
+## Dirección artística por prioridades, no por microarreglos (control adicional)
+
+El verificador `tools/world4x-artistic-process/strategy.mjs` examina el **historial de cambios reales en el código artístico** de Región 1. Si detecta **cuatro o más cambios consecutivos sobre el mismo elemento** (puente, bosque, pradera, panorámica), da un error claro y solicita una nueva decisión antes de considerar la intervención preparada para integrar. El detector clasifica los mensajes reales de commits: no pretende medir inteligencia ni calidad estética. Si detecta una causa mal clasificada, documentar y corregir el detector sin falsear commits.
+
+No se escribe otro sistema artístico ni se levanta otro proyecto: el responsable del **PR #100 existente** añade, únicamente cuando el control lo exija, `docs/evidence/world4x-canon-20261022/PRODUCTION_DIRECTION_CURRENT.json` en **su rama**, conservando la reserva de Windows y las fuentes AF/AG.
+
+Ejemplo orientativo de estructura, **no es una evidencia ni una orden de sustituir los defectos reales**:
+
+```json
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-world-region-1-canon-20261022",
+  "repeated_topic": "bridge",
+  "responds_to_sha": "SHA_COMPLETO_REAL_DEL_ULTIMO_CAMBIO_DE_PUENTE",
+  "decision": "PIVOT_TO_HIGH_IMPACT",
+  "visual_evidence": "Qué mostraron exactamente las últimas capturas reales de Unity y qué NO corrigieron las iteraciones anteriores",
+  "root_cause": "Por qué llevamos varios ensayos de un mismo detalle y qué enfoque hay que cambiar para salir de ese ciclo",
+  "reason_for_priority": "Qué problema de imagen global pesa más para el jugador, comparando cercana, regional y panorámica",
+  "competing_problems": [
+    {"view": "cercana", "defect": "Defecto del puente observado en Unity y su impacto en el acceso al castillo", "impact": 3},
+    {"view": "panoramica", "defect": "Brecha central pequeña y distribución geográfica sin jerarquía visual suficiente", "impact": 5}
+  ],
+  "preserve_AF_AG": true,
+  "heavy_run_rule": "QUICK_VISUAL_PREVIEW_FIRST",
+  "shared_artistic_goal": "Recuperar la composición continental aprobada y la legibilidad de la geografía en las vistas regional y panorámica",
+  "next_batch": [
+    {"view": "panoramica", "visual_change": "Recomponer la posición y silueta legible de la Brecha en el suelo y su fractura"},
+    {"view": "regional", "visual_change": "Rediseñar la continuidad de masas forestales y caminos conservando relieve y claros"}
+  ]
+}
+```
+
+El SHA es el del **último commit del tema repetido**, no el de `main`. Los problemas y su impacto deben justificarse por capturas, no por valores inventados. El siguiente lote debe ser **coherente**, no una combinación arbitraria de arreglos, y debe mantener la integridad de AF/AG y juego.
+
+Existe una única excepción `ONE_LAST_CRITICAL_FIX` si un fallo de juego/recurso impide continuar, con `critical_blocker` detallado y `one_retry_limit` que explique la intervención única. El verificador **no** permite renovar indefinidamente esa excepción más allá del umbral: debe revisarse la causa o pivotar. Ningún informe tiene permiso para cancelar runs en curso de otro responsable.
+
+El control se ejecuta junto al gate artístico en `world4x-artistic-process-gate.yml`, alojado en Linux, y se prueba con `node tools/world4x-artistic-process/strategy.test.mjs`. Fallar en una iteración de dirección **no significa que Blender, Unity o el juego estén rotos**: significa que faltan prioridad y evidencia para proseguir con la misma estrategia. Una decisión registrada tampoco sustituye una mejora real de imágenes. La aceptación visual continua requiriendo comparación contra el canon.
