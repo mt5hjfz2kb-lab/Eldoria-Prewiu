@@ -70,23 +70,27 @@ def grove_field(X,Y,index):
  d=(wx/rx)**2+(wy/ry)**2
  return np.clip((rim-d)*1.8,0,1)
 
-# Authored links join selected existing groves into uneven woodland belts;
-# they do not become collectible nodes, collision blockers or new geography.
+# Hand-composed woodland shoulders: broad asymmetric habitat masses on the
+# actual geography rather than straight corridors between forest islands.
 FOREST_CONNECTIONS=(
- ((-750,500),(-650,790),42),((-650,790),(-430,680),35),
- ((-430,680),(-220,420),33),((-730,90),(-750,-370),35),
- ((-410,-280),(-270,-470),32),((-270,-470),(-130,-800),32),
- ((330,-820),(650,-650),29),((300,420),(580,540),28),
- ((100,600),(300,420),30),((-620,1430),(-270,1120),35),
- ((240,-1570),(650,-1300),30))
+ ((-750,500),(-650,790),89),((-430,680),(-220,420),77),
+ ((100,600),(300,420),82),((-730,90),(-750,-370),76),
+ ((330,-820),(650,-650),74),((240,-1570),(650,-1300),81),
+ ((-280,90),(-410,-280),70),((240,30),(300,420),75))
+def forest_woodland_crest(ax,ay,bx,by,width,t,index):
+ length=math.hypot(bx-ax,by-ay);nx=-(by-ay)/length;ny=(bx-ax)/length
+ drift=width*.58*np.sin(np.pi*t)**1.5*np.sin(np.pi*(2.1+.2*(index%3))*t+index*1.37)
+ return ax+(bx-ax)*t+nx*drift,ay+(by-ay)*t+ny*drift
 def connecting_woodland(X,Y):
  result=np.zeros(np.shape(X))
- for (ax,ay),(bx,by),width in FOREST_CONNECTIONS:
-  dx,dy=bx-ax,by-ay
-  t=np.clip(((X-ax)*dx+(Y-ay)*dy)/(dx*dx+dy*dy),0,1)
-  distance=np.hypot(X-ax-t*dx,Y-ay-t*dy)
-  width_at_t=width*(.93+.12*np.sin(6*t+ax*.01)+.09*np.cos(11*t+by*.01))
-  result=np.maximum(result,.78*np.clip((1-(distance/width_at_t)**2)*1.35,0,1))
+ for index,((ax,ay),(bx,by),width) in enumerate(FOREST_CONNECTIONS):
+  dx=bx-ax;dy=by-ay;length=math.hypot(dx,dy);nx=-dy/length;ny=dx/length
+  t=np.clip(((X-ax)*dx+(Y-ay)*dy)/(length*length),0,1)
+  drift=width*.58*np.sin(np.pi*t)**1.5*np.sin(np.pi*(2.1+.2*(index%3))*t+index*1.37)
+  px=ax+dx*t+nx*drift;py=ay+dy*t+ny*drift
+  radius=width*(.91+.20*np.sin(4*np.pi*t+index*.81)+.12*np.cos(7*np.pi*t-index*.43))
+  dist=np.hypot(X-px,Y-py)
+  result=np.maximum(result,.78*np.clip((1-(dist/np.maximum(radius,15))**2)*1.45,0,1))
  return result
 
 def forest_field(X,Y):
@@ -752,32 +756,35 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
  tree_total+=len(parts)
  # glTF reuses the same two vertex buffers; each transform remains editable.
 
-# Fill selected inter-grove valleys with shared 3D fir donors; no forest cards.
+# Broad staggered habitat planting from the same two retained fir donors.
+# Vary the open glades, preserve functional path/river/city exclusions.
 for belt_idx,((ax,ay),(bx,by),width) in enumerate(FOREST_CONNECTIONS):
- random=np.random.default_rng(17321+belt_idx)
+ random=np.random.default_rng(17671+belt_idx)
  dx,dy=bx-ax,by-ay;segment_length=math.hypot(dx,dy)
  nx,ny=-dy/segment_length,dx/segment_length
  planted=0
- for station in np.arange(11,segment_length-6,14):
+ for station in np.arange(8,segment_length-7,16):
   t=station/segment_length
-  bend=width*.13*math.sin(math.pi*t)*math.sin(7*t+belt_idx*.77)
-  for lane in (-.68,0,.68):
-   lateral=bend+lane*width+random.uniform(-3.5,3.5)
-   x=ax+dx*t+nx*lateral;y=ay+dy*t+ny*lateral
+  cx,cy=forest_woodland_crest(ax,ay,bx,by,width,t,belt_idx)
+  for lane in (-.88,-.45,0,.45,.88):
+   lateral=lane*width+random.uniform(-8,8)
+   x=cx+nx*lateral;y=cy+ny*lateral
    if -99<x<99 and -81<y<273:continue
    if abs(x)>875 or abs(y)>1770 or float(coast(x,y))<22:continue
-   if float(line_distance(np.array(x),np.array(y)))<17:continue
-   if float(fault_distance(np.array(x),np.array(y)))<42:continue
-   if abs(y-rivercentre(x))<riverwidth(x)+12:continue
-   if any(math.hypot(x-a,y-b)<r+13 for a,b,r in cities):continue
-   if any(abs(x-qx)<16 and abs(y-qy)<span/2+12 for qx,qy,w,span in bridge_specs):continue
-   donor=masters[(belt_idx+planted)%2]
-   o=donor.copy();o.data=donor.data;scene.collection.objects.link(o)
-   o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y))
-   o.name='BLD_ForestMass_Belt_'+str(belt_idx).zfill(2)+'_'+str(planted).zfill(4)
-   scale=random.uniform(1.5,3.55);dist=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270))
-   canopy=1+.35*float(smooth(dist/220))
-   o.scale=(scale*random.uniform(1.12,1.38)*canopy,scale*1.2*canopy,scale*random.uniform(.85,1.08))
+   if float(line_distance(np.array(x),np.array(y)))<19:continue
+   if float(fault_distance(np.array(x),np.array(y)))<43:continue
+   if abs(y-rivercentre(x))<riverwidth(x)+14:continue
+   if any(math.hypot(x-a,y-b)<r+16 for a,b,r in cities):continue
+   if any(abs(x-qx)<17 and abs(y-qy)<span/2+13 for qx,qy,w,span in bridge_specs):continue
+   local=float(connecting_woodland(np.array(x),np.array(y)))
+   if local<random.uniform(.1,.46):continue
+   donor=masters[(belt_idx+planted)%2];o=donor.copy();o.data=donor.data
+   scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False)
+   o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_Belt_'+str(belt_idx).zfill(2)+'_'+str(planted).zfill(4)
+   size=random.uniform(1.45,3.65)
+   distance=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270))
+   canopy=1+.35*float(smooth(distance/220))
+   o.scale=(size*random.uniform(1.18,1.46)*canopy,size*1.22*canopy,size*random.uniform(.80,1.10))
    o.rotation_euler.z=random.uniform(0,math.tau);tree_total+=1;planted+=1
 
 # Neighbouring ground carries actual editable fir instances, never forest cards.
@@ -810,44 +817,74 @@ macro_namespace={'__file__':str(macro_path)}
 exec(compile(macro_path.read_text(encoding='utf-8'),str(macro_path),'exec'),macro_namespace)
 macro_result=macro_namespace['apply_geological_batch'](out)
 
-# Real sculpted strata on the original permitted fault arms; the new visual
-# escarpments do not change the gameplay exclusion, pickups or AF/AG terrain.
-bpy.context.view_layer.update()
-bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
-strata_materials=[
- simplemat('Weathered grey Breach shale',(.36,.335,.32)),
- simplemat('Ochre eroded Breach stone',(.48,.43,.345)),
- simplemat('Shadowed violet Breach slate',(.275,.255,.31))]
-rock_verts=[];rock_faces=[];rock_material_index=[]
+# Discontinuous weathered rockfall on the real fault shoulders. No white
+# parallel ribbons or new artificial geological walls. These are cosmetic
+# low-poly stones, not navigation blockers or gameplay resource nodes.
+bpy.context.view_layer.update();bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
+rock_mats=[simplemat('Breach ash-grey weathered stone',(.29,.275,.27)),
+           simplemat('Breach dark ironstone',(.235,.215,.255)),
+           simplemat('Breach old ochre bedrock',(.355,.325,.275))]
+rock_verts=[];rock_faces=[];rock_mats_index=[];rng=np.random.default_rng(284721)
 for branch,path in enumerate(macro_namespace['ORIGINAL_FAULTS']):
- line=[]
  for (ax,ay),(bx,by) in zip(path,path[1:]):
-  for t in np.linspace(0,1,max(2,int(math.hypot(bx-ax,by-ay)/7)),endpoint=False):
-   line.append((ax+(bx-ax)*t,ay+(by-ay)*t))
- line.append(path[-1])
- for side in (-1,1):
-  last=None
-  for i,(cx,cy) in enumerate(line):
-   aa=line[max(0,i-1)];bb=line[min(i+1,len(line)-1)]
-   theta=math.atan2(bb[1]-aa[1],bb[0]-aa[0])
-   nx,ny=-math.sin(theta)*side,math.cos(theta)*side
-   t=i/max(len(line)-1,1)
-   rim=1+.19*math.sin(t*18+branch*2.2)+.10*math.cos(t*31-branch)
-   current=[]
-   for width,lift in ((3.7,.09),(7.4,.22),(11.8,1.8),(19.2,.10)):
-    x=cx+nx*width*rim;y=cy+ny*width*rim
-    current.append(len(rock_verts));rock_verts.append((x,y,surface(x,y)+lift))
-   if last is not None:
-    for band in range(3):
-     rock_faces.append((last[band],last[band+1],current[band+1],current[band]))
-     rock_material_index.append((branch+band+i//3)%len(strata_materials))
-   last=current
-strata_mesh=bpy.data.meshes.new('Breach eroded exposed stratigraphy')
-strata_mesh.from_pydata(rock_verts,[],rock_faces);strata_mesh.update()
-for material in strata_materials:strata_mesh.materials.append(material)
-for i,poly in enumerate(strata_mesh.polygons):poly.material_index=rock_material_index[i]
-strata_obj=bpy.data.objects.new('BLD_BreachLayeredEscarpment',strata_mesh)
-scene.collection.objects.link(strata_obj)
+  length=math.hypot(bx-ax,by-ay);nx=-(by-ay)/length;ny=(bx-ax)/length
+  for station in np.arange(8,length-3,18+rng.uniform(-4,5)):
+   t=station/length;cx=ax+(bx-ax)*t;cy=ay+(by-ay)*t
+   for side in (-1,1):
+    if rng.random()<.34:continue
+    offset=side*rng.uniform(9.5,22)
+    x=cx+nx*offset;y=cy+ny*offset
+    if -96<=x<=96 and -78<=y<=270:continue
+    if float(line_distance(np.array(x),np.array(y)))<7:continue
+    if abs(y-rivercentre(x))<riverwidth(x)+5:continue
+    count=7+rng.integers(0,3);r=rng.uniform(2,5)
+    ring=[]
+    for k in range(count):
+     angle=k*math.tau/count;radius=r*rng.uniform(.65,1.2)
+     xx=x+math.cos(angle)*radius;yy=y+math.sin(angle)*radius
+     ring.append(len(rock_verts));rock_verts.append((xx,yy,surface(xx,yy)+rng.uniform(.06,.18)))
+    apex=len(rock_verts);rock_verts.append((x+rng.uniform(-.8,.8),y+rng.uniform(-.8,.8),surface(x,y)+rng.uniform(.7,2.1)))
+    for k in range(count):
+     rock_faces.append((ring[k],ring[(k+1)%count],apex))
+     rock_mats_index.append((branch+k//3+int(rng.integers(0,2)))%3)
+rock_mesh=bpy.data.meshes.new('Breach weathered rubble geometry');rock_mesh.from_pydata(rock_verts,[],rock_faces);rock_mesh.update()
+for material in rock_mats:rock_mesh.materials.append(material)
+for i,p in enumerate(rock_mesh.polygons):p.material_index=rock_mats_index[i]
+rock_obj=bpy.data.objects.new('BLD_BreachWeatheredRockfall',rock_mesh)
+scene.collection.objects.link(rock_obj)
+
+
+# Near-view ecological finish uses discrete mesh accents above the AF/AG
+# surface. It does not move/repaint a retained original vertex, UV or image.
+# Cosmetic tufts and stones are lightweight, non-interactive, no colliders.
+detail_mats=[simplemat('Near grass shade',(.27,.39,.18)),
+             simplemat('Near meadow dry grass',(.43,.45,.20)),
+             simplemat('Near bank soft olive',(.34,.40,.245))]
+near_v=[];near_f=[];near_mat=[];rng=np.random.default_rng(112407)
+for n in range(850):
+ x=rng.uniform(-94,94);y=rng.uniform(-72,265)
+ if math.hypot(x,y-112)<29 or math.hypot(x,y)<22:continue
+ if float(line_distance(np.array(x),np.array(y)))<8:continue
+ if any(abs(x-qx)<12 and abs(y-qy)<span/2+12 for qx,qy,w,span in bridge_specs):continue
+ hit,_,_,_=river.ray_cast(Vector((x,y,150)),Vector((0,0,-1)))
+ if hit:continue
+ z=surface(x,y);height_scale=rng.uniform(.3,.95);breadth=rng.uniform(.25,.70)
+ # Three shared angled shoots per patch, all surface-bound.
+ for k in range(3):
+  angle=k*math.tau/3+rng.uniform(-.23,.23)
+  dx=math.cos(angle);dy=math.sin(angle)
+  ids=[]
+  for px,py,pz in ((-breadth*.5*dy,breadth*.5*dx,.04),
+                    (breadth*.5*dy,-breadth*.5*dx,.04),
+                    (breadth*dx,height_scale*.15*dy,height_scale)):
+   ids.append(len(near_v));near_v.append((x+px,y+py,z+pz))
+  near_f.append(tuple(ids));near_mat.append((n+k)%3)
+detail_mesh=bpy.data.meshes.new('AF adjacent nonblocking three-dimensional grass tufts')
+detail_mesh.from_pydata(near_v,[],near_f);detail_mesh.update()
+for material in detail_mats:detail_mesh.materials.append(material)
+for poly,idx in zip(detail_mesh.polygons,near_mat):poly.material_index=idx
+detail_ob=bpy.data.objects.new('BLD_NearMeadowHabitat',detail_mesh)
+scene.collection.objects.link(detail_ob)
 
 # Apply the previously observed regional forest-silhouette A/B as a coherent
 # part of the geological composition candidate. This changes object.scale ONLY:
