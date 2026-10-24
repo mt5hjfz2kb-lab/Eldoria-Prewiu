@@ -54,3 +54,37 @@ test('rejects unknown request profiles and malformed identifiers',()=>{
  assert.throws(()=>selectKnowledge(req('invalid','x'),source),/INVALID_PROFILE/);
  assert.throws(()=>selectKnowledge({profile:'animated_asset',request_id:'../../bad'},source),/INVALID_WORKSTREAM_ID/);
 });
+
+test('warnings about rejected visual recipes survive early Qwen memory truncation',()=>{
+ const result=selectKnowledge(req('environment_surface','pradera ribera terreno','tintes de terreno, geometría y composición'),source);
+ assert.ok(result.rejected_ids.length>0,'Expected authentic rejection cases in catalog');
+ const warningIndex=result.inventory_text.indexOf('REJECTED CASES TO AVOID');
+ const recipesIndex=result.inventory_text.indexOf('SUGGESTED RELEVANT METHODS');
+ assert.ok(warningIndex>=0);
+ assert.ok(recipesIndex>warningIndex,'Historical negative cases must precede methods');
+ assert.match(result.inventory_text.slice(0,1700),/REJECTED:/);
+ assert.equal(result.qa_boundary.art_approved,false);
+});
+test('two independent, admitted negative reviews for the same request signal a structural pivot',()=>{
+ const base=req('environment_composition','bosque pradera ribera','composición y terreno');
+ const sample=(suffix,kind='reviewed_negative')=>({
+   id:'L'+suffix.repeat(20),origin_request:base.workstream_id,classification:kind,
+   evidence_sha256:suffix.repeat(64),review_sha256:suffix.repeat(64),
+   lesson:'The same geometry-only micro-correction did not solve the real landscape composition.',
+   next_action:'Change overall terrain composition and compare the same true Unity camera.',
+   knowledge_ids:['K20'],art_approved:false,quality_verified:'INDEPENDENT_SCOPE_ONLY',
+   catalog_sha256:'a'.repeat(64),before_sha256:'b'.repeat(64),after_sha256:'c'.repeat(64)
+ });
+ const modified={...source,journal:{...source.journal,records:[sample('1'),sample('2')]}};
+ const selected=selectKnowledge(base,modified);
+ assert.equal(selected.pivot_advisory.method_change_required,true);
+ assert.deepEqual(selected.pivot_advisory.evidence_ids,['L'+'1'.repeat(20),'L'+'2'.repeat(20)]);
+ assert.match(selected.inventory_text,/CRITICAL: Two independently reviewed attempts/);
+ assert.equal(selected.qa_boundary.artist_decisions_executed,false);
+ const withPositive=selectKnowledge(base,{...modified,journal:{...modified.journal,records:[sample('1'),sample('2'),sample('3','reviewed_positive')]}});
+ assert.equal(withPositive.pivot_advisory.method_change_required,false,'Positive review interrupts the negative sequence');
+ const foreign=selectKnowledge({...base,request_id:'foreign',workstream_id:'foreign'},modified);
+ assert.equal(foreign.pivot_advisory.method_change_required,false,'Never transfer failures from another workstream');
+ const duplicate=selectKnowledge(base,{...modified,journal:{...modified.journal,records:[sample('1'),{...sample('2'),review_sha256:'1'.repeat(64)}]}});
+ assert.equal(duplicate.pivot_advisory.method_change_required,false,'Duplicated review evidence is not two independent failures');
+});
