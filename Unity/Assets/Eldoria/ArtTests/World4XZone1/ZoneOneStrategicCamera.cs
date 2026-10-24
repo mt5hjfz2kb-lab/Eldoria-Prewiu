@@ -64,6 +64,10 @@ namespace Eldoria.World4XPrototype
         public void EnterStrategicView(Vector3 anchor)
         {
             target = anchor;
+            // Enter/Home is the regional north-up view, not a continuation of
+            // the previous whole-continent bearing. Reset before computing the
+            // navigable footprint or accepting an immediate pointer drag.
+            if (AllowWholeRegionOverview) heading = 0;
             desiredZoom = StrategicEntryZoom();
             zoomAnchored = false;
             View.orthographicSize = desiredZoom;
