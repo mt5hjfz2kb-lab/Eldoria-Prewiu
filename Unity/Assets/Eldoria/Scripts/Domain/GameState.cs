@@ -3,6 +3,20 @@ using System.Collections.Generic;
 
 namespace Eldoria.Domain
 {
+    // Persisted with the existing PlayerState/FileStateStore, never in an art asset.
+    [Serializable] public sealed class WorldResourceLocation
+    {
+        public string TargetId;
+        public string SiteId;
+        public string ResourceKind;
+        public int Remaining;
+        public int Capacity;
+        public float X, Y, Z;
+        public int Generation;
+        public long RespawnUtcTicks;
+        public long DepletedUtcTicks;
+        public WorldResourceLocation Copy() => (WorldResourceLocation)MemberwiseClone();
+    }
     [Serializable] public sealed class ResourceWallet { public int Wood; public int Stone; public int Food; }
     [Serializable] public sealed class ArmyRoster
     {
@@ -12,8 +26,10 @@ namespace Eldoria.Domain
         public int Total => ArcherT1 + ArcherT2 + ArcherT3;
         public ArmyRoster Copy() => new ArmyRoster { ArcherT1 = ArcherT1, ArcherT2 = ArcherT2, ArcherT3 = ArcherT3 };
     }
+    [Serializable] public sealed class WorldRoutePoint { public float X,Y,Z; public WorldRoutePoint Copy()=>(WorldRoutePoint)MemberwiseClone(); }
     [Serializable] public sealed class MarchState
     {
+        public List<WorldRoutePoint> Route = new List<WorldRoutePoint>();
         public string MarchId = "march-main";
         public string OwnerId = "player-local";
         public string TargetId = "";
@@ -79,6 +95,7 @@ namespace Eldoria.Domain
         public bool MarchConfigured;
         public string PreparedHeroId = "aldric";
         public ArmyRoster PreparedTroops = new ArmyRoster();
+        public List<WorldResourceLocation> WorldResourceLocations = new List<WorldResourceLocation>();
         public int ForestRemaining = 1250;
         public int QuarryRemaining = 5200;
         public long BuildingCompletesUtcTicks;

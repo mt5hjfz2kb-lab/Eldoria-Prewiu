@@ -1,0 +1,33 @@
+{
+  "kind": "texture_statistics_only_not_Unity_capture",
+  "source_commit": "ad9b4213fc416d0a14556033fdda05bcda3cbaaf",
+  "source_material": "P connected meadow forest floor paths",
+  "source_image": "AF broad meadow flows",
+  "glb_sha256": "381c1d274c58a8211fe6e3f71ccf7e38ac8dfc525c089643d1db2083fffe6783",
+  "patch_pixels": [
+    82,
+    113,
+    3
+  ],
+  "original_encoded_relative_grain_std": [
+    0.07303890747431559,
+    0.07427543372433096,
+    0.07276435993703838
+  ],
+  "original_linear_relative_grain_std": [
+    0.15802510091200803,
+    0.1611624672001717,
+    0.14005234969887834
+  ],
+  "previous_two_sample_runtime_predicted_std": [
+    0.04389936075071355,
+    0.044642563432739445,
+    0.04373434648915179
+  ],
+  "corrected_two_sample_runtime_predicted_std": [
+    0.15802510091200803,
+    0.1611624672001717,
+    0.14005234969887834
+  ],
+  "assumption": "Two decorrelated source-derived samples; actual Unity visual validation still required."
+}

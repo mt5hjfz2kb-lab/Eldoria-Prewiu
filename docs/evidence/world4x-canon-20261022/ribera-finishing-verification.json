@@ -1,0 +1,134 @@
+{
+  "pr": 100,
+  "branch": "feature/world4x-region1-canon-20261022",
+  "source_commit": "7d04b80f752ec4d12c1d69640a9c5300441cea41",
+  "run": 39947565310,
+  "artifact": 12498976720,
+  "artifact_zip_sha256": "73f33d78c29d2a217c3aca09ee7aee960b1b9e02ca152fe4b329df66764cf96d",
+  "blend_sha256": "51152e69cb3a06ac6401351cf3ca6ca7beab82889ee2f45411740d510078ef3d",
+  "glb_sha256": "046bfc47a43e883f591b9930e8e2d97860d04f991277ffdd82d96271128d5bc4",
+  "tests": [
+    {
+      "name": "ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls",
+      "result": "Passed"
+    },
+    {
+      "name": "OwnerFreshSaveCompletesIAndIIThroughGuidedHud",
+      "result": "Passed"
+    },
+    {
+      "name": "ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers",
+      "result": "Passed"
+    },
+    {
+      "name": "ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe",
+      "result": "Passed"
+    },
+    {
+      "name": "BreachIsGeologicalGroundGeometryNotTargetOrVerticalPortal",
+      "result": "Passed"
+    },
+    {
+      "name": "EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain",
+      "result": "Passed"
+    },
+    {
+      "name": "OneGeographyAndNoInventedGameplayHotspots",
+      "result": "Passed"
+    },
+    {
+      "name": "PanoramaHidesOldSquareWithoutRemovingWorldGameObjects",
+      "result": "Passed"
+    },
+    {
+      "name": "RealWoodNodeRemainsReachableWithBothMobileCameraAspects",
+      "result": "Passed"
+    },
+    {
+      "name": "ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds",
+      "result": "Passed"
+    },
+    {
+      "name": "AuthoredWorldOpensWithMateriallyWiderStrategicFraming",
+      "result": "Passed"
+    },
+    {
+      "name": "BuildingSelectionRetainsAuthoritativeGatewayOffer",
+      "result": "Passed"
+    },
+    {
+      "name": "ClosingActualPrologueKeepsIntegratedNavigationOwnership",
+      "result": "Passed"
+    },
+    {
+      "name": "RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame",
+      "result": "Passed"
+    },
+    {
+      "name": "SingleHudCompactObjectiveAndNoOverlayAtRest",
+      "result": "Passed"
+    },
+    {
+      "name": "FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave",
+      "result": "Passed"
+    },
+    {
+      "name": "ExistingEnemyRemainsSubstantiallyLegibleAcrossAuthenticCameraZoom",
+      "result": "Passed"
+    },
+    {
+      "name": "OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave",
+      "result": "Passed"
+    }
+  ],
+  "same_camera_zooms": [
+    34,
+    40,
+    46,
+    52
+  ],
+  "zoom_sequence": {
+    "frames": 97,
+    "fps": 16,
+    "size": [
+      960,
+      720
+    ],
+    "fixed_view": true,
+    "route": "34 to52 to34",
+    "endpoints_identical": true,
+    "runtime_performance_measured": false
+  },
+  "art_approved": false,
+  "physical_mobile_verified": false,
+  "playable_replacement_installed": false,
+  "reference_urls": [
+    "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/main/docs/visual-reference/world-map/01_vista_cercana.png",
+    "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/main/docs/visual-reference/world-map/02_vista_regional.png",
+    "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/blob/main/docs/visual-reference/world-map/03_vista_panoramica.png"
+  ],
+  "files": {
+    "Ribera_bank_strata.png": "e7d405b886a881d1c04f43492cb3675962dc60d0b480848cd81dd022229de912",
+    "04_eroded_bank_crown.png": "149be4bfe8a5dba25760abf6cf3f425002806203acd7ad197102d4ce51b70e0c",
+    "RiberaPilot.glb": "046bfc47a43e883f591b9930e8e2d97860d04f991277ffdd82d96271128d5bc4",
+    "03_pine_litter.png": "ef75f8d4da038fe88d4d43b91e2f151e4ef73490c7d553c15c2fd21fe55210d5",
+    "05_moist_edge.png": "9d5ca3b3fcacdb33f405ba464f8237d1b46c022945b281123768053b928174b8",
+    "Ribera_painted_surface_plus_baked_AO.png": "a8729a4cc39c466f9a729b2a2f7ccfba435f927e658bc7c39fa1048398ac88ca",
+    "Ribera_surface_painted.png": "86005f9a04ca1e4c1db456a1c8e04059fff5f1e2f421f8c0a12e708b60e6e201",
+    "02_exposed_ochre_earth.png": "7798cfd4a88b1629cbc7b9e6b6fbc2d752c59dfd899eb325cbc90aa4e4c462a6",
+    "Painted_soil_edges_mask.png": "82d700363920ed61086cc90a287831930119668cb58281ad84f36f648012525b",
+    "01_meadow_openings.png": "10bee94b84d91c2fb7b57d8b61d053c9c38b8e05af6e722b4b300948af27f5ad",
+    "finishing.json": "ecc47857ab77bc6e7701820fa81ce6742d89427381c5e15ea4fb4aac90f400a3",
+    "Ribera_pictorial_ground.png": "11efa46559a187cbee5fd403dd170020f955980ae893d40ddd422a610da0799e",
+    "Ribera_painted_current.png": "2f435453cc9a64b8f4e8759c30d71172a4d0fb2734ab29a904d9d9d23b77297b",
+    "09_revised_cluster_litter.png": "d403df257cccb69963eae06fa812ba725b0b94ae8efc68f55e891afa958a4977",
+    "06_worn_shoulders.png": "fcd6d49956a28b5fbdd55fd25ad1d9793f687f57b052ef675fe0a06e00e25290",
+    "08_mineral_outcrops.png": "23ea601c865c0cdf8746f968cbdbb5df3a638d99538f34622b6c79a99da9e50a",
+    "blender-ribera.png": "14f1f82ce743ec61ad04c34898efe59cf770a444247bd84d659512a1627cad15",
+    "Painted_groundcover_mask.png": "e2362646edf768fdd9b8e31dd3ee23caa241a9fd7a46454cad37376cdadd2418",
+    "Ribera_painted_meadow.png": "d329cd08221cbdeff9e81eb1700b3dbd32df761bd07738618545b4da405059d3",
+    "Ribera_baked_contact_AO.png": "677a83a45d1f641752d1e1a6f0276fdb9631e822b8c2f571daad4e829e22fe98",
+    "Eldoria_Ribera_Finished.blend": "51152e69cb3a06ac6401351cf3ca6ca7beab82889ee2f45411740d510078ef3d",
+    "07_footpath.png": "0ccb42a10e3d4bc3b5b204e71db890b48eaa16e8a1f1a2e2131ce3afd9256f68"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "stage": "J",
+  "base": "owner-retained I",
+  "source_blend_sha256": "878f14116db4159b0b354dbff8b97e47a9d92180d345eb7fe4e728b530599642",
+  "observed_defects": [
+    "bank pigment contains continuous dark horizontal strata",
+    "water highlights run nearly whole river length",
+    "shore transitions lack localized mineral/sediment accumulations"
+  ],
+  "decisions": [
+    "replace each bank pigment independently with oblique mineral faces and localized turf",
+    "paint localized pools and shoals with independent masks; short tapering flow strokes",
+    "bevel and flatten inherited rock mesh; compose four shore groups"
+  ],
+  "protected": [
+    "I terrain and river boundaries",
+    "I tree positions and hybrid runtime",
+    "all gameplay",
+    "original reference images"
+  ],
+  "author": "ChatGPT visual review and directed bpy operations; no Qwen, no external generation",
+  "reference_sha256": "bb053cf3099a202eff472a53207169dfba522b93c0c5b7bff0fed05b96438fd9",
+  "visual_acceptance": "must inspect real Unity against I cameras before retaining"
+}

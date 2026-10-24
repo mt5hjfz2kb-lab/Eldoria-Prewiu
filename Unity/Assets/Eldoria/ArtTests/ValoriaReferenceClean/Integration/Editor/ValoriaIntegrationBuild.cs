@@ -154,7 +154,22 @@ namespace Eldoria.ReferenceClean.Editor {
    try{Graphics.Blit(source,rt);RenderTexture.active=rt;var copy=new Texture2D(source.width,source.height,TextureFormat.RGBA32,true,linear){name=source.name,wrapMode=source.wrapMode,filterMode=source.filterMode,anisoLevel=source.anisoLevel};copy.ReadPixels(new Rect(0,0,source.width,source.height),0,0);copy.Apply(true,false);return copy;}
    finally{RenderTexture.active=active;RenderTexture.ReleaseTemporary(rt);}
   }
-  static void Entered(PlayModeStateChange state){if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;SessionState.SetBool(Flag,false);EditorApplication.delayCall+=()=>{var h=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(h==null){EditorApplication.Exit(1);return;}h.StartCoroutine(Probe(h));};}
+  static void Entered(PlayModeStateChange state){if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;SessionState.SetBool(Flag,false);EditorApplication.delayCall+=()=>{var h=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(h==null){EditorApplication.Exit(1);return;}h.StartCoroutine(GuardedProbe(h));};}
+  static IEnumerator GuardedProbe(ValoriaIntegratedWorld h){
+   var probe=Probe(h);
+   while(true){
+    object current=null;bool moved=false;Exception failure=null;
+    try{moved=probe.MoveNext();if(moved)current=probe.Current;}
+    catch(Exception e){failure=e;}
+    if(failure!=null){
+     Debug.LogException(failure);
+     File.WriteAllText(Path.Combine(Ev,"integration-failure.txt"),failure.ToString());
+     EditorApplication.Exit(1);yield break;
+    }
+    if(!moved)yield break;
+    yield return current;
+   }
+  }
   static IEnumerator Probe(ValoriaIntegratedWorld h){
    framingChecks.Clear();
    yield return null;yield return new WaitForSecondsRealtime(1);
@@ -164,7 +179,15 @@ namespace Eldoria.ReferenceClean.Editor {
     h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("La Brecha apareció"),"Original introductory narrator missing");
     Need(h.Hud.NarrativeTurnCount==3,"Web narrator, Aldric and tutorial turns not preserved");
-    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen&&!h.Hud.NarrativeIsRevealing,"First touch must reveal, not skip a speaker");
+    // Native Editor startup may consume the typewriter's real-time budget before
+    // this probe runs. Restart the SAME turn through the normal language API,
+    // preserving source text, turn index and completion callback. Never change
+    // runtime typewriter speed or weaken the real pointer/reveal assertion.
+    string openingText=h.Hud.NarrativeSourceText;int openingTurn=h.Hud.NarrativeTurnIndex;
+    Need(openingTurn==0,"Opening narrator already advanced before input probe");
+    h.Hud.SetEnglish(true);h.Hud.SetEnglish(false);
+    Need(h.Hud.NarrativeTurnIndex==openingTurn&&h.Hud.NarrativeSourceText==openingText&&h.Hud.NarrativeIsRevealing,"Opening reveal fixture did not preserve the canonical turn");
+    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen&&!h.Hud.NarrativeIsRevealing&&h.Hud.NarrativeTurnIndex==openingTurn,"First touch must reveal, not skip a speaker");
     Capture(h,"integration-story.png",900,1600);
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="Sir Aldric","Aldric did not follow narrator");
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen,"Reveal skipped Aldric");
@@ -257,7 +280,7 @@ namespace Eldoria.ReferenceClean.Editor {
      "; point="+center+"; hits="+string.Join(",",hits.Select(x=>x.gameObject.name)));
    },"World navigation is touchable even while a building sheet is open");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
-   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
+   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);Debug.Log("ELDORIA_NATIVE_STRATEGIC_ENTRY size="+h.WorldCamera.orthographicSize+" aspect="+h.WorldCamera.aspect+" heading="+h.WorldNavigation.heading+" tilt="+h.WorldNavigation.tilt+" distance="+h.WorldNavigation.cameraDistance+" target="+h.WorldNavigation.target+" min="+h.WorldNavigation.minimum+" max="+h.WorldNavigation.maximum);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Debug.Log("ELDORIA_NATIVE_VERTICAL_PAN before="+start+" after="+h.WorldNavigation.target);Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);var remembered=h.WorldNavigation.target;float zoom=h.WorldCamera.orthographicSize;h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(remembered,h.WorldNavigation.target)<.02f&&Mathf.Abs(zoom-h.WorldCamera.orthographicSize)<.02f,"Returning world lost position or zoom");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return preserves session");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{
     var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
@@ -478,7 +501,10 @@ namespace Eldoria.ReferenceClean.Editor {
    // This is an explicit local zoom (not a Focus() auto-fit back to macro).
    // Offset toward the screen's open centre while retaining the hotspot.
    h.WorldNavigation.PanTo(spawnTarget.transform.position+new Vector3(0,0,3f));
-   Need(h.WorldCamera.orthographicSize<=17f,"Local view zoom was silently lost");
+   Need(Mathf.Abs(h.WorldCamera.orthographicSize-h.WorldNavigation.localZoom)<.02f&&
+    h.WorldCamera.orthographicSize<h.WorldNavigation.regionalZoom*.25f,
+    "Local view zoom was silently lost: actual="+h.WorldCamera.orthographicSize+
+    " configuredLocal="+h.WorldNavigation.localZoom);
    yield return null;
    animated.NearPresence=animated.StrategicPresence=1f;
    yield return null;

@@ -1,0 +1,25 @@
+fileFormatVersion: 2
+guid: 5c3e356b8f1543388c14a27ee8f39312
+TextureImporter:
+  serializedVersion: 13
+  mipmaps:
+    enableMipMap: 1
+    sRGBTexture: 0
+  isReadable: 0
+  textureFormat: 1
+  maxTextureSize: 512
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 2
+    aniso: 4
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+  textureType: 0
+  textureShape: 1
+  alphaIsTransparency: 0
+  textureCompression: 0
+  userData: AF original clear-meadow detail; data texture, not a new painted replacement
+  assetBundleName: 
+  assetBundleVariant: 
