@@ -839,6 +839,64 @@ for copse_idx,(cx,cy,rx,ry,rotation) in enumerate(REGIONAL_COPSES):
   o.rotation_euler.z=random.uniform(0,math.tau);tree_total+=1
   if len(placed)>=185:break
 
+
+# Castle-close landscape A/B: retain AF/AG trees intact while adding
+# physically modelled COPSES derived from the same certified fir donors.
+# The last 401270 Unity close view is too empty between city, river and roads.
+# Position these four asymmetric groups in observed blank near-camera margins;
+# every tree remains decoration without selection, collider or resource ID.
+CASTLE_VISUAL_COPSES=(
+ (-47,42,18,16,-.24),  # west upper meadow: clear the near river and cart road
+ (53,53,17,19,.29),    # east upper meadow: connect to existing forest
+ (-51,-35,20,18,.19),  # south-west bank: restore forest silhouette
+ (52,-33,18,21,-.34)  # south-east shoulder, outside the castle approach
+)
+source_tree_positions=[(t.location.x,t.location.y) for t in oldtrees if not t.hide_render]
+near_copse_report=[]
+for grove_id,(cx,cy,rx,ry,rotation) in enumerate(CASTLE_VISUAL_COPSES):
+ rng=np.random.default_rng(294721+grove_id)
+ planted=[]
+ ca,sa=math.cos(rotation),math.sin(rotation)
+ for attempt in range(1600):
+  x=cx+rng.uniform(-rx*1.25,rx*1.25)
+  y=cy+rng.uniform(-ry*1.25,ry*1.25)
+  u=(x-cx)*ca+(y-cy)*sa
+  v=-(x-cx)*sa+(y-cy)*ca
+  theta=math.atan2(v/ry,u/rx)
+  rim=1+.21*math.sin(3*theta+grove_id*.8)+.13*math.cos(5*theta-grove_id*.37)
+  body=max(0,(rim-(u/rx)**2-(v/ry)**2)*1.45)
+  if body<rng.uniform(.18,.85):continue
+  if not(-93<x<93 and -74<y<265):continue
+  if abs(y-rivercentre(x))<riverwidth(x)+13:continue
+  if float(line_distance(np.array(x),np.array(y)))<10:continue
+  if float(fault_distance(np.array(x),np.array(y)))<25:continue
+  if any(math.hypot(x-a,y-b)<r+12 for a,b,r in cities):continue
+  if any(math.hypot(x-a,y-b)<radius for a,b,radius in [
+      (0,0,31),(47,12,18),(46.5,-62.891,15),(-85,-53,13),(-92,-57,13)]):continue
+  if any(abs(x-bx)<13 and abs(y-by)<length/2+15 for bx,by,w,length in bridge_specs):continue
+  if any((x-a)**2+(y-b)**2<6.5**2 for a,b in planted):continue
+  if any((x-a)**2+(y-b)**2<5.5**2 for a,b in source_tree_positions):continue
+  # Place new decorative trees at the real joined soil, never float proxies.
+  donor=masters[(grove_id+len(planted))%2]
+  o=donor.copy();o.data=donor.data;scene.collection.objects.link(o)
+  o.hide_render=False;o.hide_viewport=False;o.hide_set(False)
+  o.location=(x,y,surface(x,y))
+  o.name='BLD_ForestMass_Castle_'+str(grove_id).zfill(2)+'_'+str(len(planted)).zfill(3)
+  scale=rng.uniform(1.25,2.80)
+  o.scale=(scale*rng.uniform(1.12,1.4),scale*1.17,scale*rng.uniform(.84,1.13))
+  o.rotation_euler.z=rng.uniform(0,math.tau)
+  planted.append((x,y));tree_total+=1
+  if len(planted)>=33:break
+ near_copse_report.append({'grove_id':grove_id,'centre':[cx,cy],
+                           'planted':len(planted),'original_AF_AG_trees_edited':0,
+                           'new_gameplay_objects':0,'new_collider_objects':0})
+(out/'castle-near-composition.json').write_text(json.dumps({
+ 'source_camera':'Unity PlayMode 40127016633 cercana-horizontal/vertical',
+ 'direction':'four asymmetrical groves in previously empty camera margins',
+ 'historical_AF_AG_faces_preserved':True,
+ 'added_decorative_tree_instances':sum(x['planted'] for x in near_copse_report),
+ 'groups':near_copse_report,'art_approved':False},indent=2))
+
 # Neighbouring ground carries actual editable fir instances, never forest cards.
 for x,y,z,cluster,index in context_tree_roots:
  random=np.random.default_rng(93214+cluster*1000+index)
