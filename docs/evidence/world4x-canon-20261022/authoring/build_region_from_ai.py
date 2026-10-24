@@ -714,6 +714,16 @@ for near in list(scene.objects):
   far.data=near.data.copy()
   bpy.ops.object.select_all(action='DESELECT');far.select_set(True);bpy.context.view_layer.objects.active=far
   mod=far.modifiers.new('Mobile distant silhouette','DECIMATE');mod.ratio=.09 if near.name.startswith('BLD_ForestMass_') else .16;bpy.ops.object.modifier_apply(modifier=mod.name);far_cache[key]=far.data
+# Reuse the exact macro operation observed and corrected in the live MCP source.
+# Original geometry, trees, material/UV and source painting above are preserved;
+# only the reviewed geological fan and intersecting continental trees change.
+macro_path=pathlib.Path(__file__).with_name('apply_geological_batch.py')
+macro_namespace={'__file__':str(macro_path)}
+exec(compile(macro_path.read_text(encoding='utf-8'),str(macro_path),'exec'),macro_namespace)
+macro_result=macro_namespace['apply_geological_batch'](out)
+faults=macro_namespace['AUTHOR_FAULTS']
+tree_total-=len(macro_result['cleared_crowns'])
+bpy.context.view_layer.update();bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
 # Source meshes remain editable but excluded from export; remove no historical file.
 # Export includes only genuinely visible scene geometry and the assembled geography.
 anchor=bpy.data.objects.new('BLD_BreachAnchor',None);scene.collection.objects.link(anchor);anchor.location=(-260,150,0)
@@ -732,6 +742,7 @@ bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_f
 NX,NZ=456,901;data=[]
 QX,QY=np.meshgrid(np.linspace(-910,910,NX),np.linspace(-1800,1800,NZ));RD=line_distance(QX,QY);FO=np.zeros(QX.shape)
 FO=forest_field(QX,QY)
+FO*=smooth((fault_distance(QX,QY)-40)/10)
 for cx,cy,r in cities:FO*=smooth((np.hypot(QX-cx,QY-cy)-r-8)/14)
 FO*=smooth((RD-8)/8)
 qriver=np.array([rivercentre(float(x)) for x in QX[0]])[None,:];qwidth=np.array([riverwidth(float(x)) for x in QX[0]])[None,:]
