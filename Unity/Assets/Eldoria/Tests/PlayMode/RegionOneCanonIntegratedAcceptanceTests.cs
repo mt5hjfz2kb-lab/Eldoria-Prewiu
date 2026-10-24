@@ -408,6 +408,8 @@ namespace Eldoria.Tests
                 "The real wood resource must remain available in the 4X world.");
             Assert.That(wood.GetComponent<Collider>(), Is.Not.Null,
                 "Do not replace the clickable wood hotspot with painted terrain.");
+            var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).First(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+            var woodPosition=wood.transform.position;
             float oldAspect=camera.aspect;
             float oldZoom=camera.orthographicSize;
             var oldTarget=(Vector3)Member(navigation,"target");
@@ -415,9 +417,16 @@ namespace Eldoria.Tests
             {
                 foreach (float aspect in new[]{1280f/720f,390f/844f})
                 {
-                    camera.aspect=aspect;
+                    camera.aspect=aspect;Call(adapter,"RefreshForCapture");
+                    Call(navigation,"SetZoomLevel",0,true);Call(adapter,"RefreshForCapture");
+                    Assert.That(Vector3.Dot(camera.transform.right,aspect>1?Vector3.back:Vector3.right),Is.GreaterThan(.999f),"Whole-region camera must use the intended orientation, not rescale geography");
+                    var groundArgs=new object[]{camera.pixelRect.center,Vector3.zero};
+                    Assert.That((bool)navigation.GetType().GetMethod("GroundPoint").Invoke(navigation,groundArgs),Is.True);
+                    Assert.That(Vector3.Distance((Vector3)groundArgs[1],(Vector3)Member(navigation,"target")),Is.LessThan(.02f),"Rotated camera centre must still resolve to its real world target");
                     Call(navigation,"SetZoomLevel",2,true);
-                    Call(navigation,"PanTo",wood.transform.position);
+                    Call(navigation,"PanTo",wood.transform.position);Call(adapter,"RefreshForCapture");
+                    Assert.That(Vector3.Dot(camera.transform.right,Vector3.right),Is.GreaterThan(.999f),"Return to close view must restore the original heading");
+                    Assert.That(wood.transform.position,Is.EqualTo(woodPosition),"Camera orientation cannot relocate the resource");
                     var pos=camera.WorldToViewportPoint(wood.transform.position);
                     Assert.That(pos.z, Is.GreaterThan(camera.nearClipPlane));
                     Assert.That(pos.x, Is.InRange(.10f,.90f),
@@ -429,7 +438,7 @@ namespace Eldoria.Tests
             finally
             {
                 camera.aspect=oldAspect;
-                Call(navigation,"RestoreView",oldTarget,oldZoom);
+                Call(navigation,"RestoreView",oldTarget,oldZoom);Call(adapter,"RefreshForCapture");
             }
         }
 
@@ -764,13 +773,18 @@ namespace Eldoria.Tests
                         if(stage.Item2=="panoramica")
                         {
                             var terrain=world.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_Terrain");
+                            var framedMin=new Vector2(float.MaxValue,float.MaxValue);var framedMax=new Vector2(float.MinValue,float.MinValue);
                             foreach(var vertex in terrain.sharedMesh.vertices)
                             {
                                 var framed=camera.WorldToViewportPoint(terrain.transform.TransformPoint(vertex));
+                                framedMin=Vector2.Min(framedMin,new Vector2(framed.x,framed.y));framedMax=Vector2.Max(framedMax,new Vector2(framed.x,framed.y));
                                 Assert.That(framed.z,Is.InRange(camera.nearClipPlane,camera.farClipPlane),"Region clipped by camera depth");
                                 Assert.That(framed.x,Is.InRange(.005f,.995f),"Panorama crops actual regional mesh horizontally");
                                 Assert.That(framed.y,Is.InRange(.005f,.995f),"Panorama crops actual regional mesh vertically");
                             }
+                            float occupied=(framedMax.x-framedMin.x)*(framedMax.y-framedMin.y);
+                            Assert.That(occupied,Is.GreaterThan(.65f),"Both orientations must frame the actual full terrain without wasting most of the viewport");
+                            Debug.Log("REGION1_ACTUAL_PANORAMA_VIEWPORT_AREA "+format.Item3+" "+occupied.ToString("F4",System.Globalization.CultureInfo.InvariantCulture));
                         }
                         // Clean blockout/full review: SAME actual geometry and camera.
                         // Before/after uses archived runs, never a hidden old terrain.

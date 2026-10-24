@@ -49,7 +49,8 @@ namespace Eldoria.World4XCanon
         void Begin(ScriptableRenderContext context,Camera camera)
         {
             if(camera!=worldCamera||scoped)return;
-            float overview=Mathf.Max(910/Mathf.Max(.1f,camera.aspect),1625)*1.04f;
+            var navigation=camera.GetComponent<Eldoria.World4XPrototype.ZoneOneStrategicCamera>();
+            float overview=navigation?navigation.globalZoom:Mathf.Max(910/Mathf.Max(.1f,camera.aspect),1625)*1.04f;
             float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(overview*.85f,overview,camera.orthographicSize));
             var fog=QualitySettings.activeColorSpace==ColorSpace.Linear?camera.backgroundColor.linear:camera.backgroundColor;
             foreach(var material in owned){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}

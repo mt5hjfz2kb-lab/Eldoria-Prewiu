@@ -105,11 +105,12 @@ namespace Eldoria.World4XCanon
    navigation.View.farClipPlane=navigation.cameraDistance*2.5f;
    navigation.globalZoom=OverviewSize(navigation.View.aspect);
   }
+  static float PanoramaHeading(float aspect)=>90*Mathf.SmoothStep(0,1,Mathf.InverseLerp(.8f,1.2f,aspect));
   float OverviewSize(float aspect)
   {
-   // Panorama tilt converges to 64 degrees. Fit all eight bounds corners at
-   // that real orientation; portrait is governed by horizontal coverage.
-   var rotation=Quaternion.Euler(64,0,0);
+   // Observe the same longitudinal continent along its long axis in landscape.
+   // Fit all eight real bounds corners at the actual heading; never crop or scale geography.
+   var rotation=Quaternion.Euler(64,PanoramaHeading(aspect),0);
    var right=rotation*Vector3.right;var up=rotation*Vector3.up;
    float horizontal=0,vertical=0;
    for(int i=0;i<8;i++){
@@ -146,10 +147,11 @@ namespace Eldoria.World4XCanon
   void UpdateLevelOfDetail(bool force)
   {
    if(!navigation||!navigation.View)return;
+   bool wasGlobal=navigation.View.orthographicSize>=navigation.globalZoom*.98f;
    float regional=Mathf.Max(280f,400f/navigation.View.aspect);
    if(Mathf.Abs(navigation.regionalZoom-regional)>.5f){bool was=Mathf.Abs(navigation.View.orthographicSize-navigation.regionalZoom)<1;navigation.regionalZoom=regional;if(was)navigation.SetZoomLevel(1,true);}
    float far=OverviewSize(navigation.View.aspect);
-   if(Mathf.Abs(navigation.globalZoom-far)>.5f){bool was=navigation.View.orthographicSize>=navigation.regionalZoom*2;navigation.globalZoom=far;if(was)navigation.SetZoomLevel(0,true);}
+   if(Mathf.Abs(navigation.globalZoom-far)>.5f){navigation.globalZoom=far;if(wasGlobal){navigation.heading=PanoramaHeading(navigation.View.aspect);navigation.SetZoomLevel(0,true);}}
    float near=navigation.View.aspect<.8f?64:36;
    if(Mathf.Abs(navigation.localZoom-near)>.5f){bool was=navigation.View.orthographicSize<=navigation.localZoom+.5f;navigation.localZoom=near;if(was)navigation.SetZoomLevel(2,true);}
    float size=navigation.View.orthographicSize;
@@ -157,7 +159,9 @@ namespace Eldoria.World4XCanon
    if(size>=navigation.globalZoom*.98f)navigation.PanTo(new Vector3(regionBounds.center.x,origin.y,regionBounds.center.z));
    float desired=Mathf.Lerp(42,64,Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,244,size)));
    float tilt=force?desired:Mathf.Lerp(navigation.tilt,desired,1-Mathf.Exp(-7*Time.unscaledDeltaTime));
-   if(Mathf.Abs(tilt-navigation.tilt)>.04f){navigation.tilt=tilt;navigation.FitToAuthoredBounds();}
+   float desiredHeading=PanoramaHeading(navigation.View.aspect)*Mathf.SmoothStep(0,1,Mathf.InverseLerp(regional*1.15f,far*.85f,size));
+   float heading=desiredHeading; // Actual zoom already interpolates; do not add a second lag to pointer anchoring.
+   if(Mathf.Abs(tilt-navigation.tilt)>.04f||Mathf.Abs(Mathf.DeltaAngle(heading,navigation.heading))>.04f){navigation.SetOrientation(tilt,heading);}
    for(int i=0;i<originals.Count;i++)if(originals[i])originals[i].enabled=states[i]&&size<152&&originals[i].GetComponentInParent<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>()!=null;
    // Node adapter runs after the general visibility policy; it preserves the real stage gates.
    if(nodes)nodes.Refresh();if(geography)geography.Refresh();

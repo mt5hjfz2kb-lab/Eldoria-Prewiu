@@ -14,6 +14,7 @@ namespace Eldoria.World4XPrototype
         public Vector3 target = new Vector3(-18, 0, 30);
         public float localZoom = 32, regionalZoom = 60, globalZoom = 110;
         [Range(35, 80)] public float tilt = 55;
+        [Range(-180, 180)] public float heading;
         public bool AllowWholeRegionOverview;
         public float edgeMargin = 2, dragThresholdPixels = 8;
         // Orthographic framing depends on zoom, not this depth offset.
@@ -39,7 +40,9 @@ namespace Eldoria.World4XPrototype
         {
             float width = Mathf.Max(.2f, maximum.x - minimum.x - edgeMargin * 2);
             float depth = Mathf.Max(.2f, maximum.y - minimum.y - edgeMargin * 2);
-            return Mathf.Max(.1f, .5f * Mathf.Min(width / Mathf.Max(.1f, View.aspect), depth * Mathf.Sin(tilt * Mathf.Deg2Rad)));
+            float c = Mathf.Abs(Mathf.Cos(heading * Mathf.Deg2Rad)), s = Mathf.Abs(Mathf.Sin(heading * Mathf.Deg2Rad));
+            float ground = 1f / Mathf.Sin(tilt * Mathf.Deg2Rad);
+            return Mathf.Max(.1f, .5f * Mathf.Min(width / (View.aspect * c + ground * s), depth / (View.aspect * s + ground * c)));
         }
         /// <summary>
         /// Wide, bounded first entry. Leave maneuvering margin rather than
@@ -95,6 +98,14 @@ namespace Eldoria.World4XPrototype
             if (anchor && GroundPoint(zoomFocus, out Vector3 after)) target += before - after;
             ApplyPose(); FitToAuthoredBounds();
         }
+        public void SetOrientation(float pitch, float bearing)
+        {
+            Vector3 before = default;
+            bool anchor = zoomAnchored && GroundPoint(zoomFocus, out before);
+            tilt = pitch; heading = bearing; ApplyPose();
+            if (anchor && GroundPoint(zoomFocus, out Vector3 after)) target += before - after;
+            FitToAuthoredBounds();
+        }
         public void PanTo(Vector3 point) { target = point; ApplyPose(); FitToAuthoredBounds(); }
         // Restore an observed pose after a temporary render or an orientation check.
         public void RestoreView(Vector3 point, float zoom)
@@ -107,8 +118,11 @@ namespace Eldoria.World4XPrototype
             float fit = AllowWholeRegionOverview ? globalZoom : MaximumFittingZoom();
             View.orthographicSize = Mathf.Min(View.orthographicSize, fit);
             desiredZoom = Mathf.Min(desiredZoom, fit);
-            float halfX = View.orthographicSize * View.aspect;
-            float halfZ = View.orthographicSize / Mathf.Sin(tilt * Mathf.Deg2Rad);
+            float screenHalf = View.orthographicSize * View.aspect;
+            float groundHalf = View.orthographicSize / Mathf.Sin(tilt * Mathf.Deg2Rad);
+            float c = Mathf.Abs(Mathf.Cos(heading * Mathf.Deg2Rad)), s = Mathf.Abs(Mathf.Sin(heading * Mathf.Deg2Rad));
+            float halfX = screenHalf * c + groundHalf * s;
+            float halfZ = screenHalf * s + groundHalf * c;
             float x0 = minimum.x + edgeMargin + halfX, x1 = maximum.x - edgeMargin - halfX;
             float z0 = minimum.y + edgeMargin + halfZ, z1 = maximum.y - edgeMargin - halfZ;
             target.x = x0 <= x1 ? Mathf.Clamp(target.x, x0, x1) : (minimum.x + maximum.x) * .5f;
@@ -157,7 +171,7 @@ namespace Eldoria.World4XPrototype
             if (Mathf.Abs(Input.mouseScrollDelta.y) > .001f && !(PointerBlocked?.Invoke(pointer) ?? false)) ZoomAt(pointer, Mathf.Exp(-Input.mouseScrollDelta.y * .12f));
             Drag(Input.GetMouseButton(0), pointer);
 #endif
-            target += new Vector3(movement.x, 0, movement.y) * View.orthographicSize * Time.unscaledDeltaTime;
+            target += Quaternion.Euler(0, heading, 0) * new Vector3(movement.x, 0, movement.y) * View.orthographicSize * Time.unscaledDeltaTime;
             ApplyPose(); ApplyZoom(Mathf.Lerp(View.orthographicSize, desiredZoom, 1 - Mathf.Exp(-12 * Time.unscaledDeltaTime)));
             if (Mathf.Abs(View.orthographicSize - desiredZoom) < .001f) zoomAnchored = false;
         }
@@ -177,9 +191,8 @@ namespace Eldoria.World4XPrototype
         }
         void ApplyPose()
         {
-            transform.rotation = Quaternion.Euler(tilt, 0, 0);
+            transform.rotation = Quaternion.Euler(tilt, heading, 0);
             transform.position = target - transform.forward * cameraDistance;
         }
     }
 }
-

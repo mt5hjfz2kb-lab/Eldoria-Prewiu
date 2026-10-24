@@ -19,6 +19,7 @@ Esta tabla describe la receta del script actual; cada modificación necesita su 
 | Vegetación | Dos donantes originales compartidos; continente cercano 70 %, lejano 9 %; copas cercanas del núcleo sin simplificación y lejanas 16 % |
 | Transición AG | Banda ortográfica espacial 37–47 m; misma geografía y silueta, sin sustitución temprana por placas |
 | Luz del mundo | Sol (48,-35,0), sombras suaves 0,9 / 300 m; fade URP por distancia; restauración exacta al terminar la cámara |
+| Encuadre | Cámara existente: rumbo 0° cerca/regional; panorámica 0° vertical /90° horizontal, transición continua por zoom y límites proyectados sobre los mismos vértices |
 | Periferia | Solo último 15 % del zoom global, ancho 107 ±60 m; mezcla opaca al color continental, regional sin niebla |
 | Contacto y rutas | Consulta de triángulos reales; cuadrícula de consulta 4 m, navegación 8 m; pendiente 0,9, escalón 3,2 m, agua y obstáculos conservados |
 | Recursos | Autoridad LocalGateway/PlayerState; 48 IDs persistentes, huella 8 m, separación de copas 9 m; sin trasladar colliders para disimular apoyo |
@@ -187,3 +188,24 @@ La atmósfera periférica del siguiente pase mezcla color de forma opaca, como n
 
 ### Pase AF de claros verificado
 Fuente `a7368d0661c1414587f045b208a4335531369cbc`, run 40052558503, materialización `06a9535c94c26dbc6fe052dc167b7617a7d2e5b3`: **27/27 PASS**, cero omitidas, 158,05 s de Editor. Artefacto visual 12544392143, SHA256 `1862587a0e16f0bfa0642bd5aa189622afc9c570f4d6fb94a1b980e702584e53`. Se conserva el tratamiento localizado de claros; el efecto es moderado y no equivale a resolver toda la diferencia con la referencia. Las marcas del cauce original siguen visibles en este pase, por lo que se aplica la reparación geométrica descrita, sin declarar cierre anticipado.
+
+## Verificación independiente de la evidencia descargada
+
+`review_native_evidence.py` no altera imágenes. Comprueba firma PNG, dimensiones, SHA256, escena, versión Unity y procedencia PlayMode declarada en los JSON del workflow nativo; exige 126 identidades actuales y XML con al menos 27 casos satisfactorios, cero fallos y cero omitidos. Contrasta también la capacidad urbana registrada. La autenticidad se apoya además en el workflow/commit nativo y su código de captura, no únicamente en un JSON.
+
+```text
+python docs/evidence/world4x-canon-20261022/review_native_evidence.py PAQUETE_DESCOMPRIMIDO --ag-root PAQUETE_DESCOMPRIMIDO/original-ag-review --output verificacion.json
+```
+
+La comprobación básica usa Python estándar; la comparación opcional de cámaras AG necesita Pillow y NumPy. Devuelve hashes de cada PNG, hash del XML y diferencias de las cámaras cercanas horizontal/vertical. La comparación mide conservación, no aprobación artística. Nunca convierte duración de Editor en FPS ni certifica un dispositivo físico.
+
+
+### Cauce reparado y verificación integral del paquete
+Fuente `c3fe3925ec6a2d047d0fc235ac286b29547b447f`, run 40053788522, materialización `5f10db8e59ca3d801291d177e03bc933053a8bd7`: **27/27 PASS**, 159,55 s de Editor, 32/32 reservas accesibles y **126 identidades PNG verificadas independientemente**. ZIP 12545340166, SHA256 comprobado `d7a268731ecd1ff9c3eefea844e90fb75181eccfc61916c27df904d24406a8b1`. `NATIVE_REVIEW_40053788522.json` registra el XML y los hashes individuales.
+
+En los dos puntos diagnósticos, el déficit respecto a los hombros pasa de 0,647/0,619 m a -0,016/-0,001 m; desaparecen las dos marcas rectas en el PNG regional. La cámara cercana AG conserva MAE 0,381 horizontal /0,285 vertical sobre RGB 0–255. Estos resultados no son aprobación artística ni benchmark móvil.
+
+### Corrección de encuadre horizontal sin cambiar geografía
+La revisión completa de las seis vistas detecta que la ampliación longitudinal ocupa bien la pantalla vertical, pero la panorámica horizontal deja demasiado fondo vacío. No se acepta ese resultado por el solo PASS técnico. Se añade rumbo a la **cámara estratégica existente**, sin otra cámara ni otra geografía: 0° en cerca/regional, 0° panorámica vertical y 90° panorámica horizontal. El rumbo procede continuamente del zoom real entre regional×1,15 y panorámica×0,85; el desplazamiento con teclado sigue los ejes de cámara, arrastre/proyección siguen usando el plano real y el anclaje del zoom se conserva hasta donde permiten los límites.
+
+El ajuste usa los ocho extremos de los límites reales con esa orientación. No recorta, estira ni desplaza terrenos, recursos o guardados. La prueba conserva el requisito de TODOS los vértices dentro del encuadre y añade una ocupación de su caja proyectada superior al 65 % en ambas orientaciones. También verifica el retorno de panorámica a cerca y la proyección del centro sobre el objetivo real, sin mover el recurso. Cálculo previo sobre vértices nativos: 74,68 % horizontal /76,05 % vertical; **no son aún mediciones Unity del nuevo pase**. La siguiente ejecución debe validar la cámara real, capturas y controles completos.
