@@ -2,11 +2,11 @@
   "source_ai_sha256": "28f5bc9665145244fb3b3ac400983e184ef664afdd6da0b8c04dac6fae5a23fc",
   "bounds": [
     -910,
-    -1000,
+    -1800,
     910,
-    1000
+    1800
   ],
-  "terrain_vertices": 200876,
+  "terrain_vertices": 257996,
   "retained_material_samples": [
     {
       "material": "Ochre meadow",
@@ -858,6 +858,41 @@
   ],
   "city_reserves": [
     [
+      -650,
+      -1500,
+      18
+    ],
+    [
+      -330,
+      -1500,
+      18
+    ],
+    [
+      520,
+      -1500,
+      18
+    ],
+    [
+      -650,
+      -1180,
+      18
+    ],
+    [
+      -330,
+      -1180,
+      18
+    ],
+    [
+      170,
+      -1180,
+      18
+    ],
+    [
+      520,
+      -1180,
+      18
+    ],
+    [
       -330,
       -740,
       18
@@ -955,11 +990,71 @@
     [
       520,
       810,
+      18
+    ],
+    [
+      -650,
+      1120,
+      18
+    ],
+    [
+      170,
+      1120,
+      18
+    ],
+    [
+      520,
+      1120,
+      18
+    ],
+    [
+      -330,
+      1530,
+      18
+    ],
+    [
+      520,
+      1530,
       18
     ]
   ],
   "cities": [
     {
+      "x": -650,
+      "z": -1500,
+      "radius": 18
+    },
+    {
+      "x": -330,
+      "z": -1500,
+      "radius": 18
+    },
+    {
+      "x": 520,
+      "z": -1500,
+      "radius": 18
+    },
+    {
+      "x": -650,
+      "z": -1180,
+      "radius": 18
+    },
+    {
+      "x": -330,
+      "z": -1180,
+      "radius": 18
+    },
+    {
+      "x": 170,
+      "z": -1180,
+      "radius": 18
+    },
+    {
+      "x": 520,
+      "z": -1180,
+      "radius": 18
+    },
+    {
       "x": -330,
       "z": -740,
       "radius": 18
@@ -1057,6 +1152,31 @@
     {
       "x": 520,
       "z": 810,
+      "radius": 18
+    },
+    {
+      "x": -650,
+      "z": 1120,
+      "radius": 18
+    },
+    {
+      "x": 170,
+      "z": 1120,
+      "radius": 18
+    },
+    {
+      "x": 520,
+      "z": 1120,
+      "radius": 18
+    },
+    {
+      "x": -330,
+      "z": 1530,
+      "radius": 18
+    },
+    {
+      "x": 520,
+      "z": 1530,
       "radius": 18
     },
     {
@@ -1080,7 +1200,7 @@
       "radius": 15
     }
   ],
-  "forest_groups": 25,
+  "forest_groups": 33,
   "bridges": [
     {
       "x": -550.0,
@@ -1104,6 +1224,6 @@
   "source_seam_max_spread_m": 0.0,
   "dynamic_gameplay_baked": 0,
   "art_status": "CHATGPT_DIRECTED_BLENDER_PENDING_VISUAL_ACCEPTANCE",
-  "continental_trees": 5215,
+  "continental_trees": 6417,
   "physical_device": false
 }
