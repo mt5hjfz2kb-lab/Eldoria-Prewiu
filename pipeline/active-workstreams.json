@@ -1139,12 +1139,12 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": null,
-      "write_scope_released": true,
-      "ownership_revision": 26,
+      "owner": "chatgpt-world4x-art-direction-20261024",
+      "write_scope_released": false,
+      "ownership_revision": 27,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-24T13:27:33.271Z",
+      "claimed_at": "2026-10-24T16:57:17.109Z",
       "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -1159,9 +1159,9 @@
         "docs/documentation-catalog.json"
       ],
       "resources": [],
-      "authorization": "Owner instruction 2026-10-24: authorized successor-chat claim of existing PR #100/World4X same workstream; $0, no merge/publication, no Valoria/UI edits. Preserve AF/AG; native candidate and real Unity QA required.",
-      "phase": "NATIVE_40109047101_CERTIFIED_ART_PENDING_WRITE_HANDOFF",
-      "next": "Retained PR100 candidate a237e4a after native 40109047101 57 PlayMode, 26 EditMode, 44 functional checks and six Unity views. Actual approved canon triptych still visually far; see local comparison eldoria_canon_vs_native_40109047101.jpg. Attempt to write bounded relief/forest-floor authoring source was denied by session security controls; DO NOT claim it was committed or route around denial. No active World4X runs. Continue authorized next session from current live registry, real art QA, no UI/Valoria/merge/publication.",
+      "authorization": "Explicit owner direction 2026-10-24: continue same World4X PR100 autonomously, $0, no merge/publication, preserve AF/AG and native 40109047101",
+      "phase": "CANONICAL_ART_REVIEW_RESUMED",
+      "next": "Act on real Unity vs original 3-camera art deficiencies while maintaining certified Region1 navigation and 57/26/44 QA. Preserve latest editable sources, no UI or Valoria writes. Reserve Windows only when ready.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1426,6 +1426,13 @@
           "released_at": "2026-10-24T16:51:45.863Z",
           "reason": "Native 40109047101 certified and preserved; subsequent art source write refused by platform security; release Windows and ownership for safe successor without losing evidence.",
           "outcome": "PR100 DRAFT; Unity certified, ART_APPROVED false, mobile not measured."
+        },
+        {
+          "owner": null,
+          "revision": 26,
+          "transferred_at": "2026-10-24T16:57:17.109Z",
+          "to_owner": "chatgpt-world4x-art-direction-20261024",
+          "reason": "Explicit new owner message to resume SAME PR100; revision26 intentionally released, resources empty. No Windows reservation in this claim."
         }
       ],
       "delivery_definition": {
@@ -1447,7 +1454,7 @@
       },
       "release_note": "Owner-requested safe handoff, not task completion. Run40097362906 SUCCESS confirms corrected editable pigment after save/reopen and orderly close of PID9624. Windows reservation released; full new Unity certification and visual acceptance remain pending.",
       "previous_owner": "codex-world4x-executive-e5c63ba475cd",
-      "ownership_state": "available",
+      "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
         "run": 40071887223,
