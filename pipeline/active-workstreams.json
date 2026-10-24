@@ -1141,7 +1141,7 @@
       "title": "Región 1 — geografía canónica continua y representación por zoom",
       "owner": "chatgpt-world4x-art-direction-20261024",
       "write_scope_released": false,
-      "ownership_revision": 27,
+      "ownership_revision": 28,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-24T16:57:17.109Z",
@@ -1158,10 +1158,12 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "docs/documentation-catalog.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Explicit owner direction 2026-10-24: continue same World4X PR100 autonomously, $0, no merge/publication, preserve AF/AG and native 40109047101",
-      "phase": "CANONICAL_ART_REVIEW_RESUMED",
-      "next": "Act on real Unity vs original 3-camera art deficiencies while maintaining certified Region1 navigation and 57/26/44 QA. Preserve latest editable sources, no UI or Valoria writes. Reserve Windows only when ready.",
+      "phase": "NATIVE_ART_RELIEF_VALIDATION",
+      "next": "Validate pigment-only 47a11e4 plus bounded viewport improvements on certified source; require 57/26/44 and six real A/B Unity views, no ART_APPROVED without art comparison",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
