@@ -73,3 +73,22 @@ test('delivery definition is allowlisted and absent definitions do not imply com
   assert.equal(r.active[0].delivery_definition.deliverable,'Result');assert.ok(!JSON.stringify(r).includes('DO_NOT_COPY'));
   assert.match(markdown(summarize({registry})),/sin definición explícita/);
 });
+
+test('explicit owner pause and vacant ownership are not reported as live execution',()=>{
+  const paused={...registry.active[0],id:'paused',owner:null,phase:'OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100',next:'PAUSED BY OWNER'};
+  const vacant={...registry.active[0],id:'vacant',owner:null,phase:'READY'};
+  const result=summarize({registry:{active:[paused,vacant,registry.active[0]]}});
+  assert.equal(result.active[0].declared_operating_state,'paused_by_owner');
+  assert.equal(result.active[1].declared_operating_state,'unassigned_in_registry');
+  assert.equal(result.active[2].declared_operating_state,'claimed_in_registry');
+  assert.match(markdown(result),/NO significa disponible/);
+});
+
+test('multiple workstreams sharing one branch show a single timing sample',()=>{
+  const record={status:'observed',timing_sample:{status:'observed',run_id:81,source_sha:'past',jobs:[]}};
+  const two={...registry.active[0],id:'two'};
+  const result=summarize({registry:{active:[registry.active[0],two]},live:{branches:{'ui/one':record}}});
+  const output=markdown(result);
+  assert.equal((output.match(/Muestra de tiempos \(rama/g)||[]).length,1);
+  assert.equal((output.match(/Entrega de /g)||[]).length,2);
+});
