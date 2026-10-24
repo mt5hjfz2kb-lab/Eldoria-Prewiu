@@ -200,6 +200,14 @@ namespace Eldoria.World4XPrototype
         }
         void ApplyPose()
         {
+            // Enter/zoom can receive a gesture before the presentation's next
+            // LateUpdate. Keep the near plane above the visible ground now;
+            // otherwise lower-screen orthographic rays start below its plane.
+            if (AllowWholeRegionOverview)
+            {
+                cameraDistance = Mathf.Max(140, View.orthographicSize * 2.5f);
+                View.farClipPlane = Mathf.Max(900, cameraDistance * 2.5f);
+            }
             transform.rotation = Quaternion.Euler(tilt, heading, 0);
             transform.position = target - transform.forward * cameraDistance;
         }
