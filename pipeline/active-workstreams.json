@@ -1139,9 +1139,9 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "codex-world4x-executive-e5c63ba475cd",
-      "write_scope_released": false,
-      "ownership_revision": 22,
+      "owner": null,
+      "write_scope_released": true,
+      "ownership_revision": 23,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-24T12:19:41.820Z",
@@ -1158,12 +1158,10 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "docs/documentation-catalog.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Owner instruction on 2026-10-24: resume and complete PR #100, protect AF/AG, keep UI owner reservations, no merge without artistic acceptance; zero spend.",
-      "phase": "RUNNER_READONLY_RECOVERY_THEN_MACRO_COMPOSITION",
-      "next": "Verify PowerShell ping retry; inspect real canonical and latest Unity images; certify pending bridge only if needed, then coherent continental/regional Blender authoring batch; no merge or publication.",
+      "phase": "OWNER_REQUESTED_SAFE_HANDOFF_NATIVE_PENDING",
+      "next": "Read docs/evidence/world4x-canon-20261022/EXECUTIVE_SAFE_HANDOFF_20261024.md; claim same PR100/workstream through authorized handoff, verify live runs, then certify pending bank-query/packed-image fixes and reviewed macro composition. No UI, merge or publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1291,6 +1289,19 @@
           "artifact": 12551467631,
           "artifact_sha256": "2693fc3fbc0b31e9710902349e541f764d9f72901008be653894483ddc8da938",
           "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40069960813.json"
+        },
+        "executive_handoff": {
+          "source_commit": "7bcd192854016e2489a31d8e60b15851160a05ae",
+          "closure_run": 40097362906,
+          "closure_result": "success",
+          "owned_blender_closed": true,
+          "full_artifact": 12561835737,
+          "review_artifact": 12561174066,
+          "preview_blend_sha256": "d6b510a15e0c5e62a725884afca0681a55a27805eecd8fbec0a2e3f7b07f3258",
+          "packed_pigment_sha256": "b385c294e6900d42457fc88a945d1ddff6db7d7df07015cf9a1fcd88a0a3e925",
+          "new_native_certificate": false,
+          "art_approved": false,
+          "physical_mobile_tested": false
         }
       },
       "ownership_history": [
@@ -1387,6 +1398,13 @@
           "revision": 21,
           "relieved_at": "2026-10-24T12:19:41.820Z",
           "reason": "Explicit executive owner handoff in this session; preserve PR100 fb60871 and all prior evidence; no cancellation or publication."
+        },
+        {
+          "owner": "codex-world4x-executive-e5c63ba475cd",
+          "revision": 22,
+          "relieved_at": "2026-10-24T13:19:35.194Z",
+          "reason": "Owner explicitly requests safe successor-chat handoff because session time is ending.",
+          "outcome": "MCP40097362906 saved/reopened corrected packed pigment and closed owned PID9624; no new native Unity certificate. Same PR100 preserved."
         }
       ],
       "delivery_definition": {
@@ -1406,9 +1424,9 @@
         "evidence": "40061480616: headless PlayMode 56 pass, zero fail, one capture ignored; workflow failed. World-owned GPU route40069960813 passes all57, Edit26, probe44, fresh34 images. Patch applies cleanly; no test removal. Final docs head gate40071887223 independently confirms I-II and Edit pass, PlayMode root Skipped:Ignored.",
         "native_jobs_active": 0
       },
-      "release_note": "World native production and independent evidence verification completed for source009e285a; no Windows reservation retained while waiting for the separate reserved-file authorization. This is a specific integration blocker, not completion of the owner's whole replacement request.",
-      "previous_owner": "chatgpt-world4x-integration-20261024",
-      "ownership_state": "claimed",
+      "release_note": "Owner-requested safe handoff, not task completion. Run40097362906 SUCCESS confirms corrected editable pigment after save/reopen and orderly close of PID9624. Windows reservation released; full new Unity certification and visual acceptance remain pending.",
+      "previous_owner": "codex-world4x-executive-e5c63ba475cd",
+      "ownership_state": "available",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
         "run": 40071887223,
