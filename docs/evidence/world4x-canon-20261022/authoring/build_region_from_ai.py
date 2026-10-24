@@ -80,7 +80,9 @@ for y in [-1500,-1180,-740,-480,-250,330,530,810,1120,1530]:
 
 def rawheight(x,y):
  h=5+1.4*math.sin(x/97+y/170)+.9*math.cos(y/83-x/145)
- for cx,cy,rx,ry,amp in [(-490,520,100,160,28),(380,680,90,145,23),(-580,-570,100,95,19),(-390,1470,150,210,32),(320,-1510,180,160,26)]:h+=amp*math.exp(-((x-cx)/rx)**2-((y-cy)/ry)**2)
+ # Actual low continental relief authored on the SAME five existing hill centres.
+ # Preserve navigation slope constraints and all AF/AG geometry.
+ for cx,cy,rx,ry,amp in [(-490,520,100,160,39),(380,680,90,145,33),(-580,-570,100,95,29),(-390,1470,150,210,44),(320,-1510,180,160,38)]:h+=amp*math.exp(-((x-cx)/rx)**2-((y-cy)/ry)**2)
  return h
 # Broad measured-boundary blend; no second surface below AI.
 edge_exact={}
