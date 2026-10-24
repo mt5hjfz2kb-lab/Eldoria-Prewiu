@@ -68,7 +68,7 @@ namespace Eldoria.World4XCanon
                     }
                     if(valid&&high-low<.5f){city.Validated=true;ValidatedCityCount++;}
                 }
-                for(int z=-700;z<=800;z+=32)for(int x=-750;x<=600;x+=32)
+                for(int z=-1500;z<=1600;z+=32)for(int x=-750;x<=600;x+=32)
                 {
                     if(FaultExcluded(faults,x,z,8))continue;
                     bool safe=true;float low=float.MaxValue,high=float.MinValue;Vector3 centre=default;
@@ -110,10 +110,9 @@ namespace Eldoria.World4XCanon
                     if(item.TargetId!=targetId&&item.Generation>0&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(item.X,item.Z))<20)occupied=true;
                 foreach(var hotspot in host.WorldRoot.GetComponentsInChildren<Eldoria.Presentation.WorldHotspot>(true))
                     if(hotspot.Id!=targetId&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(hotspot.transform.position.x,hotspot.transform.position.z))<24)occupied=true;
-                foreach(var renderer in host.WorldRoot.GetComponentsInChildren<Renderer>(true))
-                    if(renderer.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal))
-                    {var b=renderer.bounds;b.Expand(18);if(site.Point.x>=b.min.x&&site.Point.x<=b.max.x&&site.Point.z>=b.min.z&&site.Point.z<=b.max.z)occupied=true;}
-                if(occupied)continue;
+                // Same 9 m canopy footprint clearance, now including original AF/AG
+                // trees as well as continental crowns, through the exact spatial index.
+                if(occupied||routes==null||!routes.FootprintClear(site.Point,9))continue;
                 // A flat, clear footprint is insufficient if the actual terrain disconnects its approach.
                 if(routes==null||!routes.TryRouteTo(snapshot,site.Point,out var approach))continue;
                 var p=site.Point;

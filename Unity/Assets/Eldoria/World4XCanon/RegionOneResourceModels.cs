@@ -13,7 +13,7 @@ namespace Eldoria.World4XCanon
         sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Vector3 LastPosition; public bool Grounded; }
         readonly List<Node> nodes=new List<Node>();
         ValoriaIntegratedWorld host;
-        GameObject library;
+        GameObject library;RegionOneLookDevelopment look;
         Eldoria.Domain.PlayerState cachedState;ICommandGateway cachedGateway;float nextState;
         Material impostorMaterial;readonly Mesh[] impostorMeshes=new Mesh[2];
         public void RefreshNow()=>LateUpdate();
@@ -47,7 +47,7 @@ namespace Eldoria.World4XCanon
         {
             var library=Resources.Load<GameObject>("World4X/Blender/RegionOneResources");
             if(!library)return;
-            var service=parent.gameObject.AddComponent<RegionOneResourceModels>();service.host=host;service.library=library;
+            var service=parent.gameObject.AddComponent<RegionOneResourceModels>();service.host=host;service.library=library;service.look=parent.GetComponentInChildren<RegionOneLookDevelopment>();
             var atlas=Resources.Load<Texture2D>("World4X/Blender/RegionOneResourceImpostors");
             if(atlas){service.impostorMaterial=new Material(Shader.Find("Eldoria/World4X/LocalCanopy"));service.impostorMaterial.mainTexture=atlas;}
             foreach(var pair in new[]{("forest-valoria","Resource_Wood_0"),("quarry-valoria","Resource_Stone_0")})
@@ -56,6 +56,7 @@ namespace Eldoria.World4XCanon
                 var source=library.GetComponentsInChildren<Transform>(true).Single(x=>x.name==pair.Item2);
                 if(!logical)throw new InvalidOperationException("Missing canonical resource target "+pair.Item1);
                 var visual=Instantiate(source.gameObject,parent);visual.name="Production resource visual "+pair.Item1;
+                if(service.look)service.look.ApplyMaterials(visual);
                 visual.transform.localScale=Vector3.one;visual.transform.rotation=Quaternion.Euler(0,180,0);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 service.nodes.Add(new Node{Id=pair.Item1,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=service.MakeImpostor(pair.Item1,parent)});
@@ -73,6 +74,7 @@ namespace Eldoria.World4XCanon
                 string family=item.ResourceKind=="wood"?"Wood":"Stone";
                 var source=library.GetComponentsInChildren<Transform>(true).Single(x=>x.name=="Resource_"+family+"_"+(nodes.Count%3));
                 var visual=Instantiate(source.gameObject,transform);visual.name="Production resource visual "+item.TargetId;visual.transform.rotation=Quaternion.Euler(0,180,0);
+                if(look)look.ApplyMaterials(visual);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
             }

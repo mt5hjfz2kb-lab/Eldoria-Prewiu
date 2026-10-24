@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-23T22:06:30.685Z",
+  "updated_at": "2026-10-24T00:55:58.062Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1148,8 +1148,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "RESTORE_AF_AG_MATERIALS_AFTER_NATIVE_26_PASS",
-      "next": "Preserve tested routes and materialized sources; restore source materials/UV/images and verify matched sector cameras before continental artistic continuation.",
+      "phase": "AF_AG_RECOVERED_26_PASS_CONTINENTAL_ART_REFINEMENT",
+      "next": "Inspect native 40047161591 for b8adc5e: O bank continuation, nonrepeating derived AF grain, spatial LOD and continental resource close-ups. Continue macro composition; no merge/art approval.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1234,13 +1234,22 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "49b72a87eef7ff085f32c8efc2657258ad1c037d",
-          "assets_commit": "9a3587642176a52d1071d67430b6a4309b95b012",
-          "run": 40038480141,
+          "source": "3d09adfbc4715229850015989691e54e7891edd5",
+          "assets_commit": "bf5798929b6227f5172689b62dec0f3ece276357",
+          "run": 40045435899,
           "tests": 26,
-          "captures": 16,
+          "captures": 122,
           "result": "success",
-          "art_approved": false
+          "resources": 48,
+          "accessible_city_reserves": 22,
+          "retained_original_faces": 50688,
+          "original_images": 30,
+          "imported_material_uv_samples": 96,
+          "visual_artifact": 12541268503,
+          "artifact_sha256": "138f411c63c7869c4cc62c17d1672b8af28ed0454a96bfbaa5a91893e888af8e",
+          "art_approved": false,
+          "physical_mobile_tested": false,
+          "visual_gap": "Core AF/AG pigment/shading restored. Continental repetition, isolated woods, bank profile and rectangular macro composition require further production."
         }
       },
       "ownership_history": [

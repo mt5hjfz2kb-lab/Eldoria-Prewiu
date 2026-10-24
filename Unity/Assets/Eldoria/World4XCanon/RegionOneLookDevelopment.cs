@@ -13,18 +13,23 @@ namespace Eldoria.World4XCanon
         Camera worldCamera; Light sun; Quaternion rotation; LightShadows shadows; float strength,distance;
         UniversalRenderPipelineAsset pipeline; bool scoped;
         readonly List<Material> owned=new List<Material>();
+        readonly Dictionary<Material,Material> cache=new Dictionary<Material,Material>();
+        Shader authoredShader;Vector3 origin;
         public static void Install(GameObject artwork,Camera camera)
         {
             var scope=artwork.AddComponent<RegionOneLookDevelopment>();scope.worldCamera=camera;
             var shader=Resources.Load<Shader>("World4X/RegionOneAuthoredSurface");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Authored AG surface shader missing");
-            var cache=new Dictionary<Material,Material>();
+            scope.authoredShader=shader;scope.origin=artwork.transform.position;scope.ApplyMaterials(artwork);
+        }
+        public void ApplyMaterials(GameObject artwork)
+        {
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 renderer.sharedMaterials=renderer.sharedMaterials.Select(source=>{
                     if(cache.TryGetValue(source,out var existing))return existing;
-                    var material=new Material(shader){name=source.name+" AG look",enableInstancing=true};
+                    var material=new Material(authoredShader){name=source.name+" AG look",enableInstancing=true};
                     Color colour=source.HasProperty("baseColorFactor")?source.GetColor("baseColorFactor"):source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):Color.white;
-                    material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",artwork.transform.position);
+                    material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
                     if(source.name.Contains("Region1 open meadows")){
                         var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");
                         if(!detail)throw new InvalidOperationException("Original AF-derived continental detail missing");
@@ -32,7 +37,7 @@ namespace Eldoria.World4XCanon
                     }
                     for(int p=0;p<source.shader.GetPropertyCount();p++)
                         if(source.shader.GetPropertyType(p)==ShaderPropertyType.Texture){string name=source.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",source.GetTexture(name));}
-                    cache.Add(source,material);scope.owned.Add(material);return material;
+                    cache.Add(source,material);owned.Add(material);return material;
                 }).ToArray();
             // Instanced properties opt these shared crowns into GPU instancing;
             // no per-tree material duplication, no replacement canopy imagery.
@@ -44,7 +49,7 @@ namespace Eldoria.World4XCanon
         void Begin(ScriptableRenderContext context,Camera camera)
         {
             if(camera!=worldCamera||scoped)return;
-            float overview=Mathf.Max(910/Mathf.Max(.1f,camera.aspect),910)*1.04f;
+            float overview=Mathf.Max(910/Mathf.Max(.1f,camera.aspect),1625)*1.04f;
             float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(overview*.85f,overview,camera.orthographicSize));
             foreach(var material in owned)material.SetFloat("_BoundaryWeight",atmosphere);
             sun=RenderSettings.sun;

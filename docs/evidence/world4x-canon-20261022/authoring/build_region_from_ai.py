@@ -26,6 +26,8 @@ def riverwidth(x):
  d=max(0,abs(x)-96);return river_widths[0 if x<0 else 1]+(.65+.35*math.sin(d/53))*float(smooth(d/80))
 # Paths authored as connected corridors with explicit sector exits and urban approaches.
 routes=[[(12,270),(42,350),(20,480),(58,650),(15,950)],[(96,193),(180,205),(320,260),(460,330),(710,360)],[(-96,231),(-220,250),(-350,330),(-520,390),(-860,420)],[(0,-78),(30,-180),(4,-350),(-80,-520),(-20,-940)],[(-520,390),(-580,160),(-530,-120),(-600,-400),(-480,-740)],[(460,330),(420,140),(480,-120),(390,-350),(440,-760)],[(-530,-120),(-320,-180),(-120,-210),(30,-180),(220,-150),(480,-120)],[(-350,330),(-270,560),(-60,720),(200,760),(380,680),(620,750)]]
+# Real north/south continental continuation; existing geography coordinates stay fixed.
+routes += [[(15,950),(-35,1120),(20,1380),(-55,1720)],[(620,750),(550,1020),(590,1290),(520,1690)],[(-860,420),(-720,880),(-650,1180),(-740,1660)],[(-650,1180),(-340,1280),(20,1380),(300,1320),(590,1290)],[(-20,-940),(65,-1150),(10,-1400),(80,-1740)],[(-480,-740),(-560,-1050),(-520,-1340),(-650,-1700)],[(440,-760),(520,-1090),(420,-1390),(510,-1690)],[(-520,-1340),(-230,-1430),(10,-1400),(220,-1300),(420,-1390)]]
 # Smooth the authored road control points into connected, unequal bends.
 def organic_route(points):
  if len(points)<3:return points
@@ -52,6 +54,7 @@ def fault_distance(X,Y):
    t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1);distance=np.minimum(distance,np.hypot(X-ax-t*(bx-ax),Y-ay-t*(by-ay)))
  return distance
 groves=[(-220,420,42,65),(-430,680,62,40),(-650,790,65,50),(-750,500,48,70),(-440,210,55,50),(-730,90,60,65),(-280,90,50,38),(-410,-280,55,45),(-750,-370,52,62),(-270,-470,60,45),(-610,-800,65,48),(-130,-800,45,60),(120,-610,60,50),(330,-820,45,60),(650,-650,45,70),(600,-370,45,50),(230,-320,55,48),(240,30,45,65),(540,70,55,45),(300,420,60,50),(580,540,55,65),(100,600,50,45),(-130,900,55,45),(390,910,65,45),(630,900,40,60)]
+groves += [(-620,1430,68,95),(-270,1120,70,65),(270,1550,85,70),(620,1470,60,90),(-740,-1160,55,85),(-300,-1660,85,65),(240,-1570,80,80),(650,-1300,55,90)]
 # Designed connected forest lobes, with unequal clearings and broken margins.
 # One field drives pigment, placement AND route exclusion.
 groves=[(x,y,rx*2.15,ry*2.15) for x,y,rx,ry in groves]
@@ -71,13 +74,13 @@ def forest_field(X,Y):
  for index in range(len(groves)):result=np.maximum(result,grove_field(X,Y,index))
  return result
 cities=[]
-for y in [-740,-480,-250,330,530,810]:
+for y in [-1500,-1180,-740,-480,-250,330,530,810,1120,1530]:
  for x in [-650,-330,170,520]:
   if all(((x-a)/rx)**2+((y-b)/ry)**2>2.5 for a,b,rx,ry in [(a,b,rx/2.15,ry/2.15) for a,b,rx,ry in groves]) and abs(y-rivercentre(x))>35:cities.append((x,y,18))
 
 def rawheight(x,y):
  h=5+1.4*math.sin(x/97+y/170)+.9*math.cos(y/83-x/145)
- for cx,cy,rx,ry,amp in [(-490,520,100,160,28),(380,680,90,145,23),(-580,-570,100,95,19)]:h+=amp*math.exp(-((x-cx)/rx)**2-((y-cy)/ry)**2)
+ for cx,cy,rx,ry,amp in [(-490,520,100,160,28),(380,680,90,145,23),(-580,-570,100,95,19),(-390,1470,150,210,32),(320,-1510,180,160,26)]:h+=amp*math.exp(-((x-cx)/rx)**2-((y-cy)/ry)**2)
  return h
 # Broad measured-boundary blend; no second surface below AI.
 edge_exact={}
@@ -126,7 +129,7 @@ def height(x,y):
  c=float(coast(x,y));h=h*float(smooth((c+5)/20))-.6*(1-float(smooth((c+5)/20)))
  return h
 # Sample every actual perimeter vertex so the seam has matching edge coordinates.
-xs=set(float(x) for x in np.arange(-910,911,10));ys=set(float(y) for y in np.arange(-1000,1001,10))
+xs=set(float(x) for x in np.arange(-910,911,10));ys=set(float(y) for y in np.arange(-1800,1801,10))
 xs.update([-96.,96.]);ys.update([-78.,270.]);ys.update(float(y) for y in range(-120,121,2))
 for o in land:
  for v in o.data.vertices:
@@ -182,7 +185,7 @@ detail=np.concatenate([detail,detail[:,::-1]],axis=1);detail=np.concatenate([det
 detail_pixels=np.ones((*detail.shape[:2],4),np.float32);detail_pixels[:,:,:3]=detail
 detail_image=bpy.data.images.new('AF derived continental grass detail',detail.shape[1],detail.shape[0]);detail_image.colorspace_settings.name='Non-Color';detail_image.use_fake_user=True;detail_image.pixels.foreach_set(detail_pixels.ravel());detail_image.filepath_raw=str(out/'RegionOneGrassDetail.png');detail_image.file_format='PNG';detail_image.save();detail_image.pack()
 print('AF_DERIVED_MEADOW_PALETTE',meadow_mean.tolist())
-S=3072;X,Y=np.meshgrid(np.linspace(-910,910,S),np.linspace(-1000,1000,S));road=line_distance(X,Y)
+S=3072;X,Y=np.meshgrid(np.linspace(-910,910,S),np.linspace(-1800,1800,S));road=line_distance(X,Y)
 rng=np.random.default_rng(791)
 # Independent editable masks: designed meadow flows, ridge glaze, litter, roads, banks.
 # No change to a single pixel/material/UV of the retained core.
@@ -190,7 +193,7 @@ wash=.018*np.sin(X/93+Y/123)+.014*np.sin(Y/47-X/61)+.008*np.sin(X/19+Y/37)
 grain=rng.normal(0,.008,X.shape)
 rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=meadow_mean+(wash+grain*.25)[:,:,None]
 meadow=np.zeros(X.shape);ridge=np.zeros(X.shape)
-for n,(cx,cy,rx,ry) in enumerate([(-620,680,330,105),(-350,430,290,90),(260,610,340,120),(410,880,270,100),(-540,-370,340,100),(-280,-680,350,150),(280,-520,330,110),(480,-170,220,100),(-220,45,290,60)]):
+for n,(cx,cy,rx,ry) in enumerate([(-620,680,330,105),(-350,430,290,90),(260,610,340,120),(410,880,270,100),(-540,-370,340,100),(-280,-680,350,150),(280,-520,330,110),(480,-170,220,100),(-220,45,290,60),(-330,1480,390,170),(350,1270,370,130),(-400,-1240,350,150),(310,-1580,360,180)]):
  crest=cy+35*np.sin((X-cx)/120+n*.7)+14*np.sin((X-cx)/53+n)
  mass=np.exp(-((X-cx)/rx)**4)*np.exp(-((Y-crest)/ry)**4)
  weight=mass*(.86+.14*np.sin(X*.045+Y*.019+n)*np.cos(Y*.039-X*.021))*.72
@@ -267,7 +270,7 @@ im=bpy.data.images.new('Region1 authored meadow and woodland pigment',S,S);im.pi
 mat=bpy.data.materials.new('Region1 open meadows');mat.use_nodes=True;bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.9;tex=mat.node_tree.nodes.new('ShaderNodeTexImage');tex.image=im;mat.node_tree.links.new(tex.outputs['Color'],bs.inputs['Base Color']);mesh.materials.append(mat)
 uv=mesh.uv_layers.new(name='Continental pigment')
 for loop in mesh.loops:
- p=mesh.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((p.x+910)/1820,(p.y+1000)/2000)
+ p=mesh.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((p.x+910)/1820,(p.y+1800)/3600)
 for p in mesh.polygons:p.use_smooth=True
 crossing_banks={}
 for bx in [-550.,0.,450.]:
@@ -434,13 +437,13 @@ for direction in [-1,1]:
   ob=bpy.data.objects.new('BLD_ConnectedCutbank_'+str(direction)+'_'+str(bank_side),me);scene.collection.objects.link(ob)
 # Sea only at the east edge, shaped by the same coastline rather than a rectangle beneath land.
 vv=[];ff=[]
-for i,y in enumerate(range(-1000,1001,10)):
+for i,y in enumerate(range(-1800,1801,10)):
  c=float(coast(0,y));vv.extend([(c,y,.12),(910,y,.12)])
  if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))
 me=bpy.data.meshes.new('Eastern sea');me.from_pydata(vv,[],ff);me.materials.append(watermat);o=bpy.data.objects.new('BLD_EasternSea',me);scene.collection.objects.link(o)
 uv=me.uv_layers.new(name='Coastal depth and current')
 for loop in me.loops:
- q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=(loop.vertex_index%2,(q.y+1000)/2000)
+ q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=(loop.vertex_index%2,(q.y+1800)/3600)
 U,V=np.meshgrid(np.linspace(0,1,512),np.linspace(0,1,1024));depth=smooth(U*2.7)
 sea_pixels=np.ones((1024,512,4),np.float32)
 sea_pixels[:,:,:3]=np.array([.12,.32,.34])*(1-depth[:,:,None])+np.array([.045,.22,.29])*depth[:,:,None]
@@ -467,7 +470,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   x=cx+random.uniform(-rx*1.2,rx*1.2);y=cy+random.uniform(-ry*1.2,ry*1.2)
   if float(grove_field(np.array(x),np.array(y),index))<random.uniform(.08,.55):continue
   if -99<x<99 and -81<y<273:continue
-  if abs(x)>875 or abs(y)>970 or float(coast(x,y))<22:continue
+  if abs(x)>875 or abs(y)>1770 or float(coast(x,y))<22:continue
   if float(line_distance(np.array(x),np.array(y)))<16 or float(fault_distance(np.array(x),np.array(y)))<34:continue
   if abs(y-rivercentre(x))<riverwidth(x)+9:continue
   if any(abs(x-bx)<15 and abs(y-by)<length/2+12 for bx,by,width,length in bridge_specs):continue
@@ -476,7 +479,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   positions.append((x,y));k=len(positions)
   donor=masters[k%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_'+str(index).zfill(2)+'_'+str(k).zfill(3)
   scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));o.scale=(scale*random.uniform(.88,1.15),scale,scale*random.uniform(.88,1.2));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
-  if len(parts)>=240:break
+  if len(parts)>=(240 if index<25 else 155):break
  if not parts:continue
  tree_total+=len(parts)
  # glTF reuses the same two vertex buffers; each transform remains editable.
@@ -509,8 +512,8 @@ core_proof['verified_again_before_final_export']=True
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
 # Query samples are taken from the actual exported mesh (not the height recipe).
-NX,NZ=456,501;data=[]
-QX,QY=np.meshgrid(np.linspace(-910,910,NX),np.linspace(-1000,1000,NZ));RD=line_distance(QX,QY);FO=np.zeros(QX.shape)
+NX,NZ=456,901;data=[]
+QX,QY=np.meshgrid(np.linspace(-910,910,NX),np.linspace(-1800,1800,NZ));RD=line_distance(QX,QY);FO=np.zeros(QX.shape)
 FO=forest_field(QX,QY)
 for cx,cy,r in cities:FO*=smooth((np.hypot(QX-cx,QY-cy)-r-8)/14)
 FO*=smooth((RD-8)/8)
@@ -518,7 +521,7 @@ qriver=np.array([rivercentre(float(x)) for x in QX[0]])[None,:];qwidth=np.array(
 FO*=smooth((np.abs(QY-qriver)-qwidth-8)/12)
 for bx,by,w,l in bridge_specs:FO*=smooth(np.maximum(np.abs(QX-bx)-12,np.abs(QY-by)-l/2-8)/6)
 MM=np.zeros((NZ,NX,4),np.uint8);MM[:,:,0]=(np.clip(.5+coast(QX,QY)/32,0,1)*255).astype(np.uint8);MM[:,:,2]=(np.clip(1-RD/5,0,1)*255).astype(np.uint8);MM[:,:,3]=(FO*255).astype(np.uint8)
-for j,y in enumerate(np.linspace(-1000,1000,NZ)):
+for j,y in enumerate(np.linspace(-1800,1800,NZ)):
  for i,x in enumerate(np.linspace(-910,910,NX)):
   data.append(surface(float(x),float(y)))
   riverwater=abs(x)>96 and abs(y-rivercentre(x))<riverwidth(x)
@@ -528,7 +531,7 @@ for j,y in enumerate(np.linspace(-1000,1000,NZ)):
   MM[j,i,1]=255 if riverwater else 0
 masks=MM.tobytes()
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as f:
- f.write(struct.pack('<iiiff',0x31424c45,NX,NZ,1820.,2000.));f.write(np.array(data,dtype='<f4').tobytes());f.write(bytes(masks));f.write(struct.pack('<ii',0x32564c45,len(terrain.data.vertices)))
+ f.write(struct.pack('<iiiff',0x31424c45,NX,NZ,1820.,3600.));f.write(np.array(data,dtype='<f4').tobytes());f.write(bytes(masks));f.write(struct.pack('<ii',0x32564c45,len(terrain.data.vertices)))
  for v in terrain.data.vertices:f.write(struct.pack('<fff',v.co.x,v.co.z,v.co.y))
-(out/'production-region.json').write_text(json.dumps({'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'bounds':[-910,-1000,910,1000],'terrain_vertices':len(terrain.data.vertices),'retained_material_samples':core_samples,'faults':[{'ax':a[0],'az':a[1],'bx':b[0],'bz':b[1],'radius':28} for path in faults for a,b in zip(path,path[1:])],'city_reserves':cities,'cities':[{'x':x,'z':y,'radius':rad} for x,y,rad in cities+[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]],'forest_groups':len(groves),'bridges':[{'x':x,'z':y,'width':w,'length':l} for x,y,w,l in bridge_specs],'source_seam_max_spread_m':seam_spread,'dynamic_gameplay_baked':0,'art_status':'CHATGPT_DIRECTED_BLENDER_PENDING_VISUAL_ACCEPTANCE','continental_trees':tree_total,'physical_device':False},indent=2))
+(out/'production-region.json').write_text(json.dumps({'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),'bounds':[-910,-1800,910,1800],'terrain_vertices':len(terrain.data.vertices),'retained_material_samples':core_samples,'faults':[{'ax':a[0],'az':a[1],'bx':b[0],'bz':b[1],'radius':28} for path in faults for a,b in zip(path,path[1:])],'city_reserves':cities,'cities':[{'x':x,'z':y,'radius':rad} for x,y,rad in cities+[(-62,204,15),(-18,250,15),(38,202,15),(67,250,15)]],'forest_groups':len(groves),'bridges':[{'x':x,'z':y,'width':w,'length':l} for x,y,w,l in bridge_specs],'source_seam_max_spread_m':seam_spread,'dynamic_gameplay_baked':0,'art_status':'CHATGPT_DIRECTED_BLENDER_PENDING_VISUAL_ACCEPTANCE','continental_trees':tree_total,'physical_device':False},indent=2))
 print('REGION1_AI_CONTINENT_EXPORTED',len(terrain.data.vertices))

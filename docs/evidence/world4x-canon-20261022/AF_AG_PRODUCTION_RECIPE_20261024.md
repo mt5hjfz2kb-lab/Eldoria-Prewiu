@@ -86,3 +86,33 @@ Source `3d09adfbc4715229850015989691e54e7891edd5`, materialized source/binaries 
 Visual artifact 12541268503 SHA256 `138f411c63c7869c4cc62c17d1672b8af28ed0454a96bfbaa5a91893e888af8e`. The original sector pigment and restored shader are retained. Continental meadow repetition, isolated forest shapes, simple shore profiles and visible retained-core composition still require improvement; this is explicitly NOT final artistic acceptance.
 
 Next controlled experiment preserves the source pixels and geometry, but high-pass normalizes only the derived meadow detail (Gaussian sigma 7 source pixels), blends two rotated detail samples and removes subpixel detail at regional distance. Unequal woodland belts use the same geographic exclusions and shared crowns, with young/old scale variation 1.3–3.9. Real O cutbank endpoint profiles and original clay/wet-toe materials continue into the new river. Core LOD switches through a deterministic spatial 37–47 m orthographic band, including shadow fade; no historical core near mesh is simplified. Four additional close views identify actual continental wood/stone resources in two orientations. These changes require another native validation and image review, not an inherited PASS.
+
+
+## Comprobación cuantitativa de conservación y corrección macroscópica
+En cámaras auténticas coincidentes AG frente a 40045435899, diferencia media absoluta RGB (0–255): horizontal cercana 0,712; vertical cercana 0,284. Fracción de píxeles con alguna diferencia >8/255: 2,14 % y 0,31 %. Las vistas más abiertas incluyen ampliación real y diferencias LOD; no se presentan como identidad ni como puntuación artística. Ambos PNG se inspeccionaron directamente.
+
+La panorámica vertical del territorio casi cuadrado desperdicia gran parte del encuadre. El siguiente pase amplía **terreno real** desde z ±1000 hasta ±1800, conservando x ±910 y todas las coordenadas del núcleo y territorio previo. Añade caminos conectados, ocho masas forestales, reservas urbanas adicionales y relieves norte/sur; no estira la malla, los guardados ni la cámara. La consulta cambia su profundidad exacta a 3600 m, mantiene muestra cada 4 m y obtiene alturas de triángulos. La navegación amplía su cobertura conservando celda 8 m, pendientes, agua y obstáculos. Nuevas aserciones exigen población real alcanzable al norte y al sur de ±1000 y contacto exacto en las nuevas zonas.
+
+El índice de copas conserva la separación de 9 m de los recursos y cubre también los árboles originales AF/AG. Se contrasta contra las cajas reales de TODOS los renderers cercanos, como oráculo independiente; no se reduce la exclusión. Las posiciones persistidas siguen siendo coordenadas absolutas y no se migran ni reinterpretan.
+
+Este pase macroscópico y su coste nativo están pendientes de medir. No ampliar límites de pruebas para absorber una regresión.
+
+
+## Reproducción operativa y archivos editables
+Herramientas nativas verificadas: Blender 5.2.2 LTS (`d13f752e3b9c`), Unity 6000.3.23f1, URP 17.3.0. El workflow `.github/workflows/world4x-canon-native.yml` recupera AI por identidad, comprueba la reserva viva y ausencia de procesos incompatibles, y ejecuta secuencialmente:
+
+```text
+blender -b --python authoring/build_region_from_ai.py -- OUTPUT_DIR PINNED_AI_BLEND
+blender -b --python authoring/build_resource_library.py -- OUTPUT_DIR PINNED_AI_BLEND
+Unity: RegionOneCanonicalSourceGate, después suites PlayMode integradas
+```
+
+Consultar los argumentos completos del workflow para evitar inferir rutas de una máquina. Los dos BLEND quedan en `sources/native-RUN/`, con `manifest.json` que enlaza commit fuente, run, SHA256 y bytes de cada archivo. El mundo guarda las mallas originales, materiales/UV, máscaras de pintura empaquetadas, trazos editables de caminos y copas donantes. Las fuentes originales certificadas no se sobrescriben. El GLB, consultas de triángulos y biblioteca de recursos se copian únicamente después de verificar su identidad y pasar todas las pruebas.
+
+La materialización siguiente conserva también los seis PNG principales, sus JSON de cámara/hash, seis vistas históricas del núcleo, cuatro vistas de recursos continentales y XML junto al BLEND. Las series completas de zoom permanecen en el artefacto de ejecución. Esto evita que la caducidad de un ZIP elimine las imágenes esenciales de revisión. Ni esta operación ni las comprobaciones automáticas conceden aprobación artística o autorización de fusión.
+
+
+### Resultado nativo del pase de orillas y detalle
+`b8adc5e25534a28c621dd74ee5f3c823b5d6181b` / ejecución 40047161591: **26/26 PASS**, 145,56 s de suite de Editor; materialización `4d8e707874f419b0983bcd662e5d5f5b93846fd0`. 126 identidades PNG verificadas. Artefacto 12541729864, SHA256 `efa5eb4f4d0c2ba4d5580298804ce310824e97b378e91d3b3ec59490063dc724`. Se conservan 50.688 caras y 30 imágenes; 5.215 árboles continentales con dos mallas cercanas compartidas.
+
+Revisión real: desaparece la repetición extensa de la hierba y mejora la continuidad de las orillas; las masas forestales ya tienen extensión desigual. La composición panorámica sigue siendo insuficiente, por lo que se ejecuta la ampliación longitudinal descrita. Las cuatro vistas adicionales revelan recursos pequeños y piedra excesivamente clara frente al entorno: el siguiente pase reutiliza el mismo shader/material cache AG en sus representaciones, sin tocar el hotspot, y eleva las copas del nodo de madera dentro de su huella existente (XZ ×1,15, altura ×2 sobre el donante original). El atlas distante vuelve a renderizarse desde esas mismas mallas. Los colliders y guardados conservan su autoridad y posición.

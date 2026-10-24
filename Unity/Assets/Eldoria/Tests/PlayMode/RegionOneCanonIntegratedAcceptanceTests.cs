@@ -178,6 +178,19 @@ namespace Eldoria.Tests
                 for(int i=1;i<route.Count;i++)Assert.That(Vector3.Distance(new Vector3(route[i].X,route[i].Y,route[i].Z),new Vector3(route[i-1].X,route[i-1].Y,route[i-1].Z)),Is.LessThan(9));
             }
             Assert.That(unreachable,Is.Empty,"No terrain route to: "+string.Join(",",unreachable));
+            foreach(var item in snapshot.WorldResourceLocations.Where(x=>x.Generation>0&&x.TargetId.StartsWith("region1:",StringComparison.Ordinal)))
+            {
+                var point=new Vector3(item.X,item.Y,item.Z);
+                Assert.That((bool)Call(routes,"FootprintClear",point,9f),Is.True,"Resource intersects original or continental canopy: "+item.TargetId);
+                // Independent renderer-bounds oracle also verifies the index has no false negatives.
+                foreach(var renderer in world.GetComponentsInChildren<Renderer>(true).Where(x=>x.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)||x.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal))){
+                    var b=renderer.bounds;b.Expand(18);
+                    Assert.That(point.x>=b.min.x&&point.x<=b.max.x&&point.z>=b.min.z&&point.z<=b.max.z,Is.False,item.TargetId+" overlaps "+renderer.name);
+                }
+            }
+            var domainOrigin=(Vector3)Member(host,"WorldHome");
+            Assert.That(snapshot.WorldResourceLocations.Any(x=>x.Generation>0&&x.Z-domainOrigin.z>1000),Is.True,"Northern continuation must contain reachable real population");
+            Assert.That(snapshot.WorldResourceLocations.Any(x=>x.Generation>0&&x.Z-domainOrigin.z< -1000),Is.True,"Southern continuation must contain reachable real population");
             // Exercise occupancy invalidation on the actual imported terrain, without
             // changing a GameObject, gateway state, save or production resource identity.
             var farTarget=snapshot.WorldResourceLocations.Where(x=>x.Generation>0)
@@ -239,6 +252,10 @@ namespace Eldoria.Tests
             try{
                 for(float z=-720;z<=820;z+=77)for(float x=-750;x<=650;x+=73){
                     Assert.That(collider.Raycast(new Ray(origin+new Vector3(x,250,z),Vector3.down),out var hit,500),Is.True);
+                    float expected=origin.y+(float)height.Invoke(null,new object[]{x,z});maximum=Mathf.Max(maximum,Mathf.Abs(expected-hit.point.y));samples++;
+                }
+                foreach(float z in new[]{-1700f,-1450f,-1100f,1100f,1450f,1700f})for(float x=-750;x<=650;x+=73){
+                    Assert.That(collider.Raycast(new Ray(origin+new Vector3(x,250,z),Vector3.down),out var hit,500),Is.True,"Extended continent requires real terrain");
                     float expected=origin.y+(float)height.Invoke(null,new object[]{x,z});maximum=Mathf.Max(maximum,Mathf.Abs(expected-hit.point.y));samples++;
                 }
                 Assert.That(maximum,Is.LessThan(.003f),"Contact height must match visible triangles, without collider displacement");

@@ -13,6 +13,7 @@ namespace Eldoria.World4XCanon
     {
         readonly Dictionary<Vector2Int,Vector3> cells=new Dictionary<Vector2Int,Vector3>();
         readonly ValoriaIntegratedWorld host;
+        readonly Dictionary<Vector2Int,List<Bounds>> obstacleCells=new Dictionary<Vector2Int,List<Bounds>>();
         HashSet<Vector2Int> cachedOccupied;
         Vector2Int cachedStart;
         Dictionary<Vector2Int,Vector2Int> reachable;
@@ -26,16 +27,15 @@ namespace Eldoria.World4XCanon
                 .Where(x=>x.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)||x.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).Select(x=>x.bounds).ToArray();
             // Index the SAME expanded bounds by exact grid coordinate. This avoids
             // comparing every terrain cell against every crown, without changing clearance.
-            var obstacleCells=new Dictionary<Vector2Int,List<Bounds>>();
             foreach(var bounds in obstacles)
             {
                 int x0=Mathf.Max(-112,Mathf.FloorToInt((bounds.min.x-1-host.WorldHome.x)/8)),x1=Mathf.Min(112,Mathf.CeilToInt((bounds.max.x+1-host.WorldHome.x)/8));
-                int z0=Mathf.Max(-124,Mathf.FloorToInt((bounds.min.z-1-host.WorldHome.z)/8)),z1=Mathf.Min(124,Mathf.CeilToInt((bounds.max.z+1-host.WorldHome.z)/8));
+                int z0=Mathf.Max(-224,Mathf.FloorToInt((bounds.min.z-1-host.WorldHome.z)/8)),z1=Mathf.Min(224,Mathf.CeilToInt((bounds.max.z+1-host.WorldHome.z)/8));
                 for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++){
                     var key=new Vector2Int(x,z);if(!obstacleCells.TryGetValue(key,out var bucket)){bucket=new List<Bounds>();obstacleCells[key]=bucket;}bucket.Add(bounds);
                 }
             }
-            for(int z=-124;z<=124;z++)for(int x=-112;x<=112;x++)
+            for(int z=-224;z<=224;z++)for(int x=-112;x<=112;x++)
             {
                 float xx=x*8,zz=z*8;
                 if(RegionOneResourcePlacement.FaultExcluded(faults,xx,zz,2)||RegionOneBlenderLandscape.Shore(xx,zz)<4||RegionOneBlenderLandscape.Water(xx,zz)>.08f)continue;
@@ -46,6 +46,16 @@ namespace Eldoria.World4XCanon
                     if(hit.point.x>bounds.min.x-1&&hit.point.x<bounds.max.x+1&&hit.point.z>bounds.min.z-1&&hit.point.z<bounds.max.z+1){blocked=true;break;}
                 if(!blocked)cells[new Vector2Int(x,z)]=hit.point;
             }
+        }
+        public bool FootprintClear(Vector3 point,float clearance)
+        {
+            var local=point-host.WorldHome;
+            int x0=Mathf.FloorToInt((local.x-clearance)/8)-1,x1=Mathf.CeilToInt((local.x+clearance)/8)+1;
+            int z0=Mathf.FloorToInt((local.z-clearance)/8)-1,z1=Mathf.CeilToInt((local.z+clearance)/8)+1;
+            for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++)
+                if(obstacleCells.TryGetValue(new Vector2Int(x,z),out var bucket))foreach(var b in bucket)
+                    if(point.x>=b.min.x-clearance&&point.x<=b.max.x+clearance&&point.z>=b.min.z-clearance&&point.z<=b.max.z+clearance)return false;
+            return true;
         }
         HashSet<Vector2Int> OccupiedCells(PlayerState state)
         {

@@ -12,7 +12,7 @@ namespace Eldoria.World4XCanon
  public sealed class RegionOneCanonicalLandscape : MonoBehaviour
  {
   public const int LandscapeVersion=3;
-  public const float LandscapeHalfWidth=910,LandscapeHalfDepth=1000;
+  public const float LandscapeHalfWidth=910,LandscapeHalfDepth=1800;
   public const float BreachOffsetX=-260,BreachOffsetZ=150;
   public const float LandscapePanoramaZoom=500,PortraitPanoramaZoom=620;
   internal static readonly int[] ForestCorridorPairs=new int[0];

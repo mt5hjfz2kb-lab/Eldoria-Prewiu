@@ -111,7 +111,7 @@ namespace Eldoria.World4XCanon
    {
     if(reader.ReadInt32()!=0x31424c45)throw new InvalidDataException("Unknown Blender query format");
     nx=reader.ReadInt32();nz=reader.ReadInt32();width=reader.ReadSingle();depth=reader.ReadSingle();
-    if(nx<2||nz<2||nx*nz>2000000||width!=1820||depth!=2000)throw new InvalidDataException("Unexpected Blender terrain dimensions");
+    if(nx<2||nz<2||nx*nz>2000000||width!=1820||depth!=3600)throw new InvalidDataException("Unexpected Blender terrain dimensions");
     var data=new float[nx*nz];for(int i=0;i<data.Length;i++)data[i]=reader.ReadSingle();
     masks=reader.ReadBytes(data.Length*4);if(masks.Length!=data.Length*4)throw new InvalidDataException("Truncated Blender masks");
     if(reader.ReadInt32()!=0x32564c45)throw new InvalidDataException("Exact Blender source vertices missing");

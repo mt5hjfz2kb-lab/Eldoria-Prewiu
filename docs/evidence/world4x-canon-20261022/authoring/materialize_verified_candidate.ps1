@@ -31,6 +31,30 @@ foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','
 foreach($file in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend')){
  $path="$sources/$file";Copy-Item (Join-Path $generated $file) $path;$paths+=$path
 }
+# Keep the required genuine review views beside their exact editable source;
+# artifact retention must not erase the six-scale/orientation delivery evidence.
+$captures=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
+$review="$sources/review"
+New-Item -ItemType Directory -Force $review|Out-Null
+foreach($label in @('cercana-horizontal','cercana-vertical','regional-horizontal','regional-vertical','panoramica-horizontal','panoramica-vertical')){
+ $metadata=Get-Content (Join-Path $captures "$label-source.json") -Raw|ConvertFrom-Json
+ $png=Join-Path $captures "$label-unity.png"
+ if($metadata.sha256 -ne (Get-FileHash $png -Algorithm SHA256).Hash.ToLower()){throw "Capture identity mismatch: $label"}
+ foreach($suffix in @('-unity.png','-source.json')){
+  $path="$review/$label$suffix";Copy-Item (Join-Path $captures "$label$suffix") $path;$paths+=$path
+ }
+}
+foreach($file in @('eldoria-region1-canon-tests.xml')){
+ $source=Join-Path $env:RUNNER_TEMP $file
+ if(Test-Path $source){$path="$review/$file";Copy-Item $source $path;$paths+=$path}
+}
+$path="$review/retained-core-integrity.json";Copy-Item (Join-Path $generated 'retained-core-integrity.json') $path;$paths+=$path
+foreach($file in Get-ChildItem (Join-Path $captures 'retained-sector') -File | Where-Object {$_.Extension -in @('.png','.json')}){
+ $path="$review/sector-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path
+}
+foreach($file in Get-ChildItem (Join-Path $captures 'retained-sector/continental-details') -File){
+ $path="$review/continent-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path
+}
 $manifest=@{candidate_commit=$env:GITHUB_SHA;native_run=$env:GITHUB_RUN_ID;art_approved=$false;mobile_profiled=$false;files=@()}
 foreach($path in $paths){
  if((Get-Item $path).Length -ge 100MB){throw "File exceeds repository object limit: $path"}
