@@ -1148,8 +1148,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "LINEAR_LIGHT_GRAIN_SEAM_AND_CONTINENTAL_CANOPY",
-      "next": "Correct measured sRGB/linear grass-detail normalization on new continental material only; preserve source pixels/UV. Widen derived continental crowns by up to 35% with 220m core ramp, unchanged roots/height/LOD identity. Recheck every actual route/resource/city envelope and full 57+26+44 native proof; compare all real PNG. Preserve existing UI-workflow ownership.",
+      "phase": "PHYSICAL_CONTINENTAL_CONTINUATION_AND_NATIVE_GRAIN_CALIBRATION",
+      "next": "Join real neighbouring ground at every Region1 boundary vertex, retain all playable-region viewport/routing assertions, continue the same river/coast, and add positive native seam/zoom-invariance checks. Calibrate AF-derived linear grain from genuine screenshot ROI and measured I UV density; keep widened crowns. Preserve 8x44m bridge contact deck; add new plank grain/rails outside walking width. Full 57 GPU+26 Edit+44 I-II and 126+34 fresh PNG before materialization; inspect actual six views and AG, no art approval.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1234,9 +1234,9 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "a5a17842a6e73b36a5907c2f4385612e0bf28cce",
-          "assets_commit": "6c9855a76016b735b392656dd8813ddf47d27856",
-          "run": 40062946172,
+          "source": "3eaf41af352ea9dd118cb901c64a664719b15e7b",
+          "assets_commit": "ad81eb92871a862c916acded3fdd345adf8d963c",
+          "run": 40064460822,
           "tests": 57,
           "captures": 126,
           "result": "success",
@@ -1247,11 +1247,11 @@
           "imported_material_uv_samples": 96,
           "continental_tree_instances": 6526,
           "shared_near_meshes": 2,
-          "visual_artifact": 12548348906,
-          "artifact_sha256": "c7f1815b5f2a859df2e03918c747fdeae556231c0f0955a4d07dee36cf351f45",
+          "visual_artifact": 12548953349,
+          "artifact_sha256": "eed268e05a9a1d7116c0129cc8a2ba0cb0538ee4a26414c8f9e725aed999de1b",
           "art_approved": false,
           "physical_mobile_tested": false,
-          "visual_gap": "AF/AG preserved and full native 57+26+44 certificate. New prairie strokes retained as bounded improvement. Actual Engendro PNG still exposes low-contrast continental grain seam; canopy masses remain sparse and peripheral rectangle still recognizable. Not artistic acceptance.",
+          "visual_gap": "57+26+44 and 126+34 PNG pass; 32 cities retained. Wider actual crowns retained, AG close PNG unchanged. Linear grain fine contrast restored but medium grain too strong: measured next calibration prepared. Rectangular outside silhouette still needs physical continental continuation.",
           "panorama_projected_bbox_area": {
             "horizontal": 0.7468,
             "vertical": 0.7605
@@ -1259,8 +1259,8 @@
           "general_captures": 34
         },
         "general_integration": {
-          "source": "a5a17842a6e73b36a5907c2f4385612e0bf28cce",
-          "run": 40062946172,
+          "source": "3eaf41af352ea9dd118cb901c64a664719b15e7b",
+          "run": 40064460822,
           "status": "FULL_GPU_57_EDIT_26_PROBE_44_PASS_NO_OMISSIONS",
           "editmode_passed": 26,
           "playmode_passed": 57,
@@ -1268,9 +1268,9 @@
           "playmode_skipped": 0,
           "probe_checks": 44,
           "fresh_captures": 34,
-          "artifact": 12548348906,
-          "artifact_sha256": "c7f1815b5f2a859df2e03918c747fdeae556231c0f0955a4d07dee36cf351f45",
-          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40062946172.json"
+          "artifact": 12548953349,
+          "artifact_sha256": "eed268e05a9a1d7116c0129cc8a2ba0cb0538ee4a26414c8f9e725aed999de1b",
+          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40064460822.json"
         }
       },
       "ownership_history": [
