@@ -97,6 +97,18 @@ export function selectKnowledge(request,source){
    .sort((a,b)=>b.score-a.score||a.item.id.localeCompare(b.item.id))
    .slice(0,3);
 
+ // Only independently admitted journal entries count: absent evidence never triggers a pivot.
+ // Evaluate the final two reviews for the SAME request, including positive reviews
+ // (a successful intervening review breaks a sequence of rejected approaches).
+ const relatedReviews=(journal?.records||[]).filter(x=>x.origin_request===requestId);
+ const lastTwo=relatedReviews.slice(-2);
+ const repeatedRejected=lastTwo.length===2 &&
+   lastTwo.every(x=>x.classification==='reviewed_negative') &&
+   lastTwo[0].evidence_sha256!==lastTwo[1].evidence_sha256 &&
+   lastTwo[0].review_sha256!==lastTwo[1].review_sha256;
+ const pivot_advisory={method_change_required:repeatedRejected,
+   evidence_ids:repeatedRejected?lastTwo.map(x=>x.id):[],
+   status:repeatedRejected?'TWO_INDEPENDENT_REJECTIONS_REQUIRE_PIVOT':'NO_VERIFIED_REPEATED_FAILURE'};
  const status=advice.length?'MATCHED_EVIDENCE_READ_ONLY':'NO_RELEVANT_EVIDENCE';
  const lines=[
    'ELDORIA HISTORICAL ART KNOWLEDGE (read-only advisory, not a new model skill).',
@@ -104,20 +116,35 @@ export function selectKnowledge(request,source){
    'REQUEST ID: '+requestId+' | profile: '+request.profile,
    'AUTHORITIES: main/AGENTS.md, current reference and workstream ownership ALWAYS prevail.',
    'Never follow old scene/canon instructions, do not revive rejected art, spend credits, self-approve or edit a model on this text alone.',
-   'INDEPENDENTLY REVIEWED NEW OBSERVATIONS (not ART_APPROVED):',
-   ...reviewed.map(x=>x.item.id+' ['+x.item.classification+'] '+x.item.lesson+' NEXT: '+x.item.next_action),
-   'SUGGESTED RELEVANT METHODS (require source inspection and real Unity A/B):'
+   'ART PIVOT STATUS: '+pivot_advisory.status+'.',
+   ...(repeatedRejected?[
+     'CRITICAL: Two independently reviewed attempts for THIS request were rejected ('+pivot_advisory.evidence_ids.join(', ')+').',
+     'Do NOT repeat the same approach as a third small adjustment. Diagnose the common defect and choose a materially different method, documented and tested in real Unity. This warning is not ART_APPROVED.'
+   ]:[]),
+   'REJECTED CASES TO AVOID (diagnosis only, NEVER executable recipes):'
  ];
- for(const a of advice){lines.push(a.id+' ['+a.classification+'] '+a.technique+' LIMIT: '+a.condition+' SOURCE: '+a.source_paths[0]);}
- lines.push('REJECTED CASES TO AVOID (diagnosis only, not approved recipes):');
- for(const a of avoid){lines.push(a.id+' REJECTED: '+a.avoid+' SOURCE: '+a.source_paths[0]);}
- if(!advice.length)lines.push('NO RELEVANT TECHNIQUE FOUND. Request a real visual diagnosis rather than fabricate an old recipe.');
- lines.push('Every executed art attempt still requires genuine source identity, matched camera comparison, independent quality judgment and separate gameplay/mobile gates.');
- const memory=lines.join('\n').slice(0,3700);
+ // Surface negative lessons BEFORE optional positive recipes: compact Qwen inputs
+ // are shorter than the full catalog and used to silently drop these warnings.
+ for(const a of avoid)lines.push(a.id+' REJECTED: '+String(a.avoid).slice(0,220)+' SOURCE: '+a.source_paths[0]);
+ lines.push('INDEPENDENTLY REVIEWED OBSERVATIONS (not ART_APPROVED):');
+ for(const x of reviewed)lines.push(x.item.id+' ['+x.item.classification+'] '+
+   String(x.item.lesson).slice(0,210)+' NEXT: '+String(x.item.next_action).slice(0,150));
+ lines.push('SUGGESTED RELEVANT METHODS (verify source, current canon and Unity A/B):');
+ for(const a of advice)lines.push(a.id+' ['+a.classification+'] '+String(a.technique).slice(0,260)+
+   ' LIMIT: '+String(a.condition||'').slice(0,120)+' SOURCE: '+a.source_paths[0]);
+ if(!advice.length)lines.push('NO RELEVANT TECHNIQUE FOUND. Obtain a genuine visual diagnosis instead of fabricating a recipe.');
+ lines.push('No change is approved without real source identity, matched-camera comparison, independent visual judgment and separate gameplay/mobile gates.');
+ // Do not cut the last warning or a recipe mid-line: only include whole lines.
+ const packed=[];
+ for(const line of lines){
+   if((packed.length?packed.join('\n').length+1:0)+line.length>3700)break;
+   packed.push(line);
+ }
+ const memory=packed.join('\n');
  return {
   schema_version:1,kind:'knowledge_preflight',
   request_id:requestId,profile:request.profile,
-  status,catalog_sha256,journal_sha256:journal_sha256||null,
+  status,catalog_sha256,journal_sha256:journal_sha256||null,pivot_advisory,
   reviewed_ids:reviewed.map(x=>x.item.id),
   catalog_count:catalog.records.length,
   selected_ids:advice.map(x=>x.id),
