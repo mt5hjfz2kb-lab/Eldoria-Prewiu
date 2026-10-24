@@ -1144,12 +1144,10 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "docs/documentation-catalog.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "AF_AG_27_PASS_CAMERA_ORIENTATION_COVERAGE_CORRECTION",
-      "next": "Latest native 40053788522: 27/27, 126 PNG hashes and 32 city routes verified, straight channel imprint repaired. Full six-view inspection rejected wasted landscape panorama. Next candidate adds continuous heading to the existing camera (0 portrait/90 landscape overview), preserves all-vertex coverage and adds >65% projected footprint and round-trip projection checks. Then exact general UI certification; no merge/publication.",
+      "phase": "AF_AG_27_PASS_FULL_INTEGRATION_CERTIFICATION",
+      "next": "Native 40056123101 passed 27/27 with all 126 PNG identities verified; landscape/portrait footprint .7468/.7605. Release only heavy resource after native completed, run existing general UI I-II EditMode/PlayMode certification on exact reconciled candidate. Continue continental art improvement; no artistic acceptance or merge/publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1234,9 +1232,9 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "c3fe3925ec6a2d047d0fc235ac286b29547b447f",
-          "assets_commit": "5f10db8e59ca3d801291d177e03bc933053a8bd7",
-          "run": 40053788522,
+          "source": "a9635bfce656b4c9ed53aa9cdbb5dfb1a9c4dca4",
+          "assets_commit": "ad9b4213fc416d0a14556033fdda05bcda3cbaaf",
+          "run": 40056123101,
           "tests": 27,
           "captures": 126,
           "result": "success",
@@ -1247,11 +1245,15 @@
           "imported_material_uv_samples": 96,
           "continental_tree_instances": 6526,
           "shared_near_meshes": 2,
-          "visual_artifact": 12545340166,
-          "artifact_sha256": "d7a268731ecd1ff9c3eefea844e90fb75181eccfc61916c27df904d24406a8b1",
+          "visual_artifact": 12545687903,
+          "artifact_sha256": "7fbe2a34d614d29b292b7fc45d7c6199936fb692fd9e758b595352124efc4d85",
           "art_approved": false,
           "physical_mobile_tested": false,
-          "visual_gap": "River ghost imprint repaired and core AF/AG preserved. Landscape overview wastes most viewport despite good portrait coverage; existing-camera heading correction in preparation. No final art acceptance."
+          "visual_gap": "Framing corrected in both orientations; original AF/AG preserved. Continental soil, forest composition and hydrography remain less rich than approved references; not final artistic acceptance.",
+          "panorama_projected_bbox_area": {
+            "horizontal": 0.7468,
+            "vertical": 0.7605
+          }
         }
       },
       "ownership_history": [
