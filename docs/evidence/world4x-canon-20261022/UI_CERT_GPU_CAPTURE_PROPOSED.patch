@@ -5,7 +5,7 @@
            # relative path and prepends the workspace again (run 39174538409).
            # Use a pure relative project name with explicit working directory.
 -          $args = @("-batchmode","-nographics","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
-+          $env:ELDORIA_REGION1_CAPTURE_OUT = Join-Path $env:RUNNER_TEMP "region1-ui-world-captures-$env:GITHUB_RUN_ID"
++          $env:ELDORIA_REGION1_CAPTURE_OUT = Join-Path $env:RUNNER_TEMP "region1-ui-world-captures-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
 +          $args = @("-batchmode","-force-d3d11","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
            $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
            if (-not $process.WaitForExit(600000)) {
@@ -14,7 +14,7 @@
            path: |
              ${{ runner.temp }}/Eldoria-UIProgression-EditMode.xml
              ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml
-+            ${{ runner.temp }}/region1-ui-world-captures-${{ github.run_id }}/**
++            ${{ runner.temp }}/region1-ui-world-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
              ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
              ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
              ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log

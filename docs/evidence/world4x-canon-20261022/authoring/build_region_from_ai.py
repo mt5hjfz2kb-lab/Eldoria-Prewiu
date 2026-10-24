@@ -263,6 +263,28 @@ coastal=smooth((26-coast(X,Y))/24)*.45
 rgba[:,:,:3]=rgba[:,:,:3]*(1-coastal[:,:,None])+np.array([.59,.54,.37])*coastal[:,:,None]
 fracture=smooth((36-fault_distance(X,Y))/28)*.58
 rgba[:,:,:3]=rgba[:,:,:3]*(1-fracture[:,:,None])+np.array([.37,.32,.36])*fracture[:,:,None]
+# Exposed shale facets follow only the already incised geological corridor.
+# Independent bounded UV mask: no invented boulders, portal or navigation change.
+shale_facets=np.zeros(X.shape,np.float32)
+area=np.s_[max(0,int((5+1800)/3600*(S-1))):int((295+1800)/3600*(S-1))+2,
+           int((-420+910)/1820*(S-1)):int((-100+910)/1820*(S-1))+2]
+fx=X[area];fy=Y[area];fd=fault_distance(fx,fy)
+first=np.full(fx.shape,np.inf);second=first.copy();cell=np.zeros(fx.shape,np.int32)
+rock_rng=np.random.default_rng(241017)
+seeds=[]
+for sy in np.arange(0,312,16):
+ for sx in np.arange(-430,-83,16):
+  seeds.append((sx+rock_rng.uniform(-5,5),sy+rock_rng.uniform(-5,5)))
+for index,(sx,sy) in enumerate(seeds):
+ d=np.hypot(fx-sx,fy-sy);near=d<first
+ second=np.where(near,first,np.minimum(second,d))
+ cell=np.where(near,index,cell);first=np.minimum(first,d)
+joint=1-smooth((second-first)/1.2)
+rock_weight=(1-smooth((fd-13)/11))*.66
+rock_tone=np.array([[.43,.40,.42],[.49,.45,.44],[.37,.34,.39],[.54,.49,.44]])[cell%4]
+rock_tone=rock_tone*(1-joint[:,:,None]*.62)
+rgba[area][:,:,:3]=rgba[area][:,:,:3]*(1-rock_weight[:,:,None])+rock_tone*rock_weight[:,:,None]
+shale_facets[area]=rock_weight
 # Grounded violet mineral stain at the actual fracture anchor, not a portal.
 fracture_heart=np.exp(-((X+260)/55)**2-((Y-150)/65)**2)*.65
 fracture_heart*=.85+.15*np.sin(X*.23+Y*.19)*np.cos(Y*.17-X*.11)
@@ -337,7 +359,7 @@ for side in range(4):
   broad=np.interp(axis,grid,soft_edges[side][:,channel]);fine=np.interp(axis,grid,edges[side][:,channel])
   colour=broad+(fine-broad)*(1-smooth(distance/2.5))
   rgba[:,:,channel]=rgba[:,:,channel]*(1-weight)+colour*weight
-for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental broken grass brush mask',grass_ink),('Continental original-edge glaze',glaze),('AF directed woodland clearing strokes',habitat_paint),('AF directed continental prairie strokes',prairie_paint)]:
+for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental broken grass brush mask',grass_ink),('Continental original-edge glaze',glaze),('AF directed woodland clearing strokes',habitat_paint),('AF directed continental prairie strokes',prairie_paint),('Breach incised shale facet mask',shale_facets)]:
  edit=bpy.data.images.new(name,S,S);edit.colorspace_settings.name='Non-Color';edit.use_fake_user=True
  values=np.ones((S,S,4),np.float32);values[:,:,:3]=data[:,:,None];edit.pixels.foreach_set(values.ravel());edit.pack()
 im=bpy.data.images.new('Region1 authored meadow and woodland pigment',S,S);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'Region1_continental.png');im.file_format='PNG';im.save();im.pack()
@@ -429,15 +451,20 @@ bridge_mat=bpy.data.materials.new('Bridge weathered timber');bridge_mat.use_node
 bridge_bs=next(n for n in bridge_mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bridge_bs.inputs['Base Color'].default_value=(.31,.22,.12,1);bridge_bs.inputs['Roughness'].default_value=.94
 # Grain follows real plank dimensions; it is a new bridge material, never an AF repaint.
 BU,BV=np.meshgrid(np.linspace(0,8,512),np.linspace(0,44,1024))
-wood_grain=.018*np.sin(BU*95+2*np.sin(BV*.6))+.012*np.sin(BU*173+BV*.13)
+wood_grain=.012*np.sin(BV*52+2*np.sin(BU*.9))+.008*np.sin(BV*109+BU*.25)
 plank_gap=(np.abs((BV+.5)%1-.5)<.035).astype(float)*.065
 wood_pixels=np.ones((1024,512,4),np.float32)
-wood_pixels[:,:,:3]=np.array([.38,.29,.18])+(wood_grain-plank_gap)[:,:,None]
+# Original flat bridge factor (.31,.22,.12) is linear glTF colour.
+# Generated PNG pixels are encoded sRGB: convert explicitly, not by guessing
+# a darker encoded palette. Native GLB inspection disproved double tint.
+plank_tone=.92+.08*(np.floor(BV)%2)
+wood_linear=np.clip((np.array([.31,.22,.12])+(wood_grain-plank_gap)[:,:,None])*plank_tone[:,:,None],0,1)
+wood_pixels[:,:,:3]=np.where(wood_linear<=.0031308,wood_linear*12.92,1.055*wood_linear**(1/2.4)-.055)
 wood_image=bpy.data.images.new('Authored weathered crossing planks',512,1024)
 wood_image.pixels.foreach_set(wood_pixels.ravel());wood_image.pack()
 wood_tex=bridge_mat.node_tree.nodes.new('ShaderNodeTexImage');wood_tex.image=wood_image
 bridge_mat.node_tree.links.new(wood_tex.outputs['Color'],bridge_bs.inputs['Base Color'])
-bridge_bs.inputs['Base Color'].default_value=(1,1,1,1) # Texture already carries the wood colour; avoid double tint.
+bridge_bs.inputs['Base Color'].default_value=(1,1,1,1) # Explicit neutral factor; glTF inspection confirms texture colour is authoritative.
 for cx in [-550.,0.,450.]:
  cy,z0,z1=crossing_banks[cx]
  length=44.;half=length/2;vv=[];ff=[]
@@ -569,10 +596,14 @@ water_bs=next(n for n in watermat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');
 vv=[];ff=[]
 for y0 in range(-2600,2600,10):
  y1=y0+10
- if -1800<=y0 and y1<=1800:left0=left1=910.
- else:left0=float(coast(0,y0));left1=float(coast(0,y1))
- start=len(vv);vv.extend([(left0,y0,.12),(1710,y0,.12),(1710,y1,.12),(left1,y1,.12)])
- ff.append((start,start+1,start+2,start+3))
+ if -1800<=y0 and y1<=1800:row0=row1=[910.,1710.]
+ else:
+  # Preserve the same coastal gradient span as the central sea. A single
+  # shore-to-1710 quad stretches its 0..1 UV across the whole neighbouring sea.
+  row0=[float(coast(0,y0)),910.,1710.];row1=[float(coast(0,y1)),910.,1710.]
+ for j in range(len(row0)-1):
+  start=len(vv);vv.extend([(row0[j],y0,.12),(row0[j+1],y0,.12),(row1[j+1],y1,.12),(row1[j],y1,.12)])
+  ff.append((start,start+1,start+2,start+3))
 me=bpy.data.meshes.new('Continuous eastern shelf');me.from_pydata(vv,[],ff);me.materials.append(watermat)
 o=bpy.data.objects.new('BLD_EasternSeaContinuation',me);scene.collection.objects.link(o)
 uv=me.uv_layers.new(name='Same coastal depth and current')

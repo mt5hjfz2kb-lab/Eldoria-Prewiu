@@ -21,7 +21,7 @@ Esta tabla describe la receta del script actual; cada modificación necesita su 
 | Transición AG | Banda ortográfica espacial 37–47 m; misma geografía y silueta, sin sustitución temprana por placas |
 | Luz del mundo | Sol (48,-35,0), sombras suaves 0,9 / 300 m; fade URP por distancia; restauración exacta al terminar la cámara |
 | Encuadre | Cámara existente: rumbo 0° cerca/regional; panorámica 0° vertical /90° horizontal, transición continua por zoom y límites proyectados sobre los mismos vértices |
-| Periferia | Suelo vecino físico hasta x ±1710 / z ±2600, unión vértice a vértice; niebla únicamente en su borde exterior 107 ±60 m; pase de continuidad pendiente de captura nativa |
+| Periferia | Suelo vecino físico hasta x ±1710 / z ±2600, unión vértice a vértice; niebla únicamente en su borde exterior 107 ±60 m; continuidad nativa certificada, 2416 vértices compartidos; sampler marino en revisión |
 | Contacto y rutas | Consulta de triángulos reales; cuadrícula de consulta 4 m, navegación 8 m; pendiente 0,9, escalón 3,2 m, agua y obstáculos conservados |
 | Recursos | Autoridad LocalGateway/PlayerState; 48 IDs persistentes, huella 8 m, separación de copas 9 m; sin trasladar colliders para disimular apoyo |
 | Evidencia esperada | 57 PlayMode GPU sin omisiones +26 EditMode +44 controles I–II; 126 PNG del mundo (16+6+100+4), 34 PNG generales nuevos; AG archivado aparte |
@@ -277,3 +277,26 @@ Se retiene la continuidad terrestre real: la región deja de terminar en un tabl
 - El pigmento de tablones se multiplicaba por el antiguo color marrón del material. La textura nueva ya contiene ese color: fijar factor base blanco y alternancia 0,92, conservando geometría, UV y superficie de paso.
 
 Son correcciones acotadas de causas observadas, con nueva certificación nativa pendiente. El recuento de pruebas y capturas, las exigencias de rutas/recursos y la comprobación de todos los vértices jugables siguen íntegros.
+
+
+### Hipótesis de tinte del puente refutada por el GLB real
+
+La inspección directa del GLB materializado `437df107` mostró factor base blanco por defecto en todos los materiales de puente y barandilla. Sus PNG embebidos tienen media RGB ≈(0,3750, 0,2850, 0,1750), correspondiente al pigmento generado. Por tanto, la hipótesis anterior de doble tinte era incorrecta: cambiar ese factor no demuestra una mejora. Se conserva esta corrección de diagnóstico para no repetirla.
+
+La causa comprobable es la diferencia de espacio de color: el puente plano anterior usaba el factor lineal glTF (0,31,0,22,0,12), mientras que la textura nueva almacenaba directamente otra paleta codificada sRGB. El próximo ajuste, preparado mientras termina la ejecución del mar/costa, construye primero el pigmento y la alternancia de tablones en luz lineal sobre la paleta anterior y aplica la transferencia sRGB exacta antes de guardar PNG. Las vetas siguen el eje de cada tabla transversal, no cruzan todas las tablas longitudinalmente. La geometría y los UV no cambian. Verificar en el mismo PNG cercano; no declarar mejora solo por el código.
+
+
+### Acabado geológico acotado de la Brecha — preparado, no aceptado
+
+El PNG regional real sigue mostrando una incisión demasiado lisa respecto al original aprobado. El siguiente pase pinta estratos de pizarra únicamente dentro del corredor ya excavado: máscara independiente sobre el atlas nuevo, peso máximo 0,66, transición entre 13 y 24 m del eje real, celdas irregulares de 16 m ±5 m y juntas de 1,2 m. Paleta gris/violeta mineral, con cuatro valores y juntas oscurecidas; conserva la mancha central anterior. No añade objetos, amenazas, portales ni modifica el relieve, las exclusiones, las rutas o las caras/UV AF/AG. Debe aceptarse o rechazarse mediante PNG regional real, manteniendo la prueba completa.
+
+
+## Verificación 40068128670 y cierre de defectos observados
+
+Fuente `3be21e172943df6660ae5232cf3c34539ccc1271`, fuentes/binarios `c3f95ba0c61818650893d29c1859a785335b7df5`: SUCCESS. 57/57 PlayMode GPU, 26/26 EditMode, 44 controles I–II, 126+34 PNG verificados independientemente y 32 reservas accesibles. ZIP 12551230033, SHA256 `277268b9142019588b985ffff55bb00ef8f4d00c8c53e14cb70c0dc4625d2abe`; XML `97c379c870821371538be504609bd086d4f8cce09ca4d21a4c1f61505e11c7c7`, 185,9757403 s Editor. Continuación: 26 416 vértices /50 116 triángulos, 2416 vértices de unión y diferencia de altura 0 m. Las dos capturas cercanas coincidentes AG son idénticas al pase 15.
+
+Se inspeccionaron las seis vistas y el acercamiento real al Engendro. Se retiene el perfil costero nuevo: desaparecen los grandes dientes exteriores. Se retiene sigma 4: en las mismas ROI reales, contraste sigma 1/2/4 del suelo nuevo ≈0,039/0,055/0,062; original ≈0,037–0,040/0,047–0,052/0,052–0,059. El grano medio queda algo más intenso, sin justificar otra sustitución de las fuentes.
+
+El clamp marino elimina la costura intensa, pero **no cierra completamente el defecto**. La causa restante se localiza en la interpolación UV: fuera de z ±1800, un único cuadrilátero desde la costa hasta x1710 estira el gradiente que el mar central aplica solo hasta x910. El siguiente pase divide también esas filas exteriores en x910. Mantiene el mismo material, orientación, altura y campo de costa, con amplitud de gradiente física coincidente. No cambia el suelo jugable ni simula la continuidad mediante niebla.
+
+El puente oscuro permanece, como predice el análisis del GLB: el factor blanco no era la corrección efectiva. El siguiente pase incluye la conversión lineal→sRGB descrita, junto al acabado de pizarra acotado. Las pruebas permanecen completas. No hay aprobación artística, fusión, publicación ni rendimiento móvil certificado.
