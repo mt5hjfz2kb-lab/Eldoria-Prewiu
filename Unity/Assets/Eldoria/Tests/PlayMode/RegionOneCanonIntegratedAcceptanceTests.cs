@@ -167,6 +167,7 @@ namespace Eldoria.Tests
             var placement=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneResourcePlacement");
             Assert.That((int)Member(placement,"ValidatedCityCount"),Is.GreaterThanOrEqualTo(12),"City footprints require measured real mesh clearance");
             Assert.That((int)Member(placement,"AccessibleCityCount"),Is.GreaterThanOrEqualTo(12),"Urban reserves require actual access from Valoria");
+            Debug.Log("REGION1_ACTUAL_CITY_RESERVES valid="+Member(placement,"ValidatedCityCount")+" accessible="+Member(placement,"AccessibleCityCount"));
             var routes=(Eldoria.Application.IWorldMarchRoutes)Member(placement,"MarchRoutes");
             var gateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");var snapshot=gateway.Snapshot();
             var ids=new[]{"forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"}.Concat(snapshot.WorldResourceLocations.Where(x=>x.TargetId.StartsWith("region1:")).Select(x=>x.TargetId));
@@ -177,6 +178,20 @@ namespace Eldoria.Tests
                 for(int i=1;i<route.Count;i++)Assert.That(Vector3.Distance(new Vector3(route[i].X,route[i].Y,route[i].Z),new Vector3(route[i-1].X,route[i-1].Y,route[i-1].Z)),Is.LessThan(9));
             }
             Assert.That(unreachable,Is.Empty,"No terrain route to: "+string.Join(",",unreachable));
+            // Exercise occupancy invalidation on the actual imported terrain, without
+            // changing a GameObject, gateway state, save or production resource identity.
+            var farTarget=snapshot.WorldResourceLocations.Where(x=>x.Generation>0)
+                .OrderByDescending(x=>new Vector2(x.X,x.Z).sqrMagnitude).First().TargetId;
+            Assert.That(routes.TryRoute(snapshot,farTarget,out var before),Is.True);
+            Assert.That(before.Count,Is.GreaterThan(6));
+            var changed=JsonUtility.FromJson<Eldoria.Domain.PlayerState>(JsonUtility.ToJson(snapshot));
+            var moved=changed.WorldResourceLocations.First(x=>x.TargetId!=farTarget&&x.Generation>0);
+            var middle=before[before.Count/2];moved.X=middle.X;moved.Y=middle.Y;moved.Z=middle.Z;moved.Remaining=100;
+            if(routes.TryRoute(changed,farTarget,out var detour))
+                foreach(var point in detour)Assert.That(Vector2.Distance(new Vector2(point.X,point.Z),new Vector2(moved.X,moved.Z)),Is.GreaterThanOrEqualTo(7),"A changed occupied cell must invalidate cached connectivity");
+            Assert.That(routes.TryRoute(snapshot,farTarget,out var restored),Is.True);
+            Assert.That(restored.Select(p=>new Vector3(p.X,p.Y,p.Z)),Is.EqualTo(before.Select(p=>new Vector3(p.X,p.Y,p.Z))),"Restoring occupancy must restore the deterministic terrain route");
+
         }
 
         [UnityTest]
@@ -515,26 +530,26 @@ namespace Eldoria.Tests
                     "Panorama must hide tiny existing resource, enemy and city geometry without disabling colliders.");
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Panorama must not reveal the old hard-edged rectangular prairie.");
-                var simplified = world.GetComponentsInChildren<Transform>(true).First(t=>t.name=="BLD_ForestMass_00");
-                Assert.That(simplified, Is.Not.Null);
-                Assert.That(simplified.gameObject.activeSelf, Is.True,
+                var canopies = world.GetComponentsInChildren<MeshFilter>(true).Where(t=>t.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)||t.name.StartsWith("BLD_ForestFar_",StringComparison.Ordinal)).ToArray();
+                Assert.That(canopies.Length,Is.GreaterThanOrEqualTo(40),"Both real canopy LOD populations must remain imported");
+                Assert.That(canopies.All(t=>t.gameObject.activeSelf), Is.True,
                     "Panorama must retain forest silhouettes, not blank green circles.");
                 Call(navigation, "SetZoomLevel", 1, true);
                 Call(adapter,"RefreshForCapture");
                 Assert.That(terrain.All(x => !x.enabled), Is.True,
                     "Regional view must not retain the legacy rectangular terrain edge.");
-                Assert.That(simplified.gameObject.activeSelf, Is.True,
+                Assert.That(canopies.All(t=>t.gameObject.activeSelf), Is.True,
                     "Regional view must retain shared woodland canopies, not only flat forest masks.");
                 foreach (float intermediateZoom in new [] { 55f, 90f, 145f, 153f, 113f })
                 {
                     Call(navigation,"RestoreView",target,intermediateZoom);
                     Call(adapter,"RefreshForCapture");
-                    Assert.That(simplified.gameObject.activeSelf, Is.True,
+                    Assert.That(canopies.All(t=>t.gameObject.activeSelf), Is.True,
                         "Woodland must not disappear between regional and panoramic marker LODs.");
                 }
                 Call(navigation,"SetZoomLevel",2,true);
                 Call(adapter,"RefreshForCapture");
-                Assert.That(simplified.gameObject.activeSelf, Is.True,
+                Assert.That(canopies.All(t=>t.gameObject.activeSelf), Is.True,
                     "Near view must keep the same woodland geography, without replacing it at a zoom threshold.");
                 Assert.That(world.GetComponentsInChildren<Collider>(true).Length,
                     Is.EqualTo(existingColliderCount),
@@ -566,9 +581,17 @@ namespace Eldoria.Tests
             try
             {
                 camera.aspect=width/(float)height;camera.targetTexture=rt;
-                var sceneSun=RenderSettings.sun;var sunRotation=sceneSun?sceneSun.transform.rotation:Quaternion.identity;
+                var sceneLights=Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
+                var lightStates=sceneLights.Select(l=>(l,l.transform.rotation,l.shadows,l.shadowStrength)).ToArray();
+                var pipeline=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
+                var shadowProperty=pipeline?pipeline.GetType().GetProperty("shadowDistance"):null;
+                var shadowDistance=shadowProperty?.GetValue(pipeline);
                 camera.Render();
-                if(sceneSun)Assert.That(Quaternion.Angle(sceneSun.transform.rotation,sunRotation),Is.LessThan(.001f),"World rendering must restore city sun state");
+                foreach(var state in lightStates)if(state.l){
+                    Assert.That(Quaternion.Angle(state.l.transform.rotation,state.rotation),Is.LessThan(.001f),"World rendering must restore city light rotation");
+                    Assert.That(state.l.shadows,Is.EqualTo(state.shadows));Assert.That(state.l.shadowStrength,Is.EqualTo(state.shadowStrength));
+                }
+                if(shadowProperty!=null)Assert.That(shadowProperty.GetValue(pipeline),Is.EqualTo(shadowDistance),"World rendering must restore shared pipeline shadow distance");
                 RenderTexture.active=rt;
                 pixels.ReadPixels(new Rect(0,0,width,height),0,0);pixels.Apply();var png=pixels.EncodeToPNG();
                 Assert.That(png.Length,Is.GreaterThan(2500));File.WriteAllBytes(path+".png",png);

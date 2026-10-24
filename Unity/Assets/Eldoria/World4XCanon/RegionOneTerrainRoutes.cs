@@ -13,6 +13,9 @@ namespace Eldoria.World4XCanon
     {
         readonly Dictionary<Vector2Int,Vector3> cells=new Dictionary<Vector2Int,Vector3>();
         readonly ValoriaIntegratedWorld host;
+        HashSet<Vector2Int> cachedOccupied;
+        Vector2Int cachedStart;
+        Dictionary<Vector2Int,Vector2Int> reachable;
         readonly RegionOneResourcePlacement.FaultSegment[] faults;
         static readonly Vector2Int[] directions={Vector2Int.left,Vector2Int.right,Vector2Int.up,Vector2Int.down};
         public int WalkableCells=>cells.Count;
@@ -21,6 +24,17 @@ namespace Eldoria.World4XCanon
             this.host=host;this.faults=faults;
             var obstacles=host.WorldRoot.GetComponentsInChildren<Renderer>(true)
                 .Where(x=>x.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)||x.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).Select(x=>x.bounds).ToArray();
+            // Index the SAME expanded bounds by exact grid coordinate. This avoids
+            // comparing every terrain cell against every crown, without changing clearance.
+            var obstacleCells=new Dictionary<Vector2Int,List<Bounds>>();
+            foreach(var bounds in obstacles)
+            {
+                int x0=Mathf.Max(-112,Mathf.FloorToInt((bounds.min.x-1-host.WorldHome.x)/8)),x1=Mathf.Min(112,Mathf.CeilToInt((bounds.max.x+1-host.WorldHome.x)/8));
+                int z0=Mathf.Max(-124,Mathf.FloorToInt((bounds.min.z-1-host.WorldHome.z)/8)),z1=Mathf.Min(124,Mathf.CeilToInt((bounds.max.z+1-host.WorldHome.z)/8));
+                for(int z=z0;z<=z1;z++)for(int x=x0;x<=x1;x++){
+                    var key=new Vector2Int(x,z);if(!obstacleCells.TryGetValue(key,out var bucket)){bucket=new List<Bounds>();obstacleCells[key]=bucket;}bucket.Add(bounds);
+                }
+            }
             for(int z=-124;z<=124;z++)for(int x=-112;x<=112;x++)
             {
                 float xx=x*8,zz=z*8;
@@ -28,7 +42,7 @@ namespace Eldoria.World4XCanon
                 var ray=new Ray(host.WorldHome+new Vector3(xx,250,zz),Vector3.down);
                 if(!terrain.Raycast(ray,out var hit,500)||Vector3.Dot(hit.normal,Vector3.up)<.9f)continue;
                 bool blocked=false;
-                foreach(var bounds in obstacles)
+                if(obstacleCells.TryGetValue(new Vector2Int(x,z),out var nearby))foreach(var bounds in nearby)
                     if(hit.point.x>bounds.min.x-1&&hit.point.x<bounds.max.x+1&&hit.point.z>bounds.min.z-1&&hit.point.z<bounds.max.z+1){blocked=true;break;}
                 if(!blocked)cells[new Vector2Int(x,z)]=hit.point;
             }
@@ -64,20 +78,26 @@ namespace Eldoria.World4XCanon
         {
             route=null;var occupied=OccupiedCells(snapshot);var source=host.FindTarget("valoria-map-city");
             if(!source||!Nearest(source.transform.position,occupied,out var start)||!Nearest(destination,occupied,out var goal))return false;
-            // Uniform-cost BFS over orthogonal edges. No diagonal corner cutting.
-            var queue=new Queue<Vector2Int>();var previous=new Dictionary<Vector2Int,Vector2Int>();queue.Enqueue(start);previous[start]=start;
-            while(queue.Count>0)
+            // All candidates share the same city and occupancy. Cache full reachability,
+            // invalidating on ANY occupied-cell change or source change. Edges and the
+            // 24 m approach limit are exactly the same as before; no diagonal shortcuts.
+            if(reachable==null||cachedStart!=start||!cachedOccupied.SetEquals(occupied))
             {
-                var a=queue.Dequeue();if(a==goal)break;
-                foreach(var d in directions)
+                var queue=new Queue<Vector2Int>();reachable=new Dictionary<Vector2Int,Vector2Int>();queue.Enqueue(start);reachable[start]=start;
+                while(queue.Count>0)
                 {
-                    var b=a+d;if(previous.ContainsKey(b)||!cells.TryGetValue(b,out var p)||occupied.Contains(b)||Mathf.Abs(p.y-cells[a].y)>3.2f)continue;
-                    // Mid-edge semantic checks prevent stepping across a narrow river missed by endpoint samples.
-                    var mid=(p+cells[a])*.5f-host.WorldHome;
-                    if(RegionOneResourcePlacement.FaultExcluded(faults,mid.x,mid.z,2)||RegionOneBlenderLandscape.Water(mid.x,mid.z)>.08f)continue;
-                    previous[b]=a;queue.Enqueue(b);
+                    var a=queue.Dequeue();
+                    foreach(var d in directions)
+                    {
+                        var b=a+d;if(reachable.ContainsKey(b)||!cells.TryGetValue(b,out var p)||occupied.Contains(b)||Mathf.Abs(p.y-cells[a].y)>3.2f)continue;
+                        var mid=(p+cells[a])*.5f-host.WorldHome;
+                        if(RegionOneResourcePlacement.FaultExcluded(faults,mid.x,mid.z,2)||RegionOneBlenderLandscape.Water(mid.x,mid.z)>.08f)continue;
+                        reachable[b]=a;queue.Enqueue(b);
+                    }
                 }
+                cachedOccupied=occupied;cachedStart=start;
             }
+            var previous=reachable;
             if(!previous.ContainsKey(goal)){
                 // A destination has an approach area, not one arbitrarily chosen grid cell.
                 // Search only already reached, collision-free terrain cells in the same 24m limit.

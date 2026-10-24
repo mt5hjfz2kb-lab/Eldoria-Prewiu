@@ -22,7 +22,7 @@ $assets='Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
 $sources="docs/evidence/world4x-canon-20261022/sources/native-$env:GITHUB_RUN_ID"
 New-Item -ItemType Directory -Force $sources|Out-Null
 $paths=@()
-foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json','RegionOneResources.glb','RegionOneResourceImpostors.png')){
+foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json','RegionOneResources.glb','RegionOneResourceImpostors.png','RegionOneGrassDetail.png')){
  $path="$assets/$file"
  if((Get-FileHash $path).Hash -ne (Get-FileHash (Join-Path $generated $file)).Hash){throw "Tested asset differs: $file"}
  $paths+=$path

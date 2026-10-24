@@ -17,23 +17,36 @@ namespace Eldoria.World4XCanon
         {
             var scope=artwork.AddComponent<RegionOneLookDevelopment>();scope.worldCamera=camera;
             var shader=Resources.Load<Shader>("World4X/RegionOneAuthoredSurface");
-            if(!shader)throw new InvalidOperationException("Authored AG surface shader missing");
+            if(!shader||!shader.isSupported)throw new InvalidOperationException("Authored AG surface shader missing");
             var cache=new Dictionary<Material,Material>();
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 renderer.sharedMaterials=renderer.sharedMaterials.Select(source=>{
                     if(cache.TryGetValue(source,out var existing))return existing;
                     var material=new Material(shader){name=source.name+" AG look",enableInstancing=true};
                     Color colour=source.HasProperty("baseColorFactor")?source.GetColor("baseColorFactor"):source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):Color.white;
-                    material.SetColor("_BaseColor",colour);
+                    material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",artwork.transform.position);
+                    if(source.name.Contains("Region1 open meadows")){
+                        var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");
+                        if(!detail)throw new InvalidOperationException("Original AF-derived continental detail missing");
+                        material.SetTexture("_GroundDetail",detail);material.SetFloat("_GroundDetailStrength",.85f);
+                    }
                     for(int p=0;p<source.shader.GetPropertyCount();p++)
                         if(source.shader.GetPropertyType(p)==ShaderPropertyType.Texture){string name=source.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",source.GetTexture(name));}
                     cache.Add(source,material);scope.owned.Add(material);return material;
                 }).ToArray();
+            // Instanced properties opt these shared crowns into GPU instancing;
+            // no per-tree material duplication, no replacement canopy imagery.
+            var properties=new MaterialPropertyBlock();properties.SetColor("_InstanceTint",Color.white);
+            foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
+                if(renderer.name.StartsWith("BLD_Forest")||renderer.name.StartsWith("Pilot_Pine")||renderer.name.StartsWith("Far_Pilot_Pine"))renderer.SetPropertyBlock(properties);
         }
         void OnEnable(){RenderPipelineManager.beginCameraRendering+=Begin;RenderPipelineManager.endCameraRendering+=End;}
         void Begin(ScriptableRenderContext context,Camera camera)
         {
             if(camera!=worldCamera||scoped)return;
+            float overview=Mathf.Max(910/Mathf.Max(.1f,camera.aspect),910)*1.04f;
+            float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(overview*.85f,overview,camera.orthographicSize));
+            foreach(var material in owned)material.SetFloat("_BoundaryWeight",atmosphere);
             sun=RenderSettings.sun;
             if(!sun)sun=FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.enabled&&l.type==LightType.Directional).OrderByDescending(l=>l.intensity).FirstOrDefault();
             if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;sun.transform.rotation=Quaternion.Euler(48,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}

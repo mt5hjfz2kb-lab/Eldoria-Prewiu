@@ -14,7 +14,7 @@ namespace Eldoria.World4XCanon.Editor
     public static class RegionOneCanonicalSourceGate
     {
         [Serializable] sealed class CoreMaterialSample {public string material;public float x,y,z,u,v;}
-        [Serializable] sealed class CoreMaterialProof {public CoreMaterialSample[] retained_material_samples;}
+        [Serializable] sealed class CoreMaterialProof {public CoreMaterialSample[] retained_material_samples;public int continental_trees;}
         const string ScenePath = "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
 
         [MenuItem("Eldoria/Region 1/Validate canonical world source")]
@@ -66,6 +66,11 @@ namespace Eldoria.World4XCanon.Editor
             Debug.Log("AF_AG_IMPORTED_MATERIAL_UV_PASS samples="+proof.retained_material_samples.Length);
             var forest=prefab.GetComponentsInChildren<MeshFilter>(true).Where(f=>f.name.StartsWith("BLD_ForestMass_")).ToArray();
             if(forest.Length<20)throw new InvalidOperationException("Authored forest mass export incomplete");
+            if(proof.continental_trees!=forest.Length||forest.Select(f=>f.sharedMesh).Distinct().Count()!=2)
+                throw new InvalidOperationException("Continental crowns must match authored instance count and share the two original donor meshes");
+            Debug.Log("CONTINENTAL_SHARED_CROWNS_PASS instances="+forest.Length+" distinct_near_meshes=2");
+            var detailImporter=AssetImporter.GetAtPath("Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneGrassDetail.png") as TextureImporter;
+            if(!detailImporter||detailImporter.sRGBTexture)throw new InvalidOperationException("AF-derived detail must import as linear data to preserve its neutral mean");
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
             if (!scene.IsValid()) throw new InvalidOperationException("Canonical integrated scene is missing");
             var host = UnityEngine.Object.FindFirstObjectByType<ValoriaIntegratedWorld>(FindObjectsInactive.Include);

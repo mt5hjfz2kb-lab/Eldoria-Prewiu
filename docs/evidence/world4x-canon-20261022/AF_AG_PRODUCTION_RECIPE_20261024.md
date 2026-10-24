@@ -49,3 +49,32 @@ Decisiones ejecutables: mantener el 100 % del núcleo; extender su color de bord
 Restauración de look development: clonar la receta de shader AG sobre materiales de geografía, conservar textura/factor originales y aplicar el sol histórico solo durante el render de la cámara de mundo. Restaurar estado de luz y distancia de sombras al terminar; no editar ciudad ni UI ni el material fuente. Añadir 25 fotogramas por orientación de la transición cercana → continente, aparte de los 50 del sector. Evaluar coste físico por separado: el inventario de run 40040528055 encontró ADB disponible pero **cero dispositivos Android físicos**; iOS no medido.
 
 Pendiente de revisar el resultado de este pase; no confundir decisiones de autoría con mejora ya demostrada. La forma exterior de la región y la calidad final de Brecha todavía deben evaluarse después de las correcciones anteriores.
+
+### Presupuesto de geometría y continuidad de exclusiones
+
+Inspección directa del GLB verificado `d930f951…` (74.794.436 bytes): los 25 grupos continentales duplicaban aproximadamente 47.400 vértices cada uno; los dos donantes originales tienen 4.246/4.252 vértices exportados. Aumentar los árboles manteniendo esa duplicación es un enfoque que debe descartarse, aunque el render pueda terminar. La siguiente preparación conserva transformaciones individuales y comparte dos mallas LOD0 derivadas al 40 % y dos LOD1 al 16 % de esas derivadas. El núcleo usa sus mallas originales. Los datos editables se guardan comprimidos, sin reducir ni sustituir texturas originales.
+
+El LOD continental pasa a usar tamaño de pantalla de cada árbol, umbral 0,065, en lugar del tamaño del bosque completo. Los LOD distantes siguen siendo geometría de la misma copa, no tarjetas prematuras. Unity debe verificar que el número de instancias coincide con Blender y que solo existen dos mallas cercanas compartidas. El shader conserva la receta AG y añade instanciación y dither de LOD. Esto describe una reducción de duplicación, **no FPS físicos certificados**.
+
+Los claros de caminos, reservas, riberas y accesos a puentes deben coincidir entre pigmento, árboles y máscara navegable. Se corrige la máscara que todavía podía señalar bosque en riberas donde la colocación ya excluía árboles. El cálculo escalar optimizado de distancia a caminos/fallas se comparó con el vectorial en 600 casos: error máximo 0.
+
+La atmósfera periférica preparada afecta únicamente a los últimos 75 ± 29 m del borde y se activa al alcanzar el 85–100 % del encuadre panorámico según aspecto. No cubre el sector, la Brecha ni la vista regional. No sustituye relieve ni pruebas de unión; debe revisarse en los PNG siguientes y descartarse si disimula defectos interiores o produce un efecto de isla.
+
+
+### Rutas y composición forestal
+
+El servicio existente toma las cajas de los renderers como obstáculos. Al unir cientos de árboles en una sola malla, esa caja engloba los claros y corta caminos que sí se ven libres: no se resuelve debilitando exclusiones. Las instancias individuales conservan la geometría y proporcionan obstáculos por copa. La separación de árboles nuevos respecto a caminos aumenta a 16 m y los accesos de puentes se despejan considerando el radio real de copa; el sector original mantiene sus árboles salvo las exclusiones históricas ya justificadas.
+
+El índice espacial de obstáculos solo reduce comparaciones: mantiene el mismo predicado de caja ampliada 1 m y las mismas muestras del MeshCollider. La conectividad ortogonal se calcula una vez por conjunto de celdas ocupadas y origen, con invalidación por cualquier cambio. Mantiene comprobaciones de agua/falla en el punto medio, desnivel 3,2 m y aproximación máxima 24 m. La prueba real de rutas añade un cambio de ocupación en una copia aislada del estado para exigir desvío o rechazo, y luego restauración de la ruta determinista; no toca guardados ni elimina casos anteriores.
+
+
+La transición geométrica nueva prolonga las pendientes medidas en el borde durante los primeros metros y las amortigua antes del relieve continental, además de conservar altura exacta. Se prepara una costa oriental con entrantes de amplitud desigual y pigmento de plataforma marina; los puntos de mar y tierra exigidos por las pruebas permanecen clasificados igual. Estas operaciones afectan la ampliación, no las riberas ni texturas originales del sector.
+
+
+## Resultado rechazado 40042023684 y corrección preparada
+
+Fuente `0b65fea`: Blender y la importación conservan 50.688 caras, 30 imágenes y 96 muestras; se exportaron 5.283 árboles continentales. PlayMode: **20 PASS, 6 FAIL**, 1.192,63 s. Solo 26/48 recursos colocados y 7 reservas accesibles; no se materializó el candidato. La captura agotó su límite de 180 s y produjo nueve vistas parciales, sin la serie completa. Se conservan el XML y ZIP `9ab7f1da438e423e1a4c0ec5c6430d16429aeb1288556e9d364aa499db17f7b7` en el artefacto 12540329339. No ampliar tiempos ni reducir exigencias para aceptar este pase.
+
+Revisión de esos PNG: el sombreado cercano se aproxima de nuevo a AG y las masas forestales ganan extensión, pero se rechazan las franjas longitudinales del glaseado de borde y el contraste rectangular persistente. Corregir la extrusión de grano: suavizar el color amplio del borde con núcleo gaussiano de 49 muestras, sigma 9, y extinguir el detalle unidimensional en 2,5 m. La franja de 55 m conserva únicamente el color amplio.
+
+Se inspeccionó directamente `AF_broad_meadow_flows.png` extraído del GLB verificado. Se seleccionó un fragmento de hierba libre de caminos/manchas (u 0,02–0,075, v 0,90–0,98). Su media determina la base de la ampliación; el detalle normalizado y reflejado se guarda en `RegionOneGrassDetail.png` como datos Non-Color y se repite físicamente a 21,12 × 14,72 m solo sobre la superficie continental nueva. Peso 0,85, mipmaps y filtrado anisotrópico; el núcleo sigue usando su atlas exacto. Es transferencia de material original, no una textura simplificada que lo sustituya.

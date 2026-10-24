@@ -18,7 +18,7 @@ water_height=sum(v.co.z for v in river.data.vertices)/len(river.data.vertices)
 for x in [-96,96]:
  pts=[v.co.y for v in river.data.vertices if abs(v.co.x-x)<.1];ends.append(sum(pts)/len(pts));river_widths.append((max(pts)-min(pts))/2)
 def smooth(t):t=np.clip(t,0,1);return t*t*(3-2*t)
-def coast(x,y):return 760+38*np.sin(y/157)+17*np.sin(y/57)-x
+def coast(x,y):return 720+49*np.sin(y/173)+27*np.sin(y/67)+18*np.cos(y/229)-x
 def rivercentre(x):
  side=0 if x<0 else 1;d=max(0,abs(x)-96)
  return ends[side]+(54*math.sin(d/145)+19*math.sin(d/57+.4)-19*math.sin(.4))*float(smooth(d/65))
@@ -37,7 +37,15 @@ def organic_route(points):
  result.append(points[-1]);return result
 routes=[organic_route(r) for r in routes]
 faults=[[(-385,260),(-345,218),(-308,206),(-280,165),(-260,150),(-222,137),(-195,86),(-135,40)],[(-308,206),(-350,140),(-365,110)],[(-222,137),(-175,187),(-150,230)]]
+def scalar_path_distance(x,y,paths):
+ result=1e6
+ for path in paths:
+  for (ax,ay),(bx,by) in zip(path,path[1:]):
+   dx=bx-ax;dy=by-ay;t=max(0.,min(1.,((x-ax)*dx+(y-ay)*dy)/(dx*dx+dy*dy)))
+   result=min(result,math.hypot(x-ax-t*dx,y-ay-t*dy))
+ return result
 def fault_distance(X,Y):
+ if np.ndim(X)==0:return scalar_path_distance(float(X),float(Y),faults)
  distance=np.full(np.shape(X),1e6)
  for path in faults:
   for (ax,ay),(bx,by) in zip(path,path[1:]):
@@ -92,7 +100,14 @@ def boundaryheight(x,y):
 def height(x,y):
  if -96<=x<=96 and -78<=y<=270:return oldheight(x,y)
  qx=max(-95.999,min(95.999,x));qy=max(-77.999,min(269.999,y));d=math.hypot(x-qx,y-qy)
- blend=float(smooth(d/42));h=boundaryheight(qx,qy)*(1-blend)+rawheight(x,y)*blend
+ blend=float(smooth(d/42));edge=boundaryheight(qx,qy);tangent=0.
+ # Continue measured outward slopes as well as positions, then merge into the
+ # continental relief. A constant-height collar made the retained tile readable.
+ if x<-96:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx+2,qy))/2))*(-96-x)
+ elif x>96:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx-2,qy))/2))*(x-96)
+ if y<-78:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx,qy+2))/2))*(-78-y)
+ elif y>270:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx,qy-2))/2))*(y-270)
+ h=(edge+tangent*math.exp(-d/24))*(1-blend)+rawheight(x,y)*blend
  if abs(x)>96:
   dr=abs(y-rivercentre(x));rw=riverwidth(x)
   # Continue the measured source cross-section from the very first extension row.
@@ -143,18 +158,28 @@ for index,route in enumerate(routes):
  for pt,(x,y) in zip(sp.points,route):pt.co=(x,y,height(x,y)+.04,1)
  obj=bpy.data.objects.new(data.name,data);scene.collection.objects.link(obj);obj.hide_render=True
 def line_distance(X,Y):
+ if np.ndim(X)==0:return scalar_path_distance(float(X),float(Y),routes)
  d=np.full(np.shape(X),1e6)
  for route in routes:
   for (ax,ay),(bx,by) in zip(route,route[1:]):
    t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1);d=np.minimum(d,np.hypot(X-ax-t*(bx-ax),Y-ay-t*(by-ay)))
  return d
+# Reviewed clear-grass patch from the original AF atlas (no path/forest features).
+# Reuse its measured mean and fine pigment; mirror into a seamless data tile.
+af=bpy.data.images['AF broad meadow flows'];af_values=np.empty(len(af.pixels),np.float32);af.pixels.foreach_get(af_values);af_pixels=af_values.reshape(af.size[1],af.size[0],4)
+patch=af_pixels[int(af.size[1]*.90):int(af.size[1]*.98),int(af.size[0]*.02):int(af.size[0]*.075),:3].copy()
+meadow_mean=patch.mean(axis=(0,1));detail=np.clip(patch/np.maximum(meadow_mean,.001)*.5,.32,.68)
+detail=np.concatenate([detail,detail[:,::-1]],axis=1);detail=np.concatenate([detail,detail[::-1]],axis=0)
+detail_pixels=np.ones((*detail.shape[:2],4),np.float32);detail_pixels[:,:,:3]=detail
+detail_image=bpy.data.images.new('AF derived continental grass detail',detail.shape[1],detail.shape[0]);detail_image.colorspace_settings.name='Non-Color';detail_image.use_fake_user=True;detail_image.pixels.foreach_set(detail_pixels.ravel());detail_image.filepath_raw=str(out/'RegionOneGrassDetail.png');detail_image.file_format='PNG';detail_image.save();detail_image.pack()
+print('AF_DERIVED_MEADOW_PALETTE',meadow_mean.tolist())
 S=3072;X,Y=np.meshgrid(np.linspace(-910,910,S),np.linspace(-1000,1000,S));road=line_distance(X,Y)
 rng=np.random.default_rng(791)
 # Independent editable masks: designed meadow flows, ridge glaze, litter, roads, banks.
 # No change to a single pixel/material/UV of the retained core.
 wash=.008*np.sin(X/93+Y/123)+.006*np.sin(Y/47-X/61)
 grain=rng.normal(0,.008,X.shape)
-rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=np.array([.44,.49,.265])+(wash+grain)[:,:,None]
+rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=meadow_mean+(wash+grain*.25)[:,:,None]
 meadow=np.zeros(X.shape);ridge=np.zeros(X.shape)
 for n,(cx,cy,rx,ry) in enumerate([(-620,680,330,105),(-350,430,290,90),(260,610,340,120),(410,880,270,100),(-540,-370,340,100),(-280,-680,350,150),(280,-520,330,110),(480,-170,220,100),(-220,45,290,60)]):
  crest=cy+35*np.sin((X-cx)/120+n*.7)+14*np.sin((X-cx)/53+n)
@@ -175,10 +200,13 @@ river_axis=np.array([rivercentre(float(x)) for x in X[0]])[None,:]
 river_half=np.array([riverwidth(float(x)) for x in X[0]])[None,:]
 dr=np.abs(Y-river_axis)
 forest*=smooth((dr-river_half-8)/12)
+for bx in [-550.,0.,450.]:forest*=smooth(np.maximum(np.abs(X-bx)-12,np.abs(Y-rivercentre(bx))-30)/6)
 litter=forest*.38
 rgba[:,:,:3]=rgba[:,:,:3]*(1-litter[:,:,None])+np.array([.25,.34,.19])*litter[:,:,None]
 banks=(1-smooth((dr-river_half-1)/10))*.5
 rgba[:,:,:3]=rgba[:,:,:3]*(1-banks[:,:,None])+np.array([.55,.51,.34])*banks[:,:,None]
+coastal=smooth((26-coast(X,Y))/24)*.45
+rgba[:,:,:3]=rgba[:,:,:3]*(1-coastal[:,:,None])+np.array([.59,.54,.37])*coastal[:,:,None]
 fracture=smooth((36-fault_distance(X,Y))/28)*.58
 rgba[:,:,:3]=rgba[:,:,:3]*(1-fracture[:,:,None])+np.array([.37,.32,.36])*fracture[:,:,None]
 mask=smooth((3.8-road)/2.1)*(.86+.14*np.sin(X*.35+Y*.21))
@@ -211,11 +239,18 @@ def source_pigment(x,y):
 edgeY=np.linspace(-77.99,269.99,1024);edgeX=np.linspace(-95.99,95.99,1024)
 edges=[np.array([source_pigment(x,float(y)) for y in edgeY]) for x in [-95.99,95.99]]
 edges += [np.array([source_pigment(float(x),y) for x in edgeX]) for y in [-77.99,269.99]]
+# Do not extrude one-dimensional edge grain into visible 55 m stripes.
+# Keep exact fine pigment only at contact; extend the broad palette separately.
+kernel=np.exp(-.5*(np.arange(-24,25)/9)**2);kernel/=kernel.sum()
+soft_edges=[np.stack([np.convolve(np.pad(edge[:,c],24,mode='edge'),kernel,mode='valid') for c in range(3)],axis=1) for edge in edges]
 qx=np.clip(X,-96,96);qy=np.clip(Y,-78,270);distance=np.hypot(X-qx,Y-qy);glaze=(1-smooth(distance/55))*(distance>0)
 for side in range(4):
  choose=((X<-96) if side==0 else (X>96) if side==1 else (Y<-78)&(np.abs(X)<=96) if side==2 else (Y>270)&(np.abs(X)<=96))
  weight=glaze*choose;axis=qy if side<2 else qx;grid=edgeY if side<2 else edgeX
- for channel in range(3):rgba[:,:,channel]=rgba[:,:,channel]*(1-weight)+np.interp(axis,grid,edges[side][:,channel])*weight
+ for channel in range(3):
+  broad=np.interp(axis,grid,soft_edges[side][:,channel]);fine=np.interp(axis,grid,edges[side][:,channel])
+  colour=broad+(fine-broad)*(1-smooth(distance/2.5))
+  rgba[:,:,channel]=rgba[:,:,channel]*(1-weight)+colour*weight
 for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental original-edge glaze',glaze)]:
  edit=bpy.data.images.new(name,S,S);edit.colorspace_settings.name='Non-Color';edit.use_fake_user=True
  values=np.ones((S,S,4),np.float32);values[:,:,:3]=data[:,:,None];edit.pixels.foreach_set(values.ravel());edit.pack()
@@ -367,8 +402,28 @@ for i,y in enumerate(range(-1000,1001,10)):
  c=float(coast(0,y));vv.extend([(c,y,.12),(910,y,.12)])
  if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))
 me=bpy.data.meshes.new('Eastern sea');me.from_pydata(vv,[],ff);me.materials.append(watermat);o=bpy.data.objects.new('BLD_EasternSea',me);scene.collection.objects.link(o)
+uv=me.uv_layers.new(name='Coastal depth and current')
+for loop in me.loops:
+ q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=(loop.vertex_index%2,(q.y+1000)/2000)
+U,V=np.meshgrid(np.linspace(0,1,512),np.linspace(0,1,1024));depth=smooth(U*2.7)
+sea_pixels=np.ones((1024,512,4),np.float32)
+sea_pixels[:,:,:3]=np.array([.12,.32,.34])*(1-depth[:,:,None])+np.array([.045,.22,.29])*depth[:,:,None]
+current=(.007*np.sin(V*55+U*8)+.004*np.sin(V*137-U*21))*(1-U)
+sea_pixels[:,:,:3]+=current[:,:,None]
+sea_image=bpy.data.images.new('Eastern shelf water pigment',512,1024);sea_image.pixels.foreach_set(sea_pixels.ravel());sea_image.pack()
+node=watermat.node_tree.nodes.new('ShaderNodeTexImage');node.image=sea_image
+water_bs=next(n for n in watermat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');water_bs.inputs['Base Color'].default_value=(1,1,1,1);watermat.node_tree.links.new(node.outputs['Color'],water_bs.inputs['Base Color'])
 # Natural grouped canopies reuse AI editable tree topology, never old main donors.
 masters=[bpy.data.objects['Editable Layered fir source'],bpy.data.objects['Editable Slender fir source']]
+# Simplify each derived continental donor ONCE, then share its topology across
+# instances. Original masters/core remain unchanged and editable.
+shared_masters=[]
+for master in masters:
+ derived=master.copy();derived.data=master.data.copy();scene.collection.objects.link(derived)
+ derived.hide_render=True;derived.hide_set(False);bpy.ops.object.select_all(action='DESELECT');derived.select_set(True);bpy.context.view_layer.objects.active=derived
+ mod=derived.modifiers.new('Continental shared crown LOD0','DECIMATE');mod.ratio=.4;bpy.ops.object.modifier_apply(modifier=mod.name)
+ shared_masters.append(derived)
+masters=shared_masters
 tree_total=0
 for index,(cx,cy,rx,ry) in enumerate(groves):
  parts=[];positions=[];random=np.random.default_rng(61024+index)
@@ -377,31 +432,30 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   if float(grove_field(np.array(x),np.array(y),index))<random.uniform(.08,.55):continue
   if -99<x<99 and -81<y<273:continue
   if abs(x)>875 or abs(y)>970 or float(coast(x,y))<22:continue
-  if float(line_distance(np.array(x),np.array(y)))<10 or float(fault_distance(np.array(x),np.array(y)))<34:continue
+  if float(line_distance(np.array(x),np.array(y)))<16 or float(fault_distance(np.array(x),np.array(y)))<34:continue
   if abs(y-rivercentre(x))<riverwidth(x)+9:continue
+  if any(abs(x-bx)<15 and abs(y-by)<length/2+12 for bx,by,width,length in bridge_specs):continue
   if any(math.hypot(x-a,y-b)<r+10 for a,b,r in cities):continue
   if any((x-a)**2+(y-b)**2<9.0**2 for a,b in positions):continue
   positions.append((x,y));k=len(positions)
-  donor=masters[k%2];o=donor.copy();o.data=donor.data.copy();scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y))
+  donor=masters[k%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_'+str(index).zfill(2)+'_'+str(k).zfill(3)
   scale=random.uniform(2.5,4.1);o.scale=(scale*random.uniform(.88,1.15),scale,scale*random.uniform(.88,1.2));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
   if len(parts)>=240:break
  if not parts:continue
  tree_total+=len(parts)
- bpy.ops.object.select_all(action='DESELECT')
- for o in parts:o.select_set(True)
- bpy.context.view_layer.objects.active=parts[0];bpy.ops.object.join();parts[0].name='BLD_ForestMass_'+str(index).zfill(2)
- mod=parts[0].modifiers.new('Shared regional canopy simplification','DECIMATE');mod.ratio=.4;bpy.ops.object.modifier_apply(modifier=mod.name)
+ # glTF reuses the same two vertex buffers; each transform remains editable.
 print('CONTINENTAL_CONNECTED_FOREST_TREES',tree_total)
 # Distant LODs are simplified copies of the same silhouettes; no canopy substitutions.
 far_cache={}
 for near in list(scene.objects):
  if near.type!='MESH' or not (near.name.startswith('BLD_ForestMass_') or near.name.startswith('Pilot_Pine')):continue
  if near.hide_render:continue
- far=near.copy();far.data=near.data.copy();scene.collection.objects.link(far)
+ far=near.copy();far.data=near.data;scene.collection.objects.link(far)
  far.name=near.name.replace('BLD_ForestMass_','BLD_ForestFar_') if near.name.startswith('BLD_ForestMass_') else 'Far_'+near.name
  key=near.data.name
  if key in far_cache:far.data=far_cache[key]
  else:
+  far.data=near.data.copy()
   bpy.ops.object.select_all(action='DESELECT');far.select_set(True);bpy.context.view_layer.objects.active=far
   mod=far.modifiers.new('Mobile distant silhouette','DECIMATE');mod.ratio=.16;bpy.ops.object.modifier_apply(modifier=mod.name);far_cache[key]=far.data
 # Source meshes remain editable but excluded from export; remove no historical file.
@@ -412,7 +466,11 @@ for o in scene.objects:
  if o.type=='MESH' and not o.hide_render and not o.hide_get():selected.append(o)
 bpy.ops.object.select_all(action='DESELECT')
 for o in selected:o.select_set(True)
-bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'))
+final_faces=Counter(face_signature(terrain,poly) for poly in terrain.data.polygons)
+assert not core_faces-final_faces,'Final export changed retained core after bridge/fracture authoring'
+core_proof['verified_again_before_final_export']=True
+(out/'retained-core-integrity.json').write_text(json.dumps(core_proof,indent=2))
+bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
 # Query samples are taken from the actual exported mesh (not the height recipe).
 NX,NZ=456,501;data=[]
@@ -420,6 +478,9 @@ QX,QY=np.meshgrid(np.linspace(-910,910,NX),np.linspace(-1000,1000,NZ));RD=line_d
 FO=forest_field(QX,QY)
 for cx,cy,r in cities:FO*=smooth((np.hypot(QX-cx,QY-cy)-r-8)/14)
 FO*=smooth((RD-8)/8)
+qriver=np.array([rivercentre(float(x)) for x in QX[0]])[None,:];qwidth=np.array([riverwidth(float(x)) for x in QX[0]])[None,:]
+FO*=smooth((np.abs(QY-qriver)-qwidth-8)/12)
+for bx,by,w,l in bridge_specs:FO*=smooth(np.maximum(np.abs(QX-bx)-12,np.abs(QY-by)-l/2-8)/6)
 MM=np.zeros((NZ,NX,4),np.uint8);MM[:,:,0]=(np.clip(.5+coast(QX,QY)/32,0,1)*255).astype(np.uint8);MM[:,:,2]=(np.clip(1-RD/5,0,1)*255).astype(np.uint8);MM[:,:,3]=(FO*255).astype(np.uint8)
 for j,y in enumerate(np.linspace(-1000,1000,NZ)):
  for i,x in enumerate(np.linspace(-910,910,NX)):
