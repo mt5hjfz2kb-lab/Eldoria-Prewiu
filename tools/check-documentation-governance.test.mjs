@@ -44,3 +44,30 @@ test('tracked metadata preserves catalogue and link checks without unrelated bin
     assert.match(auditDocs(f.root,tracked).errors.join('\n'),/Catalog path missing/);
   }finally{f.dispose();}
 });
+
+test('pending documentation is grouped by domain without declaring it authoritative',()=>{
+  const f=fixture();try{
+    const p=path.join(f.root,'docs/documentation-catalog.json');
+    const catalog=JSON.parse(fs.readFileSync(p,'utf8'));
+    const row=catalog.entries.find(e=>e.path==='README.md');
+    row.status='review_pending';
+    row.domain='product';
+    fs.writeFileSync(p,JSON.stringify(catalog));
+    const report=auditDocs(f.root);
+    assert.deepEqual(report.errors,[]);
+    assert.equal(report.counts.review_pending,1);
+    assert.equal(report.counts.pending_by_domain.product,1);
+    assert.equal(report.counts.by_status.review_pending,1);
+    assert.equal(report.counts.by_status.current,4);
+  }finally{f.dispose();}
+});
+
+test('tracked directory lookup does not accept neighboring path prefixes',()=>{
+  const f=fixture();try{
+    const tracked=new Set([...f.files,'docs/documentation-catalog.json','Unity/Assets/art.png','UnityOutside/other.png']);
+    fs.writeFileSync(path.join(f.root,'README.md'),'[Valid directory](Unity/) [Missing directory](UnityBad/)');
+    const report=auditDocs(f.root,tracked);
+    assert.match(report.errors.join('\n'),/UnityBad/);
+    assert.ok(!report.errors.some(e=>e.includes('Unity/')));
+  }finally{f.dispose();}
+});
