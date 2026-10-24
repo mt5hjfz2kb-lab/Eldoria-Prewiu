@@ -92,8 +92,11 @@ def connecting_woodland(X,Y):
 def forest_field(X,Y):
  result=np.zeros(np.shape(X))
  for index in range(len(groves)):result=np.maximum(result,grove_field(X,Y,index))
- result=np.maximum(result,connecting_woodland(X,Y))
  return result
+# Decorative woodland connections are deliberately NOT part of the gameplay
+# occupancy/navigation query mask; resource nodes retain their own state.
+def visual_forest_field(X,Y):
+ return np.maximum(forest_field(X,Y),connecting_woodland(X,Y))
 cities=[]
 for y in [-1500,-1180,-740,-480,-250,330,530,810,1120,1530]:
  for x in [-650,-330,170,520]:
@@ -272,7 +275,7 @@ for route_index,route in enumerate(routes[:16]):
    tone=np.array([(.66,.59,.34),(.44,.50,.27),(.56,.52,.30)][n%3])
    rgba[area][:,:,:3]=rgba[area][:,:,:3]*(1-weight[:,:,None])+tone*weight[:,:,None]
    prairie_paint[area]=np.maximum(prairie_paint[area],weight)
-forest=forest_field(X,Y)
+forest=visual_forest_field(X,Y)
 
 # Eight directed meadow terraces fill the open regions between woodland
 # ridges, tapering before the AF/AG source. The shape/colour choices are authored.
