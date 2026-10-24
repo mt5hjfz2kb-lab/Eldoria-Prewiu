@@ -54,3 +54,21 @@ test('rejects unknown request profiles and malformed identifiers',()=>{
  assert.throws(()=>selectKnowledge(req('invalid','x'),source),/INVALID_PROFILE/);
  assert.throws(()=>selectKnowledge({profile:'animated_asset',request_id:'../../bad'},source),/INVALID_WORKSTREAM_ID/);
 });
+
+test('rejected technique remains visible in truncated 1800-character Qwen memory',()=>{
+ const base=source.catalog.records.find(x=>x.evidence_status==='art_rejected')||source.catalog.records[0];
+ const bad={...base,id:'K999',family:'environment',evidence_status:'art_rejected',
+   problem:'bridge terrain shoreline camera world4x',
+   observed_result:'Small bridge texture tweaks hide the composition failure',
+   avoid:'NO_REPEAT_MICRO_BRIDGE_REPAINT: redesign the actual landmass silhouette',
+   source_paths:['docs/evidence/verified-rejected-example.md']};
+ const synthetic={...source,catalog:{...source.catalog,records:[bad,...source.catalog.records]}};
+ const selection=selectKnowledge(req('environment_composition','bridge terrain shoreline camera world4x',
+   'bridge terrain shoreline camera world4x'),synthetic);
+ assert.ok(selection.rejected_ids.includes('K999'));
+ assert.ok(!selection.selected_ids.includes('K999'));
+ assert.match(selection.inventory_text.slice(0,1000),/NO_REPEAT_MICRO_BRIDGE_REPAINT/);
+ assert.ok(selection.inventory_text.indexOf('REJECTED CASES TO AVOID')<
+   selection.inventory_text.indexOf('SUGGESTED RELEVANT METHODS'));
+ assert.equal(selection.qa_boundary.art_approved,false);
+});
