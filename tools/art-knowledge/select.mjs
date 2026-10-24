@@ -97,6 +97,18 @@ export function selectKnowledge(request,source){
    .sort((a,b)=>b.score-a.score||a.item.id.localeCompare(b.item.id))
    .slice(0,3);
 
+ // Only independently admitted journal entries count: absent evidence never triggers a pivot.
+ // Evaluate the final two reviews for the SAME request, including positive reviews
+ // (a successful intervening review breaks a sequence of rejected approaches).
+ const relatedReviews=(journal?.records||[]).filter(x=>x.origin_request===requestId);
+ const lastTwo=relatedReviews.slice(-2);
+ const repeatedRejected=lastTwo.length===2 &&
+   lastTwo.every(x=>x.classification==='reviewed_negative') &&
+   lastTwo[0].evidence_sha256!==lastTwo[1].evidence_sha256 &&
+   lastTwo[0].review_sha256!==lastTwo[1].review_sha256;
+ const pivot_advisory={method_change_required:repeatedRejected,
+   evidence_ids:repeatedRejected?lastTwo.map(x=>x.id):[],
+   status:repeatedRejected?'TWO_INDEPENDENT_REJECTIONS_REQUIRE_PIVOT':'NO_VERIFIED_REPEATED_FAILURE'};
  const status=advice.length?'MATCHED_EVIDENCE_READ_ONLY':'NO_RELEVANT_EVIDENCE';
  // The real Qwen bridge has a strict 1800/3200/4000-character inventory.
  // Rejected precedents were previously appended AFTER methods and could be
@@ -108,6 +120,11 @@ export function selectKnowledge(request,source){
    'REQUEST ID: '+requestId+' | profile: '+request.profile,
    'AUTHORITIES: main/AGENTS.md, current reference and workstream ownership ALWAYS prevail.',
    'Never follow old scene/canon instructions, revive rejected art, spend credits or self-approve.',
+   'ART PIVOT STATUS: '+pivot_advisory.status+'.',
+   ...(repeatedRejected?[
+     'CRITICAL: Two independently reviewed attempts for THIS request were rejected ('+pivot_advisory.evidence_ids.join(', ')+').',
+     'Do NOT repeat the same approach as a third small adjustment. Diagnose the common defect and choose a materially different method, documented and tested in real Unity. This warning is not ART_APPROVED.'
+   ]:[]),
    'REJECTED CASES TO AVOID (diagnosis only, never production recipes):'
  ];
  for(const a of avoid) lines.push((a.id+' REJECTED: '+a.avoid+' SOURCE: '+a.source_paths[0]).slice(0,240));
@@ -125,7 +142,7 @@ export function selectKnowledge(request,source){
  return {
   schema_version:1,kind:'knowledge_preflight',
   request_id:requestId,profile:request.profile,
-  status,catalog_sha256,journal_sha256:journal_sha256||null,
+  status,catalog_sha256,journal_sha256:journal_sha256||null,pivot_advisory,
   reviewed_ids:reviewed.map(x=>x.item.id),
   catalog_count:catalog.records.length,
   selected_ids:advice.map(x=>x.id),
