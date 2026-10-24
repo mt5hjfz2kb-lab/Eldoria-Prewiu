@@ -35,7 +35,10 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  Light l=GetMainLight(TransformWorldToShadowCoord(i.world));
  float diffuse=saturate(dot(normalize(i.normal),l.direction));
  float2 detailUV=(i.world.xz-_RegionOrigin.xz)/float2(21.12,14.72);
- c.rgb*=lerp(half3(1,1,1),SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV).rgb*2,_GroundDetailStrength);
+ float2 rotatedDetail=float2(detailUV.x*.8-detailUV.y*.6,detailUV.x*.6+detailUV.y*.8)*.73+float2(.37,.61);
+ half3 grain=(SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV).rgb+SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,rotatedDetail).rgb);
+ float detailFootprint=max(length(ddx(detailUV)),length(ddy(detailUV)));
+ c.rgb*=lerp(half3(1,1,1),grain,_GroundDetailStrength*(1-smoothstep(.018,.1,detailFootprint)));
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*l.shadowAttenuation);
  float2 region=i.world.xz-_RegionOrigin.xz;
  // Thin peripheral atmosphere only at whole-region overview, never regional fog.
@@ -51,6 +54,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  HLSLPROGRAM
  #pragma vertex shadowVert
  #pragma multi_compile_instancing
+ #pragma multi_compile _ LOD_FADE_CROSSFADE
  #pragma fragment shadowFrag
  float3 _LightDirection;
  V shadowVert(A a){V o=vert(a);o.p=TransformWorldToHClip(ApplyShadowBias(o.world,o.normal,_LightDirection));
@@ -60,7 +64,13 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  o.p.z=max(o.p.z,UNITY_NEAR_CLIP_VALUE);
  #endif
  return o;}
- half4 shadowFrag(V i):SV_Target {clip(.5-_Baked);clip(SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,i.uv).a*_BaseColor.a-.35);return 0;}
+ half4 shadowFrag(V i):SV_Target {
+ UNITY_SETUP_INSTANCE_ID(i);
+ #ifdef LOD_FADE_CROSSFADE
+ float lodDither=frac(52.9829189*frac(dot(floor(i.p.xy),float2(.06711056,.00583715))));
+ clip(unity_LODFade.x-(unity_LODFade.x<0?-lodDither:lodDither));
+ #endif
+ clip(.5-_Baked);clip(SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,i.uv).a*_BaseColor.a-.35);return 0;}
  ENDHLSL
  }
  }

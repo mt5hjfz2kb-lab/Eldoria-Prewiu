@@ -55,6 +55,9 @@ groves=[(-220,420,42,65),(-430,680,62,40),(-650,790,65,50),(-750,500,48,70),(-44
 # Designed connected forest lobes, with unequal clearings and broken margins.
 # One field drives pigment, placement AND route exclusion.
 groves=[(x,y,rx*2.15,ry*2.15) for x,y,rx,ry in groves]
+# Unequal connected woodland belts, retaining the explicit city/road clearings.
+for i,sx,sy in [(1,1.65,.85),(2,1.3,1.1),(5,.85,1.6),(8,.85,1.55),(10,1.6,.9),(12,.9,1.45),(17,1.4,.85),(19,1.55,.85),(23,1.6,.85)]:
+ x,y,rx,ry=groves[i];groves[i]=(x,y,rx*sx,ry*sy)
 def grove_field(X,Y,index):
  cx,cy,rx,ry=groves[index]
  wx=X-cx+18*np.sin((Y-cy)/41+index*.8)
@@ -168,7 +171,13 @@ def line_distance(X,Y):
 # Reuse its measured mean and fine pigment; mirror into a seamless data tile.
 af=bpy.data.images['AF broad meadow flows'];af_values=np.empty(len(af.pixels),np.float32);af.pixels.foreach_get(af_values);af_pixels=af_values.reshape(af.size[1],af.size[0],4)
 patch=af_pixels[int(af.size[1]*.90):int(af.size[1]*.98),int(af.size[0]*.02):int(af.size[0]*.075),:3].copy()
-meadow_mean=patch.mean(axis=(0,1));detail=np.clip(patch/np.maximum(meadow_mean,.001)*.5,.32,.68)
+meadow_mean=patch.mean(axis=(0,1))
+# Remove only the patch's low-frequency illumination before repeating. Preserving
+# that gradient made a visible rectangular weave at regional scale.
+fy=np.fft.fftfreq(patch.shape[0])[:,None];fx=np.fft.fftfreq(patch.shape[1])[None,:]
+gaussian=np.exp(-2*math.pi**2*7.0**2*(fx*fx+fy*fy))
+low=np.stack([np.fft.ifft2(np.fft.fft2(patch[:,:,c])*gaussian).real for c in range(3)],axis=2)
+detail=np.clip(.5+(patch-low)/np.maximum(meadow_mean,.001)*.5,.32,.68)
 detail=np.concatenate([detail,detail[:,::-1]],axis=1);detail=np.concatenate([detail,detail[::-1]],axis=0)
 detail_pixels=np.ones((*detail.shape[:2],4),np.float32);detail_pixels[:,:,:3]=detail
 detail_image=bpy.data.images.new('AF derived continental grass detail',detail.shape[1],detail.shape[0]);detail_image.colorspace_settings.name='Non-Color';detail_image.use_fake_user=True;detail_image.pixels.foreach_set(detail_pixels.ravel());detail_image.filepath_raw=str(out/'RegionOneGrassDetail.png');detail_image.file_format='PNG';detail_image.save();detail_image.pack()
@@ -177,15 +186,15 @@ S=3072;X,Y=np.meshgrid(np.linspace(-910,910,S),np.linspace(-1000,1000,S));road=l
 rng=np.random.default_rng(791)
 # Independent editable masks: designed meadow flows, ridge glaze, litter, roads, banks.
 # No change to a single pixel/material/UV of the retained core.
-wash=.008*np.sin(X/93+Y/123)+.006*np.sin(Y/47-X/61)
+wash=.018*np.sin(X/93+Y/123)+.014*np.sin(Y/47-X/61)+.008*np.sin(X/19+Y/37)
 grain=rng.normal(0,.008,X.shape)
 rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=meadow_mean+(wash+grain*.25)[:,:,None]
 meadow=np.zeros(X.shape);ridge=np.zeros(X.shape)
 for n,(cx,cy,rx,ry) in enumerate([(-620,680,330,105),(-350,430,290,90),(260,610,340,120),(410,880,270,100),(-540,-370,340,100),(-280,-680,350,150),(280,-520,330,110),(480,-170,220,100),(-220,45,290,60)]):
  crest=cy+35*np.sin((X-cx)/120+n*.7)+14*np.sin((X-cx)/53+n)
  mass=np.exp(-((X-cx)/rx)**4)*np.exp(-((Y-crest)/ry)**4)
- weight=mass*(.86+.14*np.sin(X*.045+Y*.019+n)*np.cos(Y*.039-X*.021))*.46
- tone=np.array([.54,.53,.31]) if n%3 else np.array([.34,.43,.24])
+ weight=mass*(.86+.14*np.sin(X*.045+Y*.019+n)*np.cos(Y*.039-X*.021))*.72
+ tone=meadow_mean*np.array([1.18,1.09,.91]) if n%3 else meadow_mean*np.array([.72,.94,.86])
  rgba[:,:,:3]=rgba[:,:,:3]*(1-weight[:,:,None])+tone*weight[:,:,None]
  meadow=np.maximum(meadow,weight)
 for cx,cy,rx,ry in [(-490,520,100,160),(380,680,90,145),(-580,-570,100,95)]:
@@ -201,7 +210,7 @@ river_half=np.array([riverwidth(float(x)) for x in X[0]])[None,:]
 dr=np.abs(Y-river_axis)
 forest*=smooth((dr-river_half-8)/12)
 for bx in [-550.,0.,450.]:forest*=smooth(np.maximum(np.abs(X-bx)-12,np.abs(Y-rivercentre(bx))-30)/6)
-litter=forest*.38
+litter=forest*.56
 rgba[:,:,:3]=rgba[:,:,:3]*(1-litter[:,:,None])+np.array([.25,.34,.19])*litter[:,:,None]
 banks=(1-smooth((dr-river_half-1)/10))*.5
 rgba[:,:,:3]=rgba[:,:,:3]*(1-banks[:,:,None])+np.array([.55,.51,.34])*banks[:,:,None]
@@ -396,6 +405,33 @@ for side in [-1,1]:
   q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x+96)/192,loop.vertex_index%2)
  for face in me.polygons:face.use_smooth=True
  o=bpy.data.objects.new('BLD_RiverExtension_'+str(side),me);scene.collection.objects.link(o)
+# Continue the actual O cutbank profiles and their original painted grass/clay/wet-toe
+# atlases. These are surface-bound strips, not a generic rectangular shoreline wall.
+for direction in [-1,1]:
+ for bank_side in [-1,1]:
+  original_bank=bpy.data.objects['Pilot_Cutbank_'+str(bank_side)]
+  sections=np.array([tuple(v.co) for v in original_bank.data.vertices]).reshape(193,5,3)
+  profile=sections[0 if direction<0 else -1];source_axis=ends[0 if direction<0 else 1]
+  vv=[];ff=[]
+  for row in range(329):
+   x=direction*(96+row*2.5);cy=rivercentre(x);d=abs(x)-96
+   if direction>0 and float(coast(x,cy))<0:break
+   blend=float(smooth(d/42));rw=riverwidth(x)
+   for j in range(5):
+    t=j/4;offset=bank_side*(rw-.3+4.7*(1-t)**1.35)
+    y=cy+(profile[j,1]-source_axis)*(1-blend)+offset*blend
+    z=profile[j,2]*(1-blend)+(surface(x,y)+.02)*blend
+    vv.append((x,y,z))
+   if row:
+    for j in range(4):
+     a=(row-1)*5+j;face=(a,a+1,a+6,a+5)
+     ff.append(face if direction*bank_side>0 else tuple(reversed(face)))
+  me=bpy.data.meshes.new('O continued sculpted bank');me.from_pydata(vv,[],ff);me.materials.append(original_bank.data.materials[0])
+  uv=me.uv_layers.new(name='Original O bank pigment')
+  for loop in me.loops:
+   k=loop.vertex_index;q=me.vertices[k].co;uv.data[loop.index].uv=((q.x+96)/192,(k%5)/4)
+  for face in me.polygons:face.use_smooth=True
+  ob=bpy.data.objects.new('BLD_ConnectedCutbank_'+str(direction)+'_'+str(bank_side),me);scene.collection.objects.link(ob)
 # Sea only at the east edge, shaped by the same coastline rather than a rectangle beneath land.
 vv=[];ff=[]
 for i,y in enumerate(range(-1000,1001,10)):
@@ -439,7 +475,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   if any((x-a)**2+(y-b)**2<9.0**2 for a,b in positions):continue
   positions.append((x,y));k=len(positions)
   donor=masters[k%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_'+str(index).zfill(2)+'_'+str(k).zfill(3)
-  scale=random.uniform(2.5,4.1);o.scale=(scale*random.uniform(.88,1.15),scale,scale*random.uniform(.88,1.2));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
+  scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));o.scale=(scale*random.uniform(.88,1.15),scale,scale*random.uniform(.88,1.2));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
   if len(parts)>=240:break
  if not parts:continue
  tree_total+=len(parts)

@@ -565,7 +565,7 @@ namespace Eldoria.Tests
         [Serializable]
         sealed class RenderIdentity
         {
-            public string sourceScene, version, label, sha256, context;
+            public string sourceScene, version, label, sha256, context, targetId;
             public bool actualUnityCamera, playMode, physicalIphone;
             public int width, height;
             public float zoom, aspect;
@@ -573,7 +573,7 @@ namespace Eldoria.Tests
             public Quaternion cameraRotation;
         }
 
-        static void SaveRetainedSectorFrame(Camera camera,string path,int width,int height)
+        static void SaveRetainedSectorFrame(Camera camera,string path,int width,int height,string targetId=null)
         {
             var previous=camera.targetTexture;var active=RenderTexture.active;
             var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
@@ -598,7 +598,7 @@ namespace Eldoria.Tests
                 string hash;using(var sha=SHA256.Create())hash=BitConverter.ToString(sha.ComputeHash(png)).Replace("-","").ToLowerInvariant();
                 File.WriteAllText(path+".json",JsonUtility.ToJson(new RenderIdentity{
                     sourceScene=SceneManager.GetActiveScene().path,version=UnityEngine.Application.unityVersion,
-                    context=path.Contains("continent-zoom")?"Continuous actual production camera journey across Region 1":"AF/AG camera and sector coordinates; restored scoped AG shader and lighting",label=Path.GetFileName(path),
+                    context=path.Contains("continent")?"Actual production geography and resource camera across Region 1":"AF/AG camera and sector coordinates; restored scoped AG shader and lighting",label=Path.GetFileName(path),targetId=targetId,
                     sha256=hash,actualUnityCamera=true,playMode=UnityEngine.Application.isPlaying,physicalIphone=false,
                     width=width,height=height,zoom=camera.orthographicSize,aspect=camera.aspect,
                     cameraPosition=camera.transform.position,cameraRotation=camera.transform.rotation},true));
@@ -823,6 +823,21 @@ namespace Eldoria.Tests
                     }
                     Assert.That(Directory.GetFiles(sequence,"*.png").Length,Is.EqualTo(25));
                 }
+                string continentalDetails=Path.Combine(sectorDirectory,"continental-details");Directory.CreateDirectory(continentalDetails);
+                var playableGateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");
+                var actualResources=playableGateway.Snapshot().WorldResourceLocations;
+                foreach(string kind in new[]{"wood","stone"})
+                {
+                    var item=actualResources.Where(x=>x.Generation>0&&x.TargetId.StartsWith("region1:"+kind+":",StringComparison.Ordinal)&&Mathf.Abs(x.X-home.x)>140)
+                        .OrderBy(x=>Mathf.Abs(x.X-home.x)).First();
+                    var target=(Component)Call(host,"FindTarget",item.TargetId);Assert.That(target,Is.Not.Null);
+                    foreach(bool portrait in new[]{false,true}){
+                        camera.aspect=portrait?9f/16:16f/9;Call(navigation,"RestoreView",target.transform.position,portrait?64f:36f);Call(adapter,"RefreshForCapture");
+                        yield return null;
+                        SaveRetainedSectorFrame(camera,Path.Combine(continentalDetails,kind+"-"+(portrait?"portrait":"landscape")),portrait?720:1280,portrait?1280:720,item.TargetId);
+                    }
+                }
+                Assert.That(Directory.GetFiles(continentalDetails,"*.png").Length,Is.EqualTo(4));
                 Assert.That(Directory.GetFiles(sectorDirectory,"*.png").Length,Is.EqualTo(6));
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(16));
                 if(Environment.GetEnvironmentVariable("ELDORIA_RIBERA_PILOT")=="1")
