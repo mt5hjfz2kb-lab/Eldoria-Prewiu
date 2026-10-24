@@ -1,11 +1,13 @@
-import bpy,json,pathlib,hashlib,os
+import bpy,json,pathlib,math
+from mathutils import Vector
 out=pathlib.Path(bpy.app.driver_namespace['interactive_output'])
-assert (out/'02-mineral-hierarchy.blend').exists()
-for request in sorted(out.glob('request-*.json')):
- data=json.loads(request.read_text(encoding='utf-8-sig'));code=data.get('params',{}).get('code')
- if isinstance(code,str):bpy.data.texts.new('MCP_'+request.stem).write(code)
-bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Macro_Review_Candidate_NOT_APPROVED.blend'),compress=True)
-report={'pid':os.getpid(),'baseline_observed':True,'artistic_cycles':2,'first_cycle':'VISUAL_REJECTED','second_cycle':'CANDIDATE_NATIVE_REVIEW_REQUIRED','art_approved':False,'unity_changed':False,'final_blend_sha256':hashlib.sha256((out/'Eldoria_Macro_Review_Candidate_NOT_APPROVED.blend').read_bytes()).hexdigest()}
-(out/'final-verification.json').write_text(json.dumps(report,indent=2))
-(out/'stop.request').write_text('Save reviewed source and close this owned session only before native certification.')
-print('FINAL_VERIFICATION',json.dumps(report))
+report=[]
+objects=[o for o in bpy.context.scene.objects if o.type=='MESH' and not o.hide_render and (o.name=='BLD_Terrain' or 'Cutbank' in o.name or 'River' in o.name)]
+for y in [-32.92237,-27.92237,-22.92237,-18.92237,-16.92237,-15.92237,-14.92237,-12.92237,-7.92237,0.07763]:
+ row={'x':3.3,'y':y,'hits':[]}
+ for obj in objects:
+  inv=obj.matrix_world.inverted();hit,p,n,face=obj.ray_cast(inv@Vector((3.3,y,150)),inv.to_3x3()@Vector((0,0,-1)),distance=400)
+  if hit:row['hits'].append({'object':obj.name,'height':(obj.matrix_world@p).z})
+ report.append(row)
+(out/'bridge-support-surface-diagnostic.json').write_text(json.dumps({'source':'40069960813','probe':report,'surface_names':[o.name for o in objects]},indent=2))
+print('SURFACE_DIAGNOSIS',json.dumps(report))
