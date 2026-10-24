@@ -1148,8 +1148,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "PHYSICAL_CONTINENTAL_CONTINUATION_AND_NATIVE_GRAIN_CALIBRATION",
-      "next": "Join real neighbouring ground at every Region1 boundary vertex, retain all playable-region viewport/routing assertions, continue the same river/coast, and add positive native seam/zoom-invariance checks. Calibrate AF-derived linear grain from genuine screenshot ROI and measured I UV density; keep widened crowns. Preserve 8x44m bridge contact deck; add new plank grain/rails outside walking width. Full 57 GPU+26 Edit+44 I-II and 126+34 fresh PNG before materialization; inspect actual six views and AG, no art approval.",
+      "phase": "CONTINUATION_SEA_SAMPLER_AND_COAST_FINISH",
+      "next": "Clamp sea texture extension rather than repeating shallow-edge colour, sample actual outer coastline every 10m with profile knots and stitched coarse inland loops, reduce derived grass Gaussian sigma7 to4 using native ROI evidence, remove double bridge tint. Keep actual playable mesh/UV/height, 2416 shared boundary points, routing/clearance thresholds and all 57+26+44 assertions. Rebuild and review real 126+34 PNG, no merge/publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1234,9 +1234,9 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "3eaf41af352ea9dd118cb901c64a664719b15e7b",
-          "assets_commit": "ad81eb92871a862c916acded3fdd345adf8d963c",
-          "run": 40064460822,
+          "source": "71677af9652181fdd00bbddf181ee99fc77ba01f",
+          "assets_commit": "437df107f93e4c8c49d04460e19f0614bbeccf2f",
+          "run": 40066046850,
           "tests": 57,
           "captures": 126,
           "result": "success",
@@ -1245,22 +1245,25 @@
           "retained_original_faces": 50688,
           "original_images": 30,
           "imported_material_uv_samples": 96,
-          "continental_tree_instances": 6526,
+          "continental_tree_instances": 7336,
           "shared_near_meshes": 2,
-          "visual_artifact": 12548953349,
-          "artifact_sha256": "eed268e05a9a1d7116c0129cc8a2ba0cb0538ee4a26414c8f9e725aed999de1b",
+          "visual_artifact": 12550450328,
+          "artifact_sha256": "20fbd4b1a80da097235a3abae9f584bc5db55f6919339a393d1b9100c8f1027f",
           "art_approved": false,
           "physical_mobile_tested": false,
-          "visual_gap": "57+26+44 and 126+34 PNG pass; 32 cities retained. Wider actual crowns retained, AG close PNG unchanged. Linear grain fine contrast restored but medium grain too strong: measured next calibration prepared. Rectangular outside silhouette still needs physical continental continuation.",
+          "visual_gap": "Full native 57+26+44 and 126+34 fresh PNG verified, 32 cities. Physical continental continuation removes isolated land board; 2416 edge vertices verified. Real PNG reveals sea texture wrap rectangle, coarse neighbouring shoreline, residual medium grain and double wood tint; bounded corrections prepared. No artistic approval.",
           "panorama_projected_bbox_area": {
             "horizontal": 0.7468,
             "vertical": 0.7605
           },
-          "general_captures": 34
+          "general_captures": 34,
+          "playable_region_tree_instances": 6526,
+          "neighbouring_tree_instances": 810,
+          "native_shared_edge_vertices": 2416
         },
         "general_integration": {
-          "source": "3eaf41af352ea9dd118cb901c64a664719b15e7b",
-          "run": 40064460822,
+          "source": "71677af9652181fdd00bbddf181ee99fc77ba01f",
+          "run": 40066046850,
           "status": "FULL_GPU_57_EDIT_26_PROBE_44_PASS_NO_OMISSIONS",
           "editmode_passed": 26,
           "playmode_passed": 57,
@@ -1268,9 +1271,9 @@
           "playmode_skipped": 0,
           "probe_checks": 44,
           "fresh_captures": 34,
-          "artifact": 12548953349,
-          "artifact_sha256": "eed268e05a9a1d7116c0129cc8a2ba0cb0538ee4a26414c8f9e725aed999de1b",
-          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40064460822.json"
+          "artifact": 12550450328,
+          "artifact_sha256": "20fbd4b1a80da097235a3abae9f584bc5db55f6919339a393d1b9100c8f1027f",
+          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40066046850.json"
         }
       },
       "ownership_history": [

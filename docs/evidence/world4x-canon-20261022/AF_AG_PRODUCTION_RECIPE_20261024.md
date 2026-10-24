@@ -14,7 +14,7 @@ Esta tabla describe la receta del script actual; cada modificación necesita su 
 | Unión | Soldadura 0,001 m; altura/pigmento nuevos se integran en 110 m; pendiente amortiguada a 48 m |
 | Río | Sección original preservada al contacto; cauce curvo único; retirada gradual del perfil abandonado en 24 m |
 | Pintura | Atlas nuevo 3072²; máscaras independientes y empaquetadas; UV/material original por cara sin remapeo |
-| Detalle AF | Fragmento original u 0,02–0,075 / v 0,90–0,98; transferencia sRGB→lineal, normalización sigma 7 y fuerza 0,9√2 para dos muestras giradas a igual escala; repetición física 21,1875 ×12,4921875 m con mipmaps |
+| Detalle AF | Fragmento original u 0,02–0,075 / v 0,90–0,98; transferencia sRGB→lineal, normalización sigma 4 y fuerza 0,9√2 para dos muestras giradas a igual escala; repetición física 21,1875 ×12,4921875 m con mipmaps |
 | Pradera continental | Pinceladas AF dirigidas, semiejes 37–83 /14–36 m, mezcla ≤0,47; verificadas en run 40062946172, mejora parcial sin aprobación artística |
 | Claros AF | Espinas y bordes del procedimiento aceptado, localizados en claros reales; mezcla máxima 0,43, exclusión de caminos/agua/costa/sotobosque |
 | Vegetación | Dos donantes originales compartidos; continente cercano 70 %, lejano 9 %; copas cercanas del núcleo sin simplificación y lejanas 16 %; ancho continental adicional hasta ×1,35 con rampa de 220 m |
@@ -263,3 +263,17 @@ Fuente `3eaf41af352ea9dd118cb901c64a664719b15e7b`, binarios `ad81eb92871a862c916
 La corrección de espacio de color recuperó el detalle fino, pero **se rechaza como acabado final su exceso de grano medio**. `GRAIN_NATIVE_CALIBRATION_20261024.json` conserva ROI, SHA de PNG, sigma y resultados reproducibles: en dos parches originales, desviación relativa a sigma 1/2 ≈0,040/0,052 y 0,037/0,047; la ampliación del pase 13 daba ≈0,011/0,017, y el pase 14 ≈0,038/0,059 y 0,041/0,063. No convertir un cálculo de textura en aprobación visual.
 
 La inspección del GLB original confirma que el suelo I recorre 192×156 m en 2048² texeles. La siguiente calibración usa ese tamaño físico por texel para el detalle de 226×164 píxeles (21,1875×12,4921875 m), elimina la ampliación 1/0,73 de la segunda muestra y modera la fuerza a 0,9√2=1,2727922. Conserva la transferencia lineal y el pigmento original. Debe comprobarse de nuevo en el mismo encuadre real. El contorno rectangular sigue pendiente del pase físico de continuación descrito arriba.
+
+
+## Continuación certificada, defectos de muestreo identificados — 40066046850
+
+Fuente `71677af9652181fdd00bbddf181ee99fc77ba01f`, materialización `437df107f93e4c8c49d04460e19f0614bbeccf2f`: SUCCESS, 57/57 PlayMode GPU, 26/26 EditMode, 44 controles I–II y 126+34 PNG verificados. Se mantienen 32 reservas accesibles. Unity comprobó **2416 vértices compartidos**; Blender midió diferencia de altura 0 m, 17 068 vértices y 30 906 triángulos de continuación. Vegetación: 6526 árboles continentales anteriores +810 exteriores, 7336 en total con los mismos dos donantes. ZIP visual 12550450328, SHA256 `20fbd4b1a80da097235a3abae9f584bc5db55f6919339a393d1b9100c8f1027f`; XML `dc38a447c5752d41e420e7d4178fcee0940b803e0e079c3fed9bb3306650ae4d`, 182,9897809 s de suite Editor.
+
+Se retiene la continuidad terrestre real: la región deja de terminar en un tablero aislado y el encuadre sigue incluyendo sus mismos vértices. Se rechazan cuatro defectos observados en los PNG, sin convertir el PASS técnico en aceptación visual:
+
+- El mar vecino muestrea U=1 con repetición y recupera el color de orilla; aparece una costura rectangular. Corrección: `ShaderNodeTexImage.extension=EXTEND`, y UV de profundidad exterior limitado a 0,999. Misma imagen de plataforma marina; no otro fondo.
+- La costa vecina muestra dientes al sur por el muestreo demasiado espaciado. Corrección geométrica: anillos cada 10 m y nudos explícitos en el perfil real de costa (-25, -5, 0, 5, 20 y 40 m), con bucles interiores más ligeros a 80 m y banda fluvial a 4 m. La triangulación estática conserva orientación positiva y no tiene aristas internas abiertas; ejemplo 50 844 triángulos, a confirmar en Blender. El terreno jugable y su contacto original no se cambian.
+- El grano fino ya coincide aproximadamente con el original, pero a sigma 2/4 aún hay contraste sobrante (nuevo ≈0,056/0,065 frente a original ≈0,047–0,051/0,052–0,059). Mantener UV/fuerza calibrados y reducir el filtro de iluminación de sigma 7 a 4 píxeles en el fragmento derivado; las fuentes AF/AG no se tocan.
+- El pigmento de tablones se multiplicaba por el antiguo color marrón del material. La textura nueva ya contiene ese color: fijar factor base blanco y alternancia 0,92, conservando geometría, UV y superficie de paso.
+
+Son correcciones acotadas de causas observadas, con nueva certificación nativa pendiente. El recuento de pruebas y capturas, las exigencias de rutas/recursos y la comprobación de todos los vértices jugables siguen íntegros.

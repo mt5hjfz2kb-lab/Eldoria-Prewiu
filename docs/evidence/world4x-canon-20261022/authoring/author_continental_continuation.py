@@ -12,8 +12,8 @@ perimeter += [(-910.,y) for y in reversed(ys[1:-1])]
 assert len(set(perimeter))==len(perimeter)
 # Preserve every original contact vertex, then reduce sampling outside Region 1.
 # Zipper triangulation connects unequal loops without T-junctions or cracks.
-coarse_x=sorted(set(np.arange(-910,911,20).tolist()+[-910.,910.]))
-coarse_y=sorted(set(np.arange(-1800,1801,20).tolist()+list(range(-150,151,2))+[-1800.,1800.]))
+coarse_x=sorted(set(np.arange(-910,911,80).tolist()+[-910.,910.]))
+coarse_y=sorted(set(np.arange(-1800,1801,80).tolist()+list(range(-150,151,4))+[-1800.,1800.]))
 coarse=[(x,-1800.) for x in coarse_x]+[(910.,y) for y in coarse_y[1:]]
 coarse += [(x,1800.) for x in reversed(coarse_x[:-1])]+[(-910.,y) for y in reversed(coarse_y[1:-1])]
 def perimeter_t(point):
@@ -23,8 +23,18 @@ def perimeter_t(point):
  if y==1800:return 5420+910-x
  return 7240+1800-y
 context_vertices=[];context_faces=[];count=len(perimeter);previous=None;previous_start=0
-for ring,offset in enumerate([0.,10.,20.,30.,40.,50.,60.,80.,100.,125.,150.,180.,220.,270.,330.,400.,500.,650.,800.]):
- loop=perimeter if ring==0 else coarse;start=len(context_vertices)
+for ring,offset in enumerate(range(0,801,10)):
+ loop=perimeter if ring==0 else list(coarse)
+ if ring:
+  # Track the actual coastal cross-section at every 10 m of neighbouring
+  # north/south land. Wide angular cells elsewhere do not cut sawtooth shores.
+  for sign in (-1,1):
+   shore=float(coast(0,sign*(1800+offset)))
+   for distance in (-25.,-5.,0.,5.,20.,40.):
+    base_x=(shore+distance)*910/(910+offset)
+    if -910<base_x<910:loop.append((base_x,sign*1800.))
+  loop=sorted(set(loop),key=perimeter_t)
+ start=len(context_vertices)
  for x,y in loop:
   px=x*(910+offset)/910;py=y*(1800+offset)/1800
   context_vertices.append((px,py,height(px,py)))

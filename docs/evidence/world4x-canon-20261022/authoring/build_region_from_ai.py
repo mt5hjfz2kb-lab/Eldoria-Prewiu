@@ -188,7 +188,7 @@ meadow_mean=patch.mean(axis=(0,1))
 # Remove only the patch's low-frequency illumination before repeating. Preserving
 # that gradient made a visible rectangular weave at regional scale.
 fy=np.fft.fftfreq(patch.shape[0])[:,None];fx=np.fft.fftfreq(patch.shape[1])[None,:]
-gaussian=np.exp(-2*math.pi**2*7.0**2*(fx*fx+fy*fy))
+gaussian=np.exp(-2*math.pi**2*4.0**2*(fx*fx+fy*fy))
 # The original pigment is sRGB; the Unity detail texture is linear data.
 # Normalize in linear light, otherwise the added contrast is about 2.2x too
 # weak and exposes a rectangular texture-density seam beside the retained I/AF.
@@ -437,6 +437,7 @@ wood_image=bpy.data.images.new('Authored weathered crossing planks',512,1024)
 wood_image.pixels.foreach_set(wood_pixels.ravel());wood_image.pack()
 wood_tex=bridge_mat.node_tree.nodes.new('ShaderNodeTexImage');wood_tex.image=wood_image
 bridge_mat.node_tree.links.new(wood_tex.outputs['Color'],bridge_bs.inputs['Base Color'])
+bridge_bs.inputs['Base Color'].default_value=(1,1,1,1) # Texture already carries the wood colour; avoid double tint.
 for cx in [-550.,0.,450.]:
  cy,z0,z1=crossing_banks[cx]
  length=44.;half=length/2;vv=[];ff=[]
@@ -444,7 +445,7 @@ for cx in [-550.,0.,450.]:
   t=i/44;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
   vv.extend([(cx-4,cy-half+i,z),(cx+4,cy-half+i,z)])
   if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))
- me=bpy.data.meshes.new('True plank deck');me.from_pydata(vv,[],ff);me.materials.append(bridge_mat);plank=bridge_mat.copy();plank.name='Bridge alternate weathered plank';next(n for n in plank.node_tree.nodes if n.type=='BSDF_PRINCIPLED').inputs['Base Color'].default_value=(.25,.17,.09,1);me.materials.append(plank)
+ me=bpy.data.meshes.new('True plank deck');me.from_pydata(vv,[],ff);me.materials.append(bridge_mat);plank=bridge_mat.copy();plank.name='Bridge alternate weathered plank';next(n for n in plank.node_tree.nodes if n.type=='BSDF_PRINCIPLED').inputs['Base Color'].default_value=(.92,.92,.92,1);me.materials.append(plank)
  for face in me.polygons:face.material_index=face.index%2
  uv=me.uv_layers.new(name='UVMap') # Same active layer name as the joined certified terrain
  for loop in me.loops:
@@ -562,7 +563,7 @@ sea_pixels[:,:,:3]=np.array([.12,.32,.34])*(1-depth[:,:,None])+np.array([.045,.2
 current=(.007*np.sin(V*55+U*8)+.004*np.sin(V*137-U*21))*(1-U)
 sea_pixels[:,:,:3]+=current[:,:,None]
 sea_image=bpy.data.images.new('Eastern shelf water pigment',512,1024);sea_image.pixels.foreach_set(sea_pixels.ravel());sea_image.pack()
-node=watermat.node_tree.nodes.new('ShaderNodeTexImage');node.image=sea_image
+node=watermat.node_tree.nodes.new('ShaderNodeTexImage');node.image=sea_image;node.extension='EXTEND'
 water_bs=next(n for n in watermat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');water_bs.inputs['Base Color'].default_value=(1,1,1,1);watermat.node_tree.links.new(node.outputs['Color'],water_bs.inputs['Base Color'])
 # The same real eastern coast continues outside the playable regional rectangle.
 vv=[];ff=[]
@@ -577,7 +578,7 @@ o=bpy.data.objects.new('BLD_EasternSeaContinuation',me);scene.collection.objects
 uv=me.uv_layers.new(name='Same coastal depth and current')
 for loop in me.loops:
  q=me.vertices[loop.vertex_index].co;shore=float(coast(0,q.y))
- uv.data[loop.index].uv=(min(1,max(0,(q.x-shore)/max(1,910-shore))),(q.y+1800)/3600)
+ uv.data[loop.index].uv=(min(.999,max(0,(q.x-shore)/max(1,910-shore))),(q.y+1800)/3600)
 
 # Natural grouped canopies reuse AI editable tree topology, never old main donors.
 masters=[bpy.data.objects['Editable Layered fir source'],bpy.data.objects['Editable Slender fir source']]
