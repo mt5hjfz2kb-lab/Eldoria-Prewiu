@@ -19,23 +19,24 @@ def stroke_distance(x,y,paths):
  return d
 
 def geological_paint(rgb,x,y):
- """Bounded material relationship: pale broken shoulders, dark mineral floor."""
+ """Weathered hand-positioned rift shoulders, not geometric Voronoi tiles.
+ Natural mineral pigment follows the physically carved ground; debris meshes
+ provide the small facets, never a pasted grid of polygonal fake rocks.
+ """
  d=stroke_distance(x,y,AUTHOR_FAULTS)
- core_clear=np.clip((-102-x)/23,0,1)
- apron=np.clip((35-d)/12,0,1);apron=apron*apron*(3-2*apron)*.80*core_clear
- # Broken mineral plates derived from real incised ground; no floating rocks.
- first=np.full(x.shape,np.inf);second=first.copy();cell=np.zeros(x.shape,np.int32)
- rng=np.random.default_rng(241017)
- seeds=[(sx+rng.uniform(-8,8),sy+rng.uniform(-8,8)) for sy in range(-20,651,27) for sx in range(-700,-70,27)]
- for i,(sx,sy) in enumerate(seeds):
-  q=np.hypot(x-sx,y-sy);near=q<first
-  second=np.where(near,first,np.minimum(second,q));cell=np.where(near,i,cell);first=np.minimum(first,q)
- joint=np.clip((1.3-(second-first))/1.3,0,1)
- shoulder=np.array([(.49,.45,.43),(.44,.40,.41),(.55,.49,.44),(.40,.36,.40)])[cell%4]
- shoulder*=1-joint[...,None]*.38
- rgb[:]=rgb*(1-apron[...,None])+shoulder*apron[...,None]
- floor=np.clip((11-d)/7,0,1)*.55*core_clear
- rgb[:]=rgb*(1-floor[...,None])+np.array((.25,.19,.29))*floor[...,None]
- heart=np.clip(1-((x+260)/65)**2-((y-150)/75)**2,0,1)*.50*core_clear
- rgb[:]=rgb*(1-heart[...,None])+np.array((.29,.12,.36))*heart[...,None]
- return apron
+ original_safe=np.clip((-102-x)/23,0,1)
+ outer=np.clip((46-d)/28,0,1)
+ shoulder=(outer*outer*(3-2*outer))*.46*original_safe
+ # Earthy grey/ochre with violet only inside the actual mineral incision.
+ # Directional desaturation is subtle; it does not invent parallel cracks.
+ slope=.025*np.sin(x/73+y/39)+.016*np.cos(y/31-x/62)
+ rock=np.empty((*x.shape,3),dtype=np.float64)
+ rock[...,0]=.335+slope;rock[...,1]=.307+slope*.80;rock[...,2]=.312+slope*.72
+ rgb[:]=rgb*(1-shoulder[...,None])+rock*shoulder[...,None]
+ fractured=np.clip((15-d)/11,0,1)**1.25*.53*original_safe
+ rgb[:]=rgb*(1-fractured[...,None])+np.array((.235,.185,.265))*fractured[...,None]
+ dark_core=np.clip((8-d)/6,0,1)*.48*original_safe
+ rgb[:]=rgb*(1-dark_core[...,None])+np.array((.17,.095,.22))*dark_core[...,None]
+ heart=np.clip(1-((x+260)/65)**2-((y-150)/80)**2,0,1)*.35*original_safe
+ rgb[:]=rgb*(1-heart[...,None])+np.array((.24,.085,.31))*heart[...,None]
+ return shoulder

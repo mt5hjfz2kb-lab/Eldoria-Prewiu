@@ -869,42 +869,64 @@ macro_namespace={'__file__':str(macro_path)}
 exec(compile(macro_path.read_text(encoding='utf-8'),str(macro_path),'exec'),macro_namespace)
 macro_result=macro_namespace['apply_geological_batch'](out)
 
-# Discontinuous weathered rockfall on the real fault shoulders. No white
-# parallel ribbons or new artificial geological walls. These are cosmetic
-# low-poly stones, not navigation blockers or gameplay resource nodes.
-bpy.context.view_layer.update();bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
-rock_mats=[simplemat('Breach ash-grey weathered stone',(.29,.275,.27)),
-           simplemat('Breach dark ironstone',(.235,.215,.255)),
-           simplemat('Breach old ochre bedrock',(.355,.325,.275))]
-rock_verts=[];rock_faces=[];rock_mats_index=[];rng=np.random.default_rng(284721)
+# Irregular eroded talus on the original fracture shoulders. Independent
+# low-poly rock strata, not unbroken violet ribbons or cone-shaped props.
+# Navigation/river/city masks and all original AF/AG polygons stay untouched.
+bpy.context.view_layer.update()
+bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
+rock_mats=[
+ simplemat('Breach old ash shale',(.275,.255,.26)),
+ simplemat('Breach ochre sedimentary rock',(.365,.337,.282)),
+ simplemat('Breach cool weathered slate',(.245,.255,.275))]
+rock_verts=[];rock_faces=[];rock_mats_index=[]
+rock_rng=np.random.default_rng(284732)
 for branch,path in enumerate(macro_namespace['ORIGINAL_FAULTS']):
  for (ax,ay),(bx,by) in zip(path,path[1:]):
-  length=math.hypot(bx-ax,by-ay);nx=-(by-ay)/length;ny=(bx-ax)/length
-  for station in np.arange(8,length-3,18+rng.uniform(-4,5)):
+  length=math.hypot(bx-ax,by-ay)
+  if length<4:continue
+  nx=-(by-ay)/length;ny=(bx-ax)/length
+  station=rock_rng.uniform(4,9)
+  while station<length-4:
    t=station/length;cx=ax+(bx-ax)*t;cy=ay+(by-ay)*t
    for side in (-1,1):
-    if rng.random()<.34:continue
-    offset=side*rng.uniform(9.5,22)
-    x=cx+nx*offset;y=cy+ny*offset
-    if -96<=x<=96 and -78<=y<=270:continue
-    if float(line_distance(np.array(x),np.array(y)))<7:continue
-    if abs(y-rivercentre(x))<riverwidth(x)+5:continue
-    count=7+rng.integers(0,3);r=rng.uniform(2,5)
-    ring=[]
-    for k in range(count):
-     angle=k*math.tau/count;radius=r*rng.uniform(.65,1.2)
-     xx=x+math.cos(angle)*radius;yy=y+math.sin(angle)*radius
-     ring.append(len(rock_verts));rock_verts.append((xx,yy,surface(xx,yy)+rng.uniform(.06,.18)))
-    apex=len(rock_verts);rock_verts.append((x+rng.uniform(-.8,.8),y+rng.uniform(-.8,.8),surface(x,y)+rng.uniform(.7,2.1)))
-    for k in range(count):
-     rock_faces.append((ring[k],ring[(k+1)%count],apex))
-     rock_mats_index.append((branch+k//3+int(rng.integers(0,2)))%3)
-rock_mesh=bpy.data.meshes.new('Breach weathered rubble geometry');rock_mesh.from_pydata(rock_verts,[],rock_faces);rock_mesh.update()
-for material in rock_mats:rock_mesh.materials.append(material)
-for i,p in enumerate(rock_mesh.polygons):p.material_index=rock_mats_index[i]
-rock_obj=bpy.data.objects.new('BLD_BreachWeatheredRockfall',rock_mesh)
-scene.collection.objects.link(rock_obj)
-
+    if rock_rng.random()<.26:continue
+    dist=side*rock_rng.uniform(8,28)
+    x=cx+nx*dist+rock_rng.uniform(-3.0,3.0)
+    y=cy+ny*dist+rock_rng.uniform(-3.0,3.0)
+    if -98<x<98 and -80<y<272:continue
+    if float(line_distance(np.array(x),np.array(y)))<10:continue
+    if abs(y-rivercentre(x))<riverwidth(x)+7:continue
+    if any(math.hypot(x-a,y-b)<r+8 for a,b,r in cities):continue
+    sides=int(rock_rng.integers(6,10))
+    radius=rock_rng.uniform(2.3,6.8)
+    height=rock_rng.uniform(.7,2.9)
+    direction=rock_rng.uniform(0,math.tau)
+    basal=[];upper=[]
+    for k in range(sides):
+     angle=k*math.tau/sides+direction
+     rr=radius*rock_rng.uniform(.7,1.22)
+     bx0=x+rr*math.cos(angle);by0=y+rr*math.sin(angle)
+     basal.append(len(rock_verts))
+     rock_verts.append((bx0,by0,surface(bx0,by0)+.05))
+     rr_top=rr*rock_rng.uniform(.42,.73)
+     tx=x+rr_top*math.cos(angle+.12);ty=y+rr_top*math.sin(angle+.12)
+     upper.append(len(rock_verts))
+     rock_verts.append((tx,ty,surface(tx,ty)+height+rock_rng.uniform(-.25,.32)))
+    for k in range(sides):
+     kk=(k+1)%sides
+     rock_faces.append((basal[k],basal[kk],upper[kk],upper[k]))
+     rock_mats_index.append((branch+(k//3))%len(rock_mats))
+    # Asymmetric slate plate closes each stone, not a repeated pointed cone.
+    for k in range(1,sides-1):
+     rock_faces.append((upper[0],upper[k],upper[k+1]))
+     rock_mats_index.append((branch+1)%len(rock_mats))
+   station+=rock_rng.uniform(8,15)
+stone_mesh=bpy.data.meshes.new('Breach hand-authored stepped talus')
+stone_mesh.from_pydata(rock_verts,[],rock_faces);stone_mesh.update()
+for material in rock_mats:stone_mesh.materials.append(material)
+for i,poly in enumerate(stone_mesh.polygons):poly.material_index=rock_mats_index[i]
+stone_object=bpy.data.objects.new('BLD_BreachWeatheredRockfall',stone_mesh)
+scene.collection.objects.link(stone_object)
 
 # Near-view ecological finish uses discrete mesh accents above the AF/AG
 # surface. It does not move/repaint a retained original vertex, UV or image.
