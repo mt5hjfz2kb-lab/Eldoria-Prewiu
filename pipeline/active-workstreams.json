@@ -1123,12 +1123,12 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-integration-20261024",
+      "owner": "codex-world4x-executive-e5c63ba475cd",
       "write_scope_released": false,
-      "ownership_revision": 21,
+      "ownership_revision": 22,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-24T07:24:15.320Z",
+      "claimed_at": "2026-10-24T12:19:41.820Z",
       "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -1146,8 +1146,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner instruction on 2026-10-24: resume and complete PR #100, protect AF/AG, keep UI owner reservations, no merge without artistic acceptance; zero spend.",
-      "phase": "MACRO_ART_NATIVE_AB_RESERVED_AFTER_UI_RUN_40074059376_FINISHED",
-      "next": "Native region-production trial of preserved AF/AG-compatible continental macro pigment, compare six real captures against reference and certified 40069960813, require unchanged 57+26+44 tests; UI workflow reserved by separate rev13 owner.",
+      "phase": "RUNNER_READONLY_RECOVERY_THEN_MACRO_COMPOSITION",
+      "next": "Verify PowerShell ping retry; inspect real canonical and latest Unity images; certify pending bridge only if needed, then coherent continental/regional Blender authoring batch; no merge or publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1365,6 +1365,12 @@
           "revision": 20,
           "relieved_at": "2026-10-24T07:24:15.317Z",
           "reason": "The same owner explicitly directs continuation and completion of existing PR #100; canonical World4X workstream is available with no resources reserved."
+        },
+        {
+          "owner": "chatgpt-world4x-integration-20261024",
+          "revision": 21,
+          "relieved_at": "2026-10-24T12:19:41.820Z",
+          "reason": "Explicit executive owner handoff in this session; preserve PR100 fb60871 and all prior evidence; no cancellation or publication."
         }
       ],
       "delivery_definition": {
@@ -1385,7 +1391,7 @@
         "native_jobs_active": 0
       },
       "release_note": "World native production and independent evidence verification completed for source009e285a; no Windows reservation retained while waiting for the separate reserved-file authorization. This is a specific integration blocker, not completion of the owner's whole replacement request.",
-      "previous_owner": "codex-world4x-afag-recovery-20261024",
+      "previous_owner": "chatgpt-world4x-integration-20261024",
       "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
