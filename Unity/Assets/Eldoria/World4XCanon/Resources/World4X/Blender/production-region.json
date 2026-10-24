@@ -1200,7 +1200,7 @@
       "radius": 15
     }
   ],
-  "forest_groups": 33,
+  "forest_groups": 35,
   "bridges": [
     {
       "x": -550.0,
@@ -1224,6 +1224,6 @@
   "source_seam_max_spread_m": 0.0,
   "dynamic_gameplay_baked": 0,
   "art_status": "CHATGPT_DIRECTED_BLENDER_PENDING_VISUAL_ACCEPTANCE",
-  "continental_trees": 6417,
+  "continental_trees": 6526,
   "physical_device": false
 }
