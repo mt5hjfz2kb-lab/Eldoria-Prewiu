@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T02:23:39.429Z",
+  "updated_at": "2026-10-24T02:53:35.384Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1148,8 +1148,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "AF_AG_PRESERVED_27_PASS_SINGLE_RIVER_CONTACT_REPAIR",
-      "next": "Inspect c3fe392 native 40053788522: remove abandoned straight source-river incision, verify real mesh and regional PNG, opaque peripheral blend. Then release only this workstream heavy resource for exact general UI/progression certification. No merge/publication; owner integration authorization still required.",
+      "phase": "AF_AG_27_PASS_CAMERA_ORIENTATION_COVERAGE_CORRECTION",
+      "next": "Latest native 40053788522: 27/27, 126 PNG hashes and 32 city routes verified, straight channel imprint repaired. Full six-view inspection rejected wasted landscape panorama. Next candidate adds continuous heading to the existing camera (0 portrait/90 landscape overview), preserves all-vertex coverage and adds >65% projected footprint and round-trip projection checks. Then exact general UI certification; no merge/publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1234,9 +1234,9 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "a7368d0661c1414587f045b208a4335531369cbc",
-          "assets_commit": "06a9535c94c26dbc6fe052dc167b7617a7d2e5b3",
-          "run": 40052558503,
+          "source": "c3fe3925ec6a2d047d0fc235ac286b29547b447f",
+          "assets_commit": "5f10db8e59ca3d801291d177e03bc933053a8bd7",
+          "run": 40053788522,
           "tests": 27,
           "captures": 126,
           "result": "success",
@@ -1247,11 +1247,11 @@
           "imported_material_uv_samples": 96,
           "continental_tree_instances": 6526,
           "shared_near_meshes": 2,
-          "visual_artifact": 12544392143,
-          "artifact_sha256": "1862587a0e16f0bfa0642bd5aa189622afc9c570f4d6fb94a1b980e702584e53",
+          "visual_artifact": 12545340166,
+          "artifact_sha256": "d7a268731ecd1ff9c3eefea844e90fb75181eccfc61916c27df904d24406a8b1",
           "art_approved": false,
           "physical_mobile_tested": false,
-          "visual_gap": "Core AF/AG near camera conserved (MAE .381/255); AF clearing strokes retained. Straight edge-channel imprint remains in last verified geometry and is under explicit repair; no final art acceptance."
+          "visual_gap": "River ghost imprint repaired and core AF/AG preserved. Landscape overview wastes most viewport despite good portrait coverage; existing-camera heading correction in preparation. No final art acceptance."
         }
       },
       "ownership_history": [
