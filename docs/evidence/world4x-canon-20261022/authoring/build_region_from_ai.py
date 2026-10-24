@@ -750,7 +750,14 @@ assert all(op['before']!=op['after'] for op in canopy_ops)
  'mesh_uv_material_anchor_edits':0,
  'approved_for_native_trial_not_art_approved':True,
  'operations':canopy_ops},indent=2))
-faults=macro_namespace['AUTHOR_FAULTS']
+# New outer fracture strokes remain real, sculpted geometry and artwork.
+# The original route/reservation exclusion is a separate, certified gameplay
+# contract: Unity run 40098633048 exposed an untested widening to AUTHOR_FAULTS
+# that stranded 15 of 32 city reserves and three existing targets. Keep the
+# previously certified ORIGINAL_FAULTS exclusion until physical, traversable
+# crossings of additional fault arms have been demonstrated in Unity. Real
+# terrain normals and bridge geometry still gate movement independently.
+faults=macro_namespace['ORIGINAL_FAULTS']
 tree_total-=len(macro_result['cleared_crowns'])
 bpy.context.view_layer.update();bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
 # Source meshes remain editable but excluded from export; remove no historical file.
