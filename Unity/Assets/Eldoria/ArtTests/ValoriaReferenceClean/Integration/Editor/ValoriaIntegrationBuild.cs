@@ -154,7 +154,22 @@ namespace Eldoria.ReferenceClean.Editor {
    try{Graphics.Blit(source,rt);RenderTexture.active=rt;var copy=new Texture2D(source.width,source.height,TextureFormat.RGBA32,true,linear){name=source.name,wrapMode=source.wrapMode,filterMode=source.filterMode,anisoLevel=source.anisoLevel};copy.ReadPixels(new Rect(0,0,source.width,source.height),0,0);copy.Apply(true,false);return copy;}
    finally{RenderTexture.active=active;RenderTexture.ReleaseTemporary(rt);}
   }
-  static void Entered(PlayModeStateChange state){if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;SessionState.SetBool(Flag,false);EditorApplication.delayCall+=()=>{var h=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(h==null){EditorApplication.Exit(1);return;}h.StartCoroutine(Probe(h));};}
+  static void Entered(PlayModeStateChange state){if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;SessionState.SetBool(Flag,false);EditorApplication.delayCall+=()=>{var h=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();if(h==null){EditorApplication.Exit(1);return;}h.StartCoroutine(GuardedProbe(h));};}
+  static IEnumerator GuardedProbe(ValoriaIntegratedWorld h){
+   var probe=Probe(h);
+   while(true){
+    object current=null;bool moved=false;Exception failure=null;
+    try{moved=probe.MoveNext();if(moved)current=probe.Current;}
+    catch(Exception e){failure=e;}
+    if(failure!=null){
+     Debug.LogException(failure);
+     File.WriteAllText(Path.Combine(Ev,"integration-failure.txt"),failure.ToString());
+     EditorApplication.Exit(1);yield break;
+    }
+    if(!moved)yield break;
+    yield return current;
+   }
+  }
   static IEnumerator Probe(ValoriaIntegratedWorld h){
    framingChecks.Clear();
    yield return null;yield return new WaitForSecondsRealtime(1);
@@ -164,7 +179,15 @@ namespace Eldoria.ReferenceClean.Editor {
     h.Guidance.PresentMilestone();
     Need(h.Hud.NarrativeOpen&&h.Hud.NarrativeSpeaker=="NARRADOR"&&h.Hud.NarrativeSourceText.Contains("La Brecha apareció"),"Original introductory narrator missing");
     Need(h.Hud.NarrativeTurnCount==3,"Web narrator, Aldric and tutorial turns not preserved");
-    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen&&!h.Hud.NarrativeIsRevealing,"First touch must reveal, not skip a speaker");
+    // Native Editor startup may consume the typewriter's real-time budget before
+    // this probe runs. Restart the SAME turn through the normal language API,
+    // preserving source text, turn index and completion callback. Never change
+    // runtime typewriter speed or weaken the real pointer/reveal assertion.
+    string openingText=h.Hud.NarrativeSourceText;int openingTurn=h.Hud.NarrativeTurnIndex;
+    Need(openingTurn==0,"Opening narrator already advanced before input probe");
+    h.Hud.SetEnglish(true);h.Hud.SetEnglish(false);
+    Need(h.Hud.NarrativeTurnIndex==openingTurn&&h.Hud.NarrativeSourceText==openingText&&h.Hud.NarrativeIsRevealing,"Opening reveal fixture did not preserve the canonical turn");
+    Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen&&!h.Hud.NarrativeIsRevealing&&h.Hud.NarrativeTurnIndex==openingTurn,"First touch must reveal, not skip a speaker");
     Capture(h,"integration-story.png",900,1600);
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeSpeaker=="Sir Aldric","Aldric did not follow narrator");
     Click(h.Hud.Modal.Extra);Need(h.Hud.NarrativeOpen,"Reveal skipped Aldric");
