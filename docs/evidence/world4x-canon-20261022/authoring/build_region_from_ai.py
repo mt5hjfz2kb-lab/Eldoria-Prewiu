@@ -189,8 +189,15 @@ meadow_mean=patch.mean(axis=(0,1))
 # that gradient made a visible rectangular weave at regional scale.
 fy=np.fft.fftfreq(patch.shape[0])[:,None];fx=np.fft.fftfreq(patch.shape[1])[None,:]
 gaussian=np.exp(-2*math.pi**2*7.0**2*(fx*fx+fy*fy))
-low=np.stack([np.fft.ifft2(np.fft.fft2(patch[:,:,c])*gaussian).real for c in range(3)],axis=2)
-detail=np.clip(.5+(patch-low)/np.maximum(meadow_mean,.001)*.5,.32,.68)
+# The original pigment is sRGB; the Unity detail texture is linear data.
+# Normalize in linear light, otherwise the added contrast is about 2.2x too
+# weak and exposes a rectangular texture-density seam beside the retained I/AF.
+linear_patch=np.where(patch<=.04045,patch/12.92,((patch+.055)/1.055)**2.4)
+linear_mean=linear_patch.mean(axis=(0,1))
+low=np.stack([np.fft.ifft2(np.fft.fft2(linear_patch[:,:,c])*gaussian).real for c in range(3)],axis=2)
+relative_grain=(linear_patch-low)/np.maximum(linear_mean,.001)
+detail=np.clip(.5+relative_grain*.5,.1,.9)
+print('AF_LINEAR_GRAIN_RELATIVE_STD',relative_grain.std(axis=(0,1)).tolist())
 detail=np.concatenate([detail,detail[:,::-1]],axis=1);detail=np.concatenate([detail,detail[::-1]],axis=0)
 detail_pixels=np.ones((*detail.shape[:2],4),np.float32);detail_pixels[:,:,:3]=detail
 detail_image=bpy.data.images.new('AF derived continental grass detail',detail.shape[1],detail.shape[0]);detail_image.colorspace_settings.name='Non-Color';detail_image.use_fake_user=True;detail_image.pixels.foreach_set(detail_pixels.ravel());detail_image.filepath_raw=str(out/'RegionOneGrassDetail.png');detail_image.file_format='PNG';detail_image.save();detail_image.pack()
@@ -545,7 +552,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   if any((x-a)**2+(y-b)**2<9.0**2 for a,b in positions):continue
   positions.append((x,y));k=len(positions)
   donor=masters[k%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_'+str(index).zfill(2)+'_'+str(k).zfill(3)
-  scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));core_distance=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270));scale=1.05+(scale-1.05)*float(smooth(core_distance/160));o.scale=(scale*random.uniform(1.15,1.5),scale*1.25,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
+  scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));core_distance=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270));scale=1.05+(scale-1.05)*float(smooth(core_distance/160));canopy=1+.35*float(smooth(core_distance/220));o.scale=(scale*random.uniform(1.15,1.5)*canopy,scale*1.25*canopy,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
   if len(parts)>=(240 if index<25 else 155):break
  if not parts:continue
  tree_total+=len(parts)
