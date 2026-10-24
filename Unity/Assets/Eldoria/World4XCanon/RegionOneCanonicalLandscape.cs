@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 namespace Eldoria.World4XCanon
 {
  // One presentation owner. The former stacked terrain/ecology builders are not constructed.
+ [DefaultExecutionOrder(1600)]
  public sealed class RegionOneCanonicalLandscape : MonoBehaviour
  {
   public const int LandscapeVersion=3;
@@ -19,6 +20,8 @@ namespace Eldoria.World4XCanon
   ValoriaIntegratedWorld host; ZoneOneStrategicCamera navigation;Vector3 origin;
   bool built;
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
+  RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;
+  bool previousPanorama;
   readonly List<Renderer> originals=new List<Renderer>();
   readonly List<bool> states=new List<bool>();readonly HashSet<Renderer> background=new HashSet<Renderer>();
   readonly List<LODGroup> lods=new List<LODGroup>();readonly List<bool> lodStates=new List<bool>();
@@ -143,6 +146,8 @@ namespace Eldoria.World4XCanon
    nodes=RegionOneReferenceNodes.Install(root,host);
    RegionOneResourcePlacement.Install(root,host,geography);
    RegionOneResourceModels.Install(root,host);
+   placement=root.GetComponent<RegionOneResourcePlacement>();
+   resourceModels=root.GetComponent<RegionOneResourceModels>();
   }
   void UpdateLevelOfDetail(bool force)
   {
@@ -162,8 +167,20 @@ namespace Eldoria.World4XCanon
    float desiredHeading=PanoramaHeading(navigation.View.aspect)*Mathf.SmoothStep(0,1,Mathf.InverseLerp(regional*1.15f,far*.85f,size));
    float heading=desiredHeading; // Actual zoom already interpolates; do not add a second lag to pointer anchoring.
    if(Mathf.Abs(tilt-navigation.tilt)>.04f||Mathf.Abs(Mathf.DeltaAngle(heading,navigation.heading))>.04f){navigation.SetOrientation(tilt,heading);}
-   for(int i=0;i<originals.Count;i++)if(originals[i])originals[i].enabled=states[i]&&size<152&&originals[i].GetComponentInParent<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>()!=null;
-   // Node adapter runs after the general visibility policy; it preserves the real stage gates.
+   bool panorama=RegionOneResourcePlacement.IsPanoramic(size,navigation.globalZoom);
+   // The existing Tripo spawnling remains visible in regional view. No second
+   // creature, placeholder camp or gameplay authority is ever instantiated.
+   for(int i=0;i<originals.Count;i++)if(originals[i])
+    originals[i].enabled=states[i]&&!panorama&&
+      originals[i].GetComponentInParent<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>()!=null;
+   // Change only visibility/picking. Coordinates, persistence and timers stay
+   // with the same LocalGateway instance through the entire continuous zoom.
+   if(force||previousPanorama!=panorama)
+   {
+    previousPanorama=panorama;
+    if(placement)placement.RefreshForZoom();
+    if(resourceModels)resourceModels.RefreshNow();
+   }
    if(nodes)nodes.Refresh();if(geography)geography.Refresh();
   }
   void LateUpdate(){if(built)UpdateLevelOfDetail(false);}

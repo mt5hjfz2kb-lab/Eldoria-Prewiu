@@ -32,6 +32,9 @@ namespace Eldoria.World4XCanon
         ICommandGateway bound;
         RegionOneTerrainRoutes routes;
         float nextRefresh;
+        readonly Dictionary<Collider,bool> panoramaEncounterState=new Dictionary<Collider,bool>();
+        public static bool IsPanoramic(float zoom,float globalZoom)=>globalZoom>0f&&zoom>=globalZoom*.85f;
+        public void RefreshForZoom(){if(host&&host.Ready)Synchronize();}
         public int VerifiedSiteCount => sites.Count;
         public IWorldMarchRoutes MarchRoutes=>routes;
         public static void Install(Transform root, ValoriaIntegratedWorld host, RegionOneBlenderLandscape landscape)
@@ -142,6 +145,7 @@ namespace Eldoria.World4XCanon
                 }
             }
             var state=bound.Snapshot();
+            bool panorama=host.WorldCamera&&host.WorldNavigation&&IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);
             foreach(var existing in host.WorldRoot.GetComponentsInChildren<Eldoria.Presentation.WorldHotspot>(true))
                 if(existing.Id!=null&&existing.Id.StartsWith("region1:",StringComparison.Ordinal)){
                     bool alive=state.WorldResourceLocations.Any(x=>x.TargetId==existing.Id&&x.Generation>0&&LocalGateway.ResourceRemaining(state,x.TargetId)>0);
@@ -158,8 +162,36 @@ namespace Eldoria.World4XCanon
                 }
                 if(!target)continue;
                 if(item.TargetId.StartsWith("region1:",StringComparison.Ordinal))target.gameObject.SetActive(item.Generation>0&&LocalGateway.ResourceRemaining(state,item.TargetId)>0);
-                if(target.GetComponent<Collider>())target.GetComponent<Collider>().enabled=LocalGateway.ResourceRemaining(state,item.TargetId)>0;
+                if(target.GetComponent<Collider>())target.GetComponent<Collider>().enabled=!panorama&&LocalGateway.ResourceRemaining(state,item.TargetId)>0;
                 if(item.Generation>0)target.transform.position=new Vector3(item.X,item.Y,item.Z);
+            }
+            // The historical wood and stone targets can exist before their first
+            // WorldResourceLocation is initialized. Never make either pickable in panorama.
+            foreach(var id in new[]{"forest-valoria","quarry-valoria"})
+            {
+                var target=host.FindTarget(id);
+                if(!target)continue;
+                var hit=target.GetComponent<Collider>();
+                if(hit)hit.enabled=!panorama&&LocalGateway.ResourceRemaining(state,id)>0;
+            }
+            // Campaign enemies are not renewable population. Preserve their exact
+            // original collider state when leaving panorama, never force-resurrect.
+            foreach(var id in new[]{"corrupt-scout","engendro-valoria"})
+            {
+                var target=host.FindTarget(id);
+                if(!target)continue;
+                var hit=target.GetComponent<Collider>();
+                if(!hit)continue;
+                if(panorama)
+                {
+                    if(!panoramaEncounterState.ContainsKey(hit))panoramaEncounterState.Add(hit,hit.enabled);
+                    hit.enabled=false;
+                }
+                else if(panoramaEncounterState.TryGetValue(hit,out var prior))
+                {
+                    hit.enabled=prior;
+                    panoramaEncounterState.Remove(hit);
+                }
             }
         }
     }

@@ -16,7 +16,7 @@ namespace Eldoria.World4XCanon
         GameObject library;RegionOneLookDevelopment look;
         Eldoria.Domain.PlayerState cachedState;ICommandGateway cachedGateway;float nextState;
         Material impostorMaterial;readonly Mesh[] impostorMeshes=new Mesh[2];
-        public void RefreshNow()=>LateUpdate();
+        public void RefreshNow(){nextState=0;LateUpdate();}
         void GroundParts(Node node,Vector3 position)
         {
             if(node.Grounded&&(node.LastPosition-position).sqrMagnitude<.000001f)return;
@@ -66,7 +66,7 @@ namespace Eldoria.World4XCanon
         {
             if(!host||!host.Ready)return;
             if(cachedState==null||!ReferenceEquals(cachedGateway,host.City.Gateway)||Time.unscaledTime>=nextState){cachedGateway=host.City.Gateway;cachedState=cachedGateway.Snapshot();nextState=Time.unscaledTime+.25f;}
-            var state=cachedState;float zoom=host.WorldCamera.orthographicSize;bool near=zoom<110;bool regional=zoom>=110&&zoom<host.WorldNavigation.globalZoom*.85f;
+            var state=cachedState;float zoom=host.WorldCamera.orthographicSize;bool near=zoom<110;bool regional=zoom>=110&&!RegionOneResourcePlacement.IsPanoramic(zoom,host.WorldNavigation.globalZoom);
             foreach(var item in state.WorldResourceLocations)
             {
                 if(!item.TargetId.StartsWith("region1:",StringComparison.Ordinal)||item.Generation<=0||nodes.Any(x=>x.Id==item.TargetId))continue;

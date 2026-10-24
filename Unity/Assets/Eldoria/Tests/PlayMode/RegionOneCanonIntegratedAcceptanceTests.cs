@@ -166,6 +166,68 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator PanoramaHidesRealResourcesAndEncountersWithoutChangingSavedState()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+            var gateway=(Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway");
+            var snapshot=gateway.Snapshot();
+            string initial=JsonUtility.ToJson(snapshot);
+            var ids=new[]{"forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"}
+                .Concat(snapshot.WorldResourceLocations.Where(x=>x.TargetId.StartsWith("region1:"))
+                    .Select(x=>x.TargetId)).Distinct().ToArray();
+            var sites=ids.ToDictionary(id=>id,id=>{
+                var spot=Call(host,"FindTarget",id) as Component;
+                Assert.That(spot,Is.Not.Null,"Missing existing gameplay ID: "+id);
+                return spot.transform.position;
+            });
+            Call(navigation,"SetZoomLevel",1,true);
+            Call(adapter,"RefreshForCapture");
+            Assert.That(camera.orthographicSize,Is.LessThan((float)Member(navigation,"globalZoom")*.85f));
+            var visuals=world.GetComponentsInChildren<Transform>(true)
+                .Where(x=>x.name.StartsWith("Production resource visual ",StringComparison.Ordinal)||
+                    x.name.StartsWith("Production resource impostor ",StringComparison.Ordinal)).ToArray();
+            Assert.That(visuals.Length,Is.GreaterThanOrEqualTo(48));
+            Assert.That(visuals.SelectMany(x=>x.GetComponentsInChildren<Renderer>(true))
+                .Any(x=>x.enabled&&x.name.StartsWith("Production resource impostor ",StringComparison.Ordinal)),
+                Is.True,"Regional view lost the real resources");
+            Call(navigation,"SetZoomLevel",0,true);
+            Call(adapter,"RefreshForCapture");
+            foreach(var id in ids)
+            {
+                var spot=Call(host,"FindTarget",id) as Component;
+                Assert.That(spot.GetComponent<Collider>().enabled,Is.False,"Panorama can pick "+id);
+                Assert.That(spot.transform.position,Is.EqualTo(sites[id]),"Panorama displaced "+id);
+            }
+            foreach(var renderer in visuals.SelectMany(x=>x.GetComponentsInChildren<Renderer>(true)))
+                Assert.That(renderer.enabled,Is.False,"Panorama rendered "+renderer.name);
+            var actor=world.GetComponentsInChildren<MonoBehaviour>(true)
+                .FirstOrDefault(x=>x&&x.GetType().Name=="SpawnlingEncounterVisual");
+            Assert.That(actor,Is.Not.Null,"The original Tripo engendro is required");
+            var model=Member(actor,"ModelRoot") as GameObject;
+            Assert.That(model,Is.Not.Null);
+            Assert.That(model.GetComponentsInChildren<Renderer>(true).All(x=>!x.enabled),Is.True,
+                "The engendro remained visible in panorama");
+            Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(initial),
+                "Visual zoom changed authoritative save/gameplay");
+            Call(navigation,"SetZoomLevel",1,true);
+            Call(adapter,"RefreshForCapture");
+            Assert.That(visuals.SelectMany(x=>x.GetComponentsInChildren<Renderer>(true))
+                .Any(x=>x.enabled&&x.name.StartsWith("Production resource impostor ",StringComparison.Ordinal)),Is.True);
+            foreach(var id in ids)
+            {
+                var spot=Call(host,"FindTarget",id) as Component;
+                Assert.That(spot.transform.position,Is.EqualTo(sites[id]),"Regional return displaced "+id);
+                if(Eldoria.Application.LocalGateway.ResourceKind(snapshot,id)!=null&&
+                    Eldoria.Application.LocalGateway.ResourceRemaining(snapshot,id)>0)
+                    Assert.That(spot.GetComponent<Collider>().enabled,Is.True,"Picking not restored for "+id);
+            }
+            Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(initial));
+        }
+
+        [UnityTest]
         public IEnumerator ProductionResourcesHavePersistentDistinctTerrainSites()
         {
             MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;

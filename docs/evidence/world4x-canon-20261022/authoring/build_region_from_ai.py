@@ -749,6 +749,8 @@ for loop in me.loops:
  uv.data[loop.index].uv=(min(.999,max(0,(q.x-shore)/max(1,910-shore))),(q.y+1800)/3600)
 
 # Natural grouped canopies reuse AI editable tree topology, never old main donors.
+# Owner-directed 2026-10-24: fewer NEW decorative crowns around actual playable
+# resources, enemies, city reserves and roads; protected AF/AG are unchanged.
 masters=[bpy.data.objects['Editable Layered fir source'],bpy.data.objects['Editable Slender fir source']]
 # Simplify each derived continental donor ONCE, then share its topology across
 # instances. Original masters/core remain unchanged and editable.
@@ -775,7 +777,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   positions.append((x,y));k=len(positions)
   donor=masters[k%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_'+str(index).zfill(2)+'_'+str(k).zfill(3)
   scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));core_distance=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270));scale=1.05+(scale-1.05)*float(smooth(core_distance/160));canopy=1+.35*float(smooth(core_distance/220));o.scale=(scale*random.uniform(1.15,1.5)*canopy,scale*1.25*canopy,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
-  if len(parts)>=(240 if index<25 else 155):break
+  if len(parts)>=(165 if index<25 else 105):break
  if not parts:continue
  tree_total+=len(parts)
  # glTF reuses the same two vertex buffers; each transform remains editable.
@@ -787,7 +789,7 @@ for belt_idx,((ax,ay),(bx,by),width) in enumerate(FOREST_CONNECTIONS):
  dx,dy=bx-ax,by-ay;segment_length=math.hypot(dx,dy)
  nx,ny=-dy/segment_length,dx/segment_length
  planted=0
- for station in np.arange(8,segment_length-7,16):
+ for station in np.arange(8,segment_length-7,22):
   t=station/segment_length
   cx,cy=forest_woodland_crest(ax,ay,bx,by,width,t,belt_idx)
   for lane in (-.88,-.45,0,.45,.88):
@@ -837,7 +839,7 @@ for copse_idx,(cx,cy,rx,ry,rotation) in enumerate(REGIONAL_COPSES):
   scale=random.uniform(2.0,4.2)
   o.scale=(scale*random.uniform(1.13,1.42),scale*1.22,scale*random.uniform(.82,1.14))
   o.rotation_euler.z=random.uniform(0,math.tau);tree_total+=1
-  if len(placed)>=185:break
+  if len(placed)>=105:break
 
 
 # Castle-close landscape A/B: retain AF/AG trees intact while adding
@@ -886,7 +888,7 @@ for grove_id,(cx,cy,rx,ry,rotation) in enumerate(CASTLE_VISUAL_COPSES):
   o.scale=(scale*rng.uniform(1.12,1.4),scale*1.17,scale*rng.uniform(.84,1.13))
   o.rotation_euler.z=rng.uniform(0,math.tau)
   planted.append((x,y));tree_total+=1
-  if len(planted)>=33:break
+  if len(planted)>=18:break
  near_copse_report.append({'grove_id':grove_id,'centre':[cx,cy],
                            'planted':len(planted),'original_AF_AG_trees_edited':0,
                            'new_gameplay_objects':0,'new_collider_objects':0})
