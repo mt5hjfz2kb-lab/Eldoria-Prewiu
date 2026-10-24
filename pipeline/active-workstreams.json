@@ -1148,8 +1148,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "FULL_GPU_CERTIFICATION_AND_AF_CONTINENTAL_PRAIRIE",
-      "next": "General run 40061480616 verified 44 real I-II checks +26/26 EditMode +56/57 PlayMode, 0 failed, 1 graphics capture intentionally ignored without output directory; UI aggregate rejects Skipped:Ignored. Run the full 57-case GPU suite, same I-II/framing probe and all EditMode in owned world native workflow, no omitted tests or UI workflow edits. Combine bounded new-terrain AF prairie/peripheral continuity pass; preserve original AF/AG. Require 126 world PNG +34 fresh UI PNG and exact proof before materializing. No merge/publication.",
+      "phase": "LINEAR_LIGHT_GRAIN_SEAM_AND_CONTINENTAL_CANOPY",
+      "next": "Correct measured sRGB/linear grass-detail normalization on new continental material only; preserve source pixels/UV. Widen derived continental crowns by up to 35% with 220m core ramp, unchanged roots/height/LOD identity. Recheck every actual route/resource/city envelope and full 57+26+44 native proof; compare all real PNG. Preserve existing UI-workflow ownership.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1234,10 +1234,10 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "a9635bfce656b4c9ed53aa9cdbb5dfb1a9c4dca4",
-          "assets_commit": "ad9b4213fc416d0a14556033fdda05bcda3cbaaf",
-          "run": 40056123101,
-          "tests": 27,
+          "source": "a5a17842a6e73b36a5907c2f4385612e0bf28cce",
+          "assets_commit": "6c9855a76016b735b392656dd8813ddf47d27856",
+          "run": 40062946172,
+          "tests": 57,
           "captures": 126,
           "result": "success",
           "resources": 48,
@@ -1247,29 +1247,30 @@
           "imported_material_uv_samples": 96,
           "continental_tree_instances": 6526,
           "shared_near_meshes": 2,
-          "visual_artifact": 12545687903,
-          "artifact_sha256": "7fbe2a34d614d29b292b7fc45d7c6199936fb692fd9e758b595352124efc4d85",
+          "visual_artifact": 12548348906,
+          "artifact_sha256": "c7f1815b5f2a859df2e03918c747fdeae556231c0f0955a4d07dee36cf351f45",
           "art_approved": false,
           "physical_mobile_tested": false,
-          "visual_gap": "Framing corrected in both orientations; original AF/AG preserved. Continental soil, forest composition and hydrography remain less rich than approved references; not final artistic acceptance.",
+          "visual_gap": "AF/AG preserved and full native 57+26+44 certificate. New prairie strokes retained as bounded improvement. Actual Engendro PNG still exposes low-contrast continental grain seam; canopy masses remain sparse and peripheral rectangle still recognizable. Not artistic acceptance.",
           "panorama_projected_bbox_area": {
             "horizontal": 0.7468,
             "vertical": 0.7605
-          }
+          },
+          "general_captures": 34
         },
         "general_integration": {
-          "source": "97e949d1f2cc3f689343e8c3bea734e6c747bac3",
-          "merge_source": "6fcc928be4a2998e0f9f579139644667e65623d8",
-          "run": 40061480616,
-          "status": "SCENE_44_AND_EDIT_26_PASS_PLAY_56_PASS_1_CAPTURE_IGNORED_WORKFLOW_FAILED",
+          "source": "a5a17842a6e73b36a5907c2f4385612e0bf28cce",
+          "run": 40062946172,
+          "status": "FULL_GPU_57_EDIT_26_PROBE_44_PASS_NO_OMISSIONS",
           "editmode_passed": 26,
-          "playmode_passed": 56,
+          "playmode_passed": 57,
           "playmode_failed": 0,
-          "playmode_skipped": 1,
+          "playmode_skipped": 0,
           "probe_checks": 44,
-          "artifact": 12547563891,
-          "artifact_sha256": "e57486f248dbb86ca20a4b633227433794cc5c7b7ef44be112ef3f2d7fe25f36",
-          "report": "docs/evidence/world4x-canon-20261022/GENERAL_CERTIFICATION_REPAIR_20261024.md"
+          "fresh_captures": 34,
+          "artifact": 12548348906,
+          "artifact_sha256": "c7f1815b5f2a859df2e03918c747fdeae556231c0f0955a4d07dee36cf351f45",
+          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40062946172.json"
         }
       },
       "ownership_history": [
