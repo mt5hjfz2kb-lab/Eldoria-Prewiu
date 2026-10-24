@@ -40,7 +40,10 @@ jobs:
         run: |
           node --check tools/world4x-artistic-process/verify.mjs
           node --check tools/world4x-artistic-process/test.mjs
+          node --check tools/world4x-artistic-process/strategy.mjs
+          node --check tools/world4x-artistic-process/strategy.test.mjs
           node tools/world4x-artistic-process/test.mjs
+          node tools/world4x-artistic-process/strategy.test.mjs
 
   verify-artistic-process:
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.number == 100
@@ -58,6 +61,8 @@ jobs:
             tools/world4x-artistic-process/verify.mjs
             tools/world4x-artistic-process/README.md
             tools/world4x-artistic-process/test.mjs
+            tools/world4x-artistic-process/strategy.mjs
+            tools/world4x-artistic-process/strategy.test.mjs
       - name: Read exact PR candidate and Git history (no Unity or Blender lease)
         uses: actions/checkout@v4
         with:
@@ -73,5 +78,9 @@ jobs:
         run: node --check policy/tools/world4x-artistic-process/verify.mjs
       - name: Verify complete, missing, wrong-camera and post-certification drift scenarios
         run: (cd policy && node tools/world4x-artistic-process/test.mjs)
+      - name: Catch repetitive micro-corrections before more full Unity passes
+        run: |
+          node policy/tools/world4x-artistic-process/strategy.test.mjs
+          node policy/tools/world4x-artistic-process/strategy.mjs candidate
       - name: Fail closed on missing artistic process and matched Unity A/B evidence
         run: node policy/tools/world4x-artistic-process/verify.mjs candidate
