@@ -126,7 +126,7 @@ export function selectKnowledge(request,source){
  // Surface negative lessons BEFORE optional positive recipes: compact Qwen inputs
  // are shorter than the full catalog and used to silently drop these warnings.
  for(const a of avoid)lines.push(a.id+' REJECTED: '+String(a.avoid).slice(0,220)+' SOURCE: '+a.source_paths[0]);
- lines.push('INDEPENDENTLY REVIEWED OBSERVATIONS (not ART_APPROVED):');
+ lines.push('INDEPENDENTLY REVIEWED NEW OBSERVATIONS (not ART_APPROVED):');
  for(const x of reviewed)lines.push(x.item.id+' ['+x.item.classification+'] '+
    String(x.item.lesson).slice(0,210)+' NEXT: '+String(x.item.next_action).slice(0,150));
  lines.push('SUGGESTED RELEVANT METHODS (verify source, current canon and Unity A/B):');
