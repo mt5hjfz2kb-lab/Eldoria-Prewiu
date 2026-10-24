@@ -791,7 +791,14 @@ for j,y in enumerate(np.linspace(-1800,1800,NZ)):
   riverwater=abs(x)>96 and abs(y-rivercentre(x))<riverwidth(x)
   if -96<=x<=96 and -78<=y<=270:
    hit,point,normal,face=river.ray_cast(Vector((x,y,150)),Vector((0,0,-1)));riverwater=hit
-  if any(abs(x-cx)<w/2 and abs(y-cy)<length/2 for cx,cy,w,length in bridge_specs):riverwater=False
+  # Binary Blender water mask is bilinearly interpolated by Unity at 8m grid
+  # positions. The 34m castle crossing is physically x=3.3m wide 8m; at
+  # Unity route grid x=0 its old 4m-only mask leaves water=0.5 from the
+  # adjacent query texel (measured native40098633048), above the 0.08 gate.
+  # Pad only the exported QUERY mask by one ~4m source texel. The real bridge
+  # mesh/collider, terrain normals, route algorithm and river art stay exact.
+  texel=max(1820.0/(NX-1),3600.0/(NZ-1))
+  if any(abs(x-cx)<w/2+texel and abs(y-cy)<length/2+texel for cx,cy,w,length in bridge_specs):riverwater=False
   MM[j,i,1]=255 if riverwater else 0
 masks=MM.tobytes()
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as f:
