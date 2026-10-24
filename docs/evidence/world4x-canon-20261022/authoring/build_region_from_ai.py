@@ -478,7 +478,9 @@ for cx in [-550.,0.,450.]:
  # explicit bank-safe allowance beyond the retained river half-width.
  length=44. if abs(cx)>1 else max(34.,min(40.,22.+float(riverwidth(cx))+4.))
  half=length/2
- # Real Unity A/B 400841/400854 showed an unaltered 35px visual gap to the gate.\n # Shift the central authored crossing along its route toward the gate,\n # preserving deck length, geometry, AF/AG source and river targets.\n deck_centre=cy if abs(cx)>1 else cy+(length-44.)/2-5.5
+ # Original camera A/B showed a persistent gap at the castle entrance.
+ # Shift only the central bridge along its authored road, without moving POIs.
+ deck_centre=cy if abs(cx)>1 else cy+(length-44.)/2-5.5
  segments=int(round(length));vv=[];ff=[]
  if abs(cx)<=1:
   # The castle end MUST keep the originally authored AI/AF access elevation
