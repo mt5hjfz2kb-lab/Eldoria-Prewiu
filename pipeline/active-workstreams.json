@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T07:46:23.119Z",
+  "updated_at": "2026-10-24T21:06:46.612Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1123,12 +1123,12 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-regional-art-direction-20261024",
+      "owner": "chatgpt-world4x-region1-final-production-20261024",
       "write_scope_released": false,
-      "ownership_revision": 29,
+      "ownership_revision": 30,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-24T18:02:00.283Z",
+      "claimed_at": "2026-10-24T21:06:46.612Z",
       "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -1145,9 +1145,9 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Owner explicit artistic uplift directive 2026-10-24: same PR100/workstream; regional and close priority, geological Breach, no new gameplay, 0 EUR, no merge.",
-      "phase": "REGIONAL_FOREST_BREACH_COMPOSITION_BATCH",
-      "next": "Author a coherent regional forest/ground/Breach batch in copied Blender production sources; preview first; native matched six-view A/B and strict 57 PlayMode+26 EditMode+44 progression gates before retaining.",
+      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope.",
+      "phase": "REGION1_RESOURCE_CREATURE_ZOOM_ACCEPTANCE",
+      "next": "Production batch from preserved canon: strengthen resource/creature panoramic invisibility without gameplay loss and validate real Unity; reuse Tripo source, no new model. Artist approval separate.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1426,6 +1426,12 @@
           "transferred_at": "2026-10-24T18:02:00.283Z",
           "to_owner": "chatgpt-world4x-regional-art-direction-20261024",
           "reason": "Owner 2026-10-24 directive: continue PR100 as new visual art director; prior native run40116606424 completed SUCCESS; conserve materialised files and no duplicate Windows work."
+        },
+        {
+          "owner": "chatgpt-world4x-regional-art-direction-20261024",
+          "revision": 29,
+          "relieved_at": "2026-10-24T21:06:46.609Z",
+          "reason": "Owner explicitly orders successor chat 2026-10-24 to finish same Region1 PR100. Latest World4X run40129292694 completed, no concurrent heavy run identified; same scope and no merge."
         }
       ],
       "delivery_definition": {
@@ -1446,7 +1452,7 @@
         "native_jobs_active": 0
       },
       "release_note": "Owner-requested safe handoff, not task completion. Run40097362906 SUCCESS confirms corrected editable pigment after save/reopen and orderly close of PID9624. Windows reservation released; full new Unity certification and visual acceptance remain pending.",
-      "previous_owner": "chatgpt-world4x-art-direction-20261024",
+      "previous_owner": "chatgpt-world4x-regional-art-direction-20261024",
       "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
