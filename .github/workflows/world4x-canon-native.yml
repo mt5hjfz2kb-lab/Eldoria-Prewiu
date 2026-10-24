@@ -400,6 +400,14 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
+          name: region1-interactive-review-${{ github.run_id }}
+          path: |
+            ${{ env.ELDORIA_INTERACTIVE_OUT }}/*.png
+            ${{ env.ELDORIA_INTERACTIVE_OUT }}/*.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
           name: region1-interactive-${{ github.run_id }}
           path: ${{ env.ELDORIA_INTERACTIVE_OUT }}/**
           if-no-files-found: error
