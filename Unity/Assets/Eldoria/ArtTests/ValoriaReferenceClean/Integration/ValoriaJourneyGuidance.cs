@@ -126,7 +126,26 @@ namespace Eldoria.ReferenceClean {
     if(pair.Key=="corrupt-scout")visible&=!s.ScoutDefeated;
     // Selection already has a named contextual panel. Labels identify only useful targets.
     visible&=host.Selected!=pair.Key;
-    if(!town)visible&=pair.Key==objective||pair.Key=="valoria-map-city"||host.WorldCamera.orthographicSize<=22;
+    if(!town){
+     // The approved 22-Oct world-map canon distinguishes a geographic
+     // panorama from the resource/encounter interaction scales.
+     // At the full panorama, hide individual labels (including the current
+     // objective) rather than covering a whole region with tiny badges.
+     // All original hotspots, selection commands and gameplay remain intact;
+     // players can zoom towards them or use the real objective control.
+     // The separately authorized Region1 geographic layer can expand
+     // the real camera from ~32/110 to ~84/244. A fixed 64-unit cutoff
+     // would incorrectly erase all REGIONAL POIs. Derive the panoramic
+     // break from the current live regional/global camera contract.
+     float regional=host.WorldNavigation?host.WorldNavigation.regionalZoom:32f;
+     float global=host.WorldNavigation?host.WorldNavigation.globalZoom:110f;
+     float panoramaAt=Mathf.Max(64f,Mathf.Lerp(regional,global,.67f));
+     bool panorama=host.WorldCamera&&
+      host.WorldCamera.orthographicSize>=panoramaAt;
+     visible&=!panorama&&
+      (pair.Key==objective||pair.Key=="valoria-map-city"||
+       host.WorldCamera.orthographicSize<=22f);
+    }
     pair.Value.gameObject.SetActive(visible);
     if(visible&&pair.Key=="engendro-valoria"){
      // The canonical label previously crossed the larger animated creature
