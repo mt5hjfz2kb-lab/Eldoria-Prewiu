@@ -33,8 +33,8 @@ namespace Eldoria.World4XCanon
                     if(source.name.Contains("Region1 open meadows")){
                         var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");
                         if(!detail)throw new InvalidOperationException("Original AF-derived continental detail missing");
-                        material.SetTexture("_GroundDetail",detail);// Two decorrelated half-amplitude samples need sqrt(2) to retain source variance.
-                        material.SetFloat("_GroundDetailStrength",1.41421356f);
+                        material.SetTexture("_GroundDetail",detail);// Native matched soil patches calibrate the linear detail to 0.9*sqrt(2).
+                        material.SetFloat("_GroundDetailStrength",1.2727922f);
                     }
                     for(int p=0;p<source.shader.GetPropertyCount();p++)
                         if(source.shader.GetPropertyType(p)==ShaderPropertyType.Texture){string name=source.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",source.GetTexture(name));}

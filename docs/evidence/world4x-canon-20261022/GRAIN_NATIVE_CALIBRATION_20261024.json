@@ -1,0 +1,115 @@
+{
+  "kind": "measurements_on_genuine_Unity_PNG_not_generated_images",
+  "method": "luma Rec709 on encoded PNG, std(luma-Gaussian(luma,sigma))/mean(luma); same pixel rectangles; no screenshot modification",
+  "rectangles_xywh": {
+    "original": [
+      800,
+      50,
+      140,
+      100
+    ],
+    "new": [
+      540,
+      50,
+      140,
+      100
+    ],
+    "original2": [
+      1100,
+      550,
+      150,
+      100
+    ],
+    "new2": [
+      500,
+      550,
+      150,
+      100
+    ]
+  },
+  "gaussian_sigma_pixels": [
+    1,
+    2,
+    4
+  ],
+  "captures": {
+    "thirteenth": {
+      "run": 40062946172,
+      "file": "integration-art-engendro-prebattle-close.png",
+      "sha256": "7efb3f4c91d9e7537506a90138f2006db6e03f09a11b71c691ac770a669b0c03",
+      "regions": {
+        "original": {
+          "mean_luma": 0.39553168134453776,
+          "relative_highpass_std": [
+            0.04023454221579045,
+            0.05153990893638691,
+            0.05907225557984131
+          ]
+        },
+        "new": {
+          "mean_luma": 0.439256205210084,
+          "relative_highpass_std": [
+            0.010834608029575529,
+            0.016673572362388756,
+            0.0199203836962715
+          ]
+        },
+        "original2": {
+          "mean_luma": 0.405844260496732,
+          "relative_highpass_std": [
+            0.03691839431422466,
+            0.046978685581071634,
+            0.05251805225680919
+          ]
+        },
+        "new2": {
+          "mean_luma": 0.42177437981699345,
+          "relative_highpass_std": [
+            0.011654151339706835,
+            0.017596472800041493,
+            0.020981931284035738
+          ]
+        }
+      }
+    },
+    "fourteenth": {
+      "run": 40064460822,
+      "file": "integration-art-engendro-prebattle-close.png",
+      "sha256": "4ff18246cc7dcdca820473bf549dcfc5f71f0bfe28a484befb5c9d777f4b115c",
+      "regions": {
+        "original": {
+          "mean_luma": 0.3967458795518207,
+          "relative_highpass_std": [
+            0.04017301682555423,
+            0.05153528223915378,
+            0.05902062636233764
+          ]
+        },
+        "new": {
+          "mean_luma": 0.43987225815126046,
+          "relative_highpass_std": [
+            0.037822292318449906,
+            0.058920578920869736,
+            0.07077532863334236
+          ]
+        },
+        "original2": {
+          "mean_luma": 0.40569336554248364,
+          "relative_highpass_std": [
+            0.03730627146827561,
+            0.04734609965231838,
+            0.052931463974486205
+          ]
+        },
+        "new2": {
+          "mean_luma": 0.4211078914509804,
+          "relative_highpass_std": [
+            0.041031299248590954,
+            0.06269804532521045,
+            0.07523709638555168
+          ]
+        }
+      }
+    }
+  }
+}

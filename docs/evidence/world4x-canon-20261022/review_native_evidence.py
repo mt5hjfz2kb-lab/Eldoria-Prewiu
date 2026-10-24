@@ -63,6 +63,10 @@ def review(root, expected_count=126, expected_tests=57, ag_root=None):
         assert len(footprint) == 2 and {name for name, _ in footprint} == {'horizontal', 'vertical'}, footprint
         assert all(.65 < float(value) <= 1 for _, value in footprint), footprint
         report['actual_unity_panorama_projected_bbox_area'] = {name: float(value) for name, value in footprint}
+    shared = re.findall(r'REGION1_ACTUAL_CONTINENTAL_SHARED_EDGE_VERTICES (\d+)', xml.read_text(encoding='utf-8-sig'))
+    if shared:
+        assert len(shared) == 1 and int(shared[0]) > 500, shared
+        report['native_continental_shared_edge_vertices'] = int(shared[0])
     if expected_tests >= 57:
         manifests = list(root.rglob('general-proof.json'))
         assert len(manifests) == 1, manifests

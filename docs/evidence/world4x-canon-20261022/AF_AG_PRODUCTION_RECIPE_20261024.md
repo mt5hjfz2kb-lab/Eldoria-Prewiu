@@ -14,14 +14,14 @@ Esta tabla describe la receta del script actual; cada modificación necesita su 
 | Unión | Soldadura 0,001 m; altura/pigmento nuevos se integran en 110 m; pendiente amortiguada a 48 m |
 | Río | Sección original preservada al contacto; cauce curvo único; retirada gradual del perfil abandonado en 24 m |
 | Pintura | Atlas nuevo 3072²; máscaras independientes y empaquetadas; UV/material original por cara sin remapeo |
-| Detalle AF | Fragmento original u 0,02–0,075 / v 0,90–0,98; normalización de baja frecuencia sigma 7; dos muestras giradas; repetición física 21,12 ×14,72 m con mipmaps |
-| Pradera continental | Pinceladas AF dirigidas, semiejes 37–83 /14–36 m, mezcla ≤0,47 y máscara propia; pase pendiente de captura nativa |
+| Detalle AF | Fragmento original u 0,02–0,075 / v 0,90–0,98; transferencia sRGB→lineal, normalización sigma 7 y fuerza 0,9√2 para dos muestras giradas a igual escala; repetición física 21,1875 ×12,4921875 m con mipmaps |
+| Pradera continental | Pinceladas AF dirigidas, semiejes 37–83 /14–36 m, mezcla ≤0,47; verificadas en run 40062946172, mejora parcial sin aprobación artística |
 | Claros AF | Espinas y bordes del procedimiento aceptado, localizados en claros reales; mezcla máxima 0,43, exclusión de caminos/agua/costa/sotobosque |
-| Vegetación | Dos donantes originales compartidos; continente cercano 70 %, lejano 9 %; copas cercanas del núcleo sin simplificación y lejanas 16 % |
+| Vegetación | Dos donantes originales compartidos; continente cercano 70 %, lejano 9 %; copas cercanas del núcleo sin simplificación y lejanas 16 %; ancho continental adicional hasta ×1,35 con rampa de 220 m |
 | Transición AG | Banda ortográfica espacial 37–47 m; misma geografía y silueta, sin sustitución temprana por placas |
 | Luz del mundo | Sol (48,-35,0), sombras suaves 0,9 / 300 m; fade URP por distancia; restauración exacta al terminar la cámara |
 | Encuadre | Cámara existente: rumbo 0° cerca/regional; panorámica 0° vertical /90° horizontal, transición continua por zoom y límites proyectados sobre los mismos vértices |
-| Periferia | Franja exterior 107 ±60 m; transición entre zoom regional×0,75 y ×1,25; mezcla opaca al fondo, sin niebla interior; cambio pendiente de captura nativa |
+| Periferia | Suelo vecino físico hasta x ±1710 / z ±2600, unión vértice a vértice; niebla únicamente en su borde exterior 107 ±60 m; pase de continuidad pendiente de captura nativa |
 | Contacto y rutas | Consulta de triángulos reales; cuadrícula de consulta 4 m, navegación 8 m; pendiente 0,9, escalón 3,2 m, agua y obstáculos conservados |
 | Recursos | Autoridad LocalGateway/PlayerState; 48 IDs persistentes, huella 8 m, separación de copas 9 m; sin trasladar colliders para disimular apoyo |
 | Evidencia esperada | 57 PlayMode GPU sin omisiones +26 EditMode +44 controles I–II; 126 PNG del mundo (16+6+100+4), 34 PNG generales nuevos; AG archivado aparte |
@@ -243,3 +243,23 @@ The six real views show a bounded improvement from the directed prairie strokes.
 Next bounded candidate (native result pending): convert the *derived patch* to linear light with the exact sRGB transfer, remove the same Gaussian low-frequency illumination (sigma 7 pixels), normalize against its linear mean, encode .5 + .5 relative grain in the existing linear data texture, clip only to [.1,.9], and use sqrt(2) strength for two decorrelated half-amplitude samples. World scale stays 21.12×14.72 m. Original albedo, material slots, UVs and source image pixels remain untouched. Compare the same genuine Engendro screenshot before accepting.
 
 The continental forest retains the same roots, source meshes, heights, random sequence and shared near/far topology. Broaden only new crowns up to 1.35× in Blender XY, smoothly ramping from 1× at the retained core to full width at 220 m. This addresses sparse dotted masses without adding billboard substitutes or changing geometry by camera distance. Existing real mesh/renderer clearance, route, city and resource tests remain mandatory and unchanged; a failure requires actual geometry/placement repair. Outer rectangle and less-rich hydrography remain explicit visual differences, not approved outcomes.
+
+
+## Continuación continental física — preparación, aún sin certificación nativa
+
+La panorámica 40062946172 sigue mostrando una región rectangular sobre fondo uniforme. Ampliar niebla o recortar la prueba de encuadre no resuelve la geografía. El siguiente candidato añade suelo vecino real en Blender mediante `author_continental_continuation.py`: perímetro de contacto idéntico a cada vértice de Región 1 y anillos exteriores hasta x ±1710 / z ±2600 m. Región 1 sigue siendo el rectángulo lógico jugable x ±910 / z ±1800; las consultas, los guardados, los IDs y todas las pruebas de encuadre de sus vértices se conservan. El terreno vecino es continuidad visual editable, no nuevos destinos jugables ni una segunda representación de mapa.
+
+Los anillos exteriores reducen muestreo mediante triangulación entre bucles de distinta longitud; una comprobación estática exige orientación positiva y que las únicas aristas abiertas sean el contacto interior y el perímetro exterior. La malla de ejemplo usa 31 634 triángulos; este recuento no es una medición móvil ni sustituye el resultado Blender real. La prueba PlayMode existente de geografía añade la comparación de cada vértice compartido en coordenadas mundiales (error <3 mm), y verifica que la continuación permanece visible y sin mover geometría en las tres escalas. No se elimina ni relaja la comprobación de que todos los vértices del terreno jugable caben en la panorámica.
+
+La costa oriental, el agua y la desembocadura siguen las mismas funciones físicas. Un atlas independiente de 1536² conserva el pigmento del borde y lo mezcla durante 110 m con suelo vecino; utiliza el mismo detalle AF lineal, sin escribir en los atlas originales. Árboles exteriores reutilizan las mismas dos copas editables y sus LOD; no son tarjetas. La atmósfera se desplaza al verdadero límite de la nueva malla, fuera del límite jugable. Este pase debe juzgarse en las capturas reales antes de aceptar su resultado.
+
+El mismo pase de continuación conserva las tres superficies de puente certificadas (8×44 m y alturas medidas), y añade un atlas de tablones de 512×1024 y barandillas a x ±4,18 m respecto al eje, fuera de los 8 m de paso. Los postes se limitan a ±12 m del cauce y siguen la altura del tablero; no cambian la navegación ni los colliders. Son piezas Blender editables y material nuevo de puente, no una sustitución de pigmento AF/AG. Aceptación visual y funcional nativa pendiente.
+
+
+## Revisión nativa 40064460822 y calibración siguiente
+
+Fuente `3eaf41af352ea9dd118cb901c64a664719b15e7b`, binarios `ad81eb92871a862c916acded3fdd345adf8d963c`: SUCCESS, 57/57 PlayMode GPU, 26/26 EditMode, 44 controles I–II y 160 PNG auténticos comprobados (126+34), 32 reservas accesibles. Artefacto 12548953349, SHA256 `eed268e05a9a1d7116c0129cc8a2ba0cb0538ee4a26414c8f9e725aed999de1b`; XML SHA256 `26eb5d5d5d4a64a784b300fad3c29f9b1c0a0e08d4f7c999c9167f8b46a985f7`. Las dos capturas AG cercanas son idénticas a las del pase anterior y mantienen su medida de conservación. Se retiene el ensanchamiento de copas: mejora las masas regionales sin perder reservas, rutas ni recursos.
+
+La corrección de espacio de color recuperó el detalle fino, pero **se rechaza como acabado final su exceso de grano medio**. `GRAIN_NATIVE_CALIBRATION_20261024.json` conserva ROI, SHA de PNG, sigma y resultados reproducibles: en dos parches originales, desviación relativa a sigma 1/2 ≈0,040/0,052 y 0,037/0,047; la ampliación del pase 13 daba ≈0,011/0,017, y el pase 14 ≈0,038/0,059 y 0,041/0,063. No convertir un cálculo de textura en aprobación visual.
+
+La inspección del GLB original confirma que el suelo I recorre 192×156 m en 2048² texeles. La siguiente calibración usa ese tamaño físico por texel para el detalle de 226×164 píxeles (21,1875×12,4921875 m), elimina la ampliación 1/0,73 de la segunda muestra y modera la fuerza a 0,9√2=1,2727922. Conserva la transferencia lineal y el pigmento original. Debe comprobarse de nuevo en el mismo encuadre real. El contorno rectangular sigue pendiente del pase físico de continuación descrito arriba.

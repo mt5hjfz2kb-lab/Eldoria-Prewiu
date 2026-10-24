@@ -346,6 +346,8 @@ uv=mesh.uv_layers.new(name='Continental pigment')
 for loop in mesh.loops:
  p=mesh.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((p.x+910)/1820,(p.y+1800)/3600)
 for p in mesh.polygons:p.use_smooth=True
+# Author real neighbouring continental ground while the retained height source is alive.
+exec(compile(pathlib.Path(__file__).with_name("author_continental_continuation.py").read_text(),"author_continental_continuation.py","exec"),globals())
 crossing_banks={}
 for bx in [-550.,0.,450.]:
  by=rivercentre(bx) if abs(bx)>96 else sum(v.co.y for v in river.data.vertices if abs(v.co.x)<.1)/len([v for v in river.data.vertices if abs(v.co.x)<.1])
@@ -408,6 +410,7 @@ core_proof={'source_ai_sha256':hashlib.sha256(src.read_bytes()).hexdigest(),
  'retained_faces':sum(core_faces.values()),'missing_or_changed_faces':0,
  'image_float_pixel_sha256':core_images,'method':'original material slots and UV coordinates retained; common UVMap name for join',
  'art_approved':False}
+core_proof['continental_continuation']=context_proof
 (out/'retained-core-integrity.json').write_text(json.dumps(core_proof,indent=2))
 print('AF_AG_CORE_MATERIAL_UV_INTEGRITY_PASS',sum(core_faces.values()),len(core_images))
 # Certify a real welded source/extension seam outside the river-bank section.
@@ -424,6 +427,16 @@ print('REGION1_SOURCE_SEAM_MAX_SPREAD_M',seam_spread)
 bridge_specs=[]
 bridge_mat=bpy.data.materials.new('Bridge weathered timber');bridge_mat.use_nodes=True
 bridge_bs=next(n for n in bridge_mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bridge_bs.inputs['Base Color'].default_value=(.31,.22,.12,1);bridge_bs.inputs['Roughness'].default_value=.94
+# Grain follows real plank dimensions; it is a new bridge material, never an AF repaint.
+BU,BV=np.meshgrid(np.linspace(0,8,512),np.linspace(0,44,1024))
+wood_grain=.018*np.sin(BU*95+2*np.sin(BV*.6))+.012*np.sin(BU*173+BV*.13)
+plank_gap=(np.abs((BV+.5)%1-.5)<.035).astype(float)*.065
+wood_pixels=np.ones((1024,512,4),np.float32)
+wood_pixels[:,:,:3]=np.array([.38,.29,.18])+(wood_grain-plank_gap)[:,:,None]
+wood_image=bpy.data.images.new('Authored weathered crossing planks',512,1024)
+wood_image.pixels.foreach_set(wood_pixels.ravel());wood_image.pack()
+wood_tex=bridge_mat.node_tree.nodes.new('ShaderNodeTexImage');wood_tex.image=wood_image
+bridge_mat.node_tree.links.new(wood_tex.outputs['Color'],bridge_bs.inputs['Base Color'])
 for cx in [-550.,0.,450.]:
  cy,z0,z1=crossing_banks[cx]
  length=44.;half=length/2;vv=[];ff=[]
@@ -433,8 +446,30 @@ for cx in [-550.,0.,450.]:
   if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))
  me=bpy.data.meshes.new('True plank deck');me.from_pydata(vv,[],ff);me.materials.append(bridge_mat);plank=bridge_mat.copy();plank.name='Bridge alternate weathered plank';next(n for n in plank.node_tree.nodes if n.type=='BSDF_PRINCIPLED').inputs['Base Color'].default_value=(.25,.17,.09,1);me.materials.append(plank)
  for face in me.polygons:face.material_index=face.index%2
+ uv=me.uv_layers.new(name='UVMap') # Same active layer name as the joined certified terrain
+ for loop in me.loops:
+  q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x-cx+4)/8,(q.y-cy+half)/44)
  obj=bpy.data.objects.new('Authored crossing '+str(cx),me);scene.collection.objects.link(obj)
  bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);terrain.select_set(True);bpy.context.view_layer.objects.active=terrain;bpy.ops.object.join()
+ # Simple measured timber rails beside the river span, outside the full 8 m route.
+ rail_material=bridge_mat.copy();rail_material.name='Weathered crossing rail timber'
+ rail_vertices=[];rail_faces=[]
+ def rail_box(x0,x1,y0,y1,z0,z1):
+  start=len(rail_vertices)
+  rail_vertices.extend([(x0,y0,z0),(x1,y0,z0),(x1,y1,z0),(x0,y1,z0),(x0,y0,z1),(x1,y0,z1),(x1,y1,z1),(x0,y1,z1)])
+  rail_faces.extend([tuple(start+i for i in face) for face in [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]])
+ def deck_at(local_y):
+  t=(local_y+half)/length;return z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
+ for side in (-1,1):
+  for y in range(-12,13,4):
+   z=deck_at(y);rail_box(cx+side*4.18-.12,cx+side*4.18+.12,cy+y-.12,cy+y+.12,z,z+1.25)
+  for y in range(-12,12,2):
+   z=deck_at(y+1)+1.05;rail_box(cx+side*4.18-.09,cx+side*4.18+.09,cy+y,cy+y+2,z,z+.18)
+ rail_mesh=bpy.data.meshes.new('Measured river crossing rails');rail_mesh.from_pydata(rail_vertices,[],rail_faces);rail_mesh.materials.append(rail_material)
+ rail_uv=rail_mesh.uv_layers.new(name='Weathered timber grain')
+ for loop in rail_mesh.loops:
+  q=rail_mesh.vertices[loop.vertex_index].co;rail_uv.data[loop.index].uv=((q.x-cx+4.5)/9,(q.y-cy+22)/44)
+ rail_object=bpy.data.objects.new('BLD_CrossingRails_'+str(cx),rail_mesh);scene.collection.objects.link(rail_object)
  bridge_specs.append((cx,cy,8,length))
 # Actual vegetation clearance at authored crossings and existing logical destinations.
 # These source objects remain recoverable in the certified AI file and this .blend.
@@ -452,7 +487,10 @@ def simplemat(name,color):
 shale=simplemat('Fracture dark violet shale',(.08,.045,.11));watermat=simplemat('Continental river teal',(.055,.25,.30))
 bpy.context.view_layer.update();bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
 def surface(x,y):
- p,n,i,d=bv.ray_cast(Vector((x,y,200)),Vector((0,0,-1)));return p.z if p else -.6
+ p,n,i,d=bv.ray_cast(Vector((x,y,200)),Vector((0,0,-1)))
+ if p:return p.z
+ hit,p,n,i=context_ground.ray_cast(Vector((x,y,200)),Vector((0,0,-1)))
+ return p.z if hit else -.6
 v=[];f=[]
 for branch,path in enumerate(faults):
  points=[]
@@ -471,7 +509,7 @@ me=bpy.data.meshes.new('Ground fracture ribbons');me.from_pydata(v,[],f);me.mate
 # Two connected river extensions, with no overlapping geography inside the retained sector.
 for side in [-1,1]:
  vv=[];ff=[]
- for i in range(329):
+ for i in range(647):
   x=side*(96+i*2.5);cy=rivercentre(x);d=abs(x)-96
   if side>0 and float(coast(x,cy))<0:break
   width=riverwidth(x)
@@ -490,7 +528,7 @@ for direction in [-1,1]:
   sections=np.array([tuple(v.co) for v in original_bank.data.vertices]).reshape(193,5,3)
   profile=sections[0 if direction<0 else -1];source_axis=ends[0 if direction<0 else 1]
   vv=[];ff=[]
-  for row in range(329):
+  for row in range(647):
    x=direction*(96+row*2.5);cy=rivercentre(x);d=abs(x)-96
    if direction>0 and float(coast(x,cy))<0:break
    blend=float(smooth(d/42));rw=riverwidth(x)
@@ -526,6 +564,21 @@ sea_pixels[:,:,:3]+=current[:,:,None]
 sea_image=bpy.data.images.new('Eastern shelf water pigment',512,1024);sea_image.pixels.foreach_set(sea_pixels.ravel());sea_image.pack()
 node=watermat.node_tree.nodes.new('ShaderNodeTexImage');node.image=sea_image
 water_bs=next(n for n in watermat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');water_bs.inputs['Base Color'].default_value=(1,1,1,1);watermat.node_tree.links.new(node.outputs['Color'],water_bs.inputs['Base Color'])
+# The same real eastern coast continues outside the playable regional rectangle.
+vv=[];ff=[]
+for y0 in range(-2600,2600,10):
+ y1=y0+10
+ if -1800<=y0 and y1<=1800:left0=left1=910.
+ else:left0=float(coast(0,y0));left1=float(coast(0,y1))
+ start=len(vv);vv.extend([(left0,y0,.12),(1710,y0,.12),(1710,y1,.12),(left1,y1,.12)])
+ ff.append((start,start+1,start+2,start+3))
+me=bpy.data.meshes.new('Continuous eastern shelf');me.from_pydata(vv,[],ff);me.materials.append(watermat)
+o=bpy.data.objects.new('BLD_EasternSeaContinuation',me);scene.collection.objects.link(o)
+uv=me.uv_layers.new(name='Same coastal depth and current')
+for loop in me.loops:
+ q=me.vertices[loop.vertex_index].co;shore=float(coast(0,q.y))
+ uv.data[loop.index].uv=(min(1,max(0,(q.x-shore)/max(1,910-shore))),(q.y+1800)/3600)
+
 # Natural grouped canopies reuse AI editable tree topology, never old main donors.
 masters=[bpy.data.objects['Editable Layered fir source'],bpy.data.objects['Editable Slender fir source']]
 # Simplify each derived continental donor ONCE, then share its topology across
@@ -557,6 +610,14 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
  if not parts:continue
  tree_total+=len(parts)
  # glTF reuses the same two vertex buffers; each transform remains editable.
+# Neighbouring ground carries actual editable fir instances, never forest cards.
+for x,y,z,cluster,index in context_tree_roots:
+ random=np.random.default_rng(93214+cluster*1000+index)
+ donor=masters[index%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o)
+ o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y))
+ o.name='BLD_ForestMass_Context_'+str(cluster).zfill(2)+'_'+str(index).zfill(3)
+ scale=random.uniform(1.3,3.9);o.scale=(scale*random.uniform(1.15,1.5)*1.35,scale*1.25*1.35,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau)
+ tree_total+=1
 print('CONTINENTAL_CONNECTED_FOREST_TREES',tree_total)
 # Distant LODs are simplified copies of the same silhouettes; no canopy substitutions.
 far_cache={}

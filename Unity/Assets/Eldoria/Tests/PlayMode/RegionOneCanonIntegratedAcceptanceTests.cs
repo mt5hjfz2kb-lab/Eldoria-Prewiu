@@ -534,12 +534,33 @@ namespace Eldoria.Tests
             Assert.That((float)h.Invoke(null,new object[]{-260f,150f}),Is.LessThan(-4f),"Depth must exist in the imported terrain, not only a painted floor.");
             var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).First(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
             var fixedVertices=filter.sharedMesh.vertices;var fixedPosition=filter.transform.position;
+            var continuation=geo.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_ContinentalContinuation");
+            var regionalGround=geo.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_Terrain");
+            var continuationVertices=continuation.sharedMesh.vertices;
+            var continuationPosition=continuation.transform.position;
+            var continuationWorld=continuationVertices.Select(continuation.transform.TransformPoint).ToArray();
+            var edgeLookup=continuationWorld.GroupBy(p=>new Vector2Int(Mathf.RoundToInt(p.x*1000),Mathf.RoundToInt(p.z*1000))).ToDictionary(g=>g.Key,g=>g.First());
+            int sharedEdge=0;
+            foreach(var vertex in regionalGround.sharedMesh.vertices)
+            {
+                var point=regionalGround.transform.TransformPoint(vertex);var relative=point-home;
+                if(Mathf.Abs(Mathf.Abs(relative.x)-910)>.002f && Mathf.Abs(Mathf.Abs(relative.z)-1800)>.002f)continue;
+                var key=new Vector2Int(Mathf.RoundToInt(point.x*1000),Mathf.RoundToInt(point.z*1000));
+                Assert.That(edgeLookup.ContainsKey(key),Is.True,"Every actual regional boundary vertex must continue into authored neighbouring land");
+                Assert.That(Vector3.Distance(point,edgeLookup[key]),Is.LessThan(.003f),"Continental continuation must share the real ground edge without a gap or overlay");
+                sharedEdge++;
+            }
+            Assert.That(sharedEdge,Is.GreaterThan(500));
+            Debug.Log("REGION1_ACTUAL_CONTINENTAL_SHARED_EDGE_VERTICES "+sharedEdge);
             foreach(int level in new[]{2,0,1})
             {
                 Call(navigation,"SetZoomLevel",level,true);Call(adapter,"RefreshForCapture");
                 Assert.That(scar.enabled,Is.True);
                 Assert.That(filter.sharedMesh.vertices,Is.EqualTo(fixedVertices));
                 Assert.That(filter.transform.position,Is.EqualTo(fixedPosition),"Zoom must not relocate geology.");
+                Assert.That(continuation.GetComponent<MeshRenderer>().enabled,Is.True);
+                Assert.That(continuation.sharedMesh.vertices,Is.EqualTo(continuationVertices));
+                Assert.That(continuation.transform.position,Is.EqualTo(continuationPosition),"Neighbouring land must be the same physical geometry at every zoom.");
             }
         }
         [UnityTest]

@@ -42,15 +42,15 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // Respect URP shadow distance instead of sampling beyond its cascade coverage.
  float shadow=lerp(l.shadowAttenuation,1,GetMainLightShadowFade(i.world));
  float diffuse=saturate(dot(normalize(i.normal),l.direction));
- float2 detailUV=(i.world.xz-_RegionOrigin.xz)/float2(21.12,14.72);
- float2 rotatedDetail=float2(detailUV.x*.8-detailUV.y*.6,detailUV.x*.6+detailUV.y*.8)*.73+float2(.37,.61);
+ float2 detailUV=(i.world.xz-_RegionOrigin.xz)/float2(21.1875,12.4921875);
+ float2 rotatedDetail=float2(detailUV.x*.8-detailUV.y*.6,detailUV.x*.6+detailUV.y*.8)+float2(.37,.61);
  half3 grain=(SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV).rgb+SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,rotatedDetail).rgb);
  float detailFootprint=max(length(ddx(detailUV)),length(ddy(detailUV)));
  c.rgb*=lerp(half3(1,1,1),grain,_GroundDetailStrength*(1-smoothstep(.018,.1,detailFootprint)));
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);
  float2 region=i.world.xz-_RegionOrigin.xz;
- // Thin peripheral atmosphere at the physical outer boundary only; no interior fog.
- float west=910+region.x, east=910-region.x, north=1800-region.y, south=1800+region.y;
+ // Atmosphere at the actual neighbouring-ground edge, beyond the playable region.
+ float west=1710+region.x, east=1710-region.x, north=2600-region.y, south=2600+region.y;
  float edge=min(min(west,east),min(north,south));
  float irregular=40*sin(region.y*.011)+20*cos(region.x*.017-region.y*.006);
  float atmosphere=(1-smoothstep(0,107+irregular,edge))*_BoundaryWeight;
