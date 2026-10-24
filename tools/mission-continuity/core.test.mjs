@@ -76,3 +76,28 @@ test("issue handoff contains stable marker, run and explicit evidence", () => {
 test("reject unsafe mission identifiers", () => {
   assert.throws(() => issueMarker("invalid -->"), /Invalid mission/);
 });
+
+test("owner-paused mission does not generate recovery alerts despite an old failed run",()=>{
+ const active=[{...activeWorkstreams[0],owner:null,phase:"OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100",next:"PAUSED BY OWNER"}];
+ const result=check([makeRun(6,"completed","failure")],{activeWorkstreams:active});
+ assert.equal(result.state,"OWNER_PAUSED");
+ assert.equal(result.alert,false);
+ assert.equal(result.latest_run,null);
+ assert.match(result.next_action,/explicit owner resumption/);
+ assert.deepEqual(result.required_evidence,mission.required_evidence);
+});
+
+test("explicitly unclaimed mission cannot be auto-reclaimed",()=>{
+ const active=[{...activeWorkstreams[0],owner:null,phase:"READY_TO_CLAIM"}];
+ const result=check([makeRun(6,"completed","failure")],{activeWorkstreams:active});
+ assert.equal(result.state,"UNCLAIMED_WORKSTREAM");
+ assert.equal(result.alert,false);
+ assert.match(result.next_action,/Do not automatically reclaim/);
+});
+
+test("an assigned active owner is still alerted to a real failing run",()=>{
+ const active=[{...activeWorkstreams[0],owner:"a-live-agent",phase:"QA_PENDING"}];
+ const result=check([makeRun(6,"completed","failure")],{activeWorkstreams:active});
+ assert.equal(result.state,"NEEDS_RECOVERY");
+ assert.equal(result.alert,true);
+});
