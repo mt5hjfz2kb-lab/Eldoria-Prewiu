@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-world-region-1-canon-20261022",
+  "certified_source_commit": "65140bb67fd76bccaf6b5124a55f3ecd4e0bba30",
+  "blender": {
+    "method": "blender-bpy-reviewed",
+    "mcp_status": "not-used",
+    "mcp_preflight": "Comprobación real del flujo 40127016633: el job blender-interactive aparece skipped; autoría auténtica con Blender/bpy en self-hosted y posterior PlayMode Unity de las mismas mallas.",
+    "mcp_reason": "No hubo conexión BlenderMCP interactiva verificada durante este lote; la ruta disparada por region-production(world4x) ejecuta Blender/bpy de manera nativa y no equivale a una sesión MCP. Su inspección artística se realizó con PNG Unity autentificados.",
+    "artistic_decision_log": "docs/evidence/world4x-canon-20261022/ARTISTIC_A_B_VERIFIED_40127016633.md",
+    "input_blend": "docs/evidence/world4x-canon-20261022/sources/native-40116606424/Eldoria_Region1_Production.blend",
+    "input_sha256": "4be44a1ad5af12be7a7d87f66109029cf8a182045ef1eab054901eb016e90c08",
+    "output_blend": "docs/evidence/world4x-canon-20261022/sources/native-40127016633/Eldoria_Region1_Production.blend",
+    "output_sha256": "bddf1c339380577896b3e697e7e354ea9c9976a6de9e4b03e611c5ae54148491"
+  },
+  "baseline": {
+    "run_id": 40116606424,
+    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40116606424/review"
+  },
+  "candidate": {
+    "run_id": 40127016633,
+    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40127016633/review"
+  },
+  "visual_review_path": "docs/evidence/world4x-canon-20261022/ARTISTIC_A_B_VERIFIED_40127016633.md",
+  "visual_judgment": {
+    "outcome": "RETAINED",
+    "reviewer": "ChatGPT visual review using genuine Unity source captures (not independent external artist)",
+    "observed_improvement": "Regional visible woodland mass continuity and Breach geology less starkly tiled in authentic camera-matched Unity captures; physical rock talus added, source materials and historical meshes preserved.",
+    "remaining_gaps": "Near view is still substantially less rich than the approved owner image; current Breach edges look regular; forests and soil retain cartographic simplicity. ART_APPROVED is false and physical mobile FPS are unmeasured."
+  }
+}
