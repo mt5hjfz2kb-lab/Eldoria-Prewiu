@@ -494,6 +494,16 @@ for cx in [-550.,0.,450.]:
    origin_local=terrain_inverse @ Vector((x,y,150))
    direction_local=terrain_inverse.to_3x3() @ Vector((0,0,-1))
    hit,point,normal,index=terrain.ray_cast(origin_local,direction_local,distance=400)
+   if not hit:
+    # MCP run40096546069 identifies the missing support as the original
+    # sculpted Pilot_Cutbank_1, not a hole in the world. Banks are separate
+    # editable meshes and therefore are not included in BLD_Terrain rays.
+    bank_heights=[]
+    for bank in (o for o in scene.objects if o.name.startswith('Pilot_Cutbank_') and o.type=='MESH'):
+     bank_inverse=bank.matrix_world.inverted()
+     bank_hit,bank_point,_,_=bank.ray_cast(bank_inverse @ Vector((x,y,150)),bank_inverse.to_3x3() @ Vector((0,0,-1)),distance=400)
+     if bank_hit:bank_heights.append((bank.matrix_world @ bank_point).z)
+    if bank_heights:return max(bank_heights)
    if not hit and allow_river_span:
     # The retained river has an intentionally open channel. The deck spans
     # water; only the two abutments must raycast solid joined ground.

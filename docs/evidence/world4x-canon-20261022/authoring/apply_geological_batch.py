@@ -51,7 +51,18 @@ def apply_geological_batch(output):
  y0,y1=int((-5+1800)/3600*(H-1)),int((620+1800)/3600*(H-1))+1
  X,Y=np.meshgrid(np.linspace(-910,910,W)[x0:x1],np.linspace(-1800,1800,H)[y0:y1])
  mask=geological_paint(pixels[y0:y1,x0:x1,:3],X,Y)
- image.pixels.foreach_set(pixels.ravel());image.filepath_raw=str(out/'MacroGeologicalPigment.png');image.file_format='PNG';image.save();image.pack()
+ image.pixels.foreach_set(pixels.ravel());image.filepath_raw=str(out/'MacroGeologicalPigment.png');image.file_format='PNG';image.save()
+ # MCP reopen diagnosis40097057090 proved repacking an already packed image
+ # kept stale bytes. Load the saved PNG as a fresh image and relink only this
+ # continental pigment; preserve every original AF/AG image and material.
+ fresh=bpy.data.images.load(str(out/'MacroGeologicalPigment.png'),check_existing=False)
+ fresh.name='Region1 authored geological pigment';fresh.pack()
+ import hashlib
+ assert hashlib.sha256(fresh.packed_file.data).hexdigest()==hashlib.sha256((out/'MacroGeologicalPigment.png').read_bytes()).hexdigest()
+ for material in bpy.data.materials:
+  if material.use_nodes:
+   for node in material.node_tree.nodes:
+    if node.type=='TEX_IMAGE' and node.image==image:node.image=fresh
  # No relocation or replacement of entities: only experimental forest exclusion.
  cleared=[]
  for tree in bpy.context.scene.objects:

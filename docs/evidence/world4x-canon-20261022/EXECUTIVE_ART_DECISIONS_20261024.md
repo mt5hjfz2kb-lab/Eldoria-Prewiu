@@ -22,3 +22,6 @@ The previous pending source failed before Unity because the bridge clamp demande
 
 ## Decision and remaining problems
 Retain cycle2 as a candidate for genuine Unity inspection, not a final art acceptance. Assess unchanged core, actual bridge/navigation, all57 PlayMode and26 EditMode plus44 functional integration checks. Major remaining problems: disconnected forest silhouettes, weak elevation hierarchy and uniform large meadows. A third small mineral-paint adjustment is not the next artistic strategy; use actual Unity results to choose the next coherent regional composition intervention.
+
+## Native failure and corrected cause (not a game failure)
+Run40095508228 source304a342 stopped in Blender before Unity. The open-water exception correctly found real water but the next sample y=-15.92237 hit neither BLD_Terrain nor Pilot_River. MCP run40096546069 directly observed Pilot_Cutbank_1 at that point, height0.5352m, and at the adjacent point, height0.7987m. These original sculpted banks are separate meshes. The corrected query includes those actual bank surfaces and still requires ground at abutments and real river coverage for an open interior span. No position/length change and no test removed. The subsequent independent oracle excludes old bridge faces so they cannot masquerade as terrain support.
