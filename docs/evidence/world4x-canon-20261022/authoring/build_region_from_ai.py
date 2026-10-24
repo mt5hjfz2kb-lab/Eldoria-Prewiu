@@ -731,6 +731,25 @@ macro_path=pathlib.Path(__file__).with_name('apply_geological_batch.py')
 macro_namespace={'__file__':str(macro_path)}
 exec(compile(macro_path.read_text(encoding='utf-8'),str(macro_path),'exec'),macro_namespace)
 macro_result=macro_namespace['apply_geological_batch'](out)
+# Apply the previously observed regional forest-silhouette A/B as a coherent
+# part of the geological composition candidate. This changes object.scale ONLY:
+# original mesh, UVs, materials, anchors and retained AF/AG core stay untouched.
+# The Blender proxy improved conifer legibility, but full Unity art review remains pending.
+canopy_path=pathlib.Path(__file__).with_name('apply_canopy_proportions.py')
+canopy_namespace={'__file__':str(canopy_path)}
+exec(compile(canopy_path.read_text(encoding='utf-8'),str(canopy_path),'exec'),canopy_namespace)
+canopy_ops=canopy_namespace['apply_canopy_proportions']()
+near_canopy=sum(op['name'].startswith('BLD_ForestMass_') for op in canopy_ops)
+far_canopy=sum(op['name'].startswith('BLD_ForestFar_') for op in canopy_ops)
+assert near_canopy==far_canopy and near_canopy>=7000,('Near/far LOD canopy coverage mismatch',near_canopy,far_canopy)
+assert all(op['before']!=op['after'] for op in canopy_ops)
+(out/'macro-canopy-operations.json').write_text(json.dumps({
+ 'source_experiment_run':40096725089,
+ 'handoff_reopen_run':40097362906,
+ 'near_lod_scaled':near_canopy,'far_lod_scaled':far_canopy,
+ 'mesh_uv_material_anchor_edits':0,
+ 'approved_for_native_trial_not_art_approved':True,
+ 'operations':canopy_ops},indent=2))
 faults=macro_namespace['AUTHOR_FAULTS']
 tree_total-=len(macro_result['cleared_crowns'])
 bpy.context.view_layer.update();bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
