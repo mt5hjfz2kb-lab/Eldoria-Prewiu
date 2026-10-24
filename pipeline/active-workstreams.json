@@ -1419,6 +1419,32 @@
         "ui_run_finished": 40074059376,
         "status": "RESERVED_NOT_VERIFIED"
       }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Lecciones artísticas prioritarias y continuidad sin falsas alarmas",
+      "owner": "chatgpt-memory-continuity-20261024",
+      "branch": "chore/knowledge-continuity-safe-20261024",
+      "status": "active",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only selection and continuity decision modules only; no art authoring, model changes, game mutation or credits.",
+      "phase": "ISOLATED_BOUNDED_SAFE_HARDENING",
+      "next": "Add provenance-preserving priority of rejected lessons in existing art-memory preflight and pause-aware mission watcher. Run pure Node tests; no Windows/Unity/publishing; leave PR draft if any gate fails.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      }
     }
   ],
   "history": [
