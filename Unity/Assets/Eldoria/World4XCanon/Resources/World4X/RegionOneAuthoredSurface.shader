@@ -52,8 +52,8 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // Thin peripheral atmosphere only at whole-region overview, never regional fog.
  float west=910+region.x, east=910-region.x, north=1800-region.y, south=1800+region.y;
  float edge=min(min(west,east),min(north,south));
- float irregular=18*sin(region.x*.019+region.y*.013)+11*sin(region.y*.041-region.x*.027);
- float atmosphere=(1-smoothstep(0,75+irregular,edge))*_BoundaryWeight;
+ float irregular=40*sin(region.y*.011)+20*cos(region.x*.017-region.y*.006);
+ float atmosphere=(1-smoothstep(0,107+irregular,edge))*_BoundaryWeight;
  return half4(c.rgb,1-atmosphere);
  }
  ENDHLSL

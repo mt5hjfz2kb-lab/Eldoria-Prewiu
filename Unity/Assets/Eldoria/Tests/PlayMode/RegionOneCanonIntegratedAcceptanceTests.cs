@@ -624,8 +624,9 @@ namespace Eldoria.Tests
                 var lightStates=sceneLights.Select(l=>(l,l.transform.rotation,l.shadows,l.shadowStrength)).ToArray();
                 var pipeline=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
                 var shadowProperty=pipeline?pipeline.GetType().GetProperty("shadowDistance"):null;
-                var shadowDistance=shadowProperty?.GetValue(pipeline);
+                var shadowDistance=shadowProperty?.GetValue(pipeline);var background=camera.backgroundColor;
                 camera.Render();
+                Assert.That(camera.backgroundColor,Is.EqualTo(background),"Peripheral world atmosphere must restore camera clear colour");
                 foreach(var state in lightStates)if(state.l){
                     Assert.That(Quaternion.Angle(state.l.transform.rotation,state.rotation),Is.LessThan(.001f),"World rendering must restore city light rotation");
                     Assert.That(state.l.shadows,Is.EqualTo(state.shadows));Assert.That(state.l.shadowStrength,Is.EqualTo(state.shadowStrength));

@@ -54,7 +54,7 @@ def fault_distance(X,Y):
    t=np.clip(((X-ax)*(bx-ax)+(Y-ay)*(by-ay))/((bx-ax)**2+(by-ay)**2),0,1);distance=np.minimum(distance,np.hypot(X-ax-t*(bx-ax),Y-ay-t*(by-ay)))
  return distance
 groves=[(-220,420,42,65),(-430,680,62,40),(-650,790,65,50),(-750,500,48,70),(-440,210,55,50),(-730,90,60,65),(-280,90,50,38),(-410,-280,55,45),(-750,-370,52,62),(-270,-470,60,45),(-610,-800,65,48),(-130,-800,45,60),(120,-610,60,50),(330,-820,45,60),(650,-650,45,70),(600,-370,45,50),(230,-320,55,48),(240,30,45,65),(540,70,55,45),(300,420,60,50),(580,540,55,65),(100,600,50,45),(-130,900,55,45),(390,910,65,45),(630,900,40,60)]
-groves += [(-620,1430,68,95),(-270,1120,70,65),(270,1550,85,70),(620,1470,60,90),(-740,-1160,55,85),(-300,-1660,85,65),(240,-1570,80,80),(650,-1300,55,90)]
+groves += [(-620,1430,68,95),(-270,1120,70,65),(270,1550,85,70),(620,1470,60,90),(-740,-1160,55,85),(-300,-1660,85,65),(240,-1570,80,80),(650,-1300,55,90),(-130,140,20,40),(136,150,20,38)]
 # Designed connected forest lobes, with unequal clearings and broken margins.
 # One field drives pigment, placement AND route exclusion.
 groves=[(x,y,rx*2.15,ry*2.15) for x,y,rx,ry in groves]
@@ -106,14 +106,14 @@ def boundaryheight(x,y):
 def height(x,y):
  if -96<=x<=96 and -78<=y<=270:return oldheight(x,y)
  qx=max(-95.999,min(95.999,x));qy=max(-77.999,min(269.999,y));d=math.hypot(x-qx,y-qy)
- blend=float(smooth(d/42));edge=boundaryheight(qx,qy);tangent=0.
+ blend=float(smooth(d/110));edge=boundaryheight(qx,qy);tangent=0.
  # Continue measured outward slopes as well as positions, then merge into the
  # continental relief. A constant-height collar made the retained tile readable.
  if x<-96:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx+2,qy))/2))*(-96-x)
  elif x>96:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx-2,qy))/2))*(x-96)
  if y<-78:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx,qy+2))/2))*(-78-y)
  elif y>270:tangent+=max(-.6,min(.6,(edge-boundaryheight(qx,qy-2))/2))*(y-270)
- h=(edge+tangent*math.exp(-d/24))*(1-blend)+rawheight(x,y)*blend
+ h=(edge+tangent*math.exp(-d/48))*(1-blend)+rawheight(x,y)*blend
  if abs(x)>96:
   dr=abs(y-rivercentre(x));rw=riverwidth(x)
   # Continue the measured source cross-section from the very first extension row.
@@ -233,7 +233,7 @@ brush=(.5+.5*np.sin(X*.37+Y*.21+2*np.sin(Y*.053))*np.sin(Y*.29-X*.16))**2
 grass_ink=brush*(1-forest)*(1-mask)*.12
 rgba[:,:,:3]=rgba[:,:,:3]*(1-grass_ink[:,:,None])+np.array([.62,.59,.33])*grass_ink[:,:,None]
 # Raycast the actual original polygons, interpolate their original UVs, then read
-# their active image. Only NEW extension pixels receive this 55 m boundary glaze.
+# their active image. Only NEW extension pixels receive this 110 m boundary glaze.
 image_cache={}
 def source_pigment(x,y):
  for ob in land:
@@ -260,14 +260,14 @@ def source_pigment(x,y):
 edgeY=np.linspace(-77.99,269.99,1024);edgeX=np.linspace(-95.99,95.99,1024)
 edges=[np.array([source_pigment(x,float(y)) for y in edgeY]) for x in [-95.99,95.99]]
 edges += [np.array([source_pigment(float(x),y) for x in edgeX]) for y in [-77.99,269.99]]
-# Do not extrude one-dimensional edge grain into visible 55 m stripes.
+# Do not extrude one-dimensional edge grain into visible radial stripes.
 # Keep exact fine pigment only at contact; extend the broad palette separately.
-kernel=np.exp(-.5*(np.arange(-24,25)/9)**2);kernel/=kernel.sum()
-soft_edges=[np.stack([np.convolve(np.pad(edge[:,c],24,mode='edge'),kernel,mode='valid') for c in range(3)],axis=1) for edge in edges]
-qx=np.clip(X,-96,96);qy=np.clip(Y,-78,270);distance=np.hypot(X-qx,Y-qy);glaze=(1-smooth(distance/55))*(distance>0)
+kernel=np.exp(-.5*(np.arange(-96,97)/32)**2);kernel/=kernel.sum()
+soft_edges=[np.stack([np.convolve(np.pad(edge[:,c],96,mode='edge'),kernel,mode='valid') for c in range(3)],axis=1) for edge in edges]
+qx=np.clip(X,-96,96);qy=np.clip(Y,-78,270);distance=np.hypot(X-qx,Y-qy);glaze=(1-smooth(distance/110))*(distance>0)
 for side in range(4):
  choose=((X<-96) if side==0 else (X>96) if side==1 else (Y<-78)&(np.abs(X)<=96) if side==2 else (Y>270)&(np.abs(X)<=96))
- weight=glaze*choose;axis=qy if side<2 else qx;grid=edgeY if side<2 else edgeX
+ weight=glaze*choose*(1-mask*smooth(distance/3));axis=qy if side<2 else qx;grid=edgeY if side<2 else edgeX
  for channel in range(3):
   broad=np.interp(axis,grid,soft_edges[side][:,channel]);fine=np.interp(axis,grid,edges[side][:,channel])
   colour=broad+(fine-broad)*(1-smooth(distance/2.5))
@@ -487,7 +487,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   if any((x-a)**2+(y-b)**2<9.0**2 for a,b in positions):continue
   positions.append((x,y));k=len(positions)
   donor=masters[k%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_'+str(index).zfill(2)+'_'+str(k).zfill(3)
-  scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));o.scale=(scale*random.uniform(1.15,1.5),scale*1.25,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
+  scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));core_distance=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270));scale=1.05+(scale-1.05)*float(smooth(core_distance/160));o.scale=(scale*random.uniform(1.15,1.5),scale*1.25,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
   if len(parts)>=(240 if index<25 else 155):break
  if not parts:continue
  tree_total+=len(parts)

@@ -11,7 +11,7 @@ namespace Eldoria.World4XCanon
     public sealed class RegionOneLookDevelopment : MonoBehaviour
     {
         Camera worldCamera; Light sun; Quaternion rotation; LightShadows shadows; float strength,distance;
-        UniversalRenderPipelineAsset pipeline; bool scoped;
+        UniversalRenderPipelineAsset pipeline; bool scoped; Color background;
         readonly List<Material> owned=new List<Material>();
         readonly Dictionary<Material,Material> cache=new Dictionary<Material,Material>();
         Shader authoredShader;Vector3 origin;
@@ -52,6 +52,7 @@ namespace Eldoria.World4XCanon
             float overview=Mathf.Max(910/Mathf.Max(.1f,camera.aspect),1625)*1.04f;
             float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(overview*.85f,overview,camera.orthographicSize));
             foreach(var material in owned)material.SetFloat("_BoundaryWeight",atmosphere);
+            background=camera.backgroundColor;camera.backgroundColor=Color.Lerp(background,new Color(.66f,.71f,.67f,1),atmosphere);
             sun=RenderSettings.sun;
             if(!sun)sun=FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.enabled&&l.type==LightType.Directional).OrderByDescending(l=>l.intensity).FirstOrDefault();
             if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;sun.transform.rotation=Quaternion.Euler(48,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}
@@ -60,7 +61,7 @@ namespace Eldoria.World4XCanon
             scoped=true;
         }
         void End(ScriptableRenderContext context,Camera camera){if(camera==worldCamera)Restore();}
-        void Restore(){if(!scoped)return;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;}if(pipeline)pipeline.shadowDistance=distance;scoped=false;}
+        void Restore(){if(!scoped)return;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;}if(pipeline)pipeline.shadowDistance=distance;if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
         void OnDisable(){RenderPipelineManager.beginCameraRendering-=Begin;RenderPipelineManager.endCameraRendering-=End;Restore();}
         void OnDestroy(){foreach(var material in owned)if(material)Destroy(material);}
     }
