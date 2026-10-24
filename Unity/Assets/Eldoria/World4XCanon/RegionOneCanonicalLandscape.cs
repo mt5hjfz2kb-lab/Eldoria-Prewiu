@@ -173,6 +173,14 @@ namespace Eldoria.World4XCanon
    float heading=desiredHeading; // Actual zoom already interpolates; do not add a second lag to pointer anchoring.
    if(Mathf.Abs(tilt-navigation.tilt)>.04f||Mathf.Abs(Mathf.DeltaAngle(heading,navigation.heading))>.04f){navigation.SetOrientation(tilt,heading);}
    bool panorama=RegionOneResourcePlacement.IsPanoramic(size,navigation.globalZoom);
+   // A target selected before zooming out must not leave an invisible combat
+   // or resource selection marker on the map. This is the existing RoyalHUD
+   // selection API, not new UI or a gameplay-state mutation.
+   if(panorama&&host.InWorld&&!string.IsNullOrEmpty(host.Selected)&&
+       (host.Selected.StartsWith("region1:",StringComparison.Ordinal)||
+        host.Selected=="forest-valoria"||host.Selected=="quarry-valoria"||
+        host.Selected=="corrupt-scout"||host.Selected=="engendro-valoria"))
+       host.Select("");
    // The integrated Pick() has an additional creature geometry hit-test that
    // bypasses the hotspot collider. Deactivate the SAME source ModelRoot while
    // panoramic, otherwise an invisible engendro remains selectable.

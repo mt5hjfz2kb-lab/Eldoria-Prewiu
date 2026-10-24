@@ -77,8 +77,8 @@ namespace Eldoria.World4XCanon
                     var hot=go.AddComponent<Eldoria.Presentation.WorldHotspot>();
                     hot.Id=creature.TargetId;
                     var collider=go.AddComponent<BoxCollider>();
-                    collider.isTrigger=true;collider.center=new Vector3(0,4,0);
-                    collider.size=new Vector3(8,8,8);
+                    collider.isTrigger=true;collider.center=new Vector3(0,5,0);
+                    collider.size=new Vector3(12,10,12);
                     var close=MakeModel(creature.CreatureKind,"near",go.transform,creature.TargetId);
                     var far=MakeModel(creature.CreatureKind,"far",go.transform,creature.TargetId);
                     entity=new Encounter{Hotspot=hot,Near=close,Far=far};
@@ -99,7 +99,7 @@ namespace Eldoria.World4XCanon
             go.transform.localPosition=Vector3.zero;
             float heading=0;foreach(char c in id)heading=(heading*31+c)%360;
             go.transform.localRotation=Quaternion.Euler(0,heading,0);
-            go.transform.localScale=Vector3.one*(kind=="boar"?5f:6f);
+            go.transform.localScale=Vector3.one*(kind=="boar"?7.5f:7.2f);
             foreach(var t in go.GetComponentsInChildren<Transform>(true))t.gameObject.layer=29;
             var renderers=go.GetComponentsInChildren<Renderer>(true);
             if(renderers.Length>0)

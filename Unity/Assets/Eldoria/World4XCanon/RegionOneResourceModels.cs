@@ -37,7 +37,7 @@ namespace Eldoria.World4XCanon
             if(!impostorMeshes[tile]){
                 float u=tile*.5f;var mesh=new Mesh{name="Resource actual-model impostor "+tile};
                 mesh.vertices=new[]{Vector3.zero,Vector3.zero,Vector3.zero,Vector3.zero};mesh.uv=new[]{new Vector2(u,0),new Vector2(u+.5f,0),new Vector2(u+.5f,1),new Vector2(u,1)};
-                mesh.uv2=new[]{new Vector2(-6,-1),new Vector2(6,-1),new Vector2(6,11),new Vector2(-6,11)};mesh.triangles=new[]{0,1,2,0,2,3};mesh.bounds=new Bounds(Vector3.up*5,Vector3.one*24);impostorMeshes[tile]=mesh;
+                mesh.uv2=new[]{new Vector2(-8,-1),new Vector2(8,-1),new Vector2(8,14),new Vector2(-8,14)};mesh.triangles=new[]{0,1,2,0,2,3};mesh.bounds=new Bounds(Vector3.up*5,Vector3.one*24);impostorMeshes[tile]=mesh;
             }
             var go=new GameObject("Production resource impostor "+id);go.transform.SetParent(parent,false);go.layer=29;go.AddComponent<MeshFilter>().sharedMesh=impostorMeshes[tile];var renderer=go.AddComponent<MeshRenderer>();renderer.sharedMaterial=impostorMaterial;renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;renderer.enabled=false;return renderer;
         }
@@ -57,7 +57,7 @@ namespace Eldoria.World4XCanon
                 if(!logical)throw new InvalidOperationException("Missing canonical resource target "+pair.Item1);
                 var visual=Instantiate(source.gameObject,parent);visual.name="Production resource visual "+pair.Item1;
                 if(service.look)service.look.ApplyMaterials(visual);
-                visual.transform.localScale=Vector3.one;visual.transform.rotation=Quaternion.Euler(0,180,0);
+                visual.transform.localScale=Vector3.one*1.32f;visual.transform.rotation=Quaternion.Euler(0,180,0);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 service.nodes.Add(new Node{Id=pair.Item1,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=service.MakeImpostor(pair.Item1,parent)});
             }
@@ -73,7 +73,8 @@ namespace Eldoria.World4XCanon
                 var logical=host.FindTarget(item.TargetId);if(!logical)continue;
                 string family=item.ResourceKind=="wood"?"Wood":"Stone";
                 var source=library.GetComponentsInChildren<Transform>(true).Single(x=>x.name=="Resource_"+family+"_"+(nodes.Count%3));
-                var visual=Instantiate(source.gameObject,transform);visual.name="Production resource visual "+item.TargetId;visual.transform.rotation=Quaternion.Euler(0,180,0);
+                var visual=Instantiate(source.gameObject,transform);visual.name="Production resource visual "+item.TargetId;
+                visual.transform.localScale=Vector3.one*1.32f;visual.transform.rotation=Quaternion.Euler(0,180,0);
                 if(look)look.ApplyMaterials(visual);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});

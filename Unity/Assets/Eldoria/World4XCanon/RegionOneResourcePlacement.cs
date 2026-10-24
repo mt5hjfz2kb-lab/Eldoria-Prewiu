@@ -104,7 +104,16 @@ namespace Eldoria.World4XCanon
             uint hash=2166136261;
             foreach(char c in targetId)hash=unchecked((hash^c)*16777619);
             int first=(int)(hash%(uint)sites.Count);
-            for(int pass=0;pass<2;pass++)
+            // Balance desired tiers without inventing extra 3D models or
+            // imposing visible circular biome borders. Tier is ALWAYS
+            // computed from the actual candidate coordinate and Brecha.
+            int serial=1;
+            int.TryParse(targetId.Substring(targetId.LastIndexOf(':')+1),out serial);
+            int[] desired=original.CreatureKind=="boar"
+                ?new[]{1,1,1,1,1,1,2,2,2,2,3,3,3,3,4,4,5,5}
+                :new[]{1,1,2,2,3,3,3,3,4,4,4,4,4,5,5,5,5,5};
+            int desiredLevel=desired[Mathf.Clamp(serial-1,0,desired.Length-1)];
+            for(int pass=0;pass<3;pass++)
             for(int k=0;k<sites.Count;k++)
             {
                 var site=sites[(first+k+generation*23)%sites.Count];
@@ -122,7 +131,12 @@ namespace Eldoria.World4XCanon
                 // Naturally overlapping distributions, never rigid artificial rings:
                 // boars prefer safer meadows, spawnlings the influence of Brecha.
                 bool preferred=original.CreatureKind=="boar"?breach>330:breach<540;
-                if(pass==0&&!preferred)continue;
+                // Require the intended danger first; only relax if the real
+                // navigable ground has no compatible unoccupied placement.
+                float jitter=((hash>>9)%101)/100f*.56f-.28f;
+                int level=Mathf.Clamp(Mathf.RoundToInt(1f+4f*Mathf.Clamp01(1f-breach/620f)+jitter),1,5);
+                if(pass==0&&level!=desiredLevel)continue;
+                if(pass==1&&(Mathf.Abs(level-desiredLevel)>1||!preferred))continue;
                 bool occupied=Vector2.Distance(new Vector2(site.Point.x,site.Point.z),
                     new Vector2(host.WorldHome.x,host.WorldHome.z))<40;
                 foreach(var city in cities)
@@ -141,8 +155,6 @@ namespace Eldoria.World4XCanon
                 }
                 if(occupied||!routes.FootprintClear(site.Point,10))continue;
                 if(!routes.TryRouteTo(snapshot,site.Point,out var route))continue;
-                float jitter=((hash>>9)%101)/100f*.56f-.28f;
-                int level=Mathf.Clamp(Mathf.RoundToInt(1f+4f*Mathf.Clamp01(1f-breach/620f)+jitter),1,5);
                 creature=new WorldCreatureLocation{
                     TargetId=targetId,CreatureKind=original.CreatureKind,
                     SiteId=site.Id,Generation=generation,Level=level,

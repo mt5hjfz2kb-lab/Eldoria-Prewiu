@@ -126,6 +126,59 @@ namespace Eldoria.Tests
                     .ConfigureLocalCreatureRespawn(placement,TimeSpan.FromMinutes(15)));
         }
 
+        [Serializable] sealed class EncounterFaultLayout { public EncounterFaultSegment[] faults; }
+        [Serializable] sealed class EncounterFaultSegment { public float ax,az,bx,bz,radius; }
+        [UnityTest]
+        public IEnumerator RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var state=((Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway")).Snapshot();
+            var placement=world.GetComponentsInChildren<MonoBehaviour>(true)
+                .Single(x=>x&&x.GetType().Name=="RegionOneResourcePlacement");
+            var routes=(Eldoria.Application.IWorldMarchRoutes)Member(placement,"MarchRoutes");
+            Assert.That(state.WorldCreatureLocations.Count,Is.EqualTo(36));
+            Assert.That(state.WorldCreatureLocations.Select(x=>x.TargetId).Distinct().Count(),Is.EqualTo(36));
+            // Real imported fracture coordinates; not guessed camera-colour rings.
+            var authored=Resources.Load<TextAsset>("World4X/Blender/production-region");
+            Assert.That(authored,Is.Not.Null);
+            var faults=JsonUtility.FromJson<EncounterFaultLayout>(authored.text).faults;
+            Assert.That(faults,Is.Not.Null);
+            float ToBreach(float x,float z)
+            {
+                float distance=float.MaxValue;
+                foreach(var f in faults)
+                {
+                    float ax=f.ax,az=f.az,bx=f.bx,bz=f.bz;
+                    var a=new Vector2(ax,az);var delta=new Vector2(bx-ax,bz-az);
+                    float t=delta.sqrMagnitude>0?Mathf.Clamp01(Vector2.Dot(new Vector2(x,z)-a,delta)/delta.sqrMagnitude):0;
+                    distance=Mathf.Min(distance,Vector2.Distance(new Vector2(x,z),a+delta*t));
+                }
+                return distance;
+            }
+            foreach(string family in new[]{"boar","spawnling"})
+            {
+                var alive=state.WorldCreatureLocations.Where(x=>x.Alive&&x.CreatureKind==family).ToArray();
+                Assert.That(alive.Length,Is.EqualTo(18),"Original Tripo family missing real encounter sites: "+family);
+                Assert.That(alive.Select(x=>x.Level).Distinct(),Is.EquivalentTo(new[]{1,2,3,4,5}),
+                    "The whole Region1 must exhibit all five authorized power tiers: "+family);
+                var home=(Vector3)Member(host,"WorldHome");
+                float low=alive.Where(x=>x.Level==1).Average(x=>ToBreach(x.X-home.x,x.Z-home.z));
+                float high=alive.Where(x=>x.Level==5).Average(x=>ToBreach(x.X-home.x,x.Z-home.z));
+                Assert.That(high,Is.LessThan(low),"The real fault must drive creature danger, not artificial rings");
+                foreach(var item in alive)
+                {
+                    var point=new Vector3(item.X,item.Y,item.Z);
+                    Assert.That((bool)Call(routes,"FootprintClear",point,10f),Is.True,
+                        "Encounter intersects an original or authored forest silhouette: "+item.TargetId);
+                    var target=Call(host,"FindTarget",item.TargetId) as Component;
+                    Assert.That(target,Is.Not.Null,item.TargetId+" is not an actual interactive world object");
+                    Assert.That(target.transform.position,Is.EqualTo(point),
+                        "Zoom/entity presentation must share one persistent coordinate");
+                }
+            }
+        }
+
         [Test]
         public void LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot()
         {

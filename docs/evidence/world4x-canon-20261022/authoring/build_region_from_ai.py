@@ -532,7 +532,10 @@ bridge_bs=next(n for n in bridge_mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED
 # Grain follows real plank dimensions; it is a new bridge material, never an AF repaint.
 BU,BV=np.meshgrid(np.linspace(0,8,512),np.linspace(0,44,1024))
 wood_grain=.012*np.sin(BV*52+2*np.sin(BU*.9))+.008*np.sin(BV*109+BU*.25)
-plank_gap=(np.abs((BV+.5)%1-.5)<.035).astype(float)*.065
+# Actual Unity close screenshots showed an almost textureless bridge slab.
+# Wider dark inter-plank gaps in the SAME authored weathered wood atlas,
+# preserving physical deck and all three verified navigable crossings.
+plank_gap=(np.abs((BV+.5)%1-.5)<.07).astype(float)*.16
 wood_pixels=np.ones((1024,512,4),np.float32)
 # Original flat bridge factor (.31,.22,.12) is linear glTF colour.
 # Generated PNG pixels are encoded sRGB: convert explicitly, not by guessing
@@ -612,7 +615,14 @@ for cx in [-550.,0.,450.]:
  obj=bpy.data.objects.new('Authored crossing '+str(cx),me);scene.collection.objects.link(obj)
  bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);terrain.select_set(True);bpy.context.view_layer.objects.active=terrain;bpy.ops.object.join()
  # Simple measured timber rails beside the river span, outside the full 8 m route.
- rail_material=bridge_mat.copy();rail_material.name='Weathered crossing rail timber'
+ # The former handrails inherited the SAME linked dark plank texture and
+ # were visually invisible against the deck in the real Unity close capture.
+ # Give hand-cut exposed oak a light PBR material without source repaint.
+ rail_material=bpy.data.materials.new('Bridge sunlit weathered oak rails')
+ rail_material.use_nodes=True
+ oak=next(n for n in rail_material.node_tree.nodes if n.type=='BSDF_PRINCIPLED')
+ oak.inputs['Base Color'].default_value=(.58,.43,.25,1)
+ oak.inputs['Roughness'].default_value=.91
  rail_vertices=[];rail_faces=[]
  def rail_box(x0,x1,y0,y1,z0,z1):
   start=len(rail_vertices)
@@ -629,9 +639,9 @@ for cx in [-550.,0.,450.]:
  rail_extent=int(half-2)
  for side in (-1,1):
   for y in range(-rail_extent,rail_extent+1,4):
-   z=deck_at(y);rail_box(bridge_x+side*4.34-.19,bridge_x+side*4.34+.19,deck_centre+y-.19,deck_centre+y+.19,z,z+1.55)
+   z=deck_at(y);rail_box(bridge_x+side*4.34-.26,bridge_x+side*4.34+.26,deck_centre+y-.24,deck_centre+y+.24,z,z+1.8)
   for y in range(-rail_extent,rail_extent,2):
-   z=deck_at(y+1)+1.30;rail_box(bridge_x+side*4.34-.12,bridge_x+side*4.34+.12,deck_centre+y,deck_centre+y+2,z,z+.24)
+   z=deck_at(y+1)+1.55;rail_box(bridge_x+side*4.34-.18,bridge_x+side*4.34+.18,deck_centre+y,deck_centre+y+2,z,z+.31)
  rail_mesh=bpy.data.meshes.new('Measured river crossing rails');rail_mesh.from_pydata(rail_vertices,[],rail_faces);rail_mesh.materials.append(rail_material)
  rail_uv=rail_mesh.uv_layers.new(name='Weathered timber grain')
  for loop in rail_mesh.loops:

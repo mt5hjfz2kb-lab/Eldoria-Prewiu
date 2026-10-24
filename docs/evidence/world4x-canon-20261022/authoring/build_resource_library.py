@@ -66,6 +66,27 @@ for family in ['Wood','Stone']:
    chopped_stump(root,-3.6,-2.1,.66,.73,variant,0)
    chopped_stump(root,3.45,-2.35,.44,.51,variant,1)
    chopped_stump(root,2.95,2.55,.90,.62,variant,2)
+   # A recognizable harvested timber stack in front of the canopy.
+   # Unlike more decorative pines, this is composed of cut trunks with clear
+   # heartwood end rings; one grounded mesh means stacked pieces stay stacked
+   # after the real world-fitting importer adjusts bottom contact.
+   stack_verts=[];stack_faces=[];stack_materials=[]
+   for row in range(2):
+    for col in range(3):
+     px=-2.35+col*1.05;py=-3.55+row*.62
+     z=.38+row*.57
+     radius=.37+.04*math.sin(col+variant)
+     n=len(stack_verts)
+     for end_x in [-1.65,1.65]:
+      for side in range(12):
+       angle=math.tau*side/12
+       stack_verts.append((px+end_x,py+radius*math.cos(angle),z+radius*math.sin(angle)))
+     for side in range(12):
+      following=(side+1)%12
+      stack_faces.append((n+side,n+following,n+12+following,n+12+side));stack_materials.append(0)
+     stack_faces.append(tuple(reversed(tuple(n+i for i in range(12)))));stack_materials.append(1)
+     stack_faces.append(tuple(n+12+i for i in range(12)));stack_materials.append(1)
+   finished_mesh(root,'Sawn timber reserve with end grain',stack_verts,stack_faces,[bark,heart],stack_materials)
    # Curved/tapered trunk loft with exposed end grain, not a stack of cylinder primitives.
    for log in range(2):
     vv=[];ff=[]
