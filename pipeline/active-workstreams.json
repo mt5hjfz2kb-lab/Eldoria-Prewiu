@@ -1141,7 +1141,7 @@
       "title": "Región 1 — geografía canónica continua y representación por zoom",
       "owner": "chatgpt-world4x-continuation-20261024",
       "write_scope_released": false,
-      "ownership_revision": 24,
+      "ownership_revision": 25,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-24T13:27:33.271Z",
@@ -1158,10 +1158,12 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "docs/documentation-catalog.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Owner instruction 2026-10-24: authorized successor-chat claim of existing PR #100/World4X same workstream; $0, no merge/publication, no Valoria/UI edits. Preserve AF/AG; native candidate and real Unity QA required.",
-      "phase": "NATIVE_CANDIDATE_REVALIDATION",
-      "next": "Confirm handoff blend hashes; integrate reviewed macro batch and optional approved canopy transform on certified source; dispatch native [materialize-candidate] only with free Windows runner; inspect six real Unity views and certify Play/Edit/I-II.",
+      "phase": "OWNER_CLAIMED_NATIVE_RUNNER_LEASE",
+      "next": "Single region-production [materialize-candidate] run: revised packed geological pigment and proportionally tapered canopy, Unity exact QA; no UI/Valoria, no publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1412,6 +1414,13 @@
           "transferred_at": "2026-10-24T13:27:33.271Z",
           "to_owner": "chatgpt-world4x-continuation-20261024",
           "reason": "Successor chat explicitly authorized by project owner; previous owner released, resources []. No runner reserved until readiness checked."
+        },
+        {
+          "owner": "chatgpt-world4x-continuation-20261024",
+          "revision": 25,
+          "reserved_at": "2026-10-24T13:31:23.650Z",
+          "resource": "windows-runner-heavy",
+          "reason": "No active/queued World4X jobs, existing previous Blender session closed; one native candidate run after branch registry sync."
         }
       ],
       "delivery_definition": {
