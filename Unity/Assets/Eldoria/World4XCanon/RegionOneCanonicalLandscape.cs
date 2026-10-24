@@ -110,7 +110,7 @@ namespace Eldoria.World4XCanon
   {
    // Observe the same longitudinal continent along its long axis in landscape.
    // Fit all eight real bounds corners at the actual heading; never crop or scale geography.
-   var rotation=Quaternion.Euler(56,PanoramaHeading(aspect),0);
+   var rotation=Quaternion.Euler(64,PanoramaHeading(aspect),0);
    var right=rotation*Vector3.right;var up=rotation*Vector3.up;
    float horizontal=0,vertical=0;
    for(int i=0;i<8;i++){
@@ -157,7 +157,7 @@ namespace Eldoria.World4XCanon
    float size=navigation.View.orthographicSize;
    navigation.cameraDistance=Mathf.Max(140,size*2.5f);navigation.View.farClipPlane=Mathf.Max(900,navigation.cameraDistance*2.5f);
    if(size>=navigation.globalZoom*.98f)navigation.PanTo(new Vector3(regionBounds.center.x,origin.y,regionBounds.center.z));
-   float desired=Mathf.Lerp(42,56,Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,244,size)));
+   float desired=Mathf.Lerp(42,64,Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,244,size)));
    float tilt=force?desired:Mathf.Lerp(navigation.tilt,desired,1-Mathf.Exp(-7*Time.unscaledDeltaTime));
    float desiredHeading=PanoramaHeading(navigation.View.aspect)*Mathf.SmoothStep(0,1,Mathf.InverseLerp(regional*1.15f,far*.85f,size));
    float heading=desiredHeading; // Actual zoom already interpolates; do not add a second lag to pointer anchoring.

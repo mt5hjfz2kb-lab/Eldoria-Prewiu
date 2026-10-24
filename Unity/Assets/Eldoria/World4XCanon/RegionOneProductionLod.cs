@@ -17,6 +17,15 @@ namespace Eldoria.World4XCanon
                 var group=new GameObject("LOD "+near.name);group.transform.SetParent(artwork.transform,false);
                 // Reparent with world transforms preserved, including glTF handedness.
                 near.transform.SetParent(group.transform,true);far.transform.SetParent(group.transform,true);
+                // Prefer more legible low-poly conifer silhouettes at strategic
+                // distance, not an extra carpet or enlarged close-up donor.
+                // The far mesh is independently exported, keeps its original
+                // ground anchor, and still crossfades through the existing LOD.
+                if(near.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal))
+                {
+                    var scale=far.transform.localScale;
+                    far.transform.localScale=new Vector3(scale.x*1.50f,scale.y*1.85f,scale.z*1.50f);
+                }
                 var lod=group.AddComponent<LODGroup>();lod.fadeMode=LODFadeMode.CrossFade;lod.animateCrossFading=false;
                 lod.SetLODs(new[]{new LOD(.065f,new Renderer[]{near}),new LOD(.0001f,new Renderer[]{far})});lod.RecalculateBounds();
                 bool retained=near.name.StartsWith("Pilot_Pine",StringComparison.Ordinal);
