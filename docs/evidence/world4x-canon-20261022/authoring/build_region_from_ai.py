@@ -478,31 +478,40 @@ for cx in [-550.,0.,450.]:
  # explicit bank-safe allowance beyond the retained river half-width.
  length=44. if abs(cx)>1 else max(34.,min(40.,22.+float(riverwidth(cx))+4.))
  half=length/2
- # Original camera A/B showed a persistent gap at the castle entrance.
- # Shift only the central bridge along its authored road, without moving POIs.
- deck_centre=cy if abs(cx)>1 else cy+(length-44.)/2-5.5
- segments=int(round(length));vv=[];ff=[]
+ # Exact 1280×720 Unity A/B shows that decreasing Y moved the bridge
+ # AWAY from the gate. Higher Blender Y projects upward at heading 0.
+ # Move the deck 10.5 m toward the castle versus rejected -5.5 m test.
+ # Align the deck centre horizontally with the gate (~3.3 m rightward).
+ deck_centre=cy if abs(cx)>1 else cy+(length-44.)/2+5.0
+ bridge_x=cx if abs(cx)>1 else cx+3.3
+ segments=int(round(length));vv=[];ff=[];deck_heights=[]
  if abs(cx)<=1:
-  # The castle end MUST keep the originally authored AI/AF access elevation
-  # (z0 from crossing_banks measured before the join). Raycasting the joined
-  # terrain here instead sinks the near edge below its gate, making an air gap.
-  # Only the shortened far end needs a newly measured actual bank elevation.
+  # Use the joined physical mesh, not the deleted source Blender objects.
+  # The end at positive Y faces the castle; z1 is its original AF/AI
+  # bank/gate elevation. Negative Y meets the distant bank.
   terrain_inverse=terrain.matrix_world.inverted()
-  yshore=deck_centre+half
-  origin_local=terrain_inverse @ Vector((cx,yshore,150))
-  direction_local=terrain_inverse.to_3x3() @ Vector((0,0,-1))
-  hit,point,normal,index=terrain.ray_cast(origin_local,direction_local,distance=400)
-  assert hit,('Central bridge far end must meet joined land',cx,yshore)
-  z1=(terrain.matrix_world @ point).z
+  def joined_land_height(x,y):
+   origin_local=terrain_inverse @ Vector((x,y,150))
+   direction_local=terrain_inverse.to_3x3() @ Vector((0,0,-1))
+   hit,point,normal,index=terrain.ray_cast(origin_local,direction_local,distance=400)
+   assert hit,('Bridge must meet actual joined terrain',x,y)
+   return (terrain.matrix_world @ point).z
+  z0=joined_land_height(bridge_x,deck_centre-half)+.15
+  z1=max(z1,joined_land_height(bridge_x,deck_centre+half)+.15)
  for i in range(segments+1):
-  t=i/segments;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
-  vv.extend([(cx-4,deck_centre-half+length*t,z),(cx+4,deck_centre-half+length*t,z)])
+  t=i/segments;yy=deck_centre-half+length*t
+  z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
+  # Clamp the deck to real ground: previous trial let terrain occlude
+  # the middle planks, visually splitting the crossing into two pieces.
+  if abs(cx)<=1:z=max(z,joined_land_height(bridge_x,yy)+.18)
+  deck_heights.append(z)
+  vv.extend([(bridge_x-4,yy,z),(bridge_x+4,yy,z)])
   if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))
  me=bpy.data.meshes.new('True plank deck');me.from_pydata(vv,[],ff);me.materials.append(bridge_mat);plank=bridge_mat.copy();plank.name='Bridge alternate weathered plank';next(n for n in plank.node_tree.nodes if n.type=='BSDF_PRINCIPLED').inputs['Base Color'].default_value=(.92,.92,.92,1);me.materials.append(plank)
  for face in me.polygons:face.material_index=face.index%2
  uv=me.uv_layers.new(name='UVMap') # Same active layer name as the joined certified terrain
  for loop in me.loops:
-  q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x-cx+4)/8,(q.y-deck_centre+half)/length)
+  q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x-bridge_x+4)/8,(q.y-deck_centre+half)/length)
  obj=bpy.data.objects.new('Authored crossing '+str(cx),me);scene.collection.objects.link(obj)
  bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);terrain.select_set(True);bpy.context.view_layer.objects.active=terrain;bpy.ops.object.join()
  # Simple measured timber rails beside the river span, outside the full 8 m route.
@@ -513,19 +522,23 @@ for cx in [-550.,0.,450.]:
   rail_vertices.extend([(x0,y0,z0),(x1,y0,z0),(x1,y1,z0),(x0,y1,z0),(x0,y0,z1),(x1,y0,z1),(x1,y1,z1),(x0,y1,z1)])
   rail_faces.extend([tuple(start+i for i in face) for face in [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]])
  def deck_at(local_y):
-  t=(local_y+half)/length;return z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
+  # Rail posts follow the actual corrected deck heights, not a second
+  # analytical surface that would float above/below the corrected planks.
+  q=max(0.,min(float(segments),(local_y+half)/length*segments))
+  lo=min(segments-1,int(q));f=q-lo
+  return deck_heights[lo]*(1-f)+deck_heights[lo+1]*f
  rail_extent=int(min(12,half-2))
  for side in (-1,1):
   for y in range(-rail_extent,rail_extent+1,4):
-   z=deck_at(y);rail_box(cx+side*4.18-.12,cx+side*4.18+.12,deck_centre+y-.12,deck_centre+y+.12,z,z+1.25)
+   z=deck_at(y);rail_box(bridge_x+side*4.18-.12,bridge_x+side*4.18+.12,deck_centre+y-.12,deck_centre+y+.12,z,z+1.25)
   for y in range(-rail_extent,rail_extent,2):
-   z=deck_at(y+1)+1.05;rail_box(cx+side*4.18-.09,cx+side*4.18+.09,deck_centre+y,deck_centre+y+2,z,z+.18)
+   z=deck_at(y+1)+1.05;rail_box(bridge_x+side*4.18-.09,bridge_x+side*4.18+.09,deck_centre+y,deck_centre+y+2,z,z+.18)
  rail_mesh=bpy.data.meshes.new('Measured river crossing rails');rail_mesh.from_pydata(rail_vertices,[],rail_faces);rail_mesh.materials.append(rail_material)
  rail_uv=rail_mesh.uv_layers.new(name='Weathered timber grain')
  for loop in rail_mesh.loops:
-  q=rail_mesh.vertices[loop.vertex_index].co;rail_uv.data[loop.index].uv=((q.x-cx+4.5)/9,(q.y-deck_centre+half)/length)
+  q=rail_mesh.vertices[loop.vertex_index].co;rail_uv.data[loop.index].uv=((q.x-bridge_x+4.5)/9,(q.y-deck_centre+half)/length)
  rail_object=bpy.data.objects.new('BLD_CrossingRails_'+str(cx),rail_mesh);scene.collection.objects.link(rail_object)
- bridge_specs.append((cx,deck_centre,8,length))
+ bridge_specs.append((bridge_x,deck_centre,8,length))
 # Actual vegetation clearance at authored crossings and existing logical destinations.
 # These source objects remain recoverable in the certified AI file and this .blend.
 for tree in oldtrees:
