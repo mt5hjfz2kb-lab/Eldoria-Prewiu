@@ -35,6 +35,97 @@ namespace Eldoria.Tests
                 return !Occupied && state.BastionLevel>=1;
             }
         }
+        sealed class CreaturePlacement : Eldoria.Application.IWorldCreaturePlacement
+        {
+            public bool Blocked;
+            public bool TryChoose(Eldoria.Domain.PlayerState state,string id,string previous,int generation,
+                out Eldoria.Domain.WorldCreatureLocation result)
+            {
+                result=new Eldoria.Domain.WorldCreatureLocation{
+                    TargetId=id,SiteId=id+"site"+generation,CreatureKind=id.Contains(":boar:")?"boar":"spawnling",
+                    Level=Math.Min(5,generation),Generation=generation,X=25*generation,Y=2,Z=55*generation};
+                return !Blocked;
+            }
+        }
+        sealed class CreatureRoutes : Eldoria.Application.IWorldMarchRoutes
+        {
+            public bool TryRoute(Eldoria.Domain.PlayerState state,string id,
+                out System.Collections.Generic.List<Eldoria.Domain.WorldRoutePoint> route)
+            {
+                route=new System.Collections.Generic.List<Eldoria.Domain.WorldRoutePoint>{
+                    new Eldoria.Domain.WorldRoutePoint{X=15,Y=2,Z=55}};
+                return true;
+            }
+        }
+        [Test]
+        public void TripoBoarAndEngendroLevelsKeepTheOriginalGatewayCombatAndOfflineSave()
+        {
+            var clock=new PopulationClock();var store=new PopulationStore();
+            store.Save(new Eldoria.Domain.PlayerState{ScoutDefeated=true,EngendroDefeated=true});
+            store.Json=store.Json.Replace(",\"WorldCreatureLocations\":[]","");
+            var gateway=new Eldoria.Application.LocalGateway(clock,store);
+            Assert.That(gateway.Snapshot().WorldCreatureLocations,Is.Empty,"Load a genuine legacy schema-one save");
+            gateway.ConfigureLocalMarchRoutes(new CreatureRoutes());
+            var placement=new CreaturePlacement();
+            gateway.ConfigureLocalCreatureRespawn(placement,TimeSpan.FromMinutes(15));
+            gateway.EnsureLocalCreaturePopulation(3,3);
+            var original=gateway.Snapshot();
+            Assert.That(original.WorldCreatureLocations.Count,Is.EqualTo(6));
+            Assert.That(original.WorldCreatureLocations.All(x=>x.Alive&&x.Generation==1),Is.True);
+            Assert.That(original.WorldCreatureLocations.Select(x=>x.TargetId).Distinct().Count(),Is.EqualTo(6));
+            foreach(string family in new[]{"boar","spawnling"})
+            {
+                var last=Eldoria.Domain.WorldCreatureCatalog.For(family,1);
+                for(int level=2;level<=5;level++)
+                {
+                    var next=Eldoria.Domain.WorldCreatureCatalog.For(family,level);
+                    Assert.That(next.Health,Is.GreaterThan(last.Health));
+                    Assert.That(next.Attack,Is.GreaterThan(last.Attack));
+                    Assert.That(next.Defense,Is.GreaterThan(last.Defense));
+                    Assert.That(next.RewardWood,Is.GreaterThan(last.RewardWood));
+                    last=next;
+                }
+            }
+            var standard=Eldoria.Domain.WorldCreatureCatalog.For("spawnling",3);
+            Assert.That(standard.Health,Is.EqualTo(760));
+            Assert.That(standard.Attack,Is.EqualTo(84));
+            Assert.That(standard.Defense,Is.EqualTo(72));
+            string id="region1:boar:001";
+            var command=new Eldoria.Application.GameCommand("combat-1",original.PlayerId,"Fight",id,original.Revision);
+            Assert.That(gateway.Execute(command).Ok,Is.True);
+            Assert.That(gateway.Execute(command).Ok,Is.True,"Original idempotency must remain");
+            clock.UtcTicks+=TimeSpan.FromSeconds(Eldoria.Domain.SliceRules.TravelSeconds*2+1).Ticks;
+            gateway.Advance();
+            var battled=gateway.Snapshot();
+            Assert.That(battled.March.Phase,Is.EqualTo("idle"));
+            Assert.That(battled.LastBattleReport.TargetId,Is.EqualTo(id));
+            Assert.That(battled.LastBattleReport.Won,Is.True);
+            Assert.That(battled.Resources.Wood,Is.GreaterThan(original.Resources.Wood));
+            var dead=Eldoria.Application.LocalGateway.Creature(battled,id);
+            Assert.That(dead.Alive,Is.False);
+            Assert.That(dead.RespawnUtcTicks,Is.GreaterThan(clock.UtcTicks));
+            var restart=new Eldoria.Application.LocalGateway(clock,store);
+            restart.ConfigureLocalMarchRoutes(new CreatureRoutes());
+            restart.ConfigureLocalCreatureRespawn(placement,TimeSpan.FromMinutes(15));
+            Assert.That(Eldoria.Application.LocalGateway.Creature(restart.Snapshot(),id).Alive,Is.False);
+            clock.UtcTicks=dead.RespawnUtcTicks;
+            placement.Blocked=true;restart.Advance();
+            Assert.That(Eldoria.Application.LocalGateway.Creature(restart.Snapshot(),id).Alive,Is.False,"No route, no fake respawn");
+            placement.Blocked=false;restart.Advance();
+            var after=restart.Snapshot();
+            var returned=Eldoria.Application.LocalGateway.Creature(after,id);
+            Assert.That(returned.Alive,Is.True);
+            Assert.That(returned.Generation,Is.EqualTo(2));
+            Assert.That(returned.Level,Is.EqualTo(2));
+            Assert.That(returned.SiteId,Is.Not.EqualTo(dead.SiteId));
+            Assert.That(after.WorldCreatureLocations.Count,Is.EqualTo(6));
+            Assert.That(after.ScoutDefeated&&after.EngendroDefeated,Is.True);
+            var shared=restart.Snapshot();shared.WorldId="external-server";store.Save(shared);
+            Assert.Throws<InvalidOperationException>(()=>
+                new Eldoria.Application.LocalGateway(clock,store)
+                    .ConfigureLocalCreatureRespawn(placement,TimeSpan.FromMinutes(15)));
+        }
+
         [Test]
         public void LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot()
         {

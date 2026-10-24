@@ -17,6 +17,48 @@ namespace Eldoria.Domain
         public long DepletedUtcTicks;
         public WorldResourceLocation Copy() => (WorldResourceLocation)MemberwiseClone();
     }
+    // World population is saved by the original owner store, alongside resources.
+    // Bastion I-II story bosses retain their independent progression ledger.
+    [Serializable] public sealed class WorldCreatureLocation
+    {
+        public string TargetId, SiteId, CreatureKind;
+        public int Level, Generation;
+        public float X,Y,Z;
+        public long DefeatedUtcTicks, RespawnUtcTicks;
+        public bool Alive => Generation>0&&DefeatedUtcTicks==0;
+        public WorldCreatureLocation Copy() => (WorldCreatureLocation)MemberwiseClone();
+    }
+    public readonly struct WorldCreatureStats
+    {
+        public readonly int Health,Attack,Defense,Break,RewardWood,RewardStone;
+        public WorldCreatureStats(int hp,int att,int def,int brk,int wood,int stone)
+        {Health=hp;Attack=att;Defense=def;Break=brk;RewardWood=wood;RewardStone=stone;}
+    }
+    public static class WorldCreatureCatalog
+    {
+        // One original 3D model per family, five DATA levels per family.
+        // Engendro 3 exactly matches Bastion II (HP760/ATK84/DEF72/BRK32).
+        // Starting values require playtest balance approval, not art regeneration.
+        static readonly WorldCreatureStats[] Boar={
+            new WorldCreatureStats(260,35,28,8,35,10),
+            new WorldCreatureStats(340,42,34,11,42,18),
+            new WorldCreatureStats(420,49,40,14,55,25),
+            new WorldCreatureStats(510,58,45,18,66,35),
+            new WorldCreatureStats(600,68,52,22,78,45)};
+        static readonly WorldCreatureStats[] Spawnling={
+            new WorldCreatureStats(510,65,50,23,80,65),
+            new WorldCreatureStats(620,76,59,28,95,75),
+            new WorldCreatureStats(760,84,72,32,120,100),
+            new WorldCreatureStats(890,96,82,36,140,110),
+            new WorldCreatureStats(1050,112,96,40,165,135)};
+        public static WorldCreatureStats For(string kind,int level)
+        {
+            if(level<1||level>5)throw new ArgumentOutOfRangeException(nameof(level));
+            if(kind=="boar")return Boar[level-1];
+            if(kind=="spawnling")return Spawnling[level-1];
+            throw new ArgumentException("Unknown Tripo creature family",nameof(kind));
+        }
+    }
     [Serializable] public sealed class ResourceWallet { public int Wood; public int Stone; public int Food; }
     [Serializable] public sealed class ArmyRoster
     {
@@ -96,6 +138,7 @@ namespace Eldoria.Domain
         public string PreparedHeroId = "aldric";
         public ArmyRoster PreparedTroops = new ArmyRoster();
         public List<WorldResourceLocation> WorldResourceLocations = new List<WorldResourceLocation>();
+        public List<WorldCreatureLocation> WorldCreatureLocations = new List<WorldCreatureLocation>();
         public int ForestRemaining = 1250;
         public int QuarryRemaining = 5200;
         public long BuildingCompletesUtcTicks;
@@ -309,6 +352,20 @@ namespace Eldoria.Domain
                     : "Tus arqueros y Aldric abrieron la defensa corrupta. Ataque y Ruptura superaron su resistencia.")
                 : "El enemigo resistió seis intercambios o agotó la Vida de la marcha. Refuerza las tropas.";
             return new CombatReport(win, Math.Max(0, playerHp), rounds, reason);
+        }
+        // Use the same original six-round damage equation, without a second battle engine.
+        public static CombatReport FightCreature(CombatStats player,WorldCreatureStats enemy)
+        {
+            int enemyHp=enemy.Health,playerHp=player.Health,rounds=0;
+            while(rounds<6&&enemyHp>0&&playerHp>0)
+            {
+                rounds++;enemyHp-=Hit(player.Attack,enemy.Defense,player.Break);
+                if(enemyHp>0)playerHp-=Hit(enemy.Attack,player.Defense,enemy.Break);
+            }
+            bool win=enemyHp<=0&&playerHp>0;
+            return new CombatReport(win,Math.Max(0,playerHp),rounds,
+                win?"La expedición ha vencido al objetivo de Región 1.":
+                    "La criatura resistió o agotó la Vida de la marcha. Mejora las tropas.");
         }
         private static int Hit(int attack, int defense, int brk)
             => Math.Max(12, (int)Math.Round(attack * (1 + Math.Min(.6, brk / 500.0)) - defense * .48,

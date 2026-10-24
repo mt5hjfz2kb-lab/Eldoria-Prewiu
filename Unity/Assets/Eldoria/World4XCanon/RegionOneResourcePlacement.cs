@@ -9,7 +9,7 @@ using UnityEngine;
 namespace Eldoria.World4XCanon
 {
     // Geometry service for the existing LocalGateway. Owns no timer or save file.
-    public sealed class RegionOneResourcePlacement : MonoBehaviour, IWorldResourcePlacement
+    public sealed class RegionOneResourcePlacement : MonoBehaviour, IWorldResourcePlacement, IWorldCreaturePlacement
     {
         [Serializable] public sealed class CityReserve {public float x,z,radius;[NonSerialized] public bool Validated;}
         [Serializable] public sealed class FaultSegment {public float ax,az,bx,bz,radius;}
@@ -93,6 +93,64 @@ namespace Eldoria.World4XCanon
             var snapshot=host.City.Gateway.Snapshot();
             foreach(var city in cities)if(city.Validated&&routes.TryRouteTo(snapshot,host.WorldHome+new Vector3(city.x,0,city.z),out var route))AccessibleCityCount++;
         }
+        // Enemy and resource sites share this single physical land/road/rivers
+        // verifier. No secondary map or client-side save authority is created.
+        public bool TryChoose(PlayerState snapshot,string targetId,string previousSiteId,int generation,out WorldCreatureLocation creature)
+        {
+            creature=null;
+            if(snapshot.WorldId!="world-local"||sites.Count==0||routes==null)return false;
+            var original=LocalGateway.Creature(snapshot,targetId);
+            if(original==null||(original.CreatureKind!="boar"&&original.CreatureKind!="spawnling"))return false;
+            uint hash=2166136261;
+            foreach(char c in targetId)hash=unchecked((hash^c)*16777619);
+            int first=(int)(hash%(uint)sites.Count);
+            for(int pass=0;pass<2;pass++)
+            for(int k=0;k<sites.Count;k++)
+            {
+                var site=sites[(first+k+generation*23)%sites.Count];
+                if(site.Id==previousSiteId)continue;
+                float x=site.Point.x-host.WorldHome.x,z=site.Point.z-host.WorldHome.z;
+                float breach=4000;
+                foreach(var segment in faults)
+                {
+                    var a=new Vector2(segment.ax,segment.az);
+                    var d=new Vector2(segment.bx-segment.ax,segment.bz-segment.az);
+                    float t=d.sqrMagnitude>.0001f?
+                        Mathf.Clamp01(Vector2.Dot(new Vector2(x,z)-a,d)/d.sqrMagnitude):0;
+                    breach=Mathf.Min(breach,Vector2.Distance(new Vector2(x,z),a+d*t));
+                }
+                // Naturally overlapping distributions, never rigid artificial rings:
+                // boars prefer safer meadows, spawnlings the influence of Brecha.
+                bool preferred=original.CreatureKind=="boar"?breach>330:breach<540;
+                if(pass==0&&!preferred)continue;
+                bool occupied=Vector2.Distance(new Vector2(site.Point.x,site.Point.z),
+                    new Vector2(host.WorldHome.x,host.WorldHome.z))<40;
+                foreach(var city in cities)
+                    if(Vector2.Distance(new Vector2(x,z),new Vector2(city.x,city.z))<city.radius+24)occupied=true;
+                foreach(var item in snapshot.WorldResourceLocations)
+                    if(item.Generation>0&&LocalGateway.ResourceRemaining(snapshot,item.TargetId)>0&&
+                       Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(item.X,item.Z))<28)occupied=true;
+                foreach(var other in snapshot.WorldCreatureLocations)
+                    if(other.TargetId!=targetId&&other.Alive&&
+                       Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(other.X,other.Z))<34)occupied=true;
+                foreach(var historic in new[]{"valoria-map-city","forest-valoria","quarry-valoria","corrupt-scout","engendro-valoria"})
+                {
+                    var target=host.FindTarget(historic);
+                    if(target&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),
+                       new Vector2(target.transform.position.x,target.transform.position.z))<35)occupied=true;
+                }
+                if(occupied||!routes.FootprintClear(site.Point,10))continue;
+                if(!routes.TryRouteTo(snapshot,site.Point,out var route))continue;
+                float jitter=((hash>>9)%101)/100f*.56f-.28f;
+                int level=Mathf.Clamp(Mathf.RoundToInt(1f+4f*Mathf.Clamp01(1f-breach/620f)+jitter),1,5);
+                creature=new WorldCreatureLocation{
+                    TargetId=targetId,CreatureKind=original.CreatureKind,
+                    SiteId=site.Id,Generation=generation,Level=level,
+                    X=site.Point.x,Y=site.Point.y,Z=site.Point.z};
+                return true;
+            }
+            return false;
+        }
         public bool TryChoose(PlayerState snapshot,string targetId,string previousSiteId,int generation,out WorldResourceLocation location)
         {
             location=null;
@@ -111,6 +169,10 @@ namespace Eldoria.World4XCanon
                 foreach(var city in cities)if(Vector2.Distance(new Vector2(site.Point.x-host.WorldHome.x,site.Point.z-host.WorldHome.z),new Vector2(city.x,city.z))<city.radius+9)occupied=true;
                 foreach(var item in snapshot.WorldResourceLocations)
                     if(item.TargetId!=targetId&&item.Generation>0&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(item.X,item.Z))<20)occupied=true;
+                // Do not place an exhausted node on the active creature population.
+                foreach(var creature in snapshot.WorldCreatureLocations)
+                    if(creature.Alive&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),
+                      new Vector2(creature.X,creature.Z))<28)occupied=true;
                 foreach(var hotspot in host.WorldRoot.GetComponentsInChildren<Eldoria.Presentation.WorldHotspot>(true))
                     if(hotspot.Id!=targetId&&Vector2.Distance(new Vector2(site.Point.x,site.Point.z),new Vector2(hotspot.transform.position.x,hotspot.transform.position.z))<24)occupied=true;
                 // Same 9 m canopy footprint clearance, now including original AF/AG
@@ -147,7 +209,7 @@ namespace Eldoria.World4XCanon
             var state=bound.Snapshot();
             bool panorama=host.WorldCamera&&host.WorldNavigation&&IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);
             foreach(var existing in host.WorldRoot.GetComponentsInChildren<Eldoria.Presentation.WorldHotspot>(true))
-                if(existing.Id!=null&&existing.Id.StartsWith("region1:",StringComparison.Ordinal)){
+                if(existing.Id!=null&&(existing.Id.StartsWith("region1:wood:",StringComparison.Ordinal)||existing.Id.StartsWith("region1:stone:",StringComparison.Ordinal))){
                     bool alive=state.WorldResourceLocations.Any(x=>x.TargetId==existing.Id&&x.Generation>0&&LocalGateway.ResourceRemaining(state,x.TargetId)>0);
                     if(existing.gameObject.activeSelf!=alive)existing.gameObject.SetActive(alive);
                 }

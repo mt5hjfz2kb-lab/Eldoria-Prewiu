@@ -21,6 +21,7 @@ namespace Eldoria.World4XCanon
   bool built;
   RegionOneBlenderLandscape geography;RegionOneReferenceNodes nodes;
   RegionOneResourcePlacement placement;RegionOneResourceModels resourceModels;
+  RegionOneCreaturePopulation creaturePopulation;
   Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual originalTripoActor;
   bool previousPanorama;
   readonly List<Renderer> originals=new List<Renderer>();
@@ -149,6 +150,8 @@ namespace Eldoria.World4XCanon
    RegionOneResourceModels.Install(root,host);
    placement=root.GetComponent<RegionOneResourcePlacement>();
    resourceModels=root.GetComponent<RegionOneResourceModels>();
+   RegionOneCreaturePopulation.Install(root,host,placement);
+   creaturePopulation=root.GetComponent<RegionOneCreaturePopulation>();
    originalTripoActor=existingWorld.GetComponentInChildren<Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual>(true);
   }
   void UpdateLevelOfDetail(bool force)
@@ -195,6 +198,7 @@ namespace Eldoria.World4XCanon
     previousPanorama=panorama;
     if(placement)placement.RefreshForZoom();
     if(resourceModels)resourceModels.RefreshNow();
+    if(creaturePopulation)creaturePopulation.RefreshNow();
    }
    if(nodes)nodes.Refresh();if(geography)geography.Refresh();
   }

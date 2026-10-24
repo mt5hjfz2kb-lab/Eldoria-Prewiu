@@ -1069,8 +1069,16 @@ far_canopy=sum(op['name'].startswith('BLD_ForestFar_') for op in canopy_ops)
 # verify the exact counted authored inventory after explicitly recorded
 # geological clearances, including every near/far LOD pair. This is an
 # exact conservation assertion, not a skipped/weakened coverage gate.
-expected_canopy=tree_total-len(macro_result['cleared_crowns'])
-assert expected_canopy>0 and near_canopy==far_canopy==expected_canopy,('Near/far LOD inventory mismatch',near_canopy,far_canopy,expected_canopy)
+# The exact A/B pass skips trees within the explicitly protected AF/AG
+# transition strip: their scale remains original and their near/far pair
+# persists. Explicit fracture clearance controls rendering separately.
+# Count exactly which original eligible (outside AF/AG) forest instances
+# received both LOD adjustments, rather than guessing a tree threshold.
+canopy_mass=[ob for ob in bpy.context.scene.objects if ob.name.startswith('BLD_ForestMass_')]
+assert len(canopy_mass)==tree_total,('Physical forest instances changed before A/B',len(canopy_mass),tree_total)
+expected_canopy=sum(1 for ob in canopy_mass if not ob.hide_get() and
+ math.hypot(max(0,abs(ob.location.x)-96),max(0,-78-ob.location.y,ob.location.y-270))>35)
+assert expected_canopy>0 and near_canopy==far_canopy==expected_canopy,('Exact eligible near/far canopy inventory mismatch',near_canopy,far_canopy,expected_canopy)
 assert all(op['before']!=op['after'] for op in canopy_ops)
 (out/'macro-canopy-operations.json').write_text(json.dumps({
  'source_experiment_run':40096725089,

@@ -28,7 +28,17 @@ foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','
  $paths+=$path
  if(Test-Path "$path.meta"){$paths+="$path.meta"}
 }
-foreach($file in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend')){
+# The pre-existing Tripo boar and finished Spawnling sources are immutable.
+# Preserve exact imports and the Blender-authored boar far LOD in the same PR.
+$creatures='Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures'
+foreach($name in @('RockBoarNear.glb','RockBoarFar.glb','SpawnlingNear.glb','SpawnlingFar.glb')){
+ $path="$creatures/$name"
+ if(-not(Test-Path $path) -or (Get-Item $path).Length -lt 100000){throw "Missing source-backed creature in native candidate: $path"}
+ $paths+=$path
+ if(Test-Path "$path.meta"){$paths+="$path.meta"}
+}
+if(Test-Path "$creatures.meta"){$paths+="$creatures.meta"}
+foreach($file in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend','RockBoar_Far_LOD.blend')){
  $path="$sources/$file";Copy-Item (Join-Path $generated $file) $path;$paths+=$path
 }
 # Keep the required genuine review views beside their exact editable source;

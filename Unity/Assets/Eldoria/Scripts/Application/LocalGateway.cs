@@ -35,6 +35,10 @@ namespace Eldoria.Application
         bool TryChoose(PlayerState snapshot, string targetId, string previousSiteId,
             int generation, out WorldResourceLocation location);
     }
+    public interface IWorldCreaturePlacement
+    {
+        bool TryChoose(PlayerState snapshot,string targetId,string previousSiteId,int generation,out WorldCreatureLocation location);
+    }
     public interface IWorldMarchRoutes
     {
         bool TryRoute(PlayerState snapshot,string targetId,out System.Collections.Generic.List<WorldRoutePoint> route);
@@ -47,6 +51,8 @@ namespace Eldoria.Application
         private IWorldResourcePlacement resourcePlacement;
         private long resourceRespawnTicks;
         private IWorldMarchRoutes marchRoutes;
+        private IWorldCreaturePlacement creaturePlacement;
+        private long creatureRespawnTicks;
         public void ConfigureLocalMarchRoutes(IWorldMarchRoutes routes){if(state.WorldId!="world-local")throw new InvalidOperationException("Remote route authority required");marchRoutes=routes??throw new ArgumentNullException(nameof(routes));}
         public void ConfigureLocalResourceRespawn(IWorldResourcePlacement placement, TimeSpan delay)
         {
@@ -71,6 +77,49 @@ namespace Eldoria.Application
                     state.WorldResourceLocations.Add(new WorldResourceLocation{TargetId=id,ResourceKind=kind,Capacity=kind=="wood"?1250:5200,RespawnUtcTicks=clock.UtcTicks});changed=true;
                 }
             changed|=AdvanceResourcePopulation();if(changed)Commit();
+        }
+        public void ConfigureLocalCreatureRespawn(IWorldCreaturePlacement placement,TimeSpan delay)
+        {
+            if(placement==null)throw new ArgumentNullException(nameof(placement));
+            if(delay<=TimeSpan.Zero)throw new ArgumentOutOfRangeException(nameof(delay));
+            if(state.WorldId!="world-local")throw new InvalidOperationException("Shared creatures require remote server authority");
+            creaturePlacement=placement;creatureRespawnTicks=delay.Ticks;Advance();
+        }
+        public void EnsureLocalCreaturePopulation(int boarCount,int spawnlingCount)
+        {
+            if(creaturePlacement==null||state.WorldId!="world-local")throw new InvalidOperationException("Local creature site authority required");
+            if(boarCount<0||spawnlingCount<0||boarCount>60||spawnlingCount>60)throw new ArgumentOutOfRangeException("creature population");
+            bool changed=false;
+            foreach(var kind in new[]{"boar","spawnling"})
+                for(int n=1;n<=(kind=="boar"?boarCount:spawnlingCount);n++)
+                {
+                    var id="region1:"+kind+":"+n.ToString("D3",System.Globalization.CultureInfo.InvariantCulture);
+                    if(state.WorldCreatureLocations.Exists(x=>x.TargetId==id))continue;
+                    state.WorldCreatureLocations.Add(new WorldCreatureLocation{TargetId=id,CreatureKind=kind,Level=1,RespawnUtcTicks=clock.UtcTicks});
+                    changed=true;
+                }
+            changed|=AdvanceCreaturePopulation();
+            if(changed)Commit();
+        }
+        public static WorldCreatureLocation Creature(PlayerState snapshot,string targetId)
+            =>snapshot.WorldCreatureLocations?.Find(x=>x.TargetId==targetId);
+        private bool AdvanceCreaturePopulation()
+        {
+            if(creaturePlacement==null)return false;
+            bool changed=false;
+            foreach(var record in state.WorldCreatureLocations)
+            {
+                if(record.Alive||record.RespawnUtcTicks>clock.UtcTicks||state.March.TargetId==record.TargetId)continue;
+                if(!creaturePlacement.TryChoose(Snapshot(),record.TargetId,record.SiteId,record.Generation+1,out var chosen))continue;
+                if(chosen==null||chosen.TargetId!=record.TargetId||chosen.CreatureKind!=record.CreatureKind||
+                    chosen.Level<1||chosen.Level>5||string.IsNullOrEmpty(chosen.SiteId)||chosen.SiteId==record.SiteId||
+                    float.IsNaN(chosen.X)||float.IsInfinity(chosen.X)||float.IsNaN(chosen.Y)||float.IsInfinity(chosen.Y)||
+                    float.IsNaN(chosen.Z)||float.IsInfinity(chosen.Z))
+                    throw new InvalidOperationException("Invalid authoritative creature site or level");
+                record.SiteId=chosen.SiteId;record.X=chosen.X;record.Y=chosen.Y;record.Z=chosen.Z;
+                record.Level=chosen.Level;record.Generation++;record.RespawnUtcTicks=0;record.DefeatedUtcTicks=0;changed=true;
+            }
+            return changed;
         }
         public static string ResourceKind(PlayerState snapshot,string targetId)
         {
@@ -138,6 +187,15 @@ namespace Eldoria.Application
             if (state.SchemaVersion != 1) throw new InvalidOperationException("Unsupported Eldoria save schema");
             if (state.WorldResourceLocations == null)
                 state.WorldResourceLocations = new System.Collections.Generic.List<WorldResourceLocation>();
+            if (state.WorldCreatureLocations == null)
+                state.WorldCreatureLocations = new System.Collections.Generic.List<WorldCreatureLocation>();
+            var creatureIds=new System.Collections.Generic.HashSet<string>();
+            foreach(var creature in state.WorldCreatureLocations)
+                if(creature==null||string.IsNullOrWhiteSpace(creature.TargetId)||
+                   (creature.CreatureKind!="boar"&&creature.CreatureKind!="spawnling")||
+                   !creature.TargetId.StartsWith("region1:"+creature.CreatureKind+":",StringComparison.Ordinal)||
+                   !creatureIds.Add(creature.TargetId)||creature.Level<1||creature.Level>5)
+                    throw new InvalidOperationException("Duplicate or invalid persistent creature identity");
             var resourceIds = new System.Collections.Generic.HashSet<string>();
             foreach (var item in state.WorldResourceLocations)
                 if (item == null || string.IsNullOrEmpty(item.TargetId) || (item.TargetId != "forest-valoria" && item.TargetId != "quarry-valoria" && !(item.TargetId.StartsWith("region1:wood:",StringComparison.Ordinal)&&item.ResourceKind=="wood") && !(item.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal)&&item.ResourceKind=="stone")) || !resourceIds.Add(item.TargetId))
@@ -184,6 +242,7 @@ namespace Eldoria.Application
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
                     PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
                 WorldResourceLocations=s.WorldResourceLocations.ConvertAll(x=>x.Copy()),
+                WorldCreatureLocations=s.WorldCreatureLocations.ConvertAll(x=>x.Copy()),
                 ForestRemaining=s.ForestRemaining, QuarryRemaining=s.QuarryRemaining, BuildingCompletesUtcTicks=s.BuildingCompletesUtcTicks,
                 BuildingTaskId=s.BuildingTaskId,
                 BastionUpgradeStartedUtcTicks=s.BastionUpgradeStartedUtcTicks,
@@ -273,6 +332,14 @@ namespace Eldoria.Application
                         SliceRules.Expedition(state.PreparedTroops,state.PreparedHeroId).Power;
                     break;
                 case "Fight":
+                    var creature=Creature(state,command.TargetId);
+                    if(creature!=null)
+                    {
+                        if(!creature.Alive)return Fail("La criatura está derrotada o reapareciendo");
+                        if(!CanDepart())return Fail("Marcha no disponible");
+                        if(!Depart(command.TargetId))return Fail("No hay una ruta transitable hasta la criatura");
+                        break;
+                    }
                     if (command.TargetId == "corrupt-scout")
                     {
                         if (state.ScoutDefeated) return Fail("La ruta ya está despejada");
@@ -437,12 +504,21 @@ namespace Eldoria.Application
                     else
                     {
                         var expedition = SliceRules.Expedition(m.Troops, m.HeroId);
-                        var report = SliceRules.Fight(expedition, m.TargetId);
+                        var creature=Creature(state,m.TargetId);
+                        var enemy=creature!=null?WorldCreatureCatalog.For(creature.CreatureKind,creature.Level):default(WorldCreatureStats);
+                        var report=creature!=null?SliceRules.FightCreature(expedition,enemy):SliceRules.Fight(expedition,m.TargetId);
                         state.LastBattleReason = report.Reason;
                         int rewardWood = 0, rewardStone = 0;
                         if (report.Won)
                         {
-                            if (m.TargetId == "engendro-valoria")
+                            if (creature!=null)
+                            {
+                                rewardWood=enemy.RewardWood;rewardStone=enemy.RewardStone;
+                                m.PendingWood=rewardWood;m.PendingStone=rewardStone;
+                                creature.DefeatedUtcTicks=due;
+                                creature.RespawnUtcTicks=checked(due+creatureRespawnTicks);
+                            }
+                            else if (m.TargetId == "engendro-valoria")
                             {
                                 rewardWood = 120; rewardStone = 100;
                                 m.PendingWood = rewardWood; m.PendingStone = rewardStone; state.EngendroDefeated = true;
@@ -462,7 +538,7 @@ namespace Eldoria.Application
                             HeroId = m.HeroId,
                             Troops = m.Troops.Total,
                             PlayerPower = expedition.Power,
-                            EnemyPower = 0,
+                            EnemyPower = creature!=null?enemy.Health+enemy.Attack+enemy.Defense+enemy.Break:0,
                             Won = report.Won,
                             Rounds = report.Rounds,
                             RemainingHealth = report.RemainingHealth,
@@ -532,6 +608,7 @@ namespace Eldoria.Application
             }
             if (GrantWebMissionRewards()) changed = true;
             changed |= AdvanceResourcePopulation();
+            changed |= AdvanceCreaturePopulation();
             if (changed) Commit();
             return changed;
         }

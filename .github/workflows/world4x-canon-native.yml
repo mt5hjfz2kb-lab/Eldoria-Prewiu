@@ -82,6 +82,9 @@ jobs:
             /tools/workstream-lease/**
             /pipeline/active-workstreams.json
             /docs/evidence/world4x-canon-20261022/authoring/**
+            /ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb
+            /ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb
+            /ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Far.glb
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -197,6 +200,30 @@ jobs:
           if($LASTEXITCODE){throw 'Reusable resource Blender authoring failed'}
           $dest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
           foreach($file in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json','RegionOneResources.glb','RegionOneResourceImpostors.png','RegionOneGrassDetail.png')){Copy-Item (Join-Path $out $file) (Join-Path $dest $file) -Force}
+      - name: Stage existing Tripo boar and engendro with an actual Blender far LOD
+        if: contains(github.event.head_commit.message, 'region-production(world4x):')
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Heavy process conflict'}
+          $root='world4x-source/ArtSource/World4X'
+          $out='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures'
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $boar="$root/RockBoar_v1/RockBoar_Optimizado_49800.glb"
+          $spawnNear="$root/Spawnling_v1/Finished/Spawnling_B2_Near.glb"
+          $spawnFar="$root/Spawnling_v1/Finished/Spawnling_B2_Far.glb"
+          foreach($source in @($boar,$spawnNear,$spawnFar)){if(-not(Test-Path $source)){throw "Protected Tripo original missing: $source"}}
+          Copy-Item -LiteralPath $boar -Destination "$out/RockBoarNear.glb" -Force
+          Copy-Item -LiteralPath $spawnNear -Destination "$out/SpawnlingNear.glb" -Force
+          Copy-Item -LiteralPath $spawnFar -Destination "$out/SpawnlingFar.glb" -Force
+          $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          if(-not $blender){throw 'Blender needed to create a far boar LOD from original Tripo'}
+          $outEditable=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/make_boar_far_lod.py -- $boar "$out/RockBoarFar.glb" "$outEditable/RockBoar_Far_LOD.blend"
+          if($LASTEXITCODE){throw 'Tripo boar far LOD production failed'}
+          foreach($file in @('RockBoarNear.glb','RockBoarFar.glb','SpawnlingNear.glb','SpawnlingFar.glb')){
+            if(-not(Test-Path "$out/$file") -or (Get-Item "$out/$file").Length -lt 100000){throw "Missing actual Tripo LOD: $file"}
+          }
+          Write-Host 'REGION1_TRIPO_ORIGINALS_REUSED 4 real GLBs / 2 immutable original families / zero API credits'
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell

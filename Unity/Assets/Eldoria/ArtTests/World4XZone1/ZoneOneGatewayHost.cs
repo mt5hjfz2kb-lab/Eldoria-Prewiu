@@ -44,6 +44,17 @@ namespace Eldoria.World4XPrototype
                 string kind=LocalGateway.ResourceKind(state,targetId);int remaining=LocalGateway.ResourceRemaining(state,targetId);
                 if(kind=="wood"||kind=="stone")return new ZoneOneTargetAction(targetId,"Gather",remaining<=0?"Recurso agotado":kind=="wood"?"Recoger madera":"Recoger piedra",idle&&troops&&remaining>0);
             }
+            // Existing Inspect -> Execute -> original LocalGateway route handles
+            // every renewable encounter; level is legible upon selection.
+            var creature=LocalGateway.Creature(state,targetId);
+            if(creature!=null)
+            {
+                var name=creature.CreatureKind=="boar"?"Jabalí":"Engendro";
+                return new ZoneOneTargetAction(targetId,"Fight",
+                    creature.Alive?"Atacar "+name+" · nivel "+creature.Level:
+                        name+" · reapareciendo",
+                    idle&&troops&&creature.Alive);
+            }
             switch (targetId)
             {
                 case "valoria-map-city":
