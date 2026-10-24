@@ -7,6 +7,20 @@ export function classifyMission({ mission, activeWorkstreams, runs, branchSha, n
       next_action: "Reconcile the canonical active-workstreams registry; do not claim or dispatch another owner's work.",
       required_evidence: mission.required_evidence || [] };
   }
+  // A paused or deliberately unclaimed workstream remains in the registry for
+  // provenance. Its old failed run must NOT create a new "resume" mission.
+  const explicitlyPaused=/^OWNER_PAUSED_/i.test(owner.phase||'') ||
+    /^PAUSED BY OWNER\b/i.test(owner.next||'');
+  if(explicitlyPaused || owner.owner===null){
+    return {id:mission.workstream_id,
+      state:explicitlyPaused?'OWNER_PAUSED':'UNCLAIMED_WORKSTREAM',
+      alert:false,branch:mission.branch,branch_sha:branchSha||null,
+      latest_run:null,age_minutes:null,
+      next_action:explicitlyPaused?
+        'Owner paused this workstream. Preserve evidence and wait for explicit owner resumption; do not dispatch, claim or retry.' :
+        'No current owner holds this workstream. Do not automatically reclaim or dispatch; reconcile the owner authorization and active registry.',
+      required_evidence:mission.required_evidence||[]};
+  }
   const allowed = new Set(mission.workflow_names || []);
   const relevant = (runs || []).filter((r) =>
     r.head_branch === mission.branch && allowed.has(r.name));
