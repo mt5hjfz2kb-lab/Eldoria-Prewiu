@@ -69,9 +69,30 @@ def grove_field(X,Y,index):
  rim=1+.23*np.sin(3*angle+index)+.11*np.sin(5*angle-index*.7)+.055*np.cos(7*angle+index*.4)
  d=(wx/rx)**2+(wy/ry)**2
  return np.clip((rim-d)*1.8,0,1)
+
+# Authored links join selected existing groves into uneven woodland belts;
+# they do not become collectible nodes, collision blockers or new geography.
+FOREST_CONNECTIONS=(
+ ((-750,500),(-650,790),42),((-650,790),(-430,680),35),
+ ((-430,680),(-220,420),33),((-730,90),(-750,-370),35),
+ ((-410,-280),(-270,-470),32),((-270,-470),(-130,-800),32),
+ ((330,-820),(650,-650),29),((300,420),(580,540),28),
+ ((100,600),(300,420),30),((-620,1430),(-270,1120),35),
+ ((240,-1570),(650,-1300),30))
+def connecting_woodland(X,Y):
+ result=np.zeros(np.shape(X))
+ for (ax,ay),(bx,by),width in FOREST_CONNECTIONS:
+  dx,dy=bx-ax,by-ay
+  t=np.clip(((X-ax)*dx+(Y-ay)*dy)/(dx*dx+dy*dy),0,1)
+  distance=np.hypot(X-ax-t*dx,Y-ay-t*dy)
+  width_at_t=width*(.93+.12*np.sin(6*t+ax*.01)+.09*np.cos(11*t+by*.01))
+  result=np.maximum(result,.78*np.clip((1-(distance/width_at_t)**2)*1.35,0,1))
+ return result
+
 def forest_field(X,Y):
  result=np.zeros(np.shape(X))
  for index in range(len(groves)):result=np.maximum(result,grove_field(X,Y,index))
+ result=np.maximum(result,connecting_woodland(X,Y))
  return result
 cities=[]
 for y in [-1500,-1180,-740,-480,-250,330,530,810,1120,1530]:
@@ -252,6 +273,28 @@ for route_index,route in enumerate(routes[:16]):
    rgba[area][:,:,:3]=rgba[area][:,:,:3]*(1-weight[:,:,None])+tone*weight[:,:,None]
    prairie_paint[area]=np.maximum(prairie_paint[area],weight)
 forest=forest_field(X,Y)
+
+# Eight directed meadow terraces fill the open regions between woodland
+# ridges, tapering before the AF/AG source. The shape/colour choices are authored.
+for n,(cx,cy,rx,ry,angle) in enumerate((
+ (-530,1120,205,115,.35),(85,910,255,160,-.25),
+ (415,1230,190,145,.5),(-50,-1080,270,180,.27),
+ (455,-1090,200,150,-.4),(-530,-1390,180,140,-.2),
+ (135,-330,175,95,.13),(-410,-960,175,110,-.52))):
+ reach=max(rx,ry)*1.65
+ ix0=max(0,int((cx-reach+910)/1820*(S-1)));ix1=min(S,int((cx+reach+910)/1820*(S-1))+2)
+ iy0=max(0,int((cy-reach+1800)/3600*(S-1)));iy1=min(S,int((cy+reach+1800)/3600*(S-1))+2)
+ if ix1<=ix0 or iy1<=iy0:continue
+ area=np.s_[iy0:iy1,ix0:ix1]
+ px=X[area];py=Y[area];xx=px-cx;yy=py-cy
+ u=xx*math.cos(angle)+yy*math.sin(angle)
+ v=-xx*math.sin(angle)+yy*math.cos(angle)
+ form=np.exp(-(u/rx)**4)*np.exp(-((v-ry*.09*np.sin(u/77+n*.67))/ry)**4)
+ distcore=np.hypot(np.maximum(0,np.abs(px)-96),np.maximum(0,np.maximum(-78-py,py-270)))
+ opacity=form*.56*(1-forest[area]*.86)*smooth((road[area]-7)/12)*smooth((distcore-26)/105)
+ palette=np.array((.68,.595,.365) if n%3 else (.54,.585,.345))
+ rgb=rgba[area][:,:,:3];rgb[:]=rgb*(1-opacity[:,:,None])+palette*opacity[:,:,None]
+
 # Forest clearings retain the real road network and city access footprints.
 for cx,cy,r in cities:forest*=smooth((np.hypot(X-cx,Y-cy)-r-8)/14)
 forest*=smooth((road-8)/8)
@@ -705,6 +748,35 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
  if not parts:continue
  tree_total+=len(parts)
  # glTF reuses the same two vertex buffers; each transform remains editable.
+
+# Fill selected inter-grove valleys with shared 3D fir donors; no forest cards.
+for belt_idx,((ax,ay),(bx,by),width) in enumerate(FOREST_CONNECTIONS):
+ random=np.random.default_rng(17321+belt_idx)
+ dx,dy=bx-ax,by-ay;segment_length=math.hypot(dx,dy)
+ nx,ny=-dy/segment_length,dx/segment_length
+ planted=0
+ for station in np.arange(11,segment_length-6,14):
+  t=station/segment_length
+  bend=width*.13*math.sin(math.pi*t)*math.sin(7*t+belt_idx*.77)
+  for lane in (-.68,0,.68):
+   lateral=bend+lane*width+random.uniform(-3.5,3.5)
+   x=ax+dx*t+nx*lateral;y=ay+dy*t+ny*lateral
+   if -99<x<99 and -81<y<273:continue
+   if abs(x)>875 or abs(y)>1770 or float(coast(x,y))<22:continue
+   if float(line_distance(np.array(x),np.array(y)))<17:continue
+   if float(fault_distance(np.array(x),np.array(y)))<42:continue
+   if abs(y-rivercentre(x))<riverwidth(x)+12:continue
+   if any(math.hypot(x-a,y-b)<r+13 for a,b,r in cities):continue
+   if any(abs(x-qx)<16 and abs(y-qy)<span/2+12 for qx,qy,w,span in bridge_specs):continue
+   donor=masters[(belt_idx+planted)%2]
+   o=donor.copy();o.data=donor.data;scene.collection.objects.link(o)
+   o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y))
+   o.name='BLD_ForestMass_Belt_'+str(belt_idx).zfill(2)+'_'+str(planted).zfill(4)
+   scale=random.uniform(1.5,3.55);dist=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270))
+   canopy=1+.35*float(smooth(dist/220))
+   o.scale=(scale*random.uniform(1.12,1.38)*canopy,scale*1.2*canopy,scale*random.uniform(.85,1.08))
+   o.rotation_euler.z=random.uniform(0,math.tau);tree_total+=1;planted+=1
+
 # Neighbouring ground carries actual editable fir instances, never forest cards.
 for x,y,z,cluster,index in context_tree_roots:
  random=np.random.default_rng(93214+cluster*1000+index)
@@ -734,6 +806,46 @@ macro_path=pathlib.Path(__file__).with_name('apply_geological_batch.py')
 macro_namespace={'__file__':str(macro_path)}
 exec(compile(macro_path.read_text(encoding='utf-8'),str(macro_path),'exec'),macro_namespace)
 macro_result=macro_namespace['apply_geological_batch'](out)
+
+# Real sculpted strata on the original permitted fault arms; the new visual
+# escarpments do not change the gameplay exclusion, pickups or AF/AG terrain.
+bpy.context.view_layer.update()
+bv=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
+strata_materials=[
+ simplemat('Weathered grey Breach shale',(.36,.335,.32)),
+ simplemat('Ochre eroded Breach stone',(.48,.43,.345)),
+ simplemat('Shadowed violet Breach slate',(.275,.255,.31))]
+rock_verts=[];rock_faces=[];rock_material_index=[]
+for branch,path in enumerate(macro_namespace['ORIGINAL_FAULTS']):
+ line=[]
+ for (ax,ay),(bx,by) in zip(path,path[1:]):
+  for t in np.linspace(0,1,max(2,int(math.hypot(bx-ax,by-ay)/7)),endpoint=False):
+   line.append((ax+(bx-ax)*t,ay+(by-ay)*t))
+ line.append(path[-1])
+ for side in (-1,1):
+  last=None
+  for i,(cx,cy) in enumerate(line):
+   aa=line[max(0,i-1)];bb=line[min(i+1,len(line)-1)]
+   theta=math.atan2(bb[1]-aa[1],bb[0]-aa[0])
+   nx,ny=-math.sin(theta)*side,math.cos(theta)*side
+   t=i/max(len(line)-1,1)
+   rim=1+.19*math.sin(t*18+branch*2.2)+.10*math.cos(t*31-branch)
+   current=[]
+   for width,lift in ((3.7,.09),(7.4,.22),(11.8,1.8),(19.2,.10)):
+    x=cx+nx*width*rim;y=cy+ny*width*rim
+    current.append(len(rock_verts));rock_verts.append((x,y,surface(x,y)+lift))
+   if last is not None:
+    for band in range(3):
+     rock_faces.append((last[band],last[band+1],current[band+1],current[band]))
+     rock_material_index.append((branch+band+i//3)%len(strata_materials))
+   last=current
+strata_mesh=bpy.data.meshes.new('Breach eroded exposed stratigraphy')
+strata_mesh.from_pydata(rock_verts,[],rock_faces);strata_mesh.update()
+for material in strata_materials:strata_mesh.materials.append(material)
+for i,poly in enumerate(strata_mesh.polygons):poly.material_index=rock_material_index[i]
+strata_obj=bpy.data.objects.new('BLD_BreachLayeredEscarpment',strata_mesh)
+scene.collection.objects.link(strata_obj)
+
 # Apply the previously observed regional forest-silhouette A/B as a coherent
 # part of the geological composition candidate. This changes object.scale ONLY:
 # original mesh, UVs, materials, anchors and retained AF/AG core stay untouched.
