@@ -1084,7 +1084,7 @@
   "bridges": [
     {
       "x": -550.0,
-      "z": 17.36070569090275,
+      "z": 30.74468850333628,
       "width": 8,
       "length": 44.0
     },
@@ -1096,13 +1096,14 @@
     },
     {
       "x": 450.0,
-      "z": -31.28771741477181,
+      "z": -18.49338181313655,
       "width": 8,
       "length": 44.0
     }
   ],
   "source_seam_max_spread_m": 0.0,
   "dynamic_gameplay_baked": 0,
-  "art_status": "PROTOTYPE_NO_QWEN_AUTHORSHIP_NOT_APPROVED",
+  "art_status": "CHATGPT_DIRECTED_BLENDER_PENDING_VISUAL_ACCEPTANCE",
+  "continental_trees": 5134,
   "physical_device": false
 }
