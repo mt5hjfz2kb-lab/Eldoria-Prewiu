@@ -470,16 +470,21 @@ bridge_mat.node_tree.links.new(wood_tex.outputs['Color'],bridge_bs.inputs['Base 
 bridge_bs.inputs['Base Color'].default_value=(1,1,1,1) # Explicit neutral factor; glTF inspection confirms texture colour is authoritative.
 for cx in [-550.,0.,450.]:
  cy,z0,z1=crossing_banks[cx]
- length=44.;half=length/2;vv=[];ff=[]
- for i in range(45):
-  t=i/44;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
+ # The source-sector castle occupies the same close camera as this crossing.
+ # Match the actual measured river width rather than spanning 44 metres of
+ # dry grass like a ramp into the castle gate. Other crossing profiles stay.
+ length=44. if abs(cx)>1 else max(24.,min(34.,2*float(riverwidth(cx))+8.))
+ half=length/2;segments=int(round(length));vv=[];ff=[]
+ if abs(cx)<=1:z0,z1=height(cx,cy-half),height(cx,cy+half)
+ for i in range(segments+1):
+  t=i/segments;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
   vv.extend([(cx-4,cy-half+i,z),(cx+4,cy-half+i,z)])
   if i:ff.append((2*i-2,2*i-1,2*i+1,2*i))
  me=bpy.data.meshes.new('True plank deck');me.from_pydata(vv,[],ff);me.materials.append(bridge_mat);plank=bridge_mat.copy();plank.name='Bridge alternate weathered plank';next(n for n in plank.node_tree.nodes if n.type=='BSDF_PRINCIPLED').inputs['Base Color'].default_value=(.92,.92,.92,1);me.materials.append(plank)
  for face in me.polygons:face.material_index=face.index%2
  uv=me.uv_layers.new(name='UVMap') # Same active layer name as the joined certified terrain
  for loop in me.loops:
-  q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x-cx+4)/8,(q.y-cy+half)/44)
+  q=me.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((q.x-cx+4)/8,(q.y-cy+half)/length)
  obj=bpy.data.objects.new('Authored crossing '+str(cx),me);scene.collection.objects.link(obj)
  bpy.ops.object.select_all(action='DESELECT');obj.select_set(True);terrain.select_set(True);bpy.context.view_layer.objects.active=terrain;bpy.ops.object.join()
  # Simple measured timber rails beside the river span, outside the full 8 m route.
@@ -491,15 +496,16 @@ for cx in [-550.,0.,450.]:
   rail_faces.extend([tuple(start+i for i in face) for face in [(0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)]])
  def deck_at(local_y):
   t=(local_y+half)/length;return z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
+ rail_extent=int(min(12,half-2))
  for side in (-1,1):
-  for y in range(-12,13,4):
+  for y in range(-rail_extent,rail_extent+1,4):
    z=deck_at(y);rail_box(cx+side*4.18-.12,cx+side*4.18+.12,cy+y-.12,cy+y+.12,z,z+1.25)
-  for y in range(-12,12,2):
+  for y in range(-rail_extent,rail_extent,2):
    z=deck_at(y+1)+1.05;rail_box(cx+side*4.18-.09,cx+side*4.18+.09,cy+y,cy+y+2,z,z+.18)
  rail_mesh=bpy.data.meshes.new('Measured river crossing rails');rail_mesh.from_pydata(rail_vertices,[],rail_faces);rail_mesh.materials.append(rail_material)
  rail_uv=rail_mesh.uv_layers.new(name='Weathered timber grain')
  for loop in rail_mesh.loops:
-  q=rail_mesh.vertices[loop.vertex_index].co;rail_uv.data[loop.index].uv=((q.x-cx+4.5)/9,(q.y-cy+22)/44)
+  q=rail_mesh.vertices[loop.vertex_index].co;rail_uv.data[loop.index].uv=((q.x-cx+4.5)/9,(q.y-cy+half)/length)
  rail_object=bpy.data.objects.new('BLD_CrossingRails_'+str(cx),rail_mesh);scene.collection.objects.link(rail_object)
  bridge_specs.append((cx,cy,8,length))
 # Actual vegetation clearance at authored crossings and existing logical destinations.
