@@ -433,6 +433,22 @@ namespace Eldoria.Tests
                         "Actual wood target cannot be centred within horizontally bounded near view.");
                     Assert.That(pos.y, Is.InRange(.10f,.90f),
                         "Actual wood target cannot be centred within vertically bounded near view.");
+                    var minimum=(Vector2)Member(navigation,"minimum");var maximum=(Vector2)Member(navigation,"maximum");
+                    var centre=new Vector3((minimum.x+maximum.x)*.5f,woodPosition.y,(minimum.y+maximum.y)*.5f);
+                    Call(navigation,"EnterStrategicView",centre);
+                    // Test the SAME frame, before the landscape's LateUpdate
+                    // can repair an insufficient camera distance after zoom.
+                    foreach(var offset in new[]{Vector2.right*80,Vector2.left*80,Vector2.up*80,Vector2.down*80}){
+                        var rayArgs=new object[]{camera.pixelRect.center+offset,Vector3.zero};
+                        Assert.That((bool)navigation.GetType().GetMethod("GroundPoint").Invoke(navigation,rayArgs),Is.True,"Every strategic-entry gesture ray must meet real ground immediately");
+                    }
+                    Call(adapter,"RefreshForCapture");
+                    Assert.That(camera.orthographicSize,Is.GreaterThan((float)Member(navigation,"localZoom")*3),"Strategic entry must remain materially wider than close view");
+                    foreach(var delta in new[]{Vector3.right*80,Vector3.left*80,Vector3.forward*80,Vector3.back*80}){
+                        Call(navigation,"PanTo",centre);var start=(Vector3)Member(navigation,"target");
+                        Call(navigation,"PanTo",start+delta);
+                        Assert.That(Vector3.Dot((Vector3)Member(navigation,"target")-start,delta.normalized),Is.GreaterThan(.5f),"Strategic entry must retain real ground movement in every direction and orientation");
+                    }
                 }
             }
             finally

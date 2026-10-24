@@ -219,7 +219,7 @@ jobs:
           $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
           $log=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-playmode.log'
           $xml=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-tests.xml'
-          $args=@('-batchmode','-projectPath',('"' + $project + '"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests;Eldoria.Tests.ReferenceUiArtPassTests;Eldoria.Tests.RoyalV3ManagementIntegrationTests;Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests;Eldoria.Tests.SpawnlingAnimatedV4Tests','-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
+          $args=@('-batchmode','-projectPath',('"' + $project + '"'),'-runTests','-testPlatform','PlayMode','-force-d3d11','-testResults',('"' + $xml + '"'),'-logFile',('"' + $log + '"'))
           $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
           if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity PlayMode test timeout' }
           if(Test-Path $log){Get-Content $log -Tail 90}
@@ -234,7 +234,7 @@ jobs:
           if(-not(Test-Path $xml)){throw 'Missing actual Unity PlayMode result'}
           [xml]$result=Get-Content $xml -Raw
           $nodes=@($result.SelectNodes('//test-case'))
-          if($nodes.Count -lt 27){throw "Expected at least 27 integrated, legacy-save, progression, UI and combat cases, got $($nodes.Count)"}
+          if($nodes.Count -lt 57){throw "Expected at least 57 full-project PlayMode cases including genuine GPU captures, got $($nodes.Count)"}
           if(@($nodes|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Unity PlayMode contains failed or ignored tests'}
           $captures=@(Get-ChildItem $env:ELDORIA_REGION1_CAPTURE_OUT -Filter '*-unity.png')
           if($captures.Count -ne 16){throw "Missing actual clean-world and blockout PNGs: expected sixteen genuine Unity captures, got $($captures.Count)"}
@@ -264,6 +264,10 @@ jobs:
           $capture=Join-Path $env:RUNNER_TEMP "region1-author-source-$env:GITHUB_RUN_ID/region1-canon-captures-39831626822"
           if(-not(Test-Path "$capture/terrain-source.json")){throw 'Measured source mesh missing'}
           "ELDORIA_REGION1_ARTIST_CAPTURE=$capture" >> $env:GITHUB_ENV
+      - name: Certify full EditMode and existing real I-II UI probe
+        if: success() && contains(github.event.head_commit.message, '[materialize-candidate]')
+        shell: powershell
+        run: '& ./world4x-source/docs/evidence/world4x-canon-20261022/authoring/certify_integrated_project.ps1'
       - name: Preserve verified candidate binaries and editable sources on the same PR branch
         if: success() && contains(github.event.head_commit.message, '[materialize-candidate]')
         shell: powershell
@@ -317,6 +321,7 @@ jobs:
           path: |
             ${{ runner.temp }}/eldoria-region1-canon-tests.xml
             ${{ runner.temp }}/region1-physical-device-inventory.json
+            ${{ runner.temp }}/region1-general-proof-${{ github.run_id }}/**
             ${{ runner.temp }}/region1-authoring-${{ github.run_id }}/retained-core-integrity.json
             ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/*.png
             ${{ runner.temp }}/region1-canon-captures-${{ github.run_id }}/*-source.json
@@ -332,8 +337,11 @@ jobs:
           path: |
             ${{ runner.temp }}/eldoria-region1-canon-unity-source.log
             ${{ runner.temp }}/eldoria-region1-canon-playmode.log
+            ${{ runner.temp }}/eldoria-region1-general-integration.log
+            ${{ runner.temp }}/eldoria-region1-editmode.log
             ${{ runner.temp }}/eldoria-region1-canon-tests.xml
             ${{ runner.temp }}/region1-physical-device-inventory.json
+            ${{ runner.temp }}/region1-general-proof-${{ github.run_id }}/**
             ${{ runner.temp }}/region1-materialized-candidate.json
             ${{ runner.temp }}/eldoria-region1-source-gate.json
             ${{ runner.temp }}/region1-canon-captures-*/**

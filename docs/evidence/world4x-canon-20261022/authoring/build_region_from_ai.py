@@ -199,7 +199,7 @@ S=3072;X,Y=np.meshgrid(np.linspace(-910,910,S),np.linspace(-1800,1800,S));road=l
 rng=np.random.default_rng(791)
 # Independent editable masks: designed meadow flows, ridge glaze, litter, roads, banks.
 # No change to a single pixel/material/UV of the retained core.
-wash=.018*np.sin(X/93+Y/123)+.014*np.sin(Y/47-X/61)+.008*np.sin(X/19+Y/37)
+wash=.004*np.sin(X/93+Y/123)+.003*np.sin(Y/47-X/61)+.002*np.sin(X/19+Y/37)
 grain=rng.normal(0,.008,X.shape)
 rgba=np.ones((S,S,4),np.float32);rgba[:,:,:3]=meadow_mean+(wash+grain*.25)[:,:,None]
 meadow=np.zeros(X.shape);ridge=np.zeros(X.shape)
@@ -214,6 +214,31 @@ for cx,cy,rx,ry in [(-490,520,100,160),(380,680,90,145),(-580,-570,100,95)]:
  ridge=np.maximum(ridge,np.exp(-((X-cx)/rx)**2-((Y-cy)/ry)**2))
 ridge*=.38*(.87+.13*np.sin(X*.08+Y*.05))
 rgba[:,:,:3]=rgba[:,:,:3]*(1-ridge[:,:,None])+np.array([.61,.56,.39])*ridge[:,:,None]
+# Directed AF strokes at terrain scale, rather than soft repeating continental
+# waves. These are pigment only: no invented fields, props or resource markers.
+# Their centres follow the authored route corridors, but stay off the worn path.
+prairie_paint=np.zeros(X.shape,np.float32)
+for route_index,route in enumerate(routes[:16]):
+ for node_index in range(1,len(route)-1,3):
+  ax,ay=route[node_index-1];bx,by=route[node_index+1]
+  tangent=np.array([bx-ax,by-ay]);tangent/=max(np.linalg.norm(tangent),.001)
+  normal=np.array([-tangent[1],tangent[0]])
+  for side in (-1,1):
+   n=route_index*97+node_index*11+(side+1)
+   cx,cy=np.array(route[node_index])+normal*side*(42+n%53)
+   rx=37+n%47;ry=14+(n*7)%23;extent=rx+ry+15
+   ix0=max(0,int((cx-extent+910)/1820*(S-1)));ix1=min(S,int((cx+extent+910)/1820*(S-1))+2)
+   iy0=max(0,int((cy-extent+1800)/3600*(S-1)));iy1=min(S,int((cy+extent+1800)/3600*(S-1))+2)
+   if ix1<=ix0 or iy1<=iy0:continue
+   area=np.s_[iy0:iy1,ix0:ix1];px=X[area]-cx;py=Y[area]-cy
+   u=px*tangent[0]+py*tangent[1];v=px*normal[0]+py*normal[1]
+   crest=4.5*np.sin(u/19+n*.7)+2.5*np.sin(u/9+n*1.3)
+   spine=np.exp(-(u/rx)**4)*np.exp(-((v-crest)/ry)**4)
+   edges=.86+.14*np.sin(u*.24+v*.11+n*1.1)*np.cos(v*.29-u*.08)
+   weight=np.clip(spine*edges*.47,0,.47)*smooth((road[area]-8)/10)
+   tone=np.array([(.66,.59,.34),(.44,.50,.27),(.56,.52,.30)][n%3])
+   rgba[area][:,:,:3]=rgba[area][:,:,:3]*(1-weight[:,:,None])+tone*weight[:,:,None]
+   prairie_paint[area]=np.maximum(prairie_paint[area],weight)
 forest=forest_field(X,Y)
 # Forest clearings retain the real road network and city access footprints.
 for cx,cy,r in cities:forest*=smooth((np.hypot(X-cx,Y-cy)-r-8)/14)
@@ -223,7 +248,7 @@ river_half=np.array([riverwidth(float(x)) for x in X[0]])[None,:]
 dr=np.abs(Y-river_axis)
 forest*=smooth((dr-river_half-8)/12)
 for bx in [-550.,0.,450.]:forest*=smooth(np.maximum(np.abs(X-bx)-12,np.abs(Y-rivercentre(bx))-30)/6)
-litter=forest*.56
+litter=forest*.69
 rgba[:,:,:3]=rgba[:,:,:3]*(1-litter[:,:,None])+np.array([.25,.34,.19])*litter[:,:,None]
 banks=(1-smooth((dr-river_half-1)/10))*.5
 rgba[:,:,:3]=rgba[:,:,:3]*(1-banks[:,:,None])+np.array([.55,.51,.34])*banks[:,:,None]
@@ -305,7 +330,7 @@ for side in range(4):
   broad=np.interp(axis,grid,soft_edges[side][:,channel]);fine=np.interp(axis,grid,edges[side][:,channel])
   colour=broad+(fine-broad)*(1-smooth(distance/2.5))
   rgba[:,:,channel]=rgba[:,:,channel]*(1-weight)+colour*weight
-for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental broken grass brush mask',grass_ink),('Continental original-edge glaze',glaze),('AF directed woodland clearing strokes',habitat_paint)]:
+for name,data in [('Continental meadow flow mask',meadow),('Continental ridge glaze mask',ridge),('Continental connected litter mask',litter),('Continental worn route mask',mask),('Continental broken grass brush mask',grass_ink),('Continental original-edge glaze',glaze),('AF directed woodland clearing strokes',habitat_paint),('AF directed continental prairie strokes',prairie_paint)]:
  edit=bpy.data.images.new(name,S,S);edit.colorspace_settings.name='Non-Color';edit.use_fake_user=True
  values=np.ones((S,S,4),np.float32);values[:,:,:3]=data[:,:,None];edit.pixels.foreach_set(values.ravel());edit.pack()
 im=bpy.data.images.new('Region1 authored meadow and woodland pigment',S,S);im.pixels.foreach_set(rgba.ravel());im.filepath_raw=str(out/'Region1_continental.png');im.file_format='PNG';im.save();im.pack()

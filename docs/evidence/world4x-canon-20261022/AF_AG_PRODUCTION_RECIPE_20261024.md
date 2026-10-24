@@ -15,15 +15,16 @@ Esta tabla describe la receta del script actual; cada modificación necesita su 
 | Río | Sección original preservada al contacto; cauce curvo único; retirada gradual del perfil abandonado en 24 m |
 | Pintura | Atlas nuevo 3072²; máscaras independientes y empaquetadas; UV/material original por cara sin remapeo |
 | Detalle AF | Fragmento original u 0,02–0,075 / v 0,90–0,98; normalización de baja frecuencia sigma 7; dos muestras giradas; repetición física 21,12 ×14,72 m con mipmaps |
+| Pradera continental | Pinceladas AF dirigidas, semiejes 37–83 /14–36 m, mezcla ≤0,47 y máscara propia; pase pendiente de captura nativa |
 | Claros AF | Espinas y bordes del procedimiento aceptado, localizados en claros reales; mezcla máxima 0,43, exclusión de caminos/agua/costa/sotobosque |
 | Vegetación | Dos donantes originales compartidos; continente cercano 70 %, lejano 9 %; copas cercanas del núcleo sin simplificación y lejanas 16 % |
 | Transición AG | Banda ortográfica espacial 37–47 m; misma geografía y silueta, sin sustitución temprana por placas |
 | Luz del mundo | Sol (48,-35,0), sombras suaves 0,9 / 300 m; fade URP por distancia; restauración exacta al terminar la cámara |
 | Encuadre | Cámara existente: rumbo 0° cerca/regional; panorámica 0° vertical /90° horizontal, transición continua por zoom y límites proyectados sobre los mismos vértices |
-| Periferia | Solo último 15 % del zoom global, ancho 107 ±60 m; mezcla opaca al color continental, regional sin niebla |
+| Periferia | Franja exterior 107 ±60 m; transición entre zoom regional×0,75 y ×1,25; mezcla opaca al fondo, sin niebla interior; cambio pendiente de captura nativa |
 | Contacto y rutas | Consulta de triángulos reales; cuadrícula de consulta 4 m, navegación 8 m; pendiente 0,9, escalón 3,2 m, agua y obstáculos conservados |
 | Recursos | Autoridad LocalGateway/PlayerState; 48 IDs persistentes, huella 8 m, separación de copas 9 m; sin trasladar colliders para disimular apoyo |
-| Evidencia esperada | 27 pruebas sin omisiones; 16 PNG principales +6 históricos coincidentes +100 de zoom +4 detalles continentales =126 actuales; AG archivado aparte |
+| Evidencia esperada | 57 PlayMode GPU sin omisiones +26 EditMode +44 controles I–II; 126 PNG del mundo (16+6+100+4), 34 PNG generales nuevos; AG archivado aparte |
 
 ## Fuentes y decisiones de fabricación
 
@@ -215,3 +216,19 @@ El ajuste usa los ocho extremos de los límites reales con esa orientación. No 
 Fuente `a9635bfce656b4c9ed53aa9cdbb5dfb1a9c4dca4`, run 40056123101, materialización `ad9b4213fc416d0a14556033fdda05bcda3cbaaf`: **27/27 PASS**, cero omisiones, 158,45 s de Editor. Unity mide caja proyectada 74,68 % horizontal /76,05 % vertical; todos los vértices siguen dentro del encuadre. Las seis capturas auténticas confirman el aprovechamiento horizontal y la continuidad del sector original. Se conservan las diferencias AF/AG cercanas del pase anterior (MAE 0,381/0,285).
 
 ZIP visual 12545687903, SHA256 `7fbe2a34d614d29b292b7fc45d7c6199936fb692fd9e758b595352124efc4d85`; 126 PNG y XML comprobados en `NATIVE_REVIEW_40056123101.json`. La representación continental todavía necesita más riqueza de suelo, masas forestales e hidrografía frente a las referencias. No se declara aprobación artística ni autorización de integración. Siguiente comprobación: suite general existente de UI/Valoria/I–II sobre candidato reconciliado, sin modificar ese workflow ni sus pruebas.
+
+
+### Pase de pradera continental: preparación posterior al encuadre
+La inspección de 40056123101 conserva el nuevo encuadre, pero rechaza considerar resuelta la uniformidad del suelo. Se reduce el lavado sinusoidal de amplitudes 0,018/0,014/0,008 a 0,004/0,003/0,002 y se trasladan pinceladas AF dirigidas a los corredores existentes, fuera del camino. Semianchos 37–83 m y 14–36 m, centro desplazado 42–94 m a cada lado, espina exp(-u⁴), ondulación 4,5/2,5 m, borde quebrado 0,86±0,14 y mezcla máxima 0,47. Paletas I/AF existentes, máscara editable independiente. La capa se aplica antes del sotobosque, riberas, costa, caminos y empalme original: cada uno conserva su autoridad. La veladura de hojarasca pasa de 0,56 a 0,69 para conectar visualmente los árboles reales.
+
+Solo cambia el atlas de la ampliación; vértices, materiales/UV originales, árboles, reservas, colliders y ubicaciones jugables permanecen iguales. No se considera mejorado hasta comparar PNG Unity del siguiente pase con 40056123101.
+
+La revisión de fotogramas 006/012/018 del zoom horizontal detecta el borde rectangular físico durante el giro, antes de activarse la atmósfera del último 15 %. Se adelanta únicamente esa misma franja periférica (107 m ±60 m): transición entre zoom regional×0,75 y ×1,25. El interior y el sector AF/AG no reciben niebla, ni se recortan o desplazan vértices; la cámara conserva/restaura su fondo. Comprobar los mismos fotogramas en Unity antes de aceptar esta corrección.
+
+
+### Certificación completa y reparación de interacción inmediata
+La suite general detectó un defecto que los pases anteriores no cubrían: el zoom estratégico se aplicaba antes que la profundidad de cámara, y un raycast de arrastre podía comenzar bajo el plano del terreno en ese primer fotograma. `ApplyPose` sincroniza ahora distancia=max(140,zoom×2,5) y farClip=max(900,distancia×2,5). La entrada/Home usa rumbo regional y 82 % del límite realmente navegable. Se preparan cuatro rayos en ambas orientaciones antes de LateUpdate; ninguna prueba de rutas, contacto o guardado se elimina. El preset cercano se verifica por igualdad estricta con el preset real, no por el antiguo número 17.
+
+Run 40061480616 confirma 44 controles nativos I–II, 26/26 EditMode y 56 PlayMode sin fallos; queda una captura omitida por el modo sin gráficos, y el workflow general resulta rojo. Se amplía el workflow propiedad de World4X a TODOS los 57 PlayMode con GPU y captura activa, más EditMode y el probe I–II existente con sus mismas comparaciones de encuadre. Exige 34 PNG generales de esta ejecución, fuente exacta y hashes. No se modifica el workflow reservado de UI ni se presenta una omisión como prueba superada. `GENERAL_CERTIFICATION_REPAIR_20261024.md` conserva causas, datos y descartes.
+
+El verificador usa ahora un mínimo de 57 pruebas y exige también el manifiesto general. Para revisar paquetes históricos de 27 pruebas se debe indicar explícitamente `--expected-tests 27`. Los 126 PNG de mundo mantienen su identidad individual, aparte de los 34 del probe general y del archivo AG. Todo el nuevo pase sigue pendiente de ejecución y revisión visual.

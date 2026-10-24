@@ -50,8 +50,11 @@ namespace Eldoria.World4XCanon
         {
             if(camera!=worldCamera||scoped)return;
             var navigation=camera.GetComponent<Eldoria.World4XPrototype.ZoneOneStrategicCamera>();
-            float overview=navigation?navigation.globalZoom:Mathf.Max(910/Mathf.Max(.1f,camera.aspect),1625)*1.04f;
-            float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(overview*.85f,overview,camera.orthographicSize));
+            float regional=navigation?navigation.regionalZoom:Mathf.Max(280,400/Mathf.Max(.1f,camera.aspect));
+            // The physical outer edge enters the viewport during the orbit,
+            // before the final overview. Fade only that same peripheral strip;
+            // no fog is applied to the interior or to the retained AG sector.
+            float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(regional*.75f,regional*1.25f,camera.orthographicSize));
             var fog=QualitySettings.activeColorSpace==ColorSpace.Linear?camera.backgroundColor.linear:camera.backgroundColor;
             foreach(var material in owned){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
             background=camera.backgroundColor; // Preserve the existing continental clear colour; grey increased the tile silhouette.

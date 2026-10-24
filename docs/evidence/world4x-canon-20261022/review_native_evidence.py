@@ -10,7 +10,7 @@ import struct
 import xml.etree.ElementTree as ET
 
 
-def review(root, expected_count=126, expected_tests=27, ag_root=None):
+def review(root, expected_count=126, expected_tests=57, ag_root=None):
     root = Path(root)
     images = {}
     for metadata in root.rglob('*.json'):
@@ -58,6 +58,32 @@ def review(root, expected_count=126, expected_tests=27, ag_root=None):
         'art_approval': False, 'physical_mobile_benchmark': False,
         'images': sorted(images.values(), key=lambda item: item['path']),
     }
+    footprint = re.findall(r'REGION1_ACTUAL_PANORAMA_VIEWPORT_AREA (horizontal|vertical) ([0-9.]+)', xml.read_text(encoding='utf-8-sig'))
+    if footprint:
+        assert len(footprint) == 2 and {name for name, _ in footprint} == {'horizontal', 'vertical'}, footprint
+        assert all(.65 < float(value) <= 1 for _, value in footprint), footprint
+        report['actual_unity_panorama_projected_bbox_area'] = {name: float(value) for name, value in footprint}
+    if expected_tests >= 57:
+        manifests = list(root.rglob('general-proof.json'))
+        assert len(manifests) == 1, manifests
+        proof_path = manifests[0]
+        proof = json.loads(proof_path.read_text(encoding='utf-8-sig'))
+        assert proof['gpu_playmode_passed'] == int(suite.get('passed'))
+        assert proof['editmode_passed'] >= 26 and proof['probe_checks'] >= 44
+        assert proof['fresh_captures'] == len(proof['images']) >= 34
+        assert {p.name for p in proof_path.parent.glob('*.png')} == {item['file'] for item in proof['images']}
+        for item in proof['images']:
+            data = (proof_path.parent / item['file']).read_bytes()
+            assert data[:8] == b'\x89PNG\r\n\x1a\n'
+            assert hashlib.sha256(data).hexdigest() == item['sha256']
+        edit = ET.parse(proof_path.parent / 'editmode.xml').getroot()
+        assert edit.get('result') == 'Passed' and int(edit.get('passed')) == proof['editmode_passed']
+        assert all(case.get('result') == 'Passed' for case in edit.iter('test-case'))
+        assert (proof_path.parent / 'playmode.xml').read_bytes() == xml.read_bytes()
+        native = json.loads((proof_path.parent / 'integration-result.json').read_text(encoding='utf-8-sig'))
+        assert native['source'] == proof['source'] and native['status'] == 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'
+        assert len(native['checks']) == proof['probe_checks'] and not native['error']
+        report['general_native_certificate'] = proof
     if ag_root:
         import numpy as np
         from PIL import Image
@@ -86,7 +112,7 @@ if __name__ == '__main__':
     parser.add_argument('root', type=Path)
     parser.add_argument('--ag-root', type=Path)
     parser.add_argument('--expected-count', type=int, default=126)
-    parser.add_argument('--expected-tests', type=int, default=27)
+    parser.add_argument('--expected-tests', type=int, default=57)
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     result = review(args.root, args.expected_count, args.expected_tests, args.ag_root)

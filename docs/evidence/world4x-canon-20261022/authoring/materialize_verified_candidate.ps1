@@ -11,7 +11,7 @@ $sourceLease=@($sourceRegistry.active|Where-Object {$_.id -eq 'eldoria-world-reg
 if($lease.Count -ne 1 -or $sourceLease.Count -ne 1 -or $lease[0].owner -ne $sourceLease[0].owner -or $lease[0].ownership_revision -ne $sourceLease[0].ownership_revision -or $lease[0].write_scope_released -or $lease[0].resources -notcontains 'windows-runner-heavy'){throw 'World ownership changed'}
 [xml]$tests=Get-Content (Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-tests.xml')
 $cases=@($tests.SelectNodes('//test-case'))
-if($cases.Count -lt 27 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Actual candidate tests must pass before materialization'}
+if($cases.Count -lt 57 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Actual candidate tests must pass before materialization'}
 $remote=Invoke-RestMethod -Headers $headers -Uri "$repo/git/ref/heads/$branch"
 if($remote.object.sha -ne $env:GITHUB_SHA){throw 'Branch advanced: do not commit stale candidate'}
 $root=Join-Path $env:GITHUB_WORKSPACE 'world4x-source'
@@ -55,6 +55,13 @@ foreach($file in Get-ChildItem (Join-Path $captures 'retained-sector') -File | W
 foreach($file in Get-ChildItem (Join-Path $captures 'retained-sector/continental-details') -File){
  $path="$review/continent-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path
 }
+# General proof must be fresh and belong to this exact native source.
+$general=Join-Path $env:RUNNER_TEMP "region1-general-proof-$env:GITHUB_RUN_ID"
+$proof=Get-Content (Join-Path $general 'general-proof.json') -Raw|ConvertFrom-Json
+if($proof.source -ne $env:GITHUB_SHA -or $proof.run -ne $env:GITHUB_RUN_ID -or $proof.editmode_passed -lt 26 -or $proof.gpu_playmode_passed -lt 57 -or $proof.probe_checks -lt 44 -or $proof.fresh_captures -lt 34){throw 'General integrated evidence is incomplete or stale'}
+foreach($item in $proof.images){if($item.sha256 -ne (Get-FileHash (Join-Path $general $item.file) -Algorithm SHA256).Hash.ToLower()){throw 'General screenshot hash mismatch'}}
+New-Item -ItemType Directory -Force "$review/general"|Out-Null
+foreach($file in Get-ChildItem $general -File){$path="$review/general/$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path}
 $manifest=@{candidate_commit=$env:GITHUB_SHA;native_run=$env:GITHUB_RUN_ID;art_approved=$false;mobile_profiled=$false;files=@()}
 foreach($path in $paths){
  if((Get-Item $path).Length -ge 100MB){throw "File exceeds repository object limit: $path"}
