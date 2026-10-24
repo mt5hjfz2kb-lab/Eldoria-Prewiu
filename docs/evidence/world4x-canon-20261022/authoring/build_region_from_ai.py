@@ -475,7 +475,18 @@ for cx in [-550.,0.,450.]:
  # dry grass like a ramp into the castle gate. Other crossing profiles stay.
  length=44. if abs(cx)>1 else max(24.,min(34.,2*float(riverwidth(cx))+8.))
  half=length/2;segments=int(round(length));vv=[];ff=[]
- if abs(cx)<=1:z0,z1=height(cx,cy-half),height(cx,cy+half)
+ if abs(cx)<=1:
+  # The original AI objects in 'land' were joined into BLD_Terrain above:
+  # their bpy Object pointers are invalid. Measure the CURRENT joined mesh.
+  shore=[]
+  terrain_inverse=terrain.matrix_world.inverted()
+  for yshore in (cy-half,cy+half):
+   origin_local=terrain_inverse @ Vector((cx,yshore,150))
+   direction_local=terrain_inverse.to_3x3() @ Vector((0,0,-1))
+   hit,point,normal,index=terrain.ray_cast(origin_local,direction_local,distance=400)
+   assert hit,('Central bridge must meet actual joined land at its bank',cx,yshore)
+   shore.append((terrain.matrix_world @ point).z)
+  z0,z1=shore
  for i in range(segments+1):
   t=i/segments;z=z0*(1-t)+z1*t+.5*math.sin(t*math.pi)
   vv.extend([(cx-4,cy-half+i,z),(cx+4,cy-half+i,z)])
