@@ -1433,11 +1433,12 @@
         "tools/work-status/report.test.mjs",
         "tools/check-documentation-governance.mjs",
         "tools/check-documentation-governance.test.mjs",
-        "docs/evidence/efficiency-audit-20261024/**"
+        "docs/evidence/efficiency-audit-20261024/**",
+        ".github/workflows/tester-qa.yml"
       ],
       "resources": [],
       "phase": "ISOLATED_READ_ONLY_TOOLING_CORRECTIONS",
-      "next": "Improve existing read-only work status and document audit. Run Node regression tests, open draft PR. Never dispatch Windows, touch art/gameplay/UI, publish, alter existing workstreams or auto-merge.",
+      "next": "Keep UI/art/world scope and Windows untouched. Narrow frozen-web QA skip only for known read-only diagnostics; self workflow edits must still trigger full QA. Run exact PR checks; release claim before integration.",
       "budget_eur": 0,
       "delivery_definition": {
         "deliverable": "Small verified safety/performance improvements to existing reporting scripts",
