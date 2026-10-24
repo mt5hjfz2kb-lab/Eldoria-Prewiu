@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T12:10:00Z",
+  "updated_at": "2026-10-24T12:13:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1418,34 +1418,6 @@
         "parent_before_lease": "278d5fe1a9830dab8f50af8710661f3e906d33c7",
         "ui_run_finished": 40074059376,
         "status": "RESERVED_NOT_VERIFIED"
-      }
-    },
-    {
-      "id": "eldoria-art-memory-continuity-safety-20261024",
-      "title": "Memoria artística priorizada y continuidad sin falsas recuperaciones",
-      "owner": "chatgpt-art-memory-continuity-20261024",
-      "branch": "chore/art-memory-continuity-safety-20261024",
-      "status": "active",
-      "claimed_at": "2026-10-24",
-      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
-      "scope": [
-        "tools/art-knowledge/select.mjs",
-        "tools/art-knowledge/select.test.mjs",
-        "tools/mission-continuity/core.mjs",
-        "tools/mission-continuity/core.test.mjs",
-        "docs/evidence/art-memory-continuity-safety-20261024/**",
-        ".github/workflows/repository-architecture-guard.yml"
-      ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Only read-only selection and continuity decisions; no artistic edits, generation, Unity scene, credits or hardware reservation.",
-      "phase": "ISOLATED_UNIT_TESTS_AND_REVIEW",
-      "next": "Run art-memory and pause-continuity unit tests in existing lightweight Ubuntu repository architecture guard; preserve other checks and never access Unity/Windows or publish. Open draft PR with exact SHA and verify.",
-      "budget_eur": 0,
-      "delivery_definition": {
-        "deliverable": "Validated improvements in existing memory selection and mission recovery policy",
-        "evidence": "Exact tests of selected/rejected art knowledge and paused workstream classification",
-        "handoff": "Draft PR; retain review pending without touching game"
       }
     }
   ],
@@ -7539,6 +7511,46 @@
         "editmode": "success",
         "playmode_root": "Skipped:Ignored",
         "meaning": "Existing headless gate reproduced; not a PASS. World GPU certificate remains all57 passed."
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-safety-20261024",
+      "title": "Memoria artística priorizada y continuidad sin falsas recuperaciones",
+      "owner": "chatgpt-art-memory-continuity-20261024",
+      "branch": "chore/art-memory-continuity-safety-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        "docs/evidence/art-memory-continuity-safety-20261024/**",
+        ".github/workflows/repository-architecture-guard.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only read-only selection and continuity decisions; no artistic edits, generation, Unity scene, credits or hardware reservation.",
+      "phase": "PATCH_CERTIFIED_IN_BRANCH_NOT_YET_MERGED",
+      "next": "Draft PR #103: tests of memory selection and paused mission recovery passed in Ubuntu Architecture guard on af5d21263d8616f3f281ff608cad2488e102dc2f. No production asset or game modified, no release. Merge only after checking current main, PR head, controls and reservations.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Validated improvements in existing memory selection and mission recovery policy",
+        "evidence": "Exact tests of selected/rejected art knowledge and paused workstream classification",
+        "handoff": "Draft PR; retain review pending without touching game"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103",
+        "verified_sha": "af5d21263d8616f3f281ff608cad2488e102dc2f",
+        "architecture_gate": 40092850243,
+        "art_planner_gate": 40092850216,
+        "governance_gate": 40092850208,
+        "art_quality": "NOT_APPLICABLE_NO_ART_PRODUCED",
+        "physical_mobile": "NOT_TESTED",
+        "gameplay_modified": false,
+        "note": "Older head failed a text compatibility assertion; fixed before the cited gate. Exact scope limited to 6 files including current registry."
       }
     }
   ],
