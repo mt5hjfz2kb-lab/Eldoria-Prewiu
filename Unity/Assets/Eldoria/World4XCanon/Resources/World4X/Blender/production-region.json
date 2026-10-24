@@ -6,7 +6,7 @@
     910,
     1800
   ],
-  "terrain_vertices": 257996,
+  "terrain_vertices": 257976,
   "retained_material_samples": [
     {
       "material": "Ochre meadow",
@@ -1209,10 +1209,10 @@
       "length": 44.0
     },
     {
-      "x": 0.0,
+      "x": 3.3,
       "z": -18.922370433807373,
       "width": 8,
-      "length": 44.0
+      "length": 34.0
     },
     {
       "x": 450.0,
@@ -1224,6 +1224,6 @@
   "source_seam_max_spread_m": 0.0,
   "dynamic_gameplay_baked": 0,
   "art_status": "CHATGPT_DIRECTED_BLENDER_PENDING_VISUAL_ACCEPTANCE",
-  "continental_trees": 7336,
+  "continental_trees": 6845,
   "physical_device": false
 }
