@@ -31,7 +31,7 @@ def paint_canonical_macro_pigment(rgba, X, Y, bounds, meadow_mean):
     assert right>left and top>bottom and np.isfinite(meadow_mean).all()
     # Restore warm readability to the current uniform dark-olive paint.
     # AF/AG source faces are a DIFFERENT material and are never passed in.
-    rgba[:,:,:3]=np.clip(rgba[:,:,:3]*np.array((1.095,1.085,.965)),.012,.97)
+    rgba[:,:,:3]=np.clip(rgba[:,:,:3]*np.array((1.115,1.095,.975)),.012,.97)
     for cx,cy,rx,ry,phase,mult in _CANONICAL_MEADOW_SWATHS:
         reach=max(rx,ry)*1.56
         x0=max(0,int((cx-reach-left)/(right-left)*(cols-1)))
@@ -50,7 +50,7 @@ def paint_canonical_macro_pigment(rgba, X, Y, bounds, meadow_mean):
         angle=np.arctan2(nv,nu)
         rim=1+.16*np.sin(3*angle+phase)+.07*np.cos(5*angle-phase)
         footprint=np.clip((rim-(nu*nu+nv*nv))*.94,0,1)
-        weight=(footprint*footprint*(3-2*footprint))*.72
+        weight=(footprint*footprint*(3-2*footprint))*.87
         palette=np.clip(np.asarray(meadow_mean)*np.asarray(mult),.012,.97)
         rgb=rgba[area][:,:,:3]
         rgb*=1-weight[:,:,None]

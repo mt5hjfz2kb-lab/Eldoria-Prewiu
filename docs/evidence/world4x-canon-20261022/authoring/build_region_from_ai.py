@@ -191,6 +191,33 @@ def height(x,y):
   if distance<radius+14:
    h=rawheight(cx,cy)+(h-rawheight(cx,cy))*float(smooth((distance-radius)/14))
  c=float(coast(x,y));h=h*float(smooth((c+5)/20))-.6*(1-float(smooth((c+5)/20)))
+ # Deliberate asymmetric geological shoulders around the existing Brecha
+ # and broad, readable meadow folds: REAL mesh elevation rather than violet
+ # paint, new props, or disconnected world/zoom layers. Gentle gradients
+ # preserve traversal and future cities. Source AF/AG uses oldheight.
+ distance_to_fault=scalar_path_distance(x,y,faults)
+ physical_rim=max(0.,min(1.,(distance_to_fault-30)/80))
+ geological_shoulders=(
+     (-495,300,240,65,.35,11.5),
+     (-230,320,210,72,-.68,10.0),
+     (-420,92,205,65,.86,8.0),
+     (-560,385,245,86,-.45,9.0))
+ for cx,cy,long_axis,short_axis,angle,amplitude in geological_shoulders:
+  dx=x-cx;dy=y-cy
+  long=math.cos(angle)*dx+math.sin(angle)*dy
+  cross=-math.sin(angle)*dx+math.cos(angle)*dy
+  ridge=math.exp(-((long/long_axis)**4+(cross/short_axis)**2))
+  # Perimeter is a weathered asymmetric escarpment, not a radial ring/tube.
+  erosion=.76+.17*math.sin(long/61+cross/90+angle)+.07*math.cos(long/37-cross/82)
+  h+=amplitude*ridge*physical_rim*erosion
+ # Shallow terrace folds break the prior monotonous grassland at true 4X scale.
+ # Existing urban reserves are flattened downstream by the same authoring code.
+ for cx,cy,rx,ry,amp in (
+     (-630,1000,190,330,12.),(420,1110,215,340,10.),
+     (-560,-980,230,320,11.),(370,-1220,225,360,11.),
+     (485,5,180,270,7.)):
+  dx=(x-cx)/rx;dy=(y-cy)/ry
+  h+=amp*math.exp(-(dx*dx+dy*dy))*(.84+.16*math.sin((x-cx)/87+(y-cy)/124))
  return h
 # Sample every actual perimeter vertex so the seam has matching edge coordinates.
 xs=set(float(x) for x in np.arange(-910,911,10));ys=set(float(y) for y in np.arange(-1800,1801,10))
@@ -760,6 +787,9 @@ for loop in me.loops:
  q=me.vertices[loop.vertex_index].co;shore=float(coast(0,q.y))
  uv.data[loop.index].uv=(min(.999,max(0,(q.x-shore)/max(1,910-shore))),(q.y+1800)/3600)
 
+# Owner-approved second coherent batch: lighten NEW continental forest bodies
+# to make open hunting, resource and city territories visible at regional zoom.
+# Original AF/AG donors, roads, fixed resource IDs and core trees unchanged.
 # Natural grouped canopies reuse AI editable tree topology, never old main donors.
 # Owner-directed 2026-10-24: fewer NEW decorative crowns around actual playable
 # resources, enemies, city reserves and roads; protected AF/AG are unchanged.
@@ -789,7 +819,7 @@ for index,(cx,cy,rx,ry) in enumerate(groves):
   positions.append((x,y));k=len(positions)
   donor=masters[k%2];o=donor.copy();o.data=donor.data;scene.collection.objects.link(o);o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=(x,y,surface(x,y));o.name='BLD_ForestMass_'+str(index).zfill(2)+'_'+str(k).zfill(3)
   scale=random.uniform(1.3,3.9)*( .85+.15*float(grove_field(np.array(x),np.array(y),index)));core_distance=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270));scale=1.05+(scale-1.05)*float(smooth(core_distance/160));canopy=1+.35*float(smooth(core_distance/220));o.scale=(scale*random.uniform(1.15,1.5)*canopy,scale*1.25*canopy,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau);parts.append(o)
-  if len(parts)>=(165 if index<25 else 105):break
+  if len(parts)>=(125 if index<25 else (105 if index>=33 else 82)):break
  if not parts:continue
  tree_total+=len(parts)
  # glTF reuses the same two vertex buffers; each transform remains editable.
