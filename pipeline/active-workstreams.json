@@ -1146,8 +1146,8 @@
       ],
       "resources": [],
       "authorization": "Owner explicit ELDORIA RELEVO INMEDIATO Y FINALIZACION DEL MUNDO 4X order in current chat; same scope/workstream/PR; 0 EUR; no merge/publication without final approval.",
-      "phase": "AF_AG_27_PASS_FULL_INTEGRATION_CERTIFICATION",
-      "next": "Native 40056123101 passed 27/27 with all 126 PNG identities verified; landscape/portrait footprint .7468/.7605. Release only heavy resource after native completed, run existing general UI I-II EditMode/PlayMode certification on exact reconciled candidate. Continue continental art improvement; no artistic acceptance or merge/publication.",
+      "phase": "GENERAL_INTEGRATION_NATIVE_CAMERA_REPAIR",
+      "next": "Native world 40056123101 remains 27/27 +126 verified PNG, AF/AG preserved. General cert 40057377057 exposed time-dependent reveal probe and uncaught coroutine error (fixed d3a5e0f). 40059877404/40060419399/40060939669 exposed strategic pan; exact numeric pose ruled out heading/bounds as remaining cause. Current 97e949d applies camera depth synchronously with zoom; general cert 40061480616 RUNNING. Await actual result before native art pass; do not claim general PASS. Continental AF prairie/peripheral continuity changes and same-frame gesture rays are prepared but not committed; same PR100. No merge/publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode."
@@ -1254,6 +1254,18 @@
             "horizontal": 0.7468,
             "vertical": 0.7605
           }
+        },
+        "general_integration": {
+          "source": "97e949d1f2cc3f689343e8c3bea734e6c747bac3",
+          "run": 40061480616,
+          "status": "running_not_certified",
+          "previous_failed_runs": [
+            40057377057,
+            40059877404,
+            40060419399,
+            40060939669
+          ],
+          "report": "docs/evidence/world4x-canon-20261022/GENERAL_CERTIFICATION_REPAIR_20261024.md"
         }
       },
       "ownership_history": [
