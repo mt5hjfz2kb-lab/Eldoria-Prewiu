@@ -287,7 +287,7 @@ jobs:
           if($LASTEXITCODE){throw 'Original boar far LOD rebuild did not succeed'}
           & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py -- "$destination/Eldoria_Region1_Production.blend" $destination
           if($LASTEXITCODE){throw 'Reviewed source-preserving look development failed'}
-          foreach($name in @('RegionOneBlenderWorld.glb','RegionOneGrassDetail.png')){
+          foreach($name in @('RegionOneBlenderWorld.glb','RegionOneGrassDetail.png','RegionOneResources.glb','RegionOneResourceImpostors.png')){
             Copy-Item (Join-Path $destination $name) (Join-Path $unityDest $name) -Force
           }
           Write-Host 'REGION1_PINNED_SOURCE_6_INPUT_HASHES_PASS reviewed_lookdev_export=1 art_approved=false repeat_native_playmode_required=1'

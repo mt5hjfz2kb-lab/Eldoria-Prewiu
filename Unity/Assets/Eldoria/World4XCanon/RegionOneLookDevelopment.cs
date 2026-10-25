@@ -30,7 +30,7 @@ namespace Eldoria.World4XCanon
                     var material=new Material(authoredShader){name=source.name+" AG look",enableInstancing=true};
                     Color colour=source.HasProperty("baseColorFactor")?source.GetColor("baseColorFactor"):source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):Color.white;
                     material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
-                    if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal))material.SetFloat("_MineralEmission",2.3f);
+                    if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal))material.SetFloat("_MineralEmission",1.7f);
                     if(source.name.Contains("Region1 open meadows")){
                         var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");
                         if(!detail)throw new InvalidOperationException("Original AF-derived continental detail missing");

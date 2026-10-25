@@ -45,6 +45,25 @@ namespace Eldoria.World4XCanon
                 part.transform.localPosition=node.BasePositions[i];
                 var source=node.SourceMeshes[i];
                 var vertices=source.vertices;
+                if(part.name.StartsWith("Quarry cleared extraction floor",StringComparison.Ordinal))
+                {
+                    // A cleared extraction surface follows this real site's
+                    // existing ground instead of being buried beneath its grass.
+                    // Only the per-instance copy changes; the donor, site and
+                    // selection collider retain their original coordinates.
+                    var floor=Instantiate(source);
+                    floor.name=source.name+" · actual terrain extraction surface";
+                    var fitted=floor.vertices;
+                    for(int v=0;v<fitted.Length;v++)
+                    {
+                        var world=part.transform.TransformPoint(fitted[v]);
+                        world.y=SoilAt(world)+.035f;
+                        fitted[v]=part.transform.InverseTransformPoint(world);
+                    }
+                    floor.vertices=fitted;floor.RecalculateBounds();floor.RecalculateNormals();
+                    part.sharedMesh=floor;authoredContactCopies.Add(floor);
+                    continue;
+                }
                 float bottom=vertices.Min(v=>part.transform.TransformPoint(v).y);
                 float highestGap=float.NegativeInfinity;
                 foreach(var vertex in vertices)
