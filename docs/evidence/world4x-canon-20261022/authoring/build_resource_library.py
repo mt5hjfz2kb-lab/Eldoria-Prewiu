@@ -116,7 +116,7 @@ for family in ['Wood','Stone']:
 def quarry_rim(root,variant):
  vertices=[];faces=[];slots=[]
  n=16
- for radius,height in ((5.8,.05),(4.8,.50),(3.65,1.05),(2.65,1.48)):
+ for radius,height in ((4.55,.05),(3.75,.50),(2.85,1.05),(2.0,1.48)):
   for j in range(n):
    angle=math.tau*j/n
    jitter=1+.065*math.sin(j*1.43+variant*2.7)+.04*math.sin(j*2.81)

@@ -77,7 +77,7 @@ namespace Eldoria.World4XCanon.Editor
                 throw new InvalidOperationException("Meaningful authored Brecha strata not in actual imported Unity continent");
             var resources=Resources.Load<GameObject>("World4X/Blender/RegionOneResources");
             if(!resources||resources.GetComponentsInChildren<MeshFilter>(true)
-                .Count(f=>f.name=="Quarry terraced exposed ledges")!=3)
+                .Count(f=>f.name.StartsWith("Quarry terraced exposed ledges",StringComparison.Ordinal))!=3)
                 throw new InvalidOperationException("All three quarry resource models must carry real layered excavation geometry");
             var detailImporter=AssetImporter.GetAtPath("Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneGrassDetail.png") as TextureImporter;
             if(!detailImporter||detailImporter.sRGBTexture)throw new InvalidOperationException("AF-derived detail must import as linear data to preserve its neutral mean");
