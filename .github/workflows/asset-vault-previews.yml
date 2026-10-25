@@ -7,6 +7,10 @@ on:
     paths:
       - '.github/workflows/asset-vault-previews.yml'
 
+concurrency:
+  group: asset-vault-preview-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
