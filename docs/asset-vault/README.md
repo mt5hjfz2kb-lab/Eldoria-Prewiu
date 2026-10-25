@@ -103,6 +103,22 @@ Desde un checkout de Eldoria:
 4. Validar licencias y presupuesto móvil por activo. Solo entonces promover selectivamente al depósito canónico. Los rechazados siguen consultables, nunca autocargables.
 5. Automatizar posteriormente el registro de nuevos modelos como **candidatos**, no como aprobados, con revisión humana/artística antes de producción.
 
+## Automatización de entrada y búsqueda (fase 2 implementada en este PR)
+
+**Al crear o modificar modelos 3D en cualquier PR hacia main** (GLB, GLTF, Blender, FBX, OBJ o STL), el workflow `.github/workflows/asset-vault-discovery.yml` analiza el árbol Git completo sin descargar todos los modelos ni usar Unity/Windows. Produce un inventario JSON de **candidatos sin catalogar** y lo adjunta a la ejecución. No edita la rama de Work ni impide el trabajo por motivos artísticos. En los pushes a `main`, actualiza una **única incidencia persistente** titulada `[ASSET VAULT] Candidatos 3D detectados automáticamente`, para que ningún nuevo archivo Git rastreado dependa de que el propietario se acuerde de él. El workflow solo se activará después de integrar esta propuesta documental en main; no debe interpretarse como automatización ya operativa mientras PR #106 permanezca DRAFT.
+
+**Antes de autorizar un modelo nuevo**, ejecutar:
+
+    python3 tools/asset-vault/find-reuse.py cantera
+    python3 tools/asset-vault/find-reuse.py engendro
+    python3 tools/asset-vault/find-reuse.py "muralla piedra"
+
+El resultado ofrece rutas, rama, rol y restricciones, con rechazo explícito de fuentes no aprobadas. Después revisar el buzón de candidatos automáticos y el inventario histórico; si no existe un recurso apropiado, crear una nueva pieza en la rama autorizada. **Descubrimiento automático no significa aprobación automática:** fuentes, licencia, escala, cámara real, materiales, LOD y criterio artístico siguen siendo requisitos para promoverlo a la biblioteca de producción.
+
+El workflow `.github/workflows/asset-vault-historical-audit.yml` permite una auditoría profunda **bajo demanda** de los 201 árboles históricos en un runner GitHub-hosted, con `--filter=blob:none`. Informa qué SHA no se pudo leer y publica un JSON; no extrae binarios ni toca la máquina Unity. Está preparado, pero su ejecución real y revisión de todos los candidatos sigue pendiente.
+
+**Limitación importante:** modelos generados exclusivamente en el PC y nunca guardados en Git/almacenamiento duradero no pueden detectarse desde GitHub; los artefactos temporales de Actions caducan. El productor debe guardar las fuentes editables en el repositorio o depósito duradero autorizado. No se puede garantizar el 100 % de activos de todos los tiempos hasta auditar también esos orígenes.
+
 ## Enlaces de evidencia
 
 * [Canon GLB 26](../../pipeline/asset-library-canonicalization-audit.json)
