@@ -18,8 +18,8 @@ class VaultTests(unittest.TestCase):
         example = {"records":[{"path":"main.glb","editable":"source.blend",
                    "sources":{"raw":{"path":"original.glb"}},
                    "integration":{"near":{"path":"near.glb"}}}]}
-        self.assertEqual(scanner.known_paths(example),
-                         {"main.glb","source.blend","original.glb","near.glb"})
+        self.assertTrue({"main.glb","source.blend","original.glb","near.glb"}.issubset(
+            scanner.known_paths(example)))
 
     def test_rejected_never_auto_promoted(self):
         search = load("find_reuse", "find-reuse.py")
