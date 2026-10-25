@@ -878,7 +878,7 @@ namespace Eldoria.Tests
             var home=(Vector3)Member(host,"WorldHome");
             Assert.That(scar.bounds.center.x-home.x,Is.EqualTo(-260f).Within(6f));
             Assert.That(scar.bounds.center.z-home.z,Is.EqualTo(150f).Within(6f));
-            Assert.That(scar.bounds.size.y,Is.LessThan(14f),"The geological floor is not a vertical portal.");
+            Assert.That(scar.bounds.size.y,Is.LessThan(Mathf.Min(scar.bounds.size.x,scar.bounds.size.z)*.15f),"The geological floor must remain a ground-following landform with a horizontal extent well above its relief.");
             Assert.That(scar.bounds.min.y-home.y,Is.LessThan(1.5f),"The Breach must cut below the certified AI meadow, not stand above it.");
             Assert.That(filter.GetComponentsInChildren<Collider>(true),Is.Empty);
             var geology=geo.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");

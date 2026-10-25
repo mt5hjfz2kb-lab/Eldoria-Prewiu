@@ -73,7 +73,7 @@ for index,path in enumerate([north,south]):
  downstream=float(sample(oldheight,*points[-1]))+.45
  upstream=max(downstream+2.0,float(sample(oldheight,*points[0]))-.65)
  water=upstream*(1-t)+downstream*t
- radius=5.0+2.2*np.sin(np.pi*t)**.6
+ radius=8.0+3.2*np.sin(np.pi*t)**.6
  radius+=(25 if index==0 else 18)*np.exp(-((t-(.23 if index==0 else .13))/.038)**2)
  road=sample(masks[:,:,2].astype(float)/255,points[:,0],points[:,1])>.10
  ford=np.zeros(len(points),bool)
@@ -85,7 +85,7 @@ def valley_field(x,y):
  for stream in streams:
   p=stream['points']
   for k,(a,b) in enumerate(zip(p,p[1:])):
-   r=max(stream['radius'][k:k+2])+40
+   r=max(stream['radius'][k:k+2])+165
    chosen=(x>=min(a[0],b[0])-r)&(x<=max(a[0],b[0])+r)&(y>=min(a[1],b[1])-r)&(y<=max(a[1],b[1])+r)
    if not np.any(chosen):continue
    dx,dy=b-a;den=dx*dx+dy*dy
@@ -294,14 +294,19 @@ weight=protect_weight(X,Y)
 roads=sample(masks[:,:,2].astype(float)/255,X,Y)
 woods=sample(masks[:,:,3].astype(float)/255,X,Y)
 h=sample(oldheight,X,Y)
-# A connected olive valley, dry golden shoulders and soft woodland margins.
-valley_wash=(1-smooth((d-r-12)/105))*weight*(1-roads)**2
-dry=smooth((h-8)/18)*weight*(1-roads)**2*(1-woods*.8)
-green=np.array((.39,.46,.185));gold=np.array((.57,.51,.235))
+# Broad painted land masses: woodland floors merge into damp drainage, while
+# exposed shoulders retain warm meadow. These are source-space washes with
+# preserved fine donor texture, never a replacement flat colour.
+valley_wash=(1-smooth((d-r-20)/125))*weight*(1-roads*.85)**2
+warp=X+55*np.sin(Y/153)+30*np.cos(X/117+Y/321)
+meadow=(.5+.5*np.sin(warp/158+np.sin(Y/270)))*(.65+.35*np.cos(Y/237-X/360))
+meadow=np.clip(meadow,0,1)*weight*(1-roads*.8)**2
+woodland=np.clip(woods*.85+valley_wash*.45,0,1)*weight*(1-roads*.85)**2
 base=pixels[:,:,:3]
-base[:]=base*(1-valley_wash[:,:,None]*.42)+green*valley_wash[:,:,None]*.42
-base[:]=base*(1-dry[:,:,None]*.23)+gold*dry[:,:,None]*.23
-shore=(1-smooth((d-r-1)/12))*smooth((d-r+1)/4)*weight*(1-roads)
+base[:]=base*(1-meadow[:,:,None]*.48)+np.array((.36,.40,.135))*meadow[:,:,None]*.48
+base[:]=base*(1-woodland[:,:,None]*.46)+np.array((.245,.325,.105))*woodland[:,:,None]*.46
+base[:]=base*(1-valley_wash[:,:,None]*.62)+np.array((.29,.375,.145))*valley_wash[:,:,None]*.62
+shore=(1-smooth((d-r-1)/15))*smooth((d-r+1)/4)*weight*(1-roads)
 base[:]=base*(1-shore[:,:,None]*.58)+np.array((.43,.39,.255))*shore[:,:,None]*.58
 new=bpy.data.images.new('Artist authored connected valley and meadow composition',W,H,alpha=True)
 new.pixels.foreach_set(pixels.ravel());new.filepath_raw=str(out/'WorldMacroPigment.png');new.file_format='PNG';new.save()
