@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-25T12:31:55.049Z",
+  "updated_at": "2026-10-25T15:05:23.952Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1139,9 +1139,9 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "codex-world4x-art-final-e996c595",
-      "write_scope_released": false,
-      "ownership_revision": 33,
+      "owner": null,
+      "write_scope_released": true,
+      "ownership_revision": 34,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-24T21:06:46.612Z",
@@ -1160,12 +1160,10 @@
         ".github/workflows/world4x-artistic-process-gate.yml",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing.",
-      "phase": "FINAL_ROOT_CAUSE_SOIL_LOD_QUARRY_BREACH",
-      "next": "Complete root-cause macro batch: mip-based soil detail, balanced same-source retained far crowns, open excavation node and central real-ground mineral exposure; certify61/26/44 and six Unity views. CI-only GPU capture repair, then release Windows and re-run final UI gate; no UI visual scope resumed.",
+      "phase": "OWNER_NODE_DESIGN_APPROVAL_BEFORE_NEW_MODELLING",
+      "next": "Show proposed wood/quarry concept image and wait for the owner's explicit approval before creating or changing those node models. Existing world/creature production and native62/26/44 remain preserved in PR100 at d6a547b5047b125e03dc40d869465a512e7d788e. Reclaim same workstream before new writes. No merge/publication/Tripo credits authorized.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1305,6 +1303,18 @@
           "packed_pigment_sha256": "b385c294e6900d42457fc88a945d1ddff6db7d7df07015cf9a1fcd88a0a3e925",
           "new_native_certificate": false,
           "art_approved": false,
+          "physical_mobile_tested": false
+        },
+        "artistic_checkpoint_20261025": {
+          "source": "e3c17867fecc695ea7a57eea28d26ecaa7ec47f5",
+          "assets_commit": "d6a547b5047b125e03dc40d869465a512e7d788e",
+          "native_run": 40204010344,
+          "conclusion": "success",
+          "playmode": 62,
+          "editmode": 26,
+          "functional_checks": 44,
+          "art_approved": false,
+          "owner_requested_node_concept_review": true,
           "physical_mobile_tested": false
         }
       },
@@ -1460,6 +1470,12 @@
           "owner": "codex-world4x-art-final-e996c595",
           "revision": 32,
           "reason": "Owner-directed completion continues after native40190145654 PASS. Limited CI workflow maintenance is available/null-owner revision14, not a reserved UI visual task; transfer only ui-progression-cert.yml, retain UI pause and all scenes."
+        },
+        {
+          "owner": "codex-world4x-art-final-e996c595",
+          "revision": 33,
+          "released_at": "2026-10-25T15:05:23.952Z",
+          "reason": "Owner explicitly requests concept image and approval before creating the redesigned node models. Native40204010344 completed successfully; assets and sources preserved at d6a547b5047b125e03dc40d869465a512e7d788e. No new node modelling started. Release exclusive production resource and write reservation while awaiting design choice."
         }
       ],
       "delivery_definition": {
@@ -1469,7 +1485,7 @@
       },
       "release_note": "Owner-requested safe handoff, not task completion. Run40097362906 SUCCESS confirms corrected editable pigment after save/reopen and orderly close of PID9624. Windows reservation released; full new Unity certification and visual acceptance remain pending.",
       "previous_owner": "chatgpt-world4x-region1-final-production-20261024",
-      "ownership_state": "claimed",
+      "ownership_state": "available",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
         "run": 40071887223,
