@@ -1,0 +1,27 @@
+{
+  "method": "Actual BlenderMCP execute_code; hand-authored approved geometry and UV-painted material maps",
+  "approved_reference_library_ids": [
+    "libfile_69f102c63f908191888794200775733e",
+    "libfile_ea187f8f47c48191b0f6e170aecdc4e6"
+  ],
+  "roots": [
+    "Resource_Wood_0",
+    "Resource_Wood_1",
+    "Resource_Wood_2",
+    "Resource_Stone_0",
+    "Resource_Stone_1",
+    "Resource_Stone_2"
+  ],
+  "root_count": 6,
+  "new_gameplay_targets": 0,
+  "input_working_copy_sha256": "7655f05ac8c5e5294b4c6a359d379f56ddadfa3eca3374aeb51d101a497f834c",
+  "output_files": {
+    "RegionOneResources.glb": "a968f7d81575d792904ec04cd4cb46fb569866f762746354eb3f5465c0a025f3",
+    "RegionOneResourceImpostors.png": "ec1e70d93c85dd7ac677d4bd23ff8884c235bfcce1e12e0b9c5be4da7b80dc0e",
+    "Eldoria_Resource_Library.blend": "2519a8b42da226e1241cd26e674ca91031b0c32252b9aec66c5397519f162b76"
+  },
+  "triangle_count": 59694,
+  "material_count": 10,
+  "preview_is_Unity": false,
+  "art_approved": false
+}
