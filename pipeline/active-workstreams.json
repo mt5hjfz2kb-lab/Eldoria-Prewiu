@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-25T15:14:23.667Z",
+  "updated_at": "2026-10-25T18:49:37.384Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1139,12 +1139,12 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "codex-world4x-art-final-e996c595",
+      "owner": "codex-world4x-takeover-a6480e11",
       "write_scope_released": false,
-      "ownership_revision": 35,
+      "ownership_revision": 36,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-25T15:14:23.667Z",
+      "claimed_at": "2026-10-25T18:49:37.384Z",
       "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -1164,8 +1164,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.",
-      "phase": "APPROVED_REFERENCE_NODE_ASSETS_AND_CLOSE_BREACH",
-      "next": "Author the approved quarry and timber depot as reusable BlenderMCP/bpy assets; preserve real six resource roots/mechanics and all originals. Verify genuine close Breach at its coordinates, all orientations and full native certification. Do not substitute earlier unapproved concepts.",
+      "phase": "RECOVER_CAPTURE_ASSERTION_AND_VISUAL_REVIEW",
+      "next": "Fix six standard retained-sector views versus twelve pigment A/B controls without dropping either assertion; rerun native and inspect exact Unity captures against canon, then finish remaining verified visual defects. No merge/publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1478,6 +1478,12 @@
           "revision": 33,
           "released_at": "2026-10-25T15:05:23.952Z",
           "reason": "Owner explicitly requests concept image and approval before creating the redesigned node models. Native40204010344 completed successfully; assets and sources preserved at d6a547b5047b125e03dc40d869465a512e7d788e. No new node modelling started. Release exclusive production resource and write reservation while awaiting design choice."
+        },
+        {
+          "owner": "codex-world4x-art-final-e996c595",
+          "revision": 35,
+          "relieved_at": "2026-10-25T18:49:37.384Z",
+          "reason": "Owner explicitly asks this chat to take over interrupted work and carry it to completion. Preserve PR100 and completed native40221998305 evidence; no jobs cancelled."
         }
       ],
       "delivery_definition": {
