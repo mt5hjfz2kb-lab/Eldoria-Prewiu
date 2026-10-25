@@ -63,7 +63,10 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      half wideA=SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV/6).a;
      half wideB=SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,rotatedDetail/6).a;
      half variation=1+clamp(wideA+wideB-1,-.65,.65)*.22;
-     c.rgb*=half3(1.40,1.10,.94)*variation;
+     // Preserve the source ochre paths and purple geology; warm the actual
+     // green meadow pigment rather than tinting the whole painted atlas.
+     half grass=1-smoothstep(.95,1.40,c.r/max(.001,c.g));
+     c.rgb*=lerp(half3(1,1,1),half3(1.40,1.10,.94)*variation,grass);
  }
  half3 originalPigment=c.rgb;
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);

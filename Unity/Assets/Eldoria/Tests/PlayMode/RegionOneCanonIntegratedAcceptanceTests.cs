@@ -1408,7 +1408,8 @@ namespace Eldoria.Tests
                 Assert.That(Directory.GetFiles(creatureDir,"*.png").Length,Is.EqualTo(4),
                     "Genuine near Tripo boar and engendro camera captures are required");
                 Assert.That(Directory.GetFiles(continentalDetails,"*.png").Length,Is.EqualTo(4));
-                Assert.That(Directory.GetFiles(sectorDirectory,"*.png").Length,Is.EqualTo(6));
+                Assert.That(Directory.GetFiles(sectorDirectory,"*.png").Count(p=>!Path.GetFileName(p).StartsWith("pigment-",StringComparison.Ordinal)),Is.EqualTo(6),"All six canonical sector frames remain required");
+                Assert.That(Directory.GetFiles(sectorDirectory,"pigment-*.png").Length,Is.EqualTo(12),"All six genuine pigment control/candidate pairs are required");
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(16));
                 if(Environment.GetEnvironmentVariable("ELDORIA_RIBERA_PILOT")=="1")
                 {

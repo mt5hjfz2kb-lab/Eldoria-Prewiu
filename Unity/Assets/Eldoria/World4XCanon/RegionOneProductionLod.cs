@@ -21,27 +21,37 @@ namespace Eldoria.World4XCanon
                 // distance, not an extra carpet or enlarged close-up donor.
                 // The far mesh is independently exported, keeps its original
                 // ground anchor, and still crossfades through the existing LOD.
-                if(near.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal))
+                bool retained=near.name.StartsWith("Pilot_Pine",StringComparison.Ordinal);
+                bool retainedFarVisible=true;
+                uint identity=2166136261;
+                foreach(char character in near.name)identity=unchecked((identity^character)*16777619);
+                if(!retained)
                 {
                     var scale=far.transform.localScale;
                     far.transform.localScale=new Vector3(scale.x*1.50f,scale.y*1.85f,scale.z*1.50f);
+                    var size=far.bounds.size;float footprint=Mathf.Max(size.x,size.z);
+                    if(footprint<12f){
+                        // The source ecotone/castle/small plantation crowns are
+                        // 1-4m high. A dense regional carpet makes the old sector
+                        // legible as a rectangle even after its ground detail is
+                        // culled. Keep its expected crown area, using fewer of
+                        // the SAME anchors at the continental silhouette scale.
+                        float coverage=footprint*footprint/(16f*16f);
+                        retainedFarVisible=(identity%10000)/10000f<coverage;
+                        if(retainedFarVisible){
+                            scale=far.transform.localScale;
+                            far.transform.localScale=new Vector3(scale.x*16f/Mathf.Max(.01f,footprint),
+                                scale.y*14f/Mathf.Max(.01f,size.y),scale.z*16f/Mathf.Max(.01f,footprint));
+                        }
+                    }
                 }
-                bool retained=near.name.StartsWith("Pilot_Pine",StringComparison.Ordinal);
-                bool retainedFarVisible=true;
-                if(retained)
+                else
                 {
-                    // Keep every protected near crown untouched. A balanced far
-                    // representation uses 1/20 of the SAME crowns at 4.5x width:
-                    // 4.5^2/20 keeps total crown coverage close to the source,
-                    // matching the continental median crown (~16m wide, ~14m high).
-                    // The earlier 1/6 LOD preserved area but kept twice as many
-                    // undersized crowns, exposing the rectangular source sector.
-                    uint identity=2166136261;
-                    foreach(char character in near.name)identity=unchecked((identity^character)*16777619);
+                    // Protected near crowns stay unchanged. The same distant
+                    // anchors retain approximately their original covered area.
                     retainedFarVisible=identity%20==0;
                     var scale=far.transform.localScale;
                     if(retainedFarVisible)far.transform.localScale=new Vector3(scale.x*4.5f,scale.y*6.5f,scale.z*4.5f);
-
                 }
                 // Scale about the existing canopy base, not the ground-origin
                 // pivot: these protected pine meshes start above a separate stem.
@@ -59,7 +69,8 @@ namespace Eldoria.World4XCanon
                 else
                 {
                     lod.SetLODs(new[]{close});
-                    far.gameObject.SetActive(false);
+                    far.enabled=false;
+                    if(retained)far.gameObject.SetActive(false);
                 }
             }
         }
