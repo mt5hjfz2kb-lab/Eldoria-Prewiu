@@ -12,36 +12,24 @@ for root in original_roots:
  for ob in list(root.children):bpy.data.objects.remove(ob,do_unlink=True)
 materials=[]
 def painted(name,base,kind):
- size=512;u,v=np.meshgrid(np.linspace(0,1,size),np.linspace(0,1,size))
- colour=np.empty((size,size,4),np.float32);colour[:]=(*base,1)
- if kind=='wood':
-  grain=.025*np.sin(u*87+2*np.sin(v*6))+.013*np.sin(u*211+np.sin(v*17))
-  grain+=.012*np.sin(u*39+3*np.sin(v*3));colour[:,:,:3]+=grain[:,:,None]
- elif kind=='cut':
-  r=np.hypot(u-.5,v-.5);a=np.arctan2(v-.5,u-.5)
-  ring=np.sin((r+.008*np.sin(a*4))*145)
-  colour[:,:,:3]-=(.055*np.maximum(0,ring)**9)[:,:,None]
-  for angle in [-2.1,.25,1.6]:
-   gap=np.abs(np.sin(a-angle))*r
-   colour[:,:,:3]-=(.14*((gap<.004)&(r>.29)))[:,:,None]
- elif kind=='stone':
-  chisel=.009*np.sin(u*257+v*34)+.008*np.cos(v*191-u*21)
-  layers=.003*np.sin(v*34)+.002*np.sin(v*87)
-  colour[:,:,:3]+=(chisel+layers)[:,:,None]
-  for x,slope in [(.14,.04),(.62,-.08),(.89,.06)]:
-   path=x+v*slope+.014*np.sin(v*29+x*13)+.006*np.sin(v*73)
-   line=np.exp(-((u-path)/.0035)**2)*.095
-   colour[:,:,:3]-=line[:,:,None]
- elif kind=='cloth':
+ size=512
+ if kind!='cloth':
+  atlas=bpy.data.images.load(str(pathlib.Path(bpy.app.driver_namespace['interactive_helpers'])/'ApprovedNodeMaterials.png'),check_existing=True)
+  w,h=atlas.size;data=np.array(atlas.pixels[:],dtype=np.float32).reshape(h,w,4)
+  if kind=='stone':colour=data[h//2:,:w//2].copy()
+  elif kind=='cut':colour=data[:h//2,w//2:].copy()
+  elif 'bark' in name:colour=data[h//2:,w//2:].copy()
+  else:colour=data[:h//2,:w//2].copy()
+  size=colour.shape[0]
+ else:
+  u,v=np.meshgrid(np.linspace(0,1,size),np.linspace(0,1,size))
+  colour=np.empty((size,size,4),np.float32);colour[:]=(*base,1)
   colour[:,:,:3]+=(.007*np.sin(u*800)+.007*np.sin(v*800))[:,:,None]
   green=np.array((.13,.20,.105));stripe=(u<.14)|(u>.86)
-  # Painted pine emblem belongs to the approved physical cloth, not map UI.
   tree=((v>.25)&(v<.47)&(abs(u-.5)<(.47-v)*.85))|((v>.40)&(v<.62)&(abs(u-.5)<(.62-v)*.67))|((v>.55)&(v<.79)&(abs(u-.5)<(.79-v)*.50))|((abs(u-.5)<.018)&(v>.18)&(v<.35))
   colour[stripe|tree,:3]=green
- colour=np.clip(colour,0,1)
- # Write explicit sRGB bytes: generated image buffers were previously treated
- # as encoded colour and decoded twice on reload, crushing the approved palette.
- colour[:,:,:3]=np.where(colour[:,:,:3]<=.0031308,colour[:,:,:3]*12.92,1.055*colour[:,:,:3]**(1/2.4)-.055)
+  colour=np.clip(colour,0,1)
+  colour[:,:,:3]=np.where(colour[:,:,:3]<=.0031308,colour[:,:,:3]*12.92,1.055*colour[:,:,:3]**(1/2.4)-.055)
  image=bpy.data.images.new(name+' painted map',size,size,alpha=True)
  image.colorspace_settings.name='Non-Color';image.pixels.foreach_set(colour.ravel());image.filepath_raw=str(out/(name+'.png'));image.file_format='PNG';image.save()
  packed=bpy.data.images.load(image.filepath_raw,check_existing=False);packed.pack()
@@ -75,7 +63,7 @@ class Builder:
   profile=[(-1,-.78),(-.78,-1),(.78,-1),(1,-.78),(1,.78),(.78,1),(-.78,1),(-1,.78)]
   rings=[[o+a*x*width*.5+b*y*depth*.5 for x,y in profile] for o in [p,q]]
   for i in range(8):
-   j=(i+1)%8;self.face([rings[0][i],rings[0][j],rings[1][j],rings[1][i]],mat,[(0,0),(1,0),(1,(q-p).length/max(width,.2)),(0,(q-p).length/max(width,.2))])
+   j=(i+1)%8;self.face([rings[0][i],rings[0][j],rings[1][j],rings[1][i]],mat,[(0,0),(1,0),(1,1),(0,1)])
   for ring,reverse in [(rings[0],True),(rings[1],False)]:
    centre=sum(ring,Vector())/8
    for i in range(8):
@@ -96,7 +84,7 @@ class Builder:
    yy=y-length*.5+length*k/3;rr=radius*(1-.08*k/3)
    profiles.append([Vector((x+rr*(1+.075*math.sin(j*2.5))*math.cos(j*math.tau/n),yy,z+rr*(1+.075*math.sin(j*2.5))*math.sin(j*math.tau/n))) for j in range(n)])
   for k in range(3):
-   for j in range(n):a=(j+1)%n;self.face([profiles[k][j],profiles[k][a],profiles[k+1][a],profiles[k+1][j]],BARK,[(j/n,k),(a/n,k),(a/n,k+1),(j/n,k+1)])
+   for j in range(n):a=(j+1)%n;self.face([profiles[k][j],profiles[k][a],profiles[k+1][a],profiles[k+1][j]],BARK,[(j/n,k/3),((j+1)/n,k/3),((j+1)/n,(k+1)/3),(j/n,(k+1)/3)])
   for k in [0,3]:
    centre=Vector((x,y-length*.5+length*k/3,z))
    for j in range(n):
@@ -115,7 +103,7 @@ class Builder:
    bm=bmesh.new();bm.from_mesh(me);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.00001);bm.to_mesh(me);bm.free();me.update()
    for polygon in me.polygons:polygon.use_smooth=polygon.material_index in (BARK,ROPE,CLOTH)
    bpy.context.view_layer.objects.active=ob;ob.select_set(True)
-   bevel=ob.modifiers.new('Authored worn edge highlights','BEVEL');bevel.width=.035;bevel.segments=2;bevel.limit_method='ANGLE';bevel.angle_limit=.75
+   bevel=ob.modifiers.new('Authored worn edge highlights','BEVEL');bevel.width=.035;bevel.segments=1;bevel.limit_method='ANGLE';bevel.angle_limit=.75
    bpy.ops.object.modifier_apply(modifier=bevel.name)
   return ob
 def platform(b,x,y,z,w,d):

@@ -21,6 +21,7 @@ server=addon.BlenderMCPServer(host='127.0.0.1',port=0)
 server.socket=socket.socket();server.socket.bind(('127.0.0.1',0));port=server.socket.getsockname()[1];server.socket.listen(2);server.running=True
 server.server_thread=threading.Thread(target=server._server_loop,daemon=True);server.server_thread.start()
 bpy.app.driver_namespace['interactive_output']=str(out)
+bpy.app.driver_namespace['interactive_helpers']=str(pathlib.Path(__file__).parent)
 def snapshot(label):
  scene=bpy.context.scene
  for view in ('panoramica-vertical','regional-horizontal'):
