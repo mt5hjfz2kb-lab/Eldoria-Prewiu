@@ -402,8 +402,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40230766938
-          name: region1-interactive-40230766938
+          run-id: 40233611270
+          name: region1-interactive-40233611270
           path: ${{ runner.temp }}/region1-reviewed-macro
       - name: Stage exact observed BlenderMCP valleys and geological walls
         shell: powershell
@@ -414,8 +414,8 @@ jobs:
           $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $unityDest=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
           $expected=@{
-            'Eldoria_Region1_Production.blend'='ebc0d001f99dec1166f08bebb9436c140612e2a89fe8b45cc0270feafb6f5823'
-            'RegionOneBlenderWorld.glb'='bf3c02383dcb6fa524463c5c6b06ec8c7a5fe5142fe15f676b720d85d8757b6b'
+            'Eldoria_Region1_Production.blend'='a4761ca33f38273a31ff444277c143ded5e31ab2498d30c8af2baca9db037d1b'
+            'RegionOneBlenderWorld.glb'='eb455b665871cbc95c6fc4c7948b8c24691765b80288770f9b99e5322c5c95ab'
             'RegionOneBlenderQueries.bytes'='bde8d1e3e13df5fc658d9fa258da9ac3d720d499f230644e250e9f3b4570589b'
             'production-region.json'='e1454e3ce1c8985e174833e6618e427aa941a97376f5958fa4138dc5cca853df'
           }
@@ -425,7 +425,7 @@ jobs:
             Copy-Item $saved (Join-Path $destination $name) -Force
             if($name -ne 'Eldoria_Region1_Production.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
           }
-          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40230766938.json','response-40230766938.json')){
+          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40233611270.json','response-40233611270.json')){
             Copy-Item (Join-Path $origin $name) (Join-Path $destination "macro-$name") -Force
           }
           Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51898_vertices new_streams=2 new_targets=0 fresh_Unity_required=1'
