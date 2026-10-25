@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-25T11:35:21.600Z",
+  "updated_at": "2026-10-25T12:31:55.049Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1141,7 +1141,7 @@
       "title": "Región 1 — geografía canónica continua y representación por zoom",
       "owner": "codex-world4x-art-final-e996c595",
       "write_scope_released": false,
-      "ownership_revision": 32,
+      "ownership_revision": 33,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-24T21:06:46.612Z",
@@ -1157,14 +1157,15 @@
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
         "docs/documentation-catalog.json",
-        ".github/workflows/world4x-artistic-process-gate.yml"
+        ".github/workflows/world4x-artistic-process-gate.yml",
+        ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [
         "windows-runner-heavy"
       ],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing.",
-      "phase": "MACRO_ECOTONE_GEOLOGY_AUTHORING",
-      "next": "Native40187953957 sourcea3e51a2 assets2934d9c:61/61 PlayMode,26/26 EditMode,44/44 probes; inspected actual regional/creature/panorama PNGs. Creature silhouettes materially improved, panorama clean. Continue remaining AF/AG visible rectangular forest/soil transition, geological Breach regularity and node finish; no7.5 approval. Reserve Windows only when next source candidate ready.",
+      "phase": "FINAL_ROOT_CAUSE_SOIL_LOD_QUARRY_BREACH",
+      "next": "Complete root-cause macro batch: mip-based soil detail, balanced same-source retained far crowns, open excavation node and central real-ground mineral exposure; certify61/26/44 and six Unity views. CI-only GPU capture repair, then release Windows and re-run final UI gate; no UI visual scope resumed.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1454,24 +1455,17 @@
           "owner": "chatgpt-world4x-region1-final-production-20261024",
           "revision": 31,
           "reason": "Owner explicitly directs safe handoff to Work after native40186883304 completed; retain certified15dac931; no jobs cancelled."
+        },
+        {
+          "owner": "codex-world4x-art-final-e996c595",
+          "revision": 32,
+          "reason": "Owner-directed completion continues after native40190145654 PASS. Limited CI workflow maintenance is available/null-owner revision14, not a reserved UI visual task; transfer only ui-progression-cert.yml, retain UI pause and all scenes."
         }
       ],
       "delivery_definition": {
         "deliverable": "One continuous Region1 replacing all old world visuals, production population connected to existing gateway/persistence, actual full-region panorama and preserved city/gameplay.",
         "evidence": "Editable Blender and Unity, genuine 3-scale 2-orientation captures, mesh contact/navigation/city capacity, save-reload-restart and I-II gameplay tests, physical metrics only if measured.",
         "handoff": "PR100 reviewable exact sources/evidence; objective remains open until all criteria met; no merge or publish."
-      },
-      "blocking_dependency": {
-        "type": "ACTIVE_RESERVED_FILE_OUTSIDE_WORLD_SCOPE",
-        "workstream": "eldoria-ui-v3-management-completion-20261021",
-        "owner": "chatgpt-issue95-visual-experience-20261022",
-        "ownership_revision": 13,
-        "file": ".github/workflows/ui-progression-cert.yml",
-        "patch": "docs/evidence/world4x-canon-20261022/UI_CERT_GPU_CAPTURE_PROPOSED.patch",
-        "base_blob": "87332d1db185b594c5a05bf5f44229125e8938ae",
-        "needed": "Explicit limited handoff for this workflow file or current owner's release; preserve all other UI scopes.",
-        "evidence": "40061480616: headless PlayMode 56 pass, zero fail, one capture ignored; workflow failed. World-owned GPU route40069960813 passes all57, Edit26, probe44, fresh34 images. Patch applies cleanly; no test removal. Final docs head gate40071887223 independently confirms I-II and Edit pass, PlayMode root Skipped:Ignored.",
-        "native_jobs_active": 0
       },
       "release_note": "Owner-requested safe handoff, not task completion. Run40097362906 SUCCESS confirms corrected editable pigment after save/reopen and orderly close of PID9624. Windows reservation released; full new Unity certification and visual acceptance remain pending.",
       "previous_owner": "chatgpt-world4x-region1-final-production-20261024",
@@ -1500,7 +1494,22 @@
         "editmode": 26,
         "functional_checks": 44,
         "art_approved": false
-      }
+      },
+      "resolved_dependencies": [
+        {
+          "type": "ACTIVE_RESERVED_FILE_OUTSIDE_WORLD_SCOPE",
+          "workstream": "eldoria-ui-v3-management-completion-20261021",
+          "owner": "chatgpt-issue95-visual-experience-20261022",
+          "ownership_revision": 13,
+          "file": ".github/workflows/ui-progression-cert.yml",
+          "patch": "docs/evidence/world4x-canon-20261022/UI_CERT_GPU_CAPTURE_PROPOSED.patch",
+          "base_blob": "87332d1db185b594c5a05bf5f44229125e8938ae",
+          "needed": "Explicit limited handoff for this workflow file or current owner's release; preserve all other UI scopes.",
+          "evidence": "40061480616: headless PlayMode 56 pass, zero fail, one capture ignored; workflow failed. World-owned GPU route40069960813 passes all57, Edit26, probe44, fresh34 images. Patch applies cleanly; no test removal. Final docs head gate40071887223 independently confirms I-II and Edit pass, PlayMode root Skipped:Ignored.",
+          "native_jobs_active": 0,
+          "resolution": "Historical reserved revision13 superseded by available/null UI revision14; exact CI workflow-only scope transfer under owner's finalization order, no UI scene takeover."
+        }
+      ]
     }
   ],
   "history": [
