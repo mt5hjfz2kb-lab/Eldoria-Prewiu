@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
   "ownership_revision": 37,
-  "source_run": 40233611270,
-  "source_sha256": "a4761ca33f38273a31ff444277c143ded5e31ab2498d30c8af2baca9db037d1b",
+  "source_run": 40237750807,
+  "source_sha256": "9f26c9560e9ddafa9f57bac8fa2c2641ef0ffb9e91874f7411bbdf3df0191ef5",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Final organic readability batch: preserve certified terrain/geology/images; remap tributary current texture along flow and replace over-decimated 67-triangle strategic conifers with two shared approved donor LODs around240triangles; inspect actual strategic silhouette workshop before final Unity.",
+  "decision": "Owner renewed macro critique: sculpt real low uplands and moist river terraces; connect woodland ecotones and warp repetitive trails; rebuild terrain-bound stratified canyon walls and rare internal light vents. Original AF/AG, original packed images, city access and gameplay targets remain protected. Review actual strategic donor LOD in Blender before new Unity certification.",
   "preview_is_Unity": false,
   "art_approved": false
 }
