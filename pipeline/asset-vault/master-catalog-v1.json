@@ -20,7 +20,7 @@
     "known_historical_sampling_limit": "selected_paths is not full recursive listing",
     "catalog_records": 47,
     "classification_counts": {
-      "USE_PRODUCTION": 5,
+      "USE_PRODUCTION": 4,
       "LANDMARK_ONLY": 1,
       "REUSE_CONDITIONAL": 20,
       "INTEGRATED_REUSE_WITH_LIMITS": 1,
@@ -28,7 +28,8 @@
       "REJECT_CURRENT_VISUAL": 1,
       "TECH_CANDIDATE_NOT_ART_APPROVED": 6,
       "HISTORICAL_HOLD_FOR_DIRECT_REVIEW": 8,
-      "REJECT_FOR_CURRENT_CANON": 4
+      "REJECT_FOR_CURRENT_CANON": 4,
+      "OWNER_BLOCKED_NO_USE": 1
     },
     "main_glb_file_probes_verified": 26,
     "main_glb_meta_probes_verified": 26,
@@ -45,30 +46,33 @@
     "REJECT_CURRENT_VISUAL": "Current visual identity rejected, retain source for look-dev only",
     "TECH_CANDIDATE_NOT_ART_APPROVED": "Unity technical result is not owner's artistic approval",
     "HISTORICAL_HOLD_FOR_DIRECT_REVIEW": "Preserve pinned ref, no auto-restore or gameplay integration",
-    "REJECT_FOR_CURRENT_CANON": "Historic negative family is not for promotion"
+    "REJECT_FOR_CURRENT_CANON": "Historic negative family is not for promotion",
+    "OWNER_BLOCKED_NO_USE": "Preserve for history only. No use by any AI/Work/game scene unless owner explicitly reauthorizes."
   },
   "records": [
     {
       "id": "canon-unity-assets-eldoria-resources-valoria-herobastiongenerated-valoria-herobastion-v1-glb",
       "name": "Valoria_HeroBastion_v1",
       "family": "valoria_or_world_city",
-      "role": "Valoria central fortress",
-      "verdict": "USE_PRODUCTION",
-      "priority": "high",
+      "role": "Archived historical Bastion; explicitly NOT approved for reuse by owner",
+      "verdict": "OWNER_BLOCKED_NO_USE",
+      "priority": "prohibited_without_owner_permission",
       "source_kind": "tracked_GLb",
       "ref": "main",
       "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
       "sha256_recorded": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
       "bytes_recorded": 13257704,
       "unity_meta_recorded": true,
-      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated. GLB integrity is NOT artistic acceptance or permission to use.",
       "image_preview": null,
       "preview_state": "not_verified",
-      "limitations": "Validated hero anchor; do not replace with older silhouette.",
+      "limitations": "Project owner explicitly prohibits any use of this prior-model-generated Bastion unless explicitly reauthorized. Do not suggest as production art, instantiate, swap into scenes or publish. Preserve source intact pending compatibility/scene ownership review.",
       "evidence": [
         "pipeline/asset-library-canonicalization-audit.json",
         "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
-      ]
+      ],
+      "owner_use_authorization": "OWNER_EXPLICIT_PERMISSION_REQUIRED",
+      "owner_decision_date": "2026-10-25"
     },
     {
       "id": "canon-unity-assets-eldoria-resources-valoria-historicallandmarks-gatestreetriserock-mv1-glb",

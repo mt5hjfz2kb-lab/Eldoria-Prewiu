@@ -10,8 +10,8 @@ spec.loader.exec_module(mod)
 class ProductionShelfTests(unittest.TestCase):
     def test_shelf_is_bounded_and_classified(self):
         shelf=json.loads((ROOT/"pipeline/asset-vault/clean-production-shelf-v1.json").read_text())
-        self.assertEqual([len(g["items"]) for g in shelf["groups"]],[5,20,1])
-        self.assertEqual(shelf["counts"]["files_in_active_shelf"],25)
+        self.assertEqual([len(g["items"]) for g in shelf["groups"]],[4,20,1,1])
+        self.assertEqual(shelf["counts"]["files_in_active_shelf"],24)
 
     def test_default_returns_only_clean_shelf(self):
         result=mod.search("muralla piedra",limit=200)
@@ -30,6 +30,21 @@ class ProductionShelfTests(unittest.TestCase):
         full=mod.search("cantera",limit=5,research=True)
         self.assertEqual(full["mode"],"FULL_RESEARCH_UNREVIEWED")
         self.assertTrue(full["historical_loaded"])
+
+    def test_legacy_bastion_owner_veto(self):
+        shelf=json.loads((ROOT/"pipeline/asset-vault/clean-production-shelf-v1.json").read_text())
+        old=shelf["groups"][-1]
+        self.assertEqual(old["id"],"owner_blocked")
+        self.assertEqual(old["items"][0]["name"],"Valoria_HeroBastion_v1")
+        self.assertEqual(old["items"][0]["reuse_authorization"],"OWNER_EXPLICIT_PERMISSION_REQUIRED")
+        for opts in ({}, {"research": True}, {"include_rejected": True}):
+            result=mod.search("Valoria_HeroBastion_v1",limit=100,**opts)
+            self.assertFalse(any(a["name"]=="Valoria_HeroBastion_v1" for a in result["top"]))
+        # Owner-blocked entries rank below all usable art even during research;
+        # full investigation can still reveal the explicit prohibition.
+        result=mod.search("Valoria_HeroBastion_v1",limit=5000,
+                          research=True,include_rejected=True)
+        self.assertTrue(any(a["verdict"]=="OWNER_BLOCKED_NO_USE" for a in result["top"]))
 
     def test_restricted_landmark_not_present_in_default(self):
         found=mod.search("GateStreetRiseRock",limit=100)

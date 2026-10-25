@@ -6,13 +6,14 @@
   "purpose": "Production retrieval: narrow approved or usable-with-conditions selection; all experimental, vendor and old variants are outside this shelf.",
   "safety": "No bytes moved/deleted. Runtime Unity paths are canonical and unchanged. License confirmation needed before exporting standalone models.",
   "counts": {
-    "production": 5,
+    "production": 4,
     "modular_conditional": 20,
     "restricted_landmark": 1,
-    "files_in_active_shelf": 25,
-    "excluded_from_active_shelf": 1
+    "owner_blocked": 1,
+    "files_in_active_shelf": 24,
+    "excluded_from_active_shelf": 2
   },
-  "selection_rule": "Prefer exact existing source. Require camera acceptance and current artistic approval for new placement. No asset from vendor/historical test promoted without explicit review.",
+  "selection_rule": "Owner-authorized selection only. Valoria_HeroBastion_v1 is ARCHIVED/BLOCKED and must not be suggested or used by any agent absent NEW explicit owner permission. Other modular candidates require real-camera acceptance.",
   "groups": [
     {
       "id": "production",
@@ -20,26 +21,6 @@
       "decision": "REUSE_IN_DOCUMENTED_ROLE",
       "status": "USE_PRODUCTION",
       "items": [
-        {
-          "id": "canon-unity-assets-eldoria-resources-valoria-herobastiongenerated-valoria-herobastion-v1-glb",
-          "name": "Valoria_HeroBastion_v1",
-          "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
-          "recorded_sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
-          "preview": "docs/asset-vault/previews/Valoria_HeroBastion_v1.png",
-          "role": "Valoria central fortress",
-          "limitations": "Validated hero anchor; do not replace with older silhouette.",
-          "allowed_uses": "Existing production role only",
-          "source_verified": "October 2 previous audit + October 25 file/meta exists in main",
-          "production_grade": true,
-          "current_camera_approval": "ORIGINAL_ROLE_ONLY",
-          "mobile_performance_independently_certified": false,
-          "license_certified": false,
-          "measured_triangles": 49800,
-          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
-          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
-          "unity_resources_load_key": "Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1",
-          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
-        },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-valoria-aserradero-ap2-v1-glb",
           "name": "Valoria_Aserradero_AP2_v1",
@@ -557,6 +538,36 @@
           "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         }
       ]
+    },
+    {
+      "id": "owner_blocked",
+      "title": "Archived legacy Bastion: blocked by project owner",
+      "decision": "OWNER_EXPLICIT_PERMISSION_REQUIRED",
+      "status": "OWNER_BLOCKED_NO_USE",
+      "items": [
+        {
+          "id": "canon-unity-assets-eldoria-resources-valoria-herobastiongenerated-valoria-herobastion-v1-glb",
+          "name": "Valoria_HeroBastion_v1",
+          "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+          "recorded_sha256": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+          "preview": "docs/asset-vault/previews/Valoria_HeroBastion_v1.png",
+          "role": "Historical legacy AI-authored Bastion; owner has NOT approved for Eldoria production",
+          "limitations": "OWNER EXPLICIT PROHIBITION 2026-10-25: Do not use, introduce, instantiate, reimport, reassemble, regenerate, promote or publish this legacy Bastion model in any scene or build unless the project owner personally gives explicit new authorization. Preserve existing files and references until runtime owners can verify safe replacement.",
+          "allowed_uses": "NO_USE_WITHOUT_OWNER_EXPLICIT_PERMISSION",
+          "source_verified": "October 2 previous audit + October 25 file/meta exists in main",
+          "production_grade": false,
+          "current_camera_approval": "OWNER_REJECTED_FOR_USE",
+          "mobile_performance_independently_certified": false,
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1",
+          "mobile_reuse_policy": "DO_NOT_USE; previous technical GLB certification is preservation-only",
+          "reuse_authorization": "OWNER_EXPLICIT_PERMISSION_REQUIRED",
+          "owner_decision_date": "2026-10-25"
+        }
+      ]
     }
   ],
   "associated_visual_families": [
@@ -609,6 +620,13 @@
     {
       "selector": "Old rejected masonry/large cliff/Slavic primary forest",
       "why": "historical negative lessons remain binding"
+    },
+    {
+      "selector": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "why": "Owner explicitly forbids use of legacy-model-generated Bastion (2026-10-25)",
+      "allow": "ARCHIVE ONLY until user explicitly authorizes reuse",
+      "permission": "OWNER_EXPLICIT_PERMISSION_REQUIRED",
+      "applies_to": "All AI agents, Work, Unity, development and publication"
     }
   ],
   "update_contract": {

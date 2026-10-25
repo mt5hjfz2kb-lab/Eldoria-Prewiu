@@ -1,17 +1,17 @@
 # Eldoria — Galería de 26 GLB canónicos (geometría real)
 
 **Estas miniaturas se generan de la malla GLB; materiales/luces no son Unity y no constituyen ART_APPROVED.**
-Para juzgar belleza y escala hay que usar cámara real en Unity; este visor sirve para reconocer rápidamente formas antes de regenerarlas.
+Para juzgar belleza y escala hay que usar cámara real en Unity; este visor sirve para reconocer rápidamente formas antes de regenerarlas. **La miniatura del Bastión antiguo se conserva únicamente como identificación de material bloqueado, no como sugerencia de uso.**
 
 ## Valoria_HeroBastion_v1
 
 ![Malla: Valoria_HeroBastion_v1](previews/Valoria_HeroBastion_v1.png)
 
-**Uso registrado:** Valoria central fortress. **Clasificación:** `USE_PRODUCTION`.
+**USO PROHIBIDO POR EL PROPIETARIO (25-10-2026). Clasificación: `OWNER_BLOCKED_NO_USE`.** Modelo histórico de un sistema de IA anterior. **No utilizarlo en Eldoria** sin permiso posterior y expreso del propietario.
 
 **Archivo:** `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb`.
 
-**Limitación:** Validated hero anchor; do not replace with older silhouette..
+**Limitación:** archivado solo como referencia histórica y para preservar dependencias; el anterior TECH PASS no concede permiso de uso.
 
 ## GateStreetRiseRock_MV1
 
