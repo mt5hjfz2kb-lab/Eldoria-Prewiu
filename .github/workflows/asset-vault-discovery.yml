@@ -42,6 +42,8 @@ jobs:
             /pipeline/asset-vault/
             /tools/asset-vault/
             /.github/workflows/asset-vault-discovery.yml
+      - name: Test read-only inventory and reuse rules
+        run: python3 -m unittest discover -s tools/asset-vault -p 'test_*.py'
       - name: Detect new tracked models (Git tree only; no Blender/Unity)
         run: |
           python3 tools/asset-vault/scan-candidates.py \
