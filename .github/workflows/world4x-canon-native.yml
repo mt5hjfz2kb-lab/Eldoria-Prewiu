@@ -39,13 +39,14 @@ jobs:
             Unity/Assets/Eldoria/World4XCanon
             Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs
             docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py
+            docs/evidence/world4x-canon-20261022/authoring/approved_breach_ground.py
             docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py
             docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py
       - name: Check Blender authoring syntax before reserving Windows editor
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py
+          python -m py_compile docs/evidence/world4x-canon-20261022/authoring/approved_breach_ground.py docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py
           echo 'WORLD4X_BLENDER_AUTHORING_SYNTAX_PASS'
       - name: Assert frozen owner PNG reference binaries
         shell: bash
@@ -541,6 +542,7 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             docs/evidence/world4x-canon-20261022/authoring/interactive
+            docs/evidence/world4x-canon-20261022/authoring/approved_breach_ground.py
             tools/workstream-lease
             pipeline
       - uses: actions/checkout@v4
@@ -560,8 +562,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40204010344
-          name: region1-canon-native-40204010344
+          run-id: 40211155178
+          name: region1-canon-native-40211155178
           path: ${{ runner.temp }}/interactive-approved-nodes-source
       - name: Send this observed decision to the persistent local BlenderMCP session
         shell: powershell

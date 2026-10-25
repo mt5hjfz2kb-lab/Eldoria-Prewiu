@@ -1,5 +1,5 @@
 $ErrorActionPreference='Stop'
-$root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/approved-nodes-e996c595-20261025-r35-v3'
+$root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/breach-ground-e996c595-20261025-r35-v1'
 $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring/interactive'
 "ELDORIA_INTERACTIVE_OUT=$root" >> $env:GITHUB_ENV
 $ready=Join-Path $root 'ready.json'
@@ -10,7 +10,7 @@ if(Test-Path $ready){
 if(-not(Test-Path $ready)){
  if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another production process is active'}
  New-Item -ItemType Directory -Force $root | Out-Null
- $source=Get-ChildItem "$env:RUNNER_TEMP/interactive-approved-nodes-source" -Recurse -Filter Eldoria_Resource_Library.blend | Select-Object -First 1 -ExpandProperty FullName
+ $source=Get-ChildItem "$env:RUNNER_TEMP/interactive-approved-nodes-source" -Recurse -Filter Eldoria_Region1_Production.blend | Select-Object -First 1 -ExpandProperty FullName
  if(-not $source){throw 'Verified resource source unavailable'}
  $blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
  $requestConfig=Get-Content "$helpers/review-request.json" -Raw | ConvertFrom-Json

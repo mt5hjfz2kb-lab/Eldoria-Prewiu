@@ -22,6 +22,7 @@ server.socket=socket.socket();server.socket.bind(('127.0.0.1',0));port=server.so
 server.server_thread=threading.Thread(target=server._server_loop,daemon=True);server.server_thread.start()
 bpy.app.driver_namespace['interactive_output']=str(out)
 bpy.app.driver_namespace['interactive_helpers']=str(pathlib.Path(__file__).parent)
+bpy.app.driver_namespace['interactive_source']=str(source)
 def snapshot(label):
  scene=bpy.context.scene
  for view in ('panoramica-vertical','regional-horizontal'):
