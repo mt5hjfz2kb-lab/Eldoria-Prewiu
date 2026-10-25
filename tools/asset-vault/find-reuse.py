@@ -24,7 +24,7 @@ ALIASES={
     "arbol":{"tree","forest","conifer","pine"},
     "árbol":{"tree","forest","conifer","pine"}
 }
-RANK={"USE_PRODUCTION":45,"INTEGRATED_REUSE_WITH_LIMITS":35,
+RANK={"USE_PRODUCTION":45,"OWNER_BLOCKED_NO_USE":-1000,"INTEGRATED_REUSE_WITH_LIMITS":35,
       "REUSE_CONDITIONAL":25,"REUSE_SOURCE_PRIORITY":22,
       "SELECTIVE_REUSE":18,"LANDMARK_ONLY":5,
       "WORLD_CANDIDATE_ONLY":12,"TECH_CANDIDATE_NOT_ART_APPROVED":12,
@@ -45,6 +45,8 @@ def search(query,limit=20,include_rejected=False,research=False):
         text=" ".join(map(str,[name,path,description,family]))
         matched=expanded & words(text)
         if not matched:return
+        if verdict == "OWNER_BLOCKED_NO_USE" and not (research and include_rejected):
+            return
         if verdict.startswith("REJECT") and not include_rejected:return
         key=(path or name,ref)
         if key in paths:return
@@ -58,6 +60,8 @@ def search(query,limit=20,include_rejected=False,research=False):
         for group in shelf["groups"]:
             if group["id"]=="historical_landmark" and not include_rejected:
                 continue
+            if group["id"]=="owner_blocked":
+                continue  # Owner ban: never suggest the old Bastion from the clean shelf.
             for asset in group["items"]:
                 add(asset["name"],asset["path"],"main",
                     "USE_PRODUCTION" if group["id"]=="production" else
