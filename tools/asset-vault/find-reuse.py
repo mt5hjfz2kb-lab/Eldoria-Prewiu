@@ -6,6 +6,7 @@ ROOT=Path(__file__).resolve().parents[2]
 C=ROOT/"pipeline/asset-vault/master-catalog-v1.json"
 CURRENT=ROOT/"pipeline/asset-vault/current-full-index-v1.json"
 HISTORY=ROOT/"pipeline/asset-vault/historical-full-index-v1.json"
+SHELF=ROOT/"pipeline/asset-vault/clean-production-shelf-v1.json"
 STOP={"para","with","from","sobre","model","modelo","asset","nuevo","new","the","and","una","uno","los","las","del","glb","blend"}
 ALIASES={
     "cantera":{"stone","quarry","rock","extraction","piedra","mine","mina"},
@@ -35,10 +36,11 @@ def words(s):
             if len(w)>2 and w not in STOP}
 def load(path):
     return json.loads(path.read_text(encoding="utf-8-sig")) if path.exists() else None
-def search(query,limit=20,include_rejected=False):
+def search(query,limit=20,include_rejected=False,research=False):
     request=words(query);expanded=set(request)
     for w in request:expanded.update(ALIASES.get(w,()))
     cur=load(C);paths=set();results=[]
+    shelf=load(SHELF)
     def add(name,path,ref,verdict,family,source,description,sha=None):
         text=" ".join(map(str,[name,path,description,family]))
         matched=expanded & words(text)
@@ -52,6 +54,26 @@ def search(query,limit=20,include_rejected=False):
                         "git_blob_sha1":sha,"matched":sorted(matched),
                         "score":len(matched)*15+RANK.get(verdict,2),
                         "note":description[:220]})
+    if shelf and not research:
+        for group in shelf["groups"]:
+            if group["id"]=="historical_landmark" and not include_rejected:
+                continue
+            for asset in group["items"]:
+                add(asset["name"],asset["path"],"main",
+                    "USE_PRODUCTION" if group["id"]=="production" else
+                    "REUSE_CONDITIONAL" if group["id"]=="modular" else "LANDMARK_ONLY",
+                    "verified_canonical", "CLEAN_SHELF",
+                    asset["role"]+" "+asset["limitations"])
+        for family in shelf.get("associated_visual_families", []):
+            source=family.get("source","")
+            add(family["title"],source,family["source_ref"],
+                "SOURCE_EXISTING_NOT_AUTO_ADMITTED","creature_or_world_source",
+                "SHELF_REFERENCE",family.get("limitations",""))
+        results.sort(key=lambda a:(-a["score"],a["name"]))
+        return {"query":query,"total_found":len(results),"top":results[:max(1,limit)],
+          "mode":"CLEAN_SHELF_ONLY","catalog_loaded":bool(cur),
+          "current_loaded":False,"historical_loaded":False,
+          "warning":"Clean shelf excludes vendor, old prototypes, rejected and unknown models; use --research only after safe shelf has been checked."}
     for a in (cur or {}).get("records",[]):
         add(a.get("name"),a.get("path"),a.get("ref"),a.get("verdict"),
             a.get("family"),"CURATED",str(a.get("role",""))+" "+str(a.get("limitations","")))
@@ -71,19 +93,21 @@ def search(query,limit=20,include_rejected=False):
             "HISTORICAL_TREE",x.get("category",""),v.get("git_blob_sha1"))
     results.sort(key=lambda x:(-x["score"],x["source"],x["name"]))
     return {"query":query,"total_found":len(results),"top":results[:max(1,limit)],
-            "catalog_loaded":bool(cur),"current_loaded":bool(now),
+            "mode":"FULL_RESEARCH_UNREVIEWED","catalog_loaded":bool(cur),"current_loaded":bool(now),
             "historical_loaded":bool(past),
             "warning":"Search discovers candidates, not approval. Verify original identity, licensing, current owner, zoom and rendered quality before modifying the game."}
 def main():
     p=argparse.ArgumentParser();p.add_argument("query",nargs="+")
     p.add_argument("--json",action="store_true");p.add_argument("--limit",type=int,default=15)
-    p.add_argument("--include-rejected",action="store_true");a=p.parse_args()
-    o=search(" ".join(a.query),a.limit,a.include_rejected)
+    p.add_argument("--include-rejected",action="store_true")
+    p.add_argument("--research",action="store_true",help="Also include unapproved historical files, third-party packs, experimental variants")
+    a=p.parse_args()
+    o=search(" ".join(a.query),a.limit,a.include_rejected,a.research)
     if a.json:print(json.dumps(o,ensure_ascii=False,indent=2))
     else:
         print("Found",o["total_found"],"candidate(s) across curated/current/historical indexes")
         for item in o["top"]:
             print(" - [{}] {} @ {} : {}".format(item["verdict"],item["name"],item["ref"],item["path"]))
-        if not o["historical_loaded"] or not o["current_loaded"]:
+        if o["mode"]=="FULL_RESEARCH_UNREVIEWED" and (not o["historical_loaded"] or not o["current_loaded"]):
             print("NOTE: Full indexes missing; search coverage is incomplete.")
 if __name__=="__main__":main()

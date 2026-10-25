@@ -4,6 +4,10 @@
 
 > **Pacto fundacional propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1):** el dueño no programa; cualquier chat o agente ha de aportar iniciativa, criterio técnico propio, crítica, alternativa cuando un método falle y evidencia real, como obliga [AGENTS.md](../AGENTS.md). Se mantiene vigente en todos los relevos; no reemplaza las autorizaciones.
 
+## Biblioteca operativa depurada — prioridad sobre inventarios brutos
+
+**Primera consulta de producción:** [biblioteca limpia de 25 piezas, imágenes y rutas directas de Unity](asset-vault/CLEAN_LIBRARY.md) y [catálogo de estante en JSON](../pipeline/asset-vault/clean-production-shelf-v1.json). El buscador habitual `python3 tools/asset-vault/find-reuse.py "muralla"` **solo ofrece piezas operativas y fuentes restringidas identificadas**; no propone los 536 recursos externos con licencia pendiente ni los experimentos históricos. `--research` abre expresamente la investigación de 775 archivos actuales y 920 rutas archivadas. **Ni modo investigación ni el simple hallazgo acreditan licencia, calidad artística o uso jugable.**
+
 ## Biblioteca 3D — buscar antes de crear
 
 **Obligatorio para producción artística:** [Biblioteca Maestra de Assets](asset-vault/README.md), [galería de los 26 GLB canónicos](asset-vault/GALLERY.md), [inventario actual completo](../pipeline/asset-vault/current-full-index-v1.json) y [archivo de las 201 ramas (920 rutas / 923 versiones)](../pipeline/asset-vault/historical-full-index-v1.json). Para evitar volver a modelar una pieza existente, usar `python3 tools/asset-vault/find-reuse.py cantera` o la descripción artística correspondiente; el criterio de aprobación sigue siendo la referencia del propietario y la cámara real Unity, no el nombre de archivo. Los modelos nuevos que entren a Git aparecerán en el buzón de candidatos cuando el workflow documental esté integrado en main. **No usar automáticamente materiales de terceros sin revisar licencia.**
