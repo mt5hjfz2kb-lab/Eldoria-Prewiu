@@ -10,8 +10,9 @@ namespace Eldoria.World4XCanon
     [DefaultExecutionOrder(1400)]
     public sealed class RegionOneResourceModels : MonoBehaviour
     {
-        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; }
+        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
         readonly List<Node> nodes=new List<Node>();
+        float lastImpostorScale=-1;
         ValoriaIntegratedWorld host;
         GameObject library;RegionOneLookDevelopment look;
         Eldoria.Domain.PlayerState cachedState;ICommandGateway cachedGateway;float nextState;
@@ -115,6 +116,34 @@ namespace Eldoria.World4XCanon
             }
             node.LastPosition=position;node.Grounded=true;
         }
+        void FitRegionalPicking(Node node,Vector3 position,float scale,bool regional)
+        {
+            if(!node.PickCached){
+                node.Hit=node.Logical.GetComponent<Collider>();node.PickCached=true;
+                if(node.Hit is BoxCollider box){node.HitCenter=box.center;node.HitSize=box.size;}
+                else if(node.Hit is SphereCollider sphere){node.HitCenter=sphere.center;node.HitRadius=sphere.radius;}
+            }
+            if(!node.Hit)return;
+            var rotation=host.WorldCamera.transform.rotation;
+            if(node.LastPickRegional==regional&&Mathf.Abs(node.LastPickScale-scale)<.0001f&&
+                (node.LastPickPosition-position).sqrMagnitude<.000001f&&Quaternion.Angle(node.LastPickRotation,rotation)<.001f)return;
+            node.LastPickRegional=regional;node.LastPickScale=scale;node.LastPickPosition=position;node.LastPickRotation=rotation;
+            if(!regional){
+                if(node.Hit is BoxCollider box){box.center=node.HitCenter;box.size=node.HitSize;}
+                else if(node.Hit is SphereCollider sphere){sphere.center=node.HitCenter;sphere.radius=node.HitRadius;}
+                return;
+            }
+            // Fit the existing selection volume to the same camera-facing model
+            // image. Logical sites, target IDs, route geometry and saves stay put.
+            var right=host.WorldCamera.transform.right;var up=host.WorldCamera.transform.up;
+            var bounds=new Bounds(node.Logical.InverseTransformPoint(position),Vector3.zero);
+            for(int corner=0;corner<4;corner++){
+                float x=(corner&1)==0?-16f:16f,y=(corner&2)==0?-1f:25f;
+                bounds.Encapsulate(node.Logical.InverseTransformPoint(position+(right*x+up*y)*scale));
+            }
+            if(node.Hit is BoxCollider pickBox){pickBox.center=bounds.center;pickBox.size=bounds.size+Vector3.one*.5f;}
+            else if(node.Hit is SphereCollider pickSphere){pickSphere.center=bounds.center;pickSphere.radius=bounds.extents.magnitude;}
+        }
         Renderer MakeImpostor(string id,Transform parent)
         {
             if(!impostorMaterial)return null;
@@ -169,6 +198,10 @@ namespace Eldoria.World4XCanon
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
             }
+            float screenScale=Mathf.Lerp(1f,1.75f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
+            if(impostorMaterial&&Mathf.Abs(lastImpostorScale-screenScale)>.0001f){
+                impostorMaterial.SetFloat("_BillboardScale",screenScale);lastImpostorScale=screenScale;
+            }
             foreach(var node in nodes)
             {
                 var p=node.Logical.position;
@@ -177,7 +210,11 @@ namespace Eldoria.World4XCanon
                 GroundParts(node,p);
                 bool alive=LocalGateway.ResourceRemaining(state,node.Id)>0;
                 foreach(var renderer in node.Renderers)if(renderer.enabled!=(alive&&near))renderer.enabled=alive&&near;
-                if(node.Impostor){node.Impostor.transform.position=p;node.Impostor.enabled=alive&&regional;}
+                if(node.Impostor){
+                    node.Impostor.transform.position=p;node.Impostor.enabled=alive&&regional;
+                    node.Impostor.localBounds=new Bounds(Vector3.up*12f*screenScale,Vector3.one*40f*screenScale);
+                    FitRegionalPicking(node,p,screenScale,regional);
+                }
             }
             foreach(var renderer in GetComponentsInChildren<Renderer>(true))
                 if(renderer.name=="Reference existing quarry"||renderer.name=="Reference existing wood grove")renderer.enabled=false;

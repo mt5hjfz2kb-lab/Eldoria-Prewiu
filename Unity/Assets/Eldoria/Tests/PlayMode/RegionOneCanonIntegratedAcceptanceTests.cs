@@ -268,6 +268,31 @@ namespace Eldoria.Tests
                         TestContext.WriteLine("ACTUAL_REGIONAL_CREATURE_VIEWPORT family="+family+
                             " aspect="+aspect+" heightFraction="+height+" zoom="+camera.orthographicSize);
                     }
+                    foreach(string kind in new[]{"wood","stone"})
+                    {
+                        var site=state.WorldResourceLocations.First(x=>x.Generation>0&&x.ResourceKind==kind&&
+                            Eldoria.Application.LocalGateway.ResourceRemaining(state,x.TargetId)>0);
+                        var target=Call(host,"FindTarget",site.TargetId) as Component;
+                        var image=world.GetComponentsInChildren<MeshRenderer>(true)
+                            .Single(x=>x.name=="Production resource impostor "+site.TargetId);
+                        Assert.That(image.enabled&&image.gameObject.activeInHierarchy,Is.True);
+                        var offsets=image.GetComponent<MeshFilter>().sharedMesh.uv2;
+                        float scale=image.sharedMaterial.GetFloat("_BillboardScale");
+                        float lo=offsets.Min(x=>x.y),hi=offsets.Max(x=>x.y);
+                        var bottom=image.transform.position+camera.transform.up*lo*scale;
+                        var top=image.transform.position+camera.transform.up*hi*scale;
+                        float footprint=camera.WorldToViewportPoint(top).y-camera.WorldToViewportPoint(bottom).y;
+                        Assert.That(footprint,Is.InRange(.06f,.11f),
+                            kind+" must retain a readable actual-model image in both regional orientations");
+                        var centre=(bottom+top)*.5f;
+                        Physics.SyncTransforms();
+                        var ray=camera.ViewportPointToRay(camera.WorldToViewportPoint(centre));
+                        Assert.That(target.GetComponent<Collider>().Raycast(ray,out _,100000f),Is.True,
+                            "The visible regional resource image must select its same saved gameplay target");
+                        Assert.That(target.transform.position,Is.EqualTo(new Vector3(site.X,site.Y,site.Z)));
+                        TestContext.WriteLine("ACTUAL_REGIONAL_RESOURCE_VIEWPORT kind="+kind+
+                            " aspect="+aspect+" heightFraction="+footprint+" zoom="+camera.orthographicSize);
+                    }
                     Call(navigation,"SetZoomLevel",0,true);Call(adapter,"RefreshForCapture");
                     foreach(var renderer in world.GetComponentsInChildren<Renderer>(true)
                         .Where(x=>x.transform.GetComponentsInParent<Transform>(true)
@@ -974,6 +999,21 @@ namespace Eldoria.Tests
                     "Regional view must not retain the legacy rectangular terrain edge.");
                 Assert.That(canopies.All(t=>t.gameObject.activeSelf), Is.True,
                     "Regional view must retain shared woodland canopies, not only flat forest masks.");
+                var closeDetail=world.GetComponentsInChildren<MeshRenderer>(true).Where(r=>
+                    r.GetComponentsInParent<Transform>(true).Any(t=>t.name=="Blender authored geography")&&
+                    r.sharedMaterials.Any(m=>m&&(m.name.StartsWith("Near underbrush",StringComparison.Ordinal)||
+                        m.name.StartsWith("Near riverbank living shrubs",StringComparison.Ordinal)||
+                        m.name.StartsWith("Near dry scrub",StringComparison.Ordinal)||
+                        m.name.StartsWith("Near grass shade",StringComparison.Ordinal)||
+                        m.name.StartsWith("Near meadow dry grass",StringComparison.Ordinal)||
+                        m.name.StartsWith("Near bank soft olive",StringComparison.Ordinal)||
+                        m.name.StartsWith("Understory ",StringComparison.Ordinal)||
+                        m.name.StartsWith("Z woodland understory",StringComparison.Ordinal)))).ToArray();
+                Assert.That(closeDetail.Length,Is.GreaterThanOrEqualTo(4),"Inspect the actual multi-material detail primitives");
+                foreach(var renderer in closeDetail){
+                    TestContext.WriteLine("ACTUAL_REGIONAL_GROUND_DETAIL name="+renderer.name+" parent="+renderer.transform.parent.name+" enabled="+renderer.enabled+" bounds="+renderer.bounds);
+                    Assert.That(renderer.enabled,Is.False,"A close-only ground-detail primitive exposed the AF/AG rectangle: "+renderer.name);
+                }
                 foreach (float intermediateZoom in new [] { 55f, 90f, 145f, 153f, 113f })
                 {
                     Call(navigation,"RestoreView",target,intermediateZoom);
@@ -1311,6 +1351,24 @@ namespace Eldoria.Tests
                     SaveRetainedSectorFrame(camera,Path.Combine(shadowStudy,label+"-ground-coverage"),portrait?720:1280,portrait?1280:720,null,(Vector3)Member(navigation,"target"));
                 }
                 Assert.That(Directory.GetFiles(shadowStudy,"*.png").Length,Is.EqualTo(12),"Actual same-camera fixed/adaptive shadow comparisons required");
+                // Actual same-camera controls for the coherent meadow finish:
+                // source textures/geometry/lighting are identical between each pair.
+                var meadowLook=world.GetComponentsInChildren<MonoBehaviour>(true)
+                    .Single(x=>x&&x.GetType().Name=="RegionOneLookDevelopment");
+                try{
+                    foreach(bool portrait in new[]{false,true})foreach(int level in new[]{2,1,0}){
+                        camera.aspect=portrait?9f/16:16f/9;Call(adapter,"RefreshForCapture");
+                        Call(navigation,"PanTo",home);Call(navigation,"SetZoomLevel",level,true);Call(adapter,"RefreshForCapture");
+                        yield return null;
+                        string label="pigment-"+new[]{"panorama","regional","close"}[level]+"-"+(portrait?"portrait":"landscape");
+                        var focus=(Vector3)Member(navigation,"target");
+                        Call(meadowLook,"SetMeadowFinish",false);
+                        SaveRetainedSectorFrame(camera,Path.Combine(sectorDirectory,label+"-control"),portrait?720:1280,portrait?1280:720,null,focus);
+                        Call(meadowLook,"SetMeadowFinish",true);
+                        SaveRetainedSectorFrame(camera,Path.Combine(sectorDirectory,label+"-finished"),portrait?720:1280,portrait?1280:720,null,focus);
+                    }
+                }finally{Call(meadowLook,"SetMeadowFinish",true);}
+
                 string continentalDetails=Path.Combine(sectorDirectory,"continental-details");Directory.CreateDirectory(continentalDetails);
                 var playableGateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");
                 var actualResources=playableGateway.Snapshot().WorldResourceLocations;

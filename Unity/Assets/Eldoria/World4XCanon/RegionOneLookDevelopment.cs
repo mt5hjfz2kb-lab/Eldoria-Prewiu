@@ -14,6 +14,7 @@ namespace Eldoria.World4XCanon
         UniversalRenderPipelineAsset pipeline; bool scoped; Color background;
         readonly List<Material> owned=new List<Material>();
         readonly List<Material> minerals=new List<Material>();
+        readonly List<Material> meadows=new List<Material>();
         readonly List<Renderer> fineDetails=new List<Renderer>();
         MaterialPropertyBlock fineProperties;float fineFade=-1f;
         readonly Dictionary<Material,Material> cache=new Dictionary<Material,Material>();
@@ -38,11 +39,14 @@ namespace Eldoria.World4XCanon
                     Color colour=source.HasProperty("baseColorFactor")?source.GetColor("baseColorFactor"):source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):Color.white;
                     material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
                     if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal)){material.SetFloat("_MineralEmission",.18f);minerals.Add(material);}
-                    if(source.name.Contains("Region1 open meadows")){
+                    bool meadow=source.name.Contains("Region1 open meadows")||source.name.StartsWith("Ochre meadow",StringComparison.Ordinal)||
+                        source.name.StartsWith("P connected meadow forest floor paths",StringComparison.Ordinal)||source.name.StartsWith("AI open meadow paths",StringComparison.Ordinal);
+                    if(meadow){material.SetFloat("_MeadowFinish",1f);meadows.Add(material);}
+                    if(meadow){
                         var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");
                         if(!detail)throw new InvalidOperationException("Original AF-derived continental detail missing");
                         material.SetTexture("_GroundDetail",detail);// Native matched soil patches calibrate the linear detail to 0.9*sqrt(2).
-                        material.SetFloat("_GroundDetailStrength",1.2727922f);
+                        if(source.name.Contains("Region1 open meadows"))material.SetFloat("_GroundDetailStrength",1.2727922f);
                     }
                     for(int p=0;p<source.shader.GetPropertyCount();p++)
                         if(source.shader.GetPropertyType(p)==ShaderPropertyType.Texture){string name=source.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",source.GetTexture(name));}
@@ -56,8 +60,18 @@ namespace Eldoria.World4XCanon
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 if(renderer.name.StartsWith("BLD_Forest")||renderer.name.StartsWith("Pilot_Pine")||renderer.name.StartsWith("Far_Pilot_Pine"))renderer.SetPropertyBlock(properties);
         }
+        public void SetMeadowFinish(bool enabled){foreach(var material in meadows)material.SetFloat("_MeadowFinish",enabled?1f:0f);}
         static bool IsCloseGroundDetail(Renderer renderer)
         {
+            if(renderer.sharedMaterials.Any(material=>material&&(
+                material.name.StartsWith("Near grass shade",StringComparison.Ordinal)||
+                material.name.StartsWith("Near meadow dry grass",StringComparison.Ordinal)||
+                material.name.StartsWith("Near bank soft olive",StringComparison.Ordinal)||
+                material.name.StartsWith("Near underbrush",StringComparison.Ordinal)||
+                material.name.StartsWith("Near riverbank living shrubs",StringComparison.Ordinal)||
+                material.name.StartsWith("Near dry scrub",StringComparison.Ordinal)||
+                material.name.StartsWith("Understory ",StringComparison.Ordinal)||
+                material.name.StartsWith("Z woodland understory",StringComparison.Ordinal))))return true;
             // glTF multi-material primitives may live below their named source
             // node. Match that ancestry as well as the renderer itself.
             for(var node=renderer.transform;node;node=node.parent){
