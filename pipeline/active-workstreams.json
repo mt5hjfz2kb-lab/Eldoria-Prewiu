@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-25T11:11:20.676Z",
+  "updated_at": "2026-10-25T11:12:56.768Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1159,9 +1159,11 @@
         "docs/documentation-catalog.json",
         ".github/workflows/world4x-artistic-process-gate.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing.",
-      "phase": "ART_FINAL_OWNER_AUTHORIZED_HANDOFF",
+      "phase": "REGIONAL_CREATURE_SILHOUETTE_FINISH",
       "next": "Review preserved61/26/44 and genuine native40186883304 captures; prioritize creature regional scale, AF/AG continuity and geological composition; await actual UI job exit before reserving Windows.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
