@@ -44,7 +44,14 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  float diffuse=saturate(dot(normalize(i.normal),l.direction));
  float2 detailUV=(i.world.xz-_RegionOrigin.xz)/float2(21.1875,12.4921875);
  float2 rotatedDetail=float2(detailUV.x*.8-detailUV.y*.6,detailUV.x*.6+detailUV.y*.8)+float2(.37,.61);
- half3 grain=(SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV).rgb+SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,rotatedDetail).rgb);
+ half4 detailA=SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV);
+ half4 detailB=SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,rotatedDetail);
+ half3 grain=detailA.rgb+detailB.rgb;
+ // Alpha carries the AF-derived 2m band, RGB the unchanged close micro-grain.
+ // Keep the regional signal instead of asking sub-pixel detail to survive mipmapping.
+ float footprint=max(length(ddx(detailUV)),length(ddy(detailUV)));
+ half meso=detailA.a+detailB.a;
+ grain=lerp(grain,half3(meso,meso,meso),smoothstep(.015,.07,footprint));
  // The same AF grain must survive regional zoom beside the retained core.
  // The existing mip chain/aniso filter performs minification; an additional
  // early derivative fade erased detail only on the extension and exposed a square.

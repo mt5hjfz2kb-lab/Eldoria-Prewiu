@@ -40,11 +40,12 @@ jobs:
             Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs
             docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py
             docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py
+            docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py
       - name: Check Blender authoring syntax before reserving Windows editor
         shell: bash
         run: |
           set -euo pipefail
-          python -m py_compile docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py
+          python -m py_compile docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py
           echo 'WORLD4X_BLENDER_AUTHORING_SYNTAX_PASS'
       - name: Assert frozen owner PNG reference binaries
         shell: bash
@@ -237,28 +238,28 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40185433981
-          name: region1-canon-native-40185433981
+          run-id: 40193549354
+          name: region1-canon-native-40193549354
           path: ${{ runner.temp }}/region1-recheck-source
       - name: Verify pinned original art and recheck exact pre-PlayMode source
         if: contains(github.event.head_commit.message, 'region-recheck(world4x):')
         shell: powershell
         run: |
-          $origin=Join-Path $env:RUNNER_TEMP 'region1-recheck-source/region1-authoring-40185433981'
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-recheck-source/region1-authoring-40193549354'
           $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
           New-Item -ItemType Directory -Path $destination -Force | Out-Null
           $verified=[ordered]@{
-            'RegionOneBlenderWorld.glb'='e36ac73fbcf2346582ac4ae96330fb0eee9fe248000fee3315dbd7e465644274'
-            'RegionOneBlenderQueries.bytes'='c7863a547a8b4683f94dd006e52d8920dfc4867965003ac8446072a77dfb3901'
+            'RegionOneBlenderWorld.glb'='1d9c2466767c3fbabdf3a238e5cace2b372c945e01458521d9ca0c6a2f8e98e7'
+            'RegionOneBlenderQueries.bytes'='4a57aa0fd5b4401fa1aeac6062c26bc142731348e63ff752dbb2c6c63ca33068'
             'production-region.json'='a4ce659d62d2f8aa7ac70cbc573f77ae75774091ab145938cc8b49bb872cba99'
-            'RegionOneResources.glb'='5626c66565c15bad56a3f2ee5d3a40c9e695a6a65a26de4aa8eeec0cf60ef03f'
-            'RegionOneResourceImpostors.png'='eb146e90b68edad94a7806da5aed335f7080dfa07da2ba40fa924347dcdf8863'
+            'RegionOneResources.glb'='fc1943706c6f5e6d3780b6c997ec9d6a9b03761938673bb1f10da6ddd9b9193d'
+            'RegionOneResourceImpostors.png'='7364fa79733f763fbd8b1fbf63c648b432f40d20f3ddf4e0b0eec9ddc5576ea0'
             'RegionOneGrassDetail.png'='4428879cb0f76f7ccb400b77f3c194b3c1398ba8bacd57226f71819306dc15c8'
           }
           foreach($pair in $verified.GetEnumerator()){
             $source=Join-Path $origin $pair.Key
-            if(-not(Test-Path $source)){throw "Pinned run 40185433981 missing source $($pair.Key)"}
+            if(-not(Test-Path $source)){throw "Pinned run 40193549354 missing source $($pair.Key)"}
             if((Get-FileHash $source -Algorithm SHA256).Hash.ToLowerInvariant() -ne $pair.Value){
               throw "Original real Blender output changed: $($pair.Key)"
             }
@@ -284,7 +285,12 @@ jobs:
           if(-not $blender){throw 'Installed Blender required for original boar far LOD'}
           & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/make_boar_far_lod.py -- $rock "$creatureDest/RockBoarFar.glb" "$destination/RockBoar_Far_LOD.blend"
           if($LASTEXITCODE){throw 'Original boar far LOD rebuild did not succeed'}
-          Write-Host 'REGION1_PINNED_BLENDER_RECHECK_SOURCE_PASS unchanged_6_hashes=1 art_approved=false repeat_native_playmode_required=1'
+          & $blender --background --python-exit-code 1 --python world4x-source/docs/evidence/world4x-canon-20261022/authoring/refine_geological_lookdev.py -- "$destination/Eldoria_Region1_Production.blend" $destination
+          if($LASTEXITCODE){throw 'Reviewed source-preserving look development failed'}
+          foreach($name in @('RegionOneBlenderWorld.glb','RegionOneGrassDetail.png')){
+            Copy-Item (Join-Path $destination $name) (Join-Path $unityDest $name) -Force
+          }
+          Write-Host 'REGION1_PINNED_SOURCE_6_INPUT_HASHES_PASS reviewed_lookdev_export=1 art_approved=false repeat_native_playmode_required=1'
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell

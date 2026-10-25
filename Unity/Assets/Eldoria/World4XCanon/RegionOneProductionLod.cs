@@ -39,8 +39,13 @@ namespace Eldoria.World4XCanon
                     retainedFarVisible=identity%6==0;
                     var scale=far.transform.localScale;
                     if(retainedFarVisible)far.transform.localScale=new Vector3(scale.x*2.5f,scale.y*4f,scale.z*2.5f);
-                    else far.gameObject.SetActive(false);
+
                 }
+                // Scale about the existing canopy base, not the ground-origin
+                // pivot: these protected pine meshes start above a separate stem.
+                // This keeps the same contact height through the LOD switch.
+                if(retainedFarVisible)
+                    far.transform.position+=Vector3.up*(near.bounds.min.y-far.bounds.min.y);
                 var lod=group.AddComponent<LODGroup>();lod.fadeMode=LODFadeMode.CrossFade;lod.animateCrossFading=false;
                 lod.SetLODs(new[]{new LOD(.065f,new Renderer[]{near}),new LOD(.0001f,new Renderer[]{far})});lod.RecalculateBounds();
                 // A spatial crossfade reproduces AG's 37–47 band, including small
@@ -48,7 +53,12 @@ namespace Eldoria.World4XCanon
                 float end=retained?Mathf.Clamp(lod.size/(2*47f),.0002f,.9f):.065f;
                 float begin=retained?Mathf.Clamp(lod.size/(2*37f),end,.95f):.08f;
                 var close=new LOD(end,new Renderer[]{near}){fadeTransitionWidth=(begin-end)/(1-end)};
-                lod.SetLODs(new[]{close,new LOD(.0001f,retainedFarVisible?new Renderer[]{far}:Array.Empty<Renderer>())});
+                if(retainedFarVisible)lod.SetLODs(new[]{close,new LOD(.0001f,new Renderer[]{far})});
+                else
+                {
+                    lod.SetLODs(new[]{close});
+                    far.gameObject.SetActive(false);
+                }
             }
         }
     }

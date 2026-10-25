@@ -1,0 +1,103 @@
+"""Reviewed look-development on the exact preserved Blender candidate.
+No terrain positions, routes, protected AF/AG images or gameplay models change.
+"""
+import bpy,sys,pathlib,json,hashlib,math
+import numpy as np
+from mathutils import Vector
+source,out=map(pathlib.Path,sys.argv[sys.argv.index('--')+1:])
+input_sha=hashlib.sha256(source.read_bytes()).hexdigest()
+bpy.ops.wm.open_mainfile(filepath=str(source))
+bpy.context.preferences.filepaths.save_version=0
+terrain=bpy.data.objects['BLD_Terrain']
+def terrain_digest():
+ v=np.array([tuple(p.co) for p in terrain.data.vertices],dtype=np.float32)
+ return hashlib.sha256(v.tobytes()).hexdigest()
+terrain_before=terrain_digest()
+# Derive two spatial bands from the SAME reviewed original AF clear-grass patch.
+af=bpy.data.images['AF broad meadow flows']
+values=np.empty(len(af.pixels),np.float32);af.pixels.foreach_get(values)
+pixels=values.reshape(af.size[1],af.size[0],4)
+patch=pixels[int(af.size[1]*.90):int(af.size[1]*.98),int(af.size[0]*.02):int(af.size[0]*.075),:3].copy()
+linear=np.where(patch<=.04045,patch/12.92,((patch+.055)/1.055)**2.4)
+mean=linear.mean(axis=(0,1))
+fy=np.fft.fftfreq(patch.shape[0])[:,None];fx=np.fft.fftfreq(patch.shape[1])[None,:]
+gaussian=np.exp(-2*math.pi**2*24.0**2*(fx*fx+fy*fy))
+low=np.stack([np.fft.ifft2(np.fft.fft2(linear[:,:,c])*gaussian).real for c in range(3)],axis=2)
+meso=np.clip(((linear-low)/np.maximum(mean,.001)).mean(axis=2),-.18,.18)
+alpha=.5+meso*.5
+alpha=np.concatenate([alpha,alpha[:,::-1]],axis=1)
+alpha=np.concatenate([alpha,alpha[::-1]],axis=0)
+detail=bpy.data.images['AF derived continental grass detail']
+rgba=np.empty(len(detail.pixels),np.float32);detail.pixels.foreach_get(rgba)
+rgba=rgba.reshape(detail.size[1],detail.size[0],4)
+assert rgba.shape[:2]==alpha.shape
+original_rgb=rgba[:,:,:3].copy();rgba[:,:,3]=alpha
+detail.alpha_mode='CHANNEL_PACKED'
+detail.pixels.foreach_set(rgba.ravel());detail.filepath_raw=str(out/'RegionOneGrassDetail.png');detail.file_format='PNG';detail.save()
+fresh=bpy.data.images.load(str(out/'RegionOneGrassDetail.png'),check_existing=False)
+fresh.name='AF reviewed micro RGB and regional meso alpha';fresh.colorspace_settings.name='Non-Color';fresh.alpha_mode='CHANNEL_PACKED';fresh.use_fake_user=True;fresh.pack()
+verified=np.empty(len(fresh.pixels),np.float32);fresh.pixels.foreach_get(verified)
+assert np.max(np.abs(verified.reshape(rgba.shape)[:,:,:3]-original_rgb))<=1.1/255,'Near-view RGB detail changed during alpha authoring'
+assert hashlib.sha256(fresh.packed_file.data).hexdigest()==hashlib.sha256((out/'RegionOneGrassDetail.png').read_bytes()).hexdigest()
+# Replace the rejected three flat-colour mineral plates with a continuous
+# exposure following the same actual ground triangles and existing fault.
+heart=bpy.data.objects['BLD_BreachMineralHeart']
+width=256;X,Y=np.meshgrid(np.linspace(-315,-205,width),np.linspace(95,205,width))
+ns={}
+recipe=pathlib.Path(__file__).with_name('interactive')/'macro_fracture_recipe.py'
+exec(compile(recipe.read_text(encoding='utf-8'),str(recipe),'exec'),ns)
+distance=ns['stroke_distance'](X,Y,ns['AUTHOR_FAULTS'])
+dx=X+260;dy=Y-150;r=np.hypot(dx,dy);angle=np.arctan2(dy,dx)
+radius=29+9*np.sin(angle*5+.7)+5*np.cos(angle*3-.2)
+def smooth(a):
+ a=np.clip(a,0,1);return a*a*(3-2*a)
+edge=r/radius
+opacity=1-smooth((edge-.72)/.35)
+exposure=1-smooth((edge-.20)/.65)
+pigment=bpy.data.images['Region1 authored geological pigment']
+data=np.empty(len(pigment.pixels),np.float32);pigment.pixels.foreach_get(data)
+data=data.reshape(pigment.size[1],pigment.size[0],4)
+ix=np.clip(((X+910)/1820*(pigment.size[0]-1)).astype(int),0,pigment.size[0]-1)
+iy=np.clip(((Y+1800)/3600*(pigment.size[1]-1)).astype(int),0,pigment.size[1]-1)
+ground=data[iy,ix,:3]
+vein=np.clip((6-distance)/5,0,1)*np.exp(-(r/22)**2)
+grain=.007*np.sin(X*4.7+Y*1.7)+.005*np.cos(Y*3.9-X*2.3)
+rock=np.empty((*X.shape,3),np.float32)
+rock[:]=np.array((.105,.055,.135));rock+=grain[:,:,None]
+rock=rock*(1-vein[:,:,None]*.72)+np.array((.30,.035,.42))*vein[:,:,None]*.72
+colour=ground*(1-exposure[:,:,None]*.88)+rock*exposure[:,:,None]*.88
+paint=np.ones((width,width,4),np.float32);paint[:,:,:3]=colour;paint[:,:,3]=opacity
+image=bpy.data.images.new('Continuous exposed central mineral',width,width,alpha=True)
+image.pixels.foreach_set(paint.ravel());image.filepath_raw=str(out/'BreachCentralMineral.png');image.file_format='PNG';image.save()
+packed=bpy.data.images.load(str(out/'BreachCentralMineral.png'),check_existing=False);packed.pack()
+assert hashlib.sha256(packed.packed_file.data).hexdigest()==hashlib.sha256((out/'BreachCentralMineral.png').read_bytes()).hexdigest()
+# Weld only duplicate vertices of this NEW exposure mesh, never original ground.
+vertices=[];faces=[];lookup={}
+for poly in heart.data.polygons:
+ ids=[]
+ for index in poly.vertices:
+  q=tuple(heart.data.vertices[index].co)
+  if q not in lookup:lookup[q]=len(vertices);vertices.append(q)
+  ids.append(lookup[q])
+ faces.append(tuple(ids))
+mesh=bpy.data.meshes.new('Continuous mineral exposure on unchanged ground')
+mesh.from_pydata(vertices,[],faces);mesh.update()
+for face in mesh.polygons:face.use_smooth=True
+uv=mesh.uv_layers.new(name='Physical mineral exposure')
+for loop in mesh.loops:
+ q=mesh.vertices[loop.vertex_index].co
+ uv.data[loop.index].uv=((q.x+315)/110,(q.y-95)/110)
+mat=bpy.data.materials.new('Breach naturally graded exposed mineral');mat.use_nodes=True
+if hasattr(mat,'surface_render_method'):mat.surface_render_method='DITHERED'
+bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED')
+bs.inputs['Base Color'].default_value=(1,1,1,1);bs.inputs['Roughness'].default_value=.9
+node=mat.node_tree.nodes.new('ShaderNodeTexImage');node.image=packed
+mat.node_tree.links.new(node.outputs['Color'],bs.inputs['Base Color'])
+mat.node_tree.links.new(node.outputs['Alpha'],bs.inputs['Alpha'])
+mesh.materials.append(mat);heart.data=mesh
+assert terrain_digest()==terrain_before,'Protected geography changed during look development'
+bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
+bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
+report={'input_blend_sha256':input_sha,'terrain_before_after_sha256':terrain_before,'terrain_positions_changed':False,'protected_AF_AG_images_edited':False,'near_detail_RGB_replaced':False,'regional_meso_band_in_existing_alpha':True,'heart_flat_plate_materials_replaced':True,'actual_ground_faces':len(faces),'art_approved':False}
+(out/'reviewed-lookdev-operations.json').write_text(json.dumps(report,indent=2))
+print('REVIEWED_LOOKDEV_EXACT_GROUND_PASS',json.dumps(report))
