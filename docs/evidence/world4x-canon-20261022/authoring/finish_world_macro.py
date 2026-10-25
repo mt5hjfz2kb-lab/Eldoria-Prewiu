@@ -1,7 +1,7 @@
 """Artist-directed valleys, riparian composition and fractured Breach on certified source.
 Executed through the existing, verified BlenderMCP session. Never edits AF/AG source faces.
 """
-import bpy, pathlib, json, hashlib, math, struct, gzip
+import bpy, bmesh, pathlib, json, hashlib, math, struct, gzip
 import numpy as np
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
@@ -19,6 +19,13 @@ coords=np.empty(len(terrain.data.vertices)*3,np.float32);terrain.data.vertices.f
 coords=coords.reshape(-1,3)
 protected=(np.abs(coords[:,0])<=96.001)&(coords[:,1]>=-78.001)&(coords[:,1]<=270.001)
 protected_before=coords[protected].copy()
+original_normals={}
+for poly in terrain.data.polygons:
+ if all(protected[i] for i in poly.vertices):
+  for loop_id in poly.loop_indices:
+   v=terrain.data.vertices[terrain.data.loops[loop_id].vertex_index].co
+   key=(tuple(v),tuple(sorted(tuple(terrain.data.vertices[i].co) for i in poly.vertices)))
+   original_normals[key]=tuple(terrain.data.corner_normals[loop_id].vector)
 images_before={im.name:hashlib.sha256(im.packed_file.data).hexdigest() for im in bpy.data.images if im.packed_file}
 query_path=source.parent/'RegionOneBlenderQueries.bytes'
 layout_path=source.parent/'production-region.json'
@@ -96,8 +103,25 @@ def protect_weight(x,y):
  for cx,cy,r in reserves:weight*=smooth((np.hypot(x-cx,y-cy)-r-8)/16)
  return weight
 
+# Add local sculpting resolution only to NEW valley/fault cells. Original
+# AF/AG faces are more than 45m from every selected edge and stay intact.
+d,w,r,f=valley_field(coords[:,0],coords[:,1])
+local_fault=np.full(len(coords),1e9)
+for fault in layout['faults']:
+ ax,ay,bx,by=fault['ax'],fault['az'],fault['bx'],fault['bz'];dx,dy=bx-ax,by-ay
+ t=np.clip(((coords[:,0]-ax)*dx+(coords[:,1]-ay)*dy)/(dx*dx+dy*dy),0,1)
+ local_fault=np.minimum(local_fault,np.hypot(coords[:,0]-ax-t*dx,coords[:,1]-ay-t*dy))
+eligible=((d<r+21)|(local_fault<20))&(protect_weight(coords[:,0],coords[:,1])>.999)
+bm=bmesh.new();bm.from_mesh(terrain.data);bm.verts.ensure_lookup_table()
+edges=[edge for edge in bm.edges if all(eligible[v.index] for v in edge.verts)]
+subdivided_edges=len(edges)
+if edges:bmesh.ops.subdivide_edges(bm,edges=edges,cuts=2,use_grid_fill=True)
+bm.to_mesh(terrain.data);bm.free();terrain.data.update()
+coords=np.empty(len(terrain.data.vertices)*3,np.float32);terrain.data.vertices.foreach_get('co',coords);coords=coords.reshape(-1,3)
+protected=(np.abs(coords[:,0])<=96.001)&(coords[:,1]>=-78.001)&(coords[:,1]<=270.001)
+assert np.array_equal(coords[protected],protected_before),'Subdivision changed original protected vertices'
 distance,water,radius,ford=valley_field(coords[:,0],coords[:,1])
-valley=(1-smooth((distance-radius-1)/17))*protect_weight(coords[:,0],coords[:,1])
+valley=(1-smooth((distance-radius-1)/np.where(ford,17,5)))*protect_weight(coords[:,0],coords[:,1])
 bed=water-np.where(ford,-.10,.60)
 coords[:,2]=coords[:,2]*(1-valley)+bed*valley
 # Re-cut the EXISTING excluded geological fault into narrow connected clefts.
@@ -110,10 +134,20 @@ def fault_field(x,y):
   d=np.minimum(d,np.hypot(x-ax-t*(bx-ax),y-ay-t*(by-ay)))
  return d
 fd=fault_field(coords[:,0],coords[:,1]);rad=np.hypot(coords[:,0]+260,coords[:,1]-150)
-cut=(1-smooth(fd/8))*(1.2+2.4*np.exp(-(rad/45)**2))*protect_weight(coords[:,0],coords[:,1])
+cut=((1-smooth(fd/(5+6*np.exp(-(rad/38)**2))))*(2.0+3.0*np.exp(-(rad/40)**2))+2.5*np.exp(-((coords[:,0]+260)/14)**4-((coords[:,1]-150)/18)**4))*protect_weight(coords[:,0],coords[:,1])
 coords[:,2]-=cut
 assert np.array_equal(coords[protected],protected_before)
 terrain.data.vertices.foreach_set('co',coords.ravel());terrain.data.update()
+# Recompute new sculpted normals, then restore the original AF/AG corner normals.
+terrain.data.normals_split_custom_set([(0.,0.,0.)]*len(terrain.data.loops));terrain.data.update()
+normals=[tuple(n.vector) for n in terrain.data.corner_normals]
+for poly in terrain.data.polygons:
+ if all(protected[i] for i in poly.vertices):
+  signature=tuple(sorted(tuple(terrain.data.vertices[i].co) for i in poly.vertices))
+  for loop_id in poly.loop_indices:
+   v=terrain.data.vertices[terrain.data.loops[loop_id].vertex_index].co;key=(tuple(v),signature)
+   if key in original_normals:normals[loop_id]=original_normals[key]
+terrain.data.normals_split_custom_set(normals)
 bpy.context.view_layer.update()
 bvh=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
 def soil(x,y):
@@ -133,47 +167,68 @@ def mesh_object(name,vertices,faces,materials,slots=None):
  else:ob=bpy.data.objects.new(name,mesh);scene.collection.objects.link(ob);exported.append(ob)
  return ob
 water_material=bpy.data.objects['Pilot_River'].data.materials[0]
+water_material=water_material.copy();water_material.name='Original river turquoise shallow ford continuity'
 for index,stream in enumerate(streams):
  vv=[];ff=[];points=stream['points']
  for k,p in enumerate(points):
   delta=points[min(k+1,len(points)-1)]-points[max(0,k-1)];normal=np.array([-delta[1],delta[0]])/np.linalg.norm(delta)
   r=stream['radius'][k]
-  for side in [-1,1]:vv.append((*list(p+normal*r*side),float(stream['water'][k])))
-  if k and not(stream['ford'][k] or stream['ford'][k-1]):ff.append((2*k-2,2*k-1,2*k+1,2*k))
+  for side in [-1,1]:vv.append((*list(p+normal*r*side),float(stream['water'][k]+(.135 if stream['ford'][k] else 0))))
+  if k:ff.append((2*k-2,2*k-1,2*k+1,2*k))
  mesh_object('BLD_AuthoredTributary_'+str(index),vv,ff,[water_material])
 
 # Replace the observed broad pile with rock lips of the actual connected cleft.
 plates=bpy.data.objects['BLD_BreachBrokenBasaltPlates']
 stone_materials=list(plates.data.materials)
 vv=[];ff=[];slots=[]
-rng=np.random.default_rng(251026)
 for branch,path in enumerate(faults):
- a,b=map(np.array,path);delta=b-a;length=float(np.linalg.norm(delta));normal=np.array([-delta[1],delta[0]])/length;tangent=delta/length
- station=3.0
- while station<length-2:
-  p=a+tangent*station
-  for side in [-1,1]:
-   c=p+normal*side*(5.7+rng.uniform(-.8,.8));long=rng.uniform(3.3,6.3);wide=rng.uniform(2.2,4.2)
-   ring=[c-tangent*long-normal*wide*.35,c+tangent*long*.7-normal*wide*.45,c+tangent*long+normal*wide*.35,c-tangent*long*.6+normal*wide*.65]
-   base=len(vv);lift=float(rng.uniform(.15,.65))
-   for q in ring:vv.append((q[0],q[1],soil(*q)+lift))
-   for q in ring:vv.append((q[0],q[1],soil(*q)-.18))
-   ff.extend([(base,base+1,base+2),(base,base+2,base+3)]);slots.extend([int(rng.integers(0,4))]*2)
-   for j in range(4):ff.append((base+j,base+(j+1)%4,base+4+(j+1)%4,base+4+j));slots.append(4)
-  station+=float(rng.uniform(8,12))
+ points=curve(path,3)
+ for side in [-1,1]:
+  start=len(vv)
+  for k,p in enumerate(points):
+   delta=points[min(k+1,len(points)-1)]-points[max(0,k-1)];normal=np.array([-delta[1],delta[0]])/np.linalg.norm(delta)
+   broken=.8*math.sin(k*1.73+branch)+.45*math.cos(k*.67+side)
+   for radius,lift in [(3.2+broken*.3,.025),(6.4+broken,.32+.18*math.sin(k*.83)),(11.2+broken*1.7,.02)]:
+    q=p+normal*side*radius;vv.append((q[0],q[1],soil(*q)+lift))
+   if k:
+    for strip in [0,1]:
+     a=start+3*(k-1)+strip;b=start+3*k+strip
+     ff.extend([(a,a+1,b+1),(a,b+1,b)]);slots.extend(([4,4] if strip==0 else [(k//4+branch)%4]*2))
 mesh_object(plates.name,vv,ff,stone_materials,slots)
-# Existing overlay surfaces follow the newly incised ground, rather than spanning it.
+# Rebuild overlay faces from the SAME sculpted triangles, eliminating old
+# coarse surfaces that otherwise span/occlude the new cleft.
 for name in ['BLD_BreachFloor','BLD_BreachOutlyingFractures']:
  ob=bpy.data.objects[name]
- for v in ob.data.vertices:v.co.z=soil(v.co.x,v.co.y)+.018
- ob.data.update()
+ old=ob.data
+ mask=BVHTree.FromPolygons([(v.co.x,v.co.y,0) for v in old.vertices],[list(p.vertices) for p in old.polygons],all_triangles=False)
+ vertices=[];faces=[];source_faces=[]
+ for poly in terrain.data.polygons:
+  c=poly.center
+  if mask.ray_cast(Vector((c.x,c.y,10)),Vector((0,0,-1)),20)[0] is None:continue
+  ids=[]
+  for i in poly.vertices:
+   q=terrain.data.vertices[i].co;ids.append(len(vertices));vertices.append((q.x,q.y,q.z+.012))
+  faces.append(tuple(ids));source_faces.append(poly.index)
+ me=bpy.data.meshes.new(name+' actual sculpted strata')
+ me.from_pydata(vertices,[],faces);me.update()
+ for mat in terrain.data.materials:me.materials.append(mat)
+ for original_layer in terrain.data.uv_layers:
+  layer=me.uv_layers.new(name=original_layer.name)
+  for face,source_id in zip(me.polygons,source_faces):
+   original=terrain.data.polygons[source_id]
+   for dst,src in zip(face.loop_indices,original.loop_indices):layer.data[dst].uv=original_layer.data[src].uv
+ normal=[]
+ for face,source_id in zip(me.polygons,source_faces):
+  original=terrain.data.polygons[source_id];face.material_index=original.material_index;face.use_smooth=original.use_smooth
+  normal.extend(tuple(terrain.data.corner_normals[i].vector) for i in original.loop_indices)
+ me.normals_split_custom_set(normal);ob.data=me
 heart=bpy.data.objects['BLD_BreachMineralHeart'];heart_materials=list(heart.data.materials)
 vv=[];ff=[];slots=[]
 for branch,path in enumerate(faults):
  points=curve(path,2.5)
  for k,p in enumerate(points):
   delta=points[min(k+1,len(points)-1)]-points[max(0,k-1)];normal=np.array([-delta[1],delta[0]])/np.linalg.norm(delta)
-  width=(.30+.50*math.exp(-np.linalg.norm(p-np.array([-260,150]))/34))*(.8+.2*math.sin(k*1.8))
+  width=(.55+1.0*math.exp(-np.linalg.norm(p-np.array([-260,150]))/34))*(.8+.2*math.sin(k*1.8))
   for side in [-1,1]:
    q=p+normal*side*width;vv.append((q[0],q[1],soil(*q)+.035))
   if k:ff.append((len(vv)-4,len(vv)-3,len(vv)-1,len(vv)-2));slots.append(min(6,len(heart_materials)-1))
@@ -198,6 +253,31 @@ for ti,ob in enumerate(trees):
   far=bpy.data.objects.get(ob.name.replace('BLD_ForestMass_','BLD_ForestFar_'))
   if far:far.location.z+=delta
   regrounded+=1
+
+# Reuse the same near/far pine donor geometry for unequal riparian copses.
+# The bank corridor becomes connected woodland rather than an empty blue stripe.
+donor=next(ob for ob in scene.objects if ob.name.startswith('BLD_ForestMass_') and ob.dimensions.z>8)
+far_donor=bpy.data.objects[donor.name.replace('BLD_ForestMass_','BLD_ForestFar_')]
+occupied=np.array([(ob.location.x,ob.location.y) for ob in scene.objects if ob.name.startswith(('BLD_ForestMass_','Pilot_Pine'))])
+new_trees=[];rng=np.random.default_rng(251027)
+for si,stream in enumerate(streams):
+ points=stream['points']
+ for gi,t in enumerate([.12,.27,.43,.61,.77,.90]):
+  k=min(len(points)-2,max(1,int(t*(len(points)-1))));p=points[k];delta=points[k+1]-points[k-1];normal=np.array([-delta[1],delta[0]])/np.linalg.norm(delta)
+  side=1 if (gi+si)%3 else -1;centre=p+normal*side*(stream['radius'][k]+32)
+  for j in range(9):
+   angle=j*2.399963+gi*.7;rr=8+18*math.sqrt(j/8);q=centre+np.array([math.cos(angle)*rr,math.sin(angle)*rr*.73])
+   if any(math.hypot(q[0]-cx,q[1]-cy)<rad+28 for cx,cy,rad in reserves):continue
+   if any(float(sample(masks[:,:,2].astype(float)/255,q[0]+dx,q[1]+dy))>.03 for dx,dy in [(0,0),(-10,0),(10,0),(0,-10),(0,10)]):continue
+   if np.min(np.linalg.norm(occupied-q,axis=1))<12:continue
+   d,w,r,f=valley_field(q[:1],q[1:])
+   if d[0]<r[0]+14:continue
+   z=soil(*q);factor=float(rng.uniform(.65,.90));heading=float(rng.uniform(0,math.tau))
+   near=donor.copy();near.data=donor.data;scene.collection.objects.link(near)
+   near.name='BLD_ForestMass_Riparian_'+str(si)+'_'+str(gi)+'_'+str(j);near.location=(q[0],q[1],z);near.rotation_euler.z=heading;near.scale=donor.scale*factor;near.hide_render=False
+   far=far_donor.copy();far.data=far_donor.data;scene.collection.objects.link(far)
+   far.name=near.name.replace('BLD_ForestMass_','BLD_ForestFar_');far.location=(q[0],q[1],z);far.rotation_euler.z=heading;far.scale=far_donor.scale*factor;far.hide_render=False
+   exported.extend([near,far]);new_trees.append((float(q[0]),float(q[1])));occupied=np.vstack([occupied,q])
 
 # Paint source-derived meadow masses using the actual new drainage and relief.
 # The original packed images remain immutable. Only the new atlas material links change.
@@ -237,12 +317,15 @@ assert links>0
 # the exact mesh vertex tail used by Unity's imported-geometry validation.
 QX,QY=np.meshgrid(np.linspace(-910,910,nx),np.linspace(-1800,1800,nz))
 d,w,r,f=valley_field(QX,QY);qw=protect_weight(QX,QY)
-changed=((d<r+19)|(fault_field(QX,QY)<9))&(qw>0)
+changed=((d<r+28)|(fault_field(QX,QY)<25))&(qw>0)
 heights=oldheight.copy()
 for j,i in np.argwhere(changed):heights[j,i]=soil(QX[j,i],QY[j,i])
 wet=(d<r)&(~f)&(qw>.99)
 masks[:,:,1]=np.maximum(masks[:,:,1],wet.astype(np.uint8)*255)
 masks[:,:,3][d<r+10]=0
+for x,y in new_trees:
+ shade=np.clip(1-np.hypot(QX-x,QY-y)/16,0,1)
+ masks[:,:,3]=np.maximum(masks[:,:,3],(shade*200).astype(np.uint8))
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as file:
  file.write(struct.pack('<iiiff',magic,nx,nz,width,depth));file.write(heights.astype('<f4').tobytes());file.write(masks.tobytes());file.write(struct.pack('<ii',0x32564c45,len(coords)))
  file.write(coords[:,[0,2,1]].astype('<f4').tobytes())
@@ -255,7 +338,7 @@ bpy.ops.object.select_all(action='DESELECT')
 for ob in exported:ob.select_set(True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
-report={'method':'artist-directed actual BlenderMCP edit','source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(images_before),'new_connected_streams':2,'new_gameplay_targets':0,'new_colliders':0,'cleared_continental_tree_lods':len(cleared),'regrounded_trees':regrounded,'continental_material_links':links,'query_samples_rebuilt':int(changed.sum()),'art_approved':False,'files':{name:hashlib.sha256((out/name).read_bytes()).hexdigest() for name in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
+report={'method':'artist-directed actual BlenderMCP edit','source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'protected_vertices_unchanged':int(protected.sum()),'terrain_vertices_after':len(coords),'original_packed_images_unchanged':len(images_before),'new_connected_streams':2,'new_gameplay_targets':0,'new_colliders':0,'cleared_continental_tree_lods':len(cleared),'regrounded_trees':regrounded,'new_riparian_shared_mesh_pairs':len(new_trees),'continental_material_links':links,'query_samples_rebuilt':int(changed.sum()),'locally_subdivided_edges':subdivided_edges,'art_approved':False,'files':{name:hashlib.sha256((out/name).read_bytes()).hexdigest() for name in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
 hidden={ob:ob.hide_render for ob in scene.objects}
 for ob in scene.objects:
