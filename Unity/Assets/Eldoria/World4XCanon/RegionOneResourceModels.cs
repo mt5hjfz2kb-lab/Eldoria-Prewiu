@@ -10,23 +10,89 @@ namespace Eldoria.World4XCanon
     [DefaultExecutionOrder(1400)]
     public sealed class RegionOneResourceModels : MonoBehaviour
     {
-        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Vector3 LastPosition; public bool Grounded; }
+        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; }
         readonly List<Node> nodes=new List<Node>();
         ValoriaIntegratedWorld host;
         GameObject library;RegionOneLookDevelopment look;
         Eldoria.Domain.PlayerState cachedState;ICommandGateway cachedGateway;float nextState;
         Material impostorMaterial;readonly Mesh[] impostorMeshes=new Mesh[2];
         public void RefreshNow(){nextState=0;LateUpdate();}
+        readonly List<Mesh> authoredContactCopies=new List<Mesh>();
+        float SoilAt(Vector3 point) => host.WorldHome.y+
+            RegionOneBlenderLandscape.Height(point.x-host.WorldHome.x,point.z-host.WorldHome.z);
+
         void GroundParts(Node node,Vector3 position)
         {
             if(node.Grounded&&(node.LastPosition-position).sqrMagnitude<.000001f)return;
-            if(node.Parts==null){node.Parts=node.Visual.GetComponentsInChildren<MeshFilter>(true);node.BasePositions=node.Parts.Select(x=>x.transform.localPosition).ToArray();}
-            for(int i=0;i<node.Parts.Length;i++){
-                var part=node.Parts[i];part.transform.localPosition=node.BasePositions[i];var vertices=part.sharedMesh.vertices;
-                float bottom=vertices.Min(v=>part.transform.TransformPoint(v).y),maximum=float.NegativeInfinity;
-                foreach(var vertex in vertices){var p=part.transform.TransformPoint(vertex);if(p.y>bottom+.03f)continue;
-                    float terrain=host.WorldHome.y+RegionOneBlenderLandscape.Height(p.x-host.WorldHome.x,p.z-host.WorldHome.z);maximum=Mathf.Max(maximum,p.y-terrain);}
-                if(!float.IsNegativeInfinity(maximum))part.transform.position-=Vector3.up*maximum;
+            if(node.Parts==null)
+            {
+                node.Parts=node.Visual.GetComponentsInChildren<MeshFilter>(true);
+                node.BasePositions=node.Parts.Select(x=>x.transform.localPosition).ToArray();
+                // Immutable imported Blender topology, reused on resource relocation.
+                node.SourceMeshes=node.Parts.Select(x=>x.sharedMesh).ToArray();
+            }
+            for(int i=0;i<node.Parts.Length;i++)
+            {
+                var part=node.Parts[i];
+                if(!part||!node.SourceMeshes[i])continue;
+                // Do not cumulatively deform previously grounded resources.
+                if(part.sharedMesh!=node.SourceMeshes[i])
+                {
+                    var prior=part.sharedMesh;
+                    part.sharedMesh=node.SourceMeshes[i];
+                    if(prior&&authoredContactCopies.Remove(prior))Destroy(prior);
+                }
+                part.transform.localPosition=node.BasePositions[i];
+                var source=node.SourceMeshes[i];
+                var vertices=source.vertices;
+                float bottom=vertices.Min(v=>part.transform.TransformPoint(v).y);
+                float highestGap=float.NegativeInfinity;
+                foreach(var vertex in vertices)
+                {
+                    var world=part.transform.TransformPoint(vertex);
+                    if(world.y>bottom+.03f)continue;
+                    highestGap=Mathf.Max(highestGap,world.y-SoilAt(world));
+                }
+                if(float.IsNegativeInfinity(highestGap))continue;
+                // Preserve exact roof, trunks and ore silhouettes: only move the
+                // model PART, never its saved site, hotspot or selection collider.
+                part.transform.position-=Vector3.up*highestGap;
+                float settledBottom=bottom-highestGap;
+                float deepest=0f;
+                foreach(var vertex in vertices)
+                {
+                    var world=part.transform.TransformPoint(vertex);
+                    if(world.y>settledBottom+.03f)continue;
+                    deepest=Mathf.Min(deepest,world.y-SoilAt(world));
+                }
+                // A single rigid base can cross uneven genuine terrain. The old
+                // max-gap fit buried some near-view quarry/timber corners 0.823 m.
+                // Only for those actual cases, gently conform the *cloned* lower
+                // geometry to soil; never mutate the protected Blender donor mesh.
+                if(deepest<-.55f)
+                {
+                    var copy=Instantiate(source);
+                    copy.name=source.name+" · local grounded contact";
+                    var moved=copy.vertices;
+                    for(int v=0;v<moved.Length;v++)
+                    {
+                        var world=part.transform.TransformPoint(vertices[v]);
+                        float above=world.y-settledBottom;
+                        if(above>1.25f)continue;
+                        float depth=SoilAt(world)-world.y;
+                        if(depth<=.08f)continue;
+                        float weight=1f-Mathf.SmoothStep(0f,1f,
+                            Mathf.Clamp01((above-.12f)/1.13f));
+                        if(weight<=0f)continue;
+                        var corrected=world+Vector3.up*((depth-.08f)*weight);
+                        moved[v]=part.transform.InverseTransformPoint(corrected);
+                    }
+                    copy.vertices=moved;
+                    copy.RecalculateBounds();
+                    copy.RecalculateNormals();
+                    part.sharedMesh=copy;
+                    authoredContactCopies.Add(copy);
+                }
             }
             node.LastPosition=position;node.Grounded=true;
         }
@@ -41,7 +107,12 @@ namespace Eldoria.World4XCanon
             }
             var go=new GameObject("Production resource impostor "+id);go.transform.SetParent(parent,false);go.layer=29;go.AddComponent<MeshFilter>().sharedMesh=impostorMeshes[tile];var renderer=go.AddComponent<MeshRenderer>();renderer.sharedMaterial=impostorMaterial;renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;renderer.enabled=false;return renderer;
         }
-        void OnDestroy(){if(impostorMaterial)Destroy(impostorMaterial);foreach(var mesh in impostorMeshes)if(mesh)Destroy(mesh);}
+        void OnDestroy()
+        {
+            if(impostorMaterial)Destroy(impostorMaterial);
+            foreach(var mesh in impostorMeshes)if(mesh)Destroy(mesh);
+            foreach(var copy in authoredContactCopies)if(copy)Destroy(copy);
+        }
 
         public static void Install(Transform parent,ValoriaIntegratedWorld host)
         {
