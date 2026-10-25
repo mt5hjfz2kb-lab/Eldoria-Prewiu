@@ -49,6 +49,13 @@ def run():
     canonical = [x for x in entries if x["id"].startswith("canon-")]
     actual, scan_warning = tracked_3d()
     known = {r["path"] for r in entries if r.get("path")}
+    for entry in entries:
+        if entry.get("editable"):
+            known.add(entry["editable"])
+        for collection in ("sources", "integration"):
+            for variant in entry.get(collection, {}).values():
+                if variant.get("path"):
+                    known.add(variant["path"])
     checks = []
     for x in canonical:
         path = ROOT / x["path"]
