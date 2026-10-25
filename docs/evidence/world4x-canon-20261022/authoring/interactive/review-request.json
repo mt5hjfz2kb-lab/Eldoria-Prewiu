@@ -1,6 +1,6 @@
 {
-  "source_run": 40069960813,
-  "source_sha256": "57efc358d49b4e2e3cbe035e198a427f7369c9d7eb6b1e90723c3bc9fdf2ca79",
+  "source_run": 40187953957,
+  "source_sha256": "cc5c53756d0530a74412aa6262805428a39c420ae55bbd0d2a7c3041f76ed4f3",
   "source_unchanged": true,
   "purpose": "Read-only current continental composition via existing BlenderMCP before coherent edits",
   "cameras": {
@@ -25,13 +25,13 @@
       },
       "worldTarget": {
         "x": 1017.9999389648438,
-        "y": 0.0,
-        "z": 30.0
+        "y": 0,
+        "z": 30
       },
       "cameraRotation": {
         "x": 0.5299192667007446,
-        "y": 0.0,
-        "z": 0.0,
+        "y": 0,
+        "z": 0,
         "w": 0.8480480909347534
       }
     },
@@ -47,22 +47,22 @@
       "physicalIphone": false,
       "width": 1280,
       "height": 720,
-      "zoom": 280.0,
+      "zoom": 280,
       "aspect": 1.7777777910232544,
       "cameraPosition": {
-        "x": 1018.0,
+        "x": 1018,
         "y": 629.1558227539062,
         "z": -276.8597717285156
       },
       "worldTarget": {
-        "x": 1018.0,
-        "y": 0.0,
+        "x": 1018,
+        "y": 0,
         "z": 30.000001907348633
       },
       "cameraRotation": {
         "x": 0.5299192667007446,
-        "y": 0.0,
-        "z": 0.0,
+        "y": 0,
+        "z": 0,
         "w": 0.8480480909347534
       }
     }

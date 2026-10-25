@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-25T11:12:56.768Z",
+  "updated_at": "2026-10-25T11:35:21.600Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1163,8 +1163,8 @@
         "windows-runner-heavy"
       ],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing.",
-      "phase": "REGIONAL_CREATURE_SILHOUETTE_FINISH",
-      "next": "Review preserved61/26/44 and genuine native40186883304 captures; prioritize creature regional scale, AF/AG continuity and geological composition; await actual UI job exit before reserving Windows.",
+      "phase": "MACRO_ECOTONE_GEOLOGY_AUTHORING",
+      "next": "Native40187953957 sourcea3e51a2 assets2934d9c:61/61 PlayMode,26/26 EditMode,44/44 probes; inspected actual regional/creature/panorama PNGs. Creature silhouettes materially improved, panorama clean. Continue remaining AF/AG visible rectangular forest/soil transition, geological Breach regularity and node finish; no7.5 approval. Reserve Windows only when next source candidate ready.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1491,6 +1491,15 @@
         "parent_before_lease": "278d5fe1a9830dab8f50af8710661f3e906d33c7",
         "ui_run_finished": 40074059376,
         "status": "RESERVED_NOT_VERIFIED"
+      },
+      "last_artistic_native": {
+        "run": 40187953957,
+        "source": "a3e51a2e3e2e06118f8f3105b48938b57b6f2fa0",
+        "assets": "2934d9c4f10b203aa280e385beb77df06f029f2e",
+        "playmode": 61,
+        "editmode": 26,
+        "functional_checks": 44,
+        "art_approved": false
       }
     }
   ],
