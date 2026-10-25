@@ -195,7 +195,10 @@ for m in bpy.data.materials:
 footprints={}
 for name in ['BLD_BreachFloor','BLD_BreachOutlyingFractures']:
  ob=bpy.data.objects[name];footprints[name]=BVHTree.FromPolygons([(v.co.x,v.co.y,0) for v in ob.data.vertices],[list(p.vertices) for p in ob.data.polygons],all_triangles=False)
-candidates=[p for p in combined.polygons if -450<p.center.x<-110 and 5<p.center.y<290]
+def center(p):return sum((combined.vertices[i].co for i in p.vertices),Vector())/len(p.vertices)
+def upward(p):
+ a,b,c=(combined.vertices[i].co for i in list(p.vertices)[:3]);n=(b-a).cross(c-a);return abs(n.z)/max(.00000001,n.length)
+candidates=[p for p in combined.polygons if -450<center(p).x<-110 and 5<center(p).y<290]
 def copy_ground(name,faces,offset):
  vv=[];ff=[];uvs=[];mat=[]
  for p in faces:
@@ -213,11 +216,12 @@ def copy_ground(name,faces,offset):
 for name,mask in footprints.items():
  faces=[]
  for p in candidates:
-  if p.normal.z<.15 or mask.ray_cast(Vector((p.center.x,p.center.y,40)),Vector((0,0,-1)),80)[0] is None:continue
+  if upward(p)<.15 or mask.ray_cast(Vector((center(p).x,center(p).y,40)),Vector((0,0,-1)),80)[0] is None:continue
   if all(abs(soil(combined.vertices[i].co.x,combined.vertices[i].co.y)-combined.vertices[i].co.z)<.003 for i in p.vertices):faces.append(p)
+ (out/('floor-selection-'+name+'.json')).write_text(json.dumps({'candidates':len(candidates),'selected':len(faces),'centers':[tuple(center(p)) for p in candidates[:5]]},indent=2))
  copy_ground(name,faces,.015)
 for name,lo,hi in [('BLD_BreachBrokenBasaltPlates',10,15),('BLD_BreachTerracedStrata',15,21),('BLD_BreachWeatheredRockfall',21,29)]:
- faces=[p for p in candidates if p.normal.z>.4 and lo<nearest(p.center.x,p.center.y)[0]<hi and all(abs(soil(combined.vertices[i].co.x,combined.vertices[i].co.y)-combined.vertices[i].co.z)<.003 for i in p.vertices)]
+ faces=[p for p in candidates if upward(p)>.4 and lo<nearest(center(p).x,center(p).y)[0]<hi and all(abs(soil(combined.vertices[i].co.x,combined.vertices[i].co.y)-combined.vertices[i].co.z)<.003 for i in p.vertices)]
  copy_ground(name,faces,.026)
 # Rare mineral vents and their real interior light anchors follow the new floor.
 core=bpy.data.objects['BLD_BreachMineralHeart']
