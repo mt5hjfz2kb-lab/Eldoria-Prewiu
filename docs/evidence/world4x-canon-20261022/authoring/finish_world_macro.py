@@ -31,7 +31,7 @@ query_path=source.parent/'RegionOneBlenderQueries.bytes'
 layout_path=source.parent/'production-region.json'
 assert query_path.exists() and layout_path.exists(),str(source.parent)
 raw=gzip.decompress(query_path.read_bytes())
-magic,nx,nz,width,depth=struct.unpack_from('<iiiff',raw)
+magic,nx,nz,world_width,world_depth=struct.unpack_from('<iiiff',raw)
 assert magic==0x31424c45
 count=nx*nz
 oldheight=np.frombuffer(raw,dtype='<f4',count=count,offset=20).reshape(nz,nx).copy()
@@ -327,8 +327,9 @@ for x,y in new_trees:
  shade=np.clip(1-np.hypot(QX-x,QY-y)/16,0,1)
  masks[:,:,3]=np.maximum(masks[:,:,3],(shade*200).astype(np.uint8))
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as file:
- file.write(struct.pack('<iiiff',magic,nx,nz,width,depth));file.write(heights.astype('<f4').tobytes());file.write(masks.tobytes());file.write(struct.pack('<ii',0x32564c45,len(coords)))
+ file.write(struct.pack('<iiiff',magic,nx,nz,world_width,world_depth));file.write(heights.astype('<f4').tobytes());file.write(masks.tobytes());file.write(struct.pack('<ii',0x32564c45,len(coords)))
  file.write(coords[:,[0,2,1]].astype('<f4').tobytes())
+layout['terrain_vertices']=len(coords)
 layout['artistic_drainage']={'streams':2,'existing_road_gravel_fords':True,'city_reserves_preserved':True}
 layout['continental_trees']=sum(o.name.startswith('BLD_ForestMass_') for o in scene.objects)
 (out/'production-region.json').write_text(json.dumps(layout,indent=2))

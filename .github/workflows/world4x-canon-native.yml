@@ -429,19 +429,13 @@ jobs:
             Copy-Item (Join-Path $origin $name) (Join-Path $destination "macro-$name") -Force
           }
           Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51898_vertices new_streams=2 new_targets=0 fresh_Unity_required=1'
+      - name: Verify and repair reviewed export metadata without changing geometry
+        shell: powershell
+        run: '& ./world4x-source/docs/evidence/world4x-canon-20261022/authoring/repair_macro_metadata.ps1'
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell
-        run: |
-          $project=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity'
-          $log=Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-unity-source.log'
-          $env:ELDORIA_REGION1_SOURCE_EVIDENCE=Join-Path $env:RUNNER_TEMP 'eldoria-region1-source-gate.json'
-          $args=@('-batchmode','-quit','-projectPath',('"' + $project + '"'),'-executeMethod','Eldoria.World4XCanon.Editor.RegionOneCanonicalSourceGate.Validate','-logFile',('"' + $log + '"'))
-          $p=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
-          if(-not $p.WaitForExit(1800000)){ & taskkill.exe /PID $p.Id /T /F | Out-Null; throw 'Unity source gate timeout' }
-          if(Test-Path $log){Get-Content $log -Tail 90}
-          if($p.ExitCode -ne 0){throw "Unity import/source gate failed: $($p.ExitCode)"}
-          if(-not(Test-Path "$env:RUNNER_TEMP/eldoria-region1-source-gate.json")){throw 'Source gate did not execute'}
+        run: '& ./world4x-source/docs/evidence/world4x-canon-20261022/authoring/validate_import.ps1'
       - name: Actual integrated scene PlayMode test
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell
