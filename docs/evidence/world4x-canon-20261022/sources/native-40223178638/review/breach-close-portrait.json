@@ -1,0 +1,31 @@
+{
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "close-portrait",
+    "sha256": "bcf4f0eca5c238217c1fee375e746cd21d4cd74b18caecba2c1d1e32f9155f22",
+    "context": "Actual playable camera at the same persistent Breach geology",
+    "targetId": "",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 720,
+    "height": 1280,
+    "zoom": 64.0,
+    "aspect": 0.5625,
+    "cameraPosition": {
+        "x": 758.0,
+        "y": 109.30070495605469,
+        "z": 63.152427673339847
+    },
+    "worldTarget": {
+        "x": 758.0,
+        "y": 0.0,
+        "z": 180.0
+    },
+    "cameraRotation": {
+        "x": 0.36722108721733096,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.9301337003707886
+    }
+}
