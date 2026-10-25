@@ -1,12 +1,15 @@
 # ELDORIA — Biblioteca Maestra de Assets 3D
 
+> **ANULACIÓN EXPRESA POR EL PROPIETARIO, 25/10/2026:** el Bastión antiguo `Valoria_HeroBastion_v1.glb`, creado con un modelo de IA anterior, está **BLOQUEADO PARA USO**, con independencia de cualquier antiguo `TECH PASS` o etiqueta `USE_PRODUCTION`. Debe preservarse solo como evidencia archivada y **no usarse ni promocionarse** sin aprobación explícita posterior del propietario. La biblioteca activa contiene **4 piezas de producción**, 20 módulos condicionales y 1 monumento de uso restringido; ese Bastión está excluido. Comprobar de forma segura por el titular de la ciudad si hay instancias actualmente activas, según [ticket #109](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/109).
+
+
 **Auditoría inicial profunda: 25-10-2026. Estado: solo documentación y herramientas de consulta.**
 
 El catálogo [JSON consultable](../../pipeline/asset-vault/master-catalog-v1.json) registra identidad, fuente, versión, rama/SHA, rol jugable, clasificación, riesgos y evidencia. **No promueve automáticamente** ningún modelo ni cambia Unity, Blender, Work o el PR #100.
 
 ## Hallazgo resumido
 
-* **26 GLB de la biblioteca canónica**, con SHA-256 y archivos .meta auditados el 02-10-2026; 5 para sus funciones de producción, 20 componentes de reutilización condicionada y 1 monumento NO transitable.
+* **26 GLB de la biblioteca canónica**, con SHA-256 y archivos .meta auditados el 02-10-2026; 4 para sus funciones de producción, 20 componentes de reutilización condicionada y 1 monumento NO transitable.
 * **3 familias originales de Tripo**: engendro, jabalí y foco, con Blender editable, variantes y trazabilidad. El foco no pasa el estándar visual ni tiene función jugable.
 * **6 representaciones activas candidatas del mundo** en PR #100: geografía, recursos, jabalí Near/Far y engendro Near/Far. NO ART_APPROVED.
 * **201 ramas históricas con referencias SHA**: 20 investigadas en fuentes originales, 181 cribadas a nivel de rutas. Solo 8 rutas 3D únicas del muestreo histórico se incorporan de entrada al catálogo; NO supone que solo existan ocho ni que se hayan evaluado todos los binarios antiguos.
