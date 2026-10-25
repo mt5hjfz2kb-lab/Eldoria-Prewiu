@@ -367,6 +367,37 @@ jobs:
           $report=Get-Content (Join-Path $destination 'approved-node-authoring.json') -Raw|ConvertFrom-Json
           if($report.root_count -ne 6 -or $report.new_gameplay_targets -ne 0){throw 'Approved assets must retain the existing six resource root identities'}
           Write-Host 'REGION1_APPROVED_NODE_ASSETS_EXACT_MCP_OUTPUT_STAGED fresh_Unity_required=true'
+      - name: Recover reviewed terrain-bound Breach from the actual BlenderMCP session
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40214248071
+          name: region1-interactive-40214248071
+          path: ${{ runner.temp }}/region1-approved-breach-ground
+      - name: Stage exact geological output and preserve both independent MCP traces
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        shell: powershell
+        run: |
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-approved-breach-ground'
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          $verified=[ordered]@{
+            'RegionOneBlenderWorld.glb'='a519e11591d1807009c0f5a2e8db7170faeed9b2378d1b3ba686d510fd92dc00'
+            'Eldoria_Region1_Production.blend'='334eb745c6513917ab8770c146dbe9e5050a3ee8dac675bd87c49a1c1483d920'
+          }
+          $report=Get-Content (Join-Path $origin 'geological-ground-authoring.json') -Raw|ConvertFrom-Json
+          if($report.terrain_before -ne 'd845d4c883de39ed5cda5e2dd792fcf18597ee0a47685cabc1dd17c241c35202' -or $report.terrain_before -ne $report.terrain_after -or $report.original_packed_images_unchanged -lt 59 -or -not $report.floor_original_materials_uv_corner_normals_copied -or $report.new_gameplay_targets -ne 0 -or $report.colliders_added -ne 0){throw 'Geological output did not preserve the actual ground/source contracts'}
+          foreach($name in $verified.Keys){
+            $saved=Join-Path $origin $name
+            if((Get-FileHash $saved -Algorithm SHA256).Hash.ToLowerInvariant() -ne $verified[$name]){throw "Reviewed geological output changed: $name"}
+            Copy-Item $saved (Join-Path $destination $name) -Force
+            if($name -eq 'RegionOneBlenderWorld.glb'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
+          }
+          Copy-Item (Join-Path $origin 'geological-ground-authoring.json') (Join-Path $destination 'geological-ground-authoring.json') -Force
+          foreach($name in @('ready','session-closed')){Copy-Item (Join-Path $origin "$name.json") (Join-Path $destination "geology-$name.json") -Force}
+          foreach($name in @('request','response')){Copy-Item (Join-Path $origin "$name-40214248071.json") (Join-Path $destination "geology-$name.json") -Force}
+          Write-Host 'REGION1_GROUND_BOUND_BREACH_STAGED terrain_position_topology_UV_materials_preserved=1 new_targets=0 fresh_Unity_required=1'
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell

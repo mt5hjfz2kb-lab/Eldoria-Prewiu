@@ -10,7 +10,7 @@ namespace Eldoria.World4XCanon
     // City cameras, imported assets, player state and shared source materials are untouched.
     public sealed class RegionOneLookDevelopment : MonoBehaviour
     {
-        Camera worldCamera; Light sun; Quaternion rotation; LightShadows shadows; float strength,distance;
+        Camera worldCamera; Light sun; Quaternion rotation; LightShadows shadows; float strength,distance,depthBias,normalBias;int cascades;
         UniversalRenderPipelineAsset pipeline; bool scoped; Color background;
         readonly List<Material> owned=new List<Material>();
         readonly Dictionary<Material,Material> cache=new Dictionary<Material,Material>();
@@ -48,6 +48,18 @@ namespace Eldoria.World4XCanon
                 if(renderer.name.StartsWith("BLD_Forest")||renderer.name.StartsWith("Pilot_Pine")||renderer.name.StartsWith("Far_Pilot_Pine"))renderer.SetPropertyBlock(properties);
         }
         void OnEnable(){RenderPipelineManager.beginCameraRendering+=Begin;RenderPipelineManager.endCameraRendering+=End;}
+        static float GroundShadowCoverage(Camera camera,Vector3 origin,float fadeBorder)
+        {
+            // Orthographic strategic cameras can stand hundreds of metres above
+            // the map. Cover their actual ground footprint, including fade-out,
+            // rather than exhausting a fixed 300m radius before reaching soil.
+            var plane=new Plane(Vector3.up,origin);float furthest=300f;
+            for(int x=0;x<2;x++)for(int y=0;y<2;y++){
+                var ray=camera.ViewportPointToRay(new Vector3(x,y,0));
+                if(plane.Raycast(ray,out float enter))furthest=Mathf.Max(furthest,Vector3.Distance(camera.transform.position,ray.GetPoint(enter)));
+            }
+            return Mathf.Min(camera.farClipPlane,furthest/Mathf.Max(.5f,1f-fadeBorder)*1.04f);
+        }
         void Begin(ScriptableRenderContext context,Camera camera)
         {
             if(camera!=worldCamera||scoped)return;
@@ -62,13 +74,24 @@ namespace Eldoria.World4XCanon
             background=camera.backgroundColor; // Preserve the existing continental clear colour; grey increased the tile silhouette.
             sun=RenderSettings.sun;
             if(!sun)sun=FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.enabled&&l.type==LightType.Directional).OrderByDescending(l=>l.intensity).FirstOrDefault();
-            if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;sun.transform.rotation=Quaternion.Euler(48,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}
+            if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;depthBias=sun.shadowBias;normalBias=sun.shadowNormalBias;sun.transform.rotation=Quaternion.Euler(48,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}
             pipeline=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
-            if(pipeline){distance=pipeline.shadowDistance;pipeline.shadowDistance=300;}
+            if(pipeline){
+                distance=pipeline.shadowDistance;cascades=pipeline.shadowCascadeCount;
+                if(camera.orthographicSize<110f)pipeline.shadowDistance=300f;
+                else{
+                    pipeline.shadowDistance=GroundShadowCoverage(camera,origin,pipeline.cascadeBorder);
+                    // A parallel orthographic frustum does not need a perspective
+                    // near cascade over empty air above the ground. Use the full
+                    // existing atlas for this one world footprint.
+                    pipeline.shadowCascadeCount=1;
+                    if(sun){sun.shadowBias=.6f;sun.shadowNormalBias=.35f;}
+                }
+            }
             scoped=true;
         }
         void End(ScriptableRenderContext context,Camera camera){if(camera==worldCamera)Restore();}
-        void Restore(){if(!scoped)return;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;}if(pipeline)pipeline.shadowDistance=distance;if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
+        void Restore(){if(!scoped)return;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;sun.shadowBias=depthBias;sun.shadowNormalBias=normalBias;}if(pipeline){pipeline.shadowDistance=distance;pipeline.shadowCascadeCount=cascades;}if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
         void OnDisable(){RenderPipelineManager.beginCameraRendering-=Begin;RenderPipelineManager.endCameraRendering-=End;Restore();}
         void OnDestroy(){foreach(var material in owned)if(material)Destroy(material);}
     }

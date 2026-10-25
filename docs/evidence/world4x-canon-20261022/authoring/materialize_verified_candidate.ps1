@@ -78,11 +78,19 @@ foreach($metadata in Get-ChildItem $breachCaptures -Filter '*.json'){
  if(-not $identity.actualUnityCamera -or -not $identity.playMode -or $identity.sha256 -ne (Get-FileHash $png -Algorithm SHA256).Hash.ToLower()){throw 'Breach evidence identity mismatch'}
 }
 foreach($file in Get-ChildItem $breachCaptures -File){$path="$review/breach-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path}
-foreach($name in @('approved-node-authoring.json','ready.json','request.json','response.json','session-closed.json')){
+foreach($name in @('approved-node-authoring.json','ready.json','request.json','response.json','session-closed.json','geological-ground-authoring.json','geology-ready.json','geology-request.json','geology-response.json','geology-session-closed.json')){
  $file=Join-Path $generated $name
  if(-not(Test-Path $file)){throw "Actual BlenderMCP asset authoring trace missing: $name"}
  $path="$review/mcp-$name";Copy-Item $file $path;$paths+=$path
 }
+$lightCaptures=Join-Path $captures 'retained-sector/shadow-study'
+if(@(Get-ChildItem $lightCaptures -Filter '*.png').Count -ne 12){throw 'Twelve genuine same-camera lighting study images required'}
+foreach($metadata in Get-ChildItem $lightCaptures -Filter '*.json'){
+ $identity=Get-Content $metadata.FullName -Raw|ConvertFrom-Json
+ $png=Join-Path $lightCaptures ($metadata.BaseName+'.png')
+ if(-not $identity.actualUnityCamera -or -not $identity.playMode -or $identity.sha256 -ne (Get-FileHash $png -Algorithm SHA256).Hash.ToLower()){throw 'Lighting comparison identity mismatch'}
+}
+foreach($file in Get-ChildItem $lightCaptures -File){$path="$review/lighting-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path}
 # General proof must be fresh and belong to this exact native source.
 $general=Join-Path $env:RUNNER_TEMP "region1-general-proof-$env:GITHUB_RUN_ID"
 $proof=Get-Content (Join-Path $general 'general-proof.json') -Raw|ConvertFrom-Json

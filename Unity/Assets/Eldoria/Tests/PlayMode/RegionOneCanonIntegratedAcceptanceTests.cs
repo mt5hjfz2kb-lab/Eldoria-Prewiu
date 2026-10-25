@@ -859,6 +859,13 @@ namespace Eldoria.Tests
             var geology=geo.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");
             var h=geology.GetType().GetMethod("Height",BindingFlags.Public|BindingFlags.Static);
             Assert.That((float)h.Invoke(null,new object[]{-260f,150f}),Is.LessThan(-4f),"Depth must exist in the imported terrain, not only a painted floor.");
+            float maximumFloorGapError=0f;
+            foreach(var vertex in filter.sharedMesh.vertices){
+                var point=filter.transform.TransformPoint(vertex);
+                float expected=home.y+(float)h.Invoke(null,new object[]{point.x-home.x,point.z-home.z});
+                maximumFloorGapError=Mathf.Max(maximumFloorGapError,Mathf.Abs(point.y-expected-.015f));
+            }
+            Assert.That(maximumFloorGapError,Is.LessThan(.005f),"Every Breach floor vertex must follow the actual imported terrain, not bridge it with a floating plate");
             var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).First(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
             var fixedVertices=filter.sharedMesh.vertices;var fixedPosition=filter.transform.position;
             var continuation=geo.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_ContinentalContinuation");
@@ -994,17 +1001,18 @@ namespace Eldoria.Tests
             {
                 camera.aspect=width/(float)height;camera.targetTexture=rt;
                 var sceneLights=Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
-                var lightStates=sceneLights.Select(l=>(l,l.transform.rotation,l.shadows,l.shadowStrength)).ToArray();
+                var lightStates=sceneLights.Select(l=>(l,l.transform.rotation,l.shadows,l.shadowStrength,l.shadowBias,l.shadowNormalBias)).ToArray();
                 var pipeline=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
                 var shadowProperty=pipeline?pipeline.GetType().GetProperty("shadowDistance"):null;
-                var shadowDistance=shadowProperty?.GetValue(pipeline);var background=camera.backgroundColor;
+                var shadowDistance=shadowProperty?.GetValue(pipeline);var cascadeProperty=pipeline?pipeline.GetType().GetProperty("shadowCascadeCount"):null;var cascadeCount=cascadeProperty?.GetValue(pipeline);var background=camera.backgroundColor;
                 camera.Render();
                 Assert.That(camera.backgroundColor,Is.EqualTo(background),"Peripheral world atmosphere must restore camera clear colour");
                 foreach(var state in lightStates)if(state.l){
                     Assert.That(Quaternion.Angle(state.l.transform.rotation,state.rotation),Is.LessThan(.001f),"World rendering must restore city light rotation");
-                    Assert.That(state.l.shadows,Is.EqualTo(state.shadows));Assert.That(state.l.shadowStrength,Is.EqualTo(state.shadowStrength));
+                    Assert.That(state.l.shadows,Is.EqualTo(state.shadows));Assert.That(state.l.shadowStrength,Is.EqualTo(state.shadowStrength));Assert.That(state.l.shadowBias,Is.EqualTo(state.shadowBias));Assert.That(state.l.shadowNormalBias,Is.EqualTo(state.shadowNormalBias));
                 }
                 if(shadowProperty!=null)Assert.That(shadowProperty.GetValue(pipeline),Is.EqualTo(shadowDistance),"World rendering must restore shared pipeline shadow distance");
+                if(cascadeProperty!=null)Assert.That(cascadeProperty.GetValue(pipeline),Is.EqualTo(cascadeCount),"World rendering must restore shared shadow cascades");
                 RenderTexture.active=rt;
                 pixels.ReadPixels(new Rect(0,0,width,height),0,0);pixels.Apply();var png=pixels.EncodeToPNG();
                 Assert.That(png.Length,Is.GreaterThan(2500));File.WriteAllBytes(path+".png",png);
@@ -1263,6 +1271,29 @@ namespace Eldoria.Tests
                     }
                 }
                 Assert.That(Directory.GetFiles(breachDirectory,"*.png").Length,Is.EqualTo(4));
+                string shadowStudy=Path.Combine(sectorDirectory,"shadow-study");Directory.CreateDirectory(shadowStudy);
+                foreach(bool portrait in new[]{false,true})foreach(bool breach in new[]{false,true})foreach(bool panoramic in new[]{false,true})
+                {
+                    if(breach&&panoramic)continue;
+                    camera.aspect=portrait?9f/16:16f/9;
+                    var focus=breach?breachFocus:home;
+                    Call(navigation,"RestoreView",focus,panoramic?(float)Member(navigation,"globalZoom"):(portrait?456f:280f));Call(adapter,"RefreshForCapture");yield return null;
+                    string label=(breach?"breach":"home")+"-"+(panoramic?"panorama":"regional")+"-"+(portrait?"portrait":"landscape");
+                    var studyPipeline=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
+                    var distanceProperty=studyPipeline.GetType().GetProperty("shadowDistance");
+                    var countProperty=studyPipeline.GetType().GetProperty("shadowCascadeCount");int baselineCascades=(int)countProperty.GetValue(studyPipeline);
+                    var studySun=RenderSettings.sun;float oldBias=studySun?studySun.shadowBias:0;float oldNormal=studySun?studySun.shadowNormalBias:0;
+                    System.Action<UnityEngine.Rendering.ScriptableRenderContext,Camera> baseline=(context,view)=>{
+                        if(view!=camera)return;
+                        distanceProperty.SetValue(studyPipeline,300f);countProperty.SetValue(studyPipeline,baselineCascades);
+                        if(studySun){studySun.shadowBias=oldBias;studySun.shadowNormalBias=oldNormal;}
+                    };
+                    UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering+=baseline;
+                    try{SaveRetainedSectorFrame(camera,Path.Combine(shadowStudy,label+"-fixed300"),portrait?720:1280,portrait?1280:720,null,(Vector3)Member(navigation,"target"));}
+                    finally{UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering-=baseline;}
+                    SaveRetainedSectorFrame(camera,Path.Combine(shadowStudy,label+"-ground-coverage"),portrait?720:1280,portrait?1280:720,null,(Vector3)Member(navigation,"target"));
+                }
+                Assert.That(Directory.GetFiles(shadowStudy,"*.png").Length,Is.EqualTo(12),"Actual same-camera fixed/adaptive shadow comparisons required");
                 string continentalDetails=Path.Combine(sectorDirectory,"continental-details");Directory.CreateDirectory(continentalDetails);
                 var playableGateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");
                 var actualResources=playableGateway.Snapshot().WorldResourceLocations;
