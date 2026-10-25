@@ -14,8 +14,19 @@ def git(*args):
     return subprocess.check_output(["git", "-C", str(ROOT), *args], stderr=subprocess.PIPE)
 
 def tracked():
-    return sorted(p for p in git("ls-files", "-z").decode("utf-8", "replace").split("\0")
-                  if p and Path(p).suffix.lower() in EXTS)
+    # Inspect the whole committed Git tree, even in a sparse checkout.
+    # Do not fetch gigabytes of GLB/.blend blobs just to discover filenames.
+    rows = []
+    for raw in git("ls-tree", "-r", "-l", "-z", "HEAD").decode("utf-8", "replace").split("\0"):
+        if not raw or "\t" not in raw:
+            continue
+        meta, path = raw.split("\t", 1)
+        if Path(path).suffix.lower() not in EXTS:
+            continue
+        parts = meta.split()
+        size = int(parts[3]) if len(parts) > 3 and parts[3].isdigit() else None
+        rows.append((path, size))
+    return sorted(rows)
 
 def known_paths(catalog):
     known = set()
@@ -45,17 +56,18 @@ def main():
     parser.add_argument("--summary", type=Path)
     args = parser.parse_args()
     catalog = json.loads(CATALOG.read_text(encoding="utf-8-sig"))
-    all_paths = tracked()
+    all_assets = tracked()
+    all_paths = [p for p, size in all_assets]
     known = known_paths(catalog)
     candidates = []
-    for path in all_paths:
+    for path, size in all_assets:
         if path in known:
             continue
         item = {
             "path": path,
             "category": classify(path),
             "ref": "CURRENT_CHECKOUT",
-            "size_bytes": (ROOT / path).stat().st_size if (ROOT / path).is_file() else None,
+            "size_bytes": size,
             "status": "DISCOVERED_UNREVIEWED",
             "art_approved": False,
             "provenance_reviewed": False,
