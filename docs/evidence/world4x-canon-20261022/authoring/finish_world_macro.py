@@ -339,6 +339,12 @@ bpy.ops.object.select_all(action='DESELECT')
 for ob in exported:ob.select_set(True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
+export_bytes=(out/'RegionOneBlenderWorld.glb').read_bytes()
+export_json=json.loads(export_bytes[20:20+struct.unpack_from('<I',export_bytes,12)[0]])
+exported_trees=[node for node in export_json['nodes'] if node.get('name','').startswith('BLD_ForestMass_')]
+assert len({node['mesh'] for node in exported_trees})==2,'Actual export lost shared donors'
+layout['continental_trees']=len(exported_trees)
+(out/'production-region.json').write_text(json.dumps(layout,indent=2))
 report={'method':'artist-directed actual BlenderMCP edit','source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'protected_vertices_unchanged':int(protected.sum()),'terrain_vertices_after':len(coords),'original_packed_images_unchanged':len(images_before),'new_connected_streams':2,'new_gameplay_targets':0,'new_colliders':0,'cleared_continental_tree_lods':len(cleared),'regrounded_trees':regrounded,'new_riparian_shared_mesh_pairs':len(new_trees),'continental_material_links':links,'query_samples_rebuilt':int(changed.sum()),'locally_subdivided_edges':subdivided_edges,'art_approved':False,'files':{name:hashlib.sha256((out/name).read_bytes()).hexdigest() for name in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
 hidden={ob:ob.hide_render for ob in scene.objects}

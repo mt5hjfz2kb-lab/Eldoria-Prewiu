@@ -29,11 +29,20 @@ if([BitConverter]::ToInt32($bytes,$tail) -ne 0x32564c45 -or $vertices -ne $proof
 $file=[IO.File]::Create($query)
 $zip=[IO.Compression.GZipStream]::new($file,[IO.Compression.CompressionMode]::Compress)
 try{$zip.Write($bytes,0,$bytes.Length)}finally{$zip.Dispose();$file.Dispose()}
+$glb=[IO.File]::ReadAllBytes((Join-Path $root 'RegionOneBlenderWorld.glb'))
+if([BitConverter]::ToInt32($glb,0) -ne 0x46546c67){throw 'Reviewed world is not GLB'}
+$jsonLength=[BitConverter]::ToInt32($glb,12)
+$gltf=[Text.Encoding]::UTF8.GetString($glb,20,$jsonLength) | ConvertFrom-Json
+$trees=@($gltf.nodes | Where-Object {$_.name -and $_.name.StartsWith('BLD_ForestMass_')})
+$donors=@($trees | ForEach-Object {$_.mesh} | Sort-Object -Unique)
+if($trees.Count -lt 20 -or $donors.Count -ne 2){throw 'Actual export must retain its two shared canopy donors'}
+$previousTrees=$layout.continental_trees
+$layout.continental_trees=$trees.Count
 $layout.terrain_vertices=$vertices
 [IO.File]::WriteAllText($layoutPath,($layout | ConvertTo-Json -Depth 30),[Text.UTF8Encoding]::new($false))
 $unity=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
 Copy-Item $query (Join-Path $unity 'RegionOneBlenderQueries.bytes') -Force
 Copy-Item $layoutPath (Join-Path $unity 'production-region.json') -Force
-@{source_query_sha256=$sourceHash;previous_width=$oldWidth;previous_depth=$oldDepth;width=$width;depth=$depth;terrain_vertices=$vertices;payload_after_header_unchanged=($before -eq $after);query_sha256=(Get-FileHash $query -Algorithm SHA256).Hash.ToLowerInvariant();geometry_reauthored=$false} |
+@{source_query_sha256=$sourceHash;previous_width=$oldWidth;previous_depth=$oldDepth;width=$width;depth=$depth;terrain_vertices=$vertices;previous_declared_trees=$previousTrees;actual_exported_trees=$trees.Count;shared_canopy_meshes=$donors.Count;payload_after_header_unchanged=($before -eq $after);query_sha256=(Get-FileHash $query -Algorithm SHA256).Hash.ToLowerInvariant();geometry_reauthored=$false} |
  ConvertTo-Json | Set-Content (Join-Path $root 'macro-query-header-repair.json')
-Write-Host "MACRO_QUERY_HEADER_REPAIR_PASS width=$width depth=$depth vertices=$vertices actual_heights_masks_vertex_tail_unchanged=true"
+Write-Host "MACRO_QUERY_HEADER_REPAIR_PASS width=$width depth=$depth vertices=$vertices trees=$($trees.Count) donors=$($donors.Count) actual_heights_masks_vertex_tail_unchanged=true"
