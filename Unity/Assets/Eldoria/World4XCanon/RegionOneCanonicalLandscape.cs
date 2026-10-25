@@ -222,7 +222,12 @@ namespace Eldoria.World4XCanon
    // direct Camera.Render must be correct without cloning the gateway snapshot
    // again on every idle frame.
    if(Mathf.Abs(renderedZoom-camera.orthographicSize)<.0001f&&Mathf.Abs(renderedAspect-camera.aspect)<.0001f)return;
-   UpdateLevelOfDetail(true);
+   // Respect the final camera frame chosen by the existing HUD focus path.
+   // Rendering refreshes model LOD/picking only; it must not reframe or tilt.
+   if(placement)placement.RefreshForZoom();
+   if(resourceModels)resourceModels.RefreshNow();
+   if(creaturePopulation)creaturePopulation.RefreshNow();
+   if(nodes)nodes.Refresh();if(geography)geography.Refresh();if(lookDevelopment)lookDevelopment.RefreshForZoom();
    renderedZoom=camera.orthographicSize;renderedAspect=camera.aspect;
   }
   void LateUpdate(){if(built)UpdateLevelOfDetail(false);}

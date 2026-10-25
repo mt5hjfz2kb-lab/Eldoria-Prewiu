@@ -1,0 +1,9 @@
+# Observación y corrección de continuidad y encuadre
+
+Native40234038777:62/62 PlayModePASS,26/26 EditModePASS,44 comprobaciones I-II completadas. El gate adicional de encuadre falló en bosque vertical: espacio libre20,3% frente a34,7% V2. Las34 capturas y el JSON originales se recuperaron sin iniciar editores en40235908567; el JSON fallido se conserva versionado. No se modifica baseline, threshold de8pp, UI ni su ámbito reservado.
+
+Decisión: conservar modelos, terreno y composición. Causa identificada en código propio: BeforeWorldRender llamaba UpdateLevelOfDetail(true), que recalculaba tilt, distancias y bandas de zoom DESPUÉS de que la interfaz terminara Focus(). La imagen vertical muestra una escala distinta de la calibrada. Corrección: ese callback solo refresca representación, picking y LOD; respeta posición, tamaño y orientación final de la cámara decidida por el HUD. Se mantiene el caché por zoom/formato para evitar snapshots cada fotograma. RefreshForCapture y LateUpdate conservan sus responsabilidades normales. La hipótesis se verificará con el MISMO gate.
+
+Observación artística de seis PNG verdaderos: red fluvial y Brecha mejoran claramente. Todavía aparece una línea de cambio térmico en el límite del núcleo cercano y un rectángulo en la panorámica. El shader aplicaba temperatura cálida1,40 al núcleo/contexto y1,05 a la extensión usando una frontera de materiales. Corrección macroscópica de aspecto: una transición espacial continua de90m conserva exactamente el centro AF/AG y aplica la misma temperatura exterior a todos los materiales de pradera, incluida la continuación vecina. El pigmento, geometría y UV no cambian. Eliminar fronteras artificiales tiene más impacto que decorar con nuevos objetos.
+
+Veredicto: retener la dirección y volver a comprobar seis cámaras idénticas y62/26/44 antes del cierre. No se anticipa aceptación artística ni funcionamiento de la corrección UI.

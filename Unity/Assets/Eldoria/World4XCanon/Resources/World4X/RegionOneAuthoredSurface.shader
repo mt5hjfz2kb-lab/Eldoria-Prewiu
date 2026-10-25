@@ -67,7 +67,13 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      // Preserve the source ochre paths and purple geology; warm the actual
      // green meadow pigment rather than tinting the whole painted atlas.
      half grass=1-smoothstep(.95,1.40,c.r/max(.001,c.g));
-     c.rgb*=lerp(half3(1,1,1),(_MeadowFinish>1.5?half3(1.05,1.02,.98):half3(1.40,1.10,.94))*variation,grass);
+     float2 meadowLocal=i.world.xz-_RegionOrigin.xz;
+     float2 beyond=float2(max(0,abs(meadowLocal.x)-96),max(0,max(-78-meadowLocal.y,meadowLocal.y-270)));
+     // One continuous temperature across the preserved core, extension and
+     // neighbouring ground. Material boundaries must not reveal rectangles.
+     half transition=smoothstep(0,90,length(beyond));
+     half3 temperature=lerp(half3(1.40,1.10,.94),half3(1.05,1.02,.98),transition);
+     c.rgb*=lerp(half3(1,1,1),temperature*variation,grass);
  }
  half3 originalPigment=c.rgb;
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);
