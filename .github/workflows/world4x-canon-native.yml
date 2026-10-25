@@ -592,8 +592,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40211155178
-          name: region1-canon-native-40211155178
+          run-id: 40223178638
+          name: region1-canon-native-40223178638
           path: ${{ runner.temp }}/interactive-approved-nodes-source
       - name: Send this observed decision to the persistent local BlenderMCP session
         shell: powershell

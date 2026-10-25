@@ -1,11 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
-  "ownership_revision": 35,
-  "source_run": 40211155178,
-  "source_sha256": "9c4bdf54ab92eb62eec574dde4038550d726100b143c4737e7ede4d5d44073c0",
-  "artistic_brief": "BREACH_GROUND_REAUTHORING_BRIEF.md",
-  "decision": "Replace the observed smooth violet puddle and floating ribbon facets with actual terrain-bound slate and fractured plates. Preserve every terrain vertex, UV, material index and existing packed image. No new gameplay target or paid generation.",
+  "ownership_revision": 37,
+  "source_run": 40223178638,
+  "source_sha256": "334eb745c6513917ab8770c146dbe9e5050a3ee8dac675bd87c49a1c1483d920",
+  "artistic_brief": "MACRO_DIRECTION_20261025.md",
+  "decision": "Inspect exact certified scene before artist-directed macro terrain/Breach/composition edit; review real camera hierarchy and source geometry.",
   "preview_is_Unity": false,
-  "art_approved": false,
-  "preflight_correction": "Use the authoring directory with cone sparse checkout. Skip artifact upload when the owned output directory has not been initialized. The failed checkout did not start Blender or execute art operations."
+  "art_approved": false
 }
