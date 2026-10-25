@@ -37,7 +37,9 @@ class VaultTests(unittest.TestCase):
         original = scanner.git
         try:
             scanner.git = lambda *args: (
-                b"Assets/Rock.glb\0Assets/Source.blend\0Assets/ignore.png\0"
+                b"100644 blob abcdef 120\tAssets/Rock.glb\0"
+                b"100644 blob 112233 240\tAssets/Source.blend\0"
+                b"100644 blob 111111 11\tAssets/ignore.png\0"
             )
             self.assertEqual(scanner.tracked(),
                              ["Assets/Rock.glb", "Assets/Source.blend"])
