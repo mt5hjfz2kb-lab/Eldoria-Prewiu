@@ -33,7 +33,7 @@ namespace Eldoria.World4XCanon
                     if(footprint>=12f){
                         float crown=20f+(identity%7);
                         far.transform.localScale=new Vector3(far.transform.localScale.x*crown/footprint,
-                            far.transform.localScale.y*(23f+identity%8)/Mathf.Max(.01f,size.y),
+                            far.transform.localScale.y*(34f+identity%8)/Mathf.Max(.01f,size.y),
                             far.transform.localScale.z*crown/footprint);
                     }
                     if(footprint<12f){
@@ -47,7 +47,7 @@ namespace Eldoria.World4XCanon
                         if(retainedFarVisible){
                             scale=far.transform.localScale;
                             far.transform.localScale=new Vector3(scale.x*22f/Mathf.Max(.01f,footprint),
-                                scale.y*20f/Mathf.Max(.01f,size.y),scale.z*22f/Mathf.Max(.01f,footprint));
+                                scale.y*34f/Mathf.Max(.01f,size.y),scale.z*22f/Mathf.Max(.01f,footprint));
                         }
                     }
                 }
@@ -60,10 +60,10 @@ namespace Eldoria.World4XCanon
                     if(retainedFarVisible){
                         var size=far.bounds.size;
                         float footprint=Mathf.Max(size.x,size.z);
-                        float crown=20f+(identity%5)*1.1f;
+                        float crown=20f+((identity/5)%5);
                         var scale=far.transform.localScale;
                         far.transform.localScale=new Vector3(scale.x*crown/Mathf.Max(.01f,footprint),
-                            scale.y*23f/Mathf.Max(.01f,size.y),scale.z*crown/Mathf.Max(.01f,footprint));
+                            scale.y*(34f+identity%7)/Mathf.Max(.01f,size.y),scale.z*crown/Mathf.Max(.01f,footprint));
                     }
                 }
                 // Scale about the existing canopy base, not the ground-origin

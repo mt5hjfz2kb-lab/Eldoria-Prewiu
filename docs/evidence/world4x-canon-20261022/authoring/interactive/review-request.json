@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
   "ownership_revision": 37,
-  "source_run": 40230766938,
-  "source_sha256": "ebc0d001f99dec1166f08bebb9436c140612e2a89fe8b45cc0270feafb6f5823",
+  "source_run": 40233611270,
+  "source_sha256": "a4761ca33f38273a31ff444277c143ded5e31ab2498d30c8af2baca9db037d1b",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Correct only the Breach overlay to the highest actual exported terrain triangle; preserve all terrain, pigment, trees and the macro composition.",
+  "decision": "Final organic readability batch: preserve certified terrain/geology/images; remap tributary current texture along flow and replace over-decimated 67-triangle strategic conifers with two shared approved donor LODs around240triangles; inspect actual strategic silhouette workshop before final Unity.",
   "preview_is_Unity": false,
   "art_approved": false
 }

@@ -4,7 +4,7 @@ def artist_snapshot(label):
  out=pathlib.Path(bpy.app.driver_namespace['interactive_output']);scene=bpy.context.scene
  camera_before=scene.camera;hidden={o:o.hide_render for o in scene.objects}
  for ob in scene.objects:
-  if ob.name.startswith(('BLD_ForestFar_','Far_Pilot_Pine')) or ob.type=='LIGHT':ob.hide_render=True
+  if ob.type=='LIGHT' or (ob.name.startswith(('BLD_ForestFar_','Far_Pilot_Pine')) and not bpy.app.driver_namespace.get('artist_preview_use_far',False)):ob.hide_render=True
  data=bpy.data.cameras.new('Artist composition review');camera=bpy.data.objects.new('Artist composition review',data);scene.collection.objects.link(camera);data.type='ORTHO';data.clip_end=15000;scene.camera=camera
  light_data=bpy.data.lights.new('Artist matched workshop sun','SUN');sun=bpy.data.objects.new('Artist matched workshop sun',light_data);scene.collection.objects.link(sun);light_data.energy=2.2
  sun.rotation_euler=Vector((.384,-.548,.743)).to_track_quat('Z','Y').to_euler()
