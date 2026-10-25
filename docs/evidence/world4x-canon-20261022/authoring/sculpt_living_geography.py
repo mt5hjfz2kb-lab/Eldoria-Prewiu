@@ -95,7 +95,13 @@ for p in terrain.data.polygons:
 terrain.data.normals_split_custom_set(normals);terrain.data.update();bpy.context.view_layer.update()
 bvh=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
 def soil(x,y):
- hit=bvh.ray_cast(Vector((float(x),float(y),400)),Vector((0,0,-1)))[0];assert hit is not None,(x,y);return hit.z
+ hit=bvh.ray_cast(Vector((float(x),float(y),400)),Vector((0,0,-1)))[0]
+ if hit is None:
+  # The retained main river deliberately has open water instead of soil.
+  # Preserve its certified query; never invent a new surface over that hole.
+  assert float(sample(old_masks[:,:,1],x,y))>64 or float(protection(x,y))==0,(x,y)
+  return float(sample(old_height,x,y))
+ return hit.z
 # Carry the retained decorative stones, understory and trees with the ground.
 # Geometry in the protected kernel remains byte-for-byte untouched.
 old_bvh=BVHTree.FromPolygons([(float(a),float(b),float(c)) for a,b,c in zip(x,y,h)], [list(p.vertices) for p in terrain.data.polygons],all_triangles=False)
@@ -139,7 +145,7 @@ for near in sorted(near_trees,key=lambda o:o.name):
  cell=tuple(np.floor(q/7).astype(int))
  if cell in occupied:q=old;cell=tuple(np.floor(q/7).astype(int))
  occupied[cell]=True
- oldz=near.location.z;near.location.x=float(q[0]);near.location.y=float(q[1]);near.location.z=soil(*q)
+ oldz=near.location.z;near.location.x=float(q[0]);near.location.y=float(q[1]);near.location.z=soil(*q) if w>0 else oldz
  far=bpy.data.objects.get(near.name.replace('BLD_ForestMass_','BLD_ForestFar_',1))
  if far:far.location.x=near.location.x;far.location.y=near.location.y;far.location.z+=near.location.z-oldz
  moved+=float(np.linalg.norm(q-old))>.1;positions.append(tuple(q))
