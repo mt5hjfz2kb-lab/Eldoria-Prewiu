@@ -1,0 +1,182 @@
+﻿{
+    "source":  "a0b678ab25b8f6846fa975e91e2defa6db3cb07c",
+    "art_approved":  false,
+    "physical_mobile_tested":  false,
+    "images":  [
+                   {
+                       "sha256":  "4158655213afb8e0f4a4c49bfa05e76cdb831d5ffba3f83ea90bc0931a4ccfc6",
+                       "file":  "integration-art-corrupt-scout-landscape.png",
+                       "bytes":  2147158
+                   },
+                   {
+                       "sha256":  "bd5881fb03e32f830ffa0459c9cae0de42ab94b42871ec5c1293e5b349cbb203",
+                       "file":  "integration-art-corrupt-scout-portrait.png",
+                       "bytes":  1941688
+                   },
+                   {
+                       "sha256":  "e25e910a3e17bab719f6b3b6b1308894d6be9ef6959783df051ff9d6ab4744e0",
+                       "file":  "integration-art-engendro-before-close.png",
+                       "bytes":  2194874
+                   },
+                   {
+                       "sha256":  "eb6d5d0cde13366ceed0caeef9a90bde6c96a222257bb95e68eaaa305846c53f",
+                       "file":  "integration-art-engendro-before-strategic.png",
+                       "bytes":  1889860
+                   },
+                   {
+                       "sha256":  "4670923631d585bf9bb723e03bbbca8bb57e54af8c94cb607a78f69aa37f1236",
+                       "file":  "integration-art-engendro-prebattle-close.png",
+                       "bytes":  2200696
+                   },
+                   {
+                       "sha256":  "bd73bd7bc7642478c475da663229d260cbe374628049bdcf80374cdad4ca551a",
+                       "file":  "integration-art-engendro-prebattle-strategic.png",
+                       "bytes":  1890017
+                   },
+                   {
+                       "sha256":  "4158655213afb8e0f4a4c49bfa05e76cdb831d5ffba3f83ea90bc0931a4ccfc6",
+                       "file":  "integration-art-engendro-valoria-landscape.png",
+                       "bytes":  2147158
+                   },
+                   {
+                       "sha256":  "fe7c05330975c5c8966d71516106e68787de1546c65b39cc58a456c6f632e1bd",
+                       "file":  "integration-art-engendro-valoria-portrait.png",
+                       "bytes":  1944927
+                   },
+                   {
+                       "sha256":  "cafdc9ca75f611c64f836c31289041c1fbcc098bdb972e3bd3fb45b53ceca840",
+                       "file":  "integration-art-forest-valoria-landscape.png",
+                       "bytes":  2206147
+                   },
+                   {
+                       "sha256":  "406954510523f86483651afb44351579ca74254c7109b29a2d9a3c6aff13249f",
+                       "file":  "integration-art-forest-valoria-portrait.png",
+                       "bytes":  1897893
+                   },
+                   {
+                       "sha256":  "d35ddf6d56a3f08ea6d0ca4175adf5bdd99de03e8463e310a15ab43bdfe1df61",
+                       "file":  "integration-art-quarry-valoria-landscape.png",
+                       "bytes":  2193279
+                   },
+                   {
+                       "sha256":  "420f005921d8c9a872df6d7b8f52684558821f50df5a1e4dbc0924d5691b1d1b",
+                       "file":  "integration-art-quarry-valoria-portrait.png",
+                       "bytes":  1859151
+                   },
+                   {
+                       "sha256":  "4ea31e11149cf0e3ce91f0c5233a29391577d70f87101572362a3a5881d2ea21",
+                       "file":  "integration-bastion-upgrade.png",
+                       "bytes":  2198259
+                   },
+                   {
+                       "sha256":  "20b397563d8f025d52b52498493a0452ca2e5418323c75095cf57dd276013396",
+                       "file":  "integration-chapter-list.png",
+                       "bytes":  2203103
+                   },
+                   {
+                       "sha256":  "d244623bb302fd2496893bf3f8c937e6b42800153e880214f1b2b15aab6dd1a2",
+                       "file":  "integration-chapter2-complete.png",
+                       "bytes":  2268663
+                   },
+                   {
+                       "sha256":  "2e650922b2c1df8161c752aaf043988f83ccd2e9793a37a4d64232318465b957",
+                       "file":  "integration-city-16x9.png",
+                       "bytes":  2323168
+                   },
+                   {
+                       "sha256":  "f7f5f428dfb3d6e1f4fd4d65d4da471bf9e25fa4eb954fc4809a192b99ef33cd",
+                       "file":  "integration-city-built.png",
+                       "bytes":  2227211
+                   },
+                   {
+                       "sha256":  "d980029e10f4b1d79661af85f871a258e6f55a2bb8fd0cde20f99266e9a1a2f0",
+                       "file":  "integration-construction-landscape.png",
+                       "bytes":  2199638
+                   },
+                   {
+                       "sha256":  "5f6fd77a2e4ab4d46b11ac15bf26e2e43813e0f2b6afe33501f0b98e278c3a4b",
+                       "file":  "integration-construction-portrait.png",
+                       "bytes":  2195871
+                   },
+                   {
+                       "sha256":  "80816e7eda1c9d4dd21a9ed33dec50af2d2beae4c5bc609ea6822a0bb2c6d1f4",
+                       "file":  "integration-issue95-world-after-portrait.png",
+                       "bytes":  2021549
+                   },
+                   {
+                       "sha256":  "002da804557c02d1e7d9773e8c421dd439f09b1e1bd2cba345053551fa8e7822",
+                       "file":  "integration-issue95-world-after-strategic.png",
+                       "bytes":  1888636
+                   },
+                   {
+                       "sha256":  "940842155491d21b76eca55e513e4ca16ade15ffea32caa1a6c035c4da5f6ccb",
+                       "file":  "integration-issue95-world-before-portrait.png",
+                       "bytes":  1971575
+                   },
+                   {
+                       "sha256":  "c725f029ba75e9fb290e59e8821212fbfe8de7a52a344632727dfbd10a4e66f0",
+                       "file":  "integration-issue95-world-before-regional.png",
+                       "bytes":  1998344
+                   },
+                   {
+                       "sha256":  "7560ed3fe334585fc17dcb2ea79bf8ddbd2b827f62d0f35e96139af14c71ef8e",
+                       "file":  "integration-march-landscape.png",
+                       "bytes":  149188
+                   },
+                   {
+                       "sha256":  "f2f03c2a729c38b83890aee6ab02a0aa290fa9a17e911ffe84153d3648f3d5c5",
+                       "file":  "integration-march-portrait.png",
+                       "bytes":  165384
+                   },
+                   {
+                       "sha256":  "ea53ce1b5c8de9e607de92586fcb2e9cbfe2cadfae9ca1b16462b1149dfc8998",
+                       "file":  "integration-story-aldric.png",
+                       "bytes":  1491785
+                   },
+                   {
+                       "sha256":  "a66b62633d85a1b5610234fd878ac10d9392b7a9e0dfb1adac45a5127a183e7b",
+                       "file":  "integration-story-mark-aldric.png",
+                       "bytes":  1425671
+                   },
+                   {
+                       "sha256":  "f26e3011864a9131aded91499cfd3eb3f14b2a8382895ec4222ed712a469b529",
+                       "file":  "integration-story-mark.png",
+                       "bytes":  1364688
+                   },
+                   {
+                       "sha256":  "7a469496d17f404869383bd646d27247833e7484d63540a4eb064a1bc04902c7",
+                       "file":  "integration-story-sawmill-tutorial.png",
+                       "bytes":  1431599
+                   },
+                   {
+                       "sha256":  "00f995e9353edab9b18cb833aa958598801dc6ce8999614a78c3f23f4fede0a1",
+                       "file":  "integration-story.png",
+                       "bytes":  1698601
+                   },
+                   {
+                       "sha256":  "8aa96f65957706ffd581695debda1a360cb8ffbba58ec7f86015bf2292f30eec",
+                       "file":  "integration-training-portrait.png",
+                       "bytes":  155293
+                   },
+                   {
+                       "sha256":  "0572b9c2096a1ef5ab07f0ee07a43cd0410bb5c254f49a629d08ac7c995f7df1",
+                       "file":  "integration-training.png",
+                       "bytes":  137728
+                   },
+                   {
+                       "sha256":  "002da804557c02d1e7d9773e8c421dd439f09b1e1bd2cba345053551fa8e7822",
+                       "file":  "integration-world-16x9.png",
+                       "bytes":  1888636
+                   },
+                   {
+                       "sha256":  "80816e7eda1c9d4dd21a9ed33dec50af2d2beae4c5bc609ea6822a0bb2c6d1f4",
+                       "file":  "integration-world-portrait.png",
+                       "bytes":  2021549
+                   }
+               ],
+    "run":  "40200025694",
+    "gpu_playmode_passed":  61,
+    "probe_checks":  44,
+    "editmode_passed":  26,
+    "fresh_captures":  34
+}
