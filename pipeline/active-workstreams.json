@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-25T15:05:23.952Z",
+  "updated_at": "2026-10-25T15:14:23.667Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1139,12 +1139,12 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": null,
-      "write_scope_released": true,
-      "ownership_revision": 34,
+      "owner": "codex-world4x-art-final-e996c595",
+      "write_scope_released": false,
+      "ownership_revision": 35,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-24T21:06:46.612Z",
+      "claimed_at": "2026-10-25T15:14:23.667Z",
       "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -1160,10 +1160,12 @@
         ".github/workflows/world4x-artistic-process-gate.yml",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [],
-      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing.",
-      "phase": "OWNER_NODE_DESIGN_APPROVAL_BEFORE_NEW_MODELLING",
-      "next": "Show proposed wood/quarry concept image and wait for the owner's explicit approval before creating or changing those node models. Existing world/creature production and native62/26/44 remain preserved in PR100 at d6a547b5047b125e03dc40d869465a512e7d788e. Reclaim same workstream before new writes. No merge/publication/Tripo credits authorized.",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.",
+      "phase": "APPROVED_REFERENCE_NODE_ASSETS_AND_CLOSE_BREACH",
+      "next": "Author the approved quarry and timber depot as reusable BlenderMCP/bpy assets; preserve real six resource roots/mechanics and all originals. Verify genuine close Breach at its coordinates, all orientations and full native certification. Do not substitute earlier unapproved concepts.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1485,7 +1487,7 @@
       },
       "release_note": "Owner-requested safe handoff, not task completion. Run40097362906 SUCCESS confirms corrected editable pigment after save/reopen and orderly close of PID9624. Windows reservation released; full new Unity certification and visual acceptance remain pending.",
       "previous_owner": "chatgpt-world4x-region1-final-production-20261024",
-      "ownership_state": "available",
+      "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
         "run": 40071887223,
