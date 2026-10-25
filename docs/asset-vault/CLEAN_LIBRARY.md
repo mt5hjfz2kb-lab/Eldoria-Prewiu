@@ -8,9 +8,10 @@
 
 | Resultado | Cantidad |
 |---|---:|
-| Para sus funciones de producción ya documentadas | **5** |
+| Para sus funciones de producción ya documentadas | **4** |
 | Módulos arquitectónicos reutilizables, sujetos a composición | **20** |
 | Monumento conservado pero excluido de navegación/circulación | **1** |
+| Bastión antiguo excluido por decisión expresa del propietario | **1** |
 | Recursos de terceros ocultos de la búsqueda habitual por licencia sin verificar | **536** |
 | Glb realmente inspeccionados (estructura, SHA-256, `.meta` Unity) | **26/26** |
 | Variantes 3D históricas accesibles en modo investigación | **920 rutas / 923 versiones** |
@@ -19,16 +20,7 @@ Para consultar antes de modelar: `python3 tools/asset-vault/find-reuse.py "aserr
 
 ## 1. Producción: reutilizar el mismo modelo en su función existente
 
-### Valoria_HeroBastion_v1
-
-![Geometría de Valoria_HeroBastion_v1](previews/Valoria_HeroBastion_v1.png)
-
-**Función:** Valoria central fortress.  **Geometría:** 49.800 triángulos.
-
-**Reutilizar en Unity:** `Resources.Load("Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1")` (según importador GLB configurado).
-**Ruta física:** `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb`.
-
-**Restricción:** Validated hero anchor; do not replace with older silhouette.; HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested.
+**Prohibición de propietario — 25/10/2026:** el Bastión anterior `Valoria_HeroBastion_v1.glb` **no está aprobado para uso** y no pertenece a esta sección. No volver a proponerlo, colocarlo, integrarlo ni publicarlo sin autorización explícita nueva.
 
 ### Valoria_Aserradero_AP2_v1
 
@@ -108,6 +100,14 @@ Estos archivos permanecen rescatables en Git, pero no se ofrecerán como piezas 
 | Modelo | Uso | Triángulos | Unity Resources | Estado |
 |---|---|---:|---|---|
 | [GateStreetRiseRock_MV1](previews/GateStreetRiseRock_MV1.png) | Monumental entrance fragment | 49.799 | `Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1` | SOLO MONUMENTO |
+
+## Archivo bloqueado por el propietario — no reutilizar
+
+**Valoria_HeroBastion_v1** es una pieza histórica generada con un modelo anterior. El propietario ha decidido expresamente que **no se utilice salvo que él mismo dé autorización específica**. Se conserva su malla y evidencia para no romper dependencias de Unity; su antigua certificación técnica no constituye aprobación estética. No debe aparecer en búsquedas normales, encargos artísticos ni nuevas escenas.
+
+![Antiguo Bastión no autorizado](previews/Valoria_HeroBastion_v1.png)
+
+**Estado:** `OWNER_BLOCKED_NO_USE` · **Permiso:** `OWNER_EXPLICIT_PERMISSION_REQUIRED`. No se ha retirado de la escena existente mediante esta actualización documental, porque hacerlo exige verificar la integración bajo su titular y preservar juego/guardados.
 
 ## 4. Lo que hemos quitado de la selección normal
 
