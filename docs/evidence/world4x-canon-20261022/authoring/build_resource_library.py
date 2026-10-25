@@ -196,7 +196,7 @@ scene.render.engine='BLENDER_EEVEE';scene.render.resolution_x=256;scene.render.r
 scene.render.film_transparent=True;scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA';scene.use_nodes=False
 for obj in scene.objects:obj.hide_render=True
 for root in roots:root.hide_render=False
-camera_data=bpy.data.cameras.new('Resource impostor orthographic camera');camera=bpy.data.objects.new(camera_data.name,camera_data);scene.collection.objects.link(camera);camera.hide_render=False;camera_data.type='ORTHO';camera_data.ortho_scale=12;camera.location=(10,-16,16);camera.rotation_euler=(Vector((0,0,3))-camera.location).to_track_quat('-Z','Y').to_euler();scene.camera=camera
+camera_data=bpy.data.cameras.new('Resource impostor orthographic camera');camera=bpy.data.objects.new(camera_data.name,camera_data);scene.collection.objects.link(camera);camera.hide_render=False;camera_data.type='ORTHO';camera_data.ortho_scale=18;camera.location=(10,-16,16);camera.rotation_euler=(Vector((0,0,3))-camera.location).to_track_quat('-Z','Y').to_euler();scene.camera=camera
 light_data=bpy.data.lights.new('Resource impostor soft key','AREA');light_data.energy=1800;light_data.shape='DISK';light_data.size=8;light=bpy.data.objects.new(light_data.name,light_data);scene.collection.objects.link(light);light.hide_render=False;light.location=(-8,-10,18);light.rotation_euler=(Vector((0,0,2))-light.location).to_track_quat('-Z','Y').to_euler()
 scene.world.use_nodes=True;scene.world.node_tree.nodes.get('Background').inputs[0].default_value=(.45,.53,.64,1);scene.world.node_tree.nodes.get('Background').inputs[1].default_value=.65
 import numpy as np

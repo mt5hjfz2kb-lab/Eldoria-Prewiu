@@ -1011,6 +1011,23 @@ assert sum(ecotone_counts)>=30,('No meaningful physical edge-transition groves',
  'original_AF_AG_core_trees_edited':0,'gameplay_nodes_added':0,
  'collider_objects_added':0,'art_approved':False},indent=2))
 print('CONTINENTAL_CONNECTED_FOREST_TREES',tree_total)
+# Reconcile the external crown size with the protected AF/AG crowns.
+# This changes ONLY new decorative tree transforms; no original source tree,
+# terrain, material, UV, entity, route or reservation moves.
+ecotone_scale_operations=[]
+for tree in scene.objects:
+ if not tree.name.startswith('BLD_ForestMass_'):continue
+ x,y=tree.location.x,tree.location.y
+ d=math.hypot(max(0,abs(x)-96),max(0,-78-y,y-270))
+ if d<=0 or d>=280:continue
+ # A broad irregular ramp prevents the silhouette of the retained rectangle
+ # from becoming a border between two visibly different tree populations.
+ span=230+35*math.sin(x/83+y/119)+15*math.cos(y/47)
+ t=max(0,min(1,d/span));t=t*t*(3-2*t)
+ factor=.38+.62*t
+ before=list(tree.scale);tree.scale*=factor
+ ecotone_scale_operations.append({'name':tree.name,'factor':factor,'before':before,'after':list(tree.scale)})
+(out/'ecotone-crown-scale-operations.json').write_text(json.dumps(ecotone_scale_operations,indent=2))
 # Distant LODs are simplified copies of the same silhouettes; no canopy substitutions.
 far_cache={}
 for near in list(scene.objects):
@@ -1114,20 +1131,30 @@ for branch,path in enumerate(macro_namespace['AUTHOR_FAULTS'][3:]):
     if abs(gy-rivercentre(gx))<riverwidth(gx)+16:continue
     if any(math.hypot(gx-qx,gy-qy)<radius+20 for qx,qy,radius in cities):continue
     if any(abs(gx-qx)<20 and abs(gy-qy)<length/2+16 for qx,qy,width,length in bridge_specs):continue
-    ll=ledge_rng.uniform(9,23);ww=ledge_rng.uniform(4.5,11);lift=ledge_rng.uniform(1.2,3.8)
-    start=len(ledges_v)
-    for along,lateral in [(-.55,-1),(.53,-1),(.58,1),(-.52,1)]:
-     xx=gx+tx*ll*along+nx*ww*lateral;yy=gy+ty*ll*along+ny*ww*lateral
-     ledges_v.append((xx,yy,surface(xx,yy)+.05))
-    for along,lateral in [(-.45,-.5),(.43,-.44),(.49,.48),(-.4,.53)]:
-     xx=gx+tx*ll*along+nx*ww*lateral;yy=gy+ty*ll*along+ny*ww*lateral
-     ledges_v.append((xx,yy,surface(xx,yy)+lift+ledge_rng.uniform(-.22,.32)))
-    for k in range(4):
-     n=(k+1)%4
-     ledges_f.append((start+k,start+n,start+4+n,start+4+k))
-     ledges_m.append((branch+k)%len(rock_mats))
-    ledges_f.extend([(start+4,start+5,start+6),(start+4,start+6,start+7)])
-    ledges_m.extend([(branch+1)%len(rock_mats)]*2)
+    # Eroded mineral shards use asymmetric six-to-nine-sided outlines.
+    # The rejected four-corner shelves read as masonry blocks from regional.
+    ll=ledge_rng.uniform(8,20);ww=ledge_rng.uniform(3.0,7.5);lift=ledge_rng.uniform(.7,2.7)
+    start=len(ledges_v);sides=int(ledge_rng.integers(6,10))
+    rings=[]
+    for level in (0,1):
+     ring=[]
+     for k in range(sides):
+      angle=math.tau*k/sides
+      jitter=ledge_rng.uniform(.72,1.14)
+      along=math.cos(angle)*ll*.5*jitter
+      lateral=math.sin(angle)*ww*jitter
+      if level:along*=.68;lateral*=.57
+      xx=gx+tx*along+nx*lateral;yy=gy+ty*along+ny*lateral
+      zz=surface(xx,yy)+(.03 if not level else lift*(.45+.55*(math.cos(angle)*.5+.5))+ledge_rng.uniform(-.15,.15))
+      ring.append(len(ledges_v));ledges_v.append((xx,yy,zz))
+     rings.append(ring)
+    for k in range(sides):
+     n=(k+1)%sides
+     ledges_f.append((rings[0][k],rings[0][n],rings[1][n],rings[1][k]))
+     ledges_m.append((branch+k//3)%len(rock_mats))
+    for k in range(1,sides-1):
+     ledges_f.append((rings[1][0],rings[1][k],rings[1][k+1]))
+     ledges_m.append((branch+1)%len(rock_mats))
 assert len(ledges_f)>90,('Too little real Brecha shelf geometry',len(ledges_f))
 ledge_mesh=bpy.data.meshes.new('Weathered irregular Brecha terraces')
 ledge_mesh.from_pydata(ledges_v,[],ledges_f);ledge_mesh.update()
