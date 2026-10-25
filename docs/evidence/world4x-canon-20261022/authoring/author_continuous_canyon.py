@@ -1,9 +1,10 @@
 """Artist-directed connected cutter, rounded banks and quiet horizontal strata.
 Replaces the rejected sampled-grid cleft, retaining the accepted low uplands.
 """
-import bpy,bmesh,numpy as np,math,pathlib,json,hashlib,struct,gzip
+import bpy,bmesh,numpy as np,math,pathlib,json,hashlib,struct,gzip,collections
 from mathutils import Vector,Matrix
 from mathutils.bvhtree import BVHTree
+from mathutils.geometry import delaunay_2d_cdt
 out=pathlib.Path(bpy.app.driver_namespace['interactive_output']);source=pathlib.Path(bpy.app.driver_namespace['interactive_source']);scene=bpy.context.scene
 terrain=bpy.data.objects['BLD_Terrain'];old=terrain.data
 raw=(source.parent/'RegionOneBlenderWorld.glb').read_bytes();export_names={n.get('name') for n in json.loads(raw[20:20+struct.unpack_from('<I',raw,12)[0]])['nodes']}
@@ -47,6 +48,29 @@ patch=bpy.data.objects.new('Temporary connected canyon authoring patch',mesh);sc
 bm=bmesh.new();bm.from_mesh(mesh);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.0001);bmesh.ops.dissolve_degenerate(bm,edges=list(bm.edges),dist=.00001);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.to_mesh(mesh);bm.free();mesh.update()
 def apply(ob,modifier):
  bpy.ops.object.select_all(action='DESELECT');ob.select_set(True);bpy.context.view_layer.objects.active=ob;bpy.ops.object.modifier_apply(modifier=modifier.name)
+# Re-triangulate the detached patch in XY to remove the legacy cleft's
+# coincident internal sheets before asking a volume Boolean to operate.
+bm=bmesh.new();bm.from_mesh(patch.data);bm.verts.ensure_lookup_table();edges=[e for e in bm.edges if e.is_boundary];remaining=set(edges);loops=[]
+while remaining:
+ edge=remaining.pop();loop=[edge.verts[0],edge.verts[1]]
+ while loop[-1]!=loop[0]:
+  candidate=next((e for e in loop[-1].link_edges if e in remaining),None)
+  if candidate is None:break
+  remaining.remove(candidate);loop.append(candidate.other_vert(loop[-1]))
+ if len(loop)>3 and loop[-1]==loop[0]:loops.append(loop[:-1])
+assert loops,'No closed geological patch boundary'
+def area(loop):return abs(sum(a.co.x*b.co.y-b.co.x*a.co.y for a,b in zip(loop,loop[1:]+loop[:1])))
+boundary=max(loops,key=area);points=[Vector((v.co.x,v.co.y)) for v in bm.verts];ring=[v.index for v in boundary]
+vv,ee,ff,origv,orige,origf=delaunay_2d_cdt(points,[],[ring],1,.00001,True)
+old_positions=[v.co.copy() for v in bm.verts];bm.free();rebuilt=[]
+for q,ids in zip(vv,origv):
+ z=old_positions[ids[0]].z if ids else float(sample(heights,q.x,q.y));rebuilt.append((q.x,q.y,z))
+clean=bpy.data.meshes.new('Clean continuous geological modelling surface');clean.from_pydata(rebuilt,[],ff)
+for m in [soil_material,temporary_bottom,temporary_rim,rock]:clean.materials.append(m)
+clean.update();patch.data=clean
+bm=bmesh.new();bm.from_mesh(clean);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+if sum(f.normal.z for f in bm.faces)<0:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
+bm.to_mesh(clean);bm.free();clean.update()
 solid=patch.modifiers.new('Temporary closed modelling volume','SOLIDIFY');solid.thickness=48;solid.offset=-1;solid.material_offset=1;solid.material_offset_rim=2;apply(patch,solid)
 # Hand-directed branching capsule loft. A voxel union rounds the joins before
 # the exact cut, so the terrain grid cannot dictate the silhouette of the wound.
@@ -69,8 +93,12 @@ for p in cm.polygons:p.material_index=3
 cm.update();cutter=bpy.data.objects.new('Temporary continuous fracture cutter',cm);scene.collection.objects.link(cutter)
 remesh=cutter.modifiers.new('Union and soften the branching wound','REMESH');remesh.mode='VOXEL';remesh.voxel_size=1.1;remesh.use_smooth_shade=True;apply(cutter,remesh)
 soften=cutter.modifiers.new('Natural eroded cut transitions','SMOOTH');soften.factor=1;soften.iterations=4;apply(cutter,soften)
+cutter.data.materials.clear()
+for m in [soil_material,temporary_bottom,temporary_rim,rock]:cutter.data.materials.append(m)
 for p in cutter.data.polygons:p.material_index=3
-cut=patch.modifiers.new('Continuous geological incision','BOOLEAN');cut.operation='DIFFERENCE';cut.solver='EXACT';cut.object=cutter;apply(patch,cut)
+cut_debug={'cutter_vertices':len(cutter.data.vertices),'cutter_faces':len(cutter.data.polygons),'cutter_materials':[m.name for m in cutter.data.materials],'patch_before_faces':len(patch.data.polygons),'patch_before_materials':dict(collections.Counter(p.material_index for p in patch.data.polygons))}
+cut=patch.modifiers.new('Continuous geological incision','BOOLEAN');cut.operation='DIFFERENCE';cut.solver='EXACT';cut.object=cutter;cut.material_mode='TRANSFER';apply(patch,cut)
+cut_debug['patch_after_faces']=len(patch.data.polygons);cut_debug['patch_after_materials']=dict(collections.Counter(p.material_index for p in patch.data.polygons));(out/'continuous-cut-diagnostic.json').write_text(json.dumps(cut_debug,indent=2))
 bpy.data.objects.remove(cutter,do_unlink=True)
 # Remove only the temporary modelling underside/exterior, leaving the actual
 # cut wall and floor connected to the original physical ground surface.

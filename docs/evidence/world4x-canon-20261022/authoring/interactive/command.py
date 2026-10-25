@@ -1,6 +1,9 @@
-import bpy,json,pathlib,collections
-result=[]
-for ob in bpy.context.scene.objects:
- if ob.name.startswith('Temporary'):
-  result.append({'name':ob.name,'vertices':len(ob.data.vertices) if ob.type=='MESH' else 0,'faces':len(ob.data.polygons) if ob.type=='MESH' else 0,'materials':[m.name for m in ob.data.materials] if ob.type=='MESH' else [],'material_counts':dict(collections.Counter(p.material_index for p in ob.data.polygons)) if ob.type=='MESH' else {},'bounds':[list(v) for v in ob.bound_box]})
-p=pathlib.Path(bpy.app.driver_namespace['interactive_output'])/'cut-diagnostic.json';p.write_text(json.dumps(result,indent=2));print(json.dumps(result))
+import pathlib,bpy
+saved={k:bpy.app.driver_namespace[k] for k in ['interactive_source','interactive_output','interactive_helpers']}
+bpy.ops.wm.open_mainfile(filepath=saved['interactive_source'])
+bpy.app.driver_namespace.update(saved)
+helpers=pathlib.Path(saved['interactive_helpers'])
+preview=helpers/'artist_preview.py'
+exec(compile(preview.read_text(encoding='utf-8'),str(preview),'exec'))
+script=helpers.parent/'author_continuous_canyon.py'
+exec(compile(script.read_text(encoding='utf-8'),str(script),'exec'))
