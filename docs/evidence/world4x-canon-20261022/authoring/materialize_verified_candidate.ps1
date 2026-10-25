@@ -41,7 +41,7 @@ if(Test-Path "$creatures.meta"){$paths+="$creatures.meta"}
 foreach($file in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend','RockBoar_Far_LOD.blend')){
  $path="$sources/$file";Copy-Item (Join-Path $generated $file) $path;$paths+=$path
 }
-foreach($file in @('macro-query-header-repair.json','macro-macro-art-operations.json','macro-ready.json','macro-session-closed.json','macro-request-40243865278.json','macro-response-40243865278.json')){
+foreach($file in @('macro-query-header-repair.json','macro-macro-art-operations.json','macro-ready.json','macro-session-closed.json','macro-request-40245425748.json','macro-response-40245425748.json')){
  $saved=Join-Path $generated $file
  if(Test-Path $saved){$path="$sources/$file";Copy-Item $saved $path;$paths+=$path}
 }
@@ -87,6 +87,14 @@ foreach($name in @('approved-node-authoring.json','ready.json','request.json','r
  if(-not(Test-Path $file)){throw "Actual BlenderMCP asset authoring trace missing: $name"}
  $path="$review/mcp-$name";Copy-Item $file $path;$paths+=$path
 }
+$interiorCaptures=Join-Path $captures 'retained-sector/interior-light-study'
+if(@(Get-ChildItem $interiorCaptures -Filter '*.png').Count -ne 2){throw 'Actual same-camera interior-light comparison required'}
+foreach($metadata in Get-ChildItem $interiorCaptures -Filter '*.json'){
+ $identity=Get-Content $metadata.FullName -Raw|ConvertFrom-Json
+ $png=Join-Path $interiorCaptures ($metadata.BaseName+'.png')
+ if(-not $identity.actualUnityCamera -or -not $identity.playMode -or $identity.sha256 -ne (Get-FileHash $png -Algorithm SHA256).Hash.ToLower()){throw 'Interior-light evidence identity mismatch'}
+}
+foreach($file in Get-ChildItem $interiorCaptures -File){$path="$review/interior-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path}
 $lightCaptures=Join-Path $captures 'retained-sector/shadow-study'
 if(@(Get-ChildItem $lightCaptures -Filter '*.png').Count -ne 12){throw 'Twelve genuine same-camera lighting study images required'}
 foreach($metadata in Get-ChildItem $lightCaptures -Filter '*.json'){

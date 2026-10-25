@@ -1341,17 +1341,18 @@ namespace Eldoria.Tests
                     }
                 }
                 Assert.That(Directory.GetFiles(breachDirectory,"*.png").Length,Is.EqualTo(4));
+                string interiorDirectory=Path.Combine(sectorDirectory,"interior-light-study");Directory.CreateDirectory(interiorDirectory);
                 var interiorLook=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneLookDevelopment");
                 camera.aspect=16f/9;Call(navigation,"RestoreView",breachFocus,36f);Call(adapter,"RefreshForCapture");yield return null;
                 try{
                     Call(interiorLook,"SetInteriorLighting",false);
-                    SaveRetainedSectorFrame(camera,Path.Combine(sectorDirectory,"breach-interior-control"),1280,720,null,breachFocus);
+                    SaveRetainedSectorFrame(camera,Path.Combine(interiorDirectory,"breach-interior-control"),1280,720,null,breachFocus);
                     Call(interiorLook,"SetInteriorLighting",true);
-                    SaveRetainedSectorFrame(camera,Path.Combine(sectorDirectory,"breach-interior-lit"),1280,720,null,breachFocus);
+                    SaveRetainedSectorFrame(camera,Path.Combine(interiorDirectory,"breach-interior-lit"),1280,720,null,breachFocus);
                     var control=new Texture2D(2,2);var lit=new Texture2D(2,2);
                     try{
-                        control.LoadImage(File.ReadAllBytes(Path.Combine(sectorDirectory,"breach-interior-control.png")));
-                        lit.LoadImage(File.ReadAllBytes(Path.Combine(sectorDirectory,"breach-interior-lit.png")));
+                        control.LoadImage(File.ReadAllBytes(Path.Combine(interiorDirectory,"breach-interior-control.png")));
+                        lit.LoadImage(File.ReadAllBytes(Path.Combine(interiorDirectory,"breach-interior-lit.png")));
                         var a=control.GetPixels32();var b=lit.GetPixels32();int illuminated=0;
                         for(int i=0;i<a.Length;i++)if((int)b[i].r+b[i].b-2*b[i].g>((int)a[i].r+a[i].b-2*a[i].g)+4)illuminated++;
                         Assert.That(illuminated,Is.GreaterThan(200),"Interior sources must actually light visible geological surfaces, not merely exist as disabled components");
