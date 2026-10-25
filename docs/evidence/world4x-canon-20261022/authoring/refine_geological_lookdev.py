@@ -30,7 +30,7 @@ alpha=np.concatenate([alpha,alpha[::-1]],axis=0)
 # Preserve the ACTUAL native PNG RGB bytes, rather than round-tripping
 # through Blender colour-managed image buffers when authoring a data channel.
 def read_rgba_png(path):
- raw=path.read_bytes();assert raw[:8]==b'\\x89PNG\\r\\n\\x1a\\n'
+ raw=path.read_bytes();assert raw[:8]==bytes((137,80,78,71,13,10,26,10))
  offset=8;compressed=bytearray()
  while offset<len(raw):
   count=struct.unpack('>I',raw[offset:offset+4])[0];kind=raw[offset+4:offset+8];payload=raw[offset+8:offset+8+count];offset+=12+count
@@ -61,8 +61,8 @@ def write_rgba_png(path,values):
  h,w,_=values.shape
  def chunk(kind,payload):
   return struct.pack('>I',len(payload))+kind+payload+struct.pack('>I',zlib.crc32(kind+payload)&0xffffffff)
- scan=b''.join(b'\\0'+row.tobytes() for row in values)
- path.write_bytes(b'\\x89PNG\\r\\n\\x1a\\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',w,h,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(scan,9))+chunk(b'IEND',b''))
+ scan=b''.join(bytes(1)+row.tobytes() for row in values)
+ path.write_bytes(bytes((137,80,78,71,13,10,26,10))+chunk(b'IHDR',struct.pack('>IIBBBBB',w,h,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(scan,9))+chunk(b'IEND',b''))
 detail_path=out/'RegionOneGrassDetail.png'
 rgba=read_rgba_png(detail_path);original_rgb=rgba[:,:,:3].copy()
 assert rgba.shape[:2]==alpha.shape
