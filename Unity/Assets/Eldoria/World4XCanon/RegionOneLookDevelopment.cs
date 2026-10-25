@@ -16,6 +16,7 @@ namespace Eldoria.World4XCanon
         readonly List<Material> minerals=new List<Material>();
         readonly List<Material> meadows=new List<Material>();
         readonly List<Renderer> fineDetails=new List<Renderer>();
+        readonly List<Light> interiorLights=new List<Light>();bool interiorLighting=true;
         MaterialPropertyBlock fineProperties;float fineFade=-1f;
         readonly Dictionary<Material,Material> cache=new Dictionary<Material,Material>();
         Shader authoredShader;Vector3 origin;
@@ -29,6 +30,13 @@ namespace Eldoria.World4XCanon
             scope.fill=fillObject.AddComponent<Light>();scope.fill.type=LightType.Directional;scope.fill.shadows=LightShadows.None;
             scope.fill.color=new Color(.65f,.71f,.84f);scope.fill.intensity=.20f;scope.fill.cullingMask=1<<29;
             scope.fill.transform.rotation=Quaternion.Euler(30,145,0);scope.fill.enabled=false;
+            foreach(var anchor in artwork.GetComponentsInChildren<Transform>(true)
+                .Where(t=>t.name.StartsWith("BLD_BreachInteriorLightAnchor_",StringComparison.Ordinal)).ToArray()){
+                var source=new GameObject("Breach interior mineral light");source.transform.SetParent(anchor,false);source.layer=29;
+                var light=source.AddComponent<Light>();light.type=LightType.Point;light.range=32f;light.intensity=48f;
+                light.color=new Color(.48f,.07f,1f);light.shadows=LightShadows.None;light.cullingMask=1<<29;
+                light.renderMode=LightRenderMode.ForcePixel;light.enabled=false;scope.interiorLights.Add(light);
+            }
         }
         public void ApplyMaterials(GameObject artwork)
         {
@@ -38,6 +46,7 @@ namespace Eldoria.World4XCanon
                     var material=new Material(authoredShader){name=source.name+" AG look",enableInstancing=true};
                     Color colour=source.HasProperty("baseColorFactor")?source.GetColor("baseColorFactor"):source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):Color.white;
                     material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
+                    if(source.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal)||source.name.StartsWith("Breach shaded stratified",StringComparison.Ordinal))material.SetFloat("_GeologicalRock",1f);
                     if(source.name.StartsWith("Original river turquoise shallow ford continuity",StringComparison.Ordinal))material.SetFloat("_WaterSurface",1f);
                     if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal)){material.SetFloat("_MineralEmission",.18f);minerals.Add(material);}
                     bool meadow=source.name.Contains("Region1 open meadows")||source.name.StartsWith("Ochre meadow",StringComparison.Ordinal)||
@@ -62,6 +71,7 @@ namespace Eldoria.World4XCanon
                 if(renderer.name.StartsWith("BLD_Forest")||renderer.name.StartsWith("Pilot_Pine")||renderer.name.StartsWith("Far_Pilot_Pine"))renderer.SetPropertyBlock(properties);
         }
         public void SetMeadowFinish(bool enabled){foreach(var material in meadows)material.SetFloat("_MeadowFinish",enabled?(material.name.Contains("Region1 open meadows")?2f:1f):0f);}
+        public void SetInteriorLighting(bool enabled){interiorLighting=enabled;}
         static bool IsCloseGroundDetail(Renderer renderer)
         {
             if(renderer.sharedMaterials.Any(material=>material&&(
@@ -144,10 +154,11 @@ namespace Eldoria.World4XCanon
             // shadows occlude the key light. Keep their albedo/normal/ORM intact.
             if(sun)RenderSettings.sun=sun;
             if(fill)fill.enabled=true;
+            foreach(var light in interiorLights)if(light)light.enabled=interiorLighting;
             scoped=true;
         }
         void End(ScriptableRenderContext context,Camera camera){if(camera==worldCamera)Restore();}
-        void Restore(){if(!scoped)return;if(fill)fill.enabled=false;RenderSettings.sun=configuredSun?configuredSun:null;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;sun.shadowBias=depthBias;sun.shadowNormalBias=normalBias;}if(pipeline){pipeline.shadowDistance=distance;pipeline.shadowCascadeCount=cascades;}if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
+        void Restore(){if(!scoped)return;if(fill)fill.enabled=false;foreach(var light in interiorLights)if(light)light.enabled=false;RenderSettings.sun=configuredSun?configuredSun:null;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;sun.shadowBias=depthBias;sun.shadowNormalBias=normalBias;}if(pipeline){pipeline.shadowDistance=distance;pipeline.shadowCascadeCount=cascades;}if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
         void OnDisable(){RenderPipelineManager.beginCameraRendering-=Begin;RenderPipelineManager.endCameraRendering-=End;Restore();}
         void OnDestroy(){foreach(var material in owned)if(material)Destroy(material);}
     }

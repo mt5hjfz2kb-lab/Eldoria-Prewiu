@@ -86,7 +86,7 @@ namespace Eldoria.World4XCanon
                 }
                 entity.Hotspot.transform.position=new Vector3(creature.X,creature.Y,creature.Z);
                 // Both source LODs use the same continuous scale at their switching distance.
-                float presence=Mathf.Lerp(2f,4.2f,Mathf.InverseLerp(36f,280f,zoom));
+                float presence=Mathf.Lerp(2f,3.2f,Mathf.InverseLerp(36f,280f,zoom));
                 // Portrait's regional camera frames the same world with a larger
                 // orthographic size. Preserve a target's share of viewport height
                 // beyond the landscape reference, independently of device pixels.

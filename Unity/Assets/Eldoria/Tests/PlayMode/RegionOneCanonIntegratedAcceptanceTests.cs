@@ -891,6 +891,15 @@ namespace Eldoria.Tests
                 maximumFloorGapError=Mathf.Max(maximumFloorGapError,Mathf.Abs(point.y-expected-.015f));
             }
             Assert.That(maximumFloorGapError,Is.LessThan(.005f),"Every Breach floor vertex must follow the actual imported terrain, not bridge it with a floating plate");
+            var mineralLights=geo.GetComponentsInChildren<Light>(true).Where(l=>l.name=="Breach interior mineral light").ToArray();
+            Assert.That(mineralLights.Length,Is.EqualTo(3),"The geological wound requires its three authored interior sources");
+            foreach(var light in mineralLights){
+                var point=light.transform.position-home;
+                float ground=(float)h.Invoke(null,new object[]{point.x,point.z});
+                Assert.That(point.y-ground,Is.EqualTo(1.4f).Within(.01f),"Violet illumination must originate above the actual canyon floor");
+                Assert.That(light.type,Is.EqualTo(LightType.Point));Assert.That(light.enabled,Is.False,"Interior lights must not leak into city rendering");
+                Assert.That(light.cullingMask,Is.EqualTo(1<<29));
+            }
             var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).First(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
             var fixedVertices=filter.sharedMesh.vertices;var fixedPosition=filter.transform.position;
             var continuation=geo.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_ContinentalContinuation");
@@ -1332,6 +1341,23 @@ namespace Eldoria.Tests
                     }
                 }
                 Assert.That(Directory.GetFiles(breachDirectory,"*.png").Length,Is.EqualTo(4));
+                var interiorLook=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneLookDevelopment");
+                camera.aspect=16f/9;Call(navigation,"RestoreView",breachFocus,36f);Call(adapter,"RefreshForCapture");yield return null;
+                try{
+                    Call(interiorLook,"SetInteriorLighting",false);
+                    SaveRetainedSectorFrame(camera,Path.Combine(sectorDirectory,"breach-interior-control"),1280,720,null,breachFocus);
+                    Call(interiorLook,"SetInteriorLighting",true);
+                    SaveRetainedSectorFrame(camera,Path.Combine(sectorDirectory,"breach-interior-lit"),1280,720,null,breachFocus);
+                    var control=new Texture2D(2,2);var lit=new Texture2D(2,2);
+                    try{
+                        control.LoadImage(File.ReadAllBytes(Path.Combine(sectorDirectory,"breach-interior-control.png")));
+                        lit.LoadImage(File.ReadAllBytes(Path.Combine(sectorDirectory,"breach-interior-lit.png")));
+                        var a=control.GetPixels32();var b=lit.GetPixels32();int illuminated=0;
+                        for(int i=0;i<a.Length;i++)if((int)b[i].r+b[i].b-2*b[i].g>((int)a[i].r+a[i].b-2*a[i].g)+4)illuminated++;
+                        Assert.That(illuminated,Is.GreaterThan(200),"Interior sources must actually light visible geological surfaces, not merely exist as disabled components");
+                        Debug.Log("REGION1_INTERIOR_GEOLOGY_LIT_PIXELS "+illuminated);
+                    }finally{Object.Destroy(control);Object.Destroy(lit);}
+                }finally{Call(interiorLook,"SetInteriorLighting",true);}
                 string shadowStudy=Path.Combine(sectorDirectory,"shadow-study");Directory.CreateDirectory(shadowStudy);
                 foreach(bool portrait in new[]{false,true})foreach(bool breach in new[]{false,true})foreach(bool panoramic in new[]{false,true})
                 {

@@ -1,5 +1,5 @@
 Shader "Eldoria/RegionOneAuthoredSurface" {
- Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 }
+ Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 }
  SubShader {Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest"}
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -7,7 +7,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
  TEXTURE2D(_GroundDetail); SAMPLER(sampler_GroundDetail);
  CBUFFER_START(UnityPerMaterial)
- float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;
+ float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;
  CBUFFER_END
  UNITY_INSTANCING_BUFFER_START(PerTree)
  UNITY_DEFINE_INSTANCED_PROP(float4, _InstanceTint)
@@ -24,6 +24,8 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  #pragma multi_compile _ LOD_FADE_CROSSFADE
  #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
  #pragma multi_compile_fragment _ _SHADOWS_SOFT
+ #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
+ #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
  half4 frag(V i):SV_Target {
  UNITY_SETUP_INSTANCE_ID(i);
  #ifdef LOD_FADE_CROSSFADE
@@ -75,8 +77,30 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      half3 temperature=lerp(half3(1.40,1.10,.94),half3(1.05,1.02,.98),transition);
      c.rgb*=lerp(half3(1,1,1),temperature*variation,grass);
  }
+ if(_GeologicalRock>.5){
+     // Deposited layers follow physical elevation through adjacent faces.
+     float strata=(i.world.y-_RegionOrigin.y)/2.2+.10*sin(i.world.x*.11)+.07*sin(i.world.z*.16);
+     float seam=1-smoothstep(.025,.085,min(frac(strata),1-frac(strata)));
+     c.rgb*=lerp(.89,1.10,frac(strata))*(1-seam*.17);
+ }
  half3 originalPigment=c.rgb;
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);
+ #if defined(_ADDITIONAL_LIGHTS) || defined(_ADDITIONAL_LIGHTS_VERTEX) || USE_CLUSTER_LIGHT_LOOP
+ if(_Baked<.5&&distance(i.world.xz-_RegionOrigin.xz,float2(-260,150))<180){
+     InputData inputData=(InputData)0;
+     inputData.positionWS=i.world;inputData.normalWS=normalize(i.normal);
+     inputData.viewDirectionWS=GetWorldSpaceNormalizeViewDir(i.world);
+     inputData.normalizedScreenSpaceUV=GetNormalizedScreenSpaceUV(i.p);
+     uint pixelLightCount=GetAdditionalLightsCount();
+     LIGHT_LOOP_BEGIN(pixelLightCount)
+         Light interior=GetAdditionalLight(lightIndex,inputData.positionWS,half4(1,1,1,1));
+         // Leave the established cool sky fill unchanged. Only the authored
+         // mineral sources light the actual inward-facing geological walls.
+         if(interior.color.b>interior.color.g*1.2&&interior.color.r>interior.color.g*1.2)
+             c.rgb+=originalPigment*interior.color*interior.distanceAttenuation*interior.shadowAttenuation*saturate(dot(inputData.normalWS,interior.direction));
+     LIGHT_LOOP_END
+ }
+ #endif
  // Only the existing exposed central mineral receives this material value.
  // This is emissive geology on the actual ground, never a portal or icon.
  c.rgb+=originalPigment*(_MineralEmission*smoothstep(.004,.04,originalPigment.b-originalPigment.g));
@@ -116,3 +140,4 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  }
  }
 }
+
