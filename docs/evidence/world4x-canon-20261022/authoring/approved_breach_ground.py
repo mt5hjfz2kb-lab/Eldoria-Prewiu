@@ -50,8 +50,9 @@ atlas=bpy.data.images.load(str(helpers/'ApprovedNodeMaterials.png'),check_existi
 w,h=atlas.size;pixels=np.array(atlas.pixels[:],np.float32).reshape(h,w,4)
 crop=pixels[h//2:,:w//2].copy()
 linear=np.where(crop[:,:,:3]<=.04045,crop[:,:,:3]/12.92,((crop[:,:,:3]+.055)/1.055)**2.4)
+linear=np.sum(linear*np.array((.2126,.7152,.0722)),axis=2)[:,:,None]
 packed_maps=[]
-for i,tint in enumerate([(.19,.17,.25),(.22,.20,.28),(.16,.17,.23),(.24,.19,.28)]):
+for i,tint in enumerate([(.14,.15,.22),(.18,.19,.25),(.13,.15,.21),(.19,.17,.25)]):
  colour=crop.copy();colour[:,:,:3]=linear*np.array(tint)
  colour[:,:,:3]=np.where(colour[:,:,:3]<=.0031308,colour[:,:,:3]*12.92,1.055*colour[:,:,:3]**(1/2.4)-.055)
  image=bpy.data.images.new('Breach genuinely fractured shale grain '+str(i),crop.shape[1],crop.shape[0],alpha=True)
@@ -87,21 +88,38 @@ class Mesh:
   else:ob=bpy.data.objects.new(name,mesh);scene.collection.objects.link(ob)
   ob.matrix_world.identity();return ob
 
+def preserve_actual_ground_appearance(ob,face_ids):
+ mesh=ob.data;mesh.materials.clear()
+ for mat in terrain.data.materials:mesh.materials.append(mat)
+ for layer in list(mesh.uv_layers):mesh.uv_layers.remove(layer)
+ for original_layer in terrain.data.uv_layers:
+  layer=mesh.uv_layers.new(name=original_layer.name)
+  for poly,source_id in zip(mesh.polygons,face_ids):
+   original=terrain.data.polygons[source_id]
+   for destination_loop,original_loop in zip(poly.loop_indices,original.loop_indices):layer.data[destination_loop].uv=original_layer.data[original_loop].uv
+ normals=[];normal_matrix=terrain.matrix_world.to_3x3().inverted().transposed()
+ for poly,source_id in zip(mesh.polygons,face_ids):
+  original=terrain.data.polygons[source_id];poly.material_index=original.material_index;poly.use_smooth=original.use_smooth
+  normals.extend([(normal_matrix@terrain.data.corner_normals[i].vector).normalized() for i in original.loop_indices])
+ mesh.normals_split_custom_set(normals)
+ mesh.update()
+
 # The former ribbon bridged the actual incision with long flat facets. Copy the
 # actual ground faces beneath its footprint, preserving their exact topology.
-new_floor=Mesh();used_faces=0;main_face_ids=set()
+new_floor=Mesh();used_faces=0;main_face_ids=set();main_face_sequence=[]
 for poly in terrain.data.polygons:
  p=terrain.matrix_world@poly.center
  if not(lo[0]-10<=p.x<=hi[0]+10 and lo[1]-10<=p.y<=hi[1]+10):continue
  points=[world_vertices[i] for i in poly.vertices]
  if not inside(old_floor_mask,p.x,p.y) and not any(inside(old_floor_mask,q.x,q.y) for q in points):continue
- new_floor.face([(q.x,q.y,q.z+.015) for q in points],used_faces%4);used_faces+=1;main_face_ids.add(poly.index)
+ new_floor.face([(q.x,q.y,q.z+.015) for q in points],used_faces%4);used_faces+=1;main_face_ids.add(poly.index);main_face_sequence.append(poly.index)
 assert used_faces>50
 new_floor.install('Breach floor copied from actual incised terrain',floor)
+preserve_actual_ground_appearance(floor,main_face_sequence)
 outer=bpy.data.objects['BLD_BreachOutlyingFractures'];outer_mask=footprint(outer)
 outer_points=[outer.matrix_world@v.co for v in outer.data.vertices]
 outer_lo=np.min(np.array(outer_points),axis=0);outer_hi=np.max(np.array(outer_points),axis=0)
-new_outer=Mesh();outer_faces=0
+new_outer=Mesh();outer_faces=0;outer_face_sequence=[]
 for poly in terrain.data.polygons:
  if poly.index in main_face_ids:continue
  p=terrain.matrix_world@poly.center
@@ -109,9 +127,10 @@ for poly in terrain.data.polygons:
  if not(outer_lo[0]-10<=p.x<=outer_hi[0]+10 and outer_lo[1]-10<=p.y<=outer_hi[1]+10):continue
  points=[world_vertices[i] for i in poly.vertices]
  if not inside(outer_mask,p.x,p.y) and not any(inside(outer_mask,q.x,q.y) for q in points):continue
- new_outer.face([(q.x,q.y,q.z+.015) for q in points],outer_faces%4);outer_faces+=1
+ new_outer.face([(q.x,q.y,q.z+.015) for q in points],outer_faces%4);outer_faces+=1;outer_face_sequence.append(poly.index)
 assert outer_faces>50
 new_outer.install('Outer fault substrate copied from actual ground',outer)
+preserve_actual_ground_appearance(outer,outer_face_sequence)
 
 # Voronoi fracture cells replace the smooth luminous puddle. Raised plates stay
 # within the already excluded fault belt; outer staining remains ground-bound.
@@ -189,5 +208,5 @@ bpy.ops.object.select_all(action='DESELECT')
 for ob in exported:ob.select_set(True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
-report={'method':'Actual BlenderMCP execute_code of directed ground repair','source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_before':terrain_before,'terrain_after':terrain_after,'original_packed_images_unchanged':len(images_before),'copied_actual_terrain_faces':used_faces,'copied_outer_fault_ground_faces':outer_faces,'fractured_plates':cells,'raised_only_inside_existing_fault_exclusion':raised,'floor_maximum_ground_gap_error_m':gap,'floor_z_bounds':[min(p[2] for p in new_floor.v),max(p[2] for p in new_floor.v)],'floor_xy_bounds':[[min(p[c] for p in new_floor.v),max(p[c] for p in new_floor.v)] for c in [0,1]],'new_gameplay_targets':0,'colliders_added':0,'preview_is_Unity':False,'art_approved':False,'output_files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['RegionOneBlenderWorld.glb','Eldoria_Region1_Production.blend']}}
+report={'method':'Actual BlenderMCP execute_code of directed ground repair','source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_before':terrain_before,'terrain_after':terrain_after,'original_packed_images_unchanged':len(images_before),'floor_original_materials_uv_corner_normals_copied':True,'copied_actual_terrain_faces':used_faces,'copied_outer_fault_ground_faces':outer_faces,'fractured_plates':cells,'raised_only_inside_existing_fault_exclusion':raised,'floor_maximum_ground_gap_error_m':gap,'floor_z_bounds':[min(p[2] for p in new_floor.v),max(p[2] for p in new_floor.v)],'floor_xy_bounds':[[min(p[c] for p in new_floor.v),max(p[c] for p in new_floor.v)] for c in [0,1]],'new_gameplay_targets':0,'colliders_added':0,'preview_is_Unity':False,'art_approved':False,'output_files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['RegionOneBlenderWorld.glb','Eldoria_Region1_Production.blend']}}
 (out/'geological-ground-authoring.json').write_text(json.dumps(report,indent=2));print('BREACH_ACTUAL_GROUND_REAUTHORING_SAVED',json.dumps(report));(out/'stop.request').write_text('Directed ground repair saved; close owned Blender')
