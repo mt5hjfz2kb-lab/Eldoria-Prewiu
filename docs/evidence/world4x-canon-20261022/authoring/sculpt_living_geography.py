@@ -2,7 +2,7 @@
 Real BlenderMCP edit of the retained world. No gameplay targets/colliders.
 """
 import bpy,bmesh,numpy as np,math,json,gzip,struct,pathlib,hashlib
-from mathutils import Vector,noise
+from mathutils import Vector,Matrix,noise
 from mathutils.bvhtree import BVHTree
 out=pathlib.Path(bpy.app.driver_namespace['interactive_output']);source=pathlib.Path(bpy.app.driver_namespace['interactive_source'])
 terrain=bpy.data.objects['BLD_Terrain'];scene=bpy.context.scene
