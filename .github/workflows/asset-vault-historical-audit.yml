@@ -1,0 +1,48 @@
+name: Eldoria Asset Vault - Historical Deep Inventory
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-historical:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/historical-branches-20261018.json
+            /tools/asset-vault/
+      - name: Fetch branch refs without downloading 3D file bodies
+        run: |
+          git -c protocol.version=2 fetch --no-tags --filter=blob:none origin '+refs/heads/*:refs/remotes/origin/*'
+      - name: Enumerate historical pinned trees
+        run: |
+          python3 tools/asset-vault/discover-history.py --output /tmp/eldoria-history-inventory.json
+          python3 - <<'PY'
+          import json,os
+          d=json.load(open('/tmp/eldoria-history-inventory.json'))
+          lines=[
+              '# Eldoria 201 historical branches — full Git tree discovery',
+              '',
+              f"Refs examined: **{d['complete_refs']}/{d['declared_refs']}**",
+              f"Unavailable pinned commit objects: **{d['unavailable_refs']}**",
+              f"Distinct tracked 3D paths: **{d['unique_3d_paths']}**",
+              '',
+              'Discovery does not imply quality, provenance, license or integration approval.',
+              'Full inventory JSON is in the attached artifact.',
+          ]
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write('\n'.join(lines)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-201-branch-3d-inventory-${{ github.run_id }}
+          path: /tmp/eldoria-history-inventory.json
+          if-no-files-found: error
+          retention-days: 90
