@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
   "ownership_revision": 37,
-  "source_run": 40237750807,
-  "source_sha256": "9f26c9560e9ddafa9f57bac8fa2c2641ef0ffb9e91874f7411bbdf3df0191ef5",
+  "source_run": 40241117927,
+  "source_sha256": "76312a3482f914cd7fe5bd83c97633a3145f4ff42f9ddce296ba48d12a0f1278",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Owner renewed macro critique: sculpt real low uplands and moist river terraces; connect woodland ecotones and warp repetitive trails; rebuild terrain-bound stratified canyon walls and rare internal light vents. Original AF/AG, original packed images, city access and gameplay targets remain protected. Review actual strategic donor LOD in Blender before new Unity certification.",
+  "decision": "Reject stepped heightfield canyon observed in real BlenderMCP preview40241117927. Retain low uplands/forest ecotones; cut a continuous voxel-unioned branching wound through a detached closed modelling patch, remove only temporary underside, rebuild rounded geological banks and quiet elevation strata. Remove circular soil reserve marks. Cheap visual review first, no Unity/art approval anticipated.",
   "preview_is_Unity": false,
   "art_approved": false
 }
