@@ -24,6 +24,7 @@ namespace Eldoria.World4XCanon
   RegionOneCreaturePopulation creaturePopulation;RegionOneLookDevelopment lookDevelopment;
   Eldoria.SpawnlingBastion2.SpawnlingEncounterVisual originalTripoActor;
   bool previousPanorama;
+  float renderedZoom=-1f,renderedAspect=-1f;
   readonly List<Renderer> originals=new List<Renderer>();
   readonly List<bool> states=new List<bool>();readonly HashSet<Renderer> background=new HashSet<Renderer>();
   readonly List<LODGroup> lods=new List<LODGroup>();readonly List<bool> lodStates=new List<bool>();
@@ -212,10 +213,18 @@ namespace Eldoria.World4XCanon
   }
   // Render callbacks also cover direct capture cameras and a zoom changed after
   // LateUpdate. Refresh representation before drawing this actual world camera.
-  void OnEnable(){UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering+=BeforeWorldRender;}
+  void OnEnable(){renderedZoom=-1f;renderedAspect=-1f;UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering+=BeforeWorldRender;}
   void OnDisable(){UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering-=BeforeWorldRender;}
   void BeforeWorldRender(UnityEngine.Rendering.ScriptableRenderContext context,Camera camera)
-  {if(built&&host&&camera==host.WorldCamera)UpdateLevelOfDetail(true);}
+  {
+   if(!built||!host||camera!=host.WorldCamera)return;
+   // Normal population timers handle state changes. Force only a changed view:
+   // direct Camera.Render must be correct without cloning the gateway snapshot
+   // again on every idle frame.
+   if(Mathf.Abs(renderedZoom-camera.orthographicSize)<.0001f&&Mathf.Abs(renderedAspect-camera.aspect)<.0001f)return;
+   UpdateLevelOfDetail(true);
+   renderedZoom=camera.orthographicSize;renderedAspect=camera.aspect;
+  }
   void LateUpdate(){if(built)UpdateLevelOfDetail(false);}
   public void RefreshForCapture(){if(built)UpdateLevelOfDetail(true);}
   public void SetBlockout(bool value){if(geography)geography.SetBlockout(value);}

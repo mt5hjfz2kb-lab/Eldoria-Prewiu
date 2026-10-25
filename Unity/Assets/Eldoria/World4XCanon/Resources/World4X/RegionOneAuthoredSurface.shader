@@ -41,7 +41,8 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // The AG sector camera is within 300 m; continental cameras are not.
  // Respect URP shadow distance instead of sampling beyond its cascade coverage.
  float shadow=lerp(l.shadowAttenuation,1,GetMainLightShadowFade(i.world));
- float ndl=dot(normalize(i.normal),l.direction);\n float diffuse=_WaterSurface>.5?abs(ndl):saturate(ndl);
+ float ndl=dot(normalize(i.normal),l.direction);
+ float diffuse=_WaterSurface>.5?abs(ndl):saturate(ndl);
  float2 detailUV=(i.world.xz-_RegionOrigin.xz)/float2(21.1875,12.4921875);
  float2 rotatedDetail=float2(detailUV.x*.8-detailUV.y*.6,detailUV.x*.6+detailUV.y*.8)+float2(.37,.61);
  half4 detailA=SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV);

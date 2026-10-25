@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
   "ownership_revision": 37,
-  "source_run": 40223178638,
-  "source_sha256": "334eb745c6513917ab8770c146dbe9e5050a3ee8dac675bd87c49a1c1483d920",
+  "source_run": 40230766938,
+  "source_sha256": "ebc0d001f99dec1166f08bebb9436c140612e2a89fe8b45cc0270feafb6f5823",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Inspect exact certified scene before artist-directed macro terrain/Breach/composition edit; review real camera hierarchy and source geometry.",
+  "decision": "Correct only the Breach overlay to the highest actual exported terrain triangle; preserve all terrain, pigment, trees and the macro composition.",
   "preview_is_Unity": false,
   "art_approved": false
 }

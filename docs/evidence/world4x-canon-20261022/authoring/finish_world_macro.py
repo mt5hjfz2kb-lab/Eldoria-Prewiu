@@ -207,7 +207,7 @@ for name in ['BLD_BreachFloor','BLD_BreachOutlyingFractures']:
   if mask.ray_cast(Vector((c.x,c.y,10)),Vector((0,0,-1)),20)[0] is None:continue
   ids=[]
   for i in poly.vertices:
-   q=terrain.data.vertices[i].co;ids.append(len(vertices));vertices.append((q.x,q.y,q.z+.012))
+   q=terrain.data.vertices[i].co;ids.append(len(vertices));vertices.append((q.x,q.y,soil(q.x,q.y)+.015))
   faces.append(tuple(ids));source_faces.append(poly.index)
  me=bpy.data.meshes.new(name+' actual sculpted strata')
  me.from_pydata(vertices,[],faces);me.update()
