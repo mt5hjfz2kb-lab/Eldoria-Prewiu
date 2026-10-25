@@ -30,6 +30,12 @@ namespace Eldoria.World4XCanon
                     var scale=far.transform.localScale;
                     far.transform.localScale=new Vector3(scale.x*2.10f,scale.y*2.60f,scale.z*2.10f);
                     var size=far.bounds.size;float footprint=Mathf.Max(size.x,size.z);
+                    if(footprint>=12f){
+                        float crown=20f+(identity%7);
+                        far.transform.localScale=new Vector3(far.transform.localScale.x*crown/footprint,
+                            far.transform.localScale.y*(23f+identity%8)/Mathf.Max(.01f,size.y),
+                            far.transform.localScale.z*crown/footprint);
+                    }
                     if(footprint<12f){
                         // The source ecotone/castle/small plantation crowns are
                         // 1-4m high. A dense regional carpet makes the old sector
@@ -47,11 +53,18 @@ namespace Eldoria.World4XCanon
                 }
                 else
                 {
-                    // Protected near crowns stay unchanged. The same distant
-                    // anchors retain approximately their original covered area.
-                    retainedFarVisible=identity%20==0;
-                    var scale=far.transform.localScale;
-                    if(retainedFarVisible)far.transform.localScale=new Vector3(scale.x*6.3f,scale.y*9.1f,scale.z*6.3f);
+                    // Preserve every close donor. At strategic distance use the
+                    // same crown envelope as the adjacent continental ecotone;
+                    // sparse 60m crowns made the retained patch look monumental.
+                    retainedFarVisible=identity%5==0;
+                    if(retainedFarVisible){
+                        var size=far.bounds.size;
+                        float footprint=Mathf.Max(size.x,size.z);
+                        float crown=20f+(identity%5)*1.1f;
+                        var scale=far.transform.localScale;
+                        far.transform.localScale=new Vector3(scale.x*crown/Mathf.Max(.01f,footprint),
+                            scale.y*23f/Mathf.Max(.01f,size.y),scale.z*crown/Mathf.Max(.01f,footprint));
+                    }
                 }
                 // Scale about the existing canopy base, not the ground-origin
                 // pivot: these protected pine meshes start above a separate stem.
@@ -62,8 +75,8 @@ namespace Eldoria.World4XCanon
                 lod.SetLODs(new[]{new LOD(.065f,new Renderer[]{near}),new LOD(.0001f,new Renderer[]{far})});lod.RecalculateBounds();
                 // A spatial crossfade reproduces AG's 37–47 band, including small
                 // retained crowns. It is deterministic during actual Camera.Render.
-                float end=retained?Mathf.Clamp(lod.size/(2*47f),.0002f,.9f):.065f;
-                float begin=retained?Mathf.Clamp(lod.size/(2*37f),end,.95f):.08f;
+                float end=Mathf.Clamp(lod.size/(2*47f),.0002f,.9f);
+                float begin=Mathf.Clamp(lod.size/(2*37f),end,.95f);
                 var close=new LOD(end,new Renderer[]{near}){fadeTransitionWidth=(begin-end)/(1-end)};
                 if(retainedFarVisible)lod.SetLODs(new[]{close,new LOD(.0001f,new Renderer[]{far})});
                 else

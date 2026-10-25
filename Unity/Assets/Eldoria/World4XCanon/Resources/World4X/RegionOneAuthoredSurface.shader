@@ -1,5 +1,5 @@
 Shader "Eldoria/RegionOneAuthoredSurface" {
- Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 }
+ Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 }
  SubShader {Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest"}
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -7,7 +7,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
  TEXTURE2D(_GroundDetail); SAMPLER(sampler_GroundDetail);
  CBUFFER_START(UnityPerMaterial)
- float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;
+ float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;
  CBUFFER_END
  UNITY_INSTANCING_BUFFER_START(PerTree)
  UNITY_DEFINE_INSTANCED_PROP(float4, _InstanceTint)
@@ -41,7 +41,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // The AG sector camera is within 300 m; continental cameras are not.
  // Respect URP shadow distance instead of sampling beyond its cascade coverage.
  float shadow=lerp(l.shadowAttenuation,1,GetMainLightShadowFade(i.world));
- float diffuse=saturate(dot(normalize(i.normal),l.direction));
+ float ndl=dot(normalize(i.normal),l.direction);\n float diffuse=_WaterSurface>.5?abs(ndl):saturate(ndl);
  float2 detailUV=(i.world.xz-_RegionOrigin.xz)/float2(21.1875,12.4921875);
  float2 rotatedDetail=float2(detailUV.x*.8-detailUV.y*.6,detailUV.x*.6+detailUV.y*.8)+float2(.37,.61);
  half4 detailA=SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV);
@@ -66,7 +66,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      // Preserve the source ochre paths and purple geology; warm the actual
      // green meadow pigment rather than tinting the whole painted atlas.
      half grass=1-smoothstep(.95,1.40,c.r/max(.001,c.g));
-     c.rgb*=lerp(half3(1,1,1),half3(1.40,1.10,.94)*variation,grass);
+     c.rgb*=lerp(half3(1,1,1),(_MeadowFinish>1.5?half3(1.05,1.02,.98):half3(1.40,1.10,.94))*variation,grass);
  }
  half3 originalPigment=c.rgb;
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);

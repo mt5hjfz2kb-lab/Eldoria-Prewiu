@@ -38,10 +38,11 @@ namespace Eldoria.World4XCanon
                     var material=new Material(authoredShader){name=source.name+" AG look",enableInstancing=true};
                     Color colour=source.HasProperty("baseColorFactor")?source.GetColor("baseColorFactor"):source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):Color.white;
                     material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
+                    if(source.name.StartsWith("Original river turquoise shallow ford continuity",StringComparison.Ordinal))material.SetFloat("_WaterSurface",1f);
                     if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal)){material.SetFloat("_MineralEmission",.18f);minerals.Add(material);}
                     bool meadow=source.name.Contains("Region1 open meadows")||source.name.StartsWith("Ochre meadow",StringComparison.Ordinal)||
                         source.name.StartsWith("P connected meadow forest floor paths",StringComparison.Ordinal)||source.name.StartsWith("AI open meadow paths",StringComparison.Ordinal);
-                    if(meadow){material.SetFloat("_MeadowFinish",1f);meadows.Add(material);}
+                    if(meadow){material.SetFloat("_MeadowFinish",source.name.Contains("Region1 open meadows")?2f:1f);meadows.Add(material);}
                     if(meadow){
                         var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");
                         if(!detail)throw new InvalidOperationException("Original AF-derived continental detail missing");
@@ -60,7 +61,7 @@ namespace Eldoria.World4XCanon
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 if(renderer.name.StartsWith("BLD_Forest")||renderer.name.StartsWith("Pilot_Pine")||renderer.name.StartsWith("Far_Pilot_Pine"))renderer.SetPropertyBlock(properties);
         }
-        public void SetMeadowFinish(bool enabled){foreach(var material in meadows)material.SetFloat("_MeadowFinish",enabled?1f:0f);}
+        public void SetMeadowFinish(bool enabled){foreach(var material in meadows)material.SetFloat("_MeadowFinish",enabled?(material.name.Contains("Region1 open meadows")?2f:1f):0f);}
         static bool IsCloseGroundDetail(Renderer renderer)
         {
             if(renderer.sharedMaterials.Any(material=>material&&(

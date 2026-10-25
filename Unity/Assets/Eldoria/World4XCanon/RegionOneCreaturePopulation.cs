@@ -119,6 +119,13 @@ namespace Eldoria.World4XCanon
             go.transform.localRotation=Quaternion.Euler(0,heading,0);
             go.transform.localScale=Vector3.one*(kind=="boar"?7.5f:7.2f);
             foreach(var t in go.GetComponentsInChildren<Transform>(true))t.gameObject.layer=29;
+            // The strategic mesh uses the world's bounded ambient term, retaining
+            // its original albedo. Imported PBR variants fell to black silhouettes
+            // under the regional orthographic shadow cascade. Near PBR is intact.
+            if(lod=="far"){
+                var look=host.WorldRoot.GetComponentInChildren<RegionOneLookDevelopment>(true);
+                if(look)look.ApplyMaterials(go);
+            }
             var renderers=go.GetComponentsInChildren<Renderer>(true);
             if(renderers.Length>0)
             {

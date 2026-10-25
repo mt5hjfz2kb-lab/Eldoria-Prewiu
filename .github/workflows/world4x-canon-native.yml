@@ -402,8 +402,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40226719401
-          name: region1-interactive-40226719401
+          run-id: 40230766938
+          name: region1-interactive-40230766938
           path: ${{ runner.temp }}/region1-reviewed-macro
       - name: Stage exact observed BlenderMCP valleys and geological walls
         shell: powershell
@@ -414,10 +414,10 @@ jobs:
           $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $unityDest=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
           $expected=@{
-            'Eldoria_Region1_Production.blend'='b0cfa6108ec0569f1e0de524d7b34123f8f1cff099fbe71f85cc49b90f804b2e'
-            'RegionOneBlenderWorld.glb'='1d7400bb49dfb6de97441cd6269542ab1b5bbd85f5e703c44b602e17e6ca0d6d'
-            'RegionOneBlenderQueries.bytes'='7065f7d1d208bc8eaa25c84a37034d3f7f3bc171cdc87a763cbcd89d800daa3d'
-            'production-region.json'='05933906a75ab541c47c41db877878239f34cc9e9e7149866cabc732fea98e55'
+            'Eldoria_Region1_Production.blend'='ebc0d001f99dec1166f08bebb9436c140612e2a89fe8b45cc0270feafb6f5823'
+            'RegionOneBlenderWorld.glb'='bf3c02383dcb6fa524463c5c6b06ec8c7a5fe5142fe15f676b720d85d8757b6b'
+            'RegionOneBlenderQueries.bytes'='bde8d1e3e13df5fc658d9fa258da9ac3d720d499f230644e250e9f3b4570589b'
+            'production-region.json'='e1454e3ce1c8985e174833e6618e427aa941a97376f5958fa4138dc5cca853df'
           }
           foreach($name in $expected.Keys){
             $saved=Join-Path $origin $name
@@ -425,7 +425,7 @@ jobs:
             Copy-Item $saved (Join-Path $destination $name) -Force
             if($name -ne 'Eldoria_Region1_Production.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
           }
-          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40226719401.json','response-40226719401.json')){
+          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40230766938.json','response-40230766938.json')){
             Copy-Item (Join-Path $origin $name) (Join-Path $destination "macro-$name") -Force
           }
           Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51898_vertices new_streams=2 new_targets=0 fresh_Unity_required=1'
