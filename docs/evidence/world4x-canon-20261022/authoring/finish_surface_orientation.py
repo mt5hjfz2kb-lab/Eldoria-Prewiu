@@ -7,14 +7,14 @@ for ob in [terrain]+[bpy.data.objects[name] for name in ['BLD_BreachFloor','BLD_
  mesh=ob.data;normals=[tuple(n.vector) for n in mesh.corner_normals];faces=[p for p in mesh.polygons if ob!=terrain or all(-470.001<mesh.vertices[i].co.x<-97.999 and -20.001<mesh.vertices[i].co.y<320.001 for i in p.vertices)]
  horizontal=[p for p in faces if abs(p.normal.z)>.6];assert horizontal,(ob.name,len(faces));up=sum(p.normal.z*p.area for p in horizontal);assert up!=0
  count=0
- if up<0:
-  for p in faces:
+ for p in faces:
+  if p.normal.z<-.000001:
    p.flip();count+=1
    for li in p.loop_indices:
     normals[li]=(0,0,0)
     if mesh.uv_layers.active:
      q=mesh.vertices[mesh.loops[li].vertex_index].co;mesh.uv_layers.active.data[li].uv=((q.x+910)/1820,(q.y+1800)/3600)
-  mesh.update();mesh.normals_split_custom_set(normals);mesh.update()
+ mesh.update();mesh.normals_split_custom_set(normals);mesh.update()
  assert sum(p.normal.z*p.area for p in faces if abs(p.normal.z)>.6)>0,ob.name
  changes[ob.name]={'faces':len(faces),'flipped':count,'area_weighted_up_before':up}
 # Export a real supported glTF pigment; Unity supplies the physical strata.
