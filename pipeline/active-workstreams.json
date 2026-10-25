@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T21:06:46.612Z",
+  "updated_at": "2026-10-25T11:10:24.088Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1141,7 +1141,7 @@
       "title": "Región 1 — geografía canónica continua y representación por zoom",
       "owner": "chatgpt-world4x-region1-final-production-20261024",
       "write_scope_released": false,
-      "ownership_revision": 30,
+      "ownership_revision": 31,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-24T21:06:46.612Z",
@@ -1156,14 +1156,15 @@
         "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
-        "docs/documentation-catalog.json"
+        "docs/documentation-catalog.json",
+        ".github/workflows/world4x-artistic-process-gate.yml"
       ],
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope.",
-      "phase": "REGION1_RESOURCE_CREATURE_ZOOM_ACCEPTANCE",
-      "next": "Production batch from preserved canon: strengthen resource/creature panoramic invisibility without gameplay loss and validate real Unity; reuse Tripo source, no new model. Artist approval separate.",
+      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing.",
+      "phase": "REGION1_NATIVE_CERTIFIED_ARTISTIC_PROCESS_GATE_RECONCILIATION",
+      "next": "After native 40186883304 61 PlayMode/26 EditMode/44 probe PASS, reconcile World4X artistic process evidence and restore art gate using unchanged policy, then improve resource silhouette/continent with genuine Unity A/B. UI owner/window lease remain separate.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
