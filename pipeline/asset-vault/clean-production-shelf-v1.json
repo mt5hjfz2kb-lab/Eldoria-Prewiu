@@ -33,7 +33,12 @@
           "production_grade": true,
           "current_camera_approval": "ORIGINAL_ROLE_ONLY",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-valoria-aserradero-ap2-v1-glb",
@@ -48,7 +53,12 @@
           "production_grade": true,
           "current_camera_approval": "ORIGINAL_ROLE_ONLY",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/Valoria_Aserradero_AP2_v1",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-valoria-cuartel-ap2-v1-glb",
@@ -63,7 +73,12 @@
           "production_grade": true,
           "current_camera_approval": "ORIGINAL_ROLE_ONLY",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/Valoria_Cuartel_AP2_v1",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-valoria-granero-biii-v1-glb",
@@ -78,7 +93,12 @@
           "production_grade": true,
           "current_camera_approval": "ORIGINAL_ROLE_ONLY",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/Valoria_Granero_BIII_v1",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-worldplayercity-playercity-v1-glb",
@@ -93,7 +113,12 @@
           "production_grade": true,
           "current_camera_approval": "ORIGINAL_ROLE_ONLY",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 22797,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "WorldPlayerCity/PlayerCity_v1",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         }
       ]
     },
@@ -116,7 +141,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 11997,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/MidTierArchitectureKit_v1/Piece01",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-midtierarchitecturekit-v1-piece02-glb",
@@ -131,7 +161,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 13201,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/MidTierArchitectureKit_v1/Piece02",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-midtierarchitecturekit-v1-piece03-glb",
@@ -146,7 +181,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 16650,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/MidTierArchitectureKit_v1/Piece03",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-midtierarchitecturekit-v1-piece04-glb",
@@ -161,7 +201,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 6324,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/MidTierArchitectureKit_v1/Piece04",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-rescued-residentialterracerock-glb",
@@ -176,7 +221,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/Rescued/ResidentialTerraceRock",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-rescued-rockterrainseamfiller-glb",
@@ -191,7 +241,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/Rescued/RockTerrainSeamFiller",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-rescued-streetlandingtransition-glb",
@@ -206,7 +261,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/Rescued/StreetLandingTransition",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-rescued-terracestairrock-glb",
@@ -221,7 +281,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49800,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/Rescued/TerraceStairRock",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-rescued-towerwallrock-glb",
@@ -236,7 +301,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 50000,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/Rescued/TowerWallRock",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonearchitecturekit-v1-cornerwalll-glb",
@@ -251,7 +321,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 7335,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneArchitectureKit_v1/CornerWallL",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonearchitecturekit-v1-highstraightwall-glb",
@@ -266,7 +341,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 6440,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneArchitectureKit_v1/HighStraightWall",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonearchitecturekit-v1-rocktowalltransition-glb",
@@ -281,7 +361,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 7270,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneArchitectureKit_v1/RockToWallTransition",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-01-10364tris-glb",
@@ -296,7 +381,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 10364,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneKit/piece_01_10364tris",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-02-12602tris-glb",
@@ -311,7 +401,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 12602,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneKit/piece_02_12602tris",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-03-6433tris-glb",
@@ -326,7 +421,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 6433,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneKit/piece_03_6433tris",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-04-7824tris-glb",
@@ -341,7 +441,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 7824,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneKit/piece_04_7824tris",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-05-4966tris-glb",
@@ -356,7 +461,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 4966,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneKit/piece_05_4966tris",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-06-7602tris-glb",
@@ -371,7 +481,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 7602,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/StoneKit/piece_06_7602tris",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-terrainterracekit-v1-broadrockplatform-glb",
@@ -386,7 +501,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 8650,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/TerrainTerraceKit_v1/BroadRockPlatform",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         },
         {
           "id": "canon-unity-assets-eldoria-resources-valoria-terrainterracekit-v1-steppedrockterrace-glb",
@@ -401,7 +521,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 6379,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/TerrainTerraceKit_v1/SteppedRockTerrace",
+          "mobile_reuse_policy": "CONDITIONAL: profile instances, materials, LOD and actual mobile frame budget"
         }
       ]
     },
@@ -424,7 +549,12 @@
           "production_grade": false,
           "current_camera_approval": "NOT_YET",
           "mobile_performance_independently_certified": false,
-          "license_certified": false
+          "license_certified": false,
+          "measured_triangles": 49799,
+          "source_binary_integrity": "PASS_SHA256_GLTF_V2_GEOMETRY_META_40220473133",
+          "art_preview_only": "geometry-only; NOT an in-game Unity beauty/LOD approval",
+          "unity_resources_load_key": "Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1",
+          "mobile_reuse_policy": "HEAVY_MODEL: single landmark or rare instance only unless platform performance and LOD tested"
         }
       ]
     }
@@ -485,5 +615,13 @@
     "new_3d_detection": "auto candidate on PR/main; promotion only with visuals, license, platform QA",
     "new_approved_asset": "add new entry to production shelf after review; no source relocation by scripts",
     "no_automatic_removal": true
+  },
+  "verified_binary_QA": {
+    "run_id": 40220473133,
+    "passed": 26,
+    "failed": 0,
+    "triangles_sum": 655033,
+    "qa_path": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40220473133",
+    "warning": "Validation covers GLB geometry/bytes and Unity meta, not game scene visual quality, license, rigging or physical mobile FPS."
   }
 }
