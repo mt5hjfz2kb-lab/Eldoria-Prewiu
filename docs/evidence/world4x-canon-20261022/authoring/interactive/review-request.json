@@ -6,5 +6,6 @@
   "artistic_brief": "BREACH_GROUND_REAUTHORING_BRIEF.md",
   "decision": "Replace the observed smooth violet puddle and floating ribbon facets with actual terrain-bound slate and fractured plates. Preserve every terrain vertex, UV, material index and existing packed image. No new gameplay target or paid generation.",
   "preview_is_Unity": false,
-  "art_approved": false
+  "art_approved": false,
+  "preflight_correction": "Use the authoring directory with cone sparse checkout. Skip artifact upload when the owned output directory has not been initialized. The failed checkout did not start Blender or execute art operations."
 }

@@ -541,8 +541,7 @@ jobs:
           path: world4x-source
           persist-credentials: false
           sparse-checkout: |
-            docs/evidence/world4x-canon-20261022/authoring/interactive
-            docs/evidence/world4x-canon-20261022/authoring/approved_breach_ground.py
+            docs/evidence/world4x-canon-20261022/authoring
             tools/workstream-lease
             pipeline
       - uses: actions/checkout@v4
@@ -569,7 +568,7 @@ jobs:
         shell: powershell
         run: '& world4x-source/docs/evidence/world4x-canon-20261022/authoring/interactive/relay.ps1'
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && env.ELDORIA_INTERACTIVE_OUT != ''
         with:
           name: region1-interactive-review-${{ github.run_id }}
           path: |
@@ -577,7 +576,7 @@ jobs:
             ${{ env.ELDORIA_INTERACTIVE_OUT }}/*.json
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && env.ELDORIA_INTERACTIVE_OUT != ''
         with:
           name: region1-interactive-${{ github.run_id }}
           path: ${{ env.ELDORIA_INTERACTIVE_OUT }}/**
