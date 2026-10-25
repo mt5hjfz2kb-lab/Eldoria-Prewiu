@@ -25,15 +25,15 @@ def geological_paint(rgb,x,y):
  """
  d=stroke_distance(x,y,AUTHOR_FAULTS)
  original_safe=np.clip((-102-x)/23,0,1)
- outer=np.clip((46-d)/28,0,1)
- shoulder=(outer*outer*(3-2*outer))*.46*original_safe
+ outer=np.clip((64-d)/42,0,1)
+ shoulder=(outer*outer*(3-2*outer))*.62*original_safe
  # Earthy grey/ochre with violet only inside the actual mineral incision.
  # Directional desaturation is subtle; it does not invent parallel cracks.
  slope=.025*np.sin(x/73+y/39)+.016*np.cos(y/31-x/62)
  rock=np.empty((*x.shape,3),dtype=np.float64)
  rock[...,0]=.335+slope;rock[...,1]=.307+slope*.80;rock[...,2]=.312+slope*.72
  rgb[:]=rgb*(1-shoulder[...,None])+rock*shoulder[...,None]
- fractured=np.clip((15-d)/11,0,1)**1.25*.53*original_safe
+ fractured=np.clip((18-d)/13,0,1)**1.25*.58*original_safe
  rgb[:]=rgb*(1-fractured[...,None])+np.array((.235,.185,.265))*fractured[...,None]
  dark_core=np.clip((8-d)/6,0,1)*.48*original_safe
  rgb[:]=rgb*(1-dark_core[...,None])+np.array((.17,.095,.22))*dark_core[...,None]

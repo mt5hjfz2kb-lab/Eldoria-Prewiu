@@ -111,10 +111,30 @@ for family in ['Wood','Stone']:
     o.data.materials.clear()
     for m in stone:o.data.materials.append(m)
     for p in o.data.polygons:p.material_index=(p.index+k+variant)%3;p.use_smooth=False
+# Carved extraction ledges and original weathered rock read as a worked
+# quarry from ABOVE. One lightweight mesh parented to the same real resource.
+def quarry_rim(root,variant):
+ vertices=[];faces=[];slots=[]
+ n=16
+ for radius,height in ((5.8,.05),(4.8,.50),(3.65,1.05),(2.65,1.48)):
+  for j in range(n):
+   angle=math.tau*j/n
+   jitter=1+.065*math.sin(j*1.43+variant*2.7)+.04*math.sin(j*2.81)
+   vertices.append((.3+radius*math.cos(angle)*jitter,
+                    .15+.83*radius*math.sin(angle)*jitter,
+                    height+.04*math.sin(3*angle+variant)))
+ for layer in range(3):
+  for j in range(n):
+   nxt=(j+1)%n
+   faces.append((layer*n+j,layer*n+nxt,(layer+1)*n+nxt,(layer+1)*n+j))
+   slots.append((layer+j//5+variant)%len(stone))
+ finished_mesh(root,'Quarry terraced exposed ledges',vertices,faces,stone,slots)
+
 # Carved extraction benches and prepared masonry change the quarry silhouette.
 # The original rock donor still supplies the central weathered geology.
 for variant in range(3):
  root=next(x for x in roots if x.name=='Resource_Stone_'+str(variant))
+ quarry_rim(root,variant)
  dressed_stone(root,'Quarry exposed lower bench',-.55,-2.35,.02,5.3,2.6,.46,variant)
  dressed_stone(root,'Quarry weathered second bench',-.65,-1.8,.44,4.4,1.9,.48,variant+1)
  dressed_stone(root,'Quarry stepped cut face',-.85,-1.33,.87,3.1,1.15,.42,variant+2)

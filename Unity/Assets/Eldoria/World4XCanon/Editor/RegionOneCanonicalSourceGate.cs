@@ -69,6 +69,16 @@ namespace Eldoria.World4XCanon.Editor
             if(proof.continental_trees!=forest.Length||forest.Select(f=>f.sharedMesh).Distinct().Count()!=2)
                 throw new InvalidOperationException("Continental crowns must match authored instance count and share the two original donor meshes");
             Debug.Log("CONTINENTAL_SHARED_CROWNS_PASS instances="+forest.Length+" distinct_near_meshes=2");
+            // New sculptural hierarchy must be genuine imported editable
+            // Blender geometry, not a pasted colour band or a second map.
+            var strata=prefab.GetComponentsInChildren<MeshFilter>(true)
+                .SingleOrDefault(f=>f.name=="BLD_BreachTerracedStrata");
+            if(!strata||strata.sharedMesh==null||strata.sharedMesh.triangles.Length<270)
+                throw new InvalidOperationException("Meaningful authored Brecha strata not in actual imported Unity continent");
+            var resources=Resources.Load<GameObject>("World4X/Blender/RegionOneResources");
+            if(!resources||resources.GetComponentsInChildren<MeshFilter>(true)
+                .Count(f=>f.name=="Quarry terraced exposed ledges")!=3)
+                throw new InvalidOperationException("All three quarry resource models must carry real layered excavation geometry");
             var detailImporter=AssetImporter.GetAtPath("Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneGrassDetail.png") as TextureImporter;
             if(!detailImporter||detailImporter.sRGBTexture)throw new InvalidOperationException("AF-derived detail must import as linear data to preserve its neutral mean");
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);

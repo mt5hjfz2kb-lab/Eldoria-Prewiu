@@ -1030,6 +1030,52 @@ for i,poly in enumerate(stone_mesh.polygons):poly.material_index=rock_mats_index
 stone_object=bpy.data.objects.new('BLD_BreachWeatheredRockfall',stone_mesh)
 scene.collection.objects.link(stone_object)
 
+# Sculpt real layered, fractured mineral ledges against the existing Brecha
+# shoulders. One batched, shadow-casting mesh: no target, new terrain system
+# or gameplay collider. Original source AF/AG, roads and reserved cities are
+# excluded before generating each asymmetrical rock shelf.
+ledges_v=[];ledges_f=[];ledges_m=[]
+ledge_rng=np.random.default_rng(261025)
+for branch,path in enumerate(macro_namespace['AUTHOR_FAULTS'][3:]):
+ for a,b in zip(path,path[1:]):
+  dx,dy=b[0]-a[0],b[1]-a[1];span=math.hypot(dx,dy)
+  if span<14:continue
+  tx,ty=dx/span,dy/span;nx,ny=-ty,tx
+  for station in np.arange(5,span-4,16):
+   cx,cy=a[0]+tx*station,a[1]+ty*station
+   for side in (-1,1):
+    if ledge_rng.random()<.19:continue
+    gx=cx+side*nx*ledge_rng.uniform(21,31)
+    gy=cy+side*ny*ledge_rng.uniform(21,31)
+    if -99<gx<99 and -81<gy<273:continue
+    if abs(gx)>870 or abs(gy)>1750 or float(coast(gx,gy))<20:continue
+    if float(line_distance(np.array(gx),np.array(gy)))<22:continue
+    if abs(gy-rivercentre(gx))<riverwidth(gx)+16:continue
+    if any(math.hypot(gx-qx,gy-qy)<radius+20 for qx,qy,radius in cities):continue
+    if any(abs(gx-qx)<20 and abs(gy-qy)<length/2+16 for qx,qy,width,length in bridge_specs):continue
+    ll=ledge_rng.uniform(9,23);ww=ledge_rng.uniform(4.5,11);lift=ledge_rng.uniform(1.2,3.8)
+    start=len(ledges_v)
+    for along,lateral in [(-.55,-1),(.53,-1),(.58,1),(-.52,1)]:
+     xx=gx+tx*ll*along+nx*ww*lateral;yy=gy+ty*ll*along+ny*ww*lateral
+     ledges_v.append((xx,yy,surface(xx,yy)+.05))
+    for along,lateral in [(-.45,-.5),(.43,-.44),(.49,.48),(-.4,.53)]:
+     xx=gx+tx*ll*along+nx*ww*lateral;yy=gy+ty*ll*along+ny*ww*lateral
+     ledges_v.append((xx,yy,surface(xx,yy)+lift+ledge_rng.uniform(-.22,.32)))
+    for k in range(4):
+     n=(k+1)%4
+     ledges_f.append((start+k,start+n,start+4+n,start+4+k))
+     ledges_m.append((branch+k)%len(rock_mats))
+    ledges_f.extend([(start+4,start+5,start+6),(start+4,start+6,start+7)])
+    ledges_m.extend([(branch+1)%len(rock_mats)]*2)
+assert len(ledges_f)>90,('Too little real Brecha shelf geometry',len(ledges_f))
+ledge_mesh=bpy.data.meshes.new('Weathered irregular Brecha terraces')
+ledge_mesh.from_pydata(ledges_v,[],ledges_f);ledge_mesh.update()
+for material in rock_mats:ledge_mesh.materials.append(material)
+for poly,slot in zip(ledge_mesh.polygons,ledges_m):poly.material_index=slot
+ledge_object=bpy.data.objects.new('BLD_BreachTerracedStrata',ledge_mesh)
+scene.collection.objects.link(ledge_object)
+print('BRECHA_GEOLOGIC_STRATA_AUTHORED faces',len(ledges_f),'vertices',len(ledges_v),'no_colliders=True')
+
 # Near-view ecological finish uses discrete mesh accents above the AF/AG
 # surface. It does not move/repaint a retained original vertex, UV or image.
 # Cosmetic tufts and stones are lightweight, non-interactive, no colliders.

@@ -37,7 +37,7 @@ namespace Eldoria.World4XCanon
             if(!impostorMeshes[tile]){
                 float u=tile*.5f;var mesh=new Mesh{name="Resource actual-model impostor "+tile};
                 mesh.vertices=new[]{Vector3.zero,Vector3.zero,Vector3.zero,Vector3.zero};mesh.uv=new[]{new Vector2(u,0),new Vector2(u+.5f,0),new Vector2(u+.5f,1),new Vector2(u,1)};
-                mesh.uv2=new[]{new Vector2(-8,-1),new Vector2(8,-1),new Vector2(8,14),new Vector2(-8,14)};mesh.triangles=new[]{0,1,2,0,2,3};mesh.bounds=new Bounds(Vector3.up*5,Vector3.one*24);impostorMeshes[tile]=mesh;
+                mesh.uv2=new[]{new Vector2(-10,-1),new Vector2(10,-1),new Vector2(10,16),new Vector2(-10,16)};mesh.triangles=new[]{0,1,2,0,2,3};mesh.bounds=new Bounds(Vector3.up*5,Vector3.one*24);impostorMeshes[tile]=mesh;
             }
             var go=new GameObject("Production resource impostor "+id);go.transform.SetParent(parent,false);go.layer=29;go.AddComponent<MeshFilter>().sharedMesh=impostorMeshes[tile];var renderer=go.AddComponent<MeshRenderer>();renderer.sharedMaterial=impostorMaterial;renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;renderer.enabled=false;return renderer;
         }
