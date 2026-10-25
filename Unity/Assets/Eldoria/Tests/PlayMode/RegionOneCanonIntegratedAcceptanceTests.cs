@@ -1410,6 +1410,15 @@ namespace Eldoria.Tests
                 Assert.That(Directory.GetFiles(continentalDetails,"*.png").Length,Is.EqualTo(4));
                 Assert.That(Directory.GetFiles(sectorDirectory,"*.png").Count(p=>!Path.GetFileName(p).StartsWith("pigment-",StringComparison.Ordinal)),Is.EqualTo(6),"All six canonical sector frames remain required");
                 Assert.That(Directory.GetFiles(sectorDirectory,"pigment-*.png").Length,Is.EqualTo(12),"All six genuine pigment control/candidate pairs are required");
+                foreach(string orientation in new[]{"landscape","portrait"})
+                foreach(string scale in new[]{"close","regional","panorama"})
+                {
+                    Assert.That(File.Exists(Path.Combine(sectorDirectory,orientation+"-"+scale+".png")),Is.True,
+                        "Each standard sector view must be present");
+                    foreach(string finish in new[]{"control","finished"})
+                        Assert.That(File.Exists(Path.Combine(sectorDirectory,"pigment-"+scale+"-"+orientation+"-"+finish+".png")),Is.True,
+                            "Each same-camera pigment pair must be complete");
+                }
                 Assert.That(Directory.GetFiles(outdir,"*-unity.png").Length, Is.EqualTo(16));
                 if(Environment.GetEnvironmentVariable("ELDORIA_RIBERA_PILOT")=="1")
                 {
