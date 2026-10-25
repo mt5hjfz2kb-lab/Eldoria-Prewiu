@@ -5,8 +5,7 @@ for image in bpy.data.images:
  if image.packed_file:image.use_fake_user=True
 removed=[]
 for mesh in list(bpy.data.meshes):
- if mesh.users==0 or (mesh.use_fake_user and mesh.users==1 and mesh.name.startswith(('Continuous geological','Hand-shaped branching','Explicit downward','Clean continuous','Authored low uplands','Authored continental','BLD_Terrain'))):
-  if not any(ob.type=='MESH' and ob.data==mesh for ob in bpy.data.objects):removed.append(mesh.name);bpy.data.meshes.remove(mesh)
+ if not any(ob.type=='MESH' and ob.data==mesh for ob in bpy.data.objects):removed.append(mesh.name);bpy.data.meshes.remove(mesh)
 for name in ['RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']:shutil.copyfile(source.parent/name,out/name)
 report=json.loads((source.parent/'macro-art-operations.json').read_text(encoding='utf-8-sig'))
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
