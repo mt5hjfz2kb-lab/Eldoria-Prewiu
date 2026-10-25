@@ -7,6 +7,10 @@ on:
     paths:
       - '.github/workflows/asset-vault-historical-audit.yml'
 
+concurrency:
+  group: asset-vault-history-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
 
@@ -73,6 +77,15 @@ jobs:
               'branch':os.environ['PR_HEAD'],
               'content':base64.b64encode(file.read_bytes()).decode('ascii'),
           }
+          existing=subprocess.run(['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
+                                   '-f','ref='+os.environ['PR_HEAD']],capture_output=True,text=True)
+          if existing.returncode==0:
+              old=json.loads(existing.stdout)
+              previous=base64.b64decode(old['content'])
+              if previous==file.read_bytes():
+                  print('HISTORICAL_ASSET_INDEX_ALREADY_IDENTICAL')
+                  raise SystemExit(0)
+              payload['sha']=old['sha']
           pathlib.Path('/tmp/preserve-historical-index-request.json').write_text(json.dumps(payload))
           cmd=['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
                '--method','PUT','--input','/tmp/preserve-historical-index-request.json']
