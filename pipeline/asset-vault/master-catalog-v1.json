@@ -33,7 +33,8 @@
     "main_glb_file_probes_verified": 26,
     "main_glb_meta_probes_verified": 26,
     "historical_sampled_3d_file_probes_verified": 8,
-    "current_byte_hashes_recomputed": 0
+    "current_byte_hashes_recomputed": 0,
+    "tripo_source_and_variant_path_probes_verified": 12
   },
   "statuses": {
     "USE_PRODUCTION": "Use for documented existing role; any new placement still needs scene approval",
@@ -662,7 +663,7 @@
           "sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01"
         }
       },
-      "verification": "Catalog hashes + source path existence selectively verified 2026-10-25; no independent full byte audit",
+      "verification": "Every original/optimized/editable (and finished near/far when applicable) path from pipeline/tripo-art-brain/catalog.json was probed in main on 2026-10-25; all 12 of 12 files found. SHA-256 values are from provenance catalog, not freshly recalculated; quality approval remains separate.",
       "image_preview": null,
       "preview_state": "not_verified",
       "limitations": "El rostro aún es poco expresivo desde cámara de juego; comprobar frontal, ojos y línea mandíbula antes de modificar. Silueta encorvada útil pero cola/anatomía aún transmiten apariencia reptiliana; conservar identidad pequeña violeta, solo dos brazos y dos piernas. Rig/skinning y animaciones esqueléticas ausentes. La respiración por transform no equivale a un rig. No nuevo hotspot, campamento o nodo No tocar combate, recompensas, persistencia, interfaz ni escena de otro propietario No reemplazar la versión integrada antes de un A/B y QA independientes",
@@ -699,7 +700,7 @@
         }
       },
       "integration": {},
-      "verification": "Catalog hashes + source path existence selectively verified 2026-10-25; no independent full byte audit",
+      "verification": "Every original/optimized/editable (and finished near/far when applicable) path from pipeline/tripo-art-brain/catalog.json was probed in main on 2026-10-25; all 12 of 12 files found. SHA-256 values are from provenance catalog, not freshly recalculated; quality approval remains separate.",
       "image_preview": null,
       "preview_state": "not_verified",
       "limitations": "Placas rocosas parecen superpuestas; revisar transiciones orgánicas y cuerpo desde zoom táctico. Contacto pies/suelo dudoso e irregularidad anatómica; diagnosticar antes de modelar. 49.800 triángulos solo es revisión LOD0, no cifra válida para fauna replicada; no hay rig ni animaciones. No adelantar Bastion III al actual juego I–II No añadir jabalí al mundo actual por existir el GLB No publicar ni crear comportamientos nuevos",
@@ -736,7 +737,7 @@
         }
       },
       "integration": {},
-      "verification": "Catalog hashes + source path existence selectively verified 2026-10-25; no independent full byte audit",
+      "verification": "Every original/optimized/editable (and finished near/far when applicable) path from pipeline/tripo-art-brain/catalog.json was probed in main on 2026-10-25; all 12 of 12 files found. SHA-256 values are from provenance catalog, not freshly recalculated; quality approval remains separate.",
       "image_preview": null,
       "preview_state": "not_verified",
       "limitations": "La corrupción púrpura no se distingue a zoom estratégico; parece una roca convencional. La silueta acumula piedras redondeadas y el centro violeta parece un cristal pegado, no una transformación gradual. La superficie está demasiado clara con la luz neutra y las transiciones minerales no son coherentes. No campamento, altar, nido, misión o hotspot nuevo No publicar sin nueva decisión de integración No fingir aprobación visual por CI PASS",
