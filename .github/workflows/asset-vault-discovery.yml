@@ -22,7 +22,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 concurrency:
@@ -50,10 +50,40 @@ jobs:
             --output /tmp/eldoria-asset-candidates.json \
             --summary /tmp/eldoria-asset-summary.md
           cat /tmp/eldoria-asset-summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Build complete source-family and Git-blob inventory
+        run: |
+          python3 tools/asset-vault/classify-current.py \
+            --output /tmp/eldoria-current-full-index.json
+      - name: Preserve full source inventory only on isolated asset-vault branch
+        if: github.event_name == 'pull_request' && github.head_ref == 'docs/eldoria-asset-vault-audit-20261025' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_HEAD: ${{ github.head_ref }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,pathlib,subprocess
+          f=pathlib.Path('/tmp/eldoria-current-full-index.json')
+          data=json.loads(f.read_text())
+          if data['total'] < 775:
+              raise SystemExit('Unexpected truncated 3D tree; refusing to publish')
+          request={'message':'docs(asset-vault): persist complete current Git 3D source-family index',
+                   'branch':os.environ['PR_HEAD'],
+                   'content':base64.b64encode(f.read_bytes()).decode('ascii')}
+          dest='pipeline/asset-vault/current-full-index-v1.json'
+          pathlib.Path('/tmp/current-asset-api.json').write_text(json.dumps(request))
+          p=subprocess.run(['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
+                            '--method','PUT','--input','/tmp/current-asset-api.json'],capture_output=True,text=True)
+          if p.returncode:
+              raise SystemExit('Current inventory not persisted: '+p.stderr[:1500])
+          print('PERSISTED_CURRENT_3D_INDEX',data['total'],'paths',data['unique_git_blobs'],'unique blobs')
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: eldoria-asset-vault-candidates-${{ github.run_id }}
-          path: /tmp/eldoria-asset-candidates.json
+          path: |
+            /tmp/eldoria-asset-candidates.json
+            /tmp/eldoria-current-full-index.json
           if-no-files-found: error
           retention-days: 90
       - name: Maintain permanent issue inbox (main only, never write source branch)
