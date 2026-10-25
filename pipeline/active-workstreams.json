@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-25T19:04:59.797Z",
+  "updated_at": "2026-10-25T19:17:23.851Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1141,7 +1141,7 @@
       "title": "Región 1 — geografía canónica continua y representación por zoom",
       "owner": "codex-world4x-takeover-a6480e11",
       "write_scope_released": false,
-      "ownership_revision": 36,
+      "ownership_revision": 37,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-25T18:49:37.384Z",
@@ -1160,10 +1160,12 @@
         ".github/workflows/world4x-artistic-process-gate.yml",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.",
-      "phase": "NATIVE_RECOVERY_VERIFIED_VISUAL_REWORK_REQUIRED",
-      "next": "Continue authored macro visual correction on unprotected continental geography and new Breach, using TAKEOVER_REVIEW_40223178638.md. Technical recovery complete, original 7.5 visual target NOT complete. Reserve Windows again only for next justified candidate; no merge/publication.",
+      "phase": "MACRO_ART_DIRECTION_AND_ORGANIC_SCALE",
+      "next": "Owner explicitly orders coherent macro improvement to acceptable 7.5 visual reference quality: inspect exact certified Blender with actual MCP, author terrain/Breach/composition improvements, reconcile resource/enemy hierarchy and verify real three-scale Unity A/B. Same PR100, no publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
