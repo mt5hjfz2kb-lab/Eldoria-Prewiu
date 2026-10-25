@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-24T21:06:46.612Z",
+  "updated_at": "2026-10-25T11:12:56.768Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,7 +19,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-issue95-visual-experience-20261022",
+      "owner": null,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-22",
@@ -51,8 +51,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "ISSUE95_DESIGN_CORRECTION_SOURCE_WORK",
-      "next": "Correct strategic camera with global initial composition, scale Spawnling substantial at strategic distance and reconcile V3 with owner reference. Independent semantic-Qwen reviewer untouched. Require Unity/Chrome A-B and full I-II QA before main release; native281 do not re-upload.",
+      "phase": "OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100",
+      "next": "PAUSED BY OWNER. Resume only on a later explicit owner instruction, after World4X #100 production has released Windows and coordinated final integration. Read docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md. Do not edit UI scope, auto-merge PR #99, or dispatch dedicated UI native tests during pause.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -706,11 +706,17 @@
           "revision": 19,
           "at": "2026-10-23T21:54:45.623Z",
           "reason": "Explicit owner authorizes narrow world integration scope handoff to existing Region1 workstream; city/UI unrelated ownership remains."
+        },
+        {
+          "owner": "chatgpt-issue95-visual-experience-20261022",
+          "revision": 20,
+          "released_at": "2026-10-24T08:39:55.146Z",
+          "reason": "Explicit owner instruction 2026-10-24: park V3 UI and associated Valoria/Issue95 visual work until World4X PR #100 is concluded. Preserve all files, UI test results, integration commits and independent draft PR #99. No cancellation/merge."
         }
       ],
-      "ownership_revision": 20,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 21,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
       "last_claimed_at": "2026-10-16",
       "current_assignment": {
@@ -776,7 +782,9 @@
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
-      ]
+      ],
+      "paused_on": "2026-10-24",
+      "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md"
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -946,10 +954,10 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-issue95-visual-experience-20261022",
-      "ownership_state": "claimed",
-      "ownership_revision": 13,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 14,
+      "write_scope_released": true,
       "status": "active",
       "claimed_at": "2026-10-22",
       "base_main_sha": "4c871bcebaa40030bac745852438d249d06ba8ad",
@@ -1015,7 +1023,7 @@
           "status": "SUCCESS"
         }
       },
-      "next": "Correct strategic camera with global initial composition, scale Spawnling substantial at strategic distance and reconcile V3 with owner reference. Independent semantic-Qwen reviewer untouched. Require Unity/Chrome A-B and full I-II QA before main release; native281 do not re-upload.",
+      "next": "PAUSED BY OWNER. Resume only on a later explicit owner instruction, after World4X #100 production has released Windows and coordinated final integration. Read docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md. Do not edit UI scope, auto-merge PR #99, or dispatch dedicated UI native tests during pause.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1058,10 +1066,16 @@
           "owner": "codex-three-workstreams-completion-20261021",
           "revision": 12,
           "reason": "Owner-directed handoff 2026-10-22 for issue #95; retain native281 and all certified work; joint 4X/world Spawnling V3 visual correction. No cancellation of Qwen independent QA."
+        },
+        {
+          "owner": "chatgpt-issue95-visual-experience-20261022",
+          "revision": 13,
+          "released_at": "2026-10-24T08:39:55.146Z",
+          "reason": "Explicit owner instruction 2026-10-24: park V3 UI and associated Valoria/Issue95 visual work until World4X PR #100 is concluded. Preserve all files, UI test results, integration commits and independent draft PR #99. No cancellation/merge."
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "ISSUE95_DESIGN_CORRECTION_SOURCE_WORK",
+      "phase": "OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -1091,7 +1105,9 @@
         "upload_accepted": true,
         "remote_active_confirmed": false,
         "hosted_browser_verified": false
-      }
+      },
+      "paused_on": "2026-10-24",
+      "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md"
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
@@ -1123,9 +1139,9 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "chatgpt-world4x-region1-final-production-20261024",
+      "owner": "codex-world4x-art-final-e996c595",
       "write_scope_released": false,
-      "ownership_revision": 30,
+      "ownership_revision": 32,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-24T21:06:46.612Z",
@@ -1140,14 +1156,15 @@
         "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
         "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
-        "docs/documentation-catalog.json"
+        "docs/documentation-catalog.json",
+        ".github/workflows/world4x-artistic-process-gate.yml"
       ],
       "resources": [
         "windows-runner-heavy"
       ],
-      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope.",
-      "phase": "REGION1_RESOURCE_CREATURE_ZOOM_ACCEPTANCE",
-      "next": "Production batch from preserved canon: strengthen resource/creature panoramic invisibility without gameplay loss and validate real Unity; reuse Tripo source, no new model. Artist approval separate.",
+      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing.",
+      "phase": "REGIONAL_CREATURE_SILHOUETTE_FINISH",
+      "next": "Review preserved61/26/44 and genuine native40186883304 captures; prioritize creature regional scale, AF/AG continuity and geological composition; await actual UI job exit before reserving Windows.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1432,6 +1449,11 @@
           "revision": 29,
           "relieved_at": "2026-10-24T21:06:46.609Z",
           "reason": "Owner explicitly orders successor chat 2026-10-24 to finish same Region1 PR100. Latest World4X run40129292694 completed, no concurrent heavy run identified; same scope and no merge."
+        },
+        {
+          "owner": "chatgpt-world4x-region1-final-production-20261024",
+          "revision": 31,
+          "reason": "Owner explicitly directs safe handoff to Work after native40186883304 completed; retain certified15dac931; no jobs cancelled."
         }
       ],
       "delivery_definition": {
@@ -1452,7 +1474,7 @@
         "native_jobs_active": 0
       },
       "release_note": "Owner-requested safe handoff, not task completion. Run40097362906 SUCCESS confirms corrected editable pigment after save/reopen and orderly close of PID9624. Windows reservation released; full new Unity certification and visual acceptance remain pending.",
-      "previous_owner": "chatgpt-world4x-regional-art-direction-20261024",
+      "previous_owner": "chatgpt-world4x-region1-final-production-20261024",
       "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
@@ -7563,6 +7585,43 @@
         "playmode_root": "Skipped:Ignored",
         "meaning": "Existing headless gate reproduced; not a PASS. World GPU certificate remains all57 passed."
       }
+    },
+    {
+      "id": "eldoria-safe-efficiency-doc-status-20261024",
+      "title": "Optimización segura de observabilidad y catálogo documental",
+      "owner": "chatgpt-efficiency-doc-status-20261024",
+      "branch": "chore/safe-efficiency-doc-status-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/work-status/report.mjs",
+        "tools/work-status/report.test.mjs",
+        "tools/check-documentation-governance.mjs",
+        "tools/check-documentation-governance.test.mjs",
+        "docs/evidence/efficiency-audit-20261024/**",
+        ".github/workflows/tester-qa.yml"
+      ],
+      "resources": [],
+      "phase": "PROPOSED_IN_PR102_NOT_MERGED",
+      "next": "PR #102 is draft, not merged. Relevant Ubuntu architecture and art-governance PASS on a73c2416284689e2a35853551ab5bb7f2a81e9f9; verify final PR head/checks before promotion. No source or runtime changes and no Windows/Unity executed.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Small verified safety/performance improvements to existing reporting scripts",
+        "evidence": "Dedicated node:test regression and GitHub PR checks",
+        "handoff": "Draft PR with exact change list, no automatic promotion"
+      },
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "No art content, authoring, Unity changes or use of artistic tooling; report and documentation guard only.",
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pull_request": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/102",
+        "architecture_run": 40091470174,
+        "art_governance_run": 40091470093,
+        "visual_routing_run": 40091470161,
+        "technical_sha": "a73c2416284689e2a35853551ab5bb7f2a81e9f9",
+        "qa_boundary": "No Unity, art, mobile or publishing claim; web tester workflow is unrelated and was launched by conservative path filter."
+      }
     }
   ],
   "owner_specific_pauses": [
@@ -7605,6 +7664,20 @@
         "status": "RESUMED_EXPLICIT_OWNER_REQUEST",
         "windows_lease_transfer": false
       }
+    },
+    {
+      "id": "ELDORIA_UI_V3_VALORIA_POST_WORLD4X_20261024",
+      "date": "2026-10-24",
+      "status": "PAUSED_BY_EXPLICIT_OWNER_ORDER",
+      "affected_workstreams": [
+        "eldoria-ui-v3-management-completion-20261021",
+        "valoria-master-plan-layered-construction-20261016"
+      ],
+      "scope": "UI V3 management visual refinement and related Valoria/Issue #95 camera/HUD/Spawnling follow-up only; preserve merged V3 functionality in main; do not stop World4X #100",
+      "exclusive_resume": "Only later explicit owner instruction after World4X priority work",
+      "preserve": "Keep main, already-merged UI V3, PR #99 draft, source branch, reference designs, Unity/Blender assets, screenshots, tests, results and workstream ownership history. Handoff: docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
+      "allowed_exception": "Existing non-mutating GitHub Actions triggered by PR #100 are independent CI and may continue; do not weaken or disable their assertions. World4X current owner and Windows native lease remain untouched.",
+      "notice": "Metadata pause/release does not remotely stop a separate ChatGPT Work session or cancel jobs; existing UI owner must reread registry before further writes. Do not relaunch UI production during world priority."
     }
   ],
   "exclusive_priority": {
