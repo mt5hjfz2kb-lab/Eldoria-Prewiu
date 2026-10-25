@@ -68,7 +68,7 @@ for q,ids in zip(vv,origv):
 clean=bpy.data.meshes.new('Clean continuous geological modelling surface');clean.from_pydata(rebuilt,[],ff)
 for m in [soil_material,temporary_bottom,temporary_rim,rock]:clean.materials.append(m)
 clean.update();patch.data=clean
-bm=bmesh.new();bm.from_mesh(clean);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces))
+bm=bmesh.new();bm.from_mesh(clean);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.normal_update()
 if sum(f.normal.z for f in bm.faces)<0:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
 bm.to_mesh(clean);bm.free();clean.update()
 solid=patch.modifiers.new('Temporary closed modelling volume','SOLIDIFY');solid.thickness=48;solid.offset=-1;solid.material_offset=1;solid.material_offset_rim=2;apply(patch,solid)
@@ -108,6 +108,7 @@ assert len(patch.data.polygons)>1000 and any(p.material_index==3 for p in patch.
 # so composition is assessed with the exact original world camera bounds.
 lowest=min(v.co.z for v in old.vertices);assert min(v.co.z for v in patch.data.vertices)>=lowest-.01
 basin=[(v,math.exp(-((v.co.x+260)**2+(v.co.y-150)**2)/(14**2))) for v in patch.data.vertices if v.co.z<-7 and math.hypot(v.co.x+260,v.co.y-150)<42]
+(out/'basin-diagnostic.json').write_text(json.dumps({'vertices':len(patch.data.vertices),'min_z':min(v.co.z for v in patch.data.vertices),'max_z':max(v.co.z for v in patch.data.vertices),'basin_count':len(basin),'near_center':[(tuple(v.co)) for v in sorted(patch.data.vertices,key=lambda v:math.hypot(v.co.x+260,v.co.y-150))[:12]]},indent=2))
 assert len(basin)>5
 lo,hi=0.,20.
 for unused in range(45):
