@@ -1,5 +1,8 @@
 # ELDORIA — Auditoría profunda y cierre de biblioteca 3D (25/10/2026)
 
+> **ANULACIÓN EXPRESA POR EL PROPIETARIO, 25/10/2026:** el Bastión antiguo `Valoria_HeroBastion_v1.glb`, creado con un modelo de IA anterior, está **BLOQUEADO PARA USO**, con independencia de cualquier antiguo `TECH PASS` o etiqueta `USE_PRODUCTION`. Debe preservarse solo como evidencia archivada y **no usarse ni promocionarse** sin aprobación explícita posterior del propietario. La biblioteca activa contiene **4 piezas de producción**, 20 módulos condicionales y 1 monumento de uso restringido; ese Bastión está excluido. Comprobar de forma segura por el titular de la ciudad si hay instancias actualmente activas, según [ticket #109](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/issues/109).
+
+
 ## Alcance real
 
 Repositorio `mt5hjfz2kb-lab/Eldoria-Prewiu`; trabajo aislado en PR #106. Ningún archivo de escena Unity, asset original, modelo GLB/.blend, metadatos Unity ni reserva del PR #100 ha sido modificado por esta auditoría. La biblioteca distingue **disponibilidad**, **procedencia**, **reutilización posible** y **calidad visual aprobada**.
@@ -50,7 +53,7 @@ Son **4 grupos / 8 rutas redundantes**, sin necesidad de borrar ningún archivo 
 
 ### Decisiones de reutilización
 
-**Conservar como producción en su ámbito:** Bastión Hero, Aserradero, Cuartel, Granero BIII (no habilita nueva progresión) y Player City. Componentes canónicos StoneKit, MidTier Piece01–04, RetainingWall y RockToWallTransition son de alto valor para montaje modular según la cámara actual.
+**Conservar como producción en su ámbito:** Aserradero, Cuartel, Granero BIII (no habilita nueva progresión) y Player City. Componentes canónicos StoneKit, MidTier Piece01–04, RetainingWall y RockToWallTransition son de alto valor para montaje modular según la cámara actual.
 
 **Conservar condicionado:** TerraceStairRock, TowerWallRock, RockTerrainSeamFiller, ResidentialTerraceRock, StreetLandingTransition, fuentes Blender familiares, recursos Tripo de fauna/engendro y el GLB actual de Región 1 con `ART_APPROVED=false`.
 
