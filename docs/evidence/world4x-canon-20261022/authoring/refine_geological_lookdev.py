@@ -1,7 +1,7 @@
 """Reviewed look-development on the exact preserved Blender candidate.
 No terrain positions, routes, protected AF/AG images or gameplay models change.
 """
-import bpy,sys,pathlib,json,hashlib,math
+import bpy,sys,pathlib,json,hashlib,math,struct,zlib
 import numpy as np
 from mathutils import Vector
 source,out=map(pathlib.Path,sys.argv[sys.argv.index('--')+1:])
@@ -27,18 +27,52 @@ meso=np.clip(((linear-low)/np.maximum(mean,.001)).mean(axis=2),-.18,.18)
 alpha=.5+meso*.5
 alpha=np.concatenate([alpha,alpha[:,::-1]],axis=1)
 alpha=np.concatenate([alpha,alpha[::-1]],axis=0)
-detail=bpy.data.images['AF derived continental grass detail']
-rgba=np.empty(len(detail.pixels),np.float32);detail.pixels.foreach_get(rgba)
-rgba=rgba.reshape(detail.size[1],detail.size[0],4)
+# Preserve the ACTUAL native PNG RGB bytes, rather than round-tripping
+# through Blender colour-managed image buffers when authoring a data channel.
+def read_rgba_png(path):
+ raw=path.read_bytes();assert raw[:8]==b'\\x89PNG\\r\\n\\x1a\\n'
+ offset=8;compressed=bytearray()
+ while offset<len(raw):
+  count=struct.unpack('>I',raw[offset:offset+4])[0];kind=raw[offset+4:offset+8];payload=raw[offset+8:offset+8+count];offset+=12+count
+  if kind==b'IHDR':
+   w,h,depth,colour,compression,filtering,interlace=struct.unpack('>IIBBBBB',payload)
+   assert depth==8 and colour in (2,6) and interlace==0
+  if kind==b'IDAT':compressed.extend(payload)
+ bpp=4 if colour==6 else 3;stride=w*bpp
+ decoded=zlib.decompress(bytes(compressed));result=[];previous=bytearray(stride);cursor=0
+ for row in range(h):
+  mode=decoded[cursor];cursor+=1;scan=bytearray(decoded[cursor:cursor+stride]);cursor+=stride
+  for k in range(stride):
+   left=scan[k-bpp] if k>=bpp else 0;up=previous[k];corner=previous[k-bpp] if k>=bpp else 0
+   predictor=0
+   if mode==1:predictor=left
+   elif mode==2:predictor=up
+   elif mode==3:predictor=(left+up)//2
+   elif mode==4:
+    p=left+up-corner;aa=abs(p-left);bb=abs(p-up);cc=abs(p-corner)
+    predictor=left if aa<=bb and aa<=cc else up if bb<=cc else corner
+   else:assert mode==0
+   scan[k]=(scan[k]+predictor)&255
+  result.append(bytes(scan));previous=scan
+ values=np.frombuffer(b''.join(result),dtype=np.uint8).reshape(h,w,bpp)
+ if bpp==3:values=np.concatenate([values,np.full((h,w,1),255,np.uint8)],axis=2)
+ return values.copy()
+def write_rgba_png(path,values):
+ h,w,_=values.shape
+ def chunk(kind,payload):
+  return struct.pack('>I',len(payload))+kind+payload+struct.pack('>I',zlib.crc32(kind+payload)&0xffffffff)
+ scan=b''.join(b'\\0'+row.tobytes() for row in values)
+ path.write_bytes(b'\\x89PNG\\r\\n\\x1a\\n'+chunk(b'IHDR',struct.pack('>IIBBBBB',w,h,8,6,0,0,0))+chunk(b'IDAT',zlib.compress(scan,9))+chunk(b'IEND',b''))
+detail_path=out/'RegionOneGrassDetail.png'
+rgba=read_rgba_png(detail_path);original_rgb=rgba[:,:,:3].copy()
 assert rgba.shape[:2]==alpha.shape
-original_rgb=rgba[:,:,:3].copy();rgba[:,:,3]=alpha
-detail.alpha_mode='CHANNEL_PACKED'
-detail.pixels.foreach_set(rgba.ravel());detail.filepath_raw=str(out/'RegionOneGrassDetail.png');detail.file_format='PNG';detail.save()
-fresh=bpy.data.images.load(str(out/'RegionOneGrassDetail.png'),check_existing=False)
+rgba[:,:,3]=np.rint(np.clip(alpha[::-1],0,1)*255).astype(np.uint8)
+write_rgba_png(detail_path,rgba)
+verified=read_rgba_png(detail_path)
+assert np.array_equal(verified[:,:,:3],original_rgb),'Native PNG RGB bytes changed during alpha authoring'
+fresh=bpy.data.images.load(str(detail_path),check_existing=False)
 fresh.name='AF reviewed micro RGB and regional meso alpha';fresh.colorspace_settings.name='Non-Color';fresh.alpha_mode='CHANNEL_PACKED';fresh.use_fake_user=True;fresh.pack()
-verified=np.empty(len(fresh.pixels),np.float32);fresh.pixels.foreach_get(verified)
-assert np.max(np.abs(verified.reshape(rgba.shape)[:,:,:3]-original_rgb))<=1.1/255,'Near-view RGB detail changed during alpha authoring'
-assert hashlib.sha256(fresh.packed_file.data).hexdigest()==hashlib.sha256((out/'RegionOneGrassDetail.png').read_bytes()).hexdigest()
+assert hashlib.sha256(fresh.packed_file.data).hexdigest()==hashlib.sha256(detail_path.read_bytes()).hexdigest()
 # Replace the rejected three flat-colour mineral plates with a continuous
 # exposure following the same actual ground triangles and existing fault.
 heart=bpy.data.objects['BLD_BreachMineralHeart']
