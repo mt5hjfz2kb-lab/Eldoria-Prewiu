@@ -203,6 +203,70 @@ namespace Eldoria.Tests
             }
         }
 
+
+        [UnityTest]
+        public IEnumerator BothTripoFamiliesRemainReadableInBothRegionalOrientations()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+            var gateway=(Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway");
+            var state=gateway.Snapshot();string saved=JsonUtility.ToJson(state);
+            float oldAspect=camera.aspect;
+            try
+            {
+                foreach(float aspect in new[]{16f/9f,390f/844f})
+                {
+                    camera.aspect=aspect;Call(adapter,"RefreshForCapture");
+                    Call(navigation,"SetZoomLevel",1,true);
+                    yield return null;
+                    Call(adapter,"RefreshForCapture");
+                    foreach(string family in new[]{"boar","spawnling"})
+                    {
+                        var site=state.WorldCreatureLocations.First(x=>x.Alive&&x.CreatureKind==family);
+                        var target=Call(host,"FindTarget",site.TargetId) as Component;
+                        var far=target.GetComponentsInChildren<Transform>(true)
+                            .Single(x=>x.name=="Original Tripo "+family+" far "+site.TargetId);
+                        Assert.That(far.gameObject.activeInHierarchy,Is.True);
+                        var renderers=far.GetComponentsInChildren<Renderer>(true);
+                        Assert.That(renderers.Length,Is.GreaterThan(0));
+                        var bounds=renderers[0].bounds;
+                        foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+                        float minimum=float.PositiveInfinity,maximum=float.NegativeInfinity;
+                        for(int corner=0;corner<8;corner++)
+                        {
+                            var p=bounds.center+Vector3.Scale(bounds.extents,new Vector3(
+                                (corner&1)==0?-1:1,(corner&2)==0?-1:1,(corner&4)==0?-1:1));
+                            float y=camera.WorldToViewportPoint(p).y;
+                            minimum=Mathf.Min(minimum,y);maximum=Mathf.Max(maximum,y);
+                        }
+                        float height=maximum-minimum;
+                        Assert.That(height,Is.InRange(.035f,.18f),
+                            family+" needs a readable regional silhouette without covering the map; aspect="+aspect);
+                        Assert.That(target.GetComponent<Collider>().enabled,Is.True);
+                        Assert.That(target.GetComponent<Collider>().bounds.Contains(bounds.center),Is.True,
+                            "The visible encounter must remain selectable at its own model centre");
+                        Assert.That(target.transform.position,Is.EqualTo(new Vector3(site.X,site.Y,site.Z)));
+                        TestContext.WriteLine("ACTUAL_REGIONAL_CREATURE_VIEWPORT family="+family+
+                            " aspect="+aspect+" heightFraction="+height+" zoom="+camera.orthographicSize);
+                    }
+                    Call(navigation,"SetZoomLevel",0,true);Call(adapter,"RefreshForCapture");
+                    foreach(var renderer in world.GetComponentsInChildren<Renderer>(true)
+                        .Where(x=>x.transform.GetComponentsInParent<Transform>(true)
+                            .Any(t=>t.name.StartsWith("Original Tripo ",StringComparison.Ordinal))))
+                        Assert.That(renderer.enabled&&renderer.gameObject.activeInHierarchy,Is.False,
+                            "Panorama must hide creature models and their shadows in both orientations");
+                }
+                Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(saved));
+            }
+            finally
+            {
+                camera.aspect=oldAspect;
+                Call(navigation,"SetZoomLevel",1,true);Call(adapter,"RefreshForCapture");
+            }
+        }
+
         [Test]
         public void LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot()
         {

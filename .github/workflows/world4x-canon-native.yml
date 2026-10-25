@@ -291,6 +291,49 @@ jobs:
             Copy-Item (Join-Path $destination $name) (Join-Path $unityDest $name) -Force
           }
           Write-Host 'REGION1_PINNED_SOURCE_6_INPUT_HASHES_PASS reviewed_lookdev_export=1 art_approved=false repeat_native_playmode_required=1'
+      - name: Recover preserved editable art without reauthoring it
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40202342770
+          name: region1-canon-native-40202342770
+          path: ${{ runner.temp }}/region1-preserved-source
+      - name: Require exact pinned Blender output before fresh Unity verification
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        shell: powershell
+        run: |
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-preserved-source/region1-authoring-40202342770'
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          New-Item -ItemType Directory -Path $destination -Force | Out-Null
+          $measured=[ordered]@{}
+          $verified=[ordered]@{
+            'RegionOneBlenderWorld.glb'='8e1ba54bdf1708b3b725ab06d9084329ff3d41864277fbe91fbd8132dd4e38b6'
+            'RegionOneBlenderQueries.bytes'='4a57aa0fd5b4401fa1aeac6062c26bc142731348e63ff752dbb2c6c63ca33068'
+            'production-region.json'='a4ce659d62d2f8aa7ac70cbc573f77ae75774091ab145938cc8b49bb872cba99'
+            'RegionOneResources.glb'='d3a993a2389875e621e8e883d99dacf8017649c13e9ccfac01902066ea8ac37a'
+            'RegionOneResourceImpostors.png'='1c5af8246f599c120126b56602a7452318f51f31b702b1fb17cafb79c826b0a3'
+            'RegionOneGrassDetail.png'='e66b6872b03c9631cf06d18457290d724bf283d53e1a7ab9e3c502e6029af5dc'
+          }
+          foreach($name in @('RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json','RegionOneResources.glb','RegionOneResourceImpostors.png','RegionOneGrassDetail.png')){
+            $saved=Join-Path $origin $name
+            $current=Join-Path $unityDest $name
+            if(-not(Test-Path $saved)){throw "Pinned preserved art missing: $name"}
+            $expected=$verified[$name]
+            if((Get-FileHash $saved -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw "Pinned Blender binary changed: $name"}
+            Copy-Item -LiteralPath $saved -Destination $current -Force
+            $actual=(Get-FileHash $current -Algorithm SHA256).Hash.ToLowerInvariant()
+            if($expected -ne $actual){throw "Imported binary copy mismatch: $name"}
+            $measured[$name]=$actual
+          }
+          foreach($name in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend','RockBoar_Far_LOD.blend','retained-core-integrity.json')){
+            if(-not(Test-Path (Join-Path $origin $name))){throw "Missing preserved editable source: $name"}
+          }
+          Copy-Item -Path "$origin/*" -Destination $destination -Recurse -Force
+          @{source_run=40202342770;source_gate_passed=$true;previous_runtime_certified=$false;exact_imported_binary_sha256=$measured;blender_reauthored=$false;fresh_unity_tests_required=$true} |
+            ConvertTo-Json -Depth 6 | Set-Content (Join-Path $destination 'imported-art-identity.json') -Encoding UTF8
+          Write-Host 'REGION1_PRESERVED_EDITABLE_ART_AND_SIX_PINNED_IMPORTED_BINARIES_IDENTICAL fresh_Unity_required=true'
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell

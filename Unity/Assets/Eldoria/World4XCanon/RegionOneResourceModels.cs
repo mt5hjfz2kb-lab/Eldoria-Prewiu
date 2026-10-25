@@ -57,7 +57,7 @@ namespace Eldoria.World4XCanon
                     for(int v=0;v<fitted.Length;v++)
                     {
                         var world=part.transform.TransformPoint(fitted[v]);
-                        world.y=SoilAt(world)+.035f;
+                        world.y=SoilAt(world)+.003f;
                         fitted[v]=part.transform.InverseTransformPoint(world);
                     }
                     floor.vertices=fitted;floor.RecalculateBounds();floor.RecalculateNormals();

@@ -87,6 +87,10 @@ namespace Eldoria.World4XCanon
                 entity.Hotspot.transform.position=new Vector3(creature.X,creature.Y,creature.Z);
                 // Both source LODs use the same continuous scale at their switching distance.
                 float presence=Mathf.Lerp(2f,6f,Mathf.InverseLerp(36f,280f,zoom));
+                // Portrait's regional camera frames the same world with a larger
+                // orthographic size. Preserve a target's share of viewport height
+                // beyond the landscape reference, independently of device pixels.
+                if(!near)presence*=Mathf.Max(1f,zoom/280f);
                 FitModel(entity.Near,creature.CreatureKind,presence,entity.Hotspot.transform);
                 FitModel(entity.Far,creature.CreatureKind,presence,entity.Hotspot.transform);
                 var shown=near?entity.Near:entity.Far;
