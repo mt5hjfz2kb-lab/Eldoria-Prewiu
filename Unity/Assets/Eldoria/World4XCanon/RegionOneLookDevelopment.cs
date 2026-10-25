@@ -58,11 +58,17 @@ namespace Eldoria.World4XCanon
         }
         static bool IsCloseGroundDetail(Renderer renderer)
         {
-            string name=renderer.name;
-            return name=="Directed understory mesh"||name=="Z retained-sector woodland understory"||
-                name=="BLD_NearMeadowHabitat"||name=="BLD_NearUndergrowth"||
-                (name.StartsWith("Bank forest stone ",StringComparison.Ordinal)&&Mathf.Max(renderer.bounds.size.x,renderer.bounds.size.z)<7f);
+            // glTF multi-material primitives may live below their named source
+            // node. Match that ancestry as well as the renderer itself.
+            for(var node=renderer.transform;node;node=node.parent){
+                string name=node.name;
+                if(name=="Directed understory mesh"||name=="Z retained-sector woodland understory"||
+                    name=="BLD_NearMeadowHabitat"||name=="BLD_NearUndergrowth")return true;
+            }
+            return renderer.name.StartsWith("Bank forest stone ",StringComparison.Ordinal)&&
+                Mathf.Max(renderer.bounds.size.x,renderer.bounds.size.z)<7f;
         }
+
         public void RefreshForZoom()
         {
             if(!worldCamera)return;

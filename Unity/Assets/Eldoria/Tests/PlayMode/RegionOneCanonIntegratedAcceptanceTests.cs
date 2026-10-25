@@ -951,6 +951,21 @@ namespace Eldoria.Tests
                     "Panorama must not reveal the old hard-edged rectangular prairie.");
                 var canopies = world.GetComponentsInChildren<MeshFilter>(true).Where(t=>t.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)||t.name.StartsWith("BLD_ForestFar_",StringComparison.Ordinal)).ToArray();
                 Assert.That(canopies.Length,Is.GreaterThanOrEqualTo(40),"Both real canopy LOD populations must remain imported");
+                // Equal projected granularity across the protected/continental seam:
+                // compare actual imported crown bounds, not implementation scales.
+                var retainedFar=world.GetComponentsInChildren<MeshRenderer>(true)
+                    .Where(r=>r.name.StartsWith("Far_Pilot_Pine",StringComparison.Ordinal)&&r.gameObject.activeSelf).ToArray();
+                var continentFar=world.GetComponentsInChildren<MeshRenderer>(true)
+                    .Where(r=>r.name.StartsWith("BLD_ForestFar_",StringComparison.Ordinal)&&r.gameObject.activeSelf).ToArray();
+                Assert.That(retainedFar.Length,Is.GreaterThan(10),"The same retained woodland needs a legible strategic representation.");
+                var retainedWidths=retainedFar.Select(r=>r.bounds.size.x).OrderBy(x=>x).ToArray();
+                var continentWidths=continentFar.Select(r=>r.bounds.size.x).OrderBy(x=>x).ToArray();
+                var retainedHeights=retainedFar.Select(r=>r.bounds.size.y).OrderBy(x=>x).ToArray();
+                var continentHeights=continentFar.Select(r=>r.bounds.size.y).OrderBy(x=>x).ToArray();
+                Assert.That(retainedWidths[retainedWidths.Length/2]/continentWidths[continentWidths.Length/2],Is.InRange(.65f,1.45f),
+                    "Regional crown footprints must not expose the old rectangular sector through a finer tree scale.");
+                Assert.That(retainedHeights[retainedHeights.Length/2]/continentHeights[continentHeights.Length/2],Is.InRange(.65f,1.45f),
+                    "Regional crown height must remain coherent across the same continuous world.");
                 Assert.That(canopies.All(t=>t.gameObject.activeSelf), Is.True,
                     "Panorama must retain forest silhouettes, not blank green circles.");
                 Call(navigation, "SetZoomLevel", 1, true);

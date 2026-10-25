@@ -31,14 +31,16 @@ namespace Eldoria.World4XCanon
                 if(retained)
                 {
                     // Keep every protected near crown untouched. A balanced far
-                    // representation uses 1/6 of the SAME crowns at 2.5x width:
-                    // 2.5^2/6 keeps total crown coverage close to the source,
-                    // while the fir silhouette remains readable like the continent.
+                    // representation uses 1/20 of the SAME crowns at 4.5x width:
+                    // 4.5^2/20 keeps total crown coverage close to the source,
+                    // matching the continental median crown (~16m wide, ~14m high).
+                    // The earlier 1/6 LOD preserved area but kept twice as many
+                    // undersized crowns, exposing the rectangular source sector.
                     uint identity=2166136261;
                     foreach(char character in near.name)identity=unchecked((identity^character)*16777619);
-                    retainedFarVisible=identity%6==0;
+                    retainedFarVisible=identity%20==0;
                     var scale=far.transform.localScale;
-                    if(retainedFarVisible)far.transform.localScale=new Vector3(scale.x*2.5f,scale.y*4f,scale.z*2.5f);
+                    if(retainedFarVisible)far.transform.localScale=new Vector3(scale.x*4.5f,scale.y*6.5f,scale.z*4.5f);
 
                 }
                 // Scale about the existing canopy base, not the ground-origin
