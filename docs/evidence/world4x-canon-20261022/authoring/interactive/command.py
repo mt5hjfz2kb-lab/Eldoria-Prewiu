@@ -26,10 +26,11 @@ def painted(name,base,kind):
    colour[:,:,:3]-=(.14*((gap<.004)&(r>.29)))[:,:,None]
  elif kind=='stone':
   chisel=.009*np.sin(u*257+v*34)+.008*np.cos(v*191-u*21)
-  layers=.018*np.sin(v*34)+.012*np.sin(v*87)
+  layers=.003*np.sin(v*34)+.002*np.sin(v*87)
   colour[:,:,:3]+=(chisel+layers)[:,:,None]
   for x,slope in [(.14,.04),(.62,-.08),(.89,.06)]:
-   line=np.exp(-((u-x-v*slope)/.0025)**2)*.065
+   path=x+v*slope+.014*np.sin(v*29+x*13)+.006*np.sin(v*73)
+   line=np.exp(-((u-path)/.0035)**2)*.095
    colour[:,:,:3]-=line[:,:,None]
  elif kind=='cloth':
   colour[:,:,:3]+=(.007*np.sin(u*800)+.007*np.sin(v*800))[:,:,None]
@@ -38,8 +39,11 @@ def painted(name,base,kind):
   tree=((v>.25)&(v<.47)&(abs(u-.5)<(.47-v)*.85))|((v>.40)&(v<.62)&(abs(u-.5)<(.62-v)*.67))|((v>.55)&(v<.79)&(abs(u-.5)<(.79-v)*.50))|((abs(u-.5)<.018)&(v>.18)&(v<.35))
   colour[stripe|tree,:3]=green
  colour=np.clip(colour,0,1)
+ # Write explicit sRGB bytes: generated image buffers were previously treated
+ # as encoded colour and decoded twice on reload, crushing the approved palette.
+ colour[:,:,:3]=np.where(colour[:,:,:3]<=.0031308,colour[:,:,:3]*12.92,1.055*colour[:,:,:3]**(1/2.4)-.055)
  image=bpy.data.images.new(name+' painted map',size,size,alpha=True)
- image.pixels.foreach_set(colour.ravel());image.filepath_raw=str(out/(name+'.png'));image.file_format='PNG';image.save()
+ image.colorspace_settings.name='Non-Color';image.pixels.foreach_set(colour.ravel());image.filepath_raw=str(out/(name+'.png'));image.file_format='PNG';image.save()
  packed=bpy.data.images.load(image.filepath_raw,check_existing=False);packed.pack()
  mat=bpy.data.materials.new(name);mat.use_nodes=True
  bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bs.inputs['Roughness'].default_value=.88
@@ -90,7 +94,7 @@ class Builder:
   n=12;profiles=[]
   for k in range(4):
    yy=y-length*.5+length*k/3;rr=radius*(1-.08*k/3)
-   profiles.append([Vector((x+rr*(1+.035*math.sin(j*2.5))*math.cos(j*math.tau/n),yy,z+rr*(1+.035*math.sin(j*2.5))*math.sin(j*math.tau/n))) for j in range(n)])
+   profiles.append([Vector((x+rr*(1+.075*math.sin(j*2.5))*math.cos(j*math.tau/n),yy,z+rr*(1+.075*math.sin(j*2.5))*math.sin(j*math.tau/n))) for j in range(n)])
   for k in range(3):
    for j in range(n):a=(j+1)%n;self.face([profiles[k][j],profiles[k][a],profiles[k+1][a],profiles[k+1][j]],BARK,[(j/n,k),(a/n,k),(a/n,k+1),(j/n,k+1)])
   for k in [0,3]:
@@ -105,7 +109,15 @@ class Builder:
   for face,slot,coords in zip(me.polygons,self.m,self.uv):
    face.material_index=slot
    for loop,co in zip(face.loop_indices,coords):uv.data[loop].uv=co
-  ob=bpy.data.objects.new(name,me);root.users_collection[0].objects.link(ob);ob.parent=root;return ob
+  ob=bpy.data.objects.new(name,me);root.users_collection[0].objects.link(ob);ob.parent=root
+  if not name.startswith('Quarry cleared extraction floor'):
+   import bmesh
+   bm=bmesh.new();bm.from_mesh(me);bmesh.ops.remove_doubles(bm,verts=list(bm.verts),dist=.00001);bm.to_mesh(me);bm.free();me.update()
+   for polygon in me.polygons:polygon.use_smooth=polygon.material_index in (BARK,ROPE,CLOTH)
+   bpy.context.view_layer.objects.active=ob;ob.select_set(True)
+   bevel=ob.modifiers.new('Authored worn edge highlights','BEVEL');bevel.width=.035;bevel.segments=2;bevel.limit_method='ANGLE';bevel.angle_limit=.75
+   bpy.ops.object.modifier_apply(modifier=bevel.name)
+  return ob
 def platform(b,x,y,z,w,d):
  for j in range(7):b.box(x,y-d*.5+(j+.5)*d/7,z,w,d/7-.035,.15,WOOD)
  for xx in [x-w*.43,x+w*.43]:
@@ -206,7 +218,7 @@ library=[ob for root in original_roots for ob in root.children]
 for ob in scene.objects:ob.hide_render=True
 for root in original_roots:root.hide_render=False
 camera=scene.camera;camera.hide_render=False;camera.data.type='ORTHO'
-light=bpy.data.objects.get('Resource impostor soft key');light.hide_render=False;light.data.energy=2400;light.data.size=9
+light=bpy.data.objects.get('Resource impostor soft key');light.hide_render=False;light.data.energy=4000;light.data.size=9
 light.location=(-8,-10,20);light.rotation_euler=(Vector((0,0,2))-light.location).to_track_quat('-Z','Y').to_euler()
 scene.render.engine='BLENDER_EEVEE';scene.render.film_transparent=True;scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA'
 scene.view_settings.view_transform='Standard';scene.view_settings.look='Medium High Contrast' if 'Medium High Contrast' in [a.name for a in []] else 'None'
