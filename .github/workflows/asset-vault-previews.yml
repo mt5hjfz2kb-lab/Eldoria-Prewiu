@@ -31,6 +31,7 @@ jobs:
             /Unity/Assets/Eldoria/Resources/WorldPlayerCity/
             /pipeline/asset-vault/
             /tools/asset-vault/
+            /docs/asset-vault/
       - name: Load open-source geometry render dependencies
         run: python3 -m pip install --disable-pip-version-check numpy pillow trimesh
       - name: Generate honest asset geometry previews
