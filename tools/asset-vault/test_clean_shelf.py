@@ -40,7 +40,9 @@ class ProductionShelfTests(unittest.TestCase):
         for opts in ({}, {"research": True}, {"include_rejected": True}):
             result=mod.search("Valoria_HeroBastion_v1",limit=100,**opts)
             self.assertFalse(any(a["name"]=="Valoria_HeroBastion_v1" for a in result["top"]))
-        result=mod.search("Valoria_HeroBastion_v1",limit=100,
+        # Owner-blocked entries rank below all usable art even during research;
+        # full investigation can still reveal the explicit prohibition.
+        result=mod.search("Valoria_HeroBastion_v1",limit=5000,
                           research=True,include_rejected=True)
         self.assertTrue(any(a["verdict"]=="OWNER_BLOCKED_NO_USE" for a in result["top"]))
 
