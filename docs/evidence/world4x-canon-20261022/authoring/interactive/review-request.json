@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
   "ownership_revision": 37,
-  "source_run": 40241117927,
-  "source_sha256": "76312a3482f914cd7fe5bd83c97633a3145f4ff42f9ddce296ba48d12a0f1278",
+  "source_run": 40243172187,
+  "source_sha256": "49500268fac141d232b66db112469640bf56f9d99662a30b231b758225fbf554",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Reject stepped heightfield canyon observed in real BlenderMCP preview40241117927. Retain low uplands/forest ecotones; cut a continuous voxel-unioned branching wound through a detached closed modelling patch, remove only temporary underside, rebuild rounded geological banks and quiet elevation strata. Remove circular soil reserve marks. Cheap visual review first, no Unity/art approval anticipated.",
+  "decision": "Preserve exact observed tapered geological geometry and all packed source images; compact unused modelling buffers to meet existing editable-source repository object limit, then certify actual Unity with scoped interior lights and balanced strategic targets.",
   "preview_is_Unity": false,
   "art_approved": false
 }
