@@ -71,6 +71,15 @@ jobs:
                    'branch':os.environ['PR_HEAD'],
                    'content':base64.b64encode(f.read_bytes()).decode('ascii')}
           dest='pipeline/asset-vault/current-full-index-v1.json'
+          existing=subprocess.run(['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
+                                   '--method','GET','-f','ref='+os.environ['PR_HEAD']],
+                                  capture_output=True,text=True)
+          if existing.returncode==0:
+              old=json.loads(existing.stdout)
+              if base64.b64decode(old['content'])==f.read_bytes():
+                  print('CURRENT_ASSET_INDEX_ALREADY_IDENTICAL')
+                  raise SystemExit(0)
+              request['sha']=old['sha']
           pathlib.Path('/tmp/current-asset-api.json').write_text(json.dumps(request))
           p=subprocess.run(['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
                             '--method','PUT','--input','/tmp/current-asset-api.json'],capture_output=True,text=True)
