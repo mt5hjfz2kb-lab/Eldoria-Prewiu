@@ -958,6 +958,58 @@ for x,y,z,cluster,index in context_tree_roots:
  o.name='BLD_ForestMass_Context_'+str(cluster).zfill(2)+'_'+str(index).zfill(3)
  scale=random.uniform(1.3,3.9);o.scale=(scale*random.uniform(1.15,1.5)*1.35,scale*1.25*1.35,scale*random.uniform(.78,1.05));o.rotation_euler.z=random.uniform(0,math.tau)
  tree_total+=1
+# Targeted ecotone: six small asymmetrical glades CROSS the old AF/AG
+# rectangle to break the visible straight forest cutoff observed in Unity
+# 40182996115. They are real crowns from the SAME certified two fir sources,
+# never new gameplay nodes, maps, colliders or wall-to-wall forest infill.
+# Protected original trees and soil remain untouched; everything is OUTSIDE
+# the original source core, with certified river/road/city/fault exclusions.
+ECOTONE_EDGE_GROVES=(
+ (-116,48,54,67,.30),(129,67,54,70,-.19),
+ (-129,247,68,59,.44),(135,262,48,67,-.32),
+ (-15,-111,88,53,.15),(30,329,86,54,-.20)
+)
+ecotone_counts=[]
+ecotone_nearby=[(ob.location.x,ob.location.y) for ob in scene.objects
+ if ob.name.startswith('BLD_ForestMass_') and -260<ob.location.x<260 and -240<ob.location.y<455]
+for grove_id,(cx,cy,rx,ry,rotation) in enumerate(ECOTONE_EDGE_GROVES):
+ rng=np.random.default_rng(282601+grove_id);planted=0
+ co,si=math.cos(rotation),math.sin(rotation)
+ for attempt in range(1100):
+  xx=rng.uniform(-1.18,1.18)*rx;yy=rng.uniform(-1.18,1.18)*ry
+  u=xx*co+yy*si;v=-xx*si+yy*co
+  theta=math.atan2(v/ry,u/rx)
+  irregular=1+.18*math.sin(3*theta+grove_id)+.11*math.cos(5*theta-grove_id)
+  if (u/rx)**2+(v/ry)**2>irregular or rng.random()<.31:continue
+  x=cx+xx;y=cy+yy
+  if -94<x<94 and -72<y<265:continue
+  if abs(x)>260 or y< -225 or y>447:continue
+  if float(coast(x,y))<24 or abs(y-rivercentre(x))<riverwidth(x)+17:continue
+  if float(line_distance(np.array(x),np.array(y)))<18:continue
+  if float(fault_distance(np.array(x),np.array(y)))<47:continue
+  if any(math.hypot(x-a,y-b)<rr+20 for a,b,rr in cities):continue
+  if any(math.hypot(x-a,y-b)<rr for a,b,rr in ((0,0,46),(47,12,26),(-85,-53,19),(-92,-57,19))):continue
+  if any(abs(x-qx)<17 and abs(y-qy)<span/2+16 for qx,qy,w,span in bridge_specs):continue
+  if any((x-a)**2+(y-b)**2<10**2 for a,b in ecotone_nearby):continue
+  if any((x-a)**2+(y-b)**2<9**2 for a,b in source_tree_positions):continue
+  donor=masters[(grove_id+planted)%2]
+  obj=donor.copy();obj.data=donor.data;scene.collection.objects.link(obj)
+  obj.hide_render=False;obj.hide_viewport=False;obj.hide_set(False)
+  obj.location=(x,y,surface(x,y))
+  obj.name='BLD_ForestMass_Ecotone_'+str(grove_id).zfill(2)+'_'+str(planted).zfill(3)
+  scale=rng.uniform(1.45,2.95)
+  obj.scale=(scale*rng.uniform(1.1,1.33),scale*1.15,scale*rng.uniform(.83,1.1))
+  obj.rotation_euler.z=rng.uniform(0,math.tau)
+  ecotone_nearby.append((x,y));tree_total+=1;planted+=1
+  if planted>=14:break
+ ecotone_counts.append(planted)
+assert sum(ecotone_counts)>=30,('No meaningful physical edge-transition groves',ecotone_counts)
+(out/'ecotone-transition.json').write_text(json.dumps({
+ 'source_camera':'Unity PlayMode 40182996115 regional horizontal and vertical',
+ 'total_new_fir_instances':sum(ecotone_counts),
+ 'per_grove':ecotone_counts,
+ 'original_AF_AG_core_trees_edited':0,'gameplay_nodes_added':0,
+ 'collider_objects_added':0,'art_approved':False},indent=2))
 print('CONTINENTAL_CONNECTED_FOREST_TREES',tree_total)
 # Distant LODs are simplified copies of the same silhouettes; no canopy substitutions.
 far_cache={}

@@ -129,6 +129,29 @@ namespace Eldoria.Tests
         [Serializable] sealed class EncounterFaultLayout { public EncounterFaultSegment[] faults; }
         [Serializable] sealed class EncounterFaultSegment { public float ax,az,bx,bz,radius; }
         [UnityTest]
+        public IEnumerator TargetedEcotoneHasRealTwoDonorCanopiesAndDoesNotCreateGameplayNodes()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var forest=world.GetComponentsInChildren<MeshFilter>(true)
+                .Where(x=>x.name.StartsWith("BLD_ForestMass_Ecotone_",StringComparison.Ordinal)).ToArray();
+            Assert.That(forest.Length,Is.GreaterThanOrEqualTo(30),
+                "Physical transition must break the former rectangular AF/AG woodland cutoff");
+            Assert.That(forest.Select(x=>x.sharedMesh).Distinct().Count(),Is.LessThanOrEqualTo(2),
+                "Use only the two previously imported immutable conifer source meshes");
+            Assert.That(forest.All(x=>x.GetComponent<Collider>()==null),Is.True,
+                "Ecotone trees are not additional fake game targets");
+            var before=((Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway")).Snapshot();
+            Assert.That(before.WorldResourceLocations.Count(x=>x.TargetId.StartsWith("region1:")),Is.EqualTo(48));
+            Assert.That(before.WorldCreatureLocations.Count,Is.EqualTo(36));
+            Call(navigation,"SetZoomLevel",0,true);
+            Call(world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape"),
+                "RefreshForCapture");
+            Assert.That(JsonUtility.ToJson(((Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway")).Snapshot()),
+                Is.EqualTo(JsonUtility.ToJson(before)),"Panorama must retain all authentic resource and creature state");
+        }
+
+        [UnityTest]
         public IEnumerator RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels()
         {
             MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;

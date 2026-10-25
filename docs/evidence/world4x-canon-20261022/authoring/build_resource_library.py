@@ -59,7 +59,9 @@ def dressed_stone(root,name,x,y,z,dx,dy,dz,variant):
 # hotspot, loot entity or separate scene. ~120 triangles / instance.
 oak=material('Quarry sun-baked timber',(.39,.28,.16))
 rope=material('Quarry hoist dark hemp',(.17,.12,.067))
-def quarry_hoist(root,variant):
+def quarry_hoist(root,variant)
+ # Suspended quarried load, same genuine resource object; not fake loot.
+ dressed_stone(root,'Quarry hoist real stone load',4.2,0,1.55,1.75,1.75,1.35,variant+1):
  vertices=[];faces=[];slots=[]
  def prism(p,q,thickness,slot):
   p=Vector(p);q=Vector(q);axis=(q-p).normalized()
@@ -75,17 +77,17 @@ def quarry_hoist(root,variant):
     vertices.append(tuple(pos))
   for ids in ((0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)):
    faces.append(tuple(base+k for k in ids));slots.append(slot)
- side=3.5
- height=6.2+variant*.06
+ side=4.2
+ height=8.0+variant*.06
  for yy in (-2.8,2.8):
-  prism((side,yy,0),(side,yy,height),.39,0)
-  prism((side,yy*1.39,0),(side,yy,height-.65),.27,0)
- prism((side,-3.25,height),(side,3.25,height),.54,0)
- prism((side,0,height-.15),(side,0,2.35),.085,1)
- prism((side-.72,-.6,2.4),(side+.72,-.6,2.4),.23,0)
- prism((side-.72,.6,2.4),(side+.72,.6,2.4),.23,0)
- prism((side-.72,-.6,2.4),(side-.72,.6,2.4),.23,0)
- prism((side+.72,-.6,2.4),(side+.72,.6,2.4),.23,0)
+  prism((side,yy,0),(side,yy,height),.58,0)
+  prism((side,yy*1.39,0),(side,yy,height-.85),.36,0)
+ prism((side,-3.5,height),(side,3.5,height),.70,0)
+ prism((side,0,height-.15),(side,0,3.15),.145,1)
+ prism((side-.85,-.7,3.15),(side+.85,-.7,3.15),.30,0)
+ prism((side-.85,.7,3.15),(side+.85,.7,3.15),.30,0)
+ prism((side-.85,-.7,3.15),(side-.85,.7,3.15),.30,0)
+ prism((side+.85,-.7,3.15),(side+.85,.7,3.15),.30,0)
  finished_mesh(root,'Quarry lifting gantry and suspended wooden stone sling',
                vertices,faces,[oak,rope],slots)
 
@@ -153,7 +155,7 @@ for family in ['Wood','Stone']:
 def quarry_rim(root,variant):
  vertices=[];faces=[];slots=[]
  n=16
- for radius,height in ((4.55,.05),(3.75,.50),(2.85,1.05),(2.0,1.48)):
+ for radius,height in ((6.65,.05),(5.45,.78),(4.1,1.73),(2.75,2.72)):
   for j in range(n):
    angle=math.tau*j/n
    jitter=1+.065*math.sin(j*1.43+variant*2.7)+.04*math.sin(j*2.81)
