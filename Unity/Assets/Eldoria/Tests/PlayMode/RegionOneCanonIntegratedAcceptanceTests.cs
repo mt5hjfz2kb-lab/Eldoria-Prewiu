@@ -973,7 +973,7 @@ namespace Eldoria.Tests
             public Quaternion cameraRotation;
         }
 
-        static void SaveRetainedSectorFrame(Camera camera,string path,int width,int height,string targetId=null)
+        static void SaveRetainedSectorFrame(Camera camera,string path,int width,int height,string targetId=null,Vector3? worldTarget=null)
         {
             var previous=camera.targetTexture;var active=RenderTexture.active;
             var rt=new RenderTexture(width,height,24,RenderTextureFormat.ARGB32);
@@ -999,10 +999,10 @@ namespace Eldoria.Tests
                 string hash;using(var sha=SHA256.Create())hash=BitConverter.ToString(sha.ComputeHash(png)).Replace("-","").ToLowerInvariant();
                 File.WriteAllText(path+".json",JsonUtility.ToJson(new RenderIdentity{
                     sourceScene=SceneManager.GetActiveScene().path,version=UnityEngine.Application.unityVersion,
-                    context=path.Contains("continent")?"Actual production geography and resource camera across Region 1":"AF/AG camera and sector coordinates; restored scoped AG shader and lighting",label=Path.GetFileName(path),targetId=targetId,
+                    context=path.Contains("breach")?"Actual playable camera at the same persistent Breach geology":path.Contains("continent")?"Actual production geography and resource camera across Region 1":"AF/AG camera and sector coordinates; restored scoped AG shader and lighting",label=Path.GetFileName(path),targetId=targetId,
                     sha256=hash,actualUnityCamera=true,playMode=UnityEngine.Application.isPlaying,physicalIphone=false,
                     width=width,height=height,zoom=camera.orthographicSize,aspect=camera.aspect,
-                    cameraPosition=camera.transform.position,cameraRotation=camera.transform.rotation},true));
+                    cameraPosition=camera.transform.position,cameraRotation=camera.transform.rotation,worldTarget=worldTarget??Vector3.zero},true));
             }
             finally{camera.targetTexture=previous;RenderTexture.active=active;rt.Release();Object.DestroyImmediate(rt);Object.DestroyImmediate(pixels);}
         }
@@ -1229,6 +1229,28 @@ namespace Eldoria.Tests
                     }
                     Assert.That(Directory.GetFiles(sequence,"*.png").Length,Is.EqualTo(25));
                 }
+                // Move the real playable camera to the existing geological feature.
+                // The source mesh, coordinates and persistent world are identical at all zooms.
+                string breachDirectory=Path.Combine(sectorDirectory,"breach-details");Directory.CreateDirectory(breachDirectory);
+                var breachFilter=world.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_BreachFloor");
+                var breachMesh=breachFilter.sharedMesh;var breachPosition=breachFilter.transform.position;
+                var breachFocus=home+new Vector3(-260f,0,150f);
+                foreach(bool portrait in new[]{false,true})
+                {
+                    camera.aspect=portrait?9f/16:16f/9;
+                    foreach(bool close in new[]{true,false})
+                    {
+                        Call(navigation,"RestoreView",breachFocus,close?(portrait?64f:36f):(portrait?456f:244f));
+                        Call(adapter,"RefreshForCapture");yield return null;
+                        var actualFocus=(Vector3)Member(navigation,"target");
+                        Assert.That(Vector2.Distance(new Vector2(actualFocus.x,actualFocus.z),new Vector2(breachFocus.x,breachFocus.z)),Is.LessThan(.02f),"Playable camera must actually reach the Breach");
+                        Assert.That(breachFilter.GetComponent<MeshRenderer>().enabled,Is.True);
+                        Assert.That(breachFilter.sharedMesh,Is.SameAs(breachMesh));
+                        Assert.That(breachFilter.transform.position,Is.EqualTo(breachPosition));
+                        SaveRetainedSectorFrame(camera,Path.Combine(breachDirectory,(close?"close":"regional")+"-"+(portrait?"portrait":"landscape")),portrait?720:1280,portrait?1280:720,null,actualFocus);
+                    }
+                }
+                Assert.That(Directory.GetFiles(breachDirectory,"*.png").Length,Is.EqualTo(4));
                 string continentalDetails=Path.Combine(sectorDirectory,"continental-details");Directory.CreateDirectory(continentalDetails);
                 var playableGateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");
                 var actualResources=playableGateway.Snapshot().WorldResourceLocations;
@@ -1240,7 +1262,7 @@ namespace Eldoria.Tests
                     foreach(bool portrait in new[]{false,true}){
                         camera.aspect=portrait?9f/16:16f/9;Call(navigation,"RestoreView",target.transform.position,portrait?64f:36f);Call(adapter,"RefreshForCapture");
                         yield return null;
-                        SaveRetainedSectorFrame(camera,Path.Combine(continentalDetails,kind+"-"+(portrait?"portrait":"landscape")),portrait?720:1280,portrait?1280:720,item.TargetId);
+                        SaveRetainedSectorFrame(camera,Path.Combine(continentalDetails,kind+"-"+(portrait?"portrait":"landscape")),portrait?720:1280,portrait?1280:720,item.TargetId,target.transform.position);
                     }
                 }
                                 // Actual two-family Tripo evidence on the same continuous regional and
@@ -1262,7 +1284,7 @@ namespace Eldoria.Tests
                         Call(adapter,"RefreshForCapture");
                         yield return null;
                         SaveRetainedSectorFrame(camera,Path.Combine(creatureDir,kind+"-"+(portrait?"portrait":"landscape")),
-                            portrait?720:1280,portrait?1280:720,entry.TargetId);
+                            portrait?720:1280,portrait?1280:720,entry.TargetId,hotspot.transform.position);
                     }
                 }
                 Assert.That(Directory.GetFiles(creatureDir,"*.png").Length,Is.EqualTo(4),

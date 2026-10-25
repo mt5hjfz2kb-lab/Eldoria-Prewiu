@@ -334,6 +334,38 @@ jobs:
           @{source_run=40202342770;source_gate_passed=$true;previous_runtime_certified=$false;exact_imported_binary_sha256=$measured;blender_reauthored=$false;fresh_unity_tests_required=$true} |
             ConvertTo-Json -Depth 6 | Set-Content (Join-Path $destination 'imported-art-identity.json') -Encoding UTF8
           Write-Host 'REGION1_PRESERVED_EDITABLE_ART_AND_SIX_PINNED_IMPORTED_BINARIES_IDENTICAL fresh_Unity_required=true'
+      - name: Recover reviewed approved resource assets from actual BlenderMCP edit
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40209242543
+          name: region1-interactive-40209242543
+          path: ${{ runner.temp }}/region1-approved-node-assets
+      - name: Stage exact reviewed node geometry and preserve editable BlenderMCP source
+        if: contains(github.event.head_commit.message, 'region-imported(world4x):')
+        shell: powershell
+        run: |
+          $origin=Join-Path $env:RUNNER_TEMP 'region1-approved-node-assets'
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest='world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          $verified=[ordered]@{
+            'RegionOneResources.glb'='a968f7d81575d792904ec04cd4cb46fb569866f762746354eb3f5465c0a025f3'
+            'RegionOneResourceImpostors.png'='ec1e70d93c85dd7ac677d4bd23ff8884c235bfcce1e12e0b9c5be4da7b80dc0e'
+            'Eldoria_Resource_Library.blend'='2519a8b42da226e1241cd26e674ca91031b0c32252b9aec66c5397519f162b76'
+          }
+          foreach($name in $verified.Keys){
+            $saved=Join-Path $origin $name
+            if((Get-FileHash $saved -Algorithm SHA256).Hash.ToLowerInvariant() -ne $verified[$name]){throw "Reviewed resource asset identity changed: $name"}
+            Copy-Item $saved (Join-Path $destination $name) -Force
+            if($name -ne 'Eldoria_Resource_Library.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
+          }
+          foreach($name in @('approved-node-authoring.json','ready.json','session-closed.json')){Copy-Item (Join-Path $origin $name) (Join-Path $destination $name) -Force}
+          Copy-Item (Join-Path $origin 'request-40209242543.json') (Join-Path $destination 'request.json') -Force
+          Copy-Item (Join-Path $origin 'response-40209242543.json') (Join-Path $destination 'response.json') -Force
+          $report=Get-Content (Join-Path $destination 'approved-node-authoring.json') -Raw|ConvertFrom-Json
+          if($report.root_count -ne 6 -or $report.new_gameplay_targets -ne 0){throw 'Approved assets must retain the existing six resource root identities'}
+          Write-Host 'REGION1_APPROVED_NODE_ASSETS_EXACT_MCP_OUTPUT_STAGED fresh_Unity_required=true'
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell

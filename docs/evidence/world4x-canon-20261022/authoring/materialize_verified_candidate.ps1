@@ -11,7 +11,7 @@ $sourceLease=@($sourceRegistry.active|Where-Object {$_.id -eq 'eldoria-world-reg
 if($lease.Count -ne 1 -or $sourceLease.Count -ne 1 -or $lease[0].owner -ne $sourceLease[0].owner -or $lease[0].ownership_revision -ne $sourceLease[0].ownership_revision -or $lease[0].write_scope_released -or $lease[0].resources -notcontains 'windows-runner-heavy'){throw 'World ownership changed'}
 [xml]$tests=Get-Content (Join-Path $env:RUNNER_TEMP 'eldoria-region1-canon-tests.xml')
 $cases=@($tests.SelectNodes('//test-case'))
-if($cases.Count -lt 57 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Actual candidate tests must pass before materialization'}
+if($cases.Count -lt 62 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Actual candidate tests must pass before materialization'}
 $remote=Invoke-RestMethod -Headers $headers -Uri "$repo/git/ref/heads/$branch"
 if($remote.object.sha -ne $env:GITHUB_SHA){throw 'Branch advanced: do not commit stale candidate'}
 $root=Join-Path $env:GITHUB_WORKSPACE 'world4x-source'
@@ -70,10 +70,23 @@ if(-not(Test-Path $creatureCaptures)){throw 'Actual Tripo creature screenshots m
 foreach($file in Get-ChildItem $creatureCaptures -File){
  $path="$review/creature-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path
 }
+$breachCaptures=Join-Path $captures 'retained-sector/breach-details'
+if(@(Get-ChildItem $breachCaptures -Filter '*.png').Count -ne 4){throw 'Real close and regional Breach captures required in both orientations'}
+foreach($metadata in Get-ChildItem $breachCaptures -Filter '*.json'){
+ $identity=Get-Content $metadata.FullName -Raw|ConvertFrom-Json
+ $png=Join-Path $breachCaptures ($metadata.BaseName+'.png')
+ if(-not $identity.actualUnityCamera -or -not $identity.playMode -or $identity.sha256 -ne (Get-FileHash $png -Algorithm SHA256).Hash.ToLower()){throw 'Breach evidence identity mismatch'}
+}
+foreach($file in Get-ChildItem $breachCaptures -File){$path="$review/breach-$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path}
+foreach($name in @('approved-node-authoring.json','ready.json','request.json','response.json','session-closed.json')){
+ $file=Join-Path $generated $name
+ if(-not(Test-Path $file)){throw "Actual BlenderMCP asset authoring trace missing: $name"}
+ $path="$review/mcp-$name";Copy-Item $file $path;$paths+=$path
+}
 # General proof must be fresh and belong to this exact native source.
 $general=Join-Path $env:RUNNER_TEMP "region1-general-proof-$env:GITHUB_RUN_ID"
 $proof=Get-Content (Join-Path $general 'general-proof.json') -Raw|ConvertFrom-Json
-if($proof.source -ne $env:GITHUB_SHA -or $proof.run -ne $env:GITHUB_RUN_ID -or $proof.editmode_passed -lt 26 -or $proof.gpu_playmode_passed -lt 57 -or $proof.probe_checks -lt 44 -or $proof.fresh_captures -lt 34){throw 'General integrated evidence is incomplete or stale'}
+if($proof.source -ne $env:GITHUB_SHA -or $proof.run -ne $env:GITHUB_RUN_ID -or $proof.editmode_passed -lt 26 -or $proof.gpu_playmode_passed -lt 62 -or $proof.probe_checks -lt 44 -or $proof.fresh_captures -lt 34){throw 'General integrated evidence is incomplete or stale'}
 foreach($item in $proof.images){if($item.sha256 -ne (Get-FileHash (Join-Path $general $item.file) -Algorithm SHA256).Hash.ToLower()){throw 'General screenshot hash mismatch'}}
 New-Item -ItemType Directory -Force "$review/general"|Out-Null
 foreach($file in Get-ChildItem $general -File){$path="$review/general/$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path}
