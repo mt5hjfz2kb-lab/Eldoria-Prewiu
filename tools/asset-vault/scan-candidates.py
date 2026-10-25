@@ -31,6 +31,12 @@ def known_paths(catalog):
             for sub in item.get(collection, {}).values():
                 if isinstance(sub, dict) and sub.get("path"):
                     known.add(sub["path"])
+    # Historical backlog already enumerated in the permanent full-current index.
+    # Its entries remain unapproved but should not flood every future PR as "new".
+    baseline = ROOT / "pipeline/asset-vault/current-full-index-v1.json"
+    if baseline.is_file():
+        index = json.loads(baseline.read_text(encoding="utf-8-sig"))
+        known.update(x["path"] for x in index.get("records",[]) if x.get("path"))
     return known
 
 def classify(path):
