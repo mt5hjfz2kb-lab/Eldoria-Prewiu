@@ -1,5 +1,12 @@
 # Arranque vigente — mantenimiento autorizado 21-10-2026
 
+<!-- ELDORIA_OWNER_LEGACY_BASTION_VETO_20261025 -->
+## Prohibición expresa del propietario — antiguo modelo de Bastión
+
+**Decisión vinculante del propietario (25/10/2026):** el Bastión 3D antiguo creado con un modelo de IA anterior, guardado como `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb`, **NO está autorizado para uso artístico ni jugable**, incluso si una auditoría anterior lo describió como `TECH PASS` o `USE_PRODUCTION`. **No reutilizarlo, seleccionarlo como candidato, añadirlo/instanciarlo en escenas, colocarlo como protagonista, usarlo como reemplazo ni incorporarlo a compilaciones o publicaciones nuevas**, salvo autorización **explícita, posterior y específica del propietario** para ese modelo. El hecho de que un chat lo encuentre en biblioteca, supere pruebas o se parezca al canon no constituye permiso.
+
+**Conservar** el archivo, fuentes, hashes, `.meta` y el historial como material archivado; NO borrarlos o cambiarlos precipitadamente porque pueden existir referencias de Unity. Antes de una nueva entrega jugable que pudiera utilizarlo, el titular autorizado de la ciudad debe comprobar si sigue activo en la escena y plantear sustitución segura por arte aprobado, conservando mecánicas, GUID/saves y pruebas. Esta orden **no autoriza** invadir archivos reservados por Work/Valoria ni fusionar el PR #100. El catálogo operativo debe excluir el asset y el buscador ordinario no puede proponerlo.
+
 <!-- ELDORIA_ASSET_REUSE_PREFLIGHT_V1: mandatory before any new 3D model -->
 ## Obligación permanente — comprobar la biblioteca de assets antes de modelar
 
