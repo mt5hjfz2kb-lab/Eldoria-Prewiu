@@ -59,9 +59,7 @@ def dressed_stone(root,name,x,y,z,dx,dy,dz,variant):
 # hotspot, loot entity or separate scene. ~120 triangles / instance.
 oak=material('Quarry sun-baked timber',(.39,.28,.16))
 rope=material('Quarry hoist dark hemp',(.17,.12,.067))
-def quarry_hoist(root,variant)
- # Suspended quarried load, same genuine resource object; not fake loot.
- dressed_stone(root,'Quarry hoist real stone load',4.2,0,1.55,1.75,1.75,1.35,variant+1):
+def quarry_hoist(root,variant):
  vertices=[];faces=[];slots=[]
  def prism(p,q,thickness,slot):
   p=Vector(p);q=Vector(q);axis=(q-p).normalized()
@@ -175,6 +173,8 @@ for variant in range(3):
  root=next(x for x in roots if x.name=='Resource_Stone_'+str(variant))
  quarry_rim(root,variant)
  quarry_hoist(root,variant)
+ # The stone block hangs below the original lifting rope inside the REAL node.
+ dressed_stone(root,'Quarry hoist real stone load',4.2,0,1.55,1.75,1.75,1.35,variant+1)
  dressed_stone(root,'Quarry exposed lower bench',-.55,-2.35,.02,5.3,2.6,.46,variant)
  dressed_stone(root,'Quarry weathered second bench',-.65,-1.8,.44,4.4,1.9,.48,variant+1)
  dressed_stone(root,'Quarry stepped cut face',-.85,-1.33,.87,3.1,1.15,.42,variant+2)
