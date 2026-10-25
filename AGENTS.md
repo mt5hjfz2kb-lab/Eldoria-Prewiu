@@ -1,5 +1,18 @@
 # Arranque vigente — mantenimiento autorizado 21-10-2026
 
+<!-- ELDORIA_ASSET_REUSE_PREFLIGHT_V1: mandatory before any new 3D model -->
+## Obligación permanente — comprobar la biblioteca de assets antes de modelar
+
+Antes de encargar, regenerar o crear un GLB/FBX/Blend/OBJ, **buscar reutilización**:
+`python3 tools/asset-vault/find-reuse.py "descripción del elemento"`.
+Consultar los tres índices `pipeline/asset-vault/master-catalog-v1.json`,
+`pipeline/asset-vault/current-full-index-v1.json` y
+`pipeline/asset-vault/historical-full-index-v1.json`, además de la [galería de geometría](docs/asset-vault/GALLERY.md) y el contexto artístico vigente. Si un índice todavía no existe en la rama de ejecución, usar la referencia aprobada en main; **no inventar que un archivo no existe por no aparecer en un catálogo incompleto**.
+
+El productor debe justificar por qué el candidato existente sirve, requiere adaptación o no cumple el encargo. Recuperar fuentes editables, originales, materiales, LOD y pruebas cuando existan. Los archivos históricamente rechazados o de procedencia/licencia no acreditada **nunca se convierten automáticamente en producción**. La geometría útil solo se promueve después de autorización artística, licencias y prueba en la cámara real de Unity.
+
+Todo nuevo archivo 3D que se guarde en Git en una rama con PR será detectado como **candidato** por el workflow `asset-vault-discovery.yml` tras su integración en main; el propietario no tiene que recordarlo. Los archivos no versionados y los artefactos temporales deben conservarse en un depósito autorizado, porque Git no puede inventariarlos. La búsqueda o el catálogo **no autoriza gastar créditos, fusionar PR, modificar escenas ajenas, apropiarse de reservas ni interferir con Work**. Actualizar el catálogo curado y la miniatura al aprobar un recurso.
+
 <!-- ELDORIA_OWNER_AI_COLLABORATION_V1: norma permanente del propietario, 2026-10-23 -->
 ## Pacto fundacional propietario–IA — obligatorio en cualquier chat, fase o agente
 

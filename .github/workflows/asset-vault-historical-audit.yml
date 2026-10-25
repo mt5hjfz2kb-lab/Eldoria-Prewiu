@@ -1,0 +1,93 @@
+name: Eldoria Asset Vault - Historical Deep Inventory
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: asset-vault-history-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  audit-historical:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/historical-branches-20261018.json
+            /tools/asset-vault/
+      - name: Fetch branch refs without downloading 3D file bodies
+        run: |
+          git -c protocol.version=2 fetch --no-tags --filter=blob:none origin '+refs/heads/*:refs/remotes/origin/*'
+      - name: Enumerate historical pinned trees
+        run: |
+          python3 tools/asset-vault/discover-history.py --output /tmp/eldoria-history-inventory.json --compact-output /tmp/eldoria-history-version-index.json
+          python3 - <<'PY'
+          import json,os
+          d=json.load(open('/tmp/eldoria-history-inventory.json'))
+          lines=[
+              '# Eldoria 201 historical branches — full Git tree discovery',
+              '',
+              f"Refs examined: **{d['complete_refs']}/{d['declared_refs']}**",
+              f"Unavailable pinned commit objects: **{d['unavailable_refs']}**",
+              f"Distinct tracked 3D paths: **{d['unique_3d_paths']}**",
+              f"Distinct path+blob versions: **{d['exact_path_blob_versions']}**",
+              '',
+              'Discovery does not imply quality, provenance, license or integration approval.',
+              'Full inventory JSON is in the attached artifact.',
+          ]
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write('\n'.join(lines)+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-201-branch-3d-inventory-${{ github.run_id }}
+          path: |
+            /tmp/eldoria-history-inventory.json
+            /tmp/eldoria-history-version-index.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Preserve historical version index in this isolated audit branch only
+        if: github.event_name == 'pull_request' && github.head_ref == 'docs/eldoria-asset-vault-audit-20261025' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_HEAD: ${{ github.head_ref }}
+        run: |
+          python3 - <<'PY'
+          import base64,json,os,pathlib,subprocess
+          file=pathlib.Path('/tmp/eldoria-history-version-index.json')
+          source=json.loads(file.read_text(encoding='utf-8'))
+          if not source['complete_201_tree_audit']:
+              raise SystemExit('Cannot publish incomplete historical snapshot')
+          dest='pipeline/asset-vault/historical-full-index-v1.json'
+          payload={
+              'message':'docs(asset-vault): persist complete 201-ref historical 3D path/version inventory',
+              'branch':os.environ['PR_HEAD'],
+              'content':base64.b64encode(file.read_bytes()).decode('ascii'),
+          }
+          existing=subprocess.run(['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
+                                   '-f','ref='+os.environ['PR_HEAD']],capture_output=True,text=True)
+          if existing.returncode==0:
+              old=json.loads(existing.stdout)
+              previous=base64.b64decode(old['content'])
+              if previous==file.read_bytes():
+                  print('HISTORICAL_ASSET_INDEX_ALREADY_IDENTICAL')
+                  raise SystemExit(0)
+              payload['sha']=old['sha']
+          pathlib.Path('/tmp/preserve-historical-index-request.json').write_text(json.dumps(payload))
+          cmd=['gh','api',f"repos/{os.environ['GH_REPO']}/contents/{dest}",
+               '--method','PUT','--input','/tmp/preserve-historical-index-request.json']
+          p=subprocess.run(cmd,check=False,text=True,capture_output=True)
+          if p.returncode:raise SystemExit('Failed to preserve index: '+p.stderr[:1200])
+          print('PERMANENT_HISTORICAL_ASSET_INDEX_WRITTEN',dest,
+                'paths',source['unique_3d_paths'],
+                'versions',source['exact_path_blob_versions'])
+          PY
