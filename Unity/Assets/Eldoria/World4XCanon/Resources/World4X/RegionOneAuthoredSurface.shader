@@ -45,8 +45,10 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  float2 detailUV=(i.world.xz-_RegionOrigin.xz)/float2(21.1875,12.4921875);
  float2 rotatedDetail=float2(detailUV.x*.8-detailUV.y*.6,detailUV.x*.6+detailUV.y*.8)+float2(.37,.61);
  half3 grain=(SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV).rgb+SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,rotatedDetail).rgb);
- float detailFootprint=max(length(ddx(detailUV)),length(ddy(detailUV)));
- c.rgb*=lerp(half3(1,1,1),grain,_GroundDetailStrength*(1-smoothstep(.018,.1,detailFootprint)));
+ // The same AF grain must survive regional zoom beside the retained core.
+ // The existing mip chain/aniso filter performs minification; an additional
+ // early derivative fade erased detail only on the extension and exposed a square.
+ c.rgb*=lerp(half3(1,1,1),grain,_GroundDetailStrength);
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);
  float2 region=i.world.xz-_RegionOrigin.xz;
  // Atmosphere at the actual neighbouring-ground edge, beyond the playable region.

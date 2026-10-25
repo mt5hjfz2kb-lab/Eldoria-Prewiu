@@ -1024,7 +1024,7 @@ for tree in scene.objects:
  # from becoming a border between two visibly different tree populations.
  span=230+35*math.sin(x/83+y/119)+15*math.cos(y/47)
  t=max(0,min(1,d/span));t=t*t*(3-2*t)
- factor=.38+.62*t
+ factor=.70+.30*t
  before=list(tree.scale);tree.scale*=factor
  ecotone_scale_operations.append({'name':tree.name,'factor':factor,'before':before,'after':list(tree.scale)})
 (out/'ecotone-crown-scale-operations.json').write_text(json.dumps(ecotone_scale_operations,indent=2))

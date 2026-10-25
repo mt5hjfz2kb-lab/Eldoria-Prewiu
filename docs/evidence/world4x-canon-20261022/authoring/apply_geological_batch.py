@@ -72,6 +72,35 @@ def apply_geological_batch(output):
    tree.hide_render=True;far=bpy.data.objects.get(tree.name.replace('BLD_ForestMass_','BLD_ForestFar_'))
    if far:far.hide_render=True
    cleared.append(tree.name)
+ # Central mineral exposure follows the EXISTING geological triangles.
+ # It adds a focal, irregular heart without cutting new gameplay ground,
+ # moving targets, inventing a portal or changing protected source faces.
+ heart_vertices=[];heart_faces=[];heart_slots=[]
+ heart_materials=[]
+ for name,colour in [('Rift mineral black violet',(.115,.065,.155)),('Rift weathered amethyst',(.23,.105,.29)),('Rift exposed violet seam',(.40,.12,.53))]:
+  mat=bpy.data.materials.new(name);mat.diffuse_color=(*colour,1);mat.use_nodes=True
+  bs=next(n for n in mat.node_tree.nodes if n.type=='BSDF_PRINCIPLED')
+  bs.inputs['Base Color'].default_value=(*colour,1);bs.inputs['Roughness'].default_value=.88
+  heart_materials.append(mat)
+ for poly in mesh.polygons:
+  centre=poly.center;dx=centre.x+260;dy=centre.y-150
+  angle=math.atan2(dy,dx);radius=29+9*math.sin(angle*5+.7)+5*math.cos(angle*3-.2)
+  distance=math.hypot(dx,dy)
+  if distance>=radius:continue
+  ids=[]
+  for index in poly.vertices:
+   q=mesh.vertices[index].co
+   assert not(-96<=q.x<=96 and -78<=q.y<=270)
+   ids.append(len(heart_vertices));heart_vertices.append((q.x,q.y,q.z+.065))
+  heart_faces.append(tuple(ids))
+  heart_slots.append(2 if distance<radius*.24 else 1 if distance<radius*.57 else 0)
+ assert len(heart_faces)>10,'No actual geological surface selected for Breach heart'
+ heart_mesh=bpy.data.meshes.new('Existing ground triangles - exposed central mineral')
+ heart_mesh.from_pydata(heart_vertices,[],heart_faces);heart_mesh.update()
+ for mat in heart_materials:heart_mesh.materials.append(mat)
+ for poly,slot in zip(heart_mesh.polygons,heart_slots):poly.material_index=slot
+ heart_object=bpy.data.objects.new('BLD_BreachMineralHeart',heart_mesh);bpy.context.scene.collection.objects.link(heart_object)
+ (out/'breach-central-mineral.json').write_text(json.dumps({'existing_ground_faces':len(heart_faces),'ground_height_edited':False,'new_gameplay_targets':0,'protected_core_edited':False,'portal':False},indent=2))
  report={'source_baseline':'Current production source; original AF/AG bytes retained','changed_vertices':int(np.count_nonzero(np.abs(change)>1e-6)),'protected_vertices':int(protected.sum()),'protected_positions_unchanged':True,'new_faults':AUTHOR_FAULTS,'cleared_crowns':cleared,'geological_extent_m':[-660,0,-100,610],'art_approved':False,'unity_integrated':False,'core_floor_bounds':[list(floor.matrix_world @ Vector(p)) for p in floor.bound_box],'decision':'Broader connected ground fracture and woodland clearance as one focal-composition batch; no extra props or new game entities.'}
  (out/'macro-geological-operations.json').write_text(json.dumps(report,indent=2))
  return report

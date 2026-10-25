@@ -352,7 +352,11 @@ jobs:
           # Unity 6 on this Windows runner misreads mixed C:\\.../Unity as a
           # relative path and prepends the workspace again (run 39174538409).
           # Use a pure relative project name with explicit working directory.
-          $args = @("-batchmode","-nographics","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          # The genuine World4X camera tests require a real graphics device.
+          # Preserve every test and require all cases to pass; never ignore captures.
+          $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "eldoria-ui-region1-captures-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT | Out-Null
+          $args = @("-batchmode","-force-d3d11","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -372,6 +376,8 @@ jobs:
           }
           [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
+          $cases=@($results.SelectNodes('//test-case'))
+          if($cases.Count -lt 61 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Expected the complete 61+ PlayMode suite with no ignored or failed cases'}
 
       - name: Summarize certified checks
         shell: powershell
@@ -421,6 +427,7 @@ jobs:
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml
             ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
+            ${{ runner.temp }}/eldoria-ui-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
             ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log
             ${{ runner.temp }}/Eldoria-V2-Native-Framing-Baseline-*.json
             docs/evidence/valoria-reference-clean/integration-*.png

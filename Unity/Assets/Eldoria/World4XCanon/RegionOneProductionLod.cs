@@ -26,15 +26,29 @@ namespace Eldoria.World4XCanon
                     var scale=far.transform.localScale;
                     far.transform.localScale=new Vector3(scale.x*1.50f,scale.y*1.85f,scale.z*1.50f);
                 }
+                bool retained=near.name.StartsWith("Pilot_Pine",StringComparison.Ordinal);
+                bool retainedFarVisible=true;
+                if(retained)
+                {
+                    // Keep every protected near crown untouched. A balanced far
+                    // representation uses 1/6 of the SAME crowns at 2.5x width:
+                    // 2.5^2/6 keeps total crown coverage close to the source,
+                    // while the fir silhouette remains readable like the continent.
+                    uint identity=2166136261;
+                    foreach(char character in near.name)identity=unchecked((identity^character)*16777619);
+                    retainedFarVisible=identity%6==0;
+                    var scale=far.transform.localScale;
+                    if(retainedFarVisible)far.transform.localScale=new Vector3(scale.x*2.5f,scale.y*4f,scale.z*2.5f);
+                    else far.gameObject.SetActive(false);
+                }
                 var lod=group.AddComponent<LODGroup>();lod.fadeMode=LODFadeMode.CrossFade;lod.animateCrossFading=false;
                 lod.SetLODs(new[]{new LOD(.065f,new Renderer[]{near}),new LOD(.0001f,new Renderer[]{far})});lod.RecalculateBounds();
-                bool retained=near.name.StartsWith("Pilot_Pine",StringComparison.Ordinal);
                 // A spatial crossfade reproduces AG's 37–47 band, including small
                 // retained crowns. It is deterministic during actual Camera.Render.
                 float end=retained?Mathf.Clamp(lod.size/(2*47f),.0002f,.9f):.065f;
                 float begin=retained?Mathf.Clamp(lod.size/(2*37f),end,.95f):.08f;
                 var close=new LOD(end,new Renderer[]{near}){fadeTransitionWidth=(begin-end)/(1-end)};
-                lod.SetLODs(new[]{close,new LOD(.0001f,new Renderer[]{far})});
+                lod.SetLODs(new[]{close,new LOD(.0001f,retainedFarVisible?new Renderer[]{far}:Array.Empty<Renderer>())});
             }
         }
     }

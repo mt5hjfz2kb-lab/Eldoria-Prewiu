@@ -137,7 +137,7 @@ for family in ['Wood','Stone']:
     for p in me.polygons:p.material_index=1 if p.index>=40 else 0
     o=bpy.data.objects.new('Wood cut trunk '+str(log),me);collection.objects.link(o);o.parent=root;objects.append(o)
   else:
-   for k,(x,y,h,s) in enumerate([(-1.7,.2,4.8,1.8),(.6,1.2,6.5,2.1),(2.4,-.5,3.7,1.6),(-.3,-1.8,2.3,1.3),(-3.4,-1.3,1.3,.8),(3.8,1.4,1.5,.85)]):
+   for k,(x,y,h,s) in enumerate([(-2.0,3.1,4.8,1.8),(.6,3.7,6.5,2.1),(3.1,2.4,3.7,1.6),(-.3,-1.8,2.3,1.3),(-3.4,-1.3,1.3,.8),(3.8,1.4,1.5,.85)]):
     o=clone(rock,'Stone fractured mass '+str(k),root,(x,y,0),(1,1,1),variant*.7+k*.93)
     coords=[v.co.copy() for v in o.data.vertices];lo=Vector(tuple(min(p[i] for p in coords) for i in range(3)));hi=Vector(tuple(max(p[i] for p in coords) for i in range(3)));span=hi-lo
     for v in o.data.vertices:
@@ -153,7 +153,7 @@ for family in ['Wood','Stone']:
 def quarry_rim(root,variant):
  vertices=[];faces=[];slots=[]
  n=16
- for radius,height in ((6.65,.05),(5.45,.78),(4.1,1.73),(2.75,2.72)):
+ for radius,height in ((6.65,.05),(5.45,2.35),(4.1,1.48),(2.75,.05)):
   for j in range(n):
    angle=math.tau*j/n
    jitter=1+.065*math.sin(j*1.43+variant*2.7)+.04*math.sin(j*2.81)
@@ -163,6 +163,8 @@ def quarry_rim(root,variant):
  for layer in range(3):
   for j in range(n):
    nxt=(j+1)%n
+   # Leave a real open working entrance in the front of the same quarry.
+   if math.sin(math.tau*(j+.5)/n)<-.58:continue
    faces.append((layer*n+j,layer*n+nxt,(layer+1)*n+nxt,(layer+1)*n+j))
    slots.append((layer+j//5+variant)%len(stone))
  finished_mesh(root,'Quarry terraced exposed ledges',vertices,faces,stone,slots)
