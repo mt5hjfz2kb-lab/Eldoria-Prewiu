@@ -85,6 +85,20 @@ namespace Eldoria.World4XCanon
                     instances.Add(creature.TargetId,entity);
                 }
                 entity.Hotspot.transform.position=new Vector3(creature.X,creature.Y,creature.Z);
+                // Both source LODs use the same continuous scale at their switching distance.
+                float presence=Mathf.Lerp(2f,6f,Mathf.InverseLerp(36f,280f,zoom));
+                FitModel(entity.Near,creature.CreatureKind,presence,entity.Hotspot.transform);
+                FitModel(entity.Far,creature.CreatureKind,presence,entity.Hotspot.transform);
+                var shown=near?entity.Near:entity.Far;
+                var visibleBounds=shown.GetComponentsInChildren<Renderer>(true);
+                if(visibleBounds.Length>0)
+                {
+                    var bounds=visibleBounds[0].bounds;
+                    foreach(var renderer in visibleBounds)bounds.Encapsulate(renderer.bounds);
+                    var pick=(BoxCollider)entity.Hotspot.GetComponent<Collider>();
+                    pick.center=bounds.center-entity.Hotspot.transform.position;
+                    pick.size=Vector3.Max(bounds.size,new Vector3(12,10,12));
+                }
                 var alive=creature.Alive;
                 entity.Hotspot.GetComponent<Collider>().enabled=alive&&!panorama;
                 // Hide visual, impostor and shadows in panorama without removing state.
@@ -109,6 +123,14 @@ namespace Eldoria.World4XCanon
             }
             go.SetActive(false);
             return go;
+        }
+        static void FitModel(GameObject model,string kind,float presence,Transform anchor)
+        {
+            model.transform.localScale=Vector3.one*(kind=="boar"?7.5f:7.2f)*presence;
+            model.transform.position=anchor.position;
+            var renderers=model.GetComponentsInChildren<Renderer>(true);
+            if(renderers.Length>0)
+                model.transform.position+=Vector3.up*(anchor.position.y-renderers.Min(r=>r.bounds.min.y));
         }
         static void SetVisible(GameObject model,bool value)
         {
