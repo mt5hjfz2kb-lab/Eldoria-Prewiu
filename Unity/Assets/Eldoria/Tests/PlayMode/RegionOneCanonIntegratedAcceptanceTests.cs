@@ -145,7 +145,8 @@ namespace Eldoria.Tests
             Assert.That(before.WorldResourceLocations.Count(x=>x.TargetId.StartsWith("region1:")),Is.EqualTo(48));
             Assert.That(before.WorldCreatureLocations.Count,Is.EqualTo(36));
             Call(navigation,"SetZoomLevel",0,true);
-            Call(world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape"),
+            Call(Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                    .Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape"),
                 "RefreshForCapture");
             Assert.That(JsonUtility.ToJson(((Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway")).Snapshot()),
                 Is.EqualTo(JsonUtility.ToJson(before)),"Panorama must retain all authentic resource and creature state");
