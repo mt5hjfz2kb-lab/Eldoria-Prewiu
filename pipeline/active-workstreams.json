@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-25T18:49:37.384Z",
+  "updated_at": "2026-10-25T19:04:59.797Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1160,12 +1160,10 @@
         ".github/workflows/world4x-artistic-process-gate.yml",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.",
-      "phase": "RECOVER_CAPTURE_ASSERTION_AND_VISUAL_REVIEW",
-      "next": "Fix six standard retained-sector views versus twelve pigment A/B controls without dropping either assertion; rerun native and inspect exact Unity captures against canon, then finish remaining verified visual defects. No merge/publication.",
+      "phase": "NATIVE_RECOVERY_VERIFIED_VISUAL_REWORK_REQUIRED",
+      "next": "Continue authored macro visual correction on unprotected continental geography and new Breach, using TAKEOVER_REVIEW_40223178638.md. Technical recovery complete, original 7.5 visual target NOT complete. Reserve Windows again only for next justified candidate; no merge/publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1318,6 +1316,22 @@
           "art_approved": false,
           "owner_requested_node_concept_review": true,
           "physical_mobile_tested": false
+        },
+        "successor_recovery": {
+          "source": "96071b6aa8b5a352e1506c3f2cdefbd5d628ccd5",
+          "assets_commit": "1fa8fd28645de1701719cd86e33633bbfcfe8fb3",
+          "run": 40223178638,
+          "result": "success",
+          "playmode": 62,
+          "editmode": 26,
+          "functional_checks": 44,
+          "failed": 0,
+          "skipped": 0,
+          "visual_artifact": 12610277377,
+          "artifact_sha256": "a2d8d7cd8cac7aa708509a7a177da54ebcbbb7a20aebc5e596beba78bc05d9bb",
+          "art_approved": false,
+          "requested_assignment_complete": false,
+          "report": "docs/evidence/world4x-canon-20261022/TAKEOVER_REVIEW_40223178638.md"
         }
       },
       "ownership_history": [
