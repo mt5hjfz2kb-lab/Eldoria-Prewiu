@@ -1,0 +1,89 @@
+name: Eldoria Asset Vault - Automatic 3D Discovery
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ArtSource/**'
+      - 'art-source/**'
+      - 'Unity/Assets/**'
+      - 'pipeline/asset-vault/**'
+      - 'tools/asset-vault/**'
+      - '.github/workflows/asset-vault-discovery.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ArtSource/**'
+      - 'art-source/**'
+      - 'Unity/Assets/**'
+      - 'pipeline/asset-vault/**'
+      - 'tools/asset-vault/**'
+      - '.github/workflows/asset-vault-discovery.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: asset-vault-discovery-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /pipeline/asset-vault/
+            /tools/asset-vault/
+            /.github/workflows/asset-vault-discovery.yml
+      - name: Detect new tracked models (Git tree only; no Blender/Unity)
+        run: |
+          python3 tools/asset-vault/scan-candidates.py \
+            --output /tmp/eldoria-asset-candidates.json \
+            --summary /tmp/eldoria-asset-summary.md
+          cat /tmp/eldoria-asset-summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-asset-vault-candidates-${{ github.run_id }}
+          path: /tmp/eldoria-asset-candidates.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Maintain permanent issue inbox (main only, never write source branch)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          j=json.loads(Path('/tmp/eldoria-asset-candidates.json').read_text())
+          if j['new_unreviewed'] == 0:
+              Path('/tmp/asset-vault-issue-body.md').write_text(
+                  'No uncatalogued 3D paths detected at commit `'+j['source_commit']+'`.\n'
+                  'Existing approved records remain in the curated catalog.\n')
+          else:
+              lines=['Automatic, **unreviewed** 3D candidates in current main.',
+                     'Commit: `'+j['source_commit']+'`',
+                     'Count: '+str(j['new_unreviewed']),
+                     'No asset is automatically approved, copied or integrated.',
+                     'Full machine-readable inventory is attached to the corresponding workflow run.','']
+              for x in j['candidates'][:150]:
+                  lines.append('- `'+x['path']+'` ('+x['category']+')')
+              if len(j['candidates'])>150:lines.append('... remaining paths in workflow artifact.')
+              Path('/tmp/asset-vault-issue-body.md').write_text('\n'.join(lines)+'\n')
+          PY
+          TITLE='[ASSET VAULT] Candidatos 3D detectados automáticamente'
+          NUMBER=$(gh issue list --repo "$GH_REPO" --state open --limit 100 --json number,title \
+            --jq '.[] | select(.title=="[ASSET VAULT] Candidatos 3D detectados automáticamente") | .number' | head -n1)
+          if [ -n "$NUMBER" ]; then
+            gh issue edit "$NUMBER" --repo "$GH_REPO" --body-file /tmp/asset-vault-issue-body.md
+          else
+            gh issue create --repo "$GH_REPO" --title "$TITLE" --body-file /tmp/asset-vault-issue-body.md
+          fi
