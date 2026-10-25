@@ -1,5 +1,8 @@
 # Eldoria — Índice documental único
 
+> **DECISIÓN ACTUAL DEL PROPIETARIO, 25/10/2026 (PREVALECE SOBRE ESTA DOCUMENTACIÓN HISTÓRICA):** el modelo antiguo `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb` **NO está aprobado para uso**. Se conserva solo como archivo histórico y no puede sugerirse, incorporarse en escenas ni publicarse salvo autorización específica, nueva y expresa del propietario. Ningún anterior `PASS` o mención a "Hero Bastion producción" revoca esta prohibición. Antes de sustituir una posible instancia preexistente, su responsable debe comprobar las referencias y la compatibilidad de Unity sin romper el juego.
+
+
 > **Navegación documental actualizada:** 2026-10-24 · **Rol:** navegación, no autorización de desarrollo. Este índice reemplaza los mapas de navegación dispersos, pero no reemplaza las reglas técnicas ni los criterios de calidad.
 
 > **Pacto fundacional propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1):** el dueño no programa; cualquier chat o agente ha de aportar iniciativa, criterio técnico propio, crítica, alternativa cuando un método falle y evidencia real, como obliga [AGENTS.md](../AGENTS.md). Se mantiene vigente en todos los relevos; no reemplaza las autorizaciones.
