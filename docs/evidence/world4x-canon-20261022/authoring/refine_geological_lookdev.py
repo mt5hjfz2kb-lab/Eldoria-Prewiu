@@ -1,7 +1,7 @@
 """Reviewed look-development on the exact preserved Blender candidate.
 No terrain positions, routes, protected AF/AG images or gameplay models change.
 """
-import bpy,sys,pathlib,json,hashlib,math,struct,zlib
+import bpy,sys,pathlib,json,hashlib,math,struct,zlib,gzip
 import numpy as np
 from mathutils import Vector
 source,out=map(pathlib.Path,sys.argv[sys.argv.index('--')+1:])
@@ -23,7 +23,10 @@ mean=linear.mean(axis=(0,1))
 fy=np.fft.fftfreq(patch.shape[0])[:,None];fx=np.fft.fftfreq(patch.shape[1])[None,:]
 gaussian=np.exp(-2*math.pi**2*24.0**2*(fx*fx+fy*fy))
 low=np.stack([np.fft.ifft2(np.fft.fft2(linear[:,:,c])*gaussian).real for c in range(3)],axis=2)
-meso=np.clip(((linear-low)/np.maximum(mean,.001)).mean(axis=2),-.18,.18)
+meso=((linear-low)/np.maximum(mean,.001)).mean(axis=2)
+# Remove separable illumination drift that formed the rejected mirrored weave.
+meso=meso-meso.mean(axis=0)[None,:]-meso.mean(axis=1)[:,None]+meso.mean()
+meso*=.18/max(.18,float(np.abs(meso).max()))
 alpha=.5+meso*.5
 alpha=np.concatenate([alpha,alpha[:,::-1]],axis=1)
 alpha=np.concatenate([alpha,alpha[::-1]],axis=0)
@@ -91,6 +94,50 @@ exposure=1-smooth((edge-.20)/.65)
 pigment=bpy.data.images['Region1 authored geological pigment']
 data=np.empty(len(pigment.pixels),np.float32);pigment.pixels.foreach_get(data)
 data=data.reshape(pigment.size[1],pigment.size[0],4)
+# Strengthen the already-authored continental washes using the ACTUAL
+# exported ground height, never noise or a new terrain surface.
+query=gzip.decompress((out/'RegionOneBlenderQueries.bytes').read_bytes())
+magic,nx,nz,world_width,world_height=struct.unpack_from('<iiiff',query)
+assert magic==0x31424c45
+count=nx*nz
+heights=np.frombuffer(query,dtype='<f4',count=count,offset=20).reshape(nz,nx)
+masks=np.frombuffer(query,dtype=np.uint8,count=count*4,offset=20+count*4).reshape(nz,nx,4)
+W,H=pigment.size
+xc=np.linspace(-910,910,W,dtype=np.float32);yc=np.linspace(-1800,1800,H,dtype=np.float32)
+xx=np.linspace(0,nx-1,W,dtype=np.float32);yy=np.linspace(0,nz-1,H,dtype=np.float32)
+x0=xx.astype(int);x1=np.minimum(x0+1,nx-1);wx=xx-x0
+y0=yy.astype(int);y1=np.minimum(y0+1,nz-1);wy=(yy-y0)[:,None]
+def sampled(field):
+ bottom=field[y0[:,None],x0[None,:]]*(1-wx)[None,:]+field[y0[:,None],x1[None,:]]*wx[None,:]
+ top=field[y1[:,None],x0[None,:]]*(1-wx)[None,:]+field[y1[:,None],x1[None,:]]*wx[None,:]
+ return bottom*(1-wy)+top*wy
+height=sampled(heights)
+land=np.clip((sampled(masks[:,:,0].astype(np.float32))/255-.50)/.25,0,1)
+water=sampled(masks[:,:,1].astype(np.float32))/255
+road=sampled(masks[:,:,2].astype(np.float32))/255
+core_distance=np.hypot(np.maximum(0,np.abs(xc)-96)[None,:],np.maximum(0,np.maximum(-78-yc,yc-270))[:,None])
+weight=smooth(core_distance/260)*land*(1-water)*(1-road)**2
+# Preserve the existing geological palette and original protected core.
+cx=np.where((xc>=-720)&(xc<=-20))[0];cy=np.where((yc>=-100)&(yc<=680))[0]
+GX,GY=np.meshgrid(xc[cx],yc[cy])
+fault=ns['stroke_distance'](GX,GY,ns['AUTHOR_FAULTS'])
+weight[np.ix_(cy,cx)]*=smooth((fault-55)/55)
+palette_mean=patch.mean(axis=(0,1))
+graded=palette_mean+(data[:,:,:3]-palette_mean)*1.65
+ridge=smooth((height-5)/12)
+graded[:,:,0]*=1+.12*ridge;graded[:,:,1]*=1+.04*ridge;graded[:,:,2]*=1-.06*ridge
+data[:,:,:3]=data[:,:,:3]*(1-weight[:,:,None])+np.clip(graded,.025,.95)*weight[:,:,None]
+pigment.pixels.foreach_set(data.ravel())
+pigment.filepath_raw=str(out/'Region1ContinentalReviewedWashes.png');pigment.file_format='PNG';pigment.save()
+country=bpy.data.images.load(str(out/'Region1ContinentalReviewedWashes.png'),check_existing=False);country.name='Region1 reviewed original-flow continental pigment';country.pack()
+assert hashlib.sha256(country.packed_file.data).hexdigest()==hashlib.sha256((out/'Region1ContinentalReviewedWashes.png').read_bytes()).hexdigest()
+links=0
+for material in bpy.data.materials:
+ if material.use_nodes:
+  for item in material.node_tree.nodes:
+   if item.type=='TEX_IMAGE' and item.image==pigment:item.image=country;links+=1
+assert links>0,'Continental look-development was not linked to actual scene materials'
+(out/'continental-washes-review.json').write_text(json.dumps({'source':'Original AF patch and existing authored flows; exact exported height data','protected_core_pixels_changed':False,'terrain_positions_changed':False,'new_gameplay_objects':0,'material_links':links,'contrast':1.65,'art_approved':False},indent=2))
 ix=np.clip(((X+910)/1820*(pigment.size[0]-1)).astype(int),0,pigment.size[0]-1)
 iy=np.clip(((Y+1800)/3600*(pigment.size[1]-1)).astype(int),0,pigment.size[1]-1)
 ground=data[iy,ix,:3]
