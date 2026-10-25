@@ -455,7 +455,16 @@ edges += [np.array([source_pigment(float(x),y) for x in edgeX]) for y in [-77.99
 # Keep exact fine pigment only at contact; extend the broad palette separately.
 kernel=np.exp(-.5*(np.arange(-96,97)/32)**2);kernel/=kernel.sum()
 soft_edges=[np.stack([np.convolve(np.pad(edge[:,c],96,mode='edge'),kernel,mode='valid') for c in range(3)],axis=1) for edge in edges]
-qx=np.clip(X,-96,96);qy=np.clip(Y,-78,270);distance=np.hypot(X-qx,Y-qy);glaze=(1-smooth(distance/110))*(distance>0)
+# Hide the rectangular AF/AG-to-continent pigment edge WITHOUT modifying
+# one protected source pixel, UV or mesh vertex. A smooth, coast/road-aware
+# 185 m transition wraps the unchanged original texture in broader meadow
+# pigment; two low-frequency meanders break the obvious square transition
+# seen in actual regional Unity 40142228055 and 40180536302.
+qx=np.clip(X,-96,96);qy=np.clip(Y,-78,270)
+distance=np.hypot(X-qx,Y-qy)
+edge_warp=18*np.sin((X+Y*.45)/63)+11*np.sin((Y-X*.28)/91)
+organic_distance=np.maximum(0,distance+edge_warp*smooth(distance/24))
+glaze=(1-smooth(organic_distance/185))*(distance>0)
 for side in range(4):
  choose=((X<-96) if side==0 else (X>96) if side==1 else (Y<-78)&(np.abs(X)<=96) if side==2 else (Y>270)&(np.abs(X)<=96))
  weight=glaze*choose*(1-mask*smooth(distance/3));axis=qy if side<2 else qx;grid=edgeY if side<2 else edgeX

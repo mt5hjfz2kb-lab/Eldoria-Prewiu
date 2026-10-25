@@ -79,6 +79,10 @@ namespace Eldoria.World4XCanon.Editor
             if(!resources||resources.GetComponentsInChildren<MeshFilter>(true)
                 .Count(f=>f.name.StartsWith("Quarry terraced exposed ledges",StringComparison.Ordinal))!=3)
                 throw new InvalidOperationException("All three quarry resource models must carry real layered excavation geometry");
+            var lifting=resources.GetComponentsInChildren<MeshFilter>(true)
+                .Where(f=>f.name.StartsWith("Quarry lifting gantry and suspended wooden stone sling",StringComparison.Ordinal)).ToArray();
+            if(lifting.Length!=3||lifting.Any(f=>!f.sharedMesh||f.sharedMesh.triangles.Length/3>240))
+                throw new InvalidOperationException("Quarry worksite equipment must exist in all three original-node variants and remain mobile-budget geometry");
             var detailImporter=AssetImporter.GetAtPath("Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneGrassDetail.png") as TextureImporter;
             if(!detailImporter||detailImporter.sRGBTexture)throw new InvalidOperationException("AF-derived detail must import as linear data to preserve its neutral mean");
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);

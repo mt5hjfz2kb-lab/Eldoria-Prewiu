@@ -52,6 +52,43 @@ def dressed_stone(root,name,x,y,z,dx,dy,dz,variant):
   faces.append((8+k,8+j,16));ids.append((1+variant)%3)
  finished_mesh(root,name,pts,faces,stone,ids)
 
+# One authentic hand-built lifting gantry per authored QUARRY node. The real
+# current Unity camera shows the weathered rock outcrop remains nearly
+# indistinguishable from generic stones; this gives a worked-site silhouette.
+# Every timber/rope is part of that resource's existing GLB, not an extra node,
+# hotspot, loot entity or separate scene. ~120 triangles / instance.
+oak=material('Quarry sun-baked timber',(.39,.28,.16))
+rope=material('Quarry hoist dark hemp',(.17,.12,.067))
+def quarry_hoist(root,variant):
+ vertices=[];faces=[];slots=[]
+ def prism(p,q,thickness,slot):
+  p=Vector(p);q=Vector(q);axis=(q-p).normalized()
+  side=axis.cross(Vector((0,0,1)))
+  if side.length<.001:side=Vector((1,0,0))
+  side.normalize()
+  up=axis.cross(side).normalized()
+  offsets=[(-1,-1),(1,-1),(1,1),(-1,1)]
+  base=len(vertices)
+  for origin in (p,q):
+   for a,b in offsets:
+    pos=origin+side*a*thickness/2+up*b*thickness/2
+    vertices.append(tuple(pos))
+  for ids in ((0,3,2,1),(4,5,6,7),(0,1,5,4),(1,2,6,5),(2,3,7,6),(3,0,4,7)):
+   faces.append(tuple(base+k for k in ids));slots.append(slot)
+ side=3.5
+ height=6.2+variant*.06
+ for yy in (-2.8,2.8):
+  prism((side,yy,0),(side,yy,height),.39,0)
+  prism((side,yy*1.39,0),(side,yy,height-.65),.27,0)
+ prism((side,-3.25,height),(side,3.25,height),.54,0)
+ prism((side,0,height-.15),(side,0,2.35),.085,1)
+ prism((side-.72,-.6,2.4),(side+.72,-.6,2.4),.23,0)
+ prism((side-.72,.6,2.4),(side+.72,.6,2.4),.23,0)
+ prism((side-.72,-.6,2.4),(side-.72,.6,2.4),.23,0)
+ prism((side+.72,-.6,2.4),(side+.72,.6,2.4),.23,0)
+ finished_mesh(root,'Quarry lifting gantry and suspended wooden stone sling',
+               vertices,faces,[oak,rope],slots)
+
 def clone(donor,name,root,position,scale,rotation):
  o=donor.copy();o.data=donor.data.copy();collection.objects.link(o);o.name=name;o.parent=root;o.hide_render=False;o.hide_viewport=False;o.hide_set(False);o.location=position;o.scale=scale;o.rotation_euler=(0,0,rotation);objects.append(o);return o
 for family in ['Wood','Stone']:
@@ -135,6 +172,7 @@ def quarry_rim(root,variant):
 for variant in range(3):
  root=next(x for x in roots if x.name=='Resource_Stone_'+str(variant))
  quarry_rim(root,variant)
+ quarry_hoist(root,variant)
  dressed_stone(root,'Quarry exposed lower bench',-.55,-2.35,.02,5.3,2.6,.46,variant)
  dressed_stone(root,'Quarry weathered second bench',-.65,-1.8,.44,4.4,1.9,.48,variant+1)
  dressed_stone(root,'Quarry stepped cut face',-.85,-1.33,.87,3.1,1.15,.42,variant+2)

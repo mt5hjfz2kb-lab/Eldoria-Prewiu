@@ -38,6 +38,14 @@ jobs:
             docs/visual-reference/ELDORIA_WORLD_MAP_CANON_20261022.md
             Unity/Assets/Eldoria/World4XCanon
             Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs
+            docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py
+            docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py
+      - name: Check Blender authoring syntax before reserving Windows editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile docs/evidence/world4x-canon-20261022/authoring/build_region_from_ai.py docs/evidence/world4x-canon-20261022/authoring/build_resource_library.py
+          echo 'WORLD4X_BLENDER_AUTHORING_SYNTAX_PASS'
       - name: Assert frozen owner PNG reference binaries
         shell: bash
         run: |
