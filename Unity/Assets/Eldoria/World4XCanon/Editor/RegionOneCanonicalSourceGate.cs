@@ -76,13 +76,40 @@ namespace Eldoria.World4XCanon.Editor
             if(!strata||strata.sharedMesh==null||strata.sharedMesh.triangles.Length<270)
                 throw new InvalidOperationException("Meaningful authored Brecha strata not in actual imported Unity continent");
             var resources=Resources.Load<GameObject>("World4X/Blender/RegionOneResources");
-            if(!resources||resources.GetComponentsInChildren<MeshFilter>(true)
-                .Count(f=>f.name.StartsWith("Quarry terraced exposed ledges",StringComparison.Ordinal))!=3)
-                throw new InvalidOperationException("All three quarry resource models must carry real layered excavation geometry");
-            var lifting=resources.GetComponentsInChildren<MeshFilter>(true)
-                .Where(f=>f.name.StartsWith("Quarry lifting gantry and suspended wooden stone sling",StringComparison.Ordinal)).ToArray();
-            if(lifting.Length!=3||lifting.Any(f=>!f.sharedMesh||f.sharedMesh.triangles.Length/3>240))
-                throw new InvalidOperationException("Quarry worksite equipment must exist in all three original-node variants and remain mobile-budget geometry");
+            if(!resources)throw new InvalidOperationException("Approved resource library missing");
+            int resourceTriangles=0;
+            foreach(var family in new[]{"Wood","Stone"})for(int variant=0;variant<3;variant++)
+            {
+                var root=resources.GetComponentsInChildren<Transform>(true).Single(t=>t.name=="Resource_"+family+"_"+variant);
+                var models=root.GetComponentsInChildren<MeshFilter>(true);
+                string prefix=family=="Stone"?"Approved quarry carved mass derrick and platforms ":"Approved bound timber rack canopy stump axe and side bundle ";
+                var structure=models.SingleOrDefault(f=>f.name==prefix+variant);
+                if(!structure||!structure.sharedMesh||structure.sharedMesh.vertexCount<100)
+                    throw new InvalidOperationException("Complete approved structural model missing: "+root.name);
+                if(family=="Stone"&&!models.Any(f=>f.name=="Quarry cleared extraction floor "+variant))
+                    throw new InvalidOperationException("Quarry requires its terrain-conforming extraction surface: "+root.name);
+                var renderers=root.GetComponentsInChildren<MeshRenderer>(true);
+                var bounds=renderers[0].bounds;foreach(var renderer in renderers)bounds.Encapsulate(renderer.bounds);
+                if(bounds.size.y<(family=="Stone"?9f:3f)||bounds.size.x<(family=="Stone"?10f:7f))
+                    throw new InvalidOperationException("Approved crane/rack silhouette is incomplete: "+root.name);
+                foreach(var filter in models){
+                    int triangles=filter.sharedMesh.triangles.Length/3;resourceTriangles+=triangles;
+                    if(triangles>20000)throw new InvalidOperationException("Approved coherent node exceeds its review geometry budget: "+filter.name);
+                }
+                // A joined structural mesh keeps the suspended load and canopy
+                // assembled during terrain fitting. Validate all six genuine node
+                // variants instead of requiring the retired gantry fragment names.
+                foreach(var material in renderers.SelectMany(r=>r.sharedMaterials).Distinct())
+                for(int property=0;property<material.shader.GetPropertyCount();property++)
+                {
+                    string name=material.shader.GetPropertyName(property);
+                    if(material.shader.GetPropertyType(property)!=UnityEngine.Rendering.ShaderPropertyType.Texture||!name.ToLowerInvariant().Contains("basecolor"))continue;
+                    var texture=material.GetTexture(name);
+                    if(texture&&(texture.width<512||texture.height<512))throw new InvalidOperationException("Approved painted material imported at placeholder resolution: "+material.name);
+                }
+            }
+            if(resourceTriangles>60000)throw new InvalidOperationException("Approved six-variant library exceeds its 60000-triangle review budget");
+            Debug.Log("APPROVED_RESOURCE_LIBRARY_SOURCE_PASS roots=6 triangles="+resourceTriangles+" physical_mobile_profiled=false");
             var detailImporter=AssetImporter.GetAtPath("Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneGrassDetail.png") as TextureImporter;
             if(!detailImporter||detailImporter.sRGBTexture)throw new InvalidOperationException("AF-derived detail must import as linear data to preserve its neutral mean");
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);

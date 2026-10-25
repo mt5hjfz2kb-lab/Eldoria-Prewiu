@@ -609,13 +609,25 @@ namespace Eldoria.Tests
             var originalColliders=world.GetComponentsInChildren<Collider>(true).ToDictionary(x=>x,x=>x.transform.position);
             Call(modelService,"RefreshNow");
             var origin=(Vector3)Member(host,"WorldHome");var geology=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");var height=geology.GetType().GetMethod("Height",BindingFlags.Public|BindingFlags.Static);
+            var gateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");
+            var expectedIds=gateway.Snapshot().WorldResourceLocations
+                .Where(x=>x.Generation>0&&x.TargetId.StartsWith("region1:",StringComparison.Ordinal)).Select(x=>x.TargetId)
+                .Concat(new[]{"forest-valoria","quarry-valoria"}).ToArray();
+            var actualRoots=world.GetComponentsInChildren<Transform>(true)
+                .Where(x=>x.name.StartsWith("Production resource visual ",StringComparison.Ordinal)).ToArray();
+            Assert.That(actualRoots.Select(x=>x.name.Substring("Production resource visual ".Length)),Is.EquivalentTo(expectedIds),
+                "Measure every actual saved resource and both campaign nodes; no missing or duplicate visual roots");
+            foreach(var root in actualRoots)Assert.That(root.GetComponentsInChildren<MeshFilter>(true),Is.Not.Empty,"Every real node needs measured model geometry");
             float minimum=0,maximum=0;int parts=0;
-            foreach(var root in world.GetComponentsInChildren<Transform>(true).Where(x=>x.name.StartsWith("Production resource visual ")))
+            foreach(var root in actualRoots)
             foreach(var part in root.GetComponentsInChildren<MeshFilter>(true)){
                 var points=part.sharedMesh.vertices.Select(part.transform.TransformPoint).ToArray();float bottom=points.Min(p=>p.y);
                 foreach(var p in points.Where(p=>p.y<bottom+.03f)){float ground=origin.y+(float)height.Invoke(null,new object[]{p.x-origin.x,p.z-origin.z});minimum=Mathf.Min(minimum,p.y-ground);maximum=Mathf.Max(maximum,p.y-ground);}parts++;
             }
-            Assert.That(parts,Is.GreaterThan(200));Assert.That(maximum,Is.LessThan(.005f),"Floating resource supports");Assert.That(minimum,Is.GreaterThan(-.65f),"Excessive burial must be repaired, not hidden with collider offsets");
+            // Approved coherent models join structural parts so the crane and canopy
+            // remain assembled while grounding. Coverage follows the complete real
+            // resource inventory, independent of the donor's old fragment count.
+            Assert.That(parts,Is.GreaterThanOrEqualTo(actualRoots.Length));Assert.That(maximum,Is.LessThan(.005f),"Floating resource supports");Assert.That(minimum,Is.GreaterThan(-.65f),"Excessive burial must be repaired, not hidden with collider offsets");
             foreach(var pair in originalColliders)Assert.That(pair.Key.transform.position,Is.EqualTo(pair.Value));
             Debug.Log("REGION1_RESOURCE_CONTACT parts="+parts+" min_gap_m="+minimum+" max_gap_m="+maximum+" collider_movement=0");
         }
