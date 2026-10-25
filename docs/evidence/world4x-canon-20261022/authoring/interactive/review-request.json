@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
   "ownership_revision": 37,
-  "source_run": 40243172187,
-  "source_sha256": "49500268fac141d232b66db112469640bf56f9d99662a30b231b758225fbf554",
+  "source_run": 40243865278,
+  "source_sha256": "0f4b3ae5648a3efefcb2c2122c402cbfc871f4b189515b73e04be1f888095379",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Preserve exact observed tapered geological geometry and all packed source images; compact unused modelling buffers to meet existing editable-source repository object limit, then certify actual Unity with scoped interior lights and balanced strategic targets.",
+  "decision": "ActualUnity40244067413 identified down-facing rebuilt patch: black soil rectangle and single-sided collider misses. Correct physical winding and normals only in the detached unprotected geological patch; preserve all vertex positions, queries and images. Export supported explicit slate pigment instead of procedural glTF white fallback. No test weakening.",
   "preview_is_Unity": false,
   "art_approved": false
 }
