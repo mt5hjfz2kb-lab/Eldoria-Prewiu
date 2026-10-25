@@ -62,7 +62,7 @@ def main():
         try:
             evidence=preview(infile,dst)
             results.append({"name":asset["name"],"path":asset["path"],
-                "preview":str(dst.relative_to(ROOT)),**evidence,"status":"GEOMETRY_ONLY"})
+                "preview":str(dst.resolve().relative_to(ROOT)),**evidence,"status":"GEOMETRY_ONLY"})
             print("PREVIEW_OK",asset["name"])
         except Exception as e:
             results.append({"name":asset["name"],"path":asset["path"],
