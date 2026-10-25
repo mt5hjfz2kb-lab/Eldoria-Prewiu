@@ -71,7 +71,25 @@ clean.update();patch.data=clean
 bm=bmesh.new();bm.from_mesh(clean);bmesh.ops.recalc_face_normals(bm,faces=list(bm.faces));bm.normal_update()
 if sum(f.normal.z for f in bm.faces)<0:bmesh.ops.reverse_faces(bm,faces=list(bm.faces))
 bm.to_mesh(clean);bm.free();clean.update()
-solid=patch.modifiers.new('Temporary closed modelling volume','SOLIDIFY');solid.thickness=48;solid.offset=-1;solid.material_offset=1;solid.material_offset_rim=2;apply(patch,solid)
+# Extrude explicitly down world Z; imported/custom normals must not choose
+# which side of the open source sheet becomes the modelling volume.
+points=[tuple(v.co) for v in clean.vertices];N=len(points);points += [(x,y,z-48) for x,y,z in points.copy()];top=[];edge_counts={}
+for p in clean.polygons:
+ ids=list(p.vertices);area2=sum(points[a][0]*points[b][1]-points[b][0]*points[a][1] for a,b in zip(ids,ids[1:]+ids[:1]))
+ if area2<0:ids.reverse()
+ top.append(ids)
+ for a,b in zip(ids,ids[1:]+ids[:1]):
+  key=tuple(sorted((a,b)))
+  if key in edge_counts:edge_counts[key]=None
+  else:edge_counts[key]=(a,b)
+faces=top+[[i+N for i in reversed(face)] for face in top];indices=[0]*len(top)+[1]*len(top)
+for pair in edge_counts.values():
+ if pair is not None:
+  a,b=pair;faces.append([b,a,a+N,b+N]);indices.append(2)
+volume=bpy.data.meshes.new('Explicit downward geological modelling volume');volume.from_pydata(points,[],faces)
+for m in [soil_material,temporary_bottom,temporary_rim,rock]:volume.materials.append(m)
+for p,index in zip(volume.polygons,indices):p.material_index=index
+volume.update();patch.data=volume
 # Hand-directed branching capsule loft. A voxel union rounds the joins before
 # the exact cut, so the terrain grid cannot dictate the silhouette of the wound.
 cv=[];cf=[]
