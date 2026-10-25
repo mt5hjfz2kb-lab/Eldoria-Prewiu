@@ -398,6 +398,37 @@ jobs:
           foreach($name in @('ready','session-closed')){Copy-Item (Join-Path $origin "$name.json") (Join-Path $destination "geology-$name.json") -Force}
           foreach($name in @('request','response')){Copy-Item (Join-Path $origin "$name-40214248071.json") (Join-Path $destination "geology-$name.json") -Force}
           Write-Host 'REGION1_GROUND_BOUND_BREACH_STAGED terrain_position_topology_UV_materials_preserved=1 new_targets=0 fresh_Unity_required=1'
+      - name: Recover actual artist-reviewed macro composition
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40226719401
+          name: region1-interactive-40226719401
+          path: ${{ runner.temp }}/region1-reviewed-macro
+      - name: Stage exact observed BlenderMCP valleys and geological walls
+        shell: powershell
+        run: |
+          $proof=Get-ChildItem "$env:RUNNER_TEMP/region1-reviewed-macro" -Recurse -Filter macro-art-operations.json | Select-Object -First 1
+          if(-not $proof){throw 'Reviewed macro source unavailable'}
+          $origin=Split-Path $proof.FullName
+          $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
+          $unityDest=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
+          $expected=@{
+            'Eldoria_Region1_Production.blend'='b0cfa6108ec0569f1e0de524d7b34123f8f1cff099fbe71f85cc49b90f804b2e'
+            'RegionOneBlenderWorld.glb'='1d7400bb49dfb6de97441cd6269542ab1b5bbd85f5e703c44b602e17e6ca0d6d'
+            'RegionOneBlenderQueries.bytes'='7065f7d1d208bc8eaa25c84a37034d3f7f3bc171cdc87a763cbcd89d800daa3d'
+            'production-region.json'='05933906a75ab541c47c41db877878239f34cc9e9e7149866cabc732fea98e55'
+          }
+          foreach($name in $expected.Keys){
+            $saved=Join-Path $origin $name
+            if((Get-FileHash $saved -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected[$name]){throw "Observed macro output changed: $name"}
+            Copy-Item $saved (Join-Path $destination $name) -Force
+            if($name -ne 'Eldoria_Region1_Production.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
+          }
+          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40226719401.json','response-40226719401.json')){
+            Copy-Item (Join-Path $origin $name) (Join-Path $destination "macro-$name") -Force
+          }
+          Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51898_vertices new_streams=2 new_targets=0 fresh_Unity_required=1'
       - name: Actual Editor import + integrated source gate
         if: "!contains(github.event.head_commit.message, 'author-retry(world4x):') && !contains(github.event.head_commit.message, 'blender-author(world4x):')"
         shell: powershell
@@ -612,3 +643,4 @@ jobs:
           name: region1-interactive-${{ github.run_id }}
           path: ${{ env.ELDORIA_INTERACTIVE_OUT }}/**
           if-no-files-found: error
+

@@ -28,7 +28,7 @@ namespace Eldoria.World4XCanon
                 if(!retained)
                 {
                     var scale=far.transform.localScale;
-                    far.transform.localScale=new Vector3(scale.x*1.50f,scale.y*1.85f,scale.z*1.50f);
+                    far.transform.localScale=new Vector3(scale.x*2.10f,scale.y*2.60f,scale.z*2.10f);
                     var size=far.bounds.size;float footprint=Mathf.Max(size.x,size.z);
                     if(footprint<12f){
                         // The source ecotone/castle/small plantation crowns are
@@ -36,12 +36,12 @@ namespace Eldoria.World4XCanon
                         // legible as a rectangle even after its ground detail is
                         // culled. Keep its expected crown area, using fewer of
                         // the SAME anchors at the continental silhouette scale.
-                        float coverage=footprint*footprint/(16f*16f);
+                        float coverage=footprint*footprint/(22f*22f);
                         retainedFarVisible=(identity%10000)/10000f<coverage;
                         if(retainedFarVisible){
                             scale=far.transform.localScale;
-                            far.transform.localScale=new Vector3(scale.x*16f/Mathf.Max(.01f,footprint),
-                                scale.y*14f/Mathf.Max(.01f,size.y),scale.z*16f/Mathf.Max(.01f,footprint));
+                            far.transform.localScale=new Vector3(scale.x*22f/Mathf.Max(.01f,footprint),
+                                scale.y*20f/Mathf.Max(.01f,size.y),scale.z*22f/Mathf.Max(.01f,footprint));
                         }
                     }
                 }
@@ -51,7 +51,7 @@ namespace Eldoria.World4XCanon
                     // anchors retain approximately their original covered area.
                     retainedFarVisible=identity%20==0;
                     var scale=far.transform.localScale;
-                    if(retainedFarVisible)far.transform.localScale=new Vector3(scale.x*4.5f,scale.y*6.5f,scale.z*4.5f);
+                    if(retainedFarVisible)far.transform.localScale=new Vector3(scale.x*6.3f,scale.y*9.1f,scale.z*6.3f);
                 }
                 // Scale about the existing canopy base, not the ground-origin
                 // pivot: these protected pine meshes start above a separate stem.
@@ -76,3 +76,4 @@ namespace Eldoria.World4XCanon
         }
     }
 }
+

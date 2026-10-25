@@ -41,6 +41,10 @@ if(Test-Path "$creatures.meta"){$paths+="$creatures.meta"}
 foreach($file in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend','RockBoar_Far_LOD.blend')){
  $path="$sources/$file";Copy-Item (Join-Path $generated $file) $path;$paths+=$path
 }
+foreach($file in @('macro-macro-art-operations.json','macro-ready.json','macro-session-closed.json','macro-request-40226719401.json','macro-response-40226719401.json')){
+ $saved=Join-Path $generated $file
+ if(Test-Path $saved){$path="$sources/$file";Copy-Item $saved $path;$paths+=$path}
+}
 # Keep the required genuine review views beside their exact editable source;
 # artifact retention must not erase the six-scale/orientation delivery evidence.
 $captures=Join-Path $env:RUNNER_TEMP "region1-canon-captures-$env:GITHUB_RUN_ID"
@@ -121,3 +125,4 @@ try {
  Remove-Item Env:GIT_CONFIG_COUNT,Env:GIT_CONFIG_KEY_0,Env:GIT_CONFIG_VALUE_0 -ErrorAction SilentlyContinue
 }
 @{candidate_source=$env:GITHUB_SHA;assets_commit=(git rev-parse HEAD).Trim();run=$env:GITHUB_RUN_ID;merged=$false;published=$false}|ConvertTo-Json|Set-Content (Join-Path $env:RUNNER_TEMP 'region1-materialized-candidate.json')
+

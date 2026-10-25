@@ -27,7 +27,7 @@ namespace Eldoria.World4XCanon
             scope.authoredShader=shader;scope.origin=artwork.transform.position;scope.ApplyMaterials(artwork);
             var fillObject=new GameObject("Region 1 scoped sky fill");fillObject.transform.SetParent(artwork.transform,false);fillObject.layer=29;
             scope.fill=fillObject.AddComponent<Light>();scope.fill.type=LightType.Directional;scope.fill.shadows=LightShadows.None;
-            scope.fill.color=new Color(.65f,.71f,.84f);scope.fill.intensity=.28f;scope.fill.cullingMask=1<<29;
+            scope.fill.color=new Color(.65f,.71f,.84f);scope.fill.intensity=.20f;scope.fill.cullingMask=1<<29;
             scope.fill.transform.rotation=Quaternion.Euler(30,145,0);scope.fill.enabled=false;
         }
         public void ApplyMaterials(GameObject artwork)
@@ -119,13 +119,13 @@ namespace Eldoria.World4XCanon
             float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(regional*.75f,regional*1.25f,camera.orthographicSize));
             var fog=QualitySettings.activeColorSpace==ColorSpace.Linear?camera.backgroundColor.linear:camera.backgroundColor;
             foreach(var material in owned){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
-            float mineralEmission=Mathf.Lerp(.18f,.60f,Mathf.InverseLerp(36f,280f,camera.orthographicSize));
-            if(camera.orthographicSize>280f)mineralEmission=Mathf.Lerp(.60f,.95f,Mathf.InverseLerp(280f,navigation?navigation.globalZoom:2500f,camera.orthographicSize));
+            float mineralEmission=Mathf.Lerp(.65f,.85f,Mathf.InverseLerp(36f,280f,camera.orthographicSize));
+            if(camera.orthographicSize>280f)mineralEmission=Mathf.Lerp(.85f,1.10f,Mathf.InverseLerp(280f,navigation?navigation.globalZoom:2500f,camera.orthographicSize));
             foreach(var material in minerals)material.SetFloat("_MineralEmission",mineralEmission);
             background=camera.backgroundColor; // Preserve the existing continental clear colour; grey increased the tile silhouette.
             configuredSun=RenderSettings.sun;sun=configuredSun;
             if(!sun)sun=FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.enabled&&l.type==LightType.Directional).OrderByDescending(l=>l.intensity).FirstOrDefault();
-            if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;depthBias=sun.shadowBias;normalBias=sun.shadowNormalBias;sun.transform.rotation=Quaternion.Euler(48,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}
+            if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;depthBias=sun.shadowBias;normalBias=sun.shadowNormalBias;sun.transform.rotation=Quaternion.Euler(42,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}
             pipeline=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
             if(pipeline){
                 distance=pipeline.shadowDistance;cascades=pipeline.shadowCascadeCount;
@@ -151,3 +151,4 @@ namespace Eldoria.World4XCanon
         void OnDestroy(){foreach(var material in owned)if(material)Destroy(material);}
     }
 }
+

@@ -210,6 +210,12 @@ namespace Eldoria.World4XCanon
    }
    if(nodes)nodes.Refresh();if(geography)geography.Refresh();if(lookDevelopment)lookDevelopment.RefreshForZoom();
   }
+  // Render callbacks also cover direct capture cameras and a zoom changed after
+  // LateUpdate. Refresh representation before drawing this actual world camera.
+  void OnEnable(){UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering+=BeforeWorldRender;}
+  void OnDisable(){UnityEngine.Rendering.RenderPipelineManager.beginCameraRendering-=BeforeWorldRender;}
+  void BeforeWorldRender(UnityEngine.Rendering.ScriptableRenderContext context,Camera camera)
+  {if(built&&host&&camera==host.WorldCamera)UpdateLevelOfDetail(true);}
   void LateUpdate(){if(built)UpdateLevelOfDetail(false);}
   public void RefreshForCapture(){if(built)UpdateLevelOfDetail(true);}
   public void SetBlockout(bool value){if(geography)geography.SetBlockout(value);}
@@ -242,3 +248,4 @@ namespace Eldoria.World4XCanon
   void OnDestroy(){for(int i=0;i<originals.Count;i++)if(originals[i])originals[i].enabled=states[i];for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=lodStates[i];}
  }
 }
+

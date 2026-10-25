@@ -259,7 +259,7 @@ namespace Eldoria.Tests
                             minimum=Mathf.Min(minimum,y);maximum=Mathf.Max(maximum,y);
                         }
                         float height=maximum-minimum;
-                        Assert.That(height,Is.InRange(.035f,.18f),
+                        Assert.That(height,Is.InRange(.05f,.09f),
                             family+" needs a readable regional silhouette without covering the map; aspect="+aspect);
                         Assert.That(target.GetComponent<Collider>().enabled,Is.True);
                         Assert.That(target.GetComponent<Collider>().bounds.Contains(bounds.center),Is.True,
@@ -282,7 +282,7 @@ namespace Eldoria.Tests
                         var bottom=image.transform.position+camera.transform.up*lo*scale;
                         var top=image.transform.position+camera.transform.up*hi*scale;
                         float footprint=camera.WorldToViewportPoint(top).y-camera.WorldToViewportPoint(bottom).y;
-                        Assert.That(footprint,Is.InRange(.06f,.11f),
+                        Assert.That(footprint,Is.InRange(.06f,.09f),
                             kind+" must retain a readable actual-model image in both regional orientations");
                         var centre=(bottom+top)*.5f;
                         Physics.SyncTransforms();
@@ -1062,6 +1062,10 @@ namespace Eldoria.Tests
                 var shadowProperty=pipeline?pipeline.GetType().GetProperty("shadowDistance"):null;
                 var shadowDistance=shadowProperty?.GetValue(pipeline);var cascadeProperty=pipeline?pipeline.GetType().GetProperty("shadowCascadeCount"):null;var cascadeCount=cascadeProperty?.GetValue(pipeline);var background=camera.backgroundColor;
                 camera.Render();
+                if(camera.orthographicSize<110f)
+                    foreach(var renderer in Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)
+                        .Where(r=>r.name.StartsWith("Production resource impostor ",StringComparison.Ordinal)))
+                        Assert.That(renderer.enabled,Is.False,"Direct near rendering must not retain a regional-size resource image");
                 Assert.That(camera.backgroundColor,Is.EqualTo(background),"Peripheral world atmosphere must restore camera clear colour");
                 foreach(var state in lightStates)if(state.l){
                     Assert.That(Quaternion.Angle(state.l.transform.rotation,state.rotation),Is.LessThan(.001f),"World rendering must restore city light rotation");
@@ -1440,3 +1444,4 @@ namespace Eldoria.Tests
 
     }
 }
+

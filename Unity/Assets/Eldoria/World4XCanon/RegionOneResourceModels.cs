@@ -176,7 +176,7 @@ namespace Eldoria.World4XCanon
                 if(!logical)throw new InvalidOperationException("Missing canonical resource target "+pair.Item1);
                 var visual=Instantiate(source.gameObject,parent);visual.name="Production resource visual "+pair.Item1;
                 if(service.look)service.look.ApplyMaterials(visual);
-                visual.transform.localScale=Vector3.one*1.20f;visual.transform.rotation=Quaternion.Euler(0,180,0);
+                visual.transform.localScale=Vector3.one*(pair.Item1=="forest-valoria"?1.55f:1.35f);visual.transform.rotation=Quaternion.Euler(0,180,0);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 service.nodes.Add(new Node{Id=pair.Item1,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=service.MakeImpostor(pair.Item1,parent)});
             }
@@ -193,12 +193,12 @@ namespace Eldoria.World4XCanon
                 string family=item.ResourceKind=="wood"?"Wood":"Stone";
                 var source=library.GetComponentsInChildren<Transform>(true).Single(x=>x.name=="Resource_"+family+"_"+(nodes.Count%3));
                 var visual=Instantiate(source.gameObject,transform);visual.name="Production resource visual "+item.TargetId;
-                visual.transform.localScale=Vector3.one*1.20f;visual.transform.rotation=Quaternion.Euler(0,180,0);
+                visual.transform.localScale=Vector3.one*(family=="Wood"?1.55f:1.35f);visual.transform.rotation=Quaternion.Euler(0,180,0);
                 if(look)look.ApplyMaterials(visual);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
             }
-            float screenScale=Mathf.Lerp(1f,1.75f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
+            float screenScale=Mathf.Lerp(1f,1.5f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
             if(impostorMaterial&&Mathf.Abs(lastImpostorScale-screenScale)>.0001f){
                 impostorMaterial.SetFloat("_BillboardScale",screenScale);lastImpostorScale=screenScale;
             }
@@ -221,3 +221,4 @@ namespace Eldoria.World4XCanon
         }
     }
 }
+
