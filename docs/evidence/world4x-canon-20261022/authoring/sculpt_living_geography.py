@@ -67,7 +67,13 @@ for path,amplitude,spread in ridges:
  seg=[(*a,*b,0,0,0,0) for a,b in zip(path,path[1:])];d,*_=closest_lines(warpx,warpy,seg);upland+=amplitude*np.exp(-(d/spread)**2)*(0.85+field(1,x,y)*.22)
 upland*=smooth((rd-radius-45)/100)
 rolling=(field(0,x,y)*3.8+field(1,x,y)*1.8)*smooth((rd-radius-22)/90)
-newh=h+(upland+rolling)*weight
+# Fill inherited metre-wide road trenches before painting the relocated trail.
+# Broad landforms, bridges and the protected original remain unaffected.
+blur=old_height.copy()
+for unused in range(2):
+ padded=np.pad(blur,1,mode='edge');blur=(padded[:-2,:-2]+2*padded[:-2,1:-1]+padded[:-2,2:]+2*padded[1:-1,:-2]+4*padded[1:-1,1:-1]+2*padded[1:-1,2:]+padded[2:,:-2]+2*padded[2:,1:-1]+padded[2:,2:])/16
+old_road=sample(old_masks[:,:,2].astype(float)/255,x,y)*weight*smooth((rd-radius-20)/25)
+newh=h*(1-old_road*.88)+sample(blur,x,y)*old_road*.88+(upland+rolling)*weight
 # Moist fluvial terraces sit above the actual water; no perched painted river.
 terrace=water+.5+6*np.power(np.clip((rd-radius)/135,0,1),1.35)
 valley=(1-smooth((rd-radius-24)/135))*smooth((rd-radius-2)/13)*weight
@@ -233,7 +239,8 @@ for index in np.flatnonzero(face_distance<27):
 for name,polys in zip(['BLD_BreachBrokenBasaltPlates','BLD_BreachTerracedStrata','BLD_BreachWeatheredRockfall'],classified):install_copy(name,polys,.026)
 # Three small exposed vents replace the long painted violet strokes.
 core=bpy.data.objects['BLD_BreachMineralHeart'];core_material=bpy.data.materials.new('Breach naturally graded exposed mineral rare vents');core_material.diffuse_color=(.18,.015,.32,1);core_material.use_nodes=True
-bsdf=core_material.node_tree.nodes.get('Principled BSDF');bsdf.inputs['Base Color'].default_value=(.18,.015,.32,1);bsdf.inputs['Emission Color'].default_value=(.32,.012,.68,1);bsdf.inputs['Emission Strength'].default_value=.8
+nodes=core_material.node_tree.nodes;nodes.clear();bsdf=nodes.new('ShaderNodeBsdfPrincipled');output=nodes.new('ShaderNodeOutputMaterial');core_material.node_tree.links.new(bsdf.outputs['BSDF'],output.inputs['Surface'])
+bsdf.inputs['Base Color'].default_value=(.18,.015,.32,1);bsdf.inputs['Emission Color'].default_value=(.32,.012,.68,1);bsdf.inputs['Emission Strength'].default_value=.8
 vv=[];ff=[];vents=[(-262,151),(-278,166),(-238,142)]
 for i,(a,b) in enumerate(vents):
  start=len(vv)
