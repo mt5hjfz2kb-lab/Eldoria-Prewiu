@@ -1056,6 +1056,24 @@ namespace Eldoria.Tests
             public Quaternion cameraRotation;
         }
 
+        [Serializable] sealed class MatchedCameraControls { public long source_run; public RenderIdentity[] views; }
+        static void RestoreMatchedPanoramaPose(Component navigation,Camera camera,string label)
+        {
+            var path=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../../docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json"));
+            var controls=JsonUtility.FromJson<MatchedCameraControls>(File.ReadAllText(path));
+            Assert.That(controls.source_run,Is.EqualTo(40223178638));
+            var pose=controls.views.Single(x=>x.label==label);
+            // This fixes only float-rounding drift in the imported AABB centre.
+            // Any meaningful framing change still fails before taking an image.
+            Assert.That(camera.orthographicSize,Is.EqualTo(pose.zoom));Assert.That(camera.aspect,Is.EqualTo(pose.aspect));
+            Assert.That(Vector3.Distance(camera.transform.position,pose.cameraPosition),Is.LessThan(.002f));
+            Assert.That(Quaternion.Angle(camera.transform.rotation,pose.cameraRotation),Is.LessThan(.001f));
+            var target=navigation.GetType().GetField("target",BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic);
+            Assert.That(target,Is.Not.Null);target.SetValue(navigation,pose.worldTarget);
+            camera.transform.position=pose.cameraPosition;
+            // Rotation is already identical; do not normalize or rewrite it.
+        }
+
         static void SaveRetainedSectorFrame(Camera camera,string path,int width,int height,string targetId=null,Vector3? worldTarget=null)
         {
             var previous=camera.targetTexture;var active=RenderTexture.active;
@@ -1237,6 +1255,7 @@ namespace Eldoria.Tests
                             var actualTerrain=world.GetComponentsInChildren<MeshRenderer>(true).Single(r=>r.name=="BLD_Terrain");
                             Assert.That(actualTerrain.enabled&&actualTerrain.gameObject.activeInHierarchy,Is.True,"Continuous candidate terrain must be active after genuine world entry, before capture.");
                         }
+                        if(stage.Item2=="panoramica")RestoreMatchedPanoramaPose(navigation,camera,stage.Item2+"-"+format.Item3);
                         var texture = new RenderTexture(format.Item1,format.Item2,24,
                             RenderTextureFormat.ARGB32);
                         var pixels = new Texture2D(format.Item1,format.Item2,TextureFormat.RGB24,false);

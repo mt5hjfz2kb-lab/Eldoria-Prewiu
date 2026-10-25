@@ -1,0 +1,69 @@
+{
+  "source_run": 40223178638,
+  "source_commit": "96071b6aa8b5a352e1506c3f2cdefbd5d628ccd5",
+  "reason": "Frozen genuine Unity panorama poses for strict matched-camera A/B; imported AABB recentering can differ by 0.000061m. Actual camera and navigation target are restored before rendering, never metadata afterwards.",
+  "views": [
+    {
+      "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+      "version": "6000.3.23f1",
+      "label": "panoramica-horizontal",
+      "sha256": "9f3ba6dcfbf0cd001f2f6757ae904e6c46713a87bf47edb02b4636c8abfcee8f",
+      "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+      "targetId": "",
+      "actualUnityCamera": true,
+      "playMode": true,
+      "physicalIphone": false,
+      "width": 1280,
+      "height": 720,
+      "zoom": 1053.0,
+      "aspect": 1.7777777910232544,
+      "cameraPosition": {
+        "x": -136.01220703125,
+        "y": 2366.075439453125,
+        "z": 30.0
+      },
+      "worldTarget": {
+        "x": 1017.9999389648438,
+        "y": 0.0,
+        "z": 30.0
+      },
+      "cameraRotation": {
+        "x": 0.37470948696136475,
+        "y": 0.5996605753898621,
+        "z": -0.37470948696136475,
+        "w": 0.5996605753898621
+      }
+    },
+    {
+      "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+      "version": "6000.3.23f1",
+      "label": "panoramica-vertical",
+      "sha256": "2fa9053bb932ae04abd79701920a0efb5944dc3768d18e1787dc9e4e18f6d297",
+      "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+      "targetId": "",
+      "actualUnityCamera": true,
+      "playMode": true,
+      "physicalIphone": false,
+      "width": 390,
+      "height": 844,
+      "zoom": 2048.107177734375,
+      "aspect": 0.4620853066444397,
+      "cameraPosition": {
+        "x": 1017.9999389648438,
+        "y": 4602.06640625,
+        "z": -2214.57763671875
+      },
+      "worldTarget": {
+        "x": 1017.9999389648438,
+        "y": 0.0,
+        "z": 30.0
+      },
+      "cameraRotation": {
+        "x": 0.5299192667007446,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.8480480909347534
+      }
+    }
+  ]
+}

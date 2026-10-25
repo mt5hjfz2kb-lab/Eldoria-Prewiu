@@ -198,7 +198,7 @@ namespace Eldoria.World4XCanon
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
             }
-            float screenScale=Mathf.Lerp(1f,1.25f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
+            float screenScale=Mathf.Lerp(1f,1.4f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
             if(impostorMaterial&&Mathf.Abs(lastImpostorScale-screenScale)>.0001f){
                 impostorMaterial.SetFloat("_BillboardScale",screenScale);lastImpostorScale=screenScale;
             }
