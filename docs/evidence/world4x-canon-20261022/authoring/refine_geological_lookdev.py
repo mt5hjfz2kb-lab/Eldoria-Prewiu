@@ -116,14 +116,18 @@ land=np.clip((sampled(masks[:,:,0].astype(np.float32))/255-.50)/.25,0,1)
 water=sampled(masks[:,:,1].astype(np.float32))/255
 road=sampled(masks[:,:,2].astype(np.float32))/255
 core_distance=np.hypot(np.maximum(0,np.abs(xc)-96)[None,:],np.maximum(0,np.maximum(-78-yc,yc-270))[:,None])
-weight=smooth(core_distance/260)*land*(1-water)*(1-road)**2
+edge_distance=np.minimum((910-np.abs(xc))[None,:],(1800-np.abs(yc))[:,None])
+# The neighbouring context retains its original pigment. Meet it with zero
+# correction and zero derivative, rather than exposing the exported UV rectangle.
+peripheral_blend=smooth(edge_distance/240)
+weight=smooth(core_distance/260)*land*(1-water)*(1-road)**2*peripheral_blend
 # Preserve the existing geological palette and original protected core.
 cx=np.where((xc>=-720)&(xc<=-20))[0];cy=np.where((yc>=-100)&(yc<=680))[0]
 GX,GY=np.meshgrid(xc[cx],yc[cy])
 fault=ns['stroke_distance'](GX,GY,ns['AUTHOR_FAULTS'])
 weight[np.ix_(cy,cx)]*=smooth((fault-55)/55)
 palette_mean=patch.mean(axis=(0,1))
-graded=palette_mean+(data[:,:,:3]-palette_mean)*1.65
+graded=palette_mean+(data[:,:,:3]-palette_mean)*1.35
 ridge=smooth((height-5)/12)
 graded[:,:,0]*=1+.12*ridge;graded[:,:,1]*=1+.04*ridge;graded[:,:,2]*=1-.06*ridge
 data[:,:,:3]=data[:,:,:3]*(1-weight[:,:,None])+np.clip(graded,.025,.95)*weight[:,:,None]
@@ -137,7 +141,7 @@ for material in bpy.data.materials:
   for item in material.node_tree.nodes:
    if item.type=='TEX_IMAGE' and item.image==pigment:item.image=country;links+=1
 assert links>0,'Continental look-development was not linked to actual scene materials'
-(out/'continental-washes-review.json').write_text(json.dumps({'source':'Original AF patch and existing authored flows; exact exported height data','protected_core_pixels_changed':False,'terrain_positions_changed':False,'new_gameplay_objects':0,'material_links':links,'contrast':1.65,'art_approved':False},indent=2))
+(out/'continental-washes-review.json').write_text(json.dumps({'source':'Original AF patch and existing authored flows; exact exported height data','protected_core_pixels_changed':False,'terrain_positions_changed':False,'new_gameplay_objects':0,'material_links':links,'contrast':1.35,'art_approved':False},indent=2))
 ix=np.clip(((X+910)/1820*(pigment.size[0]-1)).astype(int),0,pigment.size[0]-1)
 iy=np.clip(((Y+1800)/3600*(pigment.size[1]-1)).astype(int),0,pigment.size[1]-1)
 ground=data[iy,ix,:3]
@@ -145,7 +149,7 @@ vein=np.clip((6-distance)/5,0,1)*np.exp(-(r/22)**2)
 grain=.007*np.sin(X*4.7+Y*1.7)+.005*np.cos(Y*3.9-X*2.3)
 rock=np.empty((*X.shape,3),np.float32)
 rock[:]=np.array((.105,.055,.135));rock+=grain[:,:,None]
-rock=rock*(1-vein[:,:,None]*.72)+np.array((.30,.035,.42))*vein[:,:,None]*.72
+rock=rock*(1-vein[:,:,None]*.72)+np.array((.55,.035,.70))*vein[:,:,None]*.72
 colour=ground*(1-exposure[:,:,None]*.88)+rock*exposure[:,:,None]*.88
 paint=np.ones((width,width,4),np.float32);paint[:,:,:3]=colour;paint[:,:,3]=opacity
 image=bpy.data.images.new('Continuous exposed central mineral',width,width,alpha=True)

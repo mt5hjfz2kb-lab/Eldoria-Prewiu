@@ -60,7 +60,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);
  // Only the existing exposed central mineral receives this material value.
  // This is emissive geology on the actual ground, never a portal or icon.
- c.rgb+=originalPigment*(_MineralEmission*smoothstep(.10,.28,originalPigment.b-originalPigment.g));
+ c.rgb+=originalPigment*(_MineralEmission*smoothstep(.004,.04,originalPigment.b-originalPigment.g));
  float2 region=i.world.xz-_RegionOrigin.xz;
  // Atmosphere at the actual neighbouring-ground edge, beyond the playable region.
  float west=1710+region.x, east=1710-region.x, north=2600-region.y, south=2600+region.y;
