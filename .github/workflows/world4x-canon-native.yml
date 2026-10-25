@@ -66,7 +66,7 @@ jobs:
       contents: write
       actions: read
     needs: canon-source
-    if: github.event_name == 'push' && vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, 'blender-interactive(world4x):')
+    if: github.event_name == 'push' && vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, 'blender-interactive(world4x):') && !contains(github.event.head_commit.message, 'evidence-recovery(world4x):')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 50
     steps:
@@ -639,3 +639,37 @@ jobs:
           path: ${{ env.ELDORIA_INTERACTIVE_OUT }}/**
           if-no-files-found: error
 
+
+  evidence-recovery:
+    needs: canon-source
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, 'evidence-recovery(world4x):')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Preserve existing failed general framing evidence without running an editor
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another editor is active'}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json'}
+          $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
+          $lease=@($registry.active|Where-Object {$_.id -eq 'eldoria-world-region-1-canon-20261022'})
+          if($lease.Count -ne 1 -or $lease[0].owner -ne 'codex-world4x-takeover-a6480e11' -or $lease[0].ownership_revision -ne 37 -or $lease[0].write_scope_released){throw 'World lease changed'}
+          $source=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/valoria-reference-clean'
+          $result=Get-Content (Join-Path $source 'integration-result.json') -Raw|ConvertFrom-Json
+          if($result.source -ne 'b71da71919f86844c303305c3d9a8a1d47115dd6' -or @($result.checks).Count -ne 44){throw 'Existing evidence is not the exact completed probe'}
+          $out=Join-Path $env:RUNNER_TEMP "region1-framing-recovery-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Force $out|Out-Null
+          Get-ChildItem $source -File | Where-Object {$_.Name -like 'integration*.png' -or $_.Name -eq 'integration-result.json'} | Copy-Item -Destination $out
+          Get-ChildItem $env:RUNNER_TEMP -File | Where-Object {$_.Name -like '*general*.xml' -or $_.Name -like '*general*.log' -or $_.Name -like 'Region1-General-Framing-Baseline*'} | Copy-Item -Destination $out
+          "RECOVERY_OUT=$out" >> $env:GITHUB_ENV
+          Write-Host "EXACT_FAILED_GENERAL_EVIDENCE_PRESERVED source=$($result.source) checks=$(@($result.checks).Count) no_editor_started=true"
+      - uses: actions/upload-artifact@v4
+        if: always() && env.RECOVERY_OUT != ''
+        with:
+          name: region1-framing-recovery-${{ github.run_id }}
+          path: ${{ env.RECOVERY_OUT }}/**
+          if-no-files-found: error
