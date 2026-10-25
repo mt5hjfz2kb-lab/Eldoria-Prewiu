@@ -1,41 +1,46 @@
 {
   "schema_version": 1,
   "workstream_id": "eldoria-world-region-1-canon-20261022",
-  "repeated_topic": "bridge",
-  "responds_to_sha": "110f2793bd31efd9fa040daa8e840d8c0c015a1a",
+  "repeated_topic": "panorama",
+  "responds_to_sha": "379fda24128c1b4dd1cb1f4ba3b2c837091b1ffa",
   "decision": "PIVOT_TO_HIGH_IMPACT",
-  "visual_evidence": "Six genuine Unity PNGs from run40087460002 compared directly with the three approved originals. Near view retains the AF/AG language; regional and panorama show isolated dark forest clusters, weak geological hierarchy and large uniform grass corridors. The prior bridge has terrain occlusion; the already prepared 110f279 candidate is being certified once without another geometry edit.",
-  "root_cause": "The terrain expansion preserves near assets but scales their visual vocabulary poorly across a 1820 by3600 metre region. Breach span and secondary relief occupy too little screen area; dense tree groups resolve into dots. Repeated local crossing edits cannot change those relationships.",
-  "reason_for_priority": "The regional and panoramic frames occupy most navigation time and carry the identity of Region1. A coherent hierarchy of geological form, woodland margins and open routes matters more than further decorative finish of one crossing.",
+  "visual_evidence": "Las capturas Unity native-40211155178 muestran una lámina lila lisa en breach-close-landscape y bandas uniformes superpuestas en la vista regional. Los nodos aprobados sí son reconocibles y quedan conservados. El primer render MCP40213370506 sustituyó la lámina por fracturas, pero creó un damero en los brazos; MCP40214248071 copia la apariencia exacta del suelo y elimina ese artefacto antes de otra certificación completa.",
+  "root_cause": "La continuidad geológica no se resolvía añadiendo rocas: los revestimientos largos puenteaban el suelo y su material uniforme dominaba la imagen. La cámara regional certificada está aproximadamente a700m del suelo frente a un alcance de sombras fijado en300m. Los commits incluyen dos revisiones baratas y una reparación de checkout, no cuatro mejoras visuales certificadas; se valida ahora una corrección agrupada de superficie y profundidad.",
+  "reason_for_priority": "La Brecha es el defecto mayor de cercana y regional, mientras que los nuevos nodos ya constituyen una mejora real conservada con62/26/44. El lote se centra en restituir suelo continuo, fractura legible y volumen de iluminación en la misma geografía. No se añaden puentes, árboles, objetivos ni criaturas para distraer de ese defecto.",
   "competing_problems": [
     {
-      "view": "panoramica",
-      "defect": "Breach loses prominence and forest groups collapse into dots across broad olive landcover.",
+      "view": "cercana",
+      "defect": "Centro lila liso y facetas suspendidas impiden leer una herida geológica; visibles en la captura real breach-close-landscape de40211155178.",
       "impact": 5
     },
     {
       "view": "regional",
-      "defect": "Disconnected masses and weak relief make the expanded core boundary and forest clusters dominate.",
+      "defect": "Bandas de falla demasiado uniformes y poca lectura de sombras de las masas continentales frente al canon; la cobertura fija termina antes de alcanzar el suelo.",
       "impact": 5
     },
     {
-      "view": "cercana",
-      "defect": "Prior bridge is partially occluded; certify the already committed repair before further decisions.",
-      "impact": 3
+      "view": "panoramica",
+      "defect": "La jerarquía de la fractura y el volumen de las masas forestales requieren juicio visual global; no se acredita7,5 por las pruebas técnicas.",
+      "impact": 4
     }
   ],
   "preserve_AF_AG": true,
+  "heavy_run_rule": "QUICK_VISUAL_PREVIEW_FIRST",
+  "shared_artistic_goal": "Recuperar profundidad y continuidad de la misma superficie geológica en todas las cámaras, conservando los nodos recién terminados y todos los estados persistidos.",
   "next_batch": [
     {
-      "view": "panoramica",
-      "visual_change": "Inspect the retained editable continent through BlenderMCP; author a broader connected geological hierarchy using existing terrain, preserving the AF/AG core and real navigation corridors."
+      "view": "cercana",
+      "visual_change": "Importar el núcleo de48placas de pizarra fracturada y grietas estrechas; copiar suelo, UV y normales reales bajo las fallas para eliminar las láminas y el damero."
     },
     {
       "view": "regional",
-      "visual_change": "Review woodland silhouettes and ground relationships together with the geological hierarchy, preserve open city and resource areas; reject preliminary edits before another full Unity run if no visible gain."
+      "visual_change": "Probar cobertura de sombras ajustada a la huella ortográfica real con12capturas auténticas A/B; conservarla solo si aumenta el volumen sin introducir artefactos."
+    },
+    {
+      "view": "all",
+      "visual_change": "Repetir las seis vistas canónicas y la Brecha cercana/regional en ambas orientaciones; mantener terreno completo y59imágenes empaquetadas verificadas por hash."
     }
   ],
   "art_approved": false,
-  "heavy_run_rule": "QUICK_VISUAL_PREVIEW_FIRST",
-  "shared_artistic_goal": "Restore a readable continental hierarchy from real terrain and canopy silhouettes, with the geological breach as focal point and open navigation corridors preserved across continuous zoom."
+  "score_7_5_certified": false
 }
