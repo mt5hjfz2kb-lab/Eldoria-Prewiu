@@ -27,14 +27,14 @@ patch_faces=[p for p in old.polygons if all(-470<v.co.x<-98 and -20<v.co.y<320 f
 patch_ids={p.index for p in patch_faces};used=sorted({i for p in patch_faces for i in p.vertices});remap={i:k for k,i in enumerate(used)}
 vertices=[]
 for i in used:
- q=old.vertices[i].co;d,px,py,nxv,nyv=nearest(q.x,q.y);weight=1-smooth((d-20)/12)
+ q=old.vertices[i].co;d,px,py,nxv,nyv=nearest(q.x,q.y);weight=1-smooth((d-44)/18)
  bank=(float(sample(heights,q.x+nxv*43,q.y+nyv*43))+float(sample(heights,q.x-nxv*43,q.y-nyv*43)))*.5
  vertices.append((q.x,q.y,q.z*(1-weight)+bank*weight))
 mesh=bpy.data.meshes.new('Continuous geological modelling patch');mesh.from_pydata(vertices,[],[[remap[i] for i in p.vertices] for p in patch_faces]);mesh.update()
 # Quiet rock with deposited bands in physical elevation, never stretched slab UV.
 rock=bpy.data.materials.new('Breach fractured basalt continuous geological wall');rock.diffuse_color=(.22,.235,.25,1);rock.use_nodes=True
 nodes=rock.node_tree.nodes;nodes.clear();bsdf=nodes.new('ShaderNodeBsdfPrincipled');output=nodes.new('ShaderNodeOutputMaterial');rock.node_tree.links.new(bsdf.outputs['BSDF'],output.inputs['Surface']);bsdf.inputs['Base Color'].default_value=(.22,.235,.25,1);bsdf.inputs['Roughness'].default_value=.9
-geometry=nodes.new('ShaderNodeNewGeometry');separate=nodes.new('ShaderNodeSeparateXYZ');multiply=nodes.new('ShaderNodeMath');multiply.operation='MULTIPLY';multiply.inputs[1].default_value=math.tau/2.2;sine=nodes.new('ShaderNodeMath');sine.operation='SINE';ramp=nodes.new('ShaderNodeValToRGB');ramp.color_ramp.elements[0].position=.12;ramp.color_ramp.elements[0].color=(.17,.18,.195,1);ramp.color_ramp.elements[1].position=.85;ramp.color_ramp.elements[1].color=(.26,.275,.285,1)
+geometry=nodes.new('ShaderNodeNewGeometry');separate=nodes.new('ShaderNodeSeparateXYZ');multiply=nodes.new('ShaderNodeMath');multiply.operation='MULTIPLY';multiply.inputs[1].default_value=math.tau/2.2;sine=nodes.new('ShaderNodeMath');sine.operation='SINE';ramp=nodes.new('ShaderNodeValToRGB');ramp.color_ramp.elements[0].position=.12;ramp.color_ramp.elements[0].color=(.19,.20,.215,1);ramp.color_ramp.elements[1].position=.85;ramp.color_ramp.elements[1].color=(.23,.245,.255,1)
 links=rock.node_tree.links;links.new(geometry.outputs['Position'],separate.inputs[0]);links.new(separate.outputs['Z'],multiply.inputs[0]);links.new(multiply.outputs[0],sine.inputs[0]);links.new(sine.outputs[0],ramp.inputs[0]);links.new(ramp.outputs['Color'],bsdf.inputs['Base Color'])
 soil_material=old.materials[0];temporary_bottom=bpy.data.materials.new('Temporary modeller underside');temporary_rim=bpy.data.materials.new('Temporary modeller exterior')
 for m in [soil_material,temporary_bottom,temporary_rim,rock]:mesh.materials.append(m)
@@ -93,13 +93,15 @@ volume.update();patch.data=volume
 # Hand-directed branching capsule loft. A voxel union rounds the joins before
 # the exact cut, so the terrain grid cannot dictate the silhouette of the wound.
 cv=[];cf=[]
+endpoint_degree=collections.Counter((f[k],f[z]) for f in faults for k,z in [('ax','az'),('bx','bz')])
 for index,f in enumerate(faults):
  ax,ay,bx,by=f['ax'],f['az'],f['bx'],f['bz'];angle=math.atan2(by-ay,bx-ax);rings=[]
  for z,radius in [(-13.1,4.5),(-7,7.5),(2,12),(16,14.2),(36,16)]:
   ring=[]
   for cx,cy,start in [(bx,by,angle-math.pi/2),(ax,ay,angle+math.pi/2)]:
    for j in range(8):
-    theta=start+math.pi*j/7;variation=1+.07*math.sin(cx*.047+cy*.061+theta*2)+.04*math.sin(theta*5+index)
+    theta=start+math.pi*j/7;variation=1+.24*math.sin(cx*.047+cy*.061+theta*2)+.12*math.sin(theta*5+index)
+    if endpoint_degree[(cx,cy)]==1:variation*=.12
     ring.append(len(cv));cv.append((cx+math.cos(theta)*radius*variation,cy+math.sin(theta)*radius*variation,z+.35*math.sin(cx*.021+cy*.025)))
   rings.append(ring)
  for a,b in zip(rings,rings[1:]):
