@@ -207,8 +207,25 @@ namespace Eldoria.Tests
         [UnityTest]
         public IEnumerator BothTripoFamiliesRemainReadableInBothRegionalOrientations()
         {
+            Assert.That(Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE"),Is.EqualTo("1"),
+                "Legibility verification requires the existing disposable gameplay probe.");
             MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
             yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            bool opened=(bool)Call(host,"TrySetWorld",true);
+            if(!opened)
+            {
+                var offer=Member(Member(Call(host,"Read","sawmill",false),"Building"),"Action");
+                Assert.That(offer,Is.Not.Null);
+                Assert.That(Member(offer,"Kind"),Is.EqualTo("Build"));
+                Call(host,"Submit",offer);
+                var city=Member(host,"City");
+                Call(Member(city,"Clock"),"Step",Eldoria.Domain.SliceRules.SawmillBuildSeconds+1);
+                Call(Member(city,"Gateway"),"Advance");
+                yield return null;
+                opened=(bool)Call(host,"TrySetWorld",true);
+            }
+            Assert.That(opened&&world.activeInHierarchy&&camera.enabled,Is.True,
+                "Measure targets after entering Mundo through the real gameplay gate.");
             var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
                 .Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
             var gateway=(Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway");
