@@ -1,5 +1,8 @@
 # Asset Library Canonicalization Pass v1 — Final Result
 
+> **DECISIÓN ACTUAL DEL PROPIETARIO, 25/10/2026 (PREVALECE SOBRE ESTA DOCUMENTACIÓN HISTÓRICA):** el modelo antiguo `Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb` **NO está aprobado para uso**. Se conserva solo como archivo histórico y no puede sugerirse, incorporarse en escenas ni publicarse salvo autorización específica, nueva y expresa del propietario. Ningún anterior `PASS` o mención a "Hero Bastion producción" revoca esta prohibición. Antes de sustituir una posible instancia preexistente, su responsable debe comprobar las referencias y la compatibilidad de Unity sin romper el juego.
+
+
 Date: 2026-10-02  
 Status: **TECH PASS / LIBRARY PASS**  
 Visual changes: **none**  
