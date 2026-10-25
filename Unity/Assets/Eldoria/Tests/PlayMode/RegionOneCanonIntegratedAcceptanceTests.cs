@@ -1001,7 +1001,8 @@ namespace Eldoria.Tests
             {
                 camera.aspect=width/(float)height;camera.targetTexture=rt;
                 var sceneLights=Object.FindObjectsByType<Light>(FindObjectsSortMode.None);
-                var lightStates=sceneLights.Select(l=>(l,l.transform.rotation,l.shadows,l.shadowStrength,l.shadowBias,l.shadowNormalBias)).ToArray();
+                var originalSun=RenderSettings.sun;
+                var lightStates=sceneLights.Select(l=>(l,l.transform.rotation,l.shadows,l.shadowStrength,l.shadowBias,l.shadowNormalBias,l.enabled)).ToArray();
                 var pipeline=UnityEngine.Rendering.GraphicsSettings.currentRenderPipeline;
                 var shadowProperty=pipeline?pipeline.GetType().GetProperty("shadowDistance"):null;
                 var shadowDistance=shadowProperty?.GetValue(pipeline);var cascadeProperty=pipeline?pipeline.GetType().GetProperty("shadowCascadeCount"):null;var cascadeCount=cascadeProperty?.GetValue(pipeline);var background=camera.backgroundColor;
@@ -1009,8 +1010,9 @@ namespace Eldoria.Tests
                 Assert.That(camera.backgroundColor,Is.EqualTo(background),"Peripheral world atmosphere must restore camera clear colour");
                 foreach(var state in lightStates)if(state.l){
                     Assert.That(Quaternion.Angle(state.l.transform.rotation,state.rotation),Is.LessThan(.001f),"World rendering must restore city light rotation");
-                    Assert.That(state.l.shadows,Is.EqualTo(state.shadows));Assert.That(state.l.shadowStrength,Is.EqualTo(state.shadowStrength));Assert.That(state.l.shadowBias,Is.EqualTo(state.shadowBias));Assert.That(state.l.shadowNormalBias,Is.EqualTo(state.shadowNormalBias));
+                    Assert.That(state.l.shadows,Is.EqualTo(state.shadows));Assert.That(state.l.shadowStrength,Is.EqualTo(state.shadowStrength));Assert.That(state.l.shadowBias,Is.EqualTo(state.shadowBias));Assert.That(state.l.shadowNormalBias,Is.EqualTo(state.shadowNormalBias));Assert.That(state.l.enabled,Is.EqualTo(state.enabled));
                 }
+                Assert.That(RenderSettings.sun,Is.EqualTo(originalSun),"World sky fill must restore the city sun reference");
                 if(shadowProperty!=null)Assert.That(shadowProperty.GetValue(pipeline),Is.EqualTo(shadowDistance),"World rendering must restore shared pipeline shadow distance");
                 if(cascadeProperty!=null)Assert.That(cascadeProperty.GetValue(pipeline),Is.EqualTo(cascadeCount),"World rendering must restore shared shadow cascades");
                 RenderTexture.active=rt;

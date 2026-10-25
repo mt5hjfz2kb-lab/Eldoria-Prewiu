@@ -10,9 +10,12 @@ namespace Eldoria.World4XCanon
     // City cameras, imported assets, player state and shared source materials are untouched.
     public sealed class RegionOneLookDevelopment : MonoBehaviour
     {
-        Camera worldCamera; Light sun; Quaternion rotation; LightShadows shadows; float strength,distance,depthBias,normalBias;int cascades;
+        Camera worldCamera; Light sun,configuredSun,fill; Quaternion rotation; LightShadows shadows; float strength,distance,depthBias,normalBias;int cascades;
         UniversalRenderPipelineAsset pipeline; bool scoped; Color background;
         readonly List<Material> owned=new List<Material>();
+        readonly List<Material> minerals=new List<Material>();
+        readonly List<Renderer> fineDetails=new List<Renderer>();
+        MaterialPropertyBlock fineProperties;float fineFade=-1f;
         readonly Dictionary<Material,Material> cache=new Dictionary<Material,Material>();
         Shader authoredShader;Vector3 origin;
         public static void Install(GameObject artwork,Camera camera)
@@ -21,6 +24,10 @@ namespace Eldoria.World4XCanon
             var shader=Resources.Load<Shader>("World4X/RegionOneAuthoredSurface");
             if(!shader||!shader.isSupported)throw new InvalidOperationException("Authored AG surface shader missing");
             scope.authoredShader=shader;scope.origin=artwork.transform.position;scope.ApplyMaterials(artwork);
+            var fillObject=new GameObject("Region 1 scoped sky fill");fillObject.transform.SetParent(artwork.transform,false);fillObject.layer=29;
+            scope.fill=fillObject.AddComponent<Light>();scope.fill.type=LightType.Directional;scope.fill.shadows=LightShadows.None;
+            scope.fill.color=new Color(.65f,.71f,.84f);scope.fill.intensity=.28f;scope.fill.cullingMask=1<<29;
+            scope.fill.transform.rotation=Quaternion.Euler(30,145,0);scope.fill.enabled=false;
         }
         public void ApplyMaterials(GameObject artwork)
         {
@@ -30,7 +37,7 @@ namespace Eldoria.World4XCanon
                     var material=new Material(authoredShader){name=source.name+" AG look",enableInstancing=true};
                     Color colour=source.HasProperty("baseColorFactor")?source.GetColor("baseColorFactor"):source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):Color.white;
                     material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
-                    if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal))material.SetFloat("_MineralEmission",1.7f);
+                    if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal)){material.SetFloat("_MineralEmission",.18f);minerals.Add(material);}
                     if(source.name.Contains("Region1 open meadows")){
                         var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");
                         if(!detail)throw new InvalidOperationException("Original AF-derived continental detail missing");
@@ -41,11 +48,31 @@ namespace Eldoria.World4XCanon
                         if(source.shader.GetPropertyType(p)==ShaderPropertyType.Texture){string name=source.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",source.GetTexture(name));}
                     cache.Add(source,material);owned.Add(material);return material;
                 }).ToArray();
+            foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
+                if(IsCloseGroundDetail(renderer)&&!fineDetails.Contains(renderer))fineDetails.Add(renderer);
             // Instanced properties opt these shared crowns into GPU instancing;
             // no per-tree material duplication, no replacement canopy imagery.
             var properties=new MaterialPropertyBlock();properties.SetColor("_InstanceTint",Color.white);
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 if(renderer.name.StartsWith("BLD_Forest")||renderer.name.StartsWith("Pilot_Pine")||renderer.name.StartsWith("Far_Pilot_Pine"))renderer.SetPropertyBlock(properties);
+        }
+        static bool IsCloseGroundDetail(Renderer renderer)
+        {
+            string name=renderer.name;
+            return name=="Directed understory mesh"||name=="Z retained-sector woodland understory"||
+                name=="BLD_NearMeadowHabitat"||name=="BLD_NearUndergrowth"||
+                (name.StartsWith("Bank forest stone ",StringComparison.Ordinal)&&Mathf.Max(renderer.bounds.size.x,renderer.bounds.size.z)<7f);
+        }
+        public void RefreshForZoom()
+        {
+            if(!worldCamera)return;
+            float fade=Mathf.SmoothStep(0,1,Mathf.InverseLerp(75f,170f,worldCamera.orthographicSize));
+            if(Mathf.Abs(fade-fineFade)<.0001f)return;fineFade=fade;
+            if(fineProperties==null)fineProperties=new MaterialPropertyBlock();
+            foreach(var renderer in fineDetails)if(renderer){
+                renderer.enabled=fade<.999f;fineProperties.Clear();renderer.GetPropertyBlock(fineProperties);
+                fineProperties.SetFloat("_Fade",fade);renderer.SetPropertyBlock(fineProperties);
+            }
         }
         void OnEnable(){RenderPipelineManager.beginCameraRendering+=Begin;RenderPipelineManager.endCameraRendering+=End;}
         static float GroundShadowCoverage(Camera camera,Vector3 origin,float fadeBorder)
@@ -63,6 +90,7 @@ namespace Eldoria.World4XCanon
         void Begin(ScriptableRenderContext context,Camera camera)
         {
             if(camera!=worldCamera||scoped)return;
+            RefreshForZoom();
             var navigation=camera.GetComponent<Eldoria.World4XPrototype.ZoneOneStrategicCamera>();
             float regional=navigation?navigation.regionalZoom:Mathf.Max(280,400/Mathf.Max(.1f,camera.aspect));
             // The physical outer edge enters the viewport during the orbit,
@@ -71,8 +99,11 @@ namespace Eldoria.World4XCanon
             float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(regional*.75f,regional*1.25f,camera.orthographicSize));
             var fog=QualitySettings.activeColorSpace==ColorSpace.Linear?camera.backgroundColor.linear:camera.backgroundColor;
             foreach(var material in owned){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
+            float mineralEmission=Mathf.Lerp(.18f,.60f,Mathf.InverseLerp(36f,280f,camera.orthographicSize));
+            if(camera.orthographicSize>280f)mineralEmission=Mathf.Lerp(.60f,.95f,Mathf.InverseLerp(280f,navigation?navigation.globalZoom:2500f,camera.orthographicSize));
+            foreach(var material in minerals)material.SetFloat("_MineralEmission",mineralEmission);
             background=camera.backgroundColor; // Preserve the existing continental clear colour; grey increased the tile silhouette.
-            sun=RenderSettings.sun;
+            configuredSun=RenderSettings.sun;sun=configuredSun;
             if(!sun)sun=FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.enabled&&l.type==LightType.Directional).OrderByDescending(l=>l.intensity).FirstOrDefault();
             if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;depthBias=sun.shadowBias;normalBias=sun.shadowNormalBias;sun.transform.rotation=Quaternion.Euler(48,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}
             pipeline=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
@@ -88,10 +119,14 @@ namespace Eldoria.World4XCanon
                     if(sun){sun.shadowBias=.6f;sun.shadowNormalBias=.35f;}
                 }
             }
+            // The imported Tripo PBR materials need sky fill when the new real
+            // shadows occlude the key light. Keep their albedo/normal/ORM intact.
+            if(sun)RenderSettings.sun=sun;
+            if(fill)fill.enabled=true;
             scoped=true;
         }
         void End(ScriptableRenderContext context,Camera camera){if(camera==worldCamera)Restore();}
-        void Restore(){if(!scoped)return;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;sun.shadowBias=depthBias;sun.shadowNormalBias=normalBias;}if(pipeline){pipeline.shadowDistance=distance;pipeline.shadowCascadeCount=cascades;}if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
+        void Restore(){if(!scoped)return;if(fill)fill.enabled=false;RenderSettings.sun=configuredSun?configuredSun:null;if(sun){sun.transform.rotation=rotation;sun.shadows=shadows;sun.shadowStrength=strength;sun.shadowBias=depthBias;sun.shadowNormalBias=normalBias;}if(pipeline){pipeline.shadowDistance=distance;pipeline.shadowCascadeCount=cascades;}if(worldCamera)worldCamera.backgroundColor=background;scoped=false;}
         void OnDisable(){RenderPipelineManager.beginCameraRendering-=Begin;RenderPipelineManager.endCameraRendering-=End;Restore();}
         void OnDestroy(){foreach(var material in owned)if(material)Destroy(material);}
     }

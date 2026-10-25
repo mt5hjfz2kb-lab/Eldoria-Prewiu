@@ -91,6 +91,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  float lodDither=frac(52.9829189*frac(dot(floor(i.p.xy),float2(.06711056,.00583715))));
  clip(unity_LODFade.x-(unity_LODFade.x<0?-lodDither:lodDither));
  #endif
+ float detailDither=frac(52.9829189*frac(dot(floor(i.p.xy),float2(.06711056,.00583715))));clip(detailDither-_Fade);
  clip(.5-_Baked);clip(SAMPLE_TEXTURE2D(_BaseMap,sampler_BaseMap,i.uv).a*_BaseColor.a-.35);return 0;}
  ENDHLSL
  }
