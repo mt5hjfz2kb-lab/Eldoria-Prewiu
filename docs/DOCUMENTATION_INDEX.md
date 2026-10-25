@@ -4,6 +4,10 @@
 
 > **Pacto fundacional propietario–IA (ELDORIA_OWNER_AI_COLLABORATION_V1):** el dueño no programa; cualquier chat o agente ha de aportar iniciativa, criterio técnico propio, crítica, alternativa cuando un método falle y evidencia real, como obliga [AGENTS.md](../AGENTS.md). Se mantiene vigente en todos los relevos; no reemplaza las autorizaciones.
 
+## Biblioteca 3D — buscar antes de crear
+
+**Obligatorio para producción artística:** [Biblioteca Maestra de Assets](asset-vault/README.md), [galería de los 26 GLB canónicos](asset-vault/GALLERY.md), [inventario actual completo](../pipeline/asset-vault/current-full-index-v1.json) y [archivo de las 201 ramas (920 rutas / 923 versiones)](../pipeline/asset-vault/historical-full-index-v1.json). Para evitar volver a modelar una pieza existente, usar `python3 tools/asset-vault/find-reuse.py cantera` o la descripción artística correspondiente; el criterio de aprobación sigue siendo la referencia del propietario y la cámara real Unity, no el nombre de archivo. Los modelos nuevos que entren a Git aparecerán en el buzón de candidatos cuando el workflow documental esté integrado en main. **No usar automáticamente materiales de terceros sin revisar licencia.**
+
 ## Arranque de un chat o agente (menos de dos minutos)
 
 1. Leer [AGENTS.md](../AGENTS.md) como única norma operativa general; prevalecen las instrucciones actuales del propietario y el estado vivo del repositorio.
