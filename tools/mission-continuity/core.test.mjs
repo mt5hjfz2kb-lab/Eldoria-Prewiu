@@ -119,7 +119,7 @@ test("explicit pause overrides successful or queued CI and never generates recov
   assert.equal(x.alert,false);
 });
 test("GitHub action_required is not mistaken for broken Unity or visual approval",()=>{
-  const x=check([makeRun(8,'completed','action_required')],{mission:{...mission,report_only:true}});
+  const x=check([makeRun(8,'completed','action_required')],{mission:{...mission,report_only:true},branchSha:'deadbeef'});
   assert.equal(x.state,'GITHUB_APPROVAL_REQUIRED');
   assert.equal(x.alert,false);
   assert.match(x.next_action,/never bypass authorization/);
