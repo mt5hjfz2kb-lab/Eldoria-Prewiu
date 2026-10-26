@@ -87,9 +87,17 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
          half3 brushA=SAMPLE_TEXTURE2D(_MeadowBrush,sampler_MeadowBrush,brushUV).rgb;
          half3 brushB=SAMPLE_TEXTURE2D(_MeadowBrush,sampler_MeadowBrush,float2(brushUV.x*.8-brushUV.y*.6,brushUV.x*.6+brushUV.y*.8)+float2(.37,.61)).rgb;
          half3 brush=lerp(brushA,brushB,.3)/max(_MeadowBrushMean.rgb,half3(.01,.01,.01));
-         float weight=.72*(1-smoothstep(.65,2.5,metresPerPixel))*grass;
+         // Use the actual painted albedo as the primary grass surface. The
+         // earlier neutral multiplication retained the old muddy macro pigment.
+         half3 palette=half3(.60,.64,.28);
+         float neutral=.55;
+         #ifndef UNITY_COLORSPACE_GAMMA
+         palette=SRGBToLinear(palette);neutral=SRGBToLinear(neutral);
+         #endif
+         half value=clamp(dot(c.rgb,half3(.2126,.7152,.0722))/neutral,.85,1.08);
+         float weight=.85*grass;
          if(_GeologicalRock>.5)weight*=smoothstep(55,125,distance(q,float2(-260,150)));
-         c.rgb*=lerp(half3(1,1,1),brush,weight);
+         c.rgb=lerp(c.rgb,brush*palette*value,weight);
      }
      if(_ExistingPathEnabled>.5){
          float distanceMetres=SAMPLE_TEXTURE2D(_ExistingPathDistance,sampler_ExistingPathDistance,i.uv).r*16;

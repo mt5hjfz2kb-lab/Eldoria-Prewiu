@@ -96,3 +96,10 @@ Root cause is actual production LOD enlargement: continental crowns20-26m, heigh
 40310659122 genuine Unity:61/62, floor-contact assertion now passes; same test then exposes a2.798532m mismatch at the regional/continuation boundary. Excavating the regional river bed must update BOTH mesh copies at that edge. Actual Blender correction now excavates the same existing water footprint on the continuation and copies exact shared-edge heights; masks and terrain vertex count stay fixed.
 
 Painted close detail retained provisionally. First distance-map road enlargement rejected: colour-segmented source earth includes broad field stains, and65% opacity /5.5m growth becomes flat, thick ribbons in real panorama. Replace the segmentation with the existing authored Catmull-Rom route control points from build_region_from_ai.py, a softer edge and bounded opacity; no gameplay route or target changes. Regional far-canopy correction remains grouped with this composition pass.
+
+
+## Actual Unity40313214146 — all technical checks pass; primary albedo pivot
+
+62/62 PlayMode,26/26 EditMode,44 progression checks passed; materialized0eaafe49cf1502be105c0beca1b2e33a94b07d1e. Six actual views inspected. Far crowns no longer form oversized walls; tracks are softer and source-continuation gap is repaired. Retain this as the first complete safe checkpoint of this direction. Direct visual estimate remains around7.0 overall, not7.5: close detail improves, but the broad meadow still carries the old muddy pigment and the protected-rectangle contrast remains noticeable.
+
+Decision: stop treating the new authored bitmap as a neutral multiplicative detail over the old look. Use that real painted albedo as85% of the grass surface, preserving original exposed paths and the mineral core; derive only a bounded value variation from the previous pigment. One palette for both core and continent, same world-space brush/texture filtering at every zoom. This is the primary-surface material alternative, not another low-frequency sine tint. Keep all original textures/UVs/geometry and the now-certified scaled forest/resources. Re-render actual Unity before assigning the target score.
