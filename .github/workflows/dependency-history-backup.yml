@@ -1,0 +1,89 @@
+name: '[ELDORIA] Recoverable asset archive and external references'
+on:
+  push:
+    branches: [audit/asset-recovery-package-20261026]
+    paths:
+      - '.github/workflows/dependency-history-backup.yml'
+      - 'tools/dependency-audit/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: valoria-reference-clean-native
+  cancel-in-progress: false
+
+jobs:
+  read-only-archive:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 110
+    steps:
+      - name: Locate existing Windows Git installation
+        shell: powershell
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $paths = @((Join-Path $env:ProgramFiles 'Git\cmd\git.exe'),(Join-Path $env:LOCALAPPDATA 'Programs\Git\cmd\git.exe'))
+            $desktop = Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            if (Test-Path $desktop) {
+              $paths += @(Get-ChildItem $desktop -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'})
+            }
+            $found = $paths | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $found) { throw 'Git for Windows unavailable' }
+            Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $found)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          persist-credentials: false
+          fetch-depth: 5
+      - name: Retrieve immutable Unity dependency inventory
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-unity-dependency-audit
+          run-id: 40372380113
+          github-token: ${{ github.token }}
+          repository: mt5hjfz2kb-lab/Eldoria-Prewiu
+          path: dependency-input
+      - name: Reconfirm the exact source and generate external-reference checks
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          if (-not (Test-Path 'dependency-input/dependency-asset-records.jsonl')) {throw 'Original certified inventory unavailable'}
+          if (-not (Test-Path 'dependency-input/summary.json')) {throw 'Original certified summary unavailable'}
+          $original=Get-Content 'dependency-input/summary.json' -Raw | ConvertFrom-Json
+          if (-not $original.completed -or $original.sourceCommit -ne 'd9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4' -or $original.unresolvedCandidates -ne 354 -or $original.unresolvedBytes -ne 1909173156) {throw 'Certified audit mismatch'}
+          $py=Get-Command python.exe -ErrorAction SilentlyContinue
+          if (-not $py) {throw 'Python not installed on this runner'}
+          python --version
+          python -m compileall -q tools/dependency-audit
+          if ($LASTEXITCODE -ne 0) {throw 'Python audit source invalid'}
+          New-Item -ItemType Directory -Force -Path dependency-report | Out-Null
+          python tools/dependency-audit/check_external_references.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out dependency-report/external-references.json
+          if ($LASTEXITCODE -ne 0) {throw 'External reference scan failed'}
+          if (-not (Test-Path 'dependency-report/external-references.json')) {throw 'External reference inventory missing'}
+      - name: Create a verified 354-asset historical ZIP on owner's PC
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $root=Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'EldoriaArchives'
+          if ([string]::IsNullOrEmpty($root) -or $root -eq '\EldoriaArchives') {throw 'Stable user Documents folder could not be determined'}
+          New-Item -ItemType Directory -Force -Path $root | Out-Null
+          $target=Join-Path $root 'eldoria-354-assets-20261026.zip'
+          if (Test-Path -LiteralPath $target) {throw 'Archive already exists: refusing to overwrite'}
+          python tools/dependency-audit/create_backup.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out $target
+          if ($LASTEXITCODE -ne 0) {throw 'Backup refused/failed; no existing archive was modified'}
+          if (-not (Test-Path -LiteralPath $target) -or -not (Test-Path -LiteralPath ($target+'.sha256'))) {throw 'Backup verification files missing'}
+          $obj=@{status='CREATED_AND_HASH_VERIFIED';snapshot='d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4';pc_path=$target;bytes=(Get-Item -LiteralPath $target).Length;sha256=((Get-Content ($target+'.sha256') -Raw).Split(' ')[0]);source_assets=354}
+          $obj | ConvertTo-Json | Set-Content -Path 'dependency-report/local-backup-verification.json' -Encoding UTF8
+          Get-Content 'dependency-report/local-backup-verification.json'
+      - name: Publish only lightweight evidence, never multi-GB copies to GitHub Actions
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-asset-archive-check-20261026
+          path: dependency-report/*.json
+          retention-days: 14
+          if-no-files-found: warn
