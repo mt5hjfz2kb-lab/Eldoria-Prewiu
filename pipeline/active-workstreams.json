@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T23:14:21.550Z",
+  "updated_at": "2026-10-26T23:25:03.625Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -73,15 +73,13 @@
         "updates/android/family.json",
         "docs/ui-v3/ANDROID_1_15_RELEASE.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "ANDROID15_BUILD_VERIFY_PUBLISH",
-      "next": "Build exact signed code15 from main, verify artifact, disable duplicate build, publish through existing family channel, verify public bytes and release lease.",
+      "phase": "ANDROID15_VERIFIED_PUBLICATION",
+      "next": "Promote exact verified code15 artifact; verify public bytes and family manifest, then close.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -975,9 +973,21 @@
             "evidence": "Pruebas de reutilización/recuperación/conflictos/manifest; controles originales con inputs aislados y rechazo de inputs ausentes; gobernanza y regresión web en PR; workflows efectivos de main.",
             "handoff": "PR114 integrado, evidencia en REPOSITORY_ORGANIZATION.md, alcance liberado y reversión por PR sin migración de datos."
           }
+        },
+        {
+          "owner": "codex-eldoria-android15-publication-20261027",
+          "ownership_revision": 32,
+          "phase": "ANDROID15_BUILD_VERIFY_PUBLISH",
+          "resources": [
+            "windows-runner-heavy"
+          ],
+          "build_run": 40418364444,
+          "source": "7413d029abe17e8b4a6fe366962bd522e022085f",
+          "result": "SIGNED_BUILD_AND_INDEPENDENT_CRC_HASH_ARM64_PASS",
+          "completed_at": "2026-10-26T23:25:03.625Z"
         }
       ],
-      "ownership_revision": 32,
+      "ownership_revision": 33,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",

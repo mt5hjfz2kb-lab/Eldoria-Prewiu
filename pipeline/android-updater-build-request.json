@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 15,
   "versionName": "1.15",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner explicitly authorizes new family APK 27-10-2026. Integrated UI and Region1 corrections from current main. Same original signing/package, no saved data reset, no new art/gameplay. Prior Unity exact-source 65Play/26Edit and Windows build passed; publish only after original signed builder verification."
+  "note": "Code15 built and signed successfully in40418364444 source7413d029abe17e8b4a6fe366962bd522e022085f. Artifact12696226924 independently downloaded; exact SHA256/CRC and11 ARM64 ELF libraries pass. Disable duplicate build before publication. Physical phone untested."
 }
