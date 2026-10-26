@@ -81,6 +81,12 @@ Para las fuentes idénticas, mantener una ruta canónica y que los manifiestos d
 ejecución apunten a ella y a su hash; conservar en el archivo recuperable las rutas
 históricas hasta adaptar sus scripts de restauración. Empezar por la biblioteca
 de recursos repetida 18 veces, fuera de Assets, después de mapear sus consumidores.
+Productor concreto identificado: `authoring/materialize_verified_candidate.ps1`
+crea `sources/native-$GITHUB_RUN_ID` y copia de nuevo las tres fuentes BLEND;
+`world4x-canon-native.yml` consume fuentes guardadas y verifica hashes de ellas.
+La deduplicación debe modificar conjuntamente ese productor y los consumidores,
+con resolución por manifiesto y restauración de rutas históricas. Borrar las copias
+sin esa adaptación rompería un flujo de recuperación que sigue siendo real.
 Las capturas A/B necesarias se conservan como evidencia original, no se reemplazan
 por miniaturas. No añadir otro sistema de catálogo paralelo al Asset Vault existente.
 

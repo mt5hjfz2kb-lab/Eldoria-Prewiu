@@ -63,6 +63,30 @@ def assignment(options, capacities):
     for player in range(len(options)): augment(player, set())
     return {player:slot[0] for slot,player in owners.items()}
 
+def contest(occupant, challenger):
+    """Exclusive occupant; abstract strength ordering, NOT the live combat formula.
+    Tuples are (player_id, strength_rank). On ties this experiment keeps incumbent;
+    tie policy is a modelling assumption, not an owner-approved gameplay rule.
+    Collected cargo, battle casualties and march timing are deliberately untouched.
+    """
+    if occupant is None or challenger[1] > occupant[1]: return challenger
+    return occupant
+
+def nearest_contested(safe, starts, resources, levels):
+    """Adversarial snapshot: stronger rivals occupy each spawn's nearest L1 option.
+    Each occupied site has one rival. This does not assume unlimited marches for
+    one player or invent a protection rule against winning stronger armies.
+    """
+    occupied={kind:{} for kind in resources}
+    for start in starts:
+        d=distances(safe,start)
+        for kind,nodes in resources.items():
+            eligible=[i for i,p in enumerate(nodes) if levels[kind][i]==1 and p in d]
+            if eligible:
+                i=min(eligible,key=lambda i:(d[nodes[i]],i))
+                occupied[kind][i]=(f'rival-{kind}-{i}',2)
+    return occupied
+
 def world(seed, density, broken_bridge=False):
     rng = random.Random(seed); size=40
     # Explicit hypothetical geography: river, two crossing sites, rough ground,
@@ -84,15 +108,23 @@ def world(seed, density, broken_bridge=False):
     enemies=free[26:42]
     return cells,safe,starts,resources,enemies
 
-def measure(cells,safe,starts,resources,enemies,values,budget):
+def measure(cells,safe,starts,resources,enemies,values,budget,levels=None,occupied=None):
     ds=[distances(safe,s) for s in starts]
     required={'wood':math.ceil(values['Chapter1GatherWood']/values['ForestLoad'])*values['ForestLoad'],
               'stone':math.ceil(values['Chapter1GatherStone']/values['QuarryLoad'])*values['QuarryLoad']}
     stocks={'wood':1250,'stone':5200} # LocalGateway canonical capacities, checked by tests.
+    levels=levels or {kind:[1]*len(nodes) for kind,nodes in resources.items()}
+    occupied=occupied or {kind:{} for kind in resources}
     matches={}; nearest={}; blocked=[]
     for kind,nodes in resources.items():
-        options=[sorted((n for n,p in enumerate(nodes) if d.get(p,math.inf)<=budget),key=lambda n:d[nodes[n]]) for d in ds]
-        capacity=[stocks[kind]//required[kind]]*len(nodes)
+        # L1 is the comparison tier for initial progression, not a hard unlock
+        # imposed on the game. Higher-tier yields/rates are not defined yet.
+        options=[sorted((n for n,p in enumerate(nodes) if levels[kind][n]==1 and
+                  d.get(p,math.inf)<=budget and contest(occupied[kind].get(n),(f'player-{i}',1))[0]==f'player-{i}'),
+                  key=lambda n:d[nodes[n]]) for i,d in enumerate(ds)]
+        # Stock can finance several visits, but ONE occupant only may gather at
+        # a node at once. A quarry's seven reserves are NOT seven parallel slots.
+        capacity=[min(1,stocks[kind]//required[kind])]*len(nodes)
         matches[kind]=assignment(options,capacity)
         # Once supply can cover everyone, minimize the largest one-way route.
         # This fixes a real weakness of capacity-only matching: reassignment can
@@ -105,13 +137,13 @@ def measure(cells,safe,starts,resources,enemies,values,budget):
                 if len(assignment(limited,capacity))==len(starts):high=middle
                 else:low=middle+1
             matches[kind]=assignment([[n for n in opts if ds[i][nodes[n]]<=low] for i,opts in enumerate(options)],capacity)
-        nearest[kind]=[min((d.get(p,math.inf) for p in nodes),default=math.inf) for d in ds]
+        nearest[kind]=[min((d.get(p,math.inf) for n,p in enumerate(nodes) if levels[kind][n]==1),default=math.inf) for d in ds]
     # A route to an appropriate enemy and an accessible expansion footprint are
     # separately checked; enemy positions here stand for a level-one family.
     for i,d in enumerate(ds):
         reasons=[]
         for kind in resources:
-            if i not in matches[kind]: reasons.append(kind+'_stock_or_route')
+            if i not in matches[kind]: reasons.append(kind+'_level_slot_stock_route_or_stronger_occupant')
         if not any(d.get(p,math.inf)<=budget for p in enemies): reasons.append('safe_enemy_route')
         if sum(1 for p,v in d.items() if 1<=v<=4 and all(abs(p[0]-s[0])+abs(p[1]-s[1])>1 for s in starts))<1: reasons.append('expansion_space')
         if reasons: blocked.append({'spawn':i,'reasons':reasons})
@@ -135,7 +167,9 @@ def repaired(cells,safe,starts,resources,enemies):
     for s in starts:
         d=distances(safe,s)
         eligible=sorted((p for p in d if p not in used and 2<=d[p]<=4),key=lambda p:(d[p],p))
-        for kind in ('wood','stone','enemy'):
+        # Two distinct initial options per resource allow one nearby node to be
+        # contested; no immunity, phantom player or runtime generation is added.
+        for kind in ('wood','stone','wood','stone','enemy'):
             if not eligible: break
             p=eligible.pop(0);used.add(p)
             if kind=='enemy':enemies.append(p)
@@ -150,17 +184,24 @@ def run(seeds):
         for density in (12,24,36):
             for broken in (False,True):
                 c,s,sp,r,e=world(seed,density,broken); rr,ee=repaired(c,s,sp,r,e)
+                tiers={k:[1+(i+seed)%3 for i in range(len(nodes))] for k,nodes in r.items()}
+                repaired_tiers={k:tiers[k]+[1]*(len(rr[k])-len(r[k])) for k in r}
+                blocked=nearest_contested(s,sp,r,tiers)
+                repaired_blocked=nearest_contested(s,sp,rr,repaired_tiers)
                 for budget in (8,16):
-                    for mode,res,enemy in (('baseline',r,e),('local_supply_repair',rr,ee)):
-                        m=measure(c,s,sp,res,enemy,values,budget)
+                    for mode,res,enemy,lev,occ in (
+                        ('baseline',r,e,tiers,None),('local_supply_repair',rr,ee,repaired_tiers,None),
+                        ('baseline_contested',r,e,tiers,blocked),
+                        ('local_supply_repair_contested',rr,ee,repaired_tiers,repaired_blocked)):
+                        m=measure(c,s,sp,res,enemy,values,budget,lev,occ)
                         rows.append({'seed':seed,'density':density,'bridges_closed':broken,'path_budget_edges':budget,'mode':mode,**m})
     summary={}
-    for mode in ('baseline','local_supply_repair'):
+    for mode in ('baseline','local_supply_repair','baseline_contested','local_supply_repair_contested'):
         subset=[x for x in rows if x['mode']==mode]; routes=sorted(v for x in subset for v in x['round_trip_grid_edges'])
         summary[mode]={'configurations':len(subset),'candidate_evaluations':sum(x['candidates'] for x in subset),
                        'admitted':sum(x['admitted'] for x in subset),'rejected':sum(len(x['rejected']) for x in subset),
-                       'route_edges_min':min(routes),'route_edges_median':routes[len(routes)//2],
-                       'route_edges_p95':routes[int((len(routes)-1)*.95)],'route_edges_max':max(routes)}
+                       'route_edges_min':min(routes) if routes else None,'route_edges_median':routes[len(routes)//2] if routes else None,
+                       'route_edges_p95':routes[math.ceil(len(routes)*.95)-1] if routes else None,'route_edges_max':max(routes) if routes else None}
     trips=math.ceil(values['Chapter1GatherWood']/values['ForestLoad'])+math.ceil(values['Chapter1GatherStone']/values['QuarryLoad'])
     # Persist compact replay coordinates and distributions, not thousands of
     # duplicated world snapshots. Each case is regenerated by world(seed,...).
@@ -172,10 +213,15 @@ def run(seeds):
             'route_edges_min':min(routes) if routes else None,'route_edges_max':max(routes) if routes else None,
             'future_seconds_max_at_4_8_16mps':[max(routes)*8/s+trips*values['GatherSeconds'] for s in (4,8,16)] if routes else [],
             'unreachable_basic_resource_positions':row['unreachable_basic_resource_positions']})
-    return {'schema':1,'kind':'HYPOTHETICAL_OFFLINE_DESIGN_NOT_REGION1_CERTIFICATION','profile_sha256':sha,
+    return {'schema':2,'kind':'HYPOTHETICAL_OFFLINE_DESIGN_NOT_REGION1_CERTIFICATION','profile_sha256':sha,
             'profile':values,'winning_progression_economic_ledger':progression_ledger(values),'assumptions':{'grid_cell_m':8,'future_speed_m_s':[4,8,16],'path_budgets_edges':[8,16],
             'current_live_resource_loop_seconds':trips*(2*values['TravelSeconds']+values['GatherSeconds']),
-            'not_modelled':['PvP blockades','server concurrency','actual Unity slopes/bridges','combat outcomes and full state-machine timing','measured mobile streaming']},
+            'owner_resource_rule':'Resources have levels; one occupant per node; stronger challenger displaces weaker occupant',
+            'resource_levels':[1,2,3],'initial_comparison_level':1,'higher_level_economy':'UNDEFINED_NOT_INVENTED',
+            'exclusive_concurrent_slots_per_node':1,'abstract_strength_ranks':[1,2],
+            'tie_assumption':'Incumbent stays; not a finalized gameplay rule',
+            'contested_case':'Stronger rivals occupy nearest L1 nodes; reevaluate alternate routes and exclusive capacity',
+            'not_modelled':['sustained PvP blockade over time','server concurrency implementation','actual Unity slopes/bridges','combat formula, casualties and gathered cargo settlement','combat outcomes and full state-machine timing','measured mobile streaming']},
             'summary':summary,'cases':compact}
 
 if __name__=='__main__':

@@ -32,18 +32,21 @@ población, no colocar allí otra ciudad hasta reparar oferta o habilitar otra z
 La admisión es por capacidad, no por llenar visualmente el mapa. Las incorporaciones
 tardías deben volver a comprobar ocupación, agotamiento y control territorial.
 
-La provisión inicial puede garantizarse mediante reservas temporales de suministro
-o reposición vinculada a demanda de la cohorte. Es una propuesta futura que requiere
-diseño de autoridad; no se añade ahora a LocalGateway. No ocultar una desigualdad
-dando un regalo inicial que deje al jugador permanentemente aislado.
+La admisión evalúa stock y plazas de recolección simultáneas, con alternativas del
+mismo nivel inicial. Esa asignación es una comprobación de diseño, NO propiedad
+exclusiva ni inmunidad del nodo. La reposición futura deberá responder a la demanda
+real sin convertir la ubicación de nacimiento en un monopolio. No se añade nada a
+LocalGateway ni se oculta una desigualdad con un regalo inicial.
 
 ## Equidad basada en la economía existente
 
 OWNER_I_II exige recoger 600 madera y 500 piedra. La carga actual es 360 y 700:
 dos expediciones de madera y una de piedra. Para garantizar viajes completos,
 reservar conservadoramente 720 madera y 700 piedra por aparición. Un nodo actual
-de 1250 madera no sostiene dos reservas completas; uno de 5200 piedra sostiene
-siete. Son capacidades iniciales, no una predicción de producción sostenible.
+de 1250 madera no sostiene dos reservas completas; uno de 5200 piedra contiene
+stock para siete, pero **solo admite un recolector a la vez**. Las siete reservas
+no son siete plazas paralelas. El simulador actualizado limita cada nodo a una
+asignación concurrente y distingue stock de ocupación.
 
 El capítulo completo añade aserradero 80 madera; Bastión II 450/300; cuartel
 180/120; 20 arqueros 400/240. Hay cartera inicial y recompensas de objetivos:
@@ -67,6 +70,36 @@ retención; no fabricar un «equilibrio 95%» sin significado económico.
 
 ## Recursos, fauna y competición
 
+### Regla del propietario, aclaración del 26-10-2026
+
+**Los recursos tienen niveles. En cada nodo solo puede recolectar un jugador a la
+vez. Los nodos se pueden disputar y el más fuerte permanece recolectando.** Esta
+regla sustituye cualquier lectura anterior de recolección compartida o reservas
+inviolables. Se incorpora al diseño y a la simulación, no al juego local actual.
+
+Cada nodo futuro necesita identidad, tipo, nivel, stock y un único ocupante. La
+autoridad resuelve llegada, disputa y cambio de ocupante como una operación
+atómica/versionada; nunca dos recolectores simultáneos por una carrera de comandos.
+El vencido deja de recolectar y el vencedor ocupa el nodo. La fuerza efectiva debe
+proceder de la resolución de combate de Eldoria, no de un número de poder inventado
+por este documento. Cargas ya obtenidas, bajas, retirada y empates requieren su
+contrato de combate: no se introducen aquí pérdidas de botín ni recompensas nuevas.
+
+Nivel y ocupación son dimensiones diferentes. Los niveles superiores pueden
+diferenciar oferta y eficiencia, pero sus cantidades, cadencia y requisitos se
+fijarán desde la economía aprobada. La muestra offline usa niveles 1/2/3 y compara
+oferta inicial de nivel 1; no establece el nivel máximo del juego ni una prohibición
+de visitar niveles superiores. Los valores 1250/5200 son la referencia actual,
+no una tabla de capacidades futuras por nivel.
+
+La igualdad buscada es de oportunidades iniciales y alternativas: rutas comparables,
+capacidad concurrente suficiente y más de un nodo básico apropiado accesible. Todos
+pueden ser disputados. Perder ante un rival más fuerte es parte de la competición;
+no demuestra por sí solo un fallo de aparición. Un monopolio permanente de todos
+los recursos iniciales sí puede hacer inviable la entrada: revalidar ocupación antes
+de admitir nuevas ciudades y detectar ese escenario en pruebas. No se prometen
+equidad absoluta bajo bloqueo ilimitado ni inmunidad inicial no solicitada.
+
 Madera y piedra presentes en toda zona inicial, con presentación adaptada al bioma.
 Los árboles decorativos no proporcionan stock. Los nodos jugables conservan IDs,
 capacidad, generación y autoridad. La oferta se calcula por rutas y jugadores activos,
@@ -79,8 +112,9 @@ sin crear modelos o enemigos ficticios. Corrupto y Engendro de campaña mantiene
 su papel narrativo; no convertir sus recompensas únicas en un recurso compartido.
 
 La expansión debe ofrecer rutas alternativas, información y objetivos valiosos. Las
-alianzas competirían por recursos especiales y posiciones estratégicas opcionales,
-no por bloquear el único aserradero o puente necesario para iniciar la partida.
+alianzas pueden disputar también recursos básicos, mientras los especiales y las
+posiciones estratégicas opcionales concentran los mayores incentivos. Evitar que
+una ciudad dependa de un único nodo o puente indispensable para iniciar la partida.
 No implementar torres, guerras ni ventajas de alianza en esta fase. Primero definir
 qué objetivo tiene función, qué recompensa ofrece y cómo evita una ventaja permanente.
 

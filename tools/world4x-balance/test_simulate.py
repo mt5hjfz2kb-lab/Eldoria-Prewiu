@@ -1,5 +1,5 @@
 import unittest
-from simulate import distances, assignment, economy, progression_ledger, ROOT, world, repaired, measure
+from simulate import distances, assignment, economy, progression_ledger, ROOT, world, repaired, measure, contest
 
 class BalanceTests(unittest.TestCase):
     def test_river_detour_is_not_euclidean(self):
@@ -26,5 +26,25 @@ class BalanceTests(unittest.TestCase):
         source=(ROOT/'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs').read_text()
         self.assertIn('rewardWood = 80; rewardStone = 70;',source)
         self.assertIn('rewardWood = 120; rewardStone = 100;',source)
+
+    def test_quarry_stock_does_not_create_multiple_occupancy_slots(self):
+        v,_=economy();cells={(x,y) for x in range(6) for y in range(6)}
+        m=measure(cells,cells,[(0,0),(0,4)],{'wood':[(1,0),(1,4)],'stone':[(2,2)]},[(3,3)],v,12)
+        self.assertEqual(m['admitted'],1)
+        self.assertEqual(len(m['stock_reservations']['stone']),1)
+
+    def test_stronger_replaces_occupant_without_a_second_collector(self):
+        occupant=contest(None,('first',1))
+        self.assertEqual(contest(occupant,('stronger',2)),('stronger',2))
+        self.assertEqual(contest(('stronger',2),('weaker',1)),('stronger',2))
+        self.assertEqual(contest(('incumbent',2),('equal',2)),('incumbent',2))
+
+    def test_higher_tiers_and_stronger_occupants_do_not_count_as_free_l1_supply(self):
+        v,_=economy();cells={(x,y) for x in range(6) for y in range(6)}
+        resources={'wood':[(1,0)],'stone':[(2,2)]};starts=[(0,0)];enemies=[(3,3)]
+        m=measure(cells,cells,starts,resources,enemies,v,12,{'wood':[2],'stone':[1]})
+        self.assertEqual(m['admitted'],0)
+        m=measure(cells,cells,starts,resources,enemies,v,12,occupied={'wood':{0:('rival',2)},'stone':{}})
+        self.assertEqual(m['admitted'],0)
 
 if __name__=='__main__':unittest.main()
