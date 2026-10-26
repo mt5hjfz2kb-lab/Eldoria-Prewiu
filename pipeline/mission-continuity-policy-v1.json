@@ -78,17 +78,17 @@
       "owner_branch": "main",
       "branch": "main",
       "require_owner": true,
-      "exact_head_only": true,
+      "exact_head_only": false,
       "report_only": true,
       "workflow_names": [
-        "Tripo art brain source preflight (zero credits)",
-        "Tripo art brain - real Qwen vision creature Blender pilot (zero credits)"
+        "Tripo art brain source preflight (zero credits)"
       ],
       "required_evidence": [
         "Real artist input and verified lesson provenance",
         "A/B from independent reviewer, Unity QA before any visual approval"
       ],
-      "resume_hint": "Owner validates whether any branch-HEAD workflow belongs to the assigned scope; no AI inference, credits, model promotion or artistic approval from this report."
+      "resume_hint": "Report-only latest workflow on main. Its SHA may be older than current main and never certifies the current branch. Only the assigned owner may perform production actions and independent art review.",
+      "workflow_file": "tripo-art-brain-preflight.yml"
     }
   ]
 }
