@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
   "ownership_revision": 37,
-  "source_run": 40246824373,
-  "source_sha256": "fac19536d7915601b330eaa21ab373bcf465edc8f2c8cd45ae1e2057fad7cd5a",
+  "source_run": 40250733346,
+  "source_sha256": "82c7c0e6a94a27575aba4b87a1843af7e607b31e45478848a65b424578d05daf",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Actual402490 close view reveals inherited flat triangle normals and overlapping ground masks casting shadow acne. Regenerate smooth corner normals only on unprotected canyon patch. Preserve positions/winding/UV/images/query/layout. Fresh Unity capture required; no assertion is relaxed.",
+  "decision": "REJECT normals-only native402509 close terrain: actual sawtooth soil banks remain geometric, not merely shadow acne. Erode only unprotected local soil into a continuous bank, retain the deep cut and all protected source, reground existing exposures/crowns, rebuild authoritative queries and render three quick previews before another full Unity pass.",
   "preview_is_Unity": false,
   "art_approved": false
 }
