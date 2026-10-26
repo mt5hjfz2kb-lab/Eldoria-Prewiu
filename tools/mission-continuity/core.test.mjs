@@ -131,3 +131,21 @@ test("superseded queued run does not override a newer completed success",()=>{
   assert.equal(x.latest_run.id,6);
   assert.equal(x.state,'WAITING_EVIDENCE');
 });
+
+test("Tripo workflow evidence from earlier main commit is historical, never a current ART PASS",()=>{
+  const m={...mission,report_only:true,require_owner:true,exact_head_only:false};
+  const w=[{id:mission.workstream_id,branch:mission.branch,status:'active',
+    owner:'artist',ownership_state:'claimed'}];
+  const r=check([makeRun(22,'completed','success')],{mission:m,activeWorkstreams:w,branchSha:'NEW_HEAD'});
+  assert.equal(r.state,'STALE_SOURCE_EVIDENCE');
+  assert.equal(r.alert,false);
+  assert.equal(r.source_matches_branch_head,false);
+  assert.match(r.next_action,/OLDER branch source/);
+});
+test("an older-source active art job remains observable but cannot certify current main",()=>{
+  const m={...mission,report_only:true,exact_head_only:false};
+  const r=check([makeRun(23,'in_progress',null)],{mission:m,branchSha:'NEW_HEAD'});
+  assert.equal(r.state,'EXTERNAL_RUNNING');
+  assert.equal(r.source_matches_branch_head,false);
+  assert.match(r.next_action,/older source SHA/);
+});
