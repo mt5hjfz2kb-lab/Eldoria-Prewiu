@@ -1,5 +1,5 @@
 $ErrorActionPreference='Stop'
-$root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/macro-world-a6480e11-20261025-r37-v13'
+$root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/player-art-22db827a-20261026-r40'
 $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring/interactive'
 "ELDORIA_INTERACTIVE_OUT=$root" >> $env:GITHUB_ENV
 $ready=Join-Path $root 'ready.json'

@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
-  "ownership_revision": 37,
-  "source_run": 40250733346,
-  "source_sha256": "82c7c0e6a94a27575aba4b87a1843af7e607b31e45478848a65b424578d05daf",
+  "ownership_revision": 40,
+  "source_run": 40253312800,
+  "source_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Retain exact source82c; first erosion attempt stopped before geometry edits at an intentionally absent protected bridge-soil sample outside the sculpt area. Exclude absent modeling samples from normalized erosion field; assert actual changed-area rays as before. Protect original water footprints plus12m banks with22m transition and city reserves. Inspect three quick previews before Unity.",
+  "decision": "Inspect retained source geometry, materials and near-camera composition before owner-authorized node proportions and broad meadow, bank and fracture correction. Existing source preserved.",
   "preview_is_Unity": false,
   "art_approved": false
 }
