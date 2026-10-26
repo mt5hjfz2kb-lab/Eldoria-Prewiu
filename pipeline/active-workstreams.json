@@ -59,7 +59,10 @@
         "docs/ui-v3/ORDERED_COMPLETION_20261026.md",
         "tools/dependency-audit/**",
         ".github/workflows/dependency-history-backup.yml",
-        "docs/world4x-multiplayer/FOREST_AUDIT.md"
+        "docs/world4x-multiplayer/FOREST_AUDIT.md",
+        "docs/evidence/world4x-canon-20261022/ARTISTIC_PROCESS_CURRENT.json",
+        "PROJECT_STATE.md",
+        "SESSION_HANDOFF.md"
       ],
       "resources": [],
       "art_production_routing": "required",
