@@ -24,14 +24,20 @@ def git(*args):
     return subprocess.run(("git",)+args,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE).stdout
 def main():
     root=Path.cwd()
-    raw=git("ls-tree","-r","-l","-z","HEAD")
-    files={}
-    for item in raw.split(b"\x00"):
-        if not item: continue
-        a,p=item.split(b"\t",1)
-        m,t,sha,size=a.decode().split()
-        if t=="blob":
-            files[p.decode(errors="replace")]={"sha":sha,"size":int(size)}
+    import urllib.request
+    token=os.environ.get("GITHUB_API_TOKEN")
+    repo=os.environ.get("GITHUB_REPOSITORY")
+    if not token or not repo:raise RuntimeError("Missing GitHub API token/repository; fail closed")
+    tree_sha=git("rev-parse","HEAD^{tree}").decode().strip()
+    url="https://api.github.com/repos/"+repo+"/git/trees/"+tree_sha+"?recursive=1"
+    request=urllib.request.Request(url,headers={"Authorization":"Bearer "+token,
+        "Accept":"application/vnd.github+json","User-Agent":"EldoriaReadOnlyGuidAudit"})
+    with urllib.request.urlopen(request,timeout=45) as handle:
+        tree=json.load(handle)
+    if tree.get("truncated") or not tree.get("tree"):
+        raise RuntimeError("Incomplete GitHub tree; fail closed")
+    files={v["path"]:{"sha":v["sha"],"size":v.get("size",0)}
+           for v in tree["tree"] if v.get("type")=="blob"}
     meta_files=[p for p in files if p.startswith("Unity/Assets/") and p.endswith(".meta")]
     missing=[p for p in meta_files if not Path(p).is_file()]
     if missing:
