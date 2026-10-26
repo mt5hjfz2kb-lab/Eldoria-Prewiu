@@ -64,12 +64,19 @@ for (const mission of config.missions) {
       throw Error("Policy mission requires id, branch and workflow names");
     }
     const branch = await api("/branches/" + mission.branch.split("/").map(encodeURIComponent).join("/"));
-    const runPage = await api("/actions/runs?branch=" + encodeURIComponent(mission.branch) + "&per_page=100");
+    // For chatty main, target the exact known workflow, not a repository-wide
+    // first page that may be dominated by unrelated commits and jobs.
+    // No automatic production dispatch is authorized by this GET.
+    const runsRoute = mission.workflow_file
+      ? "/actions/workflows/" + encodeURIComponent(mission.workflow_file) + "/runs?branch=" +
+        encodeURIComponent(mission.branch) + "&per_page=30"
+      : "/actions/runs?branch=" + encodeURIComponent(mission.branch) + "&per_page=100";
+    const runPage = await api(runsRoute);
     const report = classifyMission({
       mission, activeWorkstreams: registry.active, runs: runPage.workflow_runs,
       branchSha: branch.commit.sha, now, stallMinutes: config.stall_minutes
     });
-    if (runPage.total_count > 100 && report.state === "IDLE_UNFINISHED") {
+    if (runPage.total_count > (mission.workflow_file ? 30 : 100) && report.state === "IDLE_UNFINISHED") {
       report.state = "PARTIAL_RUN_WINDOW";
       report.alert = false;
       report.next_action = "More than 100 recent runs exist; this bounded observation cannot prove the requested workflow is missing. Inspect exact workflow before any action.";
