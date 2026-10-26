@@ -39,6 +39,21 @@ jobs:
           clean: false
           persist-credentials: false
           fetch-depth: 5
+      - name: Restore exact archive scripts after reused runner checkout
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $actual=(git rev-parse HEAD).Trim()
+          if($actual -ne $env:GITHUB_SHA){throw "Checkout source mismatch: $actual"}
+          git restore --source=$env:GITHUB_SHA --worktree -- tools/dependency-audit .github/workflows/dependency-history-backup.yml
+          if($LASTEXITCODE -ne 0){throw 'Exact archive script restoration failed'}
+          foreach($file in @('tools/dependency-audit/create_backup.py','tools/dependency-audit/check_external_references.py')){
+            if(-not (Test-Path -LiteralPath $file)){throw "Missing restored script: $file"}
+            $expected=(git rev-parse "$($env:GITHUB_SHA):$file").Trim()
+            $actual=(git hash-object --path=$file $file).Trim()
+            if($actual -ne $expected){throw "Restored source blob mismatch: $file"}
+          }
+          Write-Host 'ELDORIA_ARCHIVE_EXACT_SOURCE_VERIFIED'
       - name: Retrieve immutable Unity dependency inventory
         uses: actions/download-artifact@v4
         with:
