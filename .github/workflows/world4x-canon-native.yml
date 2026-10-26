@@ -402,8 +402,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40312665086
-          name: region1-interactive-40312665086
+          run-id: 40319616586
+          name: region1-interactive-40319616586
           path: ${{ runner.temp }}/region1-reviewed-macro
       - name: Stage exact observed BlenderMCP valleys and geological walls
         shell: powershell
@@ -414,9 +414,9 @@ jobs:
           $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $unityDest=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
           $expected=@{
-            'Eldoria_Region1_Production.blend'='c4a32bf634cf60d6f5dba63ce3a04771635b93591c6509dcbd455daa43876ec3'
-            'RegionOneBlenderWorld.glb'='babdd6adf6e1f8f008e5c4e6c547a12ab62870f0790180d40f0b69b49ad5b769'
-            'RegionOneBlenderQueries.bytes'='8349c7345224f40eab41d8b9146352541c53b1193dd3a08478a862d28df78a10'
+            'Eldoria_Region1_Production.blend'='0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9'
+            'RegionOneBlenderWorld.glb'='d23114d40777e014dac5de7b18078143b9d32e66df79798871751b9b1d9c6738'
+            'RegionOneBlenderQueries.bytes'='0f9ad69457db9e3910e465a531811f13fac7c3d92b2221b7788e8c94b8d2942c'
             'production-region.json'='7f9cf05c9ddded57fb0ec2d716726617d4f9ea32ed53238da616f0936735afa1'
           }
           foreach($name in $expected.Keys){
@@ -425,7 +425,7 @@ jobs:
             Copy-Item $saved (Join-Path $destination $name) -Force
             if($name -ne 'Eldoria_Region1_Production.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
           }
-          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40312665086.json','response-40312665086.json')){
+          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40319616586.json','response-40319616586.json')){
             Copy-Item (Join-Path $origin $name) (Join-Path $destination "macro-$name") -Force
           }
           Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51828_vertices bridge_length=21 modified_terrain_vertices=59005 river_bed_vertices=17405 new_targets=0 fresh_Unity_required=1'

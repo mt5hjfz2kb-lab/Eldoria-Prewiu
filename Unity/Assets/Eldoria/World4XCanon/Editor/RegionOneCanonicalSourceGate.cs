@@ -67,7 +67,7 @@ namespace Eldoria.World4XCanon.Editor
             var forest=prefab.GetComponentsInChildren<MeshFilter>(true).Where(f=>f.name.StartsWith("BLD_ForestMass_")).ToArray();
             if(forest.Length<20)throw new InvalidOperationException("Authored forest mass export incomplete");
             if(proof.continental_trees!=forest.Length||forest.Select(f=>f.sharedMesh).Distinct().Count()!=2)
-                throw new InvalidOperationException("Continental crowns must match authored instance count and share the two original donor meshes");
+                throw new InvalidOperationException("Continental crowns must match authored instance count and share exactly two source-authored canopy meshes");
             Debug.Log("CONTINENTAL_SHARED_CROWNS_PASS instances="+forest.Length+" distinct_near_meshes=2");
             // New sculptural hierarchy must be genuine imported editable
             // Blender geometry, not a pasted colour band or a second map.

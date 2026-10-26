@@ -138,7 +138,7 @@ namespace Eldoria.Tests
             Assert.That(forest.Length,Is.GreaterThanOrEqualTo(30),
                 "Physical transition must break the former rectangular AF/AG woodland cutoff");
             Assert.That(forest.Select(x=>x.sharedMesh).Distinct().Count(),Is.LessThanOrEqualTo(2),
-                "Use only the two previously imported immutable conifer source meshes");
+                "Reuse exactly two shared canopy families; original protected pines remain imported and immutable");
             Assert.That(forest.All(x=>x.GetComponent<Collider>()==null),Is.True,
                 "Ecotone trees are not additional fake game targets");
             var before=((Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway")).Snapshot();
