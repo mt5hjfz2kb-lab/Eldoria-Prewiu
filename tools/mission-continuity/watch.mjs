@@ -71,12 +71,22 @@ for (const mission of config.missions) {
       ? "/actions/workflows/" + encodeURIComponent(mission.workflow_file) + "/runs?branch=" +
         encodeURIComponent(mission.branch) + "&per_page=30"
       : "/actions/runs?branch=" + encodeURIComponent(mission.branch) + "&per_page=100";
-    const runPage = await api(runsRoute);
+    let runPage, lookupWarning=null;
+    try {
+      runPage = await api(runsRoute);
+    } catch (e) {
+      if (mission.report_only !== true || !mission.workflow_file) throw e;
+      // A branch-local workflow may be absent from default-branch Actions index.
+      // Fall back to the old bounded read-only route, not to a new dispatch.
+      lookupWarning = "targeted_workflow_unavailable_fell_back_to_branch_window";
+      runPage = await api("/actions/runs?branch=" + encodeURIComponent(mission.branch) + "&per_page=100");
+    }
     const report = classifyMission({
       mission, activeWorkstreams: registry.active, runs: runPage.workflow_runs,
       branchSha: branch.commit.sha, now, stallMinutes: config.stall_minutes
     });
-    if (runPage.total_count > (mission.workflow_file ? 30 : 100) && report.state === "IDLE_UNFINISHED") {
+    report.lookup_warning = lookupWarning;
+    if (runPage.total_count > (lookupWarning || !mission.workflow_file ? 100 : 30) && report.state === "IDLE_UNFINISHED") {
       report.state = "PARTIAL_RUN_WINDOW";
       report.alert = false;
       report.next_action = "More than 100 recent runs exist; this bounded observation cannot prove the requested workflow is missing. Inspect exact workflow before any action.";
