@@ -1,31 +1,30 @@
 {
   "schema_version": 1,
   "workstream_id": "eldoria-world-region-1-canon-20261022",
-  "certified_source_commit": "174496d09d271afc45fc4c28606c918e91687fb9",
+  "certified_source_commit": "0d3de6522f79ad85fb153a843e62fd177500491d",
   "blender": {
-    "method": "blender-bpy-reviewed",
-    "mcp_status": "not-used",
-    "mcp_preflight": "Revisión del job 40182996115: autoría automática Blender/bpy en el runner Windows, luego importación Unity y cámara real; blender-interactive figura skipped, no se presume sesión MCP.",
-    "mcp_reason": "La producción de esta intervención usa Blender CLI/bpy en un workflow nativo, sin conexión BlenderMCP interactiva comprobada ni autorización para simularla.",
-    "artistic_decision_log": "docs/evidence/world4x-canon-20261022/REGION1_ARTISTIC_AB_40182996115.md",
-    "input_blend": "docs/evidence/world4x-canon-20261022/sources/native-40142228055/Eldoria_Region1_Production.blend",
-    "input_sha256": "42cfc589064527cd2a8bf83d30b302887a113878bcb4d7d43d5f2e1e7f00cb19",
-    "output_blend": "docs/evidence/world4x-canon-20261022/sources/native-40182996115/Eldoria_Region1_Production.blend",
-    "output_sha256": "6e7da2d23bc237d9836e43e0406d0ba7c22b1969a691e8de5fd2241320bf056d"
+    "method": "blender-mcp-interactive",
+    "mcp_status": "verified",
+    "mcp_preflight": "Installed BlenderMCP addon SHA eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5, Blender5.2.2 LTS; actual loopback execute_code request/response and closed-PID proof from runs40243172187,40243865278,40245425748,40246824373. Source SHA chain preserved; actual Unity used for corrections. Physical bank correction through actual BlenderMCP40253312800, three quick real previews reviewed before new native certification; exact protected positions/UV, water footprints, city reserves and height bounds retained.",
+    "artistic_decision_log": "docs/evidence/world4x-canon-20261022/REGION1_MACRO_REVIEW_40253785923.md",
+    "input_blend": "docs/evidence/world4x-canon-20261022/sources/native-40223178638/Eldoria_Region1_Production.blend",
+    "input_sha256": "334eb745c6513917ab8770c146dbe9e5050a3ee8dac675bd87c49a1c1483d920",
+    "output_blend": "docs/evidence/world4x-canon-20261022/sources/native-40253785923/Eldoria_Region1_Production.blend",
+    "output_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce"
   },
   "baseline": {
-    "run_id": 40142228055,
-    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40142228055/review"
+    "run_id": 40223178638,
+    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40223178638/review"
   },
   "candidate": {
-    "run_id": 40182996115,
-    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40182996115/review"
+    "run_id": 40253785923,
+    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40253785923/review"
   },
-  "visual_review_path": "docs/evidence/world4x-canon-20261022/REGION1_ARTISTIC_AB_40182996115.md",
+  "visual_review_path": "docs/evidence/world4x-canon-20261022/REGION1_MACRO_REVIEW_40253785923.md",
   "visual_judgment": {
     "outcome": "RETAINED",
-    "reviewer": "ChatGPT, direct review of authentic matched Unity captures; not independent external art director",
-    "observed_improvement": "A coherent continental production candidate with real Brecha relief and resources is retained; matched regional Unity images differ at 13.587% of pixels, with preserved terrain mechanics and the original protected AF/AG sources.",
-    "remaining_gaps": "Close-view improvement is nearly imperceptible; a rectangular AF/AG soil/vegetation transition and small stone quarry silhouette remain. The artistic 7.5/10 threshold and physical Android/iOS performance have not been established."
+    "reviewer": "ChatGPT direct author review of actual final Unity images, not independent external art approval",
+    "observed_improvement": "Final six matched Unity captures retained after direct inspection: large sawtooth bank fins are removed; continuous low uplands and fluvial terraces join the preserved three water footprints and riparian woodland. The deep connected incision has dark sediment and actual interior light. Protected near sector and readable node/creature proportions remain coherent in both orientations. Six camera pairs verified exactly against40223178638, with62+26+44 passing checks.",
+    "remaining_gaps": "Canyon contour/strata and close soil facets remain more regular than the illustration; forest species and coastline remain simpler. Owner acceptance of the subjective7.5 target, formal ART_APPROVED and physical mobile performance remain unestablished."
   }
 }
