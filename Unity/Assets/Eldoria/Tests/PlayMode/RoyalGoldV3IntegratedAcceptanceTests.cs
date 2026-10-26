@@ -89,6 +89,62 @@ namespace Eldoria.Tests
             Assert.That(camera.orthographicSize, Is.EqualTo(overview).Within(.01f));
         }
 
+
+        [UnityTest]
+        public IEnumerator ActualPanoramaHasNoTinyUiMarkersButRegionalKeepsTheCityObjective()
+        {
+            if (Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE") != "1")
+                Assert.Ignore("A disposable gameplay probe is required before entering the true world.");
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            bool opened=(bool)Call(host,"TrySetWorld",true);
+            if(!opened)
+            {
+                var offer=Member(Member(Call(host,"Read","sawmill",false),"Building"),"Action");
+                Assert.That(offer,Is.Not.Null,"Actual progression must authorize world entry.");
+                Call(host,"Submit",offer);
+                var city=Member(host,"City");
+                Call(Member(city,"Clock"),"Step",Eldoria.Domain.SliceRules.SawmillBuildSeconds+1);
+                Call(Member(city,"Gateway"),"Advance");
+                yield return null;
+                opened=(bool)Call(host,"TrySetWorld",true);
+            }
+            Assert.That(opened,Is.True);
+            var nav=Member(host,"WorldNavigation") as Component;
+            var guidance=Member(host,"Guidance") as Component;
+            Assert.That(nav,Is.Not.Null);
+            Assert.That(guidance,Is.Not.Null);
+            var field=guidance.GetType().GetField("labels",BindingFlags.Instance|BindingFlags.NonPublic);
+            Assert.That(field,Is.Not.Null);
+            var labels=field.GetValue(guidance) as System.Collections.IDictionary;
+            Assert.That(labels,Is.Not.Null);
+            Assert.That(labels.Count,Is.GreaterThan(0),"The real world must retain its existing labels.");
+            var gateway=Member(Member(host,"City"),"Gateway");
+            string saved=JsonUtility.ToJson(Call(gateway,"Snapshot"));
+            Call(nav,"SetZoomLevel",0,true);
+            Call(guidance,"Refresh");
+            int worldLabels=0;
+            foreach(System.Collections.DictionaryEntry item in labels)
+            {
+                string id=item.Key.ToString();
+                if(id=="sawmill"||id=="barracks")continue;
+                var marker=item.Value as Component;
+                Assert.That(marker,Is.Not.Null);
+                Assert.That(marker.gameObject.activeSelf,Is.False,
+                    "Panoramic continent cannot show a small HUD/POI label: "+id);
+                worldLabels++;
+            }
+            Assert.That(worldLabels,Is.GreaterThan(0));
+            Call(nav,"SetZoomLevel",1,true);
+            Call(guidance,"Refresh");
+            var valoria=labels["valoria-map-city"] as Component;
+            Assert.That(valoria,Is.Not.Null);
+            Assert.That(valoria.gameObject.activeSelf,Is.True,
+                "The real Valoria marker should return in regional gameplay.");
+            Assert.That(JsonUtility.ToJson(Call(gateway,"Snapshot")),Is.EqualTo(saved),
+                "Presentation-only label changes must never write saved game state.");
+        }
+
         [UnityTest]
         public IEnumerator SingleHudCompactObjectiveAndNoOverlayAtRest()
         {

@@ -166,7 +166,9 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  float2 normalizedRegion=abs(region/float2(910,1800));
  float perimeter=pow(pow(normalizedRegion.x,4)+pow(normalizedRegion.y,4),.25);
  float irregular=.025*sin(region.y*.009)+.018*cos(region.x*.013-region.y*.006);
- float atmosphere=smoothstep(.88,1.055,perimeter+irregular)*_BoundaryWeight;
+ // Keep haze only in the last continental rim: the earlier .88
+ // start veiled too much real strategic terrain on a phone.
+ float atmosphere=smoothstep(.925,1.055,perimeter+irregular)*_BoundaryWeight;
  return half4(lerp(c.rgb,_BoundaryColour.rgb,atmosphere),1);
  }
  ENDHLSL

@@ -128,7 +128,17 @@ namespace Eldoria.ReferenceClean {
     if(pair.Key=="corrupt-scout")visible&=!s.ScoutDefeated;
     // Selection already has a named contextual panel. Labels identify only useful targets.
     visible&=host.Selected!=pair.Key;
-    if(!town)visible&=pair.Key==objective||pair.Key=="valoria-map-city"||host.WorldCamera.orthographicSize<=22;
+    if(!town){
+     // The panorama shows true continental geography only. Hide ordinary
+     // objective/city/encounter captions at the SAME threshold that suppresses
+     // their resource models; keep all real hotspots, commands and objectives.
+     // Unlike the old fixed 22m cutoff, this respects the current responsive
+     // near/regional/global camera contract on both mobile orientations.
+     float zoom=host.WorldCamera?host.WorldCamera.orthographicSize:0;
+     float overview=host.WorldNavigation?host.WorldNavigation.globalZoom:0;
+     bool panorama=overview>0&&zoom>=overview*.85f;
+     visible&=!panorama&&(pair.Key==objective||pair.Key=="valoria-map-city"||zoom<=22f);
+    }
     pair.Value.gameObject.SetActive(visible);
     if(visible&&pair.Key=="engendro-valoria"){
      // The canonical label previously crossed the larger animated creature

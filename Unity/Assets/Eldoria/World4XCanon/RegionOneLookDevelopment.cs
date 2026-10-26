@@ -186,7 +186,11 @@ namespace Eldoria.World4XCanon
             float global=navigation?navigation.globalZoom:2500f;
             float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(Mathf.Max(regional,global*.82f),global,camera.orthographicSize));
             background=camera.backgroundColor;
-            var mist=Color.Lerp(background,new Color(.66f,.75f,.78f,1),atmosphere);
+            // The previous blue-grey void made the continent look like a
+            // floating island surrounded by artificial sea. A neutral,
+            // slightly warm peripheral haze preserves the canonical narrow
+            // fog edge, without inventing neighbouring oceans or geometry.
+            var mist=Color.Lerp(background,new Color(.63f,.685f,.665f,1),atmosphere);
             var fog=QualitySettings.activeColorSpace==ColorSpace.Linear?mist.linear:mist;
             camera.backgroundColor=mist;
             foreach(var material in owned){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
