@@ -52,12 +52,16 @@
     0.92,
     1.08
   ],
-  "brush_primary_weight": 0.85,
-  "original_source_grain_relative_weight": 0.15,
+  "brush_primary_weight": 1.0,
+  "original_source_grain_relative_weight": 0.0,
   "actual_cast_shadows_preserved": true,
   "original_paths_preserved": true,
   "terrain_geometry_changed": false,
   "purpose": "Unify centre/continent using measured source means; retain near detail and lift exterior light response rather than darken the core.",
-  "actual_unity_review": "PENDING_NEXT_NATIVE",
-  "art_approved": false
+  "actual_unity_review": "40331311765 safe checkpoint; next exact shared-field capture pending",
+  "art_approved": false,
+  "previous_primary_weight": 0.85,
+  "shared_original_AF_grain": true,
+  "source_means_purpose": "Original source chroma classifies retained earth/paths; grass display uses exactly one common painted albedo and one shared AF detail field.",
+  "basin_transition": "Same source-authored basin texture and55\u2013125m pigment transition on BOTH meadow and basalt material slots; native UV V verified from actual terrain snapshot."
 }

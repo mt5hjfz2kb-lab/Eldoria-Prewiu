@@ -1,0 +1,70 @@
+{
+  "run": 40331311765,
+  "tests": {
+    "eldoria-region1-canon-tests.xml": {
+      "result": "Passed",
+      "total": "62",
+      "passed": "62",
+      "failed": "0",
+      "skipped": "0"
+    },
+    "region1-general-proof-40331311765/editmode.xml": {
+      "result": "Passed",
+      "total": "26",
+      "passed": "26",
+      "failed": "0",
+      "skipped": "0"
+    },
+    "region1-general-proof-40331311765/playmode.xml": {
+      "result": "Passed",
+      "total": "62",
+      "passed": "62",
+      "failed": "0",
+      "skipped": "0"
+    }
+  },
+  "camera_manifests_verified": 160,
+  "hash_errors": [],
+  "general_images_verified": 34,
+  "matched_views": [
+    {
+      "label": "cercana-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 27.7323
+    },
+    {
+      "label": "cercana-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 37.6826
+    },
+    {
+      "label": "regional-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 75.2076
+    },
+    {
+      "label": "regional-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 74.7667
+    },
+    {
+      "label": "panoramica-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 57.346
+    },
+    {
+      "label": "panoramica-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 58.4588
+    }
+  ],
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "probe_checks": 44,
+  "probe_status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
+  "probe_error": "",
+  "source": "dfa146a60e920c6325d5d8ee3243fa2f757626f3",
+  "materialized": "d2dc8c963cc7d9edbddce12f960a06635abd2594",
+  "status": "SAFE_CHECKPOINT_RETAINED_BOUNDARY_STILL_VISIBLE",
+  "visual_review": "All six actual views inspected. Palette mean/light improve, but source-specific grass grain still exposes the retained rectangle. Close Breach still reveals a stair-step material transition. Do not declare final7.5 or merge from this checkpoint."
+}

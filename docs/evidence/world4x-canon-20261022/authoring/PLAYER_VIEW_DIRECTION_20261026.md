@@ -142,3 +142,14 @@ Correction: one mean-normalised grass palette for all four actual source texture
 Breach20%: apply physical terrain normals to all five coincident pigment coatings. Native40328365108 had61/62: the new independent normal assertion caught a.972707689dot versus>.999, because height-ray barycentrics at very thin imported facets were not a reliable vertex-normal correspondence. Keep the assertion/tolerance and match the actual coincident source vertices instead. Cache shared normal samples only during installation, preserving the original height-only path for gameplay sampling. Outer rock receives the same normalised meadow finish; reduce saturated vein emission while retaining the bright actual central mineral and the three depth-light sources.
 
 Verdict pending: perform matched actual Unity review in all three scales and both orientations, focusing on centre/exterior continuity and the close mineral boundary. Last fully passing checkpoint remains40324796014/b532c807; no merged main or7.5 claim from the failed correction.
+
+
+## Shared-field correction after actual Unity40331311765
+
+Observed/verdict:62/62 PlayMode,26/26 EditMode,44checks,160camera hashes and34general images independently pass. All six actual views plus near Breach inspected; mean normalisation improves the exterior, but the protected sector is still identifiable by its different grass texture frequency. Near Breach still shows a stepped material edge despite verified coincident normals. Retain safe checkpoint; do not award final7.5 for it.
+
+Causal inspection: at130m radius the exact original basin PNG and adjacent meadow PNG match pixel means to within0.001RGB (median channel ratios1.0). The source image itself is not the edge cause. Imported meadow material faces reach72.28m radius inside the wound while basalt faces use a different55–125m finish mask: binary material membership changes the appearance on an irregular face boundary. Actual Unity UV snapshot confirms original Blender V (first world-Z boundary hasV=0), so a shared world-aligned basin sampler is measurable.
+
+Decision/correction: use the exact same painted grass albedo at100% for all grass surfaces, with the same AF-derived neutral grain in world coordinates. Retain source images only for genuine earth/path classification; do not retain15% source-specific grain/value that still draws a rectangle. Original source images/UVs remain byte-identical; close richness comes from the actual painted bitmap and the original AF grain, common to both sectors.
+
+Across the geological boundary, bind the existing actual basin texture to every meadow material and sample its measured world UV within130m. Apply the same55–125m grass transition and wall-facet shading to BOTH material families. Preserve central mineral texture, physical depth, lights and original terrain. No new mesh, image generation, path, target or save mutation. Verify actual matched Unity images again before any closeout.

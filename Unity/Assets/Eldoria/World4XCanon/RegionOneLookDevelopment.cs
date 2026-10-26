@@ -38,8 +38,23 @@ namespace Eldoria.World4XCanon
                 light.renderMode=LightRenderMode.ForcePixel;light.enabled=false;scope.interiorLights.Add(light);
             }
         }
+        static Texture BasePigment(Material source)
+        {
+            for(int p=0;p<source.shader.GetPropertyCount();p++)
+                if(source.shader.GetPropertyType(p)==ShaderPropertyType.Texture){
+                    string name=source.shader.GetPropertyName(p);
+                    if(name.ToLowerInvariant().Contains("basecolor")){
+                        var texture=source.GetTexture(name);if(texture)return texture;
+                    }
+                }
+            return null;
+        }
         public void ApplyMaterials(GameObject artwork)
         {
+            var basinSource=artwork.GetComponentsInChildren<MeshRenderer>(true).SelectMany(r=>r.sharedMaterials)
+                .First(m=>m.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal));
+            var basinPigment=BasePigment(basinSource);
+            if(!basinPigment)throw new InvalidOperationException("Actual authored basin pigment is missing");
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 renderer.sharedMaterials=renderer.sharedMaterials.Select(source=>{
                     if(cache.TryGetValue(source,out var existing))return existing;
@@ -65,6 +80,7 @@ namespace Eldoria.World4XCanon
                         else if(source.name.StartsWith("P connected meadow",StringComparison.Ordinal))sourceMean=new Color(.51520708f,.50766624f,.27548814f,1);
                         else if(source.name.StartsWith("AI open meadow",StringComparison.Ordinal))sourceMean=new Color(.54429120f,.53390694f,.26453816f,1);
                         material.SetVector("_MeadowSourceMean",QualitySettings.activeColorSpace==ColorSpace.Linear?sourceMean.linear:sourceMean);
+                        material.SetTexture("_BasinPigment",basinPigment);material.SetFloat("_BasinPigmentEnabled",1);
                         var brush=Resources.Load<Texture2D>("World4X/RegionOnePaintedMeadow");
                         if(brush){
                             material.SetTexture("_MeadowBrush",brush);material.SetFloat("_MeadowBrushEnabled",1);
