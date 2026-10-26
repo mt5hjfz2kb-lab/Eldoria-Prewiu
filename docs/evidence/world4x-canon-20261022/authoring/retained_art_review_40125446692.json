@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-world-region-1-canon-20261022",
+  "candidate_source_commit": "a716d89f518363db189817c3439a06da3d4a6a47",
+  "baseline_native_run": 40116606424,
+  "accepted_incremental_native_run": 40125446692,
+  "previous_geology_native_run": 40123678487,
+  "art_approved": false,
+  "decision": "RETAIN_INCREMENTAL_FOR_PR_CANDIDATE_ONLY",
+  "no_merge": true,
+  "no_publication": true,
+  "visual_evidence": "Six actual Unity PlayMode camera-matched PNGs and source metadata from 40123678487 vs 40125446692; image analysis observed reduction in large pale geological plate tiling, still-visible unnaturally regular violet fissure edge, near views unchanged.",
+  "camera_matched": true,
+  "playmode_verified_cases": 57,
+  "playmode_failed_or_ignored": 0,
+  "retained_source_faces": 50688,
+  "retained_faces_changed": 0,
+  "ab_rgb_mae_255": {
+    "cercana-horizontal": 0,
+    "cercana-vertical": 0.001,
+    "regional-horizontal": 1.448,
+    "regional-vertical": 0.669,
+    "panoramica-horizontal": 0.15,
+    "panoramica-vertical": 0.157
+  },
+  "retention_reason": "Physically sculpted existing rift + stratified slate talus and mineral pigment reduce strong cartographic plating without touching AF/AG or changing travel masks; forest improvement from native 40123678487 retained.",
+  "remaining_art_gaps": [
+    "Violet continuous contour still appears regular",
+    "Near-view richness and visual parity with owner reference not achieved",
+    "Physical mobile performance unverified"
+  ],
+  "materialization_gate": "Rebuild exact source in Blender, require native GPU 57 PlayMode, 26 EditMode and 44 I-II controls; preserve editable BLEND, GLB, query bytes, six camera-matched Unity views; no merge or final approval."
+}

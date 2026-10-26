@@ -1,0 +1,721 @@
+{
+  "schema": "eldoria.world4x.authored-layout-p0.v1",
+  "status": "ART_EXPERIMENT_ONLY_NOT_UNITY_RENDER",
+  "unity_world_bounds": {
+    "min_x": -910.0,
+    "max_x": 910.0,
+    "min_z": -780.0,
+    "max_z": 780.0
+  },
+  "world_alignment": {
+    "rift_world_x": 8,
+    "rift_world_z": 61,
+    "source_rift_pixel_x": 255.0,
+    "source_rift_pixel_y": 421.0,
+    "world_units_per_source_x_pixel": 1.9318181818181819,
+    "world_units_per_source_y_pixel": 2.354948805460751
+  },
+  "mask_resolution": 1024,
+  "mask_files": {
+    "land": "masks/land.png",
+    "forest": "masks/forest.png",
+    "water": "masks/water.png",
+    "roads": "masks/roads.png",
+    "relief": "masks/relief.png",
+    "rift": "masks/rift.png"
+  },
+  "source_reference": "docs/visual-reference/world-map/03_vista_panoramica.png",
+  "usage": "Semantic placement only. Never render concept source PNG as ground. Blend layer data into existing Unity hybrid ground, forest LOD, water, roads, relief and breach; protect actual WorldHotspot locations.",
+  "editable_polylines": {
+    "rivers": [
+      {
+        "name": "río_principal",
+        "width_world": 5.0,
+        "points": [
+          [
+            -45,
+            651
+          ],
+          [
+            -19,
+            585
+          ],
+          [
+            14,
+            508
+          ],
+          [
+            -28,
+            445
+          ],
+          [
+            -59,
+            360
+          ],
+          [
+            -98,
+            277
+          ],
+          [
+            -122,
+            204
+          ],
+          [
+            -184,
+            149
+          ],
+          [
+            -198,
+            68
+          ],
+          [
+            -224,
+            -15
+          ],
+          [
+            -199,
+            -105
+          ],
+          [
+            -163,
+            -193
+          ],
+          [
+            -132,
+            -269
+          ],
+          [
+            -96,
+            -353
+          ],
+          [
+            -49,
+            -429
+          ],
+          [
+            22,
+            -515
+          ],
+          [
+            105,
+            -582
+          ],
+          [
+            230,
+            -641
+          ],
+          [
+            360,
+            -692
+          ]
+        ]
+      },
+      {
+        "name": "afluente_norte",
+        "width_world": 2.8,
+        "points": [
+          [
+            247,
+            606
+          ],
+          [
+            181,
+            529
+          ],
+          [
+            116,
+            481
+          ],
+          [
+            49,
+            462
+          ],
+          [
+            14,
+            508
+          ]
+        ]
+      },
+      {
+        "name": "afluente_central",
+        "width_world": 3,
+        "points": [
+          [
+            -360,
+            90
+          ],
+          [
+            -302,
+            98
+          ],
+          [
+            -256,
+            132
+          ],
+          [
+            -198,
+            68
+          ]
+        ]
+      },
+      {
+        "name": "afluente_sureste",
+        "width_world": 3.3,
+        "points": [
+          [
+            350,
+            -160
+          ],
+          [
+            280,
+            -198
+          ],
+          [
+            205,
+            -238
+          ],
+          [
+            151,
+            -293
+          ],
+          [
+            -96,
+            -353
+          ]
+        ]
+      },
+      {
+        "name": "afluente_suroeste",
+        "width_world": 3.3,
+        "points": [
+          [
+            -388,
+            -314
+          ],
+          [
+            -313,
+            -350
+          ],
+          [
+            -241,
+            -369
+          ],
+          [
+            -163,
+            -193
+          ]
+        ]
+      }
+    ],
+    "roads": [
+      {
+        "name": "camino_occidental",
+        "width_world": 3.4,
+        "points": [
+          [
+            -337,
+            527
+          ],
+          [
+            -272,
+            451
+          ],
+          [
+            -236,
+            361
+          ],
+          [
+            -279,
+            246
+          ],
+          [
+            -327,
+            160
+          ],
+          [
+            -354,
+            34
+          ],
+          [
+            -342,
+            -138
+          ],
+          [
+            -273,
+            -260
+          ],
+          [
+            -220,
+            -381
+          ],
+          [
+            -134,
+            -475
+          ]
+        ]
+      },
+      {
+        "name": "camino_oriental",
+        "width_world": 3.1,
+        "points": [
+          [
+            336,
+            547
+          ],
+          [
+            295,
+            457
+          ],
+          [
+            255,
+            366
+          ],
+          [
+            291,
+            267
+          ],
+          [
+            354,
+            178
+          ],
+          [
+            355,
+            67
+          ],
+          [
+            326,
+            -56
+          ],
+          [
+            285,
+            -188
+          ],
+          [
+            300,
+            -308
+          ],
+          [
+            367,
+            -400
+          ]
+        ]
+      },
+      {
+        "name": "camino_central_norte",
+        "width_world": 3.2,
+        "points": [
+          [
+            -276,
+            430
+          ],
+          [
+            -198,
+            393
+          ],
+          [
+            -103,
+            338
+          ],
+          [
+            -26,
+            299
+          ],
+          [
+            69,
+            269
+          ],
+          [
+            158,
+            325
+          ],
+          [
+            255,
+            366
+          ]
+        ]
+      },
+      {
+        "name": "camino_central_sur",
+        "width_world": 3.0,
+        "points": [
+          [
+            -342,
+            -138
+          ],
+          [
+            -275,
+            -172
+          ],
+          [
+            -177,
+            -206
+          ],
+          [
+            -101,
+            -254
+          ],
+          [
+            0,
+            -304
+          ],
+          [
+            122,
+            -314
+          ],
+          [
+            198,
+            -359
+          ],
+          [
+            300,
+            -308
+          ]
+        ]
+      },
+      {
+        "name": "camino_sur",
+        "width_world": 2.7,
+        "points": [
+          [
+            -220,
+            -381
+          ],
+          [
+            -130,
+            -413
+          ],
+          [
+            -41,
+            -445
+          ],
+          [
+            52,
+            -487
+          ],
+          [
+            147,
+            -513
+          ],
+          [
+            244,
+            -535
+          ],
+          [
+            350,
+            -600
+          ]
+        ]
+      }
+    ],
+    "rift": [
+      {
+        "name": "grieta_principal",
+        "width_world": 3.1,
+        "points": [
+          [
+            8,
+            61
+          ],
+          [
+            0,
+            84
+          ],
+          [
+            -6,
+            109
+          ],
+          [
+            8,
+            136
+          ],
+          [
+            15,
+            176
+          ],
+          [
+            11,
+            211
+          ]
+        ]
+      },
+      {
+        "name": "grieta_noroeste",
+        "width_world": 2.4,
+        "points": [
+          [
+            3,
+            89
+          ],
+          [
+            -41,
+            108
+          ],
+          [
+            -87,
+            147
+          ],
+          [
+            -121,
+            167
+          ],
+          [
+            -158,
+            194
+          ]
+        ]
+      },
+      {
+        "name": "grieta_noreste",
+        "width_world": 2.2,
+        "points": [
+          [
+            10,
+            117
+          ],
+          [
+            49,
+            126
+          ],
+          [
+            85,
+            164
+          ],
+          [
+            123,
+            157
+          ],
+          [
+            159,
+            201
+          ]
+        ]
+      },
+      {
+        "name": "grieta_suroeste",
+        "width_world": 2.5,
+        "points": [
+          [
+            8,
+            61
+          ],
+          [
+            -31,
+            47
+          ],
+          [
+            -64,
+            14
+          ],
+          [
+            -118,
+            -19
+          ],
+          [
+            -160,
+            -52
+          ]
+        ]
+      },
+      {
+        "name": "grieta_sur",
+        "width_world": 3.4,
+        "points": [
+          [
+            8,
+            61
+          ],
+          [
+            22,
+            21
+          ],
+          [
+            0,
+            -30
+          ],
+          [
+            16,
+            -71
+          ],
+          [
+            38,
+            -113
+          ],
+          [
+            30,
+            -158
+          ]
+        ]
+      },
+      {
+        "name": "grieta_este",
+        "width_world": 2.1,
+        "points": [
+          [
+            22,
+            21
+          ],
+          [
+            75,
+            17
+          ],
+          [
+            133,
+            -3
+          ],
+          [
+            170,
+            -40
+          ],
+          [
+            202,
+            -89
+          ]
+        ]
+      }
+    ],
+    "forest_belts": [
+      {
+        "name": "bosque_noroeste",
+        "width_world": 14,
+        "points": [
+          [
+            -389,
+            240
+          ],
+          [
+            -329,
+            225
+          ],
+          [
+            -252,
+            252
+          ],
+          [
+            -190,
+            284
+          ]
+        ]
+      },
+      {
+        "name": "bosque_este_superior",
+        "width_world": 15,
+        "points": [
+          [
+            225,
+            410
+          ],
+          [
+            285,
+            375
+          ],
+          [
+            335,
+            296
+          ],
+          [
+            390,
+            271
+          ]
+        ]
+      },
+      {
+        "name": "bosque_oeste_mediano",
+        "width_world": 18,
+        "points": [
+          [
+            -402,
+            60
+          ],
+          [
+            -364,
+            3
+          ],
+          [
+            -343,
+            -69
+          ],
+          [
+            -284,
+            -114
+          ]
+        ]
+      },
+      {
+        "name": "bosque_sur_oeste",
+        "width_world": 16,
+        "points": [
+          [
+            -375,
+            -355
+          ],
+          [
+            -309,
+            -385
+          ],
+          [
+            -251,
+            -410
+          ],
+          [
+            -186,
+            -438
+          ]
+        ]
+      },
+      {
+        "name": "bosque_sur_este",
+        "width_world": 13,
+        "points": [
+          [
+            120,
+            -355
+          ],
+          [
+            173,
+            -392
+          ],
+          [
+            242,
+            -424
+          ],
+          [
+            305,
+            -453
+          ]
+        ]
+      }
+    ]
+  },
+  "explicit_relief_knots": [
+    {
+      "x": -335,
+      "z": 560,
+      "radius_x": 75,
+      "radius_z": 40
+    },
+    {
+      "x": -333,
+      "z": -472,
+      "radius_x": 77,
+      "radius_z": 51
+    },
+    {
+      "x": 265,
+      "z": 475,
+      "radius_x": 57,
+      "radius_z": 45
+    },
+    {
+      "x": 306,
+      "z": -480,
+      "radius_x": 69,
+      "radius_z": 35
+    }
+  ],
+  "protection": {
+    "no_fake_hotspots": true,
+    "no_save_changes": true,
+    "no_ui_changes": true,
+    "preserve_valoria_approach_radius_world": 90
+  }
+}

@@ -1,0 +1,31 @@
+{
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "landscape-close",
+    "sha256": "7dfb1a390e264c5983ada225b89c43b5ef721a64f4c1546ff4307dde3325a756",
+    "context": "AF/AG camera and sector coordinates; restored scoped AG shader and lighting",
+    "targetId": "",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 1280,
+    "height": 720,
+    "zoom": 24.0,
+    "aspect": 1.7777777910232545,
+    "cameraPosition": {
+        "x": 1038.0,
+        "y": 132.0,
+        "z": -20.0
+    },
+    "worldTarget": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "cameraRotation": {
+        "x": 0.35737279057502749,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.9339618682861328
+    }
+}

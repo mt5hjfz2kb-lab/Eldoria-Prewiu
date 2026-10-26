@@ -1,0 +1,59 @@
+{
+  "run": 40253312800,
+  "source_commit": "aa04c985cb312da2bee3f9910dfc98e2921d8a0a",
+  "method": "actual installed BlenderMCP execute_code with closed PID",
+  "files": {
+    "Eldoria_Region1_Production.blend": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+    "RegionOneBlenderWorld.glb": "b5a37eb7a9f3843186ec7228611c82a57a98b578a962c71d3e8340a78ee51d90",
+    "RegionOneBlenderQueries.bytes": "4f9f1866f127fac7bcac25f8ef0e27e28fc5bd324c35c744f0a4c20bdd547eae",
+    "production-region.json": "5dbfd92233e9fbe23c139aeec0b2ea513c92fe7a8469bbffe41dd8cdcc39e323"
+  },
+  "physical_correction": {
+    "changed_unprotected_vertices": 22461,
+    "max_vertical_correction_m": 8.863828659057617,
+    "protected_positions_exact": true,
+    "height_bounds_exact": true,
+    "soil_mask_coincident_vertices_welded": true,
+    "rejected_normals_only_candidate_native": 40250944622,
+    "water_footprints_preserved_with_12m_margin": true,
+    "city_reserves_preserved": true,
+    "query_payload_and_editable_positions_identical": true,
+    "report_recovery_only": "Previous MCP40253028130 completed exports and assertions; JSON report serialization stopped on numpy int64. No repeated erosion."
+  },
+  "blend_bytes": 94100760,
+  "local_floor_contact": {
+    "all_floor_vertices_against_highest_actual_triangle": true,
+    "float64_max_error_m": 5.327224731445368e-05,
+    "same_result_float32": true,
+    "unchanged_limit_m": 0.005
+  },
+  "protected_source": {
+    "triangles": 101444,
+    "missing_triangles": 0,
+    "position_uv_material_preserved": true,
+    "uv_max_error": 0,
+    "max_normal_reencoding_vs_prior": 0.004608780145645142,
+    "normals_bit_identical": false,
+    "common_embedded_images_unchanged": 10
+  },
+  "quick_visual_review": {
+    "outcome": "RETAINED_FOR_NATIVE_REVIEW",
+    "reviewer": "ChatGPT direct author; no independent external artistic approval",
+    "finding": "Actual three Blender previews: large sawtooth bank fins removed, continuous sloping soil joins the deep incision; all three existing water footprints retained. Runtime pigment/strata and target scale require fresh final Unity views.",
+    "images": [
+      {
+        "file": "eroded-continuous-banks-near-breach.png",
+        "sha256": "8fdd7059c29214173d4c66567de3fb70e2c5bad4b45ad07ef85cde7b1c2075df"
+      },
+      {
+        "file": "eroded-continuous-banks-panorama.png",
+        "sha256": "185c3bf1b716dcb80e058b7b152cb76b1afcbf2513cc6c8296a114fc387be47f"
+      },
+      {
+        "file": "eroded-continuous-banks-regional.png",
+        "sha256": "c50d0508c8f7717406438c629e7b0117a6b564e25226c5ae593033725001487c"
+      }
+    ]
+  },
+  "art_approved": false
+}

@@ -1,0 +1,13 @@
+{
+  "unique_mesh_triangles": 74724,
+  "instanced_triangles": 312672,
+  "meshes": 37,
+  "glb_sha256": "129ad3bcd71c64481d1e405aa5fadb7b9df9ab053b5b51e0bc0fd8a96639729b",
+  "active_exported_images": [
+    "O_painted_bank_1.png",
+    "O_painted_bank_-1.png",
+    "E_river_depth_and_current.png",
+    "I_recovered_exact_retained_surface.png"
+  ],
+  "mobile_measured": false
+}

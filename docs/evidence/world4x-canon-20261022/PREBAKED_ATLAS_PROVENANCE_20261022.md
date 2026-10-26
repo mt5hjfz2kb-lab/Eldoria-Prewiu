@@ -1,0 +1,7 @@
+# Native-reviewed atlas baked once
+
+Source art commit: ea2c5a544133e408256e1b30731f1b7eae3630d7. Real Unity/Blender run 39839182875; artifact 12453230573; native NUnit 7/7 passed. Terrain PNG SHA-256: d3a9b20a7d6404a77d139ee355fa2ed630034c91e179252ed7800612781dc6ac. Original exported PNG bytes preserved unchanged in Resources/World4X/RegionOneTerrainAtlas.png.
+
+The 2048 atlas improved route/bank readability but repeated scene boot tests rose to ~28.1 seconds each (versus ~3.2 seconds for the earlier 1024 baseline, ~7.3 for the continuous-coast 1024 trial). These are whole Editor test durations, not physical-mobile load or FPS measurements. Load the precomputed atlas rather than rebaking four million pixels on each world entry. Imported asset lifetime is shared; player drops CPU readability, editor retains it for authentic snapshot export. Uncompressed sRGB, mipmaps, same dimensions. Increased texture/terrain footprint remains a mobile profiling gate.
+
+For future terrain/color/water/layout edits, set ELDORIA_REGION1_REBAKE_ATLAS=1 for the authoring run, review the new actual Unity captures, and replace this PNG with the exact newly exported terrain-atlas.png. Refresh this provenance/hash. Never silently edit source geography while leaving stale baked art. Missing asset falls back to the editable source baker; Qwen is not used. The first cached-asset run must verify captures against 39839182875 and measure test durations before claiming the performance fix.

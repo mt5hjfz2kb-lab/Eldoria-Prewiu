@@ -1,0 +1,50 @@
+{
+  "method": "built-in image_gen; no CLI/API fallback",
+  "prompt": "Use case: stylized-concept. Asset type: seamless square game terrain albedo texture, 1024x1024, for a polished stylized medieval mobile 4X environment. Create ONLY a flat orthographic top-down material swatch covering the whole canvas, not a landscape scene. Warm muted olive meadow grass with small organically shaped grassy islands and irregular narrow ochre bare-earth spaces, 80 percent grass / 20 percent earth. Grass should have softly faceted painterly clusters and very sparse tiny angular pale pebbles and short grass strokes; forms range from small tufts to one-metre patches, imagining this tile represents a 16 metre square. Clean high-end hand-painted game art, readable organic edges, subtle variation, no photographic noise, no blurry camouflage clouds, no cellular polygon grid. Palette subdued yellow-olive greens and warm ochre, average roughly RGB 125,132,65, gentle value contrast. Uniform diffuse albedo without directional lighting, baked shadows, occlusion, perspective, horizon, trees, bushes, buildings, creatures, paths with a recognisable route, text, labels, border or watermark. Seamless wrap in both directions with natural continuous detail at edges. This is a usable material texture, not a preview render on a ball or a terrain mesh.",
+  "asset": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/RegionOnePaintedMeadow.png",
+  "asset_sha256": "53218917d883f5d1f39e5821708e1c477e253a4d04a0a45eea06b3b6d97b306b",
+  "original_pixels_unmodified": true,
+  "actual_dimensions": [
+    1254,
+    1254
+  ],
+  "measured_srgb_mean": [
+    0.51184069,
+    0.47712201,
+    0.18659264
+  ],
+  "path_distance": {
+    "asset": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/RegionOneExistingPathDistance.png",
+    "source": "existing 16 authored route control-point sequences in build_region_from_ai.py",
+    "source_code_sha256": "de81e28a24d55114e24a2df95bd1b9f2ae2fe9f7bb7266dc7cdb4dfc8f32e37e",
+    "method": "same Catmull-Rom curves rasterised as a numeric distance field; no colour segmentation or field-stain classification",
+    "range_metres": 16,
+    "numeric_field_dimensions": [
+      1024,
+      1024
+    ],
+    "source_earth_segmentation": "REJECTED in actual Unity40310659122: broad false stains and thick flat ribbons",
+    "opacity": 0.32,
+    "maximum_extra_radius_metres": 3.3,
+    "soft_edge_metres": 1.8,
+    "gameplay_route_changes": false
+  },
+  "official_technical_references": [
+    "https://github.com/Unity-Technologies/Graphics/blob/master/Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl",
+    "https://github.com/Unity-Technologies/Graphics/blob/master/Packages/com.unity.shadergraph/Documentation~/Tiling-And-Offset-Node.md"
+  ],
+  "acceptance": "actual Unity A/B pending; bitmap generation is not art acceptance",
+  "application": "Primary grass albedo at85% blend, palette(0.60,0.64,0.28), source value bounded0.85-1.08; old exposed paths and central mineral excluded. Earlier neutral-multiply-only appearance retained too much muddy macro pigment in genuine40313214146.",
+  "current_runtime_application": {
+    "native_run": 40337702256,
+    "shared_painted_grass_weight": 1,
+    "shared_AF_neutral_detail": true,
+    "source_images_preserved_for_path_classification": true,
+    "source_specific_grass_value_or_grain_inherited": false,
+    "basin_pigment_shared_across_material_slots": true,
+    "review": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+    "director_estimate": 7.5,
+    "estimate_is_subjective": true,
+    "art_approved": false
+  }
+}

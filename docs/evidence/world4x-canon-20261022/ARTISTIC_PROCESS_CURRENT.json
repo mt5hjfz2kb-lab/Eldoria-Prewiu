@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "workstream_id": "eldoria-world-region-1-canon-20261022",
+  "certified_source_commit": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
+  "blender": {
+    "method": "blender-mcp-interactive",
+    "mcp_status": "verified",
+    "mcp_preflight": "Actual installed BlenderMCP addon SHA eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5 with Blender5.2.2 LTS; loopback execute_code request/response and owned closed-PID proof retained from40319616586. Inspected original donor bounds, authored a rounded shared crown, repaired source beds/banks, inspected real Blender previews and reviewed actual Unity. Later scoped Unity finishing uses the unchanged exact authored source.",
+    "artistic_decision_log": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+    "input_blend": "docs/evidence/world4x-canon-20261022/sources/native-40253785923/Eldoria_Region1_Production.blend",
+    "input_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+    "output_blend": "docs/evidence/world4x-canon-20261022/sources/native-40337702256/Eldoria_Region1_Production.blend",
+    "output_sha256": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9"
+  },
+  "baseline": {
+    "run_id": 40253785923,
+    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40253785923/review"
+  },
+  "candidate": {
+    "run_id": 40337702256,
+    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40337702256/review"
+  },
+  "visual_review_path": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+  "visual_judgment": {
+    "outcome": "RETAINED",
+    "reviewer": "ChatGPT direct art director/author, not independent external approval",
+    "observed_improvement": "Directly reviewed all six authentic final Unity images and close resources, creatures and geological detail. Shared grass/albedo/detail removes source-specific material contrast; the previous stepped mineral-material boundary disappears. Readable85% nodes, grounded creatures, restrained mixed crowns, shorter bridge and continuous water remain. The director estimates approximately7.5 for the near-priority first consolidation.",
+    "remaining_gaps": "Coastline, some woodland/path groupings and mineral plate shapes remain more regular than the illustration. Panoramic detail is simpler. Independent external acceptance and physical mobile performance are not established."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "director_estimate": 7.5
+}

@@ -38,6 +38,18 @@ jobs:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     steps:
+      - name: Check live native-editor lease before downloading the Unity project
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-native-lease-preflight'}
+          $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
+          $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $ui.Count -ne 1)){throw "Windows native lease belongs to another workstream: $($claims.id -join ', ')"}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing Unity or Blender process; retain the later ownership/process check as well'}
       - name: Expose Git installed with GitHub Desktop
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -89,6 +101,20 @@ jobs:
             if(-not(Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $required))){
               throw "Integrated UI V3 candidate input missing: $required"
             }
+          }
+          # Camera fixtures are test inputs outside Unity/. A reused sparse
+          # workspace may omit them even when the project itself is complete.
+          # Restore only absent exact-commit files; refuse changed local inputs.
+          foreach($fixture in @('docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json')){
+            $expected=(& git rev-parse "$($env:GITHUB_SHA):$fixture").Trim()
+            if($LASTEXITCODE -ne 0 -or $expected -notmatch '^[0-9a-f]{40}$'){throw "Missing tracked camera fixture: $fixture"}
+            if(-not(Test-Path -LiteralPath $fixture)){
+              & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- $fixture
+              if($LASTEXITCODE){throw "Cannot restore exact camera fixture: $fixture"}
+            }
+            $actualFixture=(& git hash-object -- $fixture).Trim()
+            if($LASTEXITCODE -ne 0 -or $actualFixture -ne $expected){throw "Camera fixture differs from certified candidate: $fixture"}
+            Write-Host "ELDORIA_EXACT_CAMERA_FIXTURE_READY $fixture $expected"
           }
           Write-Host "ELDORIA_V3_EXACT_TRACKED_PROJECT_READY"
 
@@ -352,7 +378,11 @@ jobs:
           # Unity 6 on this Windows runner misreads mixed C:\\.../Unity as a
           # relative path and prepends the workspace again (run 39174538409).
           # Use a pure relative project name with explicit working directory.
-          $args = @("-batchmode","-nographics","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          # The genuine World4X camera tests require a real graphics device.
+          # Preserve every test and require all cases to pass; never ignore captures.
+          $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "eldoria-ui-region1-captures-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT | Out-Null
+          $args = @("-batchmode","-force-d3d11","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -372,6 +402,8 @@ jobs:
           }
           [xml]$results = Get-Content $xml
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
+          $cases=@($results.SelectNodes('//test-case'))
+          if($cases.Count -lt 61 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Expected the complete 61+ PlayMode suite with no ignored or failed cases'}
 
       - name: Summarize certified checks
         shell: powershell
@@ -421,6 +453,7 @@ jobs:
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml
             ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
+            ${{ runner.temp }}/eldoria-ui-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
             ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log
             ${{ runner.temp }}/Eldoria-V2-Native-Framing-Baseline-*.json
             docs/evidence/valoria-reference-clean/integration-*.png

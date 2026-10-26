@@ -1,0 +1,100 @@
+{
+  "pid": 36124,
+  "three_cycles_completed": true,
+  "art_approved": false,
+  "unity_changed": false,
+  "cameras": {
+    "panoramica-horizontal": {
+      "same_as_initial_observation": true,
+      "matrix_error": 0.0,
+      "ortho_scale": 1777.77783203125,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.8987940549850464,
+          -0.43837109208106995,
+          -236.7204132080078
+        ],
+        [
+          0.0,
+          0.43837109208106995,
+          0.8987940549850464,
+          485.3487854003906
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "panoramica-vertical": {
+      "same_as_initial_observation": true,
+      "matrix_error": 0.0,
+      "ortho_scale": 1155.9315185546875,
+      "matrix_world": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.8987940549850464,
+          -0.43837109208106995,
+          -236.7204132080078
+        ],
+        [
+          0.0,
+          0.43837109208106995,
+          0.8987940549850464,
+          485.3487854003906
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    }
+  },
+  "river_mouth_probes": [
+    {
+      "point": [
+        96.8059,
+        -398.115,
+        -5.4
+      ],
+      "terrain_height": -7.1421356201171875,
+      "water_buried": false
+    },
+    {
+      "point": [
+        113.8059,
+        -406.115,
+        -8.4
+      ],
+      "terrain_height": -7.7487030029296875,
+      "water_buried": true
+    },
+    {
+      "point": [
+        128.8059,
+        -420.115,
+        -17.6
+      ],
+      "terrain_height": -4.000030517578125,
+      "water_buried": true
+    }
+  ],
+  "final_blend_sha256": "ee2797a0e5e46b5c7e33e3a1d1654adf7b9debb3f940cf11c1e128a043cec47a"
+}

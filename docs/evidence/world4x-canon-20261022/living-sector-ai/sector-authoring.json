@@ -1,0 +1,12 @@
+{
+  "stage": "AI",
+  "source_sha256": "4b1a71c502302172017867d646f52d7abce0bcc53901264be2461da86e3f4a2d",
+  "AG_vertices_unchanged": 25283,
+  "added_vertices": 9650,
+  "extension_area_m2": 19200,
+  "previous_extent_area_m2": 47616,
+  "city_clearances": 4,
+  "added_trees": 44,
+  "dynamic_objects_baked": 0,
+  "art_approved": false
+}

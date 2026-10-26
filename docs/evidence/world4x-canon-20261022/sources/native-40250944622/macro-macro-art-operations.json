@@ -1,0 +1,84 @@
+{
+  "method": "actual BlenderMCP continuous cutter and rounded-bank geological modelling",
+  "source_sha256": "76312a3482f914cd7fe5bd83c97633a3145f4ff42f9ddce296ba48d12a0f1278",
+  "terrain_vertices_after": 369163,
+  "protected_vertices_unchanged": 51898,
+  "original_packed_images_unchanged": 62,
+  "rejected_approach": "sampled-heightfield cleft made grid-stepped walls and stretched slate UV",
+  "retained_upland_spines": 4,
+  "continuous_canyon_boolean": true,
+  "canyon_cut_faces": 30557,
+  "decorative_crowns_regrounded": 119,
+  "decorative_crowns_cleared_from_wound": 0,
+  "interior_light_anchors": 3,
+  "new_gameplay_targets": 0,
+  "new_colliders": 0,
+  "files": {
+    "Eldoria_Region1_Production.blend": "82c7c0e6a94a27575aba4b87a1843af7e607b31e45478848a65b424578d05daf",
+    "RegionOneBlenderWorld.glb": "05dc18f63af927985e7e0b16cebe3c96774f85ea325a4883ab7a555c40fcf2a9",
+    "RegionOneBlenderQueries.bytes": "aa55c034fde1a9f119c04d77c24c4610a0f0dabf6e50199de72d5b27ea8aa46c",
+    "production-region.json": "20f4fc5ef59847a4e1942d4bc3c5a12908ad2a8134d7fff13807efe9037b9978"
+  },
+  "art_approved": false,
+  "compacted_unused_modelling_meshes": [
+    "BLD_BreachBrokenBasaltPlates sculpted geological surface",
+    "BLD_BreachFloor sculpted geological surface",
+    "BLD_BreachOutlyingFractures sculpted geological surface",
+    "BLD_BreachTerracedStrata sculpted geological surface",
+    "BLD_BreachWeatheredRockfall sculpted geological surface",
+    "K Layered fir editable branch masses.003",
+    "K Slender fir editable branch masses.003",
+    "Region1 welded continental extension"
+  ],
+  "compaction_source_sha256": "49500268fac141d232b66db112469640bf56f9d99662a30b231b758225fbf554",
+  "blend_bytes": 94477875,
+  "orientation_source_sha256": "dc7ef856fd020ed4cdafd6d3f7290e111e1c8c574745c549a01774a2bf228830",
+  "corrected_outward_surface_orientation": {
+    "BLD_Terrain": {
+      "faces": 85345,
+      "flipped": 836,
+      "area_weighted_up_before": 105183.0895025953
+    },
+    "BLD_BreachFloor": {
+      "faces": 14727,
+      "flipped": 0,
+      "area_weighted_up_before": 4616.424657101149
+    },
+    "BLD_BreachOutlyingFractures": {
+      "faces": 910,
+      "flipped": 0,
+      "area_weighted_up_before": 2388.4892326743798
+    },
+    "BLD_BreachBrokenBasaltPlates": {
+      "faces": 8898,
+      "flipped": 0,
+      "area_weighted_up_before": 4635.654137873473
+    },
+    "BLD_BreachTerracedStrata": {
+      "faces": 3860,
+      "flipped": 0,
+      "area_weighted_up_before": 7440.940123074593
+    },
+    "BLD_BreachWeatheredRockfall": {
+      "faces": 1687,
+      "flipped": 0,
+      "area_weighted_up_before": 9827.45987247338
+    }
+  },
+  "terrain_vertex_positions_unchanged": true,
+  "exported_rock_base_colour": [
+    0.22,
+    0.235,
+    0.25,
+    1
+  ],
+  "smooth_geology_source_sha256": "fac19536d7915601b330eaa21ab373bcf465edc8f2c8cd45ae1e2057fad7cd5a",
+  "inherited_flat_corner_normals_removed": {
+    "BLD_Terrain": 85345,
+    "BLD_BreachFloor": 14727,
+    "BLD_BreachOutlyingFractures": 910,
+    "BLD_BreachBrokenBasaltPlates": 8898,
+    "BLD_BreachTerracedStrata": 3860,
+    "BLD_BreachWeatheredRockfall": 1687
+  }
+}

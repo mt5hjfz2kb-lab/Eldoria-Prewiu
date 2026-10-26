@@ -1,0 +1,71 @@
+{
+  "source_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+  "terrain_vertices_after": 369163,
+  "bridge_length_before": 34,
+  "bridge_length_after": 21,
+  "actual_stepped_wall_vertices": 59005,
+  "protected_vertices_unchanged": 51828,
+  "original_packed_images_unchanged": 62,
+  "overlay_vertices_projected": {
+    "BLD_BreachFloor": 17305,
+    "BLD_BreachOutlyingFractures": 929,
+    "BLD_BreachBrokenBasaltPlates": 9851,
+    "BLD_BreachTerracedStrata": 3635,
+    "BLD_BreachWeatheredRockfall": 1828,
+    "BLD_BreachMineralHeart": 30
+  },
+  "gameplay_masks_sha256": "cc2afa1bc465987e1197912180b6ac29dafa7bd110398e06bfa2e93743137923",
+  "new_gameplay_targets": 0,
+  "new_colliders": 0,
+  "existing_rooted_scenery_fitted": 108,
+  "river_bed_vertices_corrected": 17405,
+  "art_approved": false,
+  "files": {
+    "Eldoria_Region1_Production.blend": "6bb7aba8464a79a0593edffebe974dac27aafadb976ba200d73adf207940282f",
+    "RegionOneBlenderWorld.glb": "d1aa9cf33b7189909bf2268443624f758f750b0bf82e690beef51af19d77aae3",
+    "RegionOneBlenderQueries.bytes": "8f4ddf16c2fa8fcd29da3dec55c0f6eab0da970757239abd52e5fdc75662b42e",
+    "production-region.json": "7f9cf05c9ddded57fb0ec2d716726617d4f9ea32ed53238da616f0936735afa1"
+  },
+  "run": 40304157232,
+  "source_commit": "eaee19835a54a598ac4abc03a4204a6998cef983",
+  "method": "actual BlenderMCP execute_code with saved response and closed own PID",
+  "ready": {
+    "pid": 16220,
+    "port": 62114,
+    "addon_sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5",
+    "source_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+    "blender": "5.2.2 LTS",
+    "started": 1793008986.5096915
+  },
+  "session_closed": {
+    "run": "40304157232",
+    "pid": 16220,
+    "closed": true
+  },
+  "downloaded_archive_and_file_hashes_verified": true,
+  "blend_bytes": 95479660,
+  "glb_bytes": 49978108,
+  "river_geometry_sampling": {
+    "method": "GLB water triangle centres, barycentric top-ground intersection among 64 nearest terrain triangle centres; bridges excluded; non-playable continuation without terrain hits excluded",
+    "terrain_hits": 1993,
+    "remaining_occluded_centres": 0,
+    "minimum_water_clearance_metres": 0.2199472,
+    "continuous_surface_claim": "sampled centres plus observed real Blender regional image; not exhaustive surface intersection proof"
+  },
+  "original_meadow_boundary_sampling": {
+    "pairs": 237,
+    "method": "GLB ground triangle UV interpolation and actual packed source pigment, two metres inside/outside protected rectangle",
+    "median_RGB_ratio_range": [
+      0.98460081,
+      1.02158385
+    ]
+  },
+  "review": "Retained for actual Unity review; source previews alone do not certify 7.5",
+  "preview_hashes": {
+    "player-art-connected-land-v7-near-town.png": "88cb00d5fb8605e829cd2aea3d6b4c40d4ee26658df9406dfad665cc182fdcf5",
+    "FracturedBasinPigment.png": "cd45bde16f2ff7ab25d61e2c3b6330b60d3427f4b5e02981ff71e1928705d1b1",
+    "player-art-connected-land-v7-regional.png": "2a40b991d9f677339805e2963fc6e2f93ca5e3e49e49466779bdab54c5b231fb",
+    "player-art-connected-land-v7-panorama.png": "3a5a32dfa5d4be6499d267821747b7dd69d6fbffb71ea9c0ab7d5d51c7af9c23",
+    "player-art-connected-land-v7-near-breach.png": "e18070d4e2ced13999263c8c1bfccc69769bb24d416437f31b22545fac64df63"
+  }
+}

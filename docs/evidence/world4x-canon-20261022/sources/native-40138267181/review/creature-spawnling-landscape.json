@@ -1,0 +1,31 @@
+{
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "spawnling-landscape",
+    "sha256": "7c29b64a2a862bf0b30ebbfae61c1ba2e726d5dda1d8ec48bd0332378e8b467c",
+    "context": "AF/AG camera and sector coordinates; restored scoped AG shader and lighting",
+    "targetId": "region1:spawnling:001",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 1280,
+    "height": 720,
+    "zoom": 36.0,
+    "aspect": 1.7777777910232545,
+    "cameraPosition": {
+        "x": 908.0,
+        "y": 99.90916442871094,
+        "z": -550.040283203125
+    },
+    "worldTarget": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "cameraRotation": {
+        "x": 0.3583679795265198,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.9335804581642151
+    }
+}

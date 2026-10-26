@@ -14,6 +14,8 @@ namespace Eldoria.World4XPrototype
         public Vector3 target = new Vector3(-18, 0, 30);
         public float localZoom = 32, regionalZoom = 60, globalZoom = 110;
         [Range(35, 80)] public float tilt = 55;
+        [Range(-180, 180)] public float heading;
+        public bool AllowWholeRegionOverview;
         public float edgeMargin = 2, dragThresholdPixels = 8;
         // Orthographic framing depends on zoom, not this depth offset.
         // Integrated Valoria sets 140 to keep visible ground inside URP shadows.
@@ -30,7 +32,7 @@ namespace Eldoria.World4XPrototype
 
         void Awake()
         {
-            View.orthographic = true; View.nearClipPlane = .3f; View.farClipPlane = 900;
+            View.orthographic = true; View.nearClipPlane = .3f; View.farClipPlane = Mathf.Max(900, cameraDistance * 2.5f);
             desiredZoom = regionalZoom; View.orthographicSize = desiredZoom;
             ApplyPose(); FitToAuthoredBounds();
         }
@@ -38,7 +40,9 @@ namespace Eldoria.World4XPrototype
         {
             float width = Mathf.Max(.2f, maximum.x - minimum.x - edgeMargin * 2);
             float depth = Mathf.Max(.2f, maximum.y - minimum.y - edgeMargin * 2);
-            return Mathf.Max(.1f, .5f * Mathf.Min(width / Mathf.Max(.1f, View.aspect), depth * Mathf.Sin(tilt * Mathf.Deg2Rad)));
+            float c = Mathf.Abs(Mathf.Cos(heading * Mathf.Deg2Rad)), s = Mathf.Abs(Mathf.Sin(heading * Mathf.Deg2Rad));
+            float ground = 1f / Mathf.Sin(tilt * Mathf.Deg2Rad);
+            return Mathf.Max(.1f, .5f * Mathf.Min(width / (View.aspect * c + ground * s), depth / (View.aspect * s + ground * c)));
         }
         /// <summary>
         /// Wide, bounded first entry. Leave maneuvering margin rather than
@@ -47,7 +51,12 @@ namespace Eldoria.World4XPrototype
         /// </summary>
         public float StrategicEntryZoom()
         {
-            float max = Mathf.Min(globalZoom, MaximumFittingZoom());
+            // Whole-region overview may exceed the navigable footprint, but
+            // first entry must retain room to pan on BOTH ground axes. The
+            // panorama's aspect/heading-specific zoom is not that limit.
+            if (AllowWholeRegionOverview)
+                return Mathf.Max(.1f, Mathf.Min(globalZoom, MaximumFittingZoom()) * .82f);
+            float max = AllowWholeRegionOverview ? globalZoom : Mathf.Min(globalZoom, MaximumFittingZoom());
             float minimumWide = Mathf.Min(max, Mathf.Max(localZoom, regionalZoom * 1.65f));
             return Mathf.Max(minimumWide, max * .82f);
         }
@@ -55,6 +64,10 @@ namespace Eldoria.World4XPrototype
         public void EnterStrategicView(Vector3 anchor)
         {
             target = anchor;
+            // Enter/Home is the regional north-up view, not a continuation of
+            // the previous whole-continent bearing. Reset before computing the
+            // navigable footprint or accepting an immediate pointer drag.
+            if (AllowWholeRegionOverview) heading = 0;
             desiredZoom = StrategicEntryZoom();
             zoomAnchored = false;
             View.orthographicSize = desiredZoom;
@@ -65,8 +78,8 @@ namespace Eldoria.World4XPrototype
         public void SetZoomLevel(int level, bool immediate = false)
         {
             if (level < 0 || level > 2) throw new ArgumentOutOfRangeException(nameof(level));
-            View.orthographic = true; View.nearClipPlane = .3f; View.farClipPlane = 900;
-            desiredZoom = Mathf.Min(level == 0 ? globalZoom : level == 1 ? regionalZoom : localZoom, MaximumFittingZoom());
+            View.orthographic = true; View.nearClipPlane = .3f; View.farClipPlane = Mathf.Max(900, cameraDistance * 2.5f);
+            desiredZoom = AllowWholeRegionOverview ? (level == 0 ? globalZoom : level == 1 ? regionalZoom : localZoom) : Mathf.Min(level == 0 ? globalZoom : level == 1 ? regionalZoom : localZoom, MaximumFittingZoom());
             zoomAnchored = false;
             if (immediate) View.orthographicSize = desiredZoom;
             ApplyPose(); FitToAuthoredBounds();
@@ -81,7 +94,7 @@ namespace Eldoria.World4XPrototype
         public void ZoomAt(Vector2 screen, float factor, bool immediate = false)
         {
             if (factor <= 0 || float.IsNaN(factor) || float.IsInfinity(factor)) throw new ArgumentOutOfRangeException(nameof(factor));
-            float max = Mathf.Min(globalZoom, MaximumFittingZoom());
+            float max = AllowWholeRegionOverview ? globalZoom : Mathf.Min(globalZoom, MaximumFittingZoom());
             desiredZoom = Mathf.Clamp(desiredZoom * factor, Mathf.Min(localZoom, max), max);
             zoomFocus = screen; zoomAnchored = true;
             if (immediate) ApplyZoom(desiredZoom);
@@ -94,6 +107,14 @@ namespace Eldoria.World4XPrototype
             if (anchor && GroundPoint(zoomFocus, out Vector3 after)) target += before - after;
             ApplyPose(); FitToAuthoredBounds();
         }
+        public void SetOrientation(float pitch, float bearing)
+        {
+            Vector3 before = default;
+            bool anchor = zoomAnchored && GroundPoint(zoomFocus, out before);
+            tilt = pitch; heading = bearing; ApplyPose();
+            if (anchor && GroundPoint(zoomFocus, out Vector3 after)) target += before - after;
+            FitToAuthoredBounds();
+        }
         public void PanTo(Vector3 point) { target = point; ApplyPose(); FitToAuthoredBounds(); }
         // Restore an observed pose after a temporary render or an orientation check.
         public void RestoreView(Vector3 point, float zoom)
@@ -103,11 +124,14 @@ namespace Eldoria.World4XPrototype
         }
         public void FitToAuthoredBounds()
         {
-            float fit = MaximumFittingZoom();
+            float fit = AllowWholeRegionOverview ? globalZoom : MaximumFittingZoom();
             View.orthographicSize = Mathf.Min(View.orthographicSize, fit);
             desiredZoom = Mathf.Min(desiredZoom, fit);
-            float halfX = View.orthographicSize * View.aspect;
-            float halfZ = View.orthographicSize / Mathf.Sin(tilt * Mathf.Deg2Rad);
+            float screenHalf = View.orthographicSize * View.aspect;
+            float groundHalf = View.orthographicSize / Mathf.Sin(tilt * Mathf.Deg2Rad);
+            float c = Mathf.Abs(Mathf.Cos(heading * Mathf.Deg2Rad)), s = Mathf.Abs(Mathf.Sin(heading * Mathf.Deg2Rad));
+            float halfX = screenHalf * c + groundHalf * s;
+            float halfZ = screenHalf * s + groundHalf * c;
             float x0 = minimum.x + edgeMargin + halfX, x1 = maximum.x - edgeMargin - halfX;
             float z0 = minimum.y + edgeMargin + halfZ, z1 = maximum.y - edgeMargin - halfZ;
             target.x = x0 <= x1 ? Mathf.Clamp(target.x, x0, x1) : (minimum.x + maximum.x) * .5f;
@@ -156,7 +180,7 @@ namespace Eldoria.World4XPrototype
             if (Mathf.Abs(Input.mouseScrollDelta.y) > .001f && !(PointerBlocked?.Invoke(pointer) ?? false)) ZoomAt(pointer, Mathf.Exp(-Input.mouseScrollDelta.y * .12f));
             Drag(Input.GetMouseButton(0), pointer);
 #endif
-            target += new Vector3(movement.x, 0, movement.y) * View.orthographicSize * Time.unscaledDeltaTime;
+            target += Quaternion.Euler(0, heading, 0) * new Vector3(movement.x, 0, movement.y) * View.orthographicSize * Time.unscaledDeltaTime;
             ApplyPose(); ApplyZoom(Mathf.Lerp(View.orthographicSize, desiredZoom, 1 - Mathf.Exp(-12 * Time.unscaledDeltaTime)));
             if (Mathf.Abs(View.orthographicSize - desiredZoom) < .001f) zoomAnchored = false;
         }
@@ -176,9 +200,16 @@ namespace Eldoria.World4XPrototype
         }
         void ApplyPose()
         {
-            transform.rotation = Quaternion.Euler(tilt, 0, 0);
+            // Enter/zoom can receive a gesture before the presentation's next
+            // LateUpdate. Keep the near plane above the visible ground now;
+            // otherwise lower-screen orthographic rays start below its plane.
+            if (AllowWholeRegionOverview)
+            {
+                cameraDistance = Mathf.Max(140, View.orthographicSize * 2.5f);
+                View.farClipPlane = Mathf.Max(900, cameraDistance * 2.5f);
+            }
+            transform.rotation = Quaternion.Euler(tilt, heading, 0);
             transform.position = target - transform.forward * cameraDistance;
         }
     }
 }
-

@@ -1,0 +1,973 @@
+{
+  "kind": "native_editor_evidence_verification",
+  "unity": "6000.3.23f1",
+  "current_png_identities_verified": 126,
+  "tests_passed": 57,
+  "tests_failed": 0,
+  "tests_skipped": 0,
+  "editor_suite_seconds_not_mobile_fps": 184.1396056,
+  "accessible_city_reserves": 32,
+  "xml_sha256": "eb8424dcf8a88e5248e3f0cfc4a23414c0ed395c1ae65136493985dc6072f5ba",
+  "art_approval": false,
+  "physical_mobile_benchmark": false,
+  "images": [
+    {
+      "path": "region1-canon-captures-40062946172/cercana-horizontal-unity.png",
+      "sha256": "5e77b73c34bb598ecb0000f3bf65b59ff9ab5e1815ca6c586066b4dda2f294d3",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/cercana-recurso-madera-horizontal-unity.png",
+      "sha256": "bdbcec1998e1bb6489e3720e71465b74b75d9a7dd201c47ba2503a03bfb15009",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/cercana-recurso-madera-vertical-unity.png",
+      "sha256": "d2b670093408c647e1521f139483d64206347be6354923213dc266179cfe2c90",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "region1-canon-captures-40062946172/cercana-recurso-piedra-horizontal-unity.png",
+      "sha256": "91abfffa9b5524f183dde92af628e89c48ef293b044ab22a793ff44f28de77bb",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/cercana-recurso-piedra-vertical-unity.png",
+      "sha256": "492e5833916146008c54d16f9cbda64ec30b0cca5a90101c06dede1a9652522e",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "region1-canon-captures-40062946172/cercana-vertical-unity.png",
+      "sha256": "44e01048cc896e42fc78f512eca499becc5a47bf0c4c0a9c3239040c609b87aa",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "region1-canon-captures-40062946172/panoramica-blockout-horizontal-unity.png",
+      "sha256": "98f484ebbf66309b383c6933a7119f14b1dcc7fbd4cefa840b5481d5e53cc492",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/panoramica-blockout-vertical-unity.png",
+      "sha256": "e3ab1e984ed78717b5701dc0a86dd493cf2ffd6794a338fafcde6b868db0b599",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "region1-canon-captures-40062946172/panoramica-control-horizontal-unity.png",
+      "sha256": "00d194c9c6805a830b4eaa183cd4ad798ee7b6be09c255bb79fa6aa5e2d4453d",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/panoramica-control-vertical-unity.png",
+      "sha256": "4472ef33b76db553f910b8b0f88d85f5111b8954e83d44b31c74affffd02aeef",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "region1-canon-captures-40062946172/panoramica-horizontal-unity.png",
+      "sha256": "98f484ebbf66309b383c6933a7119f14b1dcc7fbd4cefa840b5481d5e53cc492",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/panoramica-vertical-unity.png",
+      "sha256": "e3ab1e984ed78717b5701dc0a86dd493cf2ffd6794a338fafcde6b868db0b599",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "region1-canon-captures-40062946172/regional-blockout-horizontal-unity.png",
+      "sha256": "0c029d914cb788d59aafef10626700c0537507ee799bebe125c7f59f50ada3e7",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/regional-blockout-vertical-unity.png",
+      "sha256": "9db1a212a476a1d8024b124606d9923b3e32600b7b44bb64f50592ede65ae161",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "region1-canon-captures-40062946172/regional-horizontal-unity.png",
+      "sha256": "0c029d914cb788d59aafef10626700c0537507ee799bebe125c7f59f50ada3e7",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/regional-vertical-unity.png",
+      "sha256": "9db1a212a476a1d8024b124606d9923b3e32600b7b44bb64f50592ede65ae161",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/continental-details/stone-landscape.png",
+      "sha256": "642a37c7db546f08f879303d2f404a070c350a2a0f04a613be7e782e3d11b0a9",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/continental-details/stone-portrait.png",
+      "sha256": "56ea05b7666278e9798e7fb2f0a65675aa1305a36ebf5eeeedf3945157049472",
+      "width": 720,
+      "height": 1280
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/continental-details/wood-landscape.png",
+      "sha256": "b4dd2d0bdcde4b9fd0b2699fa82e3df343ab6015e6d991b3198f0736cdb78342",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/continental-details/wood-portrait.png",
+      "sha256": "50410560feb1c8468278abb7f2e12d2c8fc259bcc59f7fa0d94d8213f4f40387",
+      "width": 720,
+      "height": 1280
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-close.png",
+      "sha256": "fe53fd35974c492168b34c57d24e05eabdbe2292d13989f76c6c4a57fb4c615c",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-000.png",
+      "sha256": "8c413113a53e3afdc6a9217948ad47a5922b6279fdb44177d93a66bedea49522",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-001.png",
+      "sha256": "ef8aefd7aa05d922590fa5bef72034894d76b8984e1d5f04bd3c080186e2ae51",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-002.png",
+      "sha256": "84595d0e4b886268d06292b1999a428520c501d8782d167557d6c77cd7db12fb",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-003.png",
+      "sha256": "c654ac81347129c451842996e2857c56c8cd48ec680867476f2b31df25a5388b",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-004.png",
+      "sha256": "8e3a3f495f133b3c3cf64c3130cb5d42f80d27de3a083769fa84f9b8d0bc9b54",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-005.png",
+      "sha256": "8992d7a1ee7a3c5e74e80752444f90f49d6e1401d216cf9fc4c869c3d25c7154",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-006.png",
+      "sha256": "71528089145e60369f0902a704aafad6e5acec4c3dc7b418edcc96f055b0d5b3",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-007.png",
+      "sha256": "83c8809faafd166fcd4cada97ed17f6272443896ad377d3d1c8c5778ac522c9d",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-008.png",
+      "sha256": "a587848daca166d70acc40b1bb3d5f6906d455309e0d00538100d925663b049e",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-009.png",
+      "sha256": "9009f7786d5a479935f62960bea9f71bbc576bc0f2b4905e8ee1dbc349b153ec",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-010.png",
+      "sha256": "5c3f7a9deb3a537b56d7d428ef9bc2c88809641a04cfec04f497171ec9477ff6",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-011.png",
+      "sha256": "366f93c95e2d1587b8afaa5659386a2c240ea008b4e72ae56bd720a87ed54945",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-012.png",
+      "sha256": "8f424f9066bc961936a51e59c5a22b115876b1925bc7ad92062413f01e460357",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-013.png",
+      "sha256": "a977e9c7c9100b981a97badb7bf80201806b78662f75accb9b8d3addd47cd196",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-014.png",
+      "sha256": "2dc32f0666582fc4b4ab2ef34004882c4ddd218eb26400be536f1c6e830a5a1b",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-015.png",
+      "sha256": "ab3cb23b96865936dc52a04c5e071602cf9ebe1e635a5ef541d2ed4bc1efc121",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-016.png",
+      "sha256": "4b4b2c2e2dd60f7c9a1d7508e72e75ddfd6186cdb703f79b2cf951674ec2e615",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-017.png",
+      "sha256": "e10129360a5e17701ab8e693d0773ec234afb20d162d2333292bbd9e59043834",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-018.png",
+      "sha256": "cdfff95ae4deff76f371762ed5ea094af718480b0cd957fb620bf755123152b4",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-019.png",
+      "sha256": "c958b07c3aa1ff423395e6320c36b961bfa90ae4a3c5bf4c5e010b22ad7946dd",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-020.png",
+      "sha256": "595ae960948fdf04a945f4dfaffe6be4c0613de3487d70275185e79a124faa0c",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-021.png",
+      "sha256": "29d62690552ad9d2ee0efe9306dc535d0f199e50617dacae3dd8f9e7df42ef53",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-022.png",
+      "sha256": "e92f178488c57a5a61ae10f705d9d03429224d4c10eb27c46db443d4da6eb4f3",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-023.png",
+      "sha256": "b5c6631b2b9fe931f0c797d4ef201279fad06d7575dbd4ed7f59c327e4d2c1de",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-continent-zoom/frame-024.png",
+      "sha256": "c1aa3257d730feec7966e037628694fecf887cb8980422e47a30e7ff63512d92",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-panorama.png",
+      "sha256": "5706781e2e075db508ec5a36b7841c407c1f1ba4980a9b4ce422da027a0ebab3",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-regional.png",
+      "sha256": "4886e2643ee16aaa3378cf85f77b5ad75b12839a719c7df454aaf94df3751ad8",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-000.png",
+      "sha256": "1d313f831ac826f2b9ca7bb4e08fc8837e3d4139fc4ba949edfd00252b045e96",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-001.png",
+      "sha256": "c13f0782428d0e5c1abb7f795ffd6c65b32cf33fd1a938e79bc4609e5ada5766",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-002.png",
+      "sha256": "8e2be72b036efefd77400ee2cb68e96d259da52e55b36e8a13323f2f94ec9610",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-003.png",
+      "sha256": "5a505ce80fa2ddc713bed456ef34460cbd91d7f2b434af855e024d442a86517d",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-004.png",
+      "sha256": "36110e5c2aebc7a3d64a44c8fd7d9d747db8dc9c557a7c5ecc2ee3e2351ce1fe",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-005.png",
+      "sha256": "f8fd2e44fb2bb7a12a076b35078024472e8c4f5b1affb8ccc605e607fb891e50",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-006.png",
+      "sha256": "185b44811677e5ca6f8db3fff957080ff956ca82c5a66e50601506a899a013d6",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-007.png",
+      "sha256": "d0f89e99a93a03afea565d2201b149f1a4f45ea38bb184fee87c749830be73d8",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-008.png",
+      "sha256": "bd3e4f34da8fd12475383c0fa912574820b41b9453ecdaba17de52e3e46db5ec",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-009.png",
+      "sha256": "c99e073648f3d663b0f19571817af81e3f02cee855152ed3ff1c6810d8736c3f",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-010.png",
+      "sha256": "b32120d0dc527358668e5720a2ca414fe0a596d21edfbd566b243d6b7c714308",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-011.png",
+      "sha256": "2170d2ec70fb8c1f49958487a2a892c39badf7782f876c8b3e5fae7fbec5d2d7",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-012.png",
+      "sha256": "166365f0733daaa3032fa600708a27f626be50eafcadde63ee36bc99a02197d7",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-013.png",
+      "sha256": "0a79d7dd1341f095a321933995e6f858e8445acc784b277a32c1a3afa6279d3a",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-014.png",
+      "sha256": "6b0756257a92e9113c0bb5739d2b6da06f26d883ed8d0ee62544b3eca144ec6d",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-015.png",
+      "sha256": "a44ee14172d5af6911038ffa0884ec50e41ffae2a9b52e2661efda5e338f6fa0",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-016.png",
+      "sha256": "22fc7fd14037b39284924c0d8fc769870ff4a798ee542a32061eb79d9c5059b4",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-017.png",
+      "sha256": "f39d18ca9ddf1b31018b3cba93b39859209aac6486a1620a31355954aee797e6",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-018.png",
+      "sha256": "8a6ccd2f512017b0c4aa67cf438491ff1cea507635209a7ee9a54d99fe8c73e1",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-019.png",
+      "sha256": "1c2ef9386c1b1b0b4698bb9dd13e7925a9bbaedb35fc15df19d4020414b9a472",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-020.png",
+      "sha256": "265587089aea3b47f905fe175045c74b7f4719923d387725f15a2a464e934bc7",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-021.png",
+      "sha256": "6de38e8bf983c3d188c844c0edde308264a6972d4f71478c7b1b891a9d8994d2",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-022.png",
+      "sha256": "0fcb09e41115d1ea3e36868770ed7f2f596b79f684990ce6f2fe73653cbdf032",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-023.png",
+      "sha256": "3337f34d29ab304ca39351a2fbcf7e61e6686c7e728f3c028159ed20b215a8ef",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/landscape-zoom/frame-024.png",
+      "sha256": "93bdd5198b62c382087fce55a2a1b6934686c268ab09ad51bb785a5c76df7a71",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-close.png",
+      "sha256": "60cfadffa7183c5f482bdb9654bc10b97b24bb57f42f66c72daee620c3d1274f",
+      "width": 720,
+      "height": 1280
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-000.png",
+      "sha256": "b84e23683dffc305fbbddf7d84d699e398d07785bfd3471904cec04d179dc3a3",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-001.png",
+      "sha256": "66234a01d222c576f9e8d59e30e793b13ee8f83f42067c678882aa44db6f7526",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-002.png",
+      "sha256": "7a373e92fdc344a41c3a79bd925da266fa456a2bf449372fac16b6b44be8c83f",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-003.png",
+      "sha256": "508f7a682d8d9ea4afaa4d54d036bc3009a1c281e72792bede7f452fdc531647",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-004.png",
+      "sha256": "5940f83f4654da9d26b3ecab3e1dc80376c55626506d6bf6d19bbade8b22fc10",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-005.png",
+      "sha256": "34dbd499703edf735eff9c83871670daf5e9dfc4ceee89c515aa5765a00c889c",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-006.png",
+      "sha256": "13f1aa85f1dbb48854826a8fc485e307e4da1e063b076d74baa1ba8719f32a70",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-007.png",
+      "sha256": "9882db086c246002db17bb543a7427ca4ff032233516459a1da20a538b1b3fe8",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-008.png",
+      "sha256": "796f034d5ba53dcaf93b47edf310b9738137f96dee5b8cf6b80f72485bf72cb6",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-009.png",
+      "sha256": "788efe5dd2aaade345f57ce4ef3807870b11ed2e9e897371e77874c4c234b9e2",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-010.png",
+      "sha256": "a02deaa690da820f4f07771bf6a24cb34f85bde9a86605e36367476dfa7a8958",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-011.png",
+      "sha256": "03e68581f33817ba9d5d7f5e2ef0dfc27d4b12289d4e3b381e0888457cc09080",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-012.png",
+      "sha256": "3dd46a85d4f427a8088081d104497e3059bf609e7e0cf413e71014c05c99acb8",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-013.png",
+      "sha256": "031c9654b7d9469ac7ba80cbd69fab8ec4ff1e4c2c1ebe539781bbb0f999faf3",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-014.png",
+      "sha256": "34e00b2ee636e4d91d97a75eeb0e8404a137fa59dfac36c5873ba445ceac9552",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-015.png",
+      "sha256": "c82b9b87df0e64f9783d95a2afddc0a82cbe33a728bab9cecbfc2b4ca5966146",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-016.png",
+      "sha256": "7b1f1c0050a1dd0f3b723b5e980fafa640b33d0f14535cbe7c359acf1c6904d6",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-017.png",
+      "sha256": "71e9c35781597083167bdcf067c50e78e357d5931b7c0c699c433770c5407a31",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-018.png",
+      "sha256": "774358f61e03f60536ad26d04de1dcd5c144a4bd2e7a89aba73732cbc48ebbaf",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-019.png",
+      "sha256": "1cc10441b7acd4425dd8ff10aaea15d671186c386581e05c163155d287ebc9ae",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-020.png",
+      "sha256": "f79c17c7cd5a05508d4752784a3c341c21b9a41e0834078824c696369c5056b8",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-021.png",
+      "sha256": "9d1b54e6d1e2b2f914ea179544c945ce81235f0a0cb8f7173c53b7fc58ebfc8c",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-022.png",
+      "sha256": "c300c56a8070ef48139d6c294b552baf9b1d762ab1bb46277a88dc2b64d62802",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-023.png",
+      "sha256": "720e8c4f419956c6a049b673ec8d842b9b22beca743ff272e7947520366fa5ec",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-continent-zoom/frame-024.png",
+      "sha256": "b36db7665d50b094fe96d4644b3c71930a8b84235f4f1117f71b2e04b42d4c34",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-panorama.png",
+      "sha256": "cef27dd8437a61b2a8616f7393c7782ee6cbc2f86db5ed7480b35453ba2ab8cf",
+      "width": 720,
+      "height": 1280
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-regional.png",
+      "sha256": "586dfbc64cab5ce2621e4212e22dca792a90b02faa0c6e0531cf712d3c1771bb",
+      "width": 720,
+      "height": 1280
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-000.png",
+      "sha256": "3cc3145ca21e3f6efa7c3b9d1ada95be32cde2135951e29a4f7baa8217293adf",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-001.png",
+      "sha256": "1a4f1f295e3745a02ee65c8618780efc42ebb1db68d3565826f72feca9df69fb",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-002.png",
+      "sha256": "74653fb17db3250df52182b73208d9ef6b1cfa746005018843d3ef2c2fafe010",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-003.png",
+      "sha256": "f73e8f43d533d16002dc29c1e7ebc32d6602d2b986d0585aeac920f18a9e96fd",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-004.png",
+      "sha256": "1851be44734ff06c0a1b2ba302395ffeda323bd9731313bc6a33aafc7d959c7a",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-005.png",
+      "sha256": "7d0db1e5ee21375c639a3ac0a2562b6a6cedf2a13dd594586de688c6860a0d9e",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-006.png",
+      "sha256": "4f9f21db09677407f43353364a56844ca3ee462a7dce6198521d95c6dff3fe93",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-007.png",
+      "sha256": "8f20ff99c0932112e572323a9d6db25d6d53f6c8f90855d562e48e34a9ac58b6",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-008.png",
+      "sha256": "690810d005818d3e64372649ff87fbdaf9cccf1998280898dd5ca551544811f5",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-009.png",
+      "sha256": "7426a2180c47879eff52b8ff6a1ed407b8ee1b8bdb05e3af93d26c102df6c5ee",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-010.png",
+      "sha256": "089801ef1c67c0252bd4d8f49f228f94d9eff87eab54309887bb274b3958425b",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-011.png",
+      "sha256": "ce4f9b3d024b0c06f4cd35311c11a0078f933ba13ec04f059bf8707135b4b28b",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-012.png",
+      "sha256": "e5db59f8f118180a7b770fb7af08eb5243ee1156580c141c21064696d7fb68c1",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-013.png",
+      "sha256": "f0f6012a1ceb6b1106d1902abbf28fffcf1b48b28ea5c400cd2e16140f35f137",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-014.png",
+      "sha256": "dc61d4b2aae5ea988c9b3bd576348f0e15f69914fdcfde45cb30ec3bf3de63b0",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-015.png",
+      "sha256": "4f74094d172bcacc55ded7e3b3a0e4c8fb71d732a5032afdb402ee0ecba7fa8e",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-016.png",
+      "sha256": "2f96a331101268ae3dabd43ec8fb9e3fd885ebfc26d454baf2ae3aa1331ed6c6",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-017.png",
+      "sha256": "a2ac66f5b7035acaabde229cd90db81a58e11f772956dca291534e15b87e7e6e",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-018.png",
+      "sha256": "bde791494dae7e13fb8450aabe62b4b2e56eb836872aff9be28ecfd98d46c11d",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-019.png",
+      "sha256": "e5629c0430dcc701ea419ec69bdc472c5e44f548e5a5b4a2d9e2771ab1fb99b2",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-020.png",
+      "sha256": "911638bc4e25241203030be2ff7e39a820af134dc4853690fad966f66403b758",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-021.png",
+      "sha256": "3db719be2f9b8d4f500f5a7ba402eb2e915113fb2c1757013472d7898a1022fc",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-022.png",
+      "sha256": "e6e457bc67b909ad9d0b640f83c1c988b212419d2f3fa28a9193c1484efcb467",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-023.png",
+      "sha256": "5b4f44b01ffcffabb51837b037fec44084aff11701f0dc3440b5f6d67525ed79",
+      "width": 540,
+      "height": 960
+    },
+    {
+      "path": "region1-canon-captures-40062946172/retained-sector/portrait-zoom/frame-024.png",
+      "sha256": "bb8de8cbda45904ca2ca6697ae40909b13cf13d423427294ff64809f8b72a96f",
+      "width": 540,
+      "height": 960
+    }
+  ],
+  "actual_unity_panorama_projected_bbox_area": {
+    "horizontal": 0.7468,
+    "vertical": 0.7605
+  },
+  "general_native_certificate": {
+    "source": "a5a17842a6e73b36a5907c2f4385612e0bf28cce",
+    "art_approved": false,
+    "physical_mobile_tested": false,
+    "images": [
+      {
+        "sha256": "d150fc6e428e5c9fc2327421c729c563f609856d7412f8cfe0b77676034365af",
+        "file": "integration-art-corrupt-scout-landscape.png",
+        "bytes": 1979539
+      },
+      {
+        "sha256": "8c14d9d888b4d20b87f5fee73c9556bbb8c0ee355523fd12c8235bf1906e7ea1",
+        "file": "integration-art-corrupt-scout-portrait.png",
+        "bytes": 1812229
+      },
+      {
+        "sha256": "7387ebf75f65f7a222aa1516037d8dc44092f2d9556526844683ab5a741dd936",
+        "file": "integration-art-engendro-before-close.png",
+        "bytes": 1846981
+      },
+      {
+        "sha256": "4b991ae6b84745cc4150e465027df2ac608f9cdbb6cde5f2fc25181426da992b",
+        "file": "integration-art-engendro-before-strategic.png",
+        "bytes": 1454981
+      },
+      {
+        "sha256": "7efb3f4c91d9e7537506a90138f2006db6e03f09a11b71c691ac770a669b0c03",
+        "file": "integration-art-engendro-prebattle-close.png",
+        "bytes": 1854835
+      },
+      {
+        "sha256": "4b991ae6b84745cc4150e465027df2ac608f9cdbb6cde5f2fc25181426da992b",
+        "file": "integration-art-engendro-prebattle-strategic.png",
+        "bytes": 1454981
+      },
+      {
+        "sha256": "d150fc6e428e5c9fc2327421c729c563f609856d7412f8cfe0b77676034365af",
+        "file": "integration-art-engendro-valoria-landscape.png",
+        "bytes": 1979539
+      },
+      {
+        "sha256": "a2ba8041aca80fe213ee21a3de8684e61a66898ea31f379968b403f7a7e35666",
+        "file": "integration-art-engendro-valoria-portrait.png",
+        "bytes": 1712589
+      },
+      {
+        "sha256": "bbec57922a2feb1997e68c1117478b02d62e2a892192a3190b3ab6840cf8dfcf",
+        "file": "integration-art-forest-valoria-landscape.png",
+        "bytes": 2113885
+      },
+      {
+        "sha256": "ef02557dc14ddb9d9d982d58056a566190dc0e6b4054d4cc9a34cc0e7d9f6348",
+        "file": "integration-art-forest-valoria-portrait.png",
+        "bytes": 1954298
+      },
+      {
+        "sha256": "7701299d56e9ac442adf441ce6d1ae721102551142a9c82d6adb3ccfc85fecc8",
+        "file": "integration-art-quarry-valoria-landscape.png",
+        "bytes": 2056224
+      },
+      {
+        "sha256": "f1dc4938a8b95ac3ca4c256aa57175d7a931ac86a7527a0238883f9c08225633",
+        "file": "integration-art-quarry-valoria-portrait.png",
+        "bytes": 1893270
+      },
+      {
+        "sha256": "e33472ce335d32dca66e6e28903354cd158961e8042fde359de082fd6d01d4c0",
+        "file": "integration-bastion-upgrade.png",
+        "bytes": 2198252
+      },
+      {
+        "sha256": "e9f00f294c3c4e7013aab6816f1e781f287f136cf18cbdd467371410c8be5d82",
+        "file": "integration-chapter-list.png",
+        "bytes": 2203193
+      },
+      {
+        "sha256": "3076ce3ca5ec85b1409049761197d1f8b8854805f8c94ac4b865ea7fdad460c0",
+        "file": "integration-chapter2-complete.png",
+        "bytes": 2264669
+      },
+      {
+        "sha256": "e909b957660cf6b5d9fedb4386cbffaa3fe2aade9a35273c8000e0cb009a8bda",
+        "file": "integration-city-16x9.png",
+        "bytes": 2323284
+      },
+      {
+        "sha256": "519e2ff8d9c8ea135c716f14af1bed5d7b999673c99e60b0c4e882ecc49d10a8",
+        "file": "integration-city-built.png",
+        "bytes": 2227226
+      },
+      {
+        "sha256": "2b2f506169acf42024386e10c746d8a482b72e7bbed4bd6fcc29c2bca9f6b855",
+        "file": "integration-construction-landscape.png",
+        "bytes": 2199639
+      },
+      {
+        "sha256": "5f6fd77a2e4ab4d46b11ac15bf26e2e43813e0f2b6afe33501f0b98e278c3a4b",
+        "file": "integration-construction-portrait.png",
+        "bytes": 2195871
+      },
+      {
+        "sha256": "0b5f9d610646ae56be29c7dba9c4e52e160afa3489bec9d9ffaa9ec9a05233ef",
+        "file": "integration-issue95-world-after-portrait.png",
+        "bytes": 1609010
+      },
+      {
+        "sha256": "96f8bf2c8c2e4047e1dcecc6cfbbdd54f5cdecbb43db2e0cfb05fdceeb40aa5f",
+        "file": "integration-issue95-world-after-strategic.png",
+        "bytes": 1456170
+      },
+      {
+        "sha256": "4b4d139c50463620c74bb838910320959cc870822b6d3888aca8bb484a677bf2",
+        "file": "integration-issue95-world-before-portrait.png",
+        "bytes": 1745589
+      },
+      {
+        "sha256": "f124d2edf332c2b65f0df28b537738e59d48050c0a392ff17c14917d15db23bd",
+        "file": "integration-issue95-world-before-regional.png",
+        "bytes": 1668752
+      },
+      {
+        "sha256": "7560ed3fe334585fc17dcb2ea79bf8ddbd2b827f62d0f35e96139af14c71ef8e",
+        "file": "integration-march-landscape.png",
+        "bytes": 149188
+      },
+      {
+        "sha256": "f2f03c2a729c38b83890aee6ab02a0aa290fa9a17e911ffe84153d3648f3d5c5",
+        "file": "integration-march-portrait.png",
+        "bytes": 165384
+      },
+      {
+        "sha256": "0afa8f4ef672b0fba9c3f2e6bcbdeed80a35b8d785da13e568402ff86c470af1",
+        "file": "integration-story-aldric.png",
+        "bytes": 1491798
+      },
+      {
+        "sha256": "f2a6dc99a9f08adf98f89f23411273a1cc04bef461708b4c1b853e0750db1240",
+        "file": "integration-story-mark-aldric.png",
+        "bytes": 1425701
+      },
+      {
+        "sha256": "0baa32fd28d2e00ee461af8f531457225eae585ca7f88fa394c9d176c77ef54b",
+        "file": "integration-story-mark.png",
+        "bytes": 1364697
+      },
+      {
+        "sha256": "c5df2cefacf3b14ff8760bffd6b0a0811ccfb65c3669a1c6f1caa1d3e2510550",
+        "file": "integration-story-sawmill-tutorial.png",
+        "bytes": 1431551
+      },
+      {
+        "sha256": "e0d6fa635d5eb0ac04b57768cefd47e28489adfdd8f1071d1a264b4aacf1c26c",
+        "file": "integration-story.png",
+        "bytes": 1694788
+      },
+      {
+        "sha256": "bd661f06c80c926ac3df4835596ecf5122bb689bcf28c09b43691246cc016adc",
+        "file": "integration-training-portrait.png",
+        "bytes": 155207
+      },
+      {
+        "sha256": "816041e84b91da9127e03d4c7ac2e3e7f67a6e2d659150572fa38fe24ff420c6",
+        "file": "integration-training.png",
+        "bytes": 137662
+      },
+      {
+        "sha256": "96f8bf2c8c2e4047e1dcecc6cfbbdd54f5cdecbb43db2e0cfb05fdceeb40aa5f",
+        "file": "integration-world-16x9.png",
+        "bytes": 1456170
+      },
+      {
+        "sha256": "0b5f9d610646ae56be29c7dba9c4e52e160afa3489bec9d9ffaa9ec9a05233ef",
+        "file": "integration-world-portrait.png",
+        "bytes": 1609010
+      }
+    ],
+    "run": "40062946172",
+    "gpu_playmode_passed": 57,
+    "probe_checks": 44,
+    "editmode_passed": 26,
+    "fresh_captures": 34
+  },
+  "matched_ag_close_comparison": {
+    "landscape-close.png": {
+      "original_png_sha256": "a600176454f45194874ba0ca23baed5c8dfbc4eab9bfbdbb7746d165f7b76753",
+      "current_png_sha256": "fe53fd35974c492168b34c57d24e05eabdbe2292d13989f76c6c4a57fb4c615c",
+      "mae_rgb_0_to_255": 0.3808590133101852,
+      "fraction_pixels_any_channel_difference_above_8": 0.004080946180555556,
+      "meaning": "matched-camera conservation measurement, not an artistic quality score"
+    },
+    "portrait-close.png": {
+      "original_png_sha256": "076ef4a376c8cdae66dc2b809376529db166c347a9d2878040151ff81253cc42",
+      "current_png_sha256": "60cfadffa7183c5f482bdb9654bc10b97b24bb57f42f66c72daee620c3d1274f",
+      "mae_rgb_0_to_255": 0.28501085069444443,
+      "fraction_pixels_any_channel_difference_above_8": 0.0032899305555555555,
+      "meaning": "matched-camera conservation measurement, not an artistic quality score"
+    }
+  }
+}

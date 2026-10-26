@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="61" result="Passed" total="61" passed="61" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:20:56Z" duration="220,5386754">
+  <test-suite type="TestSuite" id="1079" name="Unity" fullname="Unity" runstate="Runnable" testcasecount="61" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:20:56Z" duration="220.538675" total="61" passed="61" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1004" name="Assembly-CSharp.dll" fullname="C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/world4x-source/Unity/Library/ScriptAssemblies/Assembly-CSharp.dll" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:17:15Z" duration="0.025370" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="40988" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="ZoneOneWorldTests" fullname="ZoneOneWorldTests" classname="ZoneOneWorldTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:17:15Z" duration="0.022992" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1003" name="ChunksHave256Cells" fullname="ZoneOneWorldTests.ChunksHave256Cells" methodname="ChunksHave256Cells" classname="ZoneOneWorldTests" runstate="Runnable" seed="411340404" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:17:15Z" duration="0.012429" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+        <test-case id="1002" name="StableIds" fullname="ZoneOneWorldTests.StableIds" methodname="StableIds" classname="ZoneOneWorldTests" runstate="Runnable" seed="1069662474" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:17:15Z" duration="0.000393" asserts="0">
+          <properties>
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+        </test-case>
+      </test-suite>
+    </test-suite>
+    <test-suite type="Assembly" id="1073" name="Eldoria.Tests.PlayMode.dll" fullname="C:/actions-runner-eldoria/_work/Eldoria-Prewiu/Eldoria-Prewiu/world4x-source/Unity/Library/ScriptAssemblies/Eldoria.Tests.PlayMode.dll" runstate="Runnable" testcasecount="59" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:20:56Z" duration="220.503914" total="59" passed="59" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="40988" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1074" name="Eldoria" fullname="Eldoria" runstate="Runnable" testcasecount="59" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:20:56Z" duration="220.501835" total="59" passed="59" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1075" name="Tests" fullname="Eldoria.Tests" runstate="Runnable" testcasecount="59" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:20:56Z" duration="220.500571" total="59" passed="59" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1005" name="ParcelProgressionRuntimeTests" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:17:16Z" duration="0.658028" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1006" name="CoveredFramePanRevealsLandscapeBastionWithoutExposingEdges" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.CoveredFramePanRevealsLandscapeBastionWithoutExposingEdges" methodname="CoveredFramePanRevealsLandscapeBastionWithoutExposingEdges" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="499036729" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:17:15Z" duration="0.006511" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom" methodname="PresentedFrameProjectionAndPickingStayInverseAfterCropPanZoom" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="912955028" result="Passed" start-time="2026-10-25 12:17:15Z" end-time="2026-10-25 12:17:16Z" duration="0.014091" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1008" name="ProductionBuildingPickingReachesCertifiedDepthAndPrioritizesItsTarget" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.ProductionBuildingPickingReachesCertifiedDepthAndPrioritizesItsTarget" methodname="ProductionBuildingPickingReachesCertifiedDepthAndPrioritizesItsTarget" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="1167601078" result="Passed" start-time="2026-10-25 12:17:16Z" end-time="2026-10-25 12:17:16Z" duration="0.009475" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="RealBuildingPanelDrivesExistingGatewayAndParcelLayers" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.RealBuildingPanelDrivesExistingGatewayAndParcelLayers" methodname="RealBuildingPanelDrivesExistingGatewayAndParcelLayers" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="1652732218" result="Passed" start-time="2026-10-25 12:17:16Z" end-time="2026-10-25 12:17:16Z" duration="0.034192" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="WorldHotspotBindingsSurviveStablePrefabSerialization" fullname="Eldoria.Tests.ParcelProgressionRuntimeTests.WorldHotspotBindingsSurviveStablePrefabSerialization" methodname="WorldHotspotBindingsSurviveStablePrefabSerialization" classname="Eldoria.Tests.ParcelProgressionRuntimeTests" runstate="Runnable" seed="598752501" result="Passed" start-time="2026-10-25 12:17:16Z" end-time="2026-10-25 12:17:16Z" duration="0.591127" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1011" name="ReferenceUiArtPassTests" fullname="Eldoria.Tests.ReferenceUiArtPassTests" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-10-25 12:17:16Z" end-time="2026-10-25 12:17:24Z" duration="7.818846" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1012" name="ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" fullname="Eldoria.Tests.ReferenceUiArtPassTests.ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" methodname="ApprovedReferenceSkinDecoratesPlayerHudWithoutReplacingControls" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="1441230819" result="Passed" start-time="2026-10-25 12:17:16Z" end-time="2026-10-25 12:17:17Z" duration="1.271314" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1013" name="OwnerFreshSaveCompletesIAndIIThroughGuidedHud" fullname="Eldoria.Tests.ReferenceUiArtPassTests.OwnerFreshSaveCompletesIAndIIThroughGuidedHud" methodname="OwnerFreshSaveCompletesIAndIIThroughGuidedHud" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="1665649958" result="Passed" start-time="2026-10-25 12:17:17Z" end-time="2026-10-25 12:17:22Z" duration="4.857234" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" fullname="Eldoria.Tests.ReferenceUiArtPassTests.ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" methodname="ResourceStarvedSawmillGuidanceDepartsAndActuallyGathers" classname="Eldoria.Tests.ReferenceUiArtPassTests" runstate="Runnable" seed="1475087269" result="Passed" start-time="2026-10-25 12:17:22Z" end-time="2026-10-25 12:17:24Z" duration="1.688746" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1015" name="RegionOneCanonIntegratedAcceptanceTests" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" testcasecount="20" result="Passed" start-time="2026-10-25 12:17:24Z" end-time="2026-10-25 12:19:50Z" duration="145.638852" total="20" passed="20" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1035" name="ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe" methodname="ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="236410352" result="Passed" start-time="2026-10-25 12:17:25Z" end-time="2026-10-25 12:18:03Z" duration="38.129143" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_ACTUAL_PANORAMA_VIEWPORT_AREA horizontal 0.7468
+REGION1_ACTUAL_PANORAMA_VIEWPORT_AREA vertical 0.7606
+REGION1_CANON_NATIVE_PLAYER_CAMERA_CAPTURE_PASS views=16 (10 actual views + 2 historical-camera panorama controls + 4 blockout views) real_scene=1 disposable_gateway=1 physical_iphone=0
+]]></output>
+            </test-case>
+            <test-case id="1021" name="AdditionalResourcesUseRealGatherCommandAndPersistIndependentQuantities" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.AdditionalResourcesUseRealGatherCommandAndPersistIndependentQuantities" methodname="AdditionalResourcesUseRealGatherCommandAndPersistIndependentQuantities" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="2076184441" result="Passed" start-time="2026-10-25 12:18:03Z" end-time="2026-10-25 12:18:03Z" duration="0.002772" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1033" name="BreachIsGeologicalGroundGeometryNotTargetOrVerticalPortal" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.BreachIsGeologicalGroundGeometryNotTargetOrVerticalPortal" methodname="BreachIsGeologicalGroundGeometryNotTargetOrVerticalPortal" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="2040256421" result="Passed" start-time="2026-10-25 12:18:03Z" end-time="2026-10-25 12:18:11Z" duration="8.075972" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_ACTUAL_CONTINENTAL_SHARED_EDGE_VERTICES 2416
+]]></output>
+            </test-case>
+            <test-case id="1027" name="ContactQueriesMatchActualImportedTriangles" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ContactQueriesMatchActualImportedTriangles" methodname="ContactQueriesMatchActualImportedTriangles" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1701127189" result="Passed" start-time="2026-10-25 12:18:11Z" end-time="2026-10-25 12:18:18Z" duration="7.481550" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_EXACT_CONTACT samples=540 max_error_m=3,814697E-05
+]]></output>
+            </test-case>
+            <test-case id="1031" name="EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain" methodname="EnemyCampPlaceholdersAreVisuallyAbsentButRealTargetsRemain" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="504861537" result="Passed" start-time="2026-10-25 12:18:18Z" end-time="2026-10-25 12:18:26Z" duration="7.314037" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1019" name="LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot" methodname="LegacySchemaOneJsonWithoutPopulationFieldPreservesTheWholeSnapshot" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="2100385246" result="Passed" start-time="2026-10-25 12:18:26Z" end-time="2026-10-25 12:18:26Z" duration="0.001948" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1022" name="OfflineDepletionUsesSavedDeadlineInsteadOfRestartTime" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.OfflineDepletionUsesSavedDeadlineInsteadOfRestartTime" methodname="OfflineDepletionUsesSavedDeadlineInsteadOfRestartTime" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1627355366" result="Passed" start-time="2026-10-25 12:18:26Z" end-time="2026-10-25 12:18:26Z" duration="0.000678" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1029" name="OneGeographyAndNoInventedGameplayHotspots" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.OneGeographyAndNoInventedGameplayHotspots" methodname="OneGeographyAndNoInventedGameplayHotspots" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="84171838" result="Passed" start-time="2026-10-25 12:18:26Z" end-time="2026-10-25 12:18:33Z" duration="7.631062" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1034" name="PanoramaHidesOldSquareWithoutRemovingWorldGameObjects" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.PanoramaHidesOldSquareWithoutRemovingWorldGameObjects" methodname="PanoramaHidesOldSquareWithoutRemovingWorldGameObjects" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1983659737" result="Passed" start-time="2026-10-25 12:18:33Z" end-time="2026-10-25 12:18:41Z" duration="7.946215" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1023" name="PanoramaHidesRealResourcesAndEncountersWithoutChangingSavedState" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.PanoramaHidesRealResourcesAndEncountersWithoutChangingSavedState" methodname="PanoramaHidesRealResourcesAndEncountersWithoutChangingSavedState" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1218075989" result="Passed" start-time="2026-10-25 12:18:41Z" end-time="2026-10-25 12:18:49Z" duration="7.652906" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1024" name="ProductionResourcesHavePersistentDistinctTerrainSites" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ProductionResourcesHavePersistentDistinctTerrainSites" methodname="ProductionResourcesHavePersistentDistinctTerrainSites" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="787480636" result="Passed" start-time="2026-10-25 12:18:49Z" end-time="2026-10-25 12:18:56Z" duration="7.363916" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1020" name="RealGatewayResourceRespawnPersistsWithoutDuplicatingOrRevivingCampaign" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealGatewayResourceRespawnPersistsWithoutDuplicatingOrRevivingCampaign" methodname="RealGatewayResourceRespawnPersistsWithoutDuplicatingOrRevivingCampaign" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1425061044" result="Passed" start-time="2026-10-25 12:18:56Z" end-time="2026-10-25 12:18:56Z" duration="0.002156" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1018" name="RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels" methodname="RealTerrainHasBothTripoFamiliesAcrossFiveDangerLevels" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="594284418" result="Passed" start-time="2026-10-25 12:18:56Z" end-time="2026-10-25 12:19:04Z" duration="7.372321" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1026" name="RealTerrainRespawnSurvivesGatewayRestartWithoutDuplicatingSites" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainRespawnSurvivesGatewayRestartWithoutDuplicatingSites" methodname="RealTerrainRespawnSurvivesGatewayRestartWithoutDuplicatingSites" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="570144887" result="Passed" start-time="2026-10-25 12:19:04Z" end-time="2026-10-25 12:19:11Z" duration="7.549221" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_REAL_TERRAIN_RESPAWN_RESTART old=region1:146:-796 new=region1:-462:-764 generation=2
+]]></output>
+            </test-case>
+            <test-case id="1025" name="RealTerrainRoutesReachPopulationAndReserveCities" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealTerrainRoutesReachPopulationAndReserveCities" methodname="RealTerrainRoutesReachPopulationAndReserveCities" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="423033998" result="Passed" start-time="2026-10-25 12:19:11Z" end-time="2026-10-25 12:19:20Z" duration="8.433915" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_ACTUAL_CITY_RESERVES valid=18 accessible=18
+]]></output>
+            </test-case>
+            <test-case id="1030" name="RealWoodNodeRemainsReachableWithBothMobileCameraAspects" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.RealWoodNodeRemainsReachableWithBothMobileCameraAspects" methodname="RealWoodNodeRemainsReachableWithBothMobileCameraAspects" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1825125971" result="Passed" start-time="2026-10-25 12:19:20Z" end-time="2026-10-25 12:19:28Z" duration="7.819195" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1028" name="ResourceModelsHaveMeasuredTerrainSupportWithoutMovingColliders" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ResourceModelsHaveMeasuredTerrainSupportWithoutMovingColliders" methodname="ResourceModelsHaveMeasuredTerrainSupportWithoutMovingColliders" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1989227391" result="Passed" start-time="2026-10-25 12:19:28Z" end-time="2026-10-25 12:19:35Z" duration="7.439872" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+REGION1_RESOURCE_CONTACT parts=625 min_gap_m=-0,5335951 max_gap_m=3,33786E-06 collider_movement=0
+]]></output>
+            </test-case>
+            <test-case id="1017" name="TargetedEcotoneHasRealTwoDonorCanopiesAndDoesNotCreateGameplayNodes" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.TargetedEcotoneHasRealTwoDonorCanopiesAndDoesNotCreateGameplayNodes" methodname="TargetedEcotoneHasRealTwoDonorCanopiesAndDoesNotCreateGameplayNodes" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1434088634" result="Passed" start-time="2026-10-25 12:19:35Z" end-time="2026-10-25 12:19:42Z" duration="7.345719" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1032" name="ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds" methodname="ThreeScalesUseSameWorldHomeWithoutCameraResetOrFakeBounds" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="877087400" result="Passed" start-time="2026-10-25 12:19:42Z" end-time="2026-10-25 12:19:50Z" duration="7.299274" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1016" name="TripoBoarAndEngendroLevelsKeepTheOriginalGatewayCombatAndOfflineSave" fullname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests.TripoBoarAndEngendroLevelsKeepTheOriginalGatewayCombatAndOfflineSave" methodname="TripoBoarAndEngendroLevelsKeepTheOriginalGatewayCombatAndOfflineSave" classname="Eldoria.Tests.RegionOneCanonIntegratedAcceptanceTests" runstate="Runnable" seed="1060230778" result="Passed" start-time="2026-10-25 12:19:50Z" end-time="2026-10-25 12:19:50Z" duration="0.003272" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1036" name="RoyalGoldV3CinematicAcceptanceTests" fullname="Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests" classname="Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-25 12:19:50Z" end-time="2026-10-25 12:19:57Z" duration="7.542138" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1037" name="CinematicManuscriptRetainsCanonicalButtonsAndRestoresRegularModal" fullname="Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests.CinematicManuscriptRetainsCanonicalButtonsAndRestoresRegularModal" methodname="CinematicManuscriptRetainsCanonicalButtonsAndRestoresRegularModal" classname="Eldoria.Tests.RoyalGoldV3CinematicAcceptanceTests" runstate="Runnable" seed="1369602945" result="Passed" start-time="2026-10-25 12:19:50Z" end-time="2026-10-25 12:19:57Z" duration="7.517032" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1038" name="RoyalGoldV3IntegratedAcceptanceTests" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-10-25 12:19:57Z" end-time="2026-10-25 12:20:34Z" duration="36.782172" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1039" name="AuthoredWorldOpensWithMateriallyWiderStrategicFraming" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.AuthoredWorldOpensWithMateriallyWiderStrategicFraming" methodname="AuthoredWorldOpensWithMateriallyWiderStrategicFraming" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="395867382" result="Passed" start-time="2026-10-25 12:19:57Z" end-time="2026-10-25 12:20:04Z" duration="7.335946" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1042" name="BuildingSelectionRetainsAuthoritativeGatewayOffer" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.BuildingSelectionRetainsAuthoritativeGatewayOffer" methodname="BuildingSelectionRetainsAuthoritativeGatewayOffer" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="1464700557" result="Passed" start-time="2026-10-25 12:20:04Z" end-time="2026-10-25 12:20:12Z" duration="7.399653" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1041" name="ClosingActualPrologueKeepsIntegratedNavigationOwnership" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.ClosingActualPrologueKeepsIntegratedNavigationOwnership" methodname="ClosingActualPrologueKeepsIntegratedNavigationOwnership" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="639998309" result="Passed" start-time="2026-10-25 12:20:12Z" end-time="2026-10-25 12:20:19Z" duration="7.359335" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1043" name="RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame" methodname="RealSawmillPurchaseProjectsTimerInTheSameRenderedFrame" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="792050888" result="Passed" start-time="2026-10-25 12:20:19Z" end-time="2026-10-25 12:20:27Z" duration="7.352375" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+            <test-case id="1040" name="SingleHudCompactObjectiveAndNoOverlayAtRest" fullname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.SingleHudCompactObjectiveAndNoOverlayAtRest" methodname="SingleHudCompactObjectiveAndNoOverlayAtRest" classname="Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests" runstate="Runnable" seed="2121352844" result="Passed" start-time="2026-10-25 12:20:27Z" end-time="2026-10-25 12:20:34Z" duration="7.333294" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1044" name="RoyalV3ManagementIntegrationTests" fullname="Eldoria.Tests.RoyalV3ManagementIntegrationTests" classname="Eldoria.Tests.RoyalV3ManagementIntegrationTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-10-25 12:20:34Z" end-time="2026-10-25 12:20:41Z" duration="7.410340" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1045" name="FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave" fullname="Eldoria.Tests.RoyalV3ManagementIntegrationTests.FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave" methodname="FullScreenRoyalTrainingAndMarchesPreserveCameraAndDoNotWriteOwnerSave" classname="Eldoria.Tests.RoyalV3ManagementIntegrationTests" runstate="Runnable" seed="966347981" result="Passed" start-time="2026-10-25 12:20:34Z" end-time="2026-10-25 12:20:41Z" duration="7.407620" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150
+REGION1_REFERENCE_NODES visuals=5 old_renderers=74 new_hotspots=0 new_colliders=0
+REGION1_ROUTE_DISCONNECTED start=(0, 0) goal=(-86, -4) reachable=72590 walkable=73830
+REGION1_CANON_WORLD_INSTALLED geography=1 population_authority=existing_LocalGateway persistence=existing_PlayerState
+]]></output>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1046" name="SliceSceneSmokeTests" fullname="Eldoria.Tests.SliceSceneSmokeTests" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-10-25 12:20:41Z" end-time="2026-10-25 12:20:53Z" duration="11.393855" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1055" name="CityObjectiveFocusPreservesCameraAndBringsTargetIntoView" fullname="Eldoria.Tests.SliceSceneSmokeTests.CityObjectiveFocusPreservesCameraAndBringsTargetIntoView" methodname="CityObjectiveFocusPreservesCameraAndBringsTargetIntoView" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="983665910" result="Passed" start-time="2026-10-25 12:20:41Z" end-time="2026-10-25 12:20:43Z" duration="1.953809" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1060" name="FrontierForestUsesEvergreenTallMass" fullname="Eldoria.Tests.SliceSceneSmokeTests.FrontierForestUsesEvergreenTallMass" methodname="FrontierForestUsesEvergreenTallMass" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="967205635" result="Passed" start-time="2026-10-25 12:20:43Z" end-time="2026-10-25 12:20:44Z" duration="0.361381" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1058" name="FrontierTrailUsesDarkerEarthThanValley" fullname="Eldoria.Tests.SliceSceneSmokeTests.FrontierTrailUsesDarkerEarthThanValley" methodname="FrontierTrailUsesDarkerEarthThanValley" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1513932643" result="Passed" start-time="2026-10-25 12:20:44Z" end-time="2026-10-25 12:20:44Z" duration="0.337373" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1057" name="FrontierUsesSemanticGroundAndContinuousMarchTrail" fullname="Eldoria.Tests.SliceSceneSmokeTests.FrontierUsesSemanticGroundAndContinuousMarchTrail" methodname="FrontierUsesSemanticGroundAndContinuousMarchTrail" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1822715041" result="Passed" start-time="2026-10-25 12:20:44Z" end-time="2026-10-25 12:20:44Z" duration="0.327232" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1061" name="FrontierWorldRouteKitIsVisualOnlyAndReusable" fullname="Eldoria.Tests.SliceSceneSmokeTests.FrontierWorldRouteKitIsVisualOnlyAndReusable" methodname="FrontierWorldRouteKitIsVisualOnlyAndReusable" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="118535292" result="Passed" start-time="2026-10-25 12:20:44Z" end-time="2026-10-25 12:20:45Z" duration="0.326965" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1056" name="IrregularTerrainCarriesReadableUvsAndTiling" fullname="Eldoria.Tests.SliceSceneSmokeTests.IrregularTerrainCarriesReadableUvsAndTiling" methodname="IrregularTerrainCarriesReadableUvsAndTiling" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="680117284" result="Passed" start-time="2026-10-25 12:20:45Z" end-time="2026-10-25 12:20:46Z" duration="1.346175" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1053" name="OwnerHudExposesGuidedReferenceFrameAndReadableLighting" fullname="Eldoria.Tests.SliceSceneSmokeTests.OwnerHudExposesGuidedReferenceFrameAndReadableLighting" methodname="OwnerHudExposesGuidedReferenceFrameAndReadableLighting" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1620682813" result="Passed" start-time="2026-10-25 12:20:46Z" end-time="2026-10-25 12:20:47Z" duration="0.853275" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1048" name="OwnerHudExposesOneGuidedPrimaryActionInsteadOfQaActionWall" fullname="Eldoria.Tests.SliceSceneSmokeTests.OwnerHudExposesOneGuidedPrimaryActionInsteadOfQaActionWall" methodname="OwnerHudExposesOneGuidedPrimaryActionInsteadOfQaActionWall" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="92191290" result="Passed" start-time="2026-10-25 12:20:47Z" end-time="2026-10-25 12:20:47Z" duration="0.532543" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1059" name="OwnerHudMatchesReferenceMobileBudgets" fullname="Eldoria.Tests.SliceSceneSmokeTests.OwnerHudMatchesReferenceMobileBudgets" methodname="OwnerHudMatchesReferenceMobileBudgets" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="963333716" result="Passed" start-time="2026-10-25 12:20:47Z" end-time="2026-10-25 12:20:49Z" duration="1.181623" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1047" name="ValoriaAndFrontierExposeVisibleSceneAndActions" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaAndFrontierExposeVisibleSceneAndActions" methodname="ValoriaAndFrontierExposeVisibleSceneAndActions" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1263800660" result="Passed" start-time="2026-10-25 12:20:49Z" end-time="2026-10-25 12:20:49Z" duration="0.839621" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1051" name="ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope" methodname="ValoriaArtPassPreservesGateTravelAndOfficialZoomEnvelope" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="999156855" result="Passed" start-time="2026-10-25 12:20:49Z" end-time="2026-10-25 12:20:50Z" duration="1.039707" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1054" name="ValoriaGroundKitUsesReadableTiledSurfaceMaterials" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaGroundKitUsesReadableTiledSurfaceMaterials" methodname="ValoriaGroundKitUsesReadableTiledSurfaceMaterials" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="21729371" result="Passed" start-time="2026-10-25 12:20:50Z" end-time="2026-10-25 12:20:51Z" duration="0.659650" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1052" name="ValoriaMasterEnvelopeAndCameraPanAreProductionReady" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaMasterEnvelopeAndCameraPanAreProductionReady" methodname="ValoriaMasterEnvelopeAndCameraPanAreProductionReady" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1706056937" result="Passed" start-time="2026-10-25 12:20:51Z" end-time="2026-10-25 12:20:52Z" duration="0.538592" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1049" name="ValoriaPlayableDistrictSkeletonHasReadableLayersAndRealBuildingPanels" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaPlayableDistrictSkeletonHasReadableLayersAndRealBuildingPanels" methodname="ValoriaPlayableDistrictSkeletonHasReadableLayersAndRealBuildingPanels" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="1861025804" result="Passed" start-time="2026-10-25 12:20:52Z" end-time="2026-10-25 12:20:52Z" duration="0.564599" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1050" name="ValoriaProgressionContractGatesCuartelVisualAndInteraction" fullname="Eldoria.Tests.SliceSceneSmokeTests.ValoriaProgressionContractGatesCuartelVisualAndInteraction" methodname="ValoriaProgressionContractGatesCuartelVisualAndInteraction" classname="Eldoria.Tests.SliceSceneSmokeTests" runstate="Runnable" seed="623700615" result="Passed" start-time="2026-10-25 12:20:52Z" end-time="2026-10-25 12:20:53Z" duration="0.528098" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1062" name="SpawnlingAnimatedV4Tests" fullname="Eldoria.Tests.SpawnlingAnimatedV4Tests" classname="Eldoria.Tests.SpawnlingAnimatedV4Tests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-10-25 12:20:53Z" end-time="2026-10-25 12:20:53Z" duration="0.190524" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1063" name="ExistingEnemyRemainsSubstantiallyLegibleAcrossAuthenticCameraZoom" fullname="Eldoria.Tests.SpawnlingAnimatedV4Tests.ExistingEnemyRemainsSubstantiallyLegibleAcrossAuthenticCameraZoom" methodname="ExistingEnemyRemainsSubstantiallyLegibleAcrossAuthenticCameraZoom" classname="Eldoria.Tests.SpawnlingAnimatedV4Tests" runstate="Runnable" seed="542983246" result="Passed" start-time="2026-10-25 12:20:53Z" end-time="2026-10-25 12:20:53Z" duration="0.010472" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1064" name="OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave" fullname="Eldoria.Tests.SpawnlingAnimatedV4Tests.OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave" methodname="OriginalGatewayArrivalDrivesVisualWithoutChangingCombatOrSave" classname="Eldoria.Tests.SpawnlingAnimatedV4Tests" runstate="Runnable" seed="1262596886" result="Passed" start-time="2026-10-25 12:20:53Z" end-time="2026-10-25 12:20:53Z" duration="0.160590" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1065" name="WorldRegion1RuntimeTests" fullname="Eldoria.Tests.WorldRegion1RuntimeTests" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-10-25 12:20:53Z" end-time="2026-10-25 12:20:56Z" duration="3.063965" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1066" name="DedicatedWorldScreenBuildsCanonicalRegion1Layers" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.DedicatedWorldScreenBuildsCanonicalRegion1Layers" methodname="DedicatedWorldScreenBuildsCanonicalRegion1Layers" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="1025892501" result="Passed" start-time="2026-10-25 12:20:53Z" end-time="2026-10-25 12:20:53Z" duration="0.341203" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1071" name="MarchVisualReflectsAuthoritativeMarchPhaseWithoutOwningReward" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.MarchVisualReflectsAuthoritativeMarchPhaseWithoutOwningReward" methodname="MarchVisualReflectsAuthoritativeMarchPhaseWithoutOwningReward" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="2146628929" result="Passed" start-time="2026-10-25 12:20:53Z" end-time="2026-10-25 12:20:53Z" duration="0.127691" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1072" name="RebuildingRegionDoesNotLeakLooseWorldVisuals" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.RebuildingRegionDoesNotLeakLooseWorldVisuals" methodname="RebuildingRegionDoesNotLeakLooseWorldVisuals" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="1394653605" result="Passed" start-time="2026-10-25 12:20:53Z" end-time="2026-10-25 12:20:54Z" duration="0.568401" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1069" name="SelectingWorldResourceOpensContextBeforeDispatchingMarch" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.SelectingWorldResourceOpensContextBeforeDispatchingMarch" methodname="SelectingWorldResourceOpensContextBeforeDispatchingMarch" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="2068344498" result="Passed" start-time="2026-10-25 12:20:54Z" end-time="2026-10-25 12:20:54Z" duration="0.336589" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1067" name="TerrainReliefPreservesGameplayPlaneAndHasNoPhysicsAuthority" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.TerrainReliefPreservesGameplayPlaneAndHasNoPhysicsAuthority" methodname="TerrainReliefPreservesGameplayPlaneAndHasNoPhysicsAuthority" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="2085265346" result="Passed" start-time="2026-10-25 12:20:54Z" end-time="2026-10-25 12:20:55Z" duration="0.323186" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1070" name="ValoriaMapCityReturnsToCityScreen" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.ValoriaMapCityReturnsToCityScreen" methodname="ValoriaMapCityReturnsToCityScreen" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="583531492" result="Passed" start-time="2026-10-25 12:20:55Z" end-time="2026-10-25 12:20:56Z" duration="0.989729" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1068" name="WorldPanIsBoundedAndKeepsFixedCameraDirection" fullname="Eldoria.Tests.WorldRegion1RuntimeTests.WorldPanIsBoundedAndKeepsFixedCameraDirection" methodname="WorldPanIsBoundedAndKeepsFixedCameraDirection" classname="Eldoria.Tests.WorldRegion1RuntimeTests" runstate="Runnable" seed="1705043686" result="Passed" start-time="2026-10-25 12:20:56Z" end-time="2026-10-25 12:20:56Z" duration="0.375107" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/crist/AppData/LocalLow/DefaultCompany/Unity\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

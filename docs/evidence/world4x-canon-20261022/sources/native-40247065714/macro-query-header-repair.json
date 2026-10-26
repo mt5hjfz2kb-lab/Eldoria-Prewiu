@@ -1,0 +1,14 @@
+{
+    "width":  1820,
+    "actual_exported_trees":  5047,
+    "previous_depth":  3600,
+    "previous_width":  1820,
+    "terrain_vertices":  369163,
+    "shared_canopy_meshes":  2,
+    "query_sha256":  "db16bc1bcc1005d7483b18fb39bd78f389ef884a95231849895a4331a94d1dfd",
+    "payload_after_header_unchanged":  true,
+    "depth":  3600,
+    "previous_declared_trees":  5047,
+    "source_query_sha256":  "aa55c034fde1a9f119c04d77c24c4610a0f0dabf6e50199de72d5b27ea8aa46c",
+    "geometry_reauthored":  false
+}

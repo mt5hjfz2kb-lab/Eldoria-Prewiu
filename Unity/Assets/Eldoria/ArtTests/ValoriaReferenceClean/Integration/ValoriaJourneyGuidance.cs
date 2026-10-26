@@ -100,6 +100,8 @@ namespace Eldoria.ReferenceClean {
    Refresh();
   }
   public static string Name(string id,bool english=false){
+   if(id!=null&&id.StartsWith("region1:wood:",StringComparison.Ordinal))return english?"Wood grove":"Arboleda de madera";
+   if(id!=null&&id.StartsWith("region1:stone:",StringComparison.Ordinal))return english?"Stone deposit":"Yacimiento de piedra";
    switch(id){case "sawmill":return english?"Sawmill":"Aserradero";case "barracks":return english?"Barracks":"Cuartel";case "bastion":return english?"Bastion":"Bastión";case "march-main":return english?"Expedition":"Expedición";case "valoria-map-city":return "Valoria";case "forest-valoria":return english?"Forest":"Bosque";case "quarry-valoria":return english?"Quarry":"Cantera";case "corrupt-scout":return english?"Corrupted route":"Ruta corrupta";case "engendro-valoria":return english?"Spawn":"Engendro";case "gate":return english?"World gate":"Puerta al mundo";default:return english?"Ruined watchtower":"Atalaya en ruinas";}
   }
   void LateUpdate(){if(!host||!host.Ready)return;if(Time.unscaledTime>=next){next=Time.unscaledTime+.2f;Refresh();PresentMilestone();}}

@@ -116,7 +116,7 @@ namespace Eldoria.ReferenceClean {
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
    Hud.SelectBuilding(id);return true;
   }
-  public static bool IsWorldTarget(string id)=>id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin";
+  public static bool IsWorldTarget(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal))||id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin";
   public void SetWorld(bool open){TrySetWorld(open);}
   public bool TrySetWorld(bool open){
    if(!Ready)return false;
@@ -145,7 +145,7 @@ namespace Eldoria.ReferenceClean {
   public void Home(){if(InWorld)WorldNavigation.EnterStrategicView(WorldHome);else city.Home();}
   public void Pan(Vector2 delta){if(!InWorld){city.Pan(delta);return;}var p=new Vector2(Screen.width*.5f,Screen.height*.5f);if(WorldNavigation.GroundPoint(p,out var a)&&WorldNavigation.GroundPoint(p-delta,out var b))WorldNavigation.PanTo(WorldNavigation.target+b-a);}
   public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
-  public WorldHotspot FindTarget(string id)=>(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None)).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
+  public WorldHotspot FindTarget(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal)?WorldRoot.GetComponentsInChildren<WorldHotspot>(true):(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None))).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
   void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;
     // A management destination is not a request to move the world camera.
     var management=Hud?Hud.GetComponent<RoyalGoldV3ManagementScreens>():null;
@@ -264,14 +264,14 @@ namespace Eldoria.ReferenceClean {
    foreach(var point in points){var p=camera.WorldToViewportPoint(point);inFront&=p.z>=camera.nearClipPlane&&p.z<=camera.farClipPlane;xmin=Mathf.Min(xmin,p.x);xmax=Mathf.Max(xmax,p.x);ymin=Mathf.Min(ymin,p.y);ymax=Mathf.Max(ymax,p.y);}
    projected=points.Count>0?Rect.MinMaxRect(xmin,ymin,xmax,ymax):default;return inFront;
   }
-  public string TargetName(string id)=>ValoriaJourneyGuidance.Name(id,englishInterface);
+  public string TargetName(string id)=>id!=null&&id.StartsWith("region1:wood:",StringComparison.Ordinal)?L("Bosque de madera","Timber grove"):id!=null&&id.StartsWith("region1:stone:",StringComparison.Ordinal)?L("Afloramiento de piedra","Stone outcrop"):ValoriaJourneyGuidance.Name(id,englishInterface);
   public WorldHotspot Pick(Vector2 point){
    if(!InWorld)return city.Pick(point);
    // Keep canonical hotspot physics as first authority (including resource
    // gathering, navigation and quests). The larger visual-only creature may
    // project beyond its pre-existing, deliberately untouched hotspot collider.
    var ray=PlayerCamera.ScreenPointToRay(point);
-   var hit=Physics.RaycastAll(ray,900,1<<8).OrderBy(h=>h.distance)
+   var hit=Physics.RaycastAll(ray,PlayerCamera.farClipPlane,1<<8).OrderBy(h=>h.distance)
     .Select(h=>h.collider.GetComponent<WorldHotspot>())
     .FirstOrDefault(h=>h!=null&&h.transform.IsChildOf(WorldRoot.transform));
    if(hit)return hit;
@@ -313,10 +313,10 @@ namespace Eldoria.ReferenceClean {
   }
   public string MarchStatus(PlayerState s){string phase=s.March.Phase;return phase=="outbound"?L("En camino a ","Travelling to ")+TargetName(s.March.TargetId):phase=="gathering"?L("Recolectando en ","Gathering at ")+TargetName(s.March.TargetId):phase=="returning"?L("Regresando a Valoria","Returning to Valoria"):L("Expedición disponible","Expedition ready");}
   public string Reward(int wood,int stone){var parts=new System.Collections.Generic.List<string>();if(wood>0)parts.Add("+"+wood+L(" madera"," wood"));if(stone>0)parts.Add("+"+stone+L(" piedra"," stone"));return string.Join(" · ",parts);}
-  string ExpectedReward(string id,PlayerState s){if(id=="forest-valoria")return Reward(Math.Min(s.ForestRemaining,SliceRules.ForestLoad),0);if(id=="quarry-valoria")return Reward(0,Math.Min(s.QuarryRemaining,SliceRules.QuarryLoad));return L("El botín vuelve con las tropas.","Loot returns with the troops.");}
+  string ExpectedReward(string id,PlayerState s){if(LocalGateway.ResourceKind(s,id)=="wood")return Reward(Math.Min(LocalGateway.ResourceRemaining(s,id),SliceRules.ForestLoad),0);if(LocalGateway.ResourceKind(s,id)=="stone")return Reward(0,Math.Min(LocalGateway.ResourceRemaining(s,id),SliceRules.QuarryLoad));return L("El botín vuelve con las tropas.","Loot returns with the troops.");}
   string DestinationSummary(string id,PlayerState s){
-   if(id=="forest-valoria")return L("Madera para reconstruir Valoria.\nCada expedición: ","Timber to rebuild Valoria.\nPer expedition: ")+ExpectedReward(id,s);
-   if(id=="quarry-valoria")return L("Piedra para edificios y defensas.\nCada expedición: ","Stone for buildings and defences.\nPer expedition: ")+ExpectedReward(id,s);
+   if(LocalGateway.ResourceKind(s,id)=="wood")return L("Madera para reconstruir Valoria.\nCada expedición: ","Timber to rebuild Valoria.\nPer expedition: ")+ExpectedReward(id,s);
+   if(LocalGateway.ResourceKind(s,id)=="stone")return L("Piedra para edificios y defensas.\nCada expedición: ","Stone for buildings and defences.\nPer expedition: ")+ExpectedReward(id,s);
    if(id=="old-watch-ruin")return L("Una antigua atalaya junto al camino. Por ahora sirve como referencia del terreno.","An old watchtower beside the road. It currently serves as a landmark.");
    if(id=="corrupt-scout")return s.ScoutDefeated?L("La ruta está despejada. Tus tropas pueden volver a Valoria.","The route is clear. Your troops can return to Valoria."):L("Aldric y tus arqueros deben despejar este acceso. Botín si vencen: +80 madera · +70 piedra.","Aldric and your archers must clear this route. Victory loot: +80 wood · +70 stone.");
    return s.EngendroDefeated?L("El Engendro ha caído. Bastión II está asegurado.","The Spawn has fallen. Bastion II is secured."):L("El enemigo del capítulo II. Confirma tu expedición antes de salir. Botín si vence: +120 madera · +100 piedra.","Chapter II's enemy. Confirm your expedition before departing. Victory loot: +120 wood · +100 stone.");

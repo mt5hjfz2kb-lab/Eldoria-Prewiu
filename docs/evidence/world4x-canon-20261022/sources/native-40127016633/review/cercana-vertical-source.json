@@ -1,0 +1,31 @@
+{
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "cercana-vertical",
+    "sha256": "4c6ea7ea1ca11ac94d284797cf9a3a5228e3eb25c6f69d4a9f863504e6e44d1f",
+    "context": "Actual integrated Valoria World PlayMode / disposable genuine Gateway progression",
+    "targetId": "",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 390,
+    "height": 844,
+    "zoom": 64.0,
+    "aspect": 0.4620853066444397,
+    "cameraPosition": {
+        "x": 1018.0,
+        "y": 109.30070495605469,
+        "z": -86.84757232666016
+    },
+    "worldTarget": {
+        "x": 1018.0,
+        "y": 0.0,
+        "z": 30.000001907348634
+    },
+    "cameraRotation": {
+        "x": 0.36722108721733096,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.9301337003707886
+    }
+}

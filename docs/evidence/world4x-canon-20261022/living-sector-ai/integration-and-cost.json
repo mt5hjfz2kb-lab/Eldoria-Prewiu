@@ -1,0 +1,474 @@
+{
+    "actorVisualContactMeasured": true,
+    "actorVisualContactError": 0.0000018328428268432618,
+    "animatedOriginalRenderersRetained": 4,
+    "lodSamples": [
+        {
+            "orientation": "landscape",
+            "scale": "close",
+            "zoom": 24.0,
+            "visibleRenderers": 57,
+            "visibleTriangles": 839800
+        },
+        {
+            "orientation": "landscape",
+            "scale": "regional",
+            "zoom": 38.0,
+            "visibleRenderers": 58,
+            "visibleTriangles": 840746
+        },
+        {
+            "orientation": "landscape",
+            "scale": "panorama",
+            "zoom": 52.0,
+            "visibleRenderers": 53,
+            "visibleTriangles": 120840
+        },
+        {
+            "orientation": "portrait",
+            "scale": "close",
+            "zoom": 32.0,
+            "visibleRenderers": 57,
+            "visibleTriangles": 839800
+        },
+        {
+            "orientation": "portrait",
+            "scale": "regional",
+            "zoom": 52.0,
+            "visibleRenderers": 53,
+            "visibleTriangles": 120840
+        },
+        {
+            "orientation": "portrait",
+            "scale": "panorama",
+            "zoom": 74.0,
+            "visibleRenderers": 52,
+            "visibleTriangles": 113610
+        }
+    ],
+    "heightProbes": [
+        {
+            "isTrigger": true,
+            "name": "Zone1 target valoria-map-city",
+            "hotspotId": "valoria-map-city",
+            "colliderType": "BoxCollider",
+            "logicalPosition": {
+                "x": 1018.0,
+                "y": 6.24946928024292,
+                "z": 30.000001907348634
+            },
+            "authoredSurface": {
+                "x": 1018.0,
+                "y": 3.2250308990478517,
+                "z": 30.000001907348634
+            },
+            "boundsMin": {
+                "x": 1008.0,
+                "y": -1.7221803665161133,
+                "z": 20.0
+            },
+            "boundsMax": {
+                "x": 1028.0,
+                "y": 14.221118927001954,
+                "z": 40.0
+            },
+            "heightDifference": 4.947211265563965
+        },
+        {
+            "isTrigger": true,
+            "name": "Zone1 target forest-valoria",
+            "hotspotId": "forest-valoria",
+            "colliderType": "BoxCollider",
+            "logicalPosition": {
+                "x": 1065.0,
+                "y": -1.0832440853118897,
+                "z": 41.9999885559082
+            },
+            "authoredSurface": {
+                "x": 1065.0,
+                "y": 4.664005756378174,
+                "z": 41.99998474121094
+            },
+            "boundsMin": {
+                "x": 1059.6524658203125,
+                "y": -3.5832440853118898,
+                "z": 35.967185974121097
+            },
+            "boundsMax": {
+                "x": 1070.3475341796875,
+                "y": 1.4167559146881104,
+                "z": 48.03279113769531
+            },
+            "heightDifference": 8.247249603271485
+        },
+        {
+            "isTrigger": true,
+            "name": "Zone1 target quarry-valoria",
+            "hotspotId": "quarry-valoria",
+            "colliderType": "BoxCollider",
+            "logicalPosition": {
+                "x": 1064.4998779296875,
+                "y": 3.306429386138916,
+                "z": -32.8910026550293
+            },
+            "authoredSurface": {
+                "x": 1064.4998779296875,
+                "y": 2.792189836502075,
+                "z": -32.89099884033203
+            },
+            "boundsMin": {
+                "x": 1059.6429443359375,
+                "y": 0.2943291664123535,
+                "z": -37.7280158996582
+            },
+            "boundsMax": {
+                "x": 1069.3568115234375,
+                "y": 6.3185296058654789,
+                "z": -28.05398941040039
+            },
+            "heightDifference": 2.4978606700897219
+        },
+        {
+            "isTrigger": true,
+            "name": "Zone1 target corrupt-scout",
+            "hotspotId": "corrupt-scout",
+            "colliderType": "BoxCollider",
+            "logicalPosition": {
+                "x": 933.0,
+                "y": 16.29309844970703,
+                "z": -22.999980926513673
+            },
+            "authoredSurface": {
+                "x": 933.0,
+                "y": 3.009121894836426,
+                "z": -22.999982833862306
+            },
+            "boundsMin": {
+                "x": 926.7088012695313,
+                "y": 3.8907909393310549,
+                "z": -27.36566925048828
+            },
+            "boundsMax": {
+                "x": 939.2911987304688,
+                "y": 28.695405960083009,
+                "z": -18.634292602539064
+            },
+            "heightDifference": -0.8816690444946289
+        },
+        {
+            "isTrigger": true,
+            "name": "Zone1 target engendro-valoria",
+            "hotspotId": "engendro-valoria",
+            "colliderType": "BoxCollider",
+            "logicalPosition": {
+                "x": 926.0000610351563,
+                "y": 7.314421653747559,
+                "z": -27.00003433227539
+            },
+            "authoredSurface": {
+                "x": 926.0000610351563,
+                "y": 2.8846054077148439,
+                "z": -27.000036239624025
+            },
+            "boundsMin": {
+                "x": 922.0000610351563,
+                "y": 3.741363525390625,
+                "z": -31.830425262451173
+            },
+            "boundsMax": {
+                "x": 930.0000610351563,
+                "y": 10.887479782104493,
+                "z": -22.16964340209961
+            },
+            "heightDifference": -0.8567581176757813
+        },
+        {
+            "isTrigger": true,
+            "name": "Zone1 target old-watch-ruin",
+            "hotspotId": "old-watch-ruin",
+            "colliderType": "BoxCollider",
+            "logicalPosition": {
+                "x": 997.0,
+                "y": 8.047276496887207,
+                "z": -33.999996185302737
+            },
+            "authoredSurface": {
+                "x": 997.0,
+                "y": 2.8592822551727297,
+                "z": -34.0
+            },
+            "boundsMin": {
+                "x": 991.5,
+                "y": 1.3580474853515626,
+                "z": -37.999996185302737
+            },
+            "boundsMax": {
+                "x": 1002.5,
+                "y": 14.736505508422852,
+                "z": -29.999996185302736
+            },
+            "heightDifference": 1.501234769821167
+        }
+    ],
+    "groundedVisualMarkers": [
+        {
+            "measuredAnchors": 1,
+            "maxAnchorContactError": 7.450580596923828e-8,
+            "id": "valoria-map-city",
+            "sourceRenderer": "Reference city Bastion I",
+            "originalVisualFootY": -3.9199953079223635,
+            "authoredGroundY": 3.0823569297790529,
+            "groundedVisualFootY": 3.1623568534851076,
+            "visualCorrectionMeters": 7.082352161407471,
+            "contactErrorMeters": -7.450580596923828e-8
+        },
+        {
+            "measuredAnchors": 1,
+            "maxAnchorContactError": 7.450580596923828e-8,
+            "id": "valoria-map-city",
+            "sourceRenderer": "Reference city Bastion II",
+            "originalVisualFootY": -3.9199953079223635,
+            "authoredGroundY": 3.0823569297790529,
+            "groundedVisualFootY": 3.1623568534851076,
+            "visualCorrectionMeters": 7.082352161407471,
+            "contactErrorMeters": -7.450580596923828e-8
+        },
+        {
+            "measuredAnchors": 7,
+            "maxAnchorContactError": 7.450580596923828e-8,
+            "id": "forest-valoria",
+            "sourceRenderer": "Reference existing wood grove",
+            "originalVisualFootY": -3.9200029373168947,
+            "authoredGroundY": 4.664005279541016,
+            "groundedVisualFootY": 4.74400520324707,
+            "visualCorrectionMeters": 8.664008140563965,
+            "contactErrorMeters": -7.450580596923828e-8
+        },
+        {
+            "measuredAnchors": 1,
+            "maxAnchorContactError": 7.450580596923828e-8,
+            "id": "quarry-valoria",
+            "sourceRenderer": "Reference existing quarry",
+            "originalVisualFootY": -3.899979591369629,
+            "authoredGroundY": 2.792189836502075,
+            "groundedVisualFootY": 2.87218976020813,
+            "visualCorrectionMeters": 6.77216911315918,
+            "contactErrorMeters": -7.450580596923828e-8
+        },
+        {
+            "measuredAnchors": 1,
+            "maxAnchorContactError": 3.129243850708008e-7,
+            "id": "old-watch-ruin",
+            "sourceRenderer": "Reference existing neutral watch ruin",
+            "originalVisualFootY": -4.159160137176514,
+            "authoredGroundY": 2.8592822551727297,
+            "groundedVisualFootY": 2.939281940460205,
+            "visualCorrectionMeters": 7.098442077636719,
+            "contactErrorMeters": -3.129243850708008e-7
+        }
+    ],
+    "groundedVisualMarkerCount": 5,
+    "logicalColliderCount": 6,
+    "meshInstances": 58,
+    "rendererCount": 58,
+    "submittedMeshTriangles": 840746,
+    "editorAllocatedBytes": 1127606281,
+    "maxHeightDifference": 8.247249603271485,
+    "selectionProbes": [
+        {
+            "expectedId": "valoria-map-city",
+            "selectedId": "valoria-map-city",
+            "portrait": false,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "valoria-map-city",
+            "selectedId": "valoria-map-city",
+            "portrait": false,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "forest-valoria",
+            "selectedId": "forest-valoria",
+            "portrait": false,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "forest-valoria",
+            "selectedId": "forest-valoria",
+            "portrait": false,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "quarry-valoria",
+            "selectedId": "quarry-valoria",
+            "portrait": false,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "quarry-valoria",
+            "selectedId": "quarry-valoria",
+            "portrait": false,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "corrupt-scout",
+            "selectedId": "corrupt-scout",
+            "portrait": false,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "corrupt-scout",
+            "selectedId": "corrupt-scout",
+            "portrait": false,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "engendro-valoria",
+            "selectedId": "engendro-valoria",
+            "portrait": false,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "engendro-valoria",
+            "selectedId": "engendro-valoria",
+            "portrait": false,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "old-watch-ruin",
+            "selectedId": "old-watch-ruin",
+            "portrait": false,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "old-watch-ruin",
+            "selectedId": "old-watch-ruin",
+            "portrait": false,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "valoria-map-city",
+            "selectedId": "valoria-map-city",
+            "portrait": true,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "valoria-map-city",
+            "selectedId": "valoria-map-city",
+            "portrait": true,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "forest-valoria",
+            "selectedId": "forest-valoria",
+            "portrait": true,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "forest-valoria",
+            "selectedId": "forest-valoria",
+            "portrait": true,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "quarry-valoria",
+            "selectedId": "quarry-valoria",
+            "portrait": true,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "quarry-valoria",
+            "selectedId": "quarry-valoria",
+            "portrait": true,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "corrupt-scout",
+            "selectedId": "corrupt-scout",
+            "portrait": true,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "corrupt-scout",
+            "selectedId": "corrupt-scout",
+            "portrait": true,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "engendro-valoria",
+            "selectedId": "engendro-valoria",
+            "portrait": true,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "engendro-valoria",
+            "selectedId": "engendro-valoria",
+            "portrait": true,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "old-watch-ruin",
+            "selectedId": "old-watch-ruin",
+            "portrait": true,
+            "aimAtAuthoredGround": false,
+            "inViewport": true,
+            "matched": true
+        },
+        {
+            "expectedId": "old-watch-ruin",
+            "selectedId": "old-watch-ruin",
+            "portrait": true,
+            "aimAtAuthoredGround": true,
+            "inViewport": true,
+            "matched": true
+        }
+    ],
+    "heightDeltaIsGroundingVerdict": false,
+    "logicalPositionsUnchanged": true,
+    "physicalMobileTested": false
+}

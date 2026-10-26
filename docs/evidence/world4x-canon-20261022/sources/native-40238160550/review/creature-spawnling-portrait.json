@@ -1,0 +1,31 @@
+{
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "spawnling-portrait",
+    "sha256": "7a8212edaa904789dad3e4d4cfbfcf1214e8daadda694322619d553fed2ecffd",
+    "context": "AF/AG camera and sector coordinates; restored scoped AG shader and lighting",
+    "targetId": "region1:spawnling:001",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 720,
+    "height": 1280,
+    "zoom": 64.0,
+    "aspect": 0.5625,
+    "cameraPosition": {
+        "x": 1484.0,
+        "y": 118.41767120361328,
+        "z": 141.15243530273438
+    },
+    "worldTarget": {
+        "x": 1484.0,
+        "y": 9.116966247558594,
+        "z": 258.0
+    },
+    "cameraRotation": {
+        "x": 0.36722108721733096,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.9301337003707886
+    }
+}

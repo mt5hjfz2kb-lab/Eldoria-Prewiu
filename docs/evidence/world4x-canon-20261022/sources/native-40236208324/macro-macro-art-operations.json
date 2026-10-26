@@ -1,0 +1,31 @@
+{
+  "method": "actual BlenderMCP highest-triangle floor conformance",
+  "parent_macro_run": 40230766938,
+  "source_sha256": "ebc0d001f99dec1166f08bebb9436c140612e2a89fe8b45cc0270feafb6f5823",
+  "terrain_vertices_after": 339274,
+  "protected_vertices_unchanged": 51898,
+  "entire_terrain_vertices_unchanged": true,
+  "entire_terrain_vertex_sha256": "af6af8f3eec3f4020fd13358c5846e42dab4c985fa160619e889704313c4037a",
+  "packed_images_unchanged": 63,
+  "floor_corrections": {
+    "BLD_BreachFloor": {
+      "vertices": 16484,
+      "corrected": 16484,
+      "maximum_adjustment_m": 0.05276836395263729
+    },
+    "BLD_BreachOutlyingFractures": {
+      "vertices": 2170,
+      "corrected": 2170,
+      "maximum_adjustment_m": 0.0030452156066895775
+    }
+  },
+  "new_gameplay_targets": 0,
+  "new_colliders": 0,
+  "files": {
+    "Eldoria_Region1_Production.blend": "a4761ca33f38273a31ff444277c143ded5e31ab2498d30c8af2baca9db037d1b",
+    "RegionOneBlenderWorld.glb": "eb455b665871cbc95c6fc4c7948b8c24691765b80288770f9b99e5322c5c95ab",
+    "RegionOneBlenderQueries.bytes": "bde8d1e3e13df5fc658d9fa258da9ac3d720d499f230644e250e9f3b4570589b",
+    "production-region.json": "e1454e3ce1c8985e174833e6618e427aa941a97376f5958fa4138dc5cca853df"
+  },
+  "art_approved": false
+}

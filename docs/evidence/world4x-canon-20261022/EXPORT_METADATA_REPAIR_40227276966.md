@@ -1,0 +1,7 @@
+# Exact metadata repair after native source-gate failure
+
+Native40227276966 imported/compiled the reviewed candidate, then failed before PlayMode with `InvalidDataException: Unexpected Blender terrain dimensions`. The Blender authoring script reused global variable `width` for a mineral ribbon and consequently serialized that ribbon width into the terrain-query header. Actual geometry, all sampled heights, navigation masks and source-vertex payload remained intact. No new artistic hypothesis or source regeneration is justified.
+
+Fix future authoring by retaining `world_width/world_depth` separately. For the already reviewed/pinned source, decode its original query SHA7065f7d1d208bc8eaa25c84a37034d3f7f3bc171cdc87a763cbcd89d800daa3d, assert signature/grid and actual vertex tail, restore width/depth from the unchanged canonical bounds, and prove SHA256 equality for every byte after the 20-byte header. Also reconcile the informational vertex count with the actual329284 exported source vertices. Stage repaired data consistently in Unity and the preserved native-source directory. GLB and BLEND keep the reviewed hashes.
+
+The source-gate assertions remain unchanged. The retry must pass the exact same source, PlayMode, EditMode, gameplay and real-camera gates. Added live import-log tails and a bounded fifteen-minute process timeout aid diagnosis without treating a timeout as success. No job was cancelled:40227276966 completed failure and retained logs before the repair commit.

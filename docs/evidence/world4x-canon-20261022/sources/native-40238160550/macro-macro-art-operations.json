@@ -1,0 +1,41 @@
+{
+  "method": "actual BlenderMCP organic strategic silhouettes and flow UV authoring",
+  "parent_source_run": 40233611270,
+  "source_sha256": "a4761ca33f38273a31ff444277c143ded5e31ab2498d30c8af2baca9db037d1b",
+  "terrain_vertices_after": 339274,
+  "protected_vertices_unchanged": 51898,
+  "terrain_and_geology_vertex_hashes_unchanged": {
+    "BLD_Terrain": "af6af8f3eec3f4020fd13358c5846e42dab4c985fa160619e889704313c4037a",
+    "BLD_BreachFloor": "f7c3d8837217b41e5a9190195557d78abd0437bd9e5d5aee109a475503fd02ed",
+    "BLD_BreachOutlyingFractures": "9eed8f09adf2087fc8053e850c36a05d29b2aa1cdf2d08b36bcdf15fe9f8c1dc",
+    "BLD_BreachBrokenBasaltPlates": "35f88f622527eaf5de3ca24a8992b589706e13114ff39bd75581bba1a4a62e88"
+  },
+  "packed_images_unchanged": 62,
+  "shared_strategic_meshes": 2,
+  "strategic_trees_reusing_two_donors": 5295,
+  "strategic_triangles_per_mesh": [
+    230,
+    230
+  ],
+  "tributary_uvs": [
+    {
+      "name": "BLD_AuthoredTributary_0",
+      "metres": 2118.3995638698557,
+      "mapping": "longitudinal current, cross-channel depth; no world-grid repetition"
+    },
+    {
+      "name": "BLD_AuthoredTributary_1",
+      "metres": 2108.821423088479,
+      "mapping": "longitudinal current, cross-channel depth; no world-grid repetition"
+    }
+  ],
+  "new_gameplay_targets": 0,
+  "new_colliders": 0,
+  "files": {
+    "Eldoria_Region1_Production.blend": "9f26c9560e9ddafa9f57bac8fa2c2641ef0ffb9e91874f7411bbdf3df0191ef5",
+    "RegionOneBlenderWorld.glb": "9f55f744bdbd8ac0bfc48c053821dd4c13a8764a2085d798ebf696dc5fd9679d",
+    "RegionOneBlenderQueries.bytes": "bde8d1e3e13df5fc658d9fa258da9ac3d720d499f230644e250e9f3b4570589b",
+    "production-region.json": "e1454e3ce1c8985e174833e6618e427aa941a97376f5958fa4138dc5cca853df"
+  },
+  "art_approved": false
+}

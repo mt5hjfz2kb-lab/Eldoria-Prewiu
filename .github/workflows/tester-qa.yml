@@ -71,6 +71,15 @@ jobs:
     timeout-minutes: 32
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Keep all web sources, tests, tools and fixtures. Native Unity and
+          # archived native/art evidence are not inputs to this frozen-web job.
+          # A full checkout consumed 16 minutes of its 32-minute budget.
+          sparse-checkout: |
+            /*
+            !/Unity/
+            !/docs/evidence/
+          sparse-checkout-cone-mode: false
       - name: Install Playwright
         run: |
           npm install --no-save playwright@1.55.0
