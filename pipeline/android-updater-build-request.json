@@ -1,9 +1,9 @@
 {
-  "enabled": false,
-  "versionCode": 10,
-  "versionName": "1.10",
+  "enabled": true,
+  "versionCode": 14,
+  "versionName": "1.14",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
-  "workstreamId": "valoria-master-plan-layered-construction-20261016",
+  "workstreamId": "eldoria-world-region-1-canon-20261022",
   "budgetEur": 0,
-  "note": "Signed code10/1.10 updater-UI build 39502034675 SUCCESS from pinned integrated main 3a1cc3f17dc7adc543126c46ec53f402bb39aa94. Disable duplicate native builds; next upgrade requires monotonic code11 and separate QA."
+  "note": "Owner-authorized PR100 Region1 complete replacement, merged1ac74ece. Same Unitytree fe4aca3dacc303d953eb58089b32c15720fd3a94. Native40347811711 and40352938822 pass62/26/44; general gate40357678545 passes; original package/signing key, no save reset. Budget0; physical phone QA unaccredited."
 }
