@@ -40,3 +40,27 @@ node tools/check-workflow-governance.mjs
 ```
 
 El flujo horario `.github/workflows/mission-continuity-guard.yml` ejecuta estas pruebas y registra las observaciones de GitHub de forma acotada. La mejora se considera aceptada **solo** cuando el workflow exacto y la protección de arquitectura son SUCCESS.
+
+
+## Extensión: recuperación técnica nocturna verdaderamente automática, estrictamente acotada
+
+El sistema `nightly-recovery.mjs` ya tenía una prueba de reintentos de infraestructura transitoria para trabajos históricos. Se amplió su política para observar el **mismo trabajo canónico** `eldoria-world-region-1-canon-20261022` en su rama de candidato, aunque la titularidad figure en `main`.
+
+Esta es la única actuación productiva autónoma autorizada por este bloque: **reintentar como máximo una vez el mismo job de GitHub Actions fallido**, y solo si simultáneamente:
+- Es de noche en Madrid (22:00–08:00), la ejecución ha terminado como `failure`, han transcurrido al menos 20 minutos, es exactamente el SHA vigente de la rama, y el evento fue `push` o `workflow_dispatch`.
+- Solo hay un job fallido, con logs que acreditan explícitamente una caída temporal de infraestructura (`HTTP 502/503/504`, pérdida de conexión de runner u otra causa enumerada).
+- No hay errores de Unity, código, Python, shader o arte que el reintento pretenda esconder, no se ha usado ya el único reintento y **no hay ninguna otra ejecución de Actions activa en todo el repositorio**.
+- El titular sigue `claimed` en `pipeline/active-workstreams.json` con el mismo nombre, rama, revisión, alcance y recurso `windows-runner-heavy`; se relee el `main` vivo **inmediatamente antes** de reintentar.
+- Ni el SHA de la rama ni las reservas han cambiado. Si cualquier comprobación falla, se detiene y registra la causa: **no** hay auto-reclamo, cambio de propiedad, force push, aprobación artística, nueva fase creativa, uso de Tripo de pago, publicación ni merge.
+
+**Limitación:** disponer de este mecanismo no significa que ya haya ocurrido un reintento real; los tests y el dry-run comprueban los frenos. GitHub puede no ofrecer un runner libre. Este rescate técnico no es un agente IA que piense y arregle un defecto gráfico.
+
+La solución general para correcciones creativas autónomas sigue pendiente de un ejecutor IA de larga duración realmente conectado al repo con sus permisos. Los actuales workflows y chats no prueban esa capacidad por sí mismos.
+
+### Comprobación
+
+```bash
+node --test tools/mission-continuity/nightly-core.test.mjs
+```
+
+Consultar la ejecución exacta de `Eldoria Mission Continuity Guard` en GitHub y el resultado `night-recovery-report.json`. El veredicto nocturno aceptable sin fallo de infraestructura es `NOT_FAILED`, `NOT_NIGHT`, `RUNNER_OR_REPO_BUSY` u otro stop verificable; **no** se espera `ONE_TRANSIENT_JOB_RETRIED` salvo incidencia real y todos los criterios cumplidos.
