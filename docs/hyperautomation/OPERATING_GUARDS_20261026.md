@@ -51,3 +51,14 @@ node tools/documentation-triage/report.mjs --format markdown
 ```
 
 La verificación en GitHub es **Repository architecture guard** sobre el commit exacto. Mantener separadas las validaciones de código, la eficacia operativa medida (intervenciones humanas, reintentos, tiempos) y la calidad jugable/visual. No declarar una reducción porcentual real de tiempos sin un antes/después comparado.
+
+## Revisión de precisión y continuidad de observación (26-10-2026)
+
+- El indicador de continuidad reduce el conjunto de runs al **último intento observable de cada workflow sobre el SHA exacto de la rama**. Así, un fallo o `action_required` anterior no se convierte en bloqueo permanente cuando existe una ejecución posterior válida del mismo workflow. Otros workflows que sigan fallando permanecen visibles.
+- El campo `evidence_scope: branch_head_workflow_not_workstream` advierte que una ejecución sobre `main` **no demuestra por sí sola** qué agente concreto está progresando; la atribución requiere pruebas de alcance/propiedad.
+- `operational_counts` expone número de trabajos declarados, pausas explícitas, reservas Windows y jobs Windows observados. **Estos contadores no son porcentajes de ahorro ni actividad de chats.**
+- `eldoria-work-status.yml` obtiene una fotografía de solo lectura cada seis horas en Ubuntu hospedado, además de sus disparadores de push/manuales existentes. GitHub puede retrasar u omitir un cron; el informe se conserva como artifact 14 días. No se crea un servicio de ejecución perpetua de agentes ni se envían notificaciones automáticas al propietario.
+- La observación de los últimos 20 runs puede ser parcial: `checks_window` lo indica. Una ausencia de error en esa ventana no prueba que toda la historia esté limpia.
+- Pruebas negativas: fallo antiguo sustituido por éxito, `action_required` antiguo sustituido, nuevo fallo independiente no ocultado, ejecución reciente que aún sigue activa, muestra parcial y contadores sin afirmaciones de ahorro.
+
+**Fase aún no entregada:** integración del diagnóstico/cierre con un ejecutor IA persistente autorizado, y aplicación del contrato artístico al flujo reservado del PR #100. No afirmar que esta fotografía periódica sustituye esas capacidades.
