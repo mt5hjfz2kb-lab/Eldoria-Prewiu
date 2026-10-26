@@ -43,6 +43,45 @@ export function versionStates({head,delivery,android}){
     android_channel:{version:android?.enabled===true?android.versionName||null:null,
       basis:'enabled_channel_manifest_not_installed_device_verification'}};
 }
+// Advisory classification. Never creates a lease, dispatches a job, declares CI/ART PASS
+// or treats absence of Actions jobs as proof that a chat/PC is idle.
+export function operationalSignal(workstream, liveBranch={status:'not_checked'}, windows={observation:'not_checked',running:[],queued:[]}) {
+  const paused=/^OWNER_PAUSED_/i.test(workstream?.phase||'') ||
+    /^PAUSED BY OWNER\b/i.test(workstream?.next||'');
+  if(paused) return {code:'OWNER_PAUSED',severity:'hold',
+    next_safe_action:'Respect the owner pause; do not dispatch, take ownership or merge.'};
+  const explicitAvailable=workstream?.ownership_state==='available' &&
+    workstream?.owner==null && workstream?.write_scope_released===true &&
+    !(workstream?.resources||[]).length;
+  if(explicitAvailable) return {code:'EXPLICITLY_AVAILABLE',severity:'informational',
+    next_safe_action:'An authorized agent may claim this canonical workstream with the current registry SHA; availability is not a live runner check.'};
+  if(!workstream?.owner) return {code:'UNASSIGNED_NOT_RELEASED',severity:'needs_reconciliation',
+    next_safe_action:'Reconcile owner/release fields; a null owner alone does not authorize a claim.'};
+  if(liveBranch.status!=='observed') return {code:'LIVE_EVIDENCE_UNKNOWN',severity:'unknown',
+    next_safe_action:'Read the exact branch HEAD and live Actions/jobs; no inactivity or runner availability can be inferred.'};
+  const checks=Array.isArray(liveBranch.checks)?liveBranch.checks:[];
+  const restricted=checks.find(r=>r.conclusion==='action_required');
+  if(restricted) return {code:'GITHUB_AUTHORIZATION_REQUIRED',severity:'external_blocker',
+    run_id:restricted.run_id, next_safe_action:'Review the GitHub Actions approval requirement on this exact run. Do not bypass authorization or call it a test failure.'};
+  const failed=checks.find(r=>['failure','timed_out','startup_failure'].includes(r.conclusion));
+  if(failed) return {code:'CI_FAILURE_NEEDS_DIAGNOSIS',severity:'investigate',
+    run_id:failed.run_id,next_safe_action:'Owner inspects run logs and fixes source; an automatic retry alone is not a repair.'};
+  const running=checks.find(r=>['in_progress','queued','waiting','pending','requested'].includes(r.status));
+  if(running) return {code:'EXTERNAL_ACTIONS_RUNNING',severity:'observed',
+    run_id:running.run_id,next_safe_action:'Follow the exact run and consume its evidence before the next authorized step.'};
+  const usesWindows=(workstream?.resources||[]).includes('windows-runner-heavy');
+  const windowsComplete=windows?.observation==='complete_for_listed_actions_jobs';
+  if(usesWindows) return {code:'WINDOWS_LEASE_WITHOUT_CONFIRMED_WORK',severity:'needs_reconciliation',
+    next_safe_action:windowsComplete ?
+      'A Windows resource claim exists; no matching live Actions job was established for this workstream. Confirm the owner and external PC processes before changing the lease.' :
+      'A Windows resource claim exists and Actions observation is incomplete; reconcile without auto-releasing or stealing the runner.'};
+  if(checks.some(r=>r.conclusion==='success'))
+    return {code:'TECHNICAL_EVIDENCE_REVIEW',severity:'review',
+      next_safe_action:'Inspect matching SHA, tests, visuals and deliverable; successful CI is not completion or artistic approval.'};
+  return {code:'CLAIMED_WITHOUT_RECENT_RUN',severity:'unknown',
+    next_safe_action:'Ask the owner to inspect the next allowed gate; latest-20 window cannot prove an abandoned task.'};
+}
+
 // This is a declared registry state, not evidence that an agent or machine is running.
 export function declaredOperatingState(workstream){
   if(/^OWNER_PAUSED_/i.test(workstream?.phase||'') || /^PAUSED BY OWNER\b/i.test(workstream?.next||'')) return 'paused_by_owner';
@@ -51,7 +90,7 @@ export function declaredOperatingState(workstream){
 }
 export function summarize({registry,delivery=null,android=null,head=null,live=null,checkedAt=new Date().toISOString()}){
   if(!Array.isArray(registry?.active))throw Error('Canonical registry active array missing');
-  const active=registry.active.map(w=>({id:w.id,title:short(w.title),owner:short(w.owner),branch:short(w.branch),declared_status:w.status,declared_phase:short(w.phase),declared_operating_state:declaredOperatingState(w),declared_next:short(w.next),declared_resources:Array.isArray(w.resources)?w.resources:[],delivery_definition:{deliverable:short(w.delivery_definition?.deliverable),evidence:short(w.delivery_definition?.evidence),handoff:short(w.delivery_definition?.handoff)},live_branch:live?.branches?.[w.branch]||{status:'not_checked'}}));
+  const active=registry.active.map(w=>({id:w.id,title:short(w.title),owner:short(w.owner),branch:short(w.branch),declared_status:w.status,declared_phase:short(w.phase),declared_operating_state:declaredOperatingState(w),declared_next:short(w.next),declared_resources:Array.isArray(w.resources)?w.resources:[],operational_signal:operationalSignal(w,live?.branches?.[w.branch]||{status:'not_checked'},live?.windows),delivery_definition:{deliverable:short(w.delivery_definition?.deliverable),evidence:short(w.delivery_definition?.evidence),handoff:short(w.delivery_definition?.handoff)},live_branch:live?.branches?.[w.branch]||{status:'not_checked'}}));
   return {schema_version:1,checked_at:checkedAt,source_head:head,read_only:true,
     authority:'pipeline/active-workstreams.json; pipeline/playtest-delivery.json; updates/android/family.json',
     active,windows:live?.windows||{observation:'not_checked',running:[],queued:[],errors:[]},
@@ -113,6 +152,8 @@ export function markdown(report){
   let out='# Eldoria — estado operativo\n\nConsulta: '+md(report.checked_at)+' · HEAD: '+md(report.source_head)+'\n\n';
   out+='| Trabajo registrado | Rama | Situación declarada | Fase | Observación de rama |\n| --- | --- | --- | --- | --- |\n';
   for(const w of report.active)out+='| '+md(w.title||w.id)+' | '+md(w.branch)+' | '+md(w.declared_operating_state)+' | '+md(w.declared_phase||w.declared_status)+' | '+md(w.live_branch.status)+' |\n';
+  out+='\nSeñales de continuidad (orientativas, sin ejecutar acciones):\n';
+  for(const w of report.active){const s=w.operational_signal||{};out+='- '+md(w.title||w.id)+': '+md(s.code)+'; siguiente paso seguro: '+md(s.next_safe_action)+'\n';}
   const timedBranches=new Set();
   for(const w of report.active){
     out+='\nEntrega de '+md(w.title||w.id)+': '+md(w.delivery_definition.deliverable||'sin definición explícita registrada')+'; evidencia: '+md(w.delivery_definition.evidence)+'; cierre: '+md(w.delivery_definition.handoff)+'.\n';
