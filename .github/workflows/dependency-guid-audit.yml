@@ -1,0 +1,85 @@
+name: '[ELDORIA] Read-only Unity GUID dependency audit'
+on:
+  push:
+    branches:
+      - audit/unity-dependency-guid-20261026
+    paths:
+      - '.github/workflows/dependency-guid-audit.yml'
+      - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Editor/DependencyGuidAudit20261026.cs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Share the native Unity lease with the existing mainline CI.
+concurrency:
+  group: valoria-reference-clean-native
+  cancel-in-progress: false
+
+jobs:
+  unity-reference-map:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 55
+    steps:
+      - name: Verify native tools are idle before touching the shared workspace
+        shell: powershell
+        run: |
+          $active = @(Get-Process Unity,blender -ErrorAction SilentlyContinue)
+          if ($active.Count -gt 0) { throw 'NATIVE_RUNNER_BUSY: preserving other owner processes; retry when idle.' }
+      - name: Find Git already installed on Windows runner
+        shell: powershell
+        run: |
+          $git = Get-Command git.exe -ErrorAction SilentlyContinue
+          if (-not $git) {
+            $choices = @("${env:ProgramFiles}\Git\cmd\git.exe", "${env:LOCALAPPDATA}\Programs\Git\cmd\git.exe")
+            $desktop = "${env:LOCALAPPDATA}\GitHubDesktop"
+            if (Test-Path $desktop) {
+              $choices += @(Get-ChildItem $desktop -Directory -Filter 'app-*' | Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources\app\git\cmd\git.exe'})
+            }
+            $path = $choices | Where-Object { Test-Path $_ } | Select-Object -First 1
+            if (-not $path) { throw 'Git for Windows unavailable' }
+            Add-Content -Path $env:GITHUB_PATH -Value (Split-Path $path)
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          persist-credentials: false
+      - name: Capture dependencies in Unity Editor (no build, no scene changes)
+        shell: powershell
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP "eldoria-dependency-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          $env:ELDORIA_DEPENDENCY_AUDIT_OUT = $out
+          $project = Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $scene = Join-Path $project 'Assets\Eldoria\ArtTests\ValoriaReferenceClean\Integration\Valoria_City_World_UI.unity'
+          $script = Join-Path $project 'Assets\Eldoria\ArtTests\ValoriaReferenceClean\Editor\DependencyGuidAudit20261026.cs'
+          if (-not (Test-Path $scene) -or -not (Test-Path $script)) { throw 'INCOMPLETE_CHECKOUT: production Unity source unavailable' }
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw 'Unity executable missing on native runner' }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch '6000\.3\.23f1') { throw "Wrong installed Editor: $version" }
+          $log = Join-Path $out 'unity-editor.log'
+          $argList = @('-batchmode','-nographics','-quit','-projectPath',('"' + $project + '"'),'-executeMethod','Eldoria.Audits.DependencyGuidAudit20261026.Run','-logFile',('"' + $log + '"'))
+          $run = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $argList -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if (-not $run.WaitForExit(2400000)) {
+            & taskkill.exe /PID $run.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 90 }
+            throw 'Unity dependency audit timed out after 40 minutes'
+          }
+          if ($run.ExitCode -ne 0) {
+            if (Test-Path $log) { Get-Content $log -Tail 120 }
+            throw "Unity dependency audit failed exit=$($run.ExitCode)"
+          }
+          $summaryFile = Join-Path $out 'summary.json'
+          if (-not (Test-Path $summaryFile)) { throw 'UNITY_DEPENDENCY_REPORT_MISSING' }
+          $summary = Get-Content $summaryFile -Raw | ConvertFrom-Json
+          if (-not $summary.completed) { throw 'UNITY_DEPENDENCY_REPORT_INCOMPLETE' }
+          Get-Content $summaryFile
+          Write-Host "ELDORIA_DEPENDENCY_REPORT_READY out=$out sha=$env:GITHUB_SHA"
+      - name: Export audit evidence only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-unity-dependency-audit
+          path: ${{ runner.temp }}/eldoria-dependency-${{ github.run_id }}/*
+          retention-days: 7
+          if-no-files-found: warn
