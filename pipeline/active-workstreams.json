@@ -19,10 +19,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-eldoria-final-visual-consolidation-20261027",
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-26T23:14:21.550Z",
+      "claimed_at": "2026-10-26T23:30:30.095Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -78,7 +78,7 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "ANDROID15_PUBLISHED_VERIFIED_20261027",
+      "phase": "VISUAL_CONSOLIDATION_BASELINE_AND_SOURCE_REVIEW",
       "next": "Android1.15/code15 published and updater channel verified. No pending publication; reclaim canonical ID for a new owner-authorized scope or concrete defect.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
@@ -1027,17 +1027,23 @@
             "physical_phone_tested": false,
             "user_data_reset": false
           }
+        },
+        {
+          "owner": null,
+          "state": "available",
+          "revision": 34,
+          "reason": "Owner requests final visual consolidation city/world 2026-10-27"
         }
       ],
-      "ownership_revision": 34,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 35,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
       "delivery_definition": {
-        "deliverable": "Publicar APK Android 1.15/code15 con estado actual de main y notas de interfaz/Region1, actualizable sobre code14.",
-        "evidence": "Builder original, firma/package/ARM64/permisos y SHA256/CRC, promoción de bytes exactos y manifiesto público. Unity code unchanged from certified65Play/26Edit source.",
-        "handoff": "Enlace APK y versión verificables, solicitud desactivada tras publicación y reserva liberada."
+        "deliverable": "Coherent Valoria strategic representation; proportionate panorama, city riverbank and Breach improvements where visually justified. No APK or Bastion III.",
+        "evidence": "Authentic matched Unity A/B landscape and portrait, three world zooms and city I-II; editable sources, functional tests and reversible accepted changes.",
+        "handoff": "Retained/rejected interventions with real capture and source hashes, tests and limits. No publication."
       },
       "handoff_authority": "Explicit current owner instruction: assume unfinished UI/forest/multiplayer design work, finish autonomously, audit repository files last. Requested scope completed and verified.",
       "world_integration_handoff": {
