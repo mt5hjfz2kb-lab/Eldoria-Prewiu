@@ -259,9 +259,21 @@ namespace Eldoria.World4XCanon
                 bool alive=LocalGateway.ResourceRemaining(state,node.Id)>0;
                 foreach(var renderer in node.Renderers)if(renderer.enabled!=(alive&&near))renderer.enabled=alive&&near;
                 if(node.Impostor){
-                    node.Impostor.transform.position=p;node.Impostor.enabled=alive&&regional;
+                    // The near mesh is grounded on real terrain and can have an imported
+                    // asymmetric pivot. Anchor the regional replacement to the rendered
+                    // near footprint, not the prefab pivot. Do not move the logical site,
+                    // the near mesh, the gather/respawn state or the saved coordinates.
+                    var graphicFoot=p;
+                    if(node.Renderers.Length>0){
+                        var nearBounds=node.Renderers[0].bounds;
+                        for(int i=1;i<node.Renderers.Length;i++)nearBounds.Encapsulate(node.Renderers[i].bounds);
+                        graphicFoot.x=nearBounds.center.x;
+                        graphicFoot.z=nearBounds.center.z;
+                    }
+                    node.Impostor.transform.position=graphicFoot;
+                    node.Impostor.enabled=alive&&regional;
                     node.Impostor.localBounds=new Bounds(Vector3.up*12f*screenScale,Vector3.one*40f*screenScale);
-                    FitRegionalPicking(node,p,screenScale,regional);
+                    FitRegionalPicking(node,graphicFoot,screenScale,regional);
                 }
             }
             foreach(var renderer in GetComponentsInChildren<Renderer>(true))

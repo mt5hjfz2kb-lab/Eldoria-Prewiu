@@ -674,6 +674,15 @@ namespace Eldoria.Tests
                 Assert.That(hit,Is.Not.Null);
                 Assert.That(new Bounds(hit.center,hit.size).Contains(target.transform.InverseTransformPoint(bounds.center)),Is.True,
                     "The near selection volume must contain the real mesh centre even while the city view disables its physics");
+                // Regional billboards must occupy exactly the same X/Z footprint
+                // as their actual rendered close-view meshes, for every saved site.
+                var label=root.name.Substring("Production resource visual ".Length);
+                var impostor=world.GetComponentsInChildren<Transform>(true)
+                    .Single(x=>x.name=="Production resource impostor "+label);
+                Assert.That(impostor.position.x,Is.EqualTo(bounds.center.x).Within(.02f),
+                    "Regional wood/stone artwork jumps horizontally when changing zoom: "+label);
+                Assert.That(impostor.position.z,Is.EqualTo(bounds.center.z).Within(.02f),
+                    "Regional wood/stone artwork jumps in depth when changing zoom: "+label);
             }
             float minimum=0,maximum=0;int parts=0;
             foreach(var root in actualRoots)
