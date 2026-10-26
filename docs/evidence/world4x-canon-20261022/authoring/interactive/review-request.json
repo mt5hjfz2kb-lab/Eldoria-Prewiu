@@ -1,10 +1,10 @@
 {
   "workstream_id": "eldoria-world-region-1-canon-20261022",
   "ownership_revision": 37,
-  "source_run": 40245425748,
-  "source_sha256": "dc7ef856fd020ed4cdafd6d3f7290e111e1c8c574745c549a01774a2bf228830",
+  "source_run": 40246824373,
+  "source_sha256": "fac19536d7915601b330eaa21ab373bcf465edc8f2c8cd45ae1e2057fad7cd5a",
   "artistic_brief": "MACRO_DIRECTION_20261025.md",
-  "decision": "Retain actualUnity61/62correctedworld; clear remaining downward-facing boundary strip per-face, preserving all positions/images. Current integration passes contact and enemy checks; pending wood size and exact frozen panorama capture are code-only follow-up. No new artistic shape pass.",
+  "decision": "Actual402490 close view reveals inherited flat triangle normals and overlapping ground masks casting shadow acne. Regenerate smooth corner normals only on unprotected canyon patch. Preserve positions/winding/UV/images/query/layout. Fresh Unity capture required; no assertion is relaxed.",
   "preview_is_Unity": false,
   "art_approved": false
 }
