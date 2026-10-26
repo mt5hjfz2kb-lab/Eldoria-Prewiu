@@ -10,7 +10,7 @@ namespace Eldoria.World4XCanon
     [DefaultExecutionOrder(1400)]
     public sealed class RegionOneResourceModels : MonoBehaviour
     {
-        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
+        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public bool AnchorCached; public Vector3 VisualAnchorOffset; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
         readonly List<Node> nodes=new List<Node>();
         float lastImpostorScale=-1;
         ValoriaIntegratedWorld host;
@@ -240,7 +240,21 @@ namespace Eldoria.World4XCanon
             {
                 var p=node.Logical.position;
                 p.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(p.x-host.WorldHome.x,p.z-host.WorldHome.z);
-                node.Visual.transform.position=p;
+                // The imported wood/stone meshes need not share the logical
+                // resource's modelling pivot. Align their visible footprint
+                // once with the saved hotspot; the mid/far billboard already
+                // uses that same hotspot as its anchor.
+                if(!node.AnchorCached)
+                {
+                    var bounds=node.Renderers[0].bounds;
+                    for(int i=1;i<node.Renderers.Length;i++)bounds.Encapsulate(node.Renderers[i].bounds);
+                    node.VisualAnchorOffset=new Vector3(
+                        node.Visual.transform.position.x-bounds.center.x,
+                        0f,
+                        node.Visual.transform.position.z-bounds.center.z);
+                    node.AnchorCached=true;
+                }
+                node.Visual.transform.position=p+node.VisualAnchorOffset;
                 GroundParts(node,p);
                 bool alive=LocalGateway.ResourceRemaining(state,node.Id)>0;
                 foreach(var renderer in node.Renderers)if(renderer.enabled!=(alive&&near))renderer.enabled=alive&&near;
