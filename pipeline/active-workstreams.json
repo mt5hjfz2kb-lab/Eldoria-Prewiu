@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T10:55:48.838Z",
+  "updated_at": "2026-10-26T11:38:56.583Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1625,6 +1625,39 @@
           "resolution": "Historical reserved revision13 superseded by available/null UI revision14; exact CI workflow-only scope transfer under owner's finalization order, no UI scene takeover."
         }
       ]
+    },
+    {
+      "id": "eldoria-active-continuity-art-memory-phase2-20261026",
+      "title": "Eldoria — observación de misiones actuales y memoria artística verificable",
+      "owner": "chatgpt-ops-active-monitor-20261026",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-26",
+      "base_main_sha": "f62d8cd90ff244f516f71d13f6e0f969046e4387",
+      "scope": [
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        "tools/mission-continuity/watch.mjs",
+        "pipeline/mission-continuity-policy-v1.json",
+        ".github/workflows/mission-continuity-guard.yml",
+        "tools/art-direction/learning-evidence/build-prompt.mjs",
+        "tools/art-direction/learning-evidence/build-prompt.test.mjs",
+        ".github/workflows/repository-architecture-guard.yml",
+        "docs/hyperautomation/AUTONOMY_PHASE2_20261026.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Scope restricted to mission-watch policy, pure classification/tests, safe prompt artifact composer and Ubuntu architecture tests; no World4X protected files, AI author's workflow, Windows, Unity, spend or publication.",
+      "phase": "ACTUAL_ACTIVE_MISSION_MONITORING",
+      "next": "Add report-only observation of current workstreams with branch mapping, fail-closed classifications, safe memory prompt preparation and validation; test and release scope.",
+      "delivery_definition": {
+        "deliverable": "Hourly reporter tracks active Region1/creature workstreams without issue spam, safe resumable evidence and verified memory-input compose",
+        "evidence": "Targeted automated tests and Ubuntu CI on exact commit",
+        "handoff": "Release scoped ownership; agent-worker creation/art-production integration remains separately owner-controlled."
+      }
     }
   ],
   "history": [
