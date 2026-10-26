@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T16:37:01.563Z",
+  "updated_at": "2026-10-26T16:57:34.107Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1141,7 +1141,7 @@
       "title": "Región 1 — geografía canónica continua y representación por zoom",
       "owner": "codex-world4x-integration-97fedb88",
       "write_scope_released": false,
-      "ownership_revision": 42,
+      "ownership_revision": 43,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-26T14:52:10.197Z",
@@ -1166,12 +1166,10 @@
         ".github/workflows/tester-qa.yml",
         ".github/workflows/unity-slice.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.\n2026-10-26: Owner authorizes this director to correct all identified world visual defects, prioritize near camera reference fidelity, scale resource nodes approximately 85% of city visual size, validate and integrate today after actual visual and functional gates. No paid credits.\n2026-10-26 explicit owner handoff: complete replacement, merge PR100 after applicable checks, build installable and use existing authorized distribution channel; zero cost, no Bastion III-V or city/UI redesign.\nDelivery sub-scope: reuse existing signed family Android builder/release requests for Region1; adapt its hardcoded old workstream identity to the actual claimed request, preserving live lease/process/signature/byte checks. Existing UI/Valoria development remains paused.\nBounded PR control preparation repair: frozen-web tester checkout excludes only Unity/ and docs/evidence/ (native/art archives), preserving every web test, assertion, source and runtime fixture. Observed full checkout consumed 16 minutes of 32-minute job budget.",
-      "phase": "ANDROID_BUILD",
-      "next": "Build signed family Android1.14/code14 from current integrated main; verify artifact identity/bytes/certificate, then publish only through existing authorized family release workflow. Native process check remains mandatory; never stop foreign processes.",
+      "phase": "ANDROID_FAMILY_DISTRIBUTION",
+      "next": "Signed code14 built and independently hash/CRC verified. Publish exact build40360846540 source993137ce through existing family workflow; verify public bytes/channel, then close workstream. Windows released; physical phone untested.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1444,14 +1442,18 @@
           "web_attempt": 2,
           "web_result": "success",
           "unity_tree": "fe4aca3dacc303d953eb58089b32c15720fd3a94",
-          "android_built": false,
+          "android_built": true,
           "distributed": false,
           "physical_mobile_tested": false,
           "art_approved": false,
           "main_native_run": 40352938822,
           "main_native_result": "62_PLAYMODE_26_EDITMODE_44_CHECKS_PASS",
           "general_gate_run": 40357678545,
-          "general_gate_result": "PASS_FULL_GPU_EDITMODE_WINDOWS_PLAYER"
+          "general_gate_result": "PASS_FULL_GPU_EDITMODE_WINDOWS_PLAYER",
+          "android_build_run": 40360846540,
+          "android_source": "993137ce42e416a2ff36d7acf6ce2a5a56e640cf",
+          "android_sha256": "453f1302e904fe281ebacf90c77271d0d984e1429b1dc3d1222a55a12a9487d0",
+          "android_bytes": 395817304
         }
       },
       "ownership_history": [

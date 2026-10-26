@@ -1,8 +1,8 @@
 {
-  "enabled": false,
-  "buildRunId": 39502034675,
-  "versionCode": 10,
-  "expectedSourceSha": "3a1cc3f17dc7adc543126c46ec53f402bb39aa94",
+  "enabled": true,
+  "buildRunId": 40360846540,
+  "versionCode": 14,
+  "expectedSourceSha": "993137ce42e416a2ff36d7acf6ce2a5a56e640cf",
   "budgetEur": 0,
-  "note": "Code10/1.10 high-contrast opaque Android update dialog RELEASED AND PUBLIC BYTES VERIFIED. GitHub release run39504548347 success, signed artifact build39502034675, source3a1cc3f17dc7adc543126c46ec53f402bb39aa94, sha256 24299a64a3dd8a205b2058df42cc7bf6191609ac2fe607ba5a0da73a52ec9511. Automatic family channel now code10. Physical Android readability and save/installer flow need user observation. Disabled to prevent duplicate publication."
+  "note": "Owner-authorized delivery of PR100 Region1 through existing family channel. Exact signed APK395817304bytes sha256453f1302e904fe281ebacf90c77271d0d984e1429b1dc3d1222a55a12a9487d0 independently verified, original package/certificate, no data reset. Physical phone untested."
 }

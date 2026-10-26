@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 14,
   "versionName": "1.14",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
-  "workstreamId": "eldoria-world-region-1-canon-20261022",
+  "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner-authorized PR100 Region1 complete replacement, merged1ac74ece. Same Unitytree fe4aca3dacc303d953eb58089b32c15720fd3a94. Native40347811711 and40352938822 pass62/26/44; general gate40357678545 passes; original package/signing key, no save reset. Budget0; physical phone QA unaccredited."
+  "note": "Region1 family1.14/code14 built successfully in40360846540 from993137ce42e416a2ff36d7acf6ce2a5a56e640cf; signed original certificate, SHA/CRC/ARM64 verified. Disable duplicate native build before promotion; restore canonical nightly routing. Physical phone untested."
 }
