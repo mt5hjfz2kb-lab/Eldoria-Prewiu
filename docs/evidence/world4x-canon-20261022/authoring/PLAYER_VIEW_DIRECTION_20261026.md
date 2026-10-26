@@ -48,3 +48,9 @@ Las capturas reales confirman nodos mayores y el puente corto. Se rechaza el aca
 Las capturas reales de criaturas y cantera revelan agua tapada por el terreno fuera del núcleo. La inspección del GLB y de sus alturas detecta terreno por encima de 437/464 centros de triángulo en la extensión oriental del río y 795/1292 en la occidental (muestreo de cuadrícula, diagnóstico, no prueba exacta de contacto). Se excava únicamente la huella de las superficies de agua existentes, conservando los tableros y las máscaras jugables. No se inventan cursos nuevos.
 
 La alternativa de depresión central de Blender 40293974247 cambia la masa, pero su material gris uniforme forma un parche y las normales planas acentúan triángulos alargados. Se conserva la geometría de depresión, se suavizan las normales modificadas y se pinta un pigmento editable de placas y grietas con transición a suelo, con UV comunes en terreno y recubrimientos. La revisión de Unity sigue siendo obligatoria.
+
+## Jerarquía regional y continuidad de partidas
+
+El código ocultaba la ciudad a zoom >=152, antes de la escala regional. Se mantiene únicamente la representación de la ciudad realmente desbloqueada, con tamaño regional estable (aprox. 8–10% de altura de pantalla) y su mismo destino seleccionable. Se oculta en panorámica. No se añaden ciudades a las reservas vacías. Las criaturas ajustan su apoyo visual al terreno vigente sin reescribir coordenadas guardadas.
+
+La ejecución Blender 40295461620 agotó el tiempo durante la modificación. Se identificó un acceso a normales de vértices inmediatamente después de cambiar suavizado de cada cara, susceptible de recalcular toda la malla repetidamente. Se agrupan los cambios y se leen las normales una vez; se añade registro de etapa. La recuperación comprueba PID, ejecutable y ruta exacta de la sesión propia antes de detenerla; se reinicia desde la fuente inmutable, no desde un resultado parcial.

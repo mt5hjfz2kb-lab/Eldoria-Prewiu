@@ -239,6 +239,20 @@ namespace Eldoria.Tests
                     Call(navigation,"SetZoomLevel",1,true);
                     yield return null;
                     Call(adapter,"RefreshForCapture");
+                    var cities=world.GetComponentsInChildren<Renderer>(true)
+                        .Where(r=>r.name.StartsWith("Reference city Bastion",StringComparison.Ordinal)&&r.enabled&&r.gameObject.activeInHierarchy).ToArray();
+                    Assert.That(cities.Length,Is.EqualTo(1),"The actual unlocked city must remain visible at regional scale");
+                    var cityMesh=cities[0].GetComponent<MeshFilter>().sharedMesh;
+                    float cityScale=cities[0].sharedMaterial.GetFloat("_BillboardScale");
+                    var cityFoot=cities[0].transform.TransformPoint(cityMesh.vertices[0]);
+                    var cityTop=cityFoot+camera.transform.up*cityMesh.uv2.Max(v=>v.y)*cityScale;
+                    float cityHeight=Mathf.Abs(camera.WorldToViewportPoint(cityTop).y-camera.WorldToViewportPoint(cityFoot).y);
+                    Assert.That(cityHeight,Is.InRange(.07f,.11f),"City hierarchy must survive both regional aspects");
+                    var cityTarget=Call(host,"FindTarget","valoria-map-city") as Component;
+                    Physics.SyncTransforms();
+                    var cityRay=new Ray(camera.transform.position,((cityFoot+cityTop)*.5f-camera.transform.position).normalized);
+                    Assert.That(cityTarget.GetComponent<Collider>().Raycast(cityRay,out _,100000),Is.True,
+                        "The regional city graphic must still select its original gameplay destination");
                     foreach(string family in new[]{"boar","spawnling"})
                     {
                         var site=state.WorldCreatureLocations.First(x=>x.Alive&&x.CreatureKind==family);

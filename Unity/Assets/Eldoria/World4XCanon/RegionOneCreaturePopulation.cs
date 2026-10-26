@@ -141,13 +141,16 @@ namespace Eldoria.World4XCanon
             go.SetActive(false);
             return go;
         }
-        static void FitModel(GameObject model,string kind,float presence,Transform anchor)
+        void FitModel(GameObject model,string kind,float presence,Transform anchor)
         {
             model.transform.localScale=Vector3.one*(kind=="boar"?7.5f:7.2f)*presence;
-            model.transform.position=anchor.position;
+            var ground=anchor.position;
+            ground.y=host.WorldHome.y+RegionOneBlenderLandscape.Height(
+                ground.x-host.WorldHome.x,ground.z-host.WorldHome.z);
+            model.transform.position=ground;
             var renderers=model.GetComponentsInChildren<Renderer>(true);
             if(renderers.Length>0)
-                model.transform.position+=Vector3.up*(anchor.position.y-renderers.Min(r=>r.bounds.min.y));
+                model.transform.position+=Vector3.up*(ground.y-renderers.Min(r=>r.bounds.min.y));
         }
         static void SetVisible(GameObject model,bool value)
         {

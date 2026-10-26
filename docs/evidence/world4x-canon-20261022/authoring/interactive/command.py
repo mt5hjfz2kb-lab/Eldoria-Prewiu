@@ -2,13 +2,16 @@
 Reuse the inspected retained world. Change the canyon's actual wall silhouette,
 retain geography, gameplay exclusions, source images, city datums and UVs.
 """
-import bpy, pathlib, json, hashlib, struct, gzip, shutil, math
+import bpy, pathlib, json, hashlib, struct, gzip, shutil, math, time
 import numpy as np
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
 out=pathlib.Path(bpy.app.driver_namespace['interactive_output'])
 source=pathlib.Path(bpy.app.driver_namespace['interactive_source'])
 assert hashlib.sha256(source.read_bytes()).hexdigest()=='fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce'
+def progress(label):
+ (out/'current-stage.json').write_text(json.dumps({'stage':label,'time':time.time()}))
+progress('loaded source')
 helpers=pathlib.Path(bpy.app.driver_namespace['interactive_helpers'])
 exec(compile((helpers/'artist_preview.py').read_text(),'artist_preview.py','exec'))
 terrain=bpy.data.objects['BLD_Terrain'];scene=bpy.context.scene
@@ -84,6 +87,7 @@ for i,(x,y,z) in enumerate(before):
  coords[i,2]=z
  if abs(z-float(before[i,2]))>.001:changed.add(i)
 assert len(changed)>1000
+progress('basin geometry composed')
 # The genuine Unity detail cameras expose land occluding the water ribbons.
 # Excavate the existing river footprint, not new rivers, preserving bridge decks.
 water_objects=[o for o in scene.objects if o.name.startswith(('BLD_RiverExtension_','BLD_AuthoredTributary_'))]
@@ -99,6 +103,7 @@ for i,(x,y,z) in enumerate(coords):
   if hit is not None and coords[i,2]>hit.z-.22:
    coords[i,2]=hit.z-.22;changed.add(i);river_bed_edits+=1
    break
+progress('river beds excavated')
 # Short crossing between the measured real banks (-29 and -8), rather than
 # 34 metres of timber reaching all the way into the city. Keep the same axis.
 land_faces=[list(p.vertices) for p in terrain.data.polygons if 'Bridge' not in terrain.data.materials[p.material_index].name]
@@ -127,11 +132,17 @@ rails.data.update()
 for bridge in layout['bridges']:
  if abs(bridge['x']-3.3)<.01:bridge['z']=(start_y+end_y)/2;bridge['length']=end_y-start_y
 terrain.data.vertices.foreach_set('co',coords.ravel());terrain.data.update()
-# Preserve protected custom normals; update only the sculpted wall corners.
-for p in terrain.data.polygons:
- if any(i in changed for i in p.vertices):
-  p.use_smooth=True
-  for loop in p.loop_indices:normals[loop]=tuple(terrain.data.vertices[terrain.data.loops[loop].vertex_index].normal)
+# Batch all smoothing flags BEFORE reading normals. Reading vertex.normal
+# after each flag edit would rebuild the whole large mesh for every face.
+progress('recomputing normals once')
+modified_faces=[p.index for p in terrain.data.polygons if any(i in changed for i in p.vertices)]
+for index in modified_faces:terrain.data.polygons[index].use_smooth=True
+terrain.data.update()
+fresh_normals=[tuple(v.normal) for v in terrain.data.vertices]
+for index in modified_faces:
+ p=terrain.data.polygons[index]
+ for loop in p.loop_indices:normals[loop]=fresh_normals[terrain.data.loops[loop].vertex_index]
+progress('normals cached')
 rock_slot=next(i for i,m in enumerate(terrain.data.materials) if 'Breach fractured basalt' in m.name)
 for face in terrain.data.polygons:
  if any(protected[i] for i in face.vertices):continue
@@ -157,6 +168,7 @@ for ob in scene.objects:
  if old_hit is not None and new_hit is not None:
   delta=new_hit.z-old_hit.z;ob.location.z+=delta
   rooted_adjustments+=abs(delta)>.001
+progress('rooted scenery fitted')
 # Every retained decorative overlay follows the real cut; no floating plates.
 overlay_counts={}
 for name in ['BLD_BreachFloor','BLD_BreachOutlyingFractures','BLD_BreachBrokenBasaltPlates','BLD_BreachTerracedStrata','BLD_BreachWeatheredRockfall','BLD_BreachMineralHeart']:
@@ -180,12 +192,14 @@ for j,y in enumerate(np.linspace(-1800,1800,nz)):
   if abs(x)<=96 and -78<=y<=270 and not(-40<y<0 and -.7<x<7.3):continue
   hit=bvh.ray_cast(Vector((float(x),float(y),300)),Vector((0,0,-1)))[0]
   if hit is not None:heights[j,i]=hit.z
+progress('physical queries rebuilt')
 assert np.array_equal(coords[protected],before[protected])
 assert all(hashlib.sha256(bpy.data.images[n].packed_file.data).hexdigest()==h for n,h in original_images.items())
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as f:
  f.write(struct.pack('<iiiff',magic,nx,nz,1820,3600));f.write(heights.astype('<f4').tobytes());f.write(masks);f.write(struct.pack('<ii',0x32564c45,len(coords)));f.write(coords[:,[0,2,1]].astype('<f4').tobytes())
 layout['player_art_correction']={'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'unchanged_gameplay_masks':True,'protected_core_vertices':int(protected.sum())}
 (out/'production-region.json').write_text(json.dumps(layout,indent=2))
+progress('painting basin')
 # Paint the same fitted plates in the editable material, with a feathered soil
 # transition rather than a flat grey disk. UVs are metre-based across the wound.
 W=1024;H=1024
@@ -228,6 +242,7 @@ for vertex in heart.data.vertices:
   vertex.co.x=-262+(vertex.co.x+262)*2.2;vertex.co.y=151+(vertex.co.y-151)*2.2
   vertex.co.z=ground(vertex.co.x,vertex.co.y)+.002
 heart.data.update()
+progress('exporting reviewed source')
 bpy.ops.object.select_all(action='DESELECT')
 for ob in scene.objects:
  if ob.name in export_names and ob.type in {'MESH','EMPTY'}:ob.select_set(True)
@@ -235,6 +250,7 @@ bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend')
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
 report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
+progress('rendering source previews')
 bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v4')
 (out/'stop.request').write_text('Saved physical wall correction; actual Unity review required.')
 print('PLAYER_ART_SCULPT_COMPLETE',json.dumps(report))
