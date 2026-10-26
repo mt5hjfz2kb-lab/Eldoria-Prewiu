@@ -674,6 +674,15 @@ namespace Eldoria.Tests
                 Assert.That(hit,Is.Not.Null);
                 Assert.That(new Bounds(hit.center,hit.size).Contains(target.transform.InverseTransformPoint(bounds.center)),Is.True,
                     "The near selection volume must contain the real mesh centre even while the city view disables its physics");
+                // Regional billboards must occupy exactly the same X/Z footprint
+                // as their actual rendered close-view meshes, for every saved site.
+                var label=root.name.Substring("Production resource visual ".Length);
+                var impostor=world.GetComponentsInChildren<Transform>(true)
+                    .Single(x=>x.name=="Production resource impostor "+label);
+                Assert.That(impostor.position.x,Is.EqualTo(bounds.center.x).Within(.02f),
+                    "Regional wood/stone artwork jumps horizontally when changing zoom: "+label);
+                Assert.That(impostor.position.z,Is.EqualTo(bounds.center.z).Within(.02f),
+                    "Regional wood/stone artwork jumps in depth when changing zoom: "+label);
             }
             float minimum=0,maximum=0;int parts=0;
             foreach(var root in actualRoots)
@@ -686,6 +695,22 @@ namespace Eldoria.Tests
             // resource inventory, independent of the donor's old fragment count.
             Assert.That(parts,Is.GreaterThanOrEqualTo(actualRoots.Length));Assert.That(maximum,Is.LessThan(.005f),"Floating resource supports");Assert.That(minimum,Is.GreaterThan(-.65f),"Excessive burial must be repaired, not hidden with collider offsets");
             foreach(var pair in originalColliders)Assert.That(pair.Key.transform.position,Is.EqualTo(pair.Value));
+            // The 3D model and the billboard must not change footprint abruptly
+            // as the player crosses close (109) -> regional (110) on a phone.
+            var resourceId=actualRoots[0].name.Substring("Production resource visual ".Length);
+            var regionalSprite=world.GetComponentsInChildren<MeshRenderer>(true)
+                .Single(x=>x.name=="Production resource impostor "+resourceId);
+            var savedTarget=Call(host,"FindTarget",resourceId) as Component;
+            Vector3 savedSite=savedTarget.transform.position;
+            Call(navigation,"RestoreView",(Vector3)Member(navigation,"target"),110.1f);
+            Call(modelService,"RefreshNow");
+            Assert.That(regionalSprite.enabled,Is.True,"Regional graphics must appear at the 110 threshold.");
+            float actualWidth=32f*regionalSprite.sharedMaterial.GetFloat("_BillboardScale");
+            float closeWidth=24f*.85f;
+            Assert.That(actualWidth/closeWidth,Is.InRange(.98f,1.04f),
+                "The regional node must start at the close model width rather than popping to 32 metres.");
+            Assert.That(savedTarget.transform.position,Is.EqualTo(savedSite),
+                "Transition graphics must never relocate the saved gameplay target.");
             Debug.Log("REGION1_RESOURCE_CONTACT parts="+parts+" min_gap_m="+minimum+" max_gap_m="+maximum+" collider_movement=0");
         }
 
@@ -786,6 +811,91 @@ namespace Eldoria.Tests
                 "The broad strategic view must include its limited eastern coastal inlet.");
             Assert.That(mainland,Is.EqualTo(0f).Within(.001f),
                 "The bay must not flood the existing central landmass.");
+        }
+
+        [UnityTest]
+        public IEnumerator EachMobileWorldEntryResetsToNearViewWithoutRelocatingNodesOrSaves()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+            bool opened=(bool)Call(host,"TrySetWorld",true);
+            if(!opened)
+            {
+                var offer=Member(Member(Call(host,"Read","sawmill",false),"Building"),"Action");
+                Assert.That(offer,Is.Not.Null);
+                Call(host,"Submit",offer);
+                var city=Member(host,"City");
+                Call(Member(city,"Clock"),"Step",Eldoria.Domain.SliceRules.SawmillBuildSeconds+1);
+                Call(Member(city,"Gateway"),"Advance");
+                yield return null;
+                opened=(bool)Call(host,"TrySetWorld",true);
+            }
+            Assert.That(opened,Is.True,"The real player gate must be satisfied.");
+            var node=Call(host,"FindTarget","forest-valoria") as Component;
+            Assert.That(node,Is.Not.Null);
+            var position=node.transform.position;
+            var gateway=(Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway");
+            string saved=JsonUtility.ToJson(gateway.Snapshot());
+            float aspect=camera.aspect;
+            try
+            {
+                foreach(float screenAspect in new[]{16f/9f,390f/844f})
+                {
+                    camera.aspect=screenAspect;Call(adapter,"RefreshForCapture");
+                    Call(navigation,"SetZoomLevel",0,true);Call(adapter,"RefreshForCapture");
+                    Assert.That(camera.orthographicSize,Is.GreaterThan((float)Member(navigation,"localZoom")),
+                        "The test must leave a truly distant zoom before reentering.");
+                    Assert.That((bool)Call(host,"TrySetWorld",false),Is.True);
+                    Assert.That((bool)Call(host,"TrySetWorld",true),Is.True);
+                    Call(adapter,"RefreshForCapture");
+                    Assert.That(camera.orthographicSize,Is.EqualTo((float)Member(navigation,"localZoom")).Within(.1f),
+                        "Every mobile world entry must start in close playable view.");
+                    Assert.That(Vector3.Distance((Vector3)Member(navigation,"target"),(Vector3)Member(host,"WorldHome")),Is.LessThan(40f),
+                        "World entry must focus Valoria, not retain the previous panoramic centre.");
+                    Assert.That(node.transform.position,Is.EqualTo(position),
+                        "Close-view reentry may not relocate a gameplay resource.");
+                    // Home must obey the same near-view rule as entering Mundo.
+                    Call(navigation,"SetZoomLevel",1,true);
+                    Call(host,"Home");
+                    Call(adapter,"RefreshForCapture");
+                    Assert.That(camera.orthographicSize,Is.EqualTo((float)Member(navigation,"localZoom")).Within(.1f),
+                        "World Home must not reset the player to regional or panorama.");
+                    Assert.That(node.transform.position,Is.EqualTo(position));
+                }
+                // Real near 3D wood/stone visuals and their regional LODs
+                // must share a fixed logical map coordinate, not two model
+                // pivot positions swapped at the threshold.
+                Call(navigation,"SetZoomLevel",2,true);Call(adapter,"RefreshForCapture");
+                foreach(var id in new[]{"forest-valoria","quarry-valoria"})
+                {
+                    var spot=Call(host,"FindTarget",id) as Component;
+                    var nearRoot=world.GetComponentsInChildren<Transform>(true)
+                        .FirstOrDefault(t=>t.name=="Production resource visual "+id);
+                    var regionalRoot=world.GetComponentsInChildren<Transform>(true)
+                        .FirstOrDefault(t=>t.name=="Production resource impostor "+id);
+                    Assert.That(nearRoot,Is.Not.Null,"Missing original near resource "+id);
+                    Assert.That(regionalRoot,Is.Not.Null,"Missing regional resource "+id);
+                    var renders=nearRoot.GetComponentsInChildren<Renderer>(true);
+                    Assert.That(renders.Length,Is.GreaterThan(0),"Original approved resource mesh missing");
+                    var bounds=renders[0].bounds;
+                    foreach(var render in renders.Skip(1))bounds.Encapsulate(render.bounds);
+                    Assert.That(Vector2.Distance(
+                        new Vector2(bounds.center.x,bounds.center.z),
+                        new Vector2(spot.transform.position.x,spot.transform.position.z)),Is.LessThan(.25f),
+                        "Near resource visual is detached from its saved world site: "+id);
+                    Call(navigation,"SetZoomLevel",1,true);Call(adapter,"RefreshForCapture");
+                    Assert.That(Vector2.Distance(
+                        new Vector2(regionalRoot.position.x,regionalRoot.position.z),
+                        new Vector2(spot.transform.position.x,spot.transform.position.z)),Is.LessThan(.25f),
+                        "Regional resource billboard is detached from the same saved site: "+id);
+                    Call(navigation,"SetZoomLevel",2,true);Call(adapter,"RefreshForCapture");
+                }
+                Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(saved),
+                    "Zooming, leaving, and reentering must preserve the saved game.");
+            }
+            finally { camera.aspect=aspect;Call(adapter,"RefreshForCapture"); }
         }
 
         [UnityTest]

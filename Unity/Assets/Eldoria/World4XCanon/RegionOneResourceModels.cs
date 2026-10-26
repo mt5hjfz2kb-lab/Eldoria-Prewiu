@@ -10,7 +10,7 @@ namespace Eldoria.World4XCanon
     [DefaultExecutionOrder(1400)]
     public sealed class RegionOneResourceModels : MonoBehaviour
     {
-        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
+        sealed class Node { public string Id; public Transform Logical; public GameObject Visual; public Renderer[] Renderers; public Renderer Impostor; public MeshFilter[] Parts; public Vector3[] BasePositions; public Mesh[] SourceMeshes; public Vector3 LastPosition; public bool Grounded; public bool AnchorCached; public Vector3 VisualAnchorOffset; public Collider Hit; public bool PickCached; public Vector3 HitCenter,HitSize; public float HitRadius; public bool LastPickRegional; public float LastPickScale=-1; public Vector3 LastPickPosition; public Quaternion LastPickRotation; }
         readonly List<Node> nodes=new List<Node>();
         float lastImpostorScale=-1;
         ValoriaIntegratedWorld host;
@@ -232,7 +232,14 @@ namespace Eldoria.World4XCanon
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
             }
-            float screenScale=Mathf.Lerp(1f,1.4f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
+            // LOD silhouette continuity: the close mesh is 20.4m wide,
+            // while this regional billboard's UV2 spans 32m. At the exact
+            // 110 threshold both should present the SAME physical width,
+            // not instantly inflate 57%. Restore the approved readable
+            // regional size at zoom 280 and retain distant billboard growth.
+            float nearBillboardScale=(RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio)/32f;
+            float regionalBlend=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(110f,280f,zoom));
+            float screenScale=Mathf.Lerp(nearBillboardScale,1.4f,regionalBlend)*Mathf.Max(1f,zoom/280f);
             if(impostorMaterial&&Mathf.Abs(lastImpostorScale-screenScale)>.0001f){
                 impostorMaterial.SetFloat("_BillboardScale",screenScale);lastImpostorScale=screenScale;
             }
@@ -240,12 +247,32 @@ namespace Eldoria.World4XCanon
             {
                 var p=node.Logical.position;
                 p.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(p.x-host.WorldHome.x,p.z-host.WorldHome.z);
-                node.Visual.transform.position=p;
+                // The imported wood/stone meshes need not share the logical
+                // resource's modelling pivot. Align their visible footprint
+                // once with the saved hotspot; the mid/far billboard already
+                // uses that same hotspot as its anchor.
+                if(!node.AnchorCached)
+                {
+                    var bounds=node.Renderers[0].bounds;
+                    for(int i=1;i<node.Renderers.Length;i++)bounds.Encapsulate(node.Renderers[i].bounds);
+                    node.VisualAnchorOffset=new Vector3(
+                        node.Visual.transform.position.x-bounds.center.x,
+                        0f,
+                        node.Visual.transform.position.z-bounds.center.z);
+                    node.AnchorCached=true;
+                }
+                node.Visual.transform.position=p+node.VisualAnchorOffset;
                 GroundParts(node,p);
                 bool alive=LocalGateway.ResourceRemaining(state,node.Id)>0;
                 foreach(var renderer in node.Renderers)if(renderer.enabled!=(alive&&near))renderer.enabled=alive&&near;
                 if(node.Impostor){
-                    node.Impostor.transform.position=p;node.Impostor.enabled=alive&&regional;
+                    // The near mesh's imported pivot is recentered once above
+                    // using VisualAnchorOffset. Its rendered footprint now
+                    // coincides with the saved logical site. The regional image
+                    // shares that SAME anchor at every zoom and camera aspect.
+                    // No per-frame bounds calculation or logical site relocation.
+                    node.Impostor.transform.position=p;
+                    node.Impostor.enabled=alive&&regional;
                     node.Impostor.localBounds=new Bounds(Vector3.up*12f*screenScale,Vector3.one*40f*screenScale);
                     FitRegionalPicking(node,p,screenScale,regional);
                 }

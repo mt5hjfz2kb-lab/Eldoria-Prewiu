@@ -150,7 +150,17 @@ namespace Eldoria.World4XCanon
             model.transform.position=ground;
             var renderers=model.GetComponentsInChildren<Renderer>(true);
             if(renderers.Length>0)
-                model.transform.position+=Vector3.up*(ground.y-renderers.Min(r=>r.bounds.min.y));
+            {
+                // Near and far Tripo meshes have different local origins. Align
+                // their rendered ground footprints to the SAME saved hotspot,
+                // rather than exchanging two shifted pivots as zoom crosses 110.
+                var bounds=renderers[0].bounds;
+                for(int i=1;i<renderers.Length;i++)bounds.Encapsulate(renderers[i].bounds);
+                model.transform.position+=new Vector3(
+                    ground.x-bounds.center.x,
+                    ground.y-bounds.min.y,
+                    ground.z-bounds.center.z);
+            }
         }
         static void SetVisible(GameObject model,bool value)
         {
