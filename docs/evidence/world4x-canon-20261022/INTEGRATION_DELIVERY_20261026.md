@@ -22,8 +22,16 @@ Pruebas de sustitución relevantes: `OneGeographyAndNoInventedGameplayHotspots`,
 
 Revisión directa de las seis capturas nativas materializadas: geografía coherente, río continuo, ciudad/recursos legibles en cercana; Brecha geológica y territorio completo presentes en regional/panorámica. No se ha abierto una nueva campaña artística. Se conserva la valoración previa aproximada del autor, sin convertirla en aprobación externa. `ART_APPROVED=false`; dispositivo físico no acreditado.
 
-## Entrega — pendiente de cierre
+## Integración completada; Android en curso
 
 UI/progresión `40342562297`: escena I–II y EditMode PASS; PlayMode falla exclusivamente en `ActualPlayableWorldCapturesThreeZoomsOnDisposableProbe` por `DirectoryNotFoundException` del fixture versionado `authoring/matched-canon-camera-controls.json` (blob `688183e3bf761191e25646ad8d5f14b2f397f010`) omitido por el checkout parcial reutilizado. Preparada recuperación exacta del archivo ausente y comprobación de su blob SHA antes de Unity, sin cambiar tests, límites ni cámara. Artefacto del fallo: `12661217070`, SHA256 `075505746816a4074cd4bf091d90b609d2cde2b656466637d5200ef66d90d17d`. Tester `40342562651` se conserva hasta terminar; no se cancela por actualizar la rama. Build Android pendiente de merge y liberación real de Windows. Canal existente observado: 1.13/code13. No se afirma integración en main, APK nueva, distribución ni instalación hasta completar y registrar cada paso.
 
 Se adapta el constructor Android existente para reconocer el workstream de la solicitud, en vez de una identidad Valoria fijada en código. Conserva el veto a procesos Unity/Blender ocupados, firma original, versión/paquete, ARM64, permisos, SHA y bytes; añade rechazo de responsable/revisión obsoletos. Pruebas locales Android: 20/20 PASS. El cambio no altera la política de distribución.
+
+## Resultado del candidato y fusión
+
+PR #100 fusionado en main mediante `1ac74ecec9defeb13f95a8ac7124ba84973ffd9a`, con historial completo. HEAD certificado `beb0ddb8a01de57f1a6341b20b8fecbc95a04e2b`. Certificación nativa `40347811711`: 62/62 PlayMode GPU, 26/26 EditMode, 44 checks I–II y 34 capturas nuevas. Log confirma fixture exacto `688183e3bf761191e25646ad8d5f14b2f397f010`. Artefacto `12663885258`, ZIP SHA256 `80594074f542504a40344ab658e47a1d7ae9b737fb74bdf386b96048633b05c8`.
+
+Tester original `40342562651` PASS. Tester del candidato `40347812175` PASS en intento2, incluidas regresión dirigida, regresión general y partida nueva completa Arco I. Intento1 falló por intercepción del centro del jabalí; no se cambiaron aserciones ni juego para repetir. Checkout limitado omite solo Unity y archivos de evidencia artística; pruebas web completas conservadas. Todos los checks aplicables del HEAD finalizaron correctamente antes de fusionar.
+
+La fusión activa automáticamente `40352938822` (certificación) y `40352938587` (control general Unity); se respeta su ejecución antes de reservar Windows para Android. Aún no se acredita nueva APK, distribución ni dispositivo físico.
