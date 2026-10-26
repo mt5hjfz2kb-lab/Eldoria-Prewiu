@@ -73,7 +73,9 @@
         "updates/android/family.json",
         "docs/ui-v3/ANDROID_1_15_RELEASE.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -1035,7 +1037,7 @@
           "reason": "Owner requests final visual consolidation city/world 2026-10-27"
         }
       ],
-      "ownership_revision": 35,
+      "ownership_revision": 36,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",

@@ -306,6 +306,7 @@ jobs:
           if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
           if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
           if($req.stage -eq 'geography_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'visual_consolidation_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaConsolidationSurvey.Survey'}
           if($req.stage -eq 'architecture_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Survey'}
           if($req.terrain_polish){$env:VALORIA_TERRAIN_POLISH='1'}
           if($req.stage -eq 'terrain_bank_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaTerrainBankAuthoring.Survey'}
@@ -803,6 +804,16 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           compression-level: 1
+
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.native_stage.outputs.stage == 'visual_consolidation_survey'
+        with:
+          name: valoria-consolidation-survey-${{ github.run_id }}
+          path: |
+            valoria-layered-source/docs/evidence/valoria-reference-clean/consolidation-20261027/${{ github.run_id }}/**
+            ${{ runner.temp }}/valoria-reference-clean.log
+          if-no-files-found: error
+          retention-days: 30
 
       # Compact visual evidence for the REAL owner-facing uGUI V2. The legacy
       # review artifact carries nearly a gigabyte of old Blender/source files
