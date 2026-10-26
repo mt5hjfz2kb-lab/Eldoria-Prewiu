@@ -1210,9 +1210,9 @@
                     },
                     {
                         "x":  3.3,
-                        "z":  -18.922370433807373,
+                        "z":  -18.5,
                         "width":  8,
-                        "length":  34.0
+                        "length":  21.0
                     },
                     {
                         "x":  450.0,
@@ -1241,5 +1241,12 @@
                              "continuous_canyon_boolean":  true,
                              "settlement_colour_circles_removed":  true,
                              "physically_eroded_continuous_canyon_banks":  true
-                         }
+                         },
+    "player_art_correction":  {
+                                  "bridge_length_before":  34,
+                                  "bridge_length_after":  21,
+                                  "actual_stepped_wall_vertices":  55425,
+                                  "unchanged_gameplay_masks":  true,
+                                  "protected_core_vertices":  51828
+                              }
 }
