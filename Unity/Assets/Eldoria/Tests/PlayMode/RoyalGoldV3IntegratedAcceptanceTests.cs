@@ -345,6 +345,46 @@ namespace Eldoria.Tests
             Assert.That(fill.anchorMax.x, Is.InRange(0f, 1f));
         }
 
+        [UnityTest]
+        public IEnumerator ReducedWorldForestPreservesExistingHudAndNoninteractiveDecorations()
+        {
+            // Thinning decorative crowns cannot change HUD, game entities or saves.
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var world=Member(host,"WorldRoot") as GameObject;
+            Assert.That(world,Is.Not.Null);
+            for(int i=0;i<180&&world.transform.Find("Region 1 canonical continuous geography")==null;i++)
+                yield return null;
+            Assert.That(world.transform.Find("Region 1 canonical continuous geography"),Is.Not.Null);
+            var renderers=world.GetComponentsInChildren<MeshRenderer>(true);
+            var crowns=renderers.Where(r=>r.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).ToArray();
+            Assert.That(crowns.Length,Is.EqualTo(5047),"All authored sources remain available for reversal.");
+            int hidden=crowns.Count(r=>r.forceRenderingOff);
+            Assert.That(hidden,Is.EqualTo(3251),"Remove the inventoried rejected crowns and infill only.");
+            Assert.That(crowns.Count(r=>!r.forceRenderingOff),Is.GreaterThan(1500));
+            Assert.That(crowns.All(r=>r.gameObject.activeSelf&&r.GetComponent<Collider>()==null),Is.True);
+            foreach(var near in crowns)
+            {
+                var far=renderers.Single(r=>r.name==near.name.Replace("BLD_ForestMass_","BLD_ForestFar_"));
+                Assert.That(far.forceRenderingOff,Is.EqualTo(near.forceRenderingOff),near.name+" must stay coherent across zoom.");
+                if(near.forceRenderingOff)
+                {
+                    // Boot starts in the city: the preserved world hierarchy is inactive.
+                    var group=near.GetComponentInParent<LODGroup>(true);
+                    Assert.That(group,Is.Not.Null,near.name+" must retain its paired LOD source.");
+                    Assert.That(group.enabled,Is.False);
+                }
+            }
+            var protectedPines=renderers.Where(r=>r.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)).ToArray();
+            Assert.That(protectedPines.Length,Is.EqualTo(462));
+            Assert.That(protectedPines.All(r=>!r.forceRenderingOff),Is.True,"Keep original AF/AG near geometry.");
+            Assert.That(crowns.Where(r=>r.sharedMaterials.Any(m=>m&&m.name.StartsWith("Player broadleaf crown shade ",StringComparison.Ordinal)))
+                .All(r=>r.forceRenderingOff),Is.True,"Rejected artificial rounded model must not remain active.");
+            Assert.That(Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Count(x=>x&&x.GetType().Name=="RoyalHUD"),Is.EqualTo(1),
+                "Forest decoration cannot create a second HUD or interaction system.");
+        }
+
     }
 }
 

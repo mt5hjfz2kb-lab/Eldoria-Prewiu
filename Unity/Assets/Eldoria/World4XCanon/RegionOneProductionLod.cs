@@ -94,6 +94,26 @@ namespace Eldoria.World4XCanon
                     far.enabled=false;
                     if(retained)far.gameObject.SetActive(false);
                 }
+                // Reject the recent rounded crown model and remove complete
+                // infill cohorts instead of scattering hash-selected holes.
+                // Context/Belt/Regional/Castle were authored to fill blank ground.
+                // The original numbered groves, riparian firs, fir ecotones and
+                // every protected Pilot pine retain their existing anchors.
+                // Sources, colliders/navigation bounds, resources and saves stay
+                // intact; both representations use the same visibility decision.
+                bool mass=near.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal);
+                bool rejectedRounded=mass&&near.sharedMaterials.Any(material=>material&&
+                    material.name.StartsWith("Player broadleaf crown shade ",StringComparison.Ordinal));
+                bool infill=mass&&(near.name.StartsWith("BLD_ForestMass_Context_",StringComparison.Ordinal)||
+                    near.name.StartsWith("BLD_ForestMass_Belt_",StringComparison.Ordinal)||
+                    near.name.StartsWith("BLD_ForestMass_Regional_",StringComparison.Ordinal)||
+                    near.name.StartsWith("BLD_ForestMass_Castle_",StringComparison.Ordinal));
+                if(rejectedRounded||infill)
+                {
+                    lod.enabled=false;
+                    near.forceRenderingOff=true;
+                    far.forceRenderingOff=true;
+                }
             }
         }
     }
