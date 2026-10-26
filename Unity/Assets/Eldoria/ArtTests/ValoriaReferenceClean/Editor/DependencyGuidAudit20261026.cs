@@ -90,7 +90,7 @@ namespace Eldoria.Audits
                 var required = Dependencies(primary);
                 var productionDeps = Dependencies(production);
                 var otherSceneDeps = Dependencies(otherScenes);
-                string unityRoot = Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, ".."));
+                string unityRoot = Path.GetFullPath(Path.Combine(UnityEngine.UnityEngine.Application.dataPath, ".."));
                 using (var writer = new StreamWriter(Path.Combine(destination, "dependency-asset-records.jsonl"), false))
                 {
                     foreach (var path in assets.Where(IsCandidate))
