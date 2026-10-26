@@ -185,6 +185,23 @@ jobs:
           & git diff --quiet HEAD -- .
           if ($LASTEXITCODE -ne 0) { throw 'Tracked source differs from the expected workflow commit after cleanup.' }
           Write-Host "Source restored to $expectedCommit; only Unity/Library and the two separately managed native checkouts are excluded from cleanup."
+      - name: Restore exact Region 1 camera fixture
+        shell: powershell
+        run: |
+          # Camera fixtures are test inputs outside Unity/. A reused sparse
+          # workspace may omit them even when the project itself is complete.
+          # Restore only absent exact-commit files; refuse changed local inputs.
+          foreach($fixture in @('docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json')){
+            $expected=(& git rev-parse "$($env:GITHUB_SHA):$fixture").Trim()
+            if($LASTEXITCODE -ne 0 -or $expected -notmatch '^[0-9a-f]{40}$'){throw "Missing tracked camera fixture: $fixture"}
+            if(-not(Test-Path -LiteralPath $fixture)){
+              & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- $fixture
+              if($LASTEXITCODE){throw "Cannot restore exact camera fixture: $fixture"}
+            }
+            $actualFixture=(& git hash-object -- $fixture).Trim()
+            if($LASTEXITCODE -ne 0 -or $actualFixture -ne $expected){throw "Camera fixture differs from certified candidate: $fixture"}
+            Write-Host "ELDORIA_EXACT_CAMERA_FIXTURE_READY $fixture $expected"
+          }
       - name: Stage owner-supplied optimized Bastion from runner Downloads if present
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
@@ -397,7 +414,10 @@ jobs:
           $xml = "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
           $log = "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-nographics","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          # Capture the real world with the same GPU route as UI certification.
+          $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "eldoria-slice-region1-captures-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT | Out-Null
+          $args = @("-batchmode","-force-d3d11","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
@@ -419,6 +439,8 @@ jobs:
           }
 
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
+          $cases=@($results.SelectNodes('//test-case'))
+          if($cases.Count -lt 61 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Expected the complete 61+ PlayMode suite with no ignored or failed cases'}
       - name: Windows desktop build
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -610,5 +632,6 @@ jobs:
             ${{ runner.temp }}/Eldoria-*.log
             ${{ runner.temp }}/Eldoria-*.json
             ${{ github.workspace }}/Unity/Builds/Windows/
+            ${{ runner.temp }}/eldoria-slice-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
           if-no-files-found: warn
 
