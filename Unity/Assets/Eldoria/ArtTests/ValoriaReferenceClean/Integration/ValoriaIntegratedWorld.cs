@@ -134,6 +134,9 @@ namespace Eldoria.ReferenceClean {
     // strategic zoom. One existing camera, one WorldRoot and one persistent gateway.
     WorldNavigation.EnterStrategicView(WorldHome);
     WorldNavigation.SetZoomLevel(2,true);
+    // Strategic bounds may clamp the anchor before changing presets;
+    // bring the near camera back to the genuine Valoria start point.
+    WorldNavigation.PanTo(WorldHome);
    }
    SyncWorldCity();Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
   }
