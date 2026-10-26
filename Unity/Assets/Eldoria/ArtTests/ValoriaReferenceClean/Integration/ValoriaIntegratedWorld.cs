@@ -128,8 +128,13 @@ namespace Eldoria.ReferenceClean {
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
    RenderSettings.fog=open?false:cityFog;
-   if(open&&!worldVisited){WorldNavigation.EnterStrategicView(WorldHome);worldVisited=true;}
-   if(open)WorldNavigation.FitToAuthoredBounds();
+   if(open){
+    // Every visit starts in playable near view, including after panorama or a saved-session reload.
+    // EnterStrategicView resets bearing and focal point; the near preset then overrides its
+    // strategic zoom. One existing camera, one WorldRoot and one persistent gateway.
+    WorldNavigation.EnterStrategicView(WorldHome);
+    WorldNavigation.SetZoomLevel(2,true);
+   }
    SyncWorldCity();Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
   }
   public bool CanOpen(RoyalSection section){
