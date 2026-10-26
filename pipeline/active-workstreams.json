@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T18:42:00Z",
+  "updated_at": "2026-10-26T18:49:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -51,15 +51,16 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
         "pipeline/android-updater-build-request.json",
         "pipeline/android-updater-release-request.json",
-        "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md"
+        "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR112_VISUAL_FINISH_NATIVE_GATE_THEN_ANDROID",
-      "next": "Resume PR112 exact existing visual UI world branch and Unity A/B; preserve main PR111, then signed Android update release after QA; no new project or spend",
+      "phase": "PR112_VISUAL_QA_AND_INDEPENDENT_REVERSIBLE_FOREST_DENSITY_CANDIDATE",
+      "next": "Certify existing PR112 without invalidating its native run; simultaneously prepare independent reversible Region1 forestry density candidate in ProductionLod, no Windows until runner available, then compare real camera A/B before final Android release.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -563,7 +564,7 @@
         "other_workstreams": "remain_paused"
       },
       "continuation_authorization": "Explicit owner successor-session order 2026-10-18 17:54 Europe/Madrid: continue consolidated main, implement and verify interaction, world and city art, marches/narrative, normal-time playtest and update same owner-private Site. Preserve I-II/saves and 0 EUR, no Tripo. Same existing workstream and owner identity retained for runner contract.",
-      "handoff_authorization": "Owner current chat 26/10/2026: continúa hasta terminar, sin informes intermedios y salvo bloqueo genuino",
+      "handoff_authorization": "Owner 26/10/2026 continuing Region1 visuals and mobile optimization, no spending; do not redo PR100.",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
       "latest_owner_feedback": "18Oct16:20 Europe/Madrid: use our existing AI artist, explicitly no Tripo; new coherent sawmill, visual quality, contextual UI, original dialogue, vertical world pan, no parcel slabs, clear build locations.",
@@ -731,7 +732,7 @@
           "reason": "Owner in current chat explicitly orders continuous execution through full product delivery on 26/10/2026"
         }
       ],
-      "ownership_revision": 23,
+      "ownership_revision": 24,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
