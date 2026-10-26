@@ -7,7 +7,7 @@ objects=[]
 for ob in bpy.context.scene.objects:
  if ob.type!='MESH' or ob.name.startswith(('BLD_Forest','Far_','Pilot_Pine','Bank forest stone')):continue
  coords=[ob.matrix_world@Vector(v) for v in ob.bound_box]
- objects.append({'name':ob.name,'vertices':len(ob.data.vertices),'bounds_min':[min(v[i] for v in coords) for i in range(3)],'bounds_max':[max(v[i] for v in coords) for i in range(3)],'materials':[m.name if m else None for m in ob.data.materials]})
+ objects.append({'name':ob.name,'vertices':len(ob.data.vertices),'material_faces':{m.name:sum(p.material_index==i for p in ob.data.polygons) for i,m in enumerate(ob.data.materials) if m},'bounds_min':[min(v[i] for v in coords) for i in range(3)],'bounds_max':[max(v[i] for v in coords) for i in range(3)],'materials':[m.name if m else None for m in ob.data.materials]})
 materials=[]
 for m in bpy.data.materials:
  if not m.use_nodes:continue
