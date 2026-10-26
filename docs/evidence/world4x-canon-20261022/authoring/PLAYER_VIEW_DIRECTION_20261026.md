@@ -77,3 +77,10 @@ Blender 40302507916: river continuity is visibly restored and outer plates retai
 
 
 BlenderMCP 40304157232 inspected at close and regional scales: pale triangular fins no longer appear; outer fractures fade into the actual continental pigment; river is continuous through the reviewed settlement region. Retain for full Unity verification with unified meadow finishing and rounded panorama-only atmosphere. No final art score assigned from Blender.
+
+
+## Unity 40304622115 and painted-ground refinement
+
+Actual 61/62 PlayMode, no omissions; one floor-contact error 11.3815 mm against the unchanged 5 mm maximum. Runtime terrain/query/collider consistency tests pass. Fit a private decorative floor mesh once to the actual imported contact surface, preserving x/z and all terrain vertices; refuse corrections above 25 mm, retain +15 mm design offset and keep the 5 mm acceptance threshold. This corrects imported-overlay contact, not terrain or game data.
+
+Actual Unity images now show the continuous river, removed pale fins, coherent near detail and rounded peripheral atmosphere. The remaining broad grass lacks the illustrated tuft/earth texture. A new original bitmap brush was directed with built-in imagegen (no paid API path): seamless flat top-down stylized medieval grass/ochre earth albedo, 80/20 grass/soil, tiny pebbles and grass strokes, no scene objects, text, perspective, shadows or repeated polygon cells. Original saved PNG is preserved unchanged as RegionOnePaintedMeadow.png. It is applied as a mean-normalised world-space detail over existing grass, protecting actual paths, fading at panorama footprint and excluding the mineral core. This is a new visible material hypothesis, not another broad-colour tint. Keep only after actual Unity A/B; source references and 62 packed images remain unchanged.

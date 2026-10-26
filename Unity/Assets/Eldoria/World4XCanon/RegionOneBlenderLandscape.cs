@@ -14,7 +14,7 @@ namespace Eldoria.World4XCanon
   const string AssetRoot="World4X/Blender/";
   static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static Dictionary<Vector2Int,System.Collections.Generic.List<VerificationVertex>> sourceVertices; static int sourceVertexCount;
   struct VerificationVertex { public Vector3 position; public int index; }
-  GameObject artwork; MeshFilter terrain;
+  GameObject artwork; MeshFilter terrain; Mesh fittedPigment;
   static RegionOneBlenderLandscape activeSurface;
   Vector3[] contactVertices;int[] contactTriangles;
   readonly Dictionary<Vector2Int,List<int>> contactCells=new Dictionary<Vector2Int,List<int>>();
@@ -38,7 +38,26 @@ namespace Eldoria.World4XCanon
    }
    return !float.IsNegativeInfinity(height);
   }
-  void OnDestroy(){if(activeSurface==this)activeSurface=null;}
+  void FitImportedPigment(Vector3 origin)
+  {
+   // The original floor is authored at +15 mm. World-space float transforms
+   // of very steep tiny triangles can shift its contact by millimetres.
+   // Fit only a private decorative mesh, never the terrain or gameplay data.
+   var floor=artwork.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_BreachFloor");
+   var vertices=floor.sharedMesh.vertices;float maximum=0;int corrected=0;
+   for(int i=0;i<vertices.Length;i++){
+    var point=floor.transform.TransformPoint(vertices[i]);
+    if(!ContactHeight(point.x-origin.x,point.z-origin.z,out var ground))continue;
+    float delta=origin.y+ground+.015f-point.y;
+    if(Mathf.Abs(delta)>.025f)throw new InvalidOperationException("Imported geological pigment exceeds the 25 mm precision-correction envelope");
+    maximum=Mathf.Max(maximum,Mathf.Abs(delta));
+    if(Mathf.Abs(delta)>.000001f){vertices[i].y+=delta;corrected++;}
+   }
+   fittedPigment=Instantiate(floor.sharedMesh);fittedPigment.name=floor.sharedMesh.name+" imported contact fit";
+   fittedPigment.vertices=vertices;fittedPigment.RecalculateBounds();floor.sharedMesh=fittedPigment;
+   Debug.Log("REGION1_IMPORTED_PIGMENT_CONTACT vertices="+corrected+" max_correction="+maximum+" terrain_unchanged=1");
+  }
+  void OnDestroy(){if(activeSurface==this)activeSurface=null;if(fittedPigment)Destroy(fittedPigment);}
 
   public Mesh DirectedTerrain=>terrain.sharedMesh;
   public Vector3[] WorldVertices=>terrain.sharedMesh.vertices.Select(terrain.transform.TransformPoint).ToArray();
@@ -75,6 +94,7 @@ namespace Eldoria.World4XCanon
     throw new InvalidOperationException("Art export must not add gameplay colliders.");
    instance.ValidateImportedSurface(host.WorldHome);
    instance.BuildContactSurface(host.WorldHome);
+   instance.FitImportedPigment(host.WorldHome);
    RegionOneProductionLod.Install(instance.artwork);
    RegionOneLookDevelopment.Install(instance.artwork,host.WorldCamera);
    Debug.Log("REGION1_BLENDER_IMPORTED source=GLB procedural_terrain=0 metres=1 anchor=-260,150");

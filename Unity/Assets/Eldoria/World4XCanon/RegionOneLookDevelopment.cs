@@ -54,10 +54,20 @@ namespace Eldoria.World4XCanon
                         source.name.StartsWith("P connected meadow forest floor paths",StringComparison.Ordinal)||source.name.StartsWith("AI open meadow paths",StringComparison.Ordinal)||source.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal);
                     if(meadow){material.SetFloat("_MeadowFinish",source.name.Contains("Region1 open meadows")?2f:1f);meadows.Add(material);}
                     if(meadow){
+                        var brush=Resources.Load<Texture2D>("World4X/RegionOnePaintedMeadow");
+                        if(brush){
+                            material.SetTexture("_MeadowBrush",brush);material.SetFloat("_MeadowBrushEnabled",1);
+                            var mean=new Color(.51184069f,.47712201f,.18659264f,1);
+                            material.SetVector("_MeadowBrushMean",QualitySettings.activeColorSpace==ColorSpace.Linear?mean.linear:mean);
+                        }
                         var detail=Resources.Load<Texture2D>("World4X/Blender/RegionOneGrassDetail");
                         if(!detail)throw new InvalidOperationException("Original AF-derived continental detail missing");
                         material.SetTexture("_GroundDetail",detail);// Native matched soil patches calibrate the linear detail to 0.9*sqrt(2).
                         if(source.name.Contains("Region1 open meadows")||source.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal))material.SetFloat("_GroundDetailStrength",1.2727922f);
+                        if(source.name.Contains("Region1 open meadows")){
+                            var paths=Resources.Load<Texture2D>("World4X/RegionOneExistingPathDistance");
+                            if(paths){material.SetTexture("_ExistingPathDistance",paths);material.SetFloat("_ExistingPathEnabled",1);}
+                        }
                     }
                     for(int p=0;p<source.shader.GetPropertyCount();p++)
                         if(source.shader.GetPropertyType(p)==ShaderPropertyType.Texture){string name=source.shader.GetPropertyName(p);if(name.ToLowerInvariant().Contains("basecolor"))material.SetTexture("_BaseMap",source.GetTexture(name));}
