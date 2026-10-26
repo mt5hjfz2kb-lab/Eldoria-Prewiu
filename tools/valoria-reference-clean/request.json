@@ -1,6 +1,6 @@
 {
-  "stage": "visual_consolidation_survey",
-  "revision": 282,
+  "stage": "visual_consolidation_trial",
+  "revision": 283,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,5 +8,5 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Read-only current main city I-II architecture and riverbank source survey; fresh evidence directory; no scene save, gameplay or publication."
+  "checks": "Read-only authentic Unity PlayMode A/B; strategic I-II LOD derived with native Blender from exact integrated city meshes; no playable asset integration, no publication."
 }

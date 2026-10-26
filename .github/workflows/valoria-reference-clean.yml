@@ -306,6 +306,14 @@ jobs:
           if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
           if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
           if($req.stage -eq 'geography_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'visual_consolidation_trial'){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
+            if(-not $blender){throw 'Existing Blender required for exact city source reduction'}
+            $env:ELDORIA_CONSOLIDATION_BLENDER=$blender
+            $env:VALORIA_GAMEPLAY_PROBE='1'
+            $method='Eldoria.ReferenceClean.Editor.ValoriaConsolidationTrial.Trial'
+          }
           if($req.stage -eq 'visual_consolidation_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaConsolidationSurvey.Survey'}
           if($req.stage -eq 'architecture_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaArchitectureFinishing.Survey'}
           if($req.terrain_polish){$env:VALORIA_TERRAIN_POLISH='1'}
@@ -719,7 +727,7 @@ jobs:
         # must be uploaded unchanged; rebasing an unnecessary art commit here
         # used to reject harmless browser-QA request updates and prevent a
         # successful exact WebGL build from reaching the browser gate.
-        if: steps.native_stage.outputs.stage != 'web_playtest'
+        if: steps.native_stage.outputs.stage != 'web_playtest' && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_')
         shell: powershell
         run: |
           git config user.name 'Valoria reference clean builder'
@@ -806,7 +814,7 @@ jobs:
           compression-level: 1
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage == 'visual_consolidation_survey'
+        if: always() && startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_')
         with:
           name: valoria-consolidation-survey-${{ github.run_id }}
           path: |
@@ -838,7 +846,7 @@ jobs:
           compression-level: 1
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
+        if: always() && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_') && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
         with:
           name: valoria-review-small-${{ github.run_id }}
           path: |
@@ -916,7 +924,7 @@ jobs:
           if-no-files-found: warn
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
+        if: always() && !startsWith(steps.native_stage.outputs.stage, 'visual_consolidation_') && steps.native_stage.outputs.stage != 'city_bank_meadow_trial' && steps.native_stage.outputs.stage != 'terrain_bank_trial' && steps.native_stage.outputs.stage != 'terrain_bank_survey' && steps.native_stage.outputs.stage != 'terrain_bank_integrate' && steps.native_stage.outputs.stage != 'architecture_survey' && steps.native_stage.outputs.stage != 'architecture_trial' && steps.native_stage.outputs.stage != 'architecture_integrate' && steps.native_stage.outputs.stage != 'world_art_survey' && steps.native_stage.outputs.stage != 'world_art_trial' && steps.native_stage.outputs.stage != 'world_art_integrate' && steps.native_stage.outputs.stage != 'final_environment_trial' && steps.native_stage.outputs.stage != 'final_environment_integrate' && steps.native_stage.outputs.stage != 'environment_author' && steps.native_stage.outputs.stage != 'quarry_geology_author' && steps.native_stage.outputs.stage != 'experience_finish' && steps.native_stage.outputs.stage != 'experience_validate' && steps.native_stage.outputs.stage != 'camp_author' && steps.native_stage.outputs.stage != 'sawmill_author' && steps.native_stage.outputs.stage != 'city_world_ui' && steps.native_stage.outputs.stage != 'sawmill_trial' && steps.native_stage.outputs.stage != 'web_playtest' && steps.native_stage.outputs.stage != 'geography_survey' && steps.native_stage.outputs.stage != 'geography_trial' && steps.native_stage.outputs.stage != 'geography_integrate' && steps.native_stage.outputs.stage != 'spawnling_animated_integrate'
         with:
           name: valoria-reference-clean-${{ github.run_id }}
           path: |
