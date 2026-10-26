@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T15:49:12.258Z",
+  "updated_at": "2026-10-26T15:51:54.449Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1163,7 +1163,8 @@
         "pipeline/android-updater-build-request.json",
         "pipeline/android-updater-release-request.json",
         "docs/evidence/world4x-canon-20261022/INTEGRATION_DELIVERY_20261026.md",
-        ".github/workflows/tester-qa.yml"
+        ".github/workflows/tester-qa.yml",
+        ".github/workflows/unity-slice.yml"
       ],
       "resources": [],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.\n2026-10-26: Owner authorizes this director to correct all identified world visual defects, prioritize near camera reference fidelity, scale resource nodes approximately 85% of city visual size, validate and integrate today after actual visual and functional gates. No paid credits.\n2026-10-26 explicit owner handoff: complete replacement, merge PR100 after applicable checks, build installable and use existing authorized distribution channel; zero cost, no Bastion III-V or city/UI redesign.\nDelivery sub-scope: reuse existing signed family Android builder/release requests for Region1; adapt its hardcoded old workstream identity to the actual claimed request, preserving live lease/process/signature/byte checks. Existing UI/Valoria development remains paused.\nBounded PR control preparation repair: frozen-web tester checkout excludes only Unity/ and docs/evidence/ (native/art archives), preserving every web test, assertion, source and runtime fixture. Observed full checkout consumed 16 minutes of 32-minute job budget.",
