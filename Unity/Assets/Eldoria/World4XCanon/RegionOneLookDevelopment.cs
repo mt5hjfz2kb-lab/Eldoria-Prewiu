@@ -49,6 +49,7 @@ namespace Eldoria.World4XCanon
                     if(source.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal)||source.name.StartsWith("Breach shaded stratified",StringComparison.Ordinal))material.SetFloat("_GeologicalRock",1f);
                     if(source.name.StartsWith("Original river turquoise shallow ford continuity",StringComparison.Ordinal))material.SetFloat("_WaterSurface",1f);
                     if(source.name.StartsWith("Breach naturally graded exposed mineral",StringComparison.Ordinal)){material.SetFloat("_MineralEmission",.18f);minerals.Add(material);}
+                    if(source.name.StartsWith("Approved exposed quarry floor",StringComparison.Ordinal))material.SetFloat("_QuarryFloor",1f);
                     bool meadow=source.name.Contains("Region1 open meadows")||source.name.StartsWith("Ochre meadow",StringComparison.Ordinal)||
                         source.name.StartsWith("P connected meadow forest floor paths",StringComparison.Ordinal)||source.name.StartsWith("AI open meadow paths",StringComparison.Ordinal);
                     if(meadow){material.SetFloat("_MeadowFinish",source.name.Contains("Region1 open meadows")?2f:1f);meadows.Add(material);}
@@ -68,6 +69,7 @@ namespace Eldoria.World4XCanon
             // ground triangles. The connected terrain casts their shadow;
             // casting again from the exposure produces close-view triangle acne.
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true)){
+                if(renderer.name.StartsWith("Quarry cleared extraction floor",StringComparison.Ordinal))renderer.shadowCastingMode=ShadowCastingMode.Off;
                 for(var node=renderer.transform;node;node=node.parent){
                     string name=node.name;
                     if(name=="BLD_BreachFloor"||name=="BLD_BreachOutlyingFractures"||

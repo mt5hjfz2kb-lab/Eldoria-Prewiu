@@ -26,3 +26,7 @@ Revisar capturas reales cercanas, regionales y panorámicas H/V y detalles de Br
 Inspección de triángulos del GLB real: agua entre z=-17 y -24; terreno a cota 2,98 en -8 y 3,19 en -26. El tablero actual ocupa -35,92 a -1,92. Se corrige a 18 m entre -26 y -8 con apoyo medido en las dos orillas; se conserva el eje x=3,3 y los postes, acortando sus posiciones. La aproximación terrestre deja de ser una rampa de madera. Solo los vértices del propio tablero quedan exentos de la preservación del núcleo; los 96 testigos de pradera y caminos siguen intactos.
 
 El primer intento Unity 40289495400 no llegó al editor: el mensaje de commit no activó la recuperación del paquete base requerida por el workflow. Se corrige el disparo usando el prefijo existente `region-imported(world4x):`; ese intento no cuenta como compilación ni prueba.
+
+La comprobación posterior de los dos bordes (además del eje) detectó agua bajo la esquina x=7,3/z=-26. El gate de apoyo rechazó correctamente ese primer intento. Se conserva el extremo norte -8 y se lleva el sur a -29, donde sí hay terreno en todo el ancho: tablero final previsto de 21 m, no 18. No se debilitó la comprobación de apoyo.
+
+Cantera: el GLB tenía coordenadas UV degeneradas, idénticas para los ocho triángulos del suelo. Se corrige el mapeado de cada copia de contacto y se recorta de forma irregular el borde del material para evitar el aspecto de loseta. No se cambia el emplazamiento guardado ni el donante original.

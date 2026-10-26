@@ -1,5 +1,5 @@
 Shader "Eldoria/RegionOneAuthoredSurface" {
- Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 }
+ Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 _QuarryFloor("Grounded extraction edge",Float)=0 }
  SubShader {Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest"}
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -7,7 +7,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
  TEXTURE2D(_GroundDetail); SAMPLER(sampler_GroundDetail);
  CBUFFER_START(UnityPerMaterial)
- float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;
+ float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;float _QuarryFloor;
  CBUFFER_END
  UNITY_INSTANCING_BUFFER_START(PerTree)
  UNITY_DEFINE_INSTANCED_PROP(float4, _InstanceTint)
@@ -39,6 +39,11 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  #else
  float4 shadowCoord=TransformWorldToShadowCoord(i.world);
  #endif
+ if(_QuarryFloor>.5){
+     float2 q=(i.uv-.5)*2;
+     float edge=length(q)+.045*sin(q.x*19+q.y*11)+.03*sin(q.y*27-q.x*9);
+     clip(1-smoothstep(.83,1.03,edge)-d);
+ }
  Light l=GetMainLight(shadowCoord);
  // The AG sector camera is within 300 m; continental cameras are not.
  // Respect URP shadow distance instead of sampling beyond its cascade coverage.

@@ -75,6 +75,12 @@ namespace Eldoria.World4XCanon
                     var floor=Instantiate(source);
                     floor.name=source.name+" · actual terrain extraction surface";
                     var fitted=floor.vertices;
+                    var floorUV=new Vector2[fitted.Length];
+                    var footprint=source.bounds;
+                    for(int v=0;v<fitted.Length;v++)floorUV[v]=new Vector2(
+                        (fitted[v].x-footprint.min.x)/Mathf.Max(.001f,footprint.size.x),
+                        (fitted[v].z-footprint.min.z)/Mathf.Max(.001f,footprint.size.z));
+                    floor.uv=floorUV;
                     for(int v=0;v<fitted.Length;v++)
                     {
                         var world=part.transform.TransformPoint(fitted[v]);

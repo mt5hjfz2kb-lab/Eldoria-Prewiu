@@ -50,7 +50,7 @@ for i in wall_vertices:
  coords[i,2]=z+displacement
  if abs(displacement)>.001:changed.add(i)
 assert len(changed)>1000
-# Short crossing between the measured real banks (-26 and -8), rather than
+# Short crossing between the measured real banks (-29 and -8), rather than
 # 34 metres of timber reaching all the way into the city. Keep the same axis.
 land_faces=[list(p.vertices) for p in terrain.data.polygons if 'Bridge' not in terrain.data.materials[p.material_index].name]
 land_bvh=BVHTree.FromPolygons(coords.tolist(),land_faces,all_triangles=False)
@@ -58,7 +58,7 @@ def land(x,y):
  hit=land_bvh.ray_cast(Vector((float(x),float(y),300)),Vector((0,0,-1)))[0]
  assert hit is not None,('Bridge requires real bank support',x,y)
  return hit.z
-start_y,end_y=-26.,-8.;old_centre=-18.922370433807373;old_length=34.
+start_y,end_y=-29.,-8.;old_centre=-18.922370433807373;old_length=34.
 start_z=max(land(x,start_y) for x in (-.7,3.3,7.3))+.18
 end_z=max(land(x,end_y) for x in (-.7,3.3,7.3))+.18
 def deck(y):
@@ -106,14 +106,14 @@ assert np.array_equal(coords[protected],before[protected])
 assert all(hashlib.sha256(bpy.data.images[n].packed_file.data).hexdigest()==h for n,h in original_images.items())
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as f:
  f.write(struct.pack('<iiiff',magic,nx,nz,1820,3600));f.write(heights.astype('<f4').tobytes());f.write(masks);f.write(struct.pack('<ii',0x32564c45,len(coords)));f.write(coords[:,[0,2,1]].astype('<f4').tobytes())
-layout['player_art_correction']={'bridge_length_before':34,'bridge_length_after':18,'actual_stepped_wall_vertices':len(changed),'unchanged_gameplay_masks':True,'protected_core_vertices':int(protected.sum())}
+layout['player_art_correction']={'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'unchanged_gameplay_masks':True,'protected_core_vertices':int(protected.sum())}
 (out/'production-region.json').write_text(json.dumps(layout,indent=2))
 bpy.ops.object.select_all(action='DESELECT')
 for ob in scene.objects:
  if ob.name in export_names and ob.type in {'MESH','EMPTY'}:ob.select_set(True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
-report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':18,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
+report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
 bpy.app.driver_namespace['interactive_snapshot']('player-art-sculpt-v2')
 (out/'stop.request').write_text('Saved physical wall correction; actual Unity review required.')
