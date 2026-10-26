@@ -289,6 +289,30 @@ namespace Eldoria.Tests
             Assert.That(fill.anchorMax.x, Is.InRange(0f, 1f));
         }
 
+        [UnityTest]
+        public IEnumerator ReducedWorldForestPreservesExistingHudAndNoninteractiveDecorations()
+        {
+            // Thinning decorative crowns cannot change HUD, game entities or saves.
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var world=Member(host,"WorldRoot") as GameObject;
+            Assert.That(world,Is.Not.Null);
+            for(int i=0;i<180&&world.transform.Find("Region 1 canonical continuous geography")==null;i++)
+                yield return null;
+            Assert.That(world.transform.Find("Region 1 canonical continuous geography"),Is.Not.Null);
+            var crowns=world.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(r=>r.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)&&
+                    !r.name.StartsWith("BLD_ForestMass_Ecotone_",StringComparison.Ordinal)).ToArray();
+            Assert.That(crowns.Length,Is.GreaterThan(500));
+            int hidden=crowns.Count(r=>r.forceRenderingOff);
+            Assert.That(hidden/(float)crowns.Length,Is.InRange(.25f,.42f),
+                "Reversible 4X visual pruning must not eliminate authored woodland.");
+            Assert.That(crowns.All(r=>r.gameObject.activeSelf&&r.GetComponent<Collider>()==null),Is.True);
+            Assert.That(Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Count(x=>x&&x.GetType().Name=="RoyalHUD"),Is.EqualTo(1),
+                "Forest decoration cannot create a second HUD or interaction system.");
+        }
+
     }
 }
 
