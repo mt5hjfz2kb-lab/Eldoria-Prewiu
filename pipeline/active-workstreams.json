@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T01:47:15Z",
+  "updated_at": "2026-10-26T10:37:40.103Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1625,6 +1625,36 @@
           "resolution": "Historical reserved revision13 superseded by available/null UI revision14; exact CI workflow-only scope transfer under owner's finalization order, no UI scene takeover."
         }
       ]
+    },
+    {
+      "id": "eldoria-hyperautomation-guardrails-20261026",
+      "title": "Eldoria — guardas de continuidad, conocimiento y documentación (sin Unity)",
+      "owner": "chatgpt-eldoria-ops-20261026",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-26",
+      "base_main_sha": "0b4a4883719accb42d5b101db89fd0cad9bc15a3",
+      "scope": [
+        "tools/work-status/report.mjs",
+        "tools/work-status/report.test.mjs",
+        "tools/documentation-triage/**",
+        "tools/art-direction/learning-evidence/verify-brief-use.mjs",
+        "tools/art-direction/learning-evidence/verify-brief-use.test.mjs",
+        "docs/hyperautomation/**",
+        ".github/workflows/repository-architecture-guard.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "phase": "SAFE_READ_ONLY_TOOLING",
+      "next": "Implementar diagnósticos puramente consultivos, pruebas focalizadas y documentación anidada sin alterar el PR #100, Unity, catálogo reservado, aprobaciones, publicación ni recursos Windows.",
+      "delivery_definition": {
+        "deliverable": "Diagnóstico observable de estados y bloqueos; verificador de consumo de memoria artística; triaje documental; tests en guard Ubuntu existente",
+        "evidence": "GitHub committed source SHA y Actions guard focalizado",
+        "handoff": "Cerrar trabajo y liberar alcance; limitaciones de integración artística explicitas"
+      }
     }
   ],
   "history": [
