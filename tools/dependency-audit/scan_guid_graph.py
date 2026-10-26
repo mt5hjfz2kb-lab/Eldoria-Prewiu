@@ -51,13 +51,8 @@ def main():
             return None
         if Path(p).is_file(): data=Path(p).read_bytes()
         else:
-            if total_remote>80_000_000:
-                issues["unreadable"].append({"path":p,"reason":"remote_budget_exceeded"})
-                return None
-            try: data=git("show","HEAD:"+p); total_remote+=len(data)
-            except subprocess.CalledProcessError:
-                issues["unreadable"].append({"path":p,"reason":"git_show_failed"})
-                return None
+            issues["unreadable"].append({"path":p,"reason":"not_in_sparse_snapshot_deferred_to_unity"})
+            return None
         if b"\0" in data[:1024]:
             issues["binary"].append(p)
             return None
