@@ -102,6 +102,20 @@ jobs:
               throw "Integrated UI V3 candidate input missing: $required"
             }
           }
+          # Camera fixtures are test inputs outside Unity/. A reused sparse
+          # workspace may omit them even when the project itself is complete.
+          # Restore only absent exact-commit files; refuse changed local inputs.
+          foreach($fixture in @('docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json')){
+            $expected=(& git rev-parse "$($env:GITHUB_SHA):$fixture").Trim()
+            if($LASTEXITCODE -ne 0 -or $expected -notmatch '^[0-9a-f]{40}$'){throw "Missing tracked camera fixture: $fixture"}
+            if(-not(Test-Path -LiteralPath $fixture)){
+              & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- $fixture
+              if($LASTEXITCODE){throw "Cannot restore exact camera fixture: $fixture"}
+            }
+            $actualFixture=(& git hash-object -- $fixture).Trim()
+            if($LASTEXITCODE -ne 0 -or $actualFixture -ne $expected){throw "Camera fixture differs from certified candidate: $fixture"}
+            Write-Host "ELDORIA_EXACT_CAMERA_FIXTURE_READY $fixture $expected"
+          }
           Write-Host "ELDORIA_V3_EXACT_TRACKED_PROJECT_READY"
 
       - uses: actions/checkout@v4
