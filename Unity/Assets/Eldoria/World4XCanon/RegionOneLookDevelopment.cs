@@ -139,16 +139,18 @@ namespace Eldoria.World4XCanon
             RefreshForZoom();
             var navigation=camera.GetComponent<Eldoria.World4XPrototype.ZoneOneStrategicCamera>();
             float regional=navigation?navigation.regionalZoom:Mathf.Max(280,400/Mathf.Max(.1f,camera.aspect));
-            // The physical outer edge enters the viewport during the orbit,
-            // before the final overview. Fade only that same peripheral strip;
-            // no fog is applied to the interior or to the retained AG sector.
-            float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(regional*.75f,regional*1.25f,camera.orthographicSize));
-            var fog=QualitySettings.activeColorSpace==ColorSpace.Linear?camera.backgroundColor.linear:camera.backgroundColor;
+            // Only the final overview reveals neighbouring regions. Fade a narrow
+            // irregular peripheral strip; the regional gameplay view stays clear.
+            float global=navigation?navigation.globalZoom:2500f;
+            float atmosphere=Mathf.SmoothStep(0,1,Mathf.InverseLerp(Mathf.Max(regional,global*.82f),global,camera.orthographicSize));
+            background=camera.backgroundColor;
+            var mist=Color.Lerp(background,new Color(.66f,.75f,.78f,1),atmosphere);
+            var fog=QualitySettings.activeColorSpace==ColorSpace.Linear?mist.linear:mist;
+            camera.backgroundColor=mist;
             foreach(var material in owned){material.SetFloat("_BoundaryWeight",atmosphere);material.SetVector("_BoundaryColour",new Vector4(fog.r,fog.g,fog.b,1));}
             float mineralEmission=Mathf.Lerp(.65f,.85f,Mathf.InverseLerp(36f,280f,camera.orthographicSize));
             if(camera.orthographicSize>280f)mineralEmission=Mathf.Lerp(.85f,1.10f,Mathf.InverseLerp(280f,navigation?navigation.globalZoom:2500f,camera.orthographicSize));
             foreach(var material in minerals)material.SetFloat("_MineralEmission",mineralEmission);
-            background=camera.backgroundColor; // Preserve the existing continental clear colour; grey increased the tile silhouette.
             configuredSun=RenderSettings.sun;sun=configuredSun;
             if(!sun)sun=FindObjectsByType<Light>(FindObjectsSortMode.None).Where(l=>l.enabled&&l.type==LightType.Directional).OrderByDescending(l=>l.intensity).FirstOrDefault();
             if(sun){rotation=sun.transform.rotation;shadows=sun.shadows;strength=sun.shadowStrength;depthBias=sun.shadowBias;normalBias=sun.shadowNormalBias;sun.transform.rotation=Quaternion.Euler(42,-35,0);sun.shadows=LightShadows.Soft;sun.shadowStrength=.9f;}

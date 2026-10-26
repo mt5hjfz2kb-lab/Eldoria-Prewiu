@@ -632,6 +632,7 @@ namespace Eldoria.Tests
             yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
             var modelService=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneResourceModels");
             var originalColliders=world.GetComponentsInChildren<Collider>(true).ToDictionary(x=>x,x=>x.transform.position);
+            Call(navigation,"SetZoomLevel",2,true);
             Call(modelService,"RefreshNow");
             var origin=(Vector3)Member(host,"WorldHome");var geology=world.GetComponentsInChildren<MonoBehaviour>(true).Single(x=>x&&x.GetType().Name=="RegionOneBlenderLandscape");var height=geology.GetType().GetMethod("Height",BindingFlags.Public|BindingFlags.Static);
             var gateway=(Eldoria.Application.LocalGateway)Member(Member(host,"City"),"Gateway");
@@ -655,8 +656,10 @@ namespace Eldoria.Tests
                 Assert.That(target,Is.Not.Null);
                 var bounds=new Bounds(vertices[0],Vector3.zero);
                 foreach(var point in vertices)bounds.Encapsulate(point);
-                Assert.That(target.GetComponent<Collider>().bounds.Contains(bounds.center),Is.True,
-                    "Enlarging the actual resource must retain selectable visual centre");
+                var hit=target.GetComponent<BoxCollider>();
+                Assert.That(hit,Is.Not.Null);
+                Assert.That(new Bounds(hit.center,hit.size).Contains(target.transform.InverseTransformPoint(bounds.center)),Is.True,
+                    "The near selection volume must contain the real mesh centre even while the city view disables its physics");
             }
             float minimum=0,maximum=0;int parts=0;
             foreach(var root in actualRoots)

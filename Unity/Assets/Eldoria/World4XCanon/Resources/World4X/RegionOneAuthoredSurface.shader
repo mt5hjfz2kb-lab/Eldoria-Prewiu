@@ -64,20 +64,27 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // The existing mip chain/aniso filter performs minification; an additional
  // early derivative fade erased detail only on the extension and exposed a square.
  c.rgb*=lerp(half3(1,1,1),grain,_GroundDetailStrength);
- // One metre-based meadow palette across the original patch and its extension.
- // Broad, connected green clearings retain source grain and ochre paths.
+ // Preserve the source's close grass grain and paths. Compress the broad
+ // colour contrast with pixel footprint so overview never becomes camouflage.
  if(_MeadowFinish>.5){
      float2 q=i.world.xz-_RegionOrigin.xz;
      float broad=sin(q.x*.041+sin(q.y*.028)*1.7)+sin(q.y*.057-q.x*.019)+.42*sin(q.x*.133+q.y*.091);
-     float clearing=smoothstep(-.65,.8,broad);
-     half luminance=dot(c.rgb,half3(.2126,.7152,.0722));
-     half sourcePath=smoothstep(1.12,1.55,c.r/max(.001,c.g));
-     half3 grassPalette=lerp(half3(.63,.79,.31),half3(.93,.84,.43),clearing);
-     half3 pathPalette=half3(1.02,.79,.47);
-     half3 palette=lerp(grassPalette,pathPalette,sourcePath*.8);
-     // Preserve variation already painted into the source, but stop amplifying red.
-     half value=clamp(luminance/.32,.62,1.28);
-     c.rgb=lerp(c.rgb,palette*.47*value,.76);
+     float metresPerPixel=max(length(ddx(i.world.xz)),length(ddy(i.world.xz)));
+     float clearing=smoothstep(-1.1,1.2,broad);
+     clearing=.5+(clearing-.5)*lerp(.65,.16,smoothstep(.7,4,metresPerPixel));
+     half ratio=c.r/max(.001,c.g);
+     if(_MeadowFinish<1.5){
+         half grass=1-smoothstep(1.02,1.16,ratio);
+         half3 temperature=lerp(half3(.91,1.08,1.15),half3(1.16,1.08,1.11),clearing)*1.08;
+         c.rgb*=lerp(half3(1.10,1.10,1.10),temperature,grass);
+     }else{
+         half luminance=dot(c.rgb,half3(.2126,.7152,.0722));
+         half path=smoothstep(1.16,1.25,ratio);
+         half3 palette=lerp(half3(.56,.64,.27),half3(.66,.65,.28),clearing);
+         palette=lerp(palette,half3(.72,.60,.34),path);
+         half value=clamp(1+(luminance-.4)*.45,.9,1.1);
+         c.rgb=palette*value;
+     }
  }
  if(_GeologicalRock>.5){
      // Flat sediment belongs to the dark interior; deposited layers describe
@@ -89,6 +96,8 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      float fleck=frac(sin(dot(facet,float2(12.9898,78.233)))*43758.5453);
      c.rgb*=lerp(half3(.40,.34,.43),half3(.89,.85,.83),wall);
      c.rgb*=lerp(.91,1.08,fleck);
+     float wound=1-smoothstep(24,116,distance(i.world.xz-_RegionOrigin.xz,float2(-260,150)));
+     c.rgb=lerp(c.rgb,c.rgb*half3(.77,.62,1.04),wound*.75);
 
  }
  half3 originalPigment=c.rgb;
@@ -113,8 +122,8 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // This is emissive geology on the actual ground, never a portal or icon.
  c.rgb+=originalPigment*(_MineralEmission*smoothstep(.004,.04,originalPigment.b-originalPigment.g));
  float2 region=i.world.xz-_RegionOrigin.xz;
- // Atmosphere at the actual neighbouring-ground edge, beyond the playable region.
- float west=1710+region.x, east=1710-region.x, north=2600-region.y, south=2600+region.y;
+ // Minimal peripheral atmosphere at the region, hiding the neighbouring continuation.
+ float west=910+region.x, east=910-region.x, north=1800-region.y, south=1800+region.y;
  float edge=min(min(west,east),min(north,south));
  float irregular=40*sin(region.y*.011)+20*cos(region.x*.017-region.y*.006);
  float atmosphere=(1-smoothstep(0,107+irregular,edge))*_BoundaryWeight;

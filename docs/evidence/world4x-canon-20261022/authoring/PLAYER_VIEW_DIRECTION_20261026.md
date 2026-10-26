@@ -30,3 +30,15 @@ El primer intento Unity 40289495400 no llegó al editor: el mensaje de commit no
 La comprobación posterior de los dos bordes (además del eje) detectó agua bajo la esquina x=7,3/z=-26. El gate de apoyo rechazó correctamente ese primer intento. Se conserva el extremo norte -8 y se lleva el sur a -29, donde sí hay terreno en todo el ancho: tablero final previsto de 21 m, no 18. No se debilitó la comprobación de apoyo.
 
 Cantera: el GLB tenía coordenadas UV degeneradas, idénticas para los ocho triángulos del suelo. Se corrige el mapeado de cada copia de contacto y se recorta de forma irregular el borde del material para evitar el aspecto de loseta. No se cambia el emplazamiento guardado ni el donante original.
+
+## Cambio de hipótesis para la Brecha
+
+La previsualización de la talla escalonada conserva el defecto principal: una zanja en Y de profundidad uniforme. La referencia tiene una depresión central rodeada por placas fracturadas y ramas que pierden profundidad. Se prepara una alternativa macroscópica: conservar el eje y las exclusiones existentes, reducir gradualmente la profundidad de las ramas periféricas, tallar cortes poco profundos entre placas irregulares en el entorno central y concentrar el hundimiento en el corazón. No sumar losas flotantes. Todas las superficies de detalle se reproyectan sobre la misma malla; la vegetación existente acompaña verticalmente al suelo.
+
+La panorámica también necesita atmósfera en el borde de la región visible, no solo en el borde lejano de la continuación que queda fuera de cámara. Se prepara una franja estrecha e irregular de bruma únicamente en el zoom panorámico. La vista regional permanece libre de niebla y se restaura el estado de la cámara al terminar cada render.
+
+## Primera revisión real de Unity: 40291321336
+
+Importación y fuente PASS. PlayMode: 60/62, sin omisiones. Dos defectos concretos: el suelo de Brecha se exportó a 2 mm cuando su contrato exige 15 mm (error medido 13,3 mm); se restablece el desplazamiento de 15 mm sin cambiar tolerancias. La nueva prueba de selección consultó `Collider.bounds` mientras la vista de ciudad desactiva su física; se corrige para medir el volumen local real y se fija explícitamente el zoom cercano.
+
+Las capturas reales confirman nodos mayores y el puente corto. Se rechaza el acabado de pradera de esta iteración: atenúa el grano original en cercana y genera camuflaje en panorámica. El control sin acabado conserva mejor la textura. La siguiente versión preserva el grano del núcleo, comprime la variación cromática con la huella de píxel y calibra la continuación al verde/dorado del núcleo, con caminos separados. Se mantiene la crítica de la zanja en Y; la alternativa de depresión fracturada sigue pendiente de observar en Blender y Unity.
