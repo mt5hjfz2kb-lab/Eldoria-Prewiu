@@ -6,7 +6,7 @@
                    910,
                    1800
                ],
-    "terrain_vertices":  339274,
+    "terrain_vertices":  369163,
     "retained_material_samples":  [
                                       {
                                           "material":  "Ochre meadow",
@@ -1230,5 +1230,15 @@
                               "streams":  2,
                               "existing_road_gravel_fords":  true,
                               "city_reserves_preserved":  true
-                          }
+                          },
+    "living_geography":  {
+                             "upland_spines":  4,
+                             "true_fluvial_terraces":  true,
+                             "warped_existing_trails":  true,
+                             "forest_instances_transplanted":  471,
+                             "interior_breach_light_anchors":  3,
+                             "protected_AF_AG_vertices_unchanged":  51898,
+                             "continuous_canyon_boolean":  true,
+                             "settlement_colour_circles_removed":  true
+                         }
 }
