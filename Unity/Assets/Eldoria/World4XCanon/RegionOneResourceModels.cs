@@ -30,6 +30,11 @@ namespace Eldoria.World4XCanon
                     float x=part.transform.TransformPoint(vertex).x;
                     lo=Mathf.Min(lo,x);hi=Mathf.Max(hi,x);
                 }
+            foreach(var part in visual.GetComponentsInChildren<SkinnedMeshRenderer>(true))
+                if(part.sharedMesh)foreach(var vertex in part.sharedMesh.vertices){
+                    float x=part.transform.TransformPoint(vertex).x;
+                    lo=Mathf.Min(lo,x);hi=Mathf.Max(hi,x);
+                }
             if(float.IsInfinity(lo)||hi-lo<.001f)throw new InvalidOperationException("Missing measurable model "+visual.name);
             visual.transform.localScale*=desiredWidth/(hi-lo);
             return visual.transform.localScale.x;

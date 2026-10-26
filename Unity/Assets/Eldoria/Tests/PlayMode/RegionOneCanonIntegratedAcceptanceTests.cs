@@ -643,6 +643,21 @@ namespace Eldoria.Tests
             Assert.That(actualRoots.Select(x=>x.name.Substring("Production resource visual ".Length)),Is.EquivalentTo(expectedIds),
                 "Measure every actual saved resource and both campaign nodes; no missing or duplicate visual roots");
             foreach(var root in actualRoots)Assert.That(root.GetComponentsInChildren<MeshFilter>(true),Is.Not.Empty,"Every real node needs measured model geometry");
+            // Owner's near-view contract is screen-horizontal width against the
+            // existing 24-unit Bastion I sprite, measured on every imported variant.
+            foreach(var root in actualRoots){
+                var vertices=root.GetComponentsInChildren<MeshFilter>(true)
+                    .SelectMany(part=>part.sharedMesh.vertices.Select(part.transform.TransformPoint)).ToArray();
+                float width=vertices.Max(p=>p.x)-vertices.Min(p=>p.x);
+                Assert.That(width/24f,Is.EqualTo(.85f).Within(.005f),
+                    "Near resource must occupy 85% of the city's visible width: "+root.name);
+                var target=Call(host,"FindTarget",root.name.Substring("Production resource visual ".Length)) as Component;
+                Assert.That(target,Is.Not.Null);
+                var bounds=new Bounds(vertices[0],Vector3.zero);
+                foreach(var point in vertices)bounds.Encapsulate(point);
+                Assert.That(target.GetComponent<Collider>().bounds.Contains(bounds.center),Is.True,
+                    "Enlarging the actual resource must retain selectable visual centre");
+            }
             float minimum=0,maximum=0;int parts=0;
             foreach(var root in actualRoots)
             foreach(var part in root.GetComponentsInChildren<MeshFilter>(true)){
