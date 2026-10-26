@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T11:38:56.583Z",
+  "updated_at": "2026-10-26T11:48:31.825Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1631,7 +1631,7 @@
       "title": "Eldoria — observación de misiones actuales y memoria artística verificable",
       "owner": "chatgpt-ops-active-monitor-20261026",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "branch": "main",
       "status": "active",
@@ -1646,7 +1646,8 @@
         "tools/art-direction/learning-evidence/build-prompt.mjs",
         "tools/art-direction/learning-evidence/build-prompt.test.mjs",
         ".github/workflows/repository-architecture-guard.yml",
-        "docs/hyperautomation/AUTONOMY_PHASE2_20261026.md"
+        "docs/hyperautomation/AUTONOMY_PHASE2_20261026.md",
+        "AGENTS.md"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
