@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T11:53:16.101Z",
+  "updated_at": "2026-10-26T12:05:24.459Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1625,6 +1625,35 @@
           "resolution": "Historical reserved revision13 superseded by available/null UI revision14; exact CI workflow-only scope transfer under owner's finalization order, no UI scene takeover."
         }
       ]
+    },
+    {
+      "id": "eldoria-autonomy-ci-triage-20261026",
+      "title": "Eldoria — diagnóstico automático de evidencias CI y próximo paso seguro",
+      "owner": "chatgpt-ops-autonomy-ci-20261026",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-26",
+      "base_main_sha": "6386b0c518843f8a3571d7f5cb38c973efaf3ab2",
+      "scope": [
+        "tools/mission-continuity/triage.mjs",
+        "tools/mission-continuity/triage.test.mjs",
+        "tools/mission-continuity/watch.mjs",
+        ".github/workflows/mission-continuity-guard.yml",
+        "docs/hyperautomation/AUTONOMY_PHASE3_20261026.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only report-only GitHub Actions diagnostic/triage, unit tests and documentation on hosted Linux. No owner-owned Unity, Blender or art. No workflow dispatch, paid APIs, merge or mutation outside owned paths.",
+      "phase": "CI_NEXT_ACTION_TRIAGE",
+      "next": "Build bounded exact-run diagnosis and evidence inventory into the existing watcher without triggering jobs, verify CI, release.",
+      "delivery_definition": {
+        "deliverable": "Current workstream watcher reports evidence manifest of exact latest run, failure step summary and safe next action",
+        "evidence": "Exact-commit Ubuntu CI tests, live run, artifacts",
+        "handoff": "Release after acceptance; creative repair remains with owner"
+      }
     }
   ],
   "history": [
