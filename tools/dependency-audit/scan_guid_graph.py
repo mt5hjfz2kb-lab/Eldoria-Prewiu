@@ -19,7 +19,7 @@ GROUPS={
  "reference_evidence":"docs/evidence/valoria-reference-clean/"
 }
 TEXT_SUFFIXES=(".unity",".prefab",".mat",".asset",".anim",".controller",".overrideController",".shader",".shadergraph",".terrainlayer",".uxml",".uss",".lighting")
-MAX_FILE=1_048_576
+MAX_FILE=6_291_456
 def git(*args):
     return subprocess.run(("git",)+args,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE).stdout
 def main():
