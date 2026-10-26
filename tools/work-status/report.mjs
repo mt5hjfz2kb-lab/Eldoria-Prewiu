@@ -43,6 +43,29 @@ export function versionStates({head,delivery,android}){
     android_channel:{version:android?.enabled===true?android.versionName||null:null,
       basis:'enabled_channel_manifest_not_installed_device_verification'}};
 }
+// Only the most recent observation of a given workflow on the exact branch
+// HEAD is relevant. A superseded failed run must not remain a permanent alert.
+export function latestHeadChecks(checks) {
+  if(!Array.isArray(checks)) return [];
+  const newest=new Map();
+  for(const item of checks){
+    if(!item || typeof item!=='object') continue;
+    const name=typeof item.name==='string' ? item.name.trim() : '';
+    const key=name ? 'workflow:'+name : 'run:'+String(item.run_id??newest.size);
+    const old=newest.get(key);
+    const oldTime=Date.parse(old?.created_at||'');
+    const newTime=Date.parse(item.created_at||'');
+    const oldId=Number(old?.run_id),newId=Number(item.run_id);
+    const newer=!old ||
+      (Number.isFinite(oldTime)&&Number.isFinite(newTime)&&oldTime!==newTime
+        ? newTime>oldTime
+        : Number.isFinite(oldId)&&Number.isFinite(newId)
+          ? newId>oldId : true);
+    if(newer) newest.set(key,item);
+  }
+  return [...newest.values()];
+}
+
 // Advisory classification. Never creates a lease, dispatches a job, declares CI/ART PASS
 // or treats absence of Actions jobs as proof that a chat/PC is idle.
 export function operationalSignal(workstream, liveBranch={status:'not_checked'}, windows={observation:'not_checked',running:[],queued:[]}) {
@@ -59,16 +82,16 @@ export function operationalSignal(workstream, liveBranch={status:'not_checked'},
     next_safe_action:'Reconcile owner/release fields; a null owner alone does not authorize a claim.'};
   if(liveBranch.status!=='observed') return {code:'LIVE_EVIDENCE_UNKNOWN',severity:'unknown',
     next_safe_action:'Read the exact branch HEAD and live Actions/jobs; no inactivity or runner availability can be inferred.'};
-  const checks=Array.isArray(liveBranch.checks)?liveBranch.checks:[];
+  const checks=latestHeadChecks(liveBranch.checks);
   const restricted=checks.find(r=>r.conclusion==='action_required');
   if(restricted) return {code:'GITHUB_AUTHORIZATION_REQUIRED',severity:'external_blocker',
-    run_id:restricted.run_id, next_safe_action:'Review the GitHub Actions approval requirement on this exact run. Do not bypass authorization or call it a test failure.'};
+    run_id:restricted.run_id,evidence_scope:'branch_head_workflow_not_workstream', next_safe_action:'Check whether this exact branch-HEAD workflow belongs to the workstream, then review GitHub approval; do not bypass authorization or call it a Unity failure.'};
   const failed=checks.find(r=>['failure','timed_out','startup_failure'].includes(r.conclusion));
   if(failed) return {code:'CI_FAILURE_NEEDS_DIAGNOSIS',severity:'investigate',
-    run_id:failed.run_id,next_safe_action:'Owner inspects run logs and fixes source; an automatic retry alone is not a repair.'};
+    run_id:failed.run_id,evidence_scope:'branch_head_workflow_not_workstream',next_safe_action:'Owner checks this branch-HEAD workflow is relevant, then inspects logs; an automatic retry alone is not a repair.'};
   const running=checks.find(r=>['in_progress','queued','waiting','pending','requested'].includes(r.status));
   if(running) return {code:'EXTERNAL_ACTIONS_RUNNING',severity:'observed',
-    run_id:running.run_id,next_safe_action:'Follow the exact run and consume its evidence before the next authorized step.'};
+    run_id:running.run_id,evidence_scope:'branch_head_workflow_not_workstream',next_safe_action:'A branch-HEAD workflow is running (not necessarily this mission). Confirm scope and follow its evidence before proceeding.'};
   const usesWindows=(workstream?.resources||[]).includes('windows-runner-heavy');
   const windowsComplete=windows?.observation==='complete_for_listed_actions_jobs';
   if(usesWindows) return {code:'WINDOWS_LEASE_WITHOUT_CONFIRMED_WORK',severity:'needs_reconciliation',
@@ -77,7 +100,7 @@ export function operationalSignal(workstream, liveBranch={status:'not_checked'},
       'A Windows resource claim exists and Actions observation is incomplete; reconcile without auto-releasing or stealing the runner.'};
   if(checks.some(r=>r.conclusion==='success'))
     return {code:'TECHNICAL_EVIDENCE_REVIEW',severity:'review',
-      next_safe_action:'Inspect matching SHA, tests, visuals and deliverable; successful CI is not completion or artistic approval.'};
+      evidence_scope:'branch_head_workflow_not_workstream',next_safe_action:'Branch-HEAD CI succeeded; verify relevance, SHA, visuals and deliverable. This is not mission completion or artistic approval.'};
   return {code:'CLAIMED_WITHOUT_RECENT_RUN',severity:'unknown',
     next_safe_action:'Ask the owner to inspect the next allowed gate; latest-20 window cannot prove an abandoned task.'};
 }
@@ -91,7 +114,17 @@ export function declaredOperatingState(workstream){
 export function summarize({registry,delivery=null,android=null,head=null,live=null,checkedAt=new Date().toISOString()}){
   if(!Array.isArray(registry?.active))throw Error('Canonical registry active array missing');
   const active=registry.active.map(w=>({id:w.id,title:short(w.title),owner:short(w.owner),branch:short(w.branch),declared_status:w.status,declared_phase:short(w.phase),declared_operating_state:declaredOperatingState(w),declared_next:short(w.next),declared_resources:Array.isArray(w.resources)?w.resources:[],operational_signal:operationalSignal(w,live?.branches?.[w.branch]||{status:'not_checked'},live?.windows),delivery_definition:{deliverable:short(w.delivery_definition?.deliverable),evidence:short(w.delivery_definition?.evidence),handoff:short(w.delivery_definition?.handoff)},live_branch:live?.branches?.[w.branch]||{status:'not_checked'}}));
-  return {schema_version:1,checked_at:checkedAt,source_head:head,read_only:true,
+  const signalCount={};
+  for(const w of active) signalCount[w.operational_signal.code]=(signalCount[w.operational_signal.code]||0)+1;
+  const operational_counts={
+    registered_workstreams:active.length,owner_paused:active.filter(x=>x.declared_operating_state==='paused_by_owner').length,
+    declared_windows_leases:active.filter(x=>x.declared_resources.includes('windows-runner-heavy')).length,
+    observed_windows_jobs_running:live?.windows?.running?.length||0,
+    observed_windows_jobs_queued:live?.windows?.queued?.length||0,
+    signal_counts:signalCount,
+    measurement_limit:'Counts are current declarations and bounded Actions observations, not hours saved or live chat activity.'
+  };
+  return {schema_version:1,checked_at:checkedAt,source_head:head,read_only:true,operational_counts,
     authority:'pipeline/active-workstreams.json; pipeline/playtest-delivery.json; updates/android/family.json',
     active,windows:live?.windows||{observation:'not_checked',running:[],queued:[],errors:[]},
     versions:versionStates({head,delivery,android}),
@@ -106,7 +139,7 @@ export async function collectLive({github,repo,active,now=()=>new Date().toISOSt
     try{
       const head=(await github.rest.repos.getBranch({...repo,branch})).data.commit.sha;
       const response=(await github.rest.actions.listWorkflowRunsForRepo({...repo,branch,per_page:20})).data;
-      branches[branch]={status:'observed',head,checks:(response.workflow_runs||[]).filter(r=>r.head_sha===head&&r.name!=='Eldoria concise work status').map(r=>({run_id:r.id,name:r.name,status:r.status,conclusion:r.conclusion||null})),checks_window:'latest_20_runs_for_branch'};
+      branches[branch]={status:'observed',head,checks:latestHeadChecks((response.workflow_runs||[]).filter(r=>r.head_sha===head&&r.name!=='Eldoria concise work status').map(r=>({run_id:r.id,name:r.name,event:r.event||null,created_at:r.created_at||null,run_attempt:r.run_attempt||null,status:r.status,conclusion:r.conclusion||null}))),checks_window:(response.total_count||0)>20?'partial_latest_20_runs_for_branch':'latest_20_runs_for_branch'};
       // One recent substantive run per branch, including older source revisions.
       // Separate from HEAD checks so an old successful build cannot certify new code.
       const sample=(response.workflow_runs||[]).find(r=>/native|unity|android|webgl|progression/i.test(r.name||''));
@@ -154,6 +187,11 @@ export function markdown(report){
   for(const w of report.active)out+='| '+md(w.title||w.id)+' | '+md(w.branch)+' | '+md(w.declared_operating_state)+' | '+md(w.declared_phase||w.declared_status)+' | '+md(w.live_branch.status)+' |\n';
   out+='\nSeñales de continuidad (orientativas, sin ejecutar acciones):\n';
   for(const w of report.active){const s=w.operational_signal||{};out+='- '+md(w.title||w.id)+': '+md(s.code)+'; siguiente paso seguro: '+md(s.next_safe_action)+'\n';}
+  const metrics=report.operational_counts;
+  if(metrics) out+='\nDatos operativos observables: '+md(metrics.registered_workstreams)+
+    ' trabajos registrados, '+md(metrics.owner_paused)+' pausados, '+
+    md(metrics.declared_windows_leases)+' reservas Windows declaradas, '+
+    md(metrics.observed_windows_jobs_running)+' jobs Windows en ejecución observados. No son ahorro de tiempo medido.\n';
   const timedBranches=new Set();
   for(const w of report.active){
     out+='\nEntrega de '+md(w.title||w.id)+': '+md(w.delivery_definition.deliverable||'sin definición explícita registrada')+'; evidencia: '+md(w.delivery_definition.evidence)+'; cierre: '+md(w.delivery_definition.handoff)+'.\n';
