@@ -840,6 +840,13 @@ namespace Eldoria.Tests
                         "World entry must focus Valoria, not retain the previous panoramic centre.");
                     Assert.That(node.transform.position,Is.EqualTo(position),
                         "Close-view reentry may not relocate a gameplay resource.");
+                    // Home must obey the same near-view rule as entering Mundo.
+                    Call(navigation,"SetZoomLevel",1,true);
+                    Call(host,"Home");
+                    Call(adapter,"RefreshForCapture");
+                    Assert.That(camera.orthographicSize,Is.EqualTo((float)Member(navigation,"localZoom")).Within(.1f),
+                        "World Home must not reset the player to regional or panorama.");
+                    Assert.That(node.transform.position,Is.EqualTo(position));
                 }
                 // Real near 3D wood/stone visuals and their regional LODs
                 // must share a fixed logical map coordinate, not two model

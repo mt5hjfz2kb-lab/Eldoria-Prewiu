@@ -132,6 +132,9 @@ namespace Eldoria.ReferenceClean {
     // Every visit starts in playable near view, including after panorama or a saved-session reload.
     // EnterStrategicView resets bearing and focal point; the near preset then overrides its
     // strategic zoom. One existing camera, one WorldRoot and one persistent gateway.
+    // Match the canonical portrait near scale before the same-frame render,
+    // rather than creating a visible 36 -> 64 camera jump after entering.
+    WorldNavigation.localZoom=WorldCamera.aspect<.8f?64f:36f;
     WorldNavigation.EnterStrategicView(WorldHome);
     WorldNavigation.SetZoomLevel(2,true);
     // Strategic bounds may clamp the anchor before changing presets;
