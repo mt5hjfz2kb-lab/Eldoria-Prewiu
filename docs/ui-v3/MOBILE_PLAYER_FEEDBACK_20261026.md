@@ -27,4 +27,13 @@ Base: diseño **Interfaz 1 / Diálogo 1** integrado en main, pantalla real de **
 - Auditar pantallas de héroes y navegación de gestión pendiente respecto al flujo real del vertical slice, sin inventar héroes o funcionalidades. Diálogo 3 de Orín/cartas solo al disparador narrativo canónico.
 - Comparar las capturas auténticas y completar I–II, entrenar, marchar, luchar, regresar, apagar/cargar y guardar.
 
-**Estado a 26-10:** PR #111 DRAFT con cambios en fuente y pruebas; **todavía sin Unity QA sobre el HEAD final**, sin aprobación artística externa, sin build Android corregida ni actualización distribuida. PR #99 se conserva DRAFT; no fusionar por coincidencia temática. Presupuesto 0 €. Mantener la partida del propietario intacta.
+**Estado verificado al cierre de 26-10:** PR111 fusionado, HEAD final certificado
+por run40372404380 (63/63 PlayMode,26/26 EditMode). PR112 fusionado como
+8d3f25053f6817dcbf34d07da426b284fdd12908, gate general40387268368 SUCCESS y
+UI40387268720 SUCCESS (64/64 PlayMode,26/26 EditMode). PR99 cerrado como superado,
+con rama histórica conservada. La interfaz aprobada, Entrenamiento y Marchas fueron
+revisadas en capturas reales; no existe una pantalla de gestión de Héroes que deba
+presentarse como implementada. Véase [cierre de interfaz](ORDERED_COMPLETION_20261026.md)
+y [revisión forestal](../world4x-multiplayer/FOREST_VISUAL_REVIEW.md).
+Sin aprobación artística global, perfilado físico ni nueva APK distribuida.
+Android sigue1.14/code14. Presupuesto0€. Partida del propietario intacta.

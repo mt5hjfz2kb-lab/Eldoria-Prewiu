@@ -1,8 +1,9 @@
 # Auditoría forestal de la Región 1 integrada
 
-Base: main tras PR112. Evidencia de observación: artefacto 12674022008, run
-40370249261, capturas genuinas y `world-wide-renderer-survey.tsv`. Comparado
-directamente con el tríptico canónico de 22-10. Este inventario no mide FPS móvil.
+Base visual final: main tras PR112, run40387268720 (artefacto12686696359).
+Candidata revisada: run40394742870 (artefacto12687737377). Seis pares auténticos
+con cámaras equivalentes, contrastados con el tríptico canónico de22-10.
+El censo inicial se contrastó con `world-wide-renderer-survey.tsv`. No mide FPS móvil.
 
 ## Qué está activo y qué significan las cifras
 
@@ -38,13 +39,29 @@ nodos. El canon propone grupos menores, claros amplios y jerarquía del contenid
 La vista cercana necesita conservar árboles de mejor silueta como encuadre, no
 copiar todas las masas regionales a escala de primer plano.
 
-Conservar fuentes, pinos protegidos y ecotonos útiles como primera intervención.
-Priorizar retirada visual de copas genéricas recientes. PR113 propone ocultar
-1.664 de las 4.988 (33,36%), con identidad determinista compartida entre near/far.
-Esto es reversible y no regenera el terreno, pero una selección por hash NO
-garantiza claros coherentes ni mejora artística: exigir comparación visual real.
-Si queda el efecto de confeti, pasar a retirar subgrupos completos según composición
-y accesos, manteniendo manchas de bosque útiles. No acumular porcentajes globales.
+La primera selección por hash (1.664 de 4.988 copas genéricas) se rechazó tras
+examinar seis pares auténticos: perforaba las mismas masas sin retirar la silueta
+artificial ni mejorar suficientemente su composición. Se cambió de enfoque.
+
+La corrección retenida oculta el modelo compartido de copa redondeada y las cohortes
+de relleno `Context`, `Belt`, `Regional` y `Castle`. El GLB contiene 2.482 copas
+redondeadas; 1.544 elementos pertenecen a esas cohortes, con solapamiento. La unión
+retirada son **3.251 de 5.047 árboles continentales (64,4%)**: permanecen **1.796**,
+incluidos31ecotonos de abeto, y los **462 pinos originales**. No sumar categorías
+solapadas ni representaciones LOD. Las decisiones near/far son idénticas.
+
+Las fuentes de producción explican la selección: `build_region_from_ai.py` añadió
+esas cohortes para rellenar espacios y `interactive/command.py` transformó un
+modelo compartido en la copa redondeada repetitiva. Se conservan las fuentes Blender,
+mallas, objetos, transformaciones y metadatos Unity. La intervención de visibilidad
+se revierte aisladamente sin reconstruir la geografía.
+
+La revisión independiente observa una mejora clara en cercana horizontal y las dos
+regionales; moderada en ambas panorámicas; cercana vertical sin cambio significativo
+ni regresión. Se conservan bosquetes, ribera y pinos, con claros más continuos junto
+a Valoria. Persisten coníferas repetidas y puntos lejanos. Véase
+[revisión de las seis vistas](FOREST_VISUAL_REVIEW.md); no es aprobación artística
+global ni prueba de transiciones animadas.
 
 ## Límite funcional importante
 
@@ -62,9 +79,12 @@ IDs, colliders, regeneración ni rutas guardadas.
 
 ## Validación de la candidata
 
-Pendiente de cerrar con el resultado exacto de PR113: seis pares de cámaras
-cercana/regional/panorámica horizontal/vertical, matrices y dimensiones iguales,
-capturas sin retoque, estabilidad de foco/selección/guardados y suite integrada.
-Registrar si realmente mejoran claros, recursos, amenazas y coherencia, además
-del censo. Menos renderizadores no acredita FPS, memoria liberada ni ART_APPROVED:
-los meshes y fuentes permanecen cargados. No publicar APK por esta corrección.
+Los seis pares cercana/regional/panorámica horizontal/vertical tienen dimensiones,
+pose y proyección equivalentes y hashes PNG originales verificados mediante
+`verify_capture_pairs.py`. El verificador artístico existente ha emitido
+`WORLD4X_ARTISTIC_PROCESS_EVIDENCE_PASS (NOT ART_APPROVED)` usando las fuentes
+BLEND históricas exactas y sin afirmar una nueva sesión Blender/MCP.
+
+El resultado técnico final se registra por separado en FOREST_VISUAL_REVIEW.md.
+Menos renderizadores no acredita FPS ni memoria liberada: mallas y fuentes siguen
+residentes. No se publica una APK por esta corrección.

@@ -1,0 +1,24 @@
+{
+  "merged_commit": "c448cb783c512377702b452bd3bb6a7459c1c135",
+  "native_commit": "297fc583ab87c8c280ec8f1f5c90fee64a574fc3",
+  "identical_git_tree": "d2a71ea45473f5ad07a1882bd30d5d79a65240da",
+  "native_run": 40399630175,
+  "native_artifact": 12688613577,
+  "native_zip_sha256": "c5d4138d7f07d3d58d96f83e31efa2475b5f57e0e57ec269ba5f9c26a3782638",
+  "editmode": {
+    "total": 26,
+    "passed": 26,
+    "failed": 0
+  },
+  "playmode": {
+    "total": 65,
+    "passed": 65,
+    "failed": 0
+  },
+  "integration_checks": 44,
+  "artistic_process_verifier": "WORLD4X_ARTISTIC_PROCESS_EVIDENCE_PASS (NOT ART_APPROVED)",
+  "visual_outcome": "RETAINED_SCOPED_FOREST_IMPROVEMENT",
+  "art_approved": false,
+  "physical_mobile_profiled": false,
+  "apk_published": false
+}

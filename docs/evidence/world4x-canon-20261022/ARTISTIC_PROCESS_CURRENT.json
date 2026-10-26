@@ -1,33 +1,64 @@
 {
   "schema_version": 1,
   "workstream_id": "eldoria-world-region-1-canon-20261022",
-  "certified_source_commit": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
+  "certified_source_commit": "c448cb783c512377702b452bd3bb6a7459c1c135",
   "blender": {
     "method": "blender-mcp-interactive",
     "mcp_status": "verified",
-    "mcp_preflight": "Actual installed BlenderMCP addon SHA eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5 with Blender5.2.2 LTS; loopback execute_code request/response and owned closed-PID proof retained from40319616586. Inspected original donor bounds, authored a rounded shared crown, repaired source beds/banks, inspected real Blender previews and reviewed actual Unity. Later scoped Unity finishing uses the unchanged exact authored source.",
-    "artistic_decision_log": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+    "mcp_preflight": "Historical source verification only: Actual installed BlenderMCP addon SHA eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5 with Blender5.2.2 LTS; loopback execute_code request/response and owned closed-PID proof retained from40319616586. Inspected original donor bounds, authored a rounded shared crown, repaired source beds/banks, inspected real Blender previews and reviewed actual Unity. Later scoped Unity finishing uses the unchanged exact authored source. Current intervention: actual session tool inventory offered no BlenderMCP and no local Blender; no new MCP session or bpy authoring is claimed. Existing source BLEND bytes were materialized and hash verified.",
+    "artistic_decision_log": "docs/world4x-multiplayer/FOREST_VISUAL_REVIEW.md",
     "input_blend": "docs/evidence/world4x-canon-20261022/sources/native-40253785923/Eldoria_Region1_Production.blend",
     "input_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
     "output_blend": "docs/evidence/world4x-canon-20261022/sources/native-40337702256/Eldoria_Region1_Production.blend",
-    "output_sha256": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9"
+    "output_sha256": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9",
+    "method_scope": "HISTORICAL_SOURCE_PROVENANCE_ONLY",
+    "current_intervention_invoked_blender": false
   },
   "baseline": {
-    "run_id": 40253785923,
-    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40253785923/review"
+    "run_id": 40387268720,
+    "directory": "docs/world4x-multiplayer/evidence/final-control"
   },
   "candidate": {
-    "run_id": 40337702256,
-    "directory": "docs/evidence/world4x-canon-20261022/sources/native-40337702256/review"
+    "run_id": 40394742870,
+    "directory": "docs/world4x-multiplayer/evidence/candidate"
   },
-  "visual_review_path": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+  "visual_review_path": "docs/world4x-multiplayer/FOREST_VISUAL_REVIEW.md",
   "visual_judgment": {
     "outcome": "RETAINED",
-    "reviewer": "ChatGPT direct art director/author, not independent external approval",
-    "observed_improvement": "Directly reviewed all six authentic final Unity images and close resources, creatures and geological detail. Shared grass/albedo/detail removes source-specific material contrast; the previous stepped mineral-material boundary disappears. Readable85% nodes, grounded creatures, restrained mixed crowns, shorter bridge and continuous water remain. The director estimates approximately7.5 for the near-priority first consolidation.",
-    "remaining_gaps": "Coastline, some woodland/path groupings and mineral plate shapes remain more regular than the illustration. Panoramic detail is simpler. Independent external acceptance and physical mobile performance are not established."
+    "reviewer": "Independent agent /root/forest_visual_review; source author /root",
+    "observed_improvement": "Six genuine Unity pairs independently inspected: artificial rounded crowns removed, continuous open areas south of Valoria and along rivers, improved separation of resources and threats. Close pines and regional woodland survive. Near portrait unchanged without regression; regional clear improvement; panorama moderate improvement.",
+    "remaining_gaps": "Repeated conifers and distant point-like woodland remain; no global 8/10 approval, animated transition certification or physical mobile performance claim. Native technical rerun passed independently of this visual verdict."
   },
   "art_approved": false,
   "physical_mobile_tested": false,
-  "director_estimate": 7.5
+  "current_intervention": {
+    "workstream_id": "valoria-master-plan-layered-construction-20261016",
+    "method": "unity-visibility-only",
+    "art_code": "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs",
+    "input_and_output_blend_identical": true,
+    "preserved_current_blend_sha256": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9",
+    "preserved_glb_sha256": "d23114d40777e014dac5de7b18078143b9d32e66df79798871751b9b1d9c6738",
+    "new_blender_execution": false,
+    "renderer_pairs_hidden": 3251,
+    "continental_trees_retained": 1796,
+    "original_pines_retained": 462,
+    "art_assets_or_resource_ids_changed": false,
+    "native_visual_source_commit": "606663d96147526f0353eb622753f417e303f3b1",
+    "technical_status": "PASS_65_PLAYMODE_26_EDITMODE_44_INTEGRATION_CHECKS",
+    "rejected_initial_run": 40382253603,
+    "technical_run": 40399630175,
+    "technical_artifact": 12688613577,
+    "native_technical_source_commit": "297fc583ab87c8c280ec8f1f5c90fee64a574fc3",
+    "merged_commit": "c448cb783c512377702b452bd3bb6a7459c1c135",
+    "native_and_merged_tree": "d2a71ea45473f5ad07a1882bd30d5d79a65240da",
+    "visual_and_final_runtime_blob": "fdbbd41366232ca5e226de2a45ccf7e0d16c3712"
+  },
+  "evidence_archive": {
+    "url": "https://chatgpt.com/library?file_id=libfile_46d29ff672108191a9477a7855ea34b7&account_id=personal",
+    "filename": "Eldoria_Forest_AB_20261026.zip",
+    "bytes": 24160613,
+    "sha256": "3ab88532c2077b93004ed4e575551359df964355a6959dd9fb923a6c06630189",
+    "materialization": "Extract docs/world4x-multiplayer/evidence/** into the checkout before running the existing verifier; sources BLEND remain in Git.",
+    "reason": "Preserve 24 original PNGs without duplicating native binary evidence in repository history."
+  }
 }

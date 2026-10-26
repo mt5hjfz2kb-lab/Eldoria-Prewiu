@@ -29,7 +29,7 @@ una pantalla de Héroes inexistente como terminada ni se inventa progresión de 
 Orín/diálogo3 permanece condicionado al disparador narrativo auténtico: no añadir
 un evento ficticio para aparentar cobertura. Bastiones III–V permanecen fuera.
 
-El PR99 antiguo no debe fusionarse íntegro: su ocultación de etiquetas quedó
+El PR99 antiguo quedó CERRADO como superado, conservando su rama: su ocultación de etiquetas quedó
 superada por PR112 y su inclinación estratégica antecede al controlador continuo
 de Región 1. Conservar la rama como historia, sin reintroducir doble inclinación.
 
