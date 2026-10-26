@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T14:42:24.853Z",
+  "updated_at": "2026-10-26T14:52:10.197Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1139,12 +1139,12 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": "codex-world4x-player-art-22db827a",
+      "owner": "codex-world4x-integration-97fedb88",
       "write_scope_released": false,
-      "ownership_revision": 40,
+      "ownership_revision": 41,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-25T18:49:37.384Z",
+      "claimed_at": "2026-10-26T14:52:10.197Z",
       "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
       "scope": [
         "Unity/Assets/Eldoria/World4XCanon/**",
@@ -1161,7 +1161,7 @@
         ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [],
-      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.\n2026-10-26: Owner authorizes this director to correct all identified world visual defects, prioritize near camera reference fidelity, scale resource nodes approximately 85% of city visual size, validate and integrate today after actual visual and functional gates. No paid credits.",
+      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.\n2026-10-26: Owner authorizes this director to correct all identified world visual defects, prioritize near camera reference fidelity, scale resource nodes approximately 85% of city visual size, validate and integrate today after actual visual and functional gates. No paid credits.\n2026-10-26 explicit owner handoff: complete replacement, merge PR100 after applicable checks, build installable and use existing authorized distribution channel; zero cost, no Bastion III-V or city/UI redesign.",
       "phase": "INTEGRATION_CHECKS",
       "next": "Reconcile current main in same PR100, verify current artistic-process and integration checks, then owner-authorized merge; no direct publication.",
       "dependencies": [
@@ -1604,12 +1604,18 @@
           "revision": 38,
           "reason": "Owner 2026-10-26 explicitly assigns full graphical correction and integration to this session; near camera priority and resource screen size approximately 85% of city.",
           "transferred_at": "2026-10-26T07:37:46.430Z"
+        },
+        {
+          "owner": "codex-world4x-player-art-22db827a",
+          "revision": 40,
+          "relieved_at": "2026-10-26T14:52:10.197Z",
+          "reason": "Explicit owner handoff to complete total world replacement, PR100 integration and existing-channel installable delivery; preserve running candidate checks."
         }
       ],
       "delivery_definition": {
-        "deliverable": "Reference-led playable near view and coherent three-scale Region1, nodes approximately 85% city visual extent, integrated only after genuine review and QA.",
-        "evidence": "Exact-source Unity captures in 3 zooms and both orientations; measured node/city screen extents; gameplay/contact/persistence checks.",
-        "handoff": "Same PR100, preserve baseline and editable sources; record truthful visual and technical verdict before integration."
+        "deliverable": "Single active Region1 world in all game entry, return, save and zoom paths, integrated through PR100 and installable build.",
+        "evidence": "Legacy renderer/code audit, current applicable PR checks, native same-input certificate, exact delivery build QA, channel manifest.",
+        "handoff": "main merge SHA, version/build and access link; separate distribution from physical installation/test."
       },
       "release_note": "Native40337702256 completed successfully; real six-view/close-resource/creature/Breach review retained the first near-priority consolidation at an approximate author estimate7.5. Release only the completed Windows reservation for ordinary integration CI; owner/revision40 write scope remains claimed until merge completes.",
       "previous_owner": "codex-world4x-takeover-a6480e11",
