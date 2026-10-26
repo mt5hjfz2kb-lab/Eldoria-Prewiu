@@ -14,7 +14,7 @@ xs=np.arange(-494.,-73.,2.);ys=np.arange(-44.,345.,2.);values=np.zeros((len(ys),
 for j,y in enumerate(ys):
  for i,x in enumerate(xs):
   hit=bvh.ray_cast(Vector((x,y,400)),Vector((0,0,-1)))
-  assert hit[0] is not None,(x,y)
+  if hit[0] is None:continue
   index=hit[2];rock=mesh.materials[mesh.polygons[index].material_index].name.startswith('Breach fractured basalt')
   if not rock:values[j,i]=hit[0].z;weights[j,i]=1
 def blur(a):
@@ -29,6 +29,14 @@ def sample(a,x,y):
  u=max(0,min(a.shape[1]-1,(x-xs[0])/2));v=max(0,min(a.shape[0]-1,(y-ys[0])/2));i=int(u);j=int(v);ii=min(a.shape[1]-1,i+1);jj=min(a.shape[0]-1,j+1);tx=u-i;ty=v-j
  return (a[j,i]*(1-tx)+a[j,ii]*tx)*(1-ty)+(a[jj,i]*(1-tx)+a[jj,ii]*tx)*ty
 def smooth(t):t=max(0,min(1,t));return t*t*(3-2*t)
+water_trees=[]
+for name in ['BLD_RiverExtension_1','BLD_RiverExtension_-1','Pilot_River']:
+ ob=bpy.data.objects.get(name)
+ if not ob:continue
+ transform=terrain.matrix_world.inverted()@ob.matrix_world
+ points=[transform@v.co for v in ob.data.vertices]
+ water_trees.append(BVHTree.FromPolygons([(v.x,v.y,0) for v in points],[list(p.vertices) for p in ob.data.polygons]))
+assert len(water_trees)==3
 soil_ids=set()
 for face in mesh.polygons:
  if mesh.materials[face.material_index].name=='Region1 open meadows':
@@ -39,6 +47,8 @@ for i,v in enumerate(mesh.vertices):
  if not(-470<x<-98 and -20<y<320):continue
  fade=smooth(min(x+470,-98-x,y+20,320-y)/24)
  for cx,cy,radius in reserves:fade*=smooth((math.hypot(x-cx,y-cy)-radius-4)/20)
+ distance_to_water=min(tree.find_nearest(Vector((float(x),float(y),0)))[3] for tree in water_trees)
+ fade*=smooth((distance_to_water-12)/22)
  top=sample(surface,x,y);target=top if i in soil_ids else min(float(z),top)
  newz=float(z)+(target-float(z))*fade
  maxdelta=max(maxdelta,abs(newz-float(z)));changed+=abs(newz-float(z))>.0001;v.co.z=newz
