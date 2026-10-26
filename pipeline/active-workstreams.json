@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T18:49:00Z",
+  "updated_at": "2026-10-26T18:55:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -52,7 +52,8 @@
         "pipeline/android-updater-build-request.json",
         "pipeline/android-updater-release-request.json",
         "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs"
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
       ],
       "resources": [],
       "art_production_routing": "required",
@@ -60,7 +61,7 @@
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "PR112_VISUAL_QA_AND_INDEPENDENT_REVERSIBLE_FOREST_DENSITY_CANDIDATE",
-      "next": "Certify existing PR112 without invalidating its native run; simultaneously prepare independent reversible Region1 forestry density candidate in ProductionLod, no Windows until runner available, then compare real camera A/B before final Android release.",
+      "next": "Validate existing PR112 on Unity, then PR113 forest candidate in native GPU full PlayMode and A/B; with both visually retained, release signed Android via canonical builder",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -732,7 +733,7 @@
           "reason": "Owner in current chat explicitly orders continuous execution through full product delivery on 26/10/2026"
         }
       ],
-      "ownership_revision": 24,
+      "ownership_revision": 25,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
