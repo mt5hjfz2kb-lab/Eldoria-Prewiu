@@ -1,10 +1,6 @@
 name: '[ELDORIA] Recoverable asset archive and external references'
+# Completed recovery audit: rerun explicitly, never on edits to this workflow.
 on:
-  push:
-    branches: [audit/asset-recovery-package-20261026]
-    paths:
-      - '.github/workflows/dependency-history-backup.yml'
-      - 'tools/dependency-audit/**'
   workflow_dispatch:
 
 permissions:

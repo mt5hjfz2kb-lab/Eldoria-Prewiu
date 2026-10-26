@@ -179,3 +179,8 @@ Unity del ZIP en un proyecto nuevo. Ningún asset se retira antes de comprobar s
 consumidores y esa restauración funcional. El script permite volver a verificar
 un ZIP existente contra Git sin sobrescribirlo; una identidad de blob incorrecta
 fue rechazada en la prueba de protección.
+
+El flujo de recuperación queda en main como `workflow_dispatch` manual: no se
+dispara por editar su propio workflow ni por cambios rutinarios de scripts. La
+configuración de cierre superó el verificador de gobernanza existente, sin cambiar
+sus reglas. Los resultados nativos anteriores conservan su procedencia exacta.
