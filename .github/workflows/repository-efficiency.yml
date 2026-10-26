@@ -7,7 +7,6 @@ on:
       - 'docs/evidence/world4x-canon-20261022/authoring/reuse_editable_source.ps1'
       - 'docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1'
       - '.github/workflows/repository-efficiency.yml'
-      - '.github/workflows/eldoria-asset-feedback-sync-test.yml'
       - '.github/workflows/valoria-full-frame-convergence-control.yml'
       - '.github/workflows/visual-fallback-route.yml'
   pull_request:
@@ -17,7 +16,6 @@ on:
       - 'docs/evidence/world4x-canon-20261022/authoring/*editable*'
       - 'docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1'
       - '.github/workflows/repository-efficiency.yml'
-      - '.github/workflows/eldoria-asset-feedback-sync-test.yml'
       - '.github/workflows/valoria-full-frame-convergence-control.yml'
       - '.github/workflows/visual-fallback-route.yml'
   workflow_dispatch:
@@ -33,12 +31,10 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /tools/repository-efficiency/
-            /tools/valoria-asset-feedback/
             /tools/validate-valoria-full-frame-convergence.mjs
             /tools/route-visual-fallback.mjs
             /pipeline/valoria-full-frame-convergence-v1.json
             /pipeline/visual-fallback-policy.json
-            /.github/workflows/eldoria-asset-feedback-sync-test.yml
             /.github/workflows/valoria-full-frame-convergence-control.yml
             /.github/workflows/visual-fallback-route.yml
             /docs/evidence/world4x-canon-20261022/authoring/reuse_editable_source.ps1

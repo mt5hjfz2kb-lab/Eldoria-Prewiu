@@ -14,11 +14,6 @@ jobs:
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-        with:
-          # This read-only check needs text inputs only; preserve every validation.
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /tools/valoria-asset-feedback/
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -28,12 +23,12 @@ jobs:
           node --test tools/valoria-asset-feedback/guard.test.mjs tools/valoria-asset-feedback/workstream-sync.test.mjs
       - name: Validate current artist owner plan with exact Blender source
         run: |
-          git -c remote.origin.promisor=true -c remote.origin.partialclonefilter=blob:none fetch --filter=blob:none --depth=1 --no-tags origin art/valoria-63-individual-quality-uplift-20261015
+          git fetch --depth=1 origin art/valoria-63-individual-quality-uplift-20261015
           git show FETCH_HEAD:tools/valoria-modular-fortress/individual_quality_uplift.py > /tmp/valoria63-artist.py
           node tools/valoria-asset-feedback/workstream-sync.mjs artist tools/valoria-asset-feedback/art-workstream-plan.json '' '' '' /tmp/valoria63-artist.py
       - name: Validate exact Bastion pinned selection and actual Unity source
         run: |
-          git -c remote.origin.promisor=true -c remote.origin.partialclonefilter=blob:none fetch --filter=blob:none --depth=1 --no-tags origin integration/valoria-bastion1-player-scene-20261012
+          git fetch --depth=1 origin integration/valoria-bastion1-player-scene-20261012
           git show FETCH_HEAD:docs/evidence/valoria-bastion1-player-scene-integration-20261012/MODULAR63_SELECTED_VERSIONS_20261016.json > /tmp/bastion63-selected.json
           git show FETCH_HEAD:Unity/Assets/Eldoria/ArtTests/Bastion1Assembly/Editor/Bastion1Modular63SceneReview.cs > /tmp/bastion63-source.cs
           node tools/valoria-asset-feedback/workstream-sync.mjs unity tools/valoria-asset-feedback/unity-workstream-plan.json /tmp/bastion63-selected.json '' '' /tmp/bastion63-source.cs

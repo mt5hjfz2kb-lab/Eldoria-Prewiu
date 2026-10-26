@@ -1,7 +1,7 @@
 """Execute existing metadata checks in isolated copies of their actual sparse inputs.
 
 No Unity/Blender, network, deletions from the repository, or test reimplementations.
-The original workflow still checks the two historic branch source identities.
+Historical cross-branch feedback validation is outside this bounded change.
 """
 import json
 from pathlib import Path
@@ -12,14 +12,6 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = {
-    "eldoria-asset-feedback-sync-test.yml": {
-        "commands": [
-            ["node", "tools/valoria-asset-feedback/guard.mjs", "validate"],
-            ["node", "--test", "tools/valoria-asset-feedback/guard.test.mjs",
-             "tools/valoria-asset-feedback/workstream-sync.test.mjs"],
-        ],
-        "required": "tools/valoria-asset-feedback/registry.json",
-    },
     "valoria-full-frame-convergence-control.yml": {
         "commands": [["node", "tools/validate-valoria-full-frame-convergence.mjs"]],
         "required": "pipeline/valoria-full-frame-convergence-v1.json",
