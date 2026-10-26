@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {summarize,collectLive,markdown,jobTiming,versionStates,operationalSignal} from './report.mjs';
+import {summarize,collectLive,markdown,jobTiming,versionStates,operationalSignal,latestHeadChecks} from './report.mjs';
 
 const registry={active:[{id:'one',title:'UI',branch:'ui/one',owner:'existing',status:'active',resources:[],phase:'QA_PENDING'}],history:[{id:'old',status:'active',secret:'DO_NOT_COPY_HISTORY'}]};
 test('bounded view never reactivates history or labels an untested delivery current',()=>{
@@ -121,4 +121,57 @@ test('summaries expose actionable signals without exposing secrets or historical
     live:{branches:{main:{status:'observed',checks:[{run_id:1,conclusion:'failure'}]}},windows:{observation:'not_checked',running:[],queued:[],errors:[]}}});
   assert.equal(report.active[0].operational_signal.code,'CI_FAILURE_NEEDS_DIAGNOSIS');
   assert.match(markdown(report),/CI_FAILURE_NEEDS_DIAGNOSIS/);
+});
+
+test('stale failures and prior GitHub authorization runs are superseded by a newer successful same-workflow run',()=>{
+  const prior=[
+    {name:'World4X artistic process evidence',run_id:13,created_at:'2026-10-26T10:01:00Z',status:'completed',conclusion:'action_required'},
+    {name:'World4X artistic process evidence',run_id:15,created_at:'2026-10-26T10:08:00Z',status:'completed',conclusion:'success'},
+    {name:'Repository architecture guard',run_id:10,created_at:'2026-10-26T09:01:00Z',status:'completed',conclusion:'failure'},
+    {name:'Repository architecture guard',run_id:12,created_at:'2026-10-26T10:02:00Z',status:'completed',conclusion:'success'}
+  ];
+  const current=latestHeadChecks(prior);
+  assert.equal(current.length,2);
+  const result=operationalSignal({owner:'somebody',resources:[]},{status:'observed',checks:prior});
+  assert.equal(result.code,'TECHNICAL_EVIDENCE_REVIEW');
+  assert.equal(result.evidence_scope,'branch_head_workflow_not_workstream');
+});
+test('a current failure remains visible even if another different workflow passed',()=>{
+  const checks=[
+    {name:'Unity core',run_id:60,status:'completed',conclusion:'success'},
+    {name:'Art gate',run_id:61,status:'completed',conclusion:'failure'}
+  ];
+  const signal=operationalSignal({owner:'owner',resources:[]},{status:'observed',checks});
+  assert.equal(signal.code,'CI_FAILURE_NEEDS_DIAGNOSIS');
+  assert.equal(signal.run_id,61);
+});
+test('a newer running attempt supersedes a completed failed attempt of the same workflow',()=>{
+  const checks=[
+    {name:'Art gate',run_id:61,status:'completed',conclusion:'failure'},
+    {name:'Art gate',run_id:62,status:'in_progress',conclusion:null}
+  ];
+  assert.equal(operationalSignal({owner:'owner'},{status:'observed',checks}).code,'EXTERNAL_ACTIONS_RUNNING');
+});
+test('collectLive preserves bounded observation and dates for exact HEAD only',async()=>{
+  const github={rest:{repos:{getBranch:async()=>({data:{commit:{sha:'CURRENT'}}})},actions:{
+    listWorkflowRunsForRepo:async a=>({data:{total_count:22,workflow_runs:a.status?[]:[
+      {id:32,name:'Main guard',head_sha:'CURRENT',status:'completed',conclusion:'success',created_at:'2026-10-26T10:00:00Z'},
+      {id:31,name:'Main guard',head_sha:'CURRENT',status:'completed',conclusion:'failure',created_at:'2026-10-26T09:00:00Z'},
+      {id:30,name:'Main guard',head_sha:'OLD',status:'completed',conclusion:'failure'}
+    ]}}),listJobsForWorkflowRun:async()=>({data:{total_count:0,jobs:[]}})
+  }}};
+  const live=await collectLive({github,repo:{owner:'o',repo:'r'},active:[{branch:'main'}]});
+  assert.equal(live.branches.main.checks.length,1);
+  assert.equal(live.branches.main.checks[0].run_id,32);
+  assert.equal(live.branches.main.checks_window,'partial_latest_20_runs_for_branch');
+});
+test('operational counts measure declarations and bounded observations, not claimed savings',()=>{
+  const r=summarize({registry:{active:[
+    {id:'paused',phase:'OWNER_PAUSED_DELAY',resources:[],branch:'main'},
+    {id:'world',owner:'world-owner',resources:['windows-runner-heavy'],branch:'main'}
+  ]}});
+  assert.equal(r.operational_counts.registered_workstreams,2);
+  assert.equal(r.operational_counts.owner_paused,1);
+  assert.equal(r.operational_counts.declared_windows_leases,1);
+  assert.match(markdown(r),/No son ahorro de tiempo medido/);
 });
