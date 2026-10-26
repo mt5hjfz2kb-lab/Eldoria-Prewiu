@@ -1,0 +1,57 @@
+name: Repository efficiency regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/repository-efficiency/**'
+      - 'docs/evidence/world4x-canon-20261022/authoring/reuse_editable_source.ps1'
+      - 'docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1'
+      - '.github/workflows/repository-efficiency.yml'
+      - '.github/workflows/eldoria-asset-feedback-sync-test.yml'
+      - '.github/workflows/valoria-full-frame-convergence-control.yml'
+      - '.github/workflows/visual-fallback-route.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/repository-efficiency/**'
+      - 'docs/evidence/world4x-canon-20261022/authoring/*editable*'
+      - 'docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1'
+      - '.github/workflows/repository-efficiency.yml'
+      - '.github/workflows/eldoria-asset-feedback-sync-test.yml'
+      - '.github/workflows/valoria-full-frame-convergence-control.yml'
+      - '.github/workflows/visual-fallback-route.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/repository-efficiency/
+            /tools/valoria-asset-feedback/
+            /tools/validate-valoria-full-frame-convergence.mjs
+            /tools/route-visual-fallback.mjs
+            /pipeline/valoria-full-frame-convergence-v1.json
+            /pipeline/visual-fallback-policy.json
+            /.github/workflows/eldoria-asset-feedback-sync-test.yml
+            /.github/workflows/valoria-full-frame-convergence-control.yml
+            /.github/workflows/visual-fallback-route.yml
+            /docs/evidence/world4x-canon-20261022/authoring/reuse_editable_source.ps1
+            /docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify complete sparse inputs without Unity or archived binaries
+        run: python3 tools/repository-efficiency/verify_sparse.py
+      - name: Exercise source reuse without touching any real art
+        shell: pwsh
+        run: |
+          ./tools/repository-efficiency/test-source-reuse.ps1
+          $errors=$null;$tokens=$null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $pwd 'docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1'),[ref]$tokens,[ref]$errors) | Out-Null
+          if($errors.Count){throw ($errors | Out-String)}

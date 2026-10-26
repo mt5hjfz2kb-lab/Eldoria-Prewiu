@@ -38,8 +38,13 @@ foreach($name in @('RockBoarNear.glb','RockBoarFar.glb','SpawnlingNear.glb','Spa
  if(Test-Path "$path.meta"){$paths+="$path.meta"}
 }
 if(Test-Path "$creatures.meta"){$paths+="$creatures.meta"}
+. (Join-Path $PSScriptRoot 'reuse_editable_source.ps1')
+$editableSources=@()
 foreach($file in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend','RockBoar_Far_LOD.blend')){
- $path="$sources/$file";Copy-Item (Join-Path $generated $file) $path;$paths+=$path
+ $savedSource=Save-EldoriaEditableSource -GeneratedFile (Join-Path $generated $file) -DestinationDirectory $sources
+ $paths+=$savedSource.path
+ $editableSources+=$savedSource
+ Write-Host "ELDORIA_EDITABLE_SOURCE reused=$($savedSource.reused) avoided_checkout_bytes=$($savedSource.avoided_checkout_bytes) path=$($savedSource.path)"
 }
 foreach($file in @('macro-query-header-repair.json','macro-macro-art-operations.json','macro-ready.json','macro-session-closed.json','macro-request-40319616586.json','macro-response-40319616586.json')){
  $saved=Join-Path $generated $file
@@ -110,7 +115,7 @@ if($proof.source -ne $env:GITHUB_SHA -or $proof.run -ne $env:GITHUB_RUN_ID -or $
 foreach($item in $proof.images){if($item.sha256 -ne (Get-FileHash (Join-Path $general $item.file) -Algorithm SHA256).Hash.ToLower()){throw 'General screenshot hash mismatch'}}
 New-Item -ItemType Directory -Force "$review/general"|Out-Null
 foreach($file in Get-ChildItem $general -File){$path="$review/general/$($file.Name)";Copy-Item $file.FullName $path;$paths+=$path}
-$manifest=@{candidate_commit=$env:GITHUB_SHA;native_run=$env:GITHUB_RUN_ID;art_approved=$false;mobile_profiled=$false;files=@()}
+$manifest=@{candidate_commit=$env:GITHUB_SHA;native_run=$env:GITHUB_RUN_ID;art_approved=$false;mobile_profiled=$false;editable_sources=$editableSources;files=@()}
 foreach($path in $paths){
  if((Get-Item $path).Length -ge 100MB){throw "File exceeds repository object limit: $path"}
  $manifest.files+=@{path=$path;sha256=(Get-FileHash $path -Algorithm SHA256).Hash.ToLower();bytes=(Get-Item $path).Length}
