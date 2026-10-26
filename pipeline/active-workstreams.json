@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T17:13:00Z",
+  "updated_at": "2026-10-26T17:20:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -989,7 +989,9 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
         "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -1029,7 +1031,7 @@
           "status": "SUCCESS"
         }
       },
-      "next": "Fix start on near view, camera continuity across scales and visual node anchors; resume existing approved HUD V3 from merged PR90; test in landscape/portrait and native Android after source fixes before merging",
+      "next": "Native UI/world captures and scene PlayMode/EditMode on new branch before main merge or Android publish; still verify graphical LOD and official device testing.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1086,7 +1088,7 @@
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "MOBILE_PLAYER_FEEDBACK_FIX_NEAR_ENTRY_NODE_CAMERA_CONTINUITY_AND_UI_V3",
+      "phase": "WAITING_NATIVE_UI_WORLD_MOBILE_REGRESSION",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
