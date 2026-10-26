@@ -133,9 +133,16 @@ jobs:
           $live=Invoke-RestMethod "https://api.github.com/repos/$env:GITHUB_REPOSITORY/contents/pipeline/active-workstreams.json?ref=main" -Headers $h
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($live.content))|ConvertFrom-Json
           $owners=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $canonical=@($reg.active|Where-Object {$_.id -eq 'valoria-master-plan-layered-construction-20261016' -and $_.status -eq 'active' -and $_.branch -eq 'main'})
-          if($canonical.Count -ne 1 -or @($owners|Where-Object {$_.id -ne 'valoria-master-plan-layered-construction-20261016'}).Count){throw 'Runner claimed by an incompatible workstream'}
-          if($env:ELDORIA_NIGHTLY -ne 'true' -and ($owners.Count -ne 1 -or $owners[0].branch -ne 'main')){throw 'Manual Android build requires the runner claim'}
+          $buildRequest=Get-Content 'pipeline/android-updater-build-request.json' -Raw|ConvertFrom-Json
+          $pinnedRegistry=Get-Content 'pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
+          $requestedId=$buildRequest.workstreamId
+          $canonical=@($reg.active|Where-Object {$_.id -eq $requestedId -and $_.status -eq 'active' -and $_.branch -eq 'main'})
+          $pinned=@($pinnedRegistry.active|Where-Object {$_.id -eq $requestedId -and $_.status -eq 'active' -and $_.branch -eq 'main'})
+          if($canonical.Count -ne 1 -or $pinned.Count -ne 1 -or @($owners|Where-Object {$_.id -ne $requestedId}).Count){throw 'Runner claimed by an incompatible workstream'}
+          if($env:ELDORIA_NIGHTLY -ne 'true'){
+            if($owners.Count -ne 1 -or $owners[0].id -ne $requestedId -or $owners[0].branch -ne 'main'){throw 'Manual Android build requires the requested runner claim'}
+            if(-not $canonical[0].owner -or $canonical[0].ownership_state -ne 'claimed' -or $canonical[0].owner -ne $pinned[0].owner -or $canonical[0].ownership_revision -ne $pinned[0].ownership_revision){throw 'Android build ownership changed after request; refuse stale execution'}
+          }
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools already busy; never cancel other jobs'}
           $proof=Get-Content 'docs/evidence/valoria-reference-clean/android-existing-key-check.json' -Raw|ConvertFrom-Json
           if(-not @($proof.keys|Where-Object {$_.matches_original -and $_.certificate_sha256 -eq 'f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8' -and (Test-Path $_.path)}).Count){throw 'Original Android signing key missing'}
