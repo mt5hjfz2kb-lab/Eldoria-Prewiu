@@ -23,8 +23,10 @@ def main():
     wanted=set()
     for c in candidates:
         p="Unity/"+c["path"]
-        if p not in tree or tree[p][1]!=c["bytes"]:raise RuntimeError("Pinned file or size mismatch: "+p)
+        if p not in tree:raise RuntimeError("Pinned Git asset missing: "+p)
         if p+".meta" not in tree:raise RuntimeError("Missing Unity GUID .meta: "+p)
+        meta_data=git(root,"cat-file","blob",SHA+":"+p+".meta")
+        if ("guid: "+c["guid"]).encode() not in meta_data:raise RuntimeError("Unity GUID .meta mismatch: "+p)
         wanted.add(p);wanted.add(p+".meta")
         ancestor=pathlib.PurePosixPath(p).parent
         while str(ancestor) not in ("Unity/Assets","Unity","."):
