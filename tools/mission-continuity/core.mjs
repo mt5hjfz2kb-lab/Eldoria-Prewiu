@@ -44,6 +44,13 @@ export function classifyMission({ mission, activeWorkstreams, runs, branchSha, n
     state = "NEEDS_RECOVERY";
     nextAction = "Inspect failed/cancelled run logs; correct or choose an authorized bounded alternative, then rerun only the affected gate.";
   }
+  const sourceMatchesHead = latest ? Boolean(branchSha && latest.head_sha === branchSha) : null;
+  if (mission.report_only === true && latest && sourceMatchesHead === false && !running) {
+    state = "STALE_SOURCE_EVIDENCE";
+    nextAction = "A relevant workflow ran on an OLDER branch source. It is historical context only, NOT evidence that the current HEAD was tested, that the owner is progressing, or that production is complete.";
+  } else if (mission.report_only === true && running && sourceMatchesHead === false) {
+    nextAction += " This job is using an older source SHA; do not claim current HEAD certification.";
+  }
   const observedTime = latest ? Date.parse(latest.updated_at || latest.created_at) : NaN;
   const ageMinutes = Number.isFinite(observedTime) ? Math.max(0, (Date.parse(now) - observedTime) / 60000) : null;
   const stale = ageMinutes === null ? mission.report_only !== true : ageMinutes >= stallMinutes;
@@ -51,6 +58,7 @@ export function classifyMission({ mission, activeWorkstreams, runs, branchSha, n
     id: mission.workstream_id, state, alert: mission.report_only !== true && state !== "EXTERNAL_RUNNING" && stale,
     observation_mode: mission.report_only === true ? "report_only_no_issues" : "recovery_issue",
     owner_branch: ownerBranch,
+    source_matches_branch_head: sourceMatchesHead,
     branch: mission.branch, branch_sha: branchSha || null,
     latest_run: latest ? { id: latest.id, status: latest.status, conclusion: latest.conclusion || null,
       url: latest.html_url, updated_at: latest.updated_at, head_sha: latest.head_sha } : null,
