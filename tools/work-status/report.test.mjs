@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {summarize,collectLive,markdown,jobTiming,versionStates} from './report.mjs';
+import {summarize,collectLive,markdown,jobTiming,versionStates,operationalSignal} from './report.mjs';
 
 const registry={active:[{id:'one',title:'UI',branch:'ui/one',owner:'existing',status:'active',resources:[],phase:'QA_PENDING'}],history:[{id:'old',status:'active',secret:'DO_NOT_COPY_HISTORY'}]};
 test('bounded view never reactivates history or labels an untested delivery current',()=>{
@@ -91,4 +91,34 @@ test('multiple workstreams sharing one branch show a single timing sample',()=>{
   const output=markdown(result);
   assert.equal((output.match(/Muestra de tiempos \(rama/g)||[]).length,1);
   assert.equal((output.match(/Entrega de /g)||[]).length,2);
+});
+
+test('a pause overrides apparent CI success and cannot be released by a status view',()=>{
+  const w={id:'w',owner:'someone',phase:'OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100',resources:[]};
+  const sig=operationalSignal(w,{status:'observed',checks:[{conclusion:'success',run_id:1}]});
+  assert.equal(sig.code,'OWNER_PAUSED');
+});
+test('only an explicit available state, release and empty resources permits an advisory availability label',()=>{
+  const w={id:'w',owner:null,resources:[],write_scope_released:true,ownership_state:'available'};
+  assert.equal(operationalSignal(w).code,'EXPLICITLY_AVAILABLE');
+  assert.equal(operationalSignal({...w,resources:['windows-runner-heavy']}).code,'UNASSIGNED_NOT_RELEASED');
+  assert.equal(operationalSignal({...w,write_scope_released:false}).code,'UNASSIGNED_NOT_RELEASED');
+});
+test('GitHub approval requirement is an external blocker, not a Unity failure or granted approval',()=>{
+  const signal=operationalSignal({owner:'owner',resources:[]},
+    {status:'observed',checks:[{run_id:40255183681,status:'completed',conclusion:'action_required'}]});
+  assert.equal(signal.code,'GITHUB_AUTHORIZATION_REQUIRED');
+  assert.equal(signal.run_id,40255183681);
+});
+test('an Actions success and a claimed Windows lease never infer a finished mission or an idle PC',()=>{
+  const observed={status:'observed',checks:[{run_id:4,status:'completed',conclusion:'success'}]};
+  assert.equal(operationalSignal({owner:'owner',resources:[]},observed).code,'TECHNICAL_EVIDENCE_REVIEW');
+  assert.equal(operationalSignal({owner:'owner',resources:['windows-runner-heavy']},observed,
+    {observation:'complete_for_listed_actions_jobs',running:[],queued:[]}).code,'WINDOWS_LEASE_WITHOUT_CONFIRMED_WORK');
+});
+test('summaries expose actionable signals without exposing secrets or historical authority',()=>{
+  const report=summarize({registry:{active:[{id:'x',owner:'human',branch:'main',resources:[],status:'active'}]},
+    live:{branches:{main:{status:'observed',checks:[{run_id:1,conclusion:'failure'}]}},windows:{observation:'not_checked',running:[],queued:[],errors:[]}}});
+  assert.equal(report.active[0].operational_signal.code,'CI_FAILURE_NEEDS_DIAGNOSIS');
+  assert.match(markdown(report),/CI_FAILURE_NEEDS_DIAGNOSIS/);
 });
