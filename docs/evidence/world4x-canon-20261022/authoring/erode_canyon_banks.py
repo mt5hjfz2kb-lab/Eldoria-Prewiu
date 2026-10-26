@@ -105,7 +105,7 @@ bpy.ops.object.select_all(action='DESELECT')
 for ob in scene.objects:
  if ob.name in names and ob.type in {'MESH','EMPTY'}:ob.select_set(True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True);bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
-report=json.loads((source.parent/'macro-art-operations.json').read_text(encoding='utf-8-sig'));report['eroded_banks_source_sha256']=hashlib.sha256(source.read_bytes()).hexdigest();report['physical_sawtooth_bank_correction']={'changed_unprotected_vertices':changed,'max_vertical_correction_m':maxdelta,'crown_pairs_regrounded':grounded,'protected_positions_exact':True,'height_bounds_exact':True,'soil_mask_coincident_vertices_welded':True,'rejected_normals_only_candidate_native':40250944622}
+report=json.loads((source.parent/'macro-art-operations.json').read_text(encoding='utf-8-sig'));report['eroded_banks_source_sha256']=hashlib.sha256(source.read_bytes()).hexdigest();report['physical_sawtooth_bank_correction']={'changed_unprotected_vertices':int(changed),'max_vertical_correction_m':float(maxdelta),'crown_pairs_regrounded':grounded,'protected_positions_exact':True,'height_bounds_exact':True,'soil_mask_coincident_vertices_welded':True,'rejected_normals_only_candidate_native':40250944622}
 report['files']={name:hashlib.sha256((out/name).read_bytes()).hexdigest() for name in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']};report['blend_bytes']=(out/'Eldoria_Region1_Production.blend').stat().st_size
 assert report['blend_bytes']<100*1024*1024
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
