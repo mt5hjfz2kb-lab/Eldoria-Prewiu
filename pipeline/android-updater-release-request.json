@@ -1,8 +1,8 @@
 {
-  "enabled": true,
+  "enabled": false,
   "buildRunId": 40360846540,
   "versionCode": 14,
   "expectedSourceSha": "993137ce42e416a2ff36d7acf6ce2a5a56e640cf",
   "budgetEur": 0,
-  "note": "Owner-authorized delivery of PR100 Region1 through existing family channel. Exact signed APK395817304bytes sha256453f1302e904fe281ebacf90c77271d0d984e1429b1dc3d1222a55a12a9487d0 independently verified, original package/certificate, no data reset. Physical phone untested."
+  "note": "Region1 family1.14/code14 delivered by40364103100 from signed build40360846540 source993137ce42e416a2ff36d7acf6ce2a5a56e640cf. Public SHA256453f1302e904fe281ebacf90c77271d0d984e1429b1dc3d1222a55a12a9487d0 and395817304bytes independently verified. Disable duplicate publication; same original package/certificate, no data reset; physical phone untested."
 }

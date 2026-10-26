@@ -37,8 +37,20 @@ PR #100 fusionado en main mediante `1ac74ecec9defeb13f95a8ac7124ba84973ffd9a`, c
 
 El control general automático de main `40352938587` usaba configuración antigua headless/sin directorio de captura y falló `Skipped:Ignored`. Corrección `b575f3d2450af1aaa888113599288795c3dd867d`: GPU, fixture exacto, directorio nuevo por intento y todos los casos obligatoriamente aprobados. Verificado en `40357678545`. La adición temporal del autotrigger por editar el propio workflow fue rechazada por gobernanza; se retiró inmediatamente en `87a23ae4ab4f514326f3614d912deccba13212a0`. Gobernanza vuelve a PASS; no se cambió su regla. El cuerpo ejecutado del control corregido y Unity son idénticos al main posterior; solo se retiró aquel disparador. No se cancelaron ejecuciones previas.
 
-## Android — compilación en curso
+## Android — compilado y distribuido
 
-Solicitud firmada 1.14/code14 en `993137ce42e416a2ff36d7acf6ce2a5a56e640cf`, ejecución `40360846540`. Reserva Windows del mismo workstream, revisión42, registrada después de concluir todos los trabajos activos. Se preservan paquete `com.eldoria.valoria.v5test`, firma original, escena integrada, permisos de actualizador, presupuesto0 y guardados. Constructor comprueba titular/revisión y procesos Unity/Blender antes de actuar. Pruebas locales de canal20/20 PASS.
+Versión **1.14/code14**. Fuente exacta `993137ce42e416a2ff36d7acf6ce2a5a56e640cf`; construcción firmada `40360846540` PASS; artefacto `12668218748`. ZIP SHA256 `71c442c71d45a9eed16549a0624d7b6027bc1d5caea3ad8c146ec350c3f505f8`.
 
-La versión del canal observada antes de esta entrega es1.13/code13. No se acredita nueva APK, distribución ni instalación hasta verificar cada paso. ART_APPROVED y pruebas físicas móviles siguen sin acreditar.
+APK: **395.817.304 bytes**, SHA256 `453f1302e904fe281ebacf90c77271d0d984e1429b1dc3d1222a55a12a9487d0`. Paquete `com.eldoria.valoria.v5test`; certificado original `f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8`; ARM64, permisos de instalación/red, firma nativa, CRC ZIP, identidad exacta y ausencia de reset verificados. Se conserva la escena integrada ciudad/mundo y el árbol Unity certificado. Pruebas locales del canal20/20 PASS.
+
+Promoción `40364103100` PASS: descarga del artefacto exacto, comparación pública byte a byte, validación del manifiesto y avance del canal en `10d52fb2b6ced3639af44244dbc0ada643b9f2ac`. Segunda descarga independiente del enlace público confirmó tamaño y SHA256. No se cambió la política del canal existente.
+
+**Descarga:** https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code14/Eldoria-Valoria-code14.apk
+
+Instalar como actualización de la aplicación existente, sin desinstalar. Android requiere confirmación del usuario. El canal familiar apunta a1.14/code14; la solicitud de construcción quedó desactivada antes de publicar y la de publicación queda desactivada al cerrar. No hay nuevas generaciones ni costes.
+
+## Cierre y límites
+
+Integrado en main: sí. Compilado: sí. Distribuido por el canal familiar: sí, con descarga verificada. **Instalado/probado físicamente en el móvil del propietario: no acreditado. ART_APPROVED: no acreditado.** No se presentan pruebas de editor como rendimiento o aprobación física móvil.
+
+Workstream canónico cerrado tras entrega, revisión44, Windows y alcance liberados; otros trabajos conservados. La instalación física no deja una reserva abierta ni se presenta como realizada. La siguiente intervención solo corresponde a un defecto concreto comunicado o un nuevo encargo.
