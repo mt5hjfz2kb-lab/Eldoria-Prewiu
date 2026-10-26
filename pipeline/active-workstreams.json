@@ -1139,10 +1139,10 @@
     {
       "id": "eldoria-world-region-1-canon-20261022",
       "title": "Región 1 — geografía canónica continua y representación por zoom",
-      "owner": null,
-      "write_scope_released": true,
-      "ownership_revision": 38,
-      "branch": "main",
+      "owner": "codex-world4x-player-art-22db827a",
+      "write_scope_released": false,
+      "ownership_revision": 39,
+      "branch": "feature/world4x-region1-canon-20261022",
       "status": "active",
       "claimed_at": "2026-10-25T18:49:37.384Z",
       "base_main_sha": "2650047bdb6c752e6fb4ca65c13239278d7501ab",
@@ -1161,9 +1161,9 @@
         ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [],
-      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.",
-      "phase": "MACRO_CANDIDATE_REVIEW_READY_PR100",
-      "next": "Review the retained current macro candidate in PR100 and coordinate subsequent game integration under a fresh claim; no automatic merge/publication or resumption of paused UI/Valoria work. Sources and actual six-view evidence: docs/evidence/world4x-canon-20261022/REGION1_MACRO_REVIEW_40253785923.md",
+      "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.\n2026-10-26: Owner authorizes this director to correct all identified world visual defects, prioritize near camera reference fidelity, scale resource nodes approximately 85% of city visual size, validate and integrate today after actual visual and functional gates. No paid credits.",
+      "phase": "PLAYER_CAMERA_ART_CORRECTION",
+      "next": "Near-camera proportions and landscape composition; Blender source correction then native Unity images and gameplay regression.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1567,16 +1567,22 @@
           "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
           "assets_commit": "0d3de6522f79ad85fb153a843e62fd177500491d",
           "run": 40253785923
+        },
+        {
+          "owner": null,
+          "revision": 38,
+          "reason": "Owner 2026-10-26 explicitly assigns full graphical correction and integration to this session; near camera priority and resource screen size approximately 85% of city.",
+          "transferred_at": "2026-10-26T07:37:46.430Z"
         }
       ],
       "delivery_definition": {
-        "deliverable": "One continuous Region1 replacing all old world visuals, production population connected to existing gateway/persistence, actual full-region panorama and preserved city/gameplay.",
-        "evidence": "Editable Blender and Unity, genuine 3-scale 2-orientation captures, mesh contact/navigation/city capacity, save-reload-restart and I-II gameplay tests, physical metrics only if measured.",
-        "handoff": "PR100 reviewable exact sources/evidence; objective remains open until all criteria met; no merge or publish."
+        "deliverable": "Reference-led playable near view and coherent three-scale Region1, nodes approximately 85% city visual extent, integrated only after genuine review and QA.",
+        "evidence": "Exact-source Unity captures in 3 zooms and both orientations; measured node/city screen extents; gameplay/contact/persistence checks.",
+        "handoff": "Same PR100, preserve baseline and editable sources; record truthful visual and technical verdict before integration."
       },
       "release_note": "Completed bounded macro art production and evidence verification; Windows/Unity/Blender run ended successfully and reservation released. Canonical workstream identity remains active/available for PR100 attribution. Subjective art acceptance and physical-device performance remain explicit review limits.",
       "previous_owner": "codex-world4x-takeover-a6480e11",
-      "ownership_state": "available",
+      "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
       "last_general_workflow_attempt": {
         "run": 40071887223,
