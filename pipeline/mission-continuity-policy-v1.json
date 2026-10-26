@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "purpose": "Observe existing owned missions; never approve art, take over an owner, or auto-run expensive production.",
+  "purpose": "Existing legacy recovery observers plus REPORT-ONLY current active owned workstreams. Never dispatch production, approve art, steal a lease or create recovery issues for new monitored tracks.",
   "stall_minutes": 20,
   "issue_mode": "handoff_only",
   "allow_workflow_dispatch": false,
@@ -55,6 +55,40 @@
         "No merging, composition or promotion until visual quality gates and provenance"
       ],
       "resume_hint": "An explicit active owner now exists for this exact isolated art branch. Preserve source SHA and evidence; never take Unity Windows ownership, promote assets, or interpret technical retry as new art approval. Only an existing failed job with an unequivocal GitHub infrastructure fault may be reattempted in idle night conditions."
+    },
+    {
+      "workstream_id": "eldoria-world-region-1-canon-20261022",
+      "owner_branch": "main",
+      "branch": "feature/world4x-region1-canon-20261022",
+      "require_owner": true,
+      "exact_head_only": true,
+      "report_only": true,
+      "workflow_names": [
+        "World4X Region 1 canonical candidate source and PlayMode QA"
+      ],
+      "required_evidence": [
+        "Native real Unity 3-zoom captures matched with approved references",
+        "Independent qualitative art review and gameplay regressions",
+        "Explicit owner-controlled final integration; PR #100 remains draft until verified"
+      ],
+      "resume_hint": "Current owner must consume exact-HEAD run and real captured artifacts in PR #100; observer never edits, takes lease, publishes, approves art or merges."
+    },
+    {
+      "workstream_id": "eldoria-tripo-art-brain-phase2-20261021",
+      "owner_branch": "main",
+      "branch": "main",
+      "require_owner": true,
+      "exact_head_only": true,
+      "report_only": true,
+      "workflow_names": [
+        "Tripo art brain source preflight (zero credits)",
+        "Tripo art brain - real Qwen vision creature Blender pilot (zero credits)"
+      ],
+      "required_evidence": [
+        "Real artist input and verified lesson provenance",
+        "A/B from independent reviewer, Unity QA before any visual approval"
+      ],
+      "resume_hint": "Owner validates whether any branch-HEAD workflow belongs to the assigned scope; no AI inference, credits, model promotion or artistic approval from this report."
     }
   ]
 }
