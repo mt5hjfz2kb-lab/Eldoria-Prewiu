@@ -20,7 +20,8 @@ pero NO certifica los dos archivos cambiados después (modelos de recursos y tes
 PR112 integrado como `8d3f25053f6817dcbf34d07da426b284fdd12908`: etiquetas panorámicas
 y borde atmosférico. El gate general run40387268368 ha concluido SUCCESS,
 incluyendo EditMode, PlayMode y compilación Windows sobre ese SHA. La comprobación
-UI adicional run40387268720 se conserva y se espera, sin duplicarla.
+UI adicional run40387268720 también ha concluido SUCCESS: 64/64 PlayMode y
+26/26 EditMode, artefacto12686696359, sobre el mismo SHA integrado.
 
 Héroes no tiene una pantalla de gestión dedicada en el componente actual (destinos:
 Training/March). Aldric sí participa en la preparación de marcha. No se presenta
