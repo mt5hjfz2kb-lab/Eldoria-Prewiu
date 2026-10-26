@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T12:05:24.459Z",
+  "updated_at": "2026-10-26T12:10:53.989Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1631,7 +1631,7 @@
       "title": "Eldoria — diagnóstico automático de evidencias CI y próximo paso seguro",
       "owner": "chatgpt-ops-autonomy-ci-20261026",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "branch": "main",
       "status": "active",
@@ -1642,13 +1642,17 @@
         "tools/mission-continuity/triage.test.mjs",
         "tools/mission-continuity/watch.mjs",
         ".github/workflows/mission-continuity-guard.yml",
-        "docs/hyperautomation/AUTONOMY_PHASE3_20261026.md"
+        "docs/hyperautomation/AUTONOMY_PHASE3_20261026.md",
+        "tools/mission-continuity/nightly-core.mjs",
+        "tools/mission-continuity/nightly-core.test.mjs",
+        "tools/mission-continuity/nightly-recovery.mjs",
+        "pipeline/night-recovery-policy-v1.json"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Only report-only GitHub Actions diagnostic/triage, unit tests and documentation on hosted Linux. No owner-owned Unity, Blender or art. No workflow dispatch, paid APIs, merge or mutation outside owned paths.",
       "phase": "CI_NEXT_ACTION_TRIAGE",
-      "next": "Build bounded exact-run diagnosis and evidence inventory into the existing watcher without triggering jobs, verify CI, release.",
+      "next": "Complete exact-run read-only triage and guarded one-time recovery of an unequivocally transient infrastructure failure in owner-claimed World4X workflow, only overnight, zero paid credits and zero concurrent Actions; verify and release.",
       "delivery_definition": {
         "deliverable": "Current workstream watcher reports evidence manifest of exact latest run, failure step summary and safe next action",
         "evidence": "Exact-commit Ubuntu CI tests, live run, artifacts",
