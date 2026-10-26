@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { classifyMission, issueBody, issueMarker } from "./core.mjs";
+import {triageRun} from "./triage.mjs";
 
 const root = process.env.GITHUB_WORKSPACE || process.cwd();
 const config = JSON.parse(fs.readFileSync(path.join(root, "pipeline/mission-continuity-policy-v1.json"), "utf8"));
@@ -90,6 +91,22 @@ for (const mission of config.missions) {
       report.state = "PARTIAL_RUN_WINDOW";
       report.alert = false;
       report.next_action = "More than 100 recent runs exist; this bounded observation cannot prove the requested workflow is missing. Inspect exact workflow before any action.";
+    }
+    if (mission.report_only === true) {
+      // Bounded, single-run evidence inventory. No logs/secrets downloaded and
+      // no GitHub POST, rerun, owner change, release, merge or dispatch.
+      let jobs=null,artifacts=null;
+      if (report.latest_run && Number.isSafeInteger(report.latest_run.id)) {
+        try {
+          [jobs,artifacts] = await Promise.all([
+            api("/actions/runs/" + report.latest_run.id + "/jobs?per_page=25"),
+            api("/actions/runs/" + report.latest_run.id + "/artifacts?per_page=25")
+          ]);
+        } catch {
+          report.evidence_lookup = "unavailable_read_only";
+        }
+      }
+      report.diagnostic = triageRun({report,jobs,artifacts});
     }
     // Current owners remain the only writers. Report-only tracks MUST NOT create
     // or update recovery issues, even when the legacy guard has issues:write.
