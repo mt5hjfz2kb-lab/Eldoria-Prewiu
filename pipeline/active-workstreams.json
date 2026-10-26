@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T10:43:57.441Z",
+  "updated_at": "2026-10-26T10:47:16.606Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1644,7 +1644,8 @@
         "tools/art-direction/learning-evidence/verify-brief-use.mjs",
         "tools/art-direction/learning-evidence/verify-brief-use.test.mjs",
         "docs/hyperautomation/**",
-        ".github/workflows/repository-architecture-guard.yml"
+        ".github/workflows/repository-architecture-guard.yml",
+        "AGENTS.md"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
