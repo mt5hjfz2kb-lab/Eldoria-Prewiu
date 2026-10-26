@@ -167,7 +167,9 @@ namespace Eldoria.World4XCanon
    if(Mathf.Abs(navigation.localZoom-near)>.5f){bool was=navigation.View.orthographicSize<=navigation.localZoom+.5f;navigation.localZoom=near;if(was)navigation.SetZoomLevel(2,true);}
    float size=navigation.View.orthographicSize;
    navigation.cameraDistance=Mathf.Max(140,size*2.5f);navigation.View.farClipPlane=Mathf.Max(900,navigation.cameraDistance*2.5f);
-   if(size>=navigation.globalZoom*.98f)navigation.PanTo(new Vector3(regionBounds.center.x,origin.y,regionBounds.center.z));
+   // Do not snap the map back to its centre at the panoramic threshold.
+   // Changing scale must preserve the player's focus until the camera's
+   // natural authored-bounds clamp requires otherwise.
    float desired=Mathf.Lerp(42,64,Mathf.SmoothStep(0,1,Mathf.InverseLerp(36,244,size)));
    float tilt=force?desired:Mathf.Lerp(navigation.tilt,desired,1-Mathf.Exp(-7*Time.unscaledDeltaTime));
    float desiredHeading=PanoramaHeading(navigation.View.aspect)*Mathf.SmoothStep(0,1,Mathf.InverseLerp(regional*1.15f,far*.85f,size));
