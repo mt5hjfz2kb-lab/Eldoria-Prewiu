@@ -59,3 +59,12 @@ La ejecución Blender 40295461620 agotó el tiempo durante la modificación. Se 
 ## Connected ground candidate — native review next
 
 BlenderMCP 40297426643 completed after batching terrain normal evaluation. Source preserves 51,828 protected vertices and all 62 original packed images; 11,428 riverbed vertices corrected below existing water. Near bridge remains 21 m. Actual Blender renders inspected: river continuity improves and fractured basin replaces regular Y-wall composition. Basin edges and regional tonal integration still require actual Unity assessment; no 7.5 or art approval claimed. Next native run includes corrected detailed meadow, regional selectable city, 85% resource width, creature grounding and panorama-only peripheral mist. Materialization remains conditional on all 62 PlayMode / 26 EditMode / 44 functional checks and fresh native evidence.
+
+
+## Genuine Unity review 40299103664: retain close gain, reject remaining seams
+
+Exact source cd24ed90abfb9306bcb08fce5d53ba5ba9a2f63c; materialized df781015159ebc0bbc1b38642b977f698bdc29b8. Downloaded XML verifies 62/62 GPU PlayMode, 26/26 EditMode, 44 probe checks, no skipped cases; 160 actual-camera image hashes verified. Close original detail and paths return; 85% nodes and regional selectable city pass. This is NOT the final 7.5 acceptance.
+
+Actual six-view review exposes three visible faults: extension-only palette replacement erased source paths/grain and draws a rectangular seam; dark pigment covers the whole fractured basin rather than only its heart; peripheral haze varies blur width but retains four straight outer boundaries. Change hypotheses: use one source-preserving pigment operation across all meadow materials; retain meadow on outer geological plates with connected dark cracks and a central mineral wound; use a rounded irregular perimeter for panorama-only atmosphere. No regional fog.
+
+Independent GLB triangle-centre sampling (64 nearest triangle candidates) detects 0/438 and 0/448 remaining tributary occlusions, but 73/464 east and 18/1292 west river-extension occlusions. Some triangles bridge the ribbon although their vertices lie outside it. Include the immediate 4.5 m bank skirt in physical excavation and refit existing rooted scenery, with the protected core and bridge decks unchanged. Unify BOTH existing basalt material slots so the four old branch tips stop reading as unrelated pale fins. Source files and rejected images remain retained.

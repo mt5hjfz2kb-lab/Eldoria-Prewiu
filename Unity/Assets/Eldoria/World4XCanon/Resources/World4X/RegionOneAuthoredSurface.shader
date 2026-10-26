@@ -73,18 +73,11 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      float clearing=smoothstep(-1.1,1.2,broad);
      clearing=.5+(clearing-.5)*lerp(.65,.16,smoothstep(.7,4,metresPerPixel));
      half ratio=c.r/max(.001,c.g);
-     if(_MeadowFinish<1.5){
-         half grass=1-smoothstep(1.02,1.16,ratio);
-         half3 temperature=lerp(half3(.91,1.08,1.15),half3(1.16,1.08,1.11),clearing)*1.08;
-         c.rgb*=lerp(half3(1.10,1.10,1.10),temperature,grass);
-     }else{
-         half luminance=dot(c.rgb,half3(.2126,.7152,.0722));
-         half path=smoothstep(1.16,1.25,ratio);
-         half3 palette=lerp(half3(.56,.64,.27),half3(.66,.65,.28),clearing);
-         palette=lerp(palette,half3(.72,.60,.34),path);
-         half value=clamp(1+(luminance-.4)*.45,.9,1.1);
-         c.rgb=palette*value;
-     }
+     // One pigment treatment for retained core AND continuation. Replacing
+     // only the extension colour erased its painted paths/grain and drew a rectangle.
+     half grass=1-smoothstep(1.02,1.16,ratio);
+     half3 temperature=lerp(half3(.91,1.08,1.15),half3(1.16,1.08,1.11),clearing)*1.08;
+     c.rgb*=lerp(half3(1.10,1.10,1.10),temperature,grass);
  }
  if(_GeologicalRock>.5){
      // Flat sediment belongs to the dark interior; deposited layers describe
@@ -122,10 +115,12 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  c.rgb+=originalPigment*(_MineralEmission*smoothstep(.004,.04,originalPigment.b-originalPigment.g));
  float2 region=i.world.xz-_RegionOrigin.xz;
  // Minimal peripheral atmosphere at the region, hiding the neighbouring continuation.
- float west=910+region.x, east=910-region.x, north=1800-region.y, south=1800+region.y;
- float edge=min(min(west,east),min(north,south));
- float irregular=40*sin(region.y*.011)+20*cos(region.x*.017-region.y*.006);
- float atmosphere=(1-smoothstep(0,107+irregular,edge))*_BoundaryWeight;
+ // Rounded, irregular peripheral falloff. Vary the boundary itself, not
+ // merely the blur width of four perfectly straight map edges.
+ float2 normalizedRegion=abs(region/float2(910,1800));
+ float perimeter=pow(pow(normalizedRegion.x,4)+pow(normalizedRegion.y,4),.25);
+ float irregular=.025*sin(region.y*.009)+.018*cos(region.x*.013-region.y*.006);
+ float atmosphere=smoothstep(.88,1.055,perimeter+irregular)*_BoundaryWeight;
  return half4(lerp(c.rgb,_BoundaryColour.rgb,atmosphere),1);
  }
  ENDHLSL

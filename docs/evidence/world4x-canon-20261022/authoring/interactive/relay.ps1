@@ -1,18 +1,5 @@
 $ErrorActionPreference='Stop'
-# Recover only this workstream's verified, timed-out Blender session.
-$stalled=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/player-art-22db827a-20261026-r40-connected-v4'
-$stalledReady=Join-Path $stalled 'ready.json'
-if(Test-Path $stalledReady){
- $identity=Get-Content $stalledReady -Raw|ConvertFrom-Json
- $owned=Get-CimInstance Win32_Process -Filter "ProcessId=$($identity.pid)"
- if($owned){
-  if($owned.Name -ne 'blender.exe' -or -not $owned.CommandLine.Contains($stalled) -or -not $owned.CommandLine.Contains('session.py')){throw 'Timed-out PID does not match owned Blender session'}
-  Stop-Process -Id $identity.pid -Force
-  @{pid=$identity.pid;reason='Source normal reads triggered repeated full mesh recalculation; only exact owned timed-out process stopped';source_sha256=$identity.source_sha256}|ConvertTo-Json|Set-Content (Join-Path $stalled 'owned-timeout-recovery.json')
- }
- Move-Item $stalledReady (Join-Path $stalled 'ready-after-owned-timeout.json') -Force
-}
-$root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/player-art-22db827a-20261026-r40-connected-v4b'
+$root=Join-Path $env:LOCALAPPDATA 'Eldoria/World4XInteractive/player-art-22db827a-20261026-r40-connected-v5'
 $helpers=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/docs/evidence/world4x-canon-20261022/authoring/interactive'
 "ELDORIA_INTERACTIVE_OUT=$root" >> $env:GITHUB_ENV
 $ready=Join-Path $root 'ready.json'

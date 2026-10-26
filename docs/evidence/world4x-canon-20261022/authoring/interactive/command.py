@@ -100,6 +100,11 @@ for i,(x,y,z) in enumerate(coords):
  if protected[i] or i in all_bridge_vertices:continue
  for water_ob,water_bvh in water_surfaces:
   hit=water_bvh.ray_cast(Vector((float(x),float(y),300)),Vector((0,0,-1)))[0]
+  if hit is None and water_ob.name.startswith('BLD_RiverExtension_'):
+   # A four-metre terrain cell can cross the ribbon with every corner outside.
+   # Include its immediate bank skirt so interpolated triangles do not dam water.
+   nearest,normal,face,distance=water_bvh.find_nearest(Vector((float(x),float(y),.32)),4.5)
+   if nearest is not None:hit=nearest
   if hit is not None and coords[i,2]>hit.z-.22:
    coords[i,2]=hit.z-.22;changed.add(i);river_bed_edits+=1
    break
@@ -148,7 +153,8 @@ for face in terrain.data.polygons:
  if any(protected[i] for i in face.vertices):continue
  centre=face.center;r=math.hypot(centre.x+260,centre.y-150)
  angle=math.atan2(centre.y-150,centre.x+260)
- if r<92+10*math.sin(angle*3)+7*math.sin(angle*7) and any(i in changed for i in face.vertices):face.material_index=rock_slot
+ old_wall='Breach fractured basalt' in terrain.data.materials[face.material_index].name
+ if old_wall or (r<92+10*math.sin(angle*3)+7*math.sin(angle*7) and any(i in changed for i in face.vertices)):face.material_index=rock_slot
 terrain.data.normals_split_custom_set(normals);terrain.data.update();bpy.context.view_layer.update()
 bvh=BVHTree.FromObject(terrain,bpy.context.evaluated_depsgraph_get())
 def ground(x,y):
@@ -162,7 +168,7 @@ rooted_adjustments=0
 for ob in scene.objects:
  if ob.name not in export_names or not ob.name.startswith(('BLD_ForestMass_','BLD_ForestFar_','Pilot_Pine','Far_Pilot_Pine','Bank forest stone')):continue
  x,y=ob.location.x,ob.location.y
- if not(-430<x<-110 and 15<y<290):continue
+ if abs(x)<=96 and -78<=y<=270:continue
  old_hit=old_bvh.ray_cast(Vector((x,y,300)),Vector((0,0,-1)))[0]
  new_hit=bvh.ray_cast(Vector((x,y,300)),Vector((0,0,-1)))[0]
  if old_hit is not None and new_hit is not None:
@@ -215,10 +221,14 @@ rock_weight=np.clip((112+8*np.sin(A*3)+6*np.sin(A*7)-R)/37,0,1)
 rock_weight=rock_weight*rock_weight*(3-2*rock_weight)
 core=np.exp(-(R/38)**2)
 soil=np.zeros((H,W,3))+np.array((.315,.36,.060))
-plates=np.zeros_like(soil)+np.array((.20,.18,.16))
-plates=plates*(1-core[:,:,None])+np.array((.12,.08,.18))*core[:,:,None]
+# Broken meadow plates continue into the wound; only its deep centre is bare
+# dark geology. The previous full-radius dark pigment read as a paved disk.
+mineral_weight=np.exp(-(R/43)**2)[:,:,None]
+plates=soil*.92*(1-mineral_weight)+np.array((.12,.08,.18))*mineral_weight
 plates*=1+(.10*np.sin(cell*2.41))[:,:,None]
-plates=plates*(1-fracture[:,:,None]*.85)+np.array((.018,.008,.035))*fracture[:,:,None]*.85
+heart_glow=np.exp(-(R/23)**2)[:,:,None]
+crack_colour=np.array((.018,.008,.035))*(1-heart_glow)+np.array((.18,.025,.30))*heart_glow
+plates=plates*(1-fracture[:,:,None]*.85)+crack_colour*fracture[:,:,None]*.85
 rgb=soil*(1-rock_weight[:,:,None])+plates*rock_weight[:,:,None]
 rgb*=1+(.018*np.sin(X*2.6+Y*1.7)*np.sin(Y*3.3))[:,:,None]
 pixels=np.ones((H,W,4),np.float32);pixels[:,:,:3]=rgb
@@ -251,6 +261,6 @@ bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_f
 report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
 progress('rendering source previews')
-bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v4')
+bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v5')
 (out/'stop.request').write_text('Saved physical wall correction; actual Unity review required.')
 print('PLAYER_ART_SCULPT_COMPLETE',json.dumps(report))
