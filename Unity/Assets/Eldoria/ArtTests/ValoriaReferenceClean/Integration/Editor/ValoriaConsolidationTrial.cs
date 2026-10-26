@@ -60,7 +60,7 @@ namespace Eldoria.ReferenceClean.Editor {
    File.WriteAllText(Ev+"/trial-status.json","{\"art_approved\":false,\"playable_art_modified\":false,\"actual_unity_playmode\":true,\"views\":18,\"paid_calls\":0}");
    Debug.Log("ELDORIA_CONSOLIDATION_TRIAL_COMPLETE actual_Unity=1 art_approved=0");EditorApplication.Exit(0);
   }
-  static void Capture(Camera cam,Vector3 target,string phase,string name,int w,int h){string dir=Ev+"/"+phase;Directory.CreateDirectory(dir);ValoriaReferenceCleanBuilder.Capture(cam,dir+"/"+name+".png",w,h);File.WriteAllText(dir+"/"+name+".json",JsonUtility.ToJson(new Pose{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),phase=phase,view=name,position=cam.transform.position,euler=cam.transform.eulerAngles,target=target,zoom=cam.orthographicSize,aspect=cam.aspect,width=w,height=h,playMode=Application.isPlaying},true));}
+  static void Capture(Camera cam,Vector3 target,string phase,string name,int w,int h){string dir=Ev+"/"+phase;Directory.CreateDirectory(dir);ValoriaReferenceCleanBuilder.Capture(cam,dir+"/"+name+".png",w,h);File.WriteAllText(dir+"/"+name+".json",JsonUtility.ToJson(new Pose{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),phase=phase,view=name,position=cam.transform.position,euler=cam.transform.eulerAngles,target=target,zoom=cam.orthographicSize,aspect=cam.aspect,width=w,height=h,playMode=UnityEngine.Application.isPlaying},true));}
  }
 }
 #endif
