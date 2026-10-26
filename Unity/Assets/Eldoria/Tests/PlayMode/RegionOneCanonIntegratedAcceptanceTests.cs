@@ -930,6 +930,27 @@ namespace Eldoria.Tests
                 maximumFloorGapError=Mathf.Max(maximumFloorGapError,Mathf.Abs(point.y-expected-.015f));
             }
             Assert.That(maximumFloorGapError,Is.LessThan(.005f),"Every Breach floor vertex must follow the actual imported terrain, not bridge it with a floating plate");
+            // Independent imported-mesh witness: a pigment coating must receive
+            // the same lighting as the coincident physical ground vertex.
+            var litGround=geo.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_Terrain");
+            var groundPoints=litGround.sharedMesh.vertices;var groundNormals=litGround.sharedMesh.normals;
+            var normalWitness=new System.Collections.Generic.Dictionary<Vector2Int,System.Collections.Generic.List<Vector3>>();
+            for(int i=0;i<groundPoints.Length;i++){
+                var p=litGround.transform.TransformPoint(groundPoints[i]);
+                var key=new Vector2Int(Mathf.RoundToInt(p.x*100),Mathf.RoundToInt(p.z*100));
+                if(!normalWitness.TryGetValue(key,out var bucket)){bucket=new System.Collections.Generic.List<Vector3>();normalWitness[key]=bucket;}
+                bucket.Add(litGround.transform.TransformDirection(groundNormals[i]).normalized);
+            }
+            var pigmentPoints=filter.sharedMesh.vertices;var pigmentNormals=filter.sharedMesh.normals;int normalMatches=0;float worstNormalDot=1;
+            for(int i=0;i<pigmentPoints.Length;i++){
+                var p=filter.transform.TransformPoint(pigmentPoints[i]);
+                var key=new Vector2Int(Mathf.RoundToInt(p.x*100),Mathf.RoundToInt(p.z*100));
+                if(!normalWitness.TryGetValue(key,out var bucket))continue;
+                var n=filter.transform.TransformDirection(pigmentNormals[i]).normalized;
+                worstNormalDot=Mathf.Min(worstNormalDot,bucket.Max(v=>Vector3.Dot(n,v)));normalMatches++;
+            }
+            Assert.That(normalMatches,Is.GreaterThan(1000),"Normal continuity must be checked against actual imported terrain vertices");
+            Assert.That(worstNormalDot,Is.GreaterThan(.999f),"Breach coating must not expose its independent smoothing boundary through lighting");
             var mineralLights=geo.GetComponentsInChildren<Light>(true).Where(l=>l.name=="Breach interior mineral light").ToArray();
             Assert.That(mineralLights.Length,Is.EqualTo(3),"The geological wound requires its three authored interior sources");
             foreach(var light in mineralLights){

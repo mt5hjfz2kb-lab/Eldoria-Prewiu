@@ -120,3 +120,14 @@ Blender40319616586 inspected: near-forest, near-town and regional previews show 
 ## Close hierarchy after actual Unity40320274388
 
 Mixed crowns and violet veins are real improvements in the regional image, all62/26/44 passed. Detailed wood/boar portrait images expose a remaining hierarchy fault: some crowns exceed the20.4m gather-node footprint. Existing LOD transition37-47 also selects strategic forest geometry before the portrait close zoom64. Correct the relevant presentation layer rather than enlarge nodes again: cap close canopy width at38% of the24m city reference (9.12m), preserve each base and source mesh, and crossfade close-to-far at80-110 so BOTH close cameras show the close family. Retain12-16m strategic crowns and all source anchors/masks. An independent renderer-bounds assertion now requires gather nodes to exceed twice the maximum near-crown width; no previous threshold or test removed.
+
+
+## Near contact and bridge reading, after Unity40324796014
+
+Observation: all62/26/44 pass,160camera manifests and34general-image hashes independently verified. Close forest silhouettes improve (7.856% materially changed landscape pixels,0.063% portrait); panoramas are pixel-identical. Do not inflate this small final hierarchy correction into a global art acceptance. Actual Breach close imagery reveals hard coating boundaries; nearest actual GLB terrain vertices coincide exactly in XZ, while independent normal comparison finds29degrees difference at the99th percentile and93degrees maximum. The coating must inherit the physical ground's lighting normal, not merely its height.
+
+Decision/correction: interpolate imported terrain normals while performing the existing private15mm coating contact fit. Preserve every source mesh, world position, UV, pigment and gameplay surface. Add an independent imported-mesh witness requiring the coating normal to agree with a coincident actual terrain normal, retaining the original5mm height assertion.
+
+Bridge inspection: the actual renderer survey confirms all three BLD_CrossingRails objects enabled/active; the near rail geometry is9.2m wide,2.08m high,18.68m long. Posts are already authored. Correct their washed-out imported oak material with a darker warm finish, not duplicate geometry or alter the measured21m crossing. This is a scoped Unity material correction.
+
+Verdict: retain source/canopy checkpoint, review both contact and bridge corrections in actual matched Unity cameras before the integration judgment. No new paid generation; no ART_APPROVED or physical-mobile claim.

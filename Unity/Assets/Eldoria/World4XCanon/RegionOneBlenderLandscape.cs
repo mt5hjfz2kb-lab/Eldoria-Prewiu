@@ -16,11 +16,12 @@ namespace Eldoria.World4XCanon
   struct VerificationVertex { public Vector3 position; public int index; }
   GameObject artwork; MeshFilter terrain; Mesh fittedPigment;
   static RegionOneBlenderLandscape activeSurface;
-  Vector3[] contactVertices;int[] contactTriangles;
+  Vector3[] contactVertices,contactNormals;int[] contactTriangles;
   readonly Dictionary<Vector2Int,List<int>> contactCells=new Dictionary<Vector2Int,List<int>>();
   void BuildContactSurface(Vector3 origin)
   {
    contactVertices=WorldVertices.Select(p=>p-origin).ToArray();contactTriangles=terrain.sharedMesh.triangles;
+   contactNormals=terrain.sharedMesh.normals.Select(n=>terrain.transform.TransformDirection(n).normalized).ToArray();
    for(int i=0;i<contactTriangles.Length;i+=3){var a=contactVertices[contactTriangles[i]];var b=contactVertices[contactTriangles[i+1]];var c=contactVertices[contactTriangles[i+2]];
     int x0=Mathf.FloorToInt(Mathf.Min(a.x,Mathf.Min(b.x,c.x))/16),x1=Mathf.FloorToInt(Mathf.Max(a.x,Mathf.Max(b.x,c.x))/16);
     int z0=Mathf.FloorToInt(Mathf.Min(a.z,Mathf.Min(b.z,c.z))/16),z1=Mathf.FloorToInt(Mathf.Max(a.z,Mathf.Max(b.z,c.z))/16);
@@ -29,12 +30,17 @@ namespace Eldoria.World4XCanon
    activeSurface=this;
   }
   bool ContactHeight(float x,float z,out float height)
+   =>ContactSurface(x,z,out height,out _);
+  bool ContactSurface(float x,float z,out float height,out Vector3 normal)
   {
-   height=float.NegativeInfinity;if(!contactCells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x/16),Mathf.FloorToInt(z/16)),out var list))return false;
+   normal=Vector3.up;height=float.NegativeInfinity;if(!contactCells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x/16),Mathf.FloorToInt(z/16)),out var list))return false;
    foreach(int i in list){var a=contactVertices[contactTriangles[i]];var b=contactVertices[contactTriangles[i+1]];var c=contactVertices[contactTriangles[i+2]];
     float den=(b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);if(Mathf.Abs(den)<.000001f)continue;
     float u=((b.z-c.z)*(x-c.x)+(c.x-b.x)*(z-c.z))/den,v=((c.z-a.z)*(x-c.x)+(a.x-c.x)*(z-c.z))/den;
-    if(u>=-.00001f&&v>=-.00001f&&u+v<=1.00001f)height=Mathf.Max(height,u*a.y+v*b.y+(1-u-v)*c.y);
+    if(u>=-.00001f&&v>=-.00001f&&u+v<=1.00001f){
+     float candidate=u*a.y+v*b.y+(1-u-v)*c.y;
+     if(candidate>height){height=candidate;normal=(u*contactNormals[contactTriangles[i]]+v*contactNormals[contactTriangles[i+1]]+(1-u-v)*contactNormals[contactTriangles[i+2]]).normalized;}
+    }
    }
    return !float.IsNegativeInfinity(height);
   }
@@ -44,17 +50,20 @@ namespace Eldoria.World4XCanon
    // of very steep tiny triangles can shift its contact by millimetres.
    // Fit only a private decorative mesh, never the terrain or gameplay data.
    var floor=artwork.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_BreachFloor");
-   var vertices=floor.sharedMesh.vertices;float maximum=0;int corrected=0;
+   var vertices=floor.sharedMesh.vertices;var normals=floor.sharedMesh.normals;float maximum=0;int corrected=0;
    for(int i=0;i<vertices.Length;i++){
     var point=floor.transform.TransformPoint(vertices[i]);
-    if(!ContactHeight(point.x-origin.x,point.z-origin.z,out var ground))continue;
+    if(!ContactSurface(point.x-origin.x,point.z-origin.z,out var ground,out var groundNormal))continue;
+    // The pigment is the same ground surface, including its lighting normal.
+    // Independently smoothed overlay edges otherwise reveal rectangular patches.
+    normals[i]=floor.transform.InverseTransformDirection(groundNormal).normalized;
     float delta=origin.y+ground+.015f-point.y;
     if(Mathf.Abs(delta)>.025f)throw new InvalidOperationException("Imported geological pigment exceeds the 25 mm precision-correction envelope");
     maximum=Mathf.Max(maximum,Mathf.Abs(delta));
     if(Mathf.Abs(delta)>.000001f){vertices[i].y+=delta;corrected++;}
    }
    fittedPigment=Instantiate(floor.sharedMesh);fittedPigment.name=floor.sharedMesh.name+" imported contact fit";
-   fittedPigment.vertices=vertices;fittedPigment.RecalculateBounds();floor.sharedMesh=fittedPigment;
+   fittedPigment.vertices=vertices;fittedPigment.normals=normals;fittedPigment.RecalculateBounds();floor.sharedMesh=fittedPigment;
    Debug.Log("REGION1_IMPORTED_PIGMENT_CONTACT vertices="+corrected+" max_correction="+maximum+" terrain_unchanged=1");
   }
   void OnDestroy(){if(activeSurface==this)activeSurface=null;if(fittedPigment)Destroy(fittedPigment);}

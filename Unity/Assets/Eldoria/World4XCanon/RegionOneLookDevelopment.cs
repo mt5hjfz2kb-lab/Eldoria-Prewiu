@@ -45,6 +45,10 @@ namespace Eldoria.World4XCanon
                     if(cache.TryGetValue(source,out var existing))return existing;
                     var material=new Material(authoredShader){name=source.name+" AG look",enableInstancing=true};
                     Color colour=source.HasProperty("baseColorFactor")?source.GetColor("baseColorFactor"):source.HasProperty("_BaseColor")?source.GetColor("_BaseColor"):Color.white;
+                    // Existing posts/rails are real exported geometry. Their pale
+                    // imported colour merged with the deck in the player view.
+                    if(source.name.StartsWith("Bridge sunlit weathered oak rails",StringComparison.Ordinal))
+                        colour*=new Color(.60f,.52f,.40f,1f);
                     material.SetColor("_BaseColor",colour);material.SetVector("_RegionOrigin",origin);
                     if(source.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal)||source.name.StartsWith("Breach shaded stratified",StringComparison.Ordinal))material.SetFloat("_GeologicalRock",1f);
                     if(source.name.StartsWith("Original river turquoise shallow ford continuity",StringComparison.Ordinal))material.SetFloat("_WaterSurface",1f);
