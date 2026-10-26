@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T12:14:53.458Z",
+  "updated_at": "2026-10-26T14:42:24.853Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1160,12 +1160,10 @@
         ".github/workflows/world4x-artistic-process-gate.yml",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.\n2026-10-26: Owner authorizes this director to correct all identified world visual defects, prioritize near camera reference fidelity, scale resource nodes approximately 85% of city visual size, validate and integrate today after actual visual and functional gates. No paid credits.",
-      "phase": "PLAYER_CAMERA_ART_CORRECTION",
-      "next": "Near-camera proportions and landscape composition; Blender source correction then native Unity images and gameplay regression.",
+      "phase": "INTEGRATION_CHECKS",
+      "next": "Reconcile current main in same PR100, verify current artistic-process and integration checks, then owner-authorized merge; no direct publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1176,10 +1174,10 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "9394a4d305283203e800df6c6d4d7b05c5039873",
-        "unity_run": 40253785923,
+        "sha": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+        "unity_run": 40337702256,
         "unity_playmode": "62_OF_62_PASS_NATIVE_GPU_XML_NO_OMISSIONS",
-        "real_unity_captures": 161,
+        "real_unity_captures": 160,
         "art_approved": false,
         "physical_iphone_tested": false,
         "visual_gap": "Large sawtooth bank fins removed in actual final Unity views. Coastline, forest species and some cut facets remain simpler than the references; subjective7.5 owner acceptance and formal ART_APPROVED are not established.",
@@ -1251,31 +1249,35 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
-          "assets_commit": "0d3de6522f79ad85fb153a843e62fd177500491d",
-          "run": 40253785923,
+          "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+          "assets_commit": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
+          "run": 40337702256,
           "result": "success",
           "playmode_passed": 62,
           "playmode_failed": 0,
           "playmode_skipped": 0,
           "editmode_passed": 26,
           "probe_checks": 44,
-          "captures": 161,
+          "camera_manifests_verified": 160,
           "general_captures": 34,
           "exact_matched_camera_pairs": 6,
-          "visual_outcome": "RETAINED_AUTHOR_REVIEW",
-          "artifact": 12621653870,
-          "artifact_sha256": "f89cd3850c89b3ab1a884b3af4cd4fb922946e2508f9e5a331a334a9377ed004",
-          "editable_blend_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+          "visual_outcome": "RETAINED_AUTHOR_REVIEW_FIRST_CONSOLIDATION",
+          "director_estimate": 7.5,
+          "score_is_subjective": true,
+          "artifact": 12658807251,
+          "artifact_sha256": "cc27381f237bd792190700402ba69d71b9cc7c755b1d327802bcd5bd887034e6",
+          "visual_artifact": 12659136360,
+          "visual_artifact_sha256": "fce05aae205ffaaa7ab2c89abbe7dcaa6a35f34445d8ac2dc66eb6c392db2bfa",
+          "editable_blend_sha256": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9",
           "art_approved": false,
           "physical_mobile_tested": false,
           "published": false,
-          "report": "docs/evidence/world4x-canon-20261022/REGION1_MACRO_REVIEW_40253785923.md",
-          "visual_gap": "Large sawtooth bank fins removed in actual final Unity views. Coastline, forest species and some cut facets remain simpler than the references; subjective7.5 owner acceptance and formal ART_APPROVED are not established."
+          "report": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+          "visual_gap": "Coastline, some woodland/path groupings and mineral plates remain more regular than the illustration. Direct author estimate approximately7.5 with near-camera priority; no independent external or physical-device certification."
         },
         "general_integration": {
-          "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
-          "run": 40253785923,
+          "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+          "run": 40337702256,
           "status": "FULL_GPU_62_EDIT_26_PROBE_44_PASS_NO_OMISSIONS",
           "editmode_passed": 26,
           "playmode_passed": 62,
@@ -1283,9 +1285,9 @@
           "playmode_skipped": 0,
           "probe_checks": 44,
           "fresh_captures": 34,
-          "artifact": 12621653870,
-          "artifact_sha256": "f89cd3850c89b3ab1a884b3af4cd4fb922946e2508f9e5a331a334a9377ed004",
-          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40253785923.json"
+          "artifact": 12658807251,
+          "artifact_sha256": "cc27381f237bd792190700402ba69d71b9cc7c755b1d327802bcd5bd887034e6",
+          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40337702256.json"
         },
         "executive_handoff": {
           "source_commit": "7bcd192854016e2489a31d8e60b15851160a05ae",
@@ -1373,6 +1375,33 @@
           "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40069960813.json"
         },
         "current_delivery": {
+          "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+          "assets_commit": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
+          "run": 40337702256,
+          "result": "success",
+          "playmode_passed": 62,
+          "playmode_failed": 0,
+          "playmode_skipped": 0,
+          "editmode_passed": 26,
+          "probe_checks": 44,
+          "camera_manifests_verified": 160,
+          "general_captures": 34,
+          "exact_matched_camera_pairs": 6,
+          "visual_outcome": "RETAINED_AUTHOR_REVIEW_FIRST_CONSOLIDATION",
+          "director_estimate": 7.5,
+          "score_is_subjective": true,
+          "artifact": 12658807251,
+          "artifact_sha256": "cc27381f237bd792190700402ba69d71b9cc7c755b1d327802bcd5bd887034e6",
+          "visual_artifact": 12659136360,
+          "visual_artifact_sha256": "fce05aae205ffaaa7ab2c89abbe7dcaa6a35f34445d8ac2dc66eb6c392db2bfa",
+          "editable_blend_sha256": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9",
+          "art_approved": false,
+          "physical_mobile_tested": false,
+          "published": false,
+          "report": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+          "visual_gap": "Coastline, some woodland/path groupings and mineral plates remain more regular than the illustration. Direct author estimate approximately7.5 with near-camera priority; no independent external or physical-device certification."
+        },
+        "previous_production_before_player_art_20261026": {
           "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
           "assets_commit": "0d3de6522f79ad85fb153a843e62fd177500491d",
           "run": 40253785923,
@@ -1582,7 +1611,7 @@
         "evidence": "Exact-source Unity captures in 3 zooms and both orientations; measured node/city screen extents; gameplay/contact/persistence checks.",
         "handoff": "Same PR100, preserve baseline and editable sources; record truthful visual and technical verdict before integration."
       },
-      "release_note": "Completed bounded macro art production and evidence verification; Windows/Unity/Blender run ended successfully and reservation released. Canonical workstream identity remains active/available for PR100 attribution. Subjective art acceptance and physical-device performance remain explicit review limits.",
+      "release_note": "Native40337702256 completed successfully; real six-view/close-resource/creature/Breach review retained the first near-priority consolidation at an approximate author estimate7.5. Release only the completed Windows reservation for ordinary integration CI; owner/revision40 write scope remains claimed until merge completes.",
       "previous_owner": "codex-world4x-takeover-a6480e11",
       "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
@@ -1599,15 +1628,16 @@
         "detached_sha": "ce740f6417cedc6858e47863a4690b7a029abc78",
         "parent_before_lease": "278d5fe1a9830dab8f50af8710661f3e906d33c7",
         "ui_run_finished": 40074059376,
-        "status": "RESERVED_NOT_VERIFIED"
+        "status": "SUPERSEDED_BY_VERIFIED_40337702256"
       },
       "last_artistic_native": {
-        "run": 40253785923,
-        "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
-        "assets": "0d3de6522f79ad85fb153a843e62fd177500491d",
+        "run": 40337702256,
+        "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+        "assets": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
         "playmode": 62,
         "editmode": 26,
         "functional_checks": 44,
+        "director_estimate": 7.5,
         "art_approved": false
       },
       "resolved_dependencies": [
