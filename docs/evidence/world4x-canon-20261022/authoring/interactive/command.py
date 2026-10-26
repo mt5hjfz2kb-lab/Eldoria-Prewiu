@@ -72,7 +72,7 @@ for i,(x,y,z) in enumerate(before):
  if distance>24 and r>125:continue
  bank=max(sample_old(px+normal_x*28,py+normal_y*28),sample_old(px-normal_x*28,py-normal_y*28))
  if i in wall_vertices:
-  depth=max(0,bank-z);factor=.16+.84*math.exp(-(r/59)**2)
+  depth=max(0,bank-z);factor=math.exp(-(r/52)**2)*max(0,min(1,(112-r)/42))
   z=bank-depth*factor
  if r<125:
   ds=np.sort(np.linalg.norm(seeds-np.asarray((x,y)),axis=1))
@@ -261,6 +261,6 @@ bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_f
 report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
 progress('rendering source previews')
-bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v5')
+bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v6')
 (out/'stop.request').write_text('Saved physical wall correction; actual Unity review required.')
 print('PLAYER_ART_SCULPT_COMPLETE',json.dumps(report))
