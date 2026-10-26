@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T18:55:00Z",
+  "updated_at": "2026-10-26T19:38:53.829Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,7 +19,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-mobile-world-ui-20261026",
+      "owner": "codex-eldoria-ordered-completion-20261026",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-26T18:49:00Z",
@@ -60,8 +60,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR112_VISUAL_QA_AND_INDEPENDENT_REVERSIBLE_FOREST_DENSITY_CANDIDATE",
-      "next": "Validate existing PR112 on Unity, then PR113 forest candidate in native GPU full PlayMode and A/B; with both visually retained, release signed Android via canonical builder",
+      "phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
+      "next": "Finish UI/mobile evidence, reconcile existing PR113 with spatial forest brief, design and simulate multiplayer fairness, finish repository audit last. Do not publish APK or replace family delivery.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -552,7 +552,7 @@
           "handoff_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677"
         }
       },
-      "previous_owner": "chatgpt-eldoria-region1-art-mobile-release-20261026",
+      "previous_owner": "chatgpt-eldoria-mobile-world-ui-20261026",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md",
@@ -731,9 +731,15 @@
           "owner": "chatgpt-eldoria-region1-art-mobile-release-20261026",
           "revision": 22,
           "reason": "Owner in current chat explicitly orders continuous execution through full product delivery on 26/10/2026"
+        },
+        {
+          "owner": "chatgpt-eldoria-mobile-world-ui-20261026",
+          "ownership_revision": 25,
+          "released_at": "2026-10-26T19:38:53.829Z",
+          "reason": "Owner requests ordered takeover of UI/mobile, forest and multiplayer design, repository audit last."
         }
       ],
-      "ownership_revision": 25,
+      "ownership_revision": 26,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
@@ -746,9 +752,9 @@
         "preserve": "Unity source scene, source UV/colliders, 6 POIs, UI V3 native QA, no paid services"
       },
       "delivery_definition": {
-        "deliverable": "Geographic candidate62 source safety independently reviewed; native A/B and artistic approval only when live UI Windows lease releases",
-        "evidence": "Static source evidence and CI for candidate plus 15 same-source real Unity matched A/B once runner free; independent visual acceptance and progression checks",
-        "handoff": "Exact source SHA, trial revision, tests and untouched canonical art; no APK/itch publication"
+        "deliverable": "UI/mobile completion; forest audit and reversible matched Unity A/B; multiplayer architecture and reproducible balance simulation; repository organization audit last.",
+        "evidence": "Exact-source functional/visual evidence, unchanged saved resource identities, path-distance/economy simulation, dependency and recovery verification before archival.",
+        "handoff": "Verified completion and explicit remaining limits; no new APK publication."
       },
       "active_runner_claim": {
         "purpose": "Native268 local Qwen compact geography plan and reversible same-source Unity A/B",
