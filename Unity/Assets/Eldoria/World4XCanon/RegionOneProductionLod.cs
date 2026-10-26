@@ -17,8 +17,8 @@ namespace Eldoria.World4XCanon
                 var group=new GameObject("LOD "+near.name);group.transform.SetParent(artwork.transform,false);
                 // Reparent with world transforms preserved, including glTF handedness.
                 near.transform.SetParent(group.transform,true);far.transform.SetParent(group.transform,true);
-                // Prefer more legible low-poly conifer silhouettes at strategic
-                // distance, not an extra carpet or enlarged close-up donor.
+                // Match the reference crown hierarchy at strategic distance. The
+                // previous 20-26m crowns / 34-41m height dominated the region.
                 // The far mesh is independently exported, keeps its original
                 // ground anchor, and still crossfades through the existing LOD.
                 bool retained=near.name.StartsWith("Pilot_Pine",StringComparison.Ordinal);
@@ -31,9 +31,9 @@ namespace Eldoria.World4XCanon
                     far.transform.localScale=new Vector3(scale.x*2.10f,scale.y*2.60f,scale.z*2.10f);
                     var size=far.bounds.size;float footprint=Mathf.Max(size.x,size.z);
                     if(footprint>=12f){
-                        float crown=20f+(identity%7);
+                        float crown=12f+(identity%5);
                         far.transform.localScale=new Vector3(far.transform.localScale.x*crown/footprint,
-                            far.transform.localScale.y*(34f+identity%8)/Mathf.Max(.01f,size.y),
+                            far.transform.localScale.y*(18f+identity%6)/Mathf.Max(.01f,size.y),
                             far.transform.localScale.z*crown/footprint);
                     }
                     if(footprint<12f){
@@ -42,12 +42,12 @@ namespace Eldoria.World4XCanon
                         // legible as a rectangle even after its ground detail is
                         // culled. Keep its expected crown area, using fewer of
                         // the SAME anchors at the continental silhouette scale.
-                        float coverage=footprint*footprint/(22f*22f);
+                        float coverage=footprint*footprint/(14f*14f);
                         retainedFarVisible=(identity%10000)/10000f<coverage;
                         if(retainedFarVisible){
                             scale=far.transform.localScale;
-                            far.transform.localScale=new Vector3(scale.x*22f/Mathf.Max(.01f,footprint),
-                                scale.y*34f/Mathf.Max(.01f,size.y),scale.z*22f/Mathf.Max(.01f,footprint));
+                            far.transform.localScale=new Vector3(scale.x*14f/Mathf.Max(.01f,footprint),
+                                scale.y*20f/Mathf.Max(.01f,size.y),scale.z*14f/Mathf.Max(.01f,footprint));
                         }
                     }
                 }
@@ -60,10 +60,10 @@ namespace Eldoria.World4XCanon
                     if(retainedFarVisible){
                         var size=far.bounds.size;
                         float footprint=Mathf.Max(size.x,size.z);
-                        float crown=20f+((identity/5)%5);
+                        float crown=12f+((identity/5)%5);
                         var scale=far.transform.localScale;
                         far.transform.localScale=new Vector3(scale.x*crown/Mathf.Max(.01f,footprint),
-                            scale.y*(34f+identity%7)/Mathf.Max(.01f,size.y),scale.z*crown/Mathf.Max(.01f,footprint));
+                            scale.y*(18f+identity%6)/Mathf.Max(.01f,size.y),scale.z*crown/Mathf.Max(.01f,footprint));
                     }
                 }
                 // Scale about the existing canopy base, not the ground-origin

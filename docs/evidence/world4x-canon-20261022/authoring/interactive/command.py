@@ -175,6 +175,32 @@ for ob in scene.objects:
   delta=new_hit.z-old_hit.z;ob.location.z+=delta
   rooted_adjustments+=abs(delta)>.001
 progress('rooted scenery fitted')
+# The same river bed must continue into the neighbouring mesh. Match BOTH
+# copies of the shared edge after excavation, instead of opening a physical gap.
+continuation=bpy.data.objects['BLD_ContinentalContinuation']
+context=np.array([tuple(v.co) for v in continuation.data.vertices],np.float32)
+edge={}
+for x,y,z in coords:
+ if abs(abs(float(x))-910)<.002 or abs(abs(float(y))-1800)<.002:
+  key=(round(float(x),3),round(float(y),3));edge[key]=max(edge.get(key,-1e9),float(z))
+context_edits=0
+for i,(x,y,z) in enumerate(context):
+ old=float(z)
+ for water_ob,water_bvh in water_surfaces:
+  hit=water_bvh.ray_cast(Vector((float(x),float(y),300)),Vector((0,0,-1)))[0]
+  if hit is None and water_ob.name.startswith('BLD_RiverExtension_'):
+   hit=water_bvh.find_nearest(Vector((float(x),float(y),.32)),4.5)[0]
+  if hit is not None:z=min(float(z),hit.z-.22)
+ key=(round(float(x),3),round(float(y),3))
+ if key in edge:z=edge[key]
+ context[i,2]=z
+ if abs(old-float(z))>.000001:context_edits+=1
+continuation.data.vertices.foreach_set('co',context.ravel());continuation.data.update()
+for x,y,z in context:
+ key=(round(float(x),3),round(float(y),3))
+ if key in edge:assert abs(float(z)-edge[key])<.00001
+progress('shared river boundary fitted')
+
 # Every retained decorative overlay follows the real cut; no floating plates.
 overlay_counts={}
 for name in ['BLD_BreachFloor','BLD_BreachOutlyingFractures','BLD_BreachBrokenBasaltPlates','BLD_BreachTerracedStrata','BLD_BreachWeatheredRockfall','BLD_BreachMineralHeart']:
@@ -266,9 +292,9 @@ for ob in scene.objects:
  if ob.name in export_names and ob.type in {'MESH','EMPTY'}:ob.select_set(True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
-report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
+report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'continuation_vertices_refitted':context_edits,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
 progress('rendering source previews')
-bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v7')
+bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v8')
 (out/'stop.request').write_text('Saved physical wall correction; actual Unity review required.')
 print('PLAYER_ART_SCULPT_COMPLETE',json.dumps(report))

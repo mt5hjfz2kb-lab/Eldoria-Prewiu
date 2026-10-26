@@ -93,8 +93,8 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      }
      if(_ExistingPathEnabled>.5){
          float distanceMetres=SAMPLE_TEXTURE2D(_ExistingPathDistance,sampler_ExistingPathDistance,i.uv).r*16;
-         float width=lerp(.5,5.5,smoothstep(.3,4.5,metresPerPixel));
-         float readable=(1-smoothstep(width,width+1,distanceMetres))*smoothstep(.15,.7,metresPerPixel)*.65;
+         float width=lerp(.35,3.3,smoothstep(.3,4.5,metresPerPixel));
+         float readable=(1-smoothstep(width,width+1.8,distanceMetres))*smoothstep(.15,.7,metresPerPixel)*.32;
          half3 earth=half3(.70,.59,.34);
          #ifndef UNITY_COLORSPACE_GAMMA
          earth=SRGBToLinear(earth);
