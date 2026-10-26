@@ -28,7 +28,7 @@ namespace Eldoria.ReferenceClean {
   public ValoriaReferenceCleanGameplay City=>city;
   ValoriaReferenceCleanGameplay city; ExistingSliceBinding binding; ZoneOneGatewayHost world;
   ICommandGateway boundGateway; Canvas legacyCanvas; GraphicRaycaster legacyRaycaster;
-  bool cityFog,englishInterface,worldVisited; int layoutWidth,layoutHeight,focusRequest,observedFocusStage;
+  bool cityFog,englishInterface; int layoutWidth,layoutHeight,focusRequest,observedFocusStage;
   float nextVisualSync;
   Rect observedVisibleArea;
   WorldHotspot[] targets;
