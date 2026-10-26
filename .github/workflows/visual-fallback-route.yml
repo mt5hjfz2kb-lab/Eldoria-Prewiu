@@ -39,6 +39,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # This read-only check needs text inputs only; preserve every validation.
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tools/route-visual-fallback.mjs
+            /pipeline/visual-fallback-policy.json
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
