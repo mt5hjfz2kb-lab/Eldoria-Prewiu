@@ -232,7 +232,14 @@ namespace Eldoria.World4XCanon
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});
             }
-            float screenScale=Mathf.Lerp(1f,1.4f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
+            // LOD silhouette continuity: the close mesh is 20.4m wide,
+            // while this regional billboard's UV2 spans 32m. At the exact
+            // 110 threshold both should present the SAME physical width,
+            // not instantly inflate 57%. Restore the approved readable
+            // regional size at zoom 280 and retain distant billboard growth.
+            float nearBillboardScale=(RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio)/32f;
+            float regionalBlend=Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(110f,280f,zoom));
+            float screenScale=Mathf.Lerp(nearBillboardScale,1.4f,regionalBlend)*Mathf.Max(1f,zoom/280f);
             if(impostorMaterial&&Mathf.Abs(lastImpostorScale-screenScale)>.0001f){
                 impostorMaterial.SetFloat("_BillboardScale",screenScale);lastImpostorScale=screenScale;
             }

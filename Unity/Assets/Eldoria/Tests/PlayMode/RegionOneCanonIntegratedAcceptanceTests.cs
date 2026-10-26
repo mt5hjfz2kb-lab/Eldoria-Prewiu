@@ -695,6 +695,22 @@ namespace Eldoria.Tests
             // resource inventory, independent of the donor's old fragment count.
             Assert.That(parts,Is.GreaterThanOrEqualTo(actualRoots.Length));Assert.That(maximum,Is.LessThan(.005f),"Floating resource supports");Assert.That(minimum,Is.GreaterThan(-.65f),"Excessive burial must be repaired, not hidden with collider offsets");
             foreach(var pair in originalColliders)Assert.That(pair.Key.transform.position,Is.EqualTo(pair.Value));
+            // The 3D model and the billboard must not change footprint abruptly
+            // as the player crosses close (109) -> regional (110) on a phone.
+            var resourceId=actualRoots[0].name.Substring("Production resource visual ".Length);
+            var regionalSprite=world.GetComponentsInChildren<MeshRenderer>(true)
+                .Single(x=>x.name=="Production resource impostor "+resourceId);
+            var savedTarget=Call(host,"FindTarget",resourceId) as Component;
+            Vector3 savedSite=savedTarget.transform.position;
+            Call(navigation,"RestoreView",(Vector3)Member(navigation,"target"),110.1f);
+            Call(modelService,"RefreshNow");
+            Assert.That(regionalSprite.enabled,Is.True,"Regional graphics must appear at the 110 threshold.");
+            float actualWidth=32f*regionalSprite.sharedMaterial.GetFloat("_BillboardScale");
+            float closeWidth=24f*.85f;
+            Assert.That(actualWidth/closeWidth,Is.InRange(.98f,1.04f),
+                "The regional node must start at the close model width rather than popping to 32 metres.");
+            Assert.That(savedTarget.transform.position,Is.EqualTo(savedSite),
+                "Transition graphics must never relocate the saved gameplay target.");
             Debug.Log("REGION1_RESOURCE_CONTACT parts="+parts+" min_gap_m="+minimum+" max_gap_m="+maximum+" collider_movement=0");
         }
 
