@@ -59,37 +59,35 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // The existing mip chain/aniso filter performs minification; an additional
  // early derivative fade erased detail only on the extension and exposed a square.
  c.rgb*=lerp(half3(1,1,1),grain,_GroundDetailStrength);
- // Same protected AF grain, sampled at a larger physical footprint, adds
- // bounded meadow structure that survives the overview mip chain. Pigment
- // is warmed consistently at every zoom; no image or source UV is replaced.
+ // One metre-based meadow palette across the original patch and its extension.
+ // Broad, connected green clearings retain source grain and ochre paths.
  if(_MeadowFinish>.5){
-     half wideA=SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,detailUV/6).a;
-     half wideB=SAMPLE_TEXTURE2D(_GroundDetail,sampler_GroundDetail,rotatedDetail/6).a;
-     half variation=1+clamp(wideA+wideB-1,-.65,.65)*.22;
-     // Preserve the source ochre paths and purple geology; warm the actual
-     // green meadow pigment rather than tinting the whole painted atlas.
-     half grass=1-smoothstep(.95,1.40,c.r/max(.001,c.g));
-     float2 meadowLocal=i.world.xz-_RegionOrigin.xz;
-     float2 beyond=float2(max(0,abs(meadowLocal.x)-96),max(0,max(-78-meadowLocal.y,meadowLocal.y-270)));
-     // One continuous temperature across the preserved core, extension and
-     // neighbouring ground. Material boundaries must not reveal rectangles.
-     half transition=smoothstep(0,90,length(beyond));
-     half3 temperature=lerp(half3(1.40,1.10,.94),half3(1.42,1.11,.88),transition);
-     c.rgb*=lerp(half3(1,1,1),temperature*variation,grass);
+     float2 q=i.world.xz-_RegionOrigin.xz;
+     float broad=sin(q.x*.041+sin(q.y*.028)*1.7)+sin(q.y*.057-q.x*.019)+.42*sin(q.x*.133+q.y*.091);
+     float clearing=smoothstep(-.65,.8,broad);
+     half luminance=dot(c.rgb,half3(.2126,.7152,.0722));
+     half sourcePath=smoothstep(1.12,1.55,c.r/max(.001,c.g));
+     half3 grassPalette=lerp(half3(.63,.79,.31),half3(.93,.84,.43),clearing);
+     half3 pathPalette=half3(1.02,.79,.47);
+     half3 palette=lerp(grassPalette,pathPalette,sourcePath*.8);
+     // Preserve variation already painted into the source, but stop amplifying red.
+     half value=clamp(luminance/.32,.62,1.28);
+     c.rgb=lerp(c.rgb,palette*.47*value,.76);
  }
  if(_GeologicalRock>.5){
      // Flat sediment belongs to the dark interior; deposited layers describe
      // the sloping walls. This slope distinction keeps the wound below ground
      // instead of reading as a pale striped ribbon across the landscape.
      float wall=1-smoothstep(.48,.86,abs(normalize(i.normal).y));
-     float rockNoise=sin(i.world.x*.37+sin(i.world.z*.29))*sin(i.world.z*.53+i.world.x*.11);
-     float strata=(i.world.y-_RegionOrigin.y)/3.4+.73*rockNoise+.32*sin(i.world.x*.073+i.world.z*.091);
-     float seam=1-smoothstep(.02,.11,min(frac(strata),1-frac(strata)));
-     c.rgb*=lerp(half3(.46,.34,.30),half3(.82,.76,.67),wall);
-     c.rgb*=(1+rockNoise*.10)*(1-seam*.045*wall);
+     // Angular variation follows the newly cut facets; no sinusoidal contour lines.
+     float2 facet=floor((i.world.xz-_RegionOrigin.xz)/3.7);
+     float fleck=frac(sin(dot(facet,float2(12.9898,78.233)))*43758.5453);
+     c.rgb*=lerp(half3(.40,.34,.43),half3(.89,.85,.83),wall);
+     c.rgb*=lerp(.91,1.08,fleck);
+
  }
  half3 originalPigment=c.rgb;
- if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);
+ if(_Baked<.5)c.rgb*=(half3(.40,.43,.46)+half3(.60,.57,.54)*diffuse*shadow);
  #if defined(_ADDITIONAL_LIGHTS) || defined(_ADDITIONAL_LIGHTS_VERTEX) || USE_CLUSTER_LIGHT_LOOP
  if(_Baked<.5&&distance(i.world.xz-_RegionOrigin.xz,float2(-260,150))<180){
      InputData inputData=(InputData)0;

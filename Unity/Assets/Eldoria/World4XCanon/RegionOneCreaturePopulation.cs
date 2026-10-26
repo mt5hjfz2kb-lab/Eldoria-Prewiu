@@ -16,6 +16,7 @@ namespace Eldoria.World4XCanon
         {
             public Eldoria.Presentation.WorldHotspot Hotspot;
             public GameObject Near, Far;
+            public float NearScale;
         }
         readonly Dictionary<string,Encounter> instances=new Dictionary<string,Encounter>();
         readonly Dictionary<string,GameObject> prefabs=new Dictionary<string,GameObject>();
@@ -81,7 +82,9 @@ namespace Eldoria.World4XCanon
                     collider.size=new Vector3(12,10,12);
                     var close=MakeModel(creature.CreatureKind,"near",go.transform,creature.TargetId);
                     var far=MakeModel(creature.CreatureKind,"far",go.transform,creature.TargetId);
-                    entity=new Encounter{Hotspot=hot,Near=close,Far=far};
+                    float nearScale=RegionOneResourceModels.FitNearWidth(close,
+                        RegionOneReferenceNodes.BastionOneVisualWidth*(creature.CreatureKind=="boar"?.45f:.55f));
+                    entity=new Encounter{Hotspot=hot,Near=close,Far=far,NearScale=nearScale};
                     instances.Add(creature.TargetId,entity);
                 }
                 entity.Hotspot.transform.position=new Vector3(creature.X,creature.Y,creature.Z);
@@ -91,7 +94,10 @@ namespace Eldoria.World4XCanon
                 // orthographic size. Preserve a target's share of viewport height
                 // beyond the landscape reference, independently of device pixels.
                 if(!near)presence*=Mathf.Max(1f,zoom/280f);
-                FitModel(entity.Near,creature.CreatureKind,presence,entity.Hotspot.transform);
+                float baseScale=creature.CreatureKind=="boar"?7.5f:7.2f;
+                float closePresence=Mathf.Lerp(entity.NearScale/baseScale,presence,
+                    Mathf.SmoothStep(0f,1f,Mathf.InverseLerp(64f,110f,zoom)));
+                FitModel(entity.Near,creature.CreatureKind,closePresence,entity.Hotspot.transform);
                 FitModel(entity.Far,creature.CreatureKind,presence,entity.Hotspot.transform);
                 var shown=near?entity.Near:entity.Far;
                 var visibleBounds=shown.GetComponentsInChildren<Renderer>(true);

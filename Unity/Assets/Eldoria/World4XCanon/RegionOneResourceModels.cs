@@ -19,6 +19,21 @@ namespace Eldoria.World4XCanon
         Material impostorMaterial;readonly Mesh[] impostorMeshes=new Mesh[2];
         public void RefreshNow(){nextState=0;LateUpdate();}
         readonly List<Mesh> authoredContactCopies=new List<Mesh>();
+        public const float NearCityWidthRatio=.85f;
+        // Measure real imported vertices at the playable heading, not asset-local
+        // scale multipliers or renderer bounds expanded for shader billboards.
+        public static float FitNearWidth(GameObject visual,float desiredWidth)
+        {
+            float lo=float.PositiveInfinity,hi=float.NegativeInfinity;
+            foreach(var part in visual.GetComponentsInChildren<MeshFilter>(true))
+                if(part.sharedMesh)foreach(var vertex in part.sharedMesh.vertices){
+                    float x=part.transform.TransformPoint(vertex).x;
+                    lo=Mathf.Min(lo,x);hi=Mathf.Max(hi,x);
+                }
+            if(float.IsInfinity(lo)||hi-lo<.001f)throw new InvalidOperationException("Missing measurable model "+visual.name);
+            visual.transform.localScale*=desiredWidth/(hi-lo);
+            return visual.transform.localScale.x;
+        }
         float SoilAt(Vector3 point) => host.WorldHome.y+
             RegionOneBlenderLandscape.Height(point.x-host.WorldHome.x,point.z-host.WorldHome.z);
 
@@ -129,8 +144,14 @@ namespace Eldoria.World4XCanon
                 (node.LastPickPosition-position).sqrMagnitude<.000001f&&Quaternion.Angle(node.LastPickRotation,rotation)<.001f)return;
             node.LastPickRegional=regional;node.LastPickScale=scale;node.LastPickPosition=position;node.LastPickRotation=rotation;
             if(!regional){
-                if(node.Hit is BoxCollider box){box.center=node.HitCenter;box.size=node.HitSize;}
-                else if(node.Hit is SphereCollider sphere){sphere.center=node.HitCenter;sphere.radius=node.HitRadius;}
+                var nearBounds=new Bounds(node.Logical.InverseTransformPoint(node.Renderers[0].bounds.center),Vector3.zero);
+                foreach(var renderer in node.Renderers){
+                    var b=renderer.bounds;
+                    for(int k=0;k<8;k++)nearBounds.Encapsulate(node.Logical.InverseTransformPoint(b.center+
+                        Vector3.Scale(b.extents,new Vector3((k&1)==0?-1:1,(k&2)==0?-1:1,(k&4)==0?-1:1))));
+                }
+                if(node.Hit is BoxCollider box){box.center=nearBounds.center;box.size=Vector3.Max(nearBounds.size+Vector3.one*.3f,node.HitSize);}
+                else if(node.Hit is SphereCollider sphere){sphere.center=nearBounds.center;sphere.radius=Mathf.Max(node.HitRadius,nearBounds.extents.magnitude);}
                 return;
             }
             // Fit the existing selection volume to the same camera-facing model
@@ -177,6 +198,7 @@ namespace Eldoria.World4XCanon
                 var visual=Instantiate(source.gameObject,parent);visual.name="Production resource visual "+pair.Item1;
                 if(service.look)service.look.ApplyMaterials(visual);
                 visual.transform.localScale=Vector3.one*(pair.Item1=="forest-valoria"?1.55f:1.35f);visual.transform.rotation=Quaternion.Euler(0,180,0);
+                FitNearWidth(visual,RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 service.nodes.Add(new Node{Id=pair.Item1,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=service.MakeImpostor(pair.Item1,parent)});
             }
@@ -194,6 +216,7 @@ namespace Eldoria.World4XCanon
                 var source=library.GetComponentsInChildren<Transform>(true).Single(x=>x.name=="Resource_"+family+"_"+(nodes.Count%3));
                 var visual=Instantiate(source.gameObject,transform);visual.name="Production resource visual "+item.TargetId;
                 visual.transform.localScale=Vector3.one*(family=="Wood"?1.55f:1.35f);visual.transform.rotation=Quaternion.Euler(0,180,0);
+                FitNearWidth(visual,RegionOneReferenceNodes.BastionOneVisualWidth*NearCityWidthRatio);
                 if(look)look.ApplyMaterials(visual);
                 foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))renderer.gameObject.layer=29;
                 nodes.Add(new Node{Id=item.TargetId,Logical=logical.transform,Visual=visual,Renderers=visual.GetComponentsInChildren<Renderer>(true),Impostor=MakeImpostor(item.TargetId,transform)});

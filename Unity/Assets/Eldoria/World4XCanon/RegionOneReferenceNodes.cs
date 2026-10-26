@@ -11,6 +11,7 @@ namespace Eldoria.World4XCanon
  [DefaultExecutionOrder(1200)]
  public sealed class RegionOneReferenceNodes : MonoBehaviour
  {
+  public const float BastionOneVisualWidth=24f;
   ValoriaIntegratedWorld host;Material nodes,trees;bool before;
   readonly Dictionary<string,Vector3> resourceOrigins=new Dictionary<string,Vector3>();
   readonly List<Renderer> old=new List<Renderer>();readonly List<bool> states=new List<bool>();readonly List<bool> mountains=new List<bool>();
@@ -34,7 +35,7 @@ namespace Eldoria.World4XCanon
   Vector3 Foot(Bounds b)=>GroundFoot(new Vector3(b.center.x,b.min.y,b.min.z));
   void Build()
   {
-   if(host.WorldBastionOne){var b=BoundsOf(host.WorldBastionOne);Sprite("Reference city Bastion I",Foot(b),24,0,host.WorldBastionOne);Hide(host.WorldBastionOne);}
+   if(host.WorldBastionOne){var b=BoundsOf(host.WorldBastionOne);Sprite("Reference city Bastion I",Foot(b),BastionOneVisualWidth,0,host.WorldBastionOne);Hide(host.WorldBastionOne);}
    if(host.WorldBastionTwo){var b=BoundsOf(host.WorldBastionTwo);Sprite("Reference city Bastion II",Foot(b),28,0,host.WorldBastionTwo);Hide(host.WorldBastionTwo);}
    Hide(host.WorldSawmill);
    var quarry=host.FindTarget("quarry-valoria");if(quarry){var f=quarry.transform.position;f.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(f.x-host.WorldHome.x,f.z-host.WorldHome.z)+.1f;Sprite("Reference existing quarry",f,13,1,null);}

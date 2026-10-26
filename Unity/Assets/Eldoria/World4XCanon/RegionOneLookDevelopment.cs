@@ -33,7 +33,7 @@ namespace Eldoria.World4XCanon
             foreach(var anchor in artwork.GetComponentsInChildren<Transform>(true)
                 .Where(t=>t.name.StartsWith("BLD_BreachInteriorLightAnchor_",StringComparison.Ordinal)).ToArray()){
                 var source=new GameObject("Breach interior mineral light");source.transform.SetParent(anchor,false);source.layer=29;
-                var light=source.AddComponent<Light>();light.type=LightType.Point;light.range=32f;light.intensity=48f;
+                var light=source.AddComponent<Light>();light.type=LightType.Point;light.range=23f;light.intensity=17f;
                 light.color=new Color(.48f,.07f,1f);light.shadows=LightShadows.None;light.cullingMask=1<<29;
                 light.renderMode=LightRenderMode.ForcePixel;light.enabled=false;scope.interiorLights.Add(light);
             }
