@@ -14,6 +14,9 @@ if (!token) throw Error("GITHUB_TOKEN required for live evidence");
 if (config.schema_version !== 1 || !Array.isArray(config.missions) || !Array.isArray(registry.active)) {
   throw Error("Invalid continuity policy or canonical registry");
 }
+if (config.missions.length > 10 || new Set(config.missions.map(x => x.workstream_id)).size !== config.missions.length) {
+  throw Error("Continuity scope must stay bounded, with unique canonical workstream IDs");
+}
 if (config.allow_workflow_dispatch !== false) throw Error("Production dispatch must remain disabled");
 
 async function api(route, opts = {}) {
@@ -66,7 +69,15 @@ for (const mission of config.missions) {
       mission, activeWorkstreams: registry.active, runs: runPage.workflow_runs,
       branchSha: branch.commit.sha, now, stallMinutes: config.stall_minutes
     });
-    report.issue_sync = allowIssueWrites ? await reconcileIssue(report) : "dry_run";
+    if (runPage.total_count > 100 && report.state === "IDLE_UNFINISHED") {
+      report.state = "PARTIAL_RUN_WINDOW";
+      report.alert = false;
+      report.next_action = "More than 100 recent runs exist; this bounded observation cannot prove the requested workflow is missing. Inspect exact workflow before any action.";
+    }
+    // Current owners remain the only writers. Report-only tracks MUST NOT create
+    // or update recovery issues, even when the legacy guard has issues:write.
+    report.issue_sync = mission.report_only === true ? "report_only_no_issue" :
+      allowIssueWrites ? await reconcileIssue(report) : "dry_run";
     reports.push(report);
   } catch (error) {
     const message = mission.workstream_id + ": " + error.message;
