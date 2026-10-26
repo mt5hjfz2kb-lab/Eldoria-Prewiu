@@ -55,13 +55,28 @@ jobs:
           if (-not (Test-Path 'dependency-input/summary.json')) {throw 'Original certified summary unavailable'}
           $original=Get-Content 'dependency-input/summary.json' -Raw | ConvertFrom-Json
           if (-not $original.completed -or $original.sourceCommit -ne 'd9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4' -or $original.unresolvedCandidates -ne 354 -or $original.unresolvedBytes -ne 1909173156) {throw 'Certified audit mismatch'}
-          $py=Get-Command python.exe -ErrorAction SilentlyContinue
-          if (-not $py) {throw 'Python not installed on this runner'}
-          python --version
-          python -m compileall -q tools/dependency-audit
+          # WindowsApps python.exe can be an installer alias, not an interpreter.
+          $python=$null
+          $candidate=Get-Command python.exe -ErrorAction SilentlyContinue
+          if($candidate -and $candidate.Source -notmatch 'WindowsApps'){
+            & $candidate.Source -c "import sys; assert sys.version_info >= (3,8)"
+            if($LASTEXITCODE -eq 0){$python=$candidate.Source}
+          }
+          if(-not $python){
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){foreach($base in @('C:/Program Files/Blender Foundation',"$env:LOCALAPPDATA/Programs/Blender Foundation")){if(Test-Path $base){$blender=Get-ChildItem $base -Recurse -Filter blender.exe -File|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName};if($blender){break}}}
+            if($blender){$python=Get-ChildItem (Split-Path $blender) -Filter python.exe -Recurse|Select-Object -First 1 -ExpandProperty FullName}
+          }
+          if(-not $python){throw 'No existing usable Python interpreter; no software installed'}
+          & $python -c "import sys,zipfile,hashlib; assert sys.version_info >= (3,8); print(sys.executable)"
+          if($LASTEXITCODE -ne 0){throw 'Existing Python failed stdlib preflight'}
+          "ELDORIA_ARCHIVE_PYTHON=$python" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          git fetch --no-tags origin d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4
+          if($LASTEXITCODE -ne 0){throw 'Pinned historical source unavailable'}
+          & $python -m compileall -q tools/dependency-audit
           if ($LASTEXITCODE -ne 0) {throw 'Python audit source invalid'}
           New-Item -ItemType Directory -Force -Path dependency-report | Out-Null
-          python tools/dependency-audit/check_external_references.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out dependency-report/external-references.json
+          & $python tools/dependency-audit/check_external_references.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out dependency-report/external-references.json
           if ($LASTEXITCODE -ne 0) {throw 'External reference scan failed'}
           if (-not (Test-Path 'dependency-report/external-references.json')) {throw 'External reference inventory missing'}
       - name: Create a verified 354-asset historical ZIP on owner's PC
@@ -73,7 +88,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path $root | Out-Null
           $target=Join-Path $root 'eldoria-354-assets-20261026.zip'
           if (Test-Path -LiteralPath $target) {throw 'Archive already exists: refusing to overwrite'}
-          python tools/dependency-audit/create_backup.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out $target
+          & $env:ELDORIA_ARCHIVE_PYTHON tools/dependency-audit/create_backup.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out $target
           if ($LASTEXITCODE -ne 0) {throw 'Backup refused/failed; no existing archive was modified'}
           if (-not (Test-Path -LiteralPath $target) -or -not (Test-Path -LiteralPath ($target+'.sha256'))) {throw 'Backup verification files missing'}
           $obj=@{status='CREATED_AND_HASH_VERIFIED';snapshot='d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4';pc_path=$target;bytes=(Get-Item -LiteralPath $target).Length;sha256=((Get-Content ($target+'.sha256') -Raw).Split(' ')[0]);source_assets=354}

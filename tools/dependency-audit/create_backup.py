@@ -18,7 +18,7 @@ def main():
     tree={}
     for entry in git(root,"ls-tree","-r","-z","-l",SHA).split(b"\0"):
         if not entry:continue
-        header,name=entry.split(b"\t",1); mode,typ,sha,size=header.decode().split(" ")
+        header,name=entry.split(b"\t",1); mode,typ,sha,size=header.decode().split()
         if typ=="blob":tree[name.decode()]=(sha,int(size))
     wanted=set()
     for c in candidates:
@@ -38,6 +38,7 @@ def main():
     free=shutil.disk_usage(out.parent).free
     if free < 4*1024**3:raise RuntimeError("At least 4 GiB of free disk space required; no output created")
     tmp=out.with_suffix(out.suffix+".partial")
+    if tmp.exists():raise RuntimeError("Refusing to overwrite existing partial archive: "+str(tmp))
     manifest={"schema":1,"source_sha":SHA,"restore_branch":KEEP_REF,
               "asset_count":354,"asset_bytes":1909173156,"all_source_files":len(paths),
               "scope":"Original Unity assets, sibling .meta files, folder .meta files; no Git modifications",
