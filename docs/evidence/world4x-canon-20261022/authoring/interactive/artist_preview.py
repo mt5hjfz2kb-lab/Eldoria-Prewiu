@@ -12,6 +12,7 @@ def artist_snapshot(label):
  scene.view_settings.view_transform='Standard';scene.view_settings.look='None';scene.view_settings.exposure=0;scene.view_settings.gamma=1
  try:
   for name,focus,offset,scale,width,height in [
+   ('near-town',(3,-14,2),(0,-110,100),128,1280,720),
    ('near-breach',(-260,150,-3),(0,-100,140),145,1280,720),
    ('regional',(-40,150,4),(0,-800,1700),1050,1280,720),
    ('panorama',(0,0,0),(0,-2300,5200),4200,390,844)]:
