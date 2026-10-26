@@ -1,3 +1,7 @@
+> **PRIMERA ETAPA DE EFICIENCIA CERRADA — 26-10-2026.** PR114 integrado en `46dd9e892fd46c0405d62316251d8e3f51331aef`: dos controles de metadatos con descarga acotada y conservación de fuentes Blender sin nuevas copias idénticas. Pruebas específicas, protecciones del repositorio y recorrido web completo aprobados; ambos controles optimizados también pasan en main. Juego, assets, guardados, workflows nativos y entregas familiares intactos. [Alcance, pruebas y reversión](docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md#primera-etapa-de-eficiencia--26-10-2026). La limpieza profunda del histórico no se ha realizado. Asignación liberada; no hay ejecución pendiente en esta etapa.
+
+---
+
 > **ESTADO VIGENTE — CIERRE DEL ENCARGO 26-10-2026.** Interfaz y continuidad móvil verificadas; auditoría y depuración forestal integradas en PR113; diseño maestro 4X y simulación reproducible terminados; auditoría de archivos y respaldo recuperable verificados. El detalle y los límites actuales están en [COMPLETION_20261026.md](docs/world4x-multiplayer/COMPLETION_20261026.md). Las entradas inferiores son cronología; no reactivan PR99, native262 ni antiguas reservas.
 
 - PR100/111/112/113 integrados. PR113: `c448cb783c512377702b452bd3bb6a7459c1c135`; 65/65 PlayMode, 26/26 EditMode, comprobación I–II y compilación Windows correctas. Seis pares Unity auténticos revisados independientemente; mejora forestal retenida, sin ART_APPROVED global ni perfil físico móvil.

@@ -81,23 +81,25 @@ Para las fuentes idénticas, mantener una ruta canónica y que los manifiestos d
 ejecución apunten a ella y a su hash; conservar en el archivo recuperable las rutas
 históricas hasta adaptar sus scripts de restauración. Empezar por la biblioteca
 de recursos repetida 18 veces, fuera de Assets, después de mapear sus consumidores.
-Productor concreto identificado: `authoring/materialize_verified_candidate.ps1`
-crea `sources/native-$GITHUB_RUN_ID` y copia de nuevo las tres fuentes BLEND;
+Productor concreto identificado en la instantánea auditada: `authoring/materialize_verified_candidate.ps1`
+creaba `sources/native-$GITHUB_RUN_ID` y copiaba de nuevo las tres fuentes BLEND;
 `world4x-canon-native.yml` consume fuentes guardadas y verifica hashes de ellas.
-La deduplicación debe modificar conjuntamente ese productor y los consumidores,
-con resolución por manifiesto y restauración de rutas históricas. Borrar las copias
-sin esa adaptación rompería un flujo de recuperación que sigue siendo real.
+La primera etapa posterior adapta ese productor y su manifiesto, manteniendo el
+contrato de rutas y hashes de los consumidores y todas las rutas históricas. Los
+insumos temporales del workflow nativo permanecen iguales. Borrar las copias
+sin revisar sus consumidores rompería un flujo de recuperación que sigue siendo real.
 Las capturas A/B necesarias se conservan como evidencia original, no se reemplazan
 por miniaturas. No añadir otro sistema de catálogo paralelo al Asset Vault existente.
 
-Orden de una reorganización posterior, con pruebas de restauración en cada paso:
+Orden de reorganización y avance de la primera etapa, con pruebas en cada paso:
 
-1. Detener nuevas copias idénticas de BLEND adaptando el productor y sus manifiestos;
-   comprobar que una ejecución puede recuperar exactamente su fuente por hash.
+1. **Implementado en PR114:** reutilizar fuentes BLEND idénticas en el materializador,
+   conservando las distintas; recuperación y resolución por ruta/hash probadas.
 2. Delimitar checkouts de CI por función: Unity necesita el proyecto y sus fixtures;
    la autoría necesita las fuentes editables indicadas por el manifiesto; la auditoría
    puede leer Git sin materializar decenas deGB. La auditoría ya usa checkout reducido
-   y lectura de blobs. No trasladar esa configuración a Unity sin listar sus fixtures.
+   y lectura de blobs. PR114 acota otros dos controles de metadatos. No trasladar
+   esa configuración a Unity sin listar sus fixtures.
 3. Ensayar restauración/importación de un conjunto histórico completo en un entorno
    desechable, incluyendo escenas consumidoras y `.meta`; después separar su copia
    de trabajo de `Assets`, manteniendo la fuente y evidencia recuperables.
@@ -184,3 +186,89 @@ El flujo de recuperación queda en main como `workflow_dispatch` manual: no se
 dispara por editar su propio workflow ni por cambios rutinarios de scripts. La
 configuración de cierre superó el verificador de gobernanza existente, sin cambiar
 sus reglas. Los resultados nativos anteriores conservan su procedencia exacta.
+
+## Primera etapa de eficiencia — 26-10-2026
+
+Encargo posterior del propietario: frenar nuevas copias idénticas y reducir
+descargas de comprobaciones, conservando juego, automatización, pipeline e historia.
+Implementación aislada en PR114; no cambia escenas, recursos jugables, GUID,
+guardados, paquetes Unity, entregas Android ni los workflows nativos de Unity/UI.
+
+### Descarga acotada con las mismas validaciones
+
+Se conservan todos los comandos de validación de estos dos controles:
+
+| Workflow | Entradas materializadas | Bytes de esas entradas |
+| --- | ---: | ---: |
+| `valoria-full-frame-convergence-control.yml` | 2 archivos | 3.573 |
+| `visual-fallback-route.yml` | 2 archivos | 5.600 |
+
+Las cifras son los cuerpos de sus archivos de entrada, no una medición de tráfico
+total: Git, Actions y Node tienen costes adicionales. El checkout usa patrones
+exactos sin materializar Unity ni los archivos binarios históricos. El ensayo
+`python3 tools/repository-efficiency/verify_sparse.py` ejecuta los controles
+originales en directorios temporales con únicamente esas entradas y comprueba
+que retirar una entrada obligatoria provoca un rechazo.
+
+Se dejó intacto `eldoria-asset-feedback-sync-test.yml`. Una prueba de lectura
+sobre sus ramas históricas detectó que el código Unity de la rama actual ya no
+coincide con el blob exigido por su plan de revisión; el artista sí pasó la
+comparación exacta. Optimizar ese workflow lo habría reactivado por su propio
+trigger. No se cambia el plan, la fuente ni el criterio para ocultar esa diferencia,
+ni se reabre producción histórica como parte de esta etapa.
+
+### Nuevas fuentes editables sin copias idénticas
+
+El materializador conservado de Región1 consulta el árbol Git del candidato.
+Para sus tres fuentes BLEND, reutiliza una ruta ya versionada del archivo
+histórico existente solo si coinciden nombre, blob Git, tamaño y SHA256 real.
+Si la fuente cambia, conserva su nueva copia en la carpeta del nuevo run.
+Las copias históricas actuales no se borran.
+
+El manifiesto mantiene `files[].path/sha256/bytes` y añade
+`editable_sources` con la decisión y bytes de nueva copia evitados.
+El consumidor sigue una ruta exacta verificable; no se crea otro catálogo
+ni se sustituyen fuentes por enlaces simbólicos. Las capturas, pruebas y
+metadatos propios de cada ejecución siguen conservándose individualmente.
+
+Una fuente versionada ausente del checkout se recupera de HEAD, solo esa ruta.
+Un archivo local modificado o un destino diferente se conserva y provoca rechazo;
+no se limpia el workspace ni se sobrescribe. No se ha reactivado la antigua rama
+productora, cambiado su titularidad ni lanzado una nueva producción Blender/Unity.
+
+### Evidencia y límites
+
+El workflow ligero `repository-efficiency.yml` ejecuta los controles aislados,
+las pruebas PowerShell de reutilización exacta, fuente nueva, reintento, recuperación,
+conflictos, límites de ruta y resolución del manifiesto; también analiza la
+sintaxis del materializador completo. Usa fuentes binarias sintéticas en un
+repositorio temporal, sin tocar archivos artísticos reales. Esto acredita
+conservación de bytes y comportamiento del guardado, no una nueva importación
+Blender ni certificación artística.
+
+La prevención afecta a nuevas copias idénticas de esas tres fuentes; no pretende
+deduplicar automáticamente todo el repositorio. No disminuye el histórico Git ni
+el tamaño de APK. El cambio es reversible por el PR, sin migración de datos.
+
+Validación de la versión definitiva `cd0a904ad29235e835498723b976fd970f4e5a70`:
+regresión específica [40414522310](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40414522310),
+arquitectura40414522015, cuarentena40414522170 y gobernanza40414522294: SUCCESS.
+La regresión web [40414522225](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40414522225)
+terminó con `FULL FRESH-SAVE ARC I PASS`. El gate artístico se omite correctamente
+porque no se modifica arte, sin declararlo aprobado.
+
+[PR114](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/114) integrado como
+`46dd9e892fd46c0405d62316251d8e3f51331aef`; su árbol
+`d00279d286acac8cd8ac449e0021edcf052e8dcf` coincide exactamente con el árbol
+del merge de prueba. En main: control de convergencia40416558995,
+router40416559094, regresión específica40416559041, arquitectura40416559004,
+cuarentena40416559008, planner40416559003 y gobernanza40416559348: SUCCESS.
+El árbol Unity sigue siendo `4d1782c2eeb18892395bdc0d6701dde45ce8c573`.
+Las identidades de ArtSource, art-source, updates, tester-v0265 y v0220 también
+permanecen iguales respecto al inicio de esta fase. No nueva APK ni publicación.
+
+Reversión si se necesitara: revisar en rama aislada
+`git revert -m 1 46dd9e892fd46c0405d62316251d8e3f51331aef`.
+No hay archivos movidos o borrados que restaurar. Los certificados técnicos de
+Unity anteriores conservan su procedencia; esta etapa no los presenta como una
+nueva ejecución Unity ni como medición de rendimiento móvil.
