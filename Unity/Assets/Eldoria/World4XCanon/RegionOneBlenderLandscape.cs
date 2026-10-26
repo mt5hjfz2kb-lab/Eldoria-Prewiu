@@ -14,7 +14,7 @@ namespace Eldoria.World4XCanon
   const string AssetRoot="World4X/Blender/";
   static int nx,nz; static float width,depth; static float[] heights; static byte[] masks; static Dictionary<Vector2Int,System.Collections.Generic.List<VerificationVertex>> sourceVertices; static int sourceVertexCount;
   struct VerificationVertex { public Vector3 position; public int index; }
-  GameObject artwork; MeshFilter terrain; Mesh fittedPigment;
+  GameObject artwork; MeshFilter terrain; readonly List<Mesh> fittedPigments=new List<Mesh>();
   static RegionOneBlenderLandscape activeSurface;
   Vector3[] contactVertices,contactNormals;int[] contactTriangles;
   readonly Dictionary<Vector2Int,List<int>> contactCells=new Dictionary<Vector2Int,List<int>>();
@@ -30,43 +30,53 @@ namespace Eldoria.World4XCanon
    activeSurface=this;
   }
   bool ContactHeight(float x,float z,out float height)
-   =>ContactSurface(x,z,out height,out _);
-  bool ContactSurface(float x,float z,out float height,out Vector3 normal)
   {
-   normal=Vector3.up;height=float.NegativeInfinity;if(!contactCells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x/16),Mathf.FloorToInt(z/16)),out var list))return false;
+   height=float.NegativeInfinity;if(!contactCells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x/16),Mathf.FloorToInt(z/16)),out var list))return false;
    foreach(int i in list){var a=contactVertices[contactTriangles[i]];var b=contactVertices[contactTriangles[i+1]];var c=contactVertices[contactTriangles[i+2]];
     float den=(b.z-c.z)*(a.x-c.x)+(c.x-b.x)*(a.z-c.z);if(Mathf.Abs(den)<.000001f)continue;
     float u=((b.z-c.z)*(x-c.x)+(c.x-b.x)*(z-c.z))/den,v=((c.z-a.z)*(x-c.x)+(a.x-c.x)*(z-c.z))/den;
-    if(u>=-.00001f&&v>=-.00001f&&u+v<=1.00001f){
-     float candidate=u*a.y+v*b.y+(1-u-v)*c.y;
-     if(candidate>height){height=candidate;normal=(u*contactNormals[contactTriangles[i]]+v*contactNormals[contactTriangles[i+1]]+(1-u-v)*contactNormals[contactTriangles[i+2]]).normalized;}
-    }
+    if(u>=-.00001f&&v>=-.00001f&&u+v<=1.00001f)height=Mathf.Max(height,u*a.y+v*b.y+(1-u-v)*c.y);
    }
    return !float.IsNegativeInfinity(height);
   }
+  bool CoincidentGroundNormal(Vector3 point,out Vector3 normal)
+  {
+   normal=Vector3.up;if(!contactCells.TryGetValue(new Vector2Int(Mathf.FloorToInt(point.x/16),Mathf.FloorToInt(point.z/16)),out var list))return false;
+   float nearest=float.PositiveInfinity,vertical=float.PositiveInfinity;
+   foreach(int triangle in list)for(int k=0;k<3;k++){
+    int index=contactTriangles[triangle+k];var vertex=contactVertices[index];
+    float dx=vertex.x-point.x,dz=vertex.z-point.z;float distance=dx*dx+dz*dz,dy=Mathf.Abs(vertex.y-point.y);
+    if(distance<nearest||(distance==nearest&&dy<vertical)){nearest=distance;vertical=dy;normal=contactNormals[index];}
+   }
+   // These coatings duplicate actual source vertices. Reuse that exact normal;
+   // barycentric sampling near extremely thin imported facets is unstable.
+   return nearest<.002f*.002f;
+  }
   void FitImportedPigment(Vector3 origin)
   {
-   // The original floor is authored at +15 mm. World-space float transforms
-   // of very steep tiny triangles can shift its contact by millimetres.
-   // Fit only a private decorative mesh, never the terrain or gameplay data.
-   var floor=artwork.GetComponentsInChildren<MeshFilter>(true).Single(f=>f.name=="BLD_BreachFloor");
-   var vertices=floor.sharedMesh.vertices;var normals=floor.sharedMesh.normals;float maximum=0;int corrected=0;
-   for(int i=0;i<vertices.Length;i++){
-    var point=floor.transform.TransformPoint(vertices[i]);
-    if(!ContactSurface(point.x-origin.x,point.z-origin.z,out var ground,out var groundNormal))continue;
-    // The pigment is the same ground surface, including its lighting normal.
-    // Independently smoothed overlay edges otherwise reveal rectangular patches.
-    normals[i]=floor.transform.InverseTransformDirection(groundNormal).normalized;
-    float delta=origin.y+ground+.015f-point.y;
-    if(Mathf.Abs(delta)>.025f)throw new InvalidOperationException("Imported geological pigment exceeds the 25 mm precision-correction envelope");
-    maximum=Mathf.Max(maximum,Mathf.Abs(delta));
-    if(Mathf.Abs(delta)>.000001f){vertices[i].y+=delta;corrected++;}
+   var filters=artwork.GetComponentsInChildren<MeshFilter>(true);
+   var normalCache=new Dictionary<Vector2,Vector3>();
+   foreach(string name in new[]{"BLD_BreachFloor","BLD_BreachOutlyingFractures","BLD_BreachBrokenBasaltPlates","BLD_BreachTerracedStrata","BLD_BreachWeatheredRockfall"}){
+    var floor=filters.Single(f=>f.name==name);bool fitHeight=name=="BLD_BreachFloor";
+    var vertices=floor.sharedMesh.vertices;var normals=floor.sharedMesh.normals;float maximum=0;int corrected=0,normalMatches=0;
+    for(int i=0;i<vertices.Length;i++){
+     var point=floor.transform.TransformPoint(vertices[i]);var relative=point-origin;
+     var key=new Vector2(relative.x,relative.z);
+     if(normalCache.TryGetValue(key,out var groundNormal)||CoincidentGroundNormal(relative-Vector3.up*(fitHeight?.015f:.002f),out groundNormal)){
+      normalCache[key]=groundNormal;normals[i]=floor.transform.InverseTransformDirection(groundNormal).normalized;normalMatches++;
+     }
+     if(!fitHeight||!ContactHeight(relative.x,relative.z,out var ground))continue;
+     float delta=origin.y+ground+.015f-point.y;
+     if(Mathf.Abs(delta)>.025f)throw new InvalidOperationException("Imported geological pigment exceeds the 25 mm precision-correction envelope");
+     maximum=Mathf.Max(maximum,Mathf.Abs(delta));
+     if(Mathf.Abs(delta)>.000001f){vertices[i].y+=delta;corrected++;}
+    }
+    var fitted=Instantiate(floor.sharedMesh);fitted.name=floor.sharedMesh.name+" imported contact fit";
+    fitted.vertices=vertices;fitted.normals=normals;fitted.RecalculateBounds();floor.sharedMesh=fitted;fittedPigments.Add(fitted);
+    Debug.Log("REGION1_IMPORTED_PIGMENT_CONTACT name="+name+" vertices="+corrected+" max_correction="+maximum+" normal_matches="+normalMatches+" terrain_unchanged=1");
    }
-   fittedPigment=Instantiate(floor.sharedMesh);fittedPigment.name=floor.sharedMesh.name+" imported contact fit";
-   fittedPigment.vertices=vertices;fittedPigment.normals=normals;fittedPigment.RecalculateBounds();floor.sharedMesh=fittedPigment;
-   Debug.Log("REGION1_IMPORTED_PIGMENT_CONTACT vertices="+corrected+" max_correction="+maximum+" terrain_unchanged=1");
   }
-  void OnDestroy(){if(activeSurface==this)activeSurface=null;if(fittedPigment)Destroy(fittedPigment);}
+  void OnDestroy(){if(activeSurface==this)activeSurface=null;foreach(var mesh in fittedPigments)if(mesh)Destroy(mesh);}
 
   public Mesh DirectedTerrain=>terrain.sharedMesh;
   public Vector3[] WorldVertices=>terrain.sharedMesh.vertices.Select(terrain.transform.TransformPoint).ToArray();

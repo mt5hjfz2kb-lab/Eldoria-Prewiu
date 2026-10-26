@@ -131,3 +131,14 @@ Decision/correction: interpolate imported terrain normals while performing the e
 Bridge inspection: the actual renderer survey confirms all three BLD_CrossingRails objects enabled/active; the near rail geometry is9.2m wide,2.08m high,18.68m long. Posts are already authored. Correct their washed-out imported oak material with a darker warm finish, not duplicate geometry or alter the measured21m crossing. This is a scoped Unity material correction.
 
 Verdict: retain source/canopy checkpoint, review both contact and bridge corrections in actual matched Unity cameras before the integration judgment. No new paid generation; no ART_APPROVED or physical-mobile claim.
+
+
+## Owner review steering: terrain80% / Breach20%, 2026-10-26
+
+Observation/decision: the external graphical review and owner identify the remaining rectangular material break as the primary product defect. Exact exported PNG means confirm Region1 open meadows RGB(.43465,.42128,.17976) versus retained Ochre meadow(.52653,.52983,.22475), with two other protected sources carrying different means. Previous85%-brush finishing still inherited these unrelated source baselines and an absolute R/G grass classifier. The old reduced sine temperature wash also remains an unnecessary second macro treatment.
+
+Correction: one mean-normalised grass palette for all four actual source textures and the sampled outer geological pigment. Keep original textures/UVs/paths; preserve source relative grain plus85% actual painted brush at identical world coordinates. Derive the grass/path distinction from relative source chroma and limit relative value to.92–1.08. Remove the legacy sinusoidal meadow tint. Raise dark meadow slope response toward the same flat-ground light response, preserving real cast shadows and highlights; never darken the retained core to hide the gap. Exact calibration and original image hashes are recorded separately.
+
+Breach20%: apply physical terrain normals to all five coincident pigment coatings. Native40328365108 had61/62: the new independent normal assertion caught a.972707689dot versus>.999, because height-ray barycentrics at very thin imported facets were not a reliable vertex-normal correspondence. Keep the assertion/tolerance and match the actual coincident source vertices instead. Cache shared normal samples only during installation, preserving the original height-only path for gameplay sampling. Outer rock receives the same normalised meadow finish; reduce saturated vein emission while retaining the bright actual central mineral and the three depth-light sources.
+
+Verdict pending: perform matched actual Unity review in all three scales and both orientations, focusing on centre/exterior continuity and the close mineral boundary. Last fully passing checkpoint remains40324796014/b532c807; no merged main or7.5 claim from the failed correction.

@@ -1,5 +1,5 @@
 Shader "Eldoria/RegionOneAuthoredSurface" {
- Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 _QuarryFloor("Grounded extraction edge",Float)=0 _MeadowBrush("Painted grass and earth",2D)="gray"{} _MeadowBrushEnabled("Painted brush weight",Float)=0 _MeadowBrushMean("Neutral pigment mean",Vector)=(.51184069,.47712201,.18659264,1) _ExistingPathDistance("Existing authored earth distance",2D)="white"{} _ExistingPathEnabled("Path distance readability",Float)=0 }
+ Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 _QuarryFloor("Grounded extraction edge",Float)=0 _MeadowBrush("Painted grass and earth",2D)="gray"{} _MeadowBrushEnabled("Painted brush weight",Float)=0 _MeadowSourceMean("Measured source pigment mean",Vector)=(.5,.5,.25,1) _MeadowBrushMean("Neutral pigment mean",Vector)=(.51184069,.47712201,.18659264,1) _ExistingPathDistance("Existing authored earth distance",2D)="white"{} _ExistingPathEnabled("Path distance readability",Float)=0 }
  SubShader {Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest"}
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -9,7 +9,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  TEXTURE2D(_MeadowBrush); SAMPLER(sampler_MeadowBrush);
  TEXTURE2D(_ExistingPathDistance); SAMPLER(sampler_ExistingPathDistance);
  CBUFFER_START(UnityPerMaterial)
- float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;float _QuarryFloor;float _MeadowBrushEnabled;float4 _MeadowBrushMean;float _ExistingPathEnabled;
+ float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;float _QuarryFloor;float _MeadowBrushEnabled;float4 _MeadowBrushMean;float4 _MeadowSourceMean;float _ExistingPathEnabled;
  CBUFFER_END
  UNITY_INSTANCING_BUFFER_START(PerTree)
  UNITY_DEFINE_INSTANCED_PROP(float4, _InstanceTint)
@@ -70,35 +70,30 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // colour contrast with pixel footprint so overview never becomes camouflage.
  if(_MeadowFinish>.5){
      float2 q=i.world.xz-_RegionOrigin.xz;
-     float broad=sin(q.x*.041+sin(q.y*.028)*1.7)+sin(q.y*.057-q.x*.019)+.42*sin(q.x*.133+q.y*.091);
      float metresPerPixel=max(length(ddx(i.world.xz)),length(ddy(i.world.xz)));
-     float clearing=smoothstep(-1.1,1.2,broad);
-     clearing=.5+(clearing-.5)*lerp(.65,.16,smoothstep(.7,4,metresPerPixel));
-     half ratio=c.r/max(.001,c.g);
-     // One pigment treatment for retained core AND continuation. Replacing
-     // only the extension colour erased its painted paths/grain and drew a rectangle.
-     half grass=1-smoothstep(1.02,1.16,ratio);
-     half3 temperature=lerp(half3(.91,1.08,1.15),half3(1.16,1.08,1.11),clearing)*1.08;
-     c.rgb*=lerp(half3(1.10,1.10,1.10),temperature,grass);
-     // Actual authored raster brush: mean-normalised so the two terrain
-     // sources retain one palette. Existing paths stay clear and unchanged.
+     // The four actual source textures have different colour/value means.
+     // Preserve their relative detail, not their unrelated brightness baselines.
+     half3 relative=c.rgb/max(_MeadowSourceMean.rgb,half3(.01,.01,.01));
+     half grass=1-smoothstep(1.04,1.20,relative.r/max(.001,relative.g));
+     half3 palette=half3(.60,.64,.28);
+     #ifndef UNITY_COLORSPACE_GAMMA
+     palette=SRGBToLinear(palette);
+     #endif
+     float groundWeight=grass;
+     if(_GeologicalRock>.5)groundWeight*=smoothstep(55,125,distance(q,float2(-260,150)));
+     half3 unified=relative*palette;
      if(_MeadowBrushEnabled>.5){
          float2 brushUV=q/16;
          half3 brushA=SAMPLE_TEXTURE2D(_MeadowBrush,sampler_MeadowBrush,brushUV).rgb;
          half3 brushB=SAMPLE_TEXTURE2D(_MeadowBrush,sampler_MeadowBrush,float2(brushUV.x*.8-brushUV.y*.6,brushUV.x*.6+brushUV.y*.8)+float2(.37,.61)).rgb;
          half3 brush=lerp(brushA,brushB,.3)/max(_MeadowBrushMean.rgb,half3(.01,.01,.01));
-         // Use the actual painted albedo as the primary grass surface. The
-         // earlier neutral multiplication retained the old muddy macro pigment.
-         half3 palette=half3(.60,.64,.28);
-         float neutral=.55;
-         #ifndef UNITY_COLORSPACE_GAMMA
-         palette=SRGBToLinear(palette);neutral=SRGBToLinear(neutral);
-         #endif
-         half value=clamp(dot(c.rgb,half3(.2126,.7152,.0722))/neutral,.85,1.08);
-         float weight=.85*grass;
-         if(_GeologicalRock>.5)weight*=smoothstep(55,125,distance(q,float2(-260,150)));
-         c.rgb=lerp(c.rgb,brush*palette*value,weight);
+         half value=clamp(dot(relative,half3(.2126,.7152,.0722)),.92,1.08);
+         unified=lerp(unified,brush*palette*value,.85);
      }
+     c.rgb=lerp(c.rgb,unified,groundWeight);
+     // Use one soft meadow light response. Keep real cast shadows and the
+     // slope's highlights; dark macro bands must not make a second map.
+     diffuse=lerp(diffuse,max(diffuse,saturate(l.direction.y)),groundWeight*.85);
      if(_ExistingPathEnabled>.5){
          float distanceMetres=SAMPLE_TEXTURE2D(_ExistingPathDistance,sampler_ExistingPathDistance,i.uv).r*16;
          float width=lerp(.35,3.3,smoothstep(.3,4.5,metresPerPixel));
@@ -148,7 +143,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      float radius=distance(i.world.xz-_RegionOrigin.xz,float2(-260,150));
      float vein=smoothstep(1.8,2.8,originalPigment.b/max(.02,originalPigment.g))*smoothstep(.035,.12,originalPigment.b-originalPigment.g);
      vein*=1-smoothstep(18,75,radius);
-     c.rgb+=half3(.46,.055,.90)*vein*.85;
+     c.rgb+=half3(.30,.045,.48)*vein*.75;
      c.rgb+=half3(.65,.30,.85)*(1-smoothstep(1,5,radius));
  }
  float2 region=i.world.xz-_RegionOrigin.xz;

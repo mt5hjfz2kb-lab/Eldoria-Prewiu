@@ -941,13 +941,16 @@ namespace Eldoria.Tests
                 if(!normalWitness.TryGetValue(key,out var bucket)){bucket=new System.Collections.Generic.List<Vector3>();normalWitness[key]=bucket;}
                 bucket.Add(litGround.transform.TransformDirection(groundNormals[i]).normalized);
             }
-            var pigmentPoints=filter.sharedMesh.vertices;var pigmentNormals=filter.sharedMesh.normals;int normalMatches=0;float worstNormalDot=1;
-            for(int i=0;i<pigmentPoints.Length;i++){
-                var p=filter.transform.TransformPoint(pigmentPoints[i]);
-                var key=new Vector2Int(Mathf.RoundToInt(p.x*100),Mathf.RoundToInt(p.z*100));
-                if(!normalWitness.TryGetValue(key,out var bucket))continue;
-                var n=filter.transform.TransformDirection(pigmentNormals[i]).normalized;
-                worstNormalDot=Mathf.Min(worstNormalDot,bucket.Max(v=>Vector3.Dot(n,v)));normalMatches++;
+            int normalMatches=0;float worstNormalDot=1;
+            foreach(var coating in geo.GetComponentsInChildren<MeshFilter>(true).Where(f=>new[]{"BLD_BreachFloor","BLD_BreachOutlyingFractures","BLD_BreachBrokenBasaltPlates","BLD_BreachTerracedStrata","BLD_BreachWeatheredRockfall"}.Contains(f.name))){
+                var pigmentPoints=coating.sharedMesh.vertices;var pigmentNormals=coating.sharedMesh.normals;
+                for(int i=0;i<pigmentPoints.Length;i++){
+                    var p=coating.transform.TransformPoint(pigmentPoints[i]);
+                    var key=new Vector2Int(Mathf.RoundToInt(p.x*100),Mathf.RoundToInt(p.z*100));
+                    if(!normalWitness.TryGetValue(key,out var bucket))continue;
+                    var n=coating.transform.TransformDirection(pigmentNormals[i]).normalized;
+                    worstNormalDot=Mathf.Min(worstNormalDot,bucket.Max(v=>Vector3.Dot(n,v)));normalMatches++;
+                }
             }
             Assert.That(normalMatches,Is.GreaterThan(1000),"Normal continuity must be checked against actual imported terrain vertices");
             Assert.That(worstNormalDot,Is.GreaterThan(.999f),"Breach coating must not expose its independent smoothing boundary through lighting");

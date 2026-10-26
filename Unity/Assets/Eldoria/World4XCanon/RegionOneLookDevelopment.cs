@@ -58,6 +58,13 @@ namespace Eldoria.World4XCanon
                         source.name.StartsWith("P connected meadow forest floor paths",StringComparison.Ordinal)||source.name.StartsWith("AI open meadow paths",StringComparison.Ordinal)||source.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal);
                     if(meadow){material.SetFloat("_MeadowFinish",source.name.Contains("Region1 open meadows")?2f:1f);meadows.Add(material);}
                     if(meadow){
+                        // Measured from exact exported source PNG bytes. One
+                        // shared grass palette retains each source's relative grain.
+                        var sourceMean=new Color(.43464787f,.42127587f,.17976167f,1);
+                        if(source.name.StartsWith("Ochre meadow",StringComparison.Ordinal))sourceMean=new Color(.52652973f,.52982535f,.22474894f,1);
+                        else if(source.name.StartsWith("P connected meadow",StringComparison.Ordinal))sourceMean=new Color(.51520708f,.50766624f,.27548814f,1);
+                        else if(source.name.StartsWith("AI open meadow",StringComparison.Ordinal))sourceMean=new Color(.54429120f,.53390694f,.26453816f,1);
+                        material.SetVector("_MeadowSourceMean",QualitySettings.activeColorSpace==ColorSpace.Linear?sourceMean.linear:sourceMean);
                         var brush=Resources.Load<Texture2D>("World4X/RegionOnePaintedMeadow");
                         if(brush){
                             material.SetTexture("_MeadowBrush",brush);material.SetFloat("_MeadowBrushEnabled",1);
