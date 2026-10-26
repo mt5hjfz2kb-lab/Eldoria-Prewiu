@@ -71,3 +71,6 @@ Independent GLB triangle-centre sampling (64 nearest triangle candidates) detect
 
 
 Blender 40302507916: river continuity is visibly restored and outer plates retain meadow. The four old canyon tips still have a physical silhouette; recolouring alone is insufficient. Before Unity, remove the residual 16% outer trench depth entirely with a continuous radial taper reaching zero at 112 m from the wound; retain the central physical depth and surrounding shallow cracks. This is a geometry correction of the diagnosed tips, not another colour-only pass.
+
+
+40303337549 flattens outer trench relief but the triangular pigment boundaries remain visible: constant replacement green cannot match the authored surrounding image. Final source transition samples the actual continental pigment bilinearly into the new basin image, preserving all originals, and uses the same grass-grain/finish treatment on outer rock. Geological darkening tapers away beyond the central wound. Independent GLB UV/image sampling at 237 boundary pairs finds original core/extension median RGB ratios 0.985–1.022: original pigments are already close; divergent runtime finish was the rectangular-seam cause.

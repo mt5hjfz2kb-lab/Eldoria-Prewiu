@@ -220,11 +220,19 @@ fracture=np.power(np.clip(1-edge/2.7,0,1),1.4)
 rock_weight=np.clip((112+8*np.sin(A*3)+6*np.sin(A*7)-R)/37,0,1)
 rock_weight=rock_weight*rock_weight*(3-2*rock_weight)
 core=np.exp(-(R/38)**2)
-soil=np.zeros((H,W,3))+np.array((.315,.36,.060))
+# Sample the actual neighbouring continental pigment, not an approximate
+# constant green. The old branch triangles must disappear into that same ground.
+meadow_material=next(m for m in terrain.data.materials if m.name=='Region1 open meadows')
+meadow_image=next(n.image for n in meadow_material.node_tree.nodes if n.type=='TEX_IMAGE' and n.image)
+mw,mh=meadow_image.size;mp=np.empty(mw*mh*4,np.float32);meadow_image.pixels.foreach_get(mp);mp=mp.reshape(mh,mw,4)
+u=np.clip((X+910)/1820*(mw-1),0,mw-1);v=np.clip((Y+1800)/3600*(mh-1),0,mh-1)
+ix=u.astype(int);iy=v.astype(int);jx=np.minimum(ix+1,mw-1);jy=np.minimum(iy+1,mh-1)
+tx=(u-ix)[:,:,None];ty=(v-iy)[:,:,None]
+soil=(mp[iy,ix,:3]*(1-tx)+mp[iy,jx,:3]*tx)*(1-ty)+(mp[jy,ix,:3]*(1-tx)+mp[jy,jx,:3]*tx)*ty
 # Broken meadow plates continue into the wound; only its deep centre is bare
 # dark geology. The previous full-radius dark pigment read as a paved disk.
 mineral_weight=np.exp(-(R/43)**2)[:,:,None]
-plates=soil*.92*(1-mineral_weight)+np.array((.12,.08,.18))*mineral_weight
+plates=soil*(1-mineral_weight)+np.array((.12,.08,.18))*mineral_weight
 plates*=1+(.10*np.sin(cell*2.41))[:,:,None]
 heart_glow=np.exp(-(R/23)**2)[:,:,None]
 crack_colour=np.array((.018,.008,.035))*(1-heart_glow)+np.array((.18,.025,.30))*heart_glow
@@ -261,6 +269,6 @@ bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_f
 report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
 progress('rendering source previews')
-bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v6')
+bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v7')
 (out/'stop.request').write_text('Saved physical wall correction; actual Unity review required.')
 print('PLAYER_ART_SCULPT_COMPLETE',json.dumps(report))
