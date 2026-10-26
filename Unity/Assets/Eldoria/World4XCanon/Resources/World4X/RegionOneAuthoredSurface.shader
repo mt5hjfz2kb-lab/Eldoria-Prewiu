@@ -74,14 +74,19 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      // One continuous temperature across the preserved core, extension and
      // neighbouring ground. Material boundaries must not reveal rectangles.
      half transition=smoothstep(0,90,length(beyond));
-     half3 temperature=lerp(half3(1.40,1.10,.94),half3(1.05,1.02,.98),transition);
+     half3 temperature=lerp(half3(1.40,1.10,.94),half3(1.30,1.16,1.02),transition);
      c.rgb*=lerp(half3(1,1,1),temperature*variation,grass);
  }
  if(_GeologicalRock>.5){
-     // Deposited layers follow physical elevation through adjacent faces.
-     float strata=(i.world.y-_RegionOrigin.y)/2.2+.10*sin(i.world.x*.11)+.07*sin(i.world.z*.16);
-     float seam=1-smoothstep(.025,.085,min(frac(strata),1-frac(strata)));
-     c.rgb*=lerp(.89,1.10,frac(strata))*(1-seam*.17);
+     // Flat sediment belongs to the dark interior; deposited layers describe
+     // the sloping walls. This slope distinction keeps the wound below ground
+     // instead of reading as a pale striped ribbon across the landscape.
+     float wall=1-smoothstep(.48,.86,abs(normalize(i.normal).y));
+     float rockNoise=sin(i.world.x*.37+sin(i.world.z*.29))*sin(i.world.z*.53+i.world.x*.11);
+     float strata=(i.world.y-_RegionOrigin.y)/2.2+.38*rockNoise+.16*sin(i.world.x*.17+i.world.z*.13);
+     float seam=1-smoothstep(.02,.11,min(frac(strata),1-frac(strata)));
+     c.rgb*=lerp(half3(.46,.34,.30),half3(.85,.87,.88),wall);
+     c.rgb*=(1+rockNoise*.10)*(1-seam*.12*wall);
  }
  half3 originalPigment=c.rgb;
  if(_Baked<.5)c.rgb*=(half3(.30,.34,.33)+half3(.70,.66,.57)*diffuse*shadow);
