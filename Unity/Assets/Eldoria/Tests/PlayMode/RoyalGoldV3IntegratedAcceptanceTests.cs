@@ -304,14 +304,20 @@ namespace Eldoria.Tests
             var crowns=renderers.Where(r=>r.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).ToArray();
             Assert.That(crowns.Length,Is.EqualTo(5047),"All authored sources remain available for reversal.");
             int hidden=crowns.Count(r=>r.forceRenderingOff);
-            Assert.That(hidden,Is.InRange(3000,3500),"Remove rejected crowns and infill, retaining substantial woodland.");
+            Assert.That(hidden,Is.EqualTo(3251),"Remove the inventoried rejected crowns and infill only.");
             Assert.That(crowns.Count(r=>!r.forceRenderingOff),Is.GreaterThan(1500));
             Assert.That(crowns.All(r=>r.gameObject.activeSelf&&r.GetComponent<Collider>()==null),Is.True);
             foreach(var near in crowns)
             {
                 var far=renderers.Single(r=>r.name==near.name.Replace("BLD_ForestMass_","BLD_ForestFar_"));
                 Assert.That(far.forceRenderingOff,Is.EqualTo(near.forceRenderingOff),near.name+" must stay coherent across zoom.");
-                if(near.forceRenderingOff)Assert.That(near.GetComponentInParent<LODGroup>().enabled,Is.False);
+                if(near.forceRenderingOff)
+                {
+                    // Boot starts in the city: the preserved world hierarchy is inactive.
+                    var group=near.GetComponentInParent<LODGroup>(true);
+                    Assert.That(group,Is.Not.Null,near.name+" must retain its paired LOD source.");
+                    Assert.That(group.enabled,Is.False);
+                }
             }
             var protectedPines=renderers.Where(r=>r.name.StartsWith("Pilot_Pine",StringComparison.Ordinal)).ToArray();
             Assert.That(protectedPines.Length,Is.EqualTo(462));

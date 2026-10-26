@@ -731,10 +731,10 @@ namespace Eldoria.Tests
             var ordinaryCrowns=geo.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(r=>r.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)&&
                     !r.name.StartsWith("BLD_ForestMass_Ecotone_",StringComparison.Ordinal)).ToArray();
-            Assert.That(ordinaryCrowns.Length,Is.GreaterThan(500),"Retained Blender forest source census absent");
+            Assert.That(ordinaryCrowns.Length,Is.EqualTo(4988),"Retained Blender forest source census absent");
             int pruned=ordinaryCrowns.Count(r=>r.forceRenderingOff);
-            Assert.That(pruned/(float)ordinaryCrowns.Length,Is.InRange(.25f,.42f),
-                "Sparse trees must reduce the excessive canopy carpet without eliminating forests");
+            Assert.That(pruned,Is.EqualTo(3223),
+                "Remove the rejected model and complete infill cohorts; retain 1765 ordinary crowns plus 31 fir ecotones.");
             Assert.That(ordinaryCrowns.All(r=>r.gameObject.activeSelf),Is.True,
                 "Keep original source geometry and anchors for nondestructive artistic rollback");
             Assert.That(ordinaryCrowns.All(r=>r.GetComponent<Collider>()==null),Is.True,
