@@ -74,3 +74,6 @@ Blender 40302507916: river continuity is visibly restored and outer plates retai
 
 
 40303337549 flattens outer trench relief but the triangular pigment boundaries remain visible: constant replacement green cannot match the authored surrounding image. Final source transition samples the actual continental pigment bilinearly into the new basin image, preserving all originals, and uses the same grass-grain/finish treatment on outer rock. Geological darkening tapers away beyond the central wound. Independent GLB UV/image sampling at 237 boundary pairs finds original core/extension median RGB ratios 0.985–1.022: original pigments are already close; divergent runtime finish was the rectangular-seam cause.
+
+
+BlenderMCP 40304157232 inspected at close and regional scales: pale triangular fins no longer appear; outer fractures fade into the actual continental pigment; river is continuous through the reviewed settlement region. Retain for full Unity verification with unified meadow finishing and rounded panorama-only atmosphere. No final art score assigned from Blender.

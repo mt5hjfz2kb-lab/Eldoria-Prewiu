@@ -41,7 +41,7 @@ if(Test-Path "$creatures.meta"){$paths+="$creatures.meta"}
 foreach($file in @('Eldoria_Region1_Production.blend','Eldoria_Resource_Library.blend','RockBoar_Far_LOD.blend')){
  $path="$sources/$file";Copy-Item (Join-Path $generated $file) $path;$paths+=$path
 }
-foreach($file in @('macro-query-header-repair.json','macro-macro-art-operations.json','macro-ready.json','macro-session-closed.json','macro-request-40297426643.json','macro-response-40297426643.json')){
+foreach($file in @('macro-query-header-repair.json','macro-macro-art-operations.json','macro-ready.json','macro-session-closed.json','macro-request-40304157232.json','macro-response-40304157232.json')){
  $saved=Join-Path $generated $file
  if(Test-Path $saved){$path="$sources/$file";Copy-Item $saved $path;$paths+=$path}
 }
