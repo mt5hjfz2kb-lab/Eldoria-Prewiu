@@ -20,5 +20,23 @@
   "visual_outcome": "RETAINED_SCOPED_FOREST_IMPROVEMENT",
   "art_approved": false,
   "physical_mobile_profiled": false,
-  "apk_published": false
+  "apk_published": false,
+  "additional_main_general_gate": {
+    "run": 40403021824,
+    "source_commit": "c448cb783c512377702b452bd3bb6a7459c1c135",
+    "status": "SUCCESS",
+    "checks": [
+      "EditMode",
+      "PlayMode",
+      "Windows desktop build"
+    ]
+  },
+  "automatic_main_ui_repeat": {
+    "run": 40403021567,
+    "source_commit": "c448cb783c512377702b452bd3bb6a7459c1c135",
+    "status": "SUCCESS",
+    "artifact": 12692659015,
+    "playmode_passed": 65,
+    "editmode_passed": 26
+  }
 }

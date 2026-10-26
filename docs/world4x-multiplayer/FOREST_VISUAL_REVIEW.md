@@ -79,5 +79,11 @@ near/far; no se suman ambos LOD como árboles simultáneos. Los grupos retirados
 su LODGroup deshabilitado. Esto reduce trabajo potencial de representación, pero
 las mallas y objetos siguen residentes: no se afirma memoria liberada ni FPS medidos.
 Las envolventes de navegación se conservan; los claros visuales no son nuevas rutas
-ni plazas edificables. Revertir el commit forestal aislado restaura visibilidad sin
-recrear fuentes, `.meta`, recursos o guardados. No revertir PR111/112 para ello.
+ni plazas edificables. Para restaurar exactamente el estado anterior a toda la intervención forestal,
+revertir el merge aislado PR113: `git revert -m 1 c448cb783c512377702b452bd3bb6a7459c1c135`,
+en una rama de revisión y con los gates habituales. No revertir únicamente d7b699:
+eso volvería al primer aclarado rechazado por hash. No revertir PR111/112 ni recrear
+fuentes, `.meta`, recursos o guardados. Este comando se documenta; no se ejecutó.
+
+Comprobación general posterior del mergec448cb7: run40403021824 SUCCESS,
+EditMode, PlayMode y compilación Windows. No publica una APK ni cambia la entrega familiar.

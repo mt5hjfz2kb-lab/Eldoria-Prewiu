@@ -90,6 +90,24 @@ sin esa adaptación rompería un flujo de recuperación que sigue siendo real.
 Las capturas A/B necesarias se conservan como evidencia original, no se reemplazan
 por miniaturas. No añadir otro sistema de catálogo paralelo al Asset Vault existente.
 
+Orden de una reorganización posterior, con pruebas de restauración en cada paso:
+
+1. Detener nuevas copias idénticas de BLEND adaptando el productor y sus manifiestos;
+   comprobar que una ejecución puede recuperar exactamente su fuente por hash.
+2. Delimitar checkouts de CI por función: Unity necesita el proyecto y sus fixtures;
+   la autoría necesita las fuentes editables indicadas por el manifiesto; la auditoría
+   puede leer Git sin materializar decenas deGB. La auditoría ya usa checkout reducido
+   y lectura de blobs. No trasladar esa configuración a Unity sin listar sus fixtures.
+3. Ensayar restauración/importación de un conjunto histórico completo en un entorno
+   desechable, incluyendo escenas consumidoras y `.meta`; después separar su copia
+   de trabajo de `Assets`, manteniendo la fuente y evidencia recuperables.
+4. Revisar por separado una migración del historial si sigue siendo necesaria.
+   No confundir los pasos anteriores con reducir automáticamente el pack Git.
+
+La espera observada en los checkouts completos del runner confirma el coste operativo
+de materializar el árbol grande. No es una medición del rendimiento del juego móvil.
+
+
 ## Qué puede reducirse y qué no
 
 Un archivo ZIP de respaldo por sí solo no reduce el checkout. Mover archivos fuera
@@ -106,6 +124,13 @@ instalado con Blender, sin instalar software ni gastar. Además se corrigió el 
 de tamaños rellenados con espacios de `git ls-tree -l`, se exige el commit fuente
 exacto y no se sobrescribe un archivo parcial previo.
 
+El análisis de referencias literales final lee blobs Git de main725bccd0, no
+archivos de un checkout parcial. La procedencia Unity del inventario sigue siendo
+d9d4e1f9: ambas fuentes se registran por separado. La lectura de blobs se probó
+con un archivo deliberadamente ausente del checkout y referencias a un GUID y a
+un directorio generado: siguió detectándolas. No se declara cobertura completa
+sobre archivos de texto mayores de6MiB ni sobre referencias construidas dinámicamente.
+
 El análisis de referencias literales es complementario: un resultado sin coincidencias
 no demuestra ausencia de referencias dinámicas. La prueba nativa tampoco identifica
 por sí sola todos los consumidores externos. No se elimina ni mueve ninguno de los
@@ -113,8 +138,44 @@ por sí sola todos los consumidores externos. No se elimina ni mueve ninguno de 
 
 ## Cierre verificable
 
-La copia debe verificarse mediante blobs Git, GUID, SHA-256 por archivo y CRC del
-ZIP, y conservarse en `Documents/EldoriaArchives` del PC. La ejecución publica solo
-el comprobante ligero y el análisis de referencias, no otros 2 GB en Actions.
-El resultado y la ubicación exactos se incorporan al cierre del encargo después
-de que termine el job; no se considera creada una copia por haber lanzado el flujo.
+Copia creada y verificada por run40403787985 SUCCESS, artefacto12690382554.
+Ubicación: `C:\Users\crist\Documents\EldoriaArchives\eldoria-354-assets-20261026.zip`.
+264.433.994 bytes comprimidos;354 assets (1.909.173.156 bytes originales),
+742 entradas incluyendo `.meta` de archivos y carpetas.
+SHA256 `9bfb12c60b1f84218705e9f9a7ee32278df3f1f71811c6c05248b24b422507bb`.
+[Comprobante descargado y contrastado](archive-backup-verification.json).
+El exportador comprobó cada blob Git, GUID, SHA256 y CRC, además del ZIP completo.
+La rama `archive/eldoria-assets-before-cleanup-20261026` conserva el snapshotd9d4e1f9.
+No se añadió el ZIP de264MB al historial ni se eliminaron assets.
+
+El análisis literal de esa ejecución antigua examinó solo250archivos y omitió5.850
+por su checkout parcial: NO se usa su resultado de cero coincidencias para declarar
+prescindibles los354candidatos. La versión corregida lee blobs exactos de main;
+[Resultado final de referencias](external-references.json), ejecutado localmente
+sobre Git725bccd0:6.105 archivos,185.676.323bytes leídos,8textos mayores de6MiB
+omitidos y ningún archivo omitido por ausencia del checkout.108candidatos tienen
+menciones en código/configuración/serialización,269en documentación,61coincidencias
+literales de GUID y276menciones de directorio;64sin coincidencias. Los grupos se
+solapan y una mención de carpeta NO demuestra uso directo.29archivos construyen
+rutas de producción dinámicas. Se conservan todos los354candidatos.
+
+Los JSON/TXT de informes bajo docs se clasifican como documentación: por ejemplo,
+el propio inventario de tamaño no debe hacerse pasar por un consumidor operativo.
+La corrección de clasificación se probó con un GUID en código y otro solo en un
+informe JSON, ambos ausentes del checkout pero presentes en Git. Los569hallazgos
+caben íntegros en el reporte. No se usa como evidencia final el conteo anterior290
+«código/config», que mezclaba informes documentales con configuración.
+
+Segunda comprobación nativa: run40404173727 SUCCESS, artefacto12693362102,
+estado `EXISTING_REVERIFIED`. Relee las742entradas contra blobs Git/manifiesto,
+CRC y SHA256; el ZIP y su fichero SHA256 siguen exactamente iguales y no fueron
+sobrescritos. Ese run confirma también la cobertura de6.105textos/185.676.323bytes,
+pero su clasificación preliminar290/38 se sustituye por el resultado local108/269
+corregido para separar documentación de configuración. La copia y el análisis
+literal son verificaciones distintas.
+
+La comprobación de recuperación verifica contenido y rutas, no una reimportación
+Unity del ZIP en un proyecto nuevo. Ningún asset se retira antes de comprobar sus
+consumidores y esa restauración funcional. El script permite volver a verificar
+un ZIP existente contra Git sin sobrescribirlo; una identidad de blob incorrecta
+fue rechazada en la prueba de protección.

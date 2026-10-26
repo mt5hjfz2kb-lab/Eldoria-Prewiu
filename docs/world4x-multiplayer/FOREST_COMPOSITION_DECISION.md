@@ -8,4 +8,10 @@ Corrección: ocultar ambas representaciones de 3251 de los5047 árboles continen
 
 Preflight BlenderMCP: la lista real de herramientas de esta sesión no ofrece BlenderMCP; Unity/Blender locales ausentes. La corrección es exclusivamente de visibilidad en Unity sobre geometría Blender existente, sin alegar nueva autoría bpy ni sesión MCP. La validación siguiente exige capturas Unity nativas y revisión; la versión revisada NO se considera aceptada por esta decisión.
 
-Observación→decisión→corrección→veredicto se completará con el siguiente run. Sin publicación APK, coste0€.
+Cierre posterior: el ciclo se completó con la revisión independiente de los seis
+pares40387268720/40394742870 y la certificación final40399630175 (65/65 PlayMode,
+26/26 EditMode). La mejora forestal fue RETENIDA y PR113 quedó fusionado como
+c448cb783c512377702b452bd3bb6a7459c1c135. Ver FOREST_VISUAL_REVIEW.md para el juicio,
+los límites y la reversión exacta. No equivale a ART_APPROVED global. Sin publicación
+APK, coste0€.
+

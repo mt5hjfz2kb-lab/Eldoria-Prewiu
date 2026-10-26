@@ -19,12 +19,12 @@ Fuentes de comparación: los tres PNG aprobados en `docs/visual-reference/world-
 - **Panorámica:** pierde mucho detalle y relieve, el perímetro presenta una costa oscura y franja uniforme, y la Brecha se distingue menos que en la referencia de tierra fracturada. Priorizar lectura geológica central, diversidad de masas, transición de color y periferia, sin mostrar recursos ni añadir niebla regional.
 - **Corrección artística más útil:** intervenir por **familias visuales que comparten una causa** (acabado del suelo/transiciones de pigmento, Brecha/costa y jerarquía de vegetación), con captura real de las tres cámaras en ambas orientaciones antes/después. Si fracasa dos veces, cambiar el método en lugar de repetir retoques de color. Sin gastar créditos ni utilizar Qwen para autoría o evaluación artística.
 
-## Interfaz V3 reanudada
+## Interfaz V3 — comprobación cerrada
 
-Base: diseño **Interfaz 1 / Diálogo 1** integrado en main, pantalla real de **Entrenamiento y Marchas** del PR #90. No crear segundo HUD, Canvas, gateway ni repetir lo que ya funciona. Próximo tramo tras estabilizar la cámara:
+Base: diseño **Interfaz 1 / Diálogo 1** integrado en main, pantalla real de **Entrenamiento y Marchas** del PR #90. No crear segundo HUD, Canvas, gateway ni repetir lo que ya funciona. Lista de comprobación original, resuelta durante el cierre enlazado abajo:
 
 - Verificar que el HUD **no tapa el mundo** ni los objetivos en horizontal/vertical, y que el botón Construir/Mejorar, costes, requisitos y temporizadores están asociados a la selección real.
-- Auditar pantallas de héroes y navegación de gestión pendiente respecto al flujo real del vertical slice, sin inventar héroes o funcionalidades. Diálogo 3 de Orín/cartas solo al disparador narrativo canónico.
+- Navegación de gestión contrastada con el flujo real: Entrenamiento y Marchas existen; no hay pantalla de gestión de Héroes. Aldric participa en las marchas. Diálogo 3 de Orín/cartas continúa condicionado al disparador narrativo canónico, sin inventar funcionalidades.
 - Comparar las capturas auténticas y completar I–II, entrenar, marchar, luchar, regresar, apagar/cargar y guardar.
 
 **Estado verificado al cierre de 26-10:** PR111 fusionado, HEAD final certificado

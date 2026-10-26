@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T19:38:53.829Z",
+  "updated_at": "2026-10-26T22:18:02.658Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,10 +19,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-eldoria-ordered-completion-20261026",
+      "owner": null,
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-26T18:49:00Z",
+      "claimed_at": null,
       "base_main_sha": "677b5afd5d675fcfd7900645afe8cbf75ee26763",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -69,8 +69,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
-      "next": "Finish UI/mobile evidence, reconcile existing PR113 with spatial forest brief, design and simulate multiplayer fairness, finish repository audit last. Do not publish APK or replace family delivery.",
+      "phase": "ORDERED_WORK_COMPLETED_20261026",
+      "next": "No pending action in this ordered request. Reclaim the same canonical ID for a new authorized scope; do not reactivate historical PR99/native262 instructions.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -84,7 +84,7 @@
         "genuine_gate_glb_types": 6,
         "first_bridge_native_run": 38974760523,
         "recovered_bridge_native_run": 38975101937,
-        "latest_native_success_run": 39036053918,
+        "latest_native_success_run": 40403021567,
         "best_technical_art_stage": "ABCD",
         "best_visual_art_status": "V12_LOCAL_SILHOUETTE_CHANGE_VISIBLE_ART_REVIEW_REQUIRED",
         "e1_bridgedeck_verdict": "VISUAL_REJECTED",
@@ -117,7 +117,7 @@
         "v12_donor_unverified_textures_excluded": true,
         "physical_mobile_profiled": false,
         "canonical_save_touched": false,
-        "last_handoff": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_CONTINUATION_HANDOFF_20261017.md",
+        "last_handoff": "docs/world4x-multiplayer/COMPLETION_20261026.md",
         "reference_clean": {
           "source_commit": "8f55b6223f3bc0a3581ed79554e7aac4f7509497",
           "output_commit": "36e00ff4dc7f07f7f3ee7442ce0becdb6156593a",
@@ -561,7 +561,7 @@
           "handoff_commit": "47b8ce0091622dfb0722847b29e6af3b4f84d677"
         }
       },
-      "previous_owner": "chatgpt-eldoria-mobile-world-ui-20261026",
+      "previous_owner": "codex-eldoria-ordered-completion-20261026",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md",
@@ -577,13 +577,12 @@
       "handoff_authorization": "Owner 26/10/2026 continuing Region1 visuals and mobile optimization, no spending; do not redo PR100.",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
-      "latest_owner_feedback": "18Oct16:20 Europe/Madrid: use our existing AI artist, explicitly no Tripo; new coherent sawmill, visual quality, contextual UI, original dialogue, vertical world pan, no parcel slabs, clear build locations.",
       "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
-      "current_session": "chatgpt-main-player-improvements-20261018",
+      "current_session": "codex-eldoria-ordered-completion-20261026",
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
-      "resources_verified_at": "2026-10-18T15:57:23Z",
-      "resources_evidence": "Live Actions: 0 in_progress; only two legacy 7Oct startup probes queued (37642384303/37642364289); sole active workstream previously released runner. Native workflow checks actual processes before launch.",
+      "resources_verified_at": "2026-10-26T22:18:02.658Z",
+      "resources_evidence": "Native40399630175, general40403021824, automatic UI40403021567 and recovery40404173727 completed successfully. Current assignment holds no runner resource.",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -746,59 +745,75 @@
           "ownership_revision": 25,
           "released_at": "2026-10-26T19:38:53.829Z",
           "reason": "Owner requests ordered takeover of UI/mobile, forest and multiplayer design, repository audit last."
+        },
+        {
+          "owner": "codex-eldoria-ordered-completion-20261026",
+          "ownership_revision": 26,
+          "claimed_at": "2026-10-26T18:49:00Z",
+          "released_at": "2026-10-26T22:18:02.658Z",
+          "phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
+          "reason": "Owner-requested ordered completion verified: UI/mobile, forest A/B and PR113 integration, multiplayer design/simulation, repository audit and recoverable archive. No APK publication. Historical operational fields retained here rather than reactivated as current instructions.",
+          "evidence": "docs/world4x-multiplayer/COMPLETION_20261026.md",
+          "superseded_operational_metadata": {
+            "current_assignment": {
+              "owner": "chatgpt-eldoria-geography-source-validation-20261021",
+              "base_main_sha": "ec5e763be5ff074ae844a8c83b0e69883e064a6c",
+              "owner_instruction": "21-10-2026: continuar encargo artístico Valoria/Región 1 tras interrupción de chat",
+              "scope": "Read existing candidate262 and improve source-only reversible protections/tests pending authorized Windows Unity runner release; do not modify UI V3, Spawnling, gameplay or publishing",
+              "preserve": "Unity source scene, source UV/colliders, 6 POIs, UI V3 native QA, no paid services"
+            },
+            "active_runner_claim": {
+              "purpose": "Native268 local Qwen compact geography plan and reversible same-source Unity A/B",
+              "owner_authorized": "2026-10-21",
+              "previous_jobs_completed": [
+                39666405366,
+                39666405387,
+                39665814420
+              ]
+            },
+            "runner_lease_note": "Same owner controls UI/general gate and art. Reserve NEXT serial native geography job, with existing main regression39655724743 preserved ahead; no cancellation or simultaneous editor use.",
+            "pending_art_validation": {
+              "last_visual_source": "native261 run39641901228 (forest gains local, entire region below requested quality)",
+              "last_true_unity_probe": "geography_trial native261",
+              "awaiting": "native262 city 257x257 TerrainData true sculpt + synchronized candidate TerrainCollider; 4X forest/quarry; compare real captures",
+              "independent_critic": "tools/valoria-reference-clean/review_capture.py geography_v1 3 review groups, not yet executed",
+              "blocked_resource": "windows-runner-heavy",
+              "resource_holder": "eldoria-ui-v3-management-completion-20261021",
+              "review_status": "ART_REVIEW_REQUIRED",
+              "canonical_scene_unchanged": true
+            },
+            "delivery_blocker": {
+              "type": "ITCH_REMOTE_BUILD_PROCESSING",
+              "scope": "Activation of exact accepted native281 upload",
+              "upload_run": 39685413878,
+              "remote_status_run": 39685863135,
+              "remote_status_job": 119519615823,
+              "checked_at": "2026-10-21T22:40:56Z",
+              "accepted_build": 2180594,
+              "active_build": 2177569,
+              "upload_accepted": true,
+              "remote_active_confirmed": false,
+              "hosted_browser_verified": false
+            },
+            "latest_owner_feedback": "18Oct16:20 Europe/Madrid: use our existing AI artist, explicitly no Tripo; new coherent sawmill, visual quality, contextual UI, original dialogue, vertical world pan, no parcel slabs, clear build locations."
+          },
+          "previous_latest_verification": {
+            "run": 39036053918,
+            "handoff": "docs/evidence/valoria-layered-construction-20261016/NORMAL_CHAT_CONTINUATION_HANDOFF_20261017.md"
+          }
         }
       ],
-      "ownership_revision": 26,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
-      "previous_phase": "FOUR_ART_PHASES_INTEGRATED_FINAL_WEBGL_PASS",
+      "ownership_revision": 27,
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
-      "current_assignment": {
-        "owner": "chatgpt-eldoria-geography-source-validation-20261021",
-        "base_main_sha": "ec5e763be5ff074ae844a8c83b0e69883e064a6c",
-        "owner_instruction": "21-10-2026: continuar encargo artístico Valoria/Región 1 tras interrupción de chat",
-        "scope": "Read existing candidate262 and improve source-only reversible protections/tests pending authorized Windows Unity runner release; do not modify UI V3, Spawnling, gameplay or publishing",
-        "preserve": "Unity source scene, source UV/colliders, 6 POIs, UI V3 native QA, no paid services"
-      },
       "delivery_definition": {
         "deliverable": "UI/mobile completion; forest audit and reversible matched Unity A/B; multiplayer architecture and reproducible balance simulation; repository organization audit last.",
         "evidence": "Exact-source functional/visual evidence, unchanged saved resource identities, path-distance/economy simulation, dependency and recovery verification before archival.",
         "handoff": "Verified completion and explicit remaining limits; no new APK publication."
       },
-      "active_runner_claim": {
-        "purpose": "Native268 local Qwen compact geography plan and reversible same-source Unity A/B",
-        "owner_authorized": "2026-10-21",
-        "previous_jobs_completed": [
-          39666405366,
-          39666405387,
-          39665814420
-        ]
-      },
-      "runner_lease_note": "Same owner controls UI/general gate and art. Reserve NEXT serial native geography job, with existing main regression39655724743 preserved ahead; no cancellation or simultaneous editor use.",
-      "pending_art_validation": {
-        "last_visual_source": "native261 run39641901228 (forest gains local, entire region below requested quality)",
-        "last_true_unity_probe": "geography_trial native261",
-        "awaiting": "native262 city 257x257 TerrainData true sculpt + synchronized candidate TerrainCollider; 4X forest/quarry; compare real captures",
-        "independent_critic": "tools/valoria-reference-clean/review_capture.py geography_v1 3 review groups, not yet executed",
-        "blocked_resource": "windows-runner-heavy",
-        "resource_holder": "eldoria-ui-v3-management-completion-20261021",
-        "review_status": "ART_REVIEW_REQUIRED",
-        "canonical_scene_unchanged": true
-      },
-      "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
-      "delivery_blocker": {
-        "type": "ITCH_REMOTE_BUILD_PROCESSING",
-        "scope": "Activation of exact accepted native281 upload",
-        "upload_run": 39685413878,
-        "remote_status_run": 39685863135,
-        "remote_status_job": 119519615823,
-        "checked_at": "2026-10-21T22:40:56Z",
-        "accepted_build": 2180594,
-        "active_build": 2177569,
-        "upload_accepted": true,
-        "remote_active_confirmed": false,
-        "hosted_browser_verified": false
-      },
+      "handoff_authority": "Explicit current owner instruction: assume unfinished UI/forest/multiplayer design work, finish autonomously, audit repository files last. Requested scope completed and verified.",
       "world_integration_handoff": {
         "to": "eldoria-world-region-1-canon-20261022",
         "at": "2026-10-23T21:54:45.623Z",
@@ -818,7 +833,42 @@
         "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
       ],
       "paused_on": "2026-10-24",
-      "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md"
+      "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
+      "released_at": "2026-10-26T22:18:02.658Z",
+      "latest_owner_feedback": "Current owner: resources have levels, a single occupant per node, disputable and stronger player remains gathering. Incorporated into offline design/simulation; no live multiplayer implementation or APK publication authorized by this scope.",
+      "ordered_completion": {
+        "completed_at": "2026-10-26T22:18:02.658Z",
+        "status": "COMPLETED_VERIFIED",
+        "runtime_merge": "c448cb783c512377702b452bd3bb6a7459c1c135",
+        "forest_pr": 113,
+        "ui_prs": [
+          111,
+          112
+        ],
+        "superseded_pr_closed": 99,
+        "technical_run": 40399630175,
+        "general_build_run": 40403021824,
+        "automatic_ui_repeat": 40403021567,
+        "playmode_passed": 65,
+        "editmode_passed": 26,
+        "authentic_ab_pairs": 6,
+        "forest_visual_verdict": "RETAINED_SCOPED_IMPROVEMENT",
+        "art_approved": false,
+        "physical_mobile_profiled": false,
+        "simulation_configurations": 1152,
+        "candidate_evaluations": 27648,
+        "simulation_unit_tests": 9,
+        "reference_scan_text_files": 6105,
+        "archive_created_run": 40403787985,
+        "archive_reverified_run": 40404173727,
+        "archive_assets": 354,
+        "archive_included_files": 742,
+        "archive_sha256": "9bfb12c60b1f84218705e9f9a7ee32278df3f1f71811c6c05248b24b422507bb",
+        "assets_deleted": 0,
+        "apk_published": false,
+        "budget_eur": 0,
+        "evidence": "docs/world4x-multiplayer/COMPLETION_20261026.md"
+      }
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
