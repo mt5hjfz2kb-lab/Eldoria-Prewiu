@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T10:37:40.103Z",
+  "updated_at": "2026-10-26T10:43:57.441Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1654,7 +1654,8 @@
         "deliverable": "Diagnóstico observable de estados y bloqueos; verificador de consumo de memoria artística; triaje documental; tests en guard Ubuntu existente",
         "evidence": "GitHub committed source SHA y Actions guard focalizado",
         "handoff": "Cerrar trabajo y liberar alcance; limitaciones de integración artística explicitas"
-      }
+      },
+      "art_production_routing_reason": "Exclusive scope is read-only operations reporting, documentation triage and memory-provenance tests; no 3D generation, Unity scene, artistic editing, shared runner or Tripo credits."
     }
   ],
   "history": [
