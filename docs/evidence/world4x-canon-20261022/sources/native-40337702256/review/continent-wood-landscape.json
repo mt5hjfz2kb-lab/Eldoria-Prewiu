@@ -1,0 +1,31 @@
+{
+    "sourceScene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
+    "version": "6000.3.23f1",
+    "label": "wood-landscape",
+    "sha256": "3f733c4af75764257d7a2a690e3159db22ea48aa1fbbe7cf48e51564b58250fa",
+    "context": "Actual production geography and resource camera across Region 1",
+    "targetId": "region1:wood:011",
+    "actualUnityCamera": true,
+    "playMode": true,
+    "physicalIphone": false,
+    "width": 1280,
+    "height": 720,
+    "zoom": 36.0,
+    "aspect": 1.7777777910232545,
+    "cameraPosition": {
+        "x": 876.0,
+        "y": 96.43256378173828,
+        "z": -70.04026794433594
+    },
+    "worldTarget": {
+        "x": 876.0,
+        "y": 2.7542660236358644,
+        "z": 34.0
+    },
+    "cameraRotation": {
+        "x": 0.3583679795265198,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.9335804581642151
+    }
+}
