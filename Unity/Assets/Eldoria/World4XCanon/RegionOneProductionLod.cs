@@ -94,6 +94,22 @@ namespace Eldoria.World4XCanon
                     far.enabled=false;
                     if(retained)far.gameObject.SetActive(false);
                 }
+                // Player feedback: the recently added mass-canopy family makes
+                // Region 1 read like a dense stamped carpet instead of sparse
+                // 4X groves. Keep both imported LODs and every authored anchor
+                // for reversibility, but render only a deterministic ~67% of
+                // generic decorative crowns. Keep ALL ecotone bridges and
+                // protected Pilot pines so biome transitions stay continuous.
+                // One identity governs both zoom models: no appearance/pop at
+                // the 80-110 transition; no collider, gateway or save changes.
+                bool ordinaryMass=near.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)&&
+                    !near.name.StartsWith("BLD_ForestMass_Ecotone_",StringComparison.Ordinal);
+                if(ordinaryMass&&(identity%10000u)>=6700u)
+                {
+                    lod.enabled=false;
+                    near.forceRenderingOff=true;
+                    far.forceRenderingOff=true;
+                }
             }
         }
     }

@@ -726,6 +726,19 @@ namespace Eldoria.Tests
             var authoredCanopies=geo.GetComponentsInChildren<MeshFilter>(true)
                 .Where(f=>f.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).ToArray();
             Assert.That(authoredCanopies.Length,Is.GreaterThanOrEqualTo(20),"Blender forest mass export must survive import.");
+            // The owner's reduced-density visual pass is reversible and zoom-stable:
+            // all source meshes and anchors survive, with no fake resource layout.
+            var ordinaryCrowns=geo.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(r=>r.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)&&
+                    !r.name.StartsWith("BLD_ForestMass_Ecotone_",StringComparison.Ordinal)).ToArray();
+            Assert.That(ordinaryCrowns.Length,Is.GreaterThan(500),"Retained Blender forest source census absent");
+            int pruned=ordinaryCrowns.Count(r=>r.forceRenderingOff);
+            Assert.That(pruned/(float)ordinaryCrowns.Length,Is.InRange(.25f,.42f),
+                "Sparse trees must reduce the excessive canopy carpet without eliminating forests");
+            Assert.That(ordinaryCrowns.All(r=>r.gameObject.activeSelf),Is.True,
+                "Keep original source geometry and anchors for nondestructive artistic rollback");
+            Assert.That(ordinaryCrowns.All(r=>r.GetComponent<Collider>()==null),Is.True,
+                "Decorative forest remains separate from player resource hotspots");
             var visibleCrownWidths=geo.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(r=>r.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)||r.name.StartsWith("Pilot_Pine",StringComparison.Ordinal))
                 .Select(r=>Mathf.Max(r.bounds.size.x,r.bounds.size.z)).ToArray();
