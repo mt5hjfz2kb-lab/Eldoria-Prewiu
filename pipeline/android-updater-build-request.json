@@ -1,9 +1,9 @@
 {
-  "enabled": false,
-  "versionCode": 14,
-  "versionName": "1.14",
+  "enabled": true,
+  "versionCode": 15,
+  "versionName": "1.15",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Region1 family1.14/code14 built successfully in40360846540 from993137ce42e416a2ff36d7acf6ce2a5a56e640cf; signed original certificate, SHA/CRC/ARM64 verified. Disable duplicate native build before promotion; restore canonical nightly routing. Physical phone untested."
+  "note": "Owner explicitly authorizes new family APK 27-10-2026. Integrated UI and Region1 corrections from current main. Same original signing/package, no saved data reset, no new art/gameplay. Prior Unity exact-source 65Play/26Edit and Windows build passed; publish only after original signed builder verification."
 }

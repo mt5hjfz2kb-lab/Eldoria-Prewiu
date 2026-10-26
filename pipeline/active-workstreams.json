@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T23:01:06.703Z",
+  "updated_at": "2026-10-26T23:14:21.550Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,11 +19,11 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "codex-eldoria-android15-publication-20261027",
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-26T22:34:20.644Z",
-      "base_main_sha": "46dd9e892fd46c0405d62316251d8e3f51331aef",
+      "claimed_at": "2026-10-26T23:14:21.550Z",
+      "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
         "tools/valoria-layered-construction/**",
@@ -69,15 +69,19 @@
         ".github/workflows/valoria-full-frame-convergence-control.yml",
         ".github/workflows/visual-fallback-route.yml",
         "docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1",
-        "docs/evidence/world4x-canon-20261022/authoring/reuse_editable_source.ps1"
+        "docs/evidence/world4x-canon-20261022/authoring/reuse_editable_source.ps1",
+        "updates/android/family.json",
+        "docs/ui-v3/ANDROID_1_15_RELEASE.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "REPOSITORY_EFFICIENCY_STAGE1_COMPLETED_20261026",
-      "next": "Safe repository efficiency first stage completed. No pending action in this authorized stage; preserve historical assets. Reclaim this canonical ID for any new authorized scope.",
+      "phase": "ANDROID15_BUILD_VERIFY_PUBLISH",
+      "next": "Build exact signed code15 from main, verify artifact, disable duplicate build, publish through existing family channel, verify public bytes and release lease.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -641,13 +645,13 @@
         "goal": "Recover original Source08 Bastion material hierarchy, prove actual renderer influence on SHARP player presentation, art-source/Unity A/B before any promotion",
         "other_workstreams": "remain_paused"
       },
-      "continuation_authorization": "Explicit owner successor-session order 2026-10-18 17:54 Europe/Madrid: continue consolidated main, implement and verify interaction, world and city art, marches/narrative, normal-time playtest and update same owner-private Site. Preserve I-II/saves and 0 EUR, no Tripo. Same existing workstream and owner identity retained for runner contract.",
+      "continuation_authorization": "Owner explicitly instructed 27-10-2026: Publica la APK nuevo. Supersedes prior no-publication limit for this bounded family APK release only.",
       "handoff_authorization": "Owner 26/10/2026 continuing Region1 visuals and mobile optimization, no spending; do not redo PR100.",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
       "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
-      "current_session": "codex-eldoria-repository-efficiency-20261026",
+      "current_session": "codex-eldoria-android15-publication-20261027",
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
       "resources_verified_at": "2026-10-26T22:18:02.658Z",
       "resources_evidence": "Native40399630175, general40403021824, automatic UI40403021567 and recovery40404173727 completed successfully. Current assignment holds no runner resource.",
@@ -960,17 +964,28 @@
             "historical_files_deleted": 0,
             "details": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md"
           }
+        },
+        {
+          "owner": null,
+          "ownership_revision": 31,
+          "phase": "REPOSITORY_EFFICIENCY_STAGE1_COMPLETED_20261026",
+          "released_at": "2026-10-26T23:01:06.703Z",
+          "delivery_definition": {
+            "deliverable": "Evitar nuevas copias idénticas de las fuentes editables de Región1 y acotar dos controles de metadatos sin modificar juego ni publicación.",
+            "evidence": "Pruebas de reutilización/recuperación/conflictos/manifest; controles originales con inputs aislados y rechazo de inputs ausentes; gobernanza y regresión web en PR; workflows efectivos de main.",
+            "handoff": "PR114 integrado, evidencia en REPOSITORY_ORGANIZATION.md, alcance liberado y reversión por PR sin migración de datos."
+          }
         }
       ],
-      "ownership_revision": 31,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 32,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
       "delivery_definition": {
-        "deliverable": "Evitar nuevas copias idénticas de las fuentes editables de Región1 y acotar dos controles de metadatos sin modificar juego ni publicación.",
-        "evidence": "Pruebas de reutilización/recuperación/conflictos/manifest; controles originales con inputs aislados y rechazo de inputs ausentes; gobernanza y regresión web en PR; workflows efectivos de main.",
-        "handoff": "PR114 integrado, evidencia en REPOSITORY_ORGANIZATION.md, alcance liberado y reversión por PR sin migración de datos."
+        "deliverable": "Publicar APK Android 1.15/code15 con estado actual de main y notas de interfaz/Region1, actualizable sobre code14.",
+        "evidence": "Builder original, firma/package/ARM64/permisos y SHA256/CRC, promoción de bytes exactos y manifiesto público. Unity code unchanged from certified65Play/26Edit source.",
+        "handoff": "Enlace APK y versión verificables, solicitud desactivada tras publicación y reserva liberada."
       },
       "handoff_authority": "Explicit current owner instruction: assume unfinished UI/forest/multiplayer design work, finish autonomously, audit repository files last. Requested scope completed and verified.",
       "world_integration_handoff": {
