@@ -80,3 +80,4 @@ jobs:
           node tools/art-direction/learning-evidence/learning.mjs audit
           node --test tools/art-direction/learning-evidence/learning.test.mjs
           node --test tools/art-direction/learning-evidence/verify-brief-use.test.mjs
+          node --test tools/art-direction/learning-evidence/build-prompt.test.mjs
