@@ -1,0 +1,215 @@
+{
+  "schema_version": 1,
+  "art_approved": false,
+  "source": "tracked canonical GLB",
+  "previews": [
+    {
+      "name": "Valoria_HeroBastion_v1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "preview": "docs/asset-vault/previews/Valoria_HeroBastion_v1.png",
+      "meshes": 1,
+      "triangles_displayed": 24900,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "GateStreetRiseRock_MV1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb",
+      "preview": "docs/asset-vault/previews/GateStreetRiseRock_MV1.png",
+      "meshes": 1,
+      "triangles_displayed": 24900,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "Piece01",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb",
+      "preview": "docs/asset-vault/previews/Piece01.png",
+      "meshes": 1,
+      "triangles_displayed": 11997,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "Piece02",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb",
+      "preview": "docs/asset-vault/previews/Piece02.png",
+      "meshes": 1,
+      "triangles_displayed": 13201,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "Piece03",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb",
+      "preview": "docs/asset-vault/previews/Piece03.png",
+      "meshes": 1,
+      "triangles_displayed": 16650,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "Piece04",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb",
+      "preview": "docs/asset-vault/previews/Piece04.png",
+      "meshes": 1,
+      "triangles_displayed": 6324,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "ResidentialTerraceRock",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
+      "preview": "docs/asset-vault/previews/ResidentialTerraceRock.png",
+      "meshes": 4,
+      "triangles_displayed": 30340,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "RockTerrainSeamFiller",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+      "preview": "docs/asset-vault/previews/RockTerrainSeamFiller.png",
+      "meshes": 1,
+      "triangles_displayed": 24900,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "StreetLandingTransition",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+      "preview": "docs/asset-vault/previews/StreetLandingTransition.png",
+      "meshes": 1,
+      "triangles_displayed": 24900,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "TerraceStairRock",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+      "preview": "docs/asset-vault/previews/TerraceStairRock.png",
+      "meshes": 1,
+      "triangles_displayed": 24900,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "TowerWallRock",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb",
+      "preview": "docs/asset-vault/previews/TowerWallRock.png",
+      "meshes": 2,
+      "triangles_displayed": 34905,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "CornerWallL",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+      "preview": "docs/asset-vault/previews/CornerWallL.png",
+      "meshes": 1,
+      "triangles_displayed": 7335,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "HighStraightWall",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
+      "preview": "docs/asset-vault/previews/HighStraightWall.png",
+      "meshes": 1,
+      "triangles_displayed": 6440,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "RockToWallTransition",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb",
+      "preview": "docs/asset-vault/previews/RockToWallTransition.png",
+      "meshes": 1,
+      "triangles_displayed": 7270,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "piece_01_10364tris",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_01_10364tris.glb",
+      "preview": "docs/asset-vault/previews/piece_01_10364tris.png",
+      "meshes": 1,
+      "triangles_displayed": 10364,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "piece_02_12602tris",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_02_12602tris.glb",
+      "preview": "docs/asset-vault/previews/piece_02_12602tris.png",
+      "meshes": 1,
+      "triangles_displayed": 12602,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "piece_03_6433tris",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_03_6433tris.glb",
+      "preview": "docs/asset-vault/previews/piece_03_6433tris.png",
+      "meshes": 1,
+      "triangles_displayed": 6433,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "piece_04_7824tris",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_04_7824tris.glb",
+      "preview": "docs/asset-vault/previews/piece_04_7824tris.png",
+      "meshes": 1,
+      "triangles_displayed": 7824,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "piece_05_4966tris",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_05_4966tris.glb",
+      "preview": "docs/asset-vault/previews/piece_05_4966tris.png",
+      "meshes": 1,
+      "triangles_displayed": 4966,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "piece_06_7602tris",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_06_7602tris.glb",
+      "preview": "docs/asset-vault/previews/piece_06_7602tris.png",
+      "meshes": 1,
+      "triangles_displayed": 7602,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "BroadRockPlatform",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
+      "preview": "docs/asset-vault/previews/BroadRockPlatform.png",
+      "meshes": 1,
+      "triangles_displayed": 8650,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "SteppedRockTerrace",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+      "preview": "docs/asset-vault/previews/SteppedRockTerrace.png",
+      "meshes": 1,
+      "triangles_displayed": 6379,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "Valoria_Aserradero_AP2_v1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+      "preview": "docs/asset-vault/previews/Valoria_Aserradero_AP2_v1.png",
+      "meshes": 1,
+      "triangles_displayed": 24900,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "Valoria_Cuartel_AP2_v1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+      "preview": "docs/asset-vault/previews/Valoria_Cuartel_AP2_v1.png",
+      "meshes": 1,
+      "triangles_displayed": 24900,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "Valoria_Granero_BIII_v1",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+      "preview": "docs/asset-vault/previews/Valoria_Granero_BIII_v1.png",
+      "meshes": 1,
+      "triangles_displayed": 24900,
+      "status": "GEOMETRY_ONLY"
+    },
+    {
+      "name": "PlayerCity_v1",
+      "path": "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb",
+      "preview": "docs/asset-vault/previews/PlayerCity_v1.png",
+      "meshes": 1,
+      "triangles_displayed": 22797,
+      "status": "GEOMETRY_ONLY"
+    }
+  ]
+}

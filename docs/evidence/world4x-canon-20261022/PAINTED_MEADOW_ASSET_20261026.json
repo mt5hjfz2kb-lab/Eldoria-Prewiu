@@ -34,5 +34,17 @@
     "https://github.com/Unity-Technologies/Graphics/blob/master/Packages/com.unity.shadergraph/Documentation~/Tiling-And-Offset-Node.md"
   ],
   "acceptance": "actual Unity A/B pending; bitmap generation is not art acceptance",
-  "application": "Primary grass albedo at85% blend, palette(0.60,0.64,0.28), source value bounded0.85-1.08; old exposed paths and central mineral excluded. Earlier neutral-multiply-only appearance retained too much muddy macro pigment in genuine40313214146."
+  "application": "Primary grass albedo at85% blend, palette(0.60,0.64,0.28), source value bounded0.85-1.08; old exposed paths and central mineral excluded. Earlier neutral-multiply-only appearance retained too much muddy macro pigment in genuine40313214146.",
+  "current_runtime_application": {
+    "native_run": 40337702256,
+    "shared_painted_grass_weight": 1,
+    "shared_AF_neutral_detail": true,
+    "source_images_preserved_for_path_classification": true,
+    "source_specific_grass_value_or_grain_inherited": false,
+    "basin_pigment_shared_across_material_slots": true,
+    "review": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+    "director_estimate": 7.5,
+    "estimate_is_subjective": true,
+    "art_approved": false
+  }
 }

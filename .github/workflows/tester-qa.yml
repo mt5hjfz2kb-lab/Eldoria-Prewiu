@@ -35,6 +35,11 @@ jobs:
                 if (/^\.github\/workflows\//.test(p)) return false;
                 if (['AGENTS.md', 'SESSION_HANDOFF.md', 'PROJECT_STATE.md',
                      'tools/ELDORIA_AGENT_SESSION_BOOTSTRAP.md'].includes(p)) return false;
+                // Exact allowlist: observability/documentation validators cannot change frozen web gameplay.
+                // The unknown-path fallback and this workflow's self-change still require full QA.
+                if (['tools/work-status/report.mjs', 'tools/work-status/report.test.mjs',
+                     'tools/check-documentation-governance.mjs',
+                     'tools/check-documentation-governance.test.mjs'].includes(p)) return false;
                 return true;
               };
               return relevant(file.filename) ||
@@ -58,7 +63,7 @@ jobs:
             }
             core.setOutput('required', String(required));
             core.info(required ? 'Full frozen-web QA required.' :
-              'Unity/art/documentation-only changes: frozen-web QA is not applicable.');
+              'Unity/art/documentation/read-only operations changes: frozen-web QA is not applicable.');
   tester-qa:
     needs: scope
     if: needs.scope.outputs.required == 'true'

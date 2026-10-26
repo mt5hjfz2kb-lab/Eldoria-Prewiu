@@ -1,0 +1,1158 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-25",
+  "purpose": "Read-only cross-branch 3D asset discovery and reuse triage; NOT a blanket approval or byte-complete all-history backup",
+  "status": "REVIEW_CANDIDATE",
+  "governing": "AGENTS.md",
+  "work_protection": "World PR #100 owner/runner/branch unmodified; NO mover or regenerar assets",
+  "sources": {
+    "canonical": "pipeline/asset-library-canonicalization-audit.json",
+    "tripo": "pipeline/tripo-art-brain/catalog.json",
+    "history": "pipeline/art-knowledge/historical-branch-screening-v1.json",
+    "rehash_rule": "sha256_recorded is prior evidence; not rehashed today",
+    "historical_scope": "201 branch refs screened at changed-path level; 20 with source read; other 181 are not fully model-audited"
+  },
+  "coverage": {
+    "canonical_glbs": 26,
+    "historical_branches_screened": 201,
+    "historical_deep_read": 20,
+    "historical_selected_3d_unique": 8,
+    "known_historical_sampling_limit": "selected_paths is not full recursive listing",
+    "catalog_records": 47,
+    "classification_counts": {
+      "USE_PRODUCTION": 4,
+      "LANDMARK_ONLY": 1,
+      "REUSE_CONDITIONAL": 20,
+      "INTEGRATED_REUSE_WITH_LIMITS": 1,
+      "WORLD_CANDIDATE_ONLY": 1,
+      "REJECT_CURRENT_VISUAL": 1,
+      "TECH_CANDIDATE_NOT_ART_APPROVED": 6,
+      "HISTORICAL_HOLD_FOR_DIRECT_REVIEW": 8,
+      "REJECT_FOR_CURRENT_CANON": 4,
+      "OWNER_BLOCKED_NO_USE": 1
+    },
+    "main_glb_file_probes_verified": 26,
+    "main_glb_meta_probes_verified": 26,
+    "historical_sampled_3d_file_probes_verified": 8,
+    "current_byte_hashes_recomputed": 0,
+    "tripo_source_and_variant_path_probes_verified": 12
+  },
+  "statuses": {
+    "USE_PRODUCTION": "Use for documented existing role; any new placement still needs scene approval",
+    "REUSE_CONDITIONAL": "Available reusable source, validate constraints",
+    "LANDMARK_ONLY": "Never as physical route authority",
+    "INTEGRATED_REUSE_WITH_LIMITS": "Current valid family; don't create duplicate encounter",
+    "WORLD_CANDIDATE_ONLY": "Candidate visual; preserves old Tripo and game gates",
+    "REJECT_CURRENT_VISUAL": "Current visual identity rejected, retain source for look-dev only",
+    "TECH_CANDIDATE_NOT_ART_APPROVED": "Unity technical result is not owner's artistic approval",
+    "HISTORICAL_HOLD_FOR_DIRECT_REVIEW": "Preserve pinned ref, no auto-restore or gameplay integration",
+    "REJECT_FOR_CURRENT_CANON": "Historic negative family is not for promotion",
+    "OWNER_BLOCKED_NO_USE": "Preserve for history only. No use by any AI/Work/game scene unless owner explicitly reauthorizes."
+  },
+  "records": [
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-herobastiongenerated-valoria-herobastion-v1-glb",
+      "name": "Valoria_HeroBastion_v1",
+      "family": "valoria_or_world_city",
+      "role": "Archived historical Bastion; explicitly NOT approved for reuse by owner",
+      "verdict": "OWNER_BLOCKED_NO_USE",
+      "priority": "prohibited_without_owner_permission",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HeroBastionGenerated/Valoria_HeroBastion_v1.glb",
+      "sha256_recorded": "afb6cee6ae572b0879650f18285b32798e263c17359a158ffe2bdd03fb62ad5c",
+      "bytes_recorded": 13257704,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated. GLB integrity is NOT artistic acceptance or permission to use.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Project owner explicitly prohibits any use of this prior-model-generated Bastion unless explicitly reauthorized. Do not suggest as production art, instantiate, swap into scenes or publish. Preserve source intact pending compatibility/scene ownership review.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ],
+      "owner_use_authorization": "OWNER_EXPLICIT_PERMISSION_REQUIRED",
+      "owner_decision_date": "2026-10-25"
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-historicallandmarks-gatestreetriserock-mv1-glb",
+      "name": "GateStreetRiseRock_MV1",
+      "family": "valoria_or_world_city",
+      "role": "Monumental entrance fragment",
+      "verdict": "LANDMARK_ONLY",
+      "priority": "low",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/HistoricalLandmarks/GateStreetRiseRock_MV1.glb",
+      "sha256_recorded": "9d1a97ea385d557b77779eef7a7b65f8027bfc79a56b26081abc6b62f25a8302",
+      "bytes_recorded": 2101016,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Documented traversal/interface failure; no use as stand-alone passable route.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-midtierarchitecturekit-v1-piece01-glb",
+      "name": "Piece01",
+      "family": "valoria_or_world_city",
+      "role": "Valoria modular mid-tier wall/building",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece01.glb",
+      "sha256_recorded": "4e77bcd6ddaa82882fbcbb3acdcde59baf58e4de1c2db8f1b226d7ab9bc08925",
+      "bytes_recorded": 11415216,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Four selected good source modules; support compact approved topology only.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-midtierarchitecturekit-v1-piece02-glb",
+      "name": "Piece02",
+      "family": "valoria_or_world_city",
+      "role": "Valoria modular mid-tier wall/building",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece02.glb",
+      "sha256_recorded": "548e8ebfe1a6fdded7a1cd2b60e355e85acaa43be8b67bbbb8dfd3564da0cfa9",
+      "bytes_recorded": 11477736,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Four selected good source modules; support compact approved topology only.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-midtierarchitecturekit-v1-piece03-glb",
+      "name": "Piece03",
+      "family": "valoria_or_world_city",
+      "role": "Valoria modular mid-tier wall/building",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece03.glb",
+      "sha256_recorded": "9b62b6bb04ef0f4f85444b2744ebbe62c17eb0ee8a10cfba07e193c4922b6159",
+      "bytes_recorded": 11588700,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Four selected good source modules; support compact approved topology only.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-midtierarchitecturekit-v1-piece04-glb",
+      "name": "Piece04",
+      "family": "valoria_or_world_city",
+      "role": "Valoria modular mid-tier wall/building",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/MidTierArchitectureKit_v1/Piece04.glb",
+      "sha256_recorded": "5583f96878b692cf2f2437ca4baf3f3b68eb7f474ea1e5133c2bf391b160241c",
+      "bytes_recorded": 11208916,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Four selected good source modules; support compact approved topology only.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-rescued-residentialterracerock-glb",
+      "name": "ResidentialTerraceRock",
+      "family": "valoria_or_world_city",
+      "role": "inhabited/civic support mass inside already-approved production topology",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "high",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/ResidentialTerraceRock.glb",
+      "sha256_recorded": "19fe86cd1829d4e6b9bee0a21878fb6712350c79e2dea46053d3d60c40d1816f",
+      "bytes_recorded": 3084800,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "not a certified through-street module; do not force topology to fit it",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-rescued-rockterrainseamfiller-glb",
+      "name": "RockTerrainSeamFiller",
+      "family": "valoria_or_world_city",
+      "role": "terrain seam burial/overlap around production buildings and terraces",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "high",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/RockTerrainSeamFiller.glb",
+      "sha256_recorded": "bf001593287a1d50cef23afc4f286cb682527722cf96c02f21df30fa1583c6d1",
+      "bytes_recorded": 2109728,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "not a standalone landmark or path",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-rescued-streetlandingtransition-glb",
+      "name": "StreetLandingTransition",
+      "family": "valoria_or_world_city",
+      "role": "visual street/landing dressing over an independent gameplay route",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/StreetLandingTransition.glb",
+      "sha256_recorded": "ef367d9f0f671cd29e1b02e2d36a2dfdea3acd6e789087e4da5fb5e087e81b01",
+      "bytes_recorded": 2390048,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "heavy parapets and no interface certification; never trust as sole traversable connector",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-rescued-terracestairrock-glb",
+      "name": "TerraceStairRock",
+      "family": "valoria_or_world_city",
+      "role": "visual vertical transition/terrace fragment where gameplay route already exists independently",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TerraceStairRock.glb",
+      "sha256_recorded": "83fce93daeb5bb455ab89bb195c39f617b3ea69ff9bf29f938ae4744caff3e5e",
+      "bytes_recorded": 2062012,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "interface not certified; do not use mesh to define traversal",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-rescued-towerwallrock-glb",
+      "name": "TowerWallRock",
+      "family": "valoria_or_world_city",
+      "role": "defensive skyline accent / wall-rock anchor",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Rescued/TowerWallRock.glb",
+      "sha256_recorded": "02692428311756ba37aace05da6a77146e18b4038eac27e2440b18aaf6bc1687",
+      "bytes_recorded": 2695720,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "overuse makes Valoria fortress-only; no circulation role",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonearchitecturekit-v1-cornerwalll-glb",
+      "name": "CornerWallL",
+      "family": "valoria_or_world_city",
+      "role": "Valoria retaining masonry / wall",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/CornerWallL.glb",
+      "sha256_recorded": "af94cac37d0d4037d2349d632a408ec05793d21eec608255726e38bf6cb4b245",
+      "bytes_recorded": 12436120,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Certified three-piece subset; rejected siblings must not be restored.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonearchitecturekit-v1-highstraightwall-glb",
+      "name": "HighStraightWall",
+      "family": "valoria_or_world_city",
+      "role": "Valoria retaining masonry / wall",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/HighStraightWall.glb",
+      "sha256_recorded": "03acb79b41301c5c23cb7ded042e827aa6bca15027e008304c13a2e01d5791b7",
+      "bytes_recorded": 12405180,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Certified three-piece subset; rejected siblings must not be restored.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonearchitecturekit-v1-rocktowalltransition-glb",
+      "name": "RockToWallTransition",
+      "family": "valoria_or_world_city",
+      "role": "Valoria retaining masonry / wall",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneArchitectureKit_v1/RockToWallTransition.glb",
+      "sha256_recorded": "116adcc98a676c249cf4ff0f4a33b5a7fc59f2f0469ba8a10e0513cb021326e0",
+      "bytes_recorded": 12414676,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Certified three-piece subset; rejected siblings must not be restored.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-01-10364tris-glb",
+      "name": "piece_01_10364tris",
+      "family": "valoria_or_world_city",
+      "role": "stone sheet modular subset",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_01_10364tris.glb",
+      "sha256_recorded": "ebb223182a510036e911d619ac533c820de256eb3abebde9596735bd851b99ab",
+      "bytes_recorded": 14228020,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Six preserved separated modules, not proof of final artistic approval for arbitrary compositions.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-02-12602tris-glb",
+      "name": "piece_02_12602tris",
+      "family": "valoria_or_world_city",
+      "role": "stone sheet modular subset",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_02_12602tris.glb",
+      "sha256_recorded": "59ce2ff29eeff09660511624396263df254f9e429443b88f1833d94d6769703d",
+      "bytes_recorded": 14303504,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Six preserved separated modules, not proof of final artistic approval for arbitrary compositions.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-03-6433tris-glb",
+      "name": "piece_03_6433tris",
+      "family": "valoria_or_world_city",
+      "role": "stone sheet modular subset",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_03_6433tris.glb",
+      "sha256_recorded": "7bc93844297d70f053dfd5cb92262d6b9019420dd2736d183dc6274b48809f29",
+      "bytes_recorded": 14092856,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Six preserved separated modules, not proof of final artistic approval for arbitrary compositions.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-04-7824tris-glb",
+      "name": "piece_04_7824tris",
+      "family": "valoria_or_world_city",
+      "role": "stone sheet modular subset",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_04_7824tris.glb",
+      "sha256_recorded": "03ab6980bf4a14a9c159dc762316a0c04b7ef0260c6a9fc560bd85703b909272",
+      "bytes_recorded": 14144300,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Six preserved separated modules, not proof of final artistic approval for arbitrary compositions.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-05-4966tris-glb",
+      "name": "piece_05_4966tris",
+      "family": "valoria_or_world_city",
+      "role": "stone sheet modular subset",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_05_4966tris.glb",
+      "sha256_recorded": "c814b5c96ad2348cd56cdeb950b6a7ae76e7ac33731ae4254d2e9bb0cac43d37",
+      "bytes_recorded": 14066928,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Six preserved separated modules, not proof of final artistic approval for arbitrary compositions.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-stonekit-piece-06-7602tris-glb",
+      "name": "piece_06_7602tris",
+      "family": "valoria_or_world_city",
+      "role": "stone sheet modular subset",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/StoneKit/piece_06_7602tris.glb",
+      "sha256_recorded": "39a50b0f187b07336c1e1451e9b9583de913272c28359c396881e267ed258b12",
+      "bytes_recorded": 14128696,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Six preserved separated modules, not proof of final artistic approval for arbitrary compositions.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-terrainterracekit-v1-broadrockplatform-glb",
+      "name": "BroadRockPlatform",
+      "family": "valoria_or_world_city",
+      "role": "Valoria buried rock/terrace support",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/BroadRockPlatform.glb",
+      "sha256_recorded": "832d42f03c73495ce4d0eab248b9db555b9836e5fe443eeed19fff670d6f2520",
+      "bytes_recorded": 13852688,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Use only buried or top-aligned; do not turn into huge rejected cliffs.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-terrainterracekit-v1-steppedrockterrace-glb",
+      "name": "SteppedRockTerrace",
+      "family": "valoria_or_world_city",
+      "role": "Valoria buried rock/terrace support",
+      "verdict": "REUSE_CONDITIONAL",
+      "priority": "medium",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/TerrainTerraceKit_v1/SteppedRockTerrace.glb",
+      "sha256_recorded": "b2d11106fd517f51e0d76ffb733c622db33b045bb12f2ecbe5c6ae043efe05fe",
+      "bytes_recorded": 13767544,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Use only buried or top-aligned; do not turn into huge rejected cliffs.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-valoria-aserradero-ap2-v1-glb",
+      "name": "Valoria_Aserradero_AP2_v1",
+      "family": "valoria_or_world_city",
+      "role": "Valoria sawmill",
+      "verdict": "USE_PRODUCTION",
+      "priority": "high",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Aserradero_AP2_v1.glb",
+      "sha256_recorded": "1932e36c7fdf972c2ffb209ed7b3679fd7f0243d0f8e713e0f4643146fa9ad0e",
+      "bytes_recorded": 11134796,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Dedicated production aserradero.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-valoria-cuartel-ap2-v1-glb",
+      "name": "Valoria_Cuartel_AP2_v1",
+      "family": "valoria_or_world_city",
+      "role": "Valoria barracks",
+      "verdict": "USE_PRODUCTION",
+      "priority": "high",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Cuartel_AP2_v1.glb",
+      "sha256_recorded": "948a79e8f14be5ba4df1b98ddcb01d5312a3806f9fbdc4ecd8541960e0a5b980",
+      "bytes_recorded": 11603580,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Dedicated production cuartel.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-valoria-valoria-granero-biii-v1-glb",
+      "name": "Valoria_Granero_BIII_v1",
+      "family": "valoria_or_world_city",
+      "role": "Valoria granary (Bastion III art source)",
+      "verdict": "USE_PRODUCTION",
+      "priority": "high",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb",
+      "sha256_recorded": "d968bf51ba730007dd34d90c344c27467a768a36d79049abaf9ae3e174d87c67",
+      "bytes_recorded": 12951524,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Production asset, not permission to activate Bastion III gameplay.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "canon-unity-assets-eldoria-resources-worldplayercity-playercity-v1-glb",
+      "name": "PlayerCity_v1",
+      "family": "valoria_or_world_city",
+      "role": "4X strategic player city",
+      "verdict": "USE_PRODUCTION",
+      "priority": "high",
+      "source_kind": "tracked_GLb",
+      "ref": "main",
+      "path": "Unity/Assets/Eldoria/Resources/WorldPlayerCity/PlayerCity_v1.glb",
+      "sha256_recorded": "e97319398ef1294348d8f59fb747628c6f077ce16dfe6f1cfd5189e108ba0ada",
+      "bytes_recorded": 11177448,
+      "unity_meta_recorded": true,
+      "verification": "All 26 GLB paths AND all 26 sibling Unity .meta paths individually confirmed present on main 2026-10-25; SHA-256 strings are from 2026-10-02 historical audit, not freshly recalculated.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Universal strategic player-city mesh with identity/state separate.",
+      "evidence": [
+        "pipeline/asset-library-canonicalization-audit.json",
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md"
+      ]
+    },
+    {
+      "id": "tripo-spawnling",
+      "name": "Engendro de la Fisura — Bastion II",
+      "family": "tripo",
+      "role": "Bastion II common enemy spawnling; single gameplay hotspot engendro-valoria",
+      "verdict": "INTEGRATED_REUSE_WITH_LIMITS",
+      "priority": "high",
+      "source_kind": "source_family",
+      "ref": "main",
+      "path": "ArtSource/World4X/Spawnling_v1/Optimized_Source.glb",
+      "editable": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend",
+      "sources": {
+        "raw": {
+          "path": "ArtSource/World4X/Spawnling_v1/Tripo_H31_Original.glb",
+          "sha256": "5a6fa0ba4440269815ad9b7f4c2429663bf26d7ecd3227077ef6be63633f674f",
+          "triangles": 80268
+        },
+        "optimized": {
+          "path": "ArtSource/World4X/Spawnling_v1/Optimized_Source.glb",
+          "sha256": "2701e6f6a37920cbe6b434b903aa7b14283514f8276399d14bfffaece0edcc4a",
+          "triangles": 49800
+        },
+        "editable": {
+          "path": "ArtSource/World4X/Spawnling_v1/Optimized_Editable.blend",
+          "sha256": "7aa6521ea27b5996851aea7d78f0d30caee15e3ec77797df5ac09d0ff10f7edf"
+        }
+      },
+      "integration": {
+        "near": {
+          "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Near.glb",
+          "sha256": "4b956ec175f7fef198aef51b2b04faceeb772f080d273cdd80155beb4b0d717d",
+          "triangles": 12040
+        },
+        "far": {
+          "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Far.glb",
+          "sha256": "dd698116c7cb517d9fdf95154f6b8c275235d7f6e241cab1a04b2302b67fecbd",
+          "triangles": 2900
+        },
+        "editable": {
+          "path": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend",
+          "sha256": "e27b6037a463d125568506080834f8b2ffd9c5f9fd293c35f3a08f7141c16f01"
+        }
+      },
+      "verification": "Every original/optimized/editable (and finished near/far when applicable) path from pipeline/tripo-art-brain/catalog.json was probed in main on 2026-10-25; all 12 of 12 files found. SHA-256 values are from provenance catalog, not freshly recalculated; quality approval remains separate.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "El rostro aún es poco expresivo desde cámara de juego; comprobar frontal, ojos y línea mandíbula antes de modificar. Silueta encorvada útil pero cola/anatomía aún transmiten apariencia reptiliana; conservar identidad pequeña violeta, solo dos brazos y dos piernas. Rig/skinning y animaciones esqueléticas ausentes. La respiración por transform no equivale a un rig. No nuevo hotspot, campamento o nodo No tocar combate, recompensas, persistencia, interfaz ni escena de otro propietario No reemplazar la versión integrada antes de un A/B y QA independientes",
+      "evidence": [
+        "docs/TRIPO_API_ENGENDRO_RESULTADO_20261021.md",
+        "pipeline/tripo-art-brain/catalog.json"
+      ]
+    },
+    {
+      "id": "tripo-boar",
+      "name": "Jabalí de roca — World4X",
+      "family": "tripo",
+      "role": "Boar prey of chapter III in legacy vertical slice; not in current playable I–II",
+      "verdict": "WORLD_CANDIDATE_ONLY",
+      "priority": "high",
+      "source_kind": "source_family",
+      "ref": "main",
+      "path": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb",
+      "editable": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.blend",
+      "sources": {
+        "raw": {
+          "path": "ArtSource/World4X/RockBoar_v1/Tripo_RockBoar_H31_Original.glb",
+          "sha256": "166c32e7f0b86d3212aa1fdc2c30ee67bc4ce2a0994bbf15a30a42050cfd4dd5",
+          "triangles": 84178
+        },
+        "optimized": {
+          "path": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.glb",
+          "sha256": "897c8d02a445c6c760376031c38618698740e9593346099fafb4c3a0b93c1dc3",
+          "triangles": 49800
+        },
+        "editable": {
+          "path": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.blend",
+          "sha256": "91e8385dc4229b963289b4f1356056fc34e88fca67af18d86ca03675ded7cab7"
+        }
+      },
+      "integration": {},
+      "verification": "Every original/optimized/editable (and finished near/far when applicable) path from pipeline/tripo-art-brain/catalog.json was probed in main on 2026-10-25; all 12 of 12 files found. SHA-256 values are from provenance catalog, not freshly recalculated; quality approval remains separate.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "Placas rocosas parecen superpuestas; revisar transiciones orgánicas y cuerpo desde zoom táctico. Contacto pies/suelo dudoso e irregularidad anatómica; diagnosticar antes de modelar. 49.800 triángulos solo es revisión LOD0, no cifra válida para fauna replicada; no hay rig ni animaciones. No adelantar Bastion III al actual juego I–II No añadir jabalí al mundo actual por existir el GLB No publicar ni crear comportamientos nuevos",
+      "evidence": [
+        "docs/TRIPO_API_JABALI_LECCIONES_20261021.md",
+        "pipeline/tripo-art-brain/catalog.json"
+      ]
+    },
+    {
+      "id": "tripo-focus",
+      "name": "Foco de corrupción — prop experimental",
+      "family": "tripo",
+      "role": "Standalone environment-art candidate; no functional gameplay node",
+      "verdict": "REJECT_CURRENT_VISUAL",
+      "priority": "low",
+      "source_kind": "source_family",
+      "ref": "main",
+      "path": "ArtSource/World4X/RiftFocus_v1/Optimized_Source.glb",
+      "editable": "ArtSource/World4X/RiftFocus_v1/Optimized_Editable.blend",
+      "sources": {
+        "raw": {
+          "path": "ArtSource/World4X/RiftFocus_v1/Tripo_H31_Original.glb",
+          "sha256": "c1d0e458b1eb52f1a31a04361f18985cb3e14967ad4f8abf99073a696be07ae0",
+          "triangles": 82446
+        },
+        "optimized": {
+          "path": "ArtSource/World4X/RiftFocus_v1/Optimized_Source.glb",
+          "sha256": "00511927ba818a1f5bf4193e2ee1c3533d1b5ac383c8727c9c7c0f5a49f7c53e",
+          "triangles": 49799
+        },
+        "editable": {
+          "path": "ArtSource/World4X/RiftFocus_v1/Optimized_Editable.blend",
+          "sha256": "560006c58071139c582bb3ddcae07eac7bcb822d32a98deebbc9f71a20b86a2b"
+        }
+      },
+      "integration": {},
+      "verification": "Every original/optimized/editable (and finished near/far when applicable) path from pipeline/tripo-art-brain/catalog.json was probed in main on 2026-10-25; all 12 of 12 files found. SHA-256 values are from provenance catalog, not freshly recalculated; quality approval remains separate.",
+      "image_preview": null,
+      "preview_state": "not_verified",
+      "limitations": "La corrupción púrpura no se distingue a zoom estratégico; parece una roca convencional. La silueta acumula piedras redondeadas y el centro violeta parece un cristal pegado, no una transformación gradual. La superficie está demasiado clara con la luz neutra y las transiciones minerales no son coherentes. No campamento, altar, nido, misión o hotspot nuevo No publicar sin nueva decisión de integración No fingir aprobación visual por CI PASS",
+      "evidence": [
+        "docs/TRIPO_API_FOCO_RESULTADO_20261021.md",
+        "pipeline/tripo-art-brain/catalog.json"
+      ]
+    },
+    {
+      "id": "world-r1-terrain",
+      "name": "terrain",
+      "family": "world4x_region1_candidate",
+      "role": "same three-zoom candidate geography and Brecha",
+      "verdict": "TECH_CANDIDATE_NOT_ART_APPROVED",
+      "priority": "high",
+      "source_kind": "tracked_GLb_and_blend",
+      "ref": "feature/world4x-region1-canon-20261022",
+      "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneBlenderWorld.glb",
+      "editable": "docs/evidence/world4x-canon-20261022/sources/native-40204010344/Eldoria_Region1_Production.blend",
+      "verification": "Linked latest known DRAFT PR100 materialization, revision 40204010344; Work may advance HEAD, re-resolve on use",
+      "image_preview": null,
+      "preview_state": "native_captures_exist_but_not_assessed_for_this_exact_revision",
+      "limitations": "Never merge, publish, or substitute game scene automatically. Region1 ART_APPROVED=false; validate close/regional/panorama and physical mobile separately.",
+      "evidence": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40204010344/manifest.json",
+        "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100"
+      ]
+    },
+    {
+      "id": "world-r1-nodes",
+      "name": "nodes",
+      "family": "world4x_region1_candidate",
+      "role": "resource-node art presentation, not authority of dynamic targets",
+      "verdict": "TECH_CANDIDATE_NOT_ART_APPROVED",
+      "priority": "high",
+      "source_kind": "tracked_GLb_and_blend",
+      "ref": "feature/world4x-region1-canon-20261022",
+      "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender/RegionOneResources.glb",
+      "editable": "docs/evidence/world4x-canon-20261022/sources/native-40204010344/Eldoria_Resource_Library.blend",
+      "verification": "Linked latest known DRAFT PR100 materialization, revision 40204010344; Work may advance HEAD, re-resolve on use",
+      "image_preview": null,
+      "preview_state": "native_captures_exist_but_not_assessed_for_this_exact_revision",
+      "limitations": "Never merge, publish, or substitute game scene automatically. Region1 ART_APPROVED=false; validate close/regional/panorama and physical mobile separately.",
+      "evidence": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40204010344/manifest.json",
+        "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100"
+      ]
+    },
+    {
+      "id": "world-r1-boar-near",
+      "name": "boar-near",
+      "family": "world4x_region1_candidate",
+      "role": "near RockBoar visual",
+      "verdict": "TECH_CANDIDATE_NOT_ART_APPROVED",
+      "priority": "medium",
+      "source_kind": "tracked_GLb_and_blend",
+      "ref": "feature/world4x-region1-canon-20261022",
+      "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/RockBoarNear.glb",
+      "editable": "ArtSource/World4X/RockBoar_v1/RockBoar_Optimizado_49800.blend",
+      "verification": "Linked latest known DRAFT PR100 materialization, revision 40204010344; Work may advance HEAD, re-resolve on use",
+      "image_preview": null,
+      "preview_state": "native_captures_exist_but_not_assessed_for_this_exact_revision",
+      "limitations": "Never merge, publish, or substitute game scene automatically. Region1 ART_APPROVED=false; validate close/regional/panorama and physical mobile separately.",
+      "evidence": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40204010344/manifest.json",
+        "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100"
+      ]
+    },
+    {
+      "id": "world-r1-boar-far",
+      "name": "boar-far",
+      "family": "world4x_region1_candidate",
+      "role": "far RockBoar LOD",
+      "verdict": "TECH_CANDIDATE_NOT_ART_APPROVED",
+      "priority": "medium",
+      "source_kind": "tracked_GLb_and_blend",
+      "ref": "feature/world4x-region1-canon-20261022",
+      "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/RockBoarFar.glb",
+      "editable": "docs/evidence/world4x-canon-20261022/sources/native-40204010344/RockBoar_Far_LOD.blend",
+      "verification": "Linked latest known DRAFT PR100 materialization, revision 40204010344; Work may advance HEAD, re-resolve on use",
+      "image_preview": null,
+      "preview_state": "native_captures_exist_but_not_assessed_for_this_exact_revision",
+      "limitations": "Never merge, publish, or substitute game scene automatically. Region1 ART_APPROVED=false; validate close/regional/panorama and physical mobile separately.",
+      "evidence": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40204010344/manifest.json",
+        "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100"
+      ]
+    },
+    {
+      "id": "world-r1-spawnling-near",
+      "name": "spawnling-near",
+      "family": "world4x_region1_candidate",
+      "role": "near Spawnling visual",
+      "verdict": "TECH_CANDIDATE_NOT_ART_APPROVED",
+      "priority": "medium",
+      "source_kind": "tracked_GLb_and_blend",
+      "ref": "feature/world4x-region1-canon-20261022",
+      "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingNear.glb",
+      "editable": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend",
+      "verification": "Linked latest known DRAFT PR100 materialization, revision 40204010344; Work may advance HEAD, re-resolve on use",
+      "image_preview": null,
+      "preview_state": "native_captures_exist_but_not_assessed_for_this_exact_revision",
+      "limitations": "Never merge, publish, or substitute game scene automatically. Region1 ART_APPROVED=false; validate close/regional/panorama and physical mobile separately.",
+      "evidence": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40204010344/manifest.json",
+        "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100"
+      ]
+    },
+    {
+      "id": "world-r1-spawnling-far",
+      "name": "spawnling-far",
+      "family": "world4x_region1_candidate",
+      "role": "far Spawnling visual",
+      "verdict": "TECH_CANDIDATE_NOT_ART_APPROVED",
+      "priority": "medium",
+      "source_kind": "tracked_GLb_and_blend",
+      "ref": "feature/world4x-region1-canon-20261022",
+      "path": "Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Creatures/SpawnlingFar.glb",
+      "editable": "ArtSource/World4X/Spawnling_v1/Finished/Spawnling_B2_Finished.blend",
+      "verification": "Linked latest known DRAFT PR100 materialization, revision 40204010344; Work may advance HEAD, re-resolve on use",
+      "image_preview": null,
+      "preview_state": "native_captures_exist_but_not_assessed_for_this_exact_revision",
+      "limitations": "Never merge, publish, or substitute game scene automatically. Region1 ART_APPROVED=false; validate close/regional/panorama and physical mobile separately.",
+      "evidence": [
+        "docs/evidence/world4x-canon-20261022/sources/native-40204010344/manifest.json",
+        "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/100"
+      ]
+    },
+    {
+      "id": "historical-unity-assets-eldoria-arttests-valoriagatehousev1-valoria-gate-reference-glb",
+      "name": "valoria_gate_reference.glb",
+      "family": "historical_branch_candidate",
+      "role": "archived experiment / selective rescue",
+      "verdict": "HISTORICAL_HOLD_FOR_DIRECT_REVIEW",
+      "priority": "low",
+      "source_kind": "historical_git_ref",
+      "ref": "e137aaf713c682509cacc62cd1b3279c140a811c",
+      "branch": "art/studio-reuse-handoff-20261011",
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/valoria_gate_reference.glb",
+      "other_refs": [
+        {
+          "branch": "art/valoria-studio-recovery-rocks-v1-20261011",
+          "sha": "c13c03d90479305b4dfe3adc740c8933fabb1bf6",
+          "status": "added"
+        },
+        {
+          "branch": "integration/valoria-gatehouse-unity-v1-20261011",
+          "sha": "fcb275e25d7207cb0375fa5bc5d7521f91aa69f9",
+          "status": "added"
+        }
+      ],
+      "verification": "Exact path probed successfully through immutable archived commit ref on 2026-10-25; suitability/visual quality not certified.",
+      "image_preview": null,
+      "preview_state": "not_reviewed",
+      "limitations": "Historical path selected by 201-ref screening. Not a current-approved model; inspect geometry, licence, material, camera, import and gameplay before promotion.",
+      "evidence": [
+        "pipeline/art-knowledge/historical-branch-screening-v1.json",
+        "docs/knowledge/ELDORIA_GLOBAL_HISTORICAL_RECOVERY_20261021.md"
+      ]
+    },
+    {
+      "id": "historical-unity-assets-eldoria-arttests-valoriagatehousev1-valoria-visual-slice-environment-v2-glb",
+      "name": "valoria_visual_slice_environment_v2.glb",
+      "family": "historical_branch_candidate",
+      "role": "archived experiment / selective rescue",
+      "verdict": "HISTORICAL_HOLD_FOR_DIRECT_REVIEW",
+      "priority": "low",
+      "source_kind": "historical_git_ref",
+      "ref": "e137aaf713c682509cacc62cd1b3279c140a811c",
+      "branch": "art/studio-reuse-handoff-20261011",
+      "path": "Unity/Assets/Eldoria/ArtTests/ValoriaGatehouseV1/valoria_visual_slice_environment_v2.glb",
+      "other_refs": [
+        {
+          "branch": "art/valoria-studio-recovery-rocks-v1-20261011",
+          "sha": "c13c03d90479305b4dfe3adc740c8933fabb1bf6",
+          "status": "added"
+        },
+        {
+          "branch": "integration/valoria-gatehouse-unity-v1-20261011",
+          "sha": "fcb275e25d7207cb0375fa5bc5d7521f91aa69f9",
+          "status": "added"
+        }
+      ],
+      "verification": "Exact path probed successfully through immutable archived commit ref on 2026-10-25; suitability/visual quality not certified.",
+      "image_preview": null,
+      "preview_state": "not_reviewed",
+      "limitations": "Historical path selected by 201-ref screening. Not a current-approved model; inspect geometry, licence, material, camera, import and gameplay before promotion.",
+      "evidence": [
+        "pipeline/art-knowledge/historical-branch-screening-v1.json",
+        "docs/knowledge/ELDORIA_GLOBAL_HISTORICAL_RECOVERY_20261021.md"
+      ]
+    },
+    {
+      "id": "historical-art-source-valoria-production-studio-rocks-v1-valoriaenvironmentcandidate-glb",
+      "name": "ValoriaEnvironmentCandidate.glb",
+      "family": "historical_branch_candidate",
+      "role": "archived experiment / selective rescue",
+      "verdict": "HISTORICAL_HOLD_FOR_DIRECT_REVIEW",
+      "priority": "low",
+      "source_kind": "historical_git_ref",
+      "ref": "e137aaf713c682509cacc62cd1b3279c140a811c",
+      "branch": "art/studio-reuse-handoff-20261011",
+      "path": "art-source/valoria/production/studio-rocks-v1/ValoriaEnvironmentCandidate.glb",
+      "other_refs": [
+        {
+          "branch": "art/valoria-studio-recovery-rocks-v1-20261011",
+          "sha": "c13c03d90479305b4dfe3adc740c8933fabb1bf6",
+          "status": "added"
+        }
+      ],
+      "verification": "Exact path probed successfully through immutable archived commit ref on 2026-10-25; suitability/visual quality not certified.",
+      "image_preview": null,
+      "preview_state": "not_reviewed",
+      "limitations": "Historical path selected by 201-ref screening. Not a current-approved model; inspect geometry, licence, material, camera, import and gameplay before promotion.",
+      "evidence": [
+        "pipeline/art-knowledge/historical-branch-screening-v1.json",
+        "docs/knowledge/ELDORIA_GLOBAL_HISTORICAL_RECOVERY_20261021.md"
+      ]
+    },
+    {
+      "id": "historical-art-source-valoria-production-studio-rocks-v1-valoriarockstudy-blend",
+      "name": "ValoriaRockStudy.blend",
+      "family": "historical_branch_candidate",
+      "role": "archived experiment / selective rescue",
+      "verdict": "HISTORICAL_HOLD_FOR_DIRECT_REVIEW",
+      "priority": "low",
+      "source_kind": "historical_git_ref",
+      "ref": "e137aaf713c682509cacc62cd1b3279c140a811c",
+      "branch": "art/studio-reuse-handoff-20261011",
+      "path": "art-source/valoria/production/studio-rocks-v1/ValoriaRockStudy.blend",
+      "other_refs": [
+        {
+          "branch": "art/valoria-studio-recovery-rocks-v1-20261011",
+          "sha": "c13c03d90479305b4dfe3adc740c8933fabb1bf6",
+          "status": "added"
+        }
+      ],
+      "verification": "Exact path probed successfully through immutable archived commit ref on 2026-10-25; suitability/visual quality not certified.",
+      "image_preview": null,
+      "preview_state": "not_reviewed",
+      "limitations": "Historical path selected by 201-ref screening. Not a current-approved model; inspect geometry, licence, material, camera, import and gameplay before promotion.",
+      "evidence": [
+        "pipeline/art-knowledge/historical-branch-screening-v1.json",
+        "docs/knowledge/ELDORIA_GLOBAL_HISTORICAL_RECOVERY_20261021.md"
+      ]
+    },
+    {
+      "id": "historical-art-source-valoria-production-studio-rocks-v1-valoriascannedcliffcandidate-glb",
+      "name": "ValoriaScannedCliffCandidate.glb",
+      "family": "historical_branch_candidate",
+      "role": "archived experiment / selective rescue",
+      "verdict": "HISTORICAL_HOLD_FOR_DIRECT_REVIEW",
+      "priority": "low",
+      "source_kind": "historical_git_ref",
+      "ref": "e137aaf713c682509cacc62cd1b3279c140a811c",
+      "branch": "art/studio-reuse-handoff-20261011",
+      "path": "art-source/valoria/production/studio-rocks-v1/ValoriaScannedCliffCandidate.glb",
+      "other_refs": [
+        {
+          "branch": "art/valoria-studio-recovery-rocks-v1-20261011",
+          "sha": "c13c03d90479305b4dfe3adc740c8933fabb1bf6",
+          "status": "added"
+        }
+      ],
+      "verification": "Exact path probed successfully through immutable archived commit ref on 2026-10-25; suitability/visual quality not certified.",
+      "image_preview": null,
+      "preview_state": "not_reviewed",
+      "limitations": "Historical path selected by 201-ref screening. Not a current-approved model; inspect geometry, licence, material, camera, import and gameplay before promotion. Reject massive city cliffs without explicit current artistic approval.",
+      "evidence": [
+        "pipeline/art-knowledge/historical-branch-screening-v1.json",
+        "docs/knowledge/ELDORIA_GLOBAL_HISTORICAL_RECOVERY_20261021.md"
+      ]
+    },
+    {
+      "id": "historical-unity-assets-eldoria-arttests-world4xzone1-models-zoneonesectorcandidate-glb",
+      "name": "ZoneOneSectorCandidate.glb",
+      "family": "historical_branch_candidate",
+      "role": "archived experiment / selective rescue",
+      "verdict": "HISTORICAL_HOLD_FOR_DIRECT_REVIEW",
+      "priority": "low",
+      "source_kind": "historical_git_ref",
+      "ref": "711716b0a91eb7a809fe272b55215bd8ea7f1862",
+      "branch": "checkpoint/world4x-zone1-ground-source-09fcb93d-20261014",
+      "path": "Unity/Assets/Eldoria/ArtTests/World4XZone1/Models/ZoneOneSectorCandidate.glb",
+      "other_refs": [],
+      "verification": "Exact path probed successfully through immutable archived commit ref on 2026-10-25; suitability/visual quality not certified.",
+      "image_preview": null,
+      "preview_state": "not_reviewed",
+      "limitations": "Historical path selected by 201-ref screening. Not a current-approved model; inspect geometry, licence, material, camera, import and gameplay before promotion. Superseded as active World4X by Region 1 candidate; source may carry techniques.",
+      "evidence": [
+        "pipeline/art-knowledge/historical-branch-screening-v1.json",
+        "docs/knowledge/ELDORIA_GLOBAL_HISTORICAL_RECOVERY_20261021.md"
+      ]
+    },
+    {
+      "id": "historical-art-source-valoria-variants-cliff-unity-v1-cliff-rocks-unity-v1-blend",
+      "name": "cliff_rocks-unity-v1.blend",
+      "family": "historical_branch_candidate",
+      "role": "archived experiment / selective rescue",
+      "verdict": "HISTORICAL_HOLD_FOR_DIRECT_REVIEW",
+      "priority": "low",
+      "source_kind": "historical_git_ref",
+      "ref": "2efd346034bdb89ae063406558f0343d753e489a",
+      "branch": "experiment/valoria-v5-android-apk-20261012",
+      "path": "art-source/valoria/variants/cliff-unity-v1/cliff_rocks-unity-v1.blend",
+      "other_refs": [],
+      "verification": "Exact path probed successfully through immutable archived commit ref on 2026-10-25; suitability/visual quality not certified.",
+      "image_preview": null,
+      "preview_state": "not_reviewed",
+      "limitations": "Historical path selected by 201-ref screening. Not a current-approved model; inspect geometry, licence, material, camera, import and gameplay before promotion. Reject massive city cliffs without explicit current artistic approval.",
+      "evidence": [
+        "pipeline/art-knowledge/historical-branch-screening-v1.json",
+        "docs/knowledge/ELDORIA_GLOBAL_HISTORICAL_RECOVERY_20261021.md"
+      ]
+    },
+    {
+      "id": "historical-art-source-valoria-variants-cliff-unity-v1-cliff-rocks-unity-v1-glb",
+      "name": "cliff_rocks-unity-v1.glb",
+      "family": "historical_branch_candidate",
+      "role": "archived experiment / selective rescue",
+      "verdict": "HISTORICAL_HOLD_FOR_DIRECT_REVIEW",
+      "priority": "low",
+      "source_kind": "historical_git_ref",
+      "ref": "2efd346034bdb89ae063406558f0343d753e489a",
+      "branch": "experiment/valoria-v5-android-apk-20261012",
+      "path": "art-source/valoria/variants/cliff-unity-v1/cliff_rocks-unity-v1.glb",
+      "other_refs": [],
+      "verification": "Exact path probed successfully through immutable archived commit ref on 2026-10-25; suitability/visual quality not certified.",
+      "image_preview": null,
+      "preview_state": "not_reviewed",
+      "limitations": "Historical path selected by 201-ref screening. Not a current-approved model; inspect geometry, licence, material, camera, import and gameplay before promotion. Reject massive city cliffs without explicit current artistic approval.",
+      "evidence": [
+        "pipeline/art-knowledge/historical-branch-screening-v1.json",
+        "docs/knowledge/ELDORIA_GLOBAL_HISTORICAL_RECOVERY_20261021.md"
+      ]
+    },
+    {
+      "id": "negative-stone-arch-rejects",
+      "name": "Stone Architecture 03/04/06/07/08",
+      "family": "negative_lessons",
+      "role": "do not use in canon",
+      "verdict": "REJECT_FOR_CURRENT_CANON",
+      "priority": "blocker",
+      "source_kind": "documented_group_no_pinned_binary",
+      "ref": "main",
+      "path": null,
+      "verification": "Documented rejection, not independent individual GLB-file enumeration",
+      "image_preview": null,
+      "preview_state": "not_applicable",
+      "limitations": "Fused, disconnected or protruding stone shapes; historical REPLACE verdict.",
+      "evidence": [
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md",
+        "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md"
+      ]
+    },
+    {
+      "id": "negative-terrace-rejects",
+      "name": "Terrain & Terrace 02–06",
+      "family": "negative_lessons",
+      "role": "do not use in canon",
+      "verdict": "REJECT_FOR_CURRENT_CANON",
+      "priority": "blocker",
+      "source_kind": "documented_group_no_pinned_binary",
+      "ref": "main",
+      "path": null,
+      "verification": "Documented rejection, not independent individual GLB-file enumeration",
+      "image_preview": null,
+      "preview_state": "not_applicable",
+      "limitations": "Rejected groups; do not promote from historical branches.",
+      "evidence": [
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md",
+        "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md"
+      ]
+    },
+    {
+      "id": "negative-slavic-foliage",
+      "name": "Slavic foliage as primary forest",
+      "family": "negative_lessons",
+      "role": "do not use in canon",
+      "verdict": "REJECT_FOR_CURRENT_CANON",
+      "priority": "blocker",
+      "source_kind": "documented_group_no_pinned_binary",
+      "ref": "main",
+      "path": null,
+      "verification": "Documented rejection, not independent individual GLB-file enumeration",
+      "image_preview": null,
+      "preview_state": "not_applicable",
+      "limitations": "Explicitly rejected as main forestry visual language for World4X.",
+      "evidence": [
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md",
+        "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md"
+      ]
+    },
+    {
+      "id": "negative-generic-housing",
+      "name": "Old generic lateral housing",
+      "family": "negative_lessons",
+      "role": "do not use in canon",
+      "verdict": "REJECT_FOR_CURRENT_CANON",
+      "priority": "blocker",
+      "source_kind": "documented_group_no_pinned_binary",
+      "ref": "main",
+      "path": null,
+      "verification": "Documented rejection, not independent individual GLB-file enumeration",
+      "image_preview": null,
+      "preview_state": "not_applicable",
+      "limitations": "Hidden/replaced by compact Valoria design, conflicts with canon.",
+      "evidence": [
+        "docs/ASSET_LIBRARY_REPROCESSING_PASS_V1_RESULT.md",
+        "docs/ELDORIA_ASSET_LIBRARY_ROADMAP_V1.md"
+      ]
+    }
+  ]
+}

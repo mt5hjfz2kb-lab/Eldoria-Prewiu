@@ -6,7 +6,7 @@
   "window_end_hour": 8,
   "minimum_idle_minutes": 20,
   "maximum_run_attempts": 1,
-  "purpose": "Both explicitly owned tracks: retry only one exactly pinned FAILED GitHub Actions job after independently proven transient infrastructure fault, at zero cost and only when every other job is idle. Never resume a disconnected chat, rerun successful art, fix source, dispatch a new creative phase, bypass Windows lease, or approve quality.",
+  "purpose": "Single-shot zero-cost GitHub Actions infrastructure recovery on explicitly claimed canonical tracks, only at night and only after strict no-work, exact-SHA, transient-log, no-source-error, lease, and GitHub ownership recheck. Never automatically repair art, restart a chat, publish, spend, or promote.",
   "tracks": [
     {
       "id": "reference-first-zero-budget-visual-pilot-20261015",
@@ -35,6 +35,20 @@
       "runner_type": "windows",
       "owner_resource": "valoria-63-module-art",
       "windows_delegation": "idle_only_no_lease_transfer"
+    },
+    {
+      "id": "eldoria-world-region-1-canon-20261022",
+      "branch": "feature/world4x-region1-canon-20261022",
+      "owner_branch": "main",
+      "workflow_names": [
+        "World4X Region 1 canonical candidate source and PlayMode QA"
+      ],
+      "retry_enabled": true,
+      "requires_owner": true,
+      "require_claimed_owner": true,
+      "runner_type": "windows",
+      "owner_resource": "windows-runner-heavy",
+      "reason": "One-time retry of exactly one failed Actions job, only when explicit infrastructure transient and exact candidate SHA, claim and zero global concurrency remain unchanged; not a creative stage or UI/World merge."
     }
   ]
 }

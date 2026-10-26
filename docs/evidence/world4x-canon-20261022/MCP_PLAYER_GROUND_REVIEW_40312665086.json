@@ -1,0 +1,57 @@
+{
+  "source_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+  "terrain_vertices_after": 369163,
+  "bridge_length_before": 34,
+  "bridge_length_after": 21,
+  "actual_stepped_wall_vertices": 59005,
+  "protected_vertices_unchanged": 51828,
+  "original_packed_images_unchanged": 62,
+  "overlay_vertices_projected": {
+    "BLD_BreachFloor": 17305,
+    "BLD_BreachOutlyingFractures": 929,
+    "BLD_BreachBrokenBasaltPlates": 9851,
+    "BLD_BreachTerracedStrata": 3635,
+    "BLD_BreachWeatheredRockfall": 1828,
+    "BLD_BreachMineralHeart": 30
+  },
+  "gameplay_masks_sha256": "cc2afa1bc465987e1197912180b6ac29dafa7bd110398e06bfa2e93743137923",
+  "new_gameplay_targets": 0,
+  "new_colliders": 0,
+  "existing_rooted_scenery_fitted": 108,
+  "continuation_vertices_refitted": 176,
+  "river_bed_vertices_corrected": 17405,
+  "art_approved": false,
+  "files": {
+    "Eldoria_Region1_Production.blend": "c4a32bf634cf60d6f5dba63ce3a04771635b93591c6509dcbd455daa43876ec3",
+    "RegionOneBlenderWorld.glb": "babdd6adf6e1f8f008e5c4e6c547a12ab62870f0790180d40f0b69b49ad5b769",
+    "RegionOneBlenderQueries.bytes": "8349c7345224f40eab41d8b9146352541c53b1193dd3a08478a862d28df78a10",
+    "production-region.json": "7f9cf05c9ddded57fb0ec2d716726617d4f9ea32ed53238da616f0936735afa1"
+  },
+  "run": 40312665086,
+  "source_commit": "7fedbaf33f3ade839b8569ca34213a6910a1d880",
+  "method": "actual BlenderMCP execute_code with saved response and closed owned session",
+  "ready": {
+    "pid": 24760,
+    "port": 62757,
+    "addon_sha256": "eb0facf69781a30e69792532087d8d41c6a14fcd323353250abe7988ee297fa5",
+    "source_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+    "blender": "5.2.2 LTS",
+    "started": 1793012940.6613698
+  },
+  "session_closed": {
+    "run": "40312665086",
+    "pid": 24760,
+    "closed": true
+  },
+  "downloaded_archive_and_file_hashes_verified": true,
+  "blend_bytes": 95479541,
+  "glb_bytes": 49978108,
+  "shared_boundary_verification": {
+    "actual_exported_boundary_vertices": 2422,
+    "missing_matching_vertices": 0,
+    "maximum_gap_metres": 0.0,
+    "method": "All GLB regional boundary vertices compared by x/z key to the exported continental continuation, not a declared metadata value",
+    "native_world_float_tolerance_metres": 0.003
+  },
+  "review": "Shared river edge repaired in editable source; full native verification pending. Far crown size and painted details are Unity look development, not Blender preview changes."
+}

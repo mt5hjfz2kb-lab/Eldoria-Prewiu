@@ -1,46 +1,47 @@
 {
   "schema_version": 1,
   "workstream_id": "eldoria-world-region-1-canon-20261022",
-  "repeated_topic": "panorama",
-  "responds_to_sha": "379fda24128c1b4dd1cb1f4ba3b2c837091b1ffa",
+  "repeated_topic": "meadow",
+  "responds_to_sha": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
   "decision": "PIVOT_TO_HIGH_IMPACT",
-  "visual_evidence": "Las capturas Unity native-40211155178 muestran una lámina lila lisa en breach-close-landscape y bandas uniformes superpuestas en la vista regional. Los nodos aprobados sí son reconocibles y quedan conservados. El primer render MCP40213370506 sustituyó la lámina por fracturas, pero creó un damero en los brazos; MCP40214248071 copia la apariencia exacta del suelo y elimina ese artefacto antes de otra certificación completa.",
-  "root_cause": "La continuidad geológica no se resolvía añadiendo rocas: los revestimientos largos puenteaban el suelo y su material uniforme dominaba la imagen. La cámara regional certificada está aproximadamente a700m del suelo frente a un alcance de sombras fijado en300m. Los commits incluyen dos revisiones baratas y una reparación de checkout, no cuatro mejoras visuales certificadas; se valida ahora una corrección agrupada de superficie y profundidad.",
-  "reason_for_priority": "La Brecha es el defecto mayor de cercana y regional, mientras que los nuevos nodos ya constituyen una mejora real conservada con62/26/44. El lote se centra en restituir suelo continuo, fractura legible y volumen de iluminación en la misma geografía. No se añaden puentes, árboles, objetivos ni criaturas para distraer de ese defecto.",
+  "visual_evidence": "Actual Unity40331311765 improved source means but still exposed different sector grain and a stair-step Breach edge. Final40337702256 shared-field images were directly reviewed in all six matched views and close detail; the stepped edge disappears and the ground is more coherent without darkening the retained close sector.",
+  "root_cause": "Absolute source colour/value and residual source-specific detail encoded the former rectangular sector; binary meadow/basalt finish masks disagreed on contiguous ground triangles. A shared world-space albedo/detail and one actual geological pigment field remove those material discontinuities.",
+  "reason_for_priority": "The owner and external review explicitly prioritized terrain80% and Breach20%. Whole-screen continuity has greater visual impact than another prop or isolated tint; approved nodes, creature scale, geography, UI, saves and no-spend constraints remain preserved.",
   "competing_problems": [
     {
       "view": "cercana",
-      "defect": "Centro lila liso y facetas suspendidas impiden leer una herida geológica; visibles en la captura real breach-close-landscape de40211155178.",
+      "defect": "Preserve clear grass, detailed resource silhouettes and actual grounded river/mineral contacts.",
       "impact": 5
     },
     {
       "view": "regional",
-      "defect": "Bandas de falla demasiado uniformes y poca lectura de sombras de las masas continentales frente al canon; la cobertura fija termina antes de alcanzar el suelo.",
+      "defect": "Remove unrelated ground treatment and the visible stepped mineral material boundary.",
       "impact": 5
     },
     {
       "view": "panoramica",
-      "defect": "La jerarquía de la fractura y el volumen de las masas forestales requieren juicio visual global; no se acredita7,5 por las pruebas técnicas.",
-      "impact": 4
+      "defect": "Coastline and historical woodland/path grouping remain simpler and more regular than the reference.",
+      "impact": 3
     }
   ],
   "preserve_AF_AG": true,
   "heavy_run_rule": "QUICK_VISUAL_PREVIEW_FIRST",
-  "shared_artistic_goal": "Recuperar profundidad y continuidad de la misma superficie geológica en todas las cámaras, conservando los nodos recién terminados y todos los estados persistidos.",
+  "shared_artistic_goal": "One coherent playable world at all camera distances, with near resources dominant and the geological wound belonging to the same physical soil.",
   "next_batch": [
     {
-      "view": "cercana",
-      "visual_change": "Importar el núcleo de48placas de pizarra fracturada y grietas estrechas; copiar suelo, UV y normales reales bajo las fallas para eliminar las láminas y el damero."
+      "view": "all",
+      "visual_change": "Use one actual painted grass albedo and one shared AF-derived detail field; preserve original source paths and all source bytes."
     },
     {
       "view": "regional",
-      "visual_change": "Probar cobertura de sombras ajustada a la huella ortográfica real con12capturas auténticas A/B; conservarla solo si aumenta el volumen sin introducir artefactos."
-    },
-    {
-      "view": "all",
-      "visual_change": "Repetir las seis vistas canónicas y la Brecha cercana/regional en ambas orientaciones; mantener terreno completo y59imágenes empaquetadas verificadas por hash."
+      "visual_change": "Use the actual source basin texture and the same mineral/grass falloff across both geological and meadow material slots."
     }
   ],
+  "execution_completed": true,
+  "native_run": 40337702256,
   "art_approved": false,
-  "score_7_5_certified": false
+  "score_7_5_certified": false,
+  "director_estimate": 7.5,
+  "physical_mobile_tested": false,
+  "review": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md"
 }

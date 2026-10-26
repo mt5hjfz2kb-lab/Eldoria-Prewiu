@@ -47,6 +47,7 @@ jobs:
             /tools/closeout/
             /tools/workflow-recovery/
             /tools/work-status/
+            /tools/documentation-triage/
             /tools/workstream-lease/
             /.github/workflows/valoria-reference-clean.yml
             /.github/workflows/valoria-windows-chromium-qa.yml
@@ -66,6 +67,10 @@ jobs:
         run: node tools/check-documentation-governance.mjs --tracked-tree
       - name: Test documentation governance (positive and negative cases)
         run: ELDORIA_CI_TRACKED_TREE=1 node --test tools/check-documentation-governance.test.mjs
+      - name: Report document lifecycle and test safe triage
+        run: |
+          node --test tools/documentation-triage/report.test.mjs
+          node tools/documentation-triage/report.mjs --format markdown >> "$GITHUB_STEP_SUMMARY"
       - name: Test read-only closeout diagnostics (no Windows, no game build)
         run: node --test tools/closeout/closeout.test.mjs
       - name: Test recoverable native outputs and bounded read-only status
@@ -74,3 +79,5 @@ jobs:
         run: |
           node tools/art-direction/learning-evidence/learning.mjs audit
           node --test tools/art-direction/learning-evidence/learning.test.mjs
+          node --test tools/art-direction/learning-evidence/verify-brief-use.test.mjs
+          node --test tools/art-direction/learning-evidence/build-prompt.test.mjs

@@ -63,8 +63,28 @@ for(const track of policy.tracks){
         // Reconfirm exact branch HEAD and no concurrent work before mutating any job.
         const after=await request('/branches/'+track.branch.split('/').map(encodeURIComponent).join('/'));
         const busyPages=await Promise.all(['in_progress','queued','pending','waiting','requested'].map(s=>request('/actions/runs?status='+s+'&per_page=100')));
-        if(after.commit.sha!==branch.commit.sha||otherActiveRuns(busyPages,process.env.GITHUB_RUN_ID)){
+        // Main may change while the monitor runs. Check the authoritative owner
+        // and lease FRESH, immediately before the only possible write request.
+        const mainFile=await request('/contents/pipeline/active-workstreams.json?ref=main');
+        if(mainFile.encoding!=='base64'||typeof mainFile.content!=='string')throw Error('Cannot verify current main owner registry');
+        const liveRegistry=JSON.parse(Buffer.from(mainFile.content,'base64').toString('utf8'));
+        if(!Array.isArray(liveRegistry.active))throw Error('Current owner registry invalid');
+        const liveOwner=liveRegistry.active.find(x=>x.id===track.id);
+        const ownerUnchanged=!!(owner&&liveOwner&&
+          owner.owner===liveOwner.owner&&owner.ownership_revision===liveOwner.ownership_revision&&
+          owner.branch===liveOwner.branch&&
+          JSON.stringify(owner.resources||[])===JSON.stringify(liveOwner.resources||[])&&
+          JSON.stringify(owner.scope||[])===JSON.stringify(liveOwner.scope||[]));
+        const competing=liveRegistry.active.some(x=>x.id!==track.id &&
+          x.owner && x.ownership_state==='claimed' &&
+          (x.resources||[]).includes(track.owner_resource||'windows-runner-heavy'));
+        const finalGate=checkRetry({policy,track,owner:liveOwner,latest,
+          branchSha:after.commit.sha,globalBusy:otherActiveRuns(busyPages,process.env.GITHUB_RUN_ID)||performed||competing,
+          failedJobs,log,now:new Date().toISOString()});
+        if(after.commit.sha!==branch.commit.sha||!ownerUnchanged||competing||
+           finalGate!=='ELIGIBLE'){
           row.result='PRE_DISPATCH_RACE_STOP';
+          row.final_gate=finalGate;
         }else{
           await request('/actions/jobs/'+row.job_id+'/rerun',{method:'POST'});
           row.result='ONE_TRANSIENT_JOB_RETRIED';

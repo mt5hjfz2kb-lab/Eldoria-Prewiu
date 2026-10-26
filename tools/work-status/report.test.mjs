@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {summarize,collectLive,markdown,jobTiming,versionStates} from './report.mjs';
+import {summarize,collectLive,markdown,jobTiming,versionStates,operationalSignal,latestHeadChecks} from './report.mjs';
 
 const registry={active:[{id:'one',title:'UI',branch:'ui/one',owner:'existing',status:'active',resources:[],phase:'QA_PENDING'}],history:[{id:'old',status:'active',secret:'DO_NOT_COPY_HISTORY'}]};
 test('bounded view never reactivates history or labels an untested delivery current',()=>{
@@ -72,4 +72,106 @@ test('delivery definition is allowlisted and absent definitions do not imply com
   const r=summarize({registry:{active}});
   assert.equal(r.active[0].delivery_definition.deliverable,'Result');assert.ok(!JSON.stringify(r).includes('DO_NOT_COPY'));
   assert.match(markdown(summarize({registry})),/sin definición explícita/);
+});
+
+test('explicit owner pause and vacant ownership are not reported as live execution',()=>{
+  const paused={...registry.active[0],id:'paused',owner:null,phase:'OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100',next:'PAUSED BY OWNER'};
+  const vacant={...registry.active[0],id:'vacant',owner:null,phase:'READY'};
+  const result=summarize({registry:{active:[paused,vacant,registry.active[0]]}});
+  assert.equal(result.active[0].declared_operating_state,'paused_by_owner');
+  assert.equal(result.active[1].declared_operating_state,'unassigned_in_registry');
+  assert.equal(result.active[2].declared_operating_state,'claimed_in_registry');
+  assert.match(markdown(result),/NO significa disponible/);
+});
+
+test('multiple workstreams sharing one branch show a single timing sample',()=>{
+  const record={status:'observed',timing_sample:{status:'observed',run_id:81,source_sha:'past',jobs:[]}};
+  const two={...registry.active[0],id:'two'};
+  const result=summarize({registry:{active:[registry.active[0],two]},live:{branches:{'ui/one':record}}});
+  const output=markdown(result);
+  assert.equal((output.match(/Muestra de tiempos \(rama/g)||[]).length,1);
+  assert.equal((output.match(/Entrega de /g)||[]).length,2);
+});
+
+test('a pause overrides apparent CI success and cannot be released by a status view',()=>{
+  const w={id:'w',owner:'someone',phase:'OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100',resources:[]};
+  const sig=operationalSignal(w,{status:'observed',checks:[{conclusion:'success',run_id:1}]});
+  assert.equal(sig.code,'OWNER_PAUSED');
+});
+test('only an explicit available state, release and empty resources permits an advisory availability label',()=>{
+  const w={id:'w',owner:null,resources:[],write_scope_released:true,ownership_state:'available'};
+  assert.equal(operationalSignal(w).code,'EXPLICITLY_AVAILABLE');
+  assert.equal(operationalSignal({...w,resources:['windows-runner-heavy']}).code,'UNASSIGNED_NOT_RELEASED');
+  assert.equal(operationalSignal({...w,write_scope_released:false}).code,'UNASSIGNED_NOT_RELEASED');
+});
+test('GitHub approval requirement is an external blocker, not a Unity failure or granted approval',()=>{
+  const signal=operationalSignal({owner:'owner',resources:[]},
+    {status:'observed',checks:[{run_id:40255183681,status:'completed',conclusion:'action_required'}]});
+  assert.equal(signal.code,'GITHUB_AUTHORIZATION_REQUIRED');
+  assert.equal(signal.run_id,40255183681);
+});
+test('an Actions success and a claimed Windows lease never infer a finished mission or an idle PC',()=>{
+  const observed={status:'observed',checks:[{run_id:4,status:'completed',conclusion:'success'}]};
+  assert.equal(operationalSignal({owner:'owner',resources:[]},observed).code,'TECHNICAL_EVIDENCE_REVIEW');
+  assert.equal(operationalSignal({owner:'owner',resources:['windows-runner-heavy']},observed,
+    {observation:'complete_for_listed_actions_jobs',running:[],queued:[]}).code,'WINDOWS_LEASE_WITHOUT_CONFIRMED_WORK');
+});
+test('summaries expose actionable signals without exposing secrets or historical authority',()=>{
+  const report=summarize({registry:{active:[{id:'x',owner:'human',branch:'main',resources:[],status:'active'}]},
+    live:{branches:{main:{status:'observed',checks:[{run_id:1,conclusion:'failure'}]}},windows:{observation:'not_checked',running:[],queued:[],errors:[]}}});
+  assert.equal(report.active[0].operational_signal.code,'CI_FAILURE_NEEDS_DIAGNOSIS');
+  assert.match(markdown(report),/CI_FAILURE_NEEDS_DIAGNOSIS/);
+});
+
+test('stale failures and prior GitHub authorization runs are superseded by a newer successful same-workflow run',()=>{
+  const prior=[
+    {name:'World4X artistic process evidence',run_id:13,created_at:'2026-10-26T10:01:00Z',status:'completed',conclusion:'action_required'},
+    {name:'World4X artistic process evidence',run_id:15,created_at:'2026-10-26T10:08:00Z',status:'completed',conclusion:'success'},
+    {name:'Repository architecture guard',run_id:10,created_at:'2026-10-26T09:01:00Z',status:'completed',conclusion:'failure'},
+    {name:'Repository architecture guard',run_id:12,created_at:'2026-10-26T10:02:00Z',status:'completed',conclusion:'success'}
+  ];
+  const current=latestHeadChecks(prior);
+  assert.equal(current.length,2);
+  const result=operationalSignal({owner:'somebody',resources:[]},{status:'observed',checks:prior});
+  assert.equal(result.code,'TECHNICAL_EVIDENCE_REVIEW');
+  assert.equal(result.evidence_scope,'branch_head_workflow_not_workstream');
+});
+test('a current failure remains visible even if another different workflow passed',()=>{
+  const checks=[
+    {name:'Unity core',run_id:60,status:'completed',conclusion:'success'},
+    {name:'Art gate',run_id:61,status:'completed',conclusion:'failure'}
+  ];
+  const signal=operationalSignal({owner:'owner',resources:[]},{status:'observed',checks});
+  assert.equal(signal.code,'CI_FAILURE_NEEDS_DIAGNOSIS');
+  assert.equal(signal.run_id,61);
+});
+test('a newer running attempt supersedes a completed failed attempt of the same workflow',()=>{
+  const checks=[
+    {name:'Art gate',run_id:61,status:'completed',conclusion:'failure'},
+    {name:'Art gate',run_id:62,status:'in_progress',conclusion:null}
+  ];
+  assert.equal(operationalSignal({owner:'owner'},{status:'observed',checks}).code,'EXTERNAL_ACTIONS_RUNNING');
+});
+test('collectLive preserves bounded observation and dates for exact HEAD only',async()=>{
+  const github={rest:{repos:{getBranch:async()=>({data:{commit:{sha:'CURRENT'}}})},actions:{
+    listWorkflowRunsForRepo:async a=>({data:{total_count:22,workflow_runs:a.status?[]:[
+      {id:32,name:'Main guard',head_sha:'CURRENT',status:'completed',conclusion:'success',created_at:'2026-10-26T10:00:00Z'},
+      {id:31,name:'Main guard',head_sha:'CURRENT',status:'completed',conclusion:'failure',created_at:'2026-10-26T09:00:00Z'},
+      {id:30,name:'Main guard',head_sha:'OLD',status:'completed',conclusion:'failure'}
+    ]}}),listJobsForWorkflowRun:async()=>({data:{total_count:0,jobs:[]}})
+  }}};
+  const live=await collectLive({github,repo:{owner:'o',repo:'r'},active:[{branch:'main'}]});
+  assert.equal(live.branches.main.checks.length,1);
+  assert.equal(live.branches.main.checks[0].run_id,32);
+  assert.equal(live.branches.main.checks_window,'partial_latest_20_runs_for_branch');
+});
+test('operational counts measure declarations and bounded observations, not claimed savings',()=>{
+  const r=summarize({registry:{active:[
+    {id:'paused',phase:'OWNER_PAUSED_DELAY',resources:[],branch:'main'},
+    {id:'world',owner:'world-owner',resources:['windows-runner-heavy'],branch:'main'}
+  ]}});
+  assert.equal(r.operational_counts.registered_workstreams,2);
+  assert.equal(r.operational_counts.owner_paused,1);
+  assert.equal(r.operational_counts.declared_windows_leases,1);
+  assert.match(markdown(r),/No son ahorro de tiempo medido/);
 });

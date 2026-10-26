@@ -58,7 +58,12 @@
   "original_paths_preserved": true,
   "terrain_geometry_changed": false,
   "purpose": "Unify centre/continent using measured source means; retain near detail and lift exterior light response rather than darken the core.",
-  "actual_unity_review": "40331311765 safe checkpoint; next exact shared-field capture pending",
+  "actual_unity_review": {
+    "run": 40337702256,
+    "review": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+    "outcome": "RETAINED_AUTHOR_REVIEW",
+    "art_approved": false
+  },
   "art_approved": false,
   "previous_primary_weight": 0.85,
   "shared_original_AF_grain": true,

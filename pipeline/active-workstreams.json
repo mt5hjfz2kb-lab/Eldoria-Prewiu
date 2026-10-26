@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T01:47:15Z",
+  "updated_at": "2026-10-26T14:42:24.853Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1160,12 +1160,10 @@
         ".github/workflows/world4x-artistic-process-gate.yml",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.\n2026-10-26: Owner authorizes this director to correct all identified world visual defects, prioritize near camera reference fidelity, scale resource nodes approximately 85% of city visual size, validate and integrate today after actual visual and functional gates. No paid credits.",
-      "phase": "PLAYER_CAMERA_ART_CORRECTION",
-      "next": "Near-camera proportions and landscape composition; Blender source correction then native Unity images and gameplay regression.",
+      "phase": "INTEGRATION_CHECKS",
+      "next": "Reconcile current main in same PR100, verify current artistic-process and integration checks, then owner-authorized merge; no direct publication.",
       "dependencies": [
         "Preserve Valoria city and UI V3; no concurrent edits outside transferred world integration scope.",
         "Physical device verification requires an accessible device; never infer from PlayMode.",
@@ -1176,10 +1174,10 @@
       "art_production_routing_reason": "Mandatory owner-approved world art, using zero-cost existing art capabilities, no spend or approval claim",
       "art_production_request": "pipeline/art-production-requests/eldoria-world-region-1-canon-20261022.json",
       "last_verified": {
-        "sha": "9394a4d305283203e800df6c6d4d7b05c5039873",
-        "unity_run": 40253785923,
+        "sha": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+        "unity_run": 40337702256,
         "unity_playmode": "62_OF_62_PASS_NATIVE_GPU_XML_NO_OMISSIONS",
-        "real_unity_captures": 161,
+        "real_unity_captures": 160,
         "art_approved": false,
         "physical_iphone_tested": false,
         "visual_gap": "Large sawtooth bank fins removed in actual final Unity views. Coastline, forest species and some cut facets remain simpler than the references; subjective7.5 owner acceptance and formal ART_APPROVED are not established.",
@@ -1251,31 +1249,35 @@
           "persistent_package_sha256": "eddfabb4c922491dbd13e935dd9b364875ac4c3dcc847ce3a3c10f6d746ca726"
         },
         "latest_production": {
-          "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
-          "assets_commit": "0d3de6522f79ad85fb153a843e62fd177500491d",
-          "run": 40253785923,
+          "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+          "assets_commit": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
+          "run": 40337702256,
           "result": "success",
           "playmode_passed": 62,
           "playmode_failed": 0,
           "playmode_skipped": 0,
           "editmode_passed": 26,
           "probe_checks": 44,
-          "captures": 161,
+          "camera_manifests_verified": 160,
           "general_captures": 34,
           "exact_matched_camera_pairs": 6,
-          "visual_outcome": "RETAINED_AUTHOR_REVIEW",
-          "artifact": 12621653870,
-          "artifact_sha256": "f89cd3850c89b3ab1a884b3af4cd4fb922946e2508f9e5a331a334a9377ed004",
-          "editable_blend_sha256": "fd3063a792eedf77d6908fe9f5d894b47514717720a5d03ee1ac4e08f0690cce",
+          "visual_outcome": "RETAINED_AUTHOR_REVIEW_FIRST_CONSOLIDATION",
+          "director_estimate": 7.5,
+          "score_is_subjective": true,
+          "artifact": 12658807251,
+          "artifact_sha256": "cc27381f237bd792190700402ba69d71b9cc7c755b1d327802bcd5bd887034e6",
+          "visual_artifact": 12659136360,
+          "visual_artifact_sha256": "fce05aae205ffaaa7ab2c89abbe7dcaa6a35f34445d8ac2dc66eb6c392db2bfa",
+          "editable_blend_sha256": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9",
           "art_approved": false,
           "physical_mobile_tested": false,
           "published": false,
-          "report": "docs/evidence/world4x-canon-20261022/REGION1_MACRO_REVIEW_40253785923.md",
-          "visual_gap": "Large sawtooth bank fins removed in actual final Unity views. Coastline, forest species and some cut facets remain simpler than the references; subjective7.5 owner acceptance and formal ART_APPROVED are not established."
+          "report": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+          "visual_gap": "Coastline, some woodland/path groupings and mineral plates remain more regular than the illustration. Direct author estimate approximately7.5 with near-camera priority; no independent external or physical-device certification."
         },
         "general_integration": {
-          "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
-          "run": 40253785923,
+          "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+          "run": 40337702256,
           "status": "FULL_GPU_62_EDIT_26_PROBE_44_PASS_NO_OMISSIONS",
           "editmode_passed": 26,
           "playmode_passed": 62,
@@ -1283,9 +1285,9 @@
           "playmode_skipped": 0,
           "probe_checks": 44,
           "fresh_captures": 34,
-          "artifact": 12621653870,
-          "artifact_sha256": "f89cd3850c89b3ab1a884b3af4cd4fb922946e2508f9e5a331a334a9377ed004",
-          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40253785923.json"
+          "artifact": 12658807251,
+          "artifact_sha256": "cc27381f237bd792190700402ba69d71b9cc7c755b1d327802bcd5bd887034e6",
+          "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40337702256.json"
         },
         "executive_handoff": {
           "source_commit": "7bcd192854016e2489a31d8e60b15851160a05ae",
@@ -1373,6 +1375,33 @@
           "report": "docs/evidence/world4x-canon-20261022/NATIVE_REVIEW_40069960813.json"
         },
         "current_delivery": {
+          "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+          "assets_commit": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
+          "run": 40337702256,
+          "result": "success",
+          "playmode_passed": 62,
+          "playmode_failed": 0,
+          "playmode_skipped": 0,
+          "editmode_passed": 26,
+          "probe_checks": 44,
+          "camera_manifests_verified": 160,
+          "general_captures": 34,
+          "exact_matched_camera_pairs": 6,
+          "visual_outcome": "RETAINED_AUTHOR_REVIEW_FIRST_CONSOLIDATION",
+          "director_estimate": 7.5,
+          "score_is_subjective": true,
+          "artifact": 12658807251,
+          "artifact_sha256": "cc27381f237bd792190700402ba69d71b9cc7c755b1d327802bcd5bd887034e6",
+          "visual_artifact": 12659136360,
+          "visual_artifact_sha256": "fce05aae205ffaaa7ab2c89abbe7dcaa6a35f34445d8ac2dc66eb6c392db2bfa",
+          "editable_blend_sha256": "0e5a0a9df65799aaa8ccfccce12680eaf9a8bec9e94090e08991418ae87bcdb9",
+          "art_approved": false,
+          "physical_mobile_tested": false,
+          "published": false,
+          "report": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+          "visual_gap": "Coastline, some woodland/path groupings and mineral plates remain more regular than the illustration. Direct author estimate approximately7.5 with near-camera priority; no independent external or physical-device certification."
+        },
+        "previous_production_before_player_art_20261026": {
           "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
           "assets_commit": "0d3de6522f79ad85fb153a843e62fd177500491d",
           "run": 40253785923,
@@ -1582,7 +1611,7 @@
         "evidence": "Exact-source Unity captures in 3 zooms and both orientations; measured node/city screen extents; gameplay/contact/persistence checks.",
         "handoff": "Same PR100, preserve baseline and editable sources; record truthful visual and technical verdict before integration."
       },
-      "release_note": "Completed bounded macro art production and evidence verification; Windows/Unity/Blender run ended successfully and reservation released. Canonical workstream identity remains active/available for PR100 attribution. Subjective art acceptance and physical-device performance remain explicit review limits.",
+      "release_note": "Native40337702256 completed successfully; real six-view/close-resource/creature/Breach review retained the first near-priority consolidation at an approximate author estimate7.5. Release only the completed Windows reservation for ordinary integration CI; owner/revision40 write scope remains claimed until merge completes.",
       "previous_owner": "codex-world4x-takeover-a6480e11",
       "ownership_state": "claimed",
       "routing_identity_note": "Nonexclusive canonical identity for already authored open PR100. Actual blocked executor record stays in history revision19. Available/null owner/no resources does not reserve writes or Windows; preserves attribution required by existing art scope guard without weakening it.",
@@ -1599,15 +1628,16 @@
         "detached_sha": "ce740f6417cedc6858e47863a4690b7a029abc78",
         "parent_before_lease": "278d5fe1a9830dab8f50af8710661f3e906d33c7",
         "ui_run_finished": 40074059376,
-        "status": "RESERVED_NOT_VERIFIED"
+        "status": "SUPERSEDED_BY_VERIFIED_40337702256"
       },
       "last_artistic_native": {
-        "run": 40253785923,
-        "source": "9394a4d305283203e800df6c6d4d7b05c5039873",
-        "assets": "0d3de6522f79ad85fb153a843e62fd177500491d",
+        "run": 40337702256,
+        "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+        "assets": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
         "playmode": 62,
         "editmode": 26,
         "functional_checks": 44,
+        "director_estimate": 7.5,
         "art_approved": false
       },
       "resolved_dependencies": [
@@ -1628,6 +1658,173 @@
     }
   ],
   "history": [
+    {
+      "id": "eldoria-autonomy-ci-triage-20261026",
+      "title": "Eldoria — diagnóstico automático de evidencias CI y próximo paso seguro",
+      "owner": "chatgpt-ops-autonomy-ci-20261026",
+      "ownership_state": "released",
+      "ownership_revision": 2,
+      "write_scope_released": true,
+      "branch": "main",
+      "status": "completed",
+      "claimed_at": "2026-10-26",
+      "base_main_sha": "6386b0c518843f8a3571d7f5cb38c973efaf3ab2",
+      "scope": [
+        "tools/mission-continuity/triage.mjs",
+        "tools/mission-continuity/triage.test.mjs",
+        "tools/mission-continuity/watch.mjs",
+        ".github/workflows/mission-continuity-guard.yml",
+        "docs/hyperautomation/AUTONOMY_PHASE3_20261026.md",
+        "tools/mission-continuity/nightly-core.mjs",
+        "tools/mission-continuity/nightly-core.test.mjs",
+        "tools/mission-continuity/nightly-recovery.mjs",
+        "pipeline/night-recovery-policy-v1.json"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only report-only GitHub Actions diagnostic/triage, unit tests and documentation on hosted Linux. No owner-owned Unity, Blender or art. No workflow dispatch, paid APIs, merge or mutation outside owned paths.",
+      "phase": "CI_TRIAGE_AND_SINGLE_INFRA_RETRY_TECH_VERIFIED",
+      "next": "Current workstream CI triage and guarded nighttime one-time infrastructure retry integrated. Workstream/runner ownership released for this maintenance. Creative agent execution and real model-inference capture still require a separately authorized persistent AI executor and active artist owner.",
+      "delivery_definition": {
+        "deliverable": "Current workstream watcher reports evidence manifest of exact latest run, failure step summary and safe next action",
+        "evidence": "Exact-commit Ubuntu CI tests, live run, artifacts",
+        "handoff": "Release after acceptance; creative repair remains with owner"
+      },
+      "completion_evidence": {
+        "triage_readonly_report_run": 40320211563,
+        "world4x_night_recovery_guard_run": 40320821205,
+        "architecture_guard_run": 40320954044,
+        "nightly_case": "NOT_NIGHT while original World4X run active; no rerun performed",
+        "tests": "32/32 on 40320821205",
+        "docs": "docs/hyperautomation/AUTONOMY_PHASE3_20261026.md"
+      }
+    },
+    {
+      "id": "eldoria-active-continuity-art-memory-phase2-20261026",
+      "title": "Eldoria — observación de misiones actuales y memoria artística verificable",
+      "owner": "chatgpt-ops-active-monitor-20261026",
+      "ownership_state": "released",
+      "ownership_revision": 2,
+      "write_scope_released": true,
+      "branch": "main",
+      "status": "completed",
+      "claimed_at": "2026-10-26",
+      "base_main_sha": "f62d8cd90ff244f516f71d13f6e0f969046e4387",
+      "scope": [
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        "tools/mission-continuity/watch.mjs",
+        "pipeline/mission-continuity-policy-v1.json",
+        ".github/workflows/mission-continuity-guard.yml",
+        "tools/art-direction/learning-evidence/build-prompt.mjs",
+        "tools/art-direction/learning-evidence/build-prompt.test.mjs",
+        ".github/workflows/repository-architecture-guard.yml",
+        "docs/hyperautomation/AUTONOMY_PHASE2_20261026.md",
+        "AGENTS.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Scope restricted to mission-watch policy, pure classification/tests, safe prompt artifact composer and Ubuntu architecture tests; no World4X protected files, AI author's workflow, Windows, Unity, spend or publication.",
+      "phase": "ACTIVE_WATCH_AND_ART_PROMPT_PREPARATION_VERIFIED",
+      "next": "Confirmed mission continuity run 40318198138 PASS, architecture 40318198141 PASS, prompt builder covered by architecture 40318085588 PASS. Remaining live-model consumption by Tripo artist and autonomous AI execution require owning pipeline agent / compatible persistent execution, not this workstream.",
+      "delivery_definition": {
+        "deliverable": "Hourly reporter tracks active Region1/creature workstreams without issue spam, safe resumable evidence and verified memory-input compose",
+        "evidence": "Targeted automated tests and Ubuntu CI on exact commit",
+        "handoff": "Release scoped ownership; agent-worker creation/art-production integration remains separately owner-controlled."
+      },
+      "completion_evidence": {
+        "mission_continuity_run": 40318198138,
+        "architecture_guard_run": 40318198141,
+        "art_prompt_test_guard_run": 40318085588,
+        "docs": "docs/hyperautomation/AUTONOMY_PHASE2_20261026.md",
+        "limitations": [
+          "Never took Unity runner or PR100 scope.",
+          "No current visual ART_APPROVED, model-inference certification, automatic task execution or publication."
+        ]
+      }
+    },
+    {
+      "id": "eldoria-hyperautomation-continuity-precision-20261026",
+      "title": "Eldoria — exactitud y observación periódica de continuidad",
+      "owner": "chatgpt-ops-continuity-precision-20261026",
+      "ownership_state": "released",
+      "ownership_revision": 1,
+      "write_scope_released": true,
+      "branch": "main",
+      "status": "completed",
+      "claimed_at": "2026-10-26T10:51:56.040Z",
+      "base_main_sha": "522ea0314d6d67ce143991393c6d82b7b9af540e",
+      "scope": [
+        "tools/work-status/report.mjs",
+        "tools/work-status/report.test.mjs",
+        ".github/workflows/eldoria-work-status.yml",
+        "docs/hyperautomation/OPERATING_GUARDS_20261026.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Zero-credit read-only work-status signal accuracy, focused tests, bounded advisory GitHub Action and existing documentation; no graphics, Unity, Tripo or shared runner.",
+      "phase": "TECH_VERIFIED_BOUNDED_STATUS_AND_FALSE_ALERT_FIX",
+      "next": "Validated exact-commit architecture guard 40311058470 and work-status success 40311005611. Scheduled readonly observation every six hours. Real autonomous code repair and PR100 art integration remain independent owner-controlled work.",
+      "delivery_definition": {
+        "deliverable": "No false stale failures and bounded periodic advisory operational report with verified tests",
+        "evidence": "Commit-specific Actions checks and status report",
+        "handoff": "Release scope on completion; no autonomous Work session claim"
+      },
+      "completion_evidence": {
+        "architecture_run": 40311058470,
+        "status_run": 40311005611,
+        "status_artifact_id": 12645180814,
+        "source_head": "531a03bc7bc2089ab1d9f0be21c8e675ca069861",
+        "notes": "No Unity edits or publish; no CI green construed as visual pass or continuous Work agent."
+      }
+    },
+    {
+      "id": "eldoria-hyperautomation-guardrails-20261026",
+      "title": "Eldoria — guardas de continuidad, conocimiento y documentación (sin Unity)",
+      "owner": "chatgpt-eldoria-ops-20261026",
+      "ownership_state": "released",
+      "ownership_revision": 1,
+      "write_scope_released": true,
+      "branch": "main",
+      "status": "completed",
+      "claimed_at": "2026-10-26",
+      "base_main_sha": "0b4a4883719accb42d5b101db89fd0cad9bc15a3",
+      "scope": [
+        "tools/work-status/report.mjs",
+        "tools/work-status/report.test.mjs",
+        "tools/documentation-triage/**",
+        "tools/art-direction/learning-evidence/verify-brief-use.mjs",
+        "tools/art-direction/learning-evidence/verify-brief-use.test.mjs",
+        "docs/hyperautomation/**",
+        ".github/workflows/repository-architecture-guard.yml",
+        "AGENTS.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "phase": "ISOLATED_OPERATIONAL_GUARDS_TECH_VERIFIED",
+      "next": "Scoped read-only improvements completed. Autonomous agent execution and World4X artistic gate integration remain OUTSIDE this workstream and must be done only by their existing authorized owners.",
+      "delivery_definition": {
+        "deliverable": "Diagnóstico observable de estados y bloqueos; verificador de consumo de memoria artística; triaje documental; tests en guard Ubuntu existente",
+        "evidence": "GitHub committed source SHA y Actions guard focalizado",
+        "handoff": "Cerrar trabajo y liberar alcance; limitaciones de integración artística explicitas"
+      },
+      "art_production_routing_reason": "Exclusive scope is read-only operations reporting, documentation triage and memory-provenance tests; no 3D generation, Unity scene, artistic editing, shared runner or Tripo credits.",
+      "completed_at": "2026-10-26T10:48:38.407Z",
+      "last_verified": {
+        "repo_main_commit": "56701f51d86c922c6d57d7c75907e3458dc61bb8",
+        "architecture_run": 40310178831,
+        "architecture": "success",
+        "art_production_governance_run": 40310178832,
+        "workflow_governance_run": 40310178870,
+        "world4x_changes": "none",
+        "asset_modifications": 0,
+        "runner_reservations": 0,
+        "expense_eur": 0,
+        "scope_complete": true,
+        "autonomous_repair_engine_installed": false,
+        "artist_workflow_modified": false
+      }
+    },
     {
       "id": "eldoria-tripo-mobile-lod-proof-20261021",
       "title": "Tripo—LOD móviles de Jabalí y Foco, prueba sin créditos",

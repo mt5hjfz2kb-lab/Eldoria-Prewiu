@@ -18,7 +18,12 @@ export function otherActiveRuns(pages, ownRunId) {
 export function checkRetry({ policy, track, owner, latest, branchSha, globalBusy, failedJobs, log, now }) {
   if (!policy.enabled || !track.retry_enabled) return 'RETRY_DISABLED';
   if (!localNight(now, policy.zone, policy.window_start_hour, policy.window_end_hour)) return 'NOT_NIGHT';
-  if (track.requires_owner && (!owner || owner.status !== 'active' || owner.branch !== track.branch)) return 'OWNER_NOT_ACTIVE';
+  const ownerBranch=track.owner_branch||track.branch;
+  if (track.requires_owner && (!owner || owner.status !== 'active' || owner.branch !== ownerBranch)) return 'OWNER_NOT_ACTIVE';
+  if (track.requires_owner && track.require_claimed_owner &&
+      (!owner.owner || owner.ownership_state !== 'claimed')) return 'OWNER_NOT_CLAIMED';
+  if (/^OWNER_PAUSED_/i.test(owner?.phase||'') ||
+      /^PAUSED BY OWNER\\b/i.test(owner?.next||'')) return 'OWNER_PAUSED';
   if (track.requires_owner && track.runner_type === 'windows') {
     const resource = track.owner_resource || 'windows-runner-heavy';
     if (!owner.resources?.includes(resource)) return 'WINDOWS_NOT_CLAIMED';

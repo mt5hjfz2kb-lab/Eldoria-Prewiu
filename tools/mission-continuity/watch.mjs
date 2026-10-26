@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { classifyMission, issueBody, issueMarker } from "./core.mjs";
+import {triageRun} from "./triage.mjs";
 
 const root = process.env.GITHUB_WORKSPACE || process.cwd();
 const config = JSON.parse(fs.readFileSync(path.join(root, "pipeline/mission-continuity-policy-v1.json"), "utf8"));
@@ -13,6 +14,9 @@ if (!repo || !/^[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+$/.test(repo)) throw Error("Vali
 if (!token) throw Error("GITHUB_TOKEN required for live evidence");
 if (config.schema_version !== 1 || !Array.isArray(config.missions) || !Array.isArray(registry.active)) {
   throw Error("Invalid continuity policy or canonical registry");
+}
+if (config.missions.length > 10 || new Set(config.missions.map(x => x.workstream_id)).size !== config.missions.length) {
+  throw Error("Continuity scope must stay bounded, with unique canonical workstream IDs");
 }
 if (config.allow_workflow_dispatch !== false) throw Error("Production dispatch must remain disabled");
 
@@ -61,12 +65,53 @@ for (const mission of config.missions) {
       throw Error("Policy mission requires id, branch and workflow names");
     }
     const branch = await api("/branches/" + mission.branch.split("/").map(encodeURIComponent).join("/"));
-    const runPage = await api("/actions/runs?branch=" + encodeURIComponent(mission.branch) + "&per_page=100");
+    // For chatty main, target the exact known workflow, not a repository-wide
+    // first page that may be dominated by unrelated commits and jobs.
+    // No automatic production dispatch is authorized by this GET.
+    const runsRoute = mission.workflow_file
+      ? "/actions/workflows/" + encodeURIComponent(mission.workflow_file) + "/runs?branch=" +
+        encodeURIComponent(mission.branch) + "&per_page=30"
+      : "/actions/runs?branch=" + encodeURIComponent(mission.branch) + "&per_page=100";
+    let runPage, lookupWarning=null;
+    try {
+      runPage = await api(runsRoute);
+    } catch (e) {
+      if (mission.report_only !== true || !mission.workflow_file) throw e;
+      // A branch-local workflow may be absent from default-branch Actions index.
+      // Fall back to the old bounded read-only route, not to a new dispatch.
+      lookupWarning = "targeted_workflow_unavailable_fell_back_to_branch_window";
+      runPage = await api("/actions/runs?branch=" + encodeURIComponent(mission.branch) + "&per_page=100");
+    }
     const report = classifyMission({
       mission, activeWorkstreams: registry.active, runs: runPage.workflow_runs,
       branchSha: branch.commit.sha, now, stallMinutes: config.stall_minutes
     });
-    report.issue_sync = allowIssueWrites ? await reconcileIssue(report) : "dry_run";
+    report.lookup_warning = lookupWarning;
+    if (runPage.total_count > (lookupWarning || !mission.workflow_file ? 100 : 30) && report.state === "IDLE_UNFINISHED") {
+      report.state = "PARTIAL_RUN_WINDOW";
+      report.alert = false;
+      report.next_action = "More than 100 recent runs exist; this bounded observation cannot prove the requested workflow is missing. Inspect exact workflow before any action.";
+    }
+    if (mission.report_only === true) {
+      // Bounded, single-run evidence inventory. No logs/secrets downloaded and
+      // no GitHub POST, rerun, owner change, release, merge or dispatch.
+      let jobs=null,artifacts=null;
+      if (report.latest_run && Number.isSafeInteger(report.latest_run.id)) {
+        try {
+          [jobs,artifacts] = await Promise.all([
+            api("/actions/runs/" + report.latest_run.id + "/jobs?per_page=25"),
+            api("/actions/runs/" + report.latest_run.id + "/artifacts?per_page=25")
+          ]);
+        } catch {
+          report.evidence_lookup = "unavailable_read_only";
+        }
+      }
+      report.diagnostic = triageRun({report,jobs,artifacts});
+    }
+    // Current owners remain the only writers. Report-only tracks MUST NOT create
+    // or update recovery issues, even when the legacy guard has issues:write.
+    report.issue_sync = mission.report_only === true ? "report_only_no_issue" :
+      allowIssueWrites ? await reconcileIssue(report) : "dry_run";
     reports.push(report);
   } catch (error) {
     const message = mission.workstream_id + ": " + error.message;

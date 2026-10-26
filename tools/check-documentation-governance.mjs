@@ -25,8 +25,21 @@ export function auditDocs(root, trackedPaths=null) {
   const file = p => trackedPaths ? trackedPaths.has(p) : fs.existsSync(abs(p)) && fs.statSync(abs(p)).isFile();
   const directDocs = trackedPaths ? [...trackedPaths].filter(p=>/^docs\/[^/]+\.md$/.test(p)).map(p=>p.slice(5)) :
     (fs.existsSync(abs('docs')) ? fs.readdirSync(abs('docs')).filter(n=>n.endsWith('.md') && fs.statSync(abs('docs/'+n)).isFile()) : []);
-  const exists = dest => trackedPaths ? trackedPaths.has(path.relative(root,dest).split(path.sep).join('/')) ||
-    [...trackedPaths].some(p=>p.startsWith(path.relative(root,dest).split(path.sep).join('/')+'/')) : fs.existsSync(dest);
+  // Build a directory index once. A separate linear scan for every link is
+  // needlessly costly on large Unity trees and obscures the intent of the guard.
+  const trackedDirectories = trackedPaths ? new Set() : null;
+  if (trackedPaths) for (const tracked of trackedPaths) {
+    let slash = tracked.indexOf('/');
+    while (slash !== -1) {
+      trackedDirectories.add(tracked.slice(0, slash));
+      slash = tracked.indexOf('/', slash + 1);
+    }
+  }
+  const exists = dest => {
+    if (!trackedPaths) return fs.existsSync(dest);
+    const relative = path.relative(root, dest).split(path.sep).join('/');
+    return trackedPaths.has(relative) || trackedDirectories.has(relative);
+  };
   let catalog;
   try { catalog = JSON.parse(fs.readFileSync(abs('docs/documentation-catalog.json'),'utf8')); }
   catch (e) { return { errors: ['Catalog missing or invalid: '+e.message], warnings, counts: {} }; }
@@ -61,8 +74,20 @@ export function auditDocs(root, trackedPaths=null) {
   if (seen.get('docs/ELDORIA_ART_PIPELINE_INDEX.md')?.status !== 'historical') errors.push('Legacy art index must not be marked active');
   if (file('docs/ELDORIA_ART_PIPELINE_INDEX.md') && !fs.readFileSync(abs('docs/ELDORIA_ART_PIPELINE_INDEX.md'),'utf8').includes('HISTÓRICO'))
     errors.push('Legacy art index lacks visible historical banner');
-  for (const item of entries) if (item.status === 'review_pending') warnings.push(item.path);
-  return {errors,warnings,counts:{catalogued:entries.length,review_pending:warnings.length,direct_docs:directDocs.length}};
+  const byStatus = Object.fromEntries([...STATUS].map(status => [status, 0]));
+  const pendingByDomain = {};
+  for (const item of entries) {
+    if (STATUS.has(item?.status)) byStatus[item.status]++;
+    if (item?.status === 'review_pending') {
+      warnings.push(item.path);
+      const domain = item.domain || 'unclassified';
+      pendingByDomain[domain] = (pendingByDomain[domain] || 0) + 1;
+    }
+  }
+  return {errors,warnings,counts:{catalogued:entries.length,review_pending:warnings.length,
+    direct_docs:directDocs.length,by_status:byStatus,
+    pending_by_domain:Object.fromEntries(Object.entries(pendingByDomain).sort(([a],[b]) => a.localeCompare(b)))}};
+
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

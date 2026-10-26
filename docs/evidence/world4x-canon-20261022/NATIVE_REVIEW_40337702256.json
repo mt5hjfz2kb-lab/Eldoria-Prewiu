@@ -1,0 +1,78 @@
+{
+  "run": 40337702256,
+  "tests": {
+    "eldoria-region1-canon-tests.xml": {
+      "result": "Passed",
+      "total": "62",
+      "passed": "62",
+      "failed": "0",
+      "skipped": "0"
+    },
+    "region1-general-proof-40337702256/editmode.xml": {
+      "result": "Passed",
+      "total": "26",
+      "passed": "26",
+      "failed": "0",
+      "skipped": "0"
+    },
+    "region1-general-proof-40337702256/playmode.xml": {
+      "result": "Passed",
+      "total": "62",
+      "passed": "62",
+      "failed": "0",
+      "skipped": "0"
+    }
+  },
+  "camera_manifests_verified": 160,
+  "hash_errors": [],
+  "general_images_verified": 34,
+  "matched_views": [
+    {
+      "label": "cercana-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 48.9801
+    },
+    {
+      "label": "cercana-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 58.3172
+    },
+    {
+      "label": "regional-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 74.4944
+    },
+    {
+      "label": "regional-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 74.1175
+    },
+    {
+      "label": "panoramica-horizontal",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 55.3549
+    },
+    {
+      "label": "panoramica-vertical",
+      "camera_identical": true,
+      "changed_pixels_above_5_255_percent": 56.3926
+    }
+  ],
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "probe_checks": 44,
+  "probe_status": "INTEGRATION_PASS_ART_REVIEW_REQUIRED",
+  "probe_error": "",
+  "source": "75fcc8b9faaa1272d66f9b1a134c0c422db3ddb1",
+  "materialized": "80d50a4aefec2368d04d43acab9f8626f5080ee0",
+  "status": "RETAINED_FOR_OWNER_AUTHORIZED_MAIN_INTEGRATION",
+  "director_estimate": 7.5,
+  "estimate_is_subjective": true,
+  "independent_external_approval": false,
+  "baseline_40253785923_same_cameras": true,
+  "visual_review": "docs/evidence/world4x-canon-20261022/REGION1_CONTINUITY_REVIEW_40337702256.md",
+  "visual_artifact": 12659136360,
+  "visual_artifact_sha256": "fce05aae205ffaaa7ab2c89abbe7dcaa6a35f34445d8ac2dc66eb6c392db2bfa",
+  "full_artifact": 12658807251,
+  "full_artifact_sha256": "cc27381f237bd792190700402ba69d71b9cc7c755b1d327802bcd5bd887034e6"
+}
