@@ -71,7 +71,8 @@
         "Independent qualitative art review and gameplay regressions",
         "Explicit owner-controlled final integration; PR #100 remains draft until verified"
       ],
-      "resume_hint": "Current owner must consume exact-HEAD run and real captured artifacts in PR #100; observer never edits, takes lease, publishes, approves art or merges."
+      "resume_hint": "Current owner must consume exact-HEAD run and real captured artifacts in PR #100; observer never edits, takes lease, publishes, approves art or merges.",
+      "workflow_file": "world4x-canon-native.yml"
     },
     {
       "workstream_id": "eldoria-tripo-art-brain-phase2-20261021",
