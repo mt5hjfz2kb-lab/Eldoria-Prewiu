@@ -1141,7 +1141,7 @@
       "title": "Región 1 — geografía canónica continua y representación por zoom",
       "owner": "codex-world4x-player-art-22db827a",
       "write_scope_released": false,
-      "ownership_revision": 39,
+      "ownership_revision": 40,
       "branch": "feature/world4x-region1-canon-20261022",
       "status": "active",
       "claimed_at": "2026-10-25T18:49:37.384Z",
@@ -1160,7 +1160,9 @@
         ".github/workflows/world4x-artistic-process-gate.yml",
         ".github/workflows/ui-progression-cert.yml"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "authorization": "Explicit owner 2026-10-24: take over and continue PR100: forest reduction if needed, production resources, original Tripo boar/spawnling, levels 1-5, continuous zoom, real native Unity QA; no spend/merge/publish or touching UI owner scope. Extension 2026-10-25 by owner continuation: repair only existing World4X artistic evidence workflow CWD (do not modify validation policy/tests), update exact native source matched-camera evidence, no merging/publishing. Owner approved two attached exact node references on 2026-10-25 and explicitly instructs creation/integration, then full 3-zoom reference review and actual close-camera Breach visibility. Zero budget, same PR100, no merge/publication.\n2026-10-26: Owner authorizes this director to correct all identified world visual defects, prioritize near camera reference fidelity, scale resource nodes approximately 85% of city visual size, validate and integrate today after actual visual and functional gates. No paid credits.",
       "phase": "PLAYER_CAMERA_ART_CORRECTION",
       "next": "Near-camera proportions and landscape composition; Blender source correction then native Unity images and gameplay regression.",
