@@ -54,3 +54,8 @@ La alternativa de depresión central de Blender 40293974247 cambia la masa, pero
 El código ocultaba la ciudad a zoom >=152, antes de la escala regional. Se mantiene únicamente la representación de la ciudad realmente desbloqueada, con tamaño regional estable (aprox. 8–10% de altura de pantalla) y su mismo destino seleccionable. Se oculta en panorámica. No se añaden ciudades a las reservas vacías. Las criaturas ajustan su apoyo visual al terreno vigente sin reescribir coordenadas guardadas.
 
 La ejecución Blender 40295461620 agotó el tiempo durante la modificación. Se identificó un acceso a normales de vértices inmediatamente después de cambiar suavizado de cada cara, susceptible de recalcular toda la malla repetidamente. Se agrupan los cambios y se leen las normales una vez; se añade registro de etapa. La recuperación comprueba PID, ejecutable y ruta exacta de la sesión propia antes de detenerla; se reinicia desde la fuente inmutable, no desde un resultado parcial.
+
+
+## Connected ground candidate — native review next
+
+BlenderMCP 40297426643 completed after batching terrain normal evaluation. Source preserves 51,828 protected vertices and all 62 original packed images; 11,428 riverbed vertices corrected below existing water. Near bridge remains 21 m. Actual Blender renders inspected: river continuity improves and fractured basin replaces regular Y-wall composition. Basin edges and regional tonal integration still require actual Unity assessment; no 7.5 or art approval claimed. Next native run includes corrected detailed meadow, regional selectable city, 85% resource width, creature grounding and panorama-only peripheral mist. Materialization remains conditional on all 62 PlayMode / 26 EditMode / 44 functional checks and fresh native evidence.

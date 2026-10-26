@@ -5,7 +5,7 @@ $layoutPath=Join-Path $root 'production-region.json'
 $layout=Get-Content $layoutPath -Raw | ConvertFrom-Json
 $proof=Get-Content (Join-Path $root 'macro-macro-art-operations.json') -Raw | ConvertFrom-Json
 $sourceHash=(Get-FileHash $query -Algorithm SHA256).Hash.ToLowerInvariant()
-if($sourceHash -ne '4c2c5bd9b34b150bc60f27db645ab5699a551fe2152e5b94f25c448d4a56c166'){throw 'Unexpected reviewed query source'}
+if($sourceHash -ne 'b6807c6993678532987506475da63b1d4562ee61c1489547e78a85643f35d0ca'){throw 'Unexpected reviewed query source'}
 $input=[IO.MemoryStream]::new([IO.File]::ReadAllBytes($query))
 $gzip=[IO.Compression.GZipStream]::new($input,[IO.Compression.CompressionMode]::Decompress)
 $buffer=[IO.MemoryStream]::new()

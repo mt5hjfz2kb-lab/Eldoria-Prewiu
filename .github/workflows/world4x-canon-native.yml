@@ -402,8 +402,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40290805767
-          name: region1-interactive-40290805767
+          run-id: 40297426643
+          name: region1-interactive-40297426643
           path: ${{ runner.temp }}/region1-reviewed-macro
       - name: Stage exact observed BlenderMCP valleys and geological walls
         shell: powershell
@@ -414,10 +414,10 @@ jobs:
           $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $unityDest=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
           $expected=@{
-            'Eldoria_Region1_Production.blend'='bb0de807732af65b6fa07b62417368e9721a28d083d3055c7eeced595c58e456'
-            'RegionOneBlenderWorld.glb'='9ec06abed84b1a481abbc56818ee6dacb89d2623692427c7e54c0a003b997952'
-            'RegionOneBlenderQueries.bytes'='4c2c5bd9b34b150bc60f27db645ab5699a551fe2152e5b94f25c448d4a56c166'
-            'production-region.json'='0920f4e49f88d7683419191436594d95eb6b4650e06eba7d05ccc81b880d1e52'
+            'Eldoria_Region1_Production.blend'='78302b587c90c59ebe23170d96ccfc3d4549893b295a72091b4f4e52c66b7010'
+            'RegionOneBlenderWorld.glb'='fe5feadc1c7a4383b480e013e92faa0d89b303f0da0e520e7fa52f65f70592fe'
+            'RegionOneBlenderQueries.bytes'='b6807c6993678532987506475da63b1d4562ee61c1489547e78a85643f35d0ca'
+            'production-region.json'='2a51f9e0ef50bc04d590d60e64a1cf183b23f059f864ab1bbed59eb27bc2d8dd'
           }
           foreach($name in $expected.Keys){
             $saved=Join-Path $origin $name
@@ -425,10 +425,10 @@ jobs:
             Copy-Item $saved (Join-Path $destination $name) -Force
             if($name -ne 'Eldoria_Region1_Production.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
           }
-          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40290805767.json','response-40290805767.json')){
+          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40297426643.json','response-40297426643.json')){
             Copy-Item (Join-Path $origin $name) (Join-Path $destination "macro-$name") -Force
           }
-          Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51828_vertices bridge_length=21 wall_vertices=34625 new_targets=0 fresh_Unity_required=1'
+          Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51828_vertices bridge_length=21 modified_terrain_vertices=55425 river_bed_vertices=11428 new_targets=0 fresh_Unity_required=1'
       - name: Verify and repair reviewed export metadata without changing geometry
         shell: powershell
         run: '& ./world4x-source/docs/evidence/world4x-canon-20261022/authoring/repair_macro_metadata.ps1'
