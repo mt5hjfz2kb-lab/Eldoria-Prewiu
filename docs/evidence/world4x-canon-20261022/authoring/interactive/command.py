@@ -2,7 +2,7 @@
 Reuse the inspected retained world. Change the canyon's actual wall silhouette,
 retain geography, gameplay exclusions, source images, city datums and UVs.
 """
-import bpy, pathlib, json, hashlib, struct, gzip, shutil, math, time
+import bpy, bmesh, collections, pathlib, json, hashlib, struct, gzip, shutil, math, time
 import numpy as np
 from mathutils import Vector
 from mathutils.bvhtree import BVHTree
@@ -200,6 +200,66 @@ for x,y,z in context:
  key=(round(float(x),3),round(float(y),3))
  if key in edge:assert abs(float(z)-edge[key])<.00001
 progress('shared river boundary fitted')
+# A genuine second canopy silhouette, authored from the observed source envelope.
+# Keep original pine datablocks and every existing instance/anchor; derive one
+# shared round-crown family and its genuine low-poly far mesh at zero asset cost.
+forest=[o for o in scene.objects if o.name in export_names and o.type=='MESH' and o.name.startswith('BLD_ForestMass_')]
+donors=collections.Counter(o.data for o in forest);assert len(donors)==2
+selected=min(donors,key=lambda d:(donors[d],d.name))
+original_tree_context=[]
+for data,instances in donors.items():
+ q=np.array([tuple(v.co) for v in data.vertices]);original_tree_context.append({'mesh':data.name,'instances':instances,'vertices':len(q),'bounds_min':q.min(0).tolist(),'bounds_max':q.max(0).tolist(),'materials':[m.name for m in data.materials]})
+(out/'observed-forest-mesh-context.json').write_text(json.dumps(original_tree_context,indent=2))
+selected.use_fake_user=True
+leaf_materials=[]
+for index,colour in enumerate([(.045,.12,.014,1),(.085,.22,.023,1),(.15,.31,.033,1),(.23,.40,.06,1)]):
+ material=bpy.data.materials['Needles '+str(index)].copy();material.name='Player broadleaf crown shade '+str(index)
+ bsdf=next(n for n in material.node_tree.nodes if n.type=='BSDF_PRINCIPLED');bsdf.inputs['Base Color'].default_value=colour;material.diffuse_color=colour;leaf_materials.append(material)
+leaf_materials.append(bpy.data.materials['Pine bark'])
+def round_crown_mesh(name,source_mesh,subdivisions):
+ q=np.array([tuple(v.co) for v in source_mesh.vertices]);lo=q.min(0);hi=q.max(0);height=float(hi[2]-lo[2])*.90;width=float(max(hi[0]-lo[0],hi[1]-lo[1]))*1.18
+ assert height>.1 and width>.1
+ centre=Vector(((lo[0]+hi[0])/2,(lo[1]+hi[1])/2,float(lo[2])))
+ bm=bmesh.new()
+ lobes=[(-.18,.08,.64,.33,.31,.23),(.17,.09,.65,.34,.31,.24),(0,-.17,.67,.35,.31,.24),(-.055,.015,.82,.34,.33,.24),(.18,-.13,.78,.28,.29,.22)]
+ if subdivisions==1:lobes=lobes[:4]
+ for lobe,(x,y,z,rx,ry,rz) in enumerate(lobes):
+  result=bmesh.ops.create_icosphere(bm,subdivisions=subdivisions,radius=1)
+  for i,v in enumerate(result['verts']):
+   noise=1+.065*math.sin(i*4.31+lobe*2.7)
+   v.co=centre+Vector((x*width+v.co.x*rx*width*noise,y*width+v.co.y*ry*width*noise,z*height+v.co.z*rz*height*noise))
+ bm.normal_update()
+ for i,face in enumerate(bm.faces):
+  upward=face.normal.z;face.material_index=3 if upward>.42 else 2 if upward>-.1 else 1 if upward>-.55 else 0
+ def branch(start,end,radius):
+  direction=end-start;before=set(bm.faces);result=bmesh.ops.create_cone(bm,cap_ends=True,cap_tris=False,segments=8 if subdivisions>1 else 6,radius1=radius,radius2=radius*.48,depth=direction.length)
+  rotation=direction.to_track_quat('Z','Y').to_matrix();mid=(start+end)/2
+  for vertex in result['verts']:vertex.co=rotation@vertex.co+mid
+  for face in set(bm.faces)-before:face.material_index=4
+ branch(centre,centre+Vector((.015*width,0,.58*height)),width*.055)
+ if subdivisions>1:
+  for end in [Vector((-.18*width,.08*width,.69*height)),Vector((.17*width,.09*width,.70*height)),Vector((0,-.17*width,.70*height))]:branch(centre+Vector((0,0,.32*height)),centre+end,width*.027)
+ mesh=bpy.data.meshes.new(name);bm.to_mesh(mesh);bm.free();mesh.update()
+ for material in leaf_materials:mesh.materials.append(material)
+ uv=mesh.uv_layers.new(name='Authored round crown local UV')
+ for loop in mesh.loops:
+  co=mesh.vertices[loop.vertex_index].co;uv.data[loop.index].uv=((co.x-centre.x)/width+.5,(co.z-centre.z)/height)
+ return mesh
+near_broadleaf=round_crown_mesh('Player directed rounded broadleaf / shared near',selected,2)
+first=next(o for o in forest if o.data==selected);far_first=bpy.data.objects[first.name.replace('BLD_ForestMass_','BLD_ForestFar_')];far_first.data.use_fake_user=True
+far_broadleaf=round_crown_mesh('Player directed rounded broadleaf / shared far',far_first.data,1)
+converted=0
+for ob in forest:
+ if ob.data!=selected:continue
+ ob.data=near_broadleaf;far=bpy.data.objects.get(ob.name.replace('BLD_ForestMass_','BLD_ForestFar_'))
+ if far:far.data=far_broadleaf
+ converted+=1
+focus=min((o for o in forest if o.data==near_broadleaf),key=lambda o:o.location.x**2+o.location.y**2)
+bpy.app.driver_namespace['artist_forest_focus']=tuple(focus.location)
+forest_art={'original_donors_preserved':True,'existing_instances_derived':converted,'near_shared_vertices':len(near_broadleaf.vertices),'near_shared_faces':len(near_broadleaf.polygons),'far_shared_vertices':len(far_broadleaf.vertices),'far_shared_faces':len(far_broadleaf.polygons),'new_tree_anchors':0,'new_gameplay_targets':0}
+(out/'rounded-forest-authoring.json').write_text(json.dumps(forest_art,indent=2))
+progress('round crown forest authored')
+
 
 # Every retained decorative overlay follows the real cut; no floating plates.
 overlay_counts={}
@@ -292,9 +352,9 @@ for ob in scene.objects:
  if ob.name in export_names and ob.type in {'MESH','EMPTY'}:ob.select_set(True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
-report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'continuation_vertices_refitted':context_edits,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
+report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'continuation_vertices_refitted':context_edits,'forest_art':forest_art,'observed_forest_donors':original_tree_context,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
 progress('rendering source previews')
-bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v8')
+bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v9')
 (out/'stop.request').write_text('Saved physical wall correction; actual Unity review required.')
 print('PLAYER_ART_SCULPT_COMPLETE',json.dumps(report))

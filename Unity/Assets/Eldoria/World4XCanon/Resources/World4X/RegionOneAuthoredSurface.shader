@@ -144,6 +144,13 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  // Only the existing exposed central mineral receives this material value.
  // This is emissive geology on the actual ground, never a portal or icon.
  c.rgb+=originalPigment*(_MineralEmission*smoothstep(.004,.04,originalPigment.b-originalPigment.g));
+ if(_GeologicalRock>.5){
+     float radius=distance(i.world.xz-_RegionOrigin.xz,float2(-260,150));
+     float vein=smoothstep(1.8,2.8,originalPigment.b/max(.02,originalPigment.g))*smoothstep(.035,.12,originalPigment.b-originalPigment.g);
+     vein*=1-smoothstep(18,75,radius);
+     c.rgb+=half3(.46,.055,.90)*vein*.85;
+     c.rgb+=half3(.65,.30,.85)*(1-smoothstep(1,5,radius));
+ }
  float2 region=i.world.xz-_RegionOrigin.xz;
  // Minimal peripheral atmosphere at the region, hiding the neighbouring continuation.
  // Rounded, irregular peripheral falloff. Vary the boundary itself, not
