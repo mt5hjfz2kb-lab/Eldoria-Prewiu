@@ -1,3 +1,7 @@
+> **APK PUBLICADA — 27-10-2026: ELDORIA 1.15 / code15.** Nueva entrega familiar del estado integrado: interfaz y Región1 con correcciones de navegación y bosque. [Descargar APK](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code15/Eldoria-Valoria-code15.apk) · [Novedades y prueba móvil](docs/ui-v3/ANDROID_1_15_RELEASE.md). Build40418364444 y publicación40419617788 SUCCESS; bytes públicos y manifiesto del actualizador verificados. Firma/paquete originales, sin reset de datos. Prueba física del teléfono pendiente, sin bloquear esta entrega técnica completada. Solicitudes de build/publicación desactivadas tras entregar y reserva liberada. Las prohibiciones de publicación de fases anteriores describen aquellos encargos y no anulan esta publicación expresamente solicitada.
+
+---
+
 > **PRIMERA ETAPA DE EFICIENCIA CERRADA — 26-10-2026.** PR114 integrado en `46dd9e892fd46c0405d62316251d8e3f51331aef`: dos controles de metadatos con descarga acotada y conservación de fuentes Blender sin nuevas copias idénticas. Pruebas específicas, protecciones del repositorio y recorrido web completo aprobados; ambos controles optimizados también pasan en main. Juego, assets, guardados, workflows nativos y entregas familiares intactos. [Alcance, pruebas y reversión](docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md#primera-etapa-de-eficiencia--26-10-2026). La limpieza profunda del histórico no se ha realizado. Asignación liberada; no hay ejecución pendiente en esta etapa.
 
 ---

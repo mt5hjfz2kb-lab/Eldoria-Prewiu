@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T23:25:03.625Z",
+  "updated_at": "2026-10-26T23:27:03.896Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,7 +19,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-eldoria-android15-publication-20261027",
+      "owner": null,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-26T23:14:21.550Z",
@@ -78,8 +78,8 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "ANDROID15_VERIFIED_PUBLICATION",
-      "next": "Promote exact verified code15 artifact; verify public bytes and family manifest, then close.",
+      "phase": "ANDROID15_PUBLISHED_VERIFIED_20261027",
+      "next": "Android1.15/code15 published and updater channel verified. No pending publication; reclaim canonical ID for a new owner-authorized scope or concrete defect.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -629,6 +629,24 @@
           "native_or_release_workflows_changed": false,
           "historical_files_deleted": 0,
           "details": "docs/world4x-multiplayer/REPOSITORY_ORGANIZATION.md"
+        },
+        "android_family15": {
+          "version": "1.15",
+          "version_code": 15,
+          "source": "7413d029abe17e8b4a6fe366962bd522e022085f",
+          "build_run": 40418364444,
+          "build_artifact": 12696226924,
+          "publication_run": 40419617788,
+          "release_asset": 679808928,
+          "channel_commit": "f60529a1a8a7b0f8be2ee7f3ce8f9bfee495e2ca",
+          "apk_sha256": "b6205cf93ddc42a8e50c9573de83dcad97c8bc1c8268583a8a5a891d1414d55c",
+          "apk_bytes": 395819992,
+          "public_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code15/Eldoria-Valoria-code15.apk",
+          "original_certificate_matches": true,
+          "public_byte_match": true,
+          "independent_crc_hash_arm64_verified": true,
+          "physical_phone_tested": false,
+          "user_data_reset": false
         }
       },
       "previous_owner": "codex-eldoria-ordered-completion-20261026",
@@ -985,11 +1003,35 @@
           "source": "7413d029abe17e8b4a6fe366962bd522e022085f",
           "result": "SIGNED_BUILD_AND_INDEPENDENT_CRC_HASH_ARM64_PASS",
           "completed_at": "2026-10-26T23:25:03.625Z"
+        },
+        {
+          "owner": "codex-eldoria-android15-publication-20261027",
+          "ownership_revision": 33,
+          "phase": "ANDROID15_VERIFIED_PUBLICATION",
+          "completed_at": "2026-10-26T23:27:03.896Z",
+          "evidence": {
+            "version": "1.15",
+            "version_code": 15,
+            "source": "7413d029abe17e8b4a6fe366962bd522e022085f",
+            "build_run": 40418364444,
+            "build_artifact": 12696226924,
+            "publication_run": 40419617788,
+            "release_asset": 679808928,
+            "channel_commit": "f60529a1a8a7b0f8be2ee7f3ce8f9bfee495e2ca",
+            "apk_sha256": "b6205cf93ddc42a8e50c9573de83dcad97c8bc1c8268583a8a5a891d1414d55c",
+            "apk_bytes": 395819992,
+            "public_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code15/Eldoria-Valoria-code15.apk",
+            "original_certificate_matches": true,
+            "public_byte_match": true,
+            "independent_crc_hash_arm64_verified": true,
+            "physical_phone_tested": false,
+            "user_data_reset": false
+          }
         }
       ],
-      "ownership_revision": 33,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 34,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
       "delivery_definition": {
@@ -1018,7 +1060,7 @@
       ],
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
-      "released_at": "2026-10-26T23:01:06.703Z",
+      "released_at": "2026-10-26T23:27:03.896Z",
       "latest_owner_feedback": "Current owner: resources have levels, a single occupant per node, disputable and stronger player remains gathering. Incorporated into offline design/simulation; no live multiplayer implementation or APK publication authorized by this scope.",
       "ordered_completion": {
         "completed_at": "2026-10-26T22:20:44.872Z",

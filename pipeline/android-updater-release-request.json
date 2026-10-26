@@ -1,8 +1,8 @@
 {
-  "enabled": true,
+  "enabled": false,
   "buildRunId": 40418364444,
   "versionCode": 15,
   "expectedSourceSha": "7413d029abe17e8b4a6fe366962bd522e022085f",
   "budgetEur": 0,
-  "note": "Owner explicitly requested publication. Promote only verified1.15/code15 APK:395819992bytes SHA256b6205cf93ddc42a8e50c9573de83dcad97c8bc1c8268583a8a5a891d1414d55c. Same original package/certificate; no reset. Publish via existing immutable-release and public-byte verification workflow."
+  "note": "Family1.15/code15 published successfully by40419617788. Public bytes and main/raw family manifest verified:395819992bytes, SHA256b6205cf93ddc42a8e50c9573de83dcad97c8bc1c8268583a8a5a891d1414d55c. Original package/signature preserved; no reset; physical phone untested. Disable duplicate publication."
 }

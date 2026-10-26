@@ -33,6 +33,11 @@ APK:395.819.992 bytes. SHA256:
 `b6205cf93ddc42a8e50c9573de83dcad97c8bc1c8268583a8a5a891d1414d55c`.
 Firma original, paquete, versionCode15 y permisos verificados por Android SDK.
 Descarga independiente: SHA/CRC del artefacto y de la APK,11 bibliotecas ELF ARM64 correctas.
-Publicación y activación del canal todavía pendientes en este commit.
+Publicación: [40419617788](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40419617788), SUCCESS.
+[Descargar Eldoria 1.15](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code15/Eldoria-Valoria-code15.apk) (aprox.396 MB).
+Asset público679808928: digest SHA256 y tamaño coinciden con el archivo verificado.
+El publicador volvió a descargar la APK pública y comparó sus bytes íntegros.
+El manifiesto de main y la URL pública que consulta el actualizador anuncian code15.
+La entrega está completada; las solicitudes se desactivan para evitar repeticiones.
 No se declara prueba física del teléfono. El árbol Unity coincide con la fuente
 ya certificada con65 PlayMode/26 EditMode; esta compilación Android no repite esas pruebas.
