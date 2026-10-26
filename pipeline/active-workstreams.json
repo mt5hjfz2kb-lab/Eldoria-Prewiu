@@ -56,7 +56,10 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
         "tools/world4x-balance/**",
         "docs/world4x-multiplayer/**",
-        "docs/ui-v3/ORDERED_COMPLETION_20261026.md"
+        "docs/ui-v3/ORDERED_COMPLETION_20261026.md",
+        "tools/dependency-audit/**",
+        ".github/workflows/dependency-history-backup.yml",
+        "docs/world4x-multiplayer/FOREST_AUDIT.md"
       ],
       "resources": [],
       "art_production_routing": "required",
