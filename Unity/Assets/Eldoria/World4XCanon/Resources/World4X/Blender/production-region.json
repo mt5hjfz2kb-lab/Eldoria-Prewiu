@@ -1239,6 +1239,7 @@
                              "interior_breach_light_anchors":  3,
                              "protected_AF_AG_vertices_unchanged":  51898,
                              "continuous_canyon_boolean":  true,
-                             "settlement_colour_circles_removed":  true
+                             "settlement_colour_circles_removed":  true,
+                             "physically_eroded_continuous_canyon_banks":  true
                          }
 }
