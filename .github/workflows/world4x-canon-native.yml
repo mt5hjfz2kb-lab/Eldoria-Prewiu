@@ -402,8 +402,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40246824373
-          name: region1-interactive-40246824373
+          run-id: 40250733346
+          name: region1-interactive-40250733346
           path: ${{ runner.temp }}/region1-reviewed-macro
       - name: Stage exact observed BlenderMCP valleys and geological walls
         shell: powershell
@@ -414,8 +414,8 @@ jobs:
           $destination=Join-Path $env:RUNNER_TEMP "region1-authoring-$env:GITHUB_RUN_ID"
           $unityDest=Join-Path $env:GITHUB_WORKSPACE 'world4x-source/Unity/Assets/Eldoria/World4XCanon/Resources/World4X/Blender'
           $expected=@{
-            'Eldoria_Region1_Production.blend'='fac19536d7915601b330eaa21ab373bcf465edc8f2c8cd45ae1e2057fad7cd5a'
-            'RegionOneBlenderWorld.glb'='92515f8ae39b492d9a926fe1551f061731fbaf0434fe6fcad2ddc0cdcc793ad2'
+            'Eldoria_Region1_Production.blend'='82c7c0e6a94a27575aba4b87a1843af7e607b31e45478848a65b424578d05daf'
+            'RegionOneBlenderWorld.glb'='05dc18f63af927985e7e0b16cebe3c96774f85ea325a4883ab7a555c40fcf2a9'
             'RegionOneBlenderQueries.bytes'='aa55c034fde1a9f119c04d77c24c4610a0f0dabf6e50199de72d5b27ea8aa46c'
             'production-region.json'='20f4fc5ef59847a4e1942d4bc3c5a12908ad2a8134d7fff13807efe9037b9978'
           }
@@ -425,7 +425,7 @@ jobs:
             Copy-Item $saved (Join-Path $destination $name) -Force
             if($name -ne 'Eldoria_Region1_Production.blend'){Copy-Item $saved (Join-Path $unityDest $name) -Force}
           }
-          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40246824373.json','response-40246824373.json')){
+          foreach($name in @('macro-art-operations.json','ready.json','session-closed.json','request-40250733346.json','response-40250733346.json')){
             Copy-Item (Join-Path $origin $name) (Join-Path $destination "macro-$name") -Force
           }
           Write-Host 'ACTUAL_BLENDER_MCP_MACRO_ART_STAGED protected_AF_AG=51898_vertices new_streams=2 new_targets=0 fresh_Unity_required=1'
@@ -618,8 +618,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           github-token: ${{ github.token }}
-          run-id: 40246824373
-          name: region1-interactive-40246824373
+          run-id: 40250733346
+          name: region1-interactive-40250733346
           path: ${{ runner.temp }}/interactive-approved-nodes-source
       - name: Send this observed decision to the persistent local BlenderMCP session
         shell: powershell

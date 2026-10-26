@@ -64,6 +64,19 @@ namespace Eldoria.World4XCanon
                 }).ToArray();
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 if(IsCloseGroundDetail(renderer)&&!fineDetails.Contains(renderer))fineDetails.Add(renderer);
+            // These pigment exposures sit 15–26mm above the same physical
+            // ground triangles. The connected terrain casts their shadow;
+            // casting again from the exposure produces close-view triangle acne.
+            foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true)){
+                for(var node=renderer.transform;node;node=node.parent){
+                    string name=node.name;
+                    if(name=="BLD_BreachFloor"||name=="BLD_BreachOutlyingFractures"||
+                       name=="BLD_BreachBrokenBasaltPlates"||name=="BLD_BreachTerracedStrata"||
+                       name=="BLD_BreachWeatheredRockfall"){
+                        renderer.shadowCastingMode=ShadowCastingMode.Off;break;
+                    }
+                }
+            }
             // Instanced properties opt these shared crowns into GPU instancing;
             // no per-tree material duplication, no replacement canopy imagery.
             var properties=new MaterialPropertyBlock();properties.SetColor("_InstanceTint",Color.white);
@@ -163,4 +176,5 @@ namespace Eldoria.World4XCanon
         void OnDestroy(){foreach(var material in owned)if(material)Destroy(material);}
     }
 }
+
 
