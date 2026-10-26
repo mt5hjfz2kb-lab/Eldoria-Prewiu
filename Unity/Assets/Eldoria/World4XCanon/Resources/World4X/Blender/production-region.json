@@ -1245,7 +1245,7 @@
     "player_art_correction":  {
                                   "bridge_length_before":  34,
                                   "bridge_length_after":  21,
-                                  "actual_stepped_wall_vertices":  55425,
+                                  "actual_stepped_wall_vertices":  59005,
                                   "unchanged_gameplay_masks":  true,
                                   "protected_core_vertices":  51828
                               }
