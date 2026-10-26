@@ -39,13 +39,16 @@ jobs:
           clean: false
           persist-credentials: false
           fetch-depth: 5
+          sparse-checkout: |
+            tools/dependency-audit
+            .github/workflows
       - name: Restore exact archive scripts after reused runner checkout
         shell: powershell
         run: |
           $ErrorActionPreference='Stop'
           $actual=(git rev-parse HEAD).Trim()
           if($actual -ne $env:GITHUB_SHA){throw "Checkout source mismatch: $actual"}
-          git restore --source=$env:GITHUB_SHA --worktree -- tools/dependency-audit .github/workflows/dependency-history-backup.yml
+          git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- tools/dependency-audit .github/workflows/dependency-history-backup.yml
           if($LASTEXITCODE -ne 0){throw 'Exact archive script restoration failed'}
           foreach($file in @('tools/dependency-audit/create_backup.py','tools/dependency-audit/check_external_references.py')){
             if(-not (Test-Path -LiteralPath $file)){throw "Missing restored script: $file"}
