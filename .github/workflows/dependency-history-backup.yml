@@ -107,11 +107,12 @@ jobs:
           if ([string]::IsNullOrEmpty($root) -or $root -eq '\EldoriaArchives') {throw 'Stable user Documents folder could not be determined'}
           New-Item -ItemType Directory -Force -Path $root | Out-Null
           $target=Join-Path $root 'eldoria-354-assets-20261026.zip'
-          if (Test-Path -LiteralPath $target) {throw 'Archive already exists: refusing to overwrite'}
-          & $env:ELDORIA_ARCHIVE_PYTHON tools/dependency-audit/create_backup.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out $target
+          $existed=Test-Path -LiteralPath $target
+          & $env:ELDORIA_ARCHIVE_PYTHON tools/dependency-audit/create_backup.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out $target --verify-existing
           if ($LASTEXITCODE -ne 0) {throw 'Backup refused/failed; no existing archive was modified'}
           if (-not (Test-Path -LiteralPath $target) -or -not (Test-Path -LiteralPath ($target+'.sha256'))) {throw 'Backup verification files missing'}
-          $obj=@{status='CREATED_AND_HASH_VERIFIED';snapshot='d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4';pc_path=$target;bytes=(Get-Item -LiteralPath $target).Length;sha256=((Get-Content ($target+'.sha256') -Raw).Split(' ')[0]);source_assets=354}
+          $status=if($existed){'EXISTING_REVERIFIED'}else{'CREATED_AND_HASH_VERIFIED'}
+          $obj=@{status=$status;snapshot='d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4';pc_path=$target;bytes=(Get-Item -LiteralPath $target).Length;sha256=((Get-Content ($target+'.sha256') -Raw).Split(' ')[0]);source_assets=354}
           $obj | ConvertTo-Json | Set-Content -Path 'dependency-report/local-backup-verification.json' -Encoding UTF8
           Get-Content 'dependency-report/local-backup-verification.json'
       - name: Publish only lightweight evidence, never multi-GB copies to GitHub Actions

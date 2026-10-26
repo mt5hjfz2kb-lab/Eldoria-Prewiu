@@ -5,9 +5,38 @@ SHA="d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4"
 KEEP_REF="archive/eldoria-assets-before-cleanup-20261026"
 def git(repo,*args):
     return subprocess.run(["git","-C",str(repo),*args],check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE).stdout
+def verify_existing(out,paths,tree):
+    """Read every saved byte against Git identity; never modify an existing ZIP."""
+    with zipfile.ZipFile(out,"r") as z:
+        names=z.namelist()
+        if len(names)!=len(set(names)) or set(names)!=set(paths)|{"ELDORIA_ARCHIVE_MANIFEST.json"}:
+            raise RuntimeError("Existing archive has an unexpected path manifest")
+        manifest=json.loads(z.read("ELDORIA_ARCHIVE_MANIFEST.json"))
+        if manifest.get("source_sha")!=SHA or manifest.get("asset_count")!=354 or manifest.get("asset_bytes")!=1909173156:
+            raise RuntimeError("Existing archive source mismatch")
+        records={x["path"]:x for x in manifest["files"]}
+        if len(records)!=len(manifest["files"]) or set(records)!=set(paths):
+            raise RuntimeError("Existing archive file records mismatch")
+        for name in paths:
+            blob,size=tree[name];h=hashlib.sha1(("blob "+str(size)+"\0").encode());sha256=hashlib.sha256();n=0
+            with z.open(name) as f:
+                for chunk in iter(lambda:f.read(1024*1024),b""):
+                    n+=len(chunk);h.update(chunk);sha256.update(chunk)
+            rec=records[name]
+            if n!=size or h.hexdigest()!=blob or rec.get("git_blob_sha")!=blob or rec.get("bytes")!=size or rec.get("sha256")!=sha256.hexdigest():
+                raise RuntimeError("Existing archive content mismatch: "+name)
+    digest=hashlib.sha256()
+    with out.open("rb") as f:
+        for chunk in iter(lambda:f.read(1024*1024),b""):digest.update(chunk)
+    sidecar=out.with_suffix(out.suffix+".sha256")
+    if not sidecar.is_file() or sidecar.read_text(encoding="utf-8").split()[0]!=digest.hexdigest():
+        raise RuntimeError("Existing archive SHA256 sidecar mismatch or missing")
+    return digest.hexdigest()
+
 def main():
     a=argparse.ArgumentParser()
     a.add_argument("--repo",required=True);a.add_argument("--audit-jsonl",required=True);a.add_argument("--out",required=True)
+    a.add_argument("--verify-existing",action="store_true")
     o=a.parse_args();root=pathlib.Path(o.repo).resolve();out=pathlib.Path(o.out).resolve()
     if not (root/".git").exists():raise RuntimeError("Missing Git working tree")
     git(root,"cat-file","-e",SHA+"^{commit}")
@@ -34,7 +63,11 @@ def main():
             ancestor=ancestor.parent
     paths=sorted(wanted)
     out.parent.mkdir(parents=True,exist_ok=True)
-    if out.exists():raise RuntimeError("Refusing to overwrite existing archive: "+str(out))
+    if out.exists():
+        if not o.verify_existing:raise RuntimeError("Refusing to overwrite existing archive: "+str(out))
+        digest=verify_existing(out,paths,tree)
+        print("ELDORIA_ARCHIVE_REUSED_VERIFIED",json.dumps({"file":str(out),"bytes":out.stat().st_size,"sha256":digest,"unity_candidates":len(candidates),"included_files":len(paths)}),flush=True)
+        return
     free=shutil.disk_usage(out.parent).free
     if free < 4*1024**3:raise RuntimeError("At least 4 GiB of free disk space required; no output created")
     tmp=out.with_suffix(out.suffix+".partial")
