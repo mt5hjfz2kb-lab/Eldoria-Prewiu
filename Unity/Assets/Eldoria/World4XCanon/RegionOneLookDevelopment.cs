@@ -19,7 +19,7 @@ namespace Eldoria.World4XCanon
         readonly List<Light> interiorLights=new List<Light>();bool interiorLighting=true;
         MaterialPropertyBlock fineProperties;float fineFade=-1f;
         readonly Dictionary<Material,Material> cache=new Dictionary<Material,Material>();
-        Shader authoredShader;Vector3 origin;
+        Shader authoredShader;Vector3 origin;Texture basinPigment;
         public static void Install(GameObject artwork,Camera camera)
         {
             var scope=artwork.AddComponent<RegionOneLookDevelopment>();scope.worldCamera=camera;
@@ -51,10 +51,15 @@ namespace Eldoria.World4XCanon
         }
         public void ApplyMaterials(GameObject artwork)
         {
-            var basinSource=artwork.GetComponentsInChildren<MeshRenderer>(true).SelectMany(r=>r.sharedMaterials)
-                .First(m=>m.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal));
-            var basinPigment=BasePigment(basinSource);
-            if(!basinPigment)throw new InvalidOperationException("Actual authored basin pigment is missing");
+            // This service also finishes resource/creature subtrees. Resolve
+            // the shared landscape texture once, while installing geography.
+            if(!basinPigment){
+                var basinSource=artwork.GetComponentsInChildren<MeshRenderer>(true).SelectMany(r=>r.sharedMaterials)
+                    .FirstOrDefault(m=>m.name.StartsWith("Breach fractured basalt",StringComparison.Ordinal));
+                if(!basinSource)throw new InvalidOperationException("Shared basin pigment must be initialized from actual geography first");
+                basinPigment=BasePigment(basinSource);
+                if(!basinPigment)throw new InvalidOperationException("Actual authored basin pigment is missing");
+            }
             foreach(var renderer in artwork.GetComponentsInChildren<MeshRenderer>(true))
                 renderer.sharedMaterials=renderer.sharedMaterials.Select(source=>{
                     if(cache.TryGetValue(source,out var existing))return existing;

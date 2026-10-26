@@ -153,3 +153,8 @@ Causal inspection: at130m radius the exact original basin PNG and adjacent meado
 Decision/correction: use the exact same painted grass albedo at100% for all grass surfaces, with the same AF-derived neutral grain in world coordinates. Retain source images only for genuine earth/path classification; do not retain15% source-specific grain/value that still draws a rectangle. Original source images/UVs remain byte-identical; close richness comes from the actual painted bitmap and the original AF grain, common to both sectors.
 
 Across the geological boundary, bind the existing actual basin texture to every meadow material and sample its measured world UV within130m. Apply the same55–125m grass transition and wall-facet shading to BOTH material families. Preserve central mineral texture, physical depth, lights and original terrain. No new mesh, image generation, path, target or save mutation. Verify actual matched Unity images again before any closeout.
+
+
+## Shared service initialization repair, native40335650854
+
+The shared-field candidate compiled/imported but failed actual PlayMode before captures: ApplyMaterials is also called for existing resource/creature subtrees, which do not contain a geological material. The new unconditional source lookup raised Sequence contains no matching element. This is my initialization error, not a visual result or owner blocker. Resolve/cache the actual source basin texture during initial geography installation and reuse the same texture reference for later subtree finishing. Keep explicit missing-source failure for a genuinely incomplete initial geography. No test/tolerance relaxed and no source asset altered; rerun the complete native suite.
