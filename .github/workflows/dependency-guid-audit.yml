@@ -1,0 +1,54 @@
+name: '[AUDIT] Eldoria GUID dependency graph (read-only)'
+on:
+  push:
+    branches:
+      - audit/dependency-graph-20261026
+    paths:
+      - 'tools/dependency-audit/scan_guid_graph.py'
+      - '.github/workflows/dependency-guid-audit.yml'
+permissions:
+  contents: read
+jobs:
+  static-guid-graph:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Clone exact branch snapshot without giant 3D blobs
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone --depth 1 --filter=blob:none --no-checkout --branch "$GITHUB_REF_NAME" \
+            "https://github.com/$GITHUB_REPOSITORY.git" source
+          cd source
+          git sparse-checkout set --no-cone \
+            '/tools/dependency-audit/scan_guid_graph.py' \
+            '/Unity/ProjectSettings/EditorBuildSettings.asset' \
+            '/Unity/Assets/**/*.meta' \
+            '/Unity/Assets/**/*.prefab' \
+            '/Unity/Assets/**/*.mat' \
+            '/Unity/Assets/**/*.cs' \
+            '/Unity/Assets/**/*.shader' \
+            '/Unity/Assets/**/*.shadergraph' \
+            '/Unity/Assets/**/*.anim' \
+            '/Unity/Assets/**/*.controller' \
+            '/Unity/Assets/**/*.terrainlayer' \
+            '/Unity/Assets/**/*.lighting' \
+            '/Unity/Assets/**/*.uxml' \
+            '/Unity/Assets/**/*.uss' \
+            '/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity' \
+            '/.github/workflows/**/*.yml'
+          git checkout --detach "$GITHUB_SHA"
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+      - name: Compute GUID closure and conservative protection
+        run: |
+          set -euo pipefail
+          cd source
+          python3 tools/dependency-audit/scan_guid_graph.py
+      - name: Preserve audit artifact for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-guid-audit-${{ github.run_id }}
+          path: audit-output/
+          if-no-files-found: warn
+          retention-days: 7
