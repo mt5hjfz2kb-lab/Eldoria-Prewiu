@@ -84,6 +84,21 @@ for i,(x,y,z) in enumerate(before):
  coords[i,2]=z
  if abs(z-float(before[i,2]))>.001:changed.add(i)
 assert len(changed)>1000
+# The genuine Unity detail cameras expose land occluding the water ribbons.
+# Excavate the existing river footprint, not new rivers, preserving bridge decks.
+water_objects=[o for o in scene.objects if o.name.startswith(('BLD_RiverExtension_','BLD_AuthoredTributary_'))]
+water_surfaces=[(o,BVHTree.FromObject(o,bpy.context.evaluated_depsgraph_get())) for o in water_objects]
+all_bridge_vertices=set()
+for face in terrain.data.polygons:
+ if 'Bridge' in terrain.data.materials[face.material_index].name:all_bridge_vertices.update(face.vertices)
+river_bed_edits=0
+for i,(x,y,z) in enumerate(coords):
+ if protected[i] or i in all_bridge_vertices:continue
+ for water_ob,water_bvh in water_surfaces:
+  hit=water_bvh.ray_cast(Vector((float(x),float(y),300)),Vector((0,0,-1)))[0]
+  if hit is not None and coords[i,2]>hit.z-.22:
+   coords[i,2]=hit.z-.22;changed.add(i);river_bed_edits+=1
+   break
 # Short crossing between the measured real banks (-29 and -8), rather than
 # 34 metres of timber reaching all the way into the city. Keep the same axis.
 land_faces=[list(p.vertices) for p in terrain.data.polygons if 'Bridge' not in terrain.data.materials[p.material_index].name]
@@ -115,7 +130,8 @@ terrain.data.vertices.foreach_set('co',coords.ravel());terrain.data.update()
 # Preserve protected custom normals; update only the sculpted wall corners.
 for p in terrain.data.polygons:
  if any(i in changed for i in p.vertices):
-  for loop in p.loop_indices:normals[loop]=tuple(p.normal)
+  p.use_smooth=True
+  for loop in p.loop_indices:normals[loop]=tuple(terrain.data.vertices[terrain.data.loops[loop].vertex_index].normal)
 rock_slot=next(i for i,m in enumerate(terrain.data.materials) if 'Breach fractured basalt' in m.name)
 for face in terrain.data.polygons:
  if any(protected[i] for i in face.vertices):continue
@@ -160,22 +176,65 @@ for ob in scene.objects:
  if ob.name.startswith('BLD_BreachInteriorLightAnchor_'):ob.location.z=ground(ob.location.x,ob.location.y)+1.4
 # Only changed canyon samples are re-queried; all gameplay masks are exact bytes.
 for j,y in enumerate(np.linspace(-1800,1800,nz)):
- if not(-40<y<295):continue
  for i,x in enumerate(np.linspace(-910,910,nx)):
-  if (10<y<295 and -435<x<-105) or (-40<y<0 and -.7<x<7.3):heights[j,i]=ground(x,y)
+  if abs(x)<=96 and -78<=y<=270 and not(-40<y<0 and -.7<x<7.3):continue
+  hit=bvh.ray_cast(Vector((float(x),float(y),300)),Vector((0,0,-1)))[0]
+  if hit is not None:heights[j,i]=hit.z
 assert np.array_equal(coords[protected],before[protected])
 assert all(hashlib.sha256(bpy.data.images[n].packed_file.data).hexdigest()==h for n,h in original_images.items())
 with gzip.open(out/'RegionOneBlenderQueries.bytes','wb') as f:
  f.write(struct.pack('<iiiff',magic,nx,nz,1820,3600));f.write(heights.astype('<f4').tobytes());f.write(masks);f.write(struct.pack('<ii',0x32564c45,len(coords)));f.write(coords[:,[0,2,1]].astype('<f4').tobytes())
 layout['player_art_correction']={'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'unchanged_gameplay_masks':True,'protected_core_vertices':int(protected.sum())}
 (out/'production-region.json').write_text(json.dumps(layout,indent=2))
+# Paint the same fitted plates in the editable material, with a feathered soil
+# transition rather than a flat grey disk. UVs are metre-based across the wound.
+W=1024;H=1024
+X,Y=np.meshgrid(np.linspace(-430,-110,W),np.linspace(15,290,H))
+R=np.hypot(X+260,Y-150);A=np.arctan2(Y-150,X+260)
+first=np.full((H,W),1e6);second=first.copy();cell=np.zeros((H,W))
+for index,(sx,sy) in enumerate(seeds):
+ distance=np.hypot(X-sx,Y-sy);replace=distance<first
+ second=np.where(replace,first,np.minimum(second,distance));cell=np.where(replace,index,cell);first=np.minimum(first,distance)
+edge=second-first
+fracture=np.power(np.clip(1-edge/2.7,0,1),1.4)
+rock_weight=np.clip((112+8*np.sin(A*3)+6*np.sin(A*7)-R)/37,0,1)
+rock_weight=rock_weight*rock_weight*(3-2*rock_weight)
+core=np.exp(-(R/38)**2)
+soil=np.zeros((H,W,3))+np.array((.315,.36,.060))
+plates=np.zeros_like(soil)+np.array((.20,.18,.16))
+plates=plates*(1-core[:,:,None])+np.array((.12,.08,.18))*core[:,:,None]
+plates*=1+(.10*np.sin(cell*2.41))[:,:,None]
+plates=plates*(1-fracture[:,:,None]*.85)+np.array((.018,.008,.035))*fracture[:,:,None]*.85
+rgb=soil*(1-rock_weight[:,:,None])+plates*rock_weight[:,:,None]
+rgb*=1+(.018*np.sin(X*2.6+Y*1.7)*np.sin(Y*3.3))[:,:,None]
+pixels=np.ones((H,W,4),np.float32);pixels[:,:,:3]=rgb
+paint=bpy.data.images.new('Player directed fractured basin pigment',W,H,alpha=True)
+paint.pixels.foreach_set(pixels.ravel());paint.filepath_raw=str(out/'FracturedBasinPigment.png');paint.file_format='PNG';paint.save()
+packed=bpy.data.images.load(paint.filepath_raw,check_existing=False);packed.pack()
+rock_material=terrain.data.materials[rock_slot];bsdf=next(n for n in rock_material.node_tree.nodes if n.type=='BSDF_PRINCIPLED')
+texture=rock_material.node_tree.nodes.new('ShaderNodeTexImage');texture.image=packed
+rock_material.node_tree.links.new(texture.outputs['Color'],bsdf.inputs['Base Color']);bsdf.inputs['Base Color'].default_value=(1,1,1,1);rock_material.diffuse_color=(1,1,1,1)
+for ob in [terrain]+[bpy.data.objects[n] for n in overlay_counts if n!='BLD_BreachMineralHeart']:
+ if not ob.data.uv_layers.active:ob.data.uv_layers.new(name='Ground geological pigment')
+ uv=ob.data.uv_layers.active
+ for face in ob.data.polygons:
+  if ob.data.materials[face.material_index]!=rock_material:continue
+  for loop in face.loop_indices:
+   q=ob.data.vertices[ob.data.loops[loop].vertex_index].co;uv.data[loop].uv=((q.x+430)/320,(q.y-15)/275)
+# One stronger mineral heart on the actual cut, with its two quieter side vents.
+heart=bpy.data.objects['BLD_BreachMineralHeart']
+for vertex in heart.data.vertices:
+ if math.hypot(vertex.co.x+262,vertex.co.y-151)<3:
+  vertex.co.x=-262+(vertex.co.x+262)*2.2;vertex.co.y=151+(vertex.co.y-151)*2.2
+  vertex.co.z=ground(vertex.co.x,vertex.co.y)+.002
+heart.data.update()
 bpy.ops.object.select_all(action='DESELECT')
 for ob in scene.objects:
  if ob.name in export_names and ob.type in {'MESH','EMPTY'}:ob.select_set(True)
 bpy.ops.wm.save_as_mainfile(filepath=str(out/'Eldoria_Region1_Production.blend'),compress=True)
 bpy.ops.export_scene.gltf(filepath=str(out/'RegionOneBlenderWorld.glb'),export_format='GLB',use_selection=True)
-report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
+report={'source_sha256':hashlib.sha256(source.read_bytes()).hexdigest(),'terrain_vertices_after':len(coords),'bridge_length_before':34,'bridge_length_after':21,'actual_stepped_wall_vertices':len(changed),'protected_vertices_unchanged':int(protected.sum()),'original_packed_images_unchanged':len(original_images),'overlay_vertices_projected':overlay_counts,'gameplay_masks_sha256':hashlib.sha256(masks).hexdigest(),'new_gameplay_targets':0,'new_colliders':0,'existing_rooted_scenery_fitted':rooted_adjustments,'river_bed_vertices_corrected':river_bed_edits,'art_approved':False,'files':{n:hashlib.sha256((out/n).read_bytes()).hexdigest() for n in ['Eldoria_Region1_Production.blend','RegionOneBlenderWorld.glb','RegionOneBlenderQueries.bytes','production-region.json']}}
 (out/'macro-art-operations.json').write_text(json.dumps(report,indent=2))
-bpy.app.driver_namespace['interactive_snapshot']('player-art-fractured-basin-v3')
+bpy.app.driver_namespace['interactive_snapshot']('player-art-connected-land-v4')
 (out/'stop.request').write_text('Saved physical wall correction; actual Unity review required.')
 print('PLAYER_ART_SCULPT_COMPLETE',json.dumps(report))

@@ -94,10 +94,9 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      // Angular variation follows the newly cut facets; no sinusoidal contour lines.
      float2 facet=floor((i.world.xz-_RegionOrigin.xz)/3.7);
      float fleck=frac(sin(dot(facet,float2(12.9898,78.233)))*43758.5453);
-     c.rgb*=lerp(half3(.40,.34,.43),half3(.89,.85,.83),wall);
+     c.rgb*=lerp(.84,1.02,wall);
      c.rgb*=lerp(.91,1.08,fleck);
-     float wound=1-smoothstep(24,116,distance(i.world.xz-_RegionOrigin.xz,float2(-260,150)));
-     c.rgb=lerp(c.rgb,c.rgb*half3(.77,.62,1.04),wound*.75);
+
 
  }
  half3 originalPigment=c.rgb;
