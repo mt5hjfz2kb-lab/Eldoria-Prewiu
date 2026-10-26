@@ -53,7 +53,10 @@
         "pipeline/android-updater-release-request.json",
         "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneProductionLod.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+        "tools/world4x-balance/**",
+        "docs/world4x-multiplayer/**",
+        "docs/ui-v3/ORDERED_COMPLETION_20261026.md"
       ],
       "resources": [],
       "art_production_routing": "required",
