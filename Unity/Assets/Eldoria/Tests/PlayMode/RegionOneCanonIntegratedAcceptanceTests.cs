@@ -701,6 +701,13 @@ namespace Eldoria.Tests
             var authoredCanopies=geo.GetComponentsInChildren<MeshFilter>(true)
                 .Where(f=>f.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)).ToArray();
             Assert.That(authoredCanopies.Length,Is.GreaterThanOrEqualTo(20),"Blender forest mass export must survive import.");
+            var visibleCrownWidths=geo.GetComponentsInChildren<MeshRenderer>(true)
+                .Where(r=>r.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)||r.name.StartsWith("Pilot_Pine",StringComparison.Ordinal))
+                .Select(r=>Mathf.Max(r.bounds.size.x,r.bounds.size.z)).ToArray();
+            Assert.That(visibleCrownWidths.Length,Is.GreaterThan(20));
+            Assert.That(visibleCrownWidths.Max(),Is.GreaterThan(.01f));
+            Assert.That(visibleCrownWidths.Max(),Is.LessThan(10.2f),
+                "The 20.4m near gather nodes must remain wider than two close tree crowns");
             var retainedTreeSources=world.GetComponentsInChildren<MeshRenderer>(true)
                 .Where(r=>r.name.StartsWith("Forest retained Valoria pine",StringComparison.Ordinal) ||
                     r.name.StartsWith("Zone1 retained pine ",StringComparison.Ordinal) ||

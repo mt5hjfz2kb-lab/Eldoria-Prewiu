@@ -14,6 +14,15 @@ namespace Eldoria.World4XCanon
             {
                 string farName=near.name.StartsWith("BLD_ForestMass_",StringComparison.Ordinal)?near.name.Replace("BLD_ForestMass_","BLD_ForestFar_"):"Far_"+near.name;
                 if(!byName.TryGetValue(farName,out var far))continue;
+                // The real gather node is 20.4m wide. Close crowns must frame
+                // it instead of occupying the same silhouette area.
+                var closeBounds=near.bounds;float closeFootprint=Mathf.Max(closeBounds.size.x,closeBounds.size.z);
+                float closeLimit=RegionOneReferenceNodes.BastionOneVisualWidth*.38f;
+                if(closeFootprint>closeLimit){
+                    float root=closeBounds.min.y;
+                    near.transform.localScale*=closeLimit/closeFootprint;
+                    near.transform.position+=Vector3.up*(root-near.bounds.min.y);
+                }
                 var group=new GameObject("LOD "+near.name);group.transform.SetParent(artwork.transform,false);
                 // Reparent with world transforms preserved, including glTF handedness.
                 near.transform.SetParent(group.transform,true);far.transform.SetParent(group.transform,true);
@@ -73,10 +82,10 @@ namespace Eldoria.World4XCanon
                     far.transform.position+=Vector3.up*(near.bounds.min.y-far.bounds.min.y);
                 var lod=group.AddComponent<LODGroup>();lod.fadeMode=LODFadeMode.CrossFade;lod.animateCrossFading=false;
                 lod.SetLODs(new[]{new LOD(.065f,new Renderer[]{near}),new LOD(.0001f,new Renderer[]{far})});lod.RecalculateBounds();
-                // A spatial crossfade reproduces AG's 37–47 band, including small
-                // retained crowns. It is deterministic during actual Camera.Render.
-                float end=Mathf.Clamp(lod.size/(2*47f),.0002f,.9f);
-                float begin=Mathf.Clamp(lod.size/(2*37f),end,.95f);
+                // Both landscape36 and portrait64 are genuine close cameras. Keep
+                // close geometry through80, crossfade to strategic crowns by110.
+                float end=Mathf.Clamp(lod.size/(2*110f),.0002f,.9f);
+                float begin=Mathf.Clamp(lod.size/(2*80f),end,.95f);
                 var close=new LOD(end,new Renderer[]{near}){fadeTransitionWidth=(begin-end)/(1-end)};
                 if(retainedFarVisible)lod.SetLODs(new[]{close,new LOD(.0001f,new Renderer[]{far})});
                 else

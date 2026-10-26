@@ -115,3 +115,8 @@ The same coherent style pass reinforces actual geological vein pixels using thei
 
 
 Blender40319616586 inspected: near-forest, near-town and regional previews show a real mixed rounded/pine silhouette; retain for Unity. Actual derivative reuses2482 existing anchors,274near vertices/440faces and60far vertices/88faces, original donor meshes preserved. No terrain/UV/mask/core-image edits beyond the already verified source direction. Native source/test diagnostic text updated to describe two shared source-authored families; all assertions and tolerances remain identical.
+
+
+## Close hierarchy after actual Unity40320274388
+
+Mixed crowns and violet veins are real improvements in the regional image, all62/26/44 passed. Detailed wood/boar portrait images expose a remaining hierarchy fault: some crowns exceed the20.4m gather-node footprint. Existing LOD transition37-47 also selects strategic forest geometry before the portrait close zoom64. Correct the relevant presentation layer rather than enlarge nodes again: cap close canopy width at38% of the24m city reference (9.12m), preserve each base and source mesh, and crossfade close-to-far at80-110 so BOTH close cameras show the close family. Retain12-16m strategic crowns and all source anchors/masks. An independent renderer-bounds assertion now requires gather nodes to exceed twice the maximum near-crown width; no previous threshold or test removed.
