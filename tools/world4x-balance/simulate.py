@@ -10,6 +10,34 @@ def economy():
     values = {k: int(v) for k,v in re.findall(r'public const int (\w+) = (\d+);', block)}
     return values, hashlib.sha256(text.encode()).hexdigest()
 
+def progression_ledger(values):
+    """Economic feasibility of the existing winning I-II path, not combat QA."""
+    source=(ROOT/'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs').read_text()
+    grants={}
+    for name,arguments in re.findall(r'Grant\("([^"]+)",([^;]+)\);',source):
+        grants[name]={k:int(v) for k,v in re.findall(r'(wood|stone):\s*(\d+)',arguments)}
+    wallet={'wood':values['InitialWood'],'stone':values['InitialStone']}; ledger=[]
+    def step(name,wood=0,stone=0,reward=None):
+        wallet['wood']+=wood;wallet['stone']+=stone
+        if min(wallet.values())<0:raise AssertionError('Unaffordable progression: '+name)
+        if reward:
+            for k,v in grants[reward].items():wallet[k]+=v
+        ledger.append({'step':name,**wallet})
+    # Combat payouts are independently asserted against source by unit tests.
+    step('build_sawmill',-values['SawmillWoodCost'],reward='c1-sawmill')
+    step('gather_wood',math.ceil(values['Chapter1GatherWood']/values['ForestLoad'])*values['ForestLoad'],reward='c1-wood')
+    step('gather_stone',stone=math.ceil(values['Chapter1GatherStone']/values['QuarryLoad'])*values['QuarryLoad'],reward='c1-stone')
+    step('win_scout_and_return',80,70,reward='c1-route')
+    step('bastion_two',-values['Bastion2WoodCost'],-values['Bastion2StoneCost'],reward='chapter-1')
+    step('barracks',-values['BarracksWoodCost'],-values['BarracksStoneCost'],reward='c2-barracks')
+    web=PROFILE.read_text().split('public static class WebContract')[1]
+    costs={k:int(v) for k,v in re.findall(r'public const int (Recruit\w+PerArcher) = (\d+);',web)}
+    count=values['Chapter2TrainArchers']
+    step('train_twenty',-count*costs['RecruitWoodPerArcher'],-count*costs['RecruitStonePerArcher'],reward='c2-train')
+    step('win_spawnling_and_return',120,100,reward='c2-spawnling')
+    return {'assumption':'Canonical story encounters won; full state machine and combat remain Unity-tested',
+            'source_sha256':hashlib.sha256(source.encode()).hexdigest(),'steps':ledger}
+
 def distances(cells, start):
     if start not in cells: return {}
     d = {start: 0}; q = collections.deque([start])
@@ -64,7 +92,19 @@ def measure(cells,safe,starts,resources,enemies,values,budget):
     matches={}; nearest={}; blocked=[]
     for kind,nodes in resources.items():
         options=[sorted((n for n,p in enumerate(nodes) if d.get(p,math.inf)<=budget),key=lambda n:d[nodes[n]]) for d in ds]
-        matches[kind]=assignment(options,[stocks[kind]//required[kind]]*len(nodes))
+        capacity=[stocks[kind]//required[kind]]*len(nodes)
+        matches[kind]=assignment(options,capacity)
+        # Once supply can cover everyone, minimize the largest one-way route.
+        # This fixes a real weakness of capacity-only matching: reassignment can
+        # push an earlier player to a distant node despite a local alternative.
+        if len(matches[kind])==len(starts):
+            low,high=0,budget
+            while low<high:
+                middle=(low+high)//2
+                limited=[[n for n in opts if ds[i][nodes[n]]<=middle] for i,opts in enumerate(options)]
+                if len(assignment(limited,capacity))==len(starts):high=middle
+                else:low=middle+1
+            matches[kind]=assignment([[n for n in opts if ds[i][nodes[n]]<=low] for i,opts in enumerate(options)],capacity)
         nearest[kind]=[min((d.get(p,math.inf) for p in nodes),default=math.inf) for d in ds]
     # A route to an appropriate enemy and an accessible expansion footprint are
     # separately checked; enemy positions here stand for a level-one family.
@@ -133,9 +173,9 @@ def run(seeds):
             'future_seconds_max_at_4_8_16mps':[max(routes)*8/s+trips*values['GatherSeconds'] for s in (4,8,16)] if routes else [],
             'unreachable_basic_resource_positions':row['unreachable_basic_resource_positions']})
     return {'schema':1,'kind':'HYPOTHETICAL_OFFLINE_DESIGN_NOT_REGION1_CERTIFICATION','profile_sha256':sha,
-            'profile':values,'assumptions':{'grid_cell_m':8,'future_speed_m_s':[4,8,16],'path_budgets_edges':[8,16],
+            'profile':values,'winning_progression_economic_ledger':progression_ledger(values),'assumptions':{'grid_cell_m':8,'future_speed_m_s':[4,8,16],'path_budgets_edges':[8,16],
             'current_live_resource_loop_seconds':trips*(2*values['TravelSeconds']+values['GatherSeconds']),
-            'not_modelled':['PvP blockades','server concurrency','actual Unity slopes/bridges','full chapter reward ledger','measured mobile streaming']},
+            'not_modelled':['PvP blockades','server concurrency','actual Unity slopes/bridges','combat outcomes and full state-machine timing','measured mobile streaming']},
             'summary':summary,'cases':compact}
 
 if __name__=='__main__':

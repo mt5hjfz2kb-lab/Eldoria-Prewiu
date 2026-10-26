@@ -48,8 +48,10 @@ siete. Son capacidades iniciales, no una predicción de producción sostenible.
 El capítulo completo añade aserradero 80 madera; Bastión II 450/300; cuartel
 180/120; 20 arqueros 400/240. Hay cartera inicial y recompensas de objetivos:
 no sumar costes brutos como si esas entradas no existieran. El simulador adjunto
-certifica solo acceso/capacidad del primer tramo de recolección. Antes de economía
-online, reproducir todo el ledger I–II, agotamiento, reposición, colas y concurrencia.
+comprueba acceso/capacidad del primer tramo y reproduce el balance económico de
+la ruta ganadora I–II: termina con 1.030 madera y 995 piedra, coincidiendo con la
+evidencia nativa existente. No simula resultados de combate ni toda la máquina de
+estados. Antes de economía online, añadir agotamiento, reposición, colas y concurrencia.
 
 Actualmente LocalGateway usa 2 segundos por trayecto, independientemente de la
 longitud de la ruta. El ciclo de las tres expediciones suma 27 segundos de fases

@@ -1,5 +1,5 @@
 import unittest
-from simulate import distances, assignment, economy, ROOT, world, repaired, measure
+from simulate import distances, assignment, economy, progression_ledger, ROOT, world, repaired, measure
 
 class BalanceTests(unittest.TestCase):
     def test_river_detour_is_not_euclidean(self):
@@ -18,5 +18,13 @@ class BalanceTests(unittest.TestCase):
         v,_=economy();c,s,sp,r,e=world(7,24,True);original=set(c);rr,ee=repaired(c,s,sp,r,e)
         m=measure(c,s,sp,rr,ee,v,8);self.assertEqual(c,original);self.assertEqual(m['admitted'],24)
         self.assertEqual(len(set(m['stock_reservations']['wood'].values())),24)
+        self.assertLessEqual(max(m['round_trip_grid_edges']),12)
+    def test_economic_path_matches_native_final_wallet(self):
+        v,_=economy();ledger=progression_ledger(v)
+        self.assertEqual(ledger['steps'][-1]['wood'],1030)
+        self.assertEqual(ledger['steps'][-1]['stone'],995)
+        source=(ROOT/'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs').read_text()
+        self.assertIn('rewardWood = 80; rewardStone = 70;',source)
+        self.assertIn('rewardWood = 120; rewardStone = 100;',source)
 
 if __name__=='__main__':unittest.main()

@@ -22,21 +22,26 @@ simulación de combate. Cada aparición requiere recurso, enemigo accesible y es
 | Política | Evaluaciones | Admitidas | Rechazadas | Ruta total mediana / p95 / máxima (aristas) |
 | --- | ---: | ---: | ---: | --- |
 | Distribución sin garantía local | 6.912 | 2.404 | 4.508 | 44 / 80 / 96 |
-| Provisión local de candidatos | 6.912 | 6.912 | 0 | 12 / 12 / 44 |
+| Provisión local y asignación con menor recorrido máximo | 6.912 | 6.912 | 0 | 12 / 12 / 12 |
 
 La segunda política añade oportunidades cercanas sobre suelo seguro y sin ocupar
 ciudades ni otros sitios. Mantiene los obstáculos y puentes cerrados. Es una prueba
 de mecanismo, NO una instrucción para multiplicar esos nodos en Región 1 ni una
-afirmación de igualdad perfecta. El máximo residual 44 revela que asignación de
-capacidad y cercanía no bastan para minimizar el peor recorrido. La admisión evita
-escasez; la siguiente optimización de producción debe minimizar el tiempo máximo
-y comprobar equidad entre cohortes, no limitarse a una coincidencia de porcentajes.
+afirmación de igualdad perfecta. Una primera versión solo asignaba capacidad y
+dejó un máximo de 44 aristas: la reasignación podía alejar a un jugador pese a
+existir oferta local. Se corrigió buscando la menor distancia máxima que permite
+asignar stock a todos. La nueva ejecución reduce ese máximo a 12. Aún deben
+comprobarse agotamiento y equidad entre cohortes, no solo una oleada inicial.
 
 Las unidades de recorrido son aristas de 8 m hipotéticos; cada caso informa el
 tiempo futuro máximo bajo 4/8/16 m/s. Son escenarios, no velocidades implementadas.
 El juego actual usa viaje fijo, por lo que no se presenta el resultado como latencia
 real de Eldoria. Hay datos concretos de economía (600/500 objetivos; 360/700 cargas;
-1250/5200 capacidad), pero no se simulan todavía todas las recompensas ni Bastión II.
+1250/5200 capacidad). El ledger adicional aplica costes y recompensas de la ruta
+ganadora I–II, sin saldo negativo en ningún paso, y termina en 1.030 madera y
+995 piedra, el mismo balance de la evidencia nativa. Las seis pruebas del simulador
+incluyen esa comprobación y los pagos de combate de la fuente. No se simulan los
+resultados de combate ni todas las transiciones temporales del motor.
 
 **Desigualdades detectadas:** stock de madera comprometido para demasiadas ciudades,
 recursos al otro lado de un río sin ruta, candidatos cuyo enemigo accesible requiere
