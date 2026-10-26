@@ -7,7 +7,9 @@ ACTIVE={".cs",".py",".js",".mjs",".ts",".ps1",".sh",".yml",".yaml",".shader",".h
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--repo",required=True);p.add_argument("--audit-jsonl",required=True);p.add_argument("--out",required=True)
+    p.add_argument("--scan-ref",default="HEAD")
     a=p.parse_args();root=pathlib.Path(a.repo)
+    scan_commit=subprocess.run(["git","-C",str(root),"rev-parse",a.scan_ref+"^{commit}"],stdout=subprocess.PIPE,check=True).stdout.decode().strip()
     records=[json.loads(l) for l in open(a.audit_jsonl,encoding="utf-8") if l.strip()]
     records=[r for r in records if r.get("category")=="REVIEW_NO_UNITY_REFERENCE"]
     guid_to_path={r["guid"].lower():r["path"] for r in records if r.get("guid")}
@@ -20,22 +22,36 @@ def main():
     look=re.compile(r"(?i)\b[0-9a-f]{32}\b|Generated-\d+|GeneratedEntryV\d+|ArtVariants/[A-Za-z0-9_-]+")
     candidates={r["path"] for r in records}
     top_dirs=(".github/","pipeline/","tools/","scripts/","docs/","Unity/Assets/")
-    gitlist=subprocess.run(["git","-C",str(root),"ls-files","-z"],stdout=subprocess.PIPE,check=True).stdout
-    checked=0;skipped=0;size=0;hits=[];target_flags=collections.defaultdict(set);dynamic=[]
-    for raw in gitlist.split(b"\0"):
+    # Read immutable Git blobs, not a sparse/reused working directory. Missing
+    # checkout files must not silently turn a reference scan into an empty result.
+    tree=subprocess.run(["git","-C",str(root),"ls-tree","-r","-z",scan_commit],stdout=subprocess.PIPE,check=True).stdout
+    entries=[]
+    for raw in tree.split(b"\0"):
         if not raw:continue
-        name=raw.decode("utf-8","replace");suffix=pathlib.PurePosixPath(name).suffix.lower()
-        if not name.startswith(top_dirs) or suffix not in EXT:continue
+        header,name=raw.split(b"\t",1);mode,kind,blob=header.decode().split()
+        name=name.decode("utf-8");suffix=pathlib.PurePosixPath(name).suffix.lower()
+        if kind!="blob" or not name.startswith(top_dirs) or suffix not in EXT:continue
         if name.startswith("tools/dependency-audit/"):continue
-        f=root/name
-        try:
-            st=f.stat()
-            if st.st_size>6*1024*1024:
-                skipped+=1;continue
-            text=f.read_text(encoding="utf-8",errors="ignore")
-        except (OSError,UnicodeError):
+        entries.append((name,suffix,blob))
+    checked=0;skipped=0;size=0;hits=[];target_flags=collections.defaultdict(set);dynamic=[]
+    proc=subprocess.Popen(["git","-C",str(root),"cat-file","--batch"],stdin=subprocess.PIPE,stdout=subprocess.PIPE)
+    try:
+      for name,suffix,blob in entries:
+        proc.stdin.write((blob+"\n").encode());proc.stdin.flush()
+        header=proc.stdout.readline().decode().strip().split()
+        if len(header)!=3 or header[0]!=blob or header[1]!="blob":
+            raise RuntimeError("Cannot verify tracked text blob: "+name)
+        length=int(header[2]);remaining=length;parts=[]
+        while remaining:
+            chunk=proc.stdout.read(min(remaining,1024*1024))
+            if not chunk:raise RuntimeError("Truncated Git blob: "+name)
+            if length<=6*1024*1024:parts.append(chunk)
+            remaining-=len(chunk)
+        if proc.stdout.read(1)!=b"\n":raise RuntimeError("Invalid Git batch framing")
+        if length>6*1024*1024:
             skipped+=1;continue
-        checked+=1;size+=st.st_size
+        text=b"".join(parts).decode("utf-8",errors="ignore")
+        checked+=1;size+=length
         matched=set()
         for m in look.finditer(text):
             token=m.group()
@@ -52,16 +68,19 @@ def main():
             target_flags[target].add(origin)
             if len(hits)<1500:
                 hits.append({"asset":target,"reference_kind":how,"source":name,"origin":origin})
+    finally:
+        proc.stdin.close();proc.stdout.close()
+        if proc.wait()!=0:raise RuntimeError("Git reference scan process failed")
     protected=set(x for x,flags in target_flags.items() if "operational_code" in flags or "configuration_or_serialized" in flags)
     docs=set(x for x,flags in target_flags.items() if "documentation" in flags)
-    report={"schema":1,"source_unity_commit":SOURCE,"candidate_count":len(records),
+    report={"schema":1,"source_unity_commit":SOURCE,"text_scan_commit":scan_commit,"text_source":"immutable Git blobs, independent of sparse checkout","candidate_count":len(records),
             "scanned_text_files":checked,"scanned_text_bytes":size,
             "oversized_or_unreadable_skipped":skipped,
             "assets_mentioned_in_code_or_config":len(protected),
             "assets_mentioned_in_docs":len(docs),
             "assets_without_literal_text_matches":len(candidates-set(target_flags)),
             "dynamic_generator_files":dynamic[:100],
-            "warning":"Heuristic supplement, NOT a complete inverse dependency proof. Unity GUID importer result, source-version matching, missing/larger files and historical provenance must still be respected.",
+            "warning":"Heuristic supplement, NOT a complete inverse dependency proof. Unity GUID importer result, source-version matching, larger files and historical provenance must still be respected.",
             "top_hits":hits}
     out=pathlib.Path(a.out);out.parent.mkdir(parents=True,exist_ok=True)
     out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")

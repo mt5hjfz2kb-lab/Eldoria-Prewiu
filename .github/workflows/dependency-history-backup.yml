@@ -91,10 +91,12 @@ jobs:
           "ELDORIA_ARCHIVE_PYTHON=$python" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
           git fetch --no-tags origin d9d4e1f9ffb9f7ab29e1c963a80eb08321c35bb4
           if($LASTEXITCODE -ne 0){throw 'Pinned historical source unavailable'}
+          git fetch --no-tags origin 725bccd0c2f3882dfa51aecc1576feae98ee96ca
+          if($LASTEXITCODE -ne 0){throw 'Pinned current reference-scan source unavailable'}
           & $python -m compileall -q tools/dependency-audit
           if ($LASTEXITCODE -ne 0) {throw 'Python audit source invalid'}
           New-Item -ItemType Directory -Force -Path dependency-report | Out-Null
-          & $python tools/dependency-audit/check_external_references.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out dependency-report/external-references.json
+          & $python tools/dependency-audit/check_external_references.py --repo . --audit-jsonl dependency-input/dependency-asset-records.jsonl --out dependency-report/external-references.json --scan-ref 725bccd0c2f3882dfa51aecc1576feae98ee96ca
           if ($LASTEXITCODE -ne 0) {throw 'External reference scan failed'}
           if (-not (Test-Path 'dependency-report/external-references.json')) {throw 'External reference inventory missing'}
       - name: Create a verified 354-asset historical ZIP on owner's PC
