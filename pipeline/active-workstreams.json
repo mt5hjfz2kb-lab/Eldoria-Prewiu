@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T17:01:26.493Z",
+  "updated_at": "2026-10-26T17:13:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -954,14 +954,14 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 14,
-      "write_scope_released": true,
+      "owner": "chatgpt-eldoria-mobile-world-ui-20261026",
+      "ownership_state": "claimed",
+      "ownership_revision": 15,
+      "write_scope_released": false,
       "status": "active",
-      "claimed_at": "2026-10-22",
-      "base_main_sha": "4c871bcebaa40030bac745852438d249d06ba8ad",
-      "branch": "feature/ui-v3-management-completion-20261021",
+      "claimed_at": "2026-10-26T17:13:00Z",
+      "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
+      "branch": "fix/mobile-world-ui-continuity-20261026",
       "pr": 90,
       "owner_instruction": "Explicit owner direction to continue full-screen V3 barracks/training and marches to real Unity QA and main release; resume same canonical workstream.",
       "scope": [
@@ -981,7 +981,13 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneCanonicalLandscape.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
+        "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md"
       ],
       "resources": [],
       "dependencies": [
@@ -1023,7 +1029,7 @@
           "status": "SUCCESS"
         }
       },
-      "next": "PAUSED BY OWNER. Resume only on a later explicit owner instruction, after World4X #100 production has released Windows and coordinated final integration. Read docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md. Do not edit UI scope, auto-merge PR #99, or dispatch dedicated UI native tests during pause.",
+      "next": "Fix start on near view, camera continuity across scales and visual node anchors; resume existing approved HUD V3 from merged PR90; test in landscape/portrait and native Android after source fixes before merging",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1072,10 +1078,15 @@
           "revision": 13,
           "released_at": "2026-10-24T08:39:55.146Z",
           "reason": "Explicit owner instruction 2026-10-24: park V3 UI and associated Valoria/Issue95 visual work until World4X PR #100 is concluded. Preserve all files, UI test results, integration commits and independent draft PR #99. No cancellation/merge."
+        },
+        {
+          "owner": "available",
+          "revision": 14,
+          "reason": "Owner-authorized resumption after World4X PR100 integrated and Android mobile report, 2026-10-26"
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "OWNER_PAUSED_WAIT_FOR_WORLD4X_PR100",
+      "phase": "MOBILE_PLAYER_FEEDBACK_FIX_NEAR_ENTRY_NODE_CAMERA_CONTINUITY_AND_UI_V3",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -1107,7 +1118,8 @@
         "hosted_browser_verified": false
       },
       "paused_on": "2026-10-24",
-      "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md"
+      "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
+      "handoff_authorization": "Owner 2026-10-26: reanudar la interfaz after World4X integration, fix three-zoom node stability and default near zoom, improve graphical treatment; 0 €; no main merge until verified."
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
