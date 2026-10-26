@@ -789,6 +789,56 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator EachMobileWorldEntryResetsToNearViewWithoutRelocatingNodesOrSaves()
+        {
+            MonoBehaviour host=null;GameObject world=null;Component navigation=null;Camera camera=null;
+            yield return Boot((a,b,c,d)=>{host=a;world=b;navigation=c;camera=d;});
+            var adapter=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Single(x=>x&&x.GetType().Name=="RegionOneCanonicalLandscape");
+            bool opened=(bool)Call(host,"TrySetWorld",true);
+            if(!opened)
+            {
+                var offer=Member(Member(Call(host,"Read","sawmill",false),"Building"),"Action");
+                Assert.That(offer,Is.Not.Null);
+                Call(host,"Submit",offer);
+                var city=Member(host,"City");
+                Call(Member(city,"Clock"),"Step",Eldoria.Domain.SliceRules.SawmillBuildSeconds+1);
+                Call(Member(city,"Gateway"),"Advance");
+                yield return null;
+                opened=(bool)Call(host,"TrySetWorld",true);
+            }
+            Assert.That(opened,Is.True,"The real player gate must be satisfied.");
+            var node=Call(host,"FindTarget","forest-valoria") as Component;
+            Assert.That(node,Is.Not.Null);
+            var position=node.transform.position;
+            var gateway=(Eldoria.Application.ICommandGateway)Member(Member(host,"City"),"Gateway");
+            string saved=JsonUtility.ToJson(gateway.Snapshot());
+            float aspect=camera.aspect;
+            try
+            {
+                foreach(float screenAspect in new[]{16f/9f,390f/844f})
+                {
+                    camera.aspect=screenAspect;Call(adapter,"RefreshForCapture");
+                    Call(navigation,"SetZoomLevel",0,true);Call(adapter,"RefreshForCapture");
+                    Assert.That(camera.orthographicSize,Is.GreaterThan((float)Member(navigation,"localZoom")),
+                        "The test must leave a truly distant zoom before reentering.");
+                    Assert.That((bool)Call(host,"TrySetWorld",false),Is.True);
+                    Assert.That((bool)Call(host,"TrySetWorld",true),Is.True);
+                    Call(adapter,"RefreshForCapture");
+                    Assert.That(camera.orthographicSize,Is.EqualTo((float)Member(navigation,"localZoom")).Within(.1f),
+                        "Every mobile world entry must start in close playable view.");
+                    Assert.That(Vector3.Distance((Vector3)Member(navigation,"target"),(Vector3)Member(host,"WorldHome")),Is.LessThan(40f),
+                        "World entry must focus Valoria, not retain the previous panoramic centre.");
+                    Assert.That(node.transform.position,Is.EqualTo(position),
+                        "Close-view reentry may not relocate a gameplay resource.");
+                }
+                Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(saved),
+                    "Zooming, leaving, and reentering must preserve the saved game.");
+            }
+            finally { camera.aspect=aspect;Call(adapter,"RefreshForCapture"); }
+        }
+
+        [UnityTest]
         public IEnumerator RealWoodNodeRemainsReachableWithBothMobileCameraAspects()
         {
             MonoBehaviour host = null; GameObject world = null;
