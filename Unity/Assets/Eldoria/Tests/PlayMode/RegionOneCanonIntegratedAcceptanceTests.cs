@@ -841,6 +841,34 @@ namespace Eldoria.Tests
                     Assert.That(node.transform.position,Is.EqualTo(position),
                         "Close-view reentry may not relocate a gameplay resource.");
                 }
+                // Real near 3D wood/stone visuals and their regional LODs
+                // must share a fixed logical map coordinate, not two model
+                // pivot positions swapped at the threshold.
+                Call(navigation,"SetZoomLevel",2,true);Call(adapter,"RefreshForCapture");
+                foreach(var id in new[]{"forest-valoria","quarry-valoria"})
+                {
+                    var spot=Call(host,"FindTarget",id) as Component;
+                    var nearRoot=world.GetComponentsInChildren<Transform>(true)
+                        .FirstOrDefault(t=>t.name=="Production resource visual "+id);
+                    var regionalRoot=world.GetComponentsInChildren<Transform>(true)
+                        .FirstOrDefault(t=>t.name=="Production resource impostor "+id);
+                    Assert.That(nearRoot,Is.Not.Null,"Missing original near resource "+id);
+                    Assert.That(regionalRoot,Is.Not.Null,"Missing regional resource "+id);
+                    var renders=nearRoot.GetComponentsInChildren<Renderer>(true);
+                    Assert.That(renders.Length,Is.GreaterThan(0),"Original approved resource mesh missing");
+                    var bounds=renders[0].bounds;
+                    foreach(var render in renders.Skip(1))bounds.Encapsulate(render.bounds);
+                    Assert.That(Vector2.Distance(
+                        new Vector2(bounds.center.x,bounds.center.z),
+                        new Vector2(spot.transform.position.x,spot.transform.position.z)),Is.LessThan(.25f),
+                        "Near resource visual is detached from its saved world site: "+id);
+                    Call(navigation,"SetZoomLevel",1,true);Call(adapter,"RefreshForCapture");
+                    Assert.That(Vector2.Distance(
+                        new Vector2(regionalRoot.position.x,regionalRoot.position.z),
+                        new Vector2(spot.transform.position.x,spot.transform.position.z)),Is.LessThan(.25f),
+                        "Regional resource billboard is detached from the same saved site: "+id);
+                    Call(navigation,"SetZoomLevel",2,true);Call(adapter,"RefreshForCapture");
+                }
                 Assert.That(JsonUtility.ToJson(gateway.Snapshot()),Is.EqualTo(saved),
                     "Zooming, leaving, and reentering must preserve the saved game.");
             }
