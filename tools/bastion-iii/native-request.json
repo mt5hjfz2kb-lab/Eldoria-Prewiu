@@ -1,7 +1,7 @@
 {
-  "revision": 16,
+  "revision": 17,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Native r15 proved 34 EditMode,66 PlayMode and integrated I-II but correctly failed exact II->III fixed-camera A/B (0 changed pixels). Verify authored CITY supply LOD0 activation and real camera renderers, preserved routes and real wolf/fissure, small building differences, fully revealed UI with pixel-based parchment evidence. Fail closed; no art approval or APK without passing."
+  "reason": "Validate exact canonical III HEAD after LOD0 visibility and Android-safe original EA03 StockCrate/Sack/Barrel prefab extraction. Include self-contained prefab dependency gate (no excluded legacy Valoria GLBs), full 34 EditMode/66 PlayMode, I-II/III actual routes/save, city level A/B fixed-camera, authentic wolf/fissure renderers and revealed Lyra/Manuscript UI. Keep ART_APPROVED=false and family code16 untouched until real proof passes."
 }
