@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 16,
   "versionName": "1.16",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Code16 owner-authorized rebuild after first attempt 40492800484 failed before Unity: PowerShell ConvertFrom-Json did not contain optional version fields; workflow fixed at 1d061538f69c90c635cb921272e0246911fe150a. Same game source/owner signing key/scene, version 1.16, no release without signed artifact verification."
+  "note": "Code16 signed build completed SUCCESS run40495487995, source ee35c87986370bf4d7e0e62e57897957cd9bce98, artifact12729954412. Release run40497012145 PASS with public exact-byte verification. Disabled duplicate build; family manifest main now16."
 }
