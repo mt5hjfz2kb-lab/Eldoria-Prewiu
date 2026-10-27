@@ -19,7 +19,7 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public RoyalHUD Source;
 
-        private RectTransform safe, headerPlate, objectiveCard, buildingCard, buildingMiniature, scrollContent, scrollViewport;
+        private RectTransform safe, headerPlate, objectiveCard, heraldicBanner, buildingCard, buildingMiniature, scrollContent, scrollViewport;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
         private RoyalText objectiveActionLabel, objectivesButtonLabel;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
@@ -166,6 +166,14 @@ namespace Eldoria.UI.RoyalGold.V2
             headerPlate.SetAsFirstSibling();
 
             objectiveCard = Panel("V2 / current objective", safe);
+            // Original Crónica Real's royal heraldry hangs beneath the
+            // illuminated parchment in landscape. It is hidden in portrait
+            // to protect the usable view and genuine SafeArea controls.
+            heraldicBanner = NewRect("V3 / royal hanging chapter banner", objectiveCard);
+            heraldicBanner.gameObject.AddComponent<CanvasRenderer>();
+            var bannerSkin = heraldicBanner.gameObject.AddComponent<RoyalGoldV3HeraldicBannerGraphic>();
+            bannerSkin.raycastTarget = false;
+            heraldicBanner.SetAsFirstSibling();
             // Restore the approved Crónica Real parchment with heraldries.
             // Text/mission/button objects are the SAME native gameplay ones.
             var oldSlateFrame = objectiveCard.GetComponent<RoyalGoldV2FrameGraphic>();
@@ -436,6 +444,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // A shorter illuminated manuscript; the scene remains open.
             Top(objectiveCard, portrait ? 9f : 14f, goalTop,
                 goalWidth, 113f);
+            if (heraldicBanner)
+            {
+                heraldicBanner.gameObject.SetActive(!portrait);
+                Top(heraldicBanner, 16f, 72f, 47f, 150f);
+            }
             LayoutManuscriptContent(goalWidth);
             // Reflow selected objectives after every orientation/size change.
             compactObjective = false;
