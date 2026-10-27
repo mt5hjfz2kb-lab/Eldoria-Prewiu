@@ -155,7 +155,7 @@ jobs:
           }
           Write-Host "ALDRIC_UNITY_PLAYMODE_PASS actual=$passed skipped=0"
 
-      - name: Capture 10 real Unity player-camera dialogue screenshots, horizontal and vertical
+      - name: Capture 12 genuine Unity ES/EN speaker screenshots in horizontal and vertical
         shell: powershell
         working-directory: aldric-dialogue-merge-v2
         env:
@@ -171,7 +171,7 @@ jobs:
           if($p.ExitCode -ne 0){throw "Native rendering exit $($p.ExitCode)"}
           if(-not(Test-Path (Join-Path $out 'ALDRIC_NATIVE_PASS.txt'))){throw 'Real Unity screenshot proof missing'}
           $pngs=@(Get-ChildItem -Path $out -Filter '*.png' -File)
-          if($pngs.Count -lt 8){throw "Only $($pngs.Count) real Unity dialogue screenshots; expected 8 distinct pairs"}
+          if($pngs.Count -ne 12){throw "Only $($pngs.Count) native images; expected 12 distinct, 5 speakers ES plus Aldric EN in both orientations"}
           foreach($p in $pngs){if($p.Length -lt 35000){throw "Empty native screenshot $($p.Name)"}}
           Write-Host "ALDRIC_NATIVE_UI_CAPTURE_PASS pngs=$($pngs.Count)"
 
