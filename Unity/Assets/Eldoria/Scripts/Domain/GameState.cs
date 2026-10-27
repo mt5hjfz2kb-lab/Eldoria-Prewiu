@@ -79,6 +79,7 @@ namespace Eldoria.Domain
         public ArmyRoster Troops = new ArmyRoster();
         public string Phase = "idle"; // idle, outbound, gathering, returning
         public long PhaseEndsUtcTicks;
+        public int PendingFood;
         public int PendingWood;
         public int PendingStone;
     }
@@ -110,6 +111,24 @@ namespace Eldoria.Domain
         // Backward-compatible narrative ledger; rewards and chapter objectives remain separate.
         public List<string> SeenNarrative = new List<string>();
     }
+    // Additive save data: existing code16 saves remain schema 1 and start with empty III progress.
+    [Serializable] public sealed class BastionThreeState
+    {
+        public int GranaryLevel, Hunts, LyraXp;
+        public int MeatRemaining = 1100;
+        public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
+        public long InvestigationEndsUtcTicks, ClosingEndsUtcTicks, EconomyUtcTicks;
+        public long WolfRespawnUtcTicks, BoarRespawnUtcTicks, MeatRespawnUtcTicks;
+        public int WolfGeneration, BoarGeneration, MeatGeneration;
+        public int PendingBuildingLevel;
+        public List<string> Inventory = new List<string>();
+        public List<WorldRoutePoint> InvestigationRoute = new List<WorldRoutePoint>();
+        public BastionThreeState Copy() {
+            var c=(BastionThreeState)MemberwiseClone();
+            c.Inventory=new List<string>(Inventory??new List<string>());
+            c.InvestigationRoute=new List<WorldRoutePoint>();foreach(var p in InvestigationRoute??new List<WorldRoutePoint>())c.InvestigationRoute.Add(new WorldRoutePoint{X=p.X,Y=p.Y,Z=p.Z});return c;
+        }
+    }
     [Serializable] public sealed class PlayerState
     {
         public int SchemaVersion = 1;
@@ -123,6 +142,7 @@ namespace Eldoria.Domain
             Stone = SliceContentProfiles.Active.InitialStone,
             Food = SliceContentProfiles.Active.InitialFood
         };
+        public BastionThreeState ChapterThree = new BastionThreeState();
         public int BastionLevel = 1;
         public int MissionPower;
         public int SawmillLevel;
@@ -201,6 +221,8 @@ namespace Eldoria.Domain
             if(level==2) return new BastionProgressionDefinition(
                 2,1,SliceContentProfiles.Active.Bastion2WoodCost,SliceContentProfiles.Active.Bastion2StoneCost,
                 600,true,new[]{"barracks","chapter-ii","world-engendro","march-preparation"});
+            if(level==3) return new BastionProgressionDefinition(
+                3,2,650,500,900,false,new[]{"granary","food","hunting","fissure","chapter-iii"});
             throw new ArgumentOutOfRangeException(nameof(level),"Bastion level is not authored in the current progression catalog.");
         }
 
@@ -210,6 +232,7 @@ namespace Eldoria.Domain
             if(state.BastionLevel!=definition.RequiredPreviousLevel)return false;
             if(state.BastionUpgradeCompletesUtcTicks>0||state.BuildingCompletesUtcTicks>0)return false;
             if(definition.RequiresJourneyComplete&&!state.JourneyComplete)return false;
+            if(definition.Level==3&&(state.BarracksLevel<1||state.Available.Total+state.March.Troops.Total<41))return false;
             return state.Resources.Wood>=definition.WoodCost&&state.Resources.Stone>=definition.StoneCost;
         }
 
@@ -220,6 +243,8 @@ namespace Eldoria.Domain
             if(state.BastionUpgradeCompletesUtcTicks>0)missing.Add("mejora del Bastión en curso");
             else if(state.BuildingCompletesUtcTicks>0)missing.Add("espera a que termine la obra actual");
             if(definition.RequiresJourneyComplete&&!state.JourneyComplete)missing.Add("completa los objetivos de Bastión I");
+            if(definition.Level==3&&state.BarracksLevel<1)missing.Add("construye el Cuartel");
+            if(definition.Level==3&&state.Available.Total+state.March.Troops.Total<41)missing.Add("reúne 41 tropas");
             if(state.Resources.Wood<definition.WoodCost)missing.Add("madera "+state.Resources.Wood+"/"+definition.WoodCost);
             if(state.Resources.Stone<definition.StoneCost)missing.Add("piedra "+state.Resources.Stone+"/"+definition.StoneCost);
             return string.Join(" · ",missing);
@@ -293,6 +318,15 @@ namespace Eldoria.Domain
                 if (!p.RouteCleared) return "b1.clear-route";
                 return "b1.return";
             }
+            if(s.BastionLevel>=3) {
+                var c=s.ChapterThree??new BastionThreeState();
+                if(c.GranaryLevel==0)return "b3.granary";
+                if(s.Resources.Food<500&&!p.GrantedRewards.Contains("c3-food"))return "b3.food";
+                if(c.Hunts<2)return "b3.hunt";
+                if(!c.FissureClosed)return !c.FissureExplored?"b3.investigate":!c.LyraContacted?"b3.lyra":"b3.fissure";
+                if(s.SawmillLevel<2||s.BarracksLevel<2||c.GranaryLevel<2)return "b3.infrastructure";
+                return "b3.complete";
+            }
             if (s.EngendroDefeated || p.EngendroDefeated) return "b2.complete";
             if (s.BarracksLevel == 0) return "b2.build-barracks";
             if (p.TrainedArchers < SliceContentProfiles.Active.Chapter2TrainArchers) return "b2.train-archers";
@@ -307,15 +341,16 @@ namespace Eldoria.Domain
         // All deployment, preview, combat and casualties use this same tiered snapshot.
         public static CombatStats Expedition(ArmyRoster troops, string heroId)
         {
-            if (heroId != "aldric" || troops == null || troops.Total < 1) return new CombatStats(0, 0, 0, 0, 0);
-            double a = 78, d = 112, hp = 420, brk = 34; int pow = 1204;
+            if ((heroId != "aldric" && heroId != "lyra" && heroId != "aldric+lyra") || troops == null || troops.Total < 1) return new CombatStats(0, 0, 0, 0, 0);
+            bool lyra=heroId=="lyra"||heroId=="aldric+lyra", aldric=heroId!="lyra";
+            double a = (aldric?78:0)+(lyra?116:0), d = (aldric?112:0)+(lyra?62:0), hp = (aldric?420:0)+(lyra?300:0), brk = (aldric?34:0)+(lyra?82:0); int pow = (aldric?1204:0)+(lyra?1278:0);
             int[] counts = { troops.ArcherT1, troops.ArcherT2, troops.ArcherT3 };
             int[] tiers = { 1, 4, 10 }; // T1/T2/T3 profiles inherited from hero-army.js
             for (int i = 0; i < counts.Length; i++)
             {
                 if (counts[i] <= 0) continue;
                 int t = tiers[i]; double scale = Math.Sqrt(counts[i]);
-                a += (18 + t * 2) * scale;
+                a += (18 + t * 2) * scale * (lyra?1.03:1);
                 d += (11 + t) * scale;
                 hp += (34 + t * 3) * scale;
                 brk += (9 + t * 2) * scale;

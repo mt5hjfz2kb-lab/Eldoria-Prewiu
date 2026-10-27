@@ -200,6 +200,9 @@ namespace Eldoria.Application
             foreach (var item in state.WorldResourceLocations)
                 if (item == null || string.IsNullOrEmpty(item.TargetId) || (item.TargetId != "forest-valoria" && item.TargetId != "quarry-valoria" && !(item.TargetId.StartsWith("region1:wood:",StringComparison.Ordinal)&&item.ResourceKind=="wood") && !(item.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal)&&item.ResourceKind=="stone")) || !resourceIds.Add(item.TargetId))
                     throw new InvalidOperationException("Invalid or duplicate persisted resource identity");
+            if(state.ChapterThree==null)state.ChapterThree=new BastionThreeState();
+            if(state.ChapterThree.Inventory==null)state.ChapterThree.Inventory=new System.Collections.Generic.List<string>();
+            if(state.ChapterThree.FissureClosed){state.ChapterThree.LyraRecruited=true;state.ChapterThree.InvestigationEndsUtcTicks=0;}
             NormalizeMissionProgress();
             Advance();
         }
@@ -230,7 +233,7 @@ namespace Eldoria.Application
                 PlayerId=s.PlayerId, RealmId=s.RealmId, WorldId=s.WorldId,
                 Resources=new ResourceWallet { Wood=s.Resources.Wood, Stone=s.Resources.Stone, Food=s.Resources.Food },
                 BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel, BarracksLevel=s.BarracksLevel,
-                MissionPower=s.MissionPower,
+                MissionPower=s.MissionPower, ChapterThree=s.ChapterThree.Copy(),
                 CorruptionDiscovered=s.CorruptionDiscovered, ScoutDefeated=s.ScoutDefeated,
                 JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
@@ -240,7 +243,7 @@ namespace Eldoria.Application
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
                     Route=s.March.Route?.ConvertAll(x=>x.Copy())??new System.Collections.Generic.List<WorldRoutePoint>(),
                     Phase=s.March.Phase, PhaseEndsUtcTicks=s.March.PhaseEndsUtcTicks,
-                    PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
+                    PendingFood=s.March.PendingFood, PendingWood=s.March.PendingWood, PendingStone=s.March.PendingStone },
                 WorldResourceLocations=s.WorldResourceLocations.ConvertAll(x=>x.Copy()),
                 WorldCreatureLocations=s.WorldCreatureLocations.ConvertAll(x=>x.Copy()),
                 ForestRemaining=s.ForestRemaining, QuarryRemaining=s.QuarryRemaining, BuildingCompletesUtcTicks=s.BuildingCompletesUtcTicks,
@@ -288,6 +291,8 @@ namespace Eldoria.Application
             if (state.CompletedCommandIds.Contains(command.Id)) return new CommandResult(true, "Ya ejecutado", state.Revision);
             if (command.ActorId != state.PlayerId) return Fail("Propietario incorrecto");
             if (command.ExpectedRevision != state.Revision) return Fail("Estado desactualizado");
+            var chapterThreeResult=ExecuteChapterThree(command);
+            if(chapterThreeResult!=null)return chapterThreeResult;
             switch (command.Kind)
             {
                 case "Gather":
@@ -306,15 +311,20 @@ namespace Eldoria.Application
                         return Fail("Marcha no disponible");
                     if (state.March.Phase != "idle") return Fail("Espera al regreso de la Marcha");
                     int marchArchers=state.Available.ArcherT1;
+                    string marchHero="aldric";
                     if(command.TargetId != "march-main")
                     {
                         if(!command.TargetId.StartsWith("march-main:",StringComparison.Ordinal) ||
-                            !int.TryParse(command.TargetId.Substring("march-main:".Length),out marchArchers))
+                            !int.TryParse(command.TargetId.Split(':')[1],out marchArchers))
                             return Fail("Composición desconocida");
                     }
                     if(marchArchers < 1 || marchArchers > state.Available.ArcherT1)
                         return Fail("No hay suficientes arqueros disponibles");
-                    state.PreparedHeroId = "aldric";
+                    var parts=command.TargetId.Split(':');
+                    if(parts.Length>3)return Fail("Composición desconocida");
+                    if(parts.Length==3)marchHero=parts[2];
+                    if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))return Fail("Héroe no disponible");
+                    state.PreparedHeroId = marchHero;
                     state.PreparedTroops = state.Available.Copy();
                     state.PreparedTroops.ArcherT1 = marchArchers;
                     // Only the expressly selected unlocked T1 unit is assigned
@@ -376,8 +386,8 @@ namespace Eldoria.Application
                     state.Resources.Stone -= next.StoneCost;
                     state.BastionUpgradeStartedUtcTicks = clock.UtcTicks;
                     state.BastionUpgradeCompletesUtcTicks = clock.UtcTicks +
-                        TimeSpan.FromSeconds(SliceContentProfiles.WebContract.Bastion2UpgradeSeconds).Ticks;
-                    state.BastionUpgradeTaskId = "bastion2:" + command.Id;
+                        TimeSpan.FromSeconds(next.Level==3?14:SliceContentProfiles.WebContract.Bastion2UpgradeSeconds).Ticks;
+                    state.BastionUpgradeTaskId = "bastion"+next.Level+":" + command.Id;
                     break;
                 case "Build":
                     if (state.BuildingCompletesUtcTicks > 0 || state.BastionUpgradeCompletesUtcTicks > 0) return Fail("Ya hay una obra en curso");
@@ -431,7 +441,7 @@ namespace Eldoria.Application
             Commit();
             return new CommandResult(true, "Acción iniciada", state.Revision);
         }
-        private bool CanDepart() => state.March.Phase == "idle" && state.Available.ArcherT1 > 0;
+        private bool CanDepart() => state.ChapterThree.InvestigationEndsUtcTicks==0 && state.March.Phase == "idle" && state.Available.ArcherT1 > 0;
         private bool Depart(string targetId)
         {
             var planned=new System.Collections.Generic.List<WorldRoutePoint>();
@@ -439,26 +449,28 @@ namespace Eldoria.Application
             if(planned==null)return false;
             var m = state.March;
             m.Route=planned;
-            bool usePrepared = targetId == "engendro-valoria" && state.MarchConfigured;
+            bool usePrepared = (targetId == "engendro-valoria" || IsChapterThreeTarget(targetId)) && state.MarchConfigured;
+            if(usePrepared && (state.PreparedTroops.Total<1 || state.PreparedTroops.ArcherT1>state.Available.ArcherT1 || state.PreparedTroops.ArcherT2>state.Available.ArcherT2 || state.PreparedTroops.ArcherT3>state.Available.ArcherT3))return false;
             m.Troops = usePrepared ? state.PreparedTroops.Copy() : state.Available.Copy();
             m.HeroId = usePrepared ? state.PreparedHeroId : "aldric";
             state.Available.ArcherT1 -= m.Troops.ArcherT1;
             state.Available.ArcherT2 -= m.Troops.ArcherT2;
             state.Available.ArcherT3 -= m.Troops.ArcherT3;
             m.TargetId = targetId; m.Phase = "outbound";
-            m.PendingWood = m.PendingStone = 0;
+            m.PendingFood = m.PendingWood = m.PendingStone = 0;
             m.PhaseEndsUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
             return true;
         }
         public bool Advance()
         {
-            bool changed = false;
+            bool changed = AdvanceChapterThree();
             if (state.BastionUpgradeCompletesUtcTicks > 0 && state.BastionUpgradeCompletesUtcTicks <= clock.UtcTicks)
             {
                 if (!state.CompletedTaskIds.Contains(state.BastionUpgradeTaskId))
                 {
                     state.CompletedTaskIds.Add(state.BastionUpgradeTaskId);
-                    state.BastionLevel = Math.Max(2, state.BastionLevel);
+                    state.BastionLevel = Math.Max(state.BastionUpgradeTaskId.StartsWith("bastion3:",StringComparison.Ordinal)?3:2, state.BastionLevel);
+                    if(state.BastionLevel==3){state.ChapterThree.EconomyUtcTicks=state.BastionUpgradeCompletesUtcTicks;state.MissionPower+=300;}
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.BastionTwoReached = true;
                 }
@@ -499,7 +511,16 @@ namespace Eldoria.Application
                 long due = m.PhaseEndsUtcTicks;
                 if (m.Phase == "outbound")
                 {
-                    if (IsWoodTarget(m.TargetId) || IsStoneTarget(m.TargetId))
+                    if(m.TargetId=="meat-valoria") {
+                        m.Phase="gathering";
+                        int seconds=Math.Max(7,Math.Min(35,(state.ChapterThree.MeatRemaining+119)/120));
+                        m.PhaseEndsUtcTicks=due+TimeSpan.FromSeconds(seconds).Ticks;
+                    }
+                    else if(IsChapterThreeTarget(m.TargetId)) {
+                        ResolveChapterThreeMarch(m,due);
+                        m.Phase="returning";m.PhaseEndsUtcTicks=due+TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
+                    }
+                    else if (IsWoodTarget(m.TargetId) || IsStoneTarget(m.TargetId))
                     { m.Phase = "gathering"; m.PhaseEndsUtcTicks = due + TimeSpan.FromSeconds(SliceRules.GatherSeconds).Ticks; }
                     else
                     {
@@ -551,7 +572,11 @@ namespace Eldoria.Application
                 }
                 else if (m.Phase == "gathering")
                 {
-                    if(IsStoneTarget(m.TargetId))
+                    if(m.TargetId=="meat-valoria")
+                    {
+                        ResolveChapterThreeMarch(m,due);
+                    }
+                    else if(IsStoneTarget(m.TargetId))
                     {
                         m.PendingStone = Math.Min(SliceRules.QuarryLoad,ResourceRemaining(state,m.TargetId));
                         SetResourceRemaining(m.TargetId,ResourceRemaining(state,m.TargetId)-m.PendingStone);
@@ -561,7 +586,7 @@ namespace Eldoria.Application
                         m.PendingWood = Math.Min(SliceRules.ForestLoad,ResourceRemaining(state,m.TargetId));
                         SetResourceRemaining(m.TargetId,ResourceRemaining(state,m.TargetId)-m.PendingWood);
                     }
-                    if(ResourceRemaining(state,m.TargetId)==0){
+                    if(m.TargetId!="meat-valoria" && ResourceRemaining(state,m.TargetId)==0){
                         var depleted=state.WorldResourceLocations.Find(x=>x.TargetId==m.TargetId);
                         if(depleted==null){depleted=new WorldResourceLocation{TargetId=m.TargetId};state.WorldResourceLocations.Add(depleted);}
                         depleted.DepletedUtcTicks=due; // actual gathering deadline, including offline advancement
@@ -575,6 +600,7 @@ namespace Eldoria.Application
                     if (!state.CompletedTaskIds.Contains(id))
                     {
                         state.CompletedTaskIds.Add(id);
+                        state.Resources.Food += m.PendingFood;
                         state.Resources.Wood += m.PendingWood;
                         state.Resources.Stone += m.PendingStone;
                         if (IsWoodTarget(m.TargetId) && m.PendingWood > 0)
@@ -591,7 +617,7 @@ namespace Eldoria.Application
                         state.Available.ArcherT2 += m.Troops.ArcherT2;
                         state.Available.ArcherT3 += m.Troops.ArcherT3;
                     }
-                    m.Troops = new ArmyRoster(); m.PendingWood = m.PendingStone = 0;
+                    m.Troops = new ArmyRoster(); m.PendingFood = m.PendingWood = m.PendingStone = 0;
                     m.TargetId = ""; m.Phase = "idle"; m.PhaseEndsUtcTicks = 0;
                 }
                 changed = true;
@@ -606,6 +632,7 @@ namespace Eldoria.Application
                     state.ChapterProgress.RouteCleared;
                 if (chapterOneReady) { state.JourneyComplete = true; changed = true; }
             }
+            changed |= AdvanceFrontierRespawns();
             if (GrantWebMissionRewards()) changed = true;
             changed |= AdvanceResourcePopulation();
             changed |= AdvanceCreaturePopulation();
@@ -621,12 +648,13 @@ namespace Eldoria.Application
             if (p == null) return false;
             if (p.GrantedRewards == null) p.GrantedRewards = new System.Collections.Generic.List<string>();
             bool changed = false;
-            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0)
+            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0, int food=0)
             {
                 if (!complete || p.GrantedRewards.Contains(id)) return;
                 p.GrantedRewards.Add(id);
                 state.Resources.Wood += wood;
                 state.Resources.Stone += stone;
+                state.Resources.Food += food;
                 state.MissionPower += power;
                 changed = true;
             }
@@ -640,16 +668,127 @@ namespace Eldoria.Application
             Grant("c2-train", p.TrainedArchers>=SliceContentProfiles.OwnerIiiCandidate.Chapter2TrainArchers, wood:220, stone:150);
             Grant("c2-power", p.ConfirmedExpeditionPower>=SliceContentProfiles.OwnerIiiCandidate.Chapter2ExpeditionPower, power:100);
             Grant("c2-spawnling", p.EngendroDefeated, wood:120, stone:120);
-            // The web's c2-bastion and chapter-2 rewards require Bastion III. This slice
-            // intentionally ends at II, so neither completion nor payout is fabricated.
+            Grant("c2-bastion",state.BastionLevel>=3,food:180);
+            Grant("chapter-2",state.BastionLevel>=3,wood:240,stone:200,food:220,power:180);
+            if(state.BastionLevel>=3) {
+                var c=state.ChapterThree;
+                Grant("c3-granary",c.GranaryLevel>0,wood:160,stone:110);
+                Grant("c3-food",state.Resources.Food>=500,wood:120);
+                Grant("c3-hunt",c.Hunts>=2,food:220);
+                Grant("c3-fissure",c.FissureClosed,stone:260,power:100);
+                Grant("c3-infra",state.SawmillLevel>=2&&state.BarracksLevel>=2&&c.GranaryLevel>=2,wood:220,stone:180);
+            }
             return changed;
+        }
+        public static bool IsChapterThreeTarget(string id)=>id=="fissure-valoria"||id=="hunt-wolf"||id=="hunt-boar"||id=="meat-valoria";
+        CommandResult ExecuteChapterThree(GameCommand command)
+        {
+            var c=state.ChapterThree;var id=command.TargetId;
+            bool handles=command.Kind=="InvestigateFissure"||command.Kind=="ContactLyra"||command.Kind=="UpgradeBuilding"||
+                (command.Kind=="Build"&&id=="granary")||((command.Kind=="Fight"||command.Kind=="Gather")&&IsChapterThreeTarget(id));
+            if(!handles)return null;
+            if(state.BastionLevel<3)return Fail("Requiere Bastión III");
+            switch(command.Kind) {
+                case "InvestigateFissure":
+                    if(id!="fissure-valoria"||c.FissureClosed||c.FissureExplored||c.InvestigationEndsUtcTicks>0)return Fail("Investigación no disponible");
+                    if(!CanDepart())return Fail("Aldric debe regresar antes de investigar");
+                    var investigationRoute=new System.Collections.Generic.List<WorldRoutePoint>();
+                    if(marchRoutes!=null&&!marchRoutes.TryRoute(Snapshot(),id,out investigationRoute))return Fail("No hay ruta transitable hasta la fisura");
+                    c.InvestigationRoute=investigationRoute??new System.Collections.Generic.List<WorldRoutePoint>();
+                    c.InvestigationEndsUtcTicks=clock.UtcTicks+TimeSpan.FromMinutes(20).Ticks;break;
+                case "ContactLyra":
+                    if(id!="fissure-valoria"||!c.FissureExplored||c.FissureClosed||c.LyraContacted)return Fail("Encuentro no disponible");
+                    c.LyraContacted=true;break;
+                case "Build":case "UpgradeBuilding":
+                    if(state.BuildingCompletesUtcTicks>0||state.BastionUpgradeCompletesUtcTicks>0)return Fail("Ya hay una obra en curso");
+                    int level=id=="sawmill"?state.SawmillLevel:id=="barracks"?state.BarracksLevel:id=="granary"?c.GranaryLevel:-1;
+                    if(level<0||level>=state.BastionLevel||level>=3||(command.Kind=="Build"?level!=0:level==0))return Fail("Mejora no disponible");
+                    if(level>=2&&id!="barracks"&&!c.Inventory.Contains(id=="sawmill"?"iron-brace":"treated-hide"))return Fail("Falta material especial de la frontera");
+                    int wood=level==0?240:(id=="barracks"?140:120)*level;
+                    int stone=level==0?180:(id=="barracks"?90:78)*level;
+                    if(state.Resources.Wood<wood||state.Resources.Stone<stone)return Fail("Faltan recursos para la obra");
+                    state.Resources.Wood-=wood;state.Resources.Stone-=stone;c.PendingBuildingLevel=level+1;
+                    state.BuildingTaskId="c3:"+id+":"+command.Id;
+                    state.BuildingCompletesUtcTicks=clock.UtcTicks+TimeSpan.FromSeconds(level==0?9:8+level*2).Ticks;break;
+                case "Gather":case "Fight":
+                    if(id=="fissure-valoria"&&(!c.LyraContacted||c.FissureClosed))return Fail("Investiga y conoce a Lyra antes del asalto");
+                    if(id=="meat-valoria"&&(command.Kind!="Gather"||c.MeatRemaining<=0))return Fail("Reserva no disponible");
+                    if(id!="meat-valoria"&&command.Kind!="Fight")return Fail("Acción no válida");
+                    if(id=="hunt-wolf"&&c.WolfRespawnUtcTicks>clock.UtcTicks||id=="hunt-boar"&&c.BoarRespawnUtcTicks>clock.UtcTicks)return Fail("La caza aún no está disponible");
+                    if(!CanDepart())return Fail("Marcha no disponible");
+                    if(!Depart(id))return Fail("No hay ruta transitable");break;
+            }
+            GrantWebMissionRewards();state.CompletedCommandIds.Add(command.Id);Commit();
+            return new CommandResult(true,"Acción iniciada",state.Revision);
+        }
+        void AccrueChapterThree(long until)
+        {
+            var c=state.ChapterThree;
+            if(c.EconomyUtcTicks<=0){c.EconomyUtcTicks=until;return;}
+            long seconds=Math.Min(3600,Math.Max(0,(until-c.EconomyUtcTicks)/TimeSpan.TicksPerSecond));
+            state.Resources.Wood+=checked((int)seconds*state.SawmillLevel);
+            state.Resources.Food+=checked((int)seconds*c.GranaryLevel);
+            c.EconomyUtcTicks+=seconds*TimeSpan.TicksPerSecond;
+            if(until-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond)c.EconomyUtcTicks=until;
+        }
+        bool AdvanceFrontierRespawns()
+        {
+            if(state.BastionLevel<3)return false;
+            var c=state.ChapterThree;bool changed=false;
+            if(c.MeatRespawnUtcTicks>0&&clock.UtcTicks>=c.MeatRespawnUtcTicks){c.MeatRemaining=1100;c.MeatRespawnUtcTicks=0;c.MeatGeneration++;changed=true;}
+            if(c.WolfRespawnUtcTicks>0&&clock.UtcTicks>=c.WolfRespawnUtcTicks){c.WolfRespawnUtcTicks=0;c.WolfGeneration++;changed=true;}
+            if(c.BoarRespawnUtcTicks>0&&clock.UtcTicks>=c.BoarRespawnUtcTicks){c.BoarRespawnUtcTicks=0;c.BoarGeneration++;changed=true;}
+            return changed;
+        }
+        bool AdvanceChapterThree()
+        {
+            if(state.BastionLevel<3)return false;
+            var c=state.ChapterThree;bool changed=false;
+            changed|=AdvanceFrontierRespawns();
+            if(state.ScoutDefeated&&!c.Inventory.Contains("iron-brace")){c.Inventory.Add("iron-brace");changed=true;}
+            if(c.EconomyUtcTicks>0&&clock.UtcTicks-c.EconomyUtcTicks>TimeSpan.FromHours(1).Ticks){c.EconomyUtcTicks=clock.UtcTicks-TimeSpan.FromHours(1).Ticks;changed=true;}
+            if(c.InvestigationEndsUtcTicks>0&&c.InvestigationEndsUtcTicks<=clock.UtcTicks){c.FissureExplored=true;c.InvestigationEndsUtcTicks=0;changed=true;}
+            if(state.BuildingTaskId.StartsWith("c3:",StringComparison.Ordinal)&&state.BuildingCompletesUtcTicks<=clock.UtcTicks&&state.BuildingCompletesUtcTicks>0) {
+                AccrueChapterThree(Math.Max(c.EconomyUtcTicks,state.BuildingCompletesUtcTicks));
+                if(!state.CompletedTaskIds.Contains(state.BuildingTaskId)) {
+                    state.CompletedTaskIds.Add(state.BuildingTaskId);string id=state.BuildingTaskId.Split(':')[1];
+                    int oldLevel=c.PendingBuildingLevel-1;
+                    int gain=oldLevel==0?300:id=="barracks"?110+oldLevel*30:90+oldLevel*25;
+                    state.MissionPower+=gain-(id=="sawmill"?170:id=="barracks"?190:0);
+                    if(id=="sawmill")state.SawmillLevel=c.PendingBuildingLevel;
+                    else if(id=="barracks")state.BarracksLevel=c.PendingBuildingLevel;
+                    else c.GranaryLevel=c.PendingBuildingLevel;
+                }
+                c.PendingBuildingLevel=0;state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";changed=true;
+            }
+            if(c.EconomyUtcTicks==0||clock.UtcTicks-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond){AccrueChapterThree(clock.UtcTicks);changed=true;}
+            return changed;
+        }
+        void ResolveChapterThreeMarch(MarchState m,long due)
+        {
+            var c=state.ChapterThree;
+            if(m.TargetId=="meat-valoria") {m.PendingFood=c.MeatRemaining;c.MeatRemaining=0;c.MeatRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;return;}
+            var power=SliceRules.Expedition(m.Troops,m.HeroId).Power;
+            // The web's ordinary hunts resolve against their explicit expedition-power requirement.
+            bool win=m.TargetId=="fissure-valoria"?c.LyraContacted&&!c.FissureClosed:power>=(m.TargetId=="hunt-wolf"?1450:2050);
+            if(win&&m.TargetId=="fissure-valoria") {
+                c.FissureClosed=true;c.LyraRecruited=true;c.LyraXp+=80;state.MissionPower+=430;c.ClosingEndsUtcTicks=due+TimeSpan.FromMilliseconds(6500).Ticks;
+                if(!c.Inventory.Contains("breach-manuscript"))c.Inventory.Add("breach-manuscript");m.PendingStone=300;
+            } else if(win) {
+                c.Hunts++;bool wolf=m.TargetId=="hunt-wolf";m.PendingFood=wolf?140:190;
+                if(wolf)c.WolfRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;else c.BoarRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;
+                string item=wolf?"treated-hide":"stone-tusk";if(!c.Inventory.Contains(item))c.Inventory.Add(item);
+            }
+            state.LastBattleReport=new BattleReportState{TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,PlayerPower=power,Won=win,RewardStone=m.PendingStone,
+                Reason=m.TargetId=="fissure-valoria"?"Aldric y Lyra cierran la fisura. Lyra reconoce el símbolo de su hermano y se une a Valoria.":win?"La caza proporciona alimento y materiales, no Poder.":"La expedición no alcanza el Poder necesario para esta cacería."};
+            state.LastBattleReason=state.LastBattleReport.Reason;
         }
         // Narrative is acknowledged ONLY after the player finishes the last page.
         // No resources, tasks, timers or gameplay progression can be granted here.
         public bool AcknowledgeNarrative(string beat)
         {
             if (beat!="start" && beat!="world" && beat!="mark" &&
-                beat!="barracks" && beat!="secured") return false;
+                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed") return false;
             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
             if (state.ChapterProgress.SeenNarrative == null)
                 state.ChapterProgress.SeenNarrative = new System.Collections.Generic.List<string>();

@@ -106,7 +106,7 @@ namespace Eldoria.UI.RoyalGold {
      SelectBuilding(current.BastionLevel>=2?"barracks":"sawmill");
      return;
     }if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
-  void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Settings){SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
+  void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Heroes){Modal.Hide();host?.Open(RoyalSection.Inventory);return;}if(shown==RoyalSection.Settings){SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
   void ShowModal(RoyalSection section,bool takeFocus=true){
    if(current==null)return;narrative=false;Modal.Body.fontSize=26;shown=section;string body="";string title=BottomNavigation.Name(section,english);
    switch(section){
@@ -117,8 +117,8 @@ namespace Eldoria.UI.RoyalGold {
     case RoyalSection.Settings:body=L("Idioma de la interfaz: Español\n\nLa ciudad y tu progreso no se modifican.\nLa interfaz respeta las zonas seguras de tu pantalla.","Interface language: English\n\nYour city and progression are unchanged.\nThe interface respects your screen's safe area.");break;
    }
    if(takeFocus)Modal.Show(title,body);else{Modal.Title.Put(title);Modal.Body.Put(body);}
-   Modal.Extra.gameObject.SetActive(section==RoyalSection.Army||section==RoyalSection.Settings);Modal.ExtraLabel.Put(section==RoyalSection.Settings?L("Cambiar a inglés","Switch to Spanish"):L("Abrir cuartel","Open barracks"));
-   if(Modal.Secondary){Modal.Secondary.gameObject.SetActive(section==RoyalSection.Army);Modal.SecondaryLabel.Put(L("Preparar marcha","Prepare march"));}
+   Modal.Extra.gameObject.SetActive(section==RoyalSection.Army||section==RoyalSection.Settings||(section==RoyalSection.Heroes&&host!=null&&host.CanOpen(RoyalSection.Inventory)));Modal.ExtraLabel.Put(section==RoyalSection.Heroes?L("Abrir Arcón","Open Chest"):section==RoyalSection.Settings?L("Cambiar a inglés","Switch to Spanish"):L("Abrir cuartel","Open barracks"));
+   if(Modal.Secondary){Modal.Secondary.gameObject.SetActive(section==RoyalSection.Army||(section==RoyalSection.Heroes&&current.BastionLevel>=3));Modal.SecondaryLabel.Put(L("Preparar marcha","Prepare march"));}
   }
   string L(string es,string en)=>english?en:es;
  }

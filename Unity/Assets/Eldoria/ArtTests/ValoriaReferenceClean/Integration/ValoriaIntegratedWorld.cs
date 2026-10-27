@@ -77,6 +77,7 @@ namespace Eldoria.ReferenceClean {
    city.Presenter.ExternalPointerBlocked=RoyalInputGate.Blocks;
    WorldNavigation.enabled=false;WorldCamera.enabled=false;WorldRoot.SetActive(false);
    WorldNavigation.regionalZoom=32;WorldNavigation.localZoom=14;
+   gameObject.AddComponent<BastionIIIWorldPresentation>().Initialize(this);
    targets=Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None);
    Ready=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
@@ -88,6 +89,14 @@ namespace Eldoria.ReferenceClean {
     if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
     management.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,()=>city.Presenter.RefreshState());
     management.ReturnToCity=()=>{if(InWorld)TrySetWorld(false);};
+    // The saved LocalGateway is replaced on ReloadForProbe/load. Reconnect the
+    // existing terrain route/population service in the very same session
+    // rebind, before the first post-reload hunting or gathering command.
+    // This never writes a save, creates a second gateway or changes gameplay.
+    if(Ready && WorldRoot){
+      var resources=WorldRoot.GetComponentInChildren<Eldoria.World4XCanon.RegionOneResourcePlacement>(true);
+      if(resources)resources.RefreshForZoom();
+    }
    }
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
@@ -116,7 +125,7 @@ namespace Eldoria.ReferenceClean {
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
    Hud.SelectBuilding(id);return true;
   }
-  public static bool IsWorldTarget(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal))||id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin";
+  public static bool IsWorldTarget(string id)=>LocalGateway.IsChapterThreeTarget(id)||(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal))||id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin";
   public void SetWorld(bool open){TrySetWorld(open);}
   public bool TrySetWorld(bool open){
    if(!Ready)return false;
@@ -146,11 +155,12 @@ namespace Eldoria.ReferenceClean {
   public bool CanOpen(RoyalSection section){
    if(city==null||city.Gateway==null)return false;var s=city.Gateway.Snapshot();
    if(section==RoyalSection.World)return InWorld||CanEnterWorld(s);
+   if(section==RoyalSection.Inventory)return s.ChapterThree.Inventory.Count>0;
    if(section==RoyalSection.Army)return s.BastionLevel>=2&&s.BarracksLevel>0;
-   if(section==RoyalSection.Bastion)return s.BastionLevel==1&&s.JourneyComplete;
+   if(section==RoyalSection.Bastion)return s.BastionLevel<=2&&s.JourneyComplete;
    return false;
   }
-  public void Open(RoyalSection section){if(section==RoyalSection.World)TrySetWorld(!InWorld);}
+  public void Open(RoyalSection section){if(section==RoyalSection.World)TrySetWorld(!InWorld);else if(section==RoyalSection.Inventory){var s=boundGateway.Snapshot();Hud.ShowNarrative(L("ARCÓN","CHEST"),string.Join("\n\n",s.ChapterThree.Inventory.OrderBy(x=>x=="breach-manuscript"?0:1).Select(x=>x=="breach-manuscript"?L("Manuscrito de la Fisura · Misterio sin descifrar. No utilizable todavía.","Fissure Manuscript · An unsolved mystery. Not usable yet."):x=="treated-hide"?L("Piel curtida de ceniza · Material del Granero","Ash-treated hide · Granary material"):x=="iron-brace"?L("Abrazadera de hierro antiguo · Material del Aserradero","Ancient iron brace · Sawmill material"):L("Colmillo pétreo · Material de construcción","Stone tusk · Building material"))));}}
   public void Navigate(string target){TrySetWorld(target=="Frontier");}
   public void Apply(PlayerState state)=>city.Apply(state);
   public void Home(){
@@ -163,7 +173,8 @@ namespace Eldoria.ReferenceClean {
   }
   public void Pan(Vector2 delta){if(!InWorld){city.Pan(delta);return;}var p=new Vector2(Screen.width*.5f,Screen.height*.5f);if(WorldNavigation.GroundPoint(p,out var a)&&WorldNavigation.GroundPoint(p-delta,out var b))WorldNavigation.PanTo(WorldNavigation.target+b-a);}
   public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
-  public WorldHotspot FindTarget(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal)?WorldRoot.GetComponentsInChildren<WorldHotspot>(true):(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None))).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
+  public WorldHotspot FindTarget(string id)=>FindTargetExact(id=="upgrade-barracks"?"barracks":id);
+  WorldHotspot FindTargetExact(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal)?WorldRoot.GetComponentsInChildren<WorldHotspot>(true):(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None))).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
   void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;
     // A management destination is not a request to move the world camera.
     var management=Hud?Hud.GetComponent<RoyalGoldV3ManagementScreens>():null;
@@ -316,7 +327,7 @@ namespace Eldoria.ReferenceClean {
   }
   public RoyalSnapshot Read(string selected,bool english){
    englishInterface=english;var data=binding.Read(selected,english);if(InWorld)data.Realm=L("ZONA 1","ZONE 1");
-   if(IsWorldTarget(selected)){
+   if(IsWorldTarget(selected)&&!LocalGateway.IsChapterThreeTarget(selected)){
     var action=world.Inspect(selected);var s=boundGateway.Snapshot();bool active=s.March.Phase!="idle",thisMarch=active&&s.March.TargetId==selected;
     var b=new RoyalBuilding{Id=selected,Name=TargetName(selected),Function=DestinationSummary(selected,s),State=action.Label};
     if(thisMarch){b.OperationActive=true;b.State=MarchStatus(s);b.Time=RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,city.Clock.UtcTicks,english);b.Result=s.March.Phase=="returning"?Reward(s.March.PendingWood,s.March.PendingStone)+L(" al llegar a Valoria"," on arrival at Valoria"):ExpectedReward(selected,s);b.Progress=(float)ZoneOneGatewayHost.TravelFraction(city.Clock.UtcTicks,s.March.PhaseEndsUtcTicks,s.March.Phase=="gathering"?SliceRules.GatherSeconds:SliceRules.TravelSeconds);}
@@ -339,7 +350,16 @@ namespace Eldoria.ReferenceClean {
    if(id=="corrupt-scout")return s.ScoutDefeated?L("La ruta está despejada. Tus tropas pueden volver a Valoria.","The route is clear. Your troops can return to Valoria."):L("Aldric y tus arqueros deben despejar este acceso. Botín si vencen: +80 madera · +70 piedra.","Aldric and your archers must clear this route. Victory loot: +80 wood · +70 stone.");
    return s.EngendroDefeated?L("El Engendro ha caído. Bastión II está asegurado.","The Spawn has fallen. Bastion II is secured."):L("El enemigo del capítulo II. Confirma tu expedición antes de salir. Botín si vence: +120 madera · +100 piedra.","Chapter II's enemy. Confirm your expedition before departing. Victory loot: +120 wood · +100 stone.");
   }
-  public RoyalResult Submit(RoyalAction offer){var result=binding.Submit(offer);city.Presenter.RefreshState();return result;}
+  public RoyalResult Submit(RoyalAction offer){
+   if(offer!=null&&offer.Kind=="ContactLyra"){
+    Hud.ShowNarrativeSequence(new[]{
+     new RoyalNarrativePresentation.Line("Lyra","Soy Lyra. Busco a mi hermano. Su compañía desapareció la noche de la Brecha. Encontré su insignia junto a esta fisura; no sé qué significa.","I am Lyra. I seek my brother. His company vanished on the night of the Breach. I found his insignia beside this fissure; I do not know what it means."),
+     new RoyalNarrativePresentation.Line("Sir Aldric","También hemos perdido gente. Podemos seguir esas huellas juntos.","We have lost people too. We can follow these tracks together."),
+     new RoyalNarrativePresentation.Line("Lyra","Ayudaré en el asalto. Después hablaremos de mi lugar en Valoria.","I will help with the assault. Afterwards we can discuss my place in Valoria.")
+    },()=>{boundGateway.Advance();var current=boundGateway.Snapshot();binding.Submit(new RoyalAction("ContactLyra","fissure-valoria","","",current.Revision,true));city.Presenter.RefreshState();});
+    return new RoyalResult(true,L("Encuentro con Lyra","Meeting Lyra"));
+   }
+   var result=binding.Submit(offer);city.Presenter.RefreshState();return result;}
   string L(string es,string en)=>englishInterface?en:es;
  }
 }

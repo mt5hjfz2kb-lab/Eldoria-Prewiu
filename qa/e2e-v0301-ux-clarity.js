@@ -60,10 +60,18 @@ const URL=process.env.ELDORIA_URL||'http://127.0.0.1:4173/playtest/?qa=1&preset=
  for(const sel of selectors){const el=p.locator(sel).first();if(!await el.count())continue;const st=await el.evaluate(x=>{const cs=getComputedStyle(x);return{color:cs.color,bg:cs.backgroundColor,font:parseFloat(cs.fontSize)||0}});if(st.color===st.bg)throw Error('Identical foreground/background '+sel);}
 
  // Manuscript discovery must resolve as a narrative ceremony, not a toast.
- s=await state();await set({...s,view:'world',bastionLevel:3,bastion:2,bastion3:true,sawmill:true,forest:1,quarry:1,camp:1,barracks:true,granary:true,lyra:true,boss:false,breachManuscript:false,inventory:[],wood:9999,stone:9999,food:9999,selectedAction:null});
+ s=await state();await set({...s,view:'world',bastionLevel:3,bastion:2,bastion3:true,sawmill:true,forest:1,quarry:1,camp:1,barracks:true,granary:true,lyra:false,fissureExplored:true,lyraContacted:true,boss:false,breachManuscript:false,inventory:[],wood:9999,stone:9999,food:9999,selectedAction:null});
  const boss=p.locator('[data-testid="world-node-boss"]');await boss.waitFor({state:'attached'});await boss.evaluate(el=>el.click());const act=p.locator('[data-testid="world-action-boss"]');await act.waitFor({state:'attached'});await act.evaluate(el=>el.click());
  for(let i=0;i<40;i++){const ceremonyNow=p.locator('.e22-cinema .e22-dialog');if(await ceremonyNow.count())break;await p.waitForTimeout(180);const btn=p.locator('.aldric-cinematic:visible .aldric-continue');if(await btn.count()){await btn.last().evaluate(el=>el.click());await p.waitForTimeout(30);if(await btn.count())await btn.last().evaluate(el=>el.click())}}
- const ceremony=p.locator('.e22-cinema .e22-dialog');await ceremony.waitFor({state:'visible',timeout:7000});txt=(await ceremony.innerText()).toUpperCase();
+ // In the canon the 20-minute research and Lyra CONTACT precede the boss.
+ // Lyra is not recruited until the victory. The authentic victory reveals
+ // Lyra's hero ceremony FIRST and then the one-off manuscript. Verify both;
+ // never jump directly to the manuscript or bypass the unlock sequence.
+ const ceremony=p.locator('.e22-cinema .e22-dialog');await ceremony.waitFor({state:'visible',timeout:7000});
+ txt=(await ceremony.innerText()).toUpperCase();
+ if(!txt.includes('NUEVO HÉROE')||!txt.includes('LYRA'))throw Error('Post-boss Lyra recruitment ceremony missing '+txt);
+ await ceremony.locator('button').click();
+ await ceremony.waitFor({state:'visible',timeout:7000});txt=(await ceremony.innerText()).toUpperCase();
  if(!txt.includes('MANUSCRITO DE LA FISURA')||!txt.includes('MISTERIO'))throw Error('Manuscript lacks important narrative ceremony '+txt);
 
  await b.close();console.log('v0.30.1 UX CLARITY PASS');
