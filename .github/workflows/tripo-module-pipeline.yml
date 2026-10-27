@@ -16,6 +16,58 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  aldric-existing-task-recovery:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[aldric-recovery-only]')
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 17
+    steps:
+      - name: Retrieve exact existing Aldric Tripo task without generating again
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $url='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/pipeline/tripo-module-request.json'
+          $req=(Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 40).Content | ConvertFrom-Json
+          if ([bool]$req.enabled -or [bool]$req.credit_authorization.approved) { throw 'PAID_REQUEST_NOT_DISABLED' }
+          if ([string]$req.module_label -ne 'Eldoria_SirAldric_HeroPilot_v1' -or [string]$req.recover.task_id -ne '4356b1d1-5f9f-4b3b-92d8-2f4d8c0ff6d9') { throw 'RECOVERY_TASK_ID_MISMATCH' }
+          $tripo=Get-Command tripo.exe -ErrorAction SilentlyContinue
+          if (-not $tripo) { $tripo=Get-Command tripo -ErrorAction SilentlyContinue }
+          if (-not $tripo) { throw 'Tripo CLI missing; do not attempt generation' }
+          $out=Join-Path $env:RUNNER_TEMP 'eldoria-aldric-tripo-existing-task'
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $taskId=[string]$req.recover.task_id
+          $raw=(& $tripo.Source task get $taskId --json 2>&1 | Out-String).Trim()
+          if ($LASTEXITCODE -ne 0) { throw 'Read-only Tripo task GET failed. No generation was requested.' }
+          $raw | Set-Content (Join-Path $out 'task-get.json')
+          $j=$raw | ConvertFrom-Json
+          $t=$j
+          if ($null -ne $j.data) { $t=$j.data }
+          if ($null -ne $j.task) { $t=$j.task }
+          $status=[string]$t.status
+          if (-not $status) { $status=[string]$j.status }
+          Write-Host "EXISTING_ALDRIC_TASK_STATUS=$status"
+          if ($status -in @('queued','running','pending','waiting')) {
+            throw "Tripo existing task $status, retry this recovery-only job later, never issue a new make"
+          }
+          if ($status -ne 'success' -and $status -ne 'completed') {
+            throw "Tripo existing task did not succeed: $status. Never auto-regenerate."
+          }
+          $modelUrl=@($t.output.model_url,$t.output.pbr_model,$t.output.model,$t.result.model_url,$j.model_url,$j.output.model_url) | Where-Object { $_ -is [string] -and $_ -match '^https://' } | Select-Object -First 1
+          if (-not $modelUrl) { throw 'Existing task completed but model URL not identified. Inspect saved task-get.json.' }
+          $model=Join-Path $out 'Eldoria_SirAldric_H31_RAW.glb'
+          Invoke-WebRequest -Uri $modelUrl -OutFile $model -UseBasicParsing -TimeoutSec 180
+          if ((Get-Item $model).Length -lt 25000) { throw 'Returned 3D file too small' }
+          $sha=(Get-FileHash $model -Algorithm SHA256).Hash.ToLowerInvariant()
+          $meta=@{status='EXISTING_TRIPO_MODEL_RECOVERED';task_id=$taskId;model_sha256=$sha;model_bytes=(Get-Item $model).Length;new_paid_tasks=0;source_mode='tripo_text';asset='Sir Aldric';credits_consumed=$t.credits_consumed}
+          $meta | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $out 'identity.json')
+          Write-Host "ALDRIC_TRIPO_EXISTING_MODEL_RECOVERED sha256=$sha bytes=$((Get-Item $model).Length)"
+      - name: Preserve only original existing Tripo generation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-aldric-existing-task-4356b1d1-recovery
+          path: ${{ runner.temp }}/eldoria-aldric-tripo-existing-task/*
+          if-no-files-found: warn
+
   tripo-raw-recover:
     if: vars.UNITY_RUNNER_READY == 'true' && github.event_name == 'push' && contains(github.event.head_commit.message, '[tripo-recover-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
@@ -406,7 +458,7 @@ jobs:
           path: ${{ runner.temp }}/eldoria-boar-unity-isolated-20261020/Output/*
           if-no-files-found: warn
   module-gate:
-    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]') && !contains(github.event.head_commit.message, '[tripo-review-only]') && !contains(github.event.head_commit.message, '[tripo-archive-only]') && !contains(github.event.head_commit.message, '[tripo-recover-only]')
+    if: vars.UNITY_RUNNER_READY == 'true' && !contains(github.event.head_commit.message, '[boar-qa-only]') && !contains(github.event.head_commit.message, '[boar-archive-only]') && !contains(github.event.head_commit.message, '[tripo-review-only]') && !contains(github.event.head_commit.message, '[tripo-archive-only]') && !contains(github.event.head_commit.message, '[tripo-recover-only]') && !contains(github.event.head_commit.message, '[aldric-recovery-only]')
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 55
 
