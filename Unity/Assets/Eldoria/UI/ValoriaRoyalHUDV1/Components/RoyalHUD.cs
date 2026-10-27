@@ -99,7 +99,13 @@ namespace Eldoria.UI.RoyalGold {
    });
   }
   void CloseBuilding(){SelectBuilding("");}void OpenRealm(){if(StoryRequested!=null)StoryRequested();else Open(RoyalSection.Realm);}void OpenMissions(){if(ObjectiveRequested!=null)ObjectiveRequested();else Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}
-  void Open(RoyalSection section){if(current==null)return;if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
+  void Open(RoyalSection section){if(current==null)return;if(section==RoyalSection.Inventory&&Navigation&&Navigation.ChronicleLayout){
+     // The approved CONSTRUIR medallion is a genuine contextual shortcut,
+     // not an extra economy system. All costs, timers, locks and spending
+     // remain on the original selected building and its gateway offer.
+     SelectBuilding(current.BastionLevel>=2?"barracks":"sawmill");
+     return;
+    }if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
   void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Settings){SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
   void ShowModal(RoyalSection section,bool takeFocus=true){
    if(current==null)return;narrative=false;Modal.Body.fontSize=26;shown=section;string body="";string title=BottomNavigation.Name(section,english);
