@@ -1,5 +1,5 @@
 Shader "Eldoria/RegionOneAuthoredSurface" {
- Properties { _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 _QuarryFloor("Grounded extraction edge",Float)=0 _MeadowBrush("Painted grass and earth",2D)="gray"{} _MeadowBrushEnabled("Painted brush weight",Float)=0 _BasinPigment("Same authored basin pigment",2D)="white"{} _BasinPigmentEnabled("Continuous geological pigment",Float)=0 _MeadowSourceMean("Measured source pigment mean",Vector)=(.5,.5,.25,1) _MeadowBrushMean("Neutral pigment mean",Vector)=(.51184069,.47712201,.18659264,1) _ExistingPathDistance("Existing authored earth distance",2D)="white"{} _ExistingPathEnabled("Path distance readability",Float)=0 }
+ Properties { _HiddenCrossing("Replaced existing crossing",Vector)=(0,0,0,0) _BaseMap("Pigment",2D)="white"{} _BaseColor("Colour",Color)=(1,1,1,1) _Fade("Far weight",Range(0,1))=0 _Baked("Baked lighting",Float)=0 _BoundaryWeight("Peripheral atmosphere",Range(0,1))=0 _BoundaryColour("Peripheral linear colour",Vector)=(0,0,0,1) _RegionOrigin("Region origin",Vector)=(0,0,0,0) [PerRendererData] _InstanceTint("Instance tint",Color)=(1,1,1,1) _GroundDetail("AF derived grass grain",2D)="gray"{} _GroundDetailStrength("Grass grain weight",Float)=0 _MineralEmission("Central mineral emission",Float)=0 _MeadowFinish("Warm meadow pigment finish",Float)=0 _WaterSurface("Two sided water lighting",Float)=0 _GeologicalRock("Physical stratification",Float)=0 _QuarryFloor("Grounded extraction edge",Float)=0 _MeadowBrush("Painted grass and earth",2D)="gray"{} _MeadowBrushEnabled("Painted brush weight",Float)=0 _BasinPigment("Same authored basin pigment",2D)="white"{} _BasinPigmentEnabled("Continuous geological pigment",Float)=0 _MeadowSourceMean("Measured source pigment mean",Vector)=(.5,.5,.25,1) _MeadowBrushMean("Neutral pigment mean",Vector)=(.51184069,.47712201,.18659264,1) _ExistingPathDistance("Existing authored earth distance",2D)="white"{} _ExistingPathEnabled("Path distance readability",Float)=0 }
  SubShader {Tags {"RenderPipeline"="UniversalPipeline" "RenderType"="TransparentCutout" "Queue"="AlphaTest"}
  HLSLINCLUDE
  #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -10,7 +10,7 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  TEXTURE2D(_BasinPigment); SAMPLER(sampler_BasinPigment);
  TEXTURE2D(_ExistingPathDistance); SAMPLER(sampler_ExistingPathDistance);
  CBUFFER_START(UnityPerMaterial)
- float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;float _QuarryFloor;float _MeadowBrushEnabled;float4 _MeadowBrushMean;float4 _MeadowSourceMean;float _ExistingPathEnabled;float _BasinPigmentEnabled;
+ float4 _HiddenCrossing;float4 _BaseColor;float4 _BaseMap_ST;float4 _RegionOrigin;float4 _BoundaryColour;float _Fade;float _Baked;float _BoundaryWeight;float _GroundDetailStrength;float _MineralEmission;float _MeadowFinish;float _WaterSurface;float _GeologicalRock;float _QuarryFloor;float _MeadowBrushEnabled;float4 _MeadowBrushMean;float4 _MeadowSourceMean;float _ExistingPathEnabled;float _BasinPigmentEnabled;
  CBUFFER_END
  UNITY_INSTANCING_BUFFER_START(PerTree)
  UNITY_DEFINE_INSTANCED_PROP(float4, _InstanceTint)
@@ -31,6 +31,8 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  #pragma multi_compile _ _CLUSTER_LIGHT_LOOP
  half4 frag(V i):SV_Target {
  UNITY_SETUP_INSTANCE_ID(i);
+ // Only the original timber material instances enable this local replacement.
+ if(_HiddenCrossing.w>.5 && abs(i.world.x-_HiddenCrossing.x)<30 && abs(i.world.z-_HiddenCrossing.z)<100)clip(-1);
  #ifdef LOD_FADE_CROSSFADE
  float lodDither=frac(52.9829189*frac(dot(floor(i.p.xy),float2(.06711056,.00583715))));
  clip(unity_LODFade.x-(unity_LODFade.x<0?-lodDither:lodDither));
@@ -190,6 +192,8 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
  return o;}
  half4 shadowFrag(V i):SV_Target {
  UNITY_SETUP_INSTANCE_ID(i);
+ // Only the original timber material instances enable this local replacement.
+ if(_HiddenCrossing.w>.5 && abs(i.world.x-_HiddenCrossing.x)<30 && abs(i.world.z-_HiddenCrossing.z)<100)clip(-1);
  #ifdef LOD_FADE_CROSSFADE
  float lodDither=frac(52.9829189*frac(dot(floor(i.p.xy),float2(.06711056,.00583715))));
  clip(unity_LODFade.x-(unity_LODFade.x<0?-lodDither:lodDither));
