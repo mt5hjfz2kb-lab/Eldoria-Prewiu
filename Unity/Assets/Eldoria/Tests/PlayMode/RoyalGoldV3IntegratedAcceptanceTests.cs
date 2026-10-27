@@ -358,8 +358,19 @@ namespace Eldoria.Tests
                 var liveButton = Member(entry, "Button") as Button;
                 return liveButton && liveButton.gameObject.activeSelf;
             }).ToArray();
-            Assert.That(visible.Length, Is.EqualTo(5),
-                "The owner-approved dock displays Reino, Construir, Unidades, Mundo and Crónicas");
+            int expectedVisible = 3; // Reino, Construir, Crónicas always make sense
+            foreach (var entry in entries)
+            {
+                string category = Member(entry, "Section").ToString();
+                if(category != "Army" && category != "World") continue;
+                bool trulyUnlocked = (bool)Call(host, "CanOpen", Member(entry, "Section"));
+                var entryButton=Member(entry, "Button") as Button;
+                Assert.That(entryButton.gameObject.activeSelf, Is.EqualTo(trulyUnlocked),
+                    "Never display an Army or World button before real gameplay unlock");
+                if(trulyUnlocked)expectedVisible++;
+            }
+            Assert.That(visible.Length, Is.EqualTo(expectedVisible),
+                "Only coherent Crónica Real destinations may appear at this Bastion level");
             foreach (var entry in visible)
             {
                 string section = Member(entry, "Section").ToString();
