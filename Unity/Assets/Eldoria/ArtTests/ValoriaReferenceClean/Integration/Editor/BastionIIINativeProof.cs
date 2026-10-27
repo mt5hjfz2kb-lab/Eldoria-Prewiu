@@ -52,7 +52,7 @@ namespace Eldoria.ReferenceClean.Editor {
     bool frustum=GeometryUtility.TestPlanesAABB(planes,b);
     bool enabled=renderer.enabled&&renderer.gameObject.activeInHierarchy;
     var local=b.center-h.WorldHome;
-    float terrain=h.WorldHome.y+RegionOneBlenderLandscape.Height(local.x,local.z);
+    float terrain=h.WorldHome.y+Eldoria.World4XCanon.RegionOneBlenderLandscape.Height(local.x,local.z);
     Debug.Log("BASTION_III_ART_FRUSTUM id="+id+" renderer="+renderer.name+
       " world="+b.center+" bounds="+b.size+" target="+target.transform.position+
       " viewport="+pos+" ground="+terrain+" layer="+renderer.gameObject.layer+
