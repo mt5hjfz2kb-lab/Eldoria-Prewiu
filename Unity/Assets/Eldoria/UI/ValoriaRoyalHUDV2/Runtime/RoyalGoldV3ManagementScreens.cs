@@ -518,16 +518,19 @@ namespace Eldoria.UI.RoyalGold.V2
             float by=landscape?25:footH-60;
             Place(back.transform as RectTransform,12,by,bw,landscape?42:49);
             Place(action.transform as RectTransform,fw-12-bw,by,bw,landscape?42:49);
-            heading.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.062f,20,27)):23;
-            subheading.fontSize=landscape?12:15;
-            unitTitle.fontSize=landscape?20:25;
-            unitDetail.fontSize=landscape?13:17;
-            selectedText.fontSize=landscape?21:25;
-            summary.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.04f,13,20)):17;
-            status.fontSize=landscape?12:14;
-            actionLabel.fontSize=landscape?14:16;
-            switchLabel.fontSize=landscape?13:15;
-            feedback.fontSize=landscape?12:14;
+            // Crónica Real: a military manuscript must be read without zoom,
+            // including genuine counts, costs and countdowns on landscape.
+            // The earlier 12-13pt landscape type was effectively illegible.
+            heading.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.064f,23,29)):24;
+            subheading.fontSize=landscape?15:16;
+            unitTitle.fontSize=landscape?23:25;
+            unitDetail.fontSize=landscape?16:18;
+            selectedText.fontSize=landscape?24:25;
+            summary.fontSize=landscape?Mathf.RoundToInt(Mathf.Clamp(h*.046f,17,23)):19;
+            status.fontSize=landscape?15:16;
+            actionLabel.fontSize=landscape?16:17;
+            switchLabel.fontSize=landscape?15:16;
+            feedback.fontSize=landscape?14:15;
         }
         static RectTransform Rect(string name,Transform parent)
         {
