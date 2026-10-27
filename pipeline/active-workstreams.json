@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T08:24:30.470Z",
+  "updated_at": "2026-10-27T09:07:37.055Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1446,7 +1446,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Keep only PR115. Resolve objective/header overlap and portrait medallion legibility; compare original reference with real horizontal/portrait Unity screenshots; pass native I–II/management/persistence gates before merger.",
+      "next": "PR115 sole candidate head 725827f01658a65efaa14cc53db6ed9ffa59e01e; native Unity run 40477135161 in progress on same head, no Unity ART_PASS yet. Wait for exact-run native screenshots city/world + portrait/landscape and training/march; review original triptych option1 SHA256 27565c7b85004dd7b84efdfe7587b9bfd976e376b07242c51ae5241851e60582. Must fix failures then retest I-II/buttons/anchored build timers/saves before main merge. Keep Bastion III untouched, zero spend.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1524,7 +1524,7 @@
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "PR115_CORRECT_REFERENCE_COLLISIONS_AND_NATIVE_GATE",
+      "phase": "CRONICA_REAL_NATIVE_VISUAL_GATE_RUNNING",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -1558,7 +1558,24 @@
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
       "handoff_authorization": "Owner 2026-10-26: reanudar la interfaz after World4X integration, fix three-zoom node stability and default near zoom, improve graphical treatment; 0 €; no main merge until verified.",
-      "authority": "Owner instruction 2026-10-27: fidelity to approved original option 1, native responsive top/bottom edge, management screens and building contextual controls, preserve game/save and zero euro"
+      "authority": "Owner instruction 2026-10-27: fidelity to approved original option 1, native responsive top/bottom edge, management screens and building contextual controls, preserve game/save and zero euro",
+      "ui_reference_provenance": {
+        "file_name": "Tres estilos de interfaz para Valoria.png",
+        "sha256": "27565c7b85004dd7b84efdfe7587b9bfd976e376b07242c51ae5241851e60582",
+        "region": "Option 1 left column",
+        "is_unity_capture": false
+      },
+      "ui_candidate": {
+        "pr": 115,
+        "sha": "725827f01658a65efaa14cc53db6ed9ffa59e01e",
+        "run": 40477135161,
+        "run_status": "in_progress",
+        "compile_verified": false,
+        "art_approved": false,
+        "mobile_physically_tested": false,
+        "integrated_in_main": false,
+        "reason": "Latest native run has not produced comparable screenshots or all functional proof"
+      }
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
