@@ -45,6 +45,23 @@ namespace Eldoria.Tests
             Assert.That(found, Is.Not.Null, "Required existing " + typeName + " not found");
             return found;
         }
+        // Unity Transform.Find treats '/' as a hierarchy path delimiter.
+        // Crónica Real's historic presentation names include literal slashes.
+        private static Transform DirectChild(Transform parent, string exactName)
+        {
+            if (!parent) return null;
+            foreach (Transform child in parent)
+                if (child.name == exactName) return child;
+            return null;
+        }
+        private static int DirectChildCount(Transform parent, string exactName)
+        {
+            if (!parent) return 0;
+            int count = 0;
+            foreach (Transform child in parent)
+                if (child.name == exactName) count++;
+            return count;
+        }
         private static IEnumerator Boot(Action<Component, Component> ready)
         {
             SceneManager.LoadScene("Valoria_City_World_UI");
@@ -189,8 +206,11 @@ namespace Eldoria.Tests
 
             var objective = GameObject.Find("V2 / current objective");
             Assert.That(objective, Is.Not.Null, "Missing live objective");
-            var paper = objective.transform.Find("V3 / original parchment and engraved edges");
+            var paper = DirectChild(objective.transform, "V3 / original parchment and engraved edges");
             Assert.That(paper, Is.Not.Null, "Actual original manuscript treatment lost");
+            Assert.That(DirectChildCount(objective.transform,
+                "V3 / original parchment and engraved edges"), Is.EqualTo(1),
+                "The manuscript must not be duplicated on later UI reflows");
             var paperGraphic = paper.GetComponent<Graphic>();
             Assert.That(paperGraphic, Is.Not.Null);
             Assert.That(paperGraphic.GetType().Name,
@@ -200,7 +220,7 @@ namespace Eldoria.Tests
             var objectiveButton = Member(v2, "VisibleObjectiveButton") as Button;
             Assert.That(objectiveButton, Is.Not.Null,
                 "The quest pictogram must keep its existing live command");
-            var roundObjective = objectiveButton.transform.Find("Crónica / native round icon");
+            var roundObjective = DirectChild(objectiveButton.transform, "Crónica / native round icon");
             Assert.That(roundObjective, Is.Not.Null,
                 "Crónica Real's objective command must use a circular medieval medallion");
             Assert.That(objectiveButton.targetGraphic,
@@ -211,7 +231,7 @@ namespace Eldoria.Tests
             if (caption != null)
                 Assert.That(caption.enabled, Is.False,
                     "Rotating the device must not resurrect the old rectangular CTA label");
-            Assert.That(objective.transform.Find("V3 / original Valoria heraldic sigil"),
+            Assert.That(DirectChild(objective.transform, "V3 / original Valoria heraldic sigil"),
                 Is.Not.Null, "Reuse Valoria's actual established crest");
 
             var nav = Member(hud, "Navigation") as Component;
@@ -228,8 +248,15 @@ namespace Eldoria.Tests
                 "Footer must be flush with the DEVICE safe area");
             Assert.That(dock.rect.width, Is.LessThanOrEqualTo(safe.rect.width + 1f),
                 "All navigation must fit within the current safe area");
-            var trim = dock.Find("V3 / Chronicle bottom frame");
+            var trim = DirectChild(dock, "V3 / Chronicle bottom frame");
             Assert.That(trim, Is.Not.Null);
+            // Two layout recalculations must never stack opaque frames over
+            // other interactive content; this was caused by slash names.
+            Call(v2, "SynchronizeNow");
+            Call(v2, "SynchronizeNow");
+            Assert.That(DirectChildCount(dock,
+                "V3 / Chronicle bottom frame"), Is.EqualTo(1),
+                "Repeated layout must retain exactly one native footer frame");
             Assert.That(trim.GetComponent<Graphic>().raycastTarget, Is.False);
             var entries = Member(nav, "Items") as System.Array;
             Assert.That(entries, Is.Not.Null);
