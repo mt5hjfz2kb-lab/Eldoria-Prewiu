@@ -450,24 +450,28 @@ namespace Eldoria.UI.RoyalGold.V2
             // building by V3; both buttons dispatch the same V1 gateway offer.
             float cardWidth = Mathf.Min(width - (portrait ? 18f : 32f),
                 portrait ? 720f : 1300f);
-            float cardHeight = portrait ? 166f : 164f;
+            float cardHeight = portrait ? 178f : 164f;
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
             Place(buildingCard, new Vector2(.5f, 0), new Vector2(.5f, 0),
                 0, sheetBottom, cardWidth, cardHeight);
-            float picture = cardHeight - 19f;
+            // The narrow phone keeps one illustrated thumbnail and a real
+            // right-hand text/CTA column. Never squeeze its text into a 90px
+            // sliver to fit a third decorative region.
+            float picture = portrait ? 137f : cardHeight - 19f;
             Place(buildingMiniature, new Vector2(0, 1), new Vector2(0, 1),
                 9f, -9f, picture, picture);
             float textLeft = picture + 24f;
-            float actionWidth = portrait ? Mathf.Min(160f, cardWidth*.25f) : 194f;
-            float middleWidth = Mathf.Max(70f, cardWidth - textLeft - actionWidth - 24f);
-            Top(buildingTitle.rectTransform, textLeft, 10f, middleWidth, 36f);
-            buildingTitle.fontSize = portrait ? 24 : 30;
-            Top(buildingLevel.rectTransform, textLeft, 46f, middleWidth, 24f);
+            float actionWidth = portrait ? 0f : 194f;
+            float middleWidth = Mathf.Max(115f, cardWidth - textLeft -
+                actionWidth - (portrait ? 14f : 24f));
+            Top(buildingTitle.rectTransform, textLeft, 10f, middleWidth, 35f);
+            buildingTitle.fontSize = portrait ? 22 : 30;
+            Top(buildingLevel.rectTransform, textLeft, 44f, middleWidth, 22f);
             Top((RectTransform)buildingClose.transform, cardWidth - 38f, 5f, 33f, 33f);
-            Top((RectTransform)buildingScroll.transform, textLeft, 76f,
-                middleWidth, cardHeight - 83f);
+            Top((RectTransform)buildingScroll.transform, textLeft, 71f,
+                middleWidth, portrait ? 50f : cardHeight - 79f);
             Stretch(scrollViewport, 0);
             scrollContent.anchorMin = new Vector2(0, 1);
             scrollContent.anchorMax = new Vector2(1, 1);
@@ -476,10 +480,14 @@ namespace Eldoria.UI.RoyalGold.V2
             scrollContent.sizeDelta = new Vector2(0, Mathf.Max(85f, scrollViewport.rect.height));
             Top(buildingBody.rectTransform, 0, 0, middleWidth - 4f,
                 scrollContent.rect.height);
-            buildingBody.fontSize = portrait ? 16 : 19;
-            Top((RectTransform)buildingAction.transform,
-                cardWidth - actionWidth - 12f, cardHeight - 66f,
-                actionWidth, 51f);
+            buildingBody.fontSize = portrait ? 15 : 19;
+            if (portrait)
+                Top((RectTransform)buildingAction.transform,
+                    textLeft, cardHeight - 53f, middleWidth, 44f);
+            else
+                Top((RectTransform)buildingAction.transform,
+                    cardWidth - actionWidth - 12f, cardHeight - 66f,
+                    actionWidth, 51f);
             hasGeometry = true;
             lastWidth = width;
             lastHeight = height;
