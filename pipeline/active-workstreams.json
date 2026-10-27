@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T09:07:37.055Z",
+  "updated_at": "2026-10-27T09:14:38.291Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1603,6 +1603,28 @@
         "evidence": "Run GitHub actions y ZIP de screenshots contra hashes originales inmutables",
         "handoff": "Entregar resultado exacto para el otro propietario artístico; nunca fusionar la malla ni reclamarla aprobada."
       }
+    },
+    {
+      "id": "eldoria-bastion-iii-fissure-parity-20261027",
+      "title": "Bastión III — fidelidad del vertical slice web: fisura y Lyra",
+      "owner": "chatgpt-bastion3-fissure-parity-20261027",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-27T09:14:38.288Z",
+      "base_main_sha": null,
+      "scope": [
+        "v0220/index.html",
+        "DESIGN_DECISIONS.md",
+        "docs/BASTION_III_FISSURE_CANON_20261027.md",
+        "docs/BASTION_I_X_MASTER_TABLE.md",
+        "tests/bastion3-fissure-parity.test.mjs"
+      ],
+      "resources": [],
+      "budget_eur": 0,
+      "authorization": "Owner instruction 2026-10-27 10:09 Europe/Madrid: adapt original vertical slice to agreed fissure/Lyra narrative before Unity Bastion III migration. Do not migrate Unity now, no external publication."
     }
   ],
   "history": [
