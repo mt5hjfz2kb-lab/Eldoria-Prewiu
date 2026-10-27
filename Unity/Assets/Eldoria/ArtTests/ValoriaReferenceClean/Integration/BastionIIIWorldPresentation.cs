@@ -21,8 +21,8 @@ namespace Eldoria.ReferenceClean {
    Hotspot(granarySite,"granary",new Vector3(11,5,9));
    granary=Model("BastionIII/Granary/Granary",granarySite.transform,Vector3.zero,10.4f);
    siteStock=new GameObject("Granary construction supplies");siteStock.transform.SetParent(granarySite.transform,false);
-   Model("Valoria/UrbanProps/Crate",siteStock.transform,new Vector3(-1,0,0),1.5f);
-   Model("Valoria/UrbanProps/Sack",siteStock.transform,new Vector3(1,0,0),1.3f);
+   Model("BastionIII/Granary/StockCrate",siteStock.transform,new Vector3(-1,0,0),1.5f);
+   Model("BastionIII/Granary/StockSack",siteStock.transform,new Vector3(1,0,0),1.3f);
    // Existing, textured production stock denotes the small level increments.
    MakeStock("granary",granarySite.transform,new Vector3(0,0,-5),"Sack");
    if(host.City.Parcels){
@@ -50,7 +50,7 @@ namespace Eldoria.ReferenceClean {
    for(int level=minimum;level<=3;level++){
     var group=new GameObject(building+" level "+level+" stock");group.transform.SetParent(parent,false);group.transform.localPosition=point;
     float offset=(level-minimum)*1.8f;
-    for(int i=0;i<2;i++)Model("Valoria/UrbanProps/"+prop,group.transform,new Vector3(offset+i*.7f,0,i*.65f),1.1f);
+    for(int i=0;i<2;i++)Model("BastionIII/Granary/Stock"+prop,group.transform,new Vector3(offset+i*.7f,0,i*.65f),1.1f);
     cues.Add((group,building,level));
    }
   }
@@ -64,7 +64,7 @@ namespace Eldoria.ReferenceClean {
    // Enable the ACTUAL imported renderers along their prefab ancestry, not
    // placeholder cubes or extra copied artwork. The encounter parent retains
    // its original progression / panorama visibility gate.
-   if(path=="BastionIII/AshWolf"||path=="BastionIII/PrivateFissure"||path.StartsWith("Valoria/UrbanProps/",StringComparison.Ordinal)){
+   if(path=="BastionIII/AshWolf"||path=="BastionIII/PrivateFissure"||path.StartsWith("BastionIII/Granary/Stock",StringComparison.Ordinal)){
     model.SetActive(true);
     foreach(var renderer in model.GetComponentsInChildren<Renderer>(true)){
      for(var node=renderer.transform;node&&node!=parent;node=node.parent)
@@ -78,7 +78,7 @@ namespace Eldoria.ReferenceClean {
    // gameplay level changing. Select the authored highest-detail LOD0 on
    // small CITY props only; keep the same textured source, not duplicate
    // overlapping LOD meshes. Never change Region1's world LOD pipeline.
-   if(path.StartsWith("Valoria/UrbanProps/",StringComparison.Ordinal)){
+   if(path.StartsWith("BastionIII/Granary/Stock",StringComparison.Ordinal)){
     foreach(var lod in model.GetComponentsInChildren<LODGroup>(true)){
      var detail=lod.GetLODs();
      if(detail.Length==0)continue;
