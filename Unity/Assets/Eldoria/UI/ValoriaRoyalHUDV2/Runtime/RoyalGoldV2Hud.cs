@@ -813,6 +813,22 @@ namespace Eldoria.UI.RoyalGold.V2
             value.horizontalOverflow = HorizontalWrapMode.Overflow;
         }
 
+        // First-frame layout creates the card before the live footer has been
+        // reflowed to the current orientation. Always position the illustrated
+        // card AFTER the footer layout, otherwise on a phone it covers the
+        // very medallions the player needs to continue building.
+        private void AlignBuildingCartoucheToNavigation()
+        {
+            if (!buildingCard || !Source || !Source.Navigation) return;
+            var dock = Source.Navigation.transform as RectTransform;
+            if (!dock) return;
+            float safeBottom = Mathf.Max(8f,
+                dock.anchoredPosition.y + dock.rect.height + 8f);
+            var at = buildingCard.anchoredPosition;
+            if (Mathf.Abs(at.y-safeBottom)>.5f)
+                buildingCard.anchoredPosition = new Vector2(at.x,safeBottom);
+        }
+
         private void LayoutNavigation()
         {
             if (!Source.Navigation || !safe) return;
@@ -1012,6 +1028,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!hasGeometry) return;
             LayoutHeaderAlongSafeTop();
             LayoutNavigation();
+            AlignBuildingCartoucheToNavigation();
             ConfigureFeedbackReadability();
             bool modalOpen = Source.Modal && Source.Modal.gameObject.activeSelf;
 
