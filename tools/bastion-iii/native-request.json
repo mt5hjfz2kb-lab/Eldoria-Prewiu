@@ -1,1 +1,7 @@
-{"revision":3,"stage":"parity-persistence-build-safe-art-and-real-Unity-AB","budget":0,"artApproved":false}
+{
+  "revision": 4,
+  "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
+  "budget": 0,
+  "artApproved": false,
+  "reason": "Pinned CC0 wolf; isolated gameplay probe; bounded sparse native checkout"
+}

@@ -1,0 +1,15 @@
+{
+  "author": "Quaternius",
+  "pack": "Ultimate Animated Animals (July2021)",
+  "license": "CC0-1.0",
+  "license_file": "QUATERNIUS_WOLF_LICENSE.txt",
+  "source_page": "https://quaternius.com/packs/ultimateanimatedanimals.html",
+  "source_folder": "https://drive.google.com/drive/folders/1uJ3N5HfB7jKTseJUNQr3N4YaN0UuEtHk",
+  "source_file_id": "1lFQoQ9ln2Z2wGuFFWObj9i5jHqUl_ftG",
+  "source_gltf_sha256": "cc02e9d128b5715f352ee8bea086f97a35f1d875d240de99b0f9f2775c37d415",
+  "runtime_glb_sha256": "142291b6f9114c2fc9ac8e51ffda8d9f959c5726036c3ea9946be173b608a5aa",
+  "conversion": "Embedded JSON glTF to GLB container; geometry, materials, skin and animations unchanged",
+  "budget_eur": 0,
+  "art_approved": false,
+  "selection_reason": "Professionally authored canine silhouette with twelve animation clips; chosen for actual Unity evaluation against the existing fauna. Earlier authored static tube-based candidate not promoted."
+}
