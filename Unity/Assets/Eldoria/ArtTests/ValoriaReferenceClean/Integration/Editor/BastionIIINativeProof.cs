@@ -59,6 +59,26 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(h.Hud.NarrativeOpen&&!h.Hud.NarrativeIsRevealing,
      phase+" real reveal control displays complete first page");
   }
+  // Pixel evidence: a script-level "NarrativeOpen" does not mean that the
+  // authentic royal parchment actually rendered in the player's capture.
+  // The previous Lyra photo contained only terrain while the corresponding
+  // chest capture contained >17% warm parchment in frame. Fail closed if the
+  // newly generated screenshot is still visually missing the real panel.
+  static void RequireNarrativePanelRendered(string name){
+   var png=Ev+"/ui-"+name+"-vertical.png";
+   var tex=new Texture2D(2,2,TextureFormat.RGBA32,false);
+   try{
+    Need(tex.LoadImage(File.ReadAllBytes(png)),name+" screenshot PNG decodes");
+    var pixels=tex.GetPixels32();int warm=0;
+    for(int y=0;y<tex.height/2;y++)for(int x=0;x<tex.width;x++){
+     var p=pixels[y*tex.width+x];
+     if(p.r>=188&&p.g>=162&&p.b>=95&&p.b<=210&&p.r>p.g&&p.g>p.b+14)warm++;
+    }
+    // At least 2% of the bottom half must contain visible native parchment.
+    // No game objects, screenshots or pixels are substituted by this test.
+    Need(warm>=tex.width*tex.height/100,name+" real dialogue parchment appears in the player capture (pixels="+warm+")");
+   }finally{Object.Destroy(tex);}
+  }
   static void UiShot(ValoriaIntegratedWorld h,string name){
    ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-vertical.png",900,1600);
    ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-horizontal.png",1600,900);
@@ -128,7 +148,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var offer=h.Read("fissure-valoria",false).Building.Action;Need(offer.Kind=="ContactLyra","contact offer before assault");h.Submit(offer);yield return null;
    var aldricFace=h.Hud.GetComponentsInChildren<UnityEngine.UI.RawImage>(true).FirstOrDefault(x=>x.name=="Canonical Aldric portrait");
    Need(aldricFace&&!aldricFace.gameObject.activeInHierarchy,"Lyra dialogue never impersonates Aldric portrait");
-   yield return new WaitForSecondsRealtime(.36f);RevealNarrativeForCapture(h,"Lyra","hermano");yield return null;UiShot(h,"lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
+   yield return new WaitForSecondsRealtime(.36f);RevealNarrativeForCapture(h,"Lyra","hermano");yield return null;UiShot(h,"lyra-contact");RequireNarrativePanelRendered("lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
    for(int i=0;i<30&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
    Need(h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"Lyra dialogue completed");
    Shot(h,"fissure-A-open",h.WorldCamera);Command(h,"Fight","fissure-valoria");Need(h.City.Gateway.Snapshot().March.Route.Count>1,"real reachable fissure route");Step(h,2);yield return null;Shot(h,"fissure-B-scar",h.WorldCamera);Step(h,7);yield return null;Shot(h,"fissure-C-closed",h.WorldCamera);
@@ -160,7 +180,7 @@ namespace Eldoria.ReferenceClean.Editor {
    h.Select("granary");yield return null;UiShot(h,"granary-level3");
    h.Open(RoyalSection.Inventory);yield return new WaitForSecondsRealtime(.36f);
    RevealNarrativeForCapture(h,"chest","Manuscrito de la Fisura");
-   yield return null;UiShot(h,"unique-manuscript-chest");
+   yield return null;UiShot(h,"unique-manuscript-chest");RequireNarrativePanelRendered("unique-manuscript-chest");
    for(int i=0;i<10&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
    Need(management!=null,"V3 management host exists");
