@@ -315,6 +315,7 @@ jobs:
           if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
           if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
           if($req.stage -eq 'geography_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'visual_consolidation_validate'){$method='Eldoria.ReferenceClean.Editor.ValoriaConsolidationValidation.Capture';$env:VALORIA_GAMEPLAY_PROBE='1'}
           if($req.stage -eq 'visual_consolidation_integrate'){
             $reviewed=@(Get-ChildItem (Join-Path $env:GITHUB_WORKSPACE 'consolidation-reviewed') -Recurse -Filter 'mesh-output.json')
             if($reviewed.Count -ne 1){throw 'Exact reviewed consolidation input missing or ambiguous'}
@@ -638,6 +639,30 @@ jobs:
             Select-String $playLog -Pattern "Exception:|error CS|Shader error|^Error|TERRAIN_ROUTE_DIAGNOSTIC|TerrainCollider component deleted" -Context 1,2
             Get-Content $playLog -Tail 80
             if($play.ExitCode -ne 0 -or -not(Select-String $playLog -Pattern 'VALORIA_REFERENCE_CLEAN_PLAY_COMPLETE' -Quiet)){throw 'Actual PlayMode validation failed'}
+          }
+
+      - name: Verify integrated consolidation gameplay, saves and all native tests
+        if: success() && steps.native_stage.outputs.stage == 'visual_consolidation_validate'
+        shell: powershell
+        run: |
+          $project=Join-Path $env:GITHUB_WORKSPACE 'valoria-layered-source/Unity'
+          $evidence=Join-Path (Resolve-Path 'docs/evidence/valoria-reference-clean/consolidation-20261027') "$env:GITHUB_RUN_ID"
+          $env:VALORIA_GAMEPLAY_PROBE='1'
+          $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $evidence 'functional-cameras'
+          $probeLog=Join-Path $evidence 'integration-functional.log'
+          $probeArgs=@('-batchmode','-force-d3d11','-projectPath',$project,'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent','-logFile',$probeLog)
+          $probe=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $probeArgs -PassThru
+          if(-not $probe.WaitForExit(720000)){& taskkill.exe /PID $probe.Id /T /F|Out-Null;throw 'Own integrated gameplay probe timeout'}
+          if($probe.ExitCode -ne 0){Get-Content $probeLog -Tail 100;throw 'Integrated progression/save/UI probe failed'}
+          Copy-Item 'docs/evidence/valoria-reference-clean/integration-result.json' (Join-Path $evidence 'integration-result.json')
+          foreach($platform in @('EditMode','PlayMode')){
+            $xml=Join-Path $evidence ($platform+'.xml');$log=Join-Path $evidence ($platform+'.log')
+            $args=@('-batchmode','-force-d3d11','-projectPath',$project,'-runTests','-testPlatform',$platform,'-testResults',$xml,'-logFile',$log)
+            $tests=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+            if(-not $tests.WaitForExit(1800000)){& taskkill.exe /PID $tests.Id /T /F|Out-Null;throw "Own $platform timeout"}
+            if(-not(Test-Path $xml)){throw "Missing $platform results"};[xml]$result=Get-Content $xml
+            if($tests.ExitCode -ne 0 -or $result.'test-run'.result -ne 'Passed' -or [int]$result.'test-run'.failed -ne 0 -or [int]$result.'test-run'.skipped -ne 0){Get-Content $log -Tail 100;throw "Actual $platform gate not fully passed"}
+            Write-Host "$platform PASS cases=$($result.'test-run'.passed)"
           }
 
       - name: Verify optimized Android update identity and signature
