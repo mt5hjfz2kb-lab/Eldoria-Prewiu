@@ -12,6 +12,7 @@ namespace Eldoria.ReferenceClean {
   GameObject town,granary,granarySite,siteStock; readonly Dictionary<string,GameObject> nodes=new Dictionary<string,GameObject>();
   readonly List<(GameObject cue,string building,int level)> cues=new List<(GameObject,string,int)>();
   readonly List<Mesh> terrainMeshes=new List<Mesh>();
+  static readonly string[] VisibleAuthoredEncounterIds={"hunt-wolf","fissure-valoria"};
   bool placed;float refresh;
   public void Initialize(ValoriaIntegratedWorld h){
    host=h;town=new GameObject("Bastion III city additions");town.transform.SetParent(transform,false);
@@ -141,7 +142,7 @@ namespace Eldoria.ReferenceClean {
   // inaccessible zoom, or other global resources.
   void LateUpdate(){
    if(!host||!host.Ready||!host.InWorld)return;
-   foreach(var id in new[]{"hunt-wolf","fissure-valoria"}){
+   foreach(var id in VisibleAuthoredEncounterIds){
     if(nodes.TryGetValue(id,out var encounter)&&encounter.activeInHierarchy)
      EnsureVisibleImportedArt(encounter);
    }
