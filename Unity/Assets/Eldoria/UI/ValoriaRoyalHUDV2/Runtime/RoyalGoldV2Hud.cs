@@ -536,22 +536,50 @@ namespace Eldoria.UI.RoyalGold.V2
         /// </summary>
         private void LayoutHeaderAlongSafeTop()
         {
-            // In the approved reference the Valoria identity and settings
-            // medallion touch the TOP edge of the available safe rectangle.
-            // The safe-area component already excludes notches/status bars.
+            // Original approved Crónica Real: a SINGLE continuous navy/gold
+            // top band, rather than the modern phone's floating second strip.
+            // All resource totals and Valoria identity are still V1 values.
+            float w = safe.rect.width;
+            bool showFood = Source.Resources && Source.Resources.FoodVisible;
+            float realmWidth = portrait ? Mathf.Min(160f, w * .39f) : 275f;
+            float headerHeight = portrait ? 62f : 78f;
+            float settingsSize = portrait ? 56f : 76f;
+
             var realm = Source.Realm ? Source.Realm.transform as RectTransform : null;
             if (realm)
             {
                 realm.anchorMin = realm.anchorMax = new Vector2(0f, 1f);
                 realm.pivot = new Vector2(0f, 1f);
-                realm.anchoredPosition = new Vector2(4f, 0f);
+                realm.anchoredPosition = new Vector2(3f, 0f);
+                SetWidthAndHeight(realm, realmWidth, headerHeight);
+                var royalCrest = realm.Find("Valoria crest") as RectTransform;
+                float crestSize = portrait ? 54f : 70f;
+                if (royalCrest)
+                {
+                    Top(royalCrest, 3f, 3f, crestSize, crestSize);
+                    var bastion = royalCrest.Find("Bastion emblem") as RectTransform;
+                    if (bastion)
+                        Top(bastion, crestSize * .22f, crestSize * .16f,
+                            crestSize * .59f, crestSize * .59f);
+                }
+                float titleX = crestSize + 11f;
+                if (Source.Realm.Realm)
+                {
+                    Top(Source.Realm.Realm.rectTransform, titleX,
+                        portrait ? 5f : 10f, realmWidth - titleX - 2f, 28f);
+                    Source.Realm.Realm.fontSize = portrait ? 20 : 27;
+                }
+                if (Source.Realm.Power)
+                {
+                    Top(Source.Realm.Power.rectTransform, titleX,
+                        portrait ? 32f : 46f, realmWidth - titleX - 2f, 23f);
+                    Source.Realm.Power.fontSize = portrait ? 15 : 19;
+                }
             }
+
             var settings = Source.Settings ? Source.Settings.transform as RectTransform : null;
             if (settings)
             {
-                // The original top-right control is a circular gold-and-navy
-                // medieval seal. The shipped prefab inadvertently remained
-                // a SQUARE RoyalFrameGraphic; restore its authored round mesh.
                 var seal = Source.Settings.GetComponent<RoyalFrameGraphic>();
                 if (seal && !seal.Round)
                 {
@@ -560,20 +588,79 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
                 settings.anchorMin = settings.anchorMax = new Vector2(1f, 1f);
                 settings.pivot = new Vector2(1f, 1f);
-                settings.anchoredPosition = new Vector2(-4f, 0f);
+                settings.anchoredPosition = new Vector2(-3f, 0f);
+                SetWidthAndHeight(settings, settingsSize, settingsSize);
+                var icon = settings.Find("Symbol") as RectTransform;
+                if (icon)
+                {
+                    icon.anchorMin = icon.anchorMax = icon.pivot =
+                        new Vector2(.5f, .5f);
+                    SetWidthAndHeight(icon, settingsSize * .66f,
+                        settingsSize * .66f);
+                    icon.anchoredPosition = Vector2.zero;
+                }
             }
-            // A landscape screen wide enough for all three genuine headers
-            // keeps resources on the same top edge. In portrait it retains
-            // the native second row: never overlap real labels to fake parity.
+
             var resources = Source.Resources ? Source.Resources.transform as RectTransform : null;
-            if (resources && !portrait && realm && settings &&
-                safe.rect.width >= realm.rect.width + resources.rect.width +
-                    settings.rect.width + 24f)
+            if (!resources) return;
+            int n = showFood ? 3 : 2;
+            float slotMin = 59f;
+            float room = w - realmWidth - settingsSize - 17f;
+            bool secondRow = portrait && room / n < slotMin;
+            float resourceWidth = secondRow
+                ? Mathf.Min(w - 22f, n * 116f)
+                : portrait ? room : n * 165f;
+            resourceWidth = Mathf.Max(n * 40f, resourceWidth);
+            resources.anchorMin = resources.anchorMax = new Vector2(0f, 1f);
+            resources.pivot = new Vector2(0f, 1f);
+            resources.anchoredPosition = new Vector2(
+                secondRow ? 11f : portrait ? realmWidth + 8f :
+                    Mathf.Max(realmWidth + 10f, (w - resourceWidth) * .5f),
+                secondRow ? -headerHeight - 2f : 0f);
+            SetWidthAndHeight(resources, resourceWidth,
+                portrait ? 60f : headerHeight);
+            float chip = resourceWidth / n;
+            LayoutOriginalResource(resources, "Madera", Source.Resources.Wood,
+                0f, chip, portrait);
+            LayoutOriginalResource(resources, "Piedra", Source.Resources.Stone,
+                chip, chip, portrait);
+            if (showFood)
+                LayoutOriginalResource(resources, "Comida", Source.Resources.Food,
+                    chip * 2f, chip, portrait);
+
+            if (portrait && objectiveCard)
             {
-                resources.anchorMin = resources.anchorMax = new Vector2(.5f, 1f);
-                resources.pivot = new Vector2(.5f, 1f);
-                resources.anchoredPosition = Vector2.zero;
+                // Keep the original quest parchment immediately BELOW the
+                // royal top band. An unlocked third resource is a native
+                // value, not a reason to bury the objective halfway down.
+                float questY = secondRow ? headerHeight + 65f : 72f;
+                objectiveCard.anchoredPosition = new Vector2(
+                    objectiveCard.anchoredPosition.x, -questY);
             }
+        }
+
+        private static void LayoutOriginalResource(RectTransform parent,
+            string name, RoyalText value, float x, float chip, bool portrait)
+        {
+            if (!value) return;
+            // In the approved reference numbers have icons but NO extra
+            // stacked "Madera/Piedra/Comida" names stealing vertical space.
+            var word = parent.Find(name + " name");
+            if (word && word.gameObject.activeSelf)
+                word.gameObject.SetActive(false);
+            float iconSize = portrait
+                ? Mathf.Clamp(chip * .27f, 14f, 25f) : 36f;
+            var glyph = parent.Find(name + " icon") as RectTransform;
+            if (glyph)
+                Top(glyph, x + 3f, portrait ? 17f : 17f,
+                    iconSize, iconSize);
+            float textX = x + iconSize + 4f;
+            Top(value.rectTransform, textX, portrait ? 13f : 18f,
+                Mathf.Max(12f, chip - iconSize - 5f), portrait ? 33f : 40f);
+            value.fontSize = portrait
+                ? Mathf.RoundToInt(Mathf.Clamp(chip * .20f, 12f, 19f)) : 23;
+            value.alignment = TextAnchor.MiddleLeft;
+            value.horizontalOverflow = HorizontalWrapMode.Overflow;
         }
 
         private void LayoutNavigation()
