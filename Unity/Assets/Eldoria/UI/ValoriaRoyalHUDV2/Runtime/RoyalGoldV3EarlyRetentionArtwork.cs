@@ -10,6 +10,7 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public bool Scouts;
         public int Chapter = 1;
+        public bool BossEncounter;
         // Five boss seals show the ACTUAL completed milestones in this chapter.
         public int ChapterProgress;
         Color T(Color c)=>new Color(c.r*color.r,c.g*color.g,c.b*color.b,c.a*color.a);
@@ -130,6 +131,17 @@ namespace Eldoria.UI.RoyalGold.V2
                         new Color(.51f,.47f,.42f,1),new Color(.75f,.69f,.57f,1));
                 Q(vh,x+w*.519f,y+h*.40f,w*.029f,h*.17f,shadow,shadow);
                 Crest(vh,x+w*.53f,y+h*.59f,Mathf.Min(w,h)*.11f,antique);
+                if(BossEncounter)
+                {
+                    // Purple Breach atmosphere belongs to the rare boss seal,
+                    // not to every ordinary Vigilants encounter.
+                    var purple=new Color(.71f,.44f,.87f,1);
+                    Diamond(vh,x+w*.53f,y+h*.90f,Mathf.Min(w,h)*.055f,purple);
+                    Diamond(vh,x+w*.53f,y+h*.90f,Mathf.Min(w,h)*.025f,
+                        new Color(.95f,.81f,1f,1));
+                    Q(vh,x+w*.528f,y+h*.79f,w*.004f,h*.07f,purple,purple);
+                    Q(vh,x+w*.495f,y+h*.88f,w*.066f,h*.005f,purple,purple);
+                }
                 // The five illustrated boss milestones are an in-world trail,
                 // never extra buttons or tutorial-locked destinations.
                 // Displayed after clearing five, ten, fifteen, twenty,
