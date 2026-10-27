@@ -1,7 +1,7 @@
 {
-  "revision": 12,
+  "revision": 13,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Prove the actual imported wolf/fissure renderer hierarchy becomes visible inside camera after activating authored GLB children; require all 34 EditMode, 66 PlayMode, full I-II, BastionIII proof, matched real A/B and no downgrade in art quality"
+  "reason": "Run real Unity editor art gate on corrected activation AFTER encounter becomes visible, with full 34 EditMode, 66 PlayMode, I-II, BastionIII proof and actual wolf/fissure A/B. Do not approve unrendered art."
 }
