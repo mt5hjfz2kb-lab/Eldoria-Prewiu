@@ -249,6 +249,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 Top(role.rectTransform, left + 2f, 70f, textWidth - 4f, 30f);
             }
 
+            // The legacy narrative component currently activates Aldric for any non-narrator.
+            // Correct that VISUALLY here, without changing the authoritative gameplay/UI.
+            string speaker = Source.NarrativeSpeaker ?? string.Empty;
+            bool showingAldric =
+                string.Equals(speaker, "Sir Aldric", System.StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(speaker, "Aldric", System.StringComparison.OrdinalIgnoreCase);
             if (portrait)
             {
                 // Only the authentic Aldric image may represent Aldric. Lyra,
@@ -260,8 +266,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     // Keep the existing canonical RawImage, speaker visibility and its fallback.
                     // Only Sir Aldric may receive Aldric's approved chest-up portrait.
-                    if (string.Equals(Source.NarrativeSpeaker, "Sir Aldric",
-                                      System.StringComparison.OrdinalIgnoreCase))
+                    if (showingAldric)
                     {
                         int turn = Source.NarrativeTurnIndex;
                         if (aldricLastTurn != turn)
@@ -272,12 +277,16 @@ namespace Eldoria.UI.RoyalGold.V2
                         var bust = GetAldricBust();
                         if (bust) face.texture = bust;
                     }
+                    // Hide legacy Aldric JPEG on Lyra/Orín/narrator turns.
+                    // The speaker-specific glyph appears instead; never mislabel Aldric.
+                    face.gameObject.SetActive(showingAldric && face.texture != null);
                     face.raycastTarget = false;
                     face.uvRect = new Rect(0f, 0f, 1f, 1f);
                 }
             }
             if (sigil)
             {
+                sigil.gameObject.SetActive(!showingAldric);
                 Top(sigil, portraitLeft, portraitTop, portraitSize, portraitSize);
                 var glyph = sigil.GetComponent<RoyalText>();
                 if (glyph)
