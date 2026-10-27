@@ -99,9 +99,13 @@ namespace Eldoria.Tests
             Canvas.ForceUpdateCanvases();
             Assert.That(Member(v2,"ChronicleIllustratedBuildingVisible"),Is.EqualTo(true),
                 "Crónica Real must actually DISPLAY its illustrated building card, not just instantiate a hidden placeholder");
-            var realCard = GameObject.Find("V2 / contextual building sheet");
+            // GameObject.Find interprets slash-bearing scene names as
+            // hierarchy paths. Look up the actual existing HUD child by
+            // exact name instead, preventing a false-negative native gate.
+            var realCard = hud.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x => x.name=="V2 / contextual building sheet");
             Assert.That(realCard,Is.Not.Null);
-            var cardRect = realCard.GetComponent<RectTransform>();
+            var cardRect = realCard;
             var bottomNav = Member(hud,"Navigation") as Component;
             Assert.That(bottomNav,Is.Not.Null);
             // Both use safe-bottom anchored coordinates: an illustrated card
@@ -143,8 +147,14 @@ namespace Eldoria.Tests
             var reset = Member(modal, "Secondary") as Button;
             Assert.That(reset && reset.gameObject.activeInHierarchy, Is.True,
                 "Test save reset belongs in the Settings panel");
+            var initialRevision = ((Eldoria.Domain.PlayerState)Call(
+                Member(Member(host, "City"), "Gateway"), "Snapshot")).Revision;
             reset.onClick.Invoke(); // FIRST tap only: arm, NEVER destroy a save.
             yield return null;
+            var unchanged = ((Eldoria.Domain.PlayerState)Call(
+                Member(Member(host, "City"), "Gateway"), "Snapshot")).Revision;
+            Assert.That(unchanged,Is.EqualTo(initialRevision),
+                "Merely arming playtest reset must not write or delete player progress");
             var body = Member(modal, "Body") as Text;
             Assert.That(body, Is.Not.Null);
             StringAssert.Contains("CONFIRM", body.text.ToUpperInvariant());
