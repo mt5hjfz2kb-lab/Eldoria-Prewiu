@@ -12,7 +12,9 @@ namespace Eldoria.World4XCanon
  public sealed class RegionOneReferenceNodes : MonoBehaviour
  {
   public const float BastionOneVisualWidth=24f;
-  ValoriaIntegratedWorld host;Material nodes,trees;bool before;
+  ValoriaIntegratedWorld host;Material nodes,trees;bool before,canonicalCity;
+  [Serializable] sealed class CityAnchor {public float u,v;}
+  readonly List<Material> cityMaterials=new List<Material>();
   BoxCollider cityHit;Vector3 cityHitCenter,cityHitSize;bool cityHitCached;
   readonly Dictionary<string,Vector3> resourceOrigins=new Dictionary<string,Vector3>();
   readonly List<Renderer> old=new List<Renderer>();readonly List<bool> states=new List<bool>();readonly List<bool> mountains=new List<bool>();
@@ -25,7 +27,8 @@ namespace Eldoria.World4XCanon
    var c=parent.gameObject.AddComponent<RegionOneReferenceNodes>();c.host=host;
    c.nodes=new Material(shader){name="Region1 reference city quarry ruin"};c.nodes.mainTexture=texture;
    c.trees=new Material(shader){name="Region1 real wood node grove"};c.trees.mainTexture=Resources.Load<Texture2D>("World4X/RegionOnePaintedForest");
-   c.Build();return c;
+   c.canonicalCity=Resources.Load<Texture2D>("ValoriaStrategic/BastionI")&&Resources.Load<Texture2D>("ValoriaStrategic/BastionII");
+   c.Build();RegionOneStoneBridge.Install(parent,host);return c;
   }
   Transform Find(string name)=>host.WorldRoot.GetComponentsInChildren<Transform>(true).FirstOrDefault(t=>t.name==name);
   Bounds BoundsOf(GameObject go)
@@ -59,6 +62,16 @@ namespace Eldoria.World4XCanon
   }
   void Sprite(string name,Vector3 foot,float width,int cell,GameObject gate)
   {
+   if(cell==0&&gate&&canonicalCity){
+    string key=gate==host.WorldBastionTwo?"BastionII":"BastionI";
+    var texture=Resources.Load<Texture2D>("ValoriaStrategic/"+key);
+    var anchor=JsonUtility.FromJson<CityAnchor>(Resources.Load<TextAsset>("ValoriaStrategic/"+key+"-anchor").text);
+    var material=new Material(nodes){name="Valoria approved original "+key,mainTexture=texture};cityMaterials.Add(material);
+    width=BastionOneVisualWidth;float h=width*texture.height/texture.width;
+    foot=host.WorldHome+new Vector3(3.3f,0,-7.5f);foot.y=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(3.3f,-7.5f)+.18f;
+    Create(name,new[]{foot,foot,foot,foot},new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up},
+     new[]{new Vector2(-width*anchor.u,-h*anchor.v),new Vector2(width*(1-anchor.u),-h*anchor.v),new Vector2(width*(1-anchor.u),h*(1-anchor.v)),new Vector2(-width*anchor.u,h*(1-anchor.v))},new[]{0,1,2,0,2,3},material,gate);return;
+   }
    // Measured alpha bounds in the original2172x724asset, no destructive cropping.
    var boxes=new[]{new Vector4(56,16,675,681),new Vector4(773,111,1420,643),new Vector4(1515,129,2130,650)};
    var b=boxes[cell];float height=width*(b.w-b.y)/(b.z-b.x);
@@ -86,7 +99,7 @@ namespace Eldoria.World4XCanon
    for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=before&&!far&&states[i]&&(!mountains[i]||zoom<=near);
    bool panorama=RegionOneResourcePlacement.IsPanoramic(zoom,host.WorldNavigation.globalZoom);
    float cityScale=Mathf.Lerp(1f,1.8f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
-   nodes.SetFloat("_BillboardScale",cityScale);
+   nodes.SetFloat("_BillboardScale",cityScale);foreach(var material in cityMaterials)material.SetFloat("_BillboardScale",cityScale);
    if(!cityHitCached){
     var target=host.FindTarget("valoria-map-city");cityHit=target?target.GetComponent<BoxCollider>():null;
     if(cityHit){cityHitCenter=cityHit.center;cityHitSize=cityHit.size;cityHitCached=true;}
@@ -99,7 +112,7 @@ namespace Eldoria.World4XCanon
     if(id!=null&&resourceOrigins.TryGetValue(id,out var original)){var target=host.FindTarget(id);if(target){var delta=target.transform.position-original;var saved=state.WorldResourceLocations.Find(x=>x.TargetId==id);if(saved!=null&&saved.Generation>0)delta.y=target.transform.position.y-GroundFoot(original).y;current[i].transform.position=delta;}}
     bool city=current[i].name.StartsWith("Reference city Bastion",StringComparison.Ordinal);
     current[i].enabled=!(id!=null&&Resources.Load<GameObject>("World4X/Blender/RegionOneResources"))&&!before&&
-     (city?!panorama:!far)&&available&&(!gates[i]||gates[i].activeInHierarchy);
+     (city?(canonicalCity||!panorama):!far)&&available&&(!gates[i]||gates[i].activeInHierarchy);
     if(city){
      var mesh=current[i].GetComponent<MeshFilter>().sharedMesh;var foot=mesh.vertices[0];
      mesh.bounds=new Bounds(foot,Vector3.one*65f*cityScale);
@@ -113,6 +126,6 @@ namespace Eldoria.World4XCanon
    }
   }
   void LateUpdate(){Refresh();}
-  void OnDestroy(){for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=lodStates[i];for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=states[i];foreach(var r in current)if(r)Destroy(r.gameObject);foreach(var m in meshes)if(m)Destroy(m);if(nodes)Destroy(nodes);if(trees)Destroy(trees);}
+  void OnDestroy(){for(int i=0;i<lods.Count;i++)if(lods[i])lods[i].enabled=lodStates[i];for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=states[i];foreach(var r in current)if(r)Destroy(r.gameObject);foreach(var m in meshes)if(m)Destroy(m);foreach(var material in cityMaterials)if(material)Destroy(material);if(nodes)Destroy(nodes);if(trees)Destroy(trees);}
  }
 }

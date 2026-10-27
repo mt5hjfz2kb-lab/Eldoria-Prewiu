@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-26T23:27:03.896Z",
+  "updated_at": "2026-10-27T00:31:42.897Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -71,7 +71,10 @@
         "docs/evidence/world4x-canon-20261022/authoring/materialize_verified_candidate.ps1",
         "docs/evidence/world4x-canon-20261022/authoring/reuse_editable_source.ps1",
         "updates/android/family.json",
-        "docs/ui-v3/ANDROID_1_15_RELEASE.md"
+        "docs/ui-v3/ANDROID_1_15_RELEASE.md",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneReferenceNodes.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneStoneBridge.cs",
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneStoneBridge.cs.meta"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -80,7 +83,7 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VISUAL_CONSOLIDATION_BASELINE_AND_SOURCE_REVIEW",
+      "phase": "INTEGRATE_INDEPENDENTLY_REVIEWED_CONSOLIDATION",
       "next": "Android1.15/code15 published and updater channel verified. No pending publication; reclaim canonical ID for a new owner-authorized scope or concrete defect.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
@@ -1037,7 +1040,7 @@
           "reason": "Owner requests final visual consolidation city/world 2026-10-27"
         }
       ],
-      "ownership_revision": 36,
+      "ownership_revision": 37,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
@@ -1107,6 +1110,15 @@
           "unchanged_local_validator": "PASS",
           "superseded_failed_run": 40411375056
         }
+      },
+      "visual_consolidation_review": {
+        "run": 40425753661,
+        "architecture": "RETAINED_I_II_TWELVE_VIEWS",
+        "panorama": "RETAINED",
+        "bank": "RETAINED",
+        "breach": "REJECTED_PRESERVE_ORIGINAL",
+        "reviewer": "/root/visual_review",
+        "no_apk": true
       }
     },
     {

@@ -160,15 +160,16 @@ Shader "Eldoria/RegionOneAuthoredSurface" {
      c.rgb+=half3(.65,.30,.85)*(1-smoothstep(1,5,radius));
  }
  float2 region=i.world.xz-_RegionOrigin.xz;
- // Minimal peripheral atmosphere at the region, hiding the neighbouring continuation.
- // Rounded, irregular peripheral falloff. Vary the boundary itself, not
- // merely the blur width of four perfectly straight map edges.
- float2 normalizedRegion=abs(region/float2(910,1800));
- float perimeter=pow(pow(normalizedRegion.x,4)+pow(normalizedRegion.y,4),.25);
- float irregular=.025*sin(region.y*.009)+.018*cos(region.x*.013-region.y*.006);
- // Keep haze only in the last continental rim: the earlier .88
- // start veiled too much real strategic terrain on a phone.
- float atmosphere=smoothstep(.925,1.055,perimeter+irregular)*_BoundaryWeight;
+ // Peripheral atmosphere over the already authored continuation; logical region bounds are unchanged.
+ // Reveal existing continuation; broad terrain-following peripheral banks replace the oval cutout.
+ float side=abs(region.y)/2110.0;
+ float transverse=abs(region.x)/1260.0;
+ float irregular=.07*sin(region.y*.0031+1.3)+.035*cos(region.x*.006-region.y*.002);
+ float rim=max(side+irregular,transverse-.045*sin(region.y*.004));
+ float atmosphere=smoothstep(.86,1.17,rim)*_BoundaryWeight;
+ // Existing sea remains, but no ink-dark stripe at the edge of the continental view.
+ float coastHaze=smoothstep(560,940,region.x+35*sin(region.y*.002+1));
+ atmosphere=max(atmosphere,coastHaze*_BoundaryWeight);
  return half4(lerp(c.rgb,_BoundaryColour.rgb,atmosphere),1);
  }
  ENDHLSL

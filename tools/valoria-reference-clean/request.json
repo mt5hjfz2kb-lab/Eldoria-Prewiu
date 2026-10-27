@@ -1,6 +1,6 @@
 {
-  "stage": "visual_consolidation_trial",
-  "revision": 289,
+  "stage": "visual_consolidation_integrate",
+  "revision": 290,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,5 +8,5 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Exact projected stair-foot anchor for original-model city impostors; evaluate combined stone bridge and retained Boundary286. Riverbank288 independently retained; Breach original preserved."
+  "checks": "Integrate only exact independently retained native289 assets; verified SHA256 input; retain original Breach; no APK/publication. Subsequent integrated native functional/visual gate required."
 }

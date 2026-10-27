@@ -27,3 +27,13 @@ No hay BlenderMCP expuesto en la sesión. Se usa Blender 5.2.2 LTS instalado en 
 Panorámica 286 retenida visualmente. Brecha conservada sin cambios por falta de mejora perceptible. Arquitectura y ribera pendientes de revisión de las siguientes capturas. No se ha promovido arte jugable por el mero éxito de compilación o render. No se certifica dispositivo físico ni rendimiento móvil.
 
 Evidencias nativas y editables retenidas en los artefactos de sus ejecuciones; no son imágenes simuladas. La revisión final debe identificar bytes, cámaras, fuente integrada y pruebas funcionales antes del cierre.
+
+## Revisión independiente final de candidatas
+
+Ensayo288 / 40425009034: ribera RETAIN en H/V; contacto corregido y rocas portantes preservadas. Arquitectura original horneada: identidad y silueta RETAIN provisional en doce vistas, contacto con puente pendiente.
+
+Ensayo289 / 40425753661, fuente b7ef0667dc407b4e9b1a6d93ba46d90d8d4b2076: /root/visual_review retiene combined-I y combined-II tras revisar las doce vistas. La escalinata conecta con el tablero sin la separación de césped anterior. La arquitectura I-II es reconocible y las panorámicas mantienen continuidad. La superposición parcial preexistente de cantera/acceso en regional vertical se documenta sin mover recursos funcionales.
+
+La integración usa exclusivamente bytes del artefacto12699089321, ZIP SHA25648ebe5ce113ffdaaebdb592a29876731845a6bd6fc76384892ad36cbd3cd12b3. Mesh JSON582ded9a1c1b38fd148da669399dbc92cf73c099b51b99f6d799c14c45bde4ce. Fuente editable8121a7aacf1f23e6b3a3a0922c20405b031140b7ece5b579aa67d240fc27ba24. No se promueve la reducción de los Bastiones ni la variante de Brecha.
+
+La revisión corresponde a candidatas auténticas; queda pendiente comprobar la integración y sus funciones antes de cerrar.

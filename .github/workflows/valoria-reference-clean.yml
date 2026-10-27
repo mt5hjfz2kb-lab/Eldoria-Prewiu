@@ -155,6 +155,15 @@ jobs:
           run-id: 39663648455
           github-token: ${{ github.token }}
           path: spawnling-reviewed-input
+      - name: Recover exact independently reviewed consolidation assets
+        if: contains(github.event.head_commit.message, '[consolidation-integrate]')
+        uses: actions/download-artifact@v4
+        with:
+          name: valoria-consolidation-survey-40425753661
+          run-id: 40425753661
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: consolidation-reviewed
+
       - name: Execute requested stage in native Unity
         id: native_stage
         shell: powershell
@@ -306,6 +315,13 @@ jobs:
           if($req.stage -eq 'geography_survey'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Survey'}
           if($req.stage -eq 'geography_trial'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Trial'}
           if($req.stage -eq 'geography_integrate'){$method='Eldoria.ReferenceClean.Editor.ValoriaGeographyContinuityV1.Integrate';$env:VALORIA_GAMEPLAY_PROBE='1'}
+          if($req.stage -eq 'visual_consolidation_integrate'){
+            $reviewed=@(Get-ChildItem (Join-Path $env:GITHUB_WORKSPACE 'consolidation-reviewed') -Recurse -Filter 'mesh-output.json')
+            if($reviewed.Count -ne 1){throw 'Exact reviewed consolidation input missing or ambiguous'}
+            $env:ELDORIA_CONSOLIDATION_INPUT=$reviewed[0].Directory.FullName
+            $env:VALORIA_GAMEPLAY_PROBE='1'
+            $method='Eldoria.ReferenceClean.Editor.ValoriaConsolidationIntegration.Integrate'
+          }
           if($req.stage -eq 'visual_consolidation_trial'){
             $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
             if(-not $blender){$blender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Filter blender.exe -Recurse | Select-Object -First 1 -ExpandProperty FullName}
@@ -721,6 +737,60 @@ jobs:
             $count=0
             if($available){$priorPreference=$ErrorActionPreference;$ErrorActionPreference='Continue';$listing=@(& $adb devices 2>&1);$ErrorActionPreference=$priorPreference;$count=@($listing|Where-Object {$_.ToString() -match '\sdevice$'}).Count}
             @{windows_host=$true;android_adb_available=$available;authorized_android_devices=$count;physical_android_profile_performed=$false;physical_ios_profile_performed=$false}|ConvertTo-Json|Set-Content docs/evidence/valoria-reference-clean/mobile-availability.json -Encoding utf8
+          }
+      - name: Persist only independently reviewed consolidation assets and scene bindings
+        # A WebGL-only QA stage authors no scene/model/prefab. Its artifacts
+        # must be uploaded unchanged; rebasing an unnecessary art commit here
+        # used to reject harmless browser-QA request updates and prevent a
+        # successful exact WebGL build from reaching the browser gate.
+        if: success() && steps.native_stage.outputs.stage == 'visual_consolidation_integrate'
+        shell: powershell
+        run: |
+          git config user.name 'Valoria reference clean builder'
+          git config user.email 'valoria-clean@users.noreply.github.com'
+          git add -f -- Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Consolidation20261027/ Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Consolidation20261027.meta Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/ Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources.meta Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity
+          if(-not(git diff --cached --quiet)){
+            git commit -m 'art(valoria): integrate independently reviewed architecture, stone bridge and natural bank'
+            if($LASTEXITCODE){throw 'Commit failed'}
+            # If another chat updated only unrelated delivery docs during native
+            # capture, preserve their work and rebase this proof safely. Never
+            # force-push or rebase over changed gameplay/Unity/art authority.
+            $published=$false
+            for($attempt=1;$attempt -le 3;$attempt++){
+              git fetch origin main
+              if($LASTEXITCODE){throw 'Cannot read live main for safe evidence integration'}
+              $changes=@(git diff --name-only "$env:GITHUB_SHA" origin/main)
+              # Registry writes from an independent Tripo workstream are not a
+              # Valoria scene conflict. Compare the exact live lease instead
+              # of interpreting any registry edit as another art owner.
+              if($changes -contains 'pipeline/active-workstreams.json'){
+                $newLease=Join-Path $env:RUNNER_TEMP "valoria-live-after-native-$env:GITHUB_RUN_ID.json"
+                git show 'origin/main:pipeline/active-workstreams.json' | Set-Content $newLease -Encoding UTF8
+                if($LASTEXITCODE){throw 'Live post-capture ownership cannot be verified'}
+                node tools/workstream-lease/check.mjs pipeline/active-workstreams.json $newLease valoria-master-plan-layered-construction-20261016
+                if($LASTEXITCODE){throw 'Valoria lease changed while native capture ran; preserve artifacts'}
+              }
+              $protected=@($changes|Where-Object {
+                $_ -match '^(Unity/|tools/valoria-reference-clean/|docs/evidence/valoria-reference-clean/|pipeline/development-baseline\.json$|AGENTS\.md$|PROJECT_STATE\.md$|SESSION_HANDOFF\.md$)'
+              })
+              if($protected.Count){
+                throw ('Concurrent protected gameplay/art change; preserve artifacts without integration: '+($protected -join ', '))
+              }
+              $remoteSha=(git rev-parse origin/main).Trim()
+              $parentSha=(git rev-parse HEAD^).Trim()
+              if($remoteSha -ne $parentSha){
+                # The Unity editor can leave unrelated tracked local settings
+                # changed; preserve them with Git's own bounded auto-stash.
+                git -c rebase.autoStash=true rebase origin/main
+                if($LASTEXITCODE){throw 'Safe Git autostash rebase failed; preserve evidence artifact'}
+              }
+              # For unchanged origin, direct fast-forward push is always safer
+              # than a redundant rebase of the native-rendered working tree.
+              git push origin HEAD:main
+              if($LASTEXITCODE -eq 0){$published=$true;break}
+              Write-Warning "Unrelated concurrent main update, retrying safe fast-forward attempt $attempt/3"
+            }
+            if(-not $published){throw 'Concurrent main mutation persisted; all original artifacts retained, no force-push'}
           }
       - name: Persist independent scene, models, prefabs and actual captures on construction branch
         # A WebGL-only QA stage authors no scene/model/prefab. Its artifacts
