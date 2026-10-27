@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T08:11:27.537Z",
+  "updated_at": "2026-10-27T08:14:01.795Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1358,12 +1358,12 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-cronica-real-fidelity-20261027",
+      "owner": "chatgpt-cronica-real-ui-20261027",
       "ownership_state": "claimed",
-      "ownership_revision": 18,
+      "ownership_revision": 19,
       "write_scope_released": false,
       "status": "active",
-      "claimed_at": "2026-10-27T08:01:54.557Z",
+      "claimed_at": "2026-10-27T08:14:01.795Z",
       "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
       "branch": "main",
       "pr": 90,
@@ -1446,7 +1446,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Candidate on branch fix/ui-cronica-real-fidelity-20261027; merge only after Unity PlayMode/EditMode, real horizontal/vertical captures, reference direct review, button/timer/Training/March and persistence QA.",
+      "next": "Single candidate PR #115 fix/ui-cronica-real-reference-20261027. Finish native Unity PlayMode/EditMode and genuine horizontal/portrait city/world/Training/March A-B before release; no PR116 merge.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1511,10 +1511,15 @@
           "owner": "chatgpt-cronica-real-ui-20261027",
           "revision": 17,
           "reason": "Continuación explícita del mismo encargo por el propietario en esta conversación; cambio exclusivo de titularidad y no de alcance."
+        },
+        {
+          "owner": "chatgpt-cronica-real-fidelity-20261027",
+          "revision": 18,
+          "reason": "Merged coordination: PR116 closed without merge; delegate back to original PR115 writer and avoid duplicated Unity work."
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "CRONICA_REAL_NATIVE_CAPTURE_GATE_PENDING",
+      "phase": "PR115_CANONICAL_UNITY_GATE_IN_PROGRESS",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
