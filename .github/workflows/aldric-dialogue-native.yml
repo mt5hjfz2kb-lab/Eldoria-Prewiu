@@ -64,6 +64,7 @@ jobs:
           ref: refs/pull/118/merge
           path: aldric-dialogue-merge
           clean: false
+          filter: blob:none
           sparse-checkout: |
             Unity
             pipeline
