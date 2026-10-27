@@ -116,7 +116,7 @@ namespace Eldoria.ReferenceClean {
    if(IsWorldTarget(id)&&!TrySetWorld(true))return false;
    Hud.SelectBuilding(id);return true;
   }
-  public static bool IsWorldTarget(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal))||id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin";
+  public static bool IsWorldTarget(string id)=>LocalGateway.IsChapterThreeTarget(id)||(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal))||id=="forest-valoria"||id=="quarry-valoria"||id=="corrupt-scout"||id=="engendro-valoria"||id=="old-watch-ruin";
   public void SetWorld(bool open){TrySetWorld(open);}
   public bool TrySetWorld(bool open){
    if(!Ready)return false;
@@ -147,7 +147,7 @@ namespace Eldoria.ReferenceClean {
    if(city==null||city.Gateway==null)return false;var s=city.Gateway.Snapshot();
    if(section==RoyalSection.World)return InWorld||CanEnterWorld(s);
    if(section==RoyalSection.Army)return s.BastionLevel>=2&&s.BarracksLevel>0;
-   if(section==RoyalSection.Bastion)return s.BastionLevel==1&&s.JourneyComplete;
+   if(section==RoyalSection.Bastion)return s.BastionLevel<=2&&s.JourneyComplete;
    return false;
   }
   public void Open(RoyalSection section){if(section==RoyalSection.World)TrySetWorld(!InWorld);}
@@ -316,7 +316,7 @@ namespace Eldoria.ReferenceClean {
   }
   public RoyalSnapshot Read(string selected,bool english){
    englishInterface=english;var data=binding.Read(selected,english);if(InWorld)data.Realm=L("ZONA 1","ZONE 1");
-   if(IsWorldTarget(selected)){
+   if(IsWorldTarget(selected)&&!LocalGateway.IsChapterThreeTarget(selected)){
     var action=world.Inspect(selected);var s=boundGateway.Snapshot();bool active=s.March.Phase!="idle",thisMarch=active&&s.March.TargetId==selected;
     var b=new RoyalBuilding{Id=selected,Name=TargetName(selected),Function=DestinationSummary(selected,s),State=action.Label};
     if(thisMarch){b.OperationActive=true;b.State=MarchStatus(s);b.Time=RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,city.Clock.UtcTicks,english);b.Result=s.March.Phase=="returning"?Reward(s.March.PendingWood,s.March.PendingStone)+L(" al llegar a Valoria"," on arrival at Valoria"):ExpectedReward(selected,s);b.Progress=(float)ZoneOneGatewayHost.TravelFraction(city.Clock.UtcTicks,s.March.PhaseEndsUtcTicks,s.March.Phase=="gathering"?SliceRules.GatherSeconds:SliceRules.TravelSeconds);}

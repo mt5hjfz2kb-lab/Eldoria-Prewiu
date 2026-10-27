@@ -1,0 +1,62 @@
+name: '[ELDORIA] Bastion III isolated native verification'
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/bastion-iii-canonical-20261027]
+    paths: ['tools/bastion-iii/native-request.json']
+permissions:
+  contents: read
+concurrency:
+  group: bastion-iii-native
+  cancel-in-progress: false
+jobs:
+  native:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    steps:
+      - name: Recover installed Git
+        shell: powershell
+        run: |
+          if(-not(Get-Command git -ErrorAction SilentlyContinue)){ $env:Path='C:\Program Files\Git\cmd;'+$env:Path; 'C:\Program Files\Git\cmd' | Out-File $env:GITHUB_PATH -Append -Encoding utf8 }
+      - uses: actions/checkout@v4
+        with:
+          path: bastion-iii-source
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: bastion-iii-live
+          sparse-checkout: pipeline
+      - name: Verify live resource lease and idle tools
+        shell: powershell
+        working-directory: bastion-iii-source
+        run: |
+          node tools/workstream-lease/check.mjs pipeline/active-workstreams.json ../bastion-iii-live/pipeline/active-workstreams.json valoria-master-plan-layered-construction-20261016
+          if($LASTEXITCODE){throw 'Stale or conflicting lease'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
+      - name: Compile and test exact isolated candidate
+        shell: powershell
+        working-directory: bastion-iii-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iii/native'
+          New-Item -ItemType Directory -Force $evidence | Out-Null
+          New-Item -ItemType Directory -Force (Join-Path $project 'UserSettings') | Out-Null
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' | Set-Content (Join-Path $project 'UserSettings/Search.index') -Encoding UTF8
+          foreach($platform in @('EditMode','PlayMode')){
+            $xml=Join-Path $evidence "$platform.xml"
+            $log=Join-Path $evidence "$platform.log"
+            $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform',$platform,'-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+            $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+            if($p.ExitCode -ne 0){throw "Unity $platform exit $($p.ExitCode)"}
+            if(-not(Test-Path $xml)){throw "Missing $platform test results"}
+            [xml]$results=Get-Content $xml
+            if($results.'test-run'.result -ne 'Passed'){throw "Unity $platform tests failed"}
+          }
+          @{source=$env:GITHUB_SHA;run=$env:GITHUB_RUN_ID;art_approved=$false;physical_mobile_tested=$false} | ConvertTo-Json | Set-Content (Join-Path $evidence 'provenance.json') -Encoding UTF8
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion-iii-native-${{ github.run_id }}
+          path: bastion-iii-source/docs/bastion-iii/native
+          if-no-files-found: warn
