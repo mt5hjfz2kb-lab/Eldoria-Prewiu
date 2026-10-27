@@ -1,7 +1,7 @@
 {
-  "revision": 14,
+  "revision": 15,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Reverify full native 34 EditMode,66 PlayMode,I-II,III and authored A/B after animation LateUpdate fixes invisible wolf/fissure renderers; art approval remains false pending real image review"
+  "reason": "Recheck full real Unity 34 EditMode, 66 PlayMode and integrated I-II/III; repair disabled imported wolf/fissure meshes at URP camera render time, activate source props, and FAIL if fixed-camera building upgrades remain invisible. Keep artApproved false pending screenshot review."
 }
