@@ -347,7 +347,7 @@ namespace Eldoria.UI.RoyalGold.V2
             kicker.Put(vig?"PRUEBAS DEL REINO · COMBATE AUTOMÁTICO":
                 "ENCARGOS REALES · REGRESOS PERSISTENTES");
             introduction.gameObject.SetActive(false);
-            chapter.gameObject.SetActive(true);
+            chapter.gameObject.SetActive(vig); // Scout board uses its own three distinct mission cards.
             opponent.gameObject.SetActive(vig);
             formation.gameObject.SetActive(vig);
             reward.gameObject.SetActive(vig);
