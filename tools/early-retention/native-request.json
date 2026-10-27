@@ -14,6 +14,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 2,
-  "note": "Native attempt after job-env context correction; preserve first attempt evidence and no player saves."
+  "revision": 3,
+  "note": "Exact source now includes native PlayMode screenshot harness, layout sync and domain smoke improvements; keep one canonical run queued after earlier already-running attempt."
 }
