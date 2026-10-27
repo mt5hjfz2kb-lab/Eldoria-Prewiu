@@ -344,7 +344,10 @@ namespace Eldoria.UI.RoyalGold.V2
             if (width < 120 || height < 120) return;
             portrait = height > width;
             float goalWidth = Mathf.Min(portrait ? 380f : 350f, width - 26f);
-            float goalTop = portrait ? 287f : 88f;
+            // The genuine royal header is 104 units tall. Keep the
+            // illuminated chapter *below* its bounds, as in Option 1.
+            // The previous 88-unit top offset crossed the Valoria header.
+            float goalTop = portrait ? 287f : 122f;
             // A shorter illuminated manuscript; the scene remains open.
             Top(objectiveCard, portrait ? 10f : 14f, goalTop, goalWidth, 133f);
             LayoutManuscriptContent(goalWidth);
@@ -573,17 +576,25 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (item.Button && item.Button.gameObject.activeSelf) count++;
             if (count == 0) return;
 
-            // OPTION 1 / CRONICA REAL: the real, unlocked buttons belong to
-            // the BOTTOM safe-area edge, not a left rail or floating controls.
-            // Reuse every original onClick, icon, label and unlock state.
-            float availableWidth = Mathf.Max(180f, safe.rect.width - 8f);
-            float gap = safe.rect.height > safe.rect.width ? 4f : 8f;
-            float cellWidth = Mathf.Min(portrait ? 79f : 102f,
-                (availableWidth - 16f - gap * (count - 1)) / count);
-            cellWidth = Mathf.Max(38f, cellWidth);
-            float total = cellWidth * count + gap * (count - 1);
-            float dockWidth = Mathf.Min(availableWidth, total + 16f);
-            float dockHeight = portrait ? 92f : 89f;
+            // OPTION 1 / CRONICA REAL: the real, unlocked medallions are
+            // anchored to the SAFE bottom edge. Portrait devices cannot
+            // compress six legible targets into a single tiny row: reflow
+            // into two shallow rows when needed, never a side rail.
+            bool vertical = safe.rect.height > safe.rect.width;
+            int columns = vertical ? Mathf.Min(3, count) : count;
+            int rows = Mathf.CeilToInt((float)count / columns);
+            float columnGap = vertical ? 6f : 8f;
+            float rowGap = vertical ? 4f : 0f;
+            float availableWidth = Mathf.Max(150f, safe.rect.width - 16f);
+            float cellWidth = Mathf.Min(vertical ? 106f : 106f,
+                (availableWidth - 16f - columnGap * (columns - 1)) / columns);
+            cellWidth = Mathf.Max(44f, cellWidth);
+            float cellHeight = vertical ? 74f : 84f;
+            float contentHeight = rows * cellHeight + (rows - 1) * rowGap;
+            float totalWidth = cellWidth * columns +
+                columnGap * (columns - 1);
+            float dockWidth = Mathf.Min(availableWidth, totalWidth + 16f);
+            float dockHeight = contentHeight + 6f;
 
             var dock = nav.transform as RectTransform;
             if (!dock) return;
@@ -592,8 +603,8 @@ namespace Eldoria.UI.RoyalGold.V2
             SetWidthAndHeight(dock, dockWidth, dockHeight);
             dock.anchoredPosition = Vector2.zero;
 
-            // A single deep-blue and antique-gold footer, constructed behind
-            // native buttons. No screenshot fragments or duplicate raycasters.
+            // Reuse the original functional buttons. Only a separate,
+            // non-raycasting blue and antique-gold plate is added behind them.
             var trim = dock.Find("V3 / Chronicle bottom frame") as RectTransform;
             if (!trim)
             {
@@ -614,29 +625,44 @@ namespace Eldoria.UI.RoyalGold.V2
             trim.offsetMin = Vector2.zero;
             trim.offsetMax = Vector2.zero;
 
-            float medalSize = Mathf.Min(52f, cellWidth - 8f);
-            float buttonHeight = dockHeight - 6f;
+            float medalSize = Mathf.Min(vertical ? 48f : 54f, cellWidth - 8f);
+            float buttonHeight = cellHeight;
             int index = 0;
             foreach (var item in nav.Items)
             {
                 if (!item.Button || !item.Button.gameObject.activeSelf) continue;
+                int row = index / columns;
+                int column = index % columns;
+                int inRow = Mathf.Min(columns, count - row * columns);
+                float rowWidth = cellWidth * inRow +
+                    columnGap * (inRow - 1);
+                index++;
                 var cell = (RectTransform)item.Button.transform;
-                cell.anchorMin = cell.anchorMax = cell.pivot = new Vector2(.5f, .5f);
+                cell.anchorMin = cell.anchorMax = cell.pivot =
+                    new Vector2(.5f, .5f);
                 SetWidthAndHeight(cell, cellWidth, buttonHeight);
+                // Child anchors are at the middle of the dock: add NO
+                // half-dockHeight here. That old offset placed every button
+                // partly OUTSIDE the bottom bar, visibly floating.
                 cell.anchoredPosition = new Vector2(
-                    -total * .5f + cellWidth * .5f + index++ * (cellWidth + gap),
-                    dockHeight * .5f);
-                if (cell.childCount > 0 && cell.GetChild(0) is RectTransform medal)
+                    -rowWidth * .5f + cellWidth * .5f +
+                        column * (cellWidth + columnGap),
+                    contentHeight * .5f - cellHeight * .5f -
+                        row * (cellHeight + rowGap));
+                if (cell.childCount > 0 &&
+                    cell.GetChild(0) is RectTransform medal)
                 {
                     medal.anchorMin = medal.anchorMax = medal.pivot =
                         new Vector2(.5f, .5f);
                     SetWidthAndHeight(medal, medalSize, medalSize);
-                    medal.anchoredPosition = new Vector2(0f, 11f);
-                    if (medal.childCount > 0 && medal.GetChild(0) is RectTransform glyph)
+                    medal.anchoredPosition = new Vector2(0f, 10f);
+                    if (medal.childCount > 0 &&
+                        medal.GetChild(0) is RectTransform glyph)
                     {
                         glyph.anchorMin = glyph.anchorMax = glyph.pivot =
                             new Vector2(.5f, .5f);
-                        SetWidthAndHeight(glyph, medalSize * .67f, medalSize * .67f);
+                        SetWidthAndHeight(glyph, medalSize * .67f,
+                            medalSize * .67f);
                         glyph.anchoredPosition = Vector2.zero;
                     }
                 }
@@ -645,9 +671,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     var caption = item.Label.rectTransform;
                     caption.anchorMin = caption.anchorMax = caption.pivot =
                         new Vector2(.5f, .5f);
-                    SetWidthAndHeight(caption, cellWidth - 1f, 22f);
-                    caption.anchoredPosition = new Vector2(0f, -buttonHeight * .34f);
-                    item.Label.fontSize = cellWidth < 58f ? 11 : portrait ? 13 : 14;
+                    SetWidthAndHeight(caption, cellWidth - 2f, 20f);
+                    caption.anchoredPosition =
+                        new Vector2(0f, -buttonHeight * .33f);
+                    item.Label.fontSize = vertical ? 15 : 15;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                     item.Label.color = Ivory;
                 }
