@@ -86,6 +86,22 @@ namespace Eldoria.ReferenceClean {
       renderer.enabled=primary.Contains(renderer);
     }
    }
+   // These original EA03 crate/sack/barrel prefabs use 3 LOD meshes. At the
+   // city camera's 29.5 orthographic scale their stock LODGroup can cull all
+   // meshes, producing identical II/III and 1/2 A-B captures despite the
+   // gameplay level changing. Select the authored highest-detail LOD0 on
+   // small CITY props only; keep the same textured source, not duplicate
+   // overlapping LOD meshes. Never change Region1's world LOD pipeline.
+   if(path.StartsWith("Valoria/UrbanProps/",StringComparison.Ordinal)){
+    foreach(var lod in model.GetComponentsInChildren<LODGroup>(true)){
+     var detail=lod.GetLODs();
+     if(detail.Length==0)continue;
+     var keep=new HashSet<Renderer>(detail[0].renderers.Where(r=>r!=null));
+     lod.enabled=false;
+     foreach(var renderer in lod.GetComponentsInChildren<Renderer>(true))
+      renderer.enabled=keep.Contains(renderer);
+    }
+   }
    foreach(var c in model.GetComponentsInChildren<Collider>(true))Destroy(c);
    if(path=="BastionIII/AshWolf"){
     var animation=model.GetComponentInChildren<Animation>(true);
