@@ -1,7 +1,7 @@
 {
-  "revision": 13,
+  "revision": 14,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Run real Unity editor art gate on corrected activation AFTER encounter becomes visible, with full 34 EditMode, 66 PlayMode, I-II, BastionIII proof and actual wolf/fissure A/B. Do not approve unrendered art."
+  "reason": "Reverify full native 34 EditMode,66 PlayMode,I-II,III and authored A/B after animation LateUpdate fixes invisible wolf/fissure renderers; art approval remains false pending real image review"
 }
