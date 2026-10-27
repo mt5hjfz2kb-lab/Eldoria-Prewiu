@@ -1,6 +1,6 @@
 {
   "stage": "visual_consolidation_validate",
-  "revision": 294,
+  "revision": 295,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,5 +8,5 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Verify same reviewed appearance without copying terrain mesh: local deck material clipping retains original mesh/collider; canonical texture sharpness and strategic legibility; full native tests and actual A/B; no APK/publication."
+  "checks": "Verify same reviewed appearance without copying terrain mesh: local deck material clipping retains original mesh/collider; canonical texture sharpness and strategic legibility; full native tests and actual A/B; no APK/publication. Preserve scoped lookdev material ownership and continuous haze on all other crossings."
 }
