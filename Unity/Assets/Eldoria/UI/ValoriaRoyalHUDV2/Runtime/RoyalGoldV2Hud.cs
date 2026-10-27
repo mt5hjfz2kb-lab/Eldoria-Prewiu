@@ -35,6 +35,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
 
         public bool ChapterExpanded => expanded;
+        public bool ChronicleIllustratedBuildingVisible => buildingGroup && buildingGroup.alpha > .5f;
         public bool BuildingVisible
         {
             get
