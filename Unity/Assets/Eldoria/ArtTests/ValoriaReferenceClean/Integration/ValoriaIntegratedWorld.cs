@@ -30,6 +30,18 @@ namespace Eldoria.ReferenceClean {
   ICommandGateway boundGateway; Canvas legacyCanvas; GraphicRaycaster legacyRaycaster;
   bool cityFog,englishInterface; int layoutWidth,layoutHeight,focusRequest,observedFocusStage;
   float nextVisualSync;
+  // Motion is measured in screen pixels, so easing is consistent in both camera modes.
+  Vector2 unappliedDragPixels;
+  const float DragResponse=20f;
+  void SmoothCameraDrag(){
+   if(unappliedDragPixels.sqrMagnitude<.0025f){unappliedDragPixels=Vector2.zero;return;}
+   var portion=unappliedDragPixels*(1f-Mathf.Exp(-DragResponse*Mathf.Min(.05f,Time.unscaledDeltaTime)));
+   unappliedDragPixels-=portion;
+   if(!InWorld){city.Pan(portion);return;}
+   var center=new Vector2(Screen.width*.5f,Screen.height*.5f);
+   if(WorldNavigation.GroundPoint(center,out var from)&&WorldNavigation.GroundPoint(center-portion,out var to))
+    WorldNavigation.PanTo(WorldNavigation.target+to-from);
+  }
   Rect observedVisibleArea;
   WorldHotspot[] targets;
   public Camera PlayerCamera=>InWorld?WorldCamera:city.PlayerCamera;
@@ -79,6 +91,9 @@ namespace Eldoria.ReferenceClean {
    WorldNavigation.regionalZoom=32;WorldNavigation.localZoom=14;
    gameObject.AddComponent<BastionIIIWorldPresentation>().Initialize(this);
    targets=Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None);
+   // One modestly wider authored entry view (about 10%), without changing near limits or world scale.
+   city.Controls.homeZoom=Mathf.Min(65f,city.Controls.homeZoom*1.10f);
+   city.Controls.ResetView();
    Ready=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
@@ -101,6 +116,7 @@ namespace Eldoria.ReferenceClean {
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
    if(!Ready)return;
+   SmoothCameraDrag();
    if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();
    RefreshNavigation();if(Time.unscaledTime>=nextVisualSync){
     nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();
@@ -135,7 +151,9 @@ namespace Eldoria.ReferenceClean {
    }
    if(InWorld==open)return true;
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
+   unappliedDragPixels=Vector2.zero;
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
+   if(!open)city.Controls.ResetView();
    RenderSettings.fog=open?false:cityFog;
    if(open){
     // Every visit starts in playable near view, including after panorama or a saved-session reload.
@@ -171,7 +189,12 @@ namespace Eldoria.ReferenceClean {
    WorldNavigation.SetZoomLevel(2,true);
    WorldNavigation.PanTo(WorldHome);
   }
-  public void Pan(Vector2 delta){if(!InWorld){city.Pan(delta);return;}var p=new Vector2(Screen.width*.5f,Screen.height*.5f);if(WorldNavigation.GroundPoint(p,out var a)&&WorldNavigation.GroundPoint(p-delta,out var b))WorldNavigation.PanTo(WorldNavigation.target+b-a);}
+  public void Pan(Vector2 delta){
+   // Preserve the original gesture pixels, but distribute a sudden touch delta over
+   // several rendered frames instead of teleporting the camera on each event.
+   // Stop large OS/touch resumption spikes from making a violent jump.
+   unappliedDragPixels=Vector2.ClampMagnitude(unappliedDragPixels+delta,180f);
+  }
   public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
   public WorldHotspot FindTarget(string id)=>FindTargetExact(id=="upgrade-barracks"?"barracks":id);
   WorldHotspot FindTargetExact(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal)?WorldRoot.GetComponentsInChildren<WorldHotspot>(true):(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None))).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
