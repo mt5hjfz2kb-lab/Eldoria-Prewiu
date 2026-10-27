@@ -31,6 +31,22 @@ namespace Eldoria.ReferenceClean.Editor {
    var path=Ev+"/"+name+"-"+size.Item3+".png";float aspect=c.aspect;try{c.aspect=(float)size.Item1/size.Item2;ValoriaReferenceCleanBuilder.Capture(c,path,size.Item1,size.Item2);}finally{c.aspect=aspect;}
    File.WriteAllText(Path.ChangeExtension(path,".json"),JsonUtility.ToJson(new CaptureInfo{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),name=name,cameraPosition=c.transform.position,cameraEuler=c.transform.eulerAngles,zoom=c.orthographicSize,level=h.City.Gateway.Snapshot().BastionLevel,width=size.Item1,height=size.Item2},true));
   }}
+  // Match pixels from genuine fixed-camera Unity screenshots, not GameObject
+  // names or fake proof flags. Every minor building upgrade must be visible
+  // while keeping its authored silhouette and materials.
+  static void RequireVisibleUpgrade(string before,string after,int minPixels){
+   var a=new Texture2D(2,2,TextureFormat.RGBA32,false);
+   var b=new Texture2D(2,2,TextureFormat.RGBA32,false);
+   try{
+    if(!a.LoadImage(File.ReadAllBytes(Ev+"/"+before+".png"))||
+       !b.LoadImage(File.ReadAllBytes(Ev+"/"+after+".png")))throw new Exception("PNG visual delta could not decode");
+    Need(a.width==b.width&&a.height==b.height,before+" vs "+after+" camera dimension parity");
+    var px=a.GetPixels32();var py=b.GetPixels32();int changed=0;
+    for(int i=0;i<px.Length;i++)if(Math.Abs((int)px[i].r-py[i].r)>=12||
+       Math.Abs((int)px[i].g-py[i].g)>=12||Math.Abs((int)px[i].b-py[i].b)>=12)changed++;
+    Need(changed>=minPixels,before+" -> "+after+" visible level change (pixels="+changed+")");
+   }finally{Object.Destroy(a);Object.Destroy(b);}
+  }
   static void UiShot(ValoriaIntegratedWorld h,string name){
    ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-vertical.png",900,1600);
    ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-horizontal.png",1600,900);
@@ -78,12 +94,12 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(!h.Hud.NarrativeOpen,"narrative dismisses using real button");
    var cityCam=h.City.PlayerCamera;var cameraPosition=cityCam.transform.position;var cameraRotation=cityCam.transform.rotation;
    Shot(h,"A-bastion-II",cityCam);Command(h,"AdvanceBastion","bastion");Step(h,14);h.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.5f);
-   h.GetComponent<BastionIIIWorldPresentation>().Apply();cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);Shot(h,"B-bastion-III-site",cityCam);
+   h.GetComponent<BastionIIIWorldPresentation>().Apply();cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);Shot(h,"B-bastion-III-site",cityCam);RequireVisibleUpgrade("A-bastion-II-horizontal","B-bastion-III-site-horizontal",120);
    Need(h.FindTarget("granary").gameObject.activeInHierarchy,"granary III unlock");
    Command(h,"Build","granary");Step(h,9);yield return null;Shot(h,"C-granary-level1",cityCam);
    Command(h,"UpgradeBuilding","granary");h.TrySetWorld(true);yield return new WaitForSecondsRealtime(.5f);h.GetComponent<BastionIIIWorldPresentation>().Apply();Command(h,"InvestigateFissure","fissure-valoria");Need(h.City.Gateway.Snapshot().ChapterThree.InvestigationRoute.Count>1,"investigation uses real terrain route");
    h.WorldNavigation.RestoreView(h.FindTarget("fissure-valoria").transform.position,14);yield return null;Shot(h,"fissure-investigation",h.WorldCamera);h.TrySetWorld(false);yield return null;cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);Step(h,1199);h.City.ReloadForProbe();Need(!h.City.Gateway.Snapshot().ChapterThree.FissureExplored,"persistent investigation not early");Step(h,1);yield return null;
-   Need(!h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,"investigation never recruits Lyra");Shot(h,"D-granary-level2",cityCam);
+   Need(!h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,"investigation never recruits Lyra");Shot(h,"D-granary-level2",cityCam);RequireVisibleUpgrade("C-granary-level1-horizontal","D-granary-level2-horizontal",120);
    h.TrySetWorld(true);yield return null;yield return null;h.GetComponent<BastionIIIWorldPresentation>().Apply();
    foreach(var id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria"}){
     var target=h.FindTarget(id);Need(target!=null,id+" exists");
@@ -100,7 +116,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var offer=h.Read("fissure-valoria",false).Building.Action;Need(offer.Kind=="ContactLyra","contact offer before assault");h.Submit(offer);yield return null;
    var aldricFace=h.Hud.GetComponentsInChildren<UnityEngine.UI.RawImage>(true).FirstOrDefault(x=>x.name=="Canonical Aldric portrait");
    Need(aldricFace&&!aldricFace.gameObject.activeInHierarchy,"Lyra dialogue never impersonates Aldric portrait");
-   UiShot(h,"lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
+   yield return new WaitForSecondsRealtime(.36f);UiShot(h,"lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
    for(int i=0;i<30&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
    Need(h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"Lyra dialogue completed");
    Shot(h,"fissure-A-open",h.WorldCamera);Command(h,"Fight","fissure-valoria");Need(h.City.Gateway.Snapshot().March.Route.Count>1,"real reachable fissure route");Step(h,2);yield return null;Shot(h,"fissure-B-scar",h.WorldCamera);Step(h,7);yield return null;Shot(h,"fissure-C-closed",h.WorldCamera);
@@ -126,8 +142,8 @@ namespace Eldoria.ReferenceClean.Editor {
    }
    Need(h.City.Gateway.Snapshot().ChapterThree.Hunts==2,"both hunts resolved");Command(h,"ConfigureMarch","march-main:20:aldric+lyra");h.City.ReloadForProbe();Need(h.City.Gateway.Snapshot().PreparedHeroId=="aldric+lyra","recruited heroes persist in composition");
    h.TrySetWorld(false);yield return null;cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);
-   Command(h,"UpgradeBuilding","granary");Step(h,12);yield return null;Shot(h,"E-granary-level3",cityCam);
-   foreach(string building in new[]{"sawmill","barracks"})foreach(int level in new[]{2,3}){Command(h,"UpgradeBuilding",building);Step(h,8+(level-1)*2);yield return null;Shot(h,building+"-level"+level,cityCam);}
+   Command(h,"UpgradeBuilding","granary");Step(h,12);yield return null;Shot(h,"E-granary-level3",cityCam);RequireVisibleUpgrade("D-granary-level2-horizontal","E-granary-level3-horizontal",120);
+   foreach(string building in new[]{"sawmill","barracks"})foreach(int level in new[]{2,3}){Command(h,"UpgradeBuilding",building);Step(h,8+(level-1)*2);yield return null;Shot(h,building+"-level"+level,cityCam);if(level==3)RequireVisibleUpgrade(building+"-level2-horizontal",building+"-level3-horizontal",120);}
    h.City.ReloadForProbe();Need(h.City.Gateway.Snapshot().ChapterThree.GranaryLevel==3,"level3 save reload");
    h.Select("granary");yield return null;UiShot(h,"granary-level3");
    h.Open(RoyalSection.Inventory);yield return null;UiShot(h,"unique-manuscript-chest");
