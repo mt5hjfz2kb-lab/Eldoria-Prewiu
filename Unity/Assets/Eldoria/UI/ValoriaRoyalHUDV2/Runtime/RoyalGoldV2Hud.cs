@@ -19,11 +19,12 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public RoyalHUD Source;
 
-        private RectTransform safe, headerPlate, objectiveCard, buildingCard, scrollContent, scrollViewport;
+        private RectTransform safe, headerPlate, objectiveCard, buildingCard, buildingMiniature, scrollContent, scrollViewport;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
         private RoyalText objectiveActionLabel, objectivesButtonLabel;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
+        private RoyalGoldV3BuildingEngravingGraphic miniatureArt;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
         private bool buildingVisible;
         private bool ready, expanded, portrait, hasGeometry, compactObjective;
@@ -244,6 +245,18 @@ namespace Eldoria.UI.RoyalGold.V2
             });
 
             buildingCard = Panel("V2 / contextual building sheet", safe);
+            // The approved Crónica Real has an architectural illustration inside
+            // its broad bottom building cartouche. Draw an actual live, authored
+            // native miniature rather than a placeholder or static UI screenshot.
+            buildingMiniature = Panel("V3 / engraved real building miniature", buildingCard);
+            var miniSkin = buildingMiniature.GetComponent<RoyalGoldV2FrameGraphic>();
+            miniSkin.raycastTarget = false;
+            miniSkin.DecorativeCorners = true;
+            var miniSurface = NewRect("V3 / illuminated architectural illustration", buildingMiniature);
+            miniSurface.gameObject.AddComponent<CanvasRenderer>();
+            miniatureArt = miniSurface.gameObject.AddComponent<RoyalGoldV3BuildingEngravingGraphic>();
+            miniatureArt.raycastTarget = false;
+            Stretch(miniSurface, 5f);
             buildingTitle = Text("Selected building", buildingCard, 30, Ivory, true);
             buildingLevel = Text("Real level", buildingCard, 18, Gold);
             buildingClose = Button("Close selected building", buildingCard, out var closeBuildingText, false);
@@ -431,30 +444,42 @@ namespace Eldoria.UI.RoyalGold.V2
                 portrait ? Mathf.Max(10, width - 75f) : 268f,
                 goalTop - 8f, 48, 48);
 
-            float cardWidth = portrait ? Mathf.Min(width - 24, 720f) : Mathf.Min(420f, width * .34f);
-            float cardHeight = portrait ? Mathf.Min(340f, height * .30f) : Mathf.Min(474f, height * .67f);
-            // The bottom navigation is the only entrance to the World after
-            // Bastion I builds the sawmill. The context sheet MUST start above
-            // that navigation instead of silently covering its hit targets.
+            // Crónica Real: broad bottom cartouche, illustrated on the left,
+            // details in the middle and the ORIGINAL action at the right.
+            // Keep the contextual action/timer projected beside the actual
+            // building by V3; both buttons dispatch the same V1 gateway offer.
+            float cardWidth = Mathf.Min(width - (portrait ? 18f : 32f),
+                portrait ? 720f : 1300f);
+            float cardHeight = portrait ? 166f : 164f;
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
-            float sheetBottom = Mathf.Max(128f, navTop + 14f);
-            if (portrait)
-                Place(buildingCard, new Vector2(.5f, 0), new Vector2(.5f, 0), 0, sheetBottom, cardWidth, cardHeight);
-            else
-                Place(buildingCard, Vector2.one, Vector2.one, -22, -152, cardWidth, cardHeight);
-            Top(buildingTitle.rectTransform, 19, 18, cardWidth - 91, 42);
-            Top(buildingLevel.rectTransform, 20, 57, cardWidth - 44, 24);
-            Top((RectTransform)buildingClose.transform, cardWidth - 58, 17, 42, 42);
-            Top((RectTransform)buildingScroll.transform, 20, 92, cardWidth - 40, Mathf.Max(92, cardHeight - 170));
+            float sheetBottom = Mathf.Max(8f, navTop + 8f);
+            Place(buildingCard, new Vector2(.5f, 0), new Vector2(.5f, 0),
+                0, sheetBottom, cardWidth, cardHeight);
+            float picture = cardHeight - 19f;
+            Place(buildingMiniature, new Vector2(0, 1), new Vector2(0, 1),
+                9f, -9f, picture, picture);
+            float textLeft = picture + 24f;
+            float actionWidth = portrait ? Mathf.Min(160f, cardWidth*.25f) : 194f;
+            float middleWidth = Mathf.Max(70f, cardWidth - textLeft - actionWidth - 24f);
+            Top(buildingTitle.rectTransform, textLeft, 10f, middleWidth, 36f);
+            buildingTitle.fontSize = portrait ? 24 : 30;
+            Top(buildingLevel.rectTransform, textLeft, 46f, middleWidth, 24f);
+            Top((RectTransform)buildingClose.transform, cardWidth - 38f, 5f, 33f, 33f);
+            Top((RectTransform)buildingScroll.transform, textLeft, 76f,
+                middleWidth, cardHeight - 83f);
             Stretch(scrollViewport, 0);
             scrollContent.anchorMin = new Vector2(0, 1);
             scrollContent.anchorMax = new Vector2(1, 1);
             scrollContent.pivot = new Vector2(.5f, 1);
             scrollContent.anchoredPosition = Vector2.zero;
-            scrollContent.sizeDelta = new Vector2(0, Mathf.Max(200, scrollViewport.rect.height));
-            Top(buildingBody.rectTransform, 2, 0, cardWidth - 47, scrollContent.rect.height);
-            Top((RectTransform)buildingAction.transform, 18, cardHeight - 70, cardWidth - 36, 54);
+            scrollContent.sizeDelta = new Vector2(0, Mathf.Max(85f, scrollViewport.rect.height));
+            Top(buildingBody.rectTransform, 0, 0, middleWidth - 4f,
+                scrollContent.rect.height);
+            buildingBody.fontSize = portrait ? 16 : 19;
+            Top((RectTransform)buildingAction.transform,
+                cardWidth - actionWidth - 12f, cardHeight - 66f,
+                actionWidth, 51f);
             hasGeometry = true;
             lastWidth = width;
             lastHeight = height;
@@ -528,16 +553,9 @@ namespace Eldoria.UI.RoyalGold.V2
         private void RenderBuilding(bool narrativeOrModal)
         {
             var source = Source.Building;
-            // V3 attaches to the same HUD: the old, oversized V2 sheet is
-            // display-only and must never compete with object-anchored controls.
-            var contextual = GetComponent<RoyalGoldV3ContextHud>();
-            if (contextual && contextual.IsConfigured)
-            {
-                buildingVisible = false;
-                SetVisible(buildingGroup, false);
-                SetVisible(buildingActionGroup, false);
-                return;
-            }
+            // V3 owns the in-world projected action/timer. This is a separate
+            // art-only companion cartouche reading the SAME canonical offer;
+            // it does not create a second clock or a second gameplay command.
             bool show = !narrativeOrModal && !string.IsNullOrEmpty(Source.SelectedBuildingId) &&
                 source && source.Title && !string.IsNullOrWhiteSpace(source.Title.text);
             buildingVisible = show;
@@ -545,6 +563,19 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!show) return;
             buildingTitle.Put(Safe(source.Title));
             buildingLevel.Put(Safe(source.Level));
+            if (miniatureArt)
+            {
+                string selectedId = Source.SelectedBuildingId ?? "";
+                int kind = selectedId == "granary" ? 4 :
+                    selectedId == "bastion" ? 3 :
+                    selectedId == "barracks" || selectedId == "march-main" ? 2 :
+                    selectedId == "sawmill" ? 1 : 0;
+                if (miniatureArt.Kind != kind)
+                {
+                    miniatureArt.Kind = kind;
+                    miniatureArt.SetVerticesDirty();
+                }
+            }
 
             var body = new StringBuilder(280);
             Append(body, Safe(source.Function));
