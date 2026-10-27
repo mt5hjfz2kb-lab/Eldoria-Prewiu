@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T20:22:00Z",
+  "updated_at": "2026-10-27T21:35:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1692,14 +1692,16 @@
         "tools/aldric-dialogue/**",
         ".github/workflows/aldric-dialogue-portraits.yml",
         "docs/ALDRIC_DIALOGUE_BUST_INTEGRATION_20261027.md",
-        "pipeline/art-production-requests/eldoria-aldric-dialogue-bust-20261027.json"
+        "pipeline/art-production-requests/eldoria-aldric-dialogue-bust-20261027.json",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs.meta"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-aldric-dialogue-bust-20261027.json",
       "art_production_routing_reason": "Owner-approved reuse of real 3D artist source and exact Blender render to UI PNG textures; static art and presentation only; zero extra Tripo cost.",
       "dependency": "No mutation to V1 RoyalHUD (Bastion III owner), Bastion III PR117, scene, gameplay, save, builds or Unity heavy runner. Owner-approved chest-up only; isolated authoring and native QA after Windows lease release.",
-      "phase": "SOURCE_3D_CAPED_PORTRAITS_PASS_UNITY_PENDING",
+      "phase": "SOURCE_3D_CAPED_PORTRAITS_PASS_NATIVE_TEST_AUTHORED_UNITY_PENDING",
       "evidence": {
         "tripo_original_task": "f827067d-927e-4172-9bb8-6ee813176d58",
         "source_artpass_glb_sha": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555",
@@ -1710,7 +1712,7 @@
         "art_approved": false,
         "paid_credits_new": 0
       },
-      "next": "Obtain native Unity dialogue portrait and landscape captures after Bastion III releases Windows, test identity per speaker and narrative Continue, review and merge PR118 only after source and native verification."
+      "next": "PlayMode probe AldricDialogueBustPresentationTests.cs scripted. Await Windows release by Bastion III then run native Unity and collect screenshots; PR118 stays draft."
     }
   ],
   "history": [
