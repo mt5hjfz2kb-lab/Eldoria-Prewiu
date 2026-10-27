@@ -161,7 +161,21 @@ namespace Eldoria.ReferenceClean.Editor {
    var fissure=h.FindTarget("fissure-valoria");
    var splitFloor=fissure.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="Dark split floor");float gap=0;
    foreach(var vertex in splitFloor.sharedMesh.vertices){var p=splitFloor.transform.TransformPoint(vertex);float ground=h.WorldHome.y+Eldoria.World4XCanon.RegionOneBlenderLandscape.Height(p.x-h.WorldHome.x,p.z-h.WorldHome.z);gap=Mathf.Max(gap,Mathf.Abs(p.y-ground));}
-   Need(gap<.02f,"private split floor follows actual terrain within two centimetres");h.WorldNavigation.RestoreView(fissure.transform.position,14);yield return null;
+   Need(gap<.02f,"private split floor follows actual terrain within two centimetres");
+   // A native screenshot once showed this exceptional geological fault as a
+   // stacked violet retaining wall. Keep EVERY exported component draped on
+   // the same actual terrain, with no risers or foreign high-elevation bands.
+   float bankRelief=0f;int bankVertices=0;
+   foreach(var filter in fissure.GetComponentsInChildren<MeshFilter>(true)){
+    foreach(var vertex in filter.sharedMesh.vertices){
+     var world=filter.transform.TransformPoint(vertex);
+     var terrain=h.WorldHome.y+Eldoria.World4XCanon.RegionOneBlenderLandscape.Height(world.x-h.WorldHome.x,world.z-h.WorldHome.z);
+     bankRelief=Mathf.Max(bankRelief,Mathf.Abs(world.y-terrain));bankVertices++;
+    }
+   }
+   Need(bankVertices>60&&bankRelief<.085f,
+      "private fissure is a shallow soil-bound crack, not a raised geometric slab (max relief="+bankRelief+")");
+   h.WorldNavigation.RestoreView(fissure.transform.position,14);yield return null;
    var offer=h.Read("fissure-valoria",false).Building.Action;Need(offer.Kind=="ContactLyra","contact offer before assault");h.Submit(offer);yield return null;
    var aldricFace=h.Hud.GetComponentsInChildren<UnityEngine.UI.RawImage>(true).FirstOrDefault(x=>x.name=="Canonical Aldric portrait");
    Need(aldricFace&&!aldricFace.gameObject.activeInHierarchy,"Lyra dialogue never impersonates Aldric portrait");
