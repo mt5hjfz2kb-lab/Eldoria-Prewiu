@@ -1,9 +1,9 @@
 {
-  "enabled": false,
-  "versionCode": 15,
-  "versionName": "1.15",
+  "enabled": true,
+  "versionCode": 16,
+  "versionName": "1.16",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Code15 built and signed successfully in40418364444 source7413d029abe17e8b4a6fe366962bd522e022085f. Artifact12696226924 independently downloaded; exact SHA256/CRC and11 ARM64 ELF libraries pass. Disable duplicate build before publication. Physical phone untested."
+  "note": "Owner-authorized signed Android family code16 from main after merged canonical Crónica Real PR115 and 66/66 PlayMode 26/26 EditMode I-II PASS; self-hosted Windows runner serial, same package and signing key. No release before SHA/bytes/signature and native source validation. No save reset."
 }
