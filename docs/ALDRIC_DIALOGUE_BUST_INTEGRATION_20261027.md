@@ -27,3 +27,14 @@ Propietario aprueba la **identidad 3D de Aldric con capa azul** y solicita que e
 4. Cambio Sir Aldric → Orín/Lyra/narrador no reutiliza su imagen; el sigilo específico sigue correcto.
 5. Texto/revelado/avance ES/EN y estado/guardados sin cambios; QA funcional I–III y regresión al cierre de PR.
 6. No se publica APK ni se fusiona rama hasta cumplir pruebas y revisión artística con imágenes **reales Unity**.
+
+### Preparación de pruebas PlayMode — 27/10/2026
+
+Se añadió `Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs` y `.meta` al ámbito exclusivo de PR118, registrados en `pipeline/active-workstreams.json` de main. El test sobre el **RoyalHUD y la escena integrados** (bajo guardia `VALORIA_GAMEPLAY_PROBE=1` de guardado descartable) cubre:
+
+- Carga real de las 4 texturas 512×512 desde Unity Resources y comparación del PNG neutral con el `RawImage` que dibuja el diálogo.
+- Cinco pruebas de speaker solo de interfaz: Sir Aldric, Lyra, Orín, NARRADOR y Aldric. Solo Aldric recibe imagen; el resto usan sigilo, sin retocar diálogos canónicos.
+- Comprueba tamaño mínimo de busto, región UV, disponibilidad del botón real Continuar y finalización narrativa por el mismo botón.
+- `RoyalGoldV3CinematicFinish.cs` usa el sigilo como respaldo solo si tampoco existe el retrato antiguo y falta el PNG nuevo.
+
+**Es un test escrito, NO una prueba ejecutada ni evidencia de captura.** El equipo Windows sigue reclamado por `valoria-master-plan-layered-construction-20261016` para Bastión III. El workflow [UI Progression Certification](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40577952133) falla antes de Unity por esta reserva; no falsear test PASS. El nuevo test no altera guardianías ni escenas. Después de la liberación oficial ejecutar pruebas y obtener capturas 16:9/vertical en el juego antes de solicitar el merge.
