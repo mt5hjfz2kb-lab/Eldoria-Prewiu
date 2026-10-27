@@ -97,3 +97,25 @@ Ningún modelo humanoide está `ART_APPROVED` ni `INTEGRATED` en este documento.
 **Fuente de normas:** [auditoría consolidada de Tripo](TRIPO_API_AUDITORIA_CAPACIDADES_Y_BRECHAS_20261027.md), [norma Tripo](TRIPO_API_NORMA_PRODUCCION_V1.md), [pipeline canónico](TRIPO_MODULE_PIPELINE.md), [biblia de arte](ELDORIA_ART_BIBLE.md), `AGENTS.md` y `pipeline/active-workstreams.json`.
 
 **Decisiones artísticas pendientes del propietario:** aprobación final del diseño de cuerpo completo, heráldica y equipo principal. No se trata como autorización implícita de gasto, publicación ni modelo definitivo.
+
+## 7. Resultado real Tripo del 27-10-2026 (actualización posterior)
+
+**UNA generación REAL ha sido completada**, sin rig ni integración en el juego. Ejecutada mediante el workflow canónico desde commit `65464bf6d17daeb52848d57333779e6f9ba901ca`, [run 40527678020](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40527678020).
+
+| Etapa | Evidencia y resultado |
+| --- | --- |
+| Tripo H3.1 texto-a-3D, texturas estándar PBR | task `f827067d-927e-4172-9bb8-6ee813176d58`, `status=success`, **20 créditos efectivamente consumidos** |
+| GLB original | **83.224 triángulos**, 1 malla PBR, 3 mapas; 6.613.800 bytes, SHA256 `0c1ed418172872cf15c34163777c78341290a77a264678173eea9eec51b7fc13` |
+| Blender aislado | **49.800 triángulos**, 1 material, UV0, normales, BaseColor 2048², normal 2048² y ORM 1024²; optimizado GLB SHA256 `b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595` |
+| Archivo Blender editable | SHA256 `ae4f68e4f8a972e83fc083c6a596819902a5e2aa116e86212ef5d526f561f518` |
+| Tripo original y respaldo | Artifact original **12747605717** y archivo optimizado **12746169980**, asociados al run 40527678020 |
+| Prueba Unity aislada | **FAIL técnico del gate**, porque en el checkout no existía `Eldoria.EditorTools.TripoGenericModuleReview.Capture`. **No es prueba de fallo del modelo**. Unity no integrado |
+| Capturas 3D verdaderas | GLB original cargado en VTK, cuatro renders reales frente/perfil/trasera/oblicua con materiales PBR. **No** son capturas del motor Unity |
+
+### Revisión artística independiente y límites
+
+La fuente es una figura humana reconocible, armadura compleja y rostro veterano con pelo gris, manos y piernas separadas; está en pose A utilizable como punto de partida. Sin embargo, **todavía no aprobarla como Aldric definitivo**: su aspecto no conserva suficientemente el rostro del primer concepto histórico; la armadura resulta demasiado negra/brillante y **falta la capa azul amplia y emblemática**, quedando casi solo un cuello azul y faldones oscuros. No inventar que es fidelidad 1:1 de la imagen original: la generación se realizó por **texto**, no image-to-model, porque esa fuente no llegó al runner mediante entrada exacta.
+
+**Resultado:** `TRIPO_SOURCE_CREATED=PASS`, `BLENDER_PROCESS=PASS`, `UNITY_ART_GATE=FAILED_ENVIRONMENT`, `ANIMATED=NO`, `ART_APPROVED=PENDING`, `MOBILE=NOT_TESTED`, `INTEGRATED_IN_GAME=NO`. El modelo existe y está entregado en el paquete de conversación; el render de revisión no es el resultado de Unity.
+
+**No generar otra tarea Tripo para corregir este error de Unity**, ni relanzar la tarea pagada. Próxima mejora si se decide: ajustar carácter/armadura, incorporar capa azul con geometría editable en Blender; comprobar en Unity aislado mínimamente reconstruido y después rig humanoide, bajo titular de escena y sin cambiar guardados. Un cambio del rostro de referencia requeriría aprobación artística distinta, no una regeneración automática.
