@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T01:55:03.045Z",
+  "updated_at": "2026-10-27T07:48:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1358,12 +1358,12 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 16,
-      "write_scope_released": true,
+      "owner": "chatgpt-cronica-real-ui-20261027",
+      "ownership_state": "claimed",
+      "ownership_revision": 17,
+      "write_scope_released": false,
       "status": "active",
-      "claimed_at": "2026-10-26T17:13:00Z",
+      "claimed_at": "2026-10-27T07:48:00Z",
       "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
       "branch": "main",
       "pr": 90,
@@ -1391,7 +1391,10 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneCreaturePopulation.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneResourceModels.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/RegionOneCanonIntegratedAcceptanceTests.cs",
-        "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md"
+        "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md",
+        "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs"
       ],
       "resources": [],
       "dependencies": [
@@ -1441,7 +1444,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "UI V3+mobile fixes merged and tested on PR source; next dedicated management work only on new owner instruction.",
+      "next": "Reference image located. Restore real circular bottom navigation and heraldic parchment objectives, preserve original controls, compare actual Unity landscape/portrait and test I-II before merge.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1495,10 +1498,16 @@
           "owner": "available",
           "revision": 14,
           "reason": "Owner-authorized resumption after World4X PR100 integrated and Android mobile report, 2026-10-26"
+        },
+        {
+          "owner": null,
+          "ownership_state": "available",
+          "revision": 16,
+          "reason": "Owner explicitly reopens original Propuesta 1 Crónica Real restoration, 2026-10-27"
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "PR111_MERGED_MAIN_UI_AND_MOBILE_CAMERA_SOURCE",
+      "phase": "UI_REFERENCE_RESTORATION_IN_PROGRESS",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -1531,7 +1540,8 @@
       },
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
-      "handoff_authorization": "Owner 2026-10-26: reanudar la interfaz after World4X integration, fix three-zoom node stability and default near zoom, improve graphical treatment; 0 €; no main merge until verified."
+      "handoff_authorization": "Owner 2026-10-26: reanudar la interfaz after World4X integration, fix three-zoom node stability and default near zoom, improve graphical treatment; 0 €; no main merge until verified.",
+      "authority": "Owner instruction 2026-10-27: fidelity to approved original option 1, native responsive top/bottom edge, management screens and building contextual controls, preserve game/save and zero euro"
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
