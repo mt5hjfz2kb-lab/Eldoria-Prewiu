@@ -859,6 +859,13 @@ namespace Eldoria.UI.RoyalGold.V2
             // Never remove/recreate a button or listener. UI.Graphic.OnEnable
             // re-registers this same child on the current canvas after the
             // orientation/camera switch (including the native capture path).
+            // Crónica Real's two REAL chapter buttons deliberately replace
+            // their old captions with circular medieval pictograms. Do not
+            // resurrect hidden rectangular labels after rotating the phone.
+            // For any older caption still visible, keep the existing
+            // uGUI depth recovery with its original enabled state.
+            bool wasVisible = label.enabled;
+            if (!wasVisible) return;
             label.enabled = false;
             label.enabled = true;
             label.SetAllDirty();
