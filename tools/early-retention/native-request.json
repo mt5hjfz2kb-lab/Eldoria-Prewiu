@@ -14,6 +14,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 3,
-  "note": "Exact source now includes native PlayMode screenshot harness, layout sync and domain smoke improvements; keep one canonical run queued after earlier already-running attempt."
+  "revision": 4,
+  "note": "Supersede obsolete native source checkout with the exact tested early retention candidate; 7 EditMode tests, six native screenshots and actual pointer dispatch; no owner save."
 }
