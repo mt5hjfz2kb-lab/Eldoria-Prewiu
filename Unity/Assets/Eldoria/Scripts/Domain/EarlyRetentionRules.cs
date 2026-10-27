@@ -83,9 +83,16 @@ namespace Eldoria.Domain
                 "Custodio de piedra","Emboscada del bosque"};
             string[] traits={"Escudo pétreo","Emboscada","Armadura reforzada","Ataque veloz"};
             int variance=(stage-1)%4;
-            int hp=200+stage*27+(boss?190:0);
-            int atk=22+stage*4+(boss?22:0);
-            int def=19+stage*3+(boss?18:0);
+            // A quadratic ramp is deliberate: a starter roster reaches
+            // several milestones but cannot clear the whole first chapter
+            // without improving its troops/hero. Bosses are real walls,
+            // not just a different title over trivial six-round combat.
+            int hp=200+stage*27+(int)Math.Round(stage*(double)stage*.85,
+                MidpointRounding.AwayFromZero)+(boss?190:0);
+            int atk=22+stage*4+(int)Math.Round(stage*(double)stage*.12,
+                MidpointRounding.AwayFromZero)+(boss?22:0);
+            int def=19+stage*3+(int)Math.Round(stage*(double)stage*.09,
+                MidpointRounding.AwayFromZero)+(boss?18:0);
             int brk=12+stage*2+(boss?15:0);
             var enemy=new WorldCreatureStats(hp,atk,def,brk,0,0);
             return new VigilantStage(stage,chapter,level,
