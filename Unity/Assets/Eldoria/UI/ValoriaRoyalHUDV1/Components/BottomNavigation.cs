@@ -15,13 +15,13 @@ namespace Eldoria.UI.RoyalGold {
     bool unlocked=host!=null?host.CanOpen(item.Section):
       item.Section!=RoyalSection.Inventory&&item.Section!=RoyalSection.World;
     bool realDestination=item.Section!=RoyalSection.Heroes;
-    bool show=ChronicleLayout?realDestination:unlocked;
-    item.Button.gameObject.SetActive(show);
-    // Visible-but-locked medallions preserve the requested bottom rail
-    // without faking unavailable progression or executing a locked command.
-    // Reino/Construir/Crónicas use existing real contextual actions in RoyalHUD.
+    // Three genuine ever-present destinations: Reino, Construir, Crónicas.
+    // The Army and World buttons MUST NOT appear before their real gateway
+    // abilities have unlocked. Owner's 28/10 progression visibility rule.
     bool utility=ChronicleLayout&&(item.Section==RoyalSection.Bastion||
       item.Section==RoyalSection.Inventory||item.Section==RoyalSection.Missions);
+    bool show=ChronicleLayout?realDestination&&(utility||unlocked):unlocked;
+    item.Button.gameObject.SetActive(show);
     item.Button.interactable=show&&(unlocked||utility);
     item.Label.Put(ChronicleLayout?ChronicleName(item.Section,english):
       Name(item.Section,english));
