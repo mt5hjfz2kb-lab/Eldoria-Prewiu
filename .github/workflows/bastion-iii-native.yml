@@ -19,7 +19,18 @@ jobs:
       - name: Recover installed Git
         shell: powershell
         run: |
-          if(-not(Get-Command git -ErrorAction SilentlyContinue)){ $env:Path='C:\Program Files\Git\cmd;'+$env:Path; 'C:\Program Files\Git\cmd' | Out-File $env:GITHUB_PATH -Append -Encoding utf8 }
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Installed Git executable unavailable; do not fall back to a full repository archive'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+          git --version
+          if($LASTEXITCODE){throw 'Git executable verification failed'}
       - uses: actions/checkout@v4
         timeout-minutes: 20
         with:

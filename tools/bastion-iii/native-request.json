@@ -1,7 +1,7 @@
 {
-  "revision": 5,
+  "revision": 6,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Replace own stalled checkout with bounded sparse checkout; native UI and main Breach assertions"
+  "reason": "Diagnosed archive fallback: recover actual installed GitHub Desktop git.exe as proven by code16 runner"
 }

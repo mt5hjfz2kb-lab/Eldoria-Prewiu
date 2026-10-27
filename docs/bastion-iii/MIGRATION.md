@@ -22,6 +22,12 @@ Revisados los tres catálogos. `Valoria_Granero_BIII_v1` es fuente reutilizable,
 
 El runtime `v0220/index.html` tiene una resolución posterior `gather-*` que sustituye la carga parcial antigua: recoge toda la reserva, marca el nodo agotado y programa renovación a 45 s. Se conserva ese comportamiento para comida (1100), y el tiempo `clamp(ceil(reserva/120),7,35)`, dentro de las fases de viaje ya verificadas en Unity. El antiguo `gatherInfo.cap=300` es metadato histórico y no la resolución vigente.
 
-Candidata de arte: granero Tripo existente y accesorios texturizados de producción; lobo ceniciento y fisura geológica de autoría Blender sin créditos. Pendientes capturas nativas y veredicto; ninguna aprobación implícita por generación o compilación.
+Candidata de arte: granero Tripo existente y accesorios texturizados de producción; lobo Quaternius CC0 con fuente/hash/licencia fijados y animación Idle; fisura geológica de autoría Blender sin créditos. Pendientes capturas nativas y veredicto; ninguna aprobación implícita por generación o compilación.
 
 La compilación local del dominio y binding pasa la prueba III con serialización real JSON y la regresión original de gestión (30 comprobaciones). La extracción de granero preserva geometría/PBR y evita que la exclusión Android de GLB históricos deje un recurso invisible. Pruebas Unity y estética siguen pendientes; los resultados locales no las sustituyen.
+
+## Recuperación del ejecutor
+
+El primer run 40498860557 no ejecutó Unity: checkout recurrió al ZIP REST completo porque Git no estaba en PATH. Se canceló únicamente esa ejecución propia. La ruta real disponible es el Git incluido en GitHub Desktop, acreditado en el log del ejecutor; se reutiliza su descubrimiento existente y se verifica `git --version` antes del checkout disperso acotado. No es un fallo del juego ni una certificación nativa.
+
+La comprobación preparada incluye capturas de arte A/B con cámara fija, UI real vertical/horizontal (Lyra, Arcón, Granero y composición), rutas del terreno, guardado y geometría de Brecha principal conservada. Pendiente ejecutar y juzgar los resultados; mantener PR117 en borrador y no sustituir code16.
