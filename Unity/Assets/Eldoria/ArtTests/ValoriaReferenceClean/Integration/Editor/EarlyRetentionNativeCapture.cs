@@ -182,6 +182,14 @@ namespace Eldoria.ReferenceClean.Editor
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Scouts);
             Need(ui.IsOpen&&ui.OpenDestination==RoyalGoldV3EarlyRetentionScreens.Destination.Scouts,
                 "Scouts has separate scene, not Codex or Missions overlay");
+            var contractArt=hud.GetComponentsInChildren<RoyalGoldV3ScoutContractGraphic>(true);
+            Need(contractArt.Length==3,
+                "The independent Scouts screen contains three real illustrated parchment contracts");
+            Need(contractArt.All(x=>!x.raycastTarget),
+                "Gold frames, heraldic motifs and wax seals never steal mission-button touches");
+            var different=contractArt.Select(x=>x.Kind).Distinct().Count();
+            Need(different==3,
+                "Three live board entries show their distinct authored contract illustrations");
             Screenshot(h,"scout-mission-board",1600,900);
             Screenshot(h,"scout-mission-board",900,1600);
             var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
