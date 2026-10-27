@@ -1,8 +1,8 @@
 {
-  "enabled": false,
-  "buildRunId": 40418364444,
-  "versionCode": 15,
-  "expectedSourceSha": "7413d029abe17e8b4a6fe366962bd522e022085f",
+  "enabled": true,
+  "buildRunId": 40495487995,
+  "versionCode": 16,
+  "expectedSourceSha": "ee35c87986370bf4d7e0e62e57897957cd9bce98",
   "budgetEur": 0,
-  "note": "Family1.15/code15 published successfully by40419617788. Public bytes and main/raw family manifest verified:395819992bytes, SHA256b6205cf93ddc42a8e50c9573de83dcad97c8bc1c8268583a8a5a891d1414d55c. Original package/signature preserved; no reset; physical phone untested. Disable duplicate publication."
+  "note": "Owner-authorized signed family code16 update after PR115 Crónica Real merged and certified. Build 40495487995 SUCCESS; artifact12729954412 downloaded and independently verified APK SHA256 8eecd69f76e2786a018483bec569e74f83dfce5226bb5a3b332cfdf152b1e6a5, 397196700 bytes, cert f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8, same Android package. Publish immutable release only with exact-byte verification; OTA manifest code16 only afterward. Physical phone untested."
 }
