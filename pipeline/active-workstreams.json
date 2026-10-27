@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T21:55:45Z",
+  "updated_at": "2026-10-27T22:50:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1701,7 +1701,7 @@
       "id": "eldoria-aldric-dialogue-bust-20261027",
       "title": "Sir Aldric — retrato real pecho/hombros arriba en los diálogos de Eldoria",
       "owner": "chatgpt-aldric-dialogue-bust-20261027",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "branch": "feature/aldric-dialogue-bust-20261027",
@@ -1719,12 +1719,14 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs.meta"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-aldric-dialogue-bust-20261027.json",
       "art_production_routing_reason": "Owner-approved reuse of real 3D artist source and exact Blender render to UI PNG textures; static art and presentation only; zero extra Tripo cost.",
-      "dependency": "No mutation to V1 RoyalHUD (Bastion III owner), Bastion III PR117, scene, gameplay, save, builds or Unity heavy runner. Owner-approved chest-up only; isolated authoring and native QA after Windows lease release.",
-      "phase": "SOURCE_3D_CAPED_PORTRAITS_PASS_NATIVE_TEST_AUTHORED_UNITY_PENDING",
+      "dependency": "Bastion III PR117 merged, delivered and canonical Valoria workstream available; Aldric owner acquired free Windows runner for scoped UI validation. Preserve preexisting game assets and save.",
+      "phase": "NATIVE_UNITY_QA_CLAIMED_PR118",
       "evidence": {
         "tripo_original_task": "f827067d-927e-4172-9bb8-6ee813176d58",
         "source_artpass_glb_sha": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555",
@@ -1735,7 +1737,7 @@
         "art_approved": false,
         "paid_credits_new": 0
       },
-      "next": "PlayMode probe AldricDialogueBustPresentationTests.cs scripted. Await Windows release by Bastion III then run native Unity and collect screenshots; PR118 stays draft."
+      "next": "Run isolated exact PR118 Unity PlayMode and compare genuine 16:9/portrait camera screenshots. Close after validation, then release Windows claim."
     }
   ],
   "history": [
