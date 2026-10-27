@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check --quiet "numpy==2.3.5" "vtk==9.6.2" "pillow==12.3.0" "trimesh==4.11.1"
+          python -m pip install --disable-pip-version-check --quiet "numpy==2.3.5" "vtk==9.6.2" "pillow==12.3.0" "trimesh==4.11.1" "scipy==1.16.3"
       - name: Render 4 honest shoulder/chest portraits from SHA-locked GLB
         shell: bash
         run: |
