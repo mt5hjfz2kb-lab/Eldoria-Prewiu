@@ -632,6 +632,7 @@ namespace Eldoria.Application
                     state.ChapterProgress.RouteCleared;
                 if (chapterOneReady) { state.JourneyComplete = true; changed = true; }
             }
+            changed |= AdvanceFrontierRespawns();
             if (GrantWebMissionRewards()) changed = true;
             changed |= AdvanceResourcePopulation();
             changed |= AdvanceCreaturePopulation();
@@ -691,6 +692,9 @@ namespace Eldoria.Application
                 case "InvestigateFissure":
                     if(id!="fissure-valoria"||c.FissureClosed||c.FissureExplored||c.InvestigationEndsUtcTicks>0)return Fail("Investigación no disponible");
                     if(!CanDepart())return Fail("Aldric debe regresar antes de investigar");
+                    var investigationRoute=new System.Collections.Generic.List<WorldRoutePoint>();
+                    if(marchRoutes!=null&&!marchRoutes.TryRoute(Snapshot(),id,out investigationRoute))return Fail("No hay ruta transitable hasta la fisura");
+                    c.InvestigationRoute=investigationRoute??new System.Collections.Generic.List<WorldRoutePoint>();
                     c.InvestigationEndsUtcTicks=clock.UtcTicks+TimeSpan.FromMinutes(20).Ticks;break;
                 case "ContactLyra":
                     if(id!="fissure-valoria"||!c.FissureExplored||c.FissureClosed||c.LyraContacted)return Fail("Encuentro no disponible");
@@ -727,10 +731,20 @@ namespace Eldoria.Application
             c.EconomyUtcTicks+=seconds*TimeSpan.TicksPerSecond;
             if(until-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond)c.EconomyUtcTicks=until;
         }
+        bool AdvanceFrontierRespawns()
+        {
+            if(state.BastionLevel<3)return false;
+            var c=state.ChapterThree;bool changed=false;
+            if(c.MeatRespawnUtcTicks>0&&clock.UtcTicks>=c.MeatRespawnUtcTicks){c.MeatRemaining=1100;c.MeatRespawnUtcTicks=0;c.MeatGeneration++;changed=true;}
+            if(c.WolfRespawnUtcTicks>0&&clock.UtcTicks>=c.WolfRespawnUtcTicks){c.WolfRespawnUtcTicks=0;c.WolfGeneration++;changed=true;}
+            if(c.BoarRespawnUtcTicks>0&&clock.UtcTicks>=c.BoarRespawnUtcTicks){c.BoarRespawnUtcTicks=0;c.BoarGeneration++;changed=true;}
+            return changed;
+        }
         bool AdvanceChapterThree()
         {
             if(state.BastionLevel<3)return false;
             var c=state.ChapterThree;bool changed=false;
+            changed|=AdvanceFrontierRespawns();
             if(state.ScoutDefeated&&!c.Inventory.Contains("iron-brace")){c.Inventory.Add("iron-brace");changed=true;}
             if(c.EconomyUtcTicks>0&&clock.UtcTicks-c.EconomyUtcTicks>TimeSpan.FromHours(1).Ticks){c.EconomyUtcTicks=clock.UtcTicks-TimeSpan.FromHours(1).Ticks;changed=true;}
             if(c.InvestigationEndsUtcTicks>0&&c.InvestigationEndsUtcTicks<=clock.UtcTicks){c.FissureExplored=true;c.InvestigationEndsUtcTicks=0;changed=true;}
@@ -753,7 +767,7 @@ namespace Eldoria.Application
         void ResolveChapterThreeMarch(MarchState m,long due)
         {
             var c=state.ChapterThree;
-            if(m.TargetId=="meat-valoria") {m.PendingFood=Math.Min(300,c.MeatRemaining);c.MeatRemaining-=m.PendingFood;return;}
+            if(m.TargetId=="meat-valoria") {m.PendingFood=c.MeatRemaining;c.MeatRemaining=0;c.MeatRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;return;}
             var power=SliceRules.Expedition(m.Troops,m.HeroId).Power;
             // The web's ordinary hunts resolve against their explicit expedition-power requirement.
             bool win=m.TargetId=="fissure-valoria"?c.LyraContacted&&!c.FissureClosed:power>=(m.TargetId=="hunt-wolf"?1450:2050);

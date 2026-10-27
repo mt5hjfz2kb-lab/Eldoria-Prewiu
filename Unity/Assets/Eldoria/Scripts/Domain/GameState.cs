@@ -118,12 +118,15 @@ namespace Eldoria.Domain
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
         public long InvestigationEndsUtcTicks, ClosingEndsUtcTicks, EconomyUtcTicks;
-        public long WolfRespawnUtcTicks, BoarRespawnUtcTicks;
+        public long WolfRespawnUtcTicks, BoarRespawnUtcTicks, MeatRespawnUtcTicks;
+        public int WolfGeneration, BoarGeneration, MeatGeneration;
         public int PendingBuildingLevel;
         public List<string> Inventory = new List<string>();
+        public List<WorldRoutePoint> InvestigationRoute = new List<WorldRoutePoint>();
         public BastionThreeState Copy() {
             var c=(BastionThreeState)MemberwiseClone();
-            c.Inventory=new List<string>(Inventory??new List<string>());return c;
+            c.Inventory=new List<string>(Inventory??new List<string>());
+            c.InvestigationRoute=new List<WorldRoutePoint>();foreach(var p in InvestigationRoute??new List<WorldRoutePoint>())c.InvestigationRoute.Add(new WorldRoutePoint{X=p.X,Y=p.Y,Z=p.Z});return c;
         }
     }
     [Serializable] public sealed class PlayerState

@@ -160,7 +160,8 @@ namespace Eldoria.ReferenceClean {
      }
     }
     string title=Name(pair.Key,host.English);
-    bool ownBuild=(s.BuildingTaskId??"").StartsWith(pair.Key+":",StringComparison.Ordinal)&&s.BuildingCompletesUtcTicks>0;
+    bool ownBuild=((s.BuildingTaskId??"").StartsWith(pair.Key+":",StringComparison.Ordinal)||(s.BuildingTaskId??"").StartsWith("c3:"+pair.Key+":",StringComparison.Ordinal))&&s.BuildingCompletesUtcTicks>0;
+    if(pair.Key=="fissure-valoria"&&s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)title+=" · "+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,host.English);
     if(town&&!built)title=ownBuild?(host.English?"Building: ":"En obras: ")+title:(host.English?"Build here: ":"Construir aquí: ")+title;
     else if(pair.Key=="valoria-map-city")title=host.English?"Enter Valoria":"Entrar en Valoria";
     pair.Value.Label.Put(title);
@@ -169,12 +170,12 @@ namespace Eldoria.ReferenceClean {
   string ContextHint(){
    var s=city.Gateway.Snapshot();bool en=host.English;
    if(s.March.Phase!="idle")return host.MarchStatus(s)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,city.Clock.UtcTicks,en)+"\n"+(s.March.Phase=="returning"?host.Reward(s.March.PendingWood,s.March.PendingStone)+(en?" on arrival":" al llegar"):(en?"The route marker follows your expedition.":"El estandarte señala a tu expedición."));
-   if(s.BuildingCompletesUtcTicks>0&&s.BuildingTaskId.StartsWith("c3:",StringComparison.Ordinal))return s.BuildingTaskId.Split(':')[1];
+   if(s.ChapterThree.InvestigationEndsUtcTicks>city.Clock.UtcTicks)return (en?"Aldric investigates the fissure · ":"Aldric investiga la fisura · ")+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,city.Clock.UtcTicks,en);
    if(s.BuildingCompletesUtcTicks>0)return (en?"Construction paid · ":"Obra pagada · ")+RoyalFormatting.Remaining(s.BuildingCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.RecruitmentCompletesUtcTicks>0)return (en?"Training ":"Entrenando ")+SliceRules.RecruitArchers+(en?" archers · ":" arqueros · ")+RoyalFormatting.Remaining(s.RecruitmentCompletesUtcTicks,city.Clock.UtcTicks,en);
    if(s.BastionUpgradeCompletesUtcTicks>0)return (en?"Bastion upgrade paid · ":"Mejora del Bastión pagada · ")+RoyalFormatting.Remaining(s.BastionUpgradeCompletesUtcTicks,city.Clock.UtcTicks,en);
    string key=SliceRules.CurrentObjectiveKey(s),target=ObjectiveTarget();
-   if(key=="b2.complete")return en?"Bastion II secured. Next milestone: Bastion III (not yet available). Your progress is saved.":"Bastión II asegurado. Próximo hito: Bastión III (aún no disponible). Tu progreso está guardado.";
+   if(key=="b2.complete")return en?"Bastion II secured. Prepare 650 wood and 500 stone to open the frontier.":"Bastión II asegurado. Prepara 650 madera y 500 piedra para abrir la frontera.";
    if(target=="forest-valoria")return en?"Select the forest, then Gather wood. Resources arrive with the returning troops.":"Selecciona el bosque y pulsa Recoger madera. Los recursos llegan con las tropas.";
    if(target=="quarry-valoria")return en?"Select the quarry, then Gather stone. Resources arrive with the returning troops.":"Selecciona la cantera y pulsa Recoger piedra. Los recursos llegan con las tropas.";
    if(target=="sawmill"||key=="b2.build-barracks")return en?"Go to objective highlights the building plot. Review its cost and choose Build.":"Ir al objetivo señala dónde construir. Revisa el coste y pulsa Construir.";
@@ -186,7 +187,7 @@ namespace Eldoria.ReferenceClean {
   public string ObjectiveTarget(){
    var s=city.Gateway.Snapshot();
    // Paid actions keep their actual target; their debited cost must not redirect to gathering.
-   if(s.BuildingCompletesUtcTicks>0&&s.BuildingTaskId.StartsWith("c3:",StringComparison.Ordinal))return s.BuildingTaskId.Split(':')[1];
+   if(s.BuildingCompletesUtcTicks>0&&s.BuildingTaskId.StartsWith("c3:",StringComparison.Ordinal))return s.BuildingTaskId.Split(':')[1]=="barracks"?"upgrade-barracks":s.BuildingTaskId.Split(':')[1];
    if(s.BuildingCompletesUtcTicks>0)return (s.BuildingTaskId??"").StartsWith("barracks:",StringComparison.Ordinal)?"barracks":"sawmill";
    if(s.RecruitmentCompletesUtcTicks>0)return "barracks";
    if(s.BastionUpgradeCompletesUtcTicks>0)return "bastion";

@@ -21,6 +21,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: bastion-iii-source
+          clean: false
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -79,6 +80,9 @@ jobs:
           New-Item -ItemType Directory -Force $evidence | Out-Null
           New-Item -ItemType Directory -Force (Join-Path $project 'UserSettings') | Out-Null
           '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' | Set-Content (Join-Path $project 'UserSettings/Search.index') -Encoding UTF8
+          $bakeArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"'+(Join-Path $evidence 'granary-bake.log')+'"'))
+          $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $bakeArgs -Wait -PassThru
+          if($bake.ExitCode -ne 0){throw 'Build-safe granary extraction failed'}
           foreach($platform in @('EditMode','PlayMode')){
             $xml=Join-Path $evidence "$platform.xml"
             $log=Join-Path $evidence "$platform.log"

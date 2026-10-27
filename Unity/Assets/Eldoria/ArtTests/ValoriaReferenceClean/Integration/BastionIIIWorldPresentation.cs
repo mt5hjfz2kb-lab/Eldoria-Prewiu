@@ -9,14 +9,17 @@ namespace Eldoria.ReferenceClean {
  // Presentation only: all unlocks, deadlines, inventory and rewards come from the existing gateway.
  public sealed class BastionIIIWorldPresentation:MonoBehaviour {
   ValoriaIntegratedWorld host;
-  GameObject town,granary,granarySite; readonly Dictionary<string,GameObject> nodes=new Dictionary<string,GameObject>();
+  GameObject town,granary,granarySite,siteStock; readonly Dictionary<string,GameObject> nodes=new Dictionary<string,GameObject>();
   readonly List<(GameObject cue,string building,int level)> cues=new List<(GameObject,string,int)>();
   bool placed;float refresh;
   public void Initialize(ValoriaIntegratedWorld h){
    host=h;town=new GameObject("Bastion III city additions");town.transform.SetParent(transform,false);
    granarySite=new GameObject("Granary site");granarySite.transform.SetParent(town.transform,false);granarySite.transform.position=new Vector3(-19,.56f,9);
    Hotspot(granarySite,"granary",new Vector3(11,5,9));
-   granary=Model("Valoria/Valoria_Granero_BIII_v1",granarySite.transform,Vector3.zero,10.4f);
+   granary=Model("BastionIII/Granary/Granary",granarySite.transform,Vector3.zero,10.4f);
+   siteStock=new GameObject("Granary construction supplies");siteStock.transform.SetParent(granarySite.transform,false);
+   Model("Valoria/UrbanProps/Crate",siteStock.transform,new Vector3(-1,0,0),1.5f);
+   Model("Valoria/UrbanProps/Sack",siteStock.transform,new Vector3(1,0,0),1.3f);
    // Existing, textured production stock denotes the small level increments.
    MakeStock("granary",granarySite.transform,new Vector3(0,0,-5),"Sack");
    if(host.City.Parcels){
@@ -67,7 +70,7 @@ namespace Eldoria.ReferenceClean {
     for(int radius=72;radius<=176&&!found;radius+=16)for(int step=0;step<24&&!found;step++){
      float angle=(step*15+ordinal*87)*Mathf.Deg2Rad;float x=Mathf.Cos(angle)*radius,z=Mathf.Sin(angle)*radius;
      var p=host.WorldHome+new Vector3(x,RegionOneBlenderLandscape.Height(x,z),z);
-     if(used.Any(q=>Vector3.Distance(q,p)<30)||!routes.FootprintClear(p,8)||!routes.TryRouteTo(s,p,out var route))continue;
+     if(s.WorldCreatureLocations.Any(q=>q.Alive&&Vector3.Distance(new Vector3(q.X,q.Y,q.Z),p)<24)||used.Any(q=>Vector3.Distance(q,p)<30)||!routes.FootprintClear(p,8)||!routes.TryRouteTo(s,p,out var route))continue;
      // Use the reachable endpoint; no fabricated march path or floating fauna.
      var end=route[route.Count-1];p=new Vector3(end.X,end.Y,end.Z);
      if(used.Any(q=>Vector3.Distance(q,p)<30))continue;
@@ -83,8 +86,7 @@ namespace Eldoria.ReferenceClean {
    bool unlocked=s.BastionLevel>=3;town.SetActive(unlocked&&!host.InWorld);
    if(granary)granary.SetActive(c.GranaryLevel>0);
    // A buildable site has actual stored supplies instead of an invisible target.
-   if(c.GranaryLevel==0&&granarySite.transform.childCount==3){Model("Valoria/UrbanProps/Crate",granarySite.transform,new Vector3(-1,0,0),1.5f);Model("Valoria/UrbanProps/Sack",granarySite.transform,new Vector3(1,0,0),1.3f);}
-   for(int i=3;i<granarySite.transform.childCount;i++)granarySite.transform.GetChild(i).gameObject.SetActive(c.GranaryLevel==0);
+   siteStock.SetActive(c.GranaryLevel==0);
    foreach(var cue in cues){int level=cue.building=="granary"?c.GranaryLevel:cue.building=="sawmill"?s.SawmillLevel:cue.building=="barracks"?s.BarracksLevel:s.BastionLevel;cue.cue.SetActive(level>=cue.level);}
    if(!placed&&unlocked)PlaceNodes(s);
    bool near=!RegionOneResourcePlacement.IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);

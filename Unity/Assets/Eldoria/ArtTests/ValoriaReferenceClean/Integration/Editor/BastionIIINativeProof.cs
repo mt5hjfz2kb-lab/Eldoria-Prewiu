@@ -44,7 +44,8 @@ namespace Eldoria.ReferenceClean.Editor {
    h.GetComponent<BastionIIIWorldPresentation>().Apply();cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);Shot(h,"B-bastion-III-site",cityCam);
    Need(h.FindTarget("granary").gameObject.activeInHierarchy,"granary III unlock");
    Command(h,"Build","granary");Step(h,9);yield return null;Shot(h,"C-granary-level1",cityCam);
-   Command(h,"UpgradeBuilding","granary");Command(h,"InvestigateFissure","fissure-valoria");Step(h,1199);h.City.ReloadForProbe();Need(!h.City.Gateway.Snapshot().ChapterThree.FissureExplored,"persistent investigation not early");Step(h,1);yield return null;
+   Command(h,"UpgradeBuilding","granary");h.TrySetWorld(true);yield return new WaitForSecondsRealtime(.5f);h.GetComponent<BastionIIIWorldPresentation>().Apply();Command(h,"InvestigateFissure","fissure-valoria");Need(h.City.Gateway.Snapshot().ChapterThree.InvestigationRoute.Count>1,"investigation uses real terrain route");
+   h.WorldNavigation.RestoreView(h.FindTarget("fissure-valoria").transform.position,14);yield return null;Shot(h,"fissure-investigation",h.WorldCamera);h.TrySetWorld(false);yield return null;cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);Step(h,1199);h.City.ReloadForProbe();Need(!h.City.Gateway.Snapshot().ChapterThree.FissureExplored,"persistent investigation not early");Step(h,1);yield return null;
    Need(!h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,"investigation never recruits Lyra");Shot(h,"D-granary-level2",cityCam);
    h.TrySetWorld(true);yield return null;yield return null;h.GetComponent<BastionIIIWorldPresentation>().Apply();
    foreach(var id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria"}){

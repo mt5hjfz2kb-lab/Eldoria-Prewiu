@@ -13,7 +13,7 @@ namespace Eldoria.UI.RoyalGold {
   public RoyalSnapshot Read(string selection,bool en){
    var s=gateway.Snapshot(); if(s==null)throw new InvalidOperationException("PlayerState unavailable"); var p=SliceRules.TotalPower(s);
    var d=new RoyalSnapshot{Revision=s.Revision,Wood=s.Resources.Wood,Stone=s.Resources.Stone,Food=s.Resources.Food,Power=p.Total,
-    BastionLevel=s.BastionLevel,Available=s.Available.Total,Wounded=s.Wounded.Total,Prepared=s.PreparedTroops.Total,HeroPower=p.Heroes,
+    BastionLevel=s.BastionLevel,Available=s.Available.Total,Wounded=s.Wounded.Total,Prepared=s.PreparedTroops.Total,HeroPower=p.Heroes+(s.ChapterThree.LyraRecruited?1278:0),
     Hero=s.PreparedHeroId=="aldric"?"Sir Aldric":s.PreparedHeroId,IsTest=test,Profile=SliceContentProfiles.ActiveRuntimeProfile,
     Chapter=L(en,s.BastionLevel<2?"CAPÍTULO I":"CAPÍTULO II",s.BastionLevel<2?"CHAPTER I":"CHAPTER II"),March=MarchText(s,en)};
    if(s.ChapterThree.LyraRecruited)d.Hero="Sir Aldric · Lyra ("+s.ChapterThree.LyraXp+" XP)";
@@ -37,11 +37,12 @@ namespace Eldoria.UI.RoyalGold {
    }
   }
   string MarchText(PlayerState s,bool en){
+   if(s.ChapterThree.InvestigationEndsUtcTicks>clock.UtcTicks)return L(en,"Aldric · Investigando la fisura · ","Aldric · Investigating the fissure · ")+RoyalFormatting.Remaining(s.ChapterThree.InvestigationEndsUtcTicks,clock.UtcTicks,en);
    string phase=s.March.Phase??"idle",label;
    switch(phase){case "outbound":label=L(en,"En marcha","Outbound");break;case "gathering":label=L(en,"Recolectando","Gathering");break;case "returning":label=L(en,"Regresando","Returning");break;default:label=L(en,"Marcha disponible","March ready");break;}
    return label+(phase=="idle"?"":" · "+TargetName(s.March.TargetId,en)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,clock.UtcTicks,en));
   }
-  static string TargetName(string id,bool en){switch(id){case "forest-valoria":return L(en,"Bosque","Forest");case "quarry-valoria":return L(en,"Cantera","Quarry");case "corrupt-scout":return L(en,"Ruta corrupta","Corrupted route");case "engendro-valoria":return L(en,"Engendro","Spawn");default:return L(en,"Valoria","Valoria");}}
+  static string TargetName(string id,bool en){switch(id){case "meat-valoria":return L(en,"Reserva de carne","Meat reserve");case "hunt-wolf":return L(en,"Lobos cenicientos","Ash wolves");case "hunt-boar":return L(en,"Jabalí de roca","Rock boar");case "fissure-valoria":return L(en,"Fisura","Fissure");case "forest-valoria":return L(en,"Bosque","Forest");case "quarry-valoria":return L(en,"Cantera","Quarry");case "corrupt-scout":return L(en,"Ruta corrupta","Corrupted route");case "engendro-valoria":return L(en,"Engendro","Spawn");default:return L(en,"Valoria","Valoria");}}
   static void Mission(PlayerState s,RoyalSnapshot d,bool en){
    var p=s.ChapterProgress; string key=SliceRules.CurrentObjectiveKey(s); int done=0,total=1; string title;
    switch(key){
@@ -129,8 +130,8 @@ namespace Eldoria.UI.RoyalGold {
      label=L(en,kind=="InvestigateFissure"?"Investigar · 20 min":kind=="ContactLyra"?"Hablar con Lyra":"Asaltar con Lyra",kind=="InvestigateFissure"?"Investigate · 20 min":kind=="ContactLyra"?"Talk to Lyra":"Assault with Lyra");
      b.Function=L(en,"Una fisura local. Lyra busca a su hermano; aún nadie conoce el origen de la Brecha.","A local fissure. Lyra seeks her brother; the Breach's origin remains unknown.");
      deadline=c.InvestigationEndsUtcTicks;seconds=1200;
-    }else if(id=="meat-valoria")b.Function=c.MeatRemaining+L(en," comida disponible · carga 300"," food remaining · load 300");
-    else b.Function=L(en,"Caza: alimento y materiales. Sin recompensa directa de Poder.","Hunting: food and materials. No direct Power reward.");
+    }else if(id=="meat-valoria")b.Function=c.MeatRemaining+L(en," comida disponible"," food available");
+    else b.Function=id=="hunt-wolf"?L(en,"Poder requerido: 1450 · 140 comida y piel curtida.","Required power: 1450 · 140 food and treated hide."):L(en,"Poder requerido: 2050 · 190 comida y colmillo pétreo.","Required power: 2050 · 190 food and stone tusk.");
     if(c.InvestigationEndsUtcTicks>0&&id!="fissure-valoria")reason=L(en,"Aldric está investigando la fisura.","Aldric is investigating the fissure.");
     if(s.March.Phase!="idle"){reason=L(en,"Espera al regreso de la marcha.","Wait for the march to return.");if(s.March.TargetId==id){deadline=s.March.PhaseEndsUtcTicks;seconds=SliceRules.TravelSeconds;}}
     if(id=="meat-valoria"&&c.MeatRemaining<=0)reason=L(en,"Reserva agotada.","Reserve depleted.");

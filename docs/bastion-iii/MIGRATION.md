@@ -12,8 +12,16 @@ Conservar IDs, esquema de guardado 1 y sesión única. No representar un portal 
 
 Datos aditivos `ChapterThree`; comandos del gateway conservan propietario/revisión/idempotencia. Prueba ejecutable `tools/bastion-iii/DomainProbe.cs` compila las fuentes reales sin Unity; cubre ascenso, 20 minutos, reinicio, reclutamiento tras victoria, recompensa única, caza, límite de niveles y aislamiento de snapshot. No sustituye Unity ni QA visual.
 
-PENDIENTE: integración gráfica/narrativa completa, navegación, Arcón/héroes, comparación A/B real en cámara jugable, regresión I–II y pruebas Unity del candidato exacto. No integrado, no ART_APPROVED, no nueva APK.
+Implementadas conexiones de narrativa, navegación, Arcón desde Héroes, selección Aldric/Lyra/ambos tras victoria, rutas y contador de investigación. PENDIENTE: comparar los candidatos gráficos en cámara real, completar la regresión I–II y las pruebas Unity del candidato exacto. No integrado, no ART_APPROVED, no nueva APK.
 
 ## Decisión artística inicial
 
 Revisados los tres catálogos. `Valoria_Granero_BIII_v1` es fuente reutilizable, no aprobación de escena. `Granero_CFSv1` rechazado por calidad procedural; no recuperar. RCF es fuente rica pero el ensayo histórico falló por composición/crop móvil y no fue promovido. Evaluar un único volumen principal de esa familia contra la Valoria actual, evitando importar el conjunto de tres edificios y duplicar superficie. Fuente editable y pruebas históricas disponibles; debe verificarse antes de escoger.
+
+## Auditoría de paridad ejecutable
+
+El runtime `v0220/index.html` tiene una resolución posterior `gather-*` que sustituye la carga parcial antigua: recoge toda la reserva, marca el nodo agotado y programa renovación a 45 s. Se conserva ese comportamiento para comida (1100), y el tiempo `clamp(ceil(reserva/120),7,35)`, dentro de las fases de viaje ya verificadas en Unity. El antiguo `gatherInfo.cap=300` es metadato histórico y no la resolución vigente.
+
+Candidata de arte: granero Tripo existente y accesorios texturizados de producción; lobo ceniciento y fisura geológica de autoría Blender sin créditos. Pendientes capturas nativas y veredicto; ninguna aprobación implícita por generación o compilación.
+
+La compilación local del dominio y binding pasa la prueba III con serialización real JSON y la regresión original de gestión (30 comprobaciones). La extracción de granero preserva geometría/PBR y evita que la exclusión Android de GLB históricos deje un recurso invisible. Pruebas Unity y estética siguen pendientes; los resultados locales no las sustituyen.
