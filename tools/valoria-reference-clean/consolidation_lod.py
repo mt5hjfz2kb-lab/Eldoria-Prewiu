@@ -34,11 +34,14 @@ for item in data['parts']:
                     other=edge.other_vert(v)
                     if other in remaining:remaining.remove(other);group.append(other);todo.append(other)
             groups.append(group)
+        water=item['waterline']
         for group in groups:
             lo=Vector(tuple(min(v.co[k] for v in group) for k in range(3)));hi=Vector(tuple(max(v.co[k] for v in group) for k in range(3)));c=(lo+hi)/2
             if max(hi.x-lo.x,hi.z-lo.z)<1.3:continue
-            # Water is -2.05 m: preserve submerged toes, sculpt only the exposed mass.
-            water=-2.05;phase=c.x*.43+c.z*.21;compression=.74+.13*(.5+.5*math.sin(phase))
+            # Preserve actual tree-bearing stones; measurements are in this source mesh's LOCAL frame.
+            if any(lo.x-.3<=p['x']<=hi.x+.3 and lo.z-.3<=p['z']<=hi.z+.3 and p['y']<hi.y+2 for p in item.get('protectedPoints',[])):continue
+            # Preserve the correctly transformed water plane and submerged toes.
+            water=item['waterline'];phase=c.x*.43+c.z*.21;compression=.74+.13*(.5+.5*math.sin(phase))
             narrow=.76+.15*(.5+.5*math.sin(phase*1.7));top=water+max(.25,hi.y-water)*compression
             for v in group:
                 w=max(0,min(1,(v.co.y-water)/.6))

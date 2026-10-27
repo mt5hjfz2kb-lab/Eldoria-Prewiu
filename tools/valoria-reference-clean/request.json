@@ -1,6 +1,6 @@
 {
   "stage": "visual_consolidation_trial",
-  "revision": 286,
+  "revision": 287,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,5 +8,5 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Correct current ground contact, reuse source city stone bridge on measured existing crossing, retain taller fractured bank crowns, correct east coast atmospheric transition. Native A/B trial only."
+  "checks": "Change failed architecture mesh reduction to authentic original-model Unity impostor bake; preserve tree-bearing stones and rebuild foam at actual candidate water contacts. Retain independently reviewed Boundary286, do not promote Breach."
 }
