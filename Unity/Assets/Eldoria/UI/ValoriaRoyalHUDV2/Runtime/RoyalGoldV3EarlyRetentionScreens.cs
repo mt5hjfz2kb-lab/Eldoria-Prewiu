@@ -357,7 +357,12 @@ namespace Eldoria.UI.RoyalGold.V2
             bool vig=OpenDestination==Destination.Vigilants;
             sceneArtwork.Scouts=!vig;
             sceneArtwork.Chapter=Math.Max(1,(p.LastClearedStage/25)+1);
-            if(explicitRefresh)sceneArtwork.SetVerticesDirty();
+            int chapterProgress=p.LastClearedStage%25;
+            if(sceneArtwork.ChapterProgress!=chapterProgress || explicitRefresh)
+            {
+                sceneArtwork.ChapterProgress=chapterProgress;
+                sceneArtwork.SetVerticesDirty();
+            }
             heading.Put(vig?"CAMINO DE LOS VIGILANTES":"MESA DE EXPLORADORES");
             kicker.Put(vig?"PRUEBAS DEL REINO · COMBATE AUTOMÁTICO":
                 "ENCARGOS REALES · REGRESOS PERSISTENTES");
