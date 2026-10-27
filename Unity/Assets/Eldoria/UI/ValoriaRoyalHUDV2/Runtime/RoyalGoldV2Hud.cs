@@ -147,6 +147,30 @@ namespace Eldoria.UI.RoyalGold.V2
             }
 
             objectiveCard = Panel("V2 / current objective", safe);
+            var parchment = NewRect("V3 / Crónica Real parchment", objectiveCard);
+            parchment.gameObject.AddComponent<CanvasRenderer>();
+            var parchmentArt = parchment.gameObject.AddComponent<RoyalGoldV3ParchmentGraphic>();
+            parchmentArt.Objective = true;
+            parchmentArt.raycastTarget = false;
+            parchment.anchorMin = Vector2.zero;
+            parchment.anchorMax = Vector2.one;
+            parchment.offsetMin = parchment.offsetMax = Vector2.zero;
+            parchment.SetAsFirstSibling();
+            var heraldry = NewRect("V3 / genuine Valoria heraldry", objectiveCard);
+            heraldry.gameObject.AddComponent<CanvasRenderer>();
+            var shield = heraldry.gameObject.AddComponent<RoyalIconGraphic>();
+            shield.Icon = 0;
+            shield.color = new Color(.07f, .18f, .33f, 1f);
+            shield.raycastTarget = false;
+            var emblem = NewRect("Bastion heraldic emblem", heraldry);
+            emblem.gameObject.AddComponent<CanvasRenderer>();
+            var castle = emblem.gameObject.AddComponent<RoyalIconGraphic>();
+            castle.Icon = 9;
+            castle.color = new Color(.91f, .73f, .40f, 1f);
+            castle.raycastTarget = false;
+            emblem.anchorMin = new Vector2(.24f, .26f);
+            emblem.anchorMax = new Vector2(.76f, .81f);
+            emblem.offsetMin = emblem.offsetMax = Vector2.zero;
             chapterText = Text("Chapter", objectiveCard, 18, Gold, true);
             objectiveText = Text("Current real objective", objectiveCard, 25, Ivory, true);
             progressText = Text("Objective progress", objectiveCard, 17, Muted);
@@ -323,13 +347,17 @@ namespace Eldoria.UI.RoyalGold.V2
             // on a portrait handset; never place the chapter over them.
             float goalTop = portrait ? 291f : 136f;
             Top(objectiveCard, portrait ? 14 : 18, goalTop, goalWidth, 119f);
-            Top(chapterText.rectTransform, 13, 9, goalWidth - 114, 22);
-            chapterText.fontSize = 17;
+            Top((RectTransform)objectiveCard.Find("V3 / genuine Valoria heraldry"), 9, 18, 54, 72);
+            Top(chapterText.rectTransform, 73, 9, goalWidth - 181, 22);
+            chapterText.color = new Color(.28f, .20f, .105f, 1f);
+            chapterText.fontSize = 16;
             Top(progressText.rectTransform, goalWidth - 98, 9, 84, 22);
-            progressText.fontSize = 16;
+            progressText.color = new Color(.32f, .25f, .15f, 1f);
+            progressText.fontSize = 15;
             progressText.alignment = TextAnchor.MiddleRight;
-            Top(objectiveText.rectTransform, 13, 31, goalWidth - 26, 41);
-            objectiveText.fontSize = 20;
+            Top(objectiveText.rectTransform, 73, 31, goalWidth - 85, 41);
+            objectiveText.color = new Color(.14f, .105f, .07f, 1f);
+            objectiveText.fontSize = 19;
             Top((RectTransform)objectiveAction.transform, 10, 76, (goalWidth - 32f) * .58f, 39);
             Top((RectTransform)objectivesButton.transform, 16 + (goalWidth - 32f) * .58f,
                 76, (goalWidth - 32f) * .42f, 39);
@@ -383,10 +411,10 @@ namespace Eldoria.UI.RoyalGold.V2
             compactObjective = compact;
             float w = objectiveCard.rect.width;
             objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 119f);
-            Top(chapterText.rectTransform, 13, 9, w - 114f, 22f);
+            Top(chapterText.rectTransform, 73, 9, w - 181f, 22f);
             Top(progressText.rectTransform, w - 98f, 9, 84f, 22f);
-            Top(objectiveText.rectTransform, 13, 31, w - 26f, 41f);
-            objectiveText.fontSize = 20;
+            Top(objectiveText.rectTransform, 73, 31, w - 85f, 41f);
+            objectiveText.fontSize = 19;
             Top((RectTransform)objectiveAction.transform, 10, 76, (w - 32f) * .58f, 39f);
             Top((RectTransform)objectivesButton.transform,
                 16 + (w - 32f) * .58f, 76, (w - 32f) * .42f, 39f);
@@ -508,6 +536,9 @@ namespace Eldoria.UI.RoyalGold.V2
         /// all its buttons work. Reflow ONLY existing, authorized actions.
         /// Do not create dummy buttons or hide usable navigation categories.
         /// </summary>
+        // The owner-approved Crónica Real uses a fixed bottom row of real
+        // circular navigation controls, never an intermediate left rail.
+        // RoyalSafeArea already applies Screen.safeArea to the parent.
         private void LayoutNavigation()
         {
             if (!Source.Navigation || !safe) return;
@@ -517,33 +548,25 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (item.Button && item.Button.gameObject.activeSelf) count++;
             if (count == 0) return;
 
-            // Owner approved Interface 1: the landscape, not a permanent
-            // bottom-wide HUD, is the hero. Move the SAME functional navigation
-            // buttons into a quiet, narrow left rail below the chapter.
-            // Nothing is cloned, unlocked, removed or given a fake listener.
-            float available = Mathf.Max(160f, safe.rect.height -
-                (portrait ? 442f : 290f) - 88f);
-            float gap = 6f;
-            float cellHeight = Mathf.Clamp(
-                (available - gap * (count - 1)) / count, 52f, 67f);
-            float cellWidth = portrait ? 75f : 78f;
-            float total = cellHeight * count + gap * (count - 1);
-            float top = portrait ? 430f : 277f;
-            // Extremely short landscape screens must keep the genuine bottom
-            // region navigable even if the rail needs to start higher.
-            top = Mathf.Min(top, Mathf.Max(10f, safe.rect.height - total - 15f));
+            float safeWidth = safe.rect.width;
+            float available = Mathf.Max(160f, safeWidth - (portrait ? 10f : 24f));
+            float gap = portrait ? 2f : 9f;
+            float desired = portrait ? available : Mathf.Min(970f, available);
+            float cellWidth = Mathf.Max(48f, (desired - gap * (count - 1)) / count);
+            float totalWidth = cellWidth * count + gap * (count - 1);
+            float cellHeight = portrait ? 94f : 110f;
+
             var navRect = nav.transform as RectTransform;
             if (navRect)
             {
-                navRect.anchorMin = navRect.anchorMax = new Vector2(0f, 1f);
-                navRect.pivot = new Vector2(.5f, .5f);
-                SetWidthAndHeight(navRect, cellWidth, total);
-                Vector2 rail = new Vector2(12f + cellWidth * .5f,
-                    -top - total * .5f);
-                if ((navRect.anchoredPosition - rail).sqrMagnitude > .1f)
-                    navRect.anchoredPosition = rail;
+                navRect.anchorMin = navRect.anchorMax = new Vector2(.5f, 0f);
+                navRect.pivot = new Vector2(.5f, 0f);
+                SetWidthAndHeight(navRect, totalWidth, cellHeight);
+                if (navRect.anchoredPosition.sqrMagnitude > .1f)
+                    navRect.anchoredPosition = Vector2.zero;
             }
-            float icon = Mathf.Min(36f, cellWidth - 10f);
+
+            float icon = Mathf.Min(portrait ? 56f : 72f, cellWidth - 10f);
             int index = 0;
             foreach (var item in nav.Items)
             {
@@ -551,30 +574,28 @@ namespace Eldoria.UI.RoyalGold.V2
                 var cell = (RectTransform)item.Button.transform;
                 cell.anchorMin = cell.anchorMax = cell.pivot = new Vector2(.5f, .5f);
                 SetWidthAndHeight(cell, cellWidth, cellHeight);
-                float y = total * .5f - cellHeight * .5f -
-                    index++ * (cellHeight + gap);
-                Vector2 location = new Vector2(0, y);
-                if ((cell.anchoredPosition - location).sqrMagnitude > .1f)
-                    cell.anchoredPosition = location;
-                // The original action medallion and label stay inside the
-                // same native uGUI button and retain its existing navigation.
-                if (cell.childCount > 0 && cell.GetChild(0) is RectTransform medallion)
+                float x = -totalWidth * .5f + cellWidth * .5f +
+                    index++ * (cellWidth + gap);
+                var position = new Vector2(x, 0f);
+                if ((cell.anchoredPosition - position).sqrMagnitude > .1f)
+                    cell.anchoredPosition = position;
+
+                // Reuse the original icon art and original live onClick.
+                // The whole cell is the touch target, the medal is decorative.
+                if (cell.childCount > 0 && cell.GetChild(0) is RectTransform medal)
                 {
-                    SetWidthAndHeight(medallion, icon, icon);
-                    // Original 82px medal contains an independent 56px glyph.
-                    // Resize and centre BOTH; shrinking only the medal
-                    // previously left the World action as a clipped blue dot.
-                    medallion.anchorMin = medallion.anchorMax =
-                        medallion.pivot = new Vector2(.5f, .5f);
-                    Vector2 medallionLocation = new Vector2(0f, cellHeight * .18f);
-                    if ((medallion.anchoredPosition - medallionLocation).sqrMagnitude > .1f)
-                        medallion.anchoredPosition = medallionLocation;
-                    if (medallion.childCount > 0 &&
-                        medallion.GetChild(0) is RectTransform glyph)
+                    medal.anchorMin = medal.anchorMax =
+                        medal.pivot = new Vector2(.5f, .5f);
+                    SetWidthAndHeight(medal, icon, icon);
+                    var positionMedal = new Vector2(0f, cellHeight * .115f);
+                    if ((medal.anchoredPosition - positionMedal).sqrMagnitude > .1f)
+                        medal.anchoredPosition = positionMedal;
+                    if (medal.childCount > 0 &&
+                        medal.GetChild(0) is RectTransform glyph)
                     {
                         glyph.anchorMin = glyph.anchorMax =
                             glyph.pivot = new Vector2(.5f, .5f);
-                        SetWidthAndHeight(glyph, icon * .66f, icon * .66f);
+                        SetWidthAndHeight(glyph, icon * .67f, icon * .67f);
                         if (glyph.anchoredPosition.sqrMagnitude > .1f)
                             glyph.anchoredPosition = Vector2.zero;
                     }
@@ -584,11 +605,12 @@ namespace Eldoria.UI.RoyalGold.V2
                     var label = item.Label.rectTransform;
                     label.anchorMin = label.anchorMax =
                         label.pivot = new Vector2(.5f, .5f);
-                    SetWidthAndHeight(label, cellWidth - 4f, 19f);
-                    Vector2 labelLocation = new Vector2(0f, -cellHeight * .32f);
-                    if ((label.anchoredPosition - labelLocation).sqrMagnitude > .1f)
-                        label.anchoredPosition = labelLocation;
-                    if (item.Label.fontSize != 15) item.Label.fontSize = 15;
+                    SetWidthAndHeight(label, Mathf.Max(43f, cellWidth - 4f), 20f);
+                    var labelPosition = new Vector2(0f, -cellHeight * .34f);
+                    if ((label.anchoredPosition - labelPosition).sqrMagnitude > .1f)
+                        label.anchoredPosition = labelPosition;
+                    if (item.Label.fontSize != (portrait ? 13 : 15))
+                        item.Label.fontSize = portrait ? 13 : 15;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                 }
             }
@@ -709,11 +731,8 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             Rect free = Source ? Source.GetVisibleSceneViewport() : new Rect(.07f, .12f, .86f, .78f);
             if (!safe || !hasGeometry) return free;
-            // Compact real action rail replaces the horizontal bottom strip.
-            // Camera focus avoids the rail but keeps the rest of the landscape.
-            if (Source && Source.Navigation && Source.Navigation.gameObject.activeInHierarchy)
-                free.xMin = Mathf.Max(free.xMin,
-                    Mathf.Min(.15f, 104f / Mathf.Max(1f, safe.rect.width)));
+            // The bottom dock is already excluded by RoyalHUD's actual
+            // screen-space bounds. Do not cut away a fictitious left rail.
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
             float padding = .025f;
