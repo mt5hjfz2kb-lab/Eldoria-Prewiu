@@ -131,6 +131,44 @@ jobs:
           if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity version $version"}
           Write-Host 'ALDRIC_SEARCH_EDITOR_ONLY_PREPARED'
 
+      - name: Materialize certified Bastion III prefabs before testing the actual merged scene
+        shell: powershell
+        working-directory: aldric-dialogue-merge-v2
+        run: |
+          # The initial Aldric native run 40592203923 produced exactly one failed test:
+          # the canonical scene raised BASTION_III_MISSING_ART Granary. This is the
+          # same documented missing generated prefab fixed in main's unity-slice.yml.
+          # Reuse that source-authored pipeline; do not silence legitimate Unity errors.
+          $root=Join-Path (Get-Location) 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII'
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender) {
+            $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $blender){throw 'Existing Blender unavailable; do not invent fissure model'}
+          & $blender -b --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE -ne 0){throw 'Existing certified Bastion III geological fissure authoring failed'}
+          if(-not(Test-Path (Join-Path $root 'PrivateFissure.glb'))){throw 'Bastion III fissure source missing after Blender'}
+          $log=Join-Path $env:RUNNER_TEMP "aldric-certified-bastion-iii-bake-$env:GITHUB_RUN_ID.log"
+          $project=Join-Path (Get-Location) 'Unity'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+            '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"'+$log+'"'))
+          $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(780000)){
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            throw 'Canonical Bastion III art bake timed out'
+          }
+          $proc.Refresh()
+          if($proc.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            throw 'Canonical Bastion III art bake failed; preserve logs'
+          }
+          foreach($p in @('Granary','StockCrate','StockSack','StockBarrel')){
+            if(-not(Test-Path (Join-Path $root "Granary/$p.prefab"))){throw "Missing generated Bastion III prefab: $p"}
+          }
+          Write-Host 'BASTION_III_ALDRIC_PREFAB_BAKE_PASS'
+
       - name: Run real 2-test Unity PlayMode suite on merged PR118 source
         shell: powershell
         working-directory: aldric-dialogue-merge-v2
