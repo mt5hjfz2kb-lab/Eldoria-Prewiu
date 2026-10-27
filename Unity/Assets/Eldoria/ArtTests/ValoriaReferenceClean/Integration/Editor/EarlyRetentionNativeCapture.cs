@@ -91,8 +91,20 @@ namespace Eldoria.ReferenceClean.Editor
             Need(File.Exists(path)&&new FileInfo(path).Length>30000,
                 "Native Unity "+w+"x"+he+" screenshot exists: "+name);
             var tex=new Texture2D(2,2,TextureFormat.RGB24,false);
-            try{Need(tex.LoadImage(File.ReadAllBytes(path))&&tex.width==w&&tex.height==he,
-                "Real camera pixels decode at expected resolution: "+name);}
+            try{
+                Need(tex.LoadImage(File.ReadAllBytes(path))&&tex.width==w&&tex.height==he,
+                    "Real camera pixels decode at expected resolution: "+name);
+                var pixels=tex.GetPixels32();
+                int navy=0,gold=0;
+                for(int i=0;i<pixels.Length;i+=7)
+                {
+                    var c=pixels[i];
+                    if(c.b>c.r*1.10f&&c.b>c.g*.90f&&c.b>=22&&c.b<=165)navy++;
+                    if(c.r>125&&c.g>75&&c.r>c.g*1.13f&&c.g>c.b*1.13f)gold++;
+                }
+                Need(navy>pixels.Length/250&&gold>pixels.Length/10000,
+                    "Actual royal-navy and gilded visuals occupy the captured screen: "+name);
+            }
             finally{Object.Destroy(tex);}
         }
         static void ClickReal(RoyalButton button,string label)
