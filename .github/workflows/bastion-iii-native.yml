@@ -54,6 +54,13 @@ jobs:
           if($LASTEXITCODE){throw 'Stale or conflicting lease'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
+          $evidence='docs/bastion-iii/native'
+          if(Test-Path $evidence){
+            $archive=Join-Path $env:RUNNER_TEMP "bastion-iii-prior-evidence-$env:GITHUB_RUN_ID"
+            if(Test-Path $archive){throw 'Prior evidence archive already exists; preserve it'}
+            Move-Item $evidence $archive
+          }
+          New-Item -ItemType Directory -Force $evidence | Out-Null
       - name: Restore exact missing source files in the isolated checkout
         shell: powershell
         working-directory: bastion-iii-source
@@ -81,9 +88,12 @@ jobs:
             if((& git hash-object -- $dest).Trim() -ne $expected){throw "Recovered source hash mismatch: $file"}
           }
           $fixture='docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json'
-          & git checkout --ignore-skip-worktree-bits HEAD -- $fixture
-          if($LASTEXITCODE){throw 'Exact camera fixture recovery failed'}
-          if((& git hash-object -- $fixture).Trim() -ne (& git rev-parse "HEAD:$fixture").Trim()){throw 'Camera fixture hash mismatch'}
+          $expected=(& git rev-parse "HEAD:$fixture").Trim()
+          $blob=Invoke-RestMethod -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/$($fixture)?ref=$env:GITHUB_SHA" -Headers $headers
+          if($blob.sha -ne $expected -or $blob.encoding -ne 'base64'){throw 'Wrong exact camera fixture'}
+          New-Item -ItemType Directory -Force (Split-Path $fixture) | Out-Null
+          [IO.File]::WriteAllBytes((Join-Path $source $fixture),[Convert]::FromBase64String($blob.content))
+          if((& git hash-object -- $fixture).Trim() -ne $expected){throw 'Camera fixture hash mismatch'}
           exit 0
       - name: Author zero-cost frontier candidates in Blender
         shell: powershell

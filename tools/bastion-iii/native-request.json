@@ -1,7 +1,7 @@
 {
-  "revision": 7,
+  "revision": 8,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Repair observed glTFast skin import race with invariant mesh partition; explicit Blender material nodes; exact camera fixture and full native regression"
+  "reason": "Recover verified camera fixture via exact GitHub blob; archive earlier logs before each attempt"
 }
