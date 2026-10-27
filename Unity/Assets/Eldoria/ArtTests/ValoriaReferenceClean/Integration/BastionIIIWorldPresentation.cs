@@ -87,6 +87,17 @@ namespace Eldoria.ReferenceClean {
    var b=Bounds(renderers);model.transform.localScale*=width/Mathf.Max(b.size.x,b.size.z);b=Bounds(renderers);
    var local=parent.InverseTransformPoint(new Vector3(b.center.x,b.min.y,b.center.z));if(path=="BastionIII/PrivateFissure")local.y=0;model.transform.localPosition+=position-local;return model;
   }
+  // glTFast may restore disabled nested skinned meshes when the gameplay
+  // encounter toggles from inactive to active. Keep ONLY existing authored
+  // renderers of an encounter actually unlocked/visible by the real gateway.
+  // A raycastable hotspot without active renderers is not playable artwork.
+  static void EnsureVisibleImportedArt(GameObject encounter){
+   foreach(var renderer in encounter.GetComponentsInChildren<Renderer>(true)){
+    for(var node=renderer.transform;node&&node!=encounter.transform;node=node.parent)
+     if(!node.gameObject.activeSelf)node.gameObject.SetActive(true);
+    if(!renderer.enabled)renderer.enabled=true;
+   }
+  }
   static Bounds Bounds(Renderer[] rs){var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
   void PlaceNodes(PlayerState s){
    var service=host.WorldRoot.GetComponentInChildren<RegionOneResourcePlacement>(true);
@@ -136,6 +147,7 @@ namespace Eldoria.ReferenceClean {
     if(pair.Key=="hunt-boar")visible&=host.City.Clock.UtcTicks>=c.BoarRespawnUtcTicks;
     if(pair.Key=="meat-valoria")visible&=c.MeatRemaining>0;
     pair.Value.SetActive(visible);
+    if(visible)EnsureVisibleImportedArt(pair.Value);
     pair.Value.GetComponent<Collider>().enabled=visible&&!(pair.Key=="fissure-valoria"&&c.FissureClosed);
     if(pair.Key=="fissure-valoria"&&c.FissureClosed){float left=Mathf.Clamp01((float)((c.ClosingEndsUtcTicks-host.City.Clock.UtcTicks)/(double)TimeSpan.TicksPerSecond/6.5));pair.Value.transform.localScale=new Vector3(1,Mathf.Max(.03f,left),Mathf.Max(.03f,left));}
    }
