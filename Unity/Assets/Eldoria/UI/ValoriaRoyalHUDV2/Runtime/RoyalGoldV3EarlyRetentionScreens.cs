@@ -331,7 +331,11 @@ namespace Eldoria.UI.RoyalGold.V2
             TL((RectTransform)mainAction.transform,14f,Mathf.Max(236f,ih-114f),iw-28f,49f);
             TL((RectTransform)claimXp.transform,14f,Mathf.Max(288f,ih-62f),iw-28f,44f);
             TL(battleFeedback.rectTransform,14f,Mathf.Max(182f,ih-184f),iw-28f,48f);
-            float head=12f,spacing=portrait?95f:Mathf.Max(90f,(ih-20f)/3f);
+            // The approved quest-board cards occupy the actual manuscript,
+            // not three tiny 95-point rows floating at the top of a phone.
+            // Scale all three naturally with their destination's usable height.
+            float head=12f;
+            float spacing=Mathf.Clamp((ih-24f)/3f,95f,330f);
             for(int i=0;i<3;i++)
             {
                 var cell=scoutCards[i].transform.parent as RectTransform;
