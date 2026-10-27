@@ -137,3 +137,24 @@ Cambios **sobre geometría 3D auténtica**, sin una nueva inferencia generativa:
 - `/mnt/data/aldric_artpass/build_aldric.py`, `ALDRIC_mejorado_3cuartos.png`, `ALDRIC_mejorado_espalda.png`, `ALDRIC_Comparativa_Real_Antes_Despues.jpg`, `Aldric_artpass_report.json`
 
 **Limitaciones explícitas:** la forma del **rostro sigue siendo la generada por Tripo**, no se ha esculpido la semejanza con el concepto histórico; la nueva capa **no tiene skinning, colisiones dinámicas ni física**; no existen capturas nuevas de Unity, prueba móvil o aprobación artística del propietario. El archivo `.blend` del paquete **es la fuente original antes del art pass** y la versión nueva debe importarse en Blender si se quiere editar y guardar un `.blend` actualizado. No cambiar la escena I–III, las animaciones ni las partidas con esta candidata hasta veredicto artístico y QA del titular de Unity. El coste Tripo adicional es **0 créditos**.
+
+## 9. Rig humanoide y animaciones originales — prueba aislada 27/10/2026
+
+**Decisión del propietario:** apariencia aprobada de Aldric (armadura oscura, capa azul de Valoria). Se autoriza preparar esqueleto y movimiento, **NO** cambiar la identidad gráfica, recompensas, lógica del héroe, Guardados, escena canónica, gasto Tripo ni publicar.
+
+Se generó localmente un GLB real nuevo con el modelo aprobado como fuente **sin tocar sus 57.332 triángulos ni materiales originales**. La fuente artística sigue siendo SHA256 `b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555`. 
+
+### Hechos verificados con herramientas 3D independientes
+- Entrega `SirAldric_Approved_RiggedAnimated_v1.glb`, 10.134.672 bytes, SHA256 **`c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b`**.
+- **GLB 2.0**, 1 skin, **26 joints** (incluidos 2 anclajes para armas), pesos JOINTS_0/WEIGHTS_0 normalizados para las 10 primitivas originales, bind matrices y 5 animaciones embebidas: Idle (2 s), Walk (1,12 s), SwordAttack (1,25 s), Hurt (0,85 s), Defeat (1,55 s).
+- Lectura del GLB exportado por segunda ruta (`trimesh.load`): 10 mallas, **57.332** triángulos. Análisis de todas las influencias: error de suma de pesos máximo 1,8×10^-7.
+- QA de movimiento por deformación matemática independiente: reposo y ataque conservan pies en suelo (delta del pie durante ataque próximo a 0); ataque cambia geometría y devuelve exactamente a pose neutral animada; animación de capa usa huesos propios. Se renderizaron fotogramas reales desde mallas deformadas en VTK, no imágenes recreadas.
+- **Coste adicional en Tripo: 0 créditos.** Se conserva intacto el modelo aprobado.
+
+### Límites y frontera de integración
+
+**NO hay prueba nativa de Unity 6000.3.23f1, PlayMode ni APK**: en la sesión de creación no se dispone del editor Unity ni de un transporte de fichero GLB binario verificado hacia el runner Windows de GitHub. No es lícito marcar UNITY_PASS, ART_RUNTIME_APPROVED o INTEGRATED. El archivo exacto y su QA se encuentran como artefacto adjunto de conversación `Eldoria_Aldric_Rig_Animaciones_20261027.zip` y no se han promovido a `Unity/Assets` ni a `main`.
+
+**Antes de integrar:** llevar al runner el fichero exacto verificado por SHA; importar el GLB en un proyecto Unity aislado con glTFast y sus módulos de textura. Comprobar `SkinnedMeshRenderer`, 26 joints/bindposes, 5 clips con muestreo de poses/retorno, comportamiento en cámara de ciudad y mundo, LOD/materiales, colisiones y velocidad del dispositivo. Completar ajuste artístico de marcha (contacto y deslizamiento de pies, IK si procede), ataque **con espada de verdad** mediante socket, transiciones y física/rig apropiados de capa antes de considerarlo recurso final de producción. La transición a escenas jugables la debe realizar el titular de Valoria/Bastión III y requiere QA de progreso y persistencia, sin sobrescribir su escena activa.
+
+**No volver a pedir generación pagada ni rehacer el aspecto que el propietario acaba de aprobar.** El documento es un handoff técnico, no una aprobación de entrega jugable.
