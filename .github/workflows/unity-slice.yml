@@ -10,6 +10,7 @@ on:
       - '!Unity/Assets/Eldoria/Scripts/Editor/ValoriaLookDevCapture.cs'
       - '!Unity/Assets/Eldoria/Scripts/Editor/ValoriaVisualFormulaGate.cs'
       - 'scripts/check_unity_slice.py'
+      - '.github/workflows/unity-slice.yml'
   workflow_dispatch:
 
 concurrency:
@@ -367,6 +368,46 @@ jobs:
             Get-ChildItem $root -Filter blender.exe -Recurse -File -ErrorAction SilentlyContinue |
               Select-Object -ExpandProperty FullName | ForEach-Object { Write-Host "ART_TOOL blender_installed $_" }
           }
+      - name: Prepare genuine Bastion III art in disposable source-only Unity gate
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          # The native Bastion III and signed Android pipelines bake their
+          # original PBR prefabs before playing. The older general PlayMode
+          # gate had no such preparation: 27/66 tests failed solely because
+          # Resources.Load('BastionIII/Granary/Granary') was missing at startup.
+          # Fail on import errors, never silence runtime Error logs or weaken QA.
+          $src='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/BastionIIIWorldPresentation.cs'
+          if(-not(Test-Path $src)) { Write-Host 'No Bastion III source; existing slice only'; exit 0 }
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender) {
+            $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $blender){throw 'Native Blender not installed: cannot author exact ground fissure for full PlayMode'}
+          & $blender -b --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE -ne 0){throw 'Blender source-authored private fissure failed'}
+          $root=Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII'
+          if(-not(Test-Path (Join-Path $root 'PrivateFissure.glb'))){throw 'Blender geological fissure not materialized'}
+          $log=Join-Path $env:RUNNER_TEMP "eldoria-bastion-iii-full-gate-bake-$env:GITHUB_RUN_ID.log"
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),
+            '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"' + $log + '"'))
+          $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
+          if(-not $proc.WaitForExit(780000)) {
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 120}
+            throw 'Full PlayMode Bastion III prefab bake timed out'
+          }
+          $proc.Refresh()
+          if($proc.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 120}
+            throw 'Full PlayMode Bastion III prefab bake failed'
+          }
+          foreach($part in @('Granary','StockCrate','StockSack','StockBarrel')) {
+            if(-not(Test-Path (Join-Path $root "Granary/$part.prefab"))) {
+              throw "Missing build-safe real Bastion III art in full PlayMode: $part"
+            }
+          }
+          Write-Host 'BASTION_III_FULL_PLAYMODE_AUTHORED_RESOURCES_PASS'
       - name: EditMode
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
