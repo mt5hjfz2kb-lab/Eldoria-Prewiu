@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T23:22:14.760Z",
+  "updated_at": "2026-10-28T00:07:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1700,6 +1700,33 @@
       "authorization": "Owner instruction 2026-10-27 10:09 Europe/Madrid: adapt original vertical slice to agreed fissure/Lyra narrative before Unity Bastion III migration. Do not migrate Unity now, no external publication.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Solo documentación, narrativa y lógica del vertical slice ya existente; ningún asset 3D, Blender, Tripo, autoría artística ni migración Unity en este workstream."
+    },
+    {
+      "id": "eldoria-early-retention-systems-20261028",
+      "owner": "chatgpt-cronica-real-ux-polish-20261027",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "status": "active",
+      "branch": "feature/eldoria-early-retention-20261028",
+      "pr": null,
+      "resources": [],
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs.meta",
+        "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs.meta",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+        "docs/early-retention/**",
+        "tools/early-retention/**"
+      ],
+      "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
+      "last_handoff": "Build two distinct native game screens, deterministic persisted progress/rewards, no premature UI buttons, same combat rules and existing RoyalHUD; do not touch PR #119 work or Windows runner owned by other workstream."
     }
   ],
   "history": [
