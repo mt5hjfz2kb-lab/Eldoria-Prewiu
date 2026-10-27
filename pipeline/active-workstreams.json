@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T09:14:38.291Z",
+  "updated_at": "2026-10-27T09:36:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1358,12 +1358,12 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-cronica-real-fidelity-20261027",
+      "owner": "chatgpt-cronica-real-pr115-completion-20261027",
       "ownership_state": "claimed",
-      "ownership_revision": 20,
+      "ownership_revision": 21,
       "write_scope_released": false,
       "status": "active",
-      "claimed_at": "2026-10-27T08:24:30.467Z",
+      "claimed_at": "2026-10-27T09:36:00Z",
       "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
       "branch": "main",
       "pr": 90,
@@ -1446,7 +1446,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "PR115 sole candidate head 725827f01658a65efaa14cc53db6ed9ffa59e01e; native Unity run 40477135161 in progress on same head, no Unity ART_PASS yet. Wait for exact-run native screenshots city/world + portrait/landscape and training/march; review original triptych option1 SHA256 27565c7b85004dd7b84efdfe7587b9bfd976e376b07242c51ae5241851e60582. Must fix failures then retest I-II/buttons/anchored build timers/saves before main merge. Keep Bastion III untouched, zero spend.",
+      "next": "Diagnose genuine native failure in transform hierarchy, repair same PR #115 and rerun full Unity native A/B. No merge before final visual + functional PASS. Avoid parallel UI writers.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1521,10 +1521,15 @@
           "owner": "chatgpt-cronica-real-ui-20261027",
           "revision": 19,
           "reason": "Propietario solicita continuar explícitamente el encargo Crónica Real en esta conversación; se recupera la misma PR #115 sin perturbar Unity."
+        },
+        {
+          "owner": "chatgpt-cronica-real-fidelity-20261027",
+          "revision": 20,
+          "reason": "Owner explicitly transfers unfinished Crónica Real original PR115 to this session on 2026-10-27. Preserve all existing edits, review and native evidence; no second PR."
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "CRONICA_REAL_NATIVE_VISUAL_GATE_RUNNING",
+      "phase": "PR115_OWNER_AUTHORIZED_CORRECTION_AND_CERTIFICATION",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
