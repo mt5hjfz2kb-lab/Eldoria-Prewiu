@@ -155,6 +155,34 @@ jobs:
           $cfg | Add-Member -NotePropertyName 'android_version_name' -NotePropertyValue $env:VERSION -Force
           $cfg.content_updates=$false;$cfg.publish_content=$false
           $cfg|ConvertTo-Json -Depth 20|Set-Content $requestPath -Encoding utf8
+          # Bastion III artwork is a reproducible output, NOT a tracked 100MB
+          # bundle: the authored fissure must be exported by installed Blender
+          # and the real textured granary prefab baked by Unity BEFORE the
+          # legacy Valoria GLBs are excluded from the small family APK.
+          # Earlier code16 builds do not enter this block.
+          $chapter3='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/BastionIIIWorldPresentation.cs'
+          if(Test-Path $chapter3){
+            if(-not(Test-Path 'tools/bastion-iii/author-frontier.py')){throw 'Bastion III Blender source missing'}
+            $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+            if(-not $blender){
+              $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue |
+                Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+            }
+            if(-not $blender){throw 'Bastion III authoring Blender unavailable on signed build runner'}
+            & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+            if($LASTEXITCODE){throw 'Bastion III authored fissure export failed'}
+            $fissure='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb'
+            if(-not(Test-Path $fissure)){throw 'Bastion III authored fissure absent from Android inputs'}
+            $project=Join-Path (Get-Location) 'Unity'
+            $granaryLog=Join-Path $env:RUNNER_TEMP "eldoria-granary-android-$env:GITHUB_RUN_ID.log"
+            $args=@('-batchmode','-force-d3d11','-projectPath',('"' + $project + '"'),
+              '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"' + $granaryLog + '"'))
+            $granary=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+            if($granary.ExitCode -ne 0){if(Test-Path $granaryLog){Get-Content $granaryLog -Tail 90};throw 'Bastion III build-safe granary extraction failed'}
+            $prefab='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/Granary.prefab'
+            if(-not(Test-Path $prefab)){throw 'Missing real textured granary prefab in Android project'}
+            Write-Host 'ELDORIA_BASTION_III_SIGNED_APK_ART_AUTHORING_PASS'
+          }
           $root='Unity/Assets/Eldoria/Resources/Valoria'
           $stream='Unity/Assets/StreamingAssets/ValoriaFamilyV3'
           $stash=Join-Path $env:RUNNER_TEMP "eldoria-family-stash-$env:GITHUB_RUN_ID"
