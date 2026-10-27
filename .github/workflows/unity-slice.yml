@@ -101,8 +101,14 @@ jobs:
     if: vars.UNITY_RUNNER_READY == 'true' && needs.source-preflight.outputs.heavy_required == 'true'
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 75
+    env:
+      ELDORIA_GATE_PROJECT_ROOT: ${{ github.workspace }}/valoria-layered-source
+    defaults:
+      run:
+        working-directory: valoria-layered-source
     steps:
       - name: Expose Git installed with GitHub Desktop
+        working-directory: .
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $git = Get-Command git.exe -ErrorAction SilentlyContinue
@@ -127,8 +133,10 @@ jobs:
           git --version
       - uses: actions/checkout@v4
         with:
-          # The default clean -ffdx also deletes the native workflow's nested checkouts.
-          # Keep their own checkout lifecycle and Unity's validated import cache intact.
+          # Reuse the verified canonical checkout and its import cache. The old
+          # workspace-root checkout has missing objects (40430426425); preserve
+          # it untouched instead of deleting or resetting its unknown contents.
+          path: valoria-layered-source
           clean: false
       - name: Restore exact source while preserving isolated Unity caches
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
@@ -152,7 +160,7 @@ jobs:
           $gitRoot = (& git rev-parse --show-toplevel).Trim()
           if ($LASTEXITCODE -ne 0) { throw 'Cannot resolve the actual Git checkout root.' }
           $gitRootCanonical = [System.IO.Path]::GetFullPath($gitRoot)
-          $workspaceCanonical = [System.IO.Path]::GetFullPath($env:GITHUB_WORKSPACE)
+          $workspaceCanonical = [System.IO.Path]::GetFullPath($env:ELDORIA_GATE_PROJECT_ROOT)
           if ($gitRootCanonical -ine $workspaceCanonical) {
             throw "UNITY_CHECKOUT_ROOT_MISMATCH: actual=$gitRootCanonical expected=$workspaceCanonical"
           }
@@ -206,7 +214,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Bastion_Optimized_v1.glb"
+          $target = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Bastion_Optimized_v1.glb"
           $expected = '1ba4ef4daa352265116e672dfb84d5bbe26a0bd22262a2955d94cd4682862521'
           if (Test-Path $target) {
             if ((Get-FileHash $target -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw "Committed Bastion GLB SHA-256 mismatch." }
@@ -234,7 +242,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $target = "$env:GITHUB_WORKSPACE/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_50K.glb"
+          $target = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Assets/Eldoria/ArtTests/ImageTo3D/Source/Eldoria_Module_TowerWallRock_50K.glb"
           $expected = '18785f7ba607cef1e7dcee45684d65c3166dc47b0f73b4bc4fb3d295c6f53a6a'
           if (-not (Test-Path $target)) {
             $downloads = Join-Path $env:USERPROFILE 'Downloads'
@@ -256,7 +264,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          & "$env:GITHUB_WORKSPACE/scripts/fetch-valoria-art-gate.ps1"
+          & "$env:ELDORIA_GATE_PROJECT_ROOT/scripts/fetch-valoria-art-gate.ps1"
       - name: Verify installed Editor
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -364,7 +372,7 @@ jobs:
         run: |
           # Diagnose the actual Windows checkout/project identity before Unity starts.
           # Previous runs rejected both the absolute and cwd-relative project path.
-          $project = Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $project = Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity'
           $project = [System.IO.Path]::GetFullPath($project)
           foreach ($required in @('Assets','Packages/manifest.json','ProjectSettings/ProjectVersion.txt')) {
             $requiredPath = Join-Path $project $required
@@ -381,8 +389,8 @@ jobs:
           $xml = "$env:RUNNER_TEMP/Eldoria-EditMode.xml"
           $log = "$env:RUNNER_TEMP/Eldoria-EditMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-nographics","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-runTests","-testPlatform","EditMode","-testResults",$xml,"-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $args = @("-batchmode","-nographics","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-runTests","-testPlatform","EditMode","-testResults",$xml,"-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 240 }
@@ -392,7 +400,7 @@ jobs:
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "EditMode results were not produced." }
           [xml]$results = Get-Content $xml
           # A successful XML from Unity's last-opened project is not this checkout.
-          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/ScriptAssemblies'))).Replace([char]92, [char]47).TrimEnd('/') + '/'
+          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity/Library/ScriptAssemblies'))).Replace([char]92, [char]47).TrimEnd('/') + '/'
           $assemblies = @($results.SelectNodes("//test-suite[@type='Assembly']"))
           if (-not $assemblies.Count) { throw 'No test assemblies in result; cannot verify project identity.' }
           foreach ($assembly in $assemblies) {
@@ -417,8 +425,8 @@ jobs:
           # Capture the real world with the same GPU route as UI certification.
           $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "eldoria-slice-region1-captures-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
           New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT | Out-Null
-          $args = @("-batchmode","-force-d3d11","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $args = @("-batchmode","-force-d3d11","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 240 }
@@ -428,7 +436,7 @@ jobs:
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "PlayMode results were not produced." }
           [xml]$results = Get-Content $xml
           # A successful XML from Unity's last-opened project is not this checkout.
-          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:GITHUB_WORKSPACE 'Unity/Library/ScriptAssemblies'))).Replace([char]92, [char]47).TrimEnd('/') + '/'
+          $expectedAssemblyRoot = ([IO.Path]::GetFullPath((Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity/Library/ScriptAssemblies'))).Replace([char]92, [char]47).TrimEnd('/') + '/'
           $assemblies = @($results.SelectNodes("//test-suite[@type='Assembly']"))
           if (-not $assemblies.Count) { throw 'No test assemblies in result; cannot verify project identity.' }
           foreach ($assembly in $assemblies) {
@@ -446,36 +454,36 @@ jobs:
         run: |
           $log = "$env:RUNNER_TEMP/Eldoria-Build.log"
           Remove-Item $log -Force -ErrorAction SilentlyContinue
-          Remove-Item "$env:GITHUB_WORKSPACE/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-nographics","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          Remove-Item "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-nographics","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(600000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 240 }
             throw "Unity Windows desktop build timed out after 10 minutes."
           }
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Unity Windows build process failed with exit code $($process.ExitCode)." }
-          $player = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria.exe"
+          $player = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/Eldoria.exe"
           if (-not (Test-Path $player)) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Windows player was not produced." }
-          $playerDll = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/UnityPlayer.dll"
-          $dataDir = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/Eldoria_Data"
+          $playerDll = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/UnityPlayer.dll"
+          $dataDir = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/Eldoria_Data"
           if (-not (Test-Path $playerDll)) { throw "UnityPlayer.dll was not produced." }
           if (-not (Test-Path $dataDir)) { throw "Eldoria_Data was not produced." }
           # Keep QA_FAST as the default executable. OWNER_I_II is an explicit opt-in launch
           # using the same binary and its own profile-scoped save.
-          $ownerLauncher = "$env:GITHUB_WORKSPACE/Unity/Builds/Windows/PLAY_OWNER_I_II_CANDIDATE.bat"
+          $ownerLauncher = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/PLAY_OWNER_I_II_CANDIDATE.bat"
           $ownerLauncherText = "@echo off`r`ncd /d `"%~dp0`"`r`nEldoria.exe --eldoria-profile=OWNER_I_II`r`n"
           Set-Content -Path $ownerLauncher -Value $ownerLauncherText -Encoding ASCII
           if (-not (Test-Path $ownerLauncher)) { throw "Owner I-II launcher was not produced." }
       - name: Render Valoria art benchmark
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $folder = "$env:GITHUB_WORKSPACE/Unity/BenchmarkCaptures"
+          $folder = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/BenchmarkCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-BenchmarkCapture.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
           Remove-Item $log -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaBenchmarkCapture.Capture","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaBenchmarkCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(180000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 120 }
@@ -490,17 +498,17 @@ jobs:
         if: always()
         with:
           name: eldoria-valoria-captures-${{ github.sha }}
-          path: Unity/BenchmarkCaptures/*.png
+          path: valoria-layered-source/Unity/BenchmarkCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated asset gate
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $folder = "$env:GITHUB_WORKSPACE/Unity/AssetGateCaptures"
+          $folder = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/AssetGateCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-AssetGate.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaAssetGateCapture.Capture","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaAssetGateCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(180000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 120 }
@@ -515,17 +523,17 @@ jobs:
         if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-asset-gate-${{ github.sha }}
-          path: Unity/AssetGateCaptures/*.png
+          path: valoria-layered-source/Unity/AssetGateCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated original hero candidate
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $folder = "$env:GITHUB_WORKSPACE/Unity/OriginalHeroCaptures"
+          $folder = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/OriginalHeroCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-OriginalHero.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaOriginalHeroCapture.Capture","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.ValoriaOriginalHeroCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(180000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 120 }
@@ -540,17 +548,17 @@ jobs:
         if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-original-hero-${{ github.sha }}
-          path: Unity/OriginalHeroCaptures/*.png
+          path: valoria-layered-source/Unity/OriginalHeroCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated layered Valoria feasibility test
         if: github.event_name == 'workflow_dispatch'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $folder = "$env:GITHUB_WORKSPACE/Unity/LayeredValoriaCaptures"
+          $folder = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/LayeredValoriaCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-LayeredValoria.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.LayeredValoriaArtTestCapture.Capture","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.LayeredValoriaArtTestCapture.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(240000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 160 }
@@ -567,17 +575,17 @@ jobs:
         if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-layered-valoria-captures-${{ github.sha }}
-          path: Unity/LayeredValoriaCaptures/*.png
+          path: valoria-layered-source/Unity/LayeredValoriaCaptures/*.png
           if-no-files-found: warn
       - name: Render isolated optimized Bastion GLB review
         if: github.event_name == 'workflow_dispatch' && env.BASTION_GLB_PRESENT == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $folder = "$env:GITHUB_WORKSPACE/Unity/ImageTo3DReviewCaptures"
+          $folder = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/ImageTo3DReviewCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-ImageTo3DReview.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.BastionImageTo3DReview.Capture","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.BastionImageTo3DReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(300000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 180 }
@@ -592,11 +600,11 @@ jobs:
         if: github.event_name == 'workflow_dispatch' && env.TRIPO_MODULE_PRESENT == 'true'
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
-          $folder = "$env:GITHUB_WORKSPACE/Unity/TripoModuleReviewCaptures"
+          $folder = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/TripoModuleReviewCaptures"
           $log = "$env:RUNNER_TEMP/Eldoria-TripoModuleReview.log"
           Remove-Item $folder -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:GITHUB_WORKSPACE 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.TripoModuleReview.Capture","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          $args = @("-batchmode","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.TripoModuleReview.Capture","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
           if (-not $process.WaitForExit(300000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 180 }
@@ -612,16 +620,16 @@ jobs:
         with:
           name: eldoria-tripo-module-${{ github.sha }}
           path: |
-            Unity/TripoModuleReviewCaptures/*
-            Unity/Assets/Eldoria/ArtTests/ImageTo3D/TripoModuleReview.unity
+            valoria-layered-source/Unity/TripoModuleReviewCaptures/*
+            valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ImageTo3D/TripoModuleReview.unity
           if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: ${{ always() && github.event_name == 'workflow_dispatch' }}
         with:
           name: eldoria-image-to-3d-${{ github.sha }}
           path: |
-            Unity/ImageTo3DReviewCaptures/*
-            Unity/Assets/Eldoria/ArtTests/ImageTo3D/BastionImageTo3DReview.unity
+            valoria-layered-source/Unity/ImageTo3DReviewCaptures/*
+            valoria-layered-source/Unity/Assets/Eldoria/ArtTests/ImageTo3D/BastionImageTo3DReview.unity
           if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
@@ -631,7 +639,7 @@ jobs:
             ${{ runner.temp }}/Eldoria-*.xml
             ${{ runner.temp }}/Eldoria-*.log
             ${{ runner.temp }}/Eldoria-*.json
-            ${{ github.workspace }}/Unity/Builds/Windows/
+            ${{ github.workspace }}/valoria-layered-source/Unity/Builds/Windows/
             ${{ runner.temp }}/eldoria-slice-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
           if-no-files-found: warn
 

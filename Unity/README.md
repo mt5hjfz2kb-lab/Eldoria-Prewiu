@@ -65,3 +65,8 @@ La ejecución `39263683526` confirmó que el proceso Unity.exe arranca con el di
 ### Recuperación exacta de Unity/Assets en Windows CI (19-10-2026)
 
 El diagnóstico `39266054859` demostró que el checkout del workflow genérico no contenía `Unity/Assets` en `GITHUB_WORKSPACE`, aunque GitHub conserva los recursos del mismo commit. El workflow ahora verifica que el directorio de Git y el workspace coinciden y, únicamente cuando faltan carpetas rastreadas, ejecuta una restauración explícita de `Unity/Assets`, `Unity/Packages` y `Unity/ProjectSettings` **desde el SHA exacto**. Si faltan después, el gate falla con causa concreta antes de Unity. No modifica `Unity/Library`, `valoria-layered-source`, assets del juego ni guardados. La recuperación no equivale a pruebas aprobadas; el siguiente resultado Windows decidirá.
+
+
+### Native gate checkout recovery — 2026-10-27
+
+The Windows source/editor gate uses the same verified `valoria-layered-source` checkout as the native integrated-scene workflow. Run40430426425 failed before Unity because the old workspace-root sparse checkout lacked Git objects and could not restore tracked files. That old directory is preserved, not cleaned or reset. The gate still verifies the exact commit, tracked source, unexpected compilation inputs, test assembly paths, all EditMode/PlayMode results and the Windows build. Project, script and artifact paths now resolve consistently under the canonical checkout; the single labelled Windows runner serializes native use. No game assets or runtime behavior are changed by this recovery.

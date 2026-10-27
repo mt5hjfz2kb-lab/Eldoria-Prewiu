@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T00:31:42.897Z",
+  "updated_at": "2026-10-27T01:27:57.006Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -74,7 +74,9 @@
         "docs/ui-v3/ANDROID_1_15_RELEASE.md",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneReferenceNodes.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneStoneBridge.cs",
-        "Unity/Assets/Eldoria/World4XCanon/RegionOneStoneBridge.cs.meta"
+        "Unity/Assets/Eldoria/World4XCanon/RegionOneStoneBridge.cs.meta",
+        ".github/workflows/unity-slice.yml",
+        "Unity/README.md"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -83,7 +85,7 @@
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "INTEGRATE_INDEPENDENTLY_REVIEWED_CONSOLIDATION",
+      "phase": "FINAL_NATIVE_VALIDATION_AND_CHECKOUT_RECOVERY",
       "next": "Android1.15/code15 published and updater channel verified. No pending publication; reclaim canonical ID for a new owner-authorized scope or concrete defect.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
@@ -666,16 +668,16 @@
         "goal": "Recover original Source08 Bastion material hierarchy, prove actual renderer influence on SHARP player presentation, art-source/Unity A/B before any promotion",
         "other_workstreams": "remain_paused"
       },
-      "continuation_authorization": "Owner explicitly instructed 27-10-2026: Publica la APK nuevo. Supersedes prior no-publication limit for this bounded family APK release only.",
+      "continuation_authorization": "Current owner requests final visual consolidation on integrated main, authentic Unity A/B and functional validation; recover technical blockers autonomously. No APK, Bastion III, spending or external publication.",
       "handoff_authorization": "Owner 26/10/2026 continuing Region1 visuals and mobile optimization, no spending; do not redo PR100.",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
       "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
-      "current_session": "codex-eldoria-android15-publication-20261027",
+      "current_session": "chatgpt-eldoria-final-visual-consolidation-20261027",
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
       "resources_verified_at": "2026-10-26T22:18:02.658Z",
-      "resources_evidence": "Native40399630175, general40403021824, automatic UI40403021567 and recovery40404173727 completed successfully. Current assignment holds no runner resource.",
+      "resources_evidence": "Windows native final40430426343 running in verified canonical checkout; default gate40430426425 failed before Unity restoring old root checkout. Scoped recovery reuses verified checkout and preserves old directory.",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -1040,7 +1042,7 @@
           "reason": "Owner requests final visual consolidation city/world 2026-10-27"
         }
       ],
-      "ownership_revision": 37,
+      "ownership_revision": 38,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
