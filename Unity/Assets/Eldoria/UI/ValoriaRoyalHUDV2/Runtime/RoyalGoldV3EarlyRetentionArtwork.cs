@@ -170,4 +170,69 @@ namespace Eldoria.UI.RoyalGold.V2
             Diamond(vh,x+w-13,y+h-13,4,antique);
         }
     }
+
+    /// <summary>25 discernible chapter stages in a connected winding path.
+    /// Boss marks at 5/10/15/20/25 are larger; current position has an
+    /// illuminated amethyst rim. Purely informational: actual action is in
+    /// the single authoritative battle button, not 25 invented clicks.</summary>
+    public sealed class RoyalGoldV3StageTrailGraphic : MaskableGraphic
+    {
+        public int Cleared, Chapter=1;
+        Color Tint(Color c)=>new Color(c.r*color.r,c.g*color.g,c.b*color.b,c.a*color.a);
+        void Disc(VertexHelper vh,Vector2 center,float radius,Color tint)
+        {
+            int k=vh.currentVertCount;
+            vh.AddVert(center,Tint(tint),Vector2.zero);
+            for(int i=0;i<=16;i++){
+                float a=i*Mathf.PI*2/16f;
+                vh.AddVert(center+new Vector2(Mathf.Cos(a),Mathf.Sin(a))*radius,
+                    Tint(tint),Vector2.zero);
+                if(i>0)vh.AddTriangle(k,k+i,k+i+1);
+            }
+        }
+        void Line(VertexHelper vh,Vector2 start,Vector2 end,float thickness,Color c)
+        {
+            var dir=(end-start).normalized;
+            var n=new Vector2(-dir.y,dir.x)*thickness*.5f;
+            int k=vh.currentVertCount;
+            foreach(var p in new[]{start-n,start+n,end+n,end-n})
+                vh.AddVert(p,Tint(c),Vector2.zero);
+            vh.AddTriangle(k,k+1,k+2);vh.AddTriangle(k,k+2,k+3);
+        }
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();var b=rectTransform.rect;
+            if(b.width<110||b.height<65)return;
+            var nodes=new Vector2[25];
+            float marginX=Mathf.Min(26,b.width*.10f),marginY=Mathf.Min(19,b.height*.12f);
+            float dx=(b.width-marginX*2)/4f,dy=(b.height-marginY*2)/4f;
+            for(int step=0;step<25;step++){
+                int row=step/5,col=step%5;
+                if(row%2==1)col=4-col;
+                nodes[step]=new Vector2(b.xMin+marginX+col*dx,
+                    b.yMin+marginY+(4-row)*dy);
+            }
+            for(int step=0;step<24;step++)
+                Line(vh,nodes[step],nodes[step+1],
+                    Mathf.Max(1.6f,Mathf.Min(b.width/160f,3f)),
+                    new Color(.76f,.63f,.42f,.57f));
+            for(int i=0;i<25;i++){
+                int absolute=(Chapter-1)*25+i+1;
+                bool cleared=absolute<=Cleared;
+                bool current=absolute==Cleared+1;
+                bool boss=(i+1)%5==0;
+                float r=Mathf.Clamp(Mathf.Min(dx,dy)*.19f,5,16);
+                if(boss)r*=1.3f;
+                var gold=new Color(.78f,.63f,.39f,1);
+                var dark=new Color(.12f,.15f,.17f,.92f);
+                if(current)Disc(vh,nodes[i],r+5,new Color(.48f,.25f,.64f,.91f));
+                Disc(vh,nodes[i],r+2,boss?gold:new Color(.48f,.40f,.30f,1));
+                Disc(vh,nodes[i],r,cleared?gold:current?
+                    new Color(.97f,.85f,.60f,1):dark);
+                if(boss)Disc(vh,nodes[i],r*.42f,
+                    cleared?new Color(.40f,.21f,.12f,1):
+                    new Color(.67f,.31f,.25f,1));
+            }
+        }
+    }
 }
