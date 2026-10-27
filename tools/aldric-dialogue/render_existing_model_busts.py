@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Aldric dialogue bust assets, rendered from the authentic Tripo H3.1 Blender-optimized GLB.
+"""Aldric dialogue bust assets, rendered from the authentic approved Tripo/Blender cape-blue art-pass GLB.
 No painted character invention; images are static 3D captures, no facial morph claim.
 Input checksum is enforced by caller. Assets are presentation-only, never gameplay.
 """
@@ -13,7 +13,7 @@ from PIL import Image
 SOURCE=Path(sys.argv[1])
 OUT=Path(sys.argv[2])
 OUT.mkdir(parents=True,exist_ok=True)
-EXPECTED="b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+EXPECTED="b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
 actual=hashlib.sha256(SOURCE.read_bytes()).hexdigest()
 if actual != EXPECTED:
     raise SystemExit("WRONG_SOURCE_GLB expected="+EXPECTED+" actual="+actual)
@@ -102,4 +102,4 @@ for name,(position,lights) in poses.items():
     print("ALDRIC_BUST_RENDER",name,"bytes",out.stat().st_size,"opaque",occupied,flush=True)
     rw.Finalize()
 manifest=OUT/'ALDRIC_BUST_PROVENANCE.json'
-manifest.write_text(json.dumps({"source":actual,"tripo_credits_new":0,"model":"SirAldric_49800_Blend", "face_morph":"none; four camera/light treatments", "body_framing":"shoulders and chest only","unity_checked":False,"files":results},indent=2),encoding="utf-8")
+manifest.write_text(json.dumps({"source":actual,"tripo_credits_new":0,"model":"SirAldric_ArtPass_CapaAzul_Approved", "face_morph":"none; four camera/light treatments", "body_framing":"shoulders and chest only","unity_checked":False,"files":results},indent=2),encoding="utf-8")
