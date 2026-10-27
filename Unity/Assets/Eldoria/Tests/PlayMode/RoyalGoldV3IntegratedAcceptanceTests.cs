@@ -178,6 +178,54 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator CronicaRealKeepsActualMedallionsAtSafeEdgesAndParchmentObjectives()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            yield return null;
+            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            Call(v2, "SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            var nav = Member(hud, "Navigation") as Component;
+            Assert.That(nav, Is.Not.Null);
+            var dock = nav.transform as RectTransform;
+            Assert.That(dock.anchorMin.y, Is.EqualTo(0f).Within(.001f),
+                "Approved Option 1 has bottom navigation, never a floating left rail");
+            Assert.That(dock.anchorMax.y, Is.EqualTo(0f).Within(.001f));
+            Assert.That(dock.anchoredPosition.y, Is.InRange(0f, 8f),
+                "The bottom dock must touch the device's SAFE bottom edge");
+            int clickable = 0;
+            foreach (var item in (Array)Member(nav, "Items"))
+            {
+                var button = Member(item, "Button") as Button;
+                if (!button || !button.gameObject.activeInHierarchy) continue;
+                clickable++;
+                Assert.That(button.onClick, Is.Not.Null,
+                    "Keep the original real action, never replace it with icon art");
+                var medal = button.transform.childCount > 0 ?
+                    button.transform.GetChild(0) as RectTransform : null;
+                Assert.That(medal, Is.Not.Null);
+                Assert.That(Mathf.Abs(medal.rect.width - medal.rect.height),
+                    Is.LessThan(1f), "The selected visual grammar is circular medals");
+            }
+            Assert.That(clickable, Is.GreaterThan(0));
+            var objective = GameObject.Find("V2 / current objective");
+            Assert.That(objective, Is.Not.Null);
+            var manuscript = objective.GetComponent("RoyalGoldV3ParchmentGraphic");
+            Assert.That(manuscript, Is.Not.Null);
+            Assert.That(Member(manuscript, "ObjectiveCard"), Is.EqualTo(true),
+                "Restore parchment and heraldry instead of the plain blue box");
+            Assert.That(objective.transform.Find(
+                "Crónica Real / existing Valoria heraldry"), Is.Not.Null,
+                "The approved card must retain Valoria's REAL crest");
+            var realm = Member(hud, "Realm") as Component;
+            Assert.That(realm, Is.Not.Null);
+            var realmRect = realm.transform as RectTransform;
+            Assert.That(realmRect.anchoredPosition.y, Is.GreaterThan(-10f),
+                "The upper icons belong next to the top safe-area edge");
+        }
+
+        [UnityTest]
         public IEnumerator ClosingActualPrologueKeepsIntegratedNavigationOwnership()
         {
             if (Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE") != "1")
