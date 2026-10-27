@@ -8,6 +8,12 @@ class DomainProbe {
  static CommandResult Do(LocalGateway g,string k,string t,string id=null){var s=g.Snapshot();return g.Execute(new GameCommand(id??Guid.NewGuid().ToString(),s.PlayerId,k,t,s.Revision));}
  static void Main(){
   SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);
+  foreach(int troops in new[]{40,41}){
+   var boundaryClock=new Clock();var boundaryStore=new Store{Value=new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1,JourneyComplete=true,EngendroDefeated=true,Available=new ArmyRoster{ArcherT1=troops},Resources=new ResourceWallet{Wood=5000,Stone=5000}}};
+   var boundary=new LocalGateway(boundaryClock,boundaryStore);var resources=boundary.Snapshot().Resources;
+   Check(Do(boundary,"AdvanceBastion","bastion").Ok==(troops==41),"III troop boundary "+troops);
+   Check(boundary.Snapshot().Resources.Wood==resources.Wood-(troops==41?650:0)&&boundary.Snapshot().Resources.Stone==resources.Stone-(troops==41?500:0),"exact boundary debit "+troops);
+  }
   var clock=new Clock();var store=new Store{Value=new PlayerState{BastionLevel=2,SawmillLevel=1,BarracksLevel=1,JourneyComplete=true,EngendroDefeated=true,Available=new ArmyRoster{ArcherT1=56},Resources=new ResourceWallet{Wood=5000,Stone=5000}}};
   var g=new LocalGateway(clock,store);var before=g.Snapshot().Resources.Wood;
   Check(Do(g,"AdvanceBastion","bastion","ascend").Ok,"start III");Check(Do(g,"AdvanceBastion","bastion","ascend").Ok,"retry same command");

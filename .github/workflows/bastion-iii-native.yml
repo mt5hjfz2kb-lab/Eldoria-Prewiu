@@ -92,8 +92,9 @@ jobs:
           $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
           if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
           if(-not $blender){throw 'Installed Blender unavailable'}
-          & $blender --background --python tools/bastion-iii/author-frontier.py
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
           if($LASTEXITCODE){throw 'Frontier authoring failed'}
+          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb')){throw 'Expected fissure artifact missing'}
       - name: Prepare editor and bake original Granary
         shell: powershell
         working-directory: bastion-iii-source

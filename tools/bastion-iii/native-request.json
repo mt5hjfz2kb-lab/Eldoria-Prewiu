@@ -1,7 +1,7 @@
 {
-  "revision": 6,
+  "revision": 7,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Diagnosed archive fallback: recover actual installed GitHub Desktop git.exe as proven by code16 runner"
+  "reason": "Repair observed glTFast skin import race with invariant mesh partition; explicit Blender material nodes; exact camera fixture and full native regression"
 }

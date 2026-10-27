@@ -11,7 +11,8 @@ OUT.mkdir(parents=True,exist_ok=True);EV.mkdir(parents=True,exist_ok=True)
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 def mat(name,color,rough=.85):
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True
- p=m.node_tree.nodes.get('Principled BSDF');p.inputs['Base Color'].default_value=(*color,1);p.inputs['Roughness'].default_value=rough
+ m.node_tree.nodes.clear();p=m.node_tree.nodes.new('ShaderNodeBsdfPrincipled');o=m.node_tree.nodes.new('ShaderNodeOutputMaterial');m.node_tree.links.new(p.outputs['BSDF'],o.inputs['Surface'])
+ p.inputs['Base Color'].default_value=(*color,1);p.inputs['Roughness'].default_value=rough
  return m
 def mesh(name,verts,faces,material):
  me=bpy.data.meshes.new(name);me.from_pydata(verts,[],faces);me.update();o=bpy.data.objects.new(name,me);bpy.context.collection.objects.link(o);o.data.materials.append(material);return o

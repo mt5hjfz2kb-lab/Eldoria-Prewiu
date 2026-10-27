@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -20,6 +21,12 @@ namespace Eldoria.ReferenceClean.Editor {
   }
   public static void Build(){GameObject model=null;try{
    Directory.CreateDirectory(Root);AssetDatabase.Refresh();saved.Clear();index=0;
+   foreach(var resource in new[]{"AshWolf","PrivateFissure"}){
+    string file="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/"+resource+".glb";
+    var imported=AssetDatabase.LoadAssetAtPath<GameObject>(file);
+    if(!imported||imported.GetComponentsInChildren<Renderer>(true).Length==0)throw new Exception("Required III art failed native import: "+resource);
+    if(resource=="AshWolf"&&(!imported.GetComponentInChildren<Animation>(true)||!AssetDatabase.LoadAllAssetsAtPath(file).OfType<AnimationClip>().Any(x=>x.name=="Idle")))throw new Exception("Authored wolf Idle/legacy animation missing");
+   }
    const string input="Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb";
    var source=AssetDatabase.LoadAssetAtPath<GameObject>(input);if(!source)throw new Exception("Native granary importer has no prefab");model=Object.Instantiate(source);
    foreach(var f in model.GetComponentsInChildren<MeshFilter>(true))f.sharedMesh=Save(f.sharedMesh);
