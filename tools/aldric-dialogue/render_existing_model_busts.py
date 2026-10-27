@@ -69,6 +69,16 @@ for name,(position,lights) in poses.items():
     if occupied<118000 or (rgba[:,:,:3].max()<30):
         raise SystemExit("EMPTY_OR_MISFRAMED_RENDER "+name+" alpha="+str(occupied))
     img=Image.fromarray(rgba,'RGBA')
+    # Owner correction 27/10: the previous bust still displayed too much torso.
+    # Tight square crop from true rendered pixels: forehead, eyes, beard,
+    # collar and shoulder tops ONLY. No armoured chest/waist in dialogue.
+    # Normalised source area x=[138,374], y=[16,252] on the 512x512 render.
+    # The RGBA alpha is retained; no generative repainting or Tripo rerun.
+    tight_box=(138,16,374,252)
+    img=img.crop(tight_box).resize((512,512),Image.Resampling.LANCZOS)
+    occupied=int((np.asarray(img)[:,:,3]>220).sum())
+    if occupied<100000:
+        raise SystemExit("TIGHT_SHOULDER_CROP_ALPHA_TOO_SMALL "+name+" alpha="+str(occupied))
     out=OUT/(name+".png")
     img.save(out,optimize=True)
     meta=out.with_name(out.name+'.meta')
@@ -102,4 +112,4 @@ for name,(position,lights) in poses.items():
     print("ALDRIC_BUST_RENDER",name,"bytes",out.stat().st_size,"opaque",occupied,flush=True)
     rw.Finalize()
 manifest=OUT/'ALDRIC_BUST_PROVENANCE.json'
-manifest.write_text(json.dumps({"source":actual,"tripo_credits_new":0,"model":"SirAldric_ArtPass_CapaAzul_Approved", "face_morph":"none; four camera/light treatments", "body_framing":"shoulders and chest only","unity_checked":False,"files":results},indent=2),encoding="utf-8")
+manifest.write_text(json.dumps({"source":actual,"tripo_credits_new":0,"model":"SirAldric_ArtPass_CapaAzul_Approved", "face_morph":"none; four camera/light treatments", "body_framing":"close head and shoulders, NO torso, owner correction 27/10","crop_box_512":[138,16,374,252],"output_size":[512,512],"unity_checked":False,"files":results},indent=2),encoding="utf-8")
