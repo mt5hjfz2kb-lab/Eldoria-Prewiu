@@ -1,7 +1,7 @@
 {
-  "revision": 11,
+  "revision": 12,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Mandatory new-mesh visibility gate in genuine Unity world camera: frustum, renderer layer, active state, bounds and terrain location for wolf, boar, meat and private fissure. Technical-only PASS is insufficient."
+  "reason": "Prove the actual imported wolf/fissure renderer hierarchy becomes visible inside camera after activating authored GLB children; require all 34 EditMode, 66 PlayMode, full I-II, BastionIII proof, matched real A/B and no downgrade in art quality"
 }
