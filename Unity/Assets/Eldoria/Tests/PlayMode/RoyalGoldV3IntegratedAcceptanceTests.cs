@@ -277,6 +277,25 @@ namespace Eldoria.Tests
             Assert.That(trim.GetComponent<Graphic>().raycastTarget, Is.False);
             var entries = Member(nav, "Items") as System.Array;
             Assert.That(entries, Is.Not.Null);
+            Assert.That((bool)Member(nav, "ChronicleLayout"), Is.True,
+                "The original five-entry Crónica Real art must be active");
+            // Five genuine destinations at the safe-bottom edge. Locked
+            // actions can be visible but must never become interactable.
+            var visible = entries.Cast<object>().Where(entry =>
+            {
+                var liveButton = Member(entry, "Button") as Button;
+                return liveButton && liveButton.gameObject.activeSelf;
+            }).ToArray();
+            Assert.That(visible.Length, Is.EqualTo(5),
+                "The owner-approved dock displays Reino, Construir, Unidades, Mundo and Crónicas");
+            foreach (var entry in visible)
+            {
+                string section = Member(entry, "Section").ToString();
+                if (section == "Army" || section == "World") continue;
+                var button = Member(entry, "Button") as Button;
+                Assert.That(button.interactable, Is.True,
+                    "Only an existing real kingdom, build or chapter destination can be enabled");
+            }
             int active = 0;
             foreach (var entry in entries)
             {
