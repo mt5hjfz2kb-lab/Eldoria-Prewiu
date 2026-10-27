@@ -141,6 +141,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 "VIGILANTES",()=>Open(Destination.Vigilants),out var a);
             scoutsShortcut=Button(safe,"Live Scouts unlocked access",
                 "EXPLORADORES",()=>Open(Destination.Scouts),out var b);
+            // Never flash a locked action on the first Unity frame.
+            vigilantShortcut.gameObject.SetActive(false);
+            scoutsShortcut.gameObject.SetActive(false);
             // Shortcut belongs to the city HUD, NOT the Códice or the
             // bottom five-destination progression/navigation rail.
             screenRect=Rect("Early retention / independent destination",safe);
