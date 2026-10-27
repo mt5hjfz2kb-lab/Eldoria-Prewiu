@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T22:50:00Z",
+  "updated_at": "2026-10-27T22:52:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1701,7 +1701,7 @@
       "id": "eldoria-aldric-dialogue-bust-20261027",
       "title": "Sir Aldric — retrato real pecho/hombros arriba en los diálogos de Eldoria",
       "owner": "chatgpt-aldric-dialogue-bust-20261027",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "branch": "feature/aldric-dialogue-bust-20261027",
@@ -1717,7 +1717,11 @@
         "docs/ALDRIC_DIALOGUE_BUST_INTEGRATION_20261027.md",
         "pipeline/art-production-requests/eldoria-aldric-dialogue-bust-20261027.json",
         "Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs.meta"
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Editor/AldricDialogueNativeCapture.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Editor/AldricDialogueNativeCapture.cs.meta",
+        ".github/workflows/aldric-dialogue-native.yml",
+        "tools/aldric-dialogue/native-request.json"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -1726,7 +1730,7 @@
       "art_production_request": "pipeline/art-production-requests/eldoria-aldric-dialogue-bust-20261027.json",
       "art_production_routing_reason": "Owner-approved reuse of real 3D artist source and exact Blender render to UI PNG textures; static art and presentation only; zero extra Tripo cost.",
       "dependency": "Bastion III PR117 merged, delivered and canonical Valoria workstream available; Aldric owner acquired free Windows runner for scoped UI validation. Preserve preexisting game assets and save.",
-      "phase": "NATIVE_UNITY_QA_CLAIMED_PR118",
+      "phase": "NATIVE_UNITY_QA_BUILDING_CUSTOM_CAPTURE_GATE",
       "evidence": {
         "tripo_original_task": "f827067d-927e-4172-9bb8-6ee813176d58",
         "source_artpass_glb_sha": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555",
@@ -1737,7 +1741,7 @@
         "art_approved": false,
         "paid_credits_new": 0
       },
-      "next": "Run isolated exact PR118 Unity PlayMode and compare genuine 16:9/portrait camera screenshots. Close after validation, then release Windows claim."
+      "next": "Run dedicated native Unity PlayMode + genuine interactive horizontal/vertical screenshots for 5 speakers; preserve evidence and release exclusive Windows resource."
     }
   ],
   "history": [
