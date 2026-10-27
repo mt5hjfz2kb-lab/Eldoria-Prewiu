@@ -255,6 +255,7 @@ namespace Eldoria.UI.RoyalGold.V2
             bool showingAldric =
                 string.Equals(speaker, "Sir Aldric", System.StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(speaker, "Aldric", System.StringComparison.OrdinalIgnoreCase);
+            bool hasVisibleAldricPortrait = false;
             if (portrait)
             {
                 // Only the authentic Aldric image may represent Aldric. Lyra,
@@ -279,14 +280,17 @@ namespace Eldoria.UI.RoyalGold.V2
                     }
                     // Hide legacy Aldric JPEG on Lyra/Orín/narrator turns.
                     // The speaker-specific glyph appears instead; never mislabel Aldric.
-                    face.gameObject.SetActive(showingAldric && face.texture != null);
+                    hasVisibleAldricPortrait = showingAldric && face.texture != null;
+                    face.gameObject.SetActive(hasVisibleAldricPortrait);
                     face.raycastTarget = false;
                     face.uvRect = new Rect(0f, 0f, 1f, 1f);
                 }
             }
             if (sigil)
             {
-                sigil.gameObject.SetActive(!showingAldric);
+                // If both the new bust and original JPEG are missing, use the
+                // existing sigil rather than leaving an empty speaker column.
+                sigil.gameObject.SetActive(!hasVisibleAldricPortrait);
                 Top(sigil, portraitLeft, portraitTop, portraitSize, portraitSize);
                 var glyph = sigil.GetComponent<RoyalText>();
                 if (glyph)
