@@ -89,6 +89,14 @@ namespace Eldoria.ReferenceClean {
     if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
     management.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,()=>city.Presenter.RefreshState());
     management.ReturnToCity=()=>{if(InWorld)TrySetWorld(false);};
+    // The saved LocalGateway is replaced on ReloadForProbe/load. Reconnect the
+    // existing terrain route/population service in the very same session
+    // rebind, before the first post-reload hunting or gathering command.
+    // This never writes a save, creates a second gateway or changes gameplay.
+    if(Ready && WorldRoot){
+      var resources=WorldRoot.GetComponentInChildren<Eldoria.World4XCanon.RegionOneResourcePlacement>(true);
+      if(resources)resources.RefreshForZoom();
+    }
    }
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
