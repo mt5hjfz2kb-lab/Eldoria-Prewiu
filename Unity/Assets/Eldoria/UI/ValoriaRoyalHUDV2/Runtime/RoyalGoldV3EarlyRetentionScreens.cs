@@ -334,8 +334,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
-            float head=12f;
-            float spacing=Mathf.Clamp((ih-24f)/3f,95f,330f);
+            float head=57f; // Preserve the "ENCARGOS EN CURSO" royal heading.
+            float spacing=Mathf.Clamp((ih-head-12f)/3f,95f,330f);
             for(int i=0;i<3;i++)
             {
                 var cell=scoutCards[i].transform.parent as RectTransform;
