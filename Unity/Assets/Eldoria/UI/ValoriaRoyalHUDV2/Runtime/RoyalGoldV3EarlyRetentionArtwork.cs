@@ -10,6 +10,8 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public bool Scouts;
         public int Chapter = 1;
+        // Five boss seals show the ACTUAL completed milestones in this chapter.
+        public int ChapterProgress;
         Color T(Color c)=>new Color(c.r*color.r,c.g*color.g,c.b*color.b,c.a*color.a);
         void Q(VertexHelper v,float x,float y,float w,float h,Color low,Color high)
         {
@@ -25,6 +27,27 @@ namespace Eldoria.UI.RoyalGold.V2
         void Diamond(VertexHelper v,float x,float y,float radius,Color c)
         {Tri(v,new Vector2(x-radius,y),new Vector2(x,y+radius),new Vector2(x+radius,y),c);
          Tri(v,new Vector2(x-radius,y),new Vector2(x+radius,y),new Vector2(x,y-radius),c);}
+        void Coin(VertexHelper v,float x,float y,float radius,Color inner,Color rim)
+        {
+            var outer=new Vector2[20];var paper=new Vector2[20];
+            for(int i=0;i<20;i++)
+            {
+                float angle=i*Mathf.PI*.1f;
+                outer[i]=new Vector2(x+Mathf.Cos(angle)*radius,y+Mathf.Sin(angle)*radius);
+                paper[i]=new Vector2(x+Mathf.Cos(angle)*(radius-2.2f),
+                    y+Mathf.Sin(angle)*(radius-2.2f));
+            }
+            int o=v.currentVertCount;
+            foreach(var p in outer)v.AddVert(p,T(rim),Vector2.zero);
+            foreach(var p in paper)v.AddVert(p,T(inner),Vector2.zero);
+            for(int i=0;i<20;i++)
+            {
+                int j=(i+1)%20;
+                v.AddTriangle(o+i,o+j,o+20+j);
+                v.AddTriangle(o+i,o+20+j,o+20+i);
+            }
+            for(int i=1;i<19;i++)v.AddTriangle(o+20,o+20+i,o+20+i+1);
+        }
         void Tree(VertexHelper v,float x,float y,float h,Color wood,Color leaves)
         {
             Q(v,x-h*.045f,y,h*.09f,h*.55f,wood,wood);
@@ -107,6 +130,27 @@ namespace Eldoria.UI.RoyalGold.V2
                         new Color(.51f,.47f,.42f,1),new Color(.75f,.69f,.57f,1));
                 Q(vh,x+w*.519f,y+h*.40f,w*.029f,h*.17f,shadow,shadow);
                 Crest(vh,x+w*.53f,y+h*.59f,Mathf.Min(w,h)*.11f,antique);
+                // The five illustrated boss milestones are an in-world trail,
+                // never extra buttons or tutorial-locked destinations.
+                // Displayed after clearing five, ten, fifteen, twenty,
+                // and twenty-five stages in the player's own chapter.
+                float trackY=y+h*.105f;
+                float startX=x+w*.18f,endX=x+w*.82f;
+                float step=(endX-startX)*.25f;
+                float radius=Mathf.Clamp(h*.043f,5f,13f);
+                Q(vh,startX,trackY-1f,endX-startX,2f,antique,antique);
+                for(int i=0;i<5;i++)
+                {
+                    bool won=ChapterProgress>=(i+1)*5;
+                    var ring=won?new Color(.96f,.77f,.45f,1):
+                        new Color(.41f,.37f,.32f,1);
+                    var centre=won?new Color(.72f,.46f,.21f,1):
+                        new Color(.06f,.09f,.13f,1);
+                    Coin(vh,startX+i*step,trackY,radius,centre,ring);
+                    Diamond(vh,startX+i*step,trackY,radius*.47f,
+                        won?new Color(.98f,.88f,.66f,1):
+                        new Color(.50f,.50f,.47f,1));
+                }
             }
             Q(vh,x+2,y+2,w-4,2,antique,antique);
             Q(vh,x+2,y+h-4,w-4,2,antique,antique);
