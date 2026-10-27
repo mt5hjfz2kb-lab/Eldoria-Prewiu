@@ -128,7 +128,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var offer=h.Read("fissure-valoria",false).Building.Action;Need(offer.Kind=="ContactLyra","contact offer before assault");h.Submit(offer);yield return null;
    var aldricFace=h.Hud.GetComponentsInChildren<UnityEngine.UI.RawImage>(true).FirstOrDefault(x=>x.name=="Canonical Aldric portrait");
    Need(aldricFace&&!aldricFace.gameObject.activeInHierarchy,"Lyra dialogue never impersonates Aldric portrait");
-   yield return null;RevealNarrativeForCapture(h,"Lyra","hermano");yield return null;UiShot(h,"lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
+   yield return new WaitForSecondsRealtime(.36f);RevealNarrativeForCapture(h,"Lyra","hermano");yield return null;UiShot(h,"lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
    for(int i=0;i<30&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
    Need(h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"Lyra dialogue completed");
    Shot(h,"fissure-A-open",h.WorldCamera);Command(h,"Fight","fissure-valoria");Need(h.City.Gateway.Snapshot().March.Route.Count>1,"real reachable fissure route");Step(h,2);yield return null;Shot(h,"fissure-B-scar",h.WorldCamera);Step(h,7);yield return null;Shot(h,"fissure-C-closed",h.WorldCamera);
@@ -158,7 +158,7 @@ namespace Eldoria.ReferenceClean.Editor {
    foreach(string building in new[]{"sawmill","barracks"})foreach(int level in new[]{2,3}){Command(h,"UpgradeBuilding",building);Step(h,8+(level-1)*2);yield return null;Shot(h,building+"-level"+level,cityCam);if(level==3)RequireVisibleUpgrade(building+"-level2-horizontal",building+"-level3-horizontal",120);}
    h.City.ReloadForProbe();Need(h.City.Gateway.Snapshot().ChapterThree.GranaryLevel==3,"level3 save reload");
    h.Select("granary");yield return null;UiShot(h,"granary-level3");
-   h.Open(RoyalSection.Inventory);yield return null;
+   h.Open(RoyalSection.Inventory);yield return new WaitForSecondsRealtime(.36f);
    RevealNarrativeForCapture(h,"chest","Manuscrito de la Fisura");
    yield return null;UiShot(h,"unique-manuscript-chest");
    for(int i=0;i<10&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
