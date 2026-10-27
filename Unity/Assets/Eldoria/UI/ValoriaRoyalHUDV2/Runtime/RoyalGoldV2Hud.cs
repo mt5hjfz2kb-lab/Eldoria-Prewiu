@@ -147,9 +147,29 @@ namespace Eldoria.UI.RoyalGold.V2
             }
 
             objectiveCard = Panel("V2 / current objective", safe);
-            chapterText = Text("Chapter", objectiveCard, 18, Gold, true);
-            objectiveText = Text("Current real objective", objectiveCard, 25, Ivory, true);
-            progressText = Text("Objective progress", objectiveCard, 17, Muted);
+            // The owner-approved Option 1 is parchment with heraldic livery,
+            // not the generic blue rectangular quest box. All text and the
+            // two REAL objective actions remain native, independent elements.
+            var oldFrame = objectiveCard.GetComponent<RoyalGoldV2FrameGraphic>();
+            if (oldFrame) oldFrame.enabled = false;
+            var parchment = objectiveCard.gameObject.AddComponent<RoyalGoldV3ParchmentGraphic>();
+            parchment.ObjectiveCard = true;
+            parchment.raycastTarget = false;
+            var sourceCrest = realm ? realm.Find("Valoria crest") as RectTransform : null;
+            if (sourceCrest)
+            {
+                var crestCopy = Instantiate(sourceCrest, objectiveCard, false);
+                crestCopy.name = "Crónica Real / existing Valoria heraldry";
+                Top(crestCopy, 13f, 18f, 52f, 79f);
+                foreach (var graphic in crestCopy.GetComponentsInChildren<Graphic>(true))
+                    graphic.raycastTarget = false;
+            }
+            chapterText = Text("Chapter", objectiveCard, 18,
+                new Color(.34f, .24f, .13f, 1f), true);
+            objectiveText = Text("Current real objective", objectiveCard, 25,
+                new Color(.15f, .115f, .075f, 1f), true);
+            progressText = Text("Objective progress", objectiveCard, 17,
+                new Color(.36f, .26f, .15f, 1f));
             objectiveAction = Button("Go to existing objective", objectiveCard, out objectiveActionLabel, true);
             objectivesButton = Button("Open current chapter", objectiveCard, out objectivesButtonLabel, false);
             objectiveActionLabel.Put("Ir al objetivo");
@@ -323,17 +343,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // on a portrait handset; never place the chapter over them.
             float goalTop = portrait ? 291f : 136f;
             Top(objectiveCard, portrait ? 14 : 18, goalTop, goalWidth, 119f);
-            Top(chapterText.rectTransform, 13, 9, goalWidth - 114, 22);
-            chapterText.fontSize = 17;
-            Top(progressText.rectTransform, goalWidth - 98, 9, 84, 22);
-            progressText.fontSize = 16;
-            progressText.alignment = TextAnchor.MiddleRight;
-            Top(objectiveText.rectTransform, 13, 31, goalWidth - 26, 41);
-            objectiveText.fontSize = 20;
-            Top((RectTransform)objectiveAction.transform, 10, 76, (goalWidth - 32f) * .58f, 39);
-            Top((RectTransform)objectivesButton.transform, 16 + (goalWidth - 32f) * .58f,
-                76, (goalWidth - 32f) * .42f, 39);
-            PositionObjectiveActionLabels();
+            LayoutParchmentContent(goalWidth);
             // Reflow selected objectives after every orientation/size change.
             compactObjective = false;
             // Explicitly expanded chapter panels are allowed to be larger; the
@@ -383,13 +393,26 @@ namespace Eldoria.UI.RoyalGold.V2
             compactObjective = compact;
             float w = objectiveCard.rect.width;
             objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 119f);
-            Top(chapterText.rectTransform, 13, 9, w - 114f, 22f);
-            Top(progressText.rectTransform, w - 98f, 9, 84f, 22f);
-            Top(objectiveText.rectTransform, 13, 31, w - 26f, 41f);
-            objectiveText.fontSize = 20;
-            Top((RectTransform)objectiveAction.transform, 10, 76, (w - 32f) * .58f, 39f);
-            Top((RectTransform)objectivesButton.transform,
-                16 + (w - 32f) * .58f, 76, (w - 32f) * .42f, 39f);
+            LayoutParchmentContent(w);
+        }
+
+        private void LayoutParchmentContent(float w)
+        {
+            // Reserve the left heraldic strip as on the approved illustration.
+            // A single arrangement serves rest and selected-building states.
+            Top(chapterText.rectTransform, 81f, 9f, w - 168f, 22f);
+            chapterText.fontSize = 16;
+            Top(progressText.rectTransform, w - 84f, 9f, 72f, 22f);
+            progressText.fontSize = 15;
+            progressText.alignment = TextAnchor.MiddleRight;
+            Top(objectiveText.rectTransform, 81f, 30f, w - 94f, 41f);
+            objectiveText.fontSize = 19;
+            float actions = w - 91f;
+            float primaryWidth = actions * .58f;
+            Top((RectTransform)objectiveAction.transform, 80f, 76f,
+                primaryWidth, 39f);
+            Top((RectTransform)objectivesButton.transform, 84f + primaryWidth,
+                76f, actions - primaryWidth - 4f, 39f);
             PositionObjectiveActionLabels();
         }
 
