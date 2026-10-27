@@ -165,7 +165,7 @@ namespace Eldoria.Tests
             var objective = GameObject.Find("V2 / current objective");
             Assert.That(objective, Is.Not.Null);
             Assert.That(objective.GetComponent<RectTransform>().rect.height,
-                Is.LessThanOrEqualTo(120f), "Objectives must be compact by default");
+                Is.LessThanOrEqualTo(136f), "Crónica Real manuscript must remain compact");
             var sheet = GameObject.Find("V2 / contextual building sheet");
             Assert.That(sheet, Is.Not.Null);
             Assert.That(sheet.GetComponent<CanvasGroup>().blocksRaycasts,
@@ -175,6 +175,71 @@ namespace Eldoria.Tests
             Assert.That(Member(host, "InWorld"), Is.EqualTo(false));
             var free = (Rect)Call(v2, "GetFreeSceneViewport");
             Assert.That(free.width * free.height, Is.GreaterThan(.25f));
+        }
+
+        [UnityTest]
+        public IEnumerator ApprovedCronicaRealUsesAuthenticParchmentAndSafeEdgeNavigation()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            yield return null;
+            Call(v2, "SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+
+            var objective = GameObject.Find("V2 / current objective");
+            Assert.That(objective, Is.Not.Null, "Missing live objective");
+            var paper = objective.transform.Find("V3 / original parchment and engraved edges");
+            Assert.That(paper, Is.Not.Null, "Actual original manuscript treatment lost");
+            var paperGraphic = paper.GetComponent<Graphic>();
+            Assert.That(paperGraphic, Is.Not.Null);
+            Assert.That(paperGraphic.GetType().Name,
+                Is.EqualTo("RoyalGoldV3ObjectiveParchmentGraphic"));
+            Assert.That(paperGraphic.raycastTarget, Is.False,
+                "Decorative parchment may never intercept objective actions");
+            Assert.That(objective.transform.Find("V3 / original Valoria heraldic sigil"),
+                Is.Not.Null, "Reuse Valoria's actual established crest");
+
+            var nav = Member(hud, "Navigation") as Component;
+            Assert.That(nav, Is.Not.Null);
+            var dock = nav.transform as RectTransform;
+            var safe = dock.parent as RectTransform;
+            Assert.That(safe, Is.Not.Null);
+            Assert.That(dock.anchorMin.x, Is.EqualTo(.5f).Within(.01f));
+            Assert.That(dock.anchorMin.y, Is.EqualTo(0f).Within(.01f),
+                "Left or floating navigation violates approved original");
+            Assert.That(dock.anchorMax.y, Is.EqualTo(0f).Within(.01f));
+            Assert.That(dock.pivot.y, Is.EqualTo(0f).Within(.01f));
+            Assert.That(dock.anchoredPosition.y, Is.EqualTo(0f).Within(1f),
+                "Footer must be flush with the DEVICE safe area");
+            Assert.That(dock.rect.width, Is.LessThanOrEqualTo(safe.rect.width + 1f),
+                "All navigation must fit within the current safe area");
+            var trim = dock.Find("V3 / Chronicle bottom frame");
+            Assert.That(trim, Is.Not.Null);
+            Assert.That(trim.GetComponent<Graphic>().raycastTarget, Is.False);
+            var entries = Member(nav, "Items") as System.Array;
+            Assert.That(entries, Is.Not.Null);
+            int active = 0;
+            foreach (var entry in entries)
+            {
+                var button = Member(entry, "Button") as Button;
+                Assert.That(button, Is.Not.Null);
+                if (!button.gameObject.activeSelf) continue;
+                active++;
+                var rect = button.transform as RectTransform;
+                Assert.That(rect.anchorMin.y, Is.EqualTo(.5f).Within(.01f));
+                Assert.That(rect.rect.height, Is.GreaterThanOrEqualTo(72f));
+                Assert.That(Mathf.Abs(rect.anchoredPosition.x) + rect.rect.width * .5f,
+                    Is.LessThanOrEqualTo(dock.rect.width * .5f + 1f),
+                    "No genuine native medallion can leave the bottom dock");
+            }
+            Assert.That(active, Is.GreaterThan(0));
+            var realm = Member(hud, "Realm") as Component;
+            var settings = Member(hud, "Settings") as Button;
+            Assert.That(((RectTransform)realm.transform).anchoredPosition.y,
+                Is.EqualTo(0f).Within(1f), "Top crest floats below safe edge");
+            Assert.That(((RectTransform)settings.transform).anchoredPosition.y,
+                Is.EqualTo(0f).Within(1f), "Top icon floats below safe edge");
         }
 
         [UnityTest]
