@@ -9,7 +9,7 @@ permissions:
   contents: read
 concurrency:
   group: eldoria-early-retention-unity-native
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   native:
     if: vars.UNITY_RUNNER_READY == 'true'
