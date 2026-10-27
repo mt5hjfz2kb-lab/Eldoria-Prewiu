@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T22:56:00+01:00",
+  "updated_at": "2026-10-27T22:19:42.032Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1421,7 +1421,7 @@
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
       "owner": "chatgpt-cronica-real-ux-polish-20261027",
       "ownership_state": "claimed",
-      "ownership_revision": 23,
+      "ownership_revision": 24,
       "write_scope_released": true,
       "status": "active",
       "claimed_at": "2026-10-27T09:36:00Z",
@@ -1443,7 +1443,6 @@
         ".github/workflows/ui-progression-cert.yml",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Narrative.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/ReferenceUiArtPassTests.cs",
@@ -1648,7 +1647,8 @@
         "reason": "Latest native run has not produced comparable screenshots or all functional proof"
       },
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
-      "last_handoff": "Owner instruction to correct UI/UX on current main, keeping Aldric asset PR independent and avoiding its reserved file."
+      "last_handoff": "Owner instruction to correct UI/UX on current main, keeping Aldric asset PR independent and avoiding its reserved file.",
+      "scope_release_note": "2026-10-27 owner-approved Aldric PR118 integration: release solely RoyalGoldV3CinematicFinish.cs from completed Crónica Real UI workstream. Already write_scope_released=true, prior handoff explicitly avoided Aldric reserved file. All remaining UI scope retained; exact file exclusively claimed by eldoria-aldric-dialogue-bust-20261027 revision 3. No other UI code/resources modified."
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
