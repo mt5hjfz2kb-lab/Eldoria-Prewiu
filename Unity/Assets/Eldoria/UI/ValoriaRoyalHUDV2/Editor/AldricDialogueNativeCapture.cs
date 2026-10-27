@@ -106,13 +106,21 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
             {
                 Assert(texture.LoadImage(File.ReadAllBytes(path)), "Actual camera PNG decodes");
                 Assert(texture.width==width && texture.height==height, "Actual native capture dimensions "+width+"x"+height);
-                var pixels=texture.GetPixels32(); int warm=0;
+                // The authored Orín dialogue uses genuine dark-purple ARCANE
+                // parchment, unlike Aldric/Lyra/narrator's warm manuscript.
+                // Evaluate the actual correct material, not a universal sepia
+                // threshold that rejects correct Orín Unity screenshots.
+                var pixels=texture.GetPixels32(); int warm=0, arcane=0;
                 for (int y=0;y<texture.height/2;y+=3) for(int x=0;x<texture.width;x+=3)
                 {
                     var p=pixels[y*texture.width+x];
                     if (p.r>=188&&p.g>=162&&p.b>=95&&p.b<=210&&p.r>p.g&&p.g>p.b+14) warm++;
+                    if (p.b>p.g+10&&p.r>p.g+8&&p.b>40&&p.r>28) arcane++;
                 }
-                Assert(warm>width*height/1200, "Actual dialogue parchment visually present in "+name);
+                bool expectsArcane=name.IndexOf("orin",StringComparison.OrdinalIgnoreCase)>=0;
+                Assert((expectsArcane?arcane:warm)>width*height/1200,
+                    "Correct authored "+(expectsArcane?"arcane purple":"warm gold")+
+                    " dialogue parchment visually present in "+name);
             }
             finally { Object.Destroy(texture); }
         }
