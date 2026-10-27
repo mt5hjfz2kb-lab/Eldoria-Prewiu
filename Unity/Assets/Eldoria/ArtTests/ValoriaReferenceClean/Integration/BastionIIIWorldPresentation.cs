@@ -30,7 +30,7 @@ namespace Eldoria.ReferenceClean {
     MakeStock("barracks",town.transform,host.City.Parcels.RightBuilt.transform.position+new Vector3(4,0,-4),"Barrel");
    }
    // III repairs and provisions the existing keep; its approved silhouette stays intact.
-   MakeStock("bastion",town.transform,new Vector3(5,.56f,28),"Crate",3);
+   MakeStock("bastion",town.transform,new Vector3(9,.56f,17),"Crate",3);
    foreach(string id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria"}){
     var root=new GameObject(id);root.transform.SetParent(host.WorldRoot.transform,false);nodes.Add(id,root);
     Hotspot(root,id,id=="fissure-valoria"?new Vector3(9,2,4):new Vector3(7,4,5));
@@ -70,6 +70,20 @@ namespace Eldoria.ReferenceClean {
      for(var node=renderer.transform;node&&node!=parent;node=node.parent)
       if(!node.gameObject.activeSelf)node.gameObject.SetActive(true);
      if(!renderer.enabled)renderer.enabled=true;
+    }
+   }
+   // These approved UrbanProps prefabs contain 3 LOD meshes. Their source
+   // LODGroup can cull tiny production stock entirely at the ordinary city
+   // camera distance; that left all successive building levels pixel-identical.
+   // Choose the source LOD0 (highest fidelity) on this tiny NEW instance only.
+   // Never alter the reusable prefab, other buildings, or the global LODs.
+   if(path.StartsWith("Valoria/UrbanProps/",StringComparison.Ordinal)){
+    foreach(var lod in model.GetComponentsInChildren<LODGroup>(true)){
+     var levels=lod.GetLODs();if(levels.Length==0)continue;
+     var primary=new HashSet<Renderer>(levels[0].renderers);
+     lod.enabled=false;
+     foreach(var renderer in lod.GetComponentsInChildren<Renderer>(true))
+      renderer.enabled=primary.Contains(renderer);
     }
    }
    foreach(var c in model.GetComponentsInChildren<Collider>(true))Destroy(c);
