@@ -517,33 +517,36 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (item.Button && item.Button.gameObject.activeSelf) count++;
             if (count == 0) return;
 
-            // Owner approved Interface 1: the landscape, not a permanent
-            // bottom-wide HUD, is the hero. Move the SAME functional navigation
-            // buttons into a quiet, narrow left rail below the chapter.
-            // Nothing is cloned, unlocked, removed or given a fake listener.
-            float available = Mathf.Max(160f, safe.rect.height -
-                (portrait ? 442f : 290f) - 88f);
-            float gap = 6f;
-            float cellHeight = Mathf.Clamp(
-                (available - gap * (count - 1)) / count, 52f, 67f);
-            float cellWidth = portrait ? 75f : 78f;
-            float total = cellHeight * count + gap * (count - 1);
-            float top = portrait ? 430f : 277f;
-            // Extremely short landscape screens must keep the genuine bottom
-            // region navigable even if the rail needs to start higher.
-            top = Mathf.Min(top, Mathf.Max(10f, safe.rect.height - total - 15f));
+            // Option 1 "Crónica Real": the ORIGINAL functional medallions are
+            // anchored to the safe-area BOTTOM edge, never a left-side rail.
+            // Wide screens retain one compact row; portrait has a compact
+            // two-row reflow with its lowest row still resting at the edge.
+            // Do not clone actions or alter their existing listeners/unlocks.
+            bool vertical = safe.rect.height > safe.rect.width;
+            int columns = vertical ? Mathf.Min(3, count) : count;
+            int rows = (count + columns - 1) / columns;
+            float gutter = vertical ? 5f : 8f;
+            float safeWidth = Mathf.Max(170f, safe.rect.width - 20f);
+            float cellWidth = Mathf.Min(vertical ? 102f : 108f,
+                (safeWidth - gutter * (columns - 1)) / columns);
+            float cellHeight = vertical ? 66f : 80f;
+            float totalWidth = cellWidth * columns + gutter * (columns - 1);
+            float totalHeight = cellHeight * rows + gutter * (rows - 1);
             var navRect = nav.transform as RectTransform;
             if (navRect)
             {
-                navRect.anchorMin = navRect.anchorMax = new Vector2(0f, 1f);
-                navRect.pivot = new Vector2(.5f, .5f);
-                SetWidthAndHeight(navRect, cellWidth, total);
-                Vector2 rail = new Vector2(12f + cellWidth * .5f,
-                    -top - total * .5f);
-                if ((navRect.anchoredPosition - rail).sqrMagnitude > .1f)
-                    navRect.anchoredPosition = rail;
+                navRect.anchorMin = navRect.anchorMax =
+                    vertical ? new Vector2(.5f, 0f) : new Vector2(0f, 0f);
+                navRect.pivot = vertical ? new Vector2(.5f, 0f) : Vector2.zero;
+                SetWidthAndHeight(navRect, totalWidth, totalHeight);
+                // The container's parent is already Screen.safeArea-adjusted.
+                // Only a 3-unit visual inset remains; no floating navigation.
+                Vector2 edge = vertical ? new Vector2(0f, 3f) : new Vector2(12f, 3f);
+                if ((navRect.anchoredPosition - edge).sqrMagnitude > .1f)
+                    navRect.anchoredPosition = edge;
             }
-            float icon = Mathf.Min(36f, cellWidth - 10f);
+
+            float icon = Mathf.Min(vertical ? 45f : 52f, cellWidth - 14f);
             int index = 0;
             foreach (var item in nav.Items)
             {
@@ -551,30 +554,28 @@ namespace Eldoria.UI.RoyalGold.V2
                 var cell = (RectTransform)item.Button.transform;
                 cell.anchorMin = cell.anchorMax = cell.pivot = new Vector2(.5f, .5f);
                 SetWidthAndHeight(cell, cellWidth, cellHeight);
-                float y = total * .5f - cellHeight * .5f -
-                    index++ * (cellHeight + gap);
-                Vector2 location = new Vector2(0, y);
+                int row = index / columns;
+                int column = index++ % columns;
+                // A row is filled from left to right, starting at the top.
+                Vector2 location = new Vector2(
+                    -totalWidth * .5f + cellWidth * .5f + column * (cellWidth + gutter),
+                    totalHeight * .5f - cellHeight * .5f - row * (cellHeight + gutter));
                 if ((cell.anchoredPosition - location).sqrMagnitude > .1f)
                     cell.anchoredPosition = location;
-                // The original action medallion and label stay inside the
-                // same native uGUI button and retain its existing navigation.
                 if (cell.childCount > 0 && cell.GetChild(0) is RectTransform medallion)
                 {
                     SetWidthAndHeight(medallion, icon, icon);
-                    // Original 82px medal contains an independent 56px glyph.
-                    // Resize and centre BOTH; shrinking only the medal
-                    // previously left the World action as a clipped blue dot.
                     medallion.anchorMin = medallion.anchorMax =
                         medallion.pivot = new Vector2(.5f, .5f);
-                    Vector2 medallionLocation = new Vector2(0f, cellHeight * .18f);
-                    if ((medallion.anchoredPosition - medallionLocation).sqrMagnitude > .1f)
-                        medallion.anchoredPosition = medallionLocation;
+                    Vector2 emblemPosition = new Vector2(0f, cellHeight * .16f);
+                    if ((medallion.anchoredPosition - emblemPosition).sqrMagnitude > .1f)
+                        medallion.anchoredPosition = emblemPosition;
                     if (medallion.childCount > 0 &&
                         medallion.GetChild(0) is RectTransform glyph)
                     {
                         glyph.anchorMin = glyph.anchorMax =
                             glyph.pivot = new Vector2(.5f, .5f);
-                        SetWidthAndHeight(glyph, icon * .66f, icon * .66f);
+                        SetWidthAndHeight(glyph, icon * .67f, icon * .67f);
                         if (glyph.anchoredPosition.sqrMagnitude > .1f)
                             glyph.anchoredPosition = Vector2.zero;
                     }
@@ -584,10 +585,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     var label = item.Label.rectTransform;
                     label.anchorMin = label.anchorMax =
                         label.pivot = new Vector2(.5f, .5f);
-                    SetWidthAndHeight(label, cellWidth - 4f, 19f);
-                    Vector2 labelLocation = new Vector2(0f, -cellHeight * .32f);
-                    if ((label.anchoredPosition - labelLocation).sqrMagnitude > .1f)
-                        label.anchoredPosition = labelLocation;
+                    SetWidthAndHeight(label, cellWidth - 3f, 19f);
+                    Vector2 labelPosition = new Vector2(0f, -cellHeight * .32f);
+                    if ((label.anchoredPosition - labelPosition).sqrMagnitude > .1f)
+                        label.anchoredPosition = labelPosition;
                     if (item.Label.fontSize != 15) item.Label.fontSize = 15;
                     item.Label.alignment = TextAnchor.MiddleCenter;
                 }
@@ -709,11 +710,9 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             Rect free = Source ? Source.GetVisibleSceneViewport() : new Rect(.07f, .12f, .86f, .78f);
             if (!safe || !hasGeometry) return free;
-            // Compact real action rail replaces the horizontal bottom strip.
-            // Camera focus avoids the rail but keeps the rest of the landscape.
-            if (Source && Source.Navigation && Source.Navigation.gameObject.activeInHierarchy)
-                free.xMin = Mathf.Max(free.xMin,
-                    Mathf.Min(.15f, 104f / Mathf.Max(1f, safe.rect.width)));
+            // Royal navigation reserves only the real bottom safe-area strip.
+            // Source.GetVisibleSceneViewport already excludes those genuine
+            // button rects. Never subtract the obsolete 104-unit left rail.
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
             float padding = .025f;
