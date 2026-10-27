@@ -1,6 +1,6 @@
 {
   "stage": "visual_consolidation_validate",
-  "revision": 292,
+  "revision": 293,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,5 +8,5 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Actual integrated six-view capture and full native tests after restoring compact canonical Bastion strategic legibility; unchanged close scale, world anchor, resources and save fields. No APK or publication."
+  "checks": "Restore exact reviewed non-mipmapped canonical bakes; preserve near scale and verify strategic legibility, authentic integrated A/B, original gameplay/save probe and all native tests. No APK/publication."
 }
