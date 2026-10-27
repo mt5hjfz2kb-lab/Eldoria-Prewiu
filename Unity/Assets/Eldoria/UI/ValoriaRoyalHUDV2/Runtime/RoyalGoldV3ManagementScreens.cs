@@ -31,7 +31,7 @@ namespace Eldoria.UI.RoyalGold.V2
         // Optional host navigation; same scene, preserving the city camera state.
         public Action ReturnToCity { get; set; }
         RectTransform root, header, left, right, footer, quantityRow;
-        RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork;
+        RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork, statusArtwork;
         RectTransform trainingProgress;
         RectTransform trainingProgressFill;
         RoyalText heading, subheading, unitTitle, unitDetail, selectedText, summary, status, feedback;
@@ -168,6 +168,8 @@ namespace Eldoria.UI.RoyalGold.V2
             destinationArtwork.SetVerticesDirty();
             featuredUnitArtwork.MarchTheme = destination == Destination.March;
             featuredUnitArtwork.SetVerticesDirty();
+            statusArtwork.MarchTheme = destination == Destination.March;
+            statusArtwork.SetVerticesDirty();
             submitAfter = 0f;
             selectedCount = destination == Destination.Training
                 ? Mathf.Min(SliceRules.RecruitArchers, Math.Max(1, SliceRules.MaxAffordableArchers(s)))
@@ -262,6 +264,20 @@ namespace Eldoria.UI.RoyalGold.V2
             left = Frame("V3 / Featured military unit",root,false);
             right = Frame("V3 / Authoritative status and cost",root,false);
             footer = Frame("V3 / Destination actions",root,false);
+            // The existing status panel was a large empty blue rectangle
+            // even while the real expedition/cost labels were visible.
+            // Reuse the APPROVED military ornament at subdued opacity,
+            // underneath the live counts and timers. Decorative only:
+            // never create a second button, canvas, or pointer target.
+            var statusDecoration=Rect("V3 / Subdued royal military status engraving",right);
+            statusDecoration.anchorMin=Vector2.zero;
+            statusDecoration.anchorMax=Vector2.one;
+            statusDecoration.offsetMin=statusDecoration.offsetMax=Vector2.zero;
+            statusDecoration.gameObject.AddComponent<CanvasRenderer>();
+            statusArtwork=statusDecoration.gameObject.AddComponent<RoyalGoldV3ManagementBackdropGraphic>();
+            statusArtwork.color=new Color(1f,1f,1f,.22f);
+            statusArtwork.raycastTarget=false;
+            statusDecoration.SetAsFirstSibling();
             // The world-sized tapestry is obscured by opaque readable cards.
             // Repeat its actual authored gold military heraldry INSIDE the
             // unit card, behind real controls: no placeholder empty expanse,
