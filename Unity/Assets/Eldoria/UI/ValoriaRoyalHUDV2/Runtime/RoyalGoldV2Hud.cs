@@ -147,9 +147,34 @@ namespace Eldoria.UI.RoyalGold.V2
             }
 
             objectiveCard = Panel("V2 / current objective", safe);
-            chapterText = Text("Chapter", objectiveCard, 18, Gold, true);
-            objectiveText = Text("Current real objective", objectiveCard, 25, Ivory, true);
-            progressText = Text("Objective progress", objectiveCard, 17, Muted);
+            // Restore the approved Crónica Real parchment with heraldries.
+            // Text/mission/button objects are the SAME native gameplay ones.
+            var oldSlateFrame = objectiveCard.GetComponent<RoyalGoldV2FrameGraphic>();
+            if (oldSlateFrame) { oldSlateFrame.enabled = false; oldSlateFrame.raycastTarget = false; }
+            var manuscript = NewRect("V3 / original parchment and engraved edges", objectiveCard);
+            manuscript.gameObject.AddComponent<CanvasRenderer>();
+            var paperSkin = manuscript.gameObject.AddComponent<RoyalGoldV3ObjectiveParchmentGraphic>();
+            paperSkin.raycastTarget = false;
+            Stretch(manuscript, 0f);
+            manuscript.SetAsFirstSibling();
+            // A decorative repetition of the REAL Valoria shield, not a new
+            // faction, invented heraldic symbol, or second gameplay button.
+            var originalCrest = Source.Realm ? Source.Realm.transform.Find("Valoria crest") : null;
+            if (originalCrest)
+            {
+                var heraldry = UnityEngine.Object.Instantiate(originalCrest.gameObject, objectiveCard);
+                heraldry.name = "V3 / original Valoria heraldic sigil";
+                var shieldRect = heraldry.transform as RectTransform;
+                if (shieldRect) Top(shieldRect, 11f, 18f, 47f, 67f);
+                foreach (var graphic in heraldry.GetComponentsInChildren<Graphic>(true))
+                    graphic.raycastTarget = false;
+            }
+            var manuscriptInk = new Color(.22f, .155f, .095f, 1f);
+            chapterText = Text("Chapter", objectiveCard, 17, manuscriptInk, true);
+            chapterText.fontStyle = FontStyle.Bold;
+            objectiveText = Text("Current real objective", objectiveCard, 20, manuscriptInk, true);
+            progressText = Text("Objective progress", objectiveCard, 16,
+                new Color(.44f, .30f, .15f, 1f));
             objectiveAction = Button("Go to existing objective", objectiveCard, out objectiveActionLabel, true);
             objectivesButton = Button("Open current chapter", objectiveCard, out objectivesButtonLabel, false);
             objectiveActionLabel.Put("Ir al objetivo");
@@ -318,22 +343,11 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = safe.rect.width, height = safe.rect.height;
             if (width < 120 || height < 120) return;
             portrait = height > width;
-            float goalWidth = Mathf.Min(portrait ? 382f : 330f, width - 26f);
-            // Existing header/resources/feedback occupy up to 280 units
-            // on a portrait handset; never place the chapter over them.
-            float goalTop = portrait ? 291f : 136f;
-            Top(objectiveCard, portrait ? 14 : 18, goalTop, goalWidth, 119f);
-            Top(chapterText.rectTransform, 13, 9, goalWidth - 114, 22);
-            chapterText.fontSize = 17;
-            Top(progressText.rectTransform, goalWidth - 98, 9, 84, 22);
-            progressText.fontSize = 16;
-            progressText.alignment = TextAnchor.MiddleRight;
-            Top(objectiveText.rectTransform, 13, 31, goalWidth - 26, 41);
-            objectiveText.fontSize = 20;
-            Top((RectTransform)objectiveAction.transform, 10, 76, (goalWidth - 32f) * .58f, 39);
-            Top((RectTransform)objectivesButton.transform, 16 + (goalWidth - 32f) * .58f,
-                76, (goalWidth - 32f) * .42f, 39);
-            PositionObjectiveActionLabels();
+            float goalWidth = Mathf.Min(portrait ? 380f : 350f, width - 26f);
+            float goalTop = portrait ? 287f : 88f;
+            // A shorter illuminated manuscript; the scene remains open.
+            Top(objectiveCard, portrait ? 10f : 14f, goalTop, goalWidth, 133f);
+            LayoutManuscriptContent(goalWidth);
             // Reflow selected objectives after every orientation/size change.
             compactObjective = false;
             // Explicitly expanded chapter panels are allowed to be larger; the
@@ -378,18 +392,27 @@ namespace Eldoria.UI.RoyalGold.V2
         private void ReflowSelectedObjective(bool compact)
         {
             if (!hasGeometry || compactObjective == compact) return;
-            // V3 never expands an objective simply because a building was selected.
-            // The original expanded checklist remains behind the explicit Misiones action.
+            // Both compact and selected states preserve the same miniature
+            // parchment. An expanded chapter is an explicit player action.
             compactObjective = compact;
-            float w = objectiveCard.rect.width;
-            objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 119f);
-            Top(chapterText.rectTransform, 13, 9, w - 114f, 22f);
-            Top(progressText.rectTransform, w - 98f, 9, 84f, 22f);
-            Top(objectiveText.rectTransform, 13, 31, w - 26f, 41f);
-            objectiveText.fontSize = 20;
-            Top((RectTransform)objectiveAction.transform, 10, 76, (w - 32f) * .58f, 39f);
+            objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 133f);
+            LayoutManuscriptContent(objectiveCard.rect.width);
+        }
+
+        private void LayoutManuscriptContent(float width)
+        {
+            float actionWidth = width - 76f;
+            Top(chapterText.rectTransform, 67f, 12f, width - 157f, 23f);
+            chapterText.fontSize = 15;
+            Top(progressText.rectTransform, width - 90f, 12f, 76f, 23f);
+            progressText.fontSize = 14;
+            progressText.alignment = TextAnchor.MiddleRight;
+            Top(objectiveText.rectTransform, 67f, 34f, width - 84f, 46f);
+            objectiveText.fontSize = 19;
+            Top((RectTransform)objectiveAction.transform, 64f, 86f,
+                actionWidth * .57f, 40f);
             Top((RectTransform)objectivesButton.transform,
-                16 + (w - 32f) * .58f, 76, (w - 32f) * .42f, 39f);
+                69f + actionWidth * .57f, 86f, actionWidth * .43f - 5f, 40f);
             PositionObjectiveActionLabels();
         }
 
