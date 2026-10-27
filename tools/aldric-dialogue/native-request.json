@@ -2,7 +2,7 @@
   "schema_version": 1,
   "request_id": "eldoria-aldric-dialogue-bust-20261027-native-once",
   "workstream_id": "eldoria-aldric-dialogue-bust-20261027",
-  "run_type": "UNITY_MERGE_HEAD_NATIVE_PROBE",
+  "run_type": "UNITY_MERGE_HEAD_NATIVE_PROBE_WITH_REAL_BASTION_III_BAKE",
   "no_paid_tripo": true,
   "owner": "chatgpt-aldric-dialogue-bust-20261027",
   "windows_lease_revision": 3,
@@ -18,6 +18,7 @@
     "Narrator horizontal",
     "Narrator vertical"
   ],
-  "notes": "Single run queued after initial stale f10 native validation. Branch merge SHA and exact assets must be re-evaluated by workflow. Never disrupt Bastion III or launch another task while this run active.",
-  "requested_at": "2026-10-27T22:15:00Z"
+  "notes": "Second controlled native run only to repair failed inherited Bastion III resource import: first run 40592203923 proved 1/2 tests, four source PNG imports PASS; 1 test failed on BASTION_III_MISSING_ART before reaching dialogue due required prefab bake absent. Workflow now prepares approved source with exact same Blender+Unity editor method as main full PlayMode; does not mutate production assets or rerun Tripo. No duplicate concurrent Unity run.",
+  "requested_at": "2026-10-27T22:53:00Z",
+  "revision": 2
 }
