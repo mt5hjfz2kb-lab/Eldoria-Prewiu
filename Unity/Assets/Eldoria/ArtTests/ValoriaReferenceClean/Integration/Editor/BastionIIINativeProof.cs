@@ -35,6 +35,34 @@ namespace Eldoria.ReferenceClean.Editor {
    ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-vertical.png",900,1600);
    ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-horizontal.png",1600,900);
   }
+  // Strict artistic integration gate: real rendered models must occupy the
+  // gameplay camera frustum. A visible *hotspot* alone is not artwork.
+  static void RequireRealWorldModel(ValoriaIntegratedWorld h,string id)
+  {
+   var target=h.FindTarget(id);
+   Need(target!=null&&target.gameObject.activeInHierarchy,id+" has an active target");
+   var camera=h.WorldCamera;
+   var planes=GeometryUtility.CalculateFrustumPlanes(camera);
+   var renderers=target.GetComponentsInChildren<Renderer>(true);
+   int visible=0, active=0;
+   foreach(var renderer in renderers){
+    var b=renderer.bounds;
+    var pos=camera.WorldToViewportPoint(b.center);
+    bool layer=((camera.cullingMask&(1<<renderer.gameObject.layer))!=0);
+    bool frustum=GeometryUtility.TestPlanesAABB(planes,b);
+    bool enabled=renderer.enabled&&renderer.gameObject.activeInHierarchy;
+    var local=b.center-h.WorldHome;
+    float terrain=h.WorldHome.y+RegionOneBlenderLandscape.Height(local.x,local.z);
+    Debug.Log("BASTION_III_ART_FRUSTUM id="+id+" renderer="+renderer.name+
+      " world="+b.center+" bounds="+b.size+" target="+target.transform.position+
+      " viewport="+pos+" ground="+terrain+" layer="+renderer.gameObject.layer+
+      " cull="+layer+" enabled="+enabled+" frustum="+frustum);
+    if(enabled&&layer)active++;
+    if(enabled&&layer&&frustum&&pos.z>0f)visible++;
+   }
+   Need(renderers.Length>0&&active>0,id+" has live graphical renderers");
+   Need(visible>0,id+" actual mesh must be visible inside world camera frustum");
+  }
   static IEnumerator Probe(ValoriaIntegratedWorld h){
    for(int i=0;i<180&&!h.Ready;i++)yield return null;Need(h.Ready,"integrated production host ready");
    var mainBreach=h.WorldRoot.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_BreachFloor");
@@ -61,6 +89,7 @@ namespace Eldoria.ReferenceClean.Editor {
     var target=h.FindTarget(id);Need(target!=null,id+" exists");
     h.WorldNavigation.RestoreView(target.transform.position,14);h.GetComponent<BastionIIIWorldPresentation>().Apply();yield return null;
     Need(target.gameObject.activeInHierarchy,id+" visible in near view");Shot(h,id,h.WorldCamera);
+    RequireRealWorldModel(h,id);
    }
    var wolf=h.FindTarget("hunt-wolf").GetComponentInChildren<Animation>(true);
    Need(wolf&&wolf.IsPlaying("Idle"),"wolf uses its authored idle animation");
