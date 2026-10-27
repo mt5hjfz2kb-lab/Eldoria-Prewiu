@@ -12,7 +12,7 @@ permissions:
   actions: read
 concurrency:
   group: aldric-bust-source-20261027
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   render:
     runs-on: ubuntu-latest
@@ -22,6 +22,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            .github/workflows/aldric-dialogue-portraits.yml
+            tools/aldric-dialogue
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs
+            Unity/Assets/Eldoria/Resources/UI/AldricDialogue
       - name: Recover exact paid Tripo source without a new paid API call
         uses: actions/download-artifact@v4
         with:
