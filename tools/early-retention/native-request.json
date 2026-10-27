@@ -13,5 +13,7 @@
   ],
   "disposable_probes_only": true,
   "zero_cost": true,
-  "art_approved": false
+  "art_approved": false,
+  "revision": 2,
+  "note": "Native attempt after job-env context correction; preserve first attempt evidence and no player saves."
 }
