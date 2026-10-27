@@ -47,9 +47,12 @@ namespace Eldoria.UI.RoyalGold
             }
             else
             {
-                Resources.anchoredPosition = new Vector2(0, -132);
-                Mission.anchoredPosition = new Vector2(26, -288);
-                Feedback.anchoredPosition = new Vector2(0, -232);
+                // Portrait is two safe-edge rows rather than floating
+                // resources toward the middle of the city. The parchment
+                // objective starts below this authentic top-header cluster.
+                Resources.anchoredPosition = new Vector2(0, -98);
+                Mission.anchoredPosition = new Vector2(26, -254);
+                Feedback.anchoredPosition = new Vector2(0, -198);
             }
             Feedback.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Min(650, width - 52));
             Feedback.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 48);
