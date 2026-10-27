@@ -131,6 +131,18 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Retention.Orders.Select(x=>x.Id).Distinct().Count(),
                 Is.EqualTo(g.Snapshot().Retention.Orders.Count));
         }
+        [Test] public void FirstChapterHasAnActualPowerWallBeforeTheFinalBoss()
+        {
+            var boss=EarlyRetentionRules.Stage(25);
+            Assert.That(boss.Name,Is.EqualTo("Guardián del umbral"));
+            var starter=SliceRules.Expedition(new ArmyRoster{ArcherT1=36},"aldric");
+            var developed=SliceRules.Expedition(new ArmyRoster{ArcherT1=100},"aldric");
+            Assert.That(SliceRules.FightCreature(starter,boss.Enemy).Won,Is.False,
+                "Starter archers must not trivialize all twenty-five stages");
+            Assert.That(SliceRules.FightCreature(developed,boss.Enemy).Won,Is.True,
+                "Investing in an army must allow the player to surmount the chapter boss");
+        }
+
         [Test] public void AccumulatedHeroXpImprovesGenuineEarlyPveButHasSafeCap()
         {
             var state=Ready();
