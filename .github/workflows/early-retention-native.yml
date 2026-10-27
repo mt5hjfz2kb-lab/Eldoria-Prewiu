@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 60
     env:
       VALORIA_GAMEPLAY_PROBE: '1'
-      EARLY_RETENTION_EVIDENCE: ${{ runner.temp }}/early-retention-native-${{ github.run_id }}
+      EARLY_RETENTION_EVIDENCE: ${{ github.workspace }}/early-retention-native-${{ github.run_id }}
     steps:
       - name: Verify exact canonical exclusive Unity ownership
         shell: powershell
@@ -129,6 +129,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: eldoria-early-retention-native-${{ github.sha }}
-          path: ${{ runner.temp }}/early-retention-native-${{ github.run_id }}/
+          path: ${{ github.workspace }}/early-retention-native-${{ github.run_id }}/
           if-no-files-found: warn
           retention-days: 30
