@@ -390,6 +390,14 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 int stage=p.LastClearedStage+1;
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
+                bool boss=info.Step%5==0;
+                if(sceneArtwork.BossEncounter!=boss)
+                {
+                    sceneArtwork.BossEncounter=boss;
+                    sceneArtwork.SetVerticesDirty();
+                }
+                kicker.Put(info.Scene.ToUpperInvariant()+" · "+
+                    (boss?"GUARDIÁN ESPECIAL":"COMBATE AUTOMÁTICO"));
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
                 opponent.Put(info.Name+"\nRasgo: "+info.Trait);
                 int archer=s.Available?.Total??0;
