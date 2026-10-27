@@ -1,0 +1,134 @@
+name: Eldoria Early Retention - real Unity native proof
+on:
+  push:
+    branches: [feature/eldoria-early-retention-20261028]
+    paths:
+      - 'tools/early-retention/native-request.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-early-retention-unity-native
+  cancel-in-progress: false
+jobs:
+  native:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    env:
+      VALORIA_GAMEPLAY_PROBE: '1'
+      EARLY_RETENTION_EVIDENCE: ${{ runner.temp }}/early-retention-native-${{ github.run_id }}
+    steps:
+      - name: Verify exact canonical exclusive Unity ownership
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-retention-native-lease'}
+          $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
+          $claims=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-early-retention-systems-20261028' -or
+             $claims[0].ownership_state -ne 'claimed' -or $claims[0].owner -ne 'chatgpt-cronica-real-ux-polish-20261027'){
+            throw "Windows runner is not exclusively owned by this active workstream: $($claims.id -join ',')"
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'A local Unity or Blender process is already active. Do not interrupt.'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Exact Unity executable unavailable'}
+      - name: Recover Git supplied by GitHub Desktop if needed
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $candidate=Get-ChildItem "${env:LOCALAPPDATA}/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git is unavailable; no full ZIP fallback'}
+            $dir=Split-Path $candidate
+            Add-Content $env:GITHUB_PATH $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+          git --version
+      - uses: actions/checkout@v4
+        with:
+          path: retention-source
+          clean: false
+          fetch-depth: 1
+          sparse-checkout: |
+            Unity
+            tools
+            pipeline
+            docs/early-retention
+      - name: Verify SHA and preserve local project settings
+        shell: powershell
+        working-directory: retention-source
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Exact branch SHA mismatch'}
+          $project=Join-Path (Get-Location).Path 'Unity'
+          if(-not(Test-Path (Join-Path $project 'Assets'))){throw 'Unity Assets unavailable'}
+          if(-not(Test-Path (Join-Path $project 'Packages/manifest.json'))){throw 'Unity Packages unavailable'}
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "retention-search-original-$env:GITHUB_RUN_ID"
+          $new=Join-Path $env:RUNNER_TEMP "retention-search-generated-$env:GITHUB_RUN_ID"
+          if(Test-Path $settings){
+            if(Test-Path $backup){throw 'Retained backup already exists; refuse overwrite'}
+            Copy-Item $settings $backup
+          }else{
+            New-Item -ItemType Directory -Force (Split-Path $settings) | Out-Null
+            New-Item -ItemType File $new | Out-Null
+          }
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' |
+            Set-Content $settings -Encoding UTF8
+          Write-Host 'Disposable isolated source and reversible Search index ready'
+      - name: Run only Early Retention native EditMode domain tests
+        shell: powershell
+        working-directory: retention-source
+        timeout-minutes: 25
+        run: |
+          $ErrorActionPreference='Stop'
+          $args=@('-batchmode','-nographics','-quit','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
+            '-runTests','-testPlatform','editmode','-testFilter','Eldoria.Tests.EarlyRetentionRulesTests',
+            '-testResults',(Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.xml'),
+            '-logFile',(Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.log'))
+          New-Item -ItemType Directory -Force $env:EARLY_RETENTION_EVIDENCE | Out-Null
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Unity EditMode exit $($p.ExitCode). Read artifact log."}
+          if(-not(Test-Path (Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.xml'))){throw 'No genuine EditMode XML'}
+          $xml=[xml](Get-Content (Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.xml') -Raw)
+          if([int]$xml.'test-run'.failed -gt 0 -or [int]$xml.'test-run'.total -lt 7){throw "Early retention test failure/missing tests"}
+      - name: Capture actual Unity city HUD, progression unlock and two real independent destinations
+        shell: powershell
+        working-directory: retention-source
+        timeout-minutes: 22
+        run: |
+          $args=@('-batchmode','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
+            '-executeMethod','Eldoria.ReferenceClean.Editor.EarlyRetentionNativeCapture.Capture',
+            '-logFile',(Join-Path $env:EARLY_RETENTION_EVIDENCE 'captures.log'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Unity screenshot exit $($p.ExitCode); see artifact logs"}
+          $proof=Join-Path $env:EARLY_RETENTION_EVIDENCE 'result.txt'
+          if(-not(Test-Path $proof)){throw 'Actual game screenshot acceptance did not finish'}
+          if(-not((Get-Content $proof -Raw).Contains('EARLY_RETENTION_NATIVE_PASS'))){throw 'No native acceptance proof'}
+          $png=@(Get-ChildItem $env:EARLY_RETENTION_EVIDENCE -Filter '*.png')
+          if($png.Count -ne 6){throw "Expected 6 true Unity screens (portrait/landscape), got $($png.Count)"}
+      - name: Preserve original Unity Search state
+        if: always()
+        shell: powershell
+        working-directory: retention-source
+        run: |
+          $project=Join-Path (Get-Location).Path 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "retention-search-original-$env:GITHUB_RUN_ID"
+          $new=Join-Path $env:RUNNER_TEMP "retention-search-generated-$env:GITHUB_RUN_ID"
+          if(Test-Path $backup){Copy-Item $backup $settings -Force;Remove-Item $backup -Force}
+          elseif(Test-Path $new){if(Test-Path $settings){Remove-Item $settings -Force};Remove-Item $new -Force}
+      - name: Upload native XML logs and original PNG images, even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-early-retention-native-${{ github.sha }}
+          path: ${{ runner.temp }}/early-retention-native-${{ github.run_id }}/
+          if-no-files-found: warn
+          retention-days: 30
