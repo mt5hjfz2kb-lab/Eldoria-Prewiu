@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T00:33:00+01:00",
+  "updated_at": "2026-10-28T00:37:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1705,11 +1705,13 @@
       "id": "eldoria-early-retention-systems-20261028",
       "owner": "chatgpt-cronica-real-ux-polish-20261027",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "status": "active",
       "branch": "feature/eldoria-early-retention-20261028",
       "pr": null,
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
@@ -1725,10 +1727,14 @@
         "docs/early-retention/**",
         "tools/early-retention/**",
         "tools/ui-v3-domain-smoke/Smoke.csproj",
-        ".github/workflows/ui-v3-domain-smoke.yml"
+        ".github/workflows/ui-v3-domain-smoke.yml",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs.meta",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+        ".github/workflows/early-retention-native.yml"
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
-      "last_handoff": "Build two distinct native game screens, deterministic persisted progress/rewards, no premature UI buttons, same combat rules and existing RoyalHUD; do not touch PR #119 work or Windows runner owned by other workstream.",
+      "last_handoff": "Dedicated Unity 6000.3.23f1 native scene screenshot and EditMode validation, source branch #120, exclusive Windows owner until QA completes; do not alter PR119.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Native, editable uGUI geometry for two existing-HUD screens; no 3D asset production, generative models, external imagery, Tripo or artist-cycle promotion. Visual acceptance still requires true Unity scene captures."
     }
