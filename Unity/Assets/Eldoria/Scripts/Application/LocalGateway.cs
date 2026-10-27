@@ -311,15 +311,20 @@ namespace Eldoria.Application
                         return Fail("Marcha no disponible");
                     if (state.March.Phase != "idle") return Fail("Espera al regreso de la Marcha");
                     int marchArchers=state.Available.ArcherT1;
+                    string marchHero="aldric";
                     if(command.TargetId != "march-main")
                     {
                         if(!command.TargetId.StartsWith("march-main:",StringComparison.Ordinal) ||
-                            !int.TryParse(command.TargetId.Substring("march-main:".Length),out marchArchers))
+                            !int.TryParse(command.TargetId.Split(':')[1],out marchArchers))
                             return Fail("Composición desconocida");
                     }
                     if(marchArchers < 1 || marchArchers > state.Available.ArcherT1)
                         return Fail("No hay suficientes arqueros disponibles");
-                    state.PreparedHeroId = "aldric";
+                    var parts=command.TargetId.Split(':');
+                    if(parts.Length>3)return Fail("Composición desconocida");
+                    if(parts.Length==3)marchHero=parts[2];
+                    if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))return Fail("Héroe no disponible");
+                    state.PreparedHeroId = marchHero;
                     state.PreparedTroops = state.Available.Copy();
                     state.PreparedTroops.ArcherT1 = marchArchers;
                     // Only the expressly selected unlocked T1 unit is assigned
@@ -444,7 +449,8 @@ namespace Eldoria.Application
             if(planned==null)return false;
             var m = state.March;
             m.Route=planned;
-            bool usePrepared = targetId == "engendro-valoria" && state.MarchConfigured;
+            bool usePrepared = (targetId == "engendro-valoria" || IsChapterThreeTarget(targetId)) && state.MarchConfigured;
+            if(usePrepared && (state.PreparedTroops.Total<1 || state.PreparedTroops.ArcherT1>state.Available.ArcherT1 || state.PreparedTroops.ArcherT2>state.Available.ArcherT2 || state.PreparedTroops.ArcherT3>state.Available.ArcherT3))return false;
             m.Troops = usePrepared ? state.PreparedTroops.Copy() : state.Available.Copy();
             m.HeroId = usePrepared ? state.PreparedHeroId : "aldric";
             state.Available.ArcherT1 -= m.Troops.ArcherT1;
@@ -505,7 +511,12 @@ namespace Eldoria.Application
                 long due = m.PhaseEndsUtcTicks;
                 if (m.Phase == "outbound")
                 {
-                    if(IsChapterThreeTarget(m.TargetId)) {
+                    if(m.TargetId=="meat-valoria") {
+                        m.Phase="gathering";
+                        int seconds=Math.Max(7,Math.Min(35,(state.ChapterThree.MeatRemaining+119)/120));
+                        m.PhaseEndsUtcTicks=due+TimeSpan.FromSeconds(seconds).Ticks;
+                    }
+                    else if(IsChapterThreeTarget(m.TargetId)) {
                         ResolveChapterThreeMarch(m,due);
                         m.Phase="returning";m.PhaseEndsUtcTicks=due+TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
                     }
@@ -561,7 +572,11 @@ namespace Eldoria.Application
                 }
                 else if (m.Phase == "gathering")
                 {
-                    if(IsStoneTarget(m.TargetId))
+                    if(m.TargetId=="meat-valoria")
+                    {
+                        ResolveChapterThreeMarch(m,due);
+                    }
+                    else if(IsStoneTarget(m.TargetId))
                     {
                         m.PendingStone = Math.Min(SliceRules.QuarryLoad,ResourceRemaining(state,m.TargetId));
                         SetResourceRemaining(m.TargetId,ResourceRemaining(state,m.TargetId)-m.PendingStone);
@@ -571,7 +586,7 @@ namespace Eldoria.Application
                         m.PendingWood = Math.Min(SliceRules.ForestLoad,ResourceRemaining(state,m.TargetId));
                         SetResourceRemaining(m.TargetId,ResourceRemaining(state,m.TargetId)-m.PendingWood);
                     }
-                    if(ResourceRemaining(state,m.TargetId)==0){
+                    if(m.TargetId!="meat-valoria" && ResourceRemaining(state,m.TargetId)==0){
                         var depleted=state.WorldResourceLocations.Find(x=>x.TargetId==m.TargetId);
                         if(depleted==null){depleted=new WorldResourceLocation{TargetId=m.TargetId};state.WorldResourceLocations.Add(depleted);}
                         depleted.DepletedUtcTicks=due; // actual gathering deadline, including offline advancement
@@ -759,7 +774,7 @@ namespace Eldoria.Application
         public bool AcknowledgeNarrative(string beat)
         {
             if (beat!="start" && beat!="world" && beat!="mark" &&
-                beat!="barracks" && beat!="secured") return false;
+                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed") return false;
             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
             if (state.ChapterProgress.SeenNarrative == null)
                 state.ChapterProgress.SeenNarrative = new System.Collections.Generic.List<string>();

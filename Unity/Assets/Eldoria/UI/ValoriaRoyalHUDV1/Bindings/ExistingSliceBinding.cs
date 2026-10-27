@@ -16,6 +16,7 @@ namespace Eldoria.UI.RoyalGold {
     BastionLevel=s.BastionLevel,Available=s.Available.Total,Wounded=s.Wounded.Total,Prepared=s.PreparedTroops.Total,HeroPower=p.Heroes,
     Hero=s.PreparedHeroId=="aldric"?"Sir Aldric":s.PreparedHeroId,IsTest=test,Profile=SliceContentProfiles.ActiveRuntimeProfile,
     Chapter=L(en,s.BastionLevel<2?"CAPÍTULO I":"CAPÍTULO II",s.BastionLevel<2?"CHAPTER I":"CHAPTER II"),March=MarchText(s,en)};
+   if(s.ChapterThree.LyraRecruited)d.Hero="Sir Aldric · Lyra ("+s.ChapterThree.LyraXp+" XP)";
    d.ShowFood=s.BastionLevel>=3;if(s.BastionLevel>=3)d.Chapter=L(en,"CAPÍTULO III","CHAPTER III");
    ObserveRecruitment(s);Mission(s,d,en); d.Building=Building(s,selection,en); return d;
   }

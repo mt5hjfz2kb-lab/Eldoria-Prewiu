@@ -57,7 +57,7 @@ namespace Eldoria.ReferenceClean {
    standard.gameObject.SetActive(onScreen);if(!onScreen)return;
    if(RectTransformUtility.ScreenPointToLocalPointInRectangle(layer,marker,uiCamera,out var position))standard.anchoredPosition=position;
    standard.localScale=Vector3.one*(phase=="gathering"?1+Mathf.Sin(Time.unscaledTime*4)*.05f:1);
-   label.Put((host.English?"Aldric · ":"Aldric · ")+s.March.Troops.Total);
+   label.Put((s.March.HeroId=="lyra"?"Lyra · ":s.March.HeroId=="aldric+lyra"?"Aldric + Lyra · ":"Aldric · ")+s.March.Troops.Total);
   }
   static Vector3 RoutePosition(MarchState march,Vector3 from,Vector3 to,float t){
    var route=march.Route;if(route==null||route.Count<2)return Vector3.Lerp(from,to,t); // pre-migration saved march only

@@ -34,6 +34,42 @@ jobs:
           if($LASTEXITCODE){throw 'Stale or conflicting lease'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
+      - name: Restore exact missing source files in the isolated checkout
+        shell: powershell
+        working-directory: bastion-iii-source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $source=(Get-Location).Path
+          $tracked=@(& git ls-tree -r --name-only HEAD -- Unity tools/bastion-iii)
+          $missing=@($tracked | Where-Object {-not(Test-Path -LiteralPath (Join-Path $source $_))})
+          if($missing.Count){
+            & git checkout --ignore-skip-worktree-bits HEAD -- Unity tools/bastion-iii
+            $missing=@($tracked | Where-Object {-not(Test-Path -LiteralPath (Join-Path $source $_))})
+          }
+          if($missing.Count -gt 64){throw "Unexpected incomplete checkout: $($missing.Count) files"}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-BastionIII-exact-recovery'}
+          foreach($file in $missing){
+            $expected=(& git rev-parse "HEAD:$file").Trim()
+            $escaped=($file -split '/' | ForEach-Object {[Uri]::EscapeDataString($_)}) -join '/'
+            $url="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/$($escaped)?ref=$env:GITHUB_SHA"
+            $blob=Invoke-RestMethod -Uri $url -Headers $headers
+            if($blob.sha -ne $expected -or $blob.encoding -ne 'base64'){throw "Wrong exact source: $file"}
+            $dest=Join-Path $source $file
+            New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+            [IO.File]::WriteAllBytes($dest,[Convert]::FromBase64String($blob.content))
+            if((& git hash-object -- $dest).Trim() -ne $expected){throw "Recovered source hash mismatch: $file"}
+          }
+          exit 0
+      - name: Author zero-cost frontier candidates in Blender
+        shell: powershell
+        working-directory: bastion-iii-source
+        run: |
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender unavailable'}
+          & $blender --background --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Frontier authoring failed'}
       - name: Compile and test exact isolated candidate
         shell: powershell
         working-directory: bastion-iii-source
@@ -53,10 +89,16 @@ jobs:
             [xml]$results=Get-Content $xml
             if($results.'test-run'.result -ne 'Passed'){throw "Unity $platform tests failed"}
           }
+          $proofLog=Join-Path $evidence 'runtime-proof.log'
+          $proofArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIINativeProof.Capture','-logFile',('"'+$proofLog+'"'))
+          $proof=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $proofArgs -Wait -PassThru
+          if($proof.ExitCode -ne 0 -or -not(Test-Path (Join-Path $evidence 'functional-checks.txt'))){throw 'Actual integrated III proof failed'}
           @{source=$env:GITHUB_SHA;run=$env:GITHUB_RUN_ID;art_approved=$false;physical_mobile_tested=$false} | ConvertTo-Json | Set-Content (Join-Path $evidence 'provenance.json') -Encoding UTF8
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: bastion-iii-native-${{ github.run_id }}
-          path: bastion-iii-source/docs/bastion-iii/native
+          path: |
+            bastion-iii-source/docs/bastion-iii/native
+            bastion-iii-source/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII
           if-no-files-found: warn

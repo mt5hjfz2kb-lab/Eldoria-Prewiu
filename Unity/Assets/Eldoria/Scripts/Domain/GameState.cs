@@ -338,15 +338,16 @@ namespace Eldoria.Domain
         // All deployment, preview, combat and casualties use this same tiered snapshot.
         public static CombatStats Expedition(ArmyRoster troops, string heroId)
         {
-            if (heroId != "aldric" || troops == null || troops.Total < 1) return new CombatStats(0, 0, 0, 0, 0);
-            double a = 78, d = 112, hp = 420, brk = 34; int pow = 1204;
+            if ((heroId != "aldric" && heroId != "lyra" && heroId != "aldric+lyra") || troops == null || troops.Total < 1) return new CombatStats(0, 0, 0, 0, 0);
+            bool lyra=heroId=="lyra"||heroId=="aldric+lyra", aldric=heroId!="lyra";
+            double a = (aldric?78:0)+(lyra?116:0), d = (aldric?112:0)+(lyra?62:0), hp = (aldric?420:0)+(lyra?300:0), brk = (aldric?34:0)+(lyra?82:0); int pow = (aldric?1204:0)+(lyra?1278:0);
             int[] counts = { troops.ArcherT1, troops.ArcherT2, troops.ArcherT3 };
             int[] tiers = { 1, 4, 10 }; // T1/T2/T3 profiles inherited from hero-army.js
             for (int i = 0; i < counts.Length; i++)
             {
                 if (counts[i] <= 0) continue;
                 int t = tiers[i]; double scale = Math.Sqrt(counts[i]);
-                a += (18 + t * 2) * scale;
+                a += (18 + t * 2) * scale * (lyra?1.03:1);
                 d += (11 + t) * scale;
                 hp += (34 + t * 3) * scale;
                 brk += (9 + t * 2) * scale;

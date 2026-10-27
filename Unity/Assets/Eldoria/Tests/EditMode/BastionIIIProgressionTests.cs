@@ -2,10 +2,11 @@ using System;
 using Eldoria.Application;
 using Eldoria.Domain;
 using NUnit.Framework;
+using UnityEngine;
 namespace Eldoria.Tests {
  public sealed class BastionIIIProgressionTests {
   sealed class Clock:IClock {public long UtcTicks{get;set;}=DateTime.UtcNow.Ticks;public void Add(int seconds){UtcTicks+=TimeSpan.FromSeconds(seconds).Ticks;}}
-  sealed class Store:IStateStore {public PlayerState Value;public PlayerState Load()=>Value;public void Save(PlayerState state){Value=state;}}
+  sealed class Store:IStateStore {public PlayerState Value;string json;public PlayerState Load()=>json==null?Value:JsonUtility.FromJson<PlayerState>(json);public void Save(PlayerState state){json=JsonUtility.ToJson(state);Value=JsonUtility.FromJson<PlayerState>(json);}}
   string previous;
   [SetUp]public void Setup(){previous=SliceContentProfiles.ActiveRuntimeProfile;SliceContentProfiles.SetRuntimeProfileOverride(SliceContentProfiles.OwnerIiiId);}
   [TearDown]public void Cleanup(){SliceContentProfiles.SetRuntimeProfileOverride(previous);}
