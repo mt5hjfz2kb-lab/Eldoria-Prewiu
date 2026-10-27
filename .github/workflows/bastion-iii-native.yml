@@ -135,6 +135,9 @@ jobs:
           [xml]$results=Get-Content $xml
           if($results.'test-run'.result -ne 'Passed'){throw 'Unity EditMode tests failed'}
       - name: Run actual Unity PlayMode suite
+        # Fail boundedly instead of occupying the sole Windows Unity runner
+        # until the entire job's 60-minute timeout if the editor deadlocks.
+        timeout-minutes: 18
         shell: powershell
         working-directory: bastion-iii-source
         run: |
