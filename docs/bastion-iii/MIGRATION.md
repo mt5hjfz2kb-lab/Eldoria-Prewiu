@@ -1,6 +1,18 @@
-# Bastión III — migración canónica en curso
+# Bastión III — integrado, verificado y publicado (27-10-2026)
 
-Encargo del propietario 27-10-2026. Base entregada Android 1.16: `ee35c87986370bf4d7e0e62e57897957cd9bce98`. Recursos liberados y reclamados en el mismo workstream integrado; no modifica la entrega code16.
+## Estado canónico de entrega
+
+- **Código:** integrado en `main` mediante [PR #117](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/117), merge `c4a1ad9af70ba6f95ac8a53e2350f9e5bee03b08`, conservando trabajos de Aldric y del mundo.
+- **Jugabilidad:** fidelidad al vertical slice (Granero/comida/caza, investigación de 20 min, encuentro con Lyra antes del asalto, reclutamiento tras victoria, manuscrito único, cicatriz de 6,5 s y desaparición definitiva de la fisura privada). Sin cambios mayores a edificios nivel 5.
+- **Certificación real:** [Unity native20, run 40578913550](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40578913550), código `a894662ad4661c59ad685c9d65c2723151f07ac9`: EditMode, PlayMode, I–II y III incluidos, rutas, persistencia, animación, cámaras y evolución por niveles **PASS**. Evidencias PNG originales en dicho artefacto y previsualizaciones sin retoques en `docs/bastion-iii/evidence/native20/`.
+- **Dirección artística:** corrección de la fisura rechazada (cinta violeta elevada) por grieta geológica oscura, irregular y somera a ras de suelo, con cicatriz que cambia tras victoria y desaparece. Revisión de capturas interna favorable para integrar; **no equivale a `ART_APPROVED` por el propietario**.
+- **Android:** [build firmada 1.17/code17, run 40583425073](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40583425073), fuente integrada exacta `74ef803f8be5a3ceb760344baa3d68c3a9537226`; misma firma de familia `f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8` y paquete `com.eldoria.valoria.v5test`. Arte, materiales PBR y stocks convertidos a prefabs autosuficientes para que su render no dependa de GLB legados excluidos de Android.
+- **Promoción:** [run 40586806946](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40586806946) **PASS**, bytes del APK público comparados bit a bit con el firmado y canal familiar principal pasado a 1.17. [APK verificada](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code17/Eldoria-Valoria-code17.apk), 421673060 bytes, SHA256 `40d9ccbc0032a5c25097c4806ce0c0eecc2d3d93995af8909527e780b87f9ae1`. El mecanismo ya existente de actualización reconoce el nuevo manifiesto. Solicitudes de construcción y promoción desactivadas después de finalizar para evitar duplicados.
+- **Límite honesto:** no está acreditada la instalación/prueba física en un móvil. No se ha consumido presupuesto adicional ni se han generado transformaciones nuevas de nivel 5.
+
+## Registro histórico previo a la entrega
+
+Los apartados siguientes conservan el diagnóstico y decisiones durante la migración. Los textos anteriores marcados `PENDIENTE` corresponden a etapas previas, ya resueltas por la certificación y la promoción indicadas arriba.
 
 ## Contrato
 
