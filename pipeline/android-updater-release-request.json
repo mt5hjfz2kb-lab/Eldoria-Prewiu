@@ -1,8 +1,8 @@
 {
-  "enabled": true,
+  "enabled": false,
   "buildRunId": 40495487995,
   "versionCode": 16,
   "expectedSourceSha": "ee35c87986370bf4d7e0e62e57897957cd9bce98",
   "budgetEur": 0,
-  "note": "Owner-authorized signed family code16 update after PR115 Crónica Real merged and certified. Build 40495487995 SUCCESS; artifact12729954412 downloaded and independently verified APK SHA256 8eecd69f76e2786a018483bec569e74f83dfce5226bb5a3b332cfdf152b1e6a5, 397196700 bytes, cert f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8, same Android package. Publish immutable release only with exact-byte verification; OTA manifest code16 only afterward. Physical phone untested."
+  "note": "Family1.16/code16 published SUCCESS run40497012145 with ELDORIA_FAMILY_RELEASE_BYTE_MATCH_PASS and ELDORIA_FAMILY_MAIN_CHANNEL_PROMOTED; URL https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code16/Eldoria-Valoria-code16.apk, SHA256 8eecd69f76e2786a018483bec569e74f83dfce5226bb5a3b332cfdf152b1e6a5,397196700 bytes, original signing cert. Disable repeat release; physical phone not tested."
 }
