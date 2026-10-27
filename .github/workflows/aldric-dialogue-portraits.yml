@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check --quiet "numpy==2.3.5" "vtk==9.6.2" "pillow==12.3.0"
+          python -m pip install --disable-pip-version-check --quiet "numpy==2.3.5" "vtk==9.6.2" "pillow==12.3.0" "trimesh==4.11.1"
       - name: Render 4 honest shoulder/chest portraits from SHA-locked GLB
         shell: bash
         run: |
@@ -47,12 +47,18 @@ jobs:
           source=$(find "$RUNNER_TEMP/aldric-source" -type f -name 'Eldoria_Module_UnderReview_50K.glb' -print -quit)
           test -n "$source" || { echo 'NO_GLB_SOURCE_IN_EXISTING_ARTIFACT'; exit 1; }
           echo "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595  $source" | sha256sum --check
+          # Rebuild EXACT owner-approved BLUE CAPE art-pass geometry from archived recipe.
+          # No Tripo call. Fail closed if the recipe or resulting GLB differ by 1 byte.
+          python tools/aldric-dialogue/unpack_approved_source.py "$source" "$RUNNER_TEMP/aldric-approved" "$RUNNER_TEMP/aldric-approved/build_aldric.py"
+          python "$RUNNER_TEMP/aldric-approved/build_aldric.py"
+          approved="$RUNNER_TEMP/aldric-approved/SirAldric_ArtPass_CapaAzul_v1.glb"
+          echo "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555  $approved" | sha256sum --check
           dst=Unity/Assets/Eldoria/Resources/UI/AldricDialogue
           mkdir -p "$dst"
           if command -v xvfb-run >/dev/null 2>&1; then
-            xvfb-run -a python tools/aldric-dialogue/render_existing_model_busts.py "$source" "$dst"
+            xvfb-run -a python tools/aldric-dialogue/render_existing_model_busts.py "$approved" "$dst"
           else
-            python tools/aldric-dialogue/render_existing_model_busts.py "$source" "$dst"
+            python tools/aldric-dialogue/render_existing_model_busts.py "$approved" "$dst"
           fi
           python - <<'PY'
           import json,pathlib
