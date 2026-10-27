@@ -55,6 +55,8 @@ jobs:
           path: retention-source
           clean: false
           fetch-depth: 1
+          filter: blob:none
+          lfs: false
           sparse-checkout: |
             Unity
             tools
