@@ -206,6 +206,23 @@ namespace Eldoria.Tests
 
             var objective = GameObject.Find("V2 / current objective");
             Assert.That(objective, Is.Not.Null, "Missing live objective");
+            var safeRoot = (Member(hud, "Realm") as Component)?.transform.parent;
+            Assert.That(safeRoot, Is.Not.Null, "Real safe-edge root must exist");
+            var royalPlate = DirectChild(safeRoot, "V3 / continuous original royal header");
+            // Do not pass just because three independent header buttons are at y=0:
+            // the owner-approved illustration has one unbroken royal-gold bar.
+            Assert.That(royalPlate, Is.Not.Null,
+                "Crónica Real needs one continuous full-safe-width top band");
+            var plateGraphic = royalPlate.GetComponent<Graphic>();
+            Assert.That(plateGraphic, Is.Not.Null);
+            Assert.That(plateGraphic.raycastTarget, Is.False);
+            var rootRect = safeRoot as RectTransform;
+            Assert.That(((RectTransform)royalPlate).rect.width,
+                Is.EqualTo(rootRect.rect.width).Within(1f),
+                "The top band must cover the entire device safe edge");
+            Assert.That(DirectChildCount(safeRoot, "V3 / continuous original royal header"),
+                Is.EqualTo(1), "No duplicate royal headers after layout");
+
             var paper = DirectChild(objective.transform, "V3 / original parchment and engraved edges");
             Assert.That(paper, Is.Not.Null, "Actual original manuscript treatment lost");
             Assert.That(DirectChildCount(objective.transform,
