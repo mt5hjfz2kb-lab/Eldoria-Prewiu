@@ -1,7 +1,7 @@
 {
-  "revision": 15,
+  "revision": 16,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Recheck full real Unity 34 EditMode, 66 PlayMode and integrated I-II/III; repair disabled imported wolf/fissure meshes at URP camera render time, activate source props, and FAIL if fixed-camera building upgrades remain invisible. Keep artApproved false pending screenshot review."
+  "reason": "Native r15 proved 34 EditMode,66 PlayMode and integrated I-II but correctly failed exact II->III fixed-camera A/B (0 changed pixels). Verify authored CITY supply LOD0 activation and real camera renderers, preserved routes and real wolf/fissure, small building differences, fully revealed UI with pixel-based parchment evidence. Fail closed; no art approval or APK without passing."
 }
