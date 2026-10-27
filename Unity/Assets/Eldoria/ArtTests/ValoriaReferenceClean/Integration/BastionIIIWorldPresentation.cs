@@ -132,6 +132,20 @@ namespace Eldoria.ReferenceClean {
   }
   void OnDestroy(){foreach(var mesh in terrainMeshes)if(mesh)Destroy(mesh);}
   void Update(){if(host&&host.Ready&&Time.unscaledTime>=refresh){refresh=Time.unscaledTime+.2f;Apply();}}
+  // Animated glTF imports may restore their authored disabled renderer flags
+  // AFTER Update(), between the 0.2s presentation refreshes. The native
+  // camera proof confirmed in-frustum wolf meshes with renderers INACTIVE.
+  // Reassert existing imported art ONLY for currently visible encounters
+  // after Animation evaluation and before the camera renders this frame.
+  // Never enable the inactive chapter, respawning hunts, closed fissure,
+  // inaccessible zoom, or other global resources.
+  void LateUpdate(){
+   if(!host||!host.Ready||!host.InWorld)return;
+   foreach(var id in new[]{"hunt-wolf","fissure-valoria"}){
+    if(nodes.TryGetValue(id,out var encounter)&&encounter.activeInHierarchy)
+     EnsureVisibleImportedArt(encounter);
+   }
+  }
   public void Apply(){
    if(!host||host.City.Gateway==null)return;var s=host.City.Gateway.Snapshot();var c=s.ChapterThree;
    bool unlocked=s.BastionLevel>=3;town.SetActive(unlocked&&!host.InWorld);
