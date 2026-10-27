@@ -34,6 +34,38 @@ namespace Eldoria.UI.RoyalGold.V2
             mesh.AddTriangle(k, k + 2, k + 3);
         }
 
+        void WornPaper(VertexHelper mesh, Rect r, Color low, Color high)
+        {
+            // Native rag-paper silhouette instead of an antiseptic rectangle;
+            // all points are INSIDE the existing authored objective bounds.
+            float t = Mathf.Min(5f, r.height * .07f);
+            var vertices = new [] {
+                new Vector2(r.xMin+t,r.yMin+t),
+                new Vector2(r.xMin+r.width*.16f,r.yMin+1f),
+                new Vector2(r.xMin+r.width*.36f,r.yMin+2.2f),
+                new Vector2(r.xMin+r.width*.64f,r.yMin+.8f),
+                new Vector2(r.xMax-r.width*.11f,r.yMin+2.5f),
+                new Vector2(r.xMax-t,r.yMin+t),
+                new Vector2(r.xMax-1f,r.yMin+r.height*.21f),
+                new Vector2(r.xMax-2.1f,r.yMin+r.height*.57f),
+                new Vector2(r.xMax-1f,r.yMax-r.height*.15f),
+                new Vector2(r.xMax-t,r.yMax-t),
+                new Vector2(r.xMin+r.width*.83f,r.yMax-1f),
+                new Vector2(r.xMin+r.width*.52f,r.yMax-2.2f),
+                new Vector2(r.xMin+r.width*.24f,r.yMax-1f),
+                new Vector2(r.xMin+t,r.yMax-t),
+                new Vector2(r.xMin+1.8f,r.yMax-r.height*.25f),
+                new Vector2(r.xMin+1f,r.yMin+r.height*.33f)
+            };
+            int k=mesh.currentVertCount;
+            var center=Mix(Color.Lerp(low,high,.50f),color);
+            mesh.AddVert(r.center,center,Vector2.zero);
+            foreach(var v in vertices)
+                mesh.AddVert(v,Mix(Color.Lerp(low,high,Mathf.InverseLerp(r.yMin,r.yMax,v.y)),color),Vector2.zero);
+            for(int i=0;i<vertices.Length;i++)
+                mesh.AddTriangle(k,k+i+1,k+(i+1)%vertices.Length+1);
+        }
+
         void Diamond(VertexHelper mesh, Vector2 p, float n, Color tint)
         {
             int k = mesh.currentVertCount;
@@ -59,7 +91,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Quad(mesh, rim, AgedEdge, Gold);
             var paper = Rect.MinMaxRect(r.xMin + 3.6f, r.yMin + 3.6f,
                 r.xMax - 3.6f, r.yMax - 3.6f);
-            Quad(mesh, paper, ParchmentLow, ParchmentHigh);
+            WornPaper(mesh, paper, ParchmentLow, ParchmentHigh);
             // Historical illuminated-manuscript edge, transparent decoration,
             // not part of the clickable action region.
             float crestWidth = Mathf.Min(54f, r.width * .18f);
