@@ -70,3 +70,16 @@ El diagnóstico `39266054859` demostró que el checkout del workflow genérico n
 ### Native gate checkout recovery — 2026-10-27
 
 The Windows source/editor gate uses the same verified `valoria-layered-source` checkout as the native integrated-scene workflow. Run40430426425 failed before Unity because the old workspace-root sparse checkout lacked Git objects and could not restore tracked files. That old directory is preserved, not cleaned or reset. The gate still verifies the exact commit, tracked source, unexpected compilation inputs, test assembly paths, all EditMode/PlayMode results and the Windows build. Project, script and artifact paths now resolve consistently under the canonical checkout; the single labelled Windows runner serializes native use. No game assets or runtime behavior are changed by this recovery.
+
+### Bastion III full editor suite resource parity — 2026-10-27
+
+The shared Windows source-only EditMode/PlayMode gate must **author the same zero-cost
+PrivateFissure** and **bake the real Granary + StockCrate/StockSack/StockBarrel**
+using `BastionIIIArtBake.Build` *before* entering the 66-case PlayMode suite.
+Unlike the isolated Bastion III native run and signed Android build, the legacy
+generic gate previously skipped that preparation; 27 tests then failed from
+`BASTION_III_MISSING_ART` log errors at scene initialization rather than
+gameplay assertions. The repaired gate is fail-closed on missing PBR assets,
+not a suppression of log errors or relaxation of tests. Full Unity validation
+is requested explicitly by commit marker `[unity-editor-cert]`; do not
+self-trigger the heavy Windows gate from edits to its own workflow file.
