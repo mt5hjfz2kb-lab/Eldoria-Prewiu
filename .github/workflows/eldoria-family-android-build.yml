@@ -148,7 +148,11 @@ jobs:
           if(-not @($proof.keys|Where-Object {$_.matches_original -and $_.certificate_sha256 -eq 'f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8' -and (Test-Path $_.path)}).Count){throw 'Original Android signing key missing'}
           $requestPath='tools/valoria-reference-clean/request.json'
           $cfg=Get-Content $requestPath -Raw|ConvertFrom-Json
-          $cfg.android_version_code=[int]$env:CODE;$cfg.android_version_name=$env:VERSION
+          # ConvertFrom-Json returns PSCustomObject. Assignment to an absent
+          # property throws (first observed on family code16); add these
+          # build-only fields in the disposable runner checkout, not in main.
+          $cfg | Add-Member -NotePropertyName 'android_version_code' -NotePropertyValue ([int]$env:CODE) -Force
+          $cfg | Add-Member -NotePropertyName 'android_version_name' -NotePropertyValue $env:VERSION -Force
           $cfg.content_updates=$false;$cfg.publish_content=$false
           $cfg|ConvertTo-Json -Depth 20|Set-Content $requestPath -Encoding utf8
           $root='Unity/Assets/Eldoria/Resources/Valoria'
