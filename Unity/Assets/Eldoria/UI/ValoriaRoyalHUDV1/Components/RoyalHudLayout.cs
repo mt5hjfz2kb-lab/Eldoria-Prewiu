@@ -37,17 +37,34 @@ namespace Eldoria.UI.RoyalGold
             // landscape captures explicitly select the wide composition.
             bool landscape = Screen.width > Screen.height * 1.08f;
             bool wide = width >= 1080 && (offscreenCapture || landscape);
+            // Crónica Real / Option 1: header emblem and settings are pinned
+            // directly to the top of Screen.safeArea, not floating at y=-22.
+            // The RoyalSafeArea component already accounts for camera notches.
+            var hud = GetComponentInParent<RoyalHUD>();
+            if (hud)
+            {
+                if (hud.Realm)
+                {
+                    var realm = hud.Realm.transform as RectTransform;
+                    if (realm) realm.anchoredPosition = new Vector2(8f, -6f);
+                }
+                if (hud.Settings)
+                {
+                    var settings = hud.Settings.transform as RectTransform;
+                    if (settings) settings.anchoredPosition = new Vector2(-8f, -6f);
+                }
+            }
             float stripWidth = Resources.rect.width;
             if (wide)
             {
                 float left = Mathf.Clamp((width - stripWidth) / 2, 370, Mathf.Max(370, width - stripWidth - 142));
-                Resources.anchoredPosition = new Vector2(left + stripWidth / 2 - width / 2, -22);
+                Resources.anchoredPosition = new Vector2(left + stripWidth / 2 - width / 2, -8);
                 Mission.anchoredPosition = new Vector2(26, -174);
                 Feedback.anchoredPosition = new Vector2(0, -126);
             }
             else
             {
-                Resources.anchoredPosition = new Vector2(0, -132);
+                Resources.anchoredPosition = new Vector2(0, -122);
                 Mission.anchoredPosition = new Vector2(26, -288);
                 Feedback.anchoredPosition = new Vector2(0, -232);
             }
