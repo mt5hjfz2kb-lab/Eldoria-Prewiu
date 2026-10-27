@@ -109,10 +109,16 @@ namespace Eldoria.ReferenceClean {
   // encounter toggles from inactive to active. Keep ONLY existing authored
   // renderers of an encounter actually unlocked/visible by the real gateway.
   // A raycastable hotspot without active renderers is not playable artwork.
-  static void EnsureVisibleImportedArt(GameObject encounter){
+  static void EnsureVisibleImportedArt(GameObject encounter,bool closingScar=false){
    foreach(var renderer in encounter.GetComponentsInChildren<Renderer>(true)){
     for(var node=renderer.transform;node&&node!=encounter.transform;node=node.parent)
      if(!node.gameObject.activeSelf)node.gameObject.SetActive(true);
+    // After the ONE-TIME encounter closes, the void and its sparse ether
+    // illumination must disappear immediately, leaving a short-lived low
+    // soil/stone scar. Do not ever reactivate a closed private fissure.
+    bool extinguished=closingScar&&(renderer.name=="Dark split floor"||
+       renderer.name.StartsWith("Faint isolated ether vein",StringComparison.Ordinal));
+    if(extinguished){renderer.enabled=false;continue;}
     if(!renderer.enabled)renderer.enabled=true;
    }
   }
@@ -169,13 +175,13 @@ namespace Eldoria.ReferenceClean {
    if(!host||!host.Ready||!host.InWorld||camera!=host.WorldCamera)return;
    foreach(var id in VisibleAuthoredEncounterIds)
     if(nodes.TryGetValue(id,out var encounter)&&encounter.activeInHierarchy)
-     EnsureVisibleImportedArt(encounter);
+     EnsureVisibleImportedArt(encounter,id=="fissure-valoria"&&host.City.Gateway.Snapshot().ChapterThree.FissureClosed);
   }
   void LateUpdate(){
    if(!host||!host.Ready||!host.InWorld)return;
    foreach(var id in VisibleAuthoredEncounterIds){
     if(nodes.TryGetValue(id,out var encounter)&&encounter.activeInHierarchy)
-     EnsureVisibleImportedArt(encounter);
+     EnsureVisibleImportedArt(encounter,id=="fissure-valoria"&&host.City.Gateway.Snapshot().ChapterThree.FissureClosed);
    }
   }
   public void Apply(){
@@ -193,7 +199,7 @@ namespace Eldoria.ReferenceClean {
     if(pair.Key=="hunt-boar")visible&=host.City.Clock.UtcTicks>=c.BoarRespawnUtcTicks;
     if(pair.Key=="meat-valoria")visible&=c.MeatRemaining>0;
     pair.Value.SetActive(visible);
-    if(visible)EnsureVisibleImportedArt(pair.Value);
+    if(visible)EnsureVisibleImportedArt(pair.Value,pair.Key=="fissure-valoria"&&c.FissureClosed);
     pair.Value.GetComponent<Collider>().enabled=visible&&!(pair.Key=="fissure-valoria"&&c.FissureClosed);
     if(pair.Key=="fissure-valoria"&&c.FissureClosed){float left=Mathf.Clamp01((float)((c.ClosingEndsUtcTicks-host.City.Clock.UtcTicks)/(double)TimeSpan.TicksPerSecond/6.5));pair.Value.transform.localScale=new Vector3(1,Mathf.Max(.03f,left),Mathf.Max(.03f,left));}
    }
