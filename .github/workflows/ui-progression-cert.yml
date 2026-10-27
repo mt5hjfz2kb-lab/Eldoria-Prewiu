@@ -73,6 +73,8 @@ jobs:
 
       - name: Restore exact tracked Unity project when self-hosted checkout was partial
         shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # Existing unity-slice.yml has proven missing Assets after checkout.
           # Recover only files tracked by THIS exact PR merge SHA, never
@@ -88,9 +90,48 @@ jobs:
           if($missing.Count -gt 0){
             Write-Host "Recovering exact Git commit tracked Unity source, preserving all untracked caches."
             & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- Unity/Assets Unity/Packages Unity/ProjectSettings
-            if($LASTEXITCODE){throw 'Cannot restore exact tracked project files'}
+            $checkoutExit=$LASTEXITCODE
             $remaining=@($tracked | Where-Object { -not (Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $_)) })
-            if($remaining.Count){throw "Still missing $($remaining.Count) tracked Unity source files"}
+            if($checkoutExit -ne 0 -or $remaining.Count){
+              # Native run 40471465950 found 5 missing PR blobs on a reused
+              # self-hosted checkout. Recover only absent exact bytes.
+              # Never clean worktrees or alter saved state / Unity Library.
+              if($remaining.Count -eq 0){throw "Checkout failed but no files are missing"}
+              if($remaining.Count -gt 32){throw "Refuse bulk recovery of $($remaining.Count) files"}
+              $headers=@{
+                Authorization="Bearer $env:GH_TOKEN"
+                Accept='application/vnd.github+json'
+                'User-Agent'='Eldoria-UI-exact-blob-recovery'
+                'X-GitHub-Api-Version'='2022-11-28'
+              }
+              foreach($file in $remaining){
+                $expected=(& git rev-parse "$($env:GITHUB_SHA):$file").Trim()
+                if($LASTEXITCODE -ne 0 -or $expected -notmatch '^[0-9a-f]{40}$'){
+                  throw "Invalid exact PR blob SHA for $file"
+                }
+                $dest=Join-Path $env:GITHUB_WORKSPACE $file
+                if(Test-Path -LiteralPath $dest){throw "Refuse overwrite: $file"}
+                $escaped=($file -split '/' | ForEach-Object { [Uri]::EscapeDataString($_) }) -join '/'
+                $url="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/$($escaped)?ref=$env:GITHUB_SHA"
+                $blob=Invoke-RestMethod -Uri $url -Headers $headers -Method Get -ErrorAction Stop
+                if($blob.sha -ne $expected -or $blob.encoding -ne 'base64' -or -not $blob.content){
+                  throw "Exact GitHub blob mismatch: $file"
+                }
+                $parent=Split-Path -Parent $dest
+                if(-not(Test-Path -LiteralPath $parent)){
+                  New-Item -ItemType Directory -Path $parent -Force | Out-Null
+                }
+                [System.IO.File]::WriteAllBytes($dest,[Convert]::FromBase64String($blob.content))
+                $got=(& git hash-object -- $dest).Trim()
+                if($LASTEXITCODE -ne 0 -or $got -ne $expected){
+                  Remove-Item -LiteralPath $dest -Force
+                  throw "Wrong Git SHA for recovered file: $file"
+                }
+                Write-Host "ELDORIA_V3_EXACT_BLOB_RECOVERED $file $got"
+              }
+            }
+            $remaining=@($tracked | Where-Object { -not (Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $_)) })
+            if($remaining.Count){throw "Still missing $($remaining.Count) tracked files"}
           }
           foreach($required in @(
             'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity',

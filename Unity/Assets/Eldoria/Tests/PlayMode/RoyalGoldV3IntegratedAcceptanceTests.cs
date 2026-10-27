@@ -45,6 +45,23 @@ namespace Eldoria.Tests
             Assert.That(found, Is.Not.Null, "Required existing " + typeName + " not found");
             return found;
         }
+        // Unity Transform.Find treats '/' as a hierarchy path delimiter.
+        // Crónica Real's historic presentation names include literal slashes.
+        private static Transform DirectChild(Transform parent, string exactName)
+        {
+            if (!parent) return null;
+            foreach (Transform child in parent)
+                if (child.name == exactName) return child;
+            return null;
+        }
+        private static int DirectChildCount(Transform parent, string exactName)
+        {
+            if (!parent) return 0;
+            int count = 0;
+            foreach (Transform child in parent)
+                if (child.name == exactName) count++;
+            return count;
+        }
         private static IEnumerator Boot(Action<Component, Component> ready)
         {
             SceneManager.LoadScene("Valoria_City_World_UI");
@@ -165,7 +182,7 @@ namespace Eldoria.Tests
             var objective = GameObject.Find("V2 / current objective");
             Assert.That(objective, Is.Not.Null);
             Assert.That(objective.GetComponent<RectTransform>().rect.height,
-                Is.LessThanOrEqualTo(120f), "Objectives must be compact by default");
+                Is.LessThanOrEqualTo(136f), "Crónica Real manuscript must remain compact");
             var sheet = GameObject.Find("V2 / contextual building sheet");
             Assert.That(sheet, Is.Not.Null);
             Assert.That(sheet.GetComponent<CanvasGroup>().blocksRaycasts,
@@ -175,6 +192,149 @@ namespace Eldoria.Tests
             Assert.That(Member(host, "InWorld"), Is.EqualTo(false));
             var free = (Rect)Call(v2, "GetFreeSceneViewport");
             Assert.That(free.width * free.height, Is.GreaterThan(.25f));
+        }
+
+        [UnityTest]
+        public IEnumerator ApprovedCronicaRealUsesAuthenticParchmentAndSafeEdgeNavigation()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            yield return null;
+            Call(v2, "SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+
+            var objective = GameObject.Find("V2 / current objective");
+            Assert.That(objective, Is.Not.Null, "Missing live objective");
+            var safeRoot = (Member(hud, "Realm") as Component)?.transform.parent;
+            Assert.That(safeRoot, Is.Not.Null, "Real safe-edge root must exist");
+            var royalPlate = DirectChild(safeRoot, "V3 / continuous original royal header");
+            // Do not pass just because three independent header buttons are at y=0:
+            // the owner-approved illustration has one unbroken royal-gold bar.
+            Assert.That(royalPlate, Is.Not.Null,
+                "Crónica Real needs one continuous full-safe-width top band");
+            var plateGraphic = royalPlate.GetComponent<Graphic>();
+            Assert.That(plateGraphic, Is.Not.Null);
+            Assert.That(plateGraphic.raycastTarget, Is.False);
+            var rootRect = safeRoot as RectTransform;
+            Assert.That(((RectTransform)royalPlate).rect.width,
+                Is.EqualTo(rootRect.rect.width).Within(1f),
+                "The top band must cover the entire device safe edge");
+            Assert.That(DirectChildCount(safeRoot, "V3 / continuous original royal header"),
+                Is.EqualTo(1), "No duplicate royal headers after layout");
+
+            var paper = DirectChild(objective.transform, "V3 / original parchment and engraved edges");
+            Assert.That(paper, Is.Not.Null, "Actual original manuscript treatment lost");
+            Assert.That(DirectChildCount(objective.transform,
+                "V3 / original parchment and engraved edges"), Is.EqualTo(1),
+                "The manuscript must not be duplicated on later UI reflows");
+            var paperGraphic = paper.GetComponent<Graphic>();
+            Assert.That(paperGraphic, Is.Not.Null);
+            Assert.That(paperGraphic.GetType().Name,
+                Is.EqualTo("RoyalGoldV3ObjectiveParchmentGraphic"));
+            Assert.That(paperGraphic.raycastTarget, Is.False,
+                "Decorative parchment may never intercept objective actions");
+            var objectiveButton = Member(v2, "VisibleObjectiveButton") as Button;
+            Assert.That(objectiveButton, Is.Not.Null,
+                "The quest pictogram must keep its existing live command");
+            var roundObjective = DirectChild(objectiveButton.transform, "Crónica / native round icon");
+            Assert.That(roundObjective, Is.Not.Null,
+                "Crónica Real's objective command must use a circular medieval medallion");
+            Assert.That(objectiveButton.targetGraphic,
+                Is.SameAs(roundObjective.GetComponent<Graphic>()),
+                "The real button must retain its native circular hit graphic");
+            var caption = objective.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(x => x.name == "Label");
+            if (caption != null)
+                Assert.That(caption.enabled, Is.False,
+                    "Rotating the device must not resurrect the old rectangular CTA label");
+            Assert.That(DirectChild(objective.transform, "V3 / original Valoria heraldic sigil"),
+                Is.Not.Null, "Reuse Valoria's actual established crest");
+
+            var nav = Member(hud, "Navigation") as Component;
+            Assert.That(nav, Is.Not.Null);
+            var dock = nav.transform as RectTransform;
+            var safe = dock.parent as RectTransform;
+            Assert.That(safe, Is.Not.Null);
+            Assert.That(dock.anchorMin.x, Is.EqualTo(.5f).Within(.01f));
+            Assert.That(dock.anchorMin.y, Is.EqualTo(0f).Within(.01f),
+                "Left or floating navigation violates approved original");
+            Assert.That(dock.anchorMax.y, Is.EqualTo(0f).Within(.01f));
+            Assert.That(dock.pivot.y, Is.EqualTo(0f).Within(.01f));
+            Assert.That(dock.anchoredPosition.y, Is.EqualTo(0f).Within(1f),
+                "Footer must be flush with the DEVICE safe area");
+            Assert.That(dock.rect.width, Is.LessThanOrEqualTo(safe.rect.width + 1f),
+                "All navigation must fit within the current safe area");
+            var trim = DirectChild(dock, "V3 / Chronicle bottom frame");
+            Assert.That(trim, Is.Not.Null);
+            // Two layout recalculations must never stack opaque frames over
+            // other interactive content; this was caused by slash names.
+            Call(v2, "SynchronizeNow");
+            Call(v2, "SynchronizeNow");
+            Assert.That(DirectChildCount(dock,
+                "V3 / Chronicle bottom frame"), Is.EqualTo(1),
+                "Repeated layout must retain exactly one native footer frame");
+            Assert.That(trim.GetComponent<Graphic>().raycastTarget, Is.False);
+            var entries = Member(nav, "Items") as System.Array;
+            Assert.That(entries, Is.Not.Null);
+            Assert.That((bool)Member(nav, "ChronicleLayout"), Is.True,
+                "The original five-entry Crónica Real art must be active");
+            // Five genuine destinations at the safe-bottom edge. Locked
+            // actions can be visible but must never become interactable.
+            var visible = entries.Cast<object>().Where(entry =>
+            {
+                var liveButton = Member(entry, "Button") as Button;
+                return liveButton && liveButton.gameObject.activeSelf;
+            }).ToArray();
+            Assert.That(visible.Length, Is.EqualTo(5),
+                "The owner-approved dock displays Reino, Construir, Unidades, Mundo and Crónicas");
+            foreach (var entry in visible)
+            {
+                string section = Member(entry, "Section").ToString();
+                if (section == "Army" || section == "World") continue;
+                var button = Member(entry, "Button") as Button;
+                Assert.That(button.interactable, Is.True,
+                    "Only an existing real kingdom, build or chapter destination can be enabled");
+            }
+            int active = 0;
+            foreach (var entry in entries)
+            {
+                var button = Member(entry, "Button") as Button;
+                Assert.That(button, Is.Not.Null);
+                if (!button.gameObject.activeSelf) continue;
+                active++;
+                var rect = button.transform as RectTransform;
+                Assert.That(rect.anchorMin.y, Is.EqualTo(.5f).Within(.01f));
+                Assert.That(rect.rect.height, Is.GreaterThanOrEqualTo(72f));
+                Assert.That(Mathf.Abs(rect.anchoredPosition.x) + rect.rect.width * .5f,
+                    Is.LessThanOrEqualTo(dock.rect.width * .5f + 1f),
+                    "No genuine native medallion can leave the bottom dock");
+                // In uGUI an anchor at the middle of a bottom-pivot dock
+                // already includes half its height. The previous layout
+                // accidentally ADDED that half-height again: buttons hovered
+                // above the actual footer despite a valid dock anchor.
+                Assert.That(Mathf.Abs(rect.anchoredPosition.y) + rect.rect.height * .5f,
+                    Is.LessThanOrEqualTo(dock.rect.height * .5f + 1f),
+                    "Every actual clickable medallion must remain INSIDE the bottom dock");
+            }
+            // Bastion I begins with locked sections. A zero-count state is
+            // legitimate; never unlock or fabricate actions to satisfy art.
+            if (active == 0)
+                foreach (var entry in entries)
+                    Assert.That((bool)Call(host, "CanOpen", Member(entry, "Section")),
+                        Is.False, "Locked navigation must match genuine progression");
+            var realm = Member(hud, "Realm") as Component;
+            var settings = Member(hud, "Settings") as Button;
+            Assert.That(((RectTransform)realm.transform).anchoredPosition.y,
+                Is.EqualTo(0f).Within(1f), "Top crest floats below safe edge");
+            Assert.That(((RectTransform)settings.transform).anchoredPosition.y,
+                Is.EqualTo(0f).Within(1f), "Top icon floats below safe edge");
+            var headerCorners = new Vector3[4];
+            var questCorners = new Vector3[4];
+            ((RectTransform)realm.transform).GetWorldCorners(headerCorners);
+            objective.GetComponent<RectTransform>().GetWorldCorners(questCorners);
+            Assert.That(questCorners[1].y, Is.LessThan(headerCorners[0].y),
+                "The approved parchment must begin BELOW the real 104-unit royal header");
         }
 
         [UnityTest]
