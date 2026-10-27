@@ -15,6 +15,9 @@ jobs:
     timeout-minutes: 60
     env:
       VALORIA_GAMEPLAY_PROBE: '1'
+      # Region1 camera acceptance ignores itself without an explicit directory.
+      # Use the same preserved isolated evidence root, newly emptied before tests.
+      ELDORIA_REGION1_CAPTURE_OUT: ${{ github.workspace }}/bastion-iii-source/docs/bastion-iii/native/region1-capture
     steps:
       - name: Recover installed Git
         shell: powershell
