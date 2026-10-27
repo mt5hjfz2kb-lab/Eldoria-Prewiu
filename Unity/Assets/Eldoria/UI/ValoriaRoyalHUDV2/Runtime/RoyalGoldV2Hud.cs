@@ -576,24 +576,27 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (item.Button && item.Button.gameObject.activeSelf) count++;
             if (count == 0) return;
 
-            // OPTION 1 / CRONICA REAL: the real, unlocked medallions are
-            // anchored to the SAFE bottom edge. Portrait devices cannot
-            // compress six legible targets into a single tiny row: reflow
-            // into two shallow rows when needed, never a side rail.
+            // CRÓNICA REAL APPROVED ART: ONE horizontal row of circular
+            // medallions along the bottom edge in BOTH orientations. Only
+            // extremely narrow devices may require a stacked accessible row;
+            // never substitute a sidebar or invent locked destinations.
             bool vertical = safe.rect.height > safe.rect.width;
-            int columns = vertical ? Mathf.Min(3, count) : count;
+            float availableWidth = Mathf.Max(150f, safe.rect.width - 12f);
+            float columnGap = vertical ? 4f : 9f;
+            int columns = vertical && count > 4 &&
+                (availableWidth - 16f - columnGap * (count - 1)) / count < 51f
+                ? Mathf.CeilToInt(count / 2f) : count;
             int rows = Mathf.CeilToInt((float)count / columns);
-            float columnGap = vertical ? 6f : 8f;
-            float rowGap = vertical ? 4f : 0f;
-            float availableWidth = Mathf.Max(150f, safe.rect.width - 16f);
-            float cellWidth = Mathf.Min(vertical ? 106f : 106f,
-                (availableWidth - 16f - columnGap * (columns - 1)) / columns);
-            cellWidth = Mathf.Max(44f, cellWidth);
-            float cellHeight = vertical ? 74f : 84f;
+            float rowGap = rows > 1 ? 3f : 0f;
+            float cellWidth = Mathf.Min(vertical ? 88f : 115f,
+                (availableWidth - 12f - columnGap * (columns - 1)) / columns);
+            // Never create a visual button that cannot fit its own safe width.
+            cellWidth = Mathf.Max(1f, cellWidth);
+            float cellHeight = rows > 1 ? 74f : vertical ? 105f : 106f;
             float contentHeight = rows * cellHeight + (rows - 1) * rowGap;
             float totalWidth = cellWidth * columns +
                 columnGap * (columns - 1);
-            float dockWidth = Mathf.Min(availableWidth, totalWidth + 16f);
+            float dockWidth = Mathf.Min(availableWidth, totalWidth + 12f);
             float dockHeight = contentHeight + 6f;
 
             var dock = nav.transform as RectTransform;
@@ -625,7 +628,8 @@ namespace Eldoria.UI.RoyalGold.V2
             trim.offsetMin = Vector2.zero;
             trim.offsetMax = Vector2.zero;
 
-            float medalSize = Mathf.Min(vertical ? 48f : 54f, cellWidth - 8f);
+            float medalSize = Mathf.Min(rows > 1 ? 46f : vertical ? 68f : 71f,
+                cellWidth - 7f);
             float buttonHeight = cellHeight;
             int index = 0;
             foreach (var item in nav.Items)
@@ -674,7 +678,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     SetWidthAndHeight(caption, cellWidth - 2f, 20f);
                     caption.anchoredPosition =
                         new Vector2(0f, -buttonHeight * .33f);
-                    item.Label.fontSize = vertical ? 15 : 15;
+                    item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
+                        cellWidth * .19f, 10f, 17f));
                     item.Label.alignment = TextAnchor.MiddleCenter;
                     item.Label.color = Ivory;
                 }
