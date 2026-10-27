@@ -1,0 +1,507 @@
+[
+  {
+    "path": "LEEME.txt",
+    "bytes": 1127,
+    "sha256": "c9b5345d60ed17c26a99095aeba265d47a7171de075c472548e88ef5d1bbb449"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/ART_DIRECTION.md",
+    "bytes": 10034,
+    "sha256": "1404c6a8695d5774e7731ee2ee8b658d4fa32713db99231d85c90742641d0bad"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
+    "bytes": 8318,
+    "sha256": "4133aba0b38b52bc4a242814add9a8ae2962da200bf410f818be2b2aa4de73b0"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/VERIFICATION.json",
+    "bytes": 1412,
+    "sha256": "0c6fabc9d194be0e7f7bc1139587e3073419b00c4fb28b716d17c2d078f69fa1"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/cercana-horizontal-source.json",
+    "bytes": 1268,
+    "sha256": "bbdbee2cb660a5bd4f91a0ee99358d50c4a2962e6e758319dc70282736a503cf"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/cercana-horizontal-unity.png",
+    "bytes": 1675662,
+    "sha256": "93a2546e56663dc6df6843e9ad0072a50b230199ad2232210c02ac05ea3f464c"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/cercana-vertical-source.json",
+    "bytes": 1254,
+    "sha256": "b0a46f252b86bc7fe5f3036ab49371283e54491128707e6961e12fca8c75b8d8"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/cercana-vertical-unity.png",
+    "bytes": 2541103,
+    "sha256": "6192382284747b07b7857ae9ad576cba043b1c780c1dd7c172b663a48bf93089"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/panoramica-horizontal-source.json",
+    "bytes": 1264,
+    "sha256": "bd2f8cf3aac8e1b76d3d39e16e0021dc9447193f877234f03b3cac879cafc789"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/panoramica-horizontal-unity.png",
+    "bytes": 1029345,
+    "sha256": "3e5335d518eeeef08f3481352d70f51d9fdaa8b6972f48f34610e7d02603e6c2"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/panoramica-vertical-source.json",
+    "bytes": 1230,
+    "sha256": "256112ea84ca8e37341f0b3d4758688a2e1d513c6b1c593d6429b4342b7a89b2"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/panoramica-vertical-unity.png",
+    "bytes": 2099485,
+    "sha256": "95ae68fe95ec5bcc36ef4b637f8c6140aa4f7bc945d00282f580f0f7877c8e34"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/regional-horizontal-source.json",
+    "bytes": 1257,
+    "sha256": "688934a6b35c35b866544604ec46f5caa02937819f05387ac188800b078a3d95"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/regional-horizontal-unity.png",
+    "bytes": 1618009,
+    "sha256": "65772327a801561d9c0e13f20e0474a98dbd823b8c062e648a333bdca5a9f606"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/regional-vertical-source.json",
+    "bytes": 1252,
+    "sha256": "43e8e27711b2a0f2f06257e63d55b1a49ef869e456e74a5740f19e9d9a0289a1"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/baseline/regional-vertical-unity.png",
+    "bytes": 2617308,
+    "sha256": "ef96209d91e126dc80597b1cceb1ab03deeb3e21fc7c6647456115343961acba"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/cercana-horizontal-source.json",
+    "bytes": 1268,
+    "sha256": "39021d13c002d73713422f483ddb32856ce1eb5e45f133ea04bc4daaa440be0f"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/cercana-horizontal-unity.png",
+    "bytes": 1675624,
+    "sha256": "e6870b0d6bc334a92537680d35fd948fc7edcf0a1345a08744eb34bbc11280a7"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/cercana-vertical-source.json",
+    "bytes": 1254,
+    "sha256": "84ed30d6d9e3761876787de880f54d6ad19f4074055f66b83b166efb0aef05e1"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/cercana-vertical-unity.png",
+    "bytes": 2541088,
+    "sha256": "995d012199d99eb2e8cc8fbc692a2146ef9fb95f674f106ceb16670f5ac99118"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/panoramica-horizontal-source.json",
+    "bytes": 1264,
+    "sha256": "377da3c29688138f85dbcefe5a2cef69d5eba951a755c5590001f7da06a2bb3c"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/panoramica-horizontal-unity.png",
+    "bytes": 1029348,
+    "sha256": "499cca81462fb3c086386b00738ba2c44c44c384c2a6bc0f4c5570f59449e7ea"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/panoramica-vertical-source.json",
+    "bytes": 1230,
+    "sha256": "9fb76b73c5b26995bd13de7df43d76ab61d10c919caab113ce5c73c273ea3b9c"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/panoramica-vertical-unity.png",
+    "bytes": 2099603,
+    "sha256": "f62b6907fa195c286c52d1bfe7a13bb84cb7ceb417b6d75252737cb018e0640d"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/regional-horizontal-source.json",
+    "bytes": 1257,
+    "sha256": "dd7b150f2d041c9742517fa061708d74b58d031f1230e0f551dedf4402e1808e"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/regional-horizontal-unity.png",
+    "bytes": 1619490,
+    "sha256": "036573c44f8367b66a52147cc4a74ede36706b6e78b3fb99189e6ae1d6b9cf11"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/regional-vertical-source.json",
+    "bytes": 1252,
+    "sha256": "312801971c096c67360f80e3e7398998df3c0a47c6ab4d7d7c2020fe277b0ccc"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/breach-rejected/regional-vertical-unity.png",
+    "bytes": 2618109,
+    "sha256": "a63baef6006f44ba478c9fa302f28da14f9a9f7fe712dfdfad9e94fed5a8ead0"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/cercana-horizontal-source.json",
+    "bytes": 1267,
+    "sha256": "8b8edde9e18a8ca4dcf7b20f1809f01ebcbe0b73c97740fe97ecc5b5470ba4ab"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/cercana-horizontal-unity.png",
+    "bytes": 1678261,
+    "sha256": "e2e6cc3ca5172f8ac1d6c0778adbcbaefb68236b07bdf6fea9599ae4a3a7e348"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/cercana-vertical-source.json",
+    "bytes": 1253,
+    "sha256": "018e894a9b0b2d09d99e2a3a8578475d277011f3db17f013427116aa900677b8"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/cercana-vertical-unity.png",
+    "bytes": 2551331,
+    "sha256": "f5315e5a92667da4ef24e8041454b70a819f4556201ca0a062452cd815ab1078"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/panoramica-horizontal-source.json",
+    "bytes": 1263,
+    "sha256": "c23ec1b931ccb3d0ae41aab7dbe5660e5224450f4aa84ffb87c93f65b48d5e6f"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/panoramica-horizontal-unity.png",
+    "bytes": 1175681,
+    "sha256": "7f78f1e8fbdc1e60786985c058eff5a5cb8bed091081cae5891da86f432a8127"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/panoramica-vertical-source.json",
+    "bytes": 1229,
+    "sha256": "8c8bde02d3f1b6251250a6cd65aff56d1840c64c191e8e0aafe14b980627bb6c"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/panoramica-vertical-unity.png",
+    "bytes": 2259585,
+    "sha256": "562ba550849daea8e81de58eedd57c2259c3a51df66471a0c67a22d849741f9d"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/regional-horizontal-source.json",
+    "bytes": 1256,
+    "sha256": "6b00afe17e2910d03379ad7595e535a0a9c381a69c2d281b44829c88e8ca8b0d"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/regional-horizontal-unity.png",
+    "bytes": 1619174,
+    "sha256": "898f81d3158594d255c181e07448332afa4b3c98cd055d061eaed7fb4396cd21"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/regional-vertical-source.json",
+    "bytes": 1251,
+    "sha256": "8585aef6159a92fe92b336b93d7f4d666ba15cd3af8886278e152fbfccc017ab"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/candidate/regional-vertical-unity.png",
+    "bytes": 2617091,
+    "sha256": "459a6882cb80e657e44e5e7032930c9e9113b696d6bfcbef71d4529597476a36"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/city-baseline/city-horizontal-source.json",
+    "bytes": 1296,
+    "sha256": "7f37443e6e995c32f1e25692108b92a5cf36c7e07892b75a6edf28c698fbfb95"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/city-baseline/city-horizontal-unity.png",
+    "bytes": 2620213,
+    "sha256": "0e68d507b130d66d48bd1f3cd67467bc450f34121d314bf1de047df03943a3fd"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/city-baseline/city-vertical-source.json",
+    "bytes": 1279,
+    "sha256": "1fbd9d93b474fa1929c737a60b81a15472b5591bfdf8b3aa4c3fb0f185ac49b4"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/city-baseline/city-vertical-unity.png",
+    "bytes": 2422413,
+    "sha256": "857e726538f37ff3aebfd38c42681725dd525fc88c4175c8cd04d68836738522"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/city-candidate/city-horizontal-source.json",
+    "bytes": 1295,
+    "sha256": "5544939b19e7860ce7a3ef7f589b0e9045eb1a6bf757624d14de515fae1f92f7"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/city-candidate/city-horizontal-unity.png",
+    "bytes": 2609789,
+    "sha256": "a723897c47851fe4180e588d3e8850aeb0bbd61f945b50ac7517d70582649403"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/city-candidate/city-vertical-source.json",
+    "bytes": 1278,
+    "sha256": "166ae94a58e03f20b66a240d36331c2c19dbdd858676d8e145029a892d2c7585"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/city-candidate/city-vertical-unity.png",
+    "bytes": 2410506,
+    "sha256": "7808003b567626e3d8a47ce90d468b06367b2de85995ab84f90859cc70188388"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/original-city-I-II/city-1-horizontal.png",
+    "bytes": 2617570,
+    "sha256": "e04baca41c5843b450f92ed62d0b84ded7295eab31c1aa2efae8c5a3ce2cc1c2"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/original-city-I-II/city-1-vertical.png",
+    "bytes": 2422713,
+    "sha256": "3c2ec47055ce191982bf24af8c9b401c09aecb53846c08cf8faf09bccfed258e"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/original-city-I-II/city-2-horizontal.png",
+    "bytes": 2621152,
+    "sha256": "b77d98188f7df2c8b910001a3faaf12da86559bb7079f3805b1e16750737b604"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/original-city-I-II/city-2-vertical.png",
+    "bytes": 2428157,
+    "sha256": "8afaecaf11f128f52237916bb39254153e8d0d05dd290ed0b275a9c5eab0c053"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/rejected-import-blur/cercana-horizontal.json",
+    "bytes": 1267,
+    "sha256": "a7e8b39b0d2bc7d0bb7e6bcc646aa6d2a2306915f2fb5a343cf2f40f211e76b5"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/rejected-import-blur/cercana-horizontal.png",
+    "bytes": 1669089,
+    "sha256": "9d15e1fe0c92d1be9c16309c4ec21267ba5f7566ff21b0db5ad8e206356fd2bf"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/rejected-import-blur/cercana-vertical.json",
+    "bytes": 1253,
+    "sha256": "edc4b29408f4e64ede21a466b071f0302228f8b005281e22701151f049e03eeb"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/rejected-import-blur/cercana-vertical.png",
+    "bytes": 2541546,
+    "sha256": "56b01386056e149359e57e59d7b4594b64a1bd3510f99e8e94b00085177817a9"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/rejected-reduced-bastion/cercana-horizontal.json",
+    "bytes": 528,
+    "sha256": "0dabb696c68853055613835155d58263e36f7d50ed453d3a01f20e200ad494a3"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/rejected-reduced-bastion/cercana-horizontal.png",
+    "bytes": 1672544,
+    "sha256": "0ed7691e133a7537f04ff02472379373457f9337beae6d650baece2cc338adce"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/rejected-reduced-bastion/cercana-vertical.json",
+    "bytes": 514,
+    "sha256": "547e827e94b655f6020f7c90659687619cac40185e3ed1ceea4293666584fd0d"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/rejected-reduced-bastion/cercana-vertical.png",
+    "bytes": 2540678,
+    "sha256": "59776169e7829a13af712a9b5ec5c2467a35a7f8195fa01b377ca93e737b8e51"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/cercana-horizontal-source.json",
+    "bytes": 1273,
+    "sha256": "4935fc4cd20bffc65540be065b6ed91277d6f065e8a876d647aa44c194d41a0b"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/cercana-horizontal-unity.png",
+    "bytes": 1680283,
+    "sha256": "983a374c0df0f95f98e5837da16c1820ea70ec078a9c6651384f569b6e24a36d"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/cercana-vertical-source.json",
+    "bytes": 1259,
+    "sha256": "40a88861b575e9b9190fb8398f1889200c2362ddf820cf574816428221b9f286"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/cercana-vertical-unity.png",
+    "bytes": 2553312,
+    "sha256": "87efe467b3e17b2069f15e3d27e34795a4e07206a2709c9ff7f55b1d745f6ecc"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/panoramica-horizontal-source.json",
+    "bytes": 1269,
+    "sha256": "ee196c7b210bdded6832d3890b059bae280c9df48d9a00c5489936dc081d8bab"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/panoramica-horizontal-unity.png",
+    "bytes": 1175120,
+    "sha256": "a5cb7c5b26f0eef943f48455fe7f24051854f34d42f393a7cc52d3ee39384605"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/panoramica-vertical-source.json",
+    "bytes": 1235,
+    "sha256": "e3813f3df8ad80e4f165277f205154ae4e4b63d62cdff565f65fcd5f8b432f1a"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/panoramica-vertical-unity.png",
+    "bytes": 2258610,
+    "sha256": "923c485291a89588a6b3cb01b82bddf88ec8546edeeb05b7fb602d9dfc05ee20"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/regional-horizontal-source.json",
+    "bytes": 1262,
+    "sha256": "c48cbcaf811aafb471785476e0f2b2e1709966d0c1cf69eae663e172b0040aa3"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/regional-horizontal-unity.png",
+    "bytes": 1618974,
+    "sha256": "d96706bcf3433683ea054a4ae33dd311415a280b7ec4421c3f91d42704b6f41d"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/regional-vertical-source.json",
+    "bytes": 1257,
+    "sha256": "24f48a5187a7d1cf186df422e6fe5880147be7aa34f7cab0617fdccdd69524bf"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/evidence/tier-II-reviewed/regional-vertical-unity.png",
+    "bytes": 2616566,
+    "sha256": "a79c944fe70b7433fe2913942c2857d842511bb73bdce9c1f3646407473c0417"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/references/00_triptych_aprobado_2026-10-22.png",
+    "bytes": 2483343,
+    "sha256": "51df0c0b8b34619fbe3052e5f453587dcee17c50968cde742d3b3bb5cb384a35"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/references/01_vista_cercana.png",
+    "bytes": 830107,
+    "sha256": "bb053cf3099a202eff472a53207169dfba522b93c0c5b7bff0fed05b96438fd9"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/references/02_vista_regional.png",
+    "bytes": 849628,
+    "sha256": "82a38cf89e9a8ad249739496de4c972a8008df29ec4efc946c3a22273f88f316"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/references/03_vista_panoramica.png",
+    "bytes": 799202,
+    "sha256": "68cd5b898cf3675db537b7ddceb8082befe955895864079a0ac26bdf4fb37144"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/references/VALORIA_APPROVED_VISUAL_REFERENCE.jpg",
+    "bytes": 772948,
+    "sha256": "86fbffa9410514e935b121a844802573cbb7f94c73abb7358ce2f8ee15845c5d"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/.mesh-input.json.P9Oep1",
+    "bytes": 68419584,
+    "sha256": "6aba266ece4701ab7cd9c4e68e612f9ea2fa609092d9e280b8bfc7c3e6efe7a7"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/BastionI-anchor.json",
+    "bytes": 49,
+    "sha256": "09ad319bf3df53ad12f6afe0e589cd7000ed37e25b5dabcab1589f6191eb8230"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/BastionI.png",
+    "bytes": 748957,
+    "sha256": "e6518c47943956d3de271a9800014d375129c8ca1a790e364967e60ee82e789e"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/BastionII-anchor.json",
+    "bytes": 49,
+    "sha256": "d7524ac113b106f7fccae69f48efb10a2f623eea47da1801a1585348adb14cfa"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/BastionII.png",
+    "bytes": 707434,
+    "sha256": "38aafb771b326ff54b6e73b872aefc105bae110f59226031fd3a3fb91bdb2a08"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/BastionRoofJunctions.blend",
+    "bytes": 67105462,
+    "sha256": "c33187ec65202319554941063119ef2a3366f01c078cbe2b825e30138ae21ce4"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/SOURCE_ROLES.json",
+    "bytes": 1468,
+    "sha256": "e7f2c278e18cf7062fec4679301a7b871586bb4b3c228bf987aece236243a030"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/Valoria_Strategic_Architecture.blend",
+    "bytes": 20702204,
+    "sha256": "8121a7aacf1f23e6b3a3a0922c20405b031140b7ece5b579aa67d240fc27ba24"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/blender-proof.json",
+    "bytes": 4678,
+    "sha256": "621daea12c3fdd58f973f34f05917e39c01c6cfb4b4959904a102de32764df53"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/bridge-adaptation.txt",
+    "bytes": 138,
+    "sha256": "e472573222a5904ede2609a33977586a3094c277425d4a4a0f8639797f06070c"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/consolidation_lod.py",
+    "bytes": 5321,
+    "sha256": "9f6814dee1485826ef3772d38d9bac0c3a2485d7de94def01fc284bb5e1cd36c"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/material-source-bindings.json",
+    "bytes": 34941,
+    "sha256": "4176fe123ff0b283b55bf400bff88e6f2bdf3a613995cf2760d3e1912f0772a6"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/mesh-input.json",
+    "bytes": 199476329,
+    "sha256": "b639c36a42695db3adbb4ecc78cd69a1758f73622809069b6857ee882baef663"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/sources/mesh-output.json",
+    "bytes": 41166044,
+    "sha256": "582ded9a1c1b38fd148da669399dbc92cf73c099b51b99f6d799c14c45bde4ce"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/EditMode.log",
+    "bytes": 40035,
+    "sha256": "5dbe6fefa45a66e0dda83624d8fad26fdde6d22521fb3db137eabfdfc3ccaa28"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/EditMode.xml",
+    "bytes": 21209,
+    "sha256": "bf0bb8fc648215962c29c4855c9ca77d9632bce9d580e636f967fd6a2f4aecf3"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/PlayMode.log",
+    "bytes": 470517,
+    "sha256": "b8ad996b2ce99aed7a54ae5b474bcbc74a7f6693c07ce91051d6a5df835b7a8e"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/PlayMode.xml",
+    "bytes": 97531,
+    "sha256": "754f316dafd216a505372e40d2686491857f06eff9202083556016a04fa69ec1"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/checkout-recovery.json",
+    "bytes": 413,
+    "sha256": "f6ee89eb7efebb95763b7087fb29a8ac6710da640ef4084ffea0a10c84d03ef4"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/final-capture-receipt.json",
+    "bytes": 164,
+    "sha256": "f5d1a832b768ae87e85cab8813be28048957c89b4482c8080d329abe1ce6aff1"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/integration-functional.log",
+    "bytes": 66903,
+    "sha256": "b47a4ab81b17eee4281e19b74606e7b7bbc70bf61aada720e50ec79715574839"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/integration-result.json",
+    "bytes": 9852,
+    "sha256": "cd7b4c08731307150be2d5f3514114c717e79ef1b3b10797818c17e2f483f042"
+  },
+  {
+    "path": "docs/evidence/valoria-reference-clean/consolidation-20261027/technical/rejected291-PlayMode.xml",
+    "bytes": 96139,
+    "sha256": "73d175babe9e247d59cc58e18dfa7acc9fa77f766df1cdb79fc81bc8c053a5ec"
+  },
+  {
+    "path": "index.html",
+    "bytes": 3789,
+    "sha256": "458ec8999bab02d10af6cfda452de846d6427efc09c509af81081dbfcec5fb76"
+  }
+]

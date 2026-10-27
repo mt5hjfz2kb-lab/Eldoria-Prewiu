@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T01:27:57.006Z",
+  "updated_at": "2026-10-27T01:55:03.045Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,7 +19,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-final-visual-consolidation-20261027",
+      "owner": null,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-26T23:30:30.095Z",
@@ -78,15 +78,13 @@
         ".github/workflows/unity-slice.yml",
         "Unity/README.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "FINAL_NATIVE_VALIDATION_AND_CHECKOUT_RECOVERY",
-      "next": "Android1.15/code15 published and updater channel verified. No pending publication; reclaim canonical ID for a new owner-authorized scope or concrete defect.",
+      "phase": "FINAL_VISUAL_CONSOLIDATION_VERIFIED",
+      "next": "Final visual consolidation closed. Three retained interventions; Breach preserved. Canonical workstream available for a new explicit owner scope; no pending publication and Bastion III not started.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -654,12 +652,36 @@
           "independent_crc_hash_arm64_verified": true,
           "physical_phone_tested": false,
           "user_data_reset": false
+        },
+        "visual_consolidation": {
+          "status": "COMPLETED_VERIFIED",
+          "runtime_source": "3b14ade1b75cfdf7881771da16d36a18f0e088f1",
+          "native_run": 40430426343,
+          "native_artifact": 12702388496,
+          "general_gate_run": 40432752930,
+          "general_gate_source": "0004a5a85aafd4cf9641050f0cb146ecab37977d",
+          "editmode_passed": 26,
+          "playmode_passed": 65,
+          "integration_checks": 44,
+          "authentic_world_ab_pairs": 6,
+          "authentic_city_ab_pairs": 2,
+          "architecture": "RETAINED",
+          "panorama": "RETAINED",
+          "city_bank": "RETAINED",
+          "breach": "REJECTED_CANDIDATE_ORIGINAL_PRESERVED",
+          "reviewer": "/root/visual_review",
+          "evidence_archive": "https://chatgpt.com/library?file_id=libfile_30faaa5b476c8191b5f41b8d1bcdf551&account_id=personal",
+          "archive_sha256": "db484ab1813eda1f604d8d2d6edade2a17aec8ae3465261a70b28e98407b476c",
+          "physical_mobile_tested": false,
+          "apk_published": false,
+          "bastion_III_started": false,
+          "budget_eur": 0
         }
       },
-      "previous_owner": "codex-eldoria-ordered-completion-20261026",
+      "previous_owner": "chatgpt-eldoria-final-visual-consolidation-20261027",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
-      "handoff_source": "docs/evidence/valoria-reference-clean/PRODUCTION_STATE.md",
+      "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
       "last_session_reclaim": {
         "date": "2026-10-17",
         "session": "chatgpt-normal-valoria-bastion-source08-recovery-20261017",
@@ -674,10 +696,10 @@
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
       "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
-      "current_session": "chatgpt-eldoria-final-visual-consolidation-20261027",
+      "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
-      "resources_verified_at": "2026-10-26T22:18:02.658Z",
-      "resources_evidence": "Windows native final40430426343 running in verified canonical checkout; default gate40430426425 failed before Unity restoring old root checkout. Scoped recovery reuses verified checkout and preserves old directory.",
+      "resources_verified_at": "2026-10-27T01:55:03.045Z",
+      "resources_evidence": "Native40430426343 and recovered Windows gate40432752930 completed successfully; no remaining native execution for this scope.",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -1040,11 +1062,41 @@
           "state": "available",
           "revision": 34,
           "reason": "Owner requests final visual consolidation city/world 2026-10-27"
+        },
+        {
+          "owner": "chatgpt-eldoria-final-visual-consolidation-20261027",
+          "ownership_revision": 38,
+          "phase": "FINAL_VISUAL_CONSOLIDATION_VERIFIED",
+          "completed_at": "2026-10-27T01:55:03.045Z",
+          "evidence": {
+            "status": "COMPLETED_VERIFIED",
+            "runtime_source": "3b14ade1b75cfdf7881771da16d36a18f0e088f1",
+            "native_run": 40430426343,
+            "native_artifact": 12702388496,
+            "general_gate_run": 40432752930,
+            "general_gate_source": "0004a5a85aafd4cf9641050f0cb146ecab37977d",
+            "editmode_passed": 26,
+            "playmode_passed": 65,
+            "integration_checks": 44,
+            "authentic_world_ab_pairs": 6,
+            "authentic_city_ab_pairs": 2,
+            "architecture": "RETAINED",
+            "panorama": "RETAINED",
+            "city_bank": "RETAINED",
+            "breach": "REJECTED_CANDIDATE_ORIGINAL_PRESERVED",
+            "reviewer": "/root/visual_review",
+            "evidence_archive": "https://chatgpt.com/library?file_id=libfile_30faaa5b476c8191b5f41b8d1bcdf551&account_id=personal",
+            "archive_sha256": "db484ab1813eda1f604d8d2d6edade2a17aec8ae3465261a70b28e98407b476c",
+            "physical_mobile_tested": false,
+            "apk_published": false,
+            "bastion_III_started": false,
+            "budget_eur": 0
+          }
         }
       ],
-      "ownership_revision": 38,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 39,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
       "delivery_definition": {
@@ -1052,7 +1104,7 @@
         "evidence": "Authentic matched Unity A/B landscape and portrait, three world zooms and city I-II; editable sources, functional tests and reversible accepted changes.",
         "handoff": "Retained/rejected interventions with real capture and source hashes, tests and limits. No publication."
       },
-      "handoff_authority": "Explicit current owner instruction: assume unfinished UI/forest/multiplayer design work, finish autonomously, audit repository files last. Requested scope completed and verified.",
+      "handoff_authority": "Current owner requested autonomous final visual consolidation and recovery of technical blockers; scope completed with authentic A/B and independent review. No APK/Bastion III/publication authority implied.",
       "world_integration_handoff": {
         "to": "eldoria-world-region-1-canon-20261022",
         "at": "2026-10-23T21:54:45.623Z",
@@ -1073,7 +1125,7 @@
       ],
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
-      "released_at": "2026-10-26T23:27:03.896Z",
+      "released_at": "2026-10-27T01:55:03.045Z",
       "latest_owner_feedback": "Current owner: resources have levels, a single occupant per node, disputable and stronger player remains gathering. Incorporated into offline design/simulation; no live multiplayer implementation or APK publication authorized by this scope.",
       "ordered_completion": {
         "completed_at": "2026-10-26T22:20:44.872Z",
@@ -1114,13 +1166,28 @@
         }
       },
       "visual_consolidation_review": {
-        "run": 40425753661,
-        "architecture": "RETAINED_I_II_TWELVE_VIEWS",
+        "status": "COMPLETED_VERIFIED",
+        "runtime_source": "3b14ade1b75cfdf7881771da16d36a18f0e088f1",
+        "native_run": 40430426343,
+        "native_artifact": 12702388496,
+        "general_gate_run": 40432752930,
+        "general_gate_source": "0004a5a85aafd4cf9641050f0cb146ecab37977d",
+        "editmode_passed": 26,
+        "playmode_passed": 65,
+        "integration_checks": 44,
+        "authentic_world_ab_pairs": 6,
+        "authentic_city_ab_pairs": 2,
+        "architecture": "RETAINED",
         "panorama": "RETAINED",
-        "bank": "RETAINED",
-        "breach": "REJECTED_PRESERVE_ORIGINAL",
+        "city_bank": "RETAINED",
+        "breach": "REJECTED_CANDIDATE_ORIGINAL_PRESERVED",
         "reviewer": "/root/visual_review",
-        "no_apk": true
+        "evidence_archive": "https://chatgpt.com/library?file_id=libfile_30faaa5b476c8191b5f41b8d1bcdf551&account_id=personal",
+        "archive_sha256": "db484ab1813eda1f604d8d2d6edade2a17aec8ae3465261a70b28e98407b476c",
+        "physical_mobile_tested": false,
+        "apk_published": false,
+        "bastion_III_started": false,
+        "budget_eur": 0
       }
     },
     {
