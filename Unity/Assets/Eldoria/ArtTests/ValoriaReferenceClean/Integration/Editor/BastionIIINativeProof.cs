@@ -76,8 +76,25 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"Lyra dialogue completed");
    Shot(h,"fissure-A-open",h.WorldCamera);Command(h,"Fight","fissure-valoria");Need(h.City.Gateway.Snapshot().March.Route.Count>1,"real reachable fissure route");Step(h,2);yield return null;Shot(h,"fissure-B-scar",h.WorldCamera);Step(h,7);yield return null;Shot(h,"fissure-C-closed",h.WorldCamera);
    Need(mainBreach&&mainBreach.sharedMesh==mainBreachMesh&&mainBreach.transform.position==mainBreachPosition&&mainBreach.transform.localScale==mainBreachScale,"main Breach geometry preserved after private closure");
-   Need(!fissure.gameObject.activeInHierarchy,"private fissure fully disappears");h.City.ReloadForProbe();var victory=h.City.Gateway.Snapshot();Need(victory.ChapterThree.LyraRecruited&&victory.ChapterThree.Inventory.FindAll(x=>x=="breach-manuscript").Count==1,"persistent Lyra and unique manuscript");
-   foreach(var id in new[]{"hunt-wolf","hunt-boar","meat-valoria"}){Command(h,id=="meat-valoria"?"Gather":"Fight",id);Need(h.City.Gateway.Snapshot().March.Route.Count>1,id+" real route");Step(h,20);}
+   Need(!fissure.gameObject.activeInHierarchy,"private fissure fully disappears");
+   h.City.ReloadForProbe();
+   // Exercise the real next-frame session rebind after an offline load.
+   // The previous test invoked a new hunt in the exact same frame as a
+   // replacement LocalGateway, before its map route service could reattach.
+   yield return null;yield return null;
+   var routeService=h.WorldRoot.GetComponentInChildren<Eldoria.World4XCanon.RegionOneResourcePlacement>(true);
+   Need(routeService!=null&&routeService.MarchRoutes!=null,
+      "world route service survives genuine save reload");
+   var victory=h.City.Gateway.Snapshot();Need(victory.ChapterThree.LyraRecruited&&victory.ChapterThree.Inventory.FindAll(x=>x=="breach-manuscript").Count==1,"persistent Lyra and unique manuscript");
+   foreach(var id in new[]{"hunt-wolf","hunt-boar","meat-valoria"}){
+    Need(routeService.MarchRoutes.TryRoute(h.City.Gateway.Snapshot(),id,out var planned)&&planned!=null&&planned.Count>1,
+      id+" route certified after save reload");
+    Command(h,id=="meat-valoria"?"Gather":"Fight",id);
+    var underway=h.City.Gateway.Snapshot().March;
+    Need(underway.TargetId==id&&underway.Phase=="outbound"&&underway.Route.Count>1,
+      id+" actual dispatched terrain route");
+    Step(h,20);
+   }
    Need(h.City.Gateway.Snapshot().ChapterThree.Hunts==2,"both hunts resolved");Command(h,"ConfigureMarch","march-main:20:aldric+lyra");h.City.ReloadForProbe();Need(h.City.Gateway.Snapshot().PreparedHeroId=="aldric+lyra","recruited heroes persist in composition");
    h.TrySetWorld(false);yield return null;cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);
    Command(h,"UpgradeBuilding","granary");Step(h,12);yield return null;Shot(h,"E-granary-level3",cityCam);
