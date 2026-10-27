@@ -1,7 +1,7 @@
 {
-  "revision": 19,
+  "revision": 20,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Reverify exact updated shallow fault geometry after enforcing upward-facing Blender mesh normals (old soil shoulder polygons faced down and disappeared in Unity overhead camera). Run authentic Blender+Unity bake, 34/66 tests, I-II and III saves/routes, all fault mesh vertex relief <= 8.5cm, screenshot comparison, native UI and Android-safe assets; do not merge/release without independent art review."
+  "reason": "Native final-candidate art review: reject continuous ribbon, use sparse broken earth/slate bank geometry with upward normals and shallow <=8.5cm terrain contact; prove actual post-victory soil scar only after FissureClosed, A/B visible change then complete disappearance at 6.5s. Keep gameplay, saves, original Breach, Android dependencies, 34 EditMode/66 PlayMode and I-II/III exact SHA; do not merge or release until real PNG review."
 }
