@@ -29,7 +29,7 @@ namespace Eldoria.UI.RoyalGold.V2
         ICommandGateway gateway;
         Func<long> now;
         Action refreshed;
-        RectTransform safe, screenRect, heroScene, infoCard;
+        RectTransform safe, screenRect, panelRoot, heroScene, infoCard;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
@@ -150,6 +150,7 @@ namespace Eldoria.UI.RoyalGold.V2
             curtain.raycastTarget=true;
             Stretch(screenRect,0);
             var panel=Panel(screenRect,"Independent royal manuscript room");
+            panelRoot=panel;
             Stretch(panel,9);
             heading=Text(panel,"Page heading",32,Gold,true);
             kicker=Text(panel,"Chapter overline",17,Muted,true);
@@ -286,7 +287,7 @@ namespace Eldoria.UI.RoyalGold.V2
             bool portrait=height>width;
             float outer=9f;
             float pw=width-outer*2,ph=height-outer*2;
-            var panel=screenRect.GetChild(1) as RectTransform;
+            var panel=panelRoot;
             float bodyX=portrait?18f:pw*.48f;
             float bodyWidth=portrait?pw-36f:pw*.49f-18f;
             TL(heading.rectTransform,20f,18f,pw-210f,44f);
@@ -353,7 +354,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(vig)
             {
                 int stage=p.LastClearedStage+1;
-                var info=EarlyRetentionRules.Stage(stage);
+                var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
                 opponent.Put(info.Name+"\nRasgo: "+info.Trait);
                 int archer=s.Available?.Total??0;
