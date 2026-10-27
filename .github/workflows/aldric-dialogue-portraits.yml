@@ -88,4 +88,16 @@ jobs:
           git add Unity/Assets/Eldoria/Resources/UI/AldricDialogue
           if git diff --cached --quiet; then echo 'ALDRIC_BUST_UNCHANGED'; exit 0; fi
           git commit -m "art(aldric): store SHA-verified canonical speaker bust PNGs [skip ci]"
-          git push origin HEAD:feature/aldric-dialogue-bust-20261027
+          # Other source-only edits may have landed while Ubuntu rendered.
+          # Preserve both sides through fast-forward rebase; NEVER force-push.
+          for attempt in 1 2 3; do
+            git fetch origin feature/aldric-dialogue-bust-20261027 --deepen=3
+            git rebase FETCH_HEAD || { git rebase --abort || true; exit 1; }
+            if git push origin HEAD:feature/aldric-dialogue-bust-20261027; then
+              echo 'ALDRIC_APPROVED_PORTRAIT_IMAGES_PERSISTED=PASS'
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'PUSH_CONFLICT_ARTIFACT_PRESERVED' >&2
+          exit 1
