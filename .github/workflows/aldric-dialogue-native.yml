@@ -143,7 +143,13 @@ jobs:
             '-runTests','-testPlatform','PlayMode',
             '-testFilter','Eldoria.Tests.AldricDialogueBustPresentationTests',
             '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
-          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1080000)){
+            if(Test-Path $log){Get-Content $log -Tail 160}
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Aldric Unity PlayMode exceeded isolated 18-minute limit; process tree stopped safely'
+          }
+          $p.Refresh()
           if(-not(Test-Path $xml)){throw "Missing native test results; Unity exit $($p.ExitCode)"}
           [xml]$results=Get-Content $xml -Raw
           $root=$results.'test-run'
@@ -167,7 +173,14 @@ jobs:
           $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
              '-executeMethod','Eldoria.UI.RoyalGold.V2.Editor.AldricDialogueNativeCapture.Capture',
              '-logFile',('"'+(Join-Path $out 'Aldric-Capture.log')+'"'))
-          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(900000)){
+            $captureLog=Join-Path $out 'Aldric-Capture.log'
+            if(Test-Path $captureLog){Get-Content $captureLog -Tail 160}
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Aldric Unity screenshots exceeded isolated 15-minute limit; process tree stopped safely'
+          }
+          $p.Refresh()
           if($p.ExitCode -ne 0){throw "Native rendering exit $($p.ExitCode)"}
           if(-not(Test-Path (Join-Path $out 'ALDRIC_NATIVE_PASS.txt'))){throw 'Real Unity screenshot proof missing'}
           $pngs=@(Get-ChildItem -Path $out -Filter '*.png' -File)
