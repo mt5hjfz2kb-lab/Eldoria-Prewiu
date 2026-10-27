@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T10:59:08Z",
+  "updated_at": "2026-10-27T11:37:30Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -19,7 +19,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-eldoria-cronica-android-code16-20261027",
+      "owner": null,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-27T10:59:08Z",
@@ -78,15 +78,13 @@
         ".github/workflows/unity-slice.yml",
         "Unity/README.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "ANDROID_FAMILY_CODE16_VERIFIED_DELIVERY",
-      "next": "After current Unity UI certification finishes, build code16 from main merged PR115, verify original signing key/package/save compatibility and release only tested exact artifact; restore workstream and lease after release.",
+      "phase": "VALORIA_ART_CONSOLIDATED_ANDROID_FAMILY_116_RELEASED",
+      "next": "Closed after documented verified original Crónica Real integration and signed Android 1.16; any further work requires explicit new owner scope. Physical Android acceptance outstanding.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1100,11 +1098,16 @@
           "ownership_state": "available",
           "revision": 39,
           "reason": "Owner authorized final delivery of merged Crónica Real UI as signed Android family update 1.16, 2026-10-27."
+        },
+        {
+          "owner": "chatgpt-eldoria-cronica-android-code16-20261027",
+          "revision": 40,
+          "reason": "Owner-authorized original Crónica Real work complete and signed family 1.16 APK verified and promoted. PR115 merge 0abf90e, Native Unity 66/66, Android build40495487995 and publish40497012145. Release write claim, retain history."
         }
       ],
-      "ownership_revision": 40,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 41,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
       "delivery_definition": {
@@ -1366,10 +1369,10 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-cronica-real-pr115-completion-20261027",
-      "ownership_state": "claimed",
-      "ownership_revision": 21,
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 22,
+      "write_scope_released": true,
       "status": "active",
       "claimed_at": "2026-10-27T09:36:00Z",
       "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
@@ -1454,7 +1457,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Diagnose genuine native failure in transform hierarchy, repair same PR #115 and rerun full Unity native A/B. No merge before final visual + functional PASS. Avoid parallel UI writers.",
+      "next": "Closed after documented verified original Crónica Real integration and signed Android 1.16; any further work requires explicit new owner scope. Physical Android acceptance outstanding.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1534,10 +1537,15 @@
           "owner": "chatgpt-cronica-real-fidelity-20261027",
           "revision": 20,
           "reason": "Owner explicitly transfers unfinished Crónica Real original PR115 to this session on 2026-10-27. Preserve all existing edits, review and native evidence; no second PR."
+        },
+        {
+          "owner": "chatgpt-cronica-real-pr115-completion-20261027",
+          "revision": 21,
+          "reason": "Owner-authorized original Crónica Real work complete and signed family 1.16 APK verified and promoted. PR115 merge 0abf90e, Native Unity 66/66, Android build40495487995 and publish40497012145. Release write claim, retain history."
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "PR115_OWNER_AUTHORIZED_CORRECTION_AND_CERTIFICATION",
+      "phase": "CRONICA_REAL_PR115_MERGED_ANDROID_116_DELIVERED",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
