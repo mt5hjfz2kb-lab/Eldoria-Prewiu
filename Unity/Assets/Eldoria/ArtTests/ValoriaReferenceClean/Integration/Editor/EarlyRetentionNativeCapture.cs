@@ -1,0 +1,181 @@
+#if UNITY_EDITOR
+using System;
+using System.Collections;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using Eldoria.Domain;
+using Eldoria.Application;
+using Eldoria.Infrastructure;
+using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Object=UnityEngine.Object;
+
+namespace Eldoria.ReferenceClean.Editor
+{
+    /// <summary>Real native scene proof: two separate illustrated destinations,
+    /// contextual shortcut gating, and actual 1600x900/900x1600 camera renders.
+    /// Uses ONLY a disposable VALORIA_GAMEPLAY_PROBE save fixture; every prior
+    /// player state in the Windows workspace stays untouched.</summary>
+    [InitializeOnLoad] public static class EarlyRetentionNativeCapture
+    {
+        const string Flag="Eldoria.EarlyRetention.NativeProbe";
+        const string Scene="Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity";
+        static string Output=>Path.GetFullPath(Environment.GetEnvironmentVariable("EARLY_RETENTION_EVIDENCE") ??
+            Path.Combine(UnityEngine.Application.dataPath,"../../docs/early-retention/evidence"));
+        static readonly List<string> Checks=new List<string>();
+        static EarlyRetentionNativeCapture()=>EditorApplication.playModeStateChanged+=Entered;
+        static void Need(bool ok,string reason)
+        {
+            if(!ok)throw new InvalidOperationException("EARLY_RETENTION_FAIL: "+reason);
+            Checks.Add(reason);Debug.Log("EARLY_RETENTION_PASS: "+reason);
+        }
+        public static void Capture()
+        {
+            try{
+                Environment.SetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE","1");
+                Directory.CreateDirectory(Output);
+                EditorSceneManager.OpenScene(Scene);
+                SessionState.SetBool(Flag,true);
+                EditorApplication.EnterPlaymode();
+            }catch(Exception e){Fail(e);}
+        }
+        static void Entered(PlayModeStateChange state)
+        {
+            if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool(Flag,false))return;
+            SessionState.SetBool(Flag,false);
+            EditorApplication.delayCall+=()=>{
+                var h=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+                if(!h){Fail(new Exception("Actual integrated Valoria host missing"));return;}
+                h.StartCoroutine(Guard(h));
+            };
+        }
+        static IEnumerator Guard(ValoriaIntegratedWorld h)
+        {
+            var it=Probe(h);
+            while(true)
+            {
+                bool more;object current=null;
+                try{more=it.MoveNext();if(more)current=it.Current;}
+                catch(Exception e){Fail(e);yield break;}
+                if(!more)yield break;
+                yield return current;
+            }
+        }
+        static void SaveFixture(ValoriaIntegratedWorld h,int bastion)
+        {
+            Need(h.City.Probe,"Real player save cannot be overwritten by any native proof");
+            var s=h.City.Gateway.Snapshot();
+            s.SawmillLevel=1;
+            s.Available.ArcherT1=60;
+            if(bastion>=2){
+                s.BastionLevel=2;s.BarracksLevel=1;
+                s.ChapterProgress.BastionTwoReached=true;
+                s.ChapterProgress.MarchConfirmed=true;
+            }else{
+                s.BastionLevel=1;s.BarracksLevel=0;
+                s.ChapterProgress.MarchConfirmed=false;
+            }
+            new FileStateStore(h.City.SaveFile).Save(s);
+            h.City.ReloadForProbe();
+        }
+        static void Screenshot(ValoriaIntegratedWorld h,string name,int w,int he)
+        {
+            var path=Path.Combine(Output,name+(w>he?"-horizontal":"-vertical")+".png");
+            ValoriaIntegrationBuild.Capture(h,path,w,he);
+            Need(File.Exists(path)&&new FileInfo(path).Length>30000,
+                "Native Unity "+w+"x"+he+" screenshot exists: "+name);
+            var tex=new Texture2D(2,2,TextureFormat.RGB24,false);
+            try{Need(tex.LoadImage(File.ReadAllBytes(path))&&tex.width==w&&tex.height==he,
+                "Real camera pixels decode at expected resolution: "+name);}
+            finally{Object.Destroy(tex);}
+        }
+        static void ClickReal(RoyalButton button,string label)
+        {
+            Need(button&&button.IsInteractable()&&button.gameObject.activeInHierarchy,
+                label+" genuine live button clickable");
+            // The actual button action is invoked; never fake a domain reward.
+            button.onClick.Invoke();
+        }
+        static IEnumerator Probe(ValoriaIntegratedWorld h)
+        {
+            for(int i=0;i<240&&!h.Ready;i++)yield return null;
+            Need(h.Ready,"Actual Unity Valoria scene is playable");
+            var hud=h.Hud;
+            Need(hud!=null,"One real RoyalHUD instantiated");
+            var guidance=h.Guidance;
+            if(guidance)guidance.enabled=false;
+            for(int i=0;i<50&&hud.NarrativeOpen;i++){
+                hud.Modal.Extra.onClick.Invoke();
+                yield return null;
+            }
+            if(hud.Modal.gameObject.activeSelf)hud.Modal.Hide();
+            hud.SelectBuilding("");
+            yield return null;
+            var ui=hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
+            Need(ui!=null,"Both destinations attached to canonical existing HUD");
+            Need(!EarlyRetentionRules.VigilantsUnlocked(h.City.Gateway.Snapshot()),
+                "Virgin player has no premature Vigilants access");
+            Need(!EarlyRetentionRules.ScoutsUnlocked(h.City.Gateway.Snapshot()),
+                "Virgin player has no premature Scouts access");
+            yield return new WaitForSecondsRealtime(.35f);
+            Need(!ui.VigilantsShortcut.gameObject.activeSelf &&
+                !ui.ScoutsShortcut.gameObject.activeSelf,
+                "Both shortcuts are genuinely hidden before progression");
+
+            SaveFixture(h,1);yield return null;yield return new WaitForSecondsRealtime(.35f);
+            Need(ui.VigilantsShortcut.gameObject.activeInHierarchy &&
+                !ui.ScoutsShortcut.gameObject.activeInHierarchy,
+                "One early Vigilant trial unlocked but Scouts is still hidden");
+            ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
+            Need(ui.IsOpen,"Vigilants' independent full-screen scene opens");
+            Screenshot(h,"vigilants-first-trial",1600,900);
+            Screenshot(h,"vigilants-first-trial",900,1600);
+            ui.Close();
+            SaveFixture(h,2);yield return null;yield return new WaitForSecondsRealtime(.35f);
+            Need(ui.VigilantsShortcut.gameObject.activeInHierarchy &&
+                ui.ScoutsShortcut.gameObject.activeInHierarchy,
+                "After first March both activity entries legitimately unlock");
+            ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
+            Need(ui.IsOpen,"Vigilants opens after first barracks");
+            Screenshot(h,"vigilants-chapter-one",1600,900);
+            Screenshot(h,"vigilants-chapter-one",900,1600);
+            var stageButton=hud.GetComponentsInChildren<RoyalButton>(true)
+                .FirstOrDefault(x=>x.name=="Battle against next unique stage");
+            ClickReal(stageButton,"Automatic level PvE");
+            var s=h.City.Gateway.Snapshot();
+            Need(s.Retention.LastClearedStage==1 && s.LastBattleReport.Won,
+                "First stage resolves via REAL domain combat, once");
+            ui.Close();
+            ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Scouts);
+            Need(ui.IsOpen&&ui.OpenDestination==RoyalGoldV3EarlyRetentionScreens.Destination.Scouts,
+                "Scouts has separate scene, not Codex or Missions overlay");
+            Screenshot(h,"scout-mission-board",1600,900);
+            Screenshot(h,"scout-mission-board",900,1600);
+            var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
+                .FirstOrDefault(x=>x.name=="Dispatch or claim scout 1");
+            ClickReal(dispatch,"Actual scout dispatch");
+            Need(h.City.Gateway.Snapshot().Retention.Orders.Any(x=>x.StartedUtcTicks>0),
+                "Scout dispatch persists its genuine UTC return time");
+            ui.Close();
+            Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,
+                "No duplicate RoyalHUD/Canvas created");
+            File.WriteAllText(Path.Combine(Output,"result.txt"),
+                "EARLY_RETENTION_NATIVE_PASS\n"+string.Join("\n",Checks)+"\nART_APPROVED=false\n");
+            Debug.Log("EARLY_RETENTION_NATIVE_PASS");
+            EditorApplication.Exit(0);
+        }
+        static void Fail(Exception e)
+        {
+            Directory.CreateDirectory(Output);
+            File.WriteAllText(Path.Combine(Output,"failure.txt"),e.ToString());
+            Debug.LogException(e);EditorApplication.Exit(1);
+        }
+    }
+}
+#endif
