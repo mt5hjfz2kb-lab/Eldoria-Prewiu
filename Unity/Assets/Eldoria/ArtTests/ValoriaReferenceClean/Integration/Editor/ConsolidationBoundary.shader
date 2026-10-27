@@ -170,7 +170,7 @@ Shader "Eldoria/ConsolidationTrial/Boundary" {
  float rim=max(side+irregular,transverse-.045*sin(region.y*.004));
  float atmosphere=smoothstep(.86,1.17,rim)*_BoundaryWeight;
  // Existing sea remains, but no ink-dark stripe at the edge of the continental view.
- float coastHaze=smoothstep(590,1010,-region.x)*(.80+.12*sin(region.y*.002+1));
+ float coastHaze=smoothstep(560,940,region.x+35*sin(region.y*.002+1));
  atmosphere=max(atmosphere,coastHaze*_BoundaryWeight);
  return half4(lerp(c.rgb,_BoundaryColour.rgb,atmosphere),1);
  }

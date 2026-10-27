@@ -38,7 +38,7 @@ for item in data['parts']:
             lo=Vector(tuple(min(v.co[k] for v in group) for k in range(3)));hi=Vector(tuple(max(v.co[k] for v in group) for k in range(3)));c=(lo+hi)/2
             if max(hi.x-lo.x,hi.z-lo.z)<1.3:continue
             # Water is -2.05 m: preserve submerged toes, sculpt only the exposed mass.
-            water=-2.05;phase=c.x*.43+c.z*.21;compression=.48+.13*(.5+.5*math.sin(phase))
+            water=-2.05;phase=c.x*.43+c.z*.21;compression=.74+.13*(.5+.5*math.sin(phase))
             narrow=.76+.15*(.5+.5*math.sin(phase*1.7));top=water+max(.25,hi.y-water)*compression
             for v in group:
                 w=max(0,min(1,(v.co.y-water)/.6))

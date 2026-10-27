@@ -1,6 +1,6 @@
 {
   "stage": "visual_consolidation_trial",
-  "revision": 285,
+  "revision": 286,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,5 +8,5 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Native source-derived strategic architecture, localized riverbank sculpture and isolated boundary/breach shader A/B. Explicit trial only; no playable art integration."
+  "checks": "Correct current ground contact, reuse source city stone bridge on measured existing crossing, retain taller fractured bank crowns, correct east coast atmospheric transition. Native A/B trial only."
 }
