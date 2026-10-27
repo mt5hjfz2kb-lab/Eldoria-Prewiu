@@ -181,6 +181,12 @@ jobs:
             if($granary.ExitCode -ne 0){if(Test-Path $granaryLog){Get-Content $granaryLog -Tail 90};throw 'Bastion III build-safe granary extraction failed'}
             $prefab='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/Granary.prefab'
             if(-not(Test-Path $prefab)){throw 'Missing real textured granary prefab in Android project'}
+            # UrbanProps originally refer to old GLB sources removed below.
+            # Require the actual independently baked PBR originals for Android.
+            foreach($name in @('StockCrate','StockSack','StockBarrel')){
+              $stock="Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/Granary/$name.prefab"
+              if(-not(Test-Path $stock)){throw "Bastion III Android stock source missing: $stock"}
+            }
             Write-Host 'ELDORIA_BASTION_III_SIGNED_APK_ART_AUTHORING_PASS'
           }
           $root='Unity/Assets/Eldoria/Resources/Valoria'
