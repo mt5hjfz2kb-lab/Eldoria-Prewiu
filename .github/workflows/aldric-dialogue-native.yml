@@ -3,7 +3,7 @@ on:
   push:
     branches: [feature/aldric-dialogue-bust-20261027]
     paths:
-      - '.github/workflows/aldric-dialogue-native.yml'
+      - 'tools/aldric-dialogue/native-request.json'
   workflow_dispatch:
 permissions:
   contents: read
