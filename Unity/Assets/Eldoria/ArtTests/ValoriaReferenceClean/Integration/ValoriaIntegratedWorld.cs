@@ -94,7 +94,7 @@ namespace Eldoria.ReferenceClean {
    gameObject.AddComponent<BastionIIIWorldPresentation>().Initialize(this);
    targets=Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None);
    // One modestly wider authored entry view (about 10%), without changing near limits or world scale.
-   city.Controls.homeZoom=Mathf.Min(65f,city.Controls.homeZoom*1.10f);
+   city.Controls.homeZoom=Mathf.Min(65f,city.PlayerCamera.orthographicSize*1.08f);
    city.Controls.ResetView();
    Ready=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
