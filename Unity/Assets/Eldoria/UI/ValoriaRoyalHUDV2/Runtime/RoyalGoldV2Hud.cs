@@ -786,6 +786,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 float questY = secondRow ? headerHeight + 65f : 72f;
                 objectiveCard.anchoredPosition = new Vector2(
                     objectiveCard.anchoredPosition.x, -questY);
+                // Keep the expanded-chapter close action beside the ACTUAL
+                // manuscript, not at the obsolete 287px portrait position.
+                if (chapterClose)
+                    Top((RectTransform)chapterClose.transform,
+                        Mathf.Max(10f,w-58f),questY+5f,42f,42f);
             }
         }
 
