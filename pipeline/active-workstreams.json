@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T21:35:00Z",
+  "updated_at": "2026-10-27T21:55:45Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-bastion-iii-pr117-continuation-20261027",
+      "owner": null,
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-27T10:59:08Z",
@@ -88,15 +88,13 @@
         ".github/workflows/bastion-iii-native.yml",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BASTION_III_OWNER_TRANSFER_NATIVE_REPAIR",
-      "next": "Repair skipped Region1 PlayMode capture by clean explicit evidence directory in same native workflow, run full native suite and III gameplay captures, fix art/runtime faults, review before PR #117 integration. Preserve code16.",
+      "phase": "BASTION_III_PR117_ANDROID_117_DELIVERED_AVAILABLE",
+      "next": "Bastión III integrado y familia Android1.17 publicada. Sin trabajo pendiente bajo este encargo ni reserva Windows; disponible para próximo trabajo autorizado. Windows desktop generic build gate 40586040000 failed packaging resources.assets after Unity Edit/PlayMode passed: diagnose separately if desktop requested; does not revoke signed Android delivery.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -688,9 +686,27 @@
           "apk_published": false,
           "bastion_III_started": false,
           "budget_eur": 0
+        },
+        "bastion_iii_delivery": {
+          "status": "DELIVERED_MAIN_AND_SIGNED_FAMILY_ANDROID",
+          "pr_number": 117,
+          "merged_at": "2026-10-27T21:02:17Z",
+          "merge_sha": "c4a1ad9af70ba6f95ac8a53e2350f9e5bee03b08",
+          "unity_native_run": 40578913550,
+          "unity_native_result": "success",
+          "android_source_sha": "74ef803f8be5a3ceb760344baa3d68c3a9537226",
+          "android_build_run": 40583425073,
+          "android_promote_run": 40586806946,
+          "android_version_code": 17,
+          "android_release_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/tag/eldoria-android-code17",
+          "android_sha256": "40d9ccbc0032a5c25097c4806ce0c0eecc2d3d93995af8909527e780b87f9ae1",
+          "android_signature_unchanged": true,
+          "physical_device_tested": false,
+          "art_owner_approval_claimed": false,
+          "desktop_build_note": "Main Windows desktop build 40586040000 failed resources.assets; PlayMode/EditMode PASS, Android signing and publication PASS."
         }
       },
-      "previous_owner": "chatgpt-eldoria-final-visual-consolidation-20261027",
+      "previous_owner": "chatgpt-bastion-iii-pr117-continuation-20261027",
       "takeover_at": "2026-10-17",
       "takeover_authorization": "Current owner instruction in Work 2026-10-17 explicitly authorizes reconstruction from an empty independent scene on existing construction branch, zero spend.",
       "handoff_source": "docs/evidence/valoria-reference-clean/consolidation-20261027/FINAL_VISUAL_REVIEW.md",
@@ -1125,11 +1141,18 @@
           "owner": "chatgpt-bastion-iii-unity-migration-20261027",
           "revision": 43,
           "reason": "Explicit owner-directed transfer: Work session exhausted; continue the SAME Bastion III PR #117 and full native/visual QA, no parallel PR; 27 Oct 2026."
+        },
+        {
+          "owner": "chatgpt-bastion-iii-pr117-continuation-20261027",
+          "ownership_state": "released",
+          "revision": 45,
+          "at": "2026-10-27T21:55:45Z",
+          "reason": "PR117 merged into main and signed Android family code17 published and byte-verified; Unity Bastion III native20 regression PASS. Owner requested release of resources after completion."
         }
       ],
-      "ownership_revision": 44,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "ownership_revision": 45,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
       "delivery_definition": {
@@ -1158,7 +1181,7 @@
       ],
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
-      "released_at": "2026-10-27T01:55:03.045Z",
+      "released_at": "2026-10-27T21:55:45Z",
       "latest_owner_feedback": "Current owner: resources have levels, a single occupant per node, disputable and stronger player remains gathering. Incorporated into offline design/simulation; no live multiplayer implementation or APK publication authorized by this scope.",
       "ordered_completion": {
         "completed_at": "2026-10-26T22:20:44.872Z",
@@ -8582,6 +8605,25 @@
         }
       ],
       "closed_at": "2026-10-26T17:01:26.493Z"
+    },
+    {
+      "id": "eldoria-bastion-iii-pr117-delivery-20261027",
+      "title": "Bastión III — migración del vertical slice y entrega Android 1.17",
+      "owner": "chatgpt-bastion-iii-pr117-continuation-20261027",
+      "branch": "main",
+      "status": "completed",
+      "completed_at": "2026-10-27T21:55:45Z",
+      "workstream_id": "valoria-master-plan-layered-construction-20261016",
+      "pr_number": 117,
+      "merged_commit": "c4a1ad9af70ba6f95ac8a53e2350f9e5bee03b08",
+      "evidence": {
+        "native_unity_run": 40578913550,
+        "android_build_run": 40583425073,
+        "android_promote_run": 40586806946,
+        "release_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/tag/eldoria-android-code17",
+        "signed_apk_sha256": "40d9ccbc0032a5c25097c4806ce0c0eecc2d3d93995af8909527e780b87f9ae1"
+      },
+      "release_note": "Game play systems and art candidate deployed to main, signed Android v1.17 byte-verified. Owner's artistic approval and physical phone tests not presumed. Scope owner and Windows resources explicitly released. Separate optional Windows desktop resources.assets packaging error in workflow 40586040000 remains to be triaged if desktop distribution requested."
     }
   ],
   "owner_specific_pauses": [
