@@ -549,6 +549,15 @@ namespace Eldoria.UI.RoyalGold.V2
             var settings = Source.Settings ? Source.Settings.transform as RectTransform : null;
             if (settings)
             {
+                // The original top-right control is a circular gold-and-navy
+                // medieval seal. The shipped prefab inadvertently remained
+                // a SQUARE RoyalFrameGraphic; restore its authored round mesh.
+                var seal = Source.Settings.GetComponent<RoyalFrameGraphic>();
+                if (seal && !seal.Round)
+                {
+                    seal.Round = true;
+                    seal.SetVerticesDirty();
+                }
                 settings.anchorMin = settings.anchorMax = new Vector2(1f, 1f);
                 settings.pivot = new Vector2(1f, 1f);
                 settings.anchoredPosition = new Vector2(-4f, 0f);
