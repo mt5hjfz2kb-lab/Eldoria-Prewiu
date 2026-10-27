@@ -185,6 +185,10 @@ namespace Eldoria.ReferenceClean.Editor
             var contractArt=hud.GetComponentsInChildren<RoyalGoldV3ScoutContractGraphic>(true);
             Need(contractArt.Length==3,
                 "The independent Scouts screen contains three real illustrated parchment contracts");
+            Canvas.ForceUpdateCanvases();
+            Need(contractArt.All(x=>x.gameObject.activeInHierarchy && x.enabled &&
+                    !x.canvasRenderer.cull),
+                "All three hand-engraved mission cards are actually visible in the native Canvas");
             Need(contractArt.All(x=>!x.raycastTarget),
                 "Gold frames, heraldic motifs and wax seals never steal mission-button touches");
             var different=contractArt.Select(x=>x.Kind).Distinct().Count();
