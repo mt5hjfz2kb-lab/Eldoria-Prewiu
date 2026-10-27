@@ -42,6 +42,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalText heading, kicker, introduction, chapter, opponent, formation,
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel;
         RoyalGoldV3EarlyRetentionArtwork sceneArtwork;
+        RoyalGoldV3StageTrailGraphic chapterTrail;
         GameObject screen;
         float width=-1,height=-1,nextUpdate;
         string notice="";
@@ -169,6 +170,15 @@ namespace Eldoria.UI.RoyalGold.V2
             sceneArtwork=picture.gameObject.AddComponent<RoyalGoldV3EarlyRetentionArtwork>();
             sceneArtwork.raycastTarget=false;
             Stretch(picture,5);
+            // A full 25-stage visual route; purely decorative, real
+            // combat still goes through the single canonical action.
+            var trail=Rect("Twenty-five connected stage medallions",art);
+            trail.gameObject.AddComponent<CanvasRenderer>();
+            chapterTrail=trail.gameObject.AddComponent<RoyalGoldV3StageTrailGraphic>();
+            chapterTrail.raycastTarget=false;
+            trail.anchorMin=new Vector2(.10f,.06f);
+            trail.anchorMax=new Vector2(.90f,.54f);
+            trail.offsetMin=trail.offsetMax=Vector2.zero;
             victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
             var victoryPlate=victoryBanner.GetComponent<RoyalGoldV2FrameGraphic>();
             victoryPlate.Primary=true;
@@ -412,6 +422,19 @@ namespace Eldoria.UI.RoyalGold.V2
             bool vig=OpenDestination==Destination.Vigilants;
             sceneArtwork.Scouts=!vig;
             sceneArtwork.Chapter=Math.Max(1,(p.LastClearedStage/25)+1);
+            chapterTrail.gameObject.SetActive(vig);
+            if(vig)
+            {
+                int currentChapter=Math.Max(1,p.LastClearedStage/25+1);
+                if(p.LastClearedStage>0 && p.LastClearedStage%25==0)
+                    currentChapter=p.LastClearedStage/25+1;
+                if(chapterTrail.Chapter!=currentChapter||chapterTrail.Cleared!=p.LastClearedStage)
+                {
+                    chapterTrail.Chapter=currentChapter;
+                    chapterTrail.Cleared=p.LastClearedStage;
+                    chapterTrail.SetVerticesDirty();
+                }
+            }
             int chapterProgress=p.LastClearedStage%25;
             if(sceneArtwork.ChapterProgress!=chapterProgress || explicitRefresh)
             {
