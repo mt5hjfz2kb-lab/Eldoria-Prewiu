@@ -8,7 +8,7 @@ permissions:
   actions: read
   contents: write
 concurrency:
-  group: bastion-iii-native17-evidence
+  group: bastion-iii-native19-evidence
   cancel-in-progress: true
 jobs:
   evidence:
@@ -20,7 +20,7 @@ jobs:
           persist-credentials: true
           sparse-checkout: |
             .github/workflows/bastion-iii-evidence-review.yml
-            docs/bastion-iii/evidence/native17
+            docs/bastion-iii/evidence/native19
           sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
@@ -28,9 +28,9 @@ jobs:
       - name: Download certified native artifact, not a substitute render
         uses: actions/download-artifact@v4
         with:
-          run-id: 40564560872
+          run-id: 40575100536
           repository: mt5hjfz2kb-lab/Eldoria-Prewiu
-          name: bastion-iii-native-40564560872
+          name: bastion-iii-native-40575100536
           github-token: ${{ github.token }}
           path: downloaded
       - name: Extract exact screenshot previews and A/B pixel evidence
@@ -41,7 +41,7 @@ jobs:
           from pathlib import Path
           import json, shutil
           base=Path('downloaded/docs/bastion-iii/native')
-          out=Path('docs/bastion-iii/evidence/native17')
+          out=Path('docs/bastion-iii/evidence/native19')
           out.mkdir(parents=True,exist_ok=True)
           names=[
            'A-bastion-II-horizontal','B-bastion-III-site-horizontal',
@@ -49,8 +49,8 @@ jobs:
            'E-granary-level3-horizontal','sawmill-level2-horizontal',
            'sawmill-level3-horizontal','barracks-level2-horizontal',
            'barracks-level3-horizontal','hunt-wolf-horizontal',
-           'fissure-valoria-horizontal','fissure-A-open-horizontal',
-           'fissure-B-scar-horizontal','ui-lyra-contact-vertical',
+           'fissure-valoria-horizontal','fissure-investigation-horizontal','fissure-A-open-horizontal',
+           'fissure-B-scar-horizontal','fissure-C-closed-horizontal','ui-lyra-contact-vertical',
            'ui-unique-manuscript-chest-vertical','ui-granary-level3-horizontal',
            'ui-recruited-hero-composition-vertical'
           ]
@@ -61,7 +61,7 @@ jobs:
             im=im.convert('RGB'); im.thumbnail((1000,900))
             im.save(out/(name+'.jpg'),quality=82,optimize=True)
           checks=base/'functional-checks.txt'
-          if not checks.is_file(): raise RuntimeError('Exact native 17 proof checks missing')
+          if not checks.is_file(): raise RuntimeError('Exact native 19 proof checks missing')
           shutil.copy2(checks,out/'functional-checks.txt')
           pairs=[
            ('A-bastion-II-horizontal','B-bastion-III-site-horizontal'),
@@ -79,20 +79,20 @@ jobs:
             results[a+' -> '+b]={'changed_pixels_rgb_delta_ge12':count,'size':list(p.size)}
           (out/'ab-pixel-differences.json').write_text(json.dumps(results,indent=2),encoding='utf-8')
           (out/'README.md').write_text(
-           '# Bastión III: evidencia visual nativa revisión 17\n\n'
+           '# Bastión III: evidencia visual nativa revisión 19\n\n'
            'Capturas JPG reducidas sin retoques artísticos, procedentes EXCLUSIVAMENTE '
-           'del artefacto original [40564560872](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40564560872) '
-           'del commit Unity `464abe1ae4f203971bd2d8349414245cf172dd92`. '
+           'del artefacto original [40575100536](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40575100536) '
+           'del commit Unity `d926ddffe75b2b5d3f6f978ff4892bb5ae5c665a`. '
            'Las capturas PNG exactas y el paquete completo permanecen en el artefacto GitHub.\n\n'
            'Este archivo solo facilita inspección independiente: **no equivale a ART_APPROVED**.\n',
            encoding='utf-8')
-          print('ARTIFACT_NATIVE17_EVIDENCE_EXTRACTED',len(names),results)
+          print('ARTIFACT_NATIVE19_EVIDENCE_EXTRACTED',len(names),results)
           PY
       - name: Commit only read-only visual evidence
         run: |
           git config user.name 'Eldoria visual evidence'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add docs/bastion-iii/evidence/native17
+          git add docs/bastion-iii/evidence/native19
           git diff --cached --quiet && exit 0
-          git commit -m 'docs(bastion-iii): preserve actual native17 art captures and pixel evidence'
+          git commit -m 'docs(bastion-iii): preserve actual native19 art captures and pixel evidence'
           git push origin HEAD:feature/bastion-iii-canonical-20261027
