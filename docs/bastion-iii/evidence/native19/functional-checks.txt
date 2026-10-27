@@ -1,0 +1,89 @@
+integrated production host ready
+fresh probe starts at I
+granary hidden before III
+wolf hidden before III
+narrative dismisses using real button
+AdvanceBastion:bastion:Acción iniciada
+III city add-ons activated only at Bastion III
+III city supplies include enabled real textured renderers
+III city supplies have on-screen renderers in genuine camera
+A-bastion-II-horizontal vs B-bastion-III-site-horizontal camera dimension parity
+A-bastion-II-horizontal -> B-bastion-III-site-horizontal visible level change (pixels=2552)
+granary III unlock
+Build:granary:Acción iniciada
+UpgradeBuilding:granary:Acción iniciada
+InvestigateFissure:fissure-valoria:Acción iniciada
+investigation uses real terrain route
+persistent investigation not early
+investigation never recruits Lyra
+C-granary-level1-horizontal vs D-granary-level2-horizontal camera dimension parity
+C-granary-level1-horizontal -> D-granary-level2-horizontal visible level change (pixels=614)
+hunt-wolf exists
+hunt-wolf visible in near view
+hunt-wolf has an active target
+hunt-wolf has live graphical renderers
+hunt-wolf actual mesh must be visible inside world camera frustum
+hunt-boar exists
+hunt-boar visible in near view
+hunt-boar has an active target
+hunt-boar has live graphical renderers
+hunt-boar actual mesh must be visible inside world camera frustum
+meat-valoria exists
+meat-valoria visible in near view
+meat-valoria has an active target
+meat-valoria has live graphical renderers
+meat-valoria actual mesh must be visible inside world camera frustum
+fissure-valoria exists
+fissure-valoria visible in near view
+fissure-valoria has an active target
+fissure-valoria has live graphical renderers
+fissure-valoria actual mesh must be visible inside world camera frustum
+wolf uses its authored idle animation
+private split floor follows actual terrain within two centimetres
+private fissure is a shallow soil-bound crack, not a raised geometric slab (max relief=0,04363656)
+contact offer before assault
+Lyra dialogue never impersonates Aldric portrait
+Lyra genuine modal is open
+Lyra actual narrative content contains hermano
+Lyra real reveal control displays complete first page
+lyra-contact screenshot PNG decodes
+lyra-contact real dialogue parchment appears in the player capture (pixels=252529)
+Lyra real dialogue opens
+dialogue completion gates contact
+Lyra dialogue completed
+Fight:fissure-valoria:Acción iniciada
+real reachable fissure route
+main Breach geometry preserved after private closure
+private fissure fully disappears
+world route service survives genuine save reload
+persistent Lyra and unique manuscript
+hunt-wolf route certified after save reload
+Fight:hunt-wolf:Acción iniciada
+hunt-wolf actual dispatched terrain route
+hunt-boar route certified after save reload
+Fight:hunt-boar:Acción iniciada
+hunt-boar actual dispatched terrain route
+meat-valoria route certified after save reload
+Gather:meat-valoria:Acción iniciada
+meat-valoria actual dispatched terrain route
+both hunts resolved
+ConfigureMarch:march-main:20:aldric+lyra:Acción iniciada
+recruited heroes persist in composition
+UpgradeBuilding:granary:Acción iniciada
+D-granary-level2-horizontal vs E-granary-level3-horizontal camera dimension parity
+D-granary-level2-horizontal -> E-granary-level3-horizontal visible level change (pixels=671)
+UpgradeBuilding:sawmill:Acción iniciada
+UpgradeBuilding:sawmill:Acción iniciada
+sawmill-level2-horizontal vs sawmill-level3-horizontal camera dimension parity
+sawmill-level2-horizontal -> sawmill-level3-horizontal visible level change (pixels=1104)
+UpgradeBuilding:barracks:Acción iniciada
+UpgradeBuilding:barracks:Acción iniciada
+barracks-level2-horizontal vs barracks-level3-horizontal camera dimension parity
+barracks-level2-horizontal -> barracks-level3-horizontal visible level change (pixels=1145)
+level3 save reload
+chest genuine modal is open
+chest actual narrative content contains Manuscrito de la Fisura
+chest real reveal control displays complete first page
+unique-manuscript-chest screenshot PNG decodes
+unique-manuscript-chest real dialogue parchment appears in the player capture (pixels=253569)
+V3 management host exists
