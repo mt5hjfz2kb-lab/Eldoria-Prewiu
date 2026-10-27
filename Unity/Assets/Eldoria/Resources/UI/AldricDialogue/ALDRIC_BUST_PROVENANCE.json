@@ -1,38 +1,38 @@
 {
-  "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595",
+  "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555",
   "tripo_credits_new": 0,
-  "model": "SirAldric_49800_Blend",
+  "model": "SirAldric_ArtPass_CapaAzul_Approved",
   "face_morph": "none; four camera/light treatments",
   "body_framing": "shoulders and chest only",
   "unity_checked": false,
   "files": [
     {
       "key": "aldric_neutral",
-      "size": 227278,
-      "sha256": "295e8a4c57cbd6c98ecb19ba8b127c8e27f714f696dcdf80367bf852ae7c5389",
-      "opaque_pixels": 131659,
-      "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+      "size": 242215,
+      "sha256": "6e9ffd43274c7147cddb69d405d8a3a017c8beeba672724dc19dabd342773fbe",
+      "opaque_pixels": 148858,
+      "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
     },
     {
       "key": "aldric_firme",
-      "size": 228326,
-      "sha256": "bb2dfdd634bafe8a330aa1f492ea02fe147f240e025f6ae5a89343266b1a826f",
-      "opaque_pixels": 131236,
-      "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+      "size": 245381,
+      "sha256": "829409b24d57b15dc04fd1a36588a1b8ff7606240f3768ac5fe5a3ddd9228693",
+      "opaque_pixels": 149307,
+      "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
     },
     {
       "key": "aldric_preocupado",
-      "size": 222002,
-      "sha256": "7fb7e25c84fc7499a521cecd5a2e4163d08ab438f44304fe534c20bc2beef3b7",
-      "opaque_pixels": 132585,
-      "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+      "size": 233610,
+      "sha256": "f32335ff77bc0389d5cb500377724678a9ef518824332948f4ce2bda3247b6b4",
+      "opaque_pixels": 149958,
+      "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
     },
     {
       "key": "aldric_sereno",
-      "size": 228903,
-      "sha256": "c7e1452c8e6d4c827af94b75a59ac34d77e4f6e5b89f222a1744197eafcdad7a",
-      "opaque_pixels": 131473,
-      "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+      "size": 244643,
+      "sha256": "54fdda2aa73fcfe5c7a104eedfb9bb4f1215b7c4a28408ea0e8fa37088a510f6",
+      "opaque_pixels": 148618,
+      "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
     }
   ]
 }
