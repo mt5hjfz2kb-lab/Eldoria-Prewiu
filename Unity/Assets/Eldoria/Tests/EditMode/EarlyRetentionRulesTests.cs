@@ -131,6 +131,24 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Retention.Orders.Select(x=>x.Id).Distinct().Count(),
                 Is.EqualTo(g.Snapshot().Retention.Orders.Count));
         }
+        [Test] public void AccumulatedHeroXpImprovesGenuineEarlyPveButHasSafeCap()
+        {
+            var state=Ready();
+            var original=SliceRules.Expedition(state.Available,"aldric");
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.Zero);
+            state.Retention.AldricExperience=480;
+            var upgraded=EarlyRetentionRules.ExpeditionWithMastery(state,
+                state.Available,"aldric");
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(6));
+            Assert.That(upgraded.Attack,Is.EqualTo(original.Attack+24));
+            Assert.That(upgraded.Defense,Is.EqualTo(original.Defense+18));
+            Assert.That(upgraded.Power,Is.EqualTo(original.Power+270));
+            Assert.That(SliceRules.Expedition(state.Available,"aldric").Power,
+                Is.EqualTo(original.Power),"The historic battle engine must retain the old baseline");
+            state.Retention.AldricExperience=999999;
+            Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(20));
+        }
+
         [Test] public void SnapshotDoesNotExposeMutableOrderObjects()
         {
             var clock=new Clock();var save=new Save{Value=Ready()};
