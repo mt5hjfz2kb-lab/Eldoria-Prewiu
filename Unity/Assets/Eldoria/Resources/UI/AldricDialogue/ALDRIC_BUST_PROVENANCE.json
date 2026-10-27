@@ -3,35 +3,45 @@
   "tripo_credits_new": 0,
   "model": "SirAldric_ArtPass_CapaAzul_Approved",
   "face_morph": "none; four camera/light treatments",
-  "body_framing": "shoulders and chest only",
+  "body_framing": "close head and shoulders, NO torso, owner correction 27/10",
+  "crop_box_512": [
+    138,
+    16,
+    374,
+    252
+  ],
+  "output_size": [
+    512,
+    512
+  ],
   "unity_checked": false,
   "files": [
     {
       "key": "aldric_neutral",
-      "size": 242215,
-      "sha256": "6e9ffd43274c7147cddb69d405d8a3a017c8beeba672724dc19dabd342773fbe",
-      "opaque_pixels": 148858,
+      "size": 206099,
+      "sha256": "156791ca04f17c45fdc85662a134352902f76229337d02e6210f6dea10c1c685",
+      "opaque_pixels": 156012,
       "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
     },
     {
       "key": "aldric_firme",
-      "size": 245381,
-      "sha256": "829409b24d57b15dc04fd1a36588a1b8ff7606240f3768ac5fe5a3ddd9228693",
-      "opaque_pixels": 149307,
+      "size": 208225,
+      "sha256": "f3ef05c7d3f170f8c5c65a0bfef263843397be7e7cd79965de0d4fa2c571aaad",
+      "opaque_pixels": 154067,
       "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
     },
     {
       "key": "aldric_preocupado",
-      "size": 233610,
-      "sha256": "f32335ff77bc0389d5cb500377724678a9ef518824332948f4ce2bda3247b6b4",
-      "opaque_pixels": 149958,
+      "size": 203550,
+      "sha256": "c8a134b893286fa976e9a6f9078b0756af4b305aaac6da6811e8e24dc5824204",
+      "opaque_pixels": 159294,
       "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
     },
     {
       "key": "aldric_sereno",
-      "size": 244643,
-      "sha256": "54fdda2aa73fcfe5c7a104eedfb9bb4f1215b7c4a28408ea0e8fa37088a510f6",
-      "opaque_pixels": 148618,
+      "size": 211573,
+      "sha256": "41ea5109927be020e141f7b5dbbbb57104be239dd57c835d991256a2b8bccb55",
+      "opaque_pixels": 155360,
       "source": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555"
     }
   ]
