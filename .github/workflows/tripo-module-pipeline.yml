@@ -826,7 +826,7 @@ jobs:
             throw 'Canonical Blender processor unavailable or incomplete. The Tripo-paid GLB remains preserved.'
           }
           $args = @("--background","--python",$processor,"--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
-          if (@('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1') -contains [string]$request.module_label) {
+          if (@('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1','Eldoria_SirAldric_HeroPilot_v1') -contains [string]$request.module_label) {
             $args += '--save-blend'
           }
           if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
