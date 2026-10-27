@@ -1,13 +1,13 @@
 {
   "enabled": true,
-  "request_id": "aldric-h31-text-source-single-20261027",
+  "request_id": "aldric-h31-text-validated-20261027",
   "module_label": "Eldoria_SirAldric_HeroPilot_v1",
   "unity_yaw_degrees": 0,
   "source": {
     "mode": "tripo_text",
     "tripo_model": "v3.1-20260211",
     "face_limit": 85000,
-    "prompt": "ONE full-body realistic-stylized medieval dark-fantasy knight hero for the mobile 4X game Eldoria, named Sir Aldric, protector and veteran commander of the ruined stone kingdom Valoria. Male, visibly 55 years old, serious intelligent tired kind face with wrinkles and scars, medium-length swept-back silver-grey hair, short full silver beard, weathered dignified noble face; NOT a young prince. Practical battle-worn layered charcoal dark steel plate armor with articulated segmented shoulders, elbows, thighs, knees and wrists, leather belts and worn leather gloves, subtle antique gold trim, rich DEEP NAVY BLUE cloth tabard and separate navy-blue cloak hanging from shoulders, modest Valoria heraldic detail not a large eagle or royal crown. Broad grounded human proportions and clean distinctly human anatomy, exactly TWO arms, TWO legs, TEN fingers, neutral symmetrical relaxed A-POSE standing upright, arms slightly away from torso, hands visible, legs separated, boots planted, face looking forward. Heroic but humble guardian who has survived war and is rebuilding his city. Game-ready full body standalone 3D character, restrained semi-realistic PBR materials, coherent high quality sculpted geometry, clear readable silhouette at 4X strategy-game camera distance, optimized for later Blender rigging and humanoid animation. NO weapon physically welded to body, NO sword, NO shield, NO oversized pauldrons, NO horns, NO helmet, NO pedestal, NO ground, NO background scene, NO glow, NO multiple characters, NO text, NO logos, NO anime, NO cartoon, NO extra limbs, NO impossible fingers, NO excessively long or billowing cape."
+    "prompt": "Sir Aldric, veteran male knight hero of Valoria, Eldoria dark medieval fantasy strategy game. Full-body standalone character in neutral symmetrical A-pose, arms slightly away from body and legs separated, anatomically plausible human proportions. Age 55, swept-back silver grey hair, short grey beard, lined noble serious face, weathered but kind and resolute. Layered worn charcoal steel plate armor with articulated shoulder, elbow, knee and wrist joints, old leather belts and gloves, subtle antique gold trim, dark navy blue tunic and cape draping behind shoulders, restrained heraldic detail. Grounded guardian commander of a ruined kingdom, not a king or flashy superhero. Stylized semi-realistic high-quality PBR, crisp silhouette for 4X mobile viewing, riggable clean human limbs and fingers. Exactly two arms, two legs, ten fingers; no helmet, swords, shields, weapons, wings, horns, pedestal, environment, text, logos, fused limbs or cartoon styling."
   },
   "credit_authorization": {
     "approved": true,
@@ -29,8 +29,8 @@
     "enabled": false
   },
   "visual_acceptance": "Sir Aldric early-game veteran knight hero for Eldoria. Grey hair and beard, expressive weathered age 50-60 face, dark steel and deep-blue fabric, approachable noble guardian. Exactly two arms and two legs, anatomically plausible A-pose full body, identifiable armor and separate-looking cloak, no fused props or hands, no sword, no background. Real Unity 4-camera plus strategic views. This text-input first pilot cannot be claimed to match the historical portrait exactly: independent ART_REVIEW required; no gameplay integration or publishing.",
-  "run_nonce": "sir-aldric-one-task-prepaid-audit-20261027",
-  "notes": "Zero extra €; paid credits from existing Tripo API only if balance check passes. Image source transfer was unavailable in this session; text prompt describes accepted historical Aldric character, this is a candidate pilot, not approved likeness. No rerun on any failure; preserve raw task artifact and editable .blend.",
+  "run_nonce": "aldric-validated-prompt-single-task-20261027",
+  "notes": "First attempt run 40524851336 rejected by Tripo API before creating any task: prompt exceeded 1024 characters, HTTP validation rejection; no credits consumed. This is the first VALID task input with <=1024 ASCII characters, authorized once only. Never retry after task creation; recover task ID if CLI fails.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
