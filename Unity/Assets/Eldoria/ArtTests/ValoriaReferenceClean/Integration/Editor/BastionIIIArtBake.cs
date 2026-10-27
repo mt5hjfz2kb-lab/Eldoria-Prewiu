@@ -69,6 +69,15 @@ namespace Eldoria.ReferenceClean.Editor {
    if(!prefab)throw new Exception("Granary prefab was not saved");
    foreach(var stock in new[]{"Crate","Sack","Barrel"})RehomeProductionStock(stock);
    AssetDatabase.SaveAssets();
+   // Prove Android package independence, not merely prefab existence.
+   // The signing job removes ALL legacy Valoria GLB sources before compiling.
+   foreach(var item in new[]{"Granary","StockCrate","StockSack","StockBarrel"}){
+    var path=Root+"/"+item+".prefab";
+    var dependencies=AssetDatabase.GetDependencies(path,true);
+    var leaked=dependencies.Where(d=>d.StartsWith("Assets/Eldoria/Resources/Valoria/",StringComparison.OrdinalIgnoreCase)&&
+       d.EndsWith(".glb",StringComparison.OrdinalIgnoreCase)).ToArray();
+    if(leaked.Length>0)throw new Exception("Android prefab depends on excluded legacy GLB: "+item+" -> "+string.Join(",",leaked));
+   }
    Directory.CreateDirectory("../docs/bastion-iii/native");File.WriteAllText("../docs/bastion-iii/native/granary-bake.json","{\"source\":\""+input+"\",\"geometry_changed\":false,\"materials_changed\":false,\"legacy_source_exclusion_safe\":true}");
    Debug.Log("BASTION_III_GRANARY_AND_STOCK_BUILD_SAFE_PASS");EditorApplication.Exit(0);
   }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}finally{if(model)Object.DestroyImmediate(model);}}
