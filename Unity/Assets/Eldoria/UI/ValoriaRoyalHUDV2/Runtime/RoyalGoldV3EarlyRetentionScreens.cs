@@ -29,7 +29,10 @@ namespace Eldoria.UI.RoyalGold.V2
         ICommandGateway gateway;
         Func<long> now;
         Action refreshed;
-        RectTransform safe, screenRect, panelRoot, heroScene, infoCard;
+        RectTransform safe, screenRect, panelRoot, heroScene, infoCard, victoryBanner;
+        CanvasGroup victoryGroup;
+        RoyalText victoryTitle, victoryDetail;
+        float victoryUntil;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
@@ -166,6 +169,19 @@ namespace Eldoria.UI.RoyalGold.V2
             sceneArtwork=picture.gameObject.AddComponent<RoyalGoldV3EarlyRetentionArtwork>();
             sceneArtwork.raycastTarget=false;
             Stretch(picture,5);
+            victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
+            var victoryPlate=victoryBanner.GetComponent<RoyalGoldV2FrameGraphic>();
+            victoryPlate.Primary=true;
+            victoryPlate.raycastTarget=false;
+            victoryTitle=Text(victoryBanner,"Original victory heading",25,Gold,true);
+            victoryTitle.alignment=TextAnchor.MiddleCenter;
+            victoryDetail=Text(victoryBanner,"Authoritative victory reward",16,Ivory);
+            victoryDetail.alignment=TextAnchor.MiddleCenter;
+            victoryGroup=victoryBanner.gameObject.AddComponent<CanvasGroup>();
+            victoryGroup.alpha=0f;
+            victoryGroup.blocksRaycasts=false;
+            victoryGroup.interactable=false;
+            victoryBanner.SetAsLastSibling();
             infoCard=Panel(panel,"Progression and expedition information");
             chapter=Text(infoCard,"Stage progression",23,Gold,true);
             opponent=Text(infoCard,"Real enemy and trait",19,Ivory);
@@ -215,6 +231,8 @@ namespace Eldoria.UI.RoyalGold.V2
             if(destination==Destination.Scouts&&!EarlyRetentionRules.ScoutsUnlocked(s))return;
             OpenDestination=destination;
             notice="";
+            victoryUntil=0f;
+            if(victoryGroup)victoryGroup.alpha=0f;
             screen.SetActive(true);
             screenRect.SetAsLastSibling();
             width=-1;height=-1;
@@ -232,6 +250,20 @@ namespace Eldoria.UI.RoyalGold.V2
             var cmd=new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision);
             var result=gateway.Execute(cmd);
             notice=result.Message;
+            if(kind=="VigilantBattle" && result.Ok && IsOpen &&
+               OpenDestination==Destination.Vigilants)
+            {
+                var report=gateway.Snapshot().LastBattleReport;
+                if(report!=null && report.TargetId=="vigilant:"+target)
+                {
+                    victoryTitle.Put(report.Won?"VICTORIA":"DERROTA");
+                    victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
+                    victoryDetail.Put(result.Message);
+                    victoryUntil=Time.unscaledTime+3.2f;
+                    victoryGroup.alpha=1f;
+                    victoryGroup.blocksRaycasts=false;
+                }
+            }
             refreshed?.Invoke();
             Render(true);
         }
@@ -264,7 +296,13 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(Hud==null||gateway==null||now==null)return;
             EnsureView();
-            if(!ready||Time.unscaledTime<nextUpdate)return;
+            if(!ready)return;
+            if(victoryGroup && victoryGroup.alpha>0f)
+            {
+                float remaining=victoryUntil-Time.unscaledTime;
+                victoryGroup.alpha=Mathf.Clamp01(remaining*2f);
+            }
+            if(Time.unscaledTime<nextUpdate)return;
             nextUpdate=Time.unscaledTime+.3f;
             var s=gateway.Snapshot();
             bool overlay=Blocked || !string.IsNullOrEmpty(Hud.SelectedBuildingId);
@@ -322,6 +360,16 @@ namespace Eldoria.UI.RoyalGold.V2
             float imageTop=portrait?105f:108f;
             TL(heroScene,portrait?18f:20f,imageTop,
                 portrait?pw-36f:pw*.44f,portrait?Mathf.Clamp(ph*.235f,155,224):ph-168f);
+            if(victoryBanner)
+            {
+                float bannerWidth=Mathf.Min(heroScene.rect.width-18f,330f);
+                float bannerHeight=84f;
+                Pos(victoryBanner,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                    0f,0f,bannerWidth,bannerHeight);
+                TL(victoryTitle.rectTransform,12f,7f,bannerWidth-24f,35f);
+                TL(victoryDetail.rectTransform,12f,44f,bannerWidth-24f,29f);
+                victoryDetail.fontSize=portrait?14:16;
+            }
             TL(infoCard,bodyX,portrait?imageTop+Mathf.Clamp(ph*.235f,155,224)+10f:108f,
                 bodyWidth,portrait?ph-(imageTop+Mathf.Clamp(ph*.235f,155,224)+22f):ph-165f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
