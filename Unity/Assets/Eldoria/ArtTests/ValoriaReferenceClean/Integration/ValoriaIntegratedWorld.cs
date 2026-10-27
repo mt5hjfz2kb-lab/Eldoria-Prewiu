@@ -33,14 +33,18 @@ namespace Eldoria.ReferenceClean {
   // Motion is measured in screen pixels, so easing is consistent in both camera modes.
   Vector2 unappliedDragPixels;
   const float DragResponse=20f;
+  void ApplyCameraPan(Vector2 portion){
+   if(!InWorld){city.Pan(portion);return;}
+   var center=new Vector2(Screen.width*.5f,Screen.height*.5f);
+   if(WorldNavigation.GroundPoint(center,out var from)&&
+      WorldNavigation.GroundPoint(center-portion,out var to))
+    WorldNavigation.PanTo(WorldNavigation.target+to-from);
+  }
   void SmoothCameraDrag(){
    if(unappliedDragPixels.sqrMagnitude<.0025f){unappliedDragPixels=Vector2.zero;return;}
    var portion=unappliedDragPixels*(1f-Mathf.Exp(-DragResponse*Mathf.Min(.05f,Time.unscaledDeltaTime)));
    unappliedDragPixels-=portion;
-   if(!InWorld){city.Pan(portion);return;}
-   var center=new Vector2(Screen.width*.5f,Screen.height*.5f);
-   if(WorldNavigation.GroundPoint(center,out var from)&&WorldNavigation.GroundPoint(center-portion,out var to))
-    WorldNavigation.PanTo(WorldNavigation.target+to-from);
+   ApplyCameraPan(portion);
   }
   Rect observedVisibleArea;
   WorldHotspot[] targets;
@@ -192,10 +196,14 @@ namespace Eldoria.ReferenceClean {
    WorldNavigation.PanTo(WorldHome);
   }
   public void Pan(Vector2 delta){
-   // Preserve the original gesture pixels, but distribute a sudden touch delta over
-   // several rendered frames instead of teleporting the camera on each event.
-   // Stop large OS/touch resumption spikes from making a violent jump.
+   // React to each touch immediately; ease the remaining gesture rather than
+   // teleporting the whole camera in a single frame. This keeps real input
+   // responsive and preserves the existing native immediate-pan assertions.
+   // Resume spikes cannot move more than 180 screen pixels.
    unappliedDragPixels=Vector2.ClampMagnitude(unappliedDragPixels+delta,180f);
+   var leading=unappliedDragPixels*.38f;
+   unappliedDragPixels-=leading;
+   ApplyCameraPan(leading);
   }
   public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
   public WorldHotspot FindTarget(string id)=>FindTargetExact(id=="upgrade-barracks"?"barracks":id);
