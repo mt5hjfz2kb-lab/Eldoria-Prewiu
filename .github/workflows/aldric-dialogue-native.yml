@@ -1,0 +1,185 @@
+name: Aldric head-shoulders dialogue — exact merged Unity native acceptance
+on:
+  push:
+    branches: [feature/aldric-dialogue-bust-20261027]
+    paths:
+      - '.github/workflows/aldric-dialogue-native.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: aldric-pr118-one-native-unity
+  cancel-in-progress: false
+jobs:
+  portrait-native:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    env:
+      VALORIA_GAMEPLAY_PROBE: '1'
+    steps:
+      - name: Verify exclusive Aldric Windows resource reservation before touching workspace
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-Aldric-lease'}
+          $j=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($j.content)) | ConvertFrom-Json
+          $claims=@($registry.active | Where-Object { $_.resources -contains 'windows-runner-heavy' })
+          if($claims.Count -ne 1 -or [string]$claims[0].id -ne 'eldoria-aldric-dialogue-bust-20261027' -or
+             [string]$claims[0].ownership_state -ne 'claimed' -or [string]$claims[0].status -ne 'active' -or
+             [string]$claims[0].owner -ne 'chatgpt-aldric-dialogue-bust-20261027' -or
+             [int]$claims[0].ownership_revision -ne 3) {
+             throw 'Aldric native reservation revoked/stale: refuse shared Windows runner'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+             throw 'Native Unity/Blender process already running, do not interrupt'
+          }
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed at configured path'}
+          Write-Host 'ALDRIC_WINDOWS_LEASE_PASS revision=3 one canonical owner'
+
+      - name: Expose existing Git executable from GitHub Desktop
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+             Sort-Object Name -Descending |
+             ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+             Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Installed Git unavailable; no full-archive fallback'}
+            $dir=Split-Path $candidate
+            Add-Content $env:GITHUB_PATH $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+          git --version
+          if($LASTEXITCODE){throw 'Git executable check failed'}
+
+      - name: Checkout GitHub merge of latest main + the exact Aldric PR118
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/118/merge
+          path: aldric-dialogue-merge
+          clean: false
+          sparse-checkout: |
+            Unity
+            pipeline
+            tools
+            docs/evidence/valoria-reference-clean
+          fetch-depth: 2
+
+      - name: Verify no stale PR source, preserved project and source-locked 4 PNGs
+        shell: powershell
+        working-directory: aldric-dialogue-merge
+        run: |
+          $ErrorActionPreference='Stop'
+          $expected=$env:GITHUB_SHA
+          $commit=(& git rev-parse HEAD).Trim()
+          $parents=@(& git rev-list --parents -n 1 HEAD)
+          if($LASTEXITCODE -ne 0 -or "$($parents[0])" -notmatch $expected){throw "Stale PR118 merge ref: merge=$commit push=$expected"}
+          $files=@(& git ls-tree -r --name-only HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings)
+          if($LASTEXITCODE -ne 0 -or $files.Count -lt 500){throw "Incomplete native project tree count=$($files.Count)"}
+          $missing=@($files | Where-Object {-not(Test-Path -LiteralPath $_)})
+          if($missing.Count -gt 0){
+            & git checkout --ignore-skip-worktree-bits HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings
+            if($LASTEXITCODE){throw 'Exact missing Unity project recovery failed'}
+            $missing=@($files | Where-Object {-not(Test-Path -LiteralPath $_)})
+            if($missing.Count){throw "Project still missing $($missing.Count) exact tracked files"}
+          }
+          foreach($p in @(
+           'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Editor/AldricDialogueNativeCapture.cs',
+           'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs',
+           'Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs',
+           'Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_neutral.png',
+           'Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_firme.png',
+           'Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_preocupado.png',
+           'Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_sereno.png'
+          )){
+            if(-not(Test-Path $p)){throw "Exact head-shoulder source is missing: $p"}
+          }
+          & git diff --quiet HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          if($LASTEXITCODE){throw 'Tracked candidate has uncommitted edits; refuse native test'}
+          Write-Host "ALDRIC_EXACT_MERGED_SOURCE_PASS merge=$commit parent=$expected tracked=$($files.Count)"
+          $out=Join-Path $env:RUNNER_TEMP "aldric-dialogue-native-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Force $out | Out-Null
+          "merge_sha=$commit" | Set-Content (Join-Path $out 'source-id.txt') -Encoding ASCII
+          "branch_head=$expected" | Add-Content (Join-Path $out 'source-id.txt') -Encoding ASCII
+
+      - name: Prepare isolated editor-only Search index with no project changes
+        shell: powershell
+        working-directory: aldric-dialogue-merge
+        run: |
+          $p=Join-Path (Get-Location) 'Unity'
+          $u=Join-Path $p 'UserSettings/Search.index'
+          $back=Join-Path $env:RUNNER_TEMP "aldric-search-original-$env:GITHUB_RUN_ID"
+          if(Test-Path $u){
+            Copy-Item $u $back -ErrorAction Stop
+          }
+          New-Item -ItemType Directory -Force (Split-Path $u) | Out-Null
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' | Set-Content $u -Encoding UTF8
+          $cache=Join-Path $p 'Library/Search'
+          if(Test-Path $cache){
+            $dest=Join-Path $env:RUNNER_TEMP "aldric-search-cache-$env:GITHUB_RUN_ID"
+            if(Test-Path $dest){throw 'Preserve prior Search cache; no overwrite'}
+            Move-Item $cache $dest -ErrorAction Stop
+          }
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity version $version"}
+          Write-Host 'ALDRIC_SEARCH_EDITOR_ONLY_PREPARED'
+
+      - name: Run real 2-test Unity PlayMode suite on merged PR118 source
+        shell: powershell
+        working-directory: aldric-dialogue-merge
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $out=Join-Path $env:RUNNER_TEMP "aldric-dialogue-native-$env:GITHUB_RUN_ID"
+          $xml=Join-Path $out 'Aldric-PlayMode.xml'
+          $log=Join-Path $out 'Aldric-PlayMode.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+            '-runTests','-testPlatform','PlayMode',
+            '-testFilter','Eldoria.Tests.AldricDialogueBustPresentationTests',
+            '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if(-not(Test-Path $xml)){throw "Missing native test results; Unity exit $($p.ExitCode)"}
+          [xml]$results=Get-Content $xml -Raw
+          $root=$results.'test-run'
+          $passed=[int]$root.passed
+          $failed=[int]$root.failed
+          $skipped=[int]$root.skipped
+          if($p.ExitCode -ne 0 -or $failed -ne 0 -or $passed -lt 2 -or $skipped -ne 0 -or $root.result -ne 'Passed'){
+            throw "Native Aldric PlayMode not accepted exit=$($p.ExitCode) passed=$passed failed=$failed skipped=$skipped result=$($root.result)"
+          }
+          Write-Host "ALDRIC_UNITY_PLAYMODE_PASS actual=$passed skipped=0"
+
+      - name: Capture 10 real Unity player-camera dialogue screenshots, horizontal and vertical
+        shell: powershell
+        working-directory: aldric-dialogue-merge
+        env:
+          ALDRIC_NATIVE_OUTPUT: ${{ runner.temp }}/aldric-native-dialogue-captures-${{ github.run_id }}
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $out=$env:ALDRIC_NATIVE_OUTPUT
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+             '-executeMethod','Eldoria.UI.RoyalGold.V2.Editor.AldricDialogueNativeCapture.Capture',
+             '-logFile',('"'+(Join-Path $out 'Aldric-Capture.log')+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Native rendering exit $($p.ExitCode)"}
+          if(-not(Test-Path (Join-Path $out 'ALDRIC_NATIVE_PASS.txt'))){throw 'Real Unity screenshot proof missing'}
+          $pngs=@(Get-ChildItem -Path $out -Filter '*.png' -File)
+          if($pngs.Count -lt 8){throw "Only $($pngs.Count) real Unity dialogue screenshots; expected 8 distinct pairs"}
+          foreach($p in $pngs){if($p.Length -lt 35000){throw "Empty native screenshot $($p.Name)"}}
+          Write-Host "ALDRIC_NATIVE_UI_CAPTURE_PASS pngs=$($pngs.Count)"
+
+      - name: Upload actual Unity logs, tests and images even when native errors
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aldric-pr118-unity-actual-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/aldric-dialogue-native-${{ github.run_id }}/*
+            ${{ runner.temp }}/aldric-native-dialogue-captures-${{ github.run_id }}/*
+          if-no-files-found: warn
