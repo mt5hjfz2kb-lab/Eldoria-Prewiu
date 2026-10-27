@@ -73,6 +73,8 @@ jobs:
 
       - name: Restore exact tracked Unity project when self-hosted checkout was partial
         shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # Existing unity-slice.yml has proven missing Assets after checkout.
           # Recover only files tracked by THIS exact PR merge SHA, never
@@ -88,7 +90,419 @@ jobs:
           if($missing.Count -gt 0){
             Write-Host "Recovering exact Git commit tracked Unity source, preserving all untracked caches."
             & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- Unity/Assets Unity/Packages Unity/ProjectSettings
-            if($LASTEXITCODE){throw 'Cannot restore exact tracked project files'}
+            $checkoutExit=$LASTEXITCODE
+            $remaining=@($tracked | Where-Object { -not (Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $_)) })
+            if($checkoutExit -ne 0){
+              # This shared Windows repo can have partial-clone missing blobs
+              # even after actions/checkout reports SUCCESS. Native run
+              # 40471465950 recovered 10950/10955 Unity files but failed on
+              # five newly changed PR blobs absent from local Git objects.
+              # Use exact SHA-pinned GitHub bytes for ONLY those absent files.
+              # Never force-clean/reclone, never change caches or owner saves.
+              if($remaining.Count -eq 0){throw "Git checkout failed without missing files: $checkoutExit"}
+              if($remaining.Count -gt 32){throw "Refuse bulk API restoration of $($remaining.Count) missing paths"}
+              $headers=@{
+                Authorization="Bearer $env:GH_TOKEN"
+                Accept='application/vnd.github+json'
+                'User-Agent'='Eldoria-exact-blob-recovery'
+                'X-GitHub-Api-Version'='2022-11-28'
+              }
+              foreach($file in $remaining){
+                $expected=(& git rev-parse "$($env:GITHUB_SHA):$file").Trim()
+                if($LASTEXITCODE -ne 0 -or $expected -notmatch '^[0-9a-f]{40}
+          foreach($required in @(
+            'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity',
+            'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ContextHud.cs',
+            'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs',
+            'Unity/Packages/manifest.json'
+          )){
+            if(-not(Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $required))){
+              throw "Integrated UI V3 candidate input missing: $required"
+            }
+          }
+          # Camera fixtures are test inputs outside Unity/. A reused sparse
+          # workspace may omit them even when the project itself is complete.
+          # Restore only absent exact-commit files; refuse changed local inputs.
+          foreach($fixture in @('docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json')){
+            $expected=(& git rev-parse "$($env:GITHUB_SHA):$fixture").Trim()
+            if($LASTEXITCODE -ne 0 -or $expected -notmatch '^[0-9a-f]{40}$'){throw "Missing tracked camera fixture: $fixture"}
+            if(-not(Test-Path -LiteralPath $fixture)){
+              & git checkout --ignore-skip-worktree-bits $env:GITHUB_SHA -- $fixture
+              if($LASTEXITCODE){throw "Cannot restore exact camera fixture: $fixture"}
+            }
+            $actualFixture=(& git hash-object -- $fixture).Trim()
+            if($LASTEXITCODE -ne 0 -or $actualFixture -ne $expected){throw "Camera fixture differs from certified candidate: $fixture"}
+            Write-Host "ELDORIA_EXACT_CAMERA_FIXTURE_READY $fixture $expected"
+          }
+          Write-Host "ELDORIA_V3_EXACT_TRACKED_PROJECT_READY"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: ui-live-ownership
+          sparse-checkout: pipeline/active-workstreams.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Respect shared Windows native-editor lease
+        shell: powershell
+        run: |
+          # Ownership changes independently of the exact candidate source.
+          # Read current main, never a stale PR merge snapshot's old reservation.
+          $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
+          $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          $ui=@($claims|Where-Object {$_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          # An active UI owner may validate its own reservation. With no
+          # reservations, preserve the existing ordinary progression CI path.
+          # Never couple future tests to one temporary executor's identity.
+          if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $ui.Count -ne 1)){throw "Windows native lease belongs to another workstream: $($claims.id -join ', ')"}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Unity or Blender already running; UI gate must not interrupt another job'
+          }
+      - name: Verify Unity 6.3.23f1
+        shell: powershell
+        run: |
+          if (-not (Test-Path $env:UNITY_EDITOR_PATH)) { throw "UNITY_EDITOR_PATH not found" }
+          $version = & $env:UNITY_EDITOR_PATH -version
+          if ($version -notmatch "6000\.3\.23f1") { throw "Wrong Unity version: $version" }
+
+      - name: Work around verified Unity 6.3 Search-index startup corruption without changing art
+        shell: powershell
+        run: |
+          # Reuse the proven valoria-reference-clean native-editor recovery:
+          # UnityEditor.Search.SearchDatabase.IndexationOnStartup threw
+          # ArgumentOutOfRangeException on the exact V3 candidate in run 39564761151.
+          # This alters only temporary editor preferences/cache, never assets,
+          # gameplay, scene bytes, source, progression, or owner saves.
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-original-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-created-$env:GITHUB_RUN_ID.flag"
+          if((Test-Path $backup) -or (Test-Path $created)){
+            throw 'Existing current-run Search-index backup must be reconciled before rerun'
+          }
+          if(Test-Path $settings){
+            Copy-Item -LiteralPath $settings -Destination $backup
+            try{$config=Get-Content -LiteralPath $settings -Raw -Encoding UTF8|ConvertFrom-Json -ErrorAction Stop}
+            catch{throw 'Original Unity Editor Search.index malformed; preserve original and refuse blind replacement'}
+            if($config.PSObject.Properties['roots']){
+              $config.roots=@()
+              $config|ConvertTo-Json -Depth 32|Set-Content $settings -Encoding UTF8
+            }
+          }else{
+            New-Item -ItemType Directory -Force (Split-Path $settings)|Out-Null
+            $config=[ordered]@{
+              name='Assets';type='asset';roots=@();includes=@();
+              excludes=@('Assets/Temp/','Assets/External/','Temp/')
+              options=@{disabled=$false;types=$true;properties=$true;extended=$true;dependencies=$true}
+              baseScore=999
+            }
+            $config|ConvertTo-Json -Depth 16|Set-Content $settings -Encoding UTF8
+            'created only for V3 CI'|Set-Content $created -Encoding ASCII
+          }
+          $current=Get-Content $settings -Raw -Encoding UTF8|ConvertFrom-Json
+          if($current.PSObject.Properties['roots'] -and @($current.roots).Count -ne 0){
+            throw 'Editor-only search index roots must be empty during V3 validation'
+          }
+          $cache=Join-Path $project 'Library/Search'
+          $cacheBackup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-cache-$env:GITHUB_RUN_ID"
+          if(Test-Path $cacheBackup){throw 'Existing same-run Search cache backup must not be overwritten'}
+          if(Test-Path $cache){
+            Move-Item -LiteralPath $cache -Destination $cacheBackup -ErrorAction Stop
+            Write-Host "ELDORIA_V3_SEARCH_CACHE_ISOLATED $cacheBackup"
+          }
+          Write-Host "ELDORIA_V3_PROVEN_SEARCH_INDEX_RECOVERY_APPLIED"
+
+      - name: Capture and validate existing real integrated I-II scene in Unity
+        shell: powershell
+        run: |
+          # The existing ValoriaIntegrationBuild.ValidateCurrent test plays the
+          # real scene with a probe-only disposable save and checks real pointer
+          # raycasts, both orientations, story, construction, World and I-II.
+          # Do not modify any art, prefab, saved game or canonical publication.
+          # Preserve the ORIGINAL V2 native framing metrics, without
+          # changing the checked-in baseline or taking credit for old runs.
+          $e=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
+          $baselineFile=Join-Path $env:RUNNER_TEMP "Eldoria-V2-Native-Framing-Baseline-$env:GITHUB_RUN_ID.json"
+          # On the shared Windows runner, a previous task can leave a sparse
+          # checkout that omits docs/evidence even though the blob is tracked.
+          # Read the original baseline directly from THIS PR merge commit's
+          # Git tree. Do not overwrite another workstream's evidence on disk.
+          $blobRef="$($env:GITHUB_SHA):docs/evidence/valoria-reference-clean/integration-result.json"
+          $baselineLines=@(& git show $blobRef)
+          if($LASTEXITCODE -ne 0 -or $baselineLines.Count -lt 8){
+            throw 'Original native V2 baseline blob missing from exact Git commit'
+          }
+          $baselineText=$baselineLines -join "`n"
+          try{$original=$baselineText|ConvertFrom-Json -ErrorAction Stop}
+          catch{throw 'Original exact-Git V2 baseline JSON could not be parsed'}
+          if($original.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED' -or @($original.framing).Count -lt 10){
+            throw 'Original exact-Git V2 baseline is not an acceptable full I-II capture'
+          }
+          [IO.File]::WriteAllText($baselineFile,$baselineText,([System.Text.UTF8Encoding]::new($false)))
+          Write-Host "ELDORIA_V2_SOURCE_BASELINE_FROM_EXACT_GIT_TREE $($env:GITHUB_SHA)"
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-V3-Native-I-II-Visual.log'
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent',
+            '-logFile',$log)
+          $process=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          # A known editor-only SearchDatabase crash previously left this
+          # exact test running until its 30-minute timeout (run 39564761151).
+          # Detect it early AFTER the reversible Search-index recovery, so a
+          # genuine remaining infrastructure problem does not hoard the PC.
+          $deadline=(Get-Date).AddMinutes(30)
+          while(-not $process.WaitForExit(10000)){
+            if(Test-Path $log){
+              $tail=Get-Content -LiteralPath $log -Tail 700 -ErrorAction SilentlyContinue|Out-String
+              if($tail.Contains('ArgumentOutOfRangeException') -and
+                 $tail.Contains('UnityEditor.Search.SearchDatabase')){
+                & taskkill.exe /PID $process.Id /T /F | Out-Null
+                throw 'Unity SearchDatabase indexing fault persisted despite the exact reversible workaround'
+              }
+            }
+            if((Get-Date) -ge $deadline){
+              if(Test-Path $log){Get-Content $log -Tail 180}
+              & taskkill.exe /PID $process.Id /T /F | Out-Null
+              throw 'Native I-II viewport/capture probe exceeded 30 minutes'
+            }
+          }
+          if($process.ExitCode -ne 0){
+            if(Test-Path $log){Get-Content $log -Tail 180}
+            throw "Native I-II visual probe failed: $($process.ExitCode)"
+          }
+          $e=Join-Path $env:GITHUB_WORKSPACE 'docs/evidence/valoria-reference-clean'
+          foreach($file in @(
+            'integration-story-aldric.png',
+            'integration-city-16x9.png',
+            'integration-construction-landscape.png',
+            'integration-construction-portrait.png',
+            'integration-world-16x9.png',
+            'integration-world-portrait.png',
+            'integration-bastion-upgrade.png',
+            'integration-training-portrait.png',
+            'integration-march-landscape.png',
+            'integration-march-portrait.png',
+            'integration-chapter2-complete.png',
+            'integration-result.json'
+          )){
+            if(-not(Test-Path (Join-Path $e $file))){throw "Missing real Unity evidence: $file"}
+          }
+          $result=Get-Content (Join-Path $e 'integration-result.json') -Raw|ConvertFrom-Json
+          if($result.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){
+            throw "Existing I-II probe not accepted: $($result.status) $($result.error)"
+          }
+          # Measure actually-free camera area in BOTH mobile orientations,
+          # using the existing certified native framing rectangles, and
+          # compare like-for-like against V2 for each same gameplay state.
+          $before=Get-Content $baselineFile -Raw|ConvertFrom-Json
+          $v3Targets=@(
+            'integration-construction-landscape.png',
+            'integration-construction-portrait.png',
+            'integration-bastion-upgrade.png',
+            # Training deliberately leaves the city for an opaque management
+            # destination. Do NOT test the city viewport behind that screen:
+            # the correct acceptance gate is native PlayMode full-screen,
+            # topmost raycast, camera restoration and screenshot presence.
+            'integration-art-forest-valoria-landscape.png',
+            'integration-art-forest-valoria-portrait.png'
+          )
+          foreach($capture in $v3Targets){
+            $old=@($before.framing | Where-Object {$_.capture -eq $capture})
+            $new=@($result.framing | Where-Object {$_.capture -eq $capture})
+            if($old.Count -ne 1 -or $new.Count -ne 1 -or -not $new[0].pass){
+              throw "HUD V3 missing successful like-for-like native camera framing: $capture"
+            }
+            $oldRect=@($old[0].visible)
+            $newRect=@($new[0].visible)
+            if($oldRect.Count -ne 4 -or $newRect.Count -ne 4){
+              throw "Invalid native viewport coordinates: $capture"
+            }
+            # Math.Max(0, Double) resolves the Integer overload under
+            # Windows PowerShell 5.1: 0.46 became 0 and 0.78 became 1.
+            # The old gate falsely reported V2=0% / V3=100% for EVERY frame.
+            # Preserve fractional coordinates and reject non-finite geometry.
+            $coords=@($oldRect)+@($newRect)
+            foreach($v in $coords){
+              $number=[double]$v
+              if([double]::IsNaN($number) -or [double]::IsInfinity($number) -or
+                 $number -lt 0.0 -or $number -gt 1.0){
+                throw "Invalid native normalized framing coordinate: $v ($capture)"
+              }
+            }
+            $oldW=[double]$oldRect[2]-[double]$oldRect[0]
+            $oldH=[double]$oldRect[3]-[double]$oldRect[1]
+            $newW=[double]$newRect[2]-[double]$newRect[0]
+            $newH=[double]$newRect[3]-[double]$newRect[1]
+            if($oldW -le 0.0 -or $oldH -le 0.0 -or
+               $newW -le 0.0 -or $newH -le 0.0){
+              throw "Degenerate or inverted real Unity viewport: $capture"
+            }
+            [double]$oldArea=$oldW*$oldH
+            [double]$newArea=$newW*$newH
+            [double]$gain=$newArea-$oldArea
+            Write-Host ("ELDORIA_V3_FREE_VIEWPORT capture={0} V2={1:N1}% V3={2:N1}% gain={3:N1}pp" -f $capture,($oldArea*100),($newArea*100),($gain*100))
+            # An eight-percentage-point increase is meaningful; leave V2
+            # untouched if the contextual cards merely moved the occlusion.
+            if($gain -lt .08){
+              throw "V3 did not reclaim at least 8 percentage points of real free scene: $capture"
+            }
+          }
+          # Independent destinations have no visible city viewport by design;
+          # verify actual native screenshots instead of pretending camera space
+          # is visible behind their opaque artwork.
+          foreach($capture in @('integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
+            $path=Join-Path $e $capture
+            if(-not(Test-Path $path)){throw "Missing genuine full-screen management capture: $capture"}
+            if((Get-Item $path).Length -lt 4096){throw "Management capture too small: $capture"}
+            if(@($result.framing | Where-Object {$_.capture -eq $capture}).Count -ne 0){
+              throw "Management screen was wrongly certified as exposed-city camera: $capture"
+            }
+            Write-Host "ELDORIA_V3_NATIVE_MANAGEMENT_SCREEN=$capture"
+          }
+          Write-Host "ELDORIA_V3_REAL_NATIVE_I_II_PROBE=$($result.status)"
+          Write-Host "ELDORIA_V3_CHECKS=$(@($result.checks).Count) CAPTURES=$(@(Get-ChildItem $e -Filter 'integration*.png').Count)"
+          Write-Host "Native visual evidence still requires owner inspection before merge/publish."
+
+      - name: EditMode
+        shell: powershell
+        run: |
+          $xml = Join-Path $env:RUNNER_TEMP 'Eldoria-UIProgression-EditMode.xml'
+          $log = Join-Path $env:RUNNER_TEMP 'Eldoria-UIProgression-EditMode.log'
+          Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          if(-not(Test-Path $project)){throw 'Unity source project is missing from current main checkout'}
+          # Unity 6 on this Windows runner misreads mixed C:\\.../Unity as a
+          # relative path and prepends the workspace again (run 39174538409).
+          # Use a pure relative project name with explicit working directory.
+          $args = @("-batchmode","-nographics","-projectPath","Unity","-runTests","-testPlatform","EditMode","-testResults",$xml,"-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity EditMode timed out after 10 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Unity EditMode failed with exit code $($process.ExitCode)." }
+          [xml]$results = Get-Content $xml
+          if ($results.'test-run'.result -ne "Passed") { throw "EditMode tests did not pass: $($results.'test-run'.result)" }
+
+      - name: PlayMode — UI and progression contract
+        shell: powershell
+        run: |
+          $xml = Join-Path $env:RUNNER_TEMP 'Eldoria-UIProgression-PlayMode.xml'
+          $log = Join-Path $env:RUNNER_TEMP 'Eldoria-UIProgression-PlayMode.log'
+          Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          if(-not(Test-Path $project)){throw 'Unity source project is missing from current main checkout'}
+          # Unity 6 on this Windows runner misreads mixed C:\\.../Unity as a
+          # relative path and prepends the workspace again (run 39174538409).
+          # Use a pure relative project name with explicit working directory.
+          # The genuine World4X camera tests require a real graphics device.
+          # Preserve every test and require all cases to pass; never ignore captures.
+          $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "eldoria-ui-region1-captures-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+          New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT | Out-Null
+          $args = @("-batchmode","-force-d3d11","-projectPath","Unity","-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity PlayMode timed out after 10 minutes."
+          }
+          if ($process.ExitCode -ne 0) {
+            if (Test-Path $xml) {
+              [xml]$failed = Get-Content $xml
+              $failed.SelectNodes("//test-case[@result='Failed']") | ForEach-Object {
+                Write-Host "FAILED TEST: $($_.GetAttribute('fullname'))"
+                Write-Host $_.OuterXml
+              }
+            }
+            if (Test-Path $log) { Get-Content $log -Tail 100 }
+            throw "Unity PlayMode failed with exit code $($process.ExitCode)."
+          }
+          [xml]$results = Get-Content $xml
+          if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
+          $cases=@($results.SelectNodes('//test-case'))
+          if($cases.Count -lt 61 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Expected the complete 61+ PlayMode suite with no ignored or failed cases'}
+
+      - name: Summarize certified checks
+        shell: powershell
+        run: |
+          [xml]$edit = Get-Content "$env:RUNNER_TEMP/Eldoria-UIProgression-EditMode.xml"
+          [xml]$play = Get-Content "$env:RUNNER_TEMP/Eldoria-UIProgression-PlayMode.xml"
+          Write-Host "UI_PROGRESSION_CERT=PASS"
+          Write-Host "EDITMODE_TOTAL=$($edit.'test-run'.total) PASSED=$($edit.'test-run'.passed) FAILED=$($edit.'test-run'.failed)"
+          Write-Host "PLAYMODE_TOTAL=$($play.'test-run'.total) PASSED=$($play.'test-run'.passed) FAILED=$($play.'test-run'.failed)"
+          Write-Host "REFERENCE_UI_TEST=ReferenceUiArtPassTests"
+          Write-Host "PROGRESSION_TEST=ValoriaProgressionContractGatesCuartelVisualAndInteraction"
+
+      - name: Restore original Unity Editor Search preferences and cache after native checks
+        if: always()
+        shell: powershell
+        run: |
+          $project=Join-Path $env:GITHUB_WORKSPACE 'Unity'
+          $settings=Join-Path $project 'UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-original-$env:GITHUB_RUN_ID.json"
+          $created=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-created-$env:GITHUB_RUN_ID.flag"
+          if(Test-Path $backup){
+            Copy-Item -LiteralPath $backup -Destination $settings -Force
+            Write-Host 'Original Unity Search.index restored without rewriting source'
+          }elseif(Test-Path $created){
+            if(Test-Path $settings){Remove-Item -LiteralPath $settings -Force}
+            Write-Host 'Temporary Unity Search.index removed; original did not exist'
+          }
+          $cache=Join-Path $project 'Library/Search'
+          $cacheBackup=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-cache-$env:GITHUB_RUN_ID"
+          if(Test-Path $cacheBackup){
+            if(Test-Path $cache){
+              $post=Join-Path $env:RUNNER_TEMP "eldoria-ui-v3-search-new-$env:GITHUB_RUN_ID"
+              if(Test-Path $post){throw 'Refuse overwriting an existing post-validation Search cache'}
+              Move-Item -LiteralPath $cache -Destination $post -ErrorAction Stop
+            }
+            Move-Item -LiteralPath $cacheBackup -Destination $cache -ErrorAction Stop
+            Write-Host 'Existing Editor Search cache restored; temporary new index isolated'
+          }
+          Write-Host 'ELDORIA_V3_EDITOR_SEARCH_RECOVERY_RESTORED'
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-ui-progression-cert-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/Eldoria-UIProgression-EditMode.xml
+            ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml
+            ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
+            ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
+            ${{ runner.temp }}/eldoria-ui-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
+            ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log
+            ${{ runner.temp }}/Eldoria-V2-Native-Framing-Baseline-*.json
+            docs/evidence/valoria-reference-clean/integration-*.png
+            docs/evidence/valoria-reference-clean/integration-result.json
+          if-no-files-found: warn
+          retention-days: 30
+
+){
+                  throw "No exact committed blob for $file"
+                }
+                $dest=Join-Path $env:GITHUB_WORKSPACE $file
+                if(Test-Path -LiteralPath $dest){throw "Refuse overwrite of $file"}
+                $url="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/$($file.Replace(' ','%20'))?ref=$env:GITHUB_SHA"
+                $blob=Invoke-RestMethod -Uri $url -Headers $headers -Method Get -ErrorAction Stop
+                if($blob.encoding -ne 'base64' -or $blob.sha -ne $expected -or -not $blob.content){
+                  throw "API blob does not match $file at exact PR merge SHA"
+                }
+                $bytes=[Convert]::FromBase64String($blob.content)
+                $parent=Split-Path -Parent $dest
+                if(-not(Test-Path -LiteralPath $parent)){
+                  New-Item -Path $parent -ItemType Directory -Force | Out-Null
+                }
+                [System.IO.File]::WriteAllBytes($dest,$bytes)
+                $actual=(& git hash-object -- $dest).Trim()
+                if($LASTEXITCODE -ne 0 -or $actual -ne $expected){
+                  Remove-Item -LiteralPath $dest -Force
+                  throw "Exact Git SHA verification failed for $file"
+                }
+                Write-Host "ELDORIA_V3_RECOVERED_EXACT_BLOB $file $expected"
+              }
+            }
             $remaining=@($tracked | Where-Object { -not (Test-Path -LiteralPath (Join-Path $env:GITHUB_WORKSPACE $_)) })
             if($remaining.Count){throw "Still missing $($remaining.Count) tracked Unity source files"}
           }
