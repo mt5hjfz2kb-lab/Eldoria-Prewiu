@@ -182,7 +182,22 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return new WaitForSecondsRealtime(.36f);RevealNarrativeForCapture(h,"Lyra","hermano");yield return null;UiShot(h,"lyra-contact");RequireNarrativePanelRendered("lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
    for(int i=0;i<30&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
    Need(h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"Lyra dialogue completed");
-   Shot(h,"fissure-A-open",h.WorldCamera);Command(h,"Fight","fissure-valoria");Need(h.City.Gateway.Snapshot().March.Route.Count>1,"real reachable fissure route");Step(h,2);yield return null;Shot(h,"fissure-B-scar",h.WorldCamera);Step(h,7);yield return null;Shot(h,"fissure-C-closed",h.WorldCamera);
+   Shot(h,"fissure-A-open",h.WorldCamera);
+   Command(h,"Fight","fissure-valoria");
+   Need(h.City.Gateway.Snapshot().March.Route.Count>1,"real reachable fissure route");
+   // Capture the scar AFTER verified one-time victory, not an outbound march.
+   // Old A/B source screenshots were identical even when tests were green.
+   for(int i=0;i<20&&!h.City.Gateway.Snapshot().ChapterThree.FissureClosed;i++){
+    Step(h,1);yield return null;
+   }
+   var closed=h.City.Gateway.Snapshot().ChapterThree;
+   Need(closed.FissureClosed&&closed.ClosingEndsUtcTicks>h.City.Clock.UtcTicks,
+     "actual victorious private fissure enters 6.5-second scar window");
+   Shot(h,"fissure-B-scar",h.WorldCamera);
+   RequireVisibleUpgrade("fissure-A-open-horizontal","fissure-B-scar-horizontal",120);
+   Step(h,7);yield return null;
+   Shot(h,"fissure-C-closed",h.WorldCamera);
+   RequireVisibleUpgrade("fissure-B-scar-horizontal","fissure-C-closed-horizontal",120);
    Need(mainBreach&&mainBreach.sharedMesh==mainBreachMesh&&mainBreach.transform.position==mainBreachPosition&&mainBreach.transform.localScale==mainBreachScale,"main Breach geometry preserved after private closure");
    Need(!fissure.gameObject.activeInHierarchy,"private fissure fully disappears");
    h.City.ReloadForProbe();
