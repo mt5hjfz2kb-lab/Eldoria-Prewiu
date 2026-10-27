@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "aldric-h31-text-validated-20261027",
   "module_label": "Eldoria_SirAldric_HeroPilot_v1",
   "unity_yaw_degrees": 0,
@@ -10,9 +10,9 @@
     "prompt": "Sir Aldric, veteran male knight hero of Valoria, Eldoria dark medieval fantasy strategy game. Full-body standalone character in neutral symmetrical A-pose, arms slightly away from body and legs separated, anatomically plausible human proportions. Age 55, swept-back silver grey hair, short grey beard, lined noble serious face, weathered but kind and resolute. Layered worn charcoal steel plate armor with articulated shoulder, elbow, knee and wrist joints, old leather belts and gloves, subtle antique gold trim, dark navy blue tunic and cape draping behind shoulders, restrained heraldic detail. Grounded guardian commander of a ruined kingdom, not a king or flashy superhero. Stylized semi-realistic high-quality PBR, crisp silhouette for 4X mobile viewing, riggable clean human limbs and fingers. Exactly two arms, two legs, ten fingers; no helmet, swords, shields, weapons, wings, horns, pedestal, environment, text, logos, fused limbs or cartoon styling."
   },
   "credit_authorization": {
-    "approved": true,
-    "authorized_credit_cost": 20,
-    "scope": "User expressly requested one Sir Aldric model with Tripo API on 2026-10-27. Exactly ONE H3.1 standard-texture text-to-3D task at published 20 API credits from existing prepaid balance; preflight doctor and >=20 available. No automatic second task, no topology extras, rigging, retarget or further spend."
+    "approved": false,
+    "authorized_credit_cost": 0,
+    "scope": "CLOSED: Exact single task f827067d-927e-4172-9bb8-6ee813176d58 succeeded at 20 API credits, run 40527678020. Any future paid generation needs fresh explicit authorization and a new unique request ID."
   },
   "refinement": {
     "enabled": false
@@ -30,9 +30,17 @@
   },
   "visual_acceptance": "Sir Aldric early-game veteran knight hero for Eldoria. Grey hair and beard, expressive weathered age 50-60 face, dark steel and deep-blue fabric, approachable noble guardian. Exactly two arms and two legs, anatomically plausible A-pose full body, identifiable armor and separate-looking cloak, no fused props or hands, no sword, no background. Real Unity 4-camera plus strategic views. This text-input first pilot cannot be claimed to match the historical portrait exactly: independent ART_REVIEW required; no gameplay integration or publishing.",
   "run_nonce": "aldric-validated-prompt-single-task-20261027",
-  "notes": "First attempt run 40524851336 rejected by Tripo API before creating any task: prompt exceeded 1024 characters, HTTP validation rejection; no credits consumed. This is the first VALID task input with <=1024 ASCII characters, authorized once only. Never retry after task creation; recover task ID if CLI fails.",
+  "notes": "ONE confirmed Tripo paid source and editable Blender, no regeneration. This request has been disabled. The same run's Unity gate failed because its editor class was unavailable in checkout, unrelated to GLB generation. Art review PENDING. See docs/ALDRIC_HERO_PREPRODUCCION_20261027.md.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
+  },
+  "completed_source": {
+    "task_id": "f827067d-927e-4172-9bb8-6ee813176d58",
+    "source_run_id": 40527678020,
+    "credits_consumed": 20,
+    "raw_sha256": "0c1ed418172872cf15c34163777c78341290a77a264678173eea9eec51b7fc13",
+    "optimized_sha256": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595",
+    "status": "GENERATED_AND_PRESERVED_IN_ARTIFACT_NOT_INTEGRATED"
   }
 }
