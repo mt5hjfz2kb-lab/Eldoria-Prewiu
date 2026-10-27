@@ -15,7 +15,15 @@ def mat(name,color,rough=.85):
  p.inputs['Base Color'].default_value=(*color,1);p.inputs['Roughness'].default_value=rough
  return m
 def mesh(name,verts,faces,material):
- me=bpy.data.meshes.new(name);me.from_pydata(verts,[],faces);me.update();o=bpy.data.objects.new(name,me);bpy.context.collection.objects.link(o);o.data.materials.append(material);return o
+ # Keep all shallow surfaces front-facing in the actual overhead camera.
+ # A reversed winding silently culls the soil shoulder, leaving a bright strip.
+ front=[]
+ for face in faces:
+  v0,v1,v2=(Vector(verts[j]) for j in face[:3])
+  normal=(v1-v0).cross(v2-v0)
+  front.append(tuple(reversed(face)) if normal.z<0 else face)
+ me=bpy.data.meshes.new(name);me.from_pydata(verts,[],front);me.update()
+ o=bpy.data.objects.new(name,me);bpy.context.collection.objects.link(o);o.data.materials.append(material);return o
 def export(name):
  bpy.ops.object.select_all(action='DESELECT')
  objs=[o for o in bpy.context.scene.objects if o.type=='MESH']
