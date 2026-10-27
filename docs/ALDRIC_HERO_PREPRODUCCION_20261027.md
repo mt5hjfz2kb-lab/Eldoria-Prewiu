@@ -119,3 +119,21 @@ La fuente es una figura humana reconocible, armadura compleja y rostro veterano 
 **Resultado:** `TRIPO_SOURCE_CREATED=PASS`, `BLENDER_PROCESS=PASS`, `UNITY_ART_GATE=FAILED_ENVIRONMENT`, `ANIMATED=NO`, `ART_APPROVED=PENDING`, `MOBILE=NOT_TESTED`, `INTEGRATED_IN_GAME=NO`. El modelo existe y está entregado en el paquete de conversación; el render de revisión no es el resultado de Unity.
 
 **No generar otra tarea Tripo para corregir este error de Unity**, ni relanzar la tarea pagada. Próxima mejora si se decide: ajustar carácter/armadura, incorporar capa azul con geometría editable en Blender; comprobar en Unity aislado mínimamente reconstruido y después rig humanoide, bajo titular de escena y sin cambiar guardados. Un cambio del rostro de referencia requeriría aprobación artística distinta, no una regeneración automática.
+
+## 8. Art Pass local con capa azul real — 27/10/2026
+
+El propietario pidió **mejorar el modelo auténtico**, sin nuevos créditos Tripo. Se tomó como entrada exacta `SirAldric_Blender_49800tris.glb` (SHA256 `b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595`) y se preparó una candidata `SirAldric_ArtPass_CapaAzul_v1.glb` de **57.332 triángulos** (SHA256 `b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555`).
+
+Cambios **sobre geometría 3D auténtica**, sin una nueva inferencia generativa:
+- Capa azul profundo de Valoria de cuerpo completo, como **malla independiente** y con textura textil PBR propia; borde desgastado y caída que se abre ligeramente bajo la cadera.
+- Capa superior corta sobre hombros y dos broches decorativos.
+- Tratamiento de materiales de armadura más mate y textiles azules más visibles.
+- La malla original **conserva exactamente los 49.800 triángulos, posiciones, caras y UV**; las partes nuevas están separadas para autoría de rig posterior. 10 componentes/mallas totales.
+- Se verificó la recarga del GLB y se renderizó directamente desde el modelo con VTK en frente, espalda y tres cuartos. La comparación se hizo con cámara equivalente, no pintura sobre una captura.
+
+**Rutas de entrega de este chat** (archivos de la sesión de trabajo, **no versionados en GitHub ni integrados en Unity**): 
+- `/mnt/data/aldric_artpass/SirAldric_ArtPass_CapaAzul_v1.glb`
+- `/mnt/data/Eldoria_SirAldric_ArtPass_CapaAzul_REAL_20261027.zip` (original, nuevo GLB, Blender anterior al cambio, receta reproducible, albedo, comparativas y QA)
+- `/mnt/data/aldric_artpass/build_aldric.py`, `ALDRIC_mejorado_3cuartos.png`, `ALDRIC_mejorado_espalda.png`, `ALDRIC_Comparativa_Real_Antes_Despues.jpg`, `Aldric_artpass_report.json`
+
+**Limitaciones explícitas:** la forma del **rostro sigue siendo la generada por Tripo**, no se ha esculpido la semejanza con el concepto histórico; la nueva capa **no tiene skinning, colisiones dinámicas ni física**; no existen capturas nuevas de Unity, prueba móvil o aprobación artística del propietario. El archivo `.blend` del paquete **es la fuente original antes del art pass** y la versión nueva debe importarse en Blender si se quiere editar y guardar un `.blend` actualizado. No cambiar la escena I–III, las animaciones ni las partidas con esta candidata hasta veredicto artístico y QA del titular de Unity. El coste Tripo adicional es **0 créditos**.
