@@ -592,8 +592,12 @@ namespace Eldoria.UI.RoyalGold.V2
             bool vertical = safe.rect.height > safe.rect.width;
             float availableWidth = Mathf.Max(150f, safe.rect.width - 12f);
             float columnGap = vertical ? 4f : 9f;
-            int columns = vertical && count > 4 &&
-                (availableWidth - 16f - columnGap * (count - 1)) / count < 51f
+            // A 390px portrait must NEVER squeeze five/six actions into
+            // 51-unit targets with 10-point labels. Keep one row only while
+            // each action retains at least 72 logical units; otherwise use
+            // two compact edge-attached rows with the SAME live callbacks.
+            int columns = vertical && count > 2 &&
+                (availableWidth - 12f - columnGap * (count - 1)) / count < 72f
                 ? Mathf.CeilToInt(count / 2f) : count;
             int rows = Mathf.CeilToInt((float)count / columns);
             float rowGap = rows > 1 ? 3f : 0f;
@@ -688,7 +692,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     caption.anchoredPosition =
                         new Vector2(0f, -buttonHeight * .33f);
                     item.Label.fontSize = Mathf.RoundToInt(Mathf.Clamp(
-                        cellWidth * .19f, 10f, 17f));
+                        cellWidth * .19f, 13f, 17f));
                     item.Label.alignment = TextAnchor.MiddleCenter;
                     item.Label.color = Ivory;
                 }
