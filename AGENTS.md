@@ -1,5 +1,10 @@
 # Arranque vigente — mantenimiento autorizado 21-10-2026
 
+<!-- ELDORIA_SINGLE_CANONICAL_PR_GUARD_20261027 -->
+## Una misión, una PR activa — protección del propietario (27/10/2026)
+
+El encargo «Crónica Real» originó accidentalmente dos PR (#115 y #116); la **única PR viva autorizada es #115**, y #116 está cerrada sin fusionar. Antes de cualquier nueva rama, PR o trabajo Unity, consultar `main/pipeline/active-workstreams.json` y **todas las PR abiertas**; continuar el mismo objetivo en su PR canónica y transferir el mismo ID si cambia de chat. No abrir otra PR ni inventar otro ID para el mismo encargo. Las PR nuevas desde #117 incluyen `Workstream-ID: <id canónico reclamado>` en su descripción. La comprobación read-only `.github/workflows/canonical-pr-ownership.yml` detecta PR duplicadas o cambios sobre otro titular sin ocupar Windows; no sustituye el preflight previo ni garantiza bloquear merges si el check no es obligatorio en la protección de main. No alterar la PR #115 ni lanzar CI pesada por esta corrección. Detalles en `docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md`.
+
 <!-- ELDORIA_OWNER_LEGACY_BASTION_VETO_20261025 -->
 ## Prohibición expresa del propietario — antiguo modelo de Bastión
 
