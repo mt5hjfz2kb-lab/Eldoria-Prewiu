@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T22:52:00Z",
+  "updated_at": "2026-10-27T22:56:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-cronica-real-ux-polish-20261027",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-27T10:59:08Z",
@@ -1150,8 +1150,8 @@
           "reason": "PR117 merged into main and signed Android family code17 published and byte-verified; Unity Bastion III native20 regression PASS. Owner requested release of resources after completion."
         }
       ],
-      "ownership_revision": 45,
-      "ownership_state": "available",
+      "ownership_revision": 46,
+      "ownership_state": "claimed",
       "write_scope_released": true,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
@@ -1247,7 +1247,9 @@
       },
       "authorization": "Owner explicitly requests Bastion III migration after code16 release; released and manifest16 verified. Small visual increments every level, level5 overhaul excluded; real Unity AB and functional/save parity required. Owner reiterates autonomous execution 2026-10-27.",
       "candidate_branch": "feature/bastion-iii-canonical-20261027",
-      "canonical_pr": 117
+      "canonical_pr": 117,
+      "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
+      "last_handoff": "Owner instruction to correct UI/UX on current main, keeping Aldric asset PR independent and avoiding its reserved file."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -1417,9 +1419,9 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": null,
-      "ownership_state": "available",
-      "ownership_revision": 22,
+      "owner": "chatgpt-cronica-real-ux-polish-20261027",
+      "ownership_state": "claimed",
+      "ownership_revision": 23,
       "write_scope_released": true,
       "status": "active",
       "claimed_at": "2026-10-27T09:36:00Z",
@@ -1644,7 +1646,9 @@
         "mobile_physically_tested": false,
         "integrated_in_main": false,
         "reason": "Latest native run has not produced comparable screenshots or all functional proof"
-      }
+      },
+      "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
+      "last_handoff": "Owner instruction to correct UI/UX on current main, keeping Aldric asset PR independent and avoiding its reserved file."
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
