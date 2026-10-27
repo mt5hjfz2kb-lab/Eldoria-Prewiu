@@ -1,0 +1,17 @@
+{
+  "workstream_id": "eldoria-early-retention-systems-20261028",
+  "owner": "chatgpt-cronica-real-ux-polish-20261027",
+  "unity_version": "6000.3.23f1",
+  "mode": "native-scene-two-independent-screens",
+  "steps": [
+    "EditMode exact domain rules",
+    "two progress-gated shortcuts",
+    "landscape and portrait for Vigilants and Scouts",
+    "first real PvE victory",
+    "first persistent Scout dispatch",
+    "no Codex and one RoyalHUD"
+  ],
+  "disposable_probes_only": true,
+  "zero_cost": true,
+  "art_approved": false
+}
