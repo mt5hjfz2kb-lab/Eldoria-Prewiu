@@ -5,6 +5,7 @@ using Eldoria.Domain;
 using Eldoria.Presentation;
 using Eldoria.World4XCanon;
 using UnityEngine;
+using UnityEngine.Rendering;
 namespace Eldoria.ReferenceClean {
  // Presentation only: all unlocks, deadlines, inventory and rewards come from the existing gateway.
  public sealed class BastionIIIWorldPresentation:MonoBehaviour {
@@ -63,7 +64,7 @@ namespace Eldoria.ReferenceClean {
    // Enable the ACTUAL imported renderers along their prefab ancestry, not
    // placeholder cubes or extra copied artwork. The encounter parent retains
    // its original progression / panorama visibility gate.
-   if(path=="BastionIII/AshWolf"||path=="BastionIII/PrivateFissure"){
+   if(path=="BastionIII/AshWolf"||path=="BastionIII/PrivateFissure"||path.StartsWith("Valoria/UrbanProps/",StringComparison.Ordinal)){
     model.SetActive(true);
     foreach(var renderer in model.GetComponentsInChildren<Renderer>(true)){
      for(var node=renderer.transform;node&&node!=parent;node=node.parent)
@@ -140,6 +141,20 @@ namespace Eldoria.ReferenceClean {
   // after Animation evaluation and before the camera renders this frame.
   // Never enable the inactive chapter, respawning hunts, closed fissure,
   // inaccessible zoom, or other global resources.
+  // Imported glTF animation may reset MeshRenderer.enabled late in the frame.
+  // Apply the existing unlocked encounter visibility policy at the actual
+  // camera render boundary as well as Update/LateUpdate. URP receives the SRP
+  // callback; Camera.onPreCull covers the editor's explicit Camera.Render.
+  // This never creates proxy meshes or revives a defeated / locked target.
+  void OnEnable(){RenderPipelineManager.beginCameraRendering+=BeforeWorldRender;Camera.onPreCull+=BeforeLegacyWorldRender;}
+  void OnDisable(){RenderPipelineManager.beginCameraRendering-=BeforeWorldRender;Camera.onPreCull-=BeforeLegacyWorldRender;}
+  void BeforeLegacyWorldRender(Camera camera){BeforeWorldRender(default(ScriptableRenderContext),camera);}
+  void BeforeWorldRender(ScriptableRenderContext context,Camera camera){
+   if(!host||!host.Ready||!host.InWorld||camera!=host.WorldCamera)return;
+   foreach(var id in VisibleAuthoredEncounterIds)
+    if(nodes.TryGetValue(id,out var encounter)&&encounter.activeInHierarchy)
+     EnsureVisibleImportedArt(encounter);
+  }
   void LateUpdate(){
    if(!host||!host.Ready||!host.InWorld)return;
    foreach(var id in VisibleAuthoredEncounterIds){
