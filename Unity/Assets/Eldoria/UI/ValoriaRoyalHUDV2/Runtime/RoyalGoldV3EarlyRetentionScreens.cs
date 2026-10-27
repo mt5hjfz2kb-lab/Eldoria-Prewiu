@@ -34,6 +34,7 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
         readonly RoyalText[] scoutActionLabels=new RoyalText[3];
+        readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
         readonly string[] scoutIds=new string[3];
         RoyalText heading, kicker, introduction, chapter, opponent, formation,
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel;
@@ -177,7 +178,19 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 int index=i;
                 var cell=Panel(infoCard,"Royal scout order "+(i+1));
-                scoutCards[i]=Text(cell,"Real scout order description",17,Ivory);
+                // An illustrated mission CARD, with separate colored cloth
+                // crest, aged parchment and a real wax seal. Backing is purely
+                // visual: the existing action remains the one touch target.
+                var backplate=cell.GetComponent<RoyalGoldV2FrameGraphic>();
+                if(backplate){backplate.enabled=false;backplate.raycastTarget=false;}
+                var artwork=Rect("Crónica Real / illuminated scout contract",cell);
+                artwork.gameObject.AddComponent<CanvasRenderer>();
+                scoutArt[i]=artwork.gameObject.AddComponent<RoyalGoldV3ScoutContractGraphic>();
+                scoutArt[i].Kind=i;
+                scoutArt[i].raycastTarget=false;
+                Stretch(artwork,0);
+                artwork.SetAsFirstSibling();
+                scoutCards[i]=Text(cell,"Real scout order description",17,Ink);
                 scoutActions[i]=Button(cell,"Dispatch or claim scout "+(i+1),
                     "ENVIAR",()=>RunScout(index),out scoutActionLabels[i],true);
                 scoutActions[i].transform.SetParent(cell,false);
@@ -323,8 +336,10 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var cell=scoutCards[i].transform.parent as RectTransform;
                 TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
-                TL(scoutCards[i].rectTransform,10f,9f,
-                    Mathf.Max(75f,iw-(portrait?113f:153f)),spacing-19f);
+                float tab=Mathf.Clamp((iw-24f)*.14f,35f,65f);
+                float captionX=tab+22f;
+                TL(scoutCards[i].rectTransform,captionX,9f,
+                    Mathf.Max(75f,iw-(portrait?115f:153f)-captionX),spacing-19f);
                 TL((RectTransform)scoutActions[i].transform,
                     iw-(portrait?112f:150f),spacing*.5f-19f,
                     portrait?87f:120f,40f);
@@ -398,6 +413,20 @@ namespace Eldoria.UI.RoyalGold.V2
                     }
                     var order=list[i];
                     scoutIds[i]=order.Id;
+                    if(scoutArt[i])
+                    {
+                        bool completed=order.StartedUtcTicks>0&&order.EndsUtcTicks<=now();
+                        bool underway=order.StartedUtcTicks>0&&!completed;
+                        if(scoutArt[i].Kind!=order.Kind||
+                           scoutArt[i].Completed!=completed||
+                           scoutArt[i].InProgress!=underway)
+                        {
+                            scoutArt[i].Kind=order.Kind;
+                            scoutArt[i].Completed=completed;
+                            scoutArt[i].InProgress=underway;
+                            scoutArt[i].SetVerticesDirty();
+                        }
+                    }
                     string state=order.StartedUtcTicks==0?"Disponible":
                         order.EndsUtcTicks<=now()?"Listo para reclamar":
                         "Regreso en "+TimeSpan.FromTicks(order.EndsUtcTicks-now()).ToString(@"hh\:mm\:ss");
