@@ -40,7 +40,7 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
         readonly string[] scoutIds=new string[3];
         RoyalText heading, kicker, introduction, chapter, opponent, formation,
-            reward, battleFeedback, passive, footer, mainActionLabel, xpLabel;
+            reward, battleFeedback, passive, footer, mainActionLabel, xpLabel, backLabel;
         RoyalGoldV3EarlyRetentionArtwork sceneArtwork;
         RoyalGoldV3StageTrailGraphic chapterTrail;
         GameObject screen;
@@ -227,7 +227,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             footer=Text(panel,"No artificial notifications",15,Muted);
             back=Button(panel,"Return to actual kingdom","VOLVER A VALORIA",
-                Close,out var backLabel);
+                Close,out backLabel);
             screen.SetActive(false);
             ready=true;
         }
@@ -362,12 +362,28 @@ namespace Eldoria.UI.RoyalGold.V2
             var panel=panelRoot;
             float bodyX=portrait?18f:pw*.48f;
             float bodyWidth=portrait?pw-36f:pw*.49f-18f;
-            TL(heading.rectTransform,20f,18f,pw-210f,44f);
-            heading.fontSize=portrait?27:34;
-            TL(kicker.rectTransform,20f,61f,pw-35f,27f);
-            TL((RectTransform)back.transform,pw-(portrait?150f:184f)-14f,
-                23f,portrait?150f:184f,46f);
-            float imageTop=portrait?105f:108f;
+            // Two-line real destination title in portrait: do not force a long
+            // Spanish heading into the narrow strip beside the Back button.
+            // Keep the complete name and the actual tap target legible.
+            if(portrait)
+            {
+                TL(heading.rectTransform,18f,12f,pw-135f,62f);
+                heading.fontSize=22;
+                TL(kicker.rectTransform,18f,78f,pw-36f,24f);
+                TL((RectTransform)back.transform,pw-113f,22f,99f,44f);
+                backLabel.Put("VOLVER");
+                backLabel.fontSize=15;
+            }
+            else
+            {
+                TL(heading.rectTransform,20f,18f,pw-210f,44f);
+                heading.fontSize=34;
+                TL(kicker.rectTransform,20f,61f,pw-35f,27f);
+                TL((RectTransform)back.transform,pw-198f,23f,184f,46f);
+                backLabel.Put("VOLVER A VALORIA");
+                backLabel.fontSize=17;
+            }
+            float imageTop=portrait?110f:108f;
             TL(heroScene,portrait?18f:20f,imageTop,
                 portrait?pw-36f:pw*.44f,portrait?Mathf.Clamp(ph*.235f,155,224):ph-168f);
             if(victoryBanner)
@@ -443,9 +459,12 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             heading.Put(vig?"CAMINO DE LOS VIGILANTES":"MESA DE EXPLORADORES");
             kicker.Put(vig?"PRUEBAS DEL REINO · COMBATE AUTOMÁTICO":
-                "ENCARGOS REALES · REGRESOS PERSISTENTES");
+                (width<550f?"ENCARGOS DE EXPLORACIÓN":
+                "ENCARGOS REALES · REGRESOS PERSISTENTES"));
             introduction.gameObject.SetActive(false);
-            chapter.gameObject.SetActive(vig); // Scout board uses its own three distinct mission cards.
+            // The board reserves a 57 px header; show its actual section title
+            // instead of leaving a dead band above the three illustrated cards.
+            chapter.gameObject.SetActive(true);
             opponent.gameObject.SetActive(vig);
             formation.gameObject.SetActive(vig);
             reward.gameObject.SetActive(vig);
@@ -467,7 +486,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     sceneArtwork.BossEncounter=boss;
                     sceneArtwork.SetVerticesDirty();
                 }
-                kicker.Put(info.Scene.ToUpperInvariant()+" · "+
+                kicker.Put(width<550f
+                    ?(boss?"GUARDIÁN · ":"PRUEBA · ")+info.Scene.ToUpperInvariant()
+                    :info.Scene.ToUpperInvariant()+" · "+
                     (boss?"GUARDIÁN ESPECIAL":"COMBATE AUTOMÁTICO"));
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
                 opponent.Put(info.Name+"\nRasgo: "+info.Trait);
