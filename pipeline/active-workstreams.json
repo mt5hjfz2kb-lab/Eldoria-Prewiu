@@ -20,7 +20,7 @@
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "chatgpt-bastion-iii-unity-migration-20261027",
-      "branch": "feature/bastion-iii-canonical-20261027",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-27T10:59:08Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
@@ -84,9 +84,12 @@
         "Unity/Assets/Eldoria/Tests/PlayMode/BastionIII*",
         "docs/bastion-iii/**",
         "tools/bastion-iii/**",
-        ".github/workflows/bastion-iii-native.yml"
+        ".github/workflows/bastion-iii-native.yml",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -1118,7 +1121,7 @@
           "phase": "VALORIA_ART_CONSOLIDATED_ANDROID_FAMILY_116_RELEASED"
         }
       ],
-      "ownership_revision": 42,
+      "ownership_revision": 43,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
@@ -1213,7 +1216,9 @@
         "bastion_III_started": false,
         "budget_eur": 0
       },
-      "authorization": "Owner explicitly requests Bastion III migration after code16 release; released and manifest16 verified. Small visual increments every level, level5 overhaul excluded; real Unity AB and functional/save parity required. Owner reiterates autonomous execution 2026-10-27."
+      "authorization": "Owner explicitly requests Bastion III migration after code16 release; released and manifest16 verified. Small visual increments every level, level5 overhaul excluded; real Unity AB and functional/save parity required. Owner reiterates autonomous execution 2026-10-27.",
+      "candidate_branch": "feature/bastion-iii-canonical-20261027",
+      "canonical_pr": 117
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
