@@ -1,7 +1,7 @@
 {
-  "revision": 4,
+  "revision": 5,
   "stage": "parity-persistence-build-safe-art-and-real-Unity-AB",
   "budget": 0,
   "artApproved": false,
-  "reason": "Pinned CC0 wolf; isolated gameplay probe; bounded sparse native checkout"
+  "reason": "Replace own stalled checkout with bounded sparse checkout; native UI and main Breach assertions"
 }

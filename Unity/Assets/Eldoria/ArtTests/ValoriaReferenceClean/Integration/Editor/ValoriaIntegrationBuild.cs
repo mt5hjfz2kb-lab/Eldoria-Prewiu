@@ -580,7 +580,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,"Royal action raycast blocked: "+button.name+" point="+p+" screen="+Screen.width+"x"+Screen.height+" buttonGraphicDepth="+button.targetGraphic.depth+" buttonGraphicCull="+button.targetGraphic.canvasRenderer.cull+" graphicEnabled="+button.targetGraphic.isActiveAndEnabled+" graphicRaycast="+button.targetGraphic.raycastTarget+" buttonRect="+((RectTransform)button.transform).rect+" graphicCanvas="+(button.targetGraphic.canvas?button.targetGraphic.canvas.name:"NONE")+" buttonPosition="+button.transform.position+" corners="+corners[0]+" to "+corners[2]+" parent="+button.transform.parent.name+" parentActive="+button.transform.parent.gameObject.activeInHierarchy+" hits="+string.Join(",",hits.Select(x=>x.gameObject.name+":"+x.depth)));
    ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerUpHandler);ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerClickHandler);
   }
-  static void Capture(ValoriaIntegratedWorld h,string name,int width,int height){
+  public static void Capture(ValoriaIntegratedWorld h,string name,int width,int height){
    h.RefreshNavigation();
    bool managementOpen=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen==true;
    if(managementOpen){

@@ -1,11 +1,14 @@
 #if UNITY_EDITOR
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.Infrastructure;
+using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -28,8 +31,14 @@ namespace Eldoria.ReferenceClean.Editor {
    var path=Ev+"/"+name+"-"+size.Item3+".png";float aspect=c.aspect;try{c.aspect=(float)size.Item1/size.Item2;ValoriaReferenceCleanBuilder.Capture(c,path,size.Item1,size.Item2);}finally{c.aspect=aspect;}
    File.WriteAllText(Path.ChangeExtension(path,".json"),JsonUtility.ToJson(new CaptureInfo{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),name=name,cameraPosition=c.transform.position,cameraEuler=c.transform.eulerAngles,zoom=c.orthographicSize,level=h.City.Gateway.Snapshot().BastionLevel,width=size.Item1,height=size.Item2},true));
   }}
+  static void UiShot(ValoriaIntegratedWorld h,string name){
+   ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-vertical.png",900,1600);
+   ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-horizontal.png",1600,900);
+  }
   static IEnumerator Probe(ValoriaIntegratedWorld h){
    for(int i=0;i<180&&!h.Ready;i++)yield return null;Need(h.Ready,"integrated production host ready");
+   var mainBreach=h.WorldRoot.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="BLD_BreachFloor");
+   var mainBreachMesh=mainBreach.sharedMesh;var mainBreachPosition=mainBreach.transform.position;var mainBreachScale=mainBreach.transform.localScale;
    var initial=h.City.Gateway.Snapshot();Need(initial.BastionLevel==1,"fresh probe starts at I");
    Need(!h.FindTarget("granary").gameObject.activeInHierarchy,"granary hidden before III");Need(!h.FindTarget("hunt-wolf").gameObject.activeInHierarchy,"wolf hidden before III");
    // Explicit disposable completed-II fixture. I-II regression is the separate existing native suite.
@@ -54,10 +63,11 @@ namespace Eldoria.ReferenceClean.Editor {
    }
    var fissure=h.FindTarget("fissure-valoria");h.WorldNavigation.RestoreView(fissure.transform.position,14);yield return null;
    var offer=h.Read("fissure-valoria",false).Building.Action;Need(offer.Kind=="ContactLyra","contact offer before assault");h.Submit(offer);yield return null;
-   Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
+   UiShot(h,"lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
    for(int i=0;i<30&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
    Need(h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"Lyra dialogue completed");
    Shot(h,"fissure-A-open",h.WorldCamera);Command(h,"Fight","fissure-valoria");Need(h.City.Gateway.Snapshot().March.Route.Count>1,"real reachable fissure route");Step(h,2);yield return null;Shot(h,"fissure-B-scar",h.WorldCamera);Step(h,7);yield return null;Shot(h,"fissure-C-closed",h.WorldCamera);
+   Need(mainBreach&&mainBreach.sharedMesh==mainBreachMesh&&mainBreach.transform.position==mainBreachPosition&&mainBreach.transform.localScale==mainBreachScale,"main Breach geometry preserved after private closure");
    Need(!fissure.gameObject.activeInHierarchy,"private fissure fully disappears");h.City.ReloadForProbe();var victory=h.City.Gateway.Snapshot();Need(victory.ChapterThree.LyraRecruited&&victory.ChapterThree.Inventory.FindAll(x=>x=="breach-manuscript").Count==1,"persistent Lyra and unique manuscript");
    foreach(var id in new[]{"hunt-wolf","hunt-boar","meat-valoria"}){Command(h,id=="meat-valoria"?"Gather":"Fight",id);Need(h.City.Gateway.Snapshot().March.Route.Count>1,id+" real route");Step(h,20);}
    Need(h.City.Gateway.Snapshot().ChapterThree.Hunts==2,"both hunts resolved");Command(h,"ConfigureMarch","march-main:20:aldric+lyra");h.City.ReloadForProbe();Need(h.City.Gateway.Snapshot().PreparedHeroId=="aldric+lyra","recruited heroes persist in composition");
@@ -65,6 +75,12 @@ namespace Eldoria.ReferenceClean.Editor {
    Command(h,"UpgradeBuilding","granary");Step(h,12);yield return null;Shot(h,"E-granary-level3",cityCam);
    foreach(string building in new[]{"sawmill","barracks"})foreach(int level in new[]{2,3}){Command(h,"UpgradeBuilding",building);Step(h,8+(level-1)*2);yield return null;Shot(h,building+"-level"+level,cityCam);}
    h.City.ReloadForProbe();Need(h.City.Gateway.Snapshot().ChapterThree.GranaryLevel==3,"level3 save reload");
+   h.Select("granary");yield return null;UiShot(h,"granary-level3");
+   h.Open(RoyalSection.Inventory);yield return null;UiShot(h,"unique-manuscript-chest");
+   for(int i=0;i<10&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
+   var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+   Need(management!=null,"V3 management host exists");
+   management.Open(RoyalGoldV3ManagementScreens.Destination.March);yield return null;UiShot(h,"recruited-hero-composition");management.Close();
    File.WriteAllLines(Ev+"/functional-checks.txt",checks);File.WriteAllText(Ev+"/runtime-save-fixture.json",JsonUtility.ToJson(h.City.Gateway.Snapshot(),true));Debug.Log("BASTION_III_NATIVE_PROOF_PASS");EditorApplication.Exit(0);
   }
  }

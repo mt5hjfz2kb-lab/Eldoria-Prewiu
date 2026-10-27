@@ -56,6 +56,18 @@ namespace Eldoria.ReferenceClean {
    var source=Resources.Load<GameObject>(path);if(!source){Debug.LogError("BASTION_III_MISSING_ART "+path);return null;}
    var model=Instantiate(source,parent);model.name=path.Split('/').Last();model.transform.localPosition=Vector3.zero;model.transform.localRotation=Quaternion.identity;model.transform.localScale=Vector3.one;
    foreach(var c in model.GetComponentsInChildren<Collider>(true))Destroy(c);
+   if(path=="BastionIII/AshWolf"){
+    var animation=model.GetComponentInChildren<Animation>(true);
+    if(!animation)Debug.LogError("BASTION_III_WOLF_ANIMATION_MISSING");
+    else{
+     animation.Stop();bool idle=false;
+     foreach(AnimationState state in animation)if(state.name=="Idle"){
+      state.wrapMode=WrapMode.Loop;animation.clip=state.clip;animation.Play(state.name);
+      state.normalizedTime=position.x<0?0:.4f;animation.Sample();idle=true;break;
+     }
+     if(!idle)Debug.LogError("BASTION_III_WOLF_IDLE_MISSING");
+    }
+   }
    var renderers=model.GetComponentsInChildren<Renderer>(true);if(renderers.Length==0){Debug.LogError("BASTION_III_EMPTY_ART "+path);return model;}
    var b=Bounds(renderers);model.transform.localScale*=width/Mathf.Max(b.size.x,b.size.z);b=Bounds(renderers);
    var local=parent.InverseTransformPoint(new Vector3(b.center.x,b.min.y,b.center.z));model.transform.localPosition+=position-local;return model;

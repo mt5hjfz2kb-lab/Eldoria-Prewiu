@@ -348,7 +348,7 @@ namespace Eldoria.ReferenceClean {
      new RoyalNarrativePresentation.Line("Lyra","Soy Lyra. Busco a mi hermano. Su compañía desapareció la noche de la Brecha. Encontré su insignia junto a esta fisura; no sé qué significa.","I am Lyra. I seek my brother. His company vanished on the night of the Breach. I found his insignia beside this fissure; I do not know what it means."),
      new RoyalNarrativePresentation.Line("Sir Aldric","También hemos perdido gente. Podemos seguir esas huellas juntos.","We have lost people too. We can follow these tracks together."),
      new RoyalNarrativePresentation.Line("Lyra","Ayudaré en el asalto. Después hablaremos de mi lugar en Valoria.","I will help with the assault. Afterwards we can discuss my place in Valoria.")
-    },()=>{var current=boundGateway.Snapshot();binding.Submit(new RoyalAction("ContactLyra","fissure-valoria","","",current.Revision,true));city.Presenter.RefreshState();});
+    },()=>{boundGateway.Advance();var current=boundGateway.Snapshot();binding.Submit(new RoyalAction("ContactLyra","fissure-valoria","","",current.Revision,true));city.Presenter.RefreshState();});
     return new RoyalResult(true,L("Encuentro con Lyra","Meeting Lyra"));
    }
    var result=binding.Submit(offer);city.Presenter.RefreshState();return result;}
