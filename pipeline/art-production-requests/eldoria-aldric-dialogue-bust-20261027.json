@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "request_id": "eldoria-aldric-dialogue-bust-20261027",
+  "workstream_id": "eldoria-aldric-dialogue-bust-20261027",
+  "enabled": true,
+  "status": "ACTIVE",
+  "asset_or_sector": "Sir Aldric — owner-approved real 3D character blue-cape bust portrait for canonical dialogue panels",
+  "profile": "environment_surface",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "ai_authorship_policy": "required",
+  "visual_gate_state": "TECH_SOURCE_ART_BUST_VERIFIED_UNITY_PENDING",
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "diagnosis": "The owner approved a chest-up portrait of the existing Sir Aldric Art Pass; reuse Tripo/Blender exact source and its authored cape; render pre-baked RGBA png on hosted Ubuntu, no further inference, no game state mutations or Bastion III workstream takeover. The current planner only defines environment_surface/animated_asset; this isolated 2D UI portrait based on existing surface has no new geometry requirement.",
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "blender_material_consolidation": true,
+    "unity_material_blending": false
+  },
+  "artist": {
+    "model_3d_provenance": "SirAldric_ArtPass_CapaAzul_v1.glb SHA256 b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555",
+    "generation": "Approved existing authored source; SHA-verified local Blender recipe and no paid model inference",
+    "source": "tools/aldric-dialogue/render_existing_model_busts.py",
+    "reference": "docs/ALDRIC_DIALOGUE_BUST_INTEGRATION_20261027.md"
+  },
+  "validation": {
+    "source_gate": "Genuine 3D-bust PNGs created from SHA-verified exact approved cape GLB; 4 renders RGBA 512, UV/PBR and identity preserved. Run 40576565780 success.",
+    "final_gate": "Real Unity 6000.3.23f1 captured dialogue with Aldric vs Lyra/Orin/narrator in mobile portrait and landscape; unchanged continue and narrative flow; no promotion until native and visual gate."
+  },
+  "art_approved": false,
+  "physical_mobile_tested": false,
+  "budget_eur": 0,
+  "notes": "New explicitly owner-authorized artwork at zero new Tripo credits, distinct from ongoing Bastion III PR117 and existing owner claim; only PNG/UI speaker-safe display changed. PR118 remains DRAFT pending original Unity and owner QA. Do not occupy Windows runner while Bastion III owns it."
+}

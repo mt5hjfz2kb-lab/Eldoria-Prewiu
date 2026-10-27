@@ -19,6 +19,12 @@
       "note": "Decisiones con fechas: verificar supersesiones"
     },
     {
+      "path": "docs/ALDRIC_HERO_PREPRODUCCION_20261027.md",
+      "domain": "art",
+      "status": "review_pending",
+      "note": "Preproducción del piloto 3D de Sir Aldric. No acredita integración ni autorización de gasto."
+    },
+    {
       "path": "docs/ANDROID_NATIVE_PLAYTEST.md",
       "domain": "quality",
       "status": "review_pending"
@@ -393,6 +399,12 @@
       "path": "docs/TERRAIN_TERRACE_KIT_V1_FINAL_GATE.md",
       "domain": "art",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/TRIPO_API_AUDITORIA_CAPACIDADES_Y_BRECHAS_20261027.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Auditoría técnica de Tripo API; no concede licencia para nuevos créditos ni aprobación visual."
     },
     {
       "path": "docs/TRIPO_API_ENGENDRO_FOCO_BRIEFS_20261021.md",

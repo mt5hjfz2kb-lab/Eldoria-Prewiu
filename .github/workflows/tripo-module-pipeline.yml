@@ -645,6 +645,20 @@ jobs:
             throw 'Remote Tripo generation requires an explicit source.tripo_model; no implicit P2/H3 selection is allowed.'
           }
           Write-Host "CREDIT_AUTHORIZATION: approved=true | authorized_credit_cost=$authorizedCredits | model=$model"
+          # Scoped Aldric one-shot credit guard BEFORE submitting the paid task.
+          if ([string]$request.module_label -eq 'Eldoria_SirAldric_HeroPilot_v1') {
+            if ($mode -ne 'tripo_text' -or $model -ne 'v3.1-20260211' -or $authorizedCredits -ne 20) { throw 'Aldric paid task not exactly scoped.' }
+            $doctor = (& $tripo.Source doctor 2>&1 | Out-String).Trim()
+            if ($LASTEXITCODE -ne 0 -or $doctor -notmatch '"ok"\s*:\s*true') { throw 'Aldric Tripo doctor failure; no call.' }
+            $bal = (& $tripo.Source balance --json 2>&1 | Out-String).Trim()
+            if ($LASTEXITCODE -ne 0) { throw 'Aldric API balance unavailable; no call.' }
+            $available = $null
+            try { $b=$bal | ConvertFrom-Json; foreach ($v in @($b.balance,$b.available,$b.available_credits,$b.credits_available,$b.data.balance,$b.data.available)) {
+              if ($null -ne $v -and "$v" -match '^\d+(\.\d+)?$') { $available=[double]$v; break }
+            } } catch {}
+            if ($null -eq $available -or $available -lt 20) { throw 'Aldric requires 20 prepaid API credits.' }
+            Write-Host "ALDRIC_SAFE_PREPAID_BALANCE=PASS available=$available"
+          }
           $faceLimit = [int]$request.source.face_limit
           if ($faceLimit -le 0) { $faceLimit = 50000 }
 
@@ -679,7 +693,7 @@ jobs:
             Write-Host "TRIPO_SCOPED_H31_PREFLIGHT=PASS available_credits=$available approved=20"
           }
           $args = @('make') + $inputArgs + @('--model',$model,'-p',"face_limit=$faceLimit",'--json','--yes','--no-open','-o',$outDir)
-          if ($isScopedH31) {
+          if ($isScopedH31 -or [string]$request.module_label -eq 'Eldoria_SirAldric_HeroPilot_v1') {
             $args += @('-p','texture=true','-p','pbr=true','-p','texture_quality=standard','-p','geometry_quality=standard')
           }
           Write-Host ("TRIPO_COMMAND: tripo " + (($args | ForEach-Object {
@@ -812,7 +826,7 @@ jobs:
             throw 'Canonical Blender processor unavailable or incomplete. The Tripo-paid GLB remains preserved.'
           }
           $args = @("--background","--python",$processor,"--","--input",$input,"--output",$output,"--report",$report,"--refine-config",$refineConfig,"--target-tris",$targetTris,"--min-tris",$minTris,"--max-tris",$maxTris)
-          if (@('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1') -contains [string]$request.module_label) {
+          if (@('Eldoria_RockBoar_FirstHunt_v1','Eldoria_Spawnling_Bastion2_v1','Eldoria_RiftFocus_v1','Eldoria_SirAldric_HeroPilot_v1') -contains [string]$request.module_label) {
             $args += '--save-blend'
           }
           if ($null -ne $request.multipiece -and [bool]$request.multipiece.enabled) {
