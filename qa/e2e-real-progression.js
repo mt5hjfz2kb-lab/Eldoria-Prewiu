@@ -25,6 +25,9 @@ const {chromium}=require('playwright');
  await select();
  if(!(await action.innerText()).includes('EXPLORAR'))throw Error('Fissure must offer research first');
  await action.evaluate(el=>el.click());
+ // The authentic world action animates Aldric's route before dispatching the
+ // research task. Do not inspect state in the same click frame.
+ await page.waitForFunction(()=>window.ELDORIA_V023.state().tasks.some(t=>t.key==='explore-fissure'),null,{timeout:12000});
  s=await state();
  const research=(s.tasks||[]).filter(t=>t.key==='explore-fissure');
  if(research.length!==1||Math.abs((research[0].end-research[0].start)-1200000)>1000)
