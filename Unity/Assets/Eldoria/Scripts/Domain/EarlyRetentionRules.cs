@@ -136,6 +136,32 @@ namespace Eldoria.Domain
             return changed;
         }
 
+        // Early-retention XP is a real combat progression rather than a
+        // decorative counter. Apply its small capped mastery bonus only to
+        // these new personal PvE destinations until the canonical hero-level
+        // system is implemented; existing world PvE/PvP balance stays intact.
+        public static int HeroMasteryLevel(PlayerState s,string heroId)
+        {
+            var p=s?.Retention;
+            if(p==null)return 0;
+            int earned=heroId=="lyra"?p.LyraExperience:
+                heroId=="aldric+lyra"?(p.AldricExperience+p.LyraExperience)/2:
+                p.AldricExperience;
+            return Math.Max(0,Math.Min(20,earned/80));
+        }
+        public static CombatStats ExpeditionWithMastery(PlayerState s,
+            ArmyRoster troops,string heroId)
+        {
+            var baseStats=SliceRules.Expedition(troops,heroId);
+            int level=HeroMasteryLevel(s,heroId);
+            return new CombatStats(
+                checked(baseStats.Attack+level*4),
+                checked(baseStats.Defense+level*3),
+                checked(baseStats.Health+level*15),
+                checked(baseStats.Break+level*2),
+                checked(baseStats.Power+level*45));
+        }
+
         // null = unrelated command; false = refused without mutation; true = accepted.
         // The host verifies PlayerId, Revision and idempotent command ID FIRST.
         public static bool? Apply(PlayerState s,string kind,string target,long utcNow,
@@ -156,9 +182,10 @@ namespace Eldoria.Domain
                     (s.PreparedHeroId=="lyra"||s.PreparedHeroId=="aldric+lyra")
                     ?s.PreparedHeroId:"aldric";
                 var enemy=Stage(stage);
-                var battle=SliceRules.FightCreature(SliceRules.Expedition(available,hero),enemy.Enemy);
+                var army=ExpeditionWithMastery(s,available,hero);
+                var battle=SliceRules.FightCreature(army,enemy.Enemy);
                 s.LastBattleReport=new BattleReportState{TargetId="vigilant:"+stage,
-                    HeroId=hero,Troops=available.Total,PlayerPower=SliceRules.Expedition(available,hero).Power,
+                    HeroId=hero,Troops=available.Total,PlayerPower=army.Power,
                     EnemyPower=enemy.Difficulty,Won=battle.Won,Rounds=battle.Rounds,
                     RemainingHealth=battle.RemainingHealth,
                     Reason=battle.Won?"El ejército superó "+enemy.Trait.ToLowerInvariant()+".":
@@ -199,7 +226,7 @@ namespace Eldoria.Domain
                 if(s.Available==null||s.Available.Total<1){message="No hay tropas disponibles";return false;}
                 if(order.Kind==0)
                 {
-                    var fight=SliceRules.FightCreature(SliceRules.Expedition(s.Available,"aldric"),
+                    var fight=SliceRules.FightCreature(ExpeditionWithMastery(s,s.Available,"aldric"),
                         new WorldCreatureStats(430,48,43,18,0,0));
                     if(!fight.Won){message="La patrulla es demasiado fuerte; refuerza tropas";return false;}
                 }
