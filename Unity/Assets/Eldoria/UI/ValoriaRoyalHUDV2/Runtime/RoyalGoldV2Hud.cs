@@ -531,6 +531,39 @@ namespace Eldoria.UI.RoyalGold.V2
         /// all its buttons work. Reflow ONLY existing, authorized actions.
         /// Do not create dummy buttons or hide usable navigation categories.
         /// </summary>
+        private void LayoutHeaderAlongSafeTop()
+        {
+            // In the approved reference the Valoria identity and settings
+            // medallion touch the TOP edge of the available safe rectangle.
+            // The safe-area component already excludes notches/status bars.
+            var realm = Source.Realm ? Source.Realm.transform as RectTransform : null;
+            if (realm)
+            {
+                realm.anchorMin = realm.anchorMax = new Vector2(0f, 1f);
+                realm.pivot = new Vector2(0f, 1f);
+                realm.anchoredPosition = new Vector2(4f, 0f);
+            }
+            var settings = Source.Settings ? Source.Settings.transform as RectTransform : null;
+            if (settings)
+            {
+                settings.anchorMin = settings.anchorMax = new Vector2(1f, 1f);
+                settings.pivot = new Vector2(1f, 1f);
+                settings.anchoredPosition = new Vector2(-4f, 0f);
+            }
+            // A landscape screen wide enough for all three genuine headers
+            // keeps resources on the same top edge. In portrait it retains
+            // the native second row: never overlap real labels to fake parity.
+            var resources = Source.Resources ? Source.Resources.transform as RectTransform : null;
+            if (resources && !portrait && realm && settings &&
+                safe.rect.width >= realm.rect.width + resources.rect.width +
+                    settings.rect.width + 24f)
+            {
+                resources.anchorMin = resources.anchorMax = new Vector2(.5f, 1f);
+                resources.pivot = new Vector2(.5f, 1f);
+                resources.anchoredPosition = Vector2.zero;
+            }
+        }
+
         private void LayoutNavigation()
         {
             if (!Source.Navigation || !safe) return;
@@ -680,6 +713,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 RebindObjectiveLabel(objectivesButtonLabel);
             }
             if (!hasGeometry) return;
+            LayoutHeaderAlongSafeTop();
             LayoutNavigation();
             ConfigureFeedbackReadability();
             bool modalOpen = Source.Modal && Source.Modal.gameObject.activeSelf;
