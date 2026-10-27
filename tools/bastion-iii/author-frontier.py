@@ -22,24 +22,71 @@ def export(name):
  for o in objs:o.select_set(True)
  bpy.ops.export_scene.gltf(filepath=str(OUT/(name+'.glb')),export_format='GLB',use_selection=True)
  bpy.ops.wm.save_as_mainfile(filepath=str(EV/(name+'.blend')))
-rock=mat('Weathered fissure stone',(.18,.16,.19));black=mat('Deep fissure',(.022,.012,.032));violet=mat('Residual ether',(.25,.045,.34))
-# Irregular rim strata; silhouette remains ground-bound and elongated.
-centres=[(-3.6,-.4),(-2.7,.12),(-1.6,-.18),(-.5,.35),(.65,-.23),(1.7,.12),(2.65,-.3),(3.5,.12)]
-for side in [-1,1]:
+# Private fissure is an exceptional fault in the landscape, not a portal.
+# Every ring is very shallow. The Unity integration drapes each authored
+# vertex onto actual Region 1 terrain without replacing the shared Breach.
+# Shallow, staggered natural edges replace the former 0.2m elevated ribbon.
+stone=mat('Fault slate darkened by earth',(.205,.195,.195))
+earth=mat('Scuffed loamy bank',(.20,.165,.115))
+void=mat('Deep unlit soil fissure',(.033,.021,.037))
+ether=mat('Rare violet residue',(.13,.039,.15))
+chip=mat('Weathered stone fragments',(.26,.25,.245))
+# Smooth longitudinal meander with deliberately irregular, tapering widths.
+centres=[]
+for i in range(19):
+ t=i/18.
+ x=-3.85+7.7*t
+ y=.24*math.sin(2.85*math.pi*t)+.13*math.sin(6.4*math.pi*t+.4)
+ taper=max(.035,math.sin(math.pi*t)**.7)
+ gap=taper*(.18+.063*math.sin(5.9*math.pi*t)**2)
+ centres.append((x,y,gap,taper))
+def strip(name,side,first,last,material):
  verts=[]
- for i,(x,y) in enumerate(centres):
-  gap=.14+(.19 if i in [2,3,4,5] else .06)
-  for offset,z in [(gap,-.09),(gap+.22,.16+(i%3)*.055),(gap+.68,.02)]:verts.append((x,y+side*offset,z))
+ for i,(x,y,gap,taper) in enumerate(centres):
+  for offset,z in ((first(gap,taper),.017),(last(gap,taper),.006)):
+   verts.append((x,y+side*offset,z))
  faces=[]
  for i in range(len(centres)-1):
-  for k in range(2):faces.append((i*3+k,i*3+k+1,(i+1)*3+k+1,(i+1)*3+k))
- if side>0:faces=[tuple(reversed(f)) for f in faces]
- mesh('Fractured low rim '+str(side),verts,faces,rock)
-verts=[]
-for i,(x,y) in enumerate(centres):
- gap=.14+(.19 if i in [2,3,4,5] else .06)
- verts.extend([(x,y-gap,.005),(x,y+gap,.005)])
-mesh('Dark split floor',verts,[(i*2+2,i*2+3,i*2+1,i*2) for i in range(len(centres)-1)],black)
-mesh('Fine ether seam',[(x,y+dy,.012) for x,y in centres for dy in [-.018,.018]],[(i*2+2,i*2+3,i*2+1,i*2) for i in range(len(centres)-1)],violet)
+  face=(i*2,i*2+1,(i+1)*2+1,(i+1)*2)
+  faces.append(face if side>0 else tuple(reversed(face)))
+ mesh(name,verts,faces,material)
+# Each bank follows the soil rather than building an extrusion/retaining wall.
+# The stone is a narrow sliver next to the dark crack, its textured shoulder
+# gradually dies into the authored grass/soil underneath.
+for side in (-1,1):
+ strip('Broken slate lip '+str(side),side,
+       lambda g,t:g,lambda g,t:g+.18*t,stone)
+ strip('Scuffed soil shoulders '+str(side),side,
+       lambda g,t:g+.18*t,lambda g,t:g+.58*t,earth)
+# A single dark inlaid slit is required by the native terrain-contact proof.
+floor=[]
+for x,y,gap,taper in centres:
+ floor.extend([(x,y-gap,.008),(x,y+gap,.008)])
+floor_faces=[(i*2+2,i*2+3,i*2+1,i*2) for i in range(len(centres)-1)]
+mesh('Dark split floor',floor,floor_faces,void)
+# Discontinuous *thin* remnant veins, never two bright continuous bands.
+for seg in (3,8,13):
+ v=[]
+ for j in (seg,seg+1,seg+2):
+  x,y,gap,taper=centres[j]
+  centre=.055*math.sin(j*1.9)
+  v.extend([(x,y+centre-.018,.014),(x,y+centre+.018,.014)])
+ mesh('Faint isolated ether vein '+str(seg),v,
+      [(2,3,1,0),(4,5,3,2)],ether)
+# Scattered low triangular stone flakes embedded in the two banks.
+# The natural surface remains unobstructed (low < 6 cm, no tall walls).
+for side in (-1,1):
+ vertices=[];faces=[]
+ for j in (2,5,9,12,16):
+  x,y,gap,taper=centres[j]
+  off=side*(gap+.28*taper)
+  x+=.09*math.sin(j*1.1)
+  y+=off
+  k=len(vertices)
+  vertices.extend([(x-.16,y-.06,.016),(x+.09,y-.12,.023),
+                   (x+.13,y+.09,.042),(x-.09,y+.13,.024)])
+  face=(k,k+1,k+2,k+3)
+  faces.append(face if side>0 else tuple(reversed(face)))
+ mesh('Fault scatter '+str(side),vertices,faces,chip)
 export('PrivateFissure')
-print('BASTION_III_AUTHORED_CANDIDATES_EXPORTED')
+print('BASTION_III_GEOLOGICAL_GROUND_FISSURE_EXPORTED')
