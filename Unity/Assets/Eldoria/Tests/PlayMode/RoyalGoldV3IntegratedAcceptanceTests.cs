@@ -232,14 +232,32 @@ namespace Eldoria.Tests
                 Assert.That(Mathf.Abs(rect.anchoredPosition.x) + rect.rect.width * .5f,
                     Is.LessThanOrEqualTo(dock.rect.width * .5f + 1f),
                     "No genuine native medallion can leave the bottom dock");
+                // In uGUI an anchor at the middle of a bottom-pivot dock
+                // already includes half its height. The previous layout
+                // accidentally ADDED that half-height again: buttons hovered
+                // above the actual footer despite a valid dock anchor.
+                Assert.That(Mathf.Abs(rect.anchoredPosition.y) + rect.rect.height * .5f,
+                    Is.LessThanOrEqualTo(dock.rect.height * .5f + 1f),
+                    "Every actual clickable medallion must remain INSIDE the bottom dock");
             }
-            Assert.That(active, Is.GreaterThan(0));
+            // Bastion I begins with locked sections. A zero-count state is
+            // legitimate; never unlock or fabricate actions to satisfy art.
+            if (active == 0)
+                foreach (var entry in entries)
+                    Assert.That((bool)Call(host, "CanOpen", Member(entry, "Section")),
+                        Is.False, "Locked navigation must match genuine progression");
             var realm = Member(hud, "Realm") as Component;
             var settings = Member(hud, "Settings") as Button;
             Assert.That(((RectTransform)realm.transform).anchoredPosition.y,
                 Is.EqualTo(0f).Within(1f), "Top crest floats below safe edge");
             Assert.That(((RectTransform)settings.transform).anchoredPosition.y,
                 Is.EqualTo(0f).Within(1f), "Top icon floats below safe edge");
+            var headerCorners = new Vector3[4];
+            var questCorners = new Vector3[4];
+            ((RectTransform)realm.transform).GetWorldCorners(headerCorners);
+            objective.GetComponent<RectTransform>().GetWorldCorners(questCorners);
+            Assert.That(questCorners[1].y, Is.LessThan(headerCorners[0].y),
+                "The approved parchment must begin BELOW the real 104-unit royal header");
         }
 
         [UnityTest]
