@@ -19,6 +19,41 @@ namespace Eldoria.ReferenceClean.Editor {
    if(existing){EditorUtility.CopySerialized(clone,existing);Object.DestroyImmediate(clone);clone=existing;EditorUtility.SetDirty(clone);}else AssetDatabase.CreateAsset(clone,file);
    saved.Add(original,clone);return clone;
   }
+  // Rehome original geometry, PBR materials and textures, so source GLBs can
+  // safely be excluded from the signed Android APK without losing visuals.
+  static void Rehome(GameObject model){
+   foreach(var f in model.GetComponentsInChildren<MeshFilter>(true))f.sharedMesh=Save(f.sharedMesh);
+   foreach(var r in model.GetComponentsInChildren<Renderer>(true)){
+    var materials=r.sharedMaterials;
+    for(int i=0;i<materials.Length;i++){
+     var original=materials[i];var material=Save(original);if(!material)continue;
+     foreach(var property in original.GetTexturePropertyNames()){
+      var texture=original.GetTexture(property);if(texture)material.SetTexture(property,Save(texture));
+     }
+     EditorUtility.SetDirty(material);materials[i]=material;
+    }
+    r.sharedMaterials=materials;
+   }
+  }
+  // EA03 production stock prefabs point into legacy Valoria GLB meshes.
+  // Source-independent clones are mandatory because Android intentionally
+  // excludes those GLBs. Preserve EXACT approved art/LOD0, no procedural proxy.
+  static void RehomeProductionStock(string name){
+   string input="Assets/Eldoria/Resources/Valoria/UrbanProps/"+name+".prefab";
+   var source=AssetDatabase.LoadAssetAtPath<GameObject>(input);
+   if(!source)throw new Exception("Missing original authored production stock: "+input);
+   var stock=Object.Instantiate(source);
+   try{
+    if(PrefabUtility.IsPartOfPrefabInstance(stock))
+     PrefabUtility.UnpackPrefabInstance(stock,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
+    foreach(var collider in stock.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(collider);
+    Rehome(stock);
+    var path=Root+"/Stock"+name+".prefab";
+    var prefab=PrefabUtility.SaveAsPrefabAsset(stock,path);
+    if(!prefab||prefab.GetComponentsInChildren<Renderer>(true).Length==0)
+     throw new Exception("Missing build-safe stock artwork: "+path);
+   }finally{if(stock)Object.DestroyImmediate(stock);}
+  }
   public static void Build(){GameObject model=null;try{
    Directory.CreateDirectory(Root);AssetDatabase.Refresh();saved.Clear();index=0;
    foreach(var resource in new[]{"AshWolf","PrivateFissure"}){
@@ -29,18 +64,13 @@ namespace Eldoria.ReferenceClean.Editor {
    }
    const string input="Assets/Eldoria/Resources/Valoria/Valoria_Granero_BIII_v1.glb";
    var source=AssetDatabase.LoadAssetAtPath<GameObject>(input);if(!source)throw new Exception("Native granary importer has no prefab");model=Object.Instantiate(source);
-   foreach(var f in model.GetComponentsInChildren<MeshFilter>(true))f.sharedMesh=Save(f.sharedMesh);
-   foreach(var r in model.GetComponentsInChildren<Renderer>(true)){
-    var materials=r.sharedMaterials;
-    for(int i=0;i<materials.Length;i++){
-     var original=materials[i];var material=Save(original);if(!material)continue;
-     foreach(var property in original.GetTexturePropertyNames()){var texture=original.GetTexture(property);if(texture)material.SetTexture(property,Save(texture));}
-     EditorUtility.SetDirty(material);materials[i]=material;
-    }r.sharedMaterials=materials;
-   }
-   var prefab=PrefabUtility.SaveAsPrefabAsset(model,Root+"/Granary.prefab");if(!prefab)throw new Exception("Granary prefab was not saved");AssetDatabase.SaveAssets();
+   Rehome(model);
+   var prefab=PrefabUtility.SaveAsPrefabAsset(model,Root+"/Granary.prefab");
+   if(!prefab)throw new Exception("Granary prefab was not saved");
+   foreach(var stock in new[]{"Crate","Sack","Barrel"})RehomeProductionStock(stock);
+   AssetDatabase.SaveAssets();
    Directory.CreateDirectory("../docs/bastion-iii/native");File.WriteAllText("../docs/bastion-iii/native/granary-bake.json","{\"source\":\""+input+"\",\"geometry_changed\":false,\"materials_changed\":false,\"legacy_source_exclusion_safe\":true}");
-   Debug.Log("BASTION_III_GRANARY_BAKE_PASS");EditorApplication.Exit(0);
+   Debug.Log("BASTION_III_GRANARY_AND_STOCK_BUILD_SAFE_PASS");EditorApplication.Exit(0);
   }catch(Exception e){Debug.LogException(e);EditorApplication.Exit(1);}finally{if(model)Object.DestroyImmediate(model);}}
  }
 }
