@@ -23,9 +23,14 @@ namespace Eldoria.Tests
         {
             Assert.That(target, Is.Not.Null);
             var t = target.GetType();
+            // Unity's RoyalHUD.Modal is a public FIELD, whereas
+            // ValoriaIntegratedWorld.Hud and Ready are public PROPERTIES.
+            // Reflect both without changing the real HUD or test fixtures.
             var p = t.GetProperty(property, BindingFlags.Public | BindingFlags.Instance);
-            Assert.That(p, Is.Not.Null, t.Name + "." + property);
-            return p.GetValue(target);
+            if (p != null) return p.GetValue(target);
+            var f = t.GetField(property, BindingFlags.Public | BindingFlags.Instance);
+            Assert.That(f, Is.Not.Null, t.Name + "." + property + " missing (property or field)");
+            return f.GetValue(target);
         }
 
         private static void Invoke(object target, string method, params object[] args)
