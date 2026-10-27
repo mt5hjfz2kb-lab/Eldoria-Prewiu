@@ -173,6 +173,13 @@ namespace Eldoria.UI.RoyalGold.V2
             heraldicBanner.gameObject.AddComponent<CanvasRenderer>();
             var bannerSkin = heraldicBanner.gameObject.AddComponent<RoyalGoldV3HeraldicBannerGraphic>();
             bannerSkin.raycastTarget = false;
+            var pendantSigil = NewRect("V3 / genuine Valoria castle insignia", heraldicBanner);
+            pendantSigil.gameObject.AddComponent<CanvasRenderer>();
+            var standardIcon = pendantSigil.gameObject.AddComponent<RoyalIconGraphic>();
+            standardIcon.Icon = 9; // same Bastión visual language as the REAL navigation
+            standardIcon.color = new Color(.91f, .73f, .42f, .97f);
+            standardIcon.raycastTarget = false;
+            Top(pendantSigil, 8f, 75f, 32f, 35f);
             heraldicBanner.SetAsFirstSibling();
             // Restore the approved Crónica Real parchment with heraldries.
             // Text/mission/button objects are the SAME native gameplay ones.
