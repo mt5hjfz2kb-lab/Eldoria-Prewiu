@@ -1,0 +1,38 @@
+{
+  "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595",
+  "tripo_credits_new": 0,
+  "model": "SirAldric_49800_Blend",
+  "face_morph": "none; four camera/light treatments",
+  "body_framing": "shoulders and chest only",
+  "unity_checked": false,
+  "files": [
+    {
+      "key": "aldric_neutral",
+      "size": 227278,
+      "sha256": "295e8a4c57cbd6c98ecb19ba8b127c8e27f714f696dcdf80367bf852ae7c5389",
+      "opaque_pixels": 131659,
+      "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+    },
+    {
+      "key": "aldric_firme",
+      "size": 228326,
+      "sha256": "bb2dfdd634bafe8a330aa1f492ea02fe147f240e025f6ae5a89343266b1a826f",
+      "opaque_pixels": 131236,
+      "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+    },
+    {
+      "key": "aldric_preocupado",
+      "size": 222002,
+      "sha256": "7fb7e25c84fc7499a521cecd5a2e4163d08ab438f44304fe534c20bc2beef3b7",
+      "opaque_pixels": 132585,
+      "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+    },
+    {
+      "key": "aldric_sereno",
+      "size": 228903,
+      "sha256": "c7e1452c8e6d4c827af94b75a59ac34d77e4f6e5b89f222a1744197eafcdad7a",
+      "opaque_pixels": 131473,
+      "source": "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595"
+    }
+  ]
+}
