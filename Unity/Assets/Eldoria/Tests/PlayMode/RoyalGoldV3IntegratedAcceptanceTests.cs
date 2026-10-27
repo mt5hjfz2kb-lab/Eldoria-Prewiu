@@ -80,6 +80,62 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator ChronicleRealKeepsNativeBuildingIllustrationWithCanonicalOffer()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            var modal = Member(hud, "Modal") as Component;
+            if (modal && modal.gameObject.activeSelf)
+            {
+                var extra = Member(modal, "Extra") as Button;
+                // Close any authentic opening prologue using its real button.
+                for (int i = 0; i < 30 && modal.gameObject.activeSelf; ++i)
+                { if(extra)extra.onClick.Invoke(); yield return null; }
+            }
+            Call(hud, "SelectBuilding", "bastion");
+            yield return null;
+            var art = hud.GetComponentsInChildren<Graphic>(true)
+                .FirstOrDefault(g => g.GetType().Name ==
+                    "RoyalGoldV3BuildingEngravingGraphic");
+            Assert.That(art, Is.Not.Null,
+                "Crónica Real requires a genuine native illustrated selected-building sheet");
+            Assert.That(art.raycastTarget, Is.False,
+                "Decorative preview must not eat building or world input");
+            var context = hud.GetComponentsInChildren<MonoBehaviour>(true)
+                .FirstOrDefault(x => x && x.GetType().Name == "RoyalGoldV3ContextHud");
+            Assert.That(context, Is.Not.Null,
+                "The original gameplay-projected action/timer must remain in the same HUD");
+            Assert.That(hud.GetComponentsInChildren<Canvas>(true).Length, Is.EqualTo(1),
+                "Do not create a second gameplay HUD or separate Canvas");
+        }
+
+        [UnityTest]
+        public IEnumerator SettingsResetRequiresSecondExplicitTap()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            Assert.That(Member(hud, "ResetPlaytestProgress"), Is.Not.Null,
+                "Integrated Settings must expose a reset while family testing");
+            var settings = Member(hud, "Settings") as Button;
+            var modal = Member(hud, "Modal") as Component;
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(modal, Is.Not.Null);
+            // The callback is a legitimate developer/tester action, not a
+            // forced save deletion or a replay of a synthetic UI.
+            settings.onClick.Invoke();
+            yield return null;
+            var reset = Member(modal, "Secondary") as Button;
+            Assert.That(reset && reset.gameObject.activeInHierarchy, Is.True,
+                "Test save reset belongs in the Settings panel");
+            reset.onClick.Invoke(); // FIRST tap only: arm, NEVER destroy a save.
+            yield return null;
+            var body = Member(modal, "Body") as Text;
+            Assert.That(body, Is.Not.Null);
+            StringAssert.Contains("CONFIRM", body.text.ToUpperInvariant());
+            // Deliberately never issue the destructive second tap in shared QA.
+        }
+
+        [UnityTest]
         public IEnumerator AuthoredWorldOpensWithMateriallyWiderStrategicFraming()
         {
             Component host = null, hud = null;
