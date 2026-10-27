@@ -32,12 +32,13 @@ for side in [-1,1]:
  faces=[]
  for i in range(len(centres)-1):
   for k in range(2):faces.append((i*3+k,i*3+k+1,(i+1)*3+k+1,(i+1)*3+k))
+ if side>0:faces=[tuple(reversed(f)) for f in faces]
  mesh('Fractured low rim '+str(side),verts,faces,rock)
 verts=[]
 for i,(x,y) in enumerate(centres):
  gap=.14+(.19 if i in [2,3,4,5] else .06)
  verts.extend([(x,y-gap,.005),(x,y+gap,.005)])
-mesh('Dark split floor',verts,[(i*2,i*2+1,i*2+3,i*2+2) for i in range(len(centres)-1)],black)
-mesh('Fine ether seam',[(x,y+dy,.012) for x,y in centres for dy in [-.018,.018]],[(i*2,i*2+1,i*2+3,i*2+2) for i in range(len(centres)-1)],violet)
+mesh('Dark split floor',verts,[(i*2+2,i*2+3,i*2+1,i*2) for i in range(len(centres)-1)],black)
+mesh('Fine ether seam',[(x,y+dy,.012) for x,y in centres for dy in [-.018,.018]],[(i*2+2,i*2+3,i*2+1,i*2) for i in range(len(centres)-1)],violet)
 export('PrivateFissure')
 print('BASTION_III_AUTHORED_CANDIDATES_EXPORTED')

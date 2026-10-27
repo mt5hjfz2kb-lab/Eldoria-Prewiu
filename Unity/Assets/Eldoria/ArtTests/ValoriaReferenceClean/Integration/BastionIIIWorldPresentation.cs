@@ -11,6 +11,7 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;
   GameObject town,granary,granarySite,siteStock; readonly Dictionary<string,GameObject> nodes=new Dictionary<string,GameObject>();
   readonly List<(GameObject cue,string building,int level)> cues=new List<(GameObject,string,int)>();
+  readonly List<Mesh> terrainMeshes=new List<Mesh>();
   bool placed;float refresh;
   public void Initialize(ValoriaIntegratedWorld h){
    host=h;town=new GameObject("Bastion III city additions");town.transform.SetParent(transform,false);
@@ -70,7 +71,7 @@ namespace Eldoria.ReferenceClean {
    }
    var renderers=model.GetComponentsInChildren<Renderer>(true);if(renderers.Length==0){Debug.LogError("BASTION_III_EMPTY_ART "+path);return model;}
    var b=Bounds(renderers);model.transform.localScale*=width/Mathf.Max(b.size.x,b.size.z);b=Bounds(renderers);
-   var local=parent.InverseTransformPoint(new Vector3(b.center.x,b.min.y,b.center.z));model.transform.localPosition+=position-local;return model;
+   var local=parent.InverseTransformPoint(new Vector3(b.center.x,b.min.y,b.center.z));if(path=="BastionIII/PrivateFissure")local.y=0;model.transform.localPosition+=position-local;return model;
   }
   static Bounds Bounds(Renderer[] rs){var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
   void PlaceNodes(PlayerState s){
@@ -90,8 +91,21 @@ namespace Eldoria.ReferenceClean {
     }
     if(!found){Debug.LogError("BASTION_III_NO_REACHABLE_SITE "+pair.Key);return;}ordinal++;
    }
+   // Match the existing geological Breach technique: fit the private split to
+   // real terrain triangles while preserving its shallow authored strata.
+   var fissure=nodes["fissure-valoria"];
+   foreach(var filter in fissure.GetComponentsInChildren<MeshFilter>(true)){
+    var mesh=Instantiate(filter.sharedMesh);terrainMeshes.Add(mesh);var vertices=mesh.vertices;
+    for(int i=0;i<vertices.Length;i++){
+     var p=filter.transform.TransformPoint(vertices[i]);float relief=p.y-fissure.transform.position.y;
+     p.y=host.WorldHome.y+RegionOneBlenderLandscape.Height(p.x-host.WorldHome.x,p.z-host.WorldHome.z)+relief;
+     vertices[i]=filter.transform.InverseTransformPoint(p);
+    }
+    mesh.vertices=vertices;mesh.RecalculateNormals();mesh.RecalculateBounds();filter.sharedMesh=mesh;
+   }
    placed=true;
   }
+  void OnDestroy(){foreach(var mesh in terrainMeshes)if(mesh)Destroy(mesh);}
   void Update(){if(host&&host.Ready&&Time.unscaledTime>=refresh){refresh=Time.unscaledTime+.2f;Apply();}}
   public void Apply(){
    if(!host||host.City.Gateway==null)return;var s=host.City.Gateway.Snapshot();var c=s.ChapterThree;

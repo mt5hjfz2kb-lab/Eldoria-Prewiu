@@ -31,3 +31,7 @@ La compilación local del dominio y binding pasa la prueba III con serializació
 El primer run 40498860557 no ejecutó Unity: checkout recurrió al ZIP REST completo porque Git no estaba en PATH. Se canceló únicamente esa ejecución propia. La ruta real disponible es el Git incluido en GitHub Desktop, acreditado en el log del ejecutor; se reutiliza su descubrimiento existente y se verifica `git --version` antes del checkout disperso acotado. No es un fallo del juego ni una certificación nativa.
 
 La comprobación preparada incluye capturas de arte A/B con cámara fija, UI real vertical/horizontal (Lyra, Arcón, Granero y composición), rutas del terreno, guardado y geometría de Brecha principal conservada. Pendiente ejecutar y juzgar los resultados; mantener PR117 en borrador y no sustituir code16.
+
+## Correcciones agrupadas para el siguiente ensayo
+
+La fisura privada adapta sus vértices a la misma superficie real que usa el mundo, conservando el relieve somero y normales superiores coherentes. El retrato de Aldric solo identifica a Aldric; Lyra y Arcón usan el emblema narrativo existente, sin atribuirles una imagen ajena. La barra de comida sigue su duración real. Se añade el recorrido integrado I–II completo y su fixture de cámara exacto, y se separan las fases nativas para diagnosticar fallos sin confundir importación, tests y revisión visual. Estas correcciones están pendientes de ejecución Unity; no certificadas por los tests locales.

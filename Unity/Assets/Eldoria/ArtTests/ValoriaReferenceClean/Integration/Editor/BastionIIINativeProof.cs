@@ -58,11 +58,19 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(!h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,"investigation never recruits Lyra");Shot(h,"D-granary-level2",cityCam);
    h.TrySetWorld(true);yield return null;yield return null;h.GetComponent<BastionIIIWorldPresentation>().Apply();
    foreach(var id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria"}){
-    var target=h.FindTarget(id);Need(target&&target.gameObject.activeInHierarchy,id+" visible");
-    h.WorldNavigation.RestoreView(target.transform.position,14);yield return null;Shot(h,id,h.WorldCamera);
+    var target=h.FindTarget(id);Need(target!=null,id+" exists");
+    h.WorldNavigation.RestoreView(target.transform.position,14);h.GetComponent<BastionIIIWorldPresentation>().Apply();yield return null;
+    Need(target.gameObject.activeInHierarchy,id+" visible in near view");Shot(h,id,h.WorldCamera);
    }
-   var fissure=h.FindTarget("fissure-valoria");h.WorldNavigation.RestoreView(fissure.transform.position,14);yield return null;
+   var wolf=h.FindTarget("hunt-wolf").GetComponentInChildren<Animation>(true);
+   Need(wolf&&wolf.IsPlaying("Idle"),"wolf uses its authored idle animation");
+   var fissure=h.FindTarget("fissure-valoria");
+   var splitFloor=fissure.GetComponentsInChildren<MeshFilter>(true).Single(x=>x.name=="Dark split floor");float gap=0;
+   foreach(var vertex in splitFloor.sharedMesh.vertices){var p=splitFloor.transform.TransformPoint(vertex);float ground=h.WorldHome.y+Eldoria.World4XCanon.RegionOneBlenderLandscape.Height(p.x-h.WorldHome.x,p.z-h.WorldHome.z);gap=Mathf.Max(gap,Mathf.Abs(p.y-ground));}
+   Need(gap<.02f,"private split floor follows actual terrain within two centimetres");h.WorldNavigation.RestoreView(fissure.transform.position,14);yield return null;
    var offer=h.Read("fissure-valoria",false).Building.Action;Need(offer.Kind=="ContactLyra","contact offer before assault");h.Submit(offer);yield return null;
+   var aldricFace=h.Hud.GetComponentsInChildren<UnityEngine.UI.RawImage>(true).FirstOrDefault(x=>x.name=="Canonical Aldric portrait");
+   Need(aldricFace&&!aldricFace.gameObject.activeInHierarchy,"Lyra dialogue never impersonates Aldric portrait");
    UiShot(h,"lyra-contact");Need(h.Hud.NarrativeOpen,"Lyra real dialogue opens");Need(!h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"dialogue completion gates contact");
    for(int i=0;i<30&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}
    Need(h.City.Gateway.Snapshot().ChapterThree.LyraContacted,"Lyra dialogue completed");

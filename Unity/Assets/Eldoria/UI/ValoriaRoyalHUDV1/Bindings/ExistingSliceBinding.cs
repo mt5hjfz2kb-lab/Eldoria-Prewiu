@@ -133,7 +133,7 @@ namespace Eldoria.UI.RoyalGold {
     }else if(id=="meat-valoria")b.Function=c.MeatRemaining+L(en," comida disponible"," food available");
     else b.Function=id=="hunt-wolf"?L(en,"Poder requerido: 1450 · 140 comida y piel curtida.","Required power: 1450 · 140 food and treated hide."):L(en,"Poder requerido: 2050 · 190 comida y colmillo pétreo.","Required power: 2050 · 190 food and stone tusk.");
     if(c.InvestigationEndsUtcTicks>0&&id!="fissure-valoria")reason=L(en,"Aldric está investigando la fisura.","Aldric is investigating the fissure.");
-    if(s.March.Phase!="idle"){reason=L(en,"Espera al regreso de la marcha.","Wait for the march to return.");if(s.March.TargetId==id){deadline=s.March.PhaseEndsUtcTicks;seconds=SliceRules.TravelSeconds;}}
+    if(s.March.Phase!="idle"){reason=L(en,"Espera al regreso de la marcha.","Wait for the march to return.");if(s.March.TargetId==id){deadline=s.March.PhaseEndsUtcTicks;seconds=s.March.Phase=="gathering"?Math.Max(7,Math.Min(35,(c.MeatRemaining+119)/120)):SliceRules.TravelSeconds;}}
     if(id=="meat-valoria"&&c.MeatRemaining<=0)reason=L(en,"Reserva agotada.","Reserve depleted.");
     if(id=="hunt-wolf"&&c.WolfRespawnUtcTicks>clock.UtcTicks||id=="hunt-boar"&&c.BoarRespawnUtcTicks>clock.UtcTicks)reason=L(en,"La caza aún no ha regresado.","The hunt has not returned yet.");
    }

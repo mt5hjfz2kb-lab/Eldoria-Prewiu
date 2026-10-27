@@ -80,6 +80,10 @@ jobs:
             [IO.File]::WriteAllBytes($dest,[Convert]::FromBase64String($blob.content))
             if((& git hash-object -- $dest).Trim() -ne $expected){throw "Recovered source hash mismatch: $file"}
           }
+          $fixture='docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json'
+          & git checkout --ignore-skip-worktree-bits HEAD -- $fixture
+          if($LASTEXITCODE){throw 'Exact camera fixture recovery failed'}
+          if((& git hash-object -- $fixture).Trim() -ne (& git rev-parse "HEAD:$fixture").Trim()){throw 'Camera fixture hash mismatch'}
           exit 0
       - name: Author zero-cost frontier candidates in Blender
         shell: powershell
@@ -90,7 +94,7 @@ jobs:
           if(-not $blender){throw 'Installed Blender unavailable'}
           & $blender --background --python tools/bastion-iii/author-frontier.py
           if($LASTEXITCODE){throw 'Frontier authoring failed'}
-      - name: Compile and test exact isolated candidate
+      - name: Prepare editor and bake original Granary
         shell: powershell
         working-directory: bastion-iii-source
         run: |
@@ -102,16 +106,55 @@ jobs:
           $bakeArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"'+(Join-Path $evidence 'granary-bake.log')+'"'))
           $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $bakeArgs -Wait -PassThru
           if($bake.ExitCode -ne 0){throw 'Build-safe granary extraction failed'}
-          foreach($platform in @('EditMode','PlayMode')){
-            $xml=Join-Path $evidence "$platform.xml"
-            $log=Join-Path $evidence "$platform.log"
-            $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform',$platform,'-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
-            $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
-            if($p.ExitCode -ne 0){throw "Unity $platform exit $($p.ExitCode)"}
-            if(-not(Test-Path $xml)){throw "Missing $platform test results"}
-            [xml]$results=Get-Content $xml
-            if($results.'test-run'.result -ne 'Passed'){throw "Unity $platform tests failed"}
-          }
+      - name: Run actual Unity EditMode suite
+        shell: powershell
+        working-directory: bastion-iii-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iii/native'
+          $xml=Join-Path $evidence 'EditMode.xml'
+          $log=Join-Path $evidence 'EditMode.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform','EditMode','-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Unity EditMode exit $($p.ExitCode)"}
+          if(-not(Test-Path $xml)){throw 'Missing EditMode results'}
+          [xml]$results=Get-Content $xml
+          if($results.'test-run'.result -ne 'Passed'){throw 'Unity EditMode tests failed'}
+      - name: Run actual Unity PlayMode suite
+        shell: powershell
+        working-directory: bastion-iii-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iii/native'
+          $xml=Join-Path $evidence 'PlayMode.xml'
+          $log=Join-Path $evidence 'PlayMode.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform','PlayMode','-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Unity PlayMode exit $($p.ExitCode)"}
+          if(-not(Test-Path $xml)){throw 'Missing PlayMode results'}
+          [xml]$results=Get-Content $xml
+          if($results.'test-run'.result -ne 'Passed'){throw 'Unity PlayMode tests failed'}
+      - name: Validate complete integrated I-II journey
+        shell: powershell
+        working-directory: bastion-iii-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iii/native'
+          $regressionLog=Join-Path $evidence 'I-II-integrated.log'
+          $regressionArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent','-logFile',('"'+$regressionLog+'"'))
+          $regression=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $regressionArgs -Wait -PassThru
+          if($regression.ExitCode -ne 0){throw 'Actual integrated I-II journey failed'}
+          $regressionResult=Get-Content 'docs/evidence/valoria-reference-clean/integration-result.json' -Raw|ConvertFrom-Json
+          if($regressionResult.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Actual I-II result missing or failing'}
+          $regressionEvidence=Join-Path $evidence 'I-II'
+          New-Item -ItemType Directory -Force $regressionEvidence | Out-Null
+          Copy-Item 'docs/evidence/valoria-reference-clean/integration-*' $regressionEvidence
+      - name: Validate III persistence and capture real UI and art
+        shell: powershell
+        working-directory: bastion-iii-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iii/native'
           $proofLog=Join-Path $evidence 'runtime-proof.log'
           $proofArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIINativeProof.Capture','-logFile',('"'+$proofLog+'"'))
           $proof=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $proofArgs -Wait -PassThru
