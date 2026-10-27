@@ -1,6 +1,6 @@
 {
   "stage": "visual_consolidation_validate",
-  "revision": 291,
+  "revision": 292,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,5 +8,5 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Capture actual integrated production runtime without visual overrides, verify original save/progression/UI probe, all native EditMode and PlayMode tests including graphics; no APK/publication."
+  "checks": "Actual integrated six-view capture and full native tests after restoring compact canonical Bastion strategic legibility; unchanged close scale, world anchor, resources and save fields. No APK or publication."
 }

@@ -99,7 +99,11 @@ namespace Eldoria.World4XCanon
    for(int i=0;i<old.Count;i++)if(old[i])old[i].enabled=before&&!far&&states[i]&&(!mountains[i]||zoom<=near);
    bool panorama=RegionOneResourcePlacement.IsPanoramic(zoom,host.WorldNavigation.globalZoom);
    float cityScale=Mathf.Lerp(1f,1.8f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);
-   nodes.SetFloat("_BillboardScale",cityScale);foreach(var material in cityMaterials)material.SetFloat("_BillboardScale",cityScale);
+   nodes.SetFloat("_BillboardScale",cityScale);
+   // The authentic square-tower silhouette is shorter than the former atlas city.
+   // Preserve the close bridge connection, then recover strategic legibility smoothly.
+   float canonicalCityScale=cityScale*Mathf.Lerp(1f,1.12f,Mathf.InverseLerp(near,110f,zoom));
+   foreach(var material in cityMaterials)material.SetFloat("_BillboardScale",canonicalCityScale);
    if(!cityHitCached){
     var target=host.FindTarget("valoria-map-city");cityHit=target?target.GetComponent<BoxCollider>():null;
     if(cityHit){cityHitCenter=cityHit.center;cityHitSize=cityHit.size;cityHitCached=true;}
@@ -115,11 +119,12 @@ namespace Eldoria.World4XCanon
      (city?(canonicalCity||!panorama):!far)&&available&&(!gates[i]||gates[i].activeInHierarchy);
     if(city){
      var mesh=current[i].GetComponent<MeshFilter>().sharedMesh;var foot=mesh.vertices[0];
-     mesh.bounds=new Bounds(foot,Vector3.one*65f*cityScale);
+     float renderedScale=canonicalCity?canonicalCityScale:cityScale;
+     mesh.bounds=new Bounds(foot,Vector3.one*65f*renderedScale);
      if(current[i].enabled&&cityHit&&zoom>=110f){
       var offsets=mesh.uv2;var bounds=new Bounds(cityHit.transform.InverseTransformPoint(current[i].transform.TransformPoint(foot)),Vector3.zero);
       foreach(var offset in offsets)bounds.Encapsulate(cityHit.transform.InverseTransformPoint(
-       current[i].transform.TransformPoint(foot)+(host.WorldCamera.transform.right*offset.x+host.WorldCamera.transform.up*offset.y)*cityScale));
+       current[i].transform.TransformPoint(foot)+(host.WorldCamera.transform.right*offset.x+host.WorldCamera.transform.up*offset.y)*renderedScale));
       cityHit.center=bounds.center;cityHit.size=Vector3.Max(bounds.size+Vector3.one*.5f,cityHitSize);
      }
     }
