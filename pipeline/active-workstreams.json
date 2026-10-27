@@ -19,8 +19,8 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
-      "branch": "main",
+      "owner": "chatgpt-bastion-iii-unity-migration-20261027",
+      "branch": "feature/bastion-iii-canonical-20261027",
       "status": "active",
       "claimed_at": "2026-10-27T10:59:08Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
@@ -76,15 +76,23 @@
         "Unity/Assets/Eldoria/World4XCanon/RegionOneStoneBridge.cs",
         "Unity/Assets/Eldoria/World4XCanon/RegionOneStoneBridge.cs.meta",
         ".github/workflows/unity-slice.yml",
-        "Unity/README.md"
+        "Unity/README.md",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/BastionIII/**",
+        "Unity/Assets/Eldoria/Tests/EditMode/BastionIII*",
+        "Unity/Assets/Eldoria/Tests/PlayMode/BastionIII*",
+        "docs/bastion-iii/**",
+        "tools/bastion-iii/**",
+        ".github/workflows/bastion-iii-native.yml"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "VALORIA_ART_CONSOLIDATED_ANDROID_FAMILY_116_RELEASED",
-      "next": "Closed after documented verified original Crónica Real integration and signed Android 1.16; any further work requires explicit new owner scope. Physical Android acceptance outstanding.",
+      "phase": "BASTION_III_CANONICAL_MIGRATION",
+      "next": "Implement faithful chapter III on isolated branch; preserve I-II and code16; reserve Windows only for exact native validation after source tests.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1103,17 +1111,22 @@
           "owner": "chatgpt-eldoria-cronica-android-code16-20261027",
           "revision": 40,
           "reason": "Owner-authorized original Crónica Real work complete and signed family 1.16 APK verified and promoted. PR115 merge 0abf90e, Native Unity 66/66, Android build40495487995 and publish40497012145. Release write claim, retain history."
+        },
+        {
+          "owner": null,
+          "ownership_revision": 41,
+          "phase": "VALORIA_ART_CONSOLIDATED_ANDROID_FAMILY_116_RELEASED"
         }
       ],
-      "ownership_revision": 41,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 42,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
       "delivery_definition": {
-        "deliverable": "Coherent Valoria strategic representation; proportionate panorama, city riverbank and Breach improvements where visually justified. No APK or Bastion III.",
-        "evidence": "Authentic matched Unity A/B landscape and portrait, three world zooms and city I-II; editable sources, functional tests and reversible accepted changes.",
-        "handoff": "Retained/rejected interventions with real capture and source hashes, tests and limits. No publication."
+        "deliverable": "Bastion III playable migration with canonical economy, granary, hunts, fissure investigation/Lyra/manuscript and small visual upgrades",
+        "evidence": "Exact source tests, existing I-II regression, III UI journey/save/offline/idempotency, same-camera Unity AB vs reference",
+        "handoff": "Verified integrated result and exact artifacts; no formal art/mobile claims without evidence"
       },
       "handoff_authority": "Current owner requested autonomous final visual consolidation and recovery of technical blockers; scope completed with authentic A/B and independent review. No APK/Bastion III/publication authority implied.",
       "world_integration_handoff": {
@@ -1199,7 +1212,8 @@
         "apk_published": false,
         "bastion_III_started": false,
         "budget_eur": 0
-      }
+      },
+      "authorization": "Owner explicitly requests Bastion III migration after code16 release; released and manifest16 verified. Small visual increments every level, level5 overhaul excluded; real Unity AB and functional/save parity required. Owner reiterates autonomous execution 2026-10-27."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
