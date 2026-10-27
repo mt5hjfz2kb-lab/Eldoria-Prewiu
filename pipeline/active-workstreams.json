@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T13:47:00Z",
+  "updated_at": "2026-10-27T20:22:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -11,7 +11,8 @@
     "authorized_workstream_ids": [
       "valoria-master-plan-layered-construction-20261016",
       "eldoria-tripo-art-brain-phase2-20261021",
-      "eldoria-spawnling-qwen-semantic-visual-qa-20261021"
+      "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
+      "eldoria-aldric-dialogue-bust-20261027"
     ],
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
@@ -1672,6 +1673,44 @@
       "authorization": "Owner instruction 2026-10-27 10:09 Europe/Madrid: adapt original vertical slice to agreed fissure/Lyra narrative before Unity Bastion III migration. Do not migrate Unity now, no external publication.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Solo documentación, narrativa y lógica del vertical slice ya existente; ningún asset 3D, Blender, Tripo, autoría artística ni migración Unity en este workstream."
+    },
+    {
+      "id": "eldoria-aldric-dialogue-bust-20261027",
+      "title": "Sir Aldric — retrato real pecho/hombros arriba en los diálogos de Eldoria",
+      "owner": "chatgpt-aldric-dialogue-bust-20261027",
+      "ownership_revision": 1,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
+      "branch": "feature/aldric-dialogue-bust-20261027",
+      "pr": 118,
+      "status": "active",
+      "claimed_at": "2026-10-27T20:22:00Z",
+      "scope": [
+        "Unity/Assets/Eldoria/Resources/UI/AldricDialogue/**",
+        "Unity/Assets/Eldoria/Resources/UI/AldricDialogue.meta",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs",
+        "tools/aldric-dialogue/**",
+        ".github/workflows/aldric-dialogue-portraits.yml",
+        "docs/ALDRIC_DIALOGUE_BUST_INTEGRATION_20261027.md",
+        "pipeline/art-production-requests/eldoria-aldric-dialogue-bust-20261027.json"
+      ],
+      "resources": [],
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/eldoria-aldric-dialogue-bust-20261027.json",
+      "art_production_routing_reason": "Owner-approved reuse of real 3D artist source and exact Blender render to UI PNG textures; static art and presentation only; zero extra Tripo cost.",
+      "dependency": "No mutation to V1 RoyalHUD (Bastion III owner), Bastion III PR117, scene, gameplay, save, builds or Unity heavy runner. Owner-approved chest-up only; isolated authoring and native QA after Windows lease release.",
+      "phase": "SOURCE_3D_CAPED_PORTRAITS_PASS_UNITY_PENDING",
+      "evidence": {
+        "tripo_original_task": "f827067d-927e-4172-9bb8-6ee813176d58",
+        "source_artpass_glb_sha": "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555",
+        "render_run": 40576565780,
+        "source_locked": true,
+        "assets_in_feature_branch": true,
+        "unity_native_qa": false,
+        "art_approved": false,
+        "paid_credits_new": 0
+      },
+      "next": "Obtain native Unity dialogue portrait and landscape captures after Bastion III releases Windows, test identity per speaker and narrative Continue, review and merge PR118 only after source and native verification."
     }
   ],
   "history": [
