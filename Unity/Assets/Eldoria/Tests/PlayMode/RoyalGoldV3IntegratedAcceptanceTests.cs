@@ -94,6 +94,22 @@ namespace Eldoria.Tests
             }
             Call(hud, "SelectBuilding", "bastion");
             yield return null;
+            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            Call(v2, "SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            Assert.That(Member(v2,"ChronicleIllustratedBuildingVisible"),Is.EqualTo(true),
+                "Crónica Real must actually DISPLAY its illustrated building card, not just instantiate a hidden placeholder");
+            var realCard = GameObject.Find("V2 / contextual building sheet");
+            Assert.That(realCard,Is.Not.Null);
+            var cardRect = realCard.GetComponent<RectTransform>();
+            var bottomNav = Member(hud,"Navigation") as Component;
+            Assert.That(bottomNav,Is.Not.Null);
+            // Both use safe-bottom anchored coordinates: an illustrated card
+            // should be just above the live dock, never overlaid on its buttons.
+            var navRect = bottomNav.transform as RectTransform;
+            Assert.That(cardRect.anchoredPosition.y,
+                Is.GreaterThanOrEqualTo(navRect.anchoredPosition.y+navRect.rect.height),
+                "The approved illustrated card must not cover the navigation dock");
             var art = hud.GetComponentsInChildren<Graphic>(true)
                 .FirstOrDefault(g => g.GetType().Name ==
                     "RoyalGoldV3BuildingEngravingGraphic");
