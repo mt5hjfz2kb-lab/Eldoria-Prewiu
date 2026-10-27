@@ -5,5 +5,5 @@
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner-authorized signed Android family code16 from main after merged canonical Crónica Real PR115 and 66/66 PlayMode 26/26 EditMode I-II PASS; self-hosted Windows runner serial, same package and signing key. No release before SHA/bytes/signature and native source validation. No save reset."
+  "note": "Code16 owner-authorized rebuild after first attempt 40492800484 failed before Unity: PowerShell ConvertFrom-Json did not contain optional version fields; workflow fixed at 1d061538f69c90c635cb921272e0246911fe150a. Same game source/owner signing key/scene, version 1.16, no release without signed artifact verification."
 }
