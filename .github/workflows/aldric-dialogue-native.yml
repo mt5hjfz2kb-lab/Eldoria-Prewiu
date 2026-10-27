@@ -9,7 +9,7 @@ permissions:
   contents: read
 concurrency:
   group: aldric-pr118-one-native-unity
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   portrait-native:
     if: vars.UNITY_RUNNER_READY == 'true'
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: refs/pull/118/merge
-          path: aldric-dialogue-merge
+          path: aldric-dialogue-merge-v2
           clean: false
           filter: blob:none
           sparse-checkout: |
@@ -74,7 +74,7 @@ jobs:
 
       - name: Verify no stale PR source, preserved project and source-locked 4 PNGs
         shell: powershell
-        working-directory: aldric-dialogue-merge
+        working-directory: aldric-dialogue-merge-v2
         run: |
           $ErrorActionPreference='Stop'
           $expected=$env:GITHUB_SHA
@@ -111,7 +111,7 @@ jobs:
 
       - name: Prepare isolated editor-only Search index with no project changes
         shell: powershell
-        working-directory: aldric-dialogue-merge
+        working-directory: aldric-dialogue-merge-v2
         run: |
           $p=Join-Path (Get-Location) 'Unity'
           $u=Join-Path $p 'UserSettings/Search.index'
@@ -133,7 +133,7 @@ jobs:
 
       - name: Run real 2-test Unity PlayMode suite on merged PR118 source
         shell: powershell
-        working-directory: aldric-dialogue-merge
+        working-directory: aldric-dialogue-merge-v2
         run: |
           $project=Join-Path (Get-Location) 'Unity'
           $out=Join-Path $env:RUNNER_TEMP "aldric-dialogue-native-$env:GITHUB_RUN_ID"
@@ -157,7 +157,7 @@ jobs:
 
       - name: Capture 10 real Unity player-camera dialogue screenshots, horizontal and vertical
         shell: powershell
-        working-directory: aldric-dialogue-merge
+        working-directory: aldric-dialogue-merge-v2
         env:
           ALDRIC_NATIVE_OUTPUT: ${{ runner.temp }}/aldric-native-dialogue-captures-${{ github.run_id }}
         run: |
