@@ -18,7 +18,7 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public RoyalHUD Source;
 
-        private RectTransform safe, objectiveCard, buildingCard, scrollContent, scrollViewport;
+        private RectTransform safe, headerPlate, objectiveCard, buildingCard, scrollContent, scrollViewport;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
         private RoyalText objectiveActionLabel, objectivesButtonLabel;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
@@ -145,6 +145,18 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (Source.Realm.Power)
                     Source.Realm.Power.color = new Color(.80f, .82f, .81f, 1f);
             }
+
+            // The approved original has ONE unbroken midnight-blue / antique
+            // gold royal header across the *entire safe edge*. Keep the actual
+            // V1 controls above it; this decoration never catches touch input.
+            headerPlate = NewRect("V3 / continuous original royal header", safe);
+            headerPlate.gameObject.AddComponent<CanvasRenderer>();
+            var plateSkin = headerPlate.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+            plateSkin.Primary = false;
+            plateSkin.DecorativeCorners = false;
+            plateSkin.color = Color.white;
+            plateSkin.raycastTarget = false;
+            headerPlate.SetAsFirstSibling();
 
             objectiveCard = Panel("V2 / current objective", safe);
             // Restore the approved Crónica Real parchment with heraldries.
@@ -602,6 +614,21 @@ namespace Eldoria.UI.RoyalGold.V2
             float realmWidth = portrait ? Mathf.Min(160f, w * .39f) : 275f;
             float headerHeight = portrait ? 62f : 78f;
             float settingsSize = portrait ? 56f : 76f;
+            if (headerPlate)
+            {
+                // Real resources may wrap to a second line in narrow portrait.
+                // Keep them within the same top band, never behind the quest.
+                float resourceRoom = w - realmWidth - settingsSize - 17f;
+                bool wrapped = portrait && Source.Resources &&
+                    resourceRoom / (Source.Resources.FoodVisible ? 3f : 2f) < 59f;
+                headerPlate.anchorMin = headerPlate.anchorMax =
+                    headerPlate.pivot = new Vector2(0f, 1f);
+                headerPlate.anchoredPosition = Vector2.zero;
+                SetWidthAndHeight(headerPlate, w,
+                    headerHeight + (wrapped ? 63f : 0f));
+                headerPlate.SetAsFirstSibling();
+            }
+
 
             var realm = Source.Realm ? Source.Realm.transform as RectTransform : null;
             if (realm)
