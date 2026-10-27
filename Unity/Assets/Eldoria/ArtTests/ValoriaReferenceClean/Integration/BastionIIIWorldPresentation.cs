@@ -56,6 +56,20 @@ namespace Eldoria.ReferenceClean {
   static GameObject Model(string path,Transform parent,Vector3 position,float width){
    var source=Resources.Load<GameObject>(path);if(!source){Debug.LogError("BASTION_III_MISSING_ART "+path);return null;}
    var model=Instantiate(source,parent);model.name=path.Split('/').Last();model.transform.localPosition=Vector3.zero;model.transform.localRotation=Quaternion.identity;model.transform.localScale=Vector3.one;
+   // The source GLB/prefab is imported as disabled presentation geometry.
+   // Creating an active WorldHotspot does not activate these children: native
+   // art-frustum evidence showed wolf meshes correctly framed but INACTIVE.
+   // Enable the ACTUAL imported renderers along their prefab ancestry, not
+   // placeholder cubes or extra copied artwork. The encounter parent retains
+   // its original progression / panorama visibility gate.
+   if(path=="BastionIII/AshWolf"||path=="BastionIII/PrivateFissure"){
+    model.SetActive(true);
+    foreach(var renderer in model.GetComponentsInChildren<Renderer>(true)){
+     for(var node=renderer.transform;node&&node!=parent;node=node.parent)
+      if(!node.gameObject.activeSelf)node.gameObject.SetActive(true);
+     if(!renderer.enabled)renderer.enabled=true;
+    }
+   }
    foreach(var c in model.GetComponentsInChildren<Collider>(true))Destroy(c);
    if(path=="BastionIII/AshWolf"){
     var animation=model.GetComponentInChildren<Animation>(true);
