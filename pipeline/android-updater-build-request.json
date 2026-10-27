@@ -1,9 +1,9 @@
 {
-  "enabled": false,
-  "versionCode": 16,
-  "versionName": "1.16",
+  "enabled": true,
+  "versionCode": 17,
+  "versionName": "1.17",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Code16 signed build completed SUCCESS run40495487995, source ee35c87986370bf4d7e0e62e57897957cd9bce98, artifact12729954412. Release run40497012145 PASS with public exact-byte verification. Disabled duplicate build; family manifest main now16."
+  "note": "Owner-authorized Bastion III final signed Android build after PR117 merged at c4a1ad9af70ba6f95ac8a53e2350f9e5bee03b08. Native Unity SHA a894662ad4661c59ad685c9d65c2723151f07ac9 success 40578913550 and independent genuine art review native20. Preserve package/certificate/saves; only promote public family manifest after exact-byte APK verification, not before."
 }
