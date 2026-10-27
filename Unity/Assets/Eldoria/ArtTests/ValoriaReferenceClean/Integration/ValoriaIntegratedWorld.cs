@@ -59,6 +59,8 @@ namespace Eldoria.ReferenceClean {
    legacyCanvas=legacy.GetComponent<Canvas>();legacyRaycaster=legacy.GetComponent<GraphicRaycaster>();
    cityFog=RenderSettings.fog;
    Hud=Instantiate(HudPrefab).GetComponent<RoyalHUD>();Hud.name="Valoria Royal Gold HUD";
+   // The playtest Settings dialog requests a guarded backup-and-fresh-save from the real city host.
+   Hud.ResetPlaytestProgress=()=>city.ResetPlaytestProgress();
    // One authoritative Royal Gold session; V2 alters presentation only.
    if(!Hud.GetComponent<RoyalGoldV2Hud>())Hud.gameObject.AddComponent<RoyalGoldV2Hud>();
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
