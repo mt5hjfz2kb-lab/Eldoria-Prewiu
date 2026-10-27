@@ -146,6 +146,65 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator ApprovedCronicaRealKeepsRealNavigationOnSafeBottomAndObjectiveOnParchment()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            yield return null;
+            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            Call(v2, "SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+
+            var navigation = Member(hud, "Navigation") as Component;
+            Assert.That(navigation, Is.Not.Null, "The original functional navigation must remain");
+            var dock = navigation.transform as RectTransform;
+            Assert.That(dock, Is.Not.Null);
+            Assert.That(dock.anchorMin.y, Is.EqualTo(0f).Within(.001f),
+                "Owner reference: the icons belong to the safe BOTTOM edge, not a left rail");
+            Assert.That(dock.anchorMax.y, Is.EqualTo(0f).Within(.001f));
+            Assert.That(dock.anchorMin.x, Is.EqualTo(.5f).Within(.001f));
+            Assert.That(dock.anchoredPosition.y, Is.EqualTo(0f).Within(.1f));
+
+            var safe = dock.parent as RectTransform;
+            Assert.That(safe, Is.Not.Null, "Bottom dock must be inside the existing safe area");
+            var sw = new Vector3[4];
+            safe.GetWorldCorners(sw);
+            int visible = 0;
+            var items = Member(navigation, "Items") as System.Collections.IEnumerable;
+            Assert.That(items, Is.Not.Null);
+            foreach (var item in items)
+            {
+                var button = Member(item, "Button") as Button;
+                Assert.That(button, Is.Not.Null);
+                if (!button.gameObject.activeSelf) continue;
+                visible++;
+                var rt = button.transform as RectTransform;
+                var corners = new Vector3[4];
+                rt.GetWorldCorners(corners);
+                Assert.That(corners[0].x, Is.GreaterThanOrEqualTo(sw[0].x - 2f));
+                Assert.That(corners[2].x, Is.LessThanOrEqualTo(sw[2].x + 2f));
+                Assert.That(corners[0].y, Is.GreaterThanOrEqualTo(sw[0].y - 2f));
+                Assert.That(corners[2].y, Is.LessThanOrEqualTo(sw[2].y + 2f));
+                Assert.That(button.onClick.GetPersistentEventCount(),
+                    Is.GreaterThanOrEqualTo(0), "The original event source must remain");
+            }
+            Assert.That(visible, Is.GreaterThan(0), "Original real navigation actions are required");
+
+            var objective = GameObject.Find("V2 / current objective");
+            Assert.That(objective, Is.Not.Null);
+            var parchment = objective.transform.Find("V3 / Crónica Real parchment");
+            var crest = objective.transform.Find("V3 / genuine Valoria heraldry");
+            Assert.That(parchment, Is.Not.Null, "Original chapter parchment is a release requirement");
+            Assert.That(crest, Is.Not.Null, "The real Valoria heraldry must accompany the chapter");
+            var parchmentGraphic = parchment.GetComponent<Graphic>();
+            Assert.That(parchmentGraphic, Is.Not.Null);
+            Assert.That(parchmentGraphic.raycastTarget, Is.False,
+                "Artwork cannot steal touch input from the original buttons");
+            Assert.That(Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .Count(x => x && x.GetType().Name == "RoyalHUD"), Is.EqualTo(1));
+        }
+
+        [UnityTest]
         public IEnumerator SingleHudCompactObjectiveAndNoOverlayAtRest()
         {
             Component host = null, hud = null;
