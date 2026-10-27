@@ -1,8 +1,8 @@
 {
-  "enabled": false,
-  "buildRunId": 40495487995,
-  "versionCode": 16,
-  "expectedSourceSha": "ee35c87986370bf4d7e0e62e57897957cd9bce98",
+  "enabled": true,
+  "buildRunId": 40583425073,
+  "versionCode": 17,
+  "expectedSourceSha": "74ef803f8be5a3ceb760344baa3d68c3a9537226",
   "budgetEur": 0,
-  "note": "Family1.16/code16 published SUCCESS run40497012145 with ELDORIA_FAMILY_RELEASE_BYTE_MATCH_PASS and ELDORIA_FAMILY_MAIN_CHANNEL_PROMOTED; URL https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code16/Eldoria-Valoria-code16.apk, SHA256 8eecd69f76e2786a018483bec569e74f83dfce5226bb5a3b332cfdf152b1e6a5,397196700 bytes, original signing cert. Disable repeat release; physical phone not tested."
+  "note": "Owner-authorized PR117 Bastion III release. Signed original family Android 1.17 build 40583425073 SUCCESS on exact main source 74ef803f8be5a3ceb760344baa3d68c3a9537226, artifact eldoria-family-updater-code17-40583425073 ID 12772181968. Native Bastion III rev20 40578913550 PASS, final fissure visuals independently reviewed; source-only main gate 40586040000 undergoing additional global verification. Promote only after byte-for-byte public APK verification and preserve old channel until then; physical device QA not asserted."
 }
