@@ -187,8 +187,18 @@ namespace Eldoria.UI.RoyalGold.V2
             // This adds no duplicate action, EventSystem or touch surface.
             objectiveActionLabel.rectTransform.SetParent(objectiveCard, false);
             objectivesButtonLabel.rectTransform.SetParent(objectiveCard, false);
+            // The approved manuscript has TWO circular medieval miniatures
+            // BESIDE the parchment, not flat CTAs across its lower half.
+            // Keep the actual mission and go-to-objective callbacks intact.
+            StyleChronicleMedallion(objectiveAction, 12);
+            StyleChronicleMedallion(objectivesButton, 6);
             objectiveActionLabel.raycastTarget = false;
             objectivesButtonLabel.raycastTarget = false;
+            // Real actions now have their original pictogram treatment.
+            // Their accessibility names and events survive, but duplicate
+            // rectangular captions are not drawn over the medallions.
+            objectiveActionLabel.enabled = false;
+            objectivesButtonLabel.enabled = false;
             objectiveActionLabel.fontSize = 18;
             objectivesButtonLabel.fontSize = 18;
             objectiveActionLabel.alignment = TextAnchor.MiddleCenter;
@@ -316,6 +326,37 @@ namespace Eldoria.UI.RoyalGold.V2
             return button;
         }
 
+        private static void StyleChronicleMedallion(RoyalButton button, int icon)
+        {
+            if (!button || button.transform.Find("Crónica / native round icon"))
+                return;
+            var rectangularFrame = button.GetComponent<RoyalGoldV2FrameGraphic>();
+            if (rectangularFrame)
+            {
+                rectangularFrame.raycastTarget = false;
+                rectangularFrame.enabled = false;
+            }
+            var ring = NewRect("Crónica / native round icon", button.transform);
+            ring.gameObject.AddComponent<CanvasRenderer>();
+            var enamel = ring.gameObject.AddComponent<RoyalFrameGraphic>();
+            enamel.Round = true;
+            enamel.Variant = 1;
+            enamel.raycastTarget = true;
+            Stretch(ring, 0f);
+            ring.SetAsFirstSibling();
+            button.targetGraphic = enamel;
+            var symbol = NewRect("Crónica / real mission pictogram", ring);
+            symbol.gameObject.AddComponent<CanvasRenderer>();
+            var artwork = symbol.gameObject.AddComponent<RoyalIconGraphic>();
+            artwork.Icon = icon;
+            artwork.color = new Color(.95f, .79f, .46f, 1f);
+            artwork.raycastTarget = false;
+            symbol.anchorMin = symbol.anchorMax = symbol.pivot =
+                new Vector2(.5f, .5f);
+            symbol.anchoredPosition = Vector2.zero;
+            symbol.sizeDelta = new Vector2(32f, 32f);
+        }
+
         private static void Place(RectTransform r, Vector2 anchor, Vector2 pivot, float x, float y, float w, float h)
         {
             r.anchorMin = r.anchorMax = anchor;
@@ -343,13 +384,15 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = safe.rect.width, height = safe.rect.height;
             if (width < 120 || height < 120) return;
             portrait = height > width;
-            float goalWidth = Mathf.Min(portrait ? 380f : 350f, width - 26f);
+            float goalWidth = Mathf.Min(portrait ? 280f : 430f,
+                width - 142f);
             // The genuine royal header is 104 units tall. Keep the
             // illuminated chapter *below* its bounds, as in Option 1.
             // The previous 88-unit top offset crossed the Valoria header.
             float goalTop = portrait ? 287f : 122f;
             // A shorter illuminated manuscript; the scene remains open.
-            Top(objectiveCard, portrait ? 10f : 14f, goalTop, goalWidth, 133f);
+            Top(objectiveCard, portrait ? 9f : 14f, goalTop,
+                goalWidth, 113f);
             LayoutManuscriptContent(goalWidth);
             // Reflow selected objectives after every orientation/size change.
             compactObjective = false;
@@ -398,24 +441,27 @@ namespace Eldoria.UI.RoyalGold.V2
             // Both compact and selected states preserve the same miniature
             // parchment. An expanded chapter is an explicit player action.
             compactObjective = compact;
-            objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 133f);
+            objectiveCard.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 113f);
             LayoutManuscriptContent(objectiveCard.rect.width);
         }
 
         private void LayoutManuscriptContent(float width)
         {
-            float actionWidth = width - 76f;
-            Top(chapterText.rectTransform, 67f, 12f, width - 157f, 23f);
-            chapterText.fontSize = 15;
-            Top(progressText.rectTransform, width - 90f, 12f, 76f, 23f);
-            progressText.fontSize = 14;
+            // Match Option 1's 2:1 illuminated page: no full-height overlay.
+            Top(chapterText.rectTransform, 65f, 10f, width - 78f, 23f);
+            chapterText.fontSize = width < 300f ? 15 : 18;
+            Top(progressText.rectTransform, width - 66f, 10f, 52f, 22f);
+            progressText.fontSize = 13;
             progressText.alignment = TextAnchor.MiddleRight;
-            Top(objectiveText.rectTransform, 67f, 34f, width - 84f, 46f);
-            objectiveText.fontSize = 19;
-            Top((RectTransform)objectiveAction.transform, 64f, 86f,
-                actionWidth * .57f, 40f);
+            Top(objectiveText.rectTransform, 65f, 36f, width - 79f, 64f);
+            objectiveText.fontSize = width < 300f ? 17 : 20;
+            // Real "go to objective" / "missions" actions, in two rings
+            // to the RIGHT of the parchment like the selected reference.
+            const float diameter = 54f;
+            Top((RectTransform)objectiveAction.transform,
+                width + 9f, 8f, diameter, diameter);
             Top((RectTransform)objectivesButton.transform,
-                69f + actionWidth * .57f, 86f, actionWidth * .43f - 5f, 40f);
+                width + 66f, 8f, diameter, diameter);
             PositionObjectiveActionLabels();
         }
 
