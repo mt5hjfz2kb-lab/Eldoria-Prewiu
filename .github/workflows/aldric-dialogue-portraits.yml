@@ -1,0 +1,79 @@
+name: Aldric approved dialogue bust assets — isolated zero-credit producer
+on:
+  push:
+    branches:
+      - feature/aldric-dialogue-bust-20261027
+    paths:
+      - .github/workflows/aldric-dialogue-portraits.yml
+      - tools/aldric-dialogue/**
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: aldric-bust-source-20261027
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout only this branch (never the Bastion III runner)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Recover exact paid Tripo source without a new paid API call
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-tripo-module-aldric-h31-text-validated-20261027-65464bf6d17daeb52848d57333779e6f9ba901ca
+          run-id: 40527678020
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/aldric-source
+      - name: Install CPU rendering dependencies only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check --quiet "numpy==2.3.5" "vtk==9.6.2" "pillow==12.3.0"
+      - name: Render 4 honest shoulder/chest portraits from SHA-locked GLB
+        shell: bash
+        run: |
+          set -euo pipefail
+          source=$(find "$RUNNER_TEMP/aldric-source" -type f -name 'Eldoria_Module_UnderReview_50K.glb' -print -quit)
+          test -n "$source" || { echo 'NO_GLB_SOURCE_IN_EXISTING_ARTIFACT'; exit 1; }
+          echo "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595  $source" | sha256sum --check
+          dst=Unity/Assets/Eldoria/Resources/UI/AldricDialogue
+          mkdir -p "$dst"
+          if command -v xvfb-run >/dev/null 2>&1; then
+            xvfb-run -a python tools/aldric-dialogue/render_existing_model_busts.py "$source" "$dst"
+          else
+            python tools/aldric-dialogue/render_existing_model_busts.py "$source" "$dst"
+          fi
+          python - <<'PY'
+          import json,pathlib
+          a=pathlib.Path('Unity/Assets/Eldoria/Resources/UI/AldricDialogue')
+          data=json.loads((a/'ALDRIC_BUST_PROVENANCE.json').read_text())
+          assert len(data['files'])==4
+          assert all(z['opaque_pixels']>118000 and z['size']>25000 for z in data['files'])
+          ui=pathlib.Path('Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs').read_text()
+          assert 'GetAldricBust' in ui and 'Source.NarrativeSpeaker' in ui
+          print('BUST_PREP=PASS, Unity/gameplay not verified')
+          PY
+      - name: Preserve images and checksum report for independent review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aldric-dialogue-authentic-busts-20261027
+          path: Unity/Assets/Eldoria/Resources/UI/AldricDialogue/*
+          if-no-files-found: warn
+      - name: Stage render outputs only on this isolated feature branch
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "feature/aldric-dialogue-bust-20261027"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Unity/Assets/Eldoria/Resources/UI/AldricDialogue
+          if git diff --cached --quiet; then echo 'ALDRIC_BUST_UNCHANGED'; exit 0; fi
+          git commit -m "art(aldric): store SHA-verified canonical speaker bust PNGs [skip ci]"
+          git push origin HEAD:feature/aldric-dialogue-bust-20261027
