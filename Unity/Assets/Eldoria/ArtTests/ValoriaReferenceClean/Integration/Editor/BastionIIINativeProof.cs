@@ -85,6 +85,23 @@ namespace Eldoria.ReferenceClean.Editor {
   }
   // Strict artistic integration gate: real rendered models must occupy the
   // gameplay camera frustum. A visible *hotspot* alone is not artwork.
+  static void RequireCityProgressArt(ValoriaIntegratedWorld h){
+   var city=GameObject.Find("Bastion III city additions");
+   Need(city&&city.activeInHierarchy,"III city add-ons activated only at Bastion III");
+   var rs=city.GetComponentsInChildren<Renderer>(true);
+   var frustum=GeometryUtility.CalculateFrustumPlanes(h.City.PlayerCamera);
+   int live=0,inCamera=0;
+   foreach(var r in rs){
+    var on=r.enabled&&r.gameObject.activeInHierarchy&&!r.forceRenderingOff;
+    var inView=GeometryUtility.TestPlanesAABB(frustum,r.bounds);
+    Debug.Log("BASTION_III_CITY_ART object="+r.name+" active="+on+" inCamera="+inView+
+      " bounds="+r.bounds+" position="+r.transform.position);
+    if(on)live++;
+    if(on&&inView)inCamera++;
+   }
+   Need(live>0,"III city supplies include enabled real textured renderers");
+   Need(inCamera>0,"III city supplies have on-screen renderers in genuine camera");
+  }
   static void RequireRealWorldModel(ValoriaIntegratedWorld h,string id)
   {
    var target=h.FindTarget(id);
@@ -126,7 +143,7 @@ namespace Eldoria.ReferenceClean.Editor {
    Need(!h.Hud.NarrativeOpen,"narrative dismisses using real button");
    var cityCam=h.City.PlayerCamera;var cameraPosition=cityCam.transform.position;var cameraRotation=cityCam.transform.rotation;
    Shot(h,"A-bastion-II",cityCam);Command(h,"AdvanceBastion","bastion");Step(h,14);h.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.5f);
-   h.GetComponent<BastionIIIWorldPresentation>().Apply();cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);Shot(h,"B-bastion-III-site",cityCam);RequireVisibleUpgrade("A-bastion-II-horizontal","B-bastion-III-site-horizontal",120);
+   h.GetComponent<BastionIIIWorldPresentation>().Apply();cityCam.transform.SetPositionAndRotation(cameraPosition,cameraRotation);Shot(h,"B-bastion-III-site",cityCam);RequireCityProgressArt(h);RequireVisibleUpgrade("A-bastion-II-horizontal","B-bastion-III-site-horizontal",120);
    Need(h.FindTarget("granary").gameObject.activeInHierarchy,"granary III unlock");
    Command(h,"Build","granary");Step(h,9);yield return null;Shot(h,"C-granary-level1",cityCam);
    Command(h,"UpgradeBuilding","granary");h.TrySetWorld(true);yield return new WaitForSecondsRealtime(.5f);h.GetComponent<BastionIIIWorldPresentation>().Apply();Command(h,"InvestigateFissure","fissure-valoria");Need(h.City.Gateway.Snapshot().ChapterThree.InvestigationRoute.Count>1,"investigation uses real terrain route");
