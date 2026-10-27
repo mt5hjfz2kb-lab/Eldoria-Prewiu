@@ -173,15 +173,49 @@ namespace Eldoria.UI.RoyalGold.V2.Editor
                 finish.SynchronizeNow();
                 Assert(hud.Modal.Body.text.Length>100,"Full first page revealed with actual Continue");
                 Assert(button.gameObject.activeInHierarchy&&button.interactable,"Original Continue remains interactive");
-                Screenshot(host,"aldric-dialogue-"+(aldric?"aldric":speaker=="Orín"?"orin":speaker.ToLowerInvariant()),1600,900);
-                Screenshot(host,"aldric-dialogue-"+(aldric?"aldric":speaker=="Orín"?"orin":speaker.ToLowerInvariant()),900,1600);
+                // The canonical dialogue enters with a 0.28 s transition.
+                // Wait for settled opacity before claiming visible photographic evidence.
+                yield return new WaitForSecondsRealtime(.36f);
+                finish.SynchronizeNow();
+                string stem=speaker=="Sir Aldric"?"sir-aldric":
+                    speaker=="Aldric"?"aldric":speaker=="Orín"?"orin":speaker.ToLowerInvariant();
+                Screenshot(host,"aldric-dialogue-"+stem,1600,900);
+                Screenshot(host,"aldric-dialogue-"+stem,900,1600);
                 for(int k=0;k<25 && hud.NarrativeOpen;k++) { button.onClick.Invoke(); yield return null; }
                 Assert(!hud.NarrativeOpen,"No dialogue progression regression after "+speaker);
             }
+            // Two orientations for EACH of the five distinct speaker labels, with no
+            // duplicate filenames overwriting 'Sir Aldric' with 'Aldric'.
+            Assert(Directory.GetFiles(Evidence,"aldric-dialogue-*.png").Length==10,
+                "Five independent Spanish speaker captures, horizontal and vertical");
+            // Verify an independently authored 218-character English dialogue using
+            // the same existing runtime, Continue button and locale switch.
+            hud.SetEnglish(true);
+            const string englishPhrase="The city of Valoria must rebuild its walls while we protect our families and watch the forest. ";
+            string englishText=string.Concat(Enumerable.Repeat(englishPhrase,4)).Substring(0,218);
+            hud.ShowNarrative("Sir Aldric",englishText);
+            yield return null;
+            finish.SynchronizeNow();
+            Assert(hud.NarrativeOpen&&hud.NarrativeSourceText.Length==218,
+                "English 218-character narrative enters the original HUD");
+            if(hud.NarrativeIsRevealing)button.onClick.Invoke();
+            yield return null;
+            yield return new WaitForSecondsRealtime(.36f);
+            finish.SynchronizeNow();
+            Assert(hud.Modal.Body.text.Length>100,"English original Continue reveals the real text");
+            Assert(button.gameObject.activeInHierarchy&&button.interactable,
+                "English original Continue remains interactive");
+            Screenshot(host,"aldric-dialogue-sir-aldric-en",1600,900);
+            Screenshot(host,"aldric-dialogue-sir-aldric-en",900,1600);
+            for(int k=0;k<25&&hud.NarrativeOpen;k++){button.onClick.Invoke();yield return null;}
+            Assert(!hud.NarrativeOpen,"English Continue closes the narrative without changing gameplay");
+            hud.SetEnglish(false);
+            Assert(Directory.GetFiles(Evidence,"aldric-dialogue-*.png").Length==12,
+                "Exactly 12 independent real Unity captures: five ES speakers and Aldric EN in two orientations");
             Directory.CreateDirectory(Evidence);
             var output=Path.Combine(Evidence,"ALDRIC_NATIVE_PASS.txt");
             File.WriteAllLines(output,new[]{"result=PASS","source="+Source,"mode=real integrated Unity camera and HUD","notes=not physical Android device"}.Concat(Checks));
-            Debug.Log("ALDRIC_DIALOGUE_UNITY_INTEGRATED_PASS images=10 checks="+Checks.Count);
+            Debug.Log("ALDRIC_DIALOGUE_UNITY_INTEGRATED_PASS images=12 checks="+Checks.Count);
             EditorApplication.Exit(0);
         }
     }
