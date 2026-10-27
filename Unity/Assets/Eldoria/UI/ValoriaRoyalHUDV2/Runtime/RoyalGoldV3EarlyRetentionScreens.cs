@@ -396,7 +396,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     " piedra · "+(20+stage/5*3)+" XP");
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
                 passive.Put("EXP. ACUMULADA: "+xp+" XP / máximo 8 h\n"+
-                    "Aldric: "+p.AldricExperience+" XP · Lyra: "+p.LyraExperience+" XP");
+                    "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
+                    " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));
                 mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&archer>0;
                 mainActionLabel.Put(mainAction.interactable?"COMBATIR AUTOMÁTICAMENTE":
                     "DESBLOQUEO PENDIENTE");
