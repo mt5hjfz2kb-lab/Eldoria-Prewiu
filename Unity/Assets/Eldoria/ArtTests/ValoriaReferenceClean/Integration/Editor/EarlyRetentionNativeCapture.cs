@@ -99,8 +99,23 @@ namespace Eldoria.ReferenceClean.Editor
         {
             Need(button&&button.IsInteractable()&&button.gameObject.activeInHierarchy,
                 label+" genuine live button clickable");
-            // The actual button action is invoked; never fake a domain reward.
-            button.onClick.Invoke();
+            Canvas.ForceUpdateCanvases();
+            var rect=button.transform as RectTransform;
+            var corners=new Vector3[4];rect.GetWorldCorners(corners);
+            var point=RectTransformUtility.WorldToScreenPoint(null,
+                (corners[0]+corners[2])*.5f);
+            var eventSystem=EventSystem.current;
+            Need(eventSystem!=null,"One real EventSystem is active");
+            var data=new PointerEventData(eventSystem){
+                pointerId=-1,button=PointerEventData.InputButton.Left,position=point};
+            var hits=new List<RaycastResult>();
+            eventSystem.RaycastAll(data,hits);
+            Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(
+                hits[0].gameObject)==button.gameObject,
+                label+" actual topmost device raycast reaches the button");
+            ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerDownHandler);
+            ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerUpHandler);
+            ExecuteEvents.Execute(button.gameObject,data,ExecuteEvents.pointerClickHandler);
         }
         static IEnumerator Probe(ValoriaIntegratedWorld h)
         {
