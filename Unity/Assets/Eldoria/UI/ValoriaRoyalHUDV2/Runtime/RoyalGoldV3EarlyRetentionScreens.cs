@@ -485,7 +485,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     "DESBLOQUEO PENDIENTE");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
-                battleFeedback.Put(notice);
+                battleFeedback.Put(string.IsNullOrEmpty(notice) && stage==1 ?
+                    "ALDRIC · Es una prueba de preparación. Elige tus tropas y yo dirigiré el combate automático." :
+                    notice);
                 footer.Put("Una sola victoria por etapa · El resultado no necesita supervisión.");
             }
             else
