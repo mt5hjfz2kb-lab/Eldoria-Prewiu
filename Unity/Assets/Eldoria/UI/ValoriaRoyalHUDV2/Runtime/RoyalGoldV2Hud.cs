@@ -112,7 +112,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Decorative graphic only; the genuine realm button remains sole
             // hit target, and no extra overlay occupies city coordinates.
             var realm = Source.Realm ? Source.Realm.transform as RectTransform : null;
-            if (realm && !realm.Find("V3 / subdued Valoria livery"))
+            if (realm && !FindDirect(realm, "V3 / subdued Valoria livery"))
             {
                 var relief = NewRect("V3 / subdued Valoria livery", realm);
                 relief.gameObject.AddComponent<CanvasRenderer>();
@@ -274,6 +274,18 @@ namespace Eldoria.UI.RoyalGold.V2
             ready = true;
         }
 
+        // Transform.Find interprets '/' as a hierarchy separator. Our approved
+        // Crónica/Valoria decoration names contain literal slashes; match only
+        // immediate-child names to prevent false negatives and duplicate art
+        // every time an orientation/layout refresh runs.
+        private static Transform FindDirect(Transform parent, string exactName)
+        {
+            if (!parent) return null;
+            foreach (Transform child in parent)
+                if (child.name == exactName) return child;
+            return null;
+        }
+
         private static RectTransform NewRect(string name, Transform parent)
         {
             var g = new GameObject(name, typeof(RectTransform));
@@ -328,7 +340,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
         private static void StyleChronicleMedallion(RoyalButton button, int icon)
         {
-            if (!button || button.transform.Find("Crónica / native round icon"))
+            if (!button || FindDirect(button.transform, "Crónica / native round icon"))
                 return;
             var rectangularFrame = button.GetComponent<RoyalGoldV2FrameGraphic>();
             if (rectangularFrame)
@@ -754,7 +766,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
             // Reuse the original functional buttons. Only a separate,
             // non-raycasting blue and antique-gold plate is added behind them.
-            var trim = dock.Find("V3 / Chronicle bottom frame") as RectTransform;
+            var trim = FindDirect(dock, "V3 / Chronicle bottom frame") as RectTransform;
             if (!trim)
             {
                 var frameObject = new GameObject("V3 / Chronicle bottom frame",
