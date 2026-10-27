@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-27T07:48:00Z",
+  "updated_at": "2026-10-27T08:01:54.557Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1358,12 +1358,12 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-cronica-real-ui-20261027",
+      "owner": "chatgpt-cronica-real-fidelity-20261027",
       "ownership_state": "claimed",
-      "ownership_revision": 17,
+      "ownership_revision": 18,
       "write_scope_released": false,
       "status": "active",
-      "claimed_at": "2026-10-27T07:48:00Z",
+      "claimed_at": "2026-10-27T08:01:54.557Z",
       "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
       "branch": "main",
       "pr": 90,
@@ -1394,7 +1394,8 @@
         "docs/ui-v3/MOBILE_PLAYER_FEEDBACK_20261026.md",
         "Unity/Assets/Eldoria/Scripts/Presentation/ReferenceUiArtPass.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ParchmentGraphic.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BottomNavigation.cs"
       ],
       "resources": [],
       "dependencies": [
@@ -1444,7 +1445,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Reference image located. Restore real circular bottom navigation and heraldic parchment objectives, preserve original controls, compare actual Unity landscape/portrait and test I-II before merge.",
+      "next": "Restore reference Option 1 on actual RoyalHUD and run matched native Unity landscape/portrait + I-II action/persistence checks. Do not declare visual pass from compilation.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1504,6 +1505,11 @@
           "ownership_state": "available",
           "revision": 16,
           "reason": "Owner explicitly reopens original Propuesta 1 Crónica Real restoration, 2026-10-27"
+        },
+        {
+          "owner": "chatgpt-cronica-real-ui-20261027",
+          "revision": 17,
+          "reason": "Continuación explícita del mismo encargo por el propietario en esta conversación; cambio exclusivo de titularidad y no de alcance."
         }
       ],
       "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
