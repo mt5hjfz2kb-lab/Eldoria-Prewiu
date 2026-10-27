@@ -16,6 +16,7 @@ namespace Eldoria.ReferenceClean.Editor {
   static string Ev=>Path.GetFullPath("../docs/evidence/valoria-reference-clean/consolidation-20261027/"+(Environment.GetEnvironmentVariable("GITHUB_RUN_ID")??"local"));
   [Serializable] public class Slot {public int[] triangles;}
   [Serializable] public class Part {public string name,asset;public Vector3[] vertices,normals;public Vector2[] uv;public Color[] colors;public Slot[] slots;public float waterline;public Vector3[] protectedPoints;}
+  [Serializable] public class BakeAnchor {public float u,v;}
   [Serializable] public class Parts {public Part[] parts;}
   [Serializable] public class Pose {public string source,phase,view;public Vector3 position,euler,target;public float zoom,aspect;public int width,height;public bool playMode,actualUnityCamera,physicalIphone;public string label,sha256,sourceScene,version,context;public Vector3 cameraPosition,worldTarget;public Quaternion cameraRotation;}
   static ValoriaConsolidationTrial(){EditorApplication.playModeStateChanged+=Entered;}
@@ -54,14 +55,14 @@ namespace Eldoria.ReferenceClean.Editor {
    float extent=0;for(int i=0;i<8;i++){var v=new Vector3((i&1)==0?bounds.min.x:bounds.max.x,(i&2)==0?bounds.min.y:bounds.max.y,(i&4)==0?bounds.min.z:bounds.max.z)-bounds.center;extent=Mathf.Max(extent,Mathf.Abs(Vector3.Dot(v,c.transform.up)),Mathf.Abs(Vector3.Dot(v,c.transform.right)));}
    c.orthographicSize=extent*1.04f;c.transform.position=bounds.center-c.transform.forward*100;c.nearClipPlane=.1f;c.farClipPlane=250;
    var rt=new RenderTexture(1024,1024,24,RenderTextureFormat.ARGB32);rt.antiAliasing=4;c.targetTexture=rt;var prior=RenderTexture.active;c.Render();c.Render();RenderTexture.active=rt;var pixels=new Texture2D(1024,1024,TextureFormat.RGBA32,false);pixels.ReadPixels(new Rect(0,0,1024,1024),0,0);pixels.Apply();var colors=pixels.GetPixels32();int x0=1023,y0=1023,x1=0,y1=0;for(int y=0;y<1024;y++)for(int x=0;x<1024;x++)if(colors[y*1024+x].a>6){x0=Mathf.Min(x0,x);x1=Mathf.Max(x1,x);y0=Mathf.Min(y0,y);y1=Mathf.Max(y1,y);}
-   Need(x1>x0&&y1>y0,"Actual source bake empty");x0=Mathf.Max(0,x0-2);y0=Mathf.Max(0,y0-2);x1=Mathf.Min(1023,x1+2);y1=Mathf.Min(1023,y1+2);var cropped=new Texture2D(x1-x0+1,y1-y0+1,TextureFormat.RGBA32,false);cropped.SetPixels(pixels.GetPixels(x0,y0,cropped.width,cropped.height));cropped.Apply();File.WriteAllBytes(Ev+"/"+name+".png",cropped.EncodeToPNG());
+   Need(x1>x0&&y1>y0,"Actual source bake empty");x0=Mathf.Max(0,x0-2);y0=Mathf.Max(0,y0-2);x1=Mathf.Min(1023,x1+2);y1=Mathf.Min(1023,y1+2);var cropped=new Texture2D(x1-x0+1,y1-y0+1,TextureFormat.RGBA32,false);cropped.SetPixels(pixels.GetPixels(x0,y0,cropped.width,cropped.height));cropped.Apply();File.WriteAllBytes(Ev+"/"+name+".png",cropped.EncodeToPNG());var anchor=c.WorldToViewportPoint(new Vector3(bounds.center.x,bounds.min.y,bounds.min.z));File.WriteAllText(Ev+"/"+name+"-anchor.json",JsonUtility.ToJson(new BakeAnchor{u=(anchor.x*1024-x0)/cropped.width,v=(anchor.y*1024-y0)/cropped.height}));
    c.targetTexture=null;RenderTexture.active=prior;Object.DestroyImmediate(rt);Object.DestroyImmediate(pixels);Object.DestroyImmediate(cropped);Object.DestroyImmediate(obj);Object.DestroyImmediate(root);
   }
   static GameObject Icon(ValoriaIntegratedWorld h,string name){
    var texture=new Texture2D(2,2,TextureFormat.RGBA32,false);Need(texture.LoadImage(File.ReadAllBytes(Ev+"/"+name+".png")),"Source bake unavailable");texture.wrapMode=TextureWrapMode.Clamp;
    var material=new Material(Shader.Find("Eldoria/World4X/LocalCanopy")){name="Approved architecture "+name,mainTexture=texture};
-   var pos=h.WorldBastionOne.transform.position;pos.z-=8;pos.y=h.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(pos.x-h.WorldHome.x,pos.z-h.WorldHome.z)+.10f;
-   float width=24,height=width*texture.height/texture.width;var m=new Mesh{name=name,vertices=new[]{pos,pos,pos,pos},uv=new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up},uv2=new[]{new Vector2(-width/2,0),new Vector2(width/2,0),new Vector2(width/2,height),new Vector2(-width/2,height)},triangles=new[]{0,1,2,0,2,3}};m.bounds=new Bounds(pos,Vector3.one*800);
+   var anchor=JsonUtility.FromJson<BakeAnchor>(File.ReadAllText(Ev+"/"+name+"-anchor.json"));var pos=h.WorldHome+new Vector3(3.3f,0,-7.5f);pos.y=h.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(pos.x-h.WorldHome.x,pos.z-h.WorldHome.z)+.18f;
+   float width=24,height=width*texture.height/texture.width;var m=new Mesh{name=name,vertices=new[]{pos,pos,pos,pos},uv=new[]{Vector2.zero,Vector2.right,Vector2.one,Vector2.up},uv2=new[]{new Vector2(-width*anchor.u,-height*anchor.v),new Vector2(width*(1-anchor.u),-height*anchor.v),new Vector2(width*(1-anchor.u),height*(1-anchor.v)),new Vector2(-width*anchor.u,height*(1-anchor.v))},triangles=new[]{0,1,2,0,2,3}};m.bounds=new Bounds(pos,Vector3.one*800);
    var go=new GameObject(name);go.layer=29;go.transform.SetParent(h.WorldRoot.transform,true);go.transform.position=Vector3.zero;go.AddComponent<MeshFilter>().sharedMesh=m;var r=go.AddComponent<MeshRenderer>();r.sharedMaterial=material;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;return go;
   }
   static Action<bool> Bridge(ValoriaIntegratedWorld h,Dictionary<string,Mesh> reduced){
@@ -110,6 +111,7 @@ namespace Eldoria.ReferenceClean.Editor {
    File.WriteAllLines(Ev+"/bridge-measured.txt",bridgeSurvey);
    var bridge=Bridge(h,meshes);
    var cam=h.WorldCamera;var nav=h.WorldNavigation;var canon=Object.FindFirstObjectByType<RegionOneCanonicalLandscape>();
+   var combinedMaterials=h.WorldRoot.GetComponentsInChildren<Renderer>(true).SelectMany(r=>r.sharedMaterials).Where(m=>m&&m.shader.name=="Eldoria/RegionOneAuthoredSurface").Distinct().ToArray();var combinedOriginal=combinedMaterials.Select(m=>m.shader).ToArray();var combinedShader=Shader.Find("Eldoria/ConsolidationTrial/Boundary");
    foreach(var size in new[]{(1280,720,"horizontal"),(900,1600,"vertical")})foreach(var view in new[]{(2,"cercana"),(1,"regional"),(0,"panoramica")}){
     cam.aspect=(float)size.Item1/size.Item2;nav.SetZoomLevel(view.Item1,true);nav.PanTo(h.WorldHome);nav.FitToAuthoredBounds();canon.RefreshForCapture();
     string name=view.Item2+"-"+size.Item3;
@@ -117,7 +119,8 @@ namespace Eldoria.ReferenceClean.Editor {
     bridge(true);
     foreach(var r in h.WorldRoot.GetComponentsInChildren<MeshRenderer>(true).Where(r=>r.name.StartsWith("Reference city Bastion")))r.enabled=false;
     float zoom=cam.orthographicSize;float factor=Mathf.Lerp(1,1.8f,Mathf.InverseLerp(110,280,zoom))*Mathf.Max(1,zoom/280);
-    one.GetComponent<Renderer>().sharedMaterial.SetFloat("_BillboardScale",factor);two.GetComponent<Renderer>().sharedMaterial.SetFloat("_BillboardScale",factor);one.SetActive(true);Capture(cam,nav.target,"candidate-I",name,size.Item1,size.Item2);one.SetActive(false);two.SetActive(true);Capture(cam,nav.target,"candidate-II",name,size.Item1,size.Item2);two.SetActive(false);bridge(false);
+    one.GetComponent<Renderer>().sharedMaterial.SetFloat("_BillboardScale",factor);two.GetComponent<Renderer>().sharedMaterial.SetFloat("_BillboardScale",factor);one.SetActive(true);Capture(cam,nav.target,"candidate-I",name,size.Item1,size.Item2);one.SetActive(false);two.SetActive(true);Capture(cam,nav.target,"candidate-II",name,size.Item1,size.Item2);two.SetActive(false);
+    foreach(var m in combinedMaterials)m.shader=combinedShader;one.SetActive(true);Capture(cam,nav.target,"combined-I",name,size.Item1,size.Item2);one.SetActive(false);two.SetActive(true);Capture(cam,nav.target,"combined-II",name,size.Item1,size.Item2);two.SetActive(false);for(int i=0;i<combinedMaterials.Length;i++)combinedMaterials[i].shader=combinedOriginal[i];bridge(false);
    }
    var materials=h.WorldRoot.GetComponentsInChildren<Renderer>(true).SelectMany(r=>r.sharedMaterials).Where(m=>m&&m.shader.name=="Eldoria/RegionOneAuthoredSurface").Distinct().ToArray();
    foreach(var variant in new[]{"Boundary","Breach"}){
