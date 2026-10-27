@@ -50,9 +50,11 @@ namespace Eldoria.Domain
         static readonly long PeriodTicks=TimeSpan.FromHours(12).Ticks;
         static readonly long IdleCapTicks=TimeSpan.FromHours(IdleCapHours).Ticks;
 
+        // Once taught, this destination must not disappear just because
+        // the archers are temporarily away on a march. Entry stays visible;
+        // COMBATIR itself is disabled while no troops are available.
         public static bool VigilantsUnlocked(PlayerState s) =>
-            s!=null && s.SawmillLevel>=1 && s.Available!=null &&
-            (s.Available.Total>0 || s.BastionLevel>=2);
+            s!=null && s.SawmillLevel>=1;
         public static bool ScoutsUnlocked(PlayerState s) =>
             s!=null && s.BastionLevel>=2 && s.BarracksLevel>=1 &&
             s.ChapterProgress!=null && s.ChapterProgress.MarchConfirmed;
