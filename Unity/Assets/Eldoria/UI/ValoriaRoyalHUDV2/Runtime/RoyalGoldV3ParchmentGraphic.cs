@@ -13,6 +13,10 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV3ParchmentGraphic : MaskableGraphic
     {
         public bool Arcane;
+        // Independent heraldic quest-paper treatment from original Option 1.
+        // The same art class is already used by the canonical dialogue; this
+        // branch preserves its dialogue path entirely.
+        public bool Objective;
         public float PortraitColumn = 0.245f;
 
         private static readonly Color Midnight = new Color(.024f, .039f, .067f, .99f);
@@ -56,6 +60,31 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             vh.Clear();
             var r = rectTransform.rect;
+            if (Objective)
+            {
+                if (r.width < 160 || r.height < 86) return;
+                Fill(vh, r, new Color(.19f,.115f,.060f,.97f),
+                    new Color(.35f,.225f,.12f,.98f));
+                Fill(vh, Inset(r, 2f), GoldLow, GoldHigh);
+                Fill(vh, Inset(r, 4f), new Color(.65f,.54f,.365f,1f),
+                    new Color(.94f,.84f,.665f,1f));
+                Fill(vh, Inset(r, 7f), new Color(.84f,.735f,.55f,1f),
+                    new Color(.978f,.919f,.783f,1f));
+                Rect inner = Inset(r, 10f);
+                var heraldicRibbon = new Rect(inner.xMin + 3f, inner.yMin + 3f,
+                    52f, inner.height - 6f);
+                Fill(vh, heraldicRibbon, new Color(.035f,.095f,.185f,1f),
+                    new Color(.13f,.285f,.46f,1f));
+                Fill(vh, new Rect(heraldicRibbon.xMax+4f, inner.yMin+4f,
+                    1.6f, inner.height-8f), GoldLow, GoldHigh);
+                Fill(vh, new Rect(inner.xMin+66f, inner.yMin+47f,
+                    Mathf.Max(8f,inner.width-75f),1.4f),
+                    new Color(.53f,.39f,.23f,.75f),
+                    new Color(.63f,.49f,.29f,.65f));
+                Diamond(vh, new Vector2(inner.xMax-6f,inner.yMax-6f), 2.6f, GoldLow);
+                Diamond(vh, new Vector2(inner.xMin+6f,inner.yMax-6f), 2.6f, GoldHigh);
+                return;
+            }
             if (r.width < 200 || r.height < 135) return;
             // Deep opaque drop shadow and two thin, antique-gold strokes.
             Fill(vh, r, new Color(.012f, .012f, .019f, .98f),
