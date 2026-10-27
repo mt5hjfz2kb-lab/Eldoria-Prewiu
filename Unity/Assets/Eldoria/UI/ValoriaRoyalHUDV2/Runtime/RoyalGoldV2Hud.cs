@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Linq;
 using Eldoria.UI.RoyalGold;
 using UnityEngine;
 using UnityEngine.UI;
@@ -106,6 +107,10 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!anchor) return;
             safe = anchor.transform as RectTransform;
             if (!safe) return;
+            // Original approved footer has five real destinations visible even
+            // before unlock. Blocked destinations remain disabled; no gameplay
+            // permission, reward or automatic resource action is created.
+            if (Source.Navigation) Source.Navigation.ChronicleLayout = true;
 
             // Approved Interface 1: the existing crest/name/power receive a
             // quiet midnight-blue royal plate INSIDE their existing bounds.
@@ -773,15 +778,22 @@ namespace Eldoria.UI.RoyalGold.V2
                 ? Mathf.CeilToInt(count / 2f) : count;
             int rows = Mathf.CeilToInt((float)count / columns);
             float rowGap = rows > 1 ? 3f : 0f;
-            float cellWidth = Mathf.Min(vertical ? 88f : 115f,
-                (availableWidth - 12f - columnGap * (columns - 1)) / columns);
+            // Original reference uses a wide bottom cartouche spanning most
+            // of landscape. Spread the same genuine medallions across its
+            // safe width, without enlarging or moving the game viewport.
+            float cellWidth = vertical
+                ? Mathf.Min(88f, (availableWidth - 12f -
+                    columnGap * (columns - 1)) / columns)
+                : Mathf.Clamp((availableWidth * .9f - 12f -
+                    columnGap * (columns - 1)) / columns, 90f, 240f);
             // Never create a visual button that cannot fit its own safe width.
             cellWidth = Mathf.Max(1f, cellWidth);
             float cellHeight = rows > 1 ? 74f : vertical ? 105f : 106f;
             float contentHeight = rows * cellHeight + (rows - 1) * rowGap;
             float totalWidth = cellWidth * columns +
                 columnGap * (columns - 1);
-            float dockWidth = Mathf.Min(availableWidth, totalWidth + 12f);
+            float dockWidth = Mathf.Min(availableWidth,
+                Mathf.Max(totalWidth + 12f, availableWidth * .90f));
             float dockHeight = contentHeight + 6f;
 
             var dock = nav.transform as RectTransform;
@@ -817,7 +829,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 cellWidth - 7f);
             float buttonHeight = cellHeight;
             int index = 0;
-            foreach (var item in nav.Items)
+            foreach (var item in nav.Items.OrderBy(
+                item => BottomNavigation.ChronicleOrder(item.Section)))
             {
                 if (!item.Button || !item.Button.gameObject.activeSelf) continue;
                 int row = index / columns;
