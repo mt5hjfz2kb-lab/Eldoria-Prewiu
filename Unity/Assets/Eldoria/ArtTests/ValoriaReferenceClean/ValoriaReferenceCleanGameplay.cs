@@ -55,6 +55,36 @@ namespace Eldoria.ReferenceClean {
   void OnDestroy(){SliceContentProfiles.SetRuntimeProfileOverride(priorProfile);}
   void OnGUI(){if(!string.IsNullOrEmpty(LoadError))GUI.Box(new Rect(20,20,Mathf.Min(Screen.width-40,600),100),LoadError);}
   public void ReloadForProbe(){if(!Probe)throw new InvalidOperationException("Probe-only reload");Gateway=new LocalGateway(Clock,new FileStateStore(SaveFile));Presenter.Initialize(Gateway);Presenter.RefreshState();}
+  /// <summary>
+  /// Deliberate family playtest reset, invoked ONLY after two taps inside Settings.
+  /// Keep backups on disk and preserve the existing installation identity.
+  /// Never write the replacement save until the scene creates a fresh gateway.
+  /// </summary>
+  public bool ResetPlaytestProgress(){
+   if(!Ready||string.IsNullOrEmpty(SaveFile))return false;
+   var legacy=Path.Combine(UnityEngine.Application.persistentDataPath,"eldoria-unity-slice-v1.json");
+   var originals=new[]{SaveFile,legacy}.Distinct(StringComparer.Ordinal).Where(File.Exists).ToArray();
+   var archiveTag=DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff")+"-"+Guid.NewGuid().ToString("N").Substring(0,8);
+   var backups=originals.Select(x=>x+".before-playtest-reset-"+archiveTag+".bak").ToArray();
+   try{
+    // Copy ALL first; on any backup failure, do not touch the originals.
+    for(int i=0;i<originals.Length;i++)File.Copy(originals[i],backups[i],false);
+    for(int i=0;i<originals.Length;i++)File.Delete(originals[i]);
+    HadExistingSave=false;
+    // Main route: a freshly initialized saved session, fresh prologue and same
+    // app/package. Do not rely on Scene reload merely hiding an old gateway.
+    SceneManager.LoadScene(SceneManager.GetActiveScene().name,LoadSceneMode.Single);
+    return true;
+   }catch(Exception e){
+    // Recover any removed original from the backup, keeping player data safe.
+    for(int i=0;i<originals.Length;i++)
+     if(!File.Exists(originals[i])&&File.Exists(backups[i]))
+      try{File.Copy(backups[i],originals[i],false);}catch(Exception restore){Debug.LogError("VALORIA_RESET_RESTORE_FAILED "+restore);}
+    LoadError="No se pudo reiniciar: se ha intentado conservar la partida. Revisa el guardado.";
+    Debug.LogError("VALORIA_PLAYTEST_RESET_FAILED "+e);
+    return false;
+   }
+  }
   public void Apply(PlayerState s){
    if(Parcels!=null)Parcels.Apply(s);
    if(BastionTwo!=null){BastionTwo.SetActive(s.BastionLevel>=2);if(BastionOne!=null)BastionOne.SetActive(s.BastionLevel<2);}
