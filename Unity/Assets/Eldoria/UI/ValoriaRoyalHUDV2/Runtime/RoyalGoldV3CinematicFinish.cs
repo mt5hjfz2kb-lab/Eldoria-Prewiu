@@ -25,6 +25,32 @@ namespace Eldoria.UI.RoyalGold.V2
         private Vector2 labelAnchorMin, labelAnchorMax, labelPivot, labelPosition, labelSize;
         private TextAnchor labelAlignment;
         private bool captured;
+        // Pre-rendered genuine 3D busts; zero real-time skinned hero renderers in mobile dialogue.
+        // Default is neutral for every turn until canonical narrative authors assign a mood.
+        private Texture2D[] aldricBustTextures;
+        private int aldricMood;
+        private int aldricLastTurn = -1;
+        private static readonly string[] AldricBustPaths = {
+            "UI/AldricDialogue/aldric_neutral",
+            "UI/AldricDialogue/aldric_firme",
+            "UI/AldricDialogue/aldric_preocupado",
+            "UI/AldricDialogue/aldric_sereno"
+        };
+
+        // Optional, presentation-only authored override; never guesses emotion from dialogue text.
+        public void SetAldricPortraitMood(int mood) => aldricMood = Mathf.Clamp(mood, 0, 3);
+
+        private Texture2D GetAldricBust()
+        {
+            if (aldricBustTextures == null)
+            {
+                aldricBustTextures = new Texture2D[AldricBustPaths.Length];
+                for (int i = 0; i < AldricBustPaths.Length; i++)
+                    aldricBustTextures[i] = Resources.Load<Texture2D>(AldricBustPaths[i]);
+            }
+            return aldricBustTextures[aldricMood] ? aldricBustTextures[aldricMood] :
+                   aldricBustTextures[0];
+        }
         private static readonly Color Sepia = new Color(.19f, .15f, .11f, 1f);
         private static readonly Color Brown = new Color(.38f, .25f, .13f, 1f);
         private static readonly Color PurplePale = new Color(.95f, .86f, 1f, 1f);
@@ -232,6 +258,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 var face = portrait.GetComponent<RawImage>();
                 if (face)
                 {
+                    // Keep the existing canonical RawImage, speaker visibility and its fallback.
+                    // Only Sir Aldric may receive Aldric's approved chest-up portrait.
+                    if (string.Equals(Source.NarrativeSpeaker, "Sir Aldric",
+                                      System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        int turn = Source.NarrativeTurnIndex;
+                        if (aldricLastTurn != turn)
+                        {
+                            aldricMood = 0; // new turn neutral by default
+                            aldricLastTurn = turn;
+                        }
+                        var bust = GetAldricBust();
+                        if (bust) face.texture = bust;
+                    }
                     face.raycastTarget = false;
                     face.uvRect = new Rect(0f, 0f, 1f, 1f);
                 }
