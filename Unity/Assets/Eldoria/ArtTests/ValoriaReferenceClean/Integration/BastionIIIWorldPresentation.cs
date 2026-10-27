@@ -72,20 +72,6 @@ namespace Eldoria.ReferenceClean {
      if(!renderer.enabled)renderer.enabled=true;
     }
    }
-   // These approved UrbanProps prefabs contain 3 LOD meshes. Their source
-   // LODGroup can cull tiny production stock entirely at the ordinary city
-   // camera distance; that left all successive building levels pixel-identical.
-   // Choose the source LOD0 (highest fidelity) on this tiny NEW instance only.
-   // Never alter the reusable prefab, other buildings, or the global LODs.
-   if(path.StartsWith("Valoria/UrbanProps/",StringComparison.Ordinal)){
-    foreach(var lod in model.GetComponentsInChildren<LODGroup>(true)){
-     var levels=lod.GetLODs();if(levels.Length==0)continue;
-     var primary=new HashSet<Renderer>(levels[0].renderers);
-     lod.enabled=false;
-     foreach(var renderer in lod.GetComponentsInChildren<Renderer>(true))
-      renderer.enabled=primary.Contains(renderer);
-    }
-   }
    // These original EA03 crate/sack/barrel prefabs use 3 LOD meshes. At the
    // city camera's 29.5 orthographic scale their stock LODGroup can cull all
    // meshes, producing identical II/III and 1/2 A-B captures despite the
