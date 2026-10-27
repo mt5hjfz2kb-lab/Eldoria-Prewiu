@@ -197,6 +197,20 @@ namespace Eldoria.Tests
                 Is.EqualTo("RoyalGoldV3ObjectiveParchmentGraphic"));
             Assert.That(paperGraphic.raycastTarget, Is.False,
                 "Decorative parchment may never intercept objective actions");
+            var objectiveButton = Member(v2, "VisibleObjectiveButton") as Button;
+            Assert.That(objectiveButton, Is.Not.Null,
+                "The quest pictogram must keep its existing live command");
+            var roundObjective = objectiveButton.transform.Find("Crónica / native round icon");
+            Assert.That(roundObjective, Is.Not.Null,
+                "Crónica Real's objective command must use a circular medieval medallion");
+            Assert.That(objectiveButton.targetGraphic,
+                Is.SameAs(roundObjective.GetComponent<Graphic>()),
+                "The real button must retain its native circular hit graphic");
+            var caption = objective.GetComponentsInChildren<Text>(true)
+                .FirstOrDefault(x => x.name == "Label");
+            if (caption != null)
+                Assert.That(caption.enabled, Is.False,
+                    "Rotating the device must not resurrect the old rectangular CTA label");
             Assert.That(objective.transform.Find("V3 / original Valoria heraldic sigil"),
                 Is.Not.Null, "Reuse Valoria's actual established crest");
 
