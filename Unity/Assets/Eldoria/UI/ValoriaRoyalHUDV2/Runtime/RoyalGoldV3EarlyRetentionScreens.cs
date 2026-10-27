@@ -236,6 +236,14 @@ namespace Eldoria.UI.RoyalGold.V2
             if(item.StartedUtcTicks==0)Submit("ScoutDispatch",item.Id);
             else if(item.EndsUtcTicks<=now())Submit("ScoutClaim",item.Id);
         }
+        // Run after a genuine native offscreen canvas resize, just as the
+        // existing Management destination does. Never create a new canvas.
+        public void SynchronizeLayout()
+        {
+            if(!IsOpen)return;
+            Layout();
+            Render(true);
+        }
         void Update()
         {
             if(Hud==null||gateway==null||now==null)return;
