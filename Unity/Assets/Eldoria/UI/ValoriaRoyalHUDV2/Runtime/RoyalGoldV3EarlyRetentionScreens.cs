@@ -475,8 +475,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(portrait)
             {
                 TL(heading.rectTransform,18f,12f,pw-135f,62f);
-                heading.fontSize=22;
+                heading.fontSize=26;
                 TL(kicker.rectTransform,18f,78f,pw-36f,24f);
+                kicker.fontSize=19;
                 TL((RectTransform)back.transform,pw-113f,22f,99f,44f);
                 backLabel.Put("VOLVER");
                 backLabel.fontSize=15;
@@ -554,8 +555,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(battleFeedback.rectTransform,14f,Mathf.Max(182f,ih-184f),iw-28f,48f);
                 TL((RectTransform)mainAction.transform,14f,Mathf.Max(236f,ih-114f),iw-28f,49f);
                 TL((RectTransform)claimXp.transform,14f,Mathf.Max(288f,ih-62f),iw-28f,44f);
-                chapter.fontSize=26;opponent.fontSize=22;formation.fontSize=19;
-                reward.fontSize=20;passive.fontSize=20;battleFeedback.fontSize=18;
+                chapter.fontSize=27;opponent.fontSize=23;formation.fontSize=21;
+                reward.fontSize=22;passive.fontSize=21;battleFeedback.fontSize=19;
             }
             else if(vigilantsLandscape)
             {
@@ -624,11 +625,11 @@ namespace Eldoria.UI.RoyalGold.V2
                     TL((RectTransform)scoutActions[i].transform,
                         iw-(portrait?112f:150f),spacing*.5f-19f,
                         portrait?87f:120f,40f);
-                    scoutTitles[i].fontSize=portrait?22:21;
+                    scoutTitles[i].fontSize=portrait?25:21;
                     scoutTitles[i].alignment=TextAnchor.MiddleLeft;
-                    scoutCards[i].fontSize=portrait?19:18;
+                    scoutCards[i].fontSize=portrait?21:18;
                     scoutCards[i].alignment=TextAnchor.MiddleLeft;
-                    scoutActionLabels[i].fontSize=portrait?16:18;
+                    scoutActionLabels[i].fontSize=portrait?19:18;
                 }
                 scoutThumbnails[i].gameObject.SetActive(scoutsLandscape &&
                     paintedScouts!=null);
