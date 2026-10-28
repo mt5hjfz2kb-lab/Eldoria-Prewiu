@@ -44,6 +44,10 @@ namespace Eldoria.UI.RoyalGold.V2
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel, backLabel;
         RoyalGoldV3EarlyRetentionArtwork sceneArtwork;
         RoyalGoldV3StageTrailGraphic chapterTrail;
+        // Two original zero-cost painterly environments, with the hand-built
+        // vector renderer as the graceful fallback in older installations.
+        RawImage paintedScene;
+        Texture2D paintedVigilants, paintedScouts;
         GameObject screen;
         float width=-1,height=-1,nextUpdate;
         string notice="";
@@ -194,6 +198,17 @@ namespace Eldoria.UI.RoyalGold.V2
             sceneArtwork=picture.gameObject.AddComponent<RoyalGoldV3EarlyRetentionArtwork>();
             sceneArtwork.raycastTarget=false;
             Stretch(picture,5);
+            var painting=Rect("Original illustrated world / decorative only",art);
+            painting.gameObject.AddComponent<CanvasRenderer>();
+            paintedScene=painting.gameObject.AddComponent<RawImage>();
+            paintedScene.raycastTarget=false;
+            paintedScene.color=Color.white;
+            Stretch(painting,5);
+            paintedVigilants=Resources.Load<Texture2D>("EldoriaRetention/vigilants-illustration");
+            paintedScouts=Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
+            paintedScene.enabled=paintedVigilants!=null;
+            // Decorative art stays BELOW the existing 25-stage route and
+            // ABOVE the original fallback illustration, never intercepting taps.
             // A full 25-stage visual route; purely decorative, real
             // combat still goes through the single canonical action.
             var trail=Rect("Twenty-five connected stage medallions",art);
@@ -298,6 +313,19 @@ namespace Eldoria.UI.RoyalGold.V2
                     victoryGroup.alpha=1f;
                     victoryGroup.blocksRaycasts=false;
                 }
+            }
+            if(result.Ok && IsOpen && OpenDestination==Destination.Scouts &&
+               (kind=="ScoutDispatch"||kind=="ScoutClaim"))
+            {
+                // Small celebratory acknowledgement without inventing loot,
+                // blocking the UI, or creating another management screen.
+                victoryTitle.Put(kind=="ScoutClaim"?"ENCARGO COMPLETADO":
+                    "EXPLORADORES EN CAMINO");
+                victoryTitle.color=Gold;
+                victoryDetail.Put(result.Message);
+                victoryUntil=Time.unscaledTime+(kind=="ScoutClaim"?2.7f:1.9f);
+                victoryGroup.alpha=1f;
+                victoryGroup.blocksRaycasts=false;
             }
             refreshed?.Invoke();
             Render(true);
@@ -499,6 +527,25 @@ namespace Eldoria.UI.RoyalGold.V2
             bool vig=OpenDestination==Destination.Vigilants;
             sceneArtwork.Scouts=!vig;
             sceneArtwork.Chapter=Math.Max(1,(p.LastClearedStage/25)+1);
+            if(paintedScene)
+            {
+                var source=vig?paintedVigilants:paintedScouts;
+                paintedScene.enabled=source!=null;
+                if(source && paintedScene.texture!=source)paintedScene.texture=source;
+                if(source)
+                {
+                    // Cover the changing portrait/landscape panel without
+                    // stretching masonry, terrain or the cartographer's map.
+                    float panelRatio=Mathf.Max(.05f,heroScene.rect.width/
+                        Mathf.Max(1f,heroScene.rect.height));
+                    float pictureRatio=(float)source.width/source.height;
+                    paintedScene.uvRect=panelRatio>pictureRatio
+                        ?new Rect(0f,(1f-pictureRatio/panelRatio)*.5f,1f,
+                            pictureRatio/panelRatio)
+                        :new Rect((1f-panelRatio/pictureRatio)*.5f,0f,
+                            panelRatio/pictureRatio,1f);
+                }
+            }
             chapterTrail.gameObject.SetActive(vig);
             if(vig)
             {
