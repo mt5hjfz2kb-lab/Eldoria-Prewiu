@@ -709,9 +709,33 @@ namespace Eldoria.UI.RoyalGold.V2
                 int stage=p.LastClearedStage+1;
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 bool boss=info.Step%5==0;
+                bool showEngendro=info.Step==15 && engendroTexture!=null;
                 if(engendroPortrait)
-                    engendroPortrait.transform.parent.gameObject.SetActive(
-                        info.Step==15 && engendroTexture!=null);
+                    engendroPortrait.transform.parent.gameObject.SetActive(showEngendro);
+                if(showEngendro)
+                {
+                    // The real creature occupies the lower-left of the painted
+                    // scene. Shift the 25 playable stage markers up so that
+                    // none of them is hidden behind a decorative creature.
+                    float sceneHeight=Mathf.Max(1f,heroScene.rect.height);
+                    float portraitHeight=Mathf.Min(sceneHeight*.37f,
+                        height>width?170f:215f);
+                    float clearance=Mathf.Clamp(
+                        (portraitHeight+32f)/sceneHeight,.27f,.64f);
+                    bool wide=width>height;
+                    chapterTrail.rectTransform.anchorMin=new Vector2(
+                        wide?.07f:.10f,clearance);
+                    chapterTrail.rectTransform.anchorMax=new Vector2(
+                        wide?.46f:.90f,.95f);
+                }
+                else
+                {
+                    bool wide=width>height;
+                    chapterTrail.rectTransform.anchorMin=wide
+                        ?new Vector2(.04f,.13f):new Vector2(.10f,.06f);
+                    chapterTrail.rectTransform.anchorMax=wide
+                        ?new Vector2(.42f,.86f):new Vector2(.90f,.54f);
+                }
                 if(sceneArtwork.BossEncounter!=boss)
                 {
                     sceneArtwork.BossEncounter=boss;
