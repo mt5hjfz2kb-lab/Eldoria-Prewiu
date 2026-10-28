@@ -1096,11 +1096,13 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
             float padding = .025f;
-            if (portrait && buildingVisible)
+            // Crónica Real's illustrated card is bottom-docked in BOTH
+            // orientations. The former landscape right-sheet exclusion made
+            // the free width negative on 4:3 displays, so automatic focus
+            // returned without ever moving to the selected world resource.
+            if (buildingVisible)
                 free.yMin = Mathf.Max(free.yMin,
                     (buildingCard.anchoredPosition.y + buildingCard.rect.height) / height + padding);
-            else if (!portrait && buildingVisible)
-                free.xMax = Mathf.Min(free.xMax, 1f - buildingCard.rect.width / width - padding);
             // The V3 selected control follows the object itself and does not
             // reduce a whole side of the playable camera rectangle.
             if (objectiveGroup && objectiveGroup.blocksRaycasts)
