@@ -438,8 +438,18 @@ namespace Eldoria.Domain
         }
 
         public static PowerParts TotalPower(PlayerState s)
-            => new PowerParts(600 * s.BastionLevel + 170 * s.SawmillLevel + 190 * s.BarracksLevel + s.MissionPower,
-                18 * (s.Available.Total + s.Wounded.Total + (s.March.Phase == "idle" ? 0 : s.March.Troops.Total)), 1204, 0, 0);
+        {
+            int deployed=0;
+            foreach(var march in MarchCapacityRules.WorldMarches(s))
+                if(march.Phase!="idle")deployed=checked(deployed+march.Troops.Total);
+            if(s.Retention?.Orders!=null)
+                foreach(var scout in s.Retention.Orders)
+                    if(scout!=null&&!scout.TroopsReturned&&scout.StartedUtcTicks>0&&scout.Troops!=null)
+                        deployed=checked(deployed+scout.Troops.Total);
+            return new PowerParts(600*s.BastionLevel+170*s.SawmillLevel+
+                190*s.BarracksLevel+s.MissionPower,
+                18*checked(s.Available.Total+s.Wounded.Total+deployed),1204,0,0);
+        }
         // All deployment, preview, combat and casualties use this same tiered snapshot.
         public static CombatStats Expedition(ArmyRoster troops, string heroId)
         {
