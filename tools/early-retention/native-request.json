@@ -14,6 +14,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 8,
-  "note": "Validate exact updated PR120 source: title and footer layout, visible Scout card heading, automatic PvE victory announcement, 8 original Unity screenshots (4 states x 2 orientations), actual raycasts, no overlay, no save writes, and compatibility with PR119; ART_APPROVED remains false until image review."
+  "revision": 9,
+  "note": "Retry exact early-retention native proof after fixing Unity CS0542 (disposable Save fixture renamed MemoryStateStore). Require authentic EditMode XML and 8 landscape/portrait screenshots; do not touch owner saves; ART_APPROVED remains false until visual QA."
 }
