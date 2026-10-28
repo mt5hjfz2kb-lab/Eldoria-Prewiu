@@ -62,7 +62,7 @@ jobs:
             const registry=JSON.parse(Buffer.from(raw.content,'base64').toString('utf8'));
             const holders=registry.active.filter(w=>w.resources?.includes('windows-runner-heavy'));
             if(holders.length!==1 || holders[0].id!=='eldoria-early-retention-systems-20261028' ||
-               holders[0].owner!=='codex-pr119-pr120-completion-20261028' || holders[0].ownership_state!=='claimed')
+               holders[0].owner!=='codex-pr120-exact-visual-pr122-20261028' || holders[0].ownership_revision!==6 || holders[0].ownership_state!=='claimed')
               throw Error('Do not manage another workstream native queue');
             const nativePaths=new Set(['.github/workflows/ui-progression-cert.yml','.github/workflows/early-retention-native.yml']);
             const batches=await Promise.all([...nativePaths].map(workflow_id=>

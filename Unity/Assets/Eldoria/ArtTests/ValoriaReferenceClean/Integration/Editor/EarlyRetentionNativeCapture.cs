@@ -343,6 +343,13 @@ namespace Eldoria.ReferenceClean.Editor
                 "All three hand-engraved mission cards are actually visible in the native Canvas");
             Need(contractArt.All(x=>!x.raycastTarget),
                 "Gold frames, heraldic motifs and wax seals never steal mission-button touches");
+            var parchmentImages=hud.GetComponentsInChildren<UnityEngine.UI.Image>(true)
+                .Where(x=>x.name=="Reference parchment / visual only").ToArray();
+            Need(parchmentImages.Length==3 && parchmentImages.All(x=>
+                x.gameObject.activeInHierarchy && x.enabled && !x.canvasRenderer.cull &&
+                !x.raycastTarget && x.type==UnityEngine.UI.Image.Type.Sliced &&
+                x.sprite && x.sprite.texture && x.sprite.texture.name=="scout-parchment-v3"),
+                "Three actual reference parchment textures render with preserved sliced edges and no touch interception");
             var different=contractArt.Select(x=>x.Kind).Distinct().Count();
             Need(different==3,
                 "Three live board entries show their distinct authored contract illustrations");

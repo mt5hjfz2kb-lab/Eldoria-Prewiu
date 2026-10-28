@@ -22,3 +22,11 @@ Exact prompt: Create ONE production UI asset extracted/recreated faithfully from
 ## Status
 
 Candidate source only. ART_APPROVED=false. Inspect the exact new Unity screenshots before accepting or merging. Local .NET smoke could not start because this host's process-stat interface caused the .NET CLI to throw Win32Exception; this is not a domain test failure or a PASS. Use the existing Ubuntu/native certification routes.
+
+## Native31 review and next correction
+
+Run40728708845, source7251fcf11bdbe9640ef453a68889217adab7da89: Unity13 domain tests pass,13 genuine Vigilants PNGs. Route-to-paving placement visibly improves. Screenshot capture stops before Scouts because the prior test requires the disabled vector paper surface to remain enabled. Next candidate retains that component as an active heraldic emblem over the actual sliced parchment, and adds explicit checks for all3newpaper Images, texture identity, visibility and touch transparency. The observed adversary stretch is corrected by preserving actual trimmed-image aspect. Reference-style serif headings/buttons use bundled DejaVuSerif.ttf and its full redistribution notice. The font is limited to this destination; body text uses the existing HUD font. Parchment edges use9-slice rendering to survive wide/stacked card reflow. No ART_APPROVED claim.
+
+The legacy Codex fixture is now installed by Playwright addInitScript before the next document boots, preventing old-document autosave during reload from replacing its unlock flags. Its post-reload assertion checks all3flags; navigation waits for a real actionable button. No production web source changed.
+
+The corrected Codex/Relicario QA passed three consecutive fresh Chromium runs with the actual frozen web code. No assertions were removed. Native31's old owner-dependent shared UI gate failed before downloading/running Unity; its two lease checks now explicitly allow the current retention owner/revision while retaining the previous UI owner's separate claim rule. Queue cleanup likewise checks current owner and revision6 before touching any unstarted obsolete run.

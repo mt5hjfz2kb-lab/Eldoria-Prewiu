@@ -57,6 +57,7 @@ namespace Eldoria.UI.RoyalGold.V2
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
+        Sprite scoutParchmentSprite;
         GameObject screen;
         float width=-1,height=-1,nextUpdate;
         float lastSafeWidth=-1,lastSafeHeight=-1;
@@ -125,6 +126,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(Hud){Hud.NarrativeOpening-=Close;Hud.SelectionChanged-=SelectionChanged;}
             if(engendroCutout)Destroy(engendroCutout);
+            if(scoutParchmentSprite)Destroy(scoutParchmentSprite);
         }
         // The reused Bastion-II render has a neutral studio backdrop.
         // Remove only bright low-chroma backdrop pixels ONCE, retaining the
@@ -417,6 +419,11 @@ namespace Eldoria.UI.RoyalGold.V2
             claimXp=Button(infoCard,"Claim earned hero experience",
                 "RECOGER EXPERIENCIA",CollectXp,out xpLabel);
             scoutParchment=Resources.Load<Texture2D>("EldoriaRetention/scout-parchment-v3");
+            if(scoutParchment)
+                scoutParchmentSprite=Sprite.Create(scoutParchment,
+                    new Rect(0,0,scoutParchment.width,scoutParchment.height),
+                    new Vector2(.5f,.5f),100f,0,SpriteMeshType.FullRect,
+                    new Vector4(70,90,70,90));
             for(int i=0;i<3;i++)
             {
                 int index=i;
@@ -437,11 +444,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     // Blank original paper only: every title, illustration,
                     // state and action remains a live Unity child.
-                    scoutArt[i].enabled=false;
+                    scoutArt[i].EmblemOnly=true;
                     var paper=Rect("Reference parchment / visual only",cell);
                     paper.gameObject.AddComponent<CanvasRenderer>();
-                    var paperImage=paper.gameObject.AddComponent<RawImage>();
-                    paperImage.texture=scoutParchment;
+                    var paperImage=paper.gameObject.AddComponent<Image>();
+                    paperImage.sprite=scoutParchmentSprite;
+                    paperImage.type=Image.Type.Sliced;
                     paperImage.raycastTarget=false;
                     Stretch(paper);
                     paper.SetAsFirstSibling();
@@ -463,6 +471,18 @@ namespace Eldoria.UI.RoyalGold.V2
             footer=Text(panel,"No artificial notifications",15,Muted);
             back=Button(panel,"Return to actual kingdom","VOLVER A VALORIA",
                 Close,out backLabel);
+            // Match the reference's book typography only within this room.
+            // Keep compact state/resource text in the proven HUD font.
+            var referenceFont=Resources.Load<Font>("EldoriaRetention/reference-serif");
+            if(referenceFont)
+            {
+                foreach(var label in new[]{heading,chapter,mainActionLabel,currentMilestoneLabel})
+                    label.font=referenceFont;
+                foreach(var label in scoutTitles)label.font=referenceFont;
+                foreach(var label in scoutActionLabels)label.font=referenceFont;
+                foreach(var label in bossMilestoneLabels)label.font=referenceFont;
+            }
+            heading.alignment=TextAnchor.MiddleCenter;
             screen.SetActive(false);
             ready=true;
         }
@@ -646,20 +666,20 @@ namespace Eldoria.UI.RoyalGold.V2
             // Keep the complete name and the actual tap target legible.
             if(portrait)
             {
-                TL(heading.rectTransform,18f,12f,pw-200f,86f);
-                heading.fontSize=36;
+                TL(heading.rectTransform,130f,12f,pw-260f,86f);
+                heading.fontSize=32;
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
-                TL((RectTransform)back.transform,pw-176f,14f,160f,88f);
-                backLabel.Put("VOLVER");
+                TL((RectTransform)back.transform,18f,14f,100f,88f);
+                backLabel.Put("←");
                 backLabel.fontSize=26;
             }
             else
             {
-                TL(heading.rectTransform,20f,18f,pw-170f,44f);
+                TL(heading.rectTransform,130f,18f,pw-260f,44f);
                 heading.fontSize=compactLandscape?26:34;
                 TL(kicker.rectTransform,20f,61f,pw-35f,27f);
-                TL((RectTransform)back.transform,pw-150f,compactLandscape?14f:23f,136f,compactLandscape?68f:46f);
-                backLabel.Put("VOLVER");
+                TL((RectTransform)back.transform,20f,compactLandscape?14f:23f,90f,compactLandscape?68f:46f);
+                backLabel.Put("←");
                 backLabel.fontSize=compactLandscape?20:17;
             }
             float imageTop=portrait?150f:108f;
@@ -731,7 +751,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(infoCard,scoutsLandscape?18f:pw*.48f,imageTop+8f,
                     scoutsLandscape?pw-36f:pw*.50f-20f,ph-imageTop-56f);
             else if(scoutsLandscape)
-                TL(infoCard,18f,ph*.49f,pw-36f,ph*.51f-61f);
+                TL(infoCard,pw*.18f,ph*.43f,pw*.64f,ph*.57f-55f);
             else
                 TL(infoCard,pw*.37f,ph*.55f,pw*.61f,ph*.45f-55f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
@@ -818,11 +838,13 @@ namespace Eldoria.UI.RoyalGold.V2
                     float cardH=Mathf.Max(110f,ih-70f);
                     TL(cell,14f+i*(cardW+gap),55f,cardW,cardH);
                     float inset=20f;
-                    TL(scoutTitles[i].rectTransform,inset,13f,cardW-40f,33f);
+                    TL(scoutTitles[i].rectTransform,inset,44f,cardW-40f,33f);
                     TL((RectTransform)scoutThumbnails[i].transform,
-                        inset,52f,cardW-40f,Mathf.Max(54f,cardH*.30f));
-                    TL(scoutCards[i].rectTransform,inset,
-                        63f+cardH*.30f,cardW-40f,compactLandscape?76f:58f);
+                        inset,94f,cardW-40f,Mathf.Max(54f,cardH*.30f));
+                    float actionTop=cardH-(compactLandscape?83f:61f);
+                    float descriptionTop=104f+cardH*.30f;
+                    TL(scoutCards[i].rectTransform,inset,descriptionTop,cardW-40f,
+                        Mathf.Max(30f,Mathf.Min(compactLandscape?76f:86f,actionTop-descriptionTop-8f)));
                     TL((RectTransform)scoutActions[i].transform,
                         inset,cardH-(compactLandscape?83f:61f),cardW-40f,compactLandscape?68f:46f);
                     scoutTitles[i].fontSize=24;
@@ -956,10 +978,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     bool portrait=height>width;
                     var frame=engendroPortrait.transform.parent as RectTransform;
-                    float cw=infoCard.rect.width*.29f;
-                    float ch=Mathf.Min(infoCard.rect.height*.36f,cw);
-                    TL(frame,12f,portrait?64f:54f,cw,ch);
-                    float textX=infoCard.rect.width*.34f;
+                    float boxWidth=infoCard.rect.width*(portrait?.40f:.29f);
+                    float boxHeight=portrait?280f:Mathf.Min(infoCard.rect.height*.44f,compactLandscape?180f:160f);
+                    float artAspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
+                        Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
+                    float cw=boxWidth,ch=boxHeight;
+                    if((cw-8f)/(ch-8f)>artAspect)cw=(ch-8f)*artAspect+8f;
+                    else ch=(cw-8f)/artAspect+8f;
+                    TL(frame,12f+(boxWidth-cw)*.5f,portrait?64f:54f,cw,ch);
+                    float textX=infoCard.rect.width*(portrait?.44f:.34f);
                     float textW=infoCard.rect.width-textX-16f;
                     TL(opponent.rectTransform,textX,portrait?62f:54f,textW,portrait?90f:64f);
                     TL(formation.rectTransform,textX,portrait?158f:compactLandscape?108f:122f,
@@ -995,10 +1022,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     sceneArtwork.BossEncounter=boss;
                     sceneArtwork.SetVerticesDirty();
                 }
-                kicker.Put(width<550f
-                    ?(boss?"GUARDIÁN · ":"PRUEBA · ")+info.Scene.ToUpperInvariant()
-                    :info.Scene.ToUpperInvariant()+" · "+
-                    (boss?"GUARDIÁN ESPECIAL":"COMBATE AUTOMÁTICO"));
+                kicker.Put("Protege las fronteras de Valoria y supera a sus guardianes.");
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
                 opponent.Put(info.Name+"\nRasgo: "+info.Trait);
                 int archer=s.Available?.Total??0;

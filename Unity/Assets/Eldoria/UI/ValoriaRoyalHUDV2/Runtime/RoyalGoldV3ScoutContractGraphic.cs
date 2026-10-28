@@ -13,6 +13,7 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV3ScoutContractGraphic : MaskableGraphic
     {
         public int Kind;
+        public bool EmblemOnly;
         public bool Completed;
         public bool InProgress;
         Color C(float r,float g,float b,float a=1f)=>new Color(r,g,b,a);
@@ -69,6 +70,24 @@ namespace Eldoria.UI.RoyalGold.V2
             var navy=C(.048f,.10f,.165f);
             var blue=C(.13f,.23f,.31f);
             var wax=Completed?C(.26f,.39f,.24f):InProgress?C(.34f,.28f,.42f):C(.52f,.15f,.13f);
+            if(EmblemOnly)
+            {
+                // The textured paper is a separate sliced Image. Preserve a
+                // distinct live heraldic medallion without painting over it.
+                float cx=x+w*.5f,cy=y+h-22f;
+                float radius=Mathf.Clamp(w*.065f,15f,28f);
+                Circle(v,cx,cy,radius+3f,radius+3f,edge,brass);
+                var face=Kind==0?C(.18f,.33f,.50f):Kind==1?C(.22f,.38f,.17f):C(.32f,.18f,.42f);
+                Circle(v,cx,cy,radius,radius,face,navy);
+                for(int n=0;n<(Kind==1?4:8);n++)
+                {
+                    float angle=n*Mathf.PI*2f/(Kind==1?4f:8f);
+                    var end=new Vector2(cx+Mathf.Cos(angle)*radius*.65f,cy+Mathf.Sin(angle)*radius*.65f);
+                    Stroke(v,new Vector2(cx,cy),end,Kind==1?3f:2f,brass);
+                }
+                Circle(v,cx,cy,3f,3f,cream,brass);
+                return;
+            }
             // Gilt drop shadow, layered paper edging, and hand-torn silhouette.
             Quad(v,x+2,y,w-2,h-2,C(.014f,.021f,.034f,.92f));
             Polygon(v,edge,brass,new Vector2(x+5,y+3),new Vector2(x+w-10,y+1),
