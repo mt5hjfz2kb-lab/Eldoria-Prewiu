@@ -66,7 +66,13 @@ namespace Eldoria.AldricCity
                 FindObjectsInactive.Exclude, FindObjectsSortMode.None)
                 .FirstOrDefault(c => c && c.enabled &&
                     c.name.IndexOf("Axial_Paving", StringComparison.OrdinalIgnoreCase) >= 0);
-            if (!road || !BuildAndValidatePath()) yield break;
+            if (!road)
+            {
+                Debug.LogWarning("ALDRIC_CITY_AXIAL_PAVING_COLLIDER_NOT_FOUND");
+                yield break;
+            }
+            if (!BuildAndValidatePath()) yield break;
+            Debug.Log("ALDRIC_CITY_SAFE_ROUTE_VERIFIED_" + path.Length + "_POINTS");
             yield return LoadExactModel();
         }
 
@@ -85,6 +91,7 @@ namespace Eldoria.AldricCity
         {
             var lo = ground + Vector3.up * (Radius + 0.12f);
             var hi = ground + Vector3.up * (Height - Radius);
+            var mid = Vector3.Lerp(lo, hi, .5f);
             foreach (var c in obstacles)
             {
                 if (!c || !c.enabled || !c.gameObject.activeInHierarchy ||
@@ -92,6 +99,7 @@ namespace Eldoria.AldricCity
                 // Conservative closest-point checks; a failed clearance keeps
                 // Aldric stationary rather than walking through geometry.
                 if (Vector3.Distance(c.ClosestPoint(lo), lo) < Radius ||
+                    Vector3.Distance(c.ClosestPoint(mid), mid) < Radius ||
                     Vector3.Distance(c.ClosestPoint(hi), hi) < Radius)
                     return false;
             }
