@@ -265,6 +265,22 @@ namespace Eldoria.ReferenceClean.Editor
             Need(different==3,
                 "Three live board entries show their distinct authored contract illustrations");
             Screenshot(h,"scout-mission-board",1600,900);
+            var mapPreviews=hud.GetComponentsInChildren<RawImage>(true)
+                .Where(x=>x.name=="Mission map detail (visual only)").ToArray();
+            Need(mapPreviews.Length==3 &&
+                mapPreviews.All(x=>x.gameObject.activeInHierarchy && x.enabled &&
+                    !x.raycastTarget && x.texture!=null),
+                "Three authentic expedition previews render without stealing clicks");
+            Need(mapPreviews.All(x=>{
+                var uv=x.uvRect;
+                var rect=x.rectTransform.rect;
+                if(uv.height<=.005f||rect.height<=1f)return false;
+                var imageAspect=(uv.width*x.texture.width)/
+                    (uv.height*x.texture.height);
+                var panelAspect=rect.width/rect.height;
+                return Mathf.Abs(imageAspect-panelAspect)/
+                    Mathf.Max(.1f,panelAspect)<.12f;
+            }),"Real map miniatures preserve the authored image aspect without stretching");
             Screenshot(h,"scout-mission-board",900,1600);
             var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
                 .FirstOrDefault(x=>x.name=="Dispatch or claim scout 1");
