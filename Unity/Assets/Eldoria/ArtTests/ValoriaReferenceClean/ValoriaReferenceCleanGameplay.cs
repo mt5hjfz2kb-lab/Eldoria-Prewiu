@@ -62,8 +62,13 @@ namespace Eldoria.ReferenceClean {
   /// </summary>
   public bool ResetPlaytestProgress(){
    if(!Ready||string.IsNullOrEmpty(SaveFile))return false;
-   var legacy=Path.Combine(UnityEngine.Application.persistentDataPath,"eldoria-unity-slice-v1.json");
-   var originals=new[]{SaveFile,legacy}.Distinct(StringComparer.Ordinal).Where(File.Exists).ToArray();
+   // Disposable native QA must NEVER delete a production/legacy file in
+   // persistentDataPath. Only the probe's isolated temp-file may be reset.
+   var legacy=Probe?null:Path.Combine(UnityEngine.Application.persistentDataPath,
+     "eldoria-unity-slice-v1.json");
+   var originals=(Probe?new[]{SaveFile}:new[]{SaveFile,legacy})
+     .Where(x=>!string.IsNullOrEmpty(x))
+     .Distinct(StringComparer.Ordinal).Where(File.Exists).ToArray();
    var archiveTag=DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fff")+"-"+Guid.NewGuid().ToString("N").Substring(0,8);
    var backups=originals.Select(x=>x+".before-playtest-reset-"+archiveTag+".bak").ToArray();
    try{
