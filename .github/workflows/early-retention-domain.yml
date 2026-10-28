@@ -7,6 +7,8 @@ on:
       - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
       - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
       - 'tools/early-retention/**'
+      - 'Unity/Assets/Eldoria/Resources/EldoriaRetention/**'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs'
       - '.github/workflows/early-retention-domain.yml'
   workflow_dispatch:
 permissions:
@@ -22,8 +24,47 @@ jobs:
             Unity/Assets/Eldoria/Scripts/Domain
             Unity/Assets/Eldoria/Scripts/Application
             tools/early-retention
+            Unity/Assets/Eldoria/Resources/EldoriaRetention
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
       - name: Compile real Eldoria domain and enforce rewards/time/unlocks
         run: dotnet run --project tools/early-retention/Smoke.csproj --configuration Release
+
+      - name: Verify both original painted illustration textures without Unity
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib, pathlib, struct, zlib
+          root=pathlib.Path("Unity/Assets/Eldoria/Resources/EldoriaRetention")
+          hashes=[]
+          for stem in ("vigilants-illustration","scouts-illustration"):
+              f=root/(stem+".png")
+              content=f.read_bytes()
+              assert content[:8]==b"\x89PNG\r\n\x1a\n",f"Invalid PNG: {stem}"
+              pos=8; chunks={}; dimensions=None
+              while pos<len(content):
+                  size=struct.unpack_from(">I",content,pos)[0]
+                  tag=content[pos+4:pos+8]; data=content[pos+8:pos+8+size]
+                  assert (zlib.crc32(tag+data)&0xffffffff)==struct.unpack_from(">I",content,pos+8+size)[0],f"Bad PNG CRC {stem}"
+                  chunks.setdefault(tag,[]).append(data)
+                  if tag==b"IHDR": dimensions=struct.unpack_from(">IIBBBBB",data)
+                  pos+=size+12
+                  if tag==b"IEND": break
+              assert dimensions==(640,640,8,3,0,0,0),f"Unexpected artwork texture layout: {stem} {dimensions}"
+              pixels=zlib.decompress(b"".join(chunks[b"IDAT"]))
+              assert len(pixels)==640*641, f"Invalid scanline length for {stem}"
+              assert len(set(pixels))>50, f"Unexpected solid image {stem}"
+              assert f.with_suffix(".png.meta").is_file(),f"Missing Unity importer settings: {stem}"
+              hashes.append(hashlib.sha256(content).hexdigest())
+              print(f"{stem}: PNG 640x640, palette, CRC, importer and pixel variety PASS")
+          assert hashes[0]!=hashes[1],"Both activities cannot display the same illustration"
+          PY
+      - name: Keep genuine illustrated backgrounds for visual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-retention-paintings-${{ github.sha }}
+          path: |
+            Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-illustration.png
+            Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-illustration.png
+          retention-days: 14
