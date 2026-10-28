@@ -400,19 +400,25 @@ namespace Eldoria.ReferenceClean {
   public RoyalSnapshot Read(string selected,bool english){
    englishInterface=english;var data=binding.Read(selected,english);if(InWorld)data.Realm=L("ZONA 1","ZONE 1");
    if(IsWorldTarget(selected)&&!LocalGateway.IsChapterThreeTarget(selected)){
-    var action=world.Inspect(selected);var s=boundGateway.Snapshot();bool active=s.March.Phase!="idle",thisMarch=active&&s.March.TargetId==selected;
+    var action=world.Inspect(selected);var s=boundGateway.Snapshot();
+    MarchState selectedMarch=null;
+    foreach(var march in MarchCapacityRules.WorldMarches(s))
+     if(march.Phase!="idle"&&march.TargetId==selected){selectedMarch=march;break;}
+    bool thisMarch=selectedMarch!=null;
+    bool active=MarchCapacityRules.ActiveCount(s,city.Clock.UtcTicks)>=MarchCapacityRules.MaxConcurrentMarches;
     var b=new RoyalBuilding{Id=selected,Name=TargetName(selected),Function=DestinationSummary(selected,s),State=action.Label};
-    if(thisMarch){b.OperationActive=true;b.State=MarchStatus(s);b.Time=RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,city.Clock.UtcTicks,english);b.Result=s.March.Phase=="returning"?Reward(s.March.PendingWood,s.March.PendingStone)+L(" al llegar a Valoria"," on arrival at Valoria"):ExpectedReward(selected,s);b.Progress=(float)ZoneOneGatewayHost.TravelFraction(city.Clock.UtcTicks,s.March.PhaseEndsUtcTicks,s.March.Phase=="gathering"?SliceRules.GatherSeconds:SliceRules.TravelSeconds);}
-    else if(active)b.Requirements=L("Tu expedición está en ","Your expedition is at ")+TargetName(s.March.TargetId)+". "+L("Espera a su regreso.","Wait for its return.");
+    if(thisMarch){b.OperationActive=true;b.State=MarchStatus(selectedMarch);b.Time=RoyalFormatting.Remaining(selectedMarch.PhaseEndsUtcTicks,city.Clock.UtcTicks,english);b.Result=selectedMarch.Phase=="returning"?Reward(selectedMarch.PendingWood,selectedMarch.PendingStone)+L(" al llegar a Valoria"," on arrival at Valoria"):ExpectedReward(selected,s);b.Progress=(float)ZoneOneGatewayHost.TravelFraction(city.Clock.UtcTicks,selectedMarch.PhaseEndsUtcTicks,selectedMarch.Phase=="gathering"?SliceRules.GatherSeconds:SliceRules.TravelSeconds);}
+    else if(active)b.Requirements=L("Tres marchas activas. Espera a que regrese una.","Three active marches. Wait for one to return.");
     else if(selected=="engendro-valoria"&&!action.Enabled&&!s.EngendroDefeated)b.Requirements=L("Necesitas Bastión II, cuartel y una marcha confirmada.","Requires Bastion II, barracks and a confirmed march.");
     else if(!action.Enabled&&s.Available.Total<1)b.Requirements=L("No hay tropas disponibles para salir.","No troops are available to depart.");
     if(!thisMarch&&!string.IsNullOrEmpty(action.Kind))b.Action=new RoyalAction(action.Kind,selected,action.Label,b.Requirements,s.Revision,action.Enabled);
-    if(!active&&(selected=="forest-valoria"||selected=="quarry-valoria"))b.Time=L("Ida + trabajo + regreso: ","Travel + work + return: ")+(2*SliceRules.TravelSeconds+SliceRules.GatherSeconds)+" s";
+    if(!thisMarch&&(selected=="forest-valoria"||selected=="quarry-valoria"))b.Time=L("Ida + trabajo + regreso: ","Travel + work + return: ")+(2*SliceRules.TravelSeconds+SliceRules.GatherSeconds)+" s";
     data.Building=b;
    }
    return data;
   }
-  public string MarchStatus(PlayerState s){string phase=s.March.Phase;return phase=="outbound"?L("En camino a ","Travelling to ")+TargetName(s.March.TargetId):phase=="gathering"?L("Recolectando en ","Gathering at ")+TargetName(s.March.TargetId):phase=="returning"?L("Regresando a Valoria","Returning to Valoria"):L("Expedición disponible","Expedition ready");}
+  public string MarchStatus(PlayerState s)=>MarchStatus(s.March);
+  public string MarchStatus(MarchState m){string phase=m.Phase;return phase=="outbound"?L("En camino a ","Travelling to ")+TargetName(m.TargetId):phase=="gathering"?L("Recolectando en ","Gathering at ")+TargetName(m.TargetId):phase=="returning"?L("Regresando a Valoria","Returning to Valoria"):L("Expedición disponible","Expedition ready");}
   public string Reward(int wood,int stone){var parts=new System.Collections.Generic.List<string>();if(wood>0)parts.Add("+"+wood+L(" madera"," wood"));if(stone>0)parts.Add("+"+stone+L(" piedra"," stone"));return string.Join(" · ",parts);}
   string ExpectedReward(string id,PlayerState s){if(LocalGateway.ResourceKind(s,id)=="wood")return Reward(Math.Min(LocalGateway.ResourceRemaining(s,id),SliceRules.ForestLoad),0);if(LocalGateway.ResourceKind(s,id)=="stone")return Reward(0,Math.Min(LocalGateway.ResourceRemaining(s,id),SliceRules.QuarryLoad));return L("El botín vuelve con las tropas.","Loot returns with the troops.");}
   string DestinationSummary(string id,PlayerState s){
