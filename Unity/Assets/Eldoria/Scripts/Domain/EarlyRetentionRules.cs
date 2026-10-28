@@ -28,6 +28,9 @@ namespace Eldoria.Domain
     {
         public int LastClearedStage;
         public int AldricExperience, LyraExperience;
+        // A genuine narrative log entry from the most recent claimed order,
+        // saved with the same idempotent player record, not another inventory.
+        public string LatestDiscoveryTitle="", LatestDiscoveryText="";
         public long LastIdleClaimUtcTicks;
         public List<ScoutOrder> Orders=new List<ScoutOrder>();
         public EarlyRetentionState Copy()
@@ -107,12 +110,109 @@ namespace Eldoria.Domain
             int def=19+stage*3+(int)Math.Round(stage*(double)stage*.09,
                 MidpointRounding.AwayFromZero)+(boss?18:0);
             int brk=12+stage*2+(boss?15:0);
+            // Five distinct, readable guardian disciplines. The resulting
+            // stats feed the EXISTING automatic combat, never a cosmetic badge.
+            // Normal enemies retain their previous balance curve.
+            if(boss)
+            {
+                switch(level)
+                {
+                    case 5:  def+=28+chapter*3;break; // Carapace
+                    case 10: atk+=21+chapter*3;break; // Relentless assault
+                    case 15: brk+=27+chapter*4;def+=10;break; // Breach spawnling
+                    case 20: hp+=250+chapter*28;break; // Endurance
+                    case 25: atk+=12+chapter*2;def+=12+chapter*2;
+                             hp+=130+chapter*18;break; // Final guardian
+                }
+            }
             var enemy=new WorldCreatureStats(hp,atk,def,brk,0,0);
             return new VigilantStage(stage,chapter,level,
                 boss && level==15?"Engendro de la Brecha":
                     boss?"Guardián del umbral":normal[variance],
-                traits[variance],locations[(chapter-1)%locations.Length],enemy);
+                boss?GuardianTrait(level):traits[variance],
+                locations[(chapter-1)%locations.Length],enemy);
         }
+
+        public static string GuardianTrait(int step)
+        {
+            switch(step)
+            {
+                case 5:return "Coraza de ceniza · DEFENSA";
+                case 10:return "Embate furioso · ATAQUE";
+                case 15:return "Garras de la Brecha · RUPTURA";
+                case 20:return "Voluntad de hierro · RESISTENCIA";
+                case 25:return "Guardián del juramento · EQUILIBRIO";
+                default:return "Amenaza corrupta";
+            }
+        }
+        // Short, truthful advice anchored in a DIFFERENT actual enemy stat.
+        // It never promises a win or grants an automatic counter-bonus.
+        public static string CombatAdvice(VigilantStage stage)
+        {
+            switch(stage.Step)
+            {
+                case 5:return "Prioriza daño y ruptura frente a su coraza.";
+                case 10:return "Refuerza defensa y vida ante sus golpes.";
+                case 15:return "Su ruptura castiga la defensa: lleva resistencia.";
+                case 20:return "Su vida es elevada: necesitas daño sostenido.";
+                case 25:return "Equilibra daño, defensa y ruptura.";
+                default:return "Observa sus estadísticas y prepara tu marcha.";
+            }
+        }
+        public static string BattleReview(BattleReportState report,VigilantStage stage)
+        {
+            if(report==null||report.TargetId!="vigilant:"+stage.Absolute)return "";
+            var hero=report.HeroId=="lyra"?"Lyra":
+                report.HeroId=="aldric+lyra"?"Aldric y Lyra":"Aldric";
+            return (report.Won?"Victoria":"Derrota")+" · "+
+                report.Rounds+" rondas · "+report.Troops+" tropas · "+hero+
+                "\nPoder "+report.PlayerPower+" / rival "+report.EnemyPower+
+                " · Vida restante "+report.RemainingHealth+
+                "\n"+CombatAdvice(stage);
+        }
+        // Lore variants are deterministic from the saved order, so a reload
+        // never rerolls the story, fakes a rare item or duplicates a reward.
+        public static string ScoutDiscoveryTitle(ScoutOrder order)
+        {
+            if(order==null)return "";
+            switch(order.Kind)
+            {
+                case 0:return "Guardia en la frontera";
+                case 1:return "Voces del camino";
+                case 2:return "Marcas en los suministros";
+                default:return "Ecos de la Brecha";
+            }
+        }
+        public static string ScoutDiscoveryText(ScoutOrder order)
+        {
+            if(order==null)return "";
+            int variant=(int)((((long)order.Period+order.Slot)%3+3)%3);
+            switch(order.Kind)
+            {
+                case 0:return new[]{
+                    "La patrulla encontró cenizas recientes junto a la senda.",
+                    "Las huellas se interrumpen donde empieza la niebla violeta.",
+                    "Los vigías oyen pasos al otro lado de la empalizada."
+                }[variant];
+                case 1:return new[]{
+                    "Los viajeros recuerdan luces sobre el viejo paso.",
+                    "Una caravana relata cómo el bosque quedó en silencio.",
+                    "Un superviviente dibujó la forma de una torre perdida."
+                }[variant];
+                case 2:return new[]{
+                    "Una caja llevaba el sello descolorido de Valoria.",
+                    "Los fardos estaban ocultos bajo ramas ennegrecidas.",
+                    "El convoy halló señales talladas en una roca antigua."
+                }[variant];
+                default:return new[]{
+                    "La piedra de la Brecha desprendía un leve resplandor.",
+                    "Encontraron grietas violetas en las raíces del bosque.",
+                    "Un rumor profundo recorrió la tierra al caer la noche."
+                }[variant];
+            }
+        }
+        public static int RevealedScoutReports(EarlyRetentionState state)
+            => state?.Orders?.Count(o=>o!=null&&o.Claimed)??0;
 
         public static int ScoutKind(long period,int slot) => (int)((period+slot)%4);
         public static string ScoutTitle(int kind)
@@ -288,6 +388,8 @@ namespace Eldoria.Domain
             else{s.Resources.Stone=checked(s.Resources.Stone+25);s.Resources.Food=checked(s.Resources.Food+45);}
             p.AldricExperience=checked(p.AldricExperience+20);
             order.Claimed=true;
+            p.LatestDiscoveryTitle=ScoutDiscoveryTitle(order);
+            p.LatestDiscoveryText=ScoutDiscoveryText(order);
             message="Encargo completado · "+ScoutRewardText(order.Kind);
             return true;
         }
