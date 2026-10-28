@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T08:41:18.407Z",
+  "updated_at": "2026-10-28T08:48:12.680Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1427,7 +1427,7 @@
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
       "owner": "codex-pr119-pr120-completion-20261028",
       "ownership_state": "claimed",
-      "ownership_revision": 25,
+      "ownership_revision": 26,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-27T09:36:00Z",
@@ -1464,7 +1464,9 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/BottomNavigation.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHudLayout.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "dependencies": [
         {
           "workstream": "valoria-master-plan-layered-construction-20261016",
@@ -1512,7 +1514,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Certify exact PR119 after PR120 releases Windows; original Option1 comparison, reset backup, pan/zoom/wolf tests.",
+      "next": "Run exact reconciled PR119 with backup byte verification, inspect genuine screenshots against approved original.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1717,13 +1719,11 @@
       "id": "eldoria-early-retention-systems-20261028",
       "owner": "codex-pr119-pr120-completion-20261028",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "status": "active",
       "branch": "feature/eldoria-early-retention-20261028",
       "pr": 120,
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
@@ -1761,7 +1761,15 @@
           "transferred_at": "2026-10-28T08:41:18.407Z"
         }
       ],
-      "write_scope_released": false
+      "write_scope_released": false,
+      "current_native_cert": {
+        "run": 40657717839,
+        "source": "01685c187f8df1a23c5743a76a6d27c3f32ab23e",
+        "conclusion": "success",
+        "artifact_id": 12802867199,
+        "visual_review": "in_progress"
+      },
+      "next": "Review exact eight original captures; reconcile with certified PR119. No release yet."
     }
   ],
   "history": [
