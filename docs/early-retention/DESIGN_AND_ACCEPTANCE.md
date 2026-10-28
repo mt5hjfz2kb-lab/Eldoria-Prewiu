@@ -8,7 +8,7 @@ Autoridad: aprobación del propietario 28/10/2026. No se inserta dentro de Códi
 - Desde Bastión II, progreso individual permanente en capítulos de **25 etapas**. Niveles 5/10/15/20/25 tienen guardián destacado. Bastión III habilita segunda tanda; futuros bastiones abren capítulos posteriores.
 - Combate inmediato **automático**, usando `SliceRules.Expedition` y `SliceRules.FightCreature`: nunca requiere pulsar habilidades o estar presente durante la pelea. No consume la marcha de mundo ni crea ejército ficticio; utiliza tropas realmente disponibles y héroes desbloqueados.
 - Primera victoria de cada etapa: madera, piedra y XP registrada; ninguna repetición duplica recompensas. Los enemigos/escalados son una actividad PERSONAL, no los Élites públicos de la Brecha.
-- Experiencia pasiva: tasa de XP depende de hitos alcanzados, calcula el intervalo transcurrido por tiempo UTC y limita acumulación a **ocho horas**. Los XP quedan registrados por Aldric/Lyra en `PlayerState.Retention` sin aumentar estadísticas de forma inventada, hasta integrar la futura progresión general de héroes. Este límite es visible al jugador.
+- Experiencia pasiva: tasa de XP depende de hitos alcanzados, calcula el intervalo transcurrido por tiempo UTC y limita acumulación a **ocho horas**. La experiencia de Aldric/Lyra queda registrada en `PlayerState.Retention`; su maestría (80 XP por nivel, máximo 20) mejora de forma limitada ATQ/DEF/VIDA/RUPTURA/PODER **solo en los dos modos PvE tempranos**, sin alterar el combate canónico del mundo ni afirmar que existe una progresión general de héroes. Este límite es visible al jugador.
 
 ## Mesa de Exploradores
 
