@@ -327,29 +327,24 @@ namespace Eldoria.Application
                     if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Marcha no disponible");
                     if(!MarchCapacityRules.CanStart(state,clock.UtcTicks))return Fail("Ya hay tres marchas activas");
-                    int marchArchers=state.Available.ArcherT1;
-                    string marchHero="aldric";
-                    if(command.TargetId != "march-main")
-                    {
-                        if(!command.TargetId.StartsWith("march-main:",StringComparison.Ordinal) ||
-                            !int.TryParse(command.TargetId.Split(':')[1],out marchArchers))
-                            return Fail("Composición desconocida");
-                    }
-                    if(marchArchers < 1 || marchArchers > state.Available.ArcherT1)
-                        return Fail("No hay suficientes arqueros disponibles");
-                    var parts=command.TargetId.Split(':');
-                    if(parts.Length>3)return Fail("Composición desconocida");
-                    if(parts.Length==3)marchHero=parts[2];
-                    if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))return Fail("Héroe no disponible");
+                    // Legacy command plus explicit three-tier composition, all checked
+                    // atomically against troops still at home and the selected hero cap.
+                    var parts=(command.TargetId??"").Split(':');
+                    if(parts[0]!="march-main" || (parts.Length!=1&&parts.Length!=2&&parts.Length!=3&&parts.Length!=5))
+                        return Fail("Composición desconocida");
+                    string marchHero=parts.Length==3?parts[2]:parts.Length==5?parts[4]:"aldric";
+                    if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))
+                        return Fail("Héroe no disponible");
                     var nextTroops=state.Available.Copy();
-                    nextTroops.ArcherT1=marchArchers;
-                    // Only explicitly selected T1 for this editor; legacy full-stack
-                    // configs remain valid when their combined total fits capacity.
-                    if(command.TargetId!="march-main")
+                    if(parts.Length>1)
                     {
-                        nextTroops.ArcherT2=0;
-                        nextTroops.ArcherT3=0;
+                        if(!int.TryParse(parts[1],out nextTroops.ArcherT1))return Fail("Composición desconocida");
+                        nextTroops.ArcherT2=0;nextTroops.ArcherT3=0;
                     }
+                    if(parts.Length==5 &&
+                        (!int.TryParse(parts[2],out nextTroops.ArcherT2)||
+                         !int.TryParse(parts[3],out nextTroops.ArcherT3)))
+                        return Fail("Composición desconocida");
                     if(!MarchCapacityRules.Fits(nextTroops,state.Available,MarchCapacityRules.Capacity(state,marchHero)))
                         return Fail("La marcha supera la capacidad del héroe o no tiene tropas disponibles");
                     state.PreparedHeroId=marchHero;
@@ -482,7 +477,11 @@ namespace Eldoria.Application
             if(!MarchCapacityRules.CanStart(state,clock.UtcTicks))return false;
             // Never attack or resolve the same unique creature twice in parallel.
             if(MarchTargetActive(targetId)&&!IsWoodTarget(targetId)&&!IsStoneTarget(targetId))return false;
-            bool usePrepared=(targetId=="engendro-valoria"||IsChapterThreeTarget(targetId))&&state.MarchConfigured;
+            bool special=targetId=="engendro-valoria"||IsChapterThreeTarget(targetId);
+            bool usePrepared=state.MarchConfigured&&
+                MarchCapacityRules.Fits(state.PreparedTroops,state.Available,
+                    MarchCapacityRules.Capacity(state,state.PreparedHeroId));
+            if(special&&state.MarchConfigured&&!usePrepared)return false;
             string hero=usePrepared?state.PreparedHeroId:"aldric";
             var troops=usePrepared?state.PreparedTroops.Copy():
                 MarchCapacityRules.AutoSelect(state.Available,MarchCapacityRules.Capacity(state,hero));
