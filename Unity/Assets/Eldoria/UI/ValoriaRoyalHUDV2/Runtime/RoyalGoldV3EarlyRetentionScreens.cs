@@ -308,6 +308,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 "EldoriaRetention/engendro-portrait");
             engendroCutout=TransparentEngendro(engendroTexture);
             var creature=Panel(heroScene,"Lore-approved Engendro portrait");
+            // The original Breach creature is now a transparent silhouette:
+            // do not surround it with a studio-like gray/gold square over the
+            // living forest. It belongs IN the landscape, not on an ID card.
+            var creaturePlate=creature.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(creaturePlate){creaturePlate.raycastTarget=false;creaturePlate.enabled=false;}
             var creatureArt=Rect("Engendro / authentic creature illustration",creature);
             creatureArt.gameObject.AddComponent<CanvasRenderer>();
             engendroPortrait=creatureArt.gameObject.AddComponent<RawImage>();
