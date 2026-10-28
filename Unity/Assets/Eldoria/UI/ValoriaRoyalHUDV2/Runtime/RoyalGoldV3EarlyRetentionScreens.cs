@@ -59,6 +59,7 @@ namespace Eldoria.UI.RoyalGold.V2
         Texture2D paintedVigilants, paintedScouts;
         GameObject screen;
         float width=-1,height=-1,nextUpdate;
+        float lastSafeWidth=-1,lastSafeHeight=-1;
         string notice="";
         static readonly Color Ivory=new Color(.96f,.91f,.80f,1);
         static readonly Color Gold=new Color(.87f,.70f,.40f,1);
@@ -525,11 +526,11 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 if(Blocked || (OpenDestination==Destination.Vigilants&&!allowV) ||
                    (OpenDestination==Destination.Scouts&&!allowS)){Close();return;}
-                if(Mathf.Abs(safe.rect.width-width)>1||Mathf.Abs(safe.rect.height-height)>1)
+                if(Mathf.Abs(safe.rect.width-lastSafeWidth)>1||Mathf.Abs(safe.rect.height-lastSafeHeight)>1)
                     Layout();
                 Render(false);
             }
-            else if(Mathf.Abs(safe.rect.width-width)>1||Mathf.Abs(safe.rect.height-height)>1)
+            else if(Mathf.Abs(safe.rect.width-lastSafeWidth)>1||Mathf.Abs(safe.rect.height-lastSafeHeight)>1)
                 LayoutShortcuts();
         }
         void LayoutShortcuts()
@@ -552,10 +553,20 @@ namespace Eldoria.UI.RoyalGold.V2
         void Layout()
         {
             if(!ready||!safe)return;
-            width=safe.rect.width;height=safe.rect.height;
+            lastSafeWidth=safe.rect.width;lastSafeHeight=safe.rect.height;
             LayoutShortcuts();
-            if(width<200||height<260)return;
-            bool portrait=height>width;
+            if(lastSafeWidth<200||lastSafeHeight<260)return;
+            // RoyalScaler uses a 900-unit reference HEIGHT in production.
+            // Give only this room a stable portrait width, leaving the shared
+            // HUD, camera, scaler and safe-area/shortcut controls untouched.
+            bool portrait=lastSafeHeight>lastSafeWidth;
+            float roomScale=portrait?Mathf.Min(1f,lastSafeWidth/800f):1f;
+            width=lastSafeWidth/roomScale;height=lastSafeHeight/roomScale;
+            panelRoot.anchorMin=panelRoot.anchorMax=new Vector2(.5f,.5f);
+            panelRoot.pivot=new Vector2(.5f,.5f);
+            panelRoot.anchoredPosition=Vector2.zero;
+            panelRoot.sizeDelta=new Vector2(width-18f,height-18f);
+            panelRoot.localScale=Vector3.one*roomScale;
             // Every orientation-dependent font is assigned on each layout.
             // A phone capture/rotation must not leave its larger subtitle or
             // action labels inside the next landscape rectangles.
@@ -599,7 +610,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Vigilants has one encounter card: fill portrait with the world
             // instead of leaving a long dark strip before the battle button.
             // Scouts retains three full-size readable contracts beneath its map.
-            float scenicHeight=vigilantsPortrait?Mathf.Max(320f,ph-840f):
+            float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-840f):
                 portrait?Mathf.Clamp(ph-988f,220f,880f):ph-155f;
             TL(heroScene,portrait?18f:20f,imageTop,
                 portrait?pw-36f:pw-40f,scenicHeight);
@@ -808,7 +819,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 sceneArtwork.ChapterProgress=chapterProgress;
                 sceneArtwork.SetVerticesDirty();
             }
-            bool narrow=safe.rect.height>safe.rect.width && safe.rect.width<640f;
+            bool narrow=height>width && width<640f;
             heading.Put(vig?(narrow?"VIGILANTES":"CAMINO DE LOS VIGILANTES"):
                 (narrow?"EXPLORADORES":"MESA DE EXPLORADORES"));
             kicker.Put(vig?(narrow?"CAMINO DE LOS VIGILANTES · PvE":

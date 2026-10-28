@@ -32,3 +32,8 @@ La revisión conserva los fondos HD y el monstruo canónico, asigna espacio real
 
 
 La ejecución `40703334700` produjo las primeras tres vistas reales de la revisión responsiva y 13/13 pruebas de dominio. La vista de teléfono ya muestra la mejora prevista. Falló al volver a horizontal: el subtítulo conservaba la fuente de teléfono (30 unidades de altura requerida en un rectángulo de 27). Se corrige la asignación de todas las fuentes dependientes de orientación en cada layout; los umbrales no se rebajan. La captura ahora recoge todos los defectos de layout en una ejecución, guarda sus imágenes para revisión y termina obligatoriamente en FAIL antes de escribir el marcador de éxito si queda alguno.
+
+
+## Equivalencia con la aplicación
+
+La revisión 27 pasó 13/13 pruebas nativas y las 17 capturas con todas las acciones reales. La auditoría de `RoyalScaler.cs` identificó, sin embargo, que la aplicación conserva 900 unidades de altura mientras el capturador compartido tradicional imponía 800 unidades de ancho en retrato. Se corrige la causa en la habitación de Retención: un contenedor de ancho virtual 800 reescala únicamente su propio panel; el HUD, el escalador compartido, la cámara y los accesos permanecen bajo su lógica existente. La captura específica aplica expresamente la configuración real del escalador y verifica píxeles de fuente incluyendo la escala del contenedor y de la animación. Esto convierte la evidencia en una prueba de la distribución de producción; no se rebaja ningún umbral. La inspección y promoción quedan pendientes de esa ejecución.

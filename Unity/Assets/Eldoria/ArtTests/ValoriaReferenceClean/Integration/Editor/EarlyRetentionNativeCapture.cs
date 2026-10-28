@@ -98,7 +98,24 @@ namespace Eldoria.ReferenceClean.Editor
             // Supply an ABSOLUTE evidence path: the shared renderer uses
             // Path.Combine(Ev, name), which correctly preserves a rooted name.
             // This captures directly into the retention workflow artifact.
-            ValoriaIntegrationBuild.Capture(h,path,w,he,()=>ValidateTextLayout(h,w));
+            ValoriaIntegrationBuild.Capture(h,path,w,he,()=>{
+                // Match the ACTUAL RoyalScaler: reference-height scaling, not
+                // the legacy shared screenshot helper's portrait-width preset.
+                var canvas=h.Hud.GetComponent<Canvas>();
+                var scaler=h.Hud.GetComponent<RoyalScaler>();
+                Need(Mathf.Approximately(scaler.matchWidthOrHeight,1f),
+                    "Native proof uses the configured production height-matched RoyalScaler");
+                canvas.scaleFactor=he/Mathf.Max(1f,scaler.referenceResolution.y);
+                Canvas.ForceUpdateCanvases();
+                foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))
+                    layout.Apply(w/canvas.scaleFactor,true);
+                h.Hud.GetComponent<RoyalGoldV2Hud>()?.SynchronizeNow();
+                Canvas.ForceUpdateCanvases();
+                h.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>().SynchronizeLayout();
+                Canvas.ForceUpdateCanvases();
+                h.PlayerCamera.Render();h.PlayerCamera.Render();
+                ValidateTextLayout(h,w);
+            });
             Need(File.Exists(path)&&new FileInfo(path).Length>Math.Min(30000,w*he/40),
                 "Native Unity "+w+"x"+he+" screenshot exists: "+name);
             var tex=new Texture2D(2,2,TextureFormat.RGB24,false);
@@ -143,8 +160,13 @@ namespace Eldoria.ReferenceClean.Editor
                 if(string.IsNullOrWhiteSpace(label.text) ||
                     label.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.01f))continue;
                 if(captureWidth<=400)
-                    CheckLayout(label.fontSize*h.Hud.GetComponent<Canvas>().scaleFactor>=12f,
+                {
+                    var canvas=h.Hud.GetComponent<Canvas>();
+                    float ownScale=Mathf.Abs(label.transform.lossyScale.y)/
+                        Mathf.Max(.000001f,Mathf.Abs(canvas.transform.lossyScale.y));
+                    CheckLayout(label.fontSize*canvas.scaleFactor*ownScale>=12f,
                         captureWidth+"px: Phone text renders at least 12 actual pixels: "+label.name);
+                }
                 CheckLayout(label.preferredHeight<=label.rectTransform.rect.height+1f,
                     captureWidth+"px: Complete visible text fits actual capture layout: "+label.name+
                     " [required="+label.preferredHeight+", available="+
