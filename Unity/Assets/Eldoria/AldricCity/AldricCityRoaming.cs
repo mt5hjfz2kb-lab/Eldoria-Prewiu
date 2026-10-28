@@ -51,6 +51,7 @@ namespace Eldoria.AldricCity
         public bool ApprovedVisualReady => actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
         public int RoadWaypoints => path == null ? 0 : path.Length;
+        public bool ActualWalkClipPlaying => clips && clips.IsPlaying(Walk);
         public Vector3 ActorGroundPosition => actor ? actor.transform.position : Vector3.zero;
         public bool IsCityActorVisible => actor && !Away() && renderers != null &&
             renderers.Any(r => r && r.enabled && r.gameObject.activeInHierarchy);
