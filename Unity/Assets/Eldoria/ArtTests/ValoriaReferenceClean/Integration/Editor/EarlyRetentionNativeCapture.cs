@@ -282,19 +282,29 @@ namespace Eldoria.ReferenceClean.Editor
                     Mathf.Max(.1f,panelAspect)<.12f;
             }),"Real map miniatures preserve the authored image aspect without stretching");
             Screenshot(h,"scout-mission-board",900,1600);
-            var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
-                .FirstOrDefault(x=>x.name=="Dispatch or claim scout 1");
-            Need(dispatch.targetGraphic is RoyalGoldV3RetentionActionGraphic &&
-                !((RoyalGoldV3RetentionActionGraphic)dispatch.targetGraphic).Battle,
-                "The real expedition button uses the approved blue and gold action graphic");
-            var scoutPlate=dispatch?
-                dispatch.GetComponent<RoyalGoldV3RetentionActionGraphic>():null;
-            Need(scoutPlate && !scoutPlate.Battle &&
-                dispatch.targetGraphic==scoutPlate && scoutPlate.raycastTarget,
-                "Real Scout dispatch uses the approved blue interactive button");
-            ClickReal(dispatch,"Actual scout dispatch");
-            Need(h.City.Gateway.Snapshot().Retention.Orders.Any(x=>x.StartedUtcTicks>0),
-                "Scout dispatch persists its genuine UTC return time");
+            // The reference has THREE independent blue expedition actions.
+            // Certify all three original RoyalButtons and real dispatch commands,
+            // not just the first parchment. Test state is disposable only.
+            for(int slot=1;slot<=3;slot++)
+            {
+                var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
+                    .FirstOrDefault(x=>x.name=="Dispatch or claim scout "+slot);
+                Need(dispatch!=null && dispatch.targetGraphic is
+                    RoyalGoldV3RetentionActionGraphic &&
+                    !((RoyalGoldV3RetentionActionGraphic)dispatch.targetGraphic).Battle,
+                    "Expedition "+slot+" has its original live blue action");
+                var scoutPlate=dispatch.GetComponent<RoyalGoldV3RetentionActionGraphic>();
+                Need(scoutPlate && !scoutPlate.Battle &&
+                    dispatch.targetGraphic==scoutPlate && scoutPlate.raycastTarget,
+                    "Expedition "+slot+" preserves the one real button raycast");
+                int before=h.City.Gateway.Snapshot().Retention.Orders
+                    .Count(x=>x.StartedUtcTicks>0);
+                ClickReal(dispatch,"Real expedition "+slot+" dispatch");
+                int after=h.City.Gateway.Snapshot().Retention.Orders
+                    .Count(x=>x.StartedUtcTicks>0);
+                Need(after==before+1,
+                    "Expedition "+slot+" dispatches exactly one persistent UTC order");
+            }
             ui.Close();
             Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,
                 "No duplicate RoyalHUD/Canvas created");
