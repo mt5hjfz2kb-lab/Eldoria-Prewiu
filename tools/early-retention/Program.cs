@@ -29,7 +29,10 @@ static class Program
         for(int i=1;i<=100;i++){
             var stage=EarlyRetentionRules.Stage(i);
             Require(stage.Chapter==(i-1)/25+1&&stage.Step==(i-1)%25+1,"25-stage chapter math");
-            if(i%5==0)Require(stage.Name=="Guardián del umbral","Guard every five");
+            if(i%5==0)Require(stage.Name==((stage.Step==15)?
+                "Engendro de la Brecha":"Guardián del umbral"),
+                "Every fifth stage has the lore-correct guardian, never a golem");
+            if(i==3)Require(stage.Name=="Corrupto errante","No stone golems in Eldoria");
         }
         // Regression guard for the REAL Bastion II sequence. Scout unlock
         // must share ConfigureMarch's save revision; it cannot invalidate
