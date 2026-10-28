@@ -44,6 +44,8 @@ namespace Eldoria.AldricCity
         private bool walking;
         private float pauseUntil;
         private float facingYaw;
+        private float nextAwayRefresh;
+        private bool cachedAway;
         private readonly List<Collider> obstacles = new List<Collider>();
         // Native verification probes. Read-only; never mutate player saves or gameplay.
         public bool ApprovedVisualReady => actor && model && clips && path != null &&
@@ -294,11 +296,16 @@ namespace Eldoria.AldricCity
         private bool Away()
         {
             if (!host || !host.Ready || !host.City) return true;
+            if (host.InWorld) return true;
+            // Snapshot() clones the authoritative state: never allocate one every
+            // rendered frame on mobile merely to decide a cosmetic NPC's visibility.
+            if (Time.unscaledTime < nextAwayRefresh) return cachedAway;
+            nextAwayRefresh = Time.unscaledTime + .2f;
             var s = host.City.Gateway.Snapshot();
-            return host.InWorld ||
-                s.ChapterThree.InvestigationEndsUtcTicks > host.City.Clock.UtcTicks ||
+            cachedAway = s.ChapterThree.InvestigationEndsUtcTicks > host.City.Clock.UtcTicks ||
                 (s.March != null && s.March.Phase != "idle" &&
                  (s.March.HeroId == "aldric" || s.March.HeroId == "aldric+lyra"));
+            return cachedAway;
         }
 
         private void Update()
