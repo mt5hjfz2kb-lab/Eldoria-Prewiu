@@ -80,6 +80,198 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator ChronicleRealKeepsNativeBuildingIllustrationWithCanonicalOffer()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            var modal = Member(hud, "Modal") as Component;
+            // The authentic prologue is scheduled after host readiness and
+            // its transitions use real time. Thirty immediate frames could
+            // finish before it opened, leaving the intended modal over the card.
+            yield return new WaitForSecondsRealtime(.4f);
+            Assert.That(modal, Is.Not.Null);
+            var extra = Member(modal, "Extra") as Button;
+            for (int i = 0; i < 80 && modal.gameObject.activeSelf; ++i)
+            {
+                Assert.That(extra, Is.Not.Null);
+                extra.onClick.Invoke();
+                yield return new WaitForSecondsRealtime(.2f);
+            }
+            Assert.That(modal.gameObject.activeSelf, Is.False,
+                "Read and acknowledge the real opening prologue before inspecting the building card");
+            Call(hud, "SelectBuilding", "bastion");
+            yield return null;
+            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
+            Call(v2, "SynchronizeNow");
+            Canvas.ForceUpdateCanvases();
+            Assert.That(Member(v2,"ChronicleIllustratedBuildingVisible"),Is.EqualTo(true),
+                "Crónica Real must actually DISPLAY its illustrated building card, not just instantiate a hidden placeholder");
+            // GameObject.Find interprets slash-bearing scene names as
+            // hierarchy paths. Look up the actual existing HUD child by
+            // exact name instead, preventing a false-negative native gate.
+            var realCard = hud.GetComponentsInChildren<RectTransform>(true)
+                .FirstOrDefault(x => x.name=="V2 / contextual building sheet");
+            Assert.That(realCard,Is.Not.Null);
+            var freeViewport = (Rect)Call(v2, "GetFreeSceneViewport");
+            Assert.That(freeViewport.width, Is.GreaterThan(.5f),
+                "The bottom card must preserve horizontal camera space in landscape and portrait");
+            Assert.That(freeViewport.height, Is.GreaterThan(.1f),
+                "The selected building must retain a usable camera viewport");
+            var cardRect = realCard;
+            var bottomNav = Member(hud,"Navigation") as Component;
+            Assert.That(bottomNav,Is.Not.Null);
+            // Both use safe-bottom anchored coordinates: an illustrated card
+            // should be just above the live dock, never overlaid on its buttons.
+            var navRect = bottomNav.transform as RectTransform;
+            Assert.That(cardRect.anchoredPosition.y,
+                Is.GreaterThanOrEqualTo(navRect.anchoredPosition.y+navRect.rect.height),
+                "The approved illustrated card must not cover the navigation dock");
+            var art = hud.GetComponentsInChildren<Graphic>(true)
+                .FirstOrDefault(g => g.GetType().Name ==
+                    "RoyalGoldV3BuildingEngravingGraphic");
+            Assert.That(art, Is.Not.Null,
+                "Crónica Real requires a genuine native illustrated selected-building sheet");
+            Assert.That(art.raycastTarget, Is.False,
+                "Decorative preview must not eat building or world input");
+            var context = hud.GetComponentsInChildren<MonoBehaviour>(true)
+                .FirstOrDefault(x => x && x.GetType().Name == "RoyalGoldV3ContextHud");
+            Assert.That(context, Is.Not.Null,
+                "The original gameplay-projected action/timer must remain in the same HUD");
+            Assert.That(hud.GetComponentsInChildren<Canvas>(true).Length, Is.EqualTo(1),
+                "Do not create a second gameplay HUD or separate Canvas");
+        }
+
+        [UnityTest]
+        public IEnumerator SettingsResetRequiresSecondExplicitTap()
+        {
+            Component host = null, hud = null;
+            yield return Boot((h, v) => { host = h; hud = v; });
+            Assert.That(Member(hud, "ResetPlaytestProgress"), Is.Not.Null,
+                "Integrated Settings must expose a reset while family testing");
+            var settings = Member(hud, "Settings") as Button;
+            var modal = Member(hud, "Modal") as Component;
+            Assert.That(settings, Is.Not.Null);
+            Assert.That(modal, Is.Not.Null);
+            // The callback is a legitimate developer/tester action, not a
+            // forced save deletion or a replay of a synthetic UI.
+            settings.onClick.Invoke();
+            yield return null;
+            var reset = Member(modal, "Secondary") as Button;
+            Assert.That(reset && reset.gameObject.activeInHierarchy, Is.True,
+                "Test save reset belongs in the Settings panel");
+            var initialRevision = ((Eldoria.Domain.PlayerState)Call(
+                Member(Member(host, "City"), "Gateway"), "Snapshot")).Revision;
+            reset.onClick.Invoke(); // FIRST tap only: arm, NEVER destroy a save.
+            yield return null;
+            var unchanged = ((Eldoria.Domain.PlayerState)Call(
+                Member(Member(host, "City"), "Gateway"), "Snapshot")).Revision;
+            Assert.That(unchanged,Is.EqualTo(initialRevision),
+                "Merely arming playtest reset must not write or delete player progress");
+            var body = Member(modal, "Body") as Text;
+            Assert.That(body, Is.Not.Null);
+            StringAssert.Contains("CONFIRM", body.text.ToUpperInvariant());
+            // Simulate expiry without sleeping eight seconds or ever touching
+            // the real player's save. The visible label MUST disarm too.
+            var armedUntil=hud.GetType().GetField("resetArmedUntil",
+                BindingFlags.Instance|BindingFlags.NonPublic);
+            Assert.That(armedUntil,Is.Not.Null);
+            armedUntil.SetValue(hud,-1f);
+            yield return null;
+            var resetCaption=Member(modal,"SecondaryLabel") as Text;
+            Assert.That(resetCaption,Is.Not.Null);
+            StringAssert.Contains("Reiniciar",resetCaption.text);
+            Assert.That(((Eldoria.Domain.PlayerState)Call(
+                Member(Member(host,"City"),"Gateway"),"Snapshot")).Revision,
+                Is.EqualTo(initialRevision),
+                "Expired reset confirmation cannot delete or rewrite the save");
+            // Deliberately never issue the destructive second tap in shared QA.
+        }
+
+        [UnityTest]
+        public IEnumerator BastionIIIWolfBodyMatchesBoarBodyScale()
+        {
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var world=Member(host,"WorldRoot") as GameObject;
+            Assert.That(world,Is.Not.Null);
+            var wolves=world.transform.Find("hunt-wolf");
+            var boars=world.transform.Find("hunt-boar");
+            Assert.That(wolves&&boars,Is.True,
+                "Both original real world encounters must exist");
+            var wolfModel=wolves.Find("AshWolf");
+            var boarModel=boars.Find("RockBoarNear");
+            Assert.That(wolfModel&&boarModel,Is.True,
+                "Source-authored wolf and boar models must be instantiated");
+            var wolfRenderers=wolfModel.GetComponentsInChildren<Renderer>(true);
+            var boarRenderers=boarModel.GetComponentsInChildren<Renderer>(true);
+            Assert.That(wolfRenderers.Length,Is.GreaterThan(0));
+            Assert.That(boarRenderers.Length,Is.GreaterThan(0));
+            var wolf=wolfRenderers[0].bounds;
+            foreach(var renderer in wolfRenderers.Skip(1))wolf.Encapsulate(renderer.bounds);
+            var boar=boarRenderers[0].bounds;
+            foreach(var renderer in boarRenderers.Skip(1))boar.Encapsulate(renderer.bounds);
+            float wolfWidth=Mathf.Max(wolf.size.x,wolf.size.z);
+            float boarWidth=Mathf.Max(boar.size.x,boar.size.z);
+            Assert.That(wolfWidth,Is.InRange(boarWidth*.89f,boarWidth*1.12f),
+                "A single Ash Wolf must be approximately the same physical size as a Rock Boar");
+        }
+
+        [UnityTest]
+        public IEnumerator NativeProbeResetStartsFreshWithoutDeletingAnyRealDeviceSave()
+        {
+            if(Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE")!="1")
+                Assert.Ignore("The destructive path is only tested against a disposable probe file");
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var city=Member(host,"City") as Component;
+            Assert.That(city,Is.Not.Null);
+            Assert.That((bool)Member(city,"Probe"),Is.True);
+            string disposable=(string)Member(city,"SaveFile");
+            Assert.That(disposable.StartsWith(System.IO.Path.GetTempPath(),
+                StringComparison.OrdinalIgnoreCase),Is.True,
+                "Never reset a non-probe save from this native test");
+            var gateway=Member(city,"Gateway") as Eldoria.Application.ICommandGateway;
+            Assert.That(gateway,Is.Not.Null);
+            var fixture=gateway.Snapshot();
+            fixture.BastionLevel=2;
+            fixture.SawmillLevel=1;
+            new Eldoria.Infrastructure.FileStateStore(disposable).Save(fixture);
+            Assert.That(System.IO.File.Exists(disposable),Is.True);
+            var originalBytes=System.IO.File.ReadAllBytes(disposable);
+            var ok=(bool)Call(city,"ResetPlaytestProgress");
+            Assert.That(ok,Is.True,"Reset did not accept its own disposable save");
+            var backups=System.IO.Directory.GetFiles(
+                System.IO.Path.GetDirectoryName(disposable),
+                System.IO.Path.GetFileName(disposable)+".before-playtest-reset-*.bak");
+            Assert.That(backups.Length,Is.EqualTo(1),
+                "The reset must preserve exactly one recoverable backup of this unique probe save");
+            CollectionAssert.AreEqual(originalBytes,System.IO.File.ReadAllBytes(backups[0]),
+                "The backup must preserve the complete original save byte-for-byte");
+            Assert.That(System.IO.File.Exists(disposable),Is.False,
+                "Only the disposable file should be removed before fresh load");
+            Component freshHost=null,freshHud=null;
+            for(int frame=0;frame<220;frame++)
+            {
+                yield return null;
+                var candidate=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                    .FirstOrDefault(x=>x&&x.GetType().Name=="ValoriaIntegratedWorld" &&
+                        (bool)Member(x,"Ready"));
+                if(!candidate||ReferenceEquals(candidate,host))continue;
+                freshHost=candidate;
+                freshHud=Member(candidate,"Hud") as Component;
+                if(freshHud)break;
+            }
+            Assert.That(freshHost,Is.Not.Null,
+                "A real scene reload must create a fresh playable session");
+            var freshCity=Member(freshHost,"City") as Component;
+            var freshGateway=Member(freshCity,"Gateway") as Eldoria.Application.ICommandGateway;
+            Assert.That(freshGateway.Snapshot().BastionLevel,Is.EqualTo(1));
+            Assert.That(freshGateway.Snapshot().SawmillLevel,Is.Zero);
+            Assert.That((string)Member(freshCity,"SaveFile"),Is.Not.EqualTo(disposable),
+                "Fresh native probe must have a new isolated save path");
+        }
+
+        [UnityTest]
         public IEnumerator AuthoredWorldOpensWithMateriallyWiderStrategicFraming()
         {
             Component host = null, hud = null;
@@ -286,8 +478,19 @@ namespace Eldoria.Tests
                 var liveButton = Member(entry, "Button") as Button;
                 return liveButton && liveButton.gameObject.activeSelf;
             }).ToArray();
-            Assert.That(visible.Length, Is.EqualTo(5),
-                "The owner-approved dock displays Reino, Construir, Unidades, Mundo and Crónicas");
+            int expectedVisible = 3; // Reino, Construir, Crónicas always make sense
+            foreach (var entry in entries)
+            {
+                string category = Member(entry, "Section").ToString();
+                if(category != "Army" && category != "World") continue;
+                bool trulyUnlocked = (bool)Call(host, "CanOpen", Member(entry, "Section"));
+                var entryButton=Member(entry, "Button") as Button;
+                Assert.That(entryButton.gameObject.activeSelf, Is.EqualTo(trulyUnlocked),
+                    "Never display an Army or World button before real gameplay unlock");
+                if(trulyUnlocked)expectedVisible++;
+            }
+            Assert.That(visible.Length, Is.EqualTo(expectedVisible),
+                "Only coherent Crónica Real destinations may appear at this Bastion level");
             foreach (var entry in visible)
             {
                 string section = Member(entry, "Section").ToString();

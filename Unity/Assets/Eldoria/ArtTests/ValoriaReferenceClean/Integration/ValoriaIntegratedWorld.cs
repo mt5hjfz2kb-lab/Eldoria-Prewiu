@@ -30,6 +30,22 @@ namespace Eldoria.ReferenceClean {
   ICommandGateway boundGateway; Canvas legacyCanvas; GraphicRaycaster legacyRaycaster;
   bool cityFog,englishInterface; int layoutWidth,layoutHeight,focusRequest,observedFocusStage;
   float nextVisualSync;
+  // Motion is measured in screen pixels, so easing is consistent in both camera modes.
+  Vector2 unappliedDragPixels;
+  const float DragResponse=20f;
+  void ApplyCameraPan(Vector2 portion){
+   if(!InWorld){city.Pan(portion);return;}
+   var center=new Vector2(Screen.width*.5f,Screen.height*.5f);
+   if(WorldNavigation.GroundPoint(center,out var from)&&
+      WorldNavigation.GroundPoint(center-portion,out var to))
+    WorldNavigation.PanTo(WorldNavigation.target+to-from);
+  }
+  void SmoothCameraDrag(){
+   if(unappliedDragPixels.sqrMagnitude<.0025f){unappliedDragPixels=Vector2.zero;return;}
+   var portion=unappliedDragPixels*(1f-Mathf.Exp(-DragResponse*Mathf.Min(.05f,Time.unscaledDeltaTime)));
+   unappliedDragPixels-=portion;
+   ApplyCameraPan(portion);
+  }
   Rect observedVisibleArea;
   WorldHotspot[] targets;
   public Camera PlayerCamera=>InWorld?WorldCamera:city.PlayerCamera;
@@ -47,6 +63,8 @@ namespace Eldoria.ReferenceClean {
    legacyCanvas=legacy.GetComponent<Canvas>();legacyRaycaster=legacy.GetComponent<GraphicRaycaster>();
    cityFog=RenderSettings.fog;
    Hud=Instantiate(HudPrefab).GetComponent<RoyalHUD>();Hud.name="Valoria Royal Gold HUD";
+   // The playtest Settings dialog requests a guarded backup-and-fresh-save from the real city host.
+   Hud.ResetPlaytestProgress=()=>city.ResetPlaytestProgress();
    // One authoritative Royal Gold session; V2 alters presentation only.
    if(!Hud.GetComponent<RoyalGoldV2Hud>())Hud.gameObject.AddComponent<RoyalGoldV2Hud>();
    if(!Hud.GetComponent<RoyalGoldV2Narrative>())Hud.gameObject.AddComponent<RoyalGoldV2Narrative>();
@@ -79,6 +97,9 @@ namespace Eldoria.ReferenceClean {
    WorldNavigation.regionalZoom=32;WorldNavigation.localZoom=14;
    gameObject.AddComponent<BastionIIIWorldPresentation>().Initialize(this);
    targets=Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None);
+   // One modestly wider authored entry view (about 10%), without changing near limits or world scale.
+   city.Controls.homeZoom=Mathf.Min(65f,city.PlayerCamera.orthographicSize*1.08f);
+   city.Controls.ResetView();
    Ready=true;Guidance=gameObject.AddComponent<ValoriaJourneyGuidance>();Guidance.Initialize(this,city);
    gameObject.AddComponent<ValoriaMarchPresentation>().Initialize(this);
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
@@ -101,6 +122,7 @@ namespace Eldoria.ReferenceClean {
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
    if(!Ready)return;
+   SmoothCameraDrag();
    if(!ReferenceEquals(boundGateway,city.Gateway))BindSession();
    RefreshNavigation();if(Time.unscaledTime>=nextVisualSync){
     nextVisualSync=Time.unscaledTime+.25f;SyncWorldCity();
@@ -135,7 +157,9 @@ namespace Eldoria.ReferenceClean {
    }
    if(InWorld==open)return true;
    Hud.SelectBuilding("");Hud.Modal.Hide();city.Presenter.ClosePanel();
+   unappliedDragPixels=Vector2.zero;
    InWorld=open;WorldRoot.SetActive(open);city.PlayerCamera.enabled=!open;WorldCamera.enabled=open;
+   if(!open)city.Controls.ResetView();
    RenderSettings.fog=open?false:cityFog;
    if(open){
     // Every visit starts in playable near view, including after panorama or a saved-session reload.
@@ -164,6 +188,8 @@ namespace Eldoria.ReferenceClean {
   public void Navigate(string target){TrySetWorld(target=="Frontier");}
   public void Apply(PlayerState state)=>city.Apply(state);
   public void Home(){
+   // Do not replay old gesture momentum after an explicit home command.
+   unappliedDragPixels=Vector2.zero;
    if(!InWorld){city.Home();return;}
    // The player's world home is Valoria in playable near view, not a forced
    // strategic zoom that contradicts the default when entering from the city.
@@ -171,8 +197,22 @@ namespace Eldoria.ReferenceClean {
    WorldNavigation.SetZoomLevel(2,true);
    WorldNavigation.PanTo(WorldHome);
   }
-  public void Pan(Vector2 delta){if(!InWorld){city.Pan(delta);return;}var p=new Vector2(Screen.width*.5f,Screen.height*.5f);if(WorldNavigation.GroundPoint(p,out var a)&&WorldNavigation.GroundPoint(p-delta,out var b))WorldNavigation.PanTo(WorldNavigation.target+b-a);}
-  public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
+  public void Pan(Vector2 delta){
+   // React to each touch immediately; ease the remaining gesture rather than
+   // teleporting the whole camera in a single frame. This keeps real input
+   // responsive and preserves the existing native immediate-pan assertions.
+   // Resume spikes cannot move more than 180 screen pixels.
+   unappliedDragPixels=Vector2.ClampMagnitude(unappliedDragPixels+delta,180f);
+   var leading=unappliedDragPixels*.38f;
+   unappliedDragPixels-=leading;
+   ApplyCameraPan(leading);
+  }
+  public void Zoom(float delta){
+   // A deliberate pinch/wheel zoom takes priority over queued drag easing.
+   unappliedDragPixels=Vector2.zero;
+   if(!InWorld){city.Zoom(delta);return;}
+   WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);
+  }
   public WorldHotspot FindTarget(string id)=>FindTargetExact(id=="upgrade-barracks"?"barracks":id);
   WorldHotspot FindTargetExact(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal)?WorldRoot.GetComponentsInChildren<WorldHotspot>(true):(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None))).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
   void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;
@@ -195,7 +235,14 @@ namespace Eldoria.ReferenceClean {
    var safe=UIVisibleSceneViewport();
    if(!camera||safe.width<=.08f||safe.height<=.08f)return;
    var points=FocusPoints(target);
-   if(!ProjectFocus(camera,points,out var projected))return;
+   if(!ProjectFocus(camera,points,out var projected)){
+    // A selected world site can lie behind the current near-view camera.
+    // Move to its real site before fitting; rejecting projection here made
+    // distant quarry/forest actions impossible to reveal from the objective.
+    if(!InWorld)return;
+    WorldNavigation.PanTo(target.transform.position);
+    if(!ProjectFocus(camera,points,out projected))return;
+   }
    // Focus against the actual unobstructed HUD rectangle, not the whole screen.
    // Terrain-wide camera clamps can reverse the final adjustment when the
    // selected Bastion roof is close to the upper chapter panel.
@@ -244,6 +291,24 @@ namespace Eldoria.ReferenceClean {
      AddFocusRenderers(left?p.LeftAvailable:p.RightAvailable,points);
     }
    }else{
+    // Production resource models follow their saved logical sites; older
+    // authored scenery is no longer the selection's rendered geometry.
+    if(id=="forest-valoria"||id=="quarry-valoria"||
+       id.StartsWith("region1:wood:",StringComparison.Ordinal)||
+       id.StartsWith("region1:stone:",StringComparison.Ordinal)){
+     var liveVisual=WorldRoot.GetComponentsInChildren<Transform>(true)
+      .FirstOrDefault(x=>x.name=="Production resource visual "+id);
+     // Selection can arrive before LateUpdate enables the near LOD after
+     // leaving panorama. Its real mesh still supplies the correct geometry;
+     // falling back to retired scenery points the camera away from the site.
+     if(liveVisual)
+      foreach(var renderer in liveVisual.GetComponentsInChildren<Renderer>(true))
+       if(renderer is MeshRenderer||renderer is SkinnedMeshRenderer)
+        AddFocusBox(renderer.localBounds,renderer.localToWorldMatrix,points);
+     var hit=target.GetComponent<Collider>();
+     if(points.Count==0&&hit)AddFocusBox(hit.bounds,Matrix4x4.identity,points);
+     if(points.Count>0)return points;
+    }
     if(id=="valoria-map-city"){
      AddFocusRenderers(WorldBastionOne,points);AddFocusRenderers(WorldBastionTwo,points);AddFocusRenderers(WorldSawmill,points);
     }else{

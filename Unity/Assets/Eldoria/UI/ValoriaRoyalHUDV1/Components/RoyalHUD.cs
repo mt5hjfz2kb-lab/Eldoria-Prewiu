@@ -5,7 +5,9 @@ namespace Eldoria.UI.RoyalGold {
  [RequireComponent(typeof(CanvasGroup))]
  public sealed class RoyalHUD:MonoBehaviour {
   public RealmHeader Realm;public ResourceBar Resources;public MissionPanel Mission;public BottomNavigation Navigation;public BuildingDetailsPanel Building;public ModalWindow Modal;public RoyalText Feedback,TestMark;public RoyalButton Settings;
-  IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending,narrative;
+  IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending,narrative,resetArmed;
+  float resetArmedUntil;
+  public Func<bool> ResetPlaytestProgress;
   RoyalNarrativePresentation cinematic;float next,submitAfter;RoyalSection shown;CanvasGroup group;int orientationKey=-1;
   RoyalHudLayout layout;Canvas canvas;readonly Vector3[] corners=new Vector3[4];
   public string SelectedBuildingId=>selected;
@@ -21,9 +23,21 @@ namespace Eldoria.UI.RoyalGold {
    Mission.SetSelectionCompact(Screen.height>Screen.width&&!string.IsNullOrEmpty(selected));
    Refresh();Canvas.ForceUpdateCanvases();SelectionChanged?.Invoke(selected);
   }
-  void OnEnable(){Realm.Info.onClick.AddListener(OpenRealm);Mission.Open.onClick.AddListener(OpenMissions);Settings.onClick.AddListener(OpenSettings);Building.Close.onClick.AddListener(CloseBuilding);Building.Primary.Button.onClick.AddListener(Submit);Modal.Extra.onClick.AddListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.AddListener(ShowMarch);Navigation.Requested+=Open;}
-  void OnDisable(){Realm.Info.onClick.RemoveListener(OpenRealm);Mission.Open.onClick.RemoveListener(OpenMissions);Settings.onClick.RemoveListener(OpenSettings);Building.Close.onClick.RemoveListener(CloseBuilding);Building.Primary.Button.onClick.RemoveListener(Submit);Modal.Extra.onClick.RemoveListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.RemoveListener(ShowMarch);Navigation.Requested-=Open;}
-  void Update(){if(session!=null&&Time.unscaledTime>=next){next=Time.unscaledTime+.25f;Refresh();}if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){if(NarrativeOpen)Extra();else if(Modal.gameObject.activeSelf)Modal.Hide();else CloseBuilding();}}
+  void OnEnable(){Realm.Info.onClick.AddListener(OpenRealm);Mission.Open.onClick.AddListener(OpenMissions);Settings.onClick.AddListener(OpenSettings);Building.Close.onClick.AddListener(CloseBuilding);Building.Primary.Button.onClick.AddListener(Submit);Modal.Extra.onClick.AddListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.AddListener(SettingsOrMarch);Navigation.Requested+=Open;}
+  void OnDisable(){Realm.Info.onClick.RemoveListener(OpenRealm);Mission.Open.onClick.RemoveListener(OpenMissions);Settings.onClick.RemoveListener(OpenSettings);Building.Close.onClick.RemoveListener(CloseBuilding);Building.Primary.Button.onClick.RemoveListener(Submit);Modal.Extra.onClick.RemoveListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.RemoveListener(SettingsOrMarch);Navigation.Requested-=Open;}
+  void Update(){
+   if(resetArmed && Time.unscaledTime>resetArmedUntil){
+    resetArmed=false;resetArmedUntil=0f;
+    if(Modal && Modal.gameObject.activeSelf && shown==RoyalSection.Settings)
+     ShowModal(RoyalSection.Settings,false);
+   }
+   if(session!=null&&Time.unscaledTime>=next){next=Time.unscaledTime+.25f;Refresh();}
+   if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){
+    if(NarrativeOpen)Extra();
+    else if(Modal.gameObject.activeSelf){resetArmed=false;resetArmedUntil=0f;Modal.Hide();}
+    else CloseBuilding();
+   }
+  }
   public void SetEnglish(bool value){english=value;Refresh();if(NarrativeOpen){if(cinematic)cinematic.SetEnglish(value);}else if(Modal.gameObject.activeSelf)ShowModal(shown);}
   public void Refresh(){
    if(session==null)return;
@@ -98,7 +112,20 @@ namespace Eldoria.UI.RoyalGold {
     Refresh();
    });
   }
-  void CloseBuilding(){SelectBuilding("");}void OpenRealm(){if(StoryRequested!=null)StoryRequested();else Open(RoyalSection.Realm);}void OpenMissions(){if(ObjectiveRequested!=null)ObjectiveRequested();else Open(RoyalSection.Missions);}void OpenSettings(){Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}
+  void CloseBuilding(){SelectBuilding("");}void OpenRealm(){if(StoryRequested!=null)StoryRequested();else Open(RoyalSection.Realm);}void OpenMissions(){if(ObjectiveRequested!=null)ObjectiveRequested();else Open(RoyalSection.Missions);}void OpenSettings(){resetArmed=false;Open(RoyalSection.Settings);}void ShowMarch(){Modal.Hide();SelectBuilding("march-main");}
+  void SettingsOrMarch(){
+   if(shown!=RoyalSection.Settings){ShowMarch();return;}
+   if(ResetPlaytestProgress==null)return;
+   // The destructive confirmation is a short, deliberate second action,
+   // never a permanently armed button left behind after an interrupted test.
+   if(!resetArmed || Time.unscaledTime>resetArmedUntil){
+    resetArmed=true;resetArmedUntil=Time.unscaledTime+8f;
+    ShowModal(RoyalSection.Settings,false);return;
+   }
+   if(ResetPlaytestProgress())return;
+   resetArmed=false;resetArmedUntil=0f;ShowModal(RoyalSection.Settings,false);
+   if(Feedback)Feedback.Put(L("No se pudo reiniciar la partida; comprueba el almacenamiento.","Reset failed; check device storage."));
+  }
   void Open(RoyalSection section){if(current==null)return;if(section==RoyalSection.Inventory&&Navigation&&Navigation.ChronicleLayout){
      // The approved CONSTRUIR medallion is a genuine contextual shortcut,
      // not an extra economy system. All costs, timers, locks and spending
@@ -106,7 +133,7 @@ namespace Eldoria.UI.RoyalGold {
      SelectBuilding(current.BastionLevel>=2?"barracks":"sawmill");
      return;
     }if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
-  void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Heroes){Modal.Hide();host?.Open(RoyalSection.Inventory);return;}if(shown==RoyalSection.Settings){SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
+  void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Heroes){Modal.Hide();host?.Open(RoyalSection.Inventory);return;}if(shown==RoyalSection.Settings){resetArmed=false;resetArmedUntil=0f;SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
   void ShowModal(RoyalSection section,bool takeFocus=true){
    if(current==null)return;narrative=false;Modal.Body.fontSize=26;shown=section;string body="";string title=BottomNavigation.Name(section,english);
    switch(section){
@@ -114,11 +141,11 @@ namespace Eldoria.UI.RoyalGold {
     case RoyalSection.Heroes:body=current.Hero+"\n\n"+L("Poder de héroes: ","Hero power: ")+RoyalFormatting.Amount(current.HeroPower,english);break;
     case RoyalSection.Army:body=L("Tropas disponibles: ","Available troops: ")+current.Available+"\n\n"+L("Heridos: ","Wounded: ")+current.Wounded+"\n\n"+L("Preparadas: ","Prepared: ")+current.Prepared+"\n\n"+current.March;break;
     case RoyalSection.Missions:title=current.Chapter;body=current.Objective+"\n\n"+current.ObjectiveProgress;break;
-    case RoyalSection.Settings:body=L("Idioma de la interfaz: Español\n\nLa ciudad y tu progreso no se modifican.\nLa interfaz respeta las zonas seguras de tu pantalla.","Interface language: English\n\nYour city and progression are unchanged.\nThe interface respects your screen's safe area.");break;
+    case RoyalSection.Settings:body=L("Idioma de la interfaz: Español\n\nReinicio de PRUEBA: archiva una copia de la partida y comienza desde el prólogo. No desinstala el juego.","Interface language: English\n\nTEST reset: archives the save locally and restarts from the prologue. It does not uninstall the app.")+(resetArmed?L("\n\n¿CONFIRMAS el reinicio de la partida actual? Pulsa otra vez para empezar de cero.","\n\nCONFIRM resetting this save? Tap again to start from zero."):"");break;
    }
    if(takeFocus)Modal.Show(title,body);else{Modal.Title.Put(title);Modal.Body.Put(body);}
    Modal.Extra.gameObject.SetActive(section==RoyalSection.Army||section==RoyalSection.Settings||(section==RoyalSection.Heroes&&host!=null&&host.CanOpen(RoyalSection.Inventory)));Modal.ExtraLabel.Put(section==RoyalSection.Heroes?L("Abrir Arcón","Open Chest"):section==RoyalSection.Settings?L("Cambiar a inglés","Switch to Spanish"):L("Abrir cuartel","Open barracks"));
-   if(Modal.Secondary){Modal.Secondary.gameObject.SetActive(section==RoyalSection.Army||(section==RoyalSection.Heroes&&current.BastionLevel>=3));Modal.SecondaryLabel.Put(L("Preparar marcha","Prepare march"));}
+   if(Modal.Secondary){Modal.Secondary.gameObject.SetActive(section==RoyalSection.Army||(section==RoyalSection.Heroes&&current.BastionLevel>=3)||(section==RoyalSection.Settings&&ResetPlaytestProgress!=null));Modal.SecondaryLabel.Put(section==RoyalSection.Settings?(resetArmed?L("CONFIRMAR REINICIO","CONFIRM RESET"):L("Reiniciar partida (pruebas)","Reset save (testing)")):L("Preparar marcha","Prepare march"));}
   }
   string L(string es,string en)=>english?en:es;
  }

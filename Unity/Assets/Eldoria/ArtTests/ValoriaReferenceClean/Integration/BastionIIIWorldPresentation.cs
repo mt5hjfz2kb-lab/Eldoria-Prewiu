@@ -36,8 +36,10 @@ namespace Eldoria.ReferenceClean {
     Hotspot(root,id,id=="fissure-valoria"?new Vector3(9,2,4):new Vector3(7,4,5));
     if(id=="fissure-valoria")Model("BastionIII/PrivateFissure",root.transform,Vector3.zero,8);
     else if(id=="hunt-wolf"){
-     Model("BastionIII/AshWolf",root.transform,new Vector3(-1.8f,0,0),3.8f);
-     var second=Model("BastionIII/AshWolf",root.transform,new Vector3(1.5f,0,1),3.2f);if(second)second.transform.Rotate(0,24,0);
+     // Match the boar encounter\u0027s actual rendered world width (5m), not its imported prefab scale.
+     // Keep the two wolves separated so equal-sized animated silhouettes do not collide.
+     Model("BastionIII/AshWolf",root.transform,new Vector3(-3.0f,0,-.6f),5f);
+     var second=Model("BastionIII/AshWolf",root.transform,new Vector3(3.0f,0,1.5f),5f);if(second)second.transform.Rotate(0,24,0);
     }else{
      Model("World4X/Creatures/RockBoarNear",root.transform,Vector3.zero,id=="hunt-boar"?5:3.6f);
      if(id=="meat-valoria")Model("World4X/Creatures/RockBoarNear",root.transform,new Vector3(2,0,2.8f),2.6f);
