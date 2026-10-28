@@ -37,8 +37,7 @@ namespace Eldoria.World4XPrototype
         {
             var state = gateway.Snapshot();
             if (state == null) return new ZoneOneTargetAction(targetId, "", "Partida no disponible", false);
-            bool idle = MarchCapacityRules.CanStart(state,utcTicks()) &&
-                (state.ChapterThree==null||state.ChapterThree.InvestigationEndsUtcTicks<=utcTicks());
+            bool idle = MarchCapacityRules.CanStart(state,utcTicks());
             bool troops = state.Available != null && state.Available.Total > 0;
             bool targetAlreadyInFlight=false;
             foreach(var march in MarchCapacityRules.WorldMarches(state))
