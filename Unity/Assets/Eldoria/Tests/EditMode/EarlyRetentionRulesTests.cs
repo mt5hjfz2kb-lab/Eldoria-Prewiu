@@ -84,6 +84,12 @@ namespace Eldoria.Tests
             Assert.That(c.Step,Is.EqualTo(1));
             Assert.That(c.Scene,Is.Not.EqualTo(a.Scene));
             Assert.That(b.Enemy.Health,Is.GreaterThan(a.Enemy.Health));
+            Assert.That(EarlyRetentionRules.Stage(15).Name,
+                Is.EqualTo("Engendro de la Brecha"),
+                "The approved stage-15 art must depict Eldoria's corruption, not a stone golem");
+            Assert.That(EarlyRetentionRules.Stage(3).Name,
+                Is.EqualTo("Corrupto errante"),
+                "Ordinary early challengers must stay within the established bestiary");
         }
         [Test] public void BattleUsesRealCombatAndNeverDuplicatesStageReward()
         {
