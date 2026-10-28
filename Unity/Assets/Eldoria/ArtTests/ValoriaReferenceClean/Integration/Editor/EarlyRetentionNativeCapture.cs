@@ -191,6 +191,15 @@ namespace Eldoria.ReferenceClean.Editor
             var s=h.City.Gateway.Snapshot();
             Need(s.Retention.LastClearedStage==1 && s.LastBattleReport.Won,
                 "First stage resolves via REAL domain combat, once");
+            // Prove the attractive player-facing result, not just the domain
+            // success: these captures must show the real gold victory banner.
+            var victory=hud.GetComponentsInChildren<RoyalText>(true)
+                .FirstOrDefault(x=>x.name=="Original victory heading");
+            Need(victory!=null && victory.text=="VICTORIA" &&
+                victory.gameObject.activeInHierarchy,
+                "The authentic victory announcement is visible in the live scene");
+            Screenshot(h,"vigilants-real-victory",1600,900);
+            Screenshot(h,"vigilants-real-victory",900,1600);
             ui.Close();
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Scouts);
             Need(ui.IsOpen&&ui.OpenDestination==RoyalGoldV3EarlyRetentionScreens.Destination.Scouts,
