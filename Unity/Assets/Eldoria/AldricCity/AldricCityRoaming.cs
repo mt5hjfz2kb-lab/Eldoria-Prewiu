@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using GLTFast;
+using UnityEngine.Networking;
 using Eldoria.ReferenceClean;
 using UnityEngine;
 
@@ -22,11 +24,19 @@ namespace Eldoria.AldricCity
         private const float Height = 1.85f;
         private const float Speed = 1.05f;
         private const float Radius = 0.26f;
+        private const int ModelBytes = 10140372;
+        private const string ApprovedSha256 = "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b";
+        private const float ModelYawCorrection = -90f; // Check with real Unity front-view proof.
+        private static readonly string[] ApprovedAnimations = {
+            "Aldric_Idle_v1", "Aldric_Walk_v1", "Aldric_SwordAttack_v1",
+            "Aldric_Hurt_v1", "Aldric_Defeat_v1"
+        };
         private ValoriaIntegratedWorld host;
         private MeshCollider road;
         private GameObject actor;
         private GameObject model;
         private Animation clips;
+        private GltfImport ownedImport;
         private Renderer[] renderers;
         private Vector3[] path;
         private int index, direction = 1;
@@ -133,7 +143,13 @@ namespace Eldoria.AldricCity
                     if (!OnRoad(centreCandidate + axis * 4f, out var p2)) continue;
                     if (!SegmentClear(middle, p1) || !SegmentClear(p1, p2))
                         continue;
-                    path = new[] { middle, p1, p2 };
+                    // Extend the walk when the real paved geometry permits it.
+                    // Three verified points remain a safe short-route fallback.
+                    if (OnRoad(centreCandidate + axis * 6f, out var p3) &&
+                        SegmentClear(p2, p3))
+                        path = new[] { middle, p1, p2, p3 };
+                    else
+                        path = new[] { middle, p1, p2 };
                     return true;
                 }
             }
@@ -141,62 +157,88 @@ namespace Eldoria.AldricCity
             return false;
         }
 
-        private async System.Threading.Tasks.Task<bool> Import(string url)
+        private async System.Threading.Tasks.Task<bool> Import(byte[] verifiedBytes)
         {
-            var source = new GltfImport();
-            if (!await source.Load(url)) return false;
+            ownedImport = new GltfImport();
+            if (!await ownedImport.Load(verifiedBytes)) return false;
+            if (!this || !host) return false;
             actor = new GameObject("Sir Aldric | city-only visual actor");
             actor.transform.SetParent(transform, false);
+            actor.SetActive(false);
             model = new GameObject("Sir Aldric / approved walking rig");
             model.transform.SetParent(actor.transform, false);
-            var instantiator = new GameObjectInstantiator(source, model.transform);
-            if (!await source.InstantiateMainSceneAsync(instantiator)) return false;
+            var instantiator = new GameObjectInstantiator(ownedImport, model.transform);
+            if (!await ownedImport.InstantiateMainSceneAsync(instantiator)) return false;
+            if (!this || !host) return false;
             clips = instantiator.SceneInstance?.LegacyAnimation;
-            if (!clips || !clips.GetClip(Idle) || !clips.GetClip(Walk)) return false;
+            if (!clips) return false;
+            foreach (var name in ApprovedAnimations)
+                if (!clips.GetClip(name)) return false;
             renderers = model.GetComponentsInChildren<Renderer>(true);
-            if (renderers.Length == 0 || !model.GetComponentInChildren<SkinnedMeshRenderer>(true))
+            var skins = model.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            if (renderers.Length == 0 ||
+                skins.Length == 0 ||
+                !skins.Any(s => s.bones != null && s.bones.Length == 26))
                 return false;
-            foreach (var r in renderers)
-                if (r is SkinnedMeshRenderer s) s.updateWhenOffscreen = false;
+            foreach (var skin in skins) skin.updateWhenOffscreen = false;
             var bounds = renderers[0].bounds;
             for (int i = 1; i < renderers.Length; ++i) bounds.Encapsulate(renderers[i].bounds);
-            if (bounds.size.y < .05f) return false;
-            model.transform.localScale *= Mathf.Clamp(Height / bounds.size.y, .01f, 100f);
+            if (bounds.size.y < .1f || bounds.size.y > 100f) return false;
+            model.transform.localScale *= Height / bounds.size.y;
             bounds = renderers[0].bounds;
             for (int i = 1; i < renderers.Length; ++i) bounds.Encapsulate(renderers[i].bounds);
-            // Align the imported character's feet (not its empty glTF pivot)
-            // to the real cobbled-road collider.
             model.transform.position += Vector3.up * (actor.transform.position.y - bounds.min.y);
             clips.playAutomatically = false;
             clips[Idle].wrapMode = WrapMode.Loop;
             clips[Walk].wrapMode = WrapMode.Loop;
+            actor.transform.position = path[0];
+            actor.SetActive(true);
             clips.Play(Idle);
             return true;
         }
 
         private IEnumerator LoadExactModel()
         {
-            var basePath = Application.streamingAssetsPath.TrimEnd('/');
-            var pathOnDisk = basePath + "/" + Asset;
-            if (!pathOnDisk.Contains("://") && !File.Exists(pathOnDisk))
+            var pathOnDisk = Application.streamingAssetsPath.TrimEnd('/') + "/" + Asset;
+            // StreamingAssets uses jar:file:// on Android, plain file:// on desktop.
+            var url = pathOnDisk.Contains("://") ? pathOnDisk : new Uri(pathOnDisk).AbsoluteUri;
+            byte[] verifiedBytes;
+            using (var request = UnityWebRequest.Get(url))
             {
-                Debug.LogWarning("ALDRIC_CITY_APPROVED_GLB_MISSING");
+                yield return request.SendWebRequest();
+                if (request.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning("ALDRIC_CITY_APPROVED_GLB_MISSING_OR_UNREADABLE");
+                    yield break;
+                }
+                verifiedBytes = request.downloadHandler.data;
+            }
+            if (verifiedBytes == null || verifiedBytes.Length != ModelBytes)
+            {
+                Debug.LogError("ALDRIC_CITY_UNEXPECTED_MODEL_BYTES");
                 yield break;
             }
-            // StreamingAssets on Android is a jar:file URI. glTFast handles
-            // both that URL and ordinary file:// URIs.
-            var url = pathOnDisk.Contains("://") ? pathOnDisk :
-                      new Uri(pathOnDisk).AbsoluteUri;
-            var task = Import(url);
+            using (var sha = SHA256.Create())
+            {
+                var digest = BitConverter.ToString(sha.ComputeHash(verifiedBytes)).Replace("-", "").ToLowerInvariant();
+                if (digest != ApprovedSha256)
+                {
+                    Debug.LogError("ALDRIC_CITY_MODEL_SHA256_MISMATCH");
+                    yield break;
+                }
+            }
+            var task = Import(verifiedBytes);
             while (!task.IsCompleted) yield return null;
             if (task.IsFaulted || task.IsCanceled || !task.Result)
             {
-                if (model) Destroy(model);
-                Debug.LogWarning("ALDRIC_CITY_IMPORT_OR_RIG_FAILED");
+                if (actor) Destroy(actor);
+                actor = null; model = null;
+                if (ownedImport != null) { ownedImport.Dispose(); ownedImport = null; }
+                Debug.LogError("ALDRIC_CITY_IMPORT_OR_26_JOINT_RIG_FAILED");
                 yield break;
             }
-            actor.transform.position = path[0];
             pauseUntil = Time.time + 2.5f;
+            Debug.Log("ALDRIC_CITY_READY_APPROVED_RIG_26_BONES_5_CLIPS");
         }
 
         private bool Away()
@@ -255,9 +297,9 @@ namespace Eldoria.AldricCity
             }
             actor.transform.position = ground;
             actor.transform.rotation = Quaternion.Slerp(actor.transform.rotation,
-                Quaternion.LookRotation(delta.normalized), Mathf.Clamp01(7f * Time.deltaTime));
+                Quaternion.LookRotation(delta.normalized) * Quaternion.Euler(0f, ModelYawCorrection, 0f), Mathf.Clamp01(7f * Time.deltaTime));
         }
 
-        private void OnDestroy() { if (actor) Destroy(actor); }
+        private void OnDestroy() { if (actor) Destroy(actor); if (ownedImport != null) { ownedImport.Dispose(); ownedImport = null; } }
     }
 }
