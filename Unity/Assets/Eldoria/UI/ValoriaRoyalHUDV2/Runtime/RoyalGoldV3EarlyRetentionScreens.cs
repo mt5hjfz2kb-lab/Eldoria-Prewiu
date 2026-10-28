@@ -438,7 +438,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
             float head=57f; // Preserve the "ENCARGOS EN CURSO" royal heading.
-            float spacing=Mathf.Clamp((ih-head-12f)/3f,95f,330f);
+            float spacing=Mathf.Clamp((ih-head-12f)/3f,65f,330f);
             for(int i=0;i<3;i++)
             {
                 var cell=scoutCards[i].transform.parent as RectTransform;
@@ -483,9 +483,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 sceneArtwork.ChapterProgress=chapterProgress;
                 sceneArtwork.SetVerticesDirty();
             }
-            heading.Put(vig?"CAMINO DE LOS VIGILANTES":"MESA DE EXPLORADORES");
-            kicker.Put(vig?"PRUEBAS DEL REINO · COMBATE AUTOMÁTICO":
-                (width<550f?"ENCARGOS DE EXPLORACIÓN":
+            bool narrow=safe.rect.height>safe.rect.width && safe.rect.width<640f;
+            heading.Put(vig?(narrow?"VIGILANTES":"CAMINO DE LOS VIGILANTES"):
+                (narrow?"EXPLORADORES":"MESA DE EXPLORADORES"));
+            kicker.Put(vig?(narrow?"CAMINO DE LOS VIGILANTES · PvE":
+                "PRUEBAS DEL REINO · COMBATE AUTOMÁTICO"):
+                (narrow?"MESA DE EXPLORADORES · ENCARGOS":
                 "ENCARGOS REALES · REGRESOS PERSISTENTES"));
             introduction.gameObject.SetActive(false);
             // The board reserves a 57 px header; show its actual section title
