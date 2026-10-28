@@ -566,13 +566,13 @@ namespace Eldoria.UI.RoyalGold.V2
             // Keep the complete name and the actual tap target legible.
             if(portrait)
             {
-                TL(heading.rectTransform,18f,12f,pw-135f,62f);
-                heading.fontSize=26;
-                TL(kicker.rectTransform,18f,78f,pw-36f,24f);
-                kicker.fontSize=19;
-                TL((RectTransform)back.transform,pw-113f,22f,99f,44f);
+                TL(heading.rectTransform,18f,12f,pw-200f,86f);
+                heading.fontSize=36;
+                TL(kicker.rectTransform,18f,104f,pw-36f,36f);
+                kicker.fontSize=26;
+                TL((RectTransform)back.transform,pw-176f,14f,160f,88f);
                 backLabel.Put("VOLVER");
-                backLabel.fontSize=15;
+                backLabel.fontSize=26;
             }
             else
             {
@@ -583,7 +583,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 backLabel.Put("VOLVER");
                 backLabel.fontSize=17;
             }
-            float imageTop=portrait?110f:108f;
+            float imageTop=portrait?150f:108f;
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
             bool vigilantsLandscape=!portrait && OpenDestination==Destination.Vigilants;
             bool vigilantsPortrait=portrait && OpenDestination==Destination.Vigilants;
@@ -594,14 +594,14 @@ namespace Eldoria.UI.RoyalGold.V2
             // Vigilants has one encounter card: fill portrait with the world
             // instead of leaving a long dark strip before the battle button.
             // Scouts retains three full-size readable contracts beneath its map.
-            float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-538f):
-                portrait?Mathf.Clamp(ph-640f,220f,880f):ph-155f;
+            float scenicHeight=vigilantsPortrait?Mathf.Max(320f,ph-840f):
+                portrait?Mathf.Clamp(ph-988f,220f,880f):ph-155f;
             TL(heroScene,portrait?18f:20f,imageTop,
                 portrait?pw-36f:pw-40f,scenicHeight);
             if(vigilantsLandscape)
             {
                 chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
-                chapterTrail.rectTransform.anchorMax=new Vector2(.42f,.86f);
+                chapterTrail.rectTransform.anchorMax=new Vector2(.34f,.86f);
             }
             else
             {
@@ -613,8 +613,8 @@ namespace Eldoria.UI.RoyalGold.V2
             if(engendroPortrait)
             {
                 var frame=engendroPortrait.transform.parent as RectTransform;
-                float w=Mathf.Min(heroScene.rect.width*.37f,portrait?215f:330f);
-                float h=Mathf.Min(heroScene.rect.height*.49f,portrait?175f:310f);
+                float w=Mathf.Min(heroScene.rect.width*(portrait?.48f:.37f),portrait?360f:330f);
+                float h=Mathf.Min(heroScene.rect.height*.49f,portrait?360f:310f);
                 TL(frame,portrait?16f:26f,
                     Mathf.Max(90f,heroScene.rect.height-h-19f),w,h);
             }
@@ -624,16 +624,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 // announcement, still only three seconds and never a modal.
                 // The real gateway result supplies the reward text unchanged.
                 float bannerWidth=Mathf.Min(heroScene.rect.width-24f,
-                    portrait?380f:615f);
-                float bannerHeight=portrait?176f:208f;
+                    portrait?620f:615f);
+                float bannerHeight=208f;
                 Pos(victoryBanner,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
                     0f,0f,bannerWidth,bannerHeight);
                 TL(victoryTitle.rectTransform,15f,10f,bannerWidth-30f,
-                    portrait?72f:90f);
-                TL(victoryDetail.rectTransform,16f,portrait?88f:107f,
-                    bannerWidth-32f,portrait?76f:89f);
-                victoryTitle.fontSize=portrait?28:36;
-                victoryDetail.fontSize=portrait?19:25;
+                    portrait?84f:90f);
+                TL(victoryDetail.rectTransform,16f,portrait?100f:107f,
+                    bannerWidth-32f,portrait?96f:89f);
+                victoryTitle.fontSize=portrait?32:36;
+                victoryDetail.fontSize=portrait?26:25;
             }
             // Keep the portrait manuscript above the fixed bottom footer.
             // The final scout card and claim-XP button previously extended
@@ -649,24 +649,25 @@ namespace Eldoria.UI.RoyalGold.V2
             if(iw<=0||ih<=0)return;
             if(vigilantsPortrait)
             {
-                TL(chapter.rectTransform,14f,10f,iw-28f,31f);
-                TL(opponent.rectTransform,14f,43f,iw-28f,50f);
-                TL(formation.rectTransform,14f,95f,iw-28f,28f);
-                TL(reward.rectTransform,14f,125f,iw-28f,29f);
-                TL(passive.rectTransform,14f,155f,iw-28f,44f);
-                TL(battleFeedback.rectTransform,14f,207f,iw-28f,30f);
-                TL((RectTransform)mainAction.transform,14f,
-                    Mathf.Max(217f,ih-112f),iw-28f,49f);
-                TL((RectTransform)claimXp.transform,14f,
-                    Mathf.Max(270f,ih-59f),iw-28f,43f);
-                chapter.fontSize=27;opponent.fontSize=22;formation.fontSize=19;
-                reward.fontSize=20;passive.fontSize=19;battleFeedback.fontSize=16;
+                // Layout in canvas units must remain readable after the real
+                // 390px capture scales the 800-unit portrait canvas by 0.4875.
+                TL(chapter.rectTransform,14f,12f,iw-28f,44f);
+                TL(opponent.rectTransform,14f,62f,iw-28f,78f);
+                TL(formation.rectTransform,14f,148f,iw-28f,36f);
+                TL(reward.rectTransform,14f,192f,iw-28f,72f);
+                TL(passive.rectTransform,14f,272f,iw-28f,70f);
+                TL(battleFeedback.rectTransform,14f,350f,iw-28f,40f);
+                TL((RectTransform)mainAction.transform,14f,ih-200f,iw-28f,90f);
+                TL((RectTransform)claimXp.transform,14f,ih-100f,iw-28f,88f);
+                chapter.fontSize=32;opponent.fontSize=32;formation.fontSize=26;
+                reward.fontSize=26;passive.fontSize=26;battleFeedback.fontSize=26;
+                mainActionLabel.fontSize=28;xpLabel.fontSize=26;
             }
             else if(portrait)
             {
                 // Scouts occupies three real contracts and keeps their original
                 // touch-safe height in vertical and narrow phone layouts.
-                TL(chapter.rectTransform,14f,13f,iw-28f,36f);
+                TL(chapter.rectTransform,14f,12f,iw-28f,46f);
                 TL(opponent.rectTransform,14f,52f,iw-28f,64f);
                 TL(formation.rectTransform,14f,119f,iw-28f,34f);
                 TL(reward.rectTransform,14f,156f,iw-28f,35f);
@@ -674,7 +675,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(battleFeedback.rectTransform,14f,Mathf.Max(182f,ih-184f),iw-28f,48f);
                 TL((RectTransform)mainAction.transform,14f,Mathf.Max(236f,ih-114f),iw-28f,49f);
                 TL((RectTransform)claimXp.transform,14f,Mathf.Max(288f,ih-62f),iw-28f,44f);
-                chapter.fontSize=27;opponent.fontSize=23;formation.fontSize=21;
+                chapter.fontSize=32;opponent.fontSize=26;formation.fontSize=26;
                 reward.fontSize=22;passive.fontSize=21;battleFeedback.fontSize=19;
             }
             else if(vigilantsLandscape)
@@ -703,7 +704,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
-            float head=57f; // Preserve the "ENCARGOS EN CURSO" royal heading.
+            float head=portrait?80f:57f; // Preserve the "ENCARGOS EN CURSO" royal heading.
             float spacing=Mathf.Clamp((ih-head-12f)/3f,65f,330f);
             for(int i=0;i<3;i++)
             {
@@ -735,26 +736,27 @@ namespace Eldoria.UI.RoyalGold.V2
                     TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
                     float tab=Mathf.Clamp((iw-24f)*.14f,35f,65f);
                     float captionX=tab+22f;
-                    float contentWidth=Mathf.Max(75f,iw-(portrait?166f:153f)-captionX);
+                    float contentWidth=Mathf.Max(75f,iw-(portrait?186f:153f)-captionX);
                     float titleTop=Mathf.Max(13f,spacing*.18f);
                     TL(scoutTitles[i].rectTransform,captionX,titleTop,
-                        contentWidth,Mathf.Min(36f,spacing*.24f));
-                    TL(scoutCards[i].rectTransform,captionX,titleTop+41f,
-                        contentWidth,Mathf.Max(51f,spacing-titleTop-50f));
+                        contentWidth,Mathf.Min(portrait?72f:36f,spacing*(portrait?.34f:.24f)));
+                    TL(scoutCards[i].rectTransform,captionX,titleTop+(portrait?76f:41f),
+                        contentWidth,Mathf.Max(51f,spacing-titleTop-(portrait?82f:50f)));
                     TL((RectTransform)scoutActions[i].transform,
-                        iw-(portrait?163f:150f),spacing*.5f-(portrait?29f:19f),
-                        portrait?138f:120f,portrait?58f:40f);
-                    scoutTitles[i].fontSize=portrait?25:21;
+                        iw-(portrait?183f:150f),spacing*.5f-(portrait?44f:19f),
+                        portrait?158f:120f,portrait?88f:40f);
+                    scoutTitles[i].fontSize=portrait?30:21;
                     scoutTitles[i].alignment=TextAnchor.MiddleLeft;
-                    scoutCards[i].fontSize=portrait?21:18;
+                    scoutCards[i].fontSize=portrait?26:18;
                     scoutCards[i].alignment=TextAnchor.MiddleLeft;
-                    scoutActionLabels[i].fontSize=portrait?19:18;
+                    scoutActionLabels[i].fontSize=portrait?26:18;
                 }
                 scoutThumbnails[i].gameObject.SetActive(scoutsLandscape &&
                     paintedScouts!=null);
             }
             TL(introduction.rectTransform,20f,100f,pw-40f,38f);
-            TL(footer.rectTransform,20f,ph-39f,pw-40f,25f);
+            footer.fontSize=portrait?26:18;
+            TL(footer.rectTransform,20f,ph-(portrait?50f:39f),pw-40f,portrait?40f:25f);
         }
         void Render(bool explicitRefresh)
         {
@@ -841,14 +843,14 @@ namespace Eldoria.UI.RoyalGold.V2
                     // none of them is hidden behind a decorative creature.
                     float sceneHeight=Mathf.Max(1f,heroScene.rect.height);
                     float portraitHeight=Mathf.Min(sceneHeight*.49f,
-                        height>width?175f:310f);
+                        height>width?360f:310f);
                     float clearance=Mathf.Clamp(
                         (portraitHeight+32f)/sceneHeight,.27f,.64f);
                     bool wide=width>height;
                     chapterTrail.rectTransform.anchorMin=new Vector2(
                         wide?.07f:.10f,clearance);
                     chapterTrail.rectTransform.anchorMax=new Vector2(
-                        wide?.46f:.90f,.95f);
+                        wide?.34f:.90f,.95f);
                 }
                 else
                 {
@@ -856,7 +858,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     chapterTrail.rectTransform.anchorMin=wide
                         ?new Vector2(.04f,.13f):new Vector2(.10f,.06f);
                     chapterTrail.rectTransform.anchorMax=wide
-                        ?new Vector2(.42f,.86f):new Vector2(.90f,.54f);
+                        ?new Vector2(.34f,.86f):new Vector2(.90f,.54f);
                 }
                 // Update labels only AFTER the Engendro-relative trail
                 // anchors are chosen. Otherwise the captured stage-15 numbers
@@ -865,19 +867,21 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(currentMilestoneLabel)
                 {
                     currentMilestoneLabel.Put(liveStage.ToString());
+                    currentMilestoneLabel.fontSize=height>width?28:17;
                     currentMilestoneLabel.gameObject.SetActive(true);
                     var point=chapterTrail.StagePosition(liveStage);
                     Pos(currentMilestoneLabel.rectTransform,new Vector2(.5f,.5f),
-                        new Vector2(.5f,.5f),point.x,point.y,31f,28f);
+                        new Vector2(.5f,.5f),point.x,point.y,40f,38f);
                 }
                 for(int i=0;i<bossMilestoneLabels.Length;i++)
                 {
                     int bossStep=(i+1)*5;
                     var label=bossMilestoneLabels[i];
                     label.gameObject.SetActive(bossStep!=liveStage);
+                    label.fontSize=height>width?26:16;
                     var point=chapterTrail.StagePosition(bossStep);
                     Pos(label.rectTransform,new Vector2(.5f,.5f),
-                        new Vector2(.5f,.5f),point.x,point.y,31f,28f);
+                        new Vector2(.5f,.5f),point.x,point.y,40f,38f);
                 }
                 if(sceneArtwork.BossEncounter!=boss)
                 {
@@ -985,9 +989,9 @@ namespace Eldoria.UI.RoyalGold.V2
                         order.EndsUtcTicks<=now()?"RECOGER":"EN CAMINO");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());
-                footer.Put("Nuevos encargos en "+
+                footer.Put("Nuevos encargos: "+
                     TimeSpan.FromTicks(Math.Max(0,due-now())).ToString(@"hh\:mm\:ss")+
-                    " · Hasta seis pendientes acumulables");
+                    " · Máximo 6 pendientes");
             }
         }
     }

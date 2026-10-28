@@ -90,7 +90,7 @@ namespace Eldoria.ReferenceClean.Editor
             // Supply an ABSOLUTE evidence path: the shared renderer uses
             // Path.Combine(Ev, name), which correctly preserves a rooted name.
             // This captures directly into the retention workflow artifact.
-            ValoriaIntegrationBuild.Capture(h,path,w,he,()=>ValidateTextLayout(h));
+            ValoriaIntegrationBuild.Capture(h,path,w,he,()=>ValidateTextLayout(h,w));
             Need(File.Exists(path)&&new FileInfo(path).Length>Math.Min(30000,w*he/40),
                 "Native Unity "+w+"x"+he+" screenshot exists: "+name);
             var tex=new Texture2D(2,2,TextureFormat.RGB24,false);
@@ -110,14 +110,33 @@ namespace Eldoria.ReferenceClean.Editor
             }
             finally{Object.Destroy(tex);}
         }
-        static void ValidateTextLayout(ValoriaIntegratedWorld h)
+        static void ValidateTextLayout(ValoriaIntegratedWorld h,int captureWidth)
         {
             var page=h.Hud.GetComponentsInChildren<RectTransform>(true)
                 .First(x=>x.name=="Early retention / independent destination");
+            var trail=page.GetComponentsInChildren<RoyalGoldV3StageTrailGraphic>()
+                .FirstOrDefault(x=>x.gameObject.activeInHierarchy);
+            var card=page.GetComponentsInChildren<RectTransform>()
+                .First(x=>x.name=="Progression and expedition information");
+            if(trail!=null)
+            {
+                var covered=card.rect;
+                covered.xMin-=18f;covered.xMax+=18f;
+                covered.yMin-=18f;covered.yMax+=18f;
+                for(int stage=1;stage<=25;stage++)
+                {
+                    var world=trail.transform.TransformPoint(trail.StagePosition(stage));
+                    Need(!covered.Contains(card.InverseTransformPoint(world)),
+                        "Real stage marker "+stage+" stays clear of the information card");
+                }
+            }
             foreach(var label in page.GetComponentsInChildren<Text>())
             {
                 if(string.IsNullOrWhiteSpace(label.text) ||
                     label.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.01f))continue;
+                if(captureWidth<=400)
+                    Need(label.fontSize*h.Hud.GetComponent<Canvas>().scaleFactor>=12f,
+                        "Phone text renders at least 12 actual pixels: "+label.name);
                 Need(label.preferredHeight<=label.rectTransform.rect.height+1f,
                     "Complete visible text fits actual capture layout: "+label.name+
                     " [required="+label.preferredHeight+", available="+

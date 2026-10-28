@@ -234,18 +234,24 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         // One shared geometry contract for all real stage numbers and boss
         // markers; stage 1 begins near the foothills and stage 25 ascends.
+        static readonly Vector2[] Road = {
+            new Vector2(.04f,.025f),new Vector2(.21f,.06f),new Vector2(.40f,.08f),
+            new Vector2(.61f,.12f),new Vector2(.82f,.18f),new Vector2(.89f,.28f),
+            new Vector2(.73f,.34f),new Vector2(.52f,.36f),new Vector2(.29f,.38f),
+            new Vector2(.12f,.44f),new Vector2(.10f,.55f),new Vector2(.29f,.60f),
+            new Vector2(.49f,.61f),new Vector2(.69f,.64f),new Vector2(.85f,.70f),
+            new Vector2(.77f,.79f),new Vector2(.58f,.82f),new Vector2(.37f,.80f),
+            new Vector2(.18f,.83f),new Vector2(.11f,.90f),new Vector2(.26f,.94f),
+            new Vector2(.44f,.95f),new Vector2(.63f,.96f),new Vector2(.81f,.97f),
+            new Vector2(.96f,.98f)
+        };
         public Vector2 StagePosition(int stage)
         {
             var b=rectTransform.rect;
-            int step=Mathf.Clamp(stage,1,25)-1;
-            int row=step/5,col=step%5;
-            if(row%2==1)col=4-col;
+            var point=Road[Mathf.Clamp(stage,1,25)-1];
             float marginX=Mathf.Min(26,b.width*.10f),marginY=Mathf.Min(19,b.height*.12f);
-            float dx=(b.width-marginX*2)/4f,dy=(b.height-marginY*2)/4f;
-            float weaveX=Mathf.Min(8f,dx*.12f),weaveY=Mathf.Min(6f,dy*.12f);
-            return new Vector2(
-                b.xMin+marginX+col*dx+Mathf.Sin(row*1.7f+col*.82f)*weaveX,
-                b.yMin+marginY+row*dy+Mathf.Sin(step*1.31f)*weaveY);
+            return new Vector2(b.xMin+marginX+point.x*(b.width-marginX*2),
+                b.yMin+marginY+point.y*(b.height-marginY*2));
         }
         protected override void OnPopulateMesh(VertexHelper vh)
         {

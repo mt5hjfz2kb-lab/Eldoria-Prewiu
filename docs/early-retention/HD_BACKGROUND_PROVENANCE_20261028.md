@@ -22,3 +22,10 @@ Prompt Exploradores:
 - `Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly-v2.png` — SHA-256 `e3e95332f84cdcaa7bf93a2ab0024ad228384527c3b6adc1649b8dd687f46c67`.
 
 La inspección de las imágenes fuente confirma paisaje y mapa sin UI incrustada. No constituye aprobación del producto: se requieren las 17 capturas de Unity de esta revisión, sin recortes de texto, tres envíos y tres cobros reales, XP offline y persistencia. Mantener `art_approved: false` hasta revisar exactamente esa evidencia. No se presume prueba física Android.
+
+
+## Composición móvil y causa observada
+
+La evidencia nativa anterior `40693400930`, artefacto `12821402833`, demuestra un segundo defecto independiente de la resolución: el lienzo de 800 unidades se reduce a escala 0,4875 en un teléfono de 390 px. El cuerpo de 19 unidades terminaba en 9,26 px y el Engendro seguía siendo una miniatura. Las capturas mostraban además una cuadrícula de hitos y el hito 5 parcialmente bajo la ficha horizontal. Por tanto, no se acepta como fidelidad visual aunque sus pruebas de dominio y UI general pasen.
+
+La revisión conserva los fondos HD y el monstruo canónico, asigna espacio real a texto de 26 unidades o más, amplía la silueta a 360 unidades, conserva los 25 pasos en una ruta sinuosa compuesta a mano, y restringe la ruta horizontal al espacio libre de la ficha. Las etiquetas siguen mostrando etapas del progreso real. Se añaden comprobaciones de tamaño real de fuente en teléfono y de que la ficha no cubra ningún hito. El juicio artístico continúa pendiente de las 17 capturas exactas; estas cifras son dimensiones de implementación, no una puntuación estética.
