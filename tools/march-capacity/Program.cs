@@ -92,6 +92,26 @@ static class Program
         Assert(MarchCapacityRules.ActiveCount(mixed.Snapshot(),mixedClock.UtcTicks)==1 &&
                mixed.Snapshot().Available.Total==190,
             "Only the Breach investigation remains after both world marches return");
-        Console.WriteLine("GLOBAL_MARCH_CAPACITY=PASS; CONCURRENT_LIMIT=3; SAVE_COMPAT=PASS; SCOUT_SLOTS=PASS; INVESTIGATION_MIX=PASS");
+        var storyClock=new Clock();
+        var storyState=new PlayerState{SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{
+                RouteCleared=true,
+                GatheredWood=SliceContentProfiles.Active.Chapter1GatherWood,
+                GatheredStone=SliceContentProfiles.Active.Chapter1GatherStone
+            },
+            ExtraMarches=new System.Collections.Generic.List<MarchState>{
+                new MarchState{MarchId="march-2",Phase="returning",TargetId="quarry-valoria",
+                    Troops=new ArmyRoster{ArcherT1=4},
+                    PhaseEndsUtcTicks=storyClock.UtcTicks+TimeSpan.FromSeconds(10).Ticks}
+            }
+        };
+        var storyStore=new Store{State=storyState};
+        var story=new LocalGateway(storyClock,storyStore);
+        Assert(!story.Snapshot().JourneyComplete,
+            "Original chapter must wait for an additional in-flight march");
+        storyClock.Add(20);story=new LocalGateway(storyClock,storyStore);
+        Assert(story.Snapshot().JourneyComplete,
+            "Original chapter completes after the last independently saved world march returns");
+        Console.WriteLine("GLOBAL_MARCH_CAPACITY=PASS; CONCURRENT_LIMIT=3; SAVE_COMPAT=PASS; SCOUT_SLOTS=PASS; INVESTIGATION_MIX=PASS; STORY_RETURN=PASS");
     }
 }
