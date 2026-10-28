@@ -4,16 +4,16 @@
   "unity_version": "6000.3.23f1",
   "mode": "native-scene-two-independent-screens",
   "steps": [
-    "EditMode exact domain rules",
-    "two progress-gated shortcuts",
-    "landscape and portrait for Vigilants, real victory and Scouts",
-    "first real PvE victory with visible announcement",
-    "first persistent Scout dispatch",
-    "eight genuine original Unity PNGs and one RoyalHUD"
+    "Unity EditMode on the real domain",
+    "Native landscape and portrait Vigilants and Scouts capture",
+    "Real first victory and UI presentation in both orientations",
+    "Three visible contracts, readable names, reward and status, reliable raycasts",
+    "No overlap between footer and actions",
+    "Single RoyalHUD, guarded progress-only shortcuts, no real save changes"
   ],
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 10,
-  "note": "Exact candidate native10: Unity EditMode must NOT use -quit (previous run 40647221074 quit with exit 0 but no test XML); revision-atomic Scout unlock fix plus new regression tests; capture genuine 8 images, retain ART_APPROVED=false; zero user save access."
+  "revision": 11,
+  "note": "Art polish from authentic run 40651084175: significantly reduce empty portrait manuscript, make scenic trail/map legible, separate real contract titles from rewards, fix clipped landscape back action. Require eight new true Unity PNG captures for exact current SHA and inspect visually before merge; keep ART_APPROVED=false until image review."
 }
