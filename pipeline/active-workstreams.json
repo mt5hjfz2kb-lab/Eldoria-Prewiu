@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T08:48:12.680Z",
+  "updated_at": "2026-10-28T08:59:31.385Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1621,10 +1621,10 @@
         "artifact_id": 12378457368
       },
       "current_native_cert": {
-        "run": 39666405366,
-        "source": "623de76ca7a7742d59e97c3b5a160de75e68af89",
-        "conclusion": "success",
-        "artifact_id": 12378682966
+        "run": 40659657487,
+        "source": "73551fba2e5b7c0c48db1d0ea2418eb058fdf5c6",
+        "status": "in_progress",
+        "backup_byte_verification_added": true
       },
       "delivery_blocker": {
         "type": "ITCH_REMOTE_BUILD_PROCESSING",
@@ -1767,9 +1767,9 @@
         "source": "01685c187f8df1a23c5743a76a6d27c3f32ab23e",
         "conclusion": "success",
         "artifact_id": 12802867199,
-        "visual_review": "in_progress"
+        "visual_review": "CHANGES_REQUIRED: portrait enemy trait clipped, landscape victory detail clipped, scenic tree outside frame. All eight exact PNGs inspected; original option1 reference hash verified."
       },
-      "next": "Review exact eight original captures; reconcile with certified PR119. No release yet."
+      "next": "Prepared fixes plus12 screenshots including390x844, actual typography-fit assertions and three scout dispatch/claim/save/reload proof. Certify after PR119 finishes; no duplicate native run."
     }
   ],
   "history": [
