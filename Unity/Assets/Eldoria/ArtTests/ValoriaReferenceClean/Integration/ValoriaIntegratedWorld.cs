@@ -188,6 +188,8 @@ namespace Eldoria.ReferenceClean {
   public void Navigate(string target){TrySetWorld(target=="Frontier");}
   public void Apply(PlayerState state)=>city.Apply(state);
   public void Home(){
+   // Do not replay old gesture momentum after an explicit home command.
+   unappliedDragPixels=Vector2.zero;
    if(!InWorld){city.Home();return;}
    // The player's world home is Valoria in playable near view, not a forced
    // strategic zoom that contradicts the default when entering from the city.
@@ -205,7 +207,12 @@ namespace Eldoria.ReferenceClean {
    unappliedDragPixels-=leading;
    ApplyCameraPan(leading);
   }
-  public void Zoom(float delta){if(!InWorld){city.Zoom(delta);return;}WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);}
+  public void Zoom(float delta){
+   // A deliberate pinch/wheel zoom takes priority over queued drag easing.
+   unappliedDragPixels=Vector2.zero;
+   if(!InWorld){city.Zoom(delta);return;}
+   WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);
+  }
   public WorldHotspot FindTarget(string id)=>FindTargetExact(id=="upgrade-barracks"?"barracks":id);
   WorldHotspot FindTargetExact(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal)?WorldRoot.GetComponentsInChildren<WorldHotspot>(true):(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None))).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
   void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;
