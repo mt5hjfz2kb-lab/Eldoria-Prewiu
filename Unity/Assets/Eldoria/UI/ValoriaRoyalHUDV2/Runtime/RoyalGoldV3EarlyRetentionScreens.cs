@@ -554,11 +554,16 @@ namespace Eldoria.UI.RoyalGold.V2
             float imageTop=portrait?110f:108f;
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
             bool vigilantsLandscape=!portrait && OpenDestination==Destination.Vigilants;
+            bool vigilantsPortrait=portrait && OpenDestination==Destination.Vigilants;
             // The approved reference is scenic-first. In wide views the landscape
             // or cartographer's desk spans the available width; actual missions
             // and the combat panel float over the LOWER portion of that artwork.
             // Portrait keeps the existing proven stacked, safe-area composition.
-            float scenicHeight=portrait?Mathf.Clamp(ph-640f,220f,880f):ph-155f;
+            // Vigilants has one encounter card: fill portrait with the world
+            // instead of leaving a long dark strip before the battle button.
+            // Scouts retains three full-size readable contracts beneath its map.
+            float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-538f):
+                portrait?Mathf.Clamp(ph-640f,220f,880f):ph-155f;
             TL(heroScene,portrait?18f:20f,imageTop,
                 portrait?pw-36f:pw-40f,scenicHeight);
             if(vigilantsLandscape)
@@ -603,10 +608,25 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(infoCard,pw*.37f,ph*.55f,pw*.61f,ph*.45f-55f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
             if(iw<=0||ih<=0)return;
-            if(portrait)
+            if(vigilantsPortrait)
             {
-                // Compact, intentional vertical rhythm: the playable trail/map
-                // remains the hero, while both actions stay fully above the footer.
+                TL(chapter.rectTransform,14f,10f,iw-28f,31f);
+                TL(opponent.rectTransform,14f,43f,iw-28f,50f);
+                TL(formation.rectTransform,14f,95f,iw-28f,28f);
+                TL(reward.rectTransform,14f,125f,iw-28f,29f);
+                TL(passive.rectTransform,14f,155f,iw-28f,44f);
+                TL(battleFeedback.rectTransform,14f,207f,iw-28f,30f);
+                TL((RectTransform)mainAction.transform,14f,
+                    Mathf.Max(217f,ih-112f),iw-28f,49f);
+                TL((RectTransform)claimXp.transform,14f,
+                    Mathf.Max(270f,ih-59f),iw-28f,43f);
+                chapter.fontSize=27;opponent.fontSize=22;formation.fontSize=19;
+                reward.fontSize=20;passive.fontSize=19;battleFeedback.fontSize=16;
+            }
+            else if(portrait)
+            {
+                // Scouts occupies three real contracts and keeps their original
+                // touch-safe height in vertical and narrow phone layouts.
                 TL(chapter.rectTransform,14f,13f,iw-28f,36f);
                 TL(opponent.rectTransform,14f,52f,iw-28f,64f);
                 TL(formation.rectTransform,14f,119f,iw-28f,34f);
@@ -778,7 +798,9 @@ namespace Eldoria.UI.RoyalGold.V2
             passive.gameObject.SetActive(vig);
             mainAction.gameObject.SetActive(vig);
             claimXp.gameObject.SetActive(vig);
-            battleFeedback.gameObject.SetActive(vig);
+            // Portrait players receive battle feedback through the existing
+            // result banner; do not overlap compact XP/action controls.
+            battleFeedback.gameObject.SetActive(vig && width>height);
             for(int i=0;i<3;i++)
             {
                 scoutCards[i].transform.parent.gameObject.SetActive(!vig);
