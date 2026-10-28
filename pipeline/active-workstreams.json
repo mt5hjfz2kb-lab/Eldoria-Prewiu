@@ -1778,7 +1778,8 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs.meta",
         "qa/e2e-full-arc1.js",
         ".github/workflows/ui-progression-cert.yml",
-        "qa/e2e-codex-chest.js"
+        "qa/e2e-codex-chest.js",
+        "pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json"
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
@@ -1832,7 +1833,8 @@
         "docs/aldric-city/**",
         ".github/workflows/aldric-city-native.yml",
         ".github/workflows/aldric-city-domain.yml",
-        ".github/workflows/aldric-city-reconstruct.yml"
+        ".github/workflows/aldric-city-reconstruct.yml",
+        "pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json"
       ],
       "phase": "SOURCE_PREPARATION_ONLY_WAITING_FOR_PR120",
       "next": "Correct confirmed C# Application namespace collision and frame-count waits in source. No Unity dispatch or heavy-resource claim until PR120 completes, is merged and finishes its required native queue. Preserve exact approved10.14MB GLB/hash/26bones/5clips; inspect actual native movement, route, scale and hiding before merge.",
@@ -1841,7 +1843,10 @@
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
         "handoff": "Same PR122 and original source assets; no duplicate PR or paid credits"
       },
-      "budget_eur": 0
+      "budget_eur": 0,
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json",
+      "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection."
     }
   ],
   "history": [

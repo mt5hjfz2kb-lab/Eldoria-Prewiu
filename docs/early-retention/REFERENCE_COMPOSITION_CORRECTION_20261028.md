@@ -53,3 +53,45 @@ Native33 must render these exact source identities and19states, without relaxing
 ## Shared certification refreshed without repeating changed room proof
 
 Shared UI run40731703310 passed47EditMode and72PlayMode cases with zero failures. The actual compiled PR merge is fd0967e7fb0b761aa333e8a9c928e4bce95f24d4, whose Git tree20d1cfaf48df8077778b1870b69daa17e5770038 exactly equals immutable branch sourcebd0b48a6be86bbb8849b1b9fa8d4b7283da9d3c2. The existing strict scope check now pins this completed certificate; the entire certify job must remain byte-identical and shared production inputs unchanged. Its native-workflow comparison is now strict byte equality (both versions require19views), removing the old17/19normalization. The current room's own19-view native33proof is still separately mandatory. No shared or native test was disabled.
+
+
+## Candidate34 — distinct illustrated contracts and actual guardian signal
+
+Native33 (`443cf71829d705eb8f75c45b334a7fd11041d450`, run40740007470)
+passed13domain tests, all19 actual captures and real battle/three dispatches/
+three claims/XP/save reload. Its actual screenshot comparison still showed
+repeated map crops in contracts, flat vector button faces and a missing skull
+standard. Technical success did not constitute reference acceptance.
+
+Four retained PNGs were authored with the built-in image generation tool from
+the same selected paired original reference, without external API spending.
+The following describes the briefs (not a verbatim transcript): isolate a blank
+red enamel/gold battle button; isolate its blue expedition counterpart; create
+one2x2 painterly atlas of patrol tower, lost travellers at ruins, supply wagon in
+emerald forest and coastal ground fissure; isolate the red cloth/gold skull
+standard. Buttons/banner have true alpha; no numbers, rewards, captions or
+interactive controls are baked into any asset.
+
+| Source PNG | SHA256 |
+| --- | --- |
+| battle-action-skin-v4.png | 4e7df7e1fbcafda1e14382f39255eae2a63036bad975a63a0f205a31e10838f3 |
+| scout-action-skin-v4.png | 2796b59784bf05ca9bca7c3cbf3d88d7e34ed9098e0b798b760dc47ab38410f6 |
+| scout-mission-vignettes-v4.png | 9f28dabb20fc8b8740f2839b4632811cba24917a6ed4e1d43a023e0bc937121f |
+| guardian-banner-v4.png | 5d00ec6311edbb1a547226f4e95eaea3bb32e9197850bea9cc95e921c253057f |
+
+The same RoyalButton Graphic draws the nine-sliced red/blue texture and remains
+the genuine raycast target. The actual persisted mission Kind chooses its atlas
+quadrant, inset to prevent bleeding; a cover crop preserves aspect. All three
+portraits now retain the painted mission detail too. The skull banner is purely
+decorative and follows only the actual current guardian using StagePosition,
+clamped inside its existing illustrated scene. No extra Canvas, EventSystem,
+mission rules or values are introduced. Existing domain data, UTC clocks,
+combat and persistence remain authoritative. Rewards balance is provisional
+under the owner's latest instruction.
+
+The next native proof retains all19 capture states, >=12px handheld text and
+all real interaction checks. Additional assertions verify the actual source
+textures, correct kind-to-quadrant mapping, undistorted previews in both
+orientations and a wholly visible current guardian standard. Candidate34
+requires its own real Unity output and independent comparison before acceptance;
+ART_APPROVED remains false at source preparation.

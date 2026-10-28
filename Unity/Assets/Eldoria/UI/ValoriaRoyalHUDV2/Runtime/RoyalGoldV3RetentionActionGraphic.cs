@@ -5,12 +5,48 @@ namespace Eldoria.UI.RoyalGold.V2
 {
     /// <summary>
     /// Lightweight gold-edged expedition / battle buttons in the owner-approved
-    /// Royal Gold visual language. No shaders, textures, canvases or new actions.
+    /// Royal Gold visual language. Reference skins share the original uGUI mesh;
+    /// no new shader, canvas or action is introduced.
     /// The original RoyalButton remains the sole interactive element.
     /// </summary>
     public sealed class RoyalGoldV3RetentionActionGraphic : MaskableGraphic
     {
         public bool Battle;
+        static Texture2D battleSkin,scoutSkin;
+        static bool skinsLoaded;
+        Texture2D Skin {
+            get {
+                if(!skinsLoaded){
+                    battleSkin=Resources.Load<Texture2D>("EldoriaRetention/battle-action-skin-v4");
+                    scoutSkin=Resources.Load<Texture2D>("EldoriaRetention/scout-action-skin-v4");
+                    skinsLoaded=true;
+                }
+                return Battle?battleSkin:scoutSkin;
+            }
+        }
+        public override Texture mainTexture=>Skin?Skin:base.mainTexture;
+        void TexturedFace(VertexHelper mesh,Rect r,Texture2D texture)
+        {
+            // Source UVs exclude transparent image margins without altering
+            // original PNG bytes. Nine quads preserve the actual gold bevel.
+            var uv=Battle?new Rect(.023197176f,.25851198f,.95360565f,.51450189f):
+                new Rect(.0047460845f,.23190349f,.99050783f,.53485255f);
+            float edgeY=Mathf.Min(14f,r.height*.22f);
+            float sourceAspect=uv.width*texture.width/(uv.height*texture.height);
+            float edgeX=Mathf.Min(r.width*.25f,edgeY*sourceAspect*.4f);
+            float[] xs={r.xMin,r.xMin+edgeX,r.xMax-edgeX,r.xMax};
+            float[] ys={r.yMin,r.yMin+edgeY,r.yMax-edgeY,r.yMax};
+            float[] us={uv.xMin,uv.xMin+uv.width*.1f,uv.xMax-uv.width*.1f,uv.xMax};
+            float[] vs={uv.yMin,uv.yMin+uv.height*.25f,uv.yMax-uv.height*.25f,uv.yMax};
+            for(int y=0;y<3;y++)for(int x=0;x<3;x++){
+                int k=mesh.currentVertCount;
+                mesh.AddVert(new Vector2(xs[x],ys[y]),color,new Vector2(us[x],vs[y]));
+                mesh.AddVert(new Vector2(xs[x],ys[y+1]),color,new Vector2(us[x],vs[y+1]));
+                mesh.AddVert(new Vector2(xs[x+1],ys[y+1]),color,new Vector2(us[x+1],vs[y+1]));
+                mesh.AddVert(new Vector2(xs[x+1],ys[y]),color,new Vector2(us[x+1],vs[y]));
+                mesh.AddTriangle(k,k+1,k+2);mesh.AddTriangle(k,k+2,k+3);
+            }
+        }
 
         void Plate(VertexHelper mesh,Rect rect,float margin,Color bottom,Color top)
         {
@@ -47,6 +83,8 @@ namespace Eldoria.UI.RoyalGold.V2
             mesh.Clear();
             var r=rectTransform.rect;
             if(r.width<24f||r.height<22f)return;
+            var skin=Skin;
+            if(skin){TexturedFace(mesh,r,skin);return;}
             Plate(mesh,r,0,new Color(.02f,.016f,.02f,.85f),
                 new Color(.02f,.016f,.02f,.85f));
             Plate(mesh,r,2f,new Color(.41f,.25f,.08f,1),

@@ -1,6 +1,6 @@
 {
   "workstream_id": "eldoria-early-retention-systems-20261028",
-  "owner": "codex-pr119-pr120-completion-20261028",
+  "owner": "codex-pr120-exact-visual-pr122-20261028",
   "unity_version": "6000.3.23f1",
   "mode": "native-scene-two-independent-screens",
   "steps": [
@@ -10,7 +10,7 @@
     "Three visible contracts, readable names, reward and status, reliable raycasts",
     "No overlap between footer and actions",
     "Single RoyalHUD, guarded progress-only shortcuts, no real save changes",
-    "Twelve real captures including narrow390x844; assert complete visible text fits",
+    "Nineteen genuine captures including390x844 and844x390; complete visible text >=12px on phone",
     "Dispatch and claim all three cards with real raycasts, return, reload persisted progress",
     "Capture stage15 authentic Engendro in all three resolutions; keep all25 milestones visible",
     "Validate actual phone labels while all3scouts are underway and ready to claim"
@@ -18,6 +18,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 33,
-  "note": "Native32 passed13domain tests, nineteen actual views and combat/3send/3claim/XP/save/return checks; strict final collector rejected only Suministros extraviados title56required/33available. Give62units/two lines and preserve every existing check. Fix observed parchment density via3x pixelsPerUnit, landscape back/subtitle overlap, remove redundant Scouts section heading, show genuine mission duration. Reference-derived transparent creature PNG and ornate encounter skin now replace plain studio thumbnail/slate card only in presentation; actual3D enemy/rules/save remain unchanged. Source hashes and resource identity checked. Portrait encounter gives creature left49percent with readable live data right, XP/combat controls side by side; default font/body >=12pixels remains mandatory. Shared UI47Edit/72Play success at40731703310 on exact bd0b48a6/tree20d1cf; strict source/job comparison may reuse it while this independent19view native proof remains mandatory. No ART_APPROVED or release before image inspection."
+  "revision": 34,
+  "note": "Native33 source443cf718 passed13domain tests and all19views plus combat/3send/3claim/XP/save/reload. Independent comparison still rejected repeated map thumbnails, flat action surfaces and absent guardian standard. Candidate34 integrates four retained reference-derived PNGs: distinct mission scenes by actual kind in BOTH orientations, red/blue gold-edged buttons on the same real clickable Graphic, and skull banner on actual current guardian only. Preserve all previous checks; add source/UV/visibility/bounds assertions. Rewards balance remains provisional. ART_APPROVED=false pending exact candidate Unity images and independent comparison."
 }

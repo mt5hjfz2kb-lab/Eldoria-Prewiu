@@ -108,6 +108,8 @@ jobs:
               'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs',
               'tools/early-retention/native-request.json','qa/e2e-full-arc1.js',
               'pipeline/active-workstreams.json','.github/workflows/ui-progression-cert.yml',
+              'pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json',
+              'pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json',
               '.github/workflows/early-retention-native.yml'
             ]);
             const nativeOwned=p=>retainedModule.has(p) ||

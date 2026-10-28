@@ -1,0 +1,40 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-aldric-city-roaming-20261028",
+  "request_id": "eldoria-aldric-city-roaming-20261028",
+  "asset_or_sector": "Reuse exact approved Sir Aldric26-joint five-animation blue-cape GLB as a cosmetic city walker",
+  "profile": "animated_asset",
+  "visual_gate_state": "PREFLIGHT_REUSE",
+  "ai_authorship_policy": "required",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "existing_canonical_art_brain": false,
+    "unity_native_animation": true
+  },
+  "diagnosis": "The full-body GLB is already versioned in PR122 and locked by SHA256/size/rig/clips. Current work fixes C# namespace resolution, runtime loading, safe actual paving/capsule movement and visibility. No new mesh, rig, animation generation, Tripo credit or authoring inference. Planner stop-before-spend applies to any new generation, not to read-only reuse of this existing source.",
+  "reuse_sources": [
+    {
+      "path": "Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb",
+      "sha256": "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b",
+      "bytes": 10140372,
+      "joints": 26,
+      "animations": 5
+    }
+  ],
+  "validation": {
+    "source_gate": "Exact GLB identity, actual Unity source compilation, same existing host/gateway/save",
+    "final_gate": "Actual Unity PlayMode and city idle/walking captures in portrait/landscape, scale/path/animation/visibility and preserved gameplay; wait for PR120 completion and exclusive runner transfer"
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "PENDING",
+  "physical_mobile_tested": false,
+  "notes": "Existing asset reuse, not a new artist cycle; retain original sources and approved character. No fake source/motion/visual/mobile PASS."
+}

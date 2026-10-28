@@ -37,10 +37,11 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
         readonly RoyalText[] scoutTitles=new RoyalText[3];
-        // Miniatures are crops of the existing, real expedition map art:
-        // four mission families share the same no-cost source texture.
+        // Four reference-derived mission paintings share one mobile texture.
+        // The actual persisted mission kind selects the corresponding quadrant.
         readonly RawImage[] scoutThumbnails=new RawImage[3];
-        RawImage engendroPortrait;
+        RawImage engendroPortrait, guardianBanner;
+        Texture2D scoutVignettes, guardianBannerTexture;
         Texture2D engendroTexture;
         Texture2D engendroCutout;
         Rect engendroUvRect=new Rect(0f,0f,1f,1f);
@@ -268,6 +269,10 @@ namespace Eldoria.UI.RoyalGold.V2
             caption=Text(r,"Original gilded label",17,Ivory,true);
             caption.alignment=TextAnchor.MiddleCenter;
             Stretch(caption.rectTransform,5);
+            if(battleStyle.HasValue){
+                caption.rectTransform.offsetMin=new Vector2(12f,5f);
+                caption.rectTransform.offsetMax=new Vector2(-12f,-5f);
+            }
             caption.Put(label);
             b.onClick.AddListener(()=>action?.Invoke());
             return b;
@@ -351,6 +356,8 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!paintedScouts)paintedScouts=
                 Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
             paintedScene.enabled=paintedVigilants!=null;
+            scoutVignettes=Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4");
+            guardianBannerTexture=Resources.Load<Texture2D>("EldoriaRetention/guardian-banner-v4");
             // Decorative art stays BELOW the existing 25-stage route and
             // ABOVE the original fallback illustration, never intercepting taps.
             // A full 25-stage visual route; purely decorative, real
@@ -371,6 +378,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 bossMilestoneLabels[i].alignment=TextAnchor.MiddleCenter;
                 bossMilestoneLabels[i].Put(((i+1)*5).ToString());
             }
+            var banner=Rect("Current guardian / reference skull banner",trail);
+            banner.gameObject.AddComponent<CanvasRenderer>();
+            guardianBanner=banner.gameObject.AddComponent<RawImage>();
+            guardianBanner.raycastTarget=false;
+            guardianBanner.texture=guardianBannerTexture;
+            guardianBanner.uvRect=new Rect(.01578354f,.16290868f,.96956032f,.73449831f);
+            banner.gameObject.SetActive(false);
             currentMilestoneLabel=Text(trail,"Current live stage",17,Ivory,true);
             currentMilestoneLabel.alignment=TextAnchor.MiddleCenter;
             // The stage-15 elite is the canonical Bastion-II Spawnling,
@@ -441,7 +455,7 @@ namespace Eldoria.UI.RoyalGold.V2
             passive=Text(infoCard,"Offline hero experience",18,Ivory);
             battleFeedback=Text(infoCard,"Last action result",17,Ivory);
             mainAction=Button(infoCard,"Battle against next unique stage",
-                "COMBATIR",ExecuteStage,out mainActionLabel,true,true);
+                "Combatir",ExecuteStage,out mainActionLabel,true,true);
             claimXp=Button(infoCard,"Claim earned hero experience",
                 "RECOGER EXPERIENCIA",CollectXp,out xpLabel);
             scoutParchment=Resources.Load<Texture2D>("EldoriaRetention/scout-parchment-v3");
@@ -488,13 +502,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 vignette.gameObject.AddComponent<CanvasRenderer>();
                 scoutThumbnails[i]=vignette.gameObject.AddComponent<RawImage>();
                 scoutThumbnails[i].raycastTarget=false;
-                scoutThumbnails[i].texture=paintedScouts;
+                scoutThumbnails[i].texture=scoutVignettes?scoutVignettes:paintedScouts;
                 scoutThumbnails[i].uvRect=new Rect(.04f+i*.27f,.14f,.22f,.56f);
                 scoutThumbnails[i].gameObject.SetActive(false);
                 scoutTitles[i]=Text(cell,"Readable contract heading",22,Ink,true);
                 scoutCards[i]=Text(cell,"Real scout order reward and status",18,Ink);
                 scoutActions[i]=Button(cell,"Dispatch or claim scout "+(i+1),
-                    "ENVIAR",()=>RunScout(index),out scoutActionLabels[i],true,false);
+                    "Enviar",()=>RunScout(index),out scoutActionLabels[i],true,false);
                 scoutActions[i].transform.SetParent(cell,false);
                 cell.name="Scout / live contract "+(i+1);
             }
@@ -889,25 +903,27 @@ namespace Eldoria.UI.RoyalGold.V2
                 else
                 {
                     TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
-                    float tab=Mathf.Clamp((iw-24f)*.14f,35f,65f);
-                    float captionX=tab+22f;
-                    float contentWidth=Mathf.Max(75f,iw-(portrait?186f:153f)-captionX);
-                    float titleTop=Mathf.Max(13f,spacing*.18f);
-                    TL(scoutTitles[i].rectTransform,captionX,titleTop,
-                        contentWidth,Mathf.Min(portrait?72f:36f,spacing*(portrait?.34f:.24f)));
-                    TL(scoutCards[i].rectTransform,captionX,titleTop+(portrait?76f:41f),
-                        contentWidth,Mathf.Max(51f,spacing-titleTop-(portrait?82f:50f)));
+                    float cellW=iw-24f;
+                    float titleTop=portrait?34f:13f;
+                    TL(scoutTitles[i].rectTransform,32f,titleTop,cellW-64f,portrait?62f:36f);
+                    float detailTop=portrait?106f:54f;
+                    float imageW=portrait?128f:70f;
+                    float imageH=portrait?98f:50f;
+                    TL(scoutThumbnails[i].rectTransform,32f,detailTop,imageW,imageH);
+                    float captionX=32f+imageW+18f;
+                    float buttonW=portrait?158f:120f;
+                    float contentWidth=Mathf.Max(75f,cellW-captionX-buttonW-34f);
+                    TL(scoutCards[i].rectTransform,captionX,detailTop,contentWidth,
+                        Mathf.Max(51f,spacing-detailTop-16f));
                     TL((RectTransform)scoutActions[i].transform,
-                        iw-(portrait?183f:150f),spacing*.5f-(portrait?44f:19f),
-                        portrait?158f:120f,portrait?88f:40f);
+                        cellW-buttonW-18f,detailTop+4f,buttonW,portrait?88f:40f);
                     scoutTitles[i].fontSize=portrait?30:21;
                     scoutTitles[i].alignment=TextAnchor.MiddleLeft;
                     scoutCards[i].fontSize=portrait?26:18;
                     scoutCards[i].alignment=TextAnchor.MiddleLeft;
                     scoutActionLabels[i].fontSize=portrait?26:18;
                 }
-                scoutThumbnails[i].gameObject.SetActive(scoutsLandscape &&
-                    paintedScouts!=null);
+                scoutThumbnails[i].gameObject.SetActive(scoutVignettes!=null || paintedScouts!=null);
             }
             TL(introduction.rectTransform,20f,100f,pw-40f,38f);
             footer.fontSize=portrait?26:compactLandscape?20:18;
@@ -920,6 +936,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             var p=s.Retention??new EarlyRetentionState();
             bool vig=OpenDestination==Destination.Vigilants;
+            if(guardianBanner)guardianBanner.gameObject.SetActive(false);
             var boardBacking=infoCard.GetComponent<RoyalGoldV2FrameGraphic>();
             if(boardBacking)boardBacking.enabled=vig&&!encounterSkin;
             if(encounterSkin)encounterSkin.gameObject.SetActive(vig);
@@ -1058,6 +1075,26 @@ namespace Eldoria.UI.RoyalGold.V2
                     Pos(label.rectTransform,new Vector2(.5f,.5f),
                         new Vector2(.5f,.5f),point.x,point.y,40f,38f);
                 }
+                if(guardianBanner && guardianBannerTexture && liveStage%5==0)
+                {
+                    // Place the selected skull standard above the ACTUAL current
+                    // guardian, using the same projected route as its live number.
+                    float bannerW=height>width?64f:compactLandscape?56f:66f;
+                    var uv=guardianBanner.uvRect;
+                    float bannerH=bannerW/(uv.width*guardianBannerTexture.width/
+                        (uv.height*guardianBannerTexture.height));
+                    var point=chapterTrail.StagePosition(liveStage);
+                    point+=new Vector2(-bannerW*.25f,bannerH*.70f);
+                    var scenePoint=heroScene.InverseTransformPoint(chapterTrail.transform.TransformPoint(point));
+                    scenePoint.x=Mathf.Clamp(scenePoint.x,heroScene.rect.xMin+bannerW*.5f+8f,
+                        heroScene.rect.xMax-bannerW*.5f-8f);
+                    scenePoint.y=Mathf.Clamp(scenePoint.y,heroScene.rect.yMin+bannerH*.5f+8f,
+                        heroScene.rect.yMax-bannerH*.5f-8f);
+                    point=chapterTrail.transform.InverseTransformPoint(heroScene.TransformPoint(scenePoint));
+                    Pos(guardianBanner.rectTransform,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                        point.x,point.y,bannerW,bannerH);
+                    guardianBanner.gameObject.SetActive(true);
+                }
                 if(sceneArtwork.BossEncounter!=boss)
                 {
                     sceneArtwork.BossEncounter=boss;
@@ -1080,8 +1117,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&archer>0;
                 // A single direct call to action, like the approved artwork.
                 // The panel already explains that resolution is automatic.
-                mainActionLabel.Put(mainAction.interactable?"COMBATIR":
-                    "AÚN NO DISPONIBLE");
+                mainActionLabel.Put(mainAction.interactable?"Combatir":
+                    "Aún no disponible");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
                 battleFeedback.Put(string.IsNullOrEmpty(notice) && stage==1 ?
@@ -1114,24 +1151,23 @@ namespace Eldoria.UI.RoyalGold.V2
                     // refill or reorder. The picture is decorative, not gameplay.
                     if(scoutThumbnails[i])
                     {
-                        scoutThumbnails[i].enabled=paintedScouts!=null;
-                        // Each real mission type gets a recognisable crop of
-                        // the painted cartographer's map. A crop MUST preserve
-                        // aspect ratio, rather than stretching a narrow slice
-                        // of the source across a wide expedition card.
+                        var source=scoutVignettes?scoutVignettes:paintedScouts;
+                        scoutThumbnails[i].enabled=source!=null;
+                        scoutThumbnails[i].texture=source;
                         var thumbRect=scoutThumbnails[i].rectTransform.rect;
-                        float aspect=Mathf.Max(.1f,thumbRect.width/
-                            Mathf.Max(1f,thumbRect.height));
-                        float artAspect=paintedScouts
-                            ?(float)paintedScouts.width/paintedScouts.height:1f;
-                        float cropW=.54f;
-                        float cropH=Mathf.Min(.92f,cropW*artAspect/aspect);
-                        float centerX=.24f+Mathf.Clamp(order.Kind,0,3)*.17f;
-                        float centerY=.28f+Mathf.Clamp(order.Kind,0,3)*.15f;
-                        scoutThumbnails[i].uvRect=new Rect(
-                            Mathf.Clamp(centerX-cropW*.5f,0f,1f-cropW),
-                            Mathf.Clamp(centerY-cropH*.5f,0f,1f-cropH),
-                            cropW,cropH);
+                        float aspect=Mathf.Max(.1f,thumbRect.width/Mathf.Max(1f,thumbRect.height));
+                        float sourceAspect=source?(float)source.width/source.height:1f;
+                        int kind=Mathf.Clamp(order.Kind,0,3);
+                        // Inset each tile to avoid sampling its neighbour. Crop
+                        // only inside this tile while preserving painted proportions.
+                        Rect tile=scoutVignettes
+                            ?new Rect((kind%2)*.5f+.01f,(kind<2?.5f:0f)+.01f,.48f,.48f)
+                            :new Rect(0f,0f,1f,1f);
+                        float cropW=tile.width;
+                        float cropH=cropW*sourceAspect/aspect;
+                        if(cropH>tile.height){cropH=tile.height;cropW=cropH*aspect/sourceAspect;}
+                        scoutThumbnails[i].uvRect=new Rect(tile.center.x-cropW*.5f,
+                            tile.center.y-cropH*.5f,cropW,cropH);
                         bool readyToClaim=order.StartedUtcTicks>0 &&
                             order.EndsUtcTicks<=now();
                         scoutThumbnails[i].color=readyToClaim
@@ -1160,8 +1196,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     scoutTitles[i].Put(EarlyRetentionRules.ScoutTitle(order.Kind));
                     t.Put(EarlyRetentionRules.ScoutRewardText(order.Kind)+"\n"+state);
                     a.interactable=order.StartedUtcTicks==0||order.EndsUtcTicks<=now();
-                    label.Put(order.StartedUtcTicks==0?"ENVIAR":
-                        order.EndsUtcTicks<=now()?"RECOGER":"EN CAMINO");
+                    label.Put(order.StartedUtcTicks==0?"Enviar":
+                        order.EndsUtcTicks<=now()?"Recoger":"En camino");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());
                 footer.Put("Nuevos encargos: "+

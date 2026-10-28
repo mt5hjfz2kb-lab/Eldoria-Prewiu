@@ -156,6 +156,37 @@ namespace Eldoria.ReferenceClean.Editor
                         captureWidth+"px: Real stage marker "+stage+" stays clear of the information card");
                 }
             }
+            var banner=page.GetComponentsInChildren<RawImage>().FirstOrDefault(x=>
+                x.name=="Current guardian / reference skull banner");
+            if(banner)
+            {
+                CheckLayout(banner.enabled && !banner.canvasRenderer.cull && !banner.raycastTarget &&
+                    banner.texture==Resources.Load<Texture2D>("EldoriaRetention/guardian-banner-v4"),
+                    captureWidth+"px: Actual current guardian displays the reference skull banner");
+                var bounds=trail.transform.parent as RectTransform;
+                var corners=new Vector3[4];banner.rectTransform.GetWorldCorners(corners);
+                CheckLayout(corners.All(c=>bounds.rect.Contains(bounds.InverseTransformPoint(c))),
+                    captureWidth+"px: Entire live guardian banner remains inside the real illustrated scene");
+            }
+            var previews=page.GetComponentsInChildren<RawImage>().Where(x=>
+                x.name=="Mission map detail (visual only)").ToArray();
+            if(previews.Length>0)
+            {
+                CheckLayout(previews.Length==3 && previews.All(x=>x.enabled && !x.canvasRenderer.cull &&
+                    !x.raycastTarget && x.texture==Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4")),
+                    captureWidth+"px: All three real contracts retain their illustrated mission previews");
+                foreach(var preview in previews)
+                {
+                    var contract=preview.transform.parent.GetComponentInChildren<RoyalGoldV3ScoutContractGraphic>();
+                    int kind=Mathf.Clamp(contract.Kind,0,3);
+                    var tile=new Rect((kind%2)*.5f,(kind<2?.5f:0f),.5f,.5f);
+                    var uv=preview.uvRect;
+                    CheckLayout(tile.Contains(uv.min) && tile.Contains(uv.max) &&
+                        Mathf.Abs((uv.width*preview.texture.width/(uv.height*preview.texture.height))/
+                            (preview.rectTransform.rect.width/preview.rectTransform.rect.height)-1f)<.02f,
+                        captureWidth+"px: Contract kind "+kind+" uses its own undistorted painted scene");
+                }
+            }
             foreach(var label in page.GetComponentsInChildren<Text>())
             {
                 if(string.IsNullOrWhiteSpace(label.text) ||
@@ -267,7 +298,8 @@ namespace Eldoria.ReferenceClean.Editor
             var battlePlate=stageButton?
                 stageButton.GetComponent<RoyalGoldV3RetentionActionGraphic>():null;
             Need(battlePlate && battlePlate.Battle &&
-                stageButton.targetGraphic==battlePlate && battlePlate.raycastTarget,
+                stageButton.targetGraphic==battlePlate && battlePlate.raycastTarget &&
+                battlePlate.mainTexture==Resources.Load<Texture2D>("EldoriaRetention/battle-action-skin-v4"),
                 "Real PvE combat action uses the approved red interactive button");
             ClickReal(stageButton,"Automatic level PvE");
             var s=h.City.Gateway.Snapshot();
@@ -316,6 +348,9 @@ namespace Eldoria.ReferenceClean.Editor
                 "Actual illustrated encounter skin renders beneath live creature/data/buttons without stealing clicks");
             var currentNumber=hud.GetComponentsInChildren<RoyalText>(true)
                 .FirstOrDefault(x=>x.name=="Current live stage");
+            Need(hud.GetComponentsInChildren<RawImage>().Any(x=>
+                x.name=="Current guardian / reference skull banner" && x.gameObject.activeInHierarchy),
+                "The real stage15 guardian has its selected reference banner");
             Need(currentNumber!=null && currentNumber.gameObject.activeInHierarchy &&
                 currentNumber.text=="15",
                 "The approved route highlights genuine stage 15, not decorative fake markers");
@@ -368,7 +403,7 @@ namespace Eldoria.ReferenceClean.Editor
                 .Where(x=>x.name=="Mission map detail (visual only)").ToArray();
             Need(mapPreviews.Length==3 &&
                 mapPreviews.All(x=>x.gameObject.activeInHierarchy && x.enabled &&
-                    !x.raycastTarget && x.texture!=null),
+                    !x.raycastTarget && x.texture==Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4")),
                 "Three authentic expedition previews render without stealing clicks");
             Need(mapPreviews.All(x=>{
                 var uv=x.uvRect;
@@ -389,7 +424,8 @@ namespace Eldoria.ReferenceClean.Editor
                 var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
                     .First(x=>x.name=="Dispatch or claim scout "+i);
                 var scoutPlate=dispatch.GetComponent<RoyalGoldV3RetentionActionGraphic>();
-                Need(scoutPlate && !scoutPlate.Battle && dispatch.targetGraphic==scoutPlate && scoutPlate.raycastTarget,
+                Need(scoutPlate && !scoutPlate.Battle && dispatch.targetGraphic==scoutPlate && scoutPlate.raycastTarget &&
+                    scoutPlate.mainTexture==Resources.Load<Texture2D>("EldoriaRetention/scout-action-skin-v4"),
                     "Actual scout card "+i+" uses the approved blue interactive action graphic");
                 int beforeCount=h.City.Gateway.Snapshot().Retention.Orders.Count(x=>x.StartedUtcTicks>0);
                 ClickReal(dispatch,"Actual scout dispatch "+i);
