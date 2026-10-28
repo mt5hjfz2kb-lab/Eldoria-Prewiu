@@ -298,9 +298,15 @@ namespace Eldoria.ReferenceClean {
        id.StartsWith("region1:stone:",StringComparison.Ordinal)){
      var liveVisual=WorldRoot.GetComponentsInChildren<Transform>(true)
       .FirstOrDefault(x=>x.name=="Production resource visual "+id);
-     if(liveVisual)AddFocusRenderers(liveVisual.gameObject,points);
+     // Selection can arrive before LateUpdate enables the near LOD after
+     // leaving panorama. Its real mesh still supplies the correct geometry;
+     // falling back to retired scenery points the camera away from the site.
+     if(liveVisual)
+      foreach(var renderer in liveVisual.GetComponentsInChildren<Renderer>(true))
+       if(renderer is MeshRenderer||renderer is SkinnedMeshRenderer)
+        AddFocusBox(renderer.localBounds,renderer.localToWorldMatrix,points);
      var hit=target.GetComponent<Collider>();
-     if(hit&&hit.enabled)AddFocusBox(hit.bounds,Matrix4x4.identity,points);
+     if(points.Count==0&&hit)AddFocusBox(hit.bounds,Matrix4x4.identity,points);
      if(points.Count>0)return points;
     }
     if(id=="valoria-map-city"){
