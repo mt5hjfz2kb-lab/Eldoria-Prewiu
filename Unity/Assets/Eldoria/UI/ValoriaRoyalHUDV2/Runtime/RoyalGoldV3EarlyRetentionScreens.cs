@@ -383,7 +383,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var reportFrame=scoutStoryPanel.GetComponent<RoyalGoldV2FrameGraphic>();
             if(reportFrame){reportFrame.raycastTarget=false;reportFrame.Primary=false;}
             scoutStoryPanel.anchorMin=new Vector2(.04f,.035f);
-            scoutStoryPanel.anchorMax=new Vector2(.91f,.35f);
+            scoutStoryPanel.anchorMax=new Vector2(.91f,.43f);
             scoutStoryPanel.offsetMin=scoutStoryPanel.offsetMax=Vector2.zero;
             scoutStoryPreview=Text(scoutStoryPanel,"Actual last expedition story",16,Ivory);
             scoutStoryPreview.raycastTarget=false;
@@ -1026,8 +1026,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     string story=EarlyRetentionRules.ScoutReportStory(p.LatestScoutKind,p.LatestScoutVariant);
                     // Condensed only on the small painted map; full authored
                     // narrative is displayed after the actual claim.
-                    if(story.Length>78)story=story.Substring(0,75)+"…";
-                    scoutStoryPreview.fontSize=height>width?15:compactLandscape?13:16;
+                    int maxCharacters=height>width?58:compactLandscape?56:88;
+                    if(story.Length>maxCharacters)story=story.Substring(0,maxCharacters-3)+"…";
+                    scoutStoryPreview.fontSize=height>width?26:compactLandscape?22:18;
                     scoutStoryPreview.Put(title+"\n"+story);
                 }
             }
@@ -1039,8 +1040,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     string finding=EarlyRetentionRules.ScoutReportHeading(
                         p.LatestScoutKind,p.LatestScoutVariant);
-                    scoutDiscoveryRibbonText.fontSize=height>width?15:compactLandscape?13:17;
-                    scoutDiscoveryRibbonText.Put("HALLAZGOS "+p.ScoutDiscoveries+" · "+finding);
+                    scoutDiscoveryRibbonText.fontSize=height>width?25:compactLandscape?22:18;
+                    scoutDiscoveryRibbonText.Put("HALLAZGOS DEL REINO · "+p.ScoutDiscoveries);
                 }
             }
             if(vig)
@@ -1189,8 +1190,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
                 kicker.Put("Protege las fronteras de Valoria y supera a sus guardianes.");
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
-                opponent.Put(info.Name+"\n"+info.Trait+
-                    (boss?" · "+EarlyRetentionRules.GuardianHint(info.Step):""));
+                opponent.Put(info.Name+"\nRasgo: "+info.Trait);
                 int archer=s.Available?.Total??0;
                 formation.Put("Héroe: "+(s.PreparedHeroId=="lyra"&&s.ChapterThree.LyraRecruited?
                     "Lyra":"Aldric")+" · "+archer+" tropas disponibles");
@@ -1214,7 +1214,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     (battleReport.TargetId??"").StartsWith("vigilant:",StringComparison.Ordinal);
                 battleFeedback.Put(ourReport?battleReport.Reason:
                     "Prepara el héroe, la composición y el Poder de tu marcha.");
-                footer.Put(boss?"GUARDIÁN · "+EarlyRetentionRules.GuardianHint(info.Step):
+                footer.Put(boss?EarlyRetentionRules.GuardianSignal(info.Step):
                     "Cada victoria ilumina un tramo del camino.");
             }
             else
