@@ -171,6 +171,12 @@ namespace Eldoria.ReferenceClean.Editor
                 "The actual unlocked Vigilants button shows the real Valoria compass, with no extra touch blocker");
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             Need(ui.IsOpen,"Vigilants' independent full-screen scene opens");
+            var illustration=hud.GetComponentsInChildren<RawImage>(true)
+                .FirstOrDefault(x=>x.name=="Original illustrated world / decorative only");
+            Need(illustration && illustration.enabled && illustration.texture!=null &&
+                illustration.texture.width==640 && illustration.texture.height==640,
+                "Real painted Vigilants texture loads through Unity Resources");
+            var vigilantsPainting=illustration.texture;
             Screenshot(h,"vigilants-first-trial",1600,900);
             Screenshot(h,"vigilants-first-trial",900,1600);
             ui.Close();
@@ -204,6 +210,10 @@ namespace Eldoria.ReferenceClean.Editor
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Scouts);
             Need(ui.IsOpen&&ui.OpenDestination==RoyalGoldV3EarlyRetentionScreens.Destination.Scouts,
                 "Scouts has separate scene, not Codex or Missions overlay");
+            Need(illustration.enabled && illustration.texture!=null &&
+                illustration.texture!=vigilantsPainting &&
+                illustration.texture.width==640 && illustration.texture.height==640,
+                "Scouts uses its own authentic illustrated expedition map");
             var contractArt=hud.GetComponentsInChildren<RoyalGoldV3ScoutContractGraphic>(true);
             Need(contractArt.Length==3,
                 "The independent Scouts screen contains three real illustrated parchment contracts");
