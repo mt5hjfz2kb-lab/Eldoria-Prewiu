@@ -522,20 +522,28 @@ namespace Eldoria.UI.RoyalGold.V2
                 chapter.fontSize=26;opponent.fontSize=22;formation.fontSize=19;
                 reward.fontSize=20;passive.fontSize=20;battleFeedback.fontSize=18;
             }
+            else if(vigilantsLandscape)
+            {
+                // One compact, attractive mission card over the living route:
+                // the encounter, rewards and actual combat button remain real.
+                TL(chapter.rectTransform,20f,12f,iw-40f,37f);
+                TL(opponent.rectTransform,20f,54f,iw-40f,55f);
+                TL(formation.rectTransform,20f,110f,iw-40f,32f);
+                TL(reward.rectTransform,20f,153f,iw-40f,38f);
+                TL(passive.rectTransform,20f,198f,iw-40f,48f);
+                TL(battleFeedback.rectTransform,20f,250f,iw-40f,33f);
+                TL((RectTransform)mainAction.transform,iw*.51f,ih-61f,
+                    iw*.46f,48f);
+                TL((RectTransform)claimXp.transform,20f,ih-60f,
+                    iw*.46f,46f);
+                chapter.fontSize=27;opponent.fontSize=25;formation.fontSize=19;
+                reward.fontSize=20;passive.fontSize=18;battleFeedback.fontSize=17;
+            }
             else
             {
-                // Landscape uses the full parchment: important information and
-                // actions do not sit at opposite ends of a vacant dark panel.
-                TL(chapter.rectTransform,22f,24f,iw-44f,44f);
-                TL(opponent.rectTransform,22f,94f,iw-44f,68f);
-                TL(formation.rectTransform,22f,186f,iw-44f,48f);
-                TL(reward.rectTransform,22f,265f,iw-44f,47f);
-                TL(passive.rectTransform,22f,356f,iw-44f,70f);
-                TL(battleFeedback.rectTransform,22f,Mathf.Max(448f,ih-208f),iw-44f,57f);
-                TL((RectTransform)mainAction.transform,22f,ih-128f,iw-44f,52f);
-                TL((RectTransform)claimXp.transform,22f,ih-67f,iw-44f,48f);
-                chapter.fontSize=28;opponent.fontSize=26;formation.fontSize=22;
-                reward.fontSize=22;passive.fontSize=21;battleFeedback.fontSize=20;
+                // Scout-board header, visible above three portrait contracts.
+                TL(chapter.rectTransform,16f,10f,iw-32f,41f);
+                chapter.fontSize=27;
             }
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
@@ -545,23 +553,50 @@ namespace Eldoria.UI.RoyalGold.V2
             for(int i=0;i<3;i++)
             {
                 var cell=scoutCards[i].transform.parent as RectTransform;
-                TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
-                float tab=Mathf.Clamp((iw-24f)*.14f,35f,65f);
-                float captionX=tab+22f;
-                float contentWidth=Mathf.Max(75f,iw-(portrait?115f:153f)-captionX);
-                // Titles and rewards are distinct, legible visual levels; no
-                // tiny text sitting mid-way inside oversized empty parchment.
-                float titleTop=Mathf.Max(13f,spacing*.18f);
-                TL(scoutTitles[i].rectTransform,captionX,titleTop,
-                    contentWidth,Mathf.Min(36f,spacing*.24f));
-                TL(scoutCards[i].rectTransform,captionX,titleTop+41f,
-                    contentWidth,Mathf.Max(51f,spacing-titleTop-50f));
-                TL((RectTransform)scoutActions[i].transform,
-                    iw-(portrait?112f:150f),spacing*.5f-19f,
-                    portrait?87f:120f,40f);
-                scoutTitles[i].fontSize=portrait?22:26;
-                scoutCards[i].fontSize=portrait?19:22;
-                scoutActionLabels[i].fontSize=portrait?16:19;
+                if(scoutsLandscape)
+                {
+                    // Three playable illustrated parchment contracts across
+                    // the map, as in the approved image — not a list of timers.
+                    float gap=10f;
+                    float cardW=(iw-28f-gap*2f)/3f;
+                    float cardH=Mathf.Max(110f,ih-70f);
+                    TL(cell,14f+i*(cardW+gap),55f,cardW,cardH);
+                    float inset=20f;
+                    TL(scoutTitles[i].rectTransform,inset,13f,cardW-40f,33f);
+                    TL((RectTransform)scoutThumbnails[i].transform,
+                        inset,52f,cardW-40f,Mathf.Max(54f,cardH*.30f));
+                    TL(scoutCards[i].rectTransform,inset,
+                        63f+cardH*.30f,cardW-40f,58f);
+                    TL((RectTransform)scoutActions[i].transform,
+                        inset,cardH-61f,cardW-40f,46f);
+                    scoutTitles[i].fontSize=24;
+                    scoutTitles[i].alignment=TextAnchor.MiddleCenter;
+                    scoutCards[i].fontSize=19;
+                    scoutCards[i].alignment=TextAnchor.MiddleCenter;
+                    scoutActionLabels[i].fontSize=20;
+                }
+                else
+                {
+                    TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
+                    float tab=Mathf.Clamp((iw-24f)*.14f,35f,65f);
+                    float captionX=tab+22f;
+                    float contentWidth=Mathf.Max(75f,iw-(portrait?115f:153f)-captionX);
+                    float titleTop=Mathf.Max(13f,spacing*.18f);
+                    TL(scoutTitles[i].rectTransform,captionX,titleTop,
+                        contentWidth,Mathf.Min(36f,spacing*.24f));
+                    TL(scoutCards[i].rectTransform,captionX,titleTop+41f,
+                        contentWidth,Mathf.Max(51f,spacing-titleTop-50f));
+                    TL((RectTransform)scoutActions[i].transform,
+                        iw-(portrait?112f:150f),spacing*.5f-19f,
+                        portrait?87f:120f,40f);
+                    scoutTitles[i].fontSize=portrait?22:21;
+                    scoutTitles[i].alignment=TextAnchor.MiddleLeft;
+                    scoutCards[i].fontSize=portrait?19:18;
+                    scoutCards[i].alignment=TextAnchor.MiddleLeft;
+                    scoutActionLabels[i].fontSize=portrait?16:18;
+                }
+                scoutThumbnails[i].gameObject.SetActive(scoutsLandscape &&
+                    paintedScouts!=null);
             }
             TL(introduction.rectTransform,20f,100f,pw-40f,38f);
             TL(footer.rectTransform,20f,ph-39f,pw-40f,25f);
