@@ -192,6 +192,13 @@ namespace Eldoria.ReferenceClean.Editor
             Need(hud.GetComponentsInChildren<RoyalText>(true).Any(t=>
                 t.text!=null&&t.text.Contains("MARCHAS ACTIVAS")),
                 "Actual visible March Room shows global active-slot count");
+            Need(hud.GetComponentsInChildren<RoyalText>(true).Any(t=>
+                t.text!=null&&t.text.Contains("CAPACIDAD DE")),
+                "Real march room shows current hero-dependent capacity, not a decorative number");
+            var sliders=manager.VisibleRoot.GetComponentsInChildren<Slider>(true);
+            Need(sliders.Length==1&&Mathf.Approximately(sliders[0].maxValue,
+                    MarchCapacityRules.Capacity(host.City.Gateway.Snapshot(),"aldric")),
+                "The actual touch slider cannot select more troops than Aldric can command");
             Image(host,"march-composer-horizontal",1600,900);
             Image(host,"march-composer-vertical",900,1600);
             File.WriteAllText(Path.Combine(Output,"result.txt"),
