@@ -1741,15 +1741,13 @@
     },
     {
       "id": "eldoria-early-retention-systems-20261028",
-      "owner": "codex-pr120-exact-visual-pr122-20261028",
-      "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "owner": null,
+      "ownership_state": "available",
+      "ownership_revision": 7,
       "status": "active",
       "branch": "feature/eldoria-early-retention-20261028",
       "pr": 120,
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
@@ -1777,10 +1775,8 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs.meta",
         "qa/e2e-full-arc1.js",
-        ".github/workflows/ui-progression-cert.yml",
         "qa/e2e-codex-chest.js",
-        "pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json",
-        ".github/workflows/tester-qa.yml"
+        "pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json"
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
@@ -1800,7 +1796,7 @@
           "reason": "Owner explicitly instructs this session to continue PR120 to exact approved visual composition, then PR122; rewards may remain pending."
         }
       ],
-      "write_scope_released": false,
+      "write_scope_released": true,
       "current_native_cert": {
         "status": "success",
         "source": "fa028667e1e7d8492276c921efc7d49379c450c1",
@@ -1811,10 +1807,19 @@
         "ui_reference_accepted": true,
         "review": "docs/early-retention/NATIVE_ACCEPTANCE_20261028.md",
         "physical_mobile_tested": false,
-        "art_approved": false
+        "art_approved": false,
+        "main_gate": {
+          "source": "3fb13ce5209bf272bf18c09c06892240ec6dc13f",
+          "run_id": 40758901742,
+          "conclusion": "success",
+          "editmode": "success",
+          "playmode": "success",
+          "windows_build": "success",
+          "benchmark_captures": "success"
+        }
       },
-      "next": "Merge same PR120 after exact current checks. Preserve sole retention6 Windows claim until required main native queue completes. Then transfer exclusive resource to existing PR122 and finish its actual Unity movement/visibility proof. Reward balance provisional by owner; no physical-device certification claimed.",
-      "phase": "PR120_NATIVE36_UI_REFERENCE_REVIEW_ACCEPTED_MERGE_READY",
+      "next": "PR120 merged and native main validation40758901742 succeeded. UI2D reviewed; reward balance deferred by owner. Released scope/resource; current completion proceeds under existing PR122.",
+      "phase": "PR120_MERGED_NATIVE_COMPLETE_REWARD_BALANCE_DEFERRED",
       "test_harness_scope_note": "Owner-authorized PR119/120 completion: repair only stale frozen-web fresh-save Arc-I Fissure assertions (retired INSPECCIONAR/recruit-before-victory sequence) to match the already-approved real Bastion III investigation/contact/assault/recruit/manuscript journey. No frozen-web gameplay changes, no new Bastion IV/V work. Exact file unclaimed by any other active owner. Preserve native owner/revision5 and existing Windows queue. Current continuation: fix only the observed transient hidden-navigation tap in legacy Codex/Relicario QA by waiting for a genuine visible, actionable navigation button; preserve all assertions, no production web edits.",
       "certification_scope_note": "Shared UI47Edit/72Play run40731703310 and full frozen-web40731703240 compiled sourcefd0967/tree20d1cf reused only by strict identical inputs/job checks. Final retention13domain/19native-view proof40755121692 onfa028667 independently reviewed. Final metadata keeps exact Unity tree; main must verify native source pin. Preserve current owner/revision6/sole heavy resource until main queue completes.",
       "web_certification_scope_note": "Reuse full successful frozen-web run40731703240 only after proving sourcebd0b48a6 compiledmergefd0967 tree20d1cf, byte-identical entire tester-qa job and no changed web/runtime/test inputs. Exact own native-request metadata excluded; every unknown/different input fails open to full QA. No tests removed or weakened."
@@ -1823,14 +1828,16 @@
       "id": "eldoria-aldric-city-roaming-20261028",
       "title": "PR122 — Aldric auténtico animado paseando por Valoria",
       "owner": "codex-pr120-exact-visual-pr122-20261028",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/aldric-city-roaming-20261028",
       "pr": 122,
       "claimed_at": "2026-10-28T17:08:00Z",
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/AldricCity/**",
         "Unity/Assets/Eldoria/AldricCity.meta",
@@ -1842,10 +1849,12 @@
         ".github/workflows/aldric-city-native.yml",
         ".github/workflows/aldric-city-domain.yml",
         ".github/workflows/aldric-city-reconstruct.yml",
-        "pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json"
+        "pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json",
+        ".github/workflows/ui-progression-cert.yml",
+        ".github/workflows/tester-qa.yml"
       ],
-      "phase": "SOURCE_PREPARATION_ONLY_WAITING_FOR_PR120",
-      "next": "Correct confirmed C# Application namespace collision and frame-count waits in source. No Unity dispatch or heavy-resource claim until PR120 completes, is merged and finishes its required native queue. Preserve exact approved10.14MB GLB/hash/26bones/5clips; inspect actual native movement, route, scale and hiding before merge.",
+      "phase": "PR122_EXCLUSIVE_NATIVE_ROAMING_VALIDATION",
+      "next": "PR120 merged and required main native queue completed successfully. Execute existing Aldric native workflow on exact candidate: approvedGLB/scale/road/fullcapsule/boneanimation/visibility/save and12realviews. Then full shared UI regression and actual image review before merge; no duplicate workstream or credits.",
       "delivery_definition": {
         "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
@@ -1854,7 +1863,8 @@
       "budget_eur": 0,
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json",
-      "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection."
+      "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection.",
+      "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime."
     }
   ],
   "history": [
