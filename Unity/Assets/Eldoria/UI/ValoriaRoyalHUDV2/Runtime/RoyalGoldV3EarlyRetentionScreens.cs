@@ -419,8 +419,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(victoryDetail.rectTransform,12f,44f,bannerWidth-24f,29f);
                 victoryDetail.fontSize=portrait?14:16;
             }
+            // Keep the portrait manuscript above the fixed bottom footer.
+            // The final scout card and claim-XP button previously extended
+            // under this footer even though both were inside the safe area.
             TL(infoCard,bodyX,portrait?imageTop+Mathf.Clamp(ph*.235f,155,224)+10f:108f,
-                bodyWidth,portrait?ph-(imageTop+Mathf.Clamp(ph*.235f,155,224)+22f):ph-165f);
+                bodyWidth,portrait?ph-(imageTop+Mathf.Clamp(ph*.235f,155,224)+58f):ph-165f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
             if(iw<=0||ih<=0)return;
             TL(chapter.rectTransform,14f,13f,iw-28f,36f);
