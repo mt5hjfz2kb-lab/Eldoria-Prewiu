@@ -82,6 +82,13 @@ namespace Eldoria.Domain
         public int PendingFood;
         public int PendingWood;
         public int PendingStone;
+        public MarchState Copy()
+        {
+            var copy=(MarchState)MemberwiseClone();
+            copy.Troops=Troops?.Copy()??new ArmyRoster();
+            copy.Route=Route?.ConvertAll(x=>x.Copy())??new List<WorldRoutePoint>();
+            return copy;
+        }
     }
     [Serializable] public sealed class BattleReportState
     {
