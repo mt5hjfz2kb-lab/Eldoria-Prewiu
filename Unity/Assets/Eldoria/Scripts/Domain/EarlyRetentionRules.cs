@@ -27,6 +27,10 @@ namespace Eldoria.Domain
     [Serializable] public sealed class EarlyRetentionState
     {
         public int LastClearedStage;
+        // Saved, deterministic expedition discoveries. No duplicate rewards or new currencies.
+        public int ScoutDiscoveries;
+        public int LatestScoutKind=-1, LatestScoutVariant=-1;
+        public string LatestScoutReportId="";
         public int AldricExperience, LyraExperience;
         public long LastIdleClaimUtcTicks;
         public List<ScoutOrder> Orders=new List<ScoutOrder>();
@@ -107,13 +111,104 @@ namespace Eldoria.Domain
             int def=19+stage*3+(int)Math.Round(stage*(double)stage*.09,
                 MidpointRounding.AwayFromZero)+(boss?18:0);
             int brk=12+stage*2+(boss?15:0);
+            if(boss)
+            {
+                switch(level)
+                {
+                    case 5: def+=Math.Max(15,def/2);break; // armored
+                    case 10: atk+=Math.Max(15,atk/3);def=Math.Max(1,def-def/8);break; // assault
+                    case 15: brk+=Math.Max(20,brk/2);hp+=Math.Max(25,hp/5);break; // Breach
+                    case 20: hp+=Math.Max(40,hp/2);def+=Math.Max(10,def/8);break; // endurance
+                    case 25: atk+=Math.Max(15,atk/4);def+=Math.Max(15,def/4);break; // commander
+                }
+            }
             var enemy=new WorldCreatureStats(hp,atk,def,brk,0,0);
             return new VigilantStage(stage,chapter,level,
-                boss && level==15?"Engendro de la Brecha":
-                    boss?"Guardián del umbral":normal[variance],
-                traits[variance],locations[(chapter-1)%locations.Length],enemy);
+                boss?GuardianName(level):normal[variance],
+                boss?GuardianTrait(level):traits[variance],
+                locations[(chapter-1)%locations.Length],enemy);
         }
 
+        // Author-authored profiles; each boss changes real combat stats, not just labels.
+        // Names and counters remain personal PvE; world creatures are unchanged.
+        public static string GuardianName(int step)
+        {
+            switch(step){case 5:return "Guardián de la Coraza";
+                case 10:return "Acechador del Umbral";
+                case 15:return "Engendro de la Brecha";
+                case 20:return "Centinela Inquebrantable";
+                case 25:return "Vigía de las Cenizas";
+                default:return "Guardián del umbral";}
+        }
+        public static string GuardianTrait(int step)
+        {
+            switch(step){case 5:return "Coraza reforzada";
+                case 10:return "Asalto fulminante";
+                case 15:return "Ruptura corrupta";
+                case 20:return "Resistencia tenaz";
+                case 25:return "Mando corrupto";
+                default:return "Resistencia corrupta";}
+        }
+        public static string GuardianHint(int step)
+        {
+            switch(step){case 5:return "Defensa elevada: prioriza Ataque y Ruptura.";
+                case 10:return "Golpea rápido: protege la Vida de tu marcha.";
+                case 15:return "Ruptura peligrosa: refuerza Defensa y Vida.";
+                case 20:return "Combate prolongado: aumenta el daño sostenido.";
+                case 25:return "Poder equilibrado: prepara tu mejor héroe y tropas.";
+                default:return "Estudia su rasgo y ajusta tu formación.";}
+        }
+        public static string CombatInsight(VigilantStage stage,CombatStats army,CombatReport result)
+        {
+            string outcome=result.Won?"VICTORIA":"DERROTA";
+            string rounds=result.Rounds+" asaltos";
+            if(result.Won)
+                return outcome+" · "+rounds+" · "+result.RemainingHealth+
+                    " Vida restante. "+(stage.Step%5==0?"Guardián superado. ":"Camino despejado. ")+
+                    "Tu marcha venció con "+army.Power+" de Poder.";
+            if(stage.Step%5==0)
+                return outcome+" · "+rounds+". "+GuardianHint(stage.Step)+
+                    " Tu marcha: "+army.Power+" Poder.";
+            return outcome+" · "+rounds+". Revisa Poder, Ataque, Ruptura y tropas de la marcha.";
+        }
+        public static int ScoutReportVariant(ScoutOrder order)
+        {
+            if(order==null)return 0;
+            // Stable after UTC expiry, refresh and reopen; no runtime randomness.
+            return (int)((((long)order.Period+order.Slot*7L+order.Kind*11L)%3+3)%3);
+        }
+        public static string ScoutReportHeading(int kind,int variant)
+        {
+            int v=((variant%3)+3)%3;
+            switch(kind){
+                case 0:return new[]{"Señales en la frontera","Ecos del paso oscuro","Guardia en la niebla"}[v];
+                case 1:return new[]{"La hoguera encendida","Un camino de regreso","Voces entre los pinos"}[v];
+                case 2:return new[]{"El carro abandonado","Marcas junto al río","El almacén olvidado"}[v];
+                default:return new[]{"Huellas violetas","Ceniza sobre la piedra","Un rumor bajo la Brecha"}[v];
+            }
+        }
+        public static string ScoutReportStory(int kind,int variant)
+        {
+            int v=((variant%3)+3)%3;
+            switch(kind){
+                case 0:return new[]{
+                    "La patrulla halló escudos marcados por la corrupción. La ruta vuelve a ser transitable.",
+                    "Las antorchas se extinguieron antes del amanecer. Algo se retiró hacia el norte.",
+                    "Un vigía reconoció los pasos enemigos entre la bruma. Valoria conoce ahora esa senda."}[v];
+                case 1:return new[]{
+                    "Los viajeros seguían una luz entre los árboles. Los exploradores los guiaron a casa.",
+                    "Una familia había perdido el sendero. Un antiguo mojón mostró la ruta segura.",
+                    "Las voces resultaron ser campesinos refugiados. Traen noticias de las tierras fronterizas."}[v];
+                case 2:return new[]{
+                    "Un carro oculto entre zarzas conservaba materiales útiles para Valoria.",
+                    "Los rastros de ruedas conducían a un depósito intacto cerca del cauce.",
+                    "Las provisiones estaban bajo una lona antigua. El destacamento recuperó lo aprovechable."}[v];
+                default:return new[]{
+                    "Encontraron huellas violáceas junto a unas rocas. La Brecha sigue extendiendo su influencia.",
+                    "La ceniza formaba un símbolo desconocido. Los exploradores lo anotaron en su mapa.",
+                    "Un murmullo surgía de las grietas. El informe recomienda vigilar el próximo guardián."}[v];
+            }
+        }
         public static int ScoutKind(long period,int slot) => (int)((period+slot)%4);
         public static string ScoutTitle(int kind)
         {
@@ -221,10 +316,9 @@ namespace Eldoria.Domain
                     HeroId=hero,Troops=available.Total,PlayerPower=army.Power,
                     EnemyPower=enemy.Difficulty,Won=battle.Won,Rounds=battle.Rounds,
                     RemainingHealth=battle.RemainingHealth,
-                    Reason=battle.Won?"El ejército superó "+enemy.Trait.ToLowerInvariant()+".":
-                        "Refuerza las tropas y vuelve a intentarlo; "+enemy.Trait.ToLowerInvariant()+"."};
+                    Reason=CombatInsight(enemy,army,battle)};
                 s.LastBattleReason=s.LastBattleReport.Reason;
-                if(!battle.Won){message="La etapa resistió. Mejora tu ejército.";return true;}
+                if(!battle.Won){message=s.LastBattleReason;return true;}
                 p.LastClearedStage=stage;
                 if(p.LastIdleClaimUtcTicks==0)p.LastIdleClaimUtcTicks=utcNow;
                 int xp=20+stage/5*3;
@@ -288,7 +382,15 @@ namespace Eldoria.Domain
             else{s.Resources.Stone=checked(s.Resources.Stone+25);s.Resources.Food=checked(s.Resources.Food+45);}
             p.AldricExperience=checked(p.AldricExperience+20);
             order.Claimed=true;
-            message="Encargo completado · "+ScoutRewardText(order.Kind);
+            if(p.LatestScoutReportId!=order.Id)
+            {
+                p.LatestScoutReportId=order.Id;
+                p.LatestScoutKind=order.Kind;
+                p.LatestScoutVariant=ScoutReportVariant(order);
+                p.ScoutDiscoveries=checked(p.ScoutDiscoveries+1);
+            }
+            message="Hallazgo: "+ScoutReportHeading(order.Kind,p.LatestScoutVariant)+
+                " · "+ScoutRewardText(order.Kind);
             return true;
         }
     }
