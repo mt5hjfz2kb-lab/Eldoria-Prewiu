@@ -39,6 +39,7 @@ namespace Eldoria.AldricCity
         private GameObject actor;
         private GameObject model;
         private Animation clips;
+        private AnimationClip cityPoseCorrection;
         private GltfImport ownedImport;
         private string importFailure;
         public string ImportedCompatibilitySha256 { get; private set; }
@@ -56,7 +57,16 @@ namespace Eldoria.AldricCity
         public bool ApprovedVisualReady => visualConfigured && actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
         public int RoadWaypoints => path == null ? 0 : path.Length;
-        public bool ActualWalkClipPlaying => clips && clips.IsPlaying(Walk);
+        // A legacy looping state may remain registered while its visible
+        // contribution has faded to zero. Report the actual contributing clip.
+        public float WalkClipWeight => clips && clips[Walk] != null ? clips[Walk].weight : 0f;
+        public float IdleClipWeight => clips && clips[Idle] != null ? clips[Idle].weight : 0f;
+        public bool ActualWalkClipPlaying => clips && clips.IsPlaying(Walk) && WalkClipWeight > .05f;
+        public bool ActualIdleClipPlaying => clips && clips.IsPlaying(Idle) && IdleClipWeight > .5f;
+        public bool IsWalking => walking;
+        public float PauseSecondsRemaining => Mathf.Max(0f, pauseUntil-Time.time);
+        public bool CurrentLegClear => actor && path != null &&
+            (Vector3.Distance(actor.transform.position,path[index]) < .04f || SegmentClear(actor.transform.position,path[index]));
         public bool CurrentBodyClear => actor && BodyClear(actor.transform.position);
         public Vector3 ActorGroundPosition => actor ? actor.transform.position : Vector3.zero;
         public Vector3 CurrentWalkDestination => path != null ? path[index] : Vector3.zero;
@@ -311,6 +321,47 @@ namespace Eldoria.AldricCity
             return false;
         }
 
+        private void ConfigureCityRestPose(SkinnedMeshRenderer[] skins)
+        {
+            // The source is an A-pose asset. Keep its five original clips and
+            // add a small, separate runtime rest-pose layer for a relaxed city
+            // stance. No source clip, bone, weight, mesh or material is rewritten.
+            cityPoseCorrection = new AnimationClip { legacy = true,
+                name = "Aldric_City_RelaxedRestPose", wrapMode = WrapMode.ClampForever };
+            var bones = skins.SelectMany(x=>x.bones).Where(x=>x).Distinct().ToArray();
+            var targets = new[] { "Eldoria_Aldric_upperarm_L", "Eldoria_Aldric_upperarm_R" };
+            var mixing = new List<Transform>();
+            for (int side=0; side<targets.Length; side++)
+            {
+                var bone = bones.FirstOrDefault(x=>x.name==targets[side]);
+                if (!bone) throw new InvalidOperationException("Approved rest-pose bone missing: " + targets[side]);
+                var pathParts = new List<string>();
+                var cursor = bone;
+                while (cursor && cursor != clips.transform) { pathParts.Add(cursor.name); cursor = cursor.parent; }
+                if (!cursor) throw new InvalidOperationException("Approved bone is outside animation root");
+                pathParts.Reverse();
+                var path = string.Join("/",pathParts);
+                var rotation = Quaternion.Euler(side==0 ? -35f : 35f,0f,0f);
+                var values = new[] { rotation.x,rotation.y,rotation.z,rotation.w };
+                var properties = new[] { "localRotation.x","localRotation.y","localRotation.z","localRotation.w" };
+                for (int component=0; component<4; component++)
+                    cityPoseCorrection.SetCurve(path,typeof(Transform),properties[component],
+                        AnimationCurve.Linear(0f,component==3 ? 1f : 0f,.05f,values[component]));
+                mixing.Add(bone);
+            }
+            cityPoseCorrection.EnsureQuaternionContinuity();
+            clips.AddClip(cityPoseCorrection,cityPoseCorrection.name);
+            var state = clips[cityPoseCorrection.name];
+            state.layer = 1;
+            state.blendMode = AnimationBlendMode.Additive;
+            state.wrapMode = WrapMode.ClampForever;
+            foreach (var bone in mixing) state.AddMixingTransform(bone,false);
+            clips.Play(cityPoseCorrection.name,UnityEngine.PlayMode.StopSameLayer);
+            state.time = .05f;
+            state.speed = 0f;
+            state.weight = 1f;
+        }
+
         private bool ActualSkinnedPoseBounds(SkinnedMeshRenderer[] skins, out Bounds bounds)
         {
             // Measure the actual posed vertices once during import. A skin's
@@ -374,7 +425,8 @@ namespace Eldoria.AldricCity
             // unscaled frame and no approximation from the root-bone bounds.
             foreach (var renderer in renderers) renderer.enabled = false;
             actor.SetActive(true);
-            clips.Play(Idle);
+            clips.Play(Idle,UnityEngine.PlayMode.StopSameLayer);
+            ConfigureCityRestPose(skins);
             clips.Sample();
             if (!ActualSkinnedPoseBounds(skins, out var bounds) || bounds.size.y < .1f || bounds.size.y > 100f)
                 return RejectImport("invalid actual skinned idle geometry bounds " + bounds);
@@ -389,7 +441,7 @@ namespace Eldoria.AldricCity
             var initiallyVisible = !Away();
             foreach (var renderer in renderers) renderer.enabled = initiallyVisible;
             actor.SetActive(true);
-            clips.Play(Idle);
+            clips.Play(Idle,UnityEngine.PlayMode.StopSameLayer);
             Debug.Log("ALDRIC_CITY_IMPORT_26_BONES_5_CLIPS_CONFIGURED source_height=" + sourceHeight +
                 " scale=" + model.transform.localScale + " normalized_height=" + Height +
                 " actual_pose_minimum_before_grounding=" + sourceMinimum);
@@ -433,6 +485,7 @@ namespace Eldoria.AldricCity
                 if (actor) Destroy(actor);
                 actor = null; model = null;
                 if (ownedImport != null) { ownedImport.Dispose(); ownedImport = null; }
+                if (cityPoseCorrection) { Destroy(cityPoseCorrection); cityPoseCorrection = null; }
                 var reason = task.IsFaulted ? task.Exception.Flatten().ToString() :
                     task.IsCanceled ? "import task cancelled" : importFailure ?? "unknown import rejection";
                 Debug.LogError("ALDRIC_CITY_IMPORT_OR_26_JOINT_RIG_FAILED reason=" + reason);
@@ -524,6 +577,6 @@ namespace Eldoria.AldricCity
                 Quaternion.LookRotation(delta.normalized) * Quaternion.Euler(0f, ModelYawCorrection, 0f), Mathf.Clamp01(7f * Time.deltaTime));
         }
 
-        private void OnDestroy() { if (actor) Destroy(actor); if (ownedImport != null) { ownedImport.Dispose(); ownedImport = null; } }
+        private void OnDestroy() { if (actor) Destroy(actor); if (cityPoseCorrection) Destroy(cityPoseCorrection); if (ownedImport != null) { ownedImport.Dispose(); ownedImport = null; } }
     }
 }

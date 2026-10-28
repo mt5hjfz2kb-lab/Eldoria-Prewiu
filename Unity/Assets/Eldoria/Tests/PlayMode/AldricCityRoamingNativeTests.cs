@@ -161,6 +161,14 @@ namespace Eldoria.Tests
             CaptureCityCamera(camera, "aldric-city-idle-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-idle-portrait.png", 390, 844);
             AssertActualBootGrounding(skins, walker, .12f, "idle");
+            foreach (var side in new[]{"L","R"})
+            {
+                var upper = bones.Single(x=>x.name=="Eldoria_Aldric_upperarm_"+side);
+                var hand = bones.Single(x=>x.name=="Eldoria_Aldric_hand_"+side);
+                var arm = hand.position-upper.position;
+                Assert.That(-arm.y, Is.GreaterThan(Vector3.ProjectOnPlane(arm,Vector3.up).magnitude*1.05f),
+                    "Actual city idle arm hangs naturally instead of retaining the source A-pose: " + side);
+            }
 
             var beforeWalking = JsonUtility.ToJson(Gateway().Snapshot());
             // Real time/real animation: initial idle pause is intentional.
@@ -245,14 +253,37 @@ namespace Eldoria.Tests
             yield return new WaitForSecondsRealtime(.4f);
             Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.True, "Aldric returns with the actual city camera");
             var resumedWaypoint = false;
+            var nextRender = Time.realtimeSinceStartup;
+            var nextDiagnostic = Time.realtimeSinceStartup;
             for (var resumeDeadline=Time.realtimeSinceStartup+15f; Time.realtimeSinceStartup<resumeDeadline;)
             {
                 yield return null;
-                if(Vector3.Distance(Read<Vector3>(walker,"ActorGroundPosition"),interruptedDestination)<.12f &&
+                // Batch-editor GameView rendering may stop after World. Wake
+                // the genuine playable camera while observing its culled rig,
+                // rather than requiring an invisible legacy loop to stop.
+                if (Time.realtimeSinceStartup >= nextRender)
+                { camera.Render(); nextRender = Time.realtimeSinceStartup+.2f; }
+                var position = Read<Vector3>(walker,"ActorGroundPosition");
+                if (Time.realtimeSinceStartup >= nextDiagnostic)
+                {
+                    Debug.Log("ALDRIC_WORLD_RESUME position="+position+" expected="+interruptedDestination+
+                        " destination="+Read<Vector3>(walker,"CurrentWalkDestination")+
+                        " moving="+Read<bool>(walker,"IsWalking")+
+                        " walk_weight="+Read<float>(walker,"WalkClipWeight")+
+                        " idle_weight="+Read<float>(walker,"IdleClipWeight")+
+                        " time_scale="+Time.timeScale+" scaled_time="+Time.time+
+                        " pause="+Read<float>(walker,"PauseSecondsRemaining")+
+                        " body_clear="+Read<bool>(walker,"CurrentBodyClear")+
+                        " leg_clear="+Read<bool>(walker,"CurrentLegClear"));
+                    nextDiagnostic = Time.realtimeSinceStartup+1f;
+                }
+                if(Vector3.Distance(position,interruptedDestination)<.05f &&
+                    !Read<bool>(walker,"IsWalking") && Read<bool>(walker,"ActualIdleClipPlaying") &&
                     !Read<bool>(walker,"ActualWalkClipPlaying")){resumedWaypoint=true;break;}
             }
+            if (!resumedWaypoint) CaptureCityCamera(camera,"aldric-diagnostic-resume-failure.png",1280,720);
             Assert.That(resumedWaypoint, Is.True,
-                "Returning from World resumes the interrupted leg and pauses at its genuine destination");
+                "Returning from World resumes the interrupted leg and visibly pauses in Idle at its genuine destination");
 
             var state = Gateway().Snapshot();
             var sent = Gateway().Execute(new GameCommand(Guid.NewGuid().ToString("N"),

@@ -160,3 +160,29 @@ La señal ApprovedVisualReady ahora espera la configuración completa y un
 fotograma tras el ajuste, con pausa de reposo ya inicializada. Update no
 puede iniciar el paseo mientras continúa el importador asíncrono. Esto evita
 medir/renderizar una escala transitoria o llamar reposo a una marcha prematura.
+
+## Paseo real y revisión visual —40779937374
+
+Pasan: importación, escala,26huesos originales, Walk efectivo con deformación,
+orientación frontal/capa detrás, cápsula ante obstáculo dinámico, ocultación
+en Mundo y visibilidad al volver. Los vértices reales de botas dan offset
++0,000135m Idle y-0,026675m Walk, coherentes con el cálculo de la fuente.
+Nueve PNG auténticos inspeccionados individualmente, incluidos cuatro
+primeros planos: cara/armadura/capa corresponden al modelo aprobado.
+No se acepta aún: falla la comprobación de pausa tras regresar y la pose
+de brazos continúa demasiado abierta para un paseo natural.
+
+Se observa la contribución visible(weight) de las animaciones originales,
+no solo IsPlaying de un estado legado registrado con peso cero. El test
+rinde la cámara ciudad durante la observación batch, exige posición a0,05m
+del destino(por debajo de los0,12m anteriores), movimiento detenido, Idle
+visible y Walk sin contribución. Registra posición/destino/pesos/pausa/
+colisión/tiempo y, solo si falla, una captura diagnóstica del retorno.
+No se elimina ninguna acción de marcha/fisura/guardado pendiente.
+
+La corrección de reposo es una capa aditiva técnica en memoria de los dos
+brazos, separada de los cinco clips originales: convierte la postura base
+enA en reposo de ciudad. No cambia el GLB, rig, pesos, materiales ni claves
+de los clips aprobados; no hay otro modelo ni animación fuente generada.
+La prueba exige que los brazos reales cuelguen en reposo. La mejora visual
+sigue pendiente de nuevas imágenes reales; sin ART_PASS por anticipado.

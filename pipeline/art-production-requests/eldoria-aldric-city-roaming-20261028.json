@@ -48,5 +48,14 @@
     "source_equivalence_proof": "docs/aldric-city/normal-import-proof.json",
     "normal_generation": "Area-weighted geometric normals from existing indexed triangles, as conventional import preparation; zero vertex/topology/material/animation authoring",
     "native_visual_acceptance": "PENDING"
+  },
+  "runtime_pose_alignment": {
+    "purpose": "Technical retarget of original A-pose rest stance for a relaxed cosmetic city walker",
+    "source_glb_and_all_five_source_clips_unchanged": true,
+    "geometry_skin_bones_materials_unchanged": true,
+    "implementation": "Separate in-memory additive upper-arm rest alignment layer,35degrees, over original Idle/Walk; no new source animation/model asset, no external generation",
+    "visual_before_evidence": "Native40779937374 real four-angle captures; arms visibly too open",
+    "visual_after_acceptance": "PENDING_ACTUAL_UNITY_IMAGES",
+    "credit_cost": 0
   }
 }
