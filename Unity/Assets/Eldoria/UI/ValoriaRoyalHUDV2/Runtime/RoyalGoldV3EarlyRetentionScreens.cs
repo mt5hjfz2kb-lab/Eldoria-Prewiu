@@ -145,6 +145,16 @@ namespace Eldoria.UI.RoyalGold.V2
             b.onClick.AddListener(()=>action?.Invoke());
             return b;
         }
+        static void StyleRetentionAction(RoyalButton button,bool battle)
+        {
+            if(!button)return;
+            var previous=button.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(previous){previous.raycastTarget=false;previous.enabled=false;}
+            var frame=button.gameObject.AddComponent<RoyalGoldV3RetentionActionGraphic>();
+            frame.Battle=battle;
+            frame.raycastTarget=true;
+            button.targetGraphic=frame;
+        }
         static void DecorateShortcut(RoyalButton button,RoyalText caption,string source)
         {
             if(!button||!caption)return;
@@ -266,6 +276,7 @@ namespace Eldoria.UI.RoyalGold.V2
             battleFeedback=Text(infoCard,"Last action result",17,Ivory);
             mainAction=Button(infoCard,"Battle against next unique stage",
                 "COMBATIR",ExecuteStage,out mainActionLabel,true);
+            StyleRetentionAction(mainAction,true);
             claimXp=Button(infoCard,"Claim earned hero experience",
                 "RECOGER EXPERIENCIA",CollectXp,out xpLabel);
             for(int i=0;i<3;i++)
@@ -295,6 +306,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutCards[i]=Text(cell,"Real scout order reward and status",18,Ink);
                 scoutActions[i]=Button(cell,"Dispatch or claim scout "+(i+1),
                     "ENVIAR",()=>RunScout(index),out scoutActionLabels[i],true);
+                StyleRetentionAction(scoutActions[i],false);
                 scoutActions[i].transform.SetParent(cell,false);
                 cell.name="Scout / live contract "+(i+1);
             }
