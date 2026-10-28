@@ -747,24 +747,6 @@ namespace Eldoria.UI.RoyalGold.V2
             chapterTrail.gameObject.SetActive(vig);
             if(vig)
             {
-                int liveStage=p.LastClearedStage%25+1;
-                if(currentMilestoneLabel)
-                {
-                    currentMilestoneLabel.Put(liveStage.ToString());
-                    currentMilestoneLabel.gameObject.SetActive(true);
-                    var point=chapterTrail.StagePosition(liveStage);
-                    Pos(currentMilestoneLabel.rectTransform,new Vector2(.5f,.5f),
-                        new Vector2(.5f,.5f),point.x,point.y,31f,28f);
-                }
-                for(int i=0;i<bossMilestoneLabels.Length;i++)
-                {
-                    int bossStep=(i+1)*5;
-                    var label=bossMilestoneLabels[i];
-                    label.gameObject.SetActive(bossStep!=liveStage);
-                    var point=chapterTrail.StagePosition(bossStep);
-                    Pos(label.rectTransform,new Vector2(.5f,.5f),
-                        new Vector2(.5f,.5f),point.x,point.y,31f,28f);
-                }
                 int currentChapter=Math.Max(1,p.LastClearedStage/25+1);
                 if(p.LastClearedStage>0 && p.LastClearedStage%25==0)
                     currentChapter=p.LastClearedStage/25+1;
@@ -836,6 +818,27 @@ namespace Eldoria.UI.RoyalGold.V2
                         ?new Vector2(.04f,.13f):new Vector2(.10f,.06f);
                     chapterTrail.rectTransform.anchorMax=wide
                         ?new Vector2(.42f,.86f):new Vector2(.90f,.54f);
+                }
+                // Update labels only AFTER the Engendro-relative trail
+                // anchors are chosen. Otherwise the captured stage-15 numbers
+                // can retain coordinates from a different panel size.
+                int liveStage=p.LastClearedStage%25+1;
+                if(currentMilestoneLabel)
+                {
+                    currentMilestoneLabel.Put(liveStage.ToString());
+                    currentMilestoneLabel.gameObject.SetActive(true);
+                    var point=chapterTrail.StagePosition(liveStage);
+                    Pos(currentMilestoneLabel.rectTransform,new Vector2(.5f,.5f),
+                        new Vector2(.5f,.5f),point.x,point.y,31f,28f);
+                }
+                for(int i=0;i<bossMilestoneLabels.Length;i++)
+                {
+                    int bossStep=(i+1)*5;
+                    var label=bossMilestoneLabels[i];
+                    label.gameObject.SetActive(bossStep!=liveStage);
+                    var point=chapterTrail.StagePosition(bossStep);
+                    Pos(label.rectTransform,new Vector2(.5f,.5f),
+                        new Vector2(.5f,.5f),point.x,point.y,31f,28f);
                 }
                 if(sceneArtwork.BossEncounter!=boss)
                 {
