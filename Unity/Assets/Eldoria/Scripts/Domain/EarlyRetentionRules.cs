@@ -12,7 +12,16 @@ namespace Eldoria.Domain
         public int Kind, Period, Slot;
         public long StartedUtcTicks, EndsUtcTicks;
         public bool Claimed;
-        public ScoutOrder Copy() => (ScoutOrder)MemberwiseClone();
+        // Actual reserved troops return at the UTC deadline, not when the prize is claimed.
+        public string HeroId="aldric";
+        public ArmyRoster Troops=new ArmyRoster();
+        public bool TroopsReturned;
+        public ScoutOrder Copy()
+        {
+            var copy=(ScoutOrder)MemberwiseClone();
+            copy.Troops=Troops?.Copy()??new ArmyRoster();
+            return copy;
+        }
     }
 
     [Serializable] public sealed class EarlyRetentionState
@@ -129,6 +138,14 @@ namespace Eldoria.Domain
         {
             if(s==null)return false;
             var p=Get(s);bool changed=false;
+            foreach(var order in p.Orders)
+            {
+                if(order==null||order.StartedUtcTicks<=0||order.EndsUtcTicks>utcNow||order.TroopsReturned)continue;
+                if(order.Troops!=null&&order.Troops.Total>0)
+                    MarchCapacityRules.Return(s,order.Troops);
+                order.TroopsReturned=true;
+                changed=true;
+            }
             if(ScoutsUnlocked(s))
             {
                 long period=Period(utcNow);
@@ -188,11 +205,15 @@ namespace Eldoria.Domain
             {
                 if(!int.TryParse(target,out int stage) || stage!=p.LastClearedStage+1 ||
                    !StageUnlocked(s,stage)){message="Etapa aún no desbloqueada";return false;}
-                var available=s.Available?.Copy();
-                if(available==null||available.Total<1){message="Necesitas tropas disponibles";return false;}
+                if(!MarchCapacityRules.CanStart(s,utcNow)){message="Las tres marchas están ocupadas";return false;}
                 string hero=s.ChapterThree!=null&&s.ChapterThree.LyraRecruited&&
                     (s.PreparedHeroId=="lyra"||s.PreparedHeroId=="aldric+lyra")
                     ?s.PreparedHeroId:"aldric";
+                var available=s.MarchConfigured&&s.PreparedTroops!=null&&s.PreparedTroops.Total>0?
+                    s.PreparedTroops.Copy():
+                    MarchCapacityRules.AutoSelect(s.Available,MarchCapacityRules.Capacity(s,hero));
+                if(!MarchCapacityRules.Fits(available,s.Available,MarchCapacityRules.Capacity(s,hero)))
+                {message="La composición supera la capacidad de marcha o no está disponible";return false;}
                 var enemy=Stage(stage);
                 var army=ExpeditionWithMastery(s,available,hero);
                 var battle=SliceRules.FightCreature(army,enemy.Enemy);
@@ -238,13 +259,23 @@ namespace Eldoria.Domain
             if(kind=="ScoutDispatch")
             {
                 if(order.StartedUtcTicks!=0){message="Encargo ya enviado";return false;}
-                if(s.Available==null||s.Available.Total<1){message="No hay tropas disponibles";return false;}
+                if(!MarchCapacityRules.CanStart(s,utcNow)){message="Las tres marchas están ocupadas";return false;}
+                // Twelve troops is a provisional scout detachment, not a balance reward.
+                // It reserves REAL units so three orders cannot share the same army.
+                var party=MarchCapacityRules.AutoSelect(s.Available,
+                    Math.Min(12,MarchCapacityRules.Capacity(s,"aldric")));
+                if(!MarchCapacityRules.Fits(party,s.Available,MarchCapacityRules.Capacity(s,"aldric")))
+                {message="No hay tropas disponibles";return false;}
                 if(order.Kind==0)
                 {
-                    var fight=SliceRules.FightCreature(ExpeditionWithMastery(s,s.Available,"aldric"),
+                    var fight=SliceRules.FightCreature(ExpeditionWithMastery(s,party,"aldric"),
                         new WorldCreatureStats(430,48,43,18,0,0));
                     if(!fight.Won){message="La patrulla es demasiado fuerte; refuerza tropas";return false;}
                 }
+                MarchCapacityRules.Reserve(s,party);
+                order.HeroId="aldric";
+                order.Troops=party;
+                order.TroopsReturned=false;
                 order.StartedUtcTicks=utcNow;
                 order.EndsUtcTicks=checked(utcNow+TimeSpan.FromSeconds(ScoutDurationSeconds(order.Kind)).Ticks);
                 message="Exploradores enviados; volverán con su informe";
