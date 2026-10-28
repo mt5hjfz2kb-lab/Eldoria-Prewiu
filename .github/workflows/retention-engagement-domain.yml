@@ -1,0 +1,31 @@
+name: Eldoria early retention — tactical guardians and discovery stories
+on:
+  push:
+    branches: [feature/retention-engagement-evolution-20261028]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs'
+      - 'Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs'
+      - 'tools/early-retention/**'
+      - '.github/workflows/retention-engagement-domain.yml'
+  pull_request:
+    branches: [main, feature/global-march-capacity-three-slots-20261028]
+permissions:
+  contents: read
+jobs:
+  domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            tools/early-retention
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile the real gateway plus guardian and narrative regression cases
+        run: dotnet run --configuration Release --project tools/early-retention/Smoke.csproj
