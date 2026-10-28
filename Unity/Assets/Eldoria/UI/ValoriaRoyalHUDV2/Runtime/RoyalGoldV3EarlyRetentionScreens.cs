@@ -565,8 +565,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(opponent.rectTransform,20f,54f,iw-40f,55f);
                 TL(formation.rectTransform,20f,110f,iw-40f,32f);
                 TL(reward.rectTransform,20f,153f,iw-40f,38f);
-                TL(passive.rectTransform,20f,198f,iw-40f,48f);
-                TL(battleFeedback.rectTransform,20f,250f,iw-40f,33f);
+                TL(passive.rectTransform,20f,196f,iw-40f,41f);
+                TL(battleFeedback.rectTransform,20f,240f,iw-40f,30f);
                 TL((RectTransform)mainAction.transform,iw*.51f,ih-61f,
                     iw*.46f,48f);
                 TL((RectTransform)claimXp.transform,20f,ih-60f,
