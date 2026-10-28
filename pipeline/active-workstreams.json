@@ -1809,6 +1809,39 @@
       "phase": "VISUAL_REFERENCE_MISMATCH_REQUIRES_COMPOSITION_CORRECTION",
       "test_harness_scope_note": "Owner-authorized PR119/120 completion: repair only stale frozen-web fresh-save Arc-I Fissure assertions (retired INSPECCIONAR/recruit-before-victory sequence) to match the already-approved real Bastion III investigation/contact/assault/recruit/manuscript journey. No frozen-web gameplay changes, no new Bastion IV/V work. Exact file unclaimed by any other active owner. Preserve native owner/revision5 and existing Windows queue. Current continuation: fix only the observed transient hidden-navigation tap in legacy Codex/Relicario QA by waiting for a genuine visible, actionable navigation button; preserve all assertions, no production web edits.",
       "certification_scope_note": "PR119/120 completion: reuse successful exact shared-UI certification40700893871 at1f418a29274664904556aa3478dc1520e495e30b only when git comparison proves every changed file belongs to the separately native-certified Retention module, documentation or this approved legacy QA harness, and all shared certification steps remain byte-identical. Shared-domain/world/UI changes still require the full gate. Native retention proof+17images and postmerge main gates remain mandatory. Preserve current live owner/revision5/Windows queue."
+    },
+    {
+      "id": "eldoria-aldric-city-roaming-20261028",
+      "title": "PR122 — Aldric auténtico animado paseando por Valoria",
+      "owner": "codex-pr120-exact-visual-pr122-20261028",
+      "ownership_revision": 1,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/aldric-city-roaming-20261028",
+      "pr": 122,
+      "claimed_at": "2026-10-28T17:08:00Z",
+      "resources": [],
+      "scope": [
+        "Unity/Assets/Eldoria/AldricCity/**",
+        "Unity/Assets/Eldoria/AldricCity.meta",
+        "Unity/Assets/StreamingAssets/Eldoria/Aldric/**",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs.meta",
+        "tools/aldric-city/**",
+        "docs/aldric-city/**",
+        ".github/workflows/aldric-city-native.yml",
+        ".github/workflows/aldric-city-domain.yml",
+        ".github/workflows/aldric-city-reconstruct.yml"
+      ],
+      "phase": "SOURCE_PREPARATION_ONLY_WAITING_FOR_PR120",
+      "next": "Correct confirmed C# Application namespace collision and frame-count waits in source. No Unity dispatch or heavy-resource claim until PR120 completes, is merged and finishes its required native queue. Preserve exact approved10.14MB GLB/hash/26bones/5clips; inspect actual native movement, route, scale and hiding before merge.",
+      "delivery_definition": {
+        "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
+        "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
+        "handoff": "Same PR122 and original source assets; no duplicate PR or paid credits"
+      },
+      "budget_eur": 0
     }
   ],
   "history": [
