@@ -168,6 +168,13 @@ namespace Eldoria.ReferenceClean.Editor
             Need(ui.VigilantsShortcut.gameObject.activeInHierarchy &&
                 !ui.ScoutsShortcut.gameObject.activeInHierarchy,
                 "One early Vigilant trial unlocked but Scouts is still hidden");
+            var actualCompass=Resources.Load<Sprite>("EldoriaRetention/vigilants-compass");
+            var actualCrest=Resources.Load<Sprite>("EldoriaRetention/scouts-crest");
+            Need(actualCompass && actualCrest,
+                "Previously-authored original Valoria crest and compass art load from the real game resources");
+            Need(ui.VigilantsShortcut.GetComponentsInChildren<Image>(true).Any(x=>
+                    x.sprite==actualCompass && !x.raycastTarget),
+                "The actual unlocked Vigilants button shows the real Valoria compass, with no extra touch blocker");
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             Need(ui.IsOpen,"Vigilants' independent full-screen scene opens");
             Screenshot(h,"vigilants-first-trial",1600,900);
@@ -177,6 +184,9 @@ namespace Eldoria.ReferenceClean.Editor
             Need(ui.VigilantsShortcut.gameObject.activeInHierarchy &&
                 ui.ScoutsShortcut.gameObject.activeInHierarchy,
                 "After first March both activity entries legitimately unlock");
+            Need(ui.ScoutsShortcut.GetComponentsInChildren<Image>(true).Any(x=>
+                    x.sprite==actualCrest && !x.raycastTarget),
+                "The actual unlocked Scouts button shows the genuine Valoria crest art");
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             Need(ui.IsOpen,"Vigilants opens after first barracks");
             Screenshot(h,"vigilants-chapter-one",1600,900);
