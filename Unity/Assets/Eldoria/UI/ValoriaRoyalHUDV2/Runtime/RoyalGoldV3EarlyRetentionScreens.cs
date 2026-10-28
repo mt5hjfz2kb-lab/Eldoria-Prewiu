@@ -32,7 +32,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RectTransform safe, screenRect, panelRoot, heroScene, infoCard, victoryBanner;
         CanvasGroup victoryGroup;
         RoyalText victoryTitle, victoryDetail;
-        float victoryUntil, victoryStarted;
+        float victoryUntil, victoryStarted, discoverySealPulseUntil;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
@@ -638,6 +638,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 victoryTitle.color=Gold;
                 victoryDetail.Put(discovered?EarlyRetentionRules.ScoutDiscoveryText(order):result.Message);
                 victoryStarted=Time.unscaledTime;
+                if(discovered)discoverySealPulseUntil=Time.unscaledTime+.85f;
                 victoryUntil=victoryStarted+(discovered?5f:1.9f);
                 victoryGroup.alpha=1f;
                 victoryGroup.blocksRaycasts=false;
@@ -685,6 +686,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 float elapsed=Mathf.Max(0f,Time.unscaledTime-victoryStarted);
                 float spring=1f-Mathf.Exp(-elapsed*11f);
                 victoryBanner.localScale=Vector3.one*(.95f+.05f*spring);
+            }
+            if(progressPlaque)
+            {
+                // Brief wax-seal reveal, visible after the REAL successful claim.
+                // No repeating fireworks, extra textures or touch blockers.
+                float pulse=Mathf.Clamp01((discoverySealPulseUntil-Time.unscaledTime)/.85f);
+                progressPlaque.localScale=Vector3.one*(1f+.055f*pulse);
+                for(int i=0;i<discoveryPins.Length;i++)
+                    if(discoveryPins[i])discoveryPins[i].rectTransform.localScale=
+                        Vector3.one*(1f+.12f*pulse);
             }
             if(Time.unscaledTime<nextUpdate)return;
             nextUpdate=Time.unscaledTime+.3f;
@@ -1196,7 +1207,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     sceneArtwork.BossEncounter=boss;
                     sceneArtwork.SetVerticesDirty();
                 }
-                kicker.Put(boss?"GUARDIÁN · "+EarlyRetentionRules.CombatAdvice(info):
+                kicker.Put(boss?"GUARDIÁN · "+EarlyRetentionRules.GuardianBadge(info):
                     "Protege las fronteras de Valoria y supera a sus guardianes.");
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
                 opponent.Put(info.Name+"\n"+info.Trait);
