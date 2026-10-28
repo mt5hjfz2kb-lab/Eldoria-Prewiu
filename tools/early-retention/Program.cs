@@ -115,7 +115,20 @@ static class Program
         var claim=Command(g,"claim","ScoutClaim",order.Id);
         Require(g.Execute(claim).Ok,"Real offline return claim");
         int after=g.Snapshot().Retention.AldricExperience;
+        var discovery=g.Snapshot().Retention;
+        Require(discovery.ScoutDiscoveries==1&&discovery.LatestScoutKind==order.Kind,
+            "Actual scout claim writes exactly one personal discovery");
+        Require(discovery.ScoutDiscoveryMask==(1<<order.Kind),
+            "Actual report lights its correct cartographer map seal");
+        Require(discovery.LatestScoutReportId==order.Id&&discovery.LatestScoutVariant==
+            EarlyRetentionRules.ScoutReportVariant(order),
+            "Saved narrative depends only on real mission identity");
         Require(g.Execute(claim).Ok&&g.Snapshot().Retention.AldricExperience==after,"No double scout claim");
+        Require(g.Snapshot().Retention.ScoutDiscoveries==1,"Replay never makes a duplicate report");
+        g=new LocalGateway(clock,store);
+        Require(g.Snapshot().Retention.LatestScoutReportId==order.Id&&
+                g.Snapshot().Retention.ScoutDiscoveryMask==(1<<order.Kind),
+            "Last authored map discovery persists through save reload");
         clock.Add(30*24*3600);g=new LocalGateway(clock,store);
         Require(g.Snapshot().Retention.Orders.Count(x=>!x.Claimed)<=6,"Max six pending orders offline");
         Console.WriteLine("EARLY_RETENTION_DOMAIN_SMOKE=PASS");
