@@ -63,6 +63,19 @@ jobs:
               hashes.append(hashlib.sha256(content).hexdigest())
               print(f"{stem}: PNG 640x640, palette, CRC, importer and pixel variety PASS")
           assert hashes[0]!=hashes[1],"Both activities cannot display the same illustration"
+          # Real painterly references are our primary mobile-safe backgrounds.
+          # Exact hashes protect the approved art from accidental replacement.
+          expected={
+            "vigilants-painterly":"c3eb70f297234c817777010847d54696fe35b18f4020dd1d2bce347b45da5e3e",
+            "scouts-painterly":"a1fd378bdadb61b19bde8655ca23597c3e59d2bc86a521c425f6991663c2698c"}
+          for stem,wanted in expected.items():
+              f=root/(stem+".jpg")
+              content=f.read_bytes()
+              assert content.startswith(b"\\xff\\xd8") and content.endswith(b"\\xff\\xd9"),f"Corrupt original JPEG {stem}"
+              assert len(content)>60000,f"Unexpectedly low-detail scenery {stem}"
+              assert hashlib.sha256(content).hexdigest()==wanted,f"Painterly visual SHA drift {stem}"
+              assert f.with_suffix(".jpg.meta").is_file(),f"Missing Unity importer for {stem}"
+              print(f"{stem}: original painterly JPEG + Unity importer + SHA PASS")
           PY
       - name: Keep genuine illustrated backgrounds for visual review
         uses: actions/upload-artifact@v4
@@ -71,4 +84,6 @@ jobs:
           path: |
             Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-illustration.png
             Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-illustration.png
+            Unity/Assets/Eldoria/Resources/EldoriaRetention/vigilants-painterly.jpg
+            Unity/Assets/Eldoria/Resources/EldoriaRetention/scouts-painterly.jpg
           retention-days: 14
