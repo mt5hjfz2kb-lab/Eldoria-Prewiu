@@ -625,14 +625,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 // The real gateway result supplies the reward text unchanged.
                 float bannerWidth=Mathf.Min(heroScene.rect.width-24f,
                     portrait?380f:615f);
-                float bannerHeight=portrait?134f:178f;
+                float bannerHeight=portrait?176f:208f;
                 Pos(victoryBanner,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
                     0f,0f,bannerWidth,bannerHeight);
                 TL(victoryTitle.rectTransform,15f,10f,bannerWidth-30f,
-                    portrait?47f:63f);
-                TL(victoryDetail.rectTransform,16f,portrait?63f:78f,
-                    bannerWidth-32f,portrait?58f:83f);
-                victoryTitle.fontSize=portrait?33:47;
+                    portrait?72f:90f);
+                TL(victoryDetail.rectTransform,16f,portrait?88f:107f,
+                    bannerWidth-32f,portrait?76f:89f);
+                victoryTitle.fontSize=portrait?28:36;
                 victoryDetail.fontSize=portrait?19:25;
             }
             // Keep the portrait manuscript above the fixed bottom footer.

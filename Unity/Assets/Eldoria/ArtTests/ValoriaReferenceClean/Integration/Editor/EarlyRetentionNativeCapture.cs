@@ -119,7 +119,9 @@ namespace Eldoria.ReferenceClean.Editor
                 if(string.IsNullOrWhiteSpace(label.text) ||
                     label.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.01f))continue;
                 Need(label.preferredHeight<=label.rectTransform.rect.height+1f,
-                    "Complete visible text fits actual capture layout: "+label.name);
+                    "Complete visible text fits actual capture layout: "+label.name+
+                    " [required="+label.preferredHeight+", available="+
+                    label.rectTransform.rect.height+", text="+label.text+"]");
             }
         }
         static void ClickReal(RoyalButton button,string label)
