@@ -467,8 +467,9 @@ namespace Eldoria.Application
                 if(active.Phase!="idle"&&active.TargetId==targetId)return true;
             return false;
         }
-        private bool CanDepart() => state.ChapterThree.InvestigationEndsUtcTicks==0 &&
-            MarchCapacityRules.CanStart(state,clock.UtcTicks) && state.Available.Total>0;
+        // An investigation occupies ONE of three global slots, not the entire kingdom.
+        private bool CanDepart() => MarchCapacityRules.CanStart(state,clock.UtcTicks) &&
+            state.Available.Total>0;
         private bool Depart(string targetId)
         {
             var planned=new System.Collections.Generic.List<WorldRoutePoint>();
