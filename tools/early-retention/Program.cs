@@ -29,10 +29,34 @@ static class Program
         for(int i=1;i<=100;i++){
             var stage=EarlyRetentionRules.Stage(i);
             Require(stage.Chapter==(i-1)/25+1&&stage.Step==(i-1)%25+1,"25-stage chapter math");
-            if(i%5==0)Require(stage.Name==((stage.Step==15)?
-                "Engendro de la Brecha":"Guardián del umbral"),
-                "Every fifth stage has the lore-correct guardian, never a golem");
+            if(i%5==0)Require(stage.Name==EarlyRetentionRules.GuardianName(stage.Step),
+                "Every fifth stage has a unique lore-correct tactical guardian");
             if(i==3)Require(stage.Name=="Corrupto errante","No stone golems in Eldoria");
+        }
+        var bosses=new[]{5,10,15,20,25}.Select(EarlyRetentionRules.Stage).ToArray();
+        Require(bosses.Select(b=>b.Name).Distinct().Count()==5,"Five distinctive guardian identities");
+        Require(bosses.Select(b=>b.Trait).Distinct().Count()==5,"Five different guardian strengths");
+        Require(bosses.All(b=>EarlyRetentionRules.GuardianHint(b.Step).Length>20),
+            "Every guardian has a meaningful counter-strategy");
+        int attack10=22+10*4+(int)Math.Round(10d*10*.12,MidpointRounding.AwayFromZero)+22;
+        int baseDefense5=19+5*3+(int)Math.Round(5d*5*.09,MidpointRounding.AwayFromZero)+18;
+        Require(EarlyRetentionRules.Stage(10).Enemy.Attack>attack10,"Fast assault has genuine extra attack");
+        Require(EarlyRetentionRules.Stage(5).Enemy.Defense>baseDefense5,"Armor guardian has genuine defense");
+        Require(EarlyRetentionRules.Stage(15).Enemy.Break>12+15*2+15,
+            "Spawnling guardian has genuine extra rupture");
+        Require(EarlyRetentionRules.Stage(20).Enemy.Health>200+20*27+20*20*.85+190,
+            "Endurance guardian has genuine extra health");
+        var weakened=EarlyRetentionRules.Stage(5);
+        var insight=EarlyRetentionRules.CombatInsight(weakened,new CombatStats(20,20,100,5,150),
+            new CombatReport(false,0,6,""));
+        Require(insight.Contains("DERROTA")&&insight.Contains("Ruptura")&&insight.Contains("150"),
+            "Report references true outcome, commander power and counter");
+        var seen=new System.Collections.Generic.HashSet<string>();
+        for(int kind=0;kind<4;kind++)
+        for(int variant=0;variant<3;variant++){
+            var heading=EarlyRetentionRules.ScoutReportHeading(kind,variant);
+            Require(seen.Add(heading)&&EarlyRetentionRules.ScoutReportStory(kind,variant).Length>40,
+                "Twelve distinct meaningful expedition discoveries");
         }
         // Regression guard for the REAL Bastion II sequence. Scout unlock
         // must share ConfigureMarch's save revision; it cannot invalidate
