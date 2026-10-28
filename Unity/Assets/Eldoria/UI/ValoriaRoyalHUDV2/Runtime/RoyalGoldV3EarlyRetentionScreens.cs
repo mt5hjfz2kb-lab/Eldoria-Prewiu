@@ -762,6 +762,19 @@ namespace Eldoria.UI.RoyalGold.V2
                     }
                     var order=list[i];
                     scoutIds[i]=order.Id;
+                    // A real job type keeps the same miniature as board slots
+                    // refill or reorder. The picture is decorative, not gameplay.
+                    if(scoutThumbnails[i])
+                    {
+                        float mapX=.055f+Mathf.Clamp(order.Kind,0,3)*.225f;
+                        scoutThumbnails[i].uvRect=new Rect(mapX,.14f,.21f,.56f);
+                        bool readyToClaim=order.StartedUtcTicks>0 &&
+                            order.EndsUtcTicks<=now();
+                        scoutThumbnails[i].color=readyToClaim
+                            ?new Color(1f,.96f,.83f,1f)
+                            :order.StartedUtcTicks>0
+                                ?new Color(.82f,.88f,1f,1f):Color.white;
+                    }
                     if(scoutArt[i])
                     {
                         bool completed=order.StartedUtcTicks>0&&order.EndsUtcTicks<=now();
