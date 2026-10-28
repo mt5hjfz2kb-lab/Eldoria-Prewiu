@@ -609,7 +609,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     victoryTitle.Put(report.Won?"VICTORIA":"DERROTA");
                     victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
-                    victoryDetail.Put(report.Reason);
+                    victoryDetail.Put(report.Reason+
+                        (report.Won?"\n"+result.Message:""));
                     victoryStarted=Time.unscaledTime;
                     victoryUntil=victoryStarted+3.2f;
                     victoryGroup.alpha=1f;
@@ -827,7 +828,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(victoryDetail.rectTransform,16f,portrait?100f:107f,
                     bannerWidth-32f,portrait?96f:89f);
                 victoryTitle.fontSize=portrait?32:36;
-                victoryDetail.fontSize=portrait?26:25;
+                victoryDetail.fontSize=portrait?24:23;
             }
             // Keep the portrait manuscript above the fixed bottom footer.
             // The final scout card and claim-XP button previously extended
@@ -1026,10 +1027,11 @@ namespace Eldoria.UI.RoyalGold.V2
                     string story=EarlyRetentionRules.ScoutReportStory(p.LatestScoutKind,p.LatestScoutVariant);
                     // Condensed only on the small painted map; full authored
                     // narrative is displayed after the actual claim.
-                    int maxCharacters=height>width?58:compactLandscape?56:88;
+                    int maxCharacters=height>width?48:compactLandscape?54:75;
                     if(story.Length>maxCharacters)story=story.Substring(0,maxCharacters-3)+"…";
-                    scoutStoryPreview.fontSize=height>width?26:compactLandscape?22:18;
-                    scoutStoryPreview.Put(title+"\n"+story);
+                    scoutStoryPreview.fontSize=height>width?24:compactLandscape?22:18;
+                    scoutStoryPreview.Put(title+"\n"+story+"\n"+
+                        EarlyRetentionRules.ScoutRewardText(p.LatestScoutKind));
                 }
             }
             if(scoutDiscoveryRibbon)
