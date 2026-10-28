@@ -46,10 +46,11 @@ jobs:
           checks=['ValoriaIntegratedWorld','GltfImport','GameObjectInstantiator','UnityWebRequest',
             'ApprovedSha256','ALDRIC_CITY_SAFE_ROUTE_VERIFIED','SkinnedMeshRenderer',
             'Aldric_Idle_v1','Aldric_Walk_v1','Axial_Paving','RoadWaypoints',
-            'IsCityActorVisible','March.HeroId','InvestigationEndsUtcTicks']
+            'IsCityActorVisible','March.HeroId','InvestigationEndsUtcTicks',
+            'WorldToViewportPoint','SceneManager.sceneLoaded','nextAwayRefresh']
           for part in checks:
               assert part in code,part
-          for forbidden in ['new LocalGateway(', 'new FileStateStore(', 'SaveFile =']:
+          for forbidden in ['new LocalGateway(', 'new FileStateStore(', 'SaveFile =', 'distance <= 95f']:
               assert forbidden not in code,forbidden
           model=Path('Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb')
           assert model.is_file() and model.stat().st_size==10140372
