@@ -277,7 +277,8 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingLevel = Text("Real level", buildingCard, 18, Gold);
             buildingClose = Button("Close selected building", buildingCard, out var closeBuildingText, false);
             closeBuildingText.Put("×");
-            closeBuildingText.fontSize = 30;
+            closeBuildingText.fontSize = 24;
+            Stretch(closeBuildingText.rectTransform, 2f);
             buildingClose.onClick.AddListener(() => { if (Source) Source.SelectBuilding(""); });
 
             var scrollRoot = NewRect("Scrollable real building details", buildingCard);
@@ -490,7 +491,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Top(buildingTitle.rectTransform, textLeft, 10f, middleWidth, 35f);
             buildingTitle.fontSize = portrait ? 22 : 30;
             Top(buildingLevel.rectTransform, textLeft, 44f, middleWidth, 22f);
-            Top((RectTransform)buildingClose.transform, cardWidth - 38f, 5f, 33f, 33f);
+            Top((RectTransform)buildingClose.transform, cardWidth - 49f, 5f, 44f, 44f);
             Top((RectTransform)buildingScroll.transform, textLeft, 71f,
                 middleWidth, portrait ? 50f : cardHeight - 79f);
             Stretch(scrollViewport, 0);
@@ -716,7 +717,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (Source.Realm.Realm)
                 {
                     Top(Source.Realm.Realm.rectTransform, titleX,
-                        portrait ? 5f : 10f, realmWidth - titleX - 2f, 28f);
+                        5f, realmWidth - titleX - 2f, portrait ? 28f : 36f);
                     Source.Realm.Realm.fontSize = portrait ? 20 : 27;
                 }
                 if (Source.Realm.Power)
