@@ -122,8 +122,8 @@ namespace Eldoria.Domain
                     case 10: atk+=21+chapter*3;break; // Relentless assault
                     case 15: brk+=27+chapter*4;def+=10;break; // Breach spawnling
                     case 20: hp+=250+chapter*28;break; // Endurance
-                    case 25: atk+=12+chapter*2;def+=12+chapter*2;
-                             hp+=130+chapter*18;break; // Final guardian
+                    case 25: atk+=6+chapter*2;def+=10+chapter*2;
+                             hp+=24+chapter*5;break; // Balanced, still beatable by the existing developed army
                 }
             }
             var enemy=new WorldCreatureStats(hp,atk,def,brk,0,0);
