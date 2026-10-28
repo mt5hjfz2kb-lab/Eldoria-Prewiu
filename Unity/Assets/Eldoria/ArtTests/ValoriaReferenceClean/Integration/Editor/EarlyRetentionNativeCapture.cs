@@ -208,6 +208,26 @@ namespace Eldoria.ReferenceClean.Editor
             Screenshot(h,"vigilants-real-victory",1600,900);
             Screenshot(h,"vigilants-real-victory",900,1600);
             ui.Close();
+            // Art/Lore parity: the approved fifteenth stage uses the actual
+            // Bastion-II Engendro resource, never a stone golem. Only alter the
+            // disposable native-probe save, not the owner's player data.
+            s=h.City.Gateway.Snapshot();
+            s.Retention.LastClearedStage=14;
+            new FileStateStore(h.City.SaveFile).Save(s);
+            h.City.ReloadForProbe();
+            yield return null;
+            yield return new WaitForSecondsRealtime(.35f);
+            ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
+            Need(ui.IsOpen,"Stage 15 opens in the real campaign");
+            var engendroArt=hud.GetComponentsInChildren<RawImage>(true)
+                .FirstOrDefault(x=>x.name=="Engendro / authentic creature illustration");
+            Need(engendroArt!=null && engendroArt.gameObject.activeInHierarchy &&
+                engendroArt.texture!=null &&
+                engendroArt.texture.name.Contains("engendro"),
+                "Stage 15 displays Eldoria's genuine Engendro render, not a golem");
+            Screenshot(h,"vigilants-stage15-engendro",1600,900);
+            Screenshot(h,"vigilants-stage15-engendro",900,1600);
+            ui.Close();
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Scouts);
             Need(ui.IsOpen&&ui.OpenDestination==RoyalGoldV3EarlyRetentionScreens.Destination.Scouts,
                 "Scouts has separate scene, not Codex or Missions overlay");
