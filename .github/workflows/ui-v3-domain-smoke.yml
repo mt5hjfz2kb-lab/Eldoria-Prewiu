@@ -66,7 +66,7 @@ jobs:
               throw Error('Do not manage another workstream native queue');
             const nativePaths=new Set(['.github/workflows/ui-progression-cert.yml','.github/workflows/early-retention-native.yml']);
             const batches=await Promise.all([...nativePaths].map(workflow_id=>
-              github.rest.actions.listWorkflowRuns({...context.repo,workflow_id,branch,per_page:30})));
+              github.rest.actions.listWorkflowRuns({...context.repo,workflow_id:workflow_id.split('/').pop(),branch,per_page:30})));
             const runs=batches.flatMap(r=>r.data.workflow_runs);
             const neverStarted=jobs=>jobs.length===1 && jobs.every(j=>j.status==='queued' && !j.runner_id && !j.runner_name && (j.steps||[]).length===0);
             for(const run of runs) {
