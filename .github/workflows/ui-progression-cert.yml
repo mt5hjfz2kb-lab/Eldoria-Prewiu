@@ -374,10 +374,16 @@ jobs:
             [double]$newArea=$newW*$newH
             [double]$gain=$newArea-$oldArea
             Write-Host ("ELDORIA_V3_FREE_VIEWPORT capture={0} V2={1:N1}% V3={2:N1}% gain={3:N1}pp" -f $capture,($oldArea*100),($newArea*100),($gain*100))
-            # An eight-percentage-point increase is meaningful; leave V2
-            # untouched if the contextual cards merely moved the occlusion.
-            if($gain -lt .08){
-              throw "V3 did not reclaim at least 8 percentage points of real free scene: $capture"
+            # Owner's 27/10 Crónica Real restores the illustrated BOTTOM
+            # cartouche in both orientations. The earlier right-sheet V3
+            # proposal's +8pp landscape target no longer describes that design.
+            # Retain strict no-regression against the exact V2 baseline and
+            # the +8pp portrait gain, plus successful full-model framing above.
+            if($gain -lt 0.0){
+              throw "Approved bottom cartouche reduced real free scene versus V2: $capture"
+            }
+            if($capture -like '*portrait*' -and $gain -lt .08){
+              throw "Portrait did not reclaim at least 8 percentage points of real free scene: $capture"
             }
           }
           # Independent destinations have no visible city viewport by design;
