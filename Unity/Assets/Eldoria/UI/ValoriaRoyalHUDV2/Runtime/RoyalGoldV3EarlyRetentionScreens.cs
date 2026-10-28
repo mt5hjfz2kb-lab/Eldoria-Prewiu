@@ -588,13 +588,20 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             if(victoryBanner)
             {
-                float bannerWidth=Mathf.Min(heroScene.rect.width-18f,330f);
-                float bannerHeight=112f;
+                // A genuine, readable moment of triumph: larger gilded
+                // announcement, still only three seconds and never a modal.
+                // The real gateway result supplies the reward text unchanged.
+                float bannerWidth=Mathf.Min(heroScene.rect.width-24f,
+                    portrait?380f:615f);
+                float bannerHeight=portrait?134f:178f;
                 Pos(victoryBanner,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
                     0f,0f,bannerWidth,bannerHeight);
-                TL(victoryTitle.rectTransform,12f,7f,bannerWidth-24f,35f);
-                TL(victoryDetail.rectTransform,12f,44f,bannerWidth-24f,58f);
-                victoryDetail.fontSize=portrait?14:16;
+                TL(victoryTitle.rectTransform,15f,10f,bannerWidth-30f,
+                    portrait?47f:63f);
+                TL(victoryDetail.rectTransform,16f,portrait?63f:78f,
+                    bannerWidth-32f,portrait?58f:83f);
+                victoryTitle.fontSize=portrait?33:47;
+                victoryDetail.fontSize=portrait?19:25;
             }
             // Keep the portrait manuscript above the fixed bottom footer.
             // The final scout card and claim-XP button previously extended
