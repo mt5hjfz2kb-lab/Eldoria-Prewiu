@@ -12,11 +12,12 @@
     "Single RoyalHUD, guarded progress-only shortcuts, no real save changes",
     "Twelve real captures including narrow390x844; assert complete visible text fits",
     "Dispatch and claim all three cards with real raycasts, return, reload persisted progress",
-    "Capture stage15 authentic Engendro in all three resolutions; keep all25 milestones visible"
+    "Capture stage15 authentic Engendro in all three resolutions; keep all25 milestones visible",
+    "Validate actual phone labels while all3scouts are underway and ready to claim"
   ],
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 16,
-  "note": "Reconcile latest painterly/lore/button art with PR119 viewport/reset fixes, idle8h cap correction,15 native PNGs, typography-fit, all3 scout dispatch/claims, real heroXP claim and save reload. Technical PASS never replaces inspection of exact images. Fix native0e6f730 runtime Graphic collision: construct one final red/blue Graphic on each original button. Rerun full15capture/action/claim/XP/reload proof."
+  "revision": 17,
+  "note": "Reconcile latest painterly/lore/button art with PR119 viewport/reset fixes, idle8h cap correction,15 native PNGs, typography-fit, all3 scout dispatch/claims, real heroXP claim and save reload. Technical PASS never replaces inspection of exact images. Fix native0e6f730 runtime Graphic collision: construct one final red/blue Graphic on each original button. Rerun full15capture/action/claim/XP/reload proof. Widen portrait action targets for EN CAMINO and RECOGER and verify both live states with two extra phone captures (17 total)."
 }

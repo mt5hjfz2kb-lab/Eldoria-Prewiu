@@ -316,10 +316,13 @@ namespace Eldoria.ReferenceClean.Editor
             }
             var sent=h.City.Gateway.Snapshot().Retention.Orders.Where(x=>x.StartedUtcTicks>0).ToArray();
             Need(sent.Length==3,"All three cards dispatch and persist their genuine UTC return time");
+            Screenshot(h,"scout-missions-underway",390,844);
             var clock=h.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
             Need(clock!=null,"Only disposable probe clock advances for offline return proof");
             clock.Step((int)Math.Ceiling((sent.Max(x=>x.EndsUtcTicks)-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)+1);
             ui.SynchronizeLayout();
+            yield return null;
+            Screenshot(h,"scout-missions-ready",390,844);
             yield return null;
             for(int i=3;i>=1;i--)
             {

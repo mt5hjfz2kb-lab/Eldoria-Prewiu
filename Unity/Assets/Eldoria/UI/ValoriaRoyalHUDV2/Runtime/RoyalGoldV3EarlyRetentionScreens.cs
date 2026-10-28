@@ -623,15 +623,15 @@ namespace Eldoria.UI.RoyalGold.V2
                     TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
                     float tab=Mathf.Clamp((iw-24f)*.14f,35f,65f);
                     float captionX=tab+22f;
-                    float contentWidth=Mathf.Max(75f,iw-(portrait?115f:153f)-captionX);
+                    float contentWidth=Mathf.Max(75f,iw-(portrait?166f:153f)-captionX);
                     float titleTop=Mathf.Max(13f,spacing*.18f);
                     TL(scoutTitles[i].rectTransform,captionX,titleTop,
                         contentWidth,Mathf.Min(36f,spacing*.24f));
                     TL(scoutCards[i].rectTransform,captionX,titleTop+41f,
                         contentWidth,Mathf.Max(51f,spacing-titleTop-50f));
                     TL((RectTransform)scoutActions[i].transform,
-                        iw-(portrait?112f:150f),spacing*.5f-19f,
-                        portrait?87f:120f,40f);
+                        iw-(portrait?163f:150f),spacing*.5f-(portrait?29f:19f),
+                        portrait?138f:120f,portrait?58f:40f);
                     scoutTitles[i].fontSize=portrait?25:21;
                     scoutTitles[i].alignment=TextAnchor.MiddleLeft;
                     scoutCards[i].fontSize=portrait?21:18;
