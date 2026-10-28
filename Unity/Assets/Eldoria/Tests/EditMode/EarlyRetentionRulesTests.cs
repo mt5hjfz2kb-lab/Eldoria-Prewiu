@@ -13,7 +13,7 @@ namespace Eldoria.Tests
             public long UtcTicks{get;set;}=new DateTime(2026,10,28,0,0,0,DateTimeKind.Utc).Ticks;
             public void AddSeconds(long seconds) => UtcTicks=checked(UtcTicks+seconds*TimeSpan.TicksPerSecond);
         }
-        sealed class Save:IStateStore
+        sealed class MemoryStateStore:IStateStore
         {
             public PlayerState Value;
             public PlayerState Load() => Value;
@@ -65,7 +65,7 @@ namespace Eldoria.Tests
         }
         [Test] public void BattleUsesRealCombatAndNeverDuplicatesStageReward()
         {
-            var time=new Clock();var save=new Save{Value=Ready()};
+            var time=new Clock();var save=new MemoryStateStore{Value=Ready()};
             var g=new LocalGateway(time,save);
             var before=g.Snapshot().Resources.Wood;
             var cmd=Cmd(g,"v-1","VigilantBattle","1");
@@ -85,7 +85,7 @@ namespace Eldoria.Tests
         }
         [Test] public void IdleExperienceAccruesOfflineWithEightHourCapAndNoDoubleClaim()
         {
-            var time=new Clock();var store=new Save{Value=Ready()};
+            var time=new Clock();var store=new MemoryStateStore{Value=Ready()};
             var g=new LocalGateway(time,store);
             Assert.That(g.Execute(Cmd(g,"battle","VigilantBattle","1")).Ok,Is.True);
             time.AddSeconds(30*3600);
@@ -101,7 +101,7 @@ namespace Eldoria.Tests
         }
         [Test] public void ScoutsRespectUnlockTimePersistenceAndSingleClaim()
         {
-            var time=new Clock();var store=new Save{Value=Ready()};
+            var time=new Clock();var store=new MemoryStateStore{Value=Ready()};
             var g=new LocalGateway(time,store);
             var first=g.Snapshot().Retention.Orders.First();
             Assert.That(g.Snapshot().Retention.Orders.Count,Is.EqualTo(3));
@@ -122,7 +122,7 @@ namespace Eldoria.Tests
         }
         [Test] public void ScoutBoardDoesNotManufactureInfiniteOfflineBacklog()
         {
-            var time=new Clock();var store=new Save{Value=Ready()};
+            var time=new Clock();var store=new MemoryStateStore{Value=Ready()};
             var g=new LocalGateway(time,store);
             time.AddSeconds(30*24*3600);
             g=new LocalGateway(time,store);
@@ -163,7 +163,7 @@ namespace Eldoria.Tests
 
         [Test] public void SnapshotDoesNotExposeMutableOrderObjects()
         {
-            var clock=new Clock();var save=new Save{Value=Ready()};
+            var clock=new Clock();var save=new MemoryStateStore{Value=Ready()};
             var g=new LocalGateway(clock,save);
             var before=g.Snapshot().Retention.Orders[0].Id;
             var tampered=g.Snapshot();
