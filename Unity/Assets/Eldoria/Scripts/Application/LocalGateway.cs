@@ -449,6 +449,12 @@ namespace Eldoria.Application
                 default: return Fail("Acción desconocida");
             }
             GrantWebMissionRewards();
+            // A real ConfigureMarch can unlock the Scout Board. Materialize
+            // its first three contracts in THIS SAME accepted revision: if
+            // deferred until the next Execute()->Advance(), the first genuine
+            // attack after preparing a march would reject a fresh command as
+            // stale when its own preflight silently created scout orders.
+            EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
             state.CompletedCommandIds.Add(command.Id);
             Commit();
             return new CommandResult(true, "Acción iniciada", state.Revision);
