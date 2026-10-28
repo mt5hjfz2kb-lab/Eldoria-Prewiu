@@ -247,8 +247,13 @@ namespace Eldoria.ReferenceClean.Editor
                 .FirstOrDefault(x=>x.name=="Engendro / authentic creature illustration");
             Need(engendroArt!=null && engendroArt.gameObject.activeInHierarchy &&
                 engendroArt.texture!=null &&
-                engendroArt.texture.name.Contains("engendro"),
-                "Stage 15 displays Eldoria's genuine Engendro render, not a golem");
+                engendroArt.texture.name.Contains("engendro-lore-cutout"),
+                "Stage 15 displays the real Engendro with its studio backdrop removed");
+            var currentNumber=hud.GetComponentsInChildren<RoyalText>(true)
+                .FirstOrDefault(x=>x.name=="Current live stage");
+            Need(currentNumber!=null && currentNumber.gameObject.activeInHierarchy &&
+                currentNumber.text=="15",
+                "The approved route highlights genuine stage 15, not decorative fake markers");
             var stageTrail=hud.GetComponentsInChildren<RoyalGoldV3StageTrailGraphic>(true)
                 .FirstOrDefault();
             var creatureFrame=engendroArt.transform.parent as RectTransform;
