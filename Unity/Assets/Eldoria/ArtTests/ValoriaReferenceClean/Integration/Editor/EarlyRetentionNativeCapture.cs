@@ -459,6 +459,25 @@ namespace Eldoria.ReferenceClean.Editor
                     .First(x=>x.name=="Dispatch or claim scout "+i);
                 ClickReal(claim,"Actual scout reward claim "+i);
             }
+            var scoutClaimed=h.City.Gateway.Snapshot().Retention;
+            Need(scoutClaimed.ScoutDiscoveries==3 && scoutClaimed.ScoutDiscoveryMask!=0 &&
+                scoutClaimed.LatestScoutKind>=0 && scoutClaimed.LatestScoutReportId.Length>0,
+                "Real three claims persist authored discoveries and actual map seals");
+            ui.SynchronizeLayout();
+            yield return null;
+            var pins=hud.GetComponentsInChildren<RoyalGoldV3ScoutDiscoverySeals>(true);
+            Need(pins.Length==1 && pins[0].gameObject.activeInHierarchy &&
+                pins[0].DiscoveredMask==scoutClaimed.ScoutDiscoveryMask &&
+                !pins[0].raycastTarget,
+                "Four authored golden markers represent real discovered expedition families");
+            var actualStory=hud.GetComponentsInChildren<RoyalText>(true)
+                .FirstOrDefault(x=>x.name=="Actual last expedition story");
+            Need(actualStory!=null && actualStory.gameObject.activeInHierarchy &&
+                actualStory.text.Contains(EarlyRetentionRules.ScoutReportHeading(
+                    scoutClaimed.LatestScoutKind,scoutClaimed.LatestScoutVariant)),
+                "Actual last scout report is visible over the painterly cartographer map");
+            Screenshot(h,"scout-discovery-claimed",1600,900);
+            Screenshot(h,"scout-discovery-claimed",390,844);
             ui.Close();
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             yield return null;
@@ -487,7 +506,7 @@ namespace Eldoria.ReferenceClean.Editor
             Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,
                 "No duplicate RoyalHUD/Canvas created");
             Need(LayoutFailures.Count==0,
-                "All 19 genuine capture layouts passed every typography/visibility check; failures="+
+                "All 21 genuine capture layouts passed every typography/visibility check; failures="+
                 string.Join("; ",LayoutFailures.Distinct()));
             File.WriteAllText(Path.Combine(Output,"result.txt"),
                 "EARLY_RETENTION_NATIVE_PASS\n"+string.Join("\n",Checks)+"\nART_APPROVED=false\n");
