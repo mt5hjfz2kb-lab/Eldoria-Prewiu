@@ -89,6 +89,8 @@ namespace Eldoria.Tests
             }
             Assert.That(travelled, Is.GreaterThan(0.3f),
                 "Aldric must actually walk on a valid road; a static render is not acceptance");
+            Assert.That(walker.ActualWalkClipPlaying, Is.True,
+                "Real imported 26-joint Walk animation must play, not only translate a static model");
             CaptureCityCamera(camera, "aldric-city-walking-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-walking-portrait.png", 390, 844);
             Assert.That(host.City.Ready && host.Ready && !host.InWorld, Is.True);
