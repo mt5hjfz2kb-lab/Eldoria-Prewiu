@@ -197,6 +197,11 @@ namespace Eldoria.ReferenceClean.Editor
             Need(stageButton.targetGraphic is RoyalGoldV3RetentionActionGraphic &&
                 ((RoyalGoldV3RetentionActionGraphic)stageButton.targetGraphic).Battle,
                 "The real battle button uses the approved red and gold action graphic");
+            var battlePlate=stageButton?
+                stageButton.GetComponent<RoyalGoldV3RetentionActionGraphic>():null;
+            Need(battlePlate && battlePlate.Battle &&
+                stageButton.targetGraphic==battlePlate && battlePlate.raycastTarget,
+                "Real PvE combat action uses the approved red interactive button");
             ClickReal(stageButton,"Automatic level PvE");
             var s=h.City.Gateway.Snapshot();
             Need(s.Retention.LastClearedStage==1 && s.LastBattleReport.Won,
@@ -258,6 +263,11 @@ namespace Eldoria.ReferenceClean.Editor
             Need(dispatch.targetGraphic is RoyalGoldV3RetentionActionGraphic &&
                 !((RoyalGoldV3RetentionActionGraphic)dispatch.targetGraphic).Battle,
                 "The real expedition button uses the approved blue and gold action graphic");
+            var scoutPlate=dispatch?
+                dispatch.GetComponent<RoyalGoldV3RetentionActionGraphic>():null;
+            Need(scoutPlate && !scoutPlate.Battle &&
+                dispatch.targetGraphic==scoutPlate && scoutPlate.raycastTarget,
+                "Real Scout dispatch uses the approved blue interactive button");
             ClickReal(dispatch,"Actual scout dispatch");
             Need(h.City.Gateway.Snapshot().Retention.Orders.Any(x=>x.StartedUtcTicks>0),
                 "Scout dispatch persists its genuine UTC return time");
