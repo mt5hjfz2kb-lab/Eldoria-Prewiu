@@ -24,6 +24,7 @@ namespace Eldoria.AldricCity
         private const float Radius = 0.26f;
         private ValoriaIntegratedWorld host;
         private MeshCollider road;
+        private GameObject actor;
         private GameObject model;
         private Animation clips;
         private Renderer[] renderers;
@@ -144,8 +145,10 @@ namespace Eldoria.AldricCity
         {
             var source = new GltfImport();
             if (!await source.Load(url)) return false;
+            actor = new GameObject("Sir Aldric | city-only visual actor");
+            actor.transform.SetParent(transform, false);
             model = new GameObject("Sir Aldric / approved walking rig");
-            model.transform.SetParent(transform, false);
+            model.transform.SetParent(actor.transform, false);
             var instantiator = new GameObjectInstantiator(source, model.transform);
             if (!await source.InstantiateMainSceneAsync(instantiator)) return false;
             clips = instantiator.SceneInstance?.LegacyAnimation;
@@ -163,7 +166,7 @@ namespace Eldoria.AldricCity
             for (int i = 1; i < renderers.Length; ++i) bounds.Encapsulate(renderers[i].bounds);
             // Align the imported character's feet (not its empty glTF pivot)
             // to the real cobbled-road collider.
-            model.transform.position += Vector3.up * (transform.position.y - bounds.min.y);
+            model.transform.position += Vector3.up * (actor.transform.position.y - bounds.min.y);
             clips.playAutomatically = false;
             clips[Idle].wrapMode = WrapMode.Loop;
             clips[Walk].wrapMode = WrapMode.Loop;
@@ -192,7 +195,7 @@ namespace Eldoria.AldricCity
                 Debug.LogWarning("ALDRIC_CITY_IMPORT_OR_RIG_FAILED");
                 yield break;
             }
-            transform.position = path[0];
+            actor.transform.position = path[0];
             pauseUntil = Time.time + 2.5f;
         }
 
@@ -208,10 +211,10 @@ namespace Eldoria.AldricCity
 
         private void Update()
         {
-            if (!model || path == null || renderers == null) return;
+            if (!model || !actor || path == null || renderers == null) return;
             var away = Away();
             var cam = host.City.PlayerCamera;
-            var distance = cam ? Vector3.Distance(cam.transform.position, transform.position) : 999f;
+            var distance = cam ? Vector3.Distance(cam.transform.position, actor.transform.position) : 999f;
             bool visible = !away && distance <= 95f;
             foreach (var r in renderers) if (r) r.enabled = visible;
             if (away)
@@ -225,24 +228,24 @@ namespace Eldoria.AldricCity
                 if (Time.time < pauseUntil) return;
                 var next = index + direction;
                 if (next < 0 || next >= path.Length) { direction *= -1; next = index + direction; }
-                if (next < 0 || next >= path.Length || !SegmentClear(transform.position, path[next]))
+                if (next < 0 || next >= path.Length || !SegmentClear(actor.transform.position, path[next]))
                 { pauseUntil = Time.time + 4f; return; }
                 index = next;
                 walking = true;
                 clips.CrossFade(Walk, .16f);
             }
-            var delta = path[index] - transform.position;
+            var delta = path[index] - actor.transform.position;
             delta.y = 0f;
             var step = Speed * Time.deltaTime;
             if (delta.magnitude <= step + .04f)
             {
-                transform.position = path[index];
+                actor.transform.position = path[index];
                 walking = false;
                 clips.CrossFade(Idle, .16f);
                 pauseUntil = Time.time + UnityEngine.Random.Range(2.5f, 6f);
                 return;
             }
-            var candidate = transform.position + delta.normalized * step;
+            var candidate = actor.transform.position + delta.normalized * step;
             if (!OnRoad(candidate, out var ground) || !BodyClear(ground))
             {
                 walking = false;
@@ -250,11 +253,11 @@ namespace Eldoria.AldricCity
                 pauseUntil = Time.time + 6f;
                 return;
             }
-            transform.position = ground;
-            transform.rotation = Quaternion.Slerp(transform.rotation,
+            actor.transform.position = ground;
+            actor.transform.rotation = Quaternion.Slerp(actor.transform.rotation,
                 Quaternion.LookRotation(delta.normalized), Mathf.Clamp01(7f * Time.deltaTime));
         }
 
-        private void OnDestroy() { if (model) Destroy(model); }
+        private void OnDestroy() { if (actor) Destroy(actor); }
     }
 }
