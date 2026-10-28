@@ -6,14 +6,14 @@
   "steps": [
     "EditMode exact domain rules",
     "two progress-gated shortcuts",
-    "landscape and portrait for Vigilants and Scouts",
-    "first real PvE victory",
+    "landscape and portrait for Vigilants, real victory and Scouts",
+    "first real PvE victory with visible announcement",
     "first persistent Scout dispatch",
-    "no Codex and one RoyalHUD"
+    "eight genuine original Unity PNGs and one RoyalHUD"
   ],
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 7,
-  "note": "Verify actual latest PR120 head after portrait header fitting and visible Scout board section. Only replace queued (not running) native attempt. Demand genuine 900x1600/1600x900 screenshots, legible full titles, three cards and no overlaps; ART_APPROVED remains false until visual inspection."
+  "revision": 8,
+  "note": "Validate exact updated PR120 source: title and footer layout, visible Scout card heading, automatic PvE victory announcement, 8 original Unity screenshots (4 states x 2 orientations), actual raycasts, no overlay, no save writes, and compatibility with PR119; ART_APPROVED remains false until image review."
 }
