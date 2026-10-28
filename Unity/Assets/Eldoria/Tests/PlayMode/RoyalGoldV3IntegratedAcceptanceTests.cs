@@ -225,8 +225,16 @@ namespace Eldoria.Tests
             fixture.SawmillLevel=1;
             new Eldoria.Infrastructure.FileStateStore(disposable).Save(fixture);
             Assert.That(System.IO.File.Exists(disposable),Is.True);
+            var originalBytes=System.IO.File.ReadAllBytes(disposable);
             var ok=(bool)Call(city,"ResetPlaytestProgress");
             Assert.That(ok,Is.True,"Reset did not accept its own disposable save");
+            var backups=System.IO.Directory.GetFiles(
+                System.IO.Path.GetDirectoryName(disposable),
+                System.IO.Path.GetFileName(disposable)+".before-playtest-reset-*.bak");
+            Assert.That(backups.Length,Is.EqualTo(1),
+                "The reset must preserve exactly one recoverable backup of this unique probe save");
+            CollectionAssert.AreEqual(originalBytes,System.IO.File.ReadAllBytes(backups[0]),
+                "The backup must preserve the complete original save byte-for-byte");
             Assert.That(System.IO.File.Exists(disposable),Is.False,
                 "Only the disposable file should be removed before fresh load");
             Component freshHost=null,freshHud=null;

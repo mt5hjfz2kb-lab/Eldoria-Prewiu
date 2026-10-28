@@ -33,6 +33,23 @@ test('valid distinct work proceeds but cannot invade claimed foreign scope',()=>
  assert.equal(evaluate({current:a,openPulls:[original,a],registry,changedFiles:['Unity/Assets/Eldoria/SpawnlingBastion2/Test.cs']}).ok,true);
  assert.equal(evaluate({current:a,openPulls:[original,a],registry,changedFiles:['Unity/Assets/Eldoria/UI/Hud.cs']}).ok,false);
 });
+test('same live owner can combine two canonical scopes while foreign owner stays excluded',()=>{
+ const owner='chatgpt-cronica-real-ux-polish-20261027';
+ const two={active:registry.active.map(x=>({...x}))};
+ two.active[0].owner=owner;
+ two.active[2].owner=owner;
+ two.active[2].ownership_state='claimed';
+ const follow=pr(119,'Crónica Real follow-up','Workstream-ID: '+ui,'2026-10-27T22:20:52Z');
+ const changed=['Unity/Assets/Eldoria/UI/Hud.cs','Unity/Assets/Eldoria/City/Camera.cs'];
+ const ok=evaluate({current:follow,openPulls:[follow],registry:two,changedFiles:changed});
+ assert.equal(ok.ok,true,ok.errors.join('; '));
+ assert.match(ok.notes.join(' '),/same live owner/i);
+ two.active[2].owner='another-chat';
+ const bad=evaluate({current:follow,openPulls:[follow],registry:two,changedFiles:changed});
+ assert.equal(bad.ok,false);
+ assert.match(bad.errors.join(' '),/another claimed workstream/);
+});
+
 test('exact and wildcard scopes match only intended paths',()=>{
  assert.equal(globMatch('Unity/Assets/Eldoria/UI/**','Unity/Assets/Eldoria/UI/Hud.cs'),true);
  assert.equal(globMatch('Unity/Assets/Eldoria/UI/**','Unity/Assets/Eldoria/UI_old/Hud.cs'),false);

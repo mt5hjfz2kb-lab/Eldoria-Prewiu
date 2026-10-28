@@ -19,6 +19,12 @@
       "note": "Decisiones con fechas: verificar supersesiones"
     },
     {
+      "path": "docs/ALDRIC_DIALOGUE_BUST_INTEGRATION_20261027.md",
+      "domain": "art",
+      "status": "review_pending",
+      "note": "Sir Aldric: cuatro retratos auténticos desde modelo 3D aprobado con capa azul, integración UI Royal Gold V3 en PR118; Unity nativo/QA visual pendiente."
+    },
+    {
       "path": "docs/ALDRIC_HERO_PREPRODUCCION_20261027.md",
       "domain": "art",
       "status": "review_pending",

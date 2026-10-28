@@ -51,7 +51,16 @@ export function evaluate({current,openPulls,registry,changedFiles=[]}){
     for(const w of registry.active){
       if(w.id===id||!claimed(w))continue;
       const hits=changedFiles.filter(file=>(w.scope||[]).some(pattern=>globMatch(pattern,file)));
-      if(hits.length)errors.push('Touched '+hits.slice(0,3).join(', ')+' in another claimed workstream '+w.id+'; reconcile ownership before proceeding');
+      if(!hits.length)continue;
+      // A deliberate owner-authorized handoff may combine two existing
+      // canonical workstreams in one PR. Protect against a DIFFERENT writer,
+      // not against two claimed scopes held by the SAME live owner.
+      if(claimed(workstream)&&workstream.owner===w.owner){
+        notes.push('Same live owner retains responsibility for '+w.id+
+          ' (shared files '+hits.slice(0,3).join(', ')+')');
+        continue;
+      }
+      errors.push('Touched '+hits.slice(0,3).join(', ')+' in another claimed workstream '+w.id+'; reconcile ownership before proceeding');
     }
   }
   return {ok:errors.length===0,id,errors,notes};

@@ -1,0 +1,279 @@
+name: Aldric head-shoulders dialogue — exact merged Unity native acceptance
+on:
+  push:
+    branches: [feature/aldric-dialogue-bust-20261027]
+    paths:
+      - 'tools/aldric-dialogue/native-request.json'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: aldric-pr118-one-native-unity
+  cancel-in-progress: true
+jobs:
+  portrait-native:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 80
+    env:
+      VALORIA_GAMEPLAY_PROBE: '1'
+    steps:
+      - name: Verify exclusive Aldric Windows resource reservation before touching workspace
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-Aldric-lease'}
+          $j=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($j.content)) | ConvertFrom-Json
+          $claims=@($registry.active | Where-Object { $_.resources -contains 'windows-runner-heavy' })
+          if($claims.Count -ne 1 -or [string]$claims[0].id -ne 'eldoria-aldric-dialogue-bust-20261027' -or
+             [string]$claims[0].ownership_state -ne 'claimed' -or [string]$claims[0].status -ne 'active' -or
+             [string]$claims[0].owner -ne 'chatgpt-aldric-dialogue-bust-20261027' -or
+             [int]$claims[0].ownership_revision -ne 3) {
+             throw 'Aldric native reservation revoked/stale: refuse shared Windows runner'
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+             throw 'Native Unity/Blender process already running, do not interrupt'
+          }
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity Editor not installed at configured path'}
+          Write-Host 'ALDRIC_WINDOWS_LEASE_PASS revision=3 one canonical owner'
+
+      - name: Expose existing Git executable from GitHub Desktop
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $desktop=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $candidate=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+             Sort-Object Name -Descending |
+             ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+             Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Installed Git unavailable; no full-archive fallback'}
+            $dir=Split-Path $candidate
+            Add-Content $env:GITHUB_PATH $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+          git --version
+          if($LASTEXITCODE){throw 'Git executable check failed'}
+
+      - name: Checkout GitHub merge of latest main + the exact Aldric PR118
+        uses: actions/checkout@v4
+        with:
+          ref: refs/pull/118/merge
+          path: aldric-dialogue-merge-v2
+          clean: false
+          filter: blob:none
+          sparse-checkout: |
+            Unity
+            pipeline
+            tools
+            docs/evidence/valoria-reference-clean
+          fetch-depth: 2
+
+      - name: Verify no stale PR source, preserved project and source-locked 4 PNGs
+        shell: powershell
+        working-directory: aldric-dialogue-merge-v2
+        run: |
+          $ErrorActionPreference='Stop'
+          $expected=$env:GITHUB_SHA
+          $commit=(& git rev-parse HEAD).Trim()
+          $parents=@(& git rev-list --parents -n 1 HEAD)
+          if($LASTEXITCODE -ne 0 -or "$($parents[0])" -notmatch $expected){throw "Stale PR118 merge ref: merge=$commit push=$expected"}
+          $files=@(& git ls-tree -r --name-only HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings)
+          if($LASTEXITCODE -ne 0 -or $files.Count -lt 500){throw "Incomplete native project tree count=$($files.Count)"}
+          $missing=@($files | Where-Object {-not(Test-Path -LiteralPath $_)})
+          if($missing.Count -gt 0){
+            & git checkout --ignore-skip-worktree-bits HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings
+            if($LASTEXITCODE){throw 'Exact missing Unity project recovery failed'}
+            $missing=@($files | Where-Object {-not(Test-Path -LiteralPath $_)})
+            if($missing.Count){throw "Project still missing $($missing.Count) exact tracked files"}
+          }
+          foreach($p in @(
+           'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Editor/AldricDialogueNativeCapture.cs',
+           'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3CinematicFinish.cs',
+           'Unity/Assets/Eldoria/Tests/PlayMode/AldricDialogueBustPresentationTests.cs',
+           'Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_neutral.png',
+           'Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_firme.png',
+           'Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_preocupado.png',
+           'Unity/Assets/Eldoria/Resources/UI/AldricDialogue/aldric_sereno.png'
+          )){
+            if(-not(Test-Path $p)){throw "Exact head-shoulder source is missing: $p"}
+          }
+          & git diff --quiet HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings
+          if($LASTEXITCODE){throw 'Tracked candidate has uncommitted edits; refuse native test'}
+          Write-Host "ALDRIC_EXACT_MERGED_SOURCE_PASS merge=$commit parent=$expected tracked=$($files.Count)"
+          $out=Join-Path $env:RUNNER_TEMP "aldric-dialogue-native-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Force $out | Out-Null
+          "merge_sha=$commit" | Set-Content (Join-Path $out 'source-id.txt') -Encoding ASCII
+          "branch_head=$expected" | Add-Content (Join-Path $out 'source-id.txt') -Encoding ASCII
+
+      - name: Prepare isolated editor-only Search index with no project changes
+        shell: powershell
+        working-directory: aldric-dialogue-merge-v2
+        run: |
+          $p=Join-Path (Get-Location) 'Unity'
+          $u=Join-Path $p 'UserSettings/Search.index'
+          $back=Join-Path $env:RUNNER_TEMP "aldric-search-original-$env:GITHUB_RUN_ID"
+          if(Test-Path $u){
+            Copy-Item $u $back -ErrorAction Stop
+          }
+          New-Item -ItemType Directory -Force (Split-Path $u) | Out-Null
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' | Set-Content $u -Encoding UTF8
+          $cache=Join-Path $p 'Library/Search'
+          if(Test-Path $cache){
+            $dest=Join-Path $env:RUNNER_TEMP "aldric-search-cache-$env:GITHUB_RUN_ID"
+            if(Test-Path $dest){throw 'Preserve prior Search cache; no overwrite'}
+            Move-Item $cache $dest -ErrorAction Stop
+          }
+          $version=& $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Unexpected Unity version $version"}
+          Write-Host 'ALDRIC_SEARCH_EDITOR_ONLY_PREPARED'
+
+      - name: Materialize certified Bastion III prefabs before testing the actual merged scene
+        shell: powershell
+        working-directory: aldric-dialogue-merge-v2
+        run: |
+          # The initial Aldric native run 40592203923 produced exactly one failed test:
+          # the canonical scene raised BASTION_III_MISSING_ART Granary. This is the
+          # same documented missing generated prefab fixed in main's unity-slice.yml.
+          # Reuse that source-authored pipeline; do not silence legitimate Unity errors.
+          $root=Join-Path (Get-Location) 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII'
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender) {
+            $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $blender){throw 'Existing Blender unavailable; do not invent fissure model'}
+          & $blender -b --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE -ne 0){throw 'Existing certified Bastion III geological fissure authoring failed'}
+          if(-not(Test-Path (Join-Path $root 'PrivateFissure.glb'))){throw 'Bastion III fissure source missing after Blender'}
+          $log=Join-Path $env:RUNNER_TEMP "aldric-certified-bastion-iii-bake-$env:GITHUB_RUN_ID.log"
+          $project=Join-Path (Get-Location) 'Unity'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+            '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"'+$log+'"'))
+          $proc=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $proc.WaitForExit(780000)){
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            & taskkill.exe /PID $proc.Id /T /F | Out-Null
+            throw 'Canonical Bastion III art bake timed out'
+          }
+          $proc.Refresh()
+          if($proc.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 140}
+            throw 'Canonical Bastion III art bake failed; preserve logs'
+          }
+          foreach($p in @('Granary','StockCrate','StockSack','StockBarrel')){
+            if(-not(Test-Path (Join-Path $root "Granary/$p.prefab"))){throw "Missing generated Bastion III prefab: $p"}
+          }
+          Write-Host 'BASTION_III_ALDRIC_PREFAB_BAKE_PASS'
+
+      - name: Prepare existing Bastion III resources in disposable source checkout
+        shell: powershell
+        working-directory: aldric-dialogue-merge-v2
+        run: |
+          # The merged post-III source requires a one-time editorial bake before
+          # any PlayMode startup. This matches the main Unity native gate; it
+          # does NOT modify saved games or emit assets to the repository.
+          $ErrorActionPreference='Stop'
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender) {
+            $blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -File -Filter blender.exe -ErrorAction SilentlyContinue |
+              Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+          }
+          if(-not $blender){throw 'Blender required to prepare existing post-merge Bastion III source'}
+          & $blender -b --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE -ne 0){throw 'Existing Bastion III geological fissure source authoring failed'}
+          $art='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII'
+          if(-not(Test-Path (Join-Path $art 'PrivateFissure.glb'))){throw 'Private Fissure 3D art not materialized'}
+          $root=Join-Path (Get-Location) 'Unity'
+          $out=Join-Path $env:RUNNER_TEMP "aldric-dialogue-native-$env:GITHUB_RUN_ID"
+          $log=Join-Path $out 'Aldric-BastionIII-ArtBake.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$root+'"'),
+            '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build',
+            '-logFile',('"'+$log+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(780000)) {
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Existing Bastion III art bake timeout; no test false-pass'
+          }
+          $p.Refresh()
+          if($p.ExitCode -ne 0) {
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw "Existing Bastion III art bake exit=$($p.ExitCode)"
+          }
+          foreach($piece in @('Granary','StockCrate','StockSack','StockBarrel')) {
+            if(-not(Test-Path (Join-Path $art "Granary/$piece.prefab"))) {
+              throw "Missing post-merge real Bastion III art resource: $piece"
+            }
+          }
+          Write-Host 'ALDRIC_NATIVE_USES_EXISTING_BASTION_III_BAKE_PASS'
+
+      - name: Run real 2-test Unity PlayMode suite on merged PR118 source
+        shell: powershell
+        working-directory: aldric-dialogue-merge-v2
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $out=Join-Path $env:RUNNER_TEMP "aldric-dialogue-native-$env:GITHUB_RUN_ID"
+          $xml=Join-Path $out 'Aldric-PlayMode.xml'
+          $log=Join-Path $out 'Aldric-PlayMode.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+            '-runTests','-testPlatform','PlayMode',
+            '-testFilter','Eldoria.Tests.AldricDialogueBustPresentationTests',
+            '-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(1080000)){
+            if(Test-Path $log){Get-Content $log -Tail 160}
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Aldric Unity PlayMode exceeded isolated 18-minute limit; process tree stopped safely'
+          }
+          $p.Refresh()
+          if(-not(Test-Path $xml)){throw "Missing native test results; Unity exit $($p.ExitCode)"}
+          [xml]$results=Get-Content $xml -Raw
+          $root=$results.'test-run'
+          $passed=[int]$root.passed
+          $failed=[int]$root.failed
+          $skipped=[int]$root.skipped
+          if($p.ExitCode -ne 0 -or $failed -ne 0 -or $passed -lt 2 -or $skipped -ne 0 -or $root.result -ne 'Passed'){
+            throw "Native Aldric PlayMode not accepted exit=$($p.ExitCode) passed=$passed failed=$failed skipped=$skipped result=$($root.result)"
+          }
+          Write-Host "ALDRIC_UNITY_PLAYMODE_PASS actual=$passed skipped=0"
+
+      - name: Capture 12 genuine Unity ES/EN speaker screenshots in horizontal and vertical
+        shell: powershell
+        working-directory: aldric-dialogue-merge-v2
+        env:
+          ALDRIC_NATIVE_OUTPUT: ${{ runner.temp }}/aldric-native-dialogue-captures-${{ github.run_id }}
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $out=$env:ALDRIC_NATIVE_OUTPUT
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),
+             '-executeMethod','Eldoria.UI.RoyalGold.V2.Editor.AldricDialogueNativeCapture.Capture',
+             '-logFile',('"'+(Join-Path $out 'Aldric-Capture.log')+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(900000)){
+            $captureLog=Join-Path $out 'Aldric-Capture.log'
+            if(Test-Path $captureLog){Get-Content $captureLog -Tail 160}
+            & taskkill.exe /PID $p.Id /T /F | Out-Null
+            throw 'Aldric Unity screenshots exceeded isolated 15-minute limit; process tree stopped safely'
+          }
+          $p.Refresh()
+          if($p.ExitCode -ne 0){throw "Native rendering exit $($p.ExitCode)"}
+          if(-not(Test-Path (Join-Path $out 'ALDRIC_NATIVE_PASS.txt'))){throw 'Real Unity screenshot proof missing'}
+          $pngs=@(Get-ChildItem -Path $out -Filter '*.png' -File)
+          if($pngs.Count -ne 12){throw "Only $($pngs.Count) native images; expected 12 distinct, 5 speakers ES plus Aldric EN in both orientations"}
+          foreach($p in $pngs){if($p.Length -lt 35000){throw "Empty native screenshot $($p.Name)"}}
+          Write-Host "ALDRIC_NATIVE_UI_CAPTURE_PASS pngs=$($pngs.Count)"
+
+      - name: Upload actual Unity logs, tests and images even when native errors
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aldric-pr118-unity-actual-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/aldric-dialogue-native-${{ github.run_id }}/*
+            ${{ runner.temp }}/aldric-native-dialogue-captures-${{ github.run_id }}/*
+          if-no-files-found: warn
