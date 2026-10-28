@@ -110,7 +110,8 @@ jobs:
               'pipeline/active-workstreams.json','.github/workflows/ui-progression-cert.yml',
               'pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json',
               'pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json',
-              '.github/workflows/early-retention-native.yml'
+              '.github/workflows/early-retention-native.yml',
+              '.github/workflows/tester-qa.yml'
             ]);
             const nativeOwned=p=>retainedModule.has(p) ||
               p.startsWith('Unity/Assets/Eldoria/Resources/EldoriaRetention/') ||
