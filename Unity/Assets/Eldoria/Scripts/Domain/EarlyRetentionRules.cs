@@ -29,6 +29,8 @@ namespace Eldoria.Domain
         public int LastClearedStage;
         // Saved, deterministic expedition discoveries. No duplicate rewards or new currencies.
         public int ScoutDiscoveries;
+        // Four small map seals; bits track actual completed families only.
+        public int ScoutDiscoveryMask;
         public int LatestScoutKind=-1, LatestScoutVariant=-1;
         public string LatestScoutReportId="";
         public int AldricExperience, LyraExperience;
@@ -388,6 +390,7 @@ namespace Eldoria.Domain
                 p.LatestScoutKind=order.Kind;
                 p.LatestScoutVariant=ScoutReportVariant(order);
                 p.ScoutDiscoveries=checked(p.ScoutDiscoveries+1);
+                p.ScoutDiscoveryMask|=1<<(order.Kind&3);
             }
             message="Hallazgo: "+ScoutReportHeading(order.Kind,p.LatestScoutVariant)+
                 " · "+ScoutRewardText(order.Kind);
