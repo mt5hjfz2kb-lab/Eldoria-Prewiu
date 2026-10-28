@@ -313,10 +313,14 @@ namespace Eldoria.ReferenceClean.Editor
                 .FirstOrDefault();
             var creatureFrame=engendroArt.transform.parent as RectTransform;
             var trailParent=stageTrail?stageTrail.transform.parent as RectTransform:null;
-            Need(stageTrail!=null && creatureFrame!=null && trailParent!=null &&
-                stageTrail.rectTransform.anchorMin.y*trailParent.rect.height >
-                creatureFrame.rect.height+8f,
-                "Engendro stage 15 preserves all 25 route markers above the creature portrait");
+            Need(stageTrail!=null && creatureFrame!=null && trailParent!=null,
+                "Real route and authentic creature are present");
+            for(int stage=1;stage<=25;stage++)
+            {
+                var point=stageTrail.transform.TransformPoint(stageTrail.StagePosition(stage));
+                Need(!creatureFrame.rect.Contains(creatureFrame.InverseTransformPoint(point)),
+                    "Real route milestone "+stage+" is never covered by the encounter portrait");
+            }
             Screenshot(h,"vigilants-stage15-engendro",1600,900);
             Screenshot(h,"vigilants-stage15-engendro",900,1600);
             Screenshot(h,"vigilants-stage15-engendro",390,844);

@@ -216,8 +216,8 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             int k=vh.currentVertCount;
             vh.AddVert(center,Tint(tint),Vector2.zero);
-            for(int i=0;i<=16;i++){
-                float a=i*Mathf.PI*2/16f;
+            for(int i=0;i<=8;i++){
+                float a=i*Mathf.PI*2/8f;
                 vh.AddVert(center+new Vector2(Mathf.Cos(a),Mathf.Sin(a))*radius,
                     Tint(tint),Vector2.zero);
                 if(i>0)vh.AddTriangle(k,k+i,k+i+1);
@@ -232,26 +232,65 @@ namespace Eldoria.UI.RoyalGold.V2
                 vh.AddVert(p,Tint(c),Vector2.zero);
             vh.AddTriangle(k,k+1,k+2);vh.AddTriangle(k,k+2,k+3);
         }
-        // One shared geometry contract for all real stage numbers and boss
-        // markers; stage 1 begins near the foothills and stage 25 ascends.
+        // Coordinates measured on the actual painterly-v2 texture, bottom-left
+        // UV origin. Project the road through the SAME cover crop as RawImage.
+        // The chapter follows the painted paving, never an unrelated zigzag.
+        public Rect ArtworkUv=new Rect(0,0,1,1);
         static readonly Vector2[] Road = {
-            new Vector2(.04f,.025f),new Vector2(.21f,.06f),new Vector2(.40f,.08f),
-            new Vector2(.61f,.12f),new Vector2(.82f,.18f),new Vector2(.89f,.28f),
-            new Vector2(.73f,.34f),new Vector2(.52f,.36f),new Vector2(.29f,.38f),
-            new Vector2(.12f,.44f),new Vector2(.10f,.55f),new Vector2(.29f,.60f),
-            new Vector2(.49f,.61f),new Vector2(.69f,.64f),new Vector2(.85f,.70f),
-            new Vector2(.77f,.79f),new Vector2(.58f,.82f),new Vector2(.37f,.80f),
-            new Vector2(.18f,.83f),new Vector2(.11f,.90f),new Vector2(.26f,.94f),
-            new Vector2(.44f,.95f),new Vector2(.63f,.96f),new Vector2(.81f,.97f),
-            new Vector2(.96f,.98f)
+            new Vector2(.37f,.075f),new Vector2(.25f,.14f),
+            new Vector2(.13f,.19f),new Vector2(.06f,.25f),
+            new Vector2(.09f,.29f),new Vector2(.20f,.32f),
+            new Vector2(.32f,.36f),new Vector2(.43f,.40f),
+            new Vector2(.53f,.43f),new Vector2(.55f,.46f),
+            new Vector2(.51f,.49f),new Vector2(.57f,.52f),
+            new Vector2(.65f,.55f),new Vector2(.65f,.58f),
+            new Vector2(.62f,.61f),new Vector2(.67f,.64f),
+            new Vector2(.71f,.68f),new Vector2(.68f,.70f),
+            new Vector2(.72f,.74f),new Vector2(.73f,.77f),
+            new Vector2(.70f,.80f)
         };
-        public Vector2 StagePosition(int stage)
+        readonly System.Collections.Generic.List<Vector2> visibleRoad=
+            new System.Collections.Generic.List<Vector2>();
+        Rect cachedRoadBounds,cachedRoadUv;
+        bool hasRoadCache;
+        void ProjectRoad()
         {
             var b=rectTransform.rect;
-            var point=Road[Mathf.Clamp(stage,1,25)-1];
-            float marginX=Mathf.Min(26,b.width*.10f),marginY=Mathf.Min(19,b.height*.12f);
-            return new Vector2(b.xMin+marginX+point.x*(b.width-marginX*2),
-                b.yMin+marginY+point.y*(b.height-marginY*2));
+            if(hasRoadCache&&cachedRoadBounds==b&&cachedRoadUv==ArtworkUv)return;
+            cachedRoadBounds=b;cachedRoadUv=ArtworkUv;hasRoadCache=true;
+            visibleRoad.Clear();
+            var section=new System.Collections.Generic.List<Vector2>();
+            // Cover cropping can hide the foreground. Sample only the
+            // continuous visible portion, preserving actual scene positions.
+            for(int segment=0;segment<Road.Length-1;segment++)
+                for(int sample=0;sample<12;sample++)
+                {
+                    var uv=Vector2.Lerp(Road[segment],Road[segment+1],sample/12f);
+                    float x=(uv.x-ArtworkUv.x)/ArtworkUv.width;
+                    float y=(uv.y-ArtworkUv.y)/ArtworkUv.height;
+                    if(x<.04f||x>.96f||y<.06f||y>.94f)
+                    {
+                        if(section.Count>visibleRoad.Count){visibleRoad.Clear();visibleRoad.AddRange(section);}
+                        section.Clear();continue;
+                    }
+                    section.Add(new Vector2(b.xMin+x*b.width,b.yMin+y*b.height));
+                }
+            if(section.Count>visibleRoad.Count){visibleRoad.Clear();visibleRoad.AddRange(section);}
+        }
+        public Vector2 StagePosition(int stage)
+        {
+            ProjectRoad();
+            if(visibleRoad.Count<2)return rectTransform.rect.center;
+            float length=0;
+            for(int i=1;i<visibleRoad.Count;i++)length+=Vector2.Distance(visibleRoad[i-1],visibleRoad[i]);
+            float target=length*(Mathf.Clamp(stage,1,25)-1)/24f;
+            for(int i=1;i<visibleRoad.Count;i++)
+            {
+                float segment=Vector2.Distance(visibleRoad[i-1],visibleRoad[i]);
+                if(target<=segment)return Vector2.Lerp(visibleRoad[i-1],visibleRoad[i],target/Mathf.Max(.001f,segment));
+                target-=segment;
+            }
+            return visibleRoad[visibleRoad.Count-1];
         }
         protected override void OnPopulateMesh(VertexHelper vh)
         {
@@ -299,14 +338,23 @@ namespace Eldoria.UI.RoyalGold.V2
                 bool cleared=absolute<=Cleared;
                 bool current=absolute==Cleared+1;
                 bool boss=(i+1)%5==0;
-                float r=Mathf.Clamp(Mathf.Min(dx,dy)*.19f,5,16);
+                float separation=float.MaxValue;
+                if(i>0)separation=Mathf.Min(separation,Vector2.Distance(nodes[i],nodes[i-1]));
+                if(i<24)separation=Mathf.Min(separation,Vector2.Distance(nodes[i],nodes[i+1]));
+                float r=Mathf.Clamp(separation*.31f,3,16);
                 if(boss)r*=1.3f;
                 var gold=new Color(.78f,.63f,.39f,1);
                 var dark=new Color(.12f,.15f,.17f,.92f);
-                if(current)Disc(vh,nodes[i],r+5,new Color(.48f,.25f,.64f,.91f));
+                if(current){
+                    Disc(vh,nodes[i],r+9,new Color(1f,.50f,.05f,.20f));
+                    Disc(vh,nodes[i],r+5,new Color(1f,.70f,.12f,.75f));
+                }
                 Disc(vh,nodes[i],r+2,boss?gold:new Color(.48f,.40f,.30f,1));
-                Disc(vh,nodes[i],r,cleared?gold:current?
-                    new Color(.97f,.85f,.60f,1):dark);
+                Disc(vh,nodes[i],r,dark);
+                if(cleared){
+                    Line(vh,nodes[i]+new Vector2(-r*.5f,0),nodes[i]+new Vector2(-r*.1f,-r*.4f),3,new Color(.45f,.93f,.27f,1));
+                    Line(vh,nodes[i]+new Vector2(-r*.1f,-r*.4f),nodes[i]+new Vector2(r*.6f,r*.45f),3,new Color(.45f,.93f,.27f,1));
+                }
                 if(boss)Disc(vh,nodes[i],r*.42f,
                     cleared?new Color(.40f,.21f,.12f,1):
                     new Color(.67f,.31f,.25f,1));

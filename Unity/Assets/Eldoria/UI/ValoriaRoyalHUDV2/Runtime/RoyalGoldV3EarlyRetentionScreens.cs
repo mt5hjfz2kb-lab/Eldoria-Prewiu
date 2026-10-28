@@ -56,11 +56,11 @@ namespace Eldoria.UI.RoyalGold.V2
         // Two original zero-cost painterly environments, with the hand-built
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
-        Texture2D paintedVigilants, paintedScouts;
+        Texture2D paintedVigilants, paintedScouts, scoutParchment;
         GameObject screen;
         float width=-1,height=-1,nextUpdate;
         float lastSafeWidth=-1,lastSafeHeight=-1;
-        bool compactLandscape;
+        bool compactLandscape, encounterPortraitVisible;
         struct TextDensityState
         {
             public int FontSize;
@@ -367,7 +367,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 bossMilestoneLabels[i].alignment=TextAnchor.MiddleCenter;
                 bossMilestoneLabels[i].Put(((i+1)*5).ToString());
             }
-            currentMilestoneLabel=Text(trail,"Current live stage",17,Ink,true);
+            currentMilestoneLabel=Text(trail,"Current live stage",17,Ivory,true);
             currentMilestoneLabel.alignment=TextAnchor.MiddleCenter;
             // The stage-15 elite is the canonical Bastion-II Spawnling,
             // not an invented stone golem. Reuse its actual authored image.
@@ -403,6 +403,9 @@ namespace Eldoria.UI.RoyalGold.V2
             victoryGroup.interactable=false;
             victoryBanner.SetAsLastSibling();
             infoCard=Panel(panel,"Progression and expedition information");
+            // The adversary belongs to the encounter card, as in the reference;
+            // it must never cover the painted route or any chapter milestone.
+            creature.SetParent(infoCard,false);
             chapter=Text(infoCard,"Stage progression",23,Gold,true);
             opponent=Text(infoCard,"Real enemy and trait",19,Ivory);
             formation=Text(infoCard,"Actual available army",17,Muted);
@@ -413,6 +416,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 "COMBATIR",ExecuteStage,out mainActionLabel,true,true);
             claimXp=Button(infoCard,"Claim earned hero experience",
                 "RECOGER EXPERIENCIA",CollectXp,out xpLabel);
+            scoutParchment=Resources.Load<Texture2D>("EldoriaRetention/scout-parchment-v3");
             for(int i=0;i<3;i++)
             {
                 int index=i;
@@ -429,6 +433,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutArt[i].raycastTarget=false;
                 Stretch(artwork,0);
                 artwork.SetAsFirstSibling();
+                if(scoutParchment)
+                {
+                    // Blank original paper only: every title, illustration,
+                    // state and action remains a live Unity child.
+                    scoutArt[i].enabled=false;
+                    var paper=Rect("Reference parchment / visual only",cell);
+                    paper.gameObject.AddComponent<CanvasRenderer>();
+                    var paperImage=paper.gameObject.AddComponent<RawImage>();
+                    paperImage.texture=scoutParchment;
+                    paperImage.raycastTarget=false;
+                    Stretch(paper);
+                    paper.SetAsFirstSibling();
+                }
                 var vignette=Rect("Mission map detail (visual only)",cell);
                 vignette.gameObject.AddComponent<CanvasRenderer>();
                 scoutThumbnails[i]=vignette.gameObject.AddComponent<RawImage>();
@@ -657,9 +674,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // instead of leaving a long dark strip before the battle button.
             // Scouts retains three full-size readable contracts beneath its map.
             float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-840f):
-                portrait?Mathf.Clamp(ph-988f,220f,880f):ph-155f;
+                portrait?Mathf.Clamp(ph-988f,220f,880f):
+                OpenDestination==Destination.Vigilants&&!compactLandscape?ph*.44f:ph-155f;
             TL(heroScene,portrait?18f:20f,imageTop,
-                portrait?pw-36f:pw-40f,scenicHeight);
+                portrait?pw-36f:vigilantsLandscape&&compactLandscape?pw*.46f-20f:pw-40f,scenicHeight);
             if(vigilantsLandscape)
             {
                 chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
@@ -706,6 +724,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(portrait)
                 TL(infoCard,bodyX,imageTop+scenicHeight+10f,
                     bodyWidth,ph-(imageTop+scenicHeight+58f));
+            else if(vigilantsLandscape&&!compactLandscape)
+                TL(infoCard,20f,imageTop+scenicHeight+8f,pw-40f,
+                    ph-imageTop-scenicHeight-55f);
             else if(compactLandscape)
                 TL(infoCard,scoutsLandscape?18f:pw*.48f,imageTop+8f,
                     scoutsLandscape?pw-36f:pw*.50f-20f,ph-imageTop-56f);
@@ -722,8 +743,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(chapter.rectTransform,14f,12f,iw-28f,44f);
                 TL(opponent.rectTransform,14f,62f,iw-28f,78f);
                 TL(formation.rectTransform,14f,148f,iw-28f,36f);
-                TL(reward.rectTransform,14f,192f,iw-28f,72f);
-                TL(passive.rectTransform,14f,272f,iw-28f,70f);
+                TL(reward.rectTransform,14f,234f,iw-28f,64f);
+                TL(passive.rectTransform,14f,306f,iw-28f,70f);
                 TL(battleFeedback.rectTransform,14f,350f,iw-28f,40f);
                 TL((RectTransform)mainAction.transform,14f,ih-200f,iw-28f,90f);
                 TL((RectTransform)claimXp.transform,14f,ih-100f,iw-28f,88f);
@@ -844,6 +865,8 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             var p=s.Retention??new EarlyRetentionState();
             bool vig=OpenDestination==Destination.Vigilants;
+            var boardBacking=infoCard.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(boardBacking)boardBacking.enabled=vig;
             sceneArtwork.Scouts=!vig;
             sceneArtwork.Chapter=Math.Max(1,(p.LastClearedStage/25)+1);
             if(paintedScene)
@@ -885,12 +908,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 sceneArtwork.SetVerticesDirty();
             }
             bool narrow=height>width && width<640f;
-            heading.Put(vig?(narrow?"VIGILANTES":"CAMINO DE LOS VIGILANTES"):
-                (narrow?"EXPLORADORES":"MESA DE EXPLORADORES"));
+            heading.Put(vig?(narrow?"Vigilantes":"Camino de los Vigilantes"):
+                (narrow?"Exploradores":"Mesa de Exploradores"));
             kicker.Put(vig?(narrow?"CAMINO DE LOS VIGILANTES · PvE":
                 "PRUEBAS DEL REINO · COMBATE AUTOMÁTICO"):
                 (narrow?"MESA DE EXPLORADORES · ENCARGOS":
-                "ENCARGOS REALES · REGRESOS PERSISTENTES"));
+                "Envía a tus exploradores y descubre nuevas tierras"));
             introduction.gameObject.SetActive(false);
             // The board reserves a 57 px header; show its actual section title
             // instead of leaving a dead band above the three illustrated cards.
@@ -914,31 +937,35 @@ namespace Eldoria.UI.RoyalGold.V2
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 bool boss=info.Step%5==0;
                 bool showEngendro=info.Step==15 && engendroTexture!=null;
+                if(showEngendro!=encounterPortraitVisible)
+                {
+                    encounterPortraitVisible=showEngendro;
+                    Layout();
+                }
                 if(engendroPortrait)
                     engendroPortrait.transform.parent.gameObject.SetActive(showEngendro);
+                chapterTrail.rectTransform.anchorMin=Vector2.zero;
+                chapterTrail.rectTransform.anchorMax=Vector2.one;
+                chapterTrail.rectTransform.offsetMin=new Vector2(5,5);
+                chapterTrail.rectTransform.offsetMax=new Vector2(-5,-5);
+                chapterTrail.ArtworkUv=paintedScene.uvRect;
+                chapterTrail.SetVerticesDirty();
+                // All milestones now occupy the painted road. The encounter
+                // card sits below the scene, so neither creature nor text hides it.
                 if(showEngendro)
                 {
-                    // The real creature occupies the lower-left of the painted
-                    // scene. Shift the 25 playable stage markers up so that
-                    // none of them is hidden behind a decorative creature.
-                    float sceneHeight=Mathf.Max(1f,heroScene.rect.height);
-                    float portraitHeight=Mathf.Min(sceneHeight*.49f,
-                        height>width?360f:310f);
-                    float clearance=Mathf.Clamp(
-                        (portraitHeight+32f)/sceneHeight,.27f,.64f);
-                    bool wide=width>height;
-                    chapterTrail.rectTransform.anchorMin=new Vector2(
-                        wide?.07f:.10f,clearance);
-                    chapterTrail.rectTransform.anchorMax=new Vector2(
-                        wide?.34f:.90f,.95f);
-                }
-                else
-                {
-                    bool wide=width>height;
-                    chapterTrail.rectTransform.anchorMin=wide
-                        ?new Vector2(.04f,.13f):new Vector2(.10f,.06f);
-                    chapterTrail.rectTransform.anchorMax=wide
-                        ?new Vector2(.34f,.86f):new Vector2(.90f,.54f);
+                    bool portrait=height>width;
+                    var frame=engendroPortrait.transform.parent as RectTransform;
+                    float cw=infoCard.rect.width*.29f;
+                    float ch=Mathf.Min(infoCard.rect.height*.36f,cw);
+                    TL(frame,12f,portrait?64f:54f,cw,ch);
+                    float textX=infoCard.rect.width*.34f;
+                    float textW=infoCard.rect.width-textX-16f;
+                    TL(opponent.rectTransform,textX,portrait?62f:54f,textW,portrait?90f:64f);
+                    TL(formation.rectTransform,textX,portrait?158f:compactLandscape?108f:122f,
+                        textW,portrait?66f:compactLandscape?28f:38f);
+                    TL(reward.rectTransform,textX,portrait?234f:compactLandscape?144f:165f,
+                        textW,portrait?64f:compactLandscape?52f:38f);
                 }
                 // Update labels only AFTER the Engendro-relative trail
                 // anchors are chosen. Otherwise the captured stage-15 numbers

@@ -33,7 +33,7 @@ jobs:
           # owner took over this same workstream; PR119 must release Windows
           # BEFORE the single retention claim passes this gate.
           if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-early-retention-systems-20261028' -or
-             $claims[0].ownership_state -ne 'claimed' -or $claims[0].owner -ne 'codex-pr119-pr120-completion-20261028'){
+             $claims[0].ownership_state -ne 'claimed' -or $claims[0].owner -ne 'codex-pr120-exact-visual-pr122-20261028' -or $claims[0].ownership_revision -ne 6){
             throw "Windows runner is not exclusively owned by this active workstream: $($claims.id -join ',')"
           }
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'A local Unity or Blender process is already active. Do not interrupt.'}

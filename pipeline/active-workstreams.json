@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T14:42:24.150Z",
+  "updated_at": "2026-10-28T16:09:00Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1727,9 +1727,9 @@
     },
     {
       "id": "eldoria-early-retention-systems-20261028",
-      "owner": "codex-pr119-pr120-completion-20261028",
+      "owner": "codex-pr120-exact-visual-pr122-20261028",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "status": "active",
       "branch": "feature/eldoria-early-retention-20261028",
       "pr": 120,
@@ -1775,6 +1775,12 @@
           "revision": 2,
           "reason": "Owner explicitly requests current chat assume and finish PR119 and PR120 after repeated interruptions.",
           "transferred_at": "2026-10-28T08:41:18.407Z"
+        },
+        {
+          "owner": "codex-pr119-pr120-completion-20261028",
+          "revision": 5,
+          "transferred_at": "2026-10-28T16:09:00Z",
+          "reason": "Owner explicitly instructs this session to continue PR120 to exact approved visual composition, then PR122; rewards may remain pending."
         }
       ],
       "write_scope_released": false,
@@ -1784,8 +1790,8 @@
         "previous_source": "01685c187f8df1a23c5743a76a6d27c3f32ab23e",
         "previous_visual_review": "superseded_by_new_painterly_and_stage15_art"
       },
-      "next": "Publish same PR120 preserving latest4981f5fd art and merged119. Prepared15 native captures and real3scout dispatch/claim +XP +reload. Local exact-domain NUnit13/13 and managementSmoke30/30 pass. Current reference images opened; no newsystems or paidtools.",
-      "phase": "PR120_RECONCILED_NATIVE_CERTIFICATION",
+      "next": "Native aa2666d4 is functional but NOT visually accepted: route markers float left instead of following landscape path; flat navy enemy card and geometric scout cards materially differ from approved original reference. Preserve 19 native images and functional PASS. No ART_APPROVED, merge or APK until corrected actual Unity comparison. Prior session must stop writes/dispatch under superseded revision5; preserve all in-flight evidence. Current user authorizes this handoff and PR122 afterward, rewards evaluation deferred.",
+      "phase": "VISUAL_REFERENCE_MISMATCH_REQUIRES_COMPOSITION_CORRECTION",
       "test_harness_scope_note": "Owner-authorized PR119/120 completion: repair only stale frozen-web fresh-save Arc-I Fissure assertions (retired INSPECCIONAR/recruit-before-victory sequence) to match the already-approved real Bastion III investigation/contact/assault/recruit/manuscript journey. No frozen-web gameplay changes, no new Bastion IV/V work. Exact file unclaimed by any other active owner. Preserve native owner/revision5 and existing Windows queue.",
       "certification_scope_note": "PR119/120 completion: reuse successful exact shared-UI certification40700893871 at1f418a29274664904556aa3478dc1520e495e30b only when git comparison proves every changed file belongs to the separately native-certified Retention module, documentation or this approved legacy QA harness, and all shared certification steps remain byte-identical. Shared-domain/world/UI changes still require the full gate. Native retention proof+17images and postmerge main gates remain mandatory. Preserve current live owner/revision5/Windows queue."
     }
