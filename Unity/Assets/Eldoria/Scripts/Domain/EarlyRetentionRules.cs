@@ -81,9 +81,11 @@ namespace Eldoria.Domain
             bool boss=level%5==0;
             string[] locations={"Las Sendas de Ceniza","Bosque de los Centinelas",
                 "Frontera Corrupta","Ruinas de los Vigilantes"};
+            // All early challengers must belong to Eldoria's documented
+            // corruption/bestiary. There are no stone golems in this story.
             string[] normal={"Avanzadilla corrupta","Acechador ceniciento",
-                "Custodio de piedra","Emboscada del bosque"};
-            string[] traits={"Escudo pétreo","Emboscada","Armadura reforzada","Ataque veloz"};
+                "Corrupto errante","Emboscada del bosque"};
+            string[] traits={"Resistencia corrupta","Emboscada","Piel corrupta","Ataque veloz"};
             int variance=(stage-1)%4;
             // A quadratic ramp is deliberate: a starter roster reaches
             // several milestones but cannot clear the whole first chapter
@@ -98,7 +100,8 @@ namespace Eldoria.Domain
             int brk=12+stage*2+(boss?15:0);
             var enemy=new WorldCreatureStats(hp,atk,def,brk,0,0);
             return new VigilantStage(stage,chapter,level,
-                boss?"Guardián del umbral":normal[variance],
+                boss && level==15?"Engendro de la Brecha":
+                    boss?"Guardián del umbral":normal[variance],
                 traits[variance],locations[(chapter-1)%locations.Length],enemy);
         }
 
