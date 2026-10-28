@@ -31,7 +31,8 @@ namespace Eldoria.UI.RoyalGold.V2
         Action refreshed;
         RectTransform safe, screenRect, panelRoot, heroScene, infoCard, victoryBanner;
         CanvasGroup victoryGroup;
-        RoyalText victoryTitle, victoryDetail;
+        RoyalText victoryTitle, victoryDetail, scoutDiscoveryRibbonText;
+        RectTransform scoutDiscoveryRibbon;
         float victoryUntil, victoryStarted;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
@@ -357,6 +358,20 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!paintedScouts)paintedScouts=
                 Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
             paintedScene.enabled=paintedVigilants!=null;
+            // One understated illustrated cartographer's seal, above the real
+            // painted map, never a second screen or decorative tap target.
+            scoutDiscoveryRibbon=Panel(art,"Map discoveries / live royal seals");
+            var discoveryFrame=scoutDiscoveryRibbon.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(discoveryFrame){discoveryFrame.raycastTarget=false;discoveryFrame.Primary=true;}
+            scoutDiscoveryRibbon.anchorMin=new Vector2(.04f,.81f);
+            scoutDiscoveryRibbon.anchorMax=new Vector2(.80f,.96f);
+            scoutDiscoveryRibbon.offsetMin=scoutDiscoveryRibbon.offsetMax=Vector2.zero;
+            scoutDiscoveryRibbonText=Text(scoutDiscoveryRibbon,
+                "Persistent cartographer findings count",17,Gold,true);
+            scoutDiscoveryRibbonText.alignment=TextAnchor.MiddleCenter;
+            scoutDiscoveryRibbonText.raycastTarget=false;
+            Stretch(scoutDiscoveryRibbonText.rectTransform,7f);
+            scoutDiscoveryRibbon.gameObject.SetActive(false);
             scoutVignettes=Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4");
             guardianBannerTexture=Resources.Load<Texture2D>("EldoriaRetention/guardian-banner-v4");
             // Decorative art stays BELOW the existing 25-stage route and
@@ -576,7 +591,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     victoryTitle.Put(report.Won?"VICTORIA":"DERROTA");
                     victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
-                    victoryDetail.Put(result.Message);
+                    victoryDetail.Put(report.Reason);
                     victoryStarted=Time.unscaledTime;
                     victoryUntil=victoryStarted+3.2f;
                     victoryGroup.alpha=1f;
@@ -588,12 +603,18 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 // Small celebratory acknowledgement without inventing loot,
                 // blocking the UI, or creating another management screen.
-                victoryTitle.Put(kind=="ScoutClaim"?"ENCARGO COMPLETADO":
+                var after=gateway.Snapshot();
+                var retention=after.Retention;
+                bool discovery=kind=="ScoutClaim"&&retention!=null&&
+                    retention.LatestScoutKind>=0;
+                victoryTitle.Put(discovery?"HALLAZGO REGISTRADO":
                     "EXPLORADORES EN CAMINO");
                 victoryTitle.color=Gold;
-                victoryDetail.Put(result.Message);
+                victoryDetail.Put(discovery?
+                    EarlyRetentionRules.ScoutReportHeading(retention.LatestScoutKind,
+                        retention.LatestScoutVariant):result.Message);
                 victoryStarted=Time.unscaledTime;
-                victoryUntil=victoryStarted+(kind=="ScoutClaim"?2.7f:1.9f);
+                victoryUntil=victoryStarted+(discovery?4.0f:1.9f);
                 victoryGroup.alpha=1f;
                 victoryGroup.blocksRaycasts=false;
             }
@@ -967,6 +988,18 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
             }
             chapterTrail.gameObject.SetActive(vig);
+            if(scoutDiscoveryRibbon)
+            {
+                bool discovered=!vig&&p.ScoutDiscoveries>0;
+                scoutDiscoveryRibbon.gameObject.SetActive(discovered);
+                if(discovered)
+                {
+                    string finding=EarlyRetentionRules.ScoutReportHeading(
+                        p.LatestScoutKind,p.LatestScoutVariant);
+                    scoutDiscoveryRibbonText.fontSize=height>width?15:compactLandscape?13:17;
+                    scoutDiscoveryRibbonText.Put("HALLAZGOS "+p.ScoutDiscoveries+" · "+finding);
+                }
+            }
             if(vig)
             {
                 int currentChapter=Math.Max(1,p.LastClearedStage/25+1);
@@ -1113,7 +1146,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
                 kicker.Put("Protege las fronteras de Valoria y supera a sus guardianes.");
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
-                opponent.Put(info.Name+"\nRasgo: "+info.Trait);
+                opponent.Put(info.Name+"\n"+info.Trait+
+                    (boss?" · "+EarlyRetentionRules.GuardianHint(info.Step):""));
                 int archer=s.Available?.Total??0;
                 formation.Put("Héroe: "+(s.PreparedHeroId=="lyra"&&s.ChapterThree.LyraRecruited?
                     "Lyra":"Aldric")+" · "+archer+" tropas disponibles");
@@ -1132,10 +1166,13 @@ namespace Eldoria.UI.RoyalGold.V2
                     "Aún no disponible");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
-                battleFeedback.Put(string.IsNullOrEmpty(notice) && stage==1 ?
-                    "ALDRIC · Es una prueba de preparación. Elige tus tropas y yo dirigiré el combate automático." :
-                    notice);
-                footer.Put("Cada victoria abre el siguiente tramo del camino.");
+                var battleReport=s.LastBattleReport;
+                bool ourReport=battleReport!=null&&
+                    (battleReport.TargetId??"").StartsWith("vigilant:",StringComparison.Ordinal);
+                battleFeedback.Put(ourReport?battleReport.Reason:
+                    "Prepara el héroe, la composición y el Poder de tu marcha.");
+                footer.Put(boss?"GUARDIÁN · "+EarlyRetentionRules.GuardianHint(info.Step):
+                    "Cada victoria ilumina un tramo del camino.");
             }
             else
             {
@@ -1211,7 +1248,12 @@ namespace Eldoria.UI.RoyalGold.V2
                         order.EndsUtcTicks<=now()?"Recoger":"En camino");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());
-                footer.Put("Nuevos encargos: "+
+                // A completed expedition changes the cartographer's table
+                // persistently, without creating a new currency or reward.
+                bool discovered=p.ScoutDiscoveries>0&&p.LatestScoutKind>=0;
+                footer.Put(discovered?"Último informe: "+
+                    EarlyRetentionRules.ScoutReportHeading(p.LatestScoutKind,p.LatestScoutVariant):
+                    "Nuevos encargos: "+
                     TimeSpan.FromTicks(Math.Max(0,due-now())).ToString(@"hh\:mm\:ss")+
                     " · Máximo 6 pendientes");
             }
