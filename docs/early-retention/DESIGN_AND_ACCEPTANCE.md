@@ -20,10 +20,13 @@ Autoridad: aprobación del propietario 28/10/2026. No se inserta dentro de Códi
 
 ## Interfaz y desbloqueos
 
-- Son **dos pantallas completas distintas**, una de progresión/combate y otra de órdenes. Cada una tiene cabecera, arte medieval original dibujado por uGUI, información real, botones propios y regreso a Valoria.
+- Son **dos pantallas completas distintas**, una de progresión/combate y otra de órdenes. Cada una tiene cabecera, ilustración ambiental original y un recorrido/tarjetas superpuestos por uGUI, información real, botones propios y regreso a Valoria.
 - **Dos accesos discretos en el HUD de ciudad** cerca del borde seguro inferior, *por encima* de la navegación del reino. Ninguno se dibuja antes de su desbloqueo, si hay diálogo abierto, menú modal o selección de un edificio.
 - No se crea un segundo `Canvas`, cámara, `EventSystem` o sesión, no se altera la navegación canónica ni se reutiliza Códice o Relicario.
-- Escenario Vigilantes: sendero y atalaya con cambios cromáticos por capítulos. Escenario Exploradores: carta/mapa, rutas, blasones. Todo geometry editable real, no una imagen maquetada ni recurso externo con coste.
+- Escenario Vigilantes: `Resources/EldoriaRetention/vigilants-illustration.png`, ilustración original medieval con camino, atalaya, luz cálida y entorno de la Brecha. El camino real de 25 etapas y los cinco guardianes siguen siendo componentes independientes de uGUI, no parte de una imagen con números falsos.
+- Escenario Exploradores: `Resources/EldoriaRetention/scouts-illustration.png`, mapa ilustrado original con rutas y rosa de los vientos. Los tres pergaminos y sus títulos, tiempos, sellos y acciones siguen siendo componentes uGUI con estado real.
+- Ambas ilustraciones son texturas 640×640 indexadas (256 colores) sin textos, libres de elementos interactivos y con importación normal de Unity. `RoyalGoldV3EarlyRetentionScreens` las carga como `RawImage` en el **Canvas existente**, recorta proporcionalmente sin estirar y mantiene el arte vectorial original como respaldo si faltan recursos. No hay servicios, compras, nuevas escenas 3D ni cámaras adicionales.
+- Al enviar o recoger una expedición se muestra un reconocimiento breve y no bloqueante; la única autoridad para el premio continúa siendo `LocalGateway`, nunca la presentación.
 
 ## Evidencia obligatoria antes de integrar en main
 
@@ -32,6 +35,8 @@ Autoridad: aprobación del propietario 28/10/2026. No se inserta dentro de Códi
 3. PlayMode/capturas reales horizontal 1600×900 y vertical 900×1600 de ambas pantallas; comparación de jerarquía Crónica Real y solapamientos.
 4. Click real en combate/encargo, retorno al reino, sin botones prematuros, único HUD y sin errores; la prueba usa `VALORIA_GAMEPLAY_PROBE=1` con archivo desechable, **no** la partida del propietario.
 5. Verificación de compatibilidad con PR #119 sobre interfaz y mobile antes de merge/release. Los textos de tests no equivalen a **ART_APPROVED**; tras prueba gráfica se aplica revisión artística en cámara.
+6. Verificar con capturas Unity que **ambas texturas independientes** se cargan efectivamente (no basta con la compilación o la imagen de referencia), sin bloquear raycasts, con pergaminos legibles y camino de 25 etapas distinguible.
+7. El run Ubuntu de `early-retention-domain.yml` comprueba formato, CRC, paleta, resolución, diferencias entre ambas imágenes y publica los originales como artefacto para revisión humana. Es una prueba de integridad, no aprobación artística.
 
 ## Límites
 
