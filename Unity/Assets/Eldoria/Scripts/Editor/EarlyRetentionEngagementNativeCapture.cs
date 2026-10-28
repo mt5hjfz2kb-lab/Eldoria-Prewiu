@@ -129,9 +129,16 @@ namespace Eldoria.ReferenceClean.Editor
             Shot(host,"vigilants-guardian5-portrait",900,1600);
             Shot(host,"vigilants-guardian5-phone",390,844);
             var g=host.City.Gateway;
-            var battle=g.Execute(Command(g,"engagement-stage5","VigilantBattle","5"));
-            Need(battle.Ok,"Real fifth-stage boss combat accepted via existing Gateway");
+            var attack=hud.GetComponentsInChildren<RoyalButton>(true)
+                .FirstOrDefault(x=>x.name=="Battle against next unique stage");
+            Need(attack&&attack.interactable,"Real UI has an actionable guardian combat button");
+            attack.onClick.Invoke();
             var after=g.Snapshot();
+            Need(after.Retention.LastClearedStage==5,
+                "The REAL RoyalButton click defeats the fifth guardian and advances the path");
+            var victory=FindText(hud,"Original victory heading");
+            Need(victory&&victory.text=="VICTORIA"&&victory.gameObject.activeInHierarchy,
+                "A genuine gold combat celebration is shown, not only a report in code");
             Need(after.LastBattleReport.TargetId=="vigilant:5",
                 "Real combat report attached to the fifth guardian");
             Need(after.LastBattleReport.Rounds>0&&after.LastBattleReport.Troops<=
@@ -171,14 +178,30 @@ namespace Eldoria.ReferenceClean.Editor
             g=host.City.Gateway;
             var order=g.Snapshot().Retention.Orders.First(x=>x.Kind!=0);
             string story=EarlyRetentionRules.ScoutDiscoveryText(order);
-            Need(g.Execute(Command(g,"engagement-dispatch","ScoutDispatch",order.Id)).Ok,
-                "Original scout gateway dispatch accepts the true mission");
+            var visibleOrders=g.Snapshot().Retention.Orders
+                .Where(x=>x!=null&&!x.Claimed)
+                .OrderBy(x=>x.StartedUtcTicks>0?0:1)
+                .ThenBy(x=>x.Period).ThenBy(x=>x.Slot).Take(3).ToList();
+            int slot=visibleOrders.FindIndex(x=>x.Id==order.Id);
+            Need(slot>=0,"The contract can be selected by its real visible board position");
+            var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
+                .FirstOrDefault(x=>x.name=="Dispatch or claim scout "+(slot+1));
+            Need(dispatch&&dispatch.interactable,"Real blue SEND button is interactable");
+            dispatch.onClick.Invoke();
+            Need(g.Snapshot().Retention.Orders.Any(x=>x.Id==order.Id&&x.StartedUtcTicks>0),
+                "Real blue UI action dispatches the selected contract");
             var clock=host.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
             Need(clock!=null,"Only the disposable test clock can advance a report");
             clock.Step(EarlyRetentionRules.ScoutDurationSeconds(order.Kind)+1);
             g.Advance();
-            Need(g.Execute(Command(g,"engagement-claim","ScoutClaim",order.Id)).Ok,
-                "Original scout gateway pays and reports a single completed mission");
+            ui.SynchronizeLayout();
+            Need(dispatch.interactable,"Real blue CLAIM action unlocks after UTC completion");
+            dispatch.onClick.Invoke();
+            Need(g.Snapshot().Retention.Orders.Any(x=>x.Id==order.Id&&x.Claimed),
+                "The same original UI button claims one completed contract");
+            var discoveryTitle=FindText(hud,"Original victory heading");
+            Need(discoveryTitle&&discoveryTitle.text.StartsWith("HALLAZGO"),
+                "Earned expedition displays a celebratory narrative banner");
             host.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.3f);
             var saved=host.City.Gateway.Snapshot();
             Need(saved.Retention.TotalScoutReports==1&&
