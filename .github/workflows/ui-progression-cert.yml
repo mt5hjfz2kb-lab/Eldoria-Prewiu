@@ -48,7 +48,7 @@ jobs:
           script: |
             core.setOutput('eligible','false');
             const canonical='feature/eldoria-early-retention-20261028';
-            const nativeSource='c1da0a450a9b752f2759429dad06c6b42ea065ac';
+            const nativeSource='fa028667e1e7d8492276c921efc7d49379c450c1';
             const pr=context.payload.pull_request;
             let requireNativeTree=false;
             if(context.eventName==='pull_request') {
@@ -130,7 +130,7 @@ jobs:
             const nativeWorkflowUnchanged=oldNative===newNative;
             let nativeTreeMatches=true;
             if(process.env.REQUIRE_NATIVE_TREE==='true') {
-              const nativeSource='c1da0a450a9b752f2759429dad06c6b42ea065ac';
+              const nativeSource='fa028667e1e7d8492276c921efc7d49379c450c1';
               git('git',['fetch','--no-tags','--filter=blob:none','--depth=1','origin',nativeSource],{stdio:'pipe'});
               nativeTreeMatches=git('git',['rev-parse',nativeSource+':Unity'],{encoding:'utf8'}).trim()===
                 git('git',['rev-parse','HEAD:Unity'],{encoding:'utf8'}).trim();

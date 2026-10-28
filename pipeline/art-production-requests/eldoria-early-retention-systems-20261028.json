@@ -29,7 +29,7 @@
     "final_gate": "Nineteen actual Unity states in1600x900,900x1600,390x844,844x390; actual texture identities, >=12px handheld text, real buttons/raycasts/combat/3dispatch+claim/XP/save reload. Independent reference comparison required."
   },
   "art_approved": false,
-  "unity_visual_acceptance": "PENDING",
+  "unity_visual_acceptance": "NATIVE_2D_UI_REFERENCE_COMPOSITION_ACCEPTED",
   "physical_mobile_tested": false,
   "notes": "Original icon reuse remains exact. New2D presentation assets derive from the selected original reference, with prompts/hashes retained; no3D model edit, Tripo spend or Qwen invocation. Runtime gameplay and controls remain authoritative. No ART_APPROVED by compilation or technical checks.",
   "additional_2d_ui": {
@@ -72,5 +72,13 @@
     ],
     "art_approved": false,
     "fictional_baked_values": false
+  },
+  "ui_reference_review": {
+    "scope": "2D interface composition and authentic native integration; no new3D asset approval requested",
+    "source": "fa028667e1e7d8492276c921efc7d49379c450c1",
+    "run_id": 40755121692,
+    "review": "docs/early-retention/NATIVE_ACCEPTANCE_20261028.md",
+    "reward_balance": "PROVISIONAL_OWNER_DEFERRED",
+    "physical_mobile_tested": false
   }
 }
