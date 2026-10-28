@@ -8,6 +8,7 @@ using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.Infrastructure;
 using Eldoria.UI.RoyalGold;
+using Eldoria.UI.RoyalGold.V2;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -183,9 +184,9 @@ namespace Eldoria.ReferenceClean.Editor
                 snap.ExtraMarches.Count==2,
                 "All three routes/returns survive save reload with no duplicated resources");
             Need(host.TrySetWorld(false),"Player can return safely to the canonical city");
-            var manager=hud.GetComponent<Eldoria.UI.RoyalGold.RoyalGoldV3ManagementScreens>();
+            var manager=hud.GetComponent<RoyalGoldV3ManagementScreens>();
             Need(manager!=null,"Actual March Room management panel attached");
-            manager.Open(Eldoria.UI.RoyalGold.RoyalGoldV3ManagementScreens.Destination.March);
+            manager.Open(RoyalGoldV3ManagementScreens.Destination.March);
             yield return new WaitForSecondsRealtime(.2f);
             Need(manager.IsOpen,"Actual capacity-limited march composer opens");
             Need(hud.GetComponentsInChildren<RoyalText>(true).Any(t=>
