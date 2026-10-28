@@ -102,8 +102,10 @@ namespace Eldoria.AldricCity
         {
             host = GetComponent<ValoriaIntegratedWorld>();
             if (!host) yield break;
-            for (int i = 0; i < 120 && !host.Ready; ++i) yield return null;
-            if (!host.Ready || !host.City || !host.City.PlayerCamera) yield break;
+            var readyDeadline = Time.realtimeSinceStartup + 60f;
+            while (host && !host.Ready && Time.realtimeSinceStartup < readyDeadline)
+                yield return null;
+            if (!host || !host.Ready || !host.City || !host.City.PlayerCamera) yield break;
 
             // The actual Axial_Paving MeshCollider from Valoria's Paths prefab.
             // Never guess a route on grass, water or beneath buildings.
@@ -252,7 +254,7 @@ namespace Eldoria.AldricCity
 
         private IEnumerator LoadExactModel()
         {
-            var pathOnDisk = Application.streamingAssetsPath.TrimEnd('/') + "/" + Asset;
+            var pathOnDisk = UnityEngine.Application.streamingAssetsPath.TrimEnd('/') + "/" + Asset;
             // StreamingAssets uses jar:file:// on Android, plain file:// on desktop.
             var url = pathOnDisk.Contains("://") ? pathOnDisk : new Uri(pathOnDisk).AbsoluteUri;
             byte[] verifiedBytes;

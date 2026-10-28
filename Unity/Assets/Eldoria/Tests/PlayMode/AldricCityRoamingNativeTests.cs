@@ -54,7 +54,7 @@ namespace Eldoria.Tests
 
             SceneManager.LoadScene("Valoria_City_World_UI");
             ValoriaIntegratedWorld host = null;
-            for (int i = 0; i < 600; ++i)
+            for (var readyDeadline = Time.realtimeSinceStartup + 60f; Time.realtimeSinceStartup < readyDeadline;)
             {
                 yield return null;
                 host = Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
@@ -64,7 +64,8 @@ namespace Eldoria.Tests
             Assert.That(host.Ready, Is.True, "Canonical host is required; do not create a second one");
             var walker = host.GetComponent<AldricCityRoaming>();
             Assert.That(walker, Is.Not.Null, "One AldricCityRoaming must attach to existing host");
-            for (int i = 0; i < 900 && !walker.ApprovedVisualReady; ++i)
+            var importDeadline = Time.realtimeSinceStartup + 90f;
+            while (!walker.ApprovedVisualReady && Time.realtimeSinceStartup < importDeadline)
                 yield return null;
             Assert.That(walker.ApprovedVisualReady, Is.True,
                 "Original full-body skinned GLB, source hash, road route and animations must pass");
@@ -82,7 +83,7 @@ namespace Eldoria.Tests
             // Real time/real animation: initial idle pause is intentional.
             var first = walker.ActorGroundPosition;
             var travelled = 0f;
-            for (int i = 0; i < 900 && travelled < 0.3f; ++i)
+            for (var walkDeadline = Time.realtimeSinceStartup + 20f; travelled < 0.3f && Time.realtimeSinceStartup < walkDeadline;)
             {
                 yield return null;
                 travelled = Vector3.Distance(first, walker.ActorGroundPosition);

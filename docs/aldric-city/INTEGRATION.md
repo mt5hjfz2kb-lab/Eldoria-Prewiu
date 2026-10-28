@@ -37,3 +37,9 @@ Para promocionar a main: (1) terminar PR120, (2) el GLB exacto ya está versiona
 - La consulta de guardado para saber si Aldric está en marcha o investigando se limita a una cada 0,2 s; el componente solo consulta el mismo gateway sin escribirlo.
 - El intento histórico de recuperación del modelo usando la máquina Windows no encontró el archivo. **La reconstrucción posterior en GitHub sí funcionó**, por lo que se retiró ese workflow obsoleto.
 - Los tests de fuente en Ubuntu siguen siendo **no-Unity**; la prueba nativa de paseo y las cuatro capturas están preparadas, no ejecutadas. No marcar `PLAYMODE_PASS` ni `ART_APPROVED` por esos tests.
+
+## Continuación de fuente — 28/10/2026
+
+El mismo encargo canónico se reclama en main como `eldoria-aldric-city-roaming-20261028`, sin reserva de Unity mientras PR120 siga validándose. Revisión independiente encontró una colisión C# real: `Application.streamingAssetsPath` se resuelve al namespace hermano `Eldoria.Application`. Un ensayo mínimo con el compilador Roslyn confirmó CS0234. Se utiliza explícitamente `UnityEngine.Application.streamingAssetsPath`. Las esperas de inicio/importación/prueba pasan de contar fotogramas a plazos de tiempo real: un equipo que renderiza rápidamente no debe agotar la espera antes de cargar la escena o el GLB.
+
+El binario aprobado se ha vuelto a leer desde el objeto Git y coincide en tamaño10.140.372, SHA256c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b,26articulaciones y los5clips originales. No hay nueva generación ni gasto. Esta verificación de fuente no es una prueba de Unity ni permite declarar aceptación visual. Las pruebas nativas siguen pendientes hasta acabar PR120.
