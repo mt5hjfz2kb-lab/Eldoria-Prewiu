@@ -510,8 +510,11 @@ namespace Eldoria.ReferenceClean.Editor
             var loaded=h.City.Gateway.Snapshot();
             Need(loaded.Retention.LastClearedStage==claimed.Retention.LastClearedStage &&
                 loaded.Retention.AldricExperience==claimed.Retention.AldricExperience &&
-                sent.All(order=>loaded.Retention.Orders.Any(x=>x.Id==order.Id&&x.Claimed)),
-                "Real save reload preserves stage progress and all three reward claims");
+                sent.All(order=>loaded.Retention.Orders.Any(x=>x.Id==order.Id&&x.Claimed))&&
+                loaded.Retention.ScoutDiscoveries==3 &&
+                loaded.Retention.ScoutDiscoveryMask==scoutClaimed.ScoutDiscoveryMask &&
+                loaded.Retention.LatestScoutReportId==scoutClaimed.LatestScoutReportId,
+                "Real save reload preserves stages, three single rewards, map seals and last authored report");
             Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,
                 "No duplicate RoyalHUD/Canvas created");
             Need(LayoutFailures.Count==0,
