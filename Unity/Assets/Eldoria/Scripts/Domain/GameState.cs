@@ -156,6 +156,8 @@ namespace Eldoria.Domain
         public ArmyRoster Available = new ArmyRoster { ArcherT1 = SliceContentProfiles.Active.InitialArcherT1 };
         public ArmyRoster Wounded = new ArmyRoster();
         public MarchState March = new MarchState();
+        // Additive schema-one compatible: two extra independent march slots.
+        public List<MarchState> ExtraMarches = new List<MarchState>();
         public bool MarchConfigured;
         public string PreparedHeroId = "aldric";
         public ArmyRoster PreparedTroops = new ArmyRoster();
@@ -177,6 +179,97 @@ namespace Eldoria.Domain
         public List<string> CompletedCommandIds = new List<string>();
         public List<string> CompletedTaskIds = new List<string>();
     }
+    // Shared authoritative limit for all troop deployments, not only UI.
+    // Existing legacy marches continue to return even when above a new limit.
+    public static class MarchCapacityRules
+    {
+        public const int MaxConcurrentMarches = 3;
+        public const int BaseCapacity = 40;
+        public const int PerBarracksLevel = 20;
+        public const int PerHeroLevel = 5;
+        public const int HeroXpPerLevel = 80;
+        public const int MaxHeroLevel = 20;
+
+        public static int HeroLevel(PlayerState s, string heroId)
+        {
+            if(s==null)return 1;
+            int aldric=Math.Max(0,s.Retention?.AldricExperience??0);
+            int lyra=Math.Max(Math.Max(0,s.Retention?.LyraExperience??0),Math.Max(0,s.ChapterThree?.LyraXp??0));
+            int xp=heroId=="lyra"?lyra:heroId=="aldric+lyra"?Math.Max(aldric,lyra):aldric;
+            return Math.Min(MaxHeroLevel,1+xp/HeroXpPerLevel);
+        }
+        public static int Capacity(PlayerState s, string heroId)
+        {
+            if(s==null)return 0;
+            return checked(BaseCapacity+Math.Max(0,s.BarracksLevel)*PerBarracksLevel+
+                (HeroLevel(s,heroId)-1)*PerHeroLevel);
+        }
+        public static System.Collections.Generic.IEnumerable<MarchState> WorldMarches(PlayerState s)
+        {
+            if(s==null)yield break;
+            if(s.March!=null)yield return s.March;
+            if(s.ExtraMarches!=null)foreach(var m in s.ExtraMarches)if(m!=null)yield return m;
+        }
+        public static int ActiveWorldCount(PlayerState s)
+        {
+            int count=0;
+            foreach(var m in WorldMarches(s))if(m.Phase!="idle")count++;
+            return count;
+        }
+        public static int ActiveCount(PlayerState s,long utcTicks)
+        {
+            if(s==null)return 0;
+            int count=ActiveWorldCount(s);
+            if(s.ChapterThree!=null&&s.ChapterThree.InvestigationEndsUtcTicks>utcTicks)count++;
+            if(s.Retention?.Orders!=null)
+                foreach(var order in s.Retention.Orders)
+                    if(order!=null&&!order.Claimed&&order.StartedUtcTicks>0&&order.EndsUtcTicks>utcTicks)count++;
+            return count;
+        }
+        public static bool CanStart(PlayerState s,long utcTicks)
+            => s!=null && ActiveCount(s,utcTicks)<MaxConcurrentMarches;
+        public static bool Fits(ArmyRoster troops,ArmyRoster available,int capacity)
+            => troops!=null&&available!=null&&troops.Total>0&&troops.Total<=capacity&&
+               troops.ArcherT1>=0&&troops.ArcherT2>=0&&troops.ArcherT3>=0&&
+               troops.ArcherT1<=available.ArcherT1&&troops.ArcherT2<=available.ArcherT2&&
+               troops.ArcherT3<=available.ArcherT3;
+        public static ArmyRoster AutoSelect(ArmyRoster available,int capacity)
+        {
+            var result=new ArmyRoster();
+            if(available==null||capacity<=0)return result;
+            int remaining=capacity;
+            result.ArcherT3=Math.Min(Math.Max(0,available.ArcherT3),remaining);
+            remaining-=result.ArcherT3;
+            result.ArcherT2=Math.Min(Math.Max(0,available.ArcherT2),remaining);
+            remaining-=result.ArcherT2;
+            result.ArcherT1=Math.Min(Math.Max(0,available.ArcherT1),remaining);
+            return result;
+        }
+        public static void Reserve(PlayerState s,ArmyRoster troops)
+        {
+            s.Available.ArcherT1-=troops.ArcherT1;
+            s.Available.ArcherT2-=troops.ArcherT2;
+            s.Available.ArcherT3-=troops.ArcherT3;
+        }
+        public static void Return(PlayerState s,ArmyRoster troops)
+        {
+            s.Available.ArcherT1=checked(s.Available.ArcherT1+troops.ArcherT1);
+            s.Available.ArcherT2=checked(s.Available.ArcherT2+troops.ArcherT2);
+            s.Available.ArcherT3=checked(s.Available.ArcherT3+troops.ArcherT3);
+        }
+        public static MarchState AvailableSlot(PlayerState s)
+        {
+            if(s.March==null)s.March=new MarchState();
+            if(s.March.Phase=="idle")return s.March;
+            if(s.ExtraMarches==null)s.ExtraMarches=new List<MarchState>();
+            foreach(var m in s.ExtraMarches)if(m!=null&&m.Phase=="idle")return m;
+            if(s.ExtraMarches.Count>=MaxConcurrentMarches-1)return null;
+            var next=new MarchState{MarchId="march-"+(s.ExtraMarches.Count+2)};
+            s.ExtraMarches.Add(next);
+            return next;
+        }
+    }
+
     public readonly struct PowerParts
     {
         public readonly int Kingdom, Army, Heroes, Collection, Equipment;
