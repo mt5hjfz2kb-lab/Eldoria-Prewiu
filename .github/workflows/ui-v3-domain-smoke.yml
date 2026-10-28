@@ -71,6 +71,10 @@ jobs:
             const neverStarted=jobs=>jobs.length===1 && jobs.every(j=>j.status==='queued' && !j.runner_id && !j.runner_name && (j.steps||[]).length===0);
             for(const run of runs) {
               if(!nativePaths.has(run.path) || run.head_sha===head || run.status==='completed')continue;
+              // A CI-only head may not request a new native-art capture.
+              // Preserve its latest capture unless a real replacement exists.
+              if(!runs.some(next=>next.path===run.path && next.head_sha===head &&
+                (next.status!=='completed' || next.conclusion==='success')))continue;
               const jobs=(await github.rest.actions.listJobsForWorkflowRun({...context.repo,run_id:run.id})).data.jobs;
               if(!neverStarted(jobs)) {core.info('Preserve started or pending execution '+run.id);continue;}
               // Re-read directly before cancellation; never infer job state from
