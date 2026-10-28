@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-early-retention-systems-20261028",
+  "request_id": "eldoria-early-retention-systems-20261028",
+  "asset_or_sector": "Reutilización de dos sprites ya existentes de la interfaz Valoria (compás y escudo) en accesos de Retención temprana",
+  "profile": "environment_composition",
+  "visual_gate_state": "PREFLIGHT_REUSE",
+  "ai_authorship_policy": "required",
+  "diagnosis": "El HUD Crónica Real contiene gráficos aprobados dentro de su biblioteca. Los mismos píxeles se copian, sin regeneración, a Resources/EldoriaRetention para que el componente de UI creado en runtime los pueda referenciar con Resources.Load<Sprite>. No atribuir a Qwen ni a nuevas generaciones los píxeles reutilizados. Las imágenes están bajo el repositorio canónico, con source files y Unity metas conservados.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "existing_canonical_art_brain": false,
+    "unity_native_uGUI": true
+  },
+  "reuse_sources": [
+    "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/54568a33619fb51c4e73639bb2fb5bf393e351ed.png",
+    "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Sprites/Recovered/3cd5a6e27f8cf158ee620078e095d09c71e69929.png"
+  ],
+  "validation": {
+    "source_gate": "Compare byte SHA source and Resources copy; prohibit alternate drawings, paid assets, Tripo or Qwen invocation.",
+    "final_gate": "Real Unity PlayMode rendered portrait/landscape with both progression-gated buttons, art sprites not blocking clicks; owner visual acceptance still pending."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "PENDING",
+  "physical_mobile_tested": false,
+  "notes": "Reuse only: no credit cost, no fabricated art evidence; planner preflight metadata is not proof of AI execution. This request covers only PNG duplication of previously authored icons, not any new GLB/model or new art approval."
+}
