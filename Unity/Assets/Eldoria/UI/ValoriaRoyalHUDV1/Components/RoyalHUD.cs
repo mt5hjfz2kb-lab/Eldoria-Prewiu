@@ -6,6 +6,7 @@ namespace Eldoria.UI.RoyalGold {
  public sealed class RoyalHUD:MonoBehaviour {
   public RealmHeader Realm;public ResourceBar Resources;public MissionPanel Mission;public BottomNavigation Navigation;public BuildingDetailsPanel Building;public ModalWindow Modal;public RoyalText Feedback,TestMark;public RoyalButton Settings;
   IRoyalSession session;IRoyalNavigation host;RoyalSnapshot current;string selected="";bool english,pending,narrative,resetArmed;
+  float resetArmedUntil;
   public Func<bool> ResetPlaytestProgress;
   RoyalNarrativePresentation cinematic;float next,submitAfter;RoyalSection shown;CanvasGroup group;int orientationKey=-1;
   RoyalHudLayout layout;Canvas canvas;readonly Vector3[] corners=new Vector3[4];
@@ -103,9 +104,14 @@ namespace Eldoria.UI.RoyalGold {
   void SettingsOrMarch(){
    if(shown!=RoyalSection.Settings){ShowMarch();return;}
    if(ResetPlaytestProgress==null)return;
-   if(!resetArmed){resetArmed=true;ShowModal(RoyalSection.Settings,false);return;}
+   // The destructive confirmation is a short, deliberate second action,
+   // never a permanently armed button left behind after an interrupted test.
+   if(!resetArmed || Time.unscaledTime>resetArmedUntil){
+    resetArmed=true;resetArmedUntil=Time.unscaledTime+8f;
+    ShowModal(RoyalSection.Settings,false);return;
+   }
    if(ResetPlaytestProgress())return;
-   resetArmed=false;ShowModal(RoyalSection.Settings,false);
+   resetArmed=false;resetArmedUntil=0f;ShowModal(RoyalSection.Settings,false);
    if(Feedback)Feedback.Put(L("No se pudo reiniciar la partida; comprueba el almacenamiento.","Reset failed; check device storage."));
   }
   void Open(RoyalSection section){if(current==null)return;if(section==RoyalSection.Inventory&&Navigation&&Navigation.ChronicleLayout){
@@ -115,7 +121,7 @@ namespace Eldoria.UI.RoyalGold {
      SelectBuilding(current.BastionLevel>=2?"barracks":"sawmill");
      return;
     }if(section==RoyalSection.Bastion){SelectBuilding("bastion");return;}if(section==RoyalSection.World||section==RoyalSection.Inventory){if(host!=null&&host.CanOpen(section)){Modal.Hide();CloseBuilding();host.Open(section);}return;}ShowModal(section);}
-  void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Heroes){Modal.Hide();host?.Open(RoyalSection.Inventory);return;}if(shown==RoyalSection.Settings){resetArmed=false;SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
+  void Extra(){if(narrative){if(cinematic)cinematic.Advance();return;}if(shown==RoyalSection.Heroes){Modal.Hide();host?.Open(RoyalSection.Inventory);return;}if(shown==RoyalSection.Settings){resetArmed=false;resetArmedUntil=0f;SetEnglish(!english);return;}if(shown==RoyalSection.Army){Modal.Hide();SelectBuilding("barracks");}}
   void ShowModal(RoyalSection section,bool takeFocus=true){
    if(current==null)return;narrative=false;Modal.Body.fontSize=26;shown=section;string body="";string title=BottomNavigation.Name(section,english);
    switch(section){
