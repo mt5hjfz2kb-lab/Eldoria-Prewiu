@@ -31,8 +31,8 @@ namespace Eldoria.UI.RoyalGold.V2
         Action refreshed;
         RectTransform safe, screenRect, panelRoot, heroScene, infoCard, victoryBanner;
         CanvasGroup victoryGroup;
-        RoyalText victoryTitle, victoryDetail, scoutDiscoveryRibbonText;
-        RectTransform scoutDiscoveryRibbon;
+        RoyalText victoryTitle, victoryDetail, scoutDiscoveryRibbonText, scoutStoryPreview;
+        RectTransform scoutDiscoveryRibbon, scoutStoryPanel;
         float victoryUntil, victoryStarted;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
@@ -379,6 +379,17 @@ namespace Eldoria.UI.RoyalGold.V2
             scoutDiscoveryRibbonText.raycastTarget=false;
             Stretch(scoutDiscoveryRibbonText.rectTransform,7f);
             scoutDiscoveryRibbon.gameObject.SetActive(false);
+            scoutStoryPanel=Panel(art,"Cartographer last discovery / live text only");
+            var reportFrame=scoutStoryPanel.GetComponent<RoyalGoldV2FrameGraphic>();
+            if(reportFrame){reportFrame.raycastTarget=false;reportFrame.Primary=false;}
+            scoutStoryPanel.anchorMin=new Vector2(.04f,.035f);
+            scoutStoryPanel.anchorMax=new Vector2(.91f,.35f);
+            scoutStoryPanel.offsetMin=scoutStoryPanel.offsetMax=Vector2.zero;
+            scoutStoryPreview=Text(scoutStoryPanel,"Actual last expedition story",16,Ivory);
+            scoutStoryPreview.raycastTarget=false;
+            scoutStoryPreview.alignment=TextAnchor.MiddleCenter;
+            Stretch(scoutStoryPreview.rectTransform,9f);
+            scoutStoryPanel.gameObject.SetActive(false);
             scoutVignettes=Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4");
             guardianBannerTexture=Resources.Load<Texture2D>("EldoriaRetention/guardian-banner-v4");
             // Decorative art stays BELOW the existing 25-stage route and
@@ -618,7 +629,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     "EXPLORADORES EN CAMINO");
                 victoryTitle.color=Gold;
                 victoryDetail.Put(discovery?
-                    EarlyRetentionRules.ScoutReportHeading(retention.LatestScoutKind,
+                    EarlyRetentionRules.ScoutReportStory(retention.LatestScoutKind,
                         retention.LatestScoutVariant):result.Message);
                 victoryStarted=Time.unscaledTime;
                 victoryUntil=victoryStarted+(discovery?4.0f:1.9f);
@@ -1003,6 +1014,21 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     discoverySeals.DiscoveredMask=mask;
                     discoverySeals.SetVerticesDirty();
+                }
+            }
+            if(scoutStoryPanel)
+            {
+                bool showStory=!vig&&p.ScoutDiscoveries>0&&p.LatestScoutKind>=0;
+                scoutStoryPanel.gameObject.SetActive(showStory);
+                if(showStory)
+                {
+                    string title=EarlyRetentionRules.ScoutReportHeading(p.LatestScoutKind,p.LatestScoutVariant);
+                    string story=EarlyRetentionRules.ScoutReportStory(p.LatestScoutKind,p.LatestScoutVariant);
+                    // Condensed only on the small painted map; full authored
+                    // narrative is displayed after the actual claim.
+                    if(story.Length>78)story=story.Substring(0,75)+"…";
+                    scoutStoryPreview.fontSize=height>width?15:compactLandscape?13:16;
+                    scoutStoryPreview.Put(title+"\n"+story);
                 }
             }
             if(scoutDiscoveryRibbon)
