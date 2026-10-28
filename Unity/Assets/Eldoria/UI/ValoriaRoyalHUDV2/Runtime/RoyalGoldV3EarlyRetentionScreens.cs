@@ -755,6 +755,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     var t=scoutCards[i];var a=scoutActions[i];var label=scoutActionLabels[i];
                     if(i>=list.Length)
                     {
+                        if(scoutThumbnails[i])scoutThumbnails[i].enabled=false;
                         scoutTitles[i].Put("SIN ENCARGOS NUEVOS");
                         t.Put("Vuelve a consultar la mesa más tarde.");
                         a.interactable=false;label.Put("ESPERAR");scoutIds[i]="";
@@ -766,6 +767,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     // refill or reorder. The picture is decorative, not gameplay.
                     if(scoutThumbnails[i])
                     {
+                        scoutThumbnails[i].enabled=paintedScouts!=null;
                         float mapX=.055f+Mathf.Clamp(order.Kind,0,3)*.225f;
                         scoutThumbnails[i].uvRect=new Rect(mapX,.14f,.21f,.56f);
                         bool readyToClaim=order.StartedUtcTicks>0 &&
