@@ -659,7 +659,7 @@ namespace Eldoria.Application
                 }
                 changed = true;
             }
-            if (!state.JourneyComplete && state.March.Phase == "idle")
+            if (!state.JourneyComplete && MarchCapacityRules.ActiveWorldCount(state)==0)
             {
                 if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                 bool chapterOneReady =
