@@ -6,7 +6,7 @@ TextureImporter:
   mipmaps:
     enableMipMap: 0
     sRGBTexture: 1
-  isReadable: 0
+  isReadable: 1
   textureFormat: 1
   maxTextureSize: 1024
   textureSettings:
