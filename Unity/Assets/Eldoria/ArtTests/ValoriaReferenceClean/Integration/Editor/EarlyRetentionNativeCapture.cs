@@ -174,8 +174,9 @@ namespace Eldoria.ReferenceClean.Editor
             var illustration=hud.GetComponentsInChildren<RawImage>(true)
                 .FirstOrDefault(x=>x.name=="Original illustrated world / decorative only");
             Need(illustration && illustration.enabled && illustration.texture!=null &&
-                illustration.texture.width==640 && illustration.texture.height==640,
-                "Real painted Vigilants texture loads through Unity Resources");
+                illustration.texture.width==512 && illustration.texture.height==512 &&
+                illustration.texture.name.Contains("painterly"),
+                "New painterly Vigilants scene loads through actual Unity Resources");
             var vigilantsPainting=illustration.texture;
             Screenshot(h,"vigilants-first-trial",1600,900);
             Screenshot(h,"vigilants-first-trial",900,1600);
