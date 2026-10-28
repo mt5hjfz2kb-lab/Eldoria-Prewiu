@@ -71,7 +71,7 @@ jobs:
           for stem,wanted in expected.items():
               f=root/(stem+".jpg")
               content=f.read_bytes()
-              assert content.startswith(b"\\xff\\xd8") and content.endswith(b"\\xff\\xd9"),f"Corrupt original JPEG {stem}"
+              assert content.startswith(b"\xff\xd8") and content.endswith(b"\xff\xd9"),f"Corrupt original JPEG {stem}"
               assert len(content)>60000,f"Unexpectedly low-detail scenery {stem}"
               assert hashlib.sha256(content).hexdigest()==wanted,f"Painterly visual SHA drift {stem}"
               assert f.with_suffix(".jpg.meta").is_file(),f"Missing Unity importer for {stem}"
