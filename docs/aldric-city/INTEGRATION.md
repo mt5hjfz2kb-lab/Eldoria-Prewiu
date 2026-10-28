@@ -80,3 +80,15 @@ pública por reflexión que RoyalGoldV3IntegratedAcceptanceTests; no se cambian
 asmdefs ni la arquitectura para resolverlo. No produjo capturas ni prueba de
 paseo. La siguiente certificación compartida ejecutará todos los tests y el
 caso de Aldric, conservando además sus12imágenes originales y fuente exacta.
+
+La certificación completa40764789611 compiló, pasó EditMode y72de73PlayMode.
+El único fallo es real y de integración: ALDRIC_CITY_NO_SAFE_PAVED_ROUTE;
+no se creó ningún actor ni captura, por tanto NO hay aceptación visual.
+El buscador anterior probaba solo cinco puntos cercanos al centro del bounds
+de una malla irregular, que puede caer bajo el Bastión o fuera del pavimento.
+Se sustituye por muestreo acotado de la superficie REAL de todos los colliders
+Axial_Paving, repartido entre fotogramas, priorizando el encuadre real.
+Mantiene cápsula completa, pendiente, tres puntos separados dos metros y
+verificación cada0,35m; no se elimina ningún bloqueo ni se toca la ciudad.
+Añade telemetría de superficie/ocupación/primer obstáculo para diagnosticar
+la causa si ninguna ruta cumple. Pendiente de repetir la prueba nativa.

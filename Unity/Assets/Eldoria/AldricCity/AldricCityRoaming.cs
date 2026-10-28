@@ -43,10 +43,10 @@ namespace Eldoria.AldricCity
         private int index, direction = 1;
         private bool walking;
         private float pauseUntil;
-        private float facingYaw;
         private float nextAwayRefresh;
         private bool cachedAway;
         private readonly Collider[] clearanceHits = new Collider[64];
+        private string firstBlockingCollider;
         // Native verification probes. Read-only; never mutate player saves or gameplay.
         public bool ApprovedVisualReady => actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
@@ -109,18 +109,26 @@ namespace Eldoria.AldricCity
                 yield return null;
             if (!host || !host.Ready || !host.City || !host.City.PlayerCamera) yield break;
 
-            // The actual Axial_Paving MeshCollider from Valoria's Paths prefab.
-            // Never guess a route on grass, water or beneath buildings.
-            road = UnityEngine.Object.FindObjectsByType<MeshCollider>(
+            // Inspect every actual axial pavement, not a guessed point at the
+            // centre of an irregular mesh's world bounds. Physics stays authoritative.
+            var roads = UnityEngine.Object.FindObjectsByType<MeshCollider>(
                 FindObjectsInactive.Exclude, FindObjectsSortMode.None)
-                .FirstOrDefault(c => c && c.enabled &&
-                    c.name.IndexOf("Axial_Paving", StringComparison.OrdinalIgnoreCase) >= 0);
-            if (!road)
+                .Where(c => c && c.enabled &&
+                    c.name.IndexOf("Axial_Paving", StringComparison.OrdinalIgnoreCase) >= 0)
+                .OrderBy(c => c.GetInstanceID()).ToArray();
+            if (roads.Length == 0)
             {
                 Debug.LogWarning("ALDRIC_CITY_AXIAL_PAVING_COLLIDER_NOT_FOUND");
                 yield break;
             }
-            if (!BuildAndValidatePath()) yield break;
+            Physics.SyncTransforms();
+            foreach (var candidateRoad in roads)
+            {
+                road = candidateRoad;
+                yield return BuildAndValidatePath();
+                if (path != null) break;
+            }
+            if (path == null) yield break;
             Debug.Log("ALDRIC_CITY_SAFE_ROUTE_VERIFIED_" + path.Length + "_POINTS");
             yield return LoadExactModel();
         }
@@ -129,8 +137,9 @@ namespace Eldoria.AldricCity
         {
             floor = default;
             if (!road || !road.enabled) return false;
-            var ray = new Ray(point + Vector3.up * 5f, Vector3.down);
-            if (!road.Raycast(ray, out var hit, 12f)) return false;
+            var bounds = road.bounds;
+            var ray = new Ray(new Vector3(point.x, bounds.max.y + 2f, point.z), Vector3.down);
+            if (!road.Raycast(ray, out var hit, bounds.size.y + 4f)) return false;
             if (Vector3.Angle(hit.normal, Vector3.up) > 28f) return false;
             floor = hit.point;
             return true;
@@ -154,6 +163,7 @@ namespace Eldoria.AldricCity
                 var n = c.name.ToLowerInvariant();
                 if (n.Contains("road") || n.Contains("paving") || n.Contains("ground") ||
                     n.Contains("terrain") || n.Contains("meadow") || n.Contains("hotspot")) continue;
+                if (firstBlockingCollider == null) firstBlockingCollider = c.name;
                 return false;
             }
             return true;
@@ -174,36 +184,79 @@ namespace Eldoria.AldricCity
             return true;
         }
 
-        private bool BuildAndValidatePath()
+        private bool InCityFrame(Vector3 ground)
         {
-            var centre = road.bounds.center;
-            var forward = road.transform.forward;
-            var side = road.transform.right;
-            // Multiple candidates so an irregular cobbled mesh is not forced
-            // to accept its axis-aligned bounds centre as a valid pavement.
-            var candidates = new[] { centre, centre + side, centre - side,
-                                      centre + forward, centre - forward };
-            foreach (var centreCandidate in candidates)
+            var camera = host.City.PlayerCamera;
+            var p = camera.WorldToViewportPoint(ground + Vector3.up * Height * .5f);
+            return p.z > camera.nearClipPlane && p.z < camera.farClipPlane &&
+                p.x > .08f && p.x < .92f && p.y > .08f && p.y < .92f;
+        }
+
+        private IEnumerator BuildAndValidatePath()
+        {
+            // Axial_Paving is an irregular joined mesh. Its bounds centre can
+            // lie inside the fortress or in a gap. Sample its REAL surface over
+            // the complete bounds, with bounded work spread across frames.
+            var bounds = road.bounds;
+            int nx = Mathf.Clamp(Mathf.CeilToInt(bounds.size.x / .75f), 2, 64);
+            int nz = Mathf.Clamp(Mathf.CeilToInt(bounds.size.z / .75f), 2, 64);
+            var candidates = new List<Vector3>();
+            firstBlockingCollider = null;
+            int samples = 0, onPaving = 0, occupied = 0;
+            for (int x = 0; x <= nx; x++)
             {
-                foreach (var axis in new[] { forward, -forward, side, -side })
+                for (int z = 0; z <= nz; z++)
                 {
-                    if (!OnRoad(centreCandidate, out var middle)) continue;
-                    if (!OnRoad(centreCandidate + axis * 2f, out var p1)) continue;
-                    if (!OnRoad(centreCandidate + axis * 4f, out var p2)) continue;
-                    if (!SegmentClear(middle, p1) || !SegmentClear(p1, p2))
-                        continue;
-                    // Extend the walk when the real paved geometry permits it.
-                    // Three verified points remain a safe short-route fallback.
-                    if (OnRoad(centreCandidate + axis * 6f, out var p3) &&
+                    var p = new Vector3(Mathf.Lerp(bounds.min.x, bounds.max.x, x / (float)nx),
+                        bounds.center.y, Mathf.Lerp(bounds.min.z, bounds.max.z, z / (float)nz));
+                    if (OnRoad(p, out var floor))
+                    {
+                        onPaving++;
+                        if (!BodyClear(floor)) occupied++;
+                        else if (InCityFrame(floor)) candidates.Add(floor);
+                    }
+                    if (++samples % 64 == 0) yield return null;
+                }
+            }
+            // Prefer the genuine player's central city area; never move or zoom
+            // the player's camera merely to manufacture a visible acceptance view.
+            var camera = host.City.PlayerCamera;
+            candidates.Sort((a,b) => {
+                var pa = camera.WorldToViewportPoint(a);
+                var pb = camera.WorldToViewportPoint(b);
+                return ((pa.x-.5f)*(pa.x-.5f)+(pa.y-.5f)*(pa.y-.5f)).CompareTo(
+                    (pb.x-.5f)*(pb.x-.5f)+(pb.y-.5f)*(pb.y-.5f));
+            });
+            var forward = Vector3.ProjectOnPlane(road.transform.forward, Vector3.up).normalized;
+            var side = Vector3.ProjectOnPlane(road.transform.right, Vector3.up).normalized;
+            var axes = new[] { forward, -forward, side, -side,
+                (forward+side).normalized, (forward-side).normalized,
+                (-forward+side).normalized, (-forward-side).normalized };
+            int tried = 0;
+            foreach (var middle in candidates)
+            {
+                foreach (var axis in axes)
+                {
+                    if (!OnRoad(middle + axis * 2f, out var p1) || !InCityFrame(p1)) continue;
+                    if (!OnRoad(middle + axis * 4f, out var p2) || !InCityFrame(p2)) continue;
+                    if (!SegmentClear(middle, p1) || !SegmentClear(p1, p2)) continue;
+                    if (OnRoad(middle + axis * 6f, out var p3) && InCityFrame(p3) &&
                         SegmentClear(p2, p3))
                         path = new[] { middle, p1, p2, p3 };
                     else
                         path = new[] { middle, p1, p2 };
-                    return true;
+                    Debug.Log("ALDRIC_CITY_PAVING_SEARCH_PASS road=" + road.name +
+                        " samples=" + samples + " surface=" + onPaving + " occupied=" + occupied +
+                        " visible_clear=" + candidates.Count + " start=" + middle.ToString("F3") +
+                        " finish=" + path[path.Length-1].ToString("F3"));
+                    yield break;
                 }
+                if (++tried % 16 == 0) yield return null;
             }
-            Debug.LogWarning("ALDRIC_CITY_NO_SAFE_PAVED_ROUTE");
-            return false;
+            Debug.LogWarning("ALDRIC_CITY_NO_SAFE_PAVED_ROUTE road=" + road.name +
+                " bounds=" + bounds + " samples=" + samples + " surface=" + onPaving +
+                " occupied=" + occupied + " visible_clear=" + candidates.Count +
+                " first_obstruction=" + (firstBlockingCollider ?? "none"));
         }
 
         private async System.Threading.Tasks.Task<bool> Import(byte[] verifiedBytes)
