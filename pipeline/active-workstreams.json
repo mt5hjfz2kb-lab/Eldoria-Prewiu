@@ -37,8 +37,17 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "UI-only text, colored seals and pre-existing painterly assets; no new art files, geometry, textures or external AI spend",
       "dependency": "Stacked on PR124 for capacity compatibility; native runner reserved for PR122. After PR124 merge, retarget and compare the exact scene captures.",
-      "phase": "IMPLEMENTATION",
-      "next": "Add differentiated real guardian stats, actual battle evidence, deterministic persistent scout narratives and map progression seals, run existing CI."
+      "phase": "SOURCE_CI_PASS_NATIVE_VISUAL_PENDING",
+      "next": "PR125 is stacked on PR124. After PR122 releases Windows and PR124 is merged, reserve a native Unity slot for this workstream; run retention-engagement-native.yml, inspect real phone/portrait/landscape screenshots, fix any visual or gameplay defects, then merge on main.",
+      "last_verified": {
+        "source_sha": "f3b44295bb7cd0e2e2aae85624a78ed0f2591251",
+        "domain_ci_run": 40770077163,
+        "domain_ci": "PASS",
+        "ownership_ci_run": 40770082200,
+        "unity_native": "PENDING_RUNNER_HELD_BY_PR122",
+        "art_approved": false,
+        "android_released": false
+      }
     },
     {
       "id": "eldoria-global-march-capacity-three-slots-20261028",
@@ -1905,8 +1914,8 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/tester-qa.yml"
       ],
-      "phase": "PR122_ACTUAL_PAVING_ROUTE_CORRECTION",
-      "next": "Repeat full shared native certification after actual73-case run found no safe route from five bounds-centre guesses. New bounded actual-paving scan preserves all collision/slope/segment checks and camera framing. Review all12 genuine views before acceptance/merge.",
+      "phase": "PR122_GLB_INITIALIZATION_ORIENTATION_AND_NATIVE_PREFLIGHT",
+      "next": "Run actual Aldric case first, then unchanged full shared regression and12genuine views. Require real bound scale,26animatedbones,physical cape behind motion,visibility/obstacles/saves before merge. No visual acceptance yet.",
       "delivery_definition": {
         "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
@@ -1918,12 +1927,12 @@
       "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection.",
       "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime.",
       "current_native_cert": {
-        "status": "failed_actual_safe_route_search",
-        "source": "969555b664921620224446a9f7d764896232a42e",
-        "run_id": 40764789611,
-        "playmode_passed": 72,
-        "playmode_failed": 1,
-        "reason": "ALDRIC_CITY_NO_SAFE_PAVED_ROUTE: previous bounds-centre candidates do not establish a route on actual irregular paving; native case failed, no model loaded or images",
+        "status": "failed_actual_gltf_import",
+        "source": "70eadf3435779f00ed82c178daa76d1a7c3bacb3",
+        "run_id": 40770024166,
+        "playmode_passed": 69,
+        "playmode_failed": 4,
+        "reason": "Actual axial route PASS(510 samples,274 paving,272 visible clear,3 waypoints). Generic import/rig error in Aldric and three subsequent scene cases; no actor captures. Inactive-bound initialization removed, explicit Legacy import and detailed failure diagnostics added; orientation+90 and physical cape-behind-motion assertion pending new native.",
         "actual_views": 0,
         "art_approved": false
       },
@@ -1933,6 +1942,16 @@
           "source": "29ee817922adc4e7639fbf427e370b5167ab36bf",
           "run_id": 40761888936,
           "reason": "PlayMode asmdef cannot directly reference Assembly-CSharp host/walker types; corrected to public reflection like existing UI tests",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "failed_actual_safe_route_search",
+          "source": "969555b664921620224446a9f7d764896232a42e",
+          "run_id": 40764789611,
+          "playmode_passed": 72,
+          "playmode_failed": 1,
+          "reason": "ALDRIC_CITY_NO_SAFE_PAVED_ROUTE: previous bounds-centre candidates do not establish a route on actual irregular paving; native case failed, no model loaded or images",
           "actual_views": 0,
           "art_approved": false
         }

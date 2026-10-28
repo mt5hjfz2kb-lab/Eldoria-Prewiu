@@ -387,6 +387,53 @@ jobs:
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
 
+      - name: Verify Aldric native integration before the complete shared regression
+        id: aldric_preflight
+        shell: powershell
+        env:
+          ALDRIC_CITY_SCREENSHOT_DIR: ${{ github.workspace }}/aldric-preflight-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $xml=Join-Path $env:RUNNER_TEMP 'Eldoria-Aldric-Preflight-PlayMode.xml'
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-Aldric-Preflight-PlayMode.log'
+          Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force $env:ALDRIC_CITY_SCREENSHOT_DIR | Out-Null
+          $identity=[ordered]@{requested_source=$env:ALDRIC_REQUEST_SOURCE_SHA;
+            compiled_source=(& git rev-parse HEAD).Trim();compiled_tree=(& git rev-parse 'HEAD^{tree}').Trim();
+            run_id=$env:GITHUB_RUN_ID;status='PREFLIGHT_STARTED_NOT_ACCEPTANCE';physical_mobile_tested=$false}
+          $identity|ConvertTo-Json|Set-Content (Join-Path $env:ALDRIC_CITY_SCREENSHOT_DIR 'preflight-source.json') -Encoding UTF8
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-runTests',
+            '-testPlatform','PlayMode','-testFilter','Eldoria.Tests.AldricCityRoamingNativeTests',
+            '-testResults',$xml,'-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if(-not $process.WaitForExit(300000)){
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw 'Actual Aldric integration preflight timed out; do not spend the complete shared suite on a known failure'
+          }
+          if(-not(Test-Path $xml)){
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw 'Actual Aldric NUnit report missing'
+          }
+          $report=[xml](Get-Content $xml -Raw)
+          $cases=@($report.SelectNodes('//test-case'))
+          if($process.ExitCode -ne 0 -or $cases.Count -ne 1 -or $cases[0].result -ne 'Passed'){
+            $report.SelectNodes("//test-case[@result!='Passed']")|ForEach-Object {Write-Host $_.OuterXml}
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw 'Aldric must pass its complete actual integration case before full shared regression'
+          }
+          Write-Host 'ALDRIC_NATIVE_PREFLIGHT_PASS_COMPLETE_CASE; full shared EditMode and PlayMode still required below'
+
+      - uses: actions/upload-artifact@v4
+        if: failure() && steps.aldric_preflight.outcome == 'failure'
+        with:
+          name: eldoria-aldric-preflight-failure-${{ github.run_id }}
+          if-no-files-found: ignore
+          path: |
+            ${{ github.workspace }}/aldric-preflight-${{ github.run_id }}/**
+            ${{ runner.temp }}/Eldoria-Aldric-Preflight-PlayMode.xml
+            ${{ runner.temp }}/Eldoria-Aldric-Preflight-PlayMode.log
+
       - name: Capture and validate existing real integrated I-II scene in Unity
         shell: powershell
         run: |

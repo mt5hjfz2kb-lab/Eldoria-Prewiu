@@ -92,3 +92,26 @@ Mantiene cápsula completa, pendiente, tres puntos separados dos metros y
 verificación cada0,35m; no se elimina ningún bloqueo ni se toca la ciudad.
 Añade telemetría de superficie/ocupación/primer obstáculo para diagnosticar
 la causa si ninguna ruta cumple. Pendiente de repetir la prueba nativa.
+
+Revisión de orientación durante la segunda ejecución: el GLB aprobado tiene
+la capa detrás del eje-X y el frontal+X, sin rotación adicional del nodo raíz.
+La documentación oficial de glTFast4+ confirma conversión por inversión deX:
+https://github.com/Unity-Technologies/com.unity.cloud.gltfast/blob/main/Packages/com.unity.cloud.gltfast/Documentation~/UpgradeGuides.md
+Por tanto el frontal importado es-X y necesita+90°, no la corrección preliminar
+-90°. Se prepara esa corrección y una aserción física independiente: centro de
+la capa real detrás del cuerpo real respecto al desplazamiento actual. Las
+cuatro vistas diagnósticas se alinean con ese desplazamiento, conservando
+siempre la cámara jugable. No se atribuye aceptación sin la nueva prueba.
+
+Ejecución40770024166(fuente70eadf34): la ruta sobreAxial_Paving PASA
+con510muestras,274sobrepavimento,272libres/visibles y3hitos.
+El siguiente bloqueo es ALDRIC_CITY_IMPORT_OR_26_JOINT_RIG_FAILED.
+PlayMode73total/69pass/4fail: los cuatro fallos contienen ese mismo error
+de importación, también emitido al cargar escenas de otros tres casos.
+No existe captura del actor todavía. Se elimina el cálculo inicial por
+Renderer.bounds con el actor inactivo: se transforman explícitamente los
+bounds locales importados, conservando la medida real del modelo activo
+en la aserción nativa. Importación Legacy explícita y diagnóstico de
+cada rechazo/Exception real. La próxima ejecución comprueba primero
+Aldric y después TODA la escena/EditMode/PlayMode si pasa, sin quitar
+ninguna prueba ni ignorar errores. La aceptación sigue pendiente.

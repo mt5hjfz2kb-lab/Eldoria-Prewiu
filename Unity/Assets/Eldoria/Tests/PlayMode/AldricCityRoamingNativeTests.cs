@@ -152,6 +152,14 @@ namespace Eldoria.Tests
             yield return new WaitForSecondsRealtime(.22f);
             Assert.That(bones.Where((bone,i)=>Quaternion.Angle(priorPose[i],bone.localRotation)>1f).Any(), Is.True,
                 "The imported walk clip actually deforms approved bones across rendered frames");
+            var cape = skins.FirstOrDefault(x=>x.name == "Cape_Main_ValoriaBlue_SeparateCloth_ForFutureRigging");
+            var body = skins.FirstOrDefault(x=>x.name == "SirAldric_Tripo_Source_49800_VertexTopologyPreserved");
+            Assert.That(cape && body, Is.True, "Inspect the actual approved body and separate blue cape");
+            var travelDirection = Vector3.ProjectOnPlane(Read<Vector3>(walker,"CurrentWalkDestination") -
+                Read<Vector3>(walker,"ActorGroundPosition"), Vector3.up).normalized;
+            Assert.That(Vector3.Dot(Vector3.ProjectOnPlane(cape.bounds.center-body.bounds.center,Vector3.up),
+                travelDirection), Is.LessThan(-.08f),
+                "Approved blue cape is physically BEHIND the body in its actual direction of travel; no backwards walking");
             CaptureCityCamera(camera, "aldric-city-walking-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-walking-portrait.png", 390, 844);
             // Additional diagnostic front/back views retain the exact imported
@@ -171,9 +179,10 @@ namespace Eldoria.Tests
                     var centre = Read<Vector3>(walker,"ActorGroundPosition") + Vector3.up * .95f;
                     var facing = walker.transform.Find("Sir Aldric | city-only visual actor");
                     Assert.That(facing, Is.Not.Null);
-                    // Four actor-relative angles expose face, cape and yaw
-                    // without assuming the imported mesh's front axis.
-                    var directions = new[]{facing.forward, facing.right, -facing.forward, -facing.right};
+                    // Four travel-relative angles expose actual front, cape and
+                    // yaw after the independent cape/body alignment assertion.
+                    var right = Vector3.Cross(Vector3.up, travelDirection).normalized;
+                    var directions = new[]{travelDirection, right, -travelDirection, -right};
                     var names = new[]{"forward", "right", "backward", "left"};
                     for (int view=0; view<directions.Length; view++)
                     {

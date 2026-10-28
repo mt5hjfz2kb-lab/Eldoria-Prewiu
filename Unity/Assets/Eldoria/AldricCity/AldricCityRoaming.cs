@@ -27,7 +27,9 @@ namespace Eldoria.AldricCity
         private const float Radius = 0.26f;
         private const int ModelBytes = 10140372;
         private const string ApprovedSha256 = "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b";
-        private const float ModelYawCorrection = -90f; // Check with real Unity front-view proof.
+        // Approved GLB cape is behind -X (front +X). glTFast 4+ mirrors X,
+        // so the imported anatomical front is -X: +90 maps it onto travel +Z.
+        private const float ModelYawCorrection = 90f;
         private static readonly string[] ApprovedAnimations = {
             "Aldric_Idle_v1", "Aldric_Walk_v1", "Aldric_SwordAttack_v1",
             "Aldric_Hurt_v1", "Aldric_Defeat_v1"
@@ -38,6 +40,7 @@ namespace Eldoria.AldricCity
         private GameObject model;
         private Animation clips;
         private GltfImport ownedImport;
+        private string importFailure;
         private Renderer[] renderers;
         private Vector3[] path;
         private int index, direction = 1;
@@ -259,36 +262,75 @@ namespace Eldoria.AldricCity
                 " first_obstruction=" + (firstBlockingCollider ?? "none"));
         }
 
+        private bool RejectImport(string reason)
+        {
+            importFailure = reason;
+            return false;
+        }
+
+        private bool ImportedWorldBounds(out Bounds bounds)
+        {
+            bounds = default;
+            bool found = false;
+            foreach (var renderer in renderers)
+            {
+                if (!renderer) continue;
+                // Renderer.bounds is not a reliable initialization source while
+                // the imported actor is inactive. Transform the imported local
+                // mesh bounds explicitly; native tests still measure the LIVE
+                // rendered/skinned result after activation.
+                var local = renderer.localBounds;
+                if (local.size.sqrMagnitude < .000001f && renderer is SkinnedMeshRenderer skin && skin.sharedMesh)
+                    local = skin.sharedMesh.bounds;
+                if (local.size.sqrMagnitude < .000001f) continue;
+                for (int corner = 0; corner < 8; corner++)
+                {
+                    var p = local.center + Vector3.Scale(local.extents, new Vector3(
+                        (corner & 1) == 0 ? -1 : 1,
+                        (corner & 2) == 0 ? -1 : 1,
+                        (corner & 4) == 0 ? -1 : 1));
+                    p = renderer.localToWorldMatrix.MultiplyPoint3x4(p);
+                    if (!found) { bounds = new Bounds(p, Vector3.zero); found = true; }
+                    else bounds.Encapsulate(p);
+                }
+            }
+            return found;
+        }
+
         private async System.Threading.Tasks.Task<bool> Import(byte[] verifiedBytes)
         {
-            ownedImport = new GltfImport();
-            if (!await ownedImport.Load(verifiedBytes)) return false;
-            if (!this || !host) return false;
+            importFailure = null;
+            ownedImport = new GltfImport(logger: new GLTFast.Logging.ConsoleLogger());
+            var settings = new ImportSettings { AnimationMethod = AnimationMethod.Legacy };
+            if (!await ownedImport.Load(verifiedBytes, importSettings: settings))
+                return RejectImport("glTFast Load rejected exact approved bytes; see importer log");
+            if (!this || !host) return RejectImport("scene owner destroyed after loading");
             actor = new GameObject("Sir Aldric | city-only visual actor");
             actor.transform.SetParent(transform, false);
             actor.SetActive(false);
             model = new GameObject("Sir Aldric / approved walking rig");
             model.transform.SetParent(actor.transform, false);
             var instantiator = new GameObjectInstantiator(ownedImport, model.transform);
-            if (!await ownedImport.InstantiateMainSceneAsync(instantiator)) return false;
-            if (!this || !host) return false;
+            if (!await ownedImport.InstantiateMainSceneAsync(instantiator))
+                return RejectImport("glTFast scene instantiation rejected");
+            if (!this || !host) return RejectImport("scene owner destroyed after instantiation");
             clips = instantiator.SceneInstance?.LegacyAnimation;
-            if (!clips) return false;
+            if (!clips) return RejectImport("Legacy Animation absent after explicit Legacy import");
             foreach (var name in ApprovedAnimations)
-                if (!clips.GetClip(name)) return false;
+                if (!clips.GetClip(name)) return RejectImport("missing approved clip " + name +
+                    "; actual=" + string.Join(",", clips.Cast<AnimationState>().Select(x=>x.name)));
             renderers = model.GetComponentsInChildren<Renderer>(true);
             var skins = model.GetComponentsInChildren<SkinnedMeshRenderer>(true);
-            if (renderers.Length == 0 ||
-                skins.Length == 0 ||
+            if (renderers.Length == 0 || skins.Length == 0 ||
                 !skins.Any(s => s.bones != null && s.bones.Length == 26))
-                return false;
+                return RejectImport("approved skinned renderers/26 bones absent; skins=" + skins.Length +
+                    "; bone_counts=" + string.Join(",",skins.Select(x=>x.bones == null ? 0 : x.bones.Length)));
             foreach (var skin in skins) skin.updateWhenOffscreen = false;
-            var bounds = renderers[0].bounds;
-            for (int i = 1; i < renderers.Length; ++i) bounds.Encapsulate(renderers[i].bounds);
-            if (bounds.size.y < .1f || bounds.size.y > 100f) return false;
-            model.transform.localScale *= Height / bounds.size.y;
-            bounds = renderers[0].bounds;
-            for (int i = 1; i < renderers.Length; ++i) bounds.Encapsulate(renderers[i].bounds);
+            if (!ImportedWorldBounds(out var bounds) || bounds.size.y < .1f || bounds.size.y > 100f)
+                return RejectImport("invalid imported local/world bounds " + bounds);
+            var sourceHeight = bounds.size.y;
+            model.transform.localScale *= Height / sourceHeight;
+            if (!ImportedWorldBounds(out bounds)) return RejectImport("scaled bounds absent");
             model.transform.position += Vector3.up * (actor.transform.position.y - bounds.min.y);
             clips.playAutomatically = false;
             clips[Idle].wrapMode = WrapMode.Loop;
@@ -296,6 +338,8 @@ namespace Eldoria.AldricCity
             actor.transform.position = path[0];
             actor.SetActive(true);
             clips.Play(Idle);
+            Debug.Log("ALDRIC_CITY_IMPORT_26_BONES_5_CLIPS_CONFIGURED source_height=" + sourceHeight +
+                " scale=" + model.transform.localScale + " normalized_height=" + bounds.size.y);
             return true;
         }
 
@@ -336,7 +380,9 @@ namespace Eldoria.AldricCity
                 if (actor) Destroy(actor);
                 actor = null; model = null;
                 if (ownedImport != null) { ownedImport.Dispose(); ownedImport = null; }
-                Debug.LogError("ALDRIC_CITY_IMPORT_OR_26_JOINT_RIG_FAILED");
+                var reason = task.IsFaulted ? task.Exception.Flatten().ToString() :
+                    task.IsCanceled ? "import task cancelled" : importFailure ?? "unknown import rejection";
+                Debug.LogError("ALDRIC_CITY_IMPORT_OR_26_JOINT_RIG_FAILED reason=" + reason);
                 yield break;
             }
             pauseUntil = Time.time + 2.5f;
