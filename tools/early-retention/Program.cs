@@ -34,6 +34,34 @@ static class Program
                 "Every fifth stage has the lore-correct guardian, never a golem");
             if(i==3)Require(stage.Name=="Corrupto errante","No stone golems in Eldoria");
         }
+        // Each guardian actually changes a different combat stat, not just the card title.
+        var g5=EarlyRetentionRules.Stage(5);
+        var g10=EarlyRetentionRules.Stage(10);
+        var g15=EarlyRetentionRules.Stage(15);
+        var g20=EarlyRetentionRules.Stage(20);
+        var g25=EarlyRetentionRules.Stage(25);
+        Require(g5.Trait.Contains("DEFENSA")&&
+                g5.Enemy.Defense>EarlyRetentionRules.Stage(4).Enemy.Defense+20,
+                "Guardian 5 has real armor counterplay");
+        Require(g10.Trait.Contains("ATAQUE")&&
+                g10.Enemy.Attack>EarlyRetentionRules.Stage(9).Enemy.Attack+20,
+                "Guardian 10 has real attack counterplay");
+        Require(g15.Name=="Engendro de la Brecha"&&g15.Trait.Contains("RUPTURA")&&
+                g15.Enemy.Break>EarlyRetentionRules.Stage(14).Enemy.Break+25,
+                "Stage15 is the real lore Spawnling with breach pressure");
+        Require(g20.Trait.Contains("RESISTENCIA")&&
+                g20.Enemy.Health>EarlyRetentionRules.Stage(19).Enemy.Health+240,
+                "Guardian 20 has real endurance");
+        Require(g25.Trait.Contains("EQUILIBRIO")&&
+                g25.Enemy.Defense>EarlyRetentionRules.Stage(24).Enemy.Defense+10,
+                "Guardian 25 tests combined stats");
+        var evidence=new BattleReportState{TargetId="vigilant:15",
+            HeroId="lyra",Troops=55,Won=false,Rounds=5,PlayerPower=2200,
+            EnemyPower=g15.Difficulty,RemainingHealth=0};
+        var review=EarlyRetentionRules.BattleReview(evidence,g15);
+        Require(review.Contains("5 rondas")&&review.Contains("55 tropas")&&
+                review.Contains("Lyra")&&review.Contains("ruptura"),
+                "Battle report uses authoritative stats and useful advice");
         // Regression guard for the REAL Bastion II sequence. Scout unlock
         // must share ConfigureMarch's save revision; it cannot invalidate
         // the player's very next legitimate Fight command.
@@ -90,8 +118,18 @@ static class Program
         g=new LocalGateway(clock,store);
         var claim=Command(g,"claim","ScoutClaim",order.Id);
         Require(g.Execute(claim).Ok,"Real offline return claim");
+        var discovery=EarlyRetentionRules.ScoutDiscoveryText(order);
+        Require(discovery.Length>20,"Real lore report is available after scouting");
+        Require(g.Snapshot().Retention.LatestDiscoveryText==discovery,
+            "Latest discovery persisted in canonical state");
+        Require(g.Snapshot().Retention.TotalScoutReports==1,
+            "Claim grants one narrative wax seal only");
         int after=g.Snapshot().Retention.AldricExperience;
         Require(g.Execute(claim).Ok&&g.Snapshot().Retention.AldricExperience==after,"No double scout claim");
+        g=new LocalGateway(clock,store);
+        Require(g.Snapshot().Retention.LatestDiscoveryText==discovery &&
+                g.Snapshot().Retention.TotalScoutReports==1,
+                "Reopening the game never re-rolls narrative or duplicates seals");
         clock.Add(30*24*3600);g=new LocalGateway(clock,store);
         Require(g.Snapshot().Retention.Orders.Count(x=>!x.Claimed)<=6,"Max six pending orders offline");
         Console.WriteLine("EARLY_RETENTION_DOMAIN_SMOKE=PASS");
