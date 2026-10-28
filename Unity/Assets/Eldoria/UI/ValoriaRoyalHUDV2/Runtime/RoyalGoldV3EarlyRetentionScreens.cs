@@ -36,6 +36,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
+        readonly RoyalText[] scoutTitles=new RoyalText[3];
         readonly RoyalText[] scoutActionLabels=new RoyalText[3];
         readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
         readonly string[] scoutIds=new string[3];
@@ -242,7 +243,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutArt[i].raycastTarget=false;
                 Stretch(artwork,0);
                 artwork.SetAsFirstSibling();
-                scoutCards[i]=Text(cell,"Real scout order description",17,Ink);
+                scoutTitles[i]=Text(cell,"Readable contract heading",22,Ink,true);
+                scoutCards[i]=Text(cell,"Real scout order reward and status",18,Ink);
                 scoutActions[i]=Button(cell,"Dispatch or claim scout "+(i+1),
                     "ENVIAR",()=>RunScout(index),out scoutActionLabels[i],true);
                 scoutActions[i].transform.SetParent(cell,false);
@@ -399,16 +401,20 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else
             {
-                TL(heading.rectTransform,20f,18f,pw-210f,44f);
+                TL(heading.rectTransform,20f,18f,pw-170f,44f);
                 heading.fontSize=34;
                 TL(kicker.rectTransform,20f,61f,pw-35f,27f);
-                TL((RectTransform)back.transform,pw-198f,23f,184f,46f);
-                backLabel.Put("VOLVER A VALORIA");
+                TL((RectTransform)back.transform,pw-150f,23f,136f,46f);
+                backLabel.Put("VOLVER");
                 backLabel.fontSize=17;
             }
             float imageTop=portrait?110f:108f;
+            // Show the authored illustration and 25-node route as a meaningful
+            // part of a portrait session. Preserve a usable manuscript below it
+            // even on shorter phones; no extra scene or asset is introduced.
+            float scenicHeight=portrait?Mathf.Clamp(ph-820f,220f,700f):ph-168f;
             TL(heroScene,portrait?18f:20f,imageTop,
-                portrait?pw-36f:pw*.44f,portrait?Mathf.Clamp(ph*.235f,155,224):ph-168f);
+                portrait?pw-36f:pw*.44f,scenicHeight);
             if(victoryBanner)
             {
                 float bannerWidth=Mathf.Min(heroScene.rect.width-18f,330f);
@@ -422,8 +428,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // Keep the portrait manuscript above the fixed bottom footer.
             // The final scout card and claim-XP button previously extended
             // under this footer even though both were inside the safe area.
-            TL(infoCard,bodyX,portrait?imageTop+Mathf.Clamp(ph*.235f,155,224)+10f:108f,
-                bodyWidth,portrait?ph-(imageTop+Mathf.Clamp(ph*.235f,155,224)+58f):ph-165f);
+            TL(infoCard,bodyX,portrait?imageTop+scenicHeight+10f:108f,
+                bodyWidth,portrait?ph-(imageTop+scenicHeight+58f):ph-165f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
             if(iw<=0||ih<=0)return;
             TL(chapter.rectTransform,14f,13f,iw-28f,36f);
@@ -445,13 +451,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(cell,12f,head+i*spacing,iw-24f,spacing-5f);
                 float tab=Mathf.Clamp((iw-24f)*.14f,35f,65f);
                 float captionX=tab+22f;
-                TL(scoutCards[i].rectTransform,captionX,9f,
-                    Mathf.Max(75f,iw-(portrait?115f:153f)-captionX),spacing-19f);
+                float contentWidth=Mathf.Max(75f,iw-(portrait?115f:153f)-captionX);
+                // Titles and rewards are distinct, legible visual levels; no
+                // tiny text sitting mid-way inside oversized empty parchment.
+                float titleTop=Mathf.Max(13f,spacing*.18f);
+                TL(scoutTitles[i].rectTransform,captionX,titleTop,
+                    contentWidth,Mathf.Min(36f,spacing*.24f));
+                TL(scoutCards[i].rectTransform,captionX,titleTop+41f,
+                    contentWidth,Mathf.Max(51f,spacing-titleTop-50f));
                 TL((RectTransform)scoutActions[i].transform,
                     iw-(portrait?112f:150f),spacing*.5f-19f,
                     portrait?87f:120f,40f);
-                scoutCards[i].fontSize=portrait?14:17;
-                scoutActionLabels[i].fontSize=portrait?13:16;
+                scoutTitles[i].fontSize=portrait?21:21;
+                scoutCards[i].fontSize=portrait?18:18;
+                scoutActionLabels[i].fontSize=portrait?16:16;
             }
             TL(introduction.rectTransform,20f,100f,pw-40f,38f);
             TL(footer.rectTransform,20f,ph-39f,pw-40f,25f);
@@ -551,7 +564,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     var t=scoutCards[i];var a=scoutActions[i];var label=scoutActionLabels[i];
                     if(i>=list.Length)
                     {
-                        t.Put("Los exploradores no tienen nuevos encargos.");
+                        scoutTitles[i].Put("SIN ENCARGOS NUEVOS");
+                        t.Put("Vuelve a consultar la mesa más tarde.");
                         a.interactable=false;label.Put("ESPERAR");scoutIds[i]="";
                         continue;
                     }
@@ -574,8 +588,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     string state=order.StartedUtcTicks==0?"Disponible":
                         order.EndsUtcTicks<=now()?"Listo para reclamar":
                         "Regreso en "+TimeSpan.FromTicks(order.EndsUtcTicks-now()).ToString(@"hh\:mm\:ss");
-                    t.Put(EarlyRetentionRules.ScoutTitle(order.Kind)+"\n"+
-                        EarlyRetentionRules.ScoutRewardText(order.Kind)+"\n"+state);
+                    scoutTitles[i].Put(EarlyRetentionRules.ScoutTitle(order.Kind));
+                    t.Put(EarlyRetentionRules.ScoutRewardText(order.Kind)+"\n"+state);
                     a.interactable=order.StartedUtcTicks==0||order.EndsUtcTicks<=now();
                     label.Put(order.StartedUtcTicks==0?"ENVIAR":
                         order.EndsUtcTicks<=now()?"RECOGER":"EN CAMINO");
