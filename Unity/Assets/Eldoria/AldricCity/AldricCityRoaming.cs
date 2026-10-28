@@ -54,6 +54,7 @@ namespace Eldoria.AldricCity
         public bool ActualWalkClipPlaying => clips && clips.IsPlaying(Walk);
         public bool CurrentBodyClear => actor && BodyClear(actor.transform.position);
         public Vector3 ActorGroundPosition => actor ? actor.transform.position : Vector3.zero;
+        public Vector3 CurrentWalkDestination => path != null ? path[index] : Vector3.zero;
         public bool IsCityActorVisible => actor && !Away() && renderers != null &&
             renderers.Any(r => r && r.enabled && r.gameObject.activeInHierarchy);
         public float MeasuredModelHeight
@@ -161,7 +162,9 @@ namespace Eldoria.AldricCity
         private bool SegmentClear(Vector3 a, Vector3 b)
         {
             var length = Vector3.Distance(a, b);
-            if (length < 0.75f || length > 18f) return false;
+            // A resumed leg may have only centimetres left. Rejecting every
+            // remaining segment below0.75m could strand the actor after a mission.
+            if (length < 0.04f || length > 18f) return false;
             var count = Mathf.CeilToInt(length / 0.35f);
             for (int j = 0; j <= count; ++j)
             {
@@ -328,7 +331,11 @@ namespace Eldoria.AldricCity
             if (!walking)
             {
                 if (Time.time < pauseUntil) return;
-                var next = index + direction;
+                // index is the current destination while moving. An interruption
+                // must resume that leg, then pause at its real waypoint, rather
+                // than silently skipping it or reversing across a short segment.
+                var next = Vector3.Distance(actor.transform.position, path[index]) > .04f
+                    ? index : index + direction;
                 if (next < 0 || next >= path.Length) { direction *= -1; next = index + direction; }
                 if (next < 0 || next >= path.Length || !SegmentClear(actor.transform.position, path[next]))
                 { pauseUntil = Time.time + 4f; return; }

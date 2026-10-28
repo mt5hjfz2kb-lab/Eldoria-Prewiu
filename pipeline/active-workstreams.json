@@ -1853,8 +1853,8 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/tester-qa.yml"
       ],
-      "phase": "PR122_EXCLUSIVE_NATIVE_ROAMING_VALIDATION",
-      "next": "PR120 merged and required main native queue completed successfully. Execute existing Aldric native workflow on exact candidate: approvedGLB/scale/road/fullcapsule/boneanimation/visibility/save and12realviews. Then full shared UI regression and actual image review before merge; no duplicate workstream or credits.",
+      "phase": "PR122_COMBINED_SHARED_NATIVE_COMPILE_AND_RETURN_FIX",
+      "next": "Execute full shared UI EditMode+PlayMode with actual Aldric case and12required camera views in same native job. Compile boundary and resume-short-leg fixes included. Dedicated first run did not reach PlayMode; do not attribute movement or visual PASS. Inspect exact new images and all function/save assertions before merge.",
       "delivery_definition": {
         "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
@@ -1864,7 +1864,15 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json",
       "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection.",
-      "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime."
+      "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime.",
+      "current_native_cert": {
+        "status": "failed_before_playmode",
+        "source": "29ee817922adc4e7639fbf427e370b5167ab36bf",
+        "run_id": 40761888936,
+        "reason": "PlayMode asmdef cannot directly reference Assembly-CSharp host/walker types; corrected to public reflection like existing UI tests",
+        "actual_views": 0,
+        "art_approved": false
+      }
     }
   ],
   "history": [

@@ -65,3 +65,18 @@ fotogramas durante Walk y materiales soportados sin shader de error. Cuatro
 capturas diagnósticas desde ángulos opuestos para cara/capa se suman a las ocho de cámara
 jugable/ausencia/retorno. La cámara de producción se conserva intacta; las
 diagnósticas son exclusivamente del probe y no sustituyen las vistas jugables.
+
+Revisión adicional del ciclo de regreso: se corrige una interrupción que podía
+saltar el destino pendiente o dejar al actor inmóvil al rechazar tramos restantes
+menores de0,75m. Ahora reanuda el tramo y se detiene en su hito real. La prueba
+exige esa pausa tras volver de Mundo y movimiento efectivo después de terminar
+la investigación y recargar. Es una corrección de funcionamiento; necesita su
+propia ejecución nativa antes de aceptación.
+
+La primera ejecución nativa40761888936 (fuente29ee8179) falló al compilar
+la prueba, antes de PlayMode: Eldoria.Tests.PlayMode no puede referenciar
+los tipos de Assembly-CSharp directamente. Se aplica el mismo acceso a API
+pública por reflexión que RoyalGoldV3IntegratedAcceptanceTests; no se cambian
+asmdefs ni la arquitectura para resolverlo. No produjo capturas ni prueba de
+paseo. La siguiente certificación compartida ejecutará todos los tests y el
+caso de Aldric, conservando además sus12imágenes originales y fuente exacta.

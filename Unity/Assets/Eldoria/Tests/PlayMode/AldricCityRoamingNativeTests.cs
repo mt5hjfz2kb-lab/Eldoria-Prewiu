@@ -2,11 +2,10 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Linq;
-using Eldoria.AldricCity;
+using System.Reflection;
 using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.Infrastructure;
-using Eldoria.ReferenceClean;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,6 +20,26 @@ namespace Eldoria.Tests
     /// </summary>
     public sealed class AldricCityRoamingNativeTests
     {
+        // The canonical host/walker belong to Assembly-CSharp. As with the
+        // existing integrated UI tests, inspect their PUBLIC API by reflection
+        // instead of making the PlayMode asmdef depend on a predefined assembly.
+        private static T Read<T>(object target, string name)
+        {
+            Assert.That(target, Is.Not.Null, "Actual component for " + name + " missing");
+            var type = target.GetType();
+            var field = type.GetField(name, BindingFlags.Instance | BindingFlags.Public);
+            if (field != null) return (T)field.GetValue(target);
+            var property = type.GetProperty(name, BindingFlags.Instance | BindingFlags.Public);
+            Assert.That(property, Is.Not.Null, "Missing actual public " + type.Name + "." + name);
+            return (T)property.GetValue(target);
+        }
+        private static object Call(object target, string name, params object[] args)
+        {
+            var method = target.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                .FirstOrDefault(x=>x.Name==name && x.GetParameters().Length==args.Length);
+            Assert.That(method, Is.Not.Null, "Missing real " + name + " action");
+            return method.Invoke(target, args);
+        }
         // Real Unity GPU render, not a composited mockup. Overlay HUD is not
         // included: this proof is strictly the 3D character in Valoria.
         private static void CaptureCityCamera(Camera camera, string filename, int width, int height)
@@ -67,38 +86,42 @@ namespace Eldoria.Tests
                 Assert.Ignore("Only run with isolated VALORIA_GAMEPLAY_PROBE=1 save");
 
             SceneManager.LoadScene("Valoria_City_World_UI");
-            ValoriaIntegratedWorld host = null;
+            Component host = null;
             for (var readyDeadline = Time.realtimeSinceStartup + 60f; Time.realtimeSinceStartup < readyDeadline;)
             {
                 yield return null;
-                host = Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
-                if (host && host.Ready) break;
+                host = Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                    .FirstOrDefault(x=>x && x.GetType().FullName=="Eldoria.ReferenceClean.ValoriaIntegratedWorld");
+                if (host && Read<bool>(host,"Ready")) break;
             }
             Assert.That(host, Is.Not.Null, "Canonical Valoria scene must be loaded");
-            Assert.That(host.Ready, Is.True, "Canonical host is required; do not create a second one");
-            Assert.That(host.City.Probe, Is.True, "Never modify a real player save");
-            if (host.Guidance) host.Guidance.enabled = false;
-            var fixture = host.City.Gateway.Snapshot();
+            Assert.That(Read<bool>(host,"Ready"), Is.True, "Canonical host is required; do not create a second one");
+            var city = Read<Component>(host,"City");
+            Assert.That(Read<bool>(city,"Probe"), Is.True, "Never modify a real player save");
+            var guidance = Read<Behaviour>(host,"Guidance");
+            if (guidance) guidance.enabled = false;
+            ICommandGateway Gateway()=>Read<ICommandGateway>(city,"Gateway");
+            var fixture = Gateway().Snapshot();
             fixture.SawmillLevel = 1;
             fixture.BastionLevel = 2;
             fixture.BarracksLevel = 1;
             fixture.Available.ArcherT1 = 60;
             fixture.ChapterProgress.BastionTwoReached = true;
             fixture.ChapterProgress.MarchConfirmed = true;
-            new FileStateStore(host.City.SaveFile).Save(fixture);
-            host.City.ReloadForProbe();
+            new FileStateStore(Read<string>(city,"SaveFile")).Save(fixture);
+            Call(city,"ReloadForProbe");
             yield return null;
-            var walker = host.GetComponent<AldricCityRoaming>();
+            var walker = host.GetComponent("AldricCityRoaming");
             Assert.That(walker, Is.Not.Null, "One AldricCityRoaming must attach to existing host");
             var importDeadline = Time.realtimeSinceStartup + 90f;
-            while (!walker.ApprovedVisualReady && Time.realtimeSinceStartup < importDeadline)
+            while (!Read<bool>(walker,"ApprovedVisualReady") && Time.realtimeSinceStartup < importDeadline)
                 yield return null;
-            Assert.That(walker.ApprovedVisualReady, Is.True,
+            Assert.That(Read<bool>(walker,"ApprovedVisualReady"), Is.True,
                 "Original full-body skinned GLB, source hash, road route and animations must pass");
-            Assert.That(walker.RoadWaypoints, Is.GreaterThanOrEqualTo(3));
-            Assert.That(walker.MeasuredModelHeight, Is.InRange(1.70f, 2.0f),
+            Assert.That(Read<int>(walker,"RoadWaypoints"), Is.GreaterThanOrEqualTo(3));
+            Assert.That(Read<float>(walker,"MeasuredModelHeight"), Is.InRange(1.70f, 2.0f),
                 "Aldric must use human city metres; not asset units or a UI portrait");
-            Assert.That(walker.IsCityActorVisible, Is.True,
+            Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.True,
                 "Approved visual should be present in the actual Valoria city");
 
             var skins = walker.GetComponentsInChildren<SkinnedMeshRenderer>(true);
@@ -107,23 +130,23 @@ namespace Eldoria.Tests
             Assert.That(skins.SelectMany(x=>x.sharedMaterials).All(x=>x && x.shader &&
                 x.shader.isSupported && !x.shader.name.Contains("InternalError")), Is.True,
                 "Approved body/cape must use supported real materials, never the pink error shader");
-            var camera = host.City.PlayerCamera;
+            var camera = Read<Camera>(city,"PlayerCamera");
             Assert.That(camera, Is.Not.Null, "Use actual playable city camera");
             CaptureCityCamera(camera, "aldric-city-idle-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-idle-portrait.png", 390, 844);
 
-            var beforeWalking = JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            var beforeWalking = JsonUtility.ToJson(Gateway().Snapshot());
             // Real time/real animation: initial idle pause is intentional.
-            var first = walker.ActorGroundPosition;
+            var first = Read<Vector3>(walker,"ActorGroundPosition");
             var travelled = 0f;
             for (var walkDeadline = Time.realtimeSinceStartup + 20f; travelled < 0.3f && Time.realtimeSinceStartup < walkDeadline;)
             {
                 yield return null;
-                travelled = Vector3.Distance(first, walker.ActorGroundPosition);
+                travelled = Vector3.Distance(first, Read<Vector3>(walker,"ActorGroundPosition"));
             }
             Assert.That(travelled, Is.GreaterThan(0.3f),
                 "Aldric must actually walk on a valid road; a static render is not acceptance");
-            Assert.That(walker.ActualWalkClipPlaying, Is.True,
+            Assert.That(Read<bool>(walker,"ActualWalkClipPlaying"), Is.True,
                 "Real imported 26-joint Walk animation must play, not only translate a static model");
             var priorPose = bones.Select(x=>x.localRotation).ToArray();
             yield return new WaitForSecondsRealtime(.22f);
@@ -143,8 +166,9 @@ namespace Eldoria.Tests
                     diagnostic.CopyFrom(camera);
                     diagnostic.orthographic = true;
                     diagnostic.orthographicSize = 1.35f;
+                    diagnostic.nearClipPlane = .05f;
                     diagnostic.enabled = false;
-                    var centre = walker.ActorGroundPosition + Vector3.up * .95f;
+                    var centre = Read<Vector3>(walker,"ActorGroundPosition") + Vector3.up * .95f;
                     var facing = walker.transform.Find("Sir Aldric | city-only visual actor");
                     Assert.That(facing, Is.Not.Null);
                     // Four actor-relative angles expose face, cape and yaw
@@ -160,71 +184,93 @@ namespace Eldoria.Tests
                 }
                 finally { Object.Destroy(diagnosticObject); }
             }
-            Assert.That(JsonUtility.ToJson(host.City.Gateway.Snapshot()), Is.EqualTo(beforeWalking),
+            Assert.That(JsonUtility.ToJson(Gateway().Snapshot()), Is.EqualTo(beforeWalking),
                 "Cosmetic walking must not mutate authoritative player progress");
 
             // A physical obstruction added AFTER route validation must be detected.
             var obstacle = new GameObject("Native probe temporary body obstruction");
-            obstacle.transform.position = walker.ActorGroundPosition + Vector3.up * .68f;
+            obstacle.transform.position = Read<Vector3>(walker,"ActorGroundPosition") + Vector3.up * .68f;
             obstacle.AddComponent<BoxCollider>().size = new Vector3(.06f, .06f, .06f);
             Physics.SyncTransforms();
-            try { Assert.That(walker.CurrentBodyClear, Is.False,
+            try { Assert.That(Read<bool>(walker,"CurrentBodyClear"), Is.False,
                 "An actual narrow collider between old point samples blocks the entire body capsule"); }
             finally { Object.Destroy(obstacle); }
             yield return null;
             Physics.SyncTransforms();
-            Assert.That(walker.CurrentBodyClear, Is.True, "Clearance recovers after removing the probe obstacle");
+            Assert.That(Read<bool>(walker,"CurrentBodyClear"), Is.True, "Clearance recovers after removing the probe obstacle");
 
-            Assert.That(host.TrySetWorld(true), Is.True, "Use real world navigation");
+            var interruptedDestination = Read<Vector3>(walker,"CurrentWalkDestination");
+            Assert.That((bool)Call(host,"TrySetWorld",true), Is.True, "Use real world navigation");
             yield return new WaitForSecondsRealtime(.4f);
-            Assert.That(walker.IsCityActorVisible, Is.False, "No duplicate Aldric remains visible in World");
-            CaptureCityCamera(host.WorldCamera, "aldric-away-world.png", 1280, 720);
-            Assert.That(host.TrySetWorld(false), Is.True);
+            Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.False, "No duplicate Aldric remains visible in World");
+            CaptureCityCamera(Read<Camera>(host,"WorldCamera"), "aldric-away-world.png", 1280, 720);
+            Assert.That((bool)Call(host,"TrySetWorld",false), Is.True);
             yield return new WaitForSecondsRealtime(.4f);
-            Assert.That(walker.IsCityActorVisible, Is.True, "Aldric returns with the actual city camera");
+            Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.True, "Aldric returns with the actual city camera");
+            var resumedWaypoint = false;
+            for (var resumeDeadline=Time.realtimeSinceStartup+15f; Time.realtimeSinceStartup<resumeDeadline;)
+            {
+                yield return null;
+                if(Vector3.Distance(Read<Vector3>(walker,"ActorGroundPosition"),interruptedDestination)<.12f &&
+                    !Read<bool>(walker,"ActualWalkClipPlaying")){resumedWaypoint=true;break;}
+            }
+            Assert.That(resumedWaypoint, Is.True,
+                "Returning from World resumes the interrupted leg and pauses at its genuine destination");
 
-            var state = host.City.Gateway.Snapshot();
-            var sent = host.City.Gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
+            var state = Gateway().Snapshot();
+            var sent = Gateway().Execute(new GameCommand(Guid.NewGuid().ToString("N"),
                 state.PlayerId, "Gather", "forest-valoria", state.Revision));
             Assert.That(sent.Ok, Is.True, sent.Message);
             yield return new WaitForSecondsRealtime(.4f);
-            Assert.That(walker.IsCityActorVisible, Is.False, "Aldric really leaves the city with his march");
+            Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.False, "Aldric really leaves the city with his march");
             CaptureCityCamera(camera, "aldric-away-march.png", 1280, 720);
-            var clock = host.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
+            var clock = Read<IClock>(city,"Clock");
             Assert.That(clock, Is.Not.Null, "Advance only the disposable test clock");
-            clock.Step(SliceRules.TravelSeconds * 2 + SliceRules.GatherSeconds + 2);
-            host.City.Gateway.Advance();
+            Assert.That(clock.GetType().Name, Is.EqualTo("TestClock"), "Only the actual disposable probe clock may advance");
+            Call(clock,"Step",SliceRules.TravelSeconds * 2 + SliceRules.GatherSeconds + 2);
+            Gateway().Advance();
             yield return new WaitForSecondsRealtime(.4f);
-            Assert.That(host.City.Gateway.Snapshot().March.Phase, Is.EqualTo("idle"));
-            Assert.That(walker.IsCityActorVisible, Is.True, "The returning march restores Aldric in Valoria");
+            Assert.That(Gateway().Snapshot().March.Phase, Is.EqualTo("idle"));
+            Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.True, "The returning march restores Aldric in Valoria");
 
             // Prepare only the disposable chapter-III fixture; initiate the
             // actual domain investigation command, never fake a visual flag.
-            state = host.City.Gateway.Snapshot();
+            state = Gateway().Snapshot();
             state.BastionLevel = 3;
             state.ChapterThree.FissureClosed = false;
             state.ChapterThree.FissureExplored = false;
-            new FileStateStore(host.City.SaveFile).Save(state);
-            host.City.ReloadForProbe();
+            new FileStateStore(Read<string>(city,"SaveFile")).Save(state);
+            Call(city,"ReloadForProbe");
             yield return null;
-            state = host.City.Gateway.Snapshot();
-            var investigated = host.City.Gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
+            state = Gateway().Snapshot();
+            var investigated = Gateway().Execute(new GameCommand(Guid.NewGuid().ToString("N"),
                 state.PlayerId, "InvestigateFissure", "fissure-valoria", state.Revision));
             Assert.That(investigated.Ok, Is.True, investigated.Message);
             yield return new WaitForSecondsRealtime(.4f);
-            Assert.That(walker.IsCityActorVisible, Is.False, "Investigation hides the city actor");
+            Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.False, "Investigation hides the city actor");
             CaptureCityCamera(camera, "aldric-away-investigation.png", 1280, 720);
-            host.City.ReloadForProbe();
+            Call(city,"ReloadForProbe");
             yield return new WaitForSecondsRealtime(.4f);
-            Assert.That(walker.IsCityActorVisible, Is.False, "Reload preserves the actual ongoing investigation");
-            clock.Step(20 * 60 + 1);
-            host.City.Gateway.Advance();
+            Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.False, "Reload preserves the actual ongoing investigation");
+            Call(clock,"Step",20 * 60 + 1);
+            Gateway().Advance();
             yield return new WaitForSecondsRealtime(.4f);
-            Assert.That(host.City.Gateway.Snapshot().ChapterThree.FissureExplored, Is.True);
-            Assert.That(walker.IsCityActorVisible, Is.True, "Aldric returns after the genuine investigation completes");
+            Assert.That(Gateway().Snapshot().ChapterThree.FissureExplored, Is.True);
+            Assert.That(Read<bool>(walker,"IsCityActorVisible"), Is.True, "Aldric returns after the genuine investigation completes");
             CaptureCityCamera(camera, "aldric-city-returned.png", 1280, 720);
-            Assert.That(host.City.Ready && host.Ready && !host.InWorld, Is.True);
-            Assert.That(Object.FindObjectsByType<AldricCityRoaming>(FindObjectsSortMode.None).Length,
+            var returnedPosition = Read<Vector3>(walker,"ActorGroundPosition");
+            var movedAfterReturn = 0f;
+            for(var returnDeadline=Time.realtimeSinceStartup+15f;
+                movedAfterReturn<.3f && Time.realtimeSinceStartup<returnDeadline;)
+            {
+                yield return null;
+                movedAfterReturn=Vector3.Distance(returnedPosition,Read<Vector3>(walker,"ActorGroundPosition"));
+            }
+            Assert.That(movedAfterReturn, Is.GreaterThan(.3f),
+                "After the actual investigation and reload Aldric resumes walking, not a stranded idle actor");
+            Assert.That(Read<bool>(city,"Ready") && Read<bool>(host,"Ready") && !Read<bool>(host,"InWorld"), Is.True);
+            Assert.That(Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                    .Count(x=>x && x.GetType().FullName=="Eldoria.AldricCity.AldricCityRoaming"),
                 Is.EqualTo(1), "Never instantiate a duplicate logical Aldric");
         }
     }

@@ -18,6 +18,9 @@ on:
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs'
       - 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs'
       - 'Unity/Assets/Eldoria/Tests/PlayMode/RoyalGoldV3IntegratedAcceptanceTests.cs'
+      - 'Unity/Assets/Eldoria/AldricCity/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs'
+      - 'Unity/Assets/StreamingAssets/Eldoria/Aldric/**'
   workflow_dispatch:
 
 permissions:
@@ -148,6 +151,8 @@ jobs:
     # Use disposable probe-only saves for EVERY native UI test on the owner's PC.
     env:
       VALORIA_GAMEPLAY_PROBE: '1'
+      ALDRIC_CITY_SCREENSHOT_DIR: ${{ runner.temp }}/aldric-ui-native-${{ github.run_id }}
+      ALDRIC_REQUEST_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
     timeout-minutes: 65
     steps:
@@ -160,7 +165,7 @@ jobs:
           $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
           $registry=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {(($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          $ui=@($claims|Where-Object {(($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
           if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $ui.Count -ne 1)){throw "Windows native lease belongs to another workstream: $($claims.id -join ', ')"}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Existing Unity or Blender process; retain the later ownership/process check as well'}
       - name: Expose Git installed with GitHub Desktop
@@ -296,7 +301,7 @@ jobs:
           # Read current main, never a stale PR merge snapshot's old reservation.
           $registry=Get-Content 'ui-live-ownership/pipeline/active-workstreams.json' -Raw|ConvertFrom-Json
           $claims=@($registry.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
-          $ui=@($claims|Where-Object {(($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
+          $ui=@($claims|Where-Object {(($_.id -eq 'eldoria-ui-v3-management-completion-20261021' -and $_.owner -eq 'codex-pr119-pr120-completion-20261028') -or ($_.id -eq 'eldoria-early-retention-systems-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 6) -or ($_.id -eq 'eldoria-aldric-city-roaming-20261028' -and $_.owner -eq 'codex-pr120-exact-visual-pr122-20261028' -and $_.ownership_revision -eq 2)) -and $_.status -eq 'active' -and $_.ownership_state -eq 'claimed'})
           # An active UI owner may validate its own reservation. With no
           # reservations, preserve the existing ordinary progression CI path.
           # Never couple future tests to one temporary executor's identity.
@@ -599,6 +604,35 @@ jobs:
           $cases=@($results.SelectNodes('//test-case'))
           if($cases.Count -lt 61 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Expected the complete 61+ PlayMode suite with no ignored or failed cases'}
 
+      - name: Require genuine Aldric motion visibility save proof and twelve camera views
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $xml=Join-Path $env:RUNNER_TEMP 'Eldoria-UIProgression-PlayMode.xml'
+          $report=[xml](Get-Content $xml -Raw)
+          $cases=@($report.SelectNodes("//test-case[contains(@fullname,'Eldoria.Tests.AldricCityRoamingNativeTests')]"))
+          if([int]$report.'test-run'.failed -ne 0 -or [int]$report.'test-run'.total -lt 73 -or
+             $cases.Count -ne 1 -or $cases[0].result -ne 'Passed'){
+            throw 'Complete shared suite and actual Aldric integration case must pass; no ignored substitute'
+          }
+          foreach($image in @('aldric-city-idle-landscape.png','aldric-city-idle-portrait.png',
+            'aldric-city-walking-landscape.png','aldric-city-walking-portrait.png',
+            'aldric-away-world.png','aldric-away-march.png','aldric-away-investigation.png',
+            'aldric-city-returned.png','aldric-detail-forward.png','aldric-detail-right.png',
+            'aldric-detail-backward.png','aldric-detail-left.png')){
+            $path=Join-Path $env:ALDRIC_CITY_SCREENSHOT_DIR $image
+            if(-not(Test-Path $path) -or (Get-Item $path).Length -lt 10000){throw "Missing genuine Aldric native view: $image"}
+          }
+          $compiled=(& git rev-parse HEAD).Trim()
+          $tree=(& git rev-parse 'HEAD^{tree}').Trim()
+          $source='Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb'
+          $identity=[ordered]@{requested_source=$env:ALDRIC_REQUEST_SOURCE_SHA;compiled_source=$compiled;
+            compiled_tree=$tree;run_id=$env:GITHUB_RUN_ID;aldric_case='Passed';views=12;
+            model_sha256=(Get-FileHash -Algorithm SHA256 $source).Hash.ToLowerInvariant();
+            physical_mobile_tested=$false}
+          $identity|ConvertTo-Json -Depth 5|Set-Content (Join-Path $env:ALDRIC_CITY_SCREENSHOT_DIR 'native-source-identity.json') -Encoding UTF8
+          Write-Host 'ALDRIC_SHARED_NATIVE_COMPLETE_CASE_AND_TWELVE_VIEWS_PASS'
+
       - name: Summarize certified checks
         shell: powershell
         run: |
@@ -656,3 +690,13 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-aldric-shared-native-${{ github.sha }}
+          path: |
+            ${{ env.ALDRIC_CITY_SCREENSHOT_DIR }}/*
+            ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.xml
+            ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
+          if-no-files-found: warn
+          retention-days: 30
