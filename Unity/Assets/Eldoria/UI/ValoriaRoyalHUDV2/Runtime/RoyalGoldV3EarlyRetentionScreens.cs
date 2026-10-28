@@ -42,6 +42,7 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RawImage[] scoutThumbnails=new RawImage[3];
         RawImage engendroPortrait;
         Texture2D engendroTexture;
+        Texture2D engendroCutout;
         readonly RoyalText[] scoutActionLabels=new RoyalText[3];
         readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
         readonly string[] scoutIds=new string[3];
@@ -81,6 +82,44 @@ namespace Eldoria.UI.RoyalGold.V2
         void OnDestroy()
         {
             if(Hud){Hud.NarrativeOpening-=Close;Hud.SelectionChanged-=SelectionChanged;}
+            if(engendroCutout)Destroy(engendroCutout);
+        }
+        // The reused Bastion-II render has a neutral studio backdrop.
+        // Remove only bright low-chroma backdrop pixels ONCE, retaining the
+        // original model, its violet corruption and all canonical gameplay.
+        // No external service, shader, GPU readback or new art is required.
+        static Texture2D TransparentEngendro(Texture2D source)
+        {
+            if(!source)return null;
+            try
+            {
+                var pixels=source.GetPixels32();
+                for(int i=0;i<pixels.Length;i++)
+                {
+                    var p=pixels[i];
+                    int brightest=Math.Max(p.r,Math.Max(p.g,p.b));
+                    int darkest=Math.Min(p.r,Math.Min(p.g,p.b));
+                    int chroma=brightest-darkest;
+                    int light=(p.r+p.g+p.b)/3;
+                    if(chroma<25 && light>125)p.a=0;
+                    else if(chroma<38 && light>93)
+                        p.a=(byte)Mathf.Clamp((125-light)*8,0,255);
+                    pixels[i]=p;
+                }
+                var cutout=new Texture2D(source.width,source.height,
+                    TextureFormat.RGBA32,false,false);
+                cutout.name="engendro-lore-cutout";
+                cutout.filterMode=FilterMode.Bilinear;
+                cutout.wrapMode=TextureWrapMode.Clamp;
+                cutout.SetPixels32(pixels);
+                cutout.Apply(false,true);
+                return cutout;
+            }
+            catch(Exception e)
+            {
+                Debug.LogWarning("Eldoria Engendro portrait fallback: "+e.Message);
+                return null;
+            }
         }
         void SelectionChanged(string selected)
         {
@@ -267,12 +306,13 @@ namespace Eldoria.UI.RoyalGold.V2
             // not an invented stone golem. Reuse its actual authored image.
             engendroTexture=Resources.Load<Texture2D>(
                 "EldoriaRetention/engendro-portrait");
+            engendroCutout=TransparentEngendro(engendroTexture);
             var creature=Panel(heroScene,"Lore-approved Engendro portrait");
             var creatureArt=Rect("Engendro / authentic creature illustration",creature);
             creatureArt.gameObject.AddComponent<CanvasRenderer>();
             engendroPortrait=creatureArt.gameObject.AddComponent<RawImage>();
             engendroPortrait.raycastTarget=false;
-            engendroPortrait.texture=engendroTexture;
+            engendroPortrait.texture=engendroCutout?engendroCutout:engendroTexture;
             engendroPortrait.uvRect=new Rect(0f,0f,1f,1f);
             Stretch(creatureArt,4f);
             creature.gameObject.SetActive(false);
