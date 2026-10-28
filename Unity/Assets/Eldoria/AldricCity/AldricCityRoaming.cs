@@ -287,8 +287,17 @@ namespace Eldoria.AldricCity
             if (!model || !actor || path == null || renderers == null) return;
             var away = Away();
             var cam = host.City.PlayerCamera;
-            var distance = cam ? Vector3.Distance(cam.transform.position, actor.transform.position) : 999f;
-            bool visible = !away && distance <= 95f;
+            // Valoria uses an elevated orthographic camera: camera-to-actor distance
+            // can exceed 95 metres even for an actor at the centre of the screen.
+            // Culling must use projected framing, not physical camera distance.
+            bool visible = !away && cam && cam.enabled;
+            if (visible)
+            {
+                var projected = cam.WorldToViewportPoint(actor.transform.position + Vector3.up * Height * .5f);
+                visible = projected.z > cam.nearClipPlane && projected.z < cam.farClipPlane &&
+                    projected.x >= -.05f && projected.x <= 1.05f &&
+                    projected.y >= -.05f && projected.y <= 1.05f;
+            }
             foreach (var r in renderers) if (r) r.enabled = visible;
             if (away)
             {
