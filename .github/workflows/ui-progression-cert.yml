@@ -70,6 +70,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           clean: false
+          # Materialize the COMPLETE Unity project directly. Disabling a
+          # previous sparse checkout first repeatedly expanded unrelated
+          # repository history, then required restoring all 10k Unity files.
+          # The exact tracked-project verification below remains mandatory.
+          sparse-checkout: |
+            Unity
+            tools
+            docs/evidence
+            pipeline
+          sparse-checkout-cone-mode: true
 
       - name: Restore exact tracked Unity project when self-hosted checkout was partial
         shell: powershell
