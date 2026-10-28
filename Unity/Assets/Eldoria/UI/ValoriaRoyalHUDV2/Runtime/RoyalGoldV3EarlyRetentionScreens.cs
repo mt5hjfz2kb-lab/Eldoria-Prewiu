@@ -1196,7 +1196,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     sceneArtwork.BossEncounter=boss;
                     sceneArtwork.SetVerticesDirty();
                 }
-                kicker.Put("Protege las fronteras de Valoria y supera a sus guardianes.");
+                kicker.Put(boss?"GUARDIÁN · "+EarlyRetentionRules.CombatAdvice(info):
+                    "Protege las fronteras de Valoria y supera a sus guardianes.");
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
                 opponent.Put(info.Name+"\n"+info.Trait);
                 int archer=s.Available?.Total??0;
