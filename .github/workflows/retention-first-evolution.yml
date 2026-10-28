@@ -1,0 +1,52 @@
+name: Eldoria retention first evolution — domain and narrative contract
+on:
+  push:
+    branches: [feature/eldoria-retention-first-evolution-20261028]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs'
+      - 'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs'
+      - 'tools/early-retention/**'
+      - 'tools/march-capacity/**'
+      - '.github/workflows/retention-first-evolution.yml'
+  pull_request:
+    branches: [main, feature/global-march-capacity-three-slots-20261028]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  real-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime
+            tools/early-retention
+            tools/march-capacity
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile original real Eldoria gateway, five bosses and 12 narrative outcomes
+        run: dotnet run --project tools/early-retention/Smoke.csproj --configuration Release
+      - name: Prove three-march governance survives tactical and narrative extension
+        run: dotnet run --project tools/march-capacity/Smoke.csproj --configuration Release
+      - name: Source integrity for original no-cost illustrated Unity interface
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path("Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime")
+          ui=(root/"RoyalGoldV3EarlyRetentionScreens.cs").read_text()
+          art=(root/"RoyalGoldV3EarlyRetentionArtwork.cs").read_text()
+          assert 'Actual last expedition story' in ui
+          assert 'Four actual expedition discovery pins' in ui
+          assert 'ScoutReportStory(' in ui
+          assert 'CombatInsight' in (Path("Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs")).read_text()
+          assert 'public sealed class RoyalGoldV3ScoutDiscoverySeals' in art
+          assert 'raycastTarget=false' in ui
+          print("RETENTION_FIRST_EVOLUTION_SOURCE_INTEGRITY=PASS (not Unity visual certification)")
+          PY
