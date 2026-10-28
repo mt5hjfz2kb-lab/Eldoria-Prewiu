@@ -146,6 +146,18 @@ namespace Eldoria.Domain
                 default:return "Amenaza corrupta";
             }
         }
+        public static string GuardianBadge(VigilantStage stage)
+        {
+            switch(stage.Step)
+            {
+                case 5:return "DEFENSA ALTA · USA RUPTURA";
+                case 10:return "ATAQUE ALTO · USA DEFENSA";
+                case 15:return "RUPTURA ALTA · USA VIDA";
+                case 20:return "VIDA ALTA · USA ATAQUE";
+                case 25:return "EQUILIBRIO · PREPARA TU MARCHA";
+                default:return "DESAFÍO DEL CAMINO";
+            }
+        }
         // Short, truthful advice anchored in a DIFFERENT actual enemy stat.
         // It never promises a win or grants an automatic counter-bonus.
         public static string CombatAdvice(VigilantStage stage)
