@@ -165,6 +165,71 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Retention.Orders.Select(x=>x.Id).Distinct().Count(),
                 Is.EqualTo(g.Snapshot().Retention.Orders.Count));
         }
+        [Test] public void FiveGuardiansHaveRealDistinctStatStrengthsAndUsefulHints()
+        {
+            var armor=EarlyRetentionRules.Stage(5);
+            var assault=EarlyRetentionRules.Stage(10);
+            var breach=EarlyRetentionRules.Stage(15);
+            var endurance=EarlyRetentionRules.Stage(20);
+            var final=EarlyRetentionRules.Stage(25);
+            Assert.That(armor.Trait,Does.Contain("DEFENSA"));
+            Assert.That(assault.Trait,Does.Contain("ATAQUE"));
+            Assert.That(breach.Trait,Does.Contain("RUPTURA"));
+            Assert.That(endurance.Trait,Does.Contain("RESISTENCIA"));
+            Assert.That(final.Trait,Does.Contain("EQUILIBRIO"));
+            Assert.That(armor.Enemy.Defense,Is.GreaterThan(EarlyRetentionRules.Stage(4).Enemy.Defense+20));
+            Assert.That(assault.Enemy.Attack,Is.GreaterThan(EarlyRetentionRules.Stage(9).Enemy.Attack+20));
+            Assert.That(breach.Enemy.Break,Is.GreaterThan(EarlyRetentionRules.Stage(14).Enemy.Break+25));
+            Assert.That(endurance.Enemy.Health,Is.GreaterThan(EarlyRetentionRules.Stage(19).Enemy.Health+240));
+            Assert.That(final.Enemy.Defense,Is.GreaterThan(EarlyRetentionRules.Stage(24).Enemy.Defense+10));
+            foreach(var boss in new[]{armor,assault,breach,endurance,final})
+                Assert.That(EarlyRetentionRules.CombatAdvice(boss),Is.Not.Empty);
+            Assert.That(breach.Name,Is.EqualTo("Engendro de la Brecha"));
+        }
+
+        [Test] public void BattleAnalysisUsesActualSavedRoundsTroopsAndHero()
+        {
+            var challenge=EarlyRetentionRules.Stage(15);
+            var report=new BattleReportState{TargetId="vigilant:15",
+                HeroId="lyra",Won=false,Rounds=6,Troops=37,PlayerPower=2260,
+                EnemyPower=challenge.Difficulty,RemainingHealth=0};
+            var text=EarlyRetentionRules.BattleReview(report,challenge);
+            Assert.That(text,Does.Contain("6 rondas"));
+            Assert.That(text,Does.Contain("37 tropas"));
+            Assert.That(text,Does.Contain("Lyra"));
+            Assert.That(text,Does.Contain("ruptura"));
+            Assert.That(EarlyRetentionRules.BattleReview(report,EarlyRetentionRules.Stage(10)),
+                Is.Empty,"Reports cannot be shown as an unrelated battle");
+        }
+
+        [Test] public void ScoutDiscoveriesAreDeterministicAndPersistAfterReloadWithoutDoubleClaim()
+        {
+            var time=new Clock();var store=new Memory{
+                Value=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
+                    ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+                    Available=new ArmyRoster{ArcherT1=100}}
+            };
+            var gateway=new LocalGateway(time,store);
+            var order=gateway.Snapshot().Retention.Orders.First(x=>x.Kind!=0);
+            var expected=EarlyRetentionRules.ScoutDiscoveryText(order);
+            Assert.That(expected,Is.Not.Empty);
+            Assert.That(gateway.Execute(Cmd(gateway,"scout-story-send","ScoutDispatch",order.Id)).Ok,Is.True);
+            time.AddSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind)+1);
+            gateway=new LocalGateway(time,store);
+            Assert.That(gateway.Execute(Cmd(gateway,"scout-story-claim","ScoutClaim",order.Id)).Ok,Is.True);
+            var after=gateway.Snapshot();
+            Assert.That(after.Retention.TotalScoutReports,Is.EqualTo(1));
+            Assert.That(after.Retention.LatestDiscoveryText,Is.EqualTo(expected));
+            var title=after.Retention.LatestDiscoveryTitle;
+            var claimCount=after.Retention.TotalScoutReports;
+            gateway=new LocalGateway(time,store);
+            Assert.That(gateway.Snapshot().Retention.LatestDiscoveryTitle,Is.EqualTo(title));
+            Assert.That(gateway.Snapshot().Retention.LatestDiscoveryText,Is.EqualTo(expected));
+            Assert.That(gateway.Execute(Cmd(gateway,"scout-story-claim-again","ScoutClaim",order.Id)).Ok,Is.False);
+            Assert.That(gateway.Snapshot().Retention.TotalScoutReports,Is.EqualTo(claimCount));
+            Assert.That(EarlyRetentionRules.RevealedScoutReports(gateway.Snapshot().Retention),Is.EqualTo(1));
+        }
+
         [Test] public void FirstChapterHasAnActualPowerWallBeforeTheFinalBoss()
         {
             var boss=EarlyRetentionRules.Stage(25);
