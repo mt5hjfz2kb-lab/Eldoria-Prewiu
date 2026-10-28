@@ -1514,7 +1514,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Finish existing native without cancelling. Exact92fa2c7 includes bottom-viewport fix and regression plus reload/LOD fixes. Require real I-II, Edit/PlayMode and fresh portrait/landscape images before merge119. Then reconcile120 prepared tree (30 paths) with idle8h cap fix and12captures/real3claims+XP/reload.",
+      "next": "Finish native40676145109. All44 I-II checks and12frames pass; +8pp historical landscape criterion superseded by owner-approved bottom cartouche: strict no-regression retained, +8pp portrait retained. New canonical scene-resource prep fixes strict PlayMode startup. Inspect images, merge119 only after full pass; then reconcile120 preserving remote4981f5fd art.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1621,11 +1621,12 @@
         "artifact_id": 12378457368
       },
       "current_native_cert": {
-        "run": 40671553246,
-        "source": "92fa2c77273d746dd886da85d600f54b5b71dc8e",
-        "status": "pending",
-        "prior_run": 40669548543,
-        "prior_status": "in_progress"
+        "run": 40676145109,
+        "source": "3aa275dc2865d467895430d60f15599dac62c1a9",
+        "status": "in_progress",
+        "real_i_ii": "passed44checks12framing",
+        "editmode": "passed",
+        "playmode": "in_progress"
       },
       "delivery_blocker": {
         "type": "ITCH_REMOTE_BUILD_PROCESSING",
@@ -1663,10 +1664,12 @@
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
       "scope_release_note": "2026-10-27 owner-approved Aldric PR118 integration: release solely RoyalGoldV3CinematicFinish.cs from completed Crónica Real UI workstream. Already write_scope_released=true, prior handoff explicitly avoided Aldric reserved file. All remaining UI scope retained; exact file exclusively claimed by eldoria-aldric-dialogue-bust-20261027 revision 3. No other UI code/resources modified.",
       "latest_failure": {
-        "run": 40668918505,
-        "reason": "Quarry allowed by gateway but projected viewport(0.98,-0.05). Root cause: bottom cartouche still excluded as right sheet in landscape, producing negative free viewport width at4:3 and skipping Focus.",
-        "fixed_in": "c9a6a3e2c3d3f5d0953323df30bfb8e948cb2ed2",
-        "regression": "92fa2c77273d746dd886da85d600f54b5b71dc8e"
+        "run": 40674273592,
+        "artifact": 12810421620,
+        "editmode": "34/34",
+        "playmode": "40passed32failed",
+        "reason": "All32 failures from missing canonical build-generated Granary resources; UI workflow omitted existing BastionIIIArtBake preparation.",
+        "fixed_in": "3aa275dc2865d467895430d60f15599dac62c1a9"
       }
     },
     {
@@ -1774,7 +1777,7 @@
         "artifact_id": 12802867199,
         "visual_review": "CHANGES_REQUIRED: portrait enemy trait clipped, landscape victory detail clipped, scenic tree outside frame. All eight exact PNGs inspected; original option1 reference hash verified."
       },
-      "next": "Reconcile after119, then certify prepared12 screenshots, three dispatch/claims, real idle-XP button and save reload. Also corrected 8h cap overpayment after9h offline; new8/9/16/30h tests reject fresh duplicate claim. Local candidate284021b78 retained in eldoria-pr120; not pushed while119 owns native queue."
+      "next": "Local54bdeb38f combines remote4981f5fd painterly/lore/red-blue button updates with119, idle8h fix,15screens includingstage15 in3resolutions, typography-fit, all3scout dispatch/claims +heroXP +reload, canonical III resource prep. Native after119 lease release. Reference images fetched and opened. Do not overwrite newer remote art; recheck head before publishing."
     }
   ],
   "history": [
