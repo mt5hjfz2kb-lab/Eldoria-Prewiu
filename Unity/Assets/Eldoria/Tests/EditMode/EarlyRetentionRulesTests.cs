@@ -79,7 +79,7 @@ namespace Eldoria.Tests
             var c=EarlyRetentionRules.Stage(26);
             Assert.That(a.Chapter,Is.EqualTo(1));
             Assert.That(b.Step,Is.EqualTo(25));
-            Assert.That(b.Name,Is.EqualTo("Guardián del umbral"));
+            Assert.That(b.Name,Is.EqualTo(EarlyRetentionRules.GuardianName(25)));
             Assert.That(c.Chapter,Is.EqualTo(2));
             Assert.That(c.Step,Is.EqualTo(1));
             Assert.That(c.Scene,Is.Not.EqualTo(a.Scene));
@@ -202,7 +202,7 @@ namespace Eldoria.Tests
         [Test] public void FirstChapterHasAnActualPowerWallBeforeTheFinalBoss()
         {
             var boss=EarlyRetentionRules.Stage(25);
-            Assert.That(boss.Name,Is.EqualTo("Guardián del umbral"));
+            Assert.That(boss.Name,Is.EqualTo(EarlyRetentionRules.GuardianName(25)));
             var starter=SliceRules.Expedition(new ArmyRoster{ArcherT1=36},"aldric");
             var developed=SliceRules.Expedition(new ArmyRoster{ArcherT1=100},"aldric");
             Assert.That(SliceRules.FightCreature(starter,boss.Enemy).Won,Is.False,
