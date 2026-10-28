@@ -194,6 +194,9 @@ namespace Eldoria.ReferenceClean.Editor
             Screenshot(h,"vigilants-chapter-one",900,1600);
             var stageButton=hud.GetComponentsInChildren<RoyalButton>(true)
                 .FirstOrDefault(x=>x.name=="Battle against next unique stage");
+            Need(stageButton.targetGraphic is RoyalGoldV3RetentionActionGraphic &&
+                ((RoyalGoldV3RetentionActionGraphic)stageButton.targetGraphic).Battle,
+                "The real battle button uses the approved red and gold action graphic");
             ClickReal(stageButton,"Automatic level PvE");
             var s=h.City.Gateway.Snapshot();
             Need(s.Retention.LastClearedStage==1 && s.LastBattleReport.Won,
@@ -252,6 +255,9 @@ namespace Eldoria.ReferenceClean.Editor
             Screenshot(h,"scout-mission-board",900,1600);
             var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
                 .FirstOrDefault(x=>x.name=="Dispatch or claim scout 1");
+            Need(dispatch.targetGraphic is RoyalGoldV3RetentionActionGraphic &&
+                !((RoyalGoldV3RetentionActionGraphic)dispatch.targetGraphic).Battle,
+                "The real expedition button uses the approved blue and gold action graphic");
             ClickReal(dispatch,"Actual scout dispatch");
             Need(h.City.Gateway.Snapshot().Retention.Orders.Any(x=>x.StartedUtcTicks>0),
                 "Scout dispatch persists its genuine UTC return time");
