@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T01:00:00+01:00",
+  "updated_at": "2026-10-28T01:03:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1739,8 +1739,8 @@
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
       "last_handoff": "Dedicated Unity 6000.3.23f1 native scene screenshot and EditMode validation, source branch #120, exclusive Windows owner until QA completes; do not alter PR119.",
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Native, editable uGUI geometry for two existing-HUD screens; no 3D asset production, generative models, external imagery, Tripo or artist-cycle promotion. Visual acceptance still requires true Unity scene captures."
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json"
     }
   ],
   "history": [
