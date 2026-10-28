@@ -239,16 +239,42 @@ namespace Eldoria.UI.RoyalGold.V2
             var nodes=new Vector2[25];
             float marginX=Mathf.Min(26,b.width*.10f),marginY=Mathf.Min(19,b.height*.12f);
             float dx=(b.width-marginX*2)/4f,dy=(b.height-marginY*2)/4f;
+            float weaveX=Mathf.Min(8f,dx*.12f),weaveY=Mathf.Min(6f,dy*.12f);
             for(int step=0;step<25;step++){
                 int row=step/5,col=step%5;
                 if(row%2==1)col=4-col;
-                nodes[step]=new Vector2(b.xMin+marginX+col*dx,
-                    b.yMin+marginY+(4-row)*dy);
+                // The route remains 25 deterministic real steps; subtle
+                // offsets make it read as a winding campaign trail rather
+                // than a regimented five-by-five spreadsheet grid.
+                nodes[step]=new Vector2(
+                    b.xMin+marginX+col*dx+Mathf.Sin(row*1.7f+col*.82f)*weaveX,
+                    b.yMin+marginY+(4-row)*dy+Mathf.Sin(step*1.31f)*weaveY);
             }
             for(int step=0;step<24;step++)
-                Line(vh,nodes[step],nodes[step+1],
-                    Mathf.Max(1.6f,Mathf.Min(b.width/160f,3f)),
-                    new Color(.76f,.63f,.42f,.57f));
+            {
+                var a=nodes[step];var end=nodes[step+1];
+                var tangent=end-a;
+                var normal=new Vector2(-tangent.y,tangent.x).normalized;
+                float arc=Mathf.Min(7f,tangent.magnitude*.12f);
+                var bend=(a+end)*.5f+normal*((step%2==0?1f:-1f)*arc);
+                // A subtle shaded path becomes warm gold as the player
+                // completes encounters. Boss nodes still belong to this
+                // one route, not a duplicated ornamental row.
+                for(int part=0;part<6;part++)
+                {
+                    float t0=part/6f,t1=(part+1)/6f;
+                    var p0=Vector2.Lerp(Vector2.Lerp(a,bend,t0),
+                        Vector2.Lerp(bend,end,t0),t0);
+                    var p1=Vector2.Lerp(Vector2.Lerp(a,bend,t1),
+                        Vector2.Lerp(bend,end,t1),t1);
+                    Line(vh,p0,p1,Mathf.Max(3f,b.width/145f),
+                        new Color(.13f,.10f,.08f,.86f));
+                    Line(vh,p0,p1,Mathf.Max(1.5f,b.width/245f),
+                        (Chapter-1)*25+step+1<=Cleared
+                            ?new Color(.99f,.78f,.35f,.96f)
+                            :new Color(.73f,.61f,.42f,.69f));
+                }
+            }
             for(int i=0;i<25;i++){
                 int absolute=(Chapter-1)*25+i+1;
                 bool cleared=absolute<=Cleared;
