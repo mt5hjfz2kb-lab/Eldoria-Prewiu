@@ -55,6 +55,12 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalIconGraphic battleSwords;
         readonly RoyalText[] bossMilestoneLabels=new RoyalText[5];
         RoyalText currentMilestoneLabel;
+        // A small heraldic annotation layer above the SAME approved painting.
+        // Its state comes from the canonical save; never from decorative counters.
+        RectTransform progressPlaque, discoveryPlaque;
+        RoyalText progressText, discoveryText;
+        readonly Image[] discoveryPins=new Image[3];
+        readonly RoyalText[] discoveryPinLabels=new RoyalText[3];
         // Two original zero-cost painterly environments, with the hand-built
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
@@ -388,6 +394,41 @@ namespace Eldoria.UI.RoyalGold.V2
             banner.gameObject.SetActive(false);
             currentMilestoneLabel=Text(trail,"Current live stage",17,Ivory,true);
             currentMilestoneLabel.alignment=TextAnchor.MiddleCenter;
+            progressPlaque=Rect("Gilded map progress / real stages and discoveries",art);
+            progressPlaque.gameObject.AddComponent<CanvasRenderer>();
+            var progressBack=progressPlaque.gameObject.AddComponent<Image>();
+            progressBack.color=new Color(.055f,.090f,.135f,.88f);
+            progressBack.raycastTarget=false;
+            var border=progressPlaque.gameObject.AddComponent<Outline>();
+            border.effectColor=new Color(.86f,.68f,.36f,.88f);
+            border.effectDistance=new Vector2(1.2f,-1.2f);
+            progressText=Text(progressPlaque,"Live progress / no decorative counters",19,Gold,true);
+            progressText.alignment=TextAnchor.MiddleCenter;
+            discoveryPlaque=Rect("Cartographer / last discovered report",art);
+            discoveryPlaque.gameObject.AddComponent<CanvasRenderer>();
+            var diaryBack=discoveryPlaque.gameObject.AddComponent<Image>();
+            diaryBack.color=new Color(.055f,.090f,.135f,.86f);
+            diaryBack.raycastTarget=false;
+            var diaryBorder=discoveryPlaque.gameObject.AddComponent<Outline>();
+            diaryBorder.effectColor=new Color(.80f,.63f,.33f,.82f);
+            diaryBorder.effectDistance=new Vector2(1.2f,-1.2f);
+            discoveryText=Text(discoveryPlaque,"Real expedition report / persistent",21,Ivory);
+            discoveryText.alignment=TextAnchor.MiddleCenter;
+            for(int index=0;index<3;index++)
+            {
+                var pin=Rect("Cartographer wax pin / "+(index+1),art);
+                pin.gameObject.AddComponent<CanvasRenderer>();
+                discoveryPins[index]=pin.gameObject.AddComponent<Image>();
+                discoveryPins[index].color=new Color(.47f,.13f,.13f,.92f);
+                discoveryPins[index].raycastTarget=false;
+                pin.localRotation=Quaternion.Euler(0f,0f,45f);
+                var edge=pin.gameObject.AddComponent<Outline>();
+                edge.effectColor=Gold;
+                edge.effectDistance=new Vector2(1.4f,-1.4f);
+                discoveryPinLabels[index]=Text(art,"Cartographer discovery threshold",18,Ivory,true);
+                discoveryPinLabels[index].alignment=TextAnchor.MiddleCenter;
+                discoveryPinLabels[index].Put(new[]{"I","II","III"}[index]);
+            }
             // The stage-15 elite is the canonical Bastion-II Spawnling,
             // not an invented stone golem. Reuse its actual authored image.
             engendroTexture=Resources.Load<Texture2D>("EldoriaRetention/engendro-reference-v3");
@@ -576,7 +617,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     victoryTitle.Put(report.Won?"VICTORIA":"DERROTA");
                     victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
-                    victoryDetail.Put(result.Message);
+                    var challenge=EarlyRetentionRules.Stage(int.Parse(target));
+                    victoryDetail.Put(EarlyRetentionRules.BattleReview(report,challenge));
                     victoryStarted=Time.unscaledTime;
                     victoryUntil=victoryStarted+3.2f;
                     victoryGroup.alpha=1f;
@@ -588,12 +630,15 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 // Small celebratory acknowledgement without inventing loot,
                 // blocking the UI, or creating another management screen.
-                victoryTitle.Put(kind=="ScoutClaim"?"ENCARGO COMPLETADO":
+                var updated=gateway.Snapshot();
+                var order=updated.Retention?.Orders?.FirstOrDefault(x=>x.Id==target);
+                bool discovered=kind=="ScoutClaim" && order!=null&&order.Claimed;
+                victoryTitle.Put(discovered?"HALLAZGO · "+EarlyRetentionRules.ScoutDiscoveryTitle(order):
                     "EXPLORADORES EN CAMINO");
                 victoryTitle.color=Gold;
-                victoryDetail.Put(result.Message);
+                victoryDetail.Put(discovered?EarlyRetentionRules.ScoutDiscoveryText(order):result.Message);
                 victoryStarted=Time.unscaledTime;
-                victoryUntil=victoryStarted+(kind=="ScoutClaim"?2.7f:1.9f);
+                victoryUntil=victoryStarted+(discovered?5f:1.9f);
                 victoryGroup.alpha=1f;
                 victoryGroup.blocksRaycasts=false;
             }
@@ -772,6 +817,32 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(w/h>artAspect)w=h*artAspect;else h=w/artAspect;
                 TL(frame,portrait?16f:26f,
                     Mathf.Max(90f,heroScene.rect.height-h-19f),w,h);
+            }
+            if(progressPlaque)
+            {
+                float mapW=heroScene.rect.width;
+                float plaqueW=Mathf.Min(mapW-24f,portrait?540f:420f);
+                TL(progressPlaque,12f,10f,plaqueW,portrait?50f:34f);
+                TL(progressText.rectTransform,9f,3f,plaqueW-18f,portrait?44f:28f);
+                progressText.fontSize=portrait?25:compactLandscape?19:19;
+                float discoveryW=Mathf.Min(mapW-24f,portrait?620f:580f);
+                TL(discoveryPlaque,12f,portrait?68f:54f,discoveryW,portrait?128f:98f);
+                TL(discoveryText.rectTransform,12f,8f,discoveryW-24f,portrait?112f:82f);
+                discoveryText.fontSize=portrait?25:compactLandscape?20:20;
+                // Small wax seals are placed on the illustrated cartographer map
+                // and reveal only when actual contracts have been CLAIMED.
+                float[] px={.23f,.54f,.78f},py={.48f,.61f,.37f};
+                for(int i=0;i<3;i++)
+                {
+                    float side=portrait?40f:30f;
+                    Pos(discoveryPins[i].rectTransform,new Vector2(.5f,.5f),
+                        new Vector2(.5f,.5f),
+                        (px[i]-.5f)*mapW,(py[i]-.5f)*heroScene.rect.height,side,side);
+                    Pos(discoveryPinLabels[i].rectTransform,new Vector2(.5f,.5f),
+                        new Vector2(.5f,.5f),
+                        (px[i]-.5f)*mapW,(py[i]-.5f)*heroScene.rect.height,side+4f,side+4f);
+                    discoveryPinLabels[i].fontSize=portrait?20:17;
+                }
             }
             if(victoryBanner)
             {
@@ -967,6 +1038,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
             }
             chapterTrail.gameObject.SetActive(vig);
+            progressPlaque.gameObject.SetActive(true);
+            progressText.Put(vig?
+                "CAMINO ASEGURADO · "+p.LastClearedStage+" ETAPAS":
+                "SELLOS DEL GREMIO · "+EarlyRetentionRules.RevealedScoutReports(p)+" INFORMES");
+            discoveryPlaque.gameObject.SetActive(!vig && !string.IsNullOrEmpty(p.LatestDiscoveryText));
+            if(!vig)
+                discoveryText.Put("ÚLTIMO HALLAZGO · "+p.LatestDiscoveryTitle+"\n"+p.LatestDiscoveryText);
+            int discoveredCount=EarlyRetentionRules.RevealedScoutReports(p);
+            for(int i=0;i<3;i++)
+            {
+                bool revealed=!vig && discoveredCount>=new[]{1,3,6}[i];
+                discoveryPins[i].gameObject.SetActive(revealed);
+                discoveryPinLabels[i].gameObject.SetActive(revealed);
+            }
             if(vig)
             {
                 int currentChapter=Math.Max(1,p.LastClearedStage/25+1);
@@ -1113,7 +1198,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
                 kicker.Put("Protege las fronteras de Valoria y supera a sus guardianes.");
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
-                opponent.Put(info.Name+"\nRasgo: "+info.Trait);
+                opponent.Put(info.Name+"\n"+info.Trait);
                 int archer=s.Available?.Total??0;
                 formation.Put("Héroe: "+(s.PreparedHeroId=="lyra"&&s.ChapterThree.LyraRecruited?
                     "Lyra":"Aldric")+" · "+archer+" tropas disponibles");
@@ -1132,10 +1217,15 @@ namespace Eldoria.UI.RoyalGold.V2
                     "Aún no disponible");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
-                battleFeedback.Put(string.IsNullOrEmpty(notice) && stage==1 ?
-                    "ALDRIC · Es una prueba de preparación. Elige tus tropas y yo dirigiré el combate automático." :
-                    notice);
-                footer.Put("Cada victoria abre el siguiente tramo del camino.");
+                var previous=s.LastBattleReport;
+                bool hasPrevious=previous!=null&&previous.TargetId=="vigilant:"+(stage-1);
+                battleFeedback.Put(hasPrevious?
+                    EarlyRetentionRules.BattleReview(previous,EarlyRetentionRules.Stage(stage-1)):
+                    "ESTRATEGIA · "+EarlyRetentionRules.CombatAdvice(info));
+                footer.Put(hasPrevious?
+                    "ÚLTIMA MARCHA · "+(previous.Won?"VICTORIA":"DERROTA")+
+                        " · "+previous.Rounds+" rondas · Poder "+previous.PlayerPower:
+                    "Cada victoria ilumina el siguiente tramo del camino.");
             }
             else
             {
@@ -1213,7 +1303,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());
                 footer.Put("Nuevos encargos: "+
                     TimeSpan.FromTicks(Math.Max(0,due-now())).ToString(@"hh\:mm\:ss")+
-                    " · Máximo 6 pendientes");
+                    " · Máximo 6 pendientes · "+EarlyRetentionRules.RevealedScoutReports(p)+" hallazgos");
             }
             if(battleSwords)
             {
