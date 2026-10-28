@@ -158,6 +158,20 @@ namespace Eldoria.Tests
             var body = Member(modal, "Body") as Text;
             Assert.That(body, Is.Not.Null);
             StringAssert.Contains("CONFIRM", body.text.ToUpperInvariant());
+            // Simulate expiry without sleeping eight seconds or ever touching
+            // the real player's save. The visible label MUST disarm too.
+            var armedUntil=hud.GetType().GetField("resetArmedUntil",
+                BindingFlags.Instance|BindingFlags.NonPublic);
+            Assert.That(armedUntil,Is.Not.Null);
+            armedUntil.SetValue(hud,-1f);
+            yield return null;
+            var resetCaption=Member(modal,"SecondaryLabel") as Text;
+            Assert.That(resetCaption,Is.Not.Null);
+            StringAssert.Contains("Reiniciar",resetCaption.text);
+            Assert.That(((Eldoria.Domain.PlayerState)Call(
+                Member(Member(host,"City"),"Gateway"),"Snapshot")).Revision,
+                Is.EqualTo(initialRevision),
+                "Expired reset confirmation cannot delete or rewrite the save");
             // Deliberately never issue the destructive second tap in shared QA.
         }
 
