@@ -37,6 +37,9 @@ namespace Eldoria.UI.RoyalGold.V2
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
         readonly RoyalText[] scoutTitles=new RoyalText[3];
+        // Miniatures are crops of the existing, real expedition map art:
+        // four mission families share the same no-cost source texture.
+        readonly RawImage[] scoutThumbnails=new RawImage[3];
         readonly RoyalText[] scoutActionLabels=new RoyalText[3];
         readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
         readonly string[] scoutIds=new string[3];
@@ -266,6 +269,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutArt[i].raycastTarget=false;
                 Stretch(artwork,0);
                 artwork.SetAsFirstSibling();
+                var vignette=Rect("Mission map detail (visual only)",cell);
+                vignette.gameObject.AddComponent<CanvasRenderer>();
+                scoutThumbnails[i]=vignette.gameObject.AddComponent<RawImage>();
+                scoutThumbnails[i].raycastTarget=false;
+                scoutThumbnails[i].texture=paintedScouts;
+                scoutThumbnails[i].uvRect=new Rect(.04f+i*.27f,.14f,.22f,.56f);
+                scoutThumbnails[i].gameObject.SetActive(false);
                 scoutTitles[i]=Text(cell,"Readable contract heading",22,Ink,true);
                 scoutCards[i]=Text(cell,"Real scout order reward and status",18,Ink);
                 scoutActions[i]=Button(cell,"Dispatch or claim scout "+(i+1),
@@ -454,12 +464,27 @@ namespace Eldoria.UI.RoyalGold.V2
                 backLabel.fontSize=17;
             }
             float imageTop=portrait?110f:108f;
-            // Show the authored illustration and 25-node route as a meaningful
-            // part of a portrait session. Preserve a usable manuscript below it
-            // even on shorter phones; no extra scene or asset is introduced.
-            float scenicHeight=portrait?Mathf.Clamp(ph-640f,220f,880f):ph-168f;
+            bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
+            bool vigilantsLandscape=!portrait && OpenDestination==Destination.Vigilants;
+            // The approved reference is scenic-first. In wide views the landscape
+            // or cartographer's desk spans the available width; actual missions
+            // and the combat panel float over the LOWER portion of that artwork.
+            // Portrait keeps the existing proven stacked, safe-area composition.
+            float scenicHeight=portrait?Mathf.Clamp(ph-640f,220f,880f):ph-155f;
             TL(heroScene,portrait?18f:20f,imageTop,
-                portrait?pw-36f:pw*.44f,scenicHeight);
+                portrait?pw-36f:pw-40f,scenicHeight);
+            if(vigilantsLandscape)
+            {
+                chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
+                chapterTrail.rectTransform.anchorMax=new Vector2(.42f,.86f);
+            }
+            else
+            {
+                chapterTrail.rectTransform.anchorMin=new Vector2(.10f,.06f);
+                chapterTrail.rectTransform.anchorMax=new Vector2(.90f,.54f);
+            }
+            chapterTrail.rectTransform.offsetMin=Vector2.zero;
+            chapterTrail.rectTransform.offsetMax=Vector2.zero;
             if(victoryBanner)
             {
                 float bannerWidth=Mathf.Min(heroScene.rect.width-18f,330f);
@@ -473,8 +498,13 @@ namespace Eldoria.UI.RoyalGold.V2
             // Keep the portrait manuscript above the fixed bottom footer.
             // The final scout card and claim-XP button previously extended
             // under this footer even though both were inside the safe area.
-            TL(infoCard,bodyX,portrait?imageTop+scenicHeight+10f:108f,
-                bodyWidth,portrait?ph-(imageTop+scenicHeight+58f):ph-165f);
+            if(portrait)
+                TL(infoCard,bodyX,imageTop+scenicHeight+10f,
+                    bodyWidth,ph-(imageTop+scenicHeight+58f));
+            else if(scoutsLandscape)
+                TL(infoCard,18f,ph*.49f,pw-36f,ph*.51f-61f);
+            else
+                TL(infoCard,pw*.37f,ph*.55f,pw*.61f,ph*.45f-55f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
             if(iw<=0||ih<=0)return;
             if(portrait)
