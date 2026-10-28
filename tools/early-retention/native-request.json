@@ -18,6 +18,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 34,
-  "note": "Native33 source443cf718 passed13domain tests and all19views plus combat/3send/3claim/XP/save/reload. Independent comparison still rejected repeated map thumbnails, flat action surfaces and absent guardian standard. Candidate34 integrates four retained reference-derived PNGs: distinct mission scenes by actual kind in BOTH orientations, red/blue gold-edged buttons on the same real clickable Graphic, and skull banner on actual current guardian only. Preserve all previous checks; add source/UV/visibility/bounds assertions. Rewards balance remains provisional. ART_APPROVED=false pending exact candidate Unity images and independent comparison."
+  "revision": 35,
+  "note": "Native34 source9f371822 passed13domain tests/all19states/realinteractions/phonefont/sourceatlas/bannerbounds. Its actual images confirm distinct mission paintings, reference buttons and skull standard. Independent wider comparison also found the older stacked1600x900 encounter gives only~132px creature in1536px card and crops destination castle. Correct the macro composition to full-height road left/portrait-proportioned encounter right, using360-unit creature/realdata/actions. Add existing crossedswords beside live Combatir caption and reference-derived textured mission medallions by actualKind. Keep same19states and every existing functional/text/visibility/source check. No visual approval before exact new Unity images."
 }

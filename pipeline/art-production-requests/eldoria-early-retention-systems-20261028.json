@@ -64,6 +64,10 @@
       {
         "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/guardian-banner-v4.png",
         "sha256": "5d00ec6311edbb1a547226f4e95eaea3bb32e9197850bea9cc95e921c253057f"
+      },
+      {
+        "path": "Unity/Assets/Eldoria/Resources/EldoriaRetention/scout-medallions-v5.png",
+        "sha256": "26d22212ec84be3a577c9caf928c213a83143102826cb522b0b67290bace19c5"
       }
     ],
     "art_approved": false,

@@ -95,3 +95,25 @@ textures, correct kind-to-quadrant mapping, undistorted previews in both
 orientations and a wholly visible current guardian standard. Candidate34
 requires its own real Unity output and independent comparison before acceptance;
 ART_APPROVED remains false at source preparation.
+
+
+## Macro correction after reviewing the regular landscape composition
+
+The source33 1600x900 image exposed a structural layout defect: a 1536px-wide
+encounter card displayed only about132px of creature and a large unused right
+area; the shallow scenic strip also cropped out the destination castle. New
+button textures cannot correct that hierarchy. Replace the stacked wide strips
+with two balanced full-height regions: the winding campaign on the left and a
+portrait-proportioned encounter on the right, using the already readable portrait
+creature/data/action proportions. The image remains on its actual mapped road,
+all25 milestones remain clear of the separate card, and the creature receives a
+360-unit square instead of a160-unit cap. The real battle button also shows the
+existing crossed-swords icon beside its live caption. This is a composition
+change requiring a new exact native capture, not a claim of acceptance.
+
+
+### Exact retained medallion prompt — built-in image_gen
+
+Use case: stylized-concept. Asset type: ONE transparent 2x2 sprite atlas of four medieval fantasy UI medallions for the existing Eldoria Scout Board. Input image: the selected paired Camino de los Vigilantes / Mesa de Exploradores reference, used ONLY for matching its exact ornate gold circular mission badges, painterly polished game UI craftsmanship and scale. Produce four separate circular badges, perfectly centred in four equal square quadrants of one square transparent image, matching diameters and consistent gold relief rims. Top left: gold compass rose on warm amber enamel (patrol). Top right: luminous green leaf sprig on deep emerald enamel, matching the forest badge in the reference (rescue). Bottom left: small wooden supply chest with a golden latch on warm gold/brown enamel (supplies). Bottom right: ivory sailing ship over deep blue enamel, matching the coastal badge in the reference (Breach traces near coast). Each badge fills 80% of its quadrant, 10% transparent margin on all sides, fully isolated, no overlaps, no shadows spilling into adjacent quadrants. True alpha transparent background outside the four circles. No text, letters, numerals, currencies, rewards, labels, frames or complete UI. These are decorative badges only; no baked gameplay. Preserve original reference's rich gold bevel, cream highlights, dimensional illustration, no flat vector substitutes. Deliver only this one 2x2 atlas.
+
+Source: scout-medallions-v5.png; SHA256 is recorded in the art request. One512px GPU atlas, source retained at original resolution/alpha; no text or baked reward values.

@@ -380,7 +380,8 @@ namespace Eldoria.ReferenceClean.Editor
                 illustration.texture.name.EndsWith("painterly-v2"),
                 "Scouts uses its own cinematic painterly expedition map");
             var contractArt=hud.GetComponentsInChildren<RoyalGoldV3ScoutContractGraphic>(true);
-            Need(contractArt.Length==3,
+            Need(contractArt.Length==3 && contractArt.All(x=>
+                x.mainTexture==Resources.Load<Texture2D>("EldoriaRetention/scout-medallions-v5")),
                 "The independent Scouts screen contains three real illustrated parchment contracts");
             Canvas.ForceUpdateCanvases();
             Need(contractArt.All(x=>x.gameObject.activeInHierarchy && x.enabled &&

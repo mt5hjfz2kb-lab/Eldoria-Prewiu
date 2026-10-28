@@ -16,6 +16,26 @@ namespace Eldoria.UI.RoyalGold.V2
         public bool EmblemOnly;
         public bool Completed;
         public bool InProgress;
+        static Texture2D badgeTexture;
+        static bool badgeLoaded;
+        static Texture2D BadgeTexture {
+            get {
+                if(!badgeLoaded){badgeTexture=Resources.Load<Texture2D>("EldoriaRetention/scout-medallions-v5");badgeLoaded=true;}
+                return badgeTexture;
+            }
+        }
+        public override Texture mainTexture=>EmblemOnly&&BadgeTexture?BadgeTexture:base.mainTexture;
+        void PaintedEmblem(VertexHelper v,float cx,float cy,float radius)
+        {
+            int kind=Mathf.Clamp(Kind,0,3);
+            var uv=new Rect((kind%2)*.5f,(kind<2?.5f:0f),.5f,.5f);
+            v.AddVert(new Vector2(cx-radius,cy-radius),color,uv.min);
+            v.AddVert(new Vector2(cx-radius,cy+radius),color,new Vector2(uv.xMin,uv.yMax));
+            v.AddVert(new Vector2(cx+radius,cy+radius),color,uv.max);
+            v.AddVert(new Vector2(cx+radius,cy-radius),color,new Vector2(uv.xMax,uv.yMin));
+            v.AddTriangle(0,1,2);v.AddTriangle(0,2,3);
+        }
+
         Color C(float r,float g,float b,float a=1f)=>new Color(r,g,b,a);
         Color T(Color c)=>new Color(c.r*color.r,c.g*color.g,c.b*color.b,c.a*color.a);
         void Polygon(VertexHelper v,Color bottom,Color top,params Vector2[] pts)
@@ -76,6 +96,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // distinct live heraldic medallion without painting over it.
                 float cx=x+w*.5f,cy=y+h-22f;
                 float radius=Mathf.Clamp(w*.065f,15f,28f);
+                if(BadgeTexture){PaintedEmblem(v,cx,cy,radius+4f);return;}
                 Circle(v,cx,cy,radius+3f,radius+3f,edge,brass);
                 var face=Kind==0?C(.18f,.33f,.50f):Kind==1?C(.22f,.38f,.17f):C(.32f,.18f,.42f);
                 Circle(v,cx,cy,radius,radius,face,navy);

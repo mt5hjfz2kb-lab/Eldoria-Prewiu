@@ -52,6 +52,7 @@ namespace Eldoria.UI.RoyalGold.V2
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel, backLabel;
         RoyalGoldV3EarlyRetentionArtwork sceneArtwork;
         RoyalGoldV3StageTrailGraphic chapterTrail;
+        RoyalIconGraphic battleSwords;
         readonly RoyalText[] bossMilestoneLabels=new RoyalText[5];
         RoyalText currentMilestoneLabel;
         // Two original zero-cost painterly environments, with the hand-built
@@ -456,6 +457,10 @@ namespace Eldoria.UI.RoyalGold.V2
             battleFeedback=Text(infoCard,"Last action result",17,Ivory);
             mainAction=Button(infoCard,"Battle against next unique stage",
                 "Combatir",ExecuteStage,out mainActionLabel,true,true);
+            var swords=Rect("Combatir / original crossed swords",mainAction.transform);
+            swords.gameObject.AddComponent<CanvasRenderer>();
+            battleSwords=swords.gameObject.AddComponent<RoyalIconGraphic>();
+            battleSwords.Icon=5;battleSwords.color=Ivory;battleSwords.raycastTarget=false;
             claimXp=Button(infoCard,"Claim earned hero experience",
                 "RECOGER EXPERIENCIA",CollectXp,out xpLabel);
             scoutParchment=Resources.Load<Texture2D>("EldoriaRetention/scout-parchment-v3");
@@ -701,8 +706,8 @@ namespace Eldoria.UI.RoyalGold.V2
             // A phone capture/rotation must not leave its larger subtitle or
             // action labels inside the next landscape rectangles.
             kicker.fontSize=portrait?26:compactLandscape?20:18;
-            mainActionLabel.fontSize=portrait?28:compactLandscape?22:17;
-            xpLabel.fontSize=portrait?26:compactLandscape?20:17;
+            mainActionLabel.fontSize=portrait?28:compactLandscape?22:28;
+            xpLabel.fontSize=portrait?26:compactLandscape?20:26;
             float outer=9f;
             float pw=width-outer*2,ph=height-outer*2;
             var panel=panelRoot;
@@ -742,9 +747,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // Scouts retains three full-size readable contracts beneath its map.
             float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-760f):
                 portrait?Mathf.Clamp(ph-988f,220f,880f):
-                OpenDestination==Destination.Vigilants&&!compactLandscape?ph*.44f:ph-155f;
+                ph-155f;
             TL(heroScene,portrait?18f:20f,imageTop,
-                portrait?pw-36f:vigilantsLandscape&&compactLandscape?pw*.46f-20f:pw-40f,scenicHeight);
+                portrait?pw-36f:vigilantsLandscape?pw*.47f-20f:pw-40f,scenicHeight);
             if(vigilantsLandscape)
             {
                 chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
@@ -792,8 +797,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(infoCard,bodyX,imageTop+scenicHeight+10f,
                     bodyWidth,ph-(imageTop+scenicHeight+58f));
             else if(vigilantsLandscape&&!compactLandscape)
-                TL(infoCard,20f,imageTop+scenicHeight+8f,pw-40f,
-                    ph-imageTop-scenicHeight-55f);
+                TL(infoCard,pw*.49f,imageTop,pw*.50f-20f,ph-imageTop-47f);
             else if(compactLandscape)
                 TL(infoCard,scoutsLandscape?18f:pw*.48f,imageTop+8f,
                     scoutsLandscape?pw-36f:pw*.50f-20f,ph-imageTop-56f);
@@ -803,7 +807,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(infoCard,pw*.37f,ph*.55f,pw*.61f,ph*.45f-55f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
             if(iw<=0||ih<=0)return;
-            if(vigilantsPortrait)
+            if(vigilantsPortrait || (vigilantsLandscape&&!compactLandscape))
             {
                 // Layout in canvas units must remain readable after the real
                 // 390px capture scales the 800-unit portrait canvas by 0.4875.
@@ -817,6 +821,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL((RectTransform)claimXp.transform,14f,ih-104f,iw*.46f,92f);
                 chapter.fontSize=32;opponent.fontSize=32;formation.fontSize=26;
                 reward.fontSize=26;passive.fontSize=26;battleFeedback.fontSize=26;
+                if(!portrait)TL(battleFeedback.rectTransform,14f,450f,iw-28f,130f);
             }
             else if(portrait)
             {
@@ -1029,22 +1034,21 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     bool portrait=height>width;
                     var frame=engendroPortrait.transform.parent as RectTransform;
-                    float boxWidth=infoCard.rect.width*(portrait?.49f:.29f);
-                    float boxHeight=portrait?360f:Mathf.Min(infoCard.rect.height*.44f,compactLandscape?180f:160f);
+                    bool fullEncounter=portrait||!compactLandscape;
+                    float boxWidth=infoCard.rect.width*(fullEncounter?.49f:.29f);
+                    float boxHeight=fullEncounter?360f:Mathf.Min(infoCard.rect.height*.44f,180f);
                     float artAspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
                         Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
                     float cw=boxWidth,ch=boxHeight;
                     if((cw-8f)/(ch-8f)>artAspect)cw=(ch-8f)*artAspect+8f;
                     else ch=(cw-8f)/artAspect+8f;
-                    TL(frame,12f+(boxWidth-cw)*.5f,portrait?64f:54f,cw,ch);
-                    float textX=infoCard.rect.width*(portrait?.51f:.34f);
+                    TL(frame,12f+(boxWidth-cw)*.5f,fullEncounter?64f:54f,cw,ch);
+                    float textX=infoCard.rect.width*(fullEncounter?.51f:.34f);
                     float textW=infoCard.rect.width-textX-16f;
-                    TL(opponent.rectTransform,textX,portrait?62f:54f,textW,portrait?110f:64f);
-                    TL(formation.rectTransform,textX,portrait?178f:compactLandscape?108f:122f,
-                        textW,portrait?66f:compactLandscape?28f:38f);
-                    TL(reward.rectTransform,textX,portrait?252f:compactLandscape?144f:165f,
-                        textW,portrait?64f:compactLandscape?52f:38f);
-                    if(portrait)
+                    TL(opponent.rectTransform,textX,fullEncounter?62f:54f,textW,fullEncounter?110f:64f);
+                    TL(formation.rectTransform,textX,fullEncounter?178f:108f,textW,fullEncounter?66f:28f);
+                    TL(reward.rectTransform,textX,fullEncounter?252f:144f,textW,fullEncounter?64f:52f);
+                    if(fullEncounter)
                     {
                         opponent.fontSize=30;
                         TL(passive.rectTransform,textX,328f,textW,104f);
@@ -1203,6 +1207,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 footer.Put("Nuevos encargos: "+
                     TimeSpan.FromTicks(Math.Max(0,due-now())).ToString(@"hh\:mm\:ss")+
                     " · Máximo 6 pendientes");
+            }
+            if(battleSwords)
+            {
+                bool showSwords=vig&&mainAction.interactable;
+                battleSwords.gameObject.SetActive(showSwords);
+                float iconSize=height>width?38f:compactLandscape?30f:38f;
+                float gap=8f;
+                mainActionLabel.rectTransform.offsetMin=new Vector2(12f+(showSwords?iconSize+gap:0f),5f);
+                mainActionLabel.rectTransform.offsetMax=new Vector2(-12f,-5f);
+                float labelW=Mathf.Min(mainActionLabel.preferredWidth,
+                    Mathf.Max(1f,((RectTransform)mainAction.transform).rect.width-iconSize-gap-24f));
+                Pos(battleSwords.rectTransform,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
+                    -(labelW+gap)*.5f,0f,iconSize,iconSize);
             }
             ApplyTextDensity();
         }
