@@ -91,6 +91,40 @@ namespace Eldoria.Tests
                 Is.EqualTo("Corrupto errante"),
                 "Ordinary early challengers must stay within the established bestiary");
         }
+        [Test] public void FiveGuardiansHaveDifferentRealStatsAndUsefulCounters()
+        {
+            var bosses=new[]{5,10,15,20,25}.Select(EarlyRetentionRules.Stage).ToArray();
+            Assert.That(bosses.Select(x=>x.Name).Distinct().Count(),Is.EqualTo(5));
+            Assert.That(bosses.Select(x=>x.Trait).Distinct().Count(),Is.EqualTo(5));
+            Assert.That(bosses[0].Enemy.Defense,Is.GreaterThan(50));
+            Assert.That(bosses[1].Enemy.Attack,Is.GreaterThan(90));
+            Assert.That(bosses[2].Enemy.Break,Is.GreaterThan(65));
+            Assert.That(bosses[3].Enemy.Health,Is.GreaterThan(1300));
+            Assert.That(bosses[4].Enemy.Defense,Is.GreaterThan(110));
+            foreach(var guardian in bosses)
+                Assert.That(EarlyRetentionRules.GuardianHint(guardian.Step),Is.Not.Empty);
+            var report=EarlyRetentionRules.CombatInsight(bosses[0],
+                new CombatStats(20,20,100,4,200),new CombatReport(false,0,6,""));
+            Assert.That(report,Does.Contain("DERROTA"));
+            Assert.That(report,Does.Contain("Ruptura"));
+            Assert.That(report,Does.Contain("200"));
+        }
+
+        [Test] public void TwelveDeterministicReportsKeepTrueLoreAndNeverInventLoot()
+        {
+            var headings=new System.Collections.Generic.HashSet<string>();
+            for(int kind=0;kind<4;kind++)
+            for(int variant=0;variant<3;variant++)
+            {
+                Assert.That(headings.Add(EarlyRetentionRules.ScoutReportHeading(kind,variant)),Is.True);
+                Assert.That(EarlyRetentionRules.ScoutReportStory(kind,variant).Length,Is.GreaterThan(40));
+            }
+            var order=new ScoutOrder{Id="42:1",Kind=3,Period=42,Slot=1};
+            int chosen=EarlyRetentionRules.ScoutReportVariant(order);
+            Assert.That(chosen,Is.EqualTo(EarlyRetentionRules.ScoutReportVariant(order.Copy())));
+            Assert.That(chosen,Is.InRange(0,2));
+        }
+
         [Test] public void BattleUsesRealCombatAndNeverDuplicatesStageReward()
         {
             var time=new Clock();var save=new MemoryStateStore{Value=Ready()};
