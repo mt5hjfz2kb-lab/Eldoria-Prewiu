@@ -55,6 +55,12 @@ static class Program
         Require(g25.Trait.Contains("EQUILIBRIO")&&
                 g25.Enemy.Defense>EarlyRetentionRules.Stage(24).Enemy.Defense+10,
                 "Guardian 25 tests combined stats");
+        var starter=SliceRules.Expedition(new ArmyRoster{ArcherT1=36},"aldric");
+        var developed=SliceRules.Expedition(new ArmyRoster{ArcherT1=100},"aldric");
+        Require(!SliceRules.FightCreature(starter,g25.Enemy).Won,
+            "Starter army must NOT trivialize the final guardian");
+        Require(SliceRules.FightCreature(developed,g25.Enemy).Won,
+            "Improving the army still overcomes the strengthened chapter guardian");
         var evidence=new BattleReportState{TargetId="vigilant:15",
             HeroId="lyra",Troops=55,Won=false,Rounds=5,PlayerPower=2200,
             EnemyPower=g15.Difficulty,RemainingHealth=0};
