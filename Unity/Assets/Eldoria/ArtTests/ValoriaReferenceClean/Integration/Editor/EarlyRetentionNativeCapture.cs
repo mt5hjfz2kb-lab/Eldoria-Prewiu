@@ -249,6 +249,9 @@ namespace Eldoria.ReferenceClean.Editor
                 engendroArt.texture!=null &&
                 engendroArt.texture.name.Contains("engendro-lore-cutout"),
                 "Stage 15 displays the real Engendro with its studio backdrop removed");
+            Need(engendroArt.uvRect.width<.90f &&
+                engendroArt.uvRect.height<.90f,
+                "Stage 15 crops the original gray studio margins so the real creature is visually prominent");
             var currentNumber=hud.GetComponentsInChildren<RoyalText>(true)
                 .FirstOrDefault(x=>x.name=="Current live stage");
             Need(currentNumber!=null && currentNumber.gameObject.activeInHierarchy &&
