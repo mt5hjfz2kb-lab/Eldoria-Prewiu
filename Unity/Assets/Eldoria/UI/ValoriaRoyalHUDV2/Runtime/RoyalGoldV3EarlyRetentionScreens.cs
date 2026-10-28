@@ -790,6 +790,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 ph-155f;
             TL(heroScene,portrait?18f:20f,imageTop,
                 portrait?pw-36f:vigilantsLandscape?pw*.47f-20f:pw-40f,scenicHeight);
+            // Fit discoveries to the actual painterly map. The smaller phone
+            // needs a taller readable caption; wide views preserve the art.
+            if(scoutStoryPanel)
+            {
+                scoutStoryPanel.anchorMin=new Vector2(.04f,.035f);
+                scoutStoryPanel.anchorMax=new Vector2(.91f,portrait?.54f:compactLandscape?.44f:.29f);
+                scoutStoryPanel.offsetMin=scoutStoryPanel.offsetMax=Vector2.zero;
+            }
+            if(scoutDiscoveryRibbon)
+            {
+                scoutDiscoveryRibbon.anchorMin=new Vector2(.04f,portrait?.77f:compactLandscape?.72f:.88f);
+                scoutDiscoveryRibbon.anchorMax=new Vector2(.80f,portrait?.97f:compactLandscape?.96f:.98f);
+                scoutDiscoveryRibbon.offsetMin=scoutDiscoveryRibbon.offsetMax=Vector2.zero;
+            }
             if(vigilantsLandscape)
             {
                 chapterTrail.rectTransform.anchorMin=new Vector2(.04f,.13f);
@@ -1027,7 +1041,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     string story=EarlyRetentionRules.ScoutReportStory(p.LatestScoutKind,p.LatestScoutVariant);
                     // Condensed only on the small painted map; full authored
                     // narrative is displayed after the actual claim.
-                    int maxCharacters=height>width?48:compactLandscape?54:75;
+                    int maxCharacters=height>width?38:compactLandscape?40:75;
                     if(story.Length>maxCharacters)story=story.Substring(0,maxCharacters-3)+"…";
                     scoutStoryPreview.fontSize=height>width?24:compactLandscape?22:18;
                     scoutStoryPreview.Put(title+"\n"+story+"\n"+
