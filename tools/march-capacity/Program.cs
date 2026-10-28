@@ -70,6 +70,35 @@ static class Program
         for(int i=0;i<3;i++)Assert(Run(scouts,"claim"+i,"ScoutClaim",orders[i]).Ok,"Each scout reward collected exactly once");
         scouts=new LocalGateway(scoutClock,scoutStore);
         Assert(scouts.Snapshot().Available.Total==90,"Claims do not return troops twice");
+        var combinedClock=new Clock();
+        var combinedStore=new Store{State=new PlayerState{
+            BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            Available=new ArmyRoster{ArcherT1=150}
+        }};
+        var combined=new LocalGateway(combinedClock,combinedStore);
+        string combinedOrder=combined.Snapshot().Retention.Orders[0].Id;
+        Assert(Run(combined,"mixed-scout","ScoutDispatch",combinedOrder).Ok,
+            "Scout expedition reserves first shared slot and actual troops");
+        Assert(Run(combined,"mixed-wood","Gather","forest-valoria").Ok,
+            "World forest occupies second slot alongside Scouts");
+        Assert(Run(combined,"mixed-stone","Gather","quarry-valoria").Ok,
+            "World quarry occupies third shared slot alongside Scouts");
+        Assert(MarchCapacityRules.ActiveCount(combined.Snapshot(),combinedClock.UtcTicks)==3,
+            "Mixed Scout and two world marches fill exactly three slots");
+        Assert(!Run(combined,"mixed-fight-fourth","Fight","corrupt-scout").Ok,
+            "Fourth activity rejected across both different systems");
+        Assert(combined.Snapshot().Available.Total==18,
+            "Mixed activities reserve disjoint real 12+60+60 troops");
+        combinedClock.Add(1000);
+        combined=new LocalGateway(combinedClock,combinedStore);
+        Assert(MarchCapacityRules.ActiveCount(combined.Snapshot(),combinedClock.UtcTicks)==0 &&
+            combined.Snapshot().Available.Total==150,
+            "Mixed world and scout troops all return once offline");
+        Assert(Run(combined,"mixed-claim","ScoutClaim",combinedOrder).Ok,
+            "Scout claim remains separately collectible after march slots are free");
+        Assert(combined.Snapshot().Available.Total==150,
+            "Scout claim does not duplicate previously returned troops");
         var mixedClock=new Clock();
         var mixedStore=new Store{State=new PlayerState{
             BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
