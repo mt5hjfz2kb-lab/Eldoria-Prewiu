@@ -31,6 +31,30 @@ static class Program
             Require(stage.Chapter==(i-1)/25+1&&stage.Step==(i-1)%25+1,"25-stage chapter math");
             if(i%5==0)Require(stage.Name=="Guardián del umbral","Guard every five");
         }
+        // Regression guard for the REAL Bastion II sequence. Scout unlock
+        // must share ConfigureMarch's save revision; it cannot invalidate
+        // the player's very next legitimate Fight command.
+        var firstClock=new Clock();
+        var firstState=new PlayerState{
+            BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
+            Available=new ArmyRoster{ArcherT1=60},
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=false},
+            Resources=new ResourceWallet{Wood=500,Stone=400,Food=120}
+        };
+        var firstStore=new Store{State=firstState};
+        var firstGateway=new LocalGateway(firstClock,firstStore);
+        Require(firstGateway.Snapshot().Retention.Orders.Count==0,
+            "No scout cards before first real configured March");
+        var firstMarch=Command(firstGateway,"first-march","ConfigureMarch","march-main");
+        Require(firstGateway.Execute(firstMarch).Ok,"First march prepares normally");
+        Require(firstGateway.Snapshot().Retention.Orders.Count==3,
+            "Scout unlock is atomically part of the first march revision");
+        var nextFight=Command(firstGateway,"fight-after-first-march","Fight","corrupt-scout");
+        var nextResult=firstGateway.Execute(nextFight);
+        Require(nextResult.Ok,"First fight cannot fail after unlock: "+nextResult.Message);
+        Require(firstGateway.Snapshot().March.Phase=="outbound",
+            "The authentic world battle started after Scout Board initialization");
+
         var clock=new Clock();
         var state=new PlayerState{
             BastionLevel=2,SawmillLevel=1,BarracksLevel=1,
