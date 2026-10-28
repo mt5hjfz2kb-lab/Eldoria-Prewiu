@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-tier5-bastion-v-h31-20261028",
   "module_label": "Eldoria_BastionV_ApprovedA_v1",
   "unity_yaw_degrees": 0,
@@ -10,9 +10,9 @@
     "prompt": "One complete compact medieval stone bastion citadel model, coherent connected architecture around one square inner courtyard. Dominant tall rectangular central keep at the rear with steep dark desaturated blue slate hip roof and blue banner bearing restrained gold heraldic motif. Three to four secondary square crenellated defensive towers, asymmetric height and roof treatment, continuous pale warm limestone curtain walls, prominent vaulted timber gate below front wall, parapet battlements, masonry stairways and simple timber balcony galleries along the courtyard. A few small attached slate-roofed support halls; believable stone arches, recesses, worn joints and old timber. The fortress is recovered from ruin but not a royal palace; compact early-midgame level five with clear room for later upgrades. Grounded semi-realistic medieval fantasy, readable at isometric mobile game distance, weathered limestone, oak and blue slate PBR, isolated on plain neutral background."
   },
   "credit_authorization": {
-    "approved": true,
-    "authorized_credit_cost": 20,
-    "scope": "Owner-requested one-time Bastion V A H3.1 source using prepaid API credits only. No regeneration, no paid extras, no new money, no game publication."
+    "approved": false,
+    "authorized_credit_cost": 0,
+    "scope": "ONE Bastion V generation already dispatched by commit fe7a5ed46feabacebbb13adb3ca25d68fed7155b, Actions run 40689612998. This new main request is disabled; never resubmit. Recover original run's task/source."
   },
   "refinement": {
     "enabled": false
@@ -30,7 +30,7 @@
   },
   "visual_acceptance": "Bastion V approved A only: compact Valoria early-midgame keep + square wall/towers, aged warm limestone, dark-blue slate roofs, blue gold banners; open inner courtyard, gate and balconies; no sprawling city or external terrain. Compare actual GLB against owner-approved PNG, preserve future extension modularity, not integrated without mobile-camera art approval.",
   "run_nonce": "[tripo-tier5-bastion-v-once]",
-  "notes": "One controlled text-to-3D source task; first of six approved references. Preserve raw GLB/task ID and editable Blender, no automatic retries. Do not use banned old HeroBastionGenerated file.",
+  "notes": "PAID SUBMISSION RUN 40689612998 PENDING. Do not rerun or pay again. Source trace in triggering git SHA. No active request in main.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
