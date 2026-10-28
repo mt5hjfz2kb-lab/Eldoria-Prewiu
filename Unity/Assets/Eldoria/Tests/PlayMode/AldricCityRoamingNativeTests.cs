@@ -79,6 +79,29 @@ namespace Eldoria.Tests
                 if (image) Object.Destroy(image);
             }
         }
+        private static void AssertActualBootGrounding(SkinnedMeshRenderer[] skins, object walker, float tolerance, string state)
+        {
+            float bottom = float.PositiveInfinity;
+            foreach (var skin in skins)
+            {
+                var snapshot = new Mesh();
+                try
+                {
+                    // true compensates Transform scale; convert actual posed
+                    // vertices back through the live renderer Transform.
+                    skin.BakeMesh(snapshot, true);
+                    foreach (var vertex in snapshot.vertices)
+                        bottom = Mathf.Min(bottom, skin.transform.TransformPoint(vertex).y);
+                }
+                finally { Object.Destroy(snapshot); }
+            }
+            var ground = Read<Vector3>(walker,"ActorGroundPosition").y;
+            Debug.Log("ALDRIC_ACTUAL_SKIN_GROUND state=" + state + " bottom=" + bottom +
+                " paving=" + ground + " offset=" + (bottom-ground));
+            Assert.That(Mathf.Abs(bottom-ground), Is.LessThan(tolerance),
+                "Actual posed boot vertices meet the real paving in " + state);
+        }
+
         [UnityTest]
         public IEnumerator ApprovedFullBodyAldricWalksOnActualValoriaPaving()
         {
@@ -137,8 +160,7 @@ namespace Eldoria.Tests
             Assert.That(camera, Is.Not.Null, "Use actual playable city camera");
             CaptureCityCamera(camera, "aldric-city-idle-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-idle-portrait.png", 390, 844);
-            Assert.That(Mathf.Abs(skins.Min(x=>x.bounds.min.y)-Read<Vector3>(walker,"ActorGroundPosition").y),
-                Is.LessThan(.12f), "Actual rendered idle boots meet the real paved ground after scaling");
+            AssertActualBootGrounding(skins, walker, .12f, "idle");
 
             var beforeWalking = JsonUtility.ToJson(Gateway().Snapshot());
             // Real time/real animation: initial idle pause is intentional.
@@ -167,8 +189,7 @@ namespace Eldoria.Tests
                 "Approved blue cape is physically BEHIND the body in its actual direction of travel; no backwards walking");
             CaptureCityCamera(camera, "aldric-city-walking-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-walking-portrait.png", 390, 844);
-            Assert.That(Mathf.Abs(skins.Min(x=>x.bounds.min.y)-Read<Vector3>(walker,"ActorGroundPosition").y),
-                Is.LessThan(.15f), "Actual animated boots remain grounded during the genuine walk pose");
+            AssertActualBootGrounding(skins, walker, .15f, "walking");
             // Additional diagnostic front/back views retain the exact imported
             // actor and lighting; the four acceptance views above remain the
             // genuine playable camera. Never alter the production camera.

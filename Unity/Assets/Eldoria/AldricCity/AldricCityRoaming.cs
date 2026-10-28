@@ -46,13 +46,14 @@ namespace Eldoria.AldricCity
         private Vector3[] path;
         private int index, direction = 1;
         private bool walking;
+        private bool visualConfigured;
         private float pauseUntil;
         private float nextAwayRefresh;
         private bool cachedAway;
         private readonly Collider[] clearanceHits = new Collider[64];
         private string firstBlockingCollider;
         // Native verification probes. Read-only; never mutate player saves or gameplay.
-        public bool ApprovedVisualReady => actor && model && clips && path != null &&
+        public bool ApprovedVisualReady => visualConfigured && actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
         public int RoadWaypoints => path == null ? 0 : path.Length;
         public bool ActualWalkClipPlaying => clips && clips.IsPlaying(Walk);
@@ -310,31 +311,27 @@ namespace Eldoria.AldricCity
             return false;
         }
 
-        private bool ImportedWorldBounds(out Bounds bounds)
+        private bool ActualSkinnedPoseBounds(SkinnedMeshRenderer[] skins, out Bounds bounds)
         {
+            // Measure the actual posed vertices once during import. A skin's
+            // cached Renderer.bounds can be translated by its root-bone pivot;
+            // that is not the physical location of the boots.
             bounds = default;
             bool found = false;
-            foreach (var renderer in renderers)
+            foreach (var skin in skins)
             {
-                if (!renderer) continue;
-                // Renderer.bounds is not a reliable initialization source while
-                // the imported actor is inactive. Transform the imported local
-                // mesh bounds explicitly; native tests still measure the LIVE
-                // rendered/skinned result after activation.
-                var local = renderer.localBounds;
-                if (local.size.sqrMagnitude < .000001f && renderer is SkinnedMeshRenderer skin && skin.sharedMesh)
-                    local = skin.sharedMesh.bounds;
-                if (local.size.sqrMagnitude < .000001f) continue;
-                for (int corner = 0; corner < 8; corner++)
+                var snapshot = new Mesh();
+                try
                 {
-                    var p = local.center + Vector3.Scale(local.extents, new Vector3(
-                        (corner & 1) == 0 ? -1 : 1,
-                        (corner & 2) == 0 ? -1 : 1,
-                        (corner & 4) == 0 ? -1 : 1));
-                    p = renderer.transform.localToWorldMatrix.MultiplyPoint3x4(p);
-                    if (!found) { bounds = new Bounds(p, Vector3.zero); found = true; }
-                    else bounds.Encapsulate(p);
+                    skin.BakeMesh(snapshot, true);
+                    foreach (var vertex in snapshot.vertices)
+                    {
+                        var p = skin.transform.TransformPoint(vertex);
+                        if (!found) { bounds = new Bounds(p, Vector3.zero); found = true; }
+                        else bounds.Encapsulate(p);
+                    }
                 }
+                finally { Destroy(snapshot); }
             }
             return found;
         }
@@ -369,15 +366,23 @@ namespace Eldoria.AldricCity
                 return RejectImport("approved skinned renderers/26 bones absent; skins=" + skins.Length +
                     "; bone_counts=" + string.Join(",",skins.Select(x=>x.bones == null ? 0 : x.bones.Length)));
             foreach (var skin in skins) skin.updateWhenOffscreen = false;
-            if (!ImportedWorldBounds(out var bounds) || bounds.size.y < .1f || bounds.size.y > 100f)
-                return RejectImport("invalid imported local/world bounds " + bounds);
-            var sourceHeight = bounds.size.y;
-            model.transform.localScale *= Height / sourceHeight;
-            if (!ImportedWorldBounds(out bounds)) return RejectImport("scaled bounds absent");
-            model.transform.position += Vector3.up * (actor.transform.position.y - bounds.min.y);
             clips.playAutomatically = false;
             clips[Idle].wrapMode = WrapMode.Loop;
             clips[Walk].wrapMode = WrapMode.Loop;
+            // Activate only with rendering disabled, sample the ORIGINAL idle
+            // clip, and measure its genuine skin at unit scale. No visible
+            // unscaled frame and no approximation from the root-bone bounds.
+            foreach (var renderer in renderers) renderer.enabled = false;
+            actor.SetActive(true);
+            clips.Play(Idle);
+            clips.Sample();
+            if (!ActualSkinnedPoseBounds(skins, out var bounds) || bounds.size.y < .1f || bounds.size.y > 100f)
+                return RejectImport("invalid actual skinned idle geometry bounds " + bounds);
+            var sourceHeight = bounds.size.y;
+            var sourceMinimum = bounds.min.y - actor.transform.position.y;
+            var scale = Height / sourceHeight;
+            model.transform.localScale *= scale;
+            model.transform.position += Vector3.up * (-sourceMinimum * scale);
             actor.transform.position = path[0];
             // A cold load during a real march/investigation must not flash the
             // newly imported visual for one rendered frame before Update.
@@ -386,7 +391,8 @@ namespace Eldoria.AldricCity
             actor.SetActive(true);
             clips.Play(Idle);
             Debug.Log("ALDRIC_CITY_IMPORT_26_BONES_5_CLIPS_CONFIGURED source_height=" + sourceHeight +
-                " scale=" + model.transform.localScale + " normalized_height=" + bounds.size.y);
+                " scale=" + model.transform.localScale + " normalized_height=" + Height +
+                " actual_pose_minimum_before_grounding=" + sourceMinimum);
             return true;
         }
 
@@ -433,6 +439,11 @@ namespace Eldoria.AldricCity
                 yield break;
             }
             pauseUntil = Time.time + 2.5f;
+            // Do not expose a half-configured async import or start walking
+            // before the first fully scaled/grounded renderer frame.
+            yield return null;
+            if (!this || !actor || !model) yield break;
+            visualConfigured = true;
             Debug.Log("ALDRIC_CITY_READY_APPROVED_RIG_26_BONES_5_CLIPS");
         }
 
@@ -453,7 +464,7 @@ namespace Eldoria.AldricCity
 
         private void Update()
         {
-            if (!model || !actor || path == null || renderers == null) return;
+            if (!visualConfigured || !model || !actor || path == null || renderers == null) return;
             var away = Away();
             var cam = host.City.PlayerCamera;
             // Valoria uses an elevated orthographic camera: camera-to-actor distance

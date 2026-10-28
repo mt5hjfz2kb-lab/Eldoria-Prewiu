@@ -1940,8 +1940,8 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/tester-qa.yml"
       ],
-      "phase": "PR122_NORMAL_STREAM_IMPORT_COMPATIBILITY_NATIVE_VALIDATION",
-      "next": "Run actual Aldric native case with exact original source plus hash-pinned normal-only import streams; inspect early preflight images while unchanged complete scene/Edit/73Play regression runs if native passes. No visual acceptance yet.",
+      "phase": "PR122_ACTUAL_SKIN_GEOMETRY_GROUNDING_NATIVE_VALIDATION",
+      "next": "Run existing full actual Aldric case with actual skinned boot geometry and completed initialization gate. Inspect all12 early genuine views, then require complete shared native regression before merge.",
       "delivery_definition": {
         "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
@@ -1953,16 +1953,18 @@
       "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection.",
       "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime.",
       "current_native_cert": {
-        "status": "failed_preflight_exact_importer_normal_tangent_bug",
-        "source": "a95dd526ef4551399401b6b69203d5cd9d2fef96",
-        "run_id": 40773905914,
+        "status": "import_and_idle_captures_pass_ground_measurement_failed",
+        "source": "188da8bf6d5135deeb73eb9e3d62c9b3301ae16b",
+        "run_id": 40777258036,
         "preflight_passed": 0,
         "preflight_failed": 1,
         "full_shared_suite_executed": false,
-        "reason": "Actual glTFast6.14.1 error Invalid mainBufferType Position,Tangent at MeshGenerator.CreateVertexGenerator; approved source has no NORMAL accessors and body material has normalTexture. Exact geometric normal streams now prepared with original binary and every other JSON semantic unchanged; actual Unity proof still required.",
-        "artifact_id": 12855340058,
-        "artifact_digest": "sha256:9958e85fcf5456a8fcf7cedbee70e5c583d2b7b98acf476cdaf44a43adfcdf70",
-        "actual_views": 0,
+        "actual_views": 2,
+        "import_26_bones_5_clips_passed": true,
+        "measured_height_m": 1.85,
+        "reason": "Normal-only compatibility resolves actual import. Two genuine idle images present/reviewed. Renderer.bounds ground difference .129500031m equals .07 root pivot*1.85; change grounding/measurement to actual sampled skinned vertices, preserve .12/.15 tolerances and explicit post-initialization Ready gate. No walk/return/visual acceptance yet.",
+        "artifact_id": 12856520357,
+        "artifact_digest": "sha256:5f4beb8728523a136bb6cc10de20413dbeacf12dcfa7415eb4cb41c378417a44",
         "art_approved": false
       },
       "native_attempt_history": [
@@ -1991,6 +1993,19 @@
           "playmode_passed": 69,
           "playmode_failed": 4,
           "reason": "Actual axial route PASS(510 samples,274 paving,272 visible clear,3 waypoints). Generic import/rig error in Aldric and three subsequent scene cases; no actor captures. Inactive-bound initialization removed, explicit Legacy import and detailed failure diagnostics added; orientation+90 and physical cape-behind-motion assertion pending new native.",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "failed_preflight_exact_importer_normal_tangent_bug",
+          "source": "a95dd526ef4551399401b6b69203d5cd9d2fef96",
+          "run_id": 40773905914,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "reason": "Actual glTFast6.14.1 error Invalid mainBufferType Position,Tangent at MeshGenerator.CreateVertexGenerator; approved source has no NORMAL accessors and body material has normalTexture. Exact geometric normal streams now prepared with original binary and every other JSON semantic unchanged; actual Unity proof still required.",
+          "artifact_id": 12855340058,
+          "artifact_digest": "sha256:9958e85fcf5456a8fcf7cedbee70e5c583d2b7b98acf476cdaf44a43adfcdf70",
           "actual_views": 0,
           "art_approved": false
         }

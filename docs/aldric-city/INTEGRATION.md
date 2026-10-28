@@ -138,3 +138,25 @@ no se ignoran. La prueba añade contacto real de botas con calzada y la
 visibilidad inicial correcta para una partida cargada durante una misión.
 El preflight publica evidencia también si pasa, para revisar imágenes reales
 mientras continúa TODA la batería compartida obligatoria. Aún pendiente.
+
+## Primeras imágenes reales —40777258036
+
+La compatibilidad de normales resuelve la importación: fuente y GLB temporal
+verificados,26huesos/5clips presentes, escala1,85m y dos PNG reales de
+ciudad horizontal/vertical. Aún NO hay paseo/retornos ni aceptación completa.
+El preflight se detuvo en la medida de botas: Renderer.bounds desplazado
+0,1295m, exactamente0,07del pivote raíz multiplicado por1,85. Ese bounds
+no identifica necesariamente los vértices animados reales. Se cambia el
+enfoque: muestrear el clip Idle original y medir la geometría skinned real
+con BakeMesh una vez al importar, con renderers ocultos; normalizar/aterrar
+esa pose. La prueba calcula vértices animados reales en Idle/Walk y mantiene
+las tolerancias originales0,12/0,15m. No se amplían para obtener PASS.
+Referencia API oficial: https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SkinnedMeshRenderer.BakeMesh.html
+Las dos imágenes se inspeccionaron: modelo presente en calzada y escala
+coherente con edificios. Esperar nuevas12vistas y caso completo antes de
+aceptar orientación, detalle de cara/capa y funcionamiento de retornos.
+
+La señal ApprovedVisualReady ahora espera la configuración completa y un
+fotograma tras el ajuste, con pausa de reposo ya inicializada. Update no
+puede iniciar el paseo mientras continúa el importador asíncrono. Esto evita
+medir/renderizar una escala transitoria o llamar reposo a una marcha prematura.
