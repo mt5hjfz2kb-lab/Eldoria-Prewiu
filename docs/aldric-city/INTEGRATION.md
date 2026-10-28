@@ -59,3 +59,9 @@ ninguna como existente antes de ejecutar Unity. El workflow prepara los mismos
 recursos canónicos III y restaura Search.index de forma reversible.
 Referencia de API: https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Physics.OverlapCapsuleNonAlloc.html
 Estas son correcciones de fuente, no aceptación visual ni certificación móvil.
+
+La prueba preparada también exige deformación efectiva de los26huesos entre
+fotogramas durante Walk y materiales soportados sin shader de error. Cuatro
+capturas diagnósticas desde ángulos opuestos para cara/capa se suman a las ocho de cámara
+jugable/ausencia/retorno. La cámara de producción se conserva intacta; las
+diagnósticas son exclusivamente del probe y no sustituyen las vistas jugables.

@@ -65,8 +65,8 @@ jobs:
             // PR120 also carries two already-certified legacy QA repairs.
             // Compare with their completed proof, not with main before those repairs.
             if(required && context.eventName==='pull_request' &&
-              context.issue.number===120 &&
-              context.payload.pull_request.head.ref==='feature/eldoria-early-retention-20261028') {
+              ((context.issue.number===120 && context.payload.pull_request.head.ref==='feature/eldoria-early-retention-20261028') ||
+               (context.issue.number===122 && context.payload.pull_request.head.ref==='feature/aldric-city-roaming-20261028'))) {
               try {
                 const certified='bd0b48a6be86bbb8849b1b9fa8d4b7283da9d3c2';
                 const head=context.payload.pull_request.head.sha;
@@ -102,9 +102,13 @@ jobs:
                 const unchangedWeb=f=>{
                   if(f.filename===file && !f.previous_filename)return true;
                   if(f.filename==='tools/early-retention/native-request.json' && !f.previous_filename)return true;
+                  const nativeAldric=new Set(['tools/aldric-city/native-request.json',
+                    'tools/aldric-city/verify_approved_glb.py','tools/aldric-city/rig.parts/01.txt',
+                    'tools/aldric-city/rig.parts/02.txt','tools/aldric-city/rig.parts/03.txt','tools/aldric-city/rig.parts/04.txt']);
+                  if(context.issue.number===122 && nativeAldric.has(f.filename) && !f.previous_filename)return true;
                   return !needsWebQA(f);
                 };
-                const live=(await github.rest.pulls.get({...context.repo,pull_number:120})).data;
+                const live=(await github.rest.pulls.get({...context.repo,pull_number:context.issue.number})).data;
                 if(live.head.sha!==head || live.head.repo.full_name!==context.repo.owner+'/'+context.repo.repo)
                   throw Error('Candidate moved or repository differs');
                 if(comparison.files.every(unchangedWeb)) {

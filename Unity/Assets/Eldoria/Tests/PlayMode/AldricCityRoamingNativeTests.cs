@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using Eldoria.AldricCity;
 using Eldoria.Application;
 using Eldoria.Domain;
@@ -100,6 +101,12 @@ namespace Eldoria.Tests
             Assert.That(walker.IsCityActorVisible, Is.True,
                 "Approved visual should be present in the actual Valoria city");
 
+            var skins = walker.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            var bones = skins.SelectMany(x=>x.bones).Where(x=>x).Distinct().ToArray();
+            Assert.That(bones.Length, Is.EqualTo(26), "The real imported visual retains all26approved bones");
+            Assert.That(skins.SelectMany(x=>x.sharedMaterials).All(x=>x && x.shader &&
+                x.shader.isSupported && !x.shader.name.Contains("InternalError")), Is.True,
+                "Approved body/cape must use supported real materials, never the pink error shader");
             var camera = host.City.PlayerCamera;
             Assert.That(camera, Is.Not.Null, "Use actual playable city camera");
             CaptureCityCamera(camera, "aldric-city-idle-landscape.png", 1280, 720);
@@ -118,8 +125,41 @@ namespace Eldoria.Tests
                 "Aldric must actually walk on a valid road; a static render is not acceptance");
             Assert.That(walker.ActualWalkClipPlaying, Is.True,
                 "Real imported 26-joint Walk animation must play, not only translate a static model");
+            var priorPose = bones.Select(x=>x.localRotation).ToArray();
+            yield return new WaitForSecondsRealtime(.22f);
+            Assert.That(bones.Where((bone,i)=>Quaternion.Angle(priorPose[i],bone.localRotation)>1f).Any(), Is.True,
+                "The imported walk clip actually deforms approved bones across rendered frames");
             CaptureCityCamera(camera, "aldric-city-walking-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-walking-portrait.png", 390, 844);
+            // Additional diagnostic front/back views retain the exact imported
+            // actor and lighting; the four acceptance views above remain the
+            // genuine playable camera. Never alter the production camera.
+            if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ALDRIC_CITY_SCREENSHOT_DIR")))
+            {
+                var diagnosticObject = new GameObject("Probe-only Aldric four-angle detail camera");
+                var diagnostic = diagnosticObject.AddComponent<Camera>();
+                try
+                {
+                    diagnostic.CopyFrom(camera);
+                    diagnostic.orthographic = true;
+                    diagnostic.orthographicSize = 1.35f;
+                    diagnostic.enabled = false;
+                    var centre = walker.ActorGroundPosition + Vector3.up * .95f;
+                    var facing = walker.transform.Find("Sir Aldric | city-only visual actor");
+                    Assert.That(facing, Is.Not.Null);
+                    // Four actor-relative angles expose face, cape and yaw
+                    // without assuming the imported mesh's front axis.
+                    var directions = new[]{facing.forward, facing.right, -facing.forward, -facing.right};
+                    var names = new[]{"forward", "right", "backward", "left"};
+                    for (int view=0; view<directions.Length; view++)
+                    {
+                        diagnostic.transform.position = centre + directions[view] * 4f + Vector3.up * .5f;
+                        diagnostic.transform.LookAt(centre);
+                        CaptureCityCamera(diagnostic, "aldric-detail-"+names[view]+".png", 720, 900);
+                    }
+                }
+                finally { Object.Destroy(diagnosticObject); }
+            }
             Assert.That(JsonUtility.ToJson(host.City.Gateway.Snapshot()), Is.EqualTo(beforeWalking),
                 "Cosmetic walking must not mutate authoritative player progress");
 

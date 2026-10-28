@@ -30,7 +30,7 @@ jobs:
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($data.content)) | ConvertFrom-Json
           $claims=@($reg.active | Where-Object {$_.status -eq 'active' -and $_.resources -contains 'windows-runner-heavy'})
           if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-aldric-city-roaming-20261028' -or
-             $claims[0].owner -ne 'codex-pr120-exact-visual-pr122-20261028' -or $claims[0].ownership_state -ne 'claimed'){
+             $claims[0].owner -ne 'codex-pr120-exact-visual-pr122-20261028' -or $claims[0].ownership_state -ne 'claimed' -or $claims[0].ownership_revision -ne 2){
             throw "Reserved Windows runner: $($claims.id -join ', '). Retain existing owner's queue."
           }
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
@@ -154,7 +154,9 @@ jobs:
           foreach($image in @('aldric-city-idle-landscape.png','aldric-city-idle-portrait.png',
                               'aldric-city-walking-landscape.png','aldric-city-walking-portrait.png',
                               'aldric-away-world.png','aldric-away-march.png',
-                              'aldric-away-investigation.png','aldric-city-returned.png')){
+                              'aldric-away-investigation.png','aldric-city-returned.png',
+                              'aldric-detail-forward.png','aldric-detail-right.png',
+                              'aldric-detail-backward.png','aldric-detail-left.png')){
             if(-not(Test-Path (Join-Path $out $image))){throw "Native camera screenshot missing $image"}
           }
           Write-Host 'ALDRIC_CITY_REAL_UNITY_WALK_SCALE_MISSIONS_SAVE_PASS'
