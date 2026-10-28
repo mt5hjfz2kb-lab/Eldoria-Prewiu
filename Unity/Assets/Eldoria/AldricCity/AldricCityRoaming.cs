@@ -53,6 +53,15 @@ namespace Eldoria.AldricCity
         private bool cachedAway;
         private readonly Collider[] clearanceHits = new Collider[64];
         private string firstBlockingCollider;
+        private string lastBlockingCollider;
+        private int footprintSupportedSamples;
+        private const float FootSupportRadius = .08f;
+        private static readonly Vector2[] FootSupportOffsets = {
+            new Vector2(0f,1f), new Vector2(.70710678f,.70710678f),
+            new Vector2(1f,0f), new Vector2(.70710678f,-.70710678f),
+            new Vector2(0f,-1f), new Vector2(-.70710678f,-.70710678f),
+            new Vector2(-1f,0f), new Vector2(-.70710678f,.70710678f)
+        };
         // Native verification probes. Read-only; never mutate player saves or gameplay.
         public bool ApprovedVisualReady => visualConfigured && actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
@@ -148,15 +157,43 @@ namespace Eldoria.AldricCity
             yield return LoadExactModel();
         }
 
-        private bool OnRoad(Vector3 point, out Vector3 floor)
+        private bool PavingSurfaceHit(Vector3 point, out Vector3 floor)
         {
             floor = default;
-            if (!road || !road.enabled) return false;
+            if (!road || !road.enabled || !road.gameObject.activeInHierarchy) return false;
             var bounds = road.bounds;
             var ray = new Ray(new Vector3(point.x, bounds.max.y + 2f, point.z), Vector3.down);
             if (!road.Raycast(ray, out var hit, bounds.size.y + 4f)) return false;
             if (Vector3.Angle(hit.normal, Vector3.up) > 28f) return false;
             floor = hit.point;
+            return true;
+        }
+
+        private bool OnRoad(Vector3 point, out Vector3 floor)
+        {
+            if (PavingSurfaceHit(point,out floor)) return true;
+            // The actual paving consists of separate flagstones. A point ray
+            // can miss a grout joint even though the foot is supported all
+            // around it. Verify only an 8cm footprint on THIS same real mesh;
+            // never substitute grass, water or a guessed continuous plane.
+            int mask = 0, count = 0;
+            float low = float.PositiveInfinity, high = float.NegativeInfinity, sum = 0f;
+            for (int i=0; i<FootSupportOffsets.Length; i++)
+            {
+                var offset = FootSupportOffsets[i] * FootSupportRadius;
+                if (!PavingSurfaceHit(point + new Vector3(offset.x,0f,offset.y),out var support)) continue;
+                mask |= 1 << i;
+                count++;
+                low = Mathf.Min(low,support.y); high = Mathf.Max(high,support.y); sum += support.y;
+            }
+            int opposed = 0;
+            for (int i=0; i<4; i++) if ((mask & (1<<i))!=0 && (mask & (1<<(i+4)))!=0) opposed++;
+            var allowedSpan = 2f*FootSupportRadius*Mathf.Tan(28f*Mathf.Deg2Rad)+.015f;
+            if (count < 4 || opposed < 2 || high-low > allowedSpan) return false;
+            floor = new Vector3(point.x,sum/count,point.z);
+            if (++footprintSupportedSamples == 1)
+                Debug.Log("ALDRIC_CITY_REAL_PAVING_FOOTPRINT_SUPPORT point="+point+
+                    " samples="+count+" opposed_pairs="+opposed+" height_span="+(high-low));
             return true;
         }
 
@@ -179,6 +216,7 @@ namespace Eldoria.AldricCity
                 if (n.Contains("road") || n.Contains("paving") || n.Contains("ground") ||
                     n.Contains("terrain") || n.Contains("meadow") || n.Contains("hotspot")) continue;
                 if (firstBlockingCollider == null) firstBlockingCollider = c.name;
+                lastBlockingCollider = c.name;
                 return false;
             }
             return true;
@@ -565,8 +603,14 @@ namespace Eldoria.AldricCity
                 return;
             }
             var candidate = actor.transform.position + delta.normalized * step;
-            if (!OnRoad(candidate, out var ground) || !BodyClear(ground))
+            var supported = OnRoad(candidate,out var ground);
+            var bodyClear = supported && BodyClear(ground);
+            if (!supported || !bodyClear)
             {
+                Debug.LogWarning("ALDRIC_CITY_STEP_BLOCKED position="+actor.transform.position+
+                    " candidate="+candidate+" supported="+supported+" body_clear="+bodyClear+
+                    " blocker="+(lastBlockingCollider ?? "none")+
+                    " road_active="+(road && road.enabled && road.gameObject.activeInHierarchy));
                 walking = false;
                 clips.CrossFade(Idle, .16f);
                 pauseUntil = Time.time + 6f;

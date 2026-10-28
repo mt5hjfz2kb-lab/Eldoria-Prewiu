@@ -186,3 +186,26 @@ enA en reposo de ciudad. No cambia el GLB, rig, pesos, materiales ni claves
 de los clips aprobados; no hay otro modelo ni animación fuente generada.
 La prueba exige que los brazos reales cuelguen en reposo. La mejora visual
 sigue pendiente de nuevas imágenes reales; sin ART_PASS por anticipado.
+
+
+## Bloqueo real de apoyo —40784676062
+
+La nueva prueba pasa la alineación real de brazos en Idle, importación,
+altura, deformación Walk, botas, orientación, obstáculo y Mundo/visibilidad.
+No pasa el retorno completo: posición(-1,24;0,46;17,45), destino
+(-1,24;0,46;15,78), detenido, Idle1/Walk0; tiempo avanza, cápsula y
+segmento grueso libres, pausa reiniciada cada6s. Esto descarta reloj
+congelado y estado Walk sin peso como causa del bloqueo actual.
+
+La calzada tiene losas separadas y juntas visibles en los PNG reales.
+Hipótesis: el rayo puntual del paso fino cae en una junta que las muestras
+cada0,35m no detectan. Se cambia el criterio a huella de apoyo de8cm
+sobre el MISMO MeshCollider real: primero rayo central; si falla, al menos
+4de8 muestras, dos pares opuestos y desnivel compatible con28grados.
+No se sustituye suelo por plano inventado ni se acepta césped/agua.
+Se mantiene la cápsula completa y se registra el motivo exacto de cada
+paso rechazado: apoyo, cápsula, collider y activación de calzada.
+Sin cambios de tiempos, tolerancias ni acciones exigidas por el test.
+
+Arte y certificación completa pendientes;10PNG son evidencia parcial,
+no aceptación final ni prueba de dispositivo físico.
