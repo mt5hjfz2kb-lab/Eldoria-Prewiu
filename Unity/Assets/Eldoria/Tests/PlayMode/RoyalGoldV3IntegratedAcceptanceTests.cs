@@ -176,6 +176,35 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator BastionIIIWolfBodyMatchesBoarBodyScale()
+        {
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var world=Member(host,"WorldRoot") as GameObject;
+            Assert.That(world,Is.Not.Null);
+            var wolves=world.transform.Find("hunt-wolf");
+            var boars=world.transform.Find("hunt-boar");
+            Assert.That(wolves&&boars,Is.True,
+                "Both original real world encounters must exist");
+            var wolfModel=wolves.Find("AshWolf");
+            var boarModel=boars.Find("RockBoarNear");
+            Assert.That(wolfModel&&boarModel,Is.True,
+                "Source-authored wolf and boar models must be instantiated");
+            var wolfRenderers=wolfModel.GetComponentsInChildren<Renderer>(true);
+            var boarRenderers=boarModel.GetComponentsInChildren<Renderer>(true);
+            Assert.That(wolfRenderers.Length,Is.GreaterThan(0));
+            Assert.That(boarRenderers.Length,Is.GreaterThan(0));
+            var wolf=wolfRenderers[0].bounds;
+            foreach(var renderer in wolfRenderers.Skip(1))wolf.Encapsulate(renderer.bounds);
+            var boar=boarRenderers[0].bounds;
+            foreach(var renderer in boarRenderers.Skip(1))boar.Encapsulate(renderer.bounds);
+            float wolfWidth=Mathf.Max(wolf.size.x,wolf.size.z);
+            float boarWidth=Mathf.Max(boar.size.x,boar.size.z);
+            Assert.That(wolfWidth,Is.InRange(boarWidth*.89f,boarWidth*1.12f),
+                "A single Ash Wolf must be approximately the same physical size as a Rock Boar");
+        }
+
+        [UnityTest]
         public IEnumerator NativeProbeResetStartsFreshWithoutDeletingAnyRealDeviceSave()
         {
             if(Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE")!="1")
