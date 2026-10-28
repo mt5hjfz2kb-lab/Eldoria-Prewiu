@@ -213,8 +213,9 @@ namespace Eldoria.ReferenceClean.Editor
                 "Scouts has separate scene, not Codex or Missions overlay");
             Need(illustration.enabled && illustration.texture!=null &&
                 illustration.texture!=vigilantsPainting &&
-                illustration.texture.width==640 && illustration.texture.height==640,
-                "Scouts uses its own authentic illustrated expedition map");
+                illustration.texture.width==512 && illustration.texture.height==512 &&
+                illustration.texture.name.Contains("painterly"),
+                "Scouts uses its own cinematic painterly expedition map");
             var contractArt=hud.GetComponentsInChildren<RoyalGoldV3ScoutContractGraphic>(true);
             Need(contractArt.Length==3,
                 "The independent Scouts screen contains three real illustrated parchment contracts");
