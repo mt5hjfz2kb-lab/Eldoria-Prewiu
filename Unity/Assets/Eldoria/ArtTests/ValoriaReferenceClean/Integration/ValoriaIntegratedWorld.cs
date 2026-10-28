@@ -110,6 +110,13 @@ namespace Eldoria.ReferenceClean {
     if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
     management.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,()=>city.Presenter.RefreshState());
     management.ReturnToCity=()=>{if(InWorld)TrySetWorld(false);};
+    // The Camino de los Vigilantes and Mesa de Exploradores are independent
+    // top-level destinations. They are NOT inside Crónicas/Códice; their two
+    // access ribbons only appear after progression actually unlocks each.
+    var retention=Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
+    if(!retention)retention=Hud.gameObject.AddComponent<RoyalGoldV3EarlyRetentionScreens>();
+    retention.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,
+      ()=>{Hud.Refresh();city.Presenter.RefreshState();});
     // The saved LocalGateway is replaced on ReloadForProbe/load. Reconnect the
     // existing terrain route/population service in the very same session
     // rebind, before the first post-reload hunting or gathering command.

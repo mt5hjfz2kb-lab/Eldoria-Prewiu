@@ -200,6 +200,8 @@ namespace Eldoria.Application
             foreach (var item in state.WorldResourceLocations)
                 if (item == null || string.IsNullOrEmpty(item.TargetId) || (item.TargetId != "forest-valoria" && item.TargetId != "quarry-valoria" && !(item.TargetId.StartsWith("region1:wood:",StringComparison.Ordinal)&&item.ResourceKind=="wood") && !(item.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal)&&item.ResourceKind=="stone")) || !resourceIds.Add(item.TargetId))
                     throw new InvalidOperationException("Invalid or duplicate persisted resource identity");
+            if(state.Retention==null)state.Retention=new EarlyRetentionState();
+            if(state.Retention.Orders==null)state.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>();
             if(state.ChapterThree==null)state.ChapterThree=new BastionThreeState();
             if(state.ChapterThree.Inventory==null)state.ChapterThree.Inventory=new System.Collections.Generic.List<string>();
             if(state.ChapterThree.FissureClosed){state.ChapterThree.LyraRecruited=true;state.ChapterThree.InvestigationEndsUtcTicks=0;}
@@ -234,6 +236,7 @@ namespace Eldoria.Application
                 Resources=new ResourceWallet { Wood=s.Resources.Wood, Stone=s.Resources.Stone, Food=s.Resources.Food },
                 BastionLevel=s.BastionLevel, SawmillLevel=s.SawmillLevel, BarracksLevel=s.BarracksLevel,
                 MissionPower=s.MissionPower, ChapterThree=s.ChapterThree.Copy(),
+                Retention=s.Retention?.Copy()??new EarlyRetentionState(),
                 CorruptionDiscovered=s.CorruptionDiscovered, ScoutDefeated=s.ScoutDefeated,
                 JourneyComplete=s.JourneyComplete, EngendroDefeated=s.EngendroDefeated,
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
@@ -291,6 +294,15 @@ namespace Eldoria.Application
             if (state.CompletedCommandIds.Contains(command.Id)) return new CommandResult(true, "Ya ejecutado", state.Revision);
             if (command.ActorId != state.PlayerId) return Fail("Propietario incorrecto");
             if (command.ExpectedRevision != state.Revision) return Fail("Estado desactualizado");
+            var early=EarlyRetentionRules.Apply(state,command.Kind,command.TargetId,
+                clock.UtcTicks,out string earlyMessage);
+            if(early.HasValue)
+            {
+                if(!early.Value)return Fail(earlyMessage);
+                state.CompletedCommandIds.Add(command.Id);
+                Commit();
+                return new CommandResult(true,earlyMessage,state.Revision);
+            }
             var chapterThreeResult=ExecuteChapterThree(command);
             if(chapterThreeResult!=null)return chapterThreeResult;
             switch (command.Kind)
@@ -437,6 +449,12 @@ namespace Eldoria.Application
                 default: return Fail("Acción desconocida");
             }
             GrantWebMissionRewards();
+            // A real ConfigureMarch can unlock the Scout Board. Materialize
+            // its first three contracts in THIS SAME accepted revision: if
+            // deferred until the next Execute()->Advance(), the first genuine
+            // attack after preparing a march would reject a fresh command as
+            // stale when its own preflight silently created scout orders.
+            EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
             state.CompletedCommandIds.Add(command.Id);
             Commit();
             return new CommandResult(true, "Acción iniciada", state.Revision);
@@ -464,6 +482,7 @@ namespace Eldoria.Application
         public bool Advance()
         {
             bool changed = AdvanceChapterThree();
+            changed |= EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
             if (state.BastionUpgradeCompletesUtcTicks > 0 && state.BastionUpgradeCompletesUtcTicks <= clock.UtcTicks)
             {
                 if (!state.CompletedTaskIds.Contains(state.BastionUpgradeTaskId))
