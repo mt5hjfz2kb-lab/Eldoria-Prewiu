@@ -1,0 +1,9 @@
+# Aldric pasea por Valoria — candidato aislado
+
+Objetivo: una instancia **visual** de Sir Aldric, sin crear otro héroe lógico y sin alterar partidas guardadas, combate, la UI o la cámara. Entra en la ciudad por la escena integrada, busca el MeshCollider real `Axial_Paving` del prefab `Paths` y solo camina cuando tres puntos y todos sus segmentos tienen calzada y espacio libre. En ausencia de una ruta validada no se crea el personaje.
+
+Modelo autorizado obligatorio: `Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb`, SHA-256 `c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b`, 10.140.372 bytes, 26 joints, 57.332 triángulos, clips `Aldric_Idle_v1`, `Aldric_Walk_v1`, `Aldric_SwordAttack_v1`, `Aldric_Hurt_v1`, `Aldric_Defeat_v1`. La fuente exacta está recuperada en el paquete de entrega del propietario; **aún no se ha transferido como binario a este commit**, por lo que la funcionalidad permanece protegida (no aparece ningún sustituto falso).
+
+El código usa glTFast 6.14.1 (ya instalado), una sola entidad visual, escala 1,85 m verificada contra bounds, pies a nivel de calzada, pausa y recorrido, 95 m de culling, `SkinnedMeshRenderer.updateWhenOffscreen=false`. Aldric desaparece de la ciudad al viajar a Mundo, salir en una marcha propia o investigar la fisura; reaparece al regresar. No altera `GameState`, `LocalGateway`, ni `ValoriaIntegratedWorld`.
+
+Para promocionar a main: (1) terminar PR120, (2) importar el GLB exacto del paquete al path indicado; no usar el modelo estático ni los PNG de diálogo; (3) ejecutar Unity nativo PlayMode/EditMode en el SHA exacto con capturas reales horizontal/vertical, probar `Axial_Paving`, obstrucciones, pausas y ausencia en misión; (4) inspeccionar escala, piel/capa animada y perfil Android. No declarar aprobado hasta esas pruebas. No publicar APK sin ellas.
