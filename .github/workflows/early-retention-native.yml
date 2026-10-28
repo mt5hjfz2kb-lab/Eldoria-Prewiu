@@ -29,8 +29,14 @@ jobs:
           $raw=Invoke-RestMethod -Headers $headers -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($raw.content))|ConvertFrom-Json
           $claims=@($reg.active|Where-Object {$_.resources -contains 'windows-runner-heavy'})
+          # Owner continuity is registered on main. The canonical completion
+          # owner took over this same workstream; PR119 must release Windows
+          # BEFORE the single retention claim passes this gate.
+          $allowedOwners=@('chatgpt-cronica-real-ux-polish-20261027',
+                           'codex-pr119-pr120-completion-20261028')
           if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-early-retention-systems-20261028' -or
-             $claims[0].ownership_state -ne 'claimed' -or $claims[0].owner -ne 'chatgpt-cronica-real-ux-polish-20261027'){
+             $claims[0].ownership_state -ne 'claimed' -or
+             $claims[0].owner -notin $allowedOwners){
             throw "Windows runner is not exclusively owned by this active workstream: $($claims.id -join ',')"
           }
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'A local Unity or Blender process is already active. Do not interrupt.'}
