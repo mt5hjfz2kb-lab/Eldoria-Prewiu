@@ -87,7 +87,16 @@ namespace Eldoria.ReferenceClean.Editor
         static void Screenshot(ValoriaIntegratedWorld h,string name,int w,int he)
         {
             var path=Path.Combine(Output,name+(w>he?"-horizontal":"-vertical")+".png");
+            // Shared integration capture writes into its established evidence
+            // directory, not EARLY_RETENTION_EVIDENCE. Use that real rendering,
+            // then copy the exact PNG into this workflow's isolated artifact.
+            // The sparse Unity checkout does not include the legacy directory.
+            var sharedPath=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,
+                "../../docs/evidence/valoria-reference-clean",Path.GetFileName(path)));
+            Directory.CreateDirectory(Path.GetDirectoryName(sharedPath));
             ValoriaIntegrationBuild.Capture(h,path,w,he);
+            Need(File.Exists(sharedPath),"Shared native renderer did not write: "+name);
+            File.Copy(sharedPath,path,true);
             Need(File.Exists(path)&&new FileInfo(path).Length>30000,
                 "Native Unity "+w+"x"+he+" screenshot exists: "+name);
             var tex=new Texture2D(2,2,TextureFormat.RGB24,false);
