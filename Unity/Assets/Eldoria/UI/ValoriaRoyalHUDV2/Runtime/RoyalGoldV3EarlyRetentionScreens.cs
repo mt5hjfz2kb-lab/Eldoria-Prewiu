@@ -61,6 +61,45 @@ namespace Eldoria.UI.RoyalGold.V2
         float width=-1,height=-1,nextUpdate;
         float lastSafeWidth=-1,lastSafeHeight=-1;
         bool compactLandscape;
+        struct TextDensityState
+        {
+            public int FontSize;
+            public Vector2 SizeDelta;
+            public Vector3 Scale;
+        }
+        readonly Dictionary<RoyalText,TextDensityState> textDensity=
+            new Dictionary<RoyalText,TextDensityState>();
+        void RestoreTextDensity()
+        {
+            foreach(var item in textDensity)
+            {
+                if(!item.Key)continue;
+                item.Key.fontSize=item.Value.FontSize;
+                item.Key.rectTransform.sizeDelta=item.Value.SizeDelta;
+                item.Key.rectTransform.localScale=item.Value.Scale;
+            }
+            textDensity.Clear();
+        }
+        void ApplyTextDensity()
+        {
+            // uGUI generates dynamic glyphs using Canvas.scaleFactor, which
+            // excludes an enlarged room transform. Request the larger glyph
+            // and inversely scale its enlarged box: same visible geometry,
+            // crisp native pixels rather than magnified 8-pixel letters.
+            float density=panelRoot.localScale.x;
+            if(!compactLandscape || density<=1f)return;
+            foreach(var label in panelRoot.GetComponentsInChildren<RoyalText>(true))
+            {
+                var r=label.rectTransform;
+                textDensity[label]=new TextDensityState{
+                    FontSize=label.fontSize,SizeDelta=r.sizeDelta,Scale=r.localScale};
+                var size=r.rect.size;
+                label.fontSize=Mathf.CeilToInt(label.fontSize*density);
+                r.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,size.x*density);
+                r.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,size.y*density);
+                r.localScale/=density;
+            }
+        }
         string notice="";
         static readonly Color Ivory=new Color(.96f,.91f,.80f,1);
         static readonly Color Gold=new Color(.87f,.70f,.40f,1);
@@ -554,6 +593,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void Layout()
         {
             if(!ready||!safe)return;
+            RestoreTextDensity();
             lastSafeWidth=safe.rect.width;lastSafeHeight=safe.rect.height;
             LayoutShortcuts();
             if(lastSafeWidth<200||lastSafeHeight<260)return;
@@ -800,6 +840,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void Render(bool explicitRefresh)
         {
             if(!IsOpen||gateway==null||now==null)return;
+            RestoreTextDensity();
             var s=gateway.Snapshot();
             var p=s.Retention??new EarlyRetentionState();
             bool vig=OpenDestination==Destination.Vigilants;
@@ -1032,6 +1073,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     TimeSpan.FromTicks(Math.Max(0,due-now())).ToString(@"hh\:mm\:ss")+
                     " · Máximo 6 pendientes");
             }
+            ApplyTextDensity();
         }
     }
 }
