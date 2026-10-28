@@ -44,6 +44,29 @@ namespace Eldoria.AldricCity
         private float pauseUntil;
         private float facingYaw;
         private readonly List<Collider> obstacles = new List<Collider>();
+        // Native verification probes. Read-only; never mutate player saves or gameplay.
+        public bool ApprovedVisualReady => actor && model && clips && path != null &&
+            renderers != null && renderers.Length > 0;
+        public int RoadWaypoints => path == null ? 0 : path.Length;
+        public Vector3 ActorGroundPosition => actor ? actor.transform.position : Vector3.zero;
+        public bool IsCityActorVisible => actor && !Away() && renderers != null &&
+            renderers.Any(r => r && r.enabled && r.gameObject.activeInHierarchy);
+        public float MeasuredModelHeight
+        {
+            get
+            {
+                if (renderers == null || renderers.Length == 0) return 0f;
+                var found = false;
+                var bounds = new Bounds();
+                foreach (var renderer in renderers)
+                {
+                    if (!renderer) continue;
+                    if (!found) { bounds = renderer.bounds; found = true; }
+                    else bounds.Encapsulate(renderer.bounds);
+                }
+                return found ? bounds.size.y : 0f;
+            }
+        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Attach()
