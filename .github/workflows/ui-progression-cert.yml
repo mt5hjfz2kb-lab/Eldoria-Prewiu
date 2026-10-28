@@ -245,6 +245,30 @@ jobs:
           }
           Write-Host "ELDORIA_V3_PROVEN_SEARCH_INDEX_RECOVERY_APPLIED"
 
+      - name: Prepare canonical build-safe Bastion III resources required by scene tests
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
+          # The merged III scene loads these build outputs even during I-II.
+          # Reuse its approved deterministic preparation; do not invent art,
+          # hide missing-resource errors, or weaken the PlayMode log contract.
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender unavailable for canonical III resource preparation'}
+          $evidence='docs/bastion-iii/native'
+          if(Test-Path $evidence){
+            $archive=Join-Path $env:RUNNER_TEMP "bastion-iii-before-ui-$env:GITHUB_RUN_ID"
+            if(Test-Path $archive){throw 'Prior III evidence archive already exists'}
+            Move-Item $evidence $archive
+          }
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Canonical private fissure preparation failed'}
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-UI-III-ResourcePreparation.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
+
       - name: Capture and validate existing real integrated I-II scene in Unity
         shell: powershell
         run: |
@@ -511,6 +535,7 @@ jobs:
             ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
             ${{ runner.temp }}/eldoria-ui-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
+            ${{ runner.temp }}/Eldoria-UI-III-ResourcePreparation.log
             ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log
             ${{ runner.temp }}/Eldoria-V2-Native-Framing-Baseline-*.json
             docs/evidence/valoria-reference-clean/integration-*.png
