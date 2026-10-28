@@ -1763,7 +1763,8 @@
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs.meta",
         "qa/e2e-full-arc1.js",
-        ".github/workflows/ui-progression-cert.yml"
+        ".github/workflows/ui-progression-cert.yml",
+        "qa/e2e-codex-chest.js"
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
@@ -1792,7 +1793,7 @@
       },
       "next": "Native aa2666d4 is functional but NOT visually accepted: route markers float left instead of following landscape path; flat navy enemy card and geometric scout cards materially differ from approved original reference. Preserve 19 native images and functional PASS. No ART_APPROVED, merge or APK until corrected actual Unity comparison. Prior session must stop writes/dispatch under superseded revision5; preserve all in-flight evidence. Current user authorizes this handoff and PR122 afterward, rewards evaluation deferred.",
       "phase": "VISUAL_REFERENCE_MISMATCH_REQUIRES_COMPOSITION_CORRECTION",
-      "test_harness_scope_note": "Owner-authorized PR119/120 completion: repair only stale frozen-web fresh-save Arc-I Fissure assertions (retired INSPECCIONAR/recruit-before-victory sequence) to match the already-approved real Bastion III investigation/contact/assault/recruit/manuscript journey. No frozen-web gameplay changes, no new Bastion IV/V work. Exact file unclaimed by any other active owner. Preserve native owner/revision5 and existing Windows queue.",
+      "test_harness_scope_note": "Owner-authorized PR119/120 completion: repair only stale frozen-web fresh-save Arc-I Fissure assertions (retired INSPECCIONAR/recruit-before-victory sequence) to match the already-approved real Bastion III investigation/contact/assault/recruit/manuscript journey. No frozen-web gameplay changes, no new Bastion IV/V work. Exact file unclaimed by any other active owner. Preserve native owner/revision5 and existing Windows queue. Current continuation: fix only the observed transient hidden-navigation tap in legacy Codex/Relicario QA by waiting for a genuine visible, actionable navigation button; preserve all assertions, no production web edits.",
       "certification_scope_note": "PR119/120 completion: reuse successful exact shared-UI certification40700893871 at1f418a29274664904556aa3478dc1520e495e30b only when git comparison proves every changed file belongs to the separately native-certified Retention module, documentation or this approved legacy QA harness, and all shared certification steps remain byte-identical. Shared-domain/world/UI changes still require the full gate. Native retention proof+17images and postmerge main gates remain mandatory. Preserve current live owner/revision5/Windows queue."
     }
   ],
