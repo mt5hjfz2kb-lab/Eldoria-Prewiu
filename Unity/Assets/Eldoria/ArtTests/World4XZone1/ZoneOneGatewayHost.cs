@@ -37,8 +37,12 @@ namespace Eldoria.World4XPrototype
         {
             var state = gateway.Snapshot();
             if (state == null) return new ZoneOneTargetAction(targetId, "", "Partida no disponible", false);
-            bool idle = state.March != null && state.March.Phase == "idle";
-            bool troops = state.Available != null && state.Available.ArcherT1 > 0;
+            bool idle = MarchCapacityRules.CanStart(state,utcTicks()) &&
+                (state.ChapterThree==null||state.ChapterThree.InvestigationEndsUtcTicks<=utcTicks());
+            bool troops = state.Available != null && state.Available.Total > 0;
+            bool targetAlreadyInFlight=false;
+            foreach(var march in MarchCapacityRules.WorldMarches(state))
+                if(march.Phase!="idle"&&march.TargetId==targetId){targetAlreadyInFlight=true;break;}
             if(targetId!=null&&targetId.StartsWith("region1:",StringComparison.Ordinal))
             {
                 string kind=LocalGateway.ResourceKind(state,targetId);int remaining=LocalGateway.ResourceRemaining(state,targetId);
@@ -53,7 +57,7 @@ namespace Eldoria.World4XPrototype
                 return new ZoneOneTargetAction(targetId,"Fight",
                     creature.Alive?"Atacar "+name+" · nivel "+creature.Level:
                         name+" · reapareciendo",
-                    idle&&troops&&creature.Alive);
+                    idle&&troops&&creature.Alive&&!targetAlreadyInFlight);
             }
             switch (targetId)
             {
@@ -64,9 +68,9 @@ namespace Eldoria.World4XPrototype
                 case "quarry-valoria":
                     return new ZoneOneTargetAction(targetId, "Gather", state.QuarryRemaining > 0 ? "Recoger piedra" : "Cantera agotada", idle && troops && state.QuarryRemaining > 0);
                 case "corrupt-scout":
-                    return new ZoneOneTargetAction(targetId, "Fight", state.ScoutDefeated ? "Ruta despejada" : "Atacar explorador", idle && troops && !state.ScoutDefeated);
+                    return new ZoneOneTargetAction(targetId, "Fight", state.ScoutDefeated ? "Ruta despejada" : "Atacar explorador", idle && troops && !state.ScoutDefeated&&!targetAlreadyInFlight);
                 case "engendro-valoria":
-                    return new ZoneOneTargetAction(targetId, "Fight", state.EngendroDefeated ? "Engendro derrotado" : "Atacar Engendro", idle && troops && !state.EngendroDefeated && state.BastionLevel >= 2 && state.BarracksLevel > 0 && state.MarchConfigured);
+                    return new ZoneOneTargetAction(targetId, "Fight", state.EngendroDefeated ? "Engendro derrotado" : "Atacar Engendro", idle && troops && !state.EngendroDefeated&&!targetAlreadyInFlight && state.BastionLevel >= 2 && state.BarracksLevel > 0 && state.MarchConfigured);
                 case "old-watch-ruin":
                     return new ZoneOneTargetAction(targetId, "", "Atalaya en ruinas", false);
                 default:
