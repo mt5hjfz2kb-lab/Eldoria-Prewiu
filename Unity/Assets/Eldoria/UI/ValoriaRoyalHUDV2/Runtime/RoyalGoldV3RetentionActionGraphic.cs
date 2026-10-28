@@ -17,17 +17,29 @@ namespace Eldoria.UI.RoyalGold.V2
             float left=rect.xMin+margin,right=rect.xMax-margin;
             float low=rect.yMin+margin,high=rect.yMax-margin;
             if(right<=left||high<=low)return;
-            var a=new Color(bottom.r*color.r,bottom.g*color.g,
-                bottom.b*color.b,bottom.a*color.a);
-            var b=new Color(top.r*color.r,top.g*color.g,
-                top.b*color.b,top.a*color.a);
+            // An eight-sided bevel follows the approved red/blue medieval
+            // button silhouettes. It is one uGUI mesh, not decorative
+            // images on top of the real button's raycast surface.
+            float cut=Mathf.Min(10f,Mathf.Min(right-left,high-low)*.24f);
+            Vector2[] outline={
+                new Vector2(left+cut,low),new Vector2(right-cut,low),
+                new Vector2(right,low+cut),new Vector2(right,high-cut),
+                new Vector2(right-cut,high),new Vector2(left+cut,high),
+                new Vector2(left,high-cut),new Vector2(left,low+cut)
+            };
             int start=mesh.currentVertCount;
-            mesh.AddVert(new Vector3(left,low),a,Vector2.zero);
-            mesh.AddVert(new Vector3(left,high),b,Vector2.up);
-            mesh.AddVert(new Vector3(right,high),b,Vector2.one);
-            mesh.AddVert(new Vector3(right,low),a,Vector2.right);
-            mesh.AddTriangle(start,start+1,start+2);
-            mesh.AddTriangle(start,start+2,start+3);
+            Color tint=new Color(color.r,color.g,color.b,color.a);
+            Color center=Color.Lerp(bottom,top,.5f)*tint;
+            mesh.AddVert(new Vector3((left+right)*.5f,(low+high)*.5f),
+                center,Vector2.zero);
+            for(int i=0;i<outline.Length;i++)
+            {
+                var point=outline[i];
+                float t=Mathf.InverseLerp(low,high,point.y);
+                mesh.AddVert(point,Color.Lerp(bottom,top,t)*tint,Vector2.zero);
+            }
+            for(int i=0;i<outline.Length;i++)
+                mesh.AddTriangle(start,start+1+i,start+1+(i+1)%outline.Length);
         }
 
         protected override void OnPopulateMesh(VertexHelper mesh)
