@@ -1,0 +1,161 @@
+name: Eldoria Three Marches — real Unity native city and world proof
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-three-marches-one-unity-editor
+  cancel-in-progress: false
+jobs:
+  native:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 70
+    env:
+      VALORIA_GAMEPLAY_PROBE: '1'
+      MARCH_CAPACITY_EVIDENCE: ${{ github.workspace }}/three-marches-native-${{ github.run_id }}
+    steps:
+      - name: Require exclusive canonical Unity lease, never disrupt Aldric or any other owner
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-three-marches-native-lease'}
+          $data=Invoke-RestMethod -Headers $h -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($data.content))|ConvertFrom-Json
+          $claims=@($reg.active|Where-Object {$_.status -eq 'active' -and $_.resources -contains 'windows-runner-heavy'})
+          if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-global-march-capacity-three-slots-20261028' -or
+             $claims[0].ownership_state -ne 'claimed'){
+            throw "Unity lease belongs to $($claims.id -join ', '). Do not interrupt."
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Another Unity or Blender process is active'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor path missing'}
+          $version= & $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Wrong native Unity version $version"}
+          Write-Host 'THREE_MARCH_NATIVE_EXCLUSIVE_LEASE_PASS'
+      - name: Resolve Git from GitHub Desktop when necessary
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Git unavailable'}
+            $dir=Split-Path $candidate
+            Add-Content $env:GITHUB_PATH $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          path: march-source
+          clean: false
+          fetch-depth: 2
+          sparse-checkout: |
+            Unity
+            tools
+            pipeline
+          sparse-checkout-cone-mode: true
+      - name: Preserve exact checkout and reversible Unity Search index
+        shell: powershell
+        working-directory: march-source
+        run: |
+          $ErrorActionPreference='Stop'
+          if((git rev-parse HEAD).Trim() -ne $env:GITHUB_SHA){throw 'Stale three-march native checkout'}
+          if(-not(Test-Path 'Unity/Packages/manifest.json')){throw 'Unity project absent'}
+          $settings=Join-Path (Get-Location).Path 'Unity/UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "march-search-before-$env:GITHUB_RUN_ID"
+          $missing=Join-Path $env:RUNNER_TEMP "march-search-absent-$env:GITHUB_RUN_ID"
+          if(Test-Path $backup){throw 'Prior backup exists; refuse overwrite'}
+          if(Test-Path $settings){Copy-Item $settings $backup}
+          else{New-Item -ItemType Directory -Force (Split-Path $settings)|Out-Null;New-Item -ItemType File $missing|Out-Null}
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' |
+            Set-Content $settings -Encoding UTF8
+      - name: Prepare existing Bastion III resources without modifying persistent source
+        shell: powershell
+        working-directory: march-source
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied'}
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Canonical Blender unavailable'}
+          $old='docs/bastion-iii/native'
+          if(Test-Path $old){
+            $archive=Join-Path $env:RUNNER_TEMP "march-original-iii-$env:GITHUB_RUN_ID"
+            if(Test-Path $archive){throw 'Bastion evidence backup already exists'}
+            Move-Item $old $archive
+          }
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Bastion III resource authoring failed'}
+          New-Item -ItemType Directory -Force $env:MARCH_CAPACITY_EVIDENCE|Out-Null
+          $log=Join-Path $env:MARCH_CAPACITY_EVIDENCE 'resource-preparation.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod',
+            'Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical III Unity resource bake failed'}
+      - name: Run genuine NUnit EditMode marching and existing gameplay tests
+        shell: powershell
+        working-directory: march-source
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=$env:MARCH_CAPACITY_EVIDENCE
+          New-Item -ItemType Directory -Force $out|Out-Null
+          $args=@('-batchmode','-nographics','-projectPath','Unity',
+            '-runTests','-testPlatform','EditMode',
+            '-testFilter','Eldoria.Tests.SliceCoreTests',
+            '-testResults',(Join-Path $out 'editmode.xml'),
+            '-logFile',(Join-Path $out 'editmode.log'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Native EditMode failed $($p.ExitCode)"}
+          $file=Join-Path $out 'editmode.xml'
+          if(-not(Test-Path $file)){throw 'Missing genuine Unity EditMode result'}
+          $xml=[xml](Get-Content $file -Raw)
+          if([int]$xml.'test-run'.failed -ne 0 -or [int]$xml.'test-run'.total -lt 15){
+            throw 'Existing SliceCore NUnit suite and added three-march tests must all pass'
+          }
+      - name: Capture actual three independent world routes, blocked fourth and march room
+        shell: powershell
+        working-directory: march-source
+        timeout-minutes: 22
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=$env:MARCH_CAPACITY_EVIDENCE
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.ReferenceClean.Editor.MarchCapacityNativeCapture.Capture',
+            '-logFile',(Join-Path $out 'captures.log'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Native gameplay capture failed: $($p.ExitCode)"}
+          $proof=Join-Path $out 'result.txt'
+          if(-not(Test-Path $proof)){throw 'Missing actual three-march game evidence'}
+          if(-not((Get-Content $proof -Raw).Contains('GLOBAL_THREE_MARCH_NATIVE_PASS'))){
+            throw 'Three-march native proof did not pass'
+          }
+          $expected=@(
+            'three-marches-before-horizontal.png',
+            'three-marches-active-horizontal.png','three-marches-active-vertical.png',
+            'three-marches-active-phone.png','march-composer-horizontal.png',
+            'march-composer-vertical.png'
+          )
+          foreach($file in $expected){if(-not(Test-Path (Join-Path $out $file))){throw "Missing native player-camera PNG $file"}}
+          Write-Host 'THREE_MARCH_NATIVE_GAMEPLAY_CAMERA_PERSISTENCE_PASS'
+      - name: Restore isolated Unity Search index
+        shell: powershell
+        if: always()
+        working-directory: march-source
+        run: |
+          $settings=Join-Path (Get-Location).Path 'Unity/UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "march-search-before-$env:GITHUB_RUN_ID"
+          $missing=Join-Path $env:RUNNER_TEMP "march-search-absent-$env:GITHUB_RUN_ID"
+          if(Test-Path $backup){Copy-Item $backup $settings -Force}
+          elseif(Test-Path $missing){Remove-Item $settings -ErrorAction SilentlyContinue}
+      - name: Retain real Unity test logs, PNGs and source errors even on failure
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-three-marches-native-${{ github.run_id }}
+          path: ${{ env.MARCH_CAPACITY_EVIDENCE }}/*
+          if-no-files-found: warn
+          retention-days: 30
