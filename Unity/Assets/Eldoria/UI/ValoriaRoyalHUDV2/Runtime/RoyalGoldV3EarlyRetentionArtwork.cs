@@ -232,6 +232,21 @@ namespace Eldoria.UI.RoyalGold.V2
                 vh.AddVert(p,Tint(c),Vector2.zero);
             vh.AddTriangle(k,k+1,k+2);vh.AddTriangle(k,k+2,k+3);
         }
+        // One shared geometry contract for all real stage numbers and boss
+        // markers; stage 1 begins near the foothills and stage 25 ascends.
+        public Vector2 StagePosition(int stage)
+        {
+            var b=rectTransform.rect;
+            int step=Mathf.Clamp(stage,1,25)-1;
+            int row=step/5,col=step%5;
+            if(row%2==1)col=4-col;
+            float marginX=Mathf.Min(26,b.width*.10f),marginY=Mathf.Min(19,b.height*.12f);
+            float dx=(b.width-marginX*2)/4f,dy=(b.height-marginY*2)/4f;
+            float weaveX=Mathf.Min(8f,dx*.12f),weaveY=Mathf.Min(6f,dy*.12f);
+            return new Vector2(
+                b.xMin+marginX+col*dx+Mathf.Sin(row*1.7f+col*.82f)*weaveX,
+                b.yMin+marginY+row*dy+Mathf.Sin(step*1.31f)*weaveY);
+        }
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();var b=rectTransform.rect;
@@ -246,9 +261,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 // The route remains 25 deterministic real steps; subtle
                 // offsets make it read as a winding campaign trail rather
                 // than a regimented five-by-five spreadsheet grid.
-                nodes[step]=new Vector2(
-                    b.xMin+marginX+col*dx+Mathf.Sin(row*1.7f+col*.82f)*weaveX,
-                    b.yMin+marginY+(4-row)*dy+Mathf.Sin(step*1.31f)*weaveY);
+                nodes[step]=StagePosition(step+1);
             }
             for(int step=0;step<24;step++)
             {
