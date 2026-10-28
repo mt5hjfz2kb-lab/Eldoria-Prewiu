@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-pr119-pr120-completion-20261028",
+      "owner": "codex-pr120-exact-visual-pr122-20261028",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-27T10:59:08Z",
@@ -1154,9 +1154,15 @@
           "revision": 46,
           "reason": "Owner explicitly requests current chat assume and finish PR119 and PR120 after repeated interruptions.",
           "transferred_at": "2026-10-28T08:41:18.407Z"
+        },
+        {
+          "owner": "codex-pr119-pr120-completion-20261028",
+          "revision": 47,
+          "transferred_at": "2026-10-28T17:03:00Z",
+          "reason": "Current owner-directed PR120 then PR122 continuation reconciles inherited city/UI integration scopes previously held by the same PR119/120 completion session. PR119 is merged and native-certified; no new city/world art production or extra Windows lease."
         }
       ],
-      "ownership_revision": 47,
+      "ownership_revision": 48,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
@@ -1255,7 +1261,8 @@
       "candidate_branch": "feature/bastion-iii-canonical-20261027",
       "canonical_pr": 117,
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
-      "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates."
+      "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
+      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -1425,9 +1432,9 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "codex-pr119-pr120-completion-20261028",
+      "owner": "codex-pr120-exact-visual-pr122-20261028",
       "ownership_state": "claimed",
-      "ownership_revision": 27,
+      "ownership_revision": 28,
       "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-27T09:36:00Z",
@@ -1603,6 +1610,12 @@
           "revision": 24,
           "reason": "Owner explicitly requests current chat assume and finish PR119 and PR120 after repeated interruptions.",
           "transferred_at": "2026-10-28T08:41:18.407Z"
+        },
+        {
+          "owner": "codex-pr119-pr120-completion-20261028",
+          "revision": 27,
+          "transferred_at": "2026-10-28T17:03:00Z",
+          "reason": "Current owner-directed PR120 then PR122 continuation reconciles inherited city/UI integration scopes previously held by the same PR119/120 completion session. PR119 is merged and native-certified; no new city/world art production or extra Windows lease."
         }
       ],
       "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
@@ -1672,7 +1685,8 @@
         "upload_accepted": true,
         "remote_active_confirmed": false,
         "hosted_browser_verified": false
-      }
+      },
+      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6."
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
@@ -1786,15 +1800,48 @@
       ],
       "write_scope_released": false,
       "current_native_cert": {
-        "status": "pending_reconciled_source",
-        "previous_run": 40657717839,
-        "previous_source": "01685c187f8df1a23c5743a76a6d27c3f32ab23e",
-        "previous_visual_review": "superseded_by_new_painterly_and_stage15_art"
+        "status": "in_progress",
+        "source": "bd0b48a6be86bbb8849b1b9fa8d4b7283da9d3c2",
+        "run_id": 40731691933,
+        "art_approved": false
       },
-      "next": "Native aa2666d4 is functional but NOT visually accepted: route markers float left instead of following landscape path; flat navy enemy card and geometric scout cards materially differ from approved original reference. Preserve 19 native images and functional PASS. No ART_APPROVED, merge or APK until corrected actual Unity comparison. Prior session must stop writes/dispatch under superseded revision5; preserve all in-flight evidence. Current user authorizes this handoff and PR122 afterward, rewards evaluation deferred.",
+      "next": "Inspect native32 actual nineteen images: road bound to paving; preserve Engendro aspect; reference serif, sliced parchment and active emblems; real actions/persistence. Native31 source7251 compiled13domainPASS but capture stopped at obsolete disabled old-card assertion; thirteen genuine screenshots retained, no visual approval. Keep PR120 draft. Rewards balance deferred by owner. Then finish PR122.",
       "phase": "VISUAL_REFERENCE_MISMATCH_REQUIRES_COMPOSITION_CORRECTION",
       "test_harness_scope_note": "Owner-authorized PR119/120 completion: repair only stale frozen-web fresh-save Arc-I Fissure assertions (retired INSPECCIONAR/recruit-before-victory sequence) to match the already-approved real Bastion III investigation/contact/assault/recruit/manuscript journey. No frozen-web gameplay changes, no new Bastion IV/V work. Exact file unclaimed by any other active owner. Preserve native owner/revision5 and existing Windows queue. Current continuation: fix only the observed transient hidden-navigation tap in legacy Codex/Relicario QA by waiting for a genuine visible, actionable navigation button; preserve all assertions, no production web edits.",
       "certification_scope_note": "PR119/120 completion: reuse successful exact shared-UI certification40700893871 at1f418a29274664904556aa3478dc1520e495e30b only when git comparison proves every changed file belongs to the separately native-certified Retention module, documentation or this approved legacy QA harness, and all shared certification steps remain byte-identical. Shared-domain/world/UI changes still require the full gate. Native retention proof+17images and postmerge main gates remain mandatory. Preserve current live owner/revision5/Windows queue."
+    },
+    {
+      "id": "eldoria-aldric-city-roaming-20261028",
+      "title": "PR122 — Aldric auténtico animado paseando por Valoria",
+      "owner": "codex-pr120-exact-visual-pr122-20261028",
+      "ownership_revision": 1,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/aldric-city-roaming-20261028",
+      "pr": 122,
+      "claimed_at": "2026-10-28T17:08:00Z",
+      "resources": [],
+      "scope": [
+        "Unity/Assets/Eldoria/AldricCity/**",
+        "Unity/Assets/Eldoria/AldricCity.meta",
+        "Unity/Assets/StreamingAssets/Eldoria/Aldric/**",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs.meta",
+        "tools/aldric-city/**",
+        "docs/aldric-city/**",
+        ".github/workflows/aldric-city-native.yml",
+        ".github/workflows/aldric-city-domain.yml",
+        ".github/workflows/aldric-city-reconstruct.yml"
+      ],
+      "phase": "SOURCE_PREPARATION_ONLY_WAITING_FOR_PR120",
+      "next": "Correct confirmed C# Application namespace collision and frame-count waits in source. No Unity dispatch or heavy-resource claim until PR120 completes, is merged and finishes its required native queue. Preserve exact approved10.14MB GLB/hash/26bones/5clips; inspect actual native movement, route, scale and hiding before merge.",
+      "delivery_definition": {
+        "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
+        "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
+        "handoff": "Same PR122 and original source assets; no duplicate PR or paid credits"
+      },
+      "budget_eur": 0
     }
   ],
   "history": [

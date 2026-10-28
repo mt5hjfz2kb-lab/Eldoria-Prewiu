@@ -62,16 +62,16 @@ jobs:
               if(!runs.some(r=>r.head_sha===nativeSource && r.status==='completed' && r.conclusion==='success'))return;
               requireNativeTree=true;
             } else return;
-            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:40700893871})).data;
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:40731703310})).data;
             if(run.status!=='completed' || run.conclusion!=='success' ||
-              run.head_sha!=='1f418a29274664904556aa3478dc1520e495e30b' ||
+              run.head_sha!=='bd0b48a6be86bbb8849b1b9fa8d4b7283da9d3c2' ||
               run.path!=='.github/workflows/ui-progression-cert.yml' ||
               run.head_branch!==canonical)throw Error('Canonical shared-interface proof is not valid');
             // The actual compiled PR merge has precisely the same Git tree
             // as the immutable branch certificate used for comparison below.
             const actual=(await github.rest.repos.getCommit({...context.repo,
-              ref:'28c7439e0f2aaabad751140fcd7022ce4e81dcf1'})).data;
-            if(actual.commit.tree.sha!=='762d8fb1cf480cf3fe958db2dce427e46ae498af')
+              ref:'fd0967e7fb0b761aa333e8a9c928e4bce95f24d4'})).data;
+            if(actual.commit.tree.sha!=='20d1cfaf48df8077778b1870b69daa17e5770038')
               throw Error('Exact compiled shared-interface tree differs');
             core.setOutput('require_native_tree',String(requireNativeTree));
             core.setOutput('eligible','true');
@@ -96,7 +96,7 @@ jobs:
           node <<'JS'
           const fs=require('node:fs'),{execFileSync:git}=require('node:child_process');
           let heavy=true;
-          const certified='1f418a29274664904556aa3478dc1520e495e30b';
+          const certified='bd0b48a6be86bbb8849b1b9fa8d4b7283da9d3c2';
           try {
             git('git',['fetch','--no-tags','--filter=blob:none','--depth=1','origin',certified],{stdio:'pipe'});
             const files=git('git',['diff','--name-only',certified,'HEAD'],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean);
@@ -124,8 +124,7 @@ jobs:
             const nativeWorkflow='.github/workflows/early-retention-native.yml';
             const oldNative=git('git',['show',certified+':'+nativeWorkflow],{encoding:'utf8'});
             const newNative=git('git',['show','HEAD:'+nativeWorkflow],{encoding:'utf8'});
-            const nativeWorkflowUnchanged=oldNative===newNative
-              .replace('Count -ne 19','Count -ne 17').replace('Expected 19 genuine','Expected 17 genuine');
+            const nativeWorkflowUnchanged=oldNative===newNative;
             let nativeTreeMatches=true;
             if(process.env.REQUIRE_NATIVE_TREE==='true') {
               const nativeSource='c1da0a450a9b752f2759429dad06c6b42ea065ac';
@@ -135,7 +134,7 @@ jobs:
             }
             heavy=!nativeTreeMatches || !nativeWorkflowUnchanged || files.some(p=>!nativeOwned(p)) || originalJob(before)!==originalJob(current);
             console.log('Changed paths: '+files.join(', '));
-            if(!heavy)console.log('ELDORIA_SHARED_UI_CERTIFICATE_REUSED run40700893871 source='+certified+
+            if(!heavy)console.log('ELDORIA_SHARED_UI_CERTIFICATE_REUSED run40731703310 source='+certified+
               '; all shared inputs and entire certification job unchanged; dedicated Retention native proof remains required');
           } catch(error) {console.warn('Cannot prove shared UI unchanged; run full original gate: '+error.message);}
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'heavy_required='+heavy+'\n');

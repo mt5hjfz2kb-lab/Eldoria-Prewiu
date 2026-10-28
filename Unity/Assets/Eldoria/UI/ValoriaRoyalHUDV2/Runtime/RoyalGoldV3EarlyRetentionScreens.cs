@@ -57,7 +57,8 @@ namespace Eldoria.UI.RoyalGold.V2
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
         Texture2D paintedVigilants, paintedScouts, scoutParchment;
-        Sprite scoutParchmentSprite;
+        Sprite scoutParchmentSprite, encounterSkinSprite;
+        Image encounterSkin;
         GameObject screen;
         float width=-1,height=-1,nextUpdate;
         float lastSafeWidth=-1,lastSafeHeight=-1;
@@ -127,6 +128,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(Hud){Hud.NarrativeOpening-=Close;Hud.SelectionChanged-=SelectionChanged;}
             if(engendroCutout)Destroy(engendroCutout);
             if(scoutParchmentSprite)Destroy(scoutParchmentSprite);
+            if(encounterSkinSprite)Destroy(encounterSkinSprite);
         }
         // The reused Bastion-II render has a neutral studio backdrop.
         // Remove only bright low-chroma backdrop pixels ONCE, retaining the
@@ -373,9 +375,15 @@ namespace Eldoria.UI.RoyalGold.V2
             currentMilestoneLabel.alignment=TextAnchor.MiddleCenter;
             // The stage-15 elite is the canonical Bastion-II Spawnling,
             // not an invented stone golem. Reuse its actual authored image.
-            engendroTexture=Resources.Load<Texture2D>(
-                "EldoriaRetention/engendro-portrait");
-            engendroCutout=TransparentEngendro(engendroTexture,out engendroUvRect);
+            engendroTexture=Resources.Load<Texture2D>("EldoriaRetention/engendro-reference-v3");
+            if(!engendroTexture)
+            {
+                engendroTexture=Resources.Load<Texture2D>("EldoriaRetention/engendro-portrait");
+                engendroCutout=TransparentEngendro(engendroTexture,out engendroUvRect);
+            }
+            // The approved concept illustration already has genuine alpha:
+            // use it directly, preserving pale bones and avoiding a second
+            // CPU-readable/GPU copy of the same portrait on mobile.
             var creature=Panel(heroScene,"Lore-approved Engendro portrait");
             // The original Breach creature is now a transparent silhouette:
             // do not surround it with a studio-like gray/gold square over the
@@ -405,6 +413,24 @@ namespace Eldoria.UI.RoyalGold.V2
             victoryGroup.interactable=false;
             victoryBanner.SetAsLastSibling();
             infoCard=Panel(panel,"Progression and expedition information");
+            var encounterTexture=Resources.Load<Texture2D>("EldoriaRetention/encounter-panel-v3");
+            if(encounterTexture)
+            {
+                // Crop only the source's transparent outer margin. Original
+                // PNG bytes and actual gold corner artwork remain intact.
+                encounterSkinSprite=Sprite.Create(encounterTexture,
+                    new Rect(42f,130f,1690f,627f),new Vector2(.5f,.5f),
+                    100f,0,SpriteMeshType.FullRect,new Vector4(128f,128f,128f,128f));
+                var skin=Rect("Reference encounter skin / visual only",infoCard);
+                skin.gameObject.AddComponent<CanvasRenderer>();
+                encounterSkin=skin.gameObject.AddComponent<Image>();
+                encounterSkin.sprite=encounterSkinSprite;
+                encounterSkin.type=Image.Type.Sliced;
+                encounterSkin.fillCenter=true;
+                encounterSkin.pixelsPerUnitMultiplier=2.5f;
+                encounterSkin.raycastTarget=false;
+                Stretch(skin);
+            }
             // The adversary belongs to the encounter card, as in the reference;
             // it must never cover the painted route or any chapter milestone.
             creature.SetParent(infoCard,false);
@@ -450,6 +476,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     var paperImage=paper.gameObject.AddComponent<Image>();
                     paperImage.sprite=scoutParchmentSprite;
                     paperImage.type=Image.Type.Sliced;
+                    paperImage.fillCenter=true;
+                    // Source margins/curls are in pixels. Keep them compact
+                    // rather than consuming most of a short portrait row.
+                    paperImage.pixelsPerUnitMultiplier=3f;
                     paperImage.raycastTarget=false;
                     Stretch(paper);
                     paper.SetAsFirstSibling();
@@ -482,7 +512,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 foreach(var label in scoutActionLabels)label.font=referenceFont;
                 foreach(var label in bossMilestoneLabels)label.font=referenceFont;
             }
+            backLabel.color=Gold;
             heading.alignment=TextAnchor.MiddleCenter;
+            kicker.alignment=TextAnchor.MiddleCenter;
+            chapter.alignment=TextAnchor.MiddleCenter;
             screen.SetActive(false);
             ready=true;
         }
@@ -671,16 +704,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
                 TL((RectTransform)back.transform,18f,14f,100f,88f);
                 backLabel.Put("←");
-                backLabel.fontSize=26;
+                backLabel.fontSize=64;
             }
             else
             {
                 TL(heading.rectTransform,130f,18f,pw-260f,44f);
                 heading.fontSize=compactLandscape?26:34;
-                TL(kicker.rectTransform,20f,61f,pw-35f,27f);
+                TL(kicker.rectTransform,130f,61f,pw-260f,27f);
                 TL((RectTransform)back.transform,20f,compactLandscape?14f:23f,90f,compactLandscape?68f:46f);
                 backLabel.Put("←");
-                backLabel.fontSize=compactLandscape?20:17;
+                backLabel.fontSize=compactLandscape?48:30;
             }
             float imageTop=portrait?150f:108f;
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
@@ -693,7 +726,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Vigilants has one encounter card: fill portrait with the world
             // instead of leaving a long dark strip before the battle button.
             // Scouts retains three full-size readable contracts beneath its map.
-            float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-840f):
+            float scenicHeight=vigilantsPortrait?Mathf.Max(220f,ph-760f):
                 portrait?Mathf.Clamp(ph-988f,220f,880f):
                 OpenDestination==Destination.Vigilants&&!compactLandscape?ph*.44f:ph-155f;
             TL(heroScene,portrait?18f:20f,imageTop,
@@ -760,14 +793,14 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 // Layout in canvas units must remain readable after the real
                 // 390px capture scales the 800-unit portrait canvas by 0.4875.
-                TL(chapter.rectTransform,14f,12f,iw-28f,44f);
+                TL(chapter.rectTransform,54f,12f,iw-108f,44f);
                 TL(opponent.rectTransform,14f,62f,iw-28f,78f);
                 TL(formation.rectTransform,14f,148f,iw-28f,36f);
                 TL(reward.rectTransform,14f,234f,iw-28f,64f);
-                TL(passive.rectTransform,14f,306f,iw-28f,70f);
+                TL(passive.rectTransform,14f,374f,iw-28f,70f);
                 TL(battleFeedback.rectTransform,14f,350f,iw-28f,40f);
-                TL((RectTransform)mainAction.transform,14f,ih-200f,iw-28f,90f);
-                TL((RectTransform)claimXp.transform,14f,ih-100f,iw-28f,88f);
+                TL((RectTransform)mainAction.transform,iw*.51f,ih-104f,iw*.46f,92f);
+                TL((RectTransform)claimXp.transform,14f,ih-104f,iw*.46f,92f);
                 chapter.fontSize=32;opponent.fontSize=32;formation.fontSize=26;
                 reward.fontSize=26;passive.fontSize=26;battleFeedback.fontSize=26;
             }
@@ -788,7 +821,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else if(vigilantsLandscape && compactLandscape)
             {
-                TL(chapter.rectTransform,14f,10f,iw-28f,32f);
+                TL(chapter.rectTransform,54f,10f,iw-108f,32f);
                 TL(opponent.rectTransform,14f,46f,iw-28f,58f);
                 TL(formation.rectTransform,14f,108f,iw-28f,28f);
                 TL(reward.rectTransform,14f,144f,iw-28f,52f);
@@ -802,7 +835,7 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 // One compact, attractive mission card over the living route:
                 // the encounter, rewards and actual combat button remain real.
-                TL(chapter.rectTransform,20f,12f,iw-40f,37f);
+                TL(chapter.rectTransform,54f,12f,iw-108f,37f);
                 TL(opponent.rectTransform,20f,54f,iw-40f,64f);
                 TL(formation.rectTransform,20f,122f,iw-40f,32f);
                 TL(reward.rectTransform,20f,165f,iw-40f,38f);
@@ -824,7 +857,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
-            float head=portrait?80f:57f; // Preserve the "ENCARGOS EN CURSO" royal heading.
+            float head=portrait?44f:8f; // The destination title already identifies the board.
             float spacing=Mathf.Clamp((ih-head-12f)/3f,65f,330f);
             for(int i=0;i<3;i++)
             {
@@ -835,14 +868,14 @@ namespace Eldoria.UI.RoyalGold.V2
                     // the map, as in the approved image — not a list of timers.
                     float gap=10f;
                     float cardW=(iw-28f-gap*2f)/3f;
-                    float cardH=Mathf.Max(110f,ih-70f);
-                    TL(cell,14f+i*(cardW+gap),55f,cardW,cardH);
+                    float cardH=Mathf.Max(110f,ih-16f);
+                    TL(cell,14f+i*(cardW+gap),8f,cardW,cardH);
                     float inset=20f;
-                    TL(scoutTitles[i].rectTransform,inset,44f,cardW-40f,33f);
+                    TL(scoutTitles[i].rectTransform,inset,44f,cardW-40f,62f);
                     TL((RectTransform)scoutThumbnails[i].transform,
-                        inset,94f,cardW-40f,Mathf.Max(54f,cardH*.30f));
+                        inset,118f,cardW-40f,Mathf.Max(54f,cardH*.28f));
                     float actionTop=cardH-(compactLandscape?83f:61f);
-                    float descriptionTop=104f+cardH*.30f;
+                    float descriptionTop=128f+cardH*.28f;
                     TL(scoutCards[i].rectTransform,inset,descriptionTop,cardW-40f,
                         Mathf.Max(30f,Mathf.Min(compactLandscape?76f:86f,actionTop-descriptionTop-8f)));
                     TL((RectTransform)scoutActions[i].transform,
@@ -888,7 +921,8 @@ namespace Eldoria.UI.RoyalGold.V2
             var p=s.Retention??new EarlyRetentionState();
             bool vig=OpenDestination==Destination.Vigilants;
             var boardBacking=infoCard.GetComponent<RoyalGoldV2FrameGraphic>();
-            if(boardBacking)boardBacking.enabled=vig;
+            if(boardBacking)boardBacking.enabled=vig&&!encounterSkin;
+            if(encounterSkin)encounterSkin.gameObject.SetActive(vig);
             sceneArtwork.Scouts=!vig;
             sceneArtwork.Chapter=Math.Max(1,(p.LastClearedStage/25)+1);
             if(paintedScene)
@@ -939,7 +973,7 @@ namespace Eldoria.UI.RoyalGold.V2
             introduction.gameObject.SetActive(false);
             // The board reserves a 57 px header; show its actual section title
             // instead of leaving a dead band above the three illustrated cards.
-            chapter.gameObject.SetActive(true);
+            chapter.gameObject.SetActive(vig);
             opponent.gameObject.SetActive(vig);
             formation.gameObject.SetActive(vig);
             reward.gameObject.SetActive(vig);
@@ -978,21 +1012,28 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     bool portrait=height>width;
                     var frame=engendroPortrait.transform.parent as RectTransform;
-                    float boxWidth=infoCard.rect.width*(portrait?.40f:.29f);
-                    float boxHeight=portrait?280f:Mathf.Min(infoCard.rect.height*.44f,compactLandscape?180f:160f);
+                    float boxWidth=infoCard.rect.width*(portrait?.49f:.29f);
+                    float boxHeight=portrait?360f:Mathf.Min(infoCard.rect.height*.44f,compactLandscape?180f:160f);
                     float artAspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
                         Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
                     float cw=boxWidth,ch=boxHeight;
                     if((cw-8f)/(ch-8f)>artAspect)cw=(ch-8f)*artAspect+8f;
                     else ch=(cw-8f)/artAspect+8f;
                     TL(frame,12f+(boxWidth-cw)*.5f,portrait?64f:54f,cw,ch);
-                    float textX=infoCard.rect.width*(portrait?.44f:.34f);
+                    float textX=infoCard.rect.width*(portrait?.51f:.34f);
                     float textW=infoCard.rect.width-textX-16f;
-                    TL(opponent.rectTransform,textX,portrait?62f:54f,textW,portrait?90f:64f);
-                    TL(formation.rectTransform,textX,portrait?158f:compactLandscape?108f:122f,
+                    TL(opponent.rectTransform,textX,portrait?62f:54f,textW,portrait?110f:64f);
+                    TL(formation.rectTransform,textX,portrait?178f:compactLandscape?108f:122f,
                         textW,portrait?66f:compactLandscape?28f:38f);
-                    TL(reward.rectTransform,textX,portrait?234f:compactLandscape?144f:165f,
+                    TL(reward.rectTransform,textX,portrait?252f:compactLandscape?144f:165f,
                         textW,portrait?64f:compactLandscape?52f:38f);
+                    if(portrait)
+                    {
+                        opponent.fontSize=30;
+                        TL(passive.rectTransform,textX,328f,textW,104f);
+                    }
+                    else if(compactLandscape)
+                        TL(passive.rectTransform,textX,202f,textW,78f);
                 }
                 // Update labels only AFTER the Engendro-relative trail
                 // anchors are chosen. Otherwise the captured stage-15 numbers
@@ -1031,7 +1072,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 reward.Put("Al vencer: "+(30+stage*2)+" madera · "+(10+stage)+
                     " piedra · "+(20+stage/5*3)+" XP");
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
-                passive.Put("EXP. ACUMULADA: "+xp+" XP / máximo 8 h\n"+
+                string xpSummary=showEngendro&&(height>width||compactLandscape)
+                    ?"EXP. "+xp+" XP · Máx. 8 h\n":"EXP. ACUMULADA: "+xp+" XP / máximo 8 h\n";
+                passive.Put(xpSummary+
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
                     " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));
                 mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&archer>0;
@@ -1110,7 +1153,8 @@ namespace Eldoria.UI.RoyalGold.V2
                             scoutArt[i].SetVerticesDirty();
                         }
                     }
-                    string state=order.StartedUtcTicks==0?"Disponible":
+                    string state=order.StartedUtcTicks==0?"Disponible · "+
+                        TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind)).ToString(@"mm\:ss"):
                         order.EndsUtcTicks<=now()?"Listo para reclamar":
                         "Regreso en "+TimeSpan.FromTicks(order.EndsUtcTicks-now()).ToString(@"hh\:mm\:ss");
                     scoutTitles[i].Put(EarlyRetentionRules.ScoutTitle(order.Kind));

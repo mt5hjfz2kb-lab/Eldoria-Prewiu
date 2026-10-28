@@ -297,13 +297,23 @@ namespace Eldoria.ReferenceClean.Editor
             Need(ui.IsOpen,"Stage 15 opens in the real campaign");
             var engendroArt=hud.GetComponentsInChildren<RawImage>(true)
                 .FirstOrDefault(x=>x.name=="Engendro / authentic creature illustration");
+            var referencePortrait=Resources.Load<Texture2D>("EldoriaRetention/engendro-reference-v3");
             Need(engendroArt!=null && engendroArt.gameObject.activeInHierarchy &&
-                engendroArt.texture!=null &&
-                engendroArt.texture.name.Contains("engendro-lore-cutout"),
-                "Stage 15 displays the real Engendro with its studio backdrop removed");
-            Need(engendroArt.uvRect.width<.90f &&
-                engendroArt.uvRect.height<.90f,
-                "Stage 15 crops the original gray studio margins so the real creature is visually prominent");
+                referencePortrait && engendroArt.texture==referencePortrait &&
+                referencePortrait.width>=1024 && referencePortrait.height>=1024,
+                "Stage15 actually displays the selected reference-derived creature illustration");
+            Need(engendroArt.uvRect==new Rect(0,0,1,1) && !referencePortrait.isReadable,
+                "Authored transparent portrait needs no destructive studio-key or extra readable mobile texture");
+            var portraitBytes=File.ReadAllBytes("Assets/Eldoria/Resources/EldoriaRetention/engendro-reference-v3.png");
+            using(var sha=System.Security.Cryptography.SHA256.Create())
+                Need(BitConverter.ToString(sha.ComputeHash(portraitBytes)).Replace("-","").ToLowerInvariant()==
+                    "889e026b580b30c64b5b8966a68d67e81910fd15118c44c807433dd17d7139d4",
+                    "Visible illustrated creature comes from the exact retained reference-derived PNG");
+            Need(hud.GetComponentsInChildren<UnityEngine.UI.Image>(true).Any(x=>
+                x.name=="Reference encounter skin / visual only" && x.gameObject.activeInHierarchy &&
+                x.enabled && !x.raycastTarget && x.type==UnityEngine.UI.Image.Type.Sliced &&
+                x.sprite && x.sprite.texture.name=="encounter-panel-v3"),
+                "Actual illustrated encounter skin renders beneath live creature/data/buttons without stealing clicks");
             var currentNumber=hud.GetComponentsInChildren<RoyalText>(true)
                 .FirstOrDefault(x=>x.name=="Current live stage");
             Need(currentNumber!=null && currentNumber.gameObject.activeInHierarchy &&
