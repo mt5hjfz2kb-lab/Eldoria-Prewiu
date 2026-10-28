@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T00:46:00+01:00",
+  "updated_at": "2026-10-28T01:00:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1733,7 +1733,9 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
         ".github/workflows/early-retention-native.yml",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs.meta"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs.meta",
+        "Unity/Assets/Eldoria/Resources/EldoriaRetention.meta",
+        "Unity/Assets/Eldoria/Resources/EldoriaRetention/**"
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
       "last_handoff": "Dedicated Unity 6000.3.23f1 native scene screenshot and EditMode validation, source branch #120, exclusive Windows owner until QA completes; do not alter PR119.",
