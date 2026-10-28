@@ -235,7 +235,14 @@ namespace Eldoria.ReferenceClean {
    var safe=UIVisibleSceneViewport();
    if(!camera||safe.width<=.08f||safe.height<=.08f)return;
    var points=FocusPoints(target);
-   if(!ProjectFocus(camera,points,out var projected))return;
+   if(!ProjectFocus(camera,points,out var projected)){
+    // A selected world site can lie behind the current near-view camera.
+    // Move to its real site before fitting; rejecting projection here made
+    // distant quarry/forest actions impossible to reveal from the objective.
+    if(!InWorld)return;
+    WorldNavigation.PanTo(target.transform.position);
+    if(!ProjectFocus(camera,points,out projected))return;
+   }
    // Focus against the actual unobstructed HUD rectangle, not the whole screen.
    // Terrain-wide camera clamps can reverse the final adjustment when the
    // selected Bastion roof is close to the upper chapter panel.
@@ -284,6 +291,18 @@ namespace Eldoria.ReferenceClean {
      AddFocusRenderers(left?p.LeftAvailable:p.RightAvailable,points);
     }
    }else{
+    // Production resource models follow their saved logical sites; older
+    // authored scenery is no longer the selection's rendered geometry.
+    if(id=="forest-valoria"||id=="quarry-valoria"||
+       id.StartsWith("region1:wood:",StringComparison.Ordinal)||
+       id.StartsWith("region1:stone:",StringComparison.Ordinal)){
+     var liveVisual=WorldRoot.GetComponentsInChildren<Transform>(true)
+      .FirstOrDefault(x=>x.name=="Production resource visual "+id);
+     if(liveVisual)AddFocusRenderers(liveVisual.gameObject,points);
+     var hit=target.GetComponent<Collider>();
+     if(hit&&hit.enabled)AddFocusBox(hit.bounds,Matrix4x4.identity,points);
+     if(points.Count>0)return points;
+    }
     if(id=="valoria-map-city"){
      AddFocusRenderers(WorldBastionOne,points);AddFocusRenderers(WorldBastionTwo,points);AddFocusRenderers(WorldSawmill,points);
     }else{

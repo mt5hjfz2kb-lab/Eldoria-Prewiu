@@ -22,6 +22,7 @@ namespace Eldoria.World4XCanon
         readonly Dictionary<string,GameObject> prefabs=new Dictionary<string,GameObject>();
         ValoriaIntegratedWorld host;
         ICommandGateway gateway;
+        RegionOneResourcePlacement placement;
         float nextSnapshot;
         public static void Install(Transform parent,ValoriaIntegratedWorld host,RegionOneResourcePlacement placement)
         {
@@ -36,6 +37,7 @@ namespace Eldoria.World4XCanon
             }
             var service=parent.gameObject.AddComponent<RegionOneCreaturePopulation>();
             service.host=host;
+            service.placement=placement;
             service.prefabs["boar:near"]=boarNear;
             service.prefabs["boar:far"]=boarFar;
             service.prefabs["spawnling:near"]=spawnNear;
@@ -61,7 +63,12 @@ namespace Eldoria.World4XCanon
             {
                 gateway=host.City.Gateway;
                 if(gateway is LocalGateway local&&local.Snapshot().WorldId=="world-local")
+                {
+                    // Reload replaces the gateway, including its runtime services.
+                    // Reattach the same terrain authority before restoring population.
+                    local.ConfigureLocalCreatureRespawn(placement,TimeSpan.FromMinutes(15));
                     local.EnsureLocalCreaturePopulation(18,18);
+                }
             }
             var state=gateway.Snapshot();
             float zoom=host.WorldCamera.orthographicSize;
