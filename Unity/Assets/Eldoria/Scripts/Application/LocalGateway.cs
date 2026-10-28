@@ -341,19 +341,19 @@ namespace Eldoria.Application
                     if(parts.Length>3)return Fail("Composición desconocida");
                     if(parts.Length==3)marchHero=parts[2];
                     if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))return Fail("Héroe no disponible");
-                    state.PreparedHeroId = marchHero;
-                    state.PreparedTroops = state.Available.Copy();
-                    state.PreparedTroops.ArcherT1 = marchArchers;
-                    // Only the expressly selected unlocked T1 unit is assigned
-                    // in the new composition editor. Legacy full-stack marches
-                    // retain their historical behavior and save compatibility.
-                    if(command.TargetId != "march-main")
+                    var nextTroops=state.Available.Copy();
+                    nextTroops.ArcherT1=marchArchers;
+                    // Only explicitly selected T1 for this editor; legacy full-stack
+                    // configs remain valid when their combined total fits capacity.
+                    if(command.TargetId!="march-main")
                     {
-                        state.PreparedTroops.ArcherT2 = 0;
-                        state.PreparedTroops.ArcherT3 = 0;
+                        nextTroops.ArcherT2=0;
+                        nextTroops.ArcherT3=0;
                     }
-                    if(!MarchCapacityRules.Fits(state.PreparedTroops,state.Available,MarchCapacityRules.Capacity(state,marchHero)))
+                    if(!MarchCapacityRules.Fits(nextTroops,state.Available,MarchCapacityRules.Capacity(state,marchHero)))
                         return Fail("La marcha supera la capacidad del héroe o no tiene tropas disponibles");
+                    state.PreparedHeroId=marchHero;
+                    state.PreparedTroops=nextTroops;
                     state.MarchConfigured = true;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.MarchConfirmed = true;
@@ -480,6 +480,8 @@ namespace Eldoria.Application
             if(marchRoutes!=null&&!marchRoutes.TryRoute(Snapshot(),targetId,out planned))return false;
             if(planned==null)return false;
             if(!MarchCapacityRules.CanStart(state,clock.UtcTicks))return false;
+            // Never attack or resolve the same unique creature twice in parallel.
+            if(MarchTargetActive(targetId)&&!IsWoodTarget(targetId)&&!IsStoneTarget(targetId))return false;
             bool usePrepared=(targetId=="engendro-valoria"||IsChapterThreeTarget(targetId))&&state.MarchConfigured;
             string hero=usePrepared?state.PreparedHeroId:"aldric";
             var troops=usePrepared?state.PreparedTroops.Copy():
