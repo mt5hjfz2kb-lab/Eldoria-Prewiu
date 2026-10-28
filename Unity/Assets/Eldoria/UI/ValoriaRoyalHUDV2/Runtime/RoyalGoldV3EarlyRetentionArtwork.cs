@@ -49,6 +49,14 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             for(int i=1;i<19;i++)v.AddTriangle(o+20,o+20+i,o+20+i+1);
         }
+        void InkStroke(VertexHelper v,Vector2 from,Vector2 to,float thickness,Color ink)
+        {
+            if((to-from).sqrMagnitude<.0001f)return;
+            var direction=(to-from).normalized;
+            var normal=new Vector2(-direction.y,direction.x)*(thickness*.5f);
+            Tri(v,from-normal,from+normal,to+normal,ink);
+            Tri(v,from-normal,to+normal,to-normal,ink);
+        }
         void Tree(VertexHelper v,float x,float y,float h,Color wood,Color leaves)
         {
             Q(v,x-h*.045f,y,h*.09f,h*.55f,wood,wood);
@@ -94,10 +102,31 @@ namespace Eldoria.UI.RoyalGold.V2
                     new Vector2(x+w*.67f,y+h*.50f),new Color(.32f,.42f,.34f,.78f));
                 Tri(vh,new Vector2(x+w*.50f,y+h*.26f),new Vector2(x+w*.70f,y+h*.47f),
                     new Vector2(x+w*.78f,y+h*.25f),new Color(.25f,.36f,.30f,.8f));
-                for(int i=0;i<4;i++){
-                    float px=x+w*(.25f+i*.16f),py=y+h*(.33f+(i%3)*.12f);
-                    Diamond(vh,px,py,Mathf.Min(w,h)*.035f,new Color(.49f,.21f,.16f,1));
+                // A quiet hand-inked journey connects the four real map
+                // destinations. It is scenic, not a new interactive hotspot.
+                var stations=new Vector2[4];
+                for(int i=0;i<stations.Length;i++)
+                    stations[i]=new Vector2(x+w*(.25f+i*.16f),y+h*(.33f+(i%3)*.12f));
+                for(int i=0;i<stations.Length-1;i++)
+                {
+                    for(int dash=0;dash<8;dash+=2)
+                    {
+                        InkStroke(vh,Vector2.Lerp(stations[i],stations[i+1],dash/8f),
+                            Vector2.Lerp(stations[i],stations[i+1],(dash+1)/8f),
+                            Mathf.Clamp(Mathf.Min(w,h)*.007f,1f,3.5f),
+                            new Color(.40f,.27f,.17f,.70f));
+                    }
                 }
+                // Compass rose in the margin gives the parchment a believable
+                // cartographer's identity without expensive 3D objects.
+                float compassX=x+w*.20f,compassY=y+h*.72f;
+                Coin(vh,compassX,compassY,Mathf.Clamp(Mathf.Min(w,h)*.045f,6f,21f),
+                    new Color(.78f,.64f,.43f,1),new Color(.45f,.31f,.18f,1));
+                Diamond(vh,compassX,compassY,Mathf.Clamp(Mathf.Min(w,h)*.032f,4f,14f),
+                    new Color(.24f,.35f,.38f,1));
+                for(int i=0;i<stations.Length;i++)
+                    Diamond(vh,stations[i].x,stations[i].y,Mathf.Min(w,h)*.035f,
+                        new Color(.49f,.21f,.16f,1));
                 Crest(vh,x+w*.51f,y+h*.49f,Mathf.Min(w,h)*.16f,antique);
             }
             else
@@ -108,6 +137,15 @@ namespace Eldoria.UI.RoyalGold.V2
                     new Color(.12f,.22f,.28f,1);
                 Q(vh,x,y+h*.27f,w,h*.73f,deep,sky);
                 Q(vh,x,y,w,h*.27f,new Color(.12f,.16f,.13f,1),grass);
+                // Distant light and two landscape planes add atmosphere
+                // without texture bandwidth, additional cameras or animation.
+                Coin(vh,x+w*.78f,y+h*.83f,Mathf.Clamp(Mathf.Min(w,h)*.060f,8f,36f),
+                    new Color(.79f,.62f,.38f,.80f),new Color(.44f,.37f,.32f,.25f));
+                Tri(vh,new Vector2(x,y+h*.27f),new Vector2(x+w*.25f,y+h*.47f),
+                    new Vector2(x+w*.54f,y+h*.27f),new Color(.15f,.24f,.22f,1));
+                Tri(vh,new Vector2(x+w*.39f,y+h*.27f),
+                    new Vector2(x+w*.77f,y+h*.42f),
+                    new Vector2(x+w,y+h*.27f),new Color(.12f,.20f,.21f,1));
                 // A receding stone road and a single tower, with clear depth
                 // even when the banner is shown on a narrow mobile viewport.
                 Tri(vh,new Vector2(x+w*.18f,y),new Vector2(x+w*.51f,y+h*.44f),
@@ -130,6 +168,18 @@ namespace Eldoria.UI.RoyalGold.V2
                     Q(vh,x+w*(.46f+k*.043f),y+h*.76f,w*.027f,h*.055f,
                         new Color(.51f,.47f,.42f,1),new Color(.75f,.69f,.57f,1));
                 Q(vh,x+w*.519f,y+h*.40f,w*.029f,h*.17f,shadow,shadow);
+                // Fine hand-authored masonry and a single lit window reinforce
+                // the Valoria stone vocabulary instead of a featureless cuboid.
+                for(int row=0;row<5;row++)
+                {
+                    float wallY=y+h*(.43f+row*.052f);
+                    Q(vh,x+w*.475f,wallY,w*.038f,h*.005f,
+                        new Color(.28f,.27f,.25f,1),new Color(.46f,.41f,.35f,1));
+                    Q(vh,x+w*.556f,wallY+h*.022f,w*.033f,h*.004f,
+                        new Color(.28f,.27f,.25f,1),new Color(.46f,.41f,.35f,1));
+                }
+                Q(vh,x+w*.574f,y+h*.58f,w*.014f,h*.035f,
+                    new Color(.54f,.37f,.19f,1),new Color(.96f,.76f,.41f,1));
                 Crest(vh,x+w*.53f,y+h*.59f,Mathf.Min(w,h)*.11f,antique);
                 if(BossEncounter)
                 {
