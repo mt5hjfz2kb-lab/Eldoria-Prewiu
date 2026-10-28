@@ -576,8 +576,8 @@ namespace Eldoria.UI.RoyalGold.V2
             if(engendroPortrait)
             {
                 var frame=engendroPortrait.transform.parent as RectTransform;
-                float w=Mathf.Min(heroScene.rect.width*.30f,portrait?210f:235f);
-                float h=Mathf.Min(heroScene.rect.height*.37f,portrait?170f:215f);
+                float w=Mathf.Min(heroScene.rect.width*.37f,portrait?215f:330f);
+                float h=Mathf.Min(heroScene.rect.height*.49f,portrait?175f:310f);
                 TL(frame,portrait?16f:26f,
                     Mathf.Max(90f,heroScene.rect.height-h-19f),w,h);
             }
@@ -797,8 +797,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     // scene. Shift the 25 playable stage markers up so that
                     // none of them is hidden behind a decorative creature.
                     float sceneHeight=Mathf.Max(1f,heroScene.rect.height);
-                    float portraitHeight=Mathf.Min(sceneHeight*.37f,
-                        height>width?170f:215f);
+                    float portraitHeight=Mathf.Min(sceneHeight*.49f,
+                        height>width?175f:310f);
                     float clearance=Mathf.Clamp(
                         (portraitHeight+32f)/sceneHeight,.27f,.64f);
                     bool wide=width>height;
