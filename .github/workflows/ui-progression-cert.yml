@@ -107,7 +107,8 @@ jobs:
               'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs',
               'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs',
               'tools/early-retention/native-request.json','qa/e2e-full-arc1.js',
-              'pipeline/active-workstreams.json','.github/workflows/ui-progression-cert.yml'
+              'pipeline/active-workstreams.json','.github/workflows/ui-progression-cert.yml',
+              '.github/workflows/early-retention-native.yml'
             ]);
             const nativeOwned=p=>retainedModule.has(p) ||
               p.startsWith('Unity/Assets/Eldoria/Resources/EldoriaRetention/') ||
@@ -120,6 +121,11 @@ jobs:
               if(at<0)throw Error('Shared certificate job missing');
               return s.slice(at).replace(/^    needs:.*\n/m,'').replace(/^    if:.*\n/m,'');
             };
+            const nativeWorkflow='.github/workflows/early-retention-native.yml';
+            const oldNative=git('git',['show',certified+':'+nativeWorkflow],{encoding:'utf8'});
+            const newNative=git('git',['show','HEAD:'+nativeWorkflow],{encoding:'utf8'});
+            const nativeWorkflowUnchanged=oldNative===newNative
+              .replace('Count -ne 19','Count -ne 17').replace('Expected 19 genuine','Expected 17 genuine');
             let nativeTreeMatches=true;
             if(process.env.REQUIRE_NATIVE_TREE==='true') {
               const nativeSource='c1da0a450a9b752f2759429dad06c6b42ea065ac';
@@ -127,7 +133,7 @@ jobs:
               nativeTreeMatches=git('git',['rev-parse',nativeSource+':Unity'],{encoding:'utf8'}).trim()===
                 git('git',['rev-parse','HEAD:Unity'],{encoding:'utf8'}).trim();
             }
-            heavy=!nativeTreeMatches || files.some(p=>!nativeOwned(p)) || originalJob(before)!==originalJob(current);
+            heavy=!nativeTreeMatches || !nativeWorkflowUnchanged || files.some(p=>!nativeOwned(p)) || originalJob(before)!==originalJob(current);
             console.log('Changed paths: '+files.join(', '));
             if(!heavy)console.log('ELDORIA_SHARED_UI_CERTIFICATE_REUSED run40700893871 source='+certified+
               '; all shared inputs and entire certification job unchanged; dedicated Retention native proof remains required');

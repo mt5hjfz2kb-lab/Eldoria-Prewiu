@@ -94,7 +94,8 @@ namespace Eldoria.ReferenceClean.Editor
         }
         static void Screenshot(ValoriaIntegratedWorld h,string name,int w,int he)
         {
-            var path=Path.Combine(Output,name+(w<500?"-phone":w>he?"-horizontal":"-vertical")+".png");
+            var path=Path.Combine(Output,name+(w>he?(he<500?"-phone-landscape":"-horizontal"):
+                w<500?"-phone":"-vertical")+".png");
             // Supply an ABSOLUTE evidence path: the shared renderer uses
             // Path.Combine(Ev, name), which correctly preserves a rooted name.
             // This captures directly into the retention workflow artifact.
@@ -114,7 +115,7 @@ namespace Eldoria.ReferenceClean.Editor
                 h.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>().SynchronizeLayout();
                 Canvas.ForceUpdateCanvases();
                 h.PlayerCamera.Render();h.PlayerCamera.Render();
-                ValidateTextLayout(h,w);
+                ValidateTextLayout(h,w,he);
             });
             Need(File.Exists(path)&&new FileInfo(path).Length>Math.Min(30000,w*he/40),
                 "Native Unity "+w+"x"+he+" screenshot exists: "+name);
@@ -135,7 +136,7 @@ namespace Eldoria.ReferenceClean.Editor
             }
             finally{Object.Destroy(tex);}
         }
-        static void ValidateTextLayout(ValoriaIntegratedWorld h,int captureWidth)
+        static void ValidateTextLayout(ValoriaIntegratedWorld h,int captureWidth,int captureHeight)
         {
             var page=h.Hud.GetComponentsInChildren<RectTransform>(true)
                 .First(x=>x.name=="Early retention / independent destination");
@@ -159,7 +160,7 @@ namespace Eldoria.ReferenceClean.Editor
             {
                 if(string.IsNullOrWhiteSpace(label.text) ||
                     label.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.01f))continue;
-                if(captureWidth<=400)
+                if(Math.Min(captureWidth,captureHeight)<=400)
                 {
                     var canvas=h.Hud.GetComponent<Canvas>();
                     float ownScale=Mathf.Abs(label.transform.lossyScale.y)/
@@ -319,6 +320,7 @@ namespace Eldoria.ReferenceClean.Editor
             Screenshot(h,"vigilants-stage15-engendro",1600,900);
             Screenshot(h,"vigilants-stage15-engendro",900,1600);
             Screenshot(h,"vigilants-stage15-engendro",390,844);
+            Screenshot(h,"vigilants-stage15-engendro",844,390);
             ui.Close();
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Scouts);
             Need(ui.IsOpen&&ui.OpenDestination==RoyalGoldV3EarlyRetentionScreens.Destination.Scouts,
@@ -359,6 +361,7 @@ namespace Eldoria.ReferenceClean.Editor
             }),"Real map miniatures preserve the authored image aspect without stretching");
             Screenshot(h,"scout-mission-board",900,1600);
             Screenshot(h,"scout-mission-board",390,844);
+            Screenshot(h,"scout-mission-board",844,390);
             yield return null; // real rendered frame before tapping the restored Canvas
             for(int i=1;i<=3;i++)
             {
@@ -417,7 +420,7 @@ namespace Eldoria.ReferenceClean.Editor
             Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,
                 "No duplicate RoyalHUD/Canvas created");
             Need(LayoutFailures.Count==0,
-                "All 17 genuine capture layouts passed every typography/visibility check; failures="+
+                "All 19 genuine capture layouts passed every typography/visibility check; failures="+
                 string.Join("; ",LayoutFailures.Distinct()));
             File.WriteAllText(Path.Combine(Output,"result.txt"),
                 "EARLY_RETENTION_NATIVE_PASS\n"+string.Join("\n",Checks)+"\nART_APPROVED=false\n");

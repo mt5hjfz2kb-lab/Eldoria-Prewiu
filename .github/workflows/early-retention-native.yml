@@ -148,7 +148,7 @@ jobs:
           if(-not(Test-Path $proof)){throw 'Actual game screenshot acceptance did not finish'}
           if(-not((Get-Content $proof -Raw).Contains('EARLY_RETENTION_NATIVE_PASS'))){throw 'No native acceptance proof'}
           $png=@(Get-ChildItem $env:EARLY_RETENTION_EVIDENCE -Filter '*.png')
-          if($png.Count -ne 17){throw "Expected 17 genuine Unity screenshots (five states in landscape, portrait, phone plus sending and ready scout states on phone), got $($png.Count)"}
+          if($png.Count -ne 19){throw "Expected 19 genuine Unity screenshots (five states in landscape, portrait, phone plus sending and ready scout states on phone), got $($png.Count)"}
       - name: Preserve original Unity Search state
         if: always()
         shell: powershell

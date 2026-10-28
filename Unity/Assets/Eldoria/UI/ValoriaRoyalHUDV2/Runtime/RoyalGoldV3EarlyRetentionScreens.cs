@@ -60,6 +60,7 @@ namespace Eldoria.UI.RoyalGold.V2
         GameObject screen;
         float width=-1,height=-1,nextUpdate;
         float lastSafeWidth=-1,lastSafeHeight=-1;
+        bool compactLandscape;
         string notice="";
         static readonly Color Ivory=new Color(.96f,.91f,.80f,1);
         static readonly Color Gold=new Color(.87f,.70f,.40f,1);
@@ -560,7 +561,12 @@ namespace Eldoria.UI.RoyalGold.V2
             // Give only this room a stable portrait width, leaving the shared
             // HUD, camera, scaler and safe-area/shortcut controls untouched.
             bool portrait=lastSafeHeight>lastSafeWidth;
-            float roomScale=portrait?Mathf.Min(1f,lastSafeWidth/800f):1f;
+            float pixelScale=Hud.GetComponent<Canvas>().scaleFactor;
+            compactLandscape=!portrait &&
+                ((UnityEngine.Application.isMobilePlatform && lastSafeWidth/lastSafeHeight>=1.55f) ||
+                 (lastSafeWidth*pixelScale<1100f && lastSafeHeight*pixelScale<650f));
+            float roomScale=portrait?Mathf.Min(1f,lastSafeWidth/800f):
+                compactLandscape?lastSafeHeight/600f:1f;
             width=lastSafeWidth/roomScale;height=lastSafeHeight/roomScale;
             panelRoot.anchorMin=panelRoot.anchorMax=new Vector2(.5f,.5f);
             panelRoot.pivot=new Vector2(.5f,.5f);
@@ -570,9 +576,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // Every orientation-dependent font is assigned on each layout.
             // A phone capture/rotation must not leave its larger subtitle or
             // action labels inside the next landscape rectangles.
-            kicker.fontSize=portrait?26:18;
-            mainActionLabel.fontSize=portrait?28:17;
-            xpLabel.fontSize=portrait?26:17;
+            kicker.fontSize=portrait?26:compactLandscape?20:18;
+            mainActionLabel.fontSize=portrait?28:compactLandscape?22:17;
+            xpLabel.fontSize=portrait?26:compactLandscape?20:17;
             float outer=9f;
             float pw=width-outer*2,ph=height-outer*2;
             var panel=panelRoot;
@@ -593,11 +599,11 @@ namespace Eldoria.UI.RoyalGold.V2
             else
             {
                 TL(heading.rectTransform,20f,18f,pw-170f,44f);
-                heading.fontSize=34;
+                heading.fontSize=compactLandscape?26:34;
                 TL(kicker.rectTransform,20f,61f,pw-35f,27f);
-                TL((RectTransform)back.transform,pw-150f,23f,136f,46f);
+                TL((RectTransform)back.transform,pw-150f,compactLandscape?14f:23f,136f,compactLandscape?68f:46f);
                 backLabel.Put("VOLVER");
-                backLabel.fontSize=17;
+                backLabel.fontSize=compactLandscape?20:17;
             }
             float imageTop=portrait?150f:108f;
             bool scoutsLandscape=!portrait && OpenDestination==Destination.Scouts;
@@ -631,6 +637,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 var frame=engendroPortrait.transform.parent as RectTransform;
                 float w=Mathf.Min(heroScene.rect.width*(portrait?.48f:.37f),portrait?360f:330f);
                 float h=Mathf.Min(heroScene.rect.height*.49f,portrait?360f:310f);
+                float artAspect=engendroTexture?engendroUvRect.width*engendroTexture.width/
+                    Mathf.Max(1f,engendroUvRect.height*engendroTexture.height):1f;
+                if(w/h>artAspect)w=h*artAspect;else h=w/artAspect;
                 TL(frame,portrait?16f:26f,
                     Mathf.Max(90f,heroScene.rect.height-h-19f),w,h);
             }
@@ -657,6 +666,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(portrait)
                 TL(infoCard,bodyX,imageTop+scenicHeight+10f,
                     bodyWidth,ph-(imageTop+scenicHeight+58f));
+            else if(compactLandscape)
+                TL(infoCard,scoutsLandscape?18f:pw*.48f,imageTop+8f,
+                    scoutsLandscape?pw-36f:pw*.50f-20f,ph-imageTop-56f);
             else if(scoutsLandscape)
                 TL(infoCard,18f,ph*.49f,pw-36f,ph*.51f-61f);
             else
@@ -692,6 +704,18 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL((RectTransform)claimXp.transform,14f,Mathf.Max(288f,ih-62f),iw-28f,44f);
                 chapter.fontSize=32;opponent.fontSize=26;formation.fontSize=26;
                 reward.fontSize=22;passive.fontSize=21;battleFeedback.fontSize=19;
+            }
+            else if(vigilantsLandscape && compactLandscape)
+            {
+                TL(chapter.rectTransform,14f,10f,iw-28f,32f);
+                TL(opponent.rectTransform,14f,46f,iw-28f,58f);
+                TL(formation.rectTransform,14f,108f,iw-28f,28f);
+                TL(reward.rectTransform,14f,144f,iw-28f,52f);
+                TL(passive.rectTransform,14f,202f,iw-28f,50f);
+                TL((RectTransform)mainAction.transform,iw*.51f,ih-80f,iw*.46f,68f);
+                TL((RectTransform)claimXp.transform,14f,ih-80f,iw*.46f,68f);
+                chapter.fontSize=24;opponent.fontSize=24;formation.fontSize=20;
+                reward.fontSize=20;passive.fontSize=20;
             }
             else if(vigilantsLandscape)
             {
@@ -737,9 +761,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     TL((RectTransform)scoutThumbnails[i].transform,
                         inset,52f,cardW-40f,Mathf.Max(54f,cardH*.30f));
                     TL(scoutCards[i].rectTransform,inset,
-                        63f+cardH*.30f,cardW-40f,58f);
+                        63f+cardH*.30f,cardW-40f,compactLandscape?76f:58f);
                     TL((RectTransform)scoutActions[i].transform,
-                        inset,cardH-61f,cardW-40f,46f);
+                        inset,cardH-(compactLandscape?83f:61f),cardW-40f,compactLandscape?68f:46f);
                     scoutTitles[i].fontSize=24;
                     scoutTitles[i].alignment=TextAnchor.MiddleCenter;
                     scoutCards[i].fontSize=19;
@@ -770,7 +794,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     paintedScouts!=null);
             }
             TL(introduction.rectTransform,20f,100f,pw-40f,38f);
-            footer.fontSize=portrait?26:18;
+            footer.fontSize=portrait?26:compactLandscape?20:18;
             TL(footer.rectTransform,20f,ph-(portrait?50f:39f),pw-40f,portrait?40f:25f);
         }
         void Render(bool explicitRefresh)
@@ -838,7 +862,7 @@ namespace Eldoria.UI.RoyalGold.V2
             claimXp.gameObject.SetActive(vig);
             // Portrait players receive battle feedback through the existing
             // result banner; do not overlap compact XP/action controls.
-            battleFeedback.gameObject.SetActive(vig && width>height);
+            battleFeedback.gameObject.SetActive(vig && width>height && !compactLandscape);
             for(int i=0;i<3;i++)
             {
                 scoutCards[i].transform.parent.gameObject.SetActive(!vig);
@@ -882,7 +906,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(currentMilestoneLabel)
                 {
                     currentMilestoneLabel.Put(liveStage.ToString());
-                    currentMilestoneLabel.fontSize=height>width?28:17;
+                    currentMilestoneLabel.fontSize=height>width?28:compactLandscape?22:17;
                     currentMilestoneLabel.gameObject.SetActive(true);
                     var point=chapterTrail.StagePosition(liveStage);
                     Pos(currentMilestoneLabel.rectTransform,new Vector2(.5f,.5f),
@@ -893,7 +917,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     int bossStep=(i+1)*5;
                     var label=bossMilestoneLabels[i];
                     label.gameObject.SetActive(bossStep!=liveStage);
-                    label.fontSize=height>width?26:16;
+                    label.fontSize=height>width?26:compactLandscape?20:16;
                     var point=chapterTrail.StagePosition(bossStep);
                     Pos(label.rectTransform,new Vector2(.5f,.5f),
                         new Vector2(.5f,.5f),point.x,point.y,40f,38f);
