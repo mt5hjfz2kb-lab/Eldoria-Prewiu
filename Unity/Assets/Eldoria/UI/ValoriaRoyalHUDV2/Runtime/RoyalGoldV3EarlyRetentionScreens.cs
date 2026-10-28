@@ -43,6 +43,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RawImage engendroPortrait;
         Texture2D engendroTexture;
         Texture2D engendroCutout;
+        Rect engendroUvRect=new Rect(0f,0f,1f,1f);
         readonly RoyalText[] scoutActionLabels=new RoyalText[3];
         readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
         readonly string[] scoutIds=new string[3];
@@ -88,12 +89,14 @@ namespace Eldoria.UI.RoyalGold.V2
         // Remove only bright low-chroma backdrop pixels ONCE, retaining the
         // original model, its violet corruption and all canonical gameplay.
         // No external service, shader, GPU readback or new art is required.
-        static Texture2D TransparentEngendro(Texture2D source)
+        static Texture2D TransparentEngendro(Texture2D source,out Rect portraitUv)
         {
+            portraitUv=new Rect(0f,0f,1f,1f);
             if(!source)return null;
             try
             {
                 var pixels=source.GetPixels32();
+                int minX=source.width,minY=source.height,maxX=-1,maxY=-1;
                 for(int i=0;i<pixels.Length;i++)
                 {
                     var p=pixels[i];
@@ -104,7 +107,28 @@ namespace Eldoria.UI.RoyalGold.V2
                     if(chroma<25 && light>125)p.a=0;
                     else if(chroma<38 && light>93)
                         p.a=(byte)Mathf.Clamp((125-light)*8,0,255);
+                    if(p.a>100)
+                    {
+                        int x=i%source.width,y=i/source.width;
+                        minX=Math.Min(minX,x);maxX=Math.Max(maxX,x);
+                        minY=Math.Min(minY,y);maxY=Math.Max(maxY,y);
+                    }
                     pixels[i]=p;
+                }
+                if(maxX>=minX&&maxY>=minY)
+                {
+                    // Trim studio negative space so a small original model
+                    // reads like the substantial enemy in the approved art.
+                    // UV crop is reused by RawImage; source pixels stay owned
+                    // by the unchanged canonical creature asset.
+                    float dx=Mathf.Max(4f,(maxX-minX+1)*.16f);
+                    float dy=Mathf.Max(4f,(maxY-minY+1)*.16f);
+                    float left=Mathf.Clamp01((minX-dx)/source.width);
+                    float bottom=Mathf.Clamp01((minY-dy)/source.height);
+                    float right=Mathf.Clamp01((maxX+1f+dx)/source.width);
+                    float top=Mathf.Clamp01((maxY+1f+dy)/source.height);
+                    portraitUv=new Rect(left,bottom,Mathf.Max(.04f,right-left),
+                        Mathf.Max(.04f,top-bottom));
                 }
                 var cutout=new Texture2D(source.width,source.height,
                     TextureFormat.RGBA32,false,false);
@@ -306,7 +330,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // not an invented stone golem. Reuse its actual authored image.
             engendroTexture=Resources.Load<Texture2D>(
                 "EldoriaRetention/engendro-portrait");
-            engendroCutout=TransparentEngendro(engendroTexture);
+            engendroCutout=TransparentEngendro(engendroTexture,out engendroUvRect);
             var creature=Panel(heroScene,"Lore-approved Engendro portrait");
             // The original Breach creature is now a transparent silhouette:
             // do not surround it with a studio-like gray/gold square over the
@@ -318,7 +342,8 @@ namespace Eldoria.UI.RoyalGold.V2
             engendroPortrait=creatureArt.gameObject.AddComponent<RawImage>();
             engendroPortrait.raycastTarget=false;
             engendroPortrait.texture=engendroCutout?engendroCutout:engendroTexture;
-            engendroPortrait.uvRect=new Rect(0f,0f,1f,1f);
+            engendroPortrait.uvRect=engendroCutout?engendroUvRect:
+                new Rect(0f,0f,1f,1f);
             Stretch(creatureArt,4f);
             creature.gameObject.SetActive(false);
             victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
