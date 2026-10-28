@@ -1054,8 +1054,6 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutDiscoveryRibbon.gameObject.SetActive(discovered);
                 if(discovered)
                 {
-                    string finding=EarlyRetentionRules.ScoutReportHeading(
-                        p.LatestScoutKind,p.LatestScoutVariant);
                     scoutDiscoveryRibbonText.fontSize=height>width?25:compactLandscape?22:18;
                     scoutDiscoveryRibbonText.Put("HALLAZGOS DEL REINO · "+p.ScoutDiscoveries);
                 }
