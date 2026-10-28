@@ -27,3 +27,16 @@ Los valores se suman al escalado existente; **`EarlyRetentionRules.Stage` crea e
 
 ## Coordinación
 Este trabajo es **PR125 apilada sobre PR124**: ambas tocan código militar que debe seguir siendo único. El runner Windows Unity está reservado a PR122 de Aldric y no puede ser robado. Cuando PR124 cierre, retarget PR125 a `main`; conservar los tests y la composición originales de PR120. Presupuesto externo añadido: 0 €.
+
+## Implementación adicional de presentación y guardarraíles
+
+- La página de Vigilantes enseña el **poder de la marcha que el combate utilizará realmente**, `tropas seleccionadas / capacidad del héroe` y el héroe correspondiente. No muestra el Poder Total del reino como si fuera el del destacamento. El botón `COMBATIR` queda deshabilitado si la composición guardada ya no cabe o las tres ranuras están ocupadas, con una indicación breve de por qué.
+- Antes de los cinco guardianes hay una **pista corta en la cabecera** (defensa/ruptura/vida/ataque/equilibrio) que cabe en móvil; el detalle completo queda en el informe real tras combatir. Los resultados no comparan el poder de la marcha y el índice del enemigo como magnitudes equivalentes.
+- `Crónica Real / combat outcome` sigue siendo el panel de victoria y derrota existente, con sus colores, desvanecimiento y curva de entrada, y ahora enseña datos procedentes del `BattleReportState`.
+- La mesa añade placas azul noche y marcos dorados, sellos burdeos reales por los umbrales 1/3/6 y un pulso de menos de un segundo **solo al reclamar un hallazgo auténtico**; las figuras no interceptan botones. Muestra la última crónica de los exploradores incluso después de salir y volver.
+- Las ilustraciones de fondo, Engendro, pergaminos y acciones permanecen exactamente los assets previos. No nuevos modelos 3D ni efectos de partículas costosos.
+
+## Verificación con evidencias del candidato
+- `retention-engagement-domain.yml` ejecuta el **dominio y gateway de verdad** en Ubuntu con los nuevos casos (5 guardianes distintos, 100 arqueros mejorados todavía ganan al jefe final, informes comprobables y descubrimientos persistentes sin recompensas duplicadas). Ejecuciones del 28/10 confirmadas SUCCESS en GitHub.
+- `EarlyRetentionEngagementNativeCapture.cs` (editor real, partida temporal) prepara capturas de la defensa del guardián 5, el combate real con su botón, el Engendro del 15 y Exploradores antes/después de enviar y cobrar un encargo. La prueba exige insignias/relato real y nueve capturas PNG, incluidas vistas 390×844. `retention-engagement-native.yml` conserva logs/capturas en artefacto y **rechaza apropiarse del ejecutor Unity** si la reserva exclusiva continúa en la PR122.
+- `ART_APPROVED` no se inventa por tener CI del dominio. Hay que abrir los nueve PNG y contrastar legibilidad, solapamientos y motivación de la composición con la referencia antes de convertir PR125 en lista para fusionarse.
