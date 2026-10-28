@@ -160,6 +160,15 @@ namespace Eldoria.Domain
                 case 25:return "Poder equilibrado: prepara tu mejor héroe y tropas.";
                 default:return "Estudia su rasgo y ajusta tu formación.";}
         }
+        public static string GuardianSignal(int step)
+        {
+            switch(step){case 5:return "DEFENSA ALTA · USA RUPTURA";
+                case 10:return "ASALTO VELOZ · MÁS VIDA";
+                case 15:return "RUPTURA PELIGROSA · DEFENSA";
+                case 20:return "MUCHA VIDA · DAÑO SOSTENIDO";
+                case 25:return "MANDO CORRUPTO · PODER";
+                default:return "ESTUDIA AL ENEMIGO";}
+        }
         public static string CombatInsight(VigilantStage stage,CombatStats army,CombatReport result)
         {
             string outcome=result.Won?"VICTORIA":"DERROTA";
