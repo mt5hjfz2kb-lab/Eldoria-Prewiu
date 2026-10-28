@@ -25,7 +25,19 @@ namespace Eldoria.UI.RoyalGold {
   }
   void OnEnable(){Realm.Info.onClick.AddListener(OpenRealm);Mission.Open.onClick.AddListener(OpenMissions);Settings.onClick.AddListener(OpenSettings);Building.Close.onClick.AddListener(CloseBuilding);Building.Primary.Button.onClick.AddListener(Submit);Modal.Extra.onClick.AddListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.AddListener(SettingsOrMarch);Navigation.Requested+=Open;}
   void OnDisable(){Realm.Info.onClick.RemoveListener(OpenRealm);Mission.Open.onClick.RemoveListener(OpenMissions);Settings.onClick.RemoveListener(OpenSettings);Building.Close.onClick.RemoveListener(CloseBuilding);Building.Primary.Button.onClick.RemoveListener(Submit);Modal.Extra.onClick.RemoveListener(Extra);if(Modal.Secondary)Modal.Secondary.onClick.RemoveListener(SettingsOrMarch);Navigation.Requested-=Open;}
-  void Update(){if(session!=null&&Time.unscaledTime>=next){next=Time.unscaledTime+.25f;Refresh();}if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){if(NarrativeOpen)Extra();else if(Modal.gameObject.activeSelf)Modal.Hide();else CloseBuilding();}}
+  void Update(){
+   if(resetArmed && Time.unscaledTime>resetArmedUntil){
+    resetArmed=false;resetArmedUntil=0f;
+    if(Modal && Modal.gameObject.activeSelf && shown==RoyalSection.Settings)
+     ShowModal(RoyalSection.Settings,false);
+   }
+   if(session!=null&&Time.unscaledTime>=next){next=Time.unscaledTime+.25f;Refresh();}
+   if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){
+    if(NarrativeOpen)Extra();
+    else if(Modal.gameObject.activeSelf){resetArmed=false;resetArmedUntil=0f;Modal.Hide();}
+    else CloseBuilding();
+   }
+  }
   public void SetEnglish(bool value){english=value;Refresh();if(NarrativeOpen){if(cinematic)cinematic.SetEnglish(value);}else if(Modal.gameObject.activeSelf)ShowModal(shown);}
   public void Refresh(){
    if(session==null)return;
