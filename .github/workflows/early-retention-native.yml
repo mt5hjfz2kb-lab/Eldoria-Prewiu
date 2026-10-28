@@ -90,14 +90,19 @@ jobs:
         timeout-minutes: 25
         run: |
           $ErrorActionPreference='Stop'
-          $args=@('-batchmode','-nographics','-quit','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
+          $args=@('-batchmode','-nographics','-projectPath',(Join-Path (Get-Location).Path 'Unity'),
             '-runTests','-testPlatform','editmode','-testFilter','Eldoria.Tests.EarlyRetentionRulesTests',
             '-testResults',(Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.xml'),
             '-logFile',(Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.log'))
           New-Item -ItemType Directory -Force $env:EARLY_RETENTION_EVIDENCE | Out-Null
           $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
           if($p.ExitCode -ne 0){throw "Unity EditMode exit $($p.ExitCode). Read artifact log."}
-          if(-not(Test-Path (Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.xml'))){throw 'No genuine EditMode XML'}
+          if(-not(Test-Path (Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.xml'))){
+            if(Test-Path (Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.log')){
+              Get-Content (Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.log') -Tail 150
+            }
+            throw 'No genuine EditMode XML: Unity quit without actually invoking the test runner'
+          }
           $xml=[xml](Get-Content (Join-Path $env:EARLY_RETENTION_EVIDENCE 'editmode.xml') -Raw)
           if([int]$xml.'test-run'.failed -gt 0 -or [int]$xml.'test-run'.total -lt 7){throw "Early retention test failure/missing tests"}
       - name: Capture actual Unity city HUD, progression unlock and two real independent destinations
