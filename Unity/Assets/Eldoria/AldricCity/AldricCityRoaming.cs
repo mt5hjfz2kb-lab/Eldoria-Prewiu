@@ -8,6 +8,7 @@ using GLTFast;
 using UnityEngine.Networking;
 using Eldoria.ReferenceClean;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Eldoria.AldricCity
 {
@@ -68,7 +69,25 @@ namespace Eldoria.AldricCity
             }
         }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void RegisterCanonicalSceneHook()
+        {
+            // Also handle Test Runner and scene reloads, not just game boot.
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void AttachToInitialScene()
+        {
+            Attach();
+        }
+
+        private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (scene.IsValid()) Attach();
+        }
+
         private static void Attach()
         {
             var live = UnityEngine.Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
