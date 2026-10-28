@@ -852,7 +852,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     Pos(discoveryPinLabels[i].rectTransform,new Vector2(.5f,.5f),
                         new Vector2(.5f,.5f),
                         (px[i]-.5f)*mapW,(py[i]-.5f)*heroScene.rect.height,side+4f,side+4f);
-                    discoveryPinLabels[i].fontSize=portrait?20:17;
+                    // At 390x844 the 800-unit portrait room scales to
+                    // ~0.4875, so 26 units stay above the 12px readability gate.
+                    discoveryPinLabels[i].fontSize=portrait?26:compactLandscape?20:18;
                 }
             }
             if(victoryBanner)
