@@ -412,7 +412,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Show the authored illustration and 25-node route as a meaningful
             // part of a portrait session. Preserve a usable manuscript below it
             // even on shorter phones; no extra scene or asset is introduced.
-            float scenicHeight=portrait?Mathf.Clamp(ph-820f,220f,700f):ph-168f;
+            float scenicHeight=portrait?Mathf.Clamp(ph-640f,220f,880f):ph-168f;
             TL(heroScene,portrait?18f:20f,imageTop,
                 portrait?pw-36f:pw*.44f,scenicHeight);
             if(victoryBanner)
@@ -432,14 +432,36 @@ namespace Eldoria.UI.RoyalGold.V2
                 bodyWidth,portrait?ph-(imageTop+scenicHeight+58f):ph-165f);
             float iw=infoCard.rect.width,ih=infoCard.rect.height;
             if(iw<=0||ih<=0)return;
-            TL(chapter.rectTransform,14f,13f,iw-28f,36f);
-            TL(opponent.rectTransform,14f,52f,iw-28f,47f);
-            TL(formation.rectTransform,14f,101f,iw-28f,34f);
-            TL(reward.rectTransform,14f,138f,iw-28f,35f);
-            TL(passive.rectTransform,14f,182f,iw-28f,50f);
-            TL((RectTransform)mainAction.transform,14f,Mathf.Max(236f,ih-114f),iw-28f,49f);
-            TL((RectTransform)claimXp.transform,14f,Mathf.Max(288f,ih-62f),iw-28f,44f);
-            TL(battleFeedback.rectTransform,14f,Mathf.Max(182f,ih-184f),iw-28f,48f);
+            if(portrait)
+            {
+                // Compact, intentional vertical rhythm: the playable trail/map
+                // remains the hero, while both actions stay fully above the footer.
+                TL(chapter.rectTransform,14f,13f,iw-28f,36f);
+                TL(opponent.rectTransform,14f,52f,iw-28f,47f);
+                TL(formation.rectTransform,14f,101f,iw-28f,34f);
+                TL(reward.rectTransform,14f,138f,iw-28f,35f);
+                TL(passive.rectTransform,14f,182f,iw-28f,50f);
+                TL(battleFeedback.rectTransform,14f,Mathf.Max(182f,ih-184f),iw-28f,48f);
+                TL((RectTransform)mainAction.transform,14f,Mathf.Max(236f,ih-114f),iw-28f,49f);
+                TL((RectTransform)claimXp.transform,14f,Mathf.Max(288f,ih-62f),iw-28f,44f);
+                chapter.fontSize=26;opponent.fontSize=22;formation.fontSize=19;
+                reward.fontSize=20;passive.fontSize=20;battleFeedback.fontSize=18;
+            }
+            else
+            {
+                // Landscape uses the full parchment: important information and
+                // actions do not sit at opposite ends of a vacant dark panel.
+                TL(chapter.rectTransform,22f,24f,iw-44f,44f);
+                TL(opponent.rectTransform,22f,94f,iw-44f,68f);
+                TL(formation.rectTransform,22f,186f,iw-44f,48f);
+                TL(reward.rectTransform,22f,265f,iw-44f,47f);
+                TL(passive.rectTransform,22f,356f,iw-44f,70f);
+                TL(battleFeedback.rectTransform,22f,Mathf.Max(448f,ih-208f),iw-44f,57f);
+                TL((RectTransform)mainAction.transform,22f,ih-128f,iw-44f,52f);
+                TL((RectTransform)claimXp.transform,22f,ih-67f,iw-44f,48f);
+                chapter.fontSize=28;opponent.fontSize=26;formation.fontSize=22;
+                reward.fontSize=22;passive.fontSize=21;battleFeedback.fontSize=20;
+            }
             // The approved quest-board cards occupy the actual manuscript,
             // not three tiny 95-point rows floating at the top of a phone.
             // Scale all three naturally with their destination's usable height.
@@ -462,9 +484,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL((RectTransform)scoutActions[i].transform,
                     iw-(portrait?112f:150f),spacing*.5f-19f,
                     portrait?87f:120f,40f);
-                scoutTitles[i].fontSize=portrait?21:21;
-                scoutCards[i].fontSize=portrait?18:18;
-                scoutActionLabels[i].fontSize=portrait?16:16;
+                scoutTitles[i].fontSize=portrait?22:26;
+                scoutCards[i].fontSize=portrait?19:22;
+                scoutActionLabels[i].fontSize=portrait?16:19;
             }
             TL(introduction.rectTransform,20f,100f,pw-40f,38f);
             TL(footer.rectTransform,20f,ph-39f,pw-40f,25f);
