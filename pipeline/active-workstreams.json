@@ -1395,7 +1395,7 @@
         "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
         "rig_joint_count": 12,
         "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-        "skin_weights_sum_max_error": 1.1920929e-7,
+        "skin_weights_sum_max_error": 1.1920929e-07,
         "static_retained": true,
         "art_approved": false,
         "isolated_unity_import_tested": false,
@@ -1779,7 +1779,8 @@
         "qa/e2e-full-arc1.js",
         ".github/workflows/ui-progression-cert.yml",
         "qa/e2e-codex-chest.js",
-        "pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json"
+        "pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json",
+        ".github/workflows/tester-qa.yml"
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
@@ -1809,7 +1810,8 @@
       "next": "Inspect native32 actual nineteen images: road bound to paving; preserve Engendro aspect; reference serif, sliced parchment and active emblems; real actions/persistence. Native31 source7251 compiled13domainPASS but capture stopped at obsolete disabled old-card assertion; thirteen genuine screenshots retained, no visual approval. Keep PR120 draft. Rewards balance deferred by owner. Then finish PR122.",
       "phase": "VISUAL_REFERENCE_MISMATCH_REQUIRES_COMPOSITION_CORRECTION",
       "test_harness_scope_note": "Owner-authorized PR119/120 completion: repair only stale frozen-web fresh-save Arc-I Fissure assertions (retired INSPECCIONAR/recruit-before-victory sequence) to match the already-approved real Bastion III investigation/contact/assault/recruit/manuscript journey. No frozen-web gameplay changes, no new Bastion IV/V work. Exact file unclaimed by any other active owner. Preserve native owner/revision5 and existing Windows queue. Current continuation: fix only the observed transient hidden-navigation tap in legacy Codex/Relicario QA by waiting for a genuine visible, actionable navigation button; preserve all assertions, no production web edits.",
-      "certification_scope_note": "PR119/120 completion: reuse successful exact shared-UI certification40700893871 at1f418a29274664904556aa3478dc1520e495e30b only when git comparison proves every changed file belongs to the separately native-certified Retention module, documentation or this approved legacy QA harness, and all shared certification steps remain byte-identical. Shared-domain/world/UI changes still require the full gate. Native retention proof+17images and postmerge main gates remain mandatory. Preserve current live owner/revision5/Windows queue."
+      "certification_scope_note": "PR119/120 completion: reuse successful exact shared-UI certification40700893871 at1f418a29274664904556aa3478dc1520e495e30b only when git comparison proves every changed file belongs to the separately native-certified Retention module, documentation or this approved legacy QA harness, and all shared certification steps remain byte-identical. Shared-domain/world/UI changes still require the full gate. Native retention proof+17images and postmerge main gates remain mandatory. Preserve current live owner/revision5/Windows queue.",
+      "web_certification_scope_note": "Reuse full successful frozen-web run40731703240 only after proving sourcebd0b48a6 compiledmergefd0967 tree20d1cf, byte-identical entire tester-qa job and no changed web/runtime/test inputs. Exact own native-request metadata excluded; every unknown/different input fails open to full QA. No tests removed or weakened."
     },
     {
       "id": "eldoria-aldric-city-roaming-20261028",
@@ -3597,7 +3599,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -3608,7 +3610,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
