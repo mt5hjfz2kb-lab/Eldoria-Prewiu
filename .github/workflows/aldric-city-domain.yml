@@ -31,6 +31,7 @@ jobs:
           filter: blob:none
           sparse-checkout: |
             tools/aldric-city
+            docs/aldric-city
             Unity/Assets/Eldoria/AldricCity
             Unity/Assets/Eldoria/Tests/PlayMode
             Unity/Assets/StreamingAssets
@@ -40,6 +41,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 tools/aldric-city/verify_approved_glb.py
+          python3 tools/aldric-city/prepare-import-normals.py
           python3 - <<'PY'
           from pathlib import Path
           code=Path('Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs').read_text()

@@ -41,6 +41,7 @@ namespace Eldoria.AldricCity
         private Animation clips;
         private GltfImport ownedImport;
         private string importFailure;
+        public string ImportedCompatibilitySha256 { get; private set; }
         private Renderer[] renderers;
         private Vector3[] path;
         private int index, direction = 1;
@@ -262,6 +263,47 @@ namespace Eldoria.AldricCity
                 " first_obstruction=" + (firstBlockingCollider ?? "none"));
         }
 
+        private static string Digest(byte[] data)
+        {
+            using (var sha = SHA256.Create())
+                return BitConverter.ToString(sha.ComputeHash(data)).Replace("-", "").ToLowerInvariant();
+        }
+
+        private byte[] PrepareRequiredNormalStreams(byte[] approvedSource)
+        {
+            // The exact approved source has no NORMAL accessors. glTFast6.14.1
+            // rejects its normal-mapped body as Position+Tangent. Add ONLY
+            // deterministic geometric normal streams, as a transient import.
+            // Original binary prefix and EVERY other JSON semantic are proven
+            // unchanged by tools/aldric-city/prepare-import-normals.py in CI.
+            var scene = UnityEngine.Resources.Load<TextAsset>("AldricImportNormals/normal-import-scene");
+            var normal = UnityEngine.Resources.Load<TextAsset>("AldricImportNormals/normal-stream");
+            if (!scene || !normal) throw new InvalidOperationException("Approved normal import resources missing");
+            var json = scene.bytes;
+            var normals = normal.bytes;
+            if (Digest(json) != "5a9e6a66e1113e2c40cba8fa385484cb1822b253a41cd45adb4b33061e6cff34" ||
+                Digest(normals) != "5c1626f7951fb45a0c36a8a45ecf0be4b3406afe0ba13ad4ca30ead0991b9833")
+                throw new InvalidOperationException("Approved derived normal streams differ");
+            int originalBinHeader = 20 + BitConverter.ToInt32(approvedSource, 12);
+            int originalBinLength = BitConverter.ToInt32(approvedSource, originalBinHeader);
+            int jsonLength = (json.Length + 3) & ~3;
+            int binHeader = 20 + jsonLength;
+            var result = new byte[binHeader + 8 + originalBinLength + normals.Length];
+            void Put(int at, int value) { Buffer.BlockCopy(BitConverter.GetBytes(value), 0, result, at, 4); }
+            Put(0, 0x46546c67); Put(4, 2); Put(8, result.Length);
+            Put(12, jsonLength); Put(16, 0x4e4f534a);
+            Buffer.BlockCopy(json, 0, result, 20, json.Length);
+            for (int i = json.Length; i < jsonLength; i++) result[20+i] = 0x20;
+            Put(binHeader, originalBinLength + normals.Length); Put(binHeader+4, 0x004e4942);
+            Buffer.BlockCopy(approvedSource, originalBinHeader+8, result, binHeader+8, originalBinLength);
+            Buffer.BlockCopy(normals, 0, result, binHeader+8+originalBinLength, normals.Length);
+            ImportedCompatibilitySha256 = Digest(result);
+            if (ImportedCompatibilitySha256 != "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b")
+                throw new InvalidOperationException("Transient approved normal import identity differs");
+            Debug.Log("ALDRIC_CITY_ORIGINAL_SOURCE_PLUS_NORMAL_STREAMS " + ImportedCompatibilitySha256);
+            return result;
+        }
+
         private bool RejectImport(string reason)
         {
             importFailure = reason;
@@ -289,7 +331,7 @@ namespace Eldoria.AldricCity
                         (corner & 1) == 0 ? -1 : 1,
                         (corner & 2) == 0 ? -1 : 1,
                         (corner & 4) == 0 ? -1 : 1));
-                    p = renderer.localToWorldMatrix.MultiplyPoint3x4(p);
+                    p = renderer.transform.localToWorldMatrix.MultiplyPoint3x4(p);
                     if (!found) { bounds = new Bounds(p, Vector3.zero); found = true; }
                     else bounds.Encapsulate(p);
                 }
@@ -302,7 +344,8 @@ namespace Eldoria.AldricCity
             importFailure = null;
             ownedImport = new GltfImport(logger: new GLTFast.Logging.ConsoleLogger());
             var settings = new ImportSettings { AnimationMethod = AnimationMethod.Legacy };
-            if (!await ownedImport.Load(verifiedBytes, importSettings: settings))
+            var compatibleBytes = PrepareRequiredNormalStreams(verifiedBytes);
+            if (!await ownedImport.Load(compatibleBytes, importSettings: settings))
                 return RejectImport("glTFast Load rejected exact approved bytes; see importer log");
             if (!this || !host) return RejectImport("scene owner destroyed after loading");
             actor = new GameObject("Sir Aldric | city-only visual actor");
@@ -336,6 +379,10 @@ namespace Eldoria.AldricCity
             clips[Idle].wrapMode = WrapMode.Loop;
             clips[Walk].wrapMode = WrapMode.Loop;
             actor.transform.position = path[0];
+            // A cold load during a real march/investigation must not flash the
+            // newly imported visual for one rendered frame before Update.
+            var initiallyVisible = !Away();
+            foreach (var renderer in renderers) renderer.enabled = initiallyVisible;
             actor.SetActive(true);
             clips.Play(Idle);
             Debug.Log("ALDRIC_CITY_IMPORT_26_BONES_5_CLIPS_CONFIGURED source_height=" + sourceHeight +

@@ -103,7 +103,8 @@ jobs:
                   if(f.filename===file && !f.previous_filename)return true;
                   if(f.filename==='tools/early-retention/native-request.json' && !f.previous_filename)return true;
                   const nativeAldric=new Set(['tools/aldric-city/native-request.json',
-                    'tools/aldric-city/verify_approved_glb.py','tools/aldric-city/rig.parts/01.txt',
+                    'tools/aldric-city/verify_approved_glb.py','tools/aldric-city/prepare-import-normals.py',
+                    'tools/aldric-city/rig.parts/01.txt',
                     'tools/aldric-city/rig.parts/02.txt','tools/aldric-city/rig.parts/03.txt','tools/aldric-city/rig.parts/04.txt']);
                   if(context.issue.number===122 && nativeAldric.has(f.filename) && !f.previous_filename)return true;
                   return !needsWebQA(f);

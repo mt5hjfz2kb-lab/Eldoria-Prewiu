@@ -1,0 +1,77 @@
+{
+  "source_sha256": "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b",
+  "source_bytes": 10140372,
+  "normal_stream_sha256": "5c1626f7951fb45a0c36a8a45ecf0be4b3406afe0ba13ad4ca30ead0991b9833",
+  "normal_stream_bytes": 414720,
+  "import_scene_sha256": "5a9e6a66e1113e2c40cba8fa385484cb1822b253a41cd45adb4b33061e6cff34",
+  "import_scene_bytes": 31100,
+  "transient_import_sha256": "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b",
+  "transient_import_bytes": 10556548,
+  "original_binary_prefix_unchanged": true,
+  "all_original_json_semantics_unchanged": true,
+  "added_attributes_only": "NORMAL",
+  "mesh_streams": [
+    {
+      "mesh": "SirAldric_Tripo_Source_49800_VertexTopologyPreserved",
+      "vertices": 30427,
+      "triangles": 49800,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "Cape_Main_ValoriaBlue_SeparateCloth_ForFutureRigging",
+      "vertices": 1785,
+      "triangles": 3400,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "Cloak_Upper_Shoulder_Capelet_Detached",
+      "vertices": 496,
+      "triangles": 900,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "CloakShoulderAnchor_L",
+      "vertices": 26,
+      "triangles": 24,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "CloakBronzeClasp_-1",
+      "vertices": 38,
+      "triangles": 72,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "CloakSapphireStud_-1",
+      "vertices": 162,
+      "triangles": 320,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "CloakShoulderAnchor_R",
+      "vertices": 26,
+      "triangles": 24,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "CloakBronzeClasp_1",
+      "vertices": 38,
+      "triangles": 72,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "CloakSapphireStud_1",
+      "vertices": 162,
+      "triangles": 320,
+      "unused_or_degenerate_normals": 0
+    },
+    {
+      "mesh": "Cape_Edge_Trim_Combined_OneMesh",
+      "vertices": 1400,
+      "triangles": 2400,
+      "unused_or_degenerate_normals": 0
+    }
+  ],
+  "validation_scope": "SOURCE_EQUIVALENCE_ONLY",
+  "physical_mobile_tested": false
+}

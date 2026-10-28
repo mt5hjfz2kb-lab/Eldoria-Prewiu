@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "enabled": true,
+  "status": "ACTIVE",
+  "workstream_id": "eldoria-retention-first-evolution-20261028",
+  "request_id": "eldoria-retention-first-evolution-20261028",
+  "asset_or_sector": "Eldoria Early Retention first evolution: distinctive 5 guardians, actionable reports, scout narrative, authored map seal effects in existing RoyalGold uGUI",
+  "profile": "environment_composition",
+  "visual_gate_state": "NATIVE_VISUAL_PENDING",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Owner-approved new distinct enhancement to merged PR120. Reuse exact painted backgrounds, existing UI, 25-stage progression and four scout kinds; no new 3D, textures, gems or reward economy. Tactical guardian stats must affect actual domain fight; scout narrative must persist, be deterministic, and never reward twice.",
+  "geometry_gap_proven": false,
+  "allow_tripo": false,
+  "credit_authorization": {
+    "approved": false,
+    "authorized_credit_cost": 0
+  },
+  "capabilities": {
+    "existing_qualified_donor_assets": true,
+    "unity_native_uGUI": true
+  },
+  "validation": {
+    "source_gate": "Compile actual Domain/Application+UI-smokes; assert guardians change actual battle stats and advice reports; persistent deterministic scout discoveries; all old tests preserved.",
+    "final_gate": "Native Unity portrait/landscape screenshot review vs selected 2D reference, button raycasts, no clipped text, 25 markers, narrative map markers, no double rewards; coordinate Windows lease with PR122/PR124."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "PENDING",
+  "physical_mobile_tested": false,
+  "notes": "Reuse only existing original art and GPU-safe uGUI geometry; zero external spend."
+}

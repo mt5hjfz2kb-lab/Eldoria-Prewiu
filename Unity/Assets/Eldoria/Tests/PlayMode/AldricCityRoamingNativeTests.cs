@@ -118,6 +118,9 @@ namespace Eldoria.Tests
                 yield return null;
             Assert.That(Read<bool>(walker,"ApprovedVisualReady"), Is.True,
                 "Original full-body skinned GLB, source hash, road route and animations must pass");
+            Assert.That(Read<string>(walker,"ImportedCompatibilitySha256"), Is.EqualTo(
+                "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b"),
+                "Exact original geometry/UV/materials/rig/clips plus verified NORMAL streams only");
             Assert.That(Read<int>(walker,"RoadWaypoints"), Is.GreaterThanOrEqualTo(3));
             Assert.That(Read<float>(walker,"MeasuredModelHeight"), Is.InRange(1.70f, 2.0f),
                 "Aldric must use human city metres; not asset units or a UI portrait");
@@ -134,6 +137,8 @@ namespace Eldoria.Tests
             Assert.That(camera, Is.Not.Null, "Use actual playable city camera");
             CaptureCityCamera(camera, "aldric-city-idle-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-idle-portrait.png", 390, 844);
+            Assert.That(Mathf.Abs(skins.Min(x=>x.bounds.min.y)-Read<Vector3>(walker,"ActorGroundPosition").y),
+                Is.LessThan(.12f), "Actual rendered idle boots meet the real paved ground after scaling");
 
             var beforeWalking = JsonUtility.ToJson(Gateway().Snapshot());
             // Real time/real animation: initial idle pause is intentional.
@@ -162,6 +167,8 @@ namespace Eldoria.Tests
                 "Approved blue cape is physically BEHIND the body in its actual direction of travel; no backwards walking");
             CaptureCityCamera(camera, "aldric-city-walking-landscape.png", 1280, 720);
             CaptureCityCamera(camera, "aldric-city-walking-portrait.png", 390, 844);
+            Assert.That(Mathf.Abs(skins.Min(x=>x.bounds.min.y)-Read<Vector3>(walker,"ActorGroundPosition").y),
+                Is.LessThan(.15f), "Actual animated boots remain grounded during the genuine walk pose");
             // Additional diagnostic front/back views retain the exact imported
             // actor and lighting; the four acceptance views above remain the
             // genuine playable camera. Never alter the production camera.

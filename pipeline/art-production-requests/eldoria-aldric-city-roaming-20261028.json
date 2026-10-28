@@ -36,5 +36,17 @@
   "art_approved": false,
   "unity_visual_acceptance": "PENDING",
   "physical_mobile_tested": false,
-  "notes": "Existing asset reuse, not a new artist cycle; retain original sources and approved character. No fake source/motion/visual/mobile PASS."
+  "notes": "Existing asset reuse, not a new artist cycle; retain original sources and approved character. No fake source/motion/visual/mobile PASS.",
+  "import_compatibility": {
+    "reason": "Native40773905914 proved glTFast6.14.1 rejects the source normal-mapped body without NORMAL accessors: Invalid mainBufferType Position,Tangent",
+    "source_unchanged": true,
+    "geometry_positions_indices_uv_materials_textures_skin_clips_unchanged": true,
+    "normal_stream_path": "Unity/Assets/Eldoria/AldricCity/Resources/AldricImportNormals/normal-stream.bytes",
+    "normal_stream_sha256": "5c1626f7951fb45a0c36a8a45ecf0be4b3406afe0ba13ad4ca30ead0991b9833",
+    "import_scene_path": "Unity/Assets/Eldoria/AldricCity/Resources/AldricImportNormals/normal-import-scene.json",
+    "transient_import_sha256": "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b",
+    "source_equivalence_proof": "docs/aldric-city/normal-import-proof.json",
+    "normal_generation": "Area-weighted geometric normals from existing indexed triangles, as conventional import preparation; zero vertex/topology/material/animation authoring",
+    "native_visual_acceptance": "PENDING"
+  }
 }

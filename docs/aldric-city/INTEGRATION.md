@@ -115,3 +115,26 @@ en la aserción nativa. Importación Legacy explícita y diagnóstico de
 cada rechazo/Exception real. La próxima ejecución comprueba primero
 Aldric y después TODA la escena/EditMode/PlayMode si pasa, sin quitar
 ninguna prueba ni ignorar errores. La aceptación sigue pendiente.
+
+## Causa concreta de importación — prueba40773905914
+
+El preflight falló con `Invalid mainBufferType Position, Tangent` en
+`GLTFast.MeshGenerator.CreateVertexGenerator`, antes de crear el personaje.
+La fuente aprobada omite NORMAL en sus diez mallas, y la armadura usa
+normalTexture. La hipótesis inicial de bounds inactivos no era la causa
+confirmada: el diagnóstico nuevo identificó este bloqueo previo del importador.
+La corrección técnica prepara solamente normales geométricas por triángulo
+y las añade como streams al GLB temporal en memoria. El GLB original
+permanece byte por byte intacto. CI prueba que todo el BIN original,
+posiciones, índices, UV, materiales/texturas, nodos, pesos,26huesos y5clips
+son idénticos; solo se añaden NORMAL y sus accessors/views. No es otro modelo
+ni otra autoría artística, no hay créditos ni cambios de paquetes o escenas.
+
+`tools/aldric-city/prepare-import-normals.py` regenera/compara los streams y
+`docs/aldric-city/normal-import-proof.json` fija ambas identidades. Runtime
+verifica original/streams/JSON/GLB temporal antes de importar; el test exige
+la identidad temporal real además de medir el cuerpo vivo. Los errores
+no se ignoran. La prueba añade contacto real de botas con calzada y la
+visibilidad inicial correcta para una partida cargada durante una misión.
+El preflight publica evidencia también si pasa, para revisar imágenes reales
+mientras continúa TODA la batería compartida obligatoria. Aún pendiente.

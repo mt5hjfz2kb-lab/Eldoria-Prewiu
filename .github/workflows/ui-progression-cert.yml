@@ -425,9 +425,9 @@ jobs:
           Write-Host 'ALDRIC_NATIVE_PREFLIGHT_PASS_COMPLETE_CASE; full shared EditMode and PlayMode still required below'
 
       - uses: actions/upload-artifact@v4
-        if: failure() && steps.aldric_preflight.outcome == 'failure'
+        if: always() && (steps.aldric_preflight.outcome == 'failure' || steps.aldric_preflight.outcome == 'success')
         with:
-          name: eldoria-aldric-preflight-failure-${{ github.run_id }}
+          name: eldoria-aldric-preflight-evidence-${{ github.run_id }}
           if-no-files-found: ignore
           path: |
             ${{ github.workspace }}/aldric-preflight-${{ github.run_id }}/**
@@ -670,11 +670,17 @@ jobs:
             $path=Join-Path $env:ALDRIC_CITY_SCREENSHOT_DIR $image
             if(-not(Test-Path $path) -or (Get-Item $path).Length -lt 10000){throw "Missing genuine Aldric native view: $image"}
           }
+          $compatible='d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b'
+          $nativeLog=Get-Content (Join-Path $env:RUNNER_TEMP 'Eldoria-UIProgression-PlayMode.log') -Raw
+          if(-not $nativeLog.Contains('ALDRIC_CITY_ORIGINAL_SOURCE_PLUS_NORMAL_STREAMS '+$compatible)){
+            throw 'Actual verified normal-only runtime import identity missing from native execution'
+          }
           $compiled=(& git rev-parse HEAD).Trim()
           $tree=(& git rev-parse 'HEAD^{tree}').Trim()
           $source='Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb'
           $identity=[ordered]@{requested_source=$env:ALDRIC_REQUEST_SOURCE_SHA;compiled_source=$compiled;
             compiled_tree=$tree;run_id=$env:GITHUB_RUN_ID;aldric_case='Passed';views=12;
+            transient_import_sha256=$compatible;
             model_sha256=(Get-FileHash -Algorithm SHA256 $source).Hash.ToLowerInvariant();
             physical_mobile_tested=$false}
           $identity|ConvertTo-Json -Depth 5|Set-Content (Join-Path $env:ALDRIC_CITY_SCREENSHOT_DIR 'native-source-identity.json') -Encoding UTF8
