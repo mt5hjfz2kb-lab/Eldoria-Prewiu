@@ -33,6 +33,28 @@ namespace Eldoria.Tests
                 Resources=new ResourceWallet{Wood=300,Stone=250,Food=100}
             };
         }
+        [Test] public void UnlockingScoutsDoesNotInvalidateNextCanonicalFightCommand()
+        {
+            var time=new Clock();
+            var state=Ready();
+            state.MarchConfigured=false;
+            state.ChapterProgress.MarchConfirmed=false;
+            var store=new MemoryStateStore{Value=state};
+            var g=new LocalGateway(time,store);
+            Assert.That(g.Snapshot().Retention.Orders.Count,Is.Zero);
+            var preparing=Cmd(g,"first-real-march","ConfigureMarch","march-main");
+            Assert.That(g.Execute(preparing).Ok,Is.True);
+            var afterPreparation=g.Snapshot();
+            Assert.That(afterPreparation.ChapterProgress.MarchConfirmed,Is.True);
+            Assert.That(afterPreparation.Retention.Orders.Count,Is.EqualTo(3),
+                "Initial scout cards must be committed together with March preparation");
+            var attack=Cmd(g,"next-valid-battle","Fight","corrupt-scout");
+            var result=g.Execute(attack);
+            Assert.That(result.Ok,Is.True,
+                "Scout unlock must never insert an unannounced save revision before a real battle: "+result.Message);
+            Assert.That(g.Snapshot().March.Phase,Is.EqualTo("outbound"));
+        }
+
         [Test] public void UnlockButtonsOnlyWhenGameplayTrulyTeachesFeatures()
         {
             var a=new PlayerState();
