@@ -49,6 +49,8 @@ namespace Eldoria.UI.RoyalGold.V2
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel, backLabel;
         RoyalGoldV3EarlyRetentionArtwork sceneArtwork;
         RoyalGoldV3StageTrailGraphic chapterTrail;
+        readonly RoyalText[] bossMilestoneLabels=new RoyalText[5];
+        RoyalText currentMilestoneLabel;
         // Two original zero-cost painterly environments, with the hand-built
         // vector renderer as the graceful fallback in older installations.
         RawImage paintedScene;
@@ -250,6 +252,17 @@ namespace Eldoria.UI.RoyalGold.V2
             trail.anchorMin=new Vector2(.10f,.06f);
             trail.anchorMax=new Vector2(.90f,.54f);
             trail.offsetMin=trail.offsetMax=Vector2.zero;
+            // Five numbered guardians and a current-stage marker share the
+            // actual 25-step geometry, never an unrelated decorative path.
+            for(int i=0;i<5;i++)
+            {
+                bossMilestoneLabels[i]=Text(trail,
+                    "Guardian milestone "+((i+1)*5),16,Ivory,true);
+                bossMilestoneLabels[i].alignment=TextAnchor.MiddleCenter;
+                bossMilestoneLabels[i].Put(((i+1)*5).ToString());
+            }
+            currentMilestoneLabel=Text(trail,"Current live stage",17,Ink,true);
+            currentMilestoneLabel.alignment=TextAnchor.MiddleCenter;
             // The stage-15 elite is the canonical Bastion-II Spawnling,
             // not an invented stone golem. Reuse its actual authored image.
             engendroTexture=Resources.Load<Texture2D>(
@@ -674,6 +687,24 @@ namespace Eldoria.UI.RoyalGold.V2
             chapterTrail.gameObject.SetActive(vig);
             if(vig)
             {
+                int liveStage=p.LastClearedStage%25+1;
+                if(currentMilestoneLabel)
+                {
+                    currentMilestoneLabel.Put(liveStage.ToString());
+                    currentMilestoneLabel.gameObject.SetActive(true);
+                    var point=chapterTrail.StagePosition(liveStage);
+                    Pos(currentMilestoneLabel.rectTransform,new Vector2(.5f,.5f),
+                        new Vector2(.5f,.5f),point.x,point.y,31f,28f);
+                }
+                for(int i=0;i<bossMilestoneLabels.Length;i++)
+                {
+                    int bossStep=(i+1)*5;
+                    var label=bossMilestoneLabels[i];
+                    label.gameObject.SetActive(bossStep!=liveStage);
+                    var point=chapterTrail.StagePosition(bossStep);
+                    Pos(label.rectTransform,new Vector2(.5f,.5f),
+                        new Vector2(.5f,.5f),point.x,point.y,31f,28f);
+                }
                 int currentChapter=Math.Max(1,p.LastClearedStage/25+1);
                 if(p.LastClearedStage>0 && p.LastClearedStage%25==0)
                     currentChapter=p.LastClearedStage/25+1;
