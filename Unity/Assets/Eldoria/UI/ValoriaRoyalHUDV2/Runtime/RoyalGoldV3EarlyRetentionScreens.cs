@@ -1211,9 +1211,25 @@ namespace Eldoria.UI.RoyalGold.V2
                     "Protege las fronteras de Valoria y supera a sus guardianes.");
                 chapter.Put("CAPÍTULO "+info.Chapter+" · ETAPA "+info.Step+"/25");
                 opponent.Put(info.Name+"\n"+info.Trait);
-                int archer=s.Available?.Total??0;
-                formation.Put("Héroe: "+(s.PreparedHeroId=="lyra"&&s.ChapterThree.LyraRecruited?
-                    "Lyra":"Aldric")+" · "+archer+" tropas disponibles");
+                // The real preview is the exact hero/roster resolved by
+                // EarlyRetentionRules.Apply, not the full kingdom army or a
+                // decorative total power number.
+                string selectedHero=s.ChapterThree!=null&&s.ChapterThree.LyraRecruited&&
+                    (s.PreparedHeroId=="lyra"||s.PreparedHeroId=="aldric+lyra")?
+                    s.PreparedHeroId:"aldric";
+                int capacity=MarchCapacityRules.Capacity(s,selectedHero);
+                var selectedTroops=s.MarchConfigured&&s.PreparedTroops!=null&&s.PreparedTroops.Total>0?
+                    s.PreparedTroops.Copy():
+                    MarchCapacityRules.AutoSelect(s.Available,capacity);
+                bool eligibleTroops=MarchCapacityRules.Fits(selectedTroops,s.Available,capacity);
+                bool hasMarchSlot=MarchCapacityRules.CanStart(s,now());
+                var marchStats=eligibleTroops?
+                    EarlyRetentionRules.ExpeditionWithMastery(s,selectedTroops,selectedHero):
+                    default(CombatStats);
+                string heroName=selectedHero=="lyra"?"Lyra":
+                    selectedHero=="aldric+lyra"?"Aldric + Lyra":"Aldric";
+                formation.Put(heroName+" · "+selectedTroops.Total+"/"+capacity+
+                    " tropas · Poder "+marchStats.Power);
                 reward.Put("Al vencer: "+(30+stage*2)+" madera · "+(10+stage)+
                     " piedra · "+(20+stage/5*3)+" XP");
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
@@ -1222,11 +1238,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 passive.Put(xpSummary+
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
                     " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));
-                mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&archer>0;
-                // A single direct call to action, like the approved artwork.
-                // The panel already explains that resolution is automatic.
+                mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&
+                    eligibleTroops&&hasMarchSlot;
+                // The action cannot promise a battle if the real Gateway will
+                // reject it for capacity, unavailable troops or three active slots.
                 mainActionLabel.Put(mainAction.interactable?"Combatir":
-                    "Aún no disponible");
+                    !hasMarchSlot?"3 MARCHAS OCUPADAS":
+                    !eligibleTroops?"AJUSTA TU MARCHA":"AÚN NO DISPONIBLE");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
                 var previous=s.LastBattleReport;
