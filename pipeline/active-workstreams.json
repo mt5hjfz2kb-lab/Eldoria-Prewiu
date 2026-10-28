@@ -1514,7 +1514,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Run exact reconciled PR119 with backup byte verification, inspect genuine screenshots against approved original.",
+      "next": "Finish serial native runs without cancellation. Updated obsolete world-return assertion to existing main near-entry contract; fix clipped landscape Valoria title and blank building close glyph, then inspect exact captures before merge.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1621,9 +1621,11 @@
         "artifact_id": 12378457368
       },
       "current_native_cert": {
-        "run": 40659657487,
-        "source": "73551fba2e5b7c0c48db1d0ea2418eb058fdf5c6",
-        "status": "in_progress",
+        "run": 40662644166,
+        "source": "4a8dbbc96e19e07b780e4d159cdb395540ffb546",
+        "status": "pending",
+        "prior_run": 40662416755,
+        "prior_status": "in_progress",
         "backup_byte_verification_added": true
       },
       "delivery_blocker": {
@@ -1650,19 +1652,23 @@
         "is_unity_capture": false
       },
       "ui_candidate": {
-        "pr": 115,
-        "sha": "725827f01658a65efaa14cc53db6ed9ffa59e01e",
-        "run": 40477135161,
-        "run_status": "in_progress",
-        "compile_verified": false,
+        "pr": 119,
+        "sha": "4a8dbbc96e19e07b780e4d159cdb395540ffb546",
+        "run": 40662644166,
+        "run_status": "pending",
         "art_approved": false,
         "mobile_physically_tested": false,
-        "integrated_in_main": false,
-        "reason": "Latest native run has not produced comparable screenshots or all functional proof"
+        "integrated_in_main": false
       },
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
-      "scope_release_note": "2026-10-27 owner-approved Aldric PR118 integration: release solely RoyalGoldV3CinematicFinish.cs from completed Crónica Real UI workstream. Already write_scope_released=true, prior handoff explicitly avoided Aldric reserved file. All remaining UI scope retained; exact file exclusively claimed by eldoria-aldric-dialogue-bust-20261027 revision 3. No other UI code/resources modified."
+      "scope_release_note": "2026-10-27 owner-approved Aldric PR118 integration: release solely RoyalGoldV3CinematicFinish.cs from completed Crónica Real UI workstream. Already write_scope_released=true, prior handoff explicitly avoided Aldric reserved file. All remaining UI scope retained; exact file exclusively claimed by eldoria-aldric-dialogue-bust-20261027 revision 3. No other UI code/resources modified.",
+      "latest_failure": {
+        "run": 40659657487,
+        "artifact": 12804141559,
+        "reason": "Obsolete world-session framing assertion contradicted near-entry behavior already on main",
+        "fixed_in": "55d86fb5688e1debb18dcf50eac0e8e8ca38091b"
+      }
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
