@@ -40,6 +40,38 @@ namespace Eldoria.Tests
             Assert.That(method, Is.Not.Null, "Missing real " + name + " action");
             return method.Invoke(target, args);
         }
+        // Exact measured engine geometry, for reproducing any remaining support
+        // failure cheaply. These probe-only bytes are never imported as an asset.
+        private static void CapturePavingGeometry(Component walker)
+        {
+            var directory=Environment.GetEnvironmentVariable("ALDRIC_CITY_SCREENSHOT_DIR");
+            if(string.IsNullOrEmpty(directory)) return;
+            var paving=Read<MeshCollider>(walker,"ActualPavingCollider");
+            if(!paving || !paving.sharedMesh) return;
+            Directory.CreateDirectory(directory);
+            var visible=paving.GetComponent<MeshFilter>();
+            var meshes=new[]{paving.sharedMesh,visible ? visible.sharedMesh : null};
+            for(int source=0;source<meshes.Length;source++)
+            {
+                var mesh=meshes[source];
+                if(!mesh || !mesh.isReadable) continue;
+                var vertices=mesh.vertices; var triangles=mesh.triangles;
+                var filename=source==0 ? "aldric-paving-collider.bin" : "aldric-paving-visible.bin";
+                using(var file=File.Create(Path.Combine(directory,filename)))
+                using(var writer=new BinaryWriter(file))
+                {
+                    writer.Write(0x41505631); writer.Write(vertices.Length); writer.Write(triangles.Length);
+                    foreach(var vertex in vertices)
+                    {
+                        var world=paving.transform.TransformPoint(vertex);
+                        writer.Write(world.x); writer.Write(world.y); writer.Write(world.z);
+                    }
+                    foreach(var triangle in triangles) writer.Write(triangle);
+                }
+                Debug.Log("ALDRIC_NATIVE_PAVING_GEOMETRY source="+filename+" mesh="+mesh.name+
+                    " vertices="+vertices.Length+" triangles="+triangles.Length/3);
+            }
+        }
         // Real Unity GPU render, not a composited mockup. Overlay HUD is not
         // included: this proof is strictly the 3D character in Valoria.
         private static void CaptureCityCamera(Camera camera, string filename, int width, int height)
@@ -139,6 +171,7 @@ namespace Eldoria.Tests
             var importDeadline = Time.realtimeSinceStartup + 90f;
             while (!Read<bool>(walker,"ApprovedVisualReady") && Time.realtimeSinceStartup < importDeadline)
                 yield return null;
+            CapturePavingGeometry(walker);
             Assert.That(Read<bool>(walker,"ApprovedVisualReady"), Is.True,
                 "Original full-body skinned GLB, source hash, road route and animations must pass");
             Assert.That(Read<string>(walker,"ImportedCompatibilitySha256"), Is.EqualTo(

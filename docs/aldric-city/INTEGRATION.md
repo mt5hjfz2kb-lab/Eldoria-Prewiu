@@ -209,3 +209,30 @@ Sin cambios de tiempos, tolerancias ni acciones exigidas por el test.
 
 Arte y certificación completa pendientes;10PNG son evidencia parcial,
 no aceptación final ni prueba de dispositivo físico.
+
+
+## Diagnóstico de enfoque y alternativa macroscópica —40787189864
+
+Falla de nuevo el retorno; el nuevo registro confirma apoyo=False, calzada
+activa y cápsula libre. La huella8cm/dos pares exactamente opuestos no basta.
+La autoría original usa juntas3–5cm y biseles2,5cm, frente al muestreo35cm:
+puede aceptar todos los puntos de una ruta y fallar entre ellos. Se descarta
+repetir ajustes de animación, reloj o ampliar plazos; no eran la causa.
+
+Alternativa: polígono físico de apoyo13cm, dentro de la cápsula26cm intacta,
+16contactos posibles sobre el mismo MeshCollider. Se exige centro
+estrictamente dentro de la envolvente de contactos: hueco angular máximo
+menor de180grados. No acepta apoyo solo a un lado de la carretera. Se
+mantienen pendiente28grados, desnivel limitado, cápsula y consultas reales.
+Se valida cada tramo a2,5cm, por debajo de la junta original mínima.
+
+Comprobación barata de la malla visible exacta Axial_Paving_GI, escena
+24c68b8029686c89c6a72f06f3d5151b62e2edf9, malla
+5ee4f08d1447d6525b2a3eca7f1c497e50fab149 y transformaciones reales:
+121puntos alrededor de(1,43;16,30): criterio antiguo rechaza26/nuevo0;
+alrededor de(-1,24;17,45): antiguo43/nuevo0. Es análisis de fuente visible,
+NO prueba del collider de Unity ni aceptación del recorrido completo.
+El siguiente test exporta ambos meshes reales en coordenadas mundo,
+solo como evidencia binaria del probe, para reproducir cualquier fallo
+restante sin adivinar ni repetir iteraciones pesadas sin diagnóstico.
+Mantiene íntegros todos los tests y las doce capturas exigidas.

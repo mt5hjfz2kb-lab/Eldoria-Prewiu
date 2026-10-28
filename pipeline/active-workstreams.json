@@ -1940,8 +1940,8 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/tester-qa.yml"
       ],
-      "phase": "PR122_ACTUAL_PAVING_FOOT_SUPPORT_AND_FULL_NATIVE_VALIDATION",
-      "next": "Verify same-mesh 8cm footprint crosses actual narrow grout while retaining road-edge/slope/capsule rejection; inspect exact blocked-step logs and all12 actual images, then require all native regressions. No acceptance from partial preflight.",
+      "phase": "PR122_CONTINUOUS_ROUTE_AND_MEASURED_SUPPORT_POLYGON_NATIVE_VALIDATION",
+      "next": "Require complete actual native case and all12images; support polygon replaces unstable opposed-pair heuristic, dense route sampling replaces35cm aliasing. If any rejection, reproduce exact exported engine collider and5decimal step before another native iteration. All march/investigation/reload/save and shared regression checks remain mandatory.",
       "delivery_definition": {
         "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
@@ -1953,18 +1953,17 @@
       "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection.",
       "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime.",
       "current_native_cert": {
-        "status": "actual_next_step_blocked_after_world_return",
-        "source": "a00dfb541a9a65f73db6e801711282c626aceaf6",
-        "run_id": 40784676062,
+        "status": "exact_fine_step_support_rejection_confirmed",
+        "source": "0f5623dc7bf3fda95734b861803a8f72b47ed56a",
+        "run_id": 40787189864,
+        "compiled_source": "0fb45ceceb0f308a8c82f20b141a2c429fc89dc3",
         "preflight_passed": 0,
         "preflight_failed": 1,
         "full_shared_suite_executed": false,
         "actual_views": 10,
-        "import_26_bones_5_source_clips_passed": true,
-        "actual_idle_relaxed_arm_alignment_passed": true,
-        "artifact_id": 12859586919,
-        "artifact_digest": "sha256:7d1fb1d2d5130061c4efcc39ab3cc2a9031272a8ca76f84199f9eb416bbfaea2",
-        "reason": "Actual time advances, body and coarse leg clear, target remains 1.67m away, pause resets every6s: next fine step is rejected. Paving grout is inferred from point-ray support and real separate-flagstone images; not yet confirmed by exact step trace. Replace point-only support with tightly bounded real same-mesh footprint, retain full capsule and add exact failure diagnostics. No timeout/tolerance relaxation. All later march/investigation/reload checks remain mandatory.",
+        "artifact_id": 12859434835,
+        "artifact_digest": "sha256:f4e2f346ceab7bfcd4991a2c19648395de4c80851dfc21eb97f2b050add0f115",
+        "reason": "Actual STEP_BLOCKED proves supported=False with active road; body clear true in immediate probes.8cm opposed-ray-pair proxy fails at small bevel/grout intervals while35cm route samples alias them. Macro alternative: physical13cm support polygon on same actual mesh,16surrounding contacts/centre strictly inside convex hull, dense2.5cm leg checks, unchanged capsule/slopes/mandatory tests. Export exact runtime collider and visible geometry for independent reproduction. Cheap actual visible-mesh source analysis near both failed positions: old proxy rejects26/121 and43/121; new rejects0/121 in each. Source analysis is NOT native collider acceptance.",
         "art_approved": false
       },
       "native_attempt_history": [
@@ -2038,6 +2037,21 @@
           "reason": "Actual forward walk, bone deformation, skin ground, cape-behind-motion, dynamic obstacle and World hide/return visibility pass. Pause-at-interrupted-target assertion failed; observe physical stop plus visible clip weights with real camera rendering and diagnostics, preserving stricter target distance. Visual review found city arms too open in source A-pose; add separate city-only rest alignment layer, keep original GLB/five clips unchanged.",
           "artifact_id": 12857666330,
           "artifact_digest": "sha256:44fbed5669939aa5501e054028f3b18a647a2c5efe0d579f631bb3081acd25c6",
+          "art_approved": false
+        },
+        {
+          "status": "actual_next_step_blocked_after_world_return",
+          "source": "a00dfb541a9a65f73db6e801711282c626aceaf6",
+          "run_id": 40784676062,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 10,
+          "import_26_bones_5_source_clips_passed": true,
+          "actual_idle_relaxed_arm_alignment_passed": true,
+          "artifact_id": 12859586919,
+          "artifact_digest": "sha256:7d1fb1d2d5130061c4efcc39ab3cc2a9031272a8ca76f84199f9eb416bbfaea2",
+          "reason": "Actual time advances, body and coarse leg clear, target remains 1.67m away, pause resets every6s: next fine step is rejected. Paving grout is inferred from point-ray support and real separate-flagstone images; not yet confirmed by exact step trace. Replace point-only support with tightly bounded real same-mesh footprint, retain full capsule and add exact failure diagnostics. No timeout/tolerance relaxation. All later march/investigation/reload checks remain mandatory.",
           "art_approved": false
         }
       ]

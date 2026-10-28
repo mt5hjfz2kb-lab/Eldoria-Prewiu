@@ -55,16 +55,26 @@ namespace Eldoria.AldricCity
         private string firstBlockingCollider;
         private string lastBlockingCollider;
         private int footprintSupportedSamples;
-        private const float FootSupportRadius = .08f;
-        private static readonly Vector2[] FootSupportOffsets = {
-            new Vector2(0f,1f), new Vector2(.70710678f,.70710678f),
-            new Vector2(1f,0f), new Vector2(.70710678f,-.70710678f),
-            new Vector2(0f,-1f), new Vector2(-.70710678f,-.70710678f),
-            new Vector2(-1f,0f), new Vector2(-.70710678f,.70710678f)
-        };
+        // A standing human is supported by two boots, not an infinitesimal ray.
+        // The 13cm support disk is strictly inside the unchanged 26cm body capsule.
+        private const float FootSupportRadius = .13f;
+        private const int FootSupportSamples = 16;
+        private string lastSupportReason;
+        private static readonly Vector2[] FootSupportOffsets = BuildFootSupportOffsets();
+        private static Vector2[] BuildFootSupportOffsets()
+        {
+            var result = new Vector2[FootSupportSamples];
+            for (int i=0; i<result.Length; i++)
+            {
+                float angle=i*2f*Mathf.PI/result.Length;
+                result[i]=new Vector2(Mathf.Sin(angle),Mathf.Cos(angle))*FootSupportRadius;
+            }
+            return result;
+        }
         // Native verification probes. Read-only; never mutate player saves or gameplay.
         public bool ApprovedVisualReady => visualConfigured && actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
+        public MeshCollider ActualPavingCollider => road;
         public int RoadWaypoints => path == null ? 0 : path.Length;
         // A legacy looping state may remain registered while its visible
         // contribution has faded to zero. Report the actual contributing clip.
@@ -171,29 +181,33 @@ namespace Eldoria.AldricCity
 
         private bool OnRoad(Vector3 point, out Vector3 floor)
         {
-            if (PavingSurfaceHit(point,out floor)) return true;
-            // The actual paving consists of separate flagstones. A point ray
-            // can miss a grout joint even though the foot is supported all
-            // around it. Verify only an 8cm footprint on THIS same real mesh;
-            // never substitute grass, water or a guessed continuous plane.
-            int mask = 0, count = 0;
-            float low = float.PositiveInfinity, high = float.NegativeInfinity, sum = 0f;
+            if (PavingSurfaceHit(point,out floor)) { lastSupportReason="central real paving"; return true; }
+            // Measure the physical support polygon on THIS real mesh. Requiring
+            // two exactly opposed ray pairs was unstable at a beveled grout
+            // intersection: three surrounding contacts can support both boots
+            // without any pair of discrete samples being exactly opposite.
+            int count=0, first=-1, previous=-1, largestGap=0;
+            float low=float.PositiveInfinity, high=float.NegativeInfinity, sum=0f;
             for (int i=0; i<FootSupportOffsets.Length; i++)
             {
-                var offset = FootSupportOffsets[i] * FootSupportRadius;
-                if (!PavingSurfaceHit(point + new Vector3(offset.x,0f,offset.y),out var support)) continue;
-                mask |= 1 << i;
-                count++;
-                low = Mathf.Min(low,support.y); high = Mathf.Max(high,support.y); sum += support.y;
+                var offset=FootSupportOffsets[i];
+                if (!PavingSurfaceHit(point+new Vector3(offset.x,0f,offset.y),out var support)) continue;
+                if(first<0) first=i;
+                if(previous>=0) largestGap=Mathf.Max(largestGap,i-previous);
+                previous=i; count++;
+                low=Mathf.Min(low,support.y); high=Mathf.Max(high,support.y); sum+=support.y;
             }
-            int opposed = 0;
-            for (int i=0; i<4; i++) if ((mask & (1<<i))!=0 && (mask & (1<<(i+4)))!=0) opposed++;
-            var allowedSpan = 2f*FootSupportRadius*Mathf.Tan(28f*Mathf.Deg2Rad)+.015f;
-            if (count < 4 || opposed < 2 || high-low > allowedSpan) return false;
-            floor = new Vector3(point.x,sum/count,point.z);
-            if (++footprintSupportedSamples == 1)
-                Debug.Log("ALDRIC_CITY_REAL_PAVING_FOOTPRINT_SUPPORT point="+point+
-                    " samples="+count+" opposed_pairs="+opposed+" height_span="+(high-low));
+            if(count>0) largestGap=Mathf.Max(largestGap,first+FootSupportSamples-previous);
+            var allowedSpan=2f*FootSupportRadius*Mathf.Tan(28f*Mathf.Deg2Rad)+.015f;
+            lastSupportReason="contacts="+count+" largest_angular_gap="+(largestGap*360f/FootSupportSamples)+
+                " height_span="+(high-low)+" radius="+FootSupportRadius;
+            // All contacts lie on a circle. A maximum angular gap strictly below
+            // 180 degrees is exactly the convex-hull test that places the foot
+            // centre INSIDE their support polygon, never outside a road edge.
+            if(count<3 || largestGap>=FootSupportSamples/2 || high-low>allowedSpan) return false;
+            floor=new Vector3(point.x,sum/count,point.z);
+            if(++footprintSupportedSamples==1)
+                Debug.Log("ALDRIC_CITY_REAL_PAVING_FOOTPRINT_SUPPORT point="+point+" "+lastSupportReason);
             return true;
         }
 
@@ -228,7 +242,9 @@ namespace Eldoria.AldricCity
             // A resumed leg may have only centimetres left. Rejecting every
             // remaining segment below0.75m could strand the actor after a mission.
             if (length < 0.04f || length > 18f) return false;
-            var count = Mathf.CeilToInt(length / 0.35f);
+            // Validate the entire short leg at 2.5cm spacing, below the authored
+            // 3-5cm grout width. The old35cm samples could alias every joint.
+            var count = Mathf.CeilToInt(length / .025f);
             for (int j = 0; j <= count; ++j)
             {
                 var p = Vector3.Lerp(a, b, j / (float)count);
@@ -607,8 +623,9 @@ namespace Eldoria.AldricCity
             var bodyClear = supported && BodyClear(ground);
             if (!supported || !bodyClear)
             {
-                Debug.LogWarning("ALDRIC_CITY_STEP_BLOCKED position="+actor.transform.position+
-                    " candidate="+candidate+" supported="+supported+" body_clear="+bodyClear+
+                Debug.LogWarning("ALDRIC_CITY_STEP_BLOCKED position="+actor.transform.position.ToString("F5")+
+                    " candidate="+candidate.ToString("F5")+" supported="+supported+" body_clear="+bodyClear+
+                    " support_reason="+lastSupportReason+
                     " blocker="+(lastBlockingCollider ?? "none")+
                     " road_active="+(road && road.enabled && road.gameObject.activeInHierarchy));
                 walking = false;
