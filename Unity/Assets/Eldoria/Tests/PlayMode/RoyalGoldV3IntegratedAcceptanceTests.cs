@@ -85,13 +85,20 @@ namespace Eldoria.Tests
             Component host = null, hud = null;
             yield return Boot((h, v) => { host = h; hud = v; });
             var modal = Member(hud, "Modal") as Component;
-            if (modal && modal.gameObject.activeSelf)
+            // The authentic prologue is scheduled after host readiness and
+            // its transitions use real time. Thirty immediate frames could
+            // finish before it opened, leaving the intended modal over the card.
+            yield return new WaitForSecondsRealtime(.4f);
+            Assert.That(modal, Is.Not.Null);
+            var extra = Member(modal, "Extra") as Button;
+            for (int i = 0; i < 80 && modal.gameObject.activeSelf; ++i)
             {
-                var extra = Member(modal, "Extra") as Button;
-                // Close any authentic opening prologue using its real button.
-                for (int i = 0; i < 30 && modal.gameObject.activeSelf; ++i)
-                { if(extra)extra.onClick.Invoke(); yield return null; }
+                Assert.That(extra, Is.Not.Null);
+                extra.onClick.Invoke();
+                yield return new WaitForSecondsRealtime(.2f);
             }
+            Assert.That(modal.gameObject.activeSelf, Is.False,
+                "Read and acknowledge the real opening prologue before inspecting the building card");
             Call(hud, "SelectBuilding", "bastion");
             yield return null;
             var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
