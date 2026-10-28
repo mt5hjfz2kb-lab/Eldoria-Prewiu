@@ -146,9 +146,10 @@ jobs:
             if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue}
           }
           if(-not(Test-Path $xml)){throw 'No native PlayMode XML produced'}
-          $report=Get-Content -LiteralPath $xml -Raw
-          if($report -notmatch 'AldricCityRoamingNativeTests' -or $report -notmatch 'Passed'){
-            throw 'Aldric walking test was not certified'
+          $report=[xml](Get-Content -LiteralPath $xml -Raw)
+          $cases=@($report.SelectNodes("//test-case[contains(@fullname,'Eldoria.Tests.AldricCityRoamingNativeTests')]"))
+          if([int]$report.'test-run'.failed -ne 0 -or $cases.Count -ne 1 -or $cases[0].result -ne 'Passed'){
+            throw 'Actual Aldric integration case must execute and pass with zero failed tests'
           }
           foreach($image in @('aldric-city-idle-landscape.png','aldric-city-idle-portrait.png',
                               'aldric-city-walking-landscape.png','aldric-city-walking-portrait.png',

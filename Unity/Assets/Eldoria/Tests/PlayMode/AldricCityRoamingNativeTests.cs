@@ -39,6 +39,16 @@ namespace Eldoria.Tests
                 image = new Texture2D(width, height, TextureFormat.RGB24, false);
                 image.ReadPixels(new Rect(0, 0, width, height), 0, 0);
                 image.Apply(false);
+                var pixels = image.GetPixels32();
+                int darkest = 255, brightest = 0;
+                for (int i = 0; i < pixels.Length; i += 97)
+                {
+                    int value = (pixels[i].r + pixels[i].g + pixels[i].b) / 3;
+                    darkest = Math.Min(darkest, value);
+                    brightest = Math.Max(brightest, value);
+                }
+                Assert.That(brightest - darkest, Is.GreaterThan(40),
+                    "Actual city/world camera must produce nonempty native scene pixels: " + filename);
                 File.WriteAllBytes(Path.Combine(directory, filename), image.EncodeToPNG());
             }
             finally
