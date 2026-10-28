@@ -105,6 +105,11 @@ namespace Eldoria.Tests
             var realCard = hud.GetComponentsInChildren<RectTransform>(true)
                 .FirstOrDefault(x => x.name=="V2 / contextual building sheet");
             Assert.That(realCard,Is.Not.Null);
+            var freeViewport = (Rect)Call(v2, "GetFreeSceneViewport");
+            Assert.That(freeViewport.width, Is.GreaterThan(.5f),
+                "The bottom card must preserve horizontal camera space in landscape and portrait");
+            Assert.That(freeViewport.height, Is.GreaterThan(.1f),
+                "The selected building must retain a usable camera viewport");
             var cardRect = realCard;
             var bottomNav = Member(hud,"Navigation") as Component;
             Assert.That(bottomNav,Is.Not.Null);
