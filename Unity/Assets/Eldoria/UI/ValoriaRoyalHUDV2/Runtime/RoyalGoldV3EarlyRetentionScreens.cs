@@ -556,6 +556,12 @@ namespace Eldoria.UI.RoyalGold.V2
             LayoutShortcuts();
             if(width<200||height<260)return;
             bool portrait=height>width;
+            // Every orientation-dependent font is assigned on each layout.
+            // A phone capture/rotation must not leave its larger subtitle or
+            // action labels inside the next landscape rectangles.
+            kicker.fontSize=portrait?26:18;
+            mainActionLabel.fontSize=portrait?28:17;
+            xpLabel.fontSize=portrait?26:17;
             float outer=9f;
             float pw=width-outer*2,ph=height-outer*2;
             var panel=panelRoot;
@@ -569,7 +575,6 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL(heading.rectTransform,18f,12f,pw-200f,86f);
                 heading.fontSize=36;
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
-                kicker.fontSize=26;
                 TL((RectTransform)back.transform,pw-176f,14f,160f,88f);
                 backLabel.Put("VOLVER");
                 backLabel.fontSize=26;
@@ -661,7 +666,6 @@ namespace Eldoria.UI.RoyalGold.V2
                 TL((RectTransform)claimXp.transform,14f,ih-100f,iw-28f,88f);
                 chapter.fontSize=32;opponent.fontSize=32;formation.fontSize=26;
                 reward.fontSize=26;passive.fontSize=26;battleFeedback.fontSize=26;
-                mainActionLabel.fontSize=28;xpLabel.fontSize=26;
             }
             else if(portrait)
             {

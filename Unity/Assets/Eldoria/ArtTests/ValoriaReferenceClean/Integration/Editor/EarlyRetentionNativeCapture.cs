@@ -29,11 +29,19 @@ namespace Eldoria.ReferenceClean.Editor
         static string Output=>Path.GetFullPath(Environment.GetEnvironmentVariable("EARLY_RETENTION_EVIDENCE") ??
             Path.Combine(UnityEngine.Application.dataPath,"../../docs/early-retention/evidence"));
         static readonly List<string> Checks=new List<string>();
+        static readonly List<string> LayoutFailures=new List<string>();
         static EarlyRetentionNativeCapture()=>EditorApplication.playModeStateChanged+=Entered;
         static void Need(bool ok,string reason)
         {
             if(!ok)throw new InvalidOperationException("EARLY_RETENTION_FAIL: "+reason);
             Checks.Add(reason);Debug.Log("EARLY_RETENTION_PASS: "+reason);
+        }
+        static void CheckLayout(bool ok,string reason)
+        {
+            if(ok){Checks.Add(reason);return;}
+            LayoutFailures.Add(reason);
+            Debug.LogWarning("EARLY_RETENTION_LAYOUT_FAIL: "+reason);
+            File.AppendAllText(Path.Combine(Output,"layout-failures.txt"),reason+"\n");
         }
         public static void Capture()
         {
@@ -126,8 +134,8 @@ namespace Eldoria.ReferenceClean.Editor
                 for(int stage=1;stage<=25;stage++)
                 {
                     var world=trail.transform.TransformPoint(trail.StagePosition(stage));
-                    Need(!covered.Contains(card.InverseTransformPoint(world)),
-                        "Real stage marker "+stage+" stays clear of the information card");
+                    CheckLayout(!covered.Contains(card.InverseTransformPoint(world)),
+                        captureWidth+"px: Real stage marker "+stage+" stays clear of the information card");
                 }
             }
             foreach(var label in page.GetComponentsInChildren<Text>())
@@ -135,10 +143,10 @@ namespace Eldoria.ReferenceClean.Editor
                 if(string.IsNullOrWhiteSpace(label.text) ||
                     label.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.01f))continue;
                 if(captureWidth<=400)
-                    Need(label.fontSize*h.Hud.GetComponent<Canvas>().scaleFactor>=12f,
-                        "Phone text renders at least 12 actual pixels: "+label.name);
-                Need(label.preferredHeight<=label.rectTransform.rect.height+1f,
-                    "Complete visible text fits actual capture layout: "+label.name+
+                    CheckLayout(label.fontSize*h.Hud.GetComponent<Canvas>().scaleFactor>=12f,
+                        captureWidth+"px: Phone text renders at least 12 actual pixels: "+label.name);
+                CheckLayout(label.preferredHeight<=label.rectTransform.rect.height+1f,
+                    captureWidth+"px: Complete visible text fits actual capture layout: "+label.name+
                     " [required="+label.preferredHeight+", available="+
                     label.rectTransform.rect.height+", text="+label.text+"]");
             }
@@ -386,6 +394,9 @@ namespace Eldoria.ReferenceClean.Editor
                 "Real save reload preserves stage progress and all three reward claims");
             Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,
                 "No duplicate RoyalHUD/Canvas created");
+            Need(LayoutFailures.Count==0,
+                "All 17 genuine capture layouts passed every typography/visibility check; failures="+
+                string.Join("; ",LayoutFailures.Distinct()));
             File.WriteAllText(Path.Combine(Output,"result.txt"),
                 "EARLY_RETENTION_NATIVE_PASS\n"+string.Join("\n",Checks)+"\nART_APPROVED=false\n");
             Debug.Log("EARLY_RETENTION_NATIVE_PASS");
