@@ -11,6 +11,9 @@ namespace Eldoria.ReferenceClean {
  // This component never moves a clock, owns simulation, pays or grants resources.
  public sealed class ValoriaMarchPresentation:MonoBehaviour {
   ValoriaIntegratedWorld host;RectTransform layer,standard;ValoriaMarchRouteGraphic route;RoyalText label;
+  readonly RectTransform[] otherStandards=new RectTransform[2];
+  readonly ValoriaMarchRouteGraphic[] otherRoutes=new ValoriaMarchRouteGraphic[2];
+  readonly RoyalText[] otherLabels=new RoyalText[2];
   string lastPhase="idle",lastTarget="";int lastPendingWood,lastPendingStone,lastTraining;
   bool observed;
   PlayerState sampled;float nextSample;
@@ -28,11 +31,60 @@ namespace Eldoria.ReferenceClean {
    var icon=new GameObject("Expedition",typeof(RectTransform),typeof(RoyalIconGraphic)).GetComponent<RoyalIconGraphic>();icon.transform.SetParent(standard,false);icon.Icon=5;icon.color=new Color(1,.82f,.44f);icon.raycastTarget=false;icon.rectTransform.sizeDelta=new Vector2(34,34);
    label=Instantiate(host.Hud.Mission.Objective,standard);label.name="Expedition troop count";label.fontSize=15;label.alignment=TextAnchor.MiddleCenter;label.raycastTarget=false;label.color=new Color(1,.94f,.76f);label.rectTransform.anchorMin=label.rectTransform.anchorMax=new Vector2(.5f,.5f);label.rectTransform.pivot=new Vector2(.5f,.5f);label.rectTransform.anchoredPosition=new Vector2(0,-36);label.rectTransform.sizeDelta=new Vector2(160,24);
    standard.gameObject.SetActive(false);
+   for(int i=0;i<2;i++){
+    var extraLayer=new GameObject("Additional expedition route "+(i+2),typeof(RectTransform),typeof(ValoriaMarchRouteGraphic)).GetComponent<RectTransform>();
+    extraLayer.SetParent(layer,false);extraLayer.anchorMin=Vector2.zero;extraLayer.anchorMax=Vector2.one;
+    extraLayer.offsetMin=extraLayer.offsetMax=Vector2.zero;
+    var line=extraLayer.GetComponent<ValoriaMarchRouteGraphic>();line.raycastTarget=false;line.color=new Color(.52f,.84f,.92f,.78f);
+    var marker=Instantiate(standard,extraLayer);marker.name="Expedition standard "+(i+2);
+    marker.gameObject.SetActive(false);
+    otherStandards[i]=marker;otherRoutes[i]=line;
+    otherLabels[i]=marker.GetComponentInChildren<RoyalText>(true);
+   }
+  }
+  void UpdateAdditional(PlayerState state){
+   var origin=host.FindTarget("valoria-map-city");
+   var canvas=layer.GetComponentInParent<Canvas>();
+   var uiCamera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
+   for(int i=0;i<2;i++){
+    var m=state.ExtraMarches!=null&&i<state.ExtraMarches.Count?state.ExtraMarches[i]:null;
+    if(!host.InWorld||m==null||m.Phase=="idle"||!origin){
+     otherStandards[i].gameObject.SetActive(false);
+     otherRoutes[i].SetPoints(Array.Empty<Vector2>());
+     continue;
+    }
+    var destination=host.FindTarget(m.TargetId);
+    if(!destination){
+     otherStandards[i].gameObject.SetActive(false);
+     otherRoutes[i].SetPoints(Array.Empty<Vector2>());
+     continue;
+    }
+    var from=origin.transform.position;var to=destination.transform.position;
+    float fraction=m.Phase=="gathering"?1:(float)ZoneOneGatewayHost.TravelFraction(host.City.Clock.UtcTicks,m.PhaseEndsUtcTicks,SliceRules.TravelSeconds);
+    if(m.Phase=="returning")fraction=1-fraction;
+    var points=new List<Vector2>();
+    for(int j=0;j<=24;j++){
+     var sample=RoutePosition(m,from,to,j/24f)+Vector3.up*1.5f;
+     var screen=host.WorldCamera.WorldToScreenPoint(sample);
+     if(screen.z>0&&RectTransformUtility.ScreenPointToLocalPointInRectangle(layer,screen,uiCamera,out var local))points.Add(local);
+    }
+    otherRoutes[i].SetPoints(points.ToArray());
+    var world=RoutePosition(m,from,to,fraction)+Vector3.up*3;
+    var screenPosition=host.WorldCamera.WorldToScreenPoint(world);
+    bool visible=screenPosition.z>0&&host.WorldCamera.pixelRect.Contains(screenPosition);
+    otherStandards[i].gameObject.SetActive(visible);
+    if(!visible)continue;
+    if(RectTransformUtility.ScreenPointToLocalPointInRectangle(layer,screenPosition,uiCamera,out var position))
+      otherStandards[i].anchoredPosition=position;
+    otherLabels[i].Put((m.HeroId=="lyra"?"Lyra":m.HeroId=="aldric+lyra"?"Aldric + Lyra":"Aldric")+" · "+m.Troops.Total);
+   }
   }
   void LateUpdate(){
    if(!host||!host.Ready||!layer)return;
    if(sampled==null||Time.unscaledTime>=nextSample){sampled=host.City.Gateway.Snapshot();nextSample=Time.unscaledTime+.1f;}
-   var s=sampled;bool investigating=s.ChapterThree.InvestigationEndsUtcTicks>host.City.Clock.UtcTicks;
+   var s=sampled;
+   UpdateAdditional(s);
+   bool investigating=s.ChapterThree.InvestigationEndsUtcTicks>host.City.Clock.UtcTicks;
    var march=investigating?new MarchState{TargetId="fissure-valoria",HeroId="aldric",Route=s.ChapterThree.InvestigationRoute,Phase="investigating"}:s.March;
    string phase=march.Phase;ObservedPhase=phase;
    if(observed&&lastPhase!="idle"&&phase=="idle"){
