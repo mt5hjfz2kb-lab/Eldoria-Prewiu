@@ -40,6 +40,8 @@ namespace Eldoria.UI.RoyalGold.V2
         // Miniatures are crops of the existing, real expedition map art:
         // four mission families share the same no-cost source texture.
         readonly RawImage[] scoutThumbnails=new RawImage[3];
+        RawImage engendroPortrait;
+        Texture2D engendroTexture;
         readonly RoyalText[] scoutActionLabels=new RoyalText[3];
         readonly RoyalGoldV3ScoutContractGraphic[] scoutArt=new RoyalGoldV3ScoutContractGraphic[3];
         readonly string[] scoutIds=new string[3];
@@ -229,6 +231,19 @@ namespace Eldoria.UI.RoyalGold.V2
             trail.anchorMin=new Vector2(.10f,.06f);
             trail.anchorMax=new Vector2(.90f,.54f);
             trail.offsetMin=trail.offsetMax=Vector2.zero;
+            // The stage-15 elite is the canonical Bastion-II Spawnling,
+            // not an invented stone golem. Reuse its actual authored image.
+            engendroTexture=Resources.Load<Texture2D>(
+                "EldoriaRetention/engendro-portrait");
+            var creature=Panel(heroScene,"Lore-approved Engendro portrait");
+            var creatureArt=Rect("Engendro / authentic creature illustration",creature);
+            creatureArt.gameObject.AddComponent<CanvasRenderer>();
+            engendroPortrait=creatureArt.gameObject.AddComponent<RawImage>();
+            engendroPortrait.raycastTarget=false;
+            engendroPortrait.texture=engendroTexture;
+            engendroPortrait.uvRect=new Rect(0f,0f,1f,1f);
+            Stretch(creatureArt,4f);
+            creature.gameObject.SetActive(false);
             victoryBanner=Panel(heroScene,"Crónica Real / combat outcome gilded announcement");
             var victoryPlate=victoryBanner.GetComponent<RoyalGoldV2FrameGraphic>();
             victoryPlate.Primary=true;
@@ -485,6 +500,14 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             chapterTrail.rectTransform.offsetMin=Vector2.zero;
             chapterTrail.rectTransform.offsetMax=Vector2.zero;
+            if(engendroPortrait)
+            {
+                var frame=engendroPortrait.transform.parent as RectTransform;
+                float w=Mathf.Min(heroScene.rect.width*.30f,portrait?210f:235f);
+                float h=Mathf.Min(heroScene.rect.height*.37f,portrait?170f:215f);
+                TL(frame,portrait?16f:26f,
+                    Mathf.Max(90f,heroScene.rect.height-h-19f),w,h);
+            }
             if(victoryBanner)
             {
                 float bannerWidth=Mathf.Min(heroScene.rect.width-18f,330f);
@@ -674,6 +697,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 int stage=p.LastClearedStage+1;
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 bool boss=info.Step%5==0;
+                if(engendroPortrait)
+                    engendroPortrait.transform.parent.gameObject.SetActive(
+                        info.Step==15 && engendroTexture!=null);
                 if(sceneArtwork.BossEncounter!=boss)
                 {
                     sceneArtwork.BossEncounter=boss;
@@ -706,6 +732,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else
             {
+                if(engendroPortrait)
+                    engendroPortrait.transform.parent.gameObject.SetActive(false);
                 chapter.Put("ENCARGOS EN CURSO");
                 var list=p.Orders.Where(x=>x!=null&&!x.Claimed)
                     .OrderBy(x=>x.StartedUtcTicks>0?0:1)
