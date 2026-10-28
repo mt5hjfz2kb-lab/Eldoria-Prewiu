@@ -186,8 +186,8 @@ namespace Eldoria.ReferenceClean.Editor
             var illustration=hud.GetComponentsInChildren<RawImage>(true)
                 .FirstOrDefault(x=>x.name=="Original illustrated world / decorative only");
             Need(illustration && illustration.enabled && illustration.texture!=null &&
-                illustration.texture.width==512 && illustration.texture.height==512 &&
-                illustration.texture.name.Contains("painterly"),
+                illustration.texture.width>=1024 && illustration.texture.height>=1024 &&
+                illustration.texture.name.EndsWith("painterly-v2"),
                 "New painterly Vigilants scene loads through actual Unity Resources");
             var vigilantsPainting=illustration.texture;
             Screenshot(h,"vigilants-first-trial",1600,900);
@@ -274,8 +274,8 @@ namespace Eldoria.ReferenceClean.Editor
                 "Scouts has separate scene, not Codex or Missions overlay");
             Need(illustration.enabled && illustration.texture!=null &&
                 illustration.texture!=vigilantsPainting &&
-                illustration.texture.width==512 && illustration.texture.height==512 &&
-                illustration.texture.name.Contains("painterly"),
+                illustration.texture.width>=1024 && illustration.texture.height>=1024 &&
+                illustration.texture.name.EndsWith("painterly-v2"),
                 "Scouts uses its own cinematic painterly expedition map");
             var contractArt=hud.GetComponentsInChildren<RoyalGoldV3ScoutContractGraphic>(true);
             Need(contractArt.Length==3,

@@ -296,8 +296,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // Original cinematic scenery adapted from the art direction
             // approved for both activities. Gameplay markers, labels and buttons
             // remain separate, live Unity controls layered above the painting.
-            paintedVigilants=Resources.Load<Texture2D>("EldoriaRetention/vigilants-painterly");
-            paintedScouts=Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly");
+            paintedVigilants=Resources.Load<Texture2D>("EldoriaRetention/vigilants-painterly-v2")
+                ?? Resources.Load<Texture2D>("EldoriaRetention/vigilants-painterly");
+            paintedScouts=Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly-v2")
+                ?? Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly");
             // Keep the earlier zero-cost procedural texture as resilient fallback.
             if(!paintedVigilants)paintedVigilants=
                 Resources.Load<Texture2D>("EldoriaRetention/vigilants-illustration");
