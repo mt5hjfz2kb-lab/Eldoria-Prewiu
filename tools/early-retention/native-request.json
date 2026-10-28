@@ -17,6 +17,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 15,
-  "note": "Reconcile latest painterly/lore/button art with PR119 viewport/reset fixes, idle8h cap correction,15 native PNGs, typography-fit, all3 scout dispatch/claims, real heroXP claim and save reload. Technical PASS never replaces inspection of exact images."
+  "revision": 16,
+  "note": "Reconcile latest painterly/lore/button art with PR119 viewport/reset fixes, idle8h cap correction,15 native PNGs, typography-fit, all3 scout dispatch/claims, real heroXP claim and save reload. Technical PASS never replaces inspection of exact images. Fix native0e6f730 runtime Graphic collision: construct one final red/blue Graphic on each original button. Rerun full15capture/action/claim/XP/reload proof."
 }

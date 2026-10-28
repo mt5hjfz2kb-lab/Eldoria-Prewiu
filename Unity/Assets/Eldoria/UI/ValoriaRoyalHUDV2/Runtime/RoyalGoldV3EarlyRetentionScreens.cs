@@ -131,29 +131,36 @@ namespace Eldoria.UI.RoyalGold.V2
             return r;
         }
         static RoyalButton Button(Transform parent,string name,string label,
-            Action action,out RoyalText caption,bool primary=false)
+            Action action,out RoyalText caption,bool primary=false,bool? battleStyle=null)
         {
-            var r=Panel(parent,name,true);
-            var g=r.GetComponent<RoyalGoldV2FrameGraphic>();
-            g.Primary=primary;g.DecorativeCorners=false;
+            // Unity permits exactly one Graphic per GameObject. Choose the
+            // final surface at creation instead of disabling one Graphic and
+            // attempting to add a second incompatible component.
+            var r=Rect(name,parent);
+            r.gameObject.AddComponent<CanvasRenderer>();
+            Graphic surface;
+            if(battleStyle.HasValue)
+            {
+                var plate=r.gameObject.AddComponent<RoyalGoldV3RetentionActionGraphic>();
+                plate.Battle=battleStyle.Value;
+                surface=plate;
+            }
+            else
+            {
+                var plate=r.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
+                plate.Primary=primary;
+                plate.DecorativeCorners=false;
+                surface=plate;
+            }
+            surface.raycastTarget=true;
             var b=r.gameObject.AddComponent<RoyalButton>();
-            b.targetGraphic=g;
+            b.targetGraphic=surface;
             caption=Text(r,"Original gilded label",17,Ivory,true);
             caption.alignment=TextAnchor.MiddleCenter;
             Stretch(caption.rectTransform,5);
             caption.Put(label);
             b.onClick.AddListener(()=>action?.Invoke());
             return b;
-        }
-        static void StyleRetentionAction(RoyalButton button,bool battle)
-        {
-            if(!button)return;
-            var previous=button.GetComponent<RoyalGoldV2FrameGraphic>();
-            if(previous){previous.raycastTarget=false;previous.enabled=false;}
-            var frame=button.gameObject.AddComponent<RoyalGoldV3RetentionActionGraphic>();
-            frame.Battle=battle;
-            frame.raycastTarget=true;
-            button.targetGraphic=frame;
         }
         static void DecorateShortcut(RoyalButton button,RoyalText caption,string source)
         {
@@ -277,8 +284,7 @@ namespace Eldoria.UI.RoyalGold.V2
             passive=Text(infoCard,"Offline hero experience",18,Ivory);
             battleFeedback=Text(infoCard,"Last action result",17,Ivory);
             mainAction=Button(infoCard,"Battle against next unique stage",
-                "COMBATIR",ExecuteStage,out mainActionLabel,true);
-            StyleRetentionAction(mainAction,true);
+                "COMBATIR",ExecuteStage,out mainActionLabel,true,true);
             claimXp=Button(infoCard,"Claim earned hero experience",
                 "RECOGER EXPERIENCIA",CollectXp,out xpLabel);
             for(int i=0;i<3;i++)
@@ -307,8 +313,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 scoutTitles[i]=Text(cell,"Readable contract heading",22,Ink,true);
                 scoutCards[i]=Text(cell,"Real scout order reward and status",18,Ink);
                 scoutActions[i]=Button(cell,"Dispatch or claim scout "+(i+1),
-                    "ENVIAR",()=>RunScout(index),out scoutActionLabels[i],true);
-                StyleRetentionAction(scoutActions[i],false);
+                    "ENVIAR",()=>RunScout(index),out scoutActionLabels[i],true,false);
                 scoutActions[i].transform.SetParent(cell,false);
                 cell.name="Scout / live contract "+(i+1);
             }
