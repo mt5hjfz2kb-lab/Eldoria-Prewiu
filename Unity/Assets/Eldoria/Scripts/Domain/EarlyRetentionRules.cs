@@ -165,10 +165,8 @@ namespace Eldoria.Domain
             if(report==null||report.TargetId!="vigilant:"+stage.Absolute)return "";
             var hero=report.HeroId=="lyra"?"Lyra":
                 report.HeroId=="aldric+lyra"?"Aldric y Lyra":"Aldric";
-            return (report.Won?"Victoria":"Derrota")+" · "+
-                report.Rounds+" rondas · "+report.Troops+" tropas · "+hero+
-                "\nPoder "+report.PlayerPower+" / rival "+report.EnemyPower+
-                " · Vida restante "+report.RemainingHealth+
+            return report.Rounds+" rondas · "+report.Troops+" tropas · "+hero+
+                "\nPoder "+report.PlayerPower+" · Índice rival "+report.EnemyPower+
                 "\n"+CombatAdvice(stage);
         }
         // Lore variants are deterministic from the saved order, so a reload
@@ -323,8 +321,8 @@ namespace Eldoria.Domain
                     HeroId=hero,Troops=available.Total,PlayerPower=army.Power,
                     EnemyPower=enemy.Difficulty,Won=battle.Won,Rounds=battle.Rounds,
                     RemainingHealth=battle.RemainingHealth,
-                    Reason=battle.Won?"El ejército superó "+enemy.Trait.ToLowerInvariant()+".":
-                        "Refuerza las tropas y vuelve a intentarlo; "+enemy.Trait.ToLowerInvariant()+"."};
+                    Reason=battle.Won?"Superaste la "+enemy.Trait.ToLowerInvariant()+".":
+                        "Prepara otra composición: "+CombatAdvice(enemy)};
                 s.LastBattleReason=s.LastBattleReport.Reason;
                 if(!battle.Won){message="La etapa resistió. Mejora tu ejército.";return true;}
                 p.LastClearedStage=stage;
