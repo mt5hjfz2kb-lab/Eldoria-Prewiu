@@ -14,6 +14,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 9,
-  "note": "Retry exact early-retention native proof after fixing Unity CS0542 (disposable Save fixture renamed MemoryStateStore). Require authentic EditMode XML and 8 landscape/portrait screenshots; do not touch owner saves; ART_APPROVED remains false until visual QA."
+  "revision": 10,
+  "note": "Exact candidate native10: Unity EditMode must NOT use -quit (previous run 40647221074 quit with exit 0 but no test XML); revision-atomic Scout unlock fix plus new regression tests; capture genuine 8 images, retain ART_APPROVED=false; zero user save access."
 }
