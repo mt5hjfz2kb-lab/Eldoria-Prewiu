@@ -192,27 +192,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     Q(vh,x+w*.528f,y+h*.79f,w*.004f,h*.07f,purple,purple);
                     Q(vh,x+w*.495f,y+h*.88f,w*.066f,h*.005f,purple,purple);
                 }
-                // The five illustrated boss milestones are an in-world trail,
-                // never extra buttons or tutorial-locked destinations.
-                // Displayed after clearing five, ten, fifteen, twenty,
-                // and twenty-five stages in the player's own chapter.
-                float trackY=y+h*.105f;
-                float startX=x+w*.18f,endX=x+w*.82f;
-                float step=(endX-startX)*.25f;
-                float radius=Mathf.Clamp(h*.043f,5f,13f);
-                Q(vh,startX,trackY-1f,endX-startX,2f,antique,antique);
-                for(int i=0;i<5;i++)
-                {
-                    bool won=ChapterProgress>=(i+1)*5;
-                    var ring=won?new Color(.96f,.77f,.45f,1):
-                        new Color(.41f,.37f,.32f,1);
-                    var centre=won?new Color(.72f,.46f,.21f,1):
-                        new Color(.06f,.09f,.13f,1);
-                    Coin(vh,startX+i*step,trackY,radius,centre,ring);
-                    Diamond(vh,startX+i*step,trackY,radius*.47f,
-                        won?new Color(.98f,.88f,.66f,1):
-                        new Color(.50f,.50f,.47f,1));
-                }
+                // The 25-node RoyalGoldV3StageTrailGraphic already includes
+                // every guardian at 5/10/15/20/25 and owns the real progress.
+                // Do not draw a SECOND row of milestone coins beneath it:
+                // it overlaps the trail on actual Unity mobile screenshots.
             }
             Q(vh,x+2,y+2,w-4,2,antique,antique);
             Q(vh,x+2,y+h-4,w-4,2,antique,antique);
