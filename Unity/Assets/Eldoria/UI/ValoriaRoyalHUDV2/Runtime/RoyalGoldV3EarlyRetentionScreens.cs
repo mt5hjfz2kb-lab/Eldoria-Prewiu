@@ -32,7 +32,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RectTransform safe, screenRect, panelRoot, heroScene, infoCard, victoryBanner;
         CanvasGroup victoryGroup;
         RoyalText victoryTitle, victoryDetail;
-        float victoryUntil;
+        float victoryUntil, victoryStarted;
         RoyalButton vigilantShortcut, scoutsShortcut, back, mainAction, claimXp;
         readonly RoyalButton[] scoutActions=new RoyalButton[3];
         readonly RoyalText[] scoutCards=new RoyalText[3];
@@ -291,6 +291,7 @@ namespace Eldoria.UI.RoyalGold.V2
             notice="";
             victoryUntil=0f;
             if(victoryGroup)victoryGroup.alpha=0f;
+            if(victoryBanner)victoryBanner.localScale=Vector3.one;
             screen.SetActive(true);
             screenRect.SetAsLastSibling();
             width=-1;height=-1;
@@ -317,7 +318,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     victoryTitle.Put(report.Won?"VICTORIA":"DERROTA");
                     victoryTitle.color=report.Won?Gold:new Color(.93f,.51f,.41f,1f);
                     victoryDetail.Put(result.Message);
-                    victoryUntil=Time.unscaledTime+3.2f;
+                    victoryStarted=Time.unscaledTime;
+                    victoryUntil=victoryStarted+3.2f;
                     victoryGroup.alpha=1f;
                     victoryGroup.blocksRaycasts=false;
                 }
@@ -331,7 +333,8 @@ namespace Eldoria.UI.RoyalGold.V2
                     "EXPLORADORES EN CAMINO");
                 victoryTitle.color=Gold;
                 victoryDetail.Put(result.Message);
-                victoryUntil=Time.unscaledTime+(kind=="ScoutClaim"?2.7f:1.9f);
+                victoryStarted=Time.unscaledTime;
+                victoryUntil=victoryStarted+(kind=="ScoutClaim"?2.7f:1.9f);
                 victoryGroup.alpha=1f;
                 victoryGroup.blocksRaycasts=false;
             }
@@ -372,6 +375,12 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 float remaining=victoryUntil-Time.unscaledTime;
                 victoryGroup.alpha=Mathf.Clamp01(remaining*2f);
+                // Gentle, frame-rate independent acknowledgement. The result
+                // is always calculated and committed by the existing gateway;
+                // this only animates its already-real gold-framed banner.
+                float elapsed=Mathf.Max(0f,Time.unscaledTime-victoryStarted);
+                float spring=1f-Mathf.Exp(-elapsed*11f);
+                victoryBanner.localScale=Vector3.one*(.95f+.05f*spring);
             }
             if(Time.unscaledTime<nextUpdate)return;
             nextUpdate=Time.unscaledTime+.3f;
