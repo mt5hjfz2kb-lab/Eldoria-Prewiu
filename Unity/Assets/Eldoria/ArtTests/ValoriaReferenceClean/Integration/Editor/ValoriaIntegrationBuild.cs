@@ -574,7 +574,17 @@ namespace Eldoria.ReferenceClean.Editor {
     else if(button==hud.Mission.ListToggle&&!hud.Mission.ListExpanded)button=v2.VisibleChapterButton;
     else if(button==hud.Building.Primary.Button)button=v2.VisibleBuildingButton;
    }
-   Need(button!=null&&button.interactable&&button.gameObject.activeInHierarchy,"Royal action not interactable");Canvas.ForceUpdateCanvases();
+   if(button==null||!button.interactable||!button.gameObject.activeInHierarchy){
+    var host=Object.FindFirstObjectByType<ValoriaIntegratedWorld>();
+    var site=host?host.FindTarget(hud.SelectedBuildingId):null;
+    Debug.LogError("ELDORIA_ACTION_DIAGNOSTIC selected="+hud.SelectedBuildingId+
+     " site="+(site?site.transform.position.ToString():"missing")+
+     " active="+(site&&site.gameObject.activeInHierarchy)+
+     " camera="+(host?host.PlayerCamera.transform.position.ToString():"missing")+
+     " zoom="+(host?host.PlayerCamera.orthographicSize:0)+
+     " viewport="+(site&&host?host.PlayerCamera.WorldToViewportPoint(site.transform.position).ToString():"missing"));
+   }
+   Need(button!=null&&button.interactable&&button.gameObject.activeInHierarchy,"Royal action not interactable: "+hud.SelectedBuildingId);Canvas.ForceUpdateCanvases();
    var corners=new Vector3[4];((RectTransform)button.transform).GetWorldCorners(corners);var p=RectTransformUtility.WorldToScreenPoint(null,(corners[0]+corners[2])*.5f);
    var data=new PointerEventData(EventSystem.current){pointerId=-1,button=PointerEventData.InputButton.Left,position=p};
    var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(data,hits);Need(hits.Count>0&&ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject)==button.gameObject,"Royal action raycast blocked: "+button.name+" point="+p+" screen="+Screen.width+"x"+Screen.height+" buttonGraphicDepth="+button.targetGraphic.depth+" buttonGraphicCull="+button.targetGraphic.canvasRenderer.cull+" graphicEnabled="+button.targetGraphic.isActiveAndEnabled+" graphicRaycast="+button.targetGraphic.raycastTarget+" buttonRect="+((RectTransform)button.transform).rect+" graphicCanvas="+(button.targetGraphic.canvas?button.targetGraphic.canvas.name:"NONE")+" buttonPosition="+button.transform.position+" corners="+corners[0]+" to "+corners[2]+" parent="+button.transform.parent.name+" parentActive="+button.transform.parent.gameObject.activeInHierarchy+" hits="+string.Join(",",hits.Select(x=>x.gameObject.name+":"+x.depth)));
