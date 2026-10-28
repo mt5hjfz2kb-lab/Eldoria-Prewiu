@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T08:59:31.385Z",
+  "updated_at": "2026-10-28T13:43:34.050Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -1761,7 +1761,8 @@
         "Unity/Assets/Eldoria/Resources/EldoriaRetention.meta",
         "Unity/Assets/Eldoria/Resources/EldoriaRetention/**",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs.meta"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs.meta",
+        "qa/e2e-full-arc1.js"
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
@@ -1783,7 +1784,8 @@
         "previous_visual_review": "superseded_by_new_painterly_and_stage15_art"
       },
       "next": "Publish same PR120 preserving latest4981f5fd art and merged119. Prepared15 native captures and real3scout dispatch/claim +XP +reload. Local exact-domain NUnit13/13 and managementSmoke30/30 pass. Current reference images opened; no newsystems or paidtools.",
-      "phase": "PR120_RECONCILED_NATIVE_CERTIFICATION"
+      "phase": "PR120_RECONCILED_NATIVE_CERTIFICATION",
+      "test_harness_scope_note": "Owner-authorized PR119/120 completion: repair only stale frozen-web fresh-save Arc-I Fissure assertions (retired INSPECCIONAR/recruit-before-victory sequence) to match the already-approved real Bastion III investigation/contact/assault/recruit/manuscript journey. No frozen-web gameplay changes, no new Bastion IV/V work. Exact file unclaimed by any other active owner. Preserve native owner/revision5 and existing Windows queue."
     }
   ],
   "history": [
