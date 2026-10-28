@@ -1,0 +1,123 @@
+name: Aldric city — native Unity 6000.3.23f1 GPU PlayMode and four captures
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/aldric-city-roaming-20261028]
+    paths: ['tools/aldric-city/native-request.json']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-aldric-city-one-native-editor
+  cancel-in-progress: false
+jobs:
+  unity-city:
+    if: vars.UNITY_RUNNER_READY == 'true'
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 75
+    env:
+      VALORIA_GAMEPLAY_PROBE: '1'
+    steps:
+      - name: Respect PR120 ownership and check free Unity editor before touching project
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference='Stop'
+          $h=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-AldricCity-native-lease'}
+          $pr=Invoke-RestMethod -Headers $h -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/pulls/120'
+          if(-not $pr.merged_at){throw 'PR120 still owns Unity; do not start Aldric city native test'}
+          $data=Invoke-RestMethod -Headers $h -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
+          $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($data.content)) | ConvertFrom-Json
+          $claims=@($reg.active | Where-Object {$_.status -eq 'active' -and $_.resources -contains 'windows-runner-heavy'})
+          if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-aldric-city-roaming-20261028')){
+            throw "Reserved Windows runner: $($claims.id -join ', '). Retain existing owner's queue."
+          }
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Another active Unity/Blender process; do not interrupt'
+          }
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Configured Unity Editor is absent'}
+          $version= & $env:UNITY_EDITOR_PATH -version
+          if($version -notmatch '6000\.3\.23f1'){throw "Wrong Unity Editor $version"}
+          Write-Host 'ALDRIC_CITY_NATIVE_LEASE_FREE_VERSION_PASS'
+      - name: Locate Git from GitHub Desktop if not in PATH
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $desktop=Join-Path $env:LOCALAPPDATA 'GitHubDesktop'
+            $p=Get-ChildItem $desktop -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $p){throw 'Git unavailable'}
+            $dir=Split-Path $p;Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          fetch-depth: 2
+          sparse-checkout: |
+            Unity
+            tools
+            pipeline
+          sparse-checkout-cone-mode: true
+      - name: Verify exact source checkout, restore only missing tracked files and check GLB
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $sha=(& git rev-parse HEAD).Trim()
+          if($sha -ne $env:GITHUB_SHA){throw "Stale Unity PR122 checkout: $sha"}
+          $tracked=@(& git ls-tree -r --name-only HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings)
+          if($tracked.Count -lt 500){throw 'Incomplete tracked Unity project'}
+          $missing=@($tracked | Where-Object {-not(Test-Path -LiteralPath $_)})
+          if($missing.Count -gt 0){
+            & git checkout --ignore-skip-worktree-bits HEAD -- Unity/Assets Unity/Packages Unity/ProjectSettings
+            if($LASTEXITCODE -ne 0){throw 'Failed to restore exact tracked project'}
+          }
+          $remaining=@($tracked | Where-Object {-not(Test-Path -LiteralPath $_)})
+          if($remaining.Count -ne 0){throw "Missing $($remaining.Count) exact source files"}
+          $f='Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb'
+          if(-not(Test-Path $f)){throw 'Approved full-body asset absent'}
+          if((Get-Item $f).Length -ne 10140372){throw 'Incorrect full-body file size'}
+          $hash=(Get-FileHash -Algorithm SHA256 $f).Hash.ToLowerInvariant()
+          if($hash -ne 'c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b'){
+            throw 'Approved 26-joint source SHA mismatch'
+          }
+          Write-Host 'ALDRIC_CITY_EXACT_GLB_NATIVE_SOURCE_PASS'
+      - name: Run actual GPU PlayMode against the canonical Valoria city
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP "aldric-city-native-$env:GITHUB_RUN_ID"
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          $env:ALDRIC_CITY_SCREENSHOT_DIR=$out
+          $xml=Join-Path $out 'aldric-city-playmode.xml'
+          $log=Join-Path $out 'aldric-city-unity.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-runTests',
+            '-testPlatform','PlayMode','-testFilter','Eldoria.Tests.AldricCityRoamingNativeTests',
+            '-testResults',$xml,'-logFile',$log)
+          $proc=Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          try{
+            if(-not $proc.WaitForExit(2400000)){Stop-Process -Id $proc.Id -Force;throw 'Our Unity test exceeded 40m'}
+            if($proc.ExitCode -ne 0){throw "Unity PlayMode failed: $($proc.ExitCode)"}
+          }finally{
+            if(-not $proc.HasExited){Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue}
+          }
+          if(-not(Test-Path $xml)){throw 'No native PlayMode XML produced'}
+          $report=Get-Content -LiteralPath $xml -Raw
+          if($report -notmatch 'AldricCityRoamingNativeTests' -or $report -notmatch 'Passed'){
+            throw 'Aldric walking test was not certified'
+          }
+          foreach($image in @('aldric-city-idle-landscape.png','aldric-city-idle-portrait.png',
+                              'aldric-city-walking-landscape.png','aldric-city-walking-portrait.png')){
+            if(-not(Test-Path (Join-Path $out $image))){throw "Native camera screenshot missing $image"}
+          }
+          Write-Host 'ALDRIC_CITY_REAL_UNITY_WALK_SCALE_FOUR_CAMERAS_PASS'
+      - name: Preserve genuine Unity logs XML and captures even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aldric-city-native-${{ github.run_id }}
+          path: ${{ runner.temp }}/aldric-city-native-${{ github.run_id }}/*
+          if-no-files-found: warn
+          retention-days: 30
