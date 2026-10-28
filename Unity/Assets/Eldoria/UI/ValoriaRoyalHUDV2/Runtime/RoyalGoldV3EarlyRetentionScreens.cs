@@ -135,6 +135,24 @@ namespace Eldoria.UI.RoyalGold.V2
             b.onClick.AddListener(()=>action?.Invoke());
             return b;
         }
+        static void DecorateShortcut(RoyalButton button,RoyalText caption,string source)
+        {
+            if(!button||!caption)return;
+            Sprite sprite=Resources.Load<Sprite>(source);
+            if(!sprite)return;
+            var art=Rect("Approved Valoria heraldic emblem",button.transform);
+            art.gameObject.AddComponent<CanvasRenderer>();
+            var icon=art.gameObject.AddComponent<Image>();
+            icon.sprite=sprite;
+            icon.preserveAspect=true;
+            icon.raycastTarget=false;
+            Pos(art,new Vector2(0,.5f),new Vector2(0,.5f),8f,0f,37f,37f);
+            var captionRect=caption.rectTransform;
+            captionRect.offsetMin=new Vector2(45f,5f);
+            captionRect.offsetMax=new Vector2(-5f,-5f);
+            caption.fontSize=14;
+            caption.SetAllDirty();
+        }
         void EnsureView()
         {
             if(ready||!Hud)return;
@@ -145,6 +163,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 "VIGILANTES",()=>Open(Destination.Vigilants),out var a);
             scoutsShortcut=Button(safe,"Live Scouts unlocked access",
                 "EXPLORADORES",()=>Open(Destination.Scouts),out var b);
+            // Reuse genuine Eldoria's licensed recovered royal emblems, not
+            // primitive substitutes. These images are ornamental siblings
+            // inside the SAME actionable original RoyalButton.
+            DecorateShortcut(vigilantShortcut,a,"EldoriaRetention/vigilants-compass");
+            DecorateShortcut(scoutsShortcut,b,"EldoriaRetention/scouts-crest");
             // Never flash a locked action on the first Unity frame.
             vigilantShortcut.gameObject.SetActive(false);
             scoutsShortcut.gameObject.SetActive(false);
