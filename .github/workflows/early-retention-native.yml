@@ -9,7 +9,7 @@ permissions:
   contents: read
 concurrency:
   group: eldoria-early-retention-unity-native
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   native:
     if: vars.UNITY_RUNNER_READY == 'true'
@@ -32,11 +32,8 @@ jobs:
           # Owner continuity is registered on main. The canonical completion
           # owner took over this same workstream; PR119 must release Windows
           # BEFORE the single retention claim passes this gate.
-          $allowedOwners=@('chatgpt-cronica-real-ux-polish-20261027',
-                           'codex-pr119-pr120-completion-20261028')
           if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-early-retention-systems-20261028' -or
-             $claims[0].ownership_state -ne 'claimed' -or
-             $claims[0].owner -notin $allowedOwners){
+             $claims[0].ownership_state -ne 'claimed' -or $claims[0].owner -ne 'codex-pr119-pr120-completion-20261028'){
             throw "Windows runner is not exclusively owned by this active workstream: $($claims.id -join ',')"
           }
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'A local Unity or Blender process is already active. Do not interrupt.'}
@@ -90,6 +87,32 @@ jobs:
           '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' |
             Set-Content $settings -Encoding UTF8
           Write-Host 'Disposable isolated source and reversible Search index ready'
+      - name: Prepare canonical build-safe Bastion III resources required by scene tests
+        shell: powershell
+        working-directory: retention-source
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
+          # The merged III scene loads these build outputs even during I-II.
+          # Reuse its approved deterministic preparation; do not invent art,
+          # hide missing-resource errors, or weaken the PlayMode log contract.
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender unavailable for canonical III resource preparation'}
+          $evidence='docs/bastion-iii/native'
+          if(Test-Path $evidence){
+            $archive=Join-Path $env:RUNNER_TEMP "bastion-iii-before-ui-$env:GITHUB_RUN_ID"
+            if(Test-Path $archive){throw 'Prior III evidence archive already exists'}
+            Move-Item $evidence $archive
+          }
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Canonical private fissure preparation failed'}
+          New-Item -ItemType Directory -Force $env:EARLY_RETENTION_EVIDENCE | Out-Null
+          $log=Join-Path $env:EARLY_RETENTION_EVIDENCE 'resource-preparation.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
+
       - name: Run only Early Retention native EditMode domain tests
         shell: powershell
         working-directory: retention-source
@@ -125,7 +148,7 @@ jobs:
           if(-not(Test-Path $proof)){throw 'Actual game screenshot acceptance did not finish'}
           if(-not((Get-Content $proof -Raw).Contains('EARLY_RETENTION_NATIVE_PASS'))){throw 'No native acceptance proof'}
           $png=@(Get-ChildItem $env:EARLY_RETENTION_EVIDENCE -Filter '*.png')
-          if($png.Count -ne 10){throw "Expected 10 genuine Unity screenshots (trial, chapter, victory, lore-correct Engendro, scouts x two orientations), got $($png.Count)"}
+          if($png.Count -ne 15){throw "Expected 15 genuine Unity screenshots (trial, chapter, victory, Engendro stage15, scouts; landscape, portrait and narrow phone), got $($png.Count)"}
       - name: Preserve original Unity Search state
         if: always()
         shell: powershell

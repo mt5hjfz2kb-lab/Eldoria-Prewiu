@@ -208,6 +208,8 @@ namespace Eldoria.UI.RoyalGold.V2
             introduction=Text(panel,"Mission introduction",18,Ivory);
             var art=Panel(panel,"Scenic illustration");
             heroScene=art;
+            // Scenic trees stay inside the manuscript frame in either aspect ratio.
+            art.gameObject.AddComponent<RectMask2D>();
             var picture=Rect("Original hand-drawn scenery",art);
             picture.gameObject.AddComponent<CanvasRenderer>();
             sceneArtwork=picture.gameObject.AddComponent<RoyalGoldV3EarlyRetentionArtwork>();
@@ -524,11 +526,11 @@ namespace Eldoria.UI.RoyalGold.V2
             if(victoryBanner)
             {
                 float bannerWidth=Mathf.Min(heroScene.rect.width-18f,330f);
-                float bannerHeight=84f;
+                float bannerHeight=112f;
                 Pos(victoryBanner,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
                     0f,0f,bannerWidth,bannerHeight);
                 TL(victoryTitle.rectTransform,12f,7f,bannerWidth-24f,35f);
-                TL(victoryDetail.rectTransform,12f,44f,bannerWidth-24f,29f);
+                TL(victoryDetail.rectTransform,12f,44f,bannerWidth-24f,58f);
                 victoryDetail.fontSize=portrait?14:16;
             }
             // Keep the portrait manuscript above the fixed bottom footer.
@@ -548,10 +550,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 // Compact, intentional vertical rhythm: the playable trail/map
                 // remains the hero, while both actions stay fully above the footer.
                 TL(chapter.rectTransform,14f,13f,iw-28f,36f);
-                TL(opponent.rectTransform,14f,52f,iw-28f,47f);
-                TL(formation.rectTransform,14f,101f,iw-28f,34f);
-                TL(reward.rectTransform,14f,138f,iw-28f,35f);
-                TL(passive.rectTransform,14f,182f,iw-28f,50f);
+                TL(opponent.rectTransform,14f,52f,iw-28f,64f);
+                TL(formation.rectTransform,14f,119f,iw-28f,34f);
+                TL(reward.rectTransform,14f,156f,iw-28f,35f);
+                TL(passive.rectTransform,14f,200f,iw-28f,58f);
                 TL(battleFeedback.rectTransform,14f,Mathf.Max(182f,ih-184f),iw-28f,48f);
                 TL((RectTransform)mainAction.transform,14f,Mathf.Max(236f,ih-114f),iw-28f,49f);
                 TL((RectTransform)claimXp.transform,14f,Mathf.Max(288f,ih-62f),iw-28f,44f);
@@ -563,11 +565,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 // One compact, attractive mission card over the living route:
                 // the encounter, rewards and actual combat button remain real.
                 TL(chapter.rectTransform,20f,12f,iw-40f,37f);
-                TL(opponent.rectTransform,20f,54f,iw-40f,55f);
-                TL(formation.rectTransform,20f,110f,iw-40f,32f);
-                TL(reward.rectTransform,20f,153f,iw-40f,38f);
-                TL(passive.rectTransform,20f,196f,iw-40f,41f);
-                TL(battleFeedback.rectTransform,20f,240f,iw-40f,30f);
+                TL(opponent.rectTransform,20f,54f,iw-40f,64f);
+                TL(formation.rectTransform,20f,122f,iw-40f,32f);
+                TL(reward.rectTransform,20f,165f,iw-40f,38f);
+                TL(passive.rectTransform,20f,208f,iw-40f,44f);
+                TL(battleFeedback.rectTransform,20f,256f,iw-40f,24f);
                 TL((RectTransform)mainAction.transform,iw*.51f,ih-61f,
                     iw*.46f,48f);
                 TL((RectTransform)claimXp.transform,20f,ih-60f,

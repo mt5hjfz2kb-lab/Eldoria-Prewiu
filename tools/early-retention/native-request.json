@@ -1,6 +1,6 @@
 {
   "workstream_id": "eldoria-early-retention-systems-20261028",
-  "owner": "chatgpt-cronica-real-ux-polish-20261027",
+  "owner": "codex-pr119-pr120-completion-20261028",
   "unity_version": "6000.3.23f1",
   "mode": "native-scene-two-independent-screens",
   "steps": [
@@ -9,11 +9,14 @@
     "Real first victory and UI presentation in both orientations",
     "Three visible contracts, readable names, reward and status, reliable raycasts",
     "No overlap between footer and actions",
-    "Single RoyalHUD, guarded progress-only shortcuts, no real save changes"
+    "Single RoyalHUD, guarded progress-only shortcuts, no real save changes",
+    "Twelve real captures including narrow390x844; assert complete visible text fits",
+    "Dispatch and claim all three cards with real raycasts, return, reload persisted progress",
+    "Capture stage15 authentic Engendro in all three resolutions; keep all25 milestones visible"
   ],
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 14,
-  "note": "Final verified visual pass from Unity native 40657717839: 10/10 EditMode tests and 8 genuine images PASS, readable screens. One remaining visible duplication: scenic graphic renders extra five milestone coins over the 25-node progression trail. Art correction commit 53425098 removes redundant layer; recheck exact SHA with 8 native screenshots and real raycasts, and only approve after inspection. Preserve zero budget and main, no new systems."
+  "revision": 15,
+  "note": "Reconcile latest painterly/lore/button art with PR119 viewport/reset fixes, idle8h cap correction,15 native PNGs, typography-fit, all3 scout dispatch/claims, real heroXP claim and save reload. Technical PASS never replaces inspection of exact images."
 }

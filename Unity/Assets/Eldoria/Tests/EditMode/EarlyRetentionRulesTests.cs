@@ -111,12 +111,16 @@ namespace Eldoria.Tests
             g=new LocalGateway(time,save);
             Assert.That(g.Snapshot().Retention.LastClearedStage,Is.EqualTo(1));
         }
-        [Test] public void IdleExperienceAccruesOfflineWithEightHourCapAndNoDoubleClaim()
+        [TestCase(8)]
+        [TestCase(9)]
+        [TestCase(16)]
+        [TestCase(30)]
+        public void IdleExperienceAccruesOfflineWithEightHourCapAndNoDoubleClaim(int offlineHours)
         {
             var time=new Clock();var store=new MemoryStateStore{Value=Ready()};
             var g=new LocalGateway(time,store);
             Assert.That(g.Execute(Cmd(g,"battle","VigilantBattle","1")).Ok,Is.True);
-            time.AddSeconds(30*3600);
+            time.AddSeconds(offlineHours*3600);
             g=new LocalGateway(time,store);
             var pending=EarlyRetentionRules.UnclaimedIdleXp(g.Snapshot().Retention,time.UtcTicks);
             Assert.That(pending,Is.EqualTo(8*12));
@@ -126,6 +130,8 @@ namespace Eldoria.Tests
             Assert.That(g.Execute(cmd).Ok,Is.True);
             Assert.That(g.Snapshot().Retention.AldricExperience,Is.EqualTo(xp));
             Assert.That(EarlyRetentionRules.UnclaimedIdleXp(g.Snapshot().Retention,time.UtcTicks),Is.Zero);
+            Assert.That(g.Execute(Cmd(g,"fresh-claim","ClaimVigilantXp","aldric")).Ok,Is.False);
+            Assert.That(g.Snapshot().Retention.AldricExperience,Is.EqualTo(xp));
         }
         [Test] public void ScoutsRespectUnlockTimePersistenceAndSingleClaim()
         {

@@ -447,16 +447,34 @@ namespace Eldoria.UI.RoyalGold.V2
                 Source.Building.Primary.Button.interactable && Source.Building.Offer != null;
             if (!actionButton.interactable) ProbeMismatch(id, value, "OFFER_DISABLED");
             cardButton.gameObject.SetActive(offered);
-            float width = Mathf.Min(290f, safe.rect.width - 24f);
-            float contentWidth = width - 24f;
-            float y = 10f;
-            // Keep the title clear of the separate 40-unit Close target.
-            y = PositionRow(title, y, Mathf.Max(90f, contentWidth - 42f), 27f, 3f);
-            y = PositionRow(status, y, contentWidth, 20f, 5f);
-            y = PositionRow(costs, y, contentWidth, 0f, 5f);
-            y = PositionRow(requirements, y, contentWidth, 0f, 6f);
-            if (offered) { Place(cardButton, 12f, y, width - 24f, 48f); y += 56f; }
-            float height = Mathf.Max(62f, y + 6f);
+            // Keep the approved big illustrated cartouche for building DETAILS
+            // and the vertically-sliced projected button for the actual ACTION.
+            // Never display two competing text/cards over the 3D city.
+            var chronicle = Source.GetComponent<RoyalGoldV2Hud>();
+            bool illustrated = chronicle && chronicle.ChronicleIllustratedBuildingVisible;
+            float width, height;
+            if (illustrated && offered)
+            {
+                title.gameObject.SetActive(false);
+                status.gameObject.SetActive(false);
+                costs.gameObject.SetActive(false);
+                requirements.gameObject.SetActive(false);
+                width = Mathf.Min(230f, safe.rect.width - 24f);
+                height = 63f;
+                Place(cardButton, 10f, 8f, width - 20f, 47f);
+            }
+            else
+            {
+                width = Mathf.Min(290f, safe.rect.width - 24f);
+                float contentWidth = width - 24f;
+                float y = 10f;
+                y = PositionRow(title, y, Mathf.Max(90f, contentWidth - 42f), 27f, 3f);
+                y = PositionRow(status, y, contentWidth, 20f, 5f);
+                y = PositionRow(costs, y, contentWidth, 0f, 5f);
+                y = PositionRow(requirements, y, contentWidth, 0f, 6f);
+                if (offered) { Place(cardButton, 12f, y, width - 24f, 48f); y += 56f; }
+                height = Mathf.Max(62f, y + 6f);
+            }
             card.sizeDelta = new Vector2(width, height);
             // Keep the selection card below the real resources/feedback/compact
             // chapter instead of solving overlap with unreadable tiny text.

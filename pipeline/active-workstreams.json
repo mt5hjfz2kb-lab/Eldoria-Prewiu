@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T00:07:00+01:00",
+  "updated_at": "2026-10-28T08:59:31.385Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-cronica-real-ux-polish-20261027",
+      "owner": "codex-pr119-pr120-completion-20261028",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-27T10:59:08Z",
@@ -1148,11 +1148,17 @@
           "revision": 45,
           "at": "2026-10-27T21:55:45Z",
           "reason": "PR117 merged into main and signed Android family code17 published and byte-verified; Unity Bastion III native20 regression PASS. Owner requested release of resources after completion."
+        },
+        {
+          "owner": "chatgpt-cronica-real-ux-polish-20261027",
+          "revision": 46,
+          "reason": "Owner explicitly requests current chat assume and finish PR119 and PR120 after repeated interruptions.",
+          "transferred_at": "2026-10-28T08:41:18.407Z"
         }
       ],
-      "ownership_revision": 46,
+      "ownership_revision": 47,
       "ownership_state": "claimed",
-      "write_scope_released": true,
+      "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-16",
       "delivery_definition": {
@@ -1249,7 +1255,7 @@
       "candidate_branch": "feature/bastion-iii-canonical-20261027",
       "canonical_pr": 117,
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
-      "last_handoff": "Owner instruction to correct UI/UX on current main, keeping Aldric asset PR independent and avoiding its reserved file."
+      "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -1419,15 +1425,15 @@
     {
       "id": "eldoria-ui-v3-management-completion-20261021",
       "title": "Eldoria V3 full-screen management — T1 training and troop marches",
-      "owner": "chatgpt-cronica-real-ux-polish-20261027",
+      "owner": "codex-pr119-pr120-completion-20261028",
       "ownership_state": "claimed",
-      "ownership_revision": 24,
-      "write_scope_released": true,
+      "ownership_revision": 27,
+      "write_scope_released": false,
       "status": "active",
       "claimed_at": "2026-10-27T09:36:00Z",
       "base_main_sha": "de0cc6127746b562f82da03327426597d5d32257",
       "branch": "main",
-      "pr": 90,
+      "pr": 119,
       "owner_instruction": "Explicit owner direction to continue full-screen V3 barracks/training and marches to real Unity QA and main release; resume same canonical workstream.",
       "scope": [
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3Management*.cs",
@@ -1506,7 +1512,7 @@
           "status": "SOURCE_PASS"
         }
       },
-      "next": "Closed after documented verified original Crónica Real integration and signed Android 1.16; any further work requires explicit new owner scope. Physical Android acceptance outstanding.",
+      "next": "PR119 merged and certified on main. Preserve queued general main gate40681527358; no cancellation. Resource now reserved to same-owner PR120 for reconciled15capture/real-button/save certification; public release only after combined gates.",
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Pantallas uGUI de gestion sin nuevos assets 3D, Blender, Tripo ni produccion de geometria; conservar controles artisticos V3 y QA Unity.",
       "ownership_history": [
@@ -1591,10 +1597,16 @@
           "owner": "chatgpt-cronica-real-pr115-completion-20261027",
           "revision": 21,
           "reason": "Owner-authorized original Crónica Real work complete and signed family 1.16 APK verified and promoted. PR115 merge 0abf90e, Native Unity 66/66, Android build40495487995 and publish40497012145. Release write claim, retain history."
+        },
+        {
+          "owner": "chatgpt-cronica-real-ux-polish-20261027",
+          "revision": 24,
+          "reason": "Owner explicitly requests current chat assume and finish PR119 and PR120 after repeated interruptions.",
+          "transferred_at": "2026-10-28T08:41:18.407Z"
         }
       ],
-      "runner_lease_note": "Main UI certification complete. General main gate39655724743 already queued on same single Windows runner and must finish intact; geographic trial is the next serial job, not concurrent.",
-      "phase": "CRONICA_REAL_PR115_MERGED_ANDROID_116_DELIVERED",
+      "runner_lease_note": "Main UI40681527347 success. General main40681527358 is serial on existing runner; keep intact while subsequent PR120 jobs queue.",
+      "phase": "PR119_MERGED_NATIVE_CERTIFIED",
       "native_cert_control": "Keep exact-running Unity QA from cancellation by subsequent candidate commits; latest queued run follows; one exclusive Windows runner.",
       "handoff_authority": "Current owner request: Tengo 3 trabajos en marcha y los chat se están atascando bastante, puedes asumirlos y terminarlos? Sequential execution UI, geography, animated Spawnling; preserve existing scopes, zero spend and QA.",
       "general_main_gate": {
@@ -1607,23 +1619,16 @@
         "artifact_id": 12378457368
       },
       "current_native_cert": {
-        "run": 39666405366,
-        "source": "623de76ca7a7742d59e97c3b5a160de75e68af89",
-        "conclusion": "success",
-        "artifact_id": 12378682966
-      },
-      "delivery_blocker": {
-        "type": "ITCH_REMOTE_BUILD_PROCESSING",
-        "scope": "Activation of exact accepted native281 upload",
-        "upload_run": 39685413878,
-        "remote_status_run": 39685863135,
-        "remote_status_job": 119519615823,
-        "checked_at": "2026-10-21T22:40:56Z",
-        "accepted_build": 2180594,
-        "active_build": 2177569,
-        "upload_accepted": true,
-        "remote_active_confirmed": false,
-        "hosted_browser_verified": false
+        "run": 40681527347,
+        "source": "1ccd1da2b02103f633a83e4cbf08f2b6a81a6464",
+        "status": "success",
+        "pr_run": 40678041441,
+        "pr_source": "eacffc279cf7ec1045fb0433229f5843cd2e6ad3",
+        "artifact_id": 12812178410,
+        "editmode": "34/34",
+        "playmode": "72/72",
+        "checks": 44,
+        "framing": 12
       },
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
@@ -1636,19 +1641,38 @@
         "is_unity_capture": false
       },
       "ui_candidate": {
-        "pr": 115,
-        "sha": "725827f01658a65efaa14cc53db6ed9ffa59e01e",
-        "run": 40477135161,
-        "run_status": "in_progress",
-        "compile_verified": false,
-        "art_approved": false,
-        "mobile_physically_tested": false,
-        "integrated_in_main": false,
-        "reason": "Latest native run has not produced comparable screenshots or all functional proof"
+        "pr": 119,
+        "sha": "eacffc279cf7ec1045fb0433229f5843cd2e6ad3",
+        "merge": "1ccd1da2b02103f633a83e4cbf08f2b6a81a6464",
+        "integrated_in_main": true,
+        "art_approved": true,
+        "visual_review": "Exact native portrait/landscape captures opened and compared against original Option1 hash27565c7b85004dd7b84efdfe7587b9bfd976e376b07242c51ae5241851e60582. Title/close readable, bottom cartouche separate from navigation, original canonical actions retained.",
+        "mobile_physically_tested": false
       },
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
-      "last_handoff": "Owner instruction to correct UI/UX on current main, keeping Aldric asset PR independent and avoiding its reserved file.",
-      "scope_release_note": "2026-10-27 owner-approved Aldric PR118 integration: release solely RoyalGoldV3CinematicFinish.cs from completed Crónica Real UI workstream. Already write_scope_released=true, prior handoff explicitly avoided Aldric reserved file. All remaining UI scope retained; exact file exclusively claimed by eldoria-aldric-dialogue-bust-20261027 revision 3. No other UI code/resources modified."
+      "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
+      "scope_release_note": "2026-10-27 owner-approved Aldric PR118 integration: release solely RoyalGoldV3CinematicFinish.cs from completed Crónica Real UI workstream. Already write_scope_released=true, prior handoff explicitly avoided Aldric reserved file. All remaining UI scope retained; exact file exclusively claimed by eldoria-aldric-dialogue-bust-20261027 revision 3. No other UI code/resources modified.",
+      "latest_failure": {
+        "run": 40674273592,
+        "artifact": 12810421620,
+        "editmode": "34/34",
+        "playmode": "40passed32failed",
+        "reason": "All32 failures from missing canonical build-generated Granary resources; UI workflow omitted existing BastionIIIArtBake preparation.",
+        "fixed_in": "3aa275dc2865d467895430d60f15599dac62c1a9"
+      },
+      "historical_delivery_blocker": {
+        "type": "ITCH_REMOTE_BUILD_PROCESSING",
+        "scope": "Activation of exact accepted native281 upload",
+        "upload_run": 39685413878,
+        "remote_status_run": 39685863135,
+        "remote_status_job": 119519615823,
+        "checked_at": "2026-10-21T22:40:56Z",
+        "accepted_build": 2180594,
+        "active_build": 2177569,
+        "upload_accepted": true,
+        "remote_active_confirmed": false,
+        "hosted_browser_verified": false
+      }
     },
     {
       "id": "eldoria-spawnling-qwen-semantic-visual-qa-20261021",
@@ -1703,13 +1727,15 @@
     },
     {
       "id": "eldoria-early-retention-systems-20261028",
-      "owner": "chatgpt-cronica-real-ux-polish-20261027",
+      "owner": "codex-pr119-pr120-completion-20261028",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 5,
       "status": "active",
       "branch": "feature/eldoria-early-retention-20261028",
-      "pr": null,
-      "resources": [],
+      "pr": 120,
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs.meta",
@@ -1723,10 +1749,41 @@
         "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs.meta",
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
         "docs/early-retention/**",
-        "tools/early-retention/**"
+        "tools/early-retention/**",
+        "tools/ui-v3-domain-smoke/Smoke.csproj",
+        ".github/workflows/ui-v3-domain-smoke.yml",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs.meta",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/ValoriaIntegrationBuild.cs",
+        ".github/workflows/early-retention-native.yml",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs.meta",
+        "Unity/Assets/Eldoria/Resources/EldoriaRetention.meta",
+        "Unity/Assets/Eldoria/Resources/EldoriaRetention/**",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs.meta"
       ],
       "handoff_reason": "OWNER_APPROVED_20261028_25_STAGE_CHAPTERS_SEPARATE_VIGILANTS_SCOUT_SCREENS_PROGRESSIVE_UNLOCKS_OUTSIDE_CODEX",
-      "last_handoff": "Build two distinct native game screens, deterministic persisted progress/rewards, no premature UI buttons, same combat rules and existing RoyalHUD; do not touch PR #119 work or Windows runner owned by other workstream."
+      "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
+      "art_production_routing": "required",
+      "art_production_request": "pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-cronica-real-ux-polish-20261027",
+          "revision": 2,
+          "reason": "Owner explicitly requests current chat assume and finish PR119 and PR120 after repeated interruptions.",
+          "transferred_at": "2026-10-28T08:41:18.407Z"
+        }
+      ],
+      "write_scope_released": false,
+      "current_native_cert": {
+        "status": "pending_reconciled_source",
+        "previous_run": 40657717839,
+        "previous_source": "01685c187f8df1a23c5743a76a6d27c3f32ab23e",
+        "previous_visual_review": "superseded_by_new_painterly_and_stage15_art"
+      },
+      "next": "Publish same PR120 preserving latest4981f5fd art and merged119. Prepared15 native captures and real3scout dispatch/claim +XP +reload. Local exact-domain NUnit13/13 and managementSmoke30/30 pass. Current reference images opened; no newsystems or paidtools.",
+      "phase": "PR120_RECONCILED_NATIVE_CERTIFICATION"
     }
   ],
   "history": [

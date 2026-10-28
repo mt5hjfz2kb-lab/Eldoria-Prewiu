@@ -86,12 +86,12 @@ namespace Eldoria.ReferenceClean.Editor
         }
         static void Screenshot(ValoriaIntegratedWorld h,string name,int w,int he)
         {
-            var path=Path.Combine(Output,name+(w>he?"-horizontal":"-vertical")+".png");
+            var path=Path.Combine(Output,name+(w<500?"-phone":w>he?"-horizontal":"-vertical")+".png");
             // Supply an ABSOLUTE evidence path: the shared renderer uses
             // Path.Combine(Ev, name), which correctly preserves a rooted name.
             // This captures directly into the retention workflow artifact.
-            ValoriaIntegrationBuild.Capture(h,path,w,he);
-            Need(File.Exists(path)&&new FileInfo(path).Length>30000,
+            ValoriaIntegrationBuild.Capture(h,path,w,he,()=>ValidateTextLayout(h));
+            Need(File.Exists(path)&&new FileInfo(path).Length>Math.Min(30000,w*he/40),
                 "Native Unity "+w+"x"+he+" screenshot exists: "+name);
             var tex=new Texture2D(2,2,TextureFormat.RGB24,false);
             try{
@@ -109,6 +109,18 @@ namespace Eldoria.ReferenceClean.Editor
                     "Actual royal-navy and gilded visuals occupy the captured screen: "+name);
             }
             finally{Object.Destroy(tex);}
+        }
+        static void ValidateTextLayout(ValoriaIntegratedWorld h)
+        {
+            var page=h.Hud.GetComponentsInChildren<RectTransform>(true)
+                .First(x=>x.name=="Early retention / independent destination");
+            foreach(var label in page.GetComponentsInChildren<Text>())
+            {
+                if(string.IsNullOrWhiteSpace(label.text) ||
+                    label.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.01f))continue;
+                Need(label.preferredHeight<=label.rectTransform.rect.height+1f,
+                    "Complete visible text fits actual capture layout: "+label.name);
+            }
         }
         static void ClickReal(RoyalButton button,string label)
         {
@@ -180,6 +192,7 @@ namespace Eldoria.ReferenceClean.Editor
             var vigilantsPainting=illustration.texture;
             Screenshot(h,"vigilants-first-trial",1600,900);
             Screenshot(h,"vigilants-first-trial",900,1600);
+            Screenshot(h,"vigilants-first-trial",390,844);
             ui.Close();
             SaveFixture(h,2);yield return null;yield return new WaitForSecondsRealtime(.35f);
             Need(ui.VigilantsShortcut.gameObject.activeInHierarchy &&
@@ -192,6 +205,8 @@ namespace Eldoria.ReferenceClean.Editor
             Need(ui.IsOpen,"Vigilants opens after first barracks");
             Screenshot(h,"vigilants-chapter-one",1600,900);
             Screenshot(h,"vigilants-chapter-one",900,1600);
+            Screenshot(h,"vigilants-chapter-one",390,844);
+            yield return null; // real rendered frame before tapping the restored Canvas
             var stageButton=hud.GetComponentsInChildren<RoyalButton>(true)
                 .FirstOrDefault(x=>x.name=="Battle against next unique stage");
             Need(stageButton.targetGraphic is RoyalGoldV3RetentionActionGraphic &&
@@ -215,6 +230,7 @@ namespace Eldoria.ReferenceClean.Editor
                 "The authentic victory announcement is visible in the live scene");
             Screenshot(h,"vigilants-real-victory",1600,900);
             Screenshot(h,"vigilants-real-victory",900,1600);
+            Screenshot(h,"vigilants-real-victory",390,844);
             ui.Close();
             // Art/Lore parity: the approved fifteenth stage uses the actual
             // Bastion-II Engendro resource, never a stone golem. Only alter the
@@ -243,6 +259,7 @@ namespace Eldoria.ReferenceClean.Editor
                 "Engendro stage 15 preserves all 25 route markers above the creature portrait");
             Screenshot(h,"vigilants-stage15-engendro",1600,900);
             Screenshot(h,"vigilants-stage15-engendro",900,1600);
+            Screenshot(h,"vigilants-stage15-engendro",390,844);
             ui.Close();
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Scouts);
             Need(ui.IsOpen&&ui.OpenDestination==RoyalGoldV3EarlyRetentionScreens.Destination.Scouts,
@@ -282,30 +299,59 @@ namespace Eldoria.ReferenceClean.Editor
                     Mathf.Max(.1f,panelAspect)<.12f;
             }),"Real map miniatures preserve the authored image aspect without stretching");
             Screenshot(h,"scout-mission-board",900,1600);
-            // The reference has THREE independent blue expedition actions.
-            // Certify all three original RoyalButtons and real dispatch commands,
-            // not just the first parchment. Test state is disposable only.
-            for(int slot=1;slot<=3;slot++)
+            Screenshot(h,"scout-mission-board",390,844);
+            yield return null; // real rendered frame before tapping the restored Canvas
+            for(int i=1;i<=3;i++)
             {
                 var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
-                    .FirstOrDefault(x=>x.name=="Dispatch or claim scout "+slot);
-                Need(dispatch!=null && dispatch.targetGraphic is
-                    RoyalGoldV3RetentionActionGraphic &&
-                    !((RoyalGoldV3RetentionActionGraphic)dispatch.targetGraphic).Battle,
-                    "Expedition "+slot+" has its original live blue action");
+                    .First(x=>x.name=="Dispatch or claim scout "+i);
                 var scoutPlate=dispatch.GetComponent<RoyalGoldV3RetentionActionGraphic>();
-                Need(scoutPlate && !scoutPlate.Battle &&
-                    dispatch.targetGraphic==scoutPlate && scoutPlate.raycastTarget,
-                    "Expedition "+slot+" preserves the one real button raycast");
-                int before=h.City.Gateway.Snapshot().Retention.Orders
-                    .Count(x=>x.StartedUtcTicks>0);
-                ClickReal(dispatch,"Real expedition "+slot+" dispatch");
-                int after=h.City.Gateway.Snapshot().Retention.Orders
-                    .Count(x=>x.StartedUtcTicks>0);
-                Need(after==before+1,
-                    "Expedition "+slot+" dispatches exactly one persistent UTC order");
+                Need(scoutPlate && !scoutPlate.Battle && dispatch.targetGraphic==scoutPlate && scoutPlate.raycastTarget,
+                    "Actual scout card "+i+" uses the approved blue interactive action graphic");
+                int beforeCount=h.City.Gateway.Snapshot().Retention.Orders.Count(x=>x.StartedUtcTicks>0);
+                ClickReal(dispatch,"Actual scout dispatch "+i);
+                int afterCount=h.City.Gateway.Snapshot().Retention.Orders.Count(x=>x.StartedUtcTicks>0);
+                Need(afterCount==beforeCount+1,
+                    "Expedition "+i+" dispatches exactly one persistent UTC order");
+            }
+            var sent=h.City.Gateway.Snapshot().Retention.Orders.Where(x=>x.StartedUtcTicks>0).ToArray();
+            Need(sent.Length==3,"All three cards dispatch and persist their genuine UTC return time");
+            var clock=h.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
+            Need(clock!=null,"Only disposable probe clock advances for offline return proof");
+            clock.Step((int)Math.Ceiling((sent.Max(x=>x.EndsUtcTicks)-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)+1);
+            ui.SynchronizeLayout();
+            yield return null;
+            for(int i=3;i>=1;i--)
+            {
+                var claim=hud.GetComponentsInChildren<RoyalButton>(true)
+                    .First(x=>x.name=="Dispatch or claim scout "+i);
+                ClickReal(claim,"Actual scout reward claim "+i);
             }
             ui.Close();
+            ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
+            yield return null;
+            var beforeXp=h.City.Gateway.Snapshot().Retention;
+            int pendingXp=EarlyRetentionRules.UnclaimedIdleXp(beforeXp,clock.UtcTicks);
+            Need(pendingXp>0,"Real offline interval accrued hero experience");
+            var collectXp=hud.GetComponentsInChildren<RoyalButton>(true)
+                .First(x=>x.name=="Claim earned hero experience");
+            ClickReal(collectXp,"Claim actual offline hero experience");
+            var claimed=h.City.Gateway.Snapshot();
+            Need(claimed.Retention.AldricExperience==beforeXp.AldricExperience+pendingXp &&
+                EarlyRetentionRules.UnclaimedIdleXp(claimed.Retention,clock.UtcTicks)==0,
+                "Actual XP button grants earned experience once");
+            Need(sent.All(order=>claimed.Retention.Orders.Any(x=>x.Id==order.Id&&x.Claimed)),
+                "Each dispatched card is claimed exactly once through its real button");
+            var back=hud.GetComponentsInChildren<RoyalButton>(true)
+                .First(x=>x.name=="Return to actual kingdom");
+            ClickReal(back,"Return to Valoria");
+            Need(!ui.IsOpen,"Actual back button closes the activity destination");
+            h.City.ReloadForProbe();yield return null;
+            var loaded=h.City.Gateway.Snapshot();
+            Need(loaded.Retention.LastClearedStage==claimed.Retention.LastClearedStage &&
+                loaded.Retention.AldricExperience==claimed.Retention.AldricExperience &&
+                sent.All(order=>loaded.Retention.Orders.Any(x=>x.Id==order.Id&&x.Claimed)),
+                "Real save reload preserves stage progress and all three reward claims");
             Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,
                 "No duplicate RoyalHUD/Canvas created");
             File.WriteAllText(Path.Combine(Output,"result.txt"),

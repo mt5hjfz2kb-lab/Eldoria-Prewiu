@@ -27,6 +27,20 @@ namespace Eldoria.UI.RoyalGold {
    Color low=Variant==1?new Color(.08f,.15f,.23f,1):new Color(.023f,.034f,.055f,.98f);
    Color high=Variant==1?new Color(.17f,.29f,.43f,1):new Color(.068f,.105f,.17f,.99f);
    Plate(vh,r,4.5f,low,high);
+   if(Round && r.width>=40f && r.height>=40f){
+    // Layered circular enamel and eight hand-engraved golden studs, as in
+    // Crónica Real's approved bottom medallions. All touch targets unchanged.
+    Plate(vh,r,6.8f,new Color(.31f,.21f,.10f,1),new Color(.86f,.70f,.42f,1));
+    Plate(vh,r,8.5f,low,high);
+    float rx=r.width*.5f-4.8f,ry=r.height*.5f-4.8f;
+    for(int i=0;i<8;i++){
+     float angle=(i+.5f)*Mathf.PI*.25f;
+     var at=r.center+new Vector2(Mathf.Cos(angle)*rx,Mathf.Sin(angle)*ry);
+     float n=Mathf.Clamp(r.width*.027f,1.3f,2.7f);
+     Poly(vh,new[]{new Vector2(at.x,at.y+n),new Vector2(at.x+n,at.y),
+       new Vector2(at.x,at.y-n),new Vector2(at.x-n,at.y)},Gold,Light);
+    }
+   }
    if(!Round&&r.width>110){float y=r.yMax-5;float x=r.center.x;Poly(vh,new[]{new Vector2(x-6,y),new Vector2(x,y+3),new Vector2(x+6,y),new Vector2(x,y-3)},Gold,Light);}
   }
  }

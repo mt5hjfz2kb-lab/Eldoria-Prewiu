@@ -43,3 +43,13 @@ Autoridad: aprobación del propietario 28/10/2026. No se inserta dentro de Códi
 - El modo multijugador de la Brecha es otro sistema, posterior; estos dos son personales.
 - La experiencia almacenada no se representa falsamente como aumento de nivel de héroe antes de existir la mejora de héroes.
 - No publicar APK ni tocar `main` de jugabilidad hasta completar las comprobaciones en la rama propia.
+
+## Relevo y revisión independiente del 28/10/2026
+
+El propietario reasigna PR #119 y PR #120 al mismo responsable, conservando las dos PR canónicas y presupuesto 0 €. Unity nativo 40657717839 certificó técnicamente el SHA 01685c187f8df1a23c5743a76a6d27c3f32ab23e; artefacto 12802867199, diez EditMode y ocho PNG originales. Las ocho imágenes se abrieron y compararon con la revisión anterior (artefacto 12801360443). La referencia Crónica Real original se recuperó y su SHA-256 27565c7b85004dd7b84efdfe7587b9bfd976e376b07242c51ae5241851e60582 se verificó.
+
+Resultado: los títulos de cartas y la jerarquía mejoran; tres encargos visibles y botones completos. **Revisión todavía rechazada para cierre:** el rasgo del enemigo no cabe en el bloque vertical y el texto de victoria se corta en horizontal. Los árboles decorativos desbordan el marco. Corregir esos defectos conservando arte, lógica, recompensas y navegación.
+
+La siguiente certificación exige doce capturas auténticas: los cuatro estados en 1600×900, 900×1600 y 390×844. Comprobar altura tipográfica durante el render real, las tres acciones de envío y recogida con raycast, botón de regreso y persistencia tras recarga. No confundir una prueba de código con aceptación visual. Se reserva Windows a PR #119 tras terminar la prueba 120, sin interrumpir procesos; reconciliar la combinación antes de certificar 120 de nuevo.
+
+- Review found a real eight-hour cap defect: a nine-hour absence allowed eight hours then an immediate extra hour. Clamp the accrual start before consuming paid time; parameterized 8/9/16/30-hour tests also reject a fresh second claim. Native button proof now claims offline hero XP and verifies its save reload.

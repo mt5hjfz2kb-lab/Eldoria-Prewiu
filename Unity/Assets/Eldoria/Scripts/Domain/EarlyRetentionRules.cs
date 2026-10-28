@@ -223,8 +223,11 @@ namespace Eldoria.Domain
                 // Preserve fractional accrual rather than discarding sub-hour progress.
                 int rate=12+Math.Min(48,p.LastClearedStage/5*3);
                 long consumed=earned*TimeSpan.TicksPerHour/rate;
-                p.LastIdleClaimUtcTicks=Math.Min(utcNow,p.LastIdleClaimUtcTicks+consumed);
-                if(utcNow-p.LastIdleClaimUtcTicks>IdleCapTicks)p.LastIdleClaimUtcTicks=utcNow-IdleCapTicks+consumed;
+                // Discard time beyond the cap before consuming the paid interval.
+                // Otherwise a 9-hour absence pays 8 hours and leaves another hour
+                // immediately claimable through a fresh command.
+                long accrualStart=Math.Max(p.LastIdleClaimUtcTicks,utcNow-IdleCapTicks);
+                p.LastIdleClaimUtcTicks=Math.Min(utcNow,accrualStart+consumed);
                 message=earned+" XP de héroe recogida";
                 return true;
             }

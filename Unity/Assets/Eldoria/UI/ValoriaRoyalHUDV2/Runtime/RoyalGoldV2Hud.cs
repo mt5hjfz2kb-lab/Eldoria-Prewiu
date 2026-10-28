@@ -19,11 +19,12 @@ namespace Eldoria.UI.RoyalGold.V2
     {
         public RoyalHUD Source;
 
-        private RectTransform safe, headerPlate, objectiveCard, buildingCard, scrollContent, scrollViewport;
+        private RectTransform safe, headerPlate, objectiveCard, heraldicBanner, buildingCard, buildingMiniature, scrollContent, scrollViewport;
         private RoyalText chapterText, objectiveText, progressText, buildingTitle, buildingLevel, buildingBody, primaryLabel;
         private RoyalText objectiveActionLabel, objectivesButtonLabel;
         private RoyalButton objectiveAction, objectivesButton, chapterClose, buildingClose, buildingAction;
         private ScrollRect buildingScroll;
+        private RoyalGoldV3BuildingEngravingGraphic miniatureArt;
         private CanvasGroup objectiveGroup, chapterCloseGroup, buildingGroup, buildingActionGroup;
         private bool buildingVisible;
         private bool ready, expanded, portrait, hasGeometry, compactObjective;
@@ -34,6 +35,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private static readonly Color Gold = new Color(.886f, .73f, .45f);
 
         public bool ChapterExpanded => expanded;
+        public bool ChronicleIllustratedBuildingVisible => buildingGroup && buildingGroup.alpha > .5f;
         public bool BuildingVisible
         {
             get
@@ -164,6 +166,21 @@ namespace Eldoria.UI.RoyalGold.V2
             headerPlate.SetAsFirstSibling();
 
             objectiveCard = Panel("V2 / current objective", safe);
+            // Original Crónica Real's royal heraldry hangs beneath the
+            // illuminated parchment in landscape. It is hidden in portrait
+            // to protect the usable view and genuine SafeArea controls.
+            heraldicBanner = NewRect("V3 / royal hanging chapter banner", objectiveCard);
+            heraldicBanner.gameObject.AddComponent<CanvasRenderer>();
+            var bannerSkin = heraldicBanner.gameObject.AddComponent<RoyalGoldV3HeraldicBannerGraphic>();
+            bannerSkin.raycastTarget = false;
+            var pendantSigil = NewRect("V3 / genuine Valoria castle insignia", heraldicBanner);
+            pendantSigil.gameObject.AddComponent<CanvasRenderer>();
+            var standardIcon = pendantSigil.gameObject.AddComponent<RoyalIconGraphic>();
+            standardIcon.Icon = 9; // same Bastión visual language as the REAL navigation
+            standardIcon.color = new Color(.91f, .73f, .42f, .97f);
+            standardIcon.raycastTarget = false;
+            Top(pendantSigil, 8f, 75f, 32f, 35f);
+            heraldicBanner.SetAsFirstSibling();
             // Restore the approved Crónica Real parchment with heraldries.
             // Text/mission/button objects are the SAME native gameplay ones.
             var oldSlateFrame = objectiveCard.GetComponent<RoyalGoldV2FrameGraphic>();
@@ -244,11 +261,24 @@ namespace Eldoria.UI.RoyalGold.V2
             });
 
             buildingCard = Panel("V2 / contextual building sheet", safe);
+            // The approved Crónica Real has an architectural illustration inside
+            // its broad bottom building cartouche. Draw an actual live, authored
+            // native miniature rather than a placeholder or static UI screenshot.
+            buildingMiniature = Panel("V3 / engraved real building miniature", buildingCard);
+            var miniSkin = buildingMiniature.GetComponent<RoyalGoldV2FrameGraphic>();
+            miniSkin.raycastTarget = false;
+            miniSkin.DecorativeCorners = true;
+            var miniSurface = NewRect("V3 / illuminated architectural illustration", buildingMiniature);
+            miniSurface.gameObject.AddComponent<CanvasRenderer>();
+            miniatureArt = miniSurface.gameObject.AddComponent<RoyalGoldV3BuildingEngravingGraphic>();
+            miniatureArt.raycastTarget = false;
+            Stretch(miniSurface, 5f);
             buildingTitle = Text("Selected building", buildingCard, 30, Ivory, true);
             buildingLevel = Text("Real level", buildingCard, 18, Gold);
             buildingClose = Button("Close selected building", buildingCard, out var closeBuildingText, false);
             closeBuildingText.Put("×");
-            closeBuildingText.fontSize = 30;
+            closeBuildingText.fontSize = 24;
+            Stretch(closeBuildingText.rectTransform, 2f);
             buildingClose.onClick.AddListener(() => { if (Source) Source.SelectBuilding(""); });
 
             var scrollRoot = NewRect("Scrollable real building details", buildingCard);
@@ -422,6 +452,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // A shorter illuminated manuscript; the scene remains open.
             Top(objectiveCard, portrait ? 9f : 14f, goalTop,
                 goalWidth, 113f);
+            if (heraldicBanner)
+            {
+                heraldicBanner.gameObject.SetActive(!portrait);
+                Top(heraldicBanner, 16f, 72f, 47f, 150f);
+            }
             LayoutManuscriptContent(goalWidth);
             // Reflow selected objectives after every orientation/size change.
             compactObjective = false;
@@ -431,30 +466,50 @@ namespace Eldoria.UI.RoyalGold.V2
                 portrait ? Mathf.Max(10, width - 75f) : 268f,
                 goalTop - 8f, 48, 48);
 
-            float cardWidth = portrait ? Mathf.Min(width - 24, 720f) : Mathf.Min(420f, width * .34f);
-            float cardHeight = portrait ? Mathf.Min(340f, height * .30f) : Mathf.Min(474f, height * .67f);
-            // The bottom navigation is the only entrance to the World after
-            // Bastion I builds the sawmill. The context sheet MUST start above
-            // that navigation instead of silently covering its hit targets.
+            // Crónica Real: broad bottom cartouche, illustrated on the left,
+            // details in the middle and the ORIGINAL action at the right.
+            // Keep the contextual action/timer projected beside the actual
+            // building by V3; both buttons dispatch the same V1 gateway offer.
+            float cardWidth = Mathf.Min(width - (portrait ? 18f : 32f),
+                portrait ? 720f : 1300f);
+            float cardHeight = portrait ? 178f : 164f;
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
-            float sheetBottom = Mathf.Max(128f, navTop + 14f);
-            if (portrait)
-                Place(buildingCard, new Vector2(.5f, 0), new Vector2(.5f, 0), 0, sheetBottom, cardWidth, cardHeight);
-            else
-                Place(buildingCard, Vector2.one, Vector2.one, -22, -152, cardWidth, cardHeight);
-            Top(buildingTitle.rectTransform, 19, 18, cardWidth - 91, 42);
-            Top(buildingLevel.rectTransform, 20, 57, cardWidth - 44, 24);
-            Top((RectTransform)buildingClose.transform, cardWidth - 58, 17, 42, 42);
-            Top((RectTransform)buildingScroll.transform, 20, 92, cardWidth - 40, Mathf.Max(92, cardHeight - 170));
+            float sheetBottom = Mathf.Max(8f, navTop + 8f);
+            Place(buildingCard, new Vector2(.5f, 0), new Vector2(.5f, 0),
+                0, sheetBottom, cardWidth, cardHeight);
+            // The narrow phone keeps one illustrated thumbnail and a real
+            // right-hand text/CTA column. Never squeeze its text into a 90px
+            // sliver to fit a third decorative region.
+            float picture = portrait ? 137f : cardHeight - 19f;
+            Place(buildingMiniature, new Vector2(0, 1), new Vector2(0, 1),
+                9f, -9f, picture, picture);
+            float textLeft = picture + 24f;
+            float actionWidth = portrait ? 0f : 194f;
+            float middleWidth = Mathf.Max(115f, cardWidth - textLeft -
+                actionWidth - (portrait ? 14f : 24f));
+            Top(buildingTitle.rectTransform, textLeft, 10f, middleWidth, 35f);
+            buildingTitle.fontSize = portrait ? 22 : 30;
+            Top(buildingLevel.rectTransform, textLeft, 44f, middleWidth, 22f);
+            Top((RectTransform)buildingClose.transform, cardWidth - 49f, 5f, 44f, 44f);
+            Top((RectTransform)buildingScroll.transform, textLeft, 71f,
+                middleWidth, portrait ? 50f : cardHeight - 79f);
             Stretch(scrollViewport, 0);
             scrollContent.anchorMin = new Vector2(0, 1);
             scrollContent.anchorMax = new Vector2(1, 1);
             scrollContent.pivot = new Vector2(.5f, 1);
             scrollContent.anchoredPosition = Vector2.zero;
-            scrollContent.sizeDelta = new Vector2(0, Mathf.Max(200, scrollViewport.rect.height));
-            Top(buildingBody.rectTransform, 2, 0, cardWidth - 47, scrollContent.rect.height);
-            Top((RectTransform)buildingAction.transform, 18, cardHeight - 70, cardWidth - 36, 54);
+            scrollContent.sizeDelta = new Vector2(0, Mathf.Max(85f, scrollViewport.rect.height));
+            Top(buildingBody.rectTransform, 0, 0, middleWidth - 4f,
+                scrollContent.rect.height);
+            buildingBody.fontSize = portrait ? 15 : 19;
+            if (portrait)
+                Top((RectTransform)buildingAction.transform,
+                    textLeft, cardHeight - 53f, middleWidth, 44f);
+            else
+                Top((RectTransform)buildingAction.transform,
+                    cardWidth - actionWidth - 12f, cardHeight - 66f,
+                    actionWidth, 51f);
             hasGeometry = true;
             lastWidth = width;
             lastHeight = height;
@@ -528,16 +583,9 @@ namespace Eldoria.UI.RoyalGold.V2
         private void RenderBuilding(bool narrativeOrModal)
         {
             var source = Source.Building;
-            // V3 attaches to the same HUD: the old, oversized V2 sheet is
-            // display-only and must never compete with object-anchored controls.
-            var contextual = GetComponent<RoyalGoldV3ContextHud>();
-            if (contextual && contextual.IsConfigured)
-            {
-                buildingVisible = false;
-                SetVisible(buildingGroup, false);
-                SetVisible(buildingActionGroup, false);
-                return;
-            }
+            // V3 owns the in-world projected action/timer. This is a separate
+            // art-only companion cartouche reading the SAME canonical offer;
+            // it does not create a second clock or a second gameplay command.
             bool show = !narrativeOrModal && !string.IsNullOrEmpty(Source.SelectedBuildingId) &&
                 source && source.Title && !string.IsNullOrWhiteSpace(source.Title.text);
             buildingVisible = show;
@@ -545,6 +593,19 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!show) return;
             buildingTitle.Put(Safe(source.Title));
             buildingLevel.Put(Safe(source.Level));
+            if (miniatureArt)
+            {
+                string selectedId = Source.SelectedBuildingId ?? "";
+                int kind = selectedId == "granary" ? 4 :
+                    selectedId == "bastion" ? 3 :
+                    selectedId == "barracks" || selectedId == "march-main" ? 2 :
+                    selectedId == "sawmill" ? 1 : 0;
+                if (miniatureArt.Kind != kind)
+                {
+                    miniatureArt.Kind = kind;
+                    miniatureArt.SetVerticesDirty();
+                }
+            }
 
             var body = new StringBuilder(280);
             Append(body, Safe(source.Function));
@@ -656,7 +717,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (Source.Realm.Realm)
                 {
                     Top(Source.Realm.Realm.rectTransform, titleX,
-                        portrait ? 5f : 10f, realmWidth - titleX - 2f, 28f);
+                        5f, realmWidth - titleX - 2f, portrait ? 28f : 36f);
                     Source.Realm.Realm.fontSize = portrait ? 20 : 27;
                 }
                 if (Source.Realm.Power)
@@ -726,6 +787,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 float questY = secondRow ? headerHeight + 65f : 72f;
                 objectiveCard.anchoredPosition = new Vector2(
                     objectiveCard.anchoredPosition.x, -questY);
+                // Keep the expanded-chapter close action beside the ACTUAL
+                // manuscript, not at the obsolete 287px portrait position.
+                if (chapterClose)
+                    Top((RectTransform)chapterClose.transform,
+                        Mathf.Max(10f,w-58f),questY+5f,42f,42f);
             }
         }
 
@@ -751,6 +817,22 @@ namespace Eldoria.UI.RoyalGold.V2
                 ? Mathf.RoundToInt(Mathf.Clamp(chip * .20f, 12f, 19f)) : 23;
             value.alignment = TextAnchor.MiddleLeft;
             value.horizontalOverflow = HorizontalWrapMode.Overflow;
+        }
+
+        // First-frame layout creates the card before the live footer has been
+        // reflowed to the current orientation. Always position the illustrated
+        // card AFTER the footer layout, otherwise on a phone it covers the
+        // very medallions the player needs to continue building.
+        private void AlignBuildingCartoucheToNavigation()
+        {
+            if (!buildingCard || !Source || !Source.Navigation) return;
+            var dock = Source.Navigation.transform as RectTransform;
+            if (!dock) return;
+            float safeBottom = Mathf.Max(8f,
+                dock.anchoredPosition.y + dock.rect.height + 8f);
+            var at = buildingCard.anchoredPosition;
+            if (Mathf.Abs(at.y-safeBottom)>.5f)
+                buildingCard.anchoredPosition = new Vector2(at.x,safeBottom);
         }
 
         private void LayoutNavigation()
@@ -952,6 +1034,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if (!hasGeometry) return;
             LayoutHeaderAlongSafeTop();
             LayoutNavigation();
+            AlignBuildingCartoucheToNavigation();
             ConfigureFeedbackReadability();
             bool modalOpen = Source.Modal && Source.Modal.gameObject.activeSelf;
 
@@ -1013,11 +1096,13 @@ namespace Eldoria.UI.RoyalGold.V2
             float width = Mathf.Max(1, safe.rect.width);
             float height = Mathf.Max(1, safe.rect.height);
             float padding = .025f;
-            if (portrait && buildingVisible)
+            // Crónica Real's illustrated card is bottom-docked in BOTH
+            // orientations. The former landscape right-sheet exclusion made
+            // the free width negative on 4:3 displays, so automatic focus
+            // returned without ever moving to the selected world resource.
+            if (buildingVisible)
                 free.yMin = Mathf.Max(free.yMin,
                     (buildingCard.anchoredPosition.y + buildingCard.rect.height) / height + padding);
-            else if (!portrait && buildingVisible)
-                free.xMax = Mathf.Min(free.xMax, 1f - buildingCard.rect.width / width - padding);
             // The V3 selected control follows the object itself and does not
             // reduce a whole side of the playable camera rectangle.
             if (objectiveGroup && objectiveGroup.blocksRaycasts)
