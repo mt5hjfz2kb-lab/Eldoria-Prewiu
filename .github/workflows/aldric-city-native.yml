@@ -1,4 +1,4 @@
-name: Aldric city — native Unity 6000.3.23f1 GPU PlayMode and four captures
+name: Aldric city — native Unity 6000.3.23f1 GPU PlayMode and mission visibility captures
 on:
   workflow_dispatch:
   push:
@@ -29,7 +29,8 @@ jobs:
           $data=Invoke-RestMethod -Headers $h -Uri 'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/pipeline/active-workstreams.json?ref=main'
           $reg=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($data.content)) | ConvertFrom-Json
           $claims=@($reg.active | Where-Object {$_.status -eq 'active' -and $_.resources -contains 'windows-runner-heavy'})
-          if($claims.Count -gt 0 -and ($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-aldric-city-roaming-20261028')){
+          if($claims.Count -ne 1 -or $claims[0].id -ne 'eldoria-aldric-city-roaming-20261028' -or
+             $claims[0].owner -ne 'codex-pr120-exact-visual-pr122-20261028' -or $claims[0].ownership_state -ne 'claimed'){
             throw "Reserved Windows runner: $($claims.id -join ', '). Retain existing owner's queue."
           }
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
@@ -84,6 +85,47 @@ jobs:
             throw 'Approved 26-joint source SHA mismatch'
           }
           Write-Host 'ALDRIC_CITY_EXACT_GLB_NATIVE_SOURCE_PASS'
+      - name: Preserve isolated project Search index before Unity
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $settings=Join-Path $env:GITHUB_WORKSPACE 'Unity/UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "aldric-search-original-$env:GITHUB_RUN_ID"
+          $missing=Join-Path $env:RUNNER_TEMP "aldric-search-missing-$env:GITHUB_RUN_ID"
+          if(Test-Path $backup){throw 'Existing Search backup; refuse overwrite'}
+          if(Test-Path $settings){Copy-Item $settings $backup}else{
+            New-Item -ItemType Directory -Force (Split-Path $settings)|Out-Null
+            New-Item -ItemType File $missing|Out-Null
+          }
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' |
+            Set-Content $settings -Encoding UTF8
+      - name: Prepare canonical build-safe Bastion III resources required by scene tests
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP "aldric-city-native-$env:GITHUB_RUN_ID"
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
+          # The merged III scene loads these build outputs even during I-II.
+          # Reuse its approved deterministic preparation; do not invent art,
+          # hide missing-resource errors, or weaken the PlayMode log contract.
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender unavailable for canonical III resource preparation'}
+          $evidence='docs/bastion-iii/native'
+          if(Test-Path $evidence){
+            $archive=Join-Path $env:RUNNER_TEMP "bastion-iii-before-ui-$env:GITHUB_RUN_ID"
+            if(Test-Path $archive){throw 'Prior III evidence archive already exists'}
+            Move-Item $evidence $archive
+          }
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Canonical private fissure preparation failed'}
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $log=Join-Path $out 'resource-preparation.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity',
+            '-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$log)
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
+
       - name: Run actual GPU PlayMode against the canonical Valoria city
         shell: powershell
         run: |
@@ -109,10 +151,21 @@ jobs:
             throw 'Aldric walking test was not certified'
           }
           foreach($image in @('aldric-city-idle-landscape.png','aldric-city-idle-portrait.png',
-                              'aldric-city-walking-landscape.png','aldric-city-walking-portrait.png')){
+                              'aldric-city-walking-landscape.png','aldric-city-walking-portrait.png',
+                              'aldric-away-world.png','aldric-away-march.png',
+                              'aldric-away-investigation.png','aldric-city-returned.png')){
             if(-not(Test-Path (Join-Path $out $image))){throw "Native camera screenshot missing $image"}
           }
-          Write-Host 'ALDRIC_CITY_REAL_UNITY_WALK_SCALE_FOUR_CAMERAS_PASS'
+          Write-Host 'ALDRIC_CITY_REAL_UNITY_WALK_SCALE_MISSIONS_SAVE_PASS'
+      - name: Restore original isolated Search index
+        if: always()
+        shell: powershell
+        run: |
+          $settings=Join-Path $env:GITHUB_WORKSPACE 'Unity/UserSettings/Search.index'
+          $backup=Join-Path $env:RUNNER_TEMP "aldric-search-original-$env:GITHUB_RUN_ID"
+          $missing=Join-Path $env:RUNNER_TEMP "aldric-search-missing-$env:GITHUB_RUN_ID"
+          if(Test-Path $backup){Copy-Item $backup $settings -Force}
+          elseif(Test-Path $missing){Remove-Item $settings -ErrorAction SilentlyContinue}
       - name: Preserve genuine Unity logs XML and captures even on failure
         if: always()
         uses: actions/upload-artifact@v4

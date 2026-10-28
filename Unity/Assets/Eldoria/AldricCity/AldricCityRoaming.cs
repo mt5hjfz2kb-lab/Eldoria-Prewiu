@@ -46,12 +46,13 @@ namespace Eldoria.AldricCity
         private float facingYaw;
         private float nextAwayRefresh;
         private bool cachedAway;
-        private readonly List<Collider> obstacles = new List<Collider>();
+        private readonly Collider[] clearanceHits = new Collider[64];
         // Native verification probes. Read-only; never mutate player saves or gameplay.
         public bool ApprovedVisualReady => actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
         public int RoadWaypoints => path == null ? 0 : path.Length;
         public bool ActualWalkClipPlaying => clips && clips.IsPlaying(Walk);
+        public bool CurrentBodyClear => actor && BodyClear(actor.transform.position);
         public Vector3 ActorGroundPosition => actor ? actor.transform.position : Vector3.zero;
         public bool IsCityActorVisible => actor && !Away() && renderers != null &&
             renderers.Any(r => r && r.enabled && r.gameObject.activeInHierarchy);
@@ -138,17 +139,21 @@ namespace Eldoria.AldricCity
         {
             var lo = ground + Vector3.up * (Radius + 0.12f);
             var hi = ground + Vector3.up * (Height - Radius);
-            var mid = Vector3.Lerp(lo, hi, .5f);
-            foreach (var c in obstacles)
+            // Check the entire occupied capsule against current scene geometry.
+            // Three point samples can miss a narrow obstruction between them;
+            // a cached list also cannot detect colliders added after initialization.
+            int count = Physics.OverlapCapsuleNonAlloc(lo, hi, Radius, clearanceHits,
+                ~0, QueryTriggerInteraction.Ignore);
+            if (count == clearanceHits.Length) return false; // fail closed on saturation
+            for (int i = 0; i < count; i++)
             {
-                if (!c || !c.enabled || !c.gameObject.activeInHierarchy ||
-                    c.isTrigger || c == road) continue;
-                // Conservative closest-point checks; a failed clearance keeps
-                // Aldric stationary rather than walking through geometry.
-                if (Vector3.Distance(c.ClosestPoint(lo), lo) < Radius ||
-                    Vector3.Distance(c.ClosestPoint(mid), mid) < Radius ||
-                    Vector3.Distance(c.ClosestPoint(hi), hi) < Radius)
-                    return false;
+                var c = clearanceHits[i];
+                if (!c || !c.enabled || !c.gameObject.activeInHierarchy || c == road ||
+                    (actor && c.transform.IsChildOf(actor.transform))) continue;
+                var n = c.name.ToLowerInvariant();
+                if (n.Contains("road") || n.Contains("paving") || n.Contains("ground") ||
+                    n.Contains("terrain") || n.Contains("meadow") || n.Contains("hotspot")) continue;
+                return false;
             }
             return true;
         }
@@ -169,20 +174,6 @@ namespace Eldoria.AldricCity
         private bool BuildAndValidatePath()
         {
             var centre = road.bounds.center;
-            var all = UnityEngine.Object.FindObjectsByType<Collider>(
-                FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-            foreach (var c in all)
-            {
-                if (!c || c == road || c.isTrigger) continue;
-                var n = c.name.ToLowerInvariant();
-                // Roads, landscape and UI hotspots are not physical walls.
-                // Buildings and walls still block the capsule.
-                if (n.Contains("road") || n.Contains("paving") ||
-                    n.Contains("ground") || n.Contains("terrain") ||
-                    n.Contains("meadow") || n.Contains("hotspot")) continue;
-                if (Vector3.Distance(c.bounds.center, centre) < 28f)
-                    obstacles.Add(c);
-            }
             var forward = road.transform.forward;
             var side = road.transform.right;
             // Multiple candidates so an irregular cobbled mesh is not forced
