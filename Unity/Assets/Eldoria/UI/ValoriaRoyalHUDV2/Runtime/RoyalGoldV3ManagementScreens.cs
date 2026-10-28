@@ -371,7 +371,7 @@ namespace Eldoria.UI.RoyalGold.V2
             bool training=CurrentDestination==Destination.Training;
             bool trainingActive=training && s.RecruitmentCompletesUtcTicks>0;
             maxCount=training?Mathf.Min(500,SliceRules.MaxAffordableArchers(s)):
-                s.Available.ArcherT1;
+                Mathf.Min(s.Available.ArcherT1,MarchCapacityRules.Capacity(s,selectedHero));
             // A pending operation has already spent its resources. Show the
             // real saved quantity rather than a newly affordable quantity.
             if(trainingActive)
@@ -434,17 +434,19 @@ namespace Eldoria.UI.RoyalGold.V2
             else
             {
                 trainingProgress.gameObject.SetActive(false);
-                var troops=s.Available.Copy();
-                troops.ArcherT1=maxCount>0?selectedCount:0;
+                var troops=new ArmyRoster{ArcherT1=maxCount>0?selectedCount:0};
                 var power=SliceRules.Expedition(troops,selectedHero);
                 summary.Put("COMPOSICIÓN DE LA MARCHA\n\n"+HeroName(selectedHero)+"\n"+
                     "Arqueros T1   "+troops.ArcherT1+"\n\nPODER  "+power.Power+
                     "\nATAQUE  "+power.Attack+"   DEFENSA  "+power.Defense+
                     "\nVIDA  "+power.Health+"   RUPTURA  "+power.Break);
+                int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
                 status.Put("DISPONIBLES  "+s.Available.ArcherT1+
-                    "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0)+
-                    "\nEN EXPEDICIÓN  "+(s.March.Phase=="idle"?0:s.March.Troops.Total));
-                bool allowed=s.March.Phase=="idle" && maxCount>0;
+                    "\nCAPACIDAD DE "+HeroName(selectedHero)+"  "+MarchCapacityRules.Capacity(s,selectedHero)+
+                    "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
+                    "\nMARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
+                    "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
+                bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && maxCount>0;
                 actionLabel.Put(allowed?"CONFIRMAR COMPOSICIÓN":"MARCHA NO DISPONIBLE");
                 action.interactable=allowed && Time.unscaledTime>=submitAfter;
             }
@@ -462,7 +464,9 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             bool training=CurrentDestination==Destination.Training;
             if(training&&(s.RecruitmentCompletesUtcTicks>0 || selectedCount>SliceRules.MaxAffordableArchers(s)))return;
-            if(!training&&(s.March.Phase!="idle" || selectedCount>s.Available.ArcherT1))return;
+            if(!training&&(!MarchCapacityRules.CanStart(s,utcTicks()) ||
+                selectedCount>s.Available.ArcherT1 ||
+                selectedCount>MarchCapacityRules.Capacity(s,selectedHero)))return;
             string target=training?"archer:t1:"+selectedCount:"march-main:"+selectedCount+":"+selectedHero;
             string kind=training?"Recruit":"ConfigureMarch";
             submitAfter=Time.unscaledTime+.45f;
