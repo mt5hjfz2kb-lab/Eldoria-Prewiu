@@ -70,6 +70,28 @@ static class Program
         for(int i=0;i<3;i++)Assert(Run(scouts,"claim"+i,"ScoutClaim",orders[i]).Ok,"Each scout reward collected exactly once");
         scouts=new LocalGateway(scoutClock,scoutStore);
         Assert(scouts.Snapshot().Available.Total==90,"Claims do not return troops twice");
-        Console.WriteLine("GLOBAL_MARCH_CAPACITY=PASS; CONCURRENT_LIMIT=3; SAVE_COMPAT=PASS; SCOUT_SLOTS=PASS");
+        var mixedClock=new Clock();
+        var mixedStore=new Store{State=new PlayerState{
+            BastionLevel=3,BarracksLevel=1,SawmillLevel=1,
+            Available=new ArmyRoster{ArcherT1=190}
+        }};
+        var mixed=new LocalGateway(mixedClock,mixedStore);
+        Assert(Run(mixed,"investigate-one","InvestigateFissure","fissure-valoria").Ok,
+            "Real Breach investigation occupies exactly one slot");
+        Assert(MarchCapacityRules.ActiveCount(mixed.Snapshot(),mixedClock.UtcTicks)==1,
+            "Investigation counted without inventing a second world army");
+        Assert(Run(mixed,"investigate-forest","Gather","forest-valoria").Ok,
+            "First free slot remains usable during investigation");
+        Assert(Run(mixed,"investigate-quarry","Gather","quarry-valoria").Ok,
+            "Second free slot remains usable during investigation");
+        Assert(MarchCapacityRules.ActiveCount(mixed.Snapshot(),mixedClock.UtcTicks)==3,
+            "Investigation and two world marches fill exactly three slots");
+        Assert(!Run(mixed,"investigate-fourth","Fight","corrupt-scout").Ok,
+            "A fourth activity is denied while the Breach investigation is active");
+        mixedClock.Add(25);mixed=new LocalGateway(mixedClock,mixedStore);
+        Assert(MarchCapacityRules.ActiveCount(mixed.Snapshot(),mixedClock.UtcTicks)==1 &&
+               mixed.Snapshot().Available.Total==190,
+            "Only the Breach investigation remains after both world marches return");
+        Console.WriteLine("GLOBAL_MARCH_CAPACITY=PASS; CONCURRENT_LIMIT=3; SAVE_COMPAT=PASS; SCOUT_SLOTS=PASS; INVESTIGATION_MIX=PASS");
     }
 }
