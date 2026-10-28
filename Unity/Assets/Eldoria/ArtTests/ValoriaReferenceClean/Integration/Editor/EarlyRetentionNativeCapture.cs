@@ -286,6 +286,11 @@ namespace Eldoria.ReferenceClean.Editor
                 "The actual unlocked Scouts button shows the genuine Valoria crest art");
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
             Need(ui.IsOpen,"Vigilants opens after first barracks");
+            Need(hud.GetComponentsInChildren<RawImage>().Any(x=>
+                x.name=="Engendro / authentic creature illustration" && x.enabled &&
+                x.texture==Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4") &&
+                x.uvRect==new Rect(.01f,.51f,.48f,.48f)),
+                "Normal corrupt encounters show their own authored patrol illustration, never an empty card");
             Screenshot(h,"vigilants-chapter-one",1600,900);
             Screenshot(h,"vigilants-chapter-one",900,1600);
             Screenshot(h,"vigilants-chapter-one",390,844);
@@ -439,6 +444,10 @@ namespace Eldoria.ReferenceClean.Editor
             Screenshot(h,"scout-missions-underway",390,844);
             var clock=h.City.Clock as ValoriaReferenceCleanGameplay.TestClock;
             Need(clock!=null,"Only disposable probe clock advances for offline return proof");
+            // Let the real dispatch announcement expire before advancing the
+            // disposable UTC clock; a ready-state screenshot must not retain
+            // a seconds-old 'en camino' banner from an artificial time jump.
+            yield return new WaitForSecondsRealtime(2.1f);
             clock.Step((int)Math.Ceiling((sent.Max(x=>x.EndsUtcTicks)-clock.UtcTicks)/(double)TimeSpan.TicksPerSecond)+1);
             ui.SynchronizeLayout();
             yield return null;

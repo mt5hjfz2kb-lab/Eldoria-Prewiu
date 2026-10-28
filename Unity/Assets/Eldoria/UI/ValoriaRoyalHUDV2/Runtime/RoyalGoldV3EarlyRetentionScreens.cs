@@ -1015,13 +1015,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 var info=EarlyRetentionRules.Stage(Math.Min(stage,10000));
                 bool boss=info.Step%5==0;
                 bool showEngendro=info.Step==15 && engendroTexture!=null;
-                if(showEngendro!=encounterPortraitVisible)
+                bool showEncounterArt=showEngendro||scoutVignettes!=null;
+                if(showEncounterArt!=encounterPortraitVisible)
                 {
-                    encounterPortraitVisible=showEngendro;
+                    encounterPortraitVisible=showEncounterArt;
                     Layout();
                 }
                 if(engendroPortrait)
-                    engendroPortrait.transform.parent.gameObject.SetActive(showEngendro);
+                {
+                    engendroPortrait.transform.parent.gameObject.SetActive(showEncounterArt);
+                    // Ordinary corrupt patrols retain an authored encounter
+                    // illustration too; never present an empty adversary card.
+                    engendroPortrait.texture=showEngendro?engendroTexture:scoutVignettes;
+                    engendroPortrait.uvRect=showEngendro?new Rect(0,0,1,1):new Rect(.01f,.51f,.48f,.48f);
+                }
                 chapterTrail.rectTransform.anchorMin=Vector2.zero;
                 chapterTrail.rectTransform.anchorMax=Vector2.one;
                 chapterTrail.rectTransform.offsetMin=new Vector2(5,5);
@@ -1030,7 +1037,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 chapterTrail.SetVerticesDirty();
                 // All milestones now occupy the painted road. The encounter
                 // card sits below the scene, so neither creature nor text hides it.
-                if(showEngendro)
+                if(showEncounterArt)
                 {
                     bool portrait=height>width;
                     var frame=engendroPortrait.transform.parent as RectTransform;
@@ -1113,7 +1120,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 reward.Put("Al vencer: "+(30+stage*2)+" madera · "+(10+stage)+
                     " piedra · "+(20+stage/5*3)+" XP");
                 int xp=EarlyRetentionRules.UnclaimedIdleXp(p,now());
-                string xpSummary=showEngendro&&(height>width||compactLandscape)
+                string xpSummary=showEncounterArt&&(height>width||compactLandscape)
                     ?"EXP. "+xp+" XP · Máx. 8 h\n":"EXP. ACUMULADA: "+xp+" XP / máximo 8 h\n";
                 passive.Put(xpSummary+
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+

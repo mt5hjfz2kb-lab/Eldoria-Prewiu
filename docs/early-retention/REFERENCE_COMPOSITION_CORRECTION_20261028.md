@@ -117,3 +117,20 @@ change requiring a new exact native capture, not a claim of acceptance.
 Use case: stylized-concept. Asset type: ONE transparent 2x2 sprite atlas of four medieval fantasy UI medallions for the existing Eldoria Scout Board. Input image: the selected paired Camino de los Vigilantes / Mesa de Exploradores reference, used ONLY for matching its exact ornate gold circular mission badges, painterly polished game UI craftsmanship and scale. Produce four separate circular badges, perfectly centred in four equal square quadrants of one square transparent image, matching diameters and consistent gold relief rims. Top left: gold compass rose on warm amber enamel (patrol). Top right: luminous green leaf sprig on deep emerald enamel, matching the forest badge in the reference (rescue). Bottom left: small wooden supply chest with a golden latch on warm gold/brown enamel (supplies). Bottom right: ivory sailing ship over deep blue enamel, matching the coastal badge in the reference (Breach traces near coast). Each badge fills 80% of its quadrant, 10% transparent margin on all sides, fully isolated, no overlaps, no shadows spilling into adjacent quadrants. True alpha transparent background outside the four circles. No text, letters, numerals, currencies, rewards, labels, frames or complete UI. These are decorative badges only; no baked gameplay. Preserve original reference's rich gold bevel, cream highlights, dimensional illustration, no flat vector substitutes. Deliver only this one 2x2 atlas.
 
 Source: scout-medallions-v5.png; SHA256 is recorded in the art request. One512px GPU atlas, source retained at original resolution/alpha; no text or baked reward values.
+
+
+## Review of native35 and final ordinary-encounter correction
+
+Native35 run40752999192, sourceca1009fb277d0fc8e22ea7c3648b58e52129ca77,
+passed13domain and all19views/actions/save/font checks. Artifact12844063899,
+ZIP SHA2568ef4b74b884483779584d3e0311d1f109089596a434f64105b970e8f2ef5d776.
+Its actual guardian images show the restored full-height route/castle and large
+creature with live data; Scout imagery/badges/actions are distinct and readable.
+The same image review rejects the ordinary first/second-stage empty adversary
+card. Reuse the existing illustrated corrupt patrol (top-left vignette quadrant)
+for those encounters and apply the same visual/data layout throughout. Stage15
+still uses its exact original creature resource. No new art source, fictional
+enemy type, reward or gameplay change. A ready-order screenshot additionally
+waits for the real1.9-second dispatch banner to expire before jumping the
+probe UTC clock, avoiding a misleading test-only 'en camino' announcement over
+ready cards. Requires the next exact native proof; no premature final approval.
