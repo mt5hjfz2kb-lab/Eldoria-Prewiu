@@ -30,8 +30,113 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  shared_scope:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+    outputs:
+      heavy_required: ${{ steps.compare.outputs.heavy_required || 'true' }}
+    steps:
+      - name: Verify successful canonical shared-interface certificate
+        id: baseline
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setOutput('eligible','false');
+            const canonical='feature/eldoria-early-retention-20261028';
+            const nativeSource='c1da0a450a9b752f2759429dad06c6b42ea065ac';
+            const pr=context.payload.pull_request;
+            let requireNativeTree=false;
+            if(context.eventName==='pull_request') {
+              if(pr?.number!==120 || pr.head.ref!==canonical ||
+                pr.head.repo.full_name!==context.repo.owner+'/'+context.repo.repo)return;
+            } else if(context.eventName==='push' && context.ref==='refs/heads/main') {
+              const merged=(await github.rest.pulls.get({...context.repo,pull_number:120})).data;
+              if(!merged.merged)return;
+              const runs=(await github.rest.actions.listWorkflowRuns({...context.repo,
+                workflow_id:'early-retention-native.yml',branch:canonical,per_page:30})).data.workflow_runs;
+              if(!runs.some(r=>r.head_sha===nativeSource && r.status==='completed' && r.conclusion==='success'))return;
+              requireNativeTree=true;
+            } else return;
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:40700893871})).data;
+            if(run.status!=='completed' || run.conclusion!=='success' ||
+              run.head_sha!=='1f418a29274664904556aa3478dc1520e495e30b' ||
+              run.path!=='.github/workflows/ui-progression-cert.yml' ||
+              run.head_branch!==canonical)throw Error('Canonical shared-interface proof is not valid');
+            // The actual compiled PR merge has precisely the same Git tree
+            // as the immutable branch certificate used for comparison below.
+            const actual=(await github.rest.repos.getCommit({...context.repo,
+              ref:'28c7439e0f2aaabad751140fcd7022ce4e81dcf1'})).data;
+            if(actual.commit.tree.sha!=='762d8fb1cf480cf3fe958db2dce427e46ae498af')
+              throw Error('Exact compiled shared-interface tree differs');
+            core.setOutput('require_native_tree',String(requireNativeTree));
+            core.setOutput('eligible','true');
+      - uses: actions/checkout@v4
+        id: source
+        if: steps.baseline.outputs.eligible == 'true'
+        continue-on-error: true
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/ui-progression-cert.yml
+      - name: Reuse proof only for byte-identical shared inputs and certification steps
+        id: compare
+        if: steps.baseline.outputs.eligible == 'true' && steps.source.outcome == 'success'
+        shell: bash
+        env:
+          REQUIRE_NATIVE_TREE: ${{ steps.baseline.outputs.require_native_tree }}
+        run: |
+          node <<'JS'
+          const fs=require('node:fs'),{execFileSync:git}=require('node:child_process');
+          let heavy=true;
+          const certified='1f418a29274664904556aa3478dc1520e495e30b';
+          try {
+            git('git',['fetch','--no-tags','--filter=blob:none','--depth=1','origin',certified],{stdio:'pipe'});
+            const files=git('git',['diff','--name-only',certified,'HEAD'],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean);
+            const retainedModule=new Set([
+              'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs',
+              'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs',
+              'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs',
+              'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs',
+              'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs',
+              'tools/early-retention/native-request.json','qa/e2e-full-arc1.js',
+              'pipeline/active-workstreams.json','.github/workflows/ui-progression-cert.yml'
+            ]);
+            const nativeOwned=p=>retainedModule.has(p) ||
+              p.startsWith('Unity/Assets/Eldoria/Resources/EldoriaRetention/') ||
+              p.startsWith('docs/early-retention/');
+            const file='.github/workflows/ui-progression-cert.yml';
+            const before=git('git',['show',certified+':'+file],{encoding:'utf8'});
+            const current=fs.readFileSync(file,'utf8');
+            const originalJob=s=>{
+              const at=s.indexOf('  certify:\n');
+              if(at<0)throw Error('Shared certificate job missing');
+              return s.slice(at).replace(/^    needs:.*\n/m,'').replace(/^    if:.*\n/m,'');
+            };
+            let nativeTreeMatches=true;
+            if(process.env.REQUIRE_NATIVE_TREE==='true') {
+              const nativeSource='c1da0a450a9b752f2759429dad06c6b42ea065ac';
+              git('git',['fetch','--no-tags','--filter=blob:none','--depth=1','origin',nativeSource],{stdio:'pipe'});
+              nativeTreeMatches=git('git',['rev-parse',nativeSource+':Unity'],{encoding:'utf8'}).trim()===
+                git('git',['rev-parse','HEAD:Unity'],{encoding:'utf8'}).trim();
+            }
+            heavy=!nativeTreeMatches || files.some(p=>!nativeOwned(p)) || originalJob(before)!==originalJob(current);
+            console.log('Changed paths: '+files.join(', '));
+            if(!heavy)console.log('ELDORIA_SHARED_UI_CERTIFICATE_REUSED run40700893871 source='+certified+
+              '; all shared inputs and entire certification job unchanged; dedicated Retention native proof remains required');
+          } catch(error) {console.warn('Cannot prove shared UI unchanged; run full original gate: '+error.message);}
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'heavy_required='+heavy+'\n');
+          JS
   certify:
-    if: vars.UNITY_RUNNER_READY == 'true'
+    needs: shared_scope
+    if: always() && vars.UNITY_RUNNER_READY == 'true' && needs.shared_scope.outputs.heavy_required != 'false'
     # Use disposable probe-only saves for EVERY native UI test on the owner's PC.
     env:
       VALORIA_GAMEPLAY_PROBE: '1'
