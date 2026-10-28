@@ -14,6 +14,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 11,
-  "note": "Art polish from authentic run 40651084175: significantly reduce empty portrait manuscript, make scenic trail/map legible, separate real contract titles from rewards, fix clipped landscape back action. Require eight new true Unity PNG captures for exact current SHA and inspect visually before merge; keep ART_APPROVED=false until image review."
+  "revision": 12,
+  "note": "Art pass from authentic run 40651084175: increase route/map prominence and eliminate empty manuscript space with 470-unit portrait information area; scale actual heading/reward text in both orientations. Check 8 actual Unity PNG, all three parchment cards, separate titles, legible footer, real buttons; ART_APPROVED=false until inspected."
 }
