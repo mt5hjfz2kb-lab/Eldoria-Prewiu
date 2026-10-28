@@ -757,14 +757,16 @@ namespace Eldoria.UI.RoyalGold.V2
                     "Maestría PvE: Aldric "+EarlyRetentionRules.HeroMasteryLevel(s,"aldric")+
                     " · Lyra "+EarlyRetentionRules.HeroMasteryLevel(s,"lyra"));
                 mainAction.interactable=EarlyRetentionRules.StageUnlocked(s,stage)&&archer>0;
-                mainActionLabel.Put(mainAction.interactable?"COMBATIR AUTOMÁTICAMENTE":
-                    "DESBLOQUEO PENDIENTE");
+                // A single direct call to action, like the approved artwork.
+                // The panel already explains that resolution is automatic.
+                mainActionLabel.Put(mainAction.interactable?"COMBATIR":
+                    "AÚN NO DISPONIBLE");
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
                 battleFeedback.Put(string.IsNullOrEmpty(notice) && stage==1 ?
                     "ALDRIC · Es una prueba de preparación. Elige tus tropas y yo dirigiré el combate automático." :
                     notice);
-                footer.Put("Una sola victoria por etapa · El resultado no necesita supervisión.");
+                footer.Put("Cada victoria abre el siguiente tramo del camino.");
             }
             else
             {
@@ -792,8 +794,23 @@ namespace Eldoria.UI.RoyalGold.V2
                     if(scoutThumbnails[i])
                     {
                         scoutThumbnails[i].enabled=paintedScouts!=null;
-                        float mapX=.055f+Mathf.Clamp(order.Kind,0,3)*.225f;
-                        scoutThumbnails[i].uvRect=new Rect(mapX,.14f,.21f,.56f);
+                        // Each real mission type gets a recognisable crop of
+                        // the painted cartographer's map. A crop MUST preserve
+                        // aspect ratio, rather than stretching a narrow slice
+                        // of the source across a wide expedition card.
+                        var thumbRect=scoutThumbnails[i].rectTransform.rect;
+                        float aspect=Mathf.Max(.1f,thumbRect.width/
+                            Mathf.Max(1f,thumbRect.height));
+                        float artAspect=paintedScouts
+                            ?(float)paintedScouts.width/paintedScouts.height:1f;
+                        float cropW=.54f;
+                        float cropH=Mathf.Min(.92f,cropW*artAspect/aspect);
+                        float centerX=.24f+Mathf.Clamp(order.Kind,0,3)*.17f;
+                        float centerY=.28f+Mathf.Clamp(order.Kind,0,3)*.15f;
+                        scoutThumbnails[i].uvRect=new Rect(
+                            Mathf.Clamp(centerX-cropW*.5f,0f,1f-cropW),
+                            Mathf.Clamp(centerY-cropH*.5f,0f,1f-cropH),
+                            cropW,cropH);
                         bool readyToClaim=order.StartedUtcTicks>0 &&
                             order.EndsUtcTicks<=now();
                         scoutThumbnails[i].color=readyToClaim
