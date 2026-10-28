@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "request_id": "eldoria-tier5-lyra-h31-20261028",
   "module_label": "Eldoria_Lyra_Ranger_v1",
   "unity_yaw_degrees": 0,
@@ -10,9 +10,9 @@
     "prompt": "Single full-body female medieval ranger, 25-35, natural human proportions, neutral A-pose for rigging: arms gently apart, fingers and legs separated, flat feet. Warm medium tan olive-brown skin, expressive determined face, dark brown loosely braided wavy hair with flyaways. Simple weathered forest-green hoodless short shoulder cloak, fitted brown leather vest over muted rough linen shirt, asymmetrical layered olive-brown skirt panels over sturdy trousers, practical leather forearm bracers, high strapped travel boots, small belt pouch, simple leather quiver over one shoulder. Plain recurved dark wooden bow carried separately at her side; no armor plate or magical ornaments. Grounded capable frontier archer, not a sorceress. Grounded semi-realistic medieval fantasy hero, realistic fabric and worn leather PBR, clear whole-body silhouette, isolated on neutral studio background."
   },
   "credit_authorization": {
-    "approved": true,
-    "authorized_credit_cost": 20,
-    "scope": "Owner-requested one-shot Lyra ranger source, up to 20 existing Tripo API credits only. No new payment, no retries, no rigging charges, no Unity runtime integration."
+    "approved": false,
+    "authorized_credit_cost": 0,
+    "scope": "One Lyra owner-authorized task dispatched from commit 9742e9aa0826c81715ce681f6815bab1985639e2 GitHub run 40691514897; current main disarmed. No retries or payments."
   },
   "refinement": {
     "enabled": false
@@ -30,7 +30,7 @@
   },
   "visual_acceptance": "Lyra owner-approved medium-tan dark-haired ranger with green hoodless cloak, restrained worn leather, simple wooden bow and shoulder quiver; full human body, eyes/face/skin matched as closely as text can, riggable A-pose; no elf ears, no magic, no crowns. Compare with owner approved PNG before use.",
   "run_nonce": "[tripo-tier5-lyra-once]",
-  "notes": "Second independent source task; review character anatomy, skin tone, accessory separability and actual Blender 3D; do not ship as hero without visual/rigger approvals.",
+  "notes": "Inspect original run 40691514897 and recover source GLB, Blender and Unity A/B; do not resubmit.",
   "unity_import": {
     "refresh_import_mode": "InProcess",
     "job_worker_count": 1
