@@ -310,6 +310,15 @@ namespace Eldoria.ReferenceClean.Editor
             var s=h.City.Gateway.Snapshot();
             Need(s.Retention.LastClearedStage==1 && s.LastBattleReport.Won,
                 "First stage resolves via REAL domain combat, once");
+            Need(s.LastBattleReport.Reason.Contains("VICTORIA")&&
+                s.LastBattleReport.Reason.Contains("asaltos")&&
+                s.LastBattleReport.Reason.Contains(s.LastBattleReport.PlayerPower.ToString()),
+                "Native actual battle report contains outcome, genuine rounds and power");
+            var reportDetails=hud.GetComponentsInChildren<RoyalText>(true)
+                .FirstOrDefault(x=>x.name=="Authoritative victory reward");
+            Need(reportDetails!=null&&reportDetails.gameObject.activeInHierarchy&&
+                reportDetails.text==s.LastBattleReport.Reason,
+                "Actual golden victory announcement explains the real battle instead of generic reward text");
             // Prove the attractive player-facing result, not just the domain
             // success: these captures must show the real gold victory banner.
             var victory=hud.GetComponentsInChildren<RoyalText>(true)
