@@ -37,8 +37,17 @@
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "UI-only text, colored seals and pre-existing painterly assets; no new art files, geometry, textures or external AI spend",
       "dependency": "Stacked on PR124 for capacity compatibility; native runner reserved for PR122. After PR124 merge, retarget and compare the exact scene captures.",
-      "phase": "IMPLEMENTATION",
-      "next": "Add differentiated real guardian stats, actual battle evidence, deterministic persistent scout narratives and map progression seals, run existing CI."
+      "phase": "SOURCE_CI_PASS_NATIVE_VISUAL_PENDING",
+      "next": "PR125 is stacked on PR124. After PR122 releases Windows and PR124 is merged, reserve a native Unity slot for this workstream; run retention-engagement-native.yml, inspect real phone/portrait/landscape screenshots, fix any visual or gameplay defects, then merge on main.",
+      "last_verified": {
+        "source_sha": "f3b44295bb7cd0e2e2aae85624a78ed0f2591251",
+        "domain_ci_run": 40770077163,
+        "domain_ci": "PASS",
+        "ownership_ci_run": 40770082200,
+        "unity_native": "PENDING_RUNNER_HELD_BY_PR122",
+        "art_approved": false,
+        "android_released": false
+      }
     },
     {
       "id": "eldoria-global-march-capacity-three-slots-20261028",
