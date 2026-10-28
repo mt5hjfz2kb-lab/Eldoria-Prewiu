@@ -176,6 +176,53 @@ namespace Eldoria.Tests
         }
 
         [UnityTest]
+        public IEnumerator NativeProbeResetStartsFreshWithoutDeletingAnyRealDeviceSave()
+        {
+            if(Environment.GetEnvironmentVariable("VALORIA_GAMEPLAY_PROBE")!="1")
+                Assert.Ignore("The destructive path is only tested against a disposable probe file");
+            Component host=null,hud=null;
+            yield return Boot((h,v)=>{host=h;hud=v;});
+            var city=Member(host,"City") as Component;
+            Assert.That(city,Is.Not.Null);
+            Assert.That((bool)Member(city,"Probe"),Is.True);
+            string disposable=(string)Member(city,"SaveFile");
+            Assert.That(disposable.StartsWith(System.IO.Path.GetTempPath(),
+                StringComparison.OrdinalIgnoreCase),Is.True,
+                "Never reset a non-probe save from this native test");
+            var gateway=Member(city,"Gateway") as Eldoria.Application.ICommandGateway;
+            Assert.That(gateway,Is.Not.Null);
+            var fixture=gateway.Snapshot();
+            fixture.BastionLevel=2;
+            fixture.SawmillLevel=1;
+            new Eldoria.Infrastructure.FileStateStore(disposable).Save(fixture);
+            Assert.That(System.IO.File.Exists(disposable),Is.True);
+            var ok=(bool)Call(city,"ResetPlaytestProgress");
+            Assert.That(ok,Is.True,"Reset did not accept its own disposable save");
+            Assert.That(System.IO.File.Exists(disposable),Is.False,
+                "Only the disposable file should be removed before fresh load");
+            Component freshHost=null,freshHud=null;
+            for(int frame=0;frame<220;frame++)
+            {
+                yield return null;
+                var candidate=Object.FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                    .FirstOrDefault(x=>x&&x.GetType().Name=="ValoriaIntegratedWorld" &&
+                        (bool)Member(x,"Ready"));
+                if(!candidate||ReferenceEquals(candidate,host))continue;
+                freshHost=candidate;
+                freshHud=Member(candidate,"Hud") as Component;
+                if(freshHud)break;
+            }
+            Assert.That(freshHost,Is.Not.Null,
+                "A real scene reload must create a fresh playable session");
+            var freshCity=Member(freshHost,"City") as Component;
+            var freshGateway=Member(freshCity,"Gateway") as Eldoria.Application.ICommandGateway;
+            Assert.That(freshGateway.Snapshot().BastionLevel,Is.EqualTo(1));
+            Assert.That(freshGateway.Snapshot().SawmillLevel,Is.Zero);
+            Assert.That((string)Member(freshCity,"SaveFile"),Is.Not.EqualTo(disposable),
+                "Fresh native probe must have a new isolated save path");
+        }
+
+        [UnityTest]
         public IEnumerator AuthoredWorldOpensWithMateriallyWiderStrategicFraming()
         {
             Component host = null, hud = null;
