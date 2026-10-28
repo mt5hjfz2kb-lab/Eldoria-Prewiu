@@ -52,6 +52,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalText heading, kicker, introduction, chapter, opponent, formation,
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel, backLabel;
         RoyalGoldV3EarlyRetentionArtwork sceneArtwork;
+        RoyalGoldV3ScoutDiscoverySeals discoverySeals;
         RoyalGoldV3StageTrailGraphic chapterTrail;
         RoyalIconGraphic battleSwords;
         readonly RoyalText[] bossMilestoneLabels=new RoyalText[5];
@@ -358,6 +359,12 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!paintedScouts)paintedScouts=
                 Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
             paintedScene.enabled=paintedVigilants!=null;
+            var pins=Rect("Four actual expedition discovery pins / visual only",art);
+            pins.gameObject.AddComponent<CanvasRenderer>();
+            discoverySeals=pins.gameObject.AddComponent<RoyalGoldV3ScoutDiscoverySeals>();
+            discoverySeals.raycastTarget=false;
+            Stretch(pins,2f);
+            pins.gameObject.SetActive(false);
             // One understated illustrated cartographer's seal, above the real
             // painted map, never a second screen or decorative tap target.
             scoutDiscoveryRibbon=Panel(art,"Map discoveries / live royal seals");
@@ -988,6 +995,16 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
             }
             chapterTrail.gameObject.SetActive(vig);
+            if(discoverySeals)
+            {
+                int mask=p.ScoutDiscoveryMask&15;
+                discoverySeals.gameObject.SetActive(!vig && mask!=0);
+                if(discoverySeals.DiscoveredMask!=mask)
+                {
+                    discoverySeals.DiscoveredMask=mask;
+                    discoverySeals.SetVerticesDirty();
+                }
+            }
             if(scoutDiscoveryRibbon)
             {
                 bool discovered=!vig&&p.ScoutDiscoveries>0;
