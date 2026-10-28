@@ -18,6 +18,6 @@
   "disposable_probes_only": true,
   "zero_cost": true,
   "art_approved": false,
-  "revision": 17,
-  "note": "Reconcile latest painterly/lore/button art with PR119 viewport/reset fixes, idle8h cap correction,15 native PNGs, typography-fit, all3 scout dispatch/claims, real heroXP claim and save reload. Technical PASS never replaces inspection of exact images. Fix native0e6f730 runtime Graphic collision: construct one final red/blue Graphic on each original button. Rerun full15capture/action/claim/XP/reload proof. Widen portrait action targets for EN CAMINO and RECOGER and verify both live states with two extra phone captures (17 total)."
+  "revision": 18,
+  "note": "Owner-approved visual reference exact composition. Earlier native Unity run 40688340094 PASS 15 PNG and real scout/combat/save controls but human art review found flat unlabeled row grid and gray studio square on Engendro. Current candidate fixes route direction (stages ascend), numbered 5/10/15/20/25+current markers based on the actual stage geometry, one-time transparent cutout of real Bastion II Engendro from readable canonical texture and more prominent enemy silhouette without node overlap. Require 17 real PNG including scouts underway/ready and 390x844, authentic cutout and stage 15 label, real all3 send/claim+XP and reload, no fake rewards; ART_APPROVED=false until inspect exact PNGs."
 }
