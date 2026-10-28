@@ -204,8 +204,16 @@ namespace Eldoria.UI.RoyalGold.V2
             paintedScene.raycastTarget=false;
             paintedScene.color=Color.white;
             Stretch(painting,5);
-            paintedVigilants=Resources.Load<Texture2D>("EldoriaRetention/vigilants-illustration");
-            paintedScouts=Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
+            // Original cinematic scenery adapted from the art direction
+            // approved for both activities. Gameplay markers, labels and buttons
+            // remain separate, live Unity controls layered above the painting.
+            paintedVigilants=Resources.Load<Texture2D>("EldoriaRetention/vigilants-painterly");
+            paintedScouts=Resources.Load<Texture2D>("EldoriaRetention/scouts-painterly");
+            // Keep the earlier zero-cost procedural texture as resilient fallback.
+            if(!paintedVigilants)paintedVigilants=
+                Resources.Load<Texture2D>("EldoriaRetention/vigilants-illustration");
+            if(!paintedScouts)paintedScouts=
+                Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
             paintedScene.enabled=paintedVigilants!=null;
             // Decorative art stays BELOW the existing 25-stage route and
             // ABOVE the original fallback illustration, never intercepting taps.
