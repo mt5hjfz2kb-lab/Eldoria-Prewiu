@@ -31,6 +31,7 @@ namespace Eldoria.Domain
         // A genuine narrative log entry from the most recent claimed order,
         // saved with the same idempotent player record, not another inventory.
         public string LatestDiscoveryTitle="", LatestDiscoveryText="";
+        public int TotalScoutReports;
         public long LastIdleClaimUtcTicks;
         public List<ScoutOrder> Orders=new List<ScoutOrder>();
         public EarlyRetentionState Copy()
@@ -212,7 +213,8 @@ namespace Eldoria.Domain
             }
         }
         public static int RevealedScoutReports(EarlyRetentionState state)
-            => state?.Orders?.Count(o=>o!=null&&o.Claimed)??0;
+            => state==null?0:Math.Max(state.TotalScoutReports,
+                state.Orders?.Count(o=>o!=null&&o.Claimed)??0);
 
         public static int ScoutKind(long period,int slot) => (int)((period+slot)%4);
         public static string ScoutTitle(int kind)
@@ -388,6 +390,7 @@ namespace Eldoria.Domain
             else{s.Resources.Stone=checked(s.Resources.Stone+25);s.Resources.Food=checked(s.Resources.Food+45);}
             p.AldricExperience=checked(p.AldricExperience+20);
             order.Claimed=true;
+            p.TotalScoutReports=checked(p.TotalScoutReports+1);
             p.LatestDiscoveryTitle=ScoutDiscoveryTitle(order);
             p.LatestDiscoveryText=ScoutDiscoveryText(order);
             message="Encargo completado · "+ScoutRewardText(order.Kind);
