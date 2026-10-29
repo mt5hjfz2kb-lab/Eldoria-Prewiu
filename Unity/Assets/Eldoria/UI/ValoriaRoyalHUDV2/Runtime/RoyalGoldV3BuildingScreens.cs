@@ -93,17 +93,17 @@ namespace Eldoria.UI.RoyalGold.V2 {
    artCaption.Put(b.Level>=5?"ARQUITECTURA V · DISEÑO DE REFERENCIA":"PRÓXIMA ARQUITECTURA · NIVEL V\nCada mejora desarrolla este edificio de forma independiente.");
    bool choosing=selected=="bastion"&&s.BastionLevel>=4&&string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority);
    description.Put(choosing?"EL CONSEJO DE VALORIA\nElige una prioridad de desarrollo.":b.Function);
-   costs.Put(choosing?"Una elección permanente. Ninguna opción bloquea edificios.":b.OperationActive?"OBRA EN CURSO · "+b.Time:b.Costs);
+   costs.Put(choosing?"Una elección permanente. Ninguna opción bloquea edificios.":b.Level>=5&&!b.OperationActive?"NIVEL V CONSOLIDADO":b.OperationActive?"OBRA EN CURSO · "+b.Time:b.Costs);
    status.Put(choosing?"Producción refuerza los talleres; defensa, las reservas militares; vida civil, el abastecimiento.":b.OperationActive?"Los recursos ya están pagados. La obra continúa al cerrar esta pantalla.":string.IsNullOrEmpty(b.Requirements)?b.Level>=5?"Nivel V alcanzado. Esta arquitectura será la base de futuras mejoras.":"Tiempo de obra: "+b.Time+"\nLa mejora visual se aplica al finalizar.":b.Requirements);
    operationProgress.gameObject.SetActive(b.OperationActive&&!choosing);operationFill.anchorMax=new Vector2(Mathf.Clamp01(b.Progress),1);
-   choices.gameObject.SetActive(choosing);action.gameObject.SetActive(!choosing);action.interactable=b.Action!=null&&b.Action.Enabled&&!b.OperationActive;actionLabel.Put(b.Action?.Label??(b.OperationActive?"EN CURSO":b.Level>=5?"NIVEL V COMPLETADO":"EDIFICIO OPERATIVO"));notice.Put(message);
+   choices.gameObject.SetActive(choosing);action.gameObject.SetActive(!choosing);action.interactable=b.Action!=null&&b.Action.Enabled&&!b.OperationActive;actionLabel.Put(b.Level>=5&&!b.OperationActive?"NIVEL V COMPLETADO":b.Action?.Label??(b.OperationActive?"EN CURSO":"EDIFICIO OPERATIVO"));notice.Put(message);
    for(int i=0;i<tabs.Length;i++)tabs[i].interactable=Ids[i]!=selected&&(i<3||s.BastionLevel>=(i==3?3:5));
   }
   public void SynchronizeLayout(){if(!root)return;root.SetAsLastSibling();Canvas.ForceUpdateCanvases();float w=root.rect.width,h=root.rect.height;lastW=w;lastH=h;lastSafe=Screen.safeArea;bool wide=w>h;float scale=Mathf.Max(.01f,hud.GetComponent<Canvas>().scaleFactor);float m=Mathf.Max(Mathf.Clamp(w*.025f,12,30),Mathf.Max(lastSafe.xMin,Screen.width-lastSafe.xMax)/scale+12),gap=16,head=wide?130:180,foot=100;
    float topInset=Mathf.Max(m,(Screen.height-lastSafe.yMax)/scale+12),bottomInset=Mathf.Max(m,lastSafe.yMin/scale+12);
    Place(header,m,topInset,w-2*m,head);Place((RectTransform)ranking.transform,wide?w-2*m-200:(w-2*m)*.51f,wide?2:76,wide?200:(w-2*m)*.49f,36);Place((RectTransform)training.transform,wide?w-2*m-390:0,wide?2:76,wide?180:(w-2*m)*.49f,36);Place((RectTransform)title.transform,0,0,w-2*m,40);Place((RectTransform)kicker.transform,0,44,w-2*m,28);
    for(int i=0;i<tabs.Length;i++)Place((RectTransform)tabs[i].transform,i*(w-2*m)/5,wide?80:124,(w-2*m)/5-5,wide?35:48);
-   float top=topInset+head,body=h-top-foot-bottomInset;float aw=wide?(w-2*m-gap)*.43f:w-2*m;float ah=wide?body:body*.30f;
+   float top=topInset+head,body=h-top-foot-bottomInset;float aw=wide?(w-2*m-gap)*.43f:w-2*m;float ah=wide?body:body*(h/w>1.5f?.42f:.30f);
    Place(art,m,top,aw,ah);Place(detail,wide?m+aw+gap:m,wide?top:top+ah+gap,wide?w-2*m-aw-gap:w-2*m,wide?body:body-ah-gap);
    float side=Mathf.Min(aw-24,ah-65);Place((RectTransform)portrait.transform,(aw-side)*.5f,8,side,side);Place((RectTransform)artCaption.transform,14,ah-52,aw-28,48);
    float dw=detail.rect.width,dh=detail.rect.height,pad=18;
