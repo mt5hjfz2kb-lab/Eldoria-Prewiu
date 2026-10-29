@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "scope": "COMBINED_UI_V3_GEOGRAPHY275_ANIMATED_SPAWNLING280_EXACT_WEBGL_QA",
-  "source_sha": "7ba5c901f968b35d596047537eff8b4892f2e799",
-  "artifact_run": 39678224055,
-  "artifact_name": "valoria-integrated-web-playtest-39678224055",
+  "scope": "POST_PR130_EXACT_NATIVE297_WEBGL_QA",
+  "source_sha": "2b150a0e95821e31610db105dbbbd73f03324b80",
+  "artifact_run": 40938994937,
+  "artifact_name": "valoria-integrated-web-playtest-40938994937",
   "tester": "existing Windows Chromium/Edge with GPU; actual pointer and touch, landscape and portrait",
   "controls": [
     "dialogues",
@@ -21,11 +21,12 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Accepted UI native623, geography integrated275 and visually accepted animation280. General Unity39677488034SUCCESS. Test combined native281 using actual visible controls, full-screen training/march in portrait/landscape, original normal-clock I-II and byte-identical save/reload.0EUR; no publish unless PASS. Retry same binary after comparator null/empty normalization; failed39680443692 had0 operations,935 valid framing checks rejected after capture,0 runtime/network errors. Genuine camera/management changes still invalidate;5-repeat progress guard added.",
+  "reason": "Owner-authorized continuation after PR130. Exact native297 build40938994937 SUCCESS. Verify current merged main binary with real pointer/touch, normal-clock I-II progression, landscape/portrait framing and byte-identical save/reload. Exclude unmerged PR132; no publish unless complete browser PASS. Existing Windows GPU runner and 0 EUR.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 21,
+  "attempt": 22,
   "method_note": "Pin final canonical main source and original WebGL artifact; retain all existing real pointer/touch, normal clock, direct GPU image/video and exact save/reload assertions.",
-  "gameplay_source_unchanged": false
+  "gameplay_source_unchanged": false,
+  "revision": "native297"
 }
