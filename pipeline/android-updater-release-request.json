@@ -1,8 +1,8 @@
 {
-  "enabled": false,
-  "buildRunId": 40798180869,
-  "versionCode": 18,
-  "expectedSourceSha": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
+  "enabled": true,
+  "buildRunId": 40946564387,
+  "versionCode": 19,
+  "expectedSourceSha": "b310d3b0496b10bab8f1a413f8a588ff5f9b8df3",
   "budgetEur": 0,
-  "note": "Android1.18/code18 PUBLISHED SUCCESS40801382525. Exact signed build40798180869/source0f150e6a719f93d312ebb18d1ceac5edd7435ba9, public asset458971568bytes SHA2567396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644, original certificatef479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8. Public byte comparison and channel18 promotion actually passed; release asset686976107. Disable repeat. Physical phone not tested; no data reset requested."
+  "note": "Owner-authorized continuation to publication. Native code19 SUCCESS,468290348bytes below installed450MiB; original package/certificate verified. Publish only exact immutable signed artifact, require SHA/size/public-byte comparison before family channel advances. Preserve saved data;0EUR; physical phone not tested."
 }

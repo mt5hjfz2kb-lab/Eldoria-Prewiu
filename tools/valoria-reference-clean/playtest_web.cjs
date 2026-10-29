@@ -590,12 +590,22 @@ async function main() {
       }
       if (view === 'landscape') {
       await closeDetails();
-      const beforeZoom = latest, box = await canvasBox(), seq = sequence;
+      const box = await canvasBox();
       // Use the same exposed ground lane that allowed real portrait panning.
       // The world city label is a genuine UI control and must keep intercepting
-      // wheel/pointer input when hovered. Observe an actual zoom-in wheel tick,
-      // never set camera values through browser automation.
+      // wheel/pointer input when hovered. Current authored geography enters at
+      // its near limit (36), so first establish room with a real zoom-out tick.
+      // Both directions must visibly move; never set camera values through JS.
       await page.mouse.move(box.x + box.width * 0.83, box.y + box.height * 0.56);
+      const beforeOut = latest, outSequence = sequence;
+      report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-out',
+        deltaY: 240, origin: 'exposed-world-ground', before: summary(beforeOut) });
+      await page.mouse.wheel(0, 240);
+      await waitState(() => true, 'Zoom-out observation', 8000, outSequence);
+      await sleep(850);
+      const zoomOut = cameraDifference(beforeOut, latest);
+      need(zoomOut && zoomOut.zoom > 0.65, 'A real world mouse-wheel tick did not visibly zoom out from the near limit');
+      const beforeZoom = latest, seq = sequence;
       report.actions.push({ elapsed_s: elapsed(), kind: 'mouse-wheel', label: 'world-zoom-in',
         deltaY: -240, origin: 'exposed-world-ground', before: summary(beforeZoom) });
       await page.mouse.wheel(0, -240);
@@ -604,8 +614,8 @@ async function main() {
       const zoomDifference = cameraDifference(beforeZoom, latest);
       need(zoomDifference && zoomDifference.zoom < -0.65,
         'A real world mouse-wheel tick did not visibly zoom toward the selected world ground');
-      report.checks.world_zoom = { pass: true, input_delta_y: +240,
-        initial_at_regional_fitting_limit: beforeZoom.camera.zoom >= 31.9,
+      report.checks.world_zoom = { pass: true, input_delta_y: -240,
+        zoom_out: { pass: true, input_delta_y: 240, before: beforeOut.camera, after: beforeZoom.camera },
         zoom_direction: zoomDifference.zoom < 0 ? 'in' : 'out',
         before: beforeZoom.camera, after: latest.camera };
       }

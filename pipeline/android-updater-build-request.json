@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 19,
   "versionName": "1.19",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner-authorized continuation. Signed original531510996bytes; library-pruned run40940837846 compiled but513662824bytes exceeds installed450MiB limit, not releasable. Exclude retired VisualWorld/WorldRegion1Runtime Resources and three obsolete authoring textures only during packaging, preserve every direct current scene dependency and explicitly validate all current dynamic model families. Restore GUID-preserving moves in finally; no approved model changes, no downgrade, no saved-data reset. Original package/cert, code19 still unpublished;0EUR."
+  "note": "Exact code19 build40946564387/sourceb310d3b0496b10bab8f1a413f8a588ff5f9b8df3 SUCCESS.468290348bytes < installed450MiB, native original signature/package/permissions verified. Disable repeat build before channel promotion. Release workflow must compare public bytes before updating channel; no physical-phone claim."
 }
