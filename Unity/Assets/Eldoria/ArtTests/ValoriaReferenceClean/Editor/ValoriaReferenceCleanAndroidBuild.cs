@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -19,6 +21,7 @@ public static class ValoriaReferenceCleanAndroidBuild {
  public static void Build(){
   var request=JsonUtility.FromJson<Request>(File.ReadAllText("../tools/valoria-reference-clean/request.json"));
   var result=new Result{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),package_id="com.eldoria.valoria.v5test",graphics_apis="Vulkan, OpenGLES3",scene=ScenePath,physical_device_tested=false,note="Owner update: same package and verified existing signing certificate, one current Valoria city/world/Royal Gold scene, source-only GLBs optimized. No forced data reset or uninstall. Physical Android install/performance has not been observed."};
+  var libraries=new Dictionary<string,byte[]>();
   int exit=1;string settings="ProjectSettings/ProjectSettings.asset";byte[] original=File.ReadAllBytes(settings);
   try{
    if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Android,BuildTarget.Android))throw new Exception("Installed editor lacks Android Build Support");
@@ -59,14 +62,28 @@ public static class ValoriaReferenceCleanAndroidBuild {
    var scenes=new[]{ScenePath};string bundleManifest=null;
    if(request.content_updates)throw new InvalidOperationException(
     "The old isolated-scene remote bootstrap is not valid for the integrated city/world scene. Ship a signed full-scene APK without resetting data.");
+   // Reuse the integrated WebGL packager's proven exclusion of the unused
+   // legacy source catalog. Scene dependencies are retained; source assets
+   // and the catalog's exact bytes are restored in finally, even on failure.
+   var dependencies=new HashSet<string>(AssetDatabase.GetDependencies(ScenePath,true));
+   foreach(var path in AssetDatabase.FindAssets("t:ValoriaExternalAssetLibrary").Select(AssetDatabase.GUIDToAssetPath)){
+    if(dependencies.Contains(path))throw new Exception("Current scene unexpectedly depends on legacy resource library: "+path);
+    libraries[path]=File.ReadAllBytes(path);
+    var asset=AssetDatabase.LoadMainAssetAtPath(path);var serialized=new SerializedObject(asset);var it=serialized.GetIterator();
+    while(it.Next(true))if(it.propertyType==SerializedPropertyType.ObjectReference&&it.name!="m_Script")it.objectReferenceValue=null;
+    serialized.ApplyModifiedPropertiesWithoutUndo();EditorUtility.SetDirty(asset);
+   }
+   AssetDatabase.SaveAssets();
+   File.WriteAllLines("../docs/evidence/valoria-reference-clean/android-scene-dependencies.txt",dependencies.OrderBy(x=>x));
    var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{scenes=scenes,locationPathName=apk,target=BuildTarget.Android,options=BuildOptions.StrictMode,assetBundleManifestPath=bundleManifest});
    result.errors=(int)report.summary.totalErrors;result.warnings=(int)report.summary.totalWarnings;
    if(report.summary.result!=BuildResult.Succeeded||!File.Exists(apk))throw new Exception("Android build failed: "+report.summary.result);
    result.apk_bytes=new FileInfo(apk).Length;
+   if(result.apk_bytes>450L*1024*1024)throw new Exception("APK exceeds the installed updater 450 MiB limit: "+result.apk_bytes);
    using(var sha=System.Security.Cryptography.SHA256.Create())using(var stream=File.OpenRead(apk))result.apk_sha256=BitConverter.ToString(sha.ComputeHash(stream)).Replace("-","").ToLowerInvariant();
    result.status="APK_COMPILED_NOT_DEVICE_VALIDATED";exit=0;Debug.Log("VALORIA_REFERENCE_CLEAN_ANDROID_COMPLETE bytes="+result.apk_bytes);
   }catch(Exception e){result.status="ANDROID_BUILD_FAILED";result.note=e.ToString();Debug.LogException(e);}
-  finally{File.WriteAllText(Evidence,JsonUtility.ToJson(result,true));File.WriteAllBytes(settings,original);}
+  finally{foreach(var pair in libraries)File.WriteAllBytes(pair.Key,pair.Value);File.WriteAllText(Evidence,JsonUtility.ToJson(result,true));File.WriteAllBytes(settings,original);}
   EditorApplication.Exit(exit);
  }
 }
