@@ -630,9 +630,6 @@ jobs:
           # compare like-for-like against V2 for each same gameplay state.
           $before=Get-Content $baselineFile -Raw|ConvertFrom-Json
           $v3Targets=@(
-            'integration-construction-landscape.png',
-            'integration-construction-portrait.png',
-            'integration-bastion-upgrade.png',
             # Training deliberately leaves the city for an opaque management
             # destination. Do NOT test the city viewport behind that screen:
             # the correct acceptance gate is native PlayMode full-screen,
@@ -690,12 +687,25 @@ jobs:
           # Independent destinations have no visible city viewport by design;
           # verify actual native screenshots instead of pretending camera space
           # is visible behind their opaque artwork.
-          foreach($capture in @('integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
+          foreach($capture in @('integration-construction-landscape.png','integration-construction-portrait.png','integration-bastion-upgrade.png','integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
             $path=Join-Path $e $capture
             if(-not(Test-Path $path)){throw "Missing genuine full-screen management capture: $capture"}
             if((Get-Item $path).Length -lt 4096){throw "Management capture too small: $capture"}
             if(@($result.framing | Where-Object {$_.capture -eq $capture}).Count -ne 0){
               throw "Management screen was wrongly certified as exposed-city camera: $capture"
+            }
+            $destination=@($result.management | Where-Object {$_.capture -eq $capture})
+            if($destination.Count -ne 1 -or -not $destination[0].pass -or -not $destination[0].opaque -or
+               -not $destination[0].touchBlocking -or -not $destination[0].fullCanvas -or $destination[0].activeControls -lt 1){
+              throw "Management must have actual opaque full-canvas geometry and active controls: $capture"
+            }
+            if($capture -like 'integration-construction-*' -and
+               ($destination[0].screen -ne 'building' -or $destination[0].target -ne 'sawmill')){
+              throw "Construction capture must show the genuine sawmill destination: $capture"
+            }
+            if($capture -eq 'integration-bastion-upgrade.png' -and
+               ($destination[0].screen -ne 'building' -or $destination[0].target -ne 'bastion')){
+              throw 'Bastion upgrade capture must show the genuine Bastion destination'
             }
             Write-Host "ELDORIA_V3_NATIVE_MANAGEMENT_SCREEN=$capture"
           }

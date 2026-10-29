@@ -45,3 +45,9 @@ Documentación técnica consultada: Unity 6000.3 `Canvas` y orden de dibujo. Se 
 
 - `40906347082`, fuente `1469708`: SUCCESS completo. La cesión del presentador persistente resuelve el toque de Volver (caso aislado y suite completa). El Bastión V del mapa apoya en terreno y recibe raycast real en zoom32/280, con entrada anclada al puente. Artefactos: toque12911069818, revisión12913106042, diagnóstico12913038382 y completo12913871649. Se retienen las correcciones y se cierran los intentos de orden/registro gráfico como explicación insuficiente del segundo Canvas heredado.
 - Referencia de ciclo de vida consultada: https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SceneManagement.SceneManager-sceneLoaded.html — el callback sucede tras Awake/OnEnable y antes de Start, por lo que la cesión puede evitar que el presentador persistente construya otra interfaz.
+
+## Aceptación de gestión completa frente al antiguo cartucho
+
+El control general `40911481759` completó compilación, tres marchas simultáneas y Aldric. Su recorrido I–II también terminó con `INTEGRATION_PASS_ART_REVIEW_REQUIRED` y 44 comprobaciones, pero el workflow siguió exigiendo un rectángulo de ciudad expuesta en las capturas de construcción y ascenso. Las PNG reales muestran los destinos independientes solicitados; no hay ciudad visible detrás de su fondo opaco.
+
+Se añade un registro nativo de cada destino: identidad de pantalla/edificio, dimensiones, cobertura completa del Canvas, opacidad, bloqueo táctil y controles activos. Las capturas de construcción y ascenso se certifican junto a entrenamiento/marchas como gestión real. Se conservan sin reducción las comparaciones de ciudad expuesta: bosque horizontal y vertical, modelo encuadrado, área no inferior a V2 y ganancia mínima de 8 puntos porcentuales en vertical. En el control fallido sus ganancias reales ya fueron +6,56 pp horizontal y +19,13 pp vertical. No se cambian cámaras ni el baseline para fabricar un aprobado.

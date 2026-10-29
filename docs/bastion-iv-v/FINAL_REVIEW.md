@@ -46,3 +46,5 @@ Los fallos y métodos descartados están documentados en `MIGRATION.md`: etiquet
 No se han publicado APK/WebGL ni gastado créditos. Esta validación no mide FPS, memoria o temperatura en un móvil físico, ni certifica una nota artística global del mundo. Los originales y editables de las entregas anteriores siguen conservados.
 
 Artefacto nativo completo: `12913871649`, SHA-256 `0d2ceb5f8a24f51ebfc791be5d66a6f698e312645d099a618c028e729a0b7433`. La certificación general adicional se consulta en los checks de PR129 y debe pasar antes de integrar. El snapshot de ejecución ya no mantiene una reserva pesada al concluir; el mismo propietario conserva la escritura hasta el cierre.
+
+La certificación general distingue los destinos opacos de la ciudad expuesta. Comprueba geometría real de pantalla completa, opacidad, bloqueo y controles activos para construcción/ascenso/entrenamiento/marchas; conserva las exigencias originales de encuadre y área de ciudad libre para las vistas de mundo pertinentes. Ver el diagnóstico del control40911481759 en `MIGRATION.md`.
