@@ -1,0 +1,33 @@
+name: '[ELDORIA] staged Bastion I-V parity domain validation'
+on:
+  push:
+    branches:
+      - fix/bastion-i-v-web-parity-camera-contract-20261029
+    paths:
+      - '.github/workflows/bastion-i-v-parity-staged.yml'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/**'
+      - 'Unity/Assets/Eldoria/Scripts/Application/**'
+      - 'tools/bastion-iii/**'
+      - 'tools/bastion-iv-v/**'
+permissions:
+  contents: read
+jobs:
+  parity-domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/bastion-iv-v
+            tools/bastion-iii
+            Unity/Assets/Eldoria/Scripts
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Verify core and IV-V compiled domain
+        run: dotnet run --project tools/bastion-iv-v/DomainProbe.csproj
+      - name: Verify Bastion III domain and persistence
+        run: dotnet run --project tools/bastion-iii/DomainProbe.csproj
