@@ -2,7 +2,7 @@ name: '[ELDORIA] Bastion IV V integrated native verification'
 on:
   workflow_dispatch:
   push:
-    branches: [feature/bastion-iv-v-migration-20261029]
+    branches: [feature/bastion-iv-v-migration-20261029, feature/eldoria-web-parity-camera-20261029]
     paths: ['tools/bastion-iv-v/native-request.json']
 permissions:
   contents: write
@@ -180,6 +180,7 @@ jobs:
             bastion-iv-v-source/docs/bastion-iv-v/native/UI-ownership.log
           if-no-files-found: error
       - name: Validate IV V persistence and capture real UI and art
+        id: proof
         if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
         shell: powershell
         working-directory: bastion-iv-v-source
@@ -203,7 +204,7 @@ jobs:
             bastion-iv-v-source/docs/bastion-iv-v/native/runtime-proof.log
           if-no-files-found: error
       - name: Run actual Unity EditMode suite
-        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' && steps.proof.outcome == 'success' }}
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |
@@ -218,7 +219,7 @@ jobs:
           [xml]$results=Get-Content $xml
           if($results.'test-run'.result -ne 'Passed'){throw 'Unity EditMode tests failed'}
       - name: Run actual Unity PlayMode suite
-        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' && steps.proof.outcome == 'success' }}
         # Fail boundedly instead of occupying the sole Windows Unity runner
         # until the entire job's 60-minute timeout if the editor deadlocks.
         timeout-minutes: 18
@@ -236,7 +237,7 @@ jobs:
           [xml]$results=Get-Content $xml
           if($results.'test-run'.result -ne 'Passed'){throw 'Unity PlayMode tests failed'}
       - name: Validate complete integrated I-II journey
-        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' && steps.proof.outcome == 'success' }}
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |

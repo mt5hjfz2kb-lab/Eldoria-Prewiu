@@ -12,9 +12,7 @@ namespace Eldoria.World4XPrototype
     public sealed class ZoneOneStrategicCamera : MonoBehaviour
     {
         public Vector3 target = new Vector3(-18, 0, 30);
-        // Orthographic world scales: larger means farther out. Unrelated to Valoria city zoom.
-        public const float NearLandscape = 36f, NearPortrait = 64f, Regional = 110f, Panoramic = 280f;
-        public float localZoom = NearLandscape, regionalZoom = Regional, globalZoom = Panoramic;
+        public float localZoom = 32, regionalZoom = 60, globalZoom = 110;
         [Range(35, 80)] public float tilt = 55;
         [Range(-180, 180)] public float heading;
         public bool AllowWholeRegionOverview;

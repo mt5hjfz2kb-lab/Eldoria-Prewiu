@@ -3,7 +3,8 @@
 import fs from 'node:fs';
 const [snapshotFile,liveFile]=process.argv.slice(2);
 const id='valoria-master-plan-layered-construction-20261016';
-const branch='feature/bastion-iv-v-migration-20261029';
+const branch=process.env.GITHUB_REF_NAME;
+if(!['feature/bastion-iv-v-migration-20261029','feature/eldoria-web-parity-camera-20261029'].includes(branch))throw Error('Unapproved verification branch');
 const resource='windows-runner-heavy';
 function claim(file){
  const registry=JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,''));

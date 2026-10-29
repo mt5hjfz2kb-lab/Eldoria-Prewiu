@@ -8,6 +8,7 @@ using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
 using Eldoria.UI.RoyalGold.V2;
 using Eldoria.World4XPrototype;
+using Eldoria.World4XCanon;
 using UnityEngine;
 using UnityEngine.UI;
 using Object=UnityEngine.Object;
@@ -94,12 +95,10 @@ namespace Eldoria.ReferenceClean {
    city.Presenter.SceneHost=this;city.Presenter.ExternalSelection=Select;
    city.Presenter.ExternalPointerBlocked=RoyalInputGate.Blocks;
    WorldNavigation.enabled=false;WorldCamera.enabled=false;WorldRoot.SetActive(false);
-   // Three continuous WORLD scales are independent of the city camera.
-   // Entire Region 1 is a real third-world preset, not a Valoria city camera mode.
-   WorldNavigation.AllowWholeRegionOverview=true;
-   WorldNavigation.localZoom=ZoneOneStrategicCamera.NearLandscape;
-   WorldNavigation.regionalZoom=ZoneOneStrategicCamera.Regional;
-   WorldNavigation.globalZoom=ZoneOneStrategicCamera.Panoramic;
+   // Use the canonical world scale from the first frame. The landscape adapter
+   // owns whole-region coverage from actual terrain bounds, not a fixed 280 preset.
+   WorldNavigation.localZoom=RegionOneCanonicalLandscape.NearZoom(WorldCamera.aspect);
+   WorldNavigation.regionalZoom=RegionOneCanonicalLandscape.RegionalZoom(WorldCamera.aspect);
    gameObject.AddComponent<BastionIIIWorldPresentation>().Initialize(this);
    gameObject.AddComponent<BastionIVVWorldPresentation>().Initialize(this);
    targets=Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None);
@@ -182,7 +181,7 @@ namespace Eldoria.ReferenceClean {
     // strategic zoom. One existing camera, one WorldRoot and one persistent gateway.
     // Match the canonical portrait near scale before the same-frame render,
     // rather than creating a visible 36 -> 64 camera jump after entering.
-    WorldNavigation.localZoom=WorldCamera.aspect<.8f?ZoneOneStrategicCamera.NearPortrait:ZoneOneStrategicCamera.NearLandscape;
+    WorldNavigation.localZoom=RegionOneCanonicalLandscape.NearZoom(WorldCamera.aspect);
     WorldNavigation.EnterStrategicView(WorldHome);
     WorldNavigation.SetZoomLevel(2,true);
     // Strategic bounds may clamp the anchor before changing presets;

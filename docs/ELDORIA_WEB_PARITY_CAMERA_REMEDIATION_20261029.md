@@ -6,9 +6,9 @@ Este PR es una **corrección aislada no fusionada**. No modifica el editor de la
 
 ## Cámaras: contrato de producto
 - CIUDAD: cámara `city.PlayerCamera`, `city.Controls`, encuadre/cota de Valoria y gestos de ciudad. No es una vista del mapa 4X.
-- MUNDO: cámara `WorldCamera` y controlador `ZoneOneStrategicCamera`. Una única geografía para los tres acercamientos: cercana 36 horizontal / 64 vertical, regional 110, panorámica 280.
+- MUNDO: cámara `WorldCamera` y controlador `ZoneOneStrategicCamera`. Una única geografía: cercana 36 horizontal / 64 vertical; regional max(280, 400/aspecto); panorámica calculada con los límites reales del terreno. RegionOneCanonicalLandscape conserva la autoridad sobre escala y LOD.
 - Al cambiar de ciudad a mundo, se deshabilita la cámara inactiva; el zoom del mundo no debe llamar a `city.Controls.ZoomBy`. La ciudad conserva su pose; regresar restablece la pose de ciudad, no la panorámica.
-- Fallo original real: `WorldNavigation.regionalZoom=32` mientras `localZoom=36/64`, invirtiendo orden. Corregido con constantes y panorama explícita. Prueba editmode de orden y preseteado real.
+- El valor inicial regional 32 era incoherente, pero el adaptador del paisaje ya lo corregía en runtime. La inicialización ahora reutiliza los cálculos canónicos: no imponer 110/280 sobre una región mayor. La prueba nativa verifica orden, zoom continuo y aislamiento de la ciudad en ambas orientaciones.
 
 ## Paridad de misiones y economía
 - Se completan los registros idempotentes de `c3-bastion`, `chapter-3`, `c4-*`, `chapter-4`, `c5-stoneworks`, `c5-stone`, `c5-army` y `c5-rare`, conservando pagos por una sola vez y perfil del propietario. No forzar `chapter-5` sin Bastión VI.
@@ -23,3 +23,12 @@ Este PR es una **corrección aislada no fusionada**. No modifica el editor de la
 3. Examinar la ruta y combate del Acechador en escena real, y aprobar/encargar su modelo definitivo sin generar ni gastar por defecto.
 4. Revisar informes de combate explicativos/por ronda y composición mixta porcentual en las pantallas aprobadas, sin duplicar la UI ni sustituir diseños del usuario.
 5. Reconciliar `main` y PR #130. **No hacer merge ni publicar hasta que estas comprobaciones y el dueño del workstream estén resueltos.**
+
+## Continuación autorizada de PR132 / issue133
+Titular: codex-parity132-continuation-ab04f62d0b26, workstream canónico, revisión66. Main y PR130 reconciliados sin cambiar la publicación vigente.
+
+- DomainProbe III y IV–V ejecutados con .NET8: PASS. Nuevos casos: backfill exacto +1540 madera/+900 piedra/+1120 alimento/+780 poder; una recompensa de5min; recarga byte-idéntica; T2 no convierte T1, espera150s para5 unidades; acelerador idempotente y exclusivo de tarea.
+- Combate de emboscada contrastado con tres resultados ejecutados en v0220 gameplay.js/hero-army.js: (poder2000 → victoria,193HP,6 rondas), (4200 → victoria,812HP,3), (200 → derrota,0HP,0).
+- Selector visible de duración1/5min en entrenamiento y obras. El Acechador aplica daño de emboscada y reduce18% su defensa; el informe guardado lo explica.
+- Prueba Unity ampliada: botones reales, T2 y guardado, acelerador elegido, cámara ciudad/mundo, tres escalas por orientación, raycast del Acechador, combate y persistencia. Pendiente ejecución/inspección antes de merge.
+- Informe por ronda y editor mixto por porcentajes pertenecen a #131, que sigue preparado/no iniciado; no son condición para rehacer la UI en este parche. Sin aprobación artística del modelo provisional ni certificación de teléfono físico.

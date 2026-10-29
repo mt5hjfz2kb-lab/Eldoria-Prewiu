@@ -42,7 +42,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalText actionLabel, switchLabel, tierLabel;
         Slider slider;
         int selectedCount = 10;
-        int selectedTier = 1;
+        int selectedTier = 1, speedMinutes = 1;
         int maxCount;
         float nextRefresh, lastWidth = -1, lastHeight = -1, submitAfter;
         string notice = "";
@@ -175,13 +175,14 @@ namespace Eldoria.UI.RoyalGold.V2
             statusArtwork.MarchTheme = destination == Destination.March;
             statusArtwork.SetVerticesDirty();
             submitAfter = 0f;
-            selectedCount = destination == Destination.Training
-                ? Mathf.Min(SliceRules.RecruitArchers, Math.Max(1, SliceRules.MaxAffordableArchers(s)))
-                : Mathf.Min(Math.Max(1, s.Available.ArcherT1),
-                    s.MarchConfigured ? Mathf.Max(1, s.PreparedTroops.ArcherT1) : Math.Max(1, s.Available.ArcherT1));
             selectedHero=s.MarchConfigured?s.PreparedHeroId:"aldric";
             selectedTier=destination==Destination.Training&&s.RecruitmentCompletesUtcTicks>0&&s.PendingRecruitTier==2?2:
                 destination==Destination.March&&s.MarchConfigured&&s.PreparedTroops.ArcherT2>0&&s.PreparedTroops.ArcherT1==0?2:1;
+            int available=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
+            int prepared=selectedTier==2?s.PreparedTroops.ArcherT2:s.PreparedTroops.ArcherT1;
+            selectedCount=destination==Destination.Training
+                ?Mathf.Min(SliceRules.RecruitArchers,Math.Max(1,SliceRules.MaxAffordableArchers(s)))
+                :Mathf.Min(Math.Max(1,available),s.MarchConfigured?Mathf.Max(1,prepared):Math.Max(1,available));
             notice = "";
             root.gameObject.SetActive(true);
             root.SetAsLastSibling();
@@ -300,7 +301,7 @@ namespace Eldoria.UI.RoyalGold.V2
             heading = Text("Destination title",header,27,Gold,true);
             subheading = Text("Royal gold description",header,15,Muted);
             unitTitle = Text("Unit or hero title",left,26,Ivory,true);
-            tierButton=Button("Select archer tier",left,"ARQUEROS T1",()=>{selectedTier=selectedTier==1?2:1;Refresh();},false,out tierLabel);
+            tierButton=Button("Select archer tier",left,"ARQUEROS T1",()=>{if(CurrentDestination==Destination.Training&&gateway.Snapshot().RecruitmentCompletesUtcTicks>0)speedMinutes=speedMinutes==1?5:1;else selectedTier=selectedTier==1?2:1;Refresh();},false,out tierLabel);
             unitDetail = Text("Unit profile and composition",left,18,Muted);
             quantityRow = Rect("Quantity controls",left);
             minus = Button("Reduce quantity",quantityRow,"−",()=>SetQuantity(selectedCount-1),false,out _);
@@ -378,8 +379,9 @@ namespace Eldoria.UI.RoyalGold.V2
             bool tier2Unlocked=s.BarracksLevel>=4 && (training || s.Available.ArcherT2>0);
             if(!tier2Unlocked && selectedTier==2)selectedTier=1;
             if(trainingActive)selectedTier=s.PendingRecruitTier==2?2:1;
-            tierButton.gameObject.SetActive(tier2Unlocked && !trainingActive);
-            tierLabel.Put("ARQUEROS T"+selectedTier+" · CAMBIAR");
+            int minutes=SpeedMinutes(s);
+            tierButton.gameObject.SetActive(trainingActive?s.SpeedupOneMinute>0&&s.SpeedupFiveMinutes>0:tier2Unlocked);
+            tierLabel.Put(trainingActive?minutes+" MIN · CAMBIAR":"ARQUEROS T"+selectedTier+" · CAMBIAR");
             int selectedAvailable=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
             maxCount=training?Mathf.Min(500,SliceRules.MaxAffordableArchers(s)):
                 Mathf.Min(selectedAvailable,MarchCapacityRules.Capacity(s,selectedHero));
@@ -439,8 +441,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 status.Put("DISPONIBLES T"+selectedTier+"  "+selectedAvailable+
                     "\nENTRENANDO T"+(busy?s.PendingRecruitTier:selectedTier)+"  "+s.PendingRecruitArchers+
                     (busy?"\n\nCUENTA ATRÁS  "+Clock(leftSeconds):"\n\nSin entrenamiento activo"));
-                actionLabel.Put(busy?(s.SpeedupFiveMinutes>0?"ACELERAR · 5 MIN ("+s.SpeedupFiveMinutes+")":
-                    s.SpeedupOneMinute>0?"ACELERAR · 1 MIN ("+s.SpeedupOneMinute+")":
+                actionLabel.Put(busy?((s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0)?"ACELERAR · "+minutes+" MIN ("+(minutes==5?s.SpeedupFiveMinutes:s.SpeedupOneMinute)+")":
                     "ENTRENANDO T"+s.PendingRecruitTier+" · "+Clock(leftSeconds)):
                     "ENTRENAR "+selectedCount+" ARQUEROS T"+selectedTier);
                 action.interactable=(busy?(s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0):maxCount>0)&&Time.unscaledTime>=submitAfter;
@@ -472,6 +473,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(CurrentDestination==Destination.Training){root.gameObject.SetActive(false);Hud.SelectBuilding("upgrade-barracks");}
             else {selectedHero=selectedHero=="aldric"?"lyra":selectedHero=="lyra"?"aldric+lyra":"aldric";Refresh();}
         }
+        int SpeedMinutes(PlayerState s){if(speedMinutes==5&&s.SpeedupFiveMinutes==0)speedMinutes=1;if(speedMinutes==1&&s.SpeedupOneMinute==0)speedMinutes=5;return speedMinutes;}
         void Confirm()
         {
             if(!IsOpen||Time.unscaledTime<submitAfter)return;
@@ -481,7 +483,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 if(s.SpeedupFiveMinutes<=0&&s.SpeedupOneMinute<=0)return;
                 submitAfter=Time.unscaledTime+.45f;
                 var accelerated=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
-                    s.PlayerId,"UseSpeedup",s.SpeedupFiveMinutes>0?"training:5m":"training:1m",s.Revision));
+                    s.PlayerId,"UseSpeedup",SpeedMinutes(s)==5?"training:5m":"training:1m",s.Revision));
                 notice=accelerated.Message;onCommand?.Invoke();Hud.Refresh();Refresh();return;
             }
             if(training&&selectedCount>SliceRules.MaxAffordableArchers(s))return;

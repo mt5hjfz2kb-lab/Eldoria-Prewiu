@@ -483,6 +483,31 @@ jobs:
             return
           }
           if($req.stage -eq 'web_playtest'){
+            # Reuse the package-safe III outputs produced by the signed Android
+            # builder in this same isolated cache. Recover them explicitly if the
+            # cache is absent; never ship a WebGL player with missing Resources.
+            $artRoot='Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII'
+            $required=@("$artRoot/PrivateFissure.glb")
+            foreach($item in @('Granary','StockCrate','StockSack','StockBarrel','StoneWorkshop')){$required+="$artRoot/Granary/$item.prefab"}
+            $artProof='docs/bastion-iii/native/granary-bake.json'
+            $artReady=@($required|Where-Object {-not(Test-Path $_)}).Count -eq 0
+            if($artReady -and (Test-Path $artProof)){$artReady=(Get-Content $artProof -Raw|ConvertFrom-Json).legacy_source_exclusion_safe -eq $true}else{$artReady=$false}
+            if(-not $artReady){
+              $webBlender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+              if(-not $webBlender){$webBlender=Get-ChildItem 'C:/Program Files/Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue|Sort-Object FullName -Descending|Select-Object -First 1 -ExpandProperty FullName}
+              if(-not $webBlender){throw 'Existing Blender unavailable for missing III build outputs'}
+              & $webBlender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+              if($LASTEXITCODE){throw 'Existing III fissure recovery failed'}
+              $artLog=Join-Path $env:RUNNER_TEMP 'valoria-web-buildsafe-art.log'
+              $artArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',("$env:GITHUB_WORKSPACE/valoria-layered-source/Unity"),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',$artLog)
+              $artProcess=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $artArgs -PassThru
+              $artExited=$artProcess.WaitForExit(1200000)
+              if(Test-Path $artLog){Copy-Item $artLog docs/evidence/valoria-reference-clean/web-buildsafe-art.log -Force}
+              if(-not $artExited){& taskkill.exe /PID $artProcess.Id /T /F|Out-Null;throw 'Own III build-output recovery timed out; log preserved'}
+              if($artProcess.ExitCode -ne 0){throw 'Existing III package-safe art recovery failed'}
+            }
+            if(@($required|Where-Object {-not(Test-Path $_)}).Count){throw 'Missing original III build outputs; refuse incomplete WebGL package'}
+            Write-Host 'ELDORIA_WEB_ORIGINAL_III_PACKAGE_SAFE_RESOURCES_PRESENT'
             $integrationLog=Join-Path $env:RUNNER_TEMP 'valoria-web-integration-preflight.log'
             # Validate the committed integrated scene; never rebuild the historical assembly before WebGL.
             $integrationArgs=@('-batchmode','-force-d3d11','-buildTarget','Win64','-projectPath',"$env:GITHUB_WORKSPACE/valoria-layered-source/Unity",'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent','-logFile',$integrationLog)

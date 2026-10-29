@@ -52,11 +52,82 @@ namespace Eldoria.ReferenceClean.Editor {
    var rs=art.WorldModel.GetComponentsInChildren<Renderer>();var bounds=rs[0].bounds;foreach(var r in rs)bounds.Encapsulate(r.bounds);
    Physics.SyncTransforms();var screen=h.WorldCamera.WorldToScreenPoint(bounds.center);
    var hits=Physics.RaycastAll(h.WorldCamera.ScreenPointToRay(screen),2000,1<<8,QueryTriggerInteraction.Collide);
+   var actual=h.FindTarget("valoria-map-city");var collider=actual?actual.GetComponent<BoxCollider>():null;
+   File.AppendAllText(Ev+"/world-hitbox-diagnostic.txt","zoom="+h.WorldCamera.orthographicSize+" model="+bounds+" ray="+h.WorldCamera.ScreenPointToRay(screen)+" collider="+(collider?collider.bounds.ToString():"missing")+" local="+(collider?collider.size.ToString():"missing")+" active="+(actual&&actual.gameObject.activeInHierarchy)+" enabled="+(collider&&collider.enabled)+" hits="+string.Join(",",hits.Select(x=>x.collider.name))+"\n");
    Need(hits.Any(hit=>{var target=hit.collider.GetComponentInParent<Eldoria.Presentation.WorldHotspot>();return target&&target.Id=="valoria-map-city";}),"actual V city is touchable at zoom "+h.WorldCamera.orthographicSize);
    float ground=h.WorldHome.y+Eldoria.World4XCanon.RegionOneCanonicalLandscape.SampleHeight(bounds.center.x-h.WorldHome.x,bounds.center.z-h.WorldHome.z);
    Need(bounds.min.y>=ground-.02f&&bounds.min.y<=ground+.25f,"V city foundation meets actual regional terrain at zoom "+h.WorldCamera.orthographicSize);
   }
   static IEnumerator Dismiss(ValoriaIntegratedWorld h){for(int i=0;i<40&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}}
+  static void MilitaryUi(ValoriaIntegratedWorld h,string name){
+   foreach(var size in new[]{(1600,900,"horizontal"),(900,1600,"vertical")})
+    ValoriaIntegrationBuild.Capture(h,Ev+"/parity-"+name+"-"+size.Item3+".png",size.Item1,size.Item2,()=>{
+     var root=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().VisibleRoot;
+     foreach(var b in root.GetComponentsInChildren<UnityEngine.UI.Button>()){
+      var r=LocalRect(root,(RectTransform)b.transform);
+      Need(r.xMin>=root.rect.xMin-.5f&&r.xMax<=root.rect.xMax+.5f&&r.yMin>=root.rect.yMin-.5f&&r.yMax<=root.rect.yMax+.5f,"parity military control contained: "+b.name);
+     }
+    });
+  }
+  static IEnumerator MigrationParity(ValoriaIntegratedWorld h){
+   var military=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+   h.Hud.SelectBuilding("barracks");yield return null;
+   Need(military.IsOpen,"real training destination opens for parity");
+   var tier=h.Hud.GetComponentsInChildren<UnityEngine.UI.Button>().Single(x=>x.name=="Select archer tier");
+   Need(tier.interactable,"real T2 selector unlocked by CuartelV");tier.onClick.Invoke();yield return null;
+   Need(military.SelectedTier==2,"real selector chooses T2");MilitaryUi(h,"training-t2");
+   var before=h.City.Gateway.Snapshot();int quantity=military.SelectedQuantity;
+   military.VisibleAction.onClick.Invoke();yield return null;
+   Need(h.City.Gateway.Snapshot().PendingRecruitTier==2,"visible training button starts authoritative T2");
+   Step(h,1);yield return new WaitForSecondsRealtime(.5f);
+   MilitaryUi(h,"training-speedup-choice");
+   // Both rewards exist. Choose the one-minute item explicitly rather than silently wasting5m.
+   var label=tier.GetComponentInChildren<UnityEngine.UI.Text>();
+   if(!label.text.StartsWith("1 MIN",StringComparison.Ordinal)){tier.onClick.Invoke();yield return null;}
+   Need(label.text.StartsWith("1 MIN",StringComparison.Ordinal),"speedup duration is a visible player choice");
+   long deadline=h.City.Gateway.Snapshot().RecruitmentCompletesUtcTicks;
+   int five=h.City.Gateway.Snapshot().SpeedupFiveMinutes;
+   military.VisibleAction.onClick.Invoke();yield return null;
+   Need(h.City.Gateway.Snapshot().RecruitmentCompletesUtcTicks==deadline-TimeSpan.FromMinutes(1).Ticks,"real training UI subtracts exactly1min");
+   Need(h.City.Gateway.Snapshot().SpeedupFiveMinutes==five,"one-minute choice preserves five-minute inventory");
+   Step(h,SliceRules.RecruitSecondsFor(quantity));yield return null;
+   Need(h.City.Gateway.Snapshot().Available.ArcherT2==before.Available.ArcherT2+quantity&&h.City.Gateway.Snapshot().Available.ArcherT1==before.Available.ArcherT1,"actual T2 completion preserves T1");
+   military.Close();h.City.ReloadForProbe();yield return null;
+   Need(h.City.Gateway.Snapshot().Available.ArcherT2==before.Available.ArcherT2+quantity,"T2 actual FileStateStore reload");
+   h.City.Home();yield return null;
+   var city=h.City.PlayerCamera;var cityPos=city.transform.position;var cityRot=city.transform.rotation;float citySize=city.orthographicSize;
+   Need(h.TrySetWorld(true),"parity enter world");yield return new WaitForSecondsRealtime(.3f);
+   Need(h.WorldCamera!=city&&h.WorldCamera.enabled&&!city.enabled,"distinct cameras with only world active");
+   var landscape=Object.FindFirstObjectByType<Eldoria.World4XCanon.RegionOneCanonicalLandscape>();
+   var node=h.FindTarget("ash-stalker-valoria");Need(node&&node.gameObject.activeInHierarchy,"reachable authored rare encounter visible");
+   var anchor=node.transform.position;float aspect=h.WorldCamera.aspect;
+   foreach(var size in new[]{(1600,900,"horizontal"),(900,1600,"vertical")}){
+    h.WorldCamera.aspect=(float)size.Item1/size.Item2;landscape.RefreshForCapture();
+    Need(h.WorldNavigation.localZoom<h.WorldNavigation.regionalZoom&&h.WorldNavigation.regionalZoom<h.WorldNavigation.globalZoom,"ordered actual geography presets "+size.Item3);
+    float previous=0;
+    foreach(int preset in new[]{2,1,0}){
+     h.WorldNavigation.SetZoomLevel(preset,true);landscape.RefreshForCapture();
+     Need(h.WorldCamera.orthographicSize>previous,"actual world zoom monotonically increases "+size.Item3+":"+preset);previous=h.WorldCamera.orthographicSize;
+     Need(node.transform.position==anchor,"same geographic rare node at every scale");
+     Need(city.transform.position==cityPos&&city.transform.rotation==cityRot&&Mathf.Abs(city.orthographicSize-citySize)<.001f,"world presets never change city pose");
+     ValoriaReferenceCleanBuilder.Capture(h.WorldCamera,Ev+"/parity-world-"+size.Item3+"-preset"+preset+".png",size.Item1,size.Item2);
+    }
+    h.WorldNavigation.SetZoomLevel(1,true);float regional=h.WorldCamera.orthographicSize;
+    h.WorldNavigation.ZoomAt(new Vector2(h.WorldCamera.pixelWidth*.5f,h.WorldCamera.pixelHeight*.5f),.9f,true);
+    Need(h.WorldCamera.orthographicSize<regional&&h.WorldCamera.orthographicSize>h.WorldNavigation.localZoom,"continuous world zoom between presets "+size.Item3);
+   }
+   h.WorldCamera.aspect=aspect;landscape.RefreshForCapture();h.WorldNavigation.SetZoomLevel(2,true);h.Focus(node.gameObject);yield return null;
+   Physics.SyncTransforms();var point=h.WorldCamera.WorldToScreenPoint(node.transform.position);
+   Need(Physics.RaycastAll(h.WorldCamera.ScreenPointToRay(point),2000,1<<8,QueryTriggerInteraction.Collide).Any(x=>x.collider.GetComponentInParent<Eldoria.Presentation.WorldHotspot>()==node),"rare real world raycast selects encounter");
+   Shot(h,"parity-rare-before-battle");Do(h,"Fight","ash-stalker-valoria");Step(h,120);yield return Dismiss(h);Step(h,0);
+   Need(h.City.Gateway.Snapshot().ChapterThree.AshStalkerDefeated,"actual routed rare victory");
+   Need(h.City.Gateway.Snapshot().ChapterProgress.GrantedRewards.Contains("c5-rare"),"rare mission ledger paid once");
+   Need(!node.gameObject.activeInHierarchy,"defeated unique rare hides after victory");
+   Need(h.TrySetWorld(false),"parity returns to city");yield return null;
+   Need(city.enabled&&!h.WorldCamera.enabled&&Vector3.Distance(city.transform.position,cityPos)<.01f&&Mathf.Abs(city.orthographicSize-citySize)<.01f,"return restores city camera only");
+   h.City.ReloadForProbe();yield return null;Step(h,0);
+   Need(h.City.Gateway.Snapshot().ChapterThree.AshStalkerDefeated,"rare victory persisted through FileStateStore reload");
+  }
   static IEnumerator Probe(ValoriaIntegratedWorld h){
    for(int i=0;i<240&&!h.Ready;i++)yield return null;Need(h.Ready,"canonical scene ready");
    var art=h.GetComponent<BastionIVVWorldPresentation>();Need(art!=null,"real tier presenter");
@@ -88,13 +159,23 @@ namespace Eldoria.ReferenceClean.Editor {
    VisibleDelta("city-III","city-IV");VisibleDelta("city-IV","city-V-keep-only");
    h.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.3f);Step(h,0);h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;Shot(h,"city-V-complete");
    foreach(string id in new[]{"bastion","sawmill","barracks","granary","stoneworks"})Need(art.ModelFor(id).activeInHierarchy,id+" V survives save reload");
-   foreach(int yaw in new[]{90,180,270}){art.RotateCityForReview(90);Shot(h,"city-V-orientation-"+yaw);}art.RotateCityForReview(90);
+   // Capture actual runtime per-model headings and close-ups before any diagnostic extra rotation.
+   var headings=new List<string>();
+   foreach(string id in new[]{"bastion","sawmill","barracks","granary","stoneworks"}){
+    var model=art.ModelFor(id);var renders=model.GetComponentsInChildren<Renderer>();var bounds=renders[0].bounds;foreach(var renderer in renders)bounds.Encapsulate(renderer.bounds);
+    headings.Add(id+" yaw="+model.transform.eulerAngles.y+" center="+bounds.center+" size="+bounds.size);
+    h.City.PlayerCamera.transform.position=bounds.center+new Vector3(12,21,-34);h.City.PlayerCamera.transform.LookAt(bounds.center);h.City.PlayerCamera.orthographicSize=Mathf.Max(bounds.size.x,bounds.size.z)*.7f;Shot(h,"facade-"+id);
+   }
+   File.WriteAllLines(Ev+"/actual-runtime-headings.txt",headings);
+   h.City.PlayerCamera.transform.position=new Vector3(0,100,18);h.City.PlayerCamera.transform.rotation=Quaternion.Euler(90,0,0);h.City.PlayerCamera.orthographicSize=40;Shot(h,"city-V-plan-alignment");
+   h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;
    h.Hud.SelectBuilding("bastion");yield return null;
    var rankings=h.Hud.GetComponent<RoyalGoldV3RankingScreen>();rankings.Open();yield return null;Need(rankings.IsOpen,"quarry unlocks independent simulated ranking screen");Ui(h,"rank-power");
    foreach(var tab in new[]{"CORRUPTOS","RELIQUIAS"}){var button=h.Hud.GetComponentsInChildren<UnityEngine.UI.Button>(true).Single(x=>x.gameObject.name==tab);button.onClick.Invoke();yield return null;Ui(h,"rank-"+tab.ToLowerInvariant());}rankings.Close();screen.Close();
    Need(h.TrySetWorld(true),"world navigation survives IVV");yield return new WaitForSecondsRealtime(.3f);h.WorldNavigation.RestoreView(h.WorldHome,32);yield return null;Shot(h,"world-city-V");VerifyWorldCityTouch(h,art);Need(art.WorldModel.activeInHierarchy,"world V active at canonical city");foreach(var renderer in art.WorldModel.GetComponentsInChildren<Renderer>())Need((h.WorldCamera.cullingMask&(1<<renderer.gameObject.layer))!=0,"world camera includes V renderer layer");h.WorldNavigation.RestoreView(h.WorldHome,280);yield return null;Shot(h,"world-panorama-V");VerifyWorldCityTouch(h,art);h.WorldNavigation.RestoreView(h.WorldHome,32);yield return null;
    var vein=h.City.Gateway.Snapshot().WorldResourceLocations.First(x=>x.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal)&&x.Remaining>0);Do(h,"Gather",vein.TargetId);Step(h,120);yield return new WaitForSecondsRealtime(.4f);Need(h.City.Gateway.Snapshot().ChapterThree.ExtractionOddity,"regional extraction triggers persistent V narrative");yield return Dismiss(h);
    Need(h.TrySetWorld(false),"return to city");
+   var parity=MigrationParity(h);while(parity.MoveNext())yield return parity.Current;
    var earlier=h.City.Gateway.Snapshot();earlier.BastionLevel=3;earlier.SawmillLevel=2;earlier.BarracksLevel=2;earlier.ChapterThree.GranaryLevel=2;earlier.ChapterThree.StoneworksLevel=0;new FileStateStore(h.City.SaveFile).Save(earlier);h.City.ReloadForProbe();yield return null;Step(h,0);
    Need(!art.WorldModel.activeSelf,"loading earlier progress hides world V");foreach(string id in new[]{"bastion","sawmill","barracks","granary","stoneworks"})Need(!art.ModelFor(id).activeInHierarchy,"loading earlier progress hides "+id+" V");
    File.WriteAllLines(Ev+"/functional-checks.txt",checks);Debug.Log("BASTION_IV_V_NATIVE_PASS_VISUAL_REVIEW_REQUIRED");EditorApplication.Exit(0);

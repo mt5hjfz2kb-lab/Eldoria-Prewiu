@@ -917,14 +917,13 @@ namespace Eldoria.Application
             if(m.TargetId=="ash-stalker-valoria")
             {
                 var stats=SliceRules.Expedition(m.Troops,m.HeroId);
-                var report=SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0));
+                var report=SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0),ambush:true);
                 if(report.Won)c.AshStalkerDefeated=true;
                 state.LastBattleReport=new BattleReportState{
                     TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
                     PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
                     Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
-                    Reason=report.Won?"La formación resiste la emboscada y rompe la defensa del Acechador de Ceniza.":
-                        "El Acechador resiste. Refuerza tu marcha y vuelve a intentarlo."
+                    Reason=report.Reason
                 };
                 state.LastBattleReason=state.LastBattleReport.Reason;
                 return;

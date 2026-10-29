@@ -50,7 +50,9 @@ namespace Eldoria.Tests {
    int initialT1=g.Snapshot().Available.ArcherT1;
    Assert.That(Do(g,"Recruit","archer:t2:5").Ok,Is.True);
    Assert.That(g.Snapshot().PendingRecruitTier,Is.EqualTo(2));
-   c.Add(20);g=new LocalGateway(c,st);
+   c.Add(SliceRules.RecruitSecondsFor(5)-1);g=new LocalGateway(c,st);
+   Assert.That(g.Snapshot().Available.ArcherT2,Is.Zero);
+   c.Add(1);g=new LocalGateway(c,st);
    Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(initialT1));
    Assert.That(g.Snapshot().Available.ArcherT2,Is.EqualTo(5));
    Assert.That(g.Snapshot().PendingRecruitTier,Is.EqualTo(1));

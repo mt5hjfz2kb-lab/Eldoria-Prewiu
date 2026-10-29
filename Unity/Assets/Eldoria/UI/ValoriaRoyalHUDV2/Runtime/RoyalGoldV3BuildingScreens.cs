@@ -12,7 +12,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   RoyalHUD hud;ICommandGateway gateway;Func<string,RoyalBuilding> read;Action refreshed;
   RectTransform root,header,art,detail,footer,choices,operationProgress,operationFill;RawImage portrait;
   RoyalText title,kicker,description,costs,status,notice,artCaption,actionLabel;
-  RoyalButton action,ranking,training,back;RoyalGoldV3RankingScreen rankings;readonly RoyalButton[] priority=new RoyalButton[3];readonly RoyalButton[] tabs=new RoyalButton[5];
+  RoyalButton action,ranking,training,back,speedChoice;int speedMinutes=1;RoyalText speedLabel;RoyalGoldV3RankingScreen rankings;readonly RoyalButton[] priority=new RoyalButton[3];readonly RoyalButton[] tabs=new RoyalButton[5];
   string selected="",message="";float refresh,lastW,lastH;Rect lastSafe;bool suspended;
   public bool IsOpen=>root&&root.gameObject.activeSelf;
   public RectTransform VisibleRoot=>IsOpen?root:null;
@@ -81,14 +81,16 @@ namespace Eldoria.UI.RoyalGold.V2 {
    string[] values={"production","defense","civil"};for(int i=0;i<3;i++){int n=i;priority[i]=Button("Choose "+values[i],choices,choiceNames[i],()=>Choose(values[n]),out _);}
    notice=Text("Command feedback",footer,13,Gold);
    action=Button("Building action",footer,"MEJORAR",Submit,out actionLabel);
+   speedChoice=Button("Choose speedup duration",footer,"1 MIN",()=>{speedMinutes=speedMinutes==1?5:1;Refresh();},out speedLabel);
    back=Button("Back to city",footer,"VOLVER A VALORIA",Close,out _);back.name="Back";root.gameObject.SetActive(false);
   }
   void Choose(string value){var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,"ChooseDevelopment",value,s.Revision));message=result.Ok?"Prioridad guardada. Valoria recibe los recursos elegidos.":result.Message;refreshed?.Invoke();SynchronizeLayout();}
+  int SpeedMinutes(PlayerState s){if(speedMinutes==5&&s.SpeedupFiveMinutes==0)speedMinutes=1;if(speedMinutes==1&&s.SpeedupOneMinute==0)speedMinutes=5;return speedMinutes;}
   void Submit(){
    var b=read(selected);if(b==null)return;
    var s=gateway.Snapshot();string kind,target;
    if(b.OperationActive&&(s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0)){
-    kind="UseSpeedup";target=(selected=="bastion"?"bastion":"building")+":"+(s.SpeedupFiveMinutes>0?"5m":"1m");
+    kind="UseSpeedup";target=(selected=="bastion"?"bastion":"building")+":"+(SpeedMinutes(s)==5?"5m":"1m");
    }else{
     if(b.Action==null||!b.Action.Enabled)return;kind=b.Action.Kind;target=b.Action.Target;
    }
@@ -108,8 +110,10 @@ namespace Eldoria.UI.RoyalGold.V2 {
    operationProgress.gameObject.SetActive(b.OperationActive&&!choosing);operationFill.anchorMax=new Vector2(Mathf.Clamp01(b.Progress),1);
    choices.gameObject.SetActive(choosing);action.gameObject.SetActive(!choosing);action.interactable=b.OperationActive?(s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0):
     b.Action!=null&&b.Action.Enabled;
-   string boost=s.SpeedupFiveMinutes>0?"5 MIN · x"+s.SpeedupFiveMinutes:
-    s.SpeedupOneMinute>0?"1 MIN · x"+s.SpeedupOneMinute:"";
+   int minutes=SpeedMinutes(s),charges=minutes==5?s.SpeedupFiveMinutes:s.SpeedupOneMinute;
+   speedChoice.gameObject.SetActive(b.OperationActive&&s.SpeedupOneMinute>0&&s.SpeedupFiveMinutes>0);
+   speedLabel.Put(minutes+" MIN · CAMBIAR");
+   string boost=charges>0?minutes+" MIN · x"+charges:"";
    actionLabel.Put(b.OperationActive&&boost.Length>0?"ACELERAR · "+boost:
     b.Level>=5&&!b.OperationActive?"NIVEL V COMPLETADO":b.Action?.Label??(b.OperationActive?"EN CURSO":"EDIFICIO OPERATIVO"));notice.Put(message);
    for(int i=0;i<tabs.Length;i++)tabs[i].interactable=Ids[i]!=selected&&(i<3||s.BastionLevel>=(i==3?3:5));
@@ -126,7 +130,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
    Place((RectTransform)description.transform,pad,pad,dw-2*pad,compactCouncil?65:80);Place((RectTransform)costs.transform,pad,compactCouncil?90:112,dw-2*pad,compactCouncil?48:52);Place((RectTransform)status.transform,pad,compactCouncil?150:180,dw-2*pad,compactCouncil?65:95);
    Place(operationProgress,pad,dh-32,dw-2*pad,7);
    Place(choices,pad,dh-224,dw-2*pad,210);for(int i=0;i<3;i++)Place((RectTransform)priority[i].transform,0,i*70,dw-2*pad,64);
-   Place(footer,m,h-foot-bottomInset,w-2*m,foot);Place((RectTransform)notice.transform,0,0,w-2*m,30);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();RebindGraphics(root);
+   Place(footer,m,h-foot-bottomInset,w-2*m,foot);Place((RectTransform)notice.transform,0,0,(w-2*m)*.45f,30);Place((RectTransform)speedChoice.transform,(w-2*m)*.48f,0,(w-2*m)*.52f,28);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();RebindGraphics(root);
   }
  }
 }

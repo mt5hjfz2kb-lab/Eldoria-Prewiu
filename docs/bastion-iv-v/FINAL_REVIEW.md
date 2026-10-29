@@ -1,5 +1,8 @@
 # Bastión IV–V · revisión de migración
 
+> **Corrección posterior obligatoria:** la orientación inicial fue rechazada, incluso en la captura normal. PR130, integrada en5878fca, corrige los cinco giros y el acceso. Native40929047929 SUCCESS:54Edit/73Play,386 IV–V,I–II,76 PNG y raycast32/280. Captura actual SHA256 `c4613c33e11061bf9c34e36b31157c1023913cc171afefd71b27ce0813058e8b`. Web40929055448 intento2 SUCCESS. Ver `ORIENTATION_REWORK.md`; las valoraciones previas de orientación quedan supersedidas.
+
+
 Fuente de ejecución: `1469708a79dfb8c0ef0b0faa4bcb971ce88a4b32`. Escena canónica `Valoria_City_World_UI.unity`, Unity 6000.3.23f1, render D3D11 real. Esta revisión acepta el alcance visual de IV–V. Los checks generales y web también pasaron y PR129 está integrada en main.
 
 ## Resultado visual
@@ -39,7 +42,7 @@ En el mapa, el Bastión V utiliza la misma arquitectura, apoya sobre la altura r
 | PlayMode completo | PASS, 73/73, diagnóstico `12913038382` |
 | Recorrido I–II completo | PASS, ejecución `40906347082` |
 
-La revisión compara las capturas de las orientaciones 0/90/180/270 y retiene 270° para los edificios V. También contrasta las capturas III/IV, los niveles de cada edificio, la gestión en horizontal/vertical y el mundo cercano/panorámico. El cambio de píxeles solo comprueba que hay un cambio visible; no constituye una aprobación artística por sí mismo.
+La selección inicial de 270° uniforme resultó insuficiente y fue rechazada por el propietario. PR130 la sustituye por las orientaciones individuales y el anclaje real descritos en ORIENTATION_REWORK.md. También contrasta las capturas III/IV, los niveles de cada edificio, la gestión en horizontal/vertical y el mundo cercano/panorámico. El cambio de píxeles solo comprueba que hay un cambio visible; no constituye una aprobación artística por sí mismo.
 
 Los fallos y métodos descartados están documentados en `MIGRATION.md`: etiquetas vacías, JPEG importadas como Cubemap, capa de mundo incorrecta, iluminación antigua, orientación y duplicación del HUD heredado. La prueba táctil se ejecuta primero para evitar repetir una suite completa cuando esa interacción ya falla.
 

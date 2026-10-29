@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 296,
+  "revision": 298,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Owner-authorized exact current main WebGL build after PR129. Approved five own-level-V building GLBs have exact SHA256 matches and reviewed native270deg captures. Preserve integrated city/world/UI, independent per-building swaps, saves and approved content. No unmerged troop/mailbox work. Same owner lease; run only after queued signed Android19/current postmerge native job on sole Windows runner. Follow with exact native Windows Chromium QA before restricted itch promotion; budget0.",
+  "checks": "Owner-authorized release continuation. Rebuild exact current main after native297 browser40941917870 proved native WebGL log truncation at8192bytes. Preserve complete opt-in read-only JSON/save via ordered bounded base64 chunks; no command, clock, save setter or gameplay changes. Require native preflight and complete Windows Chromium QA; prior native297 is not certified. Preserve original approved models; exclude PR132.0EUR.",
   "browser_backend": "windows"
 }

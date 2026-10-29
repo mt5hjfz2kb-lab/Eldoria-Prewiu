@@ -446,7 +446,7 @@ namespace Eldoria.Domain
                 if(!(s.ChapterProgress?.GrantedRewards?.Contains("c5-stone")??false))return "b5.stone";
                 int archers=s.Available.Total+s.Wounded.Total;
                 foreach(var m in MarchCapacityRules.WorldMarches(s))if(m!=null&&m.Phase!="idle")archers+=m.Troops.Total;
-                if(archers<60)return "b5.army";
+                if(!(s.ChapterProgress?.GrantedRewards?.Contains("c5-army")??false)&&archers<60)return "b5.army";
                 return c.AshStalkerDefeated?"b5.complete":"b5.rare";
             }
             if(s.BastionLevel==4)return string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)?"b4.priority":"b4.ascend";
@@ -531,21 +531,25 @@ namespace Eldoria.Domain
             return new CombatReport(win, Math.Max(0, playerHp), rounds, reason);
         }
         // Use the same original six-round damage equation, without a second battle engine.
-        public static CombatReport FightCreature(CombatStats player,WorldCreatureStats enemy)
+        public static CombatReport FightCreature(CombatStats player,WorldCreatureStats enemy,bool ambush=false)
         {
             int enemyHp=enemy.Health,playerHp=player.Health,rounds=0;
+            int opening=ambush?Hit(enemy.Attack,player.Defense,enemy.Break,1.42):0;
+            playerHp-=opening;
+            int defense=ambush?(int)Math.Round(enemy.Defense*.82,MidpointRounding.AwayFromZero):enemy.Defense;
             while(rounds<6&&enemyHp>0&&playerHp>0)
             {
-                rounds++;enemyHp-=Hit(player.Attack,enemy.Defense,player.Break);
+                rounds++;enemyHp-=Hit(player.Attack,defense,player.Break,ambush&&rounds==1?1.08:1);
                 if(enemyHp>0)playerHp-=Hit(enemy.Attack,player.Defense,enemy.Break);
             }
             bool win=enemyHp<=0&&playerHp>0;
             return new CombatReport(win,Math.Max(0,playerHp),rounds,
-                win?"La expedición ha vencido al objetivo de Región 1.":
-                    "La criatura resistió o agotó la Vida de la marcha. Mejora las tropas.");
+                (win?"La expedición ha vencido al objetivo de Región 1.":
+                    "La criatura resistió o agotó la Vida de la marcha. Mejora las tropas.")+
+                (ambush?" Emboscada: "+opening+" daño inicial; después el Acechador pierde un 18 % de Defensa.":""));
         }
-        private static int Hit(int attack, int defense, int brk)
-            => Math.Max(12, (int)Math.Round(attack * (1 + Math.Min(.6, brk / 500.0)) - defense * .48,
+        private static int Hit(int attack, int defense, int brk,double multiplier=1)
+            => Math.Max(12, (int)Math.Round((attack * (1 + Math.Min(.6, brk / 500.0)) - defense * .48)*multiplier,
                 MidpointRounding.AwayFromZero));
     }
 }

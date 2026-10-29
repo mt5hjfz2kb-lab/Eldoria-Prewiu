@@ -42,7 +42,7 @@ namespace Eldoria.UI.RoyalGold {
    switch(phase){case "outbound":label=L(en,"En marcha","Outbound");break;case "gathering":label=L(en,"Recolectando","Gathering");break;case "returning":label=L(en,"Regresando","Returning");break;default:label=L(en,"Marcha disponible","March ready");break;}
    return label+(phase=="idle"?"":" · "+TargetName(s.March.TargetId,en)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,clock.UtcTicks,en));
   }
-  static string TargetName(string id,bool en){switch(id){case "meat-valoria":return L(en,"Reserva de carne","Meat reserve");case "hunt-wolf":return L(en,"Lobos cenicientos","Ash wolves");case "hunt-boar":return L(en,"Jabalí de roca","Rock boar");case "fissure-valoria":return L(en,"Fisura","Fissure");case "forest-valoria":return L(en,"Bosque","Forest");case "quarry-valoria":return L(en,"Cantera","Quarry");case "corrupt-scout":return L(en,"Ruta corrupta","Corrupted route");case "engendro-valoria":return L(en,"Engendro","Spawn");default:return L(en,"Valoria","Valoria");}}
+  static string TargetName(string id,bool en){switch(id){case "ash-stalker-valoria":return L(en,"Acechador de Ceniza","Ash Stalker");case "meat-valoria":return L(en,"Reserva de carne","Meat reserve");case "hunt-wolf":return L(en,"Lobos cenicientos","Ash wolves");case "hunt-boar":return L(en,"Jabalí de roca","Rock boar");case "fissure-valoria":return L(en,"Fisura","Fissure");case "forest-valoria":return L(en,"Bosque","Forest");case "quarry-valoria":return L(en,"Cantera","Quarry");case "corrupt-scout":return L(en,"Ruta corrupta","Corrupted route");case "engendro-valoria":return L(en,"Engendro","Spawn");default:return L(en,"Valoria","Valoria");}}
   static void Mission(PlayerState s,RoyalSnapshot d,bool en){
    var p=s.ChapterProgress; string key=SliceRules.CurrentObjectiveKey(s); int done=0,total=1; string title;
    switch(key){
@@ -96,7 +96,7 @@ namespace Eldoria.UI.RoyalGold {
     d.MissionSteps=new[]{
      new RoyalMissionStep(L(en,"Construye la Cantera","Build the Stoneworks"),s.ChapterThree.StoneworksLevel>0),
      new RoyalMissionStep(L(en,"Mantén 1.200 piedra","Hold 1,200 stone"),p?.GrantedRewards?.Contains("c5-stone")??false),
-     new RoyalMissionStep(L(en,"Alcanza 60 arqueros","Reach 60 archers"),available>=60),
+     new RoyalMissionStep(L(en,"Alcanza 60 arqueros","Reach 60 archers"),(p?.GrantedRewards?.Contains("c5-army")??false)||available>=60),
      new RoyalMissionStep(L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker"),s.ChapterThree.AshStalkerDefeated)};
    }else if(s.BastionLevel==4){
     d.MissionSteps=new[]{
