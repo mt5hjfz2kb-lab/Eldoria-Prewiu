@@ -10,13 +10,16 @@ namespace Eldoria.UI.RoyalGold.V2 {
  /// <summary>Independent city management destinations, projected from the shared session.</summary>
  [DisallowMultipleComponent] public sealed class RoyalGoldV3BuildingScreens:MonoBehaviour {
   RoyalHUD hud;ICommandGateway gateway;Func<string,RoyalBuilding> read;Action refreshed;
-  RectTransform root,header,art,detail,footer,choices;RawImage portrait;
+  RectTransform root,header,art,detail,footer,choices,operationProgress,operationFill;RawImage portrait;
   RoyalText title,kicker,description,costs,status,notice,artCaption,actionLabel;
-  RoyalButton action,ranking,training;RoyalGoldV3RankingScreen rankings;readonly RoyalButton[] priority=new RoyalButton[3];readonly RoyalButton[] tabs=new RoyalButton[5];
+  RoyalButton action,ranking,training,back;RoyalGoldV3RankingScreen rankings;readonly RoyalButton[] priority=new RoyalButton[3];readonly RoyalButton[] tabs=new RoyalButton[5];
   string selected="",message="";float refresh,lastW,lastH;Rect lastSafe;bool suspended;
   public bool IsOpen=>root&&root.gameObject.activeSelf;
   public RectTransform VisibleRoot=>IsOpen?root:null;
-  public Button VisibleAction=>IsOpen?action:null;
+  public RoyalButton VisibleAction=>IsOpen&&action.gameObject.activeInHierarchy?action:null;
+  public RoyalButton VisibleClose=>IsOpen?back:null;
+  public string VisibleOperationText=>IsOpen?costs.text:"";
+  public RectTransform VisibleProgress=>IsOpen&&operationProgress.gameObject.activeSelf?operationFill:null;
   public string BuildingId=>selected;
   static readonly Color Gold=new Color(.89f,.73f,.46f),Ivory=new Color(.95f,.925f,.865f),Muted=new Color(.72f,.79f,.82f);
   static readonly string[] Ids={"bastion","sawmill","upgrade-barracks","granary","stoneworks"};
@@ -61,11 +64,12 @@ namespace Eldoria.UI.RoyalGold.V2 {
    var image=Rect("Approved level V reference",art);image.gameObject.AddComponent<CanvasRenderer>();portrait=image.gameObject.AddComponent<RawImage>();portrait.raycastTarget=false;
    artCaption=Text("Reference caption",art,14,Muted);
    description=Text("Function",detail,23,Ivory);costs=Text("Exact cost",detail,19,Gold);status=Text("Requirements and progress",detail,17,Muted);
+   operationProgress=Panel("Authoritative work progress",detail);operationProgress.GetComponent<Image>().raycastTarget=false;operationFill=Panel("Gateway fill",operationProgress);operationFill.GetComponent<Image>().color=Gold;operationFill.GetComponent<Image>().raycastTarget=false;Stretch(operationFill);
    string[] choiceNames={"PRODUCCIÓN\n+260 madera · +180 piedra","DEFENSA\n+220 piedra · +100 poder","VIDA CIVIL\n+180 madera · +280 comida"};
    string[] values={"production","defense","civil"};for(int i=0;i<3;i++){int n=i;priority[i]=Button("Choose "+values[i],choices,choiceNames[i],()=>Choose(values[n]),out _);}
    notice=Text("Command feedback",footer,15,Gold);
    action=Button("Building action",footer,"MEJORAR",Submit,out actionLabel);
-   var back=Button("Back to city",footer,"VOLVER A VALORIA",Close,out _);back.name="Back";
+   back=Button("Back to city",footer,"VOLVER A VALORIA",Close,out _);back.name="Back";
   }
   void Choose(string value){var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,"ChooseDevelopment",value,s.Revision));message=result.Ok?"Prioridad guardada. Valoria recibe los recursos elegidos.":result.Message;refreshed?.Invoke();Refresh();}
   void Submit(){var b=read(selected);if(b?.Action==null||!b.Action.Enabled)return;var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,b.Action.Kind,b.Action.Target,s.Revision));message=result.Message;refreshed?.Invoke();Refresh();}
@@ -79,18 +83,21 @@ namespace Eldoria.UI.RoyalGold.V2 {
    description.Put(choosing?"EL CONSEJO DE VALORIA\nElige una prioridad de desarrollo.":b.Function);
    costs.Put(choosing?"Una elección permanente. Ninguna opción bloquea edificios.":b.OperationActive?"OBRA EN CURSO · "+b.Time:b.Costs);
    status.Put(choosing?"Producción refuerza los talleres; defensa, las reservas militares; vida civil, el abastecimiento.":b.OperationActive?"Los recursos ya están pagados. La obra continúa al cerrar esta pantalla.":string.IsNullOrEmpty(b.Requirements)?b.Level>=5?"Nivel V alcanzado. Esta arquitectura será la base de futuras mejoras.":"Tiempo de obra: "+b.Time+"\nLa mejora visual se aplica al finalizar.":b.Requirements);
+   operationProgress.gameObject.SetActive(b.OperationActive&&!choosing);operationFill.anchorMax=new Vector2(Mathf.Clamp01(b.Progress),1);
    choices.gameObject.SetActive(choosing);action.gameObject.SetActive(!choosing);action.interactable=b.Action!=null&&b.Action.Enabled&&!b.OperationActive;actionLabel.Put(b.Action?.Label??(b.OperationActive?"EN CURSO":b.Level>=5?"NIVEL V COMPLETADO":"EDIFICIO OPERATIVO"));notice.Put(message);
    for(int i=0;i<tabs.Length;i++)tabs[i].interactable=Ids[i]!=selected&&(i<3||s.BastionLevel>=(i==3?3:5));
   }
-  public void SynchronizeLayout(){if(!root)return;Canvas.ForceUpdateCanvases();float w=root.rect.width,h=root.rect.height;lastW=w;lastH=h;lastSafe=Screen.safeArea;bool wide=w>h;float scale=Mathf.Max(.01f,hud.GetComponent<Canvas>().scaleFactor);float m=Mathf.Max(Mathf.Clamp(w*.025f,12,30),Mathf.Max(lastSafe.xMin,Screen.width-lastSafe.xMax)/scale+12),gap=16,head=wide?130:160,foot=100;
+  public void SynchronizeLayout(){if(!root)return;Canvas.ForceUpdateCanvases();float w=root.rect.width,h=root.rect.height;lastW=w;lastH=h;lastSafe=Screen.safeArea;bool wide=w>h;float scale=Mathf.Max(.01f,hud.GetComponent<Canvas>().scaleFactor);float m=Mathf.Max(Mathf.Clamp(w*.025f,12,30),Mathf.Max(lastSafe.xMin,Screen.width-lastSafe.xMax)/scale+12),gap=16,head=wide?130:180,foot=100;
    float topInset=Mathf.Max(m,(Screen.height-lastSafe.yMax)/scale+12),bottomInset=Mathf.Max(m,lastSafe.yMin/scale+12);
-   Place(header,m,topInset,w-2*m,head);Place((RectTransform)ranking.transform,w-2*m-200,2,200,36);Place((RectTransform)training.transform,w-2*m-390,2,180,36);Place((RectTransform)title.transform,0,0,w-2*m,40);Place((RectTransform)kicker.transform,0,44,w-2*m,28);
-   for(int i=0;i<tabs.Length;i++)Place((RectTransform)tabs[i].transform,i*(w-2*m)/5,80,(w-2*m)/5-5,wide?35:48);
-   float top=topInset+head,body=h-top-foot-bottomInset;float aw=wide?(w-2*m-gap)*.43f:w-2*m;float ah=wide?body:body*.36f;
+   Place(header,m,topInset,w-2*m,head);Place((RectTransform)ranking.transform,wide?w-2*m-200:(w-2*m)*.51f,wide?2:76,wide?200:(w-2*m)*.49f,36);Place((RectTransform)training.transform,wide?w-2*m-390:0,wide?2:76,wide?180:(w-2*m)*.49f,36);Place((RectTransform)title.transform,0,0,w-2*m,40);Place((RectTransform)kicker.transform,0,44,w-2*m,28);
+   for(int i=0;i<tabs.Length;i++)Place((RectTransform)tabs[i].transform,i*(w-2*m)/5,wide?80:124,(w-2*m)/5-5,wide?35:48);
+   float top=topInset+head,body=h-top-foot-bottomInset;float aw=wide?(w-2*m-gap)*.43f:w-2*m;float ah=wide?body:body*.30f;
    Place(art,m,top,aw,ah);Place(detail,wide?m+aw+gap:m,wide?top:top+ah+gap,wide?w-2*m-aw-gap:w-2*m,wide?body:body-ah-gap);
    float side=Mathf.Min(aw-24,ah-65);Place((RectTransform)portrait.transform,(aw-side)*.5f,8,side,side);Place((RectTransform)artCaption.transform,14,ah-52,aw-28,48);
    float dw=detail.rect.width,dh=detail.rect.height,pad=18;
-   Place((RectTransform)description.transform,pad,pad,dw-2*pad,80);Place((RectTransform)costs.transform,pad,112,dw-2*pad,52);Place((RectTransform)status.transform,pad,180,dw-2*pad,95);
+   bool compactCouncil=!wide&&selected=="bastion"&&gateway.Snapshot().BastionLevel>=4&&string.IsNullOrEmpty(gateway.Snapshot().ChapterThree.DevelopmentPriority);
+   Place((RectTransform)description.transform,pad,pad,dw-2*pad,compactCouncil?65:80);Place((RectTransform)costs.transform,pad,compactCouncil?90:112,dw-2*pad,compactCouncil?48:52);Place((RectTransform)status.transform,pad,compactCouncil?150:180,dw-2*pad,compactCouncil?65:95);
+   Place(operationProgress,pad,dh-32,dw-2*pad,7);
    Place(choices,pad,dh-166,dw-2*pad,156);for(int i=0;i<3;i++)Place((RectTransform)priority[i].transform,0,i*51,dw-2*pad,46);
    Place(footer,m,h-foot-bottomInset,w-2*m,foot);Place((RectTransform)notice.transform,0,0,w-2*m,30);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();
   }

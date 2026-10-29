@@ -40,6 +40,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             get
             {
+                var management = GetComponent<RoyalGoldV3BuildingScreens>();if(management&&management.IsOpen)return true;
                 var v3 = GetComponent<RoyalGoldV3ContextHud>();
                 return v3 && v3.IsConfigured ? v3.CloseVisible : buildingVisible;
             }
@@ -50,6 +51,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             get
             {
+                var management = GetComponent<RoyalGoldV3BuildingScreens>();if(management&&management.IsOpen)return management.VisibleAction;
                 var v3 = GetComponent<RoyalGoldV3ContextHud>();
                 return v3 && v3.IsConfigured ? v3.VisibleActionButton : buildingAction;
             }
@@ -58,6 +60,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             get
             {
+                var management = GetComponent<RoyalGoldV3BuildingScreens>();if(management&&management.IsOpen)return management.VisibleClose;
                 var v3 = GetComponent<RoyalGoldV3ContextHud>();
                 return v3 && v3.IsConfigured ? v3.VisibleCloseButton : buildingClose;
             }
@@ -68,6 +71,7 @@ namespace Eldoria.UI.RoyalGold.V2
             get
             {
                 var v3 = GetComponent<RoyalGoldV3ContextHud>();
+                var management = GetComponent<RoyalGoldV3BuildingScreens>();if(management&&management.IsOpen)return management.VisibleAction;
                 // The established WebGL telemetry reads this boolean before
                 // clicking the actual V3 button. Do not silently mask it by
                 // the intentionally hidden V2 building sheet CanvasGroup.

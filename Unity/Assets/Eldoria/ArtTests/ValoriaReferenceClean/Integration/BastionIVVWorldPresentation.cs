@@ -11,6 +11,7 @@ namespace Eldoria.ReferenceClean {
   bool assetsLoaded;Vector3 worldFiveScale,worldFiveFoot;
   readonly Dictionary<string,GameObject> models=new Dictionary<string,GameObject>();
   readonly List<(GameObject model,int level)> stoneStock=new List<(GameObject,int)>();
+  public GameObject WorldModel=>worldFive;
   public GameObject ModelFor(string id)=>models.TryGetValue(id,out var model)?model:null;
   public void Initialize(ValoriaIntegratedWorld h){host=h;cityRoot=new GameObject("Bastion IV V architecture");cityRoot.transform.SetParent(transform,false);
    Apply();

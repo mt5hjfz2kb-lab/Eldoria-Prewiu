@@ -139,6 +139,7 @@ jobs:
           if($LASTEXITCODE){throw 'Frontier authoring failed'}
           if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb')){throw 'Expected fissure artifact missing'}
       - name: Prepare editor and bake original Granary
+        id: bake
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |
@@ -182,6 +183,7 @@ jobs:
           [xml]$results=Get-Content $xml
           if($results.'test-run'.result -ne 'Passed'){throw 'Unity PlayMode tests failed'}
       - name: Validate complete integrated I-II journey
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |
@@ -197,6 +199,7 @@ jobs:
           New-Item -ItemType Directory -Force $regressionEvidence | Out-Null
           Copy-Item 'docs/evidence/valoria-reference-clean/integration-*' $regressionEvidence
       - name: Validate IV V persistence and capture real UI and art
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |

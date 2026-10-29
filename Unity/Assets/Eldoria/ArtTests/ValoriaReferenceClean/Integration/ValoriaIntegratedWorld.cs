@@ -147,7 +147,7 @@ namespace Eldoria.ReferenceClean {
     SelectionChanged(Selected);
    }
   }
-  void SyncWorldCity(){var state=city.Gateway.Snapshot();if(WorldBastionOne)WorldBastionOne.SetActive(state.BastionLevel<2);if(WorldBastionTwo)WorldBastionTwo.SetActive(state.BastionLevel>=2);if(WorldSawmill)WorldSawmill.SetActive(state.SawmillLevel>0);}
+  void SyncWorldCity(){var state=city.Gateway.Snapshot();if(WorldBastionOne)WorldBastionOne.SetActive(state.BastionLevel<2);if(WorldBastionTwo)WorldBastionTwo.SetActive(state.BastionLevel>=2&&state.BastionLevel<5);if(WorldSawmill)WorldSawmill.SetActive(state.SawmillLevel>0);}
   void OnDestroy(){if(Hud)Hud.SelectionChanged-=SelectionChanged;if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;city.Presenter.ExternalNavigationOwned=false;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
   public static bool CanEnterWorld(PlayerState s)=>s!=null&&(s.SawmillLevel>0||s.Resources.Wood<SliceRules.SawmillWoodCost);
   public bool Select(string id){
@@ -293,6 +293,8 @@ namespace Eldoria.ReferenceClean {
   System.Collections.Generic.List<Vector3> FocusPoints(GameObject target){
    var points=new System.Collections.Generic.List<Vector3>();var spot=target.GetComponent<WorldHotspot>();string id=spot?spot.Id:"";
    if(!target.transform.IsChildOf(WorldRoot.transform)){
+    var progression=GetComponent<BastionIVVWorldPresentation>();if(progression)AddFocusRenderers(progression.ModelFor(id),points);
+    if(points.Count>0)return points;
     if(id=="bastion"){AddFocusRenderers(city.BastionOne,points);AddFocusRenderers(city.BastionTwo,points);}
     else if((id=="sawmill"||id=="barracks")&&city.Parcels){
      var p=city.Parcels;bool left=id=="sawmill";
@@ -320,6 +322,7 @@ namespace Eldoria.ReferenceClean {
      if(points.Count>0)return points;
     }
     if(id=="valoria-map-city"){
+     var progression=GetComponent<BastionIVVWorldPresentation>();if(progression)AddFocusRenderers(progression.WorldModel,points);
      AddFocusRenderers(WorldBastionOne,points);AddFocusRenderers(WorldBastionTwo,points);AddFocusRenderers(WorldSawmill,points);
     }else{
      if(id=="engendro-valoria"){
