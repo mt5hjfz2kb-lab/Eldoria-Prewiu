@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "COMPLETED",
   "workstream_id": "eldoria-global-march-capacity-three-slots-20261028",
   "request_id": "eldoria-global-march-capacity-three-slots-20261028",
   "asset_or_sector": "Gameplay-only authoring: shared military march-capacity, three persisted marches, Zone1 map markers and existing march-composition uGUI",
@@ -29,5 +29,9 @@
   "physical_mobile_tested": false,
   "notes": "No new visual art assets; existing marker/route UI duplicated only as runtime visuals. This mandatory production route documents authoring scope for ArtTests integration files; Qwen/Tripo not invoked. Owner directed new feature 2026-10-28. Budget 0 EUR. Native UI-only composition reviewed on47 real captures; no new geometry authoring or general-world ART_APPROVED claim.",
   "native_run_id": 40850803144,
-  "native_evidence": "docs/marches/NATIVE_CERTIFICATE_20261029.json"
+  "native_evidence": "docs/marches/NATIVE_CERTIFICATE_20261029.json",
+  "completed_at": "2026-10-29T11:04:56.870Z",
+  "completed_by_pr": 124,
+  "main_success_run": 40859922725,
+  "completion_evidence": "docs/marches/MAIN_INTEGRATION_20261029.json"
 }

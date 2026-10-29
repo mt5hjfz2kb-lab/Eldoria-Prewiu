@@ -1,6 +1,6 @@
 # Entrega conjunta PR124 / PR125 / PR126
 
-Estado: validación nativa completa SUCCESS; integración y comprobación final de main en curso.
+Estado: COMPLETADO Y VERIFICADO EN MAIN. PR124 fusionada; PR125 y PR126 incorporadas y cerradas, conservando sus ramas e historiales.
 
 La PR124 reúne las tres marchas y la evolución de retención propuesta en PR125 y PR126. Se mantienen los historiales originales de ambas y un solo dominio, contador de informes, selección de relatos y sistema de guardado. Las recompensas y los valores de capacidad siguen siendo provisionales. No se han creado modelos ni gastado créditos.
 
@@ -31,4 +31,8 @@ Capturas auténticas y pruebas dentro de Unity Editor. Resoluciones de teléfono
 
 Se han abierto y revisado las47 capturas de marchas y retención de esta ejecución y las12 vistas de Aldric. Las seis hojas de contacto conservan todas las vistas revisadas; ocho PNG originales quedan en el repositorio, junto al manifiesto SHA256 de los47 originales, resultados de interacción y las tres identidades de fuente. Los artefactos íntegros y sus digestos se registran en [el certificado](NATIVE_CERTIFICATE_20261029.json). Se mantiene la composición ratificada, textos completos y acciones alcanzables por raycast real. Esta aceptación corresponde a estas pantallas y marcadores; no es una aprobación del arte general del mundo ni una prueba física en teléfono.
 
-La integración final de main y su compilación de jugador se registrarán al terminar su ejecución independiente.
+La [ejecución final de main40859922725](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40859922725) terminó SUCCESS sobre `401a6e9d4fef2b62e53c6769aaff9e9ba6c7b138`:54/54 EditMode,73/73 PlayMode, cero omitidos y ejecutable de Windows generado. El paquete completo y sus digestos quedan registrados en [MAIN_INTEGRATION_20261029.json](MAIN_INTEGRATION_20261029.json); los XML auténticos y la comprobación de identidad se conservan en [main-native-40859922725](main-native-40859922725/test-results.json).
+
+Se corrigió el arranque sin gráficos de BuildPlayer y se conservó la compilación después de las pruebas para que el preparador legacy no sustituyera su lista de escenas. Se mantienen todos los tests, límites, aserciones y guardas. Estas reparaciones solo cambian el proceso CI: el árbol Unity sigue siendo `6e02527491d789b2d8151d3548001c2ed16ea2aa`, igual al candidato de las47 capturas revisadas. Las ejecuciones anteriores fallidas se identifican como sustituidas; no se presentan como certificados completos.
+
+Los tres workstreams se archivan como completados y la reserva canónica de main se libera tras terminar el job. Se conserva el trabajo ajeno de producción individual de referencias. No se publica una APK nueva en esta entrega; Android18 mantiene su publicación previa.

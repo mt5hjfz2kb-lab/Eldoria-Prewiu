@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "COMPLETED",
   "workstream_id": "eldoria-retention-first-evolution-20261028",
   "request_id": "eldoria-retention-first-evolution-20261028",
   "asset_or_sector": "Eldoria Early Retention first evolution: distinctive 5 guardians, actionable reports, scout narrative, authored map seal effects in existing RoyalGold uGUI",
@@ -28,5 +28,9 @@
   "physical_mobile_tested": false,
   "notes": "Reuse only existing original art and GPU-safe uGUI geometry; zero external spend. Native UI-only composition reviewed on47 real captures; no new geometry authoring or general-world ART_APPROVED claim.",
   "native_run_id": 40850803144,
-  "native_evidence": "docs/marches/NATIVE_CERTIFICATE_20261029.json"
+  "native_evidence": "docs/marches/NATIVE_CERTIFICATE_20261029.json",
+  "completed_at": "2026-10-29T11:04:56.870Z",
+  "completed_by_pr": 124,
+  "main_success_run": 40859922725,
+  "completion_evidence": "docs/marches/MAIN_INTEGRATION_20261029.json"
 }
