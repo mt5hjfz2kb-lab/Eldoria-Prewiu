@@ -39,7 +39,7 @@ namespace Eldoria.ReferenceClean {
   }
   void Add(string id,string resource,GameObject old,float fallback){var b=Bounds(old);models[id]=Load(resource,cityRoot.transform,new Vector3(b.center.x,b.min.y,b.center.z),b.size.sqrMagnitude>.1f?Mathf.Max(b.size.x,b.size.z):fallback);}
   static Bounds Bounds(GameObject g){var rs=g.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(g.transform.position,Vector3.zero);var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
-  static GameObject Load(string id,Transform parent,Vector3 point,float width,bool worldPoint=false){var source=Resources.Load<GameObject>("BastionIVV/Models/"+id);if(!source){Debug.LogError("BASTION_IV_V_MISSING_ART "+id);return null;}
+  static GameObject Load(string id,Transform parent,Vector3 point,float width,bool worldPoint=false){var source=Resources.Load<GameObject>(id=="stoneworks-base"?"BastionIII/Granary/StoneWorkshop":"BastionIVV/Models/"+id);if(!source){Debug.LogError("BASTION_IV_V_MISSING_ART "+id);return null;}
    var model=Instantiate(source,parent);model.name="Tier V "+id;Normalize(model,worldPoint?parent.InverseTransformPoint(point):point,width);return model;
   }
   static void Normalize(GameObject model,Vector3 point,float width){model.transform.localPosition=Vector3.zero;model.transform.localRotation=Quaternion.identity;model.transform.localScale=Vector3.one;model.SetActive(true);

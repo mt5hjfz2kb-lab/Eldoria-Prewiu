@@ -54,6 +54,19 @@ namespace Eldoria.ReferenceClean.Editor {
      throw new Exception("Missing build-safe stock artwork: "+path);
    }finally{if(stock)Object.DestroyImmediate(stock);}
   }
+  static void RehomeStoneWorkshop(){
+   const string input="Assets/EmaceArt/Slavic World Free/Prefabs/Village/Building/Shed/EA03_Village_OutBuilding_Shed_03b_PRE.prefab";
+   var source=AssetDatabase.LoadAssetAtPath<GameObject>(input);
+   if(!source)throw new Exception("Missing original textured stone workshop: "+input);
+   var wrapper=new GameObject("Stone workshop I-IV");
+   try{
+    var model=Object.Instantiate(source,wrapper.transform,false);
+    if(PrefabUtility.IsPartOfPrefabInstance(model))PrefabUtility.UnpackPrefabInstance(model,PrefabUnpackMode.Completely,InteractionMode.AutomatedAction);
+    foreach(var collider in model.GetComponentsInChildren<Collider>(true))Object.DestroyImmediate(collider);
+    Rehome(wrapper);
+    if(!PrefabUtility.SaveAsPrefabAsset(wrapper,Root+"/StoneWorkshop.prefab"))throw new Exception("Stone workshop prefab was not saved");
+   }finally{Object.DestroyImmediate(wrapper);}
+  }
   public static void Build(){GameObject model=null;try{
    Directory.CreateDirectory(Root);AssetDatabase.Refresh();saved.Clear();index=0;
    foreach(var resource in new[]{"AshWolf","PrivateFissure"}){
@@ -68,10 +81,11 @@ namespace Eldoria.ReferenceClean.Editor {
    var prefab=PrefabUtility.SaveAsPrefabAsset(model,Root+"/Granary.prefab");
    if(!prefab)throw new Exception("Granary prefab was not saved");
    foreach(var stock in new[]{"Crate","Sack","Barrel"})RehomeProductionStock(stock);
+   RehomeStoneWorkshop();
    AssetDatabase.SaveAssets();
    // Prove Android package independence, not merely prefab existence.
    // The signing job removes ALL legacy Valoria GLB sources before compiling.
-   foreach(var item in new[]{"Granary","StockCrate","StockSack","StockBarrel"}){
+   foreach(var item in new[]{"Granary","StockCrate","StockSack","StockBarrel","StoneWorkshop"}){
     var path=Root+"/"+item+".prefab";
     var dependencies=AssetDatabase.GetDependencies(path,true);
     var leaked=dependencies.Where(d=>d.StartsWith("Assets/Eldoria/Resources/Valoria/",StringComparison.OrdinalIgnoreCase)&&
