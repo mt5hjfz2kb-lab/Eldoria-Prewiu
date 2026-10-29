@@ -1,9 +1,9 @@
 {
-  "enabled": false,
-  "versionCode": 17,
-  "versionName": "1.17",
+  "enabled": true,
+  "versionCode": 18,
+  "versionName": "1.18",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "SIGNED CODE17 BUILT SUCCESS run40583425073, source exact 74ef803f8be5a3ceb760344baa3d68c3a9537226, artifact eldoria-family-updater-code17-40583425073 / 12772181968. Disable duplicate build before promoting 1.17; keep v1.16 family channel until release exact-byte verification."
+  "note": "Authorized integrated PR120+PR122 family build. Full shared47/73/12 run40789374485 and main47/73/Windows/benchmark run40795797367 validated. Sole main masterplan lease revision50; budget0; original package/certificate preserved. Release remains disabled until exact signed build is verified."
 }
