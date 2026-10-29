@@ -1,9 +1,9 @@
 {
   "enabled": false,
-  "versionCode": 17,
-  "versionName": "1.17",
+  "versionCode": 18,
+  "versionName": "1.18",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "SIGNED CODE17 BUILT SUCCESS run40583425073, source exact 74ef803f8be5a3ceb760344baa3d68c3a9537226, artifact eldoria-family-updater-code17-40583425073 / 12772181968. Disable duplicate build before promoting 1.17; keep v1.16 family channel until release exact-byte verification."
+  "note": "SIGNED_CODE18_VERIFIED build40798180869/source0f150e6a719f93d312ebb18d1ceac5edd7435ba9/artifact12864609668. APK458971568bytes SHA2567396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644; SDKsignature and independent APKv2 certificate match originalf479ca92..., approved Aldric GLBc28a65...packaged exactly. Disable duplicate build before exact public promotion."
 }

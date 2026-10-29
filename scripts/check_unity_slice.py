@@ -8,6 +8,7 @@ This does not compile or launch the Unity player, or delete shared worktrees.
 The separate native PlayMode gate uses the existing disposable game fixture.
 """
 import json
+import re
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1] / "Unity"
@@ -26,5 +27,23 @@ for module in ("Domain", "Application", "Infrastructure", "Presentation"):
     assert list((root / f"Assets/Eldoria/Scripts/{module}").glob("*.asmdef")), module
 for layer in ("EditMode", "PlayMode"):
     assert list((root / f"Assets/Eldoria/Tests/{layer}").glob("*Tests.cs")), layer
-print("PASS source preflight: editor patch, packages, versioned scenes, modules and tests")
+def playmode_process_budget(workflow: Path) -> int:
+    marker = "      - name: PlayMode"
+    text = workflow.read_text()
+    assert text.count(marker) == 1, f"Expected one complete PlayMode step: {workflow}"
+    step = text.split(marker, 1)[1].split("\n      - ", 1)[0]
+    waits = re.findall(r"WaitForExit\((\d+)\)", step)
+    assert len(waits) == 1, f"Expected a bounded PlayMode process wait: {workflow}"
+    return int(waits[0])
+
+# Both gates execute the complete integrated suite. The generic process must
+# not kill that suite earlier than the measured shared UI certification does.
+workflows = root.parent / ".github/workflows"
+generic_budget = playmode_process_budget(workflows / "unity-slice.yml")
+certified_budget = playmode_process_budget(workflows / "ui-progression-cert.yml")
+assert generic_budget >= certified_budget, (
+    f"Generic PlayMode budget {generic_budget}ms is shorter than the complete "
+    f"certification budget {certified_budget}ms; retain every test and allow startup/teardown"
+)
+print("PASS source preflight: editor patch, packages, versioned scenes, modules, tests and full-suite budget")
 

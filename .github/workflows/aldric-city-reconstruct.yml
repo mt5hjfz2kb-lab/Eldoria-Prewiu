@@ -1,0 +1,122 @@
+name: Rebuild exact approved animated Aldric from archived source (zero credits)
+on:
+  push:
+    branches: [feature/aldric-city-roaming-20261028]
+    paths: ['.github/workflows/aldric-city-reconstruct.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: eldoria-aldric-exact-artifact-rebuild
+  cancel-in-progress: false
+jobs:
+  reconstruct:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 3
+          filter: blob:none
+          sparse-checkout: |
+            tools/aldric-dialogue
+            tools/aldric-city
+            Unity/Assets/StreamingAssets
+          sparse-checkout-cone-mode: true
+      - name: Restore old paid Tripo source from its existing successful artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: eldoria-tripo-module-aldric-h31-text-validated-20261027-65464bf6d17daeb52848d57333779e6f9ba901ca
+          run-id: 40527678020
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/aldric-source
+      - name: Install original CPU art authoring dependencies (no paid APIs)
+        run: python -m pip install --disable-pip-version-check --quiet "numpy==2.3.5" "scipy==1.17.0" "trimesh==4.11.1" "vtk==9.6.2" "pillow==12.3.0"
+      - name: Recreate approved blue-cape art pass from its original recipe
+        shell: bash
+        run: |
+          set -euo pipefail
+          source=$(find "$RUNNER_TEMP/aldric-source" -type f -name 'Eldoria_Module_UnderReview_50K.glb' -print -quit)
+          test -n "$source" || { echo 'ARCHIVED_TRIPO_SOURCE_MISSING'; exit 1; }
+          echo "b12265ec907781443520b739a861e39d6860903d1dd273fdc0cd952ce4c71595  $source" | sha256sum --check
+          python tools/aldric-dialogue/unpack_approved_source.py "$source" "$RUNNER_TEMP/aldric-approved" "$RUNNER_TEMP/aldric-approved/build_aldric.py"
+          python "$RUNNER_TEMP/aldric-approved/build_aldric.py"
+          echo "b7b91923f1e8459a8327c98a83afc744cad44813267f92c59640cf755aecb555  $RUNNER_TEMP/aldric-approved/SirAldric_ArtPass_CapaAzul_v1.glb" | sha256sum --check
+      - name: Recover and verify the exact original 26-joint animation authoring recipe
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64,hashlib,lzma,os,pathlib
+          a=pathlib.Path('tools/aldric-city/rig.parts')
+          # Each Git blob is independently verified against the original local recipe.
+          shas=['3b3df90d76b536b60de080c7f1824a1bd4c1c833',
+                'a21b8d02331377382769b0b23f2997be1a3c68dc',
+                'b53d941a326d0be681d8cf6d113d09ccaa9a2c90',
+                '26fd264f2bf6936aa788a83fadc5738c133628a8']
+          import subprocess
+          pieces=[]
+          for i,expected in enumerate(shas,1):
+              path=a/f'{i:02d}.txt'
+              actual=subprocess.check_output(['git','hash-object',str(path)],text=True).strip()
+              assert actual==expected,(str(path),actual)
+              pieces.append(path.read_text().strip())
+          compressed=base64.b64decode(''.join(pieces),validate=True)
+          script=lzma.decompress(compressed)
+          assert hashlib.sha256(script).hexdigest()=='101bf5e548fb98cc1f64f0898c26355ab9dda201c5fe9de9ad9dce6ae342f3f0'
+          code=script.decode()
+          old_root="ROOT=Path('/mnt/data/aldric_animation_v1')"
+          old_source="INPUT=Path('/mnt/data/aldric_artpass/SirAldric_ArtPass_CapaAzul_v1.glb')"
+          assert code.count(old_root)==code.count(old_source)==1
+          code=code.replace(old_root,"ROOT=Path(os.environ['RUNNER_TEMP'])/'aldric-animation'")
+          code=code.replace(old_source,"INPUT=Path(os.environ['RUNNER_TEMP'])/'aldric-approved/SirAldric_ArtPass_CapaAzul_v1.glb'")
+          dest=pathlib.Path(os.environ['RUNNER_TEMP'])/'aldric-animation'
+          dest.mkdir(parents=True,exist_ok=True)
+          (dest/'rig_aldric_gltf.py').write_text(code)
+          print('ALDRIC_RIG_RECIPE_SHA_LOCKED')
+          PY
+      - name: Rebuild and verify exactly approved 10 MB animated GLB
+        shell: bash
+        run: |
+          set -euo pipefail
+          python "$RUNNER_TEMP/aldric-animation/rig_aldric_gltf.py" > "$RUNNER_TEMP/aldric-rig-report.json"
+          result="$RUNNER_TEMP/aldric-animation/SirAldric_Approved_RiggedAnimated_v1.glb"
+          echo "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b  $result" | sha256sum --check
+          mkdir -p Unity/Assets/StreamingAssets/Eldoria/Aldric
+          cp "$result" Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb
+          python tools/aldric-city/verify_approved_glb.py
+          echo "ALDRIC_26_JOINTS_5_CLIPS_EXACT_GLB_RECONSTRUCTED"
+      - name: Publish proof artifact even if the PR branch changes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-aldric-approved-full-body-animated-pr122
+          path: |
+            Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb
+            ${{ runner.temp }}/aldric-rig-report.json
+          if-no-files-found: warn
+          retention-days: 30
+      - name: Commit only the identical source GLB to PR122; no main merge or APK
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = 'feature/aldric-city-roaming-20261028'
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb
+          if git diff --cached --quiet; then echo 'ALDRIC_MODEL_ALREADY_IDENTICAL'; exit 0; fi
+          git commit -m 'art(aldric): include identical approved 26-bone, five-clip model [skip ci]'
+          # Never force push; rebase on unrelated PR progress without dropping edits.
+          for attempt in 1 2 3; do
+            git fetch origin feature/aldric-city-roaming-20261028
+            git rebase FETCH_HEAD || { git rebase --abort || true; exit 1; }
+            if git push origin HEAD:feature/aldric-city-roaming-20261028; then
+              echo 'ALDRIC_EXACT_MODEL_VERSIONED_IN_PR122'
+              exit 0
+            fi
+            sleep 3
+          done
+          echo 'PR_MOVED_RECONSTRUCTION_ARTIFACT_RETAINED'
+          exit 1
