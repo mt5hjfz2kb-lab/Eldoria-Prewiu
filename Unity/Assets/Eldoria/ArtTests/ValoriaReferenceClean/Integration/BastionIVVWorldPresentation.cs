@@ -7,10 +7,14 @@ using UnityEngine;
 namespace Eldoria.ReferenceClean {
  [DefaultExecutionOrder(700)] public sealed class BastionIVVWorldPresentation:MonoBehaviour {
   ValoriaIntegratedWorld host;GameObject cityRoot,stoneSite,stoneBase,worldFive;
+  bool assetsLoaded;
   readonly Dictionary<string,GameObject> models=new Dictionary<string,GameObject>();
   readonly List<(GameObject model,int level)> stoneStock=new List<(GameObject,int)>();
   public GameObject ModelFor(string id)=>models.TryGetValue(id,out var model)?model:null;
   public void Initialize(ValoriaIntegratedWorld h){host=h;cityRoot=new GameObject("Bastion IV V architecture");cityRoot.transform.SetParent(transform,false);
+   Apply();
+  }
+  void LoadUnlockedAssets(){if(assetsLoaded)return;assetsLoaded=true;var h=host;
    Add("bastion","bastion-v",h.City.BastionTwo,28);
    Add("sawmill","aserradero-v",h.City.Parcels.LeftBuilt,12);
    Add("barracks","cuartel-v",h.City.Parcels.RightBuilt,13);
@@ -27,7 +31,6 @@ namespace Eldoria.ReferenceClean {
     Normalize(stock,new Vector3(-3+(level-1)*1.9f,0,-4),1.4f);stoneStock.Add((stock,level));
    }
    if(h.WorldBastionTwo){var b=Bounds(h.WorldBastionTwo);worldFive=Load("bastion-v",h.WorldBastionTwo.transform.parent,new Vector3(b.center.x,b.min.y,b.center.z),Mathf.Max(b.size.x,b.size.z),true);}
-   Apply();
   }
   void Add(string id,string resource,GameObject old,float fallback){var b=Bounds(old);models[id]=Load(resource,cityRoot.transform,new Vector3(b.center.x,b.min.y,b.center.z),b.size.sqrMagnitude>.1f?Mathf.Max(b.size.x,b.size.z):fallback);}
   static Bounds Bounds(GameObject g){var rs=g.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(g.transform.position,Vector3.zero);var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
@@ -42,6 +45,7 @@ namespace Eldoria.ReferenceClean {
   }
   void LateUpdate(){if(host&&host.Ready)Apply();}
   public void Apply(){if(!host||host.City.Gateway==null)return;var s=host.City.Gateway.Snapshot();cityRoot.SetActive(!host.InWorld);
+   if(s.BastionLevel<5)return;LoadUnlockedAssets();
    Set("bastion",s.BastionLevel);Set("sawmill",s.SawmillLevel);Set("barracks",s.BarracksLevel);Set("granary",s.ChapterThree.GranaryLevel);Set("stoneworks",s.ChapterThree.StoneworksLevel);
    // Keep authoritative hotspots, deadlines and the established I-IV source objects intact.
    if(ModelFor("bastion")&&s.BastionLevel>=5)host.City.BastionTwo.SetActive(false);

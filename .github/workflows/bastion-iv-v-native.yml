@@ -127,6 +127,28 @@ jobs:
           [IO.File]::WriteAllBytes((Join-Path $source $fixture),[Convert]::FromBase64String($blob.content))
           if((& git hash-object -- $fixture).Trim() -ne $expected){throw 'Camera fixture hash mismatch'}
           exit 0
+      - name: Author zero-cost frontier candidates in Blender
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender unavailable'}
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Frontier authoring failed'}
+          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb')){throw 'Expected fissure artifact missing'}
+      - name: Prepare editor and bake original Granary
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          New-Item -ItemType Directory -Force $evidence | Out-Null
+          New-Item -ItemType Directory -Force (Join-Path $project 'UserSettings') | Out-Null
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' | Set-Content (Join-Path $project 'UserSettings/Search.index') -Encoding UTF8
+          $bakeArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"'+(Join-Path $evidence 'granary-bake.log')+'"'))
+          $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $bakeArgs -Wait -PassThru
+          if($bake.ExitCode -ne 0){throw 'Build-safe granary extraction failed'}
       - name: Run actual Unity EditMode suite
         shell: powershell
         working-directory: bastion-iv-v-source

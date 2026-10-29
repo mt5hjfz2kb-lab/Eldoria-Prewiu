@@ -3,8 +3,16 @@ import os,json,urllib.request,zipfile,io,hashlib,base64,uuid
 from pathlib import Path
 ROOT=Path('Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV')
 TOKEN=os.environ['GH_TOKEN']
+class SafeRedirect(urllib.request.HTTPRedirectHandler):
+ def redirect_request(self,req,fp,code,msg,headers,newurl):
+  redirect=super().redirect_request(req,fp,code,msg,headers,newurl)
+  # Blob SAS URLs authenticate via their own signature, never via GitHub's token.
+  if urllib.parse.urlsplit(req.full_url).netloc!=urllib.parse.urlsplit(newurl).netloc:
+   redirect.remove_header('Authorization')
+  return redirect
+OPENER=urllib.request.build_opener(SafeRedirect())
 def fetch(url):
- return urllib.request.urlopen(urllib.request.Request(url,headers={'Authorization':'Bearer '+TOKEN,'Accept':'application/vnd.github+json','User-Agent':'Eldoria-existing-assets'}),timeout=180).read()
+ return OPENER.open(urllib.request.Request(url,headers={'Authorization':'Bearer '+TOKEN,'Accept':'application/vnd.github+json','User-Agent':'Eldoria-existing-assets'}),timeout=180).read()
 def source(artifact,filename,sha):
  data=fetch(f'https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/artifacts/{artifact}/zip')
  with zipfile.ZipFile(io.BytesIO(data)) as z:

@@ -31,7 +31,10 @@ namespace Eldoria.ReferenceClean.Editor {
    for(int i=0;i<240&&!h.Ready;i++)yield return null;Need(h.Ready,"canonical scene ready");
    var art=h.GetComponent<BastionIVVWorldPresentation>();Need(art!=null,"real tier presenter");
    foreach(string id in new[]{"bastion","sawmill","barracks","granary","stoneworks"}){
-    var model=art.ModelFor(id);Need(model&&model.GetComponentsInChildren<Renderer>(true).Length>0,id+" exact GLB imported");Need(!model.activeInHierarchy,id+" V model hidden at I");
+    Need(art.ModelFor(id)==null,id+" V assets not instantiated before unlock");
+    string resource=id=="bastion"?"bastion-v":id=="sawmill"?"aserradero-v":id=="barracks"?"cuartel-v":id=="granary"?"granero-v":"cantera-v";
+    var model=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV/Models/"+resource+".glb");
+    Need(model&&model.GetComponentsInChildren<Renderer>(true).Length>0,id+" exact GLB imported");
     foreach(var r in model.GetComponentsInChildren<Renderer>(true))foreach(var m in r.sharedMaterials)Need(m&&m.shader&&!m.shader.name.Contains("Error"),id+" valid native material");
    }
    var seed=h.City.Gateway.Snapshot();seed.BastionLevel=3;seed.SawmillLevel=2;seed.BarracksLevel=2;seed.ChapterThree.GranaryLevel=2;seed.ChapterThree.FissureClosed=true;seed.ChapterThree.LyraRecruited=true;seed.ScoutDefeated=true;seed.EngendroDefeated=true;seed.JourneyComplete=true;seed.Resources.Wood=100000;seed.Resources.Stone=100000;seed.Resources.Food=100000;seed.ChapterThree.Inventory.AddRange(new[]{"iron-brace","treated-hide","stone-tusk"});seed.ChapterProgress.SeenNarrative.AddRange(new[]{"start","world","mark","barracks","secured","frontier-open","fissure-closed"});

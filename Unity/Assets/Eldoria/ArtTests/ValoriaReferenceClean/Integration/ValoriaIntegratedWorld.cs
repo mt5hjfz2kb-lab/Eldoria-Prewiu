@@ -223,7 +223,7 @@ namespace Eldoria.ReferenceClean {
    if(!InWorld){city.Zoom(delta);return;}
    WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);
   }
-  public WorldHotspot FindTarget(string id)=>FindTargetExact(id=="upgrade-barracks"?"barracks":id);
+  public WorldHotspot FindTarget(string id)=>id=="stoneworks"?GetComponentsInChildren<WorldHotspot>(true).FirstOrDefault(x=>x.Id==id):FindTargetExact(id=="upgrade-barracks"?"barracks":id);
   WorldHotspot FindTargetExact(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal)?WorldRoot.GetComponentsInChildren<WorldHotspot>(true):(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None))).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
   void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;
     // A management destination is not a request to move the world camera.
