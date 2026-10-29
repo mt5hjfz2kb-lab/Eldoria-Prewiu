@@ -95,6 +95,8 @@ namespace Eldoria.ReferenceClean {
    city.Presenter.ExternalPointerBlocked=RoyalInputGate.Blocks;
    WorldNavigation.enabled=false;WorldCamera.enabled=false;WorldRoot.SetActive(false);
    // Three continuous WORLD scales are independent of the city camera.
+   // Entire Region 1 is a real third-world preset, not a Valoria city camera mode.
+   WorldNavigation.AllowWholeRegionOverview=true;
    WorldNavigation.localZoom=ZoneOneStrategicCamera.NearLandscape;
    WorldNavigation.regionalZoom=ZoneOneStrategicCamera.Regional;
    WorldNavigation.globalZoom=ZoneOneStrategicCamera.Panoramic;

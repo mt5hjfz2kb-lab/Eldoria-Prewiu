@@ -44,7 +44,9 @@ namespace Eldoria.Tests {
    var g=new LocalGateway(c,st);
    Assert.That(Do(g,"Recruit","archer:t2:5").Ok,Is.False);
    Assert.That(g.Snapshot().Available.ArcherT2,Is.Zero);
-   st.Value.BarracksLevel=4;g=new LocalGateway(c,st);
+   // A fresh authoritative store avoids altering the cached JSON outside a command.
+   var upgraded=Ready(4);upgraded.Value.BarracksLevel=4;upgraded.Value.Available.ArcherT1=60;
+   st=upgraded;g=new LocalGateway(c,st);
    int initialT1=g.Snapshot().Available.ArcherT1;
    Assert.That(Do(g,"Recruit","archer:t2:5").Ok,Is.True);
    Assert.That(g.Snapshot().PendingRecruitTier,Is.EqualTo(2));
