@@ -27,3 +27,14 @@ Estado: dominio IV–V y regresión III aprobados en ejecución 40877107919. Int
 - Se conserva la caché de Unity entre ejecuciones. El primer importado completo tardó aproximadamente 13 minutos; no es un motivo para regenerar modelos ni duplicar créditos.
 - Las capturas usan la cámara real, guardan orientación/aspecto y SHA de la fuente compilada. Los cambios de píxeles verifican que existe una diferencia, pero no sustituyen la revisión artística.
 - La clasificación sigue el prototipo web: perfiles simulados, sin jugadores online. La extracción de vetas regionales en V activa una sola vez la intervención de Aldric y se conserva al recargar.
+
+## Revisión nativa IV–V y correcciones verificables
+
+- `40884918480`: 54/54 EditMode, 72/73 PlayMode; recorrido I–II y prueba IV–V completados. Las capturas se rechazaron artísticamente: faltaban textos e imágenes en gestión, el cierre podía recibir el toque en navegación, la arquitectura V no estaba en la capa de la cámara regional, y había luces antiguas dentro del nuevo Bastión.
+- `40892044220`: 54/54 EditMode, 72/73 PlayMode; I–II aprobado. Los textos ya aparecen. La nueva comprobación de referencia falla correctamente: las cinco JPEG se habían importado como `UnityEngine.Cubemap`, por lo que `Resources.Load<Texture2D>` devolvía null. Se fija explícitamente `TextureImporterShape.Texture2D`, manteniendo los bytes de referencia.
+- No se relaja la prueba de cierre: se conserva el raycast real y se añade diagnóstico de profundidad. El orden de hermanos por sí solo no resolvió el fallo. Se reutiliza el registro de gráficos ya empleado por el HUD V3 existente tras cambios de Canvas, sin crear otro Canvas ni otra sesión.
+- El taller GLB provisional de cantera I–IV se rechaza: estaba girado y carecía del atlas original. La sustitución reutiliza el prefab original `EA03_Village_OutBuilding_Shed_03b_PRE.prefab`, sus materiales y transformaciones, reubicados como recursos seguros para la compilación. La revisión artística nativa sigue pendiente; reutilización no equivale a aprobación.
+- Se añaden capturas de orientación 0/90/180/270 de la arquitectura V para decidir accesos mirando la cámara real. Las luces antiguas del keep y los árboles que invaden la cantera se ocultan de manera reversible únicamente en el progreso correspondiente.
+- Los artefactos grandes se recuperan mediante un trabajo Ubuntu que separa los archivos originales de diagnóstico y las capturas, sin ejecutar otra generación ni repetir Unity. La siguiente versión del workflow publica también diagnósticos pequeños directamente.
+
+Documentación técnica consultada: Unity 6000.3 `Canvas` y orden de dibujo. Se conserva el contrato del proyecto de un único Canvas de HUD; no se introduce un Canvas independiente como atajo para superar la prueba.

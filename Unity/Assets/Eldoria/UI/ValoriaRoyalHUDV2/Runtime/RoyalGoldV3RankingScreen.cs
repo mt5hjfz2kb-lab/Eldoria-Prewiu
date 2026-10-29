@@ -17,7 +17,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   void OnDestroy(){if(hud){hud.NarrativeOpening-=Close;hud.SelectionChanged-=SelectionChanged;}}
   void SelectionChanged(string id){Close();}
   public void Open(){if(gateway==null||!gateway.Snapshot().ChapterThree.RankUnlocked)return;Ensure();root.gameObject.SetActive(true);root.SetAsLastSibling();SynchronizeLayout();Refresh();}
-  void LateUpdate(){if(IsOpen)root.SetAsLastSibling();}
+  void LateUpdate(){if(IsOpen){root.SetAsLastSibling();if(back&&back.targetGraphic.depth<0)RoyalGoldV3BuildingScreens.RebindGraphics(root);}}
   public void Close(){if(root)root.gameObject.SetActive(false);}
   void Update(){if(!IsOpen)return;if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){Close();return;}if(Mathf.Abs(root.rect.width-width)>.5f||Mathf.Abs(root.rect.height-height)>.5f)SynchronizeLayout();if(Time.unscaledTime>=next){next=Time.unscaledTime+.3f;Refresh();}}
   void Ensure(){if(root)return;
@@ -40,7 +40,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
    for(int i=0;i<3;i++)RoyalGoldV3BuildingScreens.Place((RectTransform)tabs[i].transform,x+i*w/3,top+85,w/3-7,45);
    RoyalGoldV3BuildingScreens.Place((RectTransform)rival.transform,x,top+149,w,40);float row=Mathf.Min(65,(height-top-bottom-300)/9);
    for(int i=0;i<9;i++)RoyalGoldV3BuildingScreens.Place((RectTransform)rows[i].transform.parent,x,top+195+i*row,w,row-6);
-   RoyalGoldV3BuildingScreens.Place((RectTransform)note.transform,x,height-bottom-94,w,45);RoyalGoldV3BuildingScreens.Place((RectTransform)back.transform,x,height-bottom-44,w,43);
+   RoyalGoldV3BuildingScreens.Place((RectTransform)note.transform,x,height-bottom-94,w,45);RoyalGoldV3BuildingScreens.Place((RectTransform)back.transform,x,height-bottom-44,w,43);RoyalGoldV3BuildingScreens.RebindGraphics(root);
   }
  }
 }

@@ -33,6 +33,3 @@ for asset in json.load(open('tools/bastion-iv-v/assets.json')):
   if hashlib.sha256(content).hexdigest()!=sha:content=source(artifact,filename,sha)
   write(dest,content)
  print('VERIFIED_EXISTING_ASSET',name,asset['optimized_sha256'])
-# Existing coherent workshop, retained solely as a pre-V quarry candidate for native review.
-blob=json.loads(fetch('https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/1d5a5a379f5d597cbc5932996047fd803653721d'))
-write(ROOT/'Models/stoneworks-base.glb',base64.b64decode(blob['content']))

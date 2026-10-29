@@ -22,7 +22,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   public RectTransform VisibleProgress=>IsOpen&&operationProgress.gameObject.activeSelf?operationFill:null;
   public string BuildingId=>selected;
   public Texture ReferenceTexture=>portrait?portrait.texture:null;
-  void LateUpdate(){if(IsOpen&&!(rankings&&rankings.IsOpen))root.SetAsLastSibling();}
+  void LateUpdate(){if(IsOpen&&!(rankings&&rankings.IsOpen)){root.SetAsLastSibling();if(back&&back.targetGraphic.depth<0)RebindGraphics(root);}}
   static readonly Color Gold=new Color(.89f,.73f,.46f),Ivory=new Color(.95f,.925f,.865f),Muted=new Color(.72f,.79f,.82f);
   static readonly string[] Ids={"bastion","sawmill","upgrade-barracks","granary","stoneworks"};
   static readonly string[] Names={"BASTIÓN","ASERRADERO","CUARTEL","GRANERO","CANTERA"};
@@ -48,6 +48,16 @@ namespace Eldoria.UI.RoyalGold.V2 {
    if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){Close();return;}
    if(Time.unscaledTime>=refresh){refresh=Time.unscaledTime+.2f;Refresh();}
    if(Mathf.Abs(root.rect.width-lastW)>.5f||Mathf.Abs(root.rect.height-lastH)>.5f||lastSafe!=Screen.safeArea)SynchronizeLayout();
+  }
+  // Same native resize repair used by the established V3 context HUD. Dynamic
+  // graphics can retain depth -1, making the old navigation win raycasts even
+  // when the destination is the last sibling. Keep the single existing Canvas.
+  internal static void RebindGraphics(RectTransform view){
+   foreach(var graphic in view.GetComponentsInChildren<Graphic>(true)){
+    if(!graphic||!graphic.enabled)continue;
+    graphic.enabled=false;graphic.enabled=true;graphic.SetAllDirty();
+   }
+   Canvas.ForceUpdateCanvases();
   }
   internal static RectTransform Rect(string name,Transform parent){var g=new GameObject(name,typeof(RectTransform));g.transform.SetParent(parent,false);g.layer=parent.gameObject.layer;return (RectTransform)g.transform;}
   internal static void Stretch(RectTransform r){r.anchorMin=Vector2.zero;r.anchorMax=Vector2.one;r.offsetMin=r.offsetMax=Vector2.zero;}
@@ -101,7 +111,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
    Place((RectTransform)description.transform,pad,pad,dw-2*pad,compactCouncil?65:80);Place((RectTransform)costs.transform,pad,compactCouncil?90:112,dw-2*pad,compactCouncil?48:52);Place((RectTransform)status.transform,pad,compactCouncil?150:180,dw-2*pad,compactCouncil?65:95);
    Place(operationProgress,pad,dh-32,dw-2*pad,7);
    Place(choices,pad,dh-224,dw-2*pad,210);for(int i=0;i<3;i++)Place((RectTransform)priority[i].transform,0,i*70,dw-2*pad,64);
-   Place(footer,m,h-foot-bottomInset,w-2*m,foot);Place((RectTransform)notice.transform,0,0,w-2*m,30);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();
+   Place(footer,m,h-foot-bottomInset,w-2*m,foot);Place((RectTransform)notice.transform,0,0,w-2*m,30);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();RebindGraphics(root);
   }
  }
 }

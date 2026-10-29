@@ -630,7 +630,7 @@ namespace Eldoria.Tests
             EventSystem.current.RaycastAll(pointer, hits);
             Assert.That(hits.Count, Is.GreaterThan(0));
             Assert.That(ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject),
-                Is.SameAs(actualClose.gameObject), "V3 close must be the topmost touch target");
+                Is.SameAs(actualClose.gameObject), "V3 close must be the topmost touch target; close depth="+actualClose.targetGraphic.depth+"; hits="+string.Join(", ",hits.Select(x=>x.gameObject.name+" depth="+x.depth)));
             var offer = Member(candidate, "Action");
             var actualOffer = Member(read.DynamicInvoke("sawmill"), "Action");
             Assert.That(actualOffer == null ? null : Member(actualOffer, "Kind"),
