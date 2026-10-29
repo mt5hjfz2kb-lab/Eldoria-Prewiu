@@ -18,10 +18,35 @@ public static class ValoriaReferenceCleanAndroidBuild {
  [Serializable]class KeyReport{public Key[] keys;public string package;public int old_version_code;}
  [Serializable]class Request{public bool content_updates;public int revision,android_version_code;public string android_version_name;}
  [Serializable]class Result { public string source_sha,status,apk_sha256,package_id,graphics_apis,note,scene;public long apk_bytes;public int errors,warnings;public bool physical_device_tested; }
+ const string Quarantine="Assets/EldoriaReleasePackagingQuarantine";
+ static void MoveUnusedLegacyResources(HashSet<string> dependencies,Dictionary<string,string> moved,ref bool ownsQuarantine){
+  if(AssetDatabase.IsValidFolder(Quarantine)||Directory.Exists(Quarantine))throw new Exception("Existing release quarantine requires recovery");
+  AssetDatabase.CreateFolder("Assets","EldoriaReleasePackagingQuarantine");ownsQuarantine=true;
+  // SlicePresenter.OnSceneLoaded returns through SceneHost before the retired
+  // VisualWorld/WorldRegion1Runtime branches. Keep every direct scene dependency.
+  var roots=new[]{"Assets/Eldoria/Resources/Valoria","Assets/Eldoria/Resources/WorldInventory","Assets/Eldoria/Resources/WorldPlayerCity"};
+  var paths=roots.Where(AssetDatabase.IsValidFolder).SelectMany(root=>AssetDatabase.FindAssets("",new[]{root})).Select(AssetDatabase.GUIDToAssetPath).ToList();
+  // Superseded authoring textures: no current runtime resource lookup uses them.
+  const string world="Assets/Eldoria/World4XCanon/Resources/World4X/";
+  paths.AddRange(new[]{"RegionOnePaintedTerrain.png","RegionOneTerrainAtlas.png","RegionOneMeadowDetail.png"}.Select(name=>world+name));
+  foreach(var path in paths.Distinct().OrderBy(x=>x)){
+   if(!File.Exists(path)||dependencies.Contains(path)||AssetDatabase.GetMainAssetTypeAtPath(path)==typeof(Eldoria.Presentation.ValoriaExternalAssetLibrary))continue;
+   var destination=Quarantine+"/"+AssetDatabase.AssetPathToGUID(path)+Path.GetExtension(path);
+   var error=AssetDatabase.MoveAsset(path,destination);if(!string.IsNullOrEmpty(error))throw new Exception(error);
+   moved.Add(path,destination);
+  }
+  AssetDatabase.Refresh();
+  // Retain every current dynamically loaded model family, including all I-V art.
+  foreach(var path in new[]{"World4X/Blender/RegionOneBlenderWorld","World4X/Blender/RegionOneResources","World4X/Creatures/RockBoarNear","World4X/Creatures/RockBoarFar","World4X/Creatures/SpawnlingNear","World4X/Creatures/SpawnlingFar","BastionIII/AshWolf","BastionIII/Granary/Granary","BastionIII/Granary/StoneWorkshop","BastionIVV/Models/bastion-v","BastionIVV/Models/cuartel-v","BastionIVV/Models/granero-v","BastionIVV/Models/aserradero-v","BastionIVV/Models/cantera-v"})
+   if(!Resources.Load<GameObject>(path))throw new Exception("Required current runtime resource missing: "+path);
+  File.WriteAllLines("../docs/evidence/valoria-reference-clean/android-excluded-legacy-resources.txt",moved.Keys.OrderBy(x=>x));
+ }
  public static void Build(){
   var request=JsonUtility.FromJson<Request>(File.ReadAllText("../tools/valoria-reference-clean/request.json"));
   var result=new Result{source_sha=Environment.GetEnvironmentVariable("GITHUB_SHA"),package_id="com.eldoria.valoria.v5test",graphics_apis="Vulkan, OpenGLES3",scene=ScenePath,physical_device_tested=false,note="Owner update: same package and verified existing signing certificate, one current Valoria city/world/Royal Gold scene, source-only GLBs optimized. No forced data reset or uninstall. Physical Android install/performance has not been observed."};
   var libraries=new Dictionary<string,byte[]>();
+  var movedResources=new Dictionary<string,string>();
+  bool ownsQuarantine=false;
   int exit=1;string settings="ProjectSettings/ProjectSettings.asset";byte[] original=File.ReadAllBytes(settings);
   try{
    if(!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Android,BuildTarget.Android))throw new Exception("Installed editor lacks Android Build Support");
@@ -66,6 +91,7 @@ public static class ValoriaReferenceCleanAndroidBuild {
    // legacy source catalog. Scene dependencies are retained; source assets
    // and the catalog's exact bytes are restored in finally, even on failure.
    var dependencies=new HashSet<string>(AssetDatabase.GetDependencies(ScenePath,true));
+   MoveUnusedLegacyResources(dependencies,movedResources,ref ownsQuarantine);
    foreach(var path in AssetDatabase.FindAssets("t:ValoriaExternalAssetLibrary").Select(AssetDatabase.GUIDToAssetPath)){
     if(dependencies.Contains(path))throw new Exception("Current scene unexpectedly depends on legacy resource library: "+path);
     libraries[path]=File.ReadAllBytes(path);
@@ -83,7 +109,17 @@ public static class ValoriaReferenceCleanAndroidBuild {
    using(var sha=System.Security.Cryptography.SHA256.Create())using(var stream=File.OpenRead(apk))result.apk_sha256=BitConverter.ToString(sha.ComputeHash(stream)).Replace("-","").ToLowerInvariant();
    result.status="APK_COMPILED_NOT_DEVICE_VALIDATED";exit=0;Debug.Log("VALORIA_REFERENCE_CLEAN_ANDROID_COMPLETE bytes="+result.apk_bytes);
   }catch(Exception e){result.status="ANDROID_BUILD_FAILED";result.note=e.ToString();Debug.LogException(e);}
-  finally{foreach(var pair in libraries)File.WriteAllBytes(pair.Key,pair.Value);File.WriteAllText(Evidence,JsonUtility.ToJson(result,true));File.WriteAllBytes(settings,original);}
+  finally{
+   try{
+    foreach(var pair in libraries)File.WriteAllBytes(pair.Key,pair.Value);
+    foreach(var pair in movedResources.Reverse()){
+     var error=AssetDatabase.MoveAsset(pair.Value,pair.Key);if(!string.IsNullOrEmpty(error))throw new Exception("Restore original release resource: "+error);
+    }
+    if(ownsQuarantine&&AssetDatabase.IsValidFolder(Quarantine))AssetDatabase.DeleteAsset(Quarantine);
+    AssetDatabase.Refresh();
+   }catch(Exception e){exit=1;result.status="SOURCE_RESTORATION_FAILED";result.note=e.ToString();Debug.LogException(e);}
+   finally{File.WriteAllText(Evidence,JsonUtility.ToJson(result,true));File.WriteAllBytes(settings,original);}
+  }
   EditorApplication.Exit(exit);
  }
 }
