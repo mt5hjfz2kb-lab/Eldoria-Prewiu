@@ -1,5 +1,7 @@
 param([Parameter(Mandatory=$true)][string]$RequestPath)
 $ErrorActionPreference='Stop'
+$env:TRIPO_CLIENT_APP='codex'
+$env:TRIPO_DISTRIBUTION_CHANNEL='codex_plugin'
 $req=Get-Content $RequestPath -Raw | ConvertFrom-Json
 $allowed=@('lyra','bastion-v','aserradero-v','cuartel-v','granero-v','cantera-v')
 if ($allowed -notcontains [string]$req.asset) { throw 'Unknown asset' }
