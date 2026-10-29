@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T07:29:01.566Z",
+  "updated_at": "2026-10-29T07:31:49.704Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -103,7 +103,9 @@
         "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
         "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRuntimeTests.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Runtime-only AI-authored uGUI map-marker integration; no new 3D, material or asset content. Owner authorized 3-march gameplay change.",
       "art_production_request": "pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json",
