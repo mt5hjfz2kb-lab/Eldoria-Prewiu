@@ -1,10 +1,22 @@
 using Eldoria.Presentation;
+using Eldoria.ReferenceClean;
 using NUnit.Framework;
 
 namespace Eldoria.Tests.EditMode
 {
     public sealed class CameraGestureTests
     {
+        [TestCase(36f,110f)]
+        [TestCase(64f,110f)]
+        [TestCase(36f,280f)]
+        [TestCase(64f,280f)]
+        public void WorldZoomPresetsRemainDistinctAndOrdered(float near,float panoramic)
+        {
+            float regional=ValoriaIntegratedWorld.RegionalWorldZoom(near,panoramic);
+            Assert.Less(near,regional,"Close world view must remain closest");
+            Assert.Less(regional,panoramic,"Panoramic world view must remain farthest");
+        }
+
         [Test]
         public void PinchApartZoomsIn()
         {
