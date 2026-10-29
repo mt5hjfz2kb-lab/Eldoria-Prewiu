@@ -1,6 +1,6 @@
 {
-  "stage": "visual_consolidation_validate",
-  "revision": 295,
+  "stage": "web_playtest",
+  "revision": 296,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,5 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Verify same reviewed appearance without copying terrain mesh: local deck material clipping retains original mesh/collider; canonical texture sharpness and strategic legibility; full native tests and actual A/B; no APK/publication. Preserve scoped lookdev material ownership and continuous haze on all other crossings."
+  "checks": "Owner-authorized exact current main WebGL build after PR129. Approved five own-level-V building GLBs have exact SHA256 matches and reviewed native270deg captures. Preserve integrated city/world/UI, independent per-building swaps, saves and approved content. No unmerged troop/mailbox work. Same owner lease; run only after queued signed Android19/current postmerge native job on sole Windows runner. Follow with exact native Windows Chromium QA before restricted itch promotion; budget0.",
+  "browser_backend": "windows"
 }
