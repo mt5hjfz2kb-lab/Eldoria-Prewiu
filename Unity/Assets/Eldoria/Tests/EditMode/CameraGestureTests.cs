@@ -1,6 +1,8 @@
 using Eldoria.Presentation;
 using Eldoria.ReferenceClean;
 using NUnit.Framework;
+using Eldoria.World4XPrototype;
+using UnityEngine;
 
 namespace Eldoria.Tests.EditMode
 {
@@ -15,6 +17,42 @@ namespace Eldoria.Tests.EditMode
             float regional=ValoriaIntegratedWorld.RegionalWorldZoom(near,panoramic);
             Assert.Less(near,regional,"Close world view must remain closest");
             Assert.Less(regional,panoramic,"Panoramic world view must remain farthest");
+        }
+
+        [Test]
+        public void CityZoomAndWorldPresetsNeverMutateEachOther()
+        {
+            var city=new GameObject("Isolated city camera");
+            var world=new GameObject("Isolated world camera");
+            try
+            {
+                var cityCamera=city.AddComponent<Camera>();
+                cityCamera.orthographic=true;
+                cityCamera.orthographicSize=30f;
+                var cityControls=city.AddComponent<ValoriaReferenceCleanInteraction>();
+                cityControls.playerCamera=cityCamera;
+                cityControls.gameplayOwnsInput=true;
+                var worldCamera=world.AddComponent<Camera>();
+                worldCamera.orthographic=true;
+                worldCamera.orthographicSize=90f;
+                var nav=world.AddComponent<ZoneOneStrategicCamera>();
+                float worldBefore=worldCamera.orthographicSize;
+                cityControls.ZoomBy(3f);
+                Assert.That(worldCamera.orthographicSize,Is.EqualTo(worldBefore).Within(.001f),
+                    "Zoom in Valoria must not change the world camera");
+                float cityAfter=cityCamera.orthographicSize;
+                nav.AllowWholeRegionOverview=true;
+                nav.localZoom=36f;nav.regionalZoom=73f;nav.globalZoom=110f;
+                nav.SetZoomLevel(2,true);
+                Assert.That(worldCamera.orthographicSize,Is.EqualTo(36f).Within(.001f));
+                Assert.That(cityCamera.orthographicSize,Is.EqualTo(cityAfter).Within(.001f),
+                    "World zoom presets must never change the city camera");
+            }
+            finally
+            {
+                Object.DestroyImmediate(world);
+                Object.DestroyImmediate(city);
+            }
         }
 
         [Test]
