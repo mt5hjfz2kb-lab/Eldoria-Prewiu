@@ -1482,7 +1482,7 @@
         "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
         "rig_joint_count": 12,
         "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-        "skin_weights_sum_max_error": 1.1920929e-7,
+        "skin_weights_sum_max_error": 1.1920929e-07,
         "static_retained": true,
         "art_approved": false,
         "isolated_unity_import_tested": false,
@@ -1940,8 +1940,8 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/tester-qa.yml"
       ],
-      "phase": "PR122_EXCLUSIVE_NATIVE_ROAMING_VALIDATION",
-      "next": "PR120 merged and required main native queue completed successfully. Execute existing Aldric native workflow on exact candidate: approvedGLB/scale/road/fullcapsule/boneanimation/visibility/save and12realviews. Then full shared UI regression and actual image review before merge; no duplicate workstream or credits.",
+      "phase": "PR122_COMPLETE_NATIVE_AND_TWELVE_VIEW_REVIEW_PASS_READY_FOR_MAIN",
+      "next": "Merge same PR122 after final exact-input proof checks; retain sole native lease until required main native queue completes, then transfer same-owner lease to existing main masterplan for authorized signed Android1.18. No new source/model/paid credits or unrelated PR merges.",
       "delivery_definition": {
         "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
@@ -1951,7 +1951,129 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json",
       "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection.",
-      "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime."
+      "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime.",
+      "current_native_cert": {
+        "status": "SUCCESS",
+        "source": "e47c3bb525439949c19227673e66c88730d0349b",
+        "compiled_source": "0255c811d5c56ef4f027cae91c3c627083bc27c6",
+        "compiled_tree": "0580ba516b21a9a0af45dead209ae298b55fcfc4",
+        "run_id": 40789374485,
+        "editmode_passed": 47,
+        "playmode_passed": 73,
+        "playmode_failed": 0,
+        "playmode_skipped": 0,
+        "full_shared_suite_executed": true,
+        "actual_views": 12,
+        "all_final_views_individually_inspected": true,
+        "artifact_id": 12862316329,
+        "artifact_digest": "sha256:99fcbde91f4f30fe265adebd0374373bb8cac81778e4a742ec1d2403ec7e01db",
+        "certificate": "docs/aldric-city/NATIVE_CERTIFICATE_20261029.json",
+        "art_approved": false,
+        "physical_mobile_tested": false
+      },
+      "native_attempt_history": [
+        {
+          "status": "failed_before_playmode",
+          "source": "29ee817922adc4e7639fbf427e370b5167ab36bf",
+          "run_id": 40761888936,
+          "reason": "PlayMode asmdef cannot directly reference Assembly-CSharp host/walker types; corrected to public reflection like existing UI tests",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "failed_actual_safe_route_search",
+          "source": "969555b664921620224446a9f7d764896232a42e",
+          "run_id": 40764789611,
+          "playmode_passed": 72,
+          "playmode_failed": 1,
+          "reason": "ALDRIC_CITY_NO_SAFE_PAVED_ROUTE: previous bounds-centre candidates do not establish a route on actual irregular paving; native case failed, no model loaded or images",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "failed_actual_gltf_import",
+          "source": "70eadf3435779f00ed82c178daa76d1a7c3bacb3",
+          "run_id": 40770024166,
+          "playmode_passed": 69,
+          "playmode_failed": 4,
+          "reason": "Actual axial route PASS(510 samples,274 paving,272 visible clear,3 waypoints). Generic import/rig error in Aldric and three subsequent scene cases; no actor captures. Inactive-bound initialization removed, explicit Legacy import and detailed failure diagnostics added; orientation+90 and physical cape-behind-motion assertion pending new native.",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "failed_preflight_exact_importer_normal_tangent_bug",
+          "source": "a95dd526ef4551399401b6b69203d5cd9d2fef96",
+          "run_id": 40773905914,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "reason": "Actual glTFast6.14.1 error Invalid mainBufferType Position,Tangent at MeshGenerator.CreateVertexGenerator; approved source has no NORMAL accessors and body material has normalTexture. Exact geometric normal streams now prepared with original binary and every other JSON semantic unchanged; actual Unity proof still required.",
+          "artifact_id": 12855340058,
+          "artifact_digest": "sha256:9958e85fcf5456a8fcf7cedbee70e5c583d2b7b98acf476cdaf44a43adfcdf70",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "import_and_idle_captures_pass_ground_measurement_failed",
+          "source": "188da8bf6d5135deeb73eb9e3d62c9b3301ae16b",
+          "run_id": 40777258036,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 2,
+          "import_26_bones_5_clips_passed": true,
+          "measured_height_m": 1.85,
+          "reason": "Normal-only compatibility resolves actual import. Two genuine idle images present/reviewed. Renderer.bounds ground difference .129500031m equals .07 root pivot*1.85; change grounding/measurement to actual sampled skinned vertices, preserve .12/.15 tolerances and explicit post-initialization Ready gate. No walk/return/visual acceptance yet.",
+          "artifact_id": 12856520357,
+          "artifact_digest": "sha256:5f4beb8728523a136bb6cc10de20413dbeacf12dcfa7415eb4cb41c378417a44",
+          "art_approved": false
+        },
+        {
+          "status": "walking_skin_grounding_pass_world_resume_pause_failed",
+          "source": "08b99f958f3511889f4e147f1adaa8c5398553d4",
+          "run_id": 40779937374,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 9,
+          "import_26_bones_5_source_clips_passed": true,
+          "actual_skinned_idle_ground_offset_m": 0.0001349449,
+          "actual_skinned_walk_ground_offset_m": -0.02667463,
+          "reason": "Actual forward walk, bone deformation, skin ground, cape-behind-motion, dynamic obstacle and World hide/return visibility pass. Pause-at-interrupted-target assertion failed; observe physical stop plus visible clip weights with real camera rendering and diagnostics, preserving stricter target distance. Visual review found city arms too open in source A-pose; add separate city-only rest alignment layer, keep original GLB/five clips unchanged.",
+          "artifact_id": 12857666330,
+          "artifact_digest": "sha256:44fbed5669939aa5501e054028f3b18a647a2c5efe0d579f631bb3081acd25c6",
+          "art_approved": false
+        },
+        {
+          "status": "actual_next_step_blocked_after_world_return",
+          "source": "a00dfb541a9a65f73db6e801711282c626aceaf6",
+          "run_id": 40784676062,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 10,
+          "import_26_bones_5_source_clips_passed": true,
+          "actual_idle_relaxed_arm_alignment_passed": true,
+          "artifact_id": 12859586919,
+          "artifact_digest": "sha256:7d1fb1d2d5130061c4efcc39ab3cc2a9031272a8ca76f84199f9eb416bbfaea2",
+          "reason": "Actual time advances, body and coarse leg clear, target remains 1.67m away, pause resets every6s: next fine step is rejected. Paving grout is inferred from point-ray support and real separate-flagstone images; not yet confirmed by exact step trace. Replace point-only support with tightly bounded real same-mesh footprint, retain full capsule and add exact failure diagnostics. No timeout/tolerance relaxation. All later march/investigation/reload checks remain mandatory.",
+          "art_approved": false
+        },
+        {
+          "status": "exact_fine_step_support_rejection_confirmed",
+          "source": "0f5623dc7bf3fda95734b861803a8f72b47ed56a",
+          "run_id": 40787189864,
+          "compiled_source": "0fb45ceceb0f308a8c82f20b141a2c429fc89dc3",
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 10,
+          "artifact_id": 12859434835,
+          "artifact_digest": "sha256:f4e2f346ceab7bfcd4991a2c19648395de4c80851dfc21eb97f2b050add0f115",
+          "reason": "Actual STEP_BLOCKED proves supported=False with active road; body clear true in immediate probes.8cm opposed-ray-pair proxy fails at small bevel/grout intervals while35cm route samples alias them. Macro alternative: physical13cm support polygon on same actual mesh,16surrounding contacts/centre strictly inside convex hull, dense2.5cm leg checks, unchanged capsule/slopes/mandatory tests. Export exact runtime collider and visible geometry for independent reproduction. Cheap actual visible-mesh source analysis near both failed positions: old proxy rejects26/121 and43/121; new rejects0/121 in each. Source analysis is NOT native collider acceptance.",
+          "art_approved": false
+        }
+      ]
     }
   ],
   "history": [
@@ -3702,7 +3824,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -3713,7 +3835,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,

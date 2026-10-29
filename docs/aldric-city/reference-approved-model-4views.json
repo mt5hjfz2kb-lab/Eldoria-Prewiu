@@ -1,0 +1,10 @@
+{
+  "status": "OWNER_APPROVED_SOURCE_REFERENCE_NOT_NATIVE_ACCEPTANCE",
+  "file": "reference-approved-model-4views.png",
+  "bytes": 1503493,
+  "sha256": "2fbb8d075b95de2bdddc4c634d11ca32811d98edad1dd744714c4aadbea7b24c",
+  "original_name": "Aldric_modelo_3D_aprobado_capa_azul_4_vistas.png",
+  "library_file_id": "libfile_3cb37e2f302c81919d359fa3e5b6518f",
+  "canonical_rigged_glb_sha256": "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b",
+  "scope": "Original approved model four-view reference. Compare genuine Unity front/right/back/left detail and playable camera views; different lighting/camera/animation frames do not imply pixel identity. No art/native/mobile acceptance inferred from this reference."
+}
