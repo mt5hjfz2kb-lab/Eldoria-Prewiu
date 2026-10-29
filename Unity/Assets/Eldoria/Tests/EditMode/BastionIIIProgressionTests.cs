@@ -39,6 +39,22 @@ namespace Eldoria.Tests {
    Assert.That(g.Snapshot().Resources.Stone,Is.EqualTo(stone+560));
   }
   [Test]public void ConstructionAndFoodAccrueAtActualOfflineDeadline(){var c=new Clock();var st=Ready();var g=new LocalGateway(c,st);Assert.That(Do(g,"Build","granary").Ok);int food=g.Snapshot().Resources.Food;c.Add(19);g=new LocalGateway(c,st);Assert.That(g.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(1));Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+10));Assert.That(Do(g,"UpgradeBuilding","granary").Ok);c.Add(20);g=new LocalGateway(c,st);Assert.That(g.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(2));Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+40));Assert.That(Do(g,"UpgradeBuilding","granary").Ok,Is.False);}
+  [Test]public void ArcherTierTwoRequiresBarracksFourAndPreservesExistingTierOne(){
+   var c=new Clock();var st=Ready(4);st.Value.BarracksLevel=3;st.Value.Available.ArcherT1=60;
+   var g=new LocalGateway(c,st);
+   Assert.That(Do(g,"Recruit","archer:t2:5").Ok,Is.False);
+   Assert.That(g.Snapshot().Available.ArcherT2,Is.Zero);
+   st.Value.BarracksLevel=4;g=new LocalGateway(c,st);
+   int initialT1=g.Snapshot().Available.ArcherT1;
+   Assert.That(Do(g,"Recruit","archer:t2:5").Ok,Is.True);
+   Assert.That(g.Snapshot().PendingRecruitTier,Is.EqualTo(2));
+   c.Add(20);g=new LocalGateway(c,st);
+   Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(initialT1));
+   Assert.That(g.Snapshot().Available.ArcherT2,Is.EqualTo(5));
+   Assert.That(g.Snapshot().PendingRecruitTier,Is.EqualTo(1));
+   g=new LocalGateway(c,st);
+   Assert.That(g.Snapshot().Available.ArcherT2,Is.EqualTo(5));
+  }
   [Test]public void SnapshotDoesNotExposeMutableInventory(){var c=new Clock();var st=Ready();st.Value.ChapterThree.Inventory.Add("treated-hide");var g=new LocalGateway(c,st);g.Snapshot().ChapterThree.Inventory.Clear();Assert.That(g.Snapshot().ChapterThree.Inventory,Does.Contain("treated-hide"));}
   [Test]public void FullMeatReserveAndRespawnSurviveOneLongOfflineInterval(){var c=new Clock();var st=Ready();var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"Gather","meat-valoria").Ok);c.Add(60);g=new LocalGateway(c,st);Assert.That(g.Snapshot().March.Phase,Is.EqualTo("idle"));Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatRemaining,Is.EqualTo(1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));g=new LocalGateway(c,st);Assert.That(g.Snapshot().Resources.Food,Is.EqualTo(food+1100));Assert.That(g.Snapshot().ChapterThree.MeatGeneration,Is.EqualTo(1));}
   [Test]public void OfflineProductionCapsAtOneHourAcrossPendingUpgrade(){var c=new Clock();var st=Ready();st.Value.ChapterThree.GranaryLevel=1;var g=new LocalGateway(c,st);int food=g.Snapshot().Resources.Food;Assert.That(Do(g,"UpgradeBuilding","granary").Ok);c.Add(7200);g=new LocalGateway(c,st);Assert.That(g.Snapshot().ChapterThree.GranaryLevel,Is.EqualTo(2));Assert.That(g.Snapshot().Resources.Food-food,Is.EqualTo(7200));}
