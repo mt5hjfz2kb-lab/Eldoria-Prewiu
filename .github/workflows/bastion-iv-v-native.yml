@@ -223,6 +223,17 @@ jobs:
           $regressionEvidence=Join-Path $evidence 'I-II'
           New-Item -ItemType Directory -Force $regressionEvidence | Out-Null
           Copy-Item 'docs/evidence/valoria-reference-clean/integration-*' $regressionEvidence
+      - name: Preserve compact native test diagnostics
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion-iv-v-diagnostics-${{ github.run_id }}
+          path: |
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.xml
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.json
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.txt
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.log
+          if-no-files-found: warn
       - uses: actions/upload-artifact@v4
         if: always()
         with:
