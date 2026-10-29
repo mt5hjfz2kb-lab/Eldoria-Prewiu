@@ -37,19 +37,31 @@ namespace Eldoria.ReferenceClean {
    }
    if(h.WorldBastionTwo){var b=Bounds(h.WorldBastionTwo);var foot=new Vector3(b.center.x,h.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(b.center.x-h.WorldHome.x,b.center.z-h.WorldHome.z)+.12f,b.center.z);worldFive=Load("bastion-v",h.WorldBastionTwo.transform.parent,foot,Mathf.Max(b.size.x,b.size.z),true);if(worldFive){
     // Match the approved strategic entrance anchor used by the original city
-    // representation. Native 270-degree review places this GLB gate 8% left
-    // of centre and 7% behind the southern footprint edge.
+    // representation. The individually aligned GLB entrance is centered on
+    // its southern facade, behind the shallow paving apron.
     var wb=Bounds(worldFive);var entrance=Entrance(wb);
     var anchor=h.WorldHome+new Vector3(3.3f,0,-7.5f);worldFive.transform.position+=new Vector3(anchor.x-entrance.x,0,anchor.z-entrance.z);
     wb=Bounds(worldFive);float ground=h.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(wb.center.x-h.WorldHome.x,wb.center.z-h.WorldHome.z)+.12f;
     worldFive.transform.position+=Vector3.up*(ground-wb.min.y);worldFiveScale=worldFive.transform.localScale;wb=Bounds(worldFive);worldFiveFoot=Entrance(wb);
    }}
   }
-  void Add(string id,string resource,GameObject old,float fallback){var b=Bounds(old);models[id]=Load(resource,cityRoot.transform,new Vector3(b.center.x,b.min.y,b.center.z),b.size.sqrMagnitude>.1f?Mathf.Max(b.size.x,b.size.z):fallback);}
-  static Vector3 Entrance(Bounds b)=>new Vector3(b.center.x-b.size.x*.08f,b.min.y,b.min.z+b.size.z*.07f);
+  void Add(string id,string resource,GameObject old,float fallback){var b=Bounds(old);models[id]=Load(resource,cityRoot.transform,new Vector3(b.center.x,b.min.y,b.center.z),b.size.sqrMagnitude>.1f?Mathf.Max(b.size.x,b.size.z):fallback);
+   if(id=="bastion"&&models[id]){var gate=Entrance(Bounds(models[id]));models[id].transform.position+=new Vector3(b.center.x-gate.x,0,b.min.z-gate.z);}
+  }
+  // The approved meshes have different authored facade axes (measured from wall planes).
+  // Align the entrance face with the city's -Z approach, not with its diagonal mesh AABB.
+  public static float HeadingFor(string id){switch(id){
+   case "bastion-v":return 235f;
+   case "aserradero-v":return 313f;
+   case "cuartel-v":return 231f;
+   case "granero-v":return 306f;
+   case "cantera-v":return 318f;
+   default:return 0f;
+  }}
+  static Vector3 Entrance(Bounds b)=>new Vector3(b.center.x,b.min.y,b.min.z+b.size.z*.07f);
   static Bounds Bounds(GameObject g){var rs=g.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(g.transform.position,Vector3.zero);var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
   static GameObject Load(string id,Transform parent,Vector3 point,float width,bool worldPoint=false){var source=Resources.Load<GameObject>(id=="stoneworks-base"?"BastionIII/Granary/StoneWorkshop":"BastionIVV/Models/"+id);if(!source){Debug.LogError("BASTION_IV_V_MISSING_ART "+id);return null;}
-   var model=Instantiate(source,parent);model.name=id=="stoneworks-base"?"Stone workshop I-IV":"Tier V "+id;Normalize(model,worldPoint?parent.InverseTransformPoint(point):point,width);if(id!="stoneworks-base"){var b=Bounds(model);model.transform.RotateAround(new Vector3(b.center.x,b.min.y,b.center.z),Vector3.up,270);}return model;
+   var model=Instantiate(source,parent);model.name=id=="stoneworks-base"?"Stone workshop I-IV":"Tier V "+id;Normalize(model,worldPoint?parent.InverseTransformPoint(point):point,width);if(id!="stoneworks-base"){var b=Bounds(model);model.transform.RotateAround(new Vector3(b.center.x,b.min.y,b.center.z),Vector3.up,HeadingFor(id));}return model;
   }
   static void Normalize(GameObject model,Vector3 point,float width){model.transform.localPosition=Vector3.zero;model.transform.localRotation=Quaternion.identity;model.transform.localScale=Vector3.one;model.SetActive(true);
    foreach(var r in model.GetComponentsInChildren<Renderer>(true)){for(var t=r.transform;t&&t!=model.transform.parent;t=t.parent)t.gameObject.SetActive(true);r.enabled=true;}
