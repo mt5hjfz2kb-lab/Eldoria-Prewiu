@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T12:23:02.996Z",
+  "updated_at": "2026-10-29T16:23:32.199Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -103,15 +103,13 @@
         ".github/workflows/bastion-iv-v-domain.yml",
         "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BASTION_IV_V_PARITY_AUDIT",
-      "next": "Compare canonical web IV/V with Unity; implement exact-reference tier-five architecture and per-building upgrades, native gameplay/save/UI/camera gates.",
+      "phase": "BASTION_IV_V_NATIVE_VERIFIED_SHARED_CERT_PENDING",
+      "next": "Run the existing full shared PR UI certification on the final metadata head, then integrate PR129 and release this writing claim.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -721,6 +719,26 @@
           "physical_device_tested": false,
           "art_owner_approval_claimed": false,
           "desktop_build_note": "Main Windows desktop build 40586040000 failed resources.assets; PlayMode/EditMode PASS, Android signing and publication PASS."
+        },
+        "bastion_iv_v": {
+          "status": "NATIVE_AND_SCOPED_VISUAL_PASS_SHARED_CERT_PENDING",
+          "source": "1469708a79dfb8c0ef0b0faa4bcb971ce88a4b32",
+          "native_run": 40906347082,
+          "domain_run": 40906346835,
+          "editmode_passed": 54,
+          "playmode_passed": 73,
+          "functional_checks": 386,
+          "actual_captures": 70,
+          "actual_touch_case_passed": true,
+          "world_touch_near_and_panorama": true,
+          "i_ii_regression_passed": true,
+          "review_artifact": 12913106042,
+          "diagnostics_artifact": 12913038382,
+          "full_artifact": 12913871649,
+          "scoped_visual_review": "ACCEPTED_IV_V_BUILDINGS_UI_WORLD_ENTRY",
+          "physical_mobile_profiled": false,
+          "new_apk_published": false,
+          "budget_eur": 0
         }
       },
       "previous_owner": "chatgpt-bastion-iii-pr117-continuation-20261027",
@@ -743,8 +761,8 @@
       "consolidation_authorization": "Explicit owner request18Oct17:23 Europe/Madrid; no visual-final approval implied",
       "current_session": null,
       "session_base_main_sha": "c96bd1fd0b696620f0e78cad8c21c6d8049b1634",
-      "resources_verified_at": "2026-10-27T01:55:03.045Z",
-      "resources_evidence": "Native40430426343 and recovered Windows gate40432752930 completed successfully; no remaining native execution for this scope.",
+      "resources_verified_at": "2026-10-29T16:23:32.199Z",
+      "resources_evidence": "Dedicated native40906347082 completed; Unity processes exited before resource release. General PR certification pending; do not launch a second native IV–V generation.",
       "validation_recovery_session": {
         "owner": "chatgpt-validation-recovery-20261019",
         "authorization": "Owner requested review and completion of today's validation failures and pending delivery in current session.",
@@ -1196,17 +1214,27 @@
           "phase": "PR124_125_126_COMPLETED_MAIN_NATIVE_AND_PLAYER_VERIFIED_AVAILABLE",
           "reclaimed_at": "2026-10-29T12:23:02.995Z",
           "reason": "Owner explicitly authorizes Bastion IV–V migration, per-building visual progression and management-screen refinement."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 54,
+          "phase": "BASTION_IV_V_PARITY_AUDIT",
+          "resource_handoff_at": "2026-10-29T16:23:32.199Z",
+          "resources_released": [
+            "windows-runner-heavy"
+          ],
+          "reason": "IV–V native40906347082 completed successfully (54 EditMode,73 PlayMode,386 IV–V checks,real touch and I–II). Release the finished dedicated execution's resource so the existing general PR UI certification can run under its no-active-heavy-claim path; retain canonical writing owner until integration."
         }
       ],
-      "ownership_revision": 54,
+      "ownership_revision": 55,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-29T09:54:24.457Z",
       "delivery_definition": {
-        "deliverable": "Bastion III playable migration with canonical economy, granary, hunts, fissure investigation/Lyra/manuscript and small visual upgrades",
-        "evidence": "Exact source tests, existing I-II regression, III UI journey/save/offline/idempotency, same-camera Unity AB vs reference",
-        "handoff": "Verified integrated result and exact artifacts; no formal art/mobile claims without evidence"
+        "deliverable": "Bastion IV–V faithful to web, independent per-building progression and exact approved V replacements, independent management destinations, canonical world access.",
+        "evidence": "Native40906347082: 54/54 EditMode,73/73 PlayMode,386 IV–V checks,70 actual screenshots,real close/world touch and full I–II. Domain40906346835:162 IV–V+50 III checks.",
+        "handoff": "Same canonical workstream/PR129; complete shared PR gate and integration before closing. No APK/WebGL publication or new Tripo spend."
       },
       "handoff_authority": "Current owner requested autonomous final visual consolidation and recovery of technical blockers; scope completed with authentic A/B and independent review. No APK/Bastion III/publication authority implied.",
       "world_integration_handoff": {
@@ -1294,8 +1322,8 @@
         "budget_eur": 0
       },
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
-      "candidate_branch": "feature/bastion-iii-canonical-20261027",
-      "canonical_pr": 117,
+      "candidate_branch": "feature/bastion-iv-v-migration-20261029",
+      "canonical_pr": 129,
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
