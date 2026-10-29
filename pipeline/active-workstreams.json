@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T08:46:45.263Z",
+  "updated_at": "2026-10-29T09:54:24.457Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -142,15 +142,13 @@
         ".github/workflows/early-retention-domain.yml",
         "Unity/Assets/Eldoria/Tests/EditMode/BastionIIIProgressionTests.cs"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Runtime-only AI-authored uGUI map-marker integration; no new 3D, material or asset content. Owner authorized 3-march gameplay change.",
       "art_production_request": "pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json",
       "dependency": "PR120 and PR122 merged and Android18 delivered. No active heavy claim; preserve their certified runtime and paid source assets.",
-      "phase": "COMBINED_NATIVE_FUNCTIONAL_AND_REFERENCE_ACCEPTANCE",
-      "next": "Consolidate all implemented retention contributions into PR124; fix exact visible-button collisions and obsolete one-march investigation assertion; run all original reference captures, new guardian/discovery/defeat captures, three-march proof, Aldric, full EditMode/PlayMode, inspect actual evidence, then merge one coherent delivery and close absorbed PR125/126.",
+      "phase": "COMBINED_NATIVE_VERIFIED_PENDING_MAIN_INTEGRATION",
+      "next": "Merge canonical PR124 with exact completed native proof; close PR125/126 only as incorporated; main generic Editor/PlayMode/player gate still required.",
       "ownership_history": [
         {
           "owner": "codex-pr120-exact-visual-pr122-20261028",
@@ -179,7 +177,17 @@
         124,
         125,
         126
-      ]
+      ],
+      "native_evidence": {
+        "run_id": 40850803144,
+        "requested_source": "fd21934bc1889087d9713d5367389b094991207f",
+        "editmode_passed": 54,
+        "playmode_passed": 73,
+        "retention_reference_views": 19,
+        "retention_evolution_views": 20,
+        "march_views": 8,
+        "aldric_views": 12
+      }
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
@@ -254,12 +262,14 @@
         "scripts/check_unity_slice.py",
         "docs/ui-v3/ANDROID_1_18_RELEASE.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR120_PR122_ANDROID_118_DELIVERED_NATIVE_VERIFIED_AVAILABLE",
+      "phase": "PR124_125_126_FINAL_MAIN_EDITOR_PLAYMODE_AND_PLAYER_BUILD",
       "next": "PR120 andPR122 complete, merged and natively validated; signed Android1.18 delivered through family channel with exact public bytes/source/original certificate. Native reservation is free. Rewards remain provisional; physical-phone installation/performance and unrelated PR124/125/126 are not claimed.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
@@ -1326,13 +1336,19 @@
           "revision": 47,
           "transferred_at": "2026-10-28T17:03:00Z",
           "reason": "Current owner-directed PR120 then PR122 continuation reconciles inherited city/UI integration scopes previously held by the same PR119/120 completion session. PR119 is merged and native-certified; no new city/world art production or extra Windows lease."
+        },
+        {
+          "owner": "codex-pr120-exact-visual-pr122-20261028",
+          "revision": 51,
+          "at": "2026-10-29T09:54:24.457Z",
+          "reason": "Same owner continues explicitly requested PR124/125/126 completion. Combined native40850803144 passed; reserve runner for required integrated main build."
         }
       ],
-      "ownership_revision": 51,
+      "ownership_revision": 52,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
-      "last_claimed_at": "2026-10-16",
+      "last_claimed_at": "2026-10-29T09:54:24.457Z",
       "delivery_definition": {
         "deliverable": "Bastion III playable migration with canonical economy, granary, hunts, fissure investigation/Lyra/manuscript and small visual upgrades",
         "evidence": "Exact source tests, existing I-II regression, III UI journey/save/offline/idempotency, same-camera Unity AB vs reference",
