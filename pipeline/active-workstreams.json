@@ -173,15 +173,16 @@
         "docs/bastion-iii/**",
         "tools/bastion-iii/**",
         ".github/workflows/bastion-iii-native.yml",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+        "scripts/check_unity_slice.py"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BASTION_III_PR117_ANDROID_117_DELIVERED_AVAILABLE",
-      "next": "Bastión III integrado y familia Android1.17 publicada. Sin trabajo pendiente bajo este encargo ni reserva Windows; disponible para próximo trabajo autorizado. Windows desktop generic build gate 40586040000 failed packaging resources.assets after Unity Edit/PlayMode passed: diagnose separately if desktop requested; does not revoke signed Android delivery.",
+      "phase": "PR122_MAIN_NATIVE_PROCESS_BUDGET_REPAIR_BEFORE_ANDROID_118",
+      "next": "Same-owner authorized main CI repair: match15minute full-suite process budget, retain every test/zero-skip condition, fresh-only evidence. Sole native lease remains Aldric2 until full main success; no Android build started yet.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1249,7 +1250,7 @@
           "reason": "Current owner-directed PR120 then PR122 continuation reconciles inherited city/UI integration scopes previously held by the same PR119/120 completion session. PR119 is merged and native-certified; no new city/world art production or extra Windows lease."
         }
       ],
-      "ownership_revision": 48,
+      "ownership_revision": 49,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
@@ -1349,7 +1350,8 @@
       "canonical_pr": 117,
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
-      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6."
+      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
+      "scope_extension_reason": "Existing main native-gate maintenance now owns its source verifier too: verify that the generic full-suite process budget is no shorter than the completed shared UI certification, preventing this real600second timeout regression. Same owner, no resource transfer, no new workstream."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -1940,8 +1942,8 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/tester-qa.yml"
       ],
-      "phase": "PR122_COMPLETE_NATIVE_AND_TWELVE_VIEW_REVIEW_PASS_READY_FOR_MAIN",
-      "next": "Merge same PR122 after final exact-input proof checks; retain sole native lease until required main native queue completes, then transfer same-owner lease to existing main masterplan for authorized signed Android1.18. No new source/model/paid credits or unrelated PR merges.",
+      "phase": "PR122_MERGED_FULL_UI_PASS_MAIN_GENERIC_PROCESS_BUDGET_REPAIR",
+      "next": "Finish repaired full main native gate before lease transfer and signed Android1.18. Source Unity subtree unchanged; full47/73/12 certificate40789374485 remains valid. Never accept old captures/desktop player uploaded after skipped build.",
       "delivery_definition": {
         "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
@@ -2073,7 +2075,13 @@
           "reason": "Actual STEP_BLOCKED proves supported=False with active road; body clear true in immediate probes.8cm opposed-ray-pair proxy fails at small bevel/grout intervals while35cm route samples alias them. Macro alternative: physical13cm support polygon on same actual mesh,16surrounding contacts/centre strictly inside convex hull, dense2.5cm leg checks, unchanged capsule/slopes/mandatory tests. Export exact runtime collider and visible geometry for independent reproduction. Cheap actual visible-mesh source analysis near both failed positions: old proxy rejects26/121 and43/121; new rejects0/121 in each. Source analysis is NOT native collider acceptance.",
           "art_approved": false
         }
-      ]
+      ],
+      "main_native_validation": {
+        "status": "PROCESS_TIMEOUT_NOT_ACCEPTED",
+        "run_id": 40793137492,
+        "source": "ead7a0ef8b59609f26cff08312d580682aac6bfe",
+        "reason": "Actual generic main PlayMode killed at exactly600seconds while normal Valoria/Frontier scene transitions continued. Full UI actual73suite already measured558.5seconds excluding project startup/teardown. Align only process budget with existing15minute full-certification gate; preserve all tests/deadlines/assertions/project identity and zero-skip requirements. No Windows build/benchmark accepted from this failed run."
+      }
     }
   ],
   "history": [
