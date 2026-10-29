@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T07:31:49.704Z",
+  "updated_at": "2026-10-29T07:37:04.287Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -50,21 +50,30 @@
       "branch": "feature/retention-engagement-evolution-20261028",
       "status": "active",
       "ownership_state": "claimed",
-      "claimed_at": "2026-10-28T21:59:00Z",
-      "base_main_sha": "358c1bcf98e052557734664b2a26cb24f56b77dc",
+      "claimed_at": "2026-10-29T07:37:04.287Z",
+      "base_main_sha": "7b92d0c391942e3630301aa2fb3409c5076b16d8",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
         "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
         "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
         "tools/early-retention/Program.cs",
-        "docs/early-retention/ENGAGEMENT_EVOLUTION_20261028.md"
+        "docs/early-retention/ENGAGEMENT_EVOLUTION_20261028.md",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs.meta",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs",
+        ".github/workflows/retention-engagement-domain.yml",
+        ".github/workflows/retention-engagement-native.yml",
+        ".github/workflows/ui-progression-cert.yml",
+        "docs/early-retention/first-evolution/**",
+        "docs/early-retention/engagement-native/**"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "UI-only text, colored seals and pre-existing painterly assets; no new art files, geometry, textures or external AI spend",
-      "dependency": "Stacked on PR124 for capacity compatibility; native runner reserved for PR122. After PR124 merge, retarget and compare the exact scene captures.",
-      "phase": "SOURCE_CI_PASS_NATIVE_VISUAL_PENDING",
-      "next": "PR125 is stacked on PR124. After PR122 releases Windows and PR124 is merged, reserve a native Unity slot for this workstream; run retention-engagement-native.yml, inspect real phone/portrait/landscape screenshots, fix any visual or gameplay defects, then merge on main.",
+      "dependency": "PR124 native validation owns Windows. Source consolidation uses no heavy resource; final candidate will retain all PR124 fixes.",
+      "phase": "RECONCILE_PR126_CONTRIBUTIONS_WITHOUT_DUPLICATE_SYSTEMS",
+      "next": "Preserve capacity-aware PR125 combat and earned report milestones, incorporate PR126 guardian naming/family discovery seals and save proof; one actual domain/UI system; obtain native capture and full regression after PR124.",
       "last_verified": {
         "source_sha": "f3b44295bb7cd0e2e2aae85624a78ed0f2591251",
         "domain_ci_run": 40770077163,
@@ -73,7 +82,18 @@
         "unity_native": "PENDING_RUNNER_HELD_BY_PR122",
         "art_approved": false,
         "android_released": false
-      }
+      },
+      "ownership_history": [
+        {
+          "owner": "codex-pr120-exact-visual-pr122-20261028",
+          "ownership_revision": 0,
+          "released_at": "2026-10-29T07:37:04.287Z",
+          "reason": "Owner explicitly requests completion of PR124/125/126. PR125 is the earliest canonical retention-evolution implementation; incorporate distinct PR126 contributions without duplicate rules."
+        }
+      ],
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "pr": 125
     },
     {
       "id": "eldoria-global-march-capacity-three-slots-20261028",
