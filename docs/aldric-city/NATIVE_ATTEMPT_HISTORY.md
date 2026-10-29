@@ -275,3 +275,25 @@ medida anteriormente; se mantiene la huella canónica orientada528a2fea….
 [NATIVE_CERTIFICATE_20261029.json](NATIVE_CERTIFICATE_20261029.json) fija
 la ejecución completa. Esto no es aprobación artística de un modelo nuevo
 ni certificación/perfilado de teléfono físico.
+
+
+## Main: límite externo de proceso —40793137492
+
+Tras fusionar122 enead7a0ef8b59609f26cff08312d580682aac6bfe, la
+comprobación genérica de main pasó EditMode, pero mató PlayMode a los
+600s exactos(00:19:44→00:29:44UTC), antes del XML final. El registro
+seguía mostrando transiciones normales Valoria/Frontier; no se acepta
+este intento ni sus artefactos como prueba de compilación actual.
+El mismo conjunto completo ya midió558,5s solo de tests en40789374485,
+sin contar arranque/cierre del proyecto. La certificación UI usa900s.
+Se alinea únicamente el presupuesto externo a esos15min, conservando
+cada test, sus plazos, comprobación de proyecto y cero fallos/omitidos.
+El verificador de fuente exige un límite no inferior al de la certificación
+completa. Sus entradas sparse incluyen ambos workflows y se solicita la
+comprobación nativa por el canal existente[unity-editor-cert], sin añadir
+un disparador del workflow sobre sí mismo.
+Un artefacto pequeño guarda enseguida los logs/XML frescos e identidad
+de ejecución. Capturas y ejecutable solo se adjuntan si su paso real ha
+pasado; el archivo anterior pudo contener resultados antiguos al saltarse
+el benchmark/build. La geometría/código Unity y certificado47/73/12
+permanecen intactos. No se inicia Android antes de resolver main.
