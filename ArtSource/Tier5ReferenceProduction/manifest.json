@@ -26,8 +26,12 @@
       "source_run": 40856011953,
       "finished_run": 40858960344,
       "optimized_triangles": 30000,
-      "rig_readiness": "PENDING_FREE_CHECK",
-      "unity_validated": false
+      "rig_readiness": "TRIPO_ORIGINAL_BIPED_ELIGIBLE_NOT_RIGGED",
+      "unity_validated": false,
+      "asset": "lyra",
+      "raw_triangles": 82769,
+      "raw_sha256": "ec3a2cee0882fab28a7365ffb30bb2711bbe55553c55170d2419e5420a770b52",
+      "mobile_profiled": false
     },
     {
       "id": "bastion-v",
@@ -40,7 +44,11 @@
       "source_run": 40859757106,
       "finished_run": 40860591811,
       "optimized_triangles": 45000,
-      "unity_validated": false
+      "unity_validated": false,
+      "asset": "bastion-v",
+      "raw_triangles": 87786,
+      "raw_sha256": "ac6636247d11f7320c5047206c56645b7d5d65dcefbe147ca049f67779e1a82c",
+      "mobile_profiled": false
     },
     {
       "id": "aserradero-v",
@@ -53,7 +61,11 @@
       "credits_consumed": 30,
       "finished_run": 40862999843,
       "optimized_triangles": 25000,
-      "unity_validated": false
+      "unity_validated": false,
+      "asset": "aserradero-v",
+      "raw_triangles": 91693,
+      "raw_sha256": "1618082a73774ae9f519e4debac784081ca64e35cc646ffa4c747a7a7b4ceb51",
+      "mobile_profiled": false
     },
     {
       "id": "cuartel-v",
@@ -66,22 +78,45 @@
       "source_run": 40863065503,
       "finished_run": 40864194283,
       "optimized_triangles": 34999,
-      "unity_validated": false
+      "unity_validated": false,
+      "asset": "cuartel-v",
+      "raw_triangles": 86497,
+      "raw_sha256": "4e821799850f1ff006d8fe0e2c12d723b51f604d2661cf8ead99b505cd550857",
+      "mobile_profiled": false
     },
     {
       "id": "granero-v",
       "reference_sha256": "220b02d3e0e4dc265c433f4dc42a98002e811590b1611777be3bdfb43a991278",
       "kind": "building",
       "target_triangles": 25000,
-      "status": "GENERATING",
-      "source_run": 40864299824
+      "status": "VISUAL_BASE_ACCEPTED_OPTIMIZED",
+      "source_run": 40864299824,
+      "asset": "granero-v",
+      "task_id": "0cf8f7b1-b67b-4df8-9c6d-77ef5fa0fa1e",
+      "credits_consumed": 30,
+      "raw_triangles": 80321,
+      "optimized_triangles": 25000,
+      "raw_sha256": "7bf93dc46cb4a47e65cec461a913fbd720fbde726c98b6f9734fe69b1fda621e",
+      "unity_validated": false,
+      "mobile_profiled": false,
+      "finished_run": 40865642323
     },
     {
       "id": "cantera-v",
       "reference_sha256": "c049d7be471cf54ee2b15daa40288f6e71c024e35a8f06d69bf1373785f54d90",
       "kind": "building",
       "target_triangles": 25000,
-      "status": "NOT_SUBMITTED"
+      "status": "VISUAL_BASE_ACCEPTED_OPTIMIZED",
+      "asset": "cantera-v",
+      "task_id": "c3a2423e-678d-4570-b82d-9f38dfe36caf",
+      "credits_consumed": 30,
+      "raw_triangles": 84575,
+      "optimized_triangles": 25000,
+      "raw_sha256": "1605fca4fd88baed27eecf14edb8905342d77bd305b670e2a093c0f40e91efd2",
+      "unity_validated": false,
+      "mobile_profiled": false,
+      "source_run": 40865697654,
+      "finished_run": 40866607112
     }
   ],
   "acceptance": "Source visual review only; no runtime integration, publication or physical mobile certification. Triangle targets are provisional and must preserve silhouette.",
@@ -89,5 +124,16 @@
     "lyra": "8e2dd496-5911-4b6f-b7f7-bf30b9094c48",
     "bastion": "440f8846-529c-4785-9377-80b48dcc1dd0"
   },
-  "reuse_decision": "Prior text-generated tier V models are preserved but do not satisfy the owner's exact-image production requirement. Lower-tier catalog buildings remain untouched."
+  "reuse_decision": "Prior text-generated tier V models are preserved but do not satisfy the owner's exact-image production requirement. Lower-tier catalog buildings remain untouched.",
+  "total_credits": 180,
+  "remaining_balance": 200,
+  "lyra_rig_check": {
+    "task_id": "63e1ea4c-a3dc-495b-9d38-5d30879f6e6e",
+    "credits": 0,
+    "riggable": true,
+    "rig_type": "biped",
+    "tested_model": "original"
+  },
+  "formal_art_approved": false,
+  "completed_at": "2026-10-29T11:40:47.796Z"
 }
