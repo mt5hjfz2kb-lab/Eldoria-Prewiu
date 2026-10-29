@@ -5,72 +5,27 @@ on:
     paths: ['.github/workflows/tier5-reference-production.yml']
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: eldoria-tier5-reference-production
   cancel-in-progress: false
 jobs:
-  recover:
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 15
-    steps:
-      - name: Recover existing paid task only
-        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
-        run: |
-          $ErrorActionPreference='Stop'
-          $out=Join-Path $env:USERPROFILE 'EldoriaArtSource\Tier5ReferenceProduction\lyra-image-r1'
-          $tripo=Get-Command tripo.cmd -ErrorAction SilentlyContinue
-          if (-not $tripo) { $tripo=Get-Command tripo -ErrorAction Stop }
-          $task='f4670d45-00c9-43eb-a658-902efdebee87'
-          for ($i=0;$i -lt 100;$i++) {
-            $json=(& $tripo.Source task get $task --json | Out-String).Trim()
-            if ($LASTEXITCODE -ne 0) { throw 'Task query failed; retry query only, never generation.' }
-            $json | Set-Content (Join-Path $out 'task-result.json')
-            $r=$json | ConvertFrom-Json
-            Write-Host ('TASK_STATUS '+$r.status+' '+$r.progress)
-            if ($r.status -eq 'success') { break }
-            if ($r.status -eq 'failed' -or $r.status -eq 'cancelled') { throw $json }
-            Start-Sleep -Seconds 5
-          }
-          if ($r.status -ne 'success') { throw 'Task remains pending; recover same task later.' }
-          Write-Host $json
-          function Get-Urls($o) {
-            if ($null -eq $o) { return }
-            if ($o -is [string]) { if ($o -match '^https://.*\.glb(\?|$)') { $o }; return }
-            if ($o -is [array]) { foreach ($v in $o) { Get-Urls $v }; return }
-            if ($o -is [pscustomobject]) { foreach ($p in $o.PSObject.Properties) { Get-Urls $p.Value } }
-          }
-          $urls=@(Get-Urls $r | Select-Object -Unique)
-          if ($urls.Count -lt 1) { throw 'No GLB URL returned; preserve response and inspect.' }
-          $n=0
-          foreach ($url in $urls) {
-            $name=if ($n -eq 0) { 'raw.glb' } else { 'raw-variant-'+$n+'.glb' }
-            Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile (Join-Path $out $name) -TimeoutSec 180
-            $n++
-          }
-          Get-ChildItem $out -Filter '*.glb' | Get-FileHash -Algorithm SHA256 | Format-Table
-          & $tripo.Source balance --json | Set-Content (Join-Path $out 'balance-after.json')
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: lyra-image-r1-source-${{ github.run_id }}
-          path: ~\EldoriaArtSource\Tier5ReferenceProduction\lyra-image-r1\*
-
   render-source:
-    needs: recover
     runs-on: ubuntu-latest
     timeout-minutes: 18
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: lyra-image-r1-source-${{ github.run_id }}
+          name: lyra-image-r1-source-40856011953
+          run-id: 40856011953
+          github-token: ${{ github.token }}
           path: source
-      - name: Install Blender and prepare isolated review script
+      - name: Install Blender with its Python GLB dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq blender
+          sudo apt-get install -y -qq blender python3-numpy
           curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tier5-reference-production/render_asset.py' -o render_asset.py
-      - name: Render existing source from eight angles without modifying it
+      - name: Render preserved source from eight angles
         run: |
           blender -b -t 4 --python-exit-code 1 --python render_asset.py -- source/raw.glb review character > blender-render.log 2>&1 || { tail -60 blender-render.log; exit 1; }
       - uses: actions/upload-artifact@v4
