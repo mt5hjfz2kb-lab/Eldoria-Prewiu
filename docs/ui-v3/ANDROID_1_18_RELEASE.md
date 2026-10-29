@@ -1,32 +1,55 @@
-# Android1.18 — PR120 y PR122 integradas
+# Android1.18 — entrega de PR120 y PR122
 
-Estado: APK1.18firmada y verificada; promoción pública solicitada. El canal sigue en1.17hasta comparar los bytes publicados.
+Publicada y disponible en el canal family18.
+[Descargar APK1.18](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code18/Eldoria-Valoria-code18.apk).
 
-- PR120 integrada y validada: UI/sistemas de Vigilantes y Exploradores; recompensas provisionales.
-- PR122 integrada: Aldric aprobado en calzada, animación y visibilidad/retorno reales.
-- Prueba compartida40789374485:47/47EditMode,73/73PlayMode,12capturas finales inspeccionadas.
-- Main40795797367:47/47EditMode,73/73PlayMode,compilación Windows y capturas del editor Unity aprobadas.
-- Certificado y originales:docs/aldric-city/NATIVE_CERTIFICATE_20261029.json.
-- Escena:Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity.
-- Código18/nombre1.18; paquete com.eldoria.valoria.v5test.
-- Certificado original SHA256:f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8.
-- Presupuesto0€. Sin reinicio de datos. Firma, versión, paquete y bytes verificados antes de solicitar publicación.
+PR120 y PR122 están integradas. La validación compartida40789374485 pasó
+47/47EditMode y73/73PlayMode, con12capturas finales de Aldric abiertas
+e inspeccionadas individualmente contra su referencia original. Las19
+vistas nativas de los sistemas120 y sus pruebas se conservan en su
+aceptación original. Main40795797367 volvió a pasar47/73, compiló Windows
+y completó las capturas del editor. El límite externo de PlayMode se
+alineó a15min sin cambiar ningún test ni sus exigencias.
 
-No hay prueba ni perfilado de teléfono físico. Una captura vertical nativa
-no se presenta como certificación de Android/iOS. El canal público conserva
-1.17 hasta la promoción exacta de un artefacto18validado.
+## Identidad exacta de la entrega
 
-## Candidato firmado verificado
+| Campo | Valor |
+|---|---|
+| Versión |1.18 / código18|
+| Paquete |com.eldoria.valoria.v5test|
+| Compilación firmada |[40798180869](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40798180869)|
+| Fuente APK |0f150e6a719f93d312ebb18d1ceac5edd7435ba9|
+| Publicación |[40801382525](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/40801382525)|
+| Activo público |686976107 / Eldoria-Valoria-code18.apk|
+| APK bytes |458.971.568|
+| APK SHA256 |7396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644|
+| Certificado original SHA256 |f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8|
+| ZIP de origen |Artefacto12864609668;445.956.695bytes|
+| ZIP SHA256 |9c3aaf77fc6cff494d9ebaa21bf20b6772ab24b5d7efe655118f377c6627ba6b|
 
-- Builder real:40798180869/SUCCESS; fuente0f150e6a719f93d312ebb18d1ceac5edd7435ba9.
-- Artefacto12864609668; ZIP445.956.695bytes/SHA2569c3aaf77fc6cff494d9ebaa21bf20b6772ab24b5d7efe655118f377c6627ba6b.
-- APK458.971.568bytes/SHA2567396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644.
-- Certificado APKv2 extraído independientemente de la APK: coincide exactamente con el originalf479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8. El SDK verificó además la firma criptográfica.
-- GLB aprobado encontrado dentro de la APK:assets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb,10.140.372bytes/SHA256c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b.
-- Bibliotecas ARM64 presentes; GLB legado vetado ausente; paquete/versionado/permisos verificados por las herramientas Android reales.
-- El constructor compila exclusivamente Valoria_City_World_UI.unity. Las capturas del benchmark genérico antiguo de main no se usan como aceptación visual de esta escena; la evidencia correcta son las19vistas120y12vistas122.
+El SDK verificó firma criptográfica, paquete, versión, ARM64 y permisos.
+Se descargó el artefacto y se comprobaron sus bytes y la APK. El certificado
+APKv2 se extrajo además independientemente y coincide con el original.
+El publicador descargó el activo PÚBLICO y lo comparó byte a byte antes
+de actualizar el canal. La API pública confirma tamaño y SHA256 idénticos.
 
-La solicitud de construcción queda desactivada para evitar duplicados. La
-solicitud de publicación fija la ejecución y fuente exactas; solo el
-publicador puede avanzar el canal después de descargar y comparar
-los bytes públicos. Aún sin prueba de teléfono físico.
+El modelo aprobado está dentro de la APK, comprobado directamente:
+assets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb,10.140.372bytes,
+SHA256c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b.
+El GLB legado vetado no está en el paquete. El constructor usa exclusivamente
+Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity.
+Las imágenes del benchmark genérico antiguo no se presentan como aceptación
+visual de esta escena; corresponden a otra comprobación histórica.
+
+## Estado y límites
+
+Recompensas provisionales, como autorizó el propietario. Mismo paquete
+y certificado, sin borrado de datos solicitado. Sin prueba ni perfilado
+de teléfono físico; las capturas verticales no se presentan como esa prueba.
+No se afirma identidad de píxeles entre cámara/iluminación estáticas de una
+referencia y animaciones de la ciudad. Es reutilización del modelo aprobado,
+no un nuevo ciclo de autoría artística.
+
+Las solicitudes de construcción y publicación quedan desactivadas tras la
+entrega para evitar repeticiones. Reserva Windows liberada, revisión51
+del workstream principal; los encargos124/125/126 permanecen intactos.

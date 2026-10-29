@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T01:01:52.480111+00:00",
+  "updated_at": "2026-10-29T01:42:45.230362+00:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -177,15 +177,13 @@
         "scripts/check_unity_slice.py",
         "docs/ui-v3/ANDROID_1_18_RELEASE.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "SIGNED_ANDROID_118_VERIFIED_EXACT_PUBLIC_PROMOTION_IN_PROGRESS",
-      "next": "Exact public promotion only; builder request disabled. Await publisher byte comparison and channel18, disable repeat release, document exact delivery then free native reservation. No more Unity runs needed for unchanged game source.",
+      "phase": "PR120_PR122_ANDROID_118_DELIVERED_NATIVE_VERIFIED_AVAILABLE",
+      "next": "PR120 andPR122 complete, merged and natively validated; signed Android1.18 delivered through family channel with exact public bytes/source/original certificate. Native reservation is free. Rewards remain provisional; physical-phone installation/performance and unrelated PR124/125/126 are not claimed.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1253,7 +1251,7 @@
           "reason": "Current owner-directed PR120 then PR122 continuation reconciles inherited city/UI integration scopes previously held by the same PR119/120 completion session. PR119 is merged and native-certified; no new city/world art production or extra Windows lease."
         }
       ],
-      "ownership_revision": 50,
+      "ownership_revision": 51,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
@@ -1364,6 +1362,24 @@
         "original_certificate_independently_verified": true,
         "approved_aldric_glb_packaged_exact": true,
         "physical_phone_tested": false
+      },
+      "android18_delivery": {
+        "status": "PUBLIC_DELIVERED",
+        "build_run_id": 40798180869,
+        "publisher_run_id": 40801382525,
+        "source": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
+        "release_asset_id": 686976107,
+        "apk_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code18/Eldoria-Valoria-code18.apk",
+        "bytes": 458971568,
+        "sha256": "7396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644",
+        "certificate_sha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+        "approved_aldric_glb_sha256": "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b",
+        "public_byte_comparison_passed": true,
+        "family_channel_version": 18,
+        "physical_phone_tested": false,
+        "rewards_provisional": true,
+        "build_request_disabled": true,
+        "release_request_disabled": true
       }
     },
     {

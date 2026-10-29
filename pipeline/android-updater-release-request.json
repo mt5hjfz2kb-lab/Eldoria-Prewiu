@@ -1,8 +1,8 @@
 {
-  "enabled": true,
+  "enabled": false,
   "buildRunId": 40798180869,
   "versionCode": 18,
   "expectedSourceSha": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
   "budgetEur": 0,
-  "note": "Owner-authorized integrated PR120/122 Android1.18 promotion. Actual signed builderSUCCESS40798180869, exact APK/source/458971568bytes/SHA7396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644 independently verified, original APKv2 signerf479ca92...and approved Aldric GLBc28a65...verified. Publish only this immutable candidate; advance channel only after public byte comparison. Physical phone not tested."
+  "note": "Android1.18/code18 PUBLISHED SUCCESS40801382525. Exact signed build40798180869/source0f150e6a719f93d312ebb18d1ceac5edd7435ba9, public asset458971568bytes SHA2567396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644, original certificatef479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8. Public byte comparison and channel18 promotion actually passed; release asset686976107. Disable repeat. Physical phone not tested; no data reset requested."
 }
