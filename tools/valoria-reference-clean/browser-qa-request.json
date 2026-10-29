@@ -21,11 +21,11 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Native298 complete observation now works; QA40948111663 loaded in24.199s with0runtime/networkerrors but tried zoom-in at authored near limit36. Observe a genuine positive wheel zoom-out first, then genuine negative wheel zoom-in, requiring visible movement in BOTH directions. Same exact successful native298 bytes; all normal-clock progression/framing/save-reload gates retained.0EUR.",
+  "reason": "Same successful native298 bytes. QA40951703465 passed cold fresh save, bidirectional real wheel zoom,8pan directions and city/world view retention,0runtime/networkerrors. After chapterI dialogue, telemetry+actual screenshot show full-screen Building:bastion restored with visible Volver a Valoria button. Harness must click that real return after dismissing narrative before using hidden city objective. Preserve every progression/time/framing/save gate; no runtime changes or rebuild;0EUR.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 24,
+  "attempt": 25,
   "method_note": "Pin final canonical main source and original WebGL artifact; retain all existing real pointer/touch, normal clock, direct GPU image/video and exact save/reload assertions.",
   "gameplay_source_unchanged": false,
   "revision": "native298"

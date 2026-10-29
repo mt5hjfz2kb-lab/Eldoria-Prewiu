@@ -680,6 +680,15 @@ async function main() {
       if (!checkedNavigation && latest.sawmill > 0) { await navigationCheck(); checkedNavigation = true; continue; }
       const desired = ['b1.build-sawmill', 'b1.gather-stone', 'b1.ascend', 'b2.train-archers', 'b2.defeat-engendro'].includes(latest.objective) ? 'portrait' : 'landscape';
       await setOrientation(desired); await dismissNarrative();
+      // Completing a chapter dialogue can restore the selected building screen
+      // after the earlier management check. Use its real visible Return button
+      // before attempting the city objective hidden behind that full-screen view.
+      if (latest.management?.destination) {
+        await capture(`management-after-narrative-${latest.management.destination}`);
+        await closeDetails();
+        need(!latest.management?.destination, 'Visible return button did not close management after narrative');
+        continue;
+      }
       const previousObjective = latest.objective;
       await clickControl('objective');
       await waitState(state => state.narrative || state.busy || state.selected || state.objective !== previousObjective, 'Objective locates an actionable destination', 10000);
