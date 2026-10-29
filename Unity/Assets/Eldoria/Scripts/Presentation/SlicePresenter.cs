@@ -918,6 +918,16 @@ namespace Eldoria.Presentation
                     "\nAldric + "+r.Troops+" arqueros · Poder "+r.PlayerPower+
                     " · "+r.Rounds+" rondas · Vida restante "+r.RemainingHealth+reward+
                     (string.IsNullOrEmpty(r.Reason)?"":"\n"+r.Reason);
+                if(r.Exchanges!=null&&r.Exchanges.Count>0){
+                    int dealt=0,taken=0;
+                    foreach(var ex in r.Exchanges){dealt+=ex.DamageDealt;taken+=ex.DamageTaken;}
+                    text+="\nESTADÍSTICAS DE LA MARCHA · ATQ "+r.PlayerAttack+
+                        " · DEF "+r.PlayerDefense+" · VIDA "+r.PlayerHealth+
+                        " · RUPTURA "+r.PlayerBreak+
+                        "\nDAÑO INFLIGIDO "+dealt+" · RECIBIDO "+taken;
+                    foreach(var ex in r.Exchanges)
+                        text+="\nRonda "+ex.Round+" · infliges "+ex.DamageDealt+" · recibes "+ex.DamageTaken;
+                }
             }
             return text;
         }
