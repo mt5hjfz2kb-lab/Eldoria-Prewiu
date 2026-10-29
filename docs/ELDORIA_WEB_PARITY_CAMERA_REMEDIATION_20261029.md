@@ -2,7 +2,7 @@
 
 ## Autoridad y seguridad
 Basado en `main` `d518576fc69efb0ba19d60757d374cc15ad3f36e` y `v0220/js/gameplay.js`, `v0220/js/hero-army.js`, `v0220/js/v030-depth.js`.
-Este PR es una **corrección aislada no fusionada**. No modifica el editor de la orientación de fachadas de PR #130, no consume Tripo, no publica APK/WebGL y no cambia el modelo antiguo vetado. Reconciliar con el titular del workstream Valoria antes de merge. Nunca interpretar un test estático como aprobación de estética o teléfono.
+Corrección autorizada en la PR132 existente, bajo el relevo del workstream canónico. Main y PR130 reconciliados. Sin gasto de Tripo ni sustitución de arte aprobado; APK1.19/WebGLnative298 siguen siendo las publicaciones previas. Nunca interpretar un test estático como aprobación de estética o teléfono.
 
 ## Cámaras: contrato de producto
 - CIUDAD: cámara `city.PlayerCamera`, `city.Controls`, encuadre/cota de Valoria y gestos de ciudad. No es una vista del mapa 4X.
@@ -32,3 +32,48 @@ Titular: codex-parity132-continuation-ab04f62d0b26, workstream canónico, revisi
 - Selector visible de duración1/5min en entrenamiento y obras. El Acechador aplica daño de emboscada y reduce18% su defensa; el informe guardado lo explica.
 - Prueba Unity ampliada: botones reales, T2 y guardado, acelerador elegido, cámara ciudad/mundo, tres escalas por orientación, raycast del Acechador, combate y persistencia. Pendiente ejecución/inspección antes de merge.
 - Informe por ronda y editor mixto por porcentajes pertenecen a #131, que sigue preparado/no iniciado; no son condición para rehacer la UI en este parche. Sin aprobación artística del modelo provisional ni certificación de teléfono físico.
+
+## Matriz web → Unity I–V
+Fuente: CHAPTERS de v0220/js/gameplay.js. Recursos con nombres originales para comparación exacta. Perfil normal OwnerIii:600 madera/500 piedra,20 reclutas,2250 poder. Los hitos permanecen en ChapterProgress.GrantedRewards; las partidas antiguas reconcilian premios alcanzados sin borrar el libro.
+
+| ID | Objetivo | Recompensa web/Unity | Estado |
+|---|---|---|---|
+| c1-sawmill | Reconstruye el Aserradero | wood 120 | GrantWebMissionRewards / GrantedRewards |
+| c1-wood | Recupera 600 madera | stone 80 | GrantWebMissionRewards / GrantedRewards |
+| c1-stone | Recupera 500 piedra | wood 120 | GrantWebMissionRewards / GrantedRewards |
+| c1-route | Despeja la ruta de Corruptos | wood 90, stone 55 | GrantWebMissionRewards / GrantedRewards |
+| c1-bastion | Eleva el Bastión a nivel 2 | power 80 | GrantWebMissionRewards / GrantedRewards |
+| chapter-1 | Completar capítulo 1 | wood 180, stone 140, power 120 | Libro persistente, pago único |
+| c2-barracks | Construye el Cuartel | wood 140, stone 90 | GrantWebMissionRewards / GrantedRewards |
+| c2-train | Entrena 20 arqueros | wood 220, stone 150 | GrantWebMissionRewards / GrantedRewards |
+| c2-power | Alcanza 2.250 de Poder de expedición | power 100 | GrantWebMissionRewards / GrantedRewards |
+| c2-spawnling | Derrota un Engendro de la Fisura | wood 120, stone 120 | GrantWebMissionRewards / GrantedRewards |
+| c2-bastion | Eleva el Bastión a nivel 3 | food 180 | GrantWebMissionRewards / GrantedRewards |
+| chapter-2 | Completar capítulo 2 | wood 240, stone 200, food 220, power 180 | Libro persistente, pago único |
+| c3-granary | Construye el Granero | wood 160, stone 110 | GrantWebMissionRewards / GrantedRewards |
+| c3-food | Reúne 500 comida | wood 120 | GrantWebMissionRewards / GrantedRewards |
+| c3-hunt | Completa 2 cacerías | food 220 | GrantWebMissionRewards / GrantedRewards |
+| c3-fissure | Somete la Fisura | stone 260, power 100 | GrantWebMissionRewards / GrantedRewards |
+| c3-infra | Prepara la infraestructura de Valoria | wood 220, stone 180 | GrantWebMissionRewards / GrantedRewards |
+| c3-bastion | Eleva el Bastión a nivel 4 | food 180 | GrantWebMissionRewards / GrantedRewards |
+| chapter-3 | Completar capítulo 3 | wood 280, stone 240, food 260, power 220 | Libro persistente, pago único |
+| c4-sawmill2 | Aserradero a nivel 2 | wood 180 | GrantWebMissionRewards / GrantedRewards |
+| c4-granary2 | Granero a nivel 2 | food 220 | GrantWebMissionRewards / GrantedRewards |
+| c4-barracks2 | Cuartel a nivel 2 | stone 180 | GrantWebMissionRewards / GrantedRewards |
+| c4-priority | Decide qué necesita Valoria primero | power 80 | GrantWebMissionRewards / GrantedRewards |
+| c4-bastion | Eleva el Bastión a nivel 5 | power 220 | GrantWebMissionRewards / GrantedRewards |
+| chapter-4 | Completar capítulo 4 | wood 360, stone 300, food 280, speedup5 1, power 260 | Libro persistente, pago único |
+| c5-stoneworks | Construye la Cantera de Valoria | wood 220, food 180 | GrantWebMissionRewards / GrantedRewards |
+| c5-stone | Mantén 1.200 piedra disponible | wood 240 | GrantWebMissionRewards / GrantedRewards |
+| c5-army | Alcanza 60 arqueros | wood 260, stone 180 | GrantWebMissionRewards / GrantedRewards |
+| c5-rare | Derrota al Acechador de Ceniza | food 260, stone 180 | GrantWebMissionRewards / GrantedRewards |
+| c5-bastion | Eleva el Bastión a nivel 6 | power 260 | Bloqueado: requiere VI |
+| chapter-5 | Completar capítulo 5 | wood 420, stone 360, food 320, speedup5 1, power 300 | Bloqueado: requiere VI |
+
+Decisiones y desbloqueos: prioridad IV (producción260 madera/180 piedra; defensa220 piedra/100 poder; civil180 madera/280 alimento), además del premio c4-priority de80 poder. DomainProbe comprueba las tres, repetición y recarga. T2 requiere CuartelIV,20 madera/12 piedra y30s por unidad, conserva T1. Aceleradores1/5min persisten y actúan solo en obra/Bastión/entrenamiento. El primer premio de15min es de capítuloVII: queda fuera deI–V, sin concesión artificial. Acechador exigeV, persiste victoria e informe; tres fixtures web y prueba de ruta/raycast nativa. Mejoras individuales aV siguen limitadas por Bastión y conservan sus pruebas visuales; no sustituyen los objetivos del capítuloV.
+
+## Evidencia nativa de la corrección
+Fuente Unity747763dce7c5041f061a1109690cd85a707f1398, ejecución40961914744. RecorridoIII–V:456 comprobaciones correctas. Revisión12937615601, ZIP176433052 bytes, SHA256c3a443030054388aae1bc882c9276b08464db93071e8f6ec790851d6b1de2c9a. Capturas examinadas: entrenamientoT2 horizontal, aceleración1min vertical, Acechador accesible (antes de completar el botín/reaparición), seis vistas reales de escala horizontal/vertical. Controles legibles, selección T2 preservada y geografía consistente. No es ART_APPROVED ni prueba física móvil. Suites EditMode/PlayMode, I–II y certificación general se registrarán al finalizar.
+
+### Revisión final del combate
+El web `resolveLayeredCombat0266` también entrega120 comida/110 piedra por victoria y repone el Acechador a60s. Corregido: botín en la marcha y el informe, cobro único al regresar; victoria persistente separada del temporizador. La misión c5-rare paga260 comida/180 piedra una sola vez. DomainProbe comprueba primera y segunda victoria, recarga y frontera exacta del cooldown. La primera prueba nativa747763 cubría el encuentro único inicial; debe repetirse sobre esta corrección antes de certificar el código final.

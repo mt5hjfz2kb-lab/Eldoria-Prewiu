@@ -161,7 +161,7 @@ namespace Eldoria.UI.RoyalGold {
     else if(id=="ash-stalker-valoria"){
      b.Function=L(en,"Enemigo raro del Bastión V. Su emboscada exige una marcha preparada.","Rare Bastion-V enemy. Its ambush requires a prepared expedition.");
      if(s.BastionLevel<5)reason=L(en,"Requiere Bastión V.","Requires Bastion V.");
-     if(c.AshStalkerDefeated){b.State=L(en,"Acechador derrotado","Stalker defeated");return b;}
+     if(c.AshStalkerRespawnUtcTicks>clock.UtcTicks)reason=L(en,"El Acechador aún no ha regresado.","The Stalker has not returned yet.");
     }
     else b.Function=id=="hunt-wolf"?L(en,"Poder requerido: 1450 · 140 comida y piel curtida.","Required power: 1450 · 140 food and treated hide."):L(en,"Poder requerido: 2050 · 190 comida y colmillo pétreo.","Required power: 2050 · 190 food and stone tusk.");
     if(c.InvestigationEndsUtcTicks>0&&id!="fissure-valoria")reason=L(en,"Aldric está investigando la fisura.","Aldric is investigating the fissure.");

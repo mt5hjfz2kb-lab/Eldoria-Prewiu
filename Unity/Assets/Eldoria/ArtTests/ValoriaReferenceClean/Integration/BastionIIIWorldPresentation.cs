@@ -213,7 +213,7 @@ namespace Eldoria.ReferenceClean {
     if(pair.Key=="fissure-valoria")visible&=!c.FissureClosed||host.City.Clock.UtcTicks<c.ClosingEndsUtcTicks;
     if(pair.Key=="hunt-wolf")visible&=host.City.Clock.UtcTicks>=c.WolfRespawnUtcTicks;
     if(pair.Key=="hunt-boar")visible&=host.City.Clock.UtcTicks>=c.BoarRespawnUtcTicks;
-    if(pair.Key=="ash-stalker-valoria")visible&=s.BastionLevel>=5&&!c.AshStalkerDefeated;
+    if(pair.Key=="ash-stalker-valoria")visible&=s.BastionLevel>=5&&host.City.Clock.UtcTicks>=c.AshStalkerRespawnUtcTicks;
     if(pair.Key=="meat-valoria")visible&=c.MeatRemaining>0;
     pair.Value.SetActive(visible);
     if(visible)EnsureVisibleImportedArt(pair.Value,pair.Key=="fissure-valoria"&&c.FissureClosed);

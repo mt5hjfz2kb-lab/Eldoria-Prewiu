@@ -119,14 +119,16 @@ namespace Eldoria.ReferenceClean.Editor {
    h.WorldCamera.aspect=aspect;landscape.RefreshForCapture();h.WorldNavigation.SetZoomLevel(2,true);h.Focus(node.gameObject);yield return null;
    Physics.SyncTransforms();var point=h.WorldCamera.WorldToScreenPoint(node.transform.position);
    Need(Physics.RaycastAll(h.WorldCamera.ScreenPointToRay(point),2000,1<<8,QueryTriggerInteraction.Collide).Any(x=>x.collider.GetComponentInParent<Eldoria.Presentation.WorldHotspot>()==node),"rare real world raycast selects encounter");
-   Shot(h,"parity-rare-before-battle");Do(h,"Fight","ash-stalker-valoria");Step(h,120);yield return Dismiss(h);Step(h,0);
+   Shot(h,"parity-rare-before-battle");Do(h,"Fight","ash-stalker-valoria");Step(h,2*SliceRules.TravelSeconds);yield return Dismiss(h);Step(h,0);
    Need(h.City.Gateway.Snapshot().ChapterThree.AshStalkerDefeated,"actual routed rare victory");
+   Need(h.City.Gateway.Snapshot().LastBattleReport.RewardFood==120&&h.City.Gateway.Snapshot().LastBattleReport.RewardStone==110,"rare base loot is separate from mission reward");
    Need(h.City.Gateway.Snapshot().ChapterProgress.GrantedRewards.Contains("c5-rare"),"rare mission ledger paid once");
-   Need(!node.gameObject.activeInHierarchy,"defeated unique rare hides after victory");
+   Need(!node.gameObject.activeInHierarchy,"defeated rare hides during cooldown");
    Need(h.TrySetWorld(false),"parity returns to city");yield return null;
    Need(city.enabled&&!h.WorldCamera.enabled&&Vector3.Distance(city.transform.position,cityPos)<.01f&&Mathf.Abs(city.orthographicSize-citySize)<.01f,"return restores city camera only");
    h.City.ReloadForProbe();yield return null;Step(h,0);
    Need(h.City.Gateway.Snapshot().ChapterThree.AshStalkerDefeated,"rare victory persisted through FileStateStore reload");
+   Step(h,60);Need(h.TrySetWorld(true),"reopen world after rare cooldown");yield return null;Step(h,0);Need(node.gameObject.activeInHierarchy,"same rare node respawns after60seconds without resetting mission");Need(h.TrySetWorld(false),"return after respawn verification");
   }
   static IEnumerator Probe(ValoriaIntegratedWorld h){
    for(int i=0;i<240&&!h.Ready;i++)yield return null;Need(h.Ready,"canonical scene ready");

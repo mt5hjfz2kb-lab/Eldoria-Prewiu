@@ -102,6 +102,7 @@ namespace Eldoria.Domain
         public int RemainingHealth;
         public int RewardWood;
         public int RewardStone;
+        public int RewardFood;
         public string Reason = "";
     }
     [Serializable] public sealed class ChapterProgressState
@@ -126,6 +127,7 @@ namespace Eldoria.Domain
         public int StoneworksLevel;
         public string DevelopmentPriority = "";
         public bool AshStalkerDefeated;
+        public long AshStalkerRespawnUtcTicks;
         public bool RankUnlocked, ExtractionOddity;
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;

@@ -286,6 +286,7 @@ namespace Eldoria.Application
                     RemainingHealth=s.LastBattleReport?.RemainingHealth??0,
                     RewardWood=s.LastBattleReport?.RewardWood??0,
                     RewardStone=s.LastBattleReport?.RewardStone??0,
+                    RewardFood=s.LastBattleReport?.RewardFood??0,
                     Reason=s.LastBattleReport?.Reason??""
                 },
                 ChapterProgress=new ChapterProgressState {
@@ -856,7 +857,7 @@ namespace Eldoria.Application
                     state.BuildingCompletesUtcTicks=clock.UtcTicks+TimeSpan.FromSeconds(level==0?(id=="stoneworks"?12:9):8+level*2).Ticks;break;
                 case "Gather":case "Fight":
                     if(id=="fissure-valoria"&&(!c.LyraContacted||c.FissureClosed))return Fail("Investiga y conoce a Lyra antes del asalto");
-                    if(id=="ash-stalker-valoria"&&(state.BastionLevel<5||c.AshStalkerDefeated))return Fail("Acechador no disponible");
+                    if(id=="ash-stalker-valoria"&&(state.BastionLevel<5||c.AshStalkerRespawnUtcTicks>clock.UtcTicks))return Fail("Acechador no disponible");
                     if(id=="meat-valoria"&&(command.Kind!="Gather"||c.MeatRemaining<=0))return Fail("Reserva no disponible");
                     if(id!="meat-valoria"&&command.Kind!="Fight")return Fail("Acción no válida");
                     if(id=="hunt-wolf"&&c.WolfRespawnUtcTicks>clock.UtcTicks||id=="hunt-boar"&&c.BoarRespawnUtcTicks>clock.UtcTicks)return Fail("La caza aún no está disponible");
@@ -918,12 +919,13 @@ namespace Eldoria.Application
             {
                 var stats=SliceRules.Expedition(m.Troops,m.HeroId);
                 var report=SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0),ambush:true);
-                if(report.Won)c.AshStalkerDefeated=true;
+                if(report.Won){c.AshStalkerDefeated=true;c.AshStalkerRespawnUtcTicks=due+TimeSpan.FromSeconds(60).Ticks;m.PendingFood=120;m.PendingStone=110;}
                 state.LastBattleReport=new BattleReportState{
                     TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
                     PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
                     Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
-                    Reason=report.Reason
+                    RewardFood=m.PendingFood,RewardStone=m.PendingStone,
+                    Reason=report.Reason+(report.Won?" Botín: 120 comida y 110 piedra al regresar.":"")
                 };
                 state.LastBattleReason=state.LastBattleReport.Reason;
                 return;
