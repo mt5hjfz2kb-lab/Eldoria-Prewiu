@@ -9,3 +9,5 @@ Los renders locales con geometría original sirven para descartar giros incorrec
 Estado: candidato de corrección, pendiente de capturas genuinas Unity y revisión de accesos. No ART PASS por código o ángulos solamente.
 
 Native40925435457 confirma las cinco fachadas alineadas, pero rechaza todavía el cierre: la puerta queda separada del camino y el raycast panorámico falla. Renderer.bounds es una caja de malla girada, no el borde real de fachada; se sustituye el anclaje estimado por el umbral medido sobre el GLB original. La caja táctil se obtiene de las ocho esquinas transformadas, evitando que InverseTransformVector sobre un tamaño cancele ejes cuando hay rotación. Se conservan imágenes y fallo originales.
+
+Causa del fallo panorámico identificada: RegionOneReferenceNodes.Refresh restablecía la caja I–IV al cambiar el zoom, antes del LateUpdate del presentador V. La representación antigua deja de escribir esa caja mientras existe la malla V; al recargar niveles anteriores recupera el tamaño original. Se mantiene la prueba de raycast exacta, sin relajar su condición.
