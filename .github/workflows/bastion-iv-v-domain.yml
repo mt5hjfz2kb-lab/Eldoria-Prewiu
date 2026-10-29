@@ -1,0 +1,22 @@
+name: '[ELDORIA] Bastion IV V domain parity'
+on:
+  push:
+    branches: [feature/bastion-iv-v-migration-20261029]
+    paths: ['tools/bastion-iv-v/**', 'Unity/Assets/Eldoria/Scripts/Domain/**', 'Unity/Assets/Eldoria/Scripts/Application/**', '.github/workflows/bastion-iv-v-domain.yml']
+permissions:
+  contents: read
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/bastion-iv-v
+            tools/bastion-iii
+            Unity/Assets/Eldoria/Scripts
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: dotnet run --project tools/bastion-iv-v/DomainProbe.csproj
+      - run: dotnet run --project tools/bastion-iii/DomainProbe.csproj
