@@ -44,6 +44,31 @@ namespace Eldoria.Tests
         {
             SliceContentProfiles.SetRuntimeProfileOverride(null);
         }
+        [Test] public void ArcherT2UnlocksAtBarracksFourAndSurvivesOfflineTraining()
+        {
+            var clock=new Clock();var state=Ready();
+            state.BastionLevel=4;state.BarracksLevel=3;
+            var memory=new Memory{State=state};var gateway=new LocalGateway(clock,memory);
+            Assert.That(gateway.Execute(Command(gateway,"locked-t2","Recruit","archer:t2:10")).Ok,Is.False);
+            // Test the actual Barracks IV unlock without changing the owned T1 stock.
+            memory.State.BarracksLevel=4;
+            gateway=new LocalGateway(clock,memory);
+            var before=gateway.Snapshot();
+            var start=Command(gateway,"t2-unique","Recruit","archer:t2:10");
+            Assert.That(gateway.Execute(start).Ok,Is.True);
+            Assert.That(gateway.Execute(start).Ok,Is.True,"Duplicate command is idempotent");
+            Assert.That(gateway.Snapshot().PendingRecruitTier,Is.EqualTo(2));
+            Assert.That(gateway.Snapshot().Resources.Wood,Is.EqualTo(before.Resources.Wood-200));
+            Assert.That(gateway.Snapshot().Resources.Stone,Is.EqualTo(before.Resources.Stone-120));
+            clock.Add(300);
+            gateway=new LocalGateway(clock,memory);
+            Assert.That(gateway.Snapshot().Available.ArcherT1,Is.EqualTo(36));
+            Assert.That(gateway.Snapshot().Available.ArcherT2,Is.EqualTo(10));
+            Assert.That(gateway.Snapshot().PendingRecruitArchers,Is.Zero);
+            Assert.That(gateway.Execute(Command(gateway,"t2-march","ConfigureMarch","march-main:0:10:0:aldric")).Ok,Is.True);
+            Assert.That(gateway.Snapshot().PreparedTroops.ArcherT2,Is.EqualTo(10));
+        }
+
         [Test] public void RecruitmentIsProportionalAndCostsAreAuthoritative()
         {
             Assert.That(SliceRules.RecruitSecondsFor(10),Is.EqualTo(300));
