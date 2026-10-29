@@ -62,7 +62,7 @@ public static class ValoriaReferenceCleanAndroidBuild {
    var scenes=new[]{ScenePath};string bundleManifest=null;
    if(request.content_updates)throw new InvalidOperationException(
     "The old isolated-scene remote bootstrap is not valid for the integrated city/world scene. Ship a signed full-scene APK without resetting data.");
-   // Reuse the integrated WebGL packager's proven exclusion of the unused
+   // Bounded release repair: reuse the integrated WebGL packager's proven exclusion of the unused
    // legacy source catalog. Scene dependencies are retained; source assets
    // and the catalog's exact bytes are restored in finally, even on failure.
    var dependencies=new HashSet<string>(AssetDatabase.GetDependencies(ScenePath,true));

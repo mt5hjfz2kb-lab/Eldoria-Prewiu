@@ -113,8 +113,8 @@
       "resources": [
         "windows-runner-heavy"
       ],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Corrected alignment and genuine native review complete; remaining stage only builds, verifies and publishes owner-authorized Android/WebGL.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Bounded packaging repair in ArtTests editor build source requires existing mandatory scope gate; no model, texture, scene or runtime authorship. Reuse existing WebGL legacy catalog pruning; no new artistic approval claimed.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
