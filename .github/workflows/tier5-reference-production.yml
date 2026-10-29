@@ -22,6 +22,15 @@ jobs:
           $tripo=Get-Command tripo.cmd -ErrorAction SilentlyContinue
           if (-not $tripo) { $tripo=Get-Command tripo -ErrorAction SilentlyContinue }
           if (-not $tripo) { throw 'Existing Tripo CLI missing; no installation or generation attempted.' }
+          $ref=Join-Path $out 'lyra.jpeg'
+          Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/ArtSource/Tier5ReferenceProduction/references/lyra.jpeg' -OutFile $ref
+          if ((Get-FileHash $ref -Algorithm SHA256).Hash.ToLowerInvariant() -ne '120a8e277cf8e25479fb13db4a41400d38605e50e5a0c4a393685701b93a8ca3') { throw 'Reference hash mismatch' }
+          & $tripo.Source make $ref --model v3.1-20260211 -p face_limit=85000 -p texture=true -p pbr=true -p texture_quality=standard -p geometry_quality=standard --dry-run --json --no-open 2>&1 | Out-File (Join-Path $out 'lyra-dryrun.json')
+          & $tripo.Source task --help 2>&1 | Out-File (Join-Path $out 'task-help.txt')
+          & $tripo.Source history --json 2>&1 | Out-File (Join-Path $out 'history.json')
+          Get-Content (Join-Path $out 'lyra-dryrun.json')
+          Get-Content (Join-Path $out 'task-help.txt')
+          Get-Content (Join-Path $out 'history.json')
           & $tripo.Source --help 2>&1 | Out-File (Join-Path $out 'help.txt')
           & $tripo.Source make --help 2>&1 | Out-File (Join-Path $out 'make-help.txt')
           & $tripo.Source doctor 2>&1 | Out-File (Join-Path $out 'doctor.json')
