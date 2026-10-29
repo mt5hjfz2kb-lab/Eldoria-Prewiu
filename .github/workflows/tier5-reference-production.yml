@@ -10,7 +10,7 @@ concurrency:
   group: eldoria-tier5-reference-production
   cancel-in-progress: false
 jobs:
-  render-source:
+  finish-source:
     runs-on: ubuntu-latest
     timeout-minutes: 18
     steps:
@@ -25,15 +25,28 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq blender python3-numpy
           curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tier5-reference-production/render_asset.py' -o render_asset.py
-      - name: Render preserved source from eight angles
+      - name: Optimize visually reviewed Lyra using canonical Eldoria processor
         run: |
-          blender -b -t 4 --python-exit-code 1 --python render_asset.py -- source/raw.glb review character > blender-render.log 2>&1 || { tail -60 blender-render.log; exit 1; }
+          curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tier5-reference-production/finish_asset.py' -o finish_asset.py
+          curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/dc4bea2f466fc356ef293da1ec041d651e618313/tools/tripo_module_blender.py' -o canonical.py
+          blender -b -t 4 --python-exit-code 1 --python finish_asset.py -- source/raw.glb finished 30000 canonical.py > blender-finish.log 2>&1 || { tail -80 blender-finish.log; exit 1; }
+          blender -b -t 4 --python-exit-code 1 --python render_asset.py -- finished/optimized.glb finished/review character > blender-render.log 2>&1 || { tail -60 blender-render.log; exit 1; }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: lyra-image-r1-review-${{ github.run_id }}
+          name: lyra-image-r1-finished-${{ github.run_id }}
           path: |
-            review/*
+            finished/**
             blender-render.log
+            blender-finish.log
 
-# Render retry uses existing raw model, no Tripo call.
+  rig-readiness:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Inspect free rig check support without rigging
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $tripo=Get-Command tripo.cmd -ErrorAction Stop
+          & $tripo.Source anim check --help
+          & $tripo.Source anim check f4670d45-00c9-43eb-a658-902efdebee87 --dry-run --json
