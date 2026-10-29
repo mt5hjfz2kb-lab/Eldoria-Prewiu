@@ -54,5 +54,11 @@ step = text.split(marker, 1)[1].split("\n      - ", 1)[0]
 assert '"-force-d3d11"' in step and '"-nographics"' not in step, (
     "Windows BuildPlayer must initialize the native-tested Direct3D backend, not Null graphics"
 )
+# The legacy packaging helper regenerates its three-scene list. Keep its
+# side effects after canonical-scene tests; otherwise33 real cases cannot boot.
+assert text.index("      - name: EditMode\n") < text.index(marker)
+assert text.index("      - name: PlayMode\n") < text.index(marker), (
+    "Legacy SceneSetup packaging must not replace the scene list before integrated PlayMode"
+)
 print("PASS source preflight: editor patch, packages, versioned scenes, modules, tests, full-suite budget and graphical Windows packaging")
 
