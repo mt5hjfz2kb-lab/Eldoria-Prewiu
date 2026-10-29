@@ -626,6 +626,12 @@ namespace Eldoria.Tests
                 button = PointerEventData.InputButton.Left,
                 position = closePoint
             };
+            foreach (var legacy in Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(x=>x.name=="Eldoria HUD"))
+            {
+                Assert.That(legacy.enabled,Is.False,"Integrated scene must own every visible HUD");
+                var legacyRaycaster=legacy.GetComponent<GraphicRaycaster>();
+                Assert.That(!legacyRaycaster||!legacyRaycaster.enabled,Is.True,"Legacy HUD cannot intercept actual player touches");
+            }
             var hits = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointer, hits);
             Assert.That(hits.Count, Is.GreaterThan(0));

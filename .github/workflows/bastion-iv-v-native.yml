@@ -151,6 +151,32 @@ jobs:
           $bakeArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"'+(Join-Path $evidence 'granary-bake.log')+'"'))
           $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $bakeArgs -Wait -PassThru
           if($bake.ExitCode -ne 0){throw 'Build-safe granary extraction failed'}
+      - name: Verify actual management touch ownership first
+        id: touch
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        timeout-minutes: 4
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          $xml=Join-Path $evidence 'UI-ownership.xml'
+          $log=Join-Path $evidence 'UI-ownership.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.BuildingSelectionRetainsAuthoritativeGatewayOffer','-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($process.ExitCode -ne 0){throw 'Actual management touch ownership failed'}
+          if(-not(Test-Path $xml)){throw 'Management touch results missing'}
+          [xml]$result=Get-Content $xml
+          if($result.'test-run'.result -ne 'Passed'){throw 'Management touch raycast must pass before repeating the full suite'}
+      - name: Preserve early management touch diagnostics
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        with:
+          name: bastion-iv-v-touch-${{ github.run_id }}
+          path: |
+            bastion-iv-v-source/docs/bastion-iv-v/native/UI-ownership.xml
+            bastion-iv-v-source/docs/bastion-iv-v/native/UI-ownership.log
+          if-no-files-found: error
       - name: Validate IV V persistence and capture real UI and art
         if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
         shell: powershell
@@ -175,7 +201,7 @@ jobs:
             bastion-iv-v-source/docs/bastion-iv-v/native/runtime-proof.log
           if-no-files-found: error
       - name: Run actual Unity EditMode suite
-        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |
@@ -190,7 +216,7 @@ jobs:
           [xml]$results=Get-Content $xml
           if($results.'test-run'.result -ne 'Passed'){throw 'Unity EditMode tests failed'}
       - name: Run actual Unity PlayMode suite
-        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
         # Fail boundedly instead of occupying the sole Windows Unity runner
         # until the entire job's 60-minute timeout if the editor deadlocks.
         timeout-minutes: 18
@@ -208,7 +234,7 @@ jobs:
           [xml]$results=Get-Content $xml
           if($results.'test-run'.result -ne 'Passed'){throw 'Unity PlayMode tests failed'}
       - name: Validate complete integrated I-II journey
-        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |
