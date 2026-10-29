@@ -115,8 +115,8 @@
       "art_production_routing_reason": "Completed IV–V integration and genuine native review in PR129; current continuation only closes metadata and observes automatic gates. No active art authoring or paid generation request.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "OWNER_REJECTED_TIER_V_ORIENTATION_RELEASE_BLOCKED",
-      "next": "Owner rejects sideways entrances in actual city V capture. Disable pending APK/WebGL candidate by revoking its live native lease; correct each building entrance alignment and recapture Unity before a new release. Never promote queued Android40922548307/WebGL40922689732.",
+      "phase": "CORRECTED_WRONG_EXPERIMENTAL_SCREENSHOT_REVIEW",
+      "next": "Wrong image delivered: city-V-orientation-270 applies EXTRA270 on top of runtime rotation270. Correct normal city-V-complete image now delivered; actual normal Bastion gate aligns with approach. Keep old release queued sources unpromotable until review resolved. Do not modify runtime orientation based on the wrong variant.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1420,7 +1420,8 @@
         "criterion": "Each approved tier V building must face forward coherently; Bastion door must line up with existing approach, not expose a side toward the road.",
         "previous_capture": "city-V-orientation-270-horizontal.png",
         "status": "VISUAL_REJECTED_ORIENTATION",
-        "publication_authorization": "Conditional on corrected visuals; old candidate must not publish."
+        "publication_authorization": "Conditional on corrected visuals; old candidate must not publish.",
+        "capture_diagnosis": "NativeProof: Shot(city-V-complete) BEFORE foreach yaw90/180/270 calling RotateCityForReview(90). The previously delivered orientation270 is an experimental extra rotation, not normal runtime. Normal city-V-complete reviewed directly and source proven."
       }
     },
     {
