@@ -83,6 +83,31 @@ namespace Eldoria.ReferenceClean.Editor
                 Canvas.ForceUpdateCanvases();
                 Need(host.Hud!=null&&host.PlayerCamera!=null,
                     "One real HUD and active camera at "+name);
+                if(name.Contains("active")||name.Contains("investigation-and"))
+                {
+                    var markers=host.Hud.GetComponentsInChildren<RectTransform>(false)
+                        .Where(x=>x.name=="Aldric expedition standard"||x.name=="Expedition standard 2"||x.name=="Expedition standard 3").ToArray();
+                    Need(markers.Length==3,"All three standards remain visible in actual capture "+name);
+                    var canvas=host.Hud.GetComponent<Canvas>();
+                    for(int i=0;i<markers.Length;i++)
+                    {
+                        var marker=markers[i];var graphic=marker.GetComponent<Image>();
+                        Need((host.PlayerCamera.cullingMask&(1<<marker.gameObject.layer))!=0&&
+                            graphic.depth>=0&&!graphic.canvasRenderer.cull,
+                            "Actual world camera renders expedition standard "+i+" at "+name);
+                        Need(marker.rect.width*marker.localScale.x*canvas.scaleFactor>=28f,
+                            "Actual expedition icon stays at least 28px in "+name);
+                        for(int j=0;j<i;j++)
+                            Need(Vector2.Distance(marker.anchoredPosition,markers[j].anchoredPosition)*canvas.scaleFactor>=65f,
+                                "Departing standards do not overlap in "+name);
+                    }
+                }
+                if(name.StartsWith("march-composer"))
+                {
+                    var text=host.Hud.GetComponentsInChildren<RoyalText>(false).First(x=>x.text!=null&&x.text.Contains("MARCHAS ACTIVAS"));
+                    Need(text.preferredHeight<=text.rectTransform.rect.height+1f,
+                        "Every actual capacity/hero/slot line fits the March Room in "+name);
+                }
             });
             Need(File.Exists(path)&&new FileInfo(path).Length>24000,
                 "Actual camera PNG is present and nonempty: "+name);
@@ -154,6 +179,7 @@ namespace Eldoria.ReferenceClean.Editor
                 "Second independent real quarry gathering starts");
             Need(gateway.Execute(Command(gateway,"native-march-3","Fight","corrupt-scout")).Ok,
                 "Third independent real enemy march starts");
+            ((ValoriaReferenceCleanGameplay.TestClock)host.City.Clock).Step(1);
             snap=gateway.Snapshot();
             Need(MarchCapacityRules.ActiveCount(snap,host.City.Clock.UtcTicks)==3 &&
                 snap.ExtraMarches.Count==2,

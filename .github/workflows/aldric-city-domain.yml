@@ -48,7 +48,7 @@ jobs:
           checks=['ValoriaIntegratedWorld','GltfImport','GameObjectInstantiator','UnityWebRequest',
             'ApprovedSha256','ALDRIC_CITY_SAFE_ROUTE_VERIFIED','SkinnedMeshRenderer',
             'Aldric_Idle_v1','Aldric_Walk_v1','Axial_Paving','RoadWaypoints',
-            'IsCityActorVisible','March.HeroId','InvestigationEndsUtcTicks',
+            'IsCityActorVisible','MarchCapacityRules.WorldMarches(s)','m.HeroId','InvestigationEndsUtcTicks',
             'WorldToViewportPoint','SceneManager.sceneLoaded','nextAwayRefresh']
           for part in checks:
               assert part in code,part

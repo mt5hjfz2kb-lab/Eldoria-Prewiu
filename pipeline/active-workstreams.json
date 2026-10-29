@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T07:37:04.287Z",
+  "updated_at": "2026-10-29T07:51:45.059Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -121,7 +121,9 @@
         "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs.meta",
         "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
         "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
-        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRuntimeTests.cs"
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRuntimeTests.cs",
+        ".github/workflows/aldric-city-domain.yml",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs"
       ],
       "resources": [
         "windows-runner-heavy"
@@ -130,8 +132,8 @@
       "art_production_routing_reason": "Runtime-only AI-authored uGUI map-marker integration; no new 3D, material or asset content. Owner authorized 3-march gameplay change.",
       "art_production_request": "pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json",
       "dependency": "PR120 and PR122 merged and Android18 delivered. No active heavy claim; preserve their certified runtime and paid source assets.",
-      "phase": "RECONCILE_CURRENT_MAIN_AND_NATIVE_VALIDATION",
-      "next": "Reconcile latest main, audit global slots/save/runtime Aldric, obtain genuine native three-march and regression evidence, inspect captures, merge canonical PR124.",
+      "phase": "NATIVE_VISUAL_REWORK",
+      "next": "Fix actual visible world marker layer/projection/separation and status height; align source wiring guard with WorldMarches; wait for actual Walk contribution in native test, preserving geometry and animation assertions; rerun full native source.",
       "ownership_history": [
         {
           "owner": "codex-pr120-exact-visual-pr122-20261028",
@@ -142,7 +144,16 @@
       ],
       "ownership_revision": 1,
       "write_scope_released": false,
-      "pr": 124
+      "pr": 124,
+      "last_verified": {
+        "source_sha": "001138a4971748f6bf420b1e36af6f744aff9e71",
+        "native_run": 40836165983,
+        "march_domain": "PASS",
+        "native_march_functional": "PASS",
+        "native_views": 8,
+        "visual_review": "REWORK: departure standards overlap, UI layers excluded from world-camera capture, landscape status clipped",
+        "shared_regression": "FAILED_PREFLIGHT_WALK_ANIMATION_SAMPLE_RACE"
+      }
     },
     {
       "id": "valoria-master-plan-layered-construction-20261016",

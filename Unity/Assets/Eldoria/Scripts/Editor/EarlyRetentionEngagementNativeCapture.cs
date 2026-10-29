@@ -149,6 +149,18 @@ namespace Eldoria.ReferenceClean.Editor
                 "Useful battle review comes from the actual combat report");
             ui.SynchronizeLayout();
             Shot(host,"vigilants-battle-result-landscape",1600,900);
+            foreach(int guardian in new[]{10,20,25})
+            {
+                state=host.City.Gateway.Snapshot();
+                state.Retention.LastClearedStage=guardian-1;
+                Save(host,state);yield return new WaitForSecondsRealtime(.3f);
+                ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Vigilants);
+                ui.SynchronizeLayout();
+                Need(FindText(hud,"Real enemy and trait").text.Contains(EarlyRetentionRules.GuardianName(guardian)),
+                    "Actual named guardian is shown for milestone "+guardian);
+                Shot(host,"vigilants-guardian"+guardian+"-landscape",1600,900);
+                Shot(host,"vigilants-guardian"+guardian+"-phone",390,844);
+            }
             // Stage 15's approved original creature remains present; only its
             // trait and combat numbers change.
             state=host.City.Gateway.Snapshot();
@@ -166,12 +178,16 @@ namespace Eldoria.ReferenceClean.Editor
             state.Available=new ArmyRoster{ArcherT1=1};
             state.MarchConfigured=false;
             state.PreparedTroops=new ArmyRoster();
+            int lossWood=state.Resources.Wood,lossStone=state.Resources.Stone,
+                lossXp=state.Retention.AldricExperience;
             Save(host,state);yield return new WaitForSecondsRealtime(.3f);
             ui.SynchronizeLayout();
             attack.onClick.Invoke();
             var loss=host.City.Gateway.Snapshot();
             Need(loss.Retention.LastClearedStage==14&&!loss.LastBattleReport.Won&&
-                loss.LastBattleReport.TargetId=="vigilant:15"&&loss.LastBattleReport.Rounds>0,
+                loss.LastBattleReport.TargetId=="vigilant:15"&&loss.LastBattleReport.Rounds>0&&
+                loss.Resources.Wood==lossWood&&loss.Resources.Stone==lossStone&&
+                loss.Retention.AldricExperience==lossXp,
                 "Actual one-troop defeat neither advances nor pays a false victory");
             Need(victory.text=="DERROTA"&&victory.gameObject.activeInHierarchy,
                 "Losing combat presents a distinct real defeat banner");

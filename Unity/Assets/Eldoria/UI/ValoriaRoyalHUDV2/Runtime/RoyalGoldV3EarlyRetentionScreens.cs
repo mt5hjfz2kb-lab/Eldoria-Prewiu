@@ -640,10 +640,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 var updated=gateway.Snapshot();
                 var order=updated.Retention?.Orders?.FirstOrDefault(x=>x.Id==target);
                 bool discovered=kind=="ScoutClaim" && order!=null&&order.Claimed;
-                victoryTitle.Put(discovered?"HALLAZGO · "+EarlyRetentionRules.ScoutDiscoveryTitle(order):
+                victoryTitle.Put(discovered?"HALLAZGO REGISTRADO":
                     "EXPLORADORES EN CAMINO");
                 victoryTitle.color=Gold;
-                victoryDetail.Put(discovered?EarlyRetentionRules.ScoutDiscoveryText(order):result.Message);
+                victoryDetail.Put(discovered?EarlyRetentionRules.ScoutDiscoveryTitle(order)+"\n"+
+                    EarlyRetentionRules.ScoutDiscoveryText(order):result.Message);
                 victoryStarted=Time.unscaledTime;
                 if(discovered)discoverySealPulseUntil=Time.unscaledTime+.85f;
                 victoryUntil=victoryStarted+(discovered?5f:1.9f);
@@ -871,13 +872,13 @@ namespace Eldoria.UI.RoyalGold.V2
                 // The real gateway result supplies the reward text unchanged.
                 float bannerWidth=Mathf.Min(heroScene.rect.width-24f,
                     portrait?620f:615f);
-                float bannerHeight=208f;
+                float bannerHeight=270f;
                 Pos(victoryBanner,new Vector2(.5f,.5f),new Vector2(.5f,.5f),
                     0f,0f,bannerWidth,bannerHeight);
                 TL(victoryTitle.rectTransform,15f,10f,bannerWidth-30f,
                     portrait?84f:90f);
                 TL(victoryDetail.rectTransform,16f,portrait?100f:107f,
-                    bannerWidth-32f,portrait?96f:89f);
+                    bannerWidth-32f,portrait?158f:150f);
                 victoryTitle.fontSize=portrait?32:36;
                 victoryDetail.fontSize=portrait?26:25;
             }
