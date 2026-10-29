@@ -9,41 +9,49 @@ concurrency:
   group: eldoria-tier5-reference-production
   cancel-in-progress: false
 jobs:
-  lyra-image-r1:
+  recover:
     runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 6
+    timeout-minutes: 15
     steps:
-      - name: Submit exactly one image-based Lyra task with persistent duplicate guard
+      - name: Recover existing paid task only
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $ErrorActionPreference='Stop'
           $out=Join-Path $env:USERPROFILE 'EldoriaArtSource\Tier5ReferenceProduction\lyra-image-r1'
-          New-Item -ItemType Directory -Force $out | Out-Null
           $tripo=Get-Command tripo.cmd -ErrorAction SilentlyContinue
           if (-not $tripo) { $tripo=Get-Command tripo -ErrorAction Stop }
-          $ref=Join-Path $out 'reference.jpeg'
-          Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/ArtSource/Tier5ReferenceProduction/references/lyra.jpeg' -OutFile $ref
-          if ((Get-FileHash $ref -Algorithm SHA256).Hash.ToLowerInvariant() -ne '120a8e277cf8e25479fb13db4a41400d38605e50e5a0c4a393685701b93a8ca3') { throw 'Reference hash mismatch' }
-          $result=Join-Path $out 'submission.json'
-          if (Test-Path $result) { Get-Content $result; Write-Host 'EXISTING_SUBMISSION_REUSED_NO_NEW_CHARGE'; exit 0 }
-          $lock=Join-Path $out 'SUBMISSION_STARTED.lock'
-          if (Test-Path $lock) { throw 'Previous submission ambiguous. Recover CLI history; never resubmit.' }
-          $doctor=(& $tripo.Source doctor --json | Out-String) | ConvertFrom-Json
-          if (-not $doctor.ok) { throw 'CLI authentication not ready' }
-          $bal=(& $tripo.Source balance --json | Out-String) | ConvertFrom-Json
-          if ([double]$bal.balance -lt 30) { throw 'Insufficient prepaid credits. No purchase.' }
-          $bal | ConvertTo-Json | Set-Content (Join-Path $out 'balance-before.json')
-          $args=@('make',$ref,'--model','v3.1-20260211','-p','face_limit=85000','-p','texture=true','-p','pbr=true','-p','texture_quality=standard','-p','geometry_quality=standard','-p','texture_alignment=original_image','-p','orientation=align_image','--name','eldoria-lyra-reference-r1-20261029','--no-wait','--json','--yes','--quiet','--no-open','-o',$out)
-          $args | ConvertTo-Json | Set-Content (Join-Path $out 'configuration.json')
-          'Owner authorized image-based Lyra production. H3.1 standard image+texture:30 credits, official developers.tripo3d.ai/en/models/v3-1. One candidate, no premium options, no automatic retries.' | Set-Content (Join-Path $out 'authorization.txt')
-          [IO.File]::WriteAllText($lock,[DateTime]::UtcNow.ToString('o'))
-          $json=(& $tripo.Source @args | Out-String).Trim()
-          $exitCode=$LASTEXITCODE
-          $json | Set-Content $result
+          $task='f4670d45-00c9-43eb-a658-902efdebee87'
+          for ($i=0;$i -lt 100;$i++) {
+            $json=(& $tripo.Source task get $task --json | Out-String).Trim()
+            if ($LASTEXITCODE -ne 0) { throw 'Task query failed; retry query only, never generation.' }
+            $json | Set-Content (Join-Path $out 'task-result.json')
+            $r=$json | ConvertFrom-Json
+            Write-Host ('TASK_STATUS '+$r.status+' '+$r.progress)
+            if ($r.status -eq 'success') { break }
+            if ($r.status -eq 'failed' -or $r.status -eq 'cancelled') { throw $json }
+            Start-Sleep -Seconds 5
+          }
+          if ($r.status -ne 'success') { throw 'Task remains pending; recover same task later.' }
           Write-Host $json
-          if ($exitCode -ne 0) { throw ('Submission failed or uncertain; no retry. Exit '+$exitCode) }
+          function Get-Urls($o) {
+            if ($null -eq $o) { return }
+            if ($o -is [string]) { if ($o -match '^https://.*\.glb(\?|$)') { $o }; return }
+            if ($o -is [array]) { foreach ($v in $o) { Get-Urls $v }; return }
+            if ($o -is [pscustomobject]) { foreach ($p in $o.PSObject.Properties) { Get-Urls $p.Value } }
+          }
+          $urls=@(Get-Urls $r | Select-Object -Unique)
+          if ($urls.Count -lt 1) { throw 'No GLB URL returned; preserve response and inspect.' }
+          $n=0
+          foreach ($url in $urls) {
+            $name=if ($n -eq 0) { 'raw.glb' } else { 'raw-variant-'+$n+'.glb' }
+            Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile (Join-Path $out $name) -TimeoutSec 180
+            $n++
+          }
+          Get-ChildItem $out -Filter '*.glb' | Get-FileHash -Algorithm SHA256 | Format-Table
+          & $tripo.Source balance --json | Set-Content (Join-Path $out 'balance-after.json')
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: lyra-image-r1-submission-${{ github.run_id }}
+          name: lyra-image-r1-source-${{ github.run_id }}
           path: ~\EldoriaArtSource\Tier5ReferenceProduction\lyra-image-r1\*
