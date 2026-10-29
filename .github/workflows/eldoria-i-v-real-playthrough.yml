@@ -35,6 +35,7 @@ jobs:
             tools/valoria-reference-clean
             tools/closeout
             tools/workstream-lease
+            docs/evidence/valoria-reference-clean/environment-city-wide-banner-after.png
       - name: Avoid interfering with active Unity/Blender sessions
         shell: powershell
         run: |
