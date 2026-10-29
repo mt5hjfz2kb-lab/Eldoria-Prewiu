@@ -10,63 +10,33 @@ concurrency:
   group: eldoria-tier5-reference-production
   cancel-in-progress: false
 jobs:
-  source:
-    runs-on: [self-hosted, windows, unity-6000-3-23f1]
-    timeout-minutes: 20
-    steps:
-      - name: Generate or recover one exact approved reference
-        id: source
-        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
-        run: |
-          $script=Join-Path $env:RUNNER_TEMP 'tier5-run-one.ps1'
-          Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tier5-reference-production/run_one.ps1' -OutFile $script
-          $request=Join-Path $env:RUNNER_TEMP 'tier5-selected-request.json'
-          @{asset='cuartel-v';iteration=1;credit_limit=30;submit_authorized=$true;reference_url='https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/ArtSource/Tier5ReferenceProduction/references/cuartel-v.jpeg';reference_sha256='3c0e9b2915a03bd87f32d1c3ab4dcf86461a5b43f7a3e25e73f2bf71343309e0'} | ConvertTo-Json | Set-Content $request
-          & $script -RequestPath $request
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cuartel-v-image-r1-source-${{ github.run_id }}
-          path: ${{ steps.source.outputs.source_dir }}/*
-      - name: Free Lyra rig eligibility check
-        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
-        run: |
-          $env:TRIPO_CLIENT_APP='codex'
-          $env:TRIPO_DISTRIBUTION_CHANNEL='codex_plugin'
-          $out=Join-Path $env:USERPROFILE 'EldoriaArtSource\Tier5ReferenceProduction\lyra-image-r1'
-          $result=Join-Path $out 'rig-eligibility.json'
-          if (-not (Test-Path $result)) {
-            $tripo=Get-Command tripo.cmd -ErrorAction Stop
-            & $tripo.Source anim check f4670d45-00c9-43eb-a658-902efdebee87 --json --yes --quiet --no-open --timeout 300 -o $out | Set-Content $result
-            if ($LASTEXITCODE -ne 0) { Write-Warning 'Eligibility check did not complete; inspect saved response' }
-          }
-          Get-Content $result
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: lyra-rig-eligibility-${{ github.run_id }}
-          path: ~/EldoriaArtSource/Tier5ReferenceProduction/lyra-image-r1/rig-eligibility.json
-  review:
-    needs: source
+  finish-source:
     runs-on: ubuntu-latest
     timeout-minutes: 18
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: cuartel-v-image-r1-source-${{ github.run_id }}
+          name: cuartel-v-image-r1-source-40863065503
+          run-id: 40863065503
+          github-token: ${{ github.token }}
           path: source
-      - name: Prepare Blender source review
+      - name: Install Blender with its Python GLB dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq blender python3-numpy
           curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tier5-reference-production/render_asset.py' -o render_asset.py
-      - name: Render source before artistic approval
+      - name: Optimize visually reviewed Barracks V using canonical Eldoria processor
         run: |
-          blender -b -t 4 --python-exit-code 1 --python render_asset.py -- source/raw.glb review building > blender-render.log 2>&1 || { tail -80 blender-render.log; exit 1; }
+          curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tier5-reference-production/finish_asset.py' -o finish_asset.py
+          curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/dc4bea2f466fc356ef293da1ec041d651e618313/tools/tripo_module_blender.py' -o canonical.py
+          blender -b -t 4 --python-exit-code 1 --python finish_asset.py -- source/raw.glb finished 35000 canonical.py > blender-finish.log 2>&1 || { tail -80 blender-finish.log; exit 1; }
+          blender -b -t 4 --python-exit-code 1 --python render_asset.py -- finished/optimized.glb finished/review building > blender-render.log 2>&1 || { tail -60 blender-render.log; exit 1; }
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cuartel-v-image-r1-review-${{ github.run_id }}
+          name: cuartel-v-image-r1-finished-${{ github.run_id }}
           path: |
-            review/*
+            finished/**
             blender-render.log
+            blender-finish.log
+
