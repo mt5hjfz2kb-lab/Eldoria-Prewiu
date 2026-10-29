@@ -1,6 +1,6 @@
 # Bastión IV–V · revisión de migración
 
-Fuente de ejecución: `1469708a79dfb8c0ef0b0faa4bcb971ce88a4b32`. Escena canónica `Valoria_City_World_UI.unity`, Unity 6000.3.23f1, render D3D11 real. Esta revisión acepta el alcance visual de IV–V; la integración exige además los checks técnicos de la PR129.
+Fuente de ejecución: `1469708a79dfb8c0ef0b0faa4bcb971ce88a4b32`. Escena canónica `Valoria_City_World_UI.unity`, Unity 6000.3.23f1, render D3D11 real. Esta revisión acepta el alcance visual de IV–V. Los checks generales y web también pasaron y PR129 está integrada en main.
 
 ## Resultado visual
 
@@ -48,3 +48,11 @@ No se han publicado APK/WebGL ni gastado créditos. Esta validación no mide FPS
 Artefacto nativo completo: `12913871649`, SHA-256 `0d2ceb5f8a24f51ebfc791be5d66a6f698e312645d099a618c028e729a0b7433`. La certificación general adicional se consulta en los checks de PR129 y debe pasar antes de integrar. El snapshot de ejecución ya no mantiene una reserva pesada al concluir; el mismo propietario conserva la escritura hasta el cierre.
 
 La certificación general distingue los destinos opacos de la ciudad expuesta. Comprueba geometría real de pantalla completa, opacidad, bloqueo y controles activos para construcción/ascenso/entrenamiento/marchas; conserva las exigencias originales de encuadre y área de ciudad libre para las vistas de mundo pertinentes. Ver el diagnóstico del control40911481759 en `MIGRATION.md`.
+
+## Cierre de integración
+
+PR129 integrada en `b7aefa07f9897fd8fe7c43f9bc3b79e4df351d5e`. Su árbol Git `33c632bb2399ff1a98a25d4dd67f8ad4ae7dd7f0` coincide exactamente con el certificado en `9639d946aafbb724f75cc50f6978007106b1c719`, no solo con una rama parecida.
+
+Control general `40914641659` SUCCESS:54/54 EditMode,73/73 PlayMode,44 comprobaciones I–II, tres marchas simultáneas, Aldric y12 vistas, siete destinos de gestión certificados y las ganancias originales de área libre de ciudad. Artefacto general `12916382095` (SHA-256 `769370db9ef64f55b7cbb49d19ed893a40c53200826cb69a86f8b1226bd2274d`); Aldric compartido `12917245613`; tres marchas `12914019994`. Tester web `40914641605` SUCCESS, incluido Arco I completo desde partida nueva.
+
+Se libera la asignación canónica al estado disponible y se conserva el mismo ID, historial y fuentes. El cierre solo actualiza documentación/registro; no modifica los archivos ejecutables ya certificados ni publica una versión distribuida.

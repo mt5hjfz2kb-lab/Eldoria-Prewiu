@@ -17,7 +17,7 @@ El modelo V de cada edificio reemplaza únicamente su propia arquitectura al ter
 
 La interfaz abre destinos independientes sobre el Canvas Royal Gold existente, conserva navegación y partida, y oculta los paneles contextuales mientras una pantalla de gestión está abierta. La imagen de referencia se identifica como arquitectura de nivel V para no confundirla con el edificio actual.
 
-Estado de implementación: dominio IV–V y regresión III aprobados; Native40906347082 completa 54/54 EditMode,73/73 PlayMode,386 comprobaciones IV–V,70 capturas, toque real y recorrido I–II. Revisión visual del alcance aceptada en `FINAL_REVIEW.md`. La integración exige también el control general de PR129. No se certifica rendimiento físico Android/iOS ni se autoriza una publicación.
+Estado de implementación: dominio IV–V y regresión III aprobados; Native40906347082 completa 54/54 EditMode,73/73 PlayMode,386 comprobaciones IV–V,70 capturas, toque real y recorrido I–II. Revisión visual del alcance aceptada en `FINAL_REVIEW.md`. PR129 integrada; el control general40914641659 y el tester web40914641605 también han pasado. No se certifica rendimiento físico Android/iOS ni se autoriza una publicación.
 
 ## Verificación y métodos de trabajo
 
@@ -51,3 +51,5 @@ Documentación técnica consultada: Unity 6000.3 `Canvas` y orden de dibujo. Se 
 El control general `40911481759` completó compilación, tres marchas simultáneas y Aldric. Su recorrido I–II también terminó con `INTEGRATION_PASS_ART_REVIEW_REQUIRED` y 44 comprobaciones, pero el workflow siguió exigiendo un rectángulo de ciudad expuesta en las capturas de construcción y ascenso. Las PNG reales muestran los destinos independientes solicitados; no hay ciudad visible detrás de su fondo opaco.
 
 Se añade un registro nativo de cada destino: identidad de pantalla/edificio, dimensiones, cobertura completa del Canvas, opacidad, bloqueo táctil y controles activos. Las capturas de construcción y ascenso se certifican junto a entrenamiento/marchas como gestión real. Se conservan sin reducción las comparaciones de ciudad expuesta: bosque horizontal y vertical, modelo encuadrado, área no inferior a V2 y ganancia mínima de 8 puntos porcentuales en vertical. En el control fallido sus ganancias reales ya fueron +6,56 pp horizontal y +19,13 pp vertical. No se cambian cámaras ni el baseline para fabricar un aprobado.
+
+Cierre: PR129 integrada en `b7aefa07f9897fd8fe7c43f9bc3b79e4df351d5e`; árbol Git idéntico al merge certificado `9639d946`. La certificación general40914641659 y el tester web40914641605 terminaron SUCCESS. No queda trabajo IV–V pendiente en este encargo. No hay publicación de APK/WebGL ni gasto adicional.
