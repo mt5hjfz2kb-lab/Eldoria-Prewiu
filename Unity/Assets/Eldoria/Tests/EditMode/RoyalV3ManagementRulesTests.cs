@@ -44,6 +44,32 @@ namespace Eldoria.Tests
         {
             SliceContentProfiles.SetRuntimeProfileOverride(null);
         }
+        [Test] public void AcceleratorsOnlyReducePaidCompatibleTasksOnce()
+        {
+            var clock=new Clock();var state=Ready();state.BastionLevel=4;
+            var store=new Memory{State=state};var g=new LocalGateway(clock,store);
+            Assert.That(g.Execute(Command(g,"no-task","UseSpeedup","training:1")).Ok,Is.False);
+            Assert.That(g.Execute(Command(g,"begin-training","Recruit","archer:t1:10")).Ok);
+            var before=g.Snapshot();
+            Assert.That(before.ChapterProgress.SpeedupOneMinute,Is.GreaterThanOrEqualTo(1),
+                "Web first-compatible-task accelerator was not granted");
+            var use=Command(g,"consume-one-minute","UseSpeedup","training:1");
+            Assert.That(g.Execute(use).Ok);
+            var accelerated=g.Snapshot();
+            Assert.That(accelerated.RecruitmentCompletesUtcTicks,
+                Is.EqualTo(before.RecruitmentCompletesUtcTicks-TimeSpan.FromMinutes(1).Ticks));
+            Assert.That(accelerated.ChapterProgress.SpeedupOneMinute,
+                Is.EqualTo(before.ChapterProgress.SpeedupOneMinute-1));
+            Assert.That(g.Execute(use).Ok,"Replaying an accepted speedup cannot spend twice");
+            Assert.That(g.Snapshot().RecruitmentCompletesUtcTicks,
+                Is.EqualTo(accelerated.RecruitmentCompletesUtcTicks));
+            clock.Add(240);
+            g=new LocalGateway(clock,store);
+            Assert.That(g.Snapshot().Available.ArcherT1,Is.EqualTo(46));
+            Assert.That(g.Snapshot().PendingRecruitArchers,Is.Zero);
+            Assert.That(g.Execute(Command(g,"no-gather-speedup","UseSpeedup","gather:1")).Ok,Is.False);
+        }
+
         [Test] public void ChapterThreeFourFiveWebGrantsAreRetainedExactlyOnce()
         {
             var clock=new Clock();var state=Ready();
