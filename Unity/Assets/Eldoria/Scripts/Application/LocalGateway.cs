@@ -272,6 +272,7 @@ namespace Eldoria.Application
                 BastionUpgradeTaskId=s.BastionUpgradeTaskId,
                 RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
                 RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
+                PendingRecruitTier=s.PendingRecruitTier,
                 LastBattleReason=s.LastBattleReason,
                 LastBattleReport=new BattleReportState {
                     TargetId=s.LastBattleReport?.TargetId??"",
@@ -449,13 +450,19 @@ namespace Eldoria.Application
                 case "Recruit":
                     if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Reclutamiento no disponible");
-                    int recruitCount=SliceRules.RecruitArchers;
+                    int recruitCount=SliceRules.RecruitArchers, recruitTier=1;
                     if(command.TargetId != "archer:t1")
                     {
-                        if(!command.TargetId.StartsWith("archer:t1:",StringComparison.Ordinal) ||
-                           !int.TryParse(command.TargetId.Substring("archer:t1:".Length),out recruitCount))
+                        var recruitParts=(command.TargetId??"").Split(':');
+                        if(recruitParts.Length!=3||recruitParts[0]!="archer"||
+                           !int.TryParse(recruitParts[1].StartsWith("t",StringComparison.Ordinal)?
+                               recruitParts[1].Substring(1):"",out recruitTier)||
+                           !int.TryParse(recruitParts[2],out recruitCount)||
+                           (recruitTier!=1&&recruitTier!=2))
                             return Fail("Tipo de unidad desconocido");
                     }
+                    if(recruitTier==2&&state.BarracksLevel<4)
+                        return Fail("Los arqueros T2 requieren Cuartel nivel IV");
                     if(recruitCount<1 || recruitCount>500) return Fail("Cantidad de reclutas no válida");
                     if (state.RecruitmentCompletesUtcTicks > 0) return Fail("Ya hay reclutas entrenando");
                     int recruitWood=SliceRules.RecruitWoodCostFor(recruitCount);
@@ -465,6 +472,7 @@ namespace Eldoria.Application
                     state.Resources.Wood -= recruitWood;
                     state.Resources.Stone -= recruitStone;
                     state.PendingRecruitArchers = recruitCount;
+                    state.PendingRecruitTier = recruitTier;
                     state.RecruitmentTaskId = "recruit:" + command.Id;
                     state.RecruitmentCompletesUtcTicks = clock.UtcTicks +
                         TimeSpan.FromSeconds(SliceRules.RecruitSecondsFor(recruitCount)).Ticks;
@@ -560,13 +568,16 @@ namespace Eldoria.Application
                 if (!state.CompletedTaskIds.Contains(state.RecruitmentTaskId))
                 {
                     state.CompletedTaskIds.Add(state.RecruitmentTaskId);
-                    state.Available.ArcherT1 += state.PendingRecruitArchers;
+                    // A pre-migration pending task has no tier field: keep it T1.
+                    if(state.PendingRecruitTier==2)state.Available.ArcherT2+=state.PendingRecruitArchers;
+                    else state.Available.ArcherT1+=state.PendingRecruitArchers;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.TrainedArchers += state.PendingRecruitArchers;
                 }
                 state.RecruitmentCompletesUtcTicks = 0;
                 state.RecruitmentTaskId = "";
                 state.PendingRecruitArchers = 0;
+                state.PendingRecruitTier = 1;
                 changed = true;
             }
             // Every one of up to three persisted marches advances independently.
