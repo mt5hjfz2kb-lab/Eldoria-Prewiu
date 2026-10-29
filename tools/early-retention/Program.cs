@@ -155,6 +155,27 @@ static class Program
         Require(migrated.Snapshot().Retention.TotalScoutReports==2&&
                 migrated.Snapshot().Retention.ScoutDiscoveryMask==10,
                 "Migration itself is idempotent on reload");
+        var backlogClock=new Clock();
+        var backlogStore=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},Available=new ArmyRoster{ArcherT1=180}}};
+        var backlog=new LocalGateway(backlogClock,backlogStore);
+        backlogClock.Add(12*3600);backlog.Advance();
+        Require(backlog.Snapshot().Retention.Orders.Count(x=>!x.Claimed)==6,"Actual two-period backlog reaches six orders");
+        backlogClock.Add(12*3600);backlog.Advance();
+        var queued=backlog.Snapshot().Retention.Orders.Where(x=>!x.Claimed).Take(3).ToArray();
+        for(int i=0;i<queued.Length;i++)Require(backlog.Execute(Command(backlog,"backlog-send-"+i,"ScoutDispatch",queued[i].Id)).Ok,"Backlog dispatch "+i);
+        // Exact UI flow: read the snapshot and claim immediately at the UTC
+        // deadline, before another simulation tick has run.
+        backlogClock.Add(1000);
+        for(int i=queued.Length-1;i>=0;i--)
+            Require(backlog.Execute(Command(backlog,"backlog-claim-"+i,"ScoutClaim",queued[i].Id)).Ok,
+                "Consecutive real claims cannot stale themselves when the live board refills "+i);
+        Require(backlog.Snapshot().Retention.TotalScoutReports==3,"All three backlog claims grant exactly one report each");
+        var staleRevision=backlog.Snapshot().Revision;
+        var nextOrder=backlog.Snapshot().Retention.Orders.First(x=>!x.Claimed&&x.StartedUtcTicks==0);
+        Require(backlog.Execute(Command(backlog,"real-next-command","ScoutDispatch",nextOrder.Id)).Ok,"Another real command advances the saved revision");
+        Require(!backlog.Execute(new GameCommand("genuinely-stale",backlog.Snapshot().PlayerId,
+            "Gather","forest-valoria",staleRevision)).Ok,"A revision superseded by ANOTHER command is still rejected");
         Console.WriteLine("EARLY_RETENTION_DOMAIN_SMOKE=PASS");
     }
 }

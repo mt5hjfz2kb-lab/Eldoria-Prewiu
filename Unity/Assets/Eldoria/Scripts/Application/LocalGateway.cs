@@ -294,16 +294,24 @@ namespace Eldoria.Application
         }
         public CommandResult Execute(GameCommand command)
         {
+            // Reject revisions superseded by another command. Elapsed-time
+            // processing performed by THIS command must not invalidate its
+            // own fresh snapshot (for example a just-returned Scout claim).
+            var observedRevision=state.Revision;
             Advance();
             if (command == null || string.IsNullOrEmpty(command.Id)) return Fail("Comando sin ID");
             if (state.CompletedCommandIds.Contains(command.Id)) return new CommandResult(true, "Ya ejecutado", state.Revision);
             if (command.ActorId != state.PlayerId) return Fail("Propietario incorrecto");
-            if (command.ExpectedRevision != state.Revision) return Fail("Estado desactualizado");
+            if (command.ExpectedRevision != observedRevision) return Fail("Estado desactualizado");
             var early=EarlyRetentionRules.Apply(state,command.Kind,command.TargetId,
                 clock.UtcTicks,out string earlyMessage);
             if(early.HasValue)
             {
                 if(!early.Value)return Fail(earlyMessage);
+                // A claim frees a board slot. Refill/migration belongs to THIS
+                // accepted revision, not the next command's Advance preflight.
+                // Otherwise the next fresh UI claim can reject itself as stale.
+                EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
                 state.CompletedCommandIds.Add(command.Id);
                 Commit();
                 return new CommandResult(true,earlyMessage,state.Revision);

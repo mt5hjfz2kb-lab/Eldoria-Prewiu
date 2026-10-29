@@ -1355,7 +1355,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());
                 footer.Put("Nuevos encargos: "+
                     TimeSpan.FromTicks(Math.Max(0,due-now())).ToString(@"hh\:mm\:ss")+
-                    " · Máximo 6 pendientes · "+EarlyRetentionRules.RevealedScoutReports(p)+" hallazgos");
+                    " · Máximo 6 pendientes");
             }
             if(battleSwords)
             {
