@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T21:34:16.588Z",
+  "updated_at": "2026-10-29T21:35:50.378Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -111,8 +111,8 @@
         "docs/bastion-iv-v/RELEASE_20261029.md"
       ],
       "resources": [],
-      "art_production_routing": "required",
-      "art_production_routing_reason": "Bounded packaging repair in ArtTests editor build source requires existing mandatory scope gate; no model, texture, scene or runtime authorship. Reuse existing WebGL legacy catalog pruning; no new artistic approval claimed.",
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Completed post-PR130 publication and bounded technical packaging/diagnostic repairs. Canonical workstream is available with no owner, reserved resources or pending source edits. Prior required artistic request is retained as COMPLETED with original authorship policy and visual evidence; a future artistic claim must reactivate required routing before edits.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
       "phase": "POST_PR130_ANDROID19_WEBGL298_DELIVERED",
