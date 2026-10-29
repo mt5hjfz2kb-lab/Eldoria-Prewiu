@@ -40,6 +40,25 @@ namespace Eldoria.Tests.EditMode
         }
 
         [Test]
+        public void RuntimeWorldCameraSupportsNearRegionalAndPanoramaIndependently()
+        {
+            var host=new UnityEngine.GameObject("Isolated world camera test");
+            try
+            {
+                host.AddComponent<UnityEngine.Camera>();
+                var nav=host.AddComponent<ZoneOneStrategicCamera>();
+                nav.AllowWholeRegionOverview=true;
+                nav.SetZoomLevel(2,true);
+                Assert.AreEqual(ZoneOneStrategicCamera.NearLandscape,nav.View.orthographicSize,.001f);
+                nav.SetZoomLevel(1,true);
+                Assert.AreEqual(ZoneOneStrategicCamera.Regional,nav.View.orthographicSize,.001f);
+                nav.SetZoomLevel(0,true);
+                Assert.AreEqual(ZoneOneStrategicCamera.Panoramic,nav.View.orthographicSize,.001f);
+            }
+            finally { UnityEngine.Object.DestroyImmediate(host); }
+        }
+
+        [Test]
         public void InvalidPinchDataKeepsAClampedCamera()
         {
             Assert.AreEqual(12f,SlicePresenter.CalculatePinchZoom(12f,0f,200f,1000f),.0001f);
