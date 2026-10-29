@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T09:54:24.457Z",
+  "updated_at": "2026-10-29T10:08:20.614Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2232,6 +2232,27 @@
         ]
       },
       "released_at": "2026-10-29T01:01:52.480111+00:00"
+    },
+    {
+      "id": "eldoria-tier5-six-reference-models-20261029",
+      "title": "Seis modelos individuales Tripo con referencias aprobadas",
+      "owner": "codex-tier5-reference-7064f9327736",
+      "ownership_revision": 1,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
+      "branch": "feature/tier5-six-reference-models-20261029",
+      "status": "active",
+      "scope": [
+        "tools/tier5-reference-production/**",
+        "ArtSource/Tier5ReferenceProduction/**",
+        ".github/workflows/tier5-reference-production.yml",
+        "docs/tier5-reference-production/**"
+      ],
+      "resources": [],
+      "claimed_at": "2026-10-29T10:08:20.614Z",
+      "authorization": "Owner explicitly requests individual image-based Tripo production of Lyra and five tier V buildings, iterations and Blender deliverables. No runtime integration/publication.",
+      "phase": "READ_ONLY_RUNNER_PREFLIGHT",
+      "next": "Verify existing runner-local Tripo CLI authentication and pricing without submitting any generation."
     }
   ],
   "history": [
