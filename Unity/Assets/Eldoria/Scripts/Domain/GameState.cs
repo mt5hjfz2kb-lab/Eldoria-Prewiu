@@ -187,6 +187,8 @@ namespace Eldoria.Domain
         public int PendingRecruitArchers;
         // Additive on the existing schema-1 save. Older in-flight training defaults to T1.
         public int PendingRecruitTier = 1;
+        // Web chapter rewards: persistent one- and five-minute accelerators.
+        public int SpeedupOneMinute, SpeedupFiveMinutes;
         public string LastBattleReason = "";
         public BattleReportState LastBattleReport = new BattleReportState();
         public ChapterProgressState ChapterProgress = new ChapterProgressState();

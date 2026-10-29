@@ -439,8 +439,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 status.Put("DISPONIBLES T"+selectedTier+"  "+selectedAvailable+
                     "\nENTRENANDO T"+(busy?s.PendingRecruitTier:selectedTier)+"  "+s.PendingRecruitArchers+
                     (busy?"\n\nCUENTA ATRÁS  "+Clock(leftSeconds):"\n\nSin entrenamiento activo"));
-                actionLabel.Put(busy?"ENTRENANDO T"+s.PendingRecruitTier+" · "+Clock(leftSeconds):"ENTRENAR "+selectedCount+" ARQUEROS T"+selectedTier);
-                action.interactable=!busy && maxCount>0 && Time.unscaledTime>=submitAfter;
+                actionLabel.Put(busy?(s.SpeedupFiveMinutes>0?"ACELERAR · 5 MIN ("+s.SpeedupFiveMinutes+")":
+                    s.SpeedupOneMinute>0?"ACELERAR · 1 MIN ("+s.SpeedupOneMinute+")":
+                    "ENTRENANDO T"+s.PendingRecruitTier+" · "+Clock(leftSeconds)):
+                    "ENTRENAR "+selectedCount+" ARQUEROS T"+selectedTier);
+                action.interactable=(busy?(s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0):maxCount>0)&&Time.unscaledTime>=submitAfter;
             }
             else
             {
@@ -474,7 +477,14 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!IsOpen||Time.unscaledTime<submitAfter)return;
             var s=gateway.Snapshot();
             bool training=CurrentDestination==Destination.Training;
-            if(training&&(s.RecruitmentCompletesUtcTicks>0 || selectedCount>SliceRules.MaxAffordableArchers(s)))return;
+            if(training&&s.RecruitmentCompletesUtcTicks>0){
+                if(s.SpeedupFiveMinutes<=0&&s.SpeedupOneMinute<=0)return;
+                submitAfter=Time.unscaledTime+.45f;
+                var accelerated=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
+                    s.PlayerId,"UseSpeedup",s.SpeedupFiveMinutes>0?"training:5m":"training:1m",s.Revision));
+                notice=accelerated.Message;onCommand?.Invoke();Hud.Refresh();Refresh();return;
+            }
+            if(training&&selectedCount>SliceRules.MaxAffordableArchers(s))return;
             if(!training&&(!MarchCapacityRules.CanStart(s,utcTicks()) ||
                 selectedCount>(selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1) ||
                 selectedCount>MarchCapacityRules.Capacity(s,selectedHero)))return;

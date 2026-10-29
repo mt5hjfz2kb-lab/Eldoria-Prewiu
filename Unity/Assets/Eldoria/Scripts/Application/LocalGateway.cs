@@ -273,6 +273,7 @@ namespace Eldoria.Application
                 RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
                 RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
                 PendingRecruitTier=s.PendingRecruitTier,
+                SpeedupOneMinute=s.SpeedupOneMinute, SpeedupFiveMinutes=s.SpeedupFiveMinutes,
                 LastBattleReason=s.LastBattleReason,
                 LastBattleReport=new BattleReportState {
                     TargetId=s.LastBattleReport?.TargetId??"",
@@ -447,6 +448,23 @@ namespace Eldoria.Application
                     }
                     else return Fail("Obra no disponible");
                     break;
+                case "UseSpeedup":
+                    {
+                        string[] speed=command.TargetId.Split(':');
+                        if(speed.Length!=2||(speed[0]!="building"&&speed[0]!="bastion"&&speed[0]!="training")||
+                            (speed[1]!="1m"&&speed[1]!="5m"))return Fail("Aceleración desconocida");
+                        bool five=speed[1]=="5m";
+                        if(five?state.SpeedupFiveMinutes<=0:state.SpeedupOneMinute<=0)return Fail("No quedan aceleradores");
+                        long deadline=speed[0]=="building"?state.BuildingCompletesUtcTicks:
+                            speed[0]=="bastion"?state.BastionUpgradeCompletesUtcTicks:state.RecruitmentCompletesUtcTicks;
+                        if(deadline<=clock.UtcTicks)return Fail("No hay tarea activa que acelerar");
+                        long advanced=Math.Max(clock.UtcTicks,deadline-TimeSpan.FromMinutes(five?5:1).Ticks);
+                        if(speed[0]=="building")state.BuildingCompletesUtcTicks=advanced;
+                        else if(speed[0]=="bastion")state.BastionUpgradeCompletesUtcTicks=advanced;
+                        else state.RecruitmentCompletesUtcTicks=advanced;
+                        if(five)state.SpeedupFiveMinutes--;else state.SpeedupOneMinute--;
+                        break;
+                    }
                 case "Recruit":
                     if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Reclutamiento no disponible");
@@ -732,7 +750,7 @@ namespace Eldoria.Application
             if (p == null) return false;
             if (p.GrantedRewards == null) p.GrantedRewards = new System.Collections.Generic.List<string>();
             bool changed = false;
-            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0, int food=0)
+            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0, int food=0, int speedup1=0, int speedup5=0)
             {
                 if (!complete || p.GrantedRewards.Contains(id)) return;
                 p.GrantedRewards.Add(id);
@@ -740,6 +758,8 @@ namespace Eldoria.Application
                 state.Resources.Stone += stone;
                 state.Resources.Food += food;
                 state.MissionPower += power;
+                state.SpeedupOneMinute += speedup1;
+                state.SpeedupFiveMinutes += speedup5;
                 changed = true;
             }
             Grant("c1-sawmill", state.SawmillLevel>0, wood:120);
@@ -772,8 +792,14 @@ namespace Eldoria.Application
                     Grant("c4-priority",!string.IsNullOrEmpty(c.DevelopmentPriority),power:80);
                     Grant("c4-bastion",state.BastionLevel>=5,power:220);
                     Grant("chapter-4",state.BastionLevel>=5&&infrastructure&&!string.IsNullOrEmpty(c.DevelopmentPriority),
-                        wood:360,stone:300,food:280,power:260);
+                        wood:360,stone:300,food:280,power:260,speedup5:1);
                 }
+                // Web gives one introductory one-minute speedup for the first
+                // compatible chapter-IV task; gathering is never accelerated.
+                Grant("intro-speedup1",state.BastionLevel>=4 &&
+                    (state.BuildingCompletesUtcTicks>clock.UtcTicks||
+                     state.BastionUpgradeCompletesUtcTicks>clock.UtcTicks||
+                     state.RecruitmentCompletesUtcTicks>clock.UtcTicks),speedup1:1);
                 if(state.BastionLevel>=5){
                     Grant("c5-stoneworks",c.StoneworksLevel>0,wood:220,food:180);
                     Grant("c5-stone",state.Resources.Stone>=1200,wood:240);
