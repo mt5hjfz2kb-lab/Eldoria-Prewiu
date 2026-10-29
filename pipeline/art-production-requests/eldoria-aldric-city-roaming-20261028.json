@@ -31,10 +31,10 @@
   ],
   "validation": {
     "source_gate": "Exact GLB identity, actual Unity source compilation, same existing host/gateway/save",
-    "final_gate": "Actual Unity PlayMode and city idle/walking captures in portrait/landscape, scale/path/animation/visibility and preserved gameplay; wait for PR120 completion and exclusive runner transfer"
+    "final_gate": "Completed actual Unity run40789374485:47/47EditMode,73/73PlayMode,no failed/ignored cases,all12final images individually inspected; exact proof docs/aldric-city/NATIVE_CERTIFICATE_20261029.json. Physical-phone QA remains pending."
   },
   "art_approved": false,
-  "unity_visual_acceptance": "PENDING",
+  "unity_visual_acceptance": "PASS_APPROVED_ASSET_REUSE_ACTUAL_TWELVE_FINAL_VIEWS",
   "physical_mobile_tested": false,
   "notes": "Existing asset reuse, not a new artist cycle; retain original sources and approved character. No fake source/motion/visual/mobile PASS.",
   "import_compatibility": {
@@ -47,7 +47,7 @@
     "transient_import_sha256": "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b",
     "source_equivalence_proof": "docs/aldric-city/normal-import-proof.json",
     "normal_generation": "Area-weighted geometric normals from existing indexed triangles, as conventional import preparation; zero vertex/topology/material/animation authoring",
-    "native_visual_acceptance": "PENDING"
+    "native_visual_acceptance": "PASS_FULL_SHARED_NATIVE_40789374485"
   },
   "runtime_pose_alignment": {
     "purpose": "Technical retarget of original A-pose rest stance for a relaxed cosmetic city walker",
@@ -55,7 +55,8 @@
     "geometry_skin_bones_materials_unchanged": true,
     "implementation": "Separate in-memory additive upper-arm rest alignment layer,35degrees, over original Idle/Walk; no new source animation/model asset, no external generation",
     "visual_before_evidence": "Native40779937374 real four-angle captures; arms visibly too open",
-    "visual_after_acceptance": "PENDING_ACTUAL_UNITY_IMAGES",
+    "visual_after_acceptance": "Actual Idle joint alignment passed; four final detail images individually inspected with the unchanged approved model. Existing source bulk/rig retained; no new artist-cycle approval claimed.",
     "credit_cost": 0
-  }
+  },
+  "native_certificate": "docs/aldric-city/NATIVE_CERTIFICATE_20261029.json"
 }

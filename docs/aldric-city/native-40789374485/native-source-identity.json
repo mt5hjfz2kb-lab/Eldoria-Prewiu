@@ -1,0 +1,11 @@
+﻿{
+    "requested_source":  "e47c3bb525439949c19227673e66c88730d0349b",
+    "compiled_source":  "0255c811d5c56ef4f027cae91c3c627083bc27c6",
+    "compiled_tree":  "0580ba516b21a9a0af45dead209ae298b55fcfc4",
+    "run_id":  "40789374485",
+    "aldric_case":  "Passed",
+    "views":  12,
+    "transient_import_sha256":  "d64f765625340365ad760e7e8d0639d640ebdd828d55c0635b3aefc0c974081b",
+    "model_sha256":  "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b",
+    "physical_mobile_tested":  false
+}

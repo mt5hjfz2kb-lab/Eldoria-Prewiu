@@ -43,40 +43,46 @@ jobs:
     outputs:
       heavy_required: ${{ steps.compare.outputs.heavy_required || 'true' }}
     steps:
-      - name: Verify successful canonical shared-interface certificate
+      - name: Verify completed exact shared UI and Aldric native certificate
         id: baseline
         continue-on-error: true
         uses: actions/github-script@v7
         with:
           script: |
             core.setOutput('eligible','false');
-            const canonical='feature/eldoria-early-retention-20261028';
-            const nativeSource='fa028667e1e7d8492276c921efc7d49379c450c1';
+            const canonical='feature/aldric-city-roaming-20261028';
             const pr=context.payload.pull_request;
-            let requireNativeTree=false;
             if(context.eventName==='pull_request') {
-              if(pr?.number!==120 || pr.head.ref!==canonical ||
+              if(pr?.number!==122 || pr.head.ref!==canonical ||
                 pr.head.repo.full_name!==context.repo.owner+'/'+context.repo.repo)return;
             } else if(context.eventName==='push' && context.ref==='refs/heads/main') {
-              const merged=(await github.rest.pulls.get({...context.repo,pull_number:120})).data;
+              const merged=(await github.rest.pulls.get({...context.repo,pull_number:122})).data;
               if(!merged.merged)return;
-              const runs=(await github.rest.actions.listWorkflowRuns({...context.repo,
-                workflow_id:'early-retention-native.yml',branch:canonical,per_page:30})).data.workflow_runs;
-              if(!runs.some(r=>r.head_sha===nativeSource && r.status==='completed' && r.conclusion==='success'))return;
-              requireNativeTree=true;
             } else return;
-            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:40731703310})).data;
+            const ref=pr?.head.sha || context.sha;
+            const file=(await github.rest.repos.getContent({...context.repo,
+              path:'docs/aldric-city/NATIVE_CERTIFICATE_20261029.json',ref})).data;
+            if(!file.content)throw Error('Completed native certificate missing');
+            const proof=JSON.parse(Buffer.from(file.content,'base64').toString('utf8'));
+            if(proof.status!=='SUCCESS' || proof.actual_views!==12 || proof.playmode_passed<73 ||
+              !/^[a-f0-9]{40}$/.test(proof.requested_source) ||
+              !/^[a-f0-9]{40}$/.test(proof.compiled_source) ||
+              !/^[a-f0-9]{40}$/.test(proof.compiled_tree))throw Error('Invalid completed proof identity');
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:proof.run_id})).data;
             if(run.status!=='completed' || run.conclusion!=='success' ||
-              run.head_sha!=='bd0b48a6be86bbb8849b1b9fa8d4b7283da9d3c2' ||
-              run.path!=='.github/workflows/ui-progression-cert.yml' ||
-              run.head_branch!==canonical)throw Error('Canonical shared-interface proof is not valid');
-            // The actual compiled PR merge has precisely the same Git tree
-            // as the immutable branch certificate used for comparison below.
-            const actual=(await github.rest.repos.getCommit({...context.repo,
-              ref:'fd0967e7fb0b761aa333e8a9c928e4bce95f24d4'})).data;
-            if(actual.commit.tree.sha!=='20d1cfaf48df8077778b1870b69daa17e5770038')
-              throw Error('Exact compiled shared-interface tree differs');
-            core.setOutput('require_native_tree',String(requireNativeTree));
+              run.head_sha!==proof.requested_source || run.head_branch!==canonical ||
+              run.path!=='.github/workflows/ui-progression-cert.yml')throw Error('Full shared/native run is not valid');
+            const compiled=(await github.rest.repos.getCommit({...context.repo,ref:proof.compiled_source})).data;
+            const branch=(await github.rest.repos.getCommit({...context.repo,ref:proof.requested_source})).data;
+            if(compiled.commit.tree.sha!==proof.compiled_tree || branch.commit.tree.sha!==proof.compiled_tree)
+              throw Error('Compiled root does not match the immutable certified branch');
+            const artifact=(await github.rest.actions.getArtifact({...context.repo,
+              artifact_id:proof.native_artifact_id})).data;
+            if(artifact.expired || artifact.workflow_run?.id!==proof.run_id ||
+              artifact.name!=='eldoria-aldric-shared-native-'+proof.compiled_source ||
+              artifact.digest!==proof.native_artifact_digest)throw Error('Exact genuine native evidence unavailable');
+            core.setOutput('source',proof.requested_source);
+            core.setOutput('run_id',String(proof.run_id));
             core.setOutput('eligible','true');
       - uses: actions/checkout@v4
         id: source
@@ -89,60 +95,41 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: |
             /.github/workflows/ui-progression-cert.yml
-      - name: Reuse proof only for byte-identical shared inputs and certification steps
+      - name: Reuse only the identical Unity tree and entire executed native job
         id: compare
         if: steps.baseline.outputs.eligible == 'true' && steps.source.outcome == 'success'
         shell: bash
         env:
-          REQUIRE_NATIVE_TREE: ${{ steps.baseline.outputs.require_native_tree }}
+          CERTIFIED_SOURCE: ${{ steps.baseline.outputs.source }}
+          CERTIFIED_RUN: ${{ steps.baseline.outputs.run_id }}
         run: |
           node <<'JS'
           const fs=require('node:fs'),{execFileSync:git}=require('node:child_process');
           let heavy=true;
-          const certified='bd0b48a6be86bbb8849b1b9fa8d4b7283da9d3c2';
           try {
+            const certified=process.env.CERTIFIED_SOURCE;
+            if(!/^[a-f0-9]{40}$/.test(certified))throw Error('Missing certified SHA');
             git('git',['fetch','--no-tags','--filter=blob:none','--depth=1','origin',certified],{stdio:'pipe'});
+            const before=git('git',['rev-parse',certified+':Unity'],{encoding:'utf8'}).trim();
+            const after=git('git',['rev-parse','HEAD:Unity'],{encoding:'utf8'}).trim();
             const files=git('git',['diff','--name-only',certified,'HEAD'],{encoding:'utf8'}).trim().split(/\r?\n/).filter(Boolean);
-            const retainedModule=new Set([
-              'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs',
-              'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs',
-              'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3RetentionActionGraphic.cs',
-              'Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ScoutContractGraphic.cs',
-              'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs',
-              'tools/early-retention/native-request.json','qa/e2e-full-arc1.js',
-              'pipeline/active-workstreams.json','.github/workflows/ui-progression-cert.yml',
-              'pipeline/art-production-requests/eldoria-early-retention-systems-20261028.json',
-              'pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json',
-              '.github/workflows/early-retention-native.yml',
-              '.github/workflows/tester-qa.yml'
-            ]);
-            const nativeOwned=p=>retainedModule.has(p) ||
-              p.startsWith('Unity/Assets/Eldoria/Resources/EldoriaRetention/') ||
-              p.startsWith('docs/early-retention/');
             const file='.github/workflows/ui-progression-cert.yml';
-            const before=git('git',['show',certified+':'+file],{encoding:'utf8'});
-            const current=fs.readFileSync(file,'utf8');
-            const originalJob=s=>{
+            const job=s=>{
               const at=s.indexOf('  certify:\n');
-              if(at<0)throw Error('Shared certificate job missing');
-              return s.slice(at).replace(/^    needs:.*\n/m,'').replace(/^    if:.*\n/m,'');
+              if(at<0)throw Error('Complete native certification job missing');
+              return s.slice(at);
             };
-            const nativeWorkflow='.github/workflows/early-retention-native.yml';
-            const oldNative=git('git',['show',certified+':'+nativeWorkflow],{encoding:'utf8'});
-            const newNative=git('git',['show','HEAD:'+nativeWorkflow],{encoding:'utf8'});
-            const nativeWorkflowUnchanged=oldNative===newNative;
-            let nativeTreeMatches=true;
-            if(process.env.REQUIRE_NATIVE_TREE==='true') {
-              const nativeSource='fa028667e1e7d8492276c921efc7d49379c450c1';
-              git('git',['fetch','--no-tags','--filter=blob:none','--depth=1','origin',nativeSource],{stdio:'pipe'});
-              nativeTreeMatches=git('git',['rev-parse',nativeSource+':Unity'],{encoding:'utf8'}).trim()===
-                git('git',['rev-parse','HEAD:Unity'],{encoding:'utf8'}).trim();
-            }
-            heavy=!nativeTreeMatches || !nativeWorkflowUnchanged || files.some(p=>!nativeOwned(p)) || originalJob(before)!==originalJob(current);
-            console.log('Changed paths: '+files.join(', '));
-            if(!heavy)console.log('ELDORIA_SHARED_UI_CERTIFICATE_REUSED run40731703310 source='+certified+
-              '; all shared inputs and entire certification job unchanged; dedicated Retention native proof remains required');
-          } catch(error) {console.warn('Cannot prove shared UI unchanged; run full original gate: '+error.message);}
+            const oldJob=job(git('git',['show',certified+':'+file],{encoding:'utf8'}));
+            const newJob=job(fs.readFileSync(file,'utf8'));
+            const metadata=new Set([file,'pipeline/active-workstreams.json',
+              'pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json',
+              'pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json',
+              'pipeline/art-production-requests/eldoria-retention-first-evolution-20261028.json']);
+            heavy=before!==after || oldJob!==newJob ||
+              files.some(p=>!metadata.has(p) && !p.startsWith('docs/aldric-city/'));
+            if(!heavy)console.log('ELDORIA_ALDRIC_FULL_SHARED_CERTIFICATE_REUSED run'+process.env.CERTIFIED_RUN+
+              '; exact Unity tree, every native test/12-image guard and complete executed job unchanged');
+          }catch(error){console.warn('Cannot prove identical full native inputs; run complete gate: '+error.message);}
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'heavy_required='+heavy+'\n');
           JS
   certify:
