@@ -1,5 +1,7 @@
 # Eldoria — capacidad y tres marchas simultáneas
 
+> Actualización29/10/2026: entrega consolidada en PR124 junto con PR125/126. Native40850803144 SUCCESS:54 EditMode,73 PlayMode y47 capturas reales revisadas. Estado y evidencias actuales: [aceptación conjunta](COMBINED_ACCEPTANCE_20261029.md). Las reservas y pendientes descritos debajo son historial de producción.
+
 ## Regla del propietario (28/10/2026)
 - **Máximo inicial: exactamente tres operaciones de marcha en curso** en conjunto. Son ranuras del reino, no tres por subsistema.
 - La **capacidad de tropas es por marcha**, ligada al héroe seleccionado y al Cuartel. Tropas entrenadas del reino y capacidad de mando son magnitudes distintas.

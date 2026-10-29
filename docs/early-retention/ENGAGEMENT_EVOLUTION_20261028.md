@@ -1,5 +1,7 @@
 # Eldoria — primera evolución motivadora de retención (28/10/2026)
 
+> Actualización29/10/2026: entrega consolidada en PR124 junto con PR125/126. Native40850803144 SUCCESS:54 EditMode,73 PlayMode y47 capturas reales revisadas. Estado y evidencias actuales: [aceptación conjunta](../marches/COMBINED_ACCEPTANCE_20261029.md). Las reservas y pendientes descritos debajo son historial de producción.
+
 > Estado vigente 29/10: las aportaciones de PR125 y PR126 se consolidan con las tres marchas en PR124, bajo el mismo responsable y con una sola validación nativa completa. Las pruebas de dominio pasan; la aceptación gráfica y funcional conjunta sigue en ejecución. Los apartados cronológicos posteriores conservan el origen del trabajo.
 
 ## Producto decidido por el propietario
