@@ -564,8 +564,8 @@ namespace Eldoria.AldricCity
             nextAwayRefresh = Time.unscaledTime + .2f;
             var s = host.City.Gateway.Snapshot();
             cachedAway = s.ChapterThree.InvestigationEndsUtcTicks > host.City.Clock.UtcTicks ||
-                (s.March != null && s.March.Phase != "idle" &&
-                 (s.March.HeroId == "aldric" || s.March.HeroId == "aldric+lyra"));
+                Eldoria.Domain.MarchCapacityRules.WorldMarches(s).Any(m => m.Phase != "idle" &&
+                    (m.HeroId == "aldric" || m.HeroId == "aldric+lyra"));
             return cachedAway;
         }
 

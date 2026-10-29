@@ -1,0 +1,442 @@
+RETENTION_ENGAGEMENT_NATIVE_PASS
+Real game booted on throwaway save
+Single canonical HUD loaded
+Scene is using a disposable saved game, never owner progress
+The same approved two-destination player interface remains
+Real stage-five player banner warns of the actual defense profile
+Gilded landscape plaque reflects canonical saved path progress
+Actual named guardian/report text fits vigilants-guardian5-landscape: Page heading
+Actual named guardian/report text fits vigilants-guardian5-landscape: Chapter overline
+Actual named guardian/report text fits vigilants-guardian5-landscape: Guardian milestone 10
+Actual named guardian/report text fits vigilants-guardian5-landscape: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian5-landscape: Guardian milestone 20
+Actual named guardian/report text fits vigilants-guardian5-landscape: Guardian milestone 25
+Actual named guardian/report text fits vigilants-guardian5-landscape: Current live stage
+Actual named guardian/report text fits vigilants-guardian5-landscape: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian5-landscape: Stage progression
+Actual named guardian/report text fits vigilants-guardian5-landscape: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian5-landscape: Actual available army
+Actual named guardian/report text fits vigilants-guardian5-landscape: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian5-landscape: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian5-landscape: Last action result
+Actual named guardian/report text fits vigilants-guardian5-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-guardian5-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-guardian5-landscape: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian5-landscape: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian5-landscape
+Correct real camera resolution: vigilants-guardian5-landscape
+Actual named guardian/report text fits vigilants-guardian5-portrait: Page heading
+Actual named guardian/report text fits vigilants-guardian5-portrait: Chapter overline
+Actual named guardian/report text fits vigilants-guardian5-portrait: Guardian milestone 10
+Actual named guardian/report text fits vigilants-guardian5-portrait: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian5-portrait: Guardian milestone 20
+Actual named guardian/report text fits vigilants-guardian5-portrait: Guardian milestone 25
+Actual named guardian/report text fits vigilants-guardian5-portrait: Current live stage
+Actual named guardian/report text fits vigilants-guardian5-portrait: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian5-portrait: Stage progression
+Actual named guardian/report text fits vigilants-guardian5-portrait: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian5-portrait: Actual available army
+Actual named guardian/report text fits vigilants-guardian5-portrait: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian5-portrait: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian5-portrait: Original gilded label
+Actual named guardian/report text fits vigilants-guardian5-portrait: Original gilded label
+Actual named guardian/report text fits vigilants-guardian5-portrait: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian5-portrait: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian5-portrait
+Correct real camera resolution: vigilants-guardian5-portrait
+Actual named guardian/report text fits vigilants-guardian5-phone: Page heading
+Actual named guardian/report text fits vigilants-guardian5-phone: Chapter overline
+Actual named guardian/report text fits vigilants-guardian5-phone: Guardian milestone 10
+Actual named guardian/report text fits vigilants-guardian5-phone: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian5-phone: Guardian milestone 20
+Actual named guardian/report text fits vigilants-guardian5-phone: Guardian milestone 25
+Actual named guardian/report text fits vigilants-guardian5-phone: Current live stage
+Actual named guardian/report text fits vigilants-guardian5-phone: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian5-phone: Stage progression
+Actual named guardian/report text fits vigilants-guardian5-phone: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian5-phone: Actual available army
+Actual named guardian/report text fits vigilants-guardian5-phone: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian5-phone: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian5-phone: Original gilded label
+Actual named guardian/report text fits vigilants-guardian5-phone: Original gilded label
+Actual named guardian/report text fits vigilants-guardian5-phone: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian5-phone: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian5-phone
+Correct real camera resolution: vigilants-guardian5-phone
+Real UI has an actionable guardian combat button
+The REAL RoyalButton click defeats the fifth guardian and advances the path
+A genuine gold combat celebration is shown, not only a report in code
+Real combat report attached to the fifth guardian
+Battle results contain genuine rounds and capacity-limited troop count
+Useful battle review comes from the actual combat report
+Actual named guardian/report text fits vigilants-battle-result-landscape: Page heading
+Actual named guardian/report text fits vigilants-battle-result-landscape: Chapter overline
+Actual named guardian/report text fits vigilants-battle-result-landscape: Guardian milestone 5
+Actual named guardian/report text fits vigilants-battle-result-landscape: Guardian milestone 10
+Actual named guardian/report text fits vigilants-battle-result-landscape: Guardian milestone 15
+Actual named guardian/report text fits vigilants-battle-result-landscape: Guardian milestone 20
+Actual named guardian/report text fits vigilants-battle-result-landscape: Guardian milestone 25
+Actual named guardian/report text fits vigilants-battle-result-landscape: Current live stage
+Actual named guardian/report text fits vigilants-battle-result-landscape: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-battle-result-landscape: Original victory heading
+Actual named guardian/report text fits vigilants-battle-result-landscape: Authoritative victory reward
+Actual named guardian/report text fits vigilants-battle-result-landscape: Stage progression
+Actual named guardian/report text fits vigilants-battle-result-landscape: Real enemy and trait
+Actual named guardian/report text fits vigilants-battle-result-landscape: Actual available army
+Actual named guardian/report text fits vigilants-battle-result-landscape: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-battle-result-landscape: Offline hero experience
+Actual named guardian/report text fits vigilants-battle-result-landscape: Last action result
+Actual named guardian/report text fits vigilants-battle-result-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-battle-result-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-battle-result-landscape: No artificial notifications
+Actual named guardian/report text fits vigilants-battle-result-landscape: Original gilded label
+Authentic Unity camera PNG generated: vigilants-battle-result-landscape
+Correct real camera resolution: vigilants-battle-result-landscape
+Scene is using a disposable saved game, never owner progress
+Actual named guardian is shown for milestone 10
+Actual named guardian/report text fits vigilants-guardian10-landscape: Page heading
+Actual named guardian/report text fits vigilants-guardian10-landscape: Chapter overline
+Actual named guardian/report text fits vigilants-guardian10-landscape: Guardian milestone 5
+Actual named guardian/report text fits vigilants-guardian10-landscape: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian10-landscape: Guardian milestone 20
+Actual named guardian/report text fits vigilants-guardian10-landscape: Guardian milestone 25
+Actual named guardian/report text fits vigilants-guardian10-landscape: Current live stage
+Actual named guardian/report text fits vigilants-guardian10-landscape: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian10-landscape: Stage progression
+Actual named guardian/report text fits vigilants-guardian10-landscape: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian10-landscape: Actual available army
+Actual named guardian/report text fits vigilants-guardian10-landscape: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian10-landscape: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian10-landscape: Last action result
+Actual named guardian/report text fits vigilants-guardian10-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-guardian10-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-guardian10-landscape: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian10-landscape: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian10-landscape
+Correct real camera resolution: vigilants-guardian10-landscape
+Actual named guardian/report text fits vigilants-guardian10-phone: Page heading
+Actual named guardian/report text fits vigilants-guardian10-phone: Chapter overline
+Actual named guardian/report text fits vigilants-guardian10-phone: Guardian milestone 5
+Actual named guardian/report text fits vigilants-guardian10-phone: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian10-phone: Guardian milestone 20
+Actual named guardian/report text fits vigilants-guardian10-phone: Guardian milestone 25
+Actual named guardian/report text fits vigilants-guardian10-phone: Current live stage
+Actual named guardian/report text fits vigilants-guardian10-phone: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian10-phone: Stage progression
+Actual named guardian/report text fits vigilants-guardian10-phone: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian10-phone: Actual available army
+Actual named guardian/report text fits vigilants-guardian10-phone: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian10-phone: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian10-phone: Original gilded label
+Actual named guardian/report text fits vigilants-guardian10-phone: Original gilded label
+Actual named guardian/report text fits vigilants-guardian10-phone: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian10-phone: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian10-phone
+Correct real camera resolution: vigilants-guardian10-phone
+Scene is using a disposable saved game, never owner progress
+Actual named guardian is shown for milestone 20
+Actual named guardian/report text fits vigilants-guardian20-landscape: Page heading
+Actual named guardian/report text fits vigilants-guardian20-landscape: Chapter overline
+Actual named guardian/report text fits vigilants-guardian20-landscape: Guardian milestone 5
+Actual named guardian/report text fits vigilants-guardian20-landscape: Guardian milestone 10
+Actual named guardian/report text fits vigilants-guardian20-landscape: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian20-landscape: Guardian milestone 25
+Actual named guardian/report text fits vigilants-guardian20-landscape: Current live stage
+Actual named guardian/report text fits vigilants-guardian20-landscape: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian20-landscape: Stage progression
+Actual named guardian/report text fits vigilants-guardian20-landscape: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian20-landscape: Actual available army
+Actual named guardian/report text fits vigilants-guardian20-landscape: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian20-landscape: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian20-landscape: Last action result
+Actual named guardian/report text fits vigilants-guardian20-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-guardian20-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-guardian20-landscape: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian20-landscape: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian20-landscape
+Correct real camera resolution: vigilants-guardian20-landscape
+Actual named guardian/report text fits vigilants-guardian20-phone: Page heading
+Actual named guardian/report text fits vigilants-guardian20-phone: Chapter overline
+Actual named guardian/report text fits vigilants-guardian20-phone: Guardian milestone 5
+Actual named guardian/report text fits vigilants-guardian20-phone: Guardian milestone 10
+Actual named guardian/report text fits vigilants-guardian20-phone: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian20-phone: Guardian milestone 25
+Actual named guardian/report text fits vigilants-guardian20-phone: Current live stage
+Actual named guardian/report text fits vigilants-guardian20-phone: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian20-phone: Stage progression
+Actual named guardian/report text fits vigilants-guardian20-phone: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian20-phone: Actual available army
+Actual named guardian/report text fits vigilants-guardian20-phone: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian20-phone: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian20-phone: Original gilded label
+Actual named guardian/report text fits vigilants-guardian20-phone: Original gilded label
+Actual named guardian/report text fits vigilants-guardian20-phone: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian20-phone: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian20-phone
+Correct real camera resolution: vigilants-guardian20-phone
+Scene is using a disposable saved game, never owner progress
+Actual named guardian is shown for milestone 25
+Actual named guardian/report text fits vigilants-guardian25-landscape: Page heading
+Actual named guardian/report text fits vigilants-guardian25-landscape: Chapter overline
+Actual named guardian/report text fits vigilants-guardian25-landscape: Guardian milestone 5
+Actual named guardian/report text fits vigilants-guardian25-landscape: Guardian milestone 10
+Actual named guardian/report text fits vigilants-guardian25-landscape: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian25-landscape: Guardian milestone 20
+Actual named guardian/report text fits vigilants-guardian25-landscape: Current live stage
+Actual named guardian/report text fits vigilants-guardian25-landscape: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian25-landscape: Stage progression
+Actual named guardian/report text fits vigilants-guardian25-landscape: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian25-landscape: Actual available army
+Actual named guardian/report text fits vigilants-guardian25-landscape: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian25-landscape: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian25-landscape: Last action result
+Actual named guardian/report text fits vigilants-guardian25-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-guardian25-landscape: Original gilded label
+Actual named guardian/report text fits vigilants-guardian25-landscape: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian25-landscape: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian25-landscape
+Correct real camera resolution: vigilants-guardian25-landscape
+Actual named guardian/report text fits vigilants-guardian25-phone: Page heading
+Actual named guardian/report text fits vigilants-guardian25-phone: Chapter overline
+Actual named guardian/report text fits vigilants-guardian25-phone: Guardian milestone 5
+Actual named guardian/report text fits vigilants-guardian25-phone: Guardian milestone 10
+Actual named guardian/report text fits vigilants-guardian25-phone: Guardian milestone 15
+Actual named guardian/report text fits vigilants-guardian25-phone: Guardian milestone 20
+Actual named guardian/report text fits vigilants-guardian25-phone: Current live stage
+Actual named guardian/report text fits vigilants-guardian25-phone: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-guardian25-phone: Stage progression
+Actual named guardian/report text fits vigilants-guardian25-phone: Real enemy and trait
+Actual named guardian/report text fits vigilants-guardian25-phone: Actual available army
+Actual named guardian/report text fits vigilants-guardian25-phone: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-guardian25-phone: Offline hero experience
+Actual named guardian/report text fits vigilants-guardian25-phone: Original gilded label
+Actual named guardian/report text fits vigilants-guardian25-phone: Original gilded label
+Actual named guardian/report text fits vigilants-guardian25-phone: No artificial notifications
+Actual named guardian/report text fits vigilants-guardian25-phone: Original gilded label
+Authentic Unity camera PNG generated: vigilants-guardian25-phone
+Correct real camera resolution: vigilants-guardian25-phone
+Scene is using a disposable saved game, never owner progress
+The canonical Engendro warns against its real Breach trait
+The original authored Spawnling lore is preserved
+Actual named guardian/report text fits vigilants-engendro15-portrait: Page heading
+Actual named guardian/report text fits vigilants-engendro15-portrait: Chapter overline
+Actual named guardian/report text fits vigilants-engendro15-portrait: Guardian milestone 5
+Actual named guardian/report text fits vigilants-engendro15-portrait: Guardian milestone 10
+Actual named guardian/report text fits vigilants-engendro15-portrait: Guardian milestone 20
+Actual named guardian/report text fits vigilants-engendro15-portrait: Guardian milestone 25
+Actual named guardian/report text fits vigilants-engendro15-portrait: Current live stage
+Actual named guardian/report text fits vigilants-engendro15-portrait: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-engendro15-portrait: Stage progression
+Actual named guardian/report text fits vigilants-engendro15-portrait: Real enemy and trait
+Actual named guardian/report text fits vigilants-engendro15-portrait: Actual available army
+Actual named guardian/report text fits vigilants-engendro15-portrait: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-engendro15-portrait: Offline hero experience
+Actual named guardian/report text fits vigilants-engendro15-portrait: Original gilded label
+Actual named guardian/report text fits vigilants-engendro15-portrait: Original gilded label
+Actual named guardian/report text fits vigilants-engendro15-portrait: No artificial notifications
+Actual named guardian/report text fits vigilants-engendro15-portrait: Original gilded label
+Authentic Unity camera PNG generated: vigilants-engendro15-portrait
+Correct real camera resolution: vigilants-engendro15-portrait
+Scene is using a disposable saved game, never owner progress
+Actual one-troop defeat neither advances nor pays a false victory
+Losing combat presents a distinct real defeat banner
+Actual named guardian/report text fits vigilants-defeat-phone: Page heading
+Actual named guardian/report text fits vigilants-defeat-phone: Chapter overline
+Actual named guardian/report text fits vigilants-defeat-phone: Guardian milestone 5
+Actual named guardian/report text fits vigilants-defeat-phone: Guardian milestone 10
+Actual named guardian/report text fits vigilants-defeat-phone: Guardian milestone 20
+Actual named guardian/report text fits vigilants-defeat-phone: Guardian milestone 25
+Actual named guardian/report text fits vigilants-defeat-phone: Current live stage
+Actual named guardian/report text fits vigilants-defeat-phone: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-defeat-phone: Original victory heading
+Actual named guardian/report text fits vigilants-defeat-phone: Authoritative victory reward
+Actual named guardian/report text fits vigilants-defeat-phone: Stage progression
+Actual named guardian/report text fits vigilants-defeat-phone: Real enemy and trait
+Actual named guardian/report text fits vigilants-defeat-phone: Actual available army
+Actual named guardian/report text fits vigilants-defeat-phone: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-defeat-phone: Offline hero experience
+Actual named guardian/report text fits vigilants-defeat-phone: Original gilded label
+Actual named guardian/report text fits vigilants-defeat-phone: Original gilded label
+Actual named guardian/report text fits vigilants-defeat-phone: No artificial notifications
+Actual named guardian/report text fits vigilants-defeat-phone: Original gilded label
+Authentic Unity camera PNG generated: vigilants-defeat-phone
+Correct real camera resolution: vigilants-defeat-phone
+Current-stage defeat analysis survives actual saved-game reload
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Page heading
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Chapter overline
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Guardian milestone 5
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Guardian milestone 10
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Guardian milestone 20
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Guardian milestone 25
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Current live stage
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Live progress / no decorative counters
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Stage progression
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Real enemy and trait
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Actual available army
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Authoritative first victory reward
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Offline hero experience
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Original gilded label
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Original gilded label
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: No artificial notifications
+Actual named guardian/report text fits vigilants-defeat-reopened-phone: Original gilded label
+Real phone manuscript preserves the readable defeat lesson after reload and banner expiry
+Authentic Unity camera PNG generated: vigilants-defeat-reopened-phone
+Correct real camera resolution: vigilants-defeat-reopened-phone
+Scene is using a disposable saved game, never owner progress
+Map begins without fabricated discoveries or seals
+Actual named guardian/report text fits scouts-before-discovery-landscape: Page heading
+Actual named guardian/report text fits scouts-before-discovery-landscape: Chapter overline
+Actual named guardian/report text fits scouts-before-discovery-landscape: Live progress / no decorative counters
+Actual named guardian/report text fits scouts-before-discovery-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-before-discovery-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-before-discovery-landscape: Original gilded label
+Actual named guardian/report text fits scouts-before-discovery-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-before-discovery-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-before-discovery-landscape: Original gilded label
+Actual named guardian/report text fits scouts-before-discovery-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-before-discovery-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-before-discovery-landscape: Original gilded label
+Actual named guardian/report text fits scouts-before-discovery-landscape: No artificial notifications
+Actual named guardian/report text fits scouts-before-discovery-landscape: Original gilded label
+Authentic Unity camera PNG generated: scouts-before-discovery-landscape
+Correct real camera resolution: scouts-before-discovery-landscape
+The contract can be selected by its real visible board position
+Real blue SEND button is interactable
+Real blue UI action dispatches the selected contract
+Only the disposable test clock can advance a report
+Real blue CLAIM action unlocks after UTC completion
+The same original UI button claims one completed contract
+Earned expedition displays a celebratory narrative banner
+One original lore discovery survives actual file reload
+The map's first real heraldic seal is earned
+The real narrative appears on the approved cartographer painting
+The first wax pin is visible after an earned report
+Actual named guardian/report text fits scouts-discovery-landscape: Page heading
+Actual named guardian/report text fits scouts-discovery-landscape: Chapter overline
+Actual named guardian/report text fits scouts-discovery-landscape: Live progress / no decorative counters
+Actual named guardian/report text fits scouts-discovery-landscape: Real expedition report / persistent
+Actual named guardian/report text fits scouts-discovery-landscape: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-discovery-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-landscape: Original gilded label
+Actual named guardian/report text fits scouts-discovery-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-landscape: Original gilded label
+Actual named guardian/report text fits scouts-discovery-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-landscape: Original gilded label
+Actual named guardian/report text fits scouts-discovery-landscape: No artificial notifications
+Actual named guardian/report text fits scouts-discovery-landscape: Original gilded label
+Authentic Unity camera PNG generated: scouts-discovery-landscape
+Correct real camera resolution: scouts-discovery-landscape
+Actual named guardian/report text fits scouts-discovery-portrait: Page heading
+Actual named guardian/report text fits scouts-discovery-portrait: Chapter overline
+Actual named guardian/report text fits scouts-discovery-portrait: Live progress / no decorative counters
+Actual named guardian/report text fits scouts-discovery-portrait: Real expedition report / persistent
+Actual named guardian/report text fits scouts-discovery-portrait: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-discovery-portrait: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-portrait: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-portrait: Original gilded label
+Actual named guardian/report text fits scouts-discovery-portrait: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-portrait: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-portrait: Original gilded label
+Actual named guardian/report text fits scouts-discovery-portrait: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-portrait: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-portrait: Original gilded label
+Actual named guardian/report text fits scouts-discovery-portrait: No artificial notifications
+Actual named guardian/report text fits scouts-discovery-portrait: Original gilded label
+Authentic Unity camera PNG generated: scouts-discovery-portrait
+Correct real camera resolution: scouts-discovery-portrait
+Actual named guardian/report text fits scouts-discovery-phone: Page heading
+Actual named guardian/report text fits scouts-discovery-phone: Chapter overline
+Actual named guardian/report text fits scouts-discovery-phone: Live progress / no decorative counters
+Actual named guardian/report text fits scouts-discovery-phone: Real expedition report / persistent
+Actual named guardian/report text fits scouts-discovery-phone: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-discovery-phone: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-phone: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-phone: Original gilded label
+Actual named guardian/report text fits scouts-discovery-phone: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-phone: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-phone: Original gilded label
+Actual named guardian/report text fits scouts-discovery-phone: Readable contract heading
+Actual named guardian/report text fits scouts-discovery-phone: Real scout order reward and status
+Actual named guardian/report text fits scouts-discovery-phone: Original gilded label
+Actual named guardian/report text fits scouts-discovery-phone: No artificial notifications
+Actual named guardian/report text fits scouts-discovery-phone: Original gilded label
+Authentic Unity camera PNG generated: scouts-discovery-phone
+Correct real camera resolution: scouts-discovery-phone
+Only the genuinely earned scout family seal is discovered
+Dispatch actual further discovery contract 0
+Earn actual further discovery contract 0
+Dispatch actual further discovery contract 1
+Earn actual further discovery contract 1
+Dispatch actual further discovery contract 2
+Earn actual further discovery contract 2
+Dispatch actual further discovery contract 3
+Earn actual further discovery contract 3
+Dispatch actual further discovery contract 4
+Earn actual further discovery contract 4
+Six actual claims and all four discovered families persist independently
+Original map genuinely shows all four earned regional seals
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Page heading
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Chapter overline
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Live progress / no decorative counters
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Real expedition report / persistent
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: No artificial notifications
+Actual named guardian/report text fits scouts-six-reports-four-families-landscape: Original gilded label
+Authentic Unity camera PNG generated: scouts-six-reports-four-families-landscape
+Correct real camera resolution: scouts-six-reports-four-families-landscape
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Page heading
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Chapter overline
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Live progress / no decorative counters
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Real expedition report / persistent
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: No artificial notifications
+Actual named guardian/report text fits scouts-six-reports-four-families-portrait: Original gilded label
+Authentic Unity camera PNG generated: scouts-six-reports-four-families-portrait
+Correct real camera resolution: scouts-six-reports-four-families-portrait
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Page heading
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Chapter overline
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Live progress / no decorative counters
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Real expedition report / persistent
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Cartographer discovery threshold
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Readable contract heading
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Real scout order reward and status
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Original gilded label
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: No artificial notifications
+Actual named guardian/report text fits scouts-six-reports-four-families-phone: Original gilded label
+Authentic Unity camera PNG generated: scouts-six-reports-four-families-phone
+Correct real camera resolution: scouts-six-reports-four-families-phone
+No duplicate HUD, Canvas or game session created
+owner-save-modified=false

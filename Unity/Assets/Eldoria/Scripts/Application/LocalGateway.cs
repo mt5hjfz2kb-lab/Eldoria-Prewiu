@@ -109,7 +109,7 @@ namespace Eldoria.Application
             bool changed=false;
             foreach(var record in state.WorldCreatureLocations)
             {
-                if(record.Alive||record.RespawnUtcTicks>clock.UtcTicks||state.March.TargetId==record.TargetId)continue;
+                if(record.Alive||record.RespawnUtcTicks>clock.UtcTicks||MarchTargetActive(record.TargetId))continue;
                 if(!creaturePlacement.TryChoose(Snapshot(),record.TargetId,record.SiteId,record.Generation+1,out var chosen))continue;
                 if(chosen==null||chosen.TargetId!=record.TargetId||chosen.CreatureKind!=record.CreatureKind||
                     chosen.Level<1||chosen.Level>5||string.IsNullOrEmpty(chosen.SiteId)||chosen.SiteId==record.SiteId||
@@ -167,7 +167,7 @@ namespace Eldoria.Application
                     changed = true;
                 }
                 // Keep the return leg anchored to its original destination.
-                if (item.RespawnUtcTicks > clock.UtcTicks || state.March.TargetId == id) continue;
+                if (item.RespawnUtcTicks > clock.UtcTicks || MarchTargetActive(id)) continue;
                 if (!resourcePlacement.TryChoose(Snapshot(), id, item.SiteId, item.Generation + 1, out var next)) continue;
                 if (next == null || next.TargetId != id || string.IsNullOrEmpty(next.SiteId) ||
                     next.SiteId == item.SiteId || float.IsNaN(next.X) || float.IsInfinity(next.X) ||
@@ -200,13 +200,28 @@ namespace Eldoria.Application
             foreach (var item in state.WorldResourceLocations)
                 if (item == null || string.IsNullOrEmpty(item.TargetId) || (item.TargetId != "forest-valoria" && item.TargetId != "quarry-valoria" && !(item.TargetId.StartsWith("region1:wood:",StringComparison.Ordinal)&&item.ResourceKind=="wood") && !(item.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal)&&item.ResourceKind=="stone")) || !resourceIds.Add(item.TargetId))
                     throw new InvalidOperationException("Invalid or duplicate persisted resource identity");
+            if(state.March==null)state.March=new MarchState();
+            if(state.ExtraMarches==null)state.ExtraMarches=new System.Collections.Generic.List<MarchState>();
+            if(state.ExtraMarches.Count>MarchCapacityRules.MaxConcurrentMarches-1 || state.ExtraMarches.Exists(x=>x==null))
+                throw new InvalidOperationException("Invalid persistent march slots");
             if(state.Retention==null)state.Retention=new EarlyRetentionState();
             if(state.Retention.Orders==null)state.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>();
             if(state.ChapterThree==null)state.ChapterThree=new BastionThreeState();
             if(state.ChapterThree.Inventory==null)state.ChapterThree.Inventory=new System.Collections.Generic.List<string>();
             if(state.ChapterThree.FissureClosed){state.ChapterThree.LyraRecruited=true;state.ChapterThree.InvestigationEndsUtcTicks=0;}
+            // Schema-1 saves may have confirmed an army before hero capacity existed.
+            // Trim only that unreserved selection; never change home or travelling troops.
+            bool migratedPrepared=state.MarchConfigured && state.PreparedTroops!=null &&
+                state.PreparedTroops.Total>MarchCapacityRules.Capacity(state,state.PreparedHeroId);
+            if(migratedPrepared)
+            {
+                state.PreparedTroops=MarchCapacityRules.AutoSelect(state.PreparedTroops,
+                    MarchCapacityRules.Capacity(state,state.PreparedHeroId));
+                if(state.ChapterProgress!=null)state.ChapterProgress.ConfirmedExpeditionPower=
+                    SliceRules.Expedition(state.PreparedTroops,state.PreparedHeroId).Power;
+            }
             NormalizeMissionProgress();
-            Advance();
+            if(!Advance() && migratedPrepared)Commit();
         }
         private void NormalizeMissionProgress()
         {
@@ -242,6 +257,7 @@ namespace Eldoria.Application
                 Available=s.Available.Copy(), Wounded=s.Wounded.Copy(),
                 MarchConfigured=s.MarchConfigured, PreparedHeroId=s.PreparedHeroId,
                 PreparedTroops=s.PreparedTroops.Copy(),
+                ExtraMarches=s.ExtraMarches.ConvertAll(x=>x.Copy()),
                 March=new MarchState { MarchId=s.March.MarchId, OwnerId=s.March.OwnerId,
                     TargetId=s.March.TargetId, HeroId=s.March.HeroId, Troops=s.March.Troops.Copy(),
                     Route=s.March.Route?.ConvertAll(x=>x.Copy())??new System.Collections.Generic.List<WorldRoutePoint>(),
@@ -289,16 +305,24 @@ namespace Eldoria.Application
         }
         public CommandResult Execute(GameCommand command)
         {
+            // Reject revisions superseded by another command. Elapsed-time
+            // processing performed by THIS command must not invalidate its
+            // own fresh snapshot (for example a just-returned Scout claim).
+            var observedRevision=state.Revision;
             Advance();
             if (command == null || string.IsNullOrEmpty(command.Id)) return Fail("Comando sin ID");
             if (state.CompletedCommandIds.Contains(command.Id)) return new CommandResult(true, "Ya ejecutado", state.Revision);
             if (command.ActorId != state.PlayerId) return Fail("Propietario incorrecto");
-            if (command.ExpectedRevision != state.Revision) return Fail("Estado desactualizado");
+            if (command.ExpectedRevision != observedRevision) return Fail("Estado desactualizado");
             var early=EarlyRetentionRules.Apply(state,command.Kind,command.TargetId,
                 clock.UtcTicks,out string earlyMessage);
             if(early.HasValue)
             {
                 if(!early.Value)return Fail(earlyMessage);
+                // A claim frees a board slot. Refill/migration belongs to THIS
+                // accepted revision, not the next command's Advance preflight.
+                // Otherwise the next fresh UI claim can reject itself as stale.
+                EarlyRetentionRules.Synchronize(state,clock.UtcTicks);
                 state.CompletedCommandIds.Add(command.Id);
                 Commit();
                 return new CommandResult(true,earlyMessage,state.Revision);
@@ -321,32 +345,30 @@ namespace Eldoria.Application
                 case "ConfigureMarch":
                     if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Marcha no disponible");
-                    if (state.March.Phase != "idle") return Fail("Espera al regreso de la Marcha");
-                    int marchArchers=state.Available.ArcherT1;
-                    string marchHero="aldric";
-                    if(command.TargetId != "march-main")
+                    if(!MarchCapacityRules.CanStart(state,clock.UtcTicks))return Fail("Ya hay tres marchas activas");
+                    // Legacy command plus explicit three-tier composition, all checked
+                    // atomically against troops still at home and the selected hero cap.
+                    var parts=(command.TargetId??"").Split(':');
+                    if(parts[0]!="march-main" || (parts.Length!=1&&parts.Length!=2&&parts.Length!=3&&parts.Length!=5))
+                        return Fail("Composición desconocida");
+                    string marchHero=parts.Length==3?parts[2]:parts.Length==5?parts[4]:"aldric";
+                    if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))
+                        return Fail("Héroe no disponible");
+                    var nextTroops=MarchCapacityRules.AutoSelect(state.Available,
+                        MarchCapacityRules.Capacity(state,marchHero));
+                    if(parts.Length>1)
                     {
-                        if(!command.TargetId.StartsWith("march-main:",StringComparison.Ordinal) ||
-                            !int.TryParse(command.TargetId.Split(':')[1],out marchArchers))
-                            return Fail("Composición desconocida");
+                        if(!int.TryParse(parts[1],out nextTroops.ArcherT1))return Fail("Composición desconocida");
+                        nextTroops.ArcherT2=0;nextTroops.ArcherT3=0;
                     }
-                    if(marchArchers < 1 || marchArchers > state.Available.ArcherT1)
-                        return Fail("No hay suficientes arqueros disponibles");
-                    var parts=command.TargetId.Split(':');
-                    if(parts.Length>3)return Fail("Composición desconocida");
-                    if(parts.Length==3)marchHero=parts[2];
-                    if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))return Fail("Héroe no disponible");
-                    state.PreparedHeroId = marchHero;
-                    state.PreparedTroops = state.Available.Copy();
-                    state.PreparedTroops.ArcherT1 = marchArchers;
-                    // Only the expressly selected unlocked T1 unit is assigned
-                    // in the new composition editor. Legacy full-stack marches
-                    // retain their historical behavior and save compatibility.
-                    if(command.TargetId != "march-main")
-                    {
-                        state.PreparedTroops.ArcherT2 = 0;
-                        state.PreparedTroops.ArcherT3 = 0;
-                    }
+                    if(parts.Length==5 &&
+                        (!int.TryParse(parts[2],out nextTroops.ArcherT2)||
+                         !int.TryParse(parts[3],out nextTroops.ArcherT3)))
+                        return Fail("Composición desconocida");
+                    if(!MarchCapacityRules.Fits(nextTroops,state.Available,MarchCapacityRules.Capacity(state,marchHero)))
+                        return Fail("La marcha supera la capacidad del héroe o no tiene tropas disponibles");
+                    state.PreparedHeroId=marchHero;
+                    state.PreparedTroops=nextTroops;
                     state.MarchConfigured = true;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.MarchConfirmed = true;
@@ -459,21 +481,38 @@ namespace Eldoria.Application
             Commit();
             return new CommandResult(true, "Acción iniciada", state.Revision);
         }
-        private bool CanDepart() => state.ChapterThree.InvestigationEndsUtcTicks==0 && state.March.Phase == "idle" && state.Available.ArcherT1 > 0;
+        private bool MarchTargetActive(string targetId)
+        {
+            foreach(var active in MarchCapacityRules.WorldMarches(state))
+                if(active.Phase!="idle"&&active.TargetId==targetId)return true;
+            return false;
+        }
+        // An investigation occupies ONE of three global slots, not the entire kingdom.
+        private bool CanDepart() => MarchCapacityRules.CanStart(state,clock.UtcTicks) &&
+            state.Available.Total>0;
         private bool Depart(string targetId)
         {
             var planned=new System.Collections.Generic.List<WorldRoutePoint>();
             if(marchRoutes!=null&&!marchRoutes.TryRoute(Snapshot(),targetId,out planned))return false;
             if(planned==null)return false;
-            var m = state.March;
+            if(!MarchCapacityRules.CanStart(state,clock.UtcTicks))return false;
+            // Never attack or resolve the same unique creature twice in parallel.
+            if(MarchTargetActive(targetId)&&!IsWoodTarget(targetId)&&!IsStoneTarget(targetId))return false;
+            bool special=targetId=="engendro-valoria"||IsChapterThreeTarget(targetId);
+            bool usePrepared=state.MarchConfigured&&
+                MarchCapacityRules.Fits(state.PreparedTroops,state.Available,
+                    MarchCapacityRules.Capacity(state,state.PreparedHeroId));
+            if(special&&state.MarchConfigured&&!usePrepared)return false;
+            string hero=usePrepared?state.PreparedHeroId:"aldric";
+            var troops=usePrepared?state.PreparedTroops.Copy():
+                MarchCapacityRules.AutoSelect(state.Available,MarchCapacityRules.Capacity(state,hero));
+            if(!MarchCapacityRules.Fits(troops,state.Available,MarchCapacityRules.Capacity(state,hero)))return false;
+            var m=MarchCapacityRules.AvailableSlot(state);
+            if(m==null)return false;
             m.Route=planned;
-            bool usePrepared = (targetId == "engendro-valoria" || IsChapterThreeTarget(targetId)) && state.MarchConfigured;
-            if(usePrepared && (state.PreparedTroops.Total<1 || state.PreparedTroops.ArcherT1>state.Available.ArcherT1 || state.PreparedTroops.ArcherT2>state.Available.ArcherT2 || state.PreparedTroops.ArcherT3>state.Available.ArcherT3))return false;
-            m.Troops = usePrepared ? state.PreparedTroops.Copy() : state.Available.Copy();
-            m.HeroId = usePrepared ? state.PreparedHeroId : "aldric";
-            state.Available.ArcherT1 -= m.Troops.ArcherT1;
-            state.Available.ArcherT2 -= m.Troops.ArcherT2;
-            state.Available.ArcherT3 -= m.Troops.ArcherT3;
+            m.Troops=troops;
+            m.HeroId=hero;
+            MarchCapacityRules.Reserve(state,troops);
             m.TargetId = targetId; m.Phase = "outbound";
             m.PendingFood = m.PendingWood = m.PendingStone = 0;
             m.PhaseEndsUtcTicks = clock.UtcTicks + TimeSpan.FromSeconds(SliceRules.TravelSeconds).Ticks;
@@ -522,11 +561,12 @@ namespace Eldoria.Application
                 state.PendingRecruitArchers = 0;
                 changed = true;
             }
-            // Drive multiple phases in one call after a long offline interval using the ORIGINAL due time.
-            for (int guard=0; guard<3 && state.March.Phase != "idle" &&
-                state.March.PhaseEndsUtcTicks <= clock.UtcTicks; guard++)
+            // Every one of up to three persisted marches advances independently.
+            // A long offline interval may complete all three phases in one call.
+            foreach(var m in MarchCapacityRules.WorldMarches(state))
+            for (int guard=0; guard<3 && m.Phase != "idle" &&
+                m.PhaseEndsUtcTicks <= clock.UtcTicks; guard++)
             {
-                var m = state.March;
                 long due = m.PhaseEndsUtcTicks;
                 if (m.Phase == "outbound")
                 {
@@ -632,16 +672,14 @@ namespace Eldoria.Application
                             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                             state.ChapterProgress.GatheredStone += m.PendingStone;
                         }
-                        state.Available.ArcherT1 += m.Troops.ArcherT1;
-                        state.Available.ArcherT2 += m.Troops.ArcherT2;
-                        state.Available.ArcherT3 += m.Troops.ArcherT3;
+                        MarchCapacityRules.Return(state,m.Troops);
                     }
                     m.Troops = new ArmyRoster(); m.PendingFood = m.PendingWood = m.PendingStone = 0;
                     m.TargetId = ""; m.Phase = "idle"; m.PhaseEndsUtcTicks = 0;
                 }
                 changed = true;
             }
-            if (!state.JourneyComplete && state.March.Phase == "idle")
+            if (!state.JourneyComplete && MarchCapacityRules.ActiveWorldCount(state)==0)
             {
                 if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                 bool chapterOneReady =

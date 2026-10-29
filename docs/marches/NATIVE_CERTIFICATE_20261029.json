@@ -1,0 +1,36 @@
+{
+  "status": "SUCCESS",
+  "requested_source": "fd21934bc1889087d9713d5367389b094991207f",
+  "compiled_source": "c27b52c93c8d51e249fec86afd7228aa84596edf",
+  "compiled_tree": "e05acd3803c98ed43075115f98cab4677ce1670b",
+  "run_id": 40850803144,
+  "editmode_passed": 54,
+  "playmode_passed": 73,
+  "skipped": 0,
+  "actual_views": 12,
+  "march_views": 8,
+  "retention_evolution_included": true,
+  "reference_views": 19,
+  "evolution_views": 20,
+  "native_artifact_id": 12887786949,
+  "native_artifact_digest": "sha256:771094bb5b33d0e579dff25b438a719290c941803ebbd3036e1400f3d5085a2b",
+  "additional_artifacts": [
+    {
+      "id": 12887610199,
+      "name": "eldoria-retention-evolution-native-40850803144",
+      "digest": "sha256:ade57832a8d3672038f558a901ec25d36843699969e35ac5b576be0a45a0f3fc"
+    },
+    {
+      "id": 12886823548,
+      "name": "eldoria-three-marches-native-40850803144",
+      "digest": "sha256:29ba558684aec1fa7cb2eea7a2ba81cb1434b86dbad67a13123c5a2fe2c10eff"
+    }
+  ],
+  "visual_review": "COMPOSITION_AND_LEGIBILITY_ACCEPTED_FOR_EXISTING_UI_SCOPE",
+  "reviewed_capture_manifest": "docs/marches/native-40850803144/capture-manifest.json",
+  "physical_mobile_tested": false,
+  "performance_profiled_on_device": false,
+  "rewards_provisional": true,
+  "budget_eur": 0,
+  "completed_at": "2026-10-29T09:54:24.457Z"
+}

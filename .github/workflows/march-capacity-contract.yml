@@ -1,0 +1,29 @@
+name: Eldoria global march capacity and three slots
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'Unity/Assets/Eldoria/Scripts/Domain/GameState.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs'
+      - 'Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs'
+      - 'tools/march-capacity/**'
+      - '.github/workflows/march-capacity-contract.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  march:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
+            tools/march-capacity
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Real gateway, three march slots, capacity, hero growth, saved returns and scout reservations
+        run: dotnet run --configuration Release --project tools/march-capacity/Smoke.csproj

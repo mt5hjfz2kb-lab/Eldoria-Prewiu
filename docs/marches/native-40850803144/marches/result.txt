@@ -1,0 +1,216 @@
+GLOBAL_THREE_MARCH_NATIVE_PASS
+captured=8
+Scene booted real gameplay with disposable-only save
+Native proof owns the existing disposable UTC test clock
+Real RoyalHUD instantiated
+Live Gateway uses Barracks-I level-one hero troop capacity
+No expedition active before actual dispatch
+Actual world navigation is available
+One real HUD and active camera at three-marches-before-horizontal
+Actual camera PNG is present and nonempty: three-marches-before-horizontal
+PNG decodes to exact Unity camera dimensions: three-marches-before-horizontal
+World/UI pixels are not a blank test image: three-marches-before-horizontal
+Prepare Lyra for primary march, independently of Aldric
+First real forest gathering starts
+Prepare Aldric for an additional march
+Second independent real quarry gathering starts
+Third independent real enemy march starts
+Exactly three saved active world marches in one authoritative Gateway
+Three distinct sixty-troop detachments reserve 180 of 195 trained units
+Fourth expedition is rejected despite fifteen available troops
+Authoritative world-march route presenter is attached
+Actual HUD owns three distinct route graphics
+Two new real expedition markers exist alongside canonical primary marker
+One real HUD and active camera at three-marches-active-horizontal
+All three standards remain visible in actual capture three-marches-active-horizontal
+Actual expedition has a native CanvasRenderer in three-marches-active-horizontal
+Real slot number and troop/deadline caption render completely in three-marches-active-horizontal
+Real slot number and troop/deadline caption render completely in three-marches-active-horizontal
+Actual world camera renders expedition standard 0 at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-horizontal
+Actual expedition icon stays at least 28px in three-marches-active-horizontal
+Actual expedition has a native CanvasRenderer in three-marches-active-horizontal
+Real slot number and troop/deadline caption render completely in three-marches-active-horizontal
+Real slot number and troop/deadline caption render completely in three-marches-active-horizontal
+Actual world camera renders expedition standard 1 at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-horizontal
+Actual expedition icon stays at least 28px in three-marches-active-horizontal
+Departing standards do not overlap in three-marches-active-horizontal
+Actual expedition has a native CanvasRenderer in three-marches-active-horizontal
+Real slot number and troop/deadline caption render completely in three-marches-active-horizontal
+Real slot number and troop/deadline caption render completely in three-marches-active-horizontal
+Actual world camera renders expedition standard 2 at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-horizontal
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-horizontal
+Actual expedition icon stays at least 28px in three-marches-active-horizontal
+Departing standards do not overlap in three-marches-active-horizontal
+Departing standards do not overlap in three-marches-active-horizontal
+Actual camera PNG is present and nonempty: three-marches-active-horizontal
+PNG decodes to exact Unity camera dimensions: three-marches-active-horizontal
+World/UI pixels are not a blank test image: three-marches-active-horizontal
+One real HUD and active camera at three-marches-active-vertical
+All three standards remain visible in actual capture three-marches-active-vertical
+Actual expedition has a native CanvasRenderer in three-marches-active-vertical
+Real slot number and troop/deadline caption render completely in three-marches-active-vertical
+Real slot number and troop/deadline caption render completely in three-marches-active-vertical
+Actual world camera renders expedition standard 0 at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-vertical
+Actual expedition icon stays at least 28px in three-marches-active-vertical
+Actual expedition has a native CanvasRenderer in three-marches-active-vertical
+Real slot number and troop/deadline caption render completely in three-marches-active-vertical
+Real slot number and troop/deadline caption render completely in three-marches-active-vertical
+Actual world camera renders expedition standard 1 at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-vertical
+Actual expedition icon stays at least 28px in three-marches-active-vertical
+Departing standards do not overlap in three-marches-active-vertical
+Actual expedition has a native CanvasRenderer in three-marches-active-vertical
+Real slot number and troop/deadline caption render completely in three-marches-active-vertical
+Real slot number and troop/deadline caption render completely in three-marches-active-vertical
+Actual world camera renders expedition standard 2 at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-vertical
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-vertical
+Actual expedition icon stays at least 28px in three-marches-active-vertical
+Departing standards do not overlap in three-marches-active-vertical
+Departing standards do not overlap in three-marches-active-vertical
+Actual camera PNG is present and nonempty: three-marches-active-vertical
+PNG decodes to exact Unity camera dimensions: three-marches-active-vertical
+World/UI pixels are not a blank test image: three-marches-active-vertical
+One real HUD and active camera at three-marches-active-phone
+All three standards remain visible in actual capture three-marches-active-phone
+Actual expedition has a native CanvasRenderer in three-marches-active-phone
+Real slot number and troop/deadline caption render completely in three-marches-active-phone
+Real slot number and troop/deadline caption render completely in three-marches-active-phone
+Actual world camera renders expedition standard 0 at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-phone
+Actual expedition icon stays at least 28px in three-marches-active-phone
+Actual expedition has a native CanvasRenderer in three-marches-active-phone
+Real slot number and troop/deadline caption render completely in three-marches-active-phone
+Real slot number and troop/deadline caption render completely in three-marches-active-phone
+Actual world camera renders expedition standard 1 at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-phone
+Actual expedition icon stays at least 28px in three-marches-active-phone
+Departing standards do not overlap in three-marches-active-phone
+Actual expedition has a native CanvasRenderer in three-marches-active-phone
+Real slot number and troop/deadline caption render completely in three-marches-active-phone
+Real slot number and troop/deadline caption render completely in three-marches-active-phone
+Actual world camera renders expedition standard 2 at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Label target at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at three-marches-active-phone
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at three-marches-active-phone
+Actual expedition icon stays at least 28px in three-marches-active-phone
+Departing standards do not overlap in three-marches-active-phone
+Departing standards do not overlap in three-marches-active-phone
+Actual camera PNG is present and nonempty: three-marches-active-phone
+PNG decodes to exact Unity camera dimensions: three-marches-active-phone
+World/UI pixels are not a blank test image: three-marches-active-phone
+City can be inspected while three armies are away
+Actual Aldric is absent when only additional marches contain him
+Three in-flight armies and actual hero absence survive reload
+All three real march returns complete offline without lost troops
+All three routes/returns survive save reload with no duplicated resources
+Player can return safely to the canonical city
+Actual March Room management panel attached
+Actual capacity-limited march composer opens
+Actual visible March Room shows global active-slot count
+Real march room shows current hero-dependent capacity, not a decorative number
+The actual touch slider cannot select more troops than Aldric can command
+One real HUD and active camera at march-composer-horizontal
+Every actual capacity/hero/slot line fits the March Room in march-composer-horizontal
+Actual camera PNG is present and nonempty: march-composer-horizontal
+PNG decodes to exact Unity camera dimensions: march-composer-horizontal
+World/UI pixels are not a blank test image: march-composer-horizontal
+One real HUD and active camera at march-composer-vertical
+Every actual capacity/hero/slot line fits the March Room in march-composer-vertical
+Actual camera PNG is present and nonempty: march-composer-vertical
+PNG decodes to exact Unity camera dimensions: march-composer-vertical
+World/UI pixels are not a blank test image: march-composer-vertical
+Actual investigation starts in one global slot
+Investigation allows both other global march slots
+Mixed fourth operation is rejected
+Mixed-operation world can be inspected
+Investigation and BOTH world armies have active route markers
+One real HUD and active camera at investigation-and-two-marches-horizontal
+All three standards remain visible in actual capture investigation-and-two-marches-horizontal
+Actual expedition has a native CanvasRenderer in investigation-and-two-marches-horizontal
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-horizontal
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-horizontal
+Actual world camera renders expedition standard 0 at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at investigation-and-two-marches-horizontal
+Actual expedition icon stays at least 28px in investigation-and-two-marches-horizontal
+Actual expedition has a native CanvasRenderer in investigation-and-two-marches-horizontal
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-horizontal
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-horizontal
+Actual world camera renders expedition standard 1 at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at investigation-and-two-marches-horizontal
+Actual expedition icon stays at least 28px in investigation-and-two-marches-horizontal
+Departing standards do not overlap in investigation-and-two-marches-horizontal
+Actual expedition has a native CanvasRenderer in investigation-and-two-marches-horizontal
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-horizontal
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-horizontal
+Actual world camera renders expedition standard 2 at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at investigation-and-two-marches-horizontal
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at investigation-and-two-marches-horizontal
+Actual expedition icon stays at least 28px in investigation-and-two-marches-horizontal
+Departing standards do not overlap in investigation-and-two-marches-horizontal
+Departing standards do not overlap in investigation-and-two-marches-horizontal
+Actual camera PNG is present and nonempty: investigation-and-two-marches-horizontal
+PNG decodes to exact Unity camera dimensions: investigation-and-two-marches-horizontal
+World/UI pixels are not a blank test image: investigation-and-two-marches-horizontal
+One real HUD and active camera at investigation-and-two-marches-phone
+All three standards remain visible in actual capture investigation-and-two-marches-phone
+Actual expedition has a native CanvasRenderer in investigation-and-two-marches-phone
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-phone
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-phone
+Actual world camera renders expedition standard 0 at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at investigation-and-two-marches-phone
+Actual expedition icon stays at least 28px in investigation-and-two-marches-phone
+Actual expedition has a native CanvasRenderer in investigation-and-two-marches-phone
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-phone
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-phone
+Actual world camera renders expedition standard 1 at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at investigation-and-two-marches-phone
+Actual expedition icon stays at least 28px in investigation-and-two-marches-phone
+Departing standards do not overlap in investigation-and-two-marches-phone
+Actual expedition has a native CanvasRenderer in investigation-and-two-marches-phone
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-phone
+Real slot number and troop/deadline caption render completely in investigation-and-two-marches-phone
+Actual world camera renders expedition standard 2 at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Label target at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Live Vigilants unlocked access at investigation-and-two-marches-phone
+Actual expedition caption does not cover live map/retention action Live Scouts unlocked access at investigation-and-two-marches-phone
+Actual expedition icon stays at least 28px in investigation-and-two-marches-phone
+Departing standards do not overlap in investigation-and-two-marches-phone
+Departing standards do not overlap in investigation-and-two-marches-phone
+Actual camera PNG is present and nonempty: investigation-and-two-marches-phone
+PNG decodes to exact Unity camera dimensions: investigation-and-two-marches-phone
+World/UI pixels are not a blank test image: investigation-and-two-marches-phone
+owner-save-modified=false
