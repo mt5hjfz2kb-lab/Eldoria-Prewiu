@@ -1,0 +1,98 @@
+name: "[ELDORIA QA] Real-control Bastion I-V independent playthrough"
+on:
+  push:
+    branches: ["qa/eldoria-i-v-real-playthrough-20261029"]
+    paths:
+      - ".github/workflows/eldoria-i-v-real-playthrough.yml"
+      - "tools/valoria-reference-clean/playtest_web.cjs"
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: eldoria-independent-i-v-player
+  cancel-in-progress: false
+jobs:
+  play:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 85
+    steps:
+      - name: Recover installed Git from GitHub Desktop
+        shell: powershell
+        run: |
+          if(-not(Get-Command git.exe -ErrorAction SilentlyContinue)){
+            $git=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $git){throw 'Git not available on existing test PC'}
+            Add-Content $env:GITHUB_PATH (Split-Path $git)
+            $env:PATH="$(Split-Path $git);$env:PATH"
+          }
+      - uses: actions/checkout@v4
+        with:
+          clean: false
+          sparse-checkout: |
+            tools/valoria-reference-clean
+            tools/closeout
+            tools/workstream-lease
+      - name: Avoid interfering with active Unity/Blender sessions
+        shell: powershell
+        run: |
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){
+            throw 'Unity/Blender occupied; do not interfere with parallel production'
+          }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - uses: actions/download-artifact@v4
+        with:
+          name: valoria-integrated-web-playtest-40945723046
+          run-id: 40945723046
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: unity-raw
+      - name: Prepare EXACT production WebGL298 (no rebuild, no publication)
+        shell: powershell
+        run: |
+          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native298 c8580934201ae1e17543b8683749d40751fb1e12 40945723046
+          if($LASTEXITCODE){throw 'Exact native298 artifact verification failed'}
+          node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
+          if($LASTEXITCODE){throw 'Original build transport failed'}
+      - name: Install isolated Playwright and original recording tool
+        shell: powershell
+        run: |
+          $lib=Join-Path $env:RUNNER_TEMP 'eldoria-i-v-player-library'
+          npm install --prefix $lib --no-save --ignore-scripts playwright@1.55.0
+          if($LASTEXITCODE){throw 'Playwright installation failed'}
+          & (Join-Path $lib 'node_modules/.bin/playwright.cmd') install ffmpeg
+          if($LASTEXITCODE){throw 'FFmpeg installation failed'}
+          $recorders=@(Get-ChildItem (Join-Path $env:LOCALAPPDATA 'ms-playwright') -Filter ffmpeg-win64.exe -File -Recurse -ErrorAction SilentlyContinue)
+          if(-not $recorders.Count){throw 'FFmpeg is missing'}
+          Add-Content $env:GITHUB_PATH (Split-Path $recorders[0].FullName)
+          Add-Content $env:GITHUB_ENV "NODE_PATH=$(Join-Path $lib 'node_modules')"
+      - name: Play the game continuously from Bastion I to V with visible controls
+        shell: powershell
+        timeout-minutes: 77
+        env:
+          ELDORIA_EXTEND_I_V: "1"
+          ELDORIA_IV_V_MAX_EXTRA_SECONDS: "3600"
+          VALORIA_PLAYTEST_TIMEOUT_SECONDS: "1500"
+          VALORIA_WEB_LOAD_TIMEOUT_SECONDS: "180"
+          VALORIA_SOURCE_SHA: c8580934201ae1e17543b8683749d40751fb1e12
+          VALORIA_WEB_ROOT: prepared-site/dist
+          VALORIA_PLAYTEST_OUT: eldoria-i-v-genuine-player-evidence
+          VALORIA_CHROMIUM_EXECUTABLE: 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
+        run: |
+          node --check tools/valoria-reference-clean/playtest_web.cjs
+          if($LASTEXITCODE){throw 'Test harness JavaScript invalid'}
+          node tools/valoria-reference-clean/playtest_web.cjs
+          if($LASTEXITCODE){throw 'Real-control I-V playthrough incomplete; inspect authentic report/video'}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eldoria-i-v-real-player-evidence-${{ github.run_id }}
+          path: eldoria-i-v-genuine-player-evidence/**
+          if-no-files-found: warn
+          retention-days: 30
