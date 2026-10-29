@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Eldoria.Domain;
 using Eldoria.Presentation;
+using Eldoria.World4XCanon;
 using UnityEngine;
 namespace Eldoria.ReferenceClean {
  [DefaultExecutionOrder(700)] public sealed class BastionIVVWorldPresentation:MonoBehaviour {
@@ -53,7 +54,7 @@ namespace Eldoria.ReferenceClean {
    if(ModelFor("barracks")&&s.BarracksLevel>=5)host.City.Parcels.RightBuilt.SetActive(false);
    stoneSite.SetActive(s.BastionLevel>=5);if(stoneBase)stoneBase.SetActive(s.ChapterThree.StoneworksLevel>0&&s.ChapterThree.StoneworksLevel<5);
    foreach(var stock in stoneStock)stock.model.SetActive(s.ChapterThree.StoneworksLevel>=stock.level&&s.ChapterThree.StoneworksLevel<5);
-   if(worldFive){worldFive.SetActive(s.BastionLevel>=5);if(s.BastionLevel>=5)host.WorldBastionTwo.SetActive(false);}
+   if(worldFive){worldFive.SetActive(s.BastionLevel>=5&&!RegionOneResourcePlacement.IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom));if(s.BastionLevel>=5)host.WorldBastionTwo.SetActive(false);}
   }
   void Set(string id,int level){if(models.TryGetValue(id,out var model)&&model)model.SetActive(level>=5);}
  }

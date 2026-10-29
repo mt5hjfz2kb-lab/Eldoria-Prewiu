@@ -241,6 +241,7 @@ namespace Eldoria.UI.RoyalGold.V2
             bool blocked = (Source.Modal && Source.Modal.gameObject.activeInHierarchy) ||
                 (Source.Mission && Source.Mission.gameObject.activeInHierarchy) ||
                 (Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen??false) ||
+                (Source.GetComponent<RoyalGoldV3RankingScreen>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false);
             RenderSelection(camera, blocked);

@@ -25,6 +25,14 @@ namespace Eldoria.ReferenceClean.Editor {
   static void Step(ValoriaIntegratedWorld h,int sec){((ValoriaReferenceCleanGameplay.TestClock)h.City.Clock).Step(sec);h.City.Gateway.Advance();h.City.Presenter.RefreshState();h.GetComponent<BastionIIIWorldPresentation>().Apply();h.GetComponent<BastionIVVWorldPresentation>().Apply();}
   static void Do(ValoriaIntegratedWorld h,string kind,string target){var s=h.City.Gateway.Snapshot();var result=h.City.Gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision));Need(result.Ok,kind+":"+target+" "+result.Message);}
   static void Shot(ValoriaIntegratedWorld h,string name){foreach(var size in new[]{(1448,1086,"horizontal"),(900,1600,"vertical")})ValoriaReferenceCleanBuilder.Capture(h.PlayerCamera,Ev+"/"+name+"-"+size.Item3+".png",size.Item1,size.Item2);}
+  static void VisibleDelta(string before,string after){
+   var a=new Texture2D(2,2);var b=new Texture2D(2,2);
+   try{Need(a.LoadImage(File.ReadAllBytes(Ev+"/"+before+"-horizontal.png"))&&b.LoadImage(File.ReadAllBytes(Ev+"/"+after+"-horizontal.png")),"decode actual upgrade captures");
+    var x=a.GetPixels32();var y=b.GetPixels32();Need(x.Length==y.Length,"same camera resolution");int changed=0;
+    for(int i=0;i<x.Length;i++)if(Math.Abs(x[i].r-y[i].r)>12||Math.Abs(x[i].g-y[i].g)>12||Math.Abs(x[i].b-y[i].b)>12)changed++;
+    Need(changed>=120,before+" -> "+after+" visible pixels="+changed);
+   }finally{Object.Destroy(a);Object.Destroy(b);}
+  }
   static void Ui(ValoriaIntegratedWorld h,string name){ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-vertical.png",900,1600);ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-horizontal.png",1600,900);}
   static IEnumerator Dismiss(ValoriaIntegratedWorld h){for(int i=0;i<40&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}}
   static IEnumerator Probe(ValoriaIntegratedWorld h){
@@ -53,8 +61,13 @@ namespace Eldoria.ReferenceClean.Editor {
     }
     Shot(h,id+"-level-5");h.Hud.SelectBuilding(id=="barracks"?"upgrade-barracks":id);yield return null;Ui(h,id+"-V");screen.Close();
    }
+   foreach(string id in new[]{"sawmill","barracks","granary","stoneworks"})for(int level=id=="stoneworks"?1:2;level<5;level++)VisibleDelta(id+"-level-"+level,id+"-level-"+(level+1));
+   VisibleDelta("city-III","city-IV");VisibleDelta("city-IV","city-V-keep-only");
    h.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.3f);Step(h,0);h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;Shot(h,"city-V-complete");
    foreach(string id in new[]{"bastion","sawmill","barracks","granary","stoneworks"})Need(art.ModelFor(id).activeInHierarchy,id+" V survives save reload");
+   h.Hud.SelectBuilding("bastion");yield return null;
+   var rankings=h.Hud.GetComponent<RoyalGoldV3RankingScreen>();rankings.Open();yield return null;Need(rankings.IsOpen,"quarry unlocks independent simulated ranking screen");Ui(h,"rank-power");
+   foreach(var tab in new[]{"CORRUPTOS","RELIQUIAS"}){var button=h.Hud.GetComponentsInChildren<UnityEngine.UI.Button>(true).Single(x=>x.gameObject.name==tab);button.onClick.Invoke();yield return null;Ui(h,"rank-"+tab.ToLowerInvariant());}rankings.Close();screen.Close();
    Need(h.TrySetWorld(true),"world navigation survives IVV");yield return new WaitForSecondsRealtime(.3f);h.WorldNavigation.RestoreView(h.WorldHome,32);yield return null;Shot(h,"world-city-V");Need(h.TrySetWorld(false),"return to city");
    File.WriteAllLines(Ev+"/functional-checks.txt",checks);Debug.Log("BASTION_IV_V_NATIVE_PASS_VISUAL_REVIEW_REQUIRED");EditorApplication.Exit(0);
   }

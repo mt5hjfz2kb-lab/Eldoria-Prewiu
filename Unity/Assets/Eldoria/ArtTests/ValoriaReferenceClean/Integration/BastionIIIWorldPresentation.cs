@@ -12,6 +12,7 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;
   GameObject town,granary,granarySite,siteStock; readonly Dictionary<string,GameObject> nodes=new Dictionary<string,GameObject>();
   readonly List<(GameObject cue,string building,int level)> cues=new List<(GameObject,string,int)>();
+  readonly Dictionary<string,GameObject> priorities=new Dictionary<string,GameObject>();
   readonly List<Mesh> terrainMeshes=new List<Mesh>();
   static readonly string[] VisibleAuthoredEncounterIds={"hunt-wolf","fissure-valoria"};
   bool placed;float refresh;
@@ -31,6 +32,14 @@ namespace Eldoria.ReferenceClean {
    }
    // III repairs and provisions the existing keep; its approved silhouette stays intact.
    MakeStock("bastion",town.transform,new Vector3(9,.56f,17),"Crate",3);
+   // One restrained, authored supply arrangement reflects the permanent IV choice.
+   // Existing textured props preserve the city style and avoid a new floating label.
+   foreach(var option in new[]{("production","Crate"),("defense","Barrel"),("civil","Sack")}){
+    var group=new GameObject("Valoria priority "+option.Item1);group.transform.SetParent(town.transform,false);priorities.Add(option.Item1,group);
+    var origin=new Vector3(-7,.56f,16);
+    for(int i=0;i<3;i++)Model("BastionIII/Granary/Stock"+option.Item2,group.transform,origin+new Vector3((i%2)*1.25f,0,(i/2)*1.2f),1.7f);
+    group.SetActive(false);
+   }
    foreach(string id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria"}){
     var root=new GameObject(id);root.transform.SetParent(host.WorldRoot.transform,false);nodes.Add(id,root);
     Hotspot(root,id,id=="fissure-valoria"?new Vector3(9,2,4):new Vector3(7,4,5));
@@ -193,6 +202,7 @@ namespace Eldoria.ReferenceClean {
    // A buildable site has actual stored supplies instead of an invisible target.
    siteStock.SetActive(c.GranaryLevel==0);
    foreach(var cue in cues){int level=cue.building=="granary"?c.GranaryLevel:cue.building=="sawmill"?s.SawmillLevel:cue.building=="barracks"?s.BarracksLevel:s.BastionLevel;cue.cue.SetActive(level>=cue.level&&level<5);}
+   foreach(var priority in priorities)priority.Value.SetActive(s.BastionLevel>=4&&c.DevelopmentPriority==priority.Key);
    if(!placed&&unlocked)PlaceNodes(s);
    bool near=!RegionOneResourcePlacement.IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);
    foreach(var pair in nodes){bool visible=unlocked&&placed&&near;

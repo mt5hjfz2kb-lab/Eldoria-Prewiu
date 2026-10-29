@@ -27,8 +27,11 @@ def write(path,data):
  meta=Path(str(path)+'.meta')
  if not meta.exists():meta.write_text('fileFormatVersion: 2\nguid: '+uuid.uuid5(uuid.NAMESPACE_URL,'eldoria:iv-v:'+str(path)).hex+'\n')
 for asset in json.load(open('tools/bastion-iv-v/assets.json')):
- name=asset['asset'];write(ROOT/'Models'/f'{name}.glb',source(asset['finished_artifact'],'optimized.glb',asset['optimized_sha256']))
- write(ROOT/'Portraits'/f'{name}.jpeg',source(asset['source_artifact'],'reference.jpeg',asset['reference_sha256']))
+ name=asset['asset']
+ for dest,artifact,filename,sha in [(ROOT/'Models'/f'{name}.glb',asset['finished_artifact'],'optimized.glb',asset['optimized_sha256']),(ROOT/'Portraits'/f'{name}.jpeg',asset['source_artifact'],'reference.jpeg',asset['reference_sha256'])]:
+  content=dest.read_bytes() if dest.exists() else b''
+  if hashlib.sha256(content).hexdigest()!=sha:content=source(artifact,filename,sha)
+  write(dest,content)
  print('VERIFIED_EXISTING_ASSET',name,asset['optimized_sha256'])
 # Existing coherent workshop, retained solely as a pre-V quarry candidate for native review.
 blob=json.loads(fetch('https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/git/blobs/1d5a5a379f5d597cbc5932996047fd803653721d'))

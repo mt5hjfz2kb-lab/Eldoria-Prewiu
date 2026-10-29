@@ -31,7 +31,7 @@ jobs:
         run: |
           git config user.name "Eldoria asset pipeline"
           git config user.email "eldoria-pipeline@users.noreply.github.com"
-          git add Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV
+          git add -f Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV
           if ! git diff --cached --quiet; then
             git commit -m "Preserve verified level V models and exact approved references"
             git push origin HEAD:${{ github.ref_name }}
@@ -82,7 +82,7 @@ jobs:
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |
-          node tools/workstream-lease/check.mjs pipeline/active-workstreams.json ../bastion-iv-v-live/pipeline/active-workstreams.json valoria-master-plan-layered-construction-20261016
+          node tools/bastion-iv-v/check-lease.mjs pipeline/active-workstreams.json ../bastion-iv-v-live/pipeline/active-workstreams.json
           if($LASTEXITCODE){throw 'Stale or conflicting lease'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
           if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
