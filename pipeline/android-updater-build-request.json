@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 18,
   "versionName": "1.18",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Authorized integrated PR120+PR122 family build. Full shared47/73/12 run40789374485 and main47/73/Windows/benchmark run40795797367 validated. Sole main masterplan lease revision50; budget0; original package/certificate preserved. Release remains disabled until exact signed build is verified."
+  "note": "SIGNED_CODE18_VERIFIED build40798180869/source0f150e6a719f93d312ebb18d1ceac5edd7435ba9/artifact12864609668. APK458971568bytes SHA2567396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644; SDKsignature and independent APKv2 certificate match originalf479ca92..., approved Aldric GLBc28a65...packaged exactly. Disable duplicate build before exact public promotion."
 }
