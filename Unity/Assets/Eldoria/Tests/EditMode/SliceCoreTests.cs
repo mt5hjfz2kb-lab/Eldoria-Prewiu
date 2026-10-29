@@ -77,6 +77,24 @@ namespace Eldoria.Tests
             Assert.That(g.Snapshot().Available.Total,Is.EqualTo(90));
         }
 
+        [Test] public void BattleExchangeLogPreservesOriginalCombatOutcome()
+        {
+            var s=new PlayerState();
+            var expedition=SliceRules.Expedition(s.Available,"aldric");
+            var report=SliceRules.Fight(expedition,"engendro-valoria");
+            Assert.That(report.Exchanges.Length,Is.EqualTo(report.Rounds));
+            Assert.That(report.Exchanges.Length,Is.GreaterThan(0));
+            int dealt=0,taken=0;
+            foreach(var exchange in report.Exchanges){
+                Assert.That(exchange.Round,Is.InRange(1,6));
+                Assert.That(exchange.DamageDealt,Is.GreaterThan(0));
+                Assert.That(exchange.DamageTaken,Is.GreaterThanOrEqualTo(0));
+                dealt+=exchange.DamageDealt;taken+=exchange.DamageTaken;
+            }
+            Assert.That(dealt,Is.GreaterThan(0));
+            Assert.That(report.RemainingHealth,Is.EqualTo(Math.Max(0,expedition.Health-taken)));
+        }
+
         [Test] public void ReferenceNumbersDeriveFromOwnershipAndSingleMarch()
         {
             var s=new PlayerState();var p=SliceRules.TotalPower(s);
