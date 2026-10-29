@@ -73,7 +73,11 @@ function stableSelectionView(before, after) {
       before.width !== after.width || before.height !== after.height || before.narrative || after.narrative) return false;
   const camera = cameraDifference(before, after), a = framingObservation(before), b = framingObservation(after);
   if (!camera || camera.distance > 0.01 || Math.abs(camera.zoom) > 0.001 || !a.valid || !b.valid) return false;
-  if (['projected', 'visible'].some(rect => a[rect].some((value, index) => Math.abs(value - b[rect][index]) > 0.0001))) return false;
+  // Animated model bounds and transient HUD text can move while the camera and
+  // action stay perfectly still. Require full containment in BOTH observations,
+  // not identical animation poses. The observation loop resets on every clipped
+  // frame, so its >=3-frame / 0.7s window must remain continuously unobstructed.
+  if (!a.pass || !b.pass) return false;
   const first = before.controls?.primary, second = after.controls?.primary;
   return !first || !second || (first.enabled === second.enabled && Math.abs(first.x - second.x) <= 0.5 && Math.abs(first.y - second.y) <= 0.5);
 }
@@ -217,7 +221,7 @@ async function main() {
       visual_review: 'REQUIRED: inspect screenshots and continuous browser video independently' },
     measurements_scope: 'Local loopback server and CI Chromium; these are not Internet, Sites, Safari, physical-phone or FPS measurements',
     march_visual_measurement: 'Consecutive visible marker samples with unchanged viewport and stable camera (distance <= 0.01 world units, zoom delta <= 0.001). Resolved displacement >= 1 per mille of screen dimensions. Missing/out-of-frame/unstable samples do not prove missing animation. Inspect video for perceived motion and occlusion.',
-    selection_framing_measurement: 'Before each real primary action and after a completed operation that retains its selection/view: at least three telemetry frames across >=0.7 s with the same selection, viewport, camera and panel/projection bounds. Completion observations allow objective advancement and need no enabled next action; view/selection/narrative changes are recorded as interruptions. Full projected model envelope must be inside the HUD free viewport; transient camera/layout frames are observed without failing immediately. Rectangles use Unity normalized bottom-left viewport coordinates.',
+    selection_framing_measurement: 'Before each real primary action and after a completed operation that retains its selection/view: at least three telemetry frames across >=0.7 s with the same selection, viewport, camera and primary control; full animated model bounds continuously contained in the current free viewport. Completion observations allow objective advancement and need no enabled next action; view/selection/narrative changes are recorded as interruptions. Full projected model envelope must be inside the HUD free viewport; transient camera/layout frames are observed without failing immediately. Rectangles use Unity normalized bottom-left viewport coordinates.',
     cold_load_definition: 'Empty browser context with no prior HTTP/IndexedDB cache; operating-system disk cache is not claimed empty',
     checks: {}, loads: [], orientations: [], actions: [], operations: [], marches: [], navigation: [], selection_framing: [],
     transitions: [], screenshots: [], failures: [], warnings: [], runtime_errors: [], network_failures: [], diagnostics: [], legacy_ui_fallbacks: []
@@ -417,7 +421,7 @@ async function main() {
           state.width !== initial.width || state.height !== initial.height) {
         check.status = 'INTERRUPTED_BY_GAME_TRANSITION'; check.finished_elapsed_s = elapsed(); return null;
       }
-      if (!observation.valid || (!afterOperation && !state.controls?.primary?.enabled)) {
+      if (!observation.valid || !observation.pass || (!afterOperation && !state.controls?.primary?.enabled)) {
         anchor = null; stableFrames = 0; await sleep(80); continue;
       }
       if (!anchor || !stableSelectionView(anchor, state)) { anchor = state; stableSince = now; stableFrames = 1; }

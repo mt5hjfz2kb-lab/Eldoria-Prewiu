@@ -21,11 +21,11 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Same successful native298 bytes. QA40951703465 passed cold fresh save, bidirectional real wheel zoom,8pan directions and city/world view retention,0runtime/networkerrors. After chapterI dialogue, telemetry+actual screenshot show full-screen Building:bastion restored with visible Volver a Valoria button. Harness must click that real return after dismissing narrative before using hidden city objective. Preserve every progression/time/framing/save gate; no runtime changes or rebuild;0EUR.",
+  "reason": "QA40953045811 completed training20 and scouting with normal clock; camera and real attack control remained exactly stationary during12seconds, full animated engendro bounds inside viewport in every frame. Failure was comparator requiring identical animated projection/HUD text bounds. Require continuously valid full containment at every sample plus unchanged camera/control/selection/viewport across>=3frames and0.7s; clipping resets window.3 regression tests reject clipped/engineFAIL/movingcamera/control/viewport;4 telemetry testsPASS. Same native298 bytes;0EUR;no runtime edit/rebuild.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 25,
+  "attempt": 26,
   "method_note": "Pin final canonical main source and original WebGL artifact; retain all existing real pointer/touch, normal clock, direct GPU image/video and exact save/reload assertions.",
   "gameplay_source_unchanged": false,
   "revision": "native298"
