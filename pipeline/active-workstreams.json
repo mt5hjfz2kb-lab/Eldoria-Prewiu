@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T17:22:23.229Z",
+  "updated_at": "2026-10-29T17:47:33.220Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,8 +20,8 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-bastion-v-release-40a40d5b546c",
-      "branch": "main",
+      "owner": "codex-bastion-iv-v-7064f9327736",
+      "branch": "feature/bastion-iv-v-migration-20261029",
       "status": "active",
       "claimed_at": "2026-10-29T17:22:23.229Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
@@ -110,13 +110,15 @@
         ".github/workflows/eldoria-itch-delivery.yml",
         "docs/bastion-iv-v/RELEASE_20261029.md"
       ],
-      "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Completed IV–V integration and genuine native review in PR129; current continuation only closes metadata and observes automatic gates. No active art authoring or paid generation request.",
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Owner rejected normal runtime tier-five facade alignment. Reversible per-instance orientation and entrance alignment, immutable approved models; new genuine native comparison required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "CORRECTED_WRONG_EXPERIMENTAL_SCREENSHOT_REVIEW",
-      "next": "Wrong image delivered: city-V-orientation-270 applies EXTRA270 on top of runtime rotation270. Correct normal city-V-complete image now delivered; actual normal Bastion gate aligns with approach. Keep old release queued sources unpromotable until review resolved. Do not modify runtime orientation based on the wrong variant.",
+      "phase": "INDIVIDUAL_TIER_V_FACADE_ALIGNMENT_REWORK",
+      "next": "Measure actual five GLB facade planes; correct per-model heading and Bastion doorway anchor; real native same-camera comparison before any Android/WebGL publication.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1273,9 +1275,16 @@
           "ownership_revision": 58,
           "released_at": "2026-10-29T18:35:00+01:00",
           "reason": "Owner asks this session to verify each own building level V approved Tripo model and publish Android and WebGL; continue same canonical workstream after PR129. Existing postmerge read-only Unity check continues without interruption."
+        },
+        {
+          "owner": "codex-bastion-v-release-40a40d5b546c",
+          "ownership_revision": 60,
+          "phase": "CORRECTED_WRONG_EXPERIMENTAL_SCREENSHOT_REVIEW",
+          "transferred_at": "2026-10-29T17:47:33.216Z",
+          "reason": "Owner explicitly rejects normal city screenshot as still oblique; current session assumes same canonical correction with individual facade measurements before release. Prior screenshot-variant explanation insufficient."
         }
       ],
-      "ownership_revision": 60,
+      "ownership_revision": 61,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
@@ -1418,8 +1427,8 @@
       "completed_branch": "feature/bastion-iv-v-migration-20261029",
       "owner_visual_feedback": {
         "criterion": "Each approved tier V building must face forward coherently; Bastion door must line up with existing approach, not expose a side toward the road.",
-        "previous_capture": "city-V-orientation-270-horizontal.png",
-        "status": "VISUAL_REJECTED_ORIENTATION",
+        "previous_capture": "city-V-complete-horizontal.png",
+        "status": "VISUAL_REJECTED_NORMAL_RUNTIME_ORIENTATION",
         "publication_authorization": "Conditional on corrected visuals; old candidate must not publish.",
         "capture_diagnosis": "NativeProof: Shot(city-V-complete) BEFORE foreach yaw90/180/270 calling RotateCityForReview(90). The previously delivered orientation270 is an experimental extra rotation, not normal runtime. Normal city-V-complete reviewed directly and source proven."
       }
