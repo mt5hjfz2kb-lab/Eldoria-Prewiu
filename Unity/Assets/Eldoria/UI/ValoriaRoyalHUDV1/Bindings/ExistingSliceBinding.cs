@@ -69,8 +69,11 @@ namespace Eldoria.UI.RoyalGold {
     case "b4.priority":title=L(en,"Elige el desarrollo de Valoria","Choose Valoria's development priority");break;
     case "b4.ascend":title=L(en,"Eleva el Bastión a nivel V","Upgrade the Bastion to level V");break;
     case "b5.stoneworks":title=L(en,"Construye la Cantera productiva","Build the Stoneworks");break;
+    case "b5.stone":title=L(en,"Mantén 1.200 piedra disponible","Keep 1,200 stone available");done=s.Resources.Stone;total=1200;break;
+    case "b5.army":title=L(en,"Alcanza 60 arqueros","Reach 60 archers");done=s.Available.Total+s.Wounded.Total;foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")done+=march.Troops.Total;total=60;break;
+    case "b5.rare":title=L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker");done=s.ChapterThree.AshStalkerDefeated?1:0;break;
     case "b5.infrastructure":title=L(en,"Desarrolla los edificios a nivel V","Develop each building to level V");break;
-    case "b5.complete":title=L(en,"Valoria V · infraestructura consolidada","Valoria V · infrastructure established");done=1;break;
+    case "b5.complete":title=L(en,"Bastión V completado · próximo capítulo VI","Bastion V complete · chapter VI next");done=1;break;
     default:title=L(en,"Sin objetivo disponible","No objective available");total=0;break;
    }
    d.Objective=title;d.MissionFraction=total>0?Math.Min(1f,Math.Max(0f,done/(float)total)):0;d.ObjectiveProgress=total>0?Math.Min(done,total)+" / "+total:"";
@@ -87,11 +90,21 @@ namespace Eldoria.UI.RoyalGold {
      new RoyalMissionStep(L(en,"Regreso a Valoria","Return to Valoria"),s.JourneyComplete),
      new RoyalMissionStep(L(en,"Bastión II alcanzado","Bastion II reached"),s.BastionLevel>=2)
     };
-   }else if(s.BastionLevel>=4){
-    d.MissionSteps=new[]{new RoyalMissionStep(L(en,"Prioridad de desarrollo elegida","Development priority chosen"),!string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)),
-     new RoyalMissionStep(L(en,"Bastión V alcanzado","Bastion V reached"),s.BastionLevel>=5),
-     new RoyalMissionStep(L(en,"Cantera productiva construida","Stoneworks built"),s.ChapterThree.StoneworksLevel>0),
-     new RoyalMissionStep(L(en,"Edificios a nivel V","Buildings at level V"),s.SawmillLevel>=5&&s.BarracksLevel>=5&&s.ChapterThree.GranaryLevel>=5&&s.ChapterThree.StoneworksLevel>=5)};
+   }else if(s.BastionLevel>=5){
+    int available=s.Available.Total+s.Wounded.Total;
+    foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")available+=march.Troops.Total;
+    d.MissionSteps=new[]{
+     new RoyalMissionStep(L(en,"Construye la Cantera","Build the Stoneworks"),s.ChapterThree.StoneworksLevel>0),
+     new RoyalMissionStep(L(en,"Mantén 1.200 piedra","Hold 1,200 stone"),p?.GrantedRewards?.Contains("c5-stone")??false),
+     new RoyalMissionStep(L(en,"Alcanza 60 arqueros","Reach 60 archers"),available>=60),
+     new RoyalMissionStep(L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker"),s.ChapterThree.AshStalkerDefeated)};
+   }else if(s.BastionLevel==4){
+    d.MissionSteps=new[]{
+     new RoyalMissionStep(L(en,"Aserradero nivel 2","Sawmill level 2"),s.SawmillLevel>=2),
+     new RoyalMissionStep(L(en,"Granero nivel 2","Granary level 2"),s.ChapterThree.GranaryLevel>=2),
+     new RoyalMissionStep(L(en,"Cuartel nivel 2","Barracks level 2"),s.BarracksLevel>=2),
+     new RoyalMissionStep(L(en,"Prioridad de desarrollo elegida","Development priority chosen"),!string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)),
+     new RoyalMissionStep(L(en,"Bastión V alcanzado","Bastion V reached"),s.BastionLevel>=5)};
    }else if(s.BastionLevel>=3){
     d.MissionSteps=new[]{new RoyalMissionStep(L(en,"Granero construido","Granary built"),s.ChapterThree.GranaryLevel>0),
      new RoyalMissionStep(L(en,"500 comida reunida","500 food gathered"),p.GrantedRewards.Contains("c3-food")),

@@ -125,6 +125,7 @@ namespace Eldoria.Domain
         // Additive IV/V save fields: old schema-1 saves remain valid.
         public int StoneworksLevel;
         public string DevelopmentPriority = "";
+        public bool AshStalkerDefeated;
         public bool RankUnlocked, ExtractionOddity;
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
@@ -438,8 +439,13 @@ namespace Eldoria.Domain
                 return "b1.return";
             }
             if(s.BastionLevel>=5){
-                if(s.ChapterThree.StoneworksLevel==0)return "b5.stoneworks";
-                return s.SawmillLevel>=5&&s.BarracksLevel>=5&&s.ChapterThree.GranaryLevel>=5&&s.ChapterThree.StoneworksLevel>=5?"b5.complete":"b5.infrastructure";
+                var c=s.ChapterThree??new BastionThreeState();
+                if(c.StoneworksLevel==0)return "b5.stoneworks";
+                if(!(s.ChapterProgress?.GrantedRewards?.Contains("c5-stone")??false))return "b5.stone";
+                int archers=s.Available.Total+s.Wounded.Total;
+                foreach(var m in MarchCapacityRules.WorldMarches(s))if(m!=null&&m.Phase!="idle")archers+=m.Troops.Total;
+                if(archers<60)return "b5.army";
+                return c.AshStalkerDefeated?"b5.complete":"b5.rare";
             }
             if(s.BastionLevel==4)return string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)?"b4.priority":"b4.ascend";
             if(s.BastionLevel>=3) {

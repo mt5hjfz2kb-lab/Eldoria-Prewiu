@@ -781,13 +781,13 @@ namespace Eldoria.Application
                     foreach(var march in MarchCapacityRules.WorldMarches(state))
                         if(march!=null&&march.Phase!="idle")troops+=march.Troops.Total;
                     Grant("c5-army",troops>=60,wood:260,stone:180);
-                    // Acechador and the chapter-V conclusion are NOT paid until
-                    // their real encounter and the future Bastion-VI gate exist.
+                    Grant("c5-rare",c.AshStalkerDefeated,food:260,stone:180);
+                    // The chapter-V conclusion requires Bastion VI; not authored yet.
                 }
             }
             return changed;
         }
-        public static bool IsChapterThreeTarget(string id)=>id=="fissure-valoria"||id=="hunt-wolf"||id=="hunt-boar"||id=="meat-valoria";
+        public static bool IsChapterThreeTarget(string id)=>id=="fissure-valoria"||id=="hunt-wolf"||id=="hunt-boar"||id=="meat-valoria"||id=="ash-stalker-valoria";
         CommandResult ExecuteChapterThree(GameCommand command)
         {
             var c=state.ChapterThree;var id=command.TargetId;
@@ -830,6 +830,7 @@ namespace Eldoria.Application
                     state.BuildingCompletesUtcTicks=clock.UtcTicks+TimeSpan.FromSeconds(level==0?(id=="stoneworks"?12:9):8+level*2).Ticks;break;
                 case "Gather":case "Fight":
                     if(id=="fissure-valoria"&&(!c.LyraContacted||c.FissureClosed))return Fail("Investiga y conoce a Lyra antes del asalto");
+                    if(id=="ash-stalker-valoria"&&(state.BastionLevel<5||c.AshStalkerDefeated))return Fail("Acechador no disponible");
                     if(id=="meat-valoria"&&(command.Kind!="Gather"||c.MeatRemaining<=0))return Fail("Reserva no disponible");
                     if(id!="meat-valoria"&&command.Kind!="Fight")return Fail("Acción no válida");
                     if(id=="hunt-wolf"&&c.WolfRespawnUtcTicks>clock.UtcTicks||id=="hunt-boar"&&c.BoarRespawnUtcTicks>clock.UtcTicks)return Fail("La caza aún no está disponible");
@@ -887,6 +888,21 @@ namespace Eldoria.Application
         void ResolveChapterThreeMarch(MarchState m,long due)
         {
             var c=state.ChapterThree;
+            if(m.TargetId=="ash-stalker-valoria")
+            {
+                var stats=SliceRules.Expedition(m.Troops,m.HeroId);
+                var report=SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0));
+                if(report.Won)c.AshStalkerDefeated=true;
+                state.LastBattleReport=new BattleReportState{
+                    TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
+                    PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
+                    Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
+                    Reason=report.Won?"La formación resiste la emboscada y rompe la defensa del Acechador de Ceniza.":
+                        "El Acechador resiste. Refuerza tu marcha y vuelve a intentarlo."
+                };
+                state.LastBattleReason=state.LastBattleReport.Reason;
+                return;
+            }
             if(m.TargetId=="meat-valoria") {m.PendingFood=c.MeatRemaining;c.MeatRemaining=0;c.MeatRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;return;}
             var power=SliceRules.Expedition(m.Troops,m.HeroId).Power;
             // The web's ordinary hunts resolve against their explicit expedition-power requirement.

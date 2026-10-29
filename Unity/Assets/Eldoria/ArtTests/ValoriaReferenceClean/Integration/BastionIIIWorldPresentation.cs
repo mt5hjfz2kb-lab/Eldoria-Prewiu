@@ -14,7 +14,7 @@ namespace Eldoria.ReferenceClean {
   readonly List<(GameObject cue,string building,int level)> cues=new List<(GameObject,string,int)>();
   readonly Dictionary<string,GameObject> priorities=new Dictionary<string,GameObject>();
   readonly List<Mesh> terrainMeshes=new List<Mesh>();
-  static readonly string[] VisibleAuthoredEncounterIds={"hunt-wolf","fissure-valoria"};
+  static readonly string[] VisibleAuthoredEncounterIds={"hunt-wolf","fissure-valoria","ash-stalker-valoria"};
   bool placed;float refresh;
   public void Initialize(ValoriaIntegratedWorld h){
    host=h;town=new GameObject("Bastion III city additions");town.transform.SetParent(transform,false);
@@ -40,10 +40,14 @@ namespace Eldoria.ReferenceClean {
     for(int i=0;i<3;i++)Model("BastionIII/Granary/Stock"+option.Item2,group.transform,origin+new Vector3((i%2)*1.25f,0,(i/2)*1.2f),1.7f);
     group.SetActive(false);
    }
-   foreach(string id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria"}){
+   foreach(string id in new[]{"hunt-wolf","hunt-boar","meat-valoria","fissure-valoria","ash-stalker-valoria"}){
     var root=new GameObject(id);root.transform.SetParent(host.WorldRoot.transform,false);nodes.Add(id,root);
     Hotspot(root,id,id=="fissure-valoria"?new Vector3(9,2,4):new Vector3(7,4,5));
     if(id=="fissure-valoria")Model("BastionIII/PrivateFissure",root.transform,Vector3.zero,8);
+    else if(id=="ash-stalker-valoria"){
+     // Existing licensed wolf geometry is a provisional encounter stand-in, NOT an approved new asset.
+     Model("BastionIII/AshWolf",root.transform,Vector3.zero,8.2f);
+    }
     else if(id=="hunt-wolf"){
      // Match the boar encounter\u0027s actual rendered world width (5m), not its imported prefab scale.
      // Keep the two wolves separated so equal-sized animated silhouettes do not collide.
@@ -209,6 +213,7 @@ namespace Eldoria.ReferenceClean {
     if(pair.Key=="fissure-valoria")visible&=!c.FissureClosed||host.City.Clock.UtcTicks<c.ClosingEndsUtcTicks;
     if(pair.Key=="hunt-wolf")visible&=host.City.Clock.UtcTicks>=c.WolfRespawnUtcTicks;
     if(pair.Key=="hunt-boar")visible&=host.City.Clock.UtcTicks>=c.BoarRespawnUtcTicks;
+    if(pair.Key=="ash-stalker-valoria")visible&=s.BastionLevel>=5&&!c.AshStalkerDefeated;
     if(pair.Key=="meat-valoria")visible&=c.MeatRemaining>0;
     pair.Value.SetActive(visible);
     if(visible)EnsureVisibleImportedArt(pair.Value,pair.Key=="fissure-valoria"&&c.FissureClosed);
