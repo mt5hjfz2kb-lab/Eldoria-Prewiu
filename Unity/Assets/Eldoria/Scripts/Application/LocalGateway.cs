@@ -679,6 +679,9 @@ namespace Eldoria.Application
                         {
                             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                             state.ChapterProgress.GatheredStone += m.PendingStone;
+                            // Web quarry3/4 are the distant veins. Region1 replaces those
+                            // fixed DOM sites with persistent regional stone nodes.
+                            if(state.BastionLevel>=5&&m.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal))state.ChapterThree.ExtractionOddity=true;
                         }
                         MarchCapacityRules.Return(state,m.Troops);
                     }
@@ -866,7 +869,7 @@ namespace Eldoria.Application
         public bool AcknowledgeNarrative(string beat)
         {
             if (beat!="start" && beat!="world" && beat!="mark" &&
-                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed" && beat!="consolidate-valoria" && beat!="productive-valoria") return false;
+                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed" && beat!="consolidate-valoria" && beat!="productive-valoria" && beat!="extraction-oddity") return false;
             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
             if (state.ChapterProgress.SeenNarrative == null)
                 state.ChapterProgress.SeenNarrative = new System.Collections.Generic.List<string>();

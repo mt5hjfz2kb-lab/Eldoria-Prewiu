@@ -17,7 +17,7 @@ namespace Eldoria.ReferenceClean {
   string Beat {
    get {
     var s=city.Gateway.Snapshot();
-    if(s.BastionLevel>=5)return "productive-valoria";
+    if(s.BastionLevel>=5)return s.ChapterThree.ExtractionOddity&&!s.ChapterProgress.SeenNarrative.Contains("extraction-oddity")?"extraction-oddity":"productive-valoria";
     if(s.BastionLevel==4)return "consolidate-valoria";
     if(s.BastionLevel>=3)return s.ChapterThree.FissureClosed?"fissure-closed":"frontier-open";
     if(s.EngendroDefeated)return "secured";
@@ -31,6 +31,7 @@ namespace Eldoria.ReferenceClean {
    =>new RoyalNarrativePresentation.Line(who,es,en);
   RoyalNarrativePresentation.Line[] Lines(string beat){
    switch(beat){
+    case "extraction-oddity":return new[]{L("Sir Aldric","Detened los picos. Esa veta no refleja la luz como la piedra de Valoria. Guardad cualquier fragmento extraño. Si la tierra está cambiando cerca de la Brecha, necesitaremos saber por qué.","Stop the picks. That vein does not reflect light like Valoria's stone. Keep any unusual fragments. If the ground is changing near the Breach, we must learn why.")};
     case "consolidate-valoria":return new[]{L("NARRADOR","El nivel IV consolida Valoria. Elige la prioridad del reino y reúne recursos para alcanzar el V y desbloquear la Cantera.","Level IV consolidates Valoria. Choose the realm's priority and gather resources to reach V and unlock the Stoneworks.")};
     case "productive-valoria":return new[]{L("NARRADOR","Bastión V permite construir la Cantera de Valoria para generar piedra de forma continua. Cada edificio crece mediante sus propias mejoras.","Bastion V unlocks Valoria's Stoneworks for continuous stone production. Each building grows through its own upgrades.")};
     case "frontier-open":return new[]{

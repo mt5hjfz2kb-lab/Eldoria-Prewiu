@@ -43,6 +43,7 @@ jobs:
     timeout-minutes: 60
     env:
       VALORIA_GAMEPLAY_PROBE: '1'
+      ELDORIA_COMPILED_SOURCE: ${{ needs.assets.outputs.source }}
       # Region1 camera acceptance ignores itself without an explicit directory.
       # Use the same preserved isolated evidence root, newly emptied before tests.
       ELDORIA_REGION1_CAPTURE_OUT: ${{ github.workspace }}/bastion-iv-v-source/docs/bastion-iv-v/native/region1-capture
@@ -204,7 +205,7 @@ jobs:
           $proofLog=Join-Path $evidence 'runtime-proof.log'
           $proofArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIVVNativeProof.Capture','-logFile',('"'+$proofLog+'"'))
           $proof=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $proofArgs -Wait -PassThru
-          if($proof.ExitCode -ne 0 -or -not(Test-Path (Join-Path $evidence 'functional-checks.txt'))){throw 'Actual integrated III proof failed'}
+          if($proof.ExitCode -ne 0 -or -not(Test-Path (Join-Path $evidence 'functional-checks.txt'))){throw 'Actual integrated IV-V proof failed'}
           @{source="${{ needs.assets.outputs.source }}";run=$env:GITHUB_RUN_ID;art_approved=$false;physical_mobile_tested=$false} | ConvertTo-Json | Set-Content (Join-Path $evidence 'provenance.json') -Encoding UTF8
       - uses: actions/upload-artifact@v4
         if: always()

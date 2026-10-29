@@ -125,7 +125,7 @@ namespace Eldoria.Domain
         // Additive IV/V save fields: old schema-1 saves remain valid.
         public int StoneworksLevel;
         public string DevelopmentPriority = "";
-        public bool RankUnlocked;
+        public bool RankUnlocked, ExtractionOddity;
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
         public long InvestigationEndsUtcTicks, ClosingEndsUtcTicks, EconomyUtcTicks;

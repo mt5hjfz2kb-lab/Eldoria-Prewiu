@@ -34,6 +34,13 @@ class DomainProbe {
    var s=Ready();if(missing=="fissure")s.ChapterThree.FissureClosed=false;if(missing=="sawmill")s.SawmillLevel=1;if(missing=="barracks")s.BarracksLevel=1;if(missing=="granary")s.ChapterThree.GranaryLevel=1;if(missing=="food")s.Resources.Food=0;
    Check(!BastionProgressionCatalog.RequirementsMet(s,BastionProgressionCatalog.ForLevel(4)),"IV requires "+missing);
   }
+  foreach(int tier in new[]{4,5})foreach(string node in new[]{"quarry-valoria","region1:stone:3"}){
+   var clock=new Clock();var s=Ready();s.BastionLevel=tier;s.ChapterThree.DevelopmentPriority="civil";
+   s.WorldResourceLocations.Add(new(){TargetId="region1:stone:3",ResourceKind="stone",Capacity=100,Remaining=90});
+   s.March=new(){TargetId=node,Phase="returning",PhaseEndsUtcTicks=clock.UtcTicks+TimeSpan.FromSeconds(1).Ticks,PendingStone=10,Troops=new(){ArcherT1=1}};
+   var store=new Store{Value=s};var g=new LocalGateway(clock,store);clock.Add(1);g.Advance();g=new LocalGateway(clock,store);
+   Check(g.Snapshot().ChapterThree.ExtractionOddity==(tier==5&&node.StartsWith("region1:")),"extraction narrative exact tier and regional vein "+tier+" "+node);
+  }
   Console.WriteLine("BASTION_IV_V_DOMAIN_PASS");
  }
 }

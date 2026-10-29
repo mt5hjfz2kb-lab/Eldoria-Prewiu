@@ -12,8 +12,8 @@ namespace Eldoria.UI.RoyalGold.V2 {
   RoyalHUD hud;ICommandGateway gateway;Func<string,RoyalBuilding> read;Action refreshed;
   RectTransform root,header,art,detail,footer,choices;RawImage portrait;
   RoyalText title,kicker,description,costs,status,notice,artCaption,actionLabel;
-  RoyalButton action,ranking;RoyalGoldV3RankingScreen rankings;readonly RoyalButton[] priority=new RoyalButton[3];readonly RoyalButton[] tabs=new RoyalButton[5];
-  string selected="",message="";float refresh,lastW,lastH;bool suspended;
+  RoyalButton action,ranking,training;RoyalGoldV3RankingScreen rankings;readonly RoyalButton[] priority=new RoyalButton[3];readonly RoyalButton[] tabs=new RoyalButton[5];
+  string selected="",message="";float refresh,lastW,lastH;Rect lastSafe;bool suspended;
   public bool IsOpen=>root&&root.gameObject.activeSelf;
   public RectTransform VisibleRoot=>IsOpen?root:null;
   public Button VisibleAction=>IsOpen?action:null;
@@ -42,7 +42,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
    if(!IsOpen||rankings&&rankings.IsOpen)return;
    if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){Close();return;}
    if(Time.unscaledTime>=refresh){refresh=Time.unscaledTime+.2f;Refresh();}
-   if(Mathf.Abs(root.rect.width-lastW)>.5f||Mathf.Abs(root.rect.height-lastH)>.5f)SynchronizeLayout();
+   if(Mathf.Abs(root.rect.width-lastW)>.5f||Mathf.Abs(root.rect.height-lastH)>.5f||lastSafe!=Screen.safeArea)SynchronizeLayout();
   }
   internal static RectTransform Rect(string name,Transform parent){var g=new GameObject(name,typeof(RectTransform));g.transform.SetParent(parent,false);g.layer=parent.gameObject.layer;return (RectTransform)g.transform;}
   internal static void Stretch(RectTransform r){r.anchorMin=Vector2.zero;r.anchorMax=Vector2.one;r.offsetMin=r.offsetMax=Vector2.zero;}
@@ -54,6 +54,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
    root=Panel("V3 / City management destination",hud.transform);Stretch(root);root.GetComponent<Image>().color=new Color(.025f,.045f,.07f,1);
    var backdrop=Rect("Royal hall",root);Stretch(backdrop);backdrop.gameObject.AddComponent<CanvasRenderer>();var bg=backdrop.gameObject.AddComponent<RoyalGoldV3ManagementBackdrop>();bg.color=Color.white;bg.raycastTarget=false;
    header=Rect("Header",root);art=Panel("Approved architecture",root);detail=Panel("Building management",root);footer=Rect("Footer",root);choices=Rect("Development council",detail);
+   training=Button("Open training",header,"ENTRENAMIENTO",()=>hud.SelectBuilding("barracks"),out _);
    ranking=Button("Rankings",header,"CLASIFICACIONES",()=>rankings.Open(),out _);
    title=Text("Building title",header,30,Ivory);kicker=Text("Chapter and level",header,14,Gold);
    for(int i=0;i<Ids.Length;i++){int n=i;tabs[i]=Button("Open "+Ids[i],header,Names[i],()=>hud.SelectBuilding(Ids[n]),out _);}
@@ -69,7 +70,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   void Choose(string value){var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,"ChooseDevelopment",value,s.Revision));message=result.Ok?"Prioridad guardada. Valoria recibe los recursos elegidos.":result.Message;refreshed?.Invoke();Refresh();}
   void Submit(){var b=read(selected);if(b?.Action==null||!b.Action.Enabled)return;var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,b.Action.Kind,b.Action.Target,s.Revision));message=result.Message;refreshed?.Invoke();Refresh();}
   void Refresh(){if(!IsOpen)return;var s=gateway.Snapshot();var b=read(selected);if(b==null)return;
-   ranking.gameObject.SetActive(s.ChapterThree.RankUnlocked);
+   ranking.gameObject.SetActive(s.ChapterThree.RankUnlocked);training.gameObject.SetActive(selected=="upgrade-barracks"&&s.BarracksLevel>0);
    int index=Array.IndexOf(Ids,selected);title.Put(Names[index]);kicker.Put("VALORIA  /  GESTIÓN DE LA CIUDAD  /  NIVEL "+b.Level);
    string resource=index==0?"bastion-v":index==1?"aserradero-v":index==2?"cuartel-v":index==3?"granero-v":"cantera-v";
    portrait.texture=Resources.Load<Texture2D>("BastionIVV/Portraits/"+resource);
@@ -81,16 +82,17 @@ namespace Eldoria.UI.RoyalGold.V2 {
    choices.gameObject.SetActive(choosing);action.gameObject.SetActive(!choosing);action.interactable=b.Action!=null&&b.Action.Enabled&&!b.OperationActive;actionLabel.Put(b.Action?.Label??(b.OperationActive?"EN CURSO":b.Level>=5?"NIVEL V COMPLETADO":"EDIFICIO OPERATIVO"));notice.Put(message);
    for(int i=0;i<tabs.Length;i++)tabs[i].interactable=Ids[i]!=selected&&(i<3||s.BastionLevel>=(i==3?3:5));
   }
-  public void SynchronizeLayout(){if(!root)return;Canvas.ForceUpdateCanvases();float w=root.rect.width,h=root.rect.height;lastW=w;lastH=h;bool wide=w>h;float m=Mathf.Clamp(w*.025f,12,30),gap=16,head=wide?130:160,foot=100;
-   Place(header,m,m,w-2*m,head);Place((RectTransform)ranking.transform,w-2*m-200,2,200,36);Place((RectTransform)title.transform,0,0,w-2*m,40);Place((RectTransform)kicker.transform,0,44,w-2*m,28);
+  public void SynchronizeLayout(){if(!root)return;Canvas.ForceUpdateCanvases();float w=root.rect.width,h=root.rect.height;lastW=w;lastH=h;lastSafe=Screen.safeArea;bool wide=w>h;float scale=Mathf.Max(.01f,hud.GetComponent<Canvas>().scaleFactor);float m=Mathf.Max(Mathf.Clamp(w*.025f,12,30),Mathf.Max(lastSafe.xMin,Screen.width-lastSafe.xMax)/scale+12),gap=16,head=wide?130:160,foot=100;
+   float topInset=Mathf.Max(m,(Screen.height-lastSafe.yMax)/scale+12),bottomInset=Mathf.Max(m,lastSafe.yMin/scale+12);
+   Place(header,m,topInset,w-2*m,head);Place((RectTransform)ranking.transform,w-2*m-200,2,200,36);Place((RectTransform)training.transform,w-2*m-390,2,180,36);Place((RectTransform)title.transform,0,0,w-2*m,40);Place((RectTransform)kicker.transform,0,44,w-2*m,28);
    for(int i=0;i<tabs.Length;i++)Place((RectTransform)tabs[i].transform,i*(w-2*m)/5,80,(w-2*m)/5-5,wide?35:48);
-   float top=m+head,body=h-top-foot-m;float aw=wide?(w-2*m-gap)*.43f:w-2*m;float ah=wide?body:body*.36f;
+   float top=topInset+head,body=h-top-foot-bottomInset;float aw=wide?(w-2*m-gap)*.43f:w-2*m;float ah=wide?body:body*.36f;
    Place(art,m,top,aw,ah);Place(detail,wide?m+aw+gap:m,wide?top:top+ah+gap,wide?w-2*m-aw-gap:w-2*m,wide?body:body-ah-gap);
    float side=Mathf.Min(aw-24,ah-65);Place((RectTransform)portrait.transform,(aw-side)*.5f,8,side,side);Place((RectTransform)artCaption.transform,14,ah-52,aw-28,48);
    float dw=detail.rect.width,dh=detail.rect.height,pad=18;
-   Place((RectTransform)description.transform,pad,pad,dw-2*pad,70);Place((RectTransform)costs.transform,pad,94,dw-2*pad,52);Place((RectTransform)status.transform,pad,150,dw-2*pad,95);
+   Place((RectTransform)description.transform,pad,pad,dw-2*pad,80);Place((RectTransform)costs.transform,pad,112,dw-2*pad,52);Place((RectTransform)status.transform,pad,180,dw-2*pad,95);
    Place(choices,pad,dh-166,dw-2*pad,156);for(int i=0;i<3;i++)Place((RectTransform)priority[i].transform,0,i*51,dw-2*pad,46);
-   Place(footer,m,h-foot,w-2*m,foot-m);Place((RectTransform)notice.transform,0,0,w-2*m,30);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();
+   Place(footer,m,h-foot-bottomInset,w-2*m,foot);Place((RectTransform)notice.transform,0,0,w-2*m,30);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();
   }
  }
 }
