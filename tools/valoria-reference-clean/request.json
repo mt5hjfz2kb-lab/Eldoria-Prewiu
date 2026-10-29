@@ -1,6 +1,6 @@
 {
   "stage": "web_playtest",
-  "revision": 297,
+  "revision": 298,
   "budget_eur": 0,
   "validate_play": false,
   "validate_core_tests": false,
@@ -8,6 +8,6 @@
   "export_package": false,
   "content_updates": false,
   "publish_content": false,
-  "checks": "Owner-authorized continuation after PR130 corrected individual facades. Build exact current main with original III build-safe resources and current browser diagnostics. Preserve approved models/gameplay/saves; exclude unmerged PR132. Reuse existing native build route and exclusive concurrency after signed Android19 run40934932901. Require successful exact-source Windows Chromium QA before existing restricted itch promotion. 0 EUR.",
+  "checks": "Owner-authorized release continuation. Rebuild exact current main after native297 browser40941917870 proved native WebGL log truncation at8192bytes. Preserve complete opt-in read-only JSON/save via ordered bounded base64 chunks; no command, clock, save setter or gameplay changes. Require native preflight and complete Windows Chromium QA; prior native297 is not certified. Preserve original approved models; exclude PR132.0EUR.",
   "browser_backend": "windows"
 }

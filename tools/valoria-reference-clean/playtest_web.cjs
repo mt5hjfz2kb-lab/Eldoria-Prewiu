@@ -14,7 +14,7 @@ const crypto = require('node:crypto');
 const { performance } = require('node:perf_hooks');
 const { spawnSync } = require('node:child_process');
 
-const PREFIX = 'VALORIA_PLAYTEST ';
+const { createTelemetryReader } = require('./telemetry-frames.cjs');
 const VIEWS = { landscape: { width: 960, height: 540 }, portrait: { width: 540, height: 960 } };
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const sha256 = value => crypto.createHash('sha256').update(value).digest('hex');
@@ -801,20 +801,21 @@ async function main() {
     need(process.env.VALORIA_PLAYTEST_VIDEO !== '0', 'Video capture is required to validate authentic frame evidence');
     options.recordVideo = { dir: path.join(out, 'video'), size: { width: 960, height: 720 } };
     context = await browser.newContext(options); page = await context.newPage(); videoStartedAt = performance.now();
+    const telemetryReader = createTelemetryReader();
     page.on('framenavigated', frame => {
       // An old Unity frame can log while reload is starting. It must never
       // satisfy the next document's readiness or exact-save verification.
       if (frame === page.mainFrame()) {
-        latest = null; previousFrame = null; lastTelemetryAt = 0; documentCommittedAt = Date.now();
+        latest = null; previousFrame = null; lastTelemetryAt = 0; documentCommittedAt = Date.now(); telemetryReader.reset();
       }
     });
     page.on('console', message => {
-      const text = message.text(), where = text.indexOf(PREFIX);
+      const text = message.text();
       if (text.includes('ELDORIA_PLAYABLE_NAV') && text.includes('source=webgl-touch-fallback')) {
         report.legacy_ui_fallbacks.push({ elapsed_s: elapsed(), text });
       }
-      if (where >= 0) {
-        try { recordFrame(JSON.parse(text.slice(where + PREFIX.length).split('\n')[0])); }
+      if (telemetryReader.accepts(text)) {
+        try { const frame = telemetryReader.read(text); if (frame) recordFrame(frame); }
         catch (error) { telemetryBroken = true; report.failures.push('Invalid read-only telemetry: ' + error.message); }
         return;
       }

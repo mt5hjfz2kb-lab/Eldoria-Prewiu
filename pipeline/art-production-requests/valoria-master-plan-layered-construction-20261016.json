@@ -4,11 +4,11 @@
   "status": "ACTIVE",
   "workstream_id": "valoria-master-plan-layered-construction-20261016",
   "request_id": "valoria-master-plan-layered-construction-20261016",
-  "asset_or_sector": "Bastion IV–V progression, exact-reference tier-five buildings, existing management screens and world readability",
+  "asset_or_sector": "Bastion IV\u2013V progression, exact-reference tier-five buildings, existing management screens and world readability",
   "profile": "environment_composition",
   "visual_gate_state": "INTEGRATED_VISUAL_PASS",
   "ai_authorship_policy": "required",
-  "diagnosis": "Owner requests fidelity to canonical web slice IV–V, small perceptible per-level upgrades and exact approved Tripo asset substitution at each individual building level five. Reuse source-only delivery PR127 and retained Unity/Blender techniques; preserve all saves and earlier systems.",
+  "diagnosis": "Owner requests fidelity to canonical web slice IV\u2013V, small perceptible per-level upgrades and exact approved Tripo asset substitution at each individual building level five. Reuse source-only delivery PR127 and retained Unity/Blender techniques; preserve all saves and earlier systems.",
   "geometry_gap_proven": true,
   "allow_tripo": false,
   "credit_authorization": {
@@ -28,13 +28,13 @@
   },
   "validation": {
     "source_gate": "Approved exact-reference GLBs with provenance; director-led edits only where visible defects require them. Preserve originals and canonical Blender methods.",
-    "final_gate": "Real Unity captures in both orientations; IV–V progression, independent building level caps, save/reload, UI and world usability. No physical mobile certification without measurements."
+    "final_gate": "Real Unity captures in both orientations; IV\u2013V progression, independent building level caps, save/reload, UI and world usability. No physical mobile certification without measurements."
   },
   "art_approved": false,
   "unity_visual_acceptance": "PASS_NATIVE11_INDIVIDUAL_FACADES_DOOR_AND_WORLD_PICKING_NOT_GLOBAL_ART_APPROVAL",
   "physical_mobile_tested": false,
   "owner_authorization": "Explicit current conversation instruction 2026-10-29",
-  "notes": "New owner-authorized IV–V scope supersedes historical I–II-only restriction. No new Tripo calls or publication authorized. Existing approved reference sources may be integrated after native review. Owner rejected normal city-V-complete view as still oblique. Reopened bounded per-model orientation and approach alignment; previous scoped acceptance does not cover this defect. No new geometry or paid generation. PR130 corrects the owner-rejected normal runtime orientation. Native11 actual frames and full regressions now pass. Separate owner-authorized APK/WebGL delivery follows; no new source mesh or paid generation. Release continuation: Android19 is 531510996bytes and cannot pass installed updater limit. Reopen technical editor packaging scope only, reuse proven WebGL unused-library pruning, retain all runtime/model/scene sources and prior scoped orientation evidence. No new artwork, Qwen inference or artistic approval claimed; validate actual signed package and limit before release.",
+  "notes": "New owner-authorized IV\u2013V scope supersedes historical I\u2013II-only restriction. No new Tripo calls or publication authorized. Existing approved reference sources may be integrated after native review. Owner rejected normal city-V-complete view as still oblique. Reopened bounded per-model orientation and approach alignment; previous scoped acceptance does not cover this defect. No new geometry or paid generation. PR130 corrects the owner-rejected normal runtime orientation. Native11 actual frames and full regressions now pass. Separate owner-authorized APK/WebGL delivery follows; no new source mesh or paid generation. Release continuation: Android19 is 531510996bytes and cannot pass installed updater limit. Reopen technical editor packaging scope only, reuse proven WebGL unused-library pruning, retain all runtime/model/scene sources and prior scoped orientation evidence. No new artwork, Qwen inference or artistic approval claimed; validate actual signed package and limit before release. Release continuation also repairs opt-in read-only telemetry transport after Chromium40941917870 observed8192-byte truncation. No model/art/runtime-gameplay edits; original full save and assertions retained. Chunk completeness negative tests required.",
   "completed_at": "2026-10-29T18:52:45.044Z",
   "closure": {
     "main_merge_commit": "b7aefa07f9897fd8fe7c43f9bc3b79e4df351d5e",
