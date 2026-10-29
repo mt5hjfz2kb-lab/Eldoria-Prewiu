@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "scope": "POST_PR130_EXACT_NATIVE297_WEBGL_QA",
-  "source_sha": "2b150a0e95821e31610db105dbbbd73f03324b80",
-  "artifact_run": 40938994937,
-  "artifact_name": "valoria-integrated-web-playtest-40938994937",
+  "scope": "POST_PR130_EXACT_NATIVE298_WEBGL_QA",
+  "source_sha": "c8580934201ae1e17543b8683749d40751fb1e12",
+  "artifact_run": 40945723046,
+  "artifact_name": "valoria-integrated-web-playtest-40945723046",
   "tester": "existing Windows Chromium/Edge with GPU; actual pointer and touch, landscape and portrait",
   "controls": [
     "dialogues",
@@ -21,12 +21,12 @@
     "do not write saves or production assets",
     "reject unless complete browser PASS"
   ],
-  "reason": "Owner-authorized continuation after PR130. Exact native297 build40938994937 SUCCESS. Verify current merged main binary with real pointer/touch, normal-clock I-II progression, landscape/portrait framing and byte-identical save/reload. Exclude unmerged PR132; no publish unless complete browser PASS. Existing Windows GPU runner and 0 EUR.",
+  "reason": "Exact native298 succeeded. Previous native297 QA40941917870 failed because native logging truncated full observation/save at8192bytes before gameplay. Bounded ASCII chunks now preserve full original UTF8 JSON with strict completeness/order checks;4 positive/negative transport tests PASS. Repeat all existing real-input, normal-clock I-II, portrait/landscape, framing and exact save/reload gates. No bypass, no unmerged PR132,0EUR.",
   "trigger": "[valoria-web-qa]",
   "art_approved": false,
   "physical_mobile_tested": false,
-  "attempt": 22,
+  "attempt": 23,
   "method_note": "Pin final canonical main source and original WebGL artifact; retain all existing real pointer/touch, normal clock, direct GPU image/video and exact save/reload assertions.",
   "gameplay_source_unchanged": false,
-  "revision": "native297"
+  "revision": "native298"
 }
