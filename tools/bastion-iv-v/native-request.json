@@ -1,1 +1,1 @@
-{"iteration": 9, "scope": "Owner-rejected normal runtime view: individual measured facade headings, entrance approach alignment and actual close-up/top-view evidence; immutable source meshes", "paid_generation": false}
+{"iteration": 10, "scope": "Individual facades verified in native9; use actual source door threshold instead of rotated renderer AABB for approach alignment; fit world collider using all eight transformed corners; full native checks", "paid_generation": false}

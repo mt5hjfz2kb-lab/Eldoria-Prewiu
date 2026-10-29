@@ -52,6 +52,8 @@ namespace Eldoria.ReferenceClean.Editor {
    var rs=art.WorldModel.GetComponentsInChildren<Renderer>();var bounds=rs[0].bounds;foreach(var r in rs)bounds.Encapsulate(r.bounds);
    Physics.SyncTransforms();var screen=h.WorldCamera.WorldToScreenPoint(bounds.center);
    var hits=Physics.RaycastAll(h.WorldCamera.ScreenPointToRay(screen),2000,1<<8,QueryTriggerInteraction.Collide);
+   var actual=h.FindTarget("valoria-map-city");var collider=actual?actual.GetComponent<BoxCollider>():null;
+   File.AppendAllText(Ev+"/world-hitbox-diagnostic.txt","zoom="+h.WorldCamera.orthographicSize+" model="+bounds+" ray="+h.WorldCamera.ScreenPointToRay(screen)+" collider="+(collider?collider.bounds.ToString():"missing")+" local="+(collider?collider.size.ToString():"missing")+" active="+(actual&&actual.gameObject.activeInHierarchy)+" enabled="+(collider&&collider.enabled)+" hits="+string.Join(",",hits.Select(x=>x.collider.name))+"\n");
    Need(hits.Any(hit=>{var target=hit.collider.GetComponentInParent<Eldoria.Presentation.WorldHotspot>();return target&&target.Id=="valoria-map-city";}),"actual V city is touchable at zoom "+h.WorldCamera.orthographicSize);
    float ground=h.WorldHome.y+Eldoria.World4XCanon.RegionOneCanonicalLandscape.SampleHeight(bounds.center.x-h.WorldHome.x,bounds.center.z-h.WorldHome.z);
    Need(bounds.min.y>=ground-.02f&&bounds.min.y<=ground+.25f,"V city foundation meets actual regional terrain at zoom "+h.WorldCamera.orthographicSize);
