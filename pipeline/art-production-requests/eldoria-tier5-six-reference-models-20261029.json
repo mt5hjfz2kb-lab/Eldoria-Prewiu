@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "enabled": false,
+  "status": "COMPLETED",
+  "workstream_id": "eldoria-tier5-six-reference-models-20261029",
+  "request_id": "eldoria-tier5-six-reference-models-20261029",
+  "asset_or_sector": "Six independent exact-reference 3D source assets: Lyra and five Valoria tier V buildings",
+  "profile": "environment_composition",
+  "visual_gate_state": "SOURCE_REVIEW_ACCEPTED_NO_UNITY_CERTIFICATION",
+  "ai_authorship_policy": "required",
+  "diagnosis": "Owner explicitly requires six exact approved images as generation inputs; prior text-generated sources do not satisfy this request. No production integration requested.",
+  "geometry_gap_proven": true,
+  "allow_tripo": true,
+  "credit_authorization": {
+    "approved": true,
+    "authorized_credit_cost": 180,
+    "actual_credit_cost": 180,
+    "source": "Explicit current owner instruction to produce six models autonomously; standard image-to-model at 30 credits each."
+  },
+  "validation": {
+    "source_gate": "All six original and optimized models reviewed from eight Blender views; exact reference SHA retained; GLB structural validation, UVs/normals/textures and .blend presence verified.",
+    "final_gate": "Unity native import, gameplay integration and physical mobile profiling remain unperformed. No formal ART_APPROVED declaration."
+  },
+  "art_approved": false,
+  "unity_visual_acceptance": "NOT_TESTED",
+  "physical_mobile_tested": false,
+  "notes": "Source-only delivery. AI-authored Tripo meshes; canonical Eldoria Blender reduction reused. Rig check on Lyra original is biped eligible at zero credits. This administrative request is recorded at closure; preflight registry phase was not kept current during execution.",
+  "manifest": "ArtSource/Tier5ReferenceProduction/manifest.json",
+  "delivery_pr": 127,
+  "completed_at": "2026-10-29T11:41:34.335Z"
+}
