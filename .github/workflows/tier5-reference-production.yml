@@ -55,3 +55,28 @@ jobs:
         with:
           name: lyra-image-r1-source-${{ github.run_id }}
           path: ~\EldoriaArtSource\Tier5ReferenceProduction\lyra-image-r1\*
+
+  render-source:
+    needs: recover
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: lyra-image-r1-source-${{ github.run_id }}
+          path: source
+      - name: Install Blender and prepare isolated review script
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq blender
+          curl -fsSL 'https://raw.githubusercontent.com/mt5hjfz2kb-lab/Eldoria-Prewiu/${{ github.sha }}/tools/tier5-reference-production/render_asset.py' -o render_asset.py
+      - name: Render existing source from eight angles without modifying it
+        run: |
+          blender -b -t 4 --python-exit-code 1 --python render_asset.py -- source/raw.glb review character > blender-render.log 2>&1 || { tail -60 blender-render.log; exit 1; }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lyra-image-r1-review-${{ github.run_id }}
+          path: |
+            review/*
+            blender-render.log
