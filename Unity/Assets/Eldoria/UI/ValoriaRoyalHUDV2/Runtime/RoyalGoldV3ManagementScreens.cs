@@ -539,7 +539,10 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(selectedText.rectTransform,ctrl+8,0,qw-2*(ctrl+8),landscape?39:48);
             Place(slider.transform as RectTransform,landscape?19:25,uh-(landscape?21:45),uw-(landscape?38:50),landscape?14:19);
             float rw=right.rect.width,rh=right.rect.height;
-            float statusH=landscape?Mathf.Min(62,rh*.28f):Mathf.Min(108,rh*.37f);
+            // March capacity/hero/global slots add five live lines. Allocate their
+            // actual text height rather than clipping them into the old three-line box.
+            float statusH=landscape?Mathf.Min(CurrentDestination==Destination.March?118f:90f,rh*.44f):
+                Mathf.Min(CurrentDestination==Destination.March?132f:108f,rh*.40f);
             Place(summary.rectTransform,landscape?14:19,landscape?10:18,rw-(landscape?28:38),
                 rh-statusH-(landscape?18:22));
             Place(status.rectTransform,landscape?14:19,rh-statusH-4,rw-(landscape?28:38),statusH);

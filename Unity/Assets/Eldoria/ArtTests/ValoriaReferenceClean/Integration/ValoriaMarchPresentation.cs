@@ -23,17 +23,21 @@ namespace Eldoria.ReferenceClean {
   public bool MarkerVisible=>standard&&standard.gameObject.activeInHierarchy;
   public void Initialize(ValoriaIntegratedWorld value){
    host=value;
+   Canvas.willRenderCanvases+=SynchronizeForCamera;
    layer=new GameObject("Expedition route / authoritative clock",typeof(RectTransform)).GetComponent<RectTransform>();
+   layer.gameObject.layer=host.Hud.gameObject.layer;
    layer.SetParent(host.Hud.transform,false);layer.anchorMin=Vector2.zero;layer.anchorMax=Vector2.one;layer.offsetMin=layer.offsetMax=Vector2.zero;layer.SetAsFirstSibling();
    route=layer.gameObject.AddComponent<ValoriaMarchRouteGraphic>();route.raycastTarget=false;route.color=new Color(.91f,.72f,.36f,.8f);
-   standard=new GameObject("Aldric expedition standard",typeof(RectTransform),typeof(Image),typeof(Outline)).GetComponent<RectTransform>();standard.SetParent(layer,false);standard.sizeDelta=new Vector2(40,44);
+   standard=new GameObject("Aldric expedition standard",typeof(RectTransform),typeof(Image),typeof(Outline)).GetComponent<RectTransform>();standard.SetParent(layer,false);standard.sizeDelta=new Vector2(58,64);
+   standard.gameObject.layer=layer.gameObject.layer;
    standard.GetComponent<Image>().color=new Color(.025f,.09f,.17f,.94f);standard.GetComponent<Image>().raycastTarget=false;
    var outline=standard.GetComponent<Outline>();outline.effectColor=new Color(.9f,.72f,.38f);outline.effectDistance=new Vector2(1.5f,-1.5f);
-   var icon=new GameObject("Expedition",typeof(RectTransform),typeof(RoyalIconGraphic)).GetComponent<RoyalIconGraphic>();icon.transform.SetParent(standard,false);icon.Icon=5;icon.color=new Color(1,.82f,.44f);icon.raycastTarget=false;icon.rectTransform.sizeDelta=new Vector2(34,34);
-   label=Instantiate(host.Hud.Mission.Objective,standard);label.name="Expedition troop count";label.fontSize=15;label.alignment=TextAnchor.MiddleCenter;label.raycastTarget=false;label.color=new Color(1,.94f,.76f);label.rectTransform.anchorMin=label.rectTransform.anchorMax=new Vector2(.5f,.5f);label.rectTransform.pivot=new Vector2(.5f,.5f);label.rectTransform.anchoredPosition=new Vector2(0,-36);label.rectTransform.sizeDelta=new Vector2(160,24);
+   var icon=new GameObject("Expedition",typeof(RectTransform),typeof(RoyalIconGraphic)).GetComponent<RoyalIconGraphic>();icon.transform.SetParent(standard,false);icon.gameObject.layer=layer.gameObject.layer;icon.Icon=5;icon.color=new Color(1,.82f,.44f);icon.raycastTarget=false;icon.rectTransform.sizeDelta=new Vector2(44,44);
+   label=Instantiate(host.Hud.Mission.Objective,standard);label.name="Expedition troop count";label.fontSize=20;label.alignment=TextAnchor.MiddleCenter;label.raycastTarget=false;label.color=new Color(1,.94f,.76f);label.rectTransform.anchorMin=label.rectTransform.anchorMax=new Vector2(.5f,.5f);label.rectTransform.pivot=new Vector2(.5f,.5f);label.rectTransform.anchoredPosition=new Vector2(0,-46);label.rectTransform.sizeDelta=new Vector2(142,30);
    standard.gameObject.SetActive(false);
    for(int i=0;i<2;i++){
     var extraLayer=new GameObject("Additional expedition route "+(i+2),typeof(RectTransform),typeof(ValoriaMarchRouteGraphic)).GetComponent<RectTransform>();
+    extraLayer.gameObject.layer=layer.gameObject.layer;
     extraLayer.SetParent(layer,false);extraLayer.anchorMin=Vector2.zero;extraLayer.anchorMax=Vector2.one;
     extraLayer.offsetMin=extraLayer.offsetMax=Vector2.zero;
     var line=extraLayer.GetComponent<ValoriaMarchRouteGraphic>();line.raycastTarget=false;line.color=new Color(.52f,.84f,.92f,.78f);
@@ -79,7 +83,7 @@ namespace Eldoria.ReferenceClean {
     if(!visible)continue;
     if(RectTransformUtility.ScreenPointToLocalPointInRectangle(layer,screenPosition,uiCamera,out var position))
       otherStandards[i].anchoredPosition=position;
-    otherLabels[i].Put((m.HeroId=="lyra"?"Lyra":m.HeroId=="aldric+lyra"?"Aldric + Lyra":"Aldric")+" · "+m.Troops.Total);
+    otherLabels[i].Put((i+2)+" · "+(m.HeroId=="lyra"?"Lyra":m.HeroId=="aldric+lyra"?"Aldric + Lyra":"Aldric")+" · "+m.Troops.Total);
    }
   }
   void LateUpdate(){
@@ -116,6 +120,32 @@ namespace Eldoria.ReferenceClean {
    standard.localScale=Vector3.one*(phase=="gathering"?1+Mathf.Sin(Time.unscaledTime*4)*.05f:1);
    label.Put(investigating?(host.English?"Aldric · investigating":"Aldric · investigando"):(s.March.HeroId=="lyra"?"Lyra · ":s.March.HeroId=="aldric+lyra"?"Aldric + Lyra · ":"Aldric · ")+s.March.Troops.Total);
   }
+  // ScreenSpaceCamera capture and real orientation changes must project AFTER
+  // the canvas/camera have their final current dimensions, not the previous frame.
+  public void SynchronizeForCamera(){
+   LateUpdate();
+   if(!layer)return;
+   var canvas=layer.GetComponentInParent<Canvas>();
+   float scale=Mathf.Clamp(.70f/Mathf.Max(.1f,canvas.scaleFactor),.70f,1.60f);
+   var markers=new[]{standard,otherStandards[0],otherStandards[1]};
+   for(int i=0;i<markers.Length;i++){
+    var marker=markers[i];if(!marker||!marker.gameObject.activeSelf)continue;
+    marker.localScale=Vector3.one*scale;
+    var position=marker.anchoredPosition;
+    // Several departures share the same real gate. Fan out their heraldry
+    // only when it overlaps; their authoritative route geometry stays exact.
+    for(int j=0;j<i;j++){
+     if(!markers[j].gameObject.activeSelf)continue;
+     var other=markers[j].anchoredPosition;
+     if(Mathf.Abs(position.x-other.x)<150f*scale&&Mathf.Abs(position.y-other.y)<96f*scale)
+      position.x+=(i==1?-160f:160f)*scale;
+    }
+    float margin=80f*scale;
+    position.x=Mathf.Clamp(position.x,layer.rect.xMin+margin,layer.rect.xMax-margin);
+    position.y=Mathf.Clamp(position.y,layer.rect.yMin+margin,layer.rect.yMax-margin);
+    marker.anchoredPosition=position;
+   }
+  }
   static Vector3 RoutePosition(MarchState march,Vector3 from,Vector3 to,float t){
    var route=march.Route;if(route==null||route.Count<2)return Vector3.Lerp(from,to,t); // pre-migration saved march only
    float total=0;for(int i=1;i<route.Count;i++)total+=Vector3.Distance(Point(route[i-1]),Point(route[i]));
@@ -124,7 +154,7 @@ namespace Eldoria.ReferenceClean {
    return Point(route[route.Count-1]);
   }
   static Vector3 Point(WorldRoutePoint p)=>new Vector3(p.X,p.Y,p.Z);
-  void OnDestroy(){if(layer)Destroy(layer.gameObject);}
+  void OnDestroy(){Canvas.willRenderCanvases-=SynchronizeForCamera;if(layer)Destroy(layer.gameObject);}
  }
  public sealed class ValoriaMarchRouteGraphic:MaskableGraphic {
   Vector2[] points=Array.Empty<Vector2>();
@@ -133,7 +163,8 @@ namespace Eldoria.ReferenceClean {
    vh.Clear();for(int i=1;i<points.Length;i++){
     if((i&1)==0)continue;
     var a=points[i-1];var b=points[i];var delta=b-a;if(delta.sqrMagnitude<.01f)continue;
-    var n=new Vector2(-delta.y,delta.x).normalized*1.5f;int start=vh.currentVertCount;
+    var halfWidth=Mathf.Clamp(1.2f/Mathf.Max(.1f,canvas?canvas.scaleFactor:1f),1.2f,3f);
+    var n=new Vector2(-delta.y,delta.x).normalized*halfWidth;int start=vh.currentVertCount;
     vh.AddVert(a-n,color,Vector2.zero);vh.AddVert(a+n,color,Vector2.zero);vh.AddVert(b+n,color,Vector2.zero);vh.AddVert(b-n,color,Vector2.zero);vh.AddTriangle(start,start+1,start+2);vh.AddTriangle(start,start+2,start+3);
    }
   }

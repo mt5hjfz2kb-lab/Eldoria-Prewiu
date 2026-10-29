@@ -50,18 +50,25 @@ jobs:
         with:
           script: |
             core.setOutput('eligible','false');
-            const canonical='feature/aldric-city-roaming-20261028';
             const pr=context.payload.pull_request;
-            if(context.eventName==='pull_request') {
-              if(pr?.number!==122 || pr.head.ref!==canonical ||
-                pr.head.repo.full_name!==context.repo.owner+'/'+context.repo.repo)return;
-            } else if(context.eventName==='push' && context.ref==='refs/heads/main') {
-              const merged=(await github.rest.pulls.get({...context.repo,pull_number:122})).data;
-              if(!merged.merged)return;
-            } else return;
+            const routes={
+              122:['feature/aldric-city-roaming-20261028','docs/aldric-city/NATIVE_CERTIFICATE_20261029.json'],
+              124:['feature/global-march-capacity-three-slots-20261028','docs/marches/NATIVE_CERTIFICATE_20261029.json'],
+              125:['feature/retention-engagement-evolution-20261028','docs/early-retention/NATIVE_EVOLUTION_CERTIFICATE_20261029.json']};
+            let number=pr?.number;
+            if(context.eventName==='push' && context.ref==='refs/heads/main') {
+              number=undefined;
+              for(const candidate of [125,124,122]){
+                const merged=(await github.rest.pulls.get({...context.repo,pull_number:candidate})).data;
+                if(merged.merged){number=candidate;break;}
+              }
+            } else if(context.eventName!=='pull_request')return;
+            if(!routes[number])return;
+            const [canonical,proofPath]=routes[number];
+            if(pr&&(pr.head.ref!==canonical ||
+                pr.head.repo.full_name!==context.repo.owner+'/'+context.repo.repo))return;
             const ref=pr?.head.sha || context.sha;
-            const file=(await github.rest.repos.getContent({...context.repo,
-              path:'docs/aldric-city/NATIVE_CERTIFICATE_20261029.json',ref})).data;
+            const file=(await github.rest.repos.getContent({...context.repo,path:proofPath,ref})).data;
             if(!file.content)throw Error('Completed native certificate missing');
             const proof=JSON.parse(Buffer.from(file.content,'base64').toString('utf8'));
             if(proof.status!=='SUCCESS' || proof.actual_views!==12 || proof.playmode_passed<73 ||
@@ -81,6 +88,19 @@ jobs:
             if(artifact.expired || artifact.workflow_run?.id!==proof.run_id ||
               artifact.name!=='eldoria-aldric-shared-native-'+proof.compiled_source ||
               artifact.digest!==proof.native_artifact_digest)throw Error('Exact genuine native evidence unavailable');
+            if(number===124 || number===125){
+              if(proof.march_views!==8 || !Array.isArray(proof.additional_artifacts) ||
+                 proof.additional_artifacts.length!==(number===125?2:1))
+                throw Error('Missing actual three-march/evolution evidence');
+              if(number===125 && (proof.reference_views!==19 || proof.evolution_views<13))
+                throw Error('Complete original reference and new discovery/defeat views required');
+              for(const item of proof.additional_artifacts){
+                const extra=(await github.rest.actions.getArtifact({...context.repo,artifact_id:item.id})).data;
+                if(extra.expired || extra.workflow_run?.id!==proof.run_id ||
+                   extra.name!==item.name || extra.digest!==item.digest)
+                  throw Error('Additional exact native camera evidence unavailable');
+              }
+            }
             core.setOutput('source',proof.requested_source);
             core.setOutput('run_id',String(proof.run_id));
             core.setOutput('eligible','true');
@@ -121,14 +141,15 @@ jobs:
             };
             const oldJob=job(git('git',['show',certified+':'+file],{encoding:'utf8'}));
             const newJob=job(fs.readFileSync(file,'utf8'));
-            const metadata=new Set([file,'pipeline/active-workstreams.json',
+            const metadata=new Set([file,'.github/workflows/aldric-city-domain.yml','pipeline/active-workstreams.json',
               'pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json',
               'pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json',
               'pipeline/art-production-requests/eldoria-retention-first-evolution-20261028.json']);
             heavy=before!==after || oldJob!==newJob ||
-              files.some(p=>!metadata.has(p) && !p.startsWith('docs/aldric-city/'));
-            if(!heavy)console.log('ELDORIA_ALDRIC_FULL_SHARED_CERTIFICATE_REUSED run'+process.env.CERTIFIED_RUN+
-              '; exact Unity tree, every native test/12-image guard and complete executed job unchanged');
+              files.some(p=>!metadata.has(p) && !p.startsWith('docs/aldric-city/') &&
+                !p.startsWith('docs/marches/') && !p.startsWith('docs/early-retention/'));
+            if(!heavy)console.log('ELDORIA_FULL_SHARED_NATIVE_CERTIFICATE_REUSED run'+process.env.CERTIFIED_RUN+
+              '; exact Unity tree, every camera/test guard and complete executed native job unchanged');
           }catch(error){console.warn('Cannot prove identical full native inputs; run complete gate: '+error.message);}
           fs.appendFileSync(process.env.GITHUB_OUTPUT,'heavy_required='+heavy+'\n');
           JS

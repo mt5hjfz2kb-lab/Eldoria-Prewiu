@@ -207,7 +207,12 @@ namespace Eldoria.Tests
             // Real time/real animation: initial idle pause is intentional.
             var first = Read<Vector3>(walker,"ActorGroundPosition");
             var travelled = 0f;
-            for (var walkDeadline = Time.realtimeSinceStartup + 20f; travelled < 0.3f && Time.realtimeSinceStartup < walkDeadline;)
+            // Movement is updated before the legacy Animation crossfade contributes.
+            // On a slow native render the first moved frame may still have Idle weight.
+            // Observe both actual displacement AND the actual contributing Walk state.
+            for (var walkDeadline = Time.realtimeSinceStartup + 30f;
+                (travelled < 0.3f || !Read<bool>(walker,"ActualWalkClipPlaying") ||
+                 !Read<bool>(walker,"IsWalking")) && Time.realtimeSinceStartup < walkDeadline;)
             {
                 yield return null;
                 travelled = Vector3.Distance(first, Read<Vector3>(walker,"ActorGroundPosition"));
