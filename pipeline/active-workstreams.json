@@ -114,7 +114,9 @@
         "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
         "docs/documentation-catalog.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Bounded runtime integration/camera/encounter reuse corrections in existing ArtTests surfaces require technical scope gate. No new asset authorship or artistic approval; original approved sources preserved.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
@@ -1385,7 +1387,7 @@
           "reason": "Owner-authorized continuation completed: APK19 published and public bytes verified; native298 full browser QA and exact Restricted itch remote activation confirmed. No remaining heavy job or write reservation."
         }
       ],
-      "ownership_revision": 65,
+      "ownership_revision": 66,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
