@@ -17,7 +17,7 @@ El modelo V de cada edificio reemplaza únicamente su propia arquitectura al ter
 
 La interfaz abre destinos independientes sobre el Canvas Royal Gold existente, conserva navegación y partida, y oculta los paneles contextuales mientras una pantalla de gestión está abierta. La imagen de referencia se identifica como arquitectura de nivel V para no confundirla con el edificio actual.
 
-Estado: dominio IV–V y regresión III aprobados en ejecución 40877107919. Integración gráfica, pruebas nativas y revisión de composición en curso. Esto no certifica rendimiento físico Android/iOS ni autoriza una publicación.
+Estado de implementación: dominio IV–V y regresión III aprobados; Native40906347082 completa 54/54 EditMode,73/73 PlayMode,386 comprobaciones IV–V,70 capturas, toque real y recorrido I–II. Revisión visual del alcance aceptada en `FINAL_REVIEW.md`. La integración exige también el control general de PR129. No se certifica rendimiento físico Android/iOS ni se autoriza una publicación.
 
 ## Verificación y métodos de trabajo
 
@@ -42,3 +42,6 @@ Documentación técnica consultada: Unity 6000.3 `Canvas` y orden de dibujo. Se 
 - `40899902596`: recorrido IV–V (382 comprobaciones) y 54/54 EditMode aprobados; las referencias son Texture2D 1024², las entradas orientadas a 270° se leen en cámara y el Bastión del mapa apoya sobre el terreno. PlayMode continúa 72/73 por la duplicación heredada descrita arriba. La nueva prueba verifica que todos los Canvas/raycasters de `Eldoria HUD` cedan el control antes del raycast real sobre Volver.
 - La siguiente ejecución prueba primero ese caso táctil y conserva su XML pequeño inmediatamente. Si falla, el trabajo continúa capturando la parte IV–V, pero no repite las suites completas; el workflow permanece fallido. Si pasa, ejecuta íntegramente EditMode, PlayMode e I–II. Esta orden permite diagnosticar antes sin relajar la condición de aprobación.
 - La entrada V del mundo se alinea con el anclaje estratégico aprobado (WorldHome + 3,3 / −7,5), preservando ese acceso al cambiar el tamaño visual con el zoom. La base se apoya en la altura regional real y el collider canónico se ajusta a la silueta en todos los zooms. La prueba usa rayos reales en zoom cercano y panorámico, no invoca el botón o la navegación directamente.
+
+- `40906347082`, fuente `1469708`: SUCCESS completo. La cesión del presentador persistente resuelve el toque de Volver (caso aislado y suite completa). El Bastión V del mapa apoya en terreno y recibe raycast real en zoom32/280, con entrada anclada al puente. Artefactos: toque12911069818, revisión12913106042, diagnóstico12913038382 y completo12913871649. Se retienen las correcciones y se cierran los intentos de orden/registro gráfico como explicación insuficiente del segundo Canvas heredado.
+- Referencia de ciclo de vida consultada: https://docs.unity3d.com/6000.0/Documentation/ScriptReference/SceneManagement.SceneManager-sceneLoaded.html — el callback sucede tras Awake/OnEnable y antes de Start, por lo que la cesión puede evitar que el presentador persistente construya otra interfaz.

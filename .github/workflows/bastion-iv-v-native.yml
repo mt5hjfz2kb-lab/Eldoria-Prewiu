@@ -168,6 +168,8 @@ jobs:
           if(-not(Test-Path $xml)){throw 'Management touch results missing'}
           [xml]$result=Get-Content $xml
           if($result.'test-run'.result -ne 'Passed'){throw 'Management touch raycast must pass before repeating the full suite'}
+          $cases=@($result.SelectNodes('//test-case'))
+          if($cases.Count -ne 1 -or $cases[0].name -ne 'BuildingSelectionRetainsAuthoritativeGatewayOffer'){throw 'The exact real touch case must execute once'}
       - name: Preserve early management touch diagnostics
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
