@@ -283,6 +283,12 @@ namespace Eldoria.Application
                     Won=s.LastBattleReport?.Won??false,
                     Rounds=s.LastBattleReport?.Rounds??0,
                     RemainingHealth=s.LastBattleReport?.RemainingHealth??0,
+                    PlayerAttack=s.LastBattleReport?.PlayerAttack??0,
+                    PlayerDefense=s.LastBattleReport?.PlayerDefense??0,
+                    PlayerHealth=s.LastBattleReport?.PlayerHealth??0,
+                    PlayerBreak=s.LastBattleReport?.PlayerBreak??0,
+                    Exchanges=(s.LastBattleReport?.Exchanges??new System.Collections.Generic.List<BattleExchange>())
+                        .ConvertAll(x=>x.Copy()),
                     RewardWood=s.LastBattleReport?.RewardWood??0,
                     RewardStone=s.LastBattleReport?.RewardStone??0,
                     Reason=s.LastBattleReport?.Reason??""
@@ -644,6 +650,11 @@ namespace Eldoria.Application
                             Won = report.Won,
                             Rounds = report.Rounds,
                             RemainingHealth = report.RemainingHealth,
+                            PlayerAttack = expedition.Attack,
+                            PlayerDefense = expedition.Defense,
+                            PlayerHealth = expedition.Health,
+                            PlayerBreak = expedition.Break,
+                            Exchanges = new System.Collections.Generic.List<BattleExchange>(report.Exchanges),
                             RewardWood = rewardWood,
                             RewardStone = rewardStone,
                             Reason = report.Reason
