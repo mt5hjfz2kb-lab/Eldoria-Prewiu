@@ -18,3 +18,12 @@ El modelo V de cada edificio reemplaza únicamente su propia arquitectura al ter
 La interfaz abre destinos independientes sobre el Canvas Royal Gold existente, conserva navegación y partida, y oculta los paneles contextuales mientras una pantalla de gestión está abierta. La imagen de referencia se identifica como arquitectura de nivel V para no confundirla con el edificio actual.
 
 Estado: dominio IV–V y regresión III aprobados en ejecución 40877107919. Integración gráfica, pruebas nativas y revisión de composición en curso. Esto no certifica rendimiento físico Android/iOS ni autoriza una publicación.
+
+## Verificación y métodos de trabajo
+
+- Ejecución `40879777150`: importación real D3D11 completada; 54/54 EditMode aprobados. PlayMode: 71/73 aprobados; dos expectativas antiguas buscaban el panel flotante y su temporizador durante la gestión. Las pruebas se han migrado al botón y cierre táctil reales de la pantalla independiente, al pago persistente y a la cuenta atrás inmediata. El temporizador contextual vuelve al cerrar gestión. No se eliminan las verificaciones del gateway.
+- Dominio y bindings de la revisión `42fc0fc` aprobados en `40883546410`; la siguiente revisión también pasa en `40884918436`.
+- Las capturas regionales del primer ciclo son evidencia de regresión del mundo existente, no pruebas visuales del nivel V. Las capturas IV–V quedan pendientes de la ejecución nativa específica.
+- Se conserva la caché de Unity entre ejecuciones. El primer importado completo tardó aproximadamente 13 minutos; no es un motivo para regenerar modelos ni duplicar créditos.
+- Las capturas usan la cámara real, guardan orientación/aspecto y SHA de la fuente compilada. Los cambios de píxeles verifican que existe una diferencia, pero no sustituyen la revisión artística.
+- La clasificación sigue el prototipo web: perfiles simulados, sin jugadores online. La extracción de vetas regionales en V activa una sola vez la intervención de Aldric y se conserva al recargar.

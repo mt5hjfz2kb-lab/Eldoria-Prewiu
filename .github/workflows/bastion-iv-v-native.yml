@@ -151,7 +151,31 @@ jobs:
           $bakeArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"'+(Join-Path $evidence 'granary-bake.log')+'"'))
           $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $bakeArgs -Wait -PassThru
           if($bake.ExitCode -ne 0){throw 'Build-safe granary extraction failed'}
+      - name: Validate IV V persistence and capture real UI and art
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          $proofLog=Join-Path $evidence 'runtime-proof.log'
+          $proofArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIVVNativeProof.Capture','-logFile',('"'+$proofLog+'"'))
+          $proof=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $proofArgs -Wait -PassThru
+          if($proof.ExitCode -ne 0 -or -not(Test-Path (Join-Path $evidence 'functional-checks.txt'))){throw 'Actual integrated IV-V proof failed'}
+          @{source="${{ needs.assets.outputs.source }}";run=$env:GITHUB_RUN_ID;art_approved=$false;physical_mobile_tested=$false} | ConvertTo-Json | Set-Content (Join-Path $evidence 'provenance.json') -Encoding UTF8
+      - name: Preserve early native IV V visual review
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bastion-iv-v-review-${{ github.run_id }}
+          path: |
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.png
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.json
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.txt
+            bastion-iv-v-source/docs/bastion-iv-v/native/runtime-proof.log
+          if-no-files-found: error
       - name: Run actual Unity EditMode suite
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
         shell: powershell
         working-directory: bastion-iv-v-source
         run: |
@@ -166,6 +190,7 @@ jobs:
           [xml]$results=Get-Content $xml
           if($results.'test-run'.result -ne 'Passed'){throw 'Unity EditMode tests failed'}
       - name: Run actual Unity PlayMode suite
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
         # Fail boundedly instead of occupying the sole Windows Unity runner
         # until the entire job's 60-minute timeout if the editor deadlocks.
         timeout-minutes: 18
@@ -198,18 +223,6 @@ jobs:
           $regressionEvidence=Join-Path $evidence 'I-II'
           New-Item -ItemType Directory -Force $regressionEvidence | Out-Null
           Copy-Item 'docs/evidence/valoria-reference-clean/integration-*' $regressionEvidence
-      - name: Validate IV V persistence and capture real UI and art
-        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
-        shell: powershell
-        working-directory: bastion-iv-v-source
-        run: |
-          $project=Join-Path (Get-Location) 'Unity'
-          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
-          $proofLog=Join-Path $evidence 'runtime-proof.log'
-          $proofArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIVVNativeProof.Capture','-logFile',('"'+$proofLog+'"'))
-          $proof=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $proofArgs -Wait -PassThru
-          if($proof.ExitCode -ne 0 -or -not(Test-Path (Join-Path $evidence 'functional-checks.txt'))){throw 'Actual integrated IV-V proof failed'}
-          @{source="${{ needs.assets.outputs.source }}";run=$env:GITHUB_RUN_ID;art_approved=$false;physical_mobile_tested=$false} | ConvertTo-Json | Set-Content (Join-Path $evidence 'provenance.json') -Encoding UTF8
       - uses: actions/upload-artifact@v4
         if: always()
         with:

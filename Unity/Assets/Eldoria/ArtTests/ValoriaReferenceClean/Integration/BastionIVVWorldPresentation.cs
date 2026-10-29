@@ -8,10 +8,11 @@ using UnityEngine;
 namespace Eldoria.ReferenceClean {
  [DefaultExecutionOrder(1300)] public sealed class BastionIVVWorldPresentation:MonoBehaviour {
   ValoriaIntegratedWorld host;GameObject cityRoot,stoneSite,stoneBase,worldFive;
-  bool assetsLoaded;Vector3 worldFiveScale,worldFiveFoot;
+  bool assetsLoaded;PlayerState cached;object cachedGateway;float nextStatePoll;Vector3 worldFiveScale,worldFiveFoot;
   readonly Dictionary<string,GameObject> models=new Dictionary<string,GameObject>();
   readonly List<(GameObject model,int level)> stoneStock=new List<(GameObject,int)>();
   public GameObject WorldModel=>worldFive;
+  public void RotateCityForReview(float delta){foreach(var model in models.Values)if(model){var b=Bounds(model);model.transform.RotateAround(new Vector3(b.center.x,b.min.y,b.center.z),Vector3.up,delta);}}
   public GameObject ModelFor(string id)=>models.TryGetValue(id,out var model)?model:null;
   public void Initialize(ValoriaIntegratedWorld h){host=h;cityRoot=new GameObject("Bastion IV V architecture");cityRoot.transform.SetParent(transform,false);
    Apply();
@@ -44,17 +45,18 @@ namespace Eldoria.ReferenceClean {
    foreach(var c in model.GetComponentsInChildren<Collider>(true))Destroy(c);
    var b=Bounds(model);model.transform.localScale*=width/Mathf.Max(.001f,Mathf.Max(b.size.x,b.size.z));b=Bounds(model);model.transform.localPosition+=point-model.transform.parent.InverseTransformPoint(new Vector3(b.center.x,b.min.y,b.center.z));
   }
-  void LateUpdate(){if(host&&host.Ready)Apply();}
-  public void Apply(){if(!host||host.City.Gateway==null)return;var s=host.City.Gateway.Snapshot();cityRoot.SetActive(!host.InWorld);
-   if(s.BastionLevel<5)return;LoadUnlockedAssets();
+  void LateUpdate(){if(!host||!host.Ready)return;if(cached==null||!ReferenceEquals(cachedGateway,host.City.Gateway)||Time.unscaledTime>=nextStatePoll)Apply();else Render(cached);}
+  public void Apply(){if(!host||host.City.Gateway==null)return;cachedGateway=host.City.Gateway;cached=host.City.Gateway.Snapshot();nextStatePoll=Time.unscaledTime+.2f;Render(cached);}
+  void Render(PlayerState s){cityRoot.SetActive(!host.InWorld&&s.BastionLevel>=5);
+   if(s.BastionLevel<5){if(worldFive)worldFive.SetActive(false);return;}LoadUnlockedAssets();
    Set("bastion",s.BastionLevel);Set("sawmill",s.SawmillLevel);Set("barracks",s.BarracksLevel);Set("granary",s.ChapterThree.GranaryLevel);Set("stoneworks",s.ChapterThree.StoneworksLevel);
    // Keep authoritative hotspots, deadlines and the established I-IV source objects intact.
    if(ModelFor("bastion")&&s.BastionLevel>=5)host.City.BastionTwo.SetActive(false);
    if(ModelFor("sawmill")&&s.SawmillLevel>=5)host.City.Parcels.LeftBuilt.SetActive(false);
    if(ModelFor("barracks")&&s.BarracksLevel>=5)host.City.Parcels.RightBuilt.SetActive(false);
    stoneSite.SetActive(s.BastionLevel>=5);if(stoneBase)stoneBase.SetActive(s.ChapterThree.StoneworksLevel>0&&s.ChapterThree.StoneworksLevel<5);
-   foreach(var stock in stoneStock)stock.model.SetActive(s.ChapterThree.StoneworksLevel>=stock.level&&s.ChapterThree.StoneworksLevel<5);
-   if(worldFive){float zoom=host.WorldCamera.orthographicSize;float strategicScale=Mathf.Lerp(1f,1.8f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);worldFive.transform.localScale=worldFiveScale*strategicScale;var wb=Bounds(worldFive);worldFive.transform.position+=worldFiveFoot-new Vector3(wb.center.x,wb.min.y,wb.center.z);worldFive.SetActive(s.BastionLevel>=5);if(s.BastionLevel>=5)host.WorldBastionTwo.SetActive(false);if(zoom>=110){var target=host.FindTarget("valoria-map-city");var hit=target?target.GetComponent<BoxCollider>():null;if(hit){wb=Bounds(worldFive);hit.center=hit.transform.InverseTransformPoint(wb.center);hit.size=hit.transform.InverseTransformVector(wb.size)+Vector3.one;}}}
+   foreach(var stock in stoneStock)stock.model.SetActive((s.ChapterThree.StoneworksLevel==0&&stock.level<=2)||(s.ChapterThree.StoneworksLevel>=stock.level&&s.ChapterThree.StoneworksLevel<5));
+   if(worldFive){if(worldFive.layer!=host.WorldRoot.layer)foreach(var t in worldFive.GetComponentsInChildren<Transform>(true))t.gameObject.layer=host.WorldRoot.layer;float zoom=host.WorldCamera.orthographicSize;float strategicScale=Mathf.Lerp(1f,1.8f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);worldFive.transform.localScale=worldFiveScale*strategicScale;var wb=Bounds(worldFive);worldFive.transform.position+=worldFiveFoot-new Vector3(wb.center.x,wb.min.y,wb.center.z);worldFive.SetActive(s.BastionLevel>=5);if(s.BastionLevel>=5)host.WorldBastionTwo.SetActive(false);if(zoom>=110){var target=host.FindTarget("valoria-map-city");var hit=target?target.GetComponent<BoxCollider>():null;if(hit){wb=Bounds(worldFive);hit.center=hit.transform.InverseTransformPoint(wb.center);var size=hit.transform.InverseTransformVector(wb.size);hit.size=new Vector3(Mathf.Abs(size.x),Mathf.Abs(size.y),Mathf.Abs(size.z))+Vector3.one;}}}
   }
   void Set(string id,int level){if(models.TryGetValue(id,out var model)&&model)model.SetActive(level>=5);}
  }

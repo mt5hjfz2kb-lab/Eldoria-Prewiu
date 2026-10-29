@@ -8,7 +8,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 namespace Eldoria.UI.RoyalGold.V2 {
  // The web slice explicitly uses simulated profiles. Never imply online PvP.
- public sealed class RoyalGoldV3RankingScreen:MonoBehaviour {
+ [DefaultExecutionOrder(1600)] public sealed class RoyalGoldV3RankingScreen:MonoBehaviour {
   RoyalHUD hud;ICommandGateway gateway;RectTransform root;RoyalText title,subtitle,rival,note;RoyalButton back;RoyalButton[] tabs=new RoyalButton[3];RoyalText[] rows=new RoyalText[9];int category;float width,height,next;
   static readonly Color Gold=new Color(.89f,.73f,.46f),Ivory=new Color(.95f,.925f,.865f);
   public RectTransform VisibleRoot=>IsOpen?root:null;
@@ -17,6 +17,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   void OnDestroy(){if(hud){hud.NarrativeOpening-=Close;hud.SelectionChanged-=SelectionChanged;}}
   void SelectionChanged(string id){Close();}
   public void Open(){if(gateway==null||!gateway.Snapshot().ChapterThree.RankUnlocked)return;Ensure();root.gameObject.SetActive(true);root.SetAsLastSibling();SynchronizeLayout();Refresh();}
+  void LateUpdate(){if(IsOpen)root.SetAsLastSibling();}
   public void Close(){if(root)root.gameObject.SetActive(false);}
   void Update(){if(!IsOpen)return;if(Keyboard.current!=null&&Keyboard.current.escapeKey.wasPressedThisFrame){Close();return;}if(Mathf.Abs(root.rect.width-width)>.5f||Mathf.Abs(root.rect.height-height)>.5f)SynchronizeLayout();if(Time.unscaledTime>=next){next=Time.unscaledTime+.3f;Refresh();}}
   void Ensure(){if(root)return;
@@ -35,7 +36,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
    for(int i=0;i<rows.Length;i++){rows[i].Put("#"+(i+1)+"     "+ladder[i].Name+"     "+ladder[i].Value.ToString("N0"));rows[i].color=ladder[i].Me?Gold:Ivory;rows[i].transform.parent.GetComponent<Image>().color=ladder[i].Me?new Color(.19f,.16f,.10f,1):new Color(.065f,.105f,.14f,.96f);}
    for(int i=0;i<3;i++)tabs[i].interactable=i!=category;
   }
-  public void SynchronizeLayout(){if(!IsOpen)return;Canvas.ForceUpdateCanvases();width=root.rect.width;height=root.rect.height;float scale=Mathf.Max(.01f,hud.GetComponent<Canvas>().scaleFactor);var safe=Screen.safeArea;float inset=Mathf.Max(20,Mathf.Max(safe.xMin,Screen.width-safe.xMax)/scale+12);float top=Mathf.Max(25,(Screen.height-safe.yMax)/scale+12),bottom=Mathf.Max(18,safe.yMin/scale+8);float w=Mathf.Min(width-inset*2,1000),x=(width-w)*.5f;RoyalGoldV3BuildingScreens.Place((RectTransform)title.transform,x,top,w,44);RoyalGoldV3BuildingScreens.Place((RectTransform)subtitle.transform,x,top+47,w,26);
+  public void SynchronizeLayout(){if(!IsOpen)return;root.SetAsLastSibling();Canvas.ForceUpdateCanvases();width=root.rect.width;height=root.rect.height;title.fontSize=width<650?22:30;float scale=Mathf.Max(.01f,hud.GetComponent<Canvas>().scaleFactor);var safe=Screen.safeArea;float inset=Mathf.Max(20,Mathf.Max(safe.xMin,Screen.width-safe.xMax)/scale+12);float top=Mathf.Max(25,(Screen.height-safe.yMax)/scale+12),bottom=Mathf.Max(18,safe.yMin/scale+8);float w=Mathf.Min(width-inset*2,1000),x=(width-w)*.5f;RoyalGoldV3BuildingScreens.Place((RectTransform)title.transform,x,top,w,44);RoyalGoldV3BuildingScreens.Place((RectTransform)subtitle.transform,x,top+47,w,26);
    for(int i=0;i<3;i++)RoyalGoldV3BuildingScreens.Place((RectTransform)tabs[i].transform,x+i*w/3,top+85,w/3-7,45);
    RoyalGoldV3BuildingScreens.Place((RectTransform)rival.transform,x,top+149,w,40);float row=Mathf.Min(65,(height-top-bottom-300)/9);
    for(int i=0;i<9;i++)RoyalGoldV3BuildingScreens.Place((RectTransform)rows[i].transform.parent,x,top+195+i*row,w,row-6);
