@@ -17,8 +17,8 @@ for o in list(bpy.context.scene.objects):
     if o!=root and o.parent is None: o.parent=root
 root.location=-center*scale; root.scale=(scale,)*3
 scene=bpy.context.scene
-scene.render.engine='CYCLES'; scene.cycles.samples=20
-scene.cycles.use_denoising=True; scene.render.threads_mode='FIXED'; scene.render.threads=4
+scene.render.engine='CYCLES'; scene.cycles.samples=32
+scene.cycles.use_denoising=False; scene.render.threads_mode='FIXED'; scene.render.threads=4
 scene.render.resolution_x=900; scene.render.resolution_y=900; scene.render.resolution_percentage=100
 scene.world=bpy.data.worlds.new('Neutral studio'); scene.world.use_nodes=True
 scene.world.node_tree.nodes['Background'].inputs[0].default_value=(.32,.32,.32,1)
