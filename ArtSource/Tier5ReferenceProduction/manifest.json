@@ -1,0 +1,68 @@
+{
+  "workstream_id": "eldoria-tier5-six-reference-models-20261029",
+  "generation": {
+    "model": "v3.1-20260211",
+    "mode": "image_to_model",
+    "texture": true,
+    "pbr": true,
+    "texture_quality": "standard",
+    "geometry_quality": "standard",
+    "texture_alignment": "original_image",
+    "orientation": "align_image",
+    "candidates": 1,
+    "expected_credits_per_first_attempt": 30,
+    "price_source": "https://developers.tripo3d.ai/en/models/v3-1",
+    "automatic_retry": false
+  },
+  "assets": [
+    {
+      "id": "lyra",
+      "reference_sha256": "120a8e277cf8e25479fb13db4a41400d38605e50e5a0c4a393685701b93a8ca3",
+      "kind": "character",
+      "target_triangles": 30000,
+      "task_id": "f4670d45-00c9-43eb-a658-902efdebee87",
+      "status": "SUBMITTED_REVIEW_PENDING"
+    },
+    {
+      "id": "bastion-v",
+      "reference_sha256": "3bcd4a00391b95047a547997995460090e7d99dc62299aeb717d1bd280441086",
+      "kind": "building",
+      "target_triangles": 45000,
+      "status": "NOT_SUBMITTED"
+    },
+    {
+      "id": "aserradero-v",
+      "reference_sha256": "60e89993a6d056088d2267a799d08530ff923c0dfa6a024fb6422cf44b1c4dcc",
+      "kind": "building",
+      "target_triangles": 25000,
+      "status": "NOT_SUBMITTED"
+    },
+    {
+      "id": "cuartel-v",
+      "reference_sha256": "3c0e9b2915a03bd87f32d1c3ab4dcf86461a5b43f7a3e25e73f2bf71343309e0",
+      "kind": "building",
+      "target_triangles": 35000,
+      "status": "NOT_SUBMITTED"
+    },
+    {
+      "id": "granero-v",
+      "reference_sha256": "220b02d3e0e4dc265c433f4dc42a98002e811590b1611777be3bdfb43a991278",
+      "kind": "building",
+      "target_triangles": 25000,
+      "status": "NOT_SUBMITTED"
+    },
+    {
+      "id": "cantera-v",
+      "reference_sha256": "c049d7be471cf54ee2b15daa40288f6e71c024e35a8f06d69bf1373785f54d90",
+      "kind": "building",
+      "target_triangles": 25000,
+      "status": "NOT_SUBMITTED"
+    }
+  ],
+  "acceptance": "Source visual review only; no runtime integration, publication or physical mobile certification. Triangle targets are provisional and must preserve silhouette.",
+  "prior_text_tasks": {
+    "lyra": "8e2dd496-5911-4b6f-b7f7-bf30b9094c48",
+    "bastion": "440f8846-529c-4785-9377-80b48dcc1dd0"
+  },
+  "reuse_decision": "Prior text-generated tier V models are preserved but do not satisfy the owner's exact-image production requirement. Lower-tier catalog buildings remain untouched."
+}
