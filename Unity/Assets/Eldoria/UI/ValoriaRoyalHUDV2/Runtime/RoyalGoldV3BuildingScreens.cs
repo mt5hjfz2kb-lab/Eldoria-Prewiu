@@ -84,7 +84,20 @@ namespace Eldoria.UI.RoyalGold.V2 {
    back=Button("Back to city",footer,"VOLVER A VALORIA",Close,out _);back.name="Back";root.gameObject.SetActive(false);
   }
   void Choose(string value){var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,"ChooseDevelopment",value,s.Revision));message=result.Ok?"Prioridad guardada. Valoria recibe los recursos elegidos.":result.Message;refreshed?.Invoke();SynchronizeLayout();}
-  void Submit(){var b=read(selected);if(b?.Action==null||!b.Action.Enabled)return;var s=gateway.Snapshot();var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,b.Action.Kind,b.Action.Target,s.Revision));message=result.Message;refreshed?.Invoke();Refresh();}
+  void Submit(){
+   var b=read(selected);if(b==null)return;
+   var s=gateway.Snapshot();string kind,target;
+   if(b.OperationActive&&s.ChapterProgress!=null&&
+      (s.ChapterProgress.SpeedupFiveMinutes>0||s.ChapterProgress.SpeedupOneMinute>0)){
+    kind="UseSpeedup";target=(selected=="bastion"?"bastion:":"building:")+
+      (s.ChapterProgress.SpeedupFiveMinutes>0?"5":"1");
+   }else{
+    if(b.Action==null||!b.Action.Enabled)return;
+    kind=b.Action.Kind;target=b.Action.Target;
+   }
+   var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),s.PlayerId,kind,target,s.Revision));
+   message=result.Message;refreshed?.Invoke();Refresh();
+  }
   void Refresh(){if(!IsOpen)return;var s=gateway.Snapshot();var b=read(selected);if(b==null)return;
    ranking.gameObject.SetActive(s.ChapterThree.RankUnlocked);training.gameObject.SetActive(selected=="upgrade-barracks"&&s.BarracksLevel>0);
    int index=Array.IndexOf(Ids,selected);title.Put(Names[index]);kicker.Put("VALORIA  /  GESTIÓN DE LA CIUDAD  /  NIVEL "+b.Level);
@@ -96,7 +109,13 @@ namespace Eldoria.UI.RoyalGold.V2 {
    costs.Put(choosing?"Una elección permanente. Ninguna opción bloquea edificios.":b.Level>=5&&!b.OperationActive?"NIVEL V CONSOLIDADO":b.OperationActive?"OBRA EN CURSO · "+b.Time:b.Costs);
    status.Put(choosing?"Producción refuerza los talleres; defensa, las reservas militares; vida civil, el abastecimiento.":b.OperationActive?"Los recursos ya están pagados. La obra continúa al cerrar esta pantalla.":string.IsNullOrEmpty(b.Requirements)?b.Level>=5?"Nivel V alcanzado. Esta arquitectura será la base de futuras mejoras.":"Tiempo de obra: "+b.Time+"\nLa mejora visual se aplica al finalizar.":b.Requirements);
    operationProgress.gameObject.SetActive(b.OperationActive&&!choosing);operationFill.anchorMax=new Vector2(Mathf.Clamp01(b.Progress),1);
-   choices.gameObject.SetActive(choosing);action.gameObject.SetActive(!choosing);action.interactable=b.Action!=null&&b.Action.Enabled&&!b.OperationActive;actionLabel.Put(b.Level>=5&&!b.OperationActive?"NIVEL V COMPLETADO":b.Action?.Label??(b.OperationActive?"EN CURSO":"EDIFICIO OPERATIVO"));notice.Put(message);
+   bool canAccelerate=b.OperationActive&&s.ChapterProgress!=null&&
+    (s.ChapterProgress.SpeedupFiveMinutes>0||s.ChapterProgress.SpeedupOneMinute>0);
+   choices.gameObject.SetActive(choosing);action.gameObject.SetActive(!choosing);
+   action.interactable=canAccelerate||b.Action!=null&&b.Action.Enabled&&!b.OperationActive;
+   actionLabel.Put(canAccelerate?"ACELERAR "+(s.ChapterProgress.SpeedupFiveMinutes>0?"5":"1")+" MIN":
+    b.Level>=5&&!b.OperationActive?"NIVEL V COMPLETADO":
+    b.Action?.Label??(b.OperationActive?"EN CURSO":"EDIFICIO OPERATIVO"));notice.Put(message);
    for(int i=0;i<tabs.Length;i++)tabs[i].interactable=Ids[i]!=selected&&(i<3||s.BastionLevel>=(i==3?3:5));
   }
   public void SynchronizeLayout(){if(!root)return;root.SetAsLastSibling();Canvas.ForceUpdateCanvases();float w=root.rect.width,h=root.rect.height;lastW=w;lastH=h;lastSafe=Screen.safeArea;bool wide=w>h;float scale=Mathf.Max(.01f,hud.GetComponent<Canvas>().scaleFactor);float m=Mathf.Max(Mathf.Clamp(w*.025f,12,30),Mathf.Max(lastSafe.xMin,Screen.width-lastSafe.xMax)/scale+12),gap=16,head=wide?130:180,foot=100;
