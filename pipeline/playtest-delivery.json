@@ -1,8 +1,8 @@
 {
   "schema": 1,
   "provider": "itch.io",
-  "state": "NATIVE298_QA_VERIFIED_PROMOTION_REQUESTED",
-  "publish_enabled": true,
+  "state": "NATIVE298_PUBLISHED_REMOTE_ACTIVE",
+  "publish_enabled": false,
   "target": "chrismad/eldoria-pruebas",
   "restricted_project_confirmed": true,
   "candidate": {
@@ -19,23 +19,23 @@
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native245",
+    "revision": "native298",
     "url": "https://chrismad.itch.io/eldoria-pruebas",
-    "remote_build": 2177569,
-    "version": "native245-585451deffe0",
+    "remote_build": 2247360,
+    "version": "native298-15b79882a59b",
     "restricted": true,
     "remote_active_confirmed": true,
     "remote_status_evidence": {
-      "run_id": 39614581796,
-      "job_id": 119282343868,
-      "checked_at": "2026-10-21T14:31:34Z",
-      "result": "NATIVE245_ACTIVE",
-      "remote_build": 2177569,
-      "version": "native245-585451deffe0"
+      "run_id": 40958364194,
+      "job_id": 123744902862,
+      "checked_at": "2026-10-29T21:32:52Z",
+      "result": "NATIVE298_ACTIVE",
+      "remote_build": 2247360,
+      "version": "native298-15b79882a59b"
     },
-    "source_sha": "e117087fbfbc8068913e754b5bf69293fed7826c",
-    "qa_run": 39612300155,
-    "delivery_run": 39614581796,
+    "source_sha": "c8580934201ae1e17543b8683749d40751fb1e12",
+    "qa_run": 40955956262,
+    "delivery_run": 40958364194,
     "hosted_gameplay_verified": false,
     "physical_mobile_pass": false
   },
@@ -46,7 +46,7 @@
     "physical_mobile_evidence": "Current native298 has no physical-device test; earlier iPhone feedback remains historical.",
     "previous_physical_mobile_evidence": "Owner iPhone/Safari startup reload at 71%; no completed gameplay or device profiling."
   },
-  "instructions": "Owner-authorized continuation after PR130: publish exact QA-certified native298 once to existing Restricted itch web target; preserve prior publication until exact remote activation confirmed.0EUR; no PC setup; Android1.19 separately delivered. No hosted/physical-mobile PASS inferred.",
+  "instructions": "Completed owner-authorized post-PR130 publication: native298 active in existing Restricted itch channel, Android1.19 separately active. Publish flag disabled; promotion identity retained to prevent duplicate upload. Future updates require a new exact QA-backed promotion. No hosted gameplay/phone PASS claimed.",
   "project_url": "https://chrismad.itch.io/eldoria-pruebas",
   "project_setup_evidence": "Owner supplied project URL on 2026-10-19; screenshot showed Restricted selected before save and subsequent HTML project page without uploaded game. Hosted access not independently verified.",
   "credential_setup": {
@@ -64,31 +64,40 @@
     "authorization": "Owner explicitly asks this chat to continue frozen post-PR130 APK/WebGL publication to completion. Publish exact QA-certified native298 once to existing Restricted web channel;0EUR."
   },
   "last_attempt": {
-    "run_id": 39685413878,
+    "run_id": 40958364194,
     "prepare": "success",
     "transport_tests": "success",
-    "publish": "upload_accepted_remote_processing",
-    "remote_build": 2180594,
-    "publish_job_conclusion": "failure_short_activation_wait",
-    "remote_active_confirmed": false,
-    "reason": "Single upload accepted22:18:49UTC; original30-second activation wait ended while serverprocessing. No repeatedupload. Read-only exact version/build polling requested."
+    "publish": "success",
+    "remote_build": 2247360,
+    "publish_job_conclusion": "success",
+    "remote_active_confirmed": true,
+    "hosted_verified": false,
+    "reason": "Single upload accepted and exact version/build active confirmed by Butler status; no repeated upload."
   },
   "uploaded": {
     "provider": "itch.io",
     "target": "chrismad/eldoria-pruebas",
     "channel": "web",
-    "revision": "native281",
-    "run_id": 39685413878,
-    "remote_build": 2180594,
-    "version": "native281-d1b3e22066e1",
+    "revision": "native298",
+    "run_id": 40958364194,
+    "remote_build": 2247360,
+    "version": "native298-15b79882a59b",
     "upload_accepted": true,
-    "upload_accepted_at": "2026-10-21T22:18:49Z",
+    "upload_accepted_at": "2026-10-29T21:32:22Z",
     "hosted_verified": false,
-    "processing_status": "PROCESSING",
+    "processing_status": "ACTIVE",
     "transport_adapter": "itch-decoded-stream-v3",
     "physical_mobile_tested": false,
-    "remote_active_confirmed": false,
-    "zip_sha256": "d1b3e22066e106b6d48ceffe48fdee07badf61721ebd184405d7ecf3eb6fed77"
+    "remote_active_confirmed": true,
+    "zip_sha256": "15b79882a59b30e1fcc63203eb9bfbda379937a889def21164d0dfd88c23ba89",
+    "latest_remote_check": {
+      "run_id": 40958364194,
+      "job_id": 123744902862,
+      "checked_at": "2026-10-29T21:32:52Z",
+      "result": "NATIVE298_ACTIVE",
+      "remote_build": 2247360,
+      "version": "native298-15b79882a59b"
+    }
   },
   "manual_fallback": {
     "artifact_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/actions/runs/39315488741/artifacts/12218335123",
@@ -202,8 +211,11 @@
     "hosted_chrome_tested": false,
     "ios_safari_tested": false,
     "art_approved": false,
-    "transport_status": "AWAITING_FINAL_DELIVERY_ADAPTER_TEST",
-    "prior_pr130_native_certification_run": 40929047929
+    "transport_status": "EXACT_DECODED_UNITY_TRANSPORT_PASS",
+    "prior_pr130_native_certification_run": 40929047929,
+    "transport_reader_actual_unity_pass": true,
+    "unity_decoded_bytes_unchanged": true,
+    "delivery_artifact": 12933684729
   },
   "published_history": [
     {
@@ -236,6 +248,52 @@
         "job": 119261533056,
         "checked_at": "2026-10-21T13:50:58Z"
       }
+    },
+    {
+      "provider": "itch.io",
+      "target": "chrismad/eldoria-pruebas",
+      "channel": "web",
+      "revision": "native245",
+      "url": "https://chrismad.itch.io/eldoria-pruebas",
+      "remote_build": 2177569,
+      "version": "native245-585451deffe0",
+      "restricted": true,
+      "remote_active_confirmed": true,
+      "remote_status_evidence": {
+        "run_id": 39614581796,
+        "job_id": 119282343868,
+        "checked_at": "2026-10-21T14:31:34Z",
+        "result": "NATIVE245_ACTIVE",
+        "remote_build": 2177569,
+        "version": "native245-585451deffe0"
+      },
+      "source_sha": "e117087fbfbc8068913e754b5bf69293fed7826c",
+      "qa_run": 39612300155,
+      "delivery_run": 39614581796,
+      "hosted_gameplay_verified": false,
+      "physical_mobile_pass": false
+    },
+    {
+      "provider": "itch.io",
+      "target": "chrismad/eldoria-pruebas",
+      "channel": "web",
+      "revision": "native281",
+      "url": "https://chrismad.itch.io/eldoria-pruebas",
+      "remote_build": 2180594,
+      "version": "native281-d1b3e22066e1",
+      "restricted": true,
+      "remote_active_confirmed": true,
+      "remote_status_evidence": {
+        "run_id": 40958364194,
+        "job_id": 123744340035,
+        "checked_at": "2026-10-29T21:30:35Z",
+        "result": "NATIVE281_ACTIVE_BEFORE_NATIVE298_UPLOAD"
+      },
+      "source_sha": "7ba5c901f968b35d596047537eff8b4892f2e799",
+      "qa_run": 39683431955,
+      "delivery_run": 39685413878,
+      "hosted_gameplay_verified": false,
+      "physical_mobile_pass": false
     }
   ],
   "hosted_verification": {
@@ -301,11 +359,17 @@
       "upload_accepted": true,
       "upload_accepted_at": "2026-10-21T22:18:49Z",
       "hosted_verified": false,
-      "processing_status": "PROCESSING",
+      "processing_status": "ACTIVE",
       "transport_adapter": "itch-decoded-stream-v3",
       "physical_mobile_tested": false,
-      "remote_active_confirmed": false,
-      "zip_sha256": "d1b3e22066e106b6d48ceffe48fdee07badf61721ebd184405d7ecf3eb6fed77"
+      "remote_active_confirmed": true,
+      "zip_sha256": "d1b3e22066e106b6d48ceffe48fdee07badf61721ebd184405d7ecf3eb6fed77",
+      "latest_remote_check": {
+        "run_id": 40958364194,
+        "job_id": 123744340035,
+        "checked_at": "2026-10-29T21:30:35Z",
+        "result": "NATIVE281_ACTIVE_BEFORE_NATIVE298_UPLOAD"
+      }
     }
   ],
   "attempt_history": [
