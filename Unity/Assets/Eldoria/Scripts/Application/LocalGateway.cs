@@ -272,6 +272,7 @@ namespace Eldoria.Application
                 BastionUpgradeTaskId=s.BastionUpgradeTaskId,
                 RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
                 RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
+                PendingRecruitTier=s.PendingRecruitTier,
                 LastBattleReason=s.LastBattleReason,
                 LastBattleReport=new BattleReportState {
                     TargetId=s.LastBattleReport?.TargetId??"",
@@ -450,12 +451,24 @@ namespace Eldoria.Application
                     if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Reclutamiento no disponible");
                     int recruitCount=SliceRules.RecruitArchers;
+                    int recruitTier=1;
                     if(command.TargetId != "archer:t1")
                     {
-                        if(!command.TargetId.StartsWith("archer:t1:",StringComparison.Ordinal) ||
-                           !int.TryParse(command.TargetId.Substring("archer:t1:".Length),out recruitCount))
-                            return Fail("Tipo de unidad desconocido");
+                        if(command.TargetId.StartsWith("archer:t1:",StringComparison.Ordinal))
+                        {
+                            if(!int.TryParse(command.TargetId.Substring("archer:t1:".Length),out recruitCount))
+                                return Fail("Cantidad de reclutas no válida");
+                        }
+                        else if(command.TargetId.StartsWith("archer:t2:",StringComparison.Ordinal))
+                        {
+                            recruitTier=2;
+                            if(!int.TryParse(command.TargetId.Substring("archer:t2:".Length),out recruitCount))
+                                return Fail("Cantidad de reclutas no válida");
+                        }
+                        else return Fail("Tipo de unidad desconocido");
                     }
+                    if(recruitTier==2 && (state.BarracksLevel<4||state.BastionLevel<4))
+                        return Fail("Arqueros T2 requieren Cuartel nivel IV");
                     if(recruitCount<1 || recruitCount>500) return Fail("Cantidad de reclutas no válida");
                     if (state.RecruitmentCompletesUtcTicks > 0) return Fail("Ya hay reclutas entrenando");
                     int recruitWood=SliceRules.RecruitWoodCostFor(recruitCount);
@@ -465,6 +478,7 @@ namespace Eldoria.Application
                     state.Resources.Wood -= recruitWood;
                     state.Resources.Stone -= recruitStone;
                     state.PendingRecruitArchers = recruitCount;
+                    state.PendingRecruitTier = recruitTier;
                     state.RecruitmentTaskId = "recruit:" + command.Id;
                     state.RecruitmentCompletesUtcTicks = clock.UtcTicks +
                         TimeSpan.FromSeconds(SliceRules.RecruitSecondsFor(recruitCount)).Ticks;
@@ -560,13 +574,15 @@ namespace Eldoria.Application
                 if (!state.CompletedTaskIds.Contains(state.RecruitmentTaskId))
                 {
                     state.CompletedTaskIds.Add(state.RecruitmentTaskId);
-                    state.Available.ArcherT1 += state.PendingRecruitArchers;
+                    if(state.PendingRecruitTier==2)state.Available.ArcherT2+=state.PendingRecruitArchers;
+                    else state.Available.ArcherT1+=state.PendingRecruitArchers;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.TrainedArchers += state.PendingRecruitArchers;
                 }
                 state.RecruitmentCompletesUtcTicks = 0;
                 state.RecruitmentTaskId = "";
                 state.PendingRecruitArchers = 0;
+                state.PendingRecruitTier = 1;
                 changed = true;
             }
             // Every one of up to three persisted marches advances independently.
@@ -745,6 +761,29 @@ namespace Eldoria.Application
                 Grant("c3-hunt",c.Hunts>=2,food:220);
                 Grant("c3-fissure",c.FissureClosed,stone:260,power:100);
                 Grant("c3-infra",state.SawmillLevel>=2&&state.BarracksLevel>=2&&c.GranaryLevel>=2,wood:220,stone:180);
+                bool infrastructure=state.SawmillLevel>=2&&state.BarracksLevel>=2&&c.GranaryLevel>=2;
+                Grant("c3-bastion",state.BastionLevel>=4,food:180);
+                Grant("chapter-3",state.BastionLevel>=4&&infrastructure&&c.FissureClosed&&c.Hunts>=2&&p.GrantedRewards.Contains("c3-food"),
+                    wood:280,stone:240,food:260,power:220);
+                if(state.BastionLevel>=4){
+                    Grant("c4-sawmill2",state.SawmillLevel>=2,wood:180);
+                    Grant("c4-granary2",c.GranaryLevel>=2,food:220);
+                    Grant("c4-barracks2",state.BarracksLevel>=2,stone:180);
+                    Grant("c4-priority",!string.IsNullOrEmpty(c.DevelopmentPriority),power:80);
+                    Grant("c4-bastion",state.BastionLevel>=5,power:220);
+                    Grant("chapter-4",state.BastionLevel>=5&&infrastructure&&!string.IsNullOrEmpty(c.DevelopmentPriority),
+                        wood:360,stone:300,food:280,power:260);
+                }
+                if(state.BastionLevel>=5){
+                    Grant("c5-stoneworks",c.StoneworksLevel>0,wood:220,food:180);
+                    Grant("c5-stone",state.Resources.Stone>=1200,wood:240);
+                    int troops=state.Available.Total+state.Wounded.Total;
+                    foreach(var march in MarchCapacityRules.WorldMarches(state))
+                        if(march!=null&&march.Phase!="idle")troops+=march.Troops.Total;
+                    Grant("c5-army",troops>=60,wood:260,stone:180);
+                    // Acechador and the chapter-V conclusion are NOT paid until
+                    // their real encounter and the future Bastion-VI gate exist.
+                }
             }
             return changed;
         }

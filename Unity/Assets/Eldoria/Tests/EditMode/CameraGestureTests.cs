@@ -1,4 +1,5 @@
 using Eldoria.Presentation;
+using Eldoria.World4XPrototype;
 using NUnit.Framework;
 
 namespace Eldoria.Tests.EditMode
@@ -26,6 +27,16 @@ namespace Eldoria.Tests.EditMode
                 SlicePresenter.CalculatePinchZoom(9.2f,100f,1000f,1000f),.0001f);
             Assert.AreEqual(SlicePresenter.MaxOrthographicZoom,
                 SlicePresenter.CalculatePinchZoom(18.8f,1000f,100f,1000f),.0001f);
+        }
+
+        [Test]
+        public void WorldZoomPresetsFollowNearRegionalPanoramicWithoutCityOverlap()
+        {
+            Assert.Less(ZoneOneStrategicCamera.NearLandscape, ZoneOneStrategicCamera.NearPortrait);
+            Assert.Less(ZoneOneStrategicCamera.NearPortrait, ZoneOneStrategicCamera.Regional);
+            Assert.Less(ZoneOneStrategicCamera.Regional, ZoneOneStrategicCamera.Panoramic);
+            Assert.That(ZoneOneStrategicCamera.NearLandscape, Is.GreaterThan(SlicePresenter.MaxOrthographicZoom),
+                "World near scale is not the Valoria city scale.");
         }
 
         [Test]

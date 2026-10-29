@@ -184,6 +184,8 @@ namespace Eldoria.Domain
         public long RecruitmentCompletesUtcTicks;
         public string RecruitmentTaskId = "";
         public int PendingRecruitArchers;
+        // Additive on the existing schema-1 save. Older in-flight training defaults to T1.
+        public int PendingRecruitTier = 1;
         public string LastBattleReason = "";
         public BattleReportState LastBattleReport = new BattleReportState();
         public ChapterProgressState ChapterProgress = new ChapterProgressState();

@@ -94,7 +94,10 @@ namespace Eldoria.ReferenceClean {
    city.Presenter.SceneHost=this;city.Presenter.ExternalSelection=Select;
    city.Presenter.ExternalPointerBlocked=RoyalInputGate.Blocks;
    WorldNavigation.enabled=false;WorldCamera.enabled=false;WorldRoot.SetActive(false);
-   WorldNavigation.regionalZoom=32;WorldNavigation.localZoom=14;
+   // Three continuous WORLD scales are independent of the city camera.
+   WorldNavigation.localZoom=ZoneOneStrategicCamera.NearLandscape;
+   WorldNavigation.regionalZoom=ZoneOneStrategicCamera.Regional;
+   WorldNavigation.globalZoom=ZoneOneStrategicCamera.Panoramic;
    gameObject.AddComponent<BastionIIIWorldPresentation>().Initialize(this);
    gameObject.AddComponent<BastionIVVWorldPresentation>().Initialize(this);
    targets=Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None);
@@ -177,7 +180,7 @@ namespace Eldoria.ReferenceClean {
     // strategic zoom. One existing camera, one WorldRoot and one persistent gateway.
     // Match the canonical portrait near scale before the same-frame render,
     // rather than creating a visible 36 -> 64 camera jump after entering.
-    WorldNavigation.localZoom=WorldCamera.aspect<.8f?64f:36f;
+    WorldNavigation.localZoom=WorldCamera.aspect<.8f?ZoneOneStrategicCamera.NearPortrait:ZoneOneStrategicCamera.NearLandscape;
     WorldNavigation.EnterStrategicView(WorldHome);
     WorldNavigation.SetZoomLevel(2,true);
     // Strategic bounds may clamp the anchor before changing presets;
