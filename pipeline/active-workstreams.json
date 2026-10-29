@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-bastion-iv-v-7064f9327736",
+      "owner": "codex-bastion-v-release-40a40d5b546c",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-29T17:22:23.229Z",
@@ -103,15 +103,22 @@
         ".github/workflows/bastion-iv-v-domain.yml",
         "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
         ".github/workflows/ui-progression-cert.yml",
-        "pipeline/art-production-requests/eldoria-tier5-six-reference-models-20261029.json"
+        "pipeline/art-production-requests/eldoria-tier5-six-reference-models-20261029.json",
+        "pipeline/playtest-delivery.json",
+        "tools/valoria-reference-clean/browser-qa-request.json",
+        ".github/workflows/valoria-windows-chromium-qa.yml",
+        ".github/workflows/eldoria-itch-delivery.yml",
+        "docs/bastion-iv-v/RELEASE_20261029.md"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Completed IV–V integration and genuine native review in PR129; current continuation only closes metadata and observes automatic gates. No active art authoring or paid generation request.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BASTION_IV_V_POSTMERGE_METADATA_CLOSEOUT",
-      "next": "Close obsolete active art request; archive already-consumed tier-five credit authorization without authorizing another paid generation; observe existing automatic native gates.",
+      "phase": "BASTION_V_MODELS_VERIFIED_ANDROID_WEBGL_RELEASE",
+      "next": "Queue signed Android code19 after existing postmerge native verification, then build and verify exact WebGL and publish existing restricted itch channel. Exclude unmerged troop/mailbox proposals.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1262,17 +1269,23 @@
           "phase": "BASTION_IV_V_MANAGEMENT_CERTIFICATION_ALIGNMENT",
           "released_at": "2026-10-29T17:10:57.358Z",
           "reason": "Bastion IV–V completed and PR129 merged. Native40906347082 and shared40914641659 passed54 EditMode/73 PlayMode;386 IV–V checks,44 I–II checks,real touch/three marches/Aldric/70 captures and full fresh-save web40914641605 pass. Main merged tree33c632bb2399ff1a98a25d4dd67f8ad4ae7dd7f0 is identical to certified tree. No new publication or spend."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 58,
+          "released_at": "2026-10-29T18:35:00+01:00",
+          "reason": "Owner asks this session to verify each own building level V approved Tripo model and publish Android and WebGL; continue same canonical workstream after PR129. Existing postmerge read-only Unity check continues without interruption."
         }
       ],
-      "ownership_revision": 58,
+      "ownership_revision": 59,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-29T09:54:24.457Z",
       "delivery_definition": {
-        "deliverable": "Bastion IV–V faithful to web, independent per-building progression and exact approved V replacements, independent management destinations, canonical world access.",
-        "evidence": "Native40906347082: 54/54 EditMode,73/73 PlayMode,386 IV–V checks,70 actual screenshots,real close/world touch and full I–II. Domain40906346835:162 IV–V+50 III checks.",
-        "handoff": "Same canonical workstream/PR129; complete shared PR gate and integration before closing. No APK/WebGL publication or new Tripo spend."
+        "deliverable": "Verified approved five own-level-V building models, signed Android family update, updated restricted WebGL.",
+        "evidence": "Five GLB SHA256 exact matches; native270deg actual screenshots, level-isolation/save proofs; exact APK signature and public bytes/channel; exact WebGL candidate QA and remote active build.",
+        "handoff": "APK URL, existing itch URL, version/source identity and honest physical-device/hosted limits."
       },
       "handoff_authority": "Current owner requested autonomous final visual consolidation and recovery of technical blockers; scope completed with authentic A/B and independent review. No APK/Bastion III/publication authority implied.",
       "world_integration_handoff": {
