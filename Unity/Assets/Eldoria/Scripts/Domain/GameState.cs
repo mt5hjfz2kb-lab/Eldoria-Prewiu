@@ -184,6 +184,8 @@ namespace Eldoria.Domain
         public long RecruitmentCompletesUtcTicks;
         public string RecruitmentTaskId = "";
         public int PendingRecruitArchers;
+        // Legacy saves deserialize zero; zero is treated as their existing T1 queue.
+        public int PendingRecruitTier = 1;
         public string LastBattleReason = "";
         public BattleReportState LastBattleReport = new BattleReportState();
         public ChapterProgressState ChapterProgress = new ChapterProgressState();
