@@ -91,10 +91,12 @@ namespace Eldoria.ReferenceClean.Editor
                     var canvas=host.Hud.GetComponent<Canvas>();
                     for(int i=0;i<markers.Length;i++)
                     {
-                        var marker=markers[i];var graphic=marker.GetComponent<Image>();
+                        var marker=markers[i];var graphic=marker.GetComponent<Graphic>();
                         Need((host.PlayerCamera.cullingMask&(1<<marker.gameObject.layer))!=0&&
                             graphic.depth>=0&&!graphic.canvasRenderer.cull,
                             "Actual world camera renders expedition standard "+i+" at "+name);
+                        Debug.Log("ACTUAL_MARCH_STANDARD capture="+name+" slot="+i+" local="+marker.anchoredPosition+
+                            " size="+marker.rect.size+" scale="+marker.localScale+" canvas_scale="+canvas.scaleFactor);
                         Need(marker.rect.width*marker.localScale.x*canvas.scaleFactor>=28f,
                             "Actual expedition icon stays at least 28px in "+name);
                         for(int j=0;j<i;j++)
