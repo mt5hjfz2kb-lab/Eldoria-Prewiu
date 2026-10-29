@@ -783,6 +783,21 @@ async function main() {
         await capture('new-objective-'+signature);
       }
       if(latest.busy||phase(latest)!=='idle'){await sleep(250);continue;}
+      // Bastion IV has three genuine choice buttons, NOT a generic primary CTA.
+      // Native298 capture 112-blocked-primary-4-b4-priority-portrait.jpg shows
+      // Production, Defense and Civil Life. Choose Production using a real touch.
+      if(latest.objective==='b4.priority' && latest.management?.destination==='Building:bastion'){
+        await setOrientation('portrait');
+        const before=latest.revision;
+        const chosen={x:latest.width*.5,y:latest.height*.22};
+        journey.steps.push({elapsed_s:elapsed(),kind:'real_visible_choice',option:'production',objective:'b4.priority',revision_before:before});
+        await capture('b4-three-visible-choices-before-selection');
+        await clickPoint(chosen,'Choose Production in real Bastion IV council','touch');
+        await waitState(st=>st.objective!=='b4.priority'||st.revision>before||st.narrative,
+          'Production choice acknowledged by actual visible council option',12000);
+        await capture('b4-production-selection-result');
+        continue;
+      }
       if(latest.management?.destination){await closeDetails();continue;}
       let saved={};
       try{saved=JSON.parse(latest.save||'{}');}catch(error){throw Error('Invalid read-only save while playing III-V: '+error.message);}
