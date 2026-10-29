@@ -204,7 +204,7 @@ namespace Eldoria.Tests
 
         [Test] public void ScoutDiscoveriesAreDeterministicAndPersistAfterReloadWithoutDoubleClaim()
         {
-            var time=new Clock();var store=new Memory{
+            var time=new Clock();var store=new MemoryStateStore{
                 Value=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
                     ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
                     Available=new ArmyRoster{ArcherT1=100}}
