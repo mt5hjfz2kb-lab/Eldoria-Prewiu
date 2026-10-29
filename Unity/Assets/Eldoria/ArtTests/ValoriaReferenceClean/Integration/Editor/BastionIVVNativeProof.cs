@@ -52,6 +52,8 @@ namespace Eldoria.ReferenceClean.Editor {
    var rs=art.WorldModel.GetComponentsInChildren<Renderer>();var bounds=rs[0].bounds;foreach(var r in rs)bounds.Encapsulate(r.bounds);
    Physics.SyncTransforms();var screen=h.WorldCamera.WorldToScreenPoint(bounds.center);
    var hits=Physics.RaycastAll(h.WorldCamera.ScreenPointToRay(screen),2000,1<<8,QueryTriggerInteraction.Collide);
+   var actual=h.FindTarget("valoria-map-city");var collider=actual?actual.GetComponent<BoxCollider>():null;
+   File.AppendAllText(Ev+"/world-hitbox-diagnostic.txt","zoom="+h.WorldCamera.orthographicSize+" model="+bounds+" ray="+h.WorldCamera.ScreenPointToRay(screen)+" collider="+(collider?collider.bounds.ToString():"missing")+" local="+(collider?collider.size.ToString():"missing")+" active="+(actual&&actual.gameObject.activeInHierarchy)+" enabled="+(collider&&collider.enabled)+" hits="+string.Join(",",hits.Select(x=>x.collider.name))+"\n");
    Need(hits.Any(hit=>{var target=hit.collider.GetComponentInParent<Eldoria.Presentation.WorldHotspot>();return target&&target.Id=="valoria-map-city";}),"actual V city is touchable at zoom "+h.WorldCamera.orthographicSize);
    float ground=h.WorldHome.y+Eldoria.World4XCanon.RegionOneCanonicalLandscape.SampleHeight(bounds.center.x-h.WorldHome.x,bounds.center.z-h.WorldHome.z);
    Need(bounds.min.y>=ground-.02f&&bounds.min.y<=ground+.25f,"V city foundation meets actual regional terrain at zoom "+h.WorldCamera.orthographicSize);
@@ -88,7 +90,16 @@ namespace Eldoria.ReferenceClean.Editor {
    VisibleDelta("city-III","city-IV");VisibleDelta("city-IV","city-V-keep-only");
    h.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.3f);Step(h,0);h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;Shot(h,"city-V-complete");
    foreach(string id in new[]{"bastion","sawmill","barracks","granary","stoneworks"})Need(art.ModelFor(id).activeInHierarchy,id+" V survives save reload");
-   foreach(int yaw in new[]{90,180,270}){art.RotateCityForReview(90);Shot(h,"city-V-orientation-"+yaw);}art.RotateCityForReview(90);
+   // Capture actual runtime per-model headings and close-ups before any diagnostic extra rotation.
+   var headings=new List<string>();
+   foreach(string id in new[]{"bastion","sawmill","barracks","granary","stoneworks"}){
+    var model=art.ModelFor(id);var renders=model.GetComponentsInChildren<Renderer>();var bounds=renders[0].bounds;foreach(var renderer in renders)bounds.Encapsulate(renderer.bounds);
+    headings.Add(id+" yaw="+model.transform.eulerAngles.y+" center="+bounds.center+" size="+bounds.size);
+    h.City.PlayerCamera.transform.position=bounds.center+new Vector3(12,21,-34);h.City.PlayerCamera.transform.LookAt(bounds.center);h.City.PlayerCamera.orthographicSize=Mathf.Max(bounds.size.x,bounds.size.z)*.7f;Shot(h,"facade-"+id);
+   }
+   File.WriteAllLines(Ev+"/actual-runtime-headings.txt",headings);
+   h.City.PlayerCamera.transform.position=new Vector3(0,100,18);h.City.PlayerCamera.transform.rotation=Quaternion.Euler(90,0,0);h.City.PlayerCamera.orthographicSize=40;Shot(h,"city-V-plan-alignment");
+   h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;
    h.Hud.SelectBuilding("bastion");yield return null;
    var rankings=h.Hud.GetComponent<RoyalGoldV3RankingScreen>();rankings.Open();yield return null;Need(rankings.IsOpen,"quarry unlocks independent simulated ranking screen");Ui(h,"rank-power");
    foreach(var tab in new[]{"CORRUPTOS","RELIQUIAS"}){var button=h.Hud.GetComponentsInChildren<UnityEngine.UI.Button>(true).Single(x=>x.gameObject.name==tab);button.onClick.Invoke();yield return null;Ui(h,"rank-"+tab.ToLowerInvariant());}rankings.Close();screen.Close();

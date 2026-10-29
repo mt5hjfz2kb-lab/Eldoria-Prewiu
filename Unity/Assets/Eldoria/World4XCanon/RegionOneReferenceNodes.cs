@@ -104,12 +104,16 @@ namespace Eldoria.World4XCanon
    // Preserve the close bridge connection, then recover strategic legibility smoothly.
    float canonicalCityScale=cityScale*Mathf.Lerp(1f,1.12f,Mathf.InverseLerp(near,110f,zoom));
    foreach(var material in cityMaterials)material.SetFloat("_BillboardScale",canonicalCityScale);
+   var state=host.City.Gateway.Snapshot();
+   var tierFive=host.GetComponent<BastionIVVWorldPresentation>();
+   bool meshCity=state.BastionLevel>=5&&tierFive&&tierFive.WorldModel&&tierFive.WorldModel.activeInHierarchy;
    if(!cityHitCached){
     var target=host.FindTarget("valoria-map-city");cityHit=target?target.GetComponent<BoxCollider>():null;
     if(cityHit){cityHitCenter=cityHit.center;cityHitSize=cityHit.size;cityHitCached=true;}
    }
-   if(cityHit){cityHit.center=cityHitCenter;cityHit.size=cityHitSize;}
-   var state=host.City.Gateway.Snapshot();
+   // The real V mesh owns its fitted hitbox; synchronous zoom Refresh must
+   // not reset it to the obsolete I-IV billboard footprint before LateUpdate.
+   if(cityHit&&!meshCity){cityHit.center=cityHitCenter;cityHit.size=cityHitSize;}
    for(int i=0;i<current.Count;i++)if(current[i]){
     string id=current[i].name=="Reference existing quarry"?"quarry-valoria":current[i].name=="Reference existing wood grove"?"forest-valoria":null;
     bool available=id==null||(id=="forest-valoria"?state.ForestRemaining>0:state.QuarryRemaining>0);
