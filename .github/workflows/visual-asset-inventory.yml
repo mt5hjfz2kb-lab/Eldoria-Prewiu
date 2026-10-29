@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Test read-only inventory
-        run: python3 -m unittest discover -s tools/asset-vault -p 'test_*visual*.py' && python3 -m unittest discover -s tools/asset-vault -p 'test_ingest_visual_asset.py'
+        run: python3 -m unittest discover -s tools/asset-vault -p 'test_scan_visual_assets.py' && python3 -m unittest discover -s tools/asset-vault -p 'test_verify_visual_backup.py' && python3 -m unittest discover -s tools/asset-vault -p 'test_ingest_visual_asset.py'
       - name: Inventory tracked 2D and 3D assets
         run: python3 tools/asset-vault/scan_visual_assets.py --output "$RUNNER_TEMP/visual-assets.json"
       - uses: actions/upload-artifact@v4
