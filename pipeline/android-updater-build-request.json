@@ -1,9 +1,9 @@
 {
-  "enabled": false,
+  "enabled": true,
   "versionCode": 19,
   "versionName": "1.19",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "OWNER_VISUAL_REJECTION: sideways tier V entrances in actual city screenshot. Do not publish queued Android19 run40922548307; live native lease revoked. Fix orientation and inspect actual Unity before a new exact-source build request. Preserve public channel18."
+  "note": "Owner-authorized signed update after individually corrected V facades and actual doorway/bridge alignment. PR130 merge5878fca65c80136550ee16d7a2d4b4fe289117f2 exact tree equals native40929047929 certified e4e2a7f:54Edit,73Play,386IVV,I-II,world32/280 and frozen web40929055448 attempt2 PASS. Preserve package/certificate/save; no new troops/mail or paid generation. Do not promote older rejected queued code19 sources."
 }
