@@ -35,9 +35,18 @@ namespace Eldoria.ReferenceClean {
     var stock=Instantiate(prop,stoneSite.transform);stock.name="Stoneworks processing stock "+level;
     Normalize(stock,new Vector3(-3+(level-1)*1.9f,0,-4),1.4f);stoneStock.Add((stock,level));
    }
-   if(h.WorldBastionTwo){var b=Bounds(h.WorldBastionTwo);var foot=new Vector3(b.center.x,h.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(b.center.x-h.WorldHome.x,b.center.z-h.WorldHome.z)+.12f,b.center.z);worldFive=Load("bastion-v",h.WorldBastionTwo.transform.parent,foot,Mathf.Max(b.size.x,b.size.z),true);if(worldFive){worldFiveScale=worldFive.transform.localScale;var wb=Bounds(worldFive);worldFiveFoot=new Vector3(wb.center.x,wb.min.y,wb.center.z);}}
+   if(h.WorldBastionTwo){var b=Bounds(h.WorldBastionTwo);var foot=new Vector3(b.center.x,h.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(b.center.x-h.WorldHome.x,b.center.z-h.WorldHome.z)+.12f,b.center.z);worldFive=Load("bastion-v",h.WorldBastionTwo.transform.parent,foot,Mathf.Max(b.size.x,b.size.z),true);if(worldFive){
+    // Match the approved strategic entrance anchor used by the original city
+    // representation. Native 270-degree review places this GLB gate 8% left
+    // of centre and 7% behind the southern footprint edge.
+    var wb=Bounds(worldFive);var entrance=Entrance(wb);
+    var anchor=h.WorldHome+new Vector3(3.3f,0,-7.5f);worldFive.transform.position+=new Vector3(anchor.x-entrance.x,0,anchor.z-entrance.z);
+    wb=Bounds(worldFive);float ground=h.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(wb.center.x-h.WorldHome.x,wb.center.z-h.WorldHome.z)+.12f;
+    worldFive.transform.position+=Vector3.up*(ground-wb.min.y);worldFiveScale=worldFive.transform.localScale;wb=Bounds(worldFive);worldFiveFoot=Entrance(wb);
+   }}
   }
   void Add(string id,string resource,GameObject old,float fallback){var b=Bounds(old);models[id]=Load(resource,cityRoot.transform,new Vector3(b.center.x,b.min.y,b.center.z),b.size.sqrMagnitude>.1f?Mathf.Max(b.size.x,b.size.z):fallback);}
+  static Vector3 Entrance(Bounds b)=>new Vector3(b.center.x-b.size.x*.08f,b.min.y,b.min.z+b.size.z*.07f);
   static Bounds Bounds(GameObject g){var rs=g.GetComponentsInChildren<Renderer>(true);if(rs.Length==0)return new Bounds(g.transform.position,Vector3.zero);var b=rs[0].bounds;foreach(var r in rs)b.Encapsulate(r.bounds);return b;}
   static GameObject Load(string id,Transform parent,Vector3 point,float width,bool worldPoint=false){var source=Resources.Load<GameObject>(id=="stoneworks-base"?"BastionIII/Granary/StoneWorkshop":"BastionIVV/Models/"+id);if(!source){Debug.LogError("BASTION_IV_V_MISSING_ART "+id);return null;}
    var model=Instantiate(source,parent);model.name=id=="stoneworks-base"?"Stone workshop I-IV":"Tier V "+id;Normalize(model,worldPoint?parent.InverseTransformPoint(point):point,width);if(id!="stoneworks-base"){var b=Bounds(model);model.transform.RotateAround(new Vector3(b.center.x,b.min.y,b.center.z),Vector3.up,270);}return model;
@@ -59,7 +68,7 @@ namespace Eldoria.ReferenceClean {
    if(ModelFor("barracks")&&s.BarracksLevel>=5)host.City.Parcels.RightBuilt.SetActive(false);
    stoneSite.SetActive(s.BastionLevel>=5);if(stoneBase)stoneBase.SetActive(s.ChapterThree.StoneworksLevel>0&&s.ChapterThree.StoneworksLevel<5);
    foreach(var stock in stoneStock)stock.model.SetActive((s.ChapterThree.StoneworksLevel==0&&stock.level<=2)||(s.ChapterThree.StoneworksLevel>=stock.level&&s.ChapterThree.StoneworksLevel<5));
-   if(worldFive){if(worldFive.layer!=host.WorldRoot.layer)foreach(var t in worldFive.GetComponentsInChildren<Transform>(true))t.gameObject.layer=host.WorldRoot.layer;float zoom=host.WorldCamera.orthographicSize;float strategicScale=Mathf.Lerp(1f,1.8f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);worldFive.transform.localScale=worldFiveScale*strategicScale;var wb=Bounds(worldFive);worldFive.transform.position+=worldFiveFoot-new Vector3(wb.center.x,wb.min.y,wb.center.z);worldFive.SetActive(s.BastionLevel>=5);if(s.BastionLevel>=5)host.WorldBastionTwo.SetActive(false);if(zoom>=110){var target=host.FindTarget("valoria-map-city");var hit=target?target.GetComponent<BoxCollider>():null;if(hit){wb=Bounds(worldFive);hit.center=hit.transform.InverseTransformPoint(wb.center);var size=hit.transform.InverseTransformVector(wb.size);hit.size=new Vector3(Mathf.Abs(size.x),Mathf.Abs(size.y),Mathf.Abs(size.z))+Vector3.one;}}}
+   if(worldFive){if(worldFive.layer!=host.WorldRoot.layer)foreach(var t in worldFive.GetComponentsInChildren<Transform>(true))t.gameObject.layer=host.WorldRoot.layer;float zoom=host.WorldCamera.orthographicSize;float strategicScale=Mathf.Lerp(1f,1.8f,Mathf.InverseLerp(110f,280f,zoom))*Mathf.Max(1f,zoom/280f);worldFive.transform.localScale=worldFiveScale*strategicScale;var wb=Bounds(worldFive);var shift=worldFiveFoot-Entrance(wb);shift.y=0;worldFive.transform.position+=shift;wb=Bounds(worldFive);float ground=host.WorldHome.y+RegionOneCanonicalLandscape.SampleHeight(wb.center.x-host.WorldHome.x,wb.center.z-host.WorldHome.z)+.12f;worldFive.transform.position+=Vector3.up*(ground-wb.min.y);worldFive.SetActive(s.BastionLevel>=5);if(s.BastionLevel>=5)host.WorldBastionTwo.SetActive(false);{var target=host.FindTarget("valoria-map-city");var hit=target?target.GetComponent<BoxCollider>():null;if(hit){wb=Bounds(worldFive);hit.center=hit.transform.InverseTransformPoint(wb.center);var size=hit.transform.InverseTransformVector(wb.size);hit.size=new Vector3(Mathf.Abs(size.x),Mathf.Abs(size.y),Mathf.Abs(size.z))+Vector3.one;}}}
   }
   void Set(string id,int level){if(models.TryGetValue(id,out var model)&&model)model.SetActive(level>=5);}
  }

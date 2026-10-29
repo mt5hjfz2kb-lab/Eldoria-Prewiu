@@ -48,6 +48,14 @@ namespace Eldoria.ReferenceClean.Editor {
    var choices=root.Find("Building management/Development council") as RectTransform;
    if(choices&&choices.gameObject.activeInHierarchy){var status=root.Find("Building management/Requirements and progress") as RectTransform;Need(!LocalRect(root,status).Overlaps(LocalRect(root,choices)),"council choices do not overlap explanation at actual runtime scale");}
   }
+  static void VerifyWorldCityTouch(ValoriaIntegratedWorld h,BastionIVVWorldPresentation art){
+   var rs=art.WorldModel.GetComponentsInChildren<Renderer>();var bounds=rs[0].bounds;foreach(var r in rs)bounds.Encapsulate(r.bounds);
+   Physics.SyncTransforms();var screen=h.WorldCamera.WorldToScreenPoint(bounds.center);
+   var hits=Physics.RaycastAll(h.WorldCamera.ScreenPointToRay(screen),2000,1<<8,QueryTriggerInteraction.Collide);
+   Need(hits.Any(hit=>{var target=hit.collider.GetComponentInParent<Eldoria.Presentation.WorldHotspot>();return target&&target.Id=="valoria-map-city";}),"actual V city is touchable at zoom "+h.WorldCamera.orthographicSize);
+   float ground=h.WorldHome.y+Eldoria.World4XCanon.RegionOneCanonicalLandscape.SampleHeight(bounds.center.x-h.WorldHome.x,bounds.center.z-h.WorldHome.z);
+   Need(bounds.min.y>=ground-.02f&&bounds.min.y<=ground+.25f,"V city foundation meets actual regional terrain at zoom "+h.WorldCamera.orthographicSize);
+  }
   static IEnumerator Dismiss(ValoriaIntegratedWorld h){for(int i=0;i<40&&h.Hud.NarrativeOpen;i++){h.Hud.Modal.Extra.onClick.Invoke();yield return null;}}
   static IEnumerator Probe(ValoriaIntegratedWorld h){
    for(int i=0;i<240&&!h.Ready;i++)yield return null;Need(h.Ready,"canonical scene ready");
@@ -84,7 +92,7 @@ namespace Eldoria.ReferenceClean.Editor {
    h.Hud.SelectBuilding("bastion");yield return null;
    var rankings=h.Hud.GetComponent<RoyalGoldV3RankingScreen>();rankings.Open();yield return null;Need(rankings.IsOpen,"quarry unlocks independent simulated ranking screen");Ui(h,"rank-power");
    foreach(var tab in new[]{"CORRUPTOS","RELIQUIAS"}){var button=h.Hud.GetComponentsInChildren<UnityEngine.UI.Button>(true).Single(x=>x.gameObject.name==tab);button.onClick.Invoke();yield return null;Ui(h,"rank-"+tab.ToLowerInvariant());}rankings.Close();screen.Close();
-   Need(h.TrySetWorld(true),"world navigation survives IVV");yield return new WaitForSecondsRealtime(.3f);h.WorldNavigation.RestoreView(h.WorldHome,32);yield return null;Shot(h,"world-city-V");Need(art.WorldModel.activeInHierarchy,"world V active at canonical city");foreach(var renderer in art.WorldModel.GetComponentsInChildren<Renderer>())Need((h.WorldCamera.cullingMask&(1<<renderer.gameObject.layer))!=0,"world camera includes V renderer layer");h.WorldNavigation.RestoreView(h.WorldHome,280);yield return null;Shot(h,"world-panorama-V");h.WorldNavigation.RestoreView(h.WorldHome,32);yield return null;
+   Need(h.TrySetWorld(true),"world navigation survives IVV");yield return new WaitForSecondsRealtime(.3f);h.WorldNavigation.RestoreView(h.WorldHome,32);yield return null;Shot(h,"world-city-V");VerifyWorldCityTouch(h,art);Need(art.WorldModel.activeInHierarchy,"world V active at canonical city");foreach(var renderer in art.WorldModel.GetComponentsInChildren<Renderer>())Need((h.WorldCamera.cullingMask&(1<<renderer.gameObject.layer))!=0,"world camera includes V renderer layer");h.WorldNavigation.RestoreView(h.WorldHome,280);yield return null;Shot(h,"world-panorama-V");VerifyWorldCityTouch(h,art);h.WorldNavigation.RestoreView(h.WorldHome,32);yield return null;
    var vein=h.City.Gateway.Snapshot().WorldResourceLocations.First(x=>x.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal)&&x.Remaining>0);Do(h,"Gather",vein.TargetId);Step(h,120);yield return new WaitForSecondsRealtime(.4f);Need(h.City.Gateway.Snapshot().ChapterThree.ExtractionOddity,"regional extraction triggers persistent V narrative");yield return Dismiss(h);
    Need(h.TrySetWorld(false),"return to city");
    var earlier=h.City.Gateway.Snapshot();earlier.BastionLevel=3;earlier.SawmillLevel=2;earlier.BarracksLevel=2;earlier.ChapterThree.GranaryLevel=2;earlier.ChapterThree.StoneworksLevel=0;new FileStateStore(h.City.SaveFile).Save(earlier);h.City.ReloadForProbe();yield return null;Step(h,0);
