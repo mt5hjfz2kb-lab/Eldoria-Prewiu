@@ -1,0 +1,39 @@
+name: Tier V reference production
+on:
+  push:
+    branches: [feature/tier5-six-reference-models-20261029]
+    paths: ['.github/workflows/tier5-reference-production.yml', 'tools/tier5-reference-production/**', 'ArtSource/Tier5ReferenceProduction/**']
+permissions:
+  contents: read
+concurrency:
+  group: eldoria-tier5-reference-production
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 5
+    steps:
+      - name: Read-only existing CLI readiness and pricing
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          $ErrorActionPreference='Stop'
+          $out=Join-Path $env:RUNNER_TEMP ('tier5-preflight-'+$env:GITHUB_RUN_ID)
+          New-Item -ItemType Directory -Force $out | Out-Null
+          $tripo=Get-Command tripo.cmd -ErrorAction SilentlyContinue
+          if (-not $tripo) { $tripo=Get-Command tripo -ErrorAction SilentlyContinue }
+          if (-not $tripo) { throw 'Existing Tripo CLI missing; no installation or generation attempted.' }
+          & $tripo.Source --help 2>&1 | Out-File (Join-Path $out 'help.txt')
+          & $tripo.Source make --help 2>&1 | Out-File (Join-Path $out 'make-help.txt')
+          & $tripo.Source doctor 2>&1 | Out-File (Join-Path $out 'doctor.json')
+          & $tripo.Source balance --json 2>&1 | Out-File (Join-Path $out 'balance.json')
+          Get-Content (Join-Path $out 'doctor.json')
+          Get-Content (Join-Path $out 'balance.json')
+          Get-Content (Join-Path $out 'help.txt')
+          Get-Content (Join-Path $out 'make-help.txt')
+          Get-Process Unity,blender -ErrorAction SilentlyContinue | Select-Object ProcessName,Id | Format-Table | Out-String | Write-Host
+          Write-Host 'READ_ONLY_PROBE_FINISHED: no model submission, no Blender/Unity launch.'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tier5-preflight-${{ github.run_id }}
+          path: ${{ runner.temp }}/tier5-preflight-${{ github.run_id }}/*
