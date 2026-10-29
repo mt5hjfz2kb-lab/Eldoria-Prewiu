@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T18:52:45.039Z",
+  "updated_at": "2026-10-29T19:18:35.157Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-bastion-iv-v-7064f9327736",
+      "owner": "codex-release-continuation-ab04f62d0b26",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-29T17:22:23.229Z",
@@ -117,8 +117,8 @@
       "art_production_routing_reason": "Corrected alignment and genuine native review complete; remaining stage only builds, verifies and publishes owner-authorized Android/WebGL.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "ANDROID19_BUILD_AFTER_VERIFIED_TIER_V_ALIGNMENT",
-      "next": "Build and verify original signed Android1.19, then updated exact-source WebGL and browser QA; publish only verified bytes to existing family/restricted channels. Exclude new troops/mail work.",
+      "phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
+      "next": "Preserve running signed Android19 run40934932901; publish only after success and identity verification. Build and validate current WebGL, publish exact verified artifact to existing restricted itch channel.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -809,7 +809,7 @@
         "other_workstreams": "remain_paused"
       },
       "continuation_authorization": "Current owner requests final visual consolidation on integrated main, authentic Unity A/B and functional validation; recover technical blockers autonomously. No APK, Bastion III, spending or external publication.",
-      "handoff_authorization": "Owner 26/10/2026 continuing Region1 visuals and mobile optimization, no spending; do not redo PR100.",
+      "handoff_authorization": "Sigue tu con ese trabajo hasta su finalización",
       "integration_policy": "Pinned copies/adapters in Valoria branch; independent UI/4X source owners preserved pending actual handoff. No whole historical branch merge.",
       "web_playtest_authorization": "Explicit owner request18Oct15:43 Europe/Madrid: provide playable iPhone link if possible, continue city visual improvement. Authorizes publishing this current integrated playtest, not older paused projects.",
       "previous_production_branch": "construction/valoria-master-plan-layers-20261016",
@@ -1315,9 +1315,14 @@
           "phase": "INDIVIDUAL_TIER_V_FACADE_ALIGNMENT_REWORK",
           "completed_at": "2026-10-29T18:52:45.039Z",
           "reason": "PR130 merged with exact native11 tree e4e2a7f;76 captures,386IVV,54Edit/73Play,I-II,real32/280 touch and frozen web attempt2 pass. Continue existing owner-authorized APK/WebGL delivery on main."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 62,
+          "reason": "Owner explicitly requests this chat to continue APK/WebGL publication after frozen prior Work chat; existing Android run preserved."
         }
       ],
-      "ownership_revision": 62,
+      "ownership_revision": 63,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
