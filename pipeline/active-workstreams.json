@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T16:23:32.199Z",
+  "updated_at": "2026-10-29T16:39:33.688Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -101,15 +101,16 @@
         "tools/bastion-iv-v/**",
         ".github/workflows/bastion-iv-v-native.yml",
         ".github/workflows/bastion-iv-v-domain.yml",
-        "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json"
+        "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
+        ".github/workflows/ui-progression-cert.yml"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BASTION_IV_V_NATIVE_VERIFIED_SHARED_CERT_PENDING",
-      "next": "Run the existing full shared PR UI certification on the final metadata head, then integrate PR129 and release this writing claim.",
+      "phase": "BASTION_IV_V_MANAGEMENT_CERTIFICATION_ALIGNMENT",
+      "next": "Record and verify actual full-screen construction/Bastion management captures in the shared gate; preserve live city framing thresholds and complete the full general suites.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1224,9 +1225,16 @@
             "windows-runner-heavy"
           ],
           "reason": "IV–V native40906347082 completed successfully (54 EditMode,73 PlayMode,386 IV–V checks,real touch and I–II). Release the finished dedicated execution's resource so the existing general PR UI certification can run under its no-active-heavy-claim path; retain canonical writing owner until integration."
+        },
+        {
+          "owner": "codex-bastion-iv-v-7064f9327736",
+          "ownership_revision": 55,
+          "phase": "BASTION_IV_V_NATIVE_VERIFIED_SHARED_CERT_PENDING",
+          "extended_at": "2026-10-29T16:39:33.688Z",
+          "reason": "The final general gate requires exposed-city framing for construction/Bastion states now intentionally opaque management destinations. Actual integration report is PASS44; screenshots confirm requested design. Extend the existing owner scope to certify real opaque management geometry, while preserving strict exposed-city framing checks."
         }
       ],
-      "ownership_revision": 55,
+      "ownership_revision": 56,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
