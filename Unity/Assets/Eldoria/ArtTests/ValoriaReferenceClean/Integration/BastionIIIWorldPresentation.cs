@@ -49,7 +49,7 @@ namespace Eldoria.ReferenceClean {
    Apply();
   }
   void MakeStock(string building,Transform parent,Vector3 point,string prop,int minimum=2){
-   for(int level=minimum;level<=3;level++){
+   for(int level=minimum;level<=4;level++){
     var group=new GameObject(building+" level "+level+" stock");group.transform.SetParent(parent,false);group.transform.localPosition=point;
     float offset=(level-minimum)*1.8f;
     for(int i=0;i<2;i++)Model("BastionIII/Granary/Stock"+prop,group.transform,new Vector3(offset+i*.7f,0,i*.65f),1.1f);
@@ -189,10 +189,10 @@ namespace Eldoria.ReferenceClean {
   public void Apply(){
    if(!host||host.City.Gateway==null)return;var s=host.City.Gateway.Snapshot();var c=s.ChapterThree;
    bool unlocked=s.BastionLevel>=3;town.SetActive(unlocked&&!host.InWorld);
-   if(granary)granary.SetActive(c.GranaryLevel>0);
+   if(granary)granary.SetActive(c.GranaryLevel>0&&c.GranaryLevel<5);
    // A buildable site has actual stored supplies instead of an invisible target.
    siteStock.SetActive(c.GranaryLevel==0);
-   foreach(var cue in cues){int level=cue.building=="granary"?c.GranaryLevel:cue.building=="sawmill"?s.SawmillLevel:cue.building=="barracks"?s.BarracksLevel:s.BastionLevel;cue.cue.SetActive(level>=cue.level);}
+   foreach(var cue in cues){int level=cue.building=="granary"?c.GranaryLevel:cue.building=="sawmill"?s.SawmillLevel:cue.building=="barracks"?s.BarracksLevel:s.BastionLevel;cue.cue.SetActive(level>=cue.level&&level<5);}
    if(!placed&&unlocked)PlaceNodes(s);
    bool near=!RegionOneResourcePlacement.IsPanoramic(host.WorldCamera.orthographicSize,host.WorldNavigation.globalZoom);
    foreach(var pair in nodes){bool visible=unlocked&&placed&&near;

@@ -96,6 +96,7 @@ namespace Eldoria.ReferenceClean {
    WorldNavigation.enabled=false;WorldCamera.enabled=false;WorldRoot.SetActive(false);
    WorldNavigation.regionalZoom=32;WorldNavigation.localZoom=14;
    gameObject.AddComponent<BastionIIIWorldPresentation>().Initialize(this);
+   gameObject.AddComponent<BastionIVVWorldPresentation>().Initialize(this);
    targets=Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None);
    // One modestly wider authored entry view (about 10%), without changing near limits or world scale.
    city.Controls.homeZoom=Mathf.Min(65f,city.PlayerCamera.orthographicSize*1.08f);
@@ -105,6 +106,8 @@ namespace Eldoria.ReferenceClean {
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
   }
   void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);
+   var buildings=Hud.GetComponent<RoyalGoldV3BuildingScreens>();if(!buildings)buildings=Hud.gameObject.AddComponent<RoyalGoldV3BuildingScreens>();
+   buildings.Initialize(Hud,boundGateway,id=>Read(id,English).Building,()=>{city.Presenter.RefreshState();Hud.Refresh();});
     // Rebind to the one canonical gateway after resets; never create another session.
     var management=Hud.GetComponent<RoyalGoldV3ManagementScreens>();
     if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
@@ -231,7 +234,7 @@ namespace Eldoria.ReferenceClean {
    // These are the visual states already applied to the real scene. A completed
    // model can need a different frame even when the landscape HUD rect is unchanged.
    // Camera movement alone never changes this key, so manual panning stays put.
-   if(id=="bastion")return city.BastionTwo&&city.BastionTwo.activeSelf?2:1;
+   if(id=="bastion")return city.Gateway.Snapshot().BastionLevel;
    if(city.Parcels){if(id=="sawmill")return (int)city.Parcels.LeftState;if(id=="barracks"||id=="march-main")return (int)city.Parcels.RightState;}
    return 0;
   }

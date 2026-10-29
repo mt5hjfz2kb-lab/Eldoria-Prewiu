@@ -239,7 +239,10 @@ namespace Eldoria.UI.RoyalGold.V2
             lastCanvasHeight = safe.rect.height;
             var camera = ActiveCamera();
             bool blocked = (Source.Modal && Source.Modal.gameObject.activeInHierarchy) ||
-                (Source.Mission && Source.Mission.gameObject.activeInHierarchy);
+                (Source.Mission && Source.Mission.gameObject.activeInHierarchy) ||
+                (Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen??false) ||
+                (Source.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false) ||
+                (Source.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false);
             RenderSelection(camera, blocked);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
             RenderClose(blocked);

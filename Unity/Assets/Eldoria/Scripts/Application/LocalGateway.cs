@@ -866,7 +866,7 @@ namespace Eldoria.Application
         public bool AcknowledgeNarrative(string beat)
         {
             if (beat!="start" && beat!="world" && beat!="mark" &&
-                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed") return false;
+                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed" && beat!="consolidate-valoria" && beat!="productive-valoria") return false;
             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
             if (state.ChapterProgress.SeenNarrative == null)
                 state.ChapterProgress.SeenNarrative = new System.Collections.Generic.List<string>();
