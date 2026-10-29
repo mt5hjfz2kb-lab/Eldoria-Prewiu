@@ -90,6 +90,11 @@ namespace Eldoria.Domain
             return copy;
         }
     }
+    [Serializable] public sealed class BattleExchange
+    {
+        public int Round, DamageDealt, DamageTaken;
+        public BattleExchange Copy()=>(BattleExchange)MemberwiseClone();
+    }
     [Serializable] public sealed class BattleReportState
     {
         public string TargetId = "";
@@ -100,6 +105,9 @@ namespace Eldoria.Domain
         public bool Won;
         public int Rounds;
         public int RemainingHealth;
+        // Captured at resolution, never inferred from today's troop roster.
+        public int PlayerAttack, PlayerDefense, PlayerHealth, PlayerBreak;
+        public List<BattleExchange> Exchanges = new List<BattleExchange>();
         public int RewardWood;
         public int RewardStone;
         public string Reason = "";
@@ -304,8 +312,11 @@ namespace Eldoria.Domain
         public readonly int RemainingHealth;
         public readonly int Rounds;
         public readonly string Reason;
-        public CombatReport(bool won, int remainingHealth, int rounds, string reason)
-        { Won = won; RemainingHealth = remainingHealth; Rounds = rounds; Reason = reason; }
+        public readonly BattleExchange[] Exchanges;
+        public CombatReport(bool won, int remainingHealth, int rounds, string reason,
+            BattleExchange[] exchanges=null)
+        { Won = won; RemainingHealth = remainingHealth; Rounds = rounds; Reason = reason;
+          Exchanges=exchanges??Array.Empty<BattleExchange>(); }
     }
     public sealed class BastionProgressionDefinition
     {
@@ -520,11 +531,14 @@ namespace Eldoria.Domain
                 enemyHp = 620; enemyDefense = 64; enemyAttack = 76; enemyBreak = 28;
             }
             int playerHp = player.Health, rounds = 0;
+            var exchanges=new List<BattleExchange>();
             while (rounds < 6 && enemyHp > 0 && playerHp > 0)
             {
                 rounds++;
-                enemyHp -= Hit(player.Attack, enemyDefense, player.Break);
-                if (enemyHp > 0) playerHp -= Hit(enemyAttack, player.Defense, enemyBreak);
+                int dealt=Hit(player.Attack, enemyDefense, player.Break),taken=0;
+                enemyHp-=dealt;
+                if(enemyHp>0){taken=Hit(enemyAttack,player.Defense,enemyBreak);playerHp-=taken;}
+                exchanges.Add(new BattleExchange{Round=rounds,DamageDealt=dealt,DamageTaken=taken});
             }
             bool win = enemyHp <= 0 && playerHp > 0;
             string reason = win
@@ -532,21 +546,26 @@ namespace Eldoria.Domain
                     ? "La nueva línea de arqueros sostuvo el frente y Aldric rompió la defensa del Engendro."
                     : "Tus arqueros y Aldric abrieron la defensa corrupta. Ataque y Ruptura superaron su resistencia.")
                 : "El enemigo resistió seis intercambios o agotó la Vida de la marcha. Refuerza las tropas.";
-            return new CombatReport(win, Math.Max(0, playerHp), rounds, reason);
+            return new CombatReport(win, Math.Max(0, playerHp), rounds, reason,exchanges.ToArray());
         }
         // Use the same original six-round damage equation, without a second battle engine.
         public static CombatReport FightCreature(CombatStats player,WorldCreatureStats enemy)
         {
             int enemyHp=enemy.Health,playerHp=player.Health,rounds=0;
+            var exchanges=new List<BattleExchange>();
             while(rounds<6&&enemyHp>0&&playerHp>0)
             {
-                rounds++;enemyHp-=Hit(player.Attack,enemy.Defense,player.Break);
-                if(enemyHp>0)playerHp-=Hit(enemy.Attack,player.Defense,enemy.Break);
+                rounds++;
+                int dealt=Hit(player.Attack,enemy.Defense,player.Break),taken=0;
+                enemyHp-=dealt;
+                if(enemyHp>0){taken=Hit(enemy.Attack,player.Defense,enemy.Break);playerHp-=taken;}
+                exchanges.Add(new BattleExchange{Round=rounds,DamageDealt=dealt,DamageTaken=taken});
             }
             bool win=enemyHp<=0&&playerHp>0;
             return new CombatReport(win,Math.Max(0,playerHp),rounds,
                 win?"La expedición ha vencido al objetivo de Región 1.":
-                    "La criatura resistió o agotó la Vida de la marcha. Mejora las tropas.");
+                    "La criatura resistió o agotó la Vida de la marcha. Mejora las tropas.",
+                exchanges.ToArray());
         }
         private static int Hit(int attack, int defense, int brk)
             => Math.Max(12, (int)Math.Round(attack * (1 + Math.Min(.6, brk / 500.0)) - defense * .48,
