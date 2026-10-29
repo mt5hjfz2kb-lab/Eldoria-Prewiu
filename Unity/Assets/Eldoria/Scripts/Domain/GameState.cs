@@ -439,7 +439,17 @@ namespace Eldoria.Domain
             }
             if(s.BastionLevel>=5){
                 if(s.ChapterThree.StoneworksLevel==0)return "b5.stoneworks";
-                return s.SawmillLevel>=5&&s.BarracksLevel>=5&&s.ChapterThree.GranaryLevel>=5&&s.ChapterThree.StoneworksLevel>=5?"b5.complete":"b5.infrastructure";
+                // Chapter V first teaches stone and the required force. Extra
+                // building upgrades remain available, but must not replace the
+                // missing Ash Stalker or mark the web chapter complete.
+                if(!p.GrantedRewards.Contains("c5-stone"))return "b5.stone";
+                int owned=s.Available.Total+s.Wounded.Total;
+                foreach(var march in MarchCapacityRules.WorldMarches(s))
+                    if(march.Phase!="idle")owned+=march.Troops.Total;
+                if(owned<60)return "b5.army";
+                return s.SawmillLevel>=5&&s.BarracksLevel>=5&&
+                    s.ChapterThree.GranaryLevel>=5&&s.ChapterThree.StoneworksLevel>=5
+                    ?"b5.await-content":"b5.infrastructure";
             }
             if(s.BastionLevel==4)return string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)?"b4.priority":"b4.ascend";
             if(s.BastionLevel>=3) {
