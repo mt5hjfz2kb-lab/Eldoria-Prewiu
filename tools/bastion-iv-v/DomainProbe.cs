@@ -41,6 +41,33 @@ class DomainProbe {
    var store=new Store{Value=s};var g=new LocalGateway(clock,store);clock.Add(1);g.Advance();g=new LocalGateway(clock,store);
    Check(g.Snapshot().ChapterThree.ExtractionOddity==(tier==5&&node.StartsWith("region1:")),"extraction narrative exact tier and regional vein "+tier+" "+node);
   }
+  // Newly restored web systems must execute in the same persisted gateway,
+  // not only compile or render as labels in Unity.
+  {
+   var clock=new Clock();var state=Ready();
+   state.BastionLevel=5;state.BarracksLevel=4;
+   state.ChapterThree.DevelopmentPriority="production";
+   state.Available=new ArmyRoster{ArcherT1=36};
+   var store=new Store{Value=state};var g=new LocalGateway(clock,store);
+   Check(g.Snapshot().ChapterProgress.GrantedRewards.Contains("chapter-4"),"web chapter IV reward ledger");
+   Check(g.Snapshot().ChapterProgress.SpeedupFiveMinutes==1,"web chapter IV five-minute item");
+   Check(Do(g,"Recruit","archer:t2:10","tier2-train").Ok,"T2 recruitment after Cuartel IV");
+   var pending=g.Snapshot();
+   Check(pending.PendingRecruitTier==2,"T2 task persisted");
+   Check(pending.ChapterProgress.SpeedupOneMinute==1,"first eligible task awards one-minute item");
+   Check(Do(g,"UseSpeedup","training:1","speedup-used").Ok,"speedup on paid training");
+   Check(Do(g,"UseSpeedup","training:1","speedup-used").Ok,"speedup same command retry");
+   var shortened=g.Snapshot();
+   Check(shortened.RecruitmentCompletesUtcTicks==pending.RecruitmentCompletesUtcTicks-TimeSpan.FromMinutes(1).Ticks,
+     "speedup shortens one deadline once");
+   clock.Add(240);g=new LocalGateway(clock,store);
+   Check(g.Snapshot().Available.ArcherT1==36&&g.Snapshot().Available.ArcherT2==10,
+     "T2 recruited offline without losing T1");
+   Check(Do(g,"ConfigureMarch","march-main:0:10:0:aldric").Ok,"T2 march configuration");
+   var combat=SliceRules.Fight(SliceRules.Expedition(g.Snapshot().PreparedTroops,"aldric"),"engendro-valoria");
+   Check(combat.Exchanges.Length==combat.Rounds&&combat.Rounds>0,
+     "battle damage exchanges captured without changing resolution");
+  }
   Console.WriteLine("BASTION_IV_V_DOMAIN_PASS");
  }
 }
