@@ -409,6 +409,36 @@ jobs:
             }
           }
           Write-Host 'BASTION_III_FULL_PLAYMODE_AUTHORED_RESOURCES_PASS'
+      - name: Windows desktop build
+        id: windows_build
+        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
+        run: |
+          # Packaging must initialize the same real graphics backend as native QA:
+          # package OnValidate initializes compute kernels even during BuildPlayer.
+          # Run before the full suites so packaging failures do not waste their runtime.
+          $log = "$env:RUNNER_TEMP/Eldoria-Build.log"
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          Remove-Item "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
+          $args = @("-batchmode","-force-d3d11","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
+          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
+          if (-not $process.WaitForExit(600000)) {
+            & taskkill.exe /PID $process.Id /T /F | Out-Null
+            if (Test-Path $log) { Get-Content $log -Tail 240 }
+            throw "Unity Windows desktop build timed out after 10 minutes."
+          }
+          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Unity Windows build process failed with exit code $($process.ExitCode)." }
+          $player = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/Eldoria.exe"
+          if (-not (Test-Path $player)) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Windows player was not produced." }
+          $playerDll = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/UnityPlayer.dll"
+          $dataDir = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/Eldoria_Data"
+          if (-not (Test-Path $playerDll)) { throw "UnityPlayer.dll was not produced." }
+          if (-not (Test-Path $dataDir)) { throw "Eldoria_Data was not produced." }
+          # Keep QA_FAST as the default executable. OWNER_I_II is an explicit opt-in launch
+          # using the same binary and its own profile-scoped save.
+          $ownerLauncher = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/PLAY_OWNER_I_II_CANDIDATE.bat"
+          $ownerLauncherText = "@echo off`r`ncd /d `"%~dp0`"`r`nEldoria.exe --eldoria-profile=OWNER_I_II`r`n"
+          Set-Content -Path $ownerLauncher -Value $ownerLauncherText -Encoding ASCII
+          if (-not (Test-Path $ownerLauncher)) { throw "Owner I-II launcher was not produced." }
       - name: EditMode
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
@@ -511,33 +541,6 @@ jobs:
             ${{ runner.temp }}/Eldoria-Native-Test-Source-${{ github.run_id }}.json
           if-no-files-found: error
           retention-days: 30
-      - name: Windows desktop build
-        id: windows_build
-        shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
-        run: |
-          $log = "$env:RUNNER_TEMP/Eldoria-Build.log"
-          Remove-Item $log -Force -ErrorAction SilentlyContinue
-          Remove-Item "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows" -Recurse -Force -ErrorAction SilentlyContinue
-          $args = @("-batchmode","-nographics","-quit","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-executeMethod","Eldoria.EditorTools.SceneSetup.BuildWindows","-logFile",$log)
-          $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
-          if (-not $process.WaitForExit(600000)) {
-            & taskkill.exe /PID $process.Id /T /F | Out-Null
-            if (Test-Path $log) { Get-Content $log -Tail 240 }
-            throw "Unity Windows desktop build timed out after 10 minutes."
-          }
-          if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Unity Windows build process failed with exit code $($process.ExitCode)." }
-          $player = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/Eldoria.exe"
-          if (-not (Test-Path $player)) { if (Test-Path $log) { Get-Content $log -Tail 200 }; throw "Windows player was not produced." }
-          $playerDll = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/UnityPlayer.dll"
-          $dataDir = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/Eldoria_Data"
-          if (-not (Test-Path $playerDll)) { throw "UnityPlayer.dll was not produced." }
-          if (-not (Test-Path $dataDir)) { throw "Eldoria_Data was not produced." }
-          # Keep QA_FAST as the default executable. OWNER_I_II is an explicit opt-in launch
-          # using the same binary and its own profile-scoped save.
-          $ownerLauncher = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/Builds/Windows/PLAY_OWNER_I_II_CANDIDATE.bat"
-          $ownerLauncherText = "@echo off`r`ncd /d `"%~dp0`"`r`nEldoria.exe --eldoria-profile=OWNER_I_II`r`n"
-          Set-Content -Path $ownerLauncher -Value $ownerLauncherText -Encoding ASCII
-          if (-not (Test-Path $ownerLauncher)) { throw "Owner I-II launcher was not produced." }
       - name: Render Valoria art benchmark
         id: valoria_benchmark
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"

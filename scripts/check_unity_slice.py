@@ -45,5 +45,14 @@ assert generic_budget >= certified_budget, (
     f"Generic PlayMode budget {generic_budget}ms is shorter than the complete "
     f"certification budget {certified_budget}ms; retain every test and allow startup/teardown"
 )
-print("PASS source preflight: editor patch, packages, versioned scenes, modules, tests and full-suite budget")
+# BuildPlayer imports Resources and invokes graphics-package validation callbacks.
+# A Null graphics device cannot resolve their compute kernels on this GPU runner.
+text = (workflows / "unity-slice.yml").read_text()
+marker = "      - name: Windows desktop build\n"
+assert text.count(marker) == 1, "Expected one real Windows player build"
+step = text.split(marker, 1)[1].split("\n      - ", 1)[0]
+assert '"-force-d3d11"' in step and '"-nographics"' not in step, (
+    "Windows BuildPlayer must initialize the native-tested Direct3D backend, not Null graphics"
+)
+print("PASS source preflight: editor patch, packages, versioned scenes, modules, tests, full-suite budget and graphical Windows packaging")
 
