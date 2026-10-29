@@ -209,8 +209,19 @@ namespace Eldoria.Application
             if(state.ChapterThree==null)state.ChapterThree=new BastionThreeState();
             if(state.ChapterThree.Inventory==null)state.ChapterThree.Inventory=new System.Collections.Generic.List<string>();
             if(state.ChapterThree.FissureClosed){state.ChapterThree.LyraRecruited=true;state.ChapterThree.InvestigationEndsUtcTicks=0;}
+            // Schema-1 saves may have confirmed an army before hero capacity existed.
+            // Trim only that unreserved selection; never change home or travelling troops.
+            bool migratedPrepared=state.MarchConfigured && state.PreparedTroops!=null &&
+                state.PreparedTroops.Total>MarchCapacityRules.Capacity(state,state.PreparedHeroId);
+            if(migratedPrepared)
+            {
+                state.PreparedTroops=MarchCapacityRules.AutoSelect(state.PreparedTroops,
+                    MarchCapacityRules.Capacity(state,state.PreparedHeroId));
+                if(state.ChapterProgress!=null)state.ChapterProgress.ConfirmedExpeditionPower=
+                    SliceRules.Expedition(state.PreparedTroops,state.PreparedHeroId).Power;
+            }
             NormalizeMissionProgress();
-            Advance();
+            if(!Advance() && migratedPrepared)Commit();
         }
         private void NormalizeMissionProgress()
         {
@@ -343,7 +354,8 @@ namespace Eldoria.Application
                     string marchHero=parts.Length==3?parts[2]:parts.Length==5?parts[4]:"aldric";
                     if(marchHero!="aldric" && (state.BastionLevel<3 || !state.ChapterThree.LyraRecruited || (marchHero!="lyra" && marchHero!="aldric+lyra")))
                         return Fail("Héroe no disponible");
-                    var nextTroops=state.Available.Copy();
+                    var nextTroops=MarchCapacityRules.AutoSelect(state.Available,
+                        MarchCapacityRules.Capacity(state,marchHero));
                     if(parts.Length>1)
                     {
                         if(!int.TryParse(parts[1],out nextTroops.ArcherT1))return Fail("Composición desconocida");

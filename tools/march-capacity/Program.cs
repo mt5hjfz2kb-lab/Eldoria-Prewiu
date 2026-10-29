@@ -50,8 +50,21 @@ static class Program
         var barracksStore=new Store{State=barracksState};
         var b=new LocalGateway(clock,barracksStore);
         Assert(!Run(b,"overflow","ConfigureMarch","march-main:61:aldric").Ok,"Overcapacity composition rejected");
+        Assert(Run(b,"legacy-auto","ConfigureMarch","march-main").Ok,"Legacy auto composition respects current capacity");
+        Assert(b.Snapshot().PreparedTroops.Total==60&&b.Snapshot().Available.Total==100,"Auto composition does not reserve or discard troops");
         Assert(Run(b,"valid","ConfigureMarch","march-main:60:aldric").Ok,"Valid composition accepted");
         Assert(b.Snapshot().PreparedTroops.Total==60,"Prepared selection retained");
+
+        var legacyStore=new Store{State=new PlayerState{BastionLevel=2,BarracksLevel=1,
+            MarchConfigured=true,PreparedHeroId="aldric",PreparedTroops=new ArmyRoster{ArcherT1=100},
+            Available=new ArmyRoster{ArcherT1=100},
+            ChapterProgress=new ChapterProgressState{TrainedArchers=100,MarchConfirmed=true}}};
+        var legacy=new LocalGateway(clock,legacyStore);
+        Assert(legacy.Snapshot().PreparedTroops.Total==60&&legacy.Snapshot().Available.Total==100,"Old confirmed save migrates selection without losing soldiers");
+        legacy=new LocalGateway(clock,legacyStore);
+        Assert(legacy.Snapshot().PreparedTroops.Total==60,"Migration survives reload");
+        Assert(Run(legacy,"legacy-boss","Fight","engendro-valoria").Ok,"Migrated save can launch original boss encounter");
+        Assert(legacy.Snapshot().March.Troops.Total==60&&legacy.Snapshot().Available.Total==40,"Migrated encounter reserves exactly its capped army");
 
         var scoutState=new PlayerState{BastionLevel=2,BarracksLevel=1,
             Available=new ArmyRoster{ArcherT1=90},
