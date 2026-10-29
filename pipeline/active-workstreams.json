@@ -110,15 +110,13 @@
         ".github/workflows/eldoria-itch-delivery.yml",
         "docs/bastion-iv-v/RELEASE_20261029.md"
       ],
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "art_production_routing": "not_applicable",
       "art_production_routing_reason": "Completed IV–V integration and genuine native review in PR129; current continuation only closes metadata and observes automatic gates. No active art authoring or paid generation request.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BASTION_V_MODELS_VERIFIED_ANDROID_WEBGL_RELEASE",
-      "next": "Queue signed Android code19 after existing postmerge native verification, then build and verify exact WebGL and publish existing restricted itch channel. Exclude unmerged troop/mailbox proposals.",
+      "phase": "OWNER_REJECTED_TIER_V_ORIENTATION_RELEASE_BLOCKED",
+      "next": "Owner rejects sideways entrances in actual city V capture. Disable pending APK/WebGL candidate by revoking its live native lease; correct each building entrance alignment and recapture Unity before a new release. Never promote queued Android40922548307/WebGL40922689732.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1277,7 +1275,7 @@
           "reason": "Owner asks this session to verify each own building level V approved Tripo model and publish Android and WebGL; continue same canonical workstream after PR129. Existing postmerge read-only Unity check continues without interruption."
         }
       ],
-      "ownership_revision": 59,
+      "ownership_revision": 60,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
@@ -1417,7 +1415,13 @@
         "new_apk_published": false,
         "budget_eur": 0
       },
-      "completed_branch": "feature/bastion-iv-v-migration-20261029"
+      "completed_branch": "feature/bastion-iv-v-migration-20261029",
+      "owner_visual_feedback": {
+        "criterion": "Each approved tier V building must face forward coherently; Bastion door must line up with existing approach, not expose a side toward the road.",
+        "previous_capture": "city-V-orientation-270-horizontal.png",
+        "status": "VISUAL_REJECTED_ORIENTATION",
+        "publication_authorization": "Conditional on corrected visuals; old candidate must not publish."
+      }
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
