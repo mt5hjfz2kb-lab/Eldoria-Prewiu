@@ -44,6 +44,40 @@ namespace Eldoria.Tests
         {
             SliceContentProfiles.SetRuntimeProfileOverride(null);
         }
+        [Test] public void ChapterThreeFourFiveWebGrantsAreRetainedExactlyOnce()
+        {
+            var clock=new Clock();var state=Ready();
+            state.BastionLevel=5;state.SawmillLevel=2;state.BarracksLevel=2;
+            state.ChapterThree.GranaryLevel=2;
+            state.ChapterThree.StoneworksLevel=1;
+            state.ChapterThree.Hunts=2;
+            state.ChapterThree.FissureClosed=true;
+            state.ChapterThree.DevelopmentPriority="production";
+            state.Resources.Food=1200;
+            state.Resources.Stone=1600;
+            state.Available.ArcherT1=60;
+            state.ChapterProgress.GrantedRewards.Add("c3-food");
+            var memory=new Memory{State=state};
+            var gateway=new LocalGateway(clock,memory);
+            var first=gateway.Snapshot();
+            foreach(var id in new[]{"c3-bastion","chapter-3","c4-sawmill2",
+                "c4-granary2","c4-barracks2","c4-priority","c4-bastion","chapter-4",
+                "c5-stoneworks","c5-stone","c5-army"})
+                Assert.That(first.ChapterProgress.GrantedRewards,
+                    Has.Exactly(1).EqualTo(id),"Web grant "+id+" must be recorded once");
+            gateway.Advance();
+            gateway=new LocalGateway(clock,memory);
+            var second=gateway.Snapshot();
+            Assert.That(second.Resources.Wood,Is.EqualTo(first.Resources.Wood));
+            Assert.That(second.Resources.Stone,Is.EqualTo(first.Resources.Stone));
+            Assert.That(second.Resources.Food,Is.EqualTo(first.Resources.Food));
+            Assert.That(second.MissionPower,Is.EqualTo(first.MissionPower));
+            Assert.That(second.ChapterProgress.GrantedRewards,
+                Is.EquivalentTo(first.ChapterProgress.GrantedRewards));
+            Assert.That(second.ChapterProgress.GrantedRewards,Does.Not.Contain("chapter-5"),
+                "Cannot declare chapter V complete without its enemy and Bastion VI");
+        }
+
         [Test] public void ArcherT2UnlocksAtBarracksFourAndSurvivesOfflineTraining()
         {
             var clock=new Clock();var state=Ready();
