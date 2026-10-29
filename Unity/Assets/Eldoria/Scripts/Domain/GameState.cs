@@ -109,6 +109,8 @@ namespace Eldoria.Domain
         public int GatheredWood;
         public int GatheredStone;
         public int TrainedArchers;
+        // Web accelerator inventory persists within the same chapter ledger.
+        public int SpeedupOneMinute, SpeedupFiveMinutes;
         public int ConfirmedExpeditionPower;
         public bool RouteCleared;
         public bool BastionTwoReached;
