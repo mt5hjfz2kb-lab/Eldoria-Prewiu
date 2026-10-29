@@ -9,11 +9,11 @@ def sha(p):
 def ingest(source,vault,asset_id,kind):
  source=pathlib.Path(source).resolve();vault=pathlib.Path(vault).resolve()
  if not source.is_file():raise ValueError("source missing")
- if vault==source or vault in source.parents:raise ValueError("vault cannot be a source")
+ if vault==source or vault in source.parents or source==vault or vault in source.parents:raise ValueError("vault cannot be a source")
  if not asset_id or any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_" for c in asset_id):raise ValueError("unsafe asset ID")
  digest=sha(source);destination=vault/"objects"/digest[:2]/digest/source.name
  if destination.exists():
-  if sha(destination)!=digest:raise ValueError("destination conflict")
+  if not destination.is_file() or sha(destination)!=digest:raise ValueError("destination conflict")
  else:
   destination.parent.mkdir(parents=True,exist_ok=True)
   temporary=destination.with_name(destination.name+"."+uuid.uuid4().hex+".part")
