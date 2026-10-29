@@ -53,10 +53,29 @@ jobs:
           node tools/workstream-lease/check.mjs pipeline/active-workstreams.json "$env:GITHUB_WORKSPACE/valoria-qa-live-main/pipeline/active-workstreams.json" valoria-master-plan-layered-construction-20261016
           if($LASTEXITCODE){throw 'Live runner lease or queued ownership changed; refuse stale execution'}
           if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'PC native editing resources occupied; refuse interference'}
+      - name: Resolve exact current WebGL request and successful source run
+        id: input
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const cfg=JSON.parse(fs.readFileSync('tools/valoria-reference-clean/browser-qa-request.json','utf8'));
+            if(!Number.isSafeInteger(cfg.artifact_run)||cfg.artifact_run<=0||
+               !/^[0-9a-f]{40}$/.test(cfg.source_sha||'')||
+               !/^native[0-9]+$/.test(cfg.revision||'')||
+               cfg.artifact_name!=='valoria-integrated-web-playtest-'+cfg.artifact_run)
+              throw Error('Current WebGL request must pin one native revision, source SHA and exact artifact');
+            const run=(await github.rest.actions.getWorkflowRun({...context.repo,run_id:cfg.artifact_run})).data;
+            if(run.status!=='completed'||run.conclusion!=='success'||run.head_sha!==cfg.source_sha)
+              throw Error('Requested WebGL run is not a successful build of the exact requested source');
+            core.setOutput('run',String(cfg.artifact_run));
+            core.setOutput('artifact',cfg.artifact_name);
+            core.setOutput('source',cfg.source_sha);
+            core.setOutput('revision',cfg.revision);
       - uses: actions/download-artifact@v4
         with:
-          name: valoria-integrated-web-playtest-39678224055
-          run-id: 39678224055
+          name: ${{ steps.input.outputs.artifact }}
+          run-id: ${{ steps.input.outputs.run }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: unity-raw
       - uses: actions/setup-python@v5
@@ -65,7 +84,7 @@ jobs:
       - name: Prepare the exact approved WebGL binary; no Unity rebuild
         shell: powershell
         run: |
-          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site native281 7ba5c901f968b35d596047537eff8b4892f2e799 39678224055
+          python tools/valoria-reference-clean/prepare_web.py unity-raw prepared-site ${{ steps.input.outputs.revision }} ${{ steps.input.outputs.source }} ${{ steps.input.outputs.run }}
           if($LASTEXITCODE){throw 'Exact integrated browser transport rejected'}
           node tools/valoria-reference-clean/check-web-transport.cjs prepared-site/dist/play.js
           if($LASTEXITCODE){throw 'Existing Site wrapper integrity failed'}
@@ -123,9 +142,9 @@ jobs:
       - name: Preflight exact Sites payload, pinned native source, browser tools and QA syntax
         shell: powershell
         run: |
-          # Reuse the exact compiled native281 output and validate its original manifest; do not rebuild Unity.
+          # Reuse the exact requested compiled output and validate its original manifest; do not rebuild Unity.
           # No Unity build, credential access, release, or runner reallocation.
-          node tools/closeout/closeout.mjs preflight-browser --prepared-site prepared-site --native-run 39678224055 --source-sha 7ba5c901f968b35d596047537eff8b4892f2e799 --validated-source-sha 7ba5c901f968b35d596047537eff8b4892f2e799 --script tools/valoria-reference-clean/playtest_web.cjs
+          node tools/closeout/closeout.mjs preflight-browser --prepared-site prepared-site --native-run ${{ steps.input.outputs.run }} --source-sha ${{ steps.input.outputs.source }} --validated-source-sha ${{ steps.input.outputs.source }} --script tools/valoria-reference-clean/playtest_web.cjs
           if($LASTEXITCODE){throw 'ELDORIA_CLOSEOUT_PREFLIGHT_BLOCKED: check prepared bytes/source/Playwright/Edge/FFmpeg before long QA'}
       - name: Actually play Bastion I-II with native Windows Chromium GPU and SystemClock
         shell: powershell
@@ -133,7 +152,7 @@ jobs:
         env:
           VALORIA_WEB_ROOT: ${{ github.workspace }}/prepared-site/dist
           VALORIA_PLAYTEST_OUT: ${{ github.workspace }}/web-visible-controls-evidence-${{ github.run_id }}-${{ github.run_attempt }}
-          VALORIA_SOURCE_SHA: 7ba5c901f968b35d596047537eff8b4892f2e799
+          VALORIA_SOURCE_SHA: ${{ steps.input.outputs.source }}
           VALORIA_PLAYTEST_TIMEOUT_SECONDS: '1100'
           VALORIA_WEB_LOAD_TIMEOUT_SECONDS: '180'
         run: |
