@@ -36,14 +36,14 @@ namespace Eldoria.ReferenceClean {
   public Vector3 ObservedPosition {get;private set;}
   public string ObservedPhase {get;private set;}="idle";
   public bool MarkerVisible=>standards[0]&&standards[0].gameObject.activeInHierarchy;
-  static RectTransform Rect(string name,Transform parent,int uiLayer){
+  static RectTransform CreateRect(string name,Transform parent,int uiLayer){
    var r=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();
    r.SetParent(parent,false);r.gameObject.layer=uiLayer;
    r.anchorMin=r.anchorMax=r.pivot=new Vector2(.5f,.5f);
    r.anchoredPosition=Vector2.zero;r.localScale=Vector3.one;return r;
   }
   static RoyalText Text(string name,RectTransform parent,int size,Color color,Vector2 dimensions,Vector2 offset){
-   var r=Rect(name,parent,parent.gameObject.layer);r.sizeDelta=dimensions;r.anchoredPosition=offset;
+   var r=CreateRect(name,parent,parent.gameObject.layer);r.sizeDelta=dimensions;r.anchoredPosition=offset;
    var t=r.gameObject.AddComponent<RoyalText>();
    t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");t.fontSize=size;
    t.fontStyle=FontStyle.Bold;t.color=color;t.alignment=TextAnchor.MiddleCenter;
@@ -55,26 +55,26 @@ namespace Eldoria.ReferenceClean {
    headers[0]=(RectTransform)host.Hud.Realm.transform;
    headers[1]=(RectTransform)host.Hud.Resources.transform;
    headers[2]=(RectTransform)host.Hud.Settings.transform;
-   layer=Rect("Expedition route / authoritative clock",host.Hud.transform,host.Hud.gameObject.layer);
+   layer=CreateRect("Expedition route / authoritative clock",host.Hud.transform,host.Hud.gameObject.layer);
    layer.anchorMin=Vector2.zero;layer.anchorMax=Vector2.one;layer.offsetMin=layer.offsetMax=Vector2.zero;
    layer.SetAsFirstSibling();
    objective=host.Hud.GetComponentsInChildren<RectTransform>(true).FirstOrDefault(x=>x.name=="V2 / current objective");
    for(int i=0;i<3;i++){
-    var line=Rect("Authoritative expedition route "+(i+1),layer,layer.gameObject.layer);
+    var line=CreateRect("Authoritative expedition route "+(i+1),layer,layer.gameObject.layer);
     line.anchorMin=Vector2.zero;line.anchorMax=Vector2.one;line.offsetMin=line.offsetMax=Vector2.zero;
     routes[i]=line.gameObject.AddComponent<ValoriaMarchRouteGraphic>();routes[i].raycastTarget=false;
     routes[i].color=i==0?new Color(.96f,.76f,.39f,.94f):new Color(.52f,.84f,.92f,.90f);
-    var marker=Rect(i==0?"Aldric expedition standard":"Expedition standard "+(i+1),layer,layer.gameObject.layer);
+    var marker=CreateRect(i==0?"Aldric expedition standard":"Expedition standard "+(i+1),layer,layer.gameObject.layer);
     marker.sizeDelta=new Vector2(58,58);
     var frame=marker.gameObject.AddComponent<RoyalGoldV2FrameGraphic>();
     frame.Primary=true;frame.DecorativeCorners=false;frame.raycastTarget=false;
     numbers[i]=Text("Expedition slot "+(i+1),marker,32,new Color(1,.87f,.54f),new Vector2(52,48),new Vector2(0,2));
     numbers[i].Put((i+1).ToString());
-    var caption=Rect("Expedition caption backing "+(i+1),marker,layer.gameObject.layer);
+    var caption=CreateRect("Expedition caption backing "+(i+1),marker,layer.gameObject.layer);
     caption.sizeDelta=new Vector2(184,58);caption.anchoredPosition=new Vector2(0,-60);
     var back=caption.gameObject.AddComponent<Image>();back.color=new Color(.025f,.055f,.095f,.94f);back.raycastTarget=false;
     labels[i]=Text("Expedition hero troops and real deadline "+(i+1),caption,20,new Color(1,.94f,.76f),new Vector2(180,56),Vector2.zero);
-    var direction=Rect("Offscreen expedition direction "+(i+1),marker,layer.gameObject.layer);
+    var direction=CreateRect("Offscreen expedition direction "+(i+1),marker,layer.gameObject.layer);
     direction.sizeDelta=new Vector2(20,20);direction.anchoredPosition=new Vector2(30,0);
     arrows[i]=direction.gameObject.AddComponent<RoyalIconGraphic>();arrows[i].Icon=12;
     arrows[i].color=new Color(1,.85f,.43f);arrows[i].raycastTarget=false;

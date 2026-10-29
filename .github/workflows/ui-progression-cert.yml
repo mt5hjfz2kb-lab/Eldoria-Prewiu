@@ -371,6 +371,27 @@ jobs:
           }
           Write-Host "ELDORIA_V3_PROVEN_SEARCH_INDEX_RECOVERY_APPLIED"
 
+      - name: Compile the exact Unity candidate before preparing unchanged art resources
+        shell: powershell
+        run: |
+          $ErrorActionPreference='Stop'
+          $log=Join-Path $env:RUNNER_TEMP 'Eldoria-UI-SourceCompile.log'
+          Remove-Item $log -Force -ErrorAction SilentlyContinue
+          $args=@('-batchmode','-nographics','-quit','-projectPath','Unity','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:GITHUB_WORKSPACE -PassThru
+          if(-not $p.WaitForExit(240000)){
+            & taskkill.exe /PID $p.Id /T /F|Out-Null
+            if(Test-Path $log){Get-Content $log -Tail 100}
+            throw 'Exact Unity source compilation timed out before art preparation'
+          }
+          if(-not(Test-Path $log)){throw 'Actual Unity compilation log missing'}
+          $text=Get-Content $log -Raw
+          if($p.ExitCode -ne 0 -or $text -match 'error CS[0-9]+|Scripts have compiler errors'){
+            Get-Content $log -Tail 120
+            throw 'Exact Unity source must compile before preparing art or running visual probes'
+          }
+          Write-Host 'ELDORIA_EXACT_UNITY_SOURCE_COMPILED_NO_VISUAL_ACCEPTANCE_YET'
+
       - name: Prepare canonical build-safe Bastion III resources required by scene tests
         shell: powershell
         run: |
@@ -780,6 +801,7 @@ jobs:
             ${{ runner.temp }}/Eldoria-UIProgression-EditMode.log
             ${{ runner.temp }}/Eldoria-UIProgression-PlayMode.log
             ${{ runner.temp }}/eldoria-ui-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
+            ${{ runner.temp }}/Eldoria-UI-SourceCompile.log
             ${{ runner.temp }}/Eldoria-UI-III-ResourcePreparation.log
             ${{ runner.temp }}/Eldoria-V3-Native-I-II-Visual.log
             ${{ runner.temp }}/Eldoria-V2-Native-Framing-Baseline-*.json
