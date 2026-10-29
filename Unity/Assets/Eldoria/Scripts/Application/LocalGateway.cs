@@ -746,6 +746,39 @@ namespace Eldoria.Application
                 Grant("c3-fissure",c.FissureClosed,stone:260,power:100);
                 Grant("c3-infra",state.SawmillLevel>=2&&state.BarracksLevel>=2&&c.GranaryLevel>=2,wood:220,stone:180);
             }
+            // Web c3 includes the IV ascent and a separate chapter completion
+            // reward; neither was paid by the older I-III migration.
+            if(state.BastionLevel>=4){
+                Grant("c3-bastion",true,food:180);
+                Grant("chapter-3",state.ChapterThree.GranaryLevel>0&&
+                    p.GrantedRewards.Contains("c3-food")&&state.ChapterThree.Hunts>=2&&
+                    state.ChapterThree.FissureClosed&&state.SawmillLevel>=2&&
+                    state.BarracksLevel>=2&&state.ChapterThree.GranaryLevel>=2,
+                    wood:280,stone:240,food:260,power:220);
+                // Web chapter IV: each step and its choice are independent
+                // of the up-front development priority bonus.
+                Grant("c4-sawmill2",state.SawmillLevel>=2,wood:180);
+                Grant("c4-granary2",state.ChapterThree.GranaryLevel>=2,food:220);
+                Grant("c4-barracks2",state.BarracksLevel>=2,stone:180);
+                Grant("c4-priority",!string.IsNullOrEmpty(state.ChapterThree.DevelopmentPriority),power:80);
+                Grant("c4-bastion",state.BastionLevel>=5,power:220);
+                Grant("chapter-4",state.BastionLevel>=5&&
+                    p.GrantedRewards.Contains("c4-sawmill2")&&
+                    p.GrantedRewards.Contains("c4-granary2")&&
+                    p.GrantedRewards.Contains("c4-barracks2")&&
+                    p.GrantedRewards.Contains("c4-priority"),
+                    wood:360,stone:300,food:280,power:260);
+            }
+            if(state.BastionLevel>=5){
+                // Chapter V remains in progress: level VI and Ash Stalker are
+                // not authored in the Unity catalog. Do not fake those rewards.
+                Grant("c5-stoneworks",state.ChapterThree.StoneworksLevel>0,wood:220,food:180);
+                Grant("c5-stone",state.Resources.Stone>=1200,wood:240);
+                int owned=state.Available.Total+state.Wounded.Total;
+                foreach(var march in MarchCapacityRules.WorldMarches(state))
+                    if(march.Phase!="idle")owned+=march.Troops.Total;
+                Grant("c5-army",owned>=60,wood:260,stone:180);
+            }
             return changed;
         }
         public static bool IsChapterThreeTarget(string id)=>id=="fissure-valoria"||id=="hunt-wolf"||id=="hunt-boar"||id=="meat-valoria";
