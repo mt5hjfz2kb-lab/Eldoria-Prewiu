@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read-only inventory of tracked visual assets. No Tripo, Unity or writes to sources."""
+"""Read-only inventory of tracked visual assets. Never touches source assets."""
 import argparse, hashlib, json, pathlib, subprocess
 EXT={".glb":"model3d",".gltf":"model3d",".fbx":"model3d",".blend":"editable3d",".obj":"model3d",".png":"image2d",".jpg":"image2d",".jpeg":"image2d",".webp":"image2d",".tga":"image2d",".psd":"editable2d",".svg":"vector2d",".aseprite":"editable2d"}
 def scan(root):
