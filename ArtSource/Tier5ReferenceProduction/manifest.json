@@ -21,21 +21,34 @@
       "kind": "character",
       "target_triangles": 30000,
       "task_id": "f4670d45-00c9-43eb-a658-902efdebee87",
-      "status": "SUBMITTED_REVIEW_PENDING"
+      "status": "VISUAL_BASE_ACCEPTED_OPTIMIZED",
+      "credits_consumed": 30,
+      "source_run": 40856011953,
+      "finished_run": 40858960344,
+      "optimized_triangles": 30000,
+      "rig_readiness": "PENDING_FREE_CHECK",
+      "unity_validated": false
     },
     {
       "id": "bastion-v",
       "reference_sha256": "3bcd4a00391b95047a547997995460090e7d99dc62299aeb717d1bd280441086",
       "kind": "building",
       "target_triangles": 45000,
-      "status": "NOT_SUBMITTED"
+      "status": "VISUAL_BASE_ACCEPTED_OPTIMIZED",
+      "task_id": "2e71ac58-ff2a-40b7-a09a-259fb2185e3c",
+      "credits_consumed": 30,
+      "source_run": 40859757106,
+      "finished_run": 40860591811,
+      "optimized_triangles": 45000,
+      "unity_validated": false
     },
     {
       "id": "aserradero-v",
       "reference_sha256": "60e89993a6d056088d2267a799d08530ff923c0dfa6a024fb6422cf44b1c4dcc",
       "kind": "building",
       "target_triangles": 25000,
-      "status": "NOT_SUBMITTED"
+      "status": "QUEUED",
+      "source_run": 40860664737
     },
     {
       "id": "cuartel-v",
