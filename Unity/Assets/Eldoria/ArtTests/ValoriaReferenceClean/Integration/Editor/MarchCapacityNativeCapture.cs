@@ -92,6 +92,13 @@ namespace Eldoria.ReferenceClean.Editor
                     for(int i=0;i<markers.Length;i++)
                     {
                         var marker=markers[i];var graphic=marker.GetComponent<Graphic>();
+                        Need(graphic&&marker.GetComponent<CanvasRenderer>(),
+                            "Actual expedition has a native CanvasRenderer in "+name);
+                        foreach(var caption in marker.GetComponentsInChildren<RoyalText>(false))
+                            Need(caption.GetComponent<CanvasRenderer>()&&caption.font&&
+                                caption.depth>graphic.depth&&!caption.canvasRenderer.cull&&
+                                caption.preferredHeight<=caption.rectTransform.rect.height+1f,
+                                "Real slot number and troop/deadline caption render completely in "+name);
                         Need((host.PlayerCamera.cullingMask&(1<<marker.gameObject.layer))!=0&&
                             graphic.depth>=0&&!graphic.canvasRenderer.cull,
                             "Actual world camera renders expedition standard "+i+" at "+name);

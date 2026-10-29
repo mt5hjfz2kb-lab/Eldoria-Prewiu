@@ -37,7 +37,7 @@ namespace Eldoria.ReferenceClean {
   public string ObservedPhase {get;private set;}="idle";
   public bool MarkerVisible=>standards[0]&&standards[0].gameObject.activeInHierarchy;
   static RectTransform CreateRect(string name,Transform parent,int uiLayer){
-   var r=new GameObject(name,typeof(RectTransform)).GetComponent<RectTransform>();
+   var r=new GameObject(name,typeof(RectTransform),typeof(CanvasRenderer)).GetComponent<RectTransform>();
    r.SetParent(parent,false);r.gameObject.layer=uiLayer;
    r.anchorMin=r.anchorMax=r.pivot=new Vector2(.5f,.5f);
    r.anchoredPosition=Vector2.zero;r.localScale=Vector3.one;return r;
