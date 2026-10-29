@@ -1,12 +1,12 @@
 {
   "schema_version": 2,
-  "enabled": false,
-  "status": "COMPLETED",
+  "enabled": true,
+  "status": "ACTIVE",
   "workstream_id": "valoria-master-plan-layered-construction-20261016",
   "request_id": "valoria-master-plan-layered-construction-20261016",
   "asset_or_sector": "Bastion IV–V progression, exact-reference tier-five buildings, existing management screens and world readability",
   "profile": "environment_composition",
-  "visual_gate_state": "INTEGRATED_VISUAL_PASS",
+  "visual_gate_state": "VISUAL_REJECTED",
   "ai_authorship_policy": "required",
   "diagnosis": "Owner requests fidelity to canonical web slice IV–V, small perceptible per-level upgrades and exact approved Tripo asset substitution at each individual building level five. Reuse source-only delivery PR127 and retained Unity/Blender techniques; preserve all saves and earlier systems.",
   "geometry_gap_proven": true,
@@ -31,10 +31,10 @@
     "final_gate": "Real Unity captures in both orientations; IV–V progression, independent building level caps, save/reload, UI and world usability. No physical mobile certification without measurements."
   },
   "art_approved": false,
-  "unity_visual_acceptance": "PASS_SCOPED_IV_V_NATIVE_REFERENCE_REVIEW_NOT_GLOBAL_ART_APPROVAL",
+  "unity_visual_acceptance": "REWORK_INDIVIDUAL_FACADE_ALIGNMENT_OWNER_REJECTED",
   "physical_mobile_tested": false,
   "owner_authorization": "Explicit current conversation instruction 2026-10-29",
-  "notes": "New owner-authorized IV–V scope supersedes historical I–II-only restriction. No new Tripo calls or publication authorized. Existing approved reference sources may be integrated after native review.",
+  "notes": "New owner-authorized IV–V scope supersedes historical I–II-only restriction. No new Tripo calls or publication authorized. Existing approved reference sources may be integrated after native review. Owner rejected normal city-V-complete view as still oblique. Reopened bounded per-model orientation and approach alignment; previous scoped acceptance does not cover this defect. No new geometry or paid generation.",
   "completed_at": "2026-10-29T17:23:03.594779+00:00",
   "closure": {
     "main_merge_commit": "b7aefa07f9897fd8fe7c43f9bc3b79e4df351d5e",
