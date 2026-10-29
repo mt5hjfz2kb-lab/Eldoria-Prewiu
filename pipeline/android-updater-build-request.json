@@ -1,9 +1,9 @@
 {
-  "enabled": true,
+  "enabled": false,
   "versionCode": 19,
   "versionName": "1.19",
   "scene": "Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Valoria_City_World_UI.unity",
   "workstreamId": "valoria-master-plan-layered-construction-20261016",
   "budgetEur": 0,
-  "note": "Owner explicitly authorizes APK and WebGL release after verifying five approved Tripo building GLB hashes and real 270-degree Unity captures. Each model activates only when its own building completes level5; preserve code18 package/signature/saves, no unmerged troops/mailbox. Same canonical Unity tree as integrated PR129; existing native postmerge job40918349528 must finish first on the single shared Windows runner. Release requires this exact signed build source and public-byte verification; budget0."
+  "note": "OWNER_VISUAL_REJECTION: sideways tier V entrances in actual city screenshot. Do not publish queued Android19 run40922548307; live native lease revoked. Fix orientation and inspect actual Unity before a new exact-source build request. Preserve public channel18."
 }
