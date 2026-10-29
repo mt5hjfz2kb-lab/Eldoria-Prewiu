@@ -38,6 +38,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalButton minus, plus, action, back, switchDestination, chapterAction;
         RoyalText chapterActionLabel;
         string selectedHero="aldric";
+        int selectedTier=1; // T2 unlocks at Cuartel IV; T1 is never converted.
         RoyalText actionLabel, switchLabel;
         Slider slider;
         int selectedCount = 10;
@@ -370,8 +371,10 @@ namespace Eldoria.UI.RoyalGold.V2
             if(s.BastionLevel<2 || s.BarracksLevel<1){Close();return;}
             bool training=CurrentDestination==Destination.Training;
             bool trainingActive=training && s.RecruitmentCompletesUtcTicks>0;
+            if(s.BarracksLevel<4)selectedTier=1;
+            if(!training&&selectedTier==2&&s.Available.ArcherT2==0)selectedTier=1;
             maxCount=training?Mathf.Min(500,SliceRules.MaxAffordableArchers(s)):
-                Mathf.Min(s.Available.ArcherT1,MarchCapacityRules.Capacity(s,selectedHero));
+                Mathf.Min(selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1,MarchCapacityRules.Capacity(s,selectedHero));
             // A pending operation has already spent its resources. Show the
             // real saved quantity rather than a newly affordable quantity.
             if(trainingActive)
@@ -390,11 +393,12 @@ namespace Eldoria.UI.RoyalGold.V2
             selectedText.Put(maxCount>0?selectedCount.ToString():"—");
             heading.Put(training?"CUARTEL · ENTRENAMIENTO":"SALA DE MARCHAS");
             subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · PREPARACIÓN DE EXPEDICIONES");
-            unitTitle.Put(training?"ARQUEROS · T1":HeroName(selectedHero));
+            unitTitle.Put(training?"ARQUEROS · T"+selectedTier:HeroName(selectedHero)+" · T"+selectedTier);
             chapterAction.gameObject.SetActive(s.BastionLevel>=3 && (training||s.ChapterThree.LyraRecruited));
-            chapterActionLabel.Put(training?"MEJORAR CUARTEL":"CAMBIAR HÉROES");
-            unitDetail.Put(training?"Infantería de proyectiles · Nivel I\nUnidad disponible: Arquero T1":
-                "Héroe disponible · Mando de expedición\nUnidad seleccionable: Arqueros T1");
+            chapterActionLabel.Put(training?(s.BarracksLevel>=4?"ALTERNAR T1 / T2":"MEJORAR CUARTEL"):"CAMBIAR HÉROES");
+            unitDetail.Put(training?"Infantería de proyectiles · T"+selectedTier+
+                "\nT2 se desbloquea con Cuartel IV; T1 se conserva.":
+                "Héroe disponible · Mando de expedición\nUnidad seleccionable: Arqueros T"+selectedTier);
             switchLabel.Put(training?"PREPARAR MARCHA":"ENTRENAR TROPAS");
             switchDestination.interactable=true;
             bool busy=s.RecruitmentCompletesUtcTicks>0;
@@ -425,23 +429,24 @@ namespace Eldoria.UI.RoyalGold.V2
                     trainingProgressFill.sizeDelta=new Vector2(
                         trainingProgress.rect.width*elapsed,0f);
                 }
-                status.Put("DISPONIBLES  "+s.Available.ArcherT1+
-                    "\nENTRENANDO  "+s.PendingRecruitArchers+
+                status.Put("DISPONIBLES T"+selectedTier+"  "+(selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1)+
+                    "\nENTRENANDO T"+(s.PendingRecruitTier==2?2:1)+"  "+s.PendingRecruitArchers+
                     (busy?"\n\nCUENTA ATRÁS  "+Clock(leftSeconds):"\n\nSin entrenamiento activo"));
-                actionLabel.Put(busy?"ENTRENANDO · "+Clock(leftSeconds):"ENTRENAR "+selectedCount+" ARQUEROS");
+                actionLabel.Put(busy?"ENTRENANDO · "+Clock(leftSeconds):"ENTRENAR "+selectedCount+" T"+selectedTier);
                 action.interactable=!busy && maxCount>0 && Time.unscaledTime>=submitAfter;
             }
             else
             {
                 trainingProgress.gameObject.SetActive(false);
-                var troops=new ArmyRoster{ArcherT1=maxCount>0?selectedCount:0};
+                var troops=new ArmyRoster{ArcherT1=selectedTier==1&&maxCount>0?selectedCount:0,
+                    ArcherT2=selectedTier==2&&maxCount>0?selectedCount:0};
                 var power=SliceRules.Expedition(troops,selectedHero);
                 summary.Put("COMPOSICIÓN DE LA MARCHA\n\n"+HeroName(selectedHero)+"\n"+
-                    "Arqueros T1   "+troops.ArcherT1+"\n\nPODER  "+power.Power+
+                    "Arqueros T"+selectedTier+"   "+troops.Total+"\n\nPODER  "+power.Power+
                     "\nATAQUE  "+power.Attack+"   DEFENSA  "+power.Defense+
                     "\nVIDA  "+power.Health+"   RUPTURA  "+power.Break);
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
-                status.Put("DISPONIBLES  "+s.Available.ArcherT1+
+                status.Put("DISPONIBLES T"+selectedTier+"  "+(selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1)+
                     "\nCAPACIDAD DE "+HeroName(selectedHero)+"  "+MarchCapacityRules.Capacity(s,selectedHero)+
                     "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
                     "\nMARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
@@ -455,7 +460,13 @@ namespace Eldoria.UI.RoyalGold.V2
         static string HeroName(string id)=>id=="lyra"?"LYRA":id=="aldric+lyra"?"SIR ALDRIC · LYRA":"SIR ALDRIC";
         void ChapterAction()
         {
-            if(CurrentDestination==Destination.Training){root.gameObject.SetActive(false);Hud.SelectBuilding("upgrade-barracks");}
+            if(CurrentDestination==Destination.Training){
+                if(gateway.Snapshot().BarracksLevel>=4){
+                    selectedTier=selectedTier==1?2:1;
+                    Refresh();return;
+                }
+                root.gameObject.SetActive(false);Hud.SelectBuilding("upgrade-barracks");
+            }
             else {selectedHero=selectedHero=="aldric"?"lyra":selectedHero=="lyra"?"aldric+lyra":"aldric";Refresh();}
         }
         void Confirm()
@@ -465,9 +476,11 @@ namespace Eldoria.UI.RoyalGold.V2
             bool training=CurrentDestination==Destination.Training;
             if(training&&(s.RecruitmentCompletesUtcTicks>0 || selectedCount>SliceRules.MaxAffordableArchers(s)))return;
             if(!training&&(!MarchCapacityRules.CanStart(s,utcTicks()) ||
-                selectedCount>s.Available.ArcherT1 ||
+                selectedCount>(selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1) ||
                 selectedCount>MarchCapacityRules.Capacity(s,selectedHero)))return;
-            string target=training?"archer:t1:"+selectedCount:"march-main:"+selectedCount+":"+selectedHero;
+            string target=training?"archer:t"+selectedTier+":"+selectedCount:
+                selectedTier==1?"march-main:"+selectedCount+":"+selectedHero:
+                "march-main:0:"+selectedCount+":0:"+selectedHero;
             string kind=training?"Recruit":"ConfigureMarch";
             submitAfter=Time.unscaledTime+.45f;
             var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
