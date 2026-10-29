@@ -26,6 +26,16 @@ namespace Eldoria.ReferenceClean {
     close=v2?Point(v2.VisibleBuildingCloseButton,v2.BuildingVisible):Point(hud.Building.Close)
    };
    var nav=hud.Navigation.Items.FirstOrDefault(x=>x.Section==RoyalSection.World);if(nav!=null)f.controls.world=Point(nav.Button);
+   // Observe the independent building destination a player actually sees.
+   // This opt-in diagnostic reads controls only; it exposes no command/save setter.
+   var building=hud.GetComponent<RoyalGoldV3BuildingScreens>();
+   if(building&&building.IsOpen){
+    f.management=new Management{destination="Building:"+building.BuildingId,bounds=ScreenBounds(building.VisibleRoot)};
+    f.controls.primary=Point(building.VisibleAction);
+    f.controls.close=Point(building.VisibleClose);
+    f.controls.objective.enabled=false;
+    if(f.controls.world!=null)f.controls.world.enabled=false;
+   }
    var management=hud.GetComponent<RoyalGoldV3ManagementScreens>();
    if(management&&management.IsOpen){
     f.management=new Management{destination=management.CurrentDestination.ToString(),quantity=management.SelectedQuantity,

@@ -707,6 +707,10 @@ async function main() {
       report.selection_framing.some(check => check.pass &&
         check.samples.some(sample => sample.kind === 'FULL_SCREEN_MANAGEMENT' && sample.destination === destination)));
     need(report.checks.management_destinations, 'Training and march must each pass real full-screen control framing');
+    report.checks.city_building_destinations = ['Building:sawmill', 'Building:bastion'].every(destination =>
+      report.selection_framing.some(check => check.pass &&
+        check.samples.some(sample => sample.kind === 'FULL_SCREEN_MANAGEMENT' && sample.destination === destination)));
+    need(report.checks.city_building_destinations, 'Sawmill and Bastion must each use their actual full-screen building controls');
     report.checks.complete_i_ii = latest.bastion === 2 && latest.sawmill > 0 && latest.barracks > 0 &&
       latest.trained >= 20 && latest.configured && latest.scout && latest.engendro && phase(latest) === 'idle' && !latest.busy;
     need(report.checks.complete_i_ii, 'Bastion II completion did not retain all required systems and the returned march');
