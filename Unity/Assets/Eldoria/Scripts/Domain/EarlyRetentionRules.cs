@@ -32,6 +32,8 @@ namespace Eldoria.Domain
         // saved with the same idempotent player record, not another inventory.
         public string LatestDiscoveryTitle="", LatestDiscoveryText="";
         public int TotalScoutReports;
+        // PR126 contribution: earned families persist after old orders are retired.
+        public int ScoutDiscoveryMask;
         public long LastIdleClaimUtcTicks;
         public List<ScoutOrder> Orders=new List<ScoutOrder>();
         public EarlyRetentionState Copy()
@@ -128,12 +130,20 @@ namespace Eldoria.Domain
             }
             var enemy=new WorldCreatureStats(hp,atk,def,brk,0,0);
             return new VigilantStage(stage,chapter,level,
-                boss && level==15?"Engendro de la Brecha":
-                    boss?"Guardián del umbral":normal[variance],
+                boss?GuardianName(level):normal[variance],
                 boss?GuardianTrait(level):traits[variance],
                 locations[(chapter-1)%locations.Length],enemy);
         }
 
+        public static string GuardianName(int step)
+        {
+            switch(step){case 5:return "Guardián de la Coraza";
+                case 10:return "Acechador del Umbral";
+                case 15:return "Engendro de la Brecha";
+                case 20:return "Centinela Inquebrantable";
+                case 25:return "Vigía de las Cenizas";
+                default:return "Guardián del umbral";}
+        }
         public static string GuardianTrait(int step)
         {
             switch(step)
@@ -178,7 +188,8 @@ namespace Eldoria.Domain
             var hero=report.HeroId=="lyra"?"Lyra":
                 report.HeroId=="aldric+lyra"?"Aldric y Lyra":"Aldric";
             return report.Rounds+" rondas · "+report.Troops+" tropas · "+hero+
-                "\nPoder "+report.PlayerPower+" · Índice rival "+report.EnemyPower+
+                "\nPoder "+report.PlayerPower+" · Rival "+report.EnemyPower+
+                " · Vida "+report.RemainingHealth+
                 "\n"+CombatAdvice(stage);
         }
         // Lore variants are deterministic from the saved order, so a reload
@@ -250,6 +261,13 @@ namespace Eldoria.Domain
         {
             if(s==null)return false;
             var p=Get(s);bool changed=false;
+            // Migrate only genuine legacy claims BEFORE UTC cleanup removes them.
+            // Max and bitwise OR are idempotent across load, refresh and retries.
+            int reports=RevealedScoutReports(p),mask=p.ScoutDiscoveryMask;
+            foreach(var old in p.Orders)
+                if(old!=null&&old.Claimed&&old.Kind>=0&&old.Kind<4)mask|=1<<old.Kind;
+            if(reports!=p.TotalScoutReports||mask!=p.ScoutDiscoveryMask)
+            {p.TotalScoutReports=reports;p.ScoutDiscoveryMask=mask;changed=true;}
             foreach(var order in p.Orders)
             {
                 if(order==null||order.StartedUtcTicks<=0||order.EndsUtcTicks>utcNow||order.TroopsReturned)continue;
@@ -401,6 +419,7 @@ namespace Eldoria.Domain
             p.AldricExperience=checked(p.AldricExperience+20);
             order.Claimed=true;
             p.TotalScoutReports=checked(p.TotalScoutReports+1);
+            p.ScoutDiscoveryMask|=1<<(order.Kind&3);
             p.LatestDiscoveryTitle=ScoutDiscoveryTitle(order);
             p.LatestDiscoveryText=ScoutDiscoveryText(order);
             message="Encargo completado · "+ScoutRewardText(order.Kind);

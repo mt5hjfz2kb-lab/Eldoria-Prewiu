@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Eldoria.Domain;
 using Eldoria.UI.RoyalGold;
 using Eldoria.World4XPrototype;
@@ -42,12 +43,14 @@ namespace Eldoria.ReferenceClean {
     otherLabels[i]=marker.GetComponentInChildren<RoyalText>(true);
    }
   }
-  void UpdateAdditional(PlayerState state){
+  void UpdateAdditional(PlayerState state,bool investigating){
+   // Investigation uses the primary visual; keep BOTH simultaneous world routes visible.
+   var displayed=investigating?MarchCapacityRules.WorldMarches(state).Where(m=>m.Phase!="idle").ToList():state.ExtraMarches;
    var origin=host.FindTarget("valoria-map-city");
    var canvas=layer.GetComponentInParent<Canvas>();
    var uiCamera=canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera;
    for(int i=0;i<2;i++){
-    var m=state.ExtraMarches!=null&&i<state.ExtraMarches.Count?state.ExtraMarches[i]:null;
+    var m=displayed!=null&&i<displayed.Count?displayed[i]:null;
     if(!host.InWorld||m==null||m.Phase=="idle"||!origin){
      otherStandards[i].gameObject.SetActive(false);
      otherRoutes[i].SetPoints(Array.Empty<Vector2>());
@@ -83,8 +86,8 @@ namespace Eldoria.ReferenceClean {
    if(!host||!host.Ready||!layer)return;
    if(sampled==null||Time.unscaledTime>=nextSample){sampled=host.City.Gateway.Snapshot();nextSample=Time.unscaledTime+.1f;}
    var s=sampled;
-   UpdateAdditional(s);
    bool investigating=s.ChapterThree.InvestigationEndsUtcTicks>host.City.Clock.UtcTicks;
+   UpdateAdditional(s,investigating);
    var march=investigating?new MarchState{TargetId="fissure-valoria",HeroId="aldric",Route=s.ChapterThree.InvestigationRoute,Phase="investigating"}:s.March;
    string phase=march.Phase;ObservedPhase=phase;
    if(observed&&lastPhase!="idle"&&phase=="idle"){

@@ -121,7 +121,8 @@ namespace Eldoria.ReferenceClean.Editor
             hud.SelectBuilding("");
             var fresh=host.City.Gateway.Snapshot();
             fresh.SawmillLevel=1;
-            fresh.BastionLevel=2;
+            fresh.BastionLevel=3;
+            fresh.ChapterThree.LyraRecruited=true;
             fresh.BarracksLevel=1;
             fresh.Available=new ArmyRoster{ArcherT1=195};
             fresh.MarchConfigured=false;
@@ -143,8 +144,12 @@ namespace Eldoria.ReferenceClean.Editor
             Need(host.TrySetWorld(true),"Actual world navigation is available");
             yield return new WaitForSecondsRealtime(.3f);
             Image(host,"three-marches-before-horizontal",1600,900);
+            Need(gateway.Execute(Command(gateway,"native-config-lyra","ConfigureMarch","march-main:60:lyra")).Ok,
+                "Prepare Lyra for primary march, independently of Aldric");
             Need(gateway.Execute(Command(gateway,"native-march-1","Gather","forest-valoria")).Ok,
                 "First real forest gathering starts");
+            Need(gateway.Execute(Command(gateway,"native-config-aldric","ConfigureMarch","march-main:60:aldric")).Ok,
+                "Prepare Aldric for an additional march");
             Need(gateway.Execute(Command(gateway,"native-march-2","Gather","quarry-valoria")).Ok,
                 "Second independent real quarry gathering starts");
             Need(gateway.Execute(Command(gateway,"native-march-3","Fight","corrupt-scout")).Ok,
@@ -169,6 +174,18 @@ namespace Eldoria.ReferenceClean.Editor
             Image(host,"three-marches-active-horizontal",1600,900);
             Image(host,"three-marches-active-vertical",900,1600);
             Image(host,"three-marches-active-phone",390,844);
+            Need(host.TrySetWorld(false),"City can be inspected while three armies are away");
+            var aldric=host.GetComponent<Eldoria.AldricCity.AldricCityRoaming>();
+            for(int i=0;i<300&&(aldric==null||!aldric.ApprovedVisualReady);i++)yield return null;
+            yield return new WaitForSecondsRealtime(.4f);
+            Need(aldric!=null&&aldric.ApprovedVisualReady&&!aldric.IsCityActorVisible&&
+                snap.March.HeroId=="lyra"&&snap.ExtraMarches[0].HeroId=="aldric",
+                "Actual Aldric is absent when only additional marches contain him");
+            host.City.ReloadForProbe();
+            yield return new WaitForSecondsRealtime(.4f);
+            gateway=host.City.Gateway;
+            Need(MarchCapacityRules.ActiveCount(gateway.Snapshot(),host.City.Clock.UtcTicks)==3&&
+                !aldric.IsCityActorVisible,"Three in-flight armies and actual hero absence survive reload");
             var clock=(ValoriaReferenceCleanGameplay.TestClock)host.City.Clock;
             clock.Step(30);
             gateway.Advance();
@@ -201,9 +218,25 @@ namespace Eldoria.ReferenceClean.Editor
                 "The actual touch slider cannot select more troops than Aldric can command");
             Image(host,"march-composer-horizontal",1600,900);
             Image(host,"march-composer-vertical",900,1600);
+            manager.Close();
+            gateway=host.City.Gateway;
+            Need(gateway.Execute(Command(gateway,"native-investigate","InvestigateFissure","fissure-valoria")).Ok,
+                "Actual investigation starts in one global slot");
+            Need(gateway.Execute(Command(gateway,"native-mixed-world1","Gather","forest-valoria")).Ok&&
+                gateway.Execute(Command(gateway,"native-mixed-world2","Gather","quarry-valoria")).Ok,
+                "Investigation allows both other global march slots");
+            Need(!gateway.Execute(Command(gateway,"native-mixed-fourth","Fight","corrupt-scout")).Ok,
+                "Mixed fourth operation is rejected");
+            Need(host.TrySetWorld(true),"Mixed-operation world can be inspected");
+            yield return new WaitForSecondsRealtime(.4f);
+            Need(hud.GetComponentsInChildren<RectTransform>(false).Count(x=>
+                x.name=="Aldric expedition standard"||x.name=="Expedition standard 2"||x.name=="Expedition standard 3")==3,
+                "Investigation and BOTH world armies have active route markers");
+            Image(host,"investigation-and-two-marches-horizontal",1600,900);
+            Image(host,"investigation-and-two-marches-phone",390,844);
             File.WriteAllText(Path.Combine(Output,"result.txt"),
                 "GLOBAL_THREE_MARCH_NATIVE_PASS\n"+
-                "captured=6\n"+
+                "captured=8\n"+
                 string.Join("\n",Checks)+"\n"+
                 "owner-save-modified=false\n");
             Debug.Log("GLOBAL_THREE_MARCH_NATIVE_PASS");

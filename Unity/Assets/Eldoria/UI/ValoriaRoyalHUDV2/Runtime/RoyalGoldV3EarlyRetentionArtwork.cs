@@ -361,4 +361,55 @@ namespace Eldoria.UI.RoyalGold.V2
             }
         }
     }
+    /// <summary>
+    /// Four tiny illuminated cartographer map pins, based only on actual
+    /// completed Scout kinds. Pure UI mesh; no textures, taps, or invented loot.
+    /// </summary>
+    public sealed class RoyalGoldV3ScoutDiscoverySeals : MaskableGraphic
+    {
+        public int DiscoveredMask;
+        static readonly Vector2[] Points={
+            new Vector2(.30f,.39f),new Vector2(.47f,.64f),
+            new Vector2(.68f,.47f),new Vector2(.78f,.70f)
+        };
+        Color Tone(Color c)=>new Color(c.r*color.r,c.g*color.g,c.b*color.b,c.a*color.a);
+        void Disc(VertexHelper vh,Vector2 origin,float radius,Color tint,int count=16)
+        {
+            int start=vh.currentVertCount;
+            vh.AddVert(origin,Tone(tint),Vector2.zero);
+            for(int i=0;i<=count;i++)
+            {
+                float a=i*Mathf.PI*2f/count;
+                var point=origin+new Vector2(Mathf.Cos(a),Mathf.Sin(a))*radius;
+                vh.AddVert(point,Tone(tint),Vector2.zero);
+                if(i>0)vh.AddTriangle(start,start+i,start+i+1);
+            }
+        }
+        protected override void OnPopulateMesh(VertexHelper vh)
+        {
+            vh.Clear();
+            var r=rectTransform.rect;
+            if(r.width<100f||r.height<90f)return;
+            float size=Mathf.Clamp(Mathf.Min(r.width,r.height)*.033f,6.5f,15f);
+            for(int i=0;i<Points.Length;i++)
+            {
+                if((DiscoveredMask&(1<<i))==0)continue;
+                var center=new Vector2(r.xMin+r.width*Points[i].x,r.yMin+r.height*Points[i].y);
+                var gold=new Color(.99f,.78f,.40f,.98f);
+                Disc(vh,center,size*1.65f,new Color(.99f,.65f,.25f,.18f));
+                Disc(vh,center,size*1.22f,new Color(.19f,.11f,.10f,.96f));
+                Disc(vh,center,size*.96f,gold);
+                Disc(vh,center,size*.66f,new Color(.34f,.20f,.14f,1f));
+                Disc(vh,center,size*.32f,new Color(.95f,.83f,.52f,1f));
+                // The seal's tiny point directs the eye to the region; no
+                // separate clickable marker overlaps the real board actions.
+                int k=vh.currentVertCount;
+                vh.AddVert(center+new Vector2(-size*.35f,-size*.80f),Tone(gold),Vector2.zero);
+                vh.AddVert(center+new Vector2(size*.35f,-size*.80f),Tone(gold),Vector2.zero);
+                vh.AddVert(center+new Vector2(0,-size*1.63f),Tone(gold),Vector2.zero);
+                vh.AddTriangle(k,k+1,k+2);
+            }
+        }
+    }
+
 }

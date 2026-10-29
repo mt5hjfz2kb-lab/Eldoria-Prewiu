@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-28T16:09:00Z",
+  "updated_at": "2026-10-29T07:37:04.287Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -17,6 +17,133 @@
     "note": "Logical archival, not repository ACL locking or remote chat termination. No running GitHub jobs at consolidation preflight."
   },
   "active": [
+    {
+      "id": "eldoria-retention-first-evolution-20261028",
+      "title": "Early retention first evolution — 5 guardian profiles, meaningful combat reports, scout narrative, gilded map discoveries",
+      "owner": "codex-pr120-exact-visual-pr122-20261028",
+      "branch": "feature/eldoria-retention-first-evolution-20261028",
+      "status": "active",
+      "ownership_state": "claimed",
+      "claimed_at": "2026-10-28T21:59:00Z",
+      "base_main_sha": "358c1bcf98e052557734664b2a26cb24f56b77dc",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
+        "tools/early-retention/**",
+        "docs/early-retention/first-evolution/**",
+        ".github/workflows/early-retention-domain.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Original painted assets reused; native uGUI overlay only; no 3D/assets regenerated and no paid API.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-retention-first-evolution-20261028.json",
+      "dependency": "PR120 integrated; stack on PR124's new march capacity so its limited army rules remain intact; PR122 owns Windows runner for native proof.",
+      "phase": "SOURCE_IMPLEMENTATION",
+      "next": "Implement five distinct guardian combat profiles, explain wins/losses, deterministic scout reports and map seals; CI; native after lease release."
+    },
+    {
+      "id": "eldoria-retention-engagement-evolution-20261028",
+      "title": "Eldoria — guardianes tácticos, informes y descubrimientos de Exploradores",
+      "owner": "codex-pr120-exact-visual-pr122-20261028",
+      "branch": "feature/retention-engagement-evolution-20261028",
+      "status": "active",
+      "ownership_state": "claimed",
+      "claimed_at": "2026-10-29T07:37:04.287Z",
+      "base_main_sha": "7b92d0c391942e3630301aa2fb3409c5076b16d8",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionScreens.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/EarlyRetentionRulesTests.cs",
+        "tools/early-retention/Program.cs",
+        "docs/early-retention/ENGAGEMENT_EVOLUTION_20261028.md",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3EarlyRetentionArtwork.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs",
+        "Unity/Assets/Eldoria/Scripts/Editor/EarlyRetentionEngagementNativeCapture.cs.meta",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/EarlyRetentionNativeCapture.cs",
+        ".github/workflows/retention-engagement-domain.yml",
+        ".github/workflows/retention-engagement-native.yml",
+        ".github/workflows/ui-progression-cert.yml",
+        "docs/early-retention/first-evolution/**",
+        "docs/early-retention/engagement-native/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "UI-only text, colored seals and pre-existing painterly assets; no new art files, geometry, textures or external AI spend",
+      "dependency": "PR124 native validation owns Windows. Source consolidation uses no heavy resource; final candidate will retain all PR124 fixes.",
+      "phase": "RECONCILE_PR126_CONTRIBUTIONS_WITHOUT_DUPLICATE_SYSTEMS",
+      "next": "Preserve capacity-aware PR125 combat and earned report milestones, incorporate PR126 guardian naming/family discovery seals and save proof; one actual domain/UI system; obtain native capture and full regression after PR124.",
+      "last_verified": {
+        "source_sha": "f3b44295bb7cd0e2e2aae85624a78ed0f2591251",
+        "domain_ci_run": 40770077163,
+        "domain_ci": "PASS",
+        "ownership_ci_run": 40770082200,
+        "unity_native": "PENDING_RUNNER_HELD_BY_PR122",
+        "art_approved": false,
+        "android_released": false
+      },
+      "ownership_history": [
+        {
+          "owner": "codex-pr120-exact-visual-pr122-20261028",
+          "ownership_revision": 0,
+          "released_at": "2026-10-29T07:37:04.287Z",
+          "reason": "Owner explicitly requests completion of PR124/125/126. PR125 is the earliest canonical retention-evolution implementation; incorporate distinct PR126 contributions without duplicate rules."
+        }
+      ],
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "pr": 125
+    },
+    {
+      "id": "eldoria-global-march-capacity-three-slots-20261028",
+      "title": "Eldoria — capacidad global por marcha, héroes/Cuartel y exactamente tres simultáneas",
+      "owner": "codex-pr120-exact-visual-pr122-20261028",
+      "branch": "feature/global-march-capacity-three-slots-20261028",
+      "status": "active",
+      "ownership_state": "claimed",
+      "claimed_at": "2026-10-29T07:29:01.566Z",
+      "base_main_sha": "66276b215075e62f1771e935633db767cccba11e",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Domain/EarlyRetentionRules.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/ZoneOneGatewayHost.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaIntegratedWorld.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/ValoriaMarchPresentation.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+        "tools/march-capacity/**",
+        ".github/workflows/march-capacity-contract.yml",
+        "docs/marches/**",
+        ".github/workflows/march-capacity-native.yml",
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs.meta",
+        "Unity/Assets/Eldoria/Tests/EditMode/SliceCoreTests.cs",
+        "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs",
+        "Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRuntimeTests.cs"
+      ],
+      "resources": [
+        "windows-runner-heavy"
+      ],
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Runtime-only AI-authored uGUI map-marker integration; no new 3D, material or asset content. Owner authorized 3-march gameplay change.",
+      "art_production_request": "pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json",
+      "dependency": "PR120 and PR122 merged and Android18 delivered. No active heavy claim; preserve their certified runtime and paid source assets.",
+      "phase": "RECONCILE_CURRENT_MAIN_AND_NATIVE_VALIDATION",
+      "next": "Reconcile latest main, audit global slots/save/runtime Aldric, obtain genuine native three-march and regression evidence, inspect captures, merge canonical PR124.",
+      "ownership_history": [
+        {
+          "owner": "codex-pr120-exact-visual-pr122-20261028",
+          "ownership_revision": 0,
+          "released_at": "2026-10-29T07:29:01.566Z",
+          "reason": "Owner explicitly requests finish PR124/125/126; resume same canonical mission after PR120/122 delivery."
+        }
+      ],
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "pr": 124
+    },
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
@@ -86,15 +213,17 @@
         "docs/bastion-iii/**",
         "tools/bastion-iii/**",
         ".github/workflows/bastion-iii-native.yml",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+        "scripts/check_unity_slice.py",
+        "docs/ui-v3/ANDROID_1_18_RELEASE.md"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BASTION_III_PR117_ANDROID_117_DELIVERED_AVAILABLE",
-      "next": "Bastión III integrado y familia Android1.17 publicada. Sin trabajo pendiente bajo este encargo ni reserva Windows; disponible para próximo trabajo autorizado. Windows desktop generic build gate 40586040000 failed packaging resources.assets after Unity Edit/PlayMode passed: diagnose separately if desktop requested; does not revoke signed Android delivery.",
+      "phase": "PR120_PR122_ANDROID_118_DELIVERED_NATIVE_VERIFIED_AVAILABLE",
+      "next": "PR120 andPR122 complete, merged and natively validated; signed Android1.18 delivered through family channel with exact public bytes/source/original certificate. Native reservation is free. Rewards remain provisional; physical-phone installation/performance and unrelated PR124/125/126 are not claimed.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1162,7 +1291,7 @@
           "reason": "Current owner-directed PR120 then PR122 continuation reconciles inherited city/UI integration scopes previously held by the same PR119/120 completion session. PR119 is merged and native-certified; no new city/world art production or extra Windows lease."
         }
       ],
-      "ownership_revision": 48,
+      "ownership_revision": 51,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
@@ -1262,7 +1391,36 @@
       "canonical_pr": 117,
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
       "last_handoff": "Owner-authorized takeover PR119 + PR120. Preserve running native40657717839 exact source01685c18; no cancellation or duplicate dispatch. Review eight genuine captures, then certify119 and reconcile both. Zero spend, no release before required gates.",
-      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6."
+      "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
+      "scope_extension_reason": "Existing main native-gate maintenance now owns its source verifier too: verify that the generic full-suite process budget is no shorter than the completed shared UI certification, preventing this real600second timeout regression. Same owner, no resource transfer, no new workstream.",
+      "android18_signed_candidate": {
+        "build_run_id": 40798180869,
+        "source": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
+        "artifact_id": 12864609668,
+        "bytes": 458971568,
+        "sha256": "7396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644",
+        "original_certificate_independently_verified": true,
+        "approved_aldric_glb_packaged_exact": true,
+        "physical_phone_tested": false
+      },
+      "android18_delivery": {
+        "status": "PUBLIC_DELIVERED",
+        "build_run_id": 40798180869,
+        "publisher_run_id": 40801382525,
+        "source": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
+        "release_asset_id": 686976107,
+        "apk_url": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/releases/download/eldoria-android-code18/Eldoria-Valoria-code18.apk",
+        "bytes": 458971568,
+        "sha256": "7396c5a9e879a2566b99663e78169c4895ade569c5e528f9935f3186e3b0d644",
+        "certificate_sha256": "f479ca92ccfa256a991936b23d0153ffad247b352a8a5ed569457db8274443d8",
+        "approved_aldric_glb_sha256": "c28a65b6040225256ae047d8fd773849771895ac378041e0882f279517e78c8b",
+        "public_byte_comparison_passed": true,
+        "family_channel_version": 18,
+        "physical_phone_tested": false,
+        "rewards_provisional": true,
+        "build_request_disabled": true,
+        "release_request_disabled": true
+      }
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
@@ -1395,7 +1553,7 @@
         "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
         "rig_joint_count": 12,
         "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-        "skin_weights_sum_max_error": 1.1920929e-07,
+        "skin_weights_sum_max_error": 1.1920929e-7,
         "static_retained": true,
         "art_approved": false,
         "isolated_unity_import_tested": false,
@@ -1827,17 +1985,15 @@
     {
       "id": "eldoria-aldric-city-roaming-20261028",
       "title": "PR122 — Aldric auténtico animado paseando por Valoria",
-      "owner": "codex-pr120-exact-visual-pr122-20261028",
-      "ownership_revision": 2,
-      "ownership_state": "claimed",
-      "write_scope_released": false,
+      "owner": null,
+      "ownership_revision": 3,
+      "ownership_state": "available",
+      "write_scope_released": true,
       "status": "active",
       "branch": "feature/aldric-city-roaming-20261028",
       "pr": 122,
       "claimed_at": "2026-10-28T17:08:00Z",
-      "resources": [
-        "windows-runner-heavy"
-      ],
+      "resources": [],
       "scope": [
         "Unity/Assets/Eldoria/AldricCity/**",
         "Unity/Assets/Eldoria/AldricCity.meta",
@@ -1853,8 +2009,8 @@
         ".github/workflows/ui-progression-cert.yml",
         ".github/workflows/tester-qa.yml"
       ],
-      "phase": "PR122_EXCLUSIVE_NATIVE_ROAMING_VALIDATION",
-      "next": "PR120 merged and required main native queue completed successfully. Execute existing Aldric native workflow on exact candidate: approvedGLB/scale/road/fullcapsule/boneanimation/visibility/save and12realviews. Then full shared UI regression and actual image review before merge; no duplicate workstream or credits.",
+      "phase": "PR122_MERGED_COMPLETE_NATIVE_MAIN_VALIDATED_ANDROID_HANDOFF",
+      "next": "PR122 complete and merged; full shared47/73/12 plus main47/73/Windows/benchmark validated. Same-owner existing main masterplan now owns signed Android1.18 delivery; rewards remain provisional, physical-phone proof pending.",
       "delivery_definition": {
         "deliverable": "Aldric approved animated character safely walking actual Valoria paving with correct mission/world visibility and preserved saves",
         "evidence": "Exact GLB hash, actual Unity compile/PlayMode, genuine city idle/walking captures in both orientations, route/motion/visibility/save checks",
@@ -1864,7 +2020,165 @@
       "art_production_routing": "required",
       "art_production_request": "pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json",
       "art_production_routing_reason": "Byte-identical reuse of already owner-approved rigged Aldric, not new generation or geometry/material authoring. Runtime import, real city composition, movement and camera validation require source identity and independent Unity inspection.",
-      "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime."
+      "ci_scope_note": "Owner-authorized120then122completion: CI files move from released retention scope to same current Aldric owner. Preserve all checks/tests, accept sole registered122revision2 native lease, and reuse completed frozen-web proof only when entire web job/allinputs remain identical. Shared UI must run fully for new Aldric runtime.",
+      "current_native_cert": {
+        "status": "SUCCESS",
+        "source": "e47c3bb525439949c19227673e66c88730d0349b",
+        "compiled_source": "0255c811d5c56ef4f027cae91c3c627083bc27c6",
+        "compiled_tree": "0580ba516b21a9a0af45dead209ae298b55fcfc4",
+        "run_id": 40789374485,
+        "editmode_passed": 47,
+        "playmode_passed": 73,
+        "playmode_failed": 0,
+        "playmode_skipped": 0,
+        "full_shared_suite_executed": true,
+        "actual_views": 12,
+        "all_final_views_individually_inspected": true,
+        "artifact_id": 12862316329,
+        "artifact_digest": "sha256:99fcbde91f4f30fe265adebd0374373bb8cac81778e4a742ec1d2403ec7e01db",
+        "certificate": "docs/aldric-city/NATIVE_CERTIFICATE_20261029.json",
+        "art_approved": false,
+        "physical_mobile_tested": false
+      },
+      "native_attempt_history": [
+        {
+          "status": "failed_before_playmode",
+          "source": "29ee817922adc4e7639fbf427e370b5167ab36bf",
+          "run_id": 40761888936,
+          "reason": "PlayMode asmdef cannot directly reference Assembly-CSharp host/walker types; corrected to public reflection like existing UI tests",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "failed_actual_safe_route_search",
+          "source": "969555b664921620224446a9f7d764896232a42e",
+          "run_id": 40764789611,
+          "playmode_passed": 72,
+          "playmode_failed": 1,
+          "reason": "ALDRIC_CITY_NO_SAFE_PAVED_ROUTE: previous bounds-centre candidates do not establish a route on actual irregular paving; native case failed, no model loaded or images",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "failed_actual_gltf_import",
+          "source": "70eadf3435779f00ed82c178daa76d1a7c3bacb3",
+          "run_id": 40770024166,
+          "playmode_passed": 69,
+          "playmode_failed": 4,
+          "reason": "Actual axial route PASS(510 samples,274 paving,272 visible clear,3 waypoints). Generic import/rig error in Aldric and three subsequent scene cases; no actor captures. Inactive-bound initialization removed, explicit Legacy import and detailed failure diagnostics added; orientation+90 and physical cape-behind-motion assertion pending new native.",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "failed_preflight_exact_importer_normal_tangent_bug",
+          "source": "a95dd526ef4551399401b6b69203d5cd9d2fef96",
+          "run_id": 40773905914,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "reason": "Actual glTFast6.14.1 error Invalid mainBufferType Position,Tangent at MeshGenerator.CreateVertexGenerator; approved source has no NORMAL accessors and body material has normalTexture. Exact geometric normal streams now prepared with original binary and every other JSON semantic unchanged; actual Unity proof still required.",
+          "artifact_id": 12855340058,
+          "artifact_digest": "sha256:9958e85fcf5456a8fcf7cedbee70e5c583d2b7b98acf476cdaf44a43adfcdf70",
+          "actual_views": 0,
+          "art_approved": false
+        },
+        {
+          "status": "import_and_idle_captures_pass_ground_measurement_failed",
+          "source": "188da8bf6d5135deeb73eb9e3d62c9b3301ae16b",
+          "run_id": 40777258036,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 2,
+          "import_26_bones_5_clips_passed": true,
+          "measured_height_m": 1.85,
+          "reason": "Normal-only compatibility resolves actual import. Two genuine idle images present/reviewed. Renderer.bounds ground difference .129500031m equals .07 root pivot*1.85; change grounding/measurement to actual sampled skinned vertices, preserve .12/.15 tolerances and explicit post-initialization Ready gate. No walk/return/visual acceptance yet.",
+          "artifact_id": 12856520357,
+          "artifact_digest": "sha256:5f4beb8728523a136bb6cc10de20413dbeacf12dcfa7415eb4cb41c378417a44",
+          "art_approved": false
+        },
+        {
+          "status": "walking_skin_grounding_pass_world_resume_pause_failed",
+          "source": "08b99f958f3511889f4e147f1adaa8c5398553d4",
+          "run_id": 40779937374,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 9,
+          "import_26_bones_5_source_clips_passed": true,
+          "actual_skinned_idle_ground_offset_m": 0.0001349449,
+          "actual_skinned_walk_ground_offset_m": -0.02667463,
+          "reason": "Actual forward walk, bone deformation, skin ground, cape-behind-motion, dynamic obstacle and World hide/return visibility pass. Pause-at-interrupted-target assertion failed; observe physical stop plus visible clip weights with real camera rendering and diagnostics, preserving stricter target distance. Visual review found city arms too open in source A-pose; add separate city-only rest alignment layer, keep original GLB/five clips unchanged.",
+          "artifact_id": 12857666330,
+          "artifact_digest": "sha256:44fbed5669939aa5501e054028f3b18a647a2c5efe0d579f631bb3081acd25c6",
+          "art_approved": false
+        },
+        {
+          "status": "actual_next_step_blocked_after_world_return",
+          "source": "a00dfb541a9a65f73db6e801711282c626aceaf6",
+          "run_id": 40784676062,
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 10,
+          "import_26_bones_5_source_clips_passed": true,
+          "actual_idle_relaxed_arm_alignment_passed": true,
+          "artifact_id": 12859586919,
+          "artifact_digest": "sha256:7d1fb1d2d5130061c4efcc39ab3cc2a9031272a8ca76f84199f9eb416bbfaea2",
+          "reason": "Actual time advances, body and coarse leg clear, target remains 1.67m away, pause resets every6s: next fine step is rejected. Paving grout is inferred from point-ray support and real separate-flagstone images; not yet confirmed by exact step trace. Replace point-only support with tightly bounded real same-mesh footprint, retain full capsule and add exact failure diagnostics. No timeout/tolerance relaxation. All later march/investigation/reload checks remain mandatory.",
+          "art_approved": false
+        },
+        {
+          "status": "exact_fine_step_support_rejection_confirmed",
+          "source": "0f5623dc7bf3fda95734b861803a8f72b47ed56a",
+          "run_id": 40787189864,
+          "compiled_source": "0fb45ceceb0f308a8c82f20b141a2c429fc89dc3",
+          "preflight_passed": 0,
+          "preflight_failed": 1,
+          "full_shared_suite_executed": false,
+          "actual_views": 10,
+          "artifact_id": 12859434835,
+          "artifact_digest": "sha256:f4e2f346ceab7bfcd4991a2c19648395de4c80851dfc21eb97f2b050add0f115",
+          "reason": "Actual STEP_BLOCKED proves supported=False with active road; body clear true in immediate probes.8cm opposed-ray-pair proxy fails at small bevel/grout intervals while35cm route samples alias them. Macro alternative: physical13cm support polygon on same actual mesh,16surrounding contacts/centre strictly inside convex hull, dense2.5cm leg checks, unchanged capsule/slopes/mandatory tests. Export exact runtime collider and visible geometry for independent reproduction. Cheap actual visible-mesh source analysis near both failed positions: old proxy rejects26/121 and43/121; new rejects0/121 in each. Source analysis is NOT native collider acceptance.",
+          "art_approved": false
+        }
+      ],
+      "main_native_validation": {
+        "run_id": 40795797367,
+        "status": "success",
+        "source": "6049a3d4ee00dbbb211620a49459fd8ee1281fce",
+        "editmode_passed": 47,
+        "playmode_passed": 73,
+        "playmode_failed": 0,
+        "playmode_skipped": 0,
+        "windows_build": "success",
+        "benchmark": "success",
+        "benchmark_kind": "Genuine Unity Editor camera captures; not phone performance profiling",
+        "desktop_runtime_executed": false,
+        "physical_mobile_tested": false,
+        "verified_at": "2026-10-29T01:01:52.434790+00:00",
+        "artifacts": [
+          {
+            "id": 12863853704,
+            "name": "eldoria-native-test-evidence-40795797367",
+            "digest": "sha256:be4a2d0b4f46c00a68b371b655c10b9652312e35aad9e136377c81a4b7f6266b",
+            "bytes": 61878
+          },
+          {
+            "id": 12863644401,
+            "name": "eldoria-unity-checks-6049a3d4ee00dbbb211620a49459fd8ee1281fce",
+            "digest": "sha256:2e1045de271e5632bf91155f52a3e4c3bffd5ec875cc6a01e8da51d3ec334b96",
+            "bytes": 1442016483
+          },
+          {
+            "id": 12863589422,
+            "name": "eldoria-valoria-captures-6049a3d4ee00dbbb211620a49459fd8ee1281fce",
+            "digest": "sha256:95e518ba274e90aa8e0e572632e873da4f3aa9187c7884144f25ca685d0f3326",
+            "bytes": 14908960
+          }
+        ]
+      },
+      "released_at": "2026-10-29T01:01:52.480111+00:00"
     }
   ],
   "history": [
@@ -3615,7 +3929,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -3626,7 +3940,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-08,
+        "viewport_error": 5.960464477539063e-8,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,

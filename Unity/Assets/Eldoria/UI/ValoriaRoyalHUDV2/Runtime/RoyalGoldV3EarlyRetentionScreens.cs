@@ -51,6 +51,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalText heading, kicker, introduction, chapter, opponent, formation,
             reward, battleFeedback, passive, footer, mainActionLabel, xpLabel, backLabel;
         RoyalGoldV3EarlyRetentionArtwork sceneArtwork;
+        RoyalGoldV3ScoutDiscoverySeals discoverySeals;
         RoyalGoldV3StageTrailGraphic chapterTrail;
         RoyalIconGraphic battleSwords;
         readonly RoyalText[] bossMilestoneLabels=new RoyalText[5];
@@ -363,6 +364,12 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!paintedScouts)paintedScouts=
                 Resources.Load<Texture2D>("EldoriaRetention/scouts-illustration");
             paintedScene.enabled=paintedVigilants!=null;
+            var seals=Rect("Actual discovered expedition families",art);
+            seals.gameObject.AddComponent<CanvasRenderer>();
+            discoverySeals=seals.gameObject.AddComponent<RoyalGoldV3ScoutDiscoverySeals>();
+            discoverySeals.raycastTarget=false;
+            Stretch(seals,2f);
+            seals.gameObject.SetActive(false);
             scoutVignettes=Resources.Load<Texture2D>("EldoriaRetention/scout-mission-vignettes-v4");
             guardianBannerTexture=Resources.Load<Texture2D>("EldoriaRetention/guardian-banner-v4");
             // Decorative art stays BELOW the existing 25-stage route and
@@ -842,7 +849,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 discoveryText.fontSize=portrait?25:compactLandscape?20:20;
                 // Small wax seals are placed on the illustrated cartographer map
                 // and reveal only when actual contracts have been CLAIMED.
-                float[] px={.23f,.54f,.78f},py={.48f,.61f,.37f};
+                float[] px={.82f,.89f,.96f},py={.075f,.075f,.075f};
                 for(int i=0;i<3;i++)
                 {
                     float side=portrait?40f:30f;
@@ -1051,6 +1058,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 }
             }
             chapterTrail.gameObject.SetActive(vig);
+            discoverySeals.DiscoveredMask=p.ScoutDiscoveryMask&15;
+            discoverySeals.gameObject.SetActive(!vig&&discoverySeals.DiscoveredMask!=0);
+            discoverySeals.SetVerticesDirty();
             progressPlaque.gameObject.SetActive(true);
             progressText.Put(vig?
                 "CAMINO ASEGURADO · "+p.LastClearedStage+" ETAPAS":
@@ -1062,6 +1072,8 @@ namespace Eldoria.UI.RoyalGold.V2
             for(int i=0;i<3;i++)
             {
                 bool revealed=!vig && discoveredCount>=new[]{1,3,6}[i];
+                // The 1/3/6 guild milestones sit beside the earned report count;
+                // discovered regions use PR126's four distinct family seals on the map.
                 discoveryPins[i].gameObject.SetActive(revealed);
                 discoveryPinLabels[i].gameObject.SetActive(revealed);
             }
@@ -1250,9 +1262,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 claimXp.interactable=xp>0;
                 xpLabel.Put(xp>0?"RECOGER "+xp+" XP":"EXPERIENCIA EN PROGRESO");
                 var previous=s.LastBattleReport;
-                bool hasPrevious=previous!=null&&previous.TargetId=="vigilant:"+(stage-1);
+                bool hasPrevious=previous!=null&&(previous.TargetId=="vigilant:"+(stage-1)||
+                    previous.TargetId=="vigilant:"+stage);
                 battleFeedback.Put(hasPrevious?
-                    EarlyRetentionRules.BattleReview(previous,EarlyRetentionRules.Stage(stage-1)):
+                    EarlyRetentionRules.BattleReview(previous,EarlyRetentionRules.Stage(
+                        previous.TargetId=="vigilant:"+stage?stage:stage-1)):
                     "ESTRATEGIA · "+EarlyRetentionRules.CombatAdvice(info));
                 footer.Put(hasPrevious?
                     "ÚLTIMA MARCHA · "+(previous.Won?"VICTORIA":"DERROTA")+

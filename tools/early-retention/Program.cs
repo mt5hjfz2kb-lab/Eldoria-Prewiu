@@ -30,7 +30,7 @@ static class Program
             var stage=EarlyRetentionRules.Stage(i);
             Require(stage.Chapter==(i-1)/25+1&&stage.Step==(i-1)%25+1,"25-stage chapter math");
             if(i%5==0)Require(stage.Name==((stage.Step==15)?
-                "Engendro de la Brecha":"Guardián del umbral"),
+                "Engendro de la Brecha":EarlyRetentionRules.GuardianName(stage.Step)),
                 "Every fifth stage has the lore-correct guardian, never a golem");
             if(i==3)Require(stage.Name=="Corrupto errante","No stone golems in Eldoria");
         }
@@ -130,6 +130,8 @@ static class Program
             "Latest discovery persisted in canonical state");
         Require(g.Snapshot().Retention.TotalScoutReports==1,
             "Claim grants one narrative wax seal only");
+        Require(g.Snapshot().Retention.ScoutDiscoveryMask==(1<<order.Kind),
+            "Only the genuinely claimed expedition family earns a persistent seal");
         int after=g.Snapshot().Retention.AldricExperience;
         Require(g.Execute(claim).Ok&&g.Snapshot().Retention.AldricExperience==after,"No double scout claim");
         g=new LocalGateway(clock,store);
@@ -138,6 +140,21 @@ static class Program
                 "Reopening the game never re-rolls narrative or duplicates seals");
         clock.Add(30*24*3600);g=new LocalGateway(clock,store);
         Require(g.Snapshot().Retention.Orders.Count(x=>!x.Claimed)<=6,"Max six pending orders offline");
+        Require(g.Snapshot().Retention.TotalScoutReports==1&&
+                g.Snapshot().Retention.ScoutDiscoveryMask==(1<<order.Kind),
+                "Count and family discoveries survive old-order expiry");
+        var legacy=new PlayerState{BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true}};
+        legacy.Retention.Orders.Add(new ScoutOrder{Id="old-1",Period=0,Kind=1,Claimed=true});
+        legacy.Retention.Orders.Add(new ScoutOrder{Id="old-3",Period=0,Kind=3,Claimed=true});
+        var legacyStore=new Store{State=legacy};var migrated=new LocalGateway(clock,legacyStore);
+        Require(migrated.Snapshot().Retention.TotalScoutReports==2&&
+                migrated.Snapshot().Retention.ScoutDiscoveryMask==10,
+                "Actual legacy claims migrate before pruning, never inventing discoveries");
+        migrated=new LocalGateway(clock,legacyStore);
+        Require(migrated.Snapshot().Retention.TotalScoutReports==2&&
+                migrated.Snapshot().Retention.ScoutDiscoveryMask==10,
+                "Migration itself is idempotent on reload");
         Console.WriteLine("EARLY_RETENTION_DOMAIN_SMOKE=PASS");
     }
 }

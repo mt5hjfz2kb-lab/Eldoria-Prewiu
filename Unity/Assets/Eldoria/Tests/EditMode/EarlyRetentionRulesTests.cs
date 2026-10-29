@@ -79,7 +79,7 @@ namespace Eldoria.Tests
             var c=EarlyRetentionRules.Stage(26);
             Assert.That(a.Chapter,Is.EqualTo(1));
             Assert.That(b.Step,Is.EqualTo(25));
-            Assert.That(b.Name,Is.EqualTo("Guardián del umbral"));
+            Assert.That(b.Name,Is.EqualTo(EarlyRetentionRules.GuardianName(b.Step)));
             Assert.That(c.Chapter,Is.EqualTo(2));
             Assert.That(c.Step,Is.EqualTo(1));
             Assert.That(c.Scene,Is.Not.EqualTo(a.Scene));
@@ -219,6 +219,7 @@ namespace Eldoria.Tests
             Assert.That(gateway.Execute(Cmd(gateway,"scout-story-claim","ScoutClaim",order.Id)).Ok,Is.True);
             var after=gateway.Snapshot();
             Assert.That(after.Retention.TotalScoutReports,Is.EqualTo(1));
+            Assert.That(after.Retention.ScoutDiscoveryMask,Is.EqualTo(1<<order.Kind));
             Assert.That(after.Retention.LatestDiscoveryText,Is.EqualTo(expected));
             var title=after.Retention.LatestDiscoveryTitle;
             var claimCount=after.Retention.TotalScoutReports;
@@ -233,7 +234,7 @@ namespace Eldoria.Tests
         [Test] public void FirstChapterHasAnActualPowerWallBeforeTheFinalBoss()
         {
             var boss=EarlyRetentionRules.Stage(25);
-            Assert.That(boss.Name,Is.EqualTo("Guardián del umbral"));
+            Assert.That(boss.Name,Is.EqualTo("Vigía de las Cenizas"));
             var starter=SliceRules.Expedition(new ArmyRoster{ArcherT1=36},"aldric");
             var developed=SliceRules.Expedition(new ArmyRoster{ArcherT1=100},"aldric");
             Assert.That(SliceRules.FightCreature(starter,boss.Enemy).Won,Is.False,
@@ -258,6 +259,22 @@ namespace Eldoria.Tests
                 Is.EqualTo(original.Power),"The historic battle engine must retain the old baseline");
             state.Retention.AldricExperience=999999;
             Assert.That(EarlyRetentionRules.HeroMasteryLevel(state,"aldric"),Is.EqualTo(20));
+        }
+
+        [Test] public void LegacyScoutClaimsKeepCountAndFamiliesAfterUtcCleanupAndReload()
+        {
+            var time=new Clock();var old=Ready();
+            old.Retention.Orders=new System.Collections.Generic.List<ScoutOrder>{
+                new ScoutOrder{Id="legacy-wood",Period=0,Kind=1,Claimed=true},
+                new ScoutOrder{Id="legacy-breach",Period=0,Kind=3,Claimed=true}};
+            var save=new MemoryStateStore{Value=old};
+            var gateway=new LocalGateway(time,save);
+            Assert.That(gateway.Snapshot().Retention.TotalScoutReports,Is.EqualTo(2));
+            Assert.That(gateway.Snapshot().Retention.ScoutDiscoveryMask,Is.EqualTo(10));
+            gateway=new LocalGateway(time,save);
+            Assert.That(gateway.Snapshot().Retention.TotalScoutReports,Is.EqualTo(2));
+            Assert.That(gateway.Snapshot().Retention.ScoutDiscoveryMask,Is.EqualTo(10));
+            Assert.That(gateway.Snapshot().Retention.Orders.Any(x=>x.Id.StartsWith("legacy-")),Is.False);
         }
 
         [Test] public void SnapshotDoesNotExposeMutableOrderObjects()

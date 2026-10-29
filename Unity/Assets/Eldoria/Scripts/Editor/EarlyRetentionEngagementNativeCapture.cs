@@ -161,6 +161,26 @@ namespace Eldoria.ReferenceClean.Editor
             Need(FindText(hud,"Real enemy and trait").text.Contains("Engendro de la Brecha"),
                 "The original authored Spawnling lore is preserved");
             Shot(host,"vigilants-engendro15-portrait",900,1600);
+            // A real losing army must keep the current stage and explain the defeat.
+            state=host.City.Gateway.Snapshot();
+            state.Available=new ArmyRoster{ArcherT1=1};
+            state.MarchConfigured=false;
+            state.PreparedTroops=new ArmyRoster();
+            Save(host,state);yield return new WaitForSecondsRealtime(.3f);
+            ui.SynchronizeLayout();
+            attack.onClick.Invoke();
+            var loss=host.City.Gateway.Snapshot();
+            Need(loss.Retention.LastClearedStage==14&&!loss.LastBattleReport.Won&&
+                loss.LastBattleReport.TargetId=="vigilant:15"&&loss.LastBattleReport.Rounds>0,
+                "Actual one-troop defeat neither advances nor pays a false victory");
+            Need(victory.text=="DERROTA"&&victory.gameObject.activeInHierarchy,
+                "Losing combat presents a distinct real defeat banner");
+            Shot(host,"vigilants-defeat-phone",390,844);
+            host.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.3f);
+            ui.SynchronizeLayout();
+            Need(host.City.Gateway.Snapshot().LastBattleReport.TargetId=="vigilant:15"&&
+                FindText(hud,"Last action result").text.Contains("rondas"),
+                "Current-stage defeat analysis survives actual saved-game reload");
             ui.Close();
             state=host.City.Gateway.Snapshot();
             state.Retention.LastClearedStage=0;
@@ -168,6 +188,7 @@ namespace Eldoria.ReferenceClean.Editor
             state.Retention.LatestDiscoveryTitle="";
             state.Retention.LatestDiscoveryText="";
             state.Retention.TotalScoutReports=0;
+            state.Retention.ScoutDiscoveryMask=0;
             state.Available=new ArmyRoster{ArcherT1=100};
             Save(host,state);yield return new WaitForSecondsRealtime(.3f);
             ui.Open(RoyalGoldV3EarlyRetentionScreens.Destination.Scouts);
@@ -221,6 +242,34 @@ namespace Eldoria.ReferenceClean.Editor
             Shot(host,"scouts-discovery-landscape",1600,900);
             Shot(host,"scouts-discovery-portrait",900,1600);
             Shot(host,"scouts-discovery-phone",390,844);
+            Need(saved.Retention.ScoutDiscoveryMask==(1<<order.Kind),
+                "Only the genuinely earned scout family seal is discovered");
+            for(int i=0;i<5;i++)
+            {
+                g=host.City.Gateway;
+                var next=g.Snapshot().Retention.Orders.FirstOrDefault(x=>!x.Claimed&&x.StartedUtcTicks==0);
+                if(next==null)
+                {
+                    clock.Step(12*3600);g.Advance();
+                    next=g.Snapshot().Retention.Orders.First(x=>!x.Claimed&&x.StartedUtcTicks==0);
+                }
+                Need(g.Execute(Command(g,"family-send-"+i,"ScoutDispatch",next.Id)).Ok,
+                    "Dispatch actual further discovery contract "+i);
+                clock.Step(EarlyRetentionRules.ScoutDurationSeconds(next.Kind)+1);g.Advance();
+                Need(g.Execute(Command(g,"family-claim-"+i,"ScoutClaim",next.Id)).Ok,
+                    "Earn actual further discovery contract "+i);
+            }
+            host.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.4f);
+            saved=host.City.Gateway.Snapshot();
+            Need(saved.Retention.TotalScoutReports==6&&saved.Retention.ScoutDiscoveryMask==15,
+                "Six actual claims and all four discovered families persist independently");
+            ui.SynchronizeLayout();
+            var familySeals=hud.GetComponentInChildren<RoyalGoldV3ScoutDiscoverySeals>(true);
+            Need(familySeals&&familySeals.DiscoveredMask==15&&familySeals.gameObject.activeInHierarchy,
+                "Original map genuinely shows all four earned regional seals");
+            Shot(host,"scouts-six-reports-four-families-landscape",1600,900);
+            Shot(host,"scouts-six-reports-four-families-portrait",900,1600);
+            Shot(host,"scouts-six-reports-four-families-phone",390,844);
             Need(Object.FindObjectsByType<RoyalHUD>(FindObjectsSortMode.None).Length==1,
                 "No duplicate HUD, Canvas or game session created");
             File.WriteAllText(Path.Combine(Output,"result.txt"),

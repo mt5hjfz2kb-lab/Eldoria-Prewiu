@@ -1,0 +1,65 @@
+name: Aldric city exact source and integration contract (Ubuntu, no Unity)
+on:
+  push:
+    branches: [feature/aldric-city-roaming-20261028]
+    paths:
+      - '.github/workflows/aldric-city-domain.yml'
+      - 'Unity/Assets/StreamingAssets/Eldoria/Aldric/**'
+      - 'Unity/Assets/Eldoria/AldricCity/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs'
+      - 'tools/aldric-city/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/aldric-city-domain.yml'
+      - 'Unity/Assets/StreamingAssets/Eldoria/Aldric/**'
+      - 'Unity/Assets/Eldoria/AldricCity/**'
+      - 'Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs'
+      - 'tools/aldric-city/**'
+permissions:
+  contents: read
+concurrency:
+  group: aldric-city-domain-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify-source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            tools/aldric-city
+            docs/aldric-city
+            Unity/Assets/Eldoria/AldricCity
+            Unity/Assets/Eldoria/Tests/PlayMode
+            Unity/Assets/StreamingAssets
+          sparse-checkout-cone-mode: true
+      - name: Verify original approved full-body binary and C# wiring (not PlayMode)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/aldric-city/verify_approved_glb.py
+          python3 tools/aldric-city/prepare-import-normals.py
+          python3 - <<'PY'
+          from pathlib import Path
+          code=Path('Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs').read_text()
+          checks=['ValoriaIntegratedWorld','GltfImport','GameObjectInstantiator','UnityWebRequest',
+            'ApprovedSha256','ALDRIC_CITY_SAFE_ROUTE_VERIFIED','SkinnedMeshRenderer',
+            'Aldric_Idle_v1','Aldric_Walk_v1','Axial_Paving','RoadWaypoints',
+            'IsCityActorVisible','March.HeroId','InvestigationEndsUtcTicks',
+            'WorldToViewportPoint','SceneManager.sceneLoaded','nextAwayRefresh']
+          for part in checks:
+              assert part in code,part
+          for forbidden in ['new LocalGateway(', 'new FileStateStore(', 'SaveFile =', 'distance <= 95f']:
+              assert forbidden not in code,forbidden
+          model=Path('Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb')
+          assert model.is_file() and model.stat().st_size==10140372
+          for p in ['Unity/Assets/StreamingAssets.meta','Unity/Assets/StreamingAssets/Eldoria.meta',
+            'Unity/Assets/StreamingAssets/Eldoria/Aldric.meta',
+            'Unity/Assets/StreamingAssets/Eldoria/Aldric/SirAldric_Approved_RiggedAnimated_v1.glb.meta',
+            'Unity/Assets/Eldoria/Tests/PlayMode/AldricCityRoamingNativeTests.cs']:
+              assert Path(p).is_file(),p
+          print('ALDRIC_CITY_SOURCE_AND_WIRING_PASS (UNITY_NATIVE_NOT_CERTIFIED)')
+          PY

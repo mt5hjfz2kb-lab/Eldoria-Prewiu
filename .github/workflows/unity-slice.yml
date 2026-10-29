@@ -30,6 +30,8 @@ jobs:
           # native editor/player checkout remains complete and unchanged.
           sparse-checkout-cone-mode: false
           sparse-checkout: |
+            /.github/workflows/unity-slice.yml
+            /.github/workflows/ui-progression-cert.yml
             /scripts/check_unity_slice.py
             /Unity/ProjectSettings/ProjectVersion.txt
             /Unity/ProjectSettings/EditorBuildSettings.asset
@@ -452,6 +454,7 @@ jobs:
 
           if ($results.'test-run'.result -ne "Passed") { throw "EditMode tests did not pass: $($results.'test-run'.result)" }
       - name: PlayMode
+        id: playmode
         # Integrated acceptance tests require a new disposable game. This also
         # enables the purchase/dialogue regressions instead of skipping them,
         # and never interprets the runner owner's persisted progress as a fixture.
@@ -462,15 +465,21 @@ jobs:
           $xml = "$env:RUNNER_TEMP/Eldoria-PlayMode.xml"
           $log = "$env:RUNNER_TEMP/Eldoria-PlayMode.log"
           Remove-Item $xml,$log -Force -ErrorAction SilentlyContinue
+          @{requested_source=$env:GITHUB_SHA;compiled_source=(& git rev-parse HEAD).Trim();
+            run_id=$env:GITHUB_RUN_ID;status='STARTED_NOT_ACCEPTANCE'}|ConvertTo-Json|
+            Set-Content (Join-Path $env:RUNNER_TEMP "Eldoria-Native-Test-Source-$env:GITHUB_RUN_ID.json") -Encoding UTF8
           # Capture the real world with the same GPU route as UI certification.
           $env:ELDORIA_REGION1_CAPTURE_OUT=Join-Path $env:RUNNER_TEMP "eldoria-slice-region1-captures-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
           New-Item -ItemType Directory -Force $env:ELDORIA_REGION1_CAPTURE_OUT | Out-Null
           $args = @("-batchmode","-force-d3d11","-projectPath",('"' + (Join-Path $env:ELDORIA_GATE_PROJECT_ROOT 'Unity') + '"'),"-runTests","-testPlatform","PlayMode","-testResults",$xml,"-logFile",$log)
           $process = Start-Process -FilePath $env:UNITY_EDITOR_PATH -ArgumentList $args -WorkingDirectory $env:ELDORIA_GATE_PROJECT_ROOT -PassThru
-          if (-not $process.WaitForExit(600000)) {
+          # Full73-case UI certification measured9m18s of tests alone, before
+          # project startup/teardown. Use its same15-minute process budget;
+          # individual assertions, test deadlines and zero-skip checks stay intact.
+          if (-not $process.WaitForExit(900000)) {
             & taskkill.exe /PID $process.Id /T /F | Out-Null
             if (Test-Path $log) { Get-Content $log -Tail 240 }
-            throw "Unity PlayMode timed out after 10 minutes."
+            throw "Unity PlayMode timed out after 15 minutes."
           }
           if ($process.ExitCode -ne 0) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "Unity PlayMode process failed with exit code $($process.ExitCode)." }
           if (-not (Test-Path $xml)) { if (Test-Path $log) { Get-Content $log -Tail 160 }; throw "PlayMode results were not produced." }
@@ -489,7 +498,21 @@ jobs:
           if ($results.'test-run'.result -ne "Passed") { throw "PlayMode tests did not pass: $($results.'test-run'.result)" }
           $cases=@($results.SelectNodes('//test-case'))
           if($cases.Count -lt 61 -or @($cases|Where-Object {$_.result -ne 'Passed'}).Count){throw 'Expected the complete 61+ PlayMode suite with no ignored or failed cases'}
+      - name: Preserve fresh native test evidence before the desktop archive
+        if: always() && (steps.playmode.outcome == 'success' || steps.playmode.outcome == 'failure')
+        uses: actions/upload-artifact@v4
+        with:
+          name: eldoria-native-test-evidence-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/Eldoria-EditMode.xml
+            ${{ runner.temp }}/Eldoria-EditMode.log
+            ${{ runner.temp }}/Eldoria-PlayMode.xml
+            ${{ runner.temp }}/Eldoria-PlayMode.log
+            ${{ runner.temp }}/Eldoria-Native-Test-Source-${{ github.run_id }}.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Windows desktop build
+        id: windows_build
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $log = "$env:RUNNER_TEMP/Eldoria-Build.log"
@@ -516,6 +539,7 @@ jobs:
           Set-Content -Path $ownerLauncher -Value $ownerLauncherText -Encoding ASCII
           if (-not (Test-Path $ownerLauncher)) { throw "Owner I-II launcher was not produced." }
       - name: Render Valoria art benchmark
+        id: valoria_benchmark
         shell: powershell -ExecutionPolicy Bypass -command ". '{0}'"
         run: |
           $folder = "$env:ELDORIA_GATE_PROJECT_ROOT/Unity/BenchmarkCaptures"
@@ -535,7 +559,7 @@ jobs:
             if (-not (Test-Path $file) -or (Get-Item $file).Length -lt 10000) { throw "Benchmark image missing or empty: $name" }
           }
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && steps.valoria_benchmark.outcome == 'success'
         with:
           name: eldoria-valoria-captures-${{ github.sha }}
           path: valoria-layered-source/Unity/BenchmarkCaptures/*.png
@@ -679,7 +703,7 @@ jobs:
             ${{ runner.temp }}/Eldoria-*.xml
             ${{ runner.temp }}/Eldoria-*.log
             ${{ runner.temp }}/Eldoria-*.json
-            ${{ github.workspace }}/valoria-layered-source/Unity/Builds/Windows/
+            ${{ steps.windows_build.outcome == 'success' && format('{0}/valoria-layered-source/Unity/Builds/Windows/', github.workspace) || '' }}
             ${{ runner.temp }}/eldoria-slice-region1-captures-${{ github.run_id }}-${{ github.run_attempt }}/**
           if-no-files-found: warn
 
