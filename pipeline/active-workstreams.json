@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T17:10:57.358Z",
+  "updated_at": "2026-10-29T17:22:23.229Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "codex-bastion-iv-v-7064f9327736",
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-29T12:23:02.996Z",
+      "claimed_at": "2026-10-29T17:22:23.229Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -102,15 +102,16 @@
         ".github/workflows/bastion-iv-v-native.yml",
         ".github/workflows/bastion-iv-v-domain.yml",
         "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
-        ".github/workflows/ui-progression-cert.yml"
+        ".github/workflows/ui-progression-cert.yml",
+        "pipeline/art-production-requests/eldoria-tier5-six-reference-models-20261029.json"
       ],
       "resources": [],
       "art_production_routing": "required",
       "art_production_routing_reason": "Owner-authorized continuation of the consolidated integrated main: existing Qwen/Blender artist authors world destinations and city environment finishing at zero cost; actual Unity comparison and independent visual acceptance remain required.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "BASTION_IV_V_COMPLETED_MAIN_VERIFIED_AVAILABLE",
-      "next": "No pending work in the completed IV–V migration. Future owner-authorized work reclaims this same canonical ID; preserve approved tier-V bases, original sources, safeguards and the unchanged distributed release unless publication is requested.",
+      "phase": "BASTION_IV_V_POSTMERGE_METADATA_CLOSEOUT",
+      "next": "Close obsolete active art request; archive already-consumed tier-five credit authorization without authorizing another paid generation; observe existing automatic native gates.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1263,9 +1264,9 @@
           "reason": "Bastion IV–V completed and PR129 merged. Native40906347082 and shared40914641659 passed54 EditMode/73 PlayMode;386 IV–V checks,44 I–II checks,real touch/three marches/Aldric/70 captures and full fresh-save web40914641605 pass. Main merged tree33c632bb2399ff1a98a25d4dd67f8ad4ae7dd7f0 is identical to certified tree. No new publication or spend."
         }
       ],
-      "ownership_revision": 57,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 58,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "ORDERED_TAKEOVER_UI_FOREST_MULTIPLAYER_ARCHIVE_LAST",
       "last_claimed_at": "2026-10-29T09:54:24.457Z",
       "delivery_definition": {
@@ -1294,7 +1295,6 @@
       ],
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
-      "released_at": "2026-10-29T17:10:57.358Z",
       "latest_owner_feedback": "Current owner: resources have levels, a single occupant per node, disputable and stronger player remains gathering. Incorporated into offline design/simulation; no live multiplayer implementation or APK publication authorized by this scope.",
       "ordered_completion": {
         "completed_at": "2026-10-26T22:20:44.872Z",
@@ -1364,7 +1364,7 @@
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
       "last_handoff": "docs/bastion-iv-v/FINAL_REVIEW.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
-      "scope_extension_reason": "Existing main native-gate maintenance now owns its source verifier too: verify that the generic full-suite process budget is no shorter than the completed shared UI certification, preventing this real600second timeout regression. Same owner, no resource transfer, no new workstream.",
+      "scope_extension_reason": "Owner continuation after PR129: administrative closure of the already-completed six-reference source request which incorrectly retains an executable paid composition route. No modification to PR127, assets or spend.",
       "android18_signed_candidate": {
         "build_run_id": 40798180869,
         "source": "0f150e6a719f93d312ebb18d1ceac5edd7435ba9",
