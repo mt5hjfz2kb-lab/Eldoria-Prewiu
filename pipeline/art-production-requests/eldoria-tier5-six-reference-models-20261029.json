@@ -10,12 +10,12 @@
   "ai_authorship_policy": "required",
   "diagnosis": "Owner explicitly requires six exact approved images as generation inputs; prior text-generated sources do not satisfy this request. No production integration requested.",
   "geometry_gap_proven": true,
-  "allow_tripo": true,
+  "allow_tripo": false,
   "credit_authorization": {
-    "approved": true,
-    "authorized_credit_cost": 180,
+    "approved": false,
+    "authorized_credit_cost": 0,
     "actual_credit_cost": 180,
-    "source": "Explicit current owner instruction to produce six models autonomously; standard image-to-model at 30 credits each."
+    "source": "Completed six-model request: original approval consumed in full and archived separately; no additional call authorized."
   },
   "validation": {
     "source_gate": "All six original and optimized models reviewed from eight Blender views; exact reference SHA retained; GLB structural validation, UVs/normals/textures and .blend presence verified.",
@@ -24,8 +24,14 @@
   "art_approved": false,
   "unity_visual_acceptance": "NOT_TESTED",
   "physical_mobile_tested": false,
-  "notes": "Source-only delivery. AI-authored Tripo meshes; canonical Eldoria Blender reduction reused. Rig check on Lyra original is biped eligible at zero credits. This administrative request is recorded at closure; preflight registry phase was not kept current during execution.",
+  "notes": "Source-only delivery. AI-authored Tripo meshes; canonical Eldoria Blender reduction reused. Rig check on Lyra original is biped eligible at zero credits. This administrative request is recorded at closure; preflight registry phase was not kept current during execution. Post-integration administrative closure: allow_tripo=false and remaining authorization zero; historical 180-credit authorization retained verbatim. Five building integration evidence belongs to the separate IV–V request; Lyra remains source-only.",
   "manifest": "ArtSource/Tier5ReferenceProduction/manifest.json",
   "delivery_pr": 127,
-  "completed_at": "2026-10-29T11:41:34.335Z"
+  "completed_at": "2026-10-29T11:41:34.335Z",
+  "historical_consumed_credit_authorization": {
+    "approved": true,
+    "authorized_credit_cost": 180,
+    "actual_credit_cost": 180,
+    "source": "Explicit current owner instruction to produce six models autonomously; standard image-to-model at 30 credits each."
+  }
 }
