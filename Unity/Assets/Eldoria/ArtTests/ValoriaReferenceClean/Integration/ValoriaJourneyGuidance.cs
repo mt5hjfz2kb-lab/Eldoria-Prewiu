@@ -216,6 +216,9 @@ namespace Eldoria.ReferenceClean {
     case "b3.investigate":case "b3.lyra":case "b3.fissure":return "fissure-valoria";
     case "b3.complete":case "b4.priority":case "b4.ascend":return "bastion";
     case "b5.stoneworks":return "stoneworks";
+    case "b5.stone":return "quarry-valoria";
+    case "b5.army":return "barracks";
+    case "b5.await-content":return "";
     case "b5.infrastructure":return s.SawmillLevel<5?"sawmill":s.BarracksLevel<5?"upgrade-barracks":s.ChapterThree.GranaryLevel<5?"granary":"stoneworks";
     case "b3.infrastructure":return s.SawmillLevel<2?"sawmill":s.BarracksLevel<2?"upgrade-barracks":"granary";
     default:return "";
