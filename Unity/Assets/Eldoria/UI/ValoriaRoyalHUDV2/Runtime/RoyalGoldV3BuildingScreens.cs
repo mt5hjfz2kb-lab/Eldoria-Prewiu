@@ -100,7 +100,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
    bool compactCouncil=!wide&&selected=="bastion"&&gateway.Snapshot().BastionLevel>=4&&string.IsNullOrEmpty(gateway.Snapshot().ChapterThree.DevelopmentPriority);
    Place((RectTransform)description.transform,pad,pad,dw-2*pad,compactCouncil?65:80);Place((RectTransform)costs.transform,pad,compactCouncil?90:112,dw-2*pad,compactCouncil?48:52);Place((RectTransform)status.transform,pad,compactCouncil?150:180,dw-2*pad,compactCouncil?65:95);
    Place(operationProgress,pad,dh-32,dw-2*pad,7);
-   Place(choices,pad,dh-166,dw-2*pad,156);for(int i=0;i<3;i++)Place((RectTransform)priority[i].transform,0,i*51,dw-2*pad,46);
+   Place(choices,pad,dh-224,dw-2*pad,210);for(int i=0;i<3;i++)Place((RectTransform)priority[i].transform,0,i*70,dw-2*pad,64);
    Place(footer,m,h-foot-bottomInset,w-2*m,foot);Place((RectTransform)notice.transform,0,0,w-2*m,30);Place((RectTransform)action.transform,(w-2*m)*.48f,35,(w-2*m)*.52f,45);Place((RectTransform)footer.Find("Back"),0,35,(w-2*m)*.45f,45);Refresh();
   }
  }

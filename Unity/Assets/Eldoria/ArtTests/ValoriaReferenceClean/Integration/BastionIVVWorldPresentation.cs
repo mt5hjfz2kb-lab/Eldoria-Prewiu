@@ -10,11 +10,13 @@ namespace Eldoria.ReferenceClean {
   ValoriaIntegratedWorld host;GameObject cityRoot,stoneSite,stoneBase,worldFive;
   bool assetsLoaded;PlayerState cached;object cachedGateway;float nextStatePoll;Vector3 worldFiveScale,worldFiveFoot;
   readonly Dictionary<string,GameObject> models=new Dictionary<string,GameObject>();
+  readonly List<(GameObject root,bool wasActive)> keepTorches=new List<(GameObject,bool)>(),quarryTrees=new List<(GameObject,bool)>();
   readonly List<(GameObject model,int level)> stoneStock=new List<(GameObject,int)>();
   public GameObject WorldModel=>worldFive;
   public void RotateCityForReview(float delta){foreach(var model in models.Values)if(model){var b=Bounds(model);model.transform.RotateAround(new Vector3(b.center.x,b.min.y,b.center.z),Vector3.up,delta);}}
   public GameObject ModelFor(string id)=>models.TryGetValue(id,out var model)?model:null;
   public void Initialize(ValoriaIntegratedWorld h){host=h;cityRoot=new GameObject("Bastion IV V architecture");cityRoot.transform.SetParent(transform,false);
+   foreach(var light in UnityEngine.Object.FindObjectsByType<Light>(FindObjectsInactive.Include,FindObjectsSortMode.None)){var p=light.transform.position;if(light.name=="Torch glow"&&p.z>27&&p.z<32&&Mathf.Abs(p.x)<4)keepTorches.Add((light.gameObject,light.gameObject.activeSelf));}
    Apply();
   }
   void LoadUnlockedAssets(){if(assetsLoaded)return;assetsLoaded=true;var h=host;
@@ -23,6 +25,7 @@ namespace Eldoria.ReferenceClean {
    Add("barracks","cuartel-v",h.City.Parcels.RightBuilt,13);
    models["granary"]=Load("granero-v",cityRoot.transform,new Vector3(-19,.56f,9),10.4f);
    stoneSite=new GameObject("Stoneworks site");stoneSite.transform.SetParent(cityRoot.transform,false);stoneSite.transform.position=new Vector3(19,.56f,9);stoneSite.layer=8;
+   foreach(var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsInactive.Include,FindObjectsSortMode.None)){if(r.transform.IsChildOf(h.WorldRoot.transform)||r.transform.IsChildOf(cityRoot.transform))continue;string n=r.name.ToLowerInvariant();if(!n.Contains("tree")&&!n.Contains("pine")&&!n.Contains("conifer"))continue;var d=r.bounds.center-stoneSite.transform.position;d.y=0;if(d.sqrMagnitude<49&&!quarryTrees.Exists(x=>x.root==r.gameObject))quarryTrees.Add((r.gameObject,r.gameObject.activeSelf));}
    stoneSite.AddComponent<WorldHotspot>().Id="stoneworks";var box=stoneSite.AddComponent<BoxCollider>();box.size=new Vector3(11,6,10);box.center=new Vector3(0,3,0);
    // Reuse an existing authored workshop for I-IV, never the complete tier-V silhouette early.
    stoneBase=Load("stoneworks-base",stoneSite.transform,Vector3.zero,8.5f);
@@ -47,7 +50,7 @@ namespace Eldoria.ReferenceClean {
   }
   void LateUpdate(){if(!host||!host.Ready)return;if(cached==null||!ReferenceEquals(cachedGateway,host.City.Gateway)||Time.unscaledTime>=nextStatePoll)Apply();else Render(cached);}
   public void Apply(){if(!host||host.City.Gateway==null)return;cachedGateway=host.City.Gateway;cached=host.City.Gateway.Snapshot();nextStatePoll=Time.unscaledTime+.2f;Render(cached);}
-  void Render(PlayerState s){cityRoot.SetActive(!host.InWorld&&s.BastionLevel>=5);
+  void Render(PlayerState s){foreach(var light in keepTorches)if(light.root)light.root.SetActive(s.BastionLevel<5&&light.wasActive);foreach(var tree in quarryTrees)if(tree.root)tree.root.SetActive(!(s.BastionLevel>=5&&s.ChapterThree.StoneworksLevel>0)&&tree.wasActive);cityRoot.SetActive(!host.InWorld&&s.BastionLevel>=5);
    if(s.BastionLevel<5){if(worldFive)worldFive.SetActive(false);return;}LoadUnlockedAssets();
    Set("bastion",s.BastionLevel);Set("sawmill",s.SawmillLevel);Set("barracks",s.BarracksLevel);Set("granary",s.ChapterThree.GranaryLevel);Set("stoneworks",s.ChapterThree.StoneworksLevel);
    // Keep authoritative hotspots, deadlines and the established I-IV source objects intact.
