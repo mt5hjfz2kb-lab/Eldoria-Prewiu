@@ -370,7 +370,7 @@ async function main() {
     return clickPoint(control, name);
   }
   async function capture(label, framingCheck = null) {
-    if (captureNumber >= 75) { report.warnings.push('Screenshot cap reached; video and telemetry remain available'); return; }
+    if (captureNumber >= (process.env.ELDORIA_EXTEND_I_V==='1'?220:75)) { report.warnings.push('Screenshot cap reached; video and telemetry remain available'); return; }
     const before = latest, started = elapsed();
     const videoTime = Math.max(0, (performance.now() - videoStartedAt) / 1000);
     const relative = `screenshots/${String(++captureNumber).padStart(3, '0')}-${slug(label)}-${orientation(before)}.jpg`;
@@ -758,6 +758,75 @@ async function main() {
     need(report.checks.march_visual_outbound && report.checks.march_visual_returning,
       'Visible march displacement was not resolved for at least one outbound and one return with stable camera; see each visual_motion status and video. This is incomplete motion evidence, not a claim that animation is absent');
   }
+
+  // Independent I-V test: all gameplay input remains genuine visible mouse/touch.
+  // This never edits runtime state, speeds the clock or resets the owner's saves.
+  async function continueFromBastionIIToV() {
+    const journey={started_elapsed_s:elapsed(),steps:[],objectives:[],complete:false};
+    report.bastion_i_v_journey=journey;
+    flowDeadline=performance.now()+Number(process.env.ELDORIA_IV_V_MAX_EXTRA_SECONDS||3600)*1000;
+    let decisions=0, lastKey='',same=0;
+    const stage = st => String(st?.bastion||0)+':'+String(st?.objective||'?');
+    while(true) {
+      health();
+      await dismissNarrative();
+      if(latest.bastion>=5 && latest.objective==='b5.complete') {
+        journey.complete=true;journey.finished_elapsed_s=elapsed();
+        report.checks.complete_i_v=true;
+        await capture('bastion-v-complete-with-real-controls');
+        break;
+      }
+      if(latest.bastion>5) throw Error('Advanced beyond requested Bastion V');
+      const signature=stage(latest);
+      if(!journey.objectives.some(x=>x.signature===signature)){
+        journey.objectives.push({signature,elapsed_s:elapsed(),save_sha256:typeof latest.save==='string'?sha256(latest.save):null});
+        await capture('new-objective-'+signature);
+      }
+      if(latest.busy||phase(latest)!=='idle'){await sleep(250);continue;}
+      if(latest.management?.destination){await closeDetails();continue;}
+      let saved={};
+      try{saved=JSON.parse(latest.save||'{}');}catch(error){throw Error('Invalid read-only save while playing III-V: '+error.message);}
+      const ticks=Number(saved.ChapterThree?.InvestigationEndsUtcTicks||0);
+      const finishAt=ticks/10000-62135596800000;
+      if(latest.objective==='b3.investigate' && finishAt>Date.now()+200) {
+        journey.steps.push({elapsed_s:elapsed(),kind:'real_time_fissure_wait',remaining_seconds:round((finishAt-Date.now())/1000)});
+        await capture('fissure-investigation-genuine-wait');
+        while(Date.now()<finishAt){health();await sleep(1000);}
+        await sleep(1500);
+        continue;
+      }
+      if(++decisions>130) throw Error('Too many real control operations to reach Bastion V');
+      const before=summary(latest),prior=latest.objective,rev=latest.revision;
+      if(latest.controls?.objective?.enabled){
+        await clickControl('objective');
+        await waitState(st=>st.narrative||st.busy||st.objective!==prior||!!st.selected||!!st.management?.destination,
+          'Objective selects a visible III-V destination',12000);
+      } else if(!latest.controls?.primary?.enabled){
+        journey.blocked={type:'no_visible_objective',before};
+        await capture('blocked-'+signature);
+        throw Error('No real visible objective/primary input at '+signature);
+      }
+      if(latest.narrative||latest.busy||phase(latest)!=='idle'||latest.objective!==prior){await sleep(250);continue;}
+      if(!latest.controls?.primary?.enabled){
+        journey.blocked={type:'primary_unavailable',selected:latest.selected,at:signature};
+        await capture('blocked-primary-'+signature);
+        throw Error('Real primary action unavailable at '+signature+' selected='+latest.selected);
+      }
+      const step={elapsed_s:elapsed(),kind:'real_primary_control',objective:prior,selected:latest.selected,revision_before:rev,orientation:orientation(latest)};
+      journey.steps.push(step);
+      await capture('before-action-'+signature);
+      await clickControl('primary');
+      await waitState(st=>st.revision>rev||st.busy||st.narrative||st.objective!==prior||phase(st)!=='idle',
+        'Real III-V primary action acknowledges click',14000);
+      step.revision_after=latest.revision;step.after=stage(latest);
+      if(step.after===lastKey && latest.revision===rev) same++;else same=0;
+      if(same>=3) throw Error('Visible controls have not progressed after repeated inputs at '+signature);
+      lastKey=step.after;
+      await sleep(300);
+    }
+    report.checks.i_v_real_time_without_game_setters=true;
+  }
+
   async function load(label, reload = false) {
     latest = null; previousFrame = null; lastTelemetryAt = 0;
     const start = performance.now(), requestStart = server.requests.length;
@@ -858,7 +927,7 @@ async function main() {
         report.network_failures.push({ elapsed_s: elapsed(), url: response.url(), status: response.status() });
     });
     await load('cold-empty-browser-context'); report.orientations.push('landscape');
-    report.initial_state = summary(latest);
+    report.initial_state = summary(latest); if(process.env.ELDORIA_EXTEND_I_V==='1') report.scope='LOCAL_WEB_VISIBLE_CONTROLS_NORMAL_TIME_I_V';
     report.checks.fresh_save = latest.objective === 'b1.build-sawmill' && latest.sawmill === 0 && latest.barracks === 0 && latest.bastion === 1 && latest.trained === 0 && !latest.engendro;
     need(report.checks.fresh_save, 'Fresh browser context did not start a new Bastion I game');
     await capture('arrival'); await setOrientation('portrait'); await capture('arrival'); await dismissNarrative();
@@ -873,13 +942,14 @@ async function main() {
       need(!latest.inWorld, 'The visible city gate bypassed the world access rule');
     } else report.checks.early_gate_visible_click = { attempted: false, reason: 'Gate collider centre outside current visible frame; native gate regression remains separate' };
     await normalPlaythrough();
+    if(process.env.ELDORIA_EXTEND_I_V==='1') await continueFromBastionIIToV();
     await dismissNarrative(); await toggleWorld(false); await closeDetails();
     for (const view of ['landscape', 'portrait']) { await setOrientation(view); await capture('bastion-ii-complete-city'); }
     const saved = await stableSave(); fs.writeFileSync(path.join(out, 'final-save.json'), saved);
     report.final_state = summary(latest); report.final_save_sha256 = sha256(saved);
     flowDeadline = Infinity;
     await load('warm-reload-same-browser-context', true);
-    await waitState(state => state.objective === 'b2.complete' && phase(state) === 'idle' && !state.busy, 'Reload restores completed Bastion II', 15000);
+    await waitState(state => (process.env.ELDORIA_EXTEND_I_V==='1' ? state.objective==='b5.complete' && state.bastion>=5 : state.objective==='b2.complete') && phase(state)==='idle' && !state.busy, 'Reload restores game progress', 15000);
     const restored = await stableSave(); fs.writeFileSync(path.join(out, 'reloaded-save.json'), restored);
     report.checks.exact_save_reload = { pass: saved === restored, before_sha256: sha256(saved), after_sha256: sha256(restored) };
     need(report.checks.exact_save_reload.pass, 'Reload changed the exact completed saved state');
