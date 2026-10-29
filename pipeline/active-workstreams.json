@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T21:35:50.378Z",
+  "updated_at": "2026-10-29T21:40:59.510Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
-      "branch": "main",
+      "owner": "codex-parity132-continuation-ab04f62d0b26",
+      "branch": "feature/eldoria-web-parity-camera-20261029",
       "status": "active",
-      "claimed_at": "2026-10-29T17:22:23.229Z",
+      "claimed_at": "2026-10-29T21:40:59.510Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -108,15 +108,19 @@
         "tools/valoria-reference-clean/browser-qa-request.json",
         ".github/workflows/valoria-windows-chromium-qa.yml",
         ".github/workflows/eldoria-itch-delivery.yml",
-        "docs/bastion-iv-v/RELEASE_20261029.md"
+        "docs/bastion-iv-v/RELEASE_20261029.md",
+        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**",
+        "Unity/Assets/Eldoria/Tests/EditMode/CameraGestureTests.cs",
+        "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
+        "docs/documentation-catalog.json"
       ],
       "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Completed post-PR130 publication and bounded technical packaging/diagnostic repairs. Canonical workstream is available with no owner, reserved resources or pending source edits. Prior required artistic request is retained as COMPLETED with original authorship policy and visual evidence; a future artistic claim must reactivate required routing before edits.",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Bounded runtime integration/camera/encounter reuse corrections in existing ArtTests surfaces require technical scope gate. No new asset authorship or artistic approval; original approved sources preserved.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "POST_PR130_ANDROID19_WEBGL298_DELIVERED",
-      "next": "Publication complete. Canonical workstream available for the owner's next instruction; current device/hosted-gameplay limits remain explicit.",
+      "phase": "PR132_ISSUE133_MIGRATION_PARITY_RECONCILIATION",
+      "next": "Audit existing PR132 against current main and canonical web; repair necessary parity, persistence and camera defects; exact native QA before integration and close issue133.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -923,7 +927,7 @@
           "workflow_yaml": "PASS"
         }
       },
-      "owner_handoff": "2026-10-29 owner explicitly transferred frozen post-PR130 APK/WebGL publication to this chat; completed and released under the same canonical ID.",
+      "owner_handoff": "Owner explicitly asks this chat to assume necessary PR132/issue133 migration corrections and complete them. Reuse existing PR132 under the canonical workstream; no new parallel PR.",
       "session_continuation": {
         "executor": "codex-work-artistic-convergence-20261020",
         "base_main_sha": "22fcaf8c0b3c1b1c97bc914e7b6e80b57ecdc748",
@@ -1381,15 +1385,15 @@
           "reason": "Owner-authorized continuation completed: APK19 published and public bytes verified; native298 full browser QA and exact Restricted itch remote activation confirmed. No remaining heavy job or write reservation."
         }
       ],
-      "ownership_revision": 64,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 65,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-10-29T09:54:24.457Z",
       "delivery_definition": {
-        "deliverable": "Verified approved five own-level-V building models, signed Android family update, updated restricted WebGL.",
-        "evidence": "Five GLB SHA256 exact matches; native270deg actual screenshots, level-isolation/save proofs; exact APK signature and public bytes/channel; exact WebGL candidate QA and remote active build.",
-        "handoff": "APK URL, existing itch URL, version/source identity and honest physical-device/hosted limits."
+        "deliverable": "Complete necessary web-to-Unity I–V parity and city/world camera corrections through existing PR132; resolve issue133 with verified evidence.",
+        "evidence": "Web-to-Unity matrix, old/new save and idempotency regression tests, native Edit/PlayMode I–V, actual UI/camera captures and exact source/build identity.",
+        "handoff": "Merged verified PR132, issue133 disposition, durable source/run evidence and explicit separation from unstarted V4.1 and existing APK19/WebGL298."
       },
       "handoff_authority": "Current owner requested autonomous final visual consolidation and recovery of technical blockers; scope completed with authentic A/B and independent review. No APK/Bastion III/publication authority implied.",
       "world_integration_handoff": {
@@ -1404,12 +1408,7 @@
         "authorization": "Owner full world replacement order followed by explicit 'Tienes mi autorización' on 2026-10-23. No merge, publication or expenditure.",
         "limits": "Only world visual replacement/population integration; preserve city, UI, saves, identifiers and I-II progression. No merge/publication."
       },
-      "scope_exclusions": [
-        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
-        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
-        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/**",
-        "Unity/Assets/Eldoria/ArtTests/World4XZone1/**"
-      ],
+      "scope_exclusions": [],
       "paused_on": "2026-10-24",
       "paused_handoff_document": "docs/ui-v3/OWNER_PAUSED_HANDOFF_AFTER_WORLD4X_20261024.md",
       "latest_owner_feedback": "Current owner: resources have levels, a single occupant per node, disputable and stronger player remains gathering. Incorporated into offline design/simulation; no live multiplayer implementation or APK publication authorized by this scope.",
@@ -1477,7 +1476,7 @@
       },
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "feature/bastion-iv-v-migration-20261029",
-      "canonical_pr": 130,
+      "canonical_pr": 132,
       "handoff_reason": "OWNER_REAUTHORIZED_20261027_CRONICA_REAL_UI_RESET_TEST_ONLY_WOLF_SIZE_CITY_ZOOM_PAN_SMOOTHNESS",
       "last_handoff": "docs/bastion-iv-v/FINAL_REVIEW.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
@@ -9579,8 +9578,8 @@
   "exclusive_priority": {
     "id": "valoria-master-plan-layered-construction-20261016",
     "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-    "status": "available",
-    "owner": null,
+    "status": "claimed",
+    "owner": "codex-parity132-continuation-ab04f62d0b26",
     "authorized_on": "2026-10-18",
     "instructions": "docs/ELDORIA_MAIN_BASELINE_20261018.md",
     "budget_eur": 0,
