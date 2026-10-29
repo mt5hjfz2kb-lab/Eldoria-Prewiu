@@ -76,6 +76,12 @@ namespace Eldoria.ReferenceClean.Editor
             var snap=g.Snapshot();
             return new GameCommand(id,snap.PlayerId,kind,target,snap.Revision);
         }
+        static Rect InLayer(RectTransform item,Transform layer)
+        {
+            var corners=new Vector3[4];item.GetWorldCorners(corners);
+            var min=layer.InverseTransformPoint(corners[0]);var max=layer.InverseTransformPoint(corners[2]);
+            return Rect.MinMaxRect(min.x,min.y,max.x,max.y);
+        }
         static void Image(ValoriaIntegratedWorld host,string name,int width,int height)
         {
             string path=Path.Combine(Output,name+".png");
@@ -102,6 +108,18 @@ namespace Eldoria.ReferenceClean.Editor
                         Need((host.PlayerCamera.cullingMask&(1<<marker.gameObject.layer))!=0&&
                             graphic.depth>=0&&!graphic.canvasRenderer.cull,
                             "Actual world camera renders expedition standard "+i+" at "+name);
+                        var captionBack=marker.Find("Expedition caption backing "+(i+1)) as RectTransform;
+                        var footprint=InLayer(marker,marker.parent);
+                        var captionBounds=InLayer(captionBack,marker.parent);
+                        footprint.yMin=captionBounds.yMin;footprint.xMin=captionBounds.xMin;footprint.xMax=captionBounds.xMax;
+                        foreach(var button in host.Hud.GetComponentsInChildren<Button>(false))
+                        {
+                            if(button.name!="Live Vigilants unlocked access"&&button.name!="Live Scouts unlocked access"&&
+                                !button.GetComponentInParent<BuildingLabel>())continue;
+                            if(button.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.1f))continue;
+                            Need(!footprint.Overlaps(InLayer((RectTransform)button.transform,marker.parent)),
+                                "Actual expedition caption does not cover live map/retention action "+button.name+" at "+name);
+                        }
                         Debug.Log("ACTUAL_MARCH_STANDARD capture="+name+" slot="+i+" local="+marker.anchoredPosition+
                             " size="+marker.rect.size+" scale="+marker.localScale+" canvas_scale="+canvas.scaleFactor);
                         Need(marker.rect.width*marker.localScale.x*canvas.scaleFactor>=28f,

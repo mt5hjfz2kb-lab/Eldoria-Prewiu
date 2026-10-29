@@ -12,7 +12,10 @@ namespace Eldoria.ReferenceClean {
  // Read-only presentation of the ONE authoritative save and clock. No simulation or rewards here.
  public sealed class ValoriaMarchPresentation:MonoBehaviour {
   ValoriaIntegratedWorld host;
-  RectTransform layer,objective;
+  RectTransform layer,objective,vigilantAccess,scoutAccess;
+  readonly List<Button> buttons=new List<Button>();
+  readonly List<RoyalText> hudTexts=new List<RoyalText>();
+  readonly List<Rect> occupied=new List<Rect>();
   readonly RectTransform[] standards=new RectTransform[3];
   readonly RoyalText[] numbers=new RoyalText[3],labels=new RoyalText[3];
   readonly RoyalIconGraphic[] arrows=new RoyalIconGraphic[3];
@@ -58,7 +61,10 @@ namespace Eldoria.ReferenceClean {
    layer=CreateRect("Expedition route / authoritative clock",host.Hud.transform,host.Hud.gameObject.layer);
    layer.anchorMin=Vector2.zero;layer.anchorMax=Vector2.one;layer.offsetMin=layer.offsetMax=Vector2.zero;
    layer.SetAsFirstSibling();
-   objective=host.Hud.GetComponentsInChildren<RectTransform>(true).FirstOrDefault(x=>x.name=="V2 / current objective");
+   var hudRects=host.Hud.GetComponentsInChildren<RectTransform>(true);
+   objective=hudRects.FirstOrDefault(x=>x.name=="V2 / current objective");
+   vigilantAccess=hudRects.FirstOrDefault(x=>x.name=="Live Vigilants unlocked access");
+   scoutAccess=hudRects.FirstOrDefault(x=>x.name=="Live Scouts unlocked access");
    for(int i=0;i<3;i++){
     var line=CreateRect("Authoritative expedition route "+(i+1),layer,layer.gameObject.layer);
     line.anchorMin=Vector2.zero;line.anchorMax=Vector2.one;line.offsetMin=line.offsetMax=Vector2.zero;
@@ -84,7 +90,12 @@ namespace Eldoria.ReferenceClean {
   }
   void Sample(){
    if(!host||!host.Ready)return;
-   if(sampled==null||Time.unscaledTime>=nextSample){sampled=host.City.Gateway.Snapshot();nextSample=Time.unscaledTime+.1f;}
+   if(sampled==null||Time.unscaledTime>=nextSample){
+    sampled=host.City.Gateway.Snapshot();nextSample=Time.unscaledTime+.1f;
+    buttons.Clear();hudTexts.Clear();
+    host.Hud.GetComponentsInChildren<Button>(true,buttons);
+    host.Hud.GetComponentsInChildren<RoyalText>(true,hudTexts);
+   }
   }
   void LateUpdate(){
    Sample();if(sampled==null)return;
@@ -114,8 +125,10 @@ namespace Eldoria.ReferenceClean {
    if(objective&&objective.gameObject.activeInHierarchy&&(!group||group.alpha>.1f))free.yMax=Mathf.Min(free.yMax,Bounds(objective).yMin);
    if(host.Hud.Navigation&&host.Hud.Navigation.gameObject.activeInHierarchy)
     free.yMin=Mathf.Max(free.yMin,Bounds((RectTransform)host.Hud.Navigation.transform).yMax);
-   // Include the full caption below each standard, never behind the navigation.
-   free.xMin+=98*scale;free.xMax-=98*scale;free.yMin+=92*scale;free.yMax-=34*scale;
+   if(vigilantAccess&&vigilantAccess.gameObject.activeInHierarchy)free.yMin=Mathf.Max(free.yMin,Bounds(vigilantAccess).yMax);
+   if(scoutAccess&&scoutAccess.gameObject.activeInHierarchy)free.yMin=Mathf.Max(free.yMin,Bounds(scoutAccess).yMax);
+   // Include the full caption below each standard, above shortcuts and navigation.
+   free.xMin+=98*scale;free.xMax-=98*scale;free.yMin+=100*scale;free.yMax-=34*scale;
    return free;
   }
   Vector2 Project(Vector3 world){
@@ -123,16 +136,36 @@ namespace Eldoria.ReferenceClean {
    return new Vector2(r.xMin+p.x*r.width,r.yMin+p.y*r.height);
   }
   static Vector2 Clamp(Vector2 p,Rect r)=>new Vector2(Mathf.Clamp(p.x,r.xMin,r.xMax),Mathf.Clamp(p.y,r.yMin,r.yMax));
+  void OccupiedAreas(){
+   occupied.Clear();
+   foreach(var button in buttons){
+    if(!button||!button.gameObject.activeInHierarchy||button.transform.IsChildOf(layer))continue;
+    if(button.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.1f))continue;
+    occupied.Add(Bounds((RectTransform)button.transform));
+   }
+   foreach(var text in hudTexts){
+    if(!text||!text.isActiveAndEnabled||text.transform.IsChildOf(layer)||
+       string.IsNullOrEmpty(text.text)||text.text.Length>9||!text.text.Contains(":"))continue;
+    if(text.GetComponentsInParent<CanvasGroup>().Any(g=>g.alpha<.1f))continue;
+    // The existing world node timers also remain readable underneath their buttons.
+    var r=Bounds(text.rectTransform);r.xMin-=7;r.xMax+=7;r.yMin-=7;r.yMax+=7;occupied.Add(r);
+   }
+  }
   Vector2 Place(Vector2 actual,Rect free,float scale,int index){
-   var best=Clamp(actual,free);float bestDistance=-1;
+   var origin=Clamp(actual,free);var best=origin;float bestPenalty=float.MaxValue;
    foreach(var offset in Offsets){
-    var candidate=Clamp(actual+offset*scale,free);bool clear=true;float distance=float.MaxValue;
+    var candidate=Clamp(origin+offset*scale,free);
+    var footprint=Rect.MinMaxRect(candidate.x-96*scale,candidate.y-90*scale,candidate.x+96*scale,candidate.y+31*scale);
+    float penalty=0;
+    foreach(var r in occupied)if(footprint.Overlaps(r))
+     penalty+=(Mathf.Min(footprint.xMax,r.xMax)-Mathf.Max(footprint.xMin,r.xMin))*
+      (Mathf.Min(footprint.yMax,r.yMax)-Mathf.Max(footprint.yMin,r.yMin));
     for(int j=0;j<index;j++)if(active[j]){
-     var d=candidate-placed[j];distance=Mathf.Min(distance,d.sqrMagnitude);
-     if(Mathf.Abs(d.x)<190*scale&&Mathf.Abs(d.y)<116*scale)clear=false;
+     var d=candidate-placed[j];
+     if(Mathf.Abs(d.x)<190*scale&&Mathf.Abs(d.y)<116*scale)penalty+=1000000;
     }
-    if(clear)return candidate;
-    if(distance>bestDistance){best=candidate;bestDistance=distance;}
+    if(penalty==0)return candidate;
+    if(penalty<bestPenalty){best=candidate;bestPenalty=penalty;}
    }
    return best;
   }
@@ -149,7 +182,7 @@ namespace Eldoria.ReferenceClean {
     if(investigation){int k=1;foreach(var m in MarchCapacityRules.WorldMarches(sampled))if(m.Phase!="idle"&&k<3)operations[k++]=m;}
     else if(sampled.ExtraMarches!=null)for(int i=0;i<Math.Min(2,sampled.ExtraMarches.Count);i++)operations[i+1]=sampled.ExtraMarches[i];
     var canvas=layer.GetComponentInParent<Canvas>();float scale=Mathf.Clamp(.70f/Mathf.Max(.1f,canvas.scaleFactor),.70f,1.60f);
-    var free=FreeArea(scale);var origin=host.FindTarget("valoria-map-city");
+    var free=FreeArea(scale);OccupiedAreas();var origin=host.FindTarget("valoria-map-city");
     for(int i=0;i<3;i++){
      var m=operations[i];var target=m==null?null:host.FindTarget(m.TargetId);
      active[i]=host.InWorld&&m!=null&&m.Phase!="idle"&&origin&&target&&free.width>0&&free.height>0;
@@ -171,7 +204,7 @@ namespace Eldoria.ReferenceClean {
        (seconds/60)+":"+(seconds%60).ToString("00"));
       labelSeconds[i]=seconds;labelTroops[i]=m.Troops.Total;labelHeroes[i]=m.HeroId;labelPhases[i]=m.Phase;
      }
-     bool outside=!free.Contains(actual);arrows[i].gameObject.SetActive(outside);
+     bool outside=!free.Contains(actual)||(actual-placed[i]).sqrMagnitude>16f*scale*scale;arrows[i].gameObject.SetActive(outside);
      if(outside){var d=actual-placed[i];arrows[i].rectTransform.localRotation=Quaternion.Euler(0,0,Mathf.Atan2(d.y,d.x)*Mathf.Rad2Deg);}
      for(int j=0;j<25;j++)points[i][j]=Project(RoutePosition(m,a,b,j/24f)+Vector3.up*1.5f);
      routes[i].Clip=Rect.MinMaxRect(free.xMin-70*scale,free.yMin-85*scale,free.xMax+70*scale,free.yMax+25*scale);
