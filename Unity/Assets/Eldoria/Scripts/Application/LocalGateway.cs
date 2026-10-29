@@ -418,9 +418,10 @@ namespace Eldoria.Application
                     }
                     state.Resources.Wood -= next.WoodCost;
                     state.Resources.Stone -= next.StoneCost;
+                    state.Resources.Food -= next.FoodCost;
                     state.BastionUpgradeStartedUtcTicks = clock.UtcTicks;
                     state.BastionUpgradeCompletesUtcTicks = clock.UtcTicks +
-                        TimeSpan.FromSeconds(next.Level==3?14:SliceContentProfiles.WebContract.Bastion2UpgradeSeconds).Ticks;
+                        TimeSpan.FromSeconds(next.DurationSeconds).Ticks;
                     state.BastionUpgradeTaskId = "bastion"+next.Level+":" + command.Id;
                     break;
                 case "Build":
@@ -527,8 +528,15 @@ namespace Eldoria.Application
                 if (!state.CompletedTaskIds.Contains(state.BastionUpgradeTaskId))
                 {
                     state.CompletedTaskIds.Add(state.BastionUpgradeTaskId);
-                    state.BastionLevel = Math.Max(state.BastionUpgradeTaskId.StartsWith("bastion3:",StringComparison.Ordinal)?3:2, state.BastionLevel);
-                    if(state.BastionLevel==3){state.ChapterThree.EconomyUtcTicks=state.BastionUpgradeCompletesUtcTicks;state.MissionPower+=300;}
+                    int targetLevel=2;
+                    var prefix=state.BastionUpgradeTaskId.Split(':')[0];
+                    if(prefix.StartsWith("bastion",StringComparison.Ordinal)&&int.TryParse(prefix.Substring(7),out var parsed)&&parsed>=2&&parsed<=5)targetLevel=parsed;
+                    if(targetLevel>state.BastionLevel){
+                        state.BastionLevel=targetLevel;
+                        // TotalPower already awards 600 per Bastion level.
+                        state.MissionPower+=BastionProgressionCatalog.ForLevel(targetLevel).PowerReward-600;
+                        if(targetLevel==3)state.ChapterThree.EconomyUtcTicks=state.BastionUpgradeCompletesUtcTicks;
+                    }
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.BastionTwoReached = true;
                 }
@@ -671,6 +679,9 @@ namespace Eldoria.Application
                         {
                             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                             state.ChapterProgress.GatheredStone += m.PendingStone;
+                            // Web quarry3/4 are the distant veins. Region1 replaces those
+                            // fixed DOM sites with persistent regional stone nodes.
+                            if(state.BastionLevel>=5&&m.TargetId.StartsWith("region1:stone:",StringComparison.Ordinal))state.ChapterThree.ExtractionOddity=true;
                         }
                         MarchCapacityRules.Return(state,m.Troops);
                     }
@@ -741,11 +752,19 @@ namespace Eldoria.Application
         CommandResult ExecuteChapterThree(GameCommand command)
         {
             var c=state.ChapterThree;var id=command.TargetId;
-            bool handles=command.Kind=="InvestigateFissure"||command.Kind=="ContactLyra"||command.Kind=="UpgradeBuilding"||
-                (command.Kind=="Build"&&id=="granary")||((command.Kind=="Fight"||command.Kind=="Gather")&&IsChapterThreeTarget(id));
+            bool handles=command.Kind=="ChooseDevelopment"||command.Kind=="InvestigateFissure"||command.Kind=="ContactLyra"||command.Kind=="UpgradeBuilding"||
+                (command.Kind=="Build"&&(id=="granary"||id=="stoneworks"))||((command.Kind=="Fight"||command.Kind=="Gather")&&IsChapterThreeTarget(id));
             if(!handles)return null;
             if(state.BastionLevel<3)return Fail("Requiere Bastión III");
             switch(command.Kind) {
+                case "ChooseDevelopment":
+                    if(state.BastionLevel<4||!string.IsNullOrEmpty(c.DevelopmentPriority))return Fail("Prioridad no disponible");
+                    if(id!="production"&&id!="defense"&&id!="civil")return Fail("Prioridad desconocida");
+                    c.DevelopmentPriority=id;
+                    if(id=="production"){state.Resources.Wood+=260;state.Resources.Stone+=180;}
+                    else if(id=="defense"){state.Resources.Stone+=220;state.MissionPower+=100;}
+                    else {state.Resources.Wood+=180;state.Resources.Food+=280;}
+                    break;
                 case "InvestigateFissure":
                     if(id!="fissure-valoria"||c.FissureClosed||c.FissureExplored||c.InvestigationEndsUtcTicks>0)return Fail("Investigación no disponible");
                     if(!CanDepart())return Fail("Aldric debe regresar antes de investigar");
@@ -758,15 +777,18 @@ namespace Eldoria.Application
                     c.LyraContacted=true;break;
                 case "Build":case "UpgradeBuilding":
                     if(state.BuildingCompletesUtcTicks>0||state.BastionUpgradeCompletesUtcTicks>0)return Fail("Ya hay una obra en curso");
-                    int level=id=="sawmill"?state.SawmillLevel:id=="barracks"?state.BarracksLevel:id=="granary"?c.GranaryLevel:-1;
-                    if(level<0||level>=state.BastionLevel||level>=3||(command.Kind=="Build"?level!=0:level==0))return Fail("Mejora no disponible");
-                    if(level>=2&&id!="barracks"&&!c.Inventory.Contains(id=="sawmill"?"iron-brace":"treated-hide"))return Fail("Falta material especial de la frontera");
-                    int wood=level==0?240:(id=="barracks"?140:120)*level;
-                    int stone=level==0?180:(id=="barracks"?90:78)*level;
-                    if(state.Resources.Wood<wood||state.Resources.Stone<stone)return Fail("Faltan recursos para la obra");
+                    int level=id=="sawmill"?state.SawmillLevel:id=="barracks"?state.BarracksLevel:id=="granary"?c.GranaryLevel:id=="stoneworks"?c.StoneworksLevel:-1;
+                    if(id=="stoneworks"&&state.BastionLevel<5)return Fail("Requiere Bastión V");
+                    if(level<0||level>=state.BastionLevel||level>=5||(command.Kind=="Build"?level!=0:level==0))return Fail("Mejora no disponible");
+                    if(level>=2&&id!="barracks"&&!c.Inventory.Contains(id=="sawmill"?"iron-brace":id=="stoneworks"?"stone-tusk":"treated-hide"))return Fail("Falta material especial de la frontera");
+                    int wood=level==0?(id=="stoneworks"?500:240):(id=="barracks"?140:120)*level;
+                    int stone=level==0?(id=="stoneworks"?0:180):(id=="barracks"?90:78)*level;
+                    int food=level==0&&id=="stoneworks"?200:0;
+                    if(state.Resources.Wood<wood||state.Resources.Stone<stone||state.Resources.Food<food)return Fail("Faltan recursos para la obra");
+                    state.Resources.Food-=food;
                     state.Resources.Wood-=wood;state.Resources.Stone-=stone;c.PendingBuildingLevel=level+1;
                     state.BuildingTaskId="c3:"+id+":"+command.Id;
-                    state.BuildingCompletesUtcTicks=clock.UtcTicks+TimeSpan.FromSeconds(level==0?9:8+level*2).Ticks;break;
+                    state.BuildingCompletesUtcTicks=clock.UtcTicks+TimeSpan.FromSeconds(level==0?(id=="stoneworks"?12:9):8+level*2).Ticks;break;
                 case "Gather":case "Fight":
                     if(id=="fissure-valoria"&&(!c.LyraContacted||c.FissureClosed))return Fail("Investiga y conoce a Lyra antes del asalto");
                     if(id=="meat-valoria"&&(command.Kind!="Gather"||c.MeatRemaining<=0))return Fail("Reserva no disponible");
@@ -785,6 +807,7 @@ namespace Eldoria.Application
             long seconds=Math.Min(3600,Math.Max(0,(until-c.EconomyUtcTicks)/TimeSpan.TicksPerSecond));
             state.Resources.Wood+=checked((int)seconds*state.SawmillLevel);
             state.Resources.Food+=checked((int)seconds*c.GranaryLevel);
+            state.Resources.Stone+=checked((int)seconds*2*c.StoneworksLevel);
             c.EconomyUtcTicks+=seconds*TimeSpan.TicksPerSecond;
             if(until-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond)c.EconomyUtcTicks=until;
         }
@@ -810,10 +833,11 @@ namespace Eldoria.Application
                 if(!state.CompletedTaskIds.Contains(state.BuildingTaskId)) {
                     state.CompletedTaskIds.Add(state.BuildingTaskId);string id=state.BuildingTaskId.Split(':')[1];
                     int oldLevel=c.PendingBuildingLevel-1;
-                    int gain=oldLevel==0?300:id=="barracks"?110+oldLevel*30:90+oldLevel*25;
+                    int gain=oldLevel==0?(id=="stoneworks"?420:300):id=="barracks"?110+oldLevel*30:90+oldLevel*25;
                     state.MissionPower+=gain-(id=="sawmill"?170:id=="barracks"?190:0);
                     if(id=="sawmill")state.SawmillLevel=c.PendingBuildingLevel;
                     else if(id=="barracks")state.BarracksLevel=c.PendingBuildingLevel;
+                    else if(id=="stoneworks"){c.StoneworksLevel=c.PendingBuildingLevel;c.RankUnlocked=true;}
                     else c.GranaryLevel=c.PendingBuildingLevel;
                 }
                 c.PendingBuildingLevel=0;state.BuildingCompletesUtcTicks=0;state.BuildingTaskId="";changed=true;
@@ -845,7 +869,7 @@ namespace Eldoria.Application
         public bool AcknowledgeNarrative(string beat)
         {
             if (beat!="start" && beat!="world" && beat!="mark" &&
-                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed") return false;
+                beat!="barracks" && beat!="secured" && beat!="frontier-open" && beat!="fissure-closed" && beat!="consolidate-valoria" && beat!="productive-valoria" && beat!="extraction-oddity") return false;
             if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
             if (state.ChapterProgress.SeenNarrative == null)
                 state.ChapterProgress.SeenNarrative = new System.Collections.Generic.List<string>();

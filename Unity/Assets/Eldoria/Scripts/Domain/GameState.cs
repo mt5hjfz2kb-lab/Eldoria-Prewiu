@@ -122,6 +122,10 @@ namespace Eldoria.Domain
     [Serializable] public sealed class BastionThreeState
     {
         public int GranaryLevel, Hunts, LyraXp;
+        // Additive IV/V save fields: old schema-1 saves remain valid.
+        public int StoneworksLevel;
+        public string DevelopmentPriority = "";
+        public bool RankUnlocked, ExtractionOddity;
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
         public long InvestigationEndsUtcTicks, ClosingEndsUtcTicks, EconomyUtcTicks;
@@ -301,13 +305,14 @@ namespace Eldoria.Domain
     }
     public sealed class BastionProgressionDefinition
     {
-        public readonly int Level, RequiredPreviousLevel, WoodCost, StoneCost, PowerReward;
+        public readonly int Level, RequiredPreviousLevel, WoodCost, StoneCost, PowerReward, FoodCost, DurationSeconds;
         public readonly bool RequiresJourneyComplete;
         public readonly string[] Unlocks;
         public BastionProgressionDefinition(int level,int requiredPreviousLevel,int woodCost,int stoneCost,
-            int powerReward,bool requiresJourneyComplete,string[] unlocks)
+            int powerReward,bool requiresJourneyComplete,string[] unlocks,int foodCost=0,int durationSeconds=10)
         {
             Level=level;RequiredPreviousLevel=requiredPreviousLevel;WoodCost=woodCost;StoneCost=stoneCost;
+            FoodCost=foodCost;DurationSeconds=durationSeconds;
             PowerReward=powerReward;RequiresJourneyComplete=requiresJourneyComplete;Unlocks=unlocks??Array.Empty<string>();
         }
     }
@@ -324,7 +329,9 @@ namespace Eldoria.Domain
                 2,1,SliceContentProfiles.Active.Bastion2WoodCost,SliceContentProfiles.Active.Bastion2StoneCost,
                 600,true,new[]{"barracks","chapter-ii","world-engendro","march-preparation"});
             if(level==3) return new BastionProgressionDefinition(
-                3,2,650,500,900,false,new[]{"granary","food","hunting","fissure","chapter-iii"});
+                3,2,650,500,900,false,new[]{"granary","food","hunting","fissure","chapter-iii"},0,14);
+            if(level==4) return new BastionProgressionDefinition(4,3,850,700,1150,false,new[]{"development-priority","chapter-iv"},300,16);
+            if(level==5) return new BastionProgressionDefinition(5,4,1100,900,1500,false,new[]{"stoneworks","chapter-v"},500,18);
             throw new ArgumentOutOfRangeException(nameof(level),"Bastion level is not authored in the current progression catalog.");
         }
 
@@ -335,7 +342,9 @@ namespace Eldoria.Domain
             if(state.BastionUpgradeCompletesUtcTicks>0||state.BuildingCompletesUtcTicks>0)return false;
             if(definition.RequiresJourneyComplete&&!state.JourneyComplete)return false;
             if(definition.Level==3&&(state.BarracksLevel<1||state.Available.Total+state.March.Troops.Total<41))return false;
-            return state.Resources.Wood>=definition.WoodCost&&state.Resources.Stone>=definition.StoneCost;
+            if(definition.Level==4&&(!state.ChapterThree.FissureClosed||state.SawmillLevel<2||state.BarracksLevel<2||state.ChapterThree.GranaryLevel<2))return false;
+            if(definition.Level==5&&string.IsNullOrEmpty(state.ChapterThree.DevelopmentPriority))return false;
+            return state.Resources.Wood>=definition.WoodCost&&state.Resources.Stone>=definition.StoneCost&&state.Resources.Food>=definition.FoodCost;
         }
 
         public static string MissingSummary(PlayerState state,BastionProgressionDefinition definition)
@@ -347,6 +356,12 @@ namespace Eldoria.Domain
             if(definition.RequiresJourneyComplete&&!state.JourneyComplete)missing.Add("completa los objetivos de Bastión I");
             if(definition.Level==3&&state.BarracksLevel<1)missing.Add("construye el Cuartel");
             if(definition.Level==3&&state.Available.Total+state.March.Troops.Total<41)missing.Add("reúne 41 tropas");
+            if(definition.Level==4){
+                if(!state.ChapterThree.FissureClosed)missing.Add("cierra la fisura");
+                if(state.SawmillLevel<2||state.BarracksLevel<2||state.ChapterThree.GranaryLevel<2)missing.Add("aserradero, cuartel y granero a nivel 2");
+            }
+            if(definition.Level==5&&string.IsNullOrEmpty(state.ChapterThree.DevelopmentPriority))missing.Add("elige la prioridad de desarrollo");
+            if(state.Resources.Food<definition.FoodCost)missing.Add("comida "+state.Resources.Food+"/"+definition.FoodCost);
             if(state.Resources.Wood<definition.WoodCost)missing.Add("madera "+state.Resources.Wood+"/"+definition.WoodCost);
             if(state.Resources.Stone<definition.StoneCost)missing.Add("piedra "+state.Resources.Stone+"/"+definition.StoneCost);
             return string.Join(" · ",missing);
@@ -420,6 +435,11 @@ namespace Eldoria.Domain
                 if (!p.RouteCleared) return "b1.clear-route";
                 return "b1.return";
             }
+            if(s.BastionLevel>=5){
+                if(s.ChapterThree.StoneworksLevel==0)return "b5.stoneworks";
+                return s.SawmillLevel>=5&&s.BarracksLevel>=5&&s.ChapterThree.GranaryLevel>=5&&s.ChapterThree.StoneworksLevel>=5?"b5.complete":"b5.infrastructure";
+            }
+            if(s.BastionLevel==4)return string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)?"b4.priority":"b4.ascend";
             if(s.BastionLevel>=3) {
                 var c=s.ChapterThree??new BastionThreeState();
                 if(c.GranaryLevel==0)return "b3.granary";

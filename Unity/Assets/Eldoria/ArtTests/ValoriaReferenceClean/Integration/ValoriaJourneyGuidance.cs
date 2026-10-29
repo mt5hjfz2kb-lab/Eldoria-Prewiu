@@ -17,6 +17,8 @@ namespace Eldoria.ReferenceClean {
   string Beat {
    get {
     var s=city.Gateway.Snapshot();
+    if(s.BastionLevel>=5)return s.ChapterThree.ExtractionOddity&&!s.ChapterProgress.SeenNarrative.Contains("extraction-oddity")?"extraction-oddity":"productive-valoria";
+    if(s.BastionLevel==4)return "consolidate-valoria";
     if(s.BastionLevel>=3)return s.ChapterThree.FissureClosed?"fissure-closed":"frontier-open";
     if(s.EngendroDefeated)return "secured";
     if(s.BastionLevel>=2)return "barracks";
@@ -29,6 +31,9 @@ namespace Eldoria.ReferenceClean {
    =>new RoyalNarrativePresentation.Line(who,es,en);
   RoyalNarrativePresentation.Line[] Lines(string beat){
    switch(beat){
+    case "extraction-oddity":return new[]{L("Sir Aldric","Detened los picos. Esa veta no refleja la luz como la piedra de Valoria. Guardad cualquier fragmento extraño. Si la tierra está cambiando cerca de la Brecha, necesitaremos saber por qué.","Stop the picks. That vein does not reflect light like Valoria's stone. Keep any unusual fragments. If the ground is changing near the Breach, we must learn why.")};
+    case "consolidate-valoria":return new[]{L("NARRADOR","El nivel IV consolida Valoria. Elige la prioridad del reino y reúne recursos para alcanzar el V y desbloquear la Cantera.","Level IV consolidates Valoria. Choose the realm's priority and gather resources to reach V and unlock the Stoneworks.")};
+    case "productive-valoria":return new[]{L("NARRADOR","Bastión V permite construir la Cantera de Valoria para generar piedra de forma continua. Cada edificio crece mediante sus propias mejoras.","Bastion V unlocks Valoria's Stoneworks for continuous stone production. Each building grows through its own upgrades.")};
     case "frontier-open":return new[]{
      L("Sir Aldric","La frontera se abre. Necesitamos un Granero y alimento para sostener las expediciones. Hay nuevas huellas cerca de la fisura: las investigaré.","The frontier opens. We need a Granary and food to sustain expeditions. There are new tracks near the fissure: I will investigate them.")};
     case "fissure-closed":return new[]{
@@ -108,7 +113,7 @@ namespace Eldoria.ReferenceClean {
   public static string Name(string id,bool english=false){
    if(id!=null&&id.StartsWith("region1:wood:",StringComparison.Ordinal))return english?"Wood grove":"Arboleda de madera";
    if(id!=null&&id.StartsWith("region1:stone:",StringComparison.Ordinal))return english?"Stone deposit":"Yacimiento de piedra";
-   switch(id){case "granary":return english?"Granary":"Granero";case "fissure-valoria":return english?"Fissure":"Fisura";case "meat-valoria":return english?"Meat reserve":"Reserva de carne";case "hunt-wolf":return english?"Ash wolf":"Lobo ceniciento";case "hunt-boar":return english?"Rock boar":"Jabalí de roca";case "sawmill":return english?"Sawmill":"Aserradero";case "barracks":return english?"Barracks":"Cuartel";case "bastion":return english?"Bastion":"Bastión";case "march-main":return english?"Expedition":"Expedición";case "valoria-map-city":return "Valoria";case "forest-valoria":return english?"Forest":"Bosque";case "quarry-valoria":return english?"Quarry":"Cantera";case "corrupt-scout":return english?"Corrupted route":"Ruta corrupta";case "engendro-valoria":return english?"Spawn":"Engendro";case "gate":return english?"World gate":"Puerta al mundo";default:return english?"Ruined watchtower":"Atalaya en ruinas";}
+   switch(id){case "stoneworks":return english?"Stoneworks":"Cantera productiva";case "granary":return english?"Granary":"Granero";case "fissure-valoria":return english?"Fissure":"Fisura";case "meat-valoria":return english?"Meat reserve":"Reserva de carne";case "hunt-wolf":return english?"Ash wolf":"Lobo ceniciento";case "hunt-boar":return english?"Rock boar":"Jabalí de roca";case "sawmill":return english?"Sawmill":"Aserradero";case "barracks":return english?"Barracks":"Cuartel";case "bastion":return english?"Bastion":"Bastión";case "march-main":return english?"Expedition":"Expedición";case "valoria-map-city":return "Valoria";case "forest-valoria":return english?"Forest":"Bosque";case "quarry-valoria":return english?"Quarry":"Cantera";case "corrupt-scout":return english?"Corrupted route":"Ruta corrupta";case "engendro-valoria":return english?"Spawn":"Engendro";case "gate":return english?"World gate":"Puerta al mundo";default:return english?"Ruined watchtower":"Atalaya en ruinas";}
   }
   void LateUpdate(){if(!host||!host.Ready)return;if(Time.unscaledTime>=next){next=Time.unscaledTime+.2f;Refresh();PresentMilestone();}}
   public void Refresh(){
@@ -209,6 +214,9 @@ namespace Eldoria.ReferenceClean {
     case "b3.food":return "meat-valoria";
     case "b3.hunt":return s.ChapterThree.WolfRespawnUtcTicks>city.Clock.UtcTicks?"hunt-boar":"hunt-wolf";
     case "b3.investigate":case "b3.lyra":case "b3.fissure":return "fissure-valoria";
+    case "b3.complete":case "b4.priority":case "b4.ascend":return "bastion";
+    case "b5.stoneworks":return "stoneworks";
+    case "b5.infrastructure":return s.SawmillLevel<5?"sawmill":s.BarracksLevel<5?"upgrade-barracks":s.ChapterThree.GranaryLevel<5?"granary":"stoneworks";
     case "b3.infrastructure":return s.SawmillLevel<2?"sawmill":s.BarracksLevel<2?"upgrade-barracks":"granary";
     default:return "";
    }

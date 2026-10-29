@@ -1,0 +1,54 @@
+name: '[ELDORIA] Bastion IV V domain parity'
+on:
+  push:
+    branches: [feature/bastion-iv-v-migration-20261029]
+    paths: ['tools/bastion-iv-v/**', 'Unity/Assets/Eldoria/Scripts/Domain/**', 'Unity/Assets/Eldoria/Scripts/Application/**', '.github/workflows/bastion-iv-v-domain.yml']
+permissions:
+  contents: read
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/bastion-iv-v
+            tools/bastion-iii
+            Unity/Assets/Eldoria/Scripts
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Core
+            Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Bindings
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - run: dotnet run --project tools/bastion-iv-v/DomainProbe.csproj
+      - run: dotnet run --project tools/bastion-iii/DomainProbe.csproj
+  recover_native_review:
+    if: contains(github.event.head_commit.message, '[recover-native-review]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Recover already completed native evidence without rerunning Unity
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40892044220
+          name: bastion-iv-v-native-40892044220
+          path: recovered
+      - name: Preserve native test diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: ivv-native-40892044220-diagnostics
+          path: |
+            recovered/docs/bastion-iv-v/native/*.xml
+            recovered/docs/bastion-iv-v/native/*.json
+            recovered/docs/bastion-iv-v/native/*.txt
+            recovered/docs/bastion-iv-v/native/*.log
+          if-no-files-found: error
+      - name: Preserve exact native IV V screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: ivv-native-40892044220-visuals
+          path: recovered/docs/bastion-iv-v/native/*.png
+          if-no-files-found: error

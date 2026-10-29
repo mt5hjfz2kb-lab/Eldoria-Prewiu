@@ -96,6 +96,7 @@ namespace Eldoria.ReferenceClean {
    WorldNavigation.enabled=false;WorldCamera.enabled=false;WorldRoot.SetActive(false);
    WorldNavigation.regionalZoom=32;WorldNavigation.localZoom=14;
    gameObject.AddComponent<BastionIIIWorldPresentation>().Initialize(this);
+   gameObject.AddComponent<BastionIVVWorldPresentation>().Initialize(this);
    targets=Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None);
    // One modestly wider authored entry view (about 10%), without changing near limits or world scale.
    city.Controls.homeZoom=Mathf.Min(65f,city.PlayerCamera.orthographicSize*1.08f);
@@ -105,6 +106,8 @@ namespace Eldoria.ReferenceClean {
    gameObject.AddComponent<ValoriaPlaytestTelemetry>().Initialize(this);
   }
   void BindSession(){boundGateway=city.Gateway;binding=new ExistingSliceBinding(boundGateway,city.Clock);world=new ZoneOneGatewayHost(boundGateway,()=>SetWorld(false),()=>city.Clock.UtcTicks);Hud.Bind(this,this);
+   var buildings=Hud.GetComponent<RoyalGoldV3BuildingScreens>();if(!buildings)buildings=Hud.gameObject.AddComponent<RoyalGoldV3BuildingScreens>();
+   buildings.Initialize(Hud,boundGateway,id=>Read(id,English).Building,()=>{city.Presenter.RefreshState();Hud.Refresh();});
     // Rebind to the one canonical gateway after resets; never create another session.
     var management=Hud.GetComponent<RoyalGoldV3ManagementScreens>();
     if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
@@ -144,7 +147,7 @@ namespace Eldoria.ReferenceClean {
     SelectionChanged(Selected);
    }
   }
-  void SyncWorldCity(){var state=city.Gateway.Snapshot();if(WorldBastionOne)WorldBastionOne.SetActive(state.BastionLevel<2);if(WorldBastionTwo)WorldBastionTwo.SetActive(state.BastionLevel>=2);if(WorldSawmill)WorldSawmill.SetActive(state.SawmillLevel>0);}
+  void SyncWorldCity(){var state=city.Gateway.Snapshot();if(WorldBastionOne)WorldBastionOne.SetActive(state.BastionLevel<2);if(WorldBastionTwo)WorldBastionTwo.SetActive(state.BastionLevel>=2&&state.BastionLevel<5);if(WorldSawmill)WorldSawmill.SetActive(state.SawmillLevel>0);}
   void OnDestroy(){if(Hud)Hud.SelectionChanged-=SelectionChanged;if(city!=null&&city.Presenter!=null){city.Presenter.SceneHost=city;city.Presenter.ExternalSelection=null;city.Presenter.ExternalPointerBlocked=null;city.Presenter.ExternalNavigationOwned=false;}if(legacyCanvas)legacyCanvas.enabled=true;if(legacyRaycaster)legacyRaycaster.enabled=true;if(Hud)Destroy(Hud.gameObject);}
   public static bool CanEnterWorld(PlayerState s)=>s!=null&&(s.SawmillLevel>0||s.Resources.Wood<SliceRules.SawmillWoodCost);
   public bool Select(string id){
@@ -220,7 +223,7 @@ namespace Eldoria.ReferenceClean {
    if(!InWorld){city.Zoom(delta);return;}
    WorldNavigation.ZoomAt(new Vector2(Screen.width*.5f,Screen.height*.5f),Mathf.Exp(delta*.04f),true);
   }
-  public WorldHotspot FindTarget(string id)=>FindTargetExact(id=="upgrade-barracks"?"barracks":id);
+  public WorldHotspot FindTarget(string id)=>id=="stoneworks"?GetComponentsInChildren<WorldHotspot>(true).FirstOrDefault(x=>x.Id==id):FindTargetExact(id=="upgrade-barracks"?"barracks":id);
   WorldHotspot FindTargetExact(string id)=>(id!=null&&id.StartsWith("region1:",StringComparison.Ordinal)?WorldRoot.GetComponentsInChildren<WorldHotspot>(true):(targets??Object.FindObjectsByType<WorldHotspot>(FindObjectsInactive.Include,FindObjectsSortMode.None))).FirstOrDefault(x=>x.Id==id&&(IsWorldTarget(id)||id=="valoria-map-city"?x.transform.IsChildOf(WorldRoot.transform):!x.transform.IsChildOf(WorldRoot.transform)));
   void SelectionChanged(string id){int version=++focusRequest;if(!Ready||string.IsNullOrEmpty(id))return;
     // A management destination is not a request to move the world camera.
@@ -231,7 +234,7 @@ namespace Eldoria.ReferenceClean {
    // These are the visual states already applied to the real scene. A completed
    // model can need a different frame even when the landscape HUD rect is unchanged.
    // Camera movement alone never changes this key, so manual panning stays put.
-   if(id=="bastion")return city.BastionTwo&&city.BastionTwo.activeSelf?2:1;
+   if(id=="bastion")return city.Gateway.Snapshot().BastionLevel;
    if(city.Parcels){if(id=="sawmill")return (int)city.Parcels.LeftState;if(id=="barracks"||id=="march-main")return (int)city.Parcels.RightState;}
    return 0;
   }
@@ -290,6 +293,8 @@ namespace Eldoria.ReferenceClean {
   System.Collections.Generic.List<Vector3> FocusPoints(GameObject target){
    var points=new System.Collections.Generic.List<Vector3>();var spot=target.GetComponent<WorldHotspot>();string id=spot?spot.Id:"";
    if(!target.transform.IsChildOf(WorldRoot.transform)){
+    var progression=GetComponent<BastionIVVWorldPresentation>();if(progression)AddFocusRenderers(progression.ModelFor(id),points);
+    if(points.Count>0)return points;
     if(id=="bastion"){AddFocusRenderers(city.BastionOne,points);AddFocusRenderers(city.BastionTwo,points);}
     else if((id=="sawmill"||id=="barracks")&&city.Parcels){
      var p=city.Parcels;bool left=id=="sawmill";
@@ -317,6 +322,7 @@ namespace Eldoria.ReferenceClean {
      if(points.Count>0)return points;
     }
     if(id=="valoria-map-city"){
+     var progression=GetComponent<BastionIVVWorldPresentation>();if(progression)AddFocusRenderers(progression.WorldModel,points);
      AddFocusRenderers(WorldBastionOne,points);AddFocusRenderers(WorldBastionTwo,points);AddFocusRenderers(WorldSawmill,points);
     }else{
      if(id=="engendro-valoria"){

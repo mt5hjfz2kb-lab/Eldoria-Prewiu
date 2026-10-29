@@ -605,17 +605,18 @@ namespace Eldoria.Tests
             Call(v3, "SynchronizeNow");
             Assert.That(Member(hud, "SelectedBuildingId"), Is.EqualTo("sawmill"));
             var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
-            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(true),
-                "Selected building must have a visible contextual offer");
+            var management = FindComponent(hud.gameObject, "RoyalGoldV3BuildingScreens");
+            Assert.That(Member(management, "IsOpen"), Is.EqualTo(true), "Selection opens the independent management destination");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false), "No duplicate floating card behind management");
             Assert.That(Member(v2, "BuildingActionVisible"), Is.EqualTo(true),
                 "Existing browser telemetry must discover the genuine V3 action");
             Assert.That(Member(v2, "VisibleBuildingButton"),
-                Is.SameAs(Member(v3, "VisibleActionButton")));
-            Assert.That(Member(v3, "CloseVisible"), Is.EqualTo(true),
+                Is.SameAs(Member(management, "VisibleAction")));
+            Assert.That(Member(management, "VisibleClose"), Is.Not.Null,
                 "The mobile player must be able to close selection without Escape");
             var actualClose = Member(v2, "VisibleBuildingCloseButton") as Button;
             Assert.That(actualClose, Is.Not.Null);
-            Assert.That(actualClose, Is.SameAs(Member(v3, "VisibleCloseButton")));
+            Assert.That(actualClose, Is.SameAs(Member(management, "VisibleClose")));
             var closeCorners = new Vector3[4];
             ((RectTransform)actualClose.transform).GetWorldCorners(closeCorners);
             var closePoint = RectTransformUtility.WorldToScreenPoint(null,
@@ -625,11 +626,17 @@ namespace Eldoria.Tests
                 button = PointerEventData.InputButton.Left,
                 position = closePoint
             };
+            foreach (var legacy in Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include,FindObjectsSortMode.None).Where(x=>x.name=="Eldoria HUD"))
+            {
+                Assert.That(legacy.enabled,Is.False,"Integrated scene must own every visible HUD");
+                var legacyRaycaster=legacy.GetComponent<GraphicRaycaster>();
+                Assert.That(!legacyRaycaster||!legacyRaycaster.enabled,Is.True,"Legacy HUD cannot intercept actual player touches");
+            }
             var hits = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointer, hits);
             Assert.That(hits.Count, Is.GreaterThan(0));
             Assert.That(ExecuteEvents.GetEventHandler<IPointerClickHandler>(hits[0].gameObject),
-                Is.SameAs(actualClose.gameObject), "V3 close must be the topmost touch target");
+                Is.SameAs(actualClose.gameObject), "V3 close must be the topmost touch target; close depth="+actualClose.targetGraphic.depth+"; hits="+string.Join(", ",hits.Select(x=>x.gameObject.name+" depth="+x.depth)));
             var offer = Member(candidate, "Action");
             var actualOffer = Member(read.DynamicInvoke("sawmill"), "Action");
             Assert.That(actualOffer == null ? null : Member(actualOffer, "Kind"),
@@ -669,7 +676,8 @@ namespace Eldoria.Tests
             Canvas.ForceUpdateCanvases();
             Call(v3, "SynchronizeNow");
 
-            var command = Member(v3, "VisibleActionButton") as Button;
+            var management = FindComponent(hud.gameObject, "RoyalGoldV3BuildingScreens");
+            var command = Member(management, "VisibleAction") as Button;
             Assert.That(command, Is.Not.Null);
             Assert.That(command.interactable, Is.True, "Actual sawmill Build must be actionable");
             var offer = Member(Member(Call(host, "Read", "sawmill", false),
@@ -687,25 +695,19 @@ namespace Eldoria.Tests
             // No wait/yield: the first UI sync after payment must project
             // the same authoritative timer, not a stale pre-purchase offer.
             Call(v3, "SynchronizeNow");
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
-                "A just-paid real construction must show exactly one timer immediately");
-            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
-                "Build control must disappear once construction is in progress");
-
-            var timer = GameObject.Find("V3 / real-time operation / sawmill");
-            Assert.That(timer, Is.Not.Null);
-            Assert.That(timer.GetComponent<CanvasGroup>().blocksRaycasts, Is.False,
-                "Non-interactive timer must not steal city gestures");
-            Assert.That(timer.GetComponent<CanvasGroup>().alpha,
-                Is.GreaterThan(.5f), "Timer must be visibly anchored to the sawmill");
-            var timeLabel = timer.GetComponentInChildren<Text>(true);
-            Assert.That(timeLabel, Is.Not.Null);
-            Assert.That(timeLabel.text, Does.Contain("Tiempo restante"),
-                "Timer must use the canonical state-derived countdown text");
-            var fill = timer.transform.Find("Actual progress/Gateway progress fill")
-                as RectTransform;
+            Assert.That(Member(management, "IsOpen"), Is.EqualTo(true));
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(0), "Independent management owns the countdown; no duplicate floating timer");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false));
+            Assert.That(Member(management, "VisibleOperationText") as string,
+                Does.Contain(Member(operation, "Time") as string), "The same rendered frame shows the gateway countdown");
+            Assert.That(command.interactable, Is.False, "Paid construction cannot be purchased twice");
+            var fill = Member(management, "VisibleProgress") as RectTransform;
             Assert.That(fill, Is.Not.Null);
-            Assert.That(fill.anchorMax.x, Is.InRange(0f, 1f));
+            Assert.That(fill.anchorMax.x, Is.EqualTo((float)Member(operation, "Progress")).Within(.001f));
+            Call(management, "Close");
+            Call(v3, "SynchronizeNow");
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1), "Returning to the city restores one real anchored timer");
+
         }
 
         [UnityTest]

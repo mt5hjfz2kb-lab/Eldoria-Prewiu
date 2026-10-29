@@ -1,0 +1,272 @@
+name: '[ELDORIA] Bastion IV V integrated native verification'
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/bastion-iv-v-migration-20261029]
+    paths: ['tools/bastion-iv-v/native-request.json']
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: bastion-iv-v-native
+  cancel-in-progress: false
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    outputs:
+      source: ${{ steps.commit.outputs.source }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          sparse-checkout: |
+            tools/bastion-iv-v
+            Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV
+      - name: Recover approved immutable assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/bastion-iv-v/materialize.py
+      - name: Preserve exact approved models on the migration branch
+        id: commit
+        run: |
+          git config user.name "Eldoria asset pipeline"
+          git config user.email "eldoria-pipeline@users.noreply.github.com"
+          git add -f Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV
+          if ! git diff --cached --quiet; then
+            git commit -m "Preserve verified level V models and exact approved references"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+          echo "source=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  native:
+    needs: assets
+    runs-on: [self-hosted, windows, unity-6000-3-23f1]
+    timeout-minutes: 60
+    env:
+      VALORIA_GAMEPLAY_PROBE: '1'
+      ELDORIA_COMPILED_SOURCE: ${{ needs.assets.outputs.source }}
+      # Region1 camera acceptance ignores itself without an explicit directory.
+      # Use the same preserved isolated evidence root, newly emptied before tests.
+      ELDORIA_REGION1_CAPTURE_OUT: ${{ github.workspace }}/bastion-iv-v-source/docs/bastion-iv-v/native/region1-capture
+    steps:
+      - name: Recover installed Git
+        shell: powershell
+        run: |
+          $git=Get-Command git.exe -ErrorAction SilentlyContinue
+          if(-not $git){
+            $candidate=Get-ChildItem "$env:LOCALAPPDATA/GitHubDesktop" -Directory -Filter 'app-*' -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending | ForEach-Object {Join-Path $_.FullName 'resources/app/git/cmd/git.exe'} |
+              Where-Object {Test-Path $_} | Select-Object -First 1
+            if(-not $candidate){throw 'Installed Git executable unavailable; do not fall back to a full repository archive'}
+            $dir=Split-Path $candidate
+            Add-Content -Path $env:GITHUB_PATH -Value $dir
+            $env:PATH="$dir;$env:PATH"
+          }
+          git --version
+          if($LASTEXITCODE){throw 'Git executable verification failed'}
+      - uses: actions/checkout@v4
+        timeout-minutes: 20
+        with:
+          ref: ${{ needs.assets.outputs.source }}
+          sparse-checkout: |
+            Unity
+            tools
+            pipeline
+            docs/bastion-iv-v
+          path: bastion-iv-v-source
+          clean: false
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: bastion-iv-v-live
+          sparse-checkout: pipeline
+      - name: Verify live resource lease and idle tools
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          node tools/bastion-iv-v/check-lease.mjs pipeline/active-workstreams.json ../bastion-iv-v-live/pipeline/active-workstreams.json
+          if($LASTEXITCODE){throw 'Stale or conflicting lease'}
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native tools occupied; do not interrupt'}
+          if(-not(Test-Path $env:UNITY_EDITOR_PATH)){throw 'Unity editor unavailable'}
+          $evidence='docs/bastion-iv-v/native'
+          if(Test-Path $evidence){
+            $archive=Join-Path $env:RUNNER_TEMP "bastion-iv-v-prior-evidence-$env:GITHUB_RUN_ID"
+            if(Test-Path $archive){throw 'Prior evidence archive already exists; preserve it'}
+            Move-Item $evidence $archive
+          }
+          New-Item -ItemType Directory -Force $evidence | Out-Null
+      - name: Restore exact missing source files in the isolated checkout
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $source=(Get-Location).Path
+          $tracked=@(& git ls-tree -r --name-only HEAD -- Unity tools/bastion-iv-v)
+          $missing=@($tracked | Where-Object {-not(Test-Path -LiteralPath (Join-Path $source $_))})
+          if($missing.Count){
+            & git checkout --ignore-skip-worktree-bits HEAD -- Unity tools/bastion-iv-v
+            $missing=@($tracked | Where-Object {-not(Test-Path -LiteralPath (Join-Path $source $_))})
+          }
+          if($missing.Count -gt 64){throw "Unexpected incomplete checkout: $($missing.Count) files"}
+          $headers=@{Authorization="Bearer $env:GH_TOKEN";Accept='application/vnd.github+json';'User-Agent'='Eldoria-BastionIII-exact-recovery'}
+          foreach($file in $missing){
+            $expected=(& git rev-parse "HEAD:$file").Trim()
+            $escaped=($file -split '/' | ForEach-Object {[Uri]::EscapeDataString($_)}) -join '/'
+            $url="https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/$($escaped)?ref=$env:GITHUB_SHA"
+            $blob=Invoke-RestMethod -Uri $url -Headers $headers
+            if($blob.sha -ne $expected -or $blob.encoding -ne 'base64'){throw "Wrong exact source: $file"}
+            $dest=Join-Path $source $file
+            New-Item -ItemType Directory -Force (Split-Path $dest) | Out-Null
+            [IO.File]::WriteAllBytes($dest,[Convert]::FromBase64String($blob.content))
+            if((& git hash-object -- $dest).Trim() -ne $expected){throw "Recovered source hash mismatch: $file"}
+          }
+          $fixture='docs/evidence/world4x-canon-20261022/authoring/matched-canon-camera-controls.json'
+          $expected=(& git rev-parse "HEAD:$fixture").Trim()
+          $blob=Invoke-RestMethod -Uri "https://api.github.com/repos/mt5hjfz2kb-lab/Eldoria-Prewiu/contents/$($fixture)?ref=$env:GITHUB_SHA" -Headers $headers
+          if($blob.sha -ne $expected -or $blob.encoding -ne 'base64'){throw 'Wrong exact camera fixture'}
+          New-Item -ItemType Directory -Force (Split-Path $fixture) | Out-Null
+          [IO.File]::WriteAllBytes((Join-Path $source $fixture),[Convert]::FromBase64String($blob.content))
+          if((& git hash-object -- $fixture).Trim() -ne $expected){throw 'Camera fixture hash mismatch'}
+          exit 0
+      - name: Author zero-cost frontier candidates in Blender
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $blender=(Get-Command blender.exe -ErrorAction SilentlyContinue).Source
+          if(-not $blender){$blender=Get-ChildItem 'C:\Program Files\Blender Foundation' -Recurse -Filter blender.exe -ErrorAction SilentlyContinue | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName}
+          if(-not $blender){throw 'Installed Blender unavailable'}
+          & $blender --background --python-exit-code 1 --python tools/bastion-iii/author-frontier.py
+          if($LASTEXITCODE){throw 'Frontier authoring failed'}
+          if(-not(Test-Path 'Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIII/PrivateFissure.glb')){throw 'Expected fissure artifact missing'}
+      - name: Prepare editor and bake original Granary
+        id: bake
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          New-Item -ItemType Directory -Force $evidence | Out-Null
+          New-Item -ItemType Directory -Force (Join-Path $project 'UserSettings') | Out-Null
+          '{"name":"Assets","type":"asset","roots":[],"includes":[],"excludes":[],"options":{"types":false,"properties":false,"extended":false,"dependencies":false}}' | Set-Content (Join-Path $project 'UserSettings/Search.index') -Encoding UTF8
+          $bakeArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIIIArtBake.Build','-logFile',('"'+(Join-Path $evidence 'granary-bake.log')+'"'))
+          $bake=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $bakeArgs -Wait -PassThru
+          if($bake.ExitCode -ne 0){throw 'Build-safe granary extraction failed'}
+      - name: Verify actual management touch ownership first
+        id: touch
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        timeout-minutes: 4
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          $xml=Join-Path $evidence 'UI-ownership.xml'
+          $log=Join-Path $evidence 'UI-ownership.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform','PlayMode','-testFilter','Eldoria.Tests.RoyalGoldV3IntegratedAcceptanceTests.BuildingSelectionRetainsAuthoritativeGatewayOffer','-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($process.ExitCode -ne 0){throw 'Actual management touch ownership failed'}
+          if(-not(Test-Path $xml)){throw 'Management touch results missing'}
+          [xml]$result=Get-Content $xml
+          if($result.'test-run'.result -ne 'Passed'){throw 'Management touch raycast must pass before repeating the full suite'}
+          $cases=@($result.SelectNodes('//test-case'))
+          if($cases.Count -ne 1 -or $cases[0].name -ne 'BuildingSelectionRetainsAuthoritativeGatewayOffer'){throw 'The exact real touch case must execute once'}
+      - name: Preserve early management touch diagnostics
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        with:
+          name: bastion-iv-v-touch-${{ github.run_id }}
+          path: |
+            bastion-iv-v-source/docs/bastion-iv-v/native/UI-ownership.xml
+            bastion-iv-v-source/docs/bastion-iv-v/native/UI-ownership.log
+          if-no-files-found: error
+      - name: Validate IV V persistence and capture real UI and art
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          $proofLog=Join-Path $evidence 'runtime-proof.log'
+          $proofArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.BastionIVVNativeProof.Capture','-logFile',('"'+$proofLog+'"'))
+          $proof=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $proofArgs -Wait -PassThru
+          if($proof.ExitCode -ne 0 -or -not(Test-Path (Join-Path $evidence 'functional-checks.txt'))){throw 'Actual integrated IV-V proof failed'}
+          @{source="${{ needs.assets.outputs.source }}";run=$env:GITHUB_RUN_ID;art_approved=$false;physical_mobile_tested=$false} | ConvertTo-Json | Set-Content (Join-Path $evidence 'provenance.json') -Encoding UTF8
+      - name: Preserve early native IV V visual review
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bastion-iv-v-review-${{ github.run_id }}
+          path: |
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.png
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.json
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.txt
+            bastion-iv-v-source/docs/bastion-iv-v/native/runtime-proof.log
+          if-no-files-found: error
+      - name: Run actual Unity EditMode suite
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          $xml=Join-Path $evidence 'EditMode.xml'
+          $log=Join-Path $evidence 'EditMode.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform','EditMode','-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Unity EditMode exit $($p.ExitCode)"}
+          if(-not(Test-Path $xml)){throw 'Missing EditMode results'}
+          [xml]$results=Get-Content $xml
+          if($results.'test-run'.result -ne 'Passed'){throw 'Unity EditMode tests failed'}
+      - name: Run actual Unity PlayMode suite
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
+        # Fail boundedly instead of occupying the sole Windows Unity runner
+        # until the entire job's 60-minute timeout if the editor deadlocks.
+        timeout-minutes: 18
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          $xml=Join-Path $evidence 'PlayMode.xml'
+          $log=Join-Path $evidence 'PlayMode.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-runTests','-testPlatform','PlayMode','-testResults',('"'+$xml+'"'),'-logFile',('"'+$log+'"'))
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
+          if($p.ExitCode -ne 0){throw "Unity PlayMode exit $($p.ExitCode)"}
+          if(-not(Test-Path $xml)){throw 'Missing PlayMode results'}
+          [xml]$results=Get-Content $xml
+          if($results.'test-run'.result -ne 'Passed'){throw 'Unity PlayMode tests failed'}
+      - name: Validate complete integrated I-II journey
+        if: ${{ !cancelled() && steps.bake.outcome == 'success' && steps.touch.outcome == 'success' }}
+        shell: powershell
+        working-directory: bastion-iv-v-source
+        run: |
+          $project=Join-Path (Get-Location) 'Unity'
+          $evidence=Join-Path (Get-Location) 'docs/bastion-iv-v/native'
+          $regressionLog=Join-Path $evidence 'I-II-integrated.log'
+          $regressionArgs=@('-batchmode','-force-d3d11','-projectPath',('"'+$project+'"'),'-executeMethod','Eldoria.ReferenceClean.Editor.ValoriaIntegrationBuild.ValidateCurrent','-logFile',('"'+$regressionLog+'"'))
+          $regression=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $regressionArgs -Wait -PassThru
+          if($regression.ExitCode -ne 0){throw 'Actual integrated I-II journey failed'}
+          $regressionResult=Get-Content 'docs/evidence/valoria-reference-clean/integration-result.json' -Raw|ConvertFrom-Json
+          if($regressionResult.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){throw 'Actual I-II result missing or failing'}
+          $regressionEvidence=Join-Path $evidence 'I-II'
+          New-Item -ItemType Directory -Force $regressionEvidence | Out-Null
+          Copy-Item 'docs/evidence/valoria-reference-clean/integration-*' $regressionEvidence
+      - name: Preserve compact native test diagnostics
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion-iv-v-diagnostics-${{ github.run_id }}
+          path: |
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.xml
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.json
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.txt
+            bastion-iv-v-source/docs/bastion-iv-v/native/*.log
+          if-no-files-found: warn
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bastion-iv-v-native-${{ github.run_id }}
+          path: |
+            bastion-iv-v-source/docs/bastion-iv-v/native
+            bastion-iv-v-source/Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Resources/BastionIVV
+          if-no-files-found: warn
