@@ -47,22 +47,34 @@
       "reference_sha256": "60e89993a6d056088d2267a799d08530ff923c0dfa6a024fb6422cf44b1c4dcc",
       "kind": "building",
       "target_triangles": 25000,
-      "status": "QUEUED",
-      "source_run": 40860664737
+      "status": "VISUAL_BASE_ACCEPTED_OPTIMIZED",
+      "source_run": 40860664737,
+      "task_id": "843c9067-e088-4989-b559-e730d83b4ff4",
+      "credits_consumed": 30,
+      "finished_run": 40862999843,
+      "optimized_triangles": 25000,
+      "unity_validated": false
     },
     {
       "id": "cuartel-v",
       "reference_sha256": "3c0e9b2915a03bd87f32d1c3ab4dcf86461a5b43f7a3e25e73f2bf71343309e0",
       "kind": "building",
       "target_triangles": 35000,
-      "status": "NOT_SUBMITTED"
+      "status": "VISUAL_BASE_ACCEPTED_OPTIMIZED",
+      "task_id": "83984e3d-7c27-4ab2-afa8-b4e51b40c866",
+      "credits_consumed": 30,
+      "source_run": 40863065503,
+      "finished_run": 40864194283,
+      "optimized_triangles": 34999,
+      "unity_validated": false
     },
     {
       "id": "granero-v",
       "reference_sha256": "220b02d3e0e4dc265c433f4dc42a98002e811590b1611777be3bdfb43a991278",
       "kind": "building",
       "target_triangles": 25000,
-      "status": "NOT_SUBMITTED"
+      "status": "GENERATING",
+      "source_run": 40864299824
     },
     {
       "id": "cantera-v",
