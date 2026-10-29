@@ -291,6 +291,8 @@ namespace Eldoria.Application
                     GatheredWood=s.ChapterProgress?.GatheredWood??0,
                     GatheredStone=s.ChapterProgress?.GatheredStone??0,
                     TrainedArchers=s.ChapterProgress?.TrainedArchers??0,
+                    SpeedupOneMinute=s.ChapterProgress?.SpeedupOneMinute??0,
+                    SpeedupFiveMinutes=s.ChapterProgress?.SpeedupFiveMinutes??0,
                     ConfirmedExpeditionPower=s.ChapterProgress?.ConfirmedExpeditionPower??0,
                     RouteCleared=s.ChapterProgress?.RouteCleared??false,
                     BastionTwoReached=s.ChapterProgress?.BastionTwoReached??false,
@@ -328,6 +330,7 @@ namespace Eldoria.Application
                 Commit();
                 return new CommandResult(true,earlyMessage,state.Revision);
             }
+            if(command.Kind=="UseSpeedup")return ExecuteSpeedup(command);
             var chapterThreeResult=ExecuteChapterThree(command);
             if(chapterThreeResult!=null)return chapterThreeResult;
             switch (command.Kind)
@@ -718,6 +721,31 @@ namespace Eldoria.Application
             if (changed) Commit();
             return changed;
         }
+        private CommandResult ExecuteSpeedup(GameCommand command)
+        {
+            // Only paid, active building/Bastion/training tasks can be accelerated.
+            // World gathering and combat marches must keep their real UTC travel.
+            var parts=(command.TargetId??"").Split(':');
+            if(parts.Length!=2||(parts[1]!="1"&&parts[1]!="5"))
+                return Fail("Acelerador desconocido");
+            int minutes=parts[1]=="5"?5:1;
+            var wallet=state.ChapterProgress;
+            if(wallet==null||(minutes==5?wallet.SpeedupFiveMinutes:wallet.SpeedupOneMinute)<1)
+                return Fail("No hay aceleradores disponibles");
+            long ticks=TimeSpan.FromMinutes(minutes).Ticks;
+            if(parts[0]=="building"&&state.BuildingCompletesUtcTicks>clock.UtcTicks)
+                state.BuildingCompletesUtcTicks=Math.Max(clock.UtcTicks,state.BuildingCompletesUtcTicks-ticks);
+            else if(parts[0]=="bastion"&&state.BastionUpgradeCompletesUtcTicks>clock.UtcTicks)
+                state.BastionUpgradeCompletesUtcTicks=Math.Max(clock.UtcTicks,state.BastionUpgradeCompletesUtcTicks-ticks);
+            else if(parts[0]=="training"&&state.RecruitmentCompletesUtcTicks>clock.UtcTicks)
+                state.RecruitmentCompletesUtcTicks=Math.Max(clock.UtcTicks,state.RecruitmentCompletesUtcTicks-ticks);
+            else return Fail("No existe una tarea compatible en curso");
+            if(minutes==5)wallet.SpeedupFiveMinutes--;
+            else wallet.SpeedupOneMinute--;
+            state.CompletedCommandIds.Add(command.Id);
+            Commit();
+            return new CommandResult(true,"Acelerador aplicado",state.Revision);
+        }
         private bool GrantWebMissionRewards()
         {
             // Web chapter rewards belong to the owner profile only. The ledger is saved with
@@ -727,7 +755,7 @@ namespace Eldoria.Application
             if (p == null) return false;
             if (p.GrantedRewards == null) p.GrantedRewards = new System.Collections.Generic.List<string>();
             bool changed = false;
-            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0, int food=0)
+            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0, int food=0, int speedup1=0, int speedup5=0)
             {
                 if (!complete || p.GrantedRewards.Contains(id)) return;
                 p.GrantedRewards.Add(id);
@@ -735,6 +763,8 @@ namespace Eldoria.Application
                 state.Resources.Stone += stone;
                 state.Resources.Food += food;
                 state.MissionPower += power;
+                p.SpeedupOneMinute += speedup1;
+                p.SpeedupFiveMinutes += speedup5;
                 changed = true;
             }
             Grant("c1-sawmill", state.SawmillLevel>0, wood:120);
@@ -760,6 +790,10 @@ namespace Eldoria.Application
             // Web c3 includes the IV ascent and a separate chapter completion
             // reward; neither was paid by the older I-III migration.
             if(state.BastionLevel>=4){
+                Grant("speedup-first-compatible-task",
+                    state.BuildingCompletesUtcTicks>clock.UtcTicks||
+                    state.BastionUpgradeCompletesUtcTicks>clock.UtcTicks||
+                    state.RecruitmentCompletesUtcTicks>clock.UtcTicks,speedup1:1);
                 Grant("c3-bastion",true,food:180);
                 Grant("chapter-3",state.ChapterThree.GranaryLevel>0&&
                     p.GrantedRewards.Contains("c3-food")&&state.ChapterThree.Hunts>=2&&
@@ -778,7 +812,7 @@ namespace Eldoria.Application
                     p.GrantedRewards.Contains("c4-granary2")&&
                     p.GrantedRewards.Contains("c4-barracks2")&&
                     p.GrantedRewards.Contains("c4-priority"),
-                    wood:360,stone:300,food:280,power:260);
+                    wood:360,stone:300,food:280,power:260,speedup5:1);
             }
             if(state.BastionLevel>=5){
                 // Chapter V remains in progress: level VI and Ash Stalker are
