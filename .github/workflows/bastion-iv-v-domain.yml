@@ -22,3 +22,33 @@ jobs:
           dotnet-version: '8.0.x'
       - run: dotnet run --project tools/bastion-iv-v/DomainProbe.csproj
       - run: dotnet run --project tools/bastion-iii/DomainProbe.csproj
+  recover_native_review:
+    if: contains(github.event.head_commit.message, '[recover-native-review]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Recover already completed native evidence without rerunning Unity
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ github.token }}
+          run-id: 40884918480
+          name: bastion-iv-v-native-40884918480
+          path: recovered
+      - name: Preserve native test diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: ivv-native-40884918480-diagnostics
+          path: |
+            recovered/docs/bastion-iv-v/native/*.xml
+            recovered/docs/bastion-iv-v/native/*.json
+            recovered/docs/bastion-iv-v/native/*.txt
+            recovered/docs/bastion-iv-v/native/*.log
+          if-no-files-found: error
+      - name: Preserve exact native IV V screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: ivv-native-40884918480-visuals
+          path: recovered/docs/bastion-iv-v/native/*.png
+          if-no-files-found: error
