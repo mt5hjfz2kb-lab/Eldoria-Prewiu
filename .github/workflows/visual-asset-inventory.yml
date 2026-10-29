@@ -1,0 +1,25 @@
+name: Visual asset inventory (read-only)
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tools/asset-vault/scan_visual_assets.py'
+      - 'tools/asset-vault/test_scan_visual_assets.py'
+      - '.github/workflows/visual-asset-inventory.yml'
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test read-only inventory
+        run: python3 -m unittest discover -s tools/asset-vault -p test_scan_visual_assets.py
+      - name: Inventory tracked 2D and 3D assets
+        run: python3 tools/asset-vault/scan_visual_assets.py --output "$RUNNER_TEMP/visual-assets.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: visual-assets-inventory
+          path: ${{ runner.temp }}/visual-assets.json
+          retention-days: 7
