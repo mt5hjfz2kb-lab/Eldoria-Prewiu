@@ -62,6 +62,7 @@ namespace Eldoria.Editor
             var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
             ValoriaIntegrationBuild.Capture(host,Path.Combine(Output,name+".png"),width,height,()=>{
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
+                if(management.IsOpen)ValidateMilitaryLayout(management,name);
                 // Render again after mailbox reflow inside the canonical off-screen target.
                 host.PlayerCamera.Render();host.PlayerCamera.Render();
                 RenderTexture.active=host.PlayerCamera.targetTexture;
@@ -73,6 +74,29 @@ namespace Eldoria.Editor
                     Need(image.sprite!=null,"Source texture loaded "+image.name);
             });
             Need(new FileInfo(Path.Combine(Output,name+".png")).Length>15000,"Real nonempty capture "+name);
+        }
+        static Rect Bounds(RectTransform rect)
+        {
+            var corners=new Vector3[4];rect.GetWorldCorners(corners);
+            return Rect.MinMaxRect(corners[0].x,corners[0].y,corners[2].x,corners[2].y);
+        }
+        static void ValidateMilitaryLayout(RoyalGoldV3ManagementScreens screen,string shot)
+        {
+            var labels=screen.VisibleRoot.GetComponentsInChildren<Text>();
+            var title=labels.First(t=>t.name=="Destination title");
+            var subtitle=labels.First(t=>t.name=="Royal gold description");
+            Need(title.preferredHeight<=title.rectTransform.rect.height+1,
+                "Full destination title fits its actual text area "+shot);
+            Need(!Bounds(title.rectTransform).Overlaps(Bounds(subtitle.rectTransform)),
+                "Destination title and subtitle never overlap "+shot);
+            foreach(var button in screen.VisibleRoot.GetComponentsInChildren<Button>()
+                .Where(b=>b.transform.parent==title.transform.parent&&b.gameObject.activeInHierarchy))
+                Need(!Bounds((RectTransform)button.transform).Overlaps(Bounds(title.rectTransform))&&
+                     !Bounds((RectTransform)button.transform).Overlaps(Bounds(subtitle.rectTransform)),
+                     "Header navigation does not cover title or subtitle "+button.name+" "+shot);
+            var quantity=labels.First(t=>t.name=="Authoritative quantity");
+            Need(quantity.rectTransform.rect.width>=36,
+                "Quantity remains legible between real minus and plus controls "+shot);
         }
         static IEnumerator Exercise(ValoriaIntegratedWorld host)
         {

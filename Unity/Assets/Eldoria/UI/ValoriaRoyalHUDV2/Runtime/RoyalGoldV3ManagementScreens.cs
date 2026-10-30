@@ -39,6 +39,7 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalButton heroesButton;
         RectTransform root, header, left, right, footer, quantityRow;
         RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork, statusArtwork;
+        RoyalGoldV3LayeredFinish militaryDepth;
         RectTransform trainingProgress;
         RectTransform trainingProgressFill;
         RoyalText heading, subheading, unitTitle, unitDetail, selectedText, summary, status, feedback;
@@ -188,6 +189,9 @@ namespace Eldoria.UI.RoyalGold.V2
             if(mailbox!=null)mailbox.Close();
             EnsureView();
             CurrentDestination = destination;
+            militaryDepth?.SetScene(destination==Destination.March?
+                RoyalGoldV3LayeredFinish.Scene.March:
+                RoyalGoldV3LayeredFinish.Scene.Training);
             destinationArtwork.MarchTheme = destination == Destination.March;
             destinationArtwork.SetVerticesDirty();
             featuredUnitArtwork.MarchTheme = destination == Destination.March;
@@ -298,6 +302,10 @@ namespace Eldoria.UI.RoyalGold.V2
             destinationArtwork=themeArt.gameObject.AddComponent<RoyalGoldV3ManagementBackdropGraphic>();
             destinationArtwork.color=Color.white;
             destinationArtwork.raycastTarget=false;
+            // Military atmosphere is a separate low-cost mesh behind every
+            // genuine control rather than a second flat background image.
+            militaryDepth=RoyalGoldV3LayeredFinish.Install(root,
+                RoyalGoldV3LayeredFinish.Scene.Training,2);
             header = Frame("V3 / Destination header",root,false);
             left = Frame("V3 / Featured military unit",root,false);
             right = Frame("V3 / Authoritative status and cost",root,false);
@@ -393,12 +401,27 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             percentModeButton=Button("Edit march by percent",left,"CANTIDAD / %",TogglePercentMode,
                 false,out percentModeLabel);
-            foreach(var graphic in new[]{destinationArtwork,featuredUnitArtwork,statusArtwork})graphic.enabled=false;
-            backdrop.enabled=false;
+            // Restore the reusable, authored military-hall architecture,
+            // bow and compass BEHIND the approved manuscript textures.
+            // The old implementation disabled these entirely and flattened
+            // the whole room into four oversized rectangles.
+            backdrop.enabled=true;
+            destinationArtwork.enabled=true;
+            destinationArtwork.color=new Color(1f,1f,1f,.52f);
+            featuredUnitArtwork.enabled=true;
+            featuredUnitArtwork.color=new Color(1f,1f,1f,.12f);
+            statusArtwork.enabled=true;
+            statusArtwork.color=new Color(1f,1f,1f,.12f);
             foreach(var pane in new[]{header,left,right,footer})
             {
                 pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
-                RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
+                // Semi-opaque approved parchment admits only a restrained
+                // amount of scene depth; real numbers retain high contrast.
+                var paper=RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
+                paper.color=new Color(1f,1f,1f,.94f);
+                // Antique rim and candlelight are independent of the texture.
+                RoyalGoldV3LayeredFinish.Install(pane,
+                    RoyalGoldV3LayeredFinish.Scene.Panel,1);
             }
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer");
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
@@ -532,7 +555,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 percentMode?CurrentDisplayedPercent<100:selectedCount<maxCount)&&slider.interactable;
             selectedText.Put(!training&&percentMode?CurrentDisplayedPercent+" %":
                 maxCount>0?selectedCount.ToString():"—");
-            heading.Put(training?"CUARTEL · ENTRENAMIENTO":"SALA DE MARCHAS");
+            heading.Put(training?"ENTRENAMIENTO":"SALA DE MARCHAS");
             subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · PREPARACIÓN DE EXPEDICIONES");
             unitTitle.Put(training?"ARQUERO · T"+selectedTier:"HÉROES DE LA MARCHA");
             chapterAction.gameObject.SetActive(training&&s.BastionLevel>=3);
@@ -682,7 +705,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float safeBottom=Screen.height>0?area.yMin/Mathf.Max(.01f,canvasScale):0;
             float top=Mathf.Max(Mathf.Max(10,h*.024f),safeTop+8);
             float bottom=Mathf.Max(Mathf.Max(10,h*.024f),safeBottom+8);
-            float headerH=landscape?Mathf.Clamp(h*.205f,66,95):Mathf.Clamp(h*.115f,84,104);
+            float headerH=landscape?Mathf.Clamp(h*.205f,66,95):140;
             float footH=landscape?Mathf.Clamp(h*.21f,70,92):Mathf.Clamp(h*.155f,102,132);
             float bodyY=top+headerH+8;
             float bodyH=Mathf.Max(120,h-bodyY-footH-bottom-8);
@@ -760,6 +783,20 @@ namespace Eldoria.UI.RoyalGold.V2
             actionLabel.fontSize=landscape?16:17;
             switchLabel.fontSize=landscape?15:16;
             feedback.fontSize=landscape?14:15;
+            if(!landscape)
+            {
+                // Two independent header rows: long Spanish titles must never
+                // wrap into the subtitle or underneath navigation controls.
+                Place(heading.rectTransform,15,8,hw-30,38);
+                Place(subheading.rectTransform,15,49,hw-30,24);
+                float navWidth=(hw-42)/3f;
+                Place(heroesButton.transform as RectTransform,12,84,navWidth,44);
+                Place(switchDestination.transform as RectTransform,21+navWidth,84,navWidth,44);
+                Place(chapterAction.transform as RectTransform,30+2*navWidth,84,navWidth,44);
+                heading.fontSize=22;
+                switchLabel.fontSize=14;
+                chapterActionLabel.fontSize=14;
+            }
             ReflowApprovedSurfaces(leftSide,top,usable,bodyY,bodyH,gap,landscape);
 
         }
@@ -773,6 +810,32 @@ namespace Eldoria.UI.RoyalGold.V2
             tierButton.transform.SetParent(training?right:left,false);
             if(training)
             {
+                if(!wide)
+                {
+                    // A portrait phone needs a compact illustration and unit
+                    // identity above a full-width order, not two very tall columns.
+                    float artH=Mathf.Min(height*.40f,360f);
+                    Place(left,x,y,width,artH);
+                    Place(right,x,y+artH+gap,width,height-artH-gap);
+                    float artW=Mathf.Min(width*.40f,artH*184f/476f);
+                    Place(approvedArcher.rectTransform,18,0,artW,artH);
+                    unitTitle.rectTransform.SetParent(left,false);
+                    unitDetail.rectTransform.SetParent(left,false);
+                    tierButton.transform.SetParent(left,false);
+                    float textX=Mathf.Max(width*.43f,artW+36),textW=width-textX-18;
+                    Place(unitTitle.rectTransform,textX,24,textW,42);
+                    Place(unitDetail.rectTransform,textX,80,textW,100);
+                    Place(tierButton.transform as RectTransform,textX,artH-70,textW,48);
+                    float rh=right.rect.height;
+                    Place(summary.rectTransform,20,20,width-40,176);
+                    Place(quantityRow,20,rh*.46f,width-40,44);
+                    Place(slider.transform as RectTransform,24,rh*.46f+54,width-48,24);
+                    Place(status.rectTransform,20,rh*.70f,width-40,rh*.30f-14);
+                    Place(trainingProgress,20,rh*.70f-22,width-40,10);
+                    summary.fontSize=18;status.fontSize=16;unitDetail.fontSize=17;
+                }
+                else
+                {
                 float artWidth=width*.43f;
                 Place(left,x,y,artWidth,height);
                 Place(right,x+artWidth+gap,y,width-artWidth-gap,height);
@@ -789,6 +852,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(trainingProgress,14,height*.79f,rw-28,8);
                 summary.fontSize=wide?18:16;status.fontSize=wide?14:13;
                 unitDetail.fontSize=wide?17:15;
+                }
             }
             else
             {
