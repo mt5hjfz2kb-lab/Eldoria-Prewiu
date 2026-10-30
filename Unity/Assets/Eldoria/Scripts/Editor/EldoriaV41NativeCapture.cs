@@ -115,6 +115,13 @@ namespace Eldoria.Editor
                     Need(label.preferredHeight<=label.rectTransform.rect.height+1,
                         "Small-phone complete label fits "+label.name+" (needed "+label.preferredHeight+", available "+label.rectTransform.rect.height+")");
                 }
+            if(shot=="training-small-phone-landscape")
+            {
+                var profile=labels.First(t=>t.name=="Unit profile and composition");
+                var tier=screen.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Select archer tier");
+                Need(!Bounds(profile.rectTransform).Overlaps(Bounds((RectTransform)tier.transform)),
+                    "Compact training profile is not covered by the tier selector");
+            }
             var quantity=labels.First(t=>t.name=="Authoritative quantity");
             Need(quantity.rectTransform.rect.width>=36,
                 "Quantity remains legible between real minus and plus controls "+shot);

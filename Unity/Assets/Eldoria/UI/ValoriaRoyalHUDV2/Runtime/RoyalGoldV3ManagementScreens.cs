@@ -581,7 +581,7 @@ namespace Eldoria.UI.RoyalGold.V2
             approvedTroopRow.gameObject.SetActive(!training);
             percentModeButton.gameObject.SetActive(!training);
             percentModeLabel.Put(percentMode?"EDITAR POR %":"EDITAR CANTIDAD");
-            unitDetail.Put(training?"Arqueros · nivel de tropa T"+selectedTier+"\n"+(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
+            unitDetail.Put(training?(compactLandscape?"":"Arqueros · nivel de tropa T"+selectedTier+"\n")+(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
                 "TROPAS · ARQUEROS T"+selectedTier+"\nAjusta cantidad o porcentaje.");
             switchLabel.Put(training?"PREPARAR MARCHA":"ENTRENAR TROPAS");
             switchDestination.interactable=true;
@@ -914,6 +914,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 unitDetail.fontSize=wide?17:15;
                 if(compactLandscape)
                 {
+                    Place(unitDetail.rectTransform,14,50,rw-28,30);
                     Place(summary.rectTransform,14,height*.33f,rw-28,height*.23f);
                     Place(quantityRow,14,height*.60f,rw-28,68);
                     Place(slider.transform as RectTransform,20,height*.60f+74,rw-40,12);
