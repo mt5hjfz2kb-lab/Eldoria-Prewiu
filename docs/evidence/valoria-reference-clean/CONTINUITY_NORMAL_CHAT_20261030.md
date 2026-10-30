@@ -1,5 +1,13 @@
 # RECUPERACIÓN NORMAL CHAT — 31-10-2026 (checkpoint añadido)
 
+### Addendum 31/10/2026 — v14 panel real + contraste de Marchas
+
+- **HEAD de código previo a este addendum:** `ce5ade4cdb561c93767d95e69cea4df714326589`. La fuente v14 `HeroesGoldFrameGraphic.cs` (SHA256 `d90f5efd4fb146ab49ebf4ecaaa47d1e1c600c7afe663f4988ecc6739b63a748`) se añadió **sin reinterpretación** a `Unity/Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs` y `.meta`. `HeroesApprovedDestination.cs` usa el panel como hijo sin raycast debajo de retratos y botones vivos, reemplazando los marcos planos. Proveniencia: paquete Library `Eldoria_Heroes_Integracion_Preparada_v14.zip`, carpeta interna `Assets/Eldoria/HeroesUI/`. No incorporar las 23 piezas con números/textos dibujados como UI funcional.
+- GitHub run `41144971815` confirma propietario canónico **SUCCESS**; `41144973902` confirma dominio V4.1 **SUCCESS**. El test nativo nuevo `41144973776` estaba PENDING; imprescindible comprobar su conclusión, logs y capturas antes de aprobar arte ni publicar. Una certificación de un SHA anterior NO certifica `ce5ade4`.
+- Inspección fuente + imagen: `Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs` crea cuatro superficies `RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14)` con `paper.color=new Color(1f,1f,1f,.94f)`; esas paredes azul opaco cubren el escenario de Marchas. Referencia propietaria: `marcha_3_heroes_porcentajes_REFERENCIA_INTACTA.png` Library (941x1672). Se exige recomposición verdadera, no simple retoque de opacidad. Arqueros/Paladines/Brujos en referencia no prueban que Paladines/Brujos estén activos: mantener motor V4.1 en laboratorio (issue #138) y no inventar opciones clicables o datos.
+- Arte final Sala NO certificado, sin fondo independiente completo; nuevo escenario parcial y marco son avance verificable en fuente. Capturar vertical 390×844, horizontal 844×390 y otras relaciones, contrastar v14 y comprobar safe area, interacción, texto aplanado oculto, distancia a bordes, overflow. A continuación Marchas → Entrenamiento → Ciudad, sin duplicar PR, Lyra o builds.
+
+
 > **Estado:** PR #136 sigue DRAFT, branch `fix/player-feedback-context-ui-20261030`, base `main`. Última revisión de código de esta recuperación: `e42dbf9784cd2ce574b95fd1734c2568943fcedc`; corrección del flujo Unity: `e280120f0786a9c1d33cf6979a03f6302ea7ccdd`. Comprobar siempre `git/ref/heads/fix/player-feedback-context-ui-20261030` para HEAD final después de este documento. No merge, publicación, cambio de motor ni reinicio de guardados.
 
 ## Evidencia recuperada sin repetir generación

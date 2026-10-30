@@ -1,5 +1,14 @@
 # RELEVO DEL CHAT NORMAL — 31-10-2026 — PR136 DRAFT
 
+## Nueva pieza v14 integrada — 31/10/2026, commit ce5ade4 (última continuidad)
+
+Se ha recuperado SIN regenerar del paquete de Biblioteca `Eldoria_Heroes_Integracion_Preparada_v14.zip` la clase `Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs` (SHA256 fuente `d90f5efd4fb146ab49ebf4ecaaa47d1e1c600c7afe663f4988ecc6739b63a748`). Se ha incorporado como `Unity/Assets/Eldoria/HeroesUI/HeroesGoldFrameGraphic.cs` con GUID nuevo y referenciado desde `HeroesApprovedDestination.cs` en tarjetas reales. Usa geometría graduada, bordes dobles y ornamentos de v14; NO añade actores, recursos, fuentes externas ni Canvas. HEAD de código verificado: `ce5ade4cdb561c93767d95e69cea4df714326589` (los commits documentales posteriores pueden cambiar HEAD sin tocar Unity).
+
+Con la corrección de lease `e280120`, el gate de titularidad de PR de `ce5ade4` es SUCCESS (run `41144971815`), V4.1 isolated domain SUCCESS (run `41144973902`); **Unity native exact-head está PENDING** en run `41144973776` en este checkpoint. La certificación anterior `41144687529` ejecuta sobre `e280120` y no certifica el marco agregado.
+
+La captura nativa previa `eldoria_latest_military_31oct.png` muestra Marchas demasiado opaco: `RoyalGoldV3ManagementScreens.cs` crea `blue-panel` con alpha `.94f` en cuatro paneles, ocultando paisaje. La referencia aprobada de Marchas pide tres familias Arqueros/Paladines/Brujos, pero el gameplay actual sólo conecta de forma demostrada arqueros T1/T2: **no simular unidades** ni activar V4.1 antes de #138. Entrenamiento y Ciudad siguen pendientes de nueva certificación estética. No cambiar opacidad a ciegas como sustituto de reconstrucción.
+
+
 - **Ruta canónica:** PR [#136](https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/136), rama `fix/player-feedback-context-ui-20261030`. Código añadido: `e42dbf9784cd2ce574b95fd1734c2568943fcedc` (Salón de Héroes con arquitectura original v14 y composición responsive); control nativo reparado: `e280120f0786a9c1d33cf6979a03f6302ea7ccdd`. El commit actual puede ser descendiente documental: consultar HEAD real, no asumir este SHA como HEAD final.
 - **Informe exhaustivo de esta continuación:** [CONTINUITY_NORMAL_CHAT_20261030.md](docs/evidence/valoria-reference-clean/CONTINUITY_NORMAL_CHAT_20261030.md), capítulo inicial 31-10. No sustituye el histórico previo ni autoriza aprobación visual.
 - **Certificado anterior:** HEAD original `7af82cf6` / run `41138763107` ya **SUCCESS**; material real y capturas en artefactos GitHub y Biblioteca. **La modificación nueva del Salón no comparte ese PASS:** primeras nuevas ejecuciones fallaron antes de compilar por identificadores de lease desactualizados, corregidos en `e280120`; revisar nuevas ejecuciones antes de proclamar PASS.
