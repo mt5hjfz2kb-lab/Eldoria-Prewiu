@@ -176,6 +176,64 @@ static class Program
         Require(backlog.Execute(Command(backlog,"real-next-command","ScoutDispatch",nextOrder.Id)).Ok,"Another real command advances the saved revision");
         Require(!backlog.Execute(new GameCommand("genuinely-stale",backlog.Snapshot().PlayerId,
             "Gather","forest-valoria",staleRevision)).Ok,"A revision superseded by ANOTHER command is still rejected");
+        // Owner-requested depth: three consequential troop/time scouting
+        // strategies. A fresh game with no suffix keeps the original route.
+        Require(EarlyRetentionRules.ScoutTroopsForStrategy(0)==12 &&
+                EarlyRetentionRules.ScoutTroopsForStrategy(1)==8 &&
+                EarlyRetentionRules.ScoutTroopsForStrategy(2)==20,
+                "Strategy must reserve actual distinct detachment sizes");
+        var strategyClock=new Clock();
+        var strategyStore=new Store{State=new PlayerState{
+            BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            Available=new ArmyRoster{ArcherT1=80}}};
+        var strategyGateway=new LocalGateway(strategyClock,strategyStore);
+        var scoutTarget=strategyGateway.Snapshot().Retention.Orders
+            .First(o=>o.Kind!=0).Id;
+        Require(!strategyGateway.Execute(Command(strategyGateway,"strategy-bad",
+            "ScoutDispatch",scoutTarget+"|5")).Ok,
+            "Cannot forge unknown expedition strategies");
+        Require(strategyGateway.Execute(Command(strategyGateway,"strategy-stealth",
+            "ScoutDispatch",scoutTarget+"|1")).Ok,
+            "Discreet expedition dispatches using real troops");
+        var activeOrder=strategyGateway.Snapshot().Retention.Orders
+            .First(o=>o.Id==scoutTarget);
+        Require(activeOrder.StrategyMode==1 && activeOrder.Troops.Total==8 &&
+                activeOrder.EndsUtcTicks-activeOrder.StartedUtcTicks==
+                TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(
+                    activeOrder.Kind,1)).Ticks,
+                "Discreet expedition really spends fewer troops and more UTC time");
+        Require(EarlyRetentionRules.ScoutDurationSeconds(activeOrder.Kind,1)>
+                EarlyRetentionRules.ScoutDurationSeconds(activeOrder.Kind,0),
+                "Discreet route must not be faster");
+        strategyGateway=new LocalGateway(strategyClock,strategyStore);
+        Require(strategyGateway.Snapshot().Retention.Orders.First(o=>o.Id==scoutTarget)
+                .StrategyMode==1,"Chosen route survives real save and reload");
+        strategyClock.Add(EarlyRetentionRules.ScoutDurationSeconds(activeOrder.Kind,1));
+        strategyGateway=new LocalGateway(strategyClock,strategyStore);
+        Require(strategyGateway.Execute(Command(strategyGateway,"strategy-claim",
+            "ScoutClaim",scoutTarget)).Ok,"Discreet route can finish and pay");
+        int scoutReports=strategyGateway.Snapshot().Retention.TotalScoutReports;
+        Require(!strategyGateway.Execute(Command(strategyGateway,"strategy-repeat",
+            "ScoutClaim",scoutTarget)).Ok &&
+            strategyGateway.Snapshot().Retention.TotalScoutReports==scoutReports,
+            "A second claim never duplicates scouting rewards");
+        var fastClock=new Clock();
+        var fastStore=new Store{State=new PlayerState{
+            BastionLevel=2,BarracksLevel=1,SawmillLevel=1,
+            ChapterProgress=new ChapterProgressState{MarchConfirmed=true},
+            Available=new ArmyRoster{ArcherT1=80}}};
+        var fastGateway=new LocalGateway(fastClock,fastStore);
+        var fastTarget=fastGateway.Snapshot().Retention.Orders.First(o=>o.Kind!=0).Id;
+        Require(fastGateway.Execute(Command(fastGateway,"strategy-fast","ScoutDispatch",
+            fastTarget+"|2")).Ok,"Rapid expedition sends 20 actual troops");
+        var fastOrder=fastGateway.Snapshot().Retention.Orders.First(o=>o.Id==fastTarget);
+        Require(fastOrder.StrategyMode==2 && fastOrder.Troops.Total==20 &&
+            EarlyRetentionRules.ScoutDurationSeconds(fastOrder.Kind,2)<
+            EarlyRetentionRules.ScoutDurationSeconds(fastOrder.Kind,0),
+            "Rapid route spends more troops and returns sooner");
+        Console.WriteLine("SCOUT_STRATEGY_CONTRACT=PASS");
+
         Console.WriteLine("EARLY_RETENTION_DOMAIN_SMOKE=PASS");
     }
 }
