@@ -108,6 +108,29 @@ class ContinuousJourney
         Do("ChooseDevelopment","civil");Funds(1100,900);Ascend(5);
         Funds(500,0);Do("Build","stoneworks");Reload();Rest();
         Check(game.Snapshot().ChapterThree.StoneworksLevel==1,"quarry built after continuous V unlock");
+        // Complete the authored V objectives on this SAME save, not a prepared fixture.
+        foreach(var id in new[]{"sawmill","barracks","granary","stoneworks"})
+        {
+            int first=id=="stoneworks"?1:2;
+            for(int level=first;level<5;level++) { Funds(4000,4000);Do("UpgradeBuilding",id);Reload();Rest(); }
+        }
+        Funds(1000,600);Do("Recruit","archer:t1:30");Rest();
+        Funds(400,240);Do("Recruit","archer:t2:20");Reload();Rest();
+        Check(game.Snapshot().Available.ArcherT2==20,"T2 earned after upgrading real barracks");
+        Do("ConfigureMarch","march-main:20:20:0:aldric+lyra");
+        Fight("ash-stalker-valoria");
+        Check(game.Snapshot().ChapterThree.AshStalkerDefeated,"rare V encounter won on the uninterrupted save");
+        Check(SliceRules.CurrentObjectiveKey(game.Snapshot())=="b5.complete","authored V objectives complete");
+        var beforeMail=game.Snapshot();
+        Check(beforeMail.Mailbox.Messages.Count>0,"continuous battles generated persistent messages");
+        foreach(var mail in beforeMail.Mailbox.Messages.ToArray())
+        {
+            Do("MailRead",mail.EventId);Reload();Do("MailDelete",mail.EventId);Reload();
+        }
+        var afterMail=game.Snapshot();
+        Check(afterMail.Mailbox.Messages.Count==0 && afterMail.Resources.Wood==beforeMail.Resources.Wood &&
+            afterMail.Resources.Stone==beforeMail.Resources.Stone && afterMail.Resources.Food==beforeMail.Resources.Food,
+            "read delete and reopen never re-grant combat rewards");
         Check(!game.Execute(new GameCommand("no-vi",game.Snapshot().PlayerId,"AdvanceBastion","bastion",game.Snapshot().Revision)).Ok,"Bastion VI remains unavailable");
         Console.WriteLine("CONTINUOUS_I_V_DOMAIN_PASS commands="+commands+" reloads="+reloads+"; native visuals and device certification remain separate");
     }
