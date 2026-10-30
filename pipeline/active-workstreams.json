@@ -2472,7 +2472,7 @@
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
       "phase": "PURE_DOMAIN_INTEGRATION",
       "next": "Add compile-tested C# contracts for roster percentages, hero slots, mailbox, verify exact approved visuals, then integrate UI/gameplay after releasing shared-file lease.",
-      "art_production_routing_reason": "Current PURE_DOMAIN_INTEGRATION phase contains source-only C# contracts and tooling; no 3D geometry, Blender/Tripo generation, Unity scene edits or artistic acceptance in this claim."
+      "art_production_routing_reason": "Etapa de lógica pura C# y ensayos aislados: no se crea ni altera arte; referencias aprobadas intactas. Integración visual futura requiere producción y revisión específicas."
     }
   ],
   "history": [
