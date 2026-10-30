@@ -61,6 +61,13 @@ namespace Eldoria.Editor
             var management=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
             var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
             ValoriaIntegrationBuild.Capture(host,Path.Combine(Output,name+".png"),width,height,()=>{
+                if(name.Contains("small-phone"))
+                {
+                    // Exercise the actual production height-based scaler,
+                    // not merely the older 800-unit capture convention.
+                    host.Hud.GetComponent<Canvas>().scaleFactor=height/900f;
+                    Canvas.ForceUpdateCanvases();
+                }
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
                 var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
                 if(heroes&&heroes.IsOpen){heroes.Refresh();Canvas.ForceUpdateCanvases();}
@@ -96,10 +103,14 @@ namespace Eldoria.Editor
                 Need(!Bounds((RectTransform)button.transform).Overlaps(Bounds(title.rectTransform))&&
                      !Bounds((RectTransform)button.transform).Overlaps(Bounds(subtitle.rectTransform)),
                      "Header navigation does not cover title or subtitle "+button.name+" "+shot);
-            if(shot.Contains("small-phone"))
+            if(screen.VisibleRoot.rect.height>screen.VisibleRoot.rect.width)
                 foreach(var label in labels.Where(t=>!string.IsNullOrWhiteSpace(t.text)))
                 {
-                    Need(label.fontSize*screen.GetComponentInParent<Canvas>().scaleFactor>=12,
+                    var canvas=screen.GetComponentInParent<Canvas>();
+                    float physicalScale=canvas.scaleFactor;
+                    for(var parent=label.transform.parent;parent&&parent!=canvas.transform;parent=parent.parent)
+                        physicalScale*=Mathf.Abs(parent.localScale.x);
+                    Need(label.fontSize*physicalScale>=12,
                         "Small-phone text is at least twelve actual pixels "+label.name);
                     Need(label.preferredHeight<=label.rectTransform.rect.height+1,
                         "Small-phone complete label fits "+label.name+" (needed "+label.preferredHeight+", available "+label.rectTransform.rect.height+")");

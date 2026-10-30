@@ -37,7 +37,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public Action HeroesRequested { get; set; }
         public Func<bool> CanOpenHeroes { get; set; }
         RoyalButton heroesButton;
-        RectTransform root, header, left, right, footer, quantityRow;
+        RectTransform root, layoutRoot, header, left, right, footer, quantityRow;
         RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork, statusArtwork;
         RoyalGoldV3LayeredFinish militaryDepth;
         RectTransform trainingProgress;
@@ -306,10 +306,11 @@ namespace Eldoria.UI.RoyalGold.V2
             // genuine control rather than a second flat background image.
             militaryDepth=RoyalGoldV3LayeredFinish.Install(root,
                 RoyalGoldV3LayeredFinish.Scene.Training,2);
-            header = Frame("V3 / Destination header",root,false);
-            left = Frame("V3 / Featured military unit",root,false);
-            right = Frame("V3 / Authoritative status and cost",root,false);
-            footer = Frame("V3 / Destination actions",root,false);
+            layoutRoot=Rect("V3 / Responsive military layout",root);
+            header = Frame("V3 / Destination header",layoutRoot,false);
+            left = Frame("V3 / Featured military unit",layoutRoot,false);
+            right = Frame("V3 / Authoritative status and cost",layoutRoot,false);
+            footer = Frame("V3 / Destination actions",layoutRoot,false);
             // The existing status panel was a large empty blue rectangle
             // even while the real expedition/cost labels were visible.
             // Reuse the APPROVED military ornament at subdued opacity,
@@ -577,7 +578,7 @@ namespace Eldoria.UI.RoyalGold.V2
             percentModeButton.gameObject.SetActive(!training);
             percentModeLabel.Put(percentMode?"EDITAR POR %":"EDITAR CANTIDAD");
             unitDetail.Put(training?"Arqueros · nivel de tropa T"+selectedTier+"\n"+(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
-                "Héroe disponible · Mando de expedición\nUnidad seleccionable: Arqueros T"+selectedTier);
+                "TROPAS · ARQUEROS T"+selectedTier+"\nAjusta cantidad o porcentaje.");
             switchLabel.Put(training?"PREPARAR MARCHA":"ENTRENAR TROPAS");
             switchDestination.interactable=true;
             bool busy=s.RecruitmentCompletesUtcTicks>0;
@@ -696,9 +697,18 @@ namespace Eldoria.UI.RoyalGold.V2
             float w=lastWidth,h=lastHeight;
             if(w<1||h<1)return;
             bool landscape=w>h;
+            // Production RoyalScaler matches height; native portrait probes
+            // historically matched width. Normalize only this room so both
+            // use the same 800-unit design and real physical text sizes.
+            float roomScale=landscape?1f:Mathf.Min(1f,w/800f);
+            w/=roomScale;h/=roomScale;
+            layoutRoot.anchorMin=layoutRoot.anchorMax=layoutRoot.pivot=new Vector2(.5f,.5f);
+            layoutRoot.anchoredPosition=Vector2.zero;
+            layoutRoot.sizeDelta=new Vector2(w,h);
+            layoutRoot.localScale=Vector3.one*roomScale;
             foreach(var button in root.GetComponentsInChildren<Button>(true))
                 foreach(var label in button.GetComponentsInChildren<RoyalText>(true))label.fontSize=17;
-            float canvasScale=Hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
+            float canvasScale=(Hud.GetComponentInParent<Canvas>()?.scaleFactor??1f)*roomScale;
             Rect area=Screen.safeArea;
             float insetLeft=Screen.width>0?area.xMin/Mathf.Max(.01f,canvasScale):0;
             float insetRight=Screen.width>0?(Screen.width-area.xMax)/Mathf.Max(.01f,canvasScale):0;
