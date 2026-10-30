@@ -53,7 +53,7 @@ class ContinuousJourney
         for(int i=0;i<4000;i++)
         {
             var s=game.Snapshot();
-            if(MarchCapacityRules.ActiveCount(s,clock.UtcTicks)==0 && s.BuildingCompletesUtcTicks==0 && s.RecruitmentCompletesUtcTicks==0) return;
+            if(MarchCapacityRules.ActiveCount(s,clock.UtcTicks)==0 && s.BuildingCompletesUtcTicks==0 && s.BastionUpgradeCompletesUtcTicks==0 && s.RecruitmentCompletesUtcTicks==0) return;
             Seconds(1);
         }
         throw new Exception("Canonical activity never completed");
