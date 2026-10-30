@@ -2598,6 +2598,30 @@
         "prior_state": "completed_in_branch",
         "source_pr": 103
       }
+    },
+    {
+      "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
+      "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "status": "active",
+      "branch": "review/native281-iphone-ui-world-triage-20261022",
+      "pr": 97,
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "68c18c15ab826cec69f2ff260e5d4b0a6b9aab7e",
+      "scope": [
+        "tools/delivery/optional-iphone-lifecycle-diagnostics.js",
+        "tools/delivery/test-optional-iphone-lifecycle-diagnostics.mjs",
+        "tools/delivery/prepare.py",
+        "docs/incident-native281/OWNER_PLAYTEST_CORRECTION_CONTRACT_20261022.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Dormant local-only browser lifecycle diagnostics. No art or paid service and no physical-device stability certification.",
+      "phase": "RECONCILE_PR97_WITH_CURRENT_DELIVERY",
+      "next": "Verify optional diagnostics against current delivery preparation; retain iPhone physical QA as unresolved.",
+      "budget_eur": 0
     }
   ],
   "history": [
