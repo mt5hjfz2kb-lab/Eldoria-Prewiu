@@ -1,3 +1,34 @@
+# RECUPERACIÓN NORMAL CHAT — 31-10-2026 (checkpoint añadido)
+
+> **Estado:** PR #136 sigue DRAFT, branch `fix/player-feedback-context-ui-20261030`, base `main`. Última revisión de código de esta recuperación: `e42dbf9784cd2ce574b95fd1734c2568943fcedc`; corrección del flujo Unity: `e280120f0786a9c1d33cf6979a03f6302ea7ccdd`. Comprobar siempre `git/ref/heads/fix/player-feedback-context-ui-20261030` para HEAD final después de este documento. No merge, publicación, cambio de motor ni reinicio de guardados.
+
+## Evidencia recuperada sin repetir generación
+
+- PR #136 estaba en `7af82cf6a6329a957064ef52588e591f47c43aab` al comenzar. Últimos commits previos: Lyra modelo existente `8925e117`, espera de retrato real `0859aaeb`, corrección de orientación `24de23ca`, relevo `7af82cf6`. No se ha generado, sustituido ni modificado el GLB de Lyra.
+- Unity `41138763107` sobre HEAD `7af82cf6` terminó **SUCCESS** y conserva artefactos `13020030049` (certificación completa), `13018792087` (V4.1), `13018867101` (tres marchas), `13018102628` (Retención), `13019795206` y `13018092903` (Aldric). Los 68/68 EditMode y 73/73 PlayMode de ese historial **no certifican los nuevos commits**.
+- Paquete de Biblioteca **Eldoria_Heroes_Integracion_Preparada_v14.zip**, localizado y abierto. Contiene 6 referencias offline, 23 recortes pixel-exactos y scripts de ejemplo, pero los 23 recortes tienen texto/figuras de conceptos aplanados; no son fondos de producción libres de interfaz. Conservado íntegro: `/Eldoria_Heroes_Integracion_Preparada_v14.zip` en Biblioteca. Arte de referencia de verdad: `docs/heroes-ui/REFERENCIA_MAESTRA_APROBADA.png` y `Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png`, SHA256 `48cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800`.
+- Se inspeccionó captura Unity `eldoria_latest_heroes_31oct.png` (Library). Salón negro, dos tarjetas sin entorno; ficha Lyra y Talentos funcionales pero paneles negros, enormes huecos. Los PNG de comparativa y los certificados antiguos siguen en Biblioteca `Eldoria_comparacion_nativa.html` y `Eldoria_relevo_evidencias.zip`; no duplicar.
+- No se localizaron recursos **independientes y definitivos de fondo de Salón** en el árbol completo de PR136 (21.804 entradas) ni un commit posterior al relevo con ese arte integrado. No interpretar una imagen de concepto como fondo limpio.
+
+## Integración real nueva y límites
+
+- `Unity/Assets/Eldoria/HeroesUI/HeroesApprovedDestination.cs`: `DrawApprovedSalonEnvironment` usa un recorte ornamental de la *lámina v14 canónica ya guardada* (fila superior 512×168), con ocultación de texto ficticio, columnas y luces sin raycasts; conserva controles y datos reales. Salón pasa a composición escenario primero y tarjetas responsivas, con contexto visible, sin dobles Canvas/EventSystems. **Se trata de una recuperación estructural visual, no de un fondo definitivo ni de fidelidad 100 %.**
+- No se han incorporado ilustraciones de Lyra alternativas. Se rechazó un concepto nuevo que no coincidía con la referencia v14 ni con su GLB aprobado; jamás se registró como asset de producción.
+- `.github/workflows/ui-progression-cert.yml`: los dos preflights de lease rechazaban la titularidad legítimamente transferida al usar el nombre de un chat antiguo y rev74. Se cambiaron para exigir una **única reserva viva en `main`**, de workstream canónico Valoria, rama candidata exacta, owner no vacío, revisión ≥75 y estado `claimed`. Se preserva el bloqueo de otros propietarios; no se ha relajado la suite de Unity.
+- `pipeline/active-workstreams.json` de `main`: relevo seguro mediante SHA/CAS a `chatgpt-eldoria-normal-handoff-20261031`, revisiones Valoria76, V4.1 11, Héroes8, vault7 e iPhone7, sin cambiar sus recursos/gameplay. Se reconcilió el alcance histórico iPhone porque la PR ya contenía archivos diagnósticos; no es una prueba física.
+- Primeras ejecuciones UI `41144568283` y dueño `41144609632` fallaron por esos **bloqueos de registro** antes de compilar el nuevo código. No acreditan defecto de Unity; después se ha creado el commit de reparación `e280120`; comprobar su run correspondiente y sus capturas.
+
+## Continuación segura obligatoria
+
+1. Verificar HEAD actual, el propietario y reserva del registro de `main`; **no abrir nueva PR**, no usar otro workstream y no cancelar un job del otro propietario.
+2. Leer logs de `UI Progression Certification` y `Canonical PR ownership` correspondientes a `e280120` o sucesores. Reparar fallos reales sin saltar tests. Comprobar 68 EditMode/73 PlayMode, V4.1, Marchas, Retención, ciudad y guardados; capturar Sala en 390×844 y 844×390 y comparar contra v14. Sin PASS propio, la candidata no está certificada.
+3. Si el recorte del salón muestra texto aplanado o arte mal estirado, **retirar solo el decorado nuevo** y sustituirlo por fondos limpios independientes del master; no sacrificar controles/guardados. Se requiere revisión estética auténtica. No generar otra Lyra: usar exclusivamente la existente.
+4. Completar de verdad materialidad, marcos, filtros/estado y composición de Sala; luego Marchas, Entrenamiento y Ciudad. Repetir capturas Unity y pruebas de eventos reales, safe areas y orientación. Si fallan dos aproximaciones, cambiar método, no degradar la referencia.
+5. **V4.1** issue #138 permanece laboratorio (`ProductionApproved=false` y campaña bajo `SliceRules`); no activarlo, no cerrar la incidencia. Android/WebGL sin nueva publicación hasta QA de artefacto y gate de testers; mantener actualizador, firma y saves.
+6. Leer las secciones originales de este archivo bajo este checkpoint para detalles de modelos PR127, 203 hashes, Blender/GLB, procedimientos GitData/Actions y referencias de todas las PR.
+
+---
+
 # ELDORIA — relevo operativo Work → chat normal, 30-10-2026
 
 Este documento es un checkpoint verificable, no una declaración de finalización artística. Leerlo antes de los encabezados históricos de SESSION_HANDOFF.md. Los comentarios posteriores de PR136 y el HEAD vivo prevalecen sobre un SHA registrado aquí. Preservar el historial; no empezar de cero.
