@@ -34,7 +34,7 @@ namespace Eldoria.UI.RoyalGold.V2 {
   void OnDestroy(){if(hud){hud.SelectionChanged-=Select;hud.NarrativeOpening-=Suspend;}}
   void Suspend(){if(IsOpen){root.gameObject.SetActive(false);suspended=true;}}
   bool NeedsInlineControl(string id){
-   if(Array.IndexOf(Ids,id)<0||gateway==null)return false;
+   if((Array.IndexOf(Ids,id)<0&&id!="barracks")||gateway==null)return false;
    var state=gateway.Snapshot();
    if(id=="bastion"&&state.BastionLevel>=4&&
       string.IsNullOrEmpty(state.ChapterThree.DevelopmentPriority))return true;
