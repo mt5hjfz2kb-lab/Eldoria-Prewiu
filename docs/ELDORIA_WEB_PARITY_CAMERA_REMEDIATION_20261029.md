@@ -17,12 +17,10 @@ Corrección autorizada en la PR132 existente, bajo el relevo del workstream can�
 - T2 se recluta en Cuartel IV en el mismo gateway/guardado, con coste del contrato web (20 madera + 12 piedra por arquero), sin convertir T1; la pantalla militar permite escoger T1/T2. La composición libre de varios tiers/porcentajes sigue siendo trabajo UX pendiente de validar contra los diseños recientes.
 - Los aceleradores de 1 y 5 minutos son valores persistentes, se otorgan con libro único, consumen una unidad por comando idempotente y solo acortan obra, Bastión o entrenamiento. Nunca aceleran recolección.
 
-## Comprobaciones pendientes antes de fusionar
-1. Ejecutar EditMode, PlayMode, recorrido I–V, saves antiguos, ritmo offline y botones/raycast de gestión/entrenamiento. Comparar capítulos 3/4/5 con el web con fixture real; ajustar si los tests fallan.
-2. QA de cámara real por horizontal/vertical y tres vistas (paisaje, LOD, Brecha, foco, hotspot, entrada/salida); cámara ciudad debe mantener su zoom separado.
-3. Examinar la ruta y combate del Acechador en escena real, y aprobar/encargar su modelo definitivo sin generar ni gastar por defecto.
-4. Revisar informes de combate explicativos/por ronda y composición mixta porcentual en las pantallas aprobadas, sin duplicar la UI ni sustituir diseños del usuario.
-5. Reconciliar `main` y PR #130. **No hacer merge ni publicar hasta que estas comprobaciones y el dueño del workstream estén resueltos.**
+## Alcance de integración
+Las condiciones técnicas de esta PR son EditMode/PlayMode, pruebas separadas I–II y III–V, guardados antiguos, ritmo offline, botones/raycast y cámaras en ambas orientaciones. Main y PR130 reconciliados bajo el titular canónico. La evidencia final inferior sustituye las notas de pruebas pendientes de esta auditoría.
+
+El modelo dedicado del Acechador y la aprobación estética quedan pendientes: se conserva el modelo provisional existente sin generación ni gasto. Informes por ronda y editor mixto por porcentajes pertenecen a #131, preparado/no iniciado. No declarar una partida continua I→V ni una nueva publicación APK/WebGL a partir de estas pruebas.
 
 ## Continuación autorizada de PR132 / issue133
 Titular: codex-parity132-continuation-ab04f62d0b26, workstream canónico, revisión66. Main y PR130 reconciliados sin cambiar la publicación vigente.
@@ -77,3 +75,13 @@ Fuente Unity747763dce7c5041f061a1109690cd85a707f1398, ejecución40961914744. Rec
 
 ### Revisión final del combate
 El web `resolveLayeredCombat0266` también entrega120 comida/110 piedra por victoria y repone el Acechador a60s. Corregido: botín en la marcha y el informe, cobro único al regresar; victoria persistente separada del temporizador. La misión c5-rare paga260 comida/180 piedra una sola vez. DomainProbe comprueba primera y segunda victoria, recarga y frontera exacta del cooldown. La primera prueba nativa747763 cubría el encuentro único inicial; debe repetirse sobre esta corrección antes de certificar el código final.
+
+## Certificación final — 30-10-2026
+Fuente c78524723ab0b5bdabb546f36948847102dfb966. Ejecución nativa40965665726 SUCCESS:57/57 EditMode,73/73 PlayMode,1/1 propiedad táctil,460 comprobaciones III–V,88PNG e I–II integrado PASS. Revisión12941786946 (176442160bytes,SHA256706e33b876cee2e57af714afc196b2f81fa18f4eda74f1db86ccff40c3dff498) descargada íntegra y examinada: T2 horizontal, selector1min vertical, seis escalas del mundo y Acechador en ambas orientaciones. Controles legibles y geografía consistente. Registro verifica botín base separado del premio único, cooldown, FileStateStore y reaparición a60s sin reiniciar la misión. Diagnósticos12942592092 (150053bytes,SHA25667ec59d7628d046bdee3625bffd17906b90fbe7f96f46b4c7fcaf37e312c2ac0), XML examinados. Paquete completo12941678565,468483533bytes,SHA256e401aef013f6d2d665211e23208aeaace9baffb022cae922c4abe7560ad14a27.
+
+Certificación general40965672865 SUCCESS:57/57 EditMode,73/73 PlayMode, Aldric/12 vistas reales revisadas, tres marchas e I–II. Solicitado c78524723ab0b5bdabb546f36948847102dfb966, compilado b20a73dc421d0158775946904b8a9818a0837479, árbol idéntico55892e31846983dff21790437ce1e216d9b4e8c5. Artefacto12943815050,14596996bytes,SHA2565933614828d7a9e7416adec89248b928b2141abf834cea422785b99254b78e50 descargado/verificado. Paquete general12942059746,SHA2563ad7feabc581ad7f1c4063089386980bab92e45084f9a071d4ba3bb889509e1a. Tester web40965673360 y dominio40965665803 SUCCESS.
+
+El certificado solo reutiliza esta ejecución si árbol Unity y trabajo nativo completo siguen idénticos, el artefacto auténtico sigue disponible y las diferencias se limitan a documentación/metadatos enumerados. Se conserva el documento de referencia de héroes de main sin iniciar su UI.
+
+### Límite de cobertura
+III–V utiliza estados preparados y reloj de prueba; no equivale a una partida continua desde cero. La prueba independiente40962133109 de WebGLnative298 recorrió I–III y alcanzó IV en2103s, con600s de entrenamiento y1200s de investigación. Terminó FAIL en b4.priority porque su controlador solo buscaba primary y no manejaba los tres botones de prioridad visibles en112-blocked-primary-4-b4-priority-portrait.jpg. Cero errores runtime/red. Artefacto12939837740,SHA2566ade018dbf7e170c05e7b159e5a819dada03a6140aa5a5b7bd7baf30d17b1ad4. No certifica I→V continuo. No se modificó esa rama ni se canceló su ejecución. APK1.19/WebGLnative298 no incluyen este parche; no hay prueba física móvil ni ART_APPROVED.

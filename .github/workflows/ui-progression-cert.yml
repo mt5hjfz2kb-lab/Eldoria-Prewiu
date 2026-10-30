@@ -52,13 +52,14 @@ jobs:
             core.setOutput('eligible','false');
             const pr=context.payload.pull_request;
             const routes={
+              132:['feature/eldoria-web-parity-camera-20261029','docs/bastion-iv-v/PARITY132_UI_NATIVE_CERTIFICATE.json'],
               122:['feature/aldric-city-roaming-20261028','docs/aldric-city/NATIVE_CERTIFICATE_20261029.json'],
               124:['feature/global-march-capacity-three-slots-20261028','docs/marches/NATIVE_CERTIFICATE_20261029.json'],
               125:['feature/retention-engagement-evolution-20261028','docs/early-retention/NATIVE_EVOLUTION_CERTIFICATE_20261029.json']};
             let number=pr?.number;
             if(context.eventName==='push' && context.ref==='refs/heads/main') {
               number=undefined;
-              for(const candidate of [125,124,122]){
+              for(const candidate of [132,125,124,122]){
                 const merged=(await github.rest.pulls.get({...context.repo,pull_number:candidate})).data;
                 if(merged.merged){number=candidate;break;}
               }
@@ -143,12 +144,15 @@ jobs:
             const oldJob=job(git('git',['show',certified+':'+file],{encoding:'utf8'}));
             const newJob=job(fs.readFileSync(file,'utf8'));
             const metadata=new Set([file,'.github/workflows/aldric-city-domain.yml','pipeline/active-workstreams.json',
+              'pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json',
+              'docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md','PROJECT_STATE.md','SESSION_HANDOFF.md',
+              'docs/HEROES_UI_APPROVED_ART_LOCK_20261030.md',
               'pipeline/art-production-requests/eldoria-aldric-city-roaming-20261028.json',
               'pipeline/art-production-requests/eldoria-global-march-capacity-three-slots-20261028.json',
               'pipeline/art-production-requests/eldoria-retention-first-evolution-20261028.json']);
             heavy=before!==after || oldJob!==newJob ||
               files.some(p=>!metadata.has(p) && !p.startsWith('docs/aldric-city/') &&
-                !p.startsWith('docs/marches/') && !p.startsWith('docs/early-retention/'));
+                !p.startsWith('docs/marches/') && !p.startsWith('docs/early-retention/') && !p.startsWith('docs/bastion-iv-v/'));
             if(!heavy)console.log('ELDORIA_FULL_SHARED_NATIVE_CERTIFICATE_REUSED run'+process.env.CERTIFIED_RUN+
               '; exact Unity tree, every camera/test guard and complete executed native job unchanged');
           }catch(error){console.warn('Cannot prove identical full native inputs; run complete gate: '+error.message);}
