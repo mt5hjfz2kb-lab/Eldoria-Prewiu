@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T09:53:41.912Z",
+  "updated_at": "2026-10-30T13:01:14.239Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "chatgpt-player-ui-physical-playtest-20261030",
+      "owner": "codex-final-consolidation-8520c3ef76f9",
       "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-30T09:30:00Z",
@@ -1442,9 +1442,14 @@
           "owner": "chatgpt-player-ui-physical-playtest-20261030",
           "revision": 68,
           "reason": "Owner-authorized new physical-playtest UI correction in the canonical integrated Valoria workstream; former completed IV–V stage preserved, no Windows runner reservation."
+        },
+        {
+          "owner": "chatgpt-player-ui-physical-playtest-20261030",
+          "ownership_revision": 68,
+          "reason": "Owner-directed final consolidation handoff 2026-10-30; preserve PR136 and coordinate PR134/135."
         }
       ],
-      "ownership_revision": 68,
+      "ownership_revision": 69,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
