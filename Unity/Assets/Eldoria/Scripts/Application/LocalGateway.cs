@@ -1025,6 +1025,24 @@ namespace Eldoria.Application
             if(c.EconomyUtcTicks==0||clock.UtcTicks-c.EconomyUtcTicks>=TimeSpan.TicksPerSecond){AccrueChapterThree(clock.UtcTicks);changed=true;}
             return changed;
         }
+        void RecordChapterThreeCombatMail(MarchState m,long due)
+        {
+            var report=state.LastBattleReport;
+            if(report==null || state.Mailbox==null)return;
+            string id="battle:"+m.MarchId+":"+m.TargetId+":"+due;
+            state.Mailbox.Receive(new EldoriaV41Message {
+                EventId=id,Category="informes",Type="battle",
+                Title=report.Won?"Victoria en batalla":"Derrota en batalla",
+                Subtitle=report.Reason,ReportId=id,OccurredAtUtcTicks=due,
+                Battle=new EldoriaV41CombatRecord {
+                    TargetId=report.TargetId,HeroId=report.HeroId,Troops=report.Troops,
+                    PlayerPower=report.PlayerPower,EnemyPower=report.EnemyPower,Won=report.Won,
+                    Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
+                    RewardWood=report.RewardWood,RewardStone=report.RewardStone,
+                    RewardFood=report.RewardFood,Reason=report.Reason
+                }
+            });
+        }
         void ResolveChapterThreeMarch(MarchState m,long due)
         {
             var c=state.ChapterThree;
@@ -1041,6 +1059,7 @@ namespace Eldoria.Application
                     Reason=report.Reason+(report.Won?" Botín: 120 comida y 110 piedra al regresar.":"")
                 };
                 state.LastBattleReason=state.LastBattleReport.Reason;
+                RecordChapterThreeCombatMail(m,due);
                 return;
             }
             if(m.TargetId=="meat-valoria") {m.PendingFood=c.MeatRemaining;c.MeatRemaining=0;c.MeatRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;return;}
@@ -1058,6 +1077,7 @@ namespace Eldoria.Application
             state.LastBattleReport=new BattleReportState{TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,PlayerPower=power,Won=win,RewardStone=m.PendingStone,
                 Reason=m.TargetId=="fissure-valoria"?"Aldric y Lyra cierran la fisura. Lyra reconoce el símbolo de su hermano y se une a Valoria.":win?"La caza proporciona alimento y materiales, no Poder.":"La expedición no alcanza el Poder necesario para esta cacería."};
             state.LastBattleReason=state.LastBattleReport.Reason;
+            RecordChapterThreeCombatMail(m,due);
         }
         // Narrative is acknowledged ONLY after the player finishes the last page.
         // No resources, tasks, timers or gameplay progression can be granted here.
