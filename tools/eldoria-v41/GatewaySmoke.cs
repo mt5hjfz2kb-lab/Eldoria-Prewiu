@@ -73,6 +73,19 @@ static class V41GatewaySmoke
         Check(story.Snapshot().PreparedHeroId=="aldric+lyra" &&
               story.Snapshot().PreparedHeroIds.Count==3,
               "existing two-hero combat resolver remains canonical");
+        Check(!Send(story,"emptyLeader","ConfigureMarch","march-main:40:0:0:::").Ok,
+              "empty leader cannot pass gateway validation");
+        Check(Send(story,"thirdSlot","ConfigureMarch","march-main:40:0:0:aldric::lyra").Ok &&
+              story.Snapshot().PreparedHeroId=="aldric+lyra",
+              "second support slot maps both actual heroes into combat");
+        Check(Send(story,"teamDepart","Fight","corrupt-scout").Ok,"team departs");
+        Check(!Send(story,"teamDuplicate","Gather","forest-valoria").Ok,
+              "prepared heroes cannot depart simultaneously twice");
+        Check(!Send(story,"busyHero","ConfigureMarch","march-main:40:0:0:lyra::").Ok,
+              "in-flight hero cannot be reassigned");
+        clock.Add(30);story=new LocalGateway(clock,storyStore);
+        Check(Send(story,"returnedHero","ConfigureMarch","march-main:40:0:0:lyra::").Ok,
+              "hero becomes available after real offline return");
         Console.WriteLine("ELDORIA_V41_GATEWAY_PASS");
     }
 }

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
-  "enabled": true,
-  "status": "ACTIVE",
+  "enabled": false,
+  "status": "COMPLETED",
   "workstream_id": "valoria-master-plan-layered-construction-20261016",
   "request_id": "valoria-master-plan-layered-construction-20261016",
   "asset_or_sector": "Technical migration parity I–V, existing encounter reuse and independent world camera presets; no new source art",
@@ -34,8 +34,8 @@
   "unity_visual_acceptance": "PASS_NATIVE11_INDIVIDUAL_FACADES_DOOR_AND_WORLD_PICKING_NOT_GLOBAL_ART_APPROVAL",
   "physical_mobile_tested": false,
   "owner_authorization": "Owner current instruction: assume necessary PR132/issue133 migration correction to completion",
-  "notes": "New owner-authorized IV–V scope supersedes historical I–II-only restriction. No new Tripo calls or publication authorized. Existing approved reference sources may be integrated after native review. Owner rejected normal city-V-complete view as still oblique. Reopened bounded per-model orientation and approach alignment; previous scoped acceptance does not cover this defect. No new geometry or paid generation. PR130 corrects the owner-rejected normal runtime orientation. Native11 actual frames and full regressions now pass. Separate owner-authorized APK/WebGL delivery follows; no new source mesh or paid generation. Release continuation: Android19 is 531510996bytes and cannot pass installed updater limit. Reopen technical editor packaging scope only, reuse proven WebGL unused-library pruning, retain all runtime/model/scene sources and prior scoped orientation evidence. No new artwork, Qwen inference or artistic approval claimed; validate actual signed package and limit before release. Release continuation also repairs opt-in read-only telemetry transport after Chromium40941917870 observed8192-byte truncation. No model/art/runtime-gameplay edits; original full save and assertions retained. Chunk completeness negative tests required. Second measured size repair excludes only retired Resources roots Valoria/WorldInventory/WorldPlayerCity and three unused authoring textures during Android packaging; preserve all scene dependencies, current dynamic model loads and restore original GUID assets in finally. Original513662824byte candidate not releasable. Technical continuation closed: Android1.19 signed/public bytes verified, WebGL298 full normal-clock browser PASS and exact Restricted remote activation confirmed. No new art, credits, source meshes, PR132 or phone certification. Reopened only for owner-authorized PR132/issue133 runtime parity/camera validation; preserve prior delivery and visual evidence, no new credits or asset generation.",
-  "completed_at": "2026-10-29T21:34:16.588Z",
+  "notes": "New owner-authorized IV–V scope supersedes historical I–II-only restriction. No new Tripo calls or publication authorized. Existing approved reference sources may be integrated after native review. Owner rejected normal city-V-complete view as still oblique. Reopened bounded per-model orientation and approach alignment; previous scoped acceptance does not cover this defect. No new geometry or paid generation. PR130 corrects the owner-rejected normal runtime orientation. Native11 actual frames and full regressions now pass. Separate owner-authorized APK/WebGL delivery follows; no new source mesh or paid generation. Release continuation: Android19 is 531510996bytes and cannot pass installed updater limit. Reopen technical editor packaging scope only, reuse proven WebGL unused-library pruning, retain all runtime/model/scene sources and prior scoped orientation evidence. No new artwork, Qwen inference or artistic approval claimed; validate actual signed package and limit before release. Release continuation also repairs opt-in read-only telemetry transport after Chromium40941917870 observed8192-byte truncation. No model/art/runtime-gameplay edits; original full save and assertions retained. Chunk completeness negative tests required. Second measured size repair excludes only retired Resources roots Valoria/WorldInventory/WorldPlayerCity and three unused authoring textures during Android packaging; preserve all scene dependencies, current dynamic model loads and restore original GUID assets in finally. Original513662824byte candidate not releasable. Technical continuation closed: Android1.19 signed/public bytes verified, WebGL298 full normal-clock browser PASS and exact Restricted remote activation confirmed. No new art, credits, source meshes, PR132 or phone certification. Reopened only for owner-authorized PR132/issue133 runtime parity/camera validation; preserve prior delivery and visual evidence, no new credits or asset generation. PR132 parity continuation completed: exact native, shared UI and main Windows player PASS; issue133 closed. No new artwork, credits, publication or physical-device certification. Canonical workstream released; preserve separate V4.1 work.",
+  "completed_at": "2026-10-30T07:52:24.023Z",
   "closure": {
     "main_merge_commit": "b7aefa07f9897fd8fe7c43f9bc3b79e4df351d5e",
     "pr_number": 129,
@@ -130,5 +130,51 @@
     "art_approved": false,
     "physical_mobile_tested": false,
     "report": "docs/bastion-iv-v/RELEASE_20261029.md"
+  },
+  "parity132_closeout": {
+    "completed_at": "2026-10-30T07:52:24.023Z",
+    "pr": 132,
+    "issue": 133,
+    "issue_state": "closed",
+    "runtime_source": "c78524723ab0b5bdabb546f36948847102dfb966",
+    "pr_head": "ed926b9857133d3cb6687608bbd44aff48e932fc",
+    "main_merge": "f016932317e049d340460c408d88b90b1290b692",
+    "native_run": 40965665726,
+    "shared_ui_run": 40965672865,
+    "final_pr_tester_run": 41017152807,
+    "main_run": 41018872267,
+    "main_run_attempt": 2,
+    "main_result": "SUCCESS",
+    "windows_player_build": "SUCCESS",
+    "editmode_passed": 57,
+    "playmode_passed": 73,
+    "iii_v_checks": 460,
+    "native_screenshots": 88,
+    "main_test_artifact": {
+      "id": 12961578958,
+      "bytes": 62741,
+      "sha256": "00209bf4779827c5329bf5dbaaa687aa9b57ef90c807334249eb4f8de9d5a063",
+      "download_verified": true
+    },
+    "desktop_artifact": {
+      "id": 12961694947,
+      "bytes": 1515706701,
+      "sha256": "566afb8c3bfc8d3b7ad0abc189d0772ca8a97c52e6751f8be0b174fb4a592e4d"
+    },
+    "initial_desktop_attempt": "resources.assets write failure; exact-code rerun succeeded",
+    "continuous_fresh_i_to_v_pass": false,
+    "latest_published_web_continuous_attempt": {
+      "run": 40978433069,
+      "result": "FAIL",
+      "objective": "b4.ascend",
+      "runtime_errors": 0,
+      "network_failures": 0
+    },
+    "published_apk_includes_patch": false,
+    "published_webgl_includes_patch": false,
+    "physical_mobile_tested": false,
+    "art_approved": false,
+    "new_credits_used": 0,
+    "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
   }
 }

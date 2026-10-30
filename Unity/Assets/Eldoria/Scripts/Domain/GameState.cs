@@ -215,6 +215,21 @@ namespace Eldoria.Domain
         public const int HeroXpPerLevel = 80;
         public const int MaxHeroLevel = 20;
 
+        public static bool HeroAvailable(PlayerState state, string hero)
+        {
+            if(string.IsNullOrEmpty(hero))return true;
+            foreach(var march in MarchCapacityRules.WorldMarches(state))
+            {
+                if(march.Phase=="idle")continue;
+                if(march.HeroIds!=null && march.HeroIds.Count>0)
+                {
+                    if(march.HeroIds.Contains(hero))return false;
+                }
+                else if(march.HeroId==hero || march.HeroId=="aldric+lyra")return false;
+            }
+            return true;
+        }
+
         public static int HeroLevel(PlayerState s, string heroId)
         {
             if(s==null)return 1;

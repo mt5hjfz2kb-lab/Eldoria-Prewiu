@@ -112,7 +112,7 @@ namespace Eldoria.Domain
 
         public static Dictionary<string,int> Percentages(Dictionary<string,int> counts)
         {
-            if(counts==null || Families.Any(k=>Safe(counts,k)<0))
+            if(counts==null || Families.Any(k=>counts.TryGetValue(k,out var count) && count<0))
                 throw new ArgumentException("Invalid roster");
             int total=Families.Sum(k=>Safe(counts,k));
             var result=Families.ToDictionary(k=>k,k=>0);

@@ -427,7 +427,7 @@ namespace Eldoria.Application
                                 checkedSlots=EldoriaV41Planning.SelectHero(checkedSlots,i,heroSlots[i],unlocked);
                         }
                         catch(ArgumentException){return Fail("Héroe no disponible o duplicado");}
-                        marchHero=checkedSlots[1]!=null?"aldric+lyra":checkedSlots[0];
+                        marchHero=checkedSlots[1]!=null || checkedSlots[2]!=null?"aldric+lyra":checkedSlots[0];
                         // Two heroes (Aldric+Lyra) are supported today; third is visually reserved,
                         // never used for future story characters without an approved combat contract.
                     }
@@ -439,6 +439,10 @@ namespace Eldoria.Application
                             marchHero=="lyra"?"lyra":"aldric",
                             marchHero=="aldric+lyra"?"lyra":null,null};
                     }
+                    if(string.IsNullOrEmpty(heroSlots[0]))return Fail("Selecciona un líder");
+                    foreach(var heroId in heroSlots)
+                        if(!MarchCapacityRules.HeroAvailable(state,heroId))
+                            return Fail("El héroe ya está en otra marcha");
                     var nextTroops=MarchCapacityRules.AutoSelect(state.Available,
                         MarchCapacityRules.Capacity(state,marchHero));
                     if(parts.Length>1)
@@ -620,7 +624,16 @@ namespace Eldoria.Application
                 MarchCapacityRules.Fits(state.PreparedTroops,state.Available,
                     MarchCapacityRules.Capacity(state,state.PreparedHeroId));
             if(special&&state.MarchConfigured&&!usePrepared)return false;
-            string hero=usePrepared?state.PreparedHeroId:"aldric";
+            bool gathering=IsWoodTarget(targetId)||IsStoneTarget(targetId)||targetId=="meat-valoria";
+            // Automatic supply marches need no named hero. Explicit compositions
+            // reserve their heroes until return; a second departure revalidates them.
+            string hero=usePrepared?state.PreparedHeroId:gathering?"":
+                MarchCapacityRules.HeroAvailable(state,"aldric")?"aldric":
+                state.ChapterThree.LyraRecruited&&MarchCapacityRules.HeroAvailable(state,"lyra")?"lyra":"";
+            var party=usePrepared?new System.Collections.Generic.List<string>(state.PreparedHeroIds):
+                new System.Collections.Generic.List<string>{hero,null,null};
+            if(!gathering && string.IsNullOrEmpty(hero))return false;
+            foreach(var id in party)if(!MarchCapacityRules.HeroAvailable(state,id))return false;
             var troops=usePrepared?state.PreparedTroops.Copy():
                 MarchCapacityRules.AutoSelect(state.Available,MarchCapacityRules.Capacity(state,hero));
             if(!MarchCapacityRules.Fits(troops,state.Available,MarchCapacityRules.Capacity(state,hero)))return false;
@@ -629,9 +642,7 @@ namespace Eldoria.Application
             m.Route=planned;
             m.Troops=troops;
             m.HeroId=hero;
-            m.HeroIds=usePrepared?new System.Collections.Generic.List<string>(
-                state.PreparedHeroIds??new System.Collections.Generic.List<string>()):
-                new System.Collections.Generic.List<string>{"aldric",null,null};
+            m.HeroIds=party;
             MarchCapacityRules.Reserve(state,troops);
             m.TargetId = targetId; m.Phase = "outbound";
             m.PendingFood = m.PendingWood = m.PendingStone = 0;
