@@ -11,9 +11,8 @@ namespace Eldoria.UI.RoyalGold.V2
     /// </summary>
     // Must run AFTER RoyalGoldV2Narrative (450), otherwise that
     // component overwrites the cinematic frame geometry each frame.
-    [DefaultExecutionOrder(650)]
     [DisallowMultipleComponent]
-    [DefaultExecutionOrder(520)]
+    [DefaultExecutionOrder(650)]
     public sealed class RoyalGoldV3CinematicFinish : MonoBehaviour
     {
         public RoyalHUD Source;
