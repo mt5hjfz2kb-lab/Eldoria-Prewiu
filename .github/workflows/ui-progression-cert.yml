@@ -645,6 +645,12 @@ jobs:
             'integration-march-landscape.png',
             'integration-march-portrait.png',
             'integration-chapter2-complete.png',
+            'integration-continuous-bastion-3-landscape.png',
+            'integration-continuous-bastion-3-portrait.png',
+            'integration-continuous-bastion-4-landscape.png',
+            'integration-continuous-bastion-4-portrait.png',
+            'integration-continuous-bastion-5-landscape.png',
+            'integration-continuous-bastion-5-portrait.png',
             'integration-result.json'
           )){
             if(-not(Test-Path (Join-Path $e $file))){throw "Missing real Unity evidence: $file"}
@@ -652,6 +658,14 @@ jobs:
           $result=Get-Content (Join-Path $e 'integration-result.json') -Raw|ConvertFrom-Json
           if($result.status -ne 'INTEGRATION_PASS_ART_REVIEW_REQUIRED'){
             throw "Existing I-II probe not accepted: $($result.status) $($result.error)"
+          }
+          foreach($level in @(3,4,5)){
+            if($result.checks -notcontains "continuous I-$level native progression and reopened save"){
+              throw "Missing continuous native checkpoint I-$level; seeded tests cannot substitute it"
+            }
+          }
+          if($result.checks -notcontains 'continuous I-V final saved state exact'){
+            throw 'Continuous I-V final state/reload not verified'
           }
           # Measure actually-free camera area in BOTH mobile orientations,
           # using the existing certified native framing rectangles, and
