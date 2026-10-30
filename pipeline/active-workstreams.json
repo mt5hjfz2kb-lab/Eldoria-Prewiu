@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T13:01:14.239Z",
+  "updated_at": "2026-10-30T13:04:11.202Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,7 +21,7 @@
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "codex-final-consolidation-8520c3ef76f9",
-      "branch": "main",
+      "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-10-30T09:30:00Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
@@ -114,13 +114,15 @@
         "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
         "docs/documentation-catalog.json"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "required",
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "OWNER_DEVICE_UI_REGRESSION_PR136",
-      "next": "PR136 Unity UI/native visual acceptance and reconcile V4.1 active PR134, without runner collision or release until checks.",
+      "phase": "FINAL_CONSOLIDATION_PR136_SINGLE_CARTOUCHE",
+      "next": "Validate sole cartouche command, native tests/captures; then reconcile PR134/135.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -2464,9 +2466,9 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "codex-pr134-continuation-ab04f62d0b26",
+      "owner": "codex-final-consolidation-8520c3ef76f9",
       "ownership_state": "claimed",
-      "ownership_revision": 3,
+      "ownership_revision": 4,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -2510,6 +2512,11 @@
           "ownership_revision": 2,
           "transferred_at": "2026-10-30T08:25:40.165Z",
           "reason": "Owner explicitly requests this chat assume and finish PR134 after prior chat became too long."
+        },
+        {
+          "owner": "codex-pr134-continuation-ab04f62d0b26",
+          "ownership_revision": 3,
+          "reason": "Owner requests coordinated final consolidation PR134/136; preserve current candidate and evidence."
         }
       ],
       "delivery_definition": {
