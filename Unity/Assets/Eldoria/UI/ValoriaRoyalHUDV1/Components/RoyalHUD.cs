@@ -91,7 +91,6 @@ namespace Eldoria.UI.RoyalGold {
   public bool NarrativeOpen=>narrative&&Modal.gameObject.activeSelf;
   public bool NarrativeIsRevealing=>NarrativeOpen&&cinematic&&cinematic.IsRevealing;
   public string NarrativeSpeaker=>NarrativeOpen&&cinematic?cinematic.CurrentSpeaker:"";
-  public string NarrativePageText=>NarrativeOpen&&cinematic?cinematic.CurrentPageText:"";
   public string NarrativeSourceText=>NarrativeOpen&&cinematic?cinematic.FullText:"";
   public int NarrativeTurnIndex=>NarrativeOpen&&cinematic?cinematic.TurnIndex:-1;
   public int NarrativeTurnCount=>NarrativeOpen&&cinematic?cinematic.TurnCount:0;
