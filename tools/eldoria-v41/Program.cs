@@ -43,6 +43,10 @@ static class Tests
         var mail=new EldoriaV41Mailbox();
         Check(mail.Receive(new EldoriaV41Message{EventId="fight:01",Category="informes",Type="battle",Title="Victoria",ReportId="report:01",OccurredAtUtcTicks=11}),"receive real report reference");
         Check(mail.Unread()==1 && mail.Unread("informes")==1,"unread count");
+        mail.Messages[0].Battle=new EldoriaV41CombatRecord{TargetId="spawnling",Won=true,Reason="Ruptura observada",Troops=36};
+        var copied=mail.Copy();
+        copied.Messages[0].Battle.Reason="alterado";
+        Check(mail.Messages[0].Battle.Reason=="Ruptura observada","mail snapshot deep-copies battle history");
         Check(!mail.Receive(new EldoriaV41Message{EventId="fight:01",Category="informes",Type="battle",Title="Duplicado"}),"offline replay idempotent");
         mail.MarkRead("fight:01");
         Check(mail.Unread()==0,"mark read");
