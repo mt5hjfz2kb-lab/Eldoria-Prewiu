@@ -45,9 +45,12 @@ namespace Eldoria.UI.RoyalGold.V2
 
         void Update()
         {
-            // Soft atmospheric movement, throttled; no expensive texture copies,
-            // shadow casters, camera changes or new graphic allocations per frame.
-            if (!isActiveAndEnabled || Time.unscaledTime < nextRepaint) return;
+            // The four military manuscript panels have STATIC geometry.
+            // Do not rebuild them every frame or when a hidden room is idle.
+            // Scenic layers alone animate at a mobile-safe low refresh rate.
+            if (scene == Scene.Panel || !isActiveAndEnabled ||
+                !gameObject.activeInHierarchy || Time.unscaledTime < nextRepaint)
+                return;
             nextRepaint = Time.unscaledTime + .12f;
             SetVerticesDirty();
         }
