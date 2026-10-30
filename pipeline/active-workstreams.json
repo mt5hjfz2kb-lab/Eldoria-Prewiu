@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-final-consolidation-b42e2e4f25bf",
+      "owner": "codex-artistic-completion-1515a30b9c7e",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-10-30T09:30:00Z",
@@ -121,8 +121,8 @@
       "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
       "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR136_NATIVE_CONTEXTUAL_CONSTRUCTION_CERTIFICATION_REPAIR",
-      "next": "Validate sole cartouche command, native tests/captures; then reconcile PR134/135.",
+      "phase": "PR136_REFERENCE_DRIVEN_STRUCTURAL_UI_RECONSTRUCTION",
+      "next": "Recover pending edits; rebuild training composition from approved sources; exact-head native visual QA.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1461,9 +1461,15 @@
           "ownership_revision": 70,
           "transferred_at": "2026-10-30T15:49:00Z",
           "reason": "Owner explicitly requests continuation of blocked final-consolidation chat; preserve in-flight native run 41082890524."
+        },
+        {
+          "owner": "codex-final-consolidation-b42e2e4f25bf",
+          "ownership_revision": 71,
+          "transferred_at": "2026-10-30T18:11:01.954Z",
+          "reason": "Owner directs definitive artistic reconstruction and continuation in session 1515a30b9c7e; preserve PR136 and all prior changes."
         }
       ],
-      "ownership_revision": 71,
+      "ownership_revision": 72,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
