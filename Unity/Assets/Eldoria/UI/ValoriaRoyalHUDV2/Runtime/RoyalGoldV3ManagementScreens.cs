@@ -27,6 +27,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public int SelectedTrainingSeconds => SliceRules.RecruitSecondsFor(selectedCount);
         public int SelectedTier => selectedTier;
         ICommandGateway gateway;
+        RoyalGoldV41MailboxScreen mailbox;
         Func<long> utcTicks;
         Action onCommand;
         // Optional host navigation; same scene, preserving the city camera state.
@@ -71,6 +72,13 @@ namespace Eldoria.UI.RoyalGold.V2
             gateway = authoritativeGateway;
             utcTicks = authoritativeUtcTicks;
             onCommand = refreshed;
+            // One existing Royal HUD/Canvas, no parallel gameplay scene or save.
+            if(hud!=null)
+            {
+                if(mailbox==null)mailbox=GetComponent<RoyalGoldV41MailboxScreen>();
+                if(mailbox==null)mailbox=gameObject.AddComponent<RoyalGoldV41MailboxScreen>();
+                mailbox.Initialize(hud,authoritativeGateway);
+            }
         }
 
         void SuspendForNarrative()
