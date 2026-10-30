@@ -13,6 +13,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            tools/eldoria-v41
+            Unity/Assets/Eldoria/Scripts/Domain
+          sparse-checkout-cone-mode: true
+          lfs: false
+          fetch-depth: 1
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
