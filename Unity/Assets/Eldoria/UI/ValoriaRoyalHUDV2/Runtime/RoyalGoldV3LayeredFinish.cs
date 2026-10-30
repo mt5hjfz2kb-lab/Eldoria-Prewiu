@@ -80,7 +80,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float breath=.5f+.5f*Mathf.Sin(t*.68f);
             bool landscape=scene==Scene.Vigilants || scene==Scene.Scouts;
             var clear=RGBA(0f,0f,0f,0f);
-            var midnight=RGBA(.018f,.031f,.051f,landscape?.48f:.31f);
+            var midnight=RGBA(.018f,.031f,.051f,landscape ? .48f : .31f);
 
             // Four atmospheric planes: a soft shadow at the near edge and
             // transparent lateral falloff, NOT another opaque screenshot.
