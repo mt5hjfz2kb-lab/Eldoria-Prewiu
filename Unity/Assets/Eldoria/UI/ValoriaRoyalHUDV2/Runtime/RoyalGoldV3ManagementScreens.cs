@@ -40,6 +40,12 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalButton minus, plus, action, back, switchDestination, chapterAction, tierButton;
         RoyalText chapterActionLabel;
         string selectedHero="aldric";
+        readonly string[] heroSlots={"aldric",null,null};
+        readonly RoyalButton[] heroSlotButtons=new RoyalButton[3];
+        readonly RoyalText[] heroSlotLabels=new RoyalText[3];
+        RoyalButton percentModeButton;RoyalText percentModeLabel;
+        bool percentMode;
+        int selectedT1,selectedT2;
         RoyalText actionLabel, switchLabel, tierLabel;
         Slider slider;
         int selectedCount = 10;
@@ -184,6 +190,16 @@ namespace Eldoria.UI.RoyalGold.V2
             statusArtwork.SetVerticesDirty();
             submitAfter = 0f;
             selectedHero=s.MarchConfigured?s.PreparedHeroId:"aldric";
+            for(int i=0;i<3;i++)heroSlots[i]=s.PreparedHeroIds!=null&&
+                s.PreparedHeroIds.Count==3?s.PreparedHeroIds[i]:
+                i==0?(selectedHero=="lyra"?"lyra":"aldric"):
+                i==1&&selectedHero=="aldric+lyra"?"lyra":null;
+            percentMode=false;
+            int cap=MarchCapacityRules.Capacity(s,selectedHero);
+            selectedT1=destination==Destination.March?
+                (s.MarchConfigured?s.PreparedTroops.ArcherT1:Mathf.Min(s.Available.ArcherT1,cap)):0;
+            selectedT2=destination==Destination.March?
+                (s.MarchConfigured?s.PreparedTroops.ArcherT2:0):0;
             selectedTier=destination==Destination.Training&&s.RecruitmentCompletesUtcTicks>0&&s.PendingRecruitTier==2?2:
                 destination==Destination.March&&s.MarchConfigured&&s.PreparedTroops.ArcherT2>0&&s.PreparedTroops.ArcherT1==0?2:1;
             int available=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
@@ -362,6 +378,14 @@ namespace Eldoria.UI.RoyalGold.V2
             action=Button("Confirm military command",footer,"CONFIRMAR",Confirm,true,out actionLabel);
             chapterAction=Button("Chapter III management",header,"MEJORAR CUARTEL",ChapterAction,false,out chapterActionLabel);
             switchDestination=Button("Switch destination",header,"MARCHAS",Switch,true,out switchLabel);
+            for(int i=0;i<3;i++)
+            {
+                int slot=i;
+                heroSlotButtons[i]=Button("Hero slot "+i,left,"",()=>CycleHeroSlot(slot),
+                    false,out heroSlotLabels[i]);
+            }
+            percentModeButton=Button("Edit march by percent",left,"CANTIDAD / %",TogglePercentMode,
+                false,out percentModeLabel);
             root.gameObject.SetActive(false);
         }
 
@@ -369,12 +393,56 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             Open(CurrentDestination == Destination.Training ? Destination.March : Destination.Training);
         }
+        void CycleHeroSlot(int slot)
+        {
+            if(CurrentDestination!=Destination.March || gateway==null)return;
+            var s=gateway.Snapshot();
+            bool hasLyra=s.ChapterThree!=null&&s.ChapterThree.LyraRecruited;
+            if(slot==2)return; // A third combat hero has not been unlocked in the current story.
+            if(slot==0)
+            {
+                heroSlots[0]=hasLyra&&heroSlots[0]=="aldric"?"lyra":"aldric";
+                if(heroSlots[1]==heroSlots[0])heroSlots[1]=null;
+            }
+            else if(hasLyra)
+                heroSlots[1]=heroSlots[1]==null?
+                    (heroSlots[0]=="aldric"?"lyra":"aldric"):null;
+            selectedHero=heroSlots[1]!=null?"aldric+lyra":heroSlots[0];
+            Refresh();
+        }
+        void TogglePercentMode()
+        {
+            if(CurrentDestination!=Destination.March)return;
+            percentMode=!percentMode;Refresh();
+        }
+        int SelectedFamilyCount=>selectedTier==2?selectedT2:selectedT1;
+        void SetFamilyCount(int value)
+        {
+            if(selectedTier==2)selectedT2=value;
+            else selectedT1=value;
+            selectedCount=value;
+        }
         void SetQuantity(int requested)
         {
-            int clamped = Mathf.Clamp(requested,1,Mathf.Max(1,maxCount));
-            if (clamped == selectedCount) return;
-            selectedCount = clamped;
-            slider.SetValueWithoutNotify(selectedCount);
+            if(CurrentDestination==Destination.Training)
+            {
+                selectedCount=Mathf.Clamp(requested,1,Mathf.Max(1,maxCount));
+                slider.SetValueWithoutNotify(selectedCount);Refresh();return;
+            }
+            var s=gateway.Snapshot();
+            int total=Mathf.Max(1,selectedT1+selectedT2);
+            int availableHere=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
+            int availableOther=selectedTier==2?s.Available.ArcherT1:s.Available.ArcherT2;
+            if(percentMode)
+            {
+                int desired=Mathf.RoundToInt(total*Mathf.Clamp(requested,0,100)/100f);
+                int focus=Mathf.Clamp(desired,Mathf.Max(0,total-availableOther),
+                    Mathf.Min(availableHere,total));
+                SetFamilyCount(focus);
+                if(selectedTier==2)selectedT1=total-focus;
+                else selectedT2=total-focus;
+            }
+            else SetFamilyCount(Mathf.Clamp(requested,0,maxCount));
             Refresh();
         }
         void Refresh()
