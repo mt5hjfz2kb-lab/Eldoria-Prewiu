@@ -439,6 +439,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // object must not create a second, competing action panel.
             if (value.OperationActive)
             {
+                // Disable the paid offer immediately, even when its parent
+                // CanvasGroup is hidden while the real timer remains visible.
+                actionButton.interactable = false;
                 Visible(cardGroup, false, true);
                 return;
             }
