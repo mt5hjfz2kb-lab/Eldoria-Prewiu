@@ -20,10 +20,10 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": null,
+      "owner": "chatgpt-player-ui-physical-playtest-20261030",
       "branch": "main",
       "status": "active",
-      "claimed_at": "2026-10-29T21:40:59.510Z",
+      "claimed_at": "2026-10-30T09:30:00Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
       "scope": [
         "Unity/Assets/Eldoria/ArtTests/ValoriaLayeredConstruction/**",
@@ -115,12 +115,12 @@
         "docs/documentation-catalog.json"
       ],
       "resources": [],
-      "art_production_routing": "not_applicable",
-      "art_production_routing_reason": "Technical parity correction completed and verified. No active art production, new assets or reserved edits; request closed without granting ART_APPROVED.",
-      "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016.json",
+      "art_production_routing": "required",
+      "art_production_routing_reason": "Existing Unity ArtTests .cs presentation/UI source changes require canonical visual traceability; no new assets or credits and no art approval asserted.",
+      "art_production_request": "pipeline/art-production-requests/valoria-master-plan-layered-construction-20261016-player-ui-20261030.json",
       "dependency": "Reuse certified master-plan coordinates and preserve SHARP runtime; older 63 assets and Bastion I works frozen. Windows only after actual queue is clear and no incompatible job occupies it.",
-      "phase": "PR132_PARITY_MERGED_MAIN_VERIFIED",
-      "next": "Migration parity task complete; canonical scope available. Preserve independent V4.1 claim. APK19/WebGL298 precede this patch; continuous fresh I–V remains uncertified.",
+      "phase": "OWNER_DEVICE_UI_REGRESSION_PR136",
+      "next": "PR136 Unity UI/native visual acceptance and reconcile V4.1 active PR134, without runner collision or release until checks.",
       "last_verified": {
         "source_topology_status": "SOURCE_TOPOLOGY_PASS",
         "source_footprints": 22,
@@ -1437,11 +1437,16 @@
           "released_at": "2026-10-30T07:52:24.023Z",
           "phase": "PR132_PARITY_MERGED_MAIN_VERIFIED",
           "reason": "PR132 merged, issue133 closed, exact native/domain/UI/client gates and main Windows player succeeded. No resource or write reservation retained."
+        },
+        {
+          "owner": "chatgpt-player-ui-physical-playtest-20261030",
+          "revision": 68,
+          "reason": "Owner-authorized new physical-playtest UI correction in the canonical integrated Valoria workstream; former completed IV–V stage preserved, no Windows runner reservation."
         }
       ],
-      "ownership_revision": 67,
-      "ownership_state": "available",
-      "write_scope_released": true,
+      "ownership_revision": 68,
+      "ownership_state": "claimed",
+      "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
       "last_claimed_at": "2026-10-29T09:54:24.457Z",
       "delivery_definition": {
@@ -1684,7 +1689,8 @@
         "art_approved": false,
         "new_credits_used": 0,
         "report": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md"
-      }
+      },
+      "owner_instruction": "Owner physical playtest 2026-10-30 requests remove independent build screens, align approved HUD/dialogue, and remove dashed yellow marching stripes without changing gameplay. Preserve all other active PRs."
     },
     {
       "id": "eldoria-tripo-art-brain-phase2-20261021",
