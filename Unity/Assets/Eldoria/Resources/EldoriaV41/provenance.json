@@ -49,6 +49,20 @@
       "method": "source_pixels_only"
     },
     {
+      "name": "unread-dot",
+      "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
+      "regions_xyxy": [
+        [
+          82,
+          380,
+          113,
+          411
+        ]
+      ],
+      "sha256": "c142e1a446c42747bfa6bff0ea87c679edbc4db0b3c1ec92a1c0c4a857aab68e",
+      "method": "source_pixels_only"
+    },
+    {
       "name": "mail-march",
       "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
       "regions_xyxy": [
@@ -227,19 +241,19 @@
       "source_sha256": "ef01ed38d83d0be012561320727098e59eaa1e809d08f2febf1b1dd44886b0dd",
       "regions_xyxy": [
         [
-          337,
-          204,
-          594,
-          326
+          54,
+          201,
+          322,
+          330
         ],
         [
-          380,
-          225,
-          550,
+          80,
+          223,
+          230,
           240
         ]
       ],
-      "sha256": "af9b104ca935bc49a02ae81ad6a4b6a04b89015afd1c2a5a6cae35db83e350c3",
+      "sha256": "0ca29073666f09b54c4a514f63c4b82d2fe8915ad17cc4b475a5adc38fd33567",
       "method": "source_pixels_only"
     },
     {

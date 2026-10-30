@@ -18,12 +18,15 @@ namespace Eldoria.UI.RoyalGold.V2
     public sealed class RoyalGoldV41MailboxScreen : MonoBehaviour
     {
         public bool IsOpen=>window!=null&&window.gameObject.activeSelf;
+        public Button EntryButton=>entry?entry.GetComponent<Button>():null;
         public int UnreadCount=>gateway?.Snapshot()?.Mailbox?.Unread()??0;
         RoyalHUD hud;ICommandGateway gateway;
         RectTransform window,entry;
         RoyalText entryLabel,title,detail,navLabel,resources;
         readonly List<Image> messageIcons=new List<Image>();
+        readonly List<RoyalText> messageDates=new List<RoyalText>();
         readonly List<RoyalText> messageSubtitles=new List<RoyalText>();
+        readonly List<RoyalText> tabBadges=new List<RoyalText>();
         readonly List<RoyalText> tabLabels=new List<RoyalText>();
         readonly List<RoyalText> messageLabels=new List<RoyalText>();
         readonly List<Button> messageButtons=new List<Button>();
@@ -59,7 +62,7 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             if(hud==null||gateway==null)return;
             if(IsOpen && hud.NarrativeOpen){Close();return;}
-            if(IsOpen && (Mathf.Abs(window.rect.width-lastWidth)>.5f ||
+            if(window!=null && (Mathf.Abs(window.rect.width-lastWidth)>.5f ||
                           Mathf.Abs(window.rect.height-lastHeight)>.5f))Layout();
             if(Time.unscaledTime>=nextRefresh)
             {
@@ -130,6 +133,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 button.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
                 var surface=RoyalGoldV41SourceArt.Surface((RectTransform)button.transform,"tab-idle",16);
                 surface.raycastTarget=true;button.targetGraphic=surface;
+                var badge=RoyalGoldV41SourceArt.Surface((RectTransform)button.transform,"unread-dot");
+                badge.name="Unread badge";badge.rectTransform.SetAsLastSibling();
+                var count=Label("Unread count",badge.transform,16,true);count.alignment=TextAnchor.MiddleCenter;
+                count.rectTransform.anchorMin=Vector2.zero;count.rectTransform.anchorMax=Vector2.one;
+                count.rectTransform.offsetMin=count.rectTransform.offsetMax=Vector2.zero;tabBadges.Add(count);
             }
             for(int i=0;i<5;i++)
             {
@@ -141,6 +149,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 surface.raycastTarget=true;button.targetGraphic=surface;
                 label.color=new Color(.08f,.07f,.05f);label.alignment=TextAnchor.MiddleLeft;
                 messageSubtitles.Add(Label("Mensaje resumen "+i,button.transform,17));
+                messageDates.Add(Label("Fecha del mensaje "+i,button.transform,13));
                 var icon=Node("Icono de mensaje "+i,button.transform).gameObject.AddComponent<Image>();
                 icon.raycastTarget=false;icon.preserveAspect=true;messageIcons.Add(icon);
             }
@@ -168,21 +177,23 @@ namespace Eldoria.UI.RoyalGold.V2
             float usable=w-left-right;bool wide=w>h;
             var children=window.GetComponentsInChildren<Button>(true);
             Button Find(string name)=>children.First(b=>b.name==name);
-            Position(entry,left,Mathf.Max(100,h*.16f),Mathf.Min(140,w*.22f),42);
+            float entryWidth=Mathf.Min(140,w*.22f);
+            Position(entry,w-right-entryWidth,h-bottom-(wide?118:165)-54,entryWidth,44);
             Position(title.rectTransform,left+58,top,usable*.4f,45);
             Position(resources.rectTransform,left+usable*.48f,top,usable*.52f,45);
             var back=Find("Volver");Position((RectTransform)back.transform,left,top,48,44);
             back.GetComponentInChildren<RoyalText>().Put("‹");
-            float tabsY=top+60,tabH=wide?44:Mathf.Clamp(h*.09f,46,75),gap=7;
+            float tabsY=top+100,tabH=wide?44:Mathf.Clamp(h*.09f,46,75),gap=7;
             float tabW=(usable-3*gap)/4;
             for(int i=0;i<4;i++)
             {
                 var button=Find("Buzón "+categories[i]);
                 Position((RectTransform)button.transform,left+i*(tabW+gap),tabsY,tabW,tabH);
-                tabLabels[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(tabW*.085f),12,18);
+                tabLabels[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(tabW*.13f),16,25);
+                Position((RectTransform)tabBadges[i].transform.parent,tabW-27,-9,31,31);
                 tabLabels[i].horizontalOverflow=HorizontalWrapMode.Overflow;
             }
-            float bodyY=tabsY+tabH+12,bodyH=h-bodyY-bottom-46;
+            float bodyY=tabsY+tabH+26,bodyH=h-bodyY-bottom-46;
             float rowH=bodyH/5f;
             for(int i=0;i<5;i++)
             {
@@ -190,7 +201,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 float iconSize=Mathf.Min(rowH-23,usable*.16f);
                 Position(messageIcons[i].rectTransform,14,(rowH-7-iconSize)*.5f,iconSize,iconSize);
                 Position(messageLabels[i].rectTransform,iconSize+30,7,usable-iconSize-46,(rowH-12)*.48f);
-                Position(messageSubtitles[i].rectTransform,iconSize+30,rowH*.48f,usable-iconSize-46,rowH*.39f);
+                Position(messageSubtitles[i].rectTransform,iconSize+30,rowH*.48f,usable-iconSize-164,rowH*.39f);
+                Position(messageDates[i].rectTransform,usable-126,rowH*.48f,110,rowH*.39f);
+                messageDates[i].color=new Color(.20f,.18f,.15f);
                 messageLabels[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(rowH*.23f),17,29);
                 messageSubtitles[i].fontSize=Mathf.Clamp(Mathf.RoundToInt(rowH*.18f),14,23);
                 messageSubtitles[i].color=new Color(.20f,.18f,.15f);
@@ -227,11 +240,22 @@ namespace Eldoria.UI.RoyalGold.V2
             if(result.Ok && kind=="MailDelete")selectedId=null;
             Refresh();
         }
+        static string HeroName(string id)=>id=="aldric+lyra"?"Sir Aldric y Lyra":id=="lyra"?"Lyra":id=="aldric"?"Sir Aldric":"—";
+        static string TargetName(string id)
+        {
+            switch(id){case "corrupt-scout":return "Acechador Corrupto";case "engendro-valoria":return "Engendro";
+                case "hunt-wolf":return "Lobo";case "hunt-boar":return "Jabalí";case "ash-stalker-valoria":return "Acechador de Ceniza";
+                case "fissure-valoria":return "Fisura";default:return (id??"").StartsWith("vigilant:")?"Vigilante":"el enemigo";}
+        }
         public void Refresh()
         {
             if(hud==null||gateway==null)return;
             if(window==null)Ensure();
             var s=gateway.Snapshot();var mail=s.Mailbox;
+            entry.gameObject.SetActive(!IsOpen&&!hud.NarrativeOpen&&
+                !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
+                !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
+                string.IsNullOrEmpty(hud.SelectedBuildingId));
             resources.Put("Madera "+s.Resources.Wood+"  ·  Piedra "+s.Resources.Stone+"  ·  Comida "+s.Resources.Food);
             if(entryLabel!=null)entryLabel.Put("CORREO"+(mail?.Unread()>0?" ("+mail.Unread()+")":""));
             if(!IsOpen)return;
@@ -240,8 +264,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 string key=t.transform.parent.name.Replace("Buzón ","");
                 t.color=key==category?Gold:Ivory;
                 var surface=t.transform.parent.GetComponentInChildren<Image>();
-                if(surface!=null)surface.color=key==category?new Color(1.25f,1.15f,.90f):Color.white;
-                t.Put(key.ToUpperInvariant()+((mail?.Unread(key)??0)>0?" • "+mail.Unread(key):""));
+                if(surface!=null){surface.sprite=RoyalGoldV41SourceArt.Get(key==category?"tab-active":"tab-idle",18);surface.color=Color.white;}
+                int unread=mail?.Unread(key)??0,index=Array.IndexOf(categories,key);
+                tabBadges[index].transform.parent.gameObject.SetActive(unread>0);
+                tabBadges[index].Put(unread.ToString());
+                t.Put(char.ToUpperInvariant(key[0])+key.Substring(1));
             }
             var list=mail?.List(category,offset,5)??new List<EldoriaV41Message>();
             for(int i=0;i<5;i++)
@@ -253,7 +280,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     var msg=list[i];
                     messageLabels[i].color=new Color(.08f,.07f,.05f);
                     messageLabels[i].Put((msg.Read?"":"● ")+msg.Title);
-                    messageSubtitles[i].Put(msg.Subtitle);
+                    messageSubtitles[i].Put(msg.Battle==null?msg.Subtitle:
+                        (msg.Battle.Won?"Victoria contra ":"Derrota ante ")+TargetName(msg.Battle.TargetId));
+                    messageDates[i].Put(msg.OccurredAtUtcTicks>0?new DateTime(msg.OccurredAtUtcTicks,DateTimeKind.Utc).ToString("dd/MM HH:mm"):"");
                     string icon=msg.Category=="recompensas"?"mail-reward":msg.Category=="narrativa"?"mail-narrative":
                         msg.Category=="sistema"?"mail-system":msg.Type=="battle"?"mail-battle":"mail-march";
                     messageIcons[i].sprite=RoyalGoldV41SourceArt.Get(icon);
@@ -272,9 +301,10 @@ namespace Eldoria.UI.RoyalGold.V2
             var battle=selected.Battle;
             detail.Put(selected.Title+"\n"+selected.Subtitle+
                 (battle==null?"":"\n\n"+(battle.Won?"VICTORIA":"DERROTA")+
-                "\nHéroe: "+battle.HeroId+" · Tropas: "+battle.Troops+
+                "\nHéroe: "+HeroName(battle.HeroId)+" · Tropas: "+battle.Troops+
                 "\nRondas: "+battle.Rounds+" · Poder: "+battle.PlayerPower+
                 "\nVida restante: "+battle.RemainingHealth+
+                "\nBotín: "+battle.RewardWood+" madera · "+battle.RewardStone+" piedra · "+battle.RewardFood+" comida"+
                 "\n\n"+battle.Reason)+
                 (string.IsNullOrEmpty(selected.RewardReceiptId)?"":"\n\nRecompensa registrada."));
         }

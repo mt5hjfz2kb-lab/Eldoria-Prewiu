@@ -12,6 +12,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using Object=UnityEngine.Object;
 
 namespace Eldoria.Editor
@@ -100,16 +101,36 @@ namespace Eldoria.Editor
             Need(host.City.Gateway.Snapshot().PendingRecruitArchers>0,"Actual training reserves recruits");
             screen.Open(RoyalGoldV3ManagementScreens.Destination.March);yield return null;
             Need(!screen.VisibleRoot.GetComponentsInChildren<Text>().Any(t=>t.text=="APOYO · SIR ALDRIC"),"Empty saved slots never display invented Aldric companions");
+            var controls=screen.VisibleRoot.GetComponentsInChildren<Button>();
+            controls.First(b=>b.name=="Hero slot 1").onClick.Invoke();
+            controls.First(b=>b.name=="Edit march by percent").onClick.Invoke();
+            screen.VisibleRoot.GetComponentInChildren<Slider>().value=50;
+            Need(screen.SelectedQuantity==60,"Real percent slider keeps 120 troops and assigns 50 percent to T1");
             Shot(host,"march-reference-ratio",941,1672);Shot(host,"march-landscape",1600,900);
             Need(screen.VisibleAction.interactable,"Actual march composer actionable");
             screen.VisibleAction.onClick.Invoke();
-            Need(host.City.Gateway.Snapshot().MarchConfigured,"Composition persisted by real gateway");
+            var composed=host.City.Gateway.Snapshot();
+            Need(composed.MarchConfigured&&composed.PreparedTroops.ArcherT1==60&&composed.PreparedTroops.ArcherT2==60,
+                "Mixed-tier percentage composition persisted by real gateway");
+            Need(composed.PreparedHeroIds[0]=="aldric"&&composed.PreparedHeroIds[1]=="lyra"&&string.IsNullOrEmpty(composed.PreparedHeroIds[2]),
+                "Actual support selection persists only recruited heroes");
             screen.Close();yield return null;
             var gateway=host.City.Gateway;var snap=gateway.Snapshot();
             Need(gateway.Execute(new Eldoria.Application.GameCommand("v41-native-battle",snap.PlayerId,"Fight","corrupt-scout",snap.Revision)).Ok,"Real battle departure");
             ((ValoriaReferenceCleanGameplay.TestClock)host.City.Clock).Step(30);gateway.Advance();yield return null;
             Need(gateway.Snapshot().Mailbox.List("informes").Count==1,"Real result creates one report");
-            var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();mailbox.Open();yield return null;
+            var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();mailbox.Refresh();yield return null;
+            Need(mailbox.EntryButton&&mailbox.EntryButton.gameObject.activeInHierarchy,"Mailbox shortcut is visible in the actual HUD");
+            Need(EventSystem.current!=null,"Canonical EventSystem handles pointer input");
+            var entry=(RectTransform)mailbox.EntryButton.transform;
+            var canvas=host.Hud.GetComponent<Canvas>();
+            var point=RectTransformUtility.WorldToScreenPoint(canvas.renderMode==RenderMode.ScreenSpaceOverlay?null:canvas.worldCamera,entry.TransformPoint(entry.rect.center));
+            var hits=new System.Collections.Generic.List<RaycastResult>();
+            EventSystem.current.RaycastAll(new PointerEventData(EventSystem.current){position=point},hits);
+            Need(hits.Count>0&&hits[0].gameObject.GetComponentInParent<Button>()==mailbox.EntryButton,"Mailbox entry receives the top actual pointer raycast");
+            Shot(host,"mailbox-entry-city",900,1600);
+            mailbox.EntryButton.onClick.Invoke();yield return null;
+            Need(mailbox.IsOpen,"Actual HUD shortcut opens mailbox");
             Shot(host,"mailbox-reference-ratio",1169,1345);Shot(host,"mailbox-phone",900,1600);Shot(host,"mailbox-landscape",1600,900);
             var row=host.Hud.GetComponentsInChildren<Button>().First(x=>x.name=="Buzón / mensaje 0");row.onClick.Invoke();yield return null;
             Need(gateway.Snapshot().Mailbox.Unread("informes")==0,"Opening actual message marks it read");

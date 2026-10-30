@@ -399,7 +399,7 @@ namespace Eldoria.UI.RoyalGold.V2
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer");
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
             approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
-            approvedTroopRow.preserveAspect=true;
+            approvedTroopRow.preserveAspect=true;approvedTroopRow.rectTransform.SetAsLastSibling();
             for(int i=0;i<3;i++)
             {
                 approvedHeroes[i]=RoyalGoldV41SourceArt.Surface((RectTransform)heroSlotButtons[i].transform,"aldric-face");
@@ -424,12 +424,17 @@ namespace Eldoria.UI.RoyalGold.V2
             if(slot==2)return; // A third combat hero has not been unlocked in the current story.
             if(slot==0)
             {
-                heroSlots[0]=hasLyra&&heroSlots[0]=="aldric"?"lyra":"aldric";
+                string candidate=hasLyra&&heroSlots[0]=="aldric"?"lyra":"aldric";
+                if(!MarchCapacityRules.HeroAvailable(s,candidate)){notice="El héroe está en otra marcha.";Refresh();return;}
+                heroSlots[0]=candidate;
                 if(heroSlots[1]==heroSlots[0])heroSlots[1]=null;
             }
             else if(hasLyra)
-                heroSlots[1]=string.IsNullOrEmpty(heroSlots[1])?
-                    (heroSlots[0]=="aldric"?"lyra":"aldric"):null;
+            {
+                string candidate=string.IsNullOrEmpty(heroSlots[1])?(heroSlots[0]=="aldric"?"lyra":"aldric"):null;
+                if(!MarchCapacityRules.HeroAvailable(s,candidate)){notice="El héroe está en otra marcha.";Refresh();return;}
+                heroSlots[1]=candidate;
+            }
             selectedHero=!string.IsNullOrEmpty(heroSlots[1])?"aldric+lyra":heroSlots[0];
             Refresh();
         }
@@ -603,6 +608,7 @@ namespace Eldoria.UI.RoyalGold.V2
                     "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
                 bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && troops.Total>0 &&
                     MarchCapacityRules.Fits(troops,s.Available,capacity);
+                foreach(var hero in heroSlots)if(!MarchCapacityRules.HeroAvailable(s,hero))allowed=false;
                 actionLabel.Put(allowed?"CONFIRMAR COMPOSICIÓN":"MARCHA NO DISPONIBLE");
                 action.interactable=allowed && Time.unscaledTime>=submitAfter;
             }
@@ -789,7 +795,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 for(int i=0;i<3;i++)
                 {
                     Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
-                    Place(approvedHeroes[i].rectTransform,4,4,cardW-8,cardsH*.72f);
+                    float portraitH=cardsH*.72f;
+                    float ratio=heroSlots[i]=="aldric"?138f/234f:244f/250f;
+                    float portraitW=Mathf.Min(cardW-8,portraitH*ratio);
+                    Place(approvedHeroes[i].rectTransform,(cardW-portraitW)*.5f,4,portraitW,portraitH);
                     Place(heroSlotLabels[i].rectTransform,4,cardsH*.74f,cardW-8,cardsH*.24f);
                     heroSlotLabels[i].fontSize=wide?14:13;
                 }
