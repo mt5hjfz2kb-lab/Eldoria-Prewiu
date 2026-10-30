@@ -2475,7 +2475,8 @@
         "tools/bastion-iv-v/DomainProbe.csproj",
         "tools/early-retention/Smoke.csproj",
         "tools/march-capacity/Smoke.csproj",
-        "tools/ui-v3-domain-smoke/Smoke.csproj"
+        "tools/ui-v3-domain-smoke/Smoke.csproj",
+        ".github/workflows/ui-v3-domain-smoke.yml"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
