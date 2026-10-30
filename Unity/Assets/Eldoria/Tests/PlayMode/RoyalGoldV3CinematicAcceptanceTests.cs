@@ -132,8 +132,11 @@ namespace Eldoria.Tests
                 "Dialogue 1 must be sepia ink on paper, not white on navy");
             Assert.That(frame.anchorMin.y, Is.EqualTo(0f).Within(.001f),
                 "Cinematic dialogue must sit below the city, not in the centre");
-            Assert.That(frame.rect.height, Is.LessThanOrEqualTo(440f),
-                "Dialogue must leave most of the city visible");
+            Assert.That(frame.rect.height, Is.LessThanOrEqualTo(600f),
+                "Dialogue must use a bounded cinematic strip rather than cover the world");
+            Assert.That(body.preferredHeight, Is.LessThanOrEqualTo(
+                body.rectTransform.rect.height + 12f),
+                "The complete canonical text must fit; do not crop long narrative turns");
 
             var portrait = frame.Find("Canonical Aldric portrait") as RectTransform;
             Assert.That(portrait, Is.Not.Null);
