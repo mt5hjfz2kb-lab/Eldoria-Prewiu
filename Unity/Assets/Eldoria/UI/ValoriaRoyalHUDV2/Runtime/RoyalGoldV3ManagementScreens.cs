@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Eldoria.Application;
 using Eldoria.Domain;
 using Eldoria.UI.RoyalGold;
@@ -38,6 +39,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public Func<bool> CanOpenHeroes { get; set; }
         RoyalButton heroesButton;
         RectTransform root, layoutRoot, header, left, right, footer, quantityRow;
+        bool compactLandscape;
+        struct TextDensity { public int Font; public Vector2 Size; public Vector3 Scale; }
+        readonly Dictionary<RoyalText,TextDensity> textDensity=new Dictionary<RoyalText,TextDensity>();
         RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork, statusArtwork;
         RoyalGoldV3LayeredFinish militaryDepth;
         RectTransform trainingProgress;
@@ -599,7 +603,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 int seconds=SliceRules.RecruitSecondsFor(selectedCount);
                 long leftSeconds=busy?Math.Max(0,(long)Math.Ceiling(
                     (s.RecruitmentCompletesUtcTicks-utcTicks())/(double)TimeSpan.TicksPerSecond)):0;
-                summary.Put("COSTE DEL ENTRENAMIENTO\n\nMadera   "+wood+
+                summary.Put(compactLandscape?
+                    "COSTE DEL ENTRENAMIENTO\nMadera "+wood+" · Piedra "+stone+"\nTIEMPO TOTAL  "+Clock(seconds):
+                    "COSTE DEL ENTRENAMIENTO\n\nMadera   "+wood+
                     "\nPiedra   "+stone+"\n\nTIEMPO TOTAL\n"+Clock(seconds));
                 trainingProgress.gameObject.SetActive(busy);
                 if(busy)
@@ -609,7 +615,10 @@ namespace Eldoria.UI.RoyalGold.V2
                     trainingProgressFill.sizeDelta=new Vector2(
                         trainingProgress.rect.width*elapsed,0f);
                 }
-                status.Put("DISPONIBLES T"+selectedTier+"  "+selectedAvailable+
+                status.Put(compactLandscape?
+                    "DISPONIBLES T"+selectedTier+"  "+selectedAvailable+" · ENTRENANDO "+s.PendingRecruitArchers+
+                    (busy?"\nCUENTA ATRÁS  "+Clock(leftSeconds):"\nSin entrenamiento activo"):
+                    "DISPONIBLES T"+selectedTier+"  "+selectedAvailable+
                     "\nENTRENANDO T"+(busy?s.PendingRecruitTier:selectedTier)+"  "+s.PendingRecruitArchers+
                     (busy?"\n\nCUENTA ATRÁS  "+Clock(leftSeconds):"\n\nSin entrenamiento activo"));
                 actionLabel.Put(busy?((s.SpeedupFiveMinutes>0||s.SpeedupOneMinute>0)?"ACELERAR · "+minutes+" MIN ("+(minutes==5?s.SpeedupFiveMinutes:s.SpeedupOneMinute)+")":
@@ -693,6 +702,14 @@ namespace Eldoria.UI.RoyalGold.V2
         void Reflow()
         {
             if(root==null)return;
+            foreach(var item in textDensity)
+            {
+                if(!item.Key)continue;
+                item.Key.fontSize=item.Value.Font;
+                item.Key.rectTransform.sizeDelta=item.Value.Size;
+                item.Key.rectTransform.localScale=item.Value.Scale;
+            }
+            textDensity.Clear();
             lastWidth=root.rect.width;lastHeight=root.rect.height;
             float w=lastWidth,h=lastHeight;
             if(w<1||h<1)return;
@@ -700,7 +717,9 @@ namespace Eldoria.UI.RoyalGold.V2
             // Production RoyalScaler matches height; native portrait probes
             // historically matched width. Normalize only this room so both
             // use the same 800-unit design and real physical text sizes.
-            float roomScale=landscape?1f:Mathf.Min(1f,w/800f);
+            compactLandscape=landscape&&w/h>=1.5f&&
+                h*(Hud.GetComponentInParent<Canvas>()?.scaleFactor??1f)<650f;
+            float roomScale=landscape?(compactLandscape?h/600f:1f):Mathf.Min(1f,w/800f);
             w/=roomScale;h/=roomScale;
             layoutRoot.anchorMin=layoutRoot.anchorMax=layoutRoot.pivot=new Vector2(.5f,.5f);
             layoutRoot.anchoredPosition=Vector2.zero;
@@ -811,6 +830,11 @@ namespace Eldoria.UI.RoyalGold.V2
                 switchLabel.fontSize=14;
                 chapterActionLabel.fontSize=14;
             }
+            if(compactLandscape)
+            {
+                Place(switchDestination.transform as RectTransform,hw*.71f,4,hw*.27f,34);
+                Place(chapterAction.transform as RectTransform,hw*.71f,42,hw*.27f,34);
+            }
             ReflowApprovedSurfaces(leftSide,top,usable,bodyY,bodyH,gap,landscape);
             if(!landscape)
             {
@@ -819,6 +843,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 foreach(var label in root.GetComponentsInChildren<RoyalText>(true))
                     label.fontSize=Mathf.Max(26,label.fontSize);
                 Place(feedback.rectTransform,14,4,fw-28,44);
+            }
+            if(compactLandscape)
+            {
+                foreach(var label in layoutRoot.GetComponentsInChildren<RoyalText>(true))
+                {
+                    label.fontSize=Mathf.Max(20,label.fontSize);
+                    var r=label.rectTransform;
+                    textDensity[label]=new TextDensity{Font=label.fontSize,Size=r.sizeDelta,Scale=r.localScale};
+                    var size=r.rect.size;
+                    label.fontSize=Mathf.CeilToInt(label.fontSize*roomScale);
+                    r.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal,size.x*roomScale);
+                    r.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,size.y*roomScale);
+                    r.localScale/=roomScale;
+                }
             }
 
         }
@@ -874,6 +912,14 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(trainingProgress,14,height*.79f,rw-28,8);
                 summary.fontSize=wide?18:16;status.fontSize=wide?14:13;
                 unitDetail.fontSize=wide?17:15;
+                if(compactLandscape)
+                {
+                    Place(summary.rectTransform,14,height*.33f,rw-28,height*.23f);
+                    Place(quantityRow,14,height*.60f,rw-28,68);
+                    Place(slider.transform as RectTransform,20,height*.60f+74,rw-40,12);
+                    Place(status.rectTransform,14,height*.84f,rw-28,height*.16f-4);
+                    Place(trainingProgress,14,height-9,rw-28,5);
+                }
                 }
             }
             else
@@ -884,15 +930,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(right,wide?x+lw+gap:x,wide?y:y+lh+gap,
                     wide?width-lw-gap:width,wide?height:height-lh-gap);
                 Place(unitTitle.rectTransform,14,8,lw-28,wide?30:50);
-                float cardsY=wide?43:65,cardsH=Mathf.Max(60,lh*(wide?.48f:.42f)),cardW=(lw-40)/3f;
+                float cardsY=wide?43:65,cardsH=Mathf.Max(60,lh*(compactLandscape?.36f:wide?.48f:.42f)),cardW=(lw-40)/3f;
                 for(int i=0;i<3;i++)
                 {
                     Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
-                    float portraitH=cardsH*(wide?.72f:.70f);
+                    float portraitH=compactLandscape?Mathf.Max(40,cardsH-66):cardsH*(wide?.72f:.70f);
                     float ratio=heroSlots[i]=="aldric"?138f/234f:244f/250f;
                     float portraitW=Mathf.Min(cardW-8,portraitH*ratio);
                     Place(approvedHeroes[i].rectTransform,(cardW-portraitW)*.5f,4,portraitW,portraitH);
-                    Place(heroSlotLabels[i].rectTransform,4,cardsH*(wide?.74f:.72f),cardW-8,cardsH*(wide?.24f:.26f));
+                    Place(heroSlotLabels[i].rectTransform,4,compactLandscape?cardsH-60:cardsH*(wide?.74f:.72f),cardW-8,compactLandscape?54:cardsH*(wide?.24f:.26f));
                     heroSlotLabels[i].fontSize=wide?14:13;
                 }
                 float rowY=cardsY+cardsH+8;
@@ -907,10 +953,18 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(status.rectTransform,14,rh*.60f,rw-28,rh*.38f);
                 summary.fontSize=wide?18:16;status.fontSize=wide?14:13;
                 unitDetail.fontSize=14;
+                if(compactLandscape)
+                {
+                    Place(unitDetail.rectTransform,lw*.34f,rowY,lw*.63f,52);
+                    Place(tierButton.transform as RectTransform,lw*.34f,rowY+56,lw*.63f,34);
+                    Place(percentModeButton.transform as RectTransform,lw*.34f,rowY+96,lw*.20f,68);
+                    Place(quantityRow,lw*.57f,rowY+96,lw*.40f,68);
+                    Place(slider.transform as RectTransform,lw*.34f,rowY+174,lw*.63f,10);
+                }
             }
             // Quantity buttons remain genuine controls within their moved container.
             float qw=quantityRow.rect.width;
-            float control=wide?36:88,controlHeight=wide?38:88;
+            float control=compactLandscape?68:wide?36:88,controlHeight=compactLandscape?68:wide?38:88;
             Place(minus.transform as RectTransform,0,0,control,controlHeight);
             Place(plus.transform as RectTransform,qw-control,0,control,controlHeight);
             Place(selectedText.rectTransform,control+2,0,qw-2*(control+2),controlHeight);

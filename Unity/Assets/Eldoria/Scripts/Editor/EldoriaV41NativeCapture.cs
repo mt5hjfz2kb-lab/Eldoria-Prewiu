@@ -103,12 +103,12 @@ namespace Eldoria.Editor
                 Need(!Bounds((RectTransform)button.transform).Overlaps(Bounds(title.rectTransform))&&
                      !Bounds((RectTransform)button.transform).Overlaps(Bounds(subtitle.rectTransform)),
                      "Header navigation does not cover title or subtitle "+button.name+" "+shot);
-            if(screen.VisibleRoot.rect.height>screen.VisibleRoot.rect.width)
+            if(screen.VisibleRoot.rect.height>screen.VisibleRoot.rect.width||shot.Contains("small-phone"))
                 foreach(var label in labels.Where(t=>!string.IsNullOrWhiteSpace(t.text)))
                 {
                     var canvas=screen.GetComponentInParent<Canvas>();
                     float physicalScale=canvas.scaleFactor;
-                    for(var parent=label.transform.parent;parent&&parent!=canvas.transform;parent=parent.parent)
+                    for(var parent=label.transform;parent&&parent!=canvas.transform;parent=parent.parent)
                         physicalScale*=Mathf.Abs(parent.localScale.x);
                     Need(label.fontSize*physicalScale>=12,
                         "Small-phone text is at least twelve actual pixels "+label.name);
@@ -140,7 +140,7 @@ namespace Eldoria.Editor
             var screen=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
             screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);yield return null;
             Shot(host,"training-reference-ratio",554,542);
-            Shot(host,"training-phone",900,1600);Shot(host,"training-small-phone",390,844);Shot(host,"training-landscape",1600,900);
+            Shot(host,"training-phone",900,1600);Shot(host,"training-small-phone",390,844);Shot(host,"training-small-phone-landscape",844,390);Shot(host,"training-landscape",1600,900);
             Need(screen.VisibleAction.interactable,"Training command is actionable");
             screen.VisibleAction.onClick.Invoke();
             Need(host.City.Gateway.Snapshot().PendingRecruitArchers>0,"Actual training reserves recruits");
@@ -151,7 +151,7 @@ namespace Eldoria.Editor
             controls.First(b=>b.name=="Edit march by percent").onClick.Invoke();
             screen.VisibleRoot.GetComponentInChildren<Slider>().value=50;
             Need(screen.SelectedQuantity==60,"Real percent slider keeps 120 troops and assigns 50 percent to T1");
-            Shot(host,"march-reference-ratio",941,1672);Shot(host,"march-landscape",1600,900);Shot(host,"march-small-phone",390,844);
+            Shot(host,"march-reference-ratio",941,1672);Shot(host,"march-landscape",1600,900);Shot(host,"march-small-phone",390,844);Shot(host,"march-small-phone-landscape",844,390);
             Need(screen.VisibleAction.interactable,"Actual march composer actionable");
             screen.VisibleAction.onClick.Invoke();
             var composed=host.City.Gateway.Snapshot();
