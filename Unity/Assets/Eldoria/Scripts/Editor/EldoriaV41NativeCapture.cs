@@ -171,9 +171,20 @@ namespace Eldoria.Editor
             screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);yield return null;
             Shot(host,"training-reference-ratio",554,542);
             Shot(host,"training-phone",900,1600);Shot(host,"training-small-phone",390,844);Shot(host,"training-small-phone-landscape",844,390);Shot(host,"training-landscape",1600,900);
+            var tierChoices=screen.VisibleRoot.GetComponentsInChildren<Button>()
+                .Where(b=>b.name.StartsWith("Training unit card T")).ToArray();
+            Need(tierChoices.Length==2,"Training roster exposes only the two real archer tiers");
+            string beforeTierChoice=JsonUtility.ToJson(host.City.Gateway.Snapshot());
+            tierChoices.First(b=>b.name=="Training unit card T2").onClick.Invoke();
+            Need(screen.SelectedTier==2,"Real T2 card selects its authoritative training tier");
+            tierChoices.First(b=>b.name=="Training unit card T1").onClick.Invoke();
+            Need(screen.SelectedTier==1,"Real T1 card restores its authoritative training tier");
+            Need(beforeTierChoice==JsonUtility.ToJson(host.City.Gateway.Snapshot()),
+                "Browsing training tiers does not spend resources or mutate the save");
             Need(screen.VisibleAction.interactable,"Training command is actionable");
             screen.VisibleAction.onClick.Invoke();
             Need(host.City.Gateway.Snapshot().PendingRecruitArchers>0,"Actual training reserves recruits");
+            Need(tierChoices.All(b=>!b.interactable),"Pending training locks both real tier cards");
             screen.Open(RoyalGoldV3ManagementScreens.Destination.March);yield return null;
             Need(!screen.VisibleRoot.GetComponentsInChildren<Text>().Any(t=>t.text=="APOYO · SIR ALDRIC"),"Empty saved slots never display invented Aldric companions");
             var controls=screen.VisibleRoot.GetComponentsInChildren<Button>();

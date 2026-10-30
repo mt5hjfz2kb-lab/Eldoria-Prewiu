@@ -41,6 +41,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public Action HeroesRequested { get; set; }
         public Func<bool> CanOpenHeroes { get; set; }
         RoyalButton heroesButton;
+        readonly RoyalButton[] trainingTierChoices=new RoyalButton[2];
+        readonly RoyalText[] trainingTierLabels=new RoyalText[2];
+        readonly Image[] trainingTierPortraits=new Image[2];
         RectTransform root, layoutRoot, header, left, right, footer, quantityRow;
         bool compactLandscape;
         struct TextDensity { public int Font; public Vector2 Size; public Vector3 Scale; }
@@ -361,6 +364,19 @@ namespace Eldoria.UI.RoyalGold.V2
             unitTitle = Text("Unit or hero title",left,26,Ivory,true);
             tierButton=Button("Select archer tier",left,"ARQUEROS T1",()=>{if(CurrentDestination==Destination.Training&&gateway.Snapshot().RecruitmentCompletesUtcTicks>0)speedMinutes=speedMinutes==1?5:1;else selectedTier=selectedTier==1?2:1;Refresh();},false,out tierLabel);
             unitDetail = Text("Unit profile and composition",left,18,Muted);
+            for(int i=0;i<2;i++)
+            {
+                int tier=i+1;
+                trainingTierChoices[i]=Button("Training unit card T"+tier,left,"T"+tier,()=>{
+                    var state=gateway.Snapshot();
+                    if(CurrentDestination!=Destination.Training||state.RecruitmentCompletesUtcTicks>0||
+                        (tier==2&&state.BarracksLevel<4))return;
+                    selectedTier=tier;Refresh();
+                },false,out trainingTierLabels[i]);
+                trainingTierPortraits[i]=RoyalGoldV41SourceArt.Surface(
+                    (RectTransform)trainingTierChoices[i].transform,"archer-row");
+                trainingTierPortraits[i].preserveAspect=true;
+            }
             quantityRow = Rect("Quantity controls",left);
             minus = Button("Reduce quantity",quantityRow,"−",()=>SetQuantity(CurrentDestination==Destination.March&&percentMode?CurrentDisplayedPercent-1:selectedCount-1),false,out _);
             plus = Button("Increase quantity",quantityRow,"+",()=>SetQuantity(CurrentDestination==Destination.March&&percentMode?CurrentDisplayedPercent+1:selectedCount+1),false,out _);
@@ -539,6 +555,14 @@ namespace Eldoria.UI.RoyalGold.V2
             approvedArcher.gameObject.SetActive(training);
             bool trainingActive=training && s.RecruitmentCompletesUtcTicks>0;
             bool tier2Unlocked=s.BarracksLevel>=4 && (training || s.Available.ArcherT2>0);
+            for(int i=0;i<2;i++)
+            {
+                trainingTierChoices[i].gameObject.SetActive(training);
+                bool unlocked=i==0||s.BarracksLevel>=4;
+                trainingTierChoices[i].interactable=training&&!trainingActive&&unlocked;
+                trainingTierPortraits[i].color=unlocked?Color.white:new Color(.45f,.45f,.45f,.75f);
+                trainingTierLabels[i].color=selectedTier==i+1?Gold:Muted;
+            }
             if(!tier2Unlocked && selectedTier==2)selectedTier=1;
             if(trainingActive)selectedTier=s.PendingRecruitTier==2?2:1;
             int minutes=SpeedMinutes(s);
@@ -932,7 +956,15 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(left,x,bodyY,wide?width*.54f:width,artH);
             float archerH=Mathf.Min(artH, (wide?width*.51f:width*.65f)*1.5f);
             float archerW=archerH/1.5f;
-            Place(approvedArcher.rectTransform,0,artH-archerH,archerW,archerH);
+            Place(approvedArcher.rectTransform,width*.10f,artH-archerH,archerW,archerH);
+            float rosterW=Mathf.Clamp(width*.14f,110f,150f);
+            float rosterH=wide?Mathf.Min(150f,artH*.29f):160f;
+            for(int i=0;i<2;i++)
+            {
+                Place((RectTransform)trainingTierChoices[i].transform,8,artH*.18f+i*(rosterH+12),rosterW,rosterH);
+                Place(trainingTierPortraits[i].rectTransform,6,6,rosterW-12,rosterH-48);
+                Place(trainingTierLabels[i].rectTransform,6,rosterH-40,rosterW-12,34);
+            }
             unitTitle.rectTransform.SetParent(left,false);
             unitDetail.rectTransform.SetParent(left,false);
             bool stackedIdentity=wide&&!compactLandscape;
