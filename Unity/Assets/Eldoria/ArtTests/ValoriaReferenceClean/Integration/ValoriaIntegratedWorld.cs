@@ -76,6 +76,9 @@ namespace Eldoria.ReferenceClean {
    if(!context)context=Hud.gameObject.AddComponent<RoyalGoldV3ContextHud>();
    context.Source=Hud;
    context.FindAnchor=id=>{
+     // Barracks upgrading is an action against the existing Barracks model,
+     // never a separate full-screen or an imaginary world target.
+     if(id=="upgrade-barracks")id="barracks";
     // Recruitment belongs visually to the built barracks, not the logical
     // parcel hotspot, which can lie outside the portrait camera frame.
     // Selection/raycast/authoritative gameplay still use FindTarget unchanged.
