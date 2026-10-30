@@ -2477,7 +2477,8 @@
         "tools/march-capacity/Smoke.csproj",
         "tools/ui-v3-domain-smoke/Smoke.csproj",
         ".github/workflows/ui-v3-domain-smoke.yml",
-        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41*.cs"
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV41*.cs",
+        "Unity/Assets/Eldoria/Tests/EditMode/EldoriaV41*"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
