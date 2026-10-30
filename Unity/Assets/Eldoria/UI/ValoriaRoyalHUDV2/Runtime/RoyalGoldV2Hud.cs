@@ -502,7 +502,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // This cartouche owns the sole canonical purchase control.
             float cardWidth = Mathf.Min(width - (portrait ? 18f : 32f),
                 portrait ? 720f : 1300f);
-            float cardHeight = portrait ? 178f : 164f;
+            float cardHeight = portrait ? 210f : 178f;
             var nav = Source.Navigation ? Source.Navigation.transform as RectTransform : null;
             float navTop = nav ? nav.anchoredPosition.y + nav.rect.height : 114f;
             float sheetBottom = Mathf.Max(8f, navTop + 8f);
@@ -522,8 +522,8 @@ namespace Eldoria.UI.RoyalGold.V2
             buildingTitle.fontSize = portrait ? 22 : 30;
             Top(buildingLevel.rectTransform, textLeft, 44f, middleWidth, 22f);
             Top((RectTransform)buildingClose.transform, cardWidth - 49f, 5f, 44f, 44f);
-            Top((RectTransform)buildingScroll.transform, textLeft, 71f,
-                middleWidth, portrait ? 50f : cardHeight - 79f);
+            Top((RectTransform)buildingScroll.transform, textLeft, 66f,
+                middleWidth, portrait ? cardHeight - 123f : cardHeight - 74f);
             Stretch(scrollViewport, 0);
             scrollContent.anchorMin = new Vector2(0, 1);
             scrollContent.anchorMax = new Vector2(1, 1);
@@ -540,6 +540,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Top((RectTransform)buildingAction.transform,
                     cardWidth - actionWidth - 12f, cardHeight - 66f,
                     actionWidth, 51f);
+            lastDetails = null; // Recompute scroll extent after rotation even when the offer text is unchanged.
             hasGeometry = true;
             lastWidth = width;
             lastHeight = height;
@@ -646,7 +647,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var body = new StringBuilder(280);
             // Put purchase information before descriptive prose so the
             // compact viewport exposes the cost before the player commits.
-            Append(body, Safe(source.Costs));
+            Append(body, Safe(source.Costs).Replace("Coste de la acción\n", "Coste · "));
             Append(body, Safe(source.Requirements));
             Append(body, Safe(source.Time));
             Append(body, Safe(source.Status));
@@ -690,7 +691,7 @@ namespace Eldoria.UI.RoyalGold.V2
         private static void Append(StringBuilder buffer, string value)
         {
             if (string.IsNullOrWhiteSpace(value)) return;
-            if (buffer.Length > 0) buffer.Append("\n\n");
+            if (buffer.Length > 0) buffer.Append("\n");
             buffer.Append(value.Trim());
         }
 

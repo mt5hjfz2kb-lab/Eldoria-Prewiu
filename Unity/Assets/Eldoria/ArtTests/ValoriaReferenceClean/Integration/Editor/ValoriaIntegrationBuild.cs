@@ -581,14 +581,18 @@ namespace Eldoria.ReferenceClean.Editor {
    h.Select(id);yield return new WaitForSecondsRealtime(.25f);
    yield return ReadJourneyNarrative(h);
    if(Failed())yield break;
+   long revision=h.City.Gateway.Snapshot().Revision;
    Check(()=>{
     var offer=h.Read(id,false).Building;
     Need(offer!=null&&offer.Action!=null&&offer.Action.Kind==kind&&offer.Action.Enabled,
      "Continuous actual offer missing: "+id+" / "+kind);
-    long revision=h.City.Gateway.Snapshot().Revision;
     Click(h.Hud.Building.Primary.Button);
-    Need(h.City.Gateway.Snapshot().Revision>revision,"Real button did not submit "+kind+" "+id);
    },"continuous native command "+kind+" "+id);
+   if(Failed())yield break;
+   // ContactLyra commits only after the player finishes its real dialogue.
+   yield return ReadJourneyNarrative(h);
+   Check(()=>Need(h.City.Gateway.Snapshot().Revision>revision,
+    "Real button and narrative did not submit "+kind+" "+id),"continuous command committed "+kind+" "+id);
    if(Failed())yield break;
    yield return FinishJourneyActivity(h);
   }
