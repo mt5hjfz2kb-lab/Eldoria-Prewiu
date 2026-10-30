@@ -19,6 +19,7 @@ namespace Eldoria.HeroesUI
         public enum Page { Salon, Resumen, Habilidades, Talentos, Equipamiento }
         public Func<HeroState[]> ReadHeroes;
         public Func<string, bool> CanOpenHero;
+        public Func<bool> CanOpenDestination;
         public Func<string, GameObject> ReadModelRoot;
         public Action<string> HeroViewed;
         public Action Closed;
@@ -53,6 +54,7 @@ namespace Eldoria.HeroesUI
         public void Open()
         {
             if(!root)throw new InvalidOperationException("Initialize on the canonical HUD first");
+            if(CanOpenDestination!=null&&!CanOpenDestination())return;
             CurrentPage=Page.Salon;CurrentHeroId=null;root.gameObject.SetActive(true);root.SetAsLastSibling();Rebuild();
         }
         public bool OpenHero(string id)

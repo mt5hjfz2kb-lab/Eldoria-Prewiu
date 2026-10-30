@@ -678,14 +678,13 @@ namespace Eldoria.ReferenceClean.Editor {
    Check(()=>Need(h.City.Gateway.Snapshot().BastionLevel==2&&h.City.Gateway.Snapshot().EngendroDefeated,
     "Continuous III-V must start with the actual completed I-II state"),"continuous journey preserves original I-II lineage");
    h.SetWorld(false);h.Select("barracks");yield return new WaitForSecondsRealtime(.3f);
-   Check(()=>Click(GameObject.Find("Open canonical heroes").GetComponent<Button>()),"hero hall before Lyra recruitment");
-   yield return new WaitForSecondsRealtime(.2f);
    Check(()=>{
     var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
-    Need(heroes.IsOpen&&!GameObject.Find("Select hero lyra").GetComponent<Button>().interactable&&!heroes.OpenHero("lyra"),"Hero screen prematurely unlocked Lyra");
-    Click(GameObject.Find("Close heroes").GetComponent<Button>());
+    Need(!GameObject.Find("Open canonical heroes").GetComponent<Button>().interactable,"Hero hall prematurely enabled before Lyra recruitment");
+    heroes.Open();
+    Need(!heroes.IsOpen&&!heroes.OpenHero("lyra"),"Hero destination bypassed Bastion III narrative lock");
     h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();
-   },"hero hall enforces actual locked Lyra in Bastion II");
+   },"hero hall unlock waits for actual Lyra recruitment in Bastion III");
    if(Failed())yield break;
    yield return JourneyLevel(h,3,650,500);if(Failed())yield break;
    yield return JourneyFunds(h,240,180);if(Failed())yield break;

@@ -154,6 +154,8 @@ namespace Eldoria.ReferenceClean {
    if(!heroes)heroes=Hud.gameObject.AddComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
    var safe=Hud.GetComponentInChildren<RoyalHudLayout>(true).transform as RectTransform;
    heroes.Initialize(safe,ReadCanonicalHeroes);
+   heroes.CanOpenDestination=()=>boundGateway.Snapshot().ChapterThree.LyraRecruited;
+   management.CanOpenHeroes=heroes.CanOpenDestination;
    heroes.CanOpenHero=id=>id=="aldric"||id=="lyra"&&boundGateway.Snapshot().ChapterThree.LyraRecruited;
    heroes.ReadModelRoot=id=>{
     if(id!="aldric")return null;
@@ -180,7 +182,7 @@ namespace Eldoria.ReferenceClean {
     Capacity=MarchCapacityRules.Capacity(state,id),Health=stats.Health,Attack=stats.Attack,
     Defense=stats.Defense,Break=stats.Break,HeroPower=stats.Power,
     Portrait=lyra?null:RoyalGoldV41SourceArt.Get("aldric-face"),
-    AbilityName=lyra?"Apoyo de exploradora":"Defensa del guardián",
+    AbilityName=lyra?"Disparo de Ruptura":"Baluarte",
     AbilityDescription=(lyra?"Lyra aporta sus atributos a la expedición y mejora un 3 % el ataque de sus tropas.":
      "Aldric aporta sus atributos de defensa, vida, ataque y ruptura a la expedición.")+
      "\n\nEl combate se resuelve automáticamente; prepara héroes y tropas antes de partir."+
