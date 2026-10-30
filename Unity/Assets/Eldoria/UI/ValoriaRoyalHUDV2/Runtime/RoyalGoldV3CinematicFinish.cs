@@ -237,6 +237,10 @@ namespace Eldoria.UI.RoyalGold.V2
                 portraitOrientation ? 440f : 356f);
             bool compactPortrait = portraitOrientation && panelWidth < 580f;
             float column = Mathf.Clamp(panelWidth * .29f, 132f, 360f);
+            float paperColumn = compactPortrait ? 0f : .29f;
+            if (Mathf.Abs(parchment.PortraitColumn-paperColumn)>.001f) {
+                parchment.PortraitColumn=paperColumn;parchment.SetVerticesDirty();
+            }
             // Dialogues rest in the bottom cinematic strip. Unlike V2, they
             // never create a central opaque rectangle covering the whole city.
             frame.anchorMin = frame.anchorMax = new Vector2(.5f, 0f);
@@ -279,7 +283,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
 
             modal.Title.fontSize = panelWidth < 465f ? 23 : 29;
-            modal.Title.color = arcane ? PurplePale : Brown;
+            modal.Title.color = arcane ? PurplePale : new Color(.95f,.89f,.75f);
             modal.Title.fontStyle = FontStyle.Bold;
             modal.Title.alignment = TextAnchor.MiddleLeft;
             Top(modal.Title.rectTransform, left, titleTop, textWidth, 48f);

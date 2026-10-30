@@ -4,8 +4,8 @@ using UnityEngine.UI;
 namespace Eldoria.UI.RoyalGold.V2
 {
     /// <summary>
-    /// Owner-approved Dialogue 1: aged parchment with a midnight-blue portrait
-    /// column. All primitives are uGUI vertex colours: no textures, shaders,
+    /// Dialogue 1 composition: aged parchment beside an unframed portrait.
+    /// The implementation remains subject to comparison with the approved concept. All primitives are uGUI vertex colours: no textures, shaders,
     /// additional Canvas, external assets or new input surface.
     /// Draws BEHIND the retained real narrative buttons/text/portrait.
     /// </summary>
@@ -57,34 +57,24 @@ namespace Eldoria.UI.RoyalGold.V2
             vh.Clear();
             var r = rectTransform.rect;
             if (r.width < 200 || r.height < 135) return;
-            // Deep opaque drop shadow and two thin, antique-gold strokes.
-            Fill(vh, r, new Color(.012f, .012f, .019f, .98f),
-                new Color(.017f, .022f, .035f, .96f));
-            Fill(vh, Inset(r, 2), Arcane ? Violet : GoldLow,
-                Arcane ? new Color(.89f, .74f, 1f, 1f) : GoldHigh);
-            Fill(vh, Inset(r, 4), Midnight, Slate);
-
-            // The left portrait column belongs to the royal-blue livery; only
-            // the actual reading surface is parchment (not an opaque full HUD).
-            Rect inner = Inset(r, 7);
-            float column = Mathf.Clamp(r.width * PortraitColumn, 120f, 270f);
-            Rect left = new Rect(inner.xMin, inner.yMin, column, inner.height);
-            Rect parchment = new Rect(inner.xMin + column + 3f, inner.yMin,
-                Mathf.Max(4f, inner.width - column - 3f), inner.height);
-            Fill(vh, left, new Color(.028f, .052f, .084f, 1f),
-                new Color(.065f, .119f, .182f, 1f));
-            Fill(vh, parchment, Arcane ? RiftLow : PaperLow,
-                Arcane ? RiftHigh : PaperHigh);
-            // Fine rule between portrait and text, and one restrained lower
-            // ink line. These are not overlays that intercept game gestures.
-            Fill(vh, new Rect(left.xMax, inner.yMin, 2.0f, inner.height),
-                Arcane ? Violet : GoldLow, Arcane ? Violet : GoldHigh);
-            Fill(vh, new Rect(parchment.xMin + 14f, parchment.yMin + 10f,
-                Mathf.Max(4f, parchment.width - 28f), 1f),
-                Arcane ? Violet : GoldLow, Arcane ? Violet : GoldLow);
+            // The approved normal dialogue leaves the city visible behind the
+            // portrait. Only the reading surface receives an opaque paper fill.
+            float column = PortraitColumn <= 0f ? 0f : Mathf.Clamp(r.width * PortraitColumn, 132f, 360f);
+            Rect paper = Arcane ? r : new Rect(r.xMin + column, r.yMin, r.width - column, r.height);
+            Fill(vh, paper, new Color(.012f, .012f, .019f, .98f), new Color(.017f, .022f, .035f, .96f));
+            Fill(vh, Inset(paper, 2), Arcane ? Violet : GoldLow, Arcane ? Violet : GoldHigh);
+            Rect inner = Inset(paper, 5);
+            Fill(vh, inner, Arcane ? RiftLow : PaperLow, Arcane ? RiftHigh : PaperHigh);
             var ornament = Arcane ? Violet : GoldHigh;
-            Diamond(vh, new Vector2(inner.xMin + 13f, inner.yMax - 13f), 3.5f, ornament);
+            Fill(vh, new Rect(inner.xMin + 14f, inner.yMin + 10f, Mathf.Max(4f, inner.width - 28f), 1f),
+                Arcane ? Violet : GoldLow, Arcane ? Violet : GoldLow);
             Diamond(vh, new Vector2(inner.xMax - 13f, inner.yMax - 13f), 3.5f, ornament);
+            // Compact royal nameplate, independent of the genuine text control.
+            float titleLeft = r.xMin + Mathf.Clamp(r.width * .29f, 132f, 360f) + 14f;
+            Rect badge = new Rect(titleLeft, r.yMax - 73f, Mathf.Max(50f, r.xMax-titleLeft-15f), 56f);
+            Fill(vh, badge, GoldLow, ornament);
+            Fill(vh, Inset(badge, 2), Midnight, Slate);
+
         }
 
         private static Rect Inset(Rect r, float n)

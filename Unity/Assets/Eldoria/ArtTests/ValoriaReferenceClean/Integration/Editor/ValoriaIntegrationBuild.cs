@@ -660,6 +660,59 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return JourneyAction(h,"stoneworks","Build");if(Failed())yield break;
    Check(()=>Need(h.City.Gateway.Snapshot().ChapterThree.StoneworksLevel==1,
     "V quarry did not complete from continuous save"),"continuous V quarry real construction");
+   // Finish the actual authored V objectives on this same uninterrupted save.
+   foreach(var id in new[]{"sawmill","upgrade-barracks","granary","stoneworks"}){
+    for(int level=id=="stoneworks"?1:2;level<5;level++){
+     yield return JourneyFunds(h,4000,4000);if(Failed())yield break;
+     yield return JourneyAction(h,id,"UpgradeBuilding");if(Failed())yield break;
+    }
+   }
+   foreach(int tier in new[]{1,2}){
+    yield return JourneyFunds(h,1000,600);if(Failed())yield break;
+    h.SetWorld(false);h.Select("barracks");yield return new WaitForSecondsRealtime(.3f);
+    yield return ReadJourneyNarrative(h);
+    Check(()=>{
+     var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+     Need(management&&management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.Training,"V training unavailable");
+     if(management.SelectedTier!=tier)Click(GameObject.Find("Select archer tier").GetComponent<RoyalButton>());
+     GameObject.Find("Quantity slider").GetComponent<UnityEngine.UI.Slider>().value=tier==1?30:20;
+    },"continuous V selects real training tier "+tier);
+    yield return new WaitForSecondsRealtime(.2f);
+    Check(()=>{
+     Click(GameObject.Find("Confirm military command").GetComponent<RoyalButton>());
+     Need(h.City.Gateway.Snapshot().RecruitmentCompletesUtcTicks>0,"V training command rejected");
+    },"continuous V training real purchase "+tier);
+    if(Failed())yield break;
+    yield return FinishJourneyActivity(h);
+    h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();
+   }
+   h.Select("march-main");yield return new WaitForSecondsRealtime(.3f);
+   Check(()=>{
+    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+    Need(management&&management.IsOpen&&management.CurrentDestination==RoyalGoldV3ManagementScreens.Destination.March,"V preparation unavailable");
+    // The second real hero slot adds the now narratively recruited Lyra.
+    Click(GameObject.Find("Hero slot 1").GetComponent<RoyalButton>());
+    if(management.SelectedTier!=1)Click(GameObject.Find("Select archer tier").GetComponent<RoyalButton>());
+    GameObject.Find("Quantity slider").GetComponent<UnityEngine.UI.Slider>().value=20;
+    Click(GameObject.Find("Select archer tier").GetComponent<RoyalButton>());
+    GameObject.Find("Quantity slider").GetComponent<UnityEngine.UI.Slider>().value=20;
+   },"continuous V actual two-hero mixed-tier preparation");
+   yield return new WaitForSecondsRealtime(.2f);
+   Check(()=>{
+    Click(GameObject.Find("Confirm military command").GetComponent<RoyalButton>());
+    var state=h.City.Gateway.Snapshot();
+    Need(state.PreparedTroops.ArcherT1==20&&state.PreparedTroops.ArcherT2==20&&state.PreparedHeroId=="aldric+lyra","V prepared composition not persisted");
+   },"continuous V preparation saved from genuine controls");
+   if(Failed())yield break;
+   yield return JourneyAction(h,"ash-stalker-valoria","Fight");if(Failed())yield break;
+   Check(()=>Need(h.City.Gateway.Snapshot().ChapterThree.AshStalkerDefeated&&
+    SliceRules.CurrentObjectiveKey(h.City.Gateway.Snapshot())=="b5.complete","Continuous V objectives not complete"),
+    "continuous native I-V authored objectives complete");
+   h.Hud.SelectBuilding("");h.SetWorld(false);h.Home();
+   Check(()=>{
+    Capture(h,"integration-continuous-bastion-5-complete-landscape.png",1600,900);
+    Capture(h,"integration-continuous-bastion-5-complete-portrait.png",900,1600);
+   },"continuous V completed city actual captures");
    var beforeFinal=JsonUtility.ToJson(h.City.Gateway.Snapshot());h.City.ReloadForProbe();
    Check(()=>Need(beforeFinal==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Continuous V final reopen changed state"),
     "continuous I-V final saved state exact");
