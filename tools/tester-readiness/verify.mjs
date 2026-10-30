@@ -97,16 +97,15 @@ export function checkCandidate(m, root) {
   if (isObject(owner)) readVerifiedEvidence(root, owner.evidence_path, owner.evidence_sha256, errors, 'owner review');
   return errors;
 }
+// Internal owner builds (itch Restricted, family APK, old Pages) are allowed
+// as candidates: blocking them would prevent physical/hosted verification.
+// Only the separate NEXT EXTERNAL TESTER promotion is subject to this gate.
 export function activeReleaseRequests(root) {
-  const configs = [
-    ['pipeline/playtest-delivery.json', x => x.publish_enabled === true],
-    ['pipeline/android-updater-release-request.json', x => x.enabled === true],
-    ['pipeline/unity-publish-request.json', x => x.enabled === true && x.release_approved === true]
-  ];
-  return configs.filter(([p, fn]) => {
-    try { return fn(readJson(resolve(root, p))); }
-    catch { return true; } // fail closed: unreadable release config
-  }).map(([p]) => p);
+  const p = 'pipeline/tester-readiness/release-request.json';
+  try {
+    const x = readJson(resolve(root, p));
+    return x.enabled === true ? [p] : [];
+  } catch { return [p]; } // fail closed if the external tester request is unreadable
 }
 export function verify(root, opts = {}) {
   const manifestPath = resolve(root, 'pipeline/tester-readiness/candidate.json');
