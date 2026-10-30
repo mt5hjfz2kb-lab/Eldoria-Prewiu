@@ -240,13 +240,14 @@ namespace Eldoria.UI.RoyalGold.V2
             var camera = ActiveCamera();
             bool blocked = (Source.Modal && Source.Modal.gameObject.activeInHierarchy) ||
                 (Source.Mission && Source.Mission.gameObject.activeInHierarchy) ||
-                (Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3RankingScreen>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false) ||
                 (Source.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false);
-            RenderSelection(camera, blocked);
+            // Inline utility does not suppress the ongoing timers of other buildings.
+            bool inlineUtility = Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen ?? false;
+            RenderSelection(camera, blocked || inlineUtility);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
-            RenderClose(blocked);
+            RenderClose(blocked || inlineUtility);
 
             // A live V3 selection button can retain Graphic.depth == -1 after
             // a native 640x480 / portrait Canvas resize, despite remaining
