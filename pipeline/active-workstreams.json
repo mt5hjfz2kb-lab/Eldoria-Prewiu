@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-29T21:40:59.510Z",
+  "updated_at": "2026-10-30T08:43:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2349,6 +2349,29 @@
         ]
       },
       "released_at": "2026-10-29T01:01:52.480111+00:00"
+    },
+    {
+      "id": "eldoria-v41-combate-buzon-ui-20261030",
+      "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
+      "owner": "chatgpt-gpt6-v41-integration-20261030",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "status": "active",
+      "branch": "feature/eldoria-v41-contracts-20261030",
+      "claimed_at": "2026-10-30T08:43:00+01:00",
+      "base_main_sha": "f016932317e049d340460c408d88b90b1290b692",
+      "scope": [
+        "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs",
+        "tools/eldoria-v41/**",
+        "docs/eldoria-v41/**",
+        ".github/workflows/eldoria-v41-domain.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_required",
+      "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
+      "phase": "PURE_DOMAIN_INTEGRATION",
+      "next": "Add compile-tested C# contracts for roster percentages, hero slots, mailbox, verify exact approved visuals, then integrate UI/gameplay after releasing shared-file lease."
     }
   ],
   "history": [
