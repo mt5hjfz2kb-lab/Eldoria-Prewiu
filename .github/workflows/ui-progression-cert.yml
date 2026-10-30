@@ -689,10 +689,34 @@ jobs:
               throw "Portrait did not reclaim at least 8 percentage points of real free scene: $capture"
             }
           }
-          # Independent destinations have no visible city viewport by design;
-          # verify actual native screenshots instead of pretending camera space
-          # is visible behind their opaque artwork.
-          foreach($capture in @('integration-construction-landscape.png','integration-construction-portrait.png','integration-bastion-upgrade.png','integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
+          # Building selection must preserve the city, unlike training/march management.
+          foreach($capture in @('integration-construction-landscape.png','integration-construction-portrait.png','integration-bastion-upgrade.png')){
+            $path=Join-Path $e $capture
+            if(-not(Test-Path $path) -or (Get-Item $path).Length -lt 4096){throw "Missing genuine contextual building capture: $capture"}
+            $frame=@($result.framing | Where-Object {$_.capture -eq $capture})
+            $expectedTarget=if($capture -eq 'integration-bastion-upgrade.png'){'bastion'}else{'sawmill'}
+            if($frame.Count -ne 1 -or -not $frame[0].pass -or $frame[0].target -ne $expectedTarget){
+              throw "Contextual building must retain successful real city framing: $capture"
+            }
+            if(@($result.management | Where-Object {$_.capture -eq $capture}).Count -ne 0){
+              throw "Building selection opened an independent management screen: $capture"
+            }
+            $visible=@($frame[0].visible)
+            $projected=@($frame[0].projected)
+            if($visible.Count -ne 4 -or $projected.Count -ne 4){throw "Missing building viewport geometry: $capture"}
+            foreach($v in (@($visible)+@($projected))){
+              $number=[double]$v
+              if([double]::IsNaN($number) -or [double]::IsInfinity($number) -or $number -lt 0.0 -or $number -gt 1.0){throw "Invalid building framing coordinate: $capture"}
+            }
+            if([double]$visible[2] -le [double]$visible[0] -or [double]$visible[3] -le [double]$visible[1] -or
+               [double]$projected[2] -le [double]$projected[0] -or [double]$projected[3] -le [double]$projected[1] -or
+               [double]$projected[0] -lt [double]$visible[0] -or [double]$projected[1] -lt [double]$visible[1] -or
+               [double]$projected[2] -gt [double]$visible[2] -or [double]$projected[3] -gt [double]$visible[3]){
+              throw "Building is clipped by contextual UI: $capture"
+            }
+          }
+          # Complex operations keep their genuine independent destinations.
+          foreach($capture in @('integration-training.png','integration-training-portrait.png','integration-march-landscape.png','integration-march-portrait.png')){
             $path=Join-Path $e $capture
             if(-not(Test-Path $path)){throw "Missing genuine full-screen management capture: $capture"}
             if((Get-Item $path).Length -lt 4096){throw "Management capture too small: $capture"}
@@ -703,14 +727,6 @@ jobs:
             if($destination.Count -ne 1 -or -not $destination[0].pass -or -not $destination[0].opaque -or
                -not $destination[0].touchBlocking -or -not $destination[0].fullCanvas -or $destination[0].activeControls -lt 1){
               throw "Management must have actual opaque full-canvas geometry and active controls: $capture"
-            }
-            if($capture -like 'integration-construction-*' -and
-               ($destination[0].screen -ne 'building' -or $destination[0].target -ne 'sawmill')){
-              throw "Construction capture must show the genuine sawmill destination: $capture"
-            }
-            if($capture -eq 'integration-bastion-upgrade.png' -and
-               ($destination[0].screen -ne 'building' -or $destination[0].target -ne 'bastion')){
-              throw 'Bastion upgrade capture must show the genuine Bastion destination'
             }
             Write-Host "ELDORIA_V3_NATIVE_MANAGEMENT_SCREEN=$capture"
           }
