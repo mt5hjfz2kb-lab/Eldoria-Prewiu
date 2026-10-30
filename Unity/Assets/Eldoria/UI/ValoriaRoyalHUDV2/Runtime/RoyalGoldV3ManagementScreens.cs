@@ -424,6 +424,8 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer");
             approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
+            RoyalGoldV3LayeredFinish.Install(approvedArcher.rectTransform,
+                RoyalGoldV3LayeredFinish.Scene.Portrait,0);
             approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
             approvedTroopRow.preserveAspect=true;approvedTroopRow.rectTransform.SetAsLastSibling();
             for(int i=0;i<3;i++)
