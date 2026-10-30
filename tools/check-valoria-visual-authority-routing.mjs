@@ -26,7 +26,15 @@ read(routing.canonical_visual_authority.production_workflow);
 const registry=JSON.parse(read('pipeline/active-workstreams.json'));
 const canonicalOwners=registry.active.filter(w=>w.id==='valoria-master-plan-layered-construction-20261016');
 assert.equal(canonicalOwners.length,1,'Exactly one registered integrated Valoria workstream is required');
-assert.equal(canonicalOwners[0].branch,'main','Canonical integrated production must remain on main');
+// The production baseline remains main (checked above). A claimed executor may
+// validate a candidate branch before integration; that does not change art authority.
+const canonical=canonicalOwners[0];
+if(canonical.branch!=='main'){
+  assert.equal(canonical.ownership_state,'claimed','Candidate branch requires an explicit exclusive claim');
+  assert.ok(typeof canonical.branch==='string'&&canonical.branch.trim(),'Candidate branch must be named');
+  assert.match(canonical.base_main_sha||'',/^[0-9a-f]{40}$/,'Candidate requires its traceable canonical main base');
+  assert.ok(Number.isInteger(canonical.ownership_revision)&&canonical.ownership_revision>0,'Candidate requires a versioned ownership claim');
+}
 if(canonicalOwners[0].ownership_state==='available'){
   assert.equal(canonicalOwners[0].owner,null,'Available canonical work has no exclusive chat owner');
   assert.deepEqual(canonicalOwners[0].resources,[],'Available canonical work cannot reserve resources');

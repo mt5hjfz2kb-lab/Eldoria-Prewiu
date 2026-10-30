@@ -53,6 +53,11 @@ jobs:
             /.github/workflows/valoria-windows-chromium-qa.yml
             /tools/art-direction/learning-evidence/
             /tools/art-direction/ai-authoring/unity_pixel_diff.mjs
+            /tools/art-knowledge/
+            /tools/mission-continuity/core.mjs
+            /tools/mission-continuity/core.test.mjs
+            /pipeline/art-knowledge/catalog-v1.json
+            /pipeline/art-knowledge/reviewed-lessons-v1.json
       - name: Enforce repository architecture invariants
         run: |
           node tools/check-repository-architecture.mjs --tracked-tree
@@ -81,3 +86,5 @@ jobs:
           node --test tools/art-direction/learning-evidence/learning.test.mjs
           node --test tools/art-direction/learning-evidence/verify-brief-use.test.mjs
           node --test tools/art-direction/learning-evidence/build-prompt.test.mjs
+      - name: Protect priority of rejected art lessons and paused/stale mission classification
+        run: node --test tools/art-knowledge/select.test.mjs tools/mission-continuity/core.test.mjs

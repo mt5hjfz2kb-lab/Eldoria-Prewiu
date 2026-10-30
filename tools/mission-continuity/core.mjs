@@ -11,12 +11,21 @@ export function classifyMission({ mission, activeWorkstreams, runs, branchSha, n
       next_action: "Reconcile the canonical active-workstreams registry; do not claim or dispatch another owner's work.",
       required_evidence: mission.required_evidence || [] };
   }
-  if (/^OWNER_PAUSED_/i.test(owner.phase || "") || /^PAUSED BY OWNER\\b/i.test(owner.next || "")) {
-    return { id: mission.workstream_id, state: "OWNER_PAUSED", alert: false,
-      latest_run: null, branch_sha: branchSha || null,
-      next_action: "Owner has paused this scope; observing a CI run does not lift that pause.",
-      required_evidence: mission.required_evidence || [] };
-  }
+  // Registry entries explicitly paused by their owner may still be in "active".
+  // Never create a recovery issue, dispatch recommendation or misleading alert
+  // while the owner has deliberately parked UI/Valoria for another workstream.
+  const paused = /^OWNER_PAUSED_/i.test(owner.phase || '') ||
+    /^PAUSED BY OWNER\b/i.test(owner.next || '');
+  if (paused) return {id:mission.workstream_id,state:'OWNER_PAUSED',alert:false,
+    branch:mission.branch,branch_sha:branchSha || null,latest_run:null,
+    next_action:'Owner pause in canonical registry. Preserve evidence and ownership; do not retry, dispatch or treat this as idle failure.',
+    required_evidence:mission.required_evidence || []};
+  // An unassigned "active" entry is not proof of a live executor.
+  if (Object.hasOwn(owner,'owner') && !owner.owner) return {
+    id:mission.workstream_id,state:'OWNER_UNASSIGNED',alert:false,
+    branch:mission.branch,branch_sha:branchSha || null,latest_run:null,
+    next_action:'Registry has no assigned owner. Verify scope and authorized handoff before any further production step.',
+    required_evidence:mission.required_evidence || []};
   const allowed = new Set(mission.workflow_names || []);
   const relevant = (runs || []).filter((r) =>
     r.head_branch === mission.branch && allowed.has(r.name) &&
@@ -38,8 +47,15 @@ export function classifyMission({ mission, activeWorkstreams, runs, branchSha, n
     state = "GITHUB_APPROVAL_REQUIRED";
     nextAction = "GitHub approval is required; never bypass authorization or claim that Unity failed.";
   } else if (latest.conclusion === "success") {
-    state = "WAITING_EVIDENCE";
-    nextAction = "Inspect the successful run's genuine artifacts and visual/functional gates, then perform the next unfinished phase. CI success is not artistic approval.";
+    // Only compare full commit hashes. Older/noncanonical test fixtures cannot
+    // accidentally trigger branch drift, and old green runs never certify HEAD.
+    const validSha = /^[a-f0-9]{40}$/i;
+    const drift = validSha.test(branchSha || '') && validSha.test(latest.head_sha || '') &&
+      branchSha.toLowerCase() !== latest.head_sha.toLowerCase();
+    state = drift ? "SOURCE_DRIFT_REVALIDATION" : "WAITING_EVIDENCE";
+    nextAction = drift ?
+      "A previous SHA passed, not the current branch HEAD. Inspect exact diff and run only the affected authorized verification gates; do not reuse old success as acceptance." :
+      "Inspect the successful run's genuine artifacts and visual/functional gates, then perform the next unfinished phase. CI success is not artistic approval.";
   } else {
     state = "NEEDS_RECOVERY";
     nextAction = "Inspect failed/cancelled run logs; correct or choose an authorized bounded alternative, then rerun only the affected gate.";
