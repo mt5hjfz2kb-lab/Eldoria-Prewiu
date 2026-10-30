@@ -17,6 +17,7 @@ jobs:
           sparse-checkout: |
             tools/eldoria-v41
             Unity/Assets/Eldoria/Scripts/Domain
+            Unity/Assets/Eldoria/Scripts/Application
           sparse-checkout-cone-mode: true
           lfs: false
           fetch-depth: 1
@@ -25,3 +26,5 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Compile source used by Unity and test without Unity or Windows lease
         run: dotnet run --configuration Release --project tools/eldoria-v41/EldoriaV41.Contracts.Tests.csproj
+      - name: Test real gateway commands, persistent mailbox and legacy campaign
+        run: dotnet run --configuration Release --project tools/eldoria-v41/GatewaySmoke.csproj
