@@ -42,7 +42,6 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var management = GetComponent<RoyalGoldV3BuildingScreens>();if(management&&management.IsOpen)return true;
                 var v3 = GetComponent<RoyalGoldV3ContextHud>();
-                if (ChronicleIllustratedBuildingVisible) return buildingVisible;
                 return v3 && v3.IsConfigured ? v3.CloseVisible : buildingVisible;
             }
         }
@@ -54,10 +53,6 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var management = GetComponent<RoyalGoldV3BuildingScreens>();if(management&&management.IsOpen)return management.VisibleAction;
                 var v3 = GetComponent<RoyalGoldV3ContextHud>();
-                // Option 1 has ONE real action inside the illustrated bottom
-                // cartouche. Never route telemetry/touches to a second floating
-                // V3 button when that cartouche exists.
-                if (ChronicleIllustratedBuildingVisible) return buildingAction;
                 return v3 && v3.IsConfigured ? v3.VisibleActionButton : buildingAction;
             }
         }
@@ -67,7 +62,6 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 var management = GetComponent<RoyalGoldV3BuildingScreens>();if(management&&management.IsOpen)return management.VisibleClose;
                 var v3 = GetComponent<RoyalGoldV3ContextHud>();
-                if (ChronicleIllustratedBuildingVisible) return buildingClose;
                 return v3 && v3.IsConfigured ? v3.VisibleCloseButton : buildingClose;
             }
         }
@@ -81,10 +75,6 @@ namespace Eldoria.UI.RoyalGold.V2
                 // The established WebGL telemetry reads this boolean before
                 // clicking the actual V3 button. Do not silently mask it by
                 // the intentionally hidden V2 building sheet CanvasGroup.
-                if (ChronicleIllustratedBuildingVisible)
-                    return buildingVisible && buildingActionGroup &&
-                        buildingActionGroup.blocksRaycasts &&
-                        buildingAction && buildingAction.gameObject.activeInHierarchy;
                 return v3 && v3.IsConfigured
                     ? v3.ContextVisible && v3.VisibleActionButton &&
                         v3.VisibleActionButton.gameObject.activeInHierarchy
