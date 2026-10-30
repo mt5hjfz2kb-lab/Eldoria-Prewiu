@@ -54,3 +54,10 @@ Recovered original heroes v14 from Library libfile_8e8bacfa68108191b23f205a5b62b
 ### Training roster composition
 
 The following candidate restores the reference's separate left-hand unit cards using existing source artwork. It exposes ONLY the canonical archer T1/T2 families, keeps T2 disabled until Barracks IV, and locks both during an active recruitment. The original tier/speedup selector remains wired for existing flows and tests. The isolated full-height archer moves into the center-left corridor beside the cards rather than shrinking into a thumbnail. Native regression now activates both actual cards, checks selected tier, checks byte-equivalent serialized authoritative state while browsing, and verifies both cards lock after the real recruitment purchase. This candidate still needs its own Unity images and complete certification.
+
+
+### Full-suite failure recovered: stable five-entry navigation
+
+Run41124898675 on0fdaa4c3 completed the integrated I–V journey and EditMode, then failed PlayMode in RoyalGoldV3IntegratedAcceptanceTests.ApprovedCronicaRealUsesAuthenticParchmentAndSafeEdgeNavigation: "All five approved destinations remain visible" (line509). This was an assertion failure, not a15-minute timeout. Logs and results: artifact13011208156 (compiled PR merge2c368f24260e3939a43ba560ea6c731706f0e4d2), with Aldric shared artifact13011891559.
+
+BottomNavigation.Layout hid Army/World whenever host.CanOpen was false, contradicting the approved stable five-entry Crónica Real footer and the existing test. The fix shows exactly the five ChronicleOrder destinations and preserves interactability from authoritative unlock/utility rules. Historic non-Chronicle navigation is unchanged. No assertion, suite size or timeout is weakened. Candidateacdf2e71 is already running native certification41127347725; its training-card captures remain useful, but it does not contain this navigation fix and cannot be promoted as fully certified.
