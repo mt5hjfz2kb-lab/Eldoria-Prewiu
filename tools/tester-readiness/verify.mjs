@@ -31,6 +31,25 @@ export function readVerifiedEvidence(root, file, hash, errors, name) {
   if (sha(readFileSync(absolute)) !== hash.toLowerCase())
     errors.push(name + ': real evidence byte SHA256 mismatch');
 }
+function inspectPng(root, file, errors, label, orientation) {
+  if (typeof file !== 'string' || !file.toLowerCase().endsWith('.png')) {
+    errors.push(label + ': PNG file required'); return;
+  }
+  const full = resolve(root, file);
+  const rel = relative(root, full);
+  if (isAbsolute(rel) || rel.startsWith('..') || !existsSync(full)) return;
+  const b = readFileSync(full);
+  if (b.length < 64 || b.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a' ||
+      b.subarray(12, 16).toString('ascii') !== 'IHDR') {
+    errors.push(label + ': invalid PNG header'); return;
+  }
+  const w = b.readUInt32BE(16), h = b.readUInt32BE(20);
+  if (orientation === 'landscape' && !(w > h && w >= 720 && h >= 320))
+    errors.push(label + ': actual Unity landscape capture resolution/orientation invalid');
+  if (orientation === 'portrait' && !(h > w && h >= 720 && w >= 320))
+    errors.push(label + ': actual Unity portrait capture resolution/orientation invalid');
+  if (w > 8192 || h > 8192) errors.push(label + ': unreasonable image dimensions');
+}
 export function checkCandidate(m, root) {
   const errors = [];
   if (!isObject(m) || m.schema !== 1) return ['manifest: schema 1 required'];
@@ -50,6 +69,12 @@ export function checkCandidate(m, root) {
     const s = matches[0];
     readVerifiedEvidence(root, s.reference_path, s.reference_sha256, errors, name + ' reference');
     readVerifiedEvidence(root, s.actual_path, s.actual_sha256, errors, name + ' Unity capture');
+    inspectPng(root, s.reference_path, errors, name + ' reference', null);
+    inspectPng(root, s.actual_path, errors, name + ' Unity capture', orientation);
+    if (s.reference_path === s.actual_path || s.reference_sha256 === s.actual_sha256)
+      errors.push(name + ': concept/reference cannot be the same bytes as a real Unity capture');
+    if (s.source_sha !== m.source_sha || !Number.isSafeInteger(s.native_run_id) || s.native_run_id <= 0)
+      errors.push(name + ': actual Unity capture must be tied to exact native source and run');
     if (!isObject(s.review) || s.review.verdict !== 'APPROVED' ||
         typeof s.review.reviewer !== 'string' || !s.review.reviewer.trim() ||
         s.review.reviewer === 'AUTOMATED_PIXEL_SCORE' || s.review.same_camera !== true ||
@@ -58,6 +83,9 @@ export function checkCandidate(m, root) {
   }
   if (screens.length !== REQUIRED_VIEWS.length * ORIENTATIONS.length)
     errors.push('visual: unexpected/duplicate or missing screenshot entries');
+  const actualDigests = screens.map(x => x?.actual_sha256);
+  if (new Set(actualDigests).size !== actualDigests.length)
+    errors.push('visual: repeated captures cannot certify different Unity screens');
 
   const g = m.gameplay;
   if (!isObject(g) || g.status !== 'PASS' || g.source_sha !== m.source_sha ||
