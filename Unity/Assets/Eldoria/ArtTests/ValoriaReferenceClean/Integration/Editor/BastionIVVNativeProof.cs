@@ -169,7 +169,8 @@ namespace Eldoria.ReferenceClean.Editor {
      h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;Shot(h,id+"-level-"+level);
      h.Hud.SelectBuilding(id=="barracks"?"upgrade-barracks":id);yield return null;
       var context=h.Hud.GetComponent<RoyalGoldV3ContextHud>();context.SynchronizeNow();
-      var offer=context.VisibleActionButton;
+      var offer=h.Hud.GetComponent<RoyalGoldV2Hud>().VisibleBuildingButton;
+      Need(!context.ContextVisible,id+" no duplicate projected button above the city");
       Need(!screen.IsOpen,id+" must remain in the 3D city, not open a management screen");
       Need(context.ContextVisible&&offer&&offer.interactable,id+" genuine contextual upgrade available");
       offer.onClick.Invoke();
