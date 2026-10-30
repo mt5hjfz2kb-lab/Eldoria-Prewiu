@@ -2368,7 +2368,7 @@
         ".github/workflows/eldoria-v41-domain.yml"
       ],
       "resources": [],
-      "art_production_routing": "not_required",
+      "art_production_routing": "not_applicable",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
       "phase": "PURE_DOMAIN_INTEGRATION",
       "next": "Add compile-tested C# contracts for roster percentages, hero slots, mailbox, verify exact approved visuals, then integrate UI/gameplay after releasing shared-file lease."
