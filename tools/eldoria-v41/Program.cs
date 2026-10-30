@@ -65,6 +65,3 @@ static class Tests
         Console.WriteLine("ELDORIA_V41_CONTRACT_PASS "+passed);
     }
 }
-
-    }
-}
