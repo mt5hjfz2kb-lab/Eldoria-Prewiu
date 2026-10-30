@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Contracts.cs" Link="EldoriaV41Contracts.cs" />
+    <Compile Include="../../Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41Combat.cs" Link="EldoriaV41Combat.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
 </Project>
