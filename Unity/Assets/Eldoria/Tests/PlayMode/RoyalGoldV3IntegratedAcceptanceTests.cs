@@ -608,20 +608,16 @@ namespace Eldoria.Tests
             var management = FindComponent(hud.gameObject, "RoyalGoldV3BuildingScreens");
             Assert.That(Member(management, "IsOpen"), Is.EqualTo(false),
                 "Selecting a normal building must not open a new page");
-            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
-                "No duplicate projected purchase card may appear above the city");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(true),
+                "City-bound building selection must remain contextual");
             Assert.That(Member(v2, "BuildingActionVisible"), Is.EqualTo(true),
                 "Existing browser telemetry must see the genuine contextual action");
-            var approvedCartouche = GameObject.Find("V2 / contextual building sheet");
-            Assert.That(approvedCartouche, Is.Not.Null);
-            var actualAction = Member(v2, "VisibleBuildingButton") as Button;
-            Assert.That(actualAction, Is.Not.Null);
-            Assert.That(actualAction.transform.IsChildOf(approvedCartouche.transform),
-                Is.True, "The only purchase button belongs inside the approved lower cartouche");
+            Assert.That(Member(v2, "VisibleBuildingButton"),
+                Is.SameAs(Member(v3, "VisibleActionButton")));
             var actualClose = Member(v2, "VisibleBuildingCloseButton") as Button;
             Assert.That(actualClose, Is.Not.Null);
-            Assert.That(actualClose.transform.IsChildOf(approvedCartouche.transform), Is.True,
-                "Close must belong to the same illustrated bottom cartouche");
+            Assert.That(actualClose, Is.SameAs(Member(v3, "VisibleCloseButton")),
+                "Closing the city selection must not depend on an independent page");
             var closeCorners = new Vector3[4];
             ((RectTransform)actualClose.transform).GetWorldCorners(closeCorners);
             var closePoint = RectTransformUtility.WorldToScreenPoint(null,
@@ -683,8 +679,7 @@ namespace Eldoria.Tests
 
             var management = FindComponent(hud.gameObject, "RoyalGoldV3BuildingScreens");
             Assert.That(Member(management, "IsOpen"), Is.False);
-            var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
-            var command = Member(v2, "VisibleBuildingButton") as Button;
+            var command = Member(v3, "VisibleActionButton") as Button;
             Assert.That(command, Is.Not.Null);
             Assert.That(command.interactable, Is.True, "Actual sawmill Build must be actionable");
             var offer = Member(Member(Call(host, "Read", "sawmill", false),
