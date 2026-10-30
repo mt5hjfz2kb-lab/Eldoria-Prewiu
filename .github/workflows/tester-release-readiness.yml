@@ -5,18 +5,12 @@ on:
     paths:
       - 'tools/tester-readiness/**'
       - 'pipeline/tester-readiness/**'
-      - 'pipeline/playtest-delivery.json'
-      - 'pipeline/android-updater-release-request.json'
-      - 'pipeline/unity-publish-request.json'
       - '.github/workflows/tester-release-readiness.yml'
   pull_request:
     branches: [main]
     paths:
       - 'tools/tester-readiness/**'
       - 'pipeline/tester-readiness/**'
-      - 'pipeline/playtest-delivery.json'
-      - 'pipeline/android-updater-release-request.json'
-      - 'pipeline/unity-publish-request.json'
       - '.github/workflows/tester-release-readiness.yml'
   workflow_dispatch:
 permissions:
