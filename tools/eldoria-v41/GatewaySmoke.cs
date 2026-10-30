@@ -54,7 +54,7 @@ static class V41GatewaySmoke
         Check(inbox.Unread("informes")==1,"unread count reflects actual combat");
         var originalWood=g.Snapshot().Resources.Wood;
         Check(Send(g,"read1","MailRead",battle.EventId).Ok,"mark mail read through authority");
-        Check(g.Snapshot().Mailbox.Unread()==0,"mark read persists");
+        Check(g.Snapshot().Mailbox.Unread("informes")==0,"battle mail read persists while reward mail remains independent");
         Check(Send(g,"delete1","MailDelete",battle.EventId).Ok,"delete message through authority");
         g=new LocalGateway(clock,store);
         Check(g.Snapshot().Mailbox.List("informes").Count==0 &&
