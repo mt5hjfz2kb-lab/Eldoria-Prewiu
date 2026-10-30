@@ -40,3 +40,12 @@ Previous d9b60fd native V4.1, three marches, retention and Aldric passed; contin
 March candidate uses the existing independent courtyard as a backdrop, removes the full-column/full-footer blue surfaces, retains localized header/troop cartouches, and masks original hero portrait assets into card apertures. Hero slots, percentages, real troops, capacity, saving and actions remain live. No new image generation or paid service. Native captures of this candidate are required before accepting it; do not reuse 22d02040 screenshots as proof of this tree.
 
 Lease: live main registry transferred from codex-recovery-5ec48d90b77f to codex-recovery-ada07b02a31d; Valoria revision 74, sole windows-runner-heavy reservation. Workflow preflight expects the same owner/revision. Re-read registry before taking over. No gameplay changes on main, no merge, no publication. Original PRs 134/135/137 already incorporated; do not reintegrate them blindly.
+
+
+### Native review of 0fdaa4c3 and framing follow-up
+
+Run 41124898675 passed Unity compilation, V4.1, three simultaneous marches, retention, Aldric and the integrated I–V journey (step20); EditMode started next. Full final test result must still be checked. V4.1 artifact13010427368 has ZIP SHA2561742407453da73cb08b9af43478e8aa3c37b1e25cb0f90c976c1b40a1cd7566e.
+
+Inspected original Training and March references against actual same-SHA captures. Training preserves the grounded isolated character in both orientations. March portrait cards are larger, but 844x390 cover cropping cuts the faces to foreheads. This follow-up calculates actual sprite aspect (Lyra is148x180, not244x250) and offsets the crop to keep the original upper face region visible. It also centers the authentic Lyra profile explicitly; Image.preserveAspect alone obeyed the upper-left pivot and left half the stage empty. No gameplay or lock assertions changed. Fresh exact-SHA native captures remain mandatory.
+
+Recovered original heroes v14 from Library libfile_8e8bacfa68108191b23f205a5b62b529. Master SHA25648cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800 matches archived provenance. These are concept references, not new Unity implementation proof. Hero shell remains far from the approved environment/sidebar/attribute hierarchy. Training still lacks the original side selector composition; March still has excessive panel weight. Vigilants horizontal encounter occupies about half the screen. No artistic acceptance or release authorization is inferred.

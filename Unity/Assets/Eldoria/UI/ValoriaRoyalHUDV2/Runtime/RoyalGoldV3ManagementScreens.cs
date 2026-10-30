@@ -1063,13 +1063,19 @@ namespace Eldoria.UI.RoyalGold.V2
                 {
                     Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
                     float portraitH=compactLandscape?Mathf.Max(40,cardsH-70):cardsH*.70f;
-                    float ratio=heroSlots[i]=="aldric"?138f/234f:244f/250f;
+                    var portraitSprite=approvedHeroes[i].sprite;
+                    float ratio=portraitSprite?portraitSprite.rect.width/Mathf.Max(1f,portraitSprite.rect.height):1f;
                     // Fill the portrait aperture with authentic pixels, crop only
                     // inside its mask, and keep live names outside that aperture.
                     float apertureW=cardW-16;
                     Place(heroPortraitViewports[i],8,6,apertureW,portraitH);
                     float portraitW=Mathf.Max(apertureW,portraitH*ratio);
-                    Place(approvedHeroes[i].rectTransform,(apertureW-portraitW)*.5f,0,portraitW,portraitW/ratio);
+                    float portraitHeight=portraitW/ratio;
+                    // Faces sit near the upper fifth of these original portraits.
+                    // A top-aligned cover crop showed only foreheads on 844x390.
+                    float cropOffset=string.IsNullOrEmpty(heroSlots[i])?.5f:.18f;
+                    Place(approvedHeroes[i].rectTransform,(apertureW-portraitW)*.5f,
+                        -(portraitHeight-portraitH)*cropOffset,portraitW,portraitHeight);
                     Place(heroSlotLabels[i].rectTransform,4,compactLandscape?cardsH-60:cardsH*(wide?.74f:.72f),cardW-8,compactLandscape?54:cardsH*(wide?.24f:.26f));
                     heroSlotLabels[i].fontSize=wide?14:13;
                 }

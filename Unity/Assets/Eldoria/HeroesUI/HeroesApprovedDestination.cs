@@ -143,7 +143,17 @@ namespace Eldoria.HeroesUI
             }
             else{
                 raw.enabled=false;
-                if(hero.Portrait){var img=Rect("Approved hero portrait",stage).gameObject.AddComponent<Image>();Place(img.rectTransform,12,12,modelW-24,modelH-62);img.sprite=hero.Portrait;img.preserveAspect=true;img.raycastTarget=false;}
+                if(hero.Portrait){
+                    var img=Rect("Approved hero portrait",stage).gameObject.AddComponent<Image>();
+                    float ratio=hero.Portrait.rect.width/Mathf.Max(1f,hero.Portrait.rect.height);
+                    float imageH=modelH-62,imageW=imageH*ratio;
+                    if(imageW>modelW-24){imageW=modelW-24;imageH=imageW/ratio;}
+                    // Explicitly center the actual source aspect. preserveAspect
+                    // alone respects this layout's top-left pivot and left the
+                    // complete Lyra portrait stranded on half of a wide stage.
+                    Place(img.rectTransform,(modelW-imageW)*.5f,12+(modelH-62-imageH)*.5f,imageW,imageH);
+                    img.sprite=hero.Portrait;img.preserveAspect=true;img.raycastTarget=false;
+                }
                 else Label("Hero identity without substitute art",stage,hero.DisplayName,14,modelH*.35f,modelW-28,70,25,TextAnchor.MiddleCenter);
             }
             Label("Real hero availability",stage,hero.Available?"EN VALORIA":"EN EXPEDICIÓN",8,modelH-37,modelW-16,30,16,TextAnchor.MiddleCenter);
