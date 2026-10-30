@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T13:35:14.948Z",
+  "updated_at": "2026-10-30T15:31:15.561Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2657,6 +2657,33 @@
       "phase": "REBUILD_REAL_COMPONENTS_FROM_APPROVED_SIX_SCREENS",
       "next": "Combined PR136 binds canonical state and loaded Aldric geometry; native six-screen proof required.",
       "budget_eur": 0
+    },
+    {
+      "id": "eldoria-unified-art-vault-20261029",
+      "title": "Biblioteca artística unificada 2D/3D — PR128",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "branch": "docs/unified-art-vault-20261029",
+      "status": "active",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "write_scope_released": false,
+      "claimed_at": "2026-10-30T15:31:15.561Z",
+      "base_main_sha": "515555135127195542496ffea3a0852206772bea",
+      "scope": [
+        "tools/asset-vault/scan_visual_assets.py",
+        "tools/asset-vault/test_scan_visual_assets.py",
+        "tools/asset-vault/verify_visual_backup.py",
+        "tools/asset-vault/test_verify_visual_backup.py",
+        "tools/asset-vault/ingest_visual_asset.py",
+        "tools/asset-vault/test_ingest_visual_asset.py",
+        ".github/workflows/visual-asset-inventory.yml",
+        "docs/asset-vault/UNIFIED_ART_ARCHIVE_20261029.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only source inventory and verified archival tools; no Unity art, models, paid generation or approval changes.",
+      "phase": "PR128_VERIFY_EXISTING_INVENTORY_AND_SOURCE_PRESERVATION",
+      "reason": "Owner explicitly directs continuation and consolidation of PR128; no active vault owner or competing PR found."
     }
   ],
   "history": [
