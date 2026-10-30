@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 namespace Eldoria.UI.RoyalGold.V2 {
- /// <summary>Independent city management destinations, projected from the shared session.</summary>
+ /// <summary>Compact city-local council/speedup utilities on the existing HUD; never a building destination.</summary>
  [DisallowMultipleComponent,DefaultExecutionOrder(1500)] public sealed class RoyalGoldV3BuildingScreens:MonoBehaviour {
   RoyalHUD hud;ICommandGateway gateway;Func<string,RoyalBuilding> read;Action refreshed;
   RectTransform root,header,art,detail,footer,choices,operationProgress,operationFill;RawImage portrait;
@@ -188,8 +188,6 @@ namespace Eldoria.UI.RoyalGold.V2 {
    lastW=root.rect.width;lastH=root.rect.height;lastSafe=Screen.safeArea;
    Refresh();
    RebindGraphics(root);
-  }
-
   }
  }
 }
