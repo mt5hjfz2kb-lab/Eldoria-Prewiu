@@ -1,0 +1,37 @@
+name: Eldoria tester release readiness (zero-cost)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/tester-readiness/**'
+      - 'pipeline/tester-readiness/**'
+      - 'pipeline/playtest-delivery.json'
+      - 'pipeline/android-updater-release-request.json'
+      - 'pipeline/unity-publish-request.json'
+      - '.github/workflows/tester-release-readiness.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/tester-readiness/**'
+      - 'pipeline/tester-readiness/**'
+      - 'pipeline/playtest-delivery.json'
+      - 'pipeline/android-updater-release-request.json'
+      - 'pipeline/unity-publish-request.json'
+      - '.github/workflows/tester-release-readiness.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  candidate-evidence:
+    name: Tester candidate evidence (no Windows)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Contract and fail-closed regression tests
+        run: node --test tools/tester-readiness/verify.test.mjs
+      - name: Reject release requests without verified visual + gameplay + physical QA
+        run: node tools/tester-readiness/verify.mjs
