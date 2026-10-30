@@ -1836,7 +1836,7 @@
         "independent_review_path": "docs/evidence/spawnling-animation-v4-review-20261021/RESULT.md",
         "rig_joint_count": 12,
         "animation_clip": "Eldoria_Spawnling_ExpressiveClawSwipe_V4",
-        "skin_weights_sum_max_error": 1.1920929e-7,
+        "skin_weights_sum_max_error": 1.1920929e-07,
         "static_retained": true,
         "art_approved": false,
         "isolated_unity_import_tested": false,
@@ -4395,7 +4395,7 @@
         "run_id": 37462916737,
         "artifact_id": 11413795807,
         "verdict": "TECH PASS / ALIGNMENT PASS / INTERACTION PASS / DIAGNOSTIC COEXISTENCE PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1176,
           "pan_left": 1132,
@@ -4406,7 +4406,7 @@
         "run_id": 37464692130,
         "artifact_id": 11414269587,
         "verdict": "TECH PASS / VISUAL APPEARANCE PASS / BOUNDED PAN PASS / INTERACTION PASS",
-        "viewport_error": 5.960464477539063e-8,
+        "viewport_error": 5.960464477539063e-08,
         "changed_pixels": {
           "home": 1160,
           "pan_left": 1089,
@@ -9851,6 +9851,48 @@
         "prior_delivered_pr": 104,
         "prior_state": "completed_in_branch",
         "source_pr": 103
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-safety-20261024",
+      "title": "Memoria artística priorizada y continuidad sin falsas recuperaciones",
+      "owner": "chatgpt-art-memory-continuity-20261024",
+      "branch": "chore/art-memory-continuity-safety-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        "docs/evidence/art-memory-continuity-safety-20261024/**",
+        ".github/workflows/repository-architecture-guard.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only read-only selection and continuity decisions; no artistic edits, generation, Unity scene, credits or hardware reservation.",
+      "phase": "SUPERSEDED_WITHOUT_MERGE_BY_PR104",
+      "next": "PR #103 closed as duplicate; behavior and adversarial tests retained in PR #104. Historical branch and evidence remain accessible.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Validated improvements in existing memory selection and mission recovery policy",
+        "evidence": "Exact tests of selected/rejected art knowledge and paused workstream classification",
+        "handoff": "Draft PR; retain review pending without touching game"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103",
+        "verified_sha": "af5d21263d8616f3f281ff608cad2488e102dc2f",
+        "architecture_gate": 40092850243,
+        "art_planner_gate": 40092850216,
+        "governance_gate": 40092850208,
+        "art_quality": "NOT_APPLICABLE_NO_ART_PRODUCED",
+        "physical_mobile": "NOT_TESTED",
+        "gameplay_modified": false,
+        "note": "Older head failed a text compatibility assertion; fixed before the cited gate. Exact scope limited to 6 files including current registry.",
+        "superseded_by": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "original_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103"
       }
     }
   ],

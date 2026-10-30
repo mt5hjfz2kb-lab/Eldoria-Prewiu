@@ -253,6 +253,12 @@
       "status": "review_pending"
     },
     {
+      "path": "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
+      "domain": "art",
+      "status": "current",
+      "note": "Decisión del propietario: Qwen opcional, no obligatorio para autoría artística; validación visual y técnica conservada"
+    },
+    {
       "path": "docs/ELDORIA_SHARED_RUNNER_CHECKOUT_COLLISION_20261020.md",
       "status": "review_pending",
       "domain": "infrastructure"
