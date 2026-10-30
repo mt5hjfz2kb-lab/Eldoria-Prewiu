@@ -422,6 +422,29 @@ jobs:
           $process=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -Wait -PassThru
           if($process.ExitCode -ne 0){if(Test-Path $log){Get-Content $log -Tail 100};throw 'Canonical build-safe granary/stock preparation failed'}
 
+      - name: V4.1 real controls, persistent mailbox and approved-source captures
+        if: github.head_ref == 'feature/eldoria-v41-contracts-20261030'
+        shell: powershell
+        env:
+          ELDORIA_V41_EVIDENCE: ${{ github.workspace }}/v41-native-${{ github.run_id }}
+        run: |
+          $ErrorActionPreference='Stop'
+          if(@(Get-Process Unity,blender -ErrorAction SilentlyContinue).Count){throw 'Native editor occupied'}
+          New-Item -ItemType Directory -Force $env:ELDORIA_V41_EVIDENCE|Out-Null
+          $log=Join-Path $env:ELDORIA_V41_EVIDENCE 'native.log'
+          $args=@('-batchmode','-force-d3d11','-projectPath','Unity','-executeMethod','Eldoria.Editor.EldoriaV41NativeCapture.Capture','-logFile',$log)
+          $p=Start-Process $env:UNITY_EDITOR_PATH -ArgumentList $args -PassThru
+          if(-not $p.WaitForExit(600000)){& taskkill.exe /PID $p.Id /T /F|Out-Null;throw 'V41 capture timed out'}
+          if($p.ExitCode -ne 0 -or -not(Select-String -Path $log -Pattern 'ELDORIA_V41_NATIVE_PASS' -Quiet)){Get-Content $log -Tail 120;throw 'V41 native acceptance failed'}
+
+      - uses: actions/upload-artifact@v4
+        if: always() && github.head_ref == 'feature/eldoria-v41-contracts-20261030'
+        with:
+          name: eldoria-v41-native-${{ github.run_id }}
+          path: v41-native-${{ github.run_id }}
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Verify three simultaneous marches in the actual integrated scene
         id: march_preflight
         shell: powershell

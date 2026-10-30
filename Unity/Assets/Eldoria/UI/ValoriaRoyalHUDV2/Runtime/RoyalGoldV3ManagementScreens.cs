@@ -27,6 +27,9 @@ namespace Eldoria.UI.RoyalGold.V2
         public int SelectedTrainingSeconds => SliceRules.RecruitSecondsFor(selectedCount);
         public int SelectedTier => selectedTier;
         ICommandGateway gateway;
+        RoyalGoldV41MailboxScreen mailbox;
+        Image approvedArcher,approvedTroopRow;
+        readonly Image[] approvedHeroes=new Image[3];
         Func<long> utcTicks;
         Action onCommand;
         // Optional host navigation; same scene, preserving the city camera state.
@@ -39,6 +42,12 @@ namespace Eldoria.UI.RoyalGold.V2
         RoyalButton minus, plus, action, back, switchDestination, chapterAction, tierButton;
         RoyalText chapterActionLabel;
         string selectedHero="aldric";
+        readonly string[] heroSlots={"aldric",null,null};
+        readonly RoyalButton[] heroSlotButtons=new RoyalButton[3];
+        readonly RoyalText[] heroSlotLabels=new RoyalText[3];
+        RoyalButton percentModeButton;RoyalText percentModeLabel;
+        bool percentMode;
+        int selectedT1,selectedT2;
         RoyalText actionLabel, switchLabel, tierLabel;
         Slider slider;
         int selectedCount = 10;
@@ -71,6 +80,13 @@ namespace Eldoria.UI.RoyalGold.V2
             gateway = authoritativeGateway;
             utcTicks = authoritativeUtcTicks;
             onCommand = refreshed;
+            // One existing Royal HUD/Canvas, no parallel gameplay scene or save.
+            if(hud!=null)
+            {
+                if(mailbox==null)mailbox=GetComponent<RoyalGoldV41MailboxScreen>();
+                if(mailbox==null)mailbox=gameObject.AddComponent<RoyalGoldV41MailboxScreen>();
+                mailbox.Initialize(hud,authoritativeGateway);
+            }
         }
 
         void SuspendForNarrative()
@@ -166,6 +182,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 return;
             }
             deferredForModal=false;
+            if(mailbox!=null)mailbox.Close();
             EnsureView();
             CurrentDestination = destination;
             destinationArtwork.MarchTheme = destination == Destination.March;
@@ -176,6 +193,16 @@ namespace Eldoria.UI.RoyalGold.V2
             statusArtwork.SetVerticesDirty();
             submitAfter = 0f;
             selectedHero=s.MarchConfigured?s.PreparedHeroId:"aldric";
+            for(int i=0;i<3;i++)heroSlots[i]=s.PreparedHeroIds!=null&&
+                s.PreparedHeroIds.Count==3?s.PreparedHeroIds[i]:
+                i==0?(selectedHero=="lyra"?"lyra":"aldric"):
+                i==1&&selectedHero=="aldric+lyra"?"lyra":null;
+            percentMode=false;
+            int cap=MarchCapacityRules.Capacity(s,selectedHero);
+            selectedT1=destination==Destination.March?
+                (s.MarchConfigured?s.PreparedTroops.ArcherT1:Mathf.Min(s.Available.ArcherT1,cap)):0;
+            selectedT2=destination==Destination.March?
+                (s.MarchConfigured?s.PreparedTroops.ArcherT2:0):0;
             selectedTier=destination==Destination.Training&&s.RecruitmentCompletesUtcTicks>0&&s.PendingRecruitTier==2?2:
                 destination==Destination.March&&s.MarchConfigured&&s.PreparedTroops.ArcherT2>0&&s.PreparedTroops.ArcherT1==0?2:1;
             int available=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
@@ -304,8 +331,8 @@ namespace Eldoria.UI.RoyalGold.V2
             tierButton=Button("Select archer tier",left,"ARQUEROS T1",()=>{if(CurrentDestination==Destination.Training&&gateway.Snapshot().RecruitmentCompletesUtcTicks>0)speedMinutes=speedMinutes==1?5:1;else selectedTier=selectedTier==1?2:1;Refresh();},false,out tierLabel);
             unitDetail = Text("Unit profile and composition",left,18,Muted);
             quantityRow = Rect("Quantity controls",left);
-            minus = Button("Reduce quantity",quantityRow,"−",()=>SetQuantity(selectedCount-1),false,out _);
-            plus = Button("Increase quantity",quantityRow,"+",()=>SetQuantity(selectedCount+1),false,out _);
+            minus = Button("Reduce quantity",quantityRow,"−",()=>SetQuantity(CurrentDestination==Destination.March&&percentMode?CurrentDisplayedPercent-1:selectedCount-1),false,out _);
+            plus = Button("Increase quantity",quantityRow,"+",()=>SetQuantity(CurrentDestination==Destination.March&&percentMode?CurrentDisplayedPercent+1:selectedCount+1),false,out _);
             selectedText = Text("Authoritative quantity",quantityRow,26,Gold,true);
             selectedText.alignment = TextAnchor.MiddleCenter;
             var sliderGo = Rect("Quantity slider",left);
@@ -354,6 +381,34 @@ namespace Eldoria.UI.RoyalGold.V2
             action=Button("Confirm military command",footer,"CONFIRMAR",Confirm,true,out actionLabel);
             chapterAction=Button("Chapter III management",header,"MEJORAR CUARTEL",ChapterAction,false,out chapterActionLabel);
             switchDestination=Button("Switch destination",header,"MARCHAS",Switch,true,out switchLabel);
+            for(int i=0;i<3;i++)
+            {
+                int slot=i;
+                heroSlotButtons[i]=Button("Hero slot "+i,left,"",()=>CycleHeroSlot(slot),
+                    false,out heroSlotLabels[i]);
+            }
+            percentModeButton=Button("Edit march by percent",left,"CANTIDAD / %",TogglePercentMode,
+                false,out percentModeLabel);
+            foreach(var graphic in new[]{destinationArtwork,featuredUnitArtwork,statusArtwork})graphic.enabled=false;
+            backdrop.enabled=false;
+            foreach(var pane in new[]{header,left,right,footer})
+            {
+                pane.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
+                RoyalGoldV41SourceArt.Surface(pane,"blue-panel",14);
+            }
+            approvedArcher=RoyalGoldV41SourceArt.Surface(left,"training-archer");
+            approvedArcher.preserveAspect=true;approvedArcher.rectTransform.SetAsLastSibling();
+            approvedTroopRow=RoyalGoldV41SourceArt.Surface(left,"archer-row");
+            approvedTroopRow.preserveAspect=true;approvedTroopRow.rectTransform.SetAsLastSibling();
+            for(int i=0;i<3;i++)
+            {
+                approvedHeroes[i]=RoyalGoldV41SourceArt.Surface((RectTransform)heroSlotButtons[i].transform,"aldric-face");
+                approvedHeroes[i].preserveAspect=true;
+            }
+            var goldAction=RoyalGoldV41SourceArt.Surface((RectTransform)action.transform,"gold-button",14);
+            action.GetComponent<RoyalGoldV2FrameGraphic>().enabled=false;
+            goldAction.raycastTarget=true;action.targetGraphic=goldAction;
+            actionLabel.color=new Color(.08f,.06f,.025f);
             root.gameObject.SetActive(false);
         }
 
@@ -361,12 +416,63 @@ namespace Eldoria.UI.RoyalGold.V2
         {
             Open(CurrentDestination == Destination.Training ? Destination.March : Destination.Training);
         }
+        void CycleHeroSlot(int slot)
+        {
+            if(CurrentDestination!=Destination.March || gateway==null)return;
+            var s=gateway.Snapshot();
+            bool hasLyra=s.ChapterThree!=null&&s.ChapterThree.LyraRecruited;
+            if(slot==2)return; // A third combat hero has not been unlocked in the current story.
+            if(slot==0)
+            {
+                string candidate=hasLyra&&heroSlots[0]=="aldric"?"lyra":"aldric";
+                if(!MarchCapacityRules.HeroAvailable(s,candidate)){notice="El héroe está en otra marcha.";Refresh();return;}
+                heroSlots[0]=candidate;
+                if(heroSlots[1]==heroSlots[0])heroSlots[1]=null;
+            }
+            else if(hasLyra)
+            {
+                string candidate=string.IsNullOrEmpty(heroSlots[1])?(heroSlots[0]=="aldric"?"lyra":"aldric"):null;
+                if(!MarchCapacityRules.HeroAvailable(s,candidate)){notice="El héroe está en otra marcha.";Refresh();return;}
+                heroSlots[1]=candidate;
+            }
+            selectedHero=!string.IsNullOrEmpty(heroSlots[1])?"aldric+lyra":heroSlots[0];
+            Refresh();
+        }
+        void TogglePercentMode()
+        {
+            if(CurrentDestination!=Destination.March)return;
+            percentMode=!percentMode;Refresh();
+        }
+        int SelectedFamilyCount=>selectedTier==2?selectedT2:selectedT1;
+        int CurrentDisplayedPercent=>selectedT1+selectedT2>0?
+            Mathf.RoundToInt(100f*SelectedFamilyCount/(selectedT1+selectedT2)):0;
+        void SetFamilyCount(int value)
+        {
+            if(selectedTier==2)selectedT2=value;
+            else selectedT1=value;
+            selectedCount=value;
+        }
         void SetQuantity(int requested)
         {
-            int clamped = Mathf.Clamp(requested,1,Mathf.Max(1,maxCount));
-            if (clamped == selectedCount) return;
-            selectedCount = clamped;
-            slider.SetValueWithoutNotify(selectedCount);
+            if(CurrentDestination==Destination.Training)
+            {
+                selectedCount=Mathf.Clamp(requested,1,Mathf.Max(1,maxCount));
+                slider.SetValueWithoutNotify(selectedCount);Refresh();return;
+            }
+            var s=gateway.Snapshot();
+            int total=Mathf.Max(1,selectedT1+selectedT2);
+            int availableHere=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
+            int availableOther=selectedTier==2?s.Available.ArcherT1:s.Available.ArcherT2;
+            if(percentMode)
+            {
+                int desired=Mathf.RoundToInt(total*Mathf.Clamp(requested,0,100)/100f);
+                int focus=Mathf.Clamp(desired,Mathf.Max(0,total-availableOther),
+                    Mathf.Min(availableHere,total));
+                SetFamilyCount(focus);
+                if(selectedTier==2)selectedT1=total-focus;
+                else selectedT2=total-focus;
+            }
+            else SetFamilyCount(Mathf.Clamp(requested,0,maxCount));
             Refresh();
         }
         void Refresh()
@@ -375,6 +481,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var s=gateway.Snapshot();
             if(s.BastionLevel<2 || s.BarracksLevel<1){Close();return;}
             bool training=CurrentDestination==Destination.Training;
+            approvedArcher.gameObject.SetActive(training);
             bool trainingActive=training && s.RecruitmentCompletesUtcTicks>0;
             bool tier2Unlocked=s.BarracksLevel>=4 && (training || s.Available.ArcherT2>0);
             if(!tier2Unlocked && selectedTier==2)selectedTier=1;
@@ -383,8 +490,23 @@ namespace Eldoria.UI.RoyalGold.V2
             tierButton.gameObject.SetActive(trainingActive?s.SpeedupOneMinute>0&&s.SpeedupFiveMinutes>0:tier2Unlocked);
             tierLabel.Put(trainingActive?minutes+" MIN · CAMBIAR":"ARQUEROS T"+selectedTier+" · CAMBIAR");
             int selectedAvailable=selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1;
+            int capacity=MarchCapacityRules.Capacity(s,selectedHero);
+            if(!training)
+            {
+                selectedT1=Mathf.Clamp(selectedT1,0,s.Available.ArcherT1);
+                selectedT2=Mathf.Clamp(selectedT2,0,s.Available.ArcherT2);
+                if(selectedT1+selectedT2>capacity)
+                {
+                    int overflow=selectedT1+selectedT2-capacity;
+                    int reduceT2=Mathf.Min(overflow,selectedT2);
+                    selectedT2-=reduceT2;
+                    selectedT1=Mathf.Max(0,selectedT1-(overflow-reduceT2));
+                }
+                selectedCount=SelectedFamilyCount;
+            }
             maxCount=training?Mathf.Min(500,SliceRules.MaxAffordableArchers(s)):
-                Mathf.Min(selectedAvailable,MarchCapacityRules.Capacity(s,selectedHero));
+                Mathf.Min(selectedAvailable,Mathf.Max(0,capacity-
+                    (selectedTier==2?selectedT1:selectedT2)));
             // A pending operation has already spent its resources. Show the
             // real saved quantity rather than a newly affordable quantity.
             if(trainingActive)
@@ -392,20 +514,39 @@ namespace Eldoria.UI.RoyalGold.V2
                 selectedCount=Mathf.Clamp(s.PendingRecruitArchers,1,500);
                 maxCount=Mathf.Max(maxCount,selectedCount);
             }
-            else if(maxCount>0)selectedCount=Mathf.Clamp(selectedCount,1,maxCount);
-            else selectedCount=1;
-            slider.minValue=1;
-            slider.maxValue=Mathf.Max(1,maxCount);
-            slider.SetValueWithoutNotify(selectedCount);
-            slider.interactable=maxCount>1 && (!training || s.RecruitmentCompletesUtcTicks==0);
-            minus.interactable=selectedCount>1 && slider.interactable;
-            plus.interactable=selectedCount<maxCount && slider.interactable;
-            selectedText.Put(maxCount>0?selectedCount.ToString():"—");
+            else if(training && maxCount>0)selectedCount=Mathf.Clamp(selectedCount,1,maxCount);
+            else if(training)selectedCount=1;
+            slider.minValue=training?1:0;
+            slider.maxValue=!training&&percentMode?100:Mathf.Max(1,maxCount);
+            slider.SetValueWithoutNotify(!training&&percentMode?CurrentDisplayedPercent:selectedCount);
+            slider.interactable=training?maxCount>1&&s.RecruitmentCompletesUtcTicks==0:
+                (maxCount>0 || percentMode)&&!s.MarchConfigured; // Existing config remains amendable through reopen.
+            if(!training)slider.interactable=maxCount>0 || (percentMode&&selectedT1+selectedT2>0);
+            minus.interactable=(training?selectedCount>1:
+                percentMode?CurrentDisplayedPercent>0:selectedCount>0)&&slider.interactable;
+            plus.interactable=(training?selectedCount<maxCount:
+                percentMode?CurrentDisplayedPercent<100:selectedCount<maxCount)&&slider.interactable;
+            selectedText.Put(!training&&percentMode?CurrentDisplayedPercent+" %":
+                maxCount>0?selectedCount.ToString():"—");
             heading.Put(training?"CUARTEL · ENTRENAMIENTO":"SALA DE MARCHAS");
             subheading.Put(training?"VALORIA · RECLUTAMIENTO DE TROPAS":"VALORIA · PREPARACIÓN DE EXPEDICIONES");
-            unitTitle.Put(training?"ARQUEROS · T"+selectedTier:HeroName(selectedHero));
-            chapterAction.gameObject.SetActive(s.BastionLevel>=3 && (training||s.ChapterThree.LyraRecruited));
-            chapterActionLabel.Put(training?"MEJORAR CUARTEL":"CAMBIAR HÉROES");
+            unitTitle.Put(training?"ARQUERO · T"+selectedTier:"HÉROES DE LA MARCHA");
+            chapterAction.gameObject.SetActive(training&&s.BastionLevel>=3);
+            chapterActionLabel.Put("MEJORAR CUARTEL");
+            for(int i=0;i<3;i++)
+            {
+                heroSlotButtons[i].gameObject.SetActive(!training);
+                heroSlotLabels[i].Put(string.IsNullOrEmpty(heroSlots[i])?
+                    (i==2?"HÉROE 3 · BLOQUEADO":"HÉROE "+(i+1)+" · +"):
+                    (i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i]));
+                heroSlotButtons[i].interactable=i<2 &&
+                    (i==0||s.ChapterThree.LyraRecruited);
+                approvedHeroes[i].sprite=RoyalGoldV41SourceArt.Get(heroSlots[i]=="aldric"?"aldric-face":i==2?"hero-locked":"hero-support");
+                approvedHeroes[i].gameObject.SetActive(!training);
+            }
+            approvedTroopRow.gameObject.SetActive(!training);
+            percentModeButton.gameObject.SetActive(!training);
+            percentModeLabel.Put(percentMode?"EDITAR POR %":"EDITAR CANTIDAD");
             unitDetail.Put(training?"Arqueros · nivel de tropa T"+selectedTier+"\n"+(selectedTier==2?"Desbloqueados por Cuartel IV":"Unidad inicial del reino"):
                 "Héroe disponible · Mando de expedición\nUnidad seleccionable: Arqueros T"+selectedTier);
             switchLabel.Put(training?"PREPARAR MARCHA":"ENTRENAR TROPAS");
@@ -449,10 +590,14 @@ namespace Eldoria.UI.RoyalGold.V2
             else
             {
                 trainingProgress.gameObject.SetActive(false);
-                var troops=new ArmyRoster{ArcherT1=selectedTier==1&&maxCount>0?selectedCount:0,ArcherT2=selectedTier==2&&maxCount>0?selectedCount:0};
+                var troops=new ArmyRoster{ArcherT1=selectedT1,ArcherT2=selectedT2};
                 var power=SliceRules.Expedition(troops,selectedHero);
-                summary.Put("COMPOSICIÓN DE LA MARCHA\n\n"+HeroName(selectedHero)+"\n"+
-                    "Arqueros T1   "+troops.ArcherT1+"\nArqueros T2   "+troops.ArcherT2+"\n\nPODER  "+power.Power+
+                int total=troops.Total;
+                int pctT1=total>0?Mathf.RoundToInt(100f*selectedT1/total):0;
+                summary.Put("TROPAS DE LA MARCHA\n"+
+                    "Arqueros T1  "+selectedT1+" · "+pctT1+" %"+
+                    "\nArqueros T2  "+selectedT2+" · "+(total>0?100-pctT1:0)+" %"+
+                    "\n\nPODER  "+power.Power+
                     "\nATAQUE  "+power.Attack+"   DEFENSA  "+power.Defense+
                     "\nVIDA  "+power.Health+"   RUPTURA  "+power.Break);
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
@@ -461,7 +606,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
                     "\nMARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
                     "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
-                bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && maxCount>0;
+                bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && troops.Total>0 &&
+                    MarchCapacityRules.Fits(troops,s.Available,capacity);
+                foreach(var hero in heroSlots)if(!MarchCapacityRules.HeroAvailable(s,hero))allowed=false;
                 actionLabel.Put(allowed?"CONFIRMAR COMPOSICIÓN":"MARCHA NO DISPONIBLE");
                 action.interactable=allowed && Time.unscaledTime>=submitAfter;
             }
@@ -471,7 +618,7 @@ namespace Eldoria.UI.RoyalGold.V2
         void ChapterAction()
         {
             if(CurrentDestination==Destination.Training){root.gameObject.SetActive(false);Hud.SelectBuilding("upgrade-barracks");}
-            else {selectedHero=selectedHero=="aldric"?"lyra":selectedHero=="lyra"?"aldric+lyra":"aldric";Refresh();}
+            else CycleHeroSlot(0);
         }
         int SpeedMinutes(PlayerState s){if(speedMinutes==5&&s.SpeedupFiveMinutes==0)speedMinutes=1;if(speedMinutes==1&&s.SpeedupOneMinute==0)speedMinutes=5;return speedMinutes;}
         void Confirm()
@@ -487,12 +634,15 @@ namespace Eldoria.UI.RoyalGold.V2
                 notice=accelerated.Message;onCommand?.Invoke();Hud.Refresh();Refresh();return;
             }
             if(training&&selectedCount>SliceRules.MaxAffordableArchers(s))return;
+            var selectedTroops=new ArmyRoster{ArcherT1=selectedT1,ArcherT2=selectedT2};
             if(!training&&(!MarchCapacityRules.CanStart(s,utcTicks()) ||
-                selectedCount>(selectedTier==2?s.Available.ArcherT2:s.Available.ArcherT1) ||
-                selectedCount>MarchCapacityRules.Capacity(s,selectedHero)))return;
+                !MarchCapacityRules.Fits(selectedTroops,s.Available,
+                    MarchCapacityRules.Capacity(s,selectedHero))))return;
+            // The gateway independently validates all three slots and every reserved unit.
+            // This interface reveals only narratively unlocked heroes and troop tiers.
             string target=training?"archer:t"+selectedTier+":"+selectedCount:
-                selectedTier==2?"march-main:0:"+selectedCount+":0:"+selectedHero:
-                "march-main:"+selectedCount+":"+selectedHero;
+                "march-main:"+selectedT1+":"+selectedT2+":0:"+
+                (heroSlots[0]??"")+":"+(heroSlots[1]??"")+":"+(heroSlots[2]??"");
             string kind=training?"Recruit":"ConfigureMarch";
             submitAfter=Time.unscaledTime+.45f;
             var result=gateway.Execute(new GameCommand(Guid.NewGuid().ToString("N"),
@@ -556,6 +706,16 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(unitTitle.rectTransform,landscape?15:18,landscape?7:18,uw*.61f,landscape?32:40);
             Place(tierButton.transform as RectTransform,uw*.64f,landscape?7:18,uw*.33f,landscape?32:40);
             Place(unitDetail.rectTransform,landscape?15:18,landscape?46:69,uw-35,landscape?42:60);
+            // New controls stay entirely in existing left pane; never allocate a second
+            // canvas. These are functional placements, NOT final visual approval.
+            float heroY=landscape?Mathf.Min(100,uh*.31f):Mathf.Min(90,uh*.42f);
+            float slotW=(uw-30-12)/3f;
+            for(int i=0;i<3;i++)
+                Place(heroSlotButtons[i].transform as RectTransform,
+                    15+i*(slotW+6),heroY,slotW,landscape?37:32);
+            float percentY=Mathf.Min(heroY+42,Mathf.Max(48,uh-110));
+            Place(percentModeButton.transform as RectTransform,
+                15,percentY,uw-30,landscape?29:27);
             float qy=landscape?Mathf.Max(90,uh-95):uh-129;
             Place(quantityRow,landscape?14:20,qy,uw-(landscape?28:40),landscape?39:48);
             float qw=quantityRow.rect.width;
@@ -593,7 +753,76 @@ namespace Eldoria.UI.RoyalGold.V2
             actionLabel.fontSize=landscape?16:17;
             switchLabel.fontSize=landscape?15:16;
             feedback.fontSize=landscape?14:15;
+            ReflowApprovedSurfaces(leftSide,top,usable,bodyY,bodyH,gap,landscape);
+
         }
+        void ReflowApprovedSurfaces(float x,float top,float width,float y,float height,float gap,bool wide)
+        {
+            bool training=CurrentDestination==Destination.Training;
+            unitTitle.rectTransform.SetParent(training?right:left,false);
+            unitDetail.rectTransform.SetParent(training?right:left,false);
+            quantityRow.SetParent(training?right:left,false);
+            slider.transform.SetParent(training?right:left,false);
+            tierButton.transform.SetParent(training?right:left,false);
+            if(training)
+            {
+                float artWidth=width*.43f;
+                Place(left,x,y,artWidth,height);
+                Place(right,x+artWidth+gap,y,width-artWidth-gap,height);
+                float portraitWidth=Mathf.Min(artWidth,height*184f/476f);
+                Place(approvedArcher.rectTransform,(artWidth-portraitWidth)*.5f,0,portraitWidth,height);
+                float rw=right.rect.width;
+                Place(unitTitle.rectTransform,14,12,rw-28,34);
+                Place(unitDetail.rectTransform,14,50,rw-28,height*.18f);
+                Place(tierButton.transform as RectTransform,14,height*.23f,rw-28,34);
+                Place(summary.rectTransform,14,height*.33f,rw-28,height*.29f);
+                Place(quantityRow,14,height*.64f,rw-28,42);
+                Place(slider.transform as RectTransform,20,height*.64f+50,rw-40,18);
+                Place(status.rectTransform,14,height*.82f,rw-28,height*.18f-5);
+                Place(trainingProgress,14,height*.79f,rw-28,8);
+                summary.fontSize=wide?18:16;status.fontSize=wide?14:13;
+                unitDetail.fontSize=wide?17:15;
+            }
+            else
+            {
+                float lw=wide?(width-gap)*.60f:width;
+                float lh=wide?height:height*.62f;
+                Place(left,x,y,lw,lh);
+                Place(right,wide?x+lw+gap:x,wide?y:y+lh+gap,
+                    wide?width-lw-gap:width,wide?height:height-lh-gap);
+                Place(unitTitle.rectTransform,14,8,lw-28,30);
+                float cardsY=43,cardsH=Mathf.Max(60,lh*.48f),cardW=(lw-40)/3f;
+                for(int i=0;i<3;i++)
+                {
+                    Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
+                    float portraitH=cardsH*.72f;
+                    float ratio=heroSlots[i]=="aldric"?138f/234f:244f/250f;
+                    float portraitW=Mathf.Min(cardW-8,portraitH*ratio);
+                    Place(approvedHeroes[i].rectTransform,(cardW-portraitW)*.5f,4,portraitW,portraitH);
+                    Place(heroSlotLabels[i].rectTransform,4,cardsH*.74f,cardW-8,cardsH*.24f);
+                    heroSlotLabels[i].fontSize=wide?14:13;
+                }
+                float rowY=cardsY+cardsH+8;
+                Place(approvedTroopRow.rectTransform,14,rowY,lw*.29f,lh-rowY-18);
+                Place(unitDetail.rectTransform,lw*.34f,rowY,lw*.63f,40);
+                Place(tierButton.transform as RectTransform,lw*.34f,rowY+42,lw*.63f,32);
+                Place(percentModeButton.transform as RectTransform,lw*.34f,rowY+82,lw*.28f,32);
+                Place(quantityRow,lw*.65f,rowY+82,lw*.32f,38);
+                Place(slider.transform as RectTransform,lw*.34f,rowY+129,lw*.63f,16);
+                float rw=right.rect.width,rh=right.rect.height;
+                Place(summary.rectTransform,14,8,rw-28,rh*.58f);
+                Place(status.rectTransform,14,rh*.60f,rw-28,rh*.38f);
+                summary.fontSize=wide?18:16;status.fontSize=wide?14:13;
+                unitDetail.fontSize=14;
+            }
+            // Quantity buttons remain genuine controls within their moved container.
+            float qw=quantityRow.rect.width;
+            Place(minus.transform as RectTransform,0,0,36,38);
+            Place(plus.transform as RectTransform,qw-36,0,36,38);
+            Place(selectedText.rectTransform,38,0,qw-76,38);
+            selectedText.fontSize=20;
+        }
+
         static RectTransform Rect(string name,Transform parent)
         {
             var g=new GameObject(name,typeof(RectTransform));
@@ -616,7 +845,7 @@ namespace Eldoria.UI.RoyalGold.V2
             var r=Rect(name,parent);
             r.gameObject.AddComponent<CanvasRenderer>();
             var t=r.gameObject.AddComponent<RoyalText>();
-            t.font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            t.font=RoyalGoldV41SourceArt.Serif;
             t.fontSize=size;t.fontStyle=bold?FontStyle.Bold:FontStyle.Normal;
             t.color=color;t.raycastTarget=false;
             t.alignment=TextAnchor.UpperLeft;
