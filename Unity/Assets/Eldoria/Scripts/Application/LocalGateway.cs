@@ -340,6 +340,21 @@ namespace Eldoria.Application
             if(early.HasValue)
             {
                 if(!early.Value)return Fail(earlyMessage);
+                if(command.Kind=="VigilantBattle" && state.LastBattleReport!=null &&
+                    (state.LastBattleReport.TargetId??"").StartsWith("vigilant:",StringComparison.Ordinal))
+                    state.Mailbox.Receive(new EldoriaV41Message {
+                        EventId="vigilant:"+command.Id,Category="informes",Type="battle",
+                        Title=state.LastBattleReport.Won?"Victoria en los Vigilantes":"Derrota en los Vigilantes",
+                        Subtitle=state.LastBattleReport.Reason,
+                        ReportId="vigilant:"+command.Id,OccurredAtUtcTicks=clock.UtcTicks
+                    });
+                if(command.Kind=="ScoutClaim")
+                    state.Mailbox.Receive(new EldoriaV41Message {
+                        EventId="exploration:"+command.Id,Category="informes",Type="exploration",
+                        Title="Informe de exploración",
+                        Subtitle=state.Retention?.LatestDiscoveryTitle??"Exploración concluida",
+                        RewardReceiptId=command.Id,OccurredAtUtcTicks=clock.UtcTicks
+                    });
                 // A claim frees a board slot. Refill/migration belongs to THIS
                 // accepted revision, not the next command's Advance preflight.
                 // Otherwise the next fresh UI claim can reject itself as stale.
