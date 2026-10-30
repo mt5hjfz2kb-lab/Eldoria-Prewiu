@@ -272,6 +272,8 @@ namespace Eldoria.Application
                 BastionUpgradeTaskId=s.BastionUpgradeTaskId,
                 RecruitmentCompletesUtcTicks=s.RecruitmentCompletesUtcTicks,
                 RecruitmentTaskId=s.RecruitmentTaskId, PendingRecruitArchers=s.PendingRecruitArchers,
+                PendingRecruitTier=s.PendingRecruitTier,
+                SpeedupOneMinute=s.SpeedupOneMinute, SpeedupFiveMinutes=s.SpeedupFiveMinutes,
                 LastBattleReason=s.LastBattleReason,
                 LastBattleReport=new BattleReportState {
                     TargetId=s.LastBattleReport?.TargetId??"",
@@ -284,6 +286,7 @@ namespace Eldoria.Application
                     RemainingHealth=s.LastBattleReport?.RemainingHealth??0,
                     RewardWood=s.LastBattleReport?.RewardWood??0,
                     RewardStone=s.LastBattleReport?.RewardStone??0,
+                    RewardFood=s.LastBattleReport?.RewardFood??0,
                     Reason=s.LastBattleReport?.Reason??""
                 },
                 ChapterProgress=new ChapterProgressState {
@@ -446,16 +449,45 @@ namespace Eldoria.Application
                     }
                     else return Fail("Obra no disponible");
                     break;
+                case "UseSpeedup":
+                    {
+                        string[] speed=command.TargetId.Split(':');
+                        if(speed.Length!=2||(speed[0]!="building"&&speed[0]!="bastion"&&speed[0]!="training")||
+                            (speed[1]!="1m"&&speed[1]!="5m"))return Fail("Aceleración desconocida");
+                        bool five=speed[1]=="5m";
+                        if(five?state.SpeedupFiveMinutes<=0:state.SpeedupOneMinute<=0)return Fail("No quedan aceleradores");
+                        long deadline=speed[0]=="building"?state.BuildingCompletesUtcTicks:
+                            speed[0]=="bastion"?state.BastionUpgradeCompletesUtcTicks:state.RecruitmentCompletesUtcTicks;
+                        if(deadline<=clock.UtcTicks)return Fail("No hay tarea activa que acelerar");
+                        long advanced=Math.Max(clock.UtcTicks,deadline-TimeSpan.FromMinutes(five?5:1).Ticks);
+                        if(speed[0]=="building")state.BuildingCompletesUtcTicks=advanced;
+                        else if(speed[0]=="bastion")state.BastionUpgradeCompletesUtcTicks=advanced;
+                        else state.RecruitmentCompletesUtcTicks=advanced;
+                        if(five)state.SpeedupFiveMinutes--;else state.SpeedupOneMinute--;
+                        break;
+                    }
                 case "Recruit":
                     if (state.BastionLevel < 2 || state.BarracksLevel < 1)
                         return Fail("Reclutamiento no disponible");
                     int recruitCount=SliceRules.RecruitArchers;
+                    int recruitTier=1;
                     if(command.TargetId != "archer:t1")
                     {
-                        if(!command.TargetId.StartsWith("archer:t1:",StringComparison.Ordinal) ||
-                           !int.TryParse(command.TargetId.Substring("archer:t1:".Length),out recruitCount))
-                            return Fail("Tipo de unidad desconocido");
+                        if(command.TargetId.StartsWith("archer:t1:",StringComparison.Ordinal))
+                        {
+                            if(!int.TryParse(command.TargetId.Substring("archer:t1:".Length),out recruitCount))
+                                return Fail("Cantidad de reclutas no válida");
+                        }
+                        else if(command.TargetId.StartsWith("archer:t2:",StringComparison.Ordinal))
+                        {
+                            recruitTier=2;
+                            if(!int.TryParse(command.TargetId.Substring("archer:t2:".Length),out recruitCount))
+                                return Fail("Cantidad de reclutas no válida");
+                        }
+                        else return Fail("Tipo de unidad desconocido");
                     }
+                    if(recruitTier==2 && (state.BarracksLevel<4||state.BastionLevel<4))
+                        return Fail("Arqueros T2 requieren Cuartel nivel IV");
                     if(recruitCount<1 || recruitCount>500) return Fail("Cantidad de reclutas no válida");
                     if (state.RecruitmentCompletesUtcTicks > 0) return Fail("Ya hay reclutas entrenando");
                     int recruitWood=SliceRules.RecruitWoodCostFor(recruitCount);
@@ -465,6 +497,7 @@ namespace Eldoria.Application
                     state.Resources.Wood -= recruitWood;
                     state.Resources.Stone -= recruitStone;
                     state.PendingRecruitArchers = recruitCount;
+                    state.PendingRecruitTier = recruitTier;
                     state.RecruitmentTaskId = "recruit:" + command.Id;
                     state.RecruitmentCompletesUtcTicks = clock.UtcTicks +
                         TimeSpan.FromSeconds(SliceRules.RecruitSecondsFor(recruitCount)).Ticks;
@@ -560,13 +593,15 @@ namespace Eldoria.Application
                 if (!state.CompletedTaskIds.Contains(state.RecruitmentTaskId))
                 {
                     state.CompletedTaskIds.Add(state.RecruitmentTaskId);
-                    state.Available.ArcherT1 += state.PendingRecruitArchers;
+                    if(state.PendingRecruitTier==2)state.Available.ArcherT2+=state.PendingRecruitArchers;
+                    else state.Available.ArcherT1+=state.PendingRecruitArchers;
                     if (state.ChapterProgress == null) state.ChapterProgress = new ChapterProgressState();
                     state.ChapterProgress.TrainedArchers += state.PendingRecruitArchers;
                 }
                 state.RecruitmentCompletesUtcTicks = 0;
                 state.RecruitmentTaskId = "";
                 state.PendingRecruitArchers = 0;
+                state.PendingRecruitTier = 1;
                 changed = true;
             }
             // Every one of up to three persisted marches advances independently.
@@ -716,7 +751,7 @@ namespace Eldoria.Application
             if (p == null) return false;
             if (p.GrantedRewards == null) p.GrantedRewards = new System.Collections.Generic.List<string>();
             bool changed = false;
-            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0, int food=0)
+            void Grant(string id, bool complete, int wood=0, int stone=0, int power=0, int food=0, int speedup1=0, int speedup5=0)
             {
                 if (!complete || p.GrantedRewards.Contains(id)) return;
                 p.GrantedRewards.Add(id);
@@ -724,6 +759,8 @@ namespace Eldoria.Application
                 state.Resources.Stone += stone;
                 state.Resources.Food += food;
                 state.MissionPower += power;
+                state.SpeedupOneMinute += speedup1;
+                state.SpeedupFiveMinutes += speedup5;
                 changed = true;
             }
             Grant("c1-sawmill", state.SawmillLevel>0, wood:120);
@@ -745,10 +782,39 @@ namespace Eldoria.Application
                 Grant("c3-hunt",c.Hunts>=2,food:220);
                 Grant("c3-fissure",c.FissureClosed,stone:260,power:100);
                 Grant("c3-infra",state.SawmillLevel>=2&&state.BarracksLevel>=2&&c.GranaryLevel>=2,wood:220,stone:180);
+                bool infrastructure=state.SawmillLevel>=2&&state.BarracksLevel>=2&&c.GranaryLevel>=2;
+                Grant("c3-bastion",state.BastionLevel>=4,food:180);
+                Grant("chapter-3",state.BastionLevel>=4&&infrastructure&&c.FissureClosed&&c.Hunts>=2&&p.GrantedRewards.Contains("c3-food"),
+                    wood:280,stone:240,food:260,power:220);
+                if(state.BastionLevel>=4){
+                    Grant("c4-sawmill2",state.SawmillLevel>=2,wood:180);
+                    Grant("c4-granary2",c.GranaryLevel>=2,food:220);
+                    Grant("c4-barracks2",state.BarracksLevel>=2,stone:180);
+                    Grant("c4-priority",!string.IsNullOrEmpty(c.DevelopmentPriority),power:80);
+                    Grant("c4-bastion",state.BastionLevel>=5,power:220);
+                    Grant("chapter-4",state.BastionLevel>=5&&infrastructure&&!string.IsNullOrEmpty(c.DevelopmentPriority),
+                        wood:360,stone:300,food:280,power:260,speedup5:1);
+                }
+                // Web gives one introductory one-minute speedup for the first
+                // compatible chapter-IV task; gathering is never accelerated.
+                Grant("intro-speedup1",state.BastionLevel>=4 &&
+                    (state.BuildingCompletesUtcTicks>clock.UtcTicks||
+                     state.BastionUpgradeCompletesUtcTicks>clock.UtcTicks||
+                     state.RecruitmentCompletesUtcTicks>clock.UtcTicks),speedup1:1);
+                if(state.BastionLevel>=5){
+                    Grant("c5-stoneworks",c.StoneworksLevel>0,wood:220,food:180);
+                    Grant("c5-stone",state.Resources.Stone>=1200,wood:240);
+                    int troops=state.Available.Total+state.Wounded.Total;
+                    foreach(var march in MarchCapacityRules.WorldMarches(state))
+                        if(march!=null&&march.Phase!="idle")troops+=march.Troops.Total;
+                    Grant("c5-army",troops>=60,wood:260,stone:180);
+                    Grant("c5-rare",c.AshStalkerDefeated,food:260,stone:180);
+                    // The chapter-V conclusion requires Bastion VI; not authored yet.
+                }
             }
             return changed;
         }
-        public static bool IsChapterThreeTarget(string id)=>id=="fissure-valoria"||id=="hunt-wolf"||id=="hunt-boar"||id=="meat-valoria";
+        public static bool IsChapterThreeTarget(string id)=>id=="fissure-valoria"||id=="hunt-wolf"||id=="hunt-boar"||id=="meat-valoria"||id=="ash-stalker-valoria";
         CommandResult ExecuteChapterThree(GameCommand command)
         {
             var c=state.ChapterThree;var id=command.TargetId;
@@ -791,6 +857,7 @@ namespace Eldoria.Application
                     state.BuildingCompletesUtcTicks=clock.UtcTicks+TimeSpan.FromSeconds(level==0?(id=="stoneworks"?12:9):8+level*2).Ticks;break;
                 case "Gather":case "Fight":
                     if(id=="fissure-valoria"&&(!c.LyraContacted||c.FissureClosed))return Fail("Investiga y conoce a Lyra antes del asalto");
+                    if(id=="ash-stalker-valoria"&&(state.BastionLevel<5||c.AshStalkerRespawnUtcTicks>clock.UtcTicks))return Fail("Acechador no disponible");
                     if(id=="meat-valoria"&&(command.Kind!="Gather"||c.MeatRemaining<=0))return Fail("Reserva no disponible");
                     if(id!="meat-valoria"&&command.Kind!="Fight")return Fail("Acción no válida");
                     if(id=="hunt-wolf"&&c.WolfRespawnUtcTicks>clock.UtcTicks||id=="hunt-boar"&&c.BoarRespawnUtcTicks>clock.UtcTicks)return Fail("La caza aún no está disponible");
@@ -848,6 +915,21 @@ namespace Eldoria.Application
         void ResolveChapterThreeMarch(MarchState m,long due)
         {
             var c=state.ChapterThree;
+            if(m.TargetId=="ash-stalker-valoria")
+            {
+                var stats=SliceRules.Expedition(m.Troops,m.HeroId);
+                var report=SliceRules.FightCreature(stats,new WorldCreatureStats(920,132,68,54,0,0),ambush:true);
+                if(report.Won){c.AshStalkerDefeated=true;c.AshStalkerRespawnUtcTicks=due+TimeSpan.FromSeconds(60).Ticks;m.PendingFood=120;m.PendingStone=110;}
+                state.LastBattleReport=new BattleReportState{
+                    TargetId=m.TargetId,HeroId=m.HeroId,Troops=m.Troops.Total,
+                    PlayerPower=stats.Power,EnemyPower=3600,Won=report.Won,
+                    Rounds=report.Rounds,RemainingHealth=report.RemainingHealth,
+                    RewardFood=m.PendingFood,RewardStone=m.PendingStone,
+                    Reason=report.Reason+(report.Won?" Botín: 120 comida y 110 piedra al regresar.":"")
+                };
+                state.LastBattleReason=state.LastBattleReport.Reason;
+                return;
+            }
             if(m.TargetId=="meat-valoria") {m.PendingFood=c.MeatRemaining;c.MeatRemaining=0;c.MeatRespawnUtcTicks=due+TimeSpan.FromSeconds(45).Ticks;return;}
             var power=SliceRules.Expedition(m.Troops,m.HeroId).Power;
             // The web's ordinary hunts resolve against their explicit expedition-power requirement.

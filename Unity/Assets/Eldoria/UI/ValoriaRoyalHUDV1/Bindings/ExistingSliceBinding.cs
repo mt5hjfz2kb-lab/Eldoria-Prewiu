@@ -42,7 +42,7 @@ namespace Eldoria.UI.RoyalGold {
    switch(phase){case "outbound":label=L(en,"En marcha","Outbound");break;case "gathering":label=L(en,"Recolectando","Gathering");break;case "returning":label=L(en,"Regresando","Returning");break;default:label=L(en,"Marcha disponible","March ready");break;}
    return label+(phase=="idle"?"":" · "+TargetName(s.March.TargetId,en)+" · "+RoyalFormatting.Remaining(s.March.PhaseEndsUtcTicks,clock.UtcTicks,en));
   }
-  static string TargetName(string id,bool en){switch(id){case "meat-valoria":return L(en,"Reserva de carne","Meat reserve");case "hunt-wolf":return L(en,"Lobos cenicientos","Ash wolves");case "hunt-boar":return L(en,"Jabalí de roca","Rock boar");case "fissure-valoria":return L(en,"Fisura","Fissure");case "forest-valoria":return L(en,"Bosque","Forest");case "quarry-valoria":return L(en,"Cantera","Quarry");case "corrupt-scout":return L(en,"Ruta corrupta","Corrupted route");case "engendro-valoria":return L(en,"Engendro","Spawn");default:return L(en,"Valoria","Valoria");}}
+  static string TargetName(string id,bool en){switch(id){case "ash-stalker-valoria":return L(en,"Acechador de Ceniza","Ash Stalker");case "meat-valoria":return L(en,"Reserva de carne","Meat reserve");case "hunt-wolf":return L(en,"Lobos cenicientos","Ash wolves");case "hunt-boar":return L(en,"Jabalí de roca","Rock boar");case "fissure-valoria":return L(en,"Fisura","Fissure");case "forest-valoria":return L(en,"Bosque","Forest");case "quarry-valoria":return L(en,"Cantera","Quarry");case "corrupt-scout":return L(en,"Ruta corrupta","Corrupted route");case "engendro-valoria":return L(en,"Engendro","Spawn");default:return L(en,"Valoria","Valoria");}}
   static void Mission(PlayerState s,RoyalSnapshot d,bool en){
    var p=s.ChapterProgress; string key=SliceRules.CurrentObjectiveKey(s); int done=0,total=1; string title;
    switch(key){
@@ -69,8 +69,11 @@ namespace Eldoria.UI.RoyalGold {
     case "b4.priority":title=L(en,"Elige el desarrollo de Valoria","Choose Valoria's development priority");break;
     case "b4.ascend":title=L(en,"Eleva el Bastión a nivel V","Upgrade the Bastion to level V");break;
     case "b5.stoneworks":title=L(en,"Construye la Cantera productiva","Build the Stoneworks");break;
+    case "b5.stone":title=L(en,"Mantén 1.200 piedra disponible","Keep 1,200 stone available");done=s.Resources.Stone;total=1200;break;
+    case "b5.army":title=L(en,"Alcanza 60 arqueros","Reach 60 archers");done=s.Available.Total+s.Wounded.Total;foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")done+=march.Troops.Total;total=60;break;
+    case "b5.rare":title=L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker");done=s.ChapterThree.AshStalkerDefeated?1:0;break;
     case "b5.infrastructure":title=L(en,"Desarrolla los edificios a nivel V","Develop each building to level V");break;
-    case "b5.complete":title=L(en,"Valoria V · infraestructura consolidada","Valoria V · infrastructure established");done=1;break;
+    case "b5.complete":title=L(en,"Bastión V completado · próximo capítulo VI","Bastion V complete · chapter VI next");done=1;break;
     default:title=L(en,"Sin objetivo disponible","No objective available");total=0;break;
    }
    d.Objective=title;d.MissionFraction=total>0?Math.Min(1f,Math.Max(0f,done/(float)total)):0;d.ObjectiveProgress=total>0?Math.Min(done,total)+" / "+total:"";
@@ -87,11 +90,21 @@ namespace Eldoria.UI.RoyalGold {
      new RoyalMissionStep(L(en,"Regreso a Valoria","Return to Valoria"),s.JourneyComplete),
      new RoyalMissionStep(L(en,"Bastión II alcanzado","Bastion II reached"),s.BastionLevel>=2)
     };
-   }else if(s.BastionLevel>=4){
-    d.MissionSteps=new[]{new RoyalMissionStep(L(en,"Prioridad de desarrollo elegida","Development priority chosen"),!string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)),
-     new RoyalMissionStep(L(en,"Bastión V alcanzado","Bastion V reached"),s.BastionLevel>=5),
-     new RoyalMissionStep(L(en,"Cantera productiva construida","Stoneworks built"),s.ChapterThree.StoneworksLevel>0),
-     new RoyalMissionStep(L(en,"Edificios a nivel V","Buildings at level V"),s.SawmillLevel>=5&&s.BarracksLevel>=5&&s.ChapterThree.GranaryLevel>=5&&s.ChapterThree.StoneworksLevel>=5)};
+   }else if(s.BastionLevel>=5){
+    int available=s.Available.Total+s.Wounded.Total;
+    foreach(var march in MarchCapacityRules.WorldMarches(s))if(march!=null&&march.Phase!="idle")available+=march.Troops.Total;
+    d.MissionSteps=new[]{
+     new RoyalMissionStep(L(en,"Construye la Cantera","Build the Stoneworks"),s.ChapterThree.StoneworksLevel>0),
+     new RoyalMissionStep(L(en,"Mantén 1.200 piedra","Hold 1,200 stone"),p?.GrantedRewards?.Contains("c5-stone")??false),
+     new RoyalMissionStep(L(en,"Alcanza 60 arqueros","Reach 60 archers"),(p?.GrantedRewards?.Contains("c5-army")??false)||available>=60),
+     new RoyalMissionStep(L(en,"Derrota al Acechador de Ceniza","Defeat the Ash Stalker"),s.ChapterThree.AshStalkerDefeated)};
+   }else if(s.BastionLevel==4){
+    d.MissionSteps=new[]{
+     new RoyalMissionStep(L(en,"Aserradero nivel 2","Sawmill level 2"),s.SawmillLevel>=2),
+     new RoyalMissionStep(L(en,"Granero nivel 2","Granary level 2"),s.ChapterThree.GranaryLevel>=2),
+     new RoyalMissionStep(L(en,"Cuartel nivel 2","Barracks level 2"),s.BarracksLevel>=2),
+     new RoyalMissionStep(L(en,"Prioridad de desarrollo elegida","Development priority chosen"),!string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)),
+     new RoyalMissionStep(L(en,"Bastión V alcanzado","Bastion V reached"),s.BastionLevel>=5)};
    }else if(s.BastionLevel>=3){
     d.MissionSteps=new[]{new RoyalMissionStep(L(en,"Granero construido","Granary built"),s.ChapterThree.GranaryLevel>0),
      new RoyalMissionStep(L(en,"500 comida reunida","500 food gathered"),p.GrantedRewards.Contains("c3-food")),
@@ -136,7 +149,7 @@ namespace Eldoria.UI.RoyalGold {
     if(s.BuildingTaskId.StartsWith("c3:"+target+":",StringComparison.Ordinal))deadline=s.BuildingCompletesUtcTicks;
     else if(s.BuildingCompletesUtcTicks>0||s.BastionUpgradeCompletesUtcTicks>0)reason=L(en,"Otra obra está en curso.","Another construction is in progress.");
    }else{
-    b.Name=id=="fissure-valoria"?L(en,"Fisura","Fissure"):id=="hunt-wolf"?L(en,"Lobo ceniciento","Ash wolf"):id=="hunt-boar"?L(en,"Jabalí de roca","Rock boar"):L(en,"Reserva de carne","Meat reserve");
+    b.Name=id=="fissure-valoria"?L(en,"Fisura","Fissure"):id=="hunt-wolf"?L(en,"Lobo ceniciento","Ash wolf"):id=="hunt-boar"?L(en,"Jabalí de roca","Rock boar"):id=="ash-stalker-valoria"?L(en,"Acechador de Ceniza","Ash Stalker"):L(en,"Reserva de carne","Meat reserve");
     kind=id=="meat-valoria"?"Gather":"Fight";label=L(en,"Enviar expedición","Send expedition");
     if(id=="fissure-valoria"){
      if(c.FissureClosed){b.State=L(en,"Fisura cerrada","Fissure closed");return b;}
@@ -145,6 +158,11 @@ namespace Eldoria.UI.RoyalGold {
      b.Function=L(en,"Una fisura local. Lyra busca a su hermano; aún nadie conoce el origen de la Brecha.","A local fissure. Lyra seeks her brother; the Breach's origin remains unknown.");
      deadline=c.InvestigationEndsUtcTicks;seconds=1200;
     }else if(id=="meat-valoria")b.Function=c.MeatRemaining+L(en," comida disponible"," food available");
+    else if(id=="ash-stalker-valoria"){
+     b.Function=L(en,"Enemigo raro del Bastión V. Su emboscada exige una marcha preparada.","Rare Bastion-V enemy. Its ambush requires a prepared expedition.");
+     if(s.BastionLevel<5)reason=L(en,"Requiere Bastión V.","Requires Bastion V.");
+     if(c.AshStalkerRespawnUtcTicks>clock.UtcTicks)reason=L(en,"El Acechador aún no ha regresado.","The Stalker has not returned yet.");
+    }
     else b.Function=id=="hunt-wolf"?L(en,"Poder requerido: 1450 · 140 comida y piel curtida.","Required power: 1450 · 140 food and treated hide."):L(en,"Poder requerido: 2050 · 190 comida y colmillo pétreo.","Required power: 2050 · 190 food and stone tusk.");
     if(c.InvestigationEndsUtcTicks>0&&id!="fissure-valoria")reason=L(en,"Aldric está investigando la fisura.","Aldric is investigating the fissure.");
     if(s.March.Phase!="idle"){reason=L(en,"Espera al regreso de la marcha.","Wait for the march to return.");if(s.March.TargetId==id){deadline=s.March.PhaseEndsUtcTicks;seconds=s.March.Phase=="gathering"?Math.Max(7,Math.Min(35,(c.MeatRemaining+119)/120)):SliceRules.TravelSeconds;}}

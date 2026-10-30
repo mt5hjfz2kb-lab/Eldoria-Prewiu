@@ -102,6 +102,7 @@ namespace Eldoria.Domain
         public int RemainingHealth;
         public int RewardWood;
         public int RewardStone;
+        public int RewardFood;
         public string Reason = "";
     }
     [Serializable] public sealed class ChapterProgressState
@@ -125,6 +126,8 @@ namespace Eldoria.Domain
         // Additive IV/V save fields: old schema-1 saves remain valid.
         public int StoneworksLevel;
         public string DevelopmentPriority = "";
+        public bool AshStalkerDefeated;
+        public long AshStalkerRespawnUtcTicks;
         public bool RankUnlocked, ExtractionOddity;
         public int MeatRemaining = 1100;
         public bool FissureExplored, LyraContacted, LyraRecruited, FissureClosed;
@@ -184,6 +187,10 @@ namespace Eldoria.Domain
         public long RecruitmentCompletesUtcTicks;
         public string RecruitmentTaskId = "";
         public int PendingRecruitArchers;
+        // Additive on the existing schema-1 save. Older in-flight training defaults to T1.
+        public int PendingRecruitTier = 1;
+        // Web chapter rewards: persistent one- and five-minute accelerators.
+        public int SpeedupOneMinute, SpeedupFiveMinutes;
         public string LastBattleReason = "";
         public BattleReportState LastBattleReport = new BattleReportState();
         public ChapterProgressState ChapterProgress = new ChapterProgressState();
@@ -436,8 +443,13 @@ namespace Eldoria.Domain
                 return "b1.return";
             }
             if(s.BastionLevel>=5){
-                if(s.ChapterThree.StoneworksLevel==0)return "b5.stoneworks";
-                return s.SawmillLevel>=5&&s.BarracksLevel>=5&&s.ChapterThree.GranaryLevel>=5&&s.ChapterThree.StoneworksLevel>=5?"b5.complete":"b5.infrastructure";
+                var c=s.ChapterThree??new BastionThreeState();
+                if(c.StoneworksLevel==0)return "b5.stoneworks";
+                if(!(s.ChapterProgress?.GrantedRewards?.Contains("c5-stone")??false))return "b5.stone";
+                int archers=s.Available.Total+s.Wounded.Total;
+                foreach(var m in MarchCapacityRules.WorldMarches(s))if(m!=null&&m.Phase!="idle")archers+=m.Troops.Total;
+                if(!(s.ChapterProgress?.GrantedRewards?.Contains("c5-army")??false)&&archers<60)return "b5.army";
+                return c.AshStalkerDefeated?"b5.complete":"b5.rare";
             }
             if(s.BastionLevel==4)return string.IsNullOrEmpty(s.ChapterThree.DevelopmentPriority)?"b4.priority":"b4.ascend";
             if(s.BastionLevel>=3) {
@@ -521,21 +533,25 @@ namespace Eldoria.Domain
             return new CombatReport(win, Math.Max(0, playerHp), rounds, reason);
         }
         // Use the same original six-round damage equation, without a second battle engine.
-        public static CombatReport FightCreature(CombatStats player,WorldCreatureStats enemy)
+        public static CombatReport FightCreature(CombatStats player,WorldCreatureStats enemy,bool ambush=false)
         {
             int enemyHp=enemy.Health,playerHp=player.Health,rounds=0;
+            int opening=ambush?Hit(enemy.Attack,player.Defense,enemy.Break,1.42):0;
+            playerHp-=opening;
+            int defense=ambush?(int)Math.Round(enemy.Defense*.82,MidpointRounding.AwayFromZero):enemy.Defense;
             while(rounds<6&&enemyHp>0&&playerHp>0)
             {
-                rounds++;enemyHp-=Hit(player.Attack,enemy.Defense,player.Break);
+                rounds++;enemyHp-=Hit(player.Attack,defense,player.Break,ambush&&rounds==1?1.08:1);
                 if(enemyHp>0)playerHp-=Hit(enemy.Attack,player.Defense,enemy.Break);
             }
             bool win=enemyHp<=0&&playerHp>0;
             return new CombatReport(win,Math.Max(0,playerHp),rounds,
-                win?"La expedición ha vencido al objetivo de Región 1.":
-                    "La criatura resistió o agotó la Vida de la marcha. Mejora las tropas.");
+                (win?"La expedición ha vencido al objetivo de Región 1.":
+                    "La criatura resistió o agotó la Vida de la marcha. Mejora las tropas.")+
+                (ambush?" Emboscada: "+opening+" daño inicial; después el Acechador pierde un 18 % de Defensa.":""));
         }
-        private static int Hit(int attack, int defense, int brk)
-            => Math.Max(12, (int)Math.Round(attack * (1 + Math.Min(.6, brk / 500.0)) - defense * .48,
+        private static int Hit(int attack, int defense, int brk,double multiplier=1)
+            => Math.Max(12, (int)Math.Round((attack * (1 + Math.Min(.6, brk / 500.0)) - defense * .48)*multiplier,
                 MidpointRounding.AwayFromZero));
     }
 }

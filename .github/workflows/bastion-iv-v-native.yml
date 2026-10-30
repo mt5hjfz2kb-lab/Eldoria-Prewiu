@@ -2,7 +2,7 @@ name: '[ELDORIA] Bastion IV V integrated native verification'
 on:
   workflow_dispatch:
   push:
-    branches: [feature/bastion-iv-v-migration-20261029]
+    branches: [feature/bastion-iv-v-migration-20261029, feature/eldoria-web-parity-camera-20261029]
     paths: ['tools/bastion-iv-v/native-request.json']
 permissions:
   contents: write

@@ -317,6 +317,12 @@
       "note": "Método de trabajo visual sujeto a AGENTS"
     },
     {
+      "path": "docs/ELDORIA_WEB_PARITY_CAMERA_REMEDIATION_20261029.md",
+      "domain": "gameplay",
+      "status": "review_pending",
+      "note": "Correcciones en PR #132; todavía sin aceptación nativa ni conciliación de propiedad con PR #130."
+    },
+    {
       "path": "docs/ELDORIA_WORK_VISUAL_INTEGRATION_BRIEF_V1.md",
       "domain": "art",
       "status": "review_pending"
@@ -358,6 +364,12 @@
       "path": "docs/GOLDEN_PRIMARY_FORMS_PROFESSIONAL_RECONSTRUCTION_V1.md",
       "domain": "art",
       "status": "review_pending"
+    },
+    {
+      "path": "docs/HEROES_UI_APPROVED_ART_LOCK_20261030.md",
+      "domain": "art",
+      "status": "reference",
+      "note": "Referencia visual de héroes aprobada por el propietario; preparación sin UI implementada ni autoridad para iniciar producción o publicación."
     },
     {
       "path": "docs/HISTORICAL_VISUAL_RESIDUE_CLEANUP_V1.md",

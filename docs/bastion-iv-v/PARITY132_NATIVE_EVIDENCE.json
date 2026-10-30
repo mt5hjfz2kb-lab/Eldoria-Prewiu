@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "status": "SUCCESS",
+  "source": "c78524723ab0b5bdabb546f36948847102dfb966",
+  "run_id": 40965665726,
+  "editmode": {
+    "passed": 57,
+    "failed": 0
+  },
+  "playmode": {
+    "passed": 73,
+    "failed": 0
+  },
+  "touch_ownership": {
+    "passed": 1,
+    "failed": 0
+  },
+  "iii_v_checks": 460,
+  "native_screenshots": 88,
+  "i_ii_integrated": "PASS",
+  "review_artifact": {
+    "id": 12941786946,
+    "bytes": 176442160,
+    "sha256": "706e33b876cee2e57af714afc196b2f81fa18f4eda74f1db86ccff40c3dff498",
+    "download_hash_verified": true
+  },
+  "diagnostics_artifact": {
+    "id": 12942592092,
+    "bytes": 150053,
+    "sha256": "67ec59d7628d046bdee3625bffd17906b90fbe7f96f46b4c7fcaf37e312c2ac0",
+    "download_hash_verified": true
+  },
+  "complete_artifact": {
+    "id": 12941678565,
+    "bytes": 468483533,
+    "sha256": "e401aef013f6d2d665211e23208aeaace9baffb022cae922c4abe7560ad14a27"
+  },
+  "visually_reviewed": [
+    "parity-training-t2-horizontal.png",
+    "parity-training-speedup-choice-vertical.png",
+    "parity-world-horizontal-preset0.png",
+    "parity-world-horizontal-preset1.png",
+    "parity-world-horizontal-preset2.png",
+    "parity-world-vertical-preset0.png",
+    "parity-world-vertical-preset1.png",
+    "parity-world-vertical-preset2.png",
+    "parity-rare-before-battle-horizontal.png",
+    "parity-rare-before-battle-vertical.png"
+  ],
+  "test_mode": "III–V uses prepared state and test clock; separate I–II integration regression",
+  "continuous_fresh_i_to_v_pass": false,
+  "physical_mobile_tested": false,
+  "art_approved": false,
+  "published_apk_or_webgl_includes_this_patch": false
+}
