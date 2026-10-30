@@ -2558,6 +2558,44 @@
         "native_result": "SUCCESS: 61/61 EditMode, 73/73 PlayMode; visual fidelity NOT accepted",
         "runner_released": true
       }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Corregir PR104 para respetar retirada de Qwen",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "branch": "chore/knowledge-continuity-safe-20261024",
+      "status": "claimed",
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "06178d05199b2c970a17f18ef857407360bca793",
+      "scope": [
+        "AGENTS.md",
+        "tools/art-knowledge/**",
+        "tools/mission-continuity/**",
+        "tools/art-direction/ai-authoring/verify-artist-cycle.mjs",
+        "tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs",
+        "tools/check-art-production-governance.mjs",
+        "tools/plan-art-production.mjs",
+        ".github/workflows/repository-architecture-guard.yml",
+        "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
+        "docs/documentation-catalog.json"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Zero-cost governance and memory tooling consolidation; no art generation, no paid services, no Unity runner.",
+      "phase": "CONSOLIDATE_PR101_PR104",
+      "next": "Reconcile existing PR101 and PR104 with current main; verify model-neutral authoring without weakening provenance, visual review or historical evidence.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      },
+      "ownership_revision": 4,
+      "resume_context": {
+        "prior_delivered_pr": 104,
+        "prior_state": "completed_in_branch",
+        "source_pr": 103
+      }
     }
   ],
   "history": [
@@ -9728,6 +9766,43 @@
       "final_source_sha": "3a27851755b9a000ef4b177e3360d6cbfddf3713",
       "art_approved": false,
       "unity_validated": false
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Corregir PR104 para respetar retirada de Qwen",
+      "owner": "chatgpt-qwen-decoupling-pr104-safety-20261024",
+      "branch": "chore/knowledge-continuity-safe-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only memory reference wording and regression tests only; does not create art or call Qwen.",
+      "phase": "MODEL_NEUTRAL_MEMORY_CORRECTION_CERTIFIED_PR104",
+      "next": "PR104 safe memory and continuity improvements ready for exact-head review. Full Qwen art-governance decoupling remains pending separately in draft PR101; never treat Qwen as required artist.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "run_architecture": 40099103785,
+        "source_head": "73b82b40bccc54411099a7fc0c9c59624e736150",
+        "decision": "Owner removed Qwen from artistic work; no Qwen/Tripo/Unity invoked by this scope."
+      },
+      "ownership_revision": 3,
+      "resume_context": {
+        "prior_delivered_pr": 104,
+        "prior_state": "completed_in_branch",
+        "source_pr": 103
+      }
     }
   ],
   "owner_specific_pauses": [
