@@ -2453,13 +2453,13 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "chatgpt-gpt6-v41-integration-20261030",
+      "owner": "codex-pr134-continuation-ab04f62d0b26",
       "ownership_state": "claimed",
-      "ownership_revision": 2,
+      "ownership_revision": 3,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
-      "claimed_at": "2026-10-30T08:43:00+01:00",
+      "claimed_at": "2026-10-30T08:25:40.166Z",
       "base_main_sha": "f016932317e049d340460c408d88b90b1290b692",
       "scope": [
         "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs",
@@ -2485,7 +2485,20 @@
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
       "phase": "GATEWAY_AND_LEGACY_DOMAIN_TEST_INTEGRATION",
       "next": "Wire tested V4.1 hero/roster/mail contracts into save, authoritative gateway and existing RoyalGold V3 controls. Keep current campaign fight resolver unchanged until balance/art QA.",
-      "art_production_routing_reason": "Se programan controles UI y datos C# sin generar nuevo arte. Su apariencia NO está aprobada para lanzamiento; debe sustituirse por capas exactas de las referencias aprobadas con A/B Unity antes de fusionar."
+      "art_production_routing_reason": "Se programan controles UI y datos C# sin generar nuevo arte. Su apariencia NO está aprobada para lanzamiento; debe sustituirse por capas exactas de las referencias aprobadas con A/B Unity antes de fusionar.",
+      "ownership_history": [
+        {
+          "owner": "chatgpt-gpt6-v41-integration-20261030",
+          "ownership_revision": 2,
+          "transferred_at": "2026-10-30T08:25:40.165Z",
+          "reason": "Owner explicitly requests this chat assume and finish PR134 after prior chat became too long."
+        }
+      ],
+      "delivery_definition": {
+        "deliverable": "Issue131: actual three-hero/percentage march preparation, narrative-gated training, persistent battle mailbox and approved reference UI in canonical Unity game; preserve Bastion I–V resolver/versioned experimental V4.1.",
+        "evidence": "Domain and Unity regression tests, actual save/reload and UI interaction, matched native captures against original approved PNGs.",
+        "handoff": "Same PR134, verified integration and documented limits; no paid credits or unrequested publication."
+      }
     }
   ],
   "history": [
