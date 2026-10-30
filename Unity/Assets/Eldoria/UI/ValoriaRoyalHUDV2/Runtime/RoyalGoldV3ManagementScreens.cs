@@ -41,6 +41,7 @@ namespace Eldoria.UI.RoyalGold.V2
         public Action HeroesRequested { get; set; }
         public Func<bool> CanOpenHeroes { get; set; }
         RoyalButton heroesButton;
+        Sprite trainingCardPortrait;
         readonly RoyalButton[] trainingTierChoices=new RoyalButton[2];
         readonly RoyalText[] trainingTierLabels=new RoyalText[2];
         readonly Image[] trainingTierPortraits=new Image[2];
@@ -156,6 +157,7 @@ namespace Eldoria.UI.RoyalGold.V2
         }
         void OnDestroy()
         {
+            if(trainingCardPortrait)Destroy(trainingCardPortrait);
             if(Hud != null)
             {
                 Hud.SelectionChanged -= OnSelection;
@@ -364,6 +366,14 @@ namespace Eldoria.UI.RoyalGold.V2
             unitTitle = Text("Unit or hero title",left,26,Ivory,true);
             tierButton=Button("Select archer tier",left,"ARQUEROS T1",()=>{if(CurrentDestination==Destination.Training&&gateway.Snapshot().RecruitmentCompletesUtcTicks>0)speedMinutes=speedMinutes==1?5:1;else selectedTier=selectedTier==1?2:1;Refresh();},false,out tierLabel);
             unitDetail = Text("Unit profile and composition",left,18,Muted);
+            var rosterSource=RoyalGoldV41SourceArt.Get("archer-row");
+            if(rosterSource)
+            {
+                var area=rosterSource.rect;
+                trainingCardPortrait=Sprite.Create(rosterSource.texture,
+                    new Rect(area.x+area.width*.22f,area.y,area.width*.58f,area.height),
+                    new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
+            }
             for(int i=0;i<2;i++)
             {
                 int tier=i+1;
@@ -375,6 +385,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 },false,out trainingTierLabels[i]);
                 trainingTierPortraits[i]=RoyalGoldV41SourceArt.Surface(
                     (RectTransform)trainingTierChoices[i].transform,"archer-row");
+                trainingTierPortraits[i].sprite=trainingCardPortrait;
                 trainingTierPortraits[i].preserveAspect=true;
             }
             quantityRow = Rect("Quantity controls",left);
@@ -1110,6 +1121,18 @@ namespace Eldoria.UI.RoyalGold.V2
                         -(portraitHeight-portraitH)*cropOffset,portraitW,portraitHeight);
                     Place(heroSlotLabels[i].rectTransform,4,compactLandscape?cardsH-60:cardsH*(wide?.74f:.72f),cardW-8,compactLandscape?54:cardsH*(wide?.24f:.26f));
                     heroSlotLabels[i].fontSize=wide?14:13;
+                    if(compactLandscape)
+                    {
+                        // A horizontal phone cannot support a short panoramic
+                        // portrait strip: retain the complete original image
+                        // beside the actual hero name in the same touch target.
+                        float imageAreaW=cardW*.40f,imageAreaH=cardsH-12;
+                        Place(heroPortraitViewports[i],6,6,imageAreaW,imageAreaH);
+                        float imageW=Mathf.Min(imageAreaW,imageAreaH*ratio),imageH=imageW/ratio;
+                        Place(approvedHeroes[i].rectTransform,(imageAreaW-imageW)*.5f,
+                            (imageAreaH-imageH)*.5f,imageW,imageH);
+                        Place(heroSlotLabels[i].rectTransform,cardW*.45f,8,cardW*.52f,cardsH-16);
+                    }
                 }
                 float rowY=cardsY+cardsH+8;
                 Place(marchTroopSurface,8,rowY-4,lw-16,lh-rowY-4);
