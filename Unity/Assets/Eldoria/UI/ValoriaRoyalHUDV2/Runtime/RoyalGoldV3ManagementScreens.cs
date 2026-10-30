@@ -632,8 +632,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
                 status.Put("DISPONIBLES T1  "+s.Available.ArcherT1+" · T2  "+s.Available.ArcherT2+
                     "\nCAPACIDAD DE "+HeroName(selectedHero)+"  "+MarchCapacityRules.Capacity(s,selectedHero)+
-                    "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
-                    "\nMARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
+                    "\nNIVEL "+MarchCapacityRules.HeroLevel(s,selectedHero)+
+                    " · MARCHAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
                     "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
                 bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && troops.Total>0 &&
                     MarchCapacityRules.Fits(troops,s.Available,capacity);
@@ -696,6 +696,8 @@ namespace Eldoria.UI.RoyalGold.V2
             float w=lastWidth,h=lastHeight;
             if(w<1||h<1)return;
             bool landscape=w>h;
+            foreach(var button in root.GetComponentsInChildren<Button>(true))
+                foreach(var label in button.GetComponentsInChildren<RoyalText>(true))label.fontSize=17;
             float canvasScale=Hud.GetComponentInParent<Canvas>()?.scaleFactor??1f;
             Rect area=Screen.safeArea;
             float insetLeft=Screen.width>0?area.xMin/Mathf.Max(.01f,canvasScale):0;
@@ -707,7 +709,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float safeBottom=Screen.height>0?area.yMin/Mathf.Max(.01f,canvasScale):0;
             float top=Mathf.Max(Mathf.Max(10,h*.024f),safeTop+8);
             float bottom=Mathf.Max(Mathf.Max(10,h*.024f),safeBottom+8);
-            float headerH=landscape?Mathf.Clamp(h*.205f,88,95):140;
+            float headerH=landscape?Mathf.Clamp(h*.205f,88,95):196;
             float footH=landscape?Mathf.Clamp(h*.21f,70,92):Mathf.Clamp(h*.155f,102,132);
             float bodyY=top+headerH+8;
             float bodyH=Mathf.Max(120,h-bodyY-footH-bottom-8);
@@ -769,9 +771,9 @@ namespace Eldoria.UI.RoyalGold.V2
             float fw=footer.rect.width;
             Place(feedback.rectTransform,14,4,fw-28,landscape?20:25);
             float bw=Mathf.Max(90,(fw-42)*.48f);
-            float by=landscape?25:footH-60;
-            Place(back.transform as RectTransform,12,by,bw,landscape?42:49);
-            Place(action.transform as RectTransform,fw-12-bw,by,bw,landscape?42:49);
+            float by=landscape?25:footH-82;
+            Place(back.transform as RectTransform,12,by,bw,landscape?42:76);
+            Place(action.transform as RectTransform,fw-12-bw,by,bw,landscape?42:76);
             // Crónica Real: a military manuscript must be read without zoom,
             // including genuine counts, costs and countdowns on landscape.
             // The earlier 12-13pt landscape type was effectively illegible.
@@ -789,17 +791,25 @@ namespace Eldoria.UI.RoyalGold.V2
             {
                 // Two independent header rows: long Spanish titles must never
                 // wrap into the subtitle or underneath navigation controls.
-                Place(heading.rectTransform,15,8,hw-30,38);
-                Place(subheading.rectTransform,15,49,hw-30,24);
+                Place(heading.rectTransform,15,8,hw-30,44);
+                Place(subheading.rectTransform,15,58,hw-30,38);
                 float navWidth=(hw-42)/3f;
-                Place(heroesButton.transform as RectTransform,12,84,navWidth,44);
-                Place(switchDestination.transform as RectTransform,21+navWidth,84,navWidth,44);
-                Place(chapterAction.transform as RectTransform,30+2*navWidth,84,navWidth,44);
-                heading.fontSize=22;
+                Place(heroesButton.transform as RectTransform,12,110,navWidth,72);
+                Place(switchDestination.transform as RectTransform,21+navWidth,110,navWidth,72);
+                Place(chapterAction.transform as RectTransform,30+2*navWidth,110,navWidth,72);
+                heading.fontSize=32;
                 switchLabel.fontSize=14;
                 chapterActionLabel.fontSize=14;
             }
             ReflowApprovedSurfaces(leftSide,top,usable,bodyY,bodyH,gap,landscape);
+            if(!landscape)
+            {
+                // Portrait captures use 800 canvas units: 26 units remain
+                // readable at 390 px. Keep the same live controls and art.
+                foreach(var label in root.GetComponentsInChildren<RoyalText>(true))
+                    label.fontSize=Mathf.Max(26,label.fontSize);
+                Place(feedback.rectTransform,14,4,fw-28,44);
+            }
 
         }
         void ReflowApprovedSurfaces(float x,float top,float width,float y,float height,float gap,bool wide)
@@ -825,13 +835,13 @@ namespace Eldoria.UI.RoyalGold.V2
                     unitDetail.rectTransform.SetParent(left,false);
                     tierButton.transform.SetParent(left,false);
                     float textX=Mathf.Max(width*.43f,artW+36),textW=width-textX-18;
-                    Place(unitTitle.rectTransform,textX,24,textW,42);
-                    Place(unitDetail.rectTransform,textX,80,textW,100);
-                    Place(tierButton.transform as RectTransform,textX,artH-70,textW,48);
+                    Place(unitTitle.rectTransform,textX,24,textW,50);
+                    Place(unitDetail.rectTransform,textX,90,textW,116);
+                    Place(tierButton.transform as RectTransform,textX,artH-86,textW,72);
                     float rh=right.rect.height;
-                    Place(summary.rectTransform,20,20,width-40,176);
-                    Place(quantityRow,20,rh*.46f,width-40,44);
-                    Place(slider.transform as RectTransform,24,rh*.46f+54,width-48,24);
+                    Place(summary.rectTransform,20,20,width-40,260);
+                    Place(quantityRow,20,rh*.46f,width-40,88);
+                    Place(slider.transform as RectTransform,24,rh*.46f+104,width-48,24);
                     Place(status.rectTransform,20,rh*.70f,width-40,rh*.30f-14);
                     Place(trainingProgress,20,rh*.70f-22,width-40,10);
                     summary.fontSize=18;status.fontSize=16;unitDetail.fontSize=17;
@@ -863,25 +873,25 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(left,x,y,lw,lh);
                 Place(right,wide?x+lw+gap:x,wide?y:y+lh+gap,
                     wide?width-lw-gap:width,wide?height:height-lh-gap);
-                Place(unitTitle.rectTransform,14,8,lw-28,30);
-                float cardsY=43,cardsH=Mathf.Max(60,lh*.48f),cardW=(lw-40)/3f;
+                Place(unitTitle.rectTransform,14,8,lw-28,wide?30:50);
+                float cardsY=wide?43:65,cardsH=Mathf.Max(60,lh*(wide?.48f:.42f)),cardW=(lw-40)/3f;
                 for(int i=0;i<3;i++)
                 {
                     Place((RectTransform)heroSlotButtons[i].transform,14+i*(cardW+6),cardsY,cardW,cardsH);
-                    float portraitH=cardsH*.72f;
+                    float portraitH=cardsH*(wide?.72f:.70f);
                     float ratio=heroSlots[i]=="aldric"?138f/234f:244f/250f;
                     float portraitW=Mathf.Min(cardW-8,portraitH*ratio);
                     Place(approvedHeroes[i].rectTransform,(cardW-portraitW)*.5f,4,portraitW,portraitH);
-                    Place(heroSlotLabels[i].rectTransform,4,cardsH*.74f,cardW-8,cardsH*.24f);
+                    Place(heroSlotLabels[i].rectTransform,4,cardsH*(wide?.74f:.72f),cardW-8,cardsH*(wide?.24f:.26f));
                     heroSlotLabels[i].fontSize=wide?14:13;
                 }
                 float rowY=cardsY+cardsH+8;
                 Place(approvedTroopRow.rectTransform,14,rowY,lw*.29f,lh-rowY-18);
-                Place(unitDetail.rectTransform,lw*.34f,rowY,lw*.63f,40);
-                Place(tierButton.transform as RectTransform,lw*.34f,rowY+42,lw*.63f,32);
-                Place(percentModeButton.transform as RectTransform,lw*.34f,rowY+82,lw*.28f,32);
-                Place(quantityRow,lw*.65f,rowY+82,lw*.32f,38);
-                Place(slider.transform as RectTransform,lw*.34f,rowY+129,lw*.63f,16);
+                Place(unitDetail.rectTransform,lw*.34f,rowY,lw*.63f,wide?40:76);
+                Place(tierButton.transform as RectTransform,lw*.34f,rowY+(wide?42:84),lw*.63f,wide?32:80);
+                Place(percentModeButton.transform as RectTransform,lw*.34f,rowY+(wide?82:172),lw*(wide?.28f:.24f),wide?32:88);
+                Place(quantityRow,lw*(wide?.65f:.61f),rowY+(wide?82:172),lw*(wide?.32f:.36f),wide?38:88);
+                Place(slider.transform as RectTransform,lw*.34f,rowY+(wide?129:270),lw*.63f,wide?16:24);
                 float rw=right.rect.width,rh=right.rect.height;
                 Place(summary.rectTransform,14,8,rw-28,rh*.58f);
                 Place(status.rectTransform,14,rh*.60f,rw-28,rh*.38f);
@@ -890,10 +900,11 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             // Quantity buttons remain genuine controls within their moved container.
             float qw=quantityRow.rect.width;
-            Place(minus.transform as RectTransform,0,0,36,38);
-            Place(plus.transform as RectTransform,qw-36,0,36,38);
-            Place(selectedText.rectTransform,38,0,qw-76,38);
-            selectedText.fontSize=20;
+            float control=wide?36:88,controlHeight=wide?38:88;
+            Place(minus.transform as RectTransform,0,0,control,controlHeight);
+            Place(plus.transform as RectTransform,qw-control,0,control,controlHeight);
+            Place(selectedText.rectTransform,control+2,0,qw-2*(control+2),controlHeight);
+            selectedText.fontSize=wide?20:32;
         }
 
         static RectTransform Rect(string name,Transform parent)

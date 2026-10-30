@@ -96,6 +96,14 @@ namespace Eldoria.Editor
                 Need(!Bounds((RectTransform)button.transform).Overlaps(Bounds(title.rectTransform))&&
                      !Bounds((RectTransform)button.transform).Overlaps(Bounds(subtitle.rectTransform)),
                      "Header navigation does not cover title or subtitle "+button.name+" "+shot);
+            if(shot.Contains("small-phone"))
+                foreach(var label in labels.Where(t=>!string.IsNullOrWhiteSpace(t.text)))
+                {
+                    Need(label.fontSize*screen.GetComponentInParent<Canvas>().scaleFactor>=12,
+                        "Small-phone text is at least twelve actual pixels "+label.name);
+                    Need(label.preferredHeight<=label.rectTransform.rect.height+1,
+                        "Small-phone complete label fits "+label.name+" (needed "+label.preferredHeight+", available "+label.rectTransform.rect.height+")");
+                }
             var quantity=labels.First(t=>t.name=="Authoritative quantity");
             Need(quantity.rectTransform.rect.width>=36,
                 "Quantity remains legible between real minus and plus controls "+shot);
@@ -121,7 +129,7 @@ namespace Eldoria.Editor
             var screen=host.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
             screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);yield return null;
             Shot(host,"training-reference-ratio",554,542);
-            Shot(host,"training-phone",900,1600);Shot(host,"training-landscape",1600,900);
+            Shot(host,"training-phone",900,1600);Shot(host,"training-small-phone",390,844);Shot(host,"training-landscape",1600,900);
             Need(screen.VisibleAction.interactable,"Training command is actionable");
             screen.VisibleAction.onClick.Invoke();
             Need(host.City.Gateway.Snapshot().PendingRecruitArchers>0,"Actual training reserves recruits");
@@ -132,7 +140,7 @@ namespace Eldoria.Editor
             controls.First(b=>b.name=="Edit march by percent").onClick.Invoke();
             screen.VisibleRoot.GetComponentInChildren<Slider>().value=50;
             Need(screen.SelectedQuantity==60,"Real percent slider keeps 120 troops and assigns 50 percent to T1");
-            Shot(host,"march-reference-ratio",941,1672);Shot(host,"march-landscape",1600,900);
+            Shot(host,"march-reference-ratio",941,1672);Shot(host,"march-landscape",1600,900);Shot(host,"march-small-phone",390,844);
             Need(screen.VisibleAction.interactable,"Actual march composer actionable");
             screen.VisibleAction.onClick.Invoke();
             var composed=host.City.Gateway.Snapshot();

@@ -1151,7 +1151,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(vig)
             {
                 bool marchReady=s.BastionLevel>=2 && s.BarracksLevel>=1;
-                scoutStrategyLabel.Put(marchReady?"FORMAR\nMARCHA":"MARCHA\nBLOQUEADA");
+                scoutStrategyLabel.Put(marchReady?"FORMAR\nMARCHA":"MARCHA\nCERRADA");
                 scoutStrategyButton.interactable=marchReady;
             }
             else
