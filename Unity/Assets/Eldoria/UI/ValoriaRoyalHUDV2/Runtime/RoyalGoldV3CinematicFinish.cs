@@ -214,39 +214,50 @@ namespace Eldoria.UI.RoyalGold.V2
             bool portraitOrientation = availableHeight > availableWidth;
             float panelWidth = Mathf.Min(availableWidth - 26f,
                 portraitOrientation ? 725f : 1120f);
-            float panelHeight = Mathf.Min(availableHeight - 24f,
-                portraitOrientation ? 440f : 356f);
-            float column = Mathf.Clamp(panelWidth * .29f, 132f, 360f);
-            // Dialogues rest in the bottom cinematic strip. Unlike V2, they
-            // never create a central opaque rectangle covering the whole city.
+            // In a narrow portrait phone, putting a large bust in a lateral
+            // column leaves only ~180 logical pixels for a complete dialogue.
+            // Keep the approved portrait but move it into the header; the
+            // actual story text then uses the full parchment width.
+            bool narrowPortrait = portraitOrientation && panelWidth < 620f;
+            float panelHeight = Mathf.Min(availableHeight - 20f,
+                portraitOrientation ? (narrowPortrait ? 500f : 455f) : 376f);
+            float column = narrowPortrait ? 0f :
+                Mathf.Clamp(panelWidth * .27f, 122f, 300f);
             frame.anchorMin = frame.anchorMax = new Vector2(.5f, 0f);
             frame.pivot = new Vector2(.5f, 0f);
             frame.sizeDelta = new Vector2(panelWidth, panelHeight);
-            frame.anchoredPosition = new Vector2(0f, portraitOrientation ? 23f : 18f);
+            frame.anchoredPosition = new Vector2(0f, portraitOrientation ? 14f : 12f);
 
-            float left = column + 22f;
-            float textWidth = panelWidth - left - 22f;
+            float left = narrowPortrait ? 20f : column + 22f;
+            float textWidth = panelWidth - left - 20f;
+            float titleLeft = narrowPortrait ?
+                Mathf.Clamp(panelWidth * .20f, 64f, 88f) + 33f : left;
             float titleTop = 22f;
-            float bodyTop = portraitOrientation ? 116f : 102f;
-            float bodyHeight = panelHeight - bodyTop - 78f;
+            float bodyTop = narrowPortrait ? 116f : portraitOrientation ? 116f : 102f;
+            float bodyHeight = Mathf.Max(95f, panelHeight - bodyTop - 82f);
             // Interface 1 concept places Aldric as a substantial cinematic
             // presence beside his real text, not a small account avatar.
             // Reuse the actual approved asset; never invent a different face.
-            float portraitSize = Mathf.Min(column - 18f, panelHeight - 35f);
-            portraitSize = Mathf.Max(90f, portraitSize);
-            float portraitLeft = 11f + (column - portraitSize) * .5f;
-            float portraitTop = Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
+            float portraitSize = narrowPortrait ?
+                Mathf.Clamp(panelWidth * .20f, 64f, 88f) :
+                Mathf.Max(90f, Mathf.Min(column - 18f, panelHeight - 35f));
+            float portraitLeft = narrowPortrait ? 16f :
+                11f + (column - portraitSize) * .5f;
+            float portraitTop = narrowPortrait ? 22f :
+                Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
 
             modal.Title.fontSize = panelWidth < 465f ? 23 : 29;
             modal.Title.color = arcane ? PurplePale : Brown;
             modal.Title.fontStyle = FontStyle.Bold;
             modal.Title.alignment = TextAnchor.MiddleLeft;
-            Top(modal.Title.rectTransform, left, titleTop, textWidth, 48f);
+            Top(modal.Title.rectTransform, titleLeft, titleTop,
+                panelWidth - titleLeft - 16f, 48f);
             if (role)
             {
                 role.color = arcane ? new Color(.82f, .69f, .94f, 1f) : Brown;
                 role.fontSize = panelWidth < 465f ? 17 : 20;
-                Top(role.rectTransform, left + 2f, 70f, textWidth - 4f, 30f);
+                Top(role.rectTransform, titleLeft + 2f, 70f,
+                    panelWidth - titleLeft - 20f, 30f);
             }
 
             // The legacy narrative component currently activates Aldric for any non-narrator.
@@ -303,7 +314,7 @@ namespace Eldoria.UI.RoyalGold.V2
 
             // The paper uses ink, NOT white text on an oversized navy slab.
             // A real 218-character page must remain fully readable on phones.
-            modal.Body.fontSize = panelWidth < 465f ? 21 :
+            modal.Body.fontSize = panelWidth < 465f ? 23 :
                 (portraitOrientation ? 25 : 27);
             modal.Body.color = arcane ? PurplePale : Sepia;
             modal.Body.lineSpacing = 1.15f;
@@ -311,9 +322,16 @@ namespace Eldoria.UI.RoyalGold.V2
             modal.Body.horizontalOverflow = HorizontalWrapMode.Wrap;
             modal.Body.verticalOverflow = VerticalWrapMode.Truncate;
             Top(modal.Body.rectTransform, left, bodyTop, textWidth, bodyHeight);
-            for (int size = modal.Body.fontSize;
-                 modal.Body.preferredHeight > bodyHeight - 8f && size > 20; size--)
-                modal.Body.fontSize = size - 1;
+            // Measure the WHOLE authored page, not just characters already
+            // revealed by the typewriter. This prevents paragraphs from being
+            // cut off when the last lines finally appear on a real phone.
+            string revealed = modal.Body.text;
+            string completePage = Source.NarrativePageText;
+            if (!string.IsNullOrEmpty(completePage)) modal.Body.Put(completePage);
+            while (modal.Body.preferredHeight > bodyHeight - 10f &&
+                   modal.Body.fontSize > 18)
+                modal.Body.fontSize--;
+            if (!string.IsNullOrEmpty(completePage)) modal.Body.Put(revealed);
 
             // Retain the actual original Continue/Reveal button and listener,
             // but present it as a compact action on the bottom-right of paper.
