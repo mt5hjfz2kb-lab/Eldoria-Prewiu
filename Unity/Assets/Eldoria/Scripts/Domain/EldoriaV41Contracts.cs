@@ -141,11 +141,23 @@ namespace Eldoria.Domain
         }
     }
 
+    /// <summary>Immutable-at-write combat summary kept with each inbox item;
+    /// older reports must not depend on the mutable LastBattleReport field.</summary>
+    [Serializable] public sealed class EldoriaV41CombatRecord
+    {
+        public string TargetId="",HeroId="",Reason="";
+        public int Troops,PlayerPower,EnemyPower,Rounds,RemainingHealth;
+        public int RewardWood,RewardStone,RewardFood;
+        public bool Won;
+        public EldoriaV41CombatRecord Copy() => (EldoriaV41CombatRecord)MemberwiseClone();
+    }
+
     [Serializable] public sealed class EldoriaV41Message
     {
         public string EventId="", Category="", Type="", Title="", Subtitle="";
         public string ReportId="", RewardReceiptId="";
         public long OccurredAtUtcTicks;
+        public EldoriaV41CombatRecord Battle;
         public bool Read;
     }
 
@@ -172,7 +184,7 @@ namespace Eldoria.Domain
                     EventId=m.EventId,Category=m.Category,Type=m.Type,
                     Title=m.Title,Subtitle=m.Subtitle,ReportId=m.ReportId,
                     RewardReceiptId=m.RewardReceiptId,OccurredAtUtcTicks=m.OccurredAtUtcTicks,
-                    Read=m.Read
+                    Battle=m.Battle?.Copy(),Read=m.Read
                 });
             return other;
         }
@@ -187,7 +199,8 @@ namespace Eldoria.Domain
             Messages.Add(new EldoriaV41Message {
                 EventId=value.EventId, Category=value.Category, Type=value.Type,
                 Title=value.Title, Subtitle=value.Subtitle, ReportId=value.ReportId,
-                RewardReceiptId=value.RewardReceiptId, OccurredAtUtcTicks=value.OccurredAtUtcTicks
+                RewardReceiptId=value.RewardReceiptId, OccurredAtUtcTicks=value.OccurredAtUtcTicks,
+                Battle=value.Battle?.Copy()
             });
             Revision++;return true;
         }
