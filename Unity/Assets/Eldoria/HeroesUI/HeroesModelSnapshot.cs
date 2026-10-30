@@ -42,7 +42,7 @@ namespace Eldoria.HeroesUI
                 if(!texture){texture=new RenderTexture(384,576,24,RenderTextureFormat.ARGB32);texture.name="Approved hero cached preview";texture.Create();}
                 var cameraObject=new GameObject("One-shot hero camera");cameraObject.transform.SetParent(stage.transform,false);
                 var camera=cameraObject.AddComponent<Camera>();camera.enabled=false;camera.orthographic=true;camera.aspect=2f/3f;
-                camera.cullingMask=1<<31;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.045f,.055f,.075f,1);
+                camera.cullingMask=1<<31;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.045f,.055f,.075f,0);
                 camera.allowHDR=false;camera.allowMSAA=false;camera.nearClipPlane=.01f;
                 float radius=Mathf.Max(.1f,bounds.extents.magnitude);
                 camera.orthographicSize=Mathf.Max(bounds.extents.y,bounds.extents.x/camera.aspect)*1.13f;

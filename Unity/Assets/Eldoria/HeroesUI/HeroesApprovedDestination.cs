@@ -132,12 +132,15 @@ namespace Eldoria.HeroesUI
                 if(CurrentPage==page)b.targetGraphic.color=new Color(.95f,.78f,.43f);
             }
             float bodyX=portrait?20:tabWidth+36,bodyW=w-bodyX-20;
-            float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*.43f,modelH=portrait?bodyH*.44f:bodyH;
+            float bodyH=h-top-92,modelW=portrait?bodyW:bodyW*.43f,modelH=portrait?bodyH*.62f:bodyH;
             var stage=Frame("Hero model stage",content,bodyX,top,modelW,modelH);
+            var stageGilt=Rect("Approved v14 hero presentation border",stage);
+            Place(stageGilt,0,0,modelW,modelH);
+            stageGilt.gameObject.AddComponent<HeroesGoldFrameGraphic>().raycastTarget=false;
             var source=ReadModelRoot?.Invoke(hero.Id) ?? (hero.Id=="aldric"?ApprovedAldricModel:ApprovedLyraModel);
             var raw=Rect("Genuine hero model render",stage).gameObject.AddComponent<RawImage>();
             Place(raw.rectTransform,5,5,modelW-10,modelH-46);raw.raycastTarget=false;
-            if(source&&preview.Show(source,raw,hero.Id=="lyra"?0f:90f)){
+            if(source&&preview.Show(source,raw,hero.Id=="lyra"?30f:90f)){
                 float imageH=modelH-46,imageW=Mathf.Min(modelW-10,imageH*2f/3f);
                 Place(raw.rectTransform,(modelW-imageW)*.5f,5,imageW,imageH);
                 if(CurrentPage!=Page.Talentos){
@@ -164,6 +167,9 @@ namespace Eldoria.HeroesUI
             float infoX=portrait?bodyX:bodyX+modelW+12,infoY=portrait?top+modelH+12:top;
             float infoW=portrait?bodyW:bodyW-modelW-12,infoH=portrait?bodyH-modelH-12:bodyH;
             var info=Frame("Hero authoritative information",content,infoX,infoY,infoW,infoH);
+            var infoGilt=Rect("Approved v14 information border",info);
+            Place(infoGilt,0,0,infoW,infoH);
+            infoGilt.gameObject.AddComponent<HeroesGoldFrameGraphic>().raycastTarget=false;
             BuildInformation(info,hero,infoW,infoH);
             if(CurrentPage==Page.Talentos){
                 stage.gameObject.SetActive(false);info.gameObject.SetActive(false);
@@ -363,7 +369,7 @@ namespace Eldoria.HeroesUI
         {
             if(CurrentPage==Page.Resumen){
                 string[] names={"VIDA","ATAQUE","DEFENSA","RUPTURA","PODER"};int[] values={hero.Health,hero.Attack,hero.Defense,hero.Break,hero.HeroPower};
-                float row=Mathf.Min(48,(h-110)/5f);
+                float row=Mathf.Clamp((h-105f)/6f,34f,106f);
                 for(int i=0;i<names.Length;i++){
                     Label(names[i],pane,names[i],16,12+i*row,w*.60f,row,20);
                     Label(names[i]+" real value",pane,values[i].ToString(),w*.62f,12+i*row,w*.32f,row,22,TextAnchor.MiddleRight).color=gold;
