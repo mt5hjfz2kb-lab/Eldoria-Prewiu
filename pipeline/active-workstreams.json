@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T07:54:24.085Z",
+  "updated_at": "2026-10-30T08:58:00+01:00",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2455,7 +2455,7 @@
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
       "owner": "chatgpt-gpt6-v41-integration-20261030",
       "ownership_state": "claimed",
-      "ownership_revision": 1,
+      "ownership_revision": 2,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -2465,13 +2465,18 @@
         "Unity/Assets/Eldoria/Scripts/Domain/EldoriaV41*.cs",
         "tools/eldoria-v41/**",
         "docs/eldoria-v41/**",
-        ".github/workflows/eldoria-v41-domain.yml"
+        ".github/workflows/eldoria-v41-domain.yml",
+        "Unity/Assets/Eldoria/Scripts/Domain/GameState.cs",
+        "Unity/Assets/Eldoria/Scripts/Application/LocalGateway.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV3ManagementScreens.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV2/Runtime/RoyalGoldV2Hud.cs",
+        "Unity/Assets/Eldoria/UI/ValoriaRoyalHUDV1/Components/RoyalHUD.cs"
       ],
       "resources": [],
       "art_production_routing": "not_applicable",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
-      "phase": "PURE_DOMAIN_INTEGRATION",
-      "next": "Add compile-tested C# contracts for roster percentages, hero slots, mailbox, verify exact approved visuals, then integrate UI/gameplay after releasing shared-file lease.",
+      "phase": "UNITY_RUNTIME_INTEGRATION_AFTER_PR132_RELEASE",
+      "next": "Wire tested V4.1 hero/roster/mail contracts into save, authoritative gateway and existing RoyalGold V3 controls. Keep current campaign fight resolver unchanged until balance/art QA.",
       "art_production_routing_reason": "Etapa de lógica pura C# y ensayos aislados: no se crea ni altera arte; referencias aprobadas intactas. Integración visual futura requiere producción y revisión específicas."
     }
   ],
