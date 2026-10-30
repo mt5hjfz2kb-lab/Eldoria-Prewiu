@@ -1144,7 +1144,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 (narrow?"Exploradores":"Mesa de Exploradores"));
             string strategyHint=scoutStrategyMode==1?
                 "SIGILO · 8 TROPAS · +50 % TIEMPO":
-                scoutStrategyMode==2?"RÁPIDA · 20 TROPAS · −25 % TIEMPO":
+                scoutStrategyMode==2?"RÁPIDA · 20 TROPAS · -25 % TIEMPO":
                 "NORMAL · HASTA 12 TROPAS · TIEMPO ESTÁNDAR";
             kicker.Put(vig?(narrow?"CAMINO DE LOS VIGILANTES · PvE":
                 "PRUEBAS DEL REINO · COMBATE AUTOMÁTICO"):
