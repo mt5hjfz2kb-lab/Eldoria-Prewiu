@@ -535,7 +535,7 @@ namespace Eldoria.ReferenceClean.Editor {
     Check(()=>{Need(!h.Hud.NarrativeOpen,"Narrative obscures destination at capture: "+destination);Capture(h,"integration-art-"+destination+"-landscape.png",1600,900);Capture(h,"integration-art-"+destination+"-portrait.png",900,1600);},"native authored destination capture "+destination);
    }
    h.SetWorld(false);h.Hud.Refresh();
-   if(failure==null)yield return ContinueNativeJourneyToV(h);
+   if(failure==null)yield return new JourneyContext(Check,()=>failure!=null).ContinueNativeJourneyToV(h);
    var report=new Report{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),status=failure==null?"INTEGRATION_PASS_ART_REVIEW_REQUIRED":"FAIL",error=failure,checks=checks.ToArray(),scene=Scene,framing=framingChecks.ToArray(),management=managementChecks.ToArray()};
    if(failure==null) {
     File.WriteAllText(Path.Combine(Ev,"integration-input-manifest.txt"),ComputeInputManifest());
@@ -544,9 +544,13 @@ namespace Eldoria.ReferenceClean.Editor {
    File.WriteAllText(Path.Combine(Ev,"integration-result.json"),JsonUtility.ToJson(report,true));
    if(failure==null)Debug.Log("VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE");EditorApplication.Exit(failure==null?0:1);
   }
+  sealed class JourneyContext {
+   readonly Func<Action,string,bool> Check;
+   readonly Func<bool> Failed;
+   public JourneyContext(Func<Action,string,bool> check,Func<bool> failed){Check=check;Failed=failed;}
   // Continues the SAME saved I-II playthrough above. No prepared III/V save,
   // injected resources, direct progression flags, or bypassed command buttons.
-  static IEnumerator ReadJourneyNarrative(ValoriaIntegratedWorld h){
+  IEnumerator ReadJourneyNarrative(ValoriaIntegratedWorld h){
    yield return new WaitForSecondsRealtime(.3f);
    for(int turn=0;turn<40&&h.Hud.NarrativeOpen;turn++){
     if(h.Hud.NarrativeSpeaker=="Lyra")Check(()=>{
@@ -555,10 +559,10 @@ namespace Eldoria.ReferenceClean.Editor {
     },"continuous journey Lyra dialogue native captures");
     Check(()=>Click(h.Hud.Modal.Extra),"continuous journey reads canonical narrative");
     yield return new WaitForSecondsRealtime(.18f);
-    if(failure!=null)yield break;
+    if(Failed())yield break;
    }
   }
-  static IEnumerator FinishJourneyActivity(ValoriaIntegratedWorld h){
+  IEnumerator FinishJourneyActivity(ValoriaIntegratedWorld h){
    var city=h.City;
    // Preserve all deadlines/rules; advance only the existing disposable QA clock.
    Check(()=>{
@@ -568,7 +572,7 @@ namespace Eldoria.ReferenceClean.Editor {
    yield return new WaitForSecondsRealtime(.3f);
    yield return ReadJourneyNarrative(h);
   }
-  static IEnumerator JourneyAction(ValoriaIntegratedWorld h,string id,string kind){
+  IEnumerator JourneyAction(ValoriaIntegratedWorld h,string id,string kind){
    yield return ReadJourneyNarrative(h);
    var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
    if(management&&management.IsOpen)management.Close();
@@ -576,7 +580,7 @@ namespace Eldoria.ReferenceClean.Editor {
     id=="forest-valoria"||id=="quarry-valoria"||id.StartsWith("region1:"));
    h.Select(id);yield return new WaitForSecondsRealtime(.25f);
    yield return ReadJourneyNarrative(h);
-   if(failure!=null)yield break;
+   if(Failed())yield break;
    Check(()=>{
     var offer=h.Read(id,false).Building;
     Need(offer!=null&&offer.Action!=null&&offer.Action.Kind==kind&&offer.Action.Enabled,
@@ -585,10 +589,10 @@ namespace Eldoria.ReferenceClean.Editor {
     Click(h.Hud.Building.Primary.Button);
     Need(h.City.Gateway.Snapshot().Revision>revision,"Real button did not submit "+kind+" "+id);
    },"continuous native command "+kind+" "+id);
-   if(failure!=null)yield break;
+   if(Failed())yield break;
    yield return FinishJourneyActivity(h);
   }
-  static IEnumerator JourneyFunds(ValoriaIntegratedWorld h,int wood,int stone){
+  IEnumerator JourneyFunds(ValoriaIntegratedWorld h,int wood,int stone){
    for(int count=0;count<80;count++){
     var s=h.City.Gateway.Snapshot();
     if(s.Resources.Wood>=wood&&s.Resources.Stone>=stone)yield break;
@@ -602,15 +606,15 @@ namespace Eldoria.ReferenceClean.Editor {
      yield return FinishJourneyActivity(h);continue;
     }
     yield return JourneyAction(h,id,"Gather");
-    if(failure!=null)yield break;
+    if(Failed())yield break;
    }
    Check(()=>Need(false,"No canonical renewable resource met continuous journey budget"),"continuous real economy");
   }
-  static IEnumerator JourneyLevel(ValoriaIntegratedWorld h,int level,int wood,int stone){
+  IEnumerator JourneyLevel(ValoriaIntegratedWorld h,int level,int wood,int stone){
    yield return JourneyFunds(h,wood,stone);
-   if(failure!=null)yield break;
+   if(Failed())yield break;
    yield return JourneyAction(h,"bastion","AdvanceBastion");
-   if(failure!=null)yield break;
+   if(Failed())yield break;
    Check(()=>{
     Need(h.City.Gateway.Snapshot().BastionLevel==level,"Continuous Bastion "+level+" not reached");
     var before=JsonUtility.ToJson(h.City.Gateway.Snapshot());h.City.ReloadForProbe();
@@ -623,22 +627,22 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-continuous-bastion-"+level+"-portrait.png",900,1600);
    },"continuous Bastion "+level+" actual city in both orientations");
   }
-  static IEnumerator ContinueNativeJourneyToV(ValoriaIntegratedWorld h){
+  public IEnumerator ContinueNativeJourneyToV(ValoriaIntegratedWorld h){
    Check(()=>Need(h.City.Gateway.Snapshot().BastionLevel==2&&h.City.Gateway.Snapshot().EngendroDefeated,
     "Continuous III-V must start with the actual completed I-II state"),"continuous journey preserves original I-II lineage");
-   yield return JourneyLevel(h,3,650,500);if(failure!=null)yield break;
-   yield return JourneyFunds(h,240,180);if(failure!=null)yield break;
-   yield return JourneyAction(h,"granary","Build");if(failure!=null)yield break;
-   yield return JourneyAction(h,"fissure-valoria","InvestigateFissure");if(failure!=null)yield break;
-   yield return JourneyAction(h,"fissure-valoria","ContactLyra");if(failure!=null)yield break;
-   yield return JourneyAction(h,"fissure-valoria","Fight");if(failure!=null)yield break;
-   yield return JourneyAction(h,"hunt-wolf","Fight");if(failure!=null)yield break;
-   yield return JourneyAction(h,"hunt-boar","Fight");if(failure!=null)yield break;
-   yield return JourneyFunds(h,3000,3000);if(failure!=null)yield break;
+   yield return JourneyLevel(h,3,650,500);if(Failed())yield break;
+   yield return JourneyFunds(h,240,180);if(Failed())yield break;
+   yield return JourneyAction(h,"granary","Build");if(Failed())yield break;
+   yield return JourneyAction(h,"fissure-valoria","InvestigateFissure");if(Failed())yield break;
+   yield return JourneyAction(h,"fissure-valoria","ContactLyra");if(Failed())yield break;
+   yield return JourneyAction(h,"fissure-valoria","Fight");if(Failed())yield break;
+   yield return JourneyAction(h,"hunt-wolf","Fight");if(Failed())yield break;
+   yield return JourneyAction(h,"hunt-boar","Fight");if(Failed())yield break;
+   yield return JourneyFunds(h,3000,3000);if(Failed())yield break;
    foreach(var id in new[]{"sawmill","upgrade-barracks","granary"}){
-    yield return JourneyAction(h,id,"UpgradeBuilding");if(failure!=null)yield break;
+    yield return JourneyAction(h,id,"UpgradeBuilding");if(Failed())yield break;
    }
-   yield return JourneyLevel(h,4,850,700);if(failure!=null)yield break;
+   yield return JourneyLevel(h,4,850,700);if(Failed())yield break;
    h.Select("bastion");yield return new WaitForSecondsRealtime(.3f);
    yield return ReadJourneyNarrative(h);
    Check(()=>{
@@ -646,15 +650,16 @@ namespace Eldoria.ReferenceClean.Editor {
     Need(choice&&choice.interactable,"Canonical IV council choice unavailable");Click(choice);
     Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="civil","Council choice not saved");
    },"continuous IV real contextual council button");
-   if(failure!=null)yield break;
-   yield return JourneyLevel(h,5,1100,900);if(failure!=null)yield break;
-   yield return JourneyFunds(h,500,0);if(failure!=null)yield break;
-   yield return JourneyAction(h,"stoneworks","Build");if(failure!=null)yield break;
+   if(Failed())yield break;
+   yield return JourneyLevel(h,5,1100,900);if(Failed())yield break;
+   yield return JourneyFunds(h,500,0);if(Failed())yield break;
+   yield return JourneyAction(h,"stoneworks","Build");if(Failed())yield break;
    Check(()=>Need(h.City.Gateway.Snapshot().ChapterThree.StoneworksLevel==1,
     "V quarry did not complete from continuous save"),"continuous V quarry real construction");
    var beforeFinal=JsonUtility.ToJson(h.City.Gateway.Snapshot());h.City.ReloadForProbe();
    Check(()=>Need(beforeFinal==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Continuous V final reopen changed state"),
     "continuous I-V final saved state exact");
+  }
   }
   public static string ComputeInputManifest(){
    var files=new HashSet<string>(AssetDatabase.GetDependencies(Scene,true).Where(File.Exists));
