@@ -379,6 +379,18 @@ namespace Eldoria.Application
             if(chapterThreeResult!=null)return chapterThreeResult;
             switch (command.Kind)
             {
+                case "MailRead":
+                    if(state.Mailbox.Messages==null ||
+                       !state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==command.TargetId))
+                        return Fail("Correo no encontrado");
+                    state.Mailbox.MarkRead(command.TargetId);
+                    break;
+                case "MailDelete":
+                    if(state.Mailbox.Messages==null ||
+                       !state.Mailbox.Messages.Exists(m=>m!=null&&m.EventId==command.TargetId))
+                        return Fail("Correo no encontrado");
+                    state.Mailbox.Delete(command.TargetId);
+                    break;
                 case "Gather":
                     if (!IsWoodTarget(command.TargetId) && !IsStoneTarget(command.TargetId))
                         return Fail("Nodo desconocido");
