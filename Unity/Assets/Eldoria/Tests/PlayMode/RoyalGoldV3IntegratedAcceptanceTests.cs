@@ -606,17 +606,18 @@ namespace Eldoria.Tests
             Assert.That(Member(hud, "SelectedBuildingId"), Is.EqualTo("sawmill"));
             var v2 = FindComponent(hud.gameObject, "RoyalGoldV2Hud");
             var management = FindComponent(hud.gameObject, "RoyalGoldV3BuildingScreens");
-            Assert.That(Member(management, "IsOpen"), Is.EqualTo(true), "Selection opens the independent management destination");
-            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false), "No duplicate floating card behind management");
+            Assert.That(Member(management, "IsOpen"), Is.EqualTo(false),
+                "Selecting a normal building must not open a new page");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(true),
+                "City-bound building selection must remain contextual");
             Assert.That(Member(v2, "BuildingActionVisible"), Is.EqualTo(true),
-                "Existing browser telemetry must discover the genuine V3 action");
+                "Existing browser telemetry must see the genuine contextual action");
             Assert.That(Member(v2, "VisibleBuildingButton"),
-                Is.SameAs(Member(management, "VisibleAction")));
-            Assert.That(Member(management, "VisibleClose"), Is.Not.Null,
-                "The mobile player must be able to close selection without Escape");
+                Is.SameAs(Member(v3, "VisibleActionButton")));
             var actualClose = Member(v2, "VisibleBuildingCloseButton") as Button;
             Assert.That(actualClose, Is.Not.Null);
-            Assert.That(actualClose, Is.SameAs(Member(management, "VisibleClose")));
+            Assert.That(actualClose, Is.SameAs(Member(v3, "VisibleCloseButton")),
+                "Closing the city selection must not depend on an independent page");
             var closeCorners = new Vector3[4];
             ((RectTransform)actualClose.transform).GetWorldCorners(closeCorners);
             var closePoint = RectTransformUtility.WorldToScreenPoint(null,
@@ -677,7 +678,8 @@ namespace Eldoria.Tests
             Call(v3, "SynchronizeNow");
 
             var management = FindComponent(hud.gameObject, "RoyalGoldV3BuildingScreens");
-            var command = Member(management, "VisibleAction") as Button;
+            Assert.That(Member(management, "IsOpen"), Is.False);
+            var command = Member(v3, "VisibleActionButton") as Button;
             Assert.That(command, Is.Not.Null);
             Assert.That(command.interactable, Is.True, "Actual sawmill Build must be actionable");
             var offer = Member(Member(Call(host, "Read", "sawmill", false),
@@ -695,18 +697,22 @@ namespace Eldoria.Tests
             // No wait/yield: the first UI sync after payment must project
             // the same authoritative timer, not a stale pre-purchase offer.
             Call(v3, "SynchronizeNow");
-            Assert.That(Member(management, "IsOpen"), Is.EqualTo(true));
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(0), "Independent management owns the countdown; no duplicate floating timer");
-            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false));
-            Assert.That(Member(management, "VisibleOperationText") as string,
-                Does.Contain(Member(operation, "Time") as string), "The same rendered frame shows the gateway countdown");
-            Assert.That(command.interactable, Is.False, "Paid construction cannot be purchased twice");
-            var fill = Member(management, "VisibleProgress") as RectTransform;
-            Assert.That(fill, Is.Not.Null);
-            Assert.That(fill.anchorMax.x, Is.EqualTo((float)Member(operation, "Progress")).Within(.001f));
-            Call(management, "Close");
+            Assert.That(Member(management, "IsOpen"), Is.EqualTo(false));
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
+                "The paid work must show one anchored timer immediately");
+            Assert.That(Member(v3, "ContextVisible"), Is.EqualTo(false),
+                "The paid offer is never duplicated while work is active");
+            Assert.That(command.interactable, Is.False,
+                "Paid construction cannot be purchased twice");
+            var operationTime = Member(operation, "Time") as string;
+            Assert.That(hud.GetComponentsInChildren<Text>(true).Any(x =>
+                x.gameObject.name=="Live remaining time" &&
+                x.gameObject.activeInHierarchy && x.text.Contains(operationTime)),
+                Is.True,"The genuine city timer must show the gateway countdown");
+            Call(hud, "SelectBuilding", "");
             Call(v3, "SynchronizeNow");
-            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1), "Returning to the city restores one real anchored timer");
+            Assert.That(Member(v3, "ActiveTimers"), Is.EqualTo(1),
+                "Closing the contextual selection must preserve the real timer");
 
         }
 
