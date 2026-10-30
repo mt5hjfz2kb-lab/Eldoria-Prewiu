@@ -59,3 +59,11 @@ test('different hosted/source build and missing final approval fail',()=>{
     const e=checkCandidate(f.m,f.root).join(' ');
     assert.match(e,/published\/hosted/);assert.match(e,/owner artistic approval/);}finally{f.cleanup();}
 });
+
+test('complete exact-candidate evidence can authorize external promotion',()=>{
+  const f=fixture();try{
+    f.release(true);
+    assert.equal(verify(f.root).status,'READY_EVIDENCE_CONSISTENT');
+    assert.equal(verify(f.root).releaseEnabled,true);
+  }finally{f.cleanup();}
+});
