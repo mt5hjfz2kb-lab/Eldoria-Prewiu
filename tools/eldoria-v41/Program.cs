@@ -52,6 +52,16 @@ static class Tests
         Check(mail.Receive(new EldoriaV41Message{EventId="reward:02",Category="recompensas",Title="Premio",RewardReceiptId="ledger:02",OccurredAtUtcTicks=13}),"receipt is only a reference");
         Check(mail.List()[0].RewardReceiptId=="ledger:02","receipt retained");
         Check(mail.SchemaVersion==1 && mail.Revision>0,"serializable mailbox version");
+        var t1=new EldoriaV41Combat.Force().Add(0,1,30).Add(1,1,40).Add(2,1,30);
+        var t2=new EldoriaV41Combat.Force().Add(0,2,30).Add(1,2,40).Add(2,2,30);
+        var t3=new EldoriaV41Combat.Force().Add(0,3,30).Add(1,3,40).Add(2,3,30);
+        Check(EldoriaV41Combat.Duel(t1,t1).Winner==0,"same force is a symmetric draw");
+        Check(EldoriaV41Combat.Duel(t1,t2).Winner==-1,"T2 beats same-count T1");
+        Check(EldoriaV41Combat.Duel(t2,t3).Winner==-1,"T3 beats same-count T2");
+        var battle=EldoriaV41Combat.Duel(t1,t2);
+        Check(battle.Rounds>0 && battle.Rounds<=20,"automatic deterministic battle duration");
+        Check(battle.DamageDealtA.Sum()>0 && battle.DamageReceivedA.Sum()>0,"trace derives actual per-family contributions");
+        Check(EldoriaV41Combat.RulesVersion=="v4.1-laboratory" && !EldoriaV41Combat.ProductionApproved,"experimental resolver cannot silently replace campaign");
         Console.WriteLine("ELDORIA_V41_CONTRACT_PASS "+passed);
     }
 }
