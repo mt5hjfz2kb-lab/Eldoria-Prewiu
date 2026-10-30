@@ -242,7 +242,11 @@ namespace Eldoria.ReferenceClean {
     // bring the near camera back to the genuine Valoria start point.
     WorldNavigation.PanTo(WorldHome);
    }
-   SyncWorldCity();Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
+   SyncWorldCity();
+   // Restore the existing tier-V city models before the first render after
+   // returning from the world; do not leave the city empty until LateUpdate.
+   var advanced=GetComponent<BastionIVVWorldPresentation>();if(advanced)advanced.Apply();
+   Hud.Refresh();RefreshNavigation();Guidance?.Refresh();return true;
   }
   public bool CanOpen(RoyalSection section){
    if(city==null||city.Gateway==null)return false;var s=city.Gateway.Snapshot();

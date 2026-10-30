@@ -756,6 +756,12 @@ namespace Eldoria.ReferenceClean.Editor {
     "continuous native I-V authored objectives complete");
    h.Hud.SelectBuilding("");h.SetWorld(false);h.Home();
    Check(()=>{
+    var architecture=h.GetComponent<BastionIVVWorldPresentation>();
+    foreach(var id in new[]{"bastion","sawmill","barracks","granary","stoneworks"}){
+     var model=architecture.ModelFor(id);
+     Need(model&&model.activeInHierarchy&&model.GetComponentsInChildren<Renderer>().Any(r=>r.enabled),
+      "Completed V building invisible on actual city return: "+id);
+    }
     Capture(h,"integration-continuous-bastion-5-complete-landscape.png",1600,900);
     Capture(h,"integration-continuous-bastion-5-complete-portrait.png",900,1600);
    },"continuous V completed city actual captures");
