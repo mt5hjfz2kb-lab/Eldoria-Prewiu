@@ -967,7 +967,7 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(left,x,bodyY,wide?width*.54f:width,artH);
             float archerH=Mathf.Min(artH, (wide?width*.51f:width*.65f)*1.5f);
             float archerW=archerH/1.5f;
-            Place(approvedArcher.rectTransform,width*.10f,artH-archerH,archerW,archerH);
+            Place(approvedArcher.rectTransform,width*(wide?.10f:.04f),artH-archerH,archerW,archerH);
             float rosterW=Mathf.Clamp(width*.14f,110f,150f);
             float rosterH=wide?Mathf.Min(150f,artH*.29f):160f;
             for(int i=0;i<2;i++)
@@ -979,10 +979,11 @@ namespace Eldoria.UI.RoyalGold.V2
             unitTitle.rectTransform.SetParent(left,false);
             unitDetail.rectTransform.SetParent(left,false);
             bool stackedIdentity=wide&&!compactLandscape;
-            float titleX=stackedIdentity?width*.56f:wide?archerW*.82f:width*.56f;
+            // Reserve a separate identity column: the previous compact title crossed the face.
+            float titleX=stackedIdentity?width*.56f:wide?width*.36f:width*.67f;
             float titleW=stackedIdentity?width*.44f:wide?left.rect.width-titleX:width-titleX-12;
             Place(unitTitle.rectTransform,titleX,artH*.04f,titleW,wide?72:90);
-            Place(unitDetail.rectTransform,titleX,artH*.04f+(wide?82:100),titleW,wide?120:150);
+            Place(unitDetail.rectTransform,titleX,artH*.04f+(wide?82:100),titleW,wide?160:230);
             unitTitle.fontSize=wide?28:34;
             unitDetail.fontSize=wide?20:28;
             float orderW=wide?width*.44f:width;
