@@ -48,11 +48,9 @@ namespace Eldoria.UI.RoyalGold.V2 {
   void RefreshVisibility(){
    bool show=NeedsDecisionDock();
    if(show&&root==null)Ensure();
-   if(root&&root.gameObject.activeSelf!=show){
-    root.gameObject.SetActive(show);
-    lastW=-1f;
-   }
-   if(show){SynchronizeLayout();Refresh();}
+   bool changed=root&&root.gameObject.activeSelf!=show;
+   if(changed){root.gameObject.SetActive(show);lastW=-1f;}
+   if(show){if(changed||lastW<0f)SynchronizeLayout();else Refresh();}
   }
   void Suspend(){if(root)root.gameObject.SetActive(false);suspended=true;}
   void Select(string id){
