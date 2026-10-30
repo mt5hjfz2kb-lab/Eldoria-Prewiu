@@ -70,6 +70,44 @@ namespace Eldoria.UI.RoyalGold.V2
         static void Solid(VertexHelper vh,float x0,float y0,float x1,float y1,Color c)
             => Quad(vh,x0,y0,x1,y1,c,c,c,c);
 
+        static void Triangle(VertexHelper vh,Vector2 a,Vector2 b,Vector2 c,Color tint)
+        {
+            int i=vh.currentVertCount;
+            vh.AddVert(a,tint,Vector2.zero);
+            vh.AddVert(b,tint,Vector2.zero);
+            vh.AddVert(c,tint,Vector2.zero);
+            vh.AddTriangle(i,i+1,i+2);
+        }
+
+        static void Stroke(VertexHelper vh,Vector2 a,Vector2 b,float thickness,Color tint)
+        {
+            Vector2 d=b-a;
+            if(d.sqrMagnitude<.001f)return;
+            Vector2 n=new Vector2(-d.y,d.x).normalized*(thickness*.5f);
+            int i=vh.currentVertCount;
+            vh.AddVert(a-n,tint,Vector2.zero);
+            vh.AddVert(a+n,tint,Vector2.zero);
+            vh.AddVert(b+n,tint,Vector2.zero);
+            vh.AddVert(b-n,tint,Vector2.zero);
+            vh.AddTriangle(i,i+1,i+2);
+            vh.AddTriangle(i,i+2,i+3);
+        }
+
+        static void Pine(VertexHelper vh,Vector2 basePoint,float size,float sway,Color tint)
+        {
+            // Independent foreground silhouette. Never obscures the central
+            // stage trail or the overlaid encounter/paper controls.
+            var top=new Vector2(basePoint.x+sway,basePoint.y+size);
+            Triangle(vh,top,
+                new Vector2(basePoint.x-size*.35f,basePoint.y+size*.23f),
+                new Vector2(basePoint.x+size*.35f,basePoint.y+size*.23f),tint);
+            Triangle(vh,new Vector2(basePoint.x+sway*.6f,basePoint.y+size*.76f),
+                new Vector2(basePoint.x-size*.48f,basePoint.y+size*.12f),
+                new Vector2(basePoint.x+size*.48f,basePoint.y+size*.12f),tint);
+            Solid(vh,basePoint.x-size*.035f,basePoint.y,
+                basePoint.x+size*.035f,basePoint.y+size*.30f,tint);
+        }
+
         protected override void OnPopulateMesh(VertexHelper vh)
         {
             vh.Clear();
@@ -105,6 +143,20 @@ namespace Eldoria.UI.RoyalGold.V2
                 Quad(vh,x+w*shaft,y+h*.52f,x+w*(shaft+.16f),y+h,
                     clear,clear,RGBA(1f,.80f,.43f,.06f+.035f*breath),
                     RGBA(1f,.80f,.43f,.10f+.035f*breath));
+                // A separate, subtly swaying near-ground tree layer gives
+                // perspective where the original environment previously
+                // ended as a completely flat rectangle. Constrain it to
+                // outside corners so no stage or current guardian is hidden.
+                Color nearTrees=RGBA(.025f,.092f,.083f,.20f);
+                for(int i=0;i<3;i++)
+                {
+                    float height=Mathf.Min(h*.16f,w*.12f)*(1f+i*.13f);
+                    float lean=Mathf.Sin(t*.22f+i*.87f)*height*.012f;
+                    Pine(vh,new Vector2(x+w*(.017f+i*.016f),y+h*.007f),
+                        height,lean,nearTrees);
+                    Pine(vh,new Vector2(x+w*(.981f-i*.016f),y+h*.007f),
+                        height*.9f,-lean,nearTrees);
+                }
                 for(int i=0;i<5;i++)
                 {
                     float px=x+w*(.13f+i*.18f);
@@ -125,6 +177,22 @@ namespace Eldoria.UI.RoyalGold.V2
                 Quad(vh,x+w*.08f,y+h*.86f,x+w*.92f,y+h*.96f,
                     clear,clear,RGBA(.95f,.68f,.29f,.12f),
                     RGBA(.95f,.68f,.29f,.12f));
+                // Raised brass corner rails and inked map-board bevels are
+                // geometric assets, separate from the photograph and cards.
+                // No fictitious mission pins, coordinates or rewards.
+                var brass=RGBA(.90f,.70f,.36f,.25f);
+                var deskShadow=RGBA(.10f,.07f,.04f,.28f);
+                float rim=Mathf.Clamp(Mathf.Min(w,h)*.008f,1.5f,5f);
+                Stroke(vh,new Vector2(x+w*.035f,y+h*.035f),
+                    new Vector2(x+w*.035f,y+h*.23f),rim,brass);
+                Stroke(vh,new Vector2(x+w*.035f,y+h*.035f),
+                    new Vector2(x+w*.17f,y+h*.035f),rim,brass);
+                Stroke(vh,new Vector2(x+w*.965f,y+h*.035f),
+                    new Vector2(x+w*.965f,y+h*.23f),rim,brass);
+                Stroke(vh,new Vector2(x+w*.965f,y+h*.035f),
+                    new Vector2(x+w*.83f,y+h*.035f),rim,brass);
+                Stroke(vh,new Vector2(x+w*.03f,y+h*.027f),
+                    new Vector2(x+w*.97f,y+h*.027f),rim*.8f,deskShadow);
             }
             else
             {
