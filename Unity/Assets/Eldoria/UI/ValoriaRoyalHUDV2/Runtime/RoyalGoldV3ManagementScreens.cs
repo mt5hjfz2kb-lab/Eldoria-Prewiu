@@ -888,7 +888,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(!training)return;
             tierButton.transform.SetParent(right,false);
             float width=w-x-insetRight;
-            float hh=wide?86:172;
+            float hh=wide?86:188;
             float foot=wide?54:90;
             float bodyY=top+hh+12, bodyH=h-bodyY-bottom-foot;
             Place(header,x,top,width,hh);
@@ -899,9 +899,9 @@ namespace Eldoria.UI.RoyalGold.V2
                 Place(heading.rectTransform,16,8,width-32,44);
                 Place(subheading.rectTransform,16,55,width-32,32);
                 float n=(width-48)/3;
-                Place(heroesButton.transform as RectTransform,12,99,n,60);
-                Place(switchDestination.transform as RectTransform,24+n,99,n,60);
-                Place(chapterAction.transform as RectTransform,36+2*n,99,n,60);
+                Place(heroesButton.transform as RectTransform,12,99,n,76);
+                Place(switchDestination.transform as RectTransform,24+n,99,n,76);
+                Place(chapterAction.transform as RectTransform,36+2*n,99,n,76);
             }
             float artH=wide?bodyH:bodyH*.51f;
             Place(left,x,bodyY,wide?width*.52f:width,artH);

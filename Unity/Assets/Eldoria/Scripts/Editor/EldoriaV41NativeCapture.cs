@@ -113,7 +113,7 @@ namespace Eldoria.Editor
                     Need(label.fontSize*physicalScale>=12,
                         "Small-phone text is at least twelve actual pixels "+label.name);
                     Need(label.preferredHeight<=label.rectTransform.rect.height+1,
-                        "Small-phone complete label fits "+label.name+" (needed "+label.preferredHeight+", available "+label.rectTransform.rect.height+")");
+                        "Small-phone complete label fits "+label.transform.parent.name+"/"+label.name+" text=["+label.text+"] "+shot+" (needed "+label.preferredHeight+", available "+label.rectTransform.rect.height+")");
                 }
             if(shot=="training-small-phone-landscape")
             {

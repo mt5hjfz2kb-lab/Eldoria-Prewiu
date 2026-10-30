@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T18:53:17.056Z",
+  "updated_at": "2026-10-30T20:15:50.364Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-recovery-5ec48d90b77f",
+      "owner": "codex-recovery-ada07b02a31d",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-10-30T09:30:00Z",
@@ -1473,9 +1473,15 @@
           "ownership_revision": 72,
           "transferred_at": "2026-10-30T18:53:17.056Z",
           "reason": "Owner requests recovery and continuation after Work chat stopped."
+        },
+        {
+          "owner": "codex-recovery-5ec48d90b77f",
+          "ownership_revision": 73,
+          "transferred_at": "2026-10-30T20:15:50.364Z",
+          "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
         }
       ],
-      "ownership_revision": 73,
+      "ownership_revision": 74,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -2490,9 +2496,9 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "codex-recovery-5ec48d90b77f",
+      "owner": "codex-recovery-ada07b02a31d",
       "ownership_state": "claimed",
-      "ownership_revision": 8,
+      "ownership_revision": 9,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -2565,6 +2571,12 @@
           "ownership_revision": 7,
           "transferred_at": "2026-10-30T18:53:17.056Z",
           "reason": "Owner requests recovery and continuation after Work chat stopped."
+        },
+        {
+          "owner": "codex-recovery-5ec48d90b77f",
+          "ownership_revision": 8,
+          "transferred_at": "2026-10-30T20:15:50.364Z",
+          "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
         }
       ],
       "delivery_definition": {
@@ -2649,9 +2661,9 @@
     {
       "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
       "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
-      "owner": "codex-recovery-5ec48d90b77f",
+      "owner": "codex-recovery-ada07b02a31d",
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "status": "active",
       "branch": "review/native281-iphone-ui-world-triage-20261022",
       "pr": 97,
@@ -2687,6 +2699,12 @@
           "ownership_revision": 3,
           "transferred_at": "2026-10-30T18:53:17.056Z",
           "reason": "Owner requests recovery and continuation after Work chat stopped."
+        },
+        {
+          "owner": "codex-recovery-5ec48d90b77f",
+          "ownership_revision": 4,
+          "transferred_at": "2026-10-30T20:15:50.364Z",
+          "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
         }
       ],
       "write_scope_released": false
@@ -2694,9 +2712,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "codex-recovery-5ec48d90b77f",
+      "owner": "codex-recovery-ada07b02a31d",
       "ownership_state": "claimed",
-      "ownership_revision": 5,
+      "ownership_revision": 6,
       "status": "active",
       "branch": "feature/heroes-approved-ui-integration-20261030",
       "pr": 135,
@@ -2732,6 +2750,12 @@
           "ownership_revision": 4,
           "transferred_at": "2026-10-30T18:53:17.056Z",
           "reason": "Owner requests recovery and continuation after Work chat stopped."
+        },
+        {
+          "owner": "codex-recovery-5ec48d90b77f",
+          "ownership_revision": 5,
+          "transferred_at": "2026-10-30T20:15:50.364Z",
+          "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
         }
       ],
       "write_scope_released": false
@@ -2739,11 +2763,11 @@
     {
       "id": "eldoria-unified-art-vault-20261029",
       "title": "Biblioteca artística unificada 2D/3D — PR128",
-      "owner": "codex-recovery-5ec48d90b77f",
+      "owner": "codex-recovery-ada07b02a31d",
       "branch": "docs/unified-art-vault-20261029",
       "status": "active",
       "ownership_state": "claimed",
-      "ownership_revision": 4,
+      "ownership_revision": 5,
       "write_scope_released": false,
       "claimed_at": "2026-10-30T15:31:15.561Z",
       "base_main_sha": "515555135127195542496ffea3a0852206772bea",
@@ -2780,6 +2804,12 @@
           "ownership_revision": 3,
           "transferred_at": "2026-10-30T18:53:17.056Z",
           "reason": "Owner requests recovery and continuation after Work chat stopped."
+        },
+        {
+          "owner": "codex-recovery-5ec48d90b77f",
+          "ownership_revision": 4,
+          "transferred_at": "2026-10-30T20:15:50.364Z",
+          "reason": "Owner explicitly requests recovery of blocked session and continued production in canonical PR136."
         }
       ]
     }
