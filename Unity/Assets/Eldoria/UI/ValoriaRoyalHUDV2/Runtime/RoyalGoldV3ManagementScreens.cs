@@ -633,8 +633,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 int occupied=MarchCapacityRules.ActiveCount(s,utcTicks());
                 status.Put("DISPONIBLES T1  "+s.Available.ArcherT1+" · T2  "+s.Available.ArcherT2+
                     "\nCAPACIDAD DE "+HeroName(selectedHero)+"  "+MarchCapacityRules.Capacity(s,selectedHero)+
-                    "\nNIVEL "+MarchCapacityRules.HeroLevel(s,selectedHero)+
-                    " · MARCHAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
+                    "\nNIVEL HÉROE  "+MarchCapacityRules.HeroLevel(s,selectedHero)+
+                    " · MARCHAS ACTIVAS  "+occupied+"/"+MarchCapacityRules.MaxConcurrentMarches+
                     "\nYA PREPARADOS  "+(s.MarchConfigured?s.PreparedTroops.Total:0));
                 bool allowed=MarchCapacityRules.CanStart(s,utcTicks()) && troops.Total>0 &&
                     MarchCapacityRules.Fits(troops,s.Available,capacity);
