@@ -20,7 +20,7 @@
     {
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
-      "owner": "codex-recovery-8545f387ddc2",
+      "owner": "chatgpt-eldoria-normal-handoff-20261031",
       "branch": "fix/player-feedback-context-ui-20261030",
       "status": "active",
       "claimed_at": "2026-10-30T09:30:00Z",
@@ -1487,7 +1487,7 @@
           "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
         }
       ],
-      "ownership_revision": 75,
+      "ownership_revision": 76,
       "ownership_state": "claimed",
       "write_scope_released": false,
       "previous_phase": "RESUME_ANDROID19_WEBGL_PUBLICATION",
@@ -1579,7 +1579,7 @@
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
       "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
-      "handoff_reason": "PR132_MERGED_MAIN_VERIFIED_ISSUE133_CLOSED",
+      "handoff_reason": "Owner explicitly reports frozen preceding chat; 2026-10-31 continuation on existing PR136, no parallel branch, no publication.",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
       "continuation_scope_note": "Retain completed PR119/117 evidence and all unrelated paused work. Current continuation covers PR120 inherited integration files and later PR122 only. Exclusive heavy runner remains solely on retention revision6.",
       "scope_extension_reason": "Owner continuation after PR129: administrative closure of the already-completed six-reference source request which incorrectly retains an executable paid composition route. No modification to PR127, assets or spend.",
@@ -2502,9 +2502,9 @@
     {
       "id": "eldoria-v41-combate-buzon-ui-20261030",
       "title": "Eldoria V4.1 — contratos nativos de preparación, buzón y arte canónico",
-      "owner": "codex-recovery-8545f387ddc2",
+      "owner": "chatgpt-eldoria-normal-handoff-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 10,
+      "ownership_revision": 11,
       "write_scope_released": false,
       "status": "active",
       "branch": "feature/eldoria-v41-contracts-20261030",
@@ -2617,7 +2617,8 @@
         "completed_native_run": 41034159279,
         "native_result": "SUCCESS: 61/61 EditMode, 73/73 PlayMode; visual fidelity NOT accepted",
         "runner_released": true
-      }
+      },
+      "handoff_reason": "Owner explicitly reports frozen preceding chat; 2026-10-31 continuation on existing PR136, no parallel branch, no publication."
     },
     {
       "id": "eldoria-art-memory-continuity-hardening-20261024",
@@ -2730,9 +2731,9 @@
     {
       "id": "eldoria-heroes-approved-ui-20261030",
       "title": "PR135: reconstruct approved interactive hero screens",
-      "owner": "codex-recovery-8545f387ddc2",
+      "owner": "chatgpt-eldoria-normal-handoff-20261031",
       "ownership_state": "claimed",
-      "ownership_revision": 7,
+      "ownership_revision": 8,
       "status": "active",
       "branch": "feature/heroes-approved-ui-integration-20261030",
       "pr": 135,
@@ -2782,16 +2783,17 @@
           "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
         }
       ],
-      "write_scope_released": false
+      "write_scope_released": false,
+      "handoff_reason": "Owner explicitly reports frozen preceding chat; 2026-10-31 continuation on existing PR136, no parallel branch, no publication."
     },
     {
       "id": "eldoria-unified-art-vault-20261029",
       "title": "Biblioteca artística unificada 2D/3D — PR128",
-      "owner": "codex-recovery-8545f387ddc2",
+      "owner": "chatgpt-eldoria-normal-handoff-20261031",
       "branch": "docs/unified-art-vault-20261029",
       "status": "active",
       "ownership_state": "claimed",
-      "ownership_revision": 6,
+      "ownership_revision": 7,
       "write_scope_released": false,
       "claimed_at": "2026-10-30T15:31:15.561Z",
       "base_main_sha": "515555135127195542496ffea3a0852206772bea",
@@ -2841,7 +2843,8 @@
           "transferred_at": "2026-10-31",
           "reason": "Owner explicitly requests continuation after frozen chat; PR136 preserved."
         }
-      ]
+      ],
+      "handoff_reason": "Owner explicitly reports frozen preceding chat; 2026-10-31 continuation on existing PR136, no parallel branch, no publication."
     }
   ],
   "history": [
