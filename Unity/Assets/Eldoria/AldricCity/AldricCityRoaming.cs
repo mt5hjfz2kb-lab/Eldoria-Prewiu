@@ -74,6 +74,7 @@ namespace Eldoria.AldricCity
         // Native verification probes. Read-only; never mutate player saves or gameplay.
         public bool ApprovedVisualReady => visualConfigured && actor && model && clips && path != null &&
             renderers != null && renderers.Length > 0;
+        public GameObject ApprovedModelRoot => ApprovedVisualReady ? model : null;
         public MeshCollider ActualPavingCollider => road;
         public int RoadWaypoints => path == null ? 0 : path.Length;
         // A legacy looping state may remain registered while its visible

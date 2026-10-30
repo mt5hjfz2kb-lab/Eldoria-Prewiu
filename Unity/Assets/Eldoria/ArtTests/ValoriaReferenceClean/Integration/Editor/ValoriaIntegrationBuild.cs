@@ -631,9 +631,55 @@ namespace Eldoria.ReferenceClean.Editor {
     Capture(h,"integration-continuous-bastion-"+level+"-portrait.png",900,1600);
    },"continuous Bastion "+level+" actual city in both orientations");
   }
+  IEnumerator VerifyHeroDestinations(ValoriaIntegratedWorld h){
+   var before=JsonUtility.ToJson(h.City.Gateway.Snapshot());
+   h.SetWorld(false);h.Select("barracks");yield return new WaitForSecondsRealtime(.3f);
+   Check(()=>Click(GameObject.Find("Open canonical heroes").GetComponent<Button>()),"hero hall opens through actual units navigation");
+   yield return new WaitForSecondsRealtime(.3f);
+   var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+   Check(()=>{
+    Need(heroes&&heroes.IsOpen,"Integrated hero hall absent");
+    Capture(h,"integration-heroes-hall-landscape.png",1600,900);
+    Capture(h,"integration-heroes-hall-portrait.png",900,1600);
+    Click(GameObject.Find("Select hero aldric").GetComponent<Button>());
+   },"hero hall actual controls and both orientations");
+   yield return new WaitForSecondsRealtime(.3f);
+   foreach(var page in new[]{"Resumen","Habilidades","Talentos","Equipamiento"}){
+    Check(()=>Click(GameObject.Find("Hero tab "+page).GetComponent<Button>()),"genuine hero tab "+page);
+    yield return new WaitForSecondsRealtime(.2f);
+    Check(()=>{
+     Need(heroes.CurrentAuthoritativeHero().Value.Health==SliceRules.HeroIntrinsicStats("aldric").Health,"Hero values do not match combat");
+     Need(heroes.GetComponentInChildren<Eldoria.HeroesUI.HeroesModelSnapshot>(true).HasModel,"Aldric must use actual loaded 3D model");
+     Capture(h,"integration-heroes-aldric-"+page.ToLowerInvariant()+"-landscape.png",1600,900);
+     Capture(h,"integration-heroes-aldric-"+page.ToLowerInvariant()+"-portrait.png",900,1600);
+    },"actual Aldric hero screen "+page);
+    if(Failed())yield break;
+   }
+   Check(()=>Click(GameObject.Find("Next available hero").GetComponent<Button>()),"real hero navigation selects narratively recruited Lyra");
+   yield return new WaitForSecondsRealtime(.2f);
+   Check(()=>{
+    Need(heroes.CurrentHeroId=="lyra"&&h.City.Gateway.Snapshot().ChapterThree.LyraRecruited,"Lyra navigation violated narrative unlock");
+    Capture(h,"integration-heroes-lyra-resumen-landscape.png",1600,900);
+    Capture(h,"integration-heroes-lyra-resumen-portrait.png",900,1600);
+    Click(GameObject.Find("Close heroes").GetComponent<Button>());
+    Need(!heroes.IsOpen&&h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().IsOpen,"Hero close did not return to units");
+    h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();
+    Need(before==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Hero browsing changed authoritative save");
+   },"six actual hero screens preserve gameplay save and return navigation");
+  }
   public IEnumerator ContinueNativeJourneyToV(ValoriaIntegratedWorld h){
    Check(()=>Need(h.City.Gateway.Snapshot().BastionLevel==2&&h.City.Gateway.Snapshot().EngendroDefeated,
     "Continuous III-V must start with the actual completed I-II state"),"continuous journey preserves original I-II lineage");
+   h.SetWorld(false);h.Select("barracks");yield return new WaitForSecondsRealtime(.3f);
+   Check(()=>Click(GameObject.Find("Open canonical heroes").GetComponent<Button>()),"hero hall before Lyra recruitment");
+   yield return new WaitForSecondsRealtime(.2f);
+   Check(()=>{
+    var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+    Need(heroes.IsOpen&&!GameObject.Find("Select hero lyra").GetComponent<Button>().interactable&&!heroes.OpenHero("lyra"),"Hero screen prematurely unlocked Lyra");
+    Click(GameObject.Find("Close heroes").GetComponent<Button>());
+    h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().Close();
+   },"hero hall enforces actual locked Lyra in Bastion II");
+   if(Failed())yield break;
    yield return JourneyLevel(h,3,650,500);if(Failed())yield break;
    yield return JourneyFunds(h,240,180);if(Failed())yield break;
    yield return JourneyAction(h,"granary","Build");if(Failed())yield break;
@@ -716,6 +762,7 @@ namespace Eldoria.ReferenceClean.Editor {
    var beforeFinal=JsonUtility.ToJson(h.City.Gateway.Snapshot());h.City.ReloadForProbe();
    Check(()=>Need(beforeFinal==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Continuous V final reopen changed state"),
     "continuous I-V final saved state exact");
+   yield return VerifyHeroDestinations(h);
   }
   }
   public static string ComputeInputManifest(){
@@ -732,7 +779,7 @@ namespace Eldoria.ReferenceClean.Editor {
     return BitConverter.ToString(sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(ComputeInputManifest())));
   }
   static string FileHash(string path){if(!File.Exists(path))return "ABSENT";using(var sha=System.Security.Cryptography.SHA256.Create())return BitConverter.ToString(sha.ComputeHash(File.ReadAllBytes(path)));}
-  static void Click(RoyalButton button){
+  static void Click(Button button){
    var hud=Object.FindFirstObjectByType<RoyalHUD>();
    if(hud&&hud.NarrativeOpen&&button!=hud.Modal.Extra)
     for(int guard=0;guard<18&&hud.NarrativeOpen;guard++)Click(hud.Modal.Extra);
@@ -787,8 +834,10 @@ namespace Eldoria.ReferenceClean.Editor {
    var buildings=h.Hud.GetComponent<RoyalGoldV3BuildingScreens>();
    var retention=h.Hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>();
    bool buildingOpen=buildings&&buildings.IsOpen,rankingOpen=rankings&&rankings.IsOpen;
-   bool destinationOpen=managementOpen||buildingOpen||rankingOpen;
-   RectTransform destinationRoot=rankingOpen?rankings.VisibleRoot:buildingOpen?buildings.VisibleRoot:managementOpen?GameObject.Find("V3 / Management destination").GetComponent<RectTransform>():null;
+   var heroes=h.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+   bool heroesOpen=heroes&&heroes.IsOpen;
+   bool destinationOpen=managementOpen||buildingOpen||rankingOpen||heroesOpen;
+   RectTransform destinationRoot=heroesOpen?heroes.VisibleRoot:rankingOpen?rankings.VisibleRoot:buildingOpen?buildings.VisibleRoot:managementOpen?GameObject.Find("V3 / Management destination").GetComponent<RectTransform>():null;
    var c=h.PlayerCamera;var canvas=h.Hud.GetComponent<Canvas>();var oldMode=canvas.renderMode;var oldCam=canvas.worldCamera;var oldDistance=canvas.planeDistance;var oldAspect=c.aspect;var oldMask=c.cullingMask;var oldRt=c.targetTexture;var oldActive=RenderTexture.active;var position=c.transform.position;float size=c.orthographicSize;var worldTarget=h.WorldNavigation.target;
    var scaler=h.Hud.GetComponent<RoyalScaler>();bool scalerEnabled=scaler.enabled;float scale=canvas.scaleFactor,canvasPixels=canvas.referencePixelsPerUnit;var scalerMode=scaler.uiScaleMode;var scalerResolution=scaler.referenceResolution;var scalerMatchMode=scaler.screenMatchMode;float scalerMatch=scaler.matchWidthOrHeight,scalerPixels=scaler.referencePixelsPerUnit;var areas=h.Hud.GetComponentsInChildren<RoyalSafeArea>(true);var areaEnabled=areas.Select(a=>a.enabled).ToArray();
    var rt=new RenderTexture(width,height,24);var tex=new Texture2D(width,height,TextureFormat.RGB24,false);
@@ -798,19 +847,19 @@ namespace Eldoria.ReferenceClean.Editor {
     // include Unity's existing UI layer (5) only during this capture or a real
     // Lyra dialog can appear in the game but disappear from the evidence PNG.
     c.cullingMask|=1<<5;
-    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
+    if(h.InWorld)h.WorldNavigation.FitToAuthoredBounds();canvas.renderMode=RenderMode.ScreenSpaceCamera;canvas.worldCamera=c;canvas.planeDistance=1;h.Guidance.Refresh();Canvas.ForceUpdateCanvases();var ui2=h.Hud.GetComponent<RoyalGoldV2Hud>();if(ui2)ui2.SynchronizeNow();Canvas.ForceUpdateCanvases();if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();Canvas.ForceUpdateCanvases();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();Canvas.ForceUpdateCanvases();if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){var selectedTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);if(selectedTarget)h.Focus(selectedTarget.gameObject);}foreach(var label in h.Hud.GetComponentsInChildren<BuildingLabel>())label.RefreshPosition();Canvas.ForceUpdateCanvases();// Two actual Unity camera renders allow the newly bound overlay canvas
     // to participate after its first SRP layout/batch registration.
     c.Render();c.Render();RenderTexture.active=rt;tex.ReadPixels(new Rect(0,0,width,height),0,0);tex.Apply();File.WriteAllBytes(Path.Combine(Ev,name),tex.EncodeToPNG());validateLayout?.Invoke();
     if(destinationOpen){
      Need(destinationRoot&&destinationRoot.gameObject.activeInHierarchy,"Actual management root not visible: "+name);
-     var background=destinationRoot.GetComponent<Image>();var canvasRect=(RectTransform)canvas.transform;
+     var background=destinationRoot.GetComponent<Image>();var canvasRect=heroesOpen?(RectTransform)destinationRoot.parent:(RectTransform)canvas.transform;
      bool opaque=background&&background.color.a>=.999f;
      bool blocking=background&&background.raycastTarget;
      bool full=destinationRoot.anchorMin==Vector2.zero&&destinationRoot.anchorMax==Vector2.one&&Mathf.Abs(destinationRoot.rect.width-canvasRect.rect.width)<1f&&Mathf.Abs(destinationRoot.rect.height-canvasRect.rect.height)<1f;
      int controls=destinationRoot.GetComponentsInChildren<Button>().Count(b=>b.isActiveAndEnabled&&b.interactable&&((RectTransform)b.transform).rect.width>=20&&((RectTransform)b.transform).rect.height>=20);
      Need(opaque&&blocking&&full&&controls>0&&!h.InWorld,"Native management must be opaque, full-canvas and interactive: "+name);
      if(buildingOpen&&!rankingOpen)Need(buildings.ReferenceTexture&&buildings.ReferenceTexture.width>100,"Native management reference not bound: "+name);
-     managementChecks.Add(new ManagementCapture{capture=name,screen=rankingOpen?"rankings":buildingOpen?"building":"management",target=buildingOpen&&!rankingOpen?buildings.BuildingId:h.Selected,width=width,height=height,pass=true,opaque=opaque,touchBlocking=blocking,fullCanvas=full,activeControls=controls});
+     managementChecks.Add(new ManagementCapture{capture=name,screen=heroesOpen?"heroes":rankingOpen?"rankings":buildingOpen?"building":"management",target=buildingOpen&&!rankingOpen?buildings.BuildingId:h.Selected,width=width,height=height,pass=true,opaque=opaque,touchBlocking=blocking,fullCanvas=full,activeControls=controls});
     }
     if(!destinationOpen&&!string.IsNullOrEmpty(h.Selected)){
      var focusTarget=h.FindTarget(h.Selected=="march-main"?"barracks":h.Selected);
@@ -820,7 +869,7 @@ namespace Eldoria.ReferenceClean.Editor {
      }
     }
    }
-   finally{scaler.enabled=scalerEnabled;scaler.uiScaleMode=scalerMode;scaler.referenceResolution=scalerResolution;scaler.screenMatchMode=scalerMatchMode;scaler.matchWidthOrHeight=scalerMatch;scaler.referencePixelsPerUnit=scalerPixels;canvas.scaleFactor=scale;canvas.referencePixelsPerUnit=canvasPixels;for(int i=0;i<areas.Length;i++)areas[i].enabled=areaEnabled[i];canvas.renderMode=oldMode;canvas.worldCamera=oldCam;canvas.planeDistance=oldDistance;c.targetTexture=oldRt;c.aspect=oldAspect;c.cullingMask=oldMask;c.transform.position=position;c.orthographicSize=size;if(h.InWorld)h.WorldNavigation.RestoreView(worldTarget,size);RenderTexture.active=oldActive;rt.Release();Object.Destroy(rt);Object.Destroy(tex);Canvas.ForceUpdateCanvases();foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(((RectTransform)layout.transform).rect.width);if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();}
+   finally{scaler.enabled=scalerEnabled;scaler.uiScaleMode=scalerMode;scaler.referenceResolution=scalerResolution;scaler.screenMatchMode=scalerMatchMode;scaler.matchWidthOrHeight=scalerMatch;scaler.referencePixelsPerUnit=scalerPixels;canvas.scaleFactor=scale;canvas.referencePixelsPerUnit=canvasPixels;for(int i=0;i<areas.Length;i++)areas[i].enabled=areaEnabled[i];canvas.renderMode=oldMode;canvas.worldCamera=oldCam;canvas.planeDistance=oldDistance;c.targetTexture=oldRt;c.aspect=oldAspect;c.cullingMask=oldMask;c.transform.position=position;c.orthographicSize=size;if(h.InWorld)h.WorldNavigation.RestoreView(worldTarget,size);RenderTexture.active=oldActive;rt.Release();Object.Destroy(rt);Object.Destroy(tex);Canvas.ForceUpdateCanvases();foreach(var layout in h.Hud.GetComponentsInChildren<RoyalHudLayout>(true))layout.Apply(((RectTransform)layout.transform).rect.width);if(managementOpen)h.Hud.GetComponent<RoyalGoldV3ManagementScreens>().SynchronizeLayout();if(retention&&retention.IsOpen)retention.SynchronizeLayout();if(buildings&&buildings.IsOpen)buildings.SynchronizeLayout();if(rankings&&rankings.IsOpen)rankings.SynchronizeLayout();if(heroesOpen)heroes.Refresh();}
   }
   static readonly List<Framing> framingChecks=new List<Framing>();
   static readonly List<ManagementCapture> managementChecks=new List<ManagementCapture>();

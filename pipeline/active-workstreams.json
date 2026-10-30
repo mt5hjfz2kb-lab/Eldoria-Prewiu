@@ -2558,6 +2558,105 @@
         "native_result": "SUCCESS: 61/61 EditMode, 73/73 PlayMode; visual fidelity NOT accepted",
         "runner_released": true
       }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Corregir PR104 para respetar retirada de Qwen",
+      "owner": null,
+      "branch": "main",
+      "status": "active",
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "06178d05199b2c970a17f18ef857407360bca793",
+      "scope": [
+        "AGENTS.md",
+        "tools/art-knowledge/**",
+        "tools/mission-continuity/**",
+        "tools/art-direction/ai-authoring/verify-artist-cycle.mjs",
+        "tools/art-direction/ai-authoring/verify-artist-cycle.test.mjs",
+        "tools/check-art-production-governance.mjs",
+        "tools/plan-art-production.mjs",
+        ".github/workflows/repository-architecture-guard.yml",
+        "docs/ELDORIA_QWEN_ART_DECOUPLING_20261022.md",
+        "docs/documentation-catalog.json",
+        ".github/workflows/tester-qa.yml",
+        "tools/check-valoria-visual-authority-routing.mjs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Zero-cost governance and memory tooling consolidation; no art generation, no paid services, no Unity runner.",
+      "phase": "PR101_PR104_MERGED_VERIFIED",
+      "next": "Consolidation merged; retain model-neutral rules, rejection lessons, exact-head checks and historical evidence.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      },
+      "ownership_revision": 6,
+      "resume_context": {
+        "prior_delivered_pr": 104,
+        "prior_state": "completed_in_branch",
+        "source_pr": 103
+      },
+      "ownership_state": "available",
+      "write_scope_released": true,
+      "last_verified": {
+        "merge": "e41600058014f910852dfa3ffa8fd17669e03908",
+        "source": "408042637604e06ecae4551f1586d36cd95e8fc1",
+        "local_tests": "77/77",
+        "architecture_run": 41075075508,
+        "tester_run": 41075075660,
+        "visual_authority_run": 41075075523,
+        "art_approved": false
+      }
+    },
+    {
+      "id": "eldoria-iphone-lifecycle-diagnostics-20261030",
+      "title": "Resume PR97 optional local iPhone lifecycle diagnostics",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "status": "active",
+      "branch": "review/native281-iphone-ui-world-triage-20261022",
+      "pr": 97,
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "68c18c15ab826cec69f2ff260e5d4b0a6b9aab7e",
+      "scope": [
+        "tools/delivery/optional-iphone-lifecycle-diagnostics.js",
+        "tools/delivery/test-optional-iphone-lifecycle-diagnostics.mjs",
+        "tools/delivery/prepare.py",
+        "docs/incident-native281/OWNER_PLAYTEST_CORRECTION_CONTRACT_20261022.md"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Dormant local-only browser lifecycle diagnostics. No art or paid service and no physical-device stability certification.",
+      "phase": "RECONCILE_PR97_WITH_CURRENT_DELIVERY",
+      "next": "Verify optional diagnostics against current delivery preparation; retain iPhone physical QA as unresolved.",
+      "budget_eur": 0
+    },
+    {
+      "id": "eldoria-heroes-approved-ui-20261030",
+      "title": "PR135: reconstruct approved interactive hero screens",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "ownership_state": "claimed",
+      "ownership_revision": 2,
+      "status": "active",
+      "branch": "feature/heroes-approved-ui-integration-20261030",
+      "pr": 135,
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "b56f4f0f607ab4325625bd926e0588da1d9b4d73",
+      "scope": [
+        "Unity/Assets/Eldoria/HeroesUI/**",
+        "Unity/Assets/Eldoria/HeroesUI.meta",
+        "docs/heroes-ui/**",
+        "Unity/Assets/Eldoria/AldricCity/AldricCityRoaming.cs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
+      "phase": "REBUILD_REAL_COMPONENTS_FROM_APPROVED_SIX_SCREENS",
+      "next": "Combined PR136 binds canonical state and loaded Aldric geometry; native six-screen proof required.",
+      "budget_eur": 0
     }
   ],
   "history": [
@@ -9728,6 +9827,85 @@
       "final_source_sha": "3a27851755b9a000ef4b177e3360d6cbfddf3713",
       "art_approved": false,
       "unity_validated": false
+    },
+    {
+      "id": "eldoria-art-memory-continuity-hardening-20261024",
+      "title": "Corregir PR104 para respetar retirada de Qwen",
+      "owner": "chatgpt-qwen-decoupling-pr104-safety-20261024",
+      "branch": "chore/knowledge-continuity-safe-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Read-only memory reference wording and regression tests only; does not create art or call Qwen.",
+      "phase": "MODEL_NEUTRAL_MEMORY_CORRECTION_CERTIFIED_PR104",
+      "next": "PR104 safe memory and continuity improvements ready for exact-head review. Full Qwen art-governance decoupling remains pending separately in draft PR101; never treat Qwen as required artist.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Existing tools give artist key rejection lessons early and watcher respects owner pauses",
+        "evidence": "Node unit tests and architecture CI exact head",
+        "handoff": "No changes to protected production scopes; close scoped workstream after evidence"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "run_architecture": 40099103785,
+        "source_head": "73b82b40bccc54411099a7fc0c9c59624e736150",
+        "decision": "Owner removed Qwen from artistic work; no Qwen/Tripo/Unity invoked by this scope."
+      },
+      "ownership_revision": 3,
+      "resume_context": {
+        "prior_delivered_pr": 104,
+        "prior_state": "completed_in_branch",
+        "source_pr": 103
+      }
+    },
+    {
+      "id": "eldoria-art-memory-continuity-safety-20261024",
+      "title": "Memoria artística priorizada y continuidad sin falsas recuperaciones",
+      "owner": "chatgpt-art-memory-continuity-20261024",
+      "branch": "chore/art-memory-continuity-safety-20261024",
+      "status": "completed",
+      "claimed_at": "2026-10-24",
+      "base_main_sha": "8af0acdb8602d88482c2c5fce67e07ed5ff448b8",
+      "scope": [
+        "tools/art-knowledge/select.mjs",
+        "tools/art-knowledge/select.test.mjs",
+        "tools/mission-continuity/core.mjs",
+        "tools/mission-continuity/core.test.mjs",
+        "docs/evidence/art-memory-continuity-safety-20261024/**",
+        ".github/workflows/repository-architecture-guard.yml"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Only read-only selection and continuity decisions; no artistic edits, generation, Unity scene, credits or hardware reservation.",
+      "phase": "SUPERSEDED_WITHOUT_MERGE_BY_PR104",
+      "next": "PR #103 closed as duplicate; behavior and adversarial tests retained in PR #104. Historical branch and evidence remain accessible.",
+      "budget_eur": 0,
+      "delivery_definition": {
+        "deliverable": "Validated improvements in existing memory selection and mission recovery policy",
+        "evidence": "Exact tests of selected/rejected art knowledge and paused workstream classification",
+        "handoff": "Draft PR; retain review pending without touching game"
+      },
+      "completed_at": "2026-10-24",
+      "evidence": {
+        "pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103",
+        "verified_sha": "af5d21263d8616f3f281ff608cad2488e102dc2f",
+        "architecture_gate": 40092850243,
+        "art_planner_gate": 40092850216,
+        "governance_gate": 40092850208,
+        "art_quality": "NOT_APPLICABLE_NO_ART_PRODUCED",
+        "physical_mobile": "NOT_TESTED",
+        "gameplay_modified": false,
+        "note": "Older head failed a text compatibility assertion; fixed before the cited gate. Exact scope limited to 6 files including current registry.",
+        "superseded_by": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/104",
+        "original_pr": "https://github.com/mt5hjfz2kb-lab/Eldoria-Prewiu/pull/103"
+      }
     }
   ],
   "owner_specific_pauses": [

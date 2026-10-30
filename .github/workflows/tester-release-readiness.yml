@@ -1,5 +1,6 @@
 name: Eldoria tester release readiness (zero-cost)
 on:
+  workflow_call:
   push:
     branches: [main]
     paths:

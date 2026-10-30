@@ -132,6 +132,7 @@ namespace Eldoria.ReferenceClean {
     if(!management)management=Hud.gameObject.AddComponent<RoyalGoldV3ManagementScreens>();
     management.Initialize(Hud,boundGateway,()=>city.Clock.UtcTicks,()=>city.Presenter.RefreshState());
     management.ReturnToCity=()=>{if(InWorld)TrySetWorld(false);};
+    BindHeroDestination(management);
     // The Camino de los Vigilantes and Mesa de Exploradores are independent
     // top-level destinations. They are NOT inside Crónicas/Códice; their two
     // access ribbons only appear after progression actually unlocks each.
@@ -148,6 +149,44 @@ namespace Eldoria.ReferenceClean {
       if(resources)resources.RefreshForZoom();
     }
    }
+  void BindHeroDestination(RoyalGoldV3ManagementScreens management){
+   var heroes=Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+   if(!heroes)heroes=Hud.gameObject.AddComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+   var safe=Hud.GetComponentInChildren<RoyalHudLayout>(true).transform as RectTransform;
+   heroes.Initialize(safe,ReadCanonicalHeroes);
+   heroes.CanOpenHero=id=>id=="aldric"||id=="lyra"&&boundGateway.Snapshot().ChapterThree.LyraRecruited;
+   heroes.ReadModelRoot=id=>{
+    if(id!="aldric")return null;
+    var roaming=Object.FindFirstObjectByType<Eldoria.AldricCity.AldricCityRoaming>();
+    return roaming?roaming.ApprovedModelRoot:null;
+   };
+   management.HeroesRequested=()=>heroes.Open();
+   heroes.Closed=()=>management.Open(management.CurrentDestination);
+   Hud.NarrativeOpening-=SuspendHeroDestination;Hud.NarrativeOpening+=SuspendHeroDestination;
+  }
+  void SuspendHeroDestination(){var heroes=Hud?Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>():null;if(heroes)heroes.Suspend();}
+  Eldoria.HeroesUI.HeroesApprovedDestination.HeroState[] ReadCanonicalHeroes(){
+   var state=boundGateway.Snapshot();
+   return new[]{ReadCanonicalHero(state,"aldric"),ReadCanonicalHero(state,"lyra")};
+  }
+  Eldoria.HeroesUI.HeroesApprovedDestination.HeroState ReadCanonicalHero(PlayerState state,string id){
+   bool lyra=id=="lyra";var stats=SliceRules.HeroIntrinsicStats(id);
+   int xp=lyra?Math.Max(state.Retention?.LyraExperience??0,state.ChapterThree?.LyraXp??0):state.Retention?.AldricExperience??0;
+   int mastery=EarlyRetentionRules.HeroMasteryLevel(state,id);
+   return new Eldoria.HeroesUI.HeroesApprovedDestination.HeroState{
+    Id=id,DisplayName=lyra?"Lyra":"Sir Aldric",Role=lyra?"Exploradora":"Guardián de Valoria",
+    Unlocked=!lyra||state.ChapterThree.LyraRecruited,Available=MarchCapacityRules.HeroAvailable(state,id),
+    Level=MarchCapacityRules.HeroLevel(state,id),Experience=Math.Max(0,xp),Mastery=mastery,
+    Capacity=MarchCapacityRules.Capacity(state,id),Health=stats.Health,Attack=stats.Attack,
+    Defense=stats.Defense,Break=stats.Break,HeroPower=stats.Power,
+    Portrait=lyra?null:RoyalGoldV41SourceArt.Get("aldric-face"),
+    AbilityName=lyra?"Apoyo de exploradora":"Defensa del guardián",
+    AbilityDescription=(lyra?"Lyra aporta sus atributos a la expedición y mejora un 3 % el ataque de sus tropas.":
+     "Aldric aporta sus atributos de defensa, vida, ataque y ruptura a la expedición.")+
+     "\n\nEl combate se resuelve automáticamente; prepara héroes y tropas antes de partir."+
+     "\n\nMaestría PvE: "+mastery+". Sus mejoras se aplican a las actividades personales de los Vigilantes y Exploradores."
+   };
+  }
   public void RefreshNavigation(){if(Hud==null)return;foreach(var item in Hud.Navigation.Items)if(item.Section==RoyalSection.World)item.Label.Put(InWorld?L("Ciudad","City"):L("Mundo","World"));}
   void LateUpdate(){
    if(!Ready)return;

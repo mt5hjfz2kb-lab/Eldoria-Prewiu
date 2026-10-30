@@ -653,6 +653,18 @@ jobs:
             'integration-continuous-bastion-5-portrait.png',
             'integration-continuous-bastion-5-complete-landscape.png',
             'integration-continuous-bastion-5-complete-portrait.png',
+            'integration-heroes-hall-landscape.png',
+            'integration-heroes-hall-portrait.png',
+            'integration-heroes-aldric-resumen-landscape.png',
+            'integration-heroes-aldric-resumen-portrait.png',
+            'integration-heroes-aldric-habilidades-landscape.png',
+            'integration-heroes-aldric-habilidades-portrait.png',
+            'integration-heroes-aldric-talentos-landscape.png',
+            'integration-heroes-aldric-talentos-portrait.png',
+            'integration-heroes-aldric-equipamiento-landscape.png',
+            'integration-heroes-aldric-equipamiento-portrait.png',
+            'integration-heroes-lyra-resumen-landscape.png',
+            'integration-heroes-lyra-resumen-portrait.png',
             'integration-result.json'
           )){
             if(-not(Test-Path (Join-Path $e $file))){throw "Missing real Unity evidence: $file"}
@@ -665,6 +677,9 @@ jobs:
             if($result.checks -notcontains "continuous I-$level native progression and reopened save"){
               throw "Missing continuous native checkpoint I-$level; seeded tests cannot substitute it"
             }
+          }
+          if($result.checks -notcontains 'six actual hero screens preserve gameplay save and return navigation'){
+            throw 'Hero screens lack native controls, save-integrity and navigation evidence'
           }
           if($result.checks -notcontains 'continuous native I-V authored objectives complete'){
             throw 'Continuous V authored objectives were not completed through actual controls'

@@ -12,10 +12,26 @@ function fixture() {
   const put = (p, s) => { const filename=join(root,p); mkdirSync(dirname(filename),{recursive:true});writeFileSync(filename,s);return createHash('sha256').update(s).digest('hex'); };
   const digest = put('proof/proof.txt', 'authentic fixture bytes');
   const evidence = {evidence_path:'proof/proof.txt',evidence_sha256:digest};
+  const png = (w,h,marker) => {
+    // Synthetic unit-test PNG header, NOT artistic or player evidence.
+    const b=Buffer.alloc(96);
+    Buffer.from('89504e470d0a1a0a','hex').copy(b);
+    b.writeUInt32BE(13,8); b.write('IHDR',12);
+    b.writeUInt32BE(w,16);b.writeUInt32BE(h,20);
+    b.write(String(marker),32,'utf8');return b;
+  };
   const visual_evidence=[];
-  for(const view of REQUIRED_VIEWS) for(const orientation of ORIENTATIONS)
-    visual_evidence.push({view,orientation,reference_path:'proof/proof.txt',reference_sha256:digest,
-      actual_path:'proof/proof.txt',actual_sha256:digest,review:{verdict:'APPROVED',reviewer:'Independent reviewer',same_camera:true,legible_on_mobile:true,interactions_clear:true}});
+  for(const view of REQUIRED_VIEWS) for(const orientation of ORIENTATIONS) {
+    const reference_path='proof/ref-'+view+'-'+orientation+'.png';
+    const actual_path='proof/unity-'+view+'-'+orientation+'.png';
+    const reference_sha256=put(reference_path,png(512,512,'reference-'+view+'-'+orientation));
+    const actual_sha256=put(actual_path,png(
+      orientation==='landscape'?1280:720,orientation==='landscape'?720:1280,
+      'unity-'+view+'-'+orientation));
+    visual_evidence.push({view,orientation,reference_path,reference_sha256,
+      actual_path,actual_sha256,source_sha:source,native_run_id:12345,
+      review:{verdict:'APPROVED',reviewer:'Independent reviewer',same_camera:true,legible_on_mobile:true,interactions_clear:true}});
+  }
   const m={schema:1,state:'READY',source_sha:source,artifact_sha256:artifact,channels:['web'],
     visual_evidence,gameplay:{status:'PASS',source_sha:source,native_run_id:12345,
       uninterrupted_from_fresh_save:true,no_debug_skips:true,bastions:[1,2,3,4,5],
@@ -58,4 +74,12 @@ test('different hosted/source build and missing final approval fail',()=>{
     f.m.final_review.verdict='PENDING';
     const e=checkCandidate(f.m,f.root).join(' ');
     assert.match(e,/published\/hosted/);assert.match(e,/owner artistic approval/);}finally{f.cleanup();}
+});
+
+test('complete exact-candidate evidence can authorize external promotion',()=>{
+  const f=fixture();try{
+    f.release(true);
+    assert.equal(verify(f.root).status,'READY_EVIDENCE_CONSISTENT');
+    assert.equal(verify(f.root).releaseEnabled,true);
+  }finally{f.cleanup();}
 });

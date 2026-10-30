@@ -504,12 +504,22 @@ namespace Eldoria.Domain
                 190*s.BarracksLevel+s.MissionPower,
                 18*checked(s.Available.Total+s.Wounded.Total+deployed),1204,0,0);
         }
+        // The hero screen and actual combat share these existing intrinsic values.
+        // This is an extraction of the resolver's constants, not a balance change.
+        public static CombatStats HeroIntrinsicStats(string heroId)
+        {
+            bool aldric=heroId=="aldric"||heroId=="aldric+lyra";
+            bool lyra=heroId=="lyra"||heroId=="aldric+lyra";
+            return new CombatStats((aldric?78:0)+(lyra?116:0),(aldric?112:0)+(lyra?62:0),
+                (aldric?420:0)+(lyra?300:0),(aldric?34:0)+(lyra?82:0),(aldric?1204:0)+(lyra?1278:0));
+        }
         // All deployment, preview, combat and casualties use this same tiered snapshot.
         public static CombatStats Expedition(ArmyRoster troops, string heroId)
         {
             if ((heroId != "aldric" && heroId != "lyra" && heroId != "aldric+lyra") || troops == null || troops.Total < 1) return new CombatStats(0, 0, 0, 0, 0);
-            bool lyra=heroId=="lyra"||heroId=="aldric+lyra", aldric=heroId!="lyra";
-            double a = (aldric?78:0)+(lyra?116:0), d = (aldric?112:0)+(lyra?62:0), hp = (aldric?420:0)+(lyra?300:0), brk = (aldric?34:0)+(lyra?82:0); int pow = (aldric?1204:0)+(lyra?1278:0);
+            bool lyra=heroId=="lyra"||heroId=="aldric+lyra";
+            var hero=HeroIntrinsicStats(heroId);
+            double a=hero.Attack,d=hero.Defense,hp=hero.Health,brk=hero.Break;int pow=hero.Power;
             int[] counts = { troops.ArcherT1, troops.ArcherT2, troops.ArcherT3 };
             int[] tiers = { 1, 4, 10 }; // T1/T2/T3 profiles inherited from hero-army.js
             for (int i = 0; i < counts.Length; i++)

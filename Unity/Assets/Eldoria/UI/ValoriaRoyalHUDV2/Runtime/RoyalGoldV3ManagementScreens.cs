@@ -34,6 +34,8 @@ namespace Eldoria.UI.RoyalGold.V2
         Action onCommand;
         // Optional host navigation; same scene, preserving the city camera state.
         public Action ReturnToCity { get; set; }
+        public Action HeroesRequested { get; set; }
+        RoyalButton heroesButton;
         RectTransform root, header, left, right, footer, quantityRow;
         RoyalGoldV3ManagementBackdropGraphic destinationArtwork, featuredUnitArtwork, statusArtwork;
         RectTransform trainingProgress;
@@ -325,6 +327,7 @@ namespace Eldoria.UI.RoyalGold.V2
             featuredUnitArtwork=featured.gameObject.AddComponent<RoyalGoldV3ManagementBackdropGraphic>();
             featuredUnitArtwork.color=Color.white;
             featuredUnitArtwork.raycastTarget=false;
+            heroesButton=Button("Open canonical heroes",header,"HÉROES",()=>{Close();HeroesRequested?.Invoke();},false,out _);
             heading = Text("Destination title",header,27,Gold,true);
             subheading = Text("Royal gold description",header,15,Muted);
             unitTitle = Text("Unit or hero title",left,26,Ivory,true);
@@ -698,8 +701,10 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             Place(footer,leftSide,h-bottom-footH,usable,footH);
             float hw=header.rect.width;
-            Place(heading.rectTransform,landscape?14:15,7,hw*.67f,landscape?32:37);
-            Place(subheading.rectTransform,landscape?14:15,landscape?39:47,hw*.70f,22);
+            heroesButton.gameObject.SetActive(HeroesRequested!=null);
+            Place(heroesButton.transform as RectTransform,hw*.50f,landscape?7:9,hw*.19f,landscape?52:60);
+            Place(heading.rectTransform,landscape?14:15,7,hw*.47f,landscape?32:37);
+            Place(subheading.rectTransform,landscape?14:15,landscape?39:47,hw*.47f,22);
             Place(switchDestination.transform as RectTransform,hw*.71f,landscape?4:7,hw*.27f,landscape?30:34);
             Place(chapterAction.transform as RectTransform,hw*.71f,landscape?36:43,hw*.27f,landscape?27:31);
             float uw=left.rect.width,uh=left.rect.height;
