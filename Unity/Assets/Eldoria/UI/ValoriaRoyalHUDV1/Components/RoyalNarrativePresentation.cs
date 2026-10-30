@@ -39,6 +39,7 @@ namespace Eldoria.UI.RoyalGold {
   public int TurnIndex=>lineIndex;
   public int TurnCount=>turns.Count;
   string CurrentPage=>pageIndex<pages.Count?pages[pageIndex]:"";
+  public string CurrentPageText=>active?CurrentPage:"";
 
   void Awake(){modal=GetComponent<ModalWindow>();}
   void EnsureParts(){
