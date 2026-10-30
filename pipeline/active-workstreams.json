@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T08:58:00+01:00",
+  "updated_at": "2026-10-30T08:55:59.613Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -2482,9 +2482,12 @@
         "Unity/Assets/Eldoria/Resources/EldoriaV41/**",
         "Unity/Assets/Eldoria/Resources/EldoriaV41.meta",
         "Unity/Assets/Eldoria/Scripts/Editor/EldoriaV41*",
-        ".github/workflows/ui-progression-cert.yml"
+        ".github/workflows/ui-progression-cert.yml",
+        "Unity/Assets/Eldoria/ArtTests/ValoriaReferenceClean/Integration/Editor/MarchCapacityNativeCapture.cs"
       ],
-      "resources": [],
+      "resources": [
+        "windows-runner-heavy"
+      ],
       "art_production_routing": "not_applicable",
       "dependency": "PR #132 merged; do not modify GameState.cs, LocalGateway.cs, RoyalGoldV3ManagementScreens.cs or release Windows lease owned by other workstreams until verified released.",
       "phase": "FUNCTIONAL_REGRESSION_AND_APPROVED_UI_RECONSTRUCTION",
