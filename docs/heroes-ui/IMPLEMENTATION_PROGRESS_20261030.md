@@ -22,3 +22,14 @@ PR136 remains the integration route; do not reopen or duplicate PR135. Actual na
 Read PR127 at3a27851755b9a000ef4b177e3360d6cbfddf3713 and recovered finished artifact12890387724 from40858960344. Optimized Lyra GLB is4770000bytes, SHA256a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725,30000triangles; Blender source/review preserved. It is unrigged, has no Unity/mobile certificate, and formal_art_approved isfalse. Source reference hash120a8e277cf8e25479fb13db4a41400d38605e50e5a0c4a393685701b93a8ca3.
 
 The inspected model is a brown-haired, leather-clad ranger. The v14 approved master48cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800 depicts a light-haired elf with different equipment. Do NOT silently substitute that model for the master's Lyra or claim equivalence. No GLB/model was altered or imported into production for this investigation. No Tripo task, rig operation or paid generation was run. Keep the authentic v14 portrait until identity is reconciled or a matching approved model is available.
+
+
+## Decisión expresa del propietario — identidad de Lyra, 30/10/2026
+
+Ante las dos fuentes recuperadas, el propietario seleccionó «Modelo 3D existente»: la exploradora castaña de PR127 prevalece para unificar ficha y modelo; conservar la composición de v14. Esto resuelve la discrepancia documentada arriba, no autoriza generación, rigging de pago ni una aprobación global de la UI.
+
+Se reutiliza sin editar el GLB optimizado de la entrega persistente Eldoria-lyra-entrega.zip: 4770000 bytes; SHA256 a9fa7899e7ead2ad26e7b26d368c9006085ae8b8ded2df6515ca466c863f6725, Git blob290c9803242911741ff810fdbddb7591ea39737a; fuente Tripo f4670d45-00c9-43eb-a658-902efdebee87 / artifact12890387724. Se empaqueta como TextAsset .bytes, conservando exactamente los bytes GLB para el importador glTFast existente, con comprobación de tamaño/hash al cargar. Sin nueva generación/créditos.
+
+HeroesLyraModel carga bajo demanda tras desbloqueo narrativo; su geometría fuente permanece inactiva, sin actor jugable ni comandos. HeroesModelSnapshot renderiza la ficha y produce un retrato cacheado de esa misma geometría para Salón/Marchas; se descarta el retrato de identidad contradictoria en el host real. Giro real en ficha; el modelo sigue sin rig, sin animaciones inventadas. Todos los objetos/importador/texturas temporales tienen propietario y liberación. La prueba V4.1 espera la importación, exige geometría/RawImage y retrato derivados del modelo y añade captura girada; el guardado debe seguir idéntico al finalizar.
+
+Pendiente: compilación/importación/capturas y regresión exacta de esta candidata. No trasladar el PASS del padre. Mobile físico y acabado artístico siguen sin certificar.

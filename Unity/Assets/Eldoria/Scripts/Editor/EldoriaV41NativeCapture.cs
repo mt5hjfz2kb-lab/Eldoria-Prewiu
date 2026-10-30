@@ -260,9 +260,20 @@ namespace Eldoria.Editor
                 Shot(host,"heroes-aldric-"+page+"-phone",900,1600);
             }
             Need(heroes.OpenHero("lyra"),"Narratively recruited Lyra opens her own profile");
-            Need(heroes.CurrentAuthoritativeHero().Value.Portrait!=null,
-                "Lyra uses her exact approved portrait rather than missing art or Aldric");
+            var lyraModel=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesLyraModel>();
+            float lyraDeadline=Time.realtimeSinceStartup+30f;
+            while(lyraModel&&!lyraModel.Ready&&Time.realtimeSinceStartup<lyraDeadline)yield return null;
+            Need(lyraModel&&lyraModel.Ready&&lyraModel.ModelRoot,
+                "Owner-selected existing Lyra GLB imports and renders with its exact preserved SHA256");
+            heroes.Refresh();yield return null;
+            Need(heroes.CurrentAuthoritativeHero().Value.Portrait==lyraModel.Portrait,
+                "Lyra portrait is derived from her actual model, not the conflicting pale-haired master");
+            Need(heroes.VisibleRoot.GetComponentsInChildren<RawImage>().Any(r=>r.enabled&&r.texture),
+                "Lyra profile displays actual model geometry rather than a flat fallback");
             Shot(host,"heroes-lyra-resumen-landscape",1600,900);Shot(host,"heroes-lyra-resumen-phone",900,1600);
+            var rotateLyra=heroes.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Rotate hero right");
+            rotateLyra.onClick.Invoke();yield return null;
+            Shot(host,"heroes-lyra-rotated-landscape",1600,900);
             Need(File.ReadAllText(host.City.SaveFile)==saveBeforeHeroes,
                 "All six hero screens preserve the authoritative save byte for byte");
             heroes.Close();yield return null;

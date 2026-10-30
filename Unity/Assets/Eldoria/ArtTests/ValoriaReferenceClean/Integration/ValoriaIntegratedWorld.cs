@@ -157,7 +157,15 @@ namespace Eldoria.ReferenceClean {
    heroes.CanOpenDestination=()=>boundGateway.Snapshot().ChapterThree.LyraRecruited;
    management.CanOpenHeroes=heroes.CanOpenDestination;
    heroes.CanOpenHero=id=>id=="aldric"||id=="lyra"&&boundGateway.Snapshot().ChapterThree.LyraRecruited;
+   var lyra=Hud.GetComponent<Eldoria.HeroesUI.HeroesLyraModel>();
+   if(!lyra)lyra=Hud.gameObject.AddComponent<Eldoria.HeroesUI.HeroesLyraModel>();
+   lyra.Loaded=()=>{if(heroes)heroes.Refresh();if(management)management.SynchronizeLayout();};
+   RoyalGoldV41SourceArt.LyraPortraitProvider=()=>{
+    if(!lyra||!boundGateway.Snapshot().ChapterThree.LyraRecruited)return null;
+    lyra.Request();return lyra.Portrait;
+   };
    heroes.ReadModelRoot=id=>{
+    if(id=="lyra"){lyra.Request();return lyra.Ready?lyra.ModelRoot:null;}
     if(id!="aldric")return null;
     var roaming=Object.FindFirstObjectByType<Eldoria.AldricCity.AldricCityRoaming>();
     return roaming?roaming.ApprovedModelRoot:null;

@@ -14,9 +14,10 @@ namespace Eldoria.HeroesUI
         float yaw=90, renderedYaw;
         public bool HasModel => texture && previous;
         public void Rotate(float degrees){yaw=Mathf.Repeat(yaw+degrees,360);}
-        public bool Show(GameObject model,RawImage target)
+        public bool Show(GameObject model,RawImage target,float initialYaw=90f)
         {
             if(!model||!target)return false;
+            if(previous!=model)yaw=initialYaw;
             if(previous==model&&texture&&Mathf.Abs(renderedYaw-yaw)<.01f){target.texture=texture;target.enabled=true;return true;}
             var stage=new GameObject("Temporary approved hero render data");
             stage.hideFlags=HideFlags.HideAndDontSave;stage.transform.position=new Vector3(0,-12000,0);
@@ -54,6 +55,19 @@ namespace Eldoria.HeroesUI
                 previous=model;renderedYaw=yaw;return true;
             }catch(Exception error){Debug.LogWarning("HERO_PREVIEW_UNAVAILABLE "+error.GetType().Name);return false;}
             finally{stage.SetActive(false);Destroy(stage);foreach(var mesh in temporaryMeshes)Destroy(mesh);}
+        }
+        public Sprite CopyPortrait()
+        {
+            if(!HasModel)return null;
+            var prior=RenderTexture.active;
+            var copy=new Texture2D(texture.width,texture.height,TextureFormat.RGBA32,false);
+            try{
+                RenderTexture.active=texture;copy.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);copy.Apply();
+                copy.name="Lyra portrait from verified Unity geometry";
+                return Sprite.Create(copy,new Rect(copy.width*.20f,copy.height*.48f,copy.width*.60f,copy.height*.48f),
+                    new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
+            }catch{Destroy(copy);throw;}
+            finally{RenderTexture.active=prior;}
         }
         public void Release(){previous=null;if(texture){texture.Release();Destroy(texture);texture=null;}}
         void OnDestroy()=>Release();

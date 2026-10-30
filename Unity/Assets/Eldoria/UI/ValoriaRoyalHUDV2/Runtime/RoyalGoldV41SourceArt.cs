@@ -4,15 +4,17 @@ using UnityEngine.UI;
 
 namespace Eldoria.UI.RoyalGold.V2
 {
-    // Only extracted source pixels. No flattened UI screenshot, invented numbers,
+    // Approved source pixels or a cached render of the owner-selected model. No flattened UI or invented numbers,
     // runtime download or additional Canvas. See source provenance beside textures.
     public static class RoyalGoldV41SourceArt
     {
         static readonly Dictionary<string,Sprite> sprites=new Dictionary<string,Sprite>();
+        public static System.Func<Sprite> LyraPortraitProvider;
         public static Sprite HeroPortrait(string id)
         {
             if(id=="aldric")return Get("aldric-face");
             if(id!="lyra")return null;
+            if(LyraPortraitProvider!=null)return LyraPortraitProvider();
             const string key="approved-lyra-portrait";
             if(sprites.TryGetValue(key,out var cached))return cached;
             var source=Resources.Load<Texture2D>("EldoriaV41/HeroesApprovedMaster");
