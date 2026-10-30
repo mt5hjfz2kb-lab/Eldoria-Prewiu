@@ -135,7 +135,7 @@ namespace Eldoria.HeroesUI
             var source=ReadModelRoot?.Invoke(hero.Id) ?? (hero.Id=="aldric"?ApprovedAldricModel:ApprovedLyraModel);
             var raw=Rect("Genuine hero model render",stage).gameObject.AddComponent<RawImage>();
             Place(raw.rectTransform,5,5,modelW-10,modelH-46);raw.raycastTarget=false;
-            if(source&&preview.Show(source,raw,hero.Id=="lyra"?180f:90f)){
+            if(source&&preview.Show(source,raw,hero.Id=="lyra"?0f:90f)){
                 float imageH=modelH-46,imageW=Mathf.Min(modelW-10,imageH*2f/3f);
                 Place(raw.rectTransform,(modelW-imageW)*.5f,5,imageW,imageH);
                 if(CurrentPage!=Page.Talentos){

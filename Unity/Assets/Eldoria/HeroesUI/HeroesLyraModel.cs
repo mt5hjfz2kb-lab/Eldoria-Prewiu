@@ -48,7 +48,7 @@ namespace Eldoria.HeroesUI
             var capture=new GameObject("Lyra native portrait capture",typeof(RectTransform),typeof(CanvasRenderer),typeof(RawImage));
             capture.hideFlags=HideFlags.HideAndDontSave;capture.SetActive(false);
             var snapshot=capture.AddComponent<HeroesModelSnapshot>();
-            bool rendered=snapshot.Show(ModelRoot,capture.GetComponent<RawImage>(),180f);
+            bool rendered=snapshot.Show(ModelRoot,capture.GetComponent<RawImage>(),0f);
             if(rendered)Portrait=snapshot.CopyPortrait();
             Destroy(capture);
             if(!Portrait){Debug.LogError("LYRA_APPROVED_MODEL_PORTRAIT_FAILED");Release();yield break;}
