@@ -115,7 +115,8 @@ export function verify(root, opts = {}) {
   const active = activeReleaseRequests(root);
   const gate = opts.requireReady === true || active.length > 0;
   if (manifest && (gate || manifest.state === 'READY')) errors.push(...checkCandidate(manifest, root));
-  if (active.length) errors.push('release requests enabled: ' + active.join(', ') + ' — readiness must be proven before publishing');
+  // When publishing is enabled, evidence is mandatory; valid evidence can pass.
+  // This monitoring check does not replace a direct publisher preflight invocation.
   // An enabled production release is never silently waved through by this
   // pre-merge monitoring job. Wire verify --require-ready into the publishing
   // preflight itself when that currently-owned workflow is available to edit.
