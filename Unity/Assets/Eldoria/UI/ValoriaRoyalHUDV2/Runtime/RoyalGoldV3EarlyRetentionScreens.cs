@@ -820,7 +820,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // Keep the complete name and the actual tap target legible.
             if(portrait)
             {
-                TL(heading.rectTransform,130f,12f,pw-260f,86f);
+                TL(heading.rectTransform,130f,12f,pw-350f,86f);
                 heading.fontSize=32;
                 TL(kicker.rectTransform,18f,104f,pw-36f,36f);
                 TL((RectTransform)back.transform,18f,14f,100f,88f);
@@ -829,7 +829,7 @@ namespace Eldoria.UI.RoyalGold.V2
             }
             else
             {
-                TL(heading.rectTransform,130f,18f,pw-260f,44f);
+                TL(heading.rectTransform,130f,18f,pw-350f,44f);
                 heading.fontSize=compactLandscape?26:34;
                 TL(kicker.rectTransform,130f,61f,pw-260f,27f);
                 TL((RectTransform)back.transform,20f,compactLandscape?14f:23f,90f,compactLandscape?68f:46f);
@@ -837,8 +837,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 backLabel.fontSize=compactLandscape?48:30;
             }
             TL((RectTransform)scoutStrategyButton.transform,
-                pw-118f,portrait?14f:compactLandscape?14f:23f,
-                100f,portrait?88f:compactLandscape?68f:46f);
+                pw-198f,14f,
+                180f,portrait?88f:compactLandscape?68f:76f);
             // Minimum ~13 real pixels on a 390px phone at roomScale .4875.
             scoutStrategyLabel.fontSize=portrait?28:compactLandscape?21:19;
             float imageTop=portrait?150f:108f;

@@ -28,10 +28,10 @@
       "sha256": "48cbc4e73d4144c45af12731773f0fd60b45e81d2a871256b33fe2a00f7d6800",
       "runtime_copy": "Unity/Assets/Eldoria/Resources/EldoriaV41/HeroesApprovedMaster.png",
       "lyra_text_free_crop_top_left": [
-        190,
-        210,
-        123,
-        117
+        1224,
+        662,
+        148,
+        180
       ],
       "policy": "Exact approved source copy; only the text-free portrait is rendered by native hero and march controls. No new artwork or visual approval."
     }

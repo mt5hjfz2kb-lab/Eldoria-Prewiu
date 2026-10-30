@@ -19,7 +19,7 @@ namespace Eldoria.UI.RoyalGold.V2
             if(source==null || source.width!=1536 || source.height!=1024)return null;
             // Exact, text-free face from the owner's six-screen master.
             // No mockup number, skill label or silhouette is rendered as live UI.
-            var portrait=Sprite.Create(source,new Rect(190,697,123,117),
+            var portrait=Sprite.Create(source,new Rect(1224,182,148,180),
                 new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
             sprites[key]=portrait;return portrait;
         }

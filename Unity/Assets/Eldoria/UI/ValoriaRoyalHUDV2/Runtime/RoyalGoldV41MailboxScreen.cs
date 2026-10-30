@@ -60,6 +60,7 @@ namespace Eldoria.UI.RoyalGold.V2
             entry.gameObject.SetActive(!IsOpen&&!hud.NarrativeOpen&&
                 !(hud.Modal!=null&&hud.Modal.gameObject.activeSelf)&&
                 !(hud.GetComponent<RoyalGoldV3ManagementScreens>()?.IsOpen??false)&&
+                !(hud.GetComponent<RoyalGoldV3EarlyRetentionScreens>()?.IsOpen??false)&&
                 (CanShowEntry==null||CanShowEntry())&&string.IsNullOrEmpty(hud.SelectedBuildingId));
         }
         public void Open()
