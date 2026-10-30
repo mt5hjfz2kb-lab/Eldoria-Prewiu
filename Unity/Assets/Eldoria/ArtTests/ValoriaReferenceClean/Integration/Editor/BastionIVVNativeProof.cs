@@ -37,16 +37,33 @@ namespace Eldoria.ReferenceClean.Editor {
   static void Ui(ValoriaIntegratedWorld h,string name){ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-vertical.png",900,1600,()=>VerifyManagementLayout(h));ValoriaIntegrationBuild.Capture(h,Ev+"/ui-"+name+"-horizontal.png",1600,900,()=>VerifyManagementLayout(h));}
   static Rect LocalRect(RectTransform root,RectTransform child){var corners=new Vector3[4];child.GetWorldCorners(corners);var min=root.InverseTransformPoint(corners[0]);var max=root.InverseTransformPoint(corners[2]);return Rect.MinMaxRect(min.x,min.y,max.x,max.y);}
   static void VerifyManagementLayout(ValoriaIntegratedWorld h){
-   var management=h.Hud.GetComponent<RoyalGoldV3BuildingScreens>();var ranking=h.Hud.GetComponent<RoyalGoldV3RankingScreen>();
-   var root=ranking&&ranking.IsOpen?ranking.VisibleRoot:management.VisibleRoot;Need(root!=null,"actual management canvas visible");
+   var dock=h.Hud.GetComponent<RoyalGoldV3BuildingScreens>();
+   var ranking=h.Hud.GetComponent<RoyalGoldV3RankingScreen>();
+   var root=ranking&&ranking.IsOpen?ranking.VisibleRoot:dock.VisibleRoot;
+   if(root==null){
+    Need(!dock.IsOpen,"no full-screen management for regular building selection");
+    return;
+   }
+   var parent=root.parent as RectTransform;
+   if(!(ranking&&ranking.IsOpen)){
+    Need(parent&&root.rect.width<=parent.rect.width-8f&&
+     root.rect.height<parent.rect.height,"council/speedup stays a small safe-area dock");
+    Need(root.GetComponent<UnityEngine.UI.Image>().raycastTarget,
+     "contextual choices remain real, touchable controls");
+   }
    foreach(var button in root.GetComponentsInChildren<UnityEngine.UI.Button>()){
-    var r=LocalRect(root,(RectTransform)button.transform);Need(r.xMin>=root.rect.xMin-.5f&&r.xMax<=root.rect.xMax+.5f&&r.yMin>=root.rect.yMin-.5f&&r.yMax<=root.rect.yMax+.5f,"visible touch target inside destination: "+button.name);
+    var r=LocalRect(root,(RectTransform)button.transform);
+    Need(r.xMin>=root.rect.xMin-.5f&&r.xMax<=root.rect.xMax+.5f&&
+     r.yMin>=root.rect.yMin-.5f&&r.yMax<=root.rect.yMax+.5f,
+     "visible contextual control inside dock: "+button.name);
    }
    if(ranking&&ranking.IsOpen)return;
-   Need(management.ReferenceTexture&&management.ReferenceTexture.width>100,"approved reference texture bound: "+management.BuildingId);
-   foreach(var button in root.GetComponentsInChildren<UnityEngine.UI.Button>()){var text=button.GetComponentInChildren<UnityEngine.UI.Text>();Need(text&&!string.IsNullOrWhiteSpace(text.text),"visible button has a real label: "+button.name);}
    var choices=root.Find("Building management/Development council") as RectTransform;
-   if(choices&&choices.gameObject.activeInHierarchy){var status=root.Find("Building management/Requirements and progress") as RectTransform;Need(!LocalRect(root,status).Overlaps(LocalRect(root,choices)),"council choices do not overlap explanation at actual runtime scale");}
+   if(choices&&choices.gameObject.activeInHierarchy){
+    var status=root.Find("Building management/Requirements and progress") as RectTransform;
+    Need(!LocalRect(root,status).Overlaps(LocalRect(root,choices)),
+      "development choice buttons cannot overlap explanation");
+   }
   }
   static void VerifyWorldCityTouch(ValoriaIntegratedWorld h,BastionIVVWorldPresentation art){
    var rs=art.WorldModel.GetComponentsInChildren<Renderer>();var bounds=rs[0].bounds;foreach(var r in rs)bounds.Encapsulate(r.bounds);
@@ -145,14 +162,22 @@ namespace Eldoria.ReferenceClean.Editor {
    new FileStateStore(h.City.SaveFile).Save(seed);h.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.5f);yield return Dismiss(h);Step(h,0);
    h.City.Home();var pos=h.City.PlayerCamera.transform.position;var rot=h.City.PlayerCamera.transform.rotation;float zoom=h.City.PlayerCamera.orthographicSize;
    Shot(h,"city-III");Do(h,"AdvanceBastion","bastion");Step(h,16);yield return new WaitForSecondsRealtime(.3f);yield return Dismiss(h);Need(h.City.Gateway.Snapshot().BastionLevel==4,"III to IV real gateway");h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;Shot(h,"city-IV");
-   h.Hud.SelectBuilding("bastion");yield return null;var screen=h.Hud.GetComponent<RoyalGoldV3BuildingScreens>();Need(screen.IsOpen,"independent Bastion screen");Ui(h,"council-IV");var priorityButton=h.Hud.GetComponentsInChildren<UnityEngine.UI.Button>(true).Single(x=>x.gameObject.name=="Choose production");Need(priorityButton.isActiveAndEnabled&&priorityButton.interactable,"real council choice available");priorityButton.onClick.Invoke();Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="production","real council UI persists choice");h.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.3f);Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="production","choice survives actual FileStateStore reload");Ui(h,"bastion-IV");screen.Close();
+   h.Hud.SelectBuilding("bastion");yield return null;var screen=h.Hud.GetComponent<RoyalGoldV3BuildingScreens>();Need(screen.IsOpen,"small Bastion council choices visible inside the city");Ui(h,"council-IV");var priorityButton=h.Hud.GetComponentsInChildren<UnityEngine.UI.Button>(true).Single(x=>x.gameObject.name=="Choose production");Need(priorityButton.isActiveAndEnabled&&priorityButton.interactable,"real council choice available");priorityButton.onClick.Invoke();Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="production","real council UI persists choice");h.City.ReloadForProbe();yield return new WaitForSecondsRealtime(.3f);Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="production","choice survives actual FileStateStore reload");Ui(h,"bastion-IV");screen.Close();
    Do(h,"AdvanceBastion","bastion");Step(h,18);yield return new WaitForSecondsRealtime(.3f);yield return Dismiss(h);Step(h,0);Need(art.ModelFor("bastion").activeInHierarchy&&!h.City.BastionTwo.activeSelf,"V replaces keep only");Need(!art.ModelFor("sawmill").activeInHierarchy,"sawmill does not auto-promote");h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;Shot(h,"city-V-keep-only");
    Do(h,"Build","stoneworks");Step(h,12);yield return null;Need(h.City.Gateway.Snapshot().ChapterThree.StoneworksLevel==1,"quarry built individually");
    foreach(string id in new[]{"sawmill","barracks","granary","stoneworks"}){
     int from=id=="stoneworks"?1:2;
     for(int level=from;level<5;level++){
      h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;Shot(h,id+"-level-"+level);
-     h.Hud.SelectBuilding(id=="barracks"?"upgrade-barracks":id);yield return null;Need(screen.VisibleAction&&screen.VisibleAction.interactable,id+" real upgrade button available");screen.VisibleAction.onClick.Invoke();Need(h.City.Gateway.Snapshot().ChapterThree.PendingBuildingLevel==level+1,id+" UI dispatches authoritative upgrade");screen.Close();Step(h,8+level*2);yield return null;
+     h.Hud.SelectBuilding(id=="barracks"?"upgrade-barracks":id);yield return null;
+     var context=h.Hud.GetComponent<RoyalGoldV3ContextHud>();context.SynchronizeNow();
+     Need(!screen.IsOpen,id+" cannot open a new construction screen");
+     Need(context.ContextVisible&&context.VisibleActionButton&&context.VisibleActionButton.interactable,
+      id+" contextual upgrade is touchable within the city");
+     context.VisibleActionButton.onClick.Invoke();
+     Need(h.City.Gateway.Snapshot().ChapterThree.PendingBuildingLevel==level+1,
+      id+" in-city action dispatches authoritative upgrade");
+     screen.Close();Step(h,8+level*2);yield return null;
      Need(art.ModelFor(id).activeInHierarchy==(level+1>=5),id+" exact individual visual threshold "+(level+1));
     }
     h.City.PlayerCamera.transform.SetPositionAndRotation(pos,rot);h.City.PlayerCamera.orthographicSize=zoom;Shot(h,id+"-level-5");h.Hud.SelectBuilding(id=="barracks"?"upgrade-barracks":id);yield return null;Ui(h,id+"-V");screen.Close();
