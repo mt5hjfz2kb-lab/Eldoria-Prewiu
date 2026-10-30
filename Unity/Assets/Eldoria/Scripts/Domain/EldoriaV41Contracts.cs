@@ -160,6 +160,22 @@ namespace Eldoria.Domain
         // Keep tombstones after deletion so replaying an offline event cannot resurrect it.
         public List<string> ReceivedEventIds=new List<string>();
 
+        public EldoriaV41Mailbox Copy()
+        {
+            var other=new EldoriaV41Mailbox{
+                SchemaVersion=SchemaVersion,Revision=Revision,
+                ReceivedEventIds=new List<string>(ReceivedEventIds??new List<string>()),
+                Messages=new List<EldoriaV41Message>()
+            };
+            foreach(var m in Messages??new List<EldoriaV41Message>())
+                if(m!=null)other.Messages.Add(new EldoriaV41Message{
+                    EventId=m.EventId,Category=m.Category,Type=m.Type,
+                    Title=m.Title,Subtitle=m.Subtitle,ReportId=m.ReportId,
+                    RewardReceiptId=m.RewardReceiptId,OccurredAtUtcTicks=m.OccurredAtUtcTicks,
+                    Read=m.Read
+                });
+            return other;
+        }
         public bool Receive(EldoriaV41Message value)
         {
             if(value==null || string.IsNullOrWhiteSpace(value.EventId) ||
