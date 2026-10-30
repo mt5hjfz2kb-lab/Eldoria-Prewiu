@@ -2622,6 +2622,29 @@
       "phase": "RECONCILE_PR97_WITH_CURRENT_DELIVERY",
       "next": "Verify optional diagnostics against current delivery preparation; retain iPhone physical QA as unresolved.",
       "budget_eur": 0
+    },
+    {
+      "id": "eldoria-heroes-approved-ui-20261030",
+      "title": "PR135: reconstruct approved interactive hero screens",
+      "owner": "codex-final-consolidation-41862564eebb",
+      "ownership_state": "claimed",
+      "ownership_revision": 1,
+      "status": "active",
+      "branch": "feature/heroes-approved-ui-integration-20261030",
+      "pr": 135,
+      "claimed_at": "2026-10-30",
+      "base_main_sha": "b56f4f0f607ab4325625bd926e0588da1d9b4d73",
+      "scope": [
+        "Unity/Assets/Eldoria/HeroesUI/**",
+        "Unity/Assets/Eldoria/HeroesUI.meta",
+        "docs/heroes-ui/**"
+      ],
+      "resources": [],
+      "art_production_routing": "not_applicable",
+      "art_production_routing_reason": "Reconstruct existing approved UI with authentic controls and read-only data/model adapters. No new art generation or paid asset services.",
+      "phase": "REBUILD_REAL_COMPONENTS_FROM_APPROVED_SIX_SCREENS",
+      "next": "Replace flat reference placeholder with functional controls; integrate canonical data and existing model under primary workstream after its native certificate.",
+      "budget_eur": 0
     }
   ],
   "history": [
