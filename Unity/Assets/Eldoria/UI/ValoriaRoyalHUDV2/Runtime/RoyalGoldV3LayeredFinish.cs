@@ -12,7 +12,7 @@ namespace Eldoria.UI.RoyalGold.V2
     [DisallowMultipleComponent]
     public sealed class RoyalGoldV3LayeredFinish : MaskableGraphic
     {
-        public enum Scene { Vigilants, Scouts, Training, March, Panel }
+        public enum Scene { Vigilants, Scouts, Training, March, Panel, Portrait }
         [SerializeField] Scene scene;
         float nextRepaint;
 
@@ -193,6 +193,26 @@ namespace Eldoria.UI.RoyalGold.V2
                     new Vector2(x+w*.83f,y+h*.035f),rim,brass);
                 Stroke(vh,new Vector2(x+w*.03f,y+h*.027f),
                     new Vector2(x+w*.97f,y+h*.027f),rim*.8f,deskShadow);
+            }
+            else if(scene==Scene.Portrait)
+            {
+                // The supplied unit portrait is an opaque rectangular painting.
+                // A dedicated matte blends only its perimeter into the royal
+                // military hall instead of presenting it as a pasted photograph.
+                // The central approved soldier remains completely untouched.
+                var matte=RGBA(.025f,.046f,.074f,.49f);
+                Quad(vh,x,y,x+w*.18f,y+h,
+                    matte,clear,clear,matte);
+                Quad(vh,x+w*.82f,y,x+w,y+h,
+                    clear,matte,matte,clear);
+                Quad(vh,x,y,x+w,y+h*.19f,
+                    matte,matte,clear,clear);
+                Quad(vh,x,y+h*.87f,x+w,y+h,
+                    clear,clear,RGBA(.025f,.046f,.074f,.24f),
+                    RGBA(.025f,.046f,.074f,.24f));
+                Quad(vh,x+w*.28f,y+h*.65f,x+w*.71f,y+h,
+                    clear,clear,RGBA(1f,.85f,.62f,.06f+.02f*breath),
+                    clear);
             }
             else
             {
