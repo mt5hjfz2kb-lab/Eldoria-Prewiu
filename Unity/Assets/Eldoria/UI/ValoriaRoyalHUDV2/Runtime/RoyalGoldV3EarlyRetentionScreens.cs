@@ -1399,20 +1399,23 @@ namespace Eldoria.UI.RoyalGold.V2
                         }
                     }
                     int route=order.StartedUtcTicks==0?scoutStrategyMode:order.StrategyMode;
+                    int required=EarlyRetentionRules.ScoutTroopsForStrategy(route);
+                    int capacity=MarchCapacityRules.Capacity(s,"aldric");
+                    var party=MarchCapacityRules.AutoSelect(s.Available,Math.Min(required,capacity));
+                    int displayedTroops=route==0?party.Total:required;
                     string state=order.StartedUtcTicks==0?
-                        EarlyRetentionRules.ScoutTroopsForStrategy(route)+" tropas · "+
+                        displayedTroops+" tropas · "+
                         TimeSpan.FromSeconds(EarlyRetentionRules.ScoutDurationSeconds(order.Kind,route)).ToString(@"mm\:ss"):
                         order.EndsUtcTicks<=now()?"Listo para reclamar":
                         "Regreso en "+TimeSpan.FromTicks(order.EndsUtcTicks-now()).ToString(@"hh\:mm\:ss");
                     scoutTitles[i].Put(EarlyRetentionRules.ScoutTitle(order.Kind));
                     t.Put(EarlyRetentionRules.ScoutRewardText(order.Kind)+"\n"+state);
-                    int required=EarlyRetentionRules.ScoutTroopsForStrategy(scoutStrategyMode);
-                    bool hasParty=scoutStrategyMode==0 ||
-                        (s.Available.Total>=required &&
-                         MarchCapacityRules.Capacity(s,"aldric")>=required);
-                    a.interactable=order.StartedUtcTicks==0?hasParty:
+                    bool hasParty=MarchCapacityRules.Fits(party,s.Available,capacity)&&
+                        (route==0||party.Total>=required);
+                    bool hasSlot=MarchCapacityRules.CanStart(s,now());
+                    a.interactable=order.StartedUtcTicks==0?hasParty&&hasSlot:
                         order.EndsUtcTicks<=now();
-                    label.Put(order.StartedUtcTicks==0?(hasParty?"Enviar":"Sin tropas"):
+                    label.Put(order.StartedUtcTicks==0?(!hasSlot?"Marchas ocupadas":hasParty?"Enviar":"Sin tropas"):
                         order.EndsUtcTicks<=now()?"Recoger":"En camino");
                 }
                 long due=EarlyRetentionRules.NextPeriodUtcTicks(now());

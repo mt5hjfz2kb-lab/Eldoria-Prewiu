@@ -88,7 +88,7 @@ namespace Eldoria.Editor
             var title=labels.First(t=>t.name=="Destination title");
             var subtitle=labels.First(t=>t.name=="Royal gold description");
             Need(title.preferredHeight<=title.rectTransform.rect.height+1,
-                "Full destination title fits its actual text area "+shot);
+                "Full destination title fits its actual text area "+shot+" (needed "+title.preferredHeight+", available "+title.rectTransform.rect.height+")");
             Need(!Bounds(title.rectTransform).Overlaps(Bounds(subtitle.rectTransform)),
                 "Destination title and subtitle never overlap "+shot);
             foreach(var button in screen.VisibleRoot.GetComponentsInChildren<Button>()

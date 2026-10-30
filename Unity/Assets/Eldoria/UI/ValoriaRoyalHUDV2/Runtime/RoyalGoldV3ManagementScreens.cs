@@ -707,7 +707,7 @@ namespace Eldoria.UI.RoyalGold.V2
             float safeBottom=Screen.height>0?area.yMin/Mathf.Max(.01f,canvasScale):0;
             float top=Mathf.Max(Mathf.Max(10,h*.024f),safeTop+8);
             float bottom=Mathf.Max(Mathf.Max(10,h*.024f),safeBottom+8);
-            float headerH=landscape?Mathf.Clamp(h*.205f,66,95):140;
+            float headerH=landscape?Mathf.Clamp(h*.205f,88,95):140;
             float footH=landscape?Mathf.Clamp(h*.21f,70,92):Mathf.Clamp(h*.155f,102,132);
             float bodyY=top+headerH+8;
             float bodyH=Mathf.Max(120,h-bodyY-footH-bottom-8);
@@ -730,8 +730,8 @@ namespace Eldoria.UI.RoyalGold.V2
             heroesButton.gameObject.SetActive(HeroesRequested!=null);
             heroesButton.interactable=HeroesRequested!=null&&(CanOpenHeroes==null||CanOpenHeroes());
             Place(heroesButton.transform as RectTransform,hw*.50f,landscape?7:9,hw*.19f,landscape?52:60);
-            Place(heading.rectTransform,landscape?14:15,7,hw*.47f,landscape?32:37);
-            Place(subheading.rectTransform,landscape?14:15,landscape?39:47,hw*.47f,22);
+            Place(heading.rectTransform,landscape?14:15,7,hw*.47f,landscape?40:37);
+            Place(subheading.rectTransform,landscape?14:15,landscape?49:47,hw*.47f,26);
             Place(switchDestination.transform as RectTransform,hw*.71f,landscape?4:7,hw*.27f,landscape?30:34);
             Place(chapterAction.transform as RectTransform,hw*.71f,landscape?36:43,hw*.27f,landscape?27:31);
             float uw=left.rect.width,uh=left.rect.height;
