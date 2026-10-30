@@ -181,7 +181,7 @@ namespace Eldoria.ReferenceClean {
     Level=MarchCapacityRules.HeroLevel(state,id),Experience=Math.Max(0,xp),Mastery=mastery,
     Capacity=MarchCapacityRules.Capacity(state,id),Health=stats.Health,Attack=stats.Attack,
     Defense=stats.Defense,Break=stats.Break,HeroPower=stats.Power,
-    Portrait=lyra?null:RoyalGoldV41SourceArt.Get("aldric-face"),
+    Portrait=RoyalGoldV41SourceArt.HeroPortrait(id),
     AbilityName=lyra?"Disparo de Ruptura":"Baluarte",
     AbilityDescription=(lyra?"Lyra aporta sus atributos a la expedición y mejora un 3 % el ataque de sus tropas.":
      "Aldric aporta sus atributos de defensa, vida, ataque y ruptura a la expedición.")+

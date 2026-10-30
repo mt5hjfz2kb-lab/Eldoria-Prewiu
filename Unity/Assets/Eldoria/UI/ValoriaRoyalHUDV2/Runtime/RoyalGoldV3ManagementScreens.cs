@@ -568,7 +568,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     (i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i]));
                 heroSlotButtons[i].interactable=i<2 &&
                     (i==0||s.ChapterThree.LyraRecruited);
-                approvedHeroes[i].sprite=RoyalGoldV41SourceArt.Get(heroSlots[i]=="aldric"?"aldric-face":i==2?"hero-locked":"hero-support");
+                approvedHeroes[i].sprite=string.IsNullOrEmpty(heroSlots[i])?
+                    RoyalGoldV41SourceArt.Get(i==2?"hero-locked":"hero-support"):
+                    RoyalGoldV41SourceArt.HeroPortrait(heroSlots[i]);
                 approvedHeroes[i].gameObject.SetActive(!training);
             }
             approvedTroopRow.gameObject.SetActive(!training);

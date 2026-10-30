@@ -62,6 +62,8 @@ namespace Eldoria.Editor
             var mailbox=host.Hud.GetComponent<RoyalGoldV41MailboxScreen>();
             ValoriaIntegrationBuild.Capture(host,Path.Combine(Output,name+".png"),width,height,()=>{
                 management.SynchronizeLayout();mailbox.SynchronizeLayout();Canvas.ForceUpdateCanvases();
+                var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+                if(heroes&&heroes.IsOpen){heroes.Refresh();Canvas.ForceUpdateCanvases();}
                 if(management.IsOpen)ValidateMilitaryLayout(management,name);
                 // Render again after mailbox reflow inside the canonical off-screen target.
                 host.PlayerCamera.Render();host.PlayerCamera.Render();
@@ -164,6 +166,35 @@ namespace Eldoria.Editor
             Need(gateway.Snapshot().Mailbox.List("informes").Count==0&&gateway.Snapshot().Resources.Wood==wood,"Delete neither replays battle nor pays again");
             host.City.ReloadForProbe();yield return null;
             Need(host.City.Gateway.Snapshot().Mailbox.List("informes").Count==0,"Deleted battle remains deleted after real file reload");
+            var heroes=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesApprovedDestination>();
+            Need(heroes!=null,"Heroes destination is mounted on the existing royal HUD");
+            mailbox.Close();screen.Open(RoyalGoldV3ManagementScreens.Destination.Training);
+            var heroEntry=screen.VisibleRoot.GetComponentsInChildren<Button>().First(b=>b.name=="Open canonical heroes");
+            Need(heroEntry.interactable,"Narratively unlocked heroes entry is actionable");
+            heroEntry.onClick.Invoke();yield return null;
+            Need(heroes.IsOpen,"Real military navigation opens heroes hall");
+            string saveBeforeHeroes=File.ReadAllText(host.City.SaveFile);
+            Shot(host,"heroes-salon-landscape",1600,900);Shot(host,"heroes-salon-phone",900,1600);
+            Need(heroes.OpenHero("aldric"),"Actual unlocked Aldric can be selected");
+            float heroDeadline=Time.realtimeSinceStartup+90;
+            while(!heroes.ReadModelRoot("aldric")&&Time.realtimeSinceStartup<heroDeadline)yield return null;
+            Need(heroes.ReadModelRoot("aldric")!=null,"Approved Aldric geometry is actually available for the profile");
+            foreach(var page in new[]{Eldoria.HeroesUI.HeroesApprovedDestination.Page.Resumen,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Habilidades,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Talentos,
+                Eldoria.HeroesUI.HeroesApprovedDestination.Page.Equipamiento})
+            {
+                heroes.Select(page);yield return null;
+                Shot(host,"heroes-aldric-"+page+"-landscape",1600,900);
+                Shot(host,"heroes-aldric-"+page+"-phone",900,1600);
+            }
+            Need(heroes.OpenHero("lyra"),"Narratively recruited Lyra opens her own profile");
+            Need(heroes.CurrentAuthoritativeHero().Value.Portrait!=null,
+                "Lyra uses her exact approved portrait rather than missing art or Aldric");
+            Shot(host,"heroes-lyra-resumen-landscape",1600,900);Shot(host,"heroes-lyra-resumen-phone",900,1600);
+            Need(File.ReadAllText(host.City.SaveFile)==saveBeforeHeroes,
+                "All six hero screens preserve the authoritative save byte for byte");
+            heroes.Close();yield return null;
             File.WriteAllText(Path.Combine(Output,"result.json"),"{\"functional\":\"PASS\",\"visual_review\":\"REQUIRED\",\"art_approved\":false}");
             Debug.Log("ELDORIA_V41_NATIVE_PASS");EditorApplication.Exit(0);
         }

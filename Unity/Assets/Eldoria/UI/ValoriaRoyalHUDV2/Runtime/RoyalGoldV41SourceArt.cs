@@ -9,6 +9,20 @@ namespace Eldoria.UI.RoyalGold.V2
     public static class RoyalGoldV41SourceArt
     {
         static readonly Dictionary<string,Sprite> sprites=new Dictionary<string,Sprite>();
+        public static Sprite HeroPortrait(string id)
+        {
+            if(id=="aldric")return Get("aldric-face");
+            if(id!="lyra")return null;
+            const string key="approved-lyra-portrait";
+            if(sprites.TryGetValue(key,out var cached))return cached;
+            var source=Resources.Load<Texture2D>("HeroesApprovedMaster");
+            if(source==null || source.width!=1536 || source.height!=1024)return null;
+            // Exact, text-free face from the owner's six-screen master.
+            // No mockup number, skill label or silhouette is rendered as live UI.
+            var portrait=Sprite.Create(source,new Rect(190,697,123,117),
+                new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
+            sprites[key]=portrait;return portrait;
+        }
         public static Sprite Get(string id,int border=0)
         {
             string key=id+":"+border;
