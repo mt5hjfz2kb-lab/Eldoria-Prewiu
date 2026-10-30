@@ -515,6 +515,10 @@ namespace Eldoria.Tests
                 "Only coherent Crónica Real destinations may appear at this Bastion level");
             foreach (var entry in visible)
             {
+                var caption = Member(entry, "Label") as Text;
+                Assert.That(caption, Is.Not.Null);
+                Assert.That(caption.preferredWidth, Is.LessThanOrEqualTo(caption.rectTransform.rect.width + 1f),
+                    "Complete approved navigation labels must fit without truncation");
                 string section = Member(entry, "Section").ToString();
                 if (section == "Army" || section == "World") continue;
                 var button = Member(entry, "Button") as Button;

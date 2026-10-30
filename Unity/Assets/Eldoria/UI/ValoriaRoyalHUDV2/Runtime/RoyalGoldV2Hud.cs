@@ -766,6 +766,9 @@ namespace Eldoria.UI.RoyalGold.V2
                         portrait ? 32f : 46f, realmWidth - titleX - 2f, 23f);
                     Source.Realm.Power.fontSize = portrait ? 15 : 19;
                     if (ChronicleFont) Source.Realm.Power.font = ChronicleFont;
+                    Source.Realm.Power.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    while (Source.Realm.Power.fontSize > 10 && Source.Realm.Power.preferredWidth > Source.Realm.Power.rectTransform.rect.width - 2f)
+                        Source.Realm.Power.fontSize--;
                 }
             }
 
@@ -885,8 +888,8 @@ namespace Eldoria.UI.RoyalGold.V2
                 if (item.Button && item.Button.gameObject.activeSelf) count++;
             if (count == 0) return;
 
-            // CRÓNICA REAL APPROVED ART: ONE horizontal row of circular
-            // medallions along the bottom edge in BOTH orientations. Only
+            // CRÓNICA REAL APPROVED ART: ONE horizontal row of gold
+            // emblems along the bottom edge in BOTH orientations. Only
             // extremely narrow devices may require a stacked accessible row;
             // never substitute a sidebar or invent locked destinations.
             bool vertical = safe.rect.height > safe.rect.width;
@@ -902,11 +905,11 @@ namespace Eldoria.UI.RoyalGold.V2
             int rows = Mathf.CeilToInt((float)count / columns);
             float rowGap = rows > 1 ? 3f : 0f;
             // Original reference uses a wide bottom cartouche spanning most
-            // of landscape. Spread the same genuine medallions across its
+            // of landscape. Spread the same genuine emblems across its
             // safe width, without enlarging or moving the game viewport.
             float cellWidth = vertical
-                ? Mathf.Min(88f, (availableWidth - 12f -
-                    columnGap * (columns - 1)) / columns)
+                ? (availableWidth * .90f - 12f -
+                    columnGap * (columns - 1)) / columns
                 : Mathf.Clamp((availableWidth * .9f - 12f -
                     columnGap * (columns - 1)) / columns, 90f, 240f);
             // Never create a visual button that cannot fit its own safe width.
@@ -1023,6 +1026,9 @@ namespace Eldoria.UI.RoyalGold.V2
                     item.Label.alignment = TextAnchor.MiddleCenter;
                     item.Label.color = item.Button.interactable ? Ivory : new Color(.54f, .55f, .56f);
                     item.Label.Put(item.Label.text.ToUpperInvariant());
+                    item.Label.horizontalOverflow = HorizontalWrapMode.Overflow;
+                    while (item.Label.fontSize > 11 && item.Label.preferredWidth > caption.rect.width - 2f)
+                        item.Label.fontSize--;
                 }
             }
         }
