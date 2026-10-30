@@ -218,6 +218,7 @@ namespace Eldoria.UI.RoyalGold.V2
                 portraitOrientation ? 725f : 1120f);
             float panelHeight = Mathf.Min(availableHeight - 24f,
                 portraitOrientation ? 440f : 356f);
+            bool compactPortrait = portraitOrientation && panelWidth < 580f;
             float column = Mathf.Clamp(panelWidth * .29f, 132f, 360f);
             // Dialogues rest in the bottom cinematic strip. Unlike V2, they
             // never create a central opaque rectangle covering the whole city.
@@ -241,15 +242,24 @@ namespace Eldoria.UI.RoyalGold.V2
             float left = column + 22f;
             float textWidth = panelWidth - left - 22f;
             float titleTop = 22f;
-            float bodyTop = portraitOrientation ? 116f : 102f;
+            // Narrow phones need the full paper width for long canonical story
+            // turns. Keep portrait and speaker together in the top band,
+            // then place narrative text BELOW them rather than squeezing it
+            // into a 220px-wide column with silent truncation.
+            float bodyTop = compactPortrait ? 140f :
+                portraitOrientation ? 116f : 102f;
+            float bodyLeft = compactPortrait ? 24f : left;
+            float bodyWidth = compactPortrait ? panelWidth - 48f : textWidth;
             float bodyHeight = panelHeight - bodyTop - 78f;
             // Interface 1 concept places Aldric as a substantial cinematic
             // presence beside his real text, not a small account avatar.
             // Reuse the actual approved asset; never invent a different face.
-            float portraitSize = Mathf.Min(column - 18f, panelHeight - 35f);
-            portraitSize = Mathf.Max(90f, portraitSize);
+            float portraitSize = compactPortrait
+                ? Mathf.Clamp(column - 24f, 76f, 100f)
+                : Mathf.Max(90f, Mathf.Min(column - 18f, panelHeight - 35f));
             float portraitLeft = 11f + (column - portraitSize) * .5f;
-            float portraitTop = Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
+            float portraitTop = compactPortrait ? 12f :
+                Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
 
             modal.Title.fontSize = panelWidth < 465f ? 23 : 29;
             modal.Title.color = arcane ? PurplePale : Brown;
@@ -324,10 +334,40 @@ namespace Eldoria.UI.RoyalGold.V2
             modal.Body.alignment = TextAnchor.UpperLeft;
             modal.Body.horizontalOverflow = HorizontalWrapMode.Wrap;
             modal.Body.verticalOverflow = VerticalWrapMode.Truncate;
-            Top(modal.Body.rectTransform, left, bodyTop, textWidth, bodyHeight);
-            for (int size = modal.Body.fontSize;
-                 modal.Body.preferredHeight > bodyHeight - 8f && size > 20; size--)
-                modal.Body.fontSize = size - 1;
+            Top(modal.Body.rectTransform, bodyLeft, bodyTop, bodyWidth, bodyHeight);
+            // Real measured story text, including Aldric's line breaks, must
+            // fit. Prefer increasing only a dialogue that actually needs it
+            // (within the device safe area) over shrinking every page.
+            float needed = Mathf.Ceil(modal.Body.preferredHeight) + 12f;
+            if (needed > bodyHeight)
+            {
+                float maximumHeight = Mathf.Min(availableHeight - 24f,
+                    portraitOrientation ? 600f : 430f);
+                float growth = Mathf.Min(Mathf.Max(0f, maximumHeight - panelHeight),
+                    needed - bodyHeight);
+                panelHeight += growth;
+                bodyHeight += growth;
+                frame.sizeDelta = new Vector2(panelWidth, panelHeight);
+                Top(modal.Body.rectTransform, bodyLeft, bodyTop, bodyWidth, bodyHeight);
+            }
+            while (modal.Body.preferredHeight + 8f > bodyHeight &&
+                   modal.Body.fontSize > 18)
+                modal.Body.fontSize--;
+            // Short devices may not fit the longest page at 18px; expose the
+            // full available safe height rather than silently crop text.
+            if (modal.Body.preferredHeight + 8f > bodyHeight &&
+                panelHeight < availableHeight - 24f)
+            {
+                float growth = Mathf.Min(availableHeight - 24f - panelHeight,
+                    modal.Body.preferredHeight + 12f - bodyHeight);
+                if (growth > 0f)
+                {
+                    panelHeight += growth;
+                    bodyHeight += growth;
+                    frame.sizeDelta = new Vector2(panelWidth, panelHeight);
+                    Top(modal.Body.rectTransform, bodyLeft, bodyTop, bodyWidth, bodyHeight);
+                }
+            }
 
             // Retain the actual original Continue/Reveal button and listener,
             // but present it as a compact action on the bottom-right of paper.
