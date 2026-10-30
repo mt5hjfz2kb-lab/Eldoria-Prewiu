@@ -185,6 +185,15 @@ namespace Eldoria.Editor
             screen.VisibleAction.onClick.Invoke();
             Need(host.City.Gateway.Snapshot().PendingRecruitArchers>0,"Actual training reserves recruits");
             Need(tierChoices.All(b=>!b.interactable),"Pending training locks both real tier cards");
+            // Marches now shares Lyra's genuine asynchronously imported model portrait.
+            // Wait for its actual readiness; keep the subsequent source/layout assertions.
+            var marchLyraModel=host.Hud.GetComponent<Eldoria.HeroesUI.HeroesLyraModel>();
+            Need(marchLyraModel!=null,"March portrait loader is bound to the stable HUD");
+            marchLyraModel.Request();
+            float marchPortraitDeadline=Time.realtimeSinceStartup+30f;
+            while(!marchLyraModel.Ready&&Time.realtimeSinceStartup<marchPortraitDeadline)yield return null;
+            Need(marchLyraModel.Ready&&marchLyraModel.Portrait,
+                "March Lyra portrait is rendered from the preserved model before visual certification");
             screen.Open(RoyalGoldV3ManagementScreens.Destination.March);yield return null;
             Need(!screen.VisibleRoot.GetComponentsInChildren<Text>().Any(t=>t.text=="APOYO · SIR ALDRIC"),"Empty saved slots never display invented Aldric companions");
             var controls=screen.VisibleRoot.GetComponentsInChildren<Button>();

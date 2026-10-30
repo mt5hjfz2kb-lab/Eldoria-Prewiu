@@ -634,6 +634,12 @@ namespace Eldoria.UI.RoyalGold.V2
                 approvedHeroes[i].sprite=string.IsNullOrEmpty(heroSlots[i])?
                     RoyalGoldV41SourceArt.Get(i==2?"hero-locked":"hero-support"):
                     RoyalGoldV41SourceArt.HeroPortrait(heroSlots[i]);
+                if(!approvedHeroes[i].sprite)
+                {
+                    // Honest transient loading state: never show a white Image or another hero.
+                    approvedHeroes[i].sprite=RoyalGoldV41SourceArt.Get("hero-support");
+                    heroSlotLabels[i].Put((i==0?"LÍDER · ":"APOYO · ")+HeroName(heroSlots[i])+" · CARGANDO RETRATO");
+                }
                 approvedHeroes[i].gameObject.SetActive(!training);
             }
             approvedTroopRow.gameObject.SetActive(!training);
