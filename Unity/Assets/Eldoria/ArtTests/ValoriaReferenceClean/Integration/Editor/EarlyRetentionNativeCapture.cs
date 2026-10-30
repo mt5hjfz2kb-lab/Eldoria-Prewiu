@@ -273,6 +273,13 @@ namespace Eldoria.ReferenceClean.Editor
                 illustration.texture.name.EndsWith("painterly-v2"),
                 "New painterly Vigilants scene loads through actual Unity Resources");
             var vigilantsPainting=illustration.texture;
+            var painterlyLayers=hud.GetComponentsInChildren<RoyalGoldV3LayeredFinish>(true);
+            Need(painterlyLayers.Any(x=>x.CurrentScene==RoyalGoldV3LayeredFinish.Scene.Vigilants &&
+                    x.gameObject.activeInHierarchy && x.enabled &&
+                    !x.raycastTarget),
+                "Vigilants displays a separate live foreground atmosphere above its original scenery");
+            Need(painterlyLayers.All(x=>!x.raycastTarget),
+                "No depth layers intercept real stage or action button taps");
             Screenshot(h,"vigilants-first-trial",1600,900);
             Screenshot(h,"vigilants-first-trial",900,1600);
             Screenshot(h,"vigilants-first-trial",390,844);
@@ -384,6 +391,10 @@ namespace Eldoria.ReferenceClean.Editor
                 illustration.texture.width>=1024 && illustration.texture.height>=1024 &&
                 illustration.texture.name.EndsWith("painterly-v2"),
                 "Scouts uses its own cinematic painterly expedition map");
+            Need(hud.GetComponentsInChildren<RoyalGoldV3LayeredFinish>(true)
+                    .Any(x=>x.CurrentScene==RoyalGoldV3LayeredFinish.Scene.Scouts &&
+                        x.gameObject.activeInHierarchy && x.enabled && !x.raycastTarget),
+                "Explorers displays independently authored live foreground depth above its map");
             var contractArt=hud.GetComponentsInChildren<RoyalGoldV3ScoutContractGraphic>(true);
             Need(contractArt.Length==3 && contractArt.All(x=>
                 x.mainTexture==Resources.Load<Texture2D>("EldoriaRetention/scout-medallions-v5")),
@@ -425,6 +436,25 @@ namespace Eldoria.ReferenceClean.Editor
             Screenshot(h,"scout-mission-board",390,844);
             Screenshot(h,"scout-mission-board",844,390);
             yield return null; // real rendered frame before tapping the restored Canvas
+            var strategy=hud.GetComponentsInChildren<RoyalButton>(true)
+                .FirstOrDefault(x=>x.name=="Prepare actual march or choose scout strategy");
+            Need(strategy!=null && strategy.gameObject.activeInHierarchy &&
+                    strategy.interactable,"Real expedition planning has a selectable tactic");
+            ClickReal(strategy,"Select discreet exploration tactic");
+            Need(hud.GetComponentsInChildren<RoyalText>(true).Any(x=>
+                    x.gameObject.activeInHierarchy &&
+                    x.text.Contains("SIGILO")),"Discreet route visibly selected using a real button");
+            Need(hud.GetComponentsInChildren<RoyalText>(true).Any(x=>
+                    x.gameObject.activeInHierarchy &&
+                    x.text.Contains("8 tropas")),"Discreet route shows genuine troop opportunity cost");
+            ClickReal(strategy,"Select rapid exploration tactic");
+            Need(hud.GetComponentsInChildren<RoyalText>(true).Any(x=>
+                    x.gameObject.activeInHierarchy &&
+                    x.text.Contains("RÁPIDA")),"Fast route is visibly selectable");
+            ClickReal(strategy,"Restore legacy normal expedition");
+            Need(hud.GetComponentsInChildren<RoyalText>(true).Any(x=>
+                    x.gameObject.activeInHierarchy &&
+                    x.text.Contains("12 tropas")),"Normal route is preserved before legacy native three-dispatch proof");
             for(int i=1;i<=3;i++)
             {
                 var dispatch=hud.GetComponentsInChildren<RoyalButton>(true)
