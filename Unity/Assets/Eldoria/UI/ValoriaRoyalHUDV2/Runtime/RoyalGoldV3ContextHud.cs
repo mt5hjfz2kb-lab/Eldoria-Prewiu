@@ -438,6 +438,7 @@ namespace Eldoria.UI.RoyalGold.V2
             // object must not create a second, competing action panel.
             if (value.OperationActive)
             {
+                actionButton.interactable = false;
                 Visible(cardGroup, false, true);
                 return;
             }
