@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "policy": "docs/ELDORIA_PARALLEL_WORKSTREAM_PROTOCOL.md",
-  "updated_at": "2026-10-30T13:04:11.202Z",
+  "updated_at": "2026-10-30T13:06:19.092Z",
   "owner_production_pause": {
     "active": true,
     "requested_on": "2026-10-18",
@@ -21,7 +21,7 @@
       "id": "valoria-master-plan-layered-construction-20261016",
       "title": "Eldoria — única base integrada Valoria / Royal Gold / Zona1",
       "owner": "codex-final-consolidation-8520c3ef76f9",
-      "branch": "fix/player-feedback-context-ui-20261030",
+      "branch": "main",
       "status": "active",
       "claimed_at": "2026-10-30T09:30:00Z",
       "base_main_sha": "13a525db5404d1d35af030d6d6381c3190718050",
@@ -1541,7 +1541,7 @@
         "budget_eur": 0
       },
       "authorization": "Current owner instruction 2026-10-29: autonomous IV–V migration and graphics/gameplay refinement; reuse six approved reference models at individual building level five; no new Tripo spend without consultation.",
-      "candidate_branch": "feature/eldoria-web-parity-camera-20261029",
+      "candidate_branch": "fix/player-feedback-context-ui-20261030",
       "canonical_pr": 132,
       "handoff_reason": "PR132_MERGED_MAIN_VERIFIED_ISSUE133_CLOSED",
       "last_handoff": "docs/bastion-iv-v/PARITY132_CLOSEOUT.md",
