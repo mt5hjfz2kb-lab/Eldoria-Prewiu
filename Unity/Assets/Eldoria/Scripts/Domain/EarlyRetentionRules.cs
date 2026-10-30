@@ -10,6 +10,8 @@ namespace Eldoria.Domain
     {
         public string Id="";
         public int Kind, Period, Slot;
+        // 0 preserves old saves; 1 is quiet/slow, 2 fast/large detachment.
+        public int StrategyMode;
         public long StartedUtcTicks, EndsUtcTicks;
         public bool Claimed;
         // Actual reserved troops return at the UTC deadline, not when the prize is claimed.
@@ -244,6 +246,15 @@ namespace Eldoria.Domain
                 case 2:return "Suministros extraviados";default:return "Rastros de la Brecha";}
         }
         public static int ScoutDurationSeconds(int kind) => 180+kind*90;
+        public static int ScoutTroopsForStrategy(int mode)
+            => mode==1?8:mode==2?20:12;
+        public static string ScoutStrategyName(int mode)
+            => mode==1?"DISCRETA":mode==2?"RÁPIDA":"NORMAL";
+        public static int ScoutDurationSeconds(int kind,int mode)
+        {
+            int original=ScoutDurationSeconds(kind);
+            return mode==1?original*3/2:mode==2?Math.Max(60,original*3/4):original;
+        }
         public static string ScoutRewardText(int kind) =>
             kind==0?"45 madera · 20 piedra · 20 XP":
             kind==1?"35 madera · 30 comida · 20 XP":
@@ -384,7 +395,22 @@ namespace Eldoria.Domain
             }
             if(!ScoutsUnlocked(s)){message="Exploradores se desbloquea al preparar la primera Marcha";return false;}
             if(string.IsNullOrEmpty(target)){message="Encargo no identificado";return false;}
-            var order=p.Orders.FirstOrDefault(x=>x.Id==target);
+            // Legacy clients still send "period:slot". The optional suffix
+            // contains only a strategy ID, never a forged order or reward.
+            int strategy=0;
+            string orderId=target;
+            if(kind=="ScoutDispatch")
+            {
+                int separator=target.LastIndexOf('|');
+                if(separator>=0)
+                {
+                    if(!int.TryParse(target.Substring(separator+1),out strategy)
+                       ||strategy<0||strategy>2)
+                    {message="Estrategia de exploración no válida";return false;}
+                    orderId=target.Substring(0,separator);
+                }
+            }
+            var order=p.Orders.FirstOrDefault(x=>x.Id==orderId);
             if(order==null||order.Claimed){message="Encargo inexistente o ya reclamado";return false;}
             if(kind=="ScoutDispatch")
             {
@@ -392,9 +418,15 @@ namespace Eldoria.Domain
                 if(!MarchCapacityRules.CanStart(s,utcNow)){message="Las tres marchas están ocupadas";return false;}
                 // Twelve troops is a provisional scout detachment, not a balance reward.
                 // It reserves REAL units so three orders cannot share the same army.
-                var party=MarchCapacityRules.AutoSelect(s.Available,
-                    Math.Min(12,MarchCapacityRules.Capacity(s,"aldric")));
-                if(!MarchCapacityRules.Fits(party,s.Available,MarchCapacityRules.Capacity(s,"aldric")))
+                int required=ScoutTroopsForStrategy(strategy);
+                int capacity=MarchCapacityRules.Capacity(s,"aldric");
+                var party=MarchCapacityRules.AutoSelect(s.Available,Math.Min(required,capacity));
+                // Existing normal dispatches continue accepting limited starter
+                // armies. Advanced choices must actually commit their stated
+                // troop count instead of silently downgrading the bargain.
+                if(strategy!=0&&party.Total<required)
+                {message="Necesitas "+required+" tropas para esta estrategia";return false;}
+                if(!MarchCapacityRules.Fits(party,s.Available,capacity))
                 {message="No hay tropas disponibles";return false;}
                 if(order.Kind==0)
                 {
@@ -404,11 +436,14 @@ namespace Eldoria.Domain
                 }
                 MarchCapacityRules.Reserve(s,party);
                 order.HeroId="aldric";
+                order.StrategyMode=strategy;
                 order.Troops=party;
                 order.TroopsReturned=false;
                 order.StartedUtcTicks=utcNow;
-                order.EndsUtcTicks=checked(utcNow+TimeSpan.FromSeconds(ScoutDurationSeconds(order.Kind)).Ticks);
-                message="Exploradores enviados; volverán con su informe";
+                order.EndsUtcTicks=checked(utcNow+TimeSpan.FromSeconds(
+                    ScoutDurationSeconds(order.Kind,strategy)).Ticks);
+                message="Expedición "+ScoutStrategyName(strategy).ToLowerInvariant()+
+                    " enviada; regresará con su informe";
                 return true;
             }
             if(order.StartedUtcTicks<=0||order.EndsUtcTicks>utcNow){message="Los exploradores aún están en camino";return false;}
