@@ -247,7 +247,9 @@ namespace Eldoria.UI.RoyalGold.V2
             bool inlineUtility = Source.GetComponent<RoyalGoldV3BuildingScreens>()?.IsOpen ?? false;
             RenderSelection(camera, blocked || inlineUtility);
             foreach (var id in TimedTargets) RenderTimer(id, camera, blocked);
-            RenderClose(blocked || inlineUtility);
+            var chronicle = Source.GetComponent<RoyalGoldV2Hud>();
+            RenderClose(blocked || inlineUtility ||
+                (chronicle && chronicle.ChronicleIllustratedBuildingVisible));
 
             // A live V3 selection button can retain Graphic.depth == -1 after
             // a native 640x480 / portrait Canvas resize, despite remaining
@@ -460,6 +462,15 @@ namespace Eldoria.UI.RoyalGold.V2
             // Never display two competing text/cards over the 3D city.
             var chronicle = Source.GetComponent<RoyalGoldV2Hud>();
             bool illustrated = chronicle && chronicle.ChronicleIllustratedBuildingVisible;
+            if (illustrated)
+            {
+                // The owner-approved Crónica Real cartouche already contains
+                // the real purchase/upgrade button. Do not stack a second
+                // projected CTA (or a second close control) over the city.
+                actionButton.interactable = false;
+                Visible(cardGroup, false, true);
+                return;
+            }
             float width, height;
             if (illustrated && offered)
             {
