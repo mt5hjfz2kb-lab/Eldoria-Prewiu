@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Eldoria.Domain;
+using Eldoria.Application;
 using Eldoria.Presentation;
 using Eldoria.SpawnlingBastion2;
 using Eldoria.UI.RoyalGold;
@@ -283,7 +284,7 @@ namespace Eldoria.ReferenceClean.Editor {
      "; point="+center+"; hits="+string.Join(",",hits.Select(x=>x.gameObject.name)));
    },"World navigation is touchable even while a building sheet is open");
    var before=JsonUtility.ToJson(city.Gateway.Snapshot());
-   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var entryTarget=h.WorldNavigation.target;float entryZoom=h.WorldCamera.orthographicSize;var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);Debug.Log("ELDORIA_NATIVE_STRATEGIC_ENTRY size="+h.WorldCamera.orthographicSize+" aspect="+h.WorldCamera.aspect+" heading="+h.WorldNavigation.heading+" tilt="+h.WorldNavigation.tilt+" distance="+h.WorldNavigation.cameraDistance+" target="+h.WorldNavigation.target+" min="+h.WorldNavigation.minimum+" max="+h.WorldNavigation.maximum);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Debug.Log("ELDORIA_NATIVE_VERTICAL_PAN before="+start+" after="+h.WorldNavigation.target);Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(entryTarget,h.WorldNavigation.target)<.02f&&Mathf.Abs(entryZoom-h.WorldCamera.orthographicSize)<.02f,"Returning world must restore the canonical Valoria near entry");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text=="Ciudad","World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return restores near framing without mutating save");
+   Check(()=>{Need(h.TrySetWorld(true),"Unlocked world remained blocked");var entryTarget=h.WorldNavigation.target;float entryZoom=h.WorldCamera.orthographicSize;var centre=new Vector3((h.WorldNavigation.minimum.x+h.WorldNavigation.maximum.x)/2,0,(h.WorldNavigation.minimum.y+h.WorldNavigation.maximum.y)/2);h.WorldNavigation.PanTo(centre);Debug.Log("ELDORIA_NATIVE_STRATEGIC_ENTRY size="+h.WorldCamera.orthographicSize+" aspect="+h.WorldCamera.aspect+" heading="+h.WorldNavigation.heading+" tilt="+h.WorldNavigation.tilt+" distance="+h.WorldNavigation.cameraDistance+" target="+h.WorldNavigation.target+" min="+h.WorldNavigation.minimum+" max="+h.WorldNavigation.maximum);var start=h.WorldNavigation.target;h.Pan(new Vector2(0,80));Debug.Log("ELDORIA_NATIVE_VERTICAL_PAN before="+start+" after="+h.WorldNavigation.target);Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Horizontal map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(0,-80));Need(Mathf.Abs(h.WorldNavigation.target.z-start.z)>.5f,"Reverse vertical map pan blocked");start=h.WorldNavigation.target;h.Pan(new Vector2(-80,0));Need(Mathf.Abs(h.WorldNavigation.target.x-start.x)>.5f,"Reverse horizontal map pan blocked");h.Zoom(-3);h.SetWorld(false);h.SetWorld(true);Need(Vector3.Distance(entryTarget,h.WorldNavigation.target)<.02f&&Mathf.Abs(entryZoom-h.WorldCamera.orthographicSize)<.02f,"Returning world must restore the canonical Valoria near entry");h.Home();Need(Camera.allCameras.Count(x=>x.enabled)==1,"World camera count");Need(string.Equals(h.Hud.Navigation.Items.First(x=>x.Section==RoyalSection.World).Label.text,"Ciudad",StringComparison.OrdinalIgnoreCase),"World return label");Need(h.Read("",false).Realm=="ZONA 1","World realm label");Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Navigation mutated save");h.WorldNavigation.SetZoomLevel(1,true);float oldRegional=h.WorldCamera.orthographicSize;Capture(h,"integration-issue95-world-before-regional.png",1600,900);Capture(h,"integration-issue95-world-before-portrait.png",900,1600);h.WorldNavigation.EnterStrategicView(h.WorldHome);Need(h.WorldCamera.orthographicSize>oldRegional*1.45f,"World still lacks a genuinely larger strategic entry footprint");Capture(h,"integration-issue95-world-after-strategic.png",1600,900);Capture(h,"integration-issue95-world-after-portrait.png",900,1600);Capture(h,"integration-world-16x9.png",1600,900);Capture(h,"integration-world-portrait.png",900,1600);h.SetWorld(false);Need(before==JsonUtility.ToJson(city.Gateway.Snapshot()),"Return mutated save");},"world return restores near framing without mutating save");
    h.SetWorld(true);h.Select("forest-valoria");yield return null;
    Check(()=>{
     var v2=h.Hud.GetComponent<Eldoria.UI.RoyalGold.V2.RoyalGoldV2Hud>();
@@ -534,6 +535,7 @@ namespace Eldoria.ReferenceClean.Editor {
     Check(()=>{Need(!h.Hud.NarrativeOpen,"Narrative obscures destination at capture: "+destination);Capture(h,"integration-art-"+destination+"-landscape.png",1600,900);Capture(h,"integration-art-"+destination+"-portrait.png",900,1600);},"native authored destination capture "+destination);
    }
    h.SetWorld(false);h.Hud.Refresh();
+   if(failure==null)yield return ContinueNativeJourneyToV(h);
    var report=new Report{source=Environment.GetEnvironmentVariable("GITHUB_SHA"),status=failure==null?"INTEGRATION_PASS_ART_REVIEW_REQUIRED":"FAIL",error=failure,checks=checks.ToArray(),scene=Scene,framing=framingChecks.ToArray(),management=managementChecks.ToArray()};
    if(failure==null) {
     File.WriteAllText(Path.Combine(Ev,"integration-input-manifest.txt"),ComputeInputManifest());
@@ -541,6 +543,118 @@ namespace Eldoria.ReferenceClean.Editor {
    }
    File.WriteAllText(Path.Combine(Ev,"integration-result.json"),JsonUtility.ToJson(report,true));
    if(failure==null)Debug.Log("VALORIA_REFERENCE_CLEAN_INTEGRATION_COMPLETE");EditorApplication.Exit(failure==null?0:1);
+  }
+  // Continues the SAME saved I-II playthrough above. No prepared III/V save,
+  // injected resources, direct progression flags, or bypassed command buttons.
+  static IEnumerator ReadJourneyNarrative(ValoriaIntegratedWorld h){
+   yield return new WaitForSecondsRealtime(.3f);
+   for(int turn=0;turn<40&&h.Hud.NarrativeOpen;turn++){
+    if(h.Hud.NarrativeSpeaker=="Lyra")Check(()=>{
+     Capture(h,"integration-continuous-lyra-landscape.png",1600,900);
+     Capture(h,"integration-continuous-lyra-portrait.png",900,1600);
+    },"continuous journey Lyra dialogue native captures");
+    Check(()=>Click(h.Hud.Modal.Extra),"continuous journey reads canonical narrative");
+    yield return new WaitForSecondsRealtime(.18f);
+    if(failure!=null)yield break;
+   }
+  }
+  static IEnumerator FinishJourneyActivity(ValoriaIntegratedWorld h){
+   var city=h.City;
+   // Preserve all deadlines/rules; advance only the existing disposable QA clock.
+   Check(()=>{
+    ((ValoriaReferenceCleanGameplay.TestClock)city.Clock).Step(1800);
+    city.Gateway.Advance();city.Presenter.RefreshState();h.Hud.Refresh();
+   },"continuous journey completes real deadlines");
+   yield return new WaitForSecondsRealtime(.3f);
+   yield return ReadJourneyNarrative(h);
+  }
+  static IEnumerator JourneyAction(ValoriaIntegratedWorld h,string id,string kind){
+   yield return ReadJourneyNarrative(h);
+   var management=h.Hud.GetComponent<RoyalGoldV3ManagementScreens>();
+   if(management&&management.IsOpen)management.Close();
+   h.SetWorld(id=="fissure-valoria"||id.StartsWith("hunt-")||id=="ash-stalker-valoria"||
+    id=="forest-valoria"||id=="quarry-valoria"||id.StartsWith("region1:"));
+   h.Select(id);yield return new WaitForSecondsRealtime(.25f);
+   yield return ReadJourneyNarrative(h);
+   if(failure!=null)yield break;
+   Check(()=>{
+    var offer=h.Read(id,false).Building;
+    Need(offer!=null&&offer.Action!=null&&offer.Action.Kind==kind&&offer.Action.Enabled,
+     "Continuous actual offer missing: "+id+" / "+kind);
+    long revision=h.City.Gateway.Snapshot().Revision;
+    Click(h.Hud.Building.Primary.Button);
+    Need(h.City.Gateway.Snapshot().Revision>revision,"Real button did not submit "+kind+" "+id);
+   },"continuous native command "+kind+" "+id);
+   if(failure!=null)yield break;
+   yield return FinishJourneyActivity(h);
+  }
+  static IEnumerator JourneyFunds(ValoriaIntegratedWorld h,int wood,int stone){
+   for(int count=0;count<80;count++){
+    var s=h.City.Gateway.Snapshot();
+    if(s.Resources.Wood>=wood&&s.Resources.Stone>=stone)yield break;
+    string kind=s.Resources.Wood<wood?"wood":"stone";
+    string id=kind=="wood"?"forest-valoria":"quarry-valoria";
+    if(LocalGateway.ResourceRemaining(s,id)==0){
+     id=s.WorldResourceLocations.Where(x=>x.ResourceKind==kind&&x.Remaining>0&&h.FindTarget(x.TargetId))
+      .Select(x=>x.TargetId).FirstOrDefault();
+    }
+    if(string.IsNullOrEmpty(id)){
+     yield return FinishJourneyActivity(h);continue;
+    }
+    yield return JourneyAction(h,id,"Gather");
+    if(failure!=null)yield break;
+   }
+   Check(()=>Need(false,"No canonical renewable resource met continuous journey budget"),"continuous real economy");
+  }
+  static IEnumerator JourneyLevel(ValoriaIntegratedWorld h,int level,int wood,int stone){
+   yield return JourneyFunds(h,wood,stone);
+   if(failure!=null)yield break;
+   yield return JourneyAction(h,"bastion","AdvanceBastion");
+   if(failure!=null)yield break;
+   Check(()=>{
+    Need(h.City.Gateway.Snapshot().BastionLevel==level,"Continuous Bastion "+level+" not reached");
+    var before=JsonUtility.ToJson(h.City.Gateway.Snapshot());h.City.ReloadForProbe();
+    Need(before==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Continuous save/reward mismatch at "+level);
+   },"continuous I-"+level+" native progression and reopened save");
+   yield return new WaitForSecondsRealtime(.3f);
+   h.Hud.SelectBuilding("");h.SetWorld(false);h.Home();
+   Check(()=>{
+    Capture(h,"integration-continuous-bastion-"+level+"-landscape.png",1600,900);
+    Capture(h,"integration-continuous-bastion-"+level+"-portrait.png",900,1600);
+   },"continuous Bastion "+level+" actual city in both orientations");
+  }
+  static IEnumerator ContinueNativeJourneyToV(ValoriaIntegratedWorld h){
+   Check(()=>Need(h.City.Gateway.Snapshot().BastionLevel==2&&h.City.Gateway.Snapshot().EngendroDefeated,
+    "Continuous III-V must start with the actual completed I-II state"),"continuous journey preserves original I-II lineage");
+   yield return JourneyLevel(h,3,650,500);if(failure!=null)yield break;
+   yield return JourneyFunds(h,240,180);if(failure!=null)yield break;
+   yield return JourneyAction(h,"granary","Build");if(failure!=null)yield break;
+   yield return JourneyAction(h,"fissure-valoria","InvestigateFissure");if(failure!=null)yield break;
+   yield return JourneyAction(h,"fissure-valoria","ContactLyra");if(failure!=null)yield break;
+   yield return JourneyAction(h,"fissure-valoria","Fight");if(failure!=null)yield break;
+   yield return JourneyAction(h,"hunt-wolf","Fight");if(failure!=null)yield break;
+   yield return JourneyAction(h,"hunt-boar","Fight");if(failure!=null)yield break;
+   yield return JourneyFunds(h,3000,3000);if(failure!=null)yield break;
+   foreach(var id in new[]{"sawmill","upgrade-barracks","granary"}){
+    yield return JourneyAction(h,id,"UpgradeBuilding");if(failure!=null)yield break;
+   }
+   yield return JourneyLevel(h,4,850,700);if(failure!=null)yield break;
+   h.Select("bastion");yield return new WaitForSecondsRealtime(.3f);
+   yield return ReadJourneyNarrative(h);
+   Check(()=>{
+    var choice=GameObject.Find("Choose civil")?.GetComponent<RoyalButton>();
+    Need(choice&&choice.interactable,"Canonical IV council choice unavailable");Click(choice);
+    Need(h.City.Gateway.Snapshot().ChapterThree.DevelopmentPriority=="civil","Council choice not saved");
+   },"continuous IV real contextual council button");
+   if(failure!=null)yield break;
+   yield return JourneyLevel(h,5,1100,900);if(failure!=null)yield break;
+   yield return JourneyFunds(h,500,0);if(failure!=null)yield break;
+   yield return JourneyAction(h,"stoneworks","Build");if(failure!=null)yield break;
+   Check(()=>Need(h.City.Gateway.Snapshot().ChapterThree.StoneworksLevel==1,
+    "V quarry did not complete from continuous save"),"continuous V quarry real construction");
+   var beforeFinal=JsonUtility.ToJson(h.City.Gateway.Snapshot());h.City.ReloadForProbe();
+   Check(()=>Need(beforeFinal==JsonUtility.ToJson(h.City.Gateway.Snapshot()),"Continuous V final reopen changed state"),
+    "continuous I-V final saved state exact");
   }
   public static string ComputeInputManifest(){
    var files=new HashSet<string>(AssetDatabase.GetDependencies(Scene,true).Where(File.Exists));
