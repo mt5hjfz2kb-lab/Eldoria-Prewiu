@@ -261,18 +261,16 @@ namespace Eldoria.UI.RoyalGold.V2
             float portraitTop = compactPortrait ? 12f :
                 Mathf.Max(24f, (panelHeight - portraitSize) * .5f - 3f);
 
-            modal.Title.fontSize = compactPortrait ? 20 : panelWidth < 465f ? 23 : 29;
+            modal.Title.fontSize = panelWidth < 465f ? 23 : 29;
             modal.Title.color = arcane ? PurplePale : Brown;
             modal.Title.fontStyle = FontStyle.Bold;
             modal.Title.alignment = TextAnchor.MiddleLeft;
-            Top(modal.Title.rectTransform, left, compactPortrait ? 17f : titleTop,
-                textWidth, compactPortrait ? 58f : 48f);
+            Top(modal.Title.rectTransform, left, titleTop, textWidth, 48f);
             if (role)
             {
                 role.color = arcane ? new Color(.82f, .69f, .94f, 1f) : Brown;
                 role.fontSize = panelWidth < 465f ? 17 : 20;
-                Top(role.rectTransform, left + 2f, compactPortrait ? 79f : 70f,
-                    textWidth - 4f, 30f);
+                Top(role.rectTransform, left + 2f, 70f, textWidth - 4f, 30f);
             }
 
             // The legacy narrative component currently activates Aldric for any non-narrator.
@@ -340,12 +338,6 @@ namespace Eldoria.UI.RoyalGold.V2
             // Real measured story text, including Aldric's line breaks, must
             // fit. Prefer increasing only a dialogue that actually needs it
             // (within the device safe area) over shrinking every page.
-            // The typewriter has only revealed a prefix at this point.
-            // Temporarily measure the COMPLETE current page so a late
-            // sentence cannot suddenly overflow the fixed dialogue frame.
-            string revealedText = modal.Body.text;
-            string authoredPage = Source.NarrativePageText;
-            if (!string.IsNullOrEmpty(authoredPage)) modal.Body.Put(authoredPage);
             float needed = Mathf.Ceil(modal.Body.preferredHeight) + 12f;
             if (needed > bodyHeight)
             {
@@ -376,10 +368,6 @@ namespace Eldoria.UI.RoyalGold.V2
                     Top(modal.Body.rectTransform, bodyLeft, bodyTop, bodyWidth, bodyHeight);
                 }
             }
-
-            // Restore the canonical typewriter reveal; layout measurement
-            // must never jump ahead, skip a page or acknowledge a story beat.
-            if (!string.IsNullOrEmpty(authoredPage)) modal.Body.Put(revealedText);
 
             // Retain the actual original Continue/Reveal button and listener,
             // but present it as a compact action on the bottom-right of paper.
