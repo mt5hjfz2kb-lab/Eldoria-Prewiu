@@ -222,17 +222,82 @@ namespace Eldoria.HeroesUI
         }
         void BuildSalon(float w,float h)
         {
-            Label("Heroes hall title",content,"SALÓN DE HÉROES",74,12,w-148,52,30,TextAnchor.MiddleCenter).color=gold;
-            var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();int count=Math.Max(1,heroes.Length);
-            float gap=16,cardW=Mathf.Min(330,(w-40-gap*(count-1))/count),cardH=Mathf.Min(520,h-190);
-            float x=(w-(cardW*count+gap*(count-1)))/2;
-            for(int i=0;i<heroes.Length;i++){
-                var hero=heroes[i];float left=x+i*(cardW+gap);var card=Frame("Hero card "+hero.Id,content,left,110,cardW,cardH);
-                Label("Hero card name",card,hero.DisplayName,12,16,cardW-24,50,26,TextAnchor.MiddleCenter).color=gold;
-                if(hero.Portrait){var image=Rect("Verified portrait",card).gameObject.AddComponent<Image>();Place(image.rectTransform,14,78,cardW-28,Mathf.Max(50,cardH-210));image.sprite=hero.Portrait;image.preserveAspect=true;image.raycastTarget=false;}
-                Label("Hero card state",card,hero.Unlocked?hero.Role+"\nNIVEL "+hero.Level+" · PODER "+hero.HeroPower:"Se incorpora durante la historia",12,cardH-122,cardW-24,62,20,TextAnchor.MiddleCenter);
-                Button("Select hero "+hero.Id,hero.Unlocked?"VER HÉROE":"BLOQUEADO",left+12,110+cardH-54,cardW-24,42,()=>OpenHero(hero.Id),hero.Unlocked);
+            // Match the owner's v14 hierarchy: illuminated hall first,
+            // live heading and instructions second, then real hero cards.
+            float sceneryH=Mathf.Min(210f,h*.28f);
+            Label("Heroes hall title",content,"SALÓN DE HÉROES",26,18,w*.61f,48,30,
+                TextAnchor.MiddleLeft).color=gold;
+            Label("Heroes hall introduction",content,
+                "Aquí residen los héroes de Valoria.\nReclútalos, fortalécelos y lidera con ellos.",
+                27,71,w*.60f,Mathf.Max(42f,sceneryH-84f),18,
+                TextAnchor.UpperLeft);
+
+            var heroes=ReadHeroes?.Invoke()??Array.Empty<HeroState>();
+            int count=heroes.Length;
+            bool compact=h<470f;
+            float gap=Mathf.Clamp(w*.018f,8f,18f);
+            float cardTop=sceneryH+12f;
+            float cardH=Mathf.Max(152f,Mathf.Min(540f,h-cardTop-86f));
+            int columns=Mathf.Clamp(count,1,compact?3:2);
+            float cardW=Mathf.Min(330f,(w-40f-gap*(columns-1))/columns);
+            float rowGap=12f;
+            for(int i=0;i<count;i++)
+            {
+                var hero=heroes[i];
+                int col=i%columns,row=i/columns;
+                float left=(w-(cardW*columns+gap*(columns-1)))*.5f+col*(cardW+gap);
+                float top=cardTop+row*(cardH+rowGap);
+                var card=Frame("Hero card "+hero.Id,content,left,top,cardW,cardH);
+                // Copper edging and an independent portrait aperture are live
+                // elements; neither gameplay data nor mockup text is baked in.
+                Surface("Hero card interior "+hero.Id,card,3,3,cardW-6,cardH-6,
+                    new Color(.029f,.043f,.061f,.96f)).GetComponent<Image>().raycastTarget=false;
+                Surface("Hero card warm edge "+hero.Id,card,4,4,cardW-8,2,
+                    new Color(.85f,.56f,.24f)).GetComponent<Image>().raycastTarget=false;
+                Label("Hero card name",card,hero.DisplayName,10,12,cardW-20,
+                    compact?31:42,compact?21:25,TextAnchor.MiddleCenter).color=gold;
+                if(compact)
+                {
+                    float portraitW=cardW*.43f;
+                    float portraitH=Mathf.Max(36,cardH-99f);
+                    if(hero.Portrait)
+                    {
+                        var img=Rect("Verified portrait",card).gameObject.AddComponent<Image>();
+                        Place(img.rectTransform,9,46,portraitW,portraitH);
+                        img.sprite=hero.Portrait;img.preserveAspect=true;
+                        img.color=hero.Unlocked?Color.white:new Color(.38f,.38f,.40f);
+                        img.raycastTarget=false;
+                    }
+                    Label("Hero card state",card,
+                        hero.Unlocked?hero.Role+"\nNIVEL "+hero.Level+"\nPODER "+hero.HeroPower:
+                        "Se incorpora\n durante la historia",
+                        portraitW+12,52,cardW-portraitW-22,Mathf.Max(45,cardH-102),
+                        15,TextAnchor.MiddleCenter);
+                }
+                else
+                {
+                    float portraitH=Mathf.Max(75,cardH-195);
+                    if(hero.Portrait)
+                    {
+                        var img=Rect("Verified portrait",card).gameObject.AddComponent<Image>();
+                        Place(img.rectTransform,12,60,cardW-24,portraitH);
+                        img.sprite=hero.Portrait;img.preserveAspect=true;
+                        img.color=hero.Unlocked?Color.white:new Color(.38f,.38f,.40f);
+                        img.raycastTarget=false;
+                    }
+                    Label("Hero card state",card,
+                        hero.Unlocked?hero.Role+"\nNIVEL "+hero.Level+" · PODER "+hero.HeroPower:
+                        "Se incorpora durante la historia",
+                        12,cardH-131,cardW-24,63,18,TextAnchor.MiddleCenter);
+                }
+                Button("Select hero "+hero.Id,hero.Unlocked?"VER HÉROE":"BLOQUEADO",
+                    left+9,top+cardH-53,cardW-18,42,
+                    ()=>OpenHero(hero.Id),hero.Unlocked);
             }
+            int unlocked=0;foreach(var hero in heroes)if(hero.Unlocked)unlocked++;
+            Label("Authoritative hall population",content,
+                unlocked+" / "+heroes.Length+" HÉROES DISPONIBLES",20,h-72,w-40,38,
+                16,TextAnchor.MiddleCenter).color=gold;
         }
         void BuildReservedTalents(float x,float y,float w,float h,bool portrait)
         {
