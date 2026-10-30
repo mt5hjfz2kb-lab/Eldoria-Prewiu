@@ -684,10 +684,12 @@ namespace Eldoria.UI.RoyalGold.V2
             if(OpenDestination==Destination.Scouts){CycleScoutStrategy();return;}
             // The player's composition is configured in the existing royal
             // military room, never a second temporary army or fake shortcut.
-            var manager=Hud.GetComponentInChildren<RoyalGoldV3ManagementScreens>(true);
+            var manager=Hud.GetComponentInChildren<RoyalGoldV3ManagementScreens>(true)
+                ?? UnityEngine.Object.FindFirstObjectByType<RoyalGoldV3ManagementScreens>(
+                    FindObjectsInactive.Include);
             var state=gateway?.Snapshot();
-            if(manager==null || state==null || state.BastionLevel<2 ||
-                state.BarracksLevel<1)return;
+            if(manager==null || manager.Hud!=Hud || state==null ||
+                state.BastionLevel<2 || state.BarracksLevel<1)return;
             Close();
             manager.Open(RoyalGoldV3ManagementScreens.Destination.March);
         }
