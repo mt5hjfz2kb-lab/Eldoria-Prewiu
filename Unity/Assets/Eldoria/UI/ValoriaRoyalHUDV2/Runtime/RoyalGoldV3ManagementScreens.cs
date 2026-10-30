@@ -906,9 +906,10 @@ namespace Eldoria.UI.RoyalGold.V2
             // The approved composition places a full-height archer on the
             // courtyard floor and the order below the unit identity at right.
             // Narrow portrait keeps those same layers, stacking only the order.
-            float artH=wide?bodyH:bodyH*.51f;
+            float portraitOrderH=Mathf.Min(540,bodyH*.52f);
+            float artH=wide?bodyH:bodyH-portraitOrderH-12;
             Place(left,x,bodyY,wide?width*.54f:width,artH);
-            float archerH=Mathf.Min(artH, (wide?width*.51f:width*.55f)*1.5f);
+            float archerH=Mathf.Min(artH, (wide?width*.51f:width*.65f)*1.5f);
             float archerW=archerH/1.5f;
             Place(approvedArcher.rectTransform,0,artH-archerH,archerW,archerH);
             unitTitle.rectTransform.SetParent(left,false);
@@ -921,7 +922,7 @@ namespace Eldoria.UI.RoyalGold.V2
             unitTitle.fontSize=wide?28:34;
             unitDetail.fontSize=wide?20:28;
             float orderW=wide?width*.44f:width;
-            float orderH=wide?(compactLandscape?bodyH:Mathf.Min(bodyH,Mathf.Max(390,bodyH*.60f))):bodyH-artH-12;
+            float orderH=wide?(compactLandscape?bodyH:Mathf.Min(bodyH,Mathf.Max(390,bodyH*.60f))):portraitOrderH;
             Place(right,wide?x+width-orderW:x,wide?bodyY+bodyH-orderH:bodyY+artH+12,orderW,orderH);
             float pad=wide?22:26;
             float qh=wide?48:78;
@@ -941,8 +942,27 @@ namespace Eldoria.UI.RoyalGold.V2
             Place(footer,x,h-bottom-foot,width,foot);
             Place(back.transform as RectTransform,0,8,wide?width*.30f:width*.40f,foot-12);
             Place(feedback.rectTransform,wide?width*.32f:width*.43f,8,wide?width*.68f:width*.57f,foot-12);
+            if(!wide)
+            {
+                // The courtyard must share the character's viewport. Fitting it
+                // to the entire tall phone put its floor underneath the order,
+                // leaving the otherwise bottom-aligned character in the sky.
+                trainingEnvironment.rectTransform.SetParent(left,false);
+                Place(quantityRow,pad,20,orderW-pad*2,qh);
+                Place(slider.transform as RectTransform,pad+6,110,orderW-pad*2-12,24);
+                Place(summary.rectTransform,pad,154,orderW-pad*2,72);
+                Place(tierButton.transform as RectTransform,pad,240,orderW-pad*2,52);
+                Place(trainingProgress,pad,312,orderW-pad*2,8);
+                Place(status.rectTransform,pad,340,orderW-pad*2,70);
+            }
+            else
+            {
+                trainingEnvironment.rectTransform.SetParent(root,false);
+                trainingEnvironment.rectTransform.SetSiblingIndex(Mathf.Max(0,layoutRoot.GetSiblingIndex()-1));
+            }
             // Explicit stacking retains live controls above source surfaces.
             approvedArcher.rectTransform.SetAsFirstSibling();
+            if(!wide)trainingEnvironment.rectTransform.SetAsFirstSibling();
         }
 
         void ReflowApprovedSurfaces(float x,float top,float width,float y,float height,float gap,bool wide)
